@@ -1,0 +1,35 @@
+ui
+fix chatbox and main gui buttons position when changing ui scale
+todo quit to main menu reset windows
+fix dropdown list constrain to screen and add scrollbar, fix being added behind the dimmed screenblock
+fix reposition window when changing resolution
+fix window height 2 pixel difference from xna without hacks
+todo different tooltip position for ui tooltips and ingame tooltips?
+todo different stockpile presets for stockpiles, shopping areas, dumps, etc (and different stockpile designators)
+todo load game dialog make items fit perfectly instead of 1 pixel more than the scrollbox viewport
+todo make nameplatemanager not be a control?
+todo make selection manager not a control?
+todo move objectsdrawn from scene to camera 
+todo make only a single tabbed window for all actor's info tabs
+todo mousehover combobox
+todo textgetter func for textbox
+
+ui gameplay
+todo make a list with all zones to select them easier
+
+gameplay
+todo shop edit prices, edit maintain max min stock, customer browse items etc
+water lift
+todo shop customers also sell their items, buy and sell in the same transaction?
+todo put visitor selection button in populationmanager onselectedtarget, instead of adding it by default with a simple iscitizen check
+todo i had already made the behavrior for a customer buying items, so change the shop's stockpile that the shop is providing items to the behavior
+todo make some debug commands for changing visitor town rating and forcing visit
+todo make town have to be founded before visitors start arriving. build a special town center block to found the town? and choose the name
+todo town visitors hang around the town center block (used also to found the town initially?)
+
+engine
+todo make town citizens list an observablehashset
+todo make shop helper classes like workermanager etc
+
+input
+todo fix rebind hotkeys with modifier keys

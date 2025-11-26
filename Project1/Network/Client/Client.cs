@@ -262,7 +262,7 @@ namespace Start_a_Town_.Net
             if (this.PlayerData is not null && this.Map is not null)
                 PacketMousePosition.Send(Instance, this.PlayerData.ID, ToolManager.CurrentTarget); // TODO: do this at the toolmanager class instead of here
 
-            this.SendAcks();
+            PacketAcks.Send(this);
             this.SendOutgoingStream();
         }
 
@@ -323,18 +323,6 @@ namespace Start_a_Town_.Net
             /// 3) add a timestamp on the actual interaction class during the frame that it's first ticked on the server, and make clients tick it only then as well
         }
 
-        private void SendAcks()
-        {
-            if (this.AckQueue.IsEmpty)
-                return;
-            this.OutgoingStream.Write(PacketType.Acks);
-            this.OutgoingStream.Write(this.AckQueue.Count);
-            while (!this.AckQueue.IsEmpty)
-            {
-                if (this.AckQueue.TryDequeue(out long id))
-                    this.OutgoingStream.Write(id);
-            }
-        }
 
         private void SendOutgoingStream()
         {
@@ -782,7 +770,7 @@ namespace Start_a_Town_.Net
             this.PlayerDisconnected(player);
         }
 
-        private readonly ConcurrentQueue<long> AckQueue = new();
+        public readonly ConcurrentQueue<long> AckQueue = new();
 
         private void ReceiveMessage(IAsyncResult ar)
         {

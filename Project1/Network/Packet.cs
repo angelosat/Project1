@@ -25,7 +25,7 @@ namespace Start_a_Town_.Net
         EntityInventoryChange,
         MergedPackets,
         SetSaving,
-        Acks
+        //Acks
     }
 
     [Flags]

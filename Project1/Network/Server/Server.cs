@@ -18,7 +18,7 @@ namespace Start_a_Town_.Net
 
         static Server()
         {
-            RegisterPacketHandler(PacketType.Acks, Instance.ReceiveAcks);
+            //RegisterPacketHandler(PacketType.Acks, Instance.ReceiveAcks);
         }
 
         readonly string _name = "Server";
@@ -54,12 +54,10 @@ namespace Start_a_Town_.Net
         /// </summary>
         public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = new();
 
-        [Obsolete]
-        static readonly Dictionary<PacketType, Action<INetwork, PlayerData, BinaryReader>> PacketHandlersNewNew = new();
-        [Obsolete]
-        public static void RegisterPacketHandler(PacketType channel, Action<INetwork, PlayerData, BinaryReader> handler)
+        static readonly Dictionary<int, PacketHandlerWithPlayer> PacketHandlersNewNew = [];
+        public static void RegisterPacketHandlerWithPlayer(int id, PacketHandlerWithPlayer handler)
         {
-            PacketHandlersNewNew.Add(channel, handler);
+            PacketHandlersNewNew.Add(id, handler);
         }
 
         static readonly Dictionary<int, PacketHandler> PacketHandlersNewNewNew = new();
@@ -68,7 +66,6 @@ namespace Start_a_Town_.Net
         {
             PacketHandlersNewNewNew.Add(id, handler);
         }
-
         void OnGameEvent(GameEvent e)
         {
             GameMode.Current.HandleEvent(this, e);
@@ -892,10 +889,9 @@ namespace Start_a_Town_.Net
             while (mem.Position < data.Length)
             {
                 var typeID = r.ReadInt32();
-                var type = (PacketType)typeID;
                 lastPos = mem.Position;
 
-                if (PacketHandlersNewNew.TryGetValue(type, out var handlerActionNew))
+                if (PacketHandlersNewNew.TryGetValue(typeID, out var handlerActionNew))
                     handlerActionNew(Instance, player, r);
                 else if (PacketHandlersNewNewNew.TryGetValue(typeID, out var handlerActionNewNew))
                     handlerActionNewNew(Instance, r);

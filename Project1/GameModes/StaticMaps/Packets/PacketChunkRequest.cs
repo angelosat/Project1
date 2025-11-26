@@ -12,7 +12,7 @@ namespace Start_a_Town_
         }
         internal static void Send(INetwork net, int playerid)
         {
-            var w = (net as Client).OutgoingStream;
+            var w = (net as Client).OutgoingStreamUnreliable;
             w.Write(p);
             w.Write(playerid);
         }

@@ -95,6 +95,10 @@ namespace Start_a_Town_.Net
         {
             return new Packet(id, type, data.Length, data);
         }
+        static public Packet Create(long id, PacketType type, SendType sendType, byte[] data)
+        {
+            return new Packet(id, type, data.Length, data) { SendType = sendType };
+        }
         static public Packet Create(long id, PacketType type)
         {
             return new Packet(id, type, 0, new byte[] { });

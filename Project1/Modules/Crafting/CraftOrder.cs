@@ -455,7 +455,7 @@ namespace Start_a_Town_
             }
             void ChangeOrderPriority(bool p)
             {
-                CraftingManager.WriteOrderModifyPriority(Client.Instance.OutgoingStream, this, p);
+                CraftingManager.WriteOrderModifyPriority(Client.Instance.OutgoingStreamUnreliable, this, p);
             }
             void RemoveOrder()
             {
@@ -463,11 +463,11 @@ namespace Start_a_Town_
             }
             void Minus()
             {
-                CraftingManager.WriteOrderModifyQuantityParams(Client.Instance.OutgoingStream, this, -1);
+                CraftingManager.WriteOrderModifyQuantityParams(Client.Instance.OutgoingStreamUnreliable, this, -1);
             }
             void Plus()
             {
-                CraftingManager.WriteOrderModifyQuantityParams(Client.Instance.OutgoingStream, this, 1);
+                CraftingManager.WriteOrderModifyQuantityParams(Client.Instance.OutgoingStreamUnreliable, this, 1);
             }
             void ChangeFinishMode(CraftOrderFinishMode obj)
             {

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using static Start_a_Town_.Block;
 
 namespace Start_a_Town_.Net
 {
@@ -52,19 +53,19 @@ namespace Start_a_Town_.Net
         /// <summary>
         /// Contains objects that have changed since the last world delta state update
         /// </summary>
-        public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = new();
+        public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = [];
 
-        static readonly Dictionary<int, PacketHandlerWithPlayer> PacketHandlersNewNew = [];
+        static readonly Dictionary<int, PacketHandlerWithPlayer> PacketHandlersWithPlayer = [];
         public static void RegisterPacketHandlerWithPlayer(int id, PacketHandlerWithPlayer handler)
         {
-            PacketHandlersNewNew.Add(id, handler);
+            PacketHandlersWithPlayer.Add(id, handler);
         }
 
-        static readonly Dictionary<int, PacketHandler> PacketHandlersNewNewNew = new();
+        static readonly Dictionary<int, PacketHandler> PacketHandlersGeneric = [];
 
         internal static void RegisterPacketHandler(int id, PacketHandler handler)
         {
-            PacketHandlersNewNewNew.Add(id, handler);
+            PacketHandlersGeneric.Add(id, handler);
         }
         void OnGameEvent(GameEvent e)
         {
@@ -207,10 +208,39 @@ namespace Start_a_Town_.Net
 
             /// THESE MUST BE CALLED FROM WITHIN THE GAMESPEED LOOP
             this.CreatePacketsFromAllStreams();
+            this.WritePlayerSpecific();
             ResetOutgoingStreams();
             Instance.AdvanceClock();
             this.SendPackets();
         }
+
+        private void WritePlayerSpecific()
+        {
+            // SEND PLAYER SPECIFIC ACKS
+            foreach(var player in this.Players.GetList())
+            {
+                var qu = player.AckQueue;
+                if (qu.IsEmpty)
+                    continue;
+                using var str = new BinaryWriter(new MemoryStream());
+                while (!qu.IsEmpty)
+                {
+                    if (qu.TryDequeue(out long id))
+                        str.Write(id);
+                }
+                using var mem = new MemoryStream();
+                using var zip = new GZipStream(mem, CompressionMode.Compress);
+                str.BaseStream.Position = 0;
+                str.BaseStream.CopyTo(zip);
+                var data = mem.ToArray();
+
+                var p = Packet.Create(player, PacketType.MergedPackets, data, SendType.Unreliable);
+                p.Synced = true;
+                p.Tick = this.Clock.TotalMilliseconds;
+                this.Enqueue(player, p);
+            }
+        }
+
         private void SendPackets()
         {
             this.SendUnreliable();
@@ -489,9 +519,13 @@ namespace Start_a_Town_.Net
                 }
 
                 packet.Connection = state;
-                packet.Player = state.Player;
+                var player = state.Player;
+                packet.Player = player;
 
-                packet.Player.Incoming.Enqueue(packet);
+                player.Incoming.Enqueue(packet);
+
+                if ((packet.SendType & SendType.Reliable) == SendType.Reliable)
+                    player.AckQueue.Enqueue(packet.ID);
             }
             catch (SocketException)
             {
@@ -588,7 +622,8 @@ namespace Start_a_Town_.Net
                     return;
 
                 case PacketType.MergedPackets:
-                    UnmergePackets(msg.Player, msg.Decompressed);
+                    var player = msg.Player;
+                    UnmergePackets(player, msg.Decompressed);
                     break;
 
                 default:
@@ -891,9 +926,9 @@ namespace Start_a_Town_.Net
                 var typeID = r.ReadInt32();
                 lastPos = mem.Position;
 
-                if (PacketHandlersNewNew.TryGetValue(typeID, out var handlerActionNew))
+                if (PacketHandlersWithPlayer.TryGetValue(typeID, out var handlerActionNew))
                     handlerActionNew(Instance, player, r);
-                else if (PacketHandlersNewNewNew.TryGetValue(typeID, out var handlerActionNewNew))
+                else if (PacketHandlersGeneric.TryGetValue(typeID, out var handlerActionNewNew))
                     handlerActionNewNew(Instance, r);
 
                 if (mem.Position == lastPos)
@@ -930,23 +965,23 @@ namespace Start_a_Town_.Net
         {
         }
 
-        void ReceiveAcks(INetwork net, PlayerData player, BinaryReader r)
-        {
-            var acksCount = r.ReadInt32();
-            for (int i = 0; i < acksCount; i++)
-            {
-                long ackID = r.ReadInt64();
-                if (player.WaitingForAck.TryRemove(ackID, out Packet existing))
-                {
-                    existing.RTT.Stop();
-                    player.Connection.RTT = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds);
-                    player.Ping = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds).Milliseconds;
-                    if (player.OrderedPackets.Count > 0)
-                        if (player.OrderedPackets.Peek().ID == ackID)
-                            player.OrderedPackets.Dequeue();
-                }
-            }
-        }
+        //void ReceiveAcks(INetwork net, PlayerData player, BinaryReader r)
+        //{
+        //    var acksCount = r.ReadInt32();
+        //    for (int i = 0; i < acksCount; i++)
+        //    {
+        //        long ackID = r.ReadInt64();
+        //        if (player.WaitingForAck.TryRemove(ackID, out Packet existing))
+        //        {
+        //            existing.RTT.Stop();
+        //            player.Connection.RTT = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds);
+        //            player.Ping = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds).Milliseconds;
+        //            if (player.OrderedPackets.Count > 0)
+        //                if (player.OrderedPackets.Peek().ID == ackID)
+        //                    player.OrderedPackets.Dequeue();
+        //        }
+        //    }
+        //}
 
         public void Report(string text)
         {

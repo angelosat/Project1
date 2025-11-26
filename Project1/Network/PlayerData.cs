@@ -17,6 +17,8 @@ namespace Start_a_Town_.Net
         public Color Color;
         public ConcurrentQueue<Packet> Incoming = new();
         public ConcurrentDictionary<long, Packet> WaitingForAck = new();
+        public readonly ConcurrentQueue<long> AckQueue = new();
+
         public Queue<Packet> OrderedPackets = new();
         public UdpConnection Connection;
         public EndPoint IP;
@@ -26,8 +28,8 @@ namespace Start_a_Town_.Net
         public Actor ControllingEntity;
         public int Ping;
         public bool IsActive;
-        public Dictionary<Vector2, byte[]> PendingChunks = new();
-        public HashSet<Vector2> SentChunks = new();
+        public Dictionary<Vector2, byte[]> PendingChunks = [];
+        public HashSet<Vector2> SentChunks = [];
         public Vector2 CameraPosition;
         public ControlTool CurrentTool = ToolManager.Instance.GetDefaultTool();
         public float CameraZoom;

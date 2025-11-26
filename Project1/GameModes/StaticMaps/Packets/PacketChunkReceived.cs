@@ -16,7 +16,7 @@ namespace Start_a_Town_
         }
         internal static void Send(Client client, PlayerData player, Vector2 chunkCoords)
         {
-            var w = client.OutgoingStream;
+            var w = client.OutgoingStreamUnreliable;
             w.Write(p);
             w.Write(player.ID);
             w.Write(chunkCoords);

@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -75,11 +76,13 @@ namespace Start_a_Town_.Net
 
         public TimeSpan Clock => this.ClientClock;
 
-        public BinaryWriter OutgoingStream = new(new MemoryStream());
+        public BinaryWriter OutgoingStreamUnreliable = new(new MemoryStream());
+        public BinaryWriter OutgoingStreamReliable = new(new MemoryStream());
 
         public BinaryWriter GetOutgoingStream()
         {
-            return this.OutgoingStream;
+            //return this.OutgoingStreamUnreliable;
+            return this.OutgoingStreamReliable;
         }
 
         public BinaryWriter OutgoingStreamTimestamped = new(new MemoryStream());
@@ -140,7 +143,7 @@ namespace Start_a_Town_.Net
             this.RemoteOrderedReliableSequence = 0;
             this.PlayerData = playerData;
             this._packetID = 1;
-            Instance.OutgoingStream = new BinaryWriter(new MemoryStream());
+            Instance.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
             this.IncomingOrderedReliable.Clear();
             this.IncomingOrdered.Clear();
             this.IncomingSynced.Clear();
@@ -195,7 +198,7 @@ namespace Start_a_Town_.Net
             this.RemoteOrderedReliableSequence = 0;
             this.PlayerData = playerData;
             this._packetID = 1;
-            Instance.OutgoingStream = new BinaryWriter(new MemoryStream());
+            Instance.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
             this.IncomingOrderedReliable.Clear();
             this.IncomingOrdered.Clear();
             this.IncomingSynced.Clear();
@@ -262,11 +265,12 @@ namespace Start_a_Town_.Net
             if (this.PlayerData is not null && this.Map is not null)
                 PacketMousePosition.Send(Instance, this.PlayerData.ID, ToolManager.CurrentTarget); // TODO: do this at the toolmanager class instead of here
 
-            PacketAcks.Send(this);
-            this.SendOutgoingStream();
+            PacketAcks.Send(this, this.PlayerData);
+            this.SendOutgoingStreamUnreliable();
+            this.SendOutgoingStreamReliable();
         }
 
-        private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, byte[] data)> BufferTimestamped = new();
+        private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, byte[] data)> BufferTimestamped = [];
 
         private ulong lasttickreceived;
 
@@ -324,26 +328,44 @@ namespace Start_a_Town_.Net
         }
 
 
-        private void SendOutgoingStream()
+        private void SendOutgoingStreamUnreliable()
         {
-            if (this.OutgoingStream.BaseStream.Position > 0)
+            if (this.OutgoingStreamUnreliable.BaseStream.Position > 0)
             {
                 byte[] data;
                 using (var output = new MemoryStream())
                 {
                     using (var zip = new GZipStream(output, CompressionMode.Compress))
                     {
-                        this.OutgoingStream.BaseStream.Position = 0;
-                        this.OutgoingStream.BaseStream.CopyTo(zip);
+                        this.OutgoingStreamUnreliable.BaseStream.Position = 0;
+                        this.OutgoingStreamUnreliable.BaseStream.CopyTo(zip);
                     }
                     data = output.ToArray();
                 }
                 if (data.Length > 0)
-                    this.Send(PacketType.MergedPackets, data);
-                this.OutgoingStream = new BinaryWriter(new MemoryStream());
+                    this.Send(PacketType.MergedPackets, data, SendType.Unreliable);
+                this.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
             }
         }
-
+        private void SendOutgoingStreamReliable()
+        {
+            if (this.OutgoingStreamReliable.BaseStream.Position > 0)
+            {
+                byte[] data;
+                using (var output = new MemoryStream())
+                {
+                    using (var zip = new GZipStream(output, CompressionMode.Compress))
+                    {
+                        this.OutgoingStreamReliable.BaseStream.Position = 0;
+                        this.OutgoingStreamReliable.BaseStream.CopyTo(zip);
+                    }
+                    data = output.ToArray();
+                }
+                if (data.Length > 0)
+                    this.Send(PacketType.MergedPackets, data, SendType.OrderedReliable);
+                this.OutgoingStreamReliable = new BinaryWriter(new MemoryStream());
+            }
+        }
         private void OnGameEvent(GameEvent e)
         {
             GameMode.Current.HandleEvent(Instance, e);
@@ -770,7 +792,7 @@ namespace Start_a_Town_.Net
             this.PlayerDisconnected(player);
         }
 
-        public readonly ConcurrentQueue<long> AckQueue = new();
+        //public readonly ConcurrentQueue<long> AckQueue = new();
 
         private void ReceiveMessage(IAsyncResult ar)
         {
@@ -791,7 +813,7 @@ namespace Start_a_Town_.Net
                     // OLD METHOD: immediately send a tiny datagram back with the ack
                     //    Packet.Send(this.PacketID, PacketType.Ack, Network.Serialize(w => w.Write(packet.ID)), this.Host, this.RemoteIP);
                     // NEW METHOD: piggy-back the ack to the mergedpacket that will be sent next frame
-                    this.AckQueue.Enqueue(packet.ID);
+                    this.PlayerData.AckQueue.Enqueue(packet.ID);
 
 
                 this.IncomingAll.Enqueue(packet);
@@ -1026,11 +1048,14 @@ namespace Start_a_Town_.Net
             }).Send(Instance.PacketID, PacketType.PlayerServerCommand, Instance.Host, Instance.RemoteIP);
         }
 
-        private void Send(PacketType packetType, byte[] data)
+        private void Send(PacketType packetType, byte[] data, SendType sendType)
         {
-            data.Send(this.PacketID, packetType, this.Host, this.RemoteIP);
+            data.Send(this.PacketID, packetType, sendType, this.Host, this.RemoteIP);
         }
-
+        //private void Send(PacketType packetType, byte[] data)
+        //{
+        //    data.Send(this.PacketID, packetType, sendType, this.Host, this.RemoteIP);
+        //}
         /// <summary>
         /// Does nothing on client!
         /// </summary>

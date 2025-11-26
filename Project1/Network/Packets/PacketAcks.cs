@@ -30,20 +30,32 @@ namespace Start_a_Town_
                 }
             }
         }
-        internal static void Send(INetwork net)
+        internal static void Send(Client client, PlayerData player)
         {
-            if (net is Client client)
+
+            //if (net is Client client)
+            //{
+            //var stream = client.OutgoingStream;
+            // the client will write the whole batch of the acks to send back to the server
+            var stream = client.OutgoingStreamUnreliable;
+            var ackqueue = player.AckQueue;
+            if (ackqueue.IsEmpty)
+                return;
+            stream.Write(p);
+            stream.Write(ackqueue.Count);
+            while (!ackqueue.IsEmpty)
             {
-                if (client.AckQueue.IsEmpty)
-                    return;
-                client.OutgoingStream.Write(p);
-                client.OutgoingStream.Write(client.AckQueue.Count);
-                while (!client.AckQueue.IsEmpty)
-                {
-                    if (client.AckQueue.TryDequeue(out long id))
-                        client.OutgoingStream.Write(id);
-                }
+                if (ackqueue.TryDequeue(out long id))
+                    stream.Write(id);
             }
+            //}
+            //else if (net is Server server)
+            //{
+            //    if(player is null)
+            //        throw new Exception("Server handler called without player");
+            //    //var stream = server.GetOutgoingStream();
+            //    // TODO: the server will write all the packetids that it received from the player last frame?
+            //}
         }
         internal static void Init() { }
     }

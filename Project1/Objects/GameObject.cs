@@ -1345,7 +1345,7 @@ namespace Start_a_Town_
                     return pos;
                 }
             }
-            throw new Exception(); //throwed when actor was stuck inside a block
+            throw new Exception(); //thrown when actor was stuck inside a block
         }
 
         internal bool IsFootprintWithinBlock(Vector3 target)

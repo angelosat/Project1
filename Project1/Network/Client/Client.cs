@@ -325,11 +325,11 @@ namespace Start_a_Town_.Net
 
         private void SendAcks()
         {
-            if (!this.AckQueue.Any())
+            if (this.AckQueue.IsEmpty)
                 return;
             this.OutgoingStream.Write(PacketType.Acks);
             this.OutgoingStream.Write(this.AckQueue.Count);
-            while (this.AckQueue.Any())
+            while (!this.AckQueue.IsEmpty)
             {
                 if (this.AckQueue.TryDequeue(out long id))
                     this.OutgoingStream.Write(id);
@@ -798,8 +798,13 @@ namespace Start_a_Town_.Net
 
                 Packet packet = Packet.Read(bytesReceived);
 
+
                 if ((packet.SendType & SendType.Reliable) == SendType.Reliable)
-                    Packet.Send(this.PacketID, PacketType.Ack, Network.Serialize(w => w.Write(packet.ID)), this.Host, this.RemoteIP);
+                    // OLD METHOD: immediately send a tiny datagram back with the ack
+                    //    Packet.Send(this.PacketID, PacketType.Ack, Network.Serialize(w => w.Write(packet.ID)), this.Host, this.RemoteIP);
+                    // NEW METHOD: piggy-back the ack to the mergedpacket that will be sent next frame
+                    this.AckQueue.Enqueue(packet.ID);
+
 
                 this.IncomingAll.Enqueue(packet);
             }

@@ -40,8 +40,7 @@ namespace Start_a_Town_.Net
         {
             get
             {
-                if (this._Console == null)
-                    this._Console = new UI.ConsoleBoxAsync(new Rectangle(0, 0, 800, 500)) { FadeText = false };
+                this._Console ??= new UI.ConsoleBoxAsync(new Rectangle(0, 0, 800, 500)) { FadeText = false };
                 return this._Console;
             }
         }
@@ -590,22 +589,6 @@ namespace Start_a_Town_.Net
                         Instance.Enqueue(PacketType.PlayerRemoteCall, msg.Payload, SendType.OrderedReliable, msg.Player.ControllingEntity.Global);
                     });
                     return;
-
-                case PacketType.Ack:
-                    Network.Deserialize(msg.Payload, r =>
-                    {
-                        long ackID = r.ReadInt64();
-                        if (msg.Player.WaitingForAck.TryRemove(ackID, out Packet existing))
-                        {
-                            existing.RTT.Stop();
-                            msg.Connection.RTT = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds);
-                            msg.Player.Ping = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds).Milliseconds;
-                            if (msg.Player.OrderedPackets.Count > 0)
-                                if (msg.Player.OrderedPackets.Peek().ID == ackID)
-                                    msg.Player.OrderedPackets.Dequeue();
-                        }
-                    });
-                    break;
 
                 case PacketType.MergedPackets:
                     UnmergePackets(msg.Player, msg.Decompressed);

@@ -17,7 +17,6 @@ namespace Start_a_Town_.Net
         WorldData, 
         Chunk,
         ObjectEvent,
-        Ack,
         ServerBroadcast,
         PlayerSlotClick,
         SpawnChildObject,

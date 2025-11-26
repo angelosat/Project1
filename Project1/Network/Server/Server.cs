@@ -223,16 +223,16 @@ namespace Start_a_Town_.Net
                 if (qu.IsEmpty)
                     continue;
                 using var str = new BinaryWriter(new MemoryStream());
-                while (!qu.IsEmpty)
-                {
-                    if (qu.TryDequeue(out long id))
-                        str.Write(id);
-                }
+                PacketAcks.Send(str, player);
                 using var mem = new MemoryStream();
-                using var zip = new GZipStream(mem, CompressionMode.Compress);
-                str.BaseStream.Position = 0;
-                str.BaseStream.CopyTo(zip);
+                using (var zip = new GZipStream(mem, CompressionMode.Compress))
+                {
+                    str.BaseStream.Position = 0;
+                    str.BaseStream.CopyTo(zip);
+                }
                 var data = mem.ToArray();
+
+                var test = data.Decompress();
 
                 var p = Packet.Create(player, PacketType.MergedPackets, data, SendType.Unreliable);
                 p.Synced = true;

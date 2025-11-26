@@ -22,7 +22,8 @@ namespace Start_a_Town_
                 if (player.WaitingForAck.TryRemove(ackID, out Packet existing))
                 {
                     existing.RTT.Stop();
-                    player.Connection.RTT = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds);
+                    if(net is Server)
+                        player.Connection.RTT = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds); // because the player instance in the client has connection = null (for now?)
                     player.Ping = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds).Milliseconds;
                     if (player.OrderedPackets.Count > 0)
                         if (player.OrderedPackets.Peek().ID == ackID)
@@ -56,6 +57,20 @@ namespace Start_a_Town_
             //    //var stream = server.GetOutgoingStream();
             //    // TODO: the server will write all the packetids that it received from the player last frame?
             //}
+        }
+        internal static void Send(BinaryWriter stream, PlayerData player)
+        {
+            var ackqueue = player.AckQueue;
+            if (ackqueue.IsEmpty)
+                return;
+            stream.Write(p);
+            stream.Write(ackqueue.Count);
+            while (!ackqueue.IsEmpty)
+            {
+                if (ackqueue.TryDequeue(out long id))
+                    stream.Write(id);
+            }
+           
         }
         internal static void Init() { }
     }

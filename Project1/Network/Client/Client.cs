@@ -35,7 +35,7 @@ namespace Start_a_Town_.Net
         private bool IsRunning;
 
         private long _packetID = 1;
-        public long PacketID => this._packetID++;
+        public long NextPacketID => this._packetID++;
         private long RemoteSequence = 0;
         public long RemoteOrderedReliableSequence = 0;
         private readonly Dictionary<int, GameObject> NetworkObjects = new();
@@ -100,7 +100,7 @@ namespace Start_a_Town_.Net
             Engine.Map = null;
             this.Timeout = -1;
             Instance.NetworkObjects.Clear();
-            Packet.Create(this.PacketID, PacketType.PlayerDisconnected).BeginSendTo(this.Host, this.RemoteIP, a => { });
+            Packet.Create(this.NextPacketID, PacketType.PlayerDisconnected).BeginSendTo(this.Host, this.RemoteIP, a => { });
             this.IncomingAll = new ConcurrentQueue<Packet>();
             this.ClientClock = new TimeSpan();
             this.SyncedPackets = new Queue<Packet>();
@@ -171,7 +171,7 @@ namespace Start_a_Town_.Net
             var state = new UdpConnection("Server", this.Host) { Buffer = new byte[Packet.Size] };
             this.Host.Bind(new IPEndPoint(IPAddress.Any, 0));
 
-            byte[] data = Packet.Create(this.PacketID, PacketType.RequestConnection, Network.Serialize(w =>
+            byte[] data = Packet.Create(this.NextPacketID, PacketType.RequestConnection, Network.Serialize(w =>
             {
                 w.Write(playerData.Name);
             })).ToArray();
@@ -214,7 +214,7 @@ namespace Start_a_Town_.Net
             var state = new UdpConnection("Server", this.Host) { Buffer = new byte[Packet.Size] };
             this.Host.Bind(new IPEndPoint(IPAddress.Any, 0));
 
-            byte[] data = Packet.Create(this.PacketID, PacketType.RequestConnection, Network.Serialize(w =>
+            byte[] data = Packet.Create(this.NextPacketID, PacketType.RequestConnection, Network.Serialize(w =>
             {
                 w.Write(playerData.Name);
             })).ToArray();
@@ -389,12 +389,16 @@ namespace Start_a_Town_.Net
         }
 
         private static readonly Dictionary<int, PacketHandler> PacketHandlersNewNewNew = new();
+        private static readonly Dictionary<int, PacketHandlerWithPlayer> PacketHandlersWithPlayer = new();
 
         internal static void RegisterPacketHandler(int id, PacketHandler handler)
         {
             PacketHandlersNewNewNew.Add(id, handler);
         }
-
+        internal static void RegisterPacketHandlerWithPlayer(int id, PacketHandlerWithPlayer handler)
+        {
+            PacketHandlersWithPlayer.Add(id, handler);
+        }
         public void EventOccured(Message.Types type, params object[] p)
         {
             var e = new GameEvent(this.ClientClock.TotalMilliseconds, type, p);
@@ -480,6 +484,8 @@ namespace Start_a_Town_.Net
 
                 if (PacketHandlersNew.TryGetValue(type, out Action<INetwork, BinaryReader> handlerAction))
                     handlerAction(Instance, r);
+                else if (PacketHandlersWithPlayer.TryGetValue(id, out var handlerActionWithPlayer))
+                    handlerActionWithPlayer(Instance,this.PlayerData, r);
                 else if (PacketHandlersNewNewNew.TryGetValue(id, out var handlerActionNewNew))
                     handlerActionNewNew(Instance, r);
                 else
@@ -500,6 +506,7 @@ namespace Start_a_Town_.Net
                     break;
 
                 default:
+                    throw new Exception("received invalid packet id");
                     break;
             }
         }
@@ -1045,12 +1052,17 @@ namespace Start_a_Town_.Net
             Network.Serialize(writer =>
             {
                 writer.WriteASCII(command);
-            }).Send(Instance.PacketID, PacketType.PlayerServerCommand, Instance.Host, Instance.RemoteIP);
+            }).Send(Instance.NextPacketID, PacketType.PlayerServerCommand, Instance.Host, Instance.RemoteIP);
         }
 
         private void Send(PacketType packetType, byte[] data, SendType sendType)
         {
-            data.Send(this.PacketID, packetType, sendType, this.Host, this.RemoteIP);
+            //data.Send(this.PacketID, packetType, sendType, this.Host, this.RemoteIP);
+            var packet = Packet.Create(this.NextPacketID, packetType, sendType, data);
+            packet.BeginSendTo(this.Host, this.RemoteIP);
+
+            if ((packet.SendType & SendType.Reliable) == SendType.Reliable)
+                this.PlayerData.WaitingForAck[packet.ID] = packet;
         }
         //private void Send(PacketType packetType, byte[] data)
         //{

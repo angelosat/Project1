@@ -66,6 +66,7 @@ namespace Start_a_Town_.Net
         {
             var id = PacketIDSequence++;
             Server.RegisterPacketHandlerWithPlayer(id, handler);
+            Client.RegisterPacketHandlerWithPlayer(id, handler);
             return id;
         }
         public void CreateClient()

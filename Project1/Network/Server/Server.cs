@@ -338,7 +338,6 @@ namespace Start_a_Town_.Net
                 }
         }
 
-        const int RTT = 20000;// 5000;
         void SendOrderedReliable()
         {
             foreach (var player in this.Players.GetList())
@@ -362,7 +361,7 @@ namespace Start_a_Town_.Net
                 var packet = player.WaitingForAck.Values.FirstOrDefault();
                 if (packet != null)
                 {
-                    if (packet.RTT.ElapsedMilliseconds < RTT)
+                    if (packet.RTT.ElapsedMilliseconds < Network.RTT)
                         continue;
                     if (packet.Retries-- <= 0)
                     {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using SharpDX.X3DAudio;
 using Start_a_Town_.Components;
 using System;
 using System.Collections.Concurrent;
@@ -267,6 +268,7 @@ namespace Start_a_Town_.Net
 
             PacketAcks.Send(this, this.PlayerData);
             this.SendOutgoingStreamUnreliable();
+            this.TryResendPacketsFirst();
             this.SendOutgoingStreamReliable();
         }
 
@@ -469,6 +471,20 @@ namespace Start_a_Town_.Net
             tag.Add(charTag);
 
             tag.WriteTo(writer);
+        }
+
+        void TryResendPacketsFirst()
+        {
+            var player = this.PlayerData;
+            var packet = player.WaitingForAck.Values.FirstOrDefault();
+            if (packet != null)
+            {
+                if (packet.RTT.ElapsedMilliseconds < Network.RTT)
+                    return;
+                if (packet.Retries-- <= 0)
+                    throw new Exception($"Exceeded maximum retries to resend packet {packet.ID}");
+                packet.BeginSendTo(this.Host, this.RemoteIP);
+            }
         }
 
         private void UnmergePackets(byte[] data)

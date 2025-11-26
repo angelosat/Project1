@@ -47,6 +47,8 @@ namespace Start_a_Town_.Net
         public Client Client;
         public Server Server;
 
+        public const int RTT = 20000;// 5000;
+
         static int PacketIDSequence = 10000;
         //public static int RegisterPacketHandler(Action<INetwork, BinaryReader> handler)
         //{

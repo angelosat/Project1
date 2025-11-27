@@ -475,16 +475,8 @@ namespace Start_a_Town_.Net
 
         void TryResendPacketsFirst()
         {
-            var player = this.PlayerData;
-            var packet = player.WaitingForAck.Values.FirstOrDefault();
-            if (packet != null)
-            {
-                if (packet.RTT.ElapsedMilliseconds < Network.RTT)
-                    return;
-                if (packet.Retries-- <= 0)
-                    throw new Exception($"Exceeded maximum retries to resend packet {packet.ID}");
-                packet.BeginSendTo(this.Host, this.RemoteIP);
-            }
+            if (NetworkHelper.TryResend(this.Host, this.RemoteIP, this.PlayerData) is { } timedout)
+                throw new TimeoutException($"Exceeded maximum retries to resend packet {timedout.ID}");
         }
 
         private void UnmergePackets(byte[] data)

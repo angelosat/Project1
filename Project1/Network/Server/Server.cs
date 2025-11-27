@@ -358,21 +358,11 @@ namespace Start_a_Town_.Net
         {
             foreach (var player in this.Players.GetList())
             {
-                var packet = player.WaitingForAck.Values.FirstOrDefault();
-                if (packet != null)
+                if(NetworkHelper.TryResend(Listener, player.IP, player) is { } timedout)
                 {
-                    if (packet.RTT.ElapsedMilliseconds < Network.RTT)
-                        continue;
-                    if (packet.Retries-- <= 0)
-                    {
-                        player.WaitingForAck.TryRemove(packet.ID, out _);
-                        this.ConsoleBox.Write(UI.ConsoleMessageTypes.Acks, Color.Orange, "SERVER", "Send retries exceeded maximum for packet " + packet);
-                        this.ConsoleBox.Write(Color.Red, "SERVER", player.Name + " timed out");
-                        CloseConnection(player.Connection);
-                        //send player disconnected packet to rest of players
-                        break;
-                    }
-                    packet.BeginSendTo(Listener, player.IP);
+                    this.ConsoleBox.Write(UI.ConsoleMessageTypes.Acks, Color.Orange, "SERVER", "Send retries exceeded maximum for packet " + timedout);
+                    this.ConsoleBox.Write(Color.Red, "SERVER", player.Name + " timed out");
+                    CloseConnection(player.Connection);
                 }
             }
         }

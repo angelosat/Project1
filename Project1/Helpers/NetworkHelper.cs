@@ -1,10 +1,12 @@
-﻿using System;
-using System.IO;
-using System.IO.Compression;
-using System.Net;
-using System.Net.Sockets;
+﻿using SharpDX.X3DAudio;
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
+using System;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Start_a_Town_
 {
@@ -63,5 +65,26 @@ namespace Start_a_Town_
             return compressed;
         }
 
+        /// <summary>
+        /// Returns the packet that exceeded maximum resend attempts
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="ip"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static Packet TryResend(Socket socket, EndPoint ip, PlayerData player)
+        {
+            var waiting = player.WaitingForAck;
+            if (waiting.IsEmpty)
+                return null;
+
+            var packet = waiting.Values.First();
+            if (packet.RTT.ElapsedMilliseconds < Network.RTT)
+                return null;
+            if (packet.Retries-- <= 0)
+                return packet;
+            packet.BeginSendTo(socket, ip);
+            return null;
+        }
     }
 }

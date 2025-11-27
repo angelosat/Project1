@@ -1313,9 +1313,10 @@ namespace Start_a_Town_
         {
             this.GetScreenBounds(camera).DrawHighlightBorder(sb, .5f, camera.Zoom);
         }
-
+        [Obsolete]
         internal byte[] Serialize()
         {
+            throw new Exception();
             byte[] newData = Network.Serialize(this.Write);
             return newData;
         }

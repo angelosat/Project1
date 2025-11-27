@@ -4,7 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -224,16 +223,7 @@ namespace Start_a_Town_.Net
                     continue;
                 using var str = new BinaryWriter(new MemoryStream());
                 PacketAcks.Send(str, player);
-                using var mem = new MemoryStream();
-                using (var zip = new GZipStream(mem, CompressionMode.Compress))
-                {
-                    str.BaseStream.Position = 0;
-                    str.BaseStream.CopyTo(zip);
-                }
-                var data = mem.ToArray();
-
-                var test = data.Decompress();
-
+                var data = ((MemoryStream)str.BaseStream).ToArray();
                 var p = Packet.Create(player, PacketType.MergedPackets, data, SendType.Unreliable);
                 p.Synced = true;
                 p.Tick = this.Clock.TotalMilliseconds;
@@ -369,31 +359,13 @@ namespace Start_a_Town_.Net
 
         private void CreatePacketsFromStream()
         {
-            byte[] data;
-            using (var output = new MemoryStream())
-            {
-                using (var zip = new GZipStream(output, CompressionMode.Compress))
-                {
-                    this.OutgoingStream.BaseStream.Position = 0;
-                    this.OutgoingStream.BaseStream.CopyTo(zip);
-                }
-                data = output.ToArray();
-            }
+            var data = ((MemoryStream)this.OutgoingStream.BaseStream).ToArray();
             //if (data.Length > 0) // send empty packet anyway to substitute pinging for keeping an active connection
             this.Enqueue(PacketType.MergedPackets, data);
         }
         private void CreatePacketsFromStreamUnreliable()
         {
-            byte[] data;
-            using (var output = new MemoryStream())
-            {
-                using (var zip = new GZipStream(output, CompressionMode.Compress))
-                {
-                    this.OutgoingStreamUnreliable.BaseStream.Position = 0;
-                    this.OutgoingStreamUnreliable.BaseStream.CopyTo(zip);
-                }
-                data = output.ToArray();
-            }
+            var data = ((MemoryStream)this.OutgoingStreamUnreliable.BaseStream).ToArray();
             //if (data.Length > 0) // send empty packet anyway to substitute pinging for keeping an active connection
             this.EnqueueUnreliable(PacketType.MergedPackets, data);
         }
@@ -541,14 +513,16 @@ namespace Start_a_Town_.Net
 
         private static void HandleMessage(Packet msg)
         {
+            var r = msg.Reader;
             switch (msg.PacketType)
             {
                 case PacketType.RequestConnection:
 
-                    string name = Network.Deserialize<string>(msg.Payload, r =>
-                    {
-                        return r.ReadString();
-                    });
+                    //string name = Network.Deserialize<string>(msg.Payload, r =>
+                    //{
+                    //    return r.ReadString();
+                    //});
+                    string name = msg.Reader.ReadString();
 
                     Instance.ConsoleBox.Write(Color.Lime, "SERVER", name + " connected from " + msg.Connection.IP);
 
@@ -581,38 +555,38 @@ namespace Start_a_Town_.Net
                     break;
 
                 case PacketType.PlayerServerCommand:
-                    msg.Payload.Deserialize(r =>
-                    {
+                    //msg.Payload.Deserialize(r =>
+                    //{
                         CommandParser.Execute(Instance, msg.Player, r.ReadASCII());
-                    });
+                    //});
                     break;
 
                 case PacketType.PlayerSlotClick:
-                    msg.Payload.Deserialize(r =>
-                    {
+                    //msg.Payload.Deserialize(r =>
+                    //{
                         TargetArgs actor = TargetArgs.Read(Instance, r);
                         TargetArgs target = TargetArgs.Read(Instance, r);
                         Instance.PostLocalEvent(target.Slot.Parent, Components.Message.Types.SlotInteraction, actor.Object, target.Slot);
-                    });
+                    //});
                     Instance.Enqueue(PacketType.PlayerSlotClick, msg.Payload, SendType.OrderedReliable);
                     return;
 
                 case PacketType.PlayerRemoteCall:
-                    msg.Payload.Deserialize(r =>
-                    {
+                    //msg.Payload.Deserialize(r =>
+                    //{
                         int netid = r.ReadInt32();
-                        TargetArgs target = TargetArgs.Read(Instance, r);
+                        target = TargetArgs.Read(Instance, r);
                         Message.Types call = (Message.Types)r.ReadInt32();
                         int dataLength = (int)(r.BaseStream.Length - r.BaseStream.Position);
                         byte[] args = r.ReadBytes(dataLength);
                         target.HandleRemoteCall(Instance, ObjectEventArgs.Create(call, args));
                         Instance.Enqueue(PacketType.PlayerRemoteCall, msg.Payload, SendType.OrderedReliable, msg.Player.ControllingEntity.Global);
-                    });
+                    //});
                     return;
 
                 case PacketType.MergedPackets:
                     var player = msg.Player;
-                    UnmergePackets(player, msg.Decompressed);
+                    UnmergePackets(player, msg.Reader);
                     break;
 
                 default:
@@ -904,7 +878,25 @@ namespace Start_a_Town_.Net
             });
             Instance.Enqueue(PacketType.EntityInventoryChange, data, SendType.OrderedReliable); // WARNING!!! TODO: handle case where each slot is owned by a different entity     
         }
+        private static void UnmergePackets(PlayerData player, BinaryReader r)
+        {
+            var mem = r.BaseStream;
+            var lastPos = mem.Position;
+            while (mem.Position < mem.Length)
+            {
+                var typeID = r.ReadInt32();
+                lastPos = mem.Position;
 
+                if (PacketHandlersWithPlayer.TryGetValue(typeID, out var handlerActionNew))
+                    handlerActionNew(Instance, player, r);
+                else if (PacketHandlersGeneric.TryGetValue(typeID, out var handlerActionNewNew))
+                    handlerActionNewNew(Instance, r);
+
+                if (mem.Position == lastPos)
+                    throw new Exception(); // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
+            }
+        }
+        [Obsolete]
         private static void UnmergePackets(PlayerData player, byte[] data)
         {
             using var mem = new MemoryStream(data);
@@ -921,7 +913,7 @@ namespace Start_a_Town_.Net
                     handlerActionNewNew(Instance, r);
 
                 if (mem.Position == lastPos)
-                    break;
+                    throw new Exception(); // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
             }
         }
         public static void StartSaving()

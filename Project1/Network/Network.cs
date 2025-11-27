@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.IO.Compression;
 using Start_a_Town_.UI;
 using Microsoft.Xna.Framework;
 
@@ -48,6 +47,7 @@ namespace Start_a_Town_.Net
         public Server Server;
 
         public const int RTT = 20000;// 5000;
+        public const int CompressionThreshold = 140;
 
         static int PacketIDSequence = 10000;
         //public static int RegisterPacketHandler(Action<INetwork, BinaryReader> handler)
@@ -103,41 +103,10 @@ namespace Start_a_Town_.Net
         }
         static public byte[] Serialize(Action<BinaryWriter> dataGetter)
         {
-            // with compression
-            byte[] data;
-            using (MemoryStream output = new())
-            {
-                using (MemoryStream mem = new())
-                using (BinaryWriter bin = new(mem))
-                using (GZipStream zip = new(output, CompressionMode.Compress))
-                {
-                    dataGetter(bin);
-                    mem.Position = 0;
-                    mem.CopyTo(zip);
-                }
-                data = output.ToArray();
-            }
-            return data;
+            using var m = new MemoryStream();
+            using (var str = new BinaryWriter(m))
+                dataGetter(str);
+            return m.ToArray();
         }
-
-        static public T Deserialize<T>(byte[] compressed, Func<BinaryReader, T> dataReader)
-        {
-            using MemoryStream input = new(compressed);
-            using GZipStream zip = new(input, CompressionMode.Decompress);
-            using BinaryReader reader = new(zip);
-            return dataReader(reader);
-        }
-        static public void Deserialize(byte[] compressed, Action<BinaryReader> dataReader)
-        {
-            using MemoryStream memStream = new(compressed);
-            using GZipStream decompress = new(memStream, CompressionMode.Decompress);
-            using MemoryStream decompressed = new();
-            decompress.CopyTo(decompressed);
-            decompressed.Position = 0;
-            using (BinaryReader reader = new BinaryReader(decompressed))
-                dataReader(reader);
-        }
-
-        
     }
 }

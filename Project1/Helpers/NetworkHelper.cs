@@ -1,7 +1,9 @@
-﻿using SharpDX.X3DAudio;
+﻿using SharpDX.MediaFoundation;
+using SharpDX.X3DAudio;
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using System;
+using System.Data;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -30,20 +32,14 @@ namespace Start_a_Town_
             using var r = new BinaryReader(new MemoryStream(data));
             reader(r);
         }
-        public static T Deserialize<T>(this byte[] data, Func<BinaryReader, T> reader)
-        {
-            return Network.Deserialize<T>(data, reader);
-        }
-        public static void Deserialize(this byte[] data, Action<BinaryReader> reader)
-        {
-            Network.Deserialize(data, reader);
-        }
+        
         public static byte[] GetBytes(this Action<BinaryWriter> writer)
         {
             using var w = new BinaryWriter(new MemoryStream());
             writer(w);
             return (w.BaseStream as MemoryStream).ToArray();
         }
+        
         public static byte[] Decompress(this byte[] compressed)
         {
             using var compressedStream = new MemoryStream(compressed);
@@ -63,6 +59,14 @@ namespace Start_a_Town_
                 compressed = output.ToArray();
             }
             return compressed;
+        }
+       
+        public static byte[] ToArray(this Action<BinaryWriter> writerHandler)
+        {
+            using var mem = new MemoryStream();
+            using (var output = new BinaryWriter(mem))
+                writerHandler(output);
+            return mem.ToArray();
         }
 
         /// <summary>

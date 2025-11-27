@@ -1,2 +1,4 @@
-context menu submenus not hiding (designations, zones)
-client packet retransmission, server=>client acks
+FIX context menu submenus not hiding (designations, zones)
+SORT OF WORKING client packet retransmission, server=>client acks
+TODO only gzip packet if exceeding specific length
+MAYBE: keep the stream open when reading the packet payload and pass it to the handler? instead of creating a bytearray out of it and then creating a new stream to read it again before passing it to the packet handlers?

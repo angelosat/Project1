@@ -14,8 +14,10 @@ namespace Start_a_Town_
         internal static void Send(INetwork net, PlayerData player)
         {
             var server = net as Server;
-            byte[] data = Network.Serialize(server.Map.World.WriteData);
-
+            //byte[] data = Network.Serialize(server.Map.World.WriteData); // serialization (in this case i mean compressing payloads) should only be done when reading or writing packets to/from the socket. dont compress the data at this point
+            using var w = new BinaryWriter(new MemoryStream());
+            server.Map.World.WriteData(w);
+            byte[] data = ((MemoryStream)w.BaseStream).ToArray();
             if (player == null)
             {
                 foreach (var p in server.Players.GetList())

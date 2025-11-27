@@ -39,7 +39,8 @@ namespace Start_a_Town_
             var templateID = r.ReadInt32();
             var length = r.ReadInt32();
             var data = r.ReadBytes(length);
-            var entity = Network.Deserialize(data, reader=> GameObject.CloneTemplate(templateID, reader));
+            //var entity = Network.Deserialize(data, reader=> GameObject.CloneTemplate(templateID, reader));
+            var entity = GameObject.CloneTemplate(templateID, r);
             net.Instantiate(entity);
         }
         [Obsolete]
@@ -56,9 +57,10 @@ namespace Start_a_Town_
                     throw new Exception();
                 net.Instantiate(entity);
                 entity.Spawn(net.Map);
-                var data = entity.Serialize();
-                strem.Write(data.Length);
-                strem.Write(data);
+                //var data = entity.Serialize();
+                //strem.Write(data.Length);
+                //strem.Write(data);
+                entity.Write(strem);
             }
         }
         static public void Receive(INetwork net, BinaryReader r)
@@ -68,9 +70,10 @@ namespace Start_a_Town_
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                var length = r.ReadInt32();
-                var data = r.ReadBytes(length);
-                var entity = Network.Deserialize<GameObject>(data, GameObject.Create);
+                //var length = r.ReadInt32();
+                //var data = r.ReadBytes(length);
+                //var entity = Network.Deserialize<GameObject>(data, GameObject.Create);
+                var entity = GameObject.Create(r);
                 net.Instantiate(entity);
                 if (entity.Exists)
                     entity.Spawn(net.Map);

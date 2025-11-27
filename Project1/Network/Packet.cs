@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 using System.Diagnostics;
+using SharpDX.MediaFoundation;
 
 namespace Start_a_Town_.Net
 {
@@ -41,6 +42,7 @@ namespace Start_a_Town_.Net
         public EndPoint Recipient;
         public SendType SendType;
         public double Tick;
+        public bool IsCompressed = true; //until i remove the code that blindly compressed everything
         public bool Synced;
         /// <summary>
         /// The connection from which the packet has been received, is null if the packet has just been created
@@ -55,6 +57,7 @@ namespace Start_a_Town_.Net
         public int Retries;
         public PlayerData Player;
         public System.Threading.Timer ResendTimer;
+        public BinaryReader Reader; //create a reader the moment the packet is received. instead of creating reader in the client and server instances
         protected Packet() { }
         public Packet(long id, PacketType type, int length, byte[] payload)
         {
@@ -64,8 +67,9 @@ namespace Start_a_Town_.Net
             this.Length = length;
             this.Payload = payload;
             this.Retries = MaxAttempts;
+            this.IsCompressed = payload.Length >= Network.CompressionThreshold; // do i need to set this here or when a packet is received?
         }
-        
+
         static public Packet Read(byte[] data)
         {
             using BinaryReader reader = new(new MemoryStream(data));
@@ -75,13 +79,24 @@ namespace Start_a_Town_.Net
             if (sendType == SendType.OrderedReliable)
                 orderReliableseq = reader.ReadInt64();
             PacketType type = (PacketType)reader.ReadByte();
+
+            bool isCompressed = reader.ReadBoolean();
             int length = reader.ReadInt32();
 
             byte[] payload = reader.ReadBytes(length);
-            byte[] decompressed = payload.Decompress(); // TODO: FIX: i already have a decompressed payload and i still deserialize everything when handling packets???
+            byte[] decompressed = isCompressed ? payload.Decompress() : payload; // TODO: FIX: i already have a decompressed payload and i still deserialize everything when handling packets???
             bool synced = reader.ReadBoolean();
             double tick = reader.ReadDouble();
-            return new Packet(id, type, length, payload) { SendType = sendType, Decompressed = decompressed, OrderedReliableID = orderReliableseq, Tick = tick, Synced = synced };
+
+            return new Packet(id, type, length, payload)
+            {
+                SendType = sendType,
+                Decompressed = decompressed,
+                OrderedReliableID = orderReliableseq,
+                Tick = tick,
+                Synced = synced,
+                Reader = new BinaryReader(new MemoryStream(decompressed))
+            };
         }
         static public Packet Create(PlayerData reciepient, PacketType type, byte[] data, SendType sendType = SendType.Unreliable)
         {
@@ -115,8 +130,13 @@ namespace Start_a_Town_.Net
                 writer.Write(this.OrderedReliableID);
             }
             writer.Write((byte)this.PacketType);
-            writer.Write(this.Payload.Length);
-            writer.Write(this.Payload);
+            var isCompressed = this.Payload.Length >= Network.CompressionThreshold;
+            byte[] final = isCompressed ? this.Payload.Compress() : this.Payload;
+            //writer.Write(this.Payload.Length);
+            //writer.Write(this.Payload);
+            writer.Write(isCompressed);
+            writer.Write(final.Length);
+            writer.Write(final);
             writer.Write(this.Synced);
             writer.Write(this.Tick);
             return mem.ToArray();

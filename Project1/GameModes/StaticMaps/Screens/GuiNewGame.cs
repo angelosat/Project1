@@ -114,16 +114,7 @@ namespace Start_a_Town_.Core
 
         void CreateMap(string name, StaticMap.MapSize size, List<Terraformer> terraformers, Actor[] actors)
         {
-
             StartGameNew(name, size, terraformers, actors);
-
-            return;
-            var world = new StaticWorld(name, terraformers);
-            var map = new StaticMap(world, "test", Vector2.Zero, size);
-            this.Hide();
-            Server.Start();
-            map.Generate(showDialog: true)
-                .ContinueWith(_ => OnMapGenerated(actors, world, map));
         }
 
         void StartGameNew(string name, StaticMap.MapSize size, List<Terraformer> terraformers, Actor[] actors)

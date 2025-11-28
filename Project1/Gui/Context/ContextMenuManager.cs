@@ -58,5 +58,21 @@ namespace Start_a_Town_
         {
             Object = null;
         }
+
+        public static Window CreateContextSubMenu(string title, IEnumerable<(string, Action)> items)
+        {
+            var box = new ListBoxNoScroll<(string, Action), Button>(createButton, 0).AddItems(items);
+            box.BackgroundColor = Microsoft.Xna.Framework.Color.Black * .5f;
+            var win = box.ToWindow(title);//.Transparent();
+            win.Location = Controller.Instance.MouseLocation;
+            return win;
+
+            static Button createButton((string label, Action action) item)
+            {
+                var btn = new Button(item.label, item.action, 96);
+                //btn.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolDigging tool && btn.Tag == tool.DesignationDef;
+                return btn;
+            }
+        }
     }
 }

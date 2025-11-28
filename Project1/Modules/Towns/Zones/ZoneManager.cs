@@ -112,18 +112,17 @@ namespace Start_a_Town_
             yield return new Tuple<Func<string>, Action>(() => $"Zones [{Hotkey.GetLabel()}]", ToggleGui);
         }
         static Window _gui;
+        static Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Zones", GetContextSubmenuItems()));
         private static readonly IHotkey Hotkey;
 
         public static void ToggleGui()
         {
-            if (_gui is null)
-            {
-                var box = new ListBoxNoScroll<ZoneDef, Button>(z => new Button(z.Label, () => Zone.Edit(Ingame.CurrentMap.Town, z), 96), 0).AddItems(ZoneDefs);
-                box.BackgroundColor = Microsoft.Xna.Framework.Color.Black * .5f;
-                _gui = box.ToWindow("Zones").Transparent();
-                _gui.Location = Controller.Instance.MouseLocation;
-            }
-            _gui.Toggle();
+            _guiNew.Value.Toggle();
+        }
+        static IEnumerable<(string, Action)> GetContextSubmenuItems()
+        {
+            foreach (var def in ZoneDefs)
+                yield return (def.Label, () => Zone.Edit(Ingame.CurrentMap.Town, def));
         }
         public override ISelectable QuerySelectable(TargetArgs target)
         {

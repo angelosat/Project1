@@ -69,12 +69,6 @@ namespace Start_a_Town_
         internal override void OnSelectedTargetChanged(TargetArgs target)
         {
             Refresh(target.Object as Actor);
-            return;
-            var actor = target.Object as Actor;
-            if (!actor?.Equals(this.Tag) ?? false)
-            {
-                GetGui(actor);
-            }
         }
         public Control Refresh(Actor actor)
         {

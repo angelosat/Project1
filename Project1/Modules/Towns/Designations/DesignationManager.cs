@@ -174,27 +174,20 @@ namespace Start_a_Town_
 
         internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
         {
-            yield return new Tuple<Func<string>, Action>(() => $"Designations [{Hotkey.GetLabel()}]", ToggleGui);
+            yield return new Tuple<Func<string>, Action>(() => $"Designations [{Hotkey.GetLabel()}]", () => _guiNew.Value.Toggle());
         }
-        static Window _gui;
 
-        public static void ToggleGui()
+        private static readonly Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Designations", GetContextSubmenuItems()).HideOnAnyClick());
+
+        static void ToggleGui()
         {
-            if (_gui is null)
-            {
-                var box = new ListBoxNoScroll<DesignationDef, Button>(createButton, 0).AddItems(Ingame.CurrentMap.Town.DesignationManager.Designations.Keys.Prepend(null));// DesignationDef.Remove));
-                box.BackgroundColor = Microsoft.Xna.Framework.Color.Black * .5f;
-                _gui = box.ToWindow("Designations").Transparent();
-                _gui.Location = Controller.Instance.MouseLocation;
-            }
-            _gui.Toggle();
-
-            Button createButton(DesignationDef d)
-            {
-                var btn = new Button(d?.Label ?? "Remove", () => SetTool(d), 96) { Tag = d };
-                btn.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolDigging tool && btn.Tag == tool.DesignationDef;
-                return btn;
-            }
+            _guiNew.Value.Toggle();
+        }
+        static IEnumerable<(string, Action)> GetContextSubmenuItems()
+        {
+            yield return ("Remove", () => SetTool(null));
+            foreach (var def in Ingame.CurrentMap.Town.DesignationManager.Designations.Keys)
+                yield return (def.Label, () => SetTool(def));
         }
 
         private static void SetTool(DesignationDef d)

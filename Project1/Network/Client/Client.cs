@@ -1,17 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using SharpDX.X3DAudio;
 using Start_a_Town_.Components;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Start_a_Town_.Net
 {
@@ -274,41 +271,10 @@ namespace Start_a_Town_.Net
             this.SendOutgoingStreamReliable();
         }
 
-        //private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, BinaryReader r)> BufferTimestamped = [];
         private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, byte[] data)> BufferTimestamped = [];
-        private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, Packet packet, long payloadPos)> BufferTimestampedNew = [];
+        private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, Packet packet, int payloadPos, int frameLength)> BufferTimestampedNew = [];
 
         private ulong lasttickreceived;
-
-        /// <summary>
-        /// this is called by a packet handler
-        /// </summary>
-        /// <param name="r"></param>
-        /// <exception cref="Exception"></exception>
-        public void HandleTimestamped(BinaryReader r)
-        {
-            var currenttick = this.Map.World.CurrentTick;
-            for (int i = 0; i < this.Speed; i++)
-            {
-                var mapTick = r.ReadUInt64();
-                var serverTick = r.ReadDouble();
-                var length = r.ReadInt64();
-                if (length > 0)
-                {
-                    var array = r.ReadBytes((int)length);
-                    if (mapTick == currenttick)
-                        this.UnmergePackets(array);
-                    //this.UnmergePackets(r);
-                    else
-                        this.BufferTimestamped.Add(mapTick, (mapTick, serverTick, array));
-                    //this.BufferTimestampedNew.Add(mapTick, (mapTick, serverTick, r, r.BaseStream.Position));
-                }
-                //if (mapTick <= this.lasttickreceived)
-                if (mapTick < this.lasttickreceived)
-                    throw new Exception();
-                this.lasttickreceived = mapTick;
-            }
-        }
 
         public void HandleTimestamped(Packet packet)
         {
@@ -326,11 +292,10 @@ namespace Start_a_Town_.Net
                 if (mapTick == currenttick)
                 {
                     r.BaseStream.Position = frameStart;
-                    //this.UnmergePackets(r);
-                    this.UnmergePackets(packet);
+                    this.UnmergePackets(packet, (int)length);
                 }
                 else
-                    this.BufferTimestampedNew[mapTick] = (mapTick, serverTick, packet, frameStart);
+                    this.BufferTimestampedNew[mapTick] = (mapTick, serverTick, packet, frameStart, (int)length);
 
                 if (mapTick < this.lasttickreceived)
                     throw new Exception();
@@ -338,32 +303,6 @@ namespace Start_a_Town_.Net
             }
         }
 
-        /// <summary>
-        /// this is called by the tickmap method for the packets that were buffered by the packethandler's HandleTimestamped call
-        /// </summary>
-        private void HandleBufferedTimestamped()
-        {
-            //while (this.BufferTimestampedNew.Count != 0)
-            //{
-            //    var item = this.BufferTimestampedNew.First();
-            //    var currenttick = this.Map.World.CurrentTick;
-            //    if (item.Key != currenttick)
-            //        return;
-            //    this.BufferTimestampedNew.Remove(item.Key);
-            //    item.Value.r.BaseStream.Position = item.Value.pos;
-            //    this.UnmergePackets(item.Value.r);
-            //}
-            //return;
-            while (this.BufferTimestamped.Count != 0)
-            {
-                var item = this.BufferTimestamped.First();
-                var currenttick = this.Map.World.CurrentTick;
-                if (item.Key != currenttick)
-                    return;
-                this.BufferTimestamped.Remove(item.Key);
-                this.UnmergePackets(item.Value.data);
-            }
-        }
         private void HandleBufferedTimestampedNew()
         {
             while (this.BufferTimestampedNew.Count != 0)
@@ -372,18 +311,15 @@ namespace Start_a_Town_.Net
                 var currenttick = this.Map.World.CurrentTick;
                 if (item.Key != currenttick)
                     return;
-                using var m = new MemoryStream(item.Value.packet.Decompressed);
-                m.Position = item.Value.payloadPos;
-                using var r = new BinaryReader(m);
-                //this.UnmergePackets(r);
-                this.UnmergePackets(item.Value.packet);
-                this.BufferTimestamped.Remove(item.Key);
+                var packet = item.Value.packet;
+                packet.Reader.BaseStream.Position = item.Value.payloadPos;
+                this.UnmergePackets(item.Value.packet, item.Value.frameLength);
+                this.BufferTimestampedNew.Remove(item.Key);
             }
         }
         private void TickMap()
         {
-            this.HandleBufferedTimestamped();
-            //this.HandleBufferedTimestampedNew();
+            this.HandleBufferedTimestampedNew();
             this.Map.UpdateParticles();
             this.Map.World.Tick(Instance);
             this.Map.Tick();
@@ -533,44 +469,14 @@ namespace Start_a_Town_.Net
             if (NetworkHelper.TryResend(this.Host, this.RemoteIP, this.PlayerData) is { } timedout)
                 throw new TimeoutException($"Exceeded maximum retries to resend packet {timedout.ID}");
         }
-        [Obsolete]
-        private void UnmergePackets(byte[] data)
-        {
-            using var mem = new MemoryStream(data);
-            using var r = new BinaryReader(mem);
-            this.UnmergePackets(r);
-        }
-        [Obsolete]
-        private void UnmergePackets(BinaryReader r)
-        {
-            //using var mem = new MemoryStream(data);
-            //using var r = new BinaryReader(mem);
-            var mem = r.BaseStream;
-            var lastPos = mem.Position;
-            while (mem.Position < mem.Length)
-            {
-                var id = r.ReadInt32();
-                var type = (PacketType)id;
-                lastPos = mem.Position;
-
-                if (PacketHandlersNew.TryGetValue(type, out Action<INetPeer, BinaryReader> handlerAction))
-                    handlerAction(Instance, r);
-                else if (PacketHandlersWithPlayer.TryGetValue(id, out var handlerActionWithPlayer))
-                    handlerActionWithPlayer(Instance, this.PlayerData, r);
-                else if (PacketHandlersNewNewNew.TryGetValue(id, out var handlerActionNewNew))
-                    handlerActionNewNew(Instance, r);
-                else
-                    this.Receive(type, r);
-                if (mem.Position == lastPos)
-                    break;
-            }
-        }
-        private void UnmergePackets(Packet packet)
+       
+        private void UnmergePackets(Packet packet, long maxBytes = -1)
         {
             var r = packet.Reader;
             var mem = r.BaseStream;
             var lastPos = mem.Position;
-            while (mem.Position < mem.Length)
+            var endPos = maxBytes == -1 ? mem.Length : lastPos + maxBytes;
+            while (mem.Position < endPos)
             {
                 var id = r.ReadInt32();
                 var type = (PacketType)id;
@@ -585,12 +491,12 @@ namespace Start_a_Town_.Net
                 else if (PacketHandlersWithPacket.TryGetValue(id, out var h))
                     h(Instance, packet);
                 else
-                    this.Receive(type, r);
+                    Receive(type, r);
                 if (mem.Position == lastPos)
-                    break;
+                    break; 
             }
         }
-        private void Receive(PacketType type, BinaryReader r)
+        private static void Receive(PacketType type, BinaryReader r)
         {
             switch (type)
             {
@@ -639,94 +545,75 @@ namespace Start_a_Town_.Net
                     break;
 
                 case PacketType.PlayerDisconnected:
-                    //int plid = msg.Payload.Deserialize<int>(r => r.ReadInt32());
                     int plid = msg.Reader.ReadInt32();
                     Instance.PlayerDisconnected(plid);
                     break;
 
                 case PacketType.PlayerRemoteCall:
-                    //msg.Payload.Deserialize(r =>
-                    //{
-                        int netid = r.ReadInt32();
-                        TargetArgs target = TargetArgs.Read(Instance, r);
-                        Message.Types call = (Message.Types)r.ReadInt32();
+                    int netid = r.ReadInt32();
+                    TargetArgs target = TargetArgs.Read(Instance, r);
+                    Message.Types call = (Message.Types)r.ReadInt32();
 
-                        int dataLength = (int)(r.BaseStream.Length - r.BaseStream.Position);
-                        byte[] args = r.ReadBytes(dataLength);
+                    int dataLength = (int)(r.BaseStream.Length - r.BaseStream.Position);
+                    byte[] args = r.ReadBytes(dataLength);
 
-                        target.HandleRemoteCall(Instance, ObjectEventArgs.Create(call, args));
-                    //});
+                    target.HandleRemoteCall(Instance, ObjectEventArgs.Create(call, args));
                     return;
 
                 case PacketType.SpawnChildObject:
-                    //Network.Deserialize(msg.Payload, r =>
-                    //{
-                        GameObject obj = GameObject.Create(r);
-                        if (obj.RefID == 0)
-                            throw new Exception("Uninstantiated entity");
-                        if (!Instance.NetworkObjects.ContainsKey(obj.RefID))
-                            Instance.Instantiate(obj);
+                    GameObject obj = GameObject.Create(r);
+                    if (obj.RefID == 0)
+                        throw new Exception("Uninstantiated entity");
+                    if (!Instance.NetworkObjects.ContainsKey(obj.RefID))
+                        Instance.Instantiate(obj);
 
-                        int parentID = r.ReadInt32();
-                        if (!Instance.TryGetNetworkObject(parentID, out GameObject parent))
-                            throw (new Exception("Parent doesn't exist"));
+                    int parentID = r.ReadInt32();
+                    if (!Instance.TryGetNetworkObject(parentID, out GameObject parent))
+                        throw (new Exception("Parent doesn't exist"));
 
-                        obj.Parent = parent;
-                        int childIndex = r.ReadInt32();
-                        var slot = parent.GetChildren()[childIndex];
-                        slot.Object = obj;
-                    //});
+                    obj.Parent = parent;
+                    int childIndex = r.ReadInt32();
+                    var slot = parent.GetChildren()[childIndex];
+                    slot.Object = obj;
                     return;
 
                 case PacketType.ServerBroadcast:
-                    //Network.Deserialize(msg.Payload, reader =>
-                    //{
-                        string chatText = r.ReadASCII();
-                        Network.Console.Write(Color.Yellow, "SERVER", chatText);
-                    //});
+                    string chatText = r.ReadASCII();
+                    Network.Console.Write(Color.Yellow, "SERVER", chatText);
                     break;
 
                 case PacketType.EntityInventoryChange:
-                    //Network.Deserialize(msg.Payload, r =>
-                    //{
-                        int count = r.ReadInt32();
-                        for (int i = 0; i < count; i++)
+                    int count = r.ReadInt32();
+                    for (int i = 0; i < count; i++)
+                    {
+                        slot = TargetArgs.Read(Instance, r).Slot;
+                        var stacksize = r.ReadInt32();
+                        if (stacksize > 0)
                         {
-                            slot = TargetArgs.Read(Instance, r).Slot;
-                            var stacksize = r.ReadInt32();
-                            if (stacksize > 0)
-                            {
-                                var id = r.ReadInt32();
-                                slot.Object = Instance.GetNetworkObject(id);
-                            }
-                            slot.StackSize = stacksize;
+                            var id = r.ReadInt32();
+                            slot.Object = Instance.GetNetworkObject(id);
                         }
-                    //});
+                        slot.StackSize = stacksize;
+                    }
                     break;
 
                 case PacketType.PlayerSlotClick:
-                    //msg.Payload.Deserialize(r =>
-                    //{
-                        var actor = TargetArgs.Read(Instance, r);
-                        var t = TargetArgs.Read(Instance, r);
-                        parent = t.Slot.Parent;
-                        Instance.PostLocalEvent(parent, Components.Message.Types.SlotInteraction, actor.Object, t.Slot);
-                    //});
+                    var actor = TargetArgs.Read(Instance, r);
+                    var t = TargetArgs.Read(Instance, r);
+                    parent = t.Slot.Parent;
+                    Instance.PostLocalEvent(parent, Components.Message.Types.SlotInteraction, actor.Object, t.Slot);
                     return;
 
                 case PacketType.PlayerServerCommand:
-                    //msg.Payload.Deserialize(r => Instance.ParseCommand(r.ReadASCII()));
                     Instance.ParseCommand(r.ReadASCII());
                     break;
 
                 case PacketType.SetSaving:
-                    //msg.Payload.Deserialize(r => this.SetSaving(r.ReadBoolean()));
                     this.SetSaving(r.ReadBoolean());
                     break;
 
                 case PacketType.MergedPackets:
-                    this.UnmergePackets(msg.Reader);
-                    //this.UnmergePackets(msg);
+                    this.UnmergePackets(msg);
                     break;
 
                 default:

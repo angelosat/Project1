@@ -19,15 +19,9 @@ namespace Start_a_Town_.Net
             static public void Init()
             {
                 PacketSyncReport = RegisterPacketHandler(HandleSyncReport);
-                //PacketTimestamped = RegisterPacketHandlerWithPacket(ReceiveTimestamped);
-                PacketTimestamped = RegisterPacketHandler(ReceiveTimestamped);
+                PacketTimestamped = RegisterPacketHandlerWithPacket(ReceiveTimestamped);
             }
-            [Obsolete]
-            private static void ReceiveTimestamped(INetPeer net, BinaryReader r)
-            {
-                if(net is Client client)
-                    client.HandleTimestamped(r);
-            }
+           
             private static void ReceiveTimestamped(INetPeer net, Packet packet)
             {
                 if (net is Client client)

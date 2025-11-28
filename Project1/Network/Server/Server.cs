@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using static Start_a_Town_.Block;
 
 namespace Start_a_Town_.Net
 {
@@ -522,10 +521,6 @@ namespace Start_a_Town_.Net
             {
                 case PacketType.RequestConnection:
 
-                    //string name = Network.Deserialize<string>(msg.Payload, r =>
-                    //{
-                    //    return r.ReadString();
-                    //});
                     string name = msg.Reader.ReadString();
 
                     Instance.ConsoleBox.Write(Color.Lime, "SERVER", name + " connected from " + msg.Connection.IP);
@@ -559,39 +554,28 @@ namespace Start_a_Town_.Net
                     break;
 
                 case PacketType.PlayerServerCommand:
-                    //msg.Payload.Deserialize(r =>
-                    //{
-                        CommandParser.Execute(Instance, msg.Player, r.ReadASCII());
-                    //});
+                    CommandParser.Execute(Instance, msg.Player, r.ReadASCII());
                     break;
 
                 case PacketType.PlayerSlotClick:
-                    //msg.Payload.Deserialize(r =>
-                    //{
-                        TargetArgs actor = TargetArgs.Read(Instance, r);
-                        TargetArgs target = TargetArgs.Read(Instance, r);
-                        Instance.PostLocalEvent(target.Slot.Parent, Components.Message.Types.SlotInteraction, actor.Object, target.Slot);
-                    //});
+                    TargetArgs actor = TargetArgs.Read(Instance, r);
+                    TargetArgs target = TargetArgs.Read(Instance, r);
+                    Instance.PostLocalEvent(target.Slot.Parent, Components.Message.Types.SlotInteraction, actor.Object, target.Slot);
                     Instance.Enqueue(PacketType.PlayerSlotClick, msg.Payload, SendType.OrderedReliable);
                     return;
 
                 case PacketType.PlayerRemoteCall:
-                    //msg.Payload.Deserialize(r =>
-                    //{
-                        int netid = r.ReadInt32();
-                        target = TargetArgs.Read(Instance, r);
-                        Message.Types call = (Message.Types)r.ReadInt32();
-                        int dataLength = (int)(r.BaseStream.Length - r.BaseStream.Position);
-                        byte[] args = r.ReadBytes(dataLength);
-                        target.HandleRemoteCall(Instance, ObjectEventArgs.Create(call, args));
-                        Instance.Enqueue(PacketType.PlayerRemoteCall, msg.Payload, SendType.OrderedReliable, msg.Player.ControllingEntity.Global);
-                    //});
+                    int netid = r.ReadInt32();
+                    target = TargetArgs.Read(Instance, r);
+                    Message.Types call = (Message.Types)r.ReadInt32();
+                    int dataLength = (int)(r.BaseStream.Length - r.BaseStream.Position);
+                    byte[] args = r.ReadBytes(dataLength);
+                    target.HandleRemoteCall(Instance, ObjectEventArgs.Create(call, args));
+                    Instance.Enqueue(PacketType.PlayerRemoteCall, msg.Payload, SendType.OrderedReliable, msg.Player.ControllingEntity.Global);
                     return;
 
                 case PacketType.MergedPackets:
-                    //UnmergePackets(msg);
-                    var player = msg.Player;
-                    UnmergePackets(player, msg.Reader);
+                    UnmergePackets(msg);
                     break;
 
                 default:
@@ -976,24 +960,6 @@ namespace Start_a_Town_.Net
         public void Write(string text)
         {
         }
-
-        //void ReceiveAcks(INetwork net, PlayerData player, BinaryReader r)
-        //{
-        //    var acksCount = r.ReadInt32();
-        //    for (int i = 0; i < acksCount; i++)
-        //    {
-        //        long ackID = r.ReadInt64();
-        //        if (player.WaitingForAck.TryRemove(ackID, out Packet existing))
-        //        {
-        //            existing.RTT.Stop();
-        //            player.Connection.RTT = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds);
-        //            player.Ping = TimeSpan.FromMilliseconds(existing.RTT.ElapsedMilliseconds).Milliseconds;
-        //            if (player.OrderedPackets.Count > 0)
-        //                if (player.OrderedPackets.Peek().ID == ackID)
-        //                    player.OrderedPackets.Dequeue();
-        //        }
-        //    }
-        //}
 
         public void Report(string text)
         {

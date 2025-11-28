@@ -131,7 +131,7 @@ namespace Start_a_Town_
             this.Sync();
         }
        
-        private static void Sync(INetwork net, BinaryReader r)
+        private static void Sync(INetPeer net, BinaryReader r)
         {
             var actor = net.GetNetworkObject<Actor>(r.ReadInt32());
             actor.GetVisitorProperties().Sync(r);
@@ -238,7 +238,7 @@ namespace Start_a_Town_
             this.AwardTownRating(value);
             net.WriteToStream(PacketSyncAwardTownRating, this.Actor.RefID, value);
         }
-        private static void SyncAwardTownRating(INetwork net, BinaryReader r)
+        private static void SyncAwardTownRating(INetPeer net, BinaryReader r)
         {
             if (net is Server)
                 throw new Exception();

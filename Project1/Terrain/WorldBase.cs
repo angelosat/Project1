@@ -21,7 +21,7 @@ namespace Start_a_Town_
         public int MaxHeight { get; set;  }
         public virtual ulong CurrentTick { get; set; }
         public virtual TimeSpan Clock { get; }
-        public INetwork Net { get; set; }
+        public INetPeer Net { get; set; }
 
         public byte[] SeedArray { get; set; }
 
@@ -37,7 +37,7 @@ namespace Start_a_Town_
         public abstract MapCollection GetMaps();
 
         public abstract void Draw(SpriteBatch sb, Camera cam);
-        public abstract void Tick(INetwork net);
+        public abstract void Tick(INetPeer net);
         public abstract void OnHudCreated(Hud hud);
         public abstract void OnTargetSelected(IUISelection info, ISelectable selection);
         public abstract void OnTargetSelected(SelectionManagerNew info, ISelectable selection);

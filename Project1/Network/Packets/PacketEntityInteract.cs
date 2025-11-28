@@ -13,7 +13,7 @@ namespace Start_a_Town_
             PacketInteract = Network.RegisterPacketHandler(Receive);
         }
 
-        internal static void EndInteraction(INetwork net, GameObject entity, bool success)
+        internal static void EndInteraction(INetPeer net, GameObject entity, bool success)
         {
             var server = net as Server;
             var w = server.OutgoingStreamTimestamped;
@@ -22,7 +22,7 @@ namespace Start_a_Town_
             w.Write(false);
             w.Write(success);
         }
-        internal static void Send(INetwork net, GameObject entity, Interaction action, TargetArgs target)
+        internal static void Send(INetPeer net, GameObject entity, Interaction action, TargetArgs target)
         {
             var server = net as Server;
             var w = server.OutgoingStreamTimestamped;
@@ -36,7 +36,7 @@ namespace Start_a_Town_
             w.Write(entity.Velocity);
             w.Write(entity.Direction);
         }
-        internal static void Receive(INetwork net, BinaryReader r)
+        internal static void Receive(INetPeer net, BinaryReader r)
         {
             if (net is Server)
                 throw new Exception();

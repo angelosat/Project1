@@ -17,7 +17,7 @@ namespace Start_a_Town_.Components
             {
                 PacketSyncInsert = Network.RegisterPacketHandler(HandleSyncInsert);
 
-                static void handleSetHaulSlot(INetwork net, BinaryReader r)
+                static void handleSetHaulSlot(INetPeer net, BinaryReader r)
                 {
                     var actor = net.GetNetworkObject(r.ReadInt32()) as Actor;
                     var item = net.GetNetworkObject(r.ReadInt32()) as Entity;
@@ -27,14 +27,14 @@ namespace Start_a_Town_.Components
                 PacketSetHaulSlot = Network.RegisterPacketHandler(handleSetHaulSlot);
             }
 
-            public static void SendSyncInsert(INetwork net, Actor actor, Entity item)
+            public static void SendSyncInsert(INetPeer net, Actor actor, Entity item)
             {
                 var server = net as Server;
                 //if (net is Server server)
                 actor.Inventory.Insert(item);
                 server.OutgoingStreamTimestamped.Write(PacketSyncInsert, actor.RefID, item.RefID);
             }
-            private static void HandleSyncInsert(INetwork net, BinaryReader r)
+            private static void HandleSyncInsert(INetPeer net, BinaryReader r)
             {
                 var actor = net.GetNetworkObject(r.ReadInt32()) as Actor;
                 var item = net.GetNetworkObject(r.ReadInt32()) as Entity;
@@ -44,7 +44,7 @@ namespace Start_a_Town_.Components
                     actor.Inventory.Insert(item);
             }
 
-            public static void SyncSetHaulSlot(INetwork net, Actor actor, Entity item)
+            public static void SyncSetHaulSlot(INetPeer net, Actor actor, Entity item)
             {
                 var server = net as Server;
                 var w = server.OutgoingStreamTimestamped;// .GetOutgoingStream();

@@ -11,7 +11,7 @@ namespace Start_a_Town_
         {
             Client.RegisterPacketHandler(PacketType.WorldData, Receive);
         }
-        internal static void Send(INetwork net, PlayerData player)
+        internal static void Send(INetPeer net, PlayerData player)
         {
             var server = net as Server;
             //byte[] data = Network.Serialize(server.Map.World.WriteData); // serialization (in this case i mean compressing payloads) should only be done when reading or writing packets to/from the socket. dont compress the data at this point
@@ -26,7 +26,7 @@ namespace Start_a_Town_
             else
                 server.Enqueue(player, Packet.Create(player, PacketType.WorldData, data, SendType.OrderedReliable));
         }
-        internal static void Receive(INetwork net, BinaryReader r)
+        internal static void Receive(INetPeer net, BinaryReader r)
         {
             var client = net as Client;
             if (client.World != null)

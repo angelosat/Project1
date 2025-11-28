@@ -21,7 +21,7 @@ namespace Start_a_Town_
             w.Write(player.ID);
             w.Write(chunkCoords);
         }
-        internal static void Receive(INetwork net, BinaryReader r)
+        internal static void Receive(INetPeer net, BinaryReader r)
         {
             var playerid = r.ReadInt32();
             var vec = r.ReadVector2();

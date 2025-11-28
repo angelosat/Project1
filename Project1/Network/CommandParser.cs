@@ -2,11 +2,11 @@
 {
     interface ICommandParser
     {
-        bool Execute(INetwork net, string command);
+        bool Execute(INetPeer net, string command);
     }
     class CommandParser
     {
-        static public bool Execute(INetwork net, PlayerData player, string command)
+        static public bool Execute(INetPeer net, PlayerData player, string command)
         {
             var p = command.Split(' ');
             var type = p[0];
@@ -19,7 +19,7 @@
             return false;
         }
 
-        static public bool Execute(INetwork net, string command)
+        static public bool Execute(INetPeer net, string command)
         {
             var p = command.Split(' ');
             var type = p[0];

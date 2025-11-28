@@ -12,7 +12,7 @@ using static Start_a_Town_.Block;
 
 namespace Start_a_Town_.Net
 {
-    public partial class Server : INetwork
+    public partial class Server : INetPeer
     {
         public double CurrentTick => ServerClock.TotalMilliseconds;
 
@@ -55,11 +55,15 @@ namespace Start_a_Town_.Net
         public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = [];
 
         static readonly Dictionary<int, PacketHandlerWithPlayer> PacketHandlersWithPlayer = [];
+        static readonly Dictionary<int, PacketHandlerWithPacket> PacketHandlersWithPacket = [];
         public static void RegisterPacketHandlerWithPlayer(int id, PacketHandlerWithPlayer handler)
         {
             PacketHandlersWithPlayer.Add(id, handler);
         }
-
+        internal static void RegisterPacketHandler(int id, PacketHandlerWithPacket handler)
+        {
+            PacketHandlersWithPacket.Add(id, handler);
+        }
         static readonly Dictionary<int, PacketHandler> PacketHandlersGeneric = [];
 
         internal static void RegisterPacketHandler(int id, PacketHandler handler)
@@ -585,6 +589,7 @@ namespace Start_a_Town_.Net
                     return;
 
                 case PacketType.MergedPackets:
+                    //UnmergePackets(msg);
                     var player = msg.Player;
                     UnmergePackets(player, msg.Reader);
                     break;
@@ -878,6 +883,30 @@ namespace Start_a_Town_.Net
             });
             Instance.Enqueue(PacketType.EntityInventoryChange, data, SendType.OrderedReliable); // WARNING!!! TODO: handle case where each slot is owned by a different entity     
         }
+        private static void UnmergePackets(Packet packet)
+        {
+            var player = packet.Player;
+            var r = packet.Reader;
+            var mem = r.BaseStream;
+            var lastPos = mem.Position;
+            while (mem.Position < mem.Length)
+            {
+                var typeID = r.ReadInt32();
+                lastPos = mem.Position;
+
+                if (PacketHandlersWithPlayer.TryGetValue(typeID, out var handlerActionNew))
+                    handlerActionNew(Instance, player, r);
+                else if (PacketHandlersGeneric.TryGetValue(typeID, out var handlerActionNewNew))
+                    handlerActionNewNew(Instance, r);
+                else if (PacketHandlersWithPacket.TryGetValue(typeID, out var handler))
+                    handler(Instance, packet);
+                if (mem.Position == lastPos)
+                    // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
+                    //throw new Exception();
+                    break; // i think that's the price of not sending the length as the header and just continuing to read until the packethandler is invalid, which implies we reached the end. but that doesnt sound very clean
+            }
+        }
+        [Obsolete]
         private static void UnmergePackets(PlayerData player, BinaryReader r)
         {
             var mem = r.BaseStream;
@@ -893,7 +922,9 @@ namespace Start_a_Town_.Net
                     handlerActionNewNew(Instance, r);
 
                 if (mem.Position == lastPos)
-                    throw new Exception(); // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
+                    // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
+                    //throw new Exception();
+                    break; // i think that's the price of not sending the length as the header and just continuing to read until the packethandler is invalid, which implies we reached the end. but that doesnt sound very clean
             }
         }
         [Obsolete]

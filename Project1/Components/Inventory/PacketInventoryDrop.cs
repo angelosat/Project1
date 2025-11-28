@@ -11,7 +11,7 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetwork net, GameObject actor, GameObject item, int amount)
+        internal static void Send(INetPeer net, GameObject actor, GameObject item, int amount)
         {
             var stream = net.GetOutgoingStream();
             stream.Write(p);
@@ -19,7 +19,7 @@ namespace Start_a_Town_
             stream.Write(item.RefID);
             stream.Write(amount);
         }
-        static void Receive(INetwork net, BinaryReader r)
+        static void Receive(INetPeer net, BinaryReader r)
         {
             var actorID = r.ReadInt32();
             var itemID = r.ReadInt32();

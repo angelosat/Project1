@@ -17,11 +17,11 @@ namespace Start_a_Town_
             PckTypeNew = Network.RegisterPacketHandler(ReceiveTemplate);
         }
         [Obsolete]
-        static public void Send(INetwork net, GameObject entity)
+        static public void Send(INetPeer net, GameObject entity)
         {
             Send(net, new GameObject[] { entity });
         }
-        static public void SendFromTemplate(INetwork net, int templateID, GameObject entity)
+        static public void SendFromTemplate(INetPeer net, int templateID, GameObject entity)
         {
             if (net is Client)
                 throw new Exception();
@@ -32,7 +32,7 @@ namespace Start_a_Town_
             strem.Write(data.Length);
             strem.Write(data);
         }
-        static public void ReceiveTemplate(INetwork net, BinaryReader r)
+        static public void ReceiveTemplate(INetPeer net, BinaryReader r)
         {
             if (net is Server)
                 throw new Exception();
@@ -44,7 +44,7 @@ namespace Start_a_Town_
             net.Instantiate(entity);
         }
         [Obsolete]
-        static public void Send(INetwork net, IEnumerable<GameObject> entities)
+        static public void Send(INetPeer net, IEnumerable<GameObject> entities)
         {
             if (net is Client)
                 throw new Exception();
@@ -63,7 +63,7 @@ namespace Start_a_Town_
                 entity.Write(strem);
             }
         }
-        static public void Receive(INetwork net, BinaryReader r)
+        static public void Receive(INetPeer net, BinaryReader r)
         {
             if (net is Server)
                 throw new Exception();

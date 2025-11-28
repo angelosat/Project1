@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    public interface INetwork
+    public interface INetPeer
     {
         ConsoleBoxAsync ConsoleBox { get; }
         PlayerData CurrentPlayer { get; }

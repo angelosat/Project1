@@ -49,7 +49,7 @@ namespace Start_a_Town_
             //this.Box_Buttons.Anchor = Vector2.One;
         }
 
-        public Hud(INetwork net, Camera camera)
+        public Hud(INetPeer net, Camera camera)
         {
             this.AutoSize = false;
             this.Width = UIManager.Width;
@@ -125,7 +125,7 @@ namespace Start_a_Town_
                 );
         }
 
-        private void TogglePlayerList(INetwork net)
+        private void TogglePlayerList(INetPeer net)
         {
             if (this.WindowPlayers is null)
             {

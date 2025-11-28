@@ -9,7 +9,7 @@ namespace Start_a_Town_.UI
     {
         //ButtonTogglable BtnPause, Btn1x, Btn2x, Btn3x;
         
-        public UIGameSpeed(INetwork net)
+        public UIGameSpeed(INetPeer net)
         {
             this.AutoSize = true;
             //var w = Button.GetWidth(UIManager.Font, "►►►");
@@ -70,7 +70,7 @@ namespace Start_a_Town_.UI
                 text += pl.Name + '\n';
             return text.TrimEnd('\n');
         }
-        void SetSpeed(INetwork net, int s)
+        void SetSpeed(INetPeer net, int s)
         {
             PacketPlayerSetSpeed.Send(net, net.GetPlayer().ID, s);
         }

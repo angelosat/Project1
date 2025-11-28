@@ -324,7 +324,7 @@ namespace Start_a_Town_
                 pSyncPrefsAll = Network.RegisterPacketHandler(Receive);
             }
 
-            internal static void Sync(INetwork net, Actor actor, System.Collections.IList oldItems, System.Collections.IList newItems)
+            internal static void Sync(INetPeer net, Actor actor, System.Collections.IList oldItems, System.Collections.IList newItems)
             {
                 var w = net.GetOutgoingStream();
                 w.Write(pSyncPrefsAll);
@@ -341,7 +341,7 @@ namespace Start_a_Town_
                     newItems.Cast<ItemPreference>().ToList().Write(w);
             }
 
-            private static void Receive(INetwork net, BinaryReader r)
+            private static void Receive(INetPeer net, BinaryReader r)
             {
                 if (net is Server)
                     throw new Exception();

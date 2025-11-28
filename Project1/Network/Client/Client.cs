@@ -11,13 +11,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Start_a_Town_.Net
 {
     internal enum PlayerSavingState
     { Saved, Changed, Saving }
 
-    public class Client : INetwork
+    public class Client : INetPeer
     {
         private static Client _Instance;
         public static Client Instance => _Instance ??= new Client();
@@ -275,7 +276,7 @@ namespace Start_a_Town_.Net
 
         //private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, BinaryReader r)> BufferTimestamped = [];
         private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, byte[] data)> BufferTimestamped = [];
-        //private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, BinaryReader r, long pos)> BufferTimestampedNew = [];
+        private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, Packet packet, long payloadPos)> BufferTimestampedNew = [];
 
         private ulong lasttickreceived;
 
@@ -309,6 +310,34 @@ namespace Start_a_Town_.Net
             }
         }
 
+        public void HandleTimestamped(Packet packet)
+        {
+            var r = packet.Reader;
+            var currenttick = this.Map.World.CurrentTick;
+            for (int i = 0; i < this.Speed; i++)
+            {
+                var mapTick = r.ReadUInt64();
+                var serverTick = r.ReadDouble();
+                var length = r.ReadInt64();
+                int frameStart = (int)r.BaseStream.Position;
+                if (length > 0)
+                    r.BaseStream.Position += length; // skip data, dont read them. because i read them when handling them
+
+                if (mapTick == currenttick)
+                {
+                    r.BaseStream.Position = frameStart;
+                    //this.UnmergePackets(r);
+                    this.UnmergePackets(packet);
+                }
+                else
+                    this.BufferTimestampedNew[mapTick] = (mapTick, serverTick, packet, frameStart);
+
+                if (mapTick < this.lasttickreceived)
+                    throw new Exception();
+                this.lasttickreceived = mapTick;
+            }
+        }
+
         /// <summary>
         /// this is called by the tickmap method for the packets that were buffered by the packethandler's HandleTimestamped call
         /// </summary>
@@ -335,10 +364,26 @@ namespace Start_a_Town_.Net
                 this.UnmergePackets(item.Value.data);
             }
         }
-
+        private void HandleBufferedTimestampedNew()
+        {
+            while (this.BufferTimestampedNew.Count != 0)
+            {
+                var item = this.BufferTimestampedNew.First();
+                var currenttick = this.Map.World.CurrentTick;
+                if (item.Key != currenttick)
+                    return;
+                using var m = new MemoryStream(item.Value.packet.Decompressed);
+                m.Position = item.Value.payloadPos;
+                using var r = new BinaryReader(m);
+                //this.UnmergePackets(r);
+                this.UnmergePackets(item.Value.packet);
+                this.BufferTimestamped.Remove(item.Key);
+            }
+        }
         private void TickMap()
         {
             this.HandleBufferedTimestamped();
+            //this.HandleBufferedTimestampedNew();
             this.Map.UpdateParticles();
             this.Map.World.Tick(Instance);
             this.Map.Tick();
@@ -387,16 +432,17 @@ namespace Start_a_Town_.Net
         }
 
         [Obsolete]
-        private static readonly Dictionary<PacketType, Action<INetwork, BinaryReader>> PacketHandlersNew = new();
+        private static readonly Dictionary<PacketType, Action<INetPeer, BinaryReader>> PacketHandlersNew = new();
 
         [Obsolete]
-        public static void RegisterPacketHandler(PacketType channel, Action<INetwork, BinaryReader> handler)
+        public static void RegisterPacketHandler(PacketType channel, Action<INetPeer, BinaryReader> handler)
         {
             PacketHandlersNew.Add(channel, handler);
         }
 
         private static readonly Dictionary<int, PacketHandler> PacketHandlersNewNewNew = new();
         private static readonly Dictionary<int, PacketHandlerWithPlayer> PacketHandlersWithPlayer = new();
+        private static readonly Dictionary<int, PacketHandlerWithPacket> PacketHandlersWithPacket = new();
 
         internal static void RegisterPacketHandler(int id, PacketHandler handler)
         {
@@ -405,6 +451,10 @@ namespace Start_a_Town_.Net
         internal static void RegisterPacketHandlerWithPlayer(int id, PacketHandlerWithPlayer handler)
         {
             PacketHandlersWithPlayer.Add(id, handler);
+        }
+        internal static void RegisterPacketHandler(int id, PacketHandlerWithPacket handler)
+        {
+            PacketHandlersWithPacket.Add(id, handler);
         }
         public void EventOccured(Message.Types type, params object[] p)
         {
@@ -490,6 +540,7 @@ namespace Start_a_Town_.Net
             using var r = new BinaryReader(mem);
             this.UnmergePackets(r);
         }
+        [Obsolete]
         private void UnmergePackets(BinaryReader r)
         {
             //using var mem = new MemoryStream(data);
@@ -502,12 +553,37 @@ namespace Start_a_Town_.Net
                 var type = (PacketType)id;
                 lastPos = mem.Position;
 
-                if (PacketHandlersNew.TryGetValue(type, out Action<INetwork, BinaryReader> handlerAction))
+                if (PacketHandlersNew.TryGetValue(type, out Action<INetPeer, BinaryReader> handlerAction))
                     handlerAction(Instance, r);
                 else if (PacketHandlersWithPlayer.TryGetValue(id, out var handlerActionWithPlayer))
                     handlerActionWithPlayer(Instance, this.PlayerData, r);
                 else if (PacketHandlersNewNewNew.TryGetValue(id, out var handlerActionNewNew))
                     handlerActionNewNew(Instance, r);
+                else
+                    this.Receive(type, r);
+                if (mem.Position == lastPos)
+                    break;
+            }
+        }
+        private void UnmergePackets(Packet packet)
+        {
+            var r = packet.Reader;
+            var mem = r.BaseStream;
+            var lastPos = mem.Position;
+            while (mem.Position < mem.Length)
+            {
+                var id = r.ReadInt32();
+                var type = (PacketType)id;
+                lastPos = mem.Position;
+
+                if (PacketHandlersNew.TryGetValue(type, out Action<INetPeer, BinaryReader> handlerAction))
+                    handlerAction(Instance, r);
+                else if (PacketHandlersWithPlayer.TryGetValue(id, out var handlerActionWithPlayer))
+                    handlerActionWithPlayer(Instance, this.PlayerData, r);
+                else if (PacketHandlersNewNewNew.TryGetValue(id, out var handlerActionNewNew))
+                    handlerActionNewNew(Instance, r);
+                else if (PacketHandlersWithPacket.TryGetValue(id, out var h))
+                    h(Instance, packet);
                 else
                     this.Receive(type, r);
                 if (mem.Position == lastPos)
@@ -539,7 +615,7 @@ namespace Start_a_Town_.Net
 
         private void HandleMessage(Packet msg)
         {
-            if (PacketHandlersNew.TryGetValue(msg.PacketType, out Action<INetwork, BinaryReader> handlerNew))
+            if (PacketHandlersNew.TryGetValue(msg.PacketType, out Action<INetPeer, BinaryReader> handlerNew))
             {
                 handlerNew(this, msg.Reader);
                 return;
@@ -650,6 +726,7 @@ namespace Start_a_Town_.Net
 
                 case PacketType.MergedPackets:
                     this.UnmergePackets(msg.Reader);
+                    //this.UnmergePackets(msg);
                     break;
 
                 default:

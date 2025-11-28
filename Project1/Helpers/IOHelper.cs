@@ -468,7 +468,7 @@ namespace Start_a_Town_
             var list = new List<TargetArgs>(count);
             for (int i = 0; i < count; i++)
             {
-                list.Add(TargetArgs.Read((INetwork)null, r));
+                list.Add(TargetArgs.Read((INetPeer)null, r));
             }
             return list;
         }

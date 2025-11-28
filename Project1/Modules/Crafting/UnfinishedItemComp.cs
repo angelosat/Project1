@@ -19,7 +19,7 @@ namespace Start_a_Town_
                 pCancel = Network.RegisterPacketHandler(ReceiveCancel);
             }
 
-            public static void SendCancel(INetwork net, PlayerData player, List<TargetArgs> obj)
+            public static void SendCancel(INetPeer net, PlayerData player, List<TargetArgs> obj)
             {
                 //var net = obj.First().Network;
                 var w = net.GetOutgoingStream();
@@ -27,7 +27,7 @@ namespace Start_a_Town_
                 w.Write(player.ID);
                 w.Write(obj.Select(t => t.Object.RefID).ToList());
             }
-            private static void ReceiveCancel(INetwork net, BinaryReader r)
+            private static void ReceiveCancel(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var refIDs = r.ReadListInt();

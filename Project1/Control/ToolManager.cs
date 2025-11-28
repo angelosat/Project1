@@ -253,7 +253,7 @@ namespace Start_a_Town_
         }
 
         static readonly ToolControlActor ToolControlActor = new();
-        internal static void OnGameEvent(INetwork net, GameEvent e)
+        internal static void OnGameEvent(INetPeer net, GameEvent e)
         {
             Instance.ActiveTool?.OnGameEvent(e);
             switch (e.Type)

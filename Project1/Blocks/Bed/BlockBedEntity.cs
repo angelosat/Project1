@@ -158,7 +158,7 @@ namespace Start_a_Town_
                 pChangeType = Network.RegisterPacketHandler(SetType);
             }
 
-            internal static void SetOwner(INetwork net, PlayerData playerData, IntVec3 global, Actor owner)
+            internal static void SetOwner(INetPeer net, PlayerData playerData, IntVec3 global, Actor owner)
             {
                 if (net is Server)
                     BlockBedEntity.SetOwner(net.Map, global, owner);
@@ -166,7 +166,7 @@ namespace Start_a_Town_
                 net.GetOutgoingStream().Write(pOwner, playerData.ID, global, owner?.RefID ?? -1);
             }
 
-            private static void SetOwner(INetwork net, BinaryReader r)
+            private static void SetOwner(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var global = r.ReadIntVec3();
@@ -177,7 +177,7 @@ namespace Start_a_Town_
                     SetOwner(net, player, global, owner);
             }
 
-            internal static void SetType(INetwork net, PlayerData playerData, IntVec3 vector3, BlockBedEntity.Types type)
+            internal static void SetType(INetPeer net, PlayerData playerData, IntVec3 vector3, BlockBedEntity.Types type)
             {
                 if (net is Server)
                     BlockBedEntity.SetType(net.Map, vector3, type);
@@ -185,7 +185,7 @@ namespace Start_a_Town_
                 net.GetOutgoingStream().Write(pChangeType, playerData.ID, vector3, (int)type);
             }
 
-            private static void SetType(INetwork net, BinaryReader r)
+            private static void SetType(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var vec = r.ReadIntVec3();

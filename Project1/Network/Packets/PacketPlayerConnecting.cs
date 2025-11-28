@@ -13,13 +13,13 @@ namespace Start_a_Town_
         {
             Client.RegisterPacketHandler(PacketType.PlayerConnecting, Receive);
         }
-        internal static void Send(INetwork net, PlayerData player)
+        internal static void Send(INetPeer net, PlayerData player)
         {
             var w = (net as Server).OutgoingStream;
             w.Write(PacketType.PlayerConnecting);
             player.Write(w);
         }
-        internal static void Receive(INetwork net, BinaryReader r)
+        internal static void Receive(INetPeer net, BinaryReader r)
         {
             PlayerData player = PlayerData.Read(r);
             var client = net as Client;

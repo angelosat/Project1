@@ -12,7 +12,7 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        static public void Send(INetwork net, ICollection<GameObject> entities)
+        static public void Send(INetPeer net, ICollection<GameObject> entities)
         {
             var server = net as Server;
             var strem = server.OutgoingStreamUnreliable;
@@ -25,7 +25,7 @@ namespace Start_a_Town_
                 ObjectSnapshot.Write(obj, strem);
             }
         }
-        static public void Receive(INetwork net, BinaryReader r)
+        static public void Receive(INetPeer net, BinaryReader r)
         {
             var client = net as Client;
             client.ReadSnapshot(r);

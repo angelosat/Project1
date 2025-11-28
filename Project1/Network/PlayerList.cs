@@ -5,13 +5,13 @@ namespace Start_a_Town_.Net
 {
     public class PlayerList
     {
-        readonly INetwork Net;
+        readonly INetPeer Net;
         readonly Dictionary<int, PlayerData> List = new();
         public IEnumerable<PlayerData> GetList()
         {
             return this.List.Values;
         }
-        public PlayerList(INetwork net)
+        public PlayerList(INetPeer net)
         {
             this.Net = net;
         }
@@ -24,7 +24,7 @@ namespace Start_a_Town_.Net
             }
         }
 
-        public static PlayerList Read(INetwork net, BinaryReader reader)
+        public static PlayerList Read(INetPeer net, BinaryReader reader)
         {
             PlayerList list = new PlayerList(net);
             int count = reader.ReadInt32();

@@ -22,7 +22,7 @@ namespace Start_a_Town_
             s.Write(item.Name);
             s.Write(v.Name);
         }
-        private static void ReceiveVariation(INetwork net, BinaryReader r)
+        private static void ReceiveVariation(INetPeer net, BinaryReader r)
         {
             var stockpileID = r.ReadInt32();
             var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
@@ -40,7 +40,7 @@ namespace Start_a_Town_
             s.Write(stockpile.ID);
             s.Write(category?.Name ?? "");
         }
-        private static void ReceiveCategory(INetwork net, BinaryReader r)
+        private static void ReceiveCategory(INetPeer net, BinaryReader r)
         {
             var stockpileID = r.ReadInt32();
             var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
@@ -58,7 +58,7 @@ namespace Start_a_Town_
             s.Write(item.Name);
             s.Write(mat?.Name ?? "");
         }
-        private static void ReceiveNew(INetwork net, BinaryReader r)
+        private static void ReceiveNew(INetPeer net, BinaryReader r)
         {
             var stockpileID = r.ReadInt32();
             var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
@@ -83,7 +83,7 @@ namespace Start_a_Town_
             s.Write(nodeIndices ?? new int[] { });
             s.Write(leafIndices ?? new int[] { });
         }
-        static void Receive(INetwork net, BinaryReader r)
+        static void Receive(INetPeer net, BinaryReader r)
         {
             var stockpileID = r.ReadInt32();
             var nodes = r.ReadIntArray();

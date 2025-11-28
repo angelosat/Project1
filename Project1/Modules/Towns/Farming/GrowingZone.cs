@@ -60,7 +60,7 @@ namespace Start_a_Town_
                 w.Write(zone.Planting);
                 w.Write(zone.Harvesting);
             }
-            static void Sync(INetwork net, BinaryReader r)
+            static void Sync(INetPeer net, BinaryReader r)
             {
                 var zone = net.Map.Town.ZoneManager.GetZone<GrowingZone>(r.ReadInt32());
                 zone.Plant = Def.GetDef<PlantProperties>(r);

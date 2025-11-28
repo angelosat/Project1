@@ -12,7 +12,7 @@ namespace Start_a_Town_
             PType = Network.RegisterPacketHandler(Receive);
         }
         
-        internal static void Send(INetwork net, int entityID, bool toggle)
+        internal static void Send(INetPeer net, int entityID, bool toggle)
         {
             var server = net as Server;
             var w = server.OutgoingStreamTimestamped;
@@ -20,7 +20,7 @@ namespace Start_a_Town_
             w.Write(entityID);
             w.Write(toggle);
         }
-        internal static void Receive(INetwork net, BinaryReader r)
+        internal static void Receive(INetPeer net, BinaryReader r)
         {
             var id = r.ReadInt32();
             var entity = net.GetNetworkObject(id) as Actor;

@@ -31,13 +31,13 @@ namespace Start_a_Town_
         
         internal abstract void OnMainMenuCreated(MainMenuWindow mainmenu);
 
-        public virtual void ParseCommand(INetwork net, string command)
+        public virtual void ParseCommand(INetPeer net, string command)
         {
 
         }
 
         protected List<GameComponent> GameComponents = new List<GameComponent>();
-        public abstract GameScreen GetWorldSelectScreen(INetwork net);
+        public abstract GameScreen GetWorldSelectScreen(INetPeer net);
         public static readonly GameMode StaticMaps = new GameModeStaticMaps();
 
         public virtual void OnIngameMenuCreated(IngameMenu menu) { }
@@ -59,8 +59,8 @@ namespace Start_a_Town_
         internal virtual Control GetNewGameGui(Action cancelAction) { return null; }
 
         internal virtual void ChunkReceived(Server server, int playerid, Vector2 vec) { }
-        internal virtual void HandleEvent(INetwork net, GameEvent e) { }
-        internal virtual void HandleEvent(INetwork net, object e, object[] p) { }
-        internal virtual void AllChunksReceived(INetwork net) { }
+        internal virtual void HandleEvent(INetPeer net, GameEvent e) { }
+        internal virtual void HandleEvent(INetPeer net, object e, object[] p) { }
+        internal virtual void AllChunksReceived(INetPeer net) { }
     }
 }

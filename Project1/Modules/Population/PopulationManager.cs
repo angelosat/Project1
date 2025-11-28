@@ -29,7 +29,7 @@ namespace Start_a_Town_
                 var w = Server.Instance.OutgoingStreamTimestamped;
                 w.Write(PacketAdventurerCreated, actor.RefID);
             }
-            private static void ReceiveNotifyAdventurerCreated(INetwork net, BinaryReader r)
+            private static void ReceiveNotifyAdventurerCreated(INetPeer net, BinaryReader r)
             {
                 var client = net as Client;
                 var actorID = r.ReadInt32();
@@ -37,7 +37,7 @@ namespace Start_a_Town_
                 var world = client.Map.World as StaticWorld;
                 world.Population.RegisterVisitor(actor);
             }
-            private static void ReceiveNotifyVisit(INetwork net, BinaryReader r)
+            private static void ReceiveNotifyVisit(INetPeer net, BinaryReader r)
             {
                 if (net is Server)
                     throw new Exception();
@@ -46,7 +46,7 @@ namespace Start_a_Town_
                 ReportVisit(net, actor);
             }
 
-            private static void ReportVisit(INetwork net, Actor actor)
+            private static void ReportVisit(INetPeer net, Actor actor)
             {
                 var props = actor.GetVisitorProperties();
                 net.Report($"{actor.Name} is {(!actor.Exists ? ("visiting" + (props.Discovered ? "" : " for the first time!")) : "departing")}");
@@ -73,7 +73,7 @@ namespace Start_a_Town_
         {
             this.World = world;
         }
-        public void Update(INetwork net)
+        public void Update(INetPeer net)
         {
             if (net is Server)
                 this.HandleErrors();
@@ -117,12 +117,12 @@ namespace Start_a_Town_
                 this.RegisterVisitor(GenerateInhabitant());
         }
 
-        void Tick(INetwork net)
+        void Tick(INetPeer net)
         {
             this.PopulateNew(net);
         }
 
-        private Actor PopulateNew(INetwork net)
+        private Actor PopulateNew(INetPeer net)
         {
             if (net is Server && this.ActorsAdventuring.Count < WorldPopulationCap)
             {
@@ -151,7 +151,7 @@ namespace Start_a_Town_
             MakeVisitor(actor);
         }
 
-        private static void AnnounceInhabitantCreated(INetwork net, Actor actor)
+        private static void AnnounceInhabitantCreated(INetPeer net, Actor actor)
         {
             net.Write($"{actor.Name} created");
             net.EventOccured(Components.Message.Types.NewAdventurerCreated, actor);

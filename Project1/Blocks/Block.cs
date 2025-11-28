@@ -513,7 +513,7 @@ namespace Start_a_Town_
         public virtual bool IsOpaque(Cell cell) => this.Opaque;
         //public abstract MaterialDef GetMaterial(byte blockdata);
 
-        public virtual void RandomBlockUpdate(INetwork net, IntVec3 global, Cell cell) { }
+        public virtual void RandomBlockUpdate(INetPeer net, IntVec3 global, Cell cell) { }
         protected virtual void HandleMessage(Vector3 global, ObjectEventArgs e) { }
 
         public static Dictionary<int, Block> Registry = new();

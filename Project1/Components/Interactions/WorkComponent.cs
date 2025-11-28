@@ -115,7 +115,7 @@ namespace Start_a_Town_.Components
             var isinteracting = r.ReadBoolean();
             if (!isinteracting)
                 return;
-            this.Target = TargetArgs.Read((INetwork)null, r);
+            this.Target = TargetArgs.Read((INetPeer)null, r);
             var interactionType = r.ReadString();
             var interaction = Activator.CreateInstance(Type.GetType(interactionType)) as Interaction;
             interaction.Actor = this.Parent as Actor;

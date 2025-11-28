@@ -12,7 +12,7 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        static public void Send(INetwork net, Entity entity)
+        static public void Send(INetPeer net, Entity entity)
         {
             if (net is Client)
                 return;
@@ -20,7 +20,7 @@ namespace Start_a_Town_
             w.Write(p);
             w.Write(entity.RefID);
         }
-        static public void Receive(INetwork net, BinaryReader r)
+        static public void Receive(INetPeer net, BinaryReader r)
         {
             var client = net as Client;
             var actor = client.GetNetworkObject(r.ReadInt32()) as Actor;

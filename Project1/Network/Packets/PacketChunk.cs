@@ -10,12 +10,12 @@ namespace Start_a_Town_
         {
             Client.RegisterPacketHandler(PacketType.Chunk, Receive);
         }
-        internal static void Send(INetwork net, Vector2 vector2, byte[] chunkData, PlayerData player)
+        internal static void Send(INetPeer net, Vector2 vector2, byte[] chunkData, PlayerData player)
         {
             var server = net as Server;
             server.Enqueue(player, Packet.Create(player, PacketType.Chunk, chunkData, sendType: SendType.OrderedReliable));
         }
-        internal static void Receive(INetwork net, BinaryReader r)
+        internal static void Receive(INetPeer net, BinaryReader r)
         {
             var chunk = Chunk.Create(net.Map, r);
             var client = net as Client;

@@ -21,7 +21,7 @@ namespace Start_a_Town_
             w.Write(def.GetType().FullName);
             target.Write(w);
         }
-        static void Receive(INetwork net, BinaryReader r)
+        static void Receive(INetPeer net, BinaryReader r)
         {
             var actor = net.GetNetworkObject(r.ReadInt32()) as Actor;
             var typeName = r.ReadString();

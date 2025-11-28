@@ -13,12 +13,12 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetwork net, ToolBlockBuild.Args a)
+        internal static void Send(INetPeer net, ToolBlockBuild.Args a)
         {
             Send(net, null, a);
         }
         
-        static public void Send(INetwork net, ProductMaterialPair item, ToolBlockBuild.Args a)
+        static public void Send(INetPeer net, ProductMaterialPair item, ToolBlockBuild.Args a)
         {
             var stream = net.GetOutgoingStream();
             stream.Write(p);
@@ -26,7 +26,7 @@ namespace Start_a_Town_
             if(!a.Removing)
                 item.Write(stream);
         }
-        static public void Receive(INetwork net, BinaryReader r)
+        static public void Receive(INetPeer net, BinaryReader r)
         {
             var args = new ToolBlockBuild.Args(r);
             var product = args.Removing ? null : new ProductMaterialPair(r);

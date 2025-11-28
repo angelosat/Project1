@@ -13,7 +13,7 @@ namespace Start_a_Town_
             p = Network.RegisterPacketHandler(Receive);
         }
 
-        static void Receive(INetwork net, PlayerData player, BinaryReader r)
+        static void Receive(INetPeer net, PlayerData player, BinaryReader r)
         {
             var acksCount = r.ReadInt32();
             for (int i = 0; i < acksCount; i++)

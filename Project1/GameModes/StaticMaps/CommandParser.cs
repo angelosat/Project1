@@ -6,7 +6,7 @@ namespace Start_a_Town_
 {
     class CommandParser
     {
-        public void Execute(INetwork net, string command)
+        public void Execute(INetPeer net, string command)
         {
             try
             {

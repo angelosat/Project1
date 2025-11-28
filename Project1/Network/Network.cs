@@ -6,8 +6,9 @@ using Microsoft.Xna.Framework;
 namespace Start_a_Town_.Net
 {
     public enum NetworkSideType { Local, Server }
-    public delegate void PacketHandler(INetwork net, BinaryReader r);
-    public delegate void PacketHandlerWithPlayer(INetwork net, PlayerData player, BinaryReader r);
+    public delegate void PacketHandler(INetPeer net, BinaryReader r);
+    public delegate void PacketHandlerWithPacket(INetPeer net, Packet packet);
+    public delegate void PacketHandlerWithPlayer(INetPeer net, PlayerData player, BinaryReader r);
     public delegate void PacketHandlerServer(Server server, BinaryReader r); // in case i need to force packethandlers to only exist on server or client in the future
     public delegate void PacketHandlerClient(Client client, BinaryReader r); // in case i need to force packethandlers to only exist on server or client in the future
     public class Network
@@ -18,20 +19,25 @@ namespace Start_a_Town_.Net
             static public void Init()
             {
                 PacketSyncReport = RegisterPacketHandler(HandleSyncReport);
+                //PacketTimestamped = RegisterPacketHandlerWithPacket(ReceiveTimestamped);
                 PacketTimestamped = RegisterPacketHandler(ReceiveTimestamped);
             }
-
-            private static void ReceiveTimestamped(INetwork net, BinaryReader r)
+            [Obsolete]
+            private static void ReceiveTimestamped(INetPeer net, BinaryReader r)
             {
                 if(net is Client client)
                     client.HandleTimestamped(r);
             }
-
+            private static void ReceiveTimestamped(INetPeer net, Packet packet)
+            {
+                if (net is Client client)
+                    client.HandleTimestamped(packet);
+            }
             public static void SendSyncReport(Server server, string text)
             {
                 server.GetOutgoingStream().Write(PacketSyncReport, text);
             }
-            private static void HandleSyncReport(INetwork net, BinaryReader r)
+            private static void HandleSyncReport(INetPeer net, BinaryReader r)
             {
                 if (net is not Net.Client)
                     throw new Exception();
@@ -39,7 +45,7 @@ namespace Start_a_Town_.Net
             }
         }
 
-        public static INetwork CurrentNetwork;
+        public static INetPeer CurrentNetwork;
 
         static public ConsoleBoxAsync Console { get { return LobbyWindow.Instance.Console; } }
 
@@ -69,6 +75,13 @@ namespace Start_a_Town_.Net
             var id = PacketIDSequence++;
             Server.RegisterPacketHandlerWithPlayer(id, handler);
             Client.RegisterPacketHandlerWithPlayer(id, handler);
+            return id;
+        }
+        public static int RegisterPacketHandlerWithPacket(PacketHandlerWithPacket handler)
+        {
+            var id = PacketIDSequence++;
+            Server.RegisterPacketHandler(id, handler);
+            Client.RegisterPacketHandler(id, handler);
             return id;
         }
         public void CreateClient()

@@ -12,7 +12,7 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetwork net)
+        internal static void Send(INetPeer net)
         {
             if (net is Server)
                 throw new Exception();
@@ -20,7 +20,7 @@ namespace Start_a_Town_
             w.Write(p);
             w.Write(net.GetPlayer().ID);
         }
-        private static void Receive(INetwork net, BinaryReader r)
+        private static void Receive(INetPeer net, BinaryReader r)
         {
             if (net is Client)
                 throw new Exception();

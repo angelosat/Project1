@@ -253,7 +253,7 @@ List of available commands:
         {
             _write(Entry.Chat(player, txt));
         }
-        internal static void Network(INetwork net, string txt)
+        internal static void Network(INetPeer net, string txt)
         {
             _write(Entry.Network(net, txt));
         }

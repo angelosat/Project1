@@ -19,7 +19,7 @@ namespace Start_a_Town_.Components.Needs
             server.OutgoingStream.Write(value);
 
         }
-        static public void Receive(INetwork net, BinaryReader r)
+        static public void Receive(INetPeer net, BinaryReader r)
         {
             var entity = net.GetNetworkObject(r.ReadInt32());
             var needName = r.ReadString();

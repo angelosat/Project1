@@ -20,7 +20,7 @@ namespace Start_a_Town_
                 pSync = Network.RegisterPacketHandler(HandleJobSync);
             }
 
-            private static void HandleJobModRequest(INetwork net, BinaryReader r)
+            private static void HandleJobModRequest(INetPeer net, BinaryReader r)
             {
                 var server = net as Server;
                 var player = server.GetPlayer(r.ReadInt32());
@@ -57,7 +57,7 @@ namespace Start_a_Town_
                 }
                 net.GetOutgoingStream().Write(pToggle, player.ID, actor.RefID, jobDef.Name);
             }
-            private static void HandleLaborToggle(INetwork net, BinaryReader r)
+            private static void HandleLaborToggle(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var actor = net.GetNetworkObject(r.ReadInt32()) as Actor;
@@ -78,7 +78,7 @@ namespace Start_a_Town_
                 w.Write(job.Def.Name);
                 job.Write(w);
             }
-            private static void HandleJobSync(INetwork net, BinaryReader r)
+            private static void HandleJobSync(INetPeer net, BinaryReader r)
             {
                 var client = net as Client;
                 var player = client.GetPlayer(r.ReadInt32());

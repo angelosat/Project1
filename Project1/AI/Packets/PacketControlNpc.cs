@@ -12,21 +12,21 @@ namespace Start_a_Town_
         {
             PType = Network.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetwork net, int entityid)
+        internal static void Send(INetPeer net, int entityid)
         {
             if (net is Server)
                 throw new Exception();
             var plid = net.GetPlayer().ID;
             Send(net, plid, entityid);
         }
-        internal static void Send(INetwork net, int playerid, int entityid)
+        internal static void Send(INetPeer net, int playerid, int entityid)
         {
             var w = net.GetOutgoingStream();
             w.Write(PType);
             w.Write(playerid);
             w.Write(entityid);
         }
-        private static void Receive(INetwork net, BinaryReader r)
+        private static void Receive(INetPeer net, BinaryReader r)
         {
             var player = net.GetPlayer(r.ReadInt32());
             var entityid = r.ReadInt32();

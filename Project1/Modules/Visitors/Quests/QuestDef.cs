@@ -392,13 +392,13 @@ namespace Start_a_Town_
                 PacketAdjustRewardCount = Network.RegisterPacketHandler(HandleAdjustRewardCount);
             }
 
-            internal static void SendAutoMatchBudget(INetwork net, PlayerData player, QuestDef quest)
+            internal static void SendAutoMatchBudget(INetPeer net, PlayerData player, QuestDef quest)
             {
                 if (net is Server)
                     quest.AutoMatchBudget();
                 net.GetOutgoingStream().Write(PacketAutoMatchBudget, player.ID, quest.ID);
             }
-            private static void HandleAutoMatchBudget(INetwork net, BinaryReader r)
+            private static void HandleAutoMatchBudget(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
@@ -408,7 +408,7 @@ namespace Start_a_Town_
                     SendAutoMatchBudget(net, player, quest);
             }
 
-            internal static void SendQuestCreateObjective(INetwork net, PlayerData player, QuestDef quest, QuestObjective qobj)
+            internal static void SendQuestCreateObjective(INetPeer net, PlayerData player, QuestDef quest, QuestObjective qobj)
             {
                 if (net is Server)
                 {
@@ -421,7 +421,7 @@ namespace Start_a_Town_
                 w.Write(qobj.GetType().FullName);
                 qobj.Write(w);
             }
-            private static void ReceiveQuestCreateObjective(INetwork net, BinaryReader r)
+            private static void ReceiveQuestCreateObjective(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
@@ -437,13 +437,13 @@ namespace Start_a_Town_
                 }
             }
 
-            internal static void SendQuestModify(INetwork net, PlayerData player, QuestDef quest, int maxConcurrentModValue)
+            internal static void SendQuestModify(INetPeer net, PlayerData player, QuestDef quest, int maxConcurrentModValue)
             {
                 if (net is Server)
                     quest.MaxConcurrent = maxConcurrentModValue;
                 net.GetOutgoingStream().Write(PacketQuestModify, player.ID, quest.ID, maxConcurrentModValue);
             }
-            private static void ReceiveQuestModify(INetwork net, BinaryReader r)
+            private static void ReceiveQuestModify(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
@@ -454,7 +454,7 @@ namespace Start_a_Town_
                     SendQuestModify(net, player, quest, maxConcurrentModValue);
             }
 
-            internal static void SendQuestObjectiveRemove(INetwork net, PlayerData player, QuestDef quest, QuestObjective qobj)
+            internal static void SendQuestObjectiveRemove(INetPeer net, PlayerData player, QuestDef quest, QuestObjective qobj)
             {
                 var index = quest.GetObjectives().ToList().FindIndex(i => i == qobj);
                 if (net is Server server)
@@ -465,7 +465,7 @@ namespace Start_a_Town_
                 w.Write(quest.ID);
                 w.Write(index);
             }
-            private static void ReceiveQuestRemoveObjective(INetwork net, BinaryReader r)
+            private static void ReceiveQuestRemoveObjective(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
@@ -477,14 +477,14 @@ namespace Start_a_Town_
                     quest.RemoveObjective(objective);
             }
 
-            internal static void SendAdjustObjectiveCount(INetwork net, PlayerData player, QuestObjective objective, int count)
+            internal static void SendAdjustObjectiveCount(INetPeer net, PlayerData player, QuestObjective objective, int count)
             {
                 if (net is Server)
                     objective.Count = count;
                 var q = objective.Parent;
                 net.GetOutgoingStream().Write(PacketAdjustObjectiveCount, player.ID, q.ID, q.GetObjectives().ToList().FindIndex(i => i == objective), count);
             }
-            private static void HandleAdjustObjectiveCount(INetwork net, BinaryReader r)
+            private static void HandleAdjustObjectiveCount(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
@@ -496,14 +496,14 @@ namespace Start_a_Town_
                     objective.Count = count;
             }
 
-            internal static void SendAdjustRewardCount(INetwork net, PlayerData player, QuestReward reward, int count)
+            internal static void SendAdjustRewardCount(INetPeer net, PlayerData player, QuestReward reward, int count)
             {
                 if (net is Server)
                     reward.Count = count;
                 var q = reward.Parent;
                 net.GetOutgoingStream().Write(PacketAdjustRewardCount, player.ID, q.ID, q.GetRewards().ToList().FindIndex(i => i == reward), count);
             }
-            private static void HandleAdjustRewardCount(INetwork net, BinaryReader r)
+            private static void HandleAdjustRewardCount(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());

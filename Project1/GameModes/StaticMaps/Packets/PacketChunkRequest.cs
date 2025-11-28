@@ -10,13 +10,13 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetwork net, int playerid)
+        internal static void Send(INetPeer net, int playerid)
         {
             var w = (net as Client).OutgoingStreamUnreliable;
             w.Write(p);
             w.Write(playerid);
         }
-        internal static void Receive(INetwork net, BinaryReader r)
+        internal static void Receive(INetPeer net, BinaryReader r)
         {
             var server = net as Server;
             if (server != null)

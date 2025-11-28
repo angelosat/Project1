@@ -275,6 +275,7 @@ namespace Start_a_Town_.Net
 
         //private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, BinaryReader r)> BufferTimestamped = [];
         private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, byte[] data)> BufferTimestamped = [];
+        //private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, BinaryReader r, long pos)> BufferTimestampedNew = [];
 
         private ulong lasttickreceived;
 
@@ -299,9 +300,9 @@ namespace Start_a_Town_.Net
                     //this.UnmergePackets(r);
                     else
                         this.BufferTimestamped.Add(mapTick, (mapTick, serverTick, array));
-                        //this.BufferTimestamped.Add(mapTick, (mapTick, serverTick, r));
+                    //this.BufferTimestampedNew.Add(mapTick, (mapTick, serverTick, r, r.BaseStream.Position));
                 }
-                //if (tick <= this.lasttickreceived)
+                //if (mapTick <= this.lasttickreceived)
                 if (mapTick < this.lasttickreceived)
                     throw new Exception();
                 this.lasttickreceived = mapTick;
@@ -309,10 +310,21 @@ namespace Start_a_Town_.Net
         }
 
         /// <summary>
-        /// this is called by the tickmap method
+        /// this is called by the tickmap method for the packets that were buffered by the packethandler's HandleTimestamped call
         /// </summary>
         private void HandleBufferedTimestamped()
         {
+            //while (this.BufferTimestampedNew.Count != 0)
+            //{
+            //    var item = this.BufferTimestampedNew.First();
+            //    var currenttick = this.Map.World.CurrentTick;
+            //    if (item.Key != currenttick)
+            //        return;
+            //    this.BufferTimestampedNew.Remove(item.Key);
+            //    item.Value.r.BaseStream.Position = item.Value.pos;
+            //    this.UnmergePackets(item.Value.r);
+            //}
+            //return;
             while (this.BufferTimestamped.Count != 0)
             {
                 var item = this.BufferTimestamped.First();
@@ -321,7 +333,6 @@ namespace Start_a_Town_.Net
                     return;
                 this.BufferTimestamped.Remove(item.Key);
                 this.UnmergePackets(item.Value.data);
-                //this.UnmergePackets(item.Value.r);
             }
         }
 

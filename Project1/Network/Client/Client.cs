@@ -278,6 +278,11 @@ namespace Start_a_Town_.Net
 
         private ulong lasttickreceived;
 
+        /// <summary>
+        /// this is called by a packet handler
+        /// </summary>
+        /// <param name="r"></param>
+        /// <exception cref="Exception"></exception>
         public void HandleTimestamped(BinaryReader r)
         {
             var currenttick = this.Map.World.CurrentTick;
@@ -303,9 +308,12 @@ namespace Start_a_Town_.Net
             }
         }
 
+        /// <summary>
+        /// this is called by the tickmap method
+        /// </summary>
         private void HandleBufferedTimestamped()
         {
-            while (this.BufferTimestamped.Any())
+            while (this.BufferTimestamped.Count != 0)
             {
                 var item = this.BufferTimestamped.First();
                 var currenttick = this.Map.World.CurrentTick;
@@ -469,24 +477,7 @@ namespace Start_a_Town_.Net
         {
             using var mem = new MemoryStream(data);
             using var r = new BinaryReader(mem);
-            var lastPos = mem.Position;
-            while (mem.Position < data.Length)
-            {
-                var id = r.ReadInt32();
-                var type = (PacketType)id;
-                lastPos = mem.Position;
-
-                if (PacketHandlersNew.TryGetValue(type, out Action<INetwork, BinaryReader> handlerAction))
-                    handlerAction(Instance, r);
-                else if (PacketHandlersWithPlayer.TryGetValue(id, out var handlerActionWithPlayer))
-                    handlerActionWithPlayer(Instance,this.PlayerData, r);
-                else if (PacketHandlersNewNewNew.TryGetValue(id, out var handlerActionNewNew))
-                    handlerActionNewNew(Instance, r);
-                else
-                    this.Receive(type, r);
-                if (mem.Position == lastPos)
-                    break;
-            }
+            this.UnmergePackets(r);
         }
         private void UnmergePackets(BinaryReader r)
         {

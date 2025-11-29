@@ -890,47 +890,7 @@ namespace Start_a_Town_.Net
                     break; // i think that's the price of not sending the length as the header and just continuing to read until the packethandler is invalid, which implies we reached the end. but that doesnt sound very clean
             }
         }
-        [Obsolete]
-        private static void UnmergePackets(PlayerData player, BinaryReader r)
-        {
-            var mem = r.BaseStream;
-            var lastPos = mem.Position;
-            while (mem.Position < mem.Length)
-            {
-                var typeID = r.ReadInt32();
-                lastPos = mem.Position;
 
-                if (PacketHandlersWithPlayer.TryGetValue(typeID, out var handlerActionNew))
-                    handlerActionNew(Instance, player, r);
-                else if (PacketHandlersGeneric.TryGetValue(typeID, out var handlerActionNewNew))
-                    handlerActionNewNew(Instance, r);
-
-                if (mem.Position == lastPos)
-                    // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
-                    //throw new Exception();
-                    break; // i think that's the price of not sending the length as the header and just continuing to read until the packethandler is invalid, which implies we reached the end. but that doesnt sound very clean
-            }
-        }
-        [Obsolete]
-        private static void UnmergePackets(PlayerData player, byte[] data)
-        {
-            using var mem = new MemoryStream(data);
-            using var r = new BinaryReader(mem);
-            var lastPos = mem.Position;
-            while (mem.Position < data.Length)
-            {
-                var typeID = r.ReadInt32();
-                lastPos = mem.Position;
-
-                if (PacketHandlersWithPlayer.TryGetValue(typeID, out var handlerActionNew))
-                    handlerActionNew(Instance, player, r);
-                else if (PacketHandlersGeneric.TryGetValue(typeID, out var handlerActionNewNew))
-                    handlerActionNewNew(Instance, r);
-
-                if (mem.Position == lastPos)
-                    throw new Exception(); // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
-            }
-        }
         public static void StartSaving()
         {
             Instance.IsSaving = true;

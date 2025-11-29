@@ -38,12 +38,11 @@ namespace Start_a_Town_
         public List<GameComponent> GameComponents = new();
         public Network Network;
 
-        protected override void OnExiting(object sender, EventArgs args)
+        protected override void OnExiting(object sender, ExitingEventArgs args)
         {
             Server.Stop();
             base.OnExiting(sender, args);
         }
-
         //private void Window_TextInput(object sender, TextInputEventArgs e)
         //{
         //    Debug.WriteLine(e.Character);

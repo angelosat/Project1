@@ -197,14 +197,6 @@ namespace Start_a_Town_.UI
         {
             foreach(var c in this.ControlsInMemory)
                     c.OnSelectedTargetChanged(target);
-            return;
-            foreach (var layer in this.Layers)
-            {
-                List<Control> wins = layer.Value.ToList();
-                wins.Reverse();
-                foreach (Control c in wins)
-                    c.OnSelectedTargetChanged(target);
-            }
         }
 
         static RenderTarget2D UITexture;

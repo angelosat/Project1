@@ -555,6 +555,13 @@ namespace Start_a_Town_
                 .ToArray();
             return data;
         }
+        static public byte[] Serialize(this string text)
+        {
+            using var m = new MemoryStream();
+            using (var str = new BinaryWriter(m))
+                str.Write(text);
+            return m.ToArray();
+        }
         public static void Write(this BinaryWriter w, Progress progress)
         {
             progress.Write(w);

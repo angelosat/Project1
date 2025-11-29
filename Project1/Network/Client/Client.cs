@@ -169,12 +169,7 @@ namespace Start_a_Town_.Net
             var state = new UdpConnection("Server", this.Host) { Buffer = new byte[Packet.Size] };
             this.Host.Bind(new IPEndPoint(IPAddress.Any, 0));
 
-            //byte[] data = Packet.Create(this.NextPacketID, PacketType.RequestConnection, Network.Serialize(w =>
-            //{
-            //    w.Write(playerData.Name);
-            //})).ToArray();
-            Action<BinaryWriter> test = w => w.Write(PlayerData.Name);
-            byte[] data = Packet.Create(this.NextPacketID, PacketType.RequestConnection, test.ToArray()).ToArray();
+            byte[] data = Packet.Create(this.NextPacketID, PacketType.RequestConnection, playerData.Name.Serialize()).ToArray();
 
             this.Host.SendTo(data, this.RemoteIP);
             this.Host.BeginReceive(state.Buffer, 0, state.Buffer.Length, SocketFlags.None, a =>
@@ -508,7 +503,6 @@ namespace Start_a_Town_.Net
 
                 default:
                     throw new Exception("received invalid packet id");
-                    break;
             }
         }
 

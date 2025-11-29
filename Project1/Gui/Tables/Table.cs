@@ -64,7 +64,7 @@ namespace Start_a_Town_.UI
             var newControls = items.Select(item =>
             //this.AddItem(i);
             {
-                var row = new GroupBox() { BackgroundColor = RowColor };
+                var row = new GroupBox() { BackgroundColor = RowColor , MouseThrough = false };
                 int currentX = 0;
                 foreach (var col in this.Columns)
                 {

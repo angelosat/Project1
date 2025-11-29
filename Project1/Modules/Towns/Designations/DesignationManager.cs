@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.IO;
 
 namespace Start_a_Town_
 {
@@ -42,12 +43,6 @@ namespace Start_a_Town_
 
         public DesignationManager(Town town) : base(town)
         {
-            //Designations = new ReadOnlyDictionary<DesignationDef, ObservableCollection<IntVec3>>(
-            //    new Dictionary<DesignationDef, ObservableCollection<IntVec3>>() {
-            //    { DesignationDefOf.Deconstruct, new ObservableCollection<IntVec3>() },
-            //    { DesignationDefOf.Mine, new ObservableCollection<IntVec3>()},
-            //    { DesignationDefOf.Switch, new ObservableCollection<IntVec3>()}
-            //});
             this.Designations = new ReadOnlyDictionary<DesignationDef, ObservableHashSet<IntVec3>>(new Dictionary<DesignationDef, ObservableHashSet<IntVec3>>() {
                 { DesignationDefOf.Deconstruct, new ObservableHashSet<IntVec3>() },
                 { DesignationDefOf.Mine, new ObservableHashSet<IntVec3>()},
@@ -161,12 +156,12 @@ namespace Start_a_Town_
             foreach (var des in this.Designations.Keys.ToList())
                 tag.TryGetTag(des.Name, v => this.Designations[des].LoadIntVecs(v));
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(BinaryWriter w)
         {
             foreach (var des in this.Designations)
                 w.Write(des.Value);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(BinaryReader r)
         {
             foreach (var des in this.Designations.Keys.ToList())
                 this.Designations[des].ReadIntVec3(r);
@@ -176,25 +171,18 @@ namespace Start_a_Town_
         {
             yield return new Tuple<Func<string>, Action>(() => $"Designations [{Hotkey.GetLabel()}]", ToggleGui);
         }
-        static Window _gui;
 
-        public static void ToggleGui()
+        private static readonly Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Designations", GetContextSubmenuItems()).HideOnAnyClick());
+
+        static void ToggleGui()
         {
-            if (_gui is null)
-            {
-                var box = new ListBoxNoScroll<DesignationDef, Button>(createButton, 0).AddItems(Ingame.CurrentMap.Town.DesignationManager.Designations.Keys.Prepend(null));// DesignationDef.Remove));
-                box.BackgroundColor = Microsoft.Xna.Framework.Color.Black * .5f;
-                _gui = box.ToWindow("Designations").Transparent();
-                _gui.Location = Controller.Instance.MouseLocation;
-            }
-            _gui.Toggle();
-
-            Button createButton(DesignationDef d)
-            {
-                var btn = new Button(d?.Label ?? "Remove", () => SetTool(d), 96) { Tag = d };
-                btn.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolDigging tool && btn.Tag == tool.DesignationDef;
-                return btn;
-            }
+            _guiNew.Value.Toggle();
+        }
+        static IEnumerable<(string, Action)> GetContextSubmenuItems()
+        {
+            yield return ("Remove", () => SetTool(null));
+            foreach (var def in Ingame.CurrentMap.Town.DesignationManager.Designations.Keys)
+                yield return (def.Label, () => SetTool(def));
         }
 
         private static void SetTool(DesignationDef d)

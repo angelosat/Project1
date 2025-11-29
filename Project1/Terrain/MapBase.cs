@@ -812,7 +812,7 @@ namespace Start_a_Town_
             this.World.OnTargetSelected(info, selected);
             this.Town.OnTargetSelected(info, selected);
         }
-        internal void OnTargetSelected(SelectionManagerNew info, ISelectable selected)
+        internal void OnTargetSelected(SelectionManager info, ISelectable selected)
         {
             this.World.OnTargetSelected(info, selected);
             this.Town.OnTargetSelected(info, selected);

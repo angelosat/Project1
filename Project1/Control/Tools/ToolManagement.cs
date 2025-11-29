@@ -96,8 +96,7 @@ namespace Start_a_Town_
         private void SelectEntity(TargetArgs target)
         {
             if (InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
-                //SelectionManager.AddToSelection(target);
-                SelectionManagerNew.AddToSelection(target);
+                SelectionManager.AddToSelection(target);
             else
             {
                 //if (false) // for testing
@@ -113,8 +112,7 @@ namespace Start_a_Town_
                 //    }
                 //}
                 //else
-                    SelectionManagerNew.Select(target);
-                //SelectionManager.Select(target);
+                    SelectionManager.Select(target);
             }
         }
 
@@ -368,7 +366,7 @@ namespace Start_a_Town_
             if (ToolManager.Instance.ActiveTool is not ToolManagement)
                 return;
             //ScreenManager.CurrentScreen.Camera.SliceOn((int)SelectionManager.Instance.SelectedSource.Global.Z);
-            ScreenManager.CurrentScreen.Camera.SliceOn((int)SelectionManagerNew.Instance.SelectedSource.Global.Z);
+            ScreenManager.CurrentScreen.Camera.SliceOn((int)SelectionManager.Instance.SelectedSource.Global.Z);
         }
     }
 }

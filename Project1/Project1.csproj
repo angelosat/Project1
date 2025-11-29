@@ -13,6 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Gui\Hud\QuickButtonBar.cs" />
+    <Compile Remove="Gui\Hud\SelectionManager.cs" />
     <Compile Remove="Modules\Crafting\Crafting\ReagentFilters\IsOfSubType.cs" />
   </ItemGroup>
   <ItemGroup>

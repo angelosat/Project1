@@ -120,7 +120,7 @@ namespace Start_a_Town_
         {
             base.OnTargetSelected(info, target);
         }
-        internal override void OnTargetSelected(SelectionManagerNew info, ISelectable target)
+        internal override void OnTargetSelected(SelectionManager info, ISelectable target)
         {
             base.OnTargetSelected(info, target);
         }

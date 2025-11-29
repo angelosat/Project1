@@ -406,14 +406,6 @@ namespace Start_a_Town_
                 comp.OnTargetSelected(info, target);
             }
         }
-        internal void Select(ISelectable target, SelectionManagerNew info)
-        {
-            foreach (var comp in this.TownComponents)
-            {
-                comp.UpdateQuickButtons();
-                comp.OnTargetSelected(info, target);
-            }
-        }
         internal IEnumerable<KeyValuePair<IntVec3, BlockEntity>> GetRefuelablesNew()
         {
             var entities = this.Map.GetBlockEntitiesCache();
@@ -433,7 +425,7 @@ namespace Start_a_Town_
                     c.OnTargetSelected(info, targetArgs);
         }
 
-        internal virtual void OnTargetSelected(SelectionManagerNew info, ISelectable selection)
+        internal virtual void OnTargetSelected(SelectionManager info, ISelectable selection)
         {
             if (selection is TargetArgs targetArgs)
                 foreach (var c in this.TownComponents)

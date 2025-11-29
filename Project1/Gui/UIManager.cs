@@ -317,14 +317,14 @@ namespace Start_a_Town_.UI
             foreach (var layer in this.Layers)
                 foreach (var ctrl in layer.Value)
                     ctrl.DrawOnCamera(sb, camera);
-            SelectionManagerNew.Instance.DrawOnCamera(sb, camera);
+            SelectionManager.Instance.DrawOnCamera(sb, camera);
         }
         public void DrawWorld(MySpriteBatch sb, Camera camera)
         {
             foreach (var layer in this.Layers)
                 foreach (var ctrl in layer.Value)
                     ctrl.DrawWorld(sb, camera);
-            SelectionManagerNew.Instance.DrawWorld(sb, camera);
+            SelectionManager.Instance.DrawWorld(sb, camera);
         }
 
         public void Draw(SpriteBatch sb, Camera camera)
@@ -667,7 +667,7 @@ namespace Start_a_Town_.UI
                 foreach (Control c in wins)
                     c.OnGameEvent(e);
             }
-            SelectionManagerNew.Instance.OnGameEvent(e);
+            SelectionManager.Instance.OnGameEvent(e);
         }
 
         static List<Rectangle> DivideScreenQuad(Rectangle screen, Rectangle rect)

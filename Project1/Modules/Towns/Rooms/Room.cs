@@ -138,15 +138,12 @@ namespace Start_a_Town_
         public void GetQuickButtons(SelectionManager panel)
         {
         }
-        public void GetQuickButtons(SelectionManagerNew panel)
-        {
-        }
         public void GetSelectionInfo(IUISelection panel)
         {
             panel.AddInfo(new Label(() => $"Owner: {this.Owner?.Name ?? "none"}"));
             panel.AddInfo(new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}"));
         }
-        public void GetSelectionInfo(SelectionManagerNew info)
+        public void GetSelectionInfo(SelectionManager info)
         {
             info.AddInfo(new Label(() => $"Owner: {this.Owner?.Name ?? "none"}"));
             info.AddInfo(new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}"));

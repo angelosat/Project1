@@ -275,7 +275,7 @@ namespace Start_a_Town_
         {
             this.PopulationManager.OnTargetSelected(info, selected);
         }
-        public override void OnTargetSelected(SelectionManagerNew info, ISelectable selected)
+        public override void OnTargetSelected(SelectionManager info, ISelectable selected)
         {
             this.PopulationManager.OnTargetSelected(info, selected);
         }

@@ -162,16 +162,8 @@ namespace Start_a_Town_
             NpcDirectory.Remove(this.Parent);
         }
 
+        
         internal override void GetQuickButtons(SelectionManager info, GameObject parent)
-        {
-            if (parent.IsPlayerControlled)
-                return;
-            info.AddButton(IconOrder, Command, parent);
-            var actor = parent as Actor;
-            info.AddButton(IconControl, Control, parent, true);
-            info.AddButton(IconToggleCitizen, ToggleCitizenship, parent, true);
-        }
-        internal override void GetQuickButtons(SelectionManagerNew info, GameObject parent)
         {
             if (parent.IsPlayerControlled)
                 return;

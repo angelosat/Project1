@@ -134,13 +134,11 @@ namespace Start_a_Town_.Components
         internal virtual void MapLoaded(GameObject parent)
         {
         }
-        [Obsolete]
         internal virtual void GetQuickButtons(SelectionManager info, GameObject parent) { }
-        internal virtual void GetQuickButtons(SelectionManagerNew info, GameObject parent) { }
         internal virtual IEnumerable<Button> GetTabs() { yield break; }
         [Obsolete]
         internal virtual void GetSelectionInfo(IUISelection info, GameObject parent) { }
-        internal virtual void GetSelectionInfo(SelectionManagerNew info, GameObject parent) { }
+        internal virtual void GetSelectionInfo(SelectionManager info, GameObject parent) { }
 
         internal virtual void OnGameEvent(GameObject gameObject, GameEvent e)
         {

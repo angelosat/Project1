@@ -857,6 +857,7 @@ namespace Start_a_Town_
             map.GetBlockEntity(vector3)?.GetSelectionInfo(info, map, vector3);
         }
 
+       
         internal void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
         {
             var e = map.GetBlockEntity(vector3);
@@ -865,16 +866,7 @@ namespace Start_a_Town_
                 uISelectedInfo.AddTabAction("Room", () => { });
             this.GetQuickButtonsEx(uISelectedInfo, map, vector3);
         }
-        internal void GetQuickButtons(SelectionManagerNew uISelectedInfo, MapBase map, IntVec3 vector3)
-        {
-            var e = map.GetBlockEntity(vector3);
-            e?.GetQuickButtons(uISelectedInfo, map, vector3);
-            if (this.Furniture is not null)
-                uISelectedInfo.AddTabAction("Room", () => { });
-            this.GetQuickButtonsEx(uISelectedInfo, map, vector3);
-        }
-        protected virtual void GetQuickButtonsEx(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3) { }
-        protected virtual void GetQuickButtonsEx(SelectionManagerNew info, MapBase map, IntVec3 vector3) { }
+        protected virtual void GetQuickButtonsEx(SelectionManager info, MapBase map, IntVec3 vector3) { }
         internal virtual bool IsValidHaulDestination(MapBase map, IntVec3 global, GameObject obj)
         {
             return false;

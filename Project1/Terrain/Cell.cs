@@ -275,7 +275,7 @@ namespace Start_a_Town_
             info.AddInfo(new BarNew(() => HitPointsMax, () => this.HitPoints) { Color = Color.CornflowerBlue, Format = "Hit Points: {0} / {1}" });
             map.GetBlockEntity(vector3)?.GetSelectionInfo(info, map, vector3);
         }
-        internal virtual void GetSelectionInfo(SelectionManagerNew info, MapBase map, IntVec3 vector3)
+        internal virtual void GetSelectionInfo(SelectionManager info, MapBase map, IntVec3 vector3)
         {
             info.AddInfo(new BarNew(() => HitPointsMax, () => this.HitPoints) { Color = Color.CornflowerBlue, Format = "Hit Points: {0} / {1}" });
             map.GetBlockEntity(vector3)?.GetSelectionInfo(info, map, vector3);

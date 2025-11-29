@@ -133,7 +133,7 @@ namespace Start_a_Town_
             foreach (var comp in this.Components.Values)
                 comp.GetSelectionInfo(info, this);
         }
-        public virtual void GetSelectionInfo(SelectionManagerNew info)
+        public virtual void GetSelectionInfo(SelectionManager info)
         {
             info.AddIcon(IconCameraFollow);
             this.Map?.World.OnTargetSelected(info, this);
@@ -144,16 +144,8 @@ namespace Start_a_Town_
         {
             return this.Town.ReservationManager.GetUnreservedAmount(this);
         }
-        [Obsolete]
+       
         public virtual void GetQuickButtons(SelectionManager info)
-        {
-            if (this.IsForbiddable())
-                info.AddButton(IconForbidden, RequestToggleForbidden, this);
-
-            foreach (var comp in this.Components.Values)
-                comp.GetQuickButtons(info, this);
-        }
-        public virtual void GetQuickButtons(SelectionManagerNew info)
         {
             if (this.IsForbiddable())
                 info.AddButton(IconForbidden, RequestToggleForbidden, this);
@@ -176,7 +168,7 @@ namespace Start_a_Town_
         static void FollowCam()
         {
             //ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManager.Instance.SelectedSource.Object);
-            ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManagerNew.Instance.SelectedSource.Object);
+            ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManager.Instance.SelectedSource.Object);
         }
 
         public void ToggleForbidden()

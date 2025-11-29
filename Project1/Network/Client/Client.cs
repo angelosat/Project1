@@ -502,7 +502,8 @@ namespace Start_a_Town_.Net
                     break;
 
                 default:
-                    throw new Exception("received invalid packet id");
+                    break; 
+                    //throw new Exception("received invalid packet id");
             }
         }
 
@@ -844,7 +845,9 @@ namespace Start_a_Town_.Net
             if (distance > 31)
             {
                 // very old packet
-                this.ConsoleBox.Write(Color.Orange, "CLIENT", "Warning! Received severely outdated packet: " + packet.PacketType.ToString());
+                //this.ConsoleBox.Write(Color.Orange, "CLIENT", "Warning! Received severely outdated packet: " + packet.PacketType.ToString());
+                this.ConsoleBox.Write(Color.Orange, "CLIENT", $"Warning! Received severely outdated packet: {packet.PacketType.ToString()} / Packet ID: {id} / RemoteSequence: {this.RemoteSequence}");
+                // this can occur on a bad connection, or even if the client's ack for this specific initial packet was lost and never reached the server
                 return false;
             }
             int mask = (1 << distance);

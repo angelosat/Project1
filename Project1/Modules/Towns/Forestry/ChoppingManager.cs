@@ -241,7 +241,8 @@ namespace Start_a_Town_
 
         private static bool IsChoppable(GameObject o)
         {
-            return o.HasComponent<PlantComponent>();
+            //return o.HasComponent<PlantComponent>();
+            return o.GetComponent<PlantComponent>()?.PlantProperties.ProductCutDown != null;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Start_a_Town_
         public abstract void Tick(INetPeer net);
         public abstract void OnHudCreated(Hud hud);
         public abstract void OnTargetSelected(IUISelection info, ISelectable selection);
-        public abstract void OnTargetSelected(SelectionManagerNew info, ISelectable selection);
+        public abstract void OnTargetSelected(SelectionManager info, ISelectable selection);
 
         public abstract void ResolveReferences();
     }

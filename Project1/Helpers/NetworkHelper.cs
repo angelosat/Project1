@@ -90,6 +90,7 @@ namespace Start_a_Town_
             if (packet.Retries-- <= 0)
                 return packet;
             packet.BeginSendTo(socket, ip);
+            ($"[SERVER]: packet {packet} resent").ToConsole();
             return null;
         }
     }

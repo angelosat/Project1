@@ -160,16 +160,11 @@ namespace Start_a_Town_
         {
             info.AddInfo(new CheckBoxNew("Hide", () => this.Hide = !this.Hide, () => this.Hide));
         }
-        public void GetSelectionInfo(SelectionManagerNew info)
+        public void GetSelectionInfo(SelectionManager info)
         {
             info.AddInfo(new CheckBoxNew("Hide", () => this.Hide = !this.Hide, () => this.Hide));
         }
         public void GetQuickButtons(SelectionManager info)
-        {
-            info.AddButtons(new IconButton(Icon.Cross) { LeftClickAction = this.RequestDelete, HoverText = "Delete" });
-            info.AddButtons(new IconButton(Icon.Construction) { LeftClickAction = this.Edit, HoverText = "Edit" });
-        }
-        public void GetQuickButtons(SelectionManagerNew info)
         {
             info.AddButtons(new IconButton(Icon.Cross) { LeftClickAction = this.RequestDelete, HoverText = "Delete" });
             info.AddButtons(new IconButton(Icon.Construction) { LeftClickAction = this.Edit, HoverText = "Edit" });

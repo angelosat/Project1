@@ -7,8 +7,8 @@ using System.Linq;
 
 namespace Start_a_Town_.UI
 {
-    //[EnsureStaticCtorCall]
-    public sealed class SelectionManager : GroupBox, IUISelection
+    [EnsureStaticCtorCall]
+    public sealed class SelectionManager
     {
         readonly GroupBox BoxTabs, BoxButtons, BoxIcons, BoxInfo;
         public Panel PanelInfo;
@@ -26,25 +26,25 @@ namespace Start_a_Town_.UI
             LeftClickAction = ToolManagement.Slice,
             HoverText = "Slice z-level"
         };
-        public static SelectionManager Instance = new();
+        public static readonly SelectionManager Instance = new();
 
         public TargetArgs SelectedSource = TargetArgs.Null;
         ISelectable Selectable;
         Window WindowInfo;
         IEnumerator<ISelectable> SelectedStack;
-        public List<TargetArgs> MultipleSelected = new(); // TODO: make this a list of iselectables
+        public List<TargetArgs> MultipleSelected = []; // TODO: make this a list of iselectables
 
         SelectionManager()
         {
-            //this.PanelInfo = new Panel(new Rectangle(0, 0, 300, 100));
             this.PanelInfo = Panel.FromClientSize(302, Label.DefaultHeight * 6);// 100); (302 = fit 3 x 100px widt bars, width 1 px spacing between them
             this.BoxTabs = new GroupBox()
             {
                 AutoSize = false,
-                //Size = new Rectangle(0, 0, 300, Button.DefaultHeight)
                 Size = new Rectangle(0, 0, this.PanelInfo.Width, Button.DefaultHeight)
             };
-            this.PanelInfo.Location = this.BoxTabs.BottomLeft;
+            this.BoxTabs.AnchorTo(() => this.PanelInfo.ScreenLocation, Vector2.UnitY);
+
+            this.PanelInfo.AnchorToBottomCenter();
             this.LabelName = new Label() { TextFunc = () => "<none>" };
             Lazy<SelectionDetailsGui> detailsGui = new Lazy<SelectionDetailsGui>(() => new SelectionDetailsGui());
             this.IconDetails = new IconButton("^")
@@ -52,7 +52,6 @@ namespace Start_a_Town_.UI
                 BackgroundTexture = UIManager.Icon16Background,
                 LeftClickAction = () =>
                 {
-                    //detailsGui.Value.Refresh(Instance.SelectedSource ?? Instance.SelectedStack.Current);
                     detailsGui.Value.Refresh(Instance.SelectedSource ?? Instance.SelectedStack.Current).GetOrCreateWindow("Details").Toggle();
                 },
                 HoverText = "Details"
@@ -82,7 +81,7 @@ namespace Start_a_Town_.UI
 
             static void showIssuesTooltip(Control tooltip)
             {
-                if(SelectedBlockEntity is BlockEntity blentity)
+                if (SelectedBlockEntity is BlockEntity blentity)
                     tooltip.AddControlsBottomLeft(blentity.GetErrorsGui());
             }
 
@@ -91,9 +90,10 @@ namespace Start_a_Town_.UI
 
             this.BoxButtons = new GroupBox();
             this.BoxButtons.BackgroundColorFunc = () => Color.Black * .5f;
-            this.BoxButtons.LocationFunc = () => this.BottomRight;
+            this.BoxButtons.LocationFunc = () => this.PanelInfo.BottomRight;
             this.BoxButtons.Anchor = new Vector2(0, 1);
             this.BoxButtons.ControlsChangedAction = () => this.BoxButtons.AlignLeftToRight();
+
 
             this.BoxInfo = new GroupBox() { Location = this.LabelName.BottomLeft };
             this.PanelInfo.AddControls(
@@ -102,16 +102,11 @@ namespace Start_a_Town_.UI
                 this.BoxInfo
                 );
 
-            this.AddControls(
-                this.BoxTabs,
-                this.PanelInfo
-                );
         }
 
         private void RepositionsBoxIcons()
         {
             this.BoxIcons.AlignLeftToRight();
-            //this.BoxIcons.Location = new Vector2(this.PanelInfo.ClientSize.Right - Panel.DefaultStyle.Border, this.PanelInfo.ClientSize.Top);
             this.BoxIcons.Location = new Vector2(this.PanelInfo.ClientSize.Right, this.PanelInfo.ClientSize.Top);
             this.BoxIcons.Anchor = new Vector2(1, 0);
         }
@@ -253,7 +248,6 @@ namespace Start_a_Town_.UI
                 case TargetType.Entity:
                     var entity = target.Object;
                     this.LabelName.TextFunc = () => entity.GetName();
-                    //this.MultipleSelected = new TargetArgs[] { target };
                     this.MultipleSelected.Clear();
                     this.MultipleSelected.Add(target);
                     entity.GetSelectionInfo(this);
@@ -264,7 +258,6 @@ namespace Start_a_Town_.UI
                     break;
 
                 case TargetType.Position:
-                    //this.MultipleSelected = new TargetArgs[1] { target };
                     this.MultipleSelected.Clear();
                     this.MultipleSelected.Add(target);
                     var selectables = target.Map.Town.QuerySelectables(target);
@@ -272,20 +265,20 @@ namespace Start_a_Town_.UI
                     {
                         this.SelectedStack = selectables.GetEnumerator();
                         this.CycleTargets();
-                        if (target.Map.IsUndiscovered(target.Global))// .GetCell(target.Global).IsExposed)
+                        if (target.Map.IsUndiscovered(target.Global))
                             this.LabelName.TextFunc = () => "Unknown block";
                     }
                     break;
 
                 case TargetType.Null:
-                    this.Hide();
+                    this.PanelInfo.Hide();
+                    this.BoxButtons.Hide();
                     this.LabelName.TextFunc = () => "<none>";
                     if (this.WindowInfo != null)
                         this.WindowInfo.Hide();
                     this.WindowInfo = null;
                     this.SelectedSource = TargetArgs.Null;
                     this.Selectable = null;
-                    //this.MultipleSelected = new TargetArgs[] { };
                     this.MultipleSelected.Clear();
                     return;
 
@@ -294,25 +287,24 @@ namespace Start_a_Town_.UI
             }
             this.SelectedSource = target;
             this.Show();
-            //if (target.Type != TargetType.Null)
-            //    target.Network.EventOccured(Message.Types.SelectedChanged, target);
+
             if (target.Type == TargetType.Entity)
                 target.Object.Net.EventOccured(Message.Types.SelectedChanged, target);
-            this.WindowManager.OnSelectedTargetChanged(target);
-            this.Validate(true);
+            this.PanelInfo.WindowManager.OnSelectedTargetChanged(target);
+            this.PanelInfo.Validate(true);
         }
-        public override bool Show()
+        void Show()
         {
-            //this.Location = Instance.BottomCenterScreen;
-            this.AnchorToBottomCenter();
-            Instance.BoxButtons.AlignLeftToRight();
+            this.BoxTabs.Show();
+            this.PanelInfo.Show();
             this.BoxButtons.Show();
-            return base.Show();
         }
-        public override bool Hide()
+        
+        void Hide()
         {
+            this.BoxTabs.Hide();
+            this.PanelInfo.Hide();
             this.BoxButtons.Hide();
-            return base.Hide();
         }
         private void Clear()
         {
@@ -390,7 +382,7 @@ namespace Start_a_Town_.UI
         {
             this.BoxTabs.AddControls(buttons);
         }
-       
+
         internal static void AddButton(IconButton button)
         {
             Instance.AddButtons(new IconButton[] { button });
@@ -400,10 +392,8 @@ namespace Start_a_Town_.UI
             action(this.ActionsAdded[action]);
         }
 
-        public override void Update()
+        public void Update()
         {
-            base.Update();
-
             /// move this to ongameevent?
             if (this.SelectedSource is not null && this.SelectedSource.Type == TargetType.Entity && this.SelectedSource.Object.IsDisposed)
                 this.SelectInternal(TargetArgs.Null);
@@ -411,7 +401,7 @@ namespace Start_a_Town_.UI
             if (this.Selectable is null)
             {
                 if (!this.MultipleSelected.Any())
-                    if (this.IsOpen)
+                    if (this.PanelInfo.IsOpen)
                         this.Hide();
                 return;
             }
@@ -420,14 +410,13 @@ namespace Start_a_Town_.UI
             //if (!this.Selectable.Exists) 
             //    this.SelectInternal(TargetArgs.Null);
         }
-        internal override void OnGameEvent(GameEvent e)
+        internal void OnGameEvent(GameEvent e)
         {
             switch (e.Type)
             {
                 case Message.Types.BlocksChanged:
                     var map = e.Parameters[0] as MapBase;
-                    var globals = e.Parameters[1] as IEnumerable<IntVec3>;// IntVec3[];
-                    //var targets = globals.Select(g => new TargetArgs(map, g));
+                    var globals = e.Parameters[1] as IEnumerable<IntVec3>;
                     if (globals.Any(t => IsSelected(t)))
                         ClearTargets();
                     break;
@@ -440,7 +429,6 @@ namespace Start_a_Town_.UI
                     break;
 
                 default:
-                    base.OnGameEvent(e);
                     break;
             }
         }
@@ -448,19 +436,11 @@ namespace Start_a_Town_.UI
         {
             return this.MultipleSelected.Any(t => (t.Type == TargetType.Position && t.Map == map && t.Global == global) || (this.SelectedSource?.Global == global));
         }
-        public override void DrawWorld(MySpriteBatch sb, Camera camera)
+        public void DrawWorld(MySpriteBatch sb, Camera camera)
         {
-            if (this.MultipleSelected.Any())
+            if (this.MultipleSelected.Count != 0)
             {
-                //foreach (var obj in this.MultipleSelected)
-                //    if (obj.Type == TargetType.Position)
-                //    {
-                //        camera.DrawBlockMouseover(sb, obj.Map, obj.Global, Color.Yellow);
-                //        //ToolManager.DrawBlockMouseover(sb, obj.Map, camera, obj);
-                //        var map = obj.Map;
-                //        var global = obj.Global;
-                //        //map.GetBlock(global).DrawSelected(sb, camera, map, global);
-                //    }
+              
                 var first = this.MultipleSelected.First();
                 var map = first.Map;
                 if (first.Type == TargetType.Position)
@@ -469,14 +449,12 @@ namespace Start_a_Town_.UI
                 {
                     var singleCell = SingleSelectedCell.Value;
                     map.GetBlock(singleCell).DrawSelected(sb, camera, map, singleCell);
-                    //map.GetBlock(singleCell).DrawInteractionSpots(sb, camera, map, singleCell);
                 }
             }
             else if (this.SelectedSource != null) // this block never executes aymore because even single selections are contained in the multipleselected collection
             {
                 if (this.SelectedSource.Type == TargetType.Position)
                 {
-                    //camera.DrawBlockMouseover(sb, this.SelectedSource.Map, this.SelectedSource.Global, Color.Yellow);
                     camera.DrawCellHighlights(Block.BlockHighlight, new IntVec3[] { this.SelectedSource.Global }, Color.Yellow);
                     var map = this.SelectedSource.Map;
                     var global = this.SelectedSource.Global;
@@ -484,7 +462,7 @@ namespace Start_a_Town_.UI
                 }
             }
         }
-        public override void DrawOnCamera(SpriteBatch sb, Camera camera)
+        public void DrawOnCamera(SpriteBatch sb, Camera camera)
         {
             if (this.MultipleSelected.Any())
                 foreach (var obj in this.MultipleSelected)
@@ -501,8 +479,8 @@ namespace Start_a_Town_.UI
         }
         public static bool IsSelected(IntVec3 tar)
         {
-            return 
-                Instance.MultipleSelected.Any(t => t.Type == TargetType.Position && (IntVec3)t.Global == tar)  || 
+            return
+                Instance.MultipleSelected.Any(t => t.Type == TargetType.Position && (IntVec3)t.Global == tar) ||
                 Instance.SelectedSource.Type == TargetType.Position && (IntVec3)Instance.SelectedSource.Global == tar;
         }
         internal static bool ClearTargets()
@@ -513,18 +491,6 @@ namespace Start_a_Town_.UI
             return true;
         }
 
-        //static void Slice()
-        //{
-        //    ScreenManager.CurrentScreen.Camera.SliceOn((int)Instance.SelectedSource.Global.Z);
-        //    //var current = ScreenManager.CurrentScreen.Camera.DrawLevel;
-        //    //if (next != current)
-        //    //{
-        //    //    Instance.PreviousDrawLevel = current;
-        //    //    ScreenManager.CurrentScreen.Camera.DrawLevel = next;
-        //    //}
-        //    //else if (Instance.PreviousDrawLevel != -1)
-        //    //    ScreenManager.CurrentScreen.Camera.DrawLevel = Instance.PreviousDrawLevel;
-        //}
         public void AddIcon(IconButton icon)
         {
             if (this.MultipleSelected.Count > 1)
@@ -606,12 +572,11 @@ namespace Start_a_Town_.UI
             }
             else
             {
-                Instance.ActionsAdded.Add(action, new List<TargetArgs>() { target });
+                Instance.ActionsAdded.Add(action, [target]);
                 Instance.BoxButtons.AddControls(button);
                 button.LeftClickAction = () => Instance.MultipleSelectedAction(action);
             }
         }
-
         internal static IEnumerable<TargetArgs> Selected => Instance.MultipleSelected;
 
         internal static IEnumerable<GameObject> GetSelectedEntities()

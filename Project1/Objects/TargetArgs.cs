@@ -728,7 +728,7 @@ namespace Start_a_Town_
             }
             this.Map.OnTargetSelected(info, this);
         }
-        public void GetSelectionInfo(SelectionManagerNew info)
+        public void GetSelectionInfo(SelectionManager info)
         {
             switch (this.Type)
             {
@@ -747,22 +747,6 @@ namespace Start_a_Town_
             this.Map.OnTargetSelected(info, this);
         }
         public void GetQuickButtons(SelectionManager info)
-        {
-            switch (this.Type)
-            {
-                case TargetType.Entity:
-                    this.Object.GetQuickButtons(info);
-                    break;
-
-                case TargetType.Position:
-                    this.Block.GetQuickButtons(info, this.Map, this.Global);
-                    break;
-
-                default:
-                    return;
-            }
-        }
-        public void GetQuickButtons(SelectionManagerNew info)
         {
             switch (this.Type)
             {

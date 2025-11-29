@@ -81,7 +81,7 @@ namespace Start_a_Town_
                 );
             info.AddInfo(box);
         }
-        internal override void GetSelectionInfo(SelectionManagerNew info, GameObject parent)
+        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
             var box = new GroupBox();
             box.AddControlsVertically(
@@ -92,10 +92,6 @@ namespace Start_a_Town_
             info.AddInfo(box);
         }
         internal override void GetQuickButtons(SelectionManager info, GameObject parent)
-        {
-            info.AddButton(IconCancel, items => Packets.SendCancel(parent.Net, parent.Net.GetPlayer(), items), parent);
-        }
-        internal override void GetQuickButtons(SelectionManagerNew info, GameObject parent)
         {
             info.AddButton(IconCancel, items => Packets.SendCancel(parent.Net, parent.Net.GetPlayer(), items), parent);
         }

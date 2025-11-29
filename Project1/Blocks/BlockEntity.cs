@@ -155,12 +155,8 @@ namespace Start_a_Town_
             this.OnDrawUI(sb, cam, global);
         }
         protected virtual void OnDrawUI(SpriteBatch sb, Camera cam, IntVec3 global) { }
+    
         internal virtual void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
-        {
-            foreach (var c in this.Comps)
-                c.GetQuickButtons(uISelectedInfo, map, vector3);
-        }
-        internal virtual void GetQuickButtons(SelectionManagerNew uISelectedInfo, MapBase map, IntVec3 vector3)
         {
             foreach (var c in this.Comps)
                 c.GetQuickButtons(uISelectedInfo, map, vector3);
@@ -170,7 +166,7 @@ namespace Start_a_Town_
             foreach (var c in this.Comps)
                 c.GetSelectionInfo(info, map, vector3);
         }
-        internal virtual void GetSelectionInfo(SelectionManagerNew info, MapBase map, IntVec3 vector3)
+        internal virtual void GetSelectionInfo(SelectionManager info, MapBase map, IntVec3 vector3)
         {
             foreach (var c in this.Comps)
                 c.GetSelectionInfo(info, map, vector3);

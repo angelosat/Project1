@@ -137,7 +137,7 @@ namespace Start_a_Town_
         {
             info.AddInfo(this.CachedGui);
         }
-        internal override void GetSelectionInfo(SelectionManagerNew info, GameObject parent)
+        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
             info.AddInfo(this.CachedGui);
         }

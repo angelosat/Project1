@@ -75,7 +75,6 @@ namespace Start_a_Town_
         internal virtual IEnumerable<Button> GetTabs(ISelectable selected) { yield break; }
         internal virtual void OnTargetSelected(IUISelection info, ISelectable target) { }
         internal virtual void OnTargetSelected(SelectionManager info, ISelectable target) { }
-        internal virtual void OnTargetSelected(SelectionManagerNew info, ISelectable target) { }
         internal virtual void OnTargetSelected(IUISelection info, TargetArgs targetArgs)
         {
         }

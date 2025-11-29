@@ -181,7 +181,7 @@ namespace Start_a_Town_
         internal void OnTargetSelected(IUISelection info, ISelectable selected)
         {
         }
-        internal void OnTargetSelected(SelectionManagerNew info, ISelectable selected)
+        internal void OnTargetSelected(SelectionManager info, ISelectable selected)
         {
         }
 

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.IO;
 
 namespace Start_a_Town_
 {
@@ -42,12 +43,6 @@ namespace Start_a_Town_
 
         public DesignationManager(Town town) : base(town)
         {
-            //Designations = new ReadOnlyDictionary<DesignationDef, ObservableCollection<IntVec3>>(
-            //    new Dictionary<DesignationDef, ObservableCollection<IntVec3>>() {
-            //    { DesignationDefOf.Deconstruct, new ObservableCollection<IntVec3>() },
-            //    { DesignationDefOf.Mine, new ObservableCollection<IntVec3>()},
-            //    { DesignationDefOf.Switch, new ObservableCollection<IntVec3>()}
-            //});
             this.Designations = new ReadOnlyDictionary<DesignationDef, ObservableHashSet<IntVec3>>(new Dictionary<DesignationDef, ObservableHashSet<IntVec3>>() {
                 { DesignationDefOf.Deconstruct, new ObservableHashSet<IntVec3>() },
                 { DesignationDefOf.Mine, new ObservableHashSet<IntVec3>()},
@@ -161,12 +156,12 @@ namespace Start_a_Town_
             foreach (var des in this.Designations.Keys.ToList())
                 tag.TryGetTag(des.Name, v => this.Designations[des].LoadIntVecs(v));
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(BinaryWriter w)
         {
             foreach (var des in this.Designations)
                 w.Write(des.Value);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(BinaryReader r)
         {
             foreach (var des in this.Designations.Keys.ToList())
                 this.Designations[des].ReadIntVec3(r);
@@ -174,7 +169,7 @@ namespace Start_a_Town_
 
         internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
         {
-            yield return new Tuple<Func<string>, Action>(() => $"Designations [{Hotkey.GetLabel()}]", () => _guiNew.Value.Toggle());
+            yield return new Tuple<Func<string>, Action>(() => $"Designations [{Hotkey.GetLabel()}]", ToggleGui);
         }
 
         private static readonly Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Designations", GetContextSubmenuItems()).HideOnAnyClick());

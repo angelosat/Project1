@@ -12,8 +12,7 @@ namespace Start_a_Town_
         public override string Name => "ZoneManager";
         int _zoneIDSequence = 1;
         public int GetNextID() => _zoneIDSequence++;
-        //readonly public Dictionary<int, Zone> Zones = new();
-        readonly public ObservableDictionary<int, Zone> Zones = new();
+        readonly public ObservableDictionary<int, Zone> Zones = [];
         public IEnumerable<Zone> AllZones => this.Zones.Values;
         static ZoneManager()
         {

@@ -1,8 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using SharpDX.Direct3D9;
 using System;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace Start_a_Town_.UI

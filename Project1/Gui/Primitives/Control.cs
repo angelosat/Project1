@@ -1564,8 +1564,18 @@ namespace Start_a_Town_.UI
             return this;
         }
         readonly HashSet<Func<Control, bool>> ShowConditions = new();
-        //bool DrawOnParentFocus;
-        readonly Func<Control, bool> drawOnParentFocusFunc = c => c.Parent?.HasMouseHover ?? true;
+        //readonly Func<Control, bool> drawOnParentFocusFunc = c =>
+        //{
+        //    if (c.Parent.IsMouseThrough)
+        //        throw new Exception("ShowOnParentFocus has been set for a control that its parent is MouseThrough and can't receive focus");
+        //    return c.Parent?.HasMouseHover ?? true;
+        //};
+        static bool ParentHasFocus(Control c)
+        {
+            if (c.Parent.IsMouseThrough)
+                throw new Exception("This control's parent is MouseThrough and can't receive focus");
+            return c.Parent?.HasMouseHover ?? true;
+        }
         public Control VisibleWhen(Func<bool> p)
         {
             this.ShowConditions.Add(c => p());
@@ -1574,10 +1584,10 @@ namespace Start_a_Town_.UI
         public Control ShowOnParentFocus(bool enabled)
         {
             //this.DrawOnParentFocus = enabled;
-            if (enabled && !this.ShowConditions.Contains(drawOnParentFocusFunc))
-                this.ShowConditions.Add(drawOnParentFocusFunc);
-            else if (!enabled && this.ShowConditions.Contains(drawOnParentFocusFunc))
-                this.ShowConditions.Remove(drawOnParentFocusFunc);
+            if (enabled && !this.ShowConditions.Contains(ParentHasFocus))
+                this.ShowConditions.Add(ParentHasFocus);
+            else if (!enabled && this.ShowConditions.Contains(ParentHasFocus))
+                this.ShowConditions.Remove(ParentHasFocus);
             return this;
         }
         public Control Flash(bool enabled)

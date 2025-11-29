@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Start_a_Town_.UI;
@@ -7,7 +8,7 @@ namespace Start_a_Town_
 {
     static class SaveFileManager
     {
-        public static readonly ObservableCollection<SaveFile> SaveFiles = new();
+        public static readonly ObservableCollection<SaveFile> SaveFiles = [];
 
         internal static void Refresh()
         {
@@ -27,15 +28,13 @@ namespace Start_a_Town_
             SaveFiles.Remove(save);
             save.File.Delete();
         }
-
         static Control _guiCached;
-        public static Control Gui => _guiCached ??= GetGui();
-        static Control GetGui()
+        public static Control Gui => _guiCached ??= CreateGui();
+        private static Control CreateGui()
         {
-            Refresh();
             var box = ScrollableBoxTest.FromContentsSize(SaveFile.Gui.Width, SaveFile.Gui.Width, ScrollModes.Vertical)
                 .AddControls(new ListBoxObservable<SaveFile>(SaveFiles));
-            return box;
+            return box.ToPanel();
         }
 
         public static void Load(SaveFile item)
@@ -59,8 +58,13 @@ namespace Start_a_Town_
                 UIConnecting.Create(localHost);
                 Net.Server.SetMap(map); // is this needed??? YES!!! it enumerates all existing entities in the network
                 Net.Client.Instance.Connect(localHost, "host", a => { LobbyWindow.Instance.Console.Write("Connected to " + localHost); });
-                //Gui.GetWindow().Hide();
             });
+        }
+
+        internal static Control InitGui()
+        {
+            Refresh();
+            return Gui;
         }
     }
 }

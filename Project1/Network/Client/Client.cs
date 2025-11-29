@@ -817,10 +817,13 @@ namespace Start_a_Town_.Net
             }
             catch (Exception e)
             {
+                // this is thrown (at least) twice because the server sends 2 packets per frame (reliable+unreliable) + any resent reliable packets
+
                 //ScreenManager.Remove(); // this is not the main thread. if i remove from here then in case the main thread is drawing, it won't be able to access the ingame camera class
                 //// so either don't remove the screen here, or pass the camera to the root draw call instead of accessing it through the screenmanager currentscreen property
                 this.Timeout = 0;
-                e.ShowDialog();
+                e.ToConsole();
+                //e.ShowDialog();
             }
         }
 

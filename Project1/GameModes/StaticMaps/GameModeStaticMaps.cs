@@ -179,7 +179,8 @@ namespace Start_a_Town_.Core
 
         internal override Control LoadGame()
         {
-            return SaveFileManager.Gui.ToPanel();
+            //return SaveFileManager.Gui.ToPanel();
+            return SaveFileManager.InitGui();//.Gui.ToPanel();
         }
         internal override Control GetNewGameGui(Action cancelAction)
         {

@@ -12,14 +12,14 @@ namespace Start_a_Town_.UI
             this.PanelButtons.AutoSize = true;
             int w = 150;
 
-            Button save = new("Save", save_Click, w);
-            Button load = new("Load", load_Click, w);
-            Button settings = new("Settings", settings_Click, w);
-            Button debug = new("Debug", debug_Click, w);
-            Button help = new("Help", help_Click, w);
-            Button quit = new("Quit to main menu", quit_Click, w);
-            Button saveexit = new("Save & exit", saveexit_Click, w);
-            Button exit = new("Exit to desktop", exit_Click, w);
+            Button save = new("Save", Save_Click, w);
+            Button load = new("Load", Load_Click, w);
+            Button settings = new("Settings", Settings_Click, w);
+            Button debug = new("Debug", Debug_Click, w);
+            Button help = new("Help", Help_Click, w);
+            Button quit = new("Quit to main menu", Quit_Click, w);
+            Button saveexit = new("Save & exit", Saveexit_Click, w);
+            Button exit = new("Exit to desktop", Exit_Click, w);
 
             this.PanelButtons.AddControlsVertically(settings, debug, help, quit);
             Client.Controls.Add(this.PanelButtons);
@@ -28,13 +28,13 @@ namespace Start_a_Town_.UI
             Title = "Options";
         }
 
-        void saveexit_Click()
+        void Saveexit_Click()
         {
             Net.Client.Instance.Disconnect();
             ScreenManager.Remove();
         }
 
-        void quit_Click()
+        void Quit_Click()
         {
             new MessageBox("Quit game", "Are you sure you want to quit to main menu?",
                 new ContextAction(() => "Yes",
@@ -47,38 +47,38 @@ namespace Start_a_Town_.UI
             new ContextAction(() => "No", () => { })).ShowDialog();
         }
 
-        void help_Click()
+        void Help_Click()
         {
             HelpWindow.Instance.Toggle();
         }
 
-        void debug_Click()
+        void Debug_Click()
         {
             GlobalVars.DebugMode = !GlobalVars.DebugMode;
         }
 
-        void exit_Click()
+        void Exit_Click()
         {
-            var exitbox = new MessageBox("Quit game", "Are you sure you want to exit the game without saving?", exitbox_Yes, () => { });
+            var exitbox = new MessageBox("Quit game", "Are you sure you want to exit the game without saving?", Exitbox_Yes, () => { });
             exitbox.ShowDialog();
         }
 
-        void exitbox_Yes()
+        void Exitbox_Yes()
         {
             Game1.Instance.Exit();
         }
 
-        void settings_Click()
+        void Settings_Click()
         {
             SettingsWindow.Instance.ToggleDialog();
         }
 
-        void load_Click()
+        void Load_Click()
         {
             Console.WriteLine("load");
         }
 
-        void save_Click()
+        void Save_Click()
         {
             Console.WriteLine("save");
         }

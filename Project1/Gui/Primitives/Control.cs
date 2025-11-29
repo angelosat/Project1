@@ -1418,7 +1418,8 @@ namespace Start_a_Town_.UI
         {
             if (this is Window)
                 return this as Window;
-
+            if (this.Window is not null)
+                return this.Window; // if the control already has a parent window, return the parent window
             var window = new Window()
             {
                 Title = name,

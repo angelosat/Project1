@@ -130,11 +130,9 @@ namespace Start_a_Town_.Net
         public static void Stop()
         {
             Server.ChunkLoaderToken.Cancel();
-            if (Listener is not null)
-                Listener.Close();
+            Listener?.Close();
 
-            if (Instance.ConsoleBox != null)
-                Instance.ConsoleBox.Write("SERVER", "Stopped");
+            Instance.ConsoleBox?.Write("SERVER", "Stopped");
             Instance.OutgoingStream = new BinaryWriter(new MemoryStream());
             Instance.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
             Instance.OutgoingStreamReliable = new BinaryWriter(new MemoryStream());
@@ -143,6 +141,7 @@ namespace Start_a_Town_.Net
             IsRunning = false;
             Instance.Map = null;
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
+            Instance.NetworkObjects.Clear();
             ServerClock = new TimeSpan();
             Instance.Speed = 0;
         }
@@ -155,6 +154,7 @@ namespace Start_a_Town_.Net
             Instance.OutgoingStreamReliable = new BinaryWriter(new MemoryStream());
 
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
+            Instance.NetworkObjects.Clear();
             ServerClock = new TimeSpan();
             Instance.ConsoleBox.Write("SERVER", "Started");
             if (Listener != null)
@@ -493,7 +493,7 @@ namespace Start_a_Town_.Net
             }
             catch (SocketException)
             {
-                "connection closed".ToConsole();
+                // this is thrown (at least) twice because the client sends 2 packets per frame (reliable+unreliable) + any resent reliable packets
                 CloseConnection(state);
             }
             catch (ObjectDisposedException) { }
@@ -628,12 +628,12 @@ namespace Start_a_Town_.Net
 
         static void CloseConnection(UdpConnection connection)
         {
-            connection.Ping.Stop();
             if (!Connections.TryRemove(connection.IP, out UdpConnection existing))
             {
-                throw new Exception("Tried to close nonexistent connection");
+                ("Tried to close nonexistent connection").ToConsole();
+                return;
             }
-
+            existing.Ping.Stop();
             "connection closed".ToConsole();
             Instance.Players.Remove(existing.Player);
             if (existing.Player.IsActive)

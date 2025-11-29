@@ -363,6 +363,7 @@ namespace Start_a_Town_.Net
         private void CreatePacketsFromStream()
         {
             var data = ((MemoryStream)this.OutgoingStream.BaseStream).ToArray();
+           
             //if (data.Length > 0) // send empty packet anyway to substitute pinging for keeping an active connection
             this.Enqueue(PacketType.MergedPackets, data);
         }

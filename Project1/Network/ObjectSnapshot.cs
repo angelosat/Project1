@@ -1,19 +1,13 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_.Net
 {
-    public class ObjectSnapshot
+    public class ObjectSnapshot(int refID)
     {
-        public GameObject Object;
+        public int RefID = refID;
         public Vector3 Position, Velocity, Orientation;
-        public byte[] Data;
 
-        public ObjectSnapshot(GameObject obj)
-        {
-            this.Object = obj;
-        }
         static public void Write(GameObject obj, BinaryWriter w)
         {
             w.Write(obj.Global);
@@ -27,10 +21,10 @@ namespace Start_a_Town_.Net
             this.Orientation = r.ReadVector3();
             return this;
         }
-
+      
         public override string ToString()
         {
-            return this.Object.Name.ToString() + " Position: " + this.Position + " Velocity: " + this.Velocity;
+            return $"RefID: {this.RefID} Position: {this.Position} Velocity: {this.Velocity} Orientation: {this.Orientation}";
         }
     }
 }

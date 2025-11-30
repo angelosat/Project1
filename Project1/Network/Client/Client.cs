@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using System;
+using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -239,7 +240,7 @@ namespace Start_a_Town_.Net
 
             this.HandleOrderedPackets();
             this.HandleOrderedReliablePackets();
-            this.ProcessSyncedPackets();
+            this.HandleSyncedPackets();
             this.ProcessIncomingPackets();
             GameMode.Current?.Update(Instance);
 
@@ -393,7 +394,7 @@ namespace Start_a_Town_.Net
             this.OnGameEvent(e);
         }
 
-        private void ProcessSyncedPackets()
+        private void HandleSyncedPackets()
         {
             while (this.SyncedPackets.Count > 0)
             {
@@ -405,6 +406,9 @@ namespace Start_a_Town_.Net
             }
         }
 
+        /// <summary>
+        /// Immediately handles unreliable packets, but enqueues ordered and reliable packets to be handled by this.HandleOrderedPackets() and this.HandleOrderedReliablePackets()
+        /// </summary>
         private void ProcessIncomingPackets()
         {
             while (this.IncomingAll.TryDequeue(out Packet packet))
@@ -471,6 +475,8 @@ namespace Start_a_Town_.Net
             var mem = r.BaseStream;
             var lastPos = mem.Position;
             var endPos = maxBytes == -1 ? mem.Length : lastPos + maxBytes;
+            var packetsHandled = 0;
+            var lastHandled = -1;
             while (mem.Position < endPos)
             {
                 var id = r.ReadInt32();
@@ -488,7 +494,9 @@ namespace Start_a_Town_.Net
                 else
                     Receive(type, r);
                 if (mem.Position == lastPos)
-                    break; 
+                    break;
+                packetsHandled++;
+                lastHandled = id;
             }
         }
         private static void Receive(PacketType type, BinaryReader r)
@@ -502,8 +510,8 @@ namespace Start_a_Town_.Net
                     break;
 
                 default:
-                    break; 
-                    //throw new Exception("received invalid packet id");
+                    //break; 
+                    throw new Exception("received invalid packet id");
             }
         }
 
@@ -970,8 +978,11 @@ namespace Start_a_Town_.Net
                 int netID = reader.ReadInt32();
                 var obj = Instance.NetworkObjects.GetValueOrDefault(netID);
                 if (obj is null)
-                    continue;
-                var objsnapshot = new ObjectSnapshot(obj).Read(reader);
+                    //continue;
+                    //throw new Exception($"Received snapshot for entityid {netID} that doesn't exist"); // 
+                    ($"[CLIENT]: Received snapshot for entityid {netID} that doesn't exist").ToConsole();// 
+
+                var objsnapshot = new ObjectSnapshot(netID).Read(reader);
                 worldState.ObjectSnapshots.Add(objsnapshot);
             }
 
@@ -1003,13 +1014,15 @@ namespace Start_a_Town_.Net
         {
             foreach (var objSnapshot in next.ObjectSnapshots)
             {
-                var previousObjState = prev.ObjectSnapshots.Find(o => o.Object == objSnapshot.Object);
-                if (previousObjState is null)
-                    continue;
-                objSnapshot.Object.SetPosition(objSnapshot.Position);
-                objSnapshot.Object.Velocity = objSnapshot.Velocity;
-                objSnapshot.Object.Direction = objSnapshot.Orientation;
-                if (float.IsNaN(objSnapshot.Object.Direction.X) || float.IsNaN(objSnapshot.Object.Direction.Y))
+                /// why was i skipping applying the snapshot to fresh entities???
+                //var previousObjState = prev.ObjectSnapshots.Find(o => o.Object == objSnapshot.Object);
+                //if (previousObjState is null)
+                //    continue;
+                var entity = this.GetNetworkObject(objSnapshot.RefID);
+                entity.SetPosition(objSnapshot.Position);
+                entity.Velocity = objSnapshot.Velocity;
+                entity.Direction = objSnapshot.Orientation;
+                if (float.IsNaN(entity.Direction.X) || float.IsNaN(entity.Direction.Y))
                     throw new Exception();
             }
         }

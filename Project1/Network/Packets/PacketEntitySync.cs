@@ -25,7 +25,7 @@ namespace Start_a_Town_
         {
             if (net is Server)
                 throw new Exception();
-            var entity = net.GetNetworkObject(r.ReadInt32());
+            var entity = net.GetNetworkEntity(r.ReadInt32());
             entity.SyncRead(r);
         }
     }

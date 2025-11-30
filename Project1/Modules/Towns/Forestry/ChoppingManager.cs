@@ -11,7 +11,6 @@ namespace Start_a_Town_
 {
     public sealed class ChoppingManager : TownComponent
     {
-        readonly Dictionary<int, int> DesignationTypesRegistry = [];
         public enum Types { Chopping, Foraging }
         public static readonly Icon ChopIcon = new(ItemContent.AxeFull);
         public static readonly Icon ForageIcon = new(ItemContent.BerriesFull);
@@ -21,12 +20,12 @@ namespace Start_a_Town_
 
         public List<GameObject> GetTrees()
         {
-            var list = this.ChoppingTasks.Select(id => this.Town.Map.Net.GetNetworkObject(id)).ToList();
+            var list = this.ChoppingTasks.Select(id => this.Town.Map.Net.GetNetworkEntity(id)).ToList();
             return list;
         }
         public List<GameObject> GetPlants()
         {
-            var list = this.QueuedForaging.Select(id => this.Town.Map.Net.GetNetworkObject(id)).ToList();
+            var list = this.QueuedForaging.Select(id => this.Town.Map.Net.GetNetworkEntity(id)).ToList();
             return list;
         }
         public HashSet<int> ChoppingTasks = [];
@@ -147,7 +146,7 @@ namespace Start_a_Town_
         }
         public override void Load(SaveTag tag)
         {
-            tag.TryGetTagValue<List<SaveTag>>("ChoppingTasks", v => this.ChoppingTasks = new HashSet<int>(new List<int>().Load(v)));
+            tag.TryGetTagValue<List<SaveTag>>("ChoppingTasks", v => this.ChoppingTasks = [.. new List<int>().Load(v)]);
         }
         public override void Write(System.IO.BinaryWriter w)
         {
@@ -155,7 +154,7 @@ namespace Start_a_Town_
         }
         public override void Read(System.IO.BinaryReader r)
         {
-            this.ChoppingTasks = new HashSet<int>(r.ReadListInt());
+            this.ChoppingTasks = [.. r.ReadListInt()];
         }
 
         public override void DrawUI(SpriteBatch sb, MapBase map, Camera cam)

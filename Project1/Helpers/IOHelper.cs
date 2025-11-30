@@ -31,6 +31,13 @@ namespace Start_a_Town_
             foreach (var i in list)
                 w.Write(i);
         }
+        public static void Write(this BinaryWriter w, ICollection<TargetArgs> list)
+        {
+            var count = list.Count;
+            w.Write(count);
+            foreach (var i in list)
+                w.Write(i);
+        }
         public static T ReadVector3<T>(this T collection, BinaryReader r)
             where T : ICollection<Vector3>, new()
         {
@@ -47,7 +54,14 @@ namespace Start_a_Town_
                 collection.Add(r.ReadIntVec3());
             return collection;
         }
-
+        public static T ReadTargets<T>(this T collection, BinaryReader r)
+           where T : ICollection<TargetArgs>, new()
+        {
+            var count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+                collection.Add(TargetArgs.Read((INetPeer)null, r));
+            return collection;
+        }
         public static Dictionary<int, int> Write(this Dictionary<int, int> dic, BinaryWriter w)
         {
             w.Write(dic.Count);
@@ -634,6 +648,8 @@ namespace Start_a_Town_
                     w.Write((IntVec3)arg);
                 else if (arg is Def def)
                     def.Write(w);
+                else if (arg is TargetArgs target)
+                    target.Write(w);
                 else
                     throw new ArgumentException();
             }

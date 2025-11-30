@@ -17,7 +17,7 @@ namespace Start_a_Town_
             var shopID = task.ShopID;
             var transaction = task.Transaction;
             var customer = transaction.Customer;
-            var item = net.GetNetworkObject(transaction.Item);
+            var item = net.GetNetworkEntity(transaction.Item);
             var cost = transaction.Cost;
             var shop = actor.Map.Town.GetShop(shopID) as Shop;
             var counterSurface = shop.Counter.Value.Above;

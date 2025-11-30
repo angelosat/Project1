@@ -111,7 +111,7 @@ namespace Start_a_Town_
         }
         public void RemoveCustomer(int actorID)
         {
-            var actor = this.Town.Net.GetNetworkObject(actorID) as Actor;
+            var actor = this.Town.Net.GetNetworkEntity(actorID) as Actor;
             if (this.GetNextCustomer() != actor)
                 return;
             this.CustomerQueue.Dequeue();

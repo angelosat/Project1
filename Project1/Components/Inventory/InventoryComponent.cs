@@ -19,8 +19,8 @@ namespace Start_a_Town_.Components
 
                 static void handleSetHaulSlot(INetPeer net, BinaryReader r)
                 {
-                    var actor = net.GetNetworkObject(r.ReadInt32()) as Actor;
-                    var item = net.GetNetworkObject(r.ReadInt32()) as Entity;
+                    var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
+                    var item = net.GetNetworkEntity(r.ReadInt32()) as Entity;
                     actor.Carry(item);
                 }
 
@@ -36,8 +36,8 @@ namespace Start_a_Town_.Components
             }
             private static void HandleSyncInsert(INetPeer net, BinaryReader r)
             {
-                var actor = net.GetNetworkObject(r.ReadInt32()) as Actor;
-                var item = net.GetNetworkObject(r.ReadInt32()) as Entity;
+                var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
+                var item = net.GetNetworkEntity(r.ReadInt32()) as Entity;
                 if (net is Server)
                     SendSyncInsert(net, actor, item);
                 else

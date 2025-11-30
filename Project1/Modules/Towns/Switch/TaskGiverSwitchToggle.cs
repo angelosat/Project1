@@ -8,12 +8,12 @@
 
             foreach (var site in sites)
             {
-                var global = site;
-                if (!actor.CanReserve(global) ||
-                    !actor.CanReach(global))
+                var target = site;
+                if (!actor.CanReserve(target) ||
+                    !actor.CanReach(target))
                     continue;
 
-                var task = new AITask(typeof(TaskBehaviorSwitchToggle), new TargetArgs(actor.Map, global));
+                var task = new AITask(typeof(TaskBehaviorSwitchToggle), target);// new TargetArgs(actor.Map, target));
                 return task;
             }
 

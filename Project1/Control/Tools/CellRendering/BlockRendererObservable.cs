@@ -8,16 +8,16 @@ namespace Start_a_Town_
 {
     public class BlockRendererObservable
     {
-        readonly ObservableHashSet<IntVec3> Cells;// = new();
+        readonly ObservableHashSet<TargetArgs> Cells;// = new();
         readonly Dictionary<int, MySpriteBatch> Slices = new();
         readonly HashSet<int> InvalidatedSlices = new();
         readonly AtlasDepthNormals.Node.Token BlockToken;
 
-        public BlockRendererObservable(ObservableHashSet<IntVec3> cells)
+        public BlockRendererObservable(ObservableHashSet<TargetArgs> cells)
             : this(Block.BlockBlueprint, cells)
         {
         }
-        public BlockRendererObservable(AtlasDepthNormals.Node.Token texToken, ObservableHashSet<IntVec3> cells)
+        public BlockRendererObservable(AtlasDepthNormals.Node.Token texToken, ObservableHashSet<TargetArgs> cells)
         {
             this.BlockToken = texToken;
             this.Cells = cells;
@@ -36,7 +36,7 @@ namespace Start_a_Town_
         {
             if (!this.InvalidatedSlices.Any())
                 return;
-            var bySlice = this.Cells.ToLookup(c => c.Z);
+            var bySlice = this.Cells.ToLookup(c => c.Global.Z);
             foreach (var z in this.InvalidatedSlices)
             {
                 if (!bySlice.Contains(z))
@@ -50,7 +50,7 @@ namespace Start_a_Town_
                         camera.DrawBlockSelectionGlobal(
                             slice,
                             this.BlockToken,
-                            cell);
+                            cell.Global);
                 }
             }
             this.InvalidatedSlices.Clear();

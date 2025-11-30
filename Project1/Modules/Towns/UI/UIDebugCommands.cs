@@ -25,7 +25,7 @@ namespace Start_a_Town_
         {
             foreach (var id in enumerable)
             {
-                var plant = Server.Instance.GetNetworkObject(id);
+                var plant = Server.Instance.GetNetworkEntity(id);
                 plant.TryGetComponent<Components.PlantComponent>(c => c.FinishGrowing(plant));
                 plant.TryGetComponent<Components.TreeComponent>(c => c.FinishGrowing(plant));
                 plant.Sync(Server.Instance);

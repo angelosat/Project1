@@ -730,7 +730,7 @@ namespace Start_a_Town_.Net
             }
         }
 
-        public GameObject GetNetworkObject(int netID)
+        public GameObject GetNetworkEntity(int netID)
         {
             this.NetworkObjects.TryGetValue(netID, out var obj);
             return obj;

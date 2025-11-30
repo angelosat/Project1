@@ -47,7 +47,7 @@ namespace Start_a_Town_
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var actorid = r.ReadInt32();
-                var actor = actorid == -1 ? null : net.GetNetworkObject(actorid) as Actor;
+                var actor = actorid == -1 ? null : net.GetNetworkEntity(actorid) as Actor;
                 if (net is Client)
                     quest.Giver = actor;
                 else

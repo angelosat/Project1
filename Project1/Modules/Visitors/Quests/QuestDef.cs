@@ -27,7 +27,7 @@ namespace Start_a_Town_
         {
             get
             {
-                return this.Manager.Net.GetNetworkObject(this.GiverID) as Actor;
+                return this.Manager.Net.GetNetworkEntity(this.GiverID) as Actor;
             }
             set
             {

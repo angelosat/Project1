@@ -71,7 +71,7 @@ namespace Start_a_Town_
 
         GameObject ProduceWithMaterialsOnTopNew(Actor actor, Vector3 global, CraftOrder order)
         {
-            var ingr = this.IngredientsUsed.ToDictionary(vk => vk.Key, vk => new ObjectAmount(actor.Net.GetNetworkObject(vk.Value.Object), vk.Value.Amount));
+            var ingr = this.IngredientsUsed.ToDictionary(vk => vk.Key, vk => new ObjectAmount(actor.Net.GetNetworkEntity(vk.Value.Object), vk.Value.Amount));
             var reaction = order.Reaction;
             var product = reaction.Products.First().Make(actor as Actor, reaction, ingr);
             product.ConsumeMaterials();

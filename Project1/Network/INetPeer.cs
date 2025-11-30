@@ -17,7 +17,7 @@ namespace Start_a_Town_
         MapBase Map { get; }
         int Speed { get; set; }
 
-        GameObject GetNetworkObject(int netID);
+        GameObject GetNetworkEntity(int netID);
         T GetNetworkObject<T>(int netID) where T : GameObject;
 
         IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> ids);

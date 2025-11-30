@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Start_a_Town_.Components;
+
+namespace Start_a_Town_
 {
     abstract class DesignationWorker
     {
@@ -24,6 +26,21 @@
         public override bool IsValid(TargetArgs target)
         {
             return target.BlockEntity?.HasComp<BlockEntityCompSwitchable>() ?? false;
+        }
+    }
+
+    class DesignationWorkerChop : DesignationWorker
+    {
+        public override bool IsValid(TargetArgs target)
+        {
+            return target.Object?.GetComponent<PlantComponent>()?.PlantProperties.ProductCutDown != null;
+        }
+    }
+    class DesignationWorkerHarvest : DesignationWorker
+    {
+        public override bool IsValid(TargetArgs target)
+        {
+            return target.GetEntity<Plant>()?.IsHarvestable ?? false;
         }
     }
 }

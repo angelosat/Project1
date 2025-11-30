@@ -211,7 +211,7 @@ namespace Start_a_Town_
                     else if(cell.Block != BlockDefOf.Designation)
                     {
                         var existingBlockRemovalDesignation = this.DetermineBlockRemovalDesignation(cell);
-                        this.Town.DesignationManager.Add(existingBlockRemovalDesignation, pos);
+                        this.Town.DesignationManager.Add(existingBlockRemovalDesignation, new TargetArgs(pos));
                         this.AddPendingDesignation(pos, args.Orientation, product);
                     }
                 }

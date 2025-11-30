@@ -24,7 +24,7 @@ namespace Start_a_Town_
             {
                 var server = net as Server;
                 var player = server.GetPlayer(r.ReadInt32());
-                var actor = server.GetNetworkObject(r.ReadInt32()) as Actor;
+                var actor = server.GetNetworkEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 var job = actor.GetJob(jobDef);
                 job.Read(r);
@@ -60,7 +60,7 @@ namespace Start_a_Town_
             private static void HandleLaborToggle(INetPeer net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
-                var actor = net.GetNetworkObject(r.ReadInt32()) as Actor;
+                var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 if (net is Client)
                 {
@@ -82,7 +82,7 @@ namespace Start_a_Town_
             {
                 var client = net as Client;
                 var player = client.GetPlayer(r.ReadInt32());
-                var actor = client.GetNetworkObject(r.ReadInt32()) as Actor;
+                var actor = client.GetNetworkEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 var job = actor.GetJob(jobDef);
                 job.Read(r);
@@ -167,7 +167,7 @@ namespace Start_a_Town_
                 }, 0);
             }
             var net = this.Town.Net;
-            var actors = this.Town.Townies.Select(id => net.GetNetworkObject(id) as Actor);
+            var actors = this.Town.Townies.Select(id => net.GetNetworkEntity(id) as Actor);
             tableAuto.AddItems(actors);
             tableManual.AddItems(actors);
 

@@ -33,7 +33,7 @@ namespace Start_a_Town_
             {
                 var client = net as Client;
                 var actorID = r.ReadInt32();
-                var actor = client.GetNetworkObject(actorID) as Actor;
+                var actor = client.GetNetworkEntity(actorID) as Actor;
                 var world = client.Map.World as StaticWorld;
                 world.Population.RegisterVisitor(actor);
             }
@@ -42,7 +42,7 @@ namespace Start_a_Town_
                 if (net is Server)
                     throw new Exception();
                 var actorID = r.ReadInt32();
-                var actor = net.GetNetworkObject(actorID) as Actor;
+                var actor = net.GetNetworkEntity(actorID) as Actor;
                 ReportVisit(net, actor);
             }
 

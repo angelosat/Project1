@@ -28,7 +28,7 @@ namespace Start_a_Town_
         {
             var list = r.ReadListInt();
             foreach (var id in list)
-                net.GetNetworkObject(id).ToggleForbidden();
+                net.GetNetworkEntity(id).ToggleForbidden();
             if (net is Server)
                 Send(net, list);
         }

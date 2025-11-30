@@ -22,8 +22,8 @@ namespace Start_a_Town_
         {
             var actorID = r.ReadInt32();
             var itemID = r.ReadInt32();
-            var item = net.GetNetworkObject(itemID);
-            var actor = net.GetNetworkObject(actorID) as Actor;
+            var item = net.GetNetworkEntity(itemID);
+            var actor = net.GetNetworkEntity(actorID) as Actor;
             actor.Equip(item);
             if (net is Server)
                 Send(net, actorID, itemID);

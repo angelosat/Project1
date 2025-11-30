@@ -47,7 +47,7 @@ namespace Start_a_Town_
             static void ReceiveSpawnEntity(INetPeer net, BinaryReader r)
             {
                 var client = net as Client;
-                var actor = client.GetNetworkObject(r.ReadInt32());
+                var actor = client.GetNetworkEntity(r.ReadInt32());
                 var global = r.ReadVector3();
                 var velocity = r.ReadVector3();
                 var map = client.Map;
@@ -136,7 +136,7 @@ namespace Start_a_Town_
 
         internal bool IsDesignation(IntVec3 global)
         {
-            return this.Town.DesignationManager.IsDesignation(global);
+            return this.Town.DesignationManager.IsDesignation(new TargetArgs(this, global));
         }
 
         public abstract int GetMaxHeight();

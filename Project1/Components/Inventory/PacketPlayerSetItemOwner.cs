@@ -22,7 +22,7 @@ namespace Start_a_Town_
         {
             var itemID = r.ReadInt32();
             var ownerID = r.ReadInt32();
-            var item = net.GetNetworkObject(itemID);
+            var item = net.GetNetworkEntity(itemID);
             
             item.SetOwner(ownerID);
          

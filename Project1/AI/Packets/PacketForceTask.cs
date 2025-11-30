@@ -23,7 +23,7 @@ namespace Start_a_Town_
         }
         static void Receive(INetPeer net, BinaryReader r)
         {
-            var actor = net.GetNetworkObject(r.ReadInt32()) as Actor;
+            var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
             var typeName = r.ReadString();
             var taskGiver = Activator.CreateInstance(Type.GetType(typeName)) as TaskGiver;
             var target = TargetArgs.Read(actor.Map, r);

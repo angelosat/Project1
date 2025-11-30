@@ -200,7 +200,7 @@ namespace Start_a_Town_
         {
             var plID = r.ReadInt32();
             var actorID = r.ReadInt32();
-            var actor = net.GetNetworkObject(actorID);
+            var actor = net.GetNetworkEntity(actorID);
             actor.Town.ToggleAgent(actor);
             if(net is Server)
             {
@@ -233,7 +233,7 @@ namespace Start_a_Town_
                     break;
 
                 case Message.Types.ItemOwnerChanged:
-                    item = parent.Net.GetNetworkObject((int)e.Parameters[0]) as GameObject;
+                    item = parent.Net.GetNetworkEntity((int)e.Parameters[0]) as GameObject;
                     var currentOwner = item.GetOwner();
                     if (currentOwner == parent.RefID)
                         Possesions.Add(item.RefID);

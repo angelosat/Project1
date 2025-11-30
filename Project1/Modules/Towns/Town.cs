@@ -26,7 +26,7 @@ namespace Start_a_Town_
         public ObservableHashSet<int> Townies = new();
         public IEnumerable<Actor> GetAgents()
         {
-            return this.Townies.Select(id => this.Map.Net.GetNetworkObject(id) as Actor);
+            return this.Townies.Select(id => this.Map.Net.GetNetworkEntity(id) as Actor);
         }
         public GameObject GetNpc(Guid guid)
         {
@@ -108,7 +108,7 @@ namespace Start_a_Town_
         public void Update()
         {
             foreach (var agent in this.Townies.ToArray())
-                if (this.Net.GetNetworkObject(agent) == null)
+                if (this.Net.GetNetworkEntity(agent) == null)
                     this.Townies.Remove(agent);
             foreach (var comp in this.TownComponents)
                 comp.Update();

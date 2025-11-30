@@ -21,7 +21,7 @@ namespace Start_a_Town_.Components.Needs
         }
         static public void Receive(INetPeer net, BinaryReader r)
         {
-            var entity = net.GetNetworkObject(r.ReadInt32());
+            var entity = net.GetNetworkEntity(r.ReadInt32());
             var needName = r.ReadString();
             var needVal = r.ReadSingle();
             NeedsComponent.ModifyNeed(entity, needName, needVal);

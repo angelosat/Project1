@@ -85,7 +85,7 @@ namespace Start_a_Town_
         internal Actor GetNextQuestReceiver(Actor giver)
         {
             var id = this.QuestGiverProperties[giver.RefID].GetNextQuestReceiverID();
-            return id != -1 ? this.Town.Net.GetNetworkObject(id) as Actor : null;
+            return id != -1 ? this.Town.Net.GetNetworkEntity(id) as Actor : null;
         }
         public IEnumerable<Actor> GetAllVisitorsOnQuest(QuestDef quest)
         {

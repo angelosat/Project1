@@ -347,7 +347,7 @@ namespace Start_a_Town_
         internal IEnumerable<Actor> GetWorkers()
         {
             foreach (var actor in this.Workers)
-                yield return this.Town.Net.GetNetworkObject(actor) as Actor;
+                yield return this.Town.Net.GetNetworkEntity(actor) as Actor;
         }
 
         internal virtual void OnBlocksChanged(IEnumerable<IntVec3> positions) { }
@@ -471,7 +471,7 @@ namespace Start_a_Town_
                         };
                     });
                 }
-                table.AddItems(tav.Workers.Select(tav.Net.GetNetworkObject).Cast<Actor>());
+                table.AddItems(tav.Workers.Select(tav.Net.GetNetworkEntity).Cast<Actor>());
             });
 
             box.AddControlsVertically(
@@ -545,7 +545,7 @@ namespace Start_a_Town_
                 }
             }
             var net = this.Town.Net;
-            var actors = this.Town.Townies.Select(id => net.GetNetworkObject(id) as Actor);
+            var actors = this.Town.Townies.Select(id => net.GetNetworkEntity(id) as Actor);
             tableAuto.AddItems(actors);
             tableManual.AddItems(actors);
 

@@ -19,7 +19,7 @@ namespace Start_a_Town_.Modules.AI.Net.Packets
         }
         static public void Receive(INetPeer net, BinaryReader r)
         {
-            var entity = net.GetNetworkObject(r.ReadInt32()) as Actor;
+            var entity = net.GetNetworkEntity(r.ReadInt32()) as Actor;
             var entry = r.ReadString();
             entity.Log.Write(entry);
         }

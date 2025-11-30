@@ -53,7 +53,7 @@ namespace Start_a_Town_
         {
             if (parent.Net == null)
                 return;
-            var owner = parent.Net.GetNetworkObject(this.OwnerRef);
+            var owner = parent.Net.GetNetworkEntity(this.OwnerRef);
             //tooltip.AddControlsBottomLeft(new UI.Label("Owner: " + (owner != null ? owner.Name : "<None>"), fill: Color.Lime));
             tooltip.AddControlsBottomLeft(UI.Label.ParseWrap("Owner: ", this.Owner));
         }
@@ -84,7 +84,7 @@ namespace Start_a_Town_
             var setownercombo = new ComboBoxNewNew<GameObject>(150, "Owner",
                 A => A?.Name ?? "None",
                 o => PacketPlayerSetItemOwner.Send(Net.Client.Instance, gameObject.RefID, o != null ? o.RefID : -1),
-                () => comp.OwnerRef == -1 ? null : gameObject.Net.GetNetworkObject(comp.OwnerRef),
+                () => comp.OwnerRef == -1 ? null : gameObject.Net.GetNetworkEntity(comp.OwnerRef),
                 () => alllist.Prepend(null));
 
             setownercombo.OnGameEventAction = a =>

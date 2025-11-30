@@ -23,7 +23,7 @@ namespace Start_a_Town_
         internal static void Receive(INetPeer net, BinaryReader r)
         {
             var id = r.ReadInt32();
-            var entity = net.GetNetworkObject(id) as Actor;
+            var entity = net.GetNetworkEntity(id) as Actor;
             var toggle = r.ReadBoolean();
             entity.WalkToggle(toggle);
 

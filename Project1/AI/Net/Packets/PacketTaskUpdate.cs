@@ -20,7 +20,7 @@ namespace Start_a_Town_
         }
         static public void Receive(INetPeer net, BinaryReader r)
         {
-            var entity = net.GetNetworkObject(r.ReadInt32());
+            var entity = net.GetNetworkEntity(r.ReadInt32());
             if (entity == null)
                 return;
             var taskString = r.ReadString();

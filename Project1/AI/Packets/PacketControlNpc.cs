@@ -30,7 +30,7 @@ namespace Start_a_Town_
         {
             var player = net.GetPlayer(r.ReadInt32());
             var entityid = r.ReadInt32();
-            var nextEntity = entityid != -1 ? net.GetNetworkObject(entityid) as Actor : null;
+            var nextEntity = entityid != -1 ? net.GetNetworkEntity(entityid) as Actor : null;
             if (nextEntity?.IsPlayerControlled ?? false)
                 return;
             var lastEntity = player.ControllingEntity;

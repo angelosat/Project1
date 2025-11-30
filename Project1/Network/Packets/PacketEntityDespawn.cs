@@ -23,7 +23,7 @@ namespace Start_a_Town_
         static public void Receive(INetPeer net, BinaryReader r)
         {
             var client = net as Client;
-            var actor = client.GetNetworkObject(r.ReadInt32()) as Actor;
+            var actor = client.GetNetworkEntity(r.ReadInt32()) as Actor;
             var map = client.Map as StaticMap;
             map.Despawn(actor);
         }

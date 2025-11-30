@@ -61,7 +61,7 @@ namespace Start_a_Town_.Crafting
                 return;
             }
             var actor = this.Actor;
-            var ingr = this.PlacedObjects.Select(o => new ObjectAmount(actor.Net.GetNetworkObject(o.Object), o.Amount)).ToList();
+            var ingr = this.PlacedObjects.Select(o => new ObjectAmount(actor.Net.GetNetworkEntity(o.Object), o.Amount)).ToList();
             this.Product = this.Order.Reaction.Products.First().Make(actor, this.Order.Reaction, ingr);
             this._progress.Max = this.Product.WorkAmount;
         }

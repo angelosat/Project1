@@ -20,14 +20,15 @@ namespace Start_a_Town_
             //if (!jobs.Any())
             //    return TaskHelper.TryStoreEquipped(actor, GearType.Mainhand); // WHY DO THIS HERE? i clean up in behaviorhandletask
 
-            foreach (var job in jobs) // TODO: check if another npc is standing on the target block to be digged
+            foreach (var target in jobs) // TODO: check if another npc is standing on the target block to be digged
             {
-                if (!actor.CanReserve(job))
+                var pos = (IntVec3)target.Global;
+                if (!actor.CanReserve(target))
                     continue;
-                if (!actor.CanReach(job))
+                if (!actor.CanReach(target))
                     continue;
            
-                if(TaskHelper.TryHaulAside(actor, job.Above, out var haulAsideTask))
+                if(TaskHelper.TryHaulAside(actor, pos.Above, out var haulAsideTask))
                 {
                     if (haulAsideTask != null)
                         return haulAsideTask;
@@ -35,14 +36,14 @@ namespace Start_a_Town_
                 else
                     continue;
 
-                var block = map.GetBlock(job);
-                var material = map.GetMaterial(job);
+                var block = map.GetBlock(pos);
+                var material = map.GetMaterial(pos);
                 var skill = material.Type.SkillToExtract;
 
                 if (skill == null)
                     throw new Exception();
 
-                var task = new AITask(TaskDefOf.Digging, new TargetArgs(actor.Map, job));
+                var task = new AITask(TaskDefOf.Digging, target);// new TargetArgs(actor.Map, target));
                 FindTool(actor, task, skill);
 
                 return task;

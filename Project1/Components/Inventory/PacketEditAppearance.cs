@@ -21,7 +21,7 @@ namespace Start_a_Town_
         private static void Receive(INetPeer net, BinaryReader r)
         {
             var actorID = r.ReadInt32();
-            var actor = net.GetNetworkObject(actorID) as Actor;
+            var actor = net.GetNetworkEntity(actorID) as Actor;
             var colors = new CharacterColors(r);
             actor.Sprite.Customization = colors;
             if (net is Server)

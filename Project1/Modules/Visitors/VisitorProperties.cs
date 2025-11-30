@@ -24,7 +24,7 @@ namespace Start_a_Town_
         {
             get
             {
-                return this.CachedActor ??= this.World.Map.Net.GetNetworkObject(this.ActorID) as Actor;
+                return this.CachedActor ??= this.World.Map.Net.GetNetworkEntity(this.ActorID) as Actor;
             }
             set
             {
@@ -37,7 +37,7 @@ namespace Start_a_Town_
         public bool Discovered;
         public void ResolveReferences()
         {
-            this.CachedActor = this.World.Map.Net.GetNetworkObject(this.ActorID) as Actor;
+            this.CachedActor = this.World.Map.Net.GetNetworkEntity(this.ActorID) as Actor;
         }
         
         //public float TownApprovalRating;

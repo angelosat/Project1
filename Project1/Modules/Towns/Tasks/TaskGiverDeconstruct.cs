@@ -7,11 +7,12 @@
             if (!actor.HasJob(JobDefOf.Builder))
                 return null;
             var allPositions = actor.Map.Town.DesignationManager.GetDesignations(DesignationDefOf.Deconstruct);
-            foreach(var pos in allPositions)
+            foreach(var target in allPositions)
             {
-                if (!actor.CanReserve(pos))
+                var pos = (IntVec3)target.Global;
+                if (!actor.CanReserve(target))
                     continue;
-                if (!actor.CanReach(pos))
+                if (!actor.CanReach(target))
                     continue;
                 if (!actor.Map.IsCellEmptyNew(pos.Above))
                     continue;
@@ -19,7 +20,7 @@
                 {
                     BehaviorType = typeof(TaskBehaviorDeconstruct),
                 };
-                task.SetTarget(TaskBehaviorDeconstruct.DeconstructInd, new TargetArgs(actor.Map, pos));
+                task.SetTarget(TaskBehaviorDeconstruct.DeconstructInd, target);// new TargetArgs(actor.Map, target));
                 FindTool(actor, task, JobDefOf.Builder);
                 return task;
             }

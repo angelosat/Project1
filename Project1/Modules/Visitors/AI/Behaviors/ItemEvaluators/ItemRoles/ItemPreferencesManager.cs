@@ -176,7 +176,7 @@ namespace Start_a_Town_
             var items = actor.Inventory.GetItems();
             foreach (var i in this.ToDiscard.ToArray())
             {
-                var item = net.GetNetworkObject(i) as Entity;
+                var item = net.GetNetworkEntity(i) as Entity;
                 if (!items.Contains(item))
                 {
                     this.RemoveJunk(item);

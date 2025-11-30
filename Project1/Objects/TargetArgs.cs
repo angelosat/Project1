@@ -75,9 +75,9 @@ namespace Start_a_Town_
                     if (this.EntityID == -1)
                         throw new Exception();
                     if (this.CachedObject == null)
-                        this.CachedObject = this.Map.Net.GetNetworkObject(this.EntityID);
+                        this.CachedObject = this.Map.Net.GetNetworkEntity(this.EntityID);
                 }
-               
+
                 else if (this.Type == TargetType.Slot || this.Type == TargetType.BlockEntitySlot)
                 {
                     if (this.CachedObject == null)
@@ -93,7 +93,7 @@ namespace Start_a_Town_
         int ParentID, ContainerID, SlotID;
         string ContainerName;
         GameObjectSlot _Slot;
-        public GameObjectSlot Slot 
+        public GameObjectSlot Slot
         {
             get
             {
@@ -104,7 +104,7 @@ namespace Start_a_Town_
                 switch (this.Type)
                 {
                     case TargetType.Slot:
-                        GameObject parent = this.Network.GetNetworkObject(this.ParentID);
+                        GameObject parent = this.Network.GetNetworkEntity(this.ParentID);
                         return parent.GetChild(this.ContainerID, this.SlotID);
 
                     case TargetType.BlockEntitySlot:
@@ -207,7 +207,7 @@ namespace Start_a_Town_
             this.Type = TargetType.Direction;
             this.Direction = direction;
         }
-        
+
         public TargetArgs Clone()
         {
             var copy = new TargetArgs
@@ -257,7 +257,7 @@ namespace Start_a_Town_
             switch (this.Type)
             {
                 case TargetType.Slot:
-                    
+
                     w.Write(this.Slot.Parent.RefID);
                     w.Write(this.Slot.ID);
                     w.Write(this.Slot.ContainerNew.ID);
@@ -270,7 +270,7 @@ namespace Start_a_Town_
                     return this;
 
                 case TargetType.Entity:
-               
+
                     w.Write(this.EntityID);
                     return this;
 
@@ -350,7 +350,7 @@ namespace Start_a_Town_
 
                 case TargetType.Slot:
                     int parentID = reader.ReadInt32();
-                    GameObject parent = objects.GetNetworkObject(parentID);
+                    GameObject parent = objects.GetNetworkEntity(parentID);
                     byte slotID = reader.ReadByte();
                     int containerID = reader.ReadInt32();
                     var slot = parent.GetChild(containerID, slotID);
@@ -382,7 +382,7 @@ namespace Start_a_Town_
                 case TargetType.Entity:
                     int netID = reader.ReadInt32();
                     return new TargetArgs(map, netID);
-               
+
                 case TargetType.Position:
                     var t = new TargetArgs(reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());
                     t.Map = map;
@@ -390,7 +390,7 @@ namespace Start_a_Town_
 
                 case TargetType.Slot:
                     int parentID = reader.ReadInt32();
-                    GameObject parent = map.Net.GetNetworkObject(parentID);
+                    GameObject parent = map.Net.GetNetworkEntity(parentID);
                     byte slotID = reader.ReadByte();
                     int containerID = reader.ReadInt32();
                     var slot = parent.GetChild(containerID, slotID);
@@ -653,7 +653,7 @@ namespace Start_a_Town_
                 return false;
             if (this.Type == TargetType.Entity && this.Object != null && this.Object == target.Object)
                 return true;
-            else if (this.Type == TargetType.Position && this.Global == target.Global 
+            else if (this.Type == TargetType.Position && this.Global == target.Global
                 && this.Face == target.Face) // newly added
                 return true;
             return false;
@@ -691,7 +691,7 @@ namespace Start_a_Town_
                     return "";
             }
         }
-        
+
         public IEnumerable<(string name, Action action)> GetInfoTabs()
         {
             switch (this.Type)
@@ -702,7 +702,7 @@ namespace Start_a_Town_
                 case TargetType.Position:
                     foreach (var i in this.Block.GetInfoTabs())
                         yield return i;
-                        break;
+                    break;
 
                 default:
                     yield break;
@@ -780,9 +780,13 @@ namespace Start_a_Town_
             }
         }
         public bool IsForbidden => this.Type == TargetType.Entity && this.Object.IsForbidden;
-           
+
         public bool HasObject { get { return this.Object != null; } }
 
+        public T GetEntity<T>() where T : GameObject
+        {
+            return (T)this.Object;
+        }
 
         public static implicit operator GameObject(TargetArgs b) => b.Object;
         public static implicit operator Entity(TargetArgs b) => b.Object as Entity;
@@ -799,7 +803,7 @@ namespace Start_a_Town_
 
         public IEnumerable<Control> GetSelectionDetails()
         {
-            switch(this.Type)
+            switch (this.Type)
             {
                 case TargetType.Entity:
                     foreach (var i in this.Object.GetSelectionDetails())
@@ -811,6 +815,26 @@ namespace Start_a_Town_
                     yield break;
             }
         }
+        public override bool Equals(object obj)
+        {
+            if (obj is not TargetArgs o) return false;
+            if (this.Type != o.Type) return false;
 
+            return Type switch
+            {
+                TargetType.Entity => this.EntityID == o.EntityID,
+                TargetType.Position => this.Global == o.Global,
+                TargetType.Direction => this.Direction == o.Direction,
+                _ => false
+            };
+        }
+        public override int GetHashCode() =>
+        Type switch
+        {
+            TargetType.Entity => HashCode.Combine((int)Type, this.EntityID),
+            TargetType.Position => HashCode.Combine((int)Type, this.Global.X, this.Global.Y, this.Global.Z),
+            TargetType.Direction => HashCode.Combine((int)Type, this.Direction.X, this.Direction.Y),
+            _ => (int)Type
+        };
     }
 }

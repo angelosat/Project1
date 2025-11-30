@@ -1150,7 +1150,7 @@ namespace Start_a_Town_
         }
         internal List<GameObject> GetPossesions()
         {
-            return NpcComponent.GetPossesions(this).Select(id => this.Net.GetNetworkObject(id)).ToList();
+            return NpcComponent.GetPossesions(this).Select(id => this.Net.GetNetworkEntity(id)).ToList();
         }
 
         internal Need GetNeed(NeedDef def)
@@ -1520,7 +1520,7 @@ namespace Start_a_Town_
         }
         private static void SyncSetStacksize(INetPeer net, BinaryReader r)
         {
-            var obj = net.GetNetworkObject(r.ReadInt32());
+            var obj = net.GetNetworkEntity(r.ReadInt32());
             var value = r.ReadInt32();
             if (net is Client)
                 obj.SetStackSize(value);
@@ -1553,8 +1553,8 @@ namespace Start_a_Town_
             if (net is Server)
                 throw new Exception();
 
-            var master = net.GetNetworkObject(r.ReadInt32());
-            var slave = net.GetNetworkObject(r.ReadInt32());
+            var master = net.GetNetworkEntity(r.ReadInt32());
+            var slave = net.GetNetworkEntity(r.ReadInt32());
             master.Absorb(slave);
         }
 

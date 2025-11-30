@@ -594,7 +594,7 @@ namespace Start_a_Town_.Net
                         if (stacksize > 0)
                         {
                             var id = r.ReadInt32();
-                            slot.Object = Instance.GetNetworkObject(id);
+                            slot.Object = Instance.GetNetworkEntity(id);
                         }
                         slot.StackSize = stacksize;
                     }
@@ -927,7 +927,7 @@ namespace Start_a_Town_.Net
             return obj;
         }
 
-        public GameObject GetNetworkObject(int netID)
+        public GameObject GetNetworkEntity(int netID)
         {
             this.NetworkObjects.TryGetValue(netID, out var obj);
             return obj;
@@ -1018,7 +1018,7 @@ namespace Start_a_Town_.Net
                 //var previousObjState = prev.ObjectSnapshots.Find(o => o.Object == objSnapshot.Object);
                 //if (previousObjState is null)
                 //    continue;
-                var entity = this.GetNetworkObject(objSnapshot.RefID);
+                var entity = this.GetNetworkEntity(objSnapshot.RefID);
                 entity.SetPosition(objSnapshot.Position);
                 entity.Velocity = objSnapshot.Velocity;
                 entity.Direction = objSnapshot.Orientation;

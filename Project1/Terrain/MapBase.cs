@@ -103,10 +103,6 @@ namespace Start_a_Town_
             Shadow = Game1.Instance.Content.Load<Texture2D>("Graphics/shadow");
         }
 
-        internal bool IsDeconstructible(IntVec3 global)
-        {
-            return this.GetBlock(global).IsDeconstructible;
-        }
 
         public Vector2 Coordinates;
         public abstract string GetName();

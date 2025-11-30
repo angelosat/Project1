@@ -21,6 +21,7 @@ namespace Start_a_Town_
         DesignationWorker _cachedWorker;
         DesignationWorker Worker => _cachedWorker ??= (DesignationWorker)Activator.CreateInstance(this.WorkerClass);
 
-        public bool IsValid(MapBase map, IntVec3 global) => this.Worker.IsValid(map, global);
+        public bool IsValid(MapBase map, IntVec3 global) => this.IsValid(new TargetArgs(map, global));// this.Worker.IsValid(new TargetArgs(map, global));
+        public bool IsValid(TargetArgs target) => this.Worker.IsValid(target);
     }
 }

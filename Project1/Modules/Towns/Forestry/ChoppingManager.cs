@@ -11,12 +11,13 @@ namespace Start_a_Town_
 {
     public sealed class ChoppingManager : TownComponent
     {
+        readonly Dictionary<int, int> DesignationTypesRegistry = [];
         public enum Types { Chopping, Foraging }
         public static readonly Icon ChopIcon = new(ItemContent.AxeFull);
         public static readonly Icon ForageIcon = new(ItemContent.BerriesFull);
 
         public override string Name => "Forestry";
-        readonly HashSet<int> QueuedForaging = new();
+        readonly HashSet<int> QueuedForaging = [];
 
         public List<GameObject> GetTrees()
         {
@@ -28,7 +29,7 @@ namespace Start_a_Town_
             var list = this.QueuedForaging.Select(id => this.Town.Map.Net.GetNetworkObject(id)).ToList();
             return list;
         }
-        public HashSet<int> ChoppingTasks = new();
+        public HashSet<int> ChoppingTasks = [];
 
         public ChoppingManager(Town town)
         {
@@ -200,7 +201,10 @@ namespace Start_a_Town_
         {
             PacketEntityDesignation.Send(Client.Instance, (int)Types.Foraging, targets, true);
         }
-
+        static void AddGeneric(List<TargetArgs> targets)
+        {
+            PacketEntityDesignation.Send(Client.Instance, (int)Types.Foraging, targets, true);
+        }
         internal override void UpdateQuickButtons()
         {
             if (this.Town.Net is Server)
@@ -241,7 +245,6 @@ namespace Start_a_Town_
 
         private static bool IsChoppable(GameObject o)
         {
-            //return o.HasComponent<PlantComponent>();
             return o.GetComponent<PlantComponent>()?.PlantProperties.ProductCutDown != null;
         }
     }

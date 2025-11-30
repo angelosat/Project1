@@ -2,35 +2,28 @@
 {
     abstract class DesignationWorker
     {
-        public abstract bool IsValid(MapBase map, IntVec3 global);
+        public abstract bool IsValid(TargetArgs target);
     }
-
+    
     class DesignationWorkerDeconstruct : DesignationWorker
     {
-        public override bool IsValid(MapBase map, IntVec3 global)
+        public override bool IsValid(TargetArgs target)
         {
-            return map.IsDeconstructible(global);
+            return target.Block?.IsDeconstructible ?? false;
         }
     }
     class DesignationWorkerMine : DesignationWorker
     {
-        public override bool IsValid(MapBase map, IntVec3 global)
+        public override bool IsValid(TargetArgs target)
         {
-            return map.GetBlock(global).IsMinable;
+            return target.Block?.IsMinable ?? false;
         }
     }
     class DesignationWorkerSwitch : DesignationWorker
     {
-        public override bool IsValid(MapBase map, IntVec3 global)
+        public override bool IsValid(TargetArgs target)
         {
-            return map.GetBlockEntity(global)?.HasComp<BlockEntityCompSwitchable>() ?? false;
-        }
-    }
-    class DesignationWorkerRemove : DesignationWorker
-    {
-        public override bool IsValid(MapBase map, IntVec3 global)
-        {
-            return true;
+            return target.BlockEntity?.HasComp<BlockEntityCompSwitchable>() ?? false;
         }
     }
 }

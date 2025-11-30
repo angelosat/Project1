@@ -7,7 +7,7 @@ namespace Start_a_Town_
         protected override AITask TryAssignTask(Actor actor)
         {
             // TODO associate labors with tool, if labor is enabled, look for and store tools in inventory. if labor is disabled, remove unnecessary tools from inventory
-            // TODO flag jobs for which a tool is already aquired so as to not recheck everything all the time
+            // TODO flag jobs for which a tool is already acquired so as to not recheck everything all the time
             if (!actor.IsCitizen)
                 return null; // TODO instead of doing this, check if the tool is claimable
             if (DropUnnecessaryItems(actor) is AITask task)

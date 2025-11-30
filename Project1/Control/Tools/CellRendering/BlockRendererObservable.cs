@@ -9,9 +9,9 @@ namespace Start_a_Town_
 {
     public class BlockRendererObservable
     {
-        readonly ObservableHashSet<TargetArgs> Cells;// = new();
-        readonly Dictionary<int, MySpriteBatch> Slices = new();
-        readonly HashSet<int> InvalidatedSlices = new();
+        readonly ObservableHashSet<TargetArgs> Cells;
+        readonly Dictionary<int, MySpriteBatch> Slices = [];
+        readonly HashSet<int> InvalidatedSlices = [];
         readonly AtlasDepthNormals.Node.Token BlockToken;
 
         public BlockRendererObservable(ObservableHashSet<TargetArgs> cells)

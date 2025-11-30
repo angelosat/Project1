@@ -28,17 +28,18 @@ namespace Start_a_Town_
             var strem = net.GetOutgoingStream();
             strem.Write(PckTypeNew);
             strem.Write(templateID);
-            var data = entity.Serialize();
-            strem.Write(data.Length);
-            strem.Write(data);
+            entity.Write(strem);
+            //var data = entity.Serialize();
+            //strem.Write(data.Length);
+            //strem.Write(data);
         }
         static public void ReceiveTemplate(INetPeer net, BinaryReader r)
         {
             if (net is Server)
                 throw new Exception();
             var templateID = r.ReadInt32();
-            var length = r.ReadInt32();
-            var data = r.ReadBytes(length);
+            //var length = r.ReadInt32();
+            //var data = r.ReadBytes(length);
             //var entity = Network.Deserialize(data, reader=> GameObject.CloneTemplate(templateID, reader));
             var entity = GameObject.CloneTemplate(templateID, r);
             net.Instantiate(entity);

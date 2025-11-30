@@ -3,10 +3,12 @@
 ## gui
 - xml driven
 ## ai
+### town members
+- they try to keep the tools associated with their active labors in their inventory. when a labor is toggled off, they drop the tool or go and deposit it in a stockpile if it's not required by any other labors. or in a container designated as their own storage for their owned items
 ## content
 ### npc visitors (players)
 - npcs can die and lose their equipment
-  - the lost equipment still exists in the world, maybe persistent enemies can steal it 
+  - the lost equipment still exists in the world, maybe the enemy that killed them steals it
 - npc equipment loses durability, when they break they come back to town to buy new
 - npc chance to visit the town increases as:
   - their equipment loses durability or breaks, so they need to repair or buy new

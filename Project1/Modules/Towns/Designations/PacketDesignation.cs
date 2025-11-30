@@ -42,7 +42,6 @@ namespace Start_a_Town_
         {
             var remove = r.ReadBoolean();
             var selectionType = (SelectionType)r.ReadInt32();
-            //List<IntVec3> positions;
             IEnumerable<TargetArgs> targetList;
             DesignationDef designation;
             if (selectionType == SelectionType.Box)
@@ -53,13 +52,11 @@ namespace Start_a_Town_
                 designation = remove ? null : r.ReadDef<DesignationDef>();
                 if (net is Server)
                     Send(net, remove, begin, end, designation);
-                //net.EventOccured(Components.Message.Types.ZoneDesignation, designation, positions, remove);
-                targetList = positions.Select(p => new TargetArgs(p));
+                targetList = positions.Select(p => new TargetArgs(net.Map, p));
             }
             else if (selectionType == SelectionType.List)
             {
-                targetList = r.ReadListTargets();
-                //positions = list.Select(t => (IntVec3)t.Global).ToList();
+                targetList = r.ReadListTargets(net);
                 designation = remove ? null : r.ReadDef<DesignationDef>();
                 if (net is Server)
                     Send(net, remove, targetList, designation);
@@ -67,8 +64,6 @@ namespace Start_a_Town_
             else
                 throw new Exception();
             net.Map.Town.DesignationManager.Add(designation, targetList, remove);
-
-            //net.EventOccured(Components.Message.Types.ZoneDesignation, designation, positions, remove);
         }
     }
 }

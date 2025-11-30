@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Start_a_Town_
@@ -476,13 +477,23 @@ namespace Start_a_Town_
             foreach (var i in list)
                 i.Write(w);
         }
-        public static List<TargetArgs> ReadListTargets(this BinaryReader r)
+        public static void Write(this BinaryWriter w, IEnumerable<TargetArgs> list)
+        {
+            w.Write(list.ToList());
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="net">pass the net peer to resolve targets initially</param>
+        /// <returns></returns>
+        public static List<TargetArgs> ReadListTargets(this BinaryReader r, INetPeer net = null)
         {
             var count = r.ReadInt32();
             var list = new List<TargetArgs>(count);
             for (int i = 0; i < count; i++)
             {
-                list.Add(TargetArgs.Read((INetPeer)null, r));
+                list.Add(TargetArgs.Read(net, r));
             }
             return list;
         }

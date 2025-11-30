@@ -8,10 +8,12 @@ namespace Start_a_Town_
         {
             if (!actor.HasJob(JobDefOf.Forager))
                 return null;
-            var manager = actor.Map.Town.ChoppingManager;
-            var plants = manager.GetPlants()
-                         .Where(o => actor.CanReserve(o))
-                         .OrderByReachableRegionDistance(actor);
+            //var manager = actor.Map.Town.ChoppingManager;
+            //var plants = manager.GetPlants()
+            var plants = actor.Map.Town.DesignationManager
+                .GetDesignations(DesignationDefOf.Harvest)
+                .Where(o => actor.CanReserve(o))
+                .OrderByReachableRegionDistance(actor);
             var plant = plants.FirstOrDefault();
             if (plant == null)
                 return null;

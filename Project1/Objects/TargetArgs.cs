@@ -332,7 +332,7 @@ namespace Start_a_Town_
             return tag;
         }
 
-        static public TargetArgs Read(INetPeer objects, BinaryReader reader)
+        static public TargetArgs Read(INetPeer net, BinaryReader reader)
         {
 
             TargetType type = (TargetType)reader.ReadInt32();
@@ -343,29 +343,29 @@ namespace Start_a_Town_
 
                 case TargetType.Entity:
                     int netID = reader.ReadInt32();
-                    return new TargetArgs(objects, netID);
+                    return new TargetArgs(net, netID) { Map = net.Map };
 
                 case TargetType.Position:
-                    return new TargetArgs(reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());
+                    return new TargetArgs(reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3()) { Map = net.Map };
 
                 case TargetType.Slot:
                     int parentID = reader.ReadInt32();
-                    GameObject parent = objects.GetNetworkEntity(parentID);
+                    GameObject parent = net.GetNetworkEntity(parentID);
                     byte slotID = reader.ReadByte();
                     int containerID = reader.ReadInt32();
                     var slot = parent.GetChild(containerID, slotID);
-                    return new TargetArgs(slot) { Map = objects.Map };
+                    return new TargetArgs(slot) { Map = net.Map };
 
                 case TargetType.BlockEntitySlot:
                     var vector3 = reader.ReadVector3();
-                    var blockentity = objects.Map.GetBlockEntity(vector3);
+                    var blockentity = net.Map.GetBlockEntity(vector3);
                     var containerName = reader.ReadString();
                     var slotid = reader.ReadByte();
                     var s = blockentity.GetChild(containerName, slotid);
-                    return new TargetArgs(objects.Map, vector3, s) { Map = objects.Map };
+                    return new TargetArgs(net.Map, vector3, s) { Map = net.Map };
 
                 case TargetType.Direction:
-                    return new TargetArgs(reader.ReadVector2()) { Map = objects.Map };
+                    return new TargetArgs(reader.ReadVector2()) { Map = net.Map };
 
                 default:
                     throw new Exception("Invalid target type " + type.ToString());

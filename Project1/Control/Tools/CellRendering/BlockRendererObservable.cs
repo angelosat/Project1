@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Collections.Specialized;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using SharpDX.Direct3D9;
 using Start_a_Town_.Graphics;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 
 namespace Start_a_Town_
 {
@@ -26,10 +27,10 @@ namespace Start_a_Town_
         private void Cells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.OldItems is not null)
-                foreach (var z in e.OldItems.Cast<IntVec3>().Select(cell => cell.Z))
+                foreach (var z in e.OldItems.Cast<TargetArgs>().Select(cell => (int)cell.Global.Z))
                     this.InvalidatedSlices.Add(z);
             if (e.NewItems is not null)
-                foreach (var z in e.NewItems.Cast<IntVec3>().Select(cell => cell.Z))
+                foreach (var z in e.NewItems.Cast<TargetArgs>().Select(cell => (int)cell.Global.Z))
                     this.InvalidatedSlices.Add(z);
         }
         void Validate(Camera camera)

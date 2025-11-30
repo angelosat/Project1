@@ -8,8 +8,15 @@ namespace Start_a_Town_
         {
             if (!actor.HasJob(JobDefOf.Lumberjack))
                 return null;
-            var manager = actor.Map.Town.ChoppingManager;
-            var trees = manager.GetTrees()
+            //var list = this.ChoppingTasks.Select(id => this.Town.Map.Net.GetNetworkEntity(id)).ToList();
+
+            //var manager = actor.Map.Town.ChoppingManager;
+            //var trees = manager.GetTrees()
+            //    .Where(o => actor.CanReserve(o))
+            //    .OrderByReachableRegionDistance(actor);
+
+            var manager = actor.Map.Town.DesignationManager;
+            var trees = manager.GetDesignations(DesignationDefOf.Chop)
                 .Where(o => actor.CanReserve(o))
                 .OrderByReachableRegionDistance(actor);
 

@@ -37,8 +37,8 @@ namespace Start_a_Town_
         public ZoneManager ZoneManager;
         [InspectorHidden]
         public ConstructionsManager ConstructionsManager;
-        [InspectorHidden]
-        public ChoppingManager ChoppingManager;
+        //[InspectorHidden]
+        //public ChoppingManager ChoppingManager;
         [InspectorHidden]
         public DiggingManager DiggingManager;
         [InspectorHidden]
@@ -72,7 +72,7 @@ namespace Start_a_Town_
             this.Map = map;
             this.ZoneManager = new(this);
             this.ConstructionsManager = new(this);
-            this.ChoppingManager = new(this);
+            //this.ChoppingManager = new(this);
             this.DiggingManager = new(this);
             this.DesignationManager = new(this);
             this.RoomManager = new(this);
@@ -87,7 +87,7 @@ namespace Start_a_Town_
             this.TownComponents.AddRange(new TownComponent[]{
                 this.ZoneManager,
                 this.ConstructionsManager,
-                this.ChoppingManager,
+                //this.ChoppingManager,
                 this.DiggingManager,
                 this.DesignationManager,
                 this.RoomManager,

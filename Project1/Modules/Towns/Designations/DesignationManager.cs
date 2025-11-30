@@ -109,7 +109,7 @@ namespace Start_a_Town_
         {
             this.Add(designation, [position], remove);
         }
-        internal void Add(DesignationDef designation, List<TargetArgs> positions, bool remove)
+        internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool remove)
         {
             if (designation is null)
             {
@@ -242,21 +242,21 @@ namespace Start_a_Town_
         {
             if (this.Town.Net is Server)
                 return;
-            var selectedCells = SelectionManager.GetSelectedCells().Select(i => new TargetArgs(this.Town.Map, i));
-            var fromblockentities = selectedCells.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => new TargetArgs(b.OriginGlobal));
-            selectedCells = selectedCells.Concat(fromblockentities).Distinct();
+            var selectedTargets = SelectionManager.Selected;
+            var fromblockentities = selectedTargets.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => new TargetArgs(b.OriginGlobal));
+            selectedTargets = selectedTargets.Concat(fromblockentities).Distinct();
 
-            var areTask = selectedCells.Where(e => this.Designations.Values.Any(t => t.Contains(e)));// new TargetArgs(e))));
+            var areTask = selectedTargets.Where(e => this.Designations.Values.Any(t => t.Contains(e)));// new TargetArgs(e))));
             foreach (var d in this.Designations) // need to handle construction designations differently because of multi-celled designations 
             {
-                var selectedDesignations = d.Value.Intersect(selectedCells);
+                var selectedDesignations = d.Value.Intersect(selectedTargets);
                 if (selectedDesignations.Any())
-                    SelectionManager.AddButton(d.Key.IconRemove, cancel, selectedDesignations);//.Select(i => new TargetArgs(this.Map, i)));
+                    SelectionManager.AddButton(d.Key.IconRemove, remove, selectedDesignations);
                 else
                     SelectionManager.RemoveButton(d.Key.IconRemove);
             }
 
-            var areNotTask = selectedCells.Except(areTask).Where(t =>
+            var areNotTask = selectedTargets.Except(areTask).Where(t =>
                 this.AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
 
             var splits = this.AllDesignationDefs.ToDictionary(d => d, d => areNotTask.FindAll(t => d.IsValid(t)));
@@ -265,12 +265,16 @@ namespace Start_a_Town_
                 if (!splits.TryGetValue(s, out var list) || !list.Any())
                     SelectionManager.RemoveButton(s.IconAdd);
                 else
-                    SelectionManager.AddButton(s.IconAdd, targets => MineAdd(targets, s), list);//.Select(i => new TargetArgs(this.Map, i)));
+                    SelectionManager.AddButton(s.IconAdd, targets => add(targets, s), list);
             }
 
-            static void cancel(List<TargetArgs> positions)
+            static void remove(IEnumerable<TargetArgs> targets)
             {
-                PacketDesignation.Send(Client.Instance, false, positions, null);
+                PacketDesignation.Send(Client.Instance, false, targets, null);
+            }
+            static void add(IEnumerable<TargetArgs> targets, DesignationDef des)
+            {
+                PacketDesignation.Send(Client.Instance, false, targets, des);
             }
         }
         List<DesignationDef> designationDefs;
@@ -278,11 +282,6 @@ namespace Start_a_Town_
 
         public static readonly Icon MineIcon = new(ItemContent.PickaxeFull);
         private static readonly IHotkey Hotkey;
-
-        static void MineAdd(List<TargetArgs> targets, DesignationDef des)
-        {
-            PacketDesignation.Send(Client.Instance, false, targets, des);
-        }
 
         GroupBox _pendingDesignationLabel;
         GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();

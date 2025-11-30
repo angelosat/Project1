@@ -206,6 +206,7 @@ namespace Start_a_Town_
         }
         internal override void UpdateQuickButtons()
         {
+            return;
             if (this.Town.Net is Server)
                 return;
             var entities = SelectionManager.GetSelectedEntities();

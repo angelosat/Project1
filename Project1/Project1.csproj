@@ -15,6 +15,7 @@
     <Compile Remove="Gui\Hud\QuickButtonBar.cs" />
     <Compile Remove="Gui\Hud\SelectionManager.cs" />
     <Compile Remove="Modules\Crafting\Crafting\ReagentFilters\IsOfSubType.cs" />
+    <Compile Remove="Modules\Towns\Forestry\ChoppingManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Content\blur - Copy.fx" />

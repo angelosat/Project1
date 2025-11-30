@@ -15,7 +15,7 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        static public void Send(INetPeer net, bool remove, List<TargetArgs> targets, DesignationDef designation)
+        static public void Send(INetPeer net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
         {
             remove |= designation == null;
             var w = net.GetOutgoingStream();
@@ -26,7 +26,7 @@ namespace Start_a_Town_
             if(!remove)
                 designation.Write(w);
         }
-        static public void Send(INetPeer net, bool remove, Vector3 begin, Vector3 end, DesignationDef designation)
+        static public void Send(INetPeer net, bool remove, IntVec3 begin, IntVec3 end, DesignationDef designation)
         {
             remove |= designation == null;
             var w = net.GetOutgoingStream();
@@ -42,29 +42,33 @@ namespace Start_a_Town_
         {
             var remove = r.ReadBoolean();
             var selectionType = (SelectionType)r.ReadInt32();
-            List<IntVec3> positions;
+            //List<IntVec3> positions;
+            IEnumerable<TargetArgs> targetList;
             DesignationDef designation;
             if (selectionType == SelectionType.Box)
             {
                 var begin = r.ReadVector3();
                 var end = r.ReadVector3();
-                positions = new BoundingBox(begin, end).GetBoxIntVec3();
+                var positions = new BoundingBox(begin, end).GetBoxIntVec3();
                 designation = remove ? null : r.ReadDef<DesignationDef>();
                 if (net is Server)
                     Send(net, remove, begin, end, designation);
+                //net.EventOccured(Components.Message.Types.ZoneDesignation, designation, positions, remove);
+                targetList = positions.Select(p => new TargetArgs(p));
             }
             else if (selectionType == SelectionType.List)
             {
-                var list = r.ReadListTargets();
-                positions = list.Select(t => (IntVec3)t.Global).ToList();
+                targetList = r.ReadListTargets();
+                //positions = list.Select(t => (IntVec3)t.Global).ToList();
                 designation = remove ? null : r.ReadDef<DesignationDef>();
                 if (net is Server)
-                    Send(net, remove, list, designation);
+                    Send(net, remove, targetList, designation);
             }
             else
                 throw new Exception();
+            net.Map.Town.DesignationManager.Add(designation, targetList, remove);
 
-            net.EventOccured(Components.Message.Types.ZoneDesignation, designation, positions, remove);
+            //net.EventOccured(Components.Message.Types.ZoneDesignation, designation, positions, remove);
         }
     }
 }

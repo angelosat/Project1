@@ -255,8 +255,9 @@ namespace Start_a_Town_
                     SelectionManager.RemoveButton(d.Key.IconRemove);
             }
 
-            var areNotTask = selectedTargets.Except(areTask).Where(t =>
-                this.AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
+            var areNotTask = selectedTargets
+                .Except(areTask)
+                .Where(t => this.AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
 
             var splits = this.AllDesignationDefs.ToDictionary(d => d, d => areNotTask.FindAll(t => d.IsValid(t)));
             foreach (var s in this.AllDesignationDefs)

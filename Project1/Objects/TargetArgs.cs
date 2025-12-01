@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Components.Interactions;
 using Start_a_Town_.UI;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 #nullable enable
 
@@ -716,8 +717,8 @@ namespace Start_a_Town_
             return false;
         }
         Block BlockCached;
-        public Block Block => BlockCached ??= this.Map.GetBlock(this.Global);
-        public BlockEntity BlockEntity => this.Map.GetBlockEntity(this.Global);
+        public Block Block => BlockCached ??= this.Type == TargetType.Position ? this.Map.GetBlock(this.Global) : null;
+        public BlockEntity BlockEntity => this.Type == TargetType.Position ? this.Map.GetBlockEntity(this.Global) : null;
         public RegionNode Node => this.Map.Regions.GetNodeAt(this.Global);
         public Region Region => this.Node?.Region;
         public RegionRoom RegionRoom => this.Region?.Room;
@@ -832,7 +833,7 @@ namespace Start_a_Town_
 
         public T GetEntity<T>() where T : GameObject
         {
-            return (T)this.Object;
+            return this.Object as T;
         }
 
         public static implicit operator GameObject(TargetArgs b) => b.Object;

@@ -645,7 +645,6 @@ namespace Start_a_Town_.Net
 
         public GameObject Instantiate(GameObject obj)
         {
-            //obj.Instantiate(this.Instantiator);
             foreach (var o in obj.GetSelfAndChildren())
                 this.Instantiator(o);
             return obj;
@@ -656,11 +655,7 @@ namespace Start_a_Town_.Net
                 obj.RefID = GetNextObjID();
             else
                 _refIdSequence = Math.Max(_refIdSequence, obj.RefID + 1);
-            //if (Instance.NetworkObjects.TryGetValue(obj.RefID, out var existing))
-            //{
-            //    if (existing == obj) return;
-            //    else throw new Exception();
-            //}
+           
             obj.Net = this;
             Instance.NetworkObjects.Add(obj.RefID, obj);
         }

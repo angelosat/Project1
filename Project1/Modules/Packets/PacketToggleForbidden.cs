@@ -13,18 +13,18 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetPeer net, IEnumerable<GameObject> enumerable)
+        internal static void Send(INetEndpoint net, IEnumerable<GameObject> enumerable)
         {
             Send(net, enumerable.Select(o => o.RefID).ToList());
         }
-        internal static void Send(INetPeer net, List<int> instanceID)
+        internal static void Send(INetEndpoint net, List<int> instanceID)
         {
            
             var w = net.GetOutgoingStream();
             w.Write(p);
             w.Write(instanceID);
         }
-        static void Receive(INetPeer net, BinaryReader r)
+        static void Receive(INetEndpoint net, BinaryReader r)
         {
             var list = r.ReadListInt();
             foreach (var id in list)

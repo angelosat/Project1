@@ -13,7 +13,7 @@
             {
                 if (!map.IsStandableIn(pos))
                     continue;
-                var task = new AITask(TaskDefOf.Moving, new TargetArgs(pos));
+                var task = new AITask(TaskDefOf.Moving, pos.At(map));
                 return task;
             }
             return null;

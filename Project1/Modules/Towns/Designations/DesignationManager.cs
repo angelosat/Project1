@@ -42,7 +42,7 @@ namespace Start_a_Town_
         }
         internal bool RemoveDesignation(DesignationDef des, IntVec3 target)
         {
-            return this.RemoveDesignation(des, new TargetArgs(target));
+            return this.RemoveDesignation(des, target.At(this.Map));
         }
         public DesignationManager(Town town) : base(town)
         {
@@ -146,11 +146,11 @@ namespace Start_a_Town_
         }
         internal bool IsDesignation(IntVec3 global)
         {
-            return this.Designations.Values.Any(v => v.Contains(new TargetArgs(global)));
+            return this.Designations.Values.Any(v => v.Contains(global.At(this.Map)));
         }
         internal bool IsDesignation(IntVec3 global, DesignationDef desType)
         {
-            var contains = this.Designations[desType].Contains(new TargetArgs(global));
+            var contains = this.Designations[desType].Contains(global.At(this.Map));
             return contains;
         }
         internal bool IsDesignation(TargetArgs global, DesignationDef desType)
@@ -242,7 +242,7 @@ namespace Start_a_Town_
             if (this.Town.Net is Server)
                 return;
             var selectedTargets = SelectionManager.Selected;
-            var fromblockentities = selectedTargets.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => new TargetArgs(b.OriginGlobal));
+            var fromblockentities = selectedTargets.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => b.OriginGlobal.At(this.Town.Map));// new TargetArgs(b.OriginGlobal));
             selectedTargets = selectedTargets.Concat(fromblockentities).Distinct();
 
             var areTask = selectedTargets.Where(e => this.Designations.Values.Any(t => t.Contains(e)));// new TargetArgs(e))));

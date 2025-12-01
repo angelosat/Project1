@@ -61,7 +61,7 @@ namespace Start_a_Town_
         public List<TownComponent> TownComponents = new();
 
         public MapBase Map;
-        public INetPeer Net => this.Map.Net;
+        public INetEndpoint Net => this.Map.Net;
 
         public Dictionary<Utility.Types, HashSet<Vector3>> TownUtilitiesNew = new();
 

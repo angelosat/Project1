@@ -16,13 +16,13 @@ namespace Start_a_Town_
                 PacketRefresh = Network.RegisterPacketHandler(Refresh);
             }
 
-            public static void SetRoomType(INetPeer net, PlayerData player, Room room, RoomRoleDef roomType)
+            public static void SetRoomType(INetEndpoint net, PlayerData player, Room room, RoomRoleDef roomType)
             {
                 if (net is Server)
                     room.RoomRole = roomType;
                 net.GetOutgoingStream().Write(PacketSetRoomType, player.ID, room.ID, roomType?.Name ?? "");
             }
-            private static void SetRoomType(INetPeer net, BinaryReader r)
+            private static void SetRoomType(INetEndpoint net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var room = net.Map.Town.RoomManager.GetRoom(r.ReadInt32());
@@ -33,13 +33,13 @@ namespace Start_a_Town_
                     SetRoomType(net, player, room, roomdef);
             }
 
-            public static void SetOwner(INetPeer net, PlayerData player, Room room, Actor owner)
+            public static void SetOwner(INetEndpoint net, PlayerData player, Room room, Actor owner)
             {
                 if (net is Server)
                     room.ForceAddOwner(owner);
                 net.GetOutgoingStream().Write(PacketSetOwner, player.ID, room.ID, owner?.RefID ?? -1);
             }
-            private static void SetOwner(INetPeer net, BinaryReader r)
+            private static void SetOwner(INetEndpoint net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var roomID = r.ReadInt32();
@@ -51,7 +51,7 @@ namespace Start_a_Town_
                     room.ForceAddOwner(owner);
             }
 
-            internal static void SetWorkplace(INetPeer net, PlayerData player, Room room, Workplace wplace)
+            internal static void SetWorkplace(INetEndpoint net, PlayerData player, Room room, Workplace wplace)
             {
                 if (net is Server)
                     room.SetWorkplace(wplace);
@@ -61,7 +61,7 @@ namespace Start_a_Town_
                 w.Write(room.ID);
                 w.Write(wplace?.ID ?? -1);
             }
-            private static void SetWorkplace(INetPeer net, BinaryReader r)
+            private static void SetWorkplace(INetEndpoint net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var roomID = r.ReadInt32();
@@ -74,13 +74,13 @@ namespace Start_a_Town_
                     room.SetWorkplace(wplace);
             }
 
-            internal static void Refresh(INetPeer net, PlayerData playerData, Room room, IntVec3 center)
+            internal static void Refresh(INetEndpoint net, PlayerData playerData, Room room, IntVec3 center)
             {
                 if (net is Server)
                     room.Refresh(center);
                 net.GetOutgoingStream().Write(PacketRefresh, playerData.ID, room.ID, center);
             }
-            private static void Refresh(INetPeer net, BinaryReader r)
+            private static void Refresh(INetEndpoint net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var room = net.Map.Town.RoomManager.GetRoom(r.ReadInt32());

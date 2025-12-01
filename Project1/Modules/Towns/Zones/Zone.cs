@@ -12,7 +12,7 @@ namespace Start_a_Town_
     {
         public Town Town => this.Manager.Town;
         public MapBase Map => this.Town.Map;
-        public INetPeer Net => this.Map.Net;
+        public INetEndpoint Net => this.Map.Net;
         public override string Label => this.Name;
         public readonly DrawableCellCollection Positions = new(Block.FaceHighlights[IntVec3.UnitZ]);
         public string Name;

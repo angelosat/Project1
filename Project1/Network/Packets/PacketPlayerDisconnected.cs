@@ -5,14 +5,14 @@ namespace Start_a_Town_
 {
     class PacketPlayerDisconnected
     {
-        internal static void Send(INetPeer net, int playerID)
+        internal static void Send(INetEndpoint net, int playerID)
         {
             var server = net as Server;
             var w = server.OutgoingStream;
             w.Write(PacketType.PlayerDisconnected);
             w.Write(playerID);
         }
-        internal static void Receive(INetPeer net, BinaryReader r)
+        internal static void Receive(INetEndpoint net, BinaryReader r)
         {
             var playerID = r.ReadInt32();
             (net as Client).PlayerDisconnected(playerID);

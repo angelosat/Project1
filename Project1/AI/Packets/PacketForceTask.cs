@@ -21,12 +21,12 @@ namespace Start_a_Town_
             w.Write(def.GetType().FullName);
             target.Write(w);
         }
-        static void Receive(INetPeer net, BinaryReader r)
+        static void Receive(INetEndpoint net, BinaryReader r)
         {
             var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
             var typeName = r.ReadString();
             var taskGiver = Activator.CreateInstance(Type.GetType(typeName)) as TaskGiver;
-            var target = TargetArgs.Read(actor.Map, r);
+            var target = TargetArgs.Read(net, r);
             actor.ForceTask(taskGiver, target);
         }
     }

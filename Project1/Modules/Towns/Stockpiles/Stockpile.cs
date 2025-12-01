@@ -156,7 +156,7 @@ namespace Start_a_Town_
             {
                 if (!actor.CanReserve(pos))
                     continue;
-                valid.Add(new TargetArgs(pos), obj.StackMax);
+                valid.Add(pos.At(this.Map), obj.StackMax);
                 maxamount += obj.StackMax;
             }
             return valid;

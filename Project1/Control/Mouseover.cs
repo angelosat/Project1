@@ -19,7 +19,8 @@ namespace Start_a_Town_
                 this._Object = value;
                 if (value is Slot)
                 {
-                    this.Target = new TargetArgs((value as Slot).Tag);
+                    var goslot = (value as Slot).Tag;
+                    this.Target = new TargetArgs(goslot);
                 }
                 else if (value is GameObject && !Controller.BlockTargeting)
                 { 

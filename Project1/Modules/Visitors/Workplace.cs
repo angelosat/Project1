@@ -64,7 +64,7 @@ namespace Start_a_Town_
 
         public MapBase Map => this.Town.Map;
 
-        public INetPeer Net => this.Town.Net;
+        public INetEndpoint Net => this.Town.Net;
 
         public void OpenGui()
         {
@@ -683,7 +683,7 @@ namespace Start_a_Town_
                 PacketPlayerToggleShop = Network.RegisterPacketHandler(ReceivePlayerToggleShop);
             }
            
-            public static void UpdateWorkerRoles(INetPeer net, PlayerData player, Workplace tavern, JobDef role, Actor actor)
+            public static void UpdateWorkerRoles(INetEndpoint net, PlayerData player, Workplace tavern, JobDef role, Actor actor)
             {
                 if (net is Server)
                     tavern.ToggleJob(actor, role);
@@ -691,7 +691,7 @@ namespace Start_a_Town_
                 w.Write(PacketUpdateWorkerRoles, player.ID, tavern.ID, role.Name, actor.RefID);
             }
 
-            static void UpdateWorkerRoles(INetPeer net, BinaryReader r)
+            static void UpdateWorkerRoles(INetEndpoint net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var tavern = net.Map.Town.GetShop(r.ReadInt32());
@@ -703,7 +703,7 @@ namespace Start_a_Town_
                     UpdateWorkerRoles(net, player, tavern, role, actor);
             }
 
-            static public void SendPlayerRenameShop(INetPeer net, int playerID, int shopID, string name)
+            static public void SendPlayerRenameShop(INetEndpoint net, int playerID, int shopID, string name)
             {
                 if (shopID < 0)
                     return;
@@ -713,7 +713,7 @@ namespace Start_a_Town_
                 w.Write(shopID);
                 w.Write(name);
             }
-            private static void ReceivePlayerRenameShop(INetPeer net, BinaryReader r)
+            private static void ReceivePlayerRenameShop(INetEndpoint net, BinaryReader r)
             {
                 var playerID = r.ReadInt32();
                 var shopid = r.ReadInt32();
@@ -727,7 +727,7 @@ namespace Start_a_Town_
                     SendPlayerRenameShop(net, playerID, shopid, name);
             }
 
-            static public void SendPlayerToggleShop(INetPeer net, int playerID, int shopID)
+            static public void SendPlayerToggleShop(INetEndpoint net, int playerID, int shopID)
             {
                 if (shopID < 0)
                     return;
@@ -736,7 +736,7 @@ namespace Start_a_Town_
                 w.Write(playerID);
                 w.Write(shopID);
             }
-            private static void ReceivePlayerToggleShop(INetPeer net, BinaryReader r)
+            private static void ReceivePlayerToggleShop(INetEndpoint net, BinaryReader r)
             {
                 var playerID = r.ReadInt32();
                 var shopid = r.ReadInt32();

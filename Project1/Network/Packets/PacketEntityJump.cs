@@ -12,14 +12,14 @@ namespace Start_a_Town_
             PType = Network.RegisterPacketHandler(Receive);
         }
         
-        internal static void Send(INetPeer net, int entityID)
+        internal static void Send(INetEndpoint net, int entityID)
         {
             var server = net as Server;
             var w = server.OutgoingStreamTimestamped;
             w.Write(PType);
             w.Write(entityID);
         }
-        internal static void Receive(INetPeer net, BinaryReader r)
+        internal static void Receive(INetEndpoint net, BinaryReader r)
         {
             var id = r.ReadInt32();
             var entity = net.GetNetworkEntity(id) as Actor;

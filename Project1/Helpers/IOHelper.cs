@@ -60,7 +60,7 @@ namespace Start_a_Town_
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
-                collection.Add(TargetArgs.Read((INetPeer)null, r));
+                collection.Add(TargetArgs.Read((INetEndpoint)null, r));
             return collection;
         }
         public static Dictionary<int, int> Write(this Dictionary<int, int> dic, BinaryWriter w)
@@ -487,7 +487,7 @@ namespace Start_a_Town_
         /// <param name="r"></param>
         /// <param name="net">pass the net peer to resolve targets initially</param>
         /// <returns></returns>
-        public static List<TargetArgs> ReadListTargets(this BinaryReader r, INetPeer net = null)
+        public static List<TargetArgs> ReadListTargets(this BinaryReader r, INetEndpoint net = null)
         {
             var count = r.ReadInt32();
             var list = new List<TargetArgs>(count);

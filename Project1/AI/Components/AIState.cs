@@ -186,8 +186,9 @@ namespace Start_a_Town_.AI
             var targets = from v in this.Blackboard.Values
                           where v is TargetArgs
                           select v as TargetArgs;
-            foreach (var t in targets)
-                t.Map = parent.Map;
+            /// i dont need this anymore after phasing to targetargs lazily resolving entity id and passing the provider (client or server) at targetargs initialization
+            //foreach (var t in targets)
+            //    t.Map = parent.Map;
             this.CurrentTask?.MapLoaded(parent);
             if(this.CurrentTaskBehavior is not null)
                 this.CurrentTaskBehavior.Actor = parent;

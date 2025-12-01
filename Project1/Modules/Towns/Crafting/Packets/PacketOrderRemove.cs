@@ -12,14 +12,14 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetPeer net, CraftOrder order)
+        internal static void Send(INetEndpoint net, CraftOrder order)
         {
             var w = net.GetOutgoingStream();
             w.Write(p);
             w.Write(order.Workstation);
             w.Write(order.ID);
         }
-        private static void Receive(INetPeer net, BinaryReader r)
+        private static void Receive(INetEndpoint net, BinaryReader r)
         {
             var station = r.ReadIntVec3();
             var orderID = r.ReadInt32();// r.ReadString();

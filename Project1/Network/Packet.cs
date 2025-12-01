@@ -183,7 +183,7 @@ namespace Start_a_Town_.Net
 
         public virtual void Write(BinaryWriter w) { }
 
-        public virtual void Read(INetPeer net, byte[] data) { }
-        public virtual void Read(INetPeer net, BinaryReader r) { }
+        public virtual void Read(INetEndpoint net, byte[] data) { }
+        public virtual void Read(INetEndpoint net, BinaryReader r) { }
     }
 }

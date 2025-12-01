@@ -11,7 +11,7 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(ReceiveTemplate);
         }
-        internal static void SendTemplate(INetPeer net, int templateID, TargetArgs target)
+        internal static void SendTemplate(INetEndpoint net, int templateID, TargetArgs target)
         {
             var w = net.GetOutgoingStream();
             w.Write(p);
@@ -19,7 +19,7 @@ namespace Start_a_Town_
             target.Write(w);
         }
         
-        internal static void ReceiveTemplate(INetPeer net, BinaryReader r)
+        internal static void ReceiveTemplate(INetEndpoint net, BinaryReader r)
         {
             var server = net as Server;
             var templateID = r.ReadInt32();

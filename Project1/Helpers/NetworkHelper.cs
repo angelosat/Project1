@@ -22,7 +22,7 @@ namespace Start_a_Town_
         {
             Packet.Create(packetID, type, data).BeginSendTo(so, ip);
         }
-        public static void Translate(this byte[] data, INetPeer objProvider, Action<BinaryReader> reader)
+        public static void Translate(this byte[] data, INetEndpoint objProvider, Action<BinaryReader> reader)
         {
             using var r = new BinaryReader(new MemoryStream(data));
             reader(r);

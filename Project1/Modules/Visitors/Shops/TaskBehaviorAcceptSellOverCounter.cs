@@ -19,7 +19,7 @@ namespace Start_a_Town_
             {
                 InitAction = () =>
                 {
-                    task.SetTarget(TargetIndex.A, shop.Counter.Value);
+                    task.SetTarget(TargetIndex.A, shop.Counter.Value.At(actor.Map));
                     task.SetTarget(TargetIndex.B, shop.GetNextSaleItem());
                 }
             };

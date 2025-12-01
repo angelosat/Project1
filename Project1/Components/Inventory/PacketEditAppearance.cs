@@ -18,7 +18,7 @@ namespace Start_a_Town_
             w.Write(actor.RefID);
             colors.Write(w);
         }
-        private static void Receive(INetPeer net, BinaryReader r)
+        private static void Receive(INetEndpoint net, BinaryReader r)
         {
             var actorID = r.ReadInt32();
             var actor = net.GetNetworkEntity(actorID) as Actor;

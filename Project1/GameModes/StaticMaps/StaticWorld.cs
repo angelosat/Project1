@@ -23,7 +23,7 @@ namespace Start_a_Town_
                 PacketClockAdvanced = Network.RegisterPacketHandler(ReceiveClockAdvanced);
             }
 
-            private static void ReceiveClockAdvanced(INetPeer net, BinaryReader r)
+            private static void ReceiveClockAdvanced(INetEndpoint net, BinaryReader r)
             {
                 if (net is Server)
                     throw new Exception();
@@ -47,7 +47,7 @@ namespace Start_a_Town_
         public override ulong CurrentTick { get => this.currentTick; set => this.currentTick = value; }
 
         readonly PopulationManager PopulationManager;
-        public override void Tick(INetPeer net)
+        public override void Tick(INetEndpoint net)
         {
             this.PopulationManager.Update(net);
             this.CurrentTick++;

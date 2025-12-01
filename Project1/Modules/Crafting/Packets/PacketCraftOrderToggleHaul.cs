@@ -21,7 +21,7 @@ namespace Start_a_Town_
             w.Write(order.ID);
             w.Write(value);
         }
-        private static void Receive(INetPeer net, BinaryReader r)
+        private static void Receive(INetEndpoint net, BinaryReader r)
         {
             var station = r.ReadIntVec3();
             var id = r.ReadInt32();

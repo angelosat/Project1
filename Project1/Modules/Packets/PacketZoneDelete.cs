@@ -12,14 +12,14 @@ namespace Start_a_Town_
         {
             PacketPlayerZoneDelete = Network.RegisterPacketHandler(Receive);
         }
-        public static void Send(INetPeer net, Type zoneType, int zoneID)
+        public static void Send(INetEndpoint net, Type zoneType, int zoneID)
         {
             var w = net.GetOutgoingStream();
             w.Write(PacketPlayerZoneDelete);
             w.Write(zoneType.FullName);
             w.Write(zoneID);
         }
-        public static void Receive(INetPeer net, BinaryReader r)
+        public static void Receive(INetEndpoint net, BinaryReader r)
         {
             Type zoneType = Type.GetType(r.ReadString());
             int zoneID = r.ReadInt32();

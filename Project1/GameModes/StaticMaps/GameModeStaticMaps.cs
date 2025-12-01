@@ -110,7 +110,7 @@ namespace Start_a_Town_.Core
             return true;
         }
 
-        public override void ParseCommand(INetPeer net, string command)
+        public override void ParseCommand(INetEndpoint net, string command)
         {
             this.Parser.Execute(net, command);
         }
@@ -157,7 +157,7 @@ namespace Start_a_Town_.Core
             }
         }
 
-        internal override void AllChunksReceived(INetPeer net)
+        internal override void AllChunksReceived(INetEndpoint net)
         {
             // all chunks received, enter world
             "all chunks loaded!".ToConsole();
@@ -198,7 +198,7 @@ namespace Start_a_Town_.Core
             return directory.GetFiles().OrderByDescending(s => s.CreationTime).ToArray();
         }
 
-        public override GameScreen GetWorldSelectScreen(INetPeer net)
+        public override GameScreen GetWorldSelectScreen(INetEndpoint net)
         {
             throw new System.NotImplementedException();
         }

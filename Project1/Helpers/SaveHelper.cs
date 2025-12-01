@@ -839,7 +839,7 @@ namespace Start_a_Town_
             list.Clear();
             var tags = tag.Value as List<SaveTag>;
             foreach (var i in tags)
-                list.Add(new TargetArgs(null, i));
+                list.Add(new TargetArgs(i));
 
         }
 

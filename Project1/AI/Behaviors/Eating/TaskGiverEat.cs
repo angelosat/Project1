@@ -24,7 +24,7 @@ namespace Start_a_Town_.AI
                     {
                         return new AITask() { BehaviorType = typeof(TaskBehaviorEatWithTable) }
                             .SetTarget(TaskBehaviorEating.FoodInd, foodInInventory, 1)
-                            .SetTarget(TaskBehaviorEating.EatingSurfaceInd, new TargetArgs(eatingPlaces.First()));
+                            .SetTarget(TaskBehaviorEating.EatingSurfaceInd, eatingPlaces.First().At(actor.Map));
                     }
                     else
                     {

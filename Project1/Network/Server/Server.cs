@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace Start_a_Town_.Net
 {
-    public partial class Server : INetPeer
+    public partial class Server : INetEndpoint
     {
         public double CurrentTick => ServerClock.TotalMilliseconds;
 

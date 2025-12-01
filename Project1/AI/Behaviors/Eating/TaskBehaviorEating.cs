@@ -31,7 +31,7 @@ namespace Start_a_Town_.AI.Behaviors
 
             yield return new BehaviorGetAtNewNew(EatingSurfaceInd);
             var auxIndex = TargetIndex.C;
-            yield return new BehaviorCustom() { InitAction = () => { this.Task.SetTarget(auxIndex, Table.Global.Above()); } };
+            yield return new BehaviorCustom() { InitAction = () => { this.Task.SetTarget(auxIndex, Table.Global.Above().At(actor.Map)); } };
             yield return new BehaviorInteractionNew(auxIndex, new UseHauledOnTarget());
 
             yield return eat;

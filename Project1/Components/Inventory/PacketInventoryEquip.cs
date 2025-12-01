@@ -11,14 +11,14 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        static public void Send(INetPeer net, int actorID, int itemID)
+        static public void Send(INetEndpoint net, int actorID, int itemID)
         {
             var stream = net.GetOutgoingStream();
             stream.Write(p);
             stream.Write(actorID);
             stream.Write(itemID);
         }
-        static public void Receive(INetPeer net, BinaryReader r)
+        static public void Receive(INetEndpoint net, BinaryReader r)
         {
             var actorID = r.ReadInt32();
             var itemID = r.ReadInt32();

@@ -16,7 +16,7 @@ namespace Start_a_Town_
         internal static Behavior SetTarget(TargetIndex a, IntVec3 value)
         {
             var bhav = new BehaviorCustom();
-            bhav.InitAction = () => bhav.Actor.CurrentTask.SetTarget(a, value);
+            bhav.InitAction = () => bhav.Actor.CurrentTask.SetTarget(a, value.At(bhav.Actor.Map));
             return bhav;
         }
         internal static Behavior SetTarget(TargetIndex a, (MapBase map, IntVec3 value) position)

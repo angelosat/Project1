@@ -90,7 +90,7 @@ namespace Start_a_Town_
                     handler.HandleLButtonDoubleClick(e);
         }
 
-        public virtual GameScreen Initialize(INetPeer net)
+        public virtual GameScreen Initialize(INetEndpoint net)
         {
             return this;
         }

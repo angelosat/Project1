@@ -19,7 +19,7 @@ namespace Start_a_Town_
         public SceneState Scene = new();
         public override Camera Camera => GetMap().Camera; 
 
-        public override GameScreen Initialize(INetPeer net)
+        public override GameScreen Initialize(INetEndpoint net)
         {
             var camera = net.Map.Camera;
             if (net is Net.Server)
@@ -42,7 +42,7 @@ namespace Start_a_Town_
             return this;
         }
 
-        static public INetPeer Net => DrawServer ? Server.Instance : Client.Instance;
+        static public INetEndpoint Net => DrawServer ? Server.Instance : Client.Instance;
         public Hud Hud;
         public override void Update(Game1 game, GameTime gt)
         {

@@ -175,7 +175,7 @@ namespace Start_a_Town_.UI
         /// <param name="cells"></param>
         public static void Select(MapBase map, IEnumerable<IntVec3> cells)
         {
-            Instance.SelectInternal(cells.Select(c => new TargetArgs(map, c)));
+            Instance.SelectInternal(cells.Select(c => c.At(map)));
         }
 
         internal static void OnCameraRotated(Camera camera)
@@ -551,7 +551,7 @@ namespace Start_a_Town_.UI
         }
         internal static void AddButton(IconButton button, Action<List<TargetArgs>> action, IEnumerable<IntVec3> cells)
         {
-            AddButton(button, action, cells.Select(t => new TargetArgs(t)));
+            AddButton(button, action, cells.Select(t => t.At(Net.Client.Instance.Map)));
         }
         internal static void AddButton(IconButton button, Action<List<TargetArgs>> action, IEnumerable<TargetArgs> targets)
         {

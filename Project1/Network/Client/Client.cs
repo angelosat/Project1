@@ -16,7 +16,7 @@ namespace Start_a_Town_.Net
     internal enum PlayerSavingState
     { Saved, Changed, Saving }
 
-    public class Client : INetPeer
+    public class Client : INetEndpoint
     {
         private static Client _Instance;
         public static Client Instance => _Instance ??= new Client();
@@ -364,10 +364,10 @@ namespace Start_a_Town_.Net
         }
 
         [Obsolete]
-        private static readonly Dictionary<PacketType, Action<INetPeer, BinaryReader>> PacketHandlersNew = new();
+        private static readonly Dictionary<PacketType, Action<INetEndpoint, BinaryReader>> PacketHandlersNew = new();
 
         [Obsolete]
-        public static void RegisterPacketHandler(PacketType channel, Action<INetPeer, BinaryReader> handler)
+        public static void RegisterPacketHandler(PacketType channel, Action<INetEndpoint, BinaryReader> handler)
         {
             PacketHandlersNew.Add(channel, handler);
         }
@@ -483,7 +483,7 @@ namespace Start_a_Town_.Net
                 var type = (PacketType)id;
                 lastPos = mem.Position;
 
-                if (PacketHandlersNew.TryGetValue(type, out Action<INetPeer, BinaryReader> handlerAction))
+                if (PacketHandlersNew.TryGetValue(type, out Action<INetEndpoint, BinaryReader> handlerAction))
                     handlerAction(Instance, r);
                 else if (PacketHandlersWithPlayer.TryGetValue(id, out var handlerActionWithPlayer))
                     handlerActionWithPlayer(Instance, this.PlayerData, r);
@@ -524,7 +524,7 @@ namespace Start_a_Town_.Net
 
         private void HandleMessage(Packet msg)
         {
-            if (PacketHandlersNew.TryGetValue(msg.PacketType, out Action<INetPeer, BinaryReader> handlerNew))
+            if (PacketHandlersNew.TryGetValue(msg.PacketType, out Action<INetEndpoint, BinaryReader> handlerNew))
             {
                 handlerNew(this, msg.Reader);
                 return;

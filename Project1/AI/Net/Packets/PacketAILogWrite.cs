@@ -17,7 +17,7 @@ namespace Start_a_Town_.Modules.AI.Net.Packets
             server.OutgoingStream.Write(agentID);
             server.OutgoingStream.Write(entry);
         }
-        static public void Receive(INetPeer net, BinaryReader r)
+        static public void Receive(INetEndpoint net, BinaryReader r)
         {
             var entity = net.GetNetworkEntity(r.ReadInt32()) as Actor;
             var entry = r.ReadString();

@@ -22,7 +22,7 @@ namespace Start_a_Town_
                 pVariation = Network.RegisterPacketHandler(ReceiveVariation);
             }
 
-            private static void ReceiveMaterial(INetPeer net, BinaryReader r)
+            private static void ReceiveMaterial(INetEndpoint net, BinaryReader r)
             {
                 var comp = getComp(net, r);
                 var item = Def.GetDef<ItemDef>(r);
@@ -32,7 +32,7 @@ namespace Start_a_Town_
                     Send(comp, item, material);
             }
 
-            private static void ReceiveVariation(INetPeer net, BinaryReader r)
+            private static void ReceiveVariation(INetEndpoint net, BinaryReader r)
             {
                 var comp = getComp(net, r);
                 var item = Def.GetDef<ItemDef>(r);
@@ -42,7 +42,7 @@ namespace Start_a_Town_
                     Send(comp, item, def);
             }
 
-            private static void ReceiveCategory(INetPeer net, BinaryReader r)
+            private static void ReceiveCategory(INetEndpoint net, BinaryReader r)
             {
                 var comp = getComp(net, r);
                 var cat = r.ReadString() is string catName && !catName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<ItemCategory>(catName) : null;
@@ -68,7 +68,7 @@ namespace Start_a_Town_
                 w.Write(parent.OriginGlobal);
                 w.Write(category?.Name ?? "");
             }
-            private static BlockEntityCompRefuelable getComp(INetPeer net, BinaryReader r)
+            private static BlockEntityCompRefuelable getComp(INetEndpoint net, BinaryReader r)
             {
                 var global = r.ReadIntVec3();
                 return net.Map.GetBlockEntity(global).GetComp<BlockEntityCompRefuelable>();

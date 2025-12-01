@@ -11,14 +11,14 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetPeer net, int playerid, ControlTool tool)
+        internal static void Send(INetEndpoint net, int playerid, ControlTool tool)
         {
             var w = net.GetOutgoingStream();
             w.Write(p);
             w.Write(playerid);
             tool.Write(w);
         }
-        internal static void Receive(INetPeer net, BinaryReader r)
+        internal static void Receive(INetEndpoint net, BinaryReader r)
         {
             var plid = r.ReadInt32();
             var player = net.GetPlayer(plid);

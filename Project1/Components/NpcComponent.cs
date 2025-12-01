@@ -196,7 +196,7 @@ namespace Start_a_Town_
             w.Write(Net.Client.Instance.GetPlayer().ID);
             w.Write(actor.Object.RefID);
         }
-        private static void ReceiveCitizenshipToggle(INetPeer net, BinaryReader r)
+        private static void ReceiveCitizenshipToggle(INetEndpoint net, BinaryReader r)
         {
             var plID = r.ReadInt32();
             var actorID = r.ReadInt32();

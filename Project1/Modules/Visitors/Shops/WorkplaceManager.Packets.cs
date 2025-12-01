@@ -30,7 +30,7 @@ namespace Start_a_Town_
             //    PacketPlayerShopAssignCounter = Network.RegisterPacketHandler(ReceivePlayerShopAssignCounter);
             //    PacketPlayerRenameShop = Network.RegisterPacketHandler(ReceivePlayerRenameShop);
             //}
-            public static void SendPlayerDeleteShop(INetPeer net, PlayerData player, int shopid)
+            public static void SendPlayerDeleteShop(INetEndpoint net, PlayerData player, int shopid)
             {
                 if(net is Server)
                 {
@@ -38,7 +38,7 @@ namespace Start_a_Town_
                 }
                 net.GetOutgoingStream().Write(PacketPlayerDeleteShop, player.ID, shopid);
             }
-            private static void ReceivePlayerDeleteShop(INetPeer net, BinaryReader r)
+            private static void ReceivePlayerDeleteShop(INetEndpoint net, BinaryReader r)
             {
                 var pl = net.GetPlayer(r.ReadInt32());
                 var shopid = r.ReadInt32();
@@ -48,7 +48,7 @@ namespace Start_a_Town_
                     SendPlayerDeleteShop(net, pl, shopid);
             }
 
-            static public void SendPlayerShopAssignCounter(INetPeer net, PlayerData player, Workplace shop, IntVec3 global)
+            static public void SendPlayerShopAssignCounter(INetEndpoint net, PlayerData player, Workplace shop, IntVec3 global)
             {
                 var w = net.GetOutgoingStream();
                 w.Write(PacketPlayerShopAssignCounter);
@@ -56,7 +56,7 @@ namespace Start_a_Town_
                 w.Write(shop?.ID ?? -1);
                 w.Write(global);
             }
-            static void ReceivePlayerShopAssignCounter(INetPeer net, BinaryReader r)
+            static void ReceivePlayerShopAssignCounter(INetEndpoint net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var manager = net.Map.Town.ShopManager;
@@ -76,7 +76,7 @@ namespace Start_a_Town_
                     SendPlayerShopAssignCounter(net, player, shop, global);
             }
 
-            static public void SendPlayerAssignWorkerToShop(INetPeer net, PlayerData player, Actor actor, Workplace shop)
+            static public void SendPlayerAssignWorkerToShop(INetEndpoint net, PlayerData player, Actor actor, Workplace shop)
             {
                 var w = net.GetOutgoingStream();
                 w.Write(PacketPlayerAssignWorkerToShop);
@@ -84,7 +84,7 @@ namespace Start_a_Town_
                 w.Write(actor.RefID);
                 w.Write(shop.ID);
             }
-            private static void HandlePlayerAssignWorkerToShop(INetPeer net, BinaryReader r)
+            private static void HandlePlayerAssignWorkerToShop(INetEndpoint net, BinaryReader r)
             {
                 var playerID = r.ReadInt32();
                 var actorID = r.ReadInt32();
@@ -97,7 +97,7 @@ namespace Start_a_Town_
                     SendPlayerAssignWorkerToShop(net, net.GetPlayer(playerID), actor, shop);
             }
 
-            static public void SendPlayerAddStockpileToShop(INetPeer net, int playerID, int shopID, int stockpileID)
+            static public void SendPlayerAddStockpileToShop(INetEndpoint net, int playerID, int shopID, int stockpileID)
             {
                 if (shopID < 0)
                     return;
@@ -107,7 +107,7 @@ namespace Start_a_Town_
                 w.Write(shopID);
                 w.Write(stockpileID);
             }
-            private static void ReceivePlayerAddStockpileToShop(INetPeer net, BinaryReader r)
+            private static void ReceivePlayerAddStockpileToShop(INetEndpoint net, BinaryReader r)
             {
                 var playerID = r.ReadInt32();
                 var shopid = r.ReadInt32();
@@ -121,7 +121,7 @@ namespace Start_a_Town_
                     SendPlayerAddStockpileToShop(net, playerID, shopid, stockpileid);
             }
             
-            static public void SendPlayerAddShoppingArea(INetPeer net, int playerID, int shopID, int stockpileID)
+            static public void SendPlayerAddShoppingArea(INetEndpoint net, int playerID, int shopID, int stockpileID)
             {
                 if (shopID < 0)
                     return;
@@ -131,7 +131,7 @@ namespace Start_a_Town_
                 w.Write(shopID);
                 w.Write(stockpileID);
             }
-            private static void ReceivePlayerAddShoppingArea(INetPeer net, BinaryReader r)
+            private static void ReceivePlayerAddShoppingArea(INetEndpoint net, BinaryReader r)
             {
                 var playerID = r.ReadInt32();
                 var shopid = r.ReadInt32();
@@ -146,7 +146,7 @@ namespace Start_a_Town_
             }
 
 
-            static public void SendPlayerCreateShop(INetPeer net, int playerID, Type shopType, int shopID = 0)
+            static public void SendPlayerCreateShop(INetEndpoint net, int playerID, Type shopType, int shopID = 0)
             {
                 var w = net.GetOutgoingStream();
                 w.Write(PacketPlayerCreateShop);
@@ -154,7 +154,7 @@ namespace Start_a_Town_
                 w.Write(shopType.FullName);
                 w.Write(shopID);
             }
-            private static void ReceivePlayerCreateShop(INetPeer net, BinaryReader r)
+            private static void ReceivePlayerCreateShop(INetEndpoint net, BinaryReader r)
             {
                 var playerID = r.ReadInt32();
                 var shoptypename = r.ReadString();

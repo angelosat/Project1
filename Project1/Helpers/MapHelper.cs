@@ -42,7 +42,7 @@ namespace Start_a_Town_
             }
         }
 
-        public static byte GetData(this Vector3 global, INetPeer net)
+        public static byte GetData(this Vector3 global, INetEndpoint net)
         {
             return GetData(global, net.Map);
         }

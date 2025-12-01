@@ -17,7 +17,7 @@ namespace Start_a_Town_.Components
             {
                 PacketSyncInsert = Network.RegisterPacketHandler(HandleSyncInsert);
 
-                static void handleSetHaulSlot(INetPeer net, BinaryReader r)
+                static void handleSetHaulSlot(INetEndpoint net, BinaryReader r)
                 {
                     var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
                     var item = net.GetNetworkEntity(r.ReadInt32()) as Entity;
@@ -27,14 +27,14 @@ namespace Start_a_Town_.Components
                 PacketSetHaulSlot = Network.RegisterPacketHandler(handleSetHaulSlot);
             }
 
-            public static void SendSyncInsert(INetPeer net, Actor actor, Entity item)
+            public static void SendSyncInsert(INetEndpoint net, Actor actor, Entity item)
             {
                 var server = net as Server;
                 //if (net is Server server)
                 actor.Inventory.Insert(item);
                 server.OutgoingStreamTimestamped.Write(PacketSyncInsert, actor.RefID, item.RefID);
             }
-            private static void HandleSyncInsert(INetPeer net, BinaryReader r)
+            private static void HandleSyncInsert(INetEndpoint net, BinaryReader r)
             {
                 var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
                 var item = net.GetNetworkEntity(r.ReadInt32()) as Entity;
@@ -44,7 +44,7 @@ namespace Start_a_Town_.Components
                     actor.Inventory.Insert(item);
             }
 
-            public static void SyncSetHaulSlot(INetPeer net, Actor actor, Entity item)
+            public static void SyncSetHaulSlot(INetEndpoint net, Actor actor, Entity item)
             {
                 var server = net as Server;
                 var w = server.OutgoingStreamTimestamped;// .GetOutgoingStream();
@@ -205,7 +205,7 @@ namespace Start_a_Town_.Components
             var obj = slot.Object;
 
             if (obj.HasComponent<EquipComponent>())
-                (parent as Actor).Work.Perform(new Interactions.EquipFromInventory(), new TargetArgs(slot));
+                (parent as Actor).Work.Perform(new Interactions.EquipFromInventory(), new TargetArgs(parent.Net, slot));
             else
             {
                 this.HaulSlot.Swap(slot);

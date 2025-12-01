@@ -65,9 +65,10 @@ namespace Start_a_Town_
             return this.Object.Name + ": " + this.Amount.ToString();
         }
 
-        internal void ResolveReferences(INetPeer net)
+        internal void ResolveReferences(INetEndpoint net)
         {
-            this.ObjectTarget.Map = net.Map;
+            //this.ObjectTarget.Map = net.Map;
+            this.ObjectTarget.InitializeProvider(net);
         }
 
         public void Write(BinaryWriter w)

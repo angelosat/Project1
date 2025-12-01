@@ -13,7 +13,7 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        static public void Send(INetPeer net, Vector3 begin, Vector3 end, bool remove)
+        static public void Send(INetEndpoint net, Vector3 begin, Vector3 end, bool remove)
         {
             var stream = net.GetOutgoingStream();
             stream.Write(p);
@@ -21,7 +21,7 @@ namespace Start_a_Town_
             stream.Write(end);
             stream.Write(remove);
         }
-        static public void Receive(INetPeer net, BinaryReader r)
+        static public void Receive(INetEndpoint net, BinaryReader r)
         {
             var begin = r.ReadVector3();
             var end = r.ReadVector3();

@@ -12,7 +12,7 @@ namespace Start_a_Town_
         {
             PacketPlayerZoneDesignation = Network.RegisterPacketHandler(Receive);
         }
-        static public void Send(INetPeer net, ZoneDef zoneDef, int zoneID, Vector3 begin, int w, int h, bool remove)
+        static public void Send(INetEndpoint net, ZoneDef zoneDef, int zoneID, Vector3 begin, int w, int h, bool remove)
         {
             var stream = net.GetOutgoingStream();
             stream.Write(PacketPlayerZoneDesignation);
@@ -23,7 +23,7 @@ namespace Start_a_Town_
             stream.Write(h);
             stream.Write(remove);
         }
-        static public void Receive(INetPeer net, BinaryReader r)
+        static public void Receive(INetEndpoint net, BinaryReader r)
         {
             //var zoneType = Type.GetType(r.ReadString());
             var zoneType = Def.GetDef<ZoneDef>(r.ReadString());

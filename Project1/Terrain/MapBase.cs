@@ -24,7 +24,7 @@ namespace Start_a_Town_
                 PacketSyncSetCellData = Network.RegisterPacketHandler(SyncSetCellData);
                 PacketSpawn = Network.RegisterPacketHandler(ReceiveSpawnEntity);
             }
-            public static void SendSpawnEntity(INetPeer net, GameObject entity, MapBase map, Vector3 global, Vector3 velocity)
+            public static void SendSpawnEntity(INetEndpoint net, GameObject entity, MapBase map, Vector3 global, Vector3 velocity)
             {
                 if (net is not Server server)
                     return;
@@ -34,7 +34,7 @@ namespace Start_a_Town_
                 w.Write(global);
                 w.Write(velocity);
             }
-            public static void SendSpawnEntityUntimestamped(INetPeer net, GameObject entity, MapBase map, Vector3 global, Vector3 velocity)
+            public static void SendSpawnEntityUntimestamped(INetEndpoint net, GameObject entity, MapBase map, Vector3 global, Vector3 velocity)
             {
                 if (net is not Server server)
                     return;
@@ -44,7 +44,7 @@ namespace Start_a_Town_
                 w.Write(global);
                 w.Write(velocity);
             }
-            static void ReceiveSpawnEntity(INetPeer net, BinaryReader r)
+            static void ReceiveSpawnEntity(INetEndpoint net, BinaryReader r)
             {
                 var client = net as Client;
                 var actor = client.GetNetworkEntity(r.ReadInt32());
@@ -61,7 +61,7 @@ namespace Start_a_Town_
                     map.SetCellData(global, data);
                 net.WriteToStream(PacketSyncSetCellData, global, data);
             }
-            private static void SyncSetCellData(INetPeer net, BinaryReader r)
+            private static void SyncSetCellData(INetEndpoint net, BinaryReader r)
             {
                 var global = r.ReadIntVec3();
                 var data = r.ReadByte();
@@ -79,8 +79,9 @@ namespace Start_a_Town_
         public LightingEngine LightingEngine;
         public WorldBase World;
         public Dictionary<IntVec2, Chunk> ActiveChunks;
-        INetPeer _net;
-        public INetPeer Net => this._net ??= this.World.Net;
+        INetEndpoint _net;
+        public readonly int ID;
+        public INetEndpoint Net => this._net ??= this.World.Net;
         public GameObject PlayerCharacter;
         public ParticleManager ParticleManager;
         public RegionManager Regions;

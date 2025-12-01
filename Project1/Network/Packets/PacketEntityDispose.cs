@@ -27,7 +27,7 @@ namespace Start_a_Town_
             w.Write(player.ID);
         }
        
-        private static void Receive(INetPeer net, BinaryReader r)
+        private static void Receive(INetEndpoint net, BinaryReader r)
         {
             var id = r.ReadInt32();
             net.DisposeObject(id);
@@ -35,7 +35,7 @@ namespace Start_a_Town_
                 throw new System.Exception(); // this should only be handled by clients
         }
 
-        private static void ReceivePlayer(INetPeer net, BinaryReader r)
+        private static void ReceivePlayer(INetEndpoint net, BinaryReader r)
         {
             var id = r.ReadInt32();
             var player = net.GetPlayer(r.ReadInt32());

@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework;
 namespace Start_a_Town_.Net
 {
     public enum NetworkSideType { Local, Server }
-    public delegate void PacketHandler(INetPeer net, BinaryReader r);
-    public delegate void PacketHandlerWithPacket(INetPeer net, Packet packet);
-    public delegate void PacketHandlerWithPlayer(INetPeer net, PlayerData player, BinaryReader r);
+    public delegate void PacketHandler(INetEndpoint net, BinaryReader r);
+    public delegate void PacketHandlerWithPacket(INetEndpoint net, Packet packet);
+    public delegate void PacketHandlerWithPlayer(INetEndpoint net, PlayerData player, BinaryReader r);
     public delegate void PacketHandlerServer(Server server, BinaryReader r); // in case i need to force packethandlers to only exist on server or client in the future
     public delegate void PacketHandlerClient(Client client, BinaryReader r); // in case i need to force packethandlers to only exist on server or client in the future
     public class Network
@@ -22,7 +22,7 @@ namespace Start_a_Town_.Net
                 PacketTimestamped = RegisterPacketHandlerWithPacket(ReceiveTimestamped);
             }
            
-            private static void ReceiveTimestamped(INetPeer net, Packet packet)
+            private static void ReceiveTimestamped(INetEndpoint net, Packet packet)
             {
                 if (net is Client client)
                     client.HandleTimestamped(packet);
@@ -31,7 +31,7 @@ namespace Start_a_Town_.Net
             {
                 server.GetOutgoingStream().Write(PacketSyncReport, text);
             }
-            private static void HandleSyncReport(INetPeer net, BinaryReader r)
+            private static void HandleSyncReport(INetEndpoint net, BinaryReader r)
             {
                 if (net is not Net.Client)
                     throw new Exception();
@@ -39,7 +39,7 @@ namespace Start_a_Town_.Net
             }
         }
 
-        public static INetPeer CurrentNetwork;
+        public static INetEndpoint CurrentNetwork;
 
         static public ConsoleBoxAsync Console { get { return LobbyWindow.Instance.Console; } }
 

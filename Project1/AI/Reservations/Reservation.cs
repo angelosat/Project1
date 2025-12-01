@@ -44,10 +44,10 @@ namespace Start_a_Town_
                 w.Write(this.Amount);
                 w.Write(this.TaskID);
             }
-            public Reservation(MapBase map, BinaryReader r)
+            public Reservation(INetEndpoint provider, BinaryReader r)
             {
                 this.Actor = r.ReadInt32();
-                this.Target =  TargetArgs.Read(map, r);
+                this.Target =  TargetArgs.Read(provider, r);
                 this.Amount = r.ReadInt32();
                 this.TaskID = r.ReadInt32();
             }
@@ -62,7 +62,7 @@ namespace Start_a_Town_
             public Reservation(MapBase map, SaveTag tag)
             {
                 this.Actor = tag.GetValue<int>("ActorID");
-                this.Target = new TargetArgs(map, tag["Target"]);
+                this.Target = new TargetArgs(map.Net, tag["Target"]);
                 this.Amount = tag.GetValue<int>("Amount");
             }
         }

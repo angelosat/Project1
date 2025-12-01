@@ -31,7 +31,7 @@ namespace Start_a_Town_
             this.DrawMaterialColor = false;
         }
 
-        public override void RandomBlockUpdate(INetPeer net, IntVec3 global, Cell celll)
+        public override void RandomBlockUpdate(INetEndpoint net, IntVec3 global, Cell celll)
         {
             if (net.Map.GetBlock(global + IntVec3.UnitZ) != BlockDefOf.Air)
                 return;

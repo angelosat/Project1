@@ -133,7 +133,7 @@ namespace Start_a_Town_
             var targetStockpile = destination.Map.Town.ZoneManager.GetZoneAt<Stockpile>(below);
             if (targetStockpile == null)
                 return false;
-            return targetStockpile.IsValidStorage(item as Entity, new TargetArgs(below), item.StackSize);
+            return targetStockpile.IsValidStorage(item as Entity, below.At(item.Map), item.StackSize);
         }
     }
 }

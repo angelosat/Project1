@@ -24,7 +24,7 @@ namespace Start_a_Town_
                 w.Write(stockpile.ID);
                 w.Write((byte)p);
             }
-            private static void Receive(INetPeer net, BinaryReader r)
+            private static void Receive(INetEndpoint net, BinaryReader r)
             {
                 var stockpileID = r.ReadInt32();
                 var p = r.ReadByte();

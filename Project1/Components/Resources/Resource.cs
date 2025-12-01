@@ -174,7 +174,7 @@ namespace Start_a_Town_
                     actor.GetResource(def).Adjust(value);
                 net.GetOutgoingStream().Write(PacketSyncAdjust, actor.RefID, def.Name, value);
             }
-            private static void HandleSyncAdjust(INetPeer net, BinaryReader r)
+            private static void HandleSyncAdjust(INetEndpoint net, BinaryReader r)
             {
                 var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
                 var resource = Def.GetDef<ResourceDef>(r.ReadString());

@@ -30,7 +30,7 @@ namespace Start_a_Town_
                         var task = new AITask(typeof(TaskBehaviorTavernWorkerPrepareOrder));
                         foreach (var (reagent, item) in foundIngredients)
                             task.AddTarget(TargetIndex.A, item, 1);
-                        task.SetTarget(TargetIndex.B, availableKitchen.Value);
+                        task.SetTarget(TargetIndex.B, availableKitchen.Value.At(map));
                         task.IngredientsUsed = foundIngredients.ToDictionary(i => i.reagent, i => new ObjectRefIDsAmount(i.item, 1));
                         task.Order = order.Order;
                         task.CustomerProps = customer;

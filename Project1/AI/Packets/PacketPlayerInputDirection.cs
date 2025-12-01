@@ -13,7 +13,7 @@ namespace Start_a_Town_
         {
             p = Network.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetPeer net, Vector2 direction)
+        internal static void Send(INetEndpoint net, Vector2 direction)
         {
             if (net is Server)
                 throw new NotImplementedException();
@@ -22,7 +22,7 @@ namespace Start_a_Town_
             w.Write(net.GetPlayer().ID);
             w.Write(direction);
         }
-        private static void Receive(INetPeer net, BinaryReader r)
+        private static void Receive(INetEndpoint net, BinaryReader r)
         {
             if(net is Client)
                 throw new NotImplementedException();

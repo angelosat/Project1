@@ -99,10 +99,10 @@ namespace Start_a_Town_
                 if (Instance.Mouseover.Object is TargetArgs target)
                 {
                     if (target.Object != entity)
-                        target = new TargetArgs(entity, face) { Map = Engine.Map };
+                        target = new TargetArgs(entity, face);// { Map = Engine.Map };
                 }
                 else
-                    target = new TargetArgs(entity, face) { Map = Engine.Map };
+                    target = new TargetArgs(entity, face);// { Map = Engine.Map };
 
                 Instance.MouseoverNext.Target = target;
                 Instance.MouseoverNext.Object = target;

@@ -8,6 +8,8 @@ using Start_a_Town_.UI;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 
+#nullable enable
+
 namespace Start_a_Town_
 {
     public enum TargetType { Null, Entity, Slot, BlockEntitySlot, Position, Direction }
@@ -33,17 +35,9 @@ namespace Start_a_Town_
             this.Map.Town.OnTooltipCreated(tooltip, this);
             return;
         }
-        MapBase _Map;
-        public MapBase Map
-        {
-            get { return this._Map; }
-            set
-            {
-                this._Map = value;
-            }
-        }
+        
 
-        public INetPeer Network
+        public INetEndpoint Network
         {
             get { return this.Map.Net; }
         }
@@ -64,8 +58,53 @@ namespace Start_a_Town_
             }
             set => this._global = value;
         }
-        public int EntityID = -1;
-        GameObject CachedObject;
+        public void InitializeProvider(INetEndpoint provider)
+        {
+            if (this.Provider is not null)
+                throw new Exception();
+            this.Provider = provider;
+        }
+        INetEndpoint Provider;
+        int _entityID = -1, _mapID = -1;
+        public int EntityID
+        {
+            get => _entityID;
+            set
+            {
+                this._entityID = value;
+                this._resolvedEntity = null;
+            }
+        }
+        public int MapID
+        {
+            get => _mapID;
+            set
+            {
+                this._mapID = value;
+                this._resolvedMap = null;
+            }
+        }
+        MapBase? _resolvedMap;
+        //public MapBase? Map => this._resolvedMap ??= this.Provider.Map;
+       public MapBase? Map
+        {
+            get
+            {
+                return Type switch
+                {
+                    TargetType.Entity => this._resolvedEntity?.Map,
+                    TargetType.Position => _resolvedMap ??= this.Provider.Map,
+                    _ => null
+                };
+            }
+            set
+            {
+                this._mapID = value?.ID ?? -1;
+                this._resolvedMap = value;
+            }
+        }
+        GameObject? _resolvedEntity;
+        public GameObject? Entity => this._resolvedEntity ??= this.Provider.GetNetworkEntity(this.EntityID);
         public GameObject Object
         {
             get
@@ -74,16 +113,16 @@ namespace Start_a_Town_
                 {
                     if (this.EntityID == -1)
                         throw new Exception();
-                    if (this.CachedObject == null)
-                        this.CachedObject = this.Map.Net.GetNetworkEntity(this.EntityID);
+                    if (this._resolvedEntity == null)
+                        this._resolvedEntity = this.Provider.GetNetworkEntity(this.EntityID);
                 }
 
                 else if (this.Type == TargetType.Slot || this.Type == TargetType.BlockEntitySlot)
                 {
-                    if (this.CachedObject == null)
-                        this.CachedObject = this.Slot.Object;
+                    if (this._resolvedEntity == null)
+                        this._resolvedEntity = this.Slot.Object;
                 }
-                return this.CachedObject;
+                return this._resolvedEntity;
             }
         }
 
@@ -123,8 +162,8 @@ namespace Start_a_Town_
         {
             this.Type = TargetType.Entity;
             this.EntityID = obj.RefID;
-            this.CachedObject = obj;
-            this._Map = obj.Map;
+            this._resolvedEntity = obj;
+            this._resolvedMap = obj.Map;
 
             // struct assignments
             this._global = Vector3.Zero;
@@ -137,24 +176,20 @@ namespace Start_a_Town_
             this.SlotID = -1;
             this.ContainerName = "";
         }
-        public TargetArgs(INetPeer network, int entityID)
+        public TargetArgs(INetEndpoint provider, int entityID)
         {
+            this.Provider = provider;
             this.Type = TargetType.Entity;
             this.EntityID = entityID;
         }
-        public TargetArgs(MapBase map, int entityID)
-        {
-            this.Type = TargetType.Entity;
-            this.EntityID = entityID;
-            this.Map = map;
-        }
+      
         public TargetArgs(GameObject obj, Vector3 face)
         {
             this.Type = TargetType.Entity;
             this.EntityID = obj.RefID;
             this.Global = obj.Global;
-            this.CachedObject = obj;
-            this.Map = obj.Map;
+            this._resolvedEntity = obj;
+            this.Provider = obj.Net;
         }
         public TargetArgs(GameObject obj, Vector3? face)
         {
@@ -162,17 +197,17 @@ namespace Start_a_Town_
             this.EntityID = obj.RefID;
             this.Global = obj.Global;
             this.Face = face.HasValue ? face.Value : Vector3.Zero;
-            this.CachedObject = obj;
-            this.Map = obj.Map;
+            this._resolvedEntity = obj;
         }
-        public TargetArgs(MapBase map, Vector3 global)
+        public TargetArgs(INetEndpoint provider, Vector3 global)
         {
-            this.Map = map;
+            this.Provider = provider;
             this.Type = TargetType.Position;
             this.Global = global;
         }
-        public TargetArgs(Vector3 global)
+        public TargetArgs(MapBase map, Vector3 global)
         {
+            this._resolvedMap = map;
             this.Type = TargetType.Position;
             this.Global = global;
         }
@@ -182,8 +217,9 @@ namespace Start_a_Town_
             this.Global = global;
             this.Face = face;
         }
-        public TargetArgs(Vector3 global, Vector3 face, Vector3 precise)
+        public TargetArgs(INetEndpoint provider, Vector3 global, Vector3 face, Vector3 precise)
         {
+            this.Provider = provider;
             this.Type = TargetType.Position;
             this.Global = global;
             this.Face = face;
@@ -192,13 +228,21 @@ namespace Start_a_Town_
         public TargetArgs(MapBase map, Vector3 global, Vector3 face, Vector3 precise)
         {
             this.Type = TargetType.Position;
-            this.Map = map;
+            this._resolvedMap = map;
             this.Global = global;
             this.Face = face;
             this.Precise = precise;
+            this.Provider = map.Net;
+        }
+        public TargetArgs(INetEndpoint provider, GameObjectSlot slot)
+        {
+            this.Provider = provider;
+            this.Type = TargetType.Slot;
+            this.Slot = slot;
         }
         public TargetArgs(GameObjectSlot slot)
         {
+            this.Provider = slot.Parent.Net;
             this.Type = TargetType.Slot;
             this.Slot = slot;
         }
@@ -221,7 +265,7 @@ namespace Start_a_Town_
                 SlotID = this.SlotID,
                 Direction = this.Direction,
                 EntityID = this.EntityID,
-                _Map = this._Map
+                _resolvedMap = this._resolvedMap
             };
             return copy;
         }
@@ -230,12 +274,12 @@ namespace Start_a_Town_
         {
 
         }
-        public TargetArgs(MapBase map, Vector3 global, GameObjectSlot slot)
+        public TargetArgs(INetEndpoint provider, Vector3 global, GameObjectSlot slot)
         {
+            this.Provider = provider;
             if (slot == null)
                 throw new Exception();
             this.Type = TargetType.BlockEntitySlot;
-            this.Map = map;
             this.Global = global;
             this.ContainerName = slot.ContainerNew.Name;
             this.SlotID = slot.ID;
@@ -243,10 +287,7 @@ namespace Start_a_Town_
 
         public Cell Cell => this.Map.GetCell(this.Global);
 
-        static public TargetArgs Write(BinaryWriter writer, GameObjectSlot slot)
-        {
-            return new TargetArgs(slot).Write(writer);
-        }
+       
         static public TargetArgs Write(BinaryWriter writer, GameObject obj, Vector3? face = null)
         {
             return new TargetArgs(obj, face).Write(writer);
@@ -332,7 +373,7 @@ namespace Start_a_Town_
             return tag;
         }
 
-        static public TargetArgs Read(INetPeer net, BinaryReader reader)
+        static public TargetArgs Read(INetEndpoint provider, BinaryReader reader)
         {
 
             TargetType type = (TargetType)reader.ReadInt32();
@@ -343,66 +384,26 @@ namespace Start_a_Town_
 
                 case TargetType.Entity:
                     int netID = reader.ReadInt32();
-                    return new TargetArgs(net, netID) { Map = net.Map };
+                    return new TargetArgs(provider, netID);
 
                 case TargetType.Position:
-                    return new TargetArgs(reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3()) { Map = net.Map };
+                    return new TargetArgs(provider, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());// { Map = net.Map };
 
                 case TargetType.Slot:
                     int parentID = reader.ReadInt32();
-                    GameObject parent = net.GetNetworkEntity(parentID);
+                    GameObject parent = provider.GetNetworkEntity(parentID);
                     byte slotID = reader.ReadByte();
                     int containerID = reader.ReadInt32();
                     var slot = parent.GetChild(containerID, slotID);
-                    return new TargetArgs(slot) { Map = net.Map };
+                    return new TargetArgs(provider, slot);
 
                 case TargetType.BlockEntitySlot:
                     var vector3 = reader.ReadVector3();
-                    var blockentity = net.Map.GetBlockEntity(vector3);
+                    var blockentity = provider.Map.GetBlockEntity(vector3);
                     var containerName = reader.ReadString();
                     var slotid = reader.ReadByte();
                     var s = blockentity.GetChild(containerName, slotid);
-                    return new TargetArgs(net.Map, vector3, s) { Map = net.Map };
-
-                case TargetType.Direction:
-                    return new TargetArgs(reader.ReadVector2()) { Map = net.Map };
-
-                default:
-                    throw new Exception("Invalid target type " + type.ToString());
-            }
-        }
-        static public TargetArgs Read(MapBase map, BinaryReader reader)
-        {
-            TargetType type = (TargetType)reader.ReadInt32();
-            switch (type)
-            {
-                case TargetType.Null:
-                    return TargetArgs.Null;
-
-                case TargetType.Entity:
-                    int netID = reader.ReadInt32();
-                    return new TargetArgs(map, netID);
-
-                case TargetType.Position:
-                    var t = new TargetArgs(reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());
-                    t.Map = map;
-                    return t;
-
-                case TargetType.Slot:
-                    int parentID = reader.ReadInt32();
-                    GameObject parent = map.Net.GetNetworkEntity(parentID);
-                    byte slotID = reader.ReadByte();
-                    int containerID = reader.ReadInt32();
-                    var slot = parent.GetChild(containerID, slotID);
-                    return new TargetArgs(slot) { Map = map };
-
-                case TargetType.BlockEntitySlot:
-                    var vector3 = reader.ReadVector3();
-                    var blockentity = map.GetBlockEntity(vector3);
-                    var containerName = reader.ReadString();
-                    var slotid = reader.ReadByte();
-                    var s = blockentity.GetChild(containerName, slotid);
-                    return new TargetArgs(map, vector3, s);
+                    return new TargetArgs(provider, vector3, s);
 
                 case TargetType.Direction:
                     return new TargetArgs(reader.ReadVector2());
@@ -411,10 +412,49 @@ namespace Start_a_Town_
                     throw new Exception("Invalid target type " + type.ToString());
             }
         }
+        //static public TargetArgs Read(MapBase map, BinaryReader reader)
+        //{
+        //    TargetType type = (TargetType)reader.ReadInt32();
+        //    switch (type)
+        //    {
+        //        case TargetType.Null:
+        //            return TargetArgs.Null;
 
-        public void Load(MapBase map, SaveTag tag)
+        //        case TargetType.Entity:
+        //            int netID = reader.ReadInt32();
+        //            return new TargetArgs(map, netID);
+
+        //        case TargetType.Position:
+        //            var t = new TargetArgs(reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());
+        //            t.Map = map;
+        //            return t;
+
+        //        case TargetType.Slot:
+        //            int parentID = reader.ReadInt32();
+        //            GameObject parent = map.Net.GetNetworkEntity(parentID);
+        //            byte slotID = reader.ReadByte();
+        //            int containerID = reader.ReadInt32();
+        //            var slot = parent.GetChild(containerID, slotID);
+        //            return new TargetArgs(slot);
+
+        //        case TargetType.BlockEntitySlot:
+        //            var vector3 = reader.ReadVector3();
+        //            var blockentity = map.GetBlockEntity(vector3);
+        //            var containerName = reader.ReadString();
+        //            var slotid = reader.ReadByte();
+        //            var s = blockentity.GetChild(containerName, slotid);
+        //            return new TargetArgs(map, vector3, s);
+
+        //        case TargetType.Direction:
+        //            return new TargetArgs(reader.ReadVector2());
+
+        //        default:
+        //            throw new Exception("Invalid target type " + type.ToString());
+        //    }
+        //}
+
+        public void Load(SaveTag tag)
         {
-            this.Map = map;
             this.Type = (TargetType)tag.GetValue<int>("Type");
             switch (this.Type)
             {
@@ -454,14 +494,21 @@ namespace Start_a_Town_
 
         public TargetArgs(SaveTag tag)
         {
-            this.Load(null, tag);
+            this.Load(tag);
         }
 
+        public TargetArgs(INetEndpoint provider, SaveTag tag)
+        {
+            this.Provider = provider;
+
+            this.Load(tag);
+        }
         public TargetArgs(MapBase map, SaveTag tag)
         {
-            this.Load(map, tag);
+            this.Provider = map.Net;
+            this._resolvedMap = map;
+            this.Load(tag);
         }
-
         public Vector3 FinalGlobal
         {
             get
@@ -505,7 +552,7 @@ namespace Start_a_Town_
                 _ => this.Type.ToString(),
             };
         }
-        public Dictionary<string, Interaction> GetInteractions(INetPeer net)
+        public Dictionary<string, Interaction> GetInteractions(INetEndpoint net)
         {
             switch (this.Type)
             {
@@ -550,7 +597,7 @@ namespace Start_a_Town_
                     return null;
             }
         }
-        internal List<Interaction> GetAvailableTasks(INetPeer net)
+        internal List<Interaction> GetAvailableTasks(INetEndpoint net)
         {
             switch (this.Type)
             {
@@ -626,7 +673,7 @@ namespace Start_a_Town_
             }
         }
 
-        public void HandleRemoteCall(INetPeer net, ObjectEventArgs e)
+        public void HandleRemoteCall(INetEndpoint net, ObjectEventArgs e)
         {
             switch (this.Type)
             {

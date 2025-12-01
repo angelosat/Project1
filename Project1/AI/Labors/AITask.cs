@@ -88,10 +88,11 @@ namespace Start_a_Town_
             return this.SetTarget(targetInd, new TargetArgs(target));
         }
 
-        internal AITask SetTarget(TargetIndex targetInd, Vector3 target)
-        {
-            return this.SetTarget(targetInd, new TargetArgs(target));
-        }
+        //internal AITask SetTarget(TargetIndex targetInd, MapBase map, Vector3 target)
+        //{
+        //    return this.SetTarget(targetInd, target.At(map));
+        //}
+       
         internal AITask SetTarget(TargetIndex targetInd, TargetArgs targetArgs)
         {
             switch (targetInd)
@@ -348,11 +349,11 @@ namespace Start_a_Town_
         {
             this.Def = tag.LoadDef<TaskDef>("Def");
             tag.TryGetTagValue<int>("ID", t => this.ID = t);
-            tag.TryGetTag("TargetA", t => this.TargetA = new TargetArgs(null, t));
-            tag.TryGetTag("TargetB", t => this.TargetB = new TargetArgs(null, t));
-            tag.TryGetTag("TargetC", t => this.TargetC = new TargetArgs(null, t));
+            tag.TryGetTag("TargetA", t => this.TargetA = new TargetArgs(t));
+            tag.TryGetTag("TargetB", t => this.TargetB = new TargetArgs(t));
+            tag.TryGetTag("TargetC", t => this.TargetC = new TargetArgs(t));
 
-            tag.TryGetTag("Tool", t => this.Tool = new TargetArgs(null, t));
+            tag.TryGetTag("Tool", t => this.Tool = new TargetArgs(t));
 
             tag.TryGetTagValue("AmountA", out this.AmountA);
             tag.TryGetTagValue("AmountB", out this.AmountB);
@@ -374,7 +375,7 @@ namespace Start_a_Town_
 
             tag.TryLoadRef("Order", out this.Order);
             tag.TryGetTagValue("Count", out this.Count);
-            tag.TryGetTag("Product", t => this.Product = new TargetArgs(null, t));
+            tag.TryGetTag("Product", t => this.Product = new TargetArgs(t));
             tag.TryGetTagValue("Forced", out this.Forced);
             if (tag.TryGetTagValue("Queues", out List<SaveTag> queuestag))
             {
@@ -385,7 +386,7 @@ namespace Start_a_Town_
                     var clist = new List<int>();
                     foreach (var ctag in curqtag)
                     {
-                        var tar = new TargetArgs(null, ctag["Target"]);
+                        var tar = new TargetArgs(ctag["Target"]);
 
                         var amount = (int)ctag["Amount"].Value;
                         tlist.Add(tar);
@@ -428,8 +429,8 @@ namespace Start_a_Town_
         protected virtual void Read(BinaryReader r)
         {
             this.ID = r.ReadInt32();
-            this.Tool = TargetArgs.Read((INetPeer)null, r);
-            this.TargetA = TargetArgs.Read((INetPeer)null, r);
+            this.Tool = TargetArgs.Read((INetEndpoint)null, r);
+            this.TargetA = TargetArgs.Read((INetEndpoint)null, r);
             this.AmountA = r.ReadInt32();
             this.TargetsA = r.ReadListTargets();
             this.AmountsA = r.ReadListInt();
@@ -457,23 +458,24 @@ namespace Start_a_Town_
 
         internal void MapLoaded(GameObject parent)
         {
-            this.Tool.Map = parent.Map;
-            this.TargetA.Map = parent.Map;
-            this.TargetB.Map = parent.Map;
-            this.TargetC.Map = parent.Map;
+            var net = parent.Net;
+            this.Tool.InitializeProvider(net);
+            this.TargetA.InitializeProvider(net);
+            this.TargetB.InitializeProvider(net);
+            this.TargetC.InitializeProvider(net);
 
             foreach (var tar in this.TargetsA)
-                tar.Map = parent.Map;
+                tar.InitializeProvider(net);
             foreach (var tar in this.TargetsB)
-                tar.Map = parent.Map;
+                tar.InitializeProvider(net);
             foreach (var tar in this.TargetsC)
-                tar.Map = parent.Map;
+                tar.InitializeProvider(net);
 
             foreach (var q in this.TargetQueues)
                 foreach (var t in q)
-                    t.Map = parent.Map;
+                    t.InitializeProvider(net);
             foreach (var t in this.GetCustomTargets())
-                t.Map = parent.Map;
+                t.InitializeProvider(net);
             foreach (var t in this.PlacedObjects)
                 t.ResolveReferences(parent.Net);
         }

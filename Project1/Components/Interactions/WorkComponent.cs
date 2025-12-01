@@ -115,7 +115,7 @@ namespace Start_a_Town_.Components
             var isinteracting = r.ReadBoolean();
             if (!isinteracting)
                 return;
-            this.Target = TargetArgs.Read((INetPeer)null, r);
+            this.Target = TargetArgs.Read((INetEndpoint)null, r);
             var interactionType = r.ReadString();
             var interaction = Activator.CreateInstance(Type.GetType(interactionType)) as Interaction;
             interaction.Actor = this.Parent as Actor;
@@ -144,7 +144,7 @@ namespace Start_a_Town_.Components
                 return;
             if (!isInteracting)
                 return;
-            this.Target = new TargetArgs(null, save["Target"]);
+            this.Target = new TargetArgs(save["Target"]);
             var interactionTag = save["Interaction"];
             var inter = Interaction.Load(interactionTag);
             inter.Actor = this.Parent as Actor;
@@ -171,7 +171,8 @@ namespace Start_a_Town_.Components
         internal override void MapLoaded(GameObject parent)
         {
             if (this.Target != null)
-                this.Target.Map = parent.Map;
+                //this.Target.Map = parent.Map;
+                this.Target.InitializeProvider(parent.Net);
         }
 
         internal override void ResolveReferences()

@@ -87,7 +87,7 @@ namespace Start_a_Town_
             net.EventOccured(Message.Types.OrderParametersChanged, order);
 
             if (net is Server server)
-                WriteOrderToggleReagent(server.OutgoingStream, order, reagent, itemID, add);
+                WriteOrderToggleReagent(server.OutgoingStreamOrderedReliable, order, reagent, itemID, add);
         }
         static void CraftingOrderModifyPriority(INetEndpoint net, BinaryReader r)
         {
@@ -99,7 +99,7 @@ namespace Start_a_Town_
             if (!benchEntity.Reorder(orderIndex, increase))
                 return;
             if (net is Server server)
-                WriteOrderModifyPriority(server.OutgoingStream, order, increase);
+                WriteOrderModifyPriority(server.OutgoingStreamOrderedReliable, order, increase);
         }
 
         internal void RegisterOrder(CraftOrder ord)
@@ -125,7 +125,7 @@ namespace Start_a_Town_
                 return;
 
             if (net is Server server)
-                WriteOrderModifyQuantityParams(server.OutgoingStream, order, quantity);
+                WriteOrderModifyQuantityParams(server.OutgoingStreamOrderedReliable, order, quantity);
         }
 
         public static void WriteOrderModifyQuantityParams(BinaryWriter w, CraftOrder order, int quantity)

@@ -8,7 +8,7 @@ namespace Start_a_Town_
         internal static void Send(INetEndpoint net, int playerID)
         {
             var server = net as Server;
-            var w = server.OutgoingStream;
+            var w = server.OutgoingStreamOrderedReliable;
             w.Write(PacketType.PlayerDisconnected);
             w.Write(playerID);
         }

@@ -13,10 +13,10 @@ namespace Start_a_Town_.Components.Needs
         }
         static public void Send(Server server, int agentID, NeedDef needDef, float value)
         {
-            server.OutgoingStream.Write(p);
-            server.OutgoingStream.Write(agentID);
-            server.OutgoingStream.Write(needDef.Name);
-            server.OutgoingStream.Write(value);
+            server.OutgoingStreamOrderedReliable.Write(p);
+            server.OutgoingStreamOrderedReliable.Write(agentID);
+            server.OutgoingStreamOrderedReliable.Write(needDef.Name);
+            server.OutgoingStreamOrderedReliable.Write(value);
 
         }
         static public void Receive(INetEndpoint net, BinaryReader r)

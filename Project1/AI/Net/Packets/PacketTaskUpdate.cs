@@ -14,9 +14,9 @@ namespace Start_a_Town_
         }
         static public void Send(Server server, int agentID, string taskString)
         {
-            server.OutgoingStream.Write(p);
-            server.OutgoingStream.Write(agentID);
-            server.OutgoingStream.Write(taskString);
+            server.OutgoingStreamOrderedReliable.Write(p);
+            server.OutgoingStreamOrderedReliable.Write(agentID);
+            server.OutgoingStreamOrderedReliable.Write(taskString);
         }
         static public void Receive(INetEndpoint net, BinaryReader r)
         {

@@ -13,9 +13,9 @@ namespace Start_a_Town_.Modules.AI.Net.Packets
         }
         static public void Send(Server server, int agentID, string entry)
         {
-            server.OutgoingStream.Write(p);
-            server.OutgoingStream.Write(agentID);
-            server.OutgoingStream.Write(entry);
+            server.OutgoingStreamOrderedReliable.Write(p);
+            server.OutgoingStreamOrderedReliable.Write(agentID);
+            server.OutgoingStreamOrderedReliable.Write(entry);
         }
         static public void Receive(INetEndpoint net, BinaryReader r)
         {

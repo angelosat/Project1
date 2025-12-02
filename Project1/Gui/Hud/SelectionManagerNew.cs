@@ -254,7 +254,7 @@ namespace Start_a_Town_.UI
                     entity.GetQuickButtons(this);
                     this.InitInfoTabs(entity.GetTabs());
                     entity.Map.Town.Select(target, this);
-                    this.InitInfoTabs(entity.Town.GetTabs(target));
+                    this.InitInfoTabs(entity.Map.Town?.GetTabs(target));
                     break;
 
                 case TargetType.Position:

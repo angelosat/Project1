@@ -3,6 +3,7 @@
 - fix moodlets being checked only in specific context (dont check the noroom moodlet for non town members)
   - [Open MoodletDef.cs](Components/Mood/MoodletDef.cs)
 - fix "visitor" visiting for the same time when not actually the first time 
+- use getbuffer() instead of toarray() for outgoing packet streams [Open Stream.cs](Network/Stream.cs)
 ## networking
 ## gui
 - xml driven

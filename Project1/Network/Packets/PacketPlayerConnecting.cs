@@ -15,7 +15,7 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, PlayerData player)
         {
-            var w = (net as Server).OutgoingStream;
+            var w = (net as Server).OutgoingStreamOrderedReliable;
             w.Write(PacketType.PlayerConnecting);
             player.Write(w);
         }

@@ -6,7 +6,7 @@ namespace Start_a_Town_
     {
         protected override AITask TryAssignTask(Actor actor)
         {
-            var town = actor.Town;
+            var town = actor.Map.Town;
             var quests = town.QuestManager.GetQuestDefs();
             foreach(var q in quests)
             {

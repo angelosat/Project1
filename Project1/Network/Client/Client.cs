@@ -4,10 +4,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_.Net
 {
@@ -69,12 +71,13 @@ namespace Start_a_Town_.Net
         public TimeSpan Clock => this.ClientClock;
 
         public BinaryWriter OutgoingStreamUnreliable = new(new MemoryStream());
+        public BinaryWriter OutgoingStreamOrderedReliable = new(new MemoryStream());
         public BinaryWriter OutgoingStreamReliable = new(new MemoryStream());
 
         public BinaryWriter GetOutgoingStream()
         {
             //return this.OutgoingStreamUnreliable;
-            return this.OutgoingStreamReliable;
+            return this.OutgoingStreamOrderedReliable;
         }
 
         public BinaryWriter OutgoingStreamTimestamped = new(new MemoryStream());
@@ -254,12 +257,23 @@ namespace Start_a_Town_.Net
             if (this.PlayerData is not null && this.Map is not null)
                 PacketMousePosition.Send(Instance, this.PlayerData.ID, ToolManager.CurrentTarget); // TODO: do this at the toolmanager class instead of here
 
-            PacketAcks.Send(this, this.PlayerData);
-            this.SendOutgoingStreamUnreliable();
+            PacketAcks.Send(this, this.PlayerData); // acks are written to the unreliable packet
+            //simulate the unreliable packet getting lost
+            //var packetLost = _random.Chance(.8);
+            //if (!packetLost)
+                this.SendOutgoingStreamUnreliable();
+            //if (_random.Chance(.05))
+            //    simLossStreak = _random.Next(5, 20);
+            //if (simLossStreak > 0)
+            //    simLossStreak--;
+            //else
+            //    this.SendOutgoingStreamUnreliable();
             this.TryResendPacketsFirst();
-            this.SendOutgoingStreamReliable();
+            this.SendOutgoingStreamOrderedReliable();
+            this.ResetStreams();
         }
-
+        int simLossStreak;
+        Random _random = new();
         private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, byte[] data)> BufferTimestamped = [];
         private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, Packet packet, int payloadPos, int frameLength)> BufferTimestampedNew = [];
 
@@ -329,8 +343,18 @@ namespace Start_a_Town_.Net
             {
                 var data = ((MemoryStream)this.OutgoingStreamUnreliable.BaseStream).ToArray();
                 if (data.Length > 0)
-                    this.Send(PacketType.MergedPackets, data, SendType.Unreliable);
-                this.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
+                    this.Send(PacketType.MergedPackets, data, ReliabilityType.Unreliable);
+                //this.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
+            }
+        }
+        private void SendOutgoingStreamOrderedReliable()
+        {
+            if (this.OutgoingStreamOrderedReliable.BaseStream.Position > 0)
+            {
+                var data = ((MemoryStream)this.OutgoingStreamOrderedReliable.BaseStream).ToArray();
+                if (data.Length > 0)
+                    this.Send(PacketType.MergedPackets, data, ReliabilityType.OrderedReliable);
+                //this.OutgoingStreamReliable = new BinaryWriter(new MemoryStream());
             }
         }
         private void SendOutgoingStreamReliable()
@@ -339,9 +363,17 @@ namespace Start_a_Town_.Net
             {
                 var data = ((MemoryStream)this.OutgoingStreamReliable.BaseStream).ToArray();
                 if (data.Length > 0)
-                    this.Send(PacketType.MergedPackets, data, SendType.OrderedReliable);
-                this.OutgoingStreamReliable = new BinaryWriter(new MemoryStream());
+                    this.Send(PacketType.MergedPackets, data, ReliabilityType.Reliable);
             }
+        }
+        
+        void ResetStreams()
+        {
+            foreach (var s in this.StreamsArray)
+                s.Reset();
+            this.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
+            this.OutgoingStreamOrderedReliable = new BinaryWriter(new MemoryStream());
+            this.OutgoingStreamReliable = new BinaryWriter(new MemoryStream());
         }
         private void OnGameEvent(GameEvent e)
         {
@@ -422,13 +454,14 @@ namespace Start_a_Town_.Net
                     this.RecentPackets.Dequeue();
 
                 // for ordered packets, only handle last one (store most recent and discard and older ones)
-                if (packet.SendType == SendType.Ordered)
+                if (packet.Reliability == ReliabilityType.Ordered)
                 {
                     this.IncomingOrdered.Enqueue(packet.ID, packet);//e);
                 }
-                else if (packet.SendType == SendType.OrderedReliable)
+                else if (packet.Reliability == ReliabilityType.OrderedReliable)
                 {
-                    this.IncomingOrderedReliable.Enqueue(packet.OrderedReliableID, packet);
+                    if (packet.OrderedReliableID > this.RemoteOrderedReliableSequence)
+                        this.IncomingOrderedReliable.Enqueue(packet.OrderedReliableID, packet);
                 }
                 else
                 {
@@ -788,7 +821,7 @@ namespace Start_a_Town_.Net
                 Packet packet = Packet.Read(bytesReceived);
 
 
-                if ((packet.SendType & SendType.Reliable) == SendType.Reliable)
+                if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
                     // OLD METHOD: immediately send a tiny datagram back with the ack
                     //    Packet.Send(this.PacketID, PacketType.Ack, Network.Serialize(w => w.Write(packet.ID)), this.Host, this.RemoteIP);
                     // NEW METHOD: piggy-back the ack to the mergedpacket that will be sent next frame
@@ -1039,13 +1072,13 @@ namespace Start_a_Town_.Net
             }).Send(Instance.NextPacketID, PacketType.PlayerServerCommand, Instance.Host, Instance.RemoteIP);
         }
 
-        private void Send(PacketType packetType, byte[] data, SendType sendType)
+        private void Send(PacketType packetType, byte[] data, ReliabilityType sendType)
         {
             //data.Send(this.PacketID, packetType, sendType, this.Host, this.RemoteIP);
             var packet = Packet.Create(this.NextPacketID, packetType, sendType, data);
             packet.BeginSendTo(this.Host, this.RemoteIP);
 
-            if ((packet.SendType & SendType.Reliable) == SendType.Reliable)
+            if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
                 this.PlayerData.WaitingForAck[packet.ID] = packet;
         }
         //private void Send(PacketType packetType, byte[] data)
@@ -1058,7 +1091,7 @@ namespace Start_a_Town_.Net
         /// <param name="packetType"></param>
         /// <param name="payload"></param>
         /// <param name="sendType"></param>
-        public void Enqueue(PacketType packetType, byte[] payload, SendType sendType)
+        public void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType)
         { }
 
         /// <summary>
@@ -1177,6 +1210,67 @@ namespace Start_a_Town_.Net
         public void WriteToStream(params object[] args)
         {
             this.GetOutgoingStream().Write(args);
+        }
+        public BinaryWriter this[ReliabilityType reliability]
+        {
+            get
+            {
+                foreach (var s in this.StreamsArray)
+                    if (s.Reliability == reliability)
+                        return s.Writer;
+                throw new Exception("Stream not found");
+            }
+        }
+        [Obsolete]
+        public BinaryWriter GetStream(ReliabilityType reliability)
+        {
+            return this[reliability];
+            //return reliability switch
+            //{
+            //    ReliabilityType.Unreliable => this.OutgoingStreamUnreliable,
+            //    ReliabilityType.Reliable => this.OutgoingStreamReliable,
+            //    ReliabilityType.OrderedReliable => this.OutgoingStreamOrderedReliable,
+            //    _ => throw new Exception()
+            //};
+        }
+
+        //Dictionary<ReliabilityType, BinaryWriter> Streams = new() { { ReliabilityType.Unreliable, new BinaryWriter(new MemoryStream()) }, { ReliabilityType.Reliable, new BinaryWriter(new MemoryStream()) }, { ReliabilityType.OrderedReliable, new BinaryWriter(new MemoryStream()) } };
+        //private void SendOutgoingStreams()
+        //{
+        //    foreach (var i in this.Streams)
+        //        if (i.Value.BaseStream.Position > 0)
+        //        {
+        //            var data = ((MemoryStream)i.Value.BaseStream).ToArray();
+        //            if (data.Length > 0)
+        //                this.Send(PacketType.MergedPackets, data, i.Key);
+        //        }
+        //}
+        class Stream
+        {
+            public readonly ReliabilityType Reliability;
+            readonly MemoryStream Memory = new();
+            public readonly BinaryWriter Writer;
+            public Stream(ReliabilityType reliability)
+            {
+                this.Reliability = reliability;
+                this.Writer = new BinaryWriter(this.Memory);
+            }
+            public void Reset() => this.Writer.BaseStream.SetLength(0);
+            public ArraySegment<byte> GetBuffer()
+            {
+                return new ArraySegment<byte>(this.Memory.GetBuffer(), 0, (int)this.Memory.Position);
+            }
+        }
+        private readonly Stream[] StreamsArray = [new(ReliabilityType.Unreliable), new(ReliabilityType.Reliable), new(ReliabilityType.OrderedReliable)];
+        private void SendOutgoingStreamsArray()
+        {
+            foreach (var i in this.StreamsArray)
+                if (i.Writer.BaseStream.Position > 0)
+                {
+                    var data = ((MemoryStream)i.Writer.BaseStream).ToArray();
+                    if (data.Length > 0)
+                        this.Send(PacketType.MergedPackets, data, i.Reliability);
+                }
         }
     }
 }

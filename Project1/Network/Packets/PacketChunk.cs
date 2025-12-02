@@ -13,7 +13,7 @@ namespace Start_a_Town_
         internal static void Send(INetEndpoint net, Vector2 vector2, byte[] chunkData, PlayerData player)
         {
             var server = net as Server;
-            server.Enqueue(player, Packet.Create(player, PacketType.Chunk, chunkData, sendType: SendType.OrderedReliable));
+            server.Enqueue(player, Packet.Create(player, PacketType.Chunk, chunkData, sendType: ReliabilityType.OrderedReliable));
         }
         internal static void Receive(INetEndpoint net, BinaryReader r)
         {

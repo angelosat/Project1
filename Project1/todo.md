@@ -1,10 +1,8 @@
 # todo 2025
 ## immediate
-- fix moodlets being checked only in specific context (dont check the noroom moodlet for noncitizens)
+- fix moodlets being checked only in specific context (dont check the noroom moodlet for non town members)
   - [Open MoodletDef.cs](Components/Mood/MoodletDef.cs)
-	- Condition = a => a.IsCitizen && a.AssignedRoom == null 
-	- fix IsCitizen (rename to IsTownMember) so that it doesn't check the actor's *nullable* Map field 
-	- decouple town from map, probably i need assignable unique town ids, so that the actor knows its part of a town even if the map/town isn't loaded
+- fix "visitor" visiting for the same time when not actually the first time 
 ## networking
 ## gui
 - xml driven

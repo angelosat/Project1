@@ -21,10 +21,10 @@ namespace Start_a_Town_
             if (player == null)
             {
                 foreach (var p in server.Players.GetList())
-                    server.Enqueue(p, Packet.Create(player, PacketType.WorldData, data, SendType.OrderedReliable));
+                    server.Enqueue(p, Packet.Create(player, PacketType.WorldData, data, ReliabilityType.OrderedReliable));
             }
             else
-                server.Enqueue(player, Packet.Create(player, PacketType.WorldData, data, SendType.OrderedReliable));
+                server.Enqueue(player, Packet.Create(player, PacketType.WorldData, data, ReliabilityType.OrderedReliable));
         }
         internal static void Receive(INetEndpoint net, BinaryReader r)
         {

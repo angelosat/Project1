@@ -14,7 +14,7 @@ namespace Start_a_Town_
 {
     public static class NetworkHelper
     {
-        public static void Send(this byte[] data, long packetID, PacketType type, SendType sendType, Socket so, EndPoint ip)
+        public static void Send(this byte[] data, long packetID, PacketType type, ReliabilityType sendType, Socket so, EndPoint ip)
         {
             Packet.Create(packetID, type, sendType, data).BeginSendTo(so, ip);
         }

@@ -25,7 +25,7 @@ namespace Start_a_Town_
         IEnumerable<GameObject> GetNetworkObjects();
 
         bool TryGetNetworkObject(int netID, out Entity obj);
-        void Enqueue(PacketType packetType, byte[] payload, SendType sendType);
+        void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType);
 
         IEnumerable<PlayerData> GetPlayers();
         PlayerData GetPlayer(int id);
@@ -51,6 +51,7 @@ namespace Start_a_Town_
         void EventOccured(Components.Message.Types type, params object[] p);
 
         BinaryWriter GetOutgoingStream();
+        BinaryWriter GetStream(ReliabilityType reliabilityChannel);
         void WriteToStream(params object[] args);
 
         void SetSpeed(int playerID, int speed);

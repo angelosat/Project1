@@ -30,7 +30,7 @@ namespace Start_a_Town_.Net
     }
 
     [Flags]
-    public enum SendType { Unreliable = 0, Ordered = 0x1, Reliable = 0x2, OrderedReliable = 0x3 }
+    public enum ReliabilityType { Unreliable = 0, Ordered = 0x1, Reliable = 0x2, OrderedReliable = 0x3 }
 
     public class Packet
     {
@@ -40,7 +40,7 @@ namespace Start_a_Town_.Net
         public long OrderedReliableID;
         public EndPoint Sender;
         public EndPoint Recipient;
-        public SendType SendType;
+        public ReliabilityType Reliability;
         public double Tick;
         public bool IsCompressed = true; //until i remove the code that blindly compressed everything
         public bool Synced;
@@ -75,8 +75,8 @@ namespace Start_a_Town_.Net
             using BinaryReader reader = new(new MemoryStream(data));
             long orderReliableseq = 0;
             long id = reader.ReadInt64();
-            SendType sendType = (SendType)reader.ReadInt32(); //read and write sendtype as 2 bits
-            if (sendType == SendType.OrderedReliable)
+            ReliabilityType sendType = (ReliabilityType)reader.ReadInt32(); //read and write sendtype as 2 bits
+            if (sendType == ReliabilityType.OrderedReliable)
                 orderReliableseq = reader.ReadInt64();
             PacketType type = (PacketType)reader.ReadByte();
 
@@ -90,7 +90,7 @@ namespace Start_a_Town_.Net
 
             return new Packet(id, type, length, payload)
             {
-                SendType = sendType,
+                Reliability = sendType,
                 Decompressed = decompressed,
                 OrderedReliableID = orderReliableseq,
                 Tick = tick,
@@ -98,21 +98,21 @@ namespace Start_a_Town_.Net
                 Reader = new BinaryReader(new MemoryStream(decompressed))
             };
         }
-        static public Packet Create(PlayerData reciepient, PacketType type, byte[] data, SendType sendType = SendType.Unreliable)
+        static public Packet Create(PlayerData reciepient, PacketType type, byte[] data, ReliabilityType sendType = ReliabilityType.Unreliable)
         {
             return new Packet(reciepient.PacketSequenceIncrement, type, data.Length, data) { 
                 Player = reciepient, 
-                SendType = sendType,
-                OrderedReliableID = sendType == SendType.OrderedReliable ? reciepient.OrderedReliableSequence++ : 0
+                Reliability = sendType,
+                OrderedReliableID = sendType == ReliabilityType.OrderedReliable ? reciepient.OrderedReliableSequence++ : 0
             };
         }
         static public Packet Create(long id, PacketType type, byte[] data)
         {
             return new Packet(id, type, data.Length, data);
         }
-        static public Packet Create(long id, PacketType type, SendType sendType, byte[] data)
+        static public Packet Create(long id, PacketType type, ReliabilityType sendType, byte[] data)
         {
-            return new Packet(id, type, data.Length, data) { SendType = sendType };
+            return new Packet(id, type, data.Length, data) { Reliability = sendType };
         }
         static public Packet Create(long id, PacketType type)
         {
@@ -124,8 +124,8 @@ namespace Start_a_Town_.Net
             var mem = new MemoryStream();
             using BinaryWriter writer = GetWriter(mem);
             writer.Write(this.ID);
-            writer.Write((int)this.SendType);
-            if (this.SendType == SendType.OrderedReliable)
+            writer.Write((int)this.Reliability);
+            if (this.Reliability == ReliabilityType.OrderedReliable)
             {
                 writer.Write(this.OrderedReliableID);
             }

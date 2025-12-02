@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Start_a_Town_.Net
@@ -126,15 +127,12 @@ namespace Start_a_Town_.Net
             Listener?.Close();
 
             Instance.ConsoleBox?.Write("SERVER", "Stopped");
-            Instance.OutgoingStream = new BinaryWriter(new MemoryStream());
-            Instance.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
-            Instance.OutgoingStreamReliable = new BinaryWriter(new MemoryStream());
+            ResetOutgoingStreams();
 
             Instance.Players = new PlayerList(Instance);
             IsRunning = false;
             Instance.Map = null;
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
-            //Instance.NetworkObjects.Clear();
             ServerClock = new TimeSpan();
             Instance.Speed = 0;
         }
@@ -142,9 +140,7 @@ namespace Start_a_Town_.Net
         {
             Instance.Speed = 0;
             IsRunning = true;
-            Instance.OutgoingStream = new BinaryWriter(new MemoryStream());
-            Instance.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
-            Instance.OutgoingStreamReliable = new BinaryWriter(new MemoryStream());
+            ResetOutgoingStreams();
 
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
             //Instance.NetworkObjects.Clear();
@@ -220,7 +216,7 @@ namespace Start_a_Town_.Net
                 using var str = new BinaryWriter(new MemoryStream());
                 PacketAcks.Send(str, player);
                 var data = ((MemoryStream)str.BaseStream).ToArray();
-                var p = Packet.Create(player, PacketType.MergedPackets, data, SendType.Unreliable);
+                var p = Packet.Create(player, PacketType.MergedPackets, data, ReliabilityType.Unreliable);
                 p.Synced = true;
                 p.Tick = this.Clock.TotalMilliseconds;
                 this.Enqueue(player, p);
@@ -238,7 +234,7 @@ namespace Start_a_Town_.Net
             this.CreatePacketsFromStreamUnreliable();
             this.CreatePacketsFromStream();
         }
-        private static void ResetOutgoingStreams()
+        protected static void ResetOutgoingStreams()
         {
             Instance.OutgoingStream = new BinaryWriter(new MemoryStream());
             Instance.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
@@ -369,25 +365,25 @@ namespace Start_a_Town_.Net
 
         internal void EnqueueUnreliable(PacketType packetType, byte[] p)
         {
-            this.Enqueue(packetType, p, SendType.Unreliable, true);
+            this.Enqueue(packetType, p, ReliabilityType.Unreliable, true);
         }
         internal void Enqueue(PacketType packetType, byte[] p, bool sync = true)
         {
-            this.Enqueue(packetType, p, SendType.OrderedReliable, sync);
+            this.Enqueue(packetType, p, ReliabilityType.OrderedReliable, sync);
         }
 
         internal void Enqueue(PlayerData player, Packet packet)
         {
-            if ((packet.SendType & SendType.Reliable) == SendType.Reliable)
+            if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
             {
-                if (packet.SendType == SendType.OrderedReliable)
+                if (packet.Reliability == ReliabilityType.OrderedReliable)
                     packet.Tick = this.Clock.TotalMilliseconds;
                 player.OutReliable.Enqueue(packet);
             }
             else
                 player.OutUnreliable.Enqueue(packet);
         }
-        public void Enqueue(PacketType type, byte[] data, SendType send)
+        public void Enqueue(PacketType type, byte[] data, ReliabilityType send)
         {
             if (data.Length > 60000)
             {
@@ -401,11 +397,11 @@ namespace Start_a_Town_.Net
             foreach (var player in this.Players.GetList())
                 this.Enqueue(player, Packet.Create(player, type, data, send));
         }
-        internal void Enqueue(PacketType type, byte[] data, SendType send, Vector3 global)
+        internal void Enqueue(PacketType type, byte[] data, ReliabilityType send, Vector3 global)
         {
             this.Enqueue(type, data, send, player => player.IsWithin(global));
         }
-        internal void Enqueue(PacketType type, byte[] data, SendType send, Vector3 global, bool sync)
+        internal void Enqueue(PacketType type, byte[] data, ReliabilityType send, Vector3 global, bool sync)
         {
             foreach (var player in this.Players.GetList().Where(player => player.IsWithin(global)))
             {
@@ -416,7 +412,7 @@ namespace Start_a_Town_.Net
                 this.Enqueue(player, p);
             }
         }
-        internal void Enqueue(PacketType type, byte[] data, SendType send, bool sync)
+        internal void Enqueue(PacketType type, byte[] data, ReliabilityType send, bool sync)
         {
             foreach (var player in this.Players.GetList())
             {
@@ -426,7 +422,7 @@ namespace Start_a_Town_.Net
                 this.Enqueue(player, p);
             }
         }
-        internal void Enqueue(PacketType type, byte[] data, SendType send, Func<PlayerData, bool> filter)
+        internal void Enqueue(PacketType type, byte[] data, ReliabilityType send, Func<PlayerData, bool> filter)
         {
             if (data.Length > 60000)
             {
@@ -449,6 +445,7 @@ namespace Start_a_Town_.Net
         {
             return this.OutgoingStream;
         }
+        
         static ConcurrentDictionary<EndPoint, UdpConnection> Connections = new();
         static void ReceiveMessage(IAsyncResult ar)
         {
@@ -482,7 +479,7 @@ namespace Start_a_Town_.Net
 
                 player.Incoming.Enqueue(packet);
 
-                if ((packet.SendType & SendType.Reliable) == SendType.Reliable)
+                if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
                     player.AckQueue.Enqueue(packet.ID);
             }
             catch (SocketException)
@@ -531,7 +528,7 @@ namespace Start_a_Town_.Net
                         w.Write(msg.Player.ID);
                         Instance.Players.Write(w);
                         w.Write(Instance.Speed);
-                    }), SendType.Reliable | SendType.Ordered));
+                    }), ReliabilityType.Reliable | ReliabilityType.Ordered));
 
                     var state = new UdpConnection(pl.Name + " listener", pl.IP) { Buffer = new byte[Packet.Size], Player = pl };
                     EndPoint ip = state.IP;
@@ -555,7 +552,7 @@ namespace Start_a_Town_.Net
                     TargetArgs actor = TargetArgs.Read(Instance, r);
                     TargetArgs target = TargetArgs.Read(Instance, r);
                     Instance.PostLocalEvent(target.Slot.Parent, Components.Message.Types.SlotInteraction, actor.Object, target.Slot);
-                    Instance.Enqueue(PacketType.PlayerSlotClick, msg.Payload, SendType.OrderedReliable);
+                    Instance.Enqueue(PacketType.PlayerSlotClick, msg.Payload, ReliabilityType.OrderedReliable);
                     return;
 
                 case PacketType.PlayerRemoteCall:
@@ -565,7 +562,7 @@ namespace Start_a_Town_.Net
                     int dataLength = (int)(r.BaseStream.Length - r.BaseStream.Position);
                     byte[] args = r.ReadBytes(dataLength);
                     target.HandleRemoteCall(Instance, ObjectEventArgs.Create(call, args));
-                    Instance.Enqueue(PacketType.PlayerRemoteCall, msg.Payload, SendType.OrderedReliable, msg.Player.ControllingEntity.Global);
+                    Instance.Enqueue(PacketType.PlayerRemoteCall, msg.Payload, ReliabilityType.OrderedReliable, msg.Player.ControllingEntity.Global);
                     return;
 
                 case PacketType.MergedPackets:
@@ -612,7 +609,7 @@ namespace Start_a_Town_.Net
                 w.Write(childIndex);
             });
             foreach (var player in this.Players.GetList())
-                this.Enqueue(player, Packet.Create(player, PacketType.SpawnChildObject, data, SendType.Ordered | SendType.Reliable));
+                this.Enqueue(player, Packet.Create(player, PacketType.SpawnChildObject, data, ReliabilityType.Ordered | ReliabilityType.Reliable));
         }
 
         private static void KickPlayer(int plid)
@@ -857,7 +854,7 @@ namespace Start_a_Town_.Net
                         w.Write(slot.Slot.Object.RefId);
                 }
             });
-            Instance.Enqueue(PacketType.EntityInventoryChange, data, SendType.OrderedReliable); // WARNING!!! TODO: handle case where each slot is owned by a different entity     
+            Instance.Enqueue(PacketType.EntityInventoryChange, data, ReliabilityType.OrderedReliable); // WARNING!!! TODO: handle case where each slot is owned by a different entity     
         }
         private static void UnmergePackets(Packet packet)
         {
@@ -927,6 +924,17 @@ namespace Start_a_Town_.Net
         public void WriteToStream(params object[] args)
         {
             this.GetOutgoingStream().Write(args);
+        }
+
+        public BinaryWriter GetStream(ReliabilityType reliabilityChannel)
+        {
+            return reliabilityChannel switch
+            {
+                ReliabilityType.Unreliable => this.OutgoingStreamUnreliable,
+                ReliabilityType.Reliable => this.OutgoingStreamReliable,
+                ReliabilityType.OrderedReliable => this.OutgoingStream,
+                _ => throw new Exception()
+            };
         }
     }
 }

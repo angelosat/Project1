@@ -334,7 +334,7 @@ namespace Start_a_Town_
         }
         public bool IsForbidden;
         public bool IsSpawned => this._map is not null;
-        public bool IsReserved => this.Town.ReservationManager.IsReserved(this);
+        public bool IsReserved => this.Map.Town.ReservationManager.IsReserved(this);
         public bool IsPlayerControlled => this.Net.GetPlayers().Any(p => p.ControllingEntity == this); 
         public virtual bool IsHaulable => this.Def.Haulable;
         public bool IsFuel => this.Material?.Fuel?.Value > 0;
@@ -540,7 +540,8 @@ namespace Start_a_Town_
         public override string ToString()
         {
             if (!GlobalVars.DebugMode)
-                return Name;
+                return $"[{this.RefId}] {Name}";
+                //return $"{Name} / RefId: {this.RefId}";
 
             string info = "";
             foreach (KeyValuePair<string, EntityComponent> comp in Components)

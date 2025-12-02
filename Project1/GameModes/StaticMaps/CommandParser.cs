@@ -21,7 +21,7 @@ namespace Start_a_Town_
                             case "hour":
                                 int t = int.Parse(p[2]);
                                 if (net is Server)
-                                    (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), SendType.OrderedReliable);
+                                    (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), ReliabilityType.OrderedReliable);
                                 break;
 
                             default:
@@ -50,7 +50,7 @@ namespace Start_a_Town_
                                         cell.BlockData = replace.ParseData(data);
                                 }
                         if (net is Server)
-                            (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), SendType.OrderedReliable);
+                            (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), ReliabilityType.OrderedReliable);
                         break;
 
                     case "remove":
@@ -62,7 +62,7 @@ namespace Start_a_Town_
                                 if (cell.Block == toremove)
                                     net.Map.RemoveBlock(cell.LocalCoords.ToGlobal(ch.Value));
                         if (net is Server)
-                            (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), SendType.OrderedReliable);
+                            (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), ReliabilityType.OrderedReliable);
                         break;
 
                     default:

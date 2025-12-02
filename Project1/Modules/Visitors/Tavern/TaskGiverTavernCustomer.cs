@@ -8,7 +8,7 @@ namespace Start_a_Town_
     {
         protected override AITask TryAssignTask(Actor actor)
         {
-            var town = actor.Town;
+            var town = actor.Map.Town;
             var taverns = town.GetBusinesses<Tavern>();
             var favs = actor.Personality.GetFavorites().ToList();
             var budget = actor.GetMoneyTotal();

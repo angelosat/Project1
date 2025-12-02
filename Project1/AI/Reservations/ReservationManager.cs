@@ -37,7 +37,7 @@ namespace Start_a_Town_
                 stackCount = (stackCount != -1) ? stackCount : target.Object.StackSize;
 
             // update existing reservation if it exists
-            var existing = this.Reservations.FirstOrDefault(r => r.Target.IsEqual(target) && r.Actor == actor.RefID);
+            var existing = this.Reservations.FirstOrDefault(r => r.Target.IsEqual(target) && r.Actor == actor.RefId);
             if (existing != null)
             {
                 if (stackCount == existing.Amount)
@@ -137,12 +137,12 @@ namespace Start_a_Town_
 
         internal void Unreserve(GameObject actor)
         {
-            Reservations.RemoveAll(r => r.Actor == actor.RefID);
+            Reservations.RemoveAll(r => r.Actor == actor.RefId);
         }
         
         internal void Unreserve(GameObject actor, TargetArgs target)
         {
-            Reservations.RemoveAll(r => r.Actor == actor.RefID && r.Target.IsEqual(target));
+            Reservations.RemoveAll(r => r.Actor == actor.RefId && r.Target.IsEqual(target));
         }
         internal bool CanReserve(GameObject actor, TargetArgs target, int stackcount = -1, bool ignoreOtherReservations = false)
         {
@@ -212,7 +212,7 @@ namespace Start_a_Town_
         {
             if (item == null)
                 throw new Exception();
-            return this.Reservations.FirstOrDefault(t => t.Actor == actor.RefID && t.Target.Object == item)?.Amount ?? 0;
+            return this.Reservations.FirstOrDefault(t => t.Actor == actor.RefId && t.Target.Object == item)?.Amount ?? 0;
         }
         internal bool IsReserved(GameObject gameObject)
         {

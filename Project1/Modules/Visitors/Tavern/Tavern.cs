@@ -132,13 +132,13 @@ namespace Start_a_Town_
         }
         public CustomerTavern AddCustomer(Actor customer, Room freeBedroom)
         {
-            var customerProps = new CustomerTavern(this, customer.RefID, freeBedroom);
+            var customerProps = new CustomerTavern(this, customer.RefId, freeBedroom);
             this.Customers.Add(customerProps);
             return customerProps;
         }
         public CustomerTavern AddCustomer(Actor customer, IntVec3 table, VisitorCraftRequest request)
         {
-            var customerProps = new CustomerTavern(this, customer.RefID, table, request);
+            var customerProps = new CustomerTavern(this, customer.RefId, table, request);
             this.Customers.Add(customerProps);
             return customerProps;
         }
@@ -149,7 +149,7 @@ namespace Start_a_Town_
         }
         public CustomerTavern GetCustomerProperties(Actor actor)
         {
-            return this.Customers.First(c => c.CustomerID == actor.RefID);
+            return this.Customers.First(c => c.CustomerID == actor.RefId);
         }
         public CustomerTavern GetCustomerProperties(int actorID)
         {
@@ -201,7 +201,7 @@ namespace Start_a_Town_
         
         public CustomerProperties GetCustomer(Actor customer)
         {
-            return this.Customers.FirstOrDefault(c => c.CustomerID == customer.RefID);
+            return this.Customers.FirstOrDefault(c => c.CustomerID == customer.RefId);
         }
         public override IEnumerable<IntVec3> GetFacilities()
         {

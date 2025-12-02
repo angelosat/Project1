@@ -72,7 +72,7 @@ namespace Start_a_Town_.UI
                 return;
             if (this.Object is GameObject entity &&
                 actor.AttackTarget is GameObject playertarget &&
-                entity.RefID == playertarget.RefID)
+                entity.RefId == playertarget.RefId)
             {
                 var border = this.BoundsScreen;
                 border.Inflate(1, 1);

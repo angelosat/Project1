@@ -208,7 +208,7 @@ namespace Start_a_Town_
             w.Write((int)this.FinishMode.Mode);
             w.Write(this.Input?.ID ?? -1);
             w.Write(this.Output?.ID ?? -1);
-            w.Write(this.UnfinishedItem?.RefID ?? -1);
+            w.Write(this.UnfinishedItem?.RefId ?? -1);
             w.Write(this.Quantity);
             w.Write(this.Workstation);
             w.Write(this.ReagentRestrictions.Count);
@@ -318,7 +318,7 @@ namespace Start_a_Town_
             tag.Add("Input", this.Input?.ID ?? -1);
             tag.Add("Output", this.Output?.ID ?? -1);
 
-            tag.Add("UnfinishedItem", this.UnfinishedItem?.RefID ?? -1);
+            tag.Add("UnfinishedItem", this.UnfinishedItem?.RefId ?? -1);
 
             var tagRestr = new SaveTag(SaveTag.Types.Compound, "RestrictionsNew");
             tagRestr.Add(this.Restrictions.Keys.Save("Keys"));

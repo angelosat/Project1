@@ -25,12 +25,12 @@ namespace Start_a_Town_
         {
             if (this.Occupied)
                 throw new Exception();
-            this.CurrentOccupant = agent.RefID;
+            this.CurrentOccupant = agent.RefId;
             agent.GetComponent<SpriteComponent>().Body = agent.Body.FindBone(BoneDefOf.Head);
         }
         public void Wake(GameObject agent)
         {
-            if (agent.RefID != this.CurrentOccupant)
+            if (agent.RefId != this.CurrentOccupant)
                 throw new Exception();
             this.CurrentOccupant = -1;
             agent.GetComponent<SpriteComponent>().Body = null;
@@ -39,7 +39,7 @@ namespace Start_a_Town_
         {
             if (this.CurrentOccupant != -1)
             {
-                if (agent.RefID != this.CurrentOccupant)
+                if (agent.RefId != this.CurrentOccupant)
                     throw new Exception();
                 this.CurrentOccupant = -1;
                 var body = agent.Body;
@@ -51,7 +51,7 @@ namespace Start_a_Town_
             }
             else
             {
-                this.CurrentOccupant = agent.RefID;
+                this.CurrentOccupant = agent.RefId;
                 var body = agent.Body;
                 var headBone = agent.Body.FindBone(BoneDefOf.Head);
                 body.RestingFrame = new Keyframe(0, agent.Body[BoneDefOf.Head].GetTotalOffset(), 0);
@@ -163,7 +163,7 @@ namespace Start_a_Town_
                 if (net is Server)
                     BlockBedEntity.SetOwner(net.Map, global, owner);
 
-                net.GetOutgoingStream().Write(pOwner, playerData.ID, global, owner?.RefID ?? -1);
+                net.GetOutgoingStream().Write(pOwner, playerData.ID, global, owner?.RefId ?? -1);
             }
 
             private static void SetOwner(INetEndpoint net, BinaryReader r)

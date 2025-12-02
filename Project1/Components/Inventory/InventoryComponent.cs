@@ -32,7 +32,7 @@ namespace Start_a_Town_.Components
                 var server = net as Server;
                 //if (net is Server server)
                 actor.Inventory.Insert(item);
-                server.OutgoingStreamTimestamped.Write(PacketSyncInsert, actor.RefID, item.RefID);
+                server.OutgoingStreamTimestamped.Write(PacketSyncInsert, actor.RefId, item.RefId);
             }
             private static void HandleSyncInsert(INetEndpoint net, BinaryReader r)
             {
@@ -49,8 +49,8 @@ namespace Start_a_Town_.Components
                 var server = net as Server;
                 var w = server.OutgoingStreamTimestamped;// .GetOutgoingStream();
                 w.Write(PacketSetHaulSlot);
-                w.Write(actor.RefID);
-                w.Write(item.RefID);
+                w.Write(actor.RefId);
+                w.Write(item.RefId);
             }
         }
         static InventoryComponent()

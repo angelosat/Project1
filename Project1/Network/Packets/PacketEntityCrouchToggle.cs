@@ -28,7 +28,7 @@ namespace Start_a_Town_
             entity.CrouchToggle(toggle);
 
             if (net is Server)
-                Send(net, entity.RefID, toggle);
+                Send(net, entity.RefId, toggle);
         }
     }
 }

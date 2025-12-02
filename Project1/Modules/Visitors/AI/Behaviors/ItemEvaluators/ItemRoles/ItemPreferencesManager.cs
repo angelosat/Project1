@@ -120,7 +120,7 @@ namespace Start_a_Town_
                 }
             }
             if (!this.IsUseful(item))
-                this.ToDiscard.Add(item.RefID);
+                this.ToDiscard.Add(item.RefId);
         }
         public IItemPreferenceContext GetPreference(Entity item)
         {
@@ -187,7 +187,7 @@ namespace Start_a_Town_
         }
         public void RemoveJunk(Entity item)
         {
-            this.ToDiscard.Remove(item.RefID);
+            this.ToDiscard.Remove(item.RefId);
         }
         public bool AddPreference(Entity item)
         {
@@ -328,7 +328,7 @@ namespace Start_a_Town_
             {
                 var w = net.GetOutgoingStream();
                 w.Write(pSyncPrefsAll);
-                w.Write(actor.RefID);
+                w.Write(actor.RefId);
 
                 if (oldItems is null)
                     w.Write(0);

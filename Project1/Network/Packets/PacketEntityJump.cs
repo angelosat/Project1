@@ -25,7 +25,7 @@ namespace Start_a_Town_
             var entity = net.GetNetworkEntity(id) as Actor;
             entity.Jump();
             if (net is Server)
-                Send(net, entity.RefID);
+                Send(net, entity.RefId);
         }
     }
 }

@@ -103,7 +103,7 @@ namespace Start_a_Town_.Crafting
             tag.Add(this.PlacedObjects.SaveNewBEST("PlacedItems"));
             if (this.Product is not null)
                 this.Product.Save(tag, "Product");
-            tag.Add("Unfinished", this.UnfinishedItem?.RefID ?? -1);
+            tag.Add("Unfinished", this.UnfinishedItem?.RefId ?? -1);
         }
         public override void LoadData(SaveTag tag)
         {
@@ -121,7 +121,7 @@ namespace Start_a_Town_.Crafting
             w.Write(this.Product is not null);
             if (this.Product is not null)
                 this.Product.Write(w);
-            w.Write(this.UnfinishedItem?.RefID ?? -1);
+            w.Write(this.UnfinishedItem?.RefId ?? -1);
         }
         protected override void ReadExtra(BinaryReader r)
         {

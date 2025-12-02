@@ -37,7 +37,7 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     room.ForceAddOwner(owner);
-                net.GetOutgoingStream().Write(PacketSetOwner, player.ID, room.ID, owner?.RefID ?? -1);
+                net.GetOutgoingStream().Write(PacketSetOwner, player.ID, room.ID, owner?.RefId ?? -1);
             }
             private static void SetOwner(INetEndpoint net, BinaryReader r)
             {

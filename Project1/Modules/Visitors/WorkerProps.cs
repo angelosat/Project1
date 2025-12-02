@@ -12,7 +12,7 @@ namespace Start_a_Town_
         {
 
         }
-        public WorkerProps(Actor actor, params JobDef[] jobDefs) : this(actor.RefID, jobDefs)
+        public WorkerProps(Actor actor, params JobDef[] jobDefs) : this(actor.RefId, jobDefs)
         {
         }
         public WorkerProps(int actorID, params JobDef[] jobDefs)

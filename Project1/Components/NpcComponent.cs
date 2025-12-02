@@ -75,21 +75,21 @@ namespace Start_a_Town_
         static public void AddPossesion(GameObject actor, GameObject item)
         {
             var poss = GetPossesions(actor);
-            if (poss.Contains(item.RefID))
+            if (poss.Contains(item.RefId))
                 throw new Exception();
-            poss.Add(item.RefID);
+            poss.Add(item.RefId);
             item.SetOwner(actor);
         }
         static public void RemovePossesion(GameObject actor, GameObject item)
         {
             var poss = GetPossesions(actor);
-            poss.Remove(item.RefID);
+            poss.Remove(item.RefId);
             item.SetOwner(null);
         }
         static public bool HasPossesion(GameObject actor, GameObject item)
         {
             var poss = GetPossesions(actor);
-            return poss.Contains(item.RefID);
+            return poss.Contains(item.RefId);
         }
         #endregion
 
@@ -186,7 +186,7 @@ namespace Start_a_Town_
         {
             var actor = actors.First().Object as Actor;
             if (actor.IsCitizen)
-                PacketControlNpc.Send(Net.Client.Instance, Net.Client.Instance.GetPlayer().ID, actor.RefID);
+                PacketControlNpc.Send(Net.Client.Instance, Net.Client.Instance.GetPlayer().ID, actor.RefId);
         }
         private void ToggleCitizenship(List<TargetArgs> actors)
         {
@@ -194,7 +194,7 @@ namespace Start_a_Town_
             var w = Client.Instance.GetOutgoingStream();
             w.Write(p);
             w.Write(Net.Client.Instance.GetPlayer().ID);
-            w.Write(actor.Object.RefID);
+            w.Write(actor.Object.RefId);
         }
         private static void ReceiveCitizenshipToggle(INetEndpoint net, BinaryReader r)
         {
@@ -207,7 +207,7 @@ namespace Start_a_Town_
                 var w = net.GetOutgoingStream();
                 w.Write(p);
                 w.Write(Net.Client.Instance.GetPlayer().ID);
-                w.Write(actor.RefID);
+                w.Write(actor.RefId);
             }
         }
         internal override void OnGameEvent(GameObject parent, GameEvent e)
@@ -235,10 +235,10 @@ namespace Start_a_Town_
                 case Message.Types.ItemOwnerChanged:
                     item = parent.Net.GetNetworkEntity((int)e.Parameters[0]) as GameObject;
                     var currentOwner = item.GetOwner();
-                    if (currentOwner == parent.RefID)
-                        Possesions.Add(item.RefID);
+                    if (currentOwner == parent.RefId)
+                        Possesions.Add(item.RefId);
                     else
-                        Possesions.Remove(item.RefID);
+                        Possesions.Remove(item.RefId);
                     break;
 
                 default:

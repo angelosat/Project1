@@ -13,12 +13,12 @@ namespace Start_a_Town_
         }
         public ObjectRefIDsAmount(GameObject obj)
         {
-            this.Object = obj.RefID;
+            this.Object = obj.RefId;
             this.Amount = obj.StackSize;
         }
         public ObjectRefIDsAmount(GameObject obj, int amount)
         {
-            this.Object = obj.RefID;
+            this.Object = obj.RefId;
             this.Amount = amount;
         }
         public SaveTag Save(string name)

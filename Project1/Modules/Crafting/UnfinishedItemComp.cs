@@ -25,13 +25,13 @@ namespace Start_a_Town_
                 var w = net.GetOutgoingStream();
                 w.Write(pCancel);
                 w.Write(player.ID);
-                w.Write(obj.Select(t => t.Object.RefID).ToList());
+                w.Write(obj.Select(t => t.Object.RefId).ToList());
             }
             private static void ReceiveCancel(INetEndpoint net, BinaryReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var refIDs = r.ReadListInt();
-                var items = net.GetNetworkObjects(refIDs);
+                var items = net.World.GetEntities(refIDs);
                 foreach (var i in items.ToList()) // tolist because cancelling changes the networkobjects collection
                     i.GetComponent<UnfinishedItemComp>().Cancel();
                 if (net is Server)
@@ -110,7 +110,7 @@ namespace Start_a_Town_
         internal override void SaveExtra(SaveTag tag)
         {
             this.Product.Save(tag, "Product");
-            this.Creator.RefID.Save(tag, "Creator");
+            this.Creator.RefId.Save(tag, "Creator");
             this.Order.ID.Save(tag, "Order");
             this.Progress.Save(tag, "Progress");
             this.Contents.Save(tag, "Contents");
@@ -127,7 +127,7 @@ namespace Start_a_Town_
         {
             this.Product.Write(w);
             this.Progress.Write(w);
-            w.Write(this.Creator.RefID);
+            w.Write(this.Creator.RefId);
             w.Write(this.Order.ID);
             this.Contents.Write(w);
         }

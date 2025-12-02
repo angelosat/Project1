@@ -27,7 +27,7 @@ namespace Start_a_Town_
             yield return new BehaviorInteractionNew(() => actor.GetMoney(), () => new InteractionHaul(room.Value));
             yield return new BehaviorInteractionNew(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());
 
-            yield return new BehaviorWait(() => room.OwnerRef == actor.RefID); // isserved was made for dining. create a new field for bed renting?
+            yield return new BehaviorWait(() => room.OwnerRef == actor.RefId); // isserved was made for dining. create a new field for bed renting?
             // TODO wait until visitor has ownership of the bed stored in customerprops 
         }
 

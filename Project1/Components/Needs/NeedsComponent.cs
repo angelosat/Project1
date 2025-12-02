@@ -61,7 +61,7 @@ namespace Start_a_Town_.Components
             var need = actor.GetNeed(needName);
             need.SetValue(need.Value + value, actor);
             if (actor.Net is Net.Server)
-                PacketNeedModify.Send(actor.Net as Net.Server, actor.RefID, need.NeedDef, value);
+                PacketNeedModify.Send(actor.Net as Net.Server, actor.RefId, need.NeedDef, value);
             return need;
         }
         static public Need ModifyNeed(GameObject actor, NeedDef type, float value)
@@ -69,7 +69,7 @@ namespace Start_a_Town_.Components
             var need = actor.GetNeed(type);
             need.SetValue(need.Value + value, actor);
             if (actor.Net is Net.Server)
-                PacketNeedModify.Send(actor.Net as Net.Server, actor.RefID, need.NeedDef, value);
+                PacketNeedModify.Send(actor.Net as Net.Server, actor.RefId, need.NeedDef, value);
             return need;
         }
 

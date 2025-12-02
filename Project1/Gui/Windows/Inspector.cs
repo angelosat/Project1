@@ -138,8 +138,8 @@ namespace Start_a_Town_
         static void InitRefDirectory()
         {
             var net = Client.Instance;
-            var list = new ListBoxObservable<GameObject, Label>(net.ObjectsObservable, o => new Label(o.DebugName, () => Refresh(o)));
-            var search = new SearchBarNew<GameObject>(Width, o => o.Name).BindTo(list).ToPanelLabeled("Search");
+            var list = new ListBoxReadOnlyObservable<Entity, Label>(net.World.EntitiesObservable, o => new Label(o.DebugName, () => Refresh(o)));
+            var search = new SearchBarNew<Entity>(Width, o => o.Name).BindTo(list).ToPanelLabeled("Search");
             var scrollablebox = new ScrollableBoxTest(list, Width, MaxHeight - search.Height, ScrollModes.Vertical) { SmallStep = Label.DefaultHeight + list.Spacing };
             var box = new GroupBox().AddControlsVertically(search, scrollablebox.ToPanel());
             ObjectsDirectory = box;

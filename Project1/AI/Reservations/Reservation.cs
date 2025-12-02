@@ -31,7 +31,7 @@ namespace Start_a_Town_
             {
                 if (stackcount == -1)
                     throw new Exception();
-                this.Actor = actor.RefID;
+                this.Actor = actor.RefId;
                 this.Target = target;
                 this.Amount = stackcount;
                 if (target.HasObject && stackcount > target.Object.StackSize)

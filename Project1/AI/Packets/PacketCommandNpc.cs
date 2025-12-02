@@ -25,7 +25,7 @@ namespace Start_a_Town_
             var npcids = r.ReadListInt();
             var target = TargetArgs.Read(net, r);
             var enqueue = r.ReadBoolean();
-            foreach(var npc in net.GetNetworkObjects(npcids))
+            foreach(var npc in net.World.GetEntities(npcids))
                 npc.MoveOrder(target, enqueue);
         }
     }

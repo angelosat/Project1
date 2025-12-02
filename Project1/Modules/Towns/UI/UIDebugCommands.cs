@@ -17,7 +17,7 @@ namespace Start_a_Town_
         {
             this.AutoSize = true;
             this.AddControlsVertically(
-                new Button("Grow selected") { LeftClickAction = () => GrowPlants(SelectionManager.GetSelectedEntities().Select(t=>t.RefID)) }
+                new Button("Grow selected") { LeftClickAction = () => GrowPlants(SelectionManager.GetSelectedEntities().Select(t=>t.RefId)) }
                 );
         }
 

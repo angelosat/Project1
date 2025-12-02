@@ -15,11 +15,11 @@ namespace Start_a_Town_
         {
             if (this.NextQuestReceiver != -1)
                 throw new Exception();
-            this.NextQuestReceiver = actor.RefID;
+            this.NextQuestReceiver = actor.RefId;
         }
         internal void RemoveReceiver(Actor actor)
         {
-            if (this.NextQuestReceiver != actor.RefID)
+            if (this.NextQuestReceiver != actor.RefId)
                 throw new Exception();
             this.NextQuestReceiver = -1;
         }

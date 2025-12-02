@@ -12,9 +12,9 @@ namespace Start_a_Town_
 
         public Transaction(Actor customer, Types type, Entity item, int cost)
         {
-            Customer = customer.RefID;
+            Customer = customer.RefId;
             Type = type;
-            Item = item.RefID;
+            Item = item.RefId;
             Cost = cost;
         }
 

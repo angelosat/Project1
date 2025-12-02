@@ -97,10 +97,11 @@ namespace Start_a_Town_
         public string Description => this.Def.Description; 
         public virtual float Height => this.Physics.Height;
 
-        public int RefID;
+        public int RefId;
 
         public INetEndpoint Net;
 
+        public WorldBase World { get; set; }
         MapBase _map;
         public MapBase Map 
         { 
@@ -108,7 +109,7 @@ namespace Start_a_Town_
             set => this._map = value; 
         }
 
-        public Town Town => this.Net.Map.Town;
+        public Town Town => this.Map.Town;
 
         internal object GetPath()
         {
@@ -163,7 +164,7 @@ namespace Start_a_Town_
 
         static void RequestToggleForbidden(List<TargetArgs> obj)
         {
-            PacketToggleForbidden.Send(obj.First().Network, obj.Select(o => o.Object.RefID).ToList());
+            PacketToggleForbidden.Send(obj.First().Network, obj.Select(o => o.Object.RefId).ToList());
         }
         static void FollowCam()
         {
@@ -649,7 +650,7 @@ namespace Start_a_Town_
                 }
             }
 
-            tooltip.AddControlsBottomLeft(new Label(string.Format("InstanceID: {0}", this.RefID)));
+            tooltip.AddControlsBottomLeft(new Label(string.Format("InstanceID: {0}", this.RefId)));
         }
         public void GetInventoryTooltip(UI.Control tooltip)
         {
@@ -666,7 +667,7 @@ namespace Start_a_Town_
                 tooltip.AddControlsBottomLeft(new Label(string.Format("Value: {0} ({1})", value * this.StackSize, value)));
             }
 
-            tooltip.AddControlsBottomLeft(new Label(string.Format("InstanceID: {0}", this.RefID)));
+            tooltip.AddControlsBottomLeft(new Label(string.Format("InstanceID: {0}", this.RefId)));
         }
 
         public void Despawn()
@@ -717,7 +718,7 @@ namespace Start_a_Town_
         }
         public void SyncSpawnNew(MapBase map)
         {
-            if (this.RefID != 0)
+            if (this.RefId != 0)
                 this.Spawn(map);
             if (map.Net is not Server)
                 return;
@@ -808,7 +809,7 @@ namespace Start_a_Town_
             w.Write(this.Def.Name);
             if (Start_a_Town_.Def.GetDef(this.Def.Name) is null)
                 throw new Exception();
-            w.Write(this.RefID);
+            w.Write(this.RefId);
             w.Write(this.StackSize);
             w.Write(this.Components.Count);
             foreach (var comp in this.Components)
@@ -823,7 +824,7 @@ namespace Start_a_Town_
             string defName = r.ReadString();
             var def = Start_a_Town_.Def.GetDef<ItemDef>(defName);
             var obj = def.Create();
-            obj.RefID = r.ReadInt32();
+            obj.RefId = r.ReadInt32();
             obj.StackSize = r.ReadInt32();
             int compCount = r.ReadInt32();
             for (int i = 0; i < compCount; i++)
@@ -839,7 +840,7 @@ namespace Start_a_Town_
         {
             GameObject obj = CloneTemplate(templateID);
             _ = reader.ReadString(); // def name not necessary because we copy it from the existing cloned object
-            obj.RefID = reader.ReadInt32();
+            obj.RefId = reader.ReadInt32();
             obj.StackSize = reader.ReadInt32();
             int compCount = reader.ReadInt32();
             for (int i = 0; i < compCount; i++)
@@ -893,7 +894,7 @@ namespace Start_a_Town_
         {
             var data = new List<SaveTag>();
             data.Add(this.Def.Name.Save("Def"));
-            data.Add(this.RefID.Save("InstanceID"));
+            data.Add(this.RefId.Save("InstanceID"));
             data.Add(this._StackSize.Save("Stack"));
             var compData = new SaveTag(SaveTag.Types.Compound, "Components");
             foreach (var comp in this.Components)
@@ -918,7 +919,7 @@ namespace Start_a_Town_
             if (def is null)
                 return null;
             var obj = def.Create();
-            tag.TryGetTagValue("InstanceID", out obj.RefID);
+            tag.TryGetTagValue("InstanceID", out obj.RefId);
             tag.TryGetTagValue<int>("Stack", v=> obj._StackSize = v);
             var compData = tag["Components"].Value as Dictionary<string, SaveTag>;
             foreach (var compTag in compData.Values)
@@ -940,7 +941,7 @@ namespace Start_a_Town_
         public IEnumerable<ContextAction> GetInventoryContextActions(GameObject actor)
         {
             if (this.Def.GearType is not null)
-                yield return new ContextAction(() => "Equip", () => PacketInventoryEquip.Send(this.Net, actor.RefID, this.RefID));
+                yield return new ContextAction(() => "Equip", () => PacketInventoryEquip.Send(this.Net, actor.RefId, this.RefId));
             yield return new ContextAction(() => "Drop", () => PacketInventoryDrop.Send(this.Net, actor, this, this.StackSize));
         }
 
@@ -1026,7 +1027,7 @@ namespace Start_a_Town_
             return list;
         }
 
-        public bool IsDisposed => this.RefID > 0 && this.Net is null;//.GetNetworkObject(this.RefID) is null;
+        public bool IsDisposed => this.RefId > 0 && this.Net is null;//.GetNetworkObject(this.RefID) is null;
 
         public bool Dispose()
         {
@@ -1036,7 +1037,7 @@ namespace Start_a_Town_
         internal void SyncDispose()
         {
             if (this.Net is Server server)
-                server.SyncDispose(this.RefID);
+                server.SyncDispose(this.RefId);
         }
         internal void OnDispose()
         {
@@ -1387,7 +1388,7 @@ namespace Start_a_Town_
         }
         internal void SetOwner(GameObject actor)
         {
-            this.SetOwner(actor != null ? actor.RefID : -1);
+            this.SetOwner(actor != null ? actor.RefId : -1);
         }
         internal void SetOwner(int actorID)
         {
@@ -1436,7 +1437,7 @@ namespace Start_a_Town_
 
         }
 
-        public string DebugName { get { return $"[{this.RefID}]{this.Name}"; } }
+        public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
 
         internal List<StatNewModifier> GetStatModifiers(StatDef statNewDef)
         {
@@ -1491,7 +1492,7 @@ namespace Start_a_Town_
             if (net is not Server server)
                 return;
 
-            if (this.RefID != 0)
+            if (this.RefId != 0)
                 throw new Exception();
 
             net.Instantiate(this);
@@ -1515,7 +1516,7 @@ namespace Start_a_Town_
 
             var w = net.GetOutgoingStream();
             w.Write(PacketSyncSetStacksize);
-            w.Write(this.RefID);
+            w.Write(this.RefId);
             w.Write(v);
         }
         private static void SyncSetStacksize(INetEndpoint net, BinaryReader r)
@@ -1545,8 +1546,8 @@ namespace Start_a_Town_
             this.Absorb(obj);
             var w = net.GetOutgoingStream();
             w.Write(PacketSyncAbsorb);
-            w.Write(this.RefID);
-            w.Write(obj.RefID);
+            w.Write(this.RefId);
+            w.Write(obj.RefId);
         }
         private static void SyncAbsorb(INetEndpoint net, BinaryReader r)
         {

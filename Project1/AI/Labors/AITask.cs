@@ -259,7 +259,7 @@ namespace Start_a_Town_
 
         public void Reserve(GameObject actor)
         {
-            this.ReservedBy = actor.RefID;
+            this.ReservedBy = actor.RefId;
         }
 
         public string GetForceTaskText()

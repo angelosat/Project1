@@ -24,7 +24,7 @@ namespace Start_a_Town_
             get { return CachedCustomer ??= (CustomerID != -1 ? this.Tavern.Town.Net.GetNetworkEntity(this.CustomerID) as Actor : null); }
             set
             {
-                this.CustomerID = value?.RefID ?? -1;
+                this.CustomerID = value?.RefId ?? -1;
                 this.CachedCustomer = value;
             }
         }
@@ -33,7 +33,7 @@ namespace Start_a_Town_
             get { return CachedServedBy ??= (ServedByID != -1 ? this.Tavern.Town.Net.GetNetworkEntity(this.ServedByID) as Actor : null); }
             set
             {
-                this.ServedByID = value?.RefID ?? -1;
+                this.ServedByID = value?.RefId ?? -1;
                 this.CachedServedBy = value;
             }
         }
@@ -45,14 +45,14 @@ namespace Start_a_Town_
             }
             set
             {
-                this.OrderTakenByID = value?.RefID ?? -1;
+                this.OrderTakenByID = value?.RefId ?? -1;
                 this.CachedOrderTakenBy = value;
             }
         }
         public Entity Dish
         {
             get { return this.CachedDish ??= (DishID != -1 ? this.Tavern.Town.Net.GetNetworkEntity(this.DishID) as Entity : null); }
-            set { this.DishID = value?.RefID ?? -1; }
+            set { this.DishID = value?.RefId ?? -1; }
         }
 
 

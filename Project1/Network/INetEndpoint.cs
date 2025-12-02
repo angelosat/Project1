@@ -15,15 +15,16 @@ namespace Start_a_Town_
         TimeSpan Clock { get; }
         double CurrentTick { get; }
         MapBase Map { get; }
+        WorldBase World { get; }
         int Speed { get; set; }
 
         GameObject GetNetworkEntity(int netID);
-        T GetNetworkObject<T>(int netID) where T : GameObject;
+        T GetNetworkObject<T>(int netID) where T : Entity;// GameObject;
 
         IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> ids);
         IEnumerable<GameObject> GetNetworkObjects();
 
-        bool TryGetNetworkObject(int netID, out GameObject obj);
+        bool TryGetNetworkObject(int netID, out Entity obj);
         void Enqueue(PacketType packetType, byte[] payload, SendType sendType);
 
         IEnumerable<PlayerData> GetPlayers();

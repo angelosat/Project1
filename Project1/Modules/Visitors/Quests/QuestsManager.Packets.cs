@@ -40,7 +40,7 @@ namespace Start_a_Town_
             {
                 if(net is Server)
                     quest.Giver = actor;
-                net.GetOutgoingStream().Write(pAssign, player.ID, quest.ID, actor?.RefID ?? -1);
+                net.GetOutgoingStream().Write(pAssign, player.ID, quest.ID, actor?.RefId ?? -1);
             }
             private static void ReceiveQuestGiverAssign(INetEndpoint net, BinaryReader r)
             {

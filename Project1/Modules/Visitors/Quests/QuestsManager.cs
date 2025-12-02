@@ -68,23 +68,23 @@ namespace Start_a_Town_
         {
             var giver = q.Giver;
             this.GetQuestGiverProperties(q.Giver).HandleReceiver(receiver);
-            this.PendingQuestRequests.Add(giver.RefID, receiver.RefID);
+            this.PendingQuestRequests.Add(giver.RefId, receiver.RefId);
         }
         public void RemoveQuestReceiver(QuestDef q)
         {
             var giver = q.Giver;
             this.GetQuestGiverProperties(q.Giver).RemoveReceiver();
-            this.PendingQuestRequests.Remove(giver.RefID);
+            this.PendingQuestRequests.Remove(giver.RefId);
         }
         public void RemoveQuestReceiver(int qID)
         {
             var giver = this.GetQuest(qID).Giver;
             this.GetQuestGiverProperties(giver).RemoveReceiver();
-            this.PendingQuestRequests.Remove(giver.RefID);
+            this.PendingQuestRequests.Remove(giver.RefId);
         }
         internal Actor GetNextQuestReceiver(Actor giver)
         {
-            var id = this.QuestGiverProperties[giver.RefID].GetNextQuestReceiverID();
+            var id = this.QuestGiverProperties[giver.RefId].GetNextQuestReceiverID();
             return id != -1 ? this.Town.Net.GetNetworkEntity(id) as Actor : null;
         }
         public IEnumerable<Actor> GetAllVisitorsOnQuest(QuestDef quest)
@@ -98,7 +98,7 @@ namespace Start_a_Town_
         }
         internal QuestGiverProperties GetQuestGiverProperties(Actor actor)
         {
-            return this.QuestGiverProperties[actor.RefID];
+            return this.QuestGiverProperties[actor.RefId];
         }
         
         internal override void OnCitizenAdded(int actorID)

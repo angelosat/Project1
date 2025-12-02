@@ -17,7 +17,7 @@ namespace Start_a_Town_
             var client = actor.Map.Net as Client;
             var w = client.GetOutgoingStream();
             w.Write(PType);
-            w.Write(actor.RefID);
+            w.Write(actor.RefId);
             w.Write(def.GetType().FullName);
             target.Write(w);
         }

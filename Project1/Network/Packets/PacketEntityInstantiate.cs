@@ -54,7 +54,7 @@ namespace Start_a_Town_
             strem.Write(entities.Count());
             foreach(var entity in entities)
             {
-                if (entity.RefID != 0)
+                if (entity.RefId != 0)
                     throw new Exception();
                 net.Instantiate(entity);
                 entity.Spawn(net.Map);

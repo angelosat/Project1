@@ -18,7 +18,7 @@ namespace Start_a_Town_
             var server = net as Server;
             var w = server.OutgoingStreamTimestamped;
             w.Write(PacketInteract);
-            w.Write(entity.RefID);
+            w.Write(entity.RefId);
             w.Write(false);
             w.Write(success);
         }
@@ -27,7 +27,7 @@ namespace Start_a_Town_
             var server = net as Server;
             var w = server.OutgoingStreamTimestamped;
             w.Write(PacketInteract);
-            w.Write(entity.RefID);
+            w.Write(entity.RefId);
             w.Write(true);
             target.Write(w);
             w.Write(action.GetType().FullName);

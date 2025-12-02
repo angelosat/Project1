@@ -21,7 +21,7 @@ namespace Start_a_Town_
             if (net is not Server)
                 return;
             AIState state = AIState.GetState(entity);
-            PacketAILogWrite.Send(net as Server, entity.RefID, text);
+            PacketAILogWrite.Send(net as Server, entity.RefId, text);
             state.History.Write(text);
         }
         static public bool TryWrite(GameObject entity, string text)

@@ -105,7 +105,10 @@ namespace Start_a_Town_
         {
             foreach (var agent in this.Townies.ToArray())
                 if (this.Net.GetNetworkEntity(agent) == null)
+                {
                     this.Townies.Remove(agent);
+                    $"Removed disposed townie entity with id: {agent}".ToConsole();
+                }
             foreach (var comp in this.TownComponents)
                 comp.Update();
         }
@@ -120,7 +123,7 @@ namespace Start_a_Town_
 
                 case Message.Types.EntityDespawned:
                     entity = e.Parameters[0] as GameObject;
-                    if(this.Townies.Contains(entity.RefID)) //TODO: dont dismiss despawned entities (they might be active outside the map)
+                    if(this.Townies.Contains(entity.RefId)) //TODO: dont dismiss despawned entities (they might be active outside the map)
                         RemoveAgent(entity);
                     break;
 
@@ -158,7 +161,7 @@ namespace Start_a_Town_
         {
             if (!entity.HasComponent<AIComponent>())
                 throw new Exception();
-            this.AddCitizen(entity.RefID);
+            this.AddCitizen(entity.RefId);
             entity.Net.ConsoleBox.Write($"{entity.Name} has joined the town!");
             this.Map.EventOccured(Message.Types.NpcsUpdated);
         }
@@ -167,21 +170,21 @@ namespace Start_a_Town_
         {
             if (entity.HasComponent<AIComponent>())
             {
-                this.RemoveCitizen(entity.RefID);
+                this.RemoveCitizen(entity.RefId);
                 this.Net.ConsoleBox.Write($"{entity.Name} was dismissed from the town!");
                 this.Map.EventOccured(Message.Types.NpcsUpdated);
             }
         }
         public void ToggleAgent(GameObject entity)
         {
-            if (!this.Townies.Contains(entity.RefID))
+            if (!this.Townies.Contains(entity.RefId))
                 this.AddAgent(entity);
             else
                 this.RemoveAgent(entity);
         }
         public void AddCitizen(Actor actor)
         {
-            this.AddCitizen(actor.RefID);
+            this.AddCitizen(actor.RefId);
         }
         public void AddCitizen(int id)
         {

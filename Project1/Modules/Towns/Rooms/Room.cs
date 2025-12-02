@@ -71,7 +71,7 @@ namespace Start_a_Town_
         
         internal void AddOwner(Actor actor)
         {
-            this.OwnerRef = actor.RefID;
+            this.OwnerRef = actor.RefId;
         }
         internal void ForceAddOwner(Actor actor)
         {
@@ -81,7 +81,7 @@ namespace Start_a_Town_
         }
         internal void RemoveOwner(Actor actor)
         {
-            if (this.OwnerRef == actor.RefID)
+            if (this.OwnerRef == actor.RefId)
                 this.OwnerRef = -1;
         }
         
@@ -328,7 +328,7 @@ namespace Start_a_Town_
         public Actor Owner
         {
             get => GetOwner();
-            set => this.OwnerRef = value?.RefID ?? -1;
+            set => this.OwnerRef = value?.RefId ?? -1;
         }
 
         public Actor GetOwner()

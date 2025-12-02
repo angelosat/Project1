@@ -32,7 +32,7 @@ namespace Start_a_Town_
         public const int Zenith = 14;
 
         public bool Lighting;
-
+        
         //public const int TickTime = (int)(60 * 1.44f);
         public bool Flat;
         public bool Trees;

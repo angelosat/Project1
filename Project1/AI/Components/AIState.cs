@@ -29,7 +29,7 @@ namespace Start_a_Town_.AI
             set
             {
                 if (this.Parent.Net is Server)
-                    PacketTaskUpdate.Send(this.Parent.Net as Net.Server, this.Parent.RefID, value?.GetType().Name ?? "Idle");
+                    PacketTaskUpdate.Send(this.Parent.Net as Net.Server, this.Parent.RefId, value?.GetType().Name ?? "Idle");
                 this._currentTaskBehavior = value;
             }
         }

@@ -162,7 +162,7 @@ namespace Start_a_Town_
         public TargetArgs(GameObject obj)
         {
             this.Type = TargetType.Entity;
-            this.EntityID = obj.RefID;
+            this.EntityID = obj.RefId;
             this._resolvedEntity = obj;
             this._resolvedMap = obj.Map;
 
@@ -187,7 +187,7 @@ namespace Start_a_Town_
         public TargetArgs(GameObject obj, Vector3 face)
         {
             this.Type = TargetType.Entity;
-            this.EntityID = obj.RefID;
+            this.EntityID = obj.RefId;
             this.Global = obj.Global;
             this._resolvedEntity = obj;
             this.Provider = obj.Net;
@@ -195,7 +195,7 @@ namespace Start_a_Town_
         public TargetArgs(GameObject obj, Vector3? face)
         {
             this.Type = TargetType.Entity;
-            this.EntityID = obj.RefID;
+            this.EntityID = obj.RefId;
             this.Global = obj.Global;
             this.Face = face.HasValue ? face.Value : Vector3.Zero;
             this._resolvedEntity = obj;
@@ -300,7 +300,7 @@ namespace Start_a_Town_
             {
                 case TargetType.Slot:
 
-                    w.Write(this.Slot.Parent.RefID);
+                    w.Write(this.Slot.Parent.RefId);
                     w.Write(this.Slot.ID);
                     w.Write(this.Slot.ContainerNew.ID);
                     return this;
@@ -342,7 +342,7 @@ namespace Start_a_Town_
             switch (this.Type)
             {
                 case TargetType.Slot:
-                    tag.Add(new SaveTag(SaveTag.Types.Int, "ParentID", this.Slot.Parent.RefID));
+                    tag.Add(new SaveTag(SaveTag.Types.Int, "ParentID", this.Slot.Parent.RefId));
                     tag.Add(new SaveTag(SaveTag.Types.Int, "SlotID", this.Slot.ID));
                     tag.Add(new SaveTag(SaveTag.Types.Int, "ContainerID", this.Slot.ContainerNew.ID));
                     break;

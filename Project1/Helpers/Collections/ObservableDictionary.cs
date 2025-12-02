@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Collections;
+using System.Reflection;
 
 namespace Start_a_Town_
 {
-    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged
+    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, INotifyCollectionChanged
     {
         readonly Dictionary<TKey, TValue> Dictionary = new();
 
@@ -17,6 +18,10 @@ namespace Start_a_Town_
         public int Count => ((ICollection<KeyValuePair<TKey, TValue>>)this.Dictionary).Count;
 
         public bool IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)this.Dictionary).IsReadOnly;
+
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -80,5 +85,6 @@ namespace Start_a_Town_
         {
             return ((IEnumerable)this.Dictionary).GetEnumerator();
         }
+
     }
 }

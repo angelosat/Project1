@@ -29,7 +29,7 @@ namespace Start_a_Town_.Net
                             break;
 
                         case "unloadworld":
-                            UnloadWorld();
+                            Server.UnloadWorld();
                             break;
 
                         case "broadcast":

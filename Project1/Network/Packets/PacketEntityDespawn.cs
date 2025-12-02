@@ -18,7 +18,7 @@ namespace Start_a_Town_
                 return;
             var w = net.GetOutgoingStream();
             w.Write(p);
-            w.Write(entity.RefID);
+            w.Write(entity.RefId);
         }
         static public void Receive(INetEndpoint net, BinaryReader r)
         {

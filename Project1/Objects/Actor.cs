@@ -90,9 +90,9 @@ namespace Start_a_Town_
         public AILog Log => AIState.GetState(this).History;
         public IItemPreferencesManager ItemPreferences => this.GetState().ItemPreferences;
 
-        public Room AssignedRoom => this.Net.Map.Town.RoomManager.FindRoom(this.RefID); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
-        internal Workplace Workplace => this.Net.Map.Town.ShopManager.GetShop(this); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
-        public bool IsCitizen => this.Net.Map.Town.Townies.Contains(this.RefID); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
+        public Room AssignedRoom => this.Map.Town.RoomManager.FindRoom(this.RefId); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
+        internal Workplace Workplace => this.Map.Town.ShopManager.GetShop(this); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
+        public bool IsCitizen => this.Map.Town.Townies.Contains(this.RefId); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
 
 
         public override string Name => this.Npc.FullName;
@@ -178,7 +178,7 @@ namespace Start_a_Town_
         {
             this.Direction = global - this.Global;
             this.Direction.Normalize();
-            this.Net.LogStateChange(this.RefID);
+            this.Net.LogStateChange(this.RefId);
         }
         internal void ForceTask(TaskGiver taskGiver, TargetArgs target)
         {
@@ -353,7 +353,7 @@ namespace Start_a_Town_
         internal void MoveToggle(bool toggle)
         {
             if (this.Net is Server)
-                PacketEntityMoveToggle.Send(this.Net, this.RefID, toggle);
+                PacketEntityMoveToggle.Send(this.Net, this.RefId, toggle);
 
             this.Mobile.Toggle(this, toggle);
         }
@@ -515,28 +515,28 @@ namespace Start_a_Town_
         internal void WalkToggle(bool toggle)
         {
             if (this.Net is Server)
-                PacketEntityWalkToggle.Send(this.Net, this.RefID, toggle);
+                PacketEntityWalkToggle.Send(this.Net, this.RefId, toggle);
 
             this.Mobile.ToggleWalk(toggle);
         }
         internal void SprintToggle(bool toggle)
         {
             if (this.Net is Server)
-                PacketEntitySprintToggle.Send(this.Net, this.RefID, toggle);
+                PacketEntitySprintToggle.Send(this.Net, this.RefId, toggle);
 
             this.Mobile.ToggleSprint(toggle);
         }
         internal void CrouchToggle(bool toggle)
         {
             if (this.Net is Server)
-                PacketEntityCrouchToggle.Send(this.Net, this.RefID, toggle);
+                PacketEntityCrouchToggle.Send(this.Net, this.RefId, toggle);
 
             this.Mobile.ToggleCrouch(toggle);
         }
         internal void Jump()
         {
             if (this.Net is Server)
-                PacketEntityJump.Send(this.Net, this.RefID);
+                PacketEntityJump.Send(this.Net, this.RefId);
 
             this.Mobile.Jump(this);
         }

@@ -21,7 +21,7 @@ namespace Start_a_Town_
             strem.Write(entities.Count);
             foreach (var obj in entities)
             {
-                strem.Write(obj.RefID);
+                strem.Write(obj.RefId);
                 ObjectSnapshot.Write(obj, strem);
             }
         }

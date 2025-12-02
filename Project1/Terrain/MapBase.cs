@@ -30,7 +30,7 @@ namespace Start_a_Town_
                     return;
                 var w = server.OutgoingStreamTimestamped;
                 w.Write(PacketSpawn);
-                w.Write(entity.RefID);
+                w.Write(entity.RefId);
                 w.Write(global);
                 w.Write(velocity);
             }
@@ -40,7 +40,7 @@ namespace Start_a_Town_
                     return;
                 var w = server.GetOutgoingStream();
                 w.Write(PacketSpawn);
-                w.Write(entity.RefID);
+                w.Write(entity.RefId);
                 w.Write(global);
                 w.Write(velocity);
             }

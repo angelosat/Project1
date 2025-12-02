@@ -40,7 +40,7 @@ namespace Start_a_Town_
         }
         internal IEnumerable<Room> GetRoomsByOwner(Actor actor)
         {
-            return this.GetRoomsByOwner(actor.RefID);
+            return this.GetRoomsByOwner(actor.RefId);
         }
         internal IEnumerable<Room> GetRoomsByOwner(int actorID)
         {

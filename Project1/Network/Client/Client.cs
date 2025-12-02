@@ -37,18 +37,18 @@ namespace Start_a_Town_.Net
         public long NextPacketID => this._packetID++;
         private long RemoteSequence = 0;
         public long RemoteOrderedReliableSequence = 0;
-        private readonly Dictionary<int, GameObject> NetworkObjects = new();
+        //private readonly Dictionary<int, GameObject> NetworkObjects = new();
+        private IReadOnlyDictionary<int, Entity> NetworkObjects => this.World.Entities;
 
         //public readonly ObservableDictionary<int, GameObject> NetworkObjects = new();
-        public ObservableCollection<GameObject> ObjectsObservable = new();
+        //public ObservableCollection<GameObject> ObjectsObservable = new();
 
         public MapBase Map
         {
             set => Engine.Map = value;
             get => Engine.Map;
         }
-
-        public NetworkSideType Type => NetworkSideType.Local;
+        public WorldBase World { get; set; }
 
         private readonly int TimeoutLength = Ticks.PerSecond * 2;
         private int Timeout = -1;
@@ -98,7 +98,7 @@ namespace Start_a_Town_.Net
             Instance.World = null;
             Engine.Map = null;
             this.Timeout = -1;
-            Instance.NetworkObjects.Clear();
+            //Instance.NetworkObjects.Clear();
             Packet.Create(this.NextPacketID, PacketType.PlayerDisconnected).BeginSendTo(this.Host, this.RemoteIP, a => { });
             this.IncomingAll = new ConcurrentQueue<Packet>();
             this.ClientClock = new TimeSpan();
@@ -118,7 +118,7 @@ namespace Start_a_Town_.Net
             this.IncomingAll = new ConcurrentQueue<Packet>();
             this.SyncedPackets = new Queue<Packet>();
 
-            Instance.NetworkObjects.Clear();
+            //Instance.NetworkObjects.Clear();
             ScreenManager.GameScreens.Clear();
             ScreenManager.Add(MainScreen.Instance);
             this.EventOccured(Message.Types.ServerNoResponse);
@@ -565,13 +565,13 @@ namespace Start_a_Town_.Net
 
                 case PacketType.SpawnChildObject:
                     GameObject obj = GameObject.Create(r);
-                    if (obj.RefID == 0)
+                    if (obj.RefId == 0)
                         throw new Exception("Uninstantiated entity");
-                    if (!Instance.NetworkObjects.ContainsKey(obj.RefID))
+                    if (!Instance.World.Entities.ContainsKey(obj.RefId))
                         Instance.Instantiate(obj);
 
                     int parentID = r.ReadInt32();
-                    if (!Instance.TryGetNetworkObject(parentID, out GameObject parent))
+                    if (!Instance.World.TryGetEntity(parentID, out var parent))
                         throw (new Exception("Parent doesn't exist"));
 
                     obj.Parent = parent;
@@ -594,7 +594,7 @@ namespace Start_a_Town_.Net
                         if (stacksize > 0)
                         {
                             var id = r.ReadInt32();
-                            slot.Object = Instance.GetNetworkEntity(id);
+                            slot.Object = Instance.World.GetEntity(id);
                         }
                         slot.StackSize = stacksize;
                     }
@@ -603,7 +603,7 @@ namespace Start_a_Town_.Net
                 case PacketType.PlayerSlotClick:
                     var actor = TargetArgs.Read(Instance, r);
                     var t = TargetArgs.Read(Instance, r);
-                    parent = t.Slot.Parent;
+                    parent = t.Slot.Parent as Entity;
                     Instance.PostLocalEvent(parent, Components.Message.Types.SlotInteraction, actor.Object, t.Slot);
                     return;
 
@@ -700,27 +700,27 @@ namespace Start_a_Town_.Net
         /// <param name="objNetID"></param>
         public bool DisposeObject(GameObject obj)
         {
-            return this.DisposeObject(obj.RefID);
+            return this.DisposeObject(obj.RefId);
         }
 
-        public bool DisposeObject(int netID)
+        public bool DisposeObject(int netId)
         {
-            if (!this.NetworkObjects.TryGetValue(netID, out GameObject o))
-                return false;
-            foreach (var obj in o.GetSelfAndChildren())
-            {
-                Console.WriteLine($"{this} disposing {obj.DebugName}");
-                obj.OnDispose();
-                this.NetworkObjects.Remove(netID);
-                this.ObjectsObservable.Remove(obj);
-                obj.Net = null;
-                obj.RefID = 0;
-                if (obj.IsSpawned)
-                    obj.Despawn();
-                //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
-                //    this.DisposeObject(child);
-            }
-            return true;
+            return this.World.DisposeEntity(netId);
+            //if (!this.World.Entities.TryGetValue(netId, out Entity? o))
+            //    return false;
+            //foreach (var obj in o.GetSelfAndChildren())
+            //{
+            //    Console.WriteLine($"{this} disposing {obj.DebugName}");
+            //    obj.OnDispose();
+            //    this.World.RemoveEntity(netId);
+            //    obj.Net = null;
+            //    obj.RefId = 0;
+            //    if (obj.IsSpawned)
+            //        obj.Despawn();
+            //    //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
+            //    //    this.DisposeObject(child);
+            //}
+            //return true;
         }
 
         /// <summary>
@@ -738,7 +738,7 @@ namespace Start_a_Town_.Net
 
         public GameObject InstantiateLocal(GameObject ob)
         {
-            ob.RefID = _nextRefIdSequence++;
+            ob.RefId = _nextRefIdSequence++;
             //ob.Instantiate(this.Instantiator);
             foreach (var obj in ob.GetSelfAndChildren())
                 this.Instantiator(obj);
@@ -753,13 +753,11 @@ namespace Start_a_Town_.Net
             //    else throw new Exception();
             //}
             ob.Net = this;
-            Instance.NetworkObjects.Add(ob.RefID, ob);
-            _nextRefIdSequence = Math.Max(_nextRefIdSequence, ob.RefID + 1);
-            this.ObjectsObservable.Add(ob);
+            Instance.World.Register(ob as Entity);
+            _nextRefIdSequence = Math.Max(_nextRefIdSequence, ob.RefId + 1);
         }
 
         private int _nextRefIdSequence;
-        public WorldBase World;
 
         internal void AddPlayer(PlayerData player)
         {
@@ -929,30 +927,32 @@ namespace Start_a_Town_.Net
 
         public GameObject GetNetworkEntity(int netID)
         {
-            this.NetworkObjects.TryGetValue(netID, out var obj);
+            this.World.Entities.TryGetValue(netID, out var obj);
             return obj;
         }
 
-        public T GetNetworkObject<T>(int netID) where T : GameObject
+        public T GetNetworkObject<T>(int netID) where T : Entity
         {
-            this.NetworkObjects.TryGetValue(netID, out var obj);
+            this.World.Entities.TryGetValue(netID, out var obj);
             return obj as T;
         }
 
         public IEnumerable<GameObject> GetNetworkObjects()
         {
-            foreach (var o in this.NetworkObjects.Values)
+            foreach (var o in this.World.Entities.Values)
                 yield return o;
         }
 
         public IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> netID)
         {
+
             return (from o in this.NetworkObjects where netID.Contains(o.Key) select o.Value);
         }
 
-        public bool TryGetNetworkObject(int netID, out GameObject obj)
+        public bool TryGetNetworkObject(int netID, out Entity obj)
         {
-            return this.NetworkObjects.TryGetValue(netID, out obj);
+            return this.World.TryGetEntity(netID, out obj);
+            //return this.NetworkObjects.TryGetValue(netID, out obj);
         }
 
         /// <summary>
@@ -1131,7 +1131,7 @@ namespace Start_a_Town_.Net
                 if (sourceSlot.StackSize + targetSlot.StackSize <= targetSlot.StackMax)
                 {
                     targetSlot.StackSize += sourceSlot.StackSize;
-                    this.DisposeObject(sourceSlot.Object.RefID);
+                    this.DisposeObject(sourceSlot.Object.RefId);
                     sourceSlot.Clear();
                     //merge slots
                     return;

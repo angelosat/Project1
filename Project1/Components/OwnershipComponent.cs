@@ -14,7 +14,7 @@ namespace Start_a_Town_
 
         public new OwnershipComponent Initialize(GameObject owner = null)
         {
-            this.OwnerRef = owner == null ? -1 : owner.RefID;
+            this.OwnerRef = owner == null ? -1 : owner.RefId;
             return this;
         }
         public OwnershipComponent()
@@ -62,7 +62,7 @@ namespace Start_a_Town_
         {
             if (!obj.TryGetComponent("Ownership", out OwnershipComponent ownership))
                 throw new Exception();
-            return ownership.OwnerRef == owner.RefID;
+            return ownership.OwnerRef == owner.RefId;
         }
 
         internal override void GetManagementInterface(GameObject gameObject, Control box)
@@ -72,7 +72,7 @@ namespace Start_a_Town_
                 LeftClickAction = () =>
                 {
                     //150, 400
-                    var listNpc = new ListBoxNoScroll<GameObject, Label>(o => new Label(o?.Name ?? "None", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, gameObject.RefID, -1)));
+                    var listNpc = new ListBoxNoScroll<GameObject, Label>(o => new Label(o?.Name ?? "None", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, gameObject.RefId, -1)));
                     listNpc.AddItems(gameObject.Map.Town.GetAgents().Prepend(null));
                     listNpc.Toggle();
                 }
@@ -83,7 +83,7 @@ namespace Start_a_Town_
             var comp = gameObject.GetComponent<OwnershipComponent>();
             var setownercombo = new ComboBoxNewNew<GameObject>(150, "Owner",
                 A => A?.Name ?? "None",
-                o => PacketPlayerSetItemOwner.Send(Net.Client.Instance, gameObject.RefID, o != null ? o.RefID : -1),
+                o => PacketPlayerSetItemOwner.Send(Net.Client.Instance, gameObject.RefId, o != null ? o.RefId : -1),
                 () => comp.OwnerRef == -1 ? null : gameObject.Net.GetNetworkEntity(comp.OwnerRef),
                 () => alllist.Prepend(null));
 
@@ -106,7 +106,7 @@ namespace Start_a_Town_
         public void SetOwner(GameObject parent, int actorID)
         {
             this.OwnerRef = actorID;
-            parent.Net.EventOccured(Message.Types.ItemOwnerChanged, parent.RefID);
+            parent.Net.EventOccured(Message.Types.ItemOwnerChanged, parent.RefId);
         }
         static Control ActorList;
         internal override void GetSelectionInfo(IUISelection info, GameObject parent)
@@ -119,7 +119,7 @@ namespace Start_a_Town_
             var parent = this.Parent;
             //dimensions 200, 200, 
             if (ActorList is null)
-                ActorList = new ListBoxNoScroll<Actor, Button>(a => new Button(a?.Name ?? "none", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, parent.RefID, a?.RefID ?? -1)))
+                ActorList = new ListBoxNoScroll<Actor, Button>(a => new Button(a?.Name ?? "none", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, parent.RefId, a?.RefId ?? -1)))
                                                                    .AddItems(parent.Town.GetAgents().Prepend(null))
                                                                    .ToPanelLabeled("Select owner")
                                                                    .HideOnRightClick()

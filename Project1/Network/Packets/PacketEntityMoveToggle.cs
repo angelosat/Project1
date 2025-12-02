@@ -27,7 +27,7 @@ namespace Start_a_Town_
             var toggle = r.ReadBoolean();
             entity.MoveToggle(toggle);
             if (net is Server)
-                Send(net, entity.RefID, toggle);
+                Send(net, entity.RefId, toggle);
         }
     }
 }

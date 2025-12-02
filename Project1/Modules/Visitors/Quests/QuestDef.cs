@@ -31,7 +31,7 @@ namespace Start_a_Town_
             }
             set
             {
-                this.GiverID = value?.RefID ?? -1;
+                this.GiverID = value?.RefId ?? -1;
                 this.Manager.Town.Map.EventOccured(Components.Message.Types.QuestDefAssigned, this);
             }
         }

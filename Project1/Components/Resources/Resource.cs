@@ -172,7 +172,7 @@ namespace Start_a_Town_
                 var net = actor.Net;
                 if (net is Server)
                     actor.GetResource(def).Adjust(value);
-                net.GetOutgoingStream().Write(PacketSyncAdjust, actor.RefID, def.Name, value);
+                net.GetOutgoingStream().Write(PacketSyncAdjust, actor.RefId, def.Name, value);
             }
             private static void HandleSyncAdjust(INetEndpoint net, BinaryReader r)
             {

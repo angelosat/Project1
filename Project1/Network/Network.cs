@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_.Net
 {
-    public enum NetworkSideType { Local, Server }
     public delegate void PacketHandler(INetEndpoint net, BinaryReader r);
     public delegate void PacketHandlerWithPacket(INetEndpoint net, Packet packet);
     public delegate void PacketHandlerWithPlayer(INetEndpoint net, PlayerData player, BinaryReader r);

@@ -12,7 +12,7 @@ namespace Start_a_Town_
             int _itemRefId;
             public int ItemRefId
             {
-                get => this.Item?.RefID ?? this._itemRefId; 
+                get => this.Item?.RefId ?? this._itemRefId; 
                 private set { this._itemRefId = value; } 
             }
             public Entity Item;

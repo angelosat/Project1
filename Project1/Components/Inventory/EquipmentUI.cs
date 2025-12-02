@@ -16,7 +16,7 @@ namespace Start_a_Town_
             this.GearList = new ListBoxNoScroll<Entity, Button>(o =>
             {
                 var btn = ButtonHelper.CreateFromItemCompact(o);
-                btn.LeftClickAction = () => ContextMenuManager.PopUp(new ContextAction(() => "Unequip", () => PacketInventoryEquip.Send(this.Actor.Net, this.Actor.RefID, o.RefID)));
+                btn.LeftClickAction = () => ContextMenuManager.PopUp(new ContextAction(() => "Unequip", () => PacketInventoryEquip.Send(this.Actor.Net, this.Actor.RefId, o.RefId)));
                 return btn;
             });
             this.PanelList.AddControls(this.GearList);

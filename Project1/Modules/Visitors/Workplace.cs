@@ -201,7 +201,7 @@ namespace Start_a_Town_
 
         public bool ActorHasJob(Actor a, JobDef def)
         {
-            if (!this.WorkerProps.TryGetValue(a.RefID, out var wprops))
+            if (!this.WorkerProps.TryGetValue(a.RefId, out var wprops))
                 return false;
             return wprops.Jobs[def].Enabled;
         }
@@ -239,7 +239,7 @@ namespace Start_a_Town_
 
         public WorkerProps GetWorkerProps(Actor a)
         {
-            var aID = a.RefID;
+            var aID = a.RefId;
             return this.WorkerProps[aID];
         }
 
@@ -250,7 +250,7 @@ namespace Start_a_Town_
 
         public bool HasWorker(Actor actor)
         {
-            return this.Workers.Contains(actor.RefID);
+            return this.Workers.Contains(actor.RefId);
         }
 
         public virtual bool IsAllowed(Block block) { return false; }
@@ -339,8 +339,8 @@ namespace Start_a_Town_
                 return;
             }
             this.Town.ShopManager.GetShop<Shop>(actor)?.RemoveWorker(actor);
-            this.Workers.Add(actor.RefID);
-            this.WorkerProps.Add(actor.RefID, new WorkerProps(actor, this.GetRoleDefs().ToArray()));
+            this.Workers.Add(actor.RefId);
+            this.WorkerProps.Add(actor.RefId, new WorkerProps(actor, this.GetRoleDefs().ToArray()));
             this.Town.Net.EventOccured(Components.Message.Types.ShopUpdated, this, new[] { actor });
         }
 
@@ -359,8 +359,8 @@ namespace Start_a_Town_
 
         internal void RemoveWorker(Actor actor)
         {
-            this.Workers.Remove(actor.RefID);
-            this.WorkerProps.Remove(actor.RefID);
+            this.Workers.Remove(actor.RefId);
+            this.WorkerProps.Remove(actor.RefId);
             this.Town.Net.EventOccured(Components.Message.Types.ShopUpdated, this, new[] { actor });
         }
 
@@ -441,7 +441,7 @@ namespace Start_a_Town_
                             for (int i = 0; i < actors.Length; i++)
                             {
                                 var actor = actors[i];
-                                if (tav.Workers.Contains(actor.RefID))
+                                if (tav.Workers.Contains(actor.RefId))
                                     table.AddItems(actor);
                                 else
                                     table.RemoveItems(actor);
@@ -688,7 +688,7 @@ namespace Start_a_Town_
                 if (net is Server)
                     tavern.ToggleJob(actor, role);
                 var w = net.GetOutgoingStream();
-                w.Write(PacketUpdateWorkerRoles, player.ID, tavern.ID, role.Name, actor.RefID);
+                w.Write(PacketUpdateWorkerRoles, player.ID, tavern.ID, role.Name, actor.RefId);
             }
 
             static void UpdateWorkerRoles(INetEndpoint net, BinaryReader r)

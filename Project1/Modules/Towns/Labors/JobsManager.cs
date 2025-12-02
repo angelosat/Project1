@@ -44,7 +44,7 @@ namespace Start_a_Town_
                 else
                 {
                     var w = net.GetOutgoingStream();
-                    w.Write(pMod, player.ID, actor.RefID, job.Def.Name, priority);
+                    w.Write(pMod, player.ID, actor.RefId, job.Def.Name, priority);
                 }
             }
             public static void SendLaborToggle(PlayerData player, Actor actor, JobDef jobDef)
@@ -55,7 +55,7 @@ namespace Start_a_Town_
                     actor.ToggleJob(jobDef);
                     net.EventOccured(Components.Message.Types.JobUpdated, actor, jobDef);
                 }
-                net.GetOutgoingStream().Write(pToggle, player.ID, actor.RefID, jobDef.Name);
+                net.GetOutgoingStream().Write(pToggle, player.ID, actor.RefId, jobDef.Name);
             }
             private static void HandleLaborToggle(INetEndpoint net, BinaryReader r)
             {
@@ -74,7 +74,7 @@ namespace Start_a_Town_
             {
                 var net = actor.Net as Server;
                 var w = net.GetOutgoingStream();
-                w.Write(pSync, player.ID, actor.RefID);
+                w.Write(pSync, player.ID, actor.RefId);
                 w.Write(job.Def.Name);
                 job.Write(w);
             }

@@ -22,12 +22,12 @@ namespace Start_a_Town_
             public static void SendNotifyVisit(Actor actor)
             {
                 var w = Server.Instance.OutgoingStreamTimestamped;
-                w.Write(PacketVisitorArrived, actor.RefID);
+                w.Write(PacketVisitorArrived, actor.RefId);
             }
             public static void SendNotifyAdventurerCreated(Actor actor)
             {
                 var w = Server.Instance.OutgoingStreamTimestamped;
-                w.Write(PacketAdventurerCreated, actor.RefID);
+                w.Write(PacketAdventurerCreated, actor.RefId);
             }
             private static void ReceiveNotifyAdventurerCreated(INetEndpoint net, BinaryReader r)
             {
@@ -201,7 +201,7 @@ namespace Start_a_Town_
                 {
                     if (!InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
                         return;
-                    ContextMenuManager.PopUp(("Force visit", () => Server.Instance.GetNetworkObject<Actor>(npc.RefID).GetVisitorProperties().ForceVisit()));
+                    ContextMenuManager.PopUp(("Force visit", () => Server.Instance.GetNetworkObject<Actor>(npc.RefId).GetVisitorProperties().ForceVisit()));
                 };
 
                 return btn;

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
+
+#nullable enable
 
 namespace Start_a_Town_
 {
@@ -43,5 +46,76 @@ namespace Start_a_Town_
         public abstract void OnTargetSelected(SelectionManager info, ISelectable selection);
 
         public abstract void ResolveReferences();
+
+        readonly EntityRegistry EntityRegistry = [];
+        public IReadOnlyDictionary<int, Entity> Entities => this.EntityRegistry;
+        public ReadOnlyObservableCollection<Entity> EntitiesObservable => this.EntityRegistry.Entities;
+        public void Register(Entity entity)
+        {
+            entity.World = this;
+            this.EntityRegistry.Add(entity);
+        }
+        public Entity GetEntity(int refId)
+        {
+            this.EntityRegistry.TryGetValue(refId, out var obj);
+            return obj;
+        }
+        public T? GetEntity<T>(int refId) where T : Entity
+        {
+            this.EntityRegistry.TryGetValue(refId, out var obj);
+            return obj as T;
+        }
+        public IEnumerable<Entity> GetEntities()
+        {
+            foreach (var o in this.EntityRegistry.Values)
+                yield return o;
+        }
+        public IEnumerable<Entity> GetEntities(IEnumerable<int> netIds)
+        {
+            return this.EntityRegistry.GetEntities(netIds);
+        }
+        public bool TryGetEntity(int netID, out Entity obj)
+        {
+            if(  this.EntityRegistry.TryGetValue(netID, out var entity))
+            {
+                obj = entity;
+                return true;
+            }
+            obj = null!;
+            return false;
+        }
+        public bool TryGetEntity<T>(int netID, out T obj) where T : Entity
+        {
+            if (this.EntityRegistry.TryGetValue(netID, out var entity) && entity is T t)
+            {
+                obj = t;
+                return true;
+            }
+            obj = null!;
+            return false;
+        }
+
+        internal void RemoveEntity(int netId)
+        {
+            this.EntityRegistry.Remove(netId);
+        }
+        public bool DisposeEntity(int netId)
+        {
+            if (!this.EntityRegistry.TryGetValue(netId, out Entity? o))
+                return false;
+            foreach (var obj in o.GetSelfAndChildren())
+            {
+                Console.WriteLine($"{this} disposing {obj.DebugName}");
+                obj.OnDispose();
+                this.EntityRegistry.Remove(netId);
+                obj.Net = null;
+                obj.RefId = 0;
+                if (obj.IsSpawned)
+                    obj.Despawn();
+                //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
+                //    this.DisposeObject(child);
+            }
+            return true;
+        }
     }
 }

@@ -148,7 +148,7 @@ namespace Start_a_Town_.Core
             string localHost = "127.0.0.1";
             UIConnecting.Create(localHost);
             map.CameraRecenter();
-            Server.SetMap(map);
+            Server.Instance.SetMap(map);
 
             foreach (var a in actors)
                 map.Town.AddCitizen(a);

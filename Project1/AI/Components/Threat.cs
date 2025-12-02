@@ -24,7 +24,7 @@ namespace Start_a_Town_.AI.Behaviors
             float otherDistance = Vector3.Distance(this.Entity.Global, other.Entity.Global);
             if (thisDistance != otherDistance)
                 return thisDistance < otherDistance ? -1 : 1;
-            return this.Entity.RefID < other.Entity.RefID ? -1 : 1;
+            return this.Entity.RefId < other.Entity.RefId ? -1 : 1;
         }
         public override string ToString()
         {

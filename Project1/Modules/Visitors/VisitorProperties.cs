@@ -29,7 +29,7 @@ namespace Start_a_Town_
             set
             {
                 this.CachedActor = value;
-                this.ActorID = value.RefID;
+                this.ActorID = value.RefId;
             }
         }
 
@@ -142,7 +142,7 @@ namespace Start_a_Town_
             var net = this.Actor.Net;
             if (net is Client)
                 throw new Exception();
-            net.WriteToStream(PacketSync, this.Actor.RefID);
+            net.WriteToStream(PacketSync, this.Actor.RefId);
             this.Sync(net.GetOutgoingStream());
         }
 
@@ -236,7 +236,7 @@ namespace Start_a_Town_
             if (net is Client)
                 return;
             this.AwardTownRating(value);
-            net.WriteToStream(PacketSyncAwardTownRating, this.Actor.RefID, value);
+            net.WriteToStream(PacketSyncAwardTownRating, this.Actor.RefId, value);
         }
         private static void SyncAwardTownRating(INetEndpoint net, BinaryReader r)
         {
@@ -290,7 +290,7 @@ namespace Start_a_Town_
         }
         public void Write(BinaryWriter w)
         {
-            w.Write(this.Actor.RefID);
+            w.Write(this.Actor.RefId);
             w.Write(this.Actor.Exists);
             if (!this.Actor.Exists)
                 this.Actor.Write(w);
@@ -317,7 +317,7 @@ namespace Start_a_Town_
         }
         public ISyncable Sync(BinaryWriter w)
         {
-            w.Write(this.Actor.RefID);
+            w.Write(this.Actor.RefId);
             w.Write(this.TownApprovalRating.Value);
             w.Write(this.ShopBlacklist);
             w.Write(this.RecentlyVisitedShops);
@@ -338,7 +338,7 @@ namespace Start_a_Town_
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            this.Actor.RefID.Save(tag, "ActorID");
+            this.Actor.RefId.Save(tag, "ActorID");
             if (!this.Actor.Exists)
                 tag.Add(this.Actor.Save("ActorObject"));
             this.TownApprovalRating.Value.Save(tag, "TownApprovalRating");

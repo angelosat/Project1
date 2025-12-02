@@ -15,7 +15,7 @@ namespace Start_a_Town_
         {
             var w = actor.Net.GetOutgoingStream();
             w.Write(p);
-            w.Write(actor.RefID);
+            w.Write(actor.RefId);
             colors.Write(w);
         }
         private static void Receive(INetEndpoint net, BinaryReader r)

@@ -15,7 +15,7 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, IEnumerable<GameObject> enumerable)
         {
-            Send(net, enumerable.Select(o => o.RefID).ToList());
+            Send(net, enumerable.Select(o => o.RefId).ToList());
         }
         internal static void Send(INetEndpoint net, List<int> instanceID)
         {

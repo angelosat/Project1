@@ -56,7 +56,7 @@ namespace Start_a_Town_
                 map.CameraRecenter();
                 string localHost = "127.0.0.1";
                 UIConnecting.Create(localHost);
-                Net.Server.SetMap(map); // is this needed??? YES!!! it enumerates all existing entities in the network
+                Net.Server.Instance.SetMap(map); // is this needed??? YES!!! it enumerates all existing entities in the network
                 Net.Client.Instance.Connect(localHost, "host", a => { LobbyWindow.Instance.Console.Write("Connected to " + localHost); });
             });
         }

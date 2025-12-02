@@ -18,7 +18,7 @@ namespace Start_a_Town_
                 throw new Exception();
             var w = net.GetOutgoingStream();
             w.Write((int)PckType);
-            w.Write(entity.RefID);
+            w.Write(entity.RefId);
             entity.SyncWrite(w);
         }
         static public void Receive(INetEndpoint net, BinaryReader r)

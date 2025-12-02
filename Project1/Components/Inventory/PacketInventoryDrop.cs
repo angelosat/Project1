@@ -15,8 +15,8 @@ namespace Start_a_Town_
         {
             var stream = net.GetOutgoingStream();
             stream.Write(p);
-            stream.Write(actor.RefID);
-            stream.Write(item.RefID);
+            stream.Write(actor.RefId);
+            stream.Write(item.RefId);
             stream.Write(amount);
         }
         static void Receive(INetEndpoint net, BinaryReader r)

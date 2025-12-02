@@ -81,7 +81,7 @@ namespace Start_a_Town_
                 var w = net.GetOutgoingStream();
                 w.Write(PacketPlayerAssignWorkerToShop);
                 w.Write(player.ID);
-                w.Write(actor.RefID);
+                w.Write(actor.RefId);
                 w.Write(shop.ID);
             }
             private static void HandlePlayerAssignWorkerToShop(INetEndpoint net, BinaryReader r)

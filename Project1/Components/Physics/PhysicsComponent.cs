@@ -54,7 +54,7 @@ namespace Start_a_Town_
 
             var parent = this.Parent;
             var map = parent.Map;
-            var net = parent.Net;
+            var net = map.Net;
             var lastGlobal = parent.Transform.Global;
             if (!map.TryGetCell(lastGlobal, out var thisCell))
                 return;
@@ -114,7 +114,7 @@ namespace Start_a_Town_
                 if (lastGlobal != parent.Global)
                 {
                     // send a "step on" message on next block
-                    net.LogStateChange(parent.RefID);
+                    net.LogStateChange(parent.RefId);
                     Vector3 nextRounded = next.RoundXY();
                     if (nextRounded != lastGlobal.RoundXY())
                     {
@@ -412,7 +412,7 @@ namespace Start_a_Town_
                     if (lastDistance >= 1 && nextDistance < 1) // changed the inequality so the item doesn't combine if freefalling on an adjacent block
                     {
                         // collision
-                        obj.Net.PostLocalEvent(obj, ObjectEventArgs.Create(Message.Types.EntityCollision, new object[] { parent }));
+                        obj.PostMessage(ObjectEventArgs.Create(Message.Types.EntityCollision, new object[] { parent }));
                         //obj.Net.EventOccured(Message.Types.EntityCollision, parent, obj); //removing this because object gets disposed as a result of the above line
                     }
                     // TODO: combine items only when an item enters another stationary item's cell?

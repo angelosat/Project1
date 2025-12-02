@@ -46,7 +46,8 @@ namespace Start_a_Town_.Net
 
         public const int SnapshotIntervalMS = 10;// send 60 snapshots per second to clients
         public const int LightIntervalMS = 10;// send 60 light updates per second to clients
-        readonly Dictionary<int, GameObject> NetworkObjects;
+        //readonly Dictionary<int, GameObject> NetworkObjects;
+        IReadOnlyDictionary<int, Entity> NetworkObjects => this.World.Entities;
 
         /// <summary>
         /// Contains objects that have changed since the last world delta state update
@@ -86,7 +87,6 @@ namespace Start_a_Town_.Net
         public static CancellationTokenSource ChunkLoaderToken = new();
         static Server _Instance;
         public static Server Instance => _Instance ??= new Server();
-        public NetworkSideType Type => NetworkSideType.Server;
 
         static int _refIdSequence = 1;
 
@@ -98,7 +98,7 @@ namespace Start_a_Town_.Net
         public static int PlayerID => _playerID++;
         public Server()
         {
-            this.NetworkObjects = new Dictionary<int, GameObject>();
+            //this.NetworkObjects = new Dictionary<int, GameObject>();
         }
         private void AdvanceClock()
         {
@@ -109,13 +109,7 @@ namespace Start_a_Town_.Net
         /// TODO: Make it a field
         /// </summary>
         public MapBase Map { get; set; }
-
-        static WorldBase _World;
-        static WorldBase World
-        {
-            get => _World;
-            set => _World = value;
-        }
+        public  WorldBase World { get; set; }
         public static int Port = 5541;
         static Socket Listener;
         public PlayerList Players;
@@ -141,7 +135,7 @@ namespace Start_a_Town_.Net
             IsRunning = false;
             Instance.Map = null;
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
-            Instance.NetworkObjects.Clear();
+            //Instance.NetworkObjects.Clear();
             ServerClock = new TimeSpan();
             Instance.Speed = 0;
         }
@@ -154,7 +148,7 @@ namespace Start_a_Town_.Net
             Instance.OutgoingStreamReliable = new BinaryWriter(new MemoryStream());
 
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
-            Instance.NetworkObjects.Clear();
+            //Instance.NetworkObjects.Clear();
             ServerClock = new TimeSpan();
             Instance.ConsoleBox.Write("SERVER", "Started");
             if (Listener != null)
@@ -615,7 +609,7 @@ namespace Start_a_Town_.Net
             byte[] data = Network.Serialize(w =>
             {
                 obj.Write(w);
-                w.Write(parent.RefID);
+                w.Write(parent.RefId);
                 w.Write(childIndex);
             });
             foreach (var player in this.Players.GetList())
@@ -651,13 +645,14 @@ namespace Start_a_Town_.Net
         }
         public void Instantiator(GameObject obj)
         {
-            if (obj.RefID == 0)
-                obj.RefID = GetNextObjID();
+            //this.World.Register((Entity)obj);
+            if (obj.RefId == 0)
+                obj.RefId = GetNextObjID();
             else
-                _refIdSequence = Math.Max(_refIdSequence, obj.RefID + 1);
-           
+                _refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
+            this.World.Register(obj as Entity);
             obj.Net = this;
-            Instance.NetworkObjects.Add(obj.RefID, obj);
+            //Instance.NetworkObjects.Add(obj.RefId, obj);
         }
 
         /// <summary>
@@ -666,7 +661,7 @@ namespace Start_a_Town_.Net
         /// <param name="objNetID"></param>
         public bool DisposeObject(GameObject obj)
         {
-            return this.DisposeObject(obj.RefID);
+            return this.DisposeObject(obj.RefId);
         }
         /// <summary>
         /// Releases the object's networkID.
@@ -674,31 +669,32 @@ namespace Start_a_Town_.Net
         /// <param name="objNetID"></param>
         public bool DisposeObject(int netID)
         {
-            if (!this.NetworkObjects.TryGetValue(netID, out GameObject o))
-                return false;
-            foreach (var obj in o.GetSelfAndChildren())
-            {
-                Console.WriteLine($"{this} disposing {obj.DebugName}");
-                obj.OnDispose();
-                this.NetworkObjects.Remove(netID);
-                obj.Net = null;
-                obj.RefID = 0;
-                if (obj.IsSpawned)
-                    obj.Despawn();
-                //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
-                //    this.DisposeObject(child);
-            }
-            return true;
+            return this.World.DisposeEntity(netID);
+            //if (!this.NetworkObjects.TryGetValue(netID, out GameObject o))
+            //    return false;
+            //foreach (var obj in o.GetSelfAndChildren())
+            //{
+            //    Console.WriteLine($"{this} disposing {obj.DebugName}");
+            //    obj.OnDispose();
+            //    this.NetworkObjects.Remove(netID);
+            //    obj.Net = null;
+            //    obj.RefId = 0;
+            //    if (obj.IsSpawned)
+            //        obj.Despawn();
+            //    //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
+            //    //    this.DisposeObject(child);
+            //}
+            //return true;
         }
         public void SyncDispose(int refID)
         {
             this.DisposeObject(refID);
             PacketEntityDispose.Send(this, refID, null);
         }
-        public static void SetMap(MapBase map)
+        public void SetMap(MapBase map)
         {
-            World = map.World;
-            World.Net = Instance;
+            this.World = map.World;
+            this.World.Net = Instance;
             Instance.Map = map;
             foreach (var ch in map.GetActiveChunks().Values)
                 InstantiateChunk(ch);
@@ -712,7 +708,7 @@ namespace Start_a_Town_.Net
             chunk.GetObjects().ForEach(obj =>
             {
                 Instance.Instantiate(obj);
-                _refIdSequence = Math.Max(_refIdSequence, obj.RefID + 1);
+                _refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
                 //obj.Map = Instance.Map; // this isn't necessary, i set the entity's map field when loading the chunk
             });
 
@@ -725,29 +721,30 @@ namespace Start_a_Town_.Net
             }
         }
 
-        public GameObject GetNetworkEntity(int netID)
+        public GameObject GetNetworkEntity(int netId)
         {
-            this.NetworkObjects.TryGetValue(netID, out var obj);
-            return obj;
+            return this.World.GetEntity(netId);
         }
-        public T GetNetworkObject<T>(int netID) where T : GameObject
+        public T GetNetworkObject<T>(int netID) where T : Entity
         {
-            this.NetworkObjects.TryGetValue(netID, out var obj);
-            return obj as T;
+            this.World.TryGetEntity<T>(netID, out var entity);
+            return entity;
         }
 
         public IEnumerable<GameObject> GetNetworkObjects()
         {
-            foreach (var o in this.NetworkObjects.Values)
+            foreach (var o in this.World.GetEntities())
                 yield return o;
         }
-        public IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> netID)
+        public IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> netIds)
         {
-            return (from o in this.NetworkObjects where netID.Contains(o.Key) select o.Value);
+            return this.World.GetEntities(netIds);
+            //return (from o in this.NetworkObjects where netIds.Contains(o.Key) select o.Value);
         }
-        public bool TryGetNetworkObject(int netID, out GameObject obj)
+        public bool TryGetNetworkObject(int netID, out Entity obj)
         {
-            return this.NetworkObjects.TryGetValue(netID, out obj);
+            return this.World.TryGetEntity(netID, out obj);
+            //return this.NetworkObjects.TryGetValue(netID, out obj);
         }
 
         public void PostLocalEvent(GameObject recipient, ObjectEventArgs args)
@@ -799,7 +796,7 @@ namespace Start_a_Town_.Net
             obj.Global = startPosition;
             obj.Velocity = final;
 
-            if (obj.RefID == 0)
+            if (obj.RefId == 0)
                 obj.SyncInstantiate(this);
             this.Map.SyncSpawn(obj, startPosition, final);
         }
@@ -817,26 +814,26 @@ namespace Start_a_Town_.Net
             return Random;
         }
 
-        public static void SetWorld(WorldBase world)
+        public void SetWorld(WorldBase world)
         {
             if (!UnloadWorld())
                 return;
-            World = world;
-            if (World is not null)
-                Instance.ConsoleBox.Write(Color.Lime, "SERVER", "World " + World.Name + " loaded");
+            this.World = world;
+            if (this.World is not null)
+                this.ConsoleBox.Write(Color.Lime, "SERVER", "World " + World.Name + " loaded");
         }
-        private static bool UnloadWorld()
+        private bool UnloadWorld()
         {
             if (Connections.Count > 0)
             {
-                Instance.ConsoleBox.Write(Color.Red, "SERVER", "Can't unload world while active connections exist");
+                this.ConsoleBox.Write(Color.Red, "SERVER", "Can't unload world while active connections exist");
                 return false;
             }
-            if (World != null)
+            if (this.World != null)
             {
-                Instance.ConsoleBox.Write(Color.Lime, "SERVER", "World " + World.Name + " unloaded");
+                this.ConsoleBox.Write(Color.Lime, "SERVER", "World " + this.World.Name + " unloaded");
             }
-            World = null;
+            this.World = null;
             return true;
         }
 
@@ -858,7 +855,7 @@ namespace Start_a_Town_.Net
                     slot.Write(w);
                     w.Write(slot.Slot.StackSize);
                     if (slot.Slot.StackSize > 0)
-                        w.Write(slot.Slot.Object.RefID);
+                        w.Write(slot.Slot.Object.RefId);
                 }
             });
             Instance.Enqueue(PacketType.EntityInventoryChange, data, SendType.OrderedReliable); // WARNING!!! TODO: handle case where each slot is owned by a different entity     

@@ -7,9 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using static Start_a_Town_.Block;
 
 namespace Start_a_Town_.Net
 {
@@ -539,23 +537,6 @@ namespace Start_a_Town_.Net
                     CommandParser.Execute(Instance, msg.Player, r.ReadASCII());
                     break;
 
-                case PacketType.PlayerSlotClick:
-                    TargetArgs actor = TargetArgs.Read(Instance, r);
-                    TargetArgs target = TargetArgs.Read(Instance, r);
-                    Instance.PostLocalEvent(target.Slot.Parent, Components.Message.Types.SlotInteraction, actor.Object, target.Slot);
-                    Instance.Enqueue(PacketType.PlayerSlotClick, msg.Payload, ReliabilityType.OrderedReliable);
-                    return;
-
-                case PacketType.PlayerRemoteCall:
-                    int netid = r.ReadInt32();
-                    target = TargetArgs.Read(Instance, r);
-                    Message.Types call = (Message.Types)r.ReadInt32();
-                    int dataLength = (int)(r.BaseStream.Length - r.BaseStream.Position);
-                    byte[] args = r.ReadBytes(dataLength);
-                    target.HandleRemoteCall(Instance, ObjectEventArgs.Create(call, args));
-                    Instance.Enqueue(PacketType.PlayerRemoteCall, msg.Payload, ReliabilityType.OrderedReliable, msg.Player.ControllingEntity.Global);
-                    return;
-
                 case PacketType.MergedPackets:
                     UnmergePackets(msg);
                     break;
@@ -831,22 +812,7 @@ namespace Start_a_Town_.Net
                 Instance.Parser = new ServerCommandParser(Instance);
             Instance.Parser.Command(command);
         }
-       
-        public void SyncSlots(params TargetArgs[] slots)
-        {
-            byte[] data = Network.Serialize(w =>
-            {
-                w.Write(slots.Length);
-                foreach (var slot in slots)
-                {
-                    slot.Write(w);
-                    w.Write(slot.Slot.StackSize);
-                    if (slot.Slot.StackSize > 0)
-                        w.Write(slot.Slot.Object.RefId);
-                }
-            });
-            Instance.Enqueue(PacketType.EntityInventoryChange, data, ReliabilityType.OrderedReliable); // WARNING!!! TODO: handle case where each slot is owned by a different entity     
-        }
+
         private static void UnmergePackets(Packet packet)
         {
             var player = packet.Player;

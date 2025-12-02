@@ -4,12 +4,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_.Net
 {
@@ -116,7 +114,6 @@ namespace Start_a_Town_.Net
             this.IncomingAll = new ConcurrentQueue<Packet>();
             this.SyncedPackets = new Queue<Packet>();
 
-            //Instance.NetworkObjects.Clear();
             ScreenManager.GameScreens.Clear();
             ScreenManager.Add(MainScreen.Instance);
             this.EventOccured(Message.Types.ServerNoResponse);
@@ -140,7 +137,6 @@ namespace Start_a_Town_.Net
             this.RemoteOrderedReliableSequence = 0;
             this.PlayerData = playerData;
             this._packetID = 1;
-            //Instance.OutgoingStreamUnreliable = new BinaryWriter(new MemoryStream());
             this.IncomingOrderedReliable.Clear();
             this.IncomingOrdered.Clear();
             this.IncomingSynced.Clear();
@@ -545,17 +541,6 @@ namespace Start_a_Town_.Net
                     Instance.PlayerDisconnected(plid);
                     break;
 
-                case PacketType.PlayerRemoteCall:
-                    int netid = r.ReadInt32();
-                    TargetArgs target = TargetArgs.Read(Instance, r);
-                    Message.Types call = (Message.Types)r.ReadInt32();
-
-                    int dataLength = (int)(r.BaseStream.Length - r.BaseStream.Position);
-                    byte[] args = r.ReadBytes(dataLength);
-
-                    target.HandleRemoteCall(Instance, ObjectEventArgs.Create(call, args));
-                    return;
-
                 case PacketType.SpawnChildObject:
                     GameObject obj = GameObject.Create(r);
                     if (obj.RefId == 0)
@@ -577,28 +562,6 @@ namespace Start_a_Town_.Net
                     string chatText = r.ReadASCII();
                     Network.Console.Write(Color.Yellow, "SERVER", chatText);
                     break;
-
-                case PacketType.EntityInventoryChange:
-                    int count = r.ReadInt32();
-                    for (int i = 0; i < count; i++)
-                    {
-                        slot = TargetArgs.Read(Instance, r).Slot;
-                        var stacksize = r.ReadInt32();
-                        if (stacksize > 0)
-                        {
-                            var id = r.ReadInt32();
-                            slot.Object = Instance.World.GetEntity(id);
-                        }
-                        slot.StackSize = stacksize;
-                    }
-                    break;
-
-                case PacketType.PlayerSlotClick:
-                    var actor = TargetArgs.Read(Instance, r);
-                    var t = TargetArgs.Read(Instance, r);
-                    parent = t.Slot.Parent as Entity;
-                    Instance.PostLocalEvent(parent, Components.Message.Types.SlotInteraction, actor.Object, t.Slot);
-                    return;
 
                 case PacketType.PlayerServerCommand:
                     Instance.ParseCommand(r.ReadASCII());
@@ -699,21 +662,6 @@ namespace Start_a_Town_.Net
         public bool DisposeObject(int netId)
         {
             return this.World.DisposeEntity(netId);
-            //if (!this.World.Entities.TryGetValue(netId, out Entity? o))
-            //    return false;
-            //foreach (var obj in o.GetSelfAndChildren())
-            //{
-            //    Console.WriteLine($"{this} disposing {obj.DebugName}");
-            //    obj.OnDispose();
-            //    this.World.RemoveEntity(netId);
-            //    obj.Net = null;
-            //    obj.RefId = 0;
-            //    if (obj.IsSpawned)
-            //        obj.Despawn();
-            //    //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
-            //    //    this.DisposeObject(child);
-            //}
-            //return true;
         }
 
         /// <summary>

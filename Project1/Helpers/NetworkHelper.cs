@@ -1,9 +1,5 @@
-﻿using SharpDX.MediaFoundation;
-using SharpDX.X3DAudio;
-using Start_a_Town_.Components;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 using System;
-using System.Data;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -53,9 +49,8 @@ namespace Start_a_Town_
             byte[] compressed;
             using (var output = new MemoryStream())
             {
-                using (var input = new MemoryStream(data))
                 using (var zip = new GZipStream(output, CompressionMode.Compress))
-                    input.CopyTo(zip);
+                    zip.Write(data, 0, data.Length);
                 compressed = output.ToArray();
             }
             return compressed;

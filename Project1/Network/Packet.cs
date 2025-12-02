@@ -3,7 +3,6 @@ using System.Net.Sockets;
 using System.Net;
 using System.IO;
 using System.Diagnostics;
-using SharpDX.MediaFoundation;
 
 namespace Start_a_Town_.Net
 {
@@ -17,13 +16,9 @@ namespace Start_a_Town_.Net
         MapData,
         WorldData, 
         Chunk,
-        ObjectEvent,
         ServerBroadcast,
-        PlayerSlotClick,
         SpawnChildObject,
         PlayerServerCommand,
-        PlayerRemoteCall,
-        EntityInventoryChange,
         MergedPackets,
         SetSaving,
         //Acks

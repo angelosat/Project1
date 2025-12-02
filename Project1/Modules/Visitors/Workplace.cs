@@ -545,7 +545,7 @@ namespace Start_a_Town_
                 }
             }
             var net = this.Town.Net;
-            var actors = this.Town.Townies.Select(id => net.GetNetworkEntity(id) as Actor);
+            var actors = this.Town.Members.Select(id => net.GetNetworkEntity(id) as Actor);
             tableAuto.AddItems(actors);
             tableManual.AddItems(actors);
 
@@ -656,7 +656,7 @@ namespace Start_a_Town_
                         this.TableJobRoles.AddColumn(null, role.Label, 32, a => new CheckBoxNew());
                     //this.TableJobRoles.Bind(shop.Town.Townies);
                     this.TableJobRoles.Bind(shop.Workers);
-                    this.ListAvailableWorkers.Bind(shop.Town.Townies, shop.Net.GetNetworkObject<Actor>);
+                    this.ListAvailableWorkers.Bind(shop.Town.Members, shop.Net.GetNetworkObject<Actor>);
                 }
                 this.Window?.SetTitle(shop.Name);
             }

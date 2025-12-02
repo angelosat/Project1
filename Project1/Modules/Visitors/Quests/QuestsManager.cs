@@ -122,7 +122,7 @@ namespace Start_a_Town_
                 yield break;
             if (target.Object is not Actor actor)
                 yield break;
-            if (actor.IsCitizen)
+            if (actor.IsTownMember)
             {
                 //yield return("Quests", () => ShowUI(this.UIAssignQuests, $"Assign quests to {actor.Name}"));
                 yield return BtnQuests.SetLeftClickAction(() => ShowUI(this.UIAssignQuests, $"Assign quests to {actor.Name}")) as Button;
@@ -137,7 +137,7 @@ namespace Start_a_Town_
                 return;
             if (target.Object is not Actor actor)
                 return;
-            if (actor.IsCitizen)
+            if (actor.IsTownMember)
             {
                 this.UIAssignQuests.Value.GetData(actor);
             }

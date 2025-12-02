@@ -90,9 +90,9 @@ namespace Start_a_Town_
         public AILog Log => AIState.GetState(this).History;
         public IItemPreferencesManager ItemPreferences => this.GetState().ItemPreferences;
 
-        public Room AssignedRoom => this.Map.Town.RoomManager.FindRoom(this.RefId); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
-        internal Workplace Workplace => this.Map.Town.ShopManager.GetShop(this); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
-        public bool IsCitizen => this.Map.Town.Townies.Contains(this.RefId); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
+        public Room AssignedRoom => this.Town?.RoomManager.FindRoom(this.RefId); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
+        internal Workplace Workplace => this.Town?.ShopManager.GetShop(this); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
+        public bool IsTownMember => this.Town?.Members.Contains(this.RefId) ?? false; // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
 
 
         public override string Name => this.Npc.FullName;
@@ -340,7 +340,7 @@ namespace Start_a_Town_
         {
             if (this.IsPlayerControlled)
                 return Color.Yellow;
-            if (this.IsCitizen)
+            if (this.IsTownMember)
                 return Color.White;
             return Color.Cyan;
         }
@@ -413,7 +413,7 @@ namespace Start_a_Town_
             yield return this.btnPersonality.SetLeftClickAction(b => PersonalityComponent.GetGui(this).Toggle()) as Button;
             yield return this.btnNeeds.SetLeftClickAction(b => NeedsUI.GetGui(this).Toggle()) as Button;
             yield return this.btnStats.SetLeftClickAction(b => StatsGui.GetGui(this).Toggle()) as Button;
-            if (!this.IsCitizen)
+            if (!this.IsTownMember)
                 yield return this.btnVisitor.SetLeftClickAction(b => this.GetVisitorProperties().ShowGui()) as Button;
         }
         public bool CanOperate(TargetArgs target)
@@ -502,7 +502,7 @@ namespace Start_a_Town_
             var jobs = this.State.GetJobs().Where(j => j.Enabled);
             jobs.OrderBy(j => j.Priority);
             var jobTaskGivers = jobs.SelectMany(j => j.Def.GetTaskGivers());
-            givers = this.IsCitizen ? givers.Concat(jobTaskGivers) : givers.Concat(TaskGiver.VisitorTaskGivers);
+            givers = this.IsTownMember ? givers.Concat(jobTaskGivers) : givers.Concat(TaskGiver.VisitorTaskGivers);
             givers = givers.Append(TaskGiver.Idle);
             return givers;
         }

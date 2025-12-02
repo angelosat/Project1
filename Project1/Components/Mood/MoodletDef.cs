@@ -22,7 +22,7 @@ namespace Start_a_Town_
             Description = "No room assigned",
             Value = -15,
             Mode = Moodlet.Modes.Indefinite,
-            Condition = a => a.IsCitizen && a.AssignedRoom == null
+            Condition = a => a.IsTownMember && a.AssignedRoom == null
         };
         static public readonly MoodletDef JustAte = new("Meal")
         {

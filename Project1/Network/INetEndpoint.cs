@@ -21,7 +21,7 @@ namespace Start_a_Town_
         GameObject GetNetworkEntity(int netID);
         T GetNetworkObject<T>(int netID) where T : Entity;// GameObject;
 
-        IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> ids);
+        //IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> ids);
         IEnumerable<GameObject> GetNetworkObjects();
 
         bool TryGetNetworkObject(int netID, out Entity obj);

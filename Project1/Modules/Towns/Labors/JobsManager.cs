@@ -167,7 +167,7 @@ namespace Start_a_Town_
                 }, 0);
             }
             var net = this.Town.Net;
-            var actors = this.Town.Townies.Select(id => net.GetNetworkEntity(id) as Actor);
+            var actors = this.Town.Members.Select(id => net.GetNetworkEntity(id) as Actor);
             tableAuto.AddItems(actors);
             tableManual.AddItems(actors);
 

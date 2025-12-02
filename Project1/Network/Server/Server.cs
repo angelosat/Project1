@@ -46,8 +46,7 @@ namespace Start_a_Town_.Net
 
         public const int SnapshotIntervalMS = 10;// send 60 snapshots per second to clients
         public const int LightIntervalMS = 10;// send 60 light updates per second to clients
-        //readonly Dictionary<int, GameObject> NetworkObjects;
-        IReadOnlyDictionary<int, Entity> NetworkObjects => this.World.Entities;
+        //IReadOnlyDictionary<int, Entity> Entities => this.World.Entities;
 
         /// <summary>
         /// Contains objects that have changed since the last world delta state update
@@ -698,7 +697,7 @@ namespace Start_a_Town_.Net
             Instance.Map = map;
             foreach (var ch in map.GetActiveChunks().Values)
                 InstantiateChunk(ch);
-            foreach (var obj in Instance.NetworkObjects)
+            foreach (var obj in Instance.World.Entities)
                 obj.Value.MapLoaded(Instance.Map);
             map.ResolveReferences();
             Random = new RandomThreaded(Instance.Map.Random);
@@ -736,11 +735,11 @@ namespace Start_a_Town_.Net
             foreach (var o in this.World.GetEntities())
                 yield return o;
         }
-        public IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> netIds)
-        {
-            return this.World.GetEntities(netIds);
-            //return (from o in this.NetworkObjects where netIds.Contains(o.Key) select o.Value);
-        }
+        //public IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> netIds)
+        //{
+        //    return this.World.GetEntities(netIds);
+        //    //return (from o in this.NetworkObjects where netIds.Contains(o.Key) select o.Value);
+        //}
         public bool TryGetNetworkObject(int netID, out Entity obj)
         {
             return this.World.TryGetEntity(netID, out obj);
@@ -770,7 +769,7 @@ namespace Start_a_Town_.Net
 
         public bool LogStateChange(int netID)
         {
-            return this.ObjectsChangedSinceLastSnapshot.Add(this.NetworkObjects[netID]);
+            return this.ObjectsChangedSinceLastSnapshot.Add(this.World.Entities[netID]);
         }
 
         #region Loot

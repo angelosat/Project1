@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using System;
-using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -37,12 +35,7 @@ namespace Start_a_Town_.Net
         public long NextPacketID => this._packetID++;
         private long RemoteSequence = 0;
         public long RemoteOrderedReliableSequence = 0;
-        //private readonly Dictionary<int, GameObject> NetworkObjects = new();
-        private IReadOnlyDictionary<int, Entity> NetworkObjects => this.World.Entities;
-
-        //public readonly ObservableDictionary<int, GameObject> NetworkObjects = new();
-        //public ObservableCollection<GameObject> ObjectsObservable = new();
-
+       
         public MapBase Map
         {
             set => Engine.Map = value;
@@ -730,7 +723,6 @@ namespace Start_a_Town_.Net
         /// <returns></returns>
         public GameObject Instantiate(GameObject ob)
         {
-            //ob.Instantiate(this.Instantiator);
             foreach (var obj in ob.GetSelfAndChildren())
                 this.Instantiator(obj);
             return ob;
@@ -738,26 +730,18 @@ namespace Start_a_Town_.Net
 
         public GameObject InstantiateLocal(GameObject ob)
         {
-            ob.RefId = _nextRefIdSequence++;
-            //ob.Instantiate(this.Instantiator);
-            foreach (var obj in ob.GetSelfAndChildren())
-                this.Instantiator(obj);
-            return ob;
+            throw new Exception();
+            //ob.RefId = _nextRefIdSequence++;
+            //foreach (var obj in ob.GetSelfAndChildren())
+            //    this.Instantiator(obj);
+            //return ob;
         }
 
         public void Instantiator(GameObject ob)
         {
-            //if (Instance.NetworkObjects.TryGetValue(ob.RefID, out var existing))
-            //{
-            //    if (existing == ob) return;
-            //    else throw new Exception();
-            //}
             ob.Net = this;
             Instance.World.Register(ob as Entity);
-            _nextRefIdSequence = Math.Max(_nextRefIdSequence, ob.RefId + 1);
         }
-
-        private int _nextRefIdSequence;
 
         internal void AddPlayer(PlayerData player)
         {
@@ -772,8 +756,8 @@ namespace Start_a_Town_.Net
             this.Players.Remove(player);
             if (Instance.Map != null && player.ControllingEntity != null)
             {
-                Instance.NetworkObjects[player.CharacterID].Despawn();
-                Instance.DisposeObject(player.CharacterID);
+                Instance.World.Entities[player.CharacterID].Despawn();
+                Instance.World.DisposeEntity(player.CharacterID);
             }
             Log.Network(this, $"{player.Name} disconnected");
             Log.System($"{player.Name} disconnected");
@@ -943,11 +927,11 @@ namespace Start_a_Town_.Net
                 yield return o;
         }
 
-        public IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> netID)
-        {
+        //public IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> netID)
+        //{
 
-            return (from o in this.NetworkObjects where netID.Contains(o.Key) select o.Value);
-        }
+        //    return (from o in this.NetworkObjects where netID.Contains(o.Key) select o.Value);
+        //}
 
         public bool TryGetNetworkObject(int netID, out Entity obj)
         {
@@ -976,7 +960,7 @@ namespace Start_a_Town_.Net
             for (int i = 0; i < count; i++)
             {
                 int netID = reader.ReadInt32();
-                var obj = Instance.NetworkObjects.GetValueOrDefault(netID);
+                var obj = Instance.World.Entities.GetValueOrDefault(netID);
                 if (obj is null)
                     //continue;
                     //throw new Exception($"Received snapshot for entityid {netID} that doesn't exist"); // 

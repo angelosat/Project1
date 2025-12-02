@@ -375,7 +375,7 @@ namespace Start_a_Town_
             };
             var gui = GUI ??= UIHelper.ToTabbedContainer(tabs).ToWindow().SetOnSelectedTargetChangedAction((c, t) =>
             {
-                if (t.Object is Actor actor && actor.IsCitizen)
+                if (t.Object is Actor actor && actor.IsTownMember)
                     c.Hide();
                 else if (!(t.Object is Actor))
                     c.Hide();

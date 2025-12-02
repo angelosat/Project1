@@ -109,7 +109,7 @@ namespace Start_a_Town_
             set => this._map = value; 
         }
 
-        public Town Town => this.Map.Town;
+        public Town Town;// => this.Map.Town;
 
         internal object GetPath()
         {

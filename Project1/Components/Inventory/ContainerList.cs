@@ -27,7 +27,7 @@ namespace Start_a_Town_
                 return _gui.Bind(this.Contents);
                 void drop(GameObject o)
                 {
-                    if (actor.IsSpawned && actor.IsCitizen)
+                    if (actor.IsSpawned && actor.IsTownMember)
                         PacketInventoryDrop.Send(o.Net, this.Parent, o, o.StackSize);
                 }
             }

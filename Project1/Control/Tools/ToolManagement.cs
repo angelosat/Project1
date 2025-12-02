@@ -313,7 +313,7 @@ namespace Start_a_Town_
         {
             var actor = SelectionManager.SingleSelectedEntity as Actor;
 
-            if (!(actor?.IsCitizen ?? false))
+            if (!(actor?.IsTownMember ?? false))
                 return false;
 
             var taskGivers = actor.CanForceTaskOn(target);

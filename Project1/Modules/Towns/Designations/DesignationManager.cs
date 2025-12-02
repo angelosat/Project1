@@ -163,7 +163,7 @@ namespace Start_a_Town_
             switch (e.Type)
             {
                 case Components.Message.Types.BlocksChanged:
-                    this.HandleBlocksChanged(e.Parameters[1] as IEnumerable<TargetArgs>);
+                    this.HandleBlocksChanged(e.Parameters[1] as IEnumerable<IntVec3>);
                     break;
 
                 case Components.Message.Types.ZoneDesignation:
@@ -175,14 +175,14 @@ namespace Start_a_Town_
             }
         }
 
-        private void HandleBlocksChanged(IEnumerable<TargetArgs> targets)
+        private void HandleBlocksChanged(IEnumerable<IntVec3> targets)
         {
             foreach (var des in this.Designations)
             {
                 foreach (var target in targets)
                 {
-                    if (!des.Key.IsValid(target))
-                        des.Value.Remove(target);
+                    if (!des.Key.IsValid(this.Map, target))
+                        des.Value.Remove(target.At(this.Map));
                 }
             }
         }

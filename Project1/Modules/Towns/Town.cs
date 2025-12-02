@@ -23,10 +23,10 @@ namespace Start_a_Town_
             this.RoomManager.Init();
         }
 
-        public ObservableHashSet<int> Townies = new();
+        public ObservableHashSet<int> Members = new();
         public IEnumerable<Actor> GetAgents()
         {
-            return this.Townies.Select(id => this.Map.Net.GetNetworkEntity(id) as Actor);
+            return this.Members.Select(id => this.Map.Net.GetNetworkEntity(id) as Actor);
         }
         public GameObject GetNpc(Guid guid)
         {
@@ -103,10 +103,10 @@ namespace Start_a_Town_
 
         public void Update()
         {
-            foreach (var agent in this.Townies.ToArray())
+            foreach (var agent in this.Members.ToArray())
                 if (this.Net.GetNetworkEntity(agent) == null)
                 {
-                    this.Townies.Remove(agent);
+                    this.Members.Remove(agent);
                     $"Removed disposed townie entity with id: {agent}".ToConsole();
                 }
             foreach (var comp in this.TownComponents)
@@ -123,7 +123,7 @@ namespace Start_a_Town_
 
                 case Message.Types.EntityDespawned:
                     entity = e.Parameters[0] as GameObject;
-                    if(this.Townies.Contains(entity.RefId)) //TODO: dont dismiss despawned entities (they might be active outside the map)
+                    if(this.Members.Contains(entity.RefId)) //TODO: dont dismiss despawned entities (they might be active outside the map)
                         RemoveAgent(entity);
                     break;
 
@@ -162,6 +162,7 @@ namespace Start_a_Town_
             if (!entity.HasComponent<AIComponent>())
                 throw new Exception();
             this.AddCitizen(entity.RefId);
+            entity.Town = this;
             entity.Net.ConsoleBox.Write($"{entity.Name} has joined the town!");
             this.Map.EventOccured(Message.Types.NpcsUpdated);
         }
@@ -171,13 +172,14 @@ namespace Start_a_Town_
             if (entity.HasComponent<AIComponent>())
             {
                 this.RemoveCitizen(entity.RefId);
+                entity.Town = null;
                 this.Net.ConsoleBox.Write($"{entity.Name} was dismissed from the town!");
                 this.Map.EventOccured(Message.Types.NpcsUpdated);
             }
         }
         public void ToggleAgent(GameObject entity)
         {
-            if (!this.Townies.Contains(entity.RefId))
+            if (!this.Members.Contains(entity.RefId))
                 this.AddAgent(entity);
             else
                 this.RemoveAgent(entity);
@@ -188,13 +190,13 @@ namespace Start_a_Town_
         }
         public void AddCitizen(int id)
         {
-            this.Townies.Add(id);
+            this.Members.Add(id);
             foreach (var c in this.TownComponents)
                 c.OnCitizenAdded(id);
         }
         public void RemoveCitizen(int id)
         {
-            this.Townies.Remove(id);
+            this.Members.Remove(id);
             foreach (var c in this.TownComponents)
                 c.OnCitizenRemoved(id);
         }
@@ -219,6 +221,8 @@ namespace Start_a_Town_
 
         internal void ResolveReferences()
         {
+            foreach (var memberId in this.Members)
+                this.Map.World.GetEntity(memberId).Town = this;
         }
 
         public SaveTag Save(string name)
@@ -251,7 +255,7 @@ namespace Start_a_Town_
         private void SaveAgents(SaveTag tag)
         {
             var agentsTag = new SaveTag(SaveTag.Types.List, "Agents", SaveTag.Types.Int);
-            foreach (var a in this.Townies)
+            foreach (var a in this.Members)
                 agentsTag.Add(new SaveTag(SaveTag.Types.Int, "", a));
             tag.Add(agentsTag);
         }
@@ -299,8 +303,8 @@ namespace Start_a_Town_
             foreach (var comp in this.TownComponents)
                 comp.Write(w);
 
-            w.Write(this.Townies.Count);
-            foreach (var a in this.Townies)
+            w.Write(this.Members.Count);
+            foreach (var a in this.Members)
                 w.Write(a);
 
             foreach (var ut in Utility.All())

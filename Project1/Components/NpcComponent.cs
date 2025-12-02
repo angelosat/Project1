@@ -185,7 +185,7 @@ namespace Start_a_Town_
         static void Control(List<TargetArgs> actors)
         {
             var actor = actors.First().Object as Actor;
-            if (actor.IsCitizen)
+            if (actor.IsTownMember)
                 PacketControlNpc.Send(Net.Client.Instance, Net.Client.Instance.GetPlayer().ID, actor.RefId);
         }
         private void ToggleCitizenship(List<TargetArgs> actors)

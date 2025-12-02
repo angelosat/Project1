@@ -31,6 +31,10 @@ namespace Start_a_Town_
                 }
             }
         }
+        internal static void Send(PlayerData player)
+        {
+            Send(player.StreamUnreliable, player);
+        }
         internal static void Send(Client client, PlayerData player)
         {
 

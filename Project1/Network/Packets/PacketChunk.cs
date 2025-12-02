@@ -8,10 +8,6 @@ namespace Start_a_Town_
     static class PacketChunk
     {
         static int p;
-        internal static void Init()
-        {
-            Client.RegisterPacketHandler(PacketType.Chunk, Receive);
-        }
         static PacketChunk()
         {
             p = Network.RegisterPacketHandler(Receive);
@@ -19,10 +15,9 @@ namespace Start_a_Town_
         internal static void Send(INetEndpoint net, Vector2 vector2, byte[] chunkData, PlayerData player)
         {
             var server = net as Server;
-            //var w = server[ReliabilityType.OrderedReliable];
-            //w.Write(p);
-            //w.Write(chunkData);
-            server.Enqueue(player, Packet.Create(player, PacketType.Chunk, chunkData, sendType: ReliabilityType.OrderedReliable));
+            var w = player.StreamReliable;
+            w.Write(p);
+            w.Write(chunkData);
         }
         internal static void Receive(INetEndpoint net, BinaryReader r)
         {

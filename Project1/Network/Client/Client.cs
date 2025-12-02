@@ -73,10 +73,8 @@ namespace Start_a_Town_.Net
         public BinaryWriter OutgoingStreamOrderedReliable => this[ReliabilityType.OrderedReliable];
         public BinaryWriter OutgoingStreamReliable => this[ReliabilityType.Reliable];
 
-
         public BinaryWriter GetOutgoingStreamOrderedReliable()
         {
-            //return this.OutgoingStreamUnreliable;
             return this.OutgoingStreamOrderedReliable;
         }
 
@@ -94,7 +92,6 @@ namespace Start_a_Town_.Net
             Instance.World = null;
             Engine.Map = null;
             this.Timeout = -1;
-            //Instance.NetworkObjects.Clear();
             Packet.Create(this.NextPacketID, PacketType.PlayerDisconnected).BeginSendTo(this.Host, this.RemoteIP, a => { });
             this.IncomingAll = new ConcurrentQueue<Packet>();
             this.ClientClock = new TimeSpan();
@@ -401,9 +398,6 @@ namespace Start_a_Town_.Net
         {
             while (this.IncomingAll.TryDequeue(out Packet packet))
             {
-                if (packet.PacketType == PacketType.Chunk)
-                    (DateTime.Now.ToString() + " " + packet.PacketType.ToString() + " dequeued").ToConsole();
-
                 // if the timer is not stopped (not -1), reset it
                 if (this.Timeout > -1)
                     this.Timeout = this.TimeoutLength;
@@ -481,29 +475,16 @@ namespace Start_a_Town_.Net
                 else if (PacketHandlersWithPacket.TryGetValue(id, out var h))
                     h(Instance, packet);
                 else
-                    Receive(type, r);
+                    //Receive(type, r);
+                    throw new Exception("received invalid packet id");
+
                 if (mem.Position == lastPos)
                     break;
                 packetsHandled++;
                 lastHandled = id;
             }
         }
-        private static void Receive(PacketType type, BinaryReader r)
-        {
-            switch (type)
-            {
-                case PacketType.SetSaving:
-                    var val = r.ReadBoolean();
-                    IsSaving = val;
-                    Log.System("Game saved");
-                    break;
-
-                default:
-                    //break; 
-                    throw new Exception("received invalid packet id");
-            }
-        }
-
+        
         private string _name = "Client";
 
         public override string ToString()
@@ -567,10 +548,6 @@ namespace Start_a_Town_.Net
                     Instance.ParseCommand(r.ReadASCII());
                     break;
 
-                case PacketType.SetSaving:
-                    this.SetSaving(r.ReadBoolean());
-                    break;
-
                 case PacketType.MergedPackets:
                     this.UnmergePackets(msg);
                     break;
@@ -580,7 +557,7 @@ namespace Start_a_Town_.Net
             }
         }
 
-        private void SetSaving(bool val)
+        public void SetSaving(bool val)
         {
             IsSaving = val;
             Log.System(IsSaving ? "Saving..." : "Game saved");
@@ -874,12 +851,6 @@ namespace Start_a_Town_.Net
             foreach (var o in this.World.Entities.Values)
                 yield return o;
         }
-
-        //public IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> netID)
-        //{
-
-        //    return (from o in this.NetworkObjects where netID.Contains(o.Key) select o.Value);
-        //}
 
         public bool TryGetNetworkObject(int netID, out Entity obj)
         {

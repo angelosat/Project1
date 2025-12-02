@@ -8,17 +8,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using static Start_a_Town_.Block;
 
 namespace Start_a_Town_.Net
 {
     public partial class Server : INetEndpoint
     {
         public double CurrentTick => ServerClock.TotalMilliseconds;
-
-        static Server()
-        {
-            //RegisterPacketHandler(PacketType.Acks, Instance.ReceiveAcks);
-        }
 
         readonly string _name = "Server";
         public override string ToString()
@@ -32,7 +28,7 @@ namespace Start_a_Town_.Net
 
         static bool IsRunning;
 
-        bool IsSaving;
+        public bool IsSaving;
 
         UI.ConsoleBoxAsync _Console;
         public UI.ConsoleBoxAsync ConsoleBox
@@ -46,7 +42,6 @@ namespace Start_a_Town_.Net
 
         public const int SnapshotIntervalMS = 10;// send 60 snapshots per second to clients
         public const int LightIntervalMS = 10;// send 60 light updates per second to clients
-        //IReadOnlyDictionary<int, Entity> Entities => this.World.Entities;
 
         /// <summary>
         /// Contains objects that have changed since the last world delta state update
@@ -95,18 +90,11 @@ namespace Start_a_Town_.Net
         }
         static int _playerID = 1;
         public static int PlayerID => _playerID++;
-        public Server()
-        {
-            //this.NetworkObjects = new Dictionary<int, GameObject>();
-        }
         private void AdvanceClock()
         {
             ServerClock = ServerClock.Add(TimeSpan.FromMilliseconds(ClockIntervalMS));
         }
 
-        /// <summary>
-        /// TODO: Make it a field
-        /// </summary>
         public MapBase Map { get; set; }
         public  WorldBase World { get; set; }
         public static int Port = 5541;
@@ -197,10 +185,11 @@ namespace Start_a_Town_.Net
             }
 
             /// THESE MUST BE CALLED FROM WITHIN THE GAMESPEED LOOP
+            //this.WritePlayerSpecific();
+            this.WritePlayerSpecificNew();
             this.CreatePacketsFromStreams();
-            this.WritePlayerSpecific();
             this.ResetOutgoingStreams();
-            Instance.AdvanceClock();
+            this.AdvanceClock();
             this.SendPackets();
         }
 
@@ -222,6 +211,36 @@ namespace Start_a_Town_.Net
             }
         }
 
+        private void WritePlayerSpecificNew()
+        {
+            // SEND PLAYER SPECIFIC ACKS
+            foreach (var player in this.Players.GetList())
+            {
+                PacketAcks.Send(player);
+            }
+        }
+        private void CreatePacketsFromStreams()
+        {
+            foreach (var stream in this.StreamsArray)
+                if (stream.Writer.BaseStream.Position > 0)
+                {
+                    // append per-player data
+                    foreach (var player in this.GetPlayers())
+                    {
+                        MemoryStream mem = stream.Reliability switch
+                        {
+                            ReliabilityType.Unreliable => (MemoryStream)player.StreamUnreliable.BaseStream,
+                            ReliabilityType.OrderedReliable => (MemoryStream)player.StreamReliable.BaseStream,
+                            _ => throw new Exception(),
+                        };
+                        var data = stream.GetBytes(mem);
+                        var p = Packet.Create(player, PacketType.MergedPackets, data, stream.Reliability);
+                        p.Synced = true;
+                        p.Tick = this.Clock.TotalMilliseconds;
+                        this.Enqueue(player, p);
+                    }
+                }
+        }
         private void SendPackets()
         {
             this.SendUnreliable();
@@ -343,16 +362,7 @@ namespace Start_a_Town_.Net
             }
         }
 
-        private void CreatePacketsFromStreams()
-        {
-            foreach (var i in this.StreamsArray)
-                if (i.Writer.BaseStream.Position > 0)
-                {
-                    var data = i.GetBytes();
-                    if (data.Length > 0)
-                        this.Enqueue(PacketType.MergedPackets, i.Reliability, data);
-                }
-        }
+       
         internal void Enqueue(PacketType type, ReliabilityType reliability, byte[] data, bool sync = true)
         {
             if (!sync)
@@ -840,12 +850,14 @@ namespace Start_a_Town_.Net
         public static void StartSaving()
         {
             Instance.IsSaving = true;
-            Instance.Enqueue(PacketType.SetSaving, ReliabilityType.OrderedReliable, Network.Serialize(w => { w.Write(true); }));
+            PacketSaving.Send(Instance);
+            //Instance.Enqueue(PacketType.SetSaving, ReliabilityType.OrderedReliable, Network.Serialize(w => { w.Write(true); }));
         }
         public static void FinishSaving()
         {
             Instance.IsSaving = false;
-            Instance.Enqueue(PacketType.SetSaving, ReliabilityType.OrderedReliable, Network.Serialize(w => { w.Write(false); }));
+            PacketSaving.Send(Instance);
+            //Instance.Enqueue(PacketType.SetSaving, ReliabilityType.OrderedReliable, Network.Serialize(w => { w.Write(false); }));
         }
         public PlayerData CurrentPlayer => null; //placeholder until a server session supports a player and not just be dedicated
         public PlayerData GetPlayer()

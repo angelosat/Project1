@@ -32,6 +32,12 @@ namespace Start_a_Town_.Net
         {
             return new ArraySegment<byte>(this.Memory.GetBuffer(), 0, (int)this.Memory.Position);
         }
+        public byte[] GetBytes(MemoryStream append)
+        {
+            this.Memory.Write(append.GetBuffer(), 0, (int)append.Length);
+            append.SetLength(0);
+            return this.Memory.ToArray();
+        }
         public byte[] GetBytes()
         {
             return this.Memory.ToArray();

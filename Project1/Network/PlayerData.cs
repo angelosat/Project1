@@ -40,7 +40,14 @@ namespace Start_a_Town_.Net
         public ConcurrentQueue<Packet> OutUnreliable = new();
         public ConcurrentQueue<Packet> OutReliable = new();
 
-        public PlayerData(EndPoint ip)
+        private MemoryStream MemReliable = new(), MemUnreliable = new();
+        public readonly BinaryWriter StreamReliable, StreamUnreliable;
+        public PlayerData()
+        {
+            this.StreamReliable = new(this.MemReliable);
+            this.StreamUnreliable = new(this.MemUnreliable);
+        }
+        public PlayerData(EndPoint ip) : this()
         {
             this.CharacterID = 0;
             this.Name = ip.ToString();
@@ -48,12 +55,13 @@ namespace Start_a_Town_.Net
             this.Color = Random.GetColor();
         }
 
-        public PlayerData(string name)
+        public PlayerData(string name) : this()
         {
             this.CharacterID = 0;
             this.Name = name;
             this.Color = Random.GetColor();
         }
+
 
         static public PlayerData Read(BinaryReader reader)
         {

@@ -13,13 +13,10 @@ namespace Start_a_Town_.Net
         PlayerEnterWorld, 
         AssignCharacter, 
         RequestConnection,
-        Chunk,
         ServerBroadcast,
         SpawnChildObject,
         PlayerServerCommand,
         MergedPackets,
-        SetSaving,
-        //Acks
     }
 
     [Flags]

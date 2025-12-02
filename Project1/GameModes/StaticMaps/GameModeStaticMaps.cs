@@ -22,8 +22,6 @@ namespace Start_a_Town_.Core
             PacketChunkRequest.Init();
             PacketPlayerSetSpeed.Init();
             PacketChunkReceived.Init();
-            PacketMap.Init();
-            PacketWorld.Init();
         }
 
         public override void OnIngameMenuCreated(IngameMenu menu)

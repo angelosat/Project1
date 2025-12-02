@@ -36,7 +36,7 @@ namespace Start_a_Town_
                 {
                     net.Map.Town.ShopManager.RemoveShop(shopid);
                 }
-                net.GetOutgoingStream().Write(PacketPlayerDeleteShop, player.ID, shopid);
+                net.GetOutgoingStreamOrderedReliable().Write(PacketPlayerDeleteShop, player.ID, shopid);
             }
             private static void ReceivePlayerDeleteShop(INetEndpoint net, BinaryReader r)
             {
@@ -50,7 +50,7 @@ namespace Start_a_Town_
 
             static public void SendPlayerShopAssignCounter(INetEndpoint net, PlayerData player, Workplace shop, IntVec3 global)
             {
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketPlayerShopAssignCounter);
                 w.Write(player.ID);
                 w.Write(shop?.ID ?? -1);
@@ -78,7 +78,7 @@ namespace Start_a_Town_
 
             static public void SendPlayerAssignWorkerToShop(INetEndpoint net, PlayerData player, Actor actor, Workplace shop)
             {
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketPlayerAssignWorkerToShop);
                 w.Write(player.ID);
                 w.Write(actor.RefId);
@@ -101,7 +101,7 @@ namespace Start_a_Town_
             {
                 if (shopID < 0)
                     return;
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketPlayerAddStockpileToShop);
                 w.Write(playerID);
                 w.Write(shopID);
@@ -125,7 +125,7 @@ namespace Start_a_Town_
             {
                 if (shopID < 0)
                     return;
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketPlayerAddShoppingArea);
                 w.Write(playerID);
                 w.Write(shopID);
@@ -148,7 +148,7 @@ namespace Start_a_Town_
 
             static public void SendPlayerCreateShop(INetEndpoint net, int playerID, Type shopType, int shopID = 0)
             {
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketPlayerCreateShop);
                 w.Write(playerID);
                 w.Write(shopType.FullName);

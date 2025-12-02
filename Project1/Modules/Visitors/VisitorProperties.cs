@@ -143,7 +143,7 @@ namespace Start_a_Town_
             if (net is Client)
                 throw new Exception();
             net.WriteToStream(PacketSync, this.Actor.RefId);
-            this.Sync(net.GetOutgoingStream());
+            this.Sync(net.GetOutgoingStreamOrderedReliable());
         }
 
         public void GetTooltipInfo(Control tooltip)

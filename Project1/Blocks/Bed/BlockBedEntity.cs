@@ -163,7 +163,7 @@ namespace Start_a_Town_
                 if (net is Server)
                     BlockBedEntity.SetOwner(net.Map, global, owner);
 
-                net.GetOutgoingStream().Write(pOwner, playerData.ID, global, owner?.RefId ?? -1);
+                net.GetOutgoingStreamOrderedReliable().Write(pOwner, playerData.ID, global, owner?.RefId ?? -1);
             }
 
             private static void SetOwner(INetEndpoint net, BinaryReader r)
@@ -182,7 +182,7 @@ namespace Start_a_Town_
                 if (net is Server)
                     BlockBedEntity.SetType(net.Map, vector3, type);
 
-                net.GetOutgoingStream().Write(pChangeType, playerData.ID, vector3, (int)type);
+                net.GetOutgoingStreamOrderedReliable().Write(pChangeType, playerData.ID, vector3, (int)type);
             }
 
             private static void SetType(INetEndpoint net, BinaryReader r)

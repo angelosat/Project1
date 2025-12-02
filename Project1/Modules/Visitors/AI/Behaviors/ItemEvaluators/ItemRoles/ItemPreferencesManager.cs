@@ -326,7 +326,7 @@ namespace Start_a_Town_
 
             internal static void Sync(INetEndpoint net, Actor actor, System.Collections.IList oldItems, System.Collections.IList newItems)
             {
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(pSyncPrefsAll);
                 w.Write(actor.RefId);
 

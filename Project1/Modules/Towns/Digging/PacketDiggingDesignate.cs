@@ -15,7 +15,7 @@ namespace Start_a_Town_
         }
         static public void Send(INetEndpoint net, Vector3 begin, Vector3 end, bool remove)
         {
-            var stream = net.GetOutgoingStream();
+            var stream = net.GetOutgoingStreamOrderedReliable();
             stream.Write(p);
             stream.Write(begin);
             stream.Write(end);

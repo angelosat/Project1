@@ -14,7 +14,7 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, CraftOrder order)
         {
-            var w = net.GetOutgoingStream();
+            var w = net.GetOutgoingStreamOrderedReliable();
             w.Write(p);
             w.Write(order.Workstation);
             w.Write(order.ID);

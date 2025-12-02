@@ -54,7 +54,7 @@ namespace Start_a_Town_
             internal static void Send(BlockEntityCompRefuelable owner, ItemDef item, Def def)
             {
                 var parent = owner.Parent;
-                var w = parent.Map.Net.GetOutgoingStream();
+                var w = parent.Map.Net.GetOutgoingStreamOrderedReliable();
                 w.Write(def is MaterialDef ? pMaterial : pVariation);
                 w.Write(parent.OriginGlobal);
                 item.Write(w);
@@ -63,7 +63,7 @@ namespace Start_a_Town_
             internal static void Send(BlockEntityCompRefuelable owner, ItemCategory category)
             {
                 var parent = owner.Parent;
-                var w = parent.Map.Net.GetOutgoingStream();
+                var w = parent.Map.Net.GetOutgoingStreamOrderedReliable();
                 w.Write(pCategory);
                 w.Write(parent.OriginGlobal);
                 w.Write(category?.Name ?? "");

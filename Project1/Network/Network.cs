@@ -28,7 +28,7 @@ namespace Start_a_Town_.Net
             }
             public static void SendSyncReport(Server server, string text)
             {
-                server.GetOutgoingStream().Write(PacketSyncReport, text);
+                server.GetOutgoingStreamOrderedReliable().Write(PacketSyncReport, text);
             }
             private static void HandleSyncReport(INetEndpoint net, BinaryReader r)
             {

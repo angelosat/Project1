@@ -19,7 +19,7 @@ namespace Start_a_Town_
                 var net = stockpile.Map.Net;
                 if (net is Server)
                     stockpile.Settings.Priority = p;
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketStockpileSync);
                 w.Write(stockpile.ID);
                 w.Write((byte)p);

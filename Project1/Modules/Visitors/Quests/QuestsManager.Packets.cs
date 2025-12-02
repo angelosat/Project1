@@ -23,7 +23,7 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     quest.MaxConcurrent = maxConcurrentModValue;
-                net.GetOutgoingStream().Write(pMod, player.ID, quest.ID, maxConcurrentModValue);
+                net.GetOutgoingStreamOrderedReliable().Write(pMod, player.ID, quest.ID, maxConcurrentModValue);
             }
             private static void ReceiveQuestModify(INetEndpoint net, BinaryReader r)
             {
@@ -40,7 +40,7 @@ namespace Start_a_Town_
             {
                 if(net is Server)
                     quest.Giver = actor;
-                net.GetOutgoingStream().Write(pAssign, player.ID, quest.ID, actor?.RefId ?? -1);
+                net.GetOutgoingStreamOrderedReliable().Write(pAssign, player.ID, quest.ID, actor?.RefId ?? -1);
             }
             private static void ReceiveQuestGiverAssign(INetEndpoint net, BinaryReader r)
             {
@@ -59,7 +59,7 @@ namespace Start_a_Town_
                 var index = quest.GetObjectives().ToList().FindIndex(i => i == qobj);
                 if (net is Server server)
                     quest.RemoveObjective(qobj);
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(pRemoveObj);
                 w.Write(player.ID);
                 w.Write(quest.ID);
@@ -83,7 +83,7 @@ namespace Start_a_Town_
                 {
                     quest.AddObjective(qobj);
                 }
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(pCreateObj);
                 w.Write(player.ID);
                 w.Write(quest.ID);
@@ -107,7 +107,7 @@ namespace Start_a_Town_
             }
             internal static void SendAddQuestGiver(INetEndpoint net, int playerID)
             {
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(pCreate);
                 w.Write(playerID);
                 if (net is Server server)
@@ -133,7 +133,7 @@ namespace Start_a_Town_
             internal static void RemoveQuest(QuestsManager manager, int playerID, QuestDef quest)
             {
                 var net = manager.Town.Net;
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(pRemove);
                 w.Write(playerID);
                 w.Write(quest.ID);

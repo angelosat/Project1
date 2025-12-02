@@ -14,7 +14,7 @@ namespace Start_a_Town_
         internal static void Send(CraftOrder order, bool value)
         {
             var net = order.Map.Net;
-            var w = net.GetOutgoingStream();
+            var w = net.GetOutgoingStreamOrderedReliable();
             var bench = order.Workstation;
             w.Write(p);
             w.Write(bench);

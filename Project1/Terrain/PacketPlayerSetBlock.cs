@@ -17,7 +17,7 @@ namespace Start_a_Town_
             if (net is Server)
                 Perform(net.Map, global, block, material, data, variation, orientation);
 
-            var w = net.GetOutgoingStream();
+            var w = net.GetOutgoingStreamOrderedReliable();
             w.Write(p);
             w.Write(player.ID);
             w.Write(global);

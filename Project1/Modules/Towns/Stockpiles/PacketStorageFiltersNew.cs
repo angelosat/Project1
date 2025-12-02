@@ -16,7 +16,7 @@ namespace Start_a_Town_
         }
         public static void Send(Stockpile stockpile, ItemDef item, Def v)
         {
-            var s = stockpile.Map.Net.GetOutgoingStream();
+            var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
             s.Write(pVariation);
             s.Write(stockpile.ID);
             s.Write(item.Name);
@@ -35,7 +35,7 @@ namespace Start_a_Town_
 
         public static void Send(Stockpile stockpile, ItemCategory category)
         {
-            var s = stockpile.Map.Net.GetOutgoingStream();
+            var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
             s.Write(pCategory);
             s.Write(stockpile.ID);
             s.Write(category?.Name ?? "");
@@ -52,7 +52,7 @@ namespace Start_a_Town_
 
         public static void Send(Stockpile stockpile, ItemDef item, MaterialDef mat)
         {
-            var s = stockpile.Map.Net.GetOutgoingStream();
+            var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
             s.Write(pNew);
             s.Write(stockpile.ID);
             s.Write(item.Name);
@@ -77,7 +77,7 @@ namespace Start_a_Town_
 
         public static void Send(Stockpile stockpile, int[] nodeIndices = null, int[] leafIndices = null)
         {
-            var s = stockpile.Map.Net.GetOutgoingStream();
+            var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
             s.Write(p);
             s.Write(stockpile.ID);
             s.Write(nodeIndices ?? new int[] { });

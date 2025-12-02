@@ -687,7 +687,7 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     tavern.ToggleJob(actor, role);
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketUpdateWorkerRoles, player.ID, tavern.ID, role.Name, actor.RefId);
             }
 
@@ -707,7 +707,7 @@ namespace Start_a_Town_
             {
                 if (shopID < 0)
                     return;
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketPlayerRenameShop);
                 w.Write(playerID);
                 w.Write(shopID);
@@ -731,7 +731,7 @@ namespace Start_a_Town_
             {
                 if (shopID < 0)
                     return;
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketPlayerToggleShop);
                 w.Write(playerID);
                 w.Write(shopID);

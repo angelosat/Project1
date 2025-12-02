@@ -25,7 +25,7 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var strem = net.GetOutgoingStream();
+            var strem = net.GetOutgoingStreamOrderedReliable();
             strem.Write(PckTypeNew);
             strem.Write(templateID);
             entity.Write(strem);
@@ -49,7 +49,7 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var strem = net.GetOutgoingStream();
+            var strem = net.GetOutgoingStreamOrderedReliable();
             strem.Write(PckType);
             strem.Write(entities.Count());
             foreach(var entity in entities)

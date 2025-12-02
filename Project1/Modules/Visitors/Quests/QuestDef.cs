@@ -396,7 +396,7 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     quest.AutoMatchBudget();
-                net.GetOutgoingStream().Write(PacketAutoMatchBudget, player.ID, quest.ID);
+                net.GetOutgoingStreamOrderedReliable().Write(PacketAutoMatchBudget, player.ID, quest.ID);
             }
             private static void HandleAutoMatchBudget(INetEndpoint net, BinaryReader r)
             {
@@ -414,7 +414,7 @@ namespace Start_a_Town_
                 {
                     quest.AddObjective(qobj);
                 }
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketQuestCreateObjective);
                 w.Write(player.ID);
                 w.Write(quest.ID);
@@ -441,7 +441,7 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     quest.MaxConcurrent = maxConcurrentModValue;
-                net.GetOutgoingStream().Write(PacketQuestModify, player.ID, quest.ID, maxConcurrentModValue);
+                net.GetOutgoingStreamOrderedReliable().Write(PacketQuestModify, player.ID, quest.ID, maxConcurrentModValue);
             }
             private static void ReceiveQuestModify(INetEndpoint net, BinaryReader r)
             {
@@ -459,7 +459,7 @@ namespace Start_a_Town_
                 var index = quest.GetObjectives().ToList().FindIndex(i => i == qobj);
                 if (net is Server server)
                     quest.RemoveObjective(qobj);
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketQuestRemoveObjective);
                 w.Write(player.ID);
                 w.Write(quest.ID);
@@ -482,7 +482,7 @@ namespace Start_a_Town_
                 if (net is Server)
                     objective.Count = count;
                 var q = objective.Parent;
-                net.GetOutgoingStream().Write(PacketAdjustObjectiveCount, player.ID, q.ID, q.GetObjectives().ToList().FindIndex(i => i == objective), count);
+                net.GetOutgoingStreamOrderedReliable().Write(PacketAdjustObjectiveCount, player.ID, q.ID, q.GetObjectives().ToList().FindIndex(i => i == objective), count);
             }
             private static void HandleAdjustObjectiveCount(INetEndpoint net, BinaryReader r)
             {
@@ -501,7 +501,7 @@ namespace Start_a_Town_
                 if (net is Server)
                     reward.Count = count;
                 var q = reward.Parent;
-                net.GetOutgoingStream().Write(PacketAdjustRewardCount, player.ID, q.ID, q.GetRewards().ToList().FindIndex(i => i == reward), count);
+                net.GetOutgoingStreamOrderedReliable().Write(PacketAdjustRewardCount, player.ID, q.ID, q.GetRewards().ToList().FindIndex(i => i == reward), count);
             }
             private static void HandleAdjustRewardCount(INetEndpoint net, BinaryReader r)
             {

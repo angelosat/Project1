@@ -4,26 +4,26 @@ using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     class PacketMap
     {
-        internal static void Init()
+        static readonly int p;
+
+        static PacketMap()
         {
-            Client.RegisterPacketHandler(PacketType.MapData, Receive);
+            p = Network.RegisterPacketHandlerWithPacket(Receive);
         }
+
         internal static void Send(INetEndpoint net, PlayerData player)
         {
             var server = net as Server;
-            byte[] data = Network.Serialize(server.Map.WriteData); // why does it let me do that?
-            if (player is null)
-            {
-                foreach (var p in server.Players.GetList())
-                    server.Enqueue(p, Packet.Create(player, PacketType.MapData, data, ReliabilityType.OrderedReliable));
-            }
-            else
-                server.Enqueue(player, Packet.Create(player, PacketType.MapData, data, ReliabilityType.OrderedReliable));
+            var w = server[ReliabilityType.OrderedReliable];
+            w.Write(p);
+            server.Map.WriteData(w);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(INetEndpoint net, Packet packet)
         {
+            var r = packet.Reader;
             var client = net as Client;
             if (client.Map is not null)
             {

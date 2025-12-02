@@ -13,7 +13,7 @@ namespace Start_a_Town_
         }
         public static void Send(Actor actor, CharacterColors colors)
         {
-            var w = actor.Net.GetOutgoingStream();
+            var w = actor.Net.GetOutgoingStreamOrderedReliable();
             w.Write(p);
             w.Write(actor.RefId);
             colors.Write(w);

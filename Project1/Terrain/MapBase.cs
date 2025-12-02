@@ -38,7 +38,7 @@ namespace Start_a_Town_
             {
                 if (net is not Server server)
                     return;
-                var w = server.GetOutgoingStream();
+                var w = server.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketSpawn);
                 w.Write(entity.RefId);
                 w.Write(global);

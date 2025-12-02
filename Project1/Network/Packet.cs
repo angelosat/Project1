@@ -13,8 +13,6 @@ namespace Start_a_Town_.Net
         PlayerEnterWorld, 
         AssignCharacter, 
         RequestConnection,
-        MapData,
-        WorldData, 
         Chunk,
         ServerBroadcast,
         SpawnChildObject,

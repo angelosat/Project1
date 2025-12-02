@@ -50,7 +50,7 @@ namespace Start_a_Town_
 
         void EventOccured(Components.Message.Types type, params object[] p);
 
-        BinaryWriter GetOutgoingStream();
+        BinaryWriter GetOutgoingStreamOrderedReliable();
         BinaryWriter this[ReliabilityType reliabilityChannel] { get; }
         NetworkStream GetStream(ReliabilityType reliabilityChannel);
         void WriteToStream(params object[] args);

@@ -16,7 +16,7 @@ namespace Start_a_Town_
         {
             if (net is Server)
                 throw new Exception();
-            var w = net.GetOutgoingStream();
+            var w = net.GetOutgoingStreamOrderedReliable();
             w.Write(p);
             w.Write(net.GetPlayer().ID);
             w.Write(toggle);

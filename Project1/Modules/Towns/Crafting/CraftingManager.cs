@@ -48,7 +48,7 @@ namespace Start_a_Town_
         public static void SetOrderRestrictions(CraftOrder order, string reagent, ItemDef[] defs, MaterialDef[] mats, MaterialTypeDef[] matTypes)
         {
             var net = order.Map.Net;
-            var w = net.GetOutgoingStream();
+            var w = net.GetOutgoingStreamOrderedReliable();
             w.Write(pRestrictions);
             w.Write(order.Workstation);
             w.Write(order.ID);

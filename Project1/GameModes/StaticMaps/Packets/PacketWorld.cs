@@ -1,30 +1,23 @@
 ﻿using System;
 using System.IO;
 using Start_a_Town_.Net;
-using Start_a_Town_.Core;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     class PacketWorld
     {
-        internal static void Init()
+        static int p;
+        static PacketWorld()
         {
-            Client.RegisterPacketHandler(PacketType.WorldData, Receive);
+            p = Network.RegisterPacketHandler(Receive);
         }
         internal static void Send(INetEndpoint net, PlayerData player)
         {
             var server = net as Server;
-            //byte[] data = Network.Serialize(server.Map.World.WriteData); // serialization (in this case i mean compressing payloads) should only be done when reading or writing packets to/from the socket. dont compress the data at this point
-            using var w = new BinaryWriter(new MemoryStream());
+            var w = server[ReliabilityType.OrderedReliable];
+            w.Write(p);
             server.Map.World.WriteData(w);
-            byte[] data = ((MemoryStream)w.BaseStream).ToArray();
-            if (player == null)
-            {
-                foreach (var p in server.Players.GetList())
-                    server.Enqueue(p, Packet.Create(player, PacketType.WorldData, data, ReliabilityType.OrderedReliable));
-            }
-            else
-                server.Enqueue(player, Packet.Create(player, PacketType.WorldData, data, ReliabilityType.OrderedReliable));
         }
         internal static void Receive(INetEndpoint net, BinaryReader r)
         {

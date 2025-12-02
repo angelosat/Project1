@@ -18,7 +18,7 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var strem = net.GetOutgoingStream();
+            var strem = net.GetOutgoingStreamOrderedReliable();
             strem.Write(p);
             strem.Write(list);
         }

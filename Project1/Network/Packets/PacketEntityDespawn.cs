@@ -16,7 +16,7 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 return;
-            var w = net.GetOutgoingStream();
+            var w = net.GetOutgoingStreamOrderedReliable();
             w.Write(p);
             w.Write(entity.RefId);
         }

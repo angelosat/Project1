@@ -15,7 +15,7 @@ namespace Start_a_Town_
         internal static void Send(TaskGiver def, Actor actor, TargetArgs target)
         {
             var client = actor.Map.Net as Client;
-            var w = client.GetOutgoingStream();
+            var w = client.GetOutgoingStreamOrderedReliable();
             w.Write(PType);
             w.Write(actor.RefId);
             w.Write(def.GetType().FullName);

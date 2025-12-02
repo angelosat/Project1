@@ -22,7 +22,7 @@ namespace Start_a_Town_
             public static void Send(GrowingZone zone, PlantProperties plant, bool tilling, bool planting, bool harvesting)
             {
                 var client = zone.Net as Client;
-                var w = client.GetOutgoingStream();
+                var w = client.GetOutgoingStreamOrderedReliable();
                 w.Write(pSync);
                 w.Write(zone.ID);
                 plant.Write(w);
@@ -52,7 +52,7 @@ namespace Start_a_Town_
                 //if (zone.Net is Client)
                 //    return;
 
-                var w = zone.Map.Net.GetOutgoingStream();
+                var w = zone.Map.Net.GetOutgoingStreamOrderedReliable();
                 w.Write(pSync);
                 w.Write(zone.ID);
                 zone.Plant.Write(w);

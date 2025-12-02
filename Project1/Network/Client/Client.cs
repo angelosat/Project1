@@ -74,7 +74,7 @@ namespace Start_a_Town_.Net
         public BinaryWriter OutgoingStreamReliable => this[ReliabilityType.Reliable];
 
 
-        public BinaryWriter GetOutgoingStream()
+        public BinaryWriter GetOutgoingStreamOrderedReliable()
         {
             //return this.OutgoingStreamUnreliable;
             return this.OutgoingStreamOrderedReliable;
@@ -1124,7 +1124,7 @@ namespace Start_a_Town_.Net
 
         public void WriteToStream(params object[] args)
         {
-            this.GetOutgoingStream().Write(args);
+            this.GetOutgoingStreamOrderedReliable().Write(args);
         }
         public BinaryWriter this[ReliabilityType reliability] =>this.GetStream(reliability).Writer;
         public NetworkStream GetStream(ReliabilityType reliability)

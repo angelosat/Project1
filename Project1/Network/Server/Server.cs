@@ -430,7 +430,7 @@ namespace Start_a_Town_.Net
 
         public BinaryWriter OutgoingStreamTimestamped = new(new MemoryStream());
 
-        public BinaryWriter GetOutgoingStream()
+        public BinaryWriter GetOutgoingStreamOrderedReliable()
         {
             return this.OutgoingStreamOrderedReliable;
         }
@@ -880,7 +880,7 @@ namespace Start_a_Town_.Net
 
         public void WriteToStream(params object[] args)
         {
-            this.GetOutgoingStream().Write(args);
+            this.GetOutgoingStreamOrderedReliable().Write(args);
         }
 
         //public BinaryWriter GetStream(ReliabilityType reliability)

@@ -1515,7 +1515,7 @@ namespace Start_a_Town_
             if (net is Server)
                 this.SetStackSize(v);
 
-            var w = net.GetOutgoingStream();
+            var w = net.GetOutgoingStreamOrderedReliable();
             w.Write(PacketSyncSetStacksize);
             w.Write(this.RefId);
             w.Write(v);
@@ -1545,7 +1545,7 @@ namespace Start_a_Town_
                 throw new Exception();
 
             this.Absorb(obj);
-            var w = net.GetOutgoingStream();
+            var w = net.GetOutgoingStreamOrderedReliable();
             w.Write(PacketSyncAbsorb);
             w.Write(this.RefId);
             w.Write(obj.RefId);

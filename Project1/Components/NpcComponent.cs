@@ -191,7 +191,7 @@ namespace Start_a_Town_
         private void ToggleCitizenship(List<TargetArgs> actors)
         {
             var actor = actors.First();
-            var w = Client.Instance.GetOutgoingStream();
+            var w = Client.Instance.GetOutgoingStreamOrderedReliable();
             w.Write(p);
             w.Write(Net.Client.Instance.GetPlayer().ID);
             w.Write(actor.Object.RefId);
@@ -204,7 +204,7 @@ namespace Start_a_Town_
             actor.Town.ToggleAgent(actor);
             if(net is Server)
             {
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(p);
                 w.Write(Net.Client.Instance.GetPlayer().ID);
                 w.Write(actor.RefId);

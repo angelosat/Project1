@@ -13,7 +13,7 @@ namespace Start_a_Town_
         }
         static internal void Send(INetEndpoint net, int playerid, TargetArgs target)
         {
-            var w = net.GetOutgoingStream();
+            var w = net.GetOutgoingStreamOrderedReliable();
             w.Write(p);
             w.Write(playerid);
             target.Write(w);

@@ -31,7 +31,7 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     tavern.RemoveOrder(order);
-                net.GetOutgoingStream().Write(PacketOrderRemove, player.ID, tavern.ID, order.ID);
+                net.GetOutgoingStreamOrderedReliable().Write(PacketOrderRemove, player.ID, tavern.ID, order.ID);
             }
             private static void HandleAddOrder(INetEndpoint net, BinaryReader r)
             {
@@ -52,14 +52,14 @@ namespace Start_a_Town_
                     id = tavern.MenuItemIDSequence++;
                     tavern.AddOrder(new CraftOrder(reaction) { ID = id });
                 }
-                net.GetOutgoingStream().Write(PacketOrderAdd, player.ID, tavern.ID, reaction, id);
+                net.GetOutgoingStreamOrderedReliable().Write(PacketOrderAdd, player.ID, tavern.ID, reaction, id);
             }
 
             static public void SendOrderSync(INetEndpoint net, PlayerData player, Tavern tavern, CraftOrder order, bool enabled)
             {
                 if (net is Server)
                     order.Enabled = enabled;
-                net.GetOutgoingStream().Write(PacketOrderSync, player.ID, tavern.ID, order.ID, enabled);
+                net.GetOutgoingStreamOrderedReliable().Write(PacketOrderSync, player.ID, tavern.ID, order.ID, enabled);
             }
             private static void HandleSyncOrder(INetEndpoint net, BinaryReader r)
             {
@@ -70,14 +70,14 @@ namespace Start_a_Town_
                 if (net is Client)
                     order.Enabled = enabled;
                 else
-                    net.GetOutgoingStream().Write(PacketOrderSync, pl.ID, tavern.ID, order.ID, enabled);
+                    net.GetOutgoingStreamOrderedReliable().Write(PacketOrderSync, pl.ID, tavern.ID, order.ID, enabled);
             }
 
             public static void UpdateOrderIngredients(INetEndpoint net, PlayerData player, Tavern tavern, CraftOrder order, string reagent, ItemDef[] defs, MaterialDef[] mats, MaterialTypeDef[] matTypes)
             {
                 if (net is Server)
                     order.ToggleReagentRestrictions(reagent, defs, mats, matTypes);
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(PacketOrderUpdateIngredients);
                 w.Write(player.ID);
                 w.Write(tavern.ID);

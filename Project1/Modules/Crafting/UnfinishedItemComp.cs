@@ -22,7 +22,7 @@ namespace Start_a_Town_
             public static void SendCancel(INetEndpoint net, PlayerData player, List<TargetArgs> obj)
             {
                 //var net = obj.First().Network;
-                var w = net.GetOutgoingStream();
+                var w = net.GetOutgoingStreamOrderedReliable();
                 w.Write(pCancel);
                 w.Write(player.ID);
                 w.Write(obj.Select(t => t.Object.RefId).ToList());

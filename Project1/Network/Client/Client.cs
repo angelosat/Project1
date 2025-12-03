@@ -35,11 +35,7 @@ namespace Start_a_Town_.Net
         private long _packetID = 1;
         public long NextPacketID => this._packetID++;
         private long RemoteSequence = 0;
-        //public long RemoteOrderedReliableSequence = -1;//0;
-        //public long OrderedReliableSequence = 0;//1;
-        public long RemoteOrderedReliableSequence { get => this.PlayerData.RemoteOrderedReliableSequence; set => this.PlayerData.RemoteOrderedReliableSequence = value; }
-        public long OrderedReliableSequence { get => this.PlayerData.OrderedReliableSequence; set => this.PlayerData.OrderedReliableSequence = value; }
-
+        
         public MapBase Map
         {
             set => Engine.Map = value;
@@ -136,7 +132,6 @@ namespace Start_a_Town_.Net
             this.ChunkCallBackEvents = new ConcurrentDictionary<Vector2, ConcurrentQueue<Action<Chunk>>>();
             this.RecentPackets = new Queue<long>();
             this.RemoteSequence = 0;
-            this.RemoteOrderedReliableSequence = 0;
             this._packetID = 1;
             this.IncomingOrderedReliable.Clear();
             this.IncomingOrdered.Clear();
@@ -186,7 +181,6 @@ namespace Start_a_Town_.Net
             this.ChunkCallBackEvents = new ConcurrentDictionary<Vector2, ConcurrentQueue<Action<Chunk>>>();
             this.RecentPackets = new Queue<long>();
             this.RemoteSequence = 0;
-            this.RemoteOrderedReliableSequence = 0;
             this.PlayerData = playerData;
             this._packetID = 1;
             this.IncomingOrderedReliable.Clear();
@@ -433,7 +427,7 @@ namespace Start_a_Town_.Net
                 }
                 else if (packet.Reliability == ReliabilityType.OrderedReliable)
                 {
-                    if (packet.OrderedReliableID > this.RemoteOrderedReliableSequence)
+                    if (packet.OrderedReliableID > this.PlayerData.RemoteOrderedReliableSequence)
                         this.IncomingOrderedReliable.Enqueue(packet.OrderedReliableID, packet);
                 }
                 else
@@ -510,11 +504,7 @@ namespace Start_a_Town_.Net
 
         private void HandleMessage(Packet msg)
         {
-            if (PacketHandlersNew.TryGetValue(msg.PacketType, out Action<INetEndpoint, BinaryReader> handlerNew))
-            {
-                handlerNew(this, msg.Reader);
-                return;
-            }
+            
             var r = msg.Reader;
             switch (msg.PacketType)
             {
@@ -525,9 +515,8 @@ namespace Start_a_Town_.Net
                     this.Speed = r.ReadInt32();
                     Log.Network(this, $"Connected to {this.RemoteIP}");
                     GameMode.Current.PlayerIDAssigned(this);
-                    //Instance.SyncTime(msg.Tick);
                     this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(msg.Tick - ClientClockDelayMS, 0));
-                    this.RemoteOrderedReliableSequence = msg.OrderedReliableID;
+                    this.PlayerData.RemoteOrderedReliableSequence = msg.OrderedReliableID;
                     Instance.EventOccured(Message.Types.ServerResponseReceived);
                     break;
 
@@ -567,6 +556,8 @@ namespace Start_a_Town_.Net
                     break;
 
                 default:
+                    if (PacketHandlersNew.TryGetValue(msg.PacketType, out Action<INetEndpoint, BinaryReader> handlerNew))
+                        handlerNew(this, msg.Reader);
                     break;
             }
         }
@@ -622,9 +613,9 @@ namespace Start_a_Town_.Net
             {
                 var next = this.IncomingOrderedReliable.Peek();
                 long nextid = next.OrderedReliableID;
-                if (nextid == this.RemoteOrderedReliableSequence + 1)
+                if (nextid == this.PlayerData.RemoteOrderedReliableSequence + 1)
                 {
-                    this.RemoteOrderedReliableSequence = nextid;
+                    this.PlayerData.RemoteOrderedReliableSequence = nextid;
                     Packet packet = this.IncomingOrderedReliable.Dequeue();
                     if (next.Tick > Instance.Clock.TotalMilliseconds) // TODO maybe use this while changing clock to ad
                     {
@@ -670,10 +661,6 @@ namespace Start_a_Town_.Net
         public GameObject InstantiateLocal(GameObject ob)
         {
             throw new Exception();
-            //ob.RefId = _nextRefIdSequence++;
-            //foreach (var obj in ob.GetSelfAndChildren())
-            //    this.Instantiator(obj);
-            //return ob;
         }
 
         public void Instantiator(GameObject ob)
@@ -710,8 +697,6 @@ namespace Start_a_Town_.Net
             this.PlayerDisconnected(player);
         }
 
-        //public readonly ConcurrentQueue<long> AckQueue = new();
-
         private void ReceiveMessage(IAsyncResult ar)
         {
             try
@@ -726,13 +711,8 @@ namespace Start_a_Town_.Net
 
                 Packet packet = Packet.Read(bytesReceived);
 
-
                 if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
-                    // OLD METHOD: immediately send a tiny datagram back with the ack
-                    //    Packet.Send(this.PacketID, PacketType.Ack, Network.Serialize(w => w.Write(packet.ID)), this.Host, this.RemoteIP);
-                    // NEW METHOD: piggy-back the ack to the mergedpacket that will be sent next frame
                     this.PlayerData.AckQueue.Enqueue(packet.ID);
-
 
                 this.IncomingAll.Enqueue(packet);
             }
@@ -742,7 +722,6 @@ namespace Start_a_Town_.Net
             catch (Exception e)
             {
                 // this is thrown (at least) twice because the server sends 2 packets per frame (reliable+unreliable) + any resent reliable packets
-
                 //ScreenManager.Remove(); // this is not the main thread. if i remove from here then in case the main thread is drawing, it won't be able to access the ingame camera class
                 //// so either don't remove the screen here, or pass the camera to the root draw call instead of accessing it through the screenmanager currentscreen property
                 this.Timeout = 0;
@@ -818,7 +797,6 @@ namespace Start_a_Town_.Net
 
             chunk.GetObjects().ForEach(obj =>
             {
-                //obj.Instantiate(this.Instantiator);
                 this.Instantiate(obj);
                 obj.MapLoaded(Instance.Map);
                 /// why here too? BECAUSE some things dont get initialized properly on client. like initializing sprites from defs
@@ -869,7 +847,6 @@ namespace Start_a_Town_.Net
         public bool TryGetNetworkObject(int netID, out Entity obj)
         {
             return this.World.TryGetEntity(netID, out obj);
-            //return this.NetworkObjects.TryGetValue(netID, out obj);
         }
 
         /// <summary>
@@ -888,23 +865,6 @@ namespace Start_a_Town_.Net
 
             var time = TimeSpan.FromMilliseconds(totalMs);
             var worldState = new WorldSnapshot(time, reader);
-            //int count = reader.ReadInt32();
-            //var worldState = new WorldSnapshot(time, count, reader);
-
-            //var worldState = new WorldSnapshot(time, count);
-
-            //for (int i = 0; i < count; i++)
-            //{
-            //    int netID = reader.ReadInt32();
-            //    //var obj = Instance.World.Entities.GetValueOrDefault(netID);
-            //    //if (obj is null)
-            //    //    //continue;
-            //    //    //throw new Exception($"Received snapshot for entityid {netID} that doesn't exist"); // 
-            //    //    ($"[CLIENT]: Received snapshot for entityid {netID} that doesn't exist").ToConsole();// 
-
-            //    var objsnapshot = new ObjectSnapshot(netID).Read(reader);
-            //    worldState.Add(objsnapshot);
-            //}
 
             // insert world snapshot to world snapshot history
             this.WorldStateBuffer.Enqueue(worldState);
@@ -922,7 +882,6 @@ namespace Start_a_Town_.Net
                     prev = list[i],
                     next = list[i + 1];
 
-                // TODO: handle interpolation
                 if (this.ClientClock >= prev.Time && this.ClientClock < next.Time)
                 {
                     this.SnapObjectPositions(prev, next);
@@ -999,19 +958,15 @@ namespace Start_a_Town_.Net
 
         private void Send(PacketType packetType, byte[] data, ReliabilityType sendType)
         {
-            //data.Send(this.PacketID, packetType, sendType, this.Host, this.RemoteIP);
             var packet = Packet.Create(this.NextPacketID, packetType, sendType, data);
             if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
             {
-                packet.OrderedReliableID = this.OrderedReliableSequence++;
+                packet.OrderedReliableID = this.PlayerData.OrderedReliableSequence++;
                 this.PlayerData.WaitingForAck[packet.ID] = packet;
             }
             packet.BeginSendTo(this.Host, this.RemoteIP);
         }
-        //private void Send(PacketType packetType, byte[] data)
-        //{
-        //    data.Send(this.PacketID, packetType, sendType, this.Host, this.RemoteIP);
-        //}
+        
         /// <summary>
         /// Does nothing on client!
         /// </summary>

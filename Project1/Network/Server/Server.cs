@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using static Start_a_Town_.Block;
 
 namespace Start_a_Town_.Net
 {
@@ -186,32 +185,12 @@ namespace Start_a_Town_.Net
             }
 
             /// THESE MUST BE CALLED FROM WITHIN THE GAMESPEED LOOP
-            //this.WritePlayerSpecific();
             this.WritePlayerSpecificNew();
             this.CreatePacketsFromStreams();
             this.ResetOutgoingStreams();
             this.AdvanceClock();
             this.SendPackets();
         }
-
-        private void WritePlayerSpecific()
-        {
-            // SEND PLAYER SPECIFIC ACKS
-            foreach(var player in this.Players.GetList())
-            {
-                var qu = player.AckQueue;
-                if (qu.IsEmpty)
-                    continue;
-                using var str = new BinaryWriter(new MemoryStream());
-                PacketAcks.Send(str, player);
-                var data = ((MemoryStream)str.BaseStream).ToArray();
-                var p = Packet.Create(player, PacketType.MergedPackets, data, ReliabilityType.Unreliable);
-                p.Synced = true;
-                p.Tick = this.Clock.TotalMilliseconds;
-                this.Enqueue(player, p);
-            }
-        }
-
         private void WritePlayerSpecificNew()
         {
             // SEND PLAYER SPECIFIC ACKS
@@ -649,14 +628,12 @@ namespace Start_a_Town_.Net
         }
         public void Instantiator(GameObject obj)
         {
-            //this.World.Register((Entity)obj);
             if (obj.RefId == 0)
                 obj.RefId = GetNextObjID();
             else
                 _refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
             this.World.Register(obj as Entity);
             obj.Net = this;
-            //Instance.NetworkObjects.Add(obj.RefId, obj);
         }
 
         /// <summary>
@@ -674,21 +651,6 @@ namespace Start_a_Town_.Net
         public bool DisposeObject(int netID)
         {
             return this.World.DisposeEntity(netID);
-            //if (!this.NetworkObjects.TryGetValue(netID, out GameObject o))
-            //    return false;
-            //foreach (var obj in o.GetSelfAndChildren())
-            //{
-            //    Console.WriteLine($"{this} disposing {obj.DebugName}");
-            //    obj.OnDispose();
-            //    this.NetworkObjects.Remove(netID);
-            //    obj.Net = null;
-            //    obj.RefId = 0;
-            //    if (obj.IsSpawned)
-            //        obj.Despawn();
-            //    //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
-            //    //    this.DisposeObject(child);
-            //}
-            //return true;
         }
         public void SyncDispose(int refID)
         {
@@ -713,7 +675,6 @@ namespace Start_a_Town_.Net
             {
                 Instance.Instantiate(obj);
                 _refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
-                //obj.Map = Instance.Map; // this isn't necessary, i set the entity's map field when loading the chunk
             });
 
             foreach (var (local, entity) in chunk.GetBlockEntitiesByPosition())
@@ -799,8 +760,6 @@ namespace Start_a_Town_.Net
         }
         public IEnumerable<GameObject> GenerateLoot(LootTable lootTable)
         {
-            //foreach (var i in lootTable.GenerateNew(Random))
-            //    yield return i;
             foreach (var i in lootTable.Generate(Random))
                 yield return i;
         }
@@ -870,13 +829,11 @@ namespace Start_a_Town_.Net
         {
             Instance.IsSaving = true;
             PacketSaving.Send(Instance);
-            //Instance.Enqueue(PacketType.SetSaving, ReliabilityType.OrderedReliable, Network.Serialize(w => { w.Write(true); }));
         }
         public static void FinishSaving()
         {
             Instance.IsSaving = false;
             PacketSaving.Send(Instance);
-            //Instance.Enqueue(PacketType.SetSaving, ReliabilityType.OrderedReliable, Network.Serialize(w => { w.Write(false); }));
         }
         public PlayerData CurrentPlayer => null; //placeholder until a server session supports a player and not just be dedicated
         public PlayerData GetPlayer()
@@ -913,18 +870,6 @@ namespace Start_a_Town_.Net
         {
             this.GetOutgoingStreamOrderedReliable().Write(args);
         }
-
-        //public BinaryWriter GetStream(ReliabilityType reliability)
-        //{
-        //    return reliability switch
-        //    {
-        //        ReliabilityType.Unreliable => this.OutgoingStreamUnreliable,
-        //        ReliabilityType.Reliable => this.OutgoingStreamReliable,
-        //        ReliabilityType.OrderedReliable => this.OutgoingStreamOrderedReliable,
-        //        _ => throw new Exception()
-        //    };
-        //}
-        //public BinaryWriter this[ReliabilityType reliability] => this.GetStream(reliability);
 
         private readonly NetworkStream[] StreamsArray = [new(ReliabilityType.Unreliable), new(ReliabilityType.Reliable), new(ReliabilityType.OrderedReliable)];
         public BinaryWriter this[ReliabilityType reliability] => this.GetStream(reliability).Writer;

@@ -246,7 +246,7 @@ namespace Start_a_Town_.Net
                     this.UpdateWorldState();
                 }
             }
-            this.ClientClock = this.ClientClock.Add(TimeSpan.FromMilliseconds(Server.ClockIntervalMS));
+            //this.ClientClock = this.ClientClock.Add(TimeSpan.FromMilliseconds(Server.ClockIntervalMS));
 
             if (this.PlayerData is not null && this.Map is not null)
                 PacketMousePosition.Send(Instance, this.PlayerData.ID, ToolManager.CurrentTarget); // TODO: do this at the toolmanager class instead of here
@@ -398,6 +398,11 @@ namespace Start_a_Town_.Net
         {
             while (this.IncomingAll.TryDequeue(out Packet packet))
             {
+                if (packet.PacketType == PacketType.RequestConnection)
+                {
+                    this.HandleMessage(packet);
+                    continue;
+                }
                 // if the timer is not stopped (not -1), reset it
                 if (this.Timeout > -1)
                     this.Timeout = this.TimeoutLength;
@@ -410,6 +415,13 @@ namespace Start_a_Town_.Net
                 if (this.RecentPackets.Count > this.RecentPacketBufferSize)
                     this.RecentPackets.Dequeue();
 
+                // clock correction happens first, for all packets
+                double target = packet.Tick - ClientClockDelayMS;
+                double curr = this.ClientClock.TotalMilliseconds;
+                double smoothed = curr + (target - curr) * 0.15;
+                this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(smoothed, 0));
+
+                //this.ClientClock = TimeSpan.FromMilliseconds(target);
                 // for ordered packets, only handle last one (store most recent and discard and older ones)
                 if (packet.Reliability == ReliabilityType.Ordered)
                 {
@@ -422,12 +434,12 @@ namespace Start_a_Town_.Net
                 }
                 else
                 {
-                    var clientms = packet.Tick - ClientClockDelayMS;
-                    if (this.CurrentTick < clientms)
-                    {
-                        this.ClientClock = TimeSpan.FromMilliseconds(clientms);
-                        "client clock caught up".ToConsole();
-                    }
+                    //var clientms = packet.Tick - ClientClockDelayMS;
+                    //if (this.CurrentTick < clientms)
+                    //{
+                    //    this.ClientClock = TimeSpan.FromMilliseconds(clientms);
+                    //    "client clock caught up".ToConsole();
+                    //}
                     this.HandleMessage(packet);
                 }
             }
@@ -503,17 +515,15 @@ namespace Start_a_Town_.Net
             switch (msg.PacketType)
             {
                 case PacketType.RequestConnection:
-                    Instance.Timeout = Instance.TimeoutLength;
-                    //msg.Payload.Deserialize(r =>
-                    //{
-                    Instance.PlayerData.ID = r.ReadInt32();
-                    Instance.Players = PlayerList.Read(Instance, r);
-                    Instance.Speed = r.ReadInt32();
-                    //});
-
+                    this.Timeout = this.TimeoutLength;
+                    this.PlayerData.ID = r.ReadInt32();
+                    this.Players = PlayerList.Read(Instance, r);
+                    this.Speed = r.ReadInt32();
                     Log.Network(this, $"Connected to {this.RemoteIP}");
-                    GameMode.Current.PlayerIDAssigned(Instance);
-                    Instance.SyncTime(msg.Tick);
+                    GameMode.Current.PlayerIDAssigned(this);
+                    //Instance.SyncTime(msg.Tick);
+                    this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(msg.Tick - ClientClockDelayMS, 0));
+                    this.RemoteOrderedReliableSequence = msg.OrderedReliableID;
                     Instance.EventOccured(Message.Types.ServerResponseReceived);
                     break;
 
@@ -873,21 +883,24 @@ namespace Start_a_Town_.Net
             double totalMs = reader.ReadDouble();
 
             var time = TimeSpan.FromMilliseconds(totalMs);
-            var worldState = new WorldSnapshot(time);
+            var worldState = new WorldSnapshot(time, reader);
+            //int count = reader.ReadInt32();
+            //var worldState = new WorldSnapshot(time, count, reader);
 
-            int count = reader.ReadInt32();
-            for (int i = 0; i < count; i++)
-            {
-                int netID = reader.ReadInt32();
-                var obj = Instance.World.Entities.GetValueOrDefault(netID);
-                if (obj is null)
-                    //continue;
-                    //throw new Exception($"Received snapshot for entityid {netID} that doesn't exist"); // 
-                    ($"[CLIENT]: Received snapshot for entityid {netID} that doesn't exist").ToConsole();// 
+            //var worldState = new WorldSnapshot(time, count);
 
-                var objsnapshot = new ObjectSnapshot(netID).Read(reader);
-                worldState.ObjectSnapshots.Add(objsnapshot);
-            }
+            //for (int i = 0; i < count; i++)
+            //{
+            //    int netID = reader.ReadInt32();
+            //    //var obj = Instance.World.Entities.GetValueOrDefault(netID);
+            //    //if (obj is null)
+            //    //    //continue;
+            //    //    //throw new Exception($"Received snapshot for entityid {netID} that doesn't exist"); // 
+            //    //    ($"[CLIENT]: Received snapshot for entityid {netID} that doesn't exist").ToConsole();// 
+
+            //    var objsnapshot = new ObjectSnapshot(netID).Read(reader);
+            //    worldState.Add(objsnapshot);
+            //}
 
             // insert world snapshot to world snapshot history
             this.WorldStateBuffer.Enqueue(worldState);
@@ -905,7 +918,9 @@ namespace Start_a_Town_.Net
                     prev = list[i],
                     next = list[i + 1];
 
-                if (this.ClientClock == next.Time)
+                // TODO: handle interpolation
+                //if (this.ClientClock == next.Time)
+                if (this.ClientClock >= prev.Time && this.ClientClock < next.Time)
                 {
                     this.SnapObjectPositions(prev, next);
                     return;
@@ -917,14 +932,17 @@ namespace Start_a_Town_.Net
         {
             foreach (var objSnapshot in next.ObjectSnapshots)
             {
-                /// why was i skipping applying the snapshot to fresh entities???
-                //var previousObjState = prev.ObjectSnapshots.Find(o => o.Object == objSnapshot.Object);
-                //if (previousObjState is null)
-                //    continue;
+                prev.Dictionary.TryGetValue(objSnapshot.RefID, out var prevObjSnapshot);
+                if (prevObjSnapshot is null)
+                    continue;
                 var entity = this.GetNetworkEntity(objSnapshot.RefID);
-                entity.SetPosition(objSnapshot.Position);
-                entity.Velocity = objSnapshot.Velocity;
-                entity.Direction = objSnapshot.Orientation;
+           
+                float t = (float)((this.ClientClock - prev.Time) / (next.Time - prev.Time));
+
+                entity.SetPosition(prevObjSnapshot.Position + (objSnapshot.Position - prevObjSnapshot.Position) * t);
+                entity.Velocity = prevObjSnapshot.Velocity + (objSnapshot.Velocity - prevObjSnapshot.Velocity) * t;
+                entity.Direction = prevObjSnapshot.Orientation + (objSnapshot.Orientation - prevObjSnapshot.Orientation) * t;
+
                 if (float.IsNaN(entity.Direction.X) || float.IsNaN(entity.Direction.Y))
                     throw new Exception();
             }

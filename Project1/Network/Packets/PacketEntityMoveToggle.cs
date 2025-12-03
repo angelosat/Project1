@@ -15,7 +15,8 @@ namespace Start_a_Town_
         internal static void Send(INetEndpoint net, int entityID, bool toggle)
         {
             var server = net as Server;
-            var w = server.OutgoingStreamTimestamped;
+            //var w = server.OutgoingStreamTimestamped;
+            var w = server[ReliabilityType.OrderedReliable];
             w.Write(PType);
             w.Write(entityID);
             w.Write(toggle);

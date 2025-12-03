@@ -222,24 +222,27 @@ namespace Start_a_Town_.Net
         private void CreatePacketsFromStreams()
         {
             foreach (var stream in this.StreamsArray)
-                if (stream.Writer.BaseStream.Position > 0)
+            if (stream.Writer.BaseStream.Position > 0 
+                    || stream.Reliability == ReliabilityType.Unreliable) // send empty "heartbeat" packets to advance client's clock
                 {
-                    // append per-player data
-                    foreach (var player in this.GetPlayers())
+                // append per-player data
+                foreach (var player in this.GetPlayers())
+                {
+                    MemoryStream mem = stream.Reliability switch
                     {
-                        MemoryStream mem = stream.Reliability switch
-                        {
-                            ReliabilityType.Unreliable => (MemoryStream)player.StreamUnreliable.BaseStream,
-                            ReliabilityType.OrderedReliable => (MemoryStream)player.StreamReliable.BaseStream,
-                            _ => throw new Exception(),
-                        };
-                        var data = stream.GetBytes(mem);
-                        var p = Packet.Create(player, PacketType.MergedPackets, data, stream.Reliability);
-                        p.Synced = true;
-                        p.Tick = this.Clock.TotalMilliseconds;
-                        this.Enqueue(player, p);
-                    }
+                        ReliabilityType.Unreliable => (MemoryStream)player.StreamUnreliable.BaseStream,
+                        ReliabilityType.OrderedReliable => (MemoryStream)player.StreamReliable.BaseStream,
+                        _ => throw new Exception(),
+                    };
+                    //if (stream.Reliability != ReliabilityType.Unreliable && stream.Writer.BaseStream.Position == 0)
+                    //    continue;
+                    var data = stream.GetBytes(mem);
+                    var p = Packet.Create(player, PacketType.MergedPackets, data, stream.Reliability);
+                    p.Synced = true;
+                    p.Tick = this.Clock.TotalMilliseconds;
+                    this.Enqueue(player, p);
                 }
+            }
         }
         private void SendPackets()
         {

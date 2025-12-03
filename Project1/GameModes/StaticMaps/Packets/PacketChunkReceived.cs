@@ -16,11 +16,10 @@ namespace Start_a_Town_
         }
         internal static void Send(Client client, PlayerData player, Vector2 chunkCoords)
         {
-            //var w = client.OutgoingStreamUnreliable;
-            var w = client[ReliabilityType.Unreliable];
-            w.Write(p);
+            var w = client.BeginPacket(ReliabilityType.OrderedReliable, p);
             w.Write(player.ID);
             w.Write(chunkCoords);
+            client.EndPacket();
         }
         internal static void Receive(INetEndpoint net, BinaryReader r)
         {

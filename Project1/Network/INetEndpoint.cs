@@ -51,8 +51,8 @@ namespace Start_a_Town_
         void EventOccured(Components.Message.Types type, params object[] p);
 
         BinaryWriter GetOutgoingStreamOrderedReliable();
-        BinaryWriter this[ReliabilityType reliabilityChannel] { get; }
-        NetworkStream GetStream(ReliabilityType reliabilityChannel);
+        //BinaryWriter this[ReliabilityType reliabilityChannel] { get; }
+        //NetworkStream GetStream(ReliabilityType reliabilityChannel);
         void WriteToStream(params object[] args);
 
         void SetSpeed(int playerID, int speed);

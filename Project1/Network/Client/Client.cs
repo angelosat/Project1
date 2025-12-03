@@ -15,15 +15,15 @@ namespace Start_a_Town_.Net
     internal enum PlayerSavingState
     { Saved, Changed, Saving }
 
-    public partial class Client : INetEndpoint
+    public partial class Client : NetEndpointBase// INetEndpoint
     {
         private static Client _Instance;
         public static Client Instance => _Instance ??= new Client();
 
-        public double CurrentTick => this.ClientClock.TotalMilliseconds;
+        public override double CurrentTick => this.ClientClock.TotalMilliseconds;
 
         private UI.ConsoleBoxAsync _Console;
-        public UI.ConsoleBoxAsync ConsoleBox => this._Console ??= new UI.ConsoleBoxAsync(new Rectangle(0, 0, 400, 400)) { FadeText = false }; //new Rectangle(0, 0, 800, 600)
+        public override UI.ConsoleBoxAsync ConsoleBox => this._Console ??= new UI.ConsoleBoxAsync(new Rectangle(0, 0, 400, 400)) { FadeText = false }; //new Rectangle(0, 0, 800, 600)
 
         public UI.ConsoleBoxAsync GetConsole()
         {
@@ -35,13 +35,13 @@ namespace Start_a_Town_.Net
         private long _packetID = 1;
         public long NextPacketID => this._packetID++;
         private long RemoteSequence = 0;
-        
-        public MapBase Map
+
+        public override MapBase Map
         {
             set => Engine.Map = value;
             get => Engine.Map;
         }
-        public WorldBase World { get; set; }
+        public override WorldBase World { get; set; }
 
         private readonly int TimeoutLength = Ticks.PerSecond * 2;
         private int Timeout = -1;
@@ -66,14 +66,14 @@ namespace Start_a_Town_.Net
         private double LastReceivedTime = int.MinValue;
         public static bool IsSaving;
 
-        public TimeSpan Clock => this.ClientClock;
+        public override TimeSpan Clock => this.ClientClock;
 
-        
-        public BinaryWriter OutgoingStreamUnreliable => this[ReliabilityType.Unreliable];
-        public BinaryWriter OutgoingStreamOrderedReliable => this[ReliabilityType.OrderedReliable];
-        public BinaryWriter OutgoingStreamReliable => this[ReliabilityType.Reliable];
 
-        public BinaryWriter GetOutgoingStreamOrderedReliable()
+        public BinaryWriter OutgoingStreamUnreliable => this.GetStream(ReliabilityType.Unreliable).Writer;// this[ReliabilityType.Unreliable];
+        public BinaryWriter OutgoingStreamOrderedReliable => this.GetStream(ReliabilityType.OrderedReliable).Writer;// this[ReliabilityType.OrderedReliable];
+        public BinaryWriter OutgoingStreamReliable => this.GetStream(ReliabilityType.Reliable).Writer;// this[ReliabilityType.Reliable];
+
+        public override BinaryWriter GetOutgoingStreamOrderedReliable()
         {
             return this.OutgoingStreamOrderedReliable;
         }
@@ -84,7 +84,7 @@ namespace Start_a_Town_.Net
         private readonly int WorldStateBufferSize = 10;
         public const int ClientClockDelayMS = Server.SnapshotIntervalMS * 4;
         private int _Speed = 0;// 1;
-        public int Speed { get => this._Speed; set => this._Speed = value; }
+        public override int Speed { get => this._Speed; set => this._Speed = value; }
 
         public void Disconnect()
         {
@@ -213,7 +213,7 @@ namespace Start_a_Town_.Net
             }, state);
         }
 
-        public IEnumerable<PlayerData> GetPlayers()
+        public override IEnumerable<PlayerData> GetPlayers()
         {
             return this.Players.GetList();
         }
@@ -371,7 +371,7 @@ namespace Start_a_Town_.Net
         {
             PacketHandlersWithPacket.Add(id, handler);
         }
-        public void EventOccured(Message.Types type, params object[] p)
+        public override void EventOccured(Message.Types type, params object[] p)
         {
             var e = new GameEvent(this.ClientClock.TotalMilliseconds, type, p);
             this.OnGameEvent(e);
@@ -636,12 +636,12 @@ namespace Start_a_Town_.Net
         /// Both removes an object form the game world and releases its networkID
         /// </summary>
         /// <param name="objNetID"></param>
-        public bool DisposeObject(GameObject obj)
+        public override bool DisposeObject(GameObject obj)
         {
             return this.DisposeObject(obj.RefId);
         }
 
-        public bool DisposeObject(int netId)
+        public override bool DisposeObject(int netId)
         {
             return this.World.DisposeEntity(netId);
         }
@@ -651,7 +651,7 @@ namespace Start_a_Town_.Net
         /// </summary>
         /// <param name="ob"></param>
         /// <returns></returns>
-        public GameObject Instantiate(GameObject ob)
+        public override GameObject Instantiate(GameObject ob)
         {
             foreach (var obj in ob.GetSelfAndChildren())
                 this.Instantiator(obj);
@@ -663,7 +663,7 @@ namespace Start_a_Town_.Net
             throw new Exception();
         }
 
-        public void Instantiator(GameObject ob)
+        public override void Instantiator(GameObject ob)
         {
             ob.Net = this;
             Instance.World.Register(ob as Entity);
@@ -826,25 +826,25 @@ namespace Start_a_Town_.Net
             return obj;
         }
 
-        public GameObject GetNetworkEntity(int netID)
+        public override GameObject GetNetworkEntity(int netID)
         {
             this.World.Entities.TryGetValue(netID, out var obj);
             return obj;
         }
 
-        public T GetNetworkObject<T>(int netID) where T : Entity
+        public override T GetNetworkObject<T>(int netID)
         {
             this.World.Entities.TryGetValue(netID, out var obj);
             return obj as T;
         }
 
-        public IEnumerable<GameObject> GetNetworkObjects()
+        public override IEnumerable<GameObject> GetNetworkObjects()
         {
             foreach (var o in this.World.Entities.Values)
                 yield return o;
         }
 
-        public bool TryGetNetworkObject(int netID, out Entity obj)
+        public override bool TryGetNetworkObject(int netID, out Entity obj)
         {
             return this.World.TryGetEntity(netID, out obj);
         }
@@ -854,7 +854,7 @@ namespace Start_a_Town_.Net
         /// </summary>
         /// <param name="netID"></param>
         /// <returns></returns>
-        public bool LogStateChange(int netID)
+        public override bool LogStateChange(int netID)
         {
             return false;
         }
@@ -966,37 +966,37 @@ namespace Start_a_Town_.Net
             }
             packet.BeginSendTo(this.Host, this.RemoteIP);
         }
-        
+
         /// <summary>
         /// Does nothing on client!
         /// </summary>
         /// <param name="packetType"></param>
         /// <param name="payload"></param>
         /// <param name="sendType"></param>
-        public void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType)
+        public override void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType)
         { }
 
         /// <summary>
         /// Posts event data to a local object
         /// </summary>
         /// <param name="data">A serialized ObjectEventArgs array</param>
-        public void PostLocalEvent(GameObject recipient, ObjectEventArgs args)
+        public override void PostLocalEvent(GameObject recipient, ObjectEventArgs args)
         {
             args.Network = Instance;
             recipient.PostMessage(args);
         }
 
-        public void PostLocalEvent(GameObject recipient, Components.Message.Types type, params object[] args)
+        public override void PostLocalEvent(GameObject recipient, Components.Message.Types type, params object[] args)
         {
             ObjectEventArgs a = ObjectEventArgs.Create(type, args);
             a.Network = Instance;
             recipient.PostMessage(a);
         }
 
-        public void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity)
+        public override void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity)
         { }
 
-        public void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity)
+        public override void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity)
         { }
 
         public void InventoryOperation(GameObjectSlot sourceSlot, GameObjectSlot targetSlot, int amount)
@@ -1045,24 +1045,24 @@ namespace Start_a_Town_.Net
                     targetSlot.Swap(sourceSlot);
         }
 
-        public PlayerData GetPlayer(int id)
+        public override PlayerData GetPlayer(int id)
         {
             return this.Players.GetPlayer(id);
         }
 
-        public PlayerData GetPlayer()
+        public override PlayerData GetPlayer()
         {
             return this.GetPlayer(this.PlayerData.ID);
         }
 
-        public PlayerData CurrentPlayer => this.PlayerData;
+        public override PlayerData CurrentPlayer => this.PlayerData;
 
         internal void HandleServerResponse(int playerID, PlayerList playerList, int speed)
         {
             throw new Exception();
         }
 
-        public void SetSpeed(int playerID, int playerSpeed)
+        public override void SetSpeed(int playerID, int playerSpeed)
         {
             var player = this.GetPlayer(playerID);
             player.SuggestedSpeed = playerSpeed;
@@ -1075,33 +1075,25 @@ namespace Start_a_Town_.Net
             this.Speed = newspeed;
         }
 
-        public void Write(string text)
+        public override void Write(string text)
         {
             Log.Write(text);
         }
 
-        public void Report(string text)
+        public override void Report(string text)
         {
             this.Write(text);
         }
 
-        public void SyncReport(string text)
+        public override void SyncReport(string text)
         {
         }
 
-        public void WriteToStream(params object[] args)
+        public override void WriteToStream(params object[] args)
         {
             this.GetOutgoingStreamOrderedReliable().Write(args);
         }
-        public BinaryWriter this[ReliabilityType reliability] =>this.GetStream(reliability).Writer;
-        public NetworkStream GetStream(ReliabilityType reliability)
-        {
-            foreach (var s in this.StreamsArray)
-                if (s.Reliability == reliability)
-                    return s;
-            throw new Exception("Stream not found");
-        }
-        private readonly NetworkStream[] StreamsArray = [new(ReliabilityType.Unreliable), new(ReliabilityType.Reliable), new(ReliabilityType.OrderedReliable)];
+      
         private void SendOutgoingStreamsArray()
         {
             foreach (var i in this.StreamsArray)

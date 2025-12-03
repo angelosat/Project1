@@ -16,9 +16,9 @@ namespace Start_a_Town_
         }
         public static void Send(Server server)
         {
-            var w = server[ReliabilityType.OrderedReliable];
-            w.Write(p);
+            var w = server.BeginPacket(ReliabilityType.OrderedReliable, p);
             w.Write(server.IsSaving);
+            server.EndPacket();
         }
         private static void Receive(INetEndpoint net, Packet packet)
         {

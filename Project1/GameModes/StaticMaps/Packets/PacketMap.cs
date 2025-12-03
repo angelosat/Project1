@@ -16,9 +16,9 @@ namespace Start_a_Town_
         internal static void Send(INetEndpoint net, PlayerData player)
         {
             var server = net as Server;
-            var w = server[ReliabilityType.OrderedReliable];
-            w.Write(p);
+            var w = server.BeginPacket(ReliabilityType.OrderedReliable, p);
             server.Map.WriteData(w);
+            server.EndPacket();
         }
         private static void Receive(INetEndpoint net, Packet packet)
         {

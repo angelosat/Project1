@@ -12,10 +12,13 @@ namespace Start_a_Town_.Net
     {
         public Vector2 MousePosition;
         long _packetSeq = 1;
-        public long PacketSequenceIncrement => _packetSeq++; 
-        public long OrderedReliableSequence = 1;
+        public long PacketSequenceIncrement => _packetSeq++;
+        public long OrderedReliableSequence = 0;//1;
+        public long RemoteOrderedReliableSequence = -1;//0;
+
         public Color Color;
-        public ConcurrentQueue<Packet> Incoming = new();
+        public ConcurrentQueue<Packet> IncomingAll = new();
+        public PriorityQueue<long, Packet> IncomingOrderedReliable = new();
         public ConcurrentDictionary<long, Packet> WaitingForAck = new();
         public readonly ConcurrentQueue<long> AckQueue = new();
 

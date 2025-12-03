@@ -173,6 +173,7 @@ namespace Start_a_Town_.Net
             if (!IsRunning)
                 return;
             HandleIncoming();
+            HandleIncomingOrdered();
             if (GameMode.Current is not null)
                 GameMode.Current.Update(Instance);
             if (Instance.Map is null)
@@ -321,8 +322,30 @@ namespace Start_a_Town_.Net
         private static void HandleIncoming()
         {
             foreach (var player in from conn in Connections select conn.Value.Player)
-                while (player.Incoming.TryDequeue(out Packet msg))
-                    HandleMessage(msg);
+                while (player.IncomingAll.TryDequeue(out Packet msg))
+                {
+                    if ((msg.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
+                        player.IncomingOrderedReliable.Enqueue(msg.OrderedReliableID, msg);
+                    else
+                        HandleMessage(msg);
+                }
+        }
+        private static void HandleIncomingOrdered()
+        {
+            foreach (var player in from conn in Connections select conn.Value.Player)
+                while (player.IncomingOrderedReliable.Count > 0)
+                {
+                    var packet = player.IncomingOrderedReliable.Peek();
+                    long nextid = packet.OrderedReliableID;
+                    if (nextid == player.RemoteOrderedReliableSequence + 1)
+                    {
+                        player.RemoteOrderedReliableSequence = nextid;
+                        player.IncomingOrderedReliable.Dequeue();
+                        HandleMessage(packet);
+                    }
+                    else
+                        return;
+                }
         }
 
         void SendUnreliable()
@@ -479,7 +502,7 @@ namespace Start_a_Town_.Net
                 var player = state.Player;
                 packet.Player = player;
 
-                player.Incoming.Enqueue(packet);
+                player.IncomingAll.Enqueue(packet);
 
                 if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
                     player.AckQueue.Enqueue(packet.ID);

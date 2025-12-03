@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -34,8 +35,11 @@ namespace Start_a_Town_.Net
         private long _packetID = 1;
         public long NextPacketID => this._packetID++;
         private long RemoteSequence = 0;
-        public long RemoteOrderedReliableSequence = 0;
-       
+        //public long RemoteOrderedReliableSequence = -1;//0;
+        //public long OrderedReliableSequence = 0;//1;
+        public long RemoteOrderedReliableSequence { get => this.PlayerData.RemoteOrderedReliableSequence; set => this.PlayerData.RemoteOrderedReliableSequence = value; }
+        public long OrderedReliableSequence { get => this.PlayerData.OrderedReliableSequence; set => this.PlayerData.OrderedReliableSequence = value; }
+
         public MapBase Map
         {
             set => Engine.Map = value;
@@ -124,6 +128,7 @@ namespace Start_a_Town_.Net
 
         public void Connect(string address, PlayerData playerData, AsyncCallback callBack)
         {
+            this.PlayerData = playerData;
             this.SyncedPackets = new Queue<Packet>();
             this.Timeout = this.TimeoutLength;
             this.LastReceivedTime = int.MinValue;
@@ -132,7 +137,6 @@ namespace Start_a_Town_.Net
             this.RecentPackets = new Queue<long>();
             this.RemoteSequence = 0;
             this.RemoteOrderedReliableSequence = 0;
-            this.PlayerData = playerData;
             this._packetID = 1;
             this.IncomingOrderedReliable.Clear();
             this.IncomingOrdered.Clear();
@@ -997,10 +1001,12 @@ namespace Start_a_Town_.Net
         {
             //data.Send(this.PacketID, packetType, sendType, this.Host, this.RemoteIP);
             var packet = Packet.Create(this.NextPacketID, packetType, sendType, data);
-            packet.BeginSendTo(this.Host, this.RemoteIP);
-
             if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
+            {
+                packet.OrderedReliableID = this.OrderedReliableSequence++;
                 this.PlayerData.WaitingForAck[packet.ID] = packet;
+            }
+            packet.BeginSendTo(this.Host, this.RemoteIP);
         }
         //private void Send(PacketType packetType, byte[] data)
         //{

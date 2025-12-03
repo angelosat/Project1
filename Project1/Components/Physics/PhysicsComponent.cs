@@ -46,6 +46,8 @@ namespace Start_a_Town_
         /// <param name="chunk"></param>
         public override void Tick()
         {
+            if (this.Parent.Net is Client)
+                return;
             var force = this.Force;
             this.Force = Vector3.Zero;
 

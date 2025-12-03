@@ -717,15 +717,10 @@ namespace Start_a_Town_.Net
             foreach (var o in this.World.GetEntities())
                 yield return o;
         }
-        //public IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> netIds)
-        //{
-        //    return this.World.GetEntities(netIds);
-        //    //return (from o in this.NetworkObjects where netIds.Contains(o.Key) select o.Value);
-        //}
+       
         public bool TryGetNetworkObject(int netID, out Entity obj)
         {
             return this.World.TryGetEntity(netID, out obj);
-            //return this.NetworkObjects.TryGetValue(netID, out obj);
         }
 
         public void PostLocalEvent(GameObject recipient, ObjectEventArgs args)
@@ -742,11 +737,9 @@ namespace Start_a_Town_.Net
 
         private static void SendSnapshots(TimeSpan gt)
         {
-            if (Instance.ObjectsChangedSinceLastSnapshot.Count > 0)
-            {
-                PacketSnapshots.Send(Instance, Instance.ObjectsChangedSinceLastSnapshot);
-                Instance.ObjectsChangedSinceLastSnapshot.Clear();
-            }
+            /// always send snapshots every frame, even empty ones. so that the client can interpolate correctly
+            PacketSnapshots.Send(Instance, Instance.ObjectsChangedSinceLastSnapshot);
+            Instance.ObjectsChangedSinceLastSnapshot.Clear();
         }
 
         public bool LogStateChange(int netID)

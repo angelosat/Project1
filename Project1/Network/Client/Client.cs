@@ -919,7 +919,6 @@ namespace Start_a_Town_.Net
                     next = list[i + 1];
 
                 // TODO: handle interpolation
-                //if (this.ClientClock == next.Time)
                 if (this.ClientClock >= prev.Time && this.ClientClock < next.Time)
                 {
                     this.SnapObjectPositions(prev, next);
@@ -927,24 +926,42 @@ namespace Start_a_Town_.Net
                 }
             }
         }
-
         private void SnapObjectPositions(WorldSnapshot prev, WorldSnapshot next)
         {
-            foreach (var objSnapshot in next.ObjectSnapshots)
-            {
-                prev.Dictionary.TryGetValue(objSnapshot.RefID, out var prevObjSnapshot);
-                if (prevObjSnapshot is null)
-                    continue;
-                var entity = this.GetNetworkEntity(objSnapshot.RefID);
-           
-                float t = (float)((this.ClientClock - prev.Time) / (next.Time - prev.Time));
+            float t = (float)((ClientClock.TotalMilliseconds - prev.Time.TotalMilliseconds) /
+                  (next.Time.TotalMilliseconds - prev.Time.TotalMilliseconds));
+            t = Math.Clamp(t, 0f, 1f);
 
-                entity.SetPosition(prevObjSnapshot.Position + (objSnapshot.Position - prevObjSnapshot.Position) * t);
-                entity.Velocity = prevObjSnapshot.Velocity + (objSnapshot.Velocity - prevObjSnapshot.Velocity) * t;
-                entity.Direction = prevObjSnapshot.Orientation + (objSnapshot.Orientation - prevObjSnapshot.Orientation) * t;
+            foreach (var kv in prev.Dictionary)
+            {
+                var prevSnap = kv.Value;
+                next.Dictionary.TryGetValue(prevSnap.RefID, out var nextSnap);
+                if (nextSnap is null)
+                    nextSnap = prevSnap;
+                var entity = this.GetNetworkEntity(prevSnap.RefID);
+
+                entity.SetPosition(prevSnap.Position + (prevSnap.Position - prevSnap.Position) * t);
+                entity.Velocity = prevSnap.Velocity + (prevSnap.Velocity - prevSnap.Velocity) * t;
+                entity.Direction = prevSnap.Orientation + (prevSnap.Orientation - prevSnap.Orientation) * t;
 
                 if (float.IsNaN(entity.Direction.X) || float.IsNaN(entity.Direction.Y))
                     throw new Exception();
+            }
+
+            foreach(var kv in next.Dictionary)
+            {
+                if (prev.Dictionary.ContainsKey(kv.Key))
+                    continue;
+
+                var nextObj = kv.Value;
+                var entity = this.GetNetworkEntity(nextObj.RefID);
+                if (entity == null) continue;
+
+                // Policy for spawns: snap to the authoritative snapshot immediately.
+                // Alternative: treat prev as same as next and interpolate from same => same.
+                entity.SetPosition(nextObj.Position);
+                entity.Velocity = nextObj.Velocity;
+                entity.Direction = nextObj.Orientation;
             }
         }
 

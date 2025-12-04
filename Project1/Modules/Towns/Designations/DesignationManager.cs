@@ -203,7 +203,7 @@ namespace Start_a_Town_
             foreach (var des in this.Designations)
                 w.Write(des.Value);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             foreach (var des in this.Designations.Keys.ToList())
                 //this.Designations[des].ReadIntVec3(r);

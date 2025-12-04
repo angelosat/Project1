@@ -380,7 +380,7 @@ namespace Start_a_Town_.Components
             this.AnimationWalk.Write(w);
             this.AnimationJump.Write(w);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             base.Read(r);
             this.Moving = r.ReadBoolean();

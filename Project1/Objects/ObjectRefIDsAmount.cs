@@ -41,7 +41,7 @@ namespace Start_a_Town_
             w.Write(this.Amount);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Object = r.ReadInt32();
             this.Amount = r.ReadInt32();

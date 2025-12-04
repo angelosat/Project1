@@ -376,7 +376,7 @@ namespace Start_a_Town_
             w.Write(this.workplaceID);
             w.Write(this.roomRole?.Name ?? "");
         }
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Interior = new HashSet<IntVec3>().ReadIntVec3(r);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -10,7 +9,7 @@ namespace Start_a_Town_
         static readonly int PType;
         static PacketForceTask()
         {
-            PType = Network.RegisterPacketHandler(Receive);
+            PType = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(TaskGiver def, Actor actor, TargetArgs target)
         {
@@ -21,8 +20,9 @@ namespace Start_a_Town_
             w.Write(def.GetType().FullName);
             target.Write(w);
         }
-        static void Receive(INetEndpoint net, BinaryReader r)
+        static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
             var typeName = r.ReadString();
             var taskGiver = Activator.CreateInstance(Type.GetType(typeName)) as TaskGiver;

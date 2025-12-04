@@ -148,7 +148,7 @@ namespace Start_a_Town_.Components
         {
             this.Attributes.Write(w);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Attributes.Read(r);
         }

@@ -48,7 +48,7 @@ namespace Start_a_Town_
             this.Designations.Write(w);
             this.PendingDesignations.Values.Write(w);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Designations.Read(r);
             this.PendingDesignations.Read(r, i => i.Global);
@@ -299,7 +299,7 @@ namespace Start_a_Town_
                 w.Write(this.Orientation);
                 this.Product.Write(w);
             }
-            public ISerializable Read(BinaryReader r)
+            public ISerializable Read(IDataReader r)
             {
                 this.Global = r.ReadIntVec3();
                 this.Orientation = r.ReadInt32();

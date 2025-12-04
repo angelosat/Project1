@@ -241,7 +241,7 @@ namespace Start_a_Town_.Animations
             w.Write(this.Speed);
             w.Write((int)this.State);
         }
-        internal void Read(System.IO.BinaryReader r)
+        internal void Read(IDataReader r)
         {
             this.Def = Start_a_Town_.Def.GetDef<AnimationDef>(r.ReadString());
             this.Frame = r.ReadSingle();

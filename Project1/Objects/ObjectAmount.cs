@@ -77,7 +77,7 @@ namespace Start_a_Town_
             w.Write(this._amount);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.ObjectTarget = TargetArgs.Read(Network.CurrentNetwork, r);
             this._amount = r.ReadInt32();

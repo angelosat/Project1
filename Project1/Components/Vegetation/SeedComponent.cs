@@ -51,7 +51,7 @@ namespace Start_a_Town_
         {
             this.Plant.Write(w);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Plant = Def.GetDef<PlantProperties>(r.ReadString());
         }

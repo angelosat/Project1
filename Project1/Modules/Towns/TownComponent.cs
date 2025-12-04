@@ -58,7 +58,7 @@ namespace Start_a_Town_
 
         public virtual void Load(SaveTag tag) { }
         public virtual void Write(BinaryWriter w) { }
-        public virtual void Read(BinaryReader r) { }
+        public virtual void Read(IDataReader r) { }
 
 
         public virtual IContextable QueryPosition(Vector3 global) { return null; }

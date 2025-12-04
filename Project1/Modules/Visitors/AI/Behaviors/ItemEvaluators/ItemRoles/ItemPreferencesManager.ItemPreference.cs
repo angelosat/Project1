@@ -45,7 +45,7 @@ namespace Start_a_Town_
                 w.Write(this.Score);
             }
 
-            public ISerializable Read(BinaryReader r)
+            public ISerializable Read(IDataReader r)
             {
                 this.Role = RegistryByName[r.ReadString()];
                 this.ItemRefId = r.ReadInt32();

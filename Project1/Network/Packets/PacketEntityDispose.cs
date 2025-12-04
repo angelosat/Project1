@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -9,8 +8,8 @@ namespace Start_a_Town_
         static readonly int pServerAction, pPlayerRequest;
         static PacketEntityDispose()
         {
-            pServerAction = Network.RegisterPacketHandler(Receive);
-            pPlayerRequest = Network.RegisterPacketHandler(ReceivePlayer);
+            pServerAction = PacketRegistry.Register(Receive);
+            pPlayerRequest = PacketRegistry.Register(ReceivePlayer);
         }
 
         internal static void Send(Server server, int entityID, PlayerData player)
@@ -27,16 +26,18 @@ namespace Start_a_Town_
             w.Write(player.ID);
         }
        
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var id = r.ReadInt32();
             net.DisposeObject(id);
             if (net is Server)
                 throw new System.Exception(); // this should only be handled by clients
         }
 
-        private static void ReceivePlayer(INetEndpoint net, BinaryReader r)
+        private static void ReceivePlayer(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var id = r.ReadInt32();
             var player = net.GetPlayer(r.ReadInt32());
             net.DisposeObject(id);

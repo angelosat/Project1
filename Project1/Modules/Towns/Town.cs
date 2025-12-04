@@ -310,7 +310,7 @@ namespace Start_a_Town_
             foreach (var ut in Utility.All())
                 w.Write(this.TownUtilitiesNew[ut].ToList());
         }
-        public void Read(BinaryReader r)
+        public void Read(IDataReader r)
         {
             foreach (var comp in this.TownComponents)
                 comp.Read(r);
@@ -322,7 +322,7 @@ namespace Start_a_Town_
             }
 
             foreach (var ut in Utility.All())
-                this.TownUtilitiesNew[ut] = new HashSet<Vector3>(r.ReadListVector3());
+                this.TownUtilitiesNew[ut] = [.. r.ReadListVector3()];
         }
 
         public void GetContextActions(GameObject playerEntity, Vector3 pos, ContextArgs a)

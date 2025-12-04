@@ -214,7 +214,7 @@ namespace Start_a_Town_.Towns
             w.Write(this.Enabled);
             w.Write(this.Begin);
         }
-        protected override void ReadData(BinaryReader r)
+        protected override void ReadData(IDataReader r)
         {
             this.Enabled = r.ReadBoolean();
             this.Begin = r.ReadVector3();

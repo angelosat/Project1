@@ -73,7 +73,7 @@ namespace Start_a_Town_.AI.Behaviors
             w.Write(this.Seed);
             w.Write(this.Timer);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Seed = r.ReadInt32();
             this.Timer = r.ReadInt32();

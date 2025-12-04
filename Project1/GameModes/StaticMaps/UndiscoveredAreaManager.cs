@@ -63,7 +63,7 @@ namespace Start_a_Town_
         {
             w.Write(this.Valid);
         }
-        public UndiscoveredAreaManager Read(BinaryReader r)
+        public UndiscoveredAreaManager Read(IDataReader r)
         {
             this.Valid = r.ReadBoolean();
             return this;

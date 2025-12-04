@@ -15,8 +15,8 @@ namespace Start_a_Town_
             static int PacketVisitorArrived, PacketAdventurerCreated;
             public static void Init()
             {
-                PacketVisitorArrived = Network.RegisterPacketHandler(ReceiveNotifyVisit);
-                PacketAdventurerCreated = Network.RegisterPacketHandler(ReceiveNotifyAdventurerCreated);
+                PacketVisitorArrived = PacketRegistry.Register(ReceiveNotifyVisit);
+                PacketAdventurerCreated = PacketRegistry.Register(ReceiveNotifyAdventurerCreated);
             }
 
             public static void SendNotifyVisit(Actor actor)
@@ -29,16 +29,18 @@ namespace Start_a_Town_
                 var w = Server.Instance.OutgoingStreamTimestamped;
                 w.Write(PacketAdventurerCreated, actor.RefId);
             }
-            private static void ReceiveNotifyAdventurerCreated(INetEndpoint net, BinaryReader r)
+            private static void ReceiveNotifyAdventurerCreated(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var client = net as Client;
                 var actorID = r.ReadInt32();
                 var actor = client.GetNetworkEntity(actorID) as Actor;
                 var world = client.Map.World as StaticWorld;
                 world.Population.RegisterVisitor(actor);
             }
-            private static void ReceiveNotifyVisit(INetEndpoint net, BinaryReader r)
+            private static void ReceiveNotifyVisit(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 if (net is Server)
                     throw new Exception();
                 var actorID = r.ReadInt32();
@@ -257,7 +259,7 @@ namespace Start_a_Town_
             this.ActorsAdventuring.Write(w);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.ActorsAdventuring.Initialize(r, this);
             return this;

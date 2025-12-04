@@ -129,7 +129,7 @@ namespace Start_a_Town_
                 o.Write(w);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)

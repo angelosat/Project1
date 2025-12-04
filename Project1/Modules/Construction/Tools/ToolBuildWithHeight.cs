@@ -133,7 +133,7 @@ namespace Start_a_Town_
             w.Write(this.SettingHeight);
             w.Write(this.Height);
         }
-        protected override void ReadData(System.IO.BinaryReader r)
+        protected override void ReadData(IDataReader r)
         {
             base.ReadData(r);
             this.End = r.ReadVector3();

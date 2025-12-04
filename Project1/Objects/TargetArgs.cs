@@ -374,7 +374,7 @@ namespace Start_a_Town_
             return tag;
         }
 
-        static public TargetArgs Read(INetEndpoint provider, BinaryReader reader)
+        static public TargetArgs Read(INetEndpoint provider, IDataReader reader)
         {
 
             TargetType type = (TargetType)reader.ReadInt32();

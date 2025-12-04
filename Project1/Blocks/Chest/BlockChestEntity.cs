@@ -40,7 +40,7 @@ namespace Start_a_Town_
             {
                 this.Container.Write(io);
             }
-            protected override void ReadExtra(System.IO.BinaryReader io)
+            protected override void ReadExtra(IDataReader io)
             {
                 this.Container.Read(io);
             }

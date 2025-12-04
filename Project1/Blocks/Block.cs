@@ -517,7 +517,10 @@ namespace Start_a_Town_
         protected virtual void HandleMessage(Vector3 global, ObjectEventArgs e) { }
 
         public static Dictionary<int, Block> Registry = new();
-
+        public static Block GetBlock(IDataReader r)
+        {
+            return GetBlock(r.ReadInt32());
+        }
         public static Block GetBlock(int hash)
         {
             return Registry[hash];

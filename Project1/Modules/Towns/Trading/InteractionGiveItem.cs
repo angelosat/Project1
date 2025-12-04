@@ -34,7 +34,7 @@ namespace Start_a_Town_
         {
             w.Write(this.Trade);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Trade = r.ReadBoolean();
         }

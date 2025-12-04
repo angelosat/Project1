@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -9,7 +8,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketInventoryDrop()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, GameObject actor, GameObject item, int amount)
         {
@@ -20,8 +19,9 @@ namespace Start_a_Town_
             stream.Write(item.RefId);
             stream.Write(amount);
         }
-        static void Receive(INetEndpoint net, BinaryReader r)
+        static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var actorID = r.ReadInt32();
             var itemID = r.ReadInt32();
             var amount = r.ReadInt32();

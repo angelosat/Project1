@@ -571,7 +571,7 @@ namespace Start_a_Town_
             if (this._weight.HasValue)
                 w.Write(this._weight);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             if (r.ReadBoolean())
                 this._weight = r.ReadSingle();

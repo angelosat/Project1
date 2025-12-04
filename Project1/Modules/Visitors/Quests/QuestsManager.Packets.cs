@@ -12,12 +12,12 @@ namespace Start_a_Town_
             static int pCreate, pRemove, pCreateObj, pRemoveObj, pAssign, pMod;
             static public void Init()
             {
-                pCreate= Network.RegisterPacketHandler(ReceiveQuestCreate);
-                pRemove = Network.RegisterPacketHandler(ReceiveRemoveQuest);
-                pCreateObj = Network.RegisterPacketHandler(ReceiveQuestCreateObjective);
-                pRemoveObj = Network.RegisterPacketHandler(ReceiveQuestRemoveObjective);
-                pAssign = Network.RegisterPacketHandler(ReceiveQuestGiverAssign);
-                pMod = Network.RegisterPacketHandler(ReceiveQuestModify);
+                pCreate= Registry.PacketHandlers.Register(ReceiveQuestCreate);
+                pRemove = Registry.PacketHandlers.Register(ReceiveRemoveQuest);
+                pCreateObj = Registry.PacketHandlers.Register(ReceiveQuestCreateObjective);
+                pRemoveObj = Registry.PacketHandlers.Register(ReceiveQuestRemoveObjective);
+                pAssign = Registry.PacketHandlers.Register(ReceiveQuestGiverAssign);
+                pMod = Registry.PacketHandlers.Register(ReceiveQuestModify);
             }
             public static void SendQuestModify(INetEndpoint net, PlayerData player, QuestDef quest, int maxConcurrentModValue)
             {
@@ -27,8 +27,9 @@ namespace Start_a_Town_
                 net.BeginPacket(ReliabilityType.OrderedReliable, pMod).Write(player.ID, quest.ID, maxConcurrentModValue);
 
             }
-            private static void ReceiveQuestModify(INetEndpoint net, BinaryReader r)
+            private static void ReceiveQuestModify(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var maxConcurrentModValue = r.ReadInt32();
@@ -46,8 +47,9 @@ namespace Start_a_Town_
                 net.BeginPacket(ReliabilityType.OrderedReliable, pAssign).Write(player.ID, quest.ID, actor?.RefId ?? -1);
 
             }
-            private static void ReceiveQuestGiverAssign(INetEndpoint net, BinaryReader r)
+            private static void ReceiveQuestGiverAssign(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var actorid = r.ReadInt32();
@@ -70,8 +72,9 @@ namespace Start_a_Town_
                 w.Write(quest.ID);
                 w.Write(index);
             }
-            private static void ReceiveQuestRemoveObjective(INetEndpoint net, BinaryReader r)
+            private static void ReceiveQuestRemoveObjective(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var objectiveIndex = r.ReadInt32();
@@ -97,8 +100,9 @@ namespace Start_a_Town_
                 w.Write(qobj.GetType().FullName);
                 qobj.Write(w);
             }
-            private static void ReceiveQuestCreateObjective(INetEndpoint net, BinaryReader r)
+            private static void ReceiveQuestCreateObjective(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var qObj = Activator.CreateInstance(Type.GetType(r.ReadString()), quest) as QuestObjective;
@@ -127,8 +131,9 @@ namespace Start_a_Town_
                     w.Write(q.ID);
                 }
             }
-            private static void ReceiveQuestCreate(INetEndpoint net, BinaryReader r)
+            private static void ReceiveQuestCreate(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var playerID = r.ReadInt32();
                 if (net is Server server)
                     SendAddQuestGiver(server, playerID);
@@ -152,8 +157,9 @@ namespace Start_a_Town_
                     manager.RemoveQuest(quest.ID);
                 }
             }
-            static void ReceiveRemoveQuest(INetEndpoint net, BinaryReader r)
+            static void ReceiveRemoveQuest(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var manager = net.Map.Town.QuestManager;
                 var player = net.GetPlayer(r.ReadInt32());
                 var questID = r.ReadInt32();

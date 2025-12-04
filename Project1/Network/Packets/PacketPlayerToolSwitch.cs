@@ -20,7 +20,7 @@ namespace Start_a_Town_
             w.Write(playerid);
             tool.Write(w);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(INetEndpoint net, IDataReader r)
         {
             var plid = r.ReadInt32();
             var player = net.GetPlayer(plid);

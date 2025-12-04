@@ -73,7 +73,7 @@ namespace Start_a_Town_
             w.Write(this.Props is not null); // HACK for loading legacy items which lack Props
             this.Props?.Write(w);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             if (r.ReadBoolean()) // HACK for loading legacy items which lack Props
                 this.Props = Def.GetDef<ToolProps>(r);

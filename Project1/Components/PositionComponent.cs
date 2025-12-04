@@ -61,7 +61,7 @@ namespace Start_a_Town_.Components
             w.Write(this.Direction);
         }
 
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Global = r.ReadVector3();
             this.Velocity = r.ReadVector3();

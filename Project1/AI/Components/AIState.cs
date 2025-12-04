@@ -113,7 +113,7 @@ namespace Start_a_Town_.AI
             this.Jobs.Sync(w);
             this.ItemPreferences.Write(w); // sync to clients?
         }
-        public void Read(BinaryReader r)
+        public void Read(IDataReader r)
         {
             this.Jobs.Sync(r);
             this.ItemPreferences.Read(r); // sync to clients?

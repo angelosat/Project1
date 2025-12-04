@@ -7,20 +7,20 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     class PacketWorld
     {
-        static int p;
+        static int _packetTypeId;
         static PacketWorld()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetEndpoint net, PlayerData player)
+        internal static void Send(NetEndpoint net, PlayerData player)
         {
             var server = net as Server;
-            var w = server.BeginPacket(ReliabilityType.OrderedReliable, p);
+            var w = server.BeginPacket(ReliabilityType.OrderedReliable, _packetTypeId);
             server.Map.World.WriteData(w);
-            server.EndPacket();
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(NetEndpoint net, Packet p)
         {
+            var r = p.PacketReader;
             var client = net as Client;
             if (client.World != null)
             {

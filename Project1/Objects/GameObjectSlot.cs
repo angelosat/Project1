@@ -150,7 +150,7 @@ namespace Start_a_Town_
             if (this.HasValue)
                 this.Object.Write(writer);
         }
-        public void Read(System.IO.BinaryReader reader)
+        public void Read(IDataReader reader)
         {
             this.ID = reader.ReadByte();
             this.Name = reader.ReadString();

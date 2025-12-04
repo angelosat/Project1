@@ -25,7 +25,7 @@ namespace Start_a_Town_
         {
             this.Objective.Write(w);
         }
-        public override ISerializable Read(BinaryReader r)
+        public override ISerializable Read(IDataReader r)
         {
             this.Objective = new ItemMaterialAmount(r);
             return this;

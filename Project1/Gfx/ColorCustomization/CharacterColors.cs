@@ -56,7 +56,7 @@ namespace Start_a_Town_
             foreach (var item in this.Colors.Values)
                 item.Write(w);
         }
-        public CharacterColors(BinaryReader r)
+        public CharacterColors(IDataReader r)
         {
             this.Colors = new Dictionary<string, CharacterColor>();
             int count = r.ReadInt32();

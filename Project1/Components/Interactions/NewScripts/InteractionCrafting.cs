@@ -123,7 +123,7 @@ namespace Start_a_Town_.Crafting
                 this.Product.Write(w);
             w.Write(this.UnfinishedItem?.RefId ?? -1);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             var orderID = r.ReadInt32();
             if (this.Actor.Map is not null)

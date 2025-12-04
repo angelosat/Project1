@@ -20,9 +20,10 @@ namespace Start_a_Town_.Components.Crafting
             this.Requirement = itemMaterial;
         }
 
-        public ProductMaterialPair(BinaryReader r)
+        public ProductMaterialPair(IDataReader r)
         {
-            this.Block = r.ReadBlock();
+            //this.Block = r.ReadBlock();
+            this.Block = Block.GetBlock(r.ReadInt32());
             this.Data = r.ReadByte();
             if(r.ReadBoolean()) // has requirement
                 this.Requirement = new ItemMaterialAmount(r);

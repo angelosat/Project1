@@ -40,16 +40,16 @@ namespace Start_a_Town_
             this.WriteExtra(io);
         }
         protected virtual void WriteExtra(BinaryWriter w) { }
-        public void Read(BinaryReader io)
+        public void Read(IDataReader io)
         {
             this.Min = io.ReadSingle();
             this.Max = io.ReadSingle();
             this.Value = io.ReadSingle();
             this.ReadExtra(io);
         }
-        protected virtual void ReadExtra(BinaryReader r) { }
+        protected virtual void ReadExtra(IDataReader r) { }
 
-        public Progress(BinaryReader io)
+        public Progress(IDataReader io)
         {
             this.Min = io.ReadSingle();
             this.Max = io.ReadSingle();

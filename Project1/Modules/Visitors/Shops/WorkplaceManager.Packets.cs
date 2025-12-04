@@ -12,12 +12,12 @@ namespace Start_a_Town_
             static readonly int PacketPlayerCreateShop, PacketPlayerDeleteShop, PacketPlayerAddStockpileToShop, PacketPlayerAddShoppingArea, PacketPlayerAssignWorkerToShop, PacketPlayerShopAssignCounter;//, PacketPlayerRenameShop;
             static Packets()
             {
-                PacketPlayerCreateShop = Network.RegisterPacketHandler(ReceivePlayerCreateShop);
-                PacketPlayerDeleteShop = Network.RegisterPacketHandler(ReceivePlayerDeleteShop);
-                PacketPlayerAddStockpileToShop = Network.RegisterPacketHandler(ReceivePlayerAddStockpileToShop);
-                PacketPlayerAddShoppingArea = Network.RegisterPacketHandler(ReceivePlayerAddShoppingArea);
-                PacketPlayerAssignWorkerToShop = Network.RegisterPacketHandler(HandlePlayerAssignWorkerToShop);
-                PacketPlayerShopAssignCounter = Network.RegisterPacketHandler(ReceivePlayerShopAssignCounter);
+                PacketPlayerCreateShop = Registry.PacketHandlers.Register(ReceivePlayerCreateShop);
+                PacketPlayerDeleteShop = Registry.PacketHandlers.Register(ReceivePlayerDeleteShop);
+                PacketPlayerAddStockpileToShop = Registry.PacketHandlers.Register(ReceivePlayerAddStockpileToShop);
+                PacketPlayerAddShoppingArea = Registry.PacketHandlers.Register(ReceivePlayerAddShoppingArea);
+                PacketPlayerAssignWorkerToShop = Registry.PacketHandlers.Register(HandlePlayerAssignWorkerToShop);
+                PacketPlayerShopAssignCounter = Registry.PacketHandlers.Register(ReceivePlayerShopAssignCounter);
                 //PacketPlayerRenameShop = Network.RegisterPacketHandler(ReceivePlayerRenameShop);
             }
             //static public void Init()
@@ -39,8 +39,9 @@ namespace Start_a_Town_
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketPlayerDeleteShop, player.ID, shopid);
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerDeleteShop).Write(player.ID, shopid);
             }
-            private static void ReceivePlayerDeleteShop(INetEndpoint net, BinaryReader r)
+            private static void ReceivePlayerDeleteShop(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var pl = net.GetPlayer(r.ReadInt32());
                 var shopid = r.ReadInt32();
                 if (net is Client)
@@ -59,8 +60,9 @@ namespace Start_a_Town_
                 w.Write(shop?.ID ?? -1);
                 w.Write(global);
             }
-            static void ReceivePlayerShopAssignCounter(INetEndpoint net, BinaryReader r)
+            static void ReceivePlayerShopAssignCounter(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var manager = net.Map.Town.ShopManager;
                 var shop = manager.GetShop(r.ReadInt32());
@@ -89,8 +91,9 @@ namespace Start_a_Town_
                 w.Write(actor.RefId);
                 w.Write(shop.ID);
             }
-            private static void HandlePlayerAssignWorkerToShop(INetEndpoint net, BinaryReader r)
+            private static void HandlePlayerAssignWorkerToShop(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var playerID = r.ReadInt32();
                 var actorID = r.ReadInt32();
                 var shopID = r.ReadInt32();
@@ -113,8 +116,9 @@ namespace Start_a_Town_
                 w.Write(shopID);
                 w.Write(stockpileID);
             }
-            private static void ReceivePlayerAddStockpileToShop(INetEndpoint net, BinaryReader r)
+            private static void ReceivePlayerAddStockpileToShop(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var playerID = r.ReadInt32();
                 var shopid = r.ReadInt32();
                 var stockpileid = r.ReadInt32();
@@ -139,8 +143,9 @@ namespace Start_a_Town_
                 w.Write(shopID);
                 w.Write(stockpileID);
             }
-            private static void ReceivePlayerAddShoppingArea(INetEndpoint net, BinaryReader r)
+            private static void ReceivePlayerAddShoppingArea(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var playerID = r.ReadInt32();
                 var shopid = r.ReadInt32();
                 var stockpileid = r.ReadInt32();
@@ -164,8 +169,9 @@ namespace Start_a_Town_
                 w.Write(shopType.FullName);
                 w.Write(shopID);
             }
-            private static void ReceivePlayerCreateShop(INetEndpoint net, BinaryReader r)
+            private static void ReceivePlayerCreateShop(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var playerID = r.ReadInt32();
                 var shoptypename = r.ReadString();
 

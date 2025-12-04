@@ -121,7 +121,7 @@ namespace Start_a_Town_
             w.Write(this.MaterialType.Select(d => d.Name).ToArray());
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.ItemDef = new HashSet<ItemDef>(r.ReadStringArray().Select(Def.GetDef<ItemDef>));
             this.Material = new HashSet<MaterialDef>(r.ReadStringArray().Select(Def.GetDef<MaterialDef>));

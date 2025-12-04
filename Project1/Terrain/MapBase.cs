@@ -21,8 +21,8 @@ namespace Start_a_Town_
                 PacketSpawn;
             static Packets()
             {
-                PacketSyncSetCellData = Network.RegisterPacketHandler(SyncSetCellData);
-                PacketSpawn = Network.RegisterPacketHandler(ReceiveSpawnEntity);
+                PacketSyncSetCellData = Registry.PacketHandlers.Register(SyncSetCellData);
+                PacketSpawn = Registry.PacketHandlers.Register(ReceiveSpawnEntity);
             }
             public static void SendSpawnEntity(INetEndpoint net, GameObject entity, MapBase map, Vector3 global, Vector3 velocity)
             {
@@ -44,8 +44,9 @@ namespace Start_a_Town_
                 w.Write(global);
                 w.Write(velocity);
             }
-            static void ReceiveSpawnEntity(INetEndpoint net, BinaryReader r)
+            static void ReceiveSpawnEntity(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var client = net as Client;
                 var actor = client.GetNetworkEntity(r.ReadInt32());
                 var global = r.ReadVector3();
@@ -61,8 +62,9 @@ namespace Start_a_Town_
                     map.SetCellData(global, data);
                 net.WriteToStream(PacketSyncSetCellData, global, data);
             }
-            private static void SyncSetCellData(INetEndpoint net, BinaryReader r)
+            private static void SyncSetCellData(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var global = r.ReadIntVec3();
                 var data = r.ReadByte();
                 if (net is Client)

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -13,13 +12,13 @@ namespace Start_a_Town_
         static readonly int PckTypeNew;
         static PacketEntityInstantiate()
         {
-            PckType = Network.RegisterPacketHandler(Receive);
-            PckTypeNew = Network.RegisterPacketHandler(ReceiveTemplate);
+            PckType = PacketRegistry.Register(Receive);
+            PckTypeNew = PacketRegistry.Register(ReceiveTemplate);
         }
         [Obsolete]
         static public void Send(INetEndpoint net, GameObject entity)
         {
-            Send(net, new GameObject[] { entity });
+            Send(net, [entity]);
         }
         static public void SendFromTemplate(INetEndpoint net, int templateID, GameObject entity)
         {
@@ -35,8 +34,9 @@ namespace Start_a_Town_
             //strem.Write(data.Length);
             //strem.Write(data);
         }
-        static public void ReceiveTemplate(INetEndpoint net, BinaryReader r)
+        static public void ReceiveTemplate(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             if (net is Server)
                 throw new Exception();
             var templateID = r.ReadInt32();
@@ -67,8 +67,9 @@ namespace Start_a_Town_
                 entity.Write(strem);
             }
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             if (net is Server)
                 throw new Exception();
             var count = r.ReadInt32();

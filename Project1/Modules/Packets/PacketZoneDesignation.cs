@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
@@ -10,7 +9,7 @@ namespace Start_a_Town_
         static readonly int PacketPlayerZoneDesignation;
         static PacketZoneDesignation()
         {
-            PacketPlayerZoneDesignation = Network.RegisterPacketHandler(Receive);
+            PacketPlayerZoneDesignation = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(INetEndpoint net, ZoneDef zoneDef, int zoneID, Vector3 begin, int w, int h, bool remove)
         {
@@ -25,8 +24,9 @@ namespace Start_a_Town_
             stream.Write(h);
             stream.Write(remove);
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             //var zoneType = Type.GetType(r.ReadString());
             var zoneType = Def.GetDef<ZoneDef>(r.ReadString());
             var zoneID = r.ReadInt32();

@@ -9,7 +9,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketChat()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = NetEndpoint.RegisterPacketHandler(Receive);
         }
         internal static void Send(INetEndpoint net, int playerID, string text)
         {
@@ -20,8 +20,9 @@ namespace Start_a_Town_
             w.Write(playerID);
             w.WriteASCII(text);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var playerid = r.ReadInt32();
             var text = r.ReadASCII();
             if(net is Server)

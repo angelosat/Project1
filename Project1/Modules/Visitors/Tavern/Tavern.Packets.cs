@@ -11,13 +11,14 @@ namespace Start_a_Town_
             static int PacketOrderAdd, PacketOrderRemove, PacketOrderSync, PacketOrderUpdateIngredients;
             static public void Init()
             {
-                PacketOrderAdd = Network.RegisterPacketHandler(HandleAddOrder);
-                PacketOrderSync = Network.RegisterPacketHandler(HandleSyncOrder);
-                PacketOrderRemove = Network.RegisterPacketHandler(HandleRemoveOrder);
-                PacketOrderUpdateIngredients = Network.RegisterPacketHandler(UpdateOrderIngredients);
+                PacketOrderAdd = NetEndpoint.RegisterPacketHandler(HandleAddOrder);
+                PacketOrderSync = NetEndpoint.RegisterPacketHandler(HandleSyncOrder);
+                PacketOrderRemove = NetEndpoint.RegisterPacketHandler(HandleRemoveOrder);
+                PacketOrderUpdateIngredients = NetEndpoint.RegisterPacketHandler(UpdateOrderIngredients);
             }
-            private static void HandleRemoveOrder(INetEndpoint net, BinaryReader r)
+            private static void HandleRemoveOrder(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var pl = net.GetPlayer(r.ReadInt32());
                 var tavern = net.Map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
                 var orderid = r.ReadInt32();
@@ -34,8 +35,9 @@ namespace Start_a_Town_
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketOrderRemove, player.ID, tavern.ID, order.ID);
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketOrderRemove).Write(player.ID, tavern.ID, order.ID);
             }
-            private static void HandleAddOrder(INetEndpoint net, BinaryReader r)
+            private static void HandleAddOrder(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var pl = net.GetPlayer(r.ReadInt32());
                 var tavern = net.Map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
                 var reaction = r.ReadDef<Reaction>();
@@ -64,8 +66,9 @@ namespace Start_a_Town_
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketOrderSync, player.ID, tavern.ID, order.ID, enabled);
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketOrderSync).Write(player.ID, tavern.ID, order.ID, enabled);
             }
-            private static void HandleSyncOrder(INetEndpoint net, BinaryReader r)
+            private static void HandleSyncOrder(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var pl = net.GetPlayer(r.ReadInt32());
                 var tavern = net.Map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
                 var order = tavern.GetOrder(r.ReadInt32());
@@ -93,8 +96,9 @@ namespace Start_a_Town_
                 w.Write(mats?.Select(d => d.Name).ToArray());
                 w.Write(matTypes?.Select(d => d.Name).ToArray());
             }
-            private static void UpdateOrderIngredients(INetEndpoint net, BinaryReader r)
+            private static void UpdateOrderIngredients(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var tavern = net.Map.Town.GetShop<Tavern>(r.ReadInt32());
                 var order = tavern.GetOrder(r.ReadInt32());

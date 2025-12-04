@@ -336,7 +336,7 @@ namespace Start_a_Town_.Components
             this.GrowthFruit.Write(writer);
             this.GrowthBody.Write(writer);
         }
-        public override void Read(System.IO.BinaryReader reader)
+        public override void Read(IDataReader reader)
         {
             this.PlantProperties = Def.GetDef<PlantProperties>(reader.ReadString());
             this.GrowthFruit = new Progress(reader);
@@ -348,7 +348,7 @@ namespace Start_a_Town_.Components
             this.Progress.Write(w);
             w.Write(this.Growth.Value);
         }
-        internal override void SyncRead(GameObject parent, System.IO.BinaryReader r)
+        internal override void SyncRead(GameObject parent, IDataReader r)
         {
             this.Progress.Read(r);
             this.Growth.Set(parent, r.ReadInt32());

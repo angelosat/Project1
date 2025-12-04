@@ -9,7 +9,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketCraftOrderSync()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
 
         internal static void Send(CraftOrder order, Stockpile input, Stockpile output)
@@ -23,8 +23,9 @@ namespace Start_a_Town_
             w.Write(input?.ID ?? -1);
             w.Write(output?.ID ?? -1);
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var station = r.ReadIntVec3();
             var index = r.ReadInt32();
             //var bench = net.Map.Town.CraftingManager.GetWorkstation(station);

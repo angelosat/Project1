@@ -66,7 +66,7 @@ namespace Start_a_Town_.Components
             for (byte n = 0; n < size; n++)
                 Add(new GameObjectSlot(indexSequence()) { Container = this });
         }
-        public ItemContainer(BinaryReader reader)
+        public ItemContainer(IDataReader reader)
         {
             this.ID = reader.ReadByte();
             this.Capacity = (byte)reader.ReadInt32();
@@ -106,7 +106,7 @@ namespace Start_a_Town_.Components
                 slot.Write(writer);
             }
         }
-        public void Read(BinaryReader reader)
+        public void Read(IDataReader reader)
         {
             this.Clear();
             this.ID = reader.ReadByte();

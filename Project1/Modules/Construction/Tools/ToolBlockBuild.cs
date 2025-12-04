@@ -210,7 +210,7 @@ namespace Start_a_Town_
             w.Write(this.Enabled);
             w.Write(this.Begin);
         }
-        protected override void ReadData(BinaryReader r)
+        protected override void ReadData(IDataReader r)
         {
             this.Enabled = r.ReadBoolean();
             this.Begin = r.ReadVector3();
@@ -241,7 +241,7 @@ namespace Start_a_Town_
                 w.Write(this.Orientation);
                 w.Write(this.Cheat);
             }
-            public Args(BinaryReader r)
+            public Args(IDataReader r)
             {
                 this.ToolDef = r.ReadDef<BuildToolDef>();
                 this.Begin = r.ReadIntVec3();

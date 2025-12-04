@@ -108,7 +108,7 @@ namespace Start_a_Town_
                     i.Write(w);
                 }
             }
-            protected override void ReadExtra(BinaryReader r)
+            protected override void ReadExtra(IDataReader r)
             {
                 this.Global = r.ReadVector3();
                 var count = r.ReadInt32();

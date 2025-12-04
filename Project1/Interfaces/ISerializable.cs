@@ -5,6 +5,6 @@ namespace Start_a_Town_
     public interface ISerializable
     {
         void Write(BinaryWriter w);
-        ISerializable Read(BinaryReader r);
+        ISerializable Read(IDataReader r);
     }
 }

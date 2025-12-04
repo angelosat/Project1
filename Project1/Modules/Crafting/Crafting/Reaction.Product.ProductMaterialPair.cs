@@ -26,7 +26,7 @@ namespace Start_a_Town_
                 {
                     this.Load(saveTag);
                 }
-                public ProductMaterialPair(BinaryReader r)
+                public ProductMaterialPair(IDataReader r)
                 {
                     this.Read(r);
                 }
@@ -74,7 +74,7 @@ namespace Start_a_Town_
                     this.RequirementsNew.WriteNew(w, k => w.Write(k), v => v.Write(w));
                 }
 
-                public ISerializable Read(BinaryReader r)
+                public ISerializable Read(IDataReader r)
                 {
                     this.Product = GameObject.Create(r);
                     this.Reaction = r.ReadDef<Reaction>();

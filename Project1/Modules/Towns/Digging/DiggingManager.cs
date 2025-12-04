@@ -98,7 +98,7 @@ namespace Start_a_Town_
         {
             w.Write(this.AllPositions.ToList());
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.AllPositions = new HashSet<IntVec3>(r.ReadListIntVec3());
         }

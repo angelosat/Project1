@@ -33,7 +33,7 @@ namespace Start_a_Town_
         {
             w.Write((int)this.Type.ID);
         }
-        protected override void ReadExtra(System.IO.BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Type = GearType.Dictionary[(GearType.Types)r.ReadInt32()];
         }

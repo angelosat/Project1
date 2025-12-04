@@ -8,7 +8,7 @@ namespace Start_a_Town_
         static int p;
         internal static void Init()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, int playerID, int speed)
         {
@@ -18,8 +18,9 @@ namespace Start_a_Town_
             w.Write(playerID);
             w.Write(speed);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var playerID = r.ReadInt32();
             int speed = r.ReadInt32();
             net.SetSpeed(playerID, speed);

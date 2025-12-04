@@ -54,7 +54,7 @@ namespace Start_a_Town_.AI.Behaviors
             w.Write(this.CurrentStepIndex);
             this.Steps.Current.Write(w);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             base.Read(r);
             this.CurrentStepIndex = r.ReadInt32();

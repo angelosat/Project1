@@ -37,7 +37,7 @@ namespace Start_a_Town_
         {
             this.Topic.Write(w);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Topic = Def.GetDef<ConversationTopic>(r.ReadString());
         }

@@ -10,11 +10,13 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketAcks()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
 
-        static void Receive(INetEndpoint net, PlayerData player, BinaryReader r)
+        static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
+            var player = pck.Player;
             var acksCount = r.ReadInt32();
             for (int i = 0; i < acksCount; i++)
             {

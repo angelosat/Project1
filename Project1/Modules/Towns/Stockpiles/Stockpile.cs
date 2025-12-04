@@ -344,7 +344,7 @@ namespace Start_a_Town_
         {
             this.Settings.Write(w);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Settings.Read(r);
         }

@@ -12,11 +12,12 @@ namespace Start_a_Town_
         {
             _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
         }
-        static public void Send(INetEndpoint net, ICollection<GameObject> entities)
+        static public void Send(NetEndpoint net, ICollection<GameObject> entities)
         {
             var server = net as Server;
-            var strem = server.OutgoingStreamUnreliable;
-            strem.Write(_packetTypeId);
+            //var strem = server.OutgoingStreamUnreliable;
+            //strem.Write(_packetTypeId);
+            var strem = server.BeginPacketNew(ReliabilityType.Unreliable, _packetTypeId);
             strem.Write(server.Clock.TotalMilliseconds);
             strem.Write(entities.Count);
             foreach (var obj in entities)

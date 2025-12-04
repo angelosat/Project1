@@ -66,7 +66,7 @@ namespace Start_a_Town_.Net
         }
 
 
-        static public PlayerData Read(BinaryReader reader)
+        static public PlayerData Read(IDataReader reader)
         {
             int id = reader.ReadInt32();
             int namelength = reader.ReadInt32();

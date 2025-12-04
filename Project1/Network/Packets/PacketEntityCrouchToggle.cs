@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -9,7 +8,7 @@ namespace Start_a_Town_
         static readonly int PType;
         static PacketEntityCrouchToggle()
         {
-            PType = Network.RegisterPacketHandler(Receive);
+            PType = PacketRegistry.Register(Receive);
         }
        
         internal static void Send(INetEndpoint net, int entityID, bool toggle)
@@ -20,8 +19,9 @@ namespace Start_a_Town_
             w.Write(entityID);
             w.Write(toggle);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var id = r.ReadInt32();
             var entity = net.GetNetworkEntity(id) as Actor;
             var toggle = r.ReadBoolean();

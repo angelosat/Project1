@@ -147,7 +147,7 @@ namespace Start_a_Town_
             w.Write(this.DecayDelay);
             this.Mods.Write(w);
         }
-        public ISerializable Read(System.IO.BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.NeedDef = r.ReadDef<NeedDef>();
             this.Value = r.ReadSingle();

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -8,7 +7,7 @@ namespace Start_a_Town_
         static int p;
         internal static void Init()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, int playerid)
         {
@@ -16,8 +15,9 @@ namespace Start_a_Town_
             w.Write(p);
             w.Write(playerid);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var server = net as Server;
             if (server != null)
             {

@@ -123,7 +123,7 @@ namespace Start_a_Town_
             this.Moodlets.Write(w);
             w.Write(this.Mood);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Moodlets.Read(r);
             this.Mood = r.ReadSingle();

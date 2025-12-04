@@ -273,7 +273,7 @@ namespace Start_a_Town_
                 r.Write(w);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             foreach (var p in this.PreferencesNew)
                 p.Value.Read(r);
@@ -321,7 +321,7 @@ namespace Start_a_Town_
             static readonly int pSyncPrefsAll;
             static Packets()
             {
-                pSyncPrefsAll = Network.RegisterPacketHandler(Receive);
+                pSyncPrefsAll = NetEndpoint.RegisterPacketHandler(Receive);
             }
 
             internal static void Sync(INetEndpoint net, Actor actor, System.Collections.IList oldItems, System.Collections.IList newItems)
@@ -343,10 +343,12 @@ namespace Start_a_Town_
                     newItems.Cast<ItemPreference>().ToList().Write(w);
             }
 
-            private static void Receive(INetEndpoint net, BinaryReader r)
+            private static void Receive(INetEndpoint net, Packet pck)
             {
                 if (net is Server)
                     throw new Exception();
+                var r = pck.PacketReader;
+
                 var actor = net.GetNetworkObject<Actor>(r.ReadInt32());
                 var prefs = actor.ItemPreferences as ItemPreferencesManager;
                 var oldItems = new List<ItemPreference>().Read(r);

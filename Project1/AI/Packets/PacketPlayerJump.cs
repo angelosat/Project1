@@ -7,12 +7,12 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     static class PacketPlayerJump
     {
-        static readonly int p;
+        static readonly int _packetTypeId;
         static PacketPlayerJump()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
         }
-        internal static void Send(INetEndpoint net)
+        internal static void Send(NetEndpoint net)
         {
             if (net is Server)
                 throw new Exception();
@@ -23,14 +23,14 @@ namespace Start_a_Town_
             //w.Write(net.GetPlayer().ID);
             //net.EndPacket();
 
-            var pck = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
+            var pck = net.BeginPacketNew(ReliabilityType.OrderedReliable, _packetTypeId);
             pck.Write(net.GetPlayer().ID);
-            pck.End();
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
             if (net is Client)
                 throw new Exception();
+            var r = pck.PacketReader;
             var pl = net.GetPlayer(r.ReadInt32());
             pl.ControllingEntity.Jump();
         }

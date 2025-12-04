@@ -56,7 +56,7 @@ namespace Start_a_Town_
         {
         }
 
-        public virtual ISerializable Read(BinaryReader r)
+        public virtual ISerializable Read(IDataReader r)
         {
             return this;
         }

@@ -8,7 +8,7 @@ namespace Start_a_Town_
         static int p;
         static internal void Init()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
 
         internal static void Send(CraftOrder order, bool value)
@@ -24,8 +24,9 @@ namespace Start_a_Town_
             w.Write(order.ID);
             w.Write(value);
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var station = r.ReadIntVec3();
             var id = r.ReadInt32();
             var order = net.Map.Town.CraftingManager.GetOrder(station, id);

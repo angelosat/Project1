@@ -48,7 +48,7 @@ namespace Start_a_Town_.Net
         public PlayerData Player;
         public System.Threading.Timer ResendTimer;
         public BinaryReader Reader; //create a reader the moment the packet is received. instead of creating reader in the client and server instances
-        public PacketReader PacketReader;
+        public DataReader PacketReader;
         protected Packet() { }
         public Packet(long id, PacketType type, int length, byte[] payload)
         {

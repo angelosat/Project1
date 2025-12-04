@@ -13,7 +13,7 @@ namespace Start_a_Town_
         static int p;
         static public void Init()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(INetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
         {
@@ -42,8 +42,9 @@ namespace Start_a_Town_
             if(!remove)
                 designation.Write(w);
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var remove = r.ReadBoolean();
             var selectionType = (SelectionType)r.ReadInt32();
             IEnumerable<TargetArgs> targetList;

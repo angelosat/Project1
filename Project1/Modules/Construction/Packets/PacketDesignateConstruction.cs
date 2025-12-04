@@ -28,7 +28,7 @@ namespace Start_a_Town_
             if(!a.Removing)
                 item.Write(stream);
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(INetEndpoint net, IDataReader r)
         {
             var args = new ToolBlockBuild.Args(r);
             var product = args.Removing ? null : new ProductMaterialPair(r);

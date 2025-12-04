@@ -132,7 +132,7 @@ namespace Start_a_Town_.PlayerControl
             w.Write(this.Block.BaseID);
             w.Write(this.State);
         }
-        protected override void ReadData(System.IO.BinaryReader r)
+        protected override void ReadData(IDataReader r)
         {
             this.Block = Block.Registry[r.ReadInt32()];
             this.State = r.ReadByte();

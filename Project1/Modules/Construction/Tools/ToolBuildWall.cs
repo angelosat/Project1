@@ -61,7 +61,7 @@ namespace Start_a_Town_
             base.WriteData(w);
             w.Write(this.Axis);
         }
-        protected override void ReadData(System.IO.BinaryReader r)
+        protected override void ReadData(IDataReader r)
         {
             base.ReadData(r);
             this.Axis = r.ReadVector3();

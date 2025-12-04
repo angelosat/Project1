@@ -37,7 +37,7 @@ namespace Start_a_Town_
         {
             w.Write(this.RoomID);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.RoomID = r.ReadInt32();
         }

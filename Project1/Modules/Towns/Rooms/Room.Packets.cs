@@ -10,10 +10,10 @@ namespace Start_a_Town_
             static readonly int PacketSetOwner, PacketSetRoomType, PacketSetWorkplace, PacketRefresh;
             static Packets()
             {
-                PacketSetOwner = Network.RegisterPacketHandler(SetOwner);
-                PacketSetRoomType = Network.RegisterPacketHandler(SetRoomType);
-                PacketSetWorkplace = Network.RegisterPacketHandler(SetWorkplace);
-                PacketRefresh = Network.RegisterPacketHandler(Refresh);
+                PacketSetOwner = PacketRegistry.Register(SetOwner);
+                PacketSetRoomType = PacketRegistry.Register(SetRoomType);
+                PacketSetWorkplace = PacketRegistry.Register(SetWorkplace);
+                PacketRefresh = PacketRegistry.Register(Refresh);
             }
 
             public static void SetRoomType(INetEndpoint net, PlayerData player, Room room, RoomRoleDef roomType)
@@ -23,8 +23,9 @@ namespace Start_a_Town_
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketSetRoomType, player.ID, room.ID, roomType?.Name ?? "");
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketSetRoomType).Write(player.ID, room.ID, roomType?.Name ?? "");
             }
-            private static void SetRoomType(INetEndpoint net, BinaryReader r)
+            private static void SetRoomType(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var room = net.Map.Town.RoomManager.GetRoom(r.ReadInt32());
                 var roomdef = r.ReadString() is string roomRoleName && !roomRoleName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<RoomRoleDef>(roomRoleName) : null;
@@ -41,8 +42,9 @@ namespace Start_a_Town_
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketSetOwner, player.ID, room.ID, owner?.RefId ?? -1);
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketSetOwner).Write(player.ID, room.ID, owner?.RefId ?? -1);
             }
-            private static void SetOwner(INetEndpoint net, BinaryReader r)
+            private static void SetOwner(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var roomID = r.ReadInt32();
                 var room = net.Map.Town.RoomManager.GetRoom(roomID);
@@ -64,8 +66,9 @@ namespace Start_a_Town_
                 w.Write(room.ID);
                 w.Write(wplace?.ID ?? -1);
             }
-            private static void SetWorkplace(INetEndpoint net, BinaryReader r)
+            private static void SetWorkplace(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var roomID = r.ReadInt32();
                 var room = net.Map.Town.RoomManager.GetRoom(roomID);
@@ -84,8 +87,9 @@ namespace Start_a_Town_
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketRefresh, playerData.ID, room.ID, center);
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketRefresh).Write(playerData.ID, room.ID, center);
             }
-            private static void Refresh(INetEndpoint net, BinaryReader r)
+            private static void Refresh(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var room = net.Map.Town.RoomManager.GetRoom(r.ReadInt32());
                 var center = r.ReadIntVec3();

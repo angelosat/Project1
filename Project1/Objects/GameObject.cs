@@ -820,7 +820,7 @@ namespace Start_a_Town_
             }
         }
 
-        public static GameObject Create(BinaryReader r)
+        public static GameObject Create(IDataReader r)
         {
             string defName = r.ReadString();
             var def = Start_a_Town_.Def.GetDef<ItemDef>(defName);
@@ -837,7 +837,7 @@ namespace Start_a_Town_
             obj.ObjectSynced();
             return obj;
         }
-        public static GameObject CloneTemplate(int templateID, BinaryReader reader)
+        public static GameObject CloneTemplate(int templateID, IDataReader reader)
         {
             GameObject obj = CloneTemplate(templateID);
             _ = reader.ReadString(); // def name not necessary because we copy it from the existing cloned object
@@ -1377,7 +1377,7 @@ namespace Start_a_Town_
                 comp.Value.SyncWrite(w);
         }
 
-        internal void SyncRead(BinaryReader r)
+        internal void SyncRead(IDataReader r)
         {
             foreach (var comp in this.Components)
                 comp.Value.SyncRead(this, r);
@@ -1501,7 +1501,7 @@ namespace Start_a_Town_
             w.Write(PacketSyncInstantiate);
             this.Write(w);
         }
-        private static void SyncInstantiate(INetEndpoint net, BinaryReader r)
+        private static void SyncInstantiate(INetEndpoint net, IDataReader r)
         {
             if (net is Server)
                 throw new Exception();
@@ -1522,7 +1522,7 @@ namespace Start_a_Town_
             w.Write(this.RefId);
             w.Write(v);
         }
-        private static void SyncSetStacksize(INetEndpoint net, BinaryReader r)
+        private static void SyncSetStacksize(INetEndpoint net, IDataReader r)
         {
             var obj = net.GetNetworkEntity(r.ReadInt32());
             var value = r.ReadInt32();
@@ -1554,7 +1554,7 @@ namespace Start_a_Town_
             w.Write(this.RefId);
             w.Write(obj.RefId);
         }
-        private static void SyncAbsorb(INetEndpoint net, BinaryReader r)
+        private static void SyncAbsorb(INetEndpoint net, IDataReader r)
         {
             if (net is Server)
                 throw new Exception();

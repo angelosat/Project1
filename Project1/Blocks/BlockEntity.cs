@@ -129,7 +129,7 @@ namespace Start_a_Town_
                 c.Write(w);
             this.WriteExtra(w);
         }
-        public void Read(BinaryReader r)
+        public void Read(IDataReader r)
         {
             this.OriginGlobal = r.ReadIntVec3();
             this.CellsOccupied.Read(r);
@@ -138,7 +138,7 @@ namespace Start_a_Town_
             this.ReadExtra(r);
         }
         protected virtual void WriteExtra(BinaryWriter w) { }
-        protected virtual void ReadExtra(BinaryReader r) { }
+        protected virtual void ReadExtra(IDataReader r) { }
         internal virtual void HandleRemoteCall(MapBase map, Vector3 vector3, ObjectEventArgs e) { }
 
         public void Draw(Camera camera, MapBase map, IntVec3 global)

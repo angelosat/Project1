@@ -95,7 +95,7 @@ namespace Start_a_Town_
         {
             w.Write(this.Level);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Level = r.ReadInt32();
         }
@@ -163,7 +163,7 @@ namespace Start_a_Town_
         {
             w.Write(this.Level);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Level = r.ReadInt32();
         }

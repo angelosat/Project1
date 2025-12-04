@@ -67,7 +67,7 @@ namespace Start_a_Town_
             w.Write(this.TicksRemaining);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Def = Start_a_Town_.Def.GetDef<MoodletDef>(r.ReadString());
             this.TicksRemaining = r.ReadInt32();

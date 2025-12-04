@@ -15,16 +15,17 @@ namespace Start_a_Town_.Components
             static int PacketSyncInsert, PacketSetHaulSlot;
             public static void Init()
             {
-                PacketSyncInsert = Network.RegisterPacketHandler(HandleSyncInsert);
+                PacketSyncInsert = Registry.PacketHandlers.Register(HandleSyncInsert);
 
-                static void handleSetHaulSlot(INetEndpoint net, BinaryReader r)
+                static void handleSetHaulSlot(NetEndpoint net, Packet pck)
                 {
+                    var r = pck.PacketReader;
                     var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
                     var item = net.GetNetworkEntity(r.ReadInt32()) as Entity;
                     actor.Carry(item);
                 }
 
-                PacketSetHaulSlot = Network.RegisterPacketHandler(handleSetHaulSlot);
+                PacketSetHaulSlot = Registry.PacketHandlers.Register(handleSetHaulSlot);
             }
 
             public static void SendSyncInsert(INetEndpoint net, Actor actor, Entity item)
@@ -34,8 +35,9 @@ namespace Start_a_Town_.Components
                 actor.Inventory.Insert(item);
                 server.OutgoingStreamTimestamped.Write(PacketSyncInsert, actor.RefId, item.RefId);
             }
-            private static void HandleSyncInsert(INetEndpoint net, BinaryReader r)
+            private static void HandleSyncInsert(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
                 var item = net.GetNetworkEntity(r.ReadInt32()) as Entity;
                 if (net is Server)
@@ -459,7 +461,8 @@ namespace Start_a_Town_.Components
             var comp = new InventoryComponent((byte)this.Capacity);
 
             using BinaryWriter w = new(new MemoryStream());
-            using BinaryReader r = new(w.BaseStream);
+            //using BinaryReader r = new(w.BaseStream);
+            using DataReader r = new(w.BaseStream);
 
             this.Write(w);
             w.BaseStream.Position = 0;
@@ -472,7 +475,7 @@ namespace Start_a_Town_.Components
             this.Contents.Write(w);
             this.HaulSlot.Write(w);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Contents.Read(r);
             this.HaulSlot.Read(r);

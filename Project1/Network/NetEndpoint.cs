@@ -33,22 +33,20 @@ namespace Start_a_Town_.Net
             w.Write(pType);
             return w;
         }
-        public PacketBuilder BeginPacketNew(ReliabilityType rType, int pType)
+        public IDataWriter BeginPacketNew(ReliabilityType rType, int pType)
         {
             return PacketBuilder.Create(this.GetStream(rType).Writer, pType);
         }
-        public void EndPacket()
-        {
 
-        }
         public void HandlePacket(int pType, Packet pck)
         {
             if (PacketHandlers.TryGetValue(pType, out var handler))
                 handler(this, pck);
-            else
-            { 
-                // silently drop packet if next data is garbage
-            }
+            else if (PacketRegistry.TryGet(pType, out var hh))
+                hh(this, pck);
+            else if (Registry.PacketHandlers.TryGet(pType, out var hhh))
+                hhh(this, pck);
+            // silently drop packet if next data is garbage
         }
         public abstract ConsoleBoxAsync ConsoleBox { get; }
         public abstract PlayerData CurrentPlayer { get; }

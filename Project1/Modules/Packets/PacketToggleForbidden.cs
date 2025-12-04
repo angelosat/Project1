@@ -11,7 +11,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketToggleForbidden()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, IEnumerable<GameObject> enumerable)
         {
@@ -26,8 +26,9 @@ namespace Start_a_Town_
 
             w.Write(instanceID);
         }
-        static void Receive(INetEndpoint net, BinaryReader r)
+        static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var list = r.ReadListInt();
             foreach (var id in list)
                 net.GetNetworkEntity(id).ToggleForbidden();

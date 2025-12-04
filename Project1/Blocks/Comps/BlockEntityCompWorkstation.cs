@@ -89,7 +89,7 @@ namespace Start_a_Town_
         {
             this._orders.Write(w);
         }
-        public override ISerializable Read(BinaryReader r)
+        public override ISerializable Read(IDataReader r)
         {
             this._orders.ReadMutable(r);
             return this;

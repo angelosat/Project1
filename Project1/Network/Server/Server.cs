@@ -799,13 +799,14 @@ namespace Start_a_Town_.Net
         private static void UnmergePackets(Packet packet)
         {
             var player = packet.Player;
-            var r = packet.Reader;
-            var mem = r.BaseStream;
-            var lastPos = mem.Position;
-            while (mem.Position < mem.Length)
+            var r = packet.PacketReader;
+            //var mem = r.BaseStream;
+            //var lastPos = mem.Position;
+            //var lastPos = r.Position;
+            while (r.Position < r.Length)
             {
                 var typeID = r.ReadInt32();
-                lastPos = mem.Position;
+                var lastPos = r.Position;
 
                 if (PacketHandlersWithPlayer.TryGetValue(typeID, out var handlerActionNew))
                     handlerActionNew(Instance, player, r);
@@ -817,7 +818,7 @@ namespace Start_a_Town_.Net
                 //    hh(Instance, packet);
                 else
                     Instance.HandlePacket(typeID, packet);
-                if (mem.Position == lastPos)
+                if (r.Position == lastPos)
                     // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
                     //throw new Exception();
                     break; // i think that's the price of not sending the length as the header and just continuing to read until the packethandler is invalid, which implies we reached the end. but that doesnt sound very clean

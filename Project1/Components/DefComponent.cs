@@ -59,7 +59,7 @@ namespace Start_a_Town_
             w.Write(this.Quality.Name);
         }
 
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.CustomName = r.ReadString();
             this.Quality = Def.GetDef<Quality>(r.ReadString());

@@ -120,7 +120,7 @@ namespace Start_a_Town_.Components
         }
 
         public virtual void Write(BinaryWriter w) { }
-        public virtual void Read(BinaryReader r) { }
+        public virtual void Read(IDataReader r) { }
         internal virtual void GetAvailableTasks(GameObject parent, List<Interaction> list)
         {
 
@@ -147,7 +147,7 @@ namespace Start_a_Town_.Components
         internal virtual void SyncWrite(BinaryWriter w)
         {
         }
-        internal virtual void SyncRead(GameObject parent, BinaryReader r)
+        internal virtual void SyncRead(GameObject parent, IDataReader r)
         {
         }
 

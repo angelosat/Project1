@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -10,7 +9,7 @@ namespace Start_a_Town_
         static readonly int PacketPlayerZoneDelete;
         static PacketZoneDelete()
         {
-            PacketPlayerZoneDelete = Network.RegisterPacketHandler(Receive);
+            PacketPlayerZoneDelete = Registry.PacketHandlers.Register(Receive);
         }
         public static void Send(INetEndpoint net, Type zoneType, int zoneID)
         {
@@ -21,8 +20,9 @@ namespace Start_a_Town_
             w.Write(zoneType.FullName);
             w.Write(zoneID);
         }
-        public static void Receive(INetEndpoint net, BinaryReader r)
+        public static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             Type zoneType = Type.GetType(r.ReadString());
             int zoneID = r.ReadInt32();
             net.Map.Town.ZoneManager.Delete(zoneID);

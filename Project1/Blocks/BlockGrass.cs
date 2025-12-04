@@ -109,8 +109,8 @@ namespace Start_a_Town_
             static readonly int PacketGrowRandomFlower, PacketTrample;
             static Packets()
             {
-                PacketGrowRandomFlower = Network.RegisterPacketHandler(GrowRandomFlower);
-                PacketTrample = Network.RegisterPacketHandler(SyncTrample);
+                PacketGrowRandomFlower = Start_a_Town_.Registry.PacketHandlers.Register(GrowRandomFlower);
+                PacketTrample = Start_a_Town_.Registry.PacketHandlers.Register(SyncTrample);
             }
             public static void GrowRandomFlower(MapBase map, IntVec3 global)
             {
@@ -120,8 +120,9 @@ namespace Start_a_Town_
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketGrowRandomFlower, global);
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketGrowRandomFlower).Write(global);
             }
-            private static void GrowRandomFlower(INetEndpoint net, BinaryReader r)
+            private static void GrowRandomFlower(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var map = net.Map;
                 var global = r.ReadIntVec3();
                 if (net is Client)
@@ -137,8 +138,9 @@ namespace Start_a_Town_
                 Trample(map, global);
                 net.WriteToStream(PacketTrample, global);
             }
-            private static void SyncTrample(INetEndpoint net, BinaryReader r)
+            private static void SyncTrample(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var global = r.ReadIntVec3();
                 if (net is Server)
                     throw new Exception();

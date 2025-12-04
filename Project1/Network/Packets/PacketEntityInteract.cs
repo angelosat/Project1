@@ -1,6 +1,5 @@
 ﻿using Start_a_Town_.Net;
 using System;
-using System.IO;
 
 namespace Start_a_Town_
 {
@@ -10,7 +9,7 @@ namespace Start_a_Town_
         static readonly int PacketInteract;
         static PacketEntityInteract()
         {
-            PacketInteract = Network.RegisterPacketHandler(Receive);
+            PacketInteract = PacketRegistry.Register(Receive);
         }
 
         internal static void EndInteraction(INetEndpoint net, GameObject entity, bool success)
@@ -36,8 +35,9 @@ namespace Start_a_Town_
             w.Write(entity.Velocity);
             w.Write(entity.Direction);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             if (net is Server)
                 throw new Exception();
             var entity = net.GetNetworkObject<Actor>(r.ReadInt32());

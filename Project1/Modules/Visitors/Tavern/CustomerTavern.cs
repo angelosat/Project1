@@ -93,7 +93,7 @@ namespace Start_a_Town_
             w.Write(this.ServedByID);
             w.Write(this.OrderTakenByID);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Table = r.ReadIntVec3();
             this.TicksWaited = r.ReadInt32();

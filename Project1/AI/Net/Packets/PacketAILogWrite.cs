@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_.Modules.AI.Net.Packets
 {
@@ -9,7 +8,7 @@ namespace Start_a_Town_.Modules.AI.Net.Packets
         static readonly int p;
         static PacketAILogWrite()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(Server server, int agentID, string entry)
         {
@@ -17,8 +16,9 @@ namespace Start_a_Town_.Modules.AI.Net.Packets
             server.OutgoingStreamOrderedReliable.Write(agentID);
             server.OutgoingStreamOrderedReliable.Write(entry);
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var entity = net.GetNetworkEntity(r.ReadInt32()) as Actor;
             var entry = r.ReadString();
             entity.Log.Write(entry);

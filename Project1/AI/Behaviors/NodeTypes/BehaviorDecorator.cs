@@ -15,7 +15,7 @@
         {
             this.Child.Write(w);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Child.Read(r);
         }

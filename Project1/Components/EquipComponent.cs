@@ -62,7 +62,7 @@ namespace Start_a_Town_.Components
         public override void Write(System.IO.BinaryWriter io)
         {
         }
-        public override void Read(System.IO.BinaryReader io)
+        public override void Read(IDataReader io)
         {
         }
     }

@@ -15,13 +15,14 @@ namespace Start_a_Town_
             static int pToggle, pMod, pSync;
             static public void Init()
             {
-                pToggle = Network.RegisterPacketHandler(HandleLaborToggle);
-                pMod = Network.RegisterPacketHandler(HandleJobModRequest);
-                pSync = Network.RegisterPacketHandler(HandleJobSync);
+                pToggle = Registry.PacketHandlers.Register(HandleLaborToggle);
+                pMod = Registry.PacketHandlers.Register(HandleJobModRequest);
+                pSync = Registry.PacketHandlers.Register(HandleJobSync);
             }
 
-            private static void HandleJobModRequest(INetEndpoint net, BinaryReader r)
+            private static void HandleJobModRequest(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var server = net as Server;
                 var player = server.GetPlayer(r.ReadInt32());
                 var actor = server.GetNetworkEntity(r.ReadInt32()) as Actor;
@@ -62,8 +63,9 @@ namespace Start_a_Town_
                 //net.GetOutgoingStreamOrderedReliable().Write(pToggle, player.ID, actor.RefId, jobDef.Name);
                 net.BeginPacket(ReliabilityType.Ordered, pToggle).Write(player.ID, actor.RefId, jobDef.Name);
             }
-            private static void HandleLaborToggle(INetEndpoint net, BinaryReader r)
+            private static void HandleLaborToggle(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
@@ -83,8 +85,9 @@ namespace Start_a_Town_
                 w.Write(job.Def.Name);
                 job.Write(w);
             }
-            private static void HandleJobSync(INetEndpoint net, BinaryReader r)
+            private static void HandleJobSync(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var client = net as Client;
                 var player = client.GetPlayer(r.ReadInt32());
                 var actor = client.GetNetworkEntity(r.ReadInt32()) as Actor;

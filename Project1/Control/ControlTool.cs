@@ -192,20 +192,20 @@ namespace Start_a_Town_
             w.Write(this.GetType().FullName);
             this.WriteData(w);
         }
-        ControlTool Read(BinaryReader r)
+        ControlTool Read(IDataReader r)
         {
             this.ReadData(r);
             return this;
         }
         protected virtual void WriteData(BinaryWriter w) { }
-        protected virtual void ReadData(BinaryReader r) { }
+        protected virtual void ReadData(IDataReader r) { }
         
-        internal static ControlTool Create(BinaryReader r)
+        internal static ControlTool Create(IDataReader r)
         {
             var type = Type.GetType(r.ReadString());
             return (Activator.CreateInstance(type) as ControlTool).Read(r);
         }
-        internal static ControlTool CreateOrSync(BinaryReader r, Net.PlayerData player)
+        internal static ControlTool CreateOrSync(IDataReader r, Net.PlayerData player)
         {
             var type = Type.GetType(r.ReadString());
             var tool = player.CurrentTool;

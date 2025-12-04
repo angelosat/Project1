@@ -494,7 +494,7 @@ namespace Start_a_Town_
             this.UndiscoveredAreaManager.Write(w);
         }
 
-        public static StaticMap ReadData(INetEndpoint net, BinaryReader r)
+        public static StaticMap ReadData(INetEndpoint net, IDataReader r)
         {
             var map = new StaticMap
             {

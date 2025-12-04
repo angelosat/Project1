@@ -85,7 +85,7 @@ namespace Start_a_Town_
             w.Write(this.CurrentOccupant);
             w.Write((int)this.Type);
         }
-        protected override void ReadExtra(System.IO.BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.CurrentOccupant = r.ReadInt32();
             this.Type = (Types)r.ReadInt32();
@@ -154,8 +154,8 @@ namespace Start_a_Town_
             static readonly int pOwner, pChangeType;
             static Packets()
             {
-                pOwner = Network.RegisterPacketHandler(SetOwner);
-                pChangeType = Network.RegisterPacketHandler(SetType);
+                pOwner = Registry.PacketHandlers.Register(SetOwner);
+                pChangeType = Registry.PacketHandlers.Register(SetType);
             }
 
             internal static void SetOwner(INetEndpoint net, PlayerData playerData, IntVec3 global, Actor owner)
@@ -169,8 +169,9 @@ namespace Start_a_Town_
                 w.Write(playerData.ID, global, owner?.RefId ?? -1);
             }
 
-            private static void SetOwner(INetEndpoint net, BinaryReader r)
+            private static void SetOwner(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var global = r.ReadIntVec3();
                 var owner = r.ReadInt32() is int refID && refID > -1 ? net.GetNetworkObject<Actor>(refID) : null;
@@ -189,8 +190,9 @@ namespace Start_a_Town_
                 net.BeginPacket(ReliabilityType.OrderedReliable, pChangeType).Write(playerData.ID, vector3, (int)type);
             }
 
-            private static void SetType(INetEndpoint net, BinaryReader r)
+            private static void SetType(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var vec = r.ReadIntVec3();
                 var type = (BlockBedEntity.Types)r.ReadInt32();

@@ -75,7 +75,7 @@ namespace Start_a_Town_
         {
             
         }
-        public virtual void Read(BinaryReader r)
+        public virtual void Read(IDataReader r)
         {
             
         }

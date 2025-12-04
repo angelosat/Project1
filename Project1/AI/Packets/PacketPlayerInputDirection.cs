@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 
@@ -11,7 +10,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketPlayerInputDirection()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, Vector2 direction)
         {
@@ -24,9 +23,10 @@ namespace Start_a_Town_
             w.Write(net.GetPlayer().ID);
             w.Write(direction);
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
-            if(net is Client)
+            var r = pck.PacketReader;
+            if (net is Client)
                 throw new NotImplementedException();
             var pl = net.GetPlayer(r.ReadInt32());
             var dir = r.ReadVector2();

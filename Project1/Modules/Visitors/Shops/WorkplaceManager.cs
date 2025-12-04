@@ -112,7 +112,7 @@ namespace Start_a_Town_
             Packets.SendPlayerShopAssignCounter(net, net.GetPlayer(), shop, global);
         }
 
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.CurrentShopID = r.ReadInt32();
             this.Shopss.ReadListAbstract(r, this);

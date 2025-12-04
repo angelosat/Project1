@@ -43,7 +43,7 @@ namespace Start_a_Town_
             w.Write(this.ActorID);
             this.Jobs.Values.Write(w);
         }
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
             this.Jobs = r.ReadList<Job>().ToDictionary(j => j.Def, j => j);

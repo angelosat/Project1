@@ -92,7 +92,7 @@ namespace Start_a_Town_
             this.Allowed.Values.Sync(w);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Priority = (StoragePriority)r.ReadByte();
             this.Allowed.Values.Sync(r);

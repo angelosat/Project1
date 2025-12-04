@@ -82,9 +82,9 @@ namespace Start_a_Town_
         {
             w.Write(this.Block);
         }
-        protected override void ReadData(System.IO.BinaryReader r)
+        protected override void ReadData(IDataReader r)
         {
-            this.Block = r.ReadBlock();
+            this.Block = Block.GetBlock(r);// r.ReadBlock();
         }
         internal override void RotateAntiClockwise()
         {

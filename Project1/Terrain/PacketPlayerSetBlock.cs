@@ -10,7 +10,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketPlayerSetBlock()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         public static void Send(INetEndpoint net, PlayerData player, IntVec3 global, Block block, MaterialDef material, byte data = 0, int variation = 0, int orientation = 0)
         {
@@ -29,11 +29,12 @@ namespace Start_a_Town_
             w.Write(variation);
             w.Write(orientation);
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
             var global = r.ReadIntVec3();
-            var block = r.ReadBlock();
+            var block = Block.GetBlock(r);
             var material = Def.GetDef<MaterialDef>(r);
             var data = r.ReadByte();
             var variation = r.ReadInt32();

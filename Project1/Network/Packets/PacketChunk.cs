@@ -10,7 +10,7 @@ namespace Start_a_Town_
         static int p;
         static PacketChunk()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = NetEndpoint.RegisterPacketHandler(Receive);
         }
         internal static void Send(INetEndpoint net, Vector2 vector2, byte[] chunkData, PlayerData player)
         {
@@ -19,8 +19,9 @@ namespace Start_a_Town_
             w.Write(p);
             w.Write(chunkData);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var chunk = Chunk.Create(net.Map, r);
             var client = net as Client;
             client.ReceiveChunk(chunk);

@@ -426,7 +426,7 @@ namespace Start_a_Town_
 
             this.Transaction.Write(w);
         }
-        protected virtual void Read(BinaryReader r)
+        protected virtual void Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Tool = TargetArgs.Read((INetEndpoint)null, r);

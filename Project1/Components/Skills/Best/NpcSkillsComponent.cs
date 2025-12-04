@@ -115,7 +115,7 @@ namespace Start_a_Town_
         {
             this.SkillsNew.Write(w);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.SkillsNew.Read(r);
         }

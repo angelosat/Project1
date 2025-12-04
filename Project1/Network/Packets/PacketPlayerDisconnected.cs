@@ -12,7 +12,7 @@ namespace Start_a_Town_
             w.Write(PacketType.PlayerDisconnected);
             w.Write(playerID);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(INetEndpoint net, IDataReader r)
         {
             var playerID = r.ReadInt32();
             (net as Client).PlayerDisconnected(playerID);

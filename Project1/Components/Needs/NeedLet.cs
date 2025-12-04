@@ -49,7 +49,7 @@ namespace Start_a_Town_
             w.Write(this.ValueMod);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Def = r.ReadDef<NeedLetDef>();
             this.RateMod = r.ReadSingle();

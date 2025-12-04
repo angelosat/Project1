@@ -295,7 +295,7 @@ namespace Start_a_Town_
             this.Customers.Load(tag, "Customers", this);
             this.Orders.TryLoad(tag, "Orders");
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Tables.Read(r);
             this.Workstations.Read(r);

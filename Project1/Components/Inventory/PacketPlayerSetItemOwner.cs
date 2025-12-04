@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -9,7 +8,7 @@ namespace Start_a_Town_
         static readonly int PacketIDPlayerSetItemOwner;
         static PacketPlayerSetItemOwner()
         {
-            PacketIDPlayerSetItemOwner = Network.RegisterPacketHandler(Receive);
+            PacketIDPlayerSetItemOwner = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(INetEndpoint net, int itemID, int ownerID)
         {
@@ -19,8 +18,9 @@ namespace Start_a_Town_
             stream.Write(itemID);
             stream.Write(ownerID);
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var itemID = r.ReadInt32();
             var ownerID = r.ReadInt32();
             var item = net.GetNetworkEntity(itemID);

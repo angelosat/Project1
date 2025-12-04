@@ -47,7 +47,7 @@ namespace Start_a_Town_
                 collection.Add(r.ReadVector3());
             return collection;
         }
-        public static T ReadIntVec3<T>(this T collection, BinaryReader r)
+        public static T ReadIntVec3<T>(this T collection, IDataReader r)
            where T : ICollection<IntVec3>, new()
         {
             var count = r.ReadInt32();
@@ -55,7 +55,7 @@ namespace Start_a_Town_
                 collection.Add(r.ReadIntVec3());
             return collection;
         }
-        public static T ReadTargets<T>(this T collection, BinaryReader r)
+        public static T ReadTargets<T>(this T collection, IDataReader r)
            where T : ICollection<TargetArgs>, new()
         {
             var count = r.ReadInt32();
@@ -73,7 +73,7 @@ namespace Start_a_Town_
             }
             return dic;
         }
-        public static Dictionary<int, int> Read(this Dictionary<int, int> dic, BinaryReader r)
+        public static Dictionary<int, int> Read(this Dictionary<int, int> dic, IDataReader r)
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -82,7 +82,7 @@ namespace Start_a_Town_
             }
             return dic;
         }
-        public static Dictionary<T, U> Read<T, U>(this Dictionary<T, U> dic, BinaryReader r, Func<U, T> keySelector, Action<U> initializer)
+        public static Dictionary<T, U> Read<T, U>(this Dictionary<T, U> dic, IDataReader r, Func<U, T> keySelector, Action<U> initializer)
             where U : class, ISerializable, new()
         {
             var list = new List<U>().Read(r);
@@ -93,7 +93,7 @@ namespace Start_a_Town_
             }
             return dic;
         }
-        public static Dictionary<T, U> Read<T, U>(this Dictionary<T, U> dic, BinaryReader r, Func<U, T> keySelector, params object[] constructorArgs)
+        public static Dictionary<T, U> Read<T, U>(this Dictionary<T, U> dic, IDataReader r, Func<U, T> keySelector, params object[] constructorArgs)
             where U : class, ISerializable, new()
         {
             var list = new List<U>().Read(r, constructorArgs);
@@ -103,7 +103,7 @@ namespace Start_a_Town_
             }
             return dic;
         }
-        public static T[] Read<T>(this T[] array, BinaryReader r)
+        public static T[] Read<T>(this T[] array, IDataReader r)
             where T : class, ISerializable
         {
             var count = r.ReadInt32();
@@ -112,7 +112,7 @@ namespace Start_a_Town_
             return array;
         }
 
-        public static ICollection<U> Read<U>(this ICollection<U> collection, BinaryReader r, params object[] args)
+        public static ICollection<U> Read<U>(this ICollection<U> collection, IDataReader r, params object[] args)
             where U : class, ISerializable
         {
             var count = r.ReadInt32();
@@ -123,7 +123,7 @@ namespace Start_a_Town_
             }
             return collection;
         }
-        public static T Read<T>(this T collection, BinaryReader r)
+        public static T Read<T>(this T collection, IDataReader r)
             where T : ICollection<int>
         {
             var count = r.ReadInt32();
@@ -131,7 +131,7 @@ namespace Start_a_Town_
                 collection.Add(r.ReadInt32());
             return collection;
         }
-        public static ICollection<IntVec3> Read(this ICollection<IntVec3> list, BinaryReader r)
+        public static ICollection<IntVec3> Read(this ICollection<IntVec3> list, IDataReader r)
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -145,13 +145,13 @@ namespace Start_a_Town_
                 i.Sync(b);
             return list;
         }
-        public static ICollection<T> Sync<T>(this ICollection<T> list, BinaryReader b) where T : ISyncable
+        public static ICollection<T> Sync<T>(this ICollection<T> list, IDataReader b) where T : ISyncable
         {
             foreach (var i in list)
                 i.Sync(b);
             return list;
         }
-        public static ICollection<T> SyncNew<T>(this ICollection<T> list, BinaryReader b) where T : ISerializable
+        public static ICollection<T> SyncNew<T>(this ICollection<T> list, IDataReader b) where T : ISerializable
         {
             foreach (var i in list)
                 i.Read(b);
@@ -163,14 +163,14 @@ namespace Start_a_Town_
         /// <typeparam name="T"></typeparam>
         /// <param name="collection"></param>
         /// <param name="r"></param>
-        public static void ReadMutable<T>(this ICollection<T> collection, BinaryReader r)
+        public static void ReadMutable<T>(this ICollection<T> collection, IDataReader r)
             where T : class, ISerializable, new()
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
                 collection.Add(new T().Read(r) as T);
         }
-        public static void ReadImmutable<T>(this IList<T> collection, BinaryReader r)
+        public static void ReadImmutable<T>(this IList<T> collection, IDataReader r)
             where T : class, ISerializable//, new()
         {
             var count = r.ReadInt32();
@@ -183,7 +183,7 @@ namespace Start_a_Town_
         /// <typeparam name="T"></typeparam>
         /// <param name="collection"></param>
         /// <param name="r"></param>
-        public static void Initialize<T>(this ICollection<T> collection, BinaryReader r)
+        public static void Initialize<T>(this ICollection<T> collection, IDataReader r)
             where T : class, ISerializable
         {
             var count = r.ReadInt32();
@@ -198,7 +198,7 @@ namespace Start_a_Town_
         /// <param name="collection"></param>
         /// <param name="r"></param>
         /// <param name="args"></param>
-        public static void Initialize<T>(this ICollection<T> collection, BinaryReader r, params object[] args)
+        public static void Initialize<T>(this ICollection<T> collection, IDataReader r, params object[] args)
             where T : class, ISerializable
         {
             var count = r.ReadInt32();
@@ -267,7 +267,7 @@ namespace Start_a_Town_
                 list.Add(Def.GetDef(r));//.ReadString()));
             return list;
         }
-        public static ICollection<T> ReadDefs<T>(this ICollection<T> list, BinaryReader r) where T : Def
+        public static ICollection<T> ReadDefs<T>(this ICollection<T> list, IDataReader r) where T : Def
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -284,7 +284,7 @@ namespace Start_a_Town_
                 i.Write(w);
             }
         }
-        public static void InitializeAbstract<T>(this ICollection<T> collection, BinaryReader r, params object[] args)
+        public static void InitializeAbstract<T>(this ICollection<T> collection, IDataReader r, params object[] args)
             where T : class, ISerializable
         {
             var count = r.ReadInt32();
@@ -294,7 +294,7 @@ namespace Start_a_Town_
                 collection.Add((Activator.CreateInstance(Type.GetType(typeName), args) as T).Read(r) as T);
             }
         }
-        public static void InitializeNew<T>(this ICollection<T> collection, BinaryReader r, params object[] args)
+        public static void InitializeNew<T>(this ICollection<T> collection, IDataReader r, params object[] args)
             where T : class, ISerializable
         {
             var count = r.ReadInt32();
@@ -321,7 +321,7 @@ namespace Start_a_Town_
             }
             return dic;
         }
-        public static Dictionary<int, U> Sync<U>(this Dictionary<int, U> dic, BinaryReader r) where U : ISerializable
+        public static Dictionary<int, U> Sync<U>(this Dictionary<int, U> dic, IDataReader r) where U : ISerializable
         {
             for (int i = 0; i < dic.Count; i++)
             {
@@ -329,7 +329,7 @@ namespace Start_a_Town_
             }
             return dic;
         }
-        public static Dictionary<T, U> Sync<T, U>(this Dictionary<T, U> dic, BinaryReader r) where U : ISerializable where T : Def
+        public static Dictionary<T, U> Sync<T, U>(this Dictionary<T, U> dic, IDataReader r) where U : ISerializable where T : Def
         {
             for (int i = 0; i < dic.Count; i++)
             {
@@ -348,7 +348,7 @@ namespace Start_a_Town_
             }
             return dic;
         }
-        public static Dictionary<T, U> ReadNew<T, U>(this Dictionary<T, U> dic, BinaryReader r, Func<BinaryReader, T> keyReader, Func<BinaryReader, U> valueReader)
+        public static Dictionary<T, U> ReadNew<T, U>(this Dictionary<T, U> dic, IDataReader r, Func<IDataReader, T> keyReader, Func<IDataReader, U> valueReader)
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -359,21 +359,21 @@ namespace Start_a_Town_
             }
             return dic;
         }
-        public static Dictionary<T, U> ReadByValueAbstractTypes<T, U>(this Dictionary<T, U> dic, BinaryReader r, Func<U, T> keySelector, params object[] ctorArgs) where U : class, ISerializable
+        public static Dictionary<T, U> ReadByValueAbstractTypes<T, U>(this Dictionary<T, U> dic, IDataReader r, Func<U, T> keySelector, params object[] ctorArgs) where U : class, ISerializable
         {
             var items = r.ReadListAbstract<U>(ctorArgs);
             foreach (var i in items)
                 dic.Add(keySelector(i), i);
             return dic;
         }
-        public static ObservableDictionary<T, U> ReadByValueAbstractTypes<T, U>(this ObservableDictionary<T, U> dic, BinaryReader r, Func<U, T> keySelector, params object[] ctorArgs) where U : class, ISerializable
+        public static ObservableDictionary<T, U> ReadByValueAbstractTypes<T, U>(this ObservableDictionary<T, U> dic, IDataReader r, Func<U, T> keySelector, params object[] ctorArgs) where U : class, ISerializable
         {
             var items = r.ReadListAbstract<U>(ctorArgs);
             foreach (var i in items)
                 dic.Add(keySelector(i), i);
             return dic;
         }
-        public static ICollection<T> SyncOld<T>(this ICollection<T> collection, BinaryReader r)
+        public static ICollection<T> SyncOld<T>(this ICollection<T> collection, IDataReader r)
             where T : ISerializable
         {
             var count = r.ReadInt32();
@@ -487,7 +487,7 @@ namespace Start_a_Town_
         /// <param name="r"></param>
         /// <param name="net">pass the net peer to resolve targets initially</param>
         /// <returns></returns>
-        public static List<TargetArgs> ReadListTargets(this BinaryReader r, INetEndpoint net = null)
+        public static List<TargetArgs> ReadListTargets(this IDataReader r, INetEndpoint net = null)
         {
             var count = r.ReadInt32();
             var list = new List<TargetArgs>(count);
@@ -497,7 +497,7 @@ namespace Start_a_Town_
             }
             return list;
         }
-        public static T[] ReadList<T>(this BinaryReader r, params object[] constructorParams) where T : class, ISerializable
+        public static T[] ReadList<T>(this IDataReader r, params object[] constructorParams) where T : class, ISerializable
         {
             var count = r.ReadInt32();
             var list = new T[count];
@@ -508,7 +508,7 @@ namespace Start_a_Town_
             }
             return list;
         }
-        public static T[] ReadListAbstract<T>(this BinaryReader r, params object[] constructorParams) where T : class, ISerializable
+        public static T[] ReadListAbstract<T>(this IDataReader r, params object[] constructorParams) where T : class, ISerializable
         {
             var count = r.ReadInt32();
             var list = new T[count];
@@ -520,7 +520,7 @@ namespace Start_a_Town_
             }
             return list;
         }
-        public static void ReadListAbstract<T>(this ICollection<T> list, BinaryReader r, params object[] constructorParams) where T : class, ISerializable
+        public static void ReadListAbstract<T>(this ICollection<T> list, IDataReader r, params object[] constructorParams) where T : class, ISerializable
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)

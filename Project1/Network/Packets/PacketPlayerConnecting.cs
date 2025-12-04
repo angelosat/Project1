@@ -19,7 +19,7 @@ namespace Start_a_Town_
             w.Write(PacketType.PlayerConnecting);
             player.Write(w);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(INetEndpoint net, IDataReader r)
         {
             PlayerData player = PlayerData.Read(r);
             var client = net as Client;

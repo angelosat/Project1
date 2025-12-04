@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -10,7 +9,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketCommandNpc()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         static internal void Send(INetEndpoint net, List<int> npcIDs, TargetArgs target, bool enqueue)
         {
@@ -21,8 +20,9 @@ namespace Start_a_Town_
             target.Write(w);
             w.Write(enqueue);
         }
-        static void Receive(INetEndpoint net, BinaryReader r)
+        static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var npcids = r.ReadListInt();
             var target = TargetArgs.Read(net, r);
             var enqueue = r.ReadBoolean();

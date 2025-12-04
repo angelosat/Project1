@@ -29,7 +29,7 @@ namespace Start_a_Town_
                 w.Write(player.ID);
                 w.Write(obj.Select(t => t.Object.RefId).ToList());
             }
-            private static void ReceiveCancel(INetEndpoint net, BinaryReader r)
+            private static void ReceiveCancel(INetEndpoint net, IDataReader r)
             {
                 var player = net.GetPlayer(r.ReadInt32());
                 var refIDs = r.ReadListInt();
@@ -134,7 +134,7 @@ namespace Start_a_Town_
             this.Contents.Write(w);
         }
 
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Product = new(r);
             this.Progress.Read(r);

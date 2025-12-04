@@ -248,9 +248,9 @@ namespace Start_a_Town_
             w.Write(this.Data.Data);
 
         }
-        public Cell Read(BinaryReader r)
+        public Cell Read(IDataReader r)
         {
-            this.Block = r.ReadBlock();
+            this.Block = Block.GetBlock(r);// r.ReadBlock();
             this.Material = Def.GetDef<MaterialDef>(r);
             this.Data = new BitVector32(r.ReadInt32());
             return this;

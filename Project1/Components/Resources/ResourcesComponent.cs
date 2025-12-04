@@ -108,7 +108,7 @@ namespace Start_a_Town_
         {
             this.Resources.Write(writer);
         }
-        public override void Read(System.IO.BinaryReader reader)
+        public override void Read(IDataReader reader)
         {
             this.Resources.Read(reader);
         }

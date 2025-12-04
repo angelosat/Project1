@@ -27,7 +27,7 @@ namespace Start_a_Town_
         {
             w.Write(this.SwitchedOn);
         }
-        public override ISerializable Read(BinaryReader r)
+        public override ISerializable Read(IDataReader r)
         {
             this.SwitchedOn = r.ReadBoolean();
             return this;

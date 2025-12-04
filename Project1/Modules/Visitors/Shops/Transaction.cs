@@ -25,7 +25,7 @@ namespace Start_a_Town_
             Cost = cost;
             Type = type;
         }
-        public Transaction(BinaryReader r)
+        public Transaction(IDataReader r)
         {
             this.Type = (Types)r.ReadInt32();
             this.Customer = r.ReadInt32();

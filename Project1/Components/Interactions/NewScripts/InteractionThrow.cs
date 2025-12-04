@@ -66,7 +66,7 @@ namespace Start_a_Town_
         {
             w.Write(this.All);
         }
-        protected override void ReadExtra(System.IO.BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.All = r.ReadBoolean();
         }

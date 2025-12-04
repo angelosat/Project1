@@ -291,7 +291,7 @@ namespace Start_a_Town_
             this.Quests.Write(w);
             this.PendingQuestRequests.Write(w);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.QuestGiverIDSequence = r.ReadInt32();
             this.Quests.InitializeNew(r, this);

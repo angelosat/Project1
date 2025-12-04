@@ -95,7 +95,7 @@ namespace Start_a_Town_
             this.Progress.Write(w);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Progress.Read(r);
             return this;

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_.Components.Needs
 {
@@ -9,7 +8,7 @@ namespace Start_a_Town_.Components.Needs
         static readonly int p;
         static PacketNeedModify()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(Server server, int agentID, NeedDef needDef, float value)
         {
@@ -19,8 +18,9 @@ namespace Start_a_Town_.Components.Needs
             server.OutgoingStreamOrderedReliable.Write(value);
 
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var entity = net.GetNetworkEntity(r.ReadInt32());
             var needName = r.ReadString();
             var needVal = r.ReadSingle();

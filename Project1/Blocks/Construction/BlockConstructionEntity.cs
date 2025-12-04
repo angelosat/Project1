@@ -133,7 +133,7 @@ namespace Start_a_Town_
             w.Write(this.Children);
             this.Container.Write(w);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Product = new ProductMaterialPair(r);
             this.BuildProgress = new Progress(r);

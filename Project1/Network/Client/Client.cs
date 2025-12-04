@@ -347,10 +347,10 @@ namespace Start_a_Town_.Net
         }
 
         [Obsolete]
-        private static readonly Dictionary<PacketType, Action<INetEndpoint, BinaryReader>> PacketHandlersNew = new();
+        private static readonly Dictionary<PacketType, Action<INetEndpoint, IDataReader>> PacketHandlersNew = new();
 
         [Obsolete]
-        public static void RegisterPacketHandler(PacketType channel, Action<INetEndpoint, BinaryReader> handler)
+        public static void RegisterPacketHandler(PacketType channel, Action<INetEndpoint, IDataReader> handler)
         {
             PacketHandlersNew.Add(channel, handler);
         }
@@ -464,19 +464,19 @@ namespace Start_a_Town_.Net
        
         private void UnmergePackets(Packet packet, long maxBytes = -1)
         {
-            var r = packet.Reader;
-            var mem = r.BaseStream;
-            var lastPos = mem.Position;
-            var endPos = maxBytes == -1 ? mem.Length : lastPos + maxBytes;
+            var r = packet.PacketReader;
+            //var mem = r.BaseStream;
+            var lastPos = r.Position;
+            var endPos = maxBytes == -1 ? r.Length : lastPos + maxBytes;
             var packetsHandled = 0;
             var lastHandled = -1;
-            while (mem.Position < endPos)
+            while (r.Position < endPos)
             {
                 var id = r.ReadInt32();
                 var type = (PacketType)id;
-                lastPos = mem.Position;
+                lastPos = r.Position;
 
-                if (PacketHandlersNew.TryGetValue(type, out Action<INetEndpoint, BinaryReader> handlerAction))
+                if (PacketHandlersNew.TryGetValue(type, out Action<INetEndpoint, IDataReader> handlerAction))
                     handlerAction(Instance, r);
                 else if (PacketHandlersWithPlayer.TryGetValue(id, out var handlerActionWithPlayer))
                     handlerActionWithPlayer(Instance, this.PlayerData, r);
@@ -491,7 +491,7 @@ namespace Start_a_Town_.Net
                     //throw new Exception("received invalid packet id");
                     base.HandlePacket(id, packet);
 
-                if (mem.Position == lastPos)
+                if (r.Position == lastPos)
                     break;
                 packetsHandled++;
                 lastHandled = id;
@@ -508,7 +508,7 @@ namespace Start_a_Town_.Net
         private void HandleMessage(Packet msg)
         {
             
-            var r = msg.Reader;
+            var r = msg.PacketReader;
             switch (msg.PacketType)
             {
                 case PacketType.RequestConnection:
@@ -529,7 +529,7 @@ namespace Start_a_Town_.Net
                     break;
 
                 case PacketType.SpawnChildObject:
-                    GameObject obj = GameObject.Create(r);
+                    GameObject obj = GameObject.Create(msg.PacketReader);
                     if (obj.RefId == 0)
                         throw new Exception("Uninstantiated entity");
                     if (!Instance.World.Entities.ContainsKey(obj.RefId))
@@ -559,8 +559,8 @@ namespace Start_a_Town_.Net
                     break;
 
                 default:
-                    if (PacketHandlersNew.TryGetValue(msg.PacketType, out Action<INetEndpoint, BinaryReader> handlerNew))
-                        handlerNew(this, msg.Reader);
+                    if (PacketHandlersNew.TryGetValue(msg.PacketType, out Action<INetEndpoint, IDataReader> handlerNew))
+                        handlerNew(this, msg.PacketReader);
                     break;
             }
         }
@@ -713,6 +713,7 @@ namespace Start_a_Town_.Net
                 this.Host.BeginReceive(state.Buffer, 0, state.Buffer.Length, SocketFlags.None, this.ReceiveMessage, state);
 
                 Packet packet = Packet.Read(bytesReceived);
+                packet.Player = this.PlayerData;
 
                 if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
                     this.PlayerData.AckQueue.Enqueue(packet.ID);

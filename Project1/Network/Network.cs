@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_.Net
 {
-    public delegate void PacketHandler(INetEndpoint net, BinaryReader r);
+    public delegate void PacketHandler(INetEndpoint net, IDataReader r);
     public delegate void PacketHandlerWithPacket(INetEndpoint net, Packet packet);
-    public delegate void PacketHandlerWithPlayer(INetEndpoint net, PlayerData player, BinaryReader r);
+    public delegate void PacketHandlerWithPlayer(INetEndpoint net, PlayerData player, IDataReader r);
     //public delegate void PacketHandlerFinal(NetEndpoint net, Packet packet);
 
     public delegate void PacketHandlerServer(Server server, BinaryReader r); // in case i need to force packethandlers to only exist on server or client in the future
@@ -32,7 +32,7 @@ namespace Start_a_Town_.Net
             {
                 server.GetOutgoingStreamOrderedReliable().Write(PacketSyncReport, text);
             }
-            private static void HandleSyncReport(INetEndpoint net, BinaryReader r)
+            private static void HandleSyncReport(INetEndpoint net, IDataReader r)
             {
                 if (net is not Net.Client)
                     throw new Exception();

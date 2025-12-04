@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -10,7 +9,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketPlayerToggleWalk()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, bool toggle)
         {
@@ -23,8 +22,9 @@ namespace Start_a_Town_
             w.Write(net.GetPlayer().ID);
             w.Write(toggle);
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             if (net is Client)
                 throw new Exception();
             var pl = net.GetPlayer(r.ReadInt32());

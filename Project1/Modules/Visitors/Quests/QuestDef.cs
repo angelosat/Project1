@@ -175,7 +175,7 @@ namespace Start_a_Town_
             this.Objectives.WriteAbstract(w);
             w.Write(this.GiverID);
         }
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Objectives.InitializeAbstract(r, this);
@@ -385,12 +385,19 @@ namespace Start_a_Town_
             static int PacketQuestCreateObjective, PacketQuestModify, PacketQuestRemoveObjective, PacketAutoMatchBudget, PacketAdjustObjectiveCount, PacketAdjustRewardCount;
             internal static void Init()
             {
-                PacketQuestCreateObjective = Network.RegisterPacketHandler(ReceiveQuestCreateObjective);
-                PacketQuestModify = Network.RegisterPacketHandler(ReceiveQuestModify);
-                PacketQuestRemoveObjective = Network.RegisterPacketHandler(ReceiveQuestRemoveObjective);
-                PacketAutoMatchBudget = Network.RegisterPacketHandler(HandleAutoMatchBudget);
-                PacketAdjustObjectiveCount = Network.RegisterPacketHandler(HandleAdjustObjectiveCount);
-                PacketAdjustRewardCount = Network.RegisterPacketHandler(HandleAdjustRewardCount);
+                //PacketQuestCreateObjective = Network.RegisterPacketHandler(ReceiveQuestCreateObjective);
+                //PacketQuestModify = Network.RegisterPacketHandler(ReceiveQuestModify);
+                //PacketQuestRemoveObjective = Network.RegisterPacketHandler(ReceiveQuestRemoveObjective);
+                //PacketAutoMatchBudget = Network.RegisterPacketHandler(HandleAutoMatchBudget);
+                //PacketAdjustObjectiveCount = Network.RegisterPacketHandler(HandleAdjustObjectiveCount);
+                //PacketAdjustRewardCount = Network.RegisterPacketHandler(HandleAdjustRewardCount);
+
+                PacketQuestCreateObjective = NetEndpoint.RegisterPacketHandler(ReceiveQuestCreateObjective);
+                PacketQuestModify = NetEndpoint.RegisterPacketHandler(ReceiveQuestModify);
+                PacketQuestRemoveObjective = NetEndpoint.RegisterPacketHandler(ReceiveQuestRemoveObjective);
+                PacketAutoMatchBudget = NetEndpoint.RegisterPacketHandler(HandleAutoMatchBudget);
+                PacketAdjustObjectiveCount = NetEndpoint.RegisterPacketHandler(HandleAdjustObjectiveCount);
+                PacketAdjustRewardCount = NetEndpoint.RegisterPacketHandler(HandleAdjustRewardCount);
             }
 
             internal static void SendAutoMatchBudget(INetEndpoint net, PlayerData player, QuestDef quest)
@@ -401,8 +408,9 @@ namespace Start_a_Town_
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketAutoMatchBudget).Write(player.ID, quest.ID);
 
             }
-            private static void HandleAutoMatchBudget(INetEndpoint net, BinaryReader r)
+            private static void HandleAutoMatchBudget(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 if (net is Client)
@@ -425,8 +433,9 @@ namespace Start_a_Town_
                 w.Write(qobj.GetType().FullName);
                 qobj.Write(w);
             }
-            private static void ReceiveQuestCreateObjective(INetEndpoint net, BinaryReader r)
+            private static void ReceiveQuestCreateObjective(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var qObj = Activator.CreateInstance(Type.GetType(r.ReadString()), quest) as QuestObjective;
@@ -449,8 +458,9 @@ namespace Start_a_Town_
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketQuestModify).Write(player.ID, quest.ID, maxConcurrentModValue);
 
             }
-            private static void ReceiveQuestModify(INetEndpoint net, BinaryReader r)
+            private static void ReceiveQuestModify(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var maxConcurrentModValue = r.ReadInt32();
@@ -473,8 +483,9 @@ namespace Start_a_Town_
                 w.Write(quest.ID);
                 w.Write(index);
             }
-            private static void ReceiveQuestRemoveObjective(INetEndpoint net, BinaryReader r)
+            private static void ReceiveQuestRemoveObjective(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var objectiveIndex = r.ReadInt32();
@@ -494,8 +505,9 @@ namespace Start_a_Town_
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketAdjustObjectiveCount).Write(player.ID, q.ID, q.GetObjectives().ToList().FindIndex(i => i == objective), count);
 
             }
-            private static void HandleAdjustObjectiveCount(INetEndpoint net, BinaryReader r)
+            private static void HandleAdjustObjectiveCount(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var objective = quest.GetObjectives().ElementAt(r.ReadInt32());
@@ -515,8 +527,9 @@ namespace Start_a_Town_
                 net.BeginPacket(ReliabilityType.OrderedReliable, PacketAdjustRewardCount).Write(player.ID, q.ID, q.GetRewards().ToList().FindIndex(i => i == reward), count);
 
             }
-            private static void HandleAdjustRewardCount(INetEndpoint net, BinaryReader r)
+            private static void HandleAdjustRewardCount(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var quest = net.Map.Town.QuestManager.GetQuest(r.ReadInt32());
                 var reward = quest.GetRewards().ElementAt(r.ReadInt32());

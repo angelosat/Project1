@@ -10,7 +10,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketOrderRemove()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, CraftOrder order)
         {
@@ -21,8 +21,9 @@ namespace Start_a_Town_
             w.Write(order.Workstation);
             w.Write(order.ID);
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var station = r.ReadIntVec3();
             var orderID = r.ReadInt32();// r.ReadString();
             if (net.Map.Town.CraftingManager.RemoveOrder(station, orderID) is CraftOrder order)

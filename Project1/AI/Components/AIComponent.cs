@@ -133,7 +133,7 @@ namespace Start_a_Town_
             this.State.Write(w); // i dont want to sync the state for the time being
             this.Root.Write(w);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Guid = new Guid(r.ReadBytes(16));
             this.State.Read(r);// i dont want to sync the state for the time being

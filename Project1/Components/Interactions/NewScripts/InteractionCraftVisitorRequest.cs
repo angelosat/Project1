@@ -113,7 +113,7 @@ namespace Start_a_Town_
             this.PlacedObjects.Write(w);
             this.IngredientsUsed.WriteNew(w, k => w.Write(k), v => v.Write(w));
         }
-        protected override void ReadExtra(System.IO.BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
      
             this.ShopID = r.ReadInt32();

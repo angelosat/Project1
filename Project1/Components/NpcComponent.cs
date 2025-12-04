@@ -4,7 +4,6 @@ using System.Linq;
 using Start_a_Town_.UI;
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
-using System.IO;
 
 namespace Start_a_Town_
 {
@@ -13,7 +12,7 @@ namespace Start_a_Town_
         static int p;
         internal static void Init()
         {
-            p = Network.RegisterPacketHandler(ReceiveCitizenshipToggle);
+            p = Registry.PacketHandlers.Register(ReceiveCitizenshipToggle);
         }
 
         public string FullName => this.FirstName + (this.LastName.IsNullEmptyOrWhiteSpace() ? "" : string.Format(" {0}", this.LastName));
@@ -135,7 +134,7 @@ namespace Start_a_Town_
             w.Write(this.LastName);
         }
 
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             base.Read(r);
             this.Possesions = new HashSet<int>(r.ReadListInt());
@@ -196,8 +195,9 @@ namespace Start_a_Town_
             w.Write(Net.Client.Instance.GetPlayer().ID);
             w.Write(actor.Object.RefId);
         }
-        private static void ReceiveCitizenshipToggle(INetEndpoint net, BinaryReader r)
+        private static void ReceiveCitizenshipToggle(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var plID = r.ReadInt32();
             var actorID = r.ReadInt32();
             var actor = net.GetNetworkEntity(actorID);

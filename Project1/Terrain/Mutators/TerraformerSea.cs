@@ -73,7 +73,7 @@ namespace Start_a_Town_.Terraforming.Mutators
         {
             w.Write(this.SeaLevel);
         }
-        protected override void ReadExtra(System.IO.BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.SeaLevel = r.ReadInt32();
         }

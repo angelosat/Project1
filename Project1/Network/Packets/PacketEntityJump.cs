@@ -1,26 +1,26 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     static class PacketEntityJump
     {
-        static readonly int PType;
+        static readonly int _packetTypeId;
         static PacketEntityJump()
         {
-            PType = Network.RegisterPacketHandler(Receive);
+            _packetTypeId = PacketRegistry.Register(Receive);
         }
         
         internal static void Send(INetEndpoint net, int entityID)
         {
             var server = net as Server;
             var w = server.OutgoingStreamTimestamped;
-            w.Write(PType);
+            w.Write(_packetTypeId);
             w.Write(entityID);
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var id = r.ReadInt32();
             var entity = net.GetNetworkEntity(id) as Actor;
             entity.Jump();

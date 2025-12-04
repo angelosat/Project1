@@ -57,7 +57,7 @@ namespace Start_a_Town_
             w.Write(this.Value);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Value = r.ReadSingle();
             return this;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.Net;
+using System;
 using System.IO;
 
 namespace Start_a_Town_
@@ -44,10 +45,11 @@ namespace Start_a_Town_
                 w.Write(this.Amount);
                 w.Write(this.TaskID);
             }
-            public Reservation(INetEndpoint provider, BinaryReader r)
+            public Reservation(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 this.Actor = r.ReadInt32();
-                this.Target =  TargetArgs.Read(provider, r);
+                this.Target =  TargetArgs.Read(net, r);
                 this.Amount = r.ReadInt32();
                 this.TaskID = r.ReadInt32();
             }

@@ -1,4 +1,5 @@
 ﻿using Start_a_Town_.Components;
+using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,12 +48,12 @@ namespace Start_a_Town_
         {
             var types = from gear in this.Equipment.Slots select GearType.Dictionary[(GearType.Types)gear.ID];
             var comp = new GearComponent(types.ToArray());
-
             using (var w = new BinaryWriter(new MemoryStream()))
             {
                 this.Write(w);
                 w.BaseStream.Position = 0;
-                using var r = new BinaryReader(w.BaseStream);
+                //using var r = new BinaryReader(w.BaseStream);
+                using var r = new DataReader(w.BaseStream);
                 comp.Read(r);
             }
             return comp;
@@ -79,7 +80,7 @@ namespace Start_a_Town_
         {
             this.Equipment.Write(writer);
         }
-        public override void Read(BinaryReader reader)
+        public override void Read(IDataReader reader)
         {
             this.Equipment.Read(reader);
         }

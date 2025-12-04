@@ -55,7 +55,7 @@ namespace Start_a_Town_
             return null;
         }
 
-        static public T GetDef<T>(BinaryReader r) where T : Def
+        static public T GetDef<T>(IDataReader r) where T : Def
         {
             return GetDef<T>(r.ReadString());
         }

@@ -121,7 +121,7 @@ namespace Start_a_Town_
         public override void Write(System.IO.BinaryWriter w)
         {
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
         }
         protected override void AddSaveData(SaveTag tag)

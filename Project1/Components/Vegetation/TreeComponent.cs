@@ -61,7 +61,7 @@ namespace Start_a_Town_.Components
         {
             this.GrowthNew.Write(w);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.GrowthNew.Read(r);
         }
@@ -82,7 +82,7 @@ namespace Start_a_Town_.Components
         {
             w.Write(this.Growth.Value);
         }
-        internal override void SyncRead(GameObject parent, System.IO.BinaryReader r)
+        internal override void SyncRead(GameObject parent, IDataReader r)
         {
             this.Growth.Set(parent, r.ReadInt32());
         }

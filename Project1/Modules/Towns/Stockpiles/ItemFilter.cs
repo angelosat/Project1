@@ -82,7 +82,7 @@ namespace Start_a_Town_
             this.Sync(w);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Item = Def.GetDef<ItemDef>(r.ReadString());
             this.Sync(r);
@@ -97,7 +97,7 @@ namespace Start_a_Town_
             return this;
         }
 
-        public ISyncable Sync(BinaryReader r)
+        public ISyncable Sync(IDataReader r)
         {
             this.Enabled = r.ReadBoolean();
             this.DisallowedMaterials.ReadDefs(r);

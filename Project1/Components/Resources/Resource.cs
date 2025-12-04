@@ -133,7 +133,7 @@ namespace Start_a_Town_
             w.Write(this.Max);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this._value = r.ReadSingle();
             this.Max = r.ReadSingle();
@@ -165,7 +165,7 @@ namespace Start_a_Town_
             static int PacketSyncAdjust;
             public static void Init()
             {
-                PacketSyncAdjust = Network.RegisterPacketHandler(HandleSyncAdjust);
+                PacketSyncAdjust = Registry.PacketHandlers.Register(HandleSyncAdjust);
             }
             public static void SendSyncAdjust(Entity actor, ResourceDef def, float value)
             {
@@ -178,8 +178,9 @@ namespace Start_a_Town_
                 pck.Write(def.Name);
                 pck.Write(value);
             }
-            private static void HandleSyncAdjust(INetEndpoint net, BinaryReader r)
+            private static void HandleSyncAdjust(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
                 var resource = Def.GetDef<ResourceDef>(r.ReadString());
                 var value = r.ReadSingle();

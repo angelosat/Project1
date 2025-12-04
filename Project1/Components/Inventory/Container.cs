@@ -68,7 +68,7 @@ namespace Start_a_Town_.Components
                 slot.Write(writer);
             }
         }
-        public void Read(BinaryReader reader)
+        public void Read(IDataReader reader)
         {
             int haveObjects = reader.ReadInt32();
             for (int i = 0; i < haveObjects; i++)

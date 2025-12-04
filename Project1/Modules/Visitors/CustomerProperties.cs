@@ -28,12 +28,12 @@ namespace Start_a_Town_
         }
         protected virtual void WriteExtra(BinaryWriter w) { }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.CustomerID = r.ReadInt32();
             this.ReadExtra(r);
             return this;
         }
-        protected virtual void ReadExtra(BinaryReader r) { }
+        protected virtual void ReadExtra(IDataReader r) { }
     }
 }

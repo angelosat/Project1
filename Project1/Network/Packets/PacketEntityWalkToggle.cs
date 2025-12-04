@@ -9,19 +9,19 @@ namespace Start_a_Town_
         static readonly int PType;
         static PacketEntityWalkToggle()
         {
-            PType = Network.RegisterPacketHandler(Receive);
+            PType = NetEndpoint.RegisterPacketHandler(Receive);
         }
        
-        internal static void Send(INetEndpoint net, int entityID, bool toggle)
+        internal static void Send(NetEndpoint net, int entityID, bool toggle)
         {
             var server = net as Server;
             var w = server.BeginPacket(ReliabilityType.OrderedReliable, PType);
             w.Write(entityID);
             w.Write(toggle);
-            server.EndPacket();
         }
-        internal static void Receive(INetEndpoint net, BinaryReader r)
+        internal static void Receive(NetEndpoint net, Packet p)
         {
+            var r = p.PacketReader;
             var id = r.ReadInt32();
             var entity = net.GetNetworkEntity(id) as Actor;
             var toggle = r.ReadBoolean();

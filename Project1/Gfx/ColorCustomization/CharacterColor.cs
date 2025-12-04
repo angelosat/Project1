@@ -47,7 +47,7 @@ namespace Start_a_Town_
             w.Write(this.Overlay);
             this.Color.Write(w);
         }
-        public CharacterColor(BinaryReader r)
+        public CharacterColor(IDataReader r)
         {
             this.Name = r.ReadASCII();
             this.Overlay = r.ReadString();

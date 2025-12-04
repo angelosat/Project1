@@ -57,7 +57,7 @@ namespace Start_a_Town_
         public HashSet<int> RecentlyVisitedShops = new();
         public readonly ObservableCollection<QuestDef> Quests = new();
         public StaticWorld World;
-        public VisitorProperties(BinaryReader r, PopulationManager manager)
+        public VisitorProperties(IDataReader r, PopulationManager manager)
         {
             this.World = manager.World;
             this.Read(r);
@@ -131,7 +131,7 @@ namespace Start_a_Town_
             this.Sync();
         }
        
-        private static void Sync(INetEndpoint net, BinaryReader r)
+        private static void Sync(INetEndpoint net, IDataReader r)
         {
             var actor = net.GetNetworkObject<Actor>(r.ReadInt32());
             actor.GetVisitorProperties().Sync(r);
@@ -241,7 +241,7 @@ namespace Start_a_Town_
             this.AwardTownRating(value);
             net.WriteToStream(PacketSyncAwardTownRating, this.Actor.RefId, value);
         }
-        private static void SyncAwardTownRating(INetEndpoint net, BinaryReader r)
+        private static void SyncAwardTownRating(INetEndpoint net, IDataReader r)
         {
             if (net is Server)
                 throw new Exception();
@@ -304,15 +304,15 @@ namespace Start_a_Town_
             w.Write(this.Timer.TotalMilliseconds);
             w.Write(this.Quests.Select(q => q.ID).ToArray());
         }
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
             var isspawned = r.ReadBoolean();
             if (!isspawned)
                 this.Actor = GameObject.Create(r) as Actor;
             this.TownApprovalRating.Value = r.ReadSingle();
-            this.ShopBlacklist = new(r.ReadIntArray());
-            this.RecentlyVisitedShops = new(r.ReadIntArray());
+            this.ShopBlacklist = [.. r.ReadIntArray()];
+            this.RecentlyVisitedShops = [.. r.ReadIntArray()];
             this.Discovered = r.ReadBoolean();
             this.Timer = TimeSpan.FromMilliseconds(r.ReadDouble());
             r.ReadIntArray().ToList().ForEach(i => this.Quests.Add(this.World.Map.Town.QuestManager.GetQuest(i)));
@@ -328,7 +328,7 @@ namespace Start_a_Town_
             w.Write(this.Timer.TotalMilliseconds);
             return this;
         }
-        public ISyncable Sync(BinaryReader r)
+        public ISyncable Sync(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
             this.TownApprovalRating.Value = r.ReadSingle();

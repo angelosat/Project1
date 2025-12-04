@@ -81,7 +81,7 @@ namespace Start_a_Town_
             w.Write(this.Powered);
             w.Write(this.ConsumptionTick);
         }
-        public override ISerializable Read(BinaryReader r)
+        public override ISerializable Read(IDataReader r)
         {
             this.Powered = r.ReadBoolean();
             this.ConsumptionTick = r.ReadInt32();

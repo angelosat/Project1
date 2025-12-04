@@ -226,12 +226,12 @@ namespace Start_a_Town_
             w.Write(this.Restrictions.Keys.ToArray());
             this.Restrictions.Values.Write(w);
         }
-        public void Read(MapBase map, BinaryReader r)
+        public void Read(MapBase map, IDataReader r)
         {
             this.Read(r);
             this.Map = map;
         }
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             //this.Reaction = Reaction.Dictionary[r.ReadInt32()];
@@ -266,7 +266,7 @@ namespace Start_a_Town_
 
             return this;
         }
-        public CraftOrder(MapBase map, BinaryReader r)
+        public CraftOrder(MapBase map, IDataReader r)
         {
             this.Read(map, r);
         }

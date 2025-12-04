@@ -44,7 +44,7 @@ namespace Start_a_Town_
         {
             this.Load(tag);
         }
-        static public Growth Create(BinaryReader r)
+        static public Growth Create(IDataReader r)
         {
             var gr = new Growth();
             gr.Read(r);

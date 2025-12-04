@@ -12,15 +12,14 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketSaving()
         {
-            p = Network.RegisterPacketHandlerWithPacket(Receive);
+            p = NetEndpoint.RegisterPacketHandler(Receive);
         }
         public static void Send(Server server)
         {
             var w = server.BeginPacket(ReliabilityType.OrderedReliable, p);
             w.Write(server.IsSaving);
-            server.EndPacket();
         }
-        private static void Receive(INetEndpoint net, Packet packet)
+        private static void Receive(NetEndpoint net, Packet packet)
         {
             ((Client)net).SetSaving(packet.Reader.ReadBoolean());
         }

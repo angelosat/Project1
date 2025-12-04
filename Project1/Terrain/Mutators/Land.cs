@@ -44,7 +44,7 @@ namespace Start_a_Town_.Terraforming.Mutators
         {
             w.Write(this.LandLevel);
         }
-        protected override void ReadExtra(System.IO.BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.LandLevel = r.ReadInt32();
         }

@@ -134,7 +134,7 @@ namespace Start_a_Town_
             this.Traits.Write(w);
             this.Favorites.WriteDefs(w);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Traits.Read(r);
             this.Favorites.Clear();

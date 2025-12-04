@@ -11,7 +11,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketDiggingDesignate()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(INetEndpoint net, Vector3 begin, Vector3 end, bool remove)
         {
@@ -23,8 +23,9 @@ namespace Start_a_Town_
             stream.Write(end);
             stream.Write(remove);
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var begin = r.ReadVector3();
             var end = r.ReadVector3();
             var remove = r.ReadBoolean();

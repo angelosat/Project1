@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.Components;
+using Start_a_Town_.Net;
 using Start_a_Town_.Terraforming;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,8 @@ namespace Start_a_Town_
             {
                 this.Write(w);
                 w.BaseStream.Position = 0;
-                using BinaryReader r = new(w.BaseStream);
+                //using BinaryReader r = new(w.BaseStream);
+                using DataReader r = new(w.BaseStream);
                 chunk = Chunk.Create(r);
             }
             chunk.Map = this.Map;
@@ -1021,7 +1023,7 @@ namespace Start_a_Town_
                 }
             }
         }
-        private void ReadBlockEntitiesDistinct(BinaryReader r)
+        private void ReadBlockEntitiesDistinct(IDataReader r)
         {
             int blockEntityCount = r.ReadInt32();
             for (int i = 0; i < blockEntityCount; i++)
@@ -1194,13 +1196,13 @@ namespace Start_a_Town_
                 /// NO!!!! when incrementing the cell index, the next cell can be in a different Z level and completely disconnected from the previous cell
             }
         }
-        void ReadCells(BinaryReader r)
+        void ReadCells(IDataReader r)
         {
             int cellIndex = 0;
             Block block;
             do
             {
-                block = r.ReadBlock();
+                block = Block.GetBlock(r);// r.ReadBlock();
                 if (block == BlockDefOf.Air)
                 {
                     // read length of consecutive air blocks
@@ -1246,19 +1248,19 @@ namespace Start_a_Town_
             writer.Write(this.BlockLight.ToArray());
         }
 
-        public static Chunk Create(MapBase map, BinaryReader reader)
+        public static Chunk Create(MapBase map, IDataReader reader)
         {
             var chunk = new Chunk() { Map = map };
             chunk.Read(reader);
             return chunk;
         }
-        public static Chunk Create(BinaryReader reader)
+        public static Chunk Create(IDataReader reader)
         {
             Chunk chunk = new();
             chunk.Read(reader);
             return chunk;
         }
-        void Read(BinaryReader reader)
+        void Read(IDataReader reader)
         {
             this.MapCoords = reader.ReadVector2();
 

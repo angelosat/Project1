@@ -24,7 +24,7 @@ namespace Start_a_Town_
 
             strem.Write(list);
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(INetEndpoint net, IDataReader r)
         {
             if (net is Server)
                 throw new Exception();

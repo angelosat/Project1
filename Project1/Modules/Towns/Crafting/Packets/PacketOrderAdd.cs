@@ -10,7 +10,7 @@ namespace Start_a_Town_
         static internal void Init()
         {
             // TODO
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
 
         internal static void Send(INetEndpoint net, Vector3 global, Reaction reaction)
@@ -22,8 +22,9 @@ namespace Start_a_Town_
             w.Write(global);
             reaction.Write(w);
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var station = r.ReadVector3();
             var reaction = r.ReadDef<Reaction>();
             net.Map.Town.CraftingManager.AddOrder(station, reaction);

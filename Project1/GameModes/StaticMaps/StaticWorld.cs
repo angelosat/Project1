@@ -18,11 +18,12 @@ namespace Start_a_Town_
             public static readonly int PacketClockAdvanced;
             static Packets()
             {
-                PacketClockAdvanced = Network.RegisterPacketHandler(ReceiveClockAdvanced);
+                PacketClockAdvanced = Registry.PacketHandlers.Register(ReceiveClockAdvanced);
             }
 
-            private static void ReceiveClockAdvanced(INetEndpoint net, BinaryReader r)
+            private static void ReceiveClockAdvanced(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 if (net is Server)
                     throw new Exception();
                 net.Map.World.CurrentTick++;
@@ -130,7 +131,7 @@ namespace Start_a_Town_
                 this.Maps.Add(map.Coordinates, map);
             }
         }
-        public StaticWorld(BinaryReader r)
+        public StaticWorld(IDataReader r)
            : this()
         {
             this.Name = r.ReadString();

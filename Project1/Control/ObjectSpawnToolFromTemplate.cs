@@ -98,7 +98,7 @@ namespace Start_a_Town_
         {
             w.Write(this.TemplateID);
         }
-        protected override void ReadData(System.IO.BinaryReader r)
+        protected override void ReadData(IDataReader r)
         {
             this.TemplateID = r.ReadInt32();
             this.Entity = GameObject.Templates[this.TemplateID];

@@ -202,7 +202,7 @@ namespace Start_a_Town_
         {
             w.Write(this.Timer);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Timer = r.ReadInt32();
         }

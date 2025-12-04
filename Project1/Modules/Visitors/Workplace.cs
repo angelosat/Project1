@@ -275,7 +275,7 @@ namespace Start_a_Town_
             return this;
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Name = r.ReadString();
@@ -392,7 +392,7 @@ namespace Start_a_Town_
 
         protected virtual void LoadExtra(SaveTag tag) { }
 
-        protected virtual void ReadExtra(BinaryReader r) { }
+        protected virtual void ReadExtra(IDataReader r) { }
 
         protected virtual void ResolveExtraReferences() { }
 
@@ -678,9 +678,9 @@ namespace Start_a_Town_
             static int PacketUpdateWorkerRoles, PacketPlayerRenameShop, PacketPlayerToggleShop;
             static Packets()
             {
-                PacketUpdateWorkerRoles = Network.RegisterPacketHandler(UpdateWorkerRoles);
-                PacketPlayerRenameShop = Network.RegisterPacketHandler(ReceivePlayerRenameShop);
-                PacketPlayerToggleShop = Network.RegisterPacketHandler(ReceivePlayerToggleShop);
+                PacketUpdateWorkerRoles = NetEndpoint.RegisterPacketHandler(UpdateWorkerRoles);
+                PacketPlayerRenameShop = NetEndpoint.RegisterPacketHandler(ReceivePlayerRenameShop);
+                PacketPlayerToggleShop = NetEndpoint.RegisterPacketHandler(ReceivePlayerToggleShop);
             }
            
             public static void UpdateWorkerRoles(INetEndpoint net, PlayerData player, Workplace tavern, JobDef role, Actor actor)
@@ -693,8 +693,9 @@ namespace Start_a_Town_
                 w.Write(player.ID, tavern.ID, role.Name, actor.RefId);
             }
 
-            static void UpdateWorkerRoles(INetEndpoint net, BinaryReader r)
+            static void UpdateWorkerRoles(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var tavern = net.Map.Town.GetShop(r.ReadInt32());
                 var role = Def.GetDef<JobDef>(r.ReadString());
@@ -717,8 +718,9 @@ namespace Start_a_Town_
                 w.Write(shopID);
                 w.Write(name);
             }
-            private static void ReceivePlayerRenameShop(INetEndpoint net, BinaryReader r)
+            private static void ReceivePlayerRenameShop(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var playerID = r.ReadInt32();
                 var shopid = r.ReadInt32();
                 var shopmanager = net.Map.Town.ShopManager;
@@ -742,8 +744,9 @@ namespace Start_a_Town_
                 w.Write(playerID);
                 w.Write(shopID);
             }
-            private static void ReceivePlayerToggleShop(INetEndpoint net, BinaryReader r)
+            private static void ReceivePlayerToggleShop(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var playerID = r.ReadInt32();
                 var shopid = r.ReadInt32();
                 var shopmanager = net.Map.Town.ShopManager;

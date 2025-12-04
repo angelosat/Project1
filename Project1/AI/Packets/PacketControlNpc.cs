@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -10,7 +9,7 @@ namespace Start_a_Town_
         static readonly int PType;
         static PacketControlNpc()
         {
-            PType = Network.RegisterPacketHandler(Receive);
+            PType = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, int entityid)
         {
@@ -28,8 +27,9 @@ namespace Start_a_Town_
             w.Write(playerid);
             w.Write(entityid);
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
             var entityid = r.ReadInt32();
             var nextEntity = entityid != -1 ? net.GetNetworkEntity(entityid) as Actor : null;

@@ -109,7 +109,7 @@ namespace Start_a_Town_
             this.LvlProgress.Write(w);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Level = r.ReadInt32();
             this.LvlProgress.Read(r);

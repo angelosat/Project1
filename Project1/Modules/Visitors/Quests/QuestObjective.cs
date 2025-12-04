@@ -23,7 +23,7 @@ namespace Start_a_Town_
         }
         public abstract int GetValue();
         public abstract void Write(BinaryWriter w);
-        public abstract ISerializable Read(BinaryReader r);
+        public abstract ISerializable Read(IDataReader r);
         public abstract bool IsCompleted(Actor actor);
         protected virtual void AddSaveData(SaveTag save) { }
         void Save(SaveTag save)

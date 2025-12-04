@@ -22,7 +22,7 @@ namespace Start_a_Town_
             this.Amount = amount;
         }
 
-        public ItemMaterialAmount(BinaryReader r)
+        public ItemMaterialAmount(IDataReader r)
         {
             this.Read(r);
         }
@@ -73,7 +73,7 @@ namespace Start_a_Town_
             w.Write(this.Material.Name);
             w.Write(this.Amount);
         }
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Item = Start_a_Town_.Def.GetDef<ItemDef>(r.ReadString());
             this.Material = Start_a_Town_.Def.GetDef<MaterialDef>(r.ReadString());

@@ -5,6 +5,6 @@ namespace Start_a_Town_
     public interface ISyncable
     {
         ISyncable Sync(BinaryWriter w);
-        ISyncable Sync(BinaryReader r);
+        ISyncable Sync(IDataReader r);
     }
 }

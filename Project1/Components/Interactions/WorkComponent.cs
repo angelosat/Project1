@@ -110,7 +110,7 @@ namespace Start_a_Town_.Components
             //if (this.Task.Animation != null)
             //    this.Task.Animation.Write(w);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             var isinteracting = r.ReadBoolean();
             if (!isinteracting)

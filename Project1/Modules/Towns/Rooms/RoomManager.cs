@@ -263,7 +263,7 @@ namespace Start_a_Town_
             w.Write(this.Rooms.Values.ToList());
             w.Write(this.Valid);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.RoomIDSequence = r.ReadInt32();
             this.Rooms.Read(r, room => room.ID, this.Map);

@@ -135,7 +135,7 @@ namespace Start_a_Town_
             w.Write(this.WorkAppliedThisBreakStage);
             w.Write(this.WorkAppliedTotal);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.WorkAppliedThisBreakStage = r.ReadSingle();
             this.WorkAppliedTotal = r.ReadSingle();

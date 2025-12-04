@@ -209,7 +209,7 @@ namespace Start_a_Town_
                 this.Animation.Write(w);
             this.WriteExtra(w);
         }
-        public void Read(BinaryReader r)
+        public void Read(IDataReader r)
         {
             this.CurrentTick = r.ReadSingle();
             this.State = (States)r.ReadInt32();
@@ -218,7 +218,7 @@ namespace Start_a_Town_
             this.ReadExtra(r);
         }
         protected virtual void WriteExtra(BinaryWriter w) { }
-        protected virtual void ReadExtra(BinaryReader r) { }
+        protected virtual void ReadExtra(IDataReader r) { }
 
         public SaveTag SaveAs(string name = "")
         {

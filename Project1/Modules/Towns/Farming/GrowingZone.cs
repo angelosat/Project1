@@ -62,7 +62,7 @@ namespace Start_a_Town_
                 w.Write(zone.Planting);
                 w.Write(zone.Harvesting);
             }
-            static void Sync(INetEndpoint net, BinaryReader r)
+            static void Sync(INetEndpoint net, IDataReader r)
             {
                 var zone = net.Map.Town.ZoneManager.GetZone<GrowingZone>(r.ReadInt32());
                 zone.Plant = Def.GetDef<PlantProperties>(r);
@@ -90,7 +90,7 @@ namespace Start_a_Town_
         readonly HashSet<IntVec3> CachedSowing = new();
         bool Valid;
 
-        public GrowingZone(BinaryReader r)
+        public GrowingZone(IDataReader r)
             : base()
         {
             this.Read(r);
@@ -112,7 +112,7 @@ namespace Start_a_Town_
             w.Write(this.Harvesting);
             this.Plant.Write(w);
         }
-        protected override void ReadExtra(BinaryReader r)
+        protected override void ReadExtra(IDataReader r)
         {
             this.Tilling = r.ReadBoolean();
             this.Planting = r.ReadBoolean();

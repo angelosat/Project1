@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -10,7 +9,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketInventoryInsertItem()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(INetEndpoint net, Actor actor, Entity item, OffsiteAreaDef area)
         {
@@ -23,8 +22,9 @@ namespace Start_a_Town_
             stream.Write(item.RefId);
             stream.Write(area.Name);
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             if (net is Server)
                 throw new Exception();
 

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -9,7 +8,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketEditAppearance()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         public static void Send(Actor actor, CharacterColors colors)
         {
@@ -19,8 +18,9 @@ namespace Start_a_Town_
             w.Write(actor.RefId);
             colors.Write(w);
         }
-        private static void Receive(INetEndpoint net, BinaryReader r)
+        private static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var actorID = r.ReadInt32();
             var actor = net.GetNetworkEntity(actorID) as Actor;
             var colors = new CharacterColors(r);

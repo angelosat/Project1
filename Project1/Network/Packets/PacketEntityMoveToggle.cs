@@ -12,13 +12,12 @@ namespace Start_a_Town_
             _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
         }
         
-        internal static void Send(INetEndpoint net, int entityID, bool toggle)
+        internal static void Send(NetEndpoint net, int entityID, bool toggle)
         {
             var server = net as Server;
             var w = server.BeginPacket(ReliabilityType.OrderedReliable, _packetTypeId);
             w.Write(entityID);
             w.Write(toggle);
-            server.EndPacket();
         }
         internal static void Receive(NetEndpoint net, Packet packet)
         {

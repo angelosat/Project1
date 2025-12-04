@@ -101,7 +101,7 @@ namespace Start_a_Town_.Components
         {
             this.NeedsNew.WriteAbstract(w);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.NeedsNew.Clear();
             this.NeedsNew.InitializeAbstract(r, this.Parent);

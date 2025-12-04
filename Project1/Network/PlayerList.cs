@@ -24,7 +24,7 @@ namespace Start_a_Town_.Net
             }
         }
 
-        public static PlayerList Read(INetEndpoint net, BinaryReader reader)
+        public static PlayerList Read(INetEndpoint net, IDataReader reader)
         {
             PlayerList list = new PlayerList(net);
             int count = reader.ReadInt32();

@@ -11,7 +11,7 @@ namespace Start_a_Town_
             static readonly int PacketStockpileSync;
             static Packets()
             {
-                PacketStockpileSync = Network.RegisterPacketHandler(Receive);
+                PacketStockpileSync = PacketRegistry.Register(Receive);
             }
             internal static void SyncPriority(IStorageNew storage, StoragePriority p)
             {
@@ -26,8 +26,9 @@ namespace Start_a_Town_
                 w.Write(stockpile.ID);
                 w.Write((byte)p);
             }
-            private static void Receive(INetEndpoint net, BinaryReader r)
+            private static void Receive(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var stockpileID = r.ReadInt32();
                 var p = r.ReadByte();
                 var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);

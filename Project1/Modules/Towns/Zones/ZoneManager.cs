@@ -155,7 +155,7 @@ namespace Start_a_Town_
             w.Write(this._zoneIDSequence);
             this.Zones.Values.WriteAbstract(w);
         }
-        public override void Read(BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this._zoneIDSequence = r.ReadInt32();
             this.Zones.ReadByValueAbstractTypes(r, zone => zone.ID, this);

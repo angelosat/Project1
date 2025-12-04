@@ -45,7 +45,7 @@ namespace Start_a_Town_.AI.Behaviors
             w.Write(this.Position);
             base.Write(w);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.Position = r.ReadInt32();
             base.Read(r);

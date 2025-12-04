@@ -6,23 +6,22 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     class PacketMap
     {
-        static readonly int p;
+        static readonly int _packetTypeId;
 
         static PacketMap()
         {
-            p = Network.RegisterPacketHandlerWithPacket(Receive);
+            _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
         }
 
-        internal static void Send(INetEndpoint net, PlayerData player)
+        internal static void Send(NetEndpoint net, PlayerData player)
         {
             var server = net as Server;
-            var w = server.BeginPacket(ReliabilityType.OrderedReliable, p);
+            var w = server.BeginPacket(ReliabilityType.OrderedReliable, _packetTypeId);
             server.Map.WriteData(w);
-            server.EndPacket();
         }
-        private static void Receive(INetEndpoint net, Packet packet)
+        private static void Receive(NetEndpoint net, Packet packet)
         {
-            var r = packet.Reader;
+            var r = packet.PacketReader;
             var client = net as Client;
             if (client.Map is not null)
             {

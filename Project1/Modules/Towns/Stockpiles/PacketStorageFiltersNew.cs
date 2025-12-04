@@ -9,10 +9,10 @@ namespace Start_a_Town_
         static readonly int p, pNew, pCategory, pVariation;
         static PacketStorageFiltersNew()
         {
-            p = Network.RegisterPacketHandler(Receive);
-            pNew = Network.RegisterPacketHandler(ReceiveNew);
-            pCategory = Network.RegisterPacketHandler(ReceiveCategory);
-            pVariation = Network.RegisterPacketHandler(ReceiveVariation);
+            p = PacketRegistry.Register(Receive);
+            pNew = PacketRegistry.Register(ReceiveNew);
+            pCategory = PacketRegistry.Register(ReceiveCategory);
+            pVariation = PacketRegistry.Register(ReceiveVariation);
         }
         public static void Send(Stockpile stockpile, ItemDef item, Def v)
         {
@@ -23,8 +23,9 @@ namespace Start_a_Town_
             s.Write(item.Name);
             s.Write(v.Name);
         }
-        private static void ReceiveVariation(INetEndpoint net, BinaryReader r)
+        private static void ReceiveVariation(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var stockpileID = r.ReadInt32();
             var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
             var item = Def.GetDef<ItemDef>(r);
@@ -43,8 +44,9 @@ namespace Start_a_Town_
             s.Write(stockpile.ID);
             s.Write(category?.Name ?? "");
         }
-        private static void ReceiveCategory(INetEndpoint net, BinaryReader r)
+        private static void ReceiveCategory(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var stockpileID = r.ReadInt32();
             var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
             var cat = r.ReadString() is string catName && !catName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<ItemCategory>(catName) : null;
@@ -63,8 +65,9 @@ namespace Start_a_Town_
             s.Write(item.Name);
             s.Write(mat?.Name ?? "");
         }
-        private static void ReceiveNew(INetEndpoint net, BinaryReader r)
+        private static void ReceiveNew(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var stockpileID = r.ReadInt32();
             var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
             var item = Def.GetDef<ItemDef>(r);
@@ -89,8 +92,9 @@ namespace Start_a_Town_
             s.Write(nodeIndices ?? new int[] { });
             s.Write(leafIndices ?? new int[] { });
         }
-        static void Receive(INetEndpoint net, BinaryReader r)
+        static void Receive(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var stockpileID = r.ReadInt32();
             var nodes = r.ReadIntArray();
             var items = r.ReadIntArray();

@@ -35,7 +35,7 @@ namespace Start_a_Town_
             w.Write(this._Priority);
         }
 
-        public ISerializable Read(BinaryReader r)
+        public ISerializable Read(IDataReader r)
         {
             this.Def = Start_a_Town_.Def.GetDef<JobDef>(r.ReadString());
             this.Priority = r.ReadByte();

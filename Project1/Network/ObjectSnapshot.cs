@@ -8,7 +8,7 @@ namespace Start_a_Town_.Net
         public int RefID = refID;
         public Vector3 Position, Velocity, Orientation;
 
-        static public void Write(GameObject obj, BinaryWriter w)
+        static public void Write(GameObject obj, IDataWriter w)
         {
             w.Write(obj.Global);
             w.Write(obj.Velocity);

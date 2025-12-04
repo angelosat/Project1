@@ -36,7 +36,7 @@ namespace Start_a_Town_
         {
             w.Write(this.OwnerRef);
         }
-        public override void Read(System.IO.BinaryReader r)
+        public override void Read(IDataReader r)
         {
             this.OwnerRef = r.ReadInt32();
         }

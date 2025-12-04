@@ -20,7 +20,8 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     room.RoomRole = roomType;
-                net.GetOutgoingStreamOrderedReliable().Write(PacketSetRoomType, player.ID, room.ID, roomType?.Name ?? "");
+                //net.GetOutgoingStreamOrderedReliable().Write(PacketSetRoomType, player.ID, room.ID, roomType?.Name ?? "");
+                net.BeginPacket(ReliabilityType.OrderedReliable, PacketSetRoomType).Write(player.ID, room.ID, roomType?.Name ?? "");
             }
             private static void SetRoomType(INetEndpoint net, BinaryReader r)
             {
@@ -37,7 +38,8 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     room.ForceAddOwner(owner);
-                net.GetOutgoingStreamOrderedReliable().Write(PacketSetOwner, player.ID, room.ID, owner?.RefId ?? -1);
+                //net.GetOutgoingStreamOrderedReliable().Write(PacketSetOwner, player.ID, room.ID, owner?.RefId ?? -1);
+                net.BeginPacket(ReliabilityType.OrderedReliable, PacketSetOwner).Write(player.ID, room.ID, owner?.RefId ?? -1);
             }
             private static void SetOwner(INetEndpoint net, BinaryReader r)
             {
@@ -55,8 +57,9 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     room.SetWorkplace(wplace);
-                var w = net.GetOutgoingStreamOrderedReliable();
-                w.Write(PacketSetWorkplace);
+                //var w = net.GetOutgoingStreamOrderedReliable();
+                //w.Write(PacketSetWorkplace);
+                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketSetWorkplace);
                 w.Write(player.ID);
                 w.Write(room.ID);
                 w.Write(wplace?.ID ?? -1);
@@ -78,7 +81,8 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     room.Refresh(center);
-                net.GetOutgoingStreamOrderedReliable().Write(PacketRefresh, playerData.ID, room.ID, center);
+                //net.GetOutgoingStreamOrderedReliable().Write(PacketRefresh, playerData.ID, room.ID, center);
+                net.BeginPacket(ReliabilityType.OrderedReliable, PacketRefresh).Write(playerData.ID, room.ID, center);
             }
             private static void Refresh(INetEndpoint net, BinaryReader r)
             {

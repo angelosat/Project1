@@ -50,9 +50,11 @@ namespace Start_a_Town_
 
         void EventOccured(Components.Message.Types type, params object[] p);
 
-        BinaryWriter GetOutgoingStreamOrderedReliable();
-        //BinaryWriter this[ReliabilityType reliabilityChannel] { get; }
-        //NetworkStream GetStream(ReliabilityType reliabilityChannel);
+        BinaryWriter BeginPacket(ReliabilityType rType, int pType);
+        NetEndpointBase.PacketBuilder BeginPacketNew(ReliabilityType rType, int pType);
+
+        void EndPacket();
+        //BinaryWriter GetOutgoingStreamOrderedReliable();
         void WriteToStream(params object[] args);
 
         void SetSpeed(int playerID, int speed);

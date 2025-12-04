@@ -1515,8 +1515,10 @@ namespace Start_a_Town_
             if (net is Server)
                 this.SetStackSize(v);
 
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(PacketSyncSetStacksize);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(PacketSyncSetStacksize);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketSyncSetStacksize);
+
             w.Write(this.RefId);
             w.Write(v);
         }
@@ -1545,8 +1547,10 @@ namespace Start_a_Town_
                 throw new Exception();
 
             this.Absorb(obj);
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(PacketSyncAbsorb);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(PacketSyncAbsorb);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketSyncAbsorb);
+
             w.Write(this.RefId);
             w.Write(obj.RefId);
         }

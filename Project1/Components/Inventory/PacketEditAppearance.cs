@@ -13,8 +13,9 @@ namespace Start_a_Town_
         }
         public static void Send(Actor actor, CharacterColors colors)
         {
-            var w = actor.Net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = actor.Net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = actor.Net.BeginPacket(ReliabilityType.OrderedReliable, p);
             w.Write(actor.RefId);
             colors.Write(w);
         }

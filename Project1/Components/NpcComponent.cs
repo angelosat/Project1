@@ -204,8 +204,9 @@ namespace Start_a_Town_
             actor.Town.ToggleAgent(actor);
             if(net is Server)
             {
-                var w = net.GetOutgoingStreamOrderedReliable();
-                w.Write(p);
+                //var w = net.GetOutgoingStreamOrderedReliable();
+                //w.Write(p);
+                var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
                 w.Write(Net.Client.Instance.GetPlayer().ID);
                 w.Write(actor.RefId);
             }

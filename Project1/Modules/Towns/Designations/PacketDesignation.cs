@@ -18,8 +18,10 @@ namespace Start_a_Town_
         static public void Send(INetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
         {
             remove |= designation == null;
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+
             w.Write(remove);
             w.Write((int)SelectionType.List);
             w.Write(targets);
@@ -29,8 +31,10 @@ namespace Start_a_Town_
         static public void Send(INetEndpoint net, bool remove, IntVec3 begin, IntVec3 end, DesignationDef designation)
         {
             remove |= designation == null;
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+
             w.Write(remove);
             w.Write((int)SelectionType.Box);
             w.Write(begin);

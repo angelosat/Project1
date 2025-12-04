@@ -15,8 +15,9 @@ namespace Start_a_Town_
         internal static void Send(CraftOrder order, Stockpile input, Stockpile output)
         {
             var net = order.Map.Net;
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
             //w.Write(order.Workstation);
             w.Write(order.ID);
             w.Write(input?.ID ?? -1);

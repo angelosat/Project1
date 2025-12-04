@@ -117,7 +117,8 @@ namespace Start_a_Town_
                 var net = map.Net;
                 if (net is Server)
                     BlockGrass.GrowRandomFlower(map, global);
-                net.GetOutgoingStreamOrderedReliable().Write(PacketGrowRandomFlower, global);
+                //net.GetOutgoingStreamOrderedReliable().Write(PacketGrowRandomFlower, global);
+                net.BeginPacket(ReliabilityType.OrderedReliable, PacketGrowRandomFlower).Write(global);
             }
             private static void GrowRandomFlower(INetEndpoint net, BinaryReader r)
             {

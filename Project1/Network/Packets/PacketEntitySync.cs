@@ -16,8 +16,10 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write((int)PckType);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write((int)PckType);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, PckType);
+
             w.Write(entity.RefId);
             entity.SyncWrite(w);
         }

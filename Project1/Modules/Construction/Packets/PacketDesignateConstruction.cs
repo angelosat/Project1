@@ -20,8 +20,10 @@ namespace Start_a_Town_
         
         static public void Send(INetEndpoint net, ProductMaterialPair item, ToolBlockBuild.Args a)
         {
-            var stream = net.GetOutgoingStreamOrderedReliable();
-            stream.Write(p);
+            //var stream = net.GetOutgoingStreamOrderedReliable();
+            //stream.Write(p);
+            var stream = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+
             a.Write(stream);
             if(!a.Removing)
                 item.Write(stream);

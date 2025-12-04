@@ -25,8 +25,10 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var strem = net.GetOutgoingStreamOrderedReliable();
-            strem.Write(PckTypeNew);
+            //var strem = net.GetOutgoingStreamOrderedReliable();
+            //strem.Write(PckTypeNew);
+            var strem = net.BeginPacket(ReliabilityType.OrderedReliable, PckTypeNew);
+
             strem.Write(templateID);
             entity.Write(strem);
             //var data = entity.Serialize();
@@ -49,8 +51,9 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var strem = net.GetOutgoingStreamOrderedReliable();
-            strem.Write(PckType);
+            //var strem = net.GetOutgoingStreamOrderedReliable();
+            //strem.Write(PckType);
+            var strem = net.BeginPacket(ReliabilityType.OrderedReliable, PckType);
             strem.Write(entities.Count());
             foreach(var entity in entities)
             {

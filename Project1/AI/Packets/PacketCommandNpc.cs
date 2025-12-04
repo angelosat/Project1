@@ -14,8 +14,9 @@ namespace Start_a_Town_
         }
         static internal void Send(INetEndpoint net, List<int> npcIDs, TargetArgs target, bool enqueue)
         {
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
             w.Write(npcIDs);
             target.Write(w);
             w.Write(enqueue);

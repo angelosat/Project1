@@ -18,8 +18,10 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var strem = net.GetOutgoingStreamOrderedReliable();
-            strem.Write(p);
+            //var strem = net.GetOutgoingStreamOrderedReliable();
+            //strem.Write(p);
+            var strem = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+
             strem.Write(list);
         }
         static public void Receive(INetEndpoint net, BinaryReader r)

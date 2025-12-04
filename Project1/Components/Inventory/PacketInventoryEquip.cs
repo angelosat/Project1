@@ -13,8 +13,9 @@ namespace Start_a_Town_
         }
         static public void Send(INetEndpoint net, int actorID, int itemID)
         {
-            var stream = net.GetOutgoingStreamOrderedReliable();
-            stream.Write(p);
+            //var stream = net.GetOutgoingStreamOrderedReliable();
+            //stream.Write(p);
+            var stream = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
             stream.Write(actorID);
             stream.Write(itemID);
         }

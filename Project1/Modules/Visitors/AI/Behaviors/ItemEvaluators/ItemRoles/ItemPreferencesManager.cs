@@ -326,8 +326,10 @@ namespace Start_a_Town_
 
             internal static void Sync(INetEndpoint net, Actor actor, System.Collections.IList oldItems, System.Collections.IList newItems)
             {
-                var w = net.GetOutgoingStreamOrderedReliable();
-                w.Write(pSyncPrefsAll);
+                //var w = net.GetOutgoingStreamOrderedReliable();
+                //w.Write(pSyncPrefsAll);
+                var w = net.BeginPacket(ReliabilityType.OrderedReliable, pSyncPrefsAll);
+
                 w.Write(actor.RefId);
 
                 if (oldItems is null)

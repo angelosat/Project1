@@ -17,8 +17,10 @@ namespace Start_a_Town_
         {
             if (net is Server)
                 throw new NotImplementedException();
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+
             w.Write(net.GetPlayer().ID);
             w.Write(direction);
         }

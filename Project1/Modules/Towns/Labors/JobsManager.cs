@@ -43,8 +43,12 @@ namespace Start_a_Town_
                 }
                 else
                 {
-                    var w = net.GetOutgoingStreamOrderedReliable();
-                    w.Write(pMod, player.ID, actor.RefId, job.Def.Name, priority);
+                    //var w = net.GetOutgoingStreamOrderedReliable();
+                    //w.Write(pMod, player.ID, actor.RefId, job.Def.Name, priority);
+
+                    var w = net.BeginPacket(ReliabilityType.OrderedReliable, pMod);
+                    w.Write(player.ID, actor.RefId, job.Def.Name, priority);
+
                 }
             }
             public static void SendLaborToggle(PlayerData player, Actor actor, JobDef jobDef)
@@ -55,7 +59,8 @@ namespace Start_a_Town_
                     actor.ToggleJob(jobDef);
                     net.EventOccured(Components.Message.Types.JobUpdated, actor, jobDef);
                 }
-                net.GetOutgoingStreamOrderedReliable().Write(pToggle, player.ID, actor.RefId, jobDef.Name);
+                //net.GetOutgoingStreamOrderedReliable().Write(pToggle, player.ID, actor.RefId, jobDef.Name);
+                net.BeginPacket(ReliabilityType.Ordered, pToggle).Write(player.ID, actor.RefId, jobDef.Name);
             }
             private static void HandleLaborToggle(INetEndpoint net, BinaryReader r)
             {

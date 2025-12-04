@@ -16,8 +16,9 @@ namespace Start_a_Town_
         }
         public static void Send(Stockpile stockpile, ItemDef item, Def v)
         {
-            var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
-            s.Write(pVariation);
+            //var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
+            //s.Write(pVariation);
+            var s = stockpile.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, pVariation);
             s.Write(stockpile.ID);
             s.Write(item.Name);
             s.Write(v.Name);
@@ -35,8 +36,10 @@ namespace Start_a_Town_
 
         public static void Send(Stockpile stockpile, ItemCategory category)
         {
-            var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
-            s.Write(pCategory);
+            //var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
+            //s.Write(pCategory);
+            var s = stockpile.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, pCategory);
+
             s.Write(stockpile.ID);
             s.Write(category?.Name ?? "");
         }
@@ -52,8 +55,10 @@ namespace Start_a_Town_
 
         public static void Send(Stockpile stockpile, ItemDef item, MaterialDef mat)
         {
-            var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
-            s.Write(pNew);
+            //var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
+            //s.Write(pNew);
+            var s = stockpile.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, pNew);
+
             s.Write(stockpile.ID);
             s.Write(item.Name);
             s.Write(mat?.Name ?? "");
@@ -77,8 +82,9 @@ namespace Start_a_Town_
 
         public static void Send(Stockpile stockpile, int[] nodeIndices = null, int[] leafIndices = null)
         {
-            var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
-            s.Write(p);
+            //var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
+            //s.Write(p);
+            var s = stockpile.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, p);
             s.Write(stockpile.ID);
             s.Write(nodeIndices ?? new int[] { });
             s.Write(leafIndices ?? new int[] { });

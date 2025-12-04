@@ -20,8 +20,10 @@ namespace Start_a_Town_
         internal static void Send(INetEndpoint net, List<int> instanceID)
         {
            
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+
             w.Write(instanceID);
         }
         static void Receive(INetEndpoint net, BinaryReader r)

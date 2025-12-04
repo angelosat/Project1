@@ -12,8 +12,9 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, int playerID, int speed)
         {
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
             w.Write(playerID);
             w.Write(speed);
         }

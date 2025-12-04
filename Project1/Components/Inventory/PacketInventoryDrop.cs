@@ -13,8 +13,9 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, GameObject actor, GameObject item, int amount)
         {
-            var stream = net.GetOutgoingStreamOrderedReliable();
-            stream.Write(p);
+            //var stream = net.GetOutgoingStreamOrderedReliable();
+            //stream.Write(p);
+            var stream = actor.Net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
             stream.Write(actor.RefId);
             stream.Write(item.RefId);
             stream.Write(amount);

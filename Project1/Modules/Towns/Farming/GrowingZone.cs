@@ -52,8 +52,10 @@ namespace Start_a_Town_
                 //if (zone.Net is Client)
                 //    return;
 
-                var w = zone.Map.Net.GetOutgoingStreamOrderedReliable();
-                w.Write(pSync);
+                //var w = zone.Map.Net.GetOutgoingStreamOrderedReliable();
+                //w.Write(pSync);
+                var w = zone.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, pSync);
+
                 w.Write(zone.ID);
                 zone.Plant.Write(w);
                 w.Write(zone.Tilling);

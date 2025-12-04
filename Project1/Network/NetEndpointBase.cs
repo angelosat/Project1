@@ -10,8 +10,32 @@ namespace Start_a_Town_.Net
 {
     public abstract class NetEndpointBase : INetEndpoint
     {
+        public readonly struct PackerReader
+        {
+
+        }
+        public readonly struct PacketBuilder
+        {
+            readonly BinaryWriter _writer;
+            private PacketBuilder(BinaryWriter writer, int pType)
+            {
+                this._writer = writer;
+                writer.Write(pType);
+            }
+            internal void Write(bool v) => this._writer.Write(v);
+            internal void Write(byte v) => this._writer.Write(v);
+            internal void Write(int v) => this._writer.Write(v);
+            internal void Write(float v) => this._writer.Write(v);
+            internal void Write(string v) => this._writer.Write(v);
+            internal void Write(IntVec3 v) => this._writer.Write(v);
+            internal void Write(params object[] v) => this._writer.Write(v);
+            internal static PacketBuilder Create(BinaryWriter w, int pType)
+            {
+                return new(w, pType);
+            }
+            internal void End() { }
+        }
         protected readonly NetworkStream[] StreamsArray = [new(ReliabilityType.Unreliable), new(ReliabilityType.Reliable), new(ReliabilityType.OrderedReliable)];
-        //protected BinaryWriter this[ReliabilityType reliability] => this.GetStream(reliability).Writer;
         protected NetworkStream GetStream(ReliabilityType reliability)
         {
             foreach (var s in this.StreamsArray)
@@ -19,13 +43,17 @@ namespace Start_a_Town_.Net
                     return s;
             throw new Exception("Stream not found");
         }
-        public virtual BinaryWriter BeginPacket(ReliabilityType rType, int pType)
+        public BinaryWriter BeginPacket(ReliabilityType rType, int pType)
         {
             var w = this.GetStream(rType).Writer;
             w.Write(pType);
             return w;
         }
-        public virtual void EndPacket()
+        public PacketBuilder BeginPacketNew(ReliabilityType rType, int pType)
+        {
+            return PacketBuilder.Create(this.GetStream(rType).Writer, pType);
+        }
+        public void EndPacket()
         {
 
         }

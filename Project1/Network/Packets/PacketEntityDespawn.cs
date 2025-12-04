@@ -16,8 +16,9 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 return;
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
             w.Write(entity.RefId);
         }
         static public void Receive(INetEndpoint net, BinaryReader r)

@@ -15,8 +15,10 @@ namespace Start_a_Town_
 
         internal static void Send(INetEndpoint net, Vector3 global, Reaction reaction)
         {
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+
             w.Write(global);
             reaction.Write(w);
         }

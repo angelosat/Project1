@@ -14,8 +14,10 @@ namespace Start_a_Town_
         }
         public static void Send(INetEndpoint net, Type zoneType, int zoneID)
         {
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(PacketPlayerZoneDelete);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write();
+            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketPlayerZoneDelete);
+
             w.Write(zoneType.FullName);
             w.Write(zoneID);
         }

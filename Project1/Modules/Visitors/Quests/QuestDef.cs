@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Start_a_Town_.Net;
+using Start_a_Town_.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using Start_a_Town_.UI;
-using Start_a_Town_.Net;
-using Microsoft.Xna.Framework;
+using System.Security.AccessControl;
 
 namespace Start_a_Town_
 {
@@ -396,7 +397,9 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     quest.AutoMatchBudget();
-                net.GetOutgoingStreamOrderedReliable().Write(PacketAutoMatchBudget, player.ID, quest.ID);
+                //net.GetOutgoingStreamOrderedReliable().Write(PacketAutoMatchBudget, player.ID, quest.ID);
+                net.BeginPacket(ReliabilityType.OrderedReliable, PacketAutoMatchBudget).Write(player.ID, quest.ID);
+
             }
             private static void HandleAutoMatchBudget(INetEndpoint net, BinaryReader r)
             {
@@ -414,8 +417,9 @@ namespace Start_a_Town_
                 {
                     quest.AddObjective(qobj);
                 }
-                var w = net.GetOutgoingStreamOrderedReliable();
-                w.Write(PacketQuestCreateObjective);
+                //var w = net.GetOutgoingStreamOrderedReliable();
+                //w.Write(PacketQuestCreateObjective);
+                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketQuestCreateObjective);
                 w.Write(player.ID);
                 w.Write(quest.ID);
                 w.Write(qobj.GetType().FullName);
@@ -441,7 +445,9 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     quest.MaxConcurrent = maxConcurrentModValue;
-                net.GetOutgoingStreamOrderedReliable().Write(PacketQuestModify, player.ID, quest.ID, maxConcurrentModValue);
+                //net.GetOutgoingStreamOrderedReliable().Write(PacketQuestModify, player.ID, quest.ID, maxConcurrentModValue);
+                net.BeginPacket(ReliabilityType.OrderedReliable, PacketQuestModify).Write(player.ID, quest.ID, maxConcurrentModValue);
+
             }
             private static void ReceiveQuestModify(INetEndpoint net, BinaryReader r)
             {
@@ -459,8 +465,10 @@ namespace Start_a_Town_
                 var index = quest.GetObjectives().ToList().FindIndex(i => i == qobj);
                 if (net is Server server)
                     quest.RemoveObjective(qobj);
-                var w = net.GetOutgoingStreamOrderedReliable();
-                w.Write(PacketQuestRemoveObjective);
+                //var w = net.GetOutgoingStreamOrderedReliable();
+                //w.Write(PacketQuestRemoveObjective);
+                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketQuestRemoveObjective);
+
                 w.Write(player.ID);
                 w.Write(quest.ID);
                 w.Write(index);
@@ -482,7 +490,9 @@ namespace Start_a_Town_
                 if (net is Server)
                     objective.Count = count;
                 var q = objective.Parent;
-                net.GetOutgoingStreamOrderedReliable().Write(PacketAdjustObjectiveCount, player.ID, q.ID, q.GetObjectives().ToList().FindIndex(i => i == objective), count);
+                //net.GetOutgoingStreamOrderedReliable().Write(PacketAdjustObjectiveCount, player.ID, q.ID, q.GetObjectives().ToList().FindIndex(i => i == objective), count);
+                net.BeginPacket(ReliabilityType.OrderedReliable, PacketAdjustObjectiveCount).Write(player.ID, q.ID, q.GetObjectives().ToList().FindIndex(i => i == objective), count);
+
             }
             private static void HandleAdjustObjectiveCount(INetEndpoint net, BinaryReader r)
             {
@@ -501,7 +511,9 @@ namespace Start_a_Town_
                 if (net is Server)
                     reward.Count = count;
                 var q = reward.Parent;
-                net.GetOutgoingStreamOrderedReliable().Write(PacketAdjustRewardCount, player.ID, q.ID, q.GetRewards().ToList().FindIndex(i => i == reward), count);
+                //net.GetOutgoingStreamOrderedReliable().Write(PacketAdjustRewardCount, player.ID, q.ID, q.GetRewards().ToList().FindIndex(i => i == reward), count);
+                net.BeginPacket(ReliabilityType.OrderedReliable, PacketAdjustRewardCount).Write(player.ID, q.ID, q.GetRewards().ToList().FindIndex(i => i == reward), count);
+
             }
             private static void HandleAdjustRewardCount(INetEndpoint net, BinaryReader r)
             {

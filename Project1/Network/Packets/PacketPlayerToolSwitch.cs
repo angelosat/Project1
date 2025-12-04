@@ -13,8 +13,10 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, int playerid, ControlTool tool)
         {
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+
             w.Write(playerid);
             tool.Write(w);
         }

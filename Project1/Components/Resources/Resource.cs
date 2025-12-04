@@ -172,7 +172,11 @@ namespace Start_a_Town_
                 var net = actor.Net;
                 if (net is Server)
                     actor.GetResource(def).Adjust(value);
-                net.GetOutgoingStreamOrderedReliable().Write(PacketSyncAdjust, actor.RefId, def.Name, value);
+                //net.GetOutgoingStreamOrderedReliable().Write(PacketSyncAdjust, actor.RefId, def.Name, value);
+                var pck = actor.Net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketSyncAdjust);
+                pck.Write(actor.RefId);
+                pck.Write(def.Name);
+                pck.Write(value);
             }
             private static void HandleSyncAdjust(INetEndpoint net, BinaryReader r)
             {

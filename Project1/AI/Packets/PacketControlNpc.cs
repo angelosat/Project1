@@ -21,8 +21,10 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, int playerid, int entityid)
         {
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(PType);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(PType);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, PType);
+
             w.Write(playerid);
             w.Write(entityid);
         }

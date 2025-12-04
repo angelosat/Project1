@@ -16,9 +16,16 @@ namespace Start_a_Town_
         {
             if (net is Server)
                 throw new Exception();
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
-            w.Write(net.GetPlayer().ID);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+
+            //var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+            //w.Write(net.GetPlayer().ID);
+            //net.EndPacket();
+
+            var pck = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
+            pck.Write(net.GetPlayer().ID);
+            pck.End();
         }
         private static void Receive(INetEndpoint net, BinaryReader r)
         {

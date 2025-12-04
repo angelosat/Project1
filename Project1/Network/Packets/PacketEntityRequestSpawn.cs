@@ -13,8 +13,10 @@ namespace Start_a_Town_
         }
         internal static void SendTemplate(INetEndpoint net, int templateID, TargetArgs target)
         {
-            var w = net.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            //w.Write(p);
+            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+
             w.Write(templateID);
             target.Write(w);
         }

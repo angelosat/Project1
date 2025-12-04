@@ -14,9 +14,10 @@ namespace Start_a_Town_
         internal static void Send(CraftOrder order, int value)
         {
             var net = order.Map.Net;
-            var w = net.GetOutgoingStreamOrderedReliable();
-            //var bench = order.Workstation;
-            w.Write(p);
+            //var w = net.GetOutgoingStreamOrderedReliable();
+            ////var bench = order.Workstation;
+            //w.Write(p);
+            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
             w.Write(order.Workstation);
             w.Write(order.ID);// GetUniqueLoadID());
             w.Write(value);

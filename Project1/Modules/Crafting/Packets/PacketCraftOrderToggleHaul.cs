@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -18,7 +17,7 @@ namespace Start_a_Town_
             
             //w.Write(p);
             var bench = order.Workstation;
-            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
+            var w = net.BeginPacket(p);
 
             w.Write(bench);
             w.Write(order.ID);

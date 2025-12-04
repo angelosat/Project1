@@ -557,7 +557,7 @@ namespace Start_a_Town_
                 btnTogglePriorities,
                 tableBox);
 
-            box.ListenTo(Components.Message.Types.JobUpdated, args =>
+            box.ListenTo((int)Components.Message.Types.JobUpdated, args =>
             {
                 var a = args[0] as Actor;
                 var j = args[1] as JobDef;

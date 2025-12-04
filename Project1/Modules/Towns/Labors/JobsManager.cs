@@ -52,11 +52,6 @@ namespace Start_a_Town_
             public static void SendLaborToggle(PlayerData player, Actor actor, JobDef jobDef)
             {
                 var net = actor.Net;
-                if (net is Server)
-                {
-                    actor.ToggleJob(jobDef);
-                    net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
-                }
                 net.BeginPacket(pToggle).Write(player.ID, actor.RefId, jobDef.Name);
             }
             private static void HandleLaborToggle(NetEndpoint net, Packet pck)
@@ -65,14 +60,35 @@ namespace Start_a_Town_
                 var player = net.GetPlayer(r.ReadInt32());
                 var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
-                if (net is Client)
-                {
-                    actor.ToggleJob(jobDef);
-                    net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
-                }
-                else
+                actor.ToggleJob(jobDef);
+                net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
+                if (net is Server)
                     SendLaborToggle(player, actor, jobDef);
             }
+            //public static void SendLaborToggle(PlayerData player, Actor actor, JobDef jobDef)
+            //{
+            //    var net = actor.Net;
+            //    if (net is Server)
+            //    {
+            //        actor.ToggleJob(jobDef);
+            //        net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
+            //    }
+            //    net.BeginPacket(pToggle).Write(player.ID, actor.RefId, jobDef.Name);
+            //}
+            //private static void HandleLaborToggle(NetEndpoint net, Packet pck)
+            //{
+            //    var r = pck.PacketReader;
+            //    var player = net.GetPlayer(r.ReadInt32());
+            //    var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+            //    var jobDef = Def.GetDef<JobDef>(r.ReadString());
+            //    if (net is Client)
+            //    {
+            //        actor.ToggleJob(jobDef);
+            //        net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
+            //    }
+            //    else
+            //        SendLaborToggle(player, actor, jobDef);
+            //}
             public static void SyncJob(PlayerData player, Actor actor, Job job)
             {
                 var net = actor.Net as Server;
@@ -150,10 +166,15 @@ namespace Start_a_Town_
                     var job = state.GetJob(labor);
                     var ch =  new CheckBoxNew
                     {
-                        TickedFunc = () => job.Enabled,
-                        LeftClickAction = () => Packets.SendLaborToggle(player, actor, labor),
+                        Value = actor.HasJob(job.Def),
                         HoverText = job.Def.Label
                     };
+                    ch.LeftClickAction = () => { ch.Value = !ch.Value; Packets.SendLaborToggle(player, actor, labor); };
+                    ch.ListenTo((int)Components.Message.Types.JobUpdated, args =>
+                    {
+                        if (args[0] is Actor a && args[1] is JobDef j && a == actor && j == job.Def)
+                            ch.SetChecked(a.HasJob(j));
+                    });
                     return ch;
                 }, 0);
                 tableManual.AddColumn(labor, iconManual, CheckBoxNew.DefaultBounds.Width, (actor) =>
@@ -183,7 +204,7 @@ namespace Start_a_Town_
                 btnTogglePriorities,
                 tableBox);
 
-            box.ListenTo(Components.Message.Types.JobUpdated, args =>
+            box.ListenTo((int)Components.Message.Types.JobUpdated, args =>
             {
                 var a = args[0] as Actor;
                 var j = args[1] as JobDef;

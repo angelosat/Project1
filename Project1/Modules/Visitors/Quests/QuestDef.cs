@@ -270,7 +270,7 @@ namespace Start_a_Town_
                     action();
             }
 
-            reqList.ListenTo(Components.Message.Types.QuestObjectivesUpdated, args =>
+            reqList.ListenTo((int)Components.Message.Types.QuestObjectivesUpdated, args =>
             {
                 var added = args[0] as QuestObjective[];
                 var removed = args[1] as QuestObjective[];

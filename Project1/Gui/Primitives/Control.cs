@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Start_a_Town_.UI
@@ -1449,16 +1450,21 @@ namespace Start_a_Town_.UI
         {
             return this.TopLevelControl as Window ?? this.ToWindow(title);
         }
-        public Action<GameEvent> OnGameEventAction = (e) => { };
-        readonly Dictionary<Components.Message.Types, Action<GameEvent>> Listeners = new();
-        public void ListenTo(Components.Message.Types msgType, Action<object[]> action)
+        //readonly Dictionary<Components.Message.Types, Action<GameEvent>> Listeners = new();
+        //public void ListenTo(Components.Message.Types msgType, Action<object[]> action)
+        //{
+        //    this.Listeners.Add(msgType, e => action(e.Parameters));
+        //}
+        readonly Dictionary<int, Action<GameEvent>> Listeners = new();
+        public void ListenTo(int msgType, Action<GameEvent> action)
         {
-            this.Listeners.Add(msgType, e => action(e.Parameters));
+            this.Listeners.Add(msgType, e => action(e));
         }
+        public Action<GameEvent> OnGameEventAction = (e) => { };
         internal virtual void OnGameEvent(GameEvent e)
         {
             this.OnGameEventAction(e);
-            this.Listeners.TryGetValue(e.Type, a => a(e));
+            this.Listeners.TryGetValue((int)e.Type, a => a(e));
             foreach (var child in this.Controls.ToList())
                 child.OnGameEvent(e);
         }

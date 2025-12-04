@@ -14,8 +14,8 @@ namespace Start_a_Town_
         static readonly int PacketSyncAwardTownRating, PacketSync;
         static VisitorProperties()
         {
-            PacketSyncAwardTownRating = Network.RegisterPacketHandler(SyncAwardTownRating);
-            PacketSync = Network.RegisterPacketHandler(Sync);
+            PacketSyncAwardTownRating = Registry.PacketHandlers.Register(SyncAwardTownRating);
+            PacketSync = Registry.PacketHandlers.Register(Sync);
         }
 
         public int ActorID;
@@ -131,8 +131,9 @@ namespace Start_a_Town_
             this.Sync();
         }
        
-        private static void Sync(INetEndpoint net, IDataReader r)
+        private static void Sync(NetEndpoint net, Packet packet)
         {
+            var r = packet.PacketReader;
             var actor = net.GetNetworkObject<Actor>(r.ReadInt32());
             actor.GetVisitorProperties().Sync(r);
         }
@@ -241,8 +242,9 @@ namespace Start_a_Town_
             this.AwardTownRating(value);
             net.WriteToStream(PacketSyncAwardTownRating, this.Actor.RefId, value);
         }
-        private static void SyncAwardTownRating(INetEndpoint net, IDataReader r)
+        private static void SyncAwardTownRating(NetEndpoint net, Packet packet)
         {
+            var r = packet.PacketReader;
             if (net is Server)
                 throw new Exception();
             var props = net.GetNetworkObject<Actor>(r.ReadInt32()).GetVisitorProperties();

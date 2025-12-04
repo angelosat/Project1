@@ -47,22 +47,6 @@ namespace Start_a_Town_.Net
         /// </summary>
         public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = [];
 
-        static readonly Dictionary<int, PacketHandlerWithPlayer> PacketHandlersWithPlayer = [];
-        static readonly Dictionary<int, PacketHandlerWithPacket> PacketHandlersWithPacket = [];
-        public static void RegisterPacketHandlerWithPlayer(int id, PacketHandlerWithPlayer handler)
-        {
-            PacketHandlersWithPlayer.Add(id, handler);
-        }
-        internal static void RegisterPacketHandler(int id, PacketHandlerWithPacket handler)
-        {
-            PacketHandlersWithPacket.Add(id, handler);
-        }
-        static readonly Dictionary<int, PacketHandler> PacketHandlersGeneric = [];
-
-        internal static void RegisterPacketHandler(int id, PacketHandler handler)
-        {
-            PacketHandlersGeneric.Add(id, handler);
-        }
         void OnGameEvent(GameEvent e)
         {
             GameMode.Current.HandleEvent(this, e);
@@ -808,16 +792,7 @@ namespace Start_a_Town_.Net
                 var typeID = r.ReadInt32();
                 var lastPos = r.Position;
 
-                if (PacketHandlersWithPlayer.TryGetValue(typeID, out var handlerActionNew))
-                    handlerActionNew(Instance, player, r);
-                else if (PacketHandlersGeneric.TryGetValue(typeID, out var handlerActionNewNew))
-                    handlerActionNewNew(Instance, r);
-                else if (PacketHandlersWithPacket.TryGetValue(typeID, out var handler))
-                    handler(Instance, packet);
-                //else if (PacketHandlers.TryGetValue(typeID, out var hh))
-                //    hh(Instance, packet);
-                else
-                    Instance.HandlePacket(typeID, packet);
+                Instance.HandlePacket(typeID, packet);
                 if (r.Position == lastPos)
                     // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
                     //throw new Exception();

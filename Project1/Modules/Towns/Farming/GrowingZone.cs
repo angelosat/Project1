@@ -17,7 +17,7 @@ namespace Start_a_Town_
             static readonly int pSync;
             static Packets()
             {
-                pSync = Network.RegisterPacketHandler(Sync);
+                pSync = Registry.PacketHandlers.Register(Sync);
             }
             public static void Send(GrowingZone zone, PlantProperties plant, bool tilling, bool planting, bool harvesting)
             {
@@ -62,8 +62,9 @@ namespace Start_a_Town_
                 w.Write(zone.Planting);
                 w.Write(zone.Harvesting);
             }
-            static void Sync(INetEndpoint net, IDataReader r)
+            static void Sync(NetEndpoint net, Packet packet)
             {
+                var r = packet.PacketReader;
                 var zone = net.Map.Town.ZoneManager.GetZone<GrowingZone>(r.ReadInt32());
                 zone.Plant = Def.GetDef<PlantProperties>(r);
                 zone.Tilling = r.ReadBoolean();

@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Start_a_Town_.Net;
+using System;
 using System.Linq;
-using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
@@ -74,7 +75,7 @@ namespace Start_a_Town_
             var allPlants = this.ValidPlants ??= this.GetValidPlants();
             var randomPlant = allPlants.SelectRandom(map.Random);
             var plant = randomPlant.CreatePlant();
-            plant.SyncInstantiate(map.Net);
+            plant.SyncInstantiate(map.Net as NetEndpoint);
             map.SyncSpawn(plant, global.Above, Vector3.Zero);
         }
         private void SpawnBlock(MapBase map, IntVec3 global)

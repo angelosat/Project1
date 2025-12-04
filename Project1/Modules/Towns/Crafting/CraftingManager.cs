@@ -12,10 +12,10 @@ namespace Start_a_Town_
         static readonly int pReaget, pPriority, pQuantity, pRestrictions;
         static CraftingManager()
         {
-            pReaget = Network.RegisterPacketHandler(CraftingOrderToggleReagent);
-            pPriority = Network.RegisterPacketHandler(CraftingOrderModifyPriority);
-            pQuantity = Network.RegisterPacketHandler(CraftingOrderModifyQuantity);
-            pRestrictions = Network.RegisterPacketHandler(SetOrderRestrictions);
+            pReaget = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderToggleReagent);
+            pPriority = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderModifyPriority);
+            pQuantity = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderModifyQuantity);
+            pRestrictions = Start_a_Town_.Registry.PacketHandlers.Register(SetOrderRestrictions);
 
             PacketOrderAdd.Init();
             //PacketOrderRemove.Init();
@@ -59,8 +59,9 @@ namespace Start_a_Town_
             w.Write(mats?.Select(d => d.Name).ToArray());
             w.Write(matTypes?.Select(d => d.Name).ToArray());
         }
-        private static void SetOrderRestrictions(INetEndpoint net, IDataReader r)
+        private static void SetOrderRestrictions(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var benchEntity = net.Map.Town.CraftingManager.GetWorkstation(r.ReadIntVec3());
             var order = benchEntity.GetOrder(r.ReadInt32());
             var reagent = r.ReadString();
@@ -75,8 +76,9 @@ namespace Start_a_Town_
         }
 
 
-        static void CraftingOrderToggleReagent(INetEndpoint net, IDataReader r)
+        static void CraftingOrderToggleReagent(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var global = r.ReadIntVec3();
             var orderID = r.ReadInt32();
             var benchEntity = net.Map.Town.CraftingManager.GetWorkstation(global);
@@ -91,8 +93,9 @@ namespace Start_a_Town_
             if (net is Server server)
                 WriteOrderToggleReagent(server.OutgoingStreamOrderedReliable, order, reagent, itemID, add);
         }
-        static void CraftingOrderModifyPriority(INetEndpoint net, IDataReader r)
+        static void CraftingOrderModifyPriority(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var global = r.ReadIntVec3();
             var orderIndex = r.ReadInt32();
             var benchEntity = net.Map.Town.CraftingManager.GetWorkstation(global);
@@ -112,8 +115,9 @@ namespace Start_a_Town_
         {
             return this.Registry[orderID];
         }
-        static void CraftingOrderModifyQuantity(INetEndpoint net, IDataReader r)
+        static void CraftingOrderModifyQuantity(NetEndpoint net, Packet pck)
         {
+            var r = pck.PacketReader;
             var global = r.ReadIntVec3();
             var orderid = r.ReadString();
             var benchEntity = net.Map.Town.CraftingManager.GetWorkstation(global);

@@ -17,13 +17,14 @@ namespace Start_a_Town_
             static readonly int pCategory, pMaterial, pVariation;
             static Packets()
             {
-                pCategory = Network.RegisterPacketHandler(ReceiveCategory);
-                pMaterial = Network.RegisterPacketHandler(ReceiveMaterial);
-                pVariation = Network.RegisterPacketHandler(ReceiveVariation);
+                pCategory = Registry.PacketHandlers.Register(ReceiveCategory);
+                pMaterial = Registry.PacketHandlers.Register(ReceiveMaterial);
+                pVariation = Registry.PacketHandlers.Register(ReceiveVariation);
             }
 
-            private static void ReceiveMaterial(INetEndpoint net, IDataReader r)
+            private static void ReceiveMaterial(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var comp = getComp(net, r);
                 var item = Def.GetDef<ItemDef>(r);
                 var material = Def.GetDef<MaterialDef>(r);
@@ -32,8 +33,9 @@ namespace Start_a_Town_
                     Send(comp, item, material);
             }
 
-            private static void ReceiveVariation(INetEndpoint net, IDataReader r)
+            private static void ReceiveVariation(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var comp = getComp(net, r);
                 var item = Def.GetDef<ItemDef>(r);
                 var def = Def.GetDef<Def>(r);
@@ -42,8 +44,9 @@ namespace Start_a_Town_
                     Send(comp, item, def);
             }
 
-            private static void ReceiveCategory(INetEndpoint net, IDataReader r)
+            private static void ReceiveCategory(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var comp = getComp(net, r);
                 var cat = r.ReadString() is string catName && !catName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<ItemCategory>(catName) : null;
                 comp.Settings.Toggle(cat);

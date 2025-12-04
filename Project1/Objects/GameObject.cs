@@ -723,7 +723,7 @@ namespace Start_a_Town_
                 this.Spawn(map);
             if (map.Net is not Server)
                 return;
-            SyncInstantiate(map.Net);
+            SyncInstantiate(map.Net as NetEndpoint);
             map.SyncSpawn(this, this.Global, this.Velocity);
         }
 
@@ -1483,12 +1483,12 @@ namespace Start_a_Town_
         static readonly int PacketSyncInstantiate, PacketSyncSetStacksize, PacketSyncAbsorb;
         static GameObject()
         {
-            PacketSyncInstantiate = Network.RegisterPacketHandler(SyncInstantiate);
-            PacketSyncSetStacksize = Network.RegisterPacketHandler(SyncSetStacksize);
-            PacketSyncAbsorb = Network.RegisterPacketHandler(SyncAbsorb);
+            PacketSyncInstantiate = Registry.PacketHandlers.Register(SyncInstantiate);
+            PacketSyncSetStacksize = Registry.PacketHandlers.Register(SyncSetStacksize);
+            PacketSyncAbsorb = Registry.PacketHandlers.Register(SyncAbsorb);
         }
 
-        public void SyncInstantiate(INetEndpoint net)
+        public void SyncInstantiate(NetEndpoint net)
         {
             if (net is not Server server)
                 return;
@@ -1501,8 +1501,9 @@ namespace Start_a_Town_
             w.Write(PacketSyncInstantiate);
             this.Write(w);
         }
-        private static void SyncInstantiate(INetEndpoint net, IDataReader r)
+        private static void SyncInstantiate(NetEndpoint net, Packet packet)
         {
+            var r = packet.PacketReader;
             if (net is Server)
                 throw new Exception();
             var client = net as Client;
@@ -1522,8 +1523,9 @@ namespace Start_a_Town_
             w.Write(this.RefId);
             w.Write(v);
         }
-        private static void SyncSetStacksize(INetEndpoint net, IDataReader r)
+        private static void SyncSetStacksize(NetEndpoint net, Packet packet)
         {
+            var r = packet.PacketReader;
             var obj = net.GetNetworkEntity(r.ReadInt32());
             var value = r.ReadInt32();
             if (net is Client)
@@ -1554,8 +1556,9 @@ namespace Start_a_Town_
             w.Write(this.RefId);
             w.Write(obj.RefId);
         }
-        private static void SyncAbsorb(INetEndpoint net, IDataReader r)
+        private static void SyncAbsorb(NetEndpoint net, Packet packet)
         {
+            var r = packet.PacketReader;
             if (net is Server)
                 throw new Exception();
 

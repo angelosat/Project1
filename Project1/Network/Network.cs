@@ -5,13 +5,6 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_.Net
 {
-    public delegate void PacketHandler(INetEndpoint net, IDataReader r);
-    public delegate void PacketHandlerWithPacket(INetEndpoint net, Packet packet);
-    public delegate void PacketHandlerWithPlayer(INetEndpoint net, PlayerData player, IDataReader r);
-    //public delegate void PacketHandlerFinal(NetEndpoint net, Packet packet);
-
-    public delegate void PacketHandlerServer(Server server, BinaryReader r); // in case i need to force packethandlers to only exist on server or client in the future
-    public delegate void PacketHandlerClient(Client client, BinaryReader r); // in case i need to force packethandlers to only exist on server or client in the future
     public class Network
     {
         public class Packets
@@ -19,11 +12,11 @@ namespace Start_a_Town_.Net
             static public int PacketSyncReport, PacketTimestamped;
             static public void Init()
             {
-                PacketSyncReport = RegisterPacketHandler(HandleSyncReport);
-                PacketTimestamped = RegisterPacketHandlerWithPacket(ReceiveTimestamped);
+                PacketSyncReport = Registry.PacketHandlers.Register(HandleSyncReport);
+                PacketTimestamped = Registry.PacketHandlers.Register(ReceiveTimestamped);
             }
            
-            private static void ReceiveTimestamped(INetEndpoint net, Packet packet)
+            private static void ReceiveTimestamped(NetEndpoint net, Packet packet)
             {
                 if (net is Client client)
                     client.HandleTimestamped(packet);
@@ -32,8 +25,9 @@ namespace Start_a_Town_.Net
             {
                 server.GetOutgoingStreamOrderedReliable().Write(PacketSyncReport, text);
             }
-            private static void HandleSyncReport(INetEndpoint net, IDataReader r)
+            private static void HandleSyncReport(NetEndpoint net, Packet packet)
             {
+                var r = packet.PacketReader;
                 if (net is not Net.Client)
                     throw new Exception();
                 net.Report(r.ReadString());
@@ -51,40 +45,7 @@ namespace Start_a_Town_.Net
         public const int CompressionThreshold = 140;
 
         static int PacketIDSequence = 10000;
-        //public static int RegisterPacketHandlerFinal(PacketHandlerFinal handler)
-        //{
-        //    var id = PacketIDSequence++;
-        //    NetEndpoint.RegisterPacketHandler(id, handler);
-        //    return id;
-        //}
-        public static int RegisterPacketHandler(PacketHandlerWithPacket handler)
-        {
-            var id = PacketIDSequence++;
-            Server.RegisterPacketHandler(id, handler);
-            Client.RegisterPacketHandler(id, handler);
-            return id;
-        }
-        public static int RegisterPacketHandler(PacketHandler handler)
-        {
-            var id = PacketIDSequence++;
-            Server.RegisterPacketHandler(id, handler);
-            Client.RegisterPacketHandler(id, handler);
-            return id;
-        }
-        public static int RegisterPacketHandler(PacketHandlerWithPlayer handler)
-        {
-            var id = PacketIDSequence++;
-            Server.RegisterPacketHandlerWithPlayer(id, handler);
-            Client.RegisterPacketHandlerWithPlayer(id, handler);
-            return id;
-        }
-        public static int RegisterPacketHandlerWithPacket(PacketHandlerWithPacket handler)
-        {
-            var id = PacketIDSequence++;
-            Server.RegisterPacketHandler(id, handler);
-            Client.RegisterPacketHandler(id, handler);
-            return id;
-        }
+        
         public void CreateClient()
         {
             this.Client = Client.Instance;

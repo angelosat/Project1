@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -9,7 +8,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketPlayerToolSwitch()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, int playerid, ControlTool tool)
         {
@@ -20,8 +19,9 @@ namespace Start_a_Town_
             w.Write(playerid);
             tool.Write(w);
         }
-        internal static void Receive(INetEndpoint net, IDataReader r)
+        internal static void Receive(NetEndpoint net, Packet packet)
         {
+            var r = packet.PacketReader;
             var plid = r.ReadInt32();
             var player = net.GetPlayer(plid);
             var tool = ControlTool.CreateOrSync(r, player);

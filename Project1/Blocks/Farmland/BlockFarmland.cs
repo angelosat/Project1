@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Graphics;
+using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -37,7 +38,7 @@ namespace Start_a_Town_
         {
             var plantdef = obj.GetComponent<SeedComponent>().Plant;
             var plant = plantdef.CreatePlant();
-            plant.SyncInstantiate(map.Net);
+            plant.SyncInstantiate(map.Net as NetEndpoint);
             plant.SyncSpawn(map, global.Above());
             //var placer = new BlockSoil.Placer();
             //placer.Place(map, global);

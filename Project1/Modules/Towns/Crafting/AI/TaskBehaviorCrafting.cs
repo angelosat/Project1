@@ -1,5 +1,6 @@
 ﻿using Start_a_Town_.AI.Behaviors;
 using Start_a_Town_.Crafting;
+using Start_a_Town_.Net;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -63,7 +64,7 @@ namespace Start_a_Town_
                     o.SyncDispose();
                 var item = ItemDefOf.UnfinishedCraft.Create();
                 item.GetComponent<UnfinishedItemComp>().SetProduct(product, actor, order);
-                item.SyncInstantiate(actor.Net);
+                item.SyncInstantiate(actor.Net as NetEndpoint);
 
                 actor.Map.SyncSpawn(item, this.Workstation.Global.Above(), IntVec3.Zero);
 

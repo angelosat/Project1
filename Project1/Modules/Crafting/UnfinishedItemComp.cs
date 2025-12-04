@@ -16,7 +16,7 @@ namespace Start_a_Town_
             static readonly int pCancel;
             static Packets()
             {
-                pCancel = Network.RegisterPacketHandler(ReceiveCancel);
+                pCancel = Registry.PacketHandlers.Register(ReceiveCancel);
             }
 
             public static void SendCancel(INetEndpoint net, PlayerData player, List<TargetArgs> obj)
@@ -29,8 +29,9 @@ namespace Start_a_Town_
                 w.Write(player.ID);
                 w.Write(obj.Select(t => t.Object.RefId).ToList());
             }
-            private static void ReceiveCancel(INetEndpoint net, IDataReader r)
+            private static void ReceiveCancel(NetEndpoint net, Packet pck)
             {
+                var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var refIDs = r.ReadListInt();
                 var items = net.World.GetEntities(refIDs);

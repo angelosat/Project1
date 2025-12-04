@@ -4,7 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -355,22 +354,6 @@ namespace Start_a_Town_.Net
             PacketHandlersNew.Add(channel, handler);
         }
 
-        private static readonly Dictionary<int, PacketHandler> PacketHandlersNewNewNew = new();
-        private static readonly Dictionary<int, PacketHandlerWithPlayer> PacketHandlersWithPlayer = new();
-        private static readonly Dictionary<int, PacketHandlerWithPacket> PacketHandlersWithPacket = new();
-
-        internal static void RegisterPacketHandler(int id, PacketHandler handler)
-        {
-            PacketHandlersNewNewNew.Add(id, handler);
-        }
-        internal static void RegisterPacketHandlerWithPlayer(int id, PacketHandlerWithPlayer handler)
-        {
-            PacketHandlersWithPlayer.Add(id, handler);
-        }
-        internal static void RegisterPacketHandler(int id, PacketHandlerWithPacket handler)
-        {
-            PacketHandlersWithPacket.Add(id, handler);
-        }
         public override void EventOccured(Message.Types type, params object[] p)
         {
             var e = new GameEvent(this.ClientClock.TotalMilliseconds, type, p);
@@ -465,7 +448,6 @@ namespace Start_a_Town_.Net
         private void UnmergePackets(Packet packet, long maxBytes = -1)
         {
             var r = packet.PacketReader;
-            //var mem = r.BaseStream;
             var lastPos = r.Position;
             var endPos = maxBytes == -1 ? r.Length : lastPos + maxBytes;
             var packetsHandled = 0;
@@ -478,17 +460,7 @@ namespace Start_a_Town_.Net
 
                 if (PacketHandlersNew.TryGetValue(type, out Action<INetEndpoint, IDataReader> handlerAction))
                     handlerAction(Instance, r);
-                else if (PacketHandlersWithPlayer.TryGetValue(id, out var handlerActionWithPlayer))
-                    handlerActionWithPlayer(Instance, this.PlayerData, r);
-                else if (PacketHandlersNewNewNew.TryGetValue(id, out var handlerActionNewNew))
-                    handlerActionNewNew(Instance, r);
-                else if (PacketHandlersWithPacket.TryGetValue(id, out var h))
-                    h(Instance, packet);
-                //else if (PacketHandlers.TryGetValue(id, out var hh))
-                //    hh(Instance, packet);
                 else
-                    //Receive(type, r);
-                    //throw new Exception("received invalid packet id");
                     base.HandlePacket(id, packet);
 
                 if (r.Position == lastPos)

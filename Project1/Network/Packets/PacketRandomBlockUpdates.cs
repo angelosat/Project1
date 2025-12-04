@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 
@@ -12,7 +11,7 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketRandomBlockUpdates()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(INetEndpoint net, IEnumerable<Vector3> list)
         {
@@ -24,8 +23,9 @@ namespace Start_a_Town_
 
             strem.Write(list);
         }
-        static public void Receive(INetEndpoint net, IDataReader r)
+        static public void Receive(NetEndpoint net, Packet packet)
         {
+            var r = packet.PacketReader;
             if (net is Server)
                 throw new Exception();
             var list = r.ReadListVector3();

@@ -48,6 +48,7 @@ namespace Start_a_Town_.Net
         public PlayerData Player;
         public System.Threading.Timer ResendTimer;
         public BinaryReader Reader; //create a reader the moment the packet is received. instead of creating reader in the client and server instances
+        public PacketReader PacketReader;
         protected Packet() { }
         public Packet(long id, PacketType type, int length, byte[] payload)
         {
@@ -72,12 +73,12 @@ namespace Start_a_Town_.Net
 
             bool isCompressed = reader.ReadBoolean();
             int length = reader.ReadInt32();
-
             byte[] payload = reader.ReadBytes(length);
             byte[] decompressed = isCompressed ? payload.Decompress() : payload; // TODO: FIX: i already have a decompressed payload and i still deserialize everything when handling packets???
             bool synced = reader.ReadBoolean();
             double tick = reader.ReadDouble();
 
+            var r = new BinaryReader(new MemoryStream(decompressed));
             return new Packet(id, type, length, payload)
             {
                 Reliability = sendType,
@@ -85,7 +86,8 @@ namespace Start_a_Town_.Net
                 OrderedReliableID = orderReliableseq,
                 Tick = tick,
                 Synced = synced,
-                Reader = new BinaryReader(new MemoryStream(decompressed))
+                Reader = r,
+                PacketReader = new(r)
             };
         }
         static public Packet Create(PlayerData reciepient, PacketType type, byte[] data, ReliabilityType sendType = ReliabilityType.Unreliable)

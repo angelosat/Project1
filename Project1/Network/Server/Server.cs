@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace Start_a_Town_.Net
 {
-    public partial class Server : NetEndpointBase// INetEndpoint
+    public partial class Server : NetEndpoint// INetEndpoint
     {
         public override double CurrentTick => ServerClock.TotalMilliseconds;
 
@@ -433,12 +433,6 @@ namespace Start_a_Town_.Net
                 this.Enqueue(player, Packet.Create(player, type, data, send));
         }
 
-        //public BinaryWriter OutgoingStreamOrderedReliable = new(new MemoryStream());
-        //public BinaryWriter OutgoingStreamUnreliable = new(new MemoryStream());
-        //public BinaryWriter OutgoingStreamReliable = new(new MemoryStream());
-        //public BinaryWriter OutgoingStreamUnreliable => this[ReliabilityType.Unreliable];
-        //public BinaryWriter OutgoingStreamOrderedReliable => this[ReliabilityType.OrderedReliable];
-        //public BinaryWriter OutgoingStreamReliable => this[ReliabilityType.Reliable];
         public BinaryWriter OutgoingStreamUnreliable => this.GetStream(ReliabilityType.Unreliable).Writer;// this[ReliabilityType.Unreliable];
         public BinaryWriter OutgoingStreamOrderedReliable => this.GetStream(ReliabilityType.OrderedReliable).Writer;// this[ReliabilityType.OrderedReliable];
         public BinaryWriter OutgoingStreamReliable => this.GetStream(ReliabilityType.Reliable).Writer;// this[ReliabilityType.Reliable];
@@ -819,6 +813,10 @@ namespace Start_a_Town_.Net
                     handlerActionNewNew(Instance, r);
                 else if (PacketHandlersWithPacket.TryGetValue(typeID, out var handler))
                     handler(Instance, packet);
+                //else if (PacketHandlers.TryGetValue(typeID, out var hh))
+                //    hh(Instance, packet);
+                else
+                    Instance.HandlePacket(typeID, packet);
                 if (mem.Position == lastPos)
                     // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
                     //throw new Exception();

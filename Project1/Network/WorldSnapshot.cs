@@ -16,7 +16,8 @@ namespace Start_a_Town_.Net
         public IEnumerable<ObjectSnapshot> ObjectSnapshots => this.Dictionary.Values;
         private readonly Dictionary<int, ObjectSnapshot> _dic;
         public IReadOnlyDictionary<int, ObjectSnapshot> Dictionary => this._dic;
-        public WorldSnapshot(TimeSpan time, BinaryReader r)
+        //public WorldSnapshot(TimeSpan time, BinaryReader r)
+        public WorldSnapshot(TimeSpan time, IDataReader r)
         {
             this.Time = time;
             var count = r.ReadInt32();

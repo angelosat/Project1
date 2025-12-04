@@ -15,7 +15,7 @@ namespace Start_a_Town_.Net
     internal enum PlayerSavingState
     { Saved, Changed, Saving }
 
-    public partial class Client : NetEndpointBase// INetEndpoint
+    public partial class Client : NetEndpoint// INetEndpoint
     {
         private static Client _Instance;
         public static Client Instance => _Instance ??= new Client();
@@ -484,9 +484,12 @@ namespace Start_a_Town_.Net
                     handlerActionNewNew(Instance, r);
                 else if (PacketHandlersWithPacket.TryGetValue(id, out var h))
                     h(Instance, packet);
+                //else if (PacketHandlers.TryGetValue(id, out var hh))
+                //    hh(Instance, packet);
                 else
                     //Receive(type, r);
-                    throw new Exception("received invalid packet id");
+                    //throw new Exception("received invalid packet id");
+                    base.HandlePacket(id, packet);
 
                 if (mem.Position == lastPos)
                     break;
@@ -859,7 +862,8 @@ namespace Start_a_Town_.Net
             return false;
         }
 
-        internal void ReadSnapshot(BinaryReader reader)
+        //internal void ReadSnapshot(BinaryReader reader)
+        internal void ReadSnapshot(IDataReader reader)
         {
             double totalMs = reader.ReadDouble();
 

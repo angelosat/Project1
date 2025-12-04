@@ -677,6 +677,10 @@ namespace Start_a_Town_
         {
             return new Vector3(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
         }
+        public static IntVec2 ReadIntVec2(this BinaryReader reader)
+        {
+            return new IntVec2(reader.ReadInt32(), reader.ReadInt32());
+        }
         public static Vector3? ReadVector3Nullable(this BinaryReader reader)
         {
             if (!reader.ReadBoolean())

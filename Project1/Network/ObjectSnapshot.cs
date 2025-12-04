@@ -14,7 +14,8 @@ namespace Start_a_Town_.Net
             w.Write(obj.Velocity);
             w.Write(obj.Direction);
         }
-        public ObjectSnapshot Read(BinaryReader r)
+        //public ObjectSnapshot Read(BinaryReader r)
+        public ObjectSnapshot Read(IDataReader r)
         {
             this.Position = r.ReadVector3();
             this.Velocity = r.ReadVector3();

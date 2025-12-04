@@ -8,6 +8,7 @@ namespace Start_a_Town_.Net
     public delegate void PacketHandler(INetEndpoint net, BinaryReader r);
     public delegate void PacketHandlerWithPacket(INetEndpoint net, Packet packet);
     public delegate void PacketHandlerWithPlayer(INetEndpoint net, PlayerData player, BinaryReader r);
+    //public delegate void PacketHandlerFinal(NetEndpoint net, Packet packet);
 
     public delegate void PacketHandlerServer(Server server, BinaryReader r); // in case i need to force packethandlers to only exist on server or client in the future
     public delegate void PacketHandlerClient(Client client, BinaryReader r); // in case i need to force packethandlers to only exist on server or client in the future
@@ -50,13 +51,19 @@ namespace Start_a_Town_.Net
         public const int CompressionThreshold = 140;
 
         static int PacketIDSequence = 10000;
-        //public static int RegisterPacketHandler(Action<INetwork, BinaryReader> handler)
+        //public static int RegisterPacketHandlerFinal(PacketHandlerFinal handler)
         //{
         //    var id = PacketIDSequence++;
-        //    Server.RegisterPacketHandler(id, handler);
-        //    Client.RegisterPacketHandler(id, handler);
+        //    NetEndpoint.RegisterPacketHandler(id, handler);
         //    return id;
         //}
+        public static int RegisterPacketHandler(PacketHandlerWithPacket handler)
+        {
+            var id = PacketIDSequence++;
+            Server.RegisterPacketHandler(id, handler);
+            Client.RegisterPacketHandler(id, handler);
+            return id;
+        }
         public static int RegisterPacketHandler(PacketHandler handler)
         {
             var id = PacketIDSequence++;

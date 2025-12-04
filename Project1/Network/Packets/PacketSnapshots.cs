@@ -7,16 +7,16 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     static class PacketSnapshots
     {
-        static readonly int p;
+        static readonly int _packetTypeId;
         static PacketSnapshots()
         {
-            p = Network.RegisterPacketHandler(Receive);
+            _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
         }
         static public void Send(INetEndpoint net, ICollection<GameObject> entities)
         {
             var server = net as Server;
             var strem = server.OutgoingStreamUnreliable;
-            strem.Write(p);
+            strem.Write(_packetTypeId);
             strem.Write(server.Clock.TotalMilliseconds);
             strem.Write(entities.Count);
             foreach (var obj in entities)
@@ -25,9 +25,10 @@ namespace Start_a_Town_
                 ObjectSnapshot.Write(obj, strem);
             }
         }
-        static public void Receive(INetEndpoint net, BinaryReader r)
+        static public void Receive(NetEndpoint net, Packet pck)
         {
             var client = net as Client;
+            var r = pck.PacketReader;
             client.ReadSnapshot(r);
         }
     }

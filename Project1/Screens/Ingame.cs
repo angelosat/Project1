@@ -19,7 +19,7 @@ namespace Start_a_Town_
         public SceneState Scene = new();
         public override Camera Camera => GetMap().Camera; 
 
-        public override GameScreen Initialize(INetEndpoint net)
+        public override GameScreen Initialize(NetEndpoint net)
         {
             var camera = net.Map.Camera;
             if (net is Net.Server)
@@ -39,6 +39,8 @@ namespace Start_a_Town_
             KeyHandlers.Push(WindowManager);
             KeyHandlers.Push(ContextMenuManager.Instance);
             KeyHandlers.Push(this.Camera);
+            SelectionManager.Bind(net);
+            TooltipManager.Bind(net);
             return this;
         }
 

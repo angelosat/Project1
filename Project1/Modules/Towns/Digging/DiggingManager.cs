@@ -12,6 +12,7 @@ namespace Start_a_Town_
         public DiggingManager(Town town)
         {
             this.Town = town;
+            this.Town.Map.World.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         }
         public override string Name => "Digging";
 
@@ -20,33 +21,33 @@ namespace Start_a_Town_
             return this.AllPositions;
         }
 
-        internal override void OnGameEvent(GameEvent e)
+        //internal override void OnGameEvent(GameEvent e)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case Components.Message.Types.BlocksChanged:
+        //            this.HandleBlocksChanged(e.Parameters[1] as IEnumerable<IntVec3>);
+        //            break;
+
+        //        case Components.Message.Types.MiningDesignation:
+        //            var positions = e.Parameters[0] as List<IntVec3>;
+        //            var remove = (bool)e.Parameters[1];
+        //            if (remove)
+        //                foreach (var p in positions)
+        //                    this.RemovePosition(p);
+        //            else
+        //                foreach (var p in positions)
+        //                    this.HandlePosition(p);
+        //            break;
+
+        //        default:
+        //            break;
+        //    }
+        //}
+
+        void HandleBlocksChanged(BlocksChangedEvent e)
         {
-            switch (e.Type)
-            {
-                case Components.Message.Types.BlocksChanged:
-                    this.HandleBlocksChanged(e.Parameters[1] as IEnumerable<IntVec3>);
-                    break;
-
-                case Components.Message.Types.MiningDesignation:
-                    var positions = e.Parameters[0] as List<IntVec3>;
-                    var remove = (bool)e.Parameters[1];
-                    if (remove)
-                        foreach (var p in positions)
-                            this.RemovePosition(p);
-                    else
-                        foreach (var p in positions)
-                            this.HandlePosition(p);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        private void HandleBlocksChanged(IEnumerable<IntVec3> globals)
-        {
-            foreach (var global in globals)
+            foreach (var global in e.Positions)
                 if (this.AllPositions.Contains(global))
                     if (this.Map.IsAir(global))
                         this.AllPositions.Remove(global);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
+using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -90,7 +91,7 @@ namespace Start_a_Town_
                     handler.HandleLButtonDoubleClick(e);
         }
 
-        public virtual GameScreen Initialize(INetEndpoint net)
+        public virtual GameScreen Initialize(NetEndpoint net)
         {
             return this;
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
+using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -85,8 +86,9 @@ namespace Start_a_Town_
             return true;
         }
 
-        public StaticMap(string name = "")
+        public StaticMap(StaticWorld world, string name = "")
         {
+            this.World = world;
             this.LightingEngine = new LightingEngine(this);
             this.Camera = new Camera(Game1.Bounds.Width, Game1.Bounds.Height);
             this.Name = name;
@@ -98,16 +100,15 @@ namespace Start_a_Town_
             this.ParticleManager = new Particles.ParticleManager(this);
         }
         public StaticMap(StaticWorld world, Vector2 coords, string name = "")
-            : this(name)
+            : this(world, name)
         {
-            this.World = world;
             this.Coordinates = coords;
             this.Size = MapSize.Default;// MapSize.Normal;
             this.Global = this.Coordinates * this.Size.Blocks;
             this.Thumb = new MapThumb(this);
         }
         public StaticMap(StaticWorld world, string name, Vector2 coords, MapSize size)
-            : this(name)
+            : this(world, name)
         {
             this.World = world;
             this.Coordinates = coords;
@@ -494,11 +495,17 @@ namespace Start_a_Town_
             this.UndiscoveredAreaManager.Write(w);
         }
 
-        public static StaticMap ReadData(INetEndpoint net, IDataReader r)
+        public static StaticMap ReadData(NetEndpoint net, IDataReader r)
         {
-            var map = new StaticMap
+            //var map = new StaticMap
+            //{
+            //    Name = r.ReadString(),
+            //    Coordinates = new Vector2(r.ReadSingle(), r.ReadSingle()),
+            //};
+            var name = r.ReadString();
+            var map = new StaticMap(net.World as StaticWorld, name)
             {
-                Name = r.ReadString(),
+                //Name = r.ReadString(),
                 Coordinates = new Vector2(r.ReadSingle(), r.ReadSingle()),
             };
             var size = r.ReadString();
@@ -512,8 +519,8 @@ namespace Start_a_Town_
         {
             base.OnGameEvent(e);
             this.Town.HandleGameEvent(e);
-            this.Regions.OnGameEvent(e);
-            this.UndiscoveredAreaManager.OnGameEvent(e);
+            //this.Regions.OnGameEvent(e);
+            //this.UndiscoveredAreaManager.OnGameEvent(e);
         }
 
         public override bool SetBlockLuminance(IntVec3 global, byte luminance)

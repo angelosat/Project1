@@ -4,7 +4,6 @@ using System.Linq;
 using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using Start_a_Town_.AI;
-using System.IO;
 
 namespace Start_a_Town_
 {
@@ -123,8 +122,8 @@ namespace Start_a_Town_
         }
         public class JobUpdatedEvent(Actor actor, JobDef job) : EventPayloadBase
         {
-            public Actor Actor = actor;
-            public JobDef Job = job;
+            public readonly Actor Actor = actor;
+            public readonly JobDef Job = job;
         }
         Control CreateJobsTable()
         {

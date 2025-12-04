@@ -7,8 +7,13 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     public class GearComponent : EntityComponent
     {
+        static GearComponent()
+        {
+            Registry.GameEvents.Register<ActorGearUpdatedEvent>(); 
+        }
         public override string Name { get; } = "Gear";
 
         public override void OnObjectLoaded(GameObject parent)
@@ -139,7 +144,8 @@ namespace Start_a_Town_
                 //unequip
                 actor.Inventory.Insert(item);
                 actor.GetComponent<GearComponent>().RefreshStats();
-                actor.Net.EventOccured((int)Message.Types.ActorGearUpdated, actor, null, item);
+                //actor.Net.EventOccured((int)Message.Types.ActorGearUpdated, actor, null, item);
+                actor.Net.EventOccured(new ActorGearUpdatedEvent(actor, null, item));
                 return true;
             }
             var slotType = item.Def.GearType;
@@ -155,7 +161,8 @@ namespace Start_a_Town_
             actor.GetComponent<GearComponent>().RefreshStats();
             if (previousItem != null)
                 actor.Inventory.Insert(previousItem);
-            actor.Net.EventOccured((int)Message.Types.ActorGearUpdated, actor, item, previousItem);
+            //actor.Net.EventOccured((int)Message.Types.ActorGearUpdated, actor, item, previousItem);
+            actor.Net.EventOccured(new ActorGearUpdatedEvent(actor, item, previousItem));
             return true;
         }
       
@@ -177,5 +184,10 @@ namespace Start_a_Town_
                 this.Slots = defs;
             }
         }
+    }
+    class ActorGearUpdatedEvent(Actor actor, Entity newItem, Entity oldItem) : EventPayloadBase
+    {
+        public readonly Actor Actor = actor;
+        public readonly Entity NewItem = newItem, OldItem = oldItem;
     }
 }

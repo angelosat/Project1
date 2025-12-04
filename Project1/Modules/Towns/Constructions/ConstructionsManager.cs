@@ -29,6 +29,7 @@ namespace Start_a_Town_
         public ConstructionsManager(Town town)
         {
             this.Town = town;
+            this.Town.Map.World.ListenTo<BlocksChangedEvent>(this.HandleBlocksChanged);
         }
         readonly Dictionary<IntVec3, ConstructionParams> PendingDesignations = new();
         readonly HashSet<IntVec3> Designations = new();
@@ -65,25 +66,30 @@ namespace Start_a_Town_
             this.PendingDesignations.Load(tag, "PendingDesignations", i => i.Global);
         }
 
-        internal override void OnGameEvent(GameEvent e)
+        //internal override void OnGameEvent(GameEvent e)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        /// I ACTUALLY NEED IT TO ADD PENDING DESIGNATIONS
+        //        case Components.Message.Types.BlocksChanged:
+        //            foreach (var pos in e.Parameters[1] as IEnumerable<IntVec3>)
+        //                this.TryHandlePendingDesignation(pos);
+        //            break;
+
+        //        //case Components.Message.Types.ZoneDesignation:
+        //        //    this.Add(e.Parameters[0] as DesignationDef, e.Parameters[1] as List<IntVec3>, (bool)e.Parameters[2]);
+        //        //    break;
+
+        //        default:
+        //            break;
+        //    }
+        //}
+        void HandleBlocksChanged(BlocksChangedEvent e)
         {
-            switch (e.Type)
-            {
-                /// I ACTUALLY NEED IT TO ADD PENDING DESIGNATIONS
-                case Components.Message.Types.BlocksChanged:
-                    foreach (var pos in e.Parameters[1] as IEnumerable<IntVec3>)
-                        this.TryHandlePendingDesignation(pos);
-                    break;
-
-                case Components.Message.Types.ZoneDesignation:
-                    this.Add(e.Parameters[0] as DesignationDef, e.Parameters[1] as List<IntVec3>, (bool)e.Parameters[2]);
-                    break;
-
-                default:
-                    break;
-            }
+            foreach (var pos in e.Positions)
+                this.TryHandlePendingDesignation(pos);
         }
-
+        
         private void Add(DesignationDef designation, List<IntVec3> positions, bool remove)
         {
             if (designation is null)// == DesignationDefOf.Remove)

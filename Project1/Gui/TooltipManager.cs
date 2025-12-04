@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,17 +107,30 @@ namespace Start_a_Town_.UI
         {
             switch(e.Type)
             {
-                case Components.Message.Types.BlocksChanged:
-                    var map = e.Parameters[0] as MapBase;
-                    var cells = e.Parameters[1] as IEnumerable<IntVec3>;
-                    if (Instance.Object is TargetArgs target && target.Type == TargetType.Position && cells.Contains((IntVec3)target.Global))
-                        Instance.Reset();
-                    break;
+                //case Components.Message.Types.BlocksChanged:
+                //    var map = e.Parameters[0] as MapBase;
+                //    var cells = e.Parameters[1] as IEnumerable<IntVec3>;
+                //    if (Instance.Object is TargetArgs target && target.Type == TargetType.Position && cells.Contains((IntVec3)target.Global))
+                //        Instance.Reset();
+                //    break;
 
                 default:
                     Instance.Tooltip?.OnGameEvent(e);
                     break;
             }
+        }
+
+        internal static void Bind(NetEndpoint net)
+        {
+            net.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+        }
+        static void HandleBlocksChanged(BlocksChangedEvent e)
+        {
+            var map = e.Map;
+            var cells = e.Positions;
+            if(Engine.Map == map)
+            if (Instance.Object is TargetArgs target && target.Type == TargetType.Position && cells.Contains((IntVec3)target.Global))
+                Instance.Reset();
         }
     }
 }

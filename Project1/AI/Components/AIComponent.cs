@@ -90,16 +90,29 @@ namespace Start_a_Town_
         public override void OnSpawn()
         {
             this.State.Leash = this.Parent.Global;
+            this._unListen = this.Parent.Map.World.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
         }
-      
-        internal override void OnGameEvent(GameObject gameObject, GameEvent e)
+        Action _unListen;
+        public override void OnDespawn()
         {
-            if (e.Type == Message.Types.BlocksChanged)
+            this._unListen();
+        }
+        //internal override void OnGameEvent(GameObject gameObject, GameEvent e)
+        //{
+        //    if (e.Type == Message.Types.BlocksChanged)
+        //    {
+        //        if (!this.State.Path?.IsValid(gameObject as Actor) ?? false)
+        //        {
+        //            this.State.Path = null;
+        //        }
+        //    }
+        //}
+
+        void HandleBlocksChange(BlocksChangedEvent e)
+        {
+            if (!this.State.Path?.IsValid(this.Parent as Actor) ?? false)
             {
-                if (!this.State.Path?.IsValid(gameObject as Actor) ?? false)
-                {
-                    this.State.Path = null;
-                }
+                this.State.Path = null;
             }
         }
 

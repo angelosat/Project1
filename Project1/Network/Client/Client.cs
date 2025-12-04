@@ -371,6 +371,7 @@ namespace Start_a_Town_.Net
             UI.TooltipManager.OnGameEvent(e);
             ScreenManager.CurrentScreen.OnGameEvent(e);
             ToolManager.OnGameEvent(this.World, e);
+            Instance.World?.OnGameEvent(e);
         }
         private void HandleSyncedPackets()
         {

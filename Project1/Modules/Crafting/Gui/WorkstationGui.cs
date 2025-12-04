@@ -14,6 +14,7 @@ namespace Start_a_Town_.Modules.Crafting
 
         public WorkstationGui(MapBase map, IntVec3 global, BlockEntityCompWorkstation entity)
         {
+
             this.Global = global;
             this.Map = map;
             var panelOrders = new PanelTitled("Orders", 300, 500);
@@ -38,6 +39,8 @@ namespace Start_a_Town_.Modules.Crafting
 
             this.AddControls(panelOrders, btnAddOrder);
             this.AlignTopToBottom();
+
+            this.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         }
         public override void HandleLButtonDown(System.Windows.Forms.HandledMouseEventArgs e)
         {
@@ -60,19 +63,24 @@ namespace Start_a_Town_.Modules.Crafting
             PacketOrderAdd.Send(this.Map.Net, this.Global, r);
             this.PanelReactions.Hide();
         }
-        internal override void OnGameEvent(GameEvent e)
-        {
-            switch (e.Type)
-            {
-                case Components.Message.Types.BlocksChanged:
-                    if ((e.Parameters[1] as IEnumerable<IntVec3>).Contains(this.Global))
-                        this.GetWindow().Hide();
-                    break;
+        //internal override void OnGameEvent(GameEvent e)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case Components.Message.Types.BlocksChanged:
+        //            if ((e.Parameters[1] as IEnumerable<IntVec3>).Contains(this.Global))
+        //                this.GetWindow().Hide();
+        //            break;
 
-                default:
-                    base.OnGameEvent(e);
-                    break;
-            }
+        //        default:
+        //            base.OnGameEvent(e);
+        //            break;
+        //    }
+        //}
+        void HandleBlocksChanged(BlocksChangedEvent e)
+        {
+            if (e.Positions.Contains(this.Global))
+                this.GetWindow().Hide();
         }
     }
 }

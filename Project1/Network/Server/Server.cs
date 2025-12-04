@@ -54,8 +54,8 @@ namespace Start_a_Town_.Net
             GameMode.Current.HandleEvent(this, e);
             foreach (var item in Game1.Instance.GameComponents)
                 item.OnGameEvent(e);
-
-            Instance.Map.OnGameEvent(e);
+            Instance.World.OnGameEvent(e);
+            //Instance.Map.OnGameEvent(e);
         }
         //public override void EventOccured(Message.Types type, params object[] p)
         //{
@@ -269,7 +269,7 @@ namespace Start_a_Town_.Net
         static int RandomBlockUpdateIndex = 0;
         void SendRandomBlockUpdates() // TODO: move this to map class. server object shouldn't contain map logic
         {
-            var tosend = new Vector3[Instance.Map.ActiveChunks.Count];
+            var tosend = new IntVec3[Instance.Map.ActiveChunks.Count];
             var k = 0;
             foreach (var chunk in Instance.Map.ActiveChunks.Values)
             {

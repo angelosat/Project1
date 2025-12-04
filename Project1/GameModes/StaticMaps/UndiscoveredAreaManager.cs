@@ -13,6 +13,7 @@ namespace Start_a_Town_
         public UndiscoveredAreaManager(MapBase map)
         {
             this.Map = map;
+            this.Map.World.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         }
         bool Valid;// = true;
         public void Init()
@@ -79,18 +80,24 @@ namespace Start_a_Town_
             tag.TryGetTagValueNew("Valid", ref this.Valid);
         }
 
-        internal void OnGameEvent(GameEvent e)
-        {
-            switch(e.Type)
-            {
-                case Components.Message.Types.BlocksChanged:
-                    foreach (var pos in e.Parameters[1] as IEnumerable<IntVec3>)
-                        Handle(e.Parameters[0] as MapBase, pos);
-                    break;
+        //internal void OnGameEvent(GameEvent e)
+        //{
+        //    switch(e.Type)
+        //    {
+        //        case Components.Message.Types.BlocksChanged:
+        //            foreach (var pos in e.Parameters[1] as IEnumerable<IntVec3>)
+        //                Handle(e.Parameters[0] as MapBase, pos);
+        //            break;
 
-                default:
-                    break;
-            }
+        //        default:
+        //            break;
+        //    }
+        //}
+        void HandleBlocksChanged(BlocksChangedEvent e)
+        {
+            if(this.Map == e.Map)
+                foreach (var pos in e.Positions)
+                    Handle(e.Map, pos);
         }
 
         private void Handle(MapBase map, IntVec3 global)

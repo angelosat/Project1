@@ -19,6 +19,14 @@ namespace Start_a_Town_
                 btn.LeftClickAction = () => ContextMenuManager.PopUp(new ContextAction(() => "Unequip", () => PacketInventoryEquip.Send(this.Actor.Net, this.Actor.RefId, o.RefId)));
                 return btn;
             });
+            this.GearList.ListenTo<ActorGearUpdatedEvent>(a =>
+            {
+                if (this.Actor == a.Actor)
+                {
+                    this.GearList.AddItems(a.NewItem);
+                    this.GearList.RemoveItems(a.OldItem);
+                }
+            });
             this.PanelList.AddControls(this.GearList);
             this.AddControls(this.PanelList);
         }
@@ -34,24 +42,24 @@ namespace Start_a_Town_
             this.GearList.AddItems(gear);
         }
 
-        internal override void OnGameEvent(GameEvent e)
-        {
-            switch (e.Type)
-            {
-                case Message.Types.ActorGearUpdated:
-                    var actor = e.Parameters[0] as Actor;
-                    if (actor == this.Actor)
-                    {
-                        var newItem = e.Parameters[1] as Entity;
-                        var prevItem = e.Parameters[2] as Entity;
-                        this.GearList.AddItems(newItem);
-                        this.GearList.RemoveItems(prevItem);
-                    }
-                    break;
+        //internal override void OnGameEvent(GameEvent e)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case Message.Types.ActorGearUpdated:
+        //            var actor = e.Parameters[0] as Actor;
+        //            if (actor == this.Actor)
+        //            {
+        //                var newItem = e.Parameters[1] as Entity;
+        //                var prevItem = e.Parameters[2] as Entity;
+        //                this.GearList.AddItems(newItem);
+        //                this.GearList.RemoveItems(prevItem);
+        //            }
+        //            break;
 
-                default:
-                    break;
-            }
-        }
+        //        default:
+        //            break;
+        //    }
+        //}
     }
 }

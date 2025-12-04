@@ -7,6 +7,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     public partial class QuestsManager : TownComponent
     {
         readonly Lazy<Window> UIWindowQuests;
@@ -19,6 +20,8 @@ namespace Start_a_Town_
         readonly Dictionary<int, int> PendingQuestRequests = new();
         static QuestsManager()
         {
+            Registry.GameEvents.Register<QuestDefAssignedEvent>();
+            Registry.GameEvents.Register<QuestDefsUpdatedEvent>();
             Packets.Init();
         }
         public QuestsManager(Town town) : base(town)

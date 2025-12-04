@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
+using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -16,7 +17,7 @@ namespace Start_a_Town_
             Background = Game1.Instance.Content.Load<Texture2D>("Graphics/bg");
         }
 
-        public override GameScreen Initialize(INetEndpoint net)
+        public override GameScreen Initialize(NetEndpoint net)
         {
             base.Initialize(net);
             WindowManager.Initialize();

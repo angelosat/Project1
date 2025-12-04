@@ -156,7 +156,7 @@ namespace Start_a_Town_
         private static void AnnounceInhabitantCreated(INetEndpoint net, Actor actor)
         {
             net.Write($"{actor.Name} created");
-            net.EventOccured((int)Components.Message.Types.NewAdventurerCreated, actor);
+            //net.EventOccured((int)Components.Message.Types.NewAdventurerCreated, actor);
         }
 
         private static void MakeVisitor(Actor actor)

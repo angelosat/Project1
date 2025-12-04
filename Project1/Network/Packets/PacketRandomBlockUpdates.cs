@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 
@@ -13,12 +14,11 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(NetEndpoint net, IEnumerable<Vector3> list)
+        static public void Send(NetEndpoint net, IntVec3[] list) //Vector3[] list)// 
         {
             if (net is Client)
                 throw new Exception();
             var strem = net.BeginPacket(p);
-
             strem.Write(list);
         }
         static public void Receive(NetEndpoint net, Packet packet)

@@ -4,6 +4,7 @@ using Start_a_Town_.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Start_a_Town_.Net;
 
 namespace Start_a_Town_.UI
 {
@@ -414,12 +415,12 @@ namespace Start_a_Town_.UI
         {
             switch (e.Type)
             {
-                case Message.Types.BlocksChanged:
-                    var map = e.Parameters[0] as MapBase;
-                    var globals = e.Parameters[1] as IEnumerable<IntVec3>;
-                    if (globals.Any(t => IsSelected(t)))
-                        ClearTargets();
-                    break;
+                //case Message.Types.BlocksChanged:
+                //    var map = e.Parameters[0] as MapBase;
+                //    var globals = e.Parameters[1] as IEnumerable<IntVec3>;
+                //    if (globals.Any(t => IsSelected(t)))
+                //        ClearTargets();
+                //    break;
 
                 case Message.Types.EntityDespawned:
                     // TODO: deselect entity on despawn?
@@ -431,6 +432,16 @@ namespace Start_a_Town_.UI
                 default:
                     break;
             }
+        }
+        internal static void Bind(NetEndpoint net)
+        {
+            net.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+        }
+        static void HandleBlocksChanged(BlocksChangedEvent e)
+        {
+            if(Engine.Map == e.Map)
+                if (e.Positions.Any(t => IsSelected(t)))
+                    ClearTargets();
         }
         bool IsSelected(MapBase map, Vector3 global)
         {
@@ -591,6 +602,10 @@ namespace Start_a_Town_.UI
                 .Where(tar => tar.Type == TargetType.Position)
                 .Select(t => (IntVec3)t.Global);
         }
+
+        
+       
+
         internal static IEnumerable<IntVec3> SelectedCells => GetSelectedCells();
         internal static IEnumerable<GameObject> SelectedEntities => GetSelectedEntities();
 

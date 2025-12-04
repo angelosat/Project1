@@ -67,6 +67,9 @@ namespace Start_a_Town_
 
             foreach (var r in this.Designations.Values)
                 r.CollectionChanged += this.R_CollectionChanged;
+
+            this.Town.Map.World.ListenTo<BlocksChangedEvent>(this.HandleBlocksChanged);
+
         }
 
         private void R_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -158,28 +161,27 @@ namespace Start_a_Town_
             var contains = this.Designations[desType].Contains(global);
             return contains;
         }
-        internal override void OnGameEvent(GameEvent e)
-        {
-            switch (e.Type)
-            {
-                case Components.Message.Types.BlocksChanged:
-                    this.HandleBlocksChanged(e.Parameters[1] as IEnumerable<IntVec3>);
-                    break;
+        //internal override void OnGameEvent(GameEvent e)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case Components.Message.Types.BlocksChanged:
+        //            this.HandleBlocksChanged(e.Parameters[1] as IEnumerable<IntVec3>);
+        //            break;
 
-                case Components.Message.Types.ZoneDesignation:
-                    this.Add(e.Parameters[0] as DesignationDef, e.Parameters[1] as List<TargetArgs>, (bool)e.Parameters[2]);
-                    break;
+        //        //case Components.Message.Types.ZoneDesignation:
+        //        //    this.Add(e.Parameters[0] as DesignationDef, e.Parameters[1] as List<TargetArgs>, (bool)e.Parameters[2]);
+        //        //    break;
 
-                default:
-                    break;
-            }
-        }
-
-        private void HandleBlocksChanged(IEnumerable<IntVec3> targets)
+        //        default:
+        //            break;
+        //    }
+        //}
+        void HandleBlocksChanged(BlocksChangedEvent e)
         {
             foreach (var des in this.Designations)
             {
-                foreach (var target in targets)
+                foreach (var target in e.Positions)
                 {
                     if (!des.Key.IsValid(this.Map, target))
                         des.Value.Remove(target.At(this.Map));

@@ -79,5 +79,28 @@ namespace Start_a_Town_.Net
         public abstract bool TryGetNetworkObject(int netID, out Entity obj);
         public abstract void Write(string text);
         public abstract void WriteToStream(params object[] args);
+        Dictionary<int, List<Action<GameEvent>>> _eventBus = [];
+
+        public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : EventPayloadBase
+        {
+            var id = Registry.GameEvents.Register<TPayload>();
+            if (!_eventBus.TryGetValue(id, out var list))
+            {
+                list = new List<Action<GameEvent>>();
+                _eventBus[id] = list;
+            }
+            var item = new Action<GameEvent>(e => handler((TPayload)e.Payload));
+            list.Add(item);
+            return () => StopListening<TPayload>(item);
+        }
+        public void StopListening<TPayload>(Action<GameEvent> handler) where TPayload : EventPayloadBase
+        {
+            var id = Registry.GameEvents.Register<TPayload>();
+            if (!_eventBus.TryGetValue(id, out var list))
+            {
+                throw new Exception();
+            }
+            list.Remove(handler);
+        }
     }
 }

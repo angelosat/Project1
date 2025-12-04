@@ -171,7 +171,7 @@ namespace Start_a_Town_
             var btnCreate = new Button("Create", () => Packets.SendAddQuestGiver(net, net.GetPlayer().ID));
         
             qlist.AddItems(this.Quests);
-            qlist.ListenTo((int)Components.Message.Types.QuestDefsUpdated, args =>
+            qlist.ListenToOld((int)Components.Message.Types.QuestDefsUpdated, args =>
             {
                 var added = args[0] as QuestDef[];
                 var removed = args[1] as QuestDef[];
@@ -216,7 +216,7 @@ namespace Start_a_Town_
                 ,
                 questsAssigned.ToPanelLabeled("Assigned")
                 );
-            box.ListenTo((int)Components.Message.Types.QuestDefAssigned, args =>
+            box.ListenToOld((int)Components.Message.Types.QuestDefAssigned, args =>
             {
                 var q = args[0] as QuestDef;
                 if (q.Giver == actor)

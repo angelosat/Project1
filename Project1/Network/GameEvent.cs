@@ -2,11 +2,18 @@
 
 namespace Start_a_Town_
 {
+    //public class GameEvent<T>(TimeSpan clock, int type, T parameters) : EventArgs
+    //{
+    //    public double TimeStamp = clock.TotalMilliseconds;
+    //    public int Type = type;
+    //    public T Parameters = parameters;
+    //}
     public class GameEvent : EventArgs
     {
         public double TimeStamp;
         public Components.Message.Types Type;
         public object[] Parameters;
+        public object Payload;
         public object this[int index] => this.Parameters[index];
         public GameEvent(double timestamp, Components.Message.Types type, params object[] parameters)
         {

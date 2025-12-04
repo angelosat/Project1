@@ -1455,16 +1455,25 @@ namespace Start_a_Town_.UI
         //{
         //    this.Listeners.Add(msgType, e => action(e.Parameters));
         //}
-        readonly Dictionary<int, Action<GameEvent>> Listeners = new();
-        public void ListenTo(int msgType, Action<GameEvent> action)
+        [Obsolete]
+        readonly Dictionary<int, Action<GameEvent>> ListenersOld = new();
+        [Obsolete]
+        public void ListenToOld(int msgType, Action<GameEvent> action)
         {
-            this.Listeners.Add(msgType, e => action(e));
+            this.ListenersOld.Add(msgType, e => action(e));
         }
+        readonly Dictionary<int, Action<GameEvent>> Listeners = new();
+        public void ListenTo<T>(Action<T> action)
+        {
+            if (Registry.GameEvents.TryGet<T>(out var id))
+                this.Listeners.Add(id, e => action((T)e.Payload));
+        }
+
         public Action<GameEvent> OnGameEventAction = (e) => { };
         internal virtual void OnGameEvent(GameEvent e)
         {
             this.OnGameEventAction(e);
-            this.Listeners.TryGetValue((int)e.Type, a => a(e));
+            this.ListenersOld.TryGetValue((int)e.Type, a => a(e));
             foreach (var child in this.Controls.ToList())
                 child.OnGameEvent(e);
         }

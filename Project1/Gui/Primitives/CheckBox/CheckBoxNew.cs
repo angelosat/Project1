@@ -29,7 +29,10 @@ namespace Start_a_Town_.UI
                 this.Invalidate();
             }
         }
-
+        public void ToggleValue()
+        {
+            this.Value = !this.Value;
+        }
         public Func<bool> TickedFunc;
         bool LastValue;
         public override void Update()
@@ -82,5 +85,6 @@ namespace Start_a_Town_.UI
             Rectangle bounds = this.BoundsScreen;
             base.OnLeftClick();
         }
+
     }
 }

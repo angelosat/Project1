@@ -1460,10 +1460,10 @@ namespace Start_a_Town_.UI
         [Obsolete]
         public void ListenToOld(int msgType, Action<GameEvent> action)
         {
-            this.ListenersOld.Add(msgType, e => action(e));
+            //this.ListenersOld.Add(msgType, e => action(e));
         }
         readonly Dictionary<int, Action<GameEvent>> Listeners = new();
-        public void ListenTo<T>(Action<T> action)
+        public void ListenTo<T>(Action<T> action) where T : EventPayloadBase
         {
             if (Registry.GameEvents.TryGet<T>(out var id))
                 this.Listeners.Add(id, e => action((T)e.Payload));
@@ -1473,7 +1473,8 @@ namespace Start_a_Town_.UI
         internal virtual void OnGameEvent(GameEvent e)
         {
             this.OnGameEventAction(e);
-            this.ListenersOld.TryGetValue((int)e.Type, a => a(e));
+            if (!this.ListenersOld.TryGetValue((int)e.Type, a => a(e)))
+                this.Listeners.TryGetValue((int)e.Type, a => a(e));
             foreach (var child in this.Controls.ToList())
                 child.OnGameEvent(e);
         }

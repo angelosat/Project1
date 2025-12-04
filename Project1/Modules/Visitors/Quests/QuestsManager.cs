@@ -52,7 +52,8 @@ namespace Start_a_Town_
         }
         void ReportQuestsUpdated(QuestDef[] added, QuestDef[] removed)
         {
-            this.Town.Net.EventOccured((int)Components.Message.Types.QuestDefsUpdated, added, removed);
+            //this.Town.Net.EventOccured((int)Components.Message.Types.QuestDefsUpdated, added, removed);
+            this.Town.Net.EventOccured(new QuestDefsUpdatedEvent(added, removed));// { Added = added, Removed = removed });
         }
         public QuestDef GetQuest(int id)
         {
@@ -156,6 +157,15 @@ namespace Start_a_Town_
             var window = gui.GetWindow() ?? gui.ToPanelLabeled().ToWindow(title);
             window.Toggle();
         }
+        class QuestDefsUpdatedEvent(QuestDef[] added, QuestDef[] removed) : EventPayloadBase
+        {
+            public QuestDef[] Added = added;
+            public QuestDef[] Removed = removed;
+        }
+        class QuestDefAssignedEvent(QuestDef quest) : EventPayloadBase
+        {
+            public QuestDef Quest = quest;
+        }
         Window CreateUI()
         {
             var box = new GroupBox();
@@ -171,14 +181,18 @@ namespace Start_a_Town_
             var btnCreate = new Button("Create", () => Packets.SendAddQuestGiver(net, net.GetPlayer().ID));
         
             qlist.AddItems(this.Quests);
-            qlist.ListenToOld((int)Components.Message.Types.QuestDefsUpdated, args =>
+            //qlist.ListenToOld((int)Components.Message.Types.QuestDefsUpdated, args =>
+            //{
+            //    var added = args[0] as QuestDef[];
+            //    var removed = args[1] as QuestDef[];
+            //    qlist.AddItems(added);
+            //    qlist.RemoveItems(removed);
+            //});
+            qlist.ListenTo<QuestDefsUpdatedEvent>(args =>
             {
-                var added = args[0] as QuestDef[];
-                var removed = args[1] as QuestDef[];
-                qlist.AddItems(added);
-                qlist.RemoveItems(removed);
+                qlist.AddItems(args.Added);
+                qlist.RemoveItems(args.Removed);
             });
-            
             box.AddControlsVertically(
                 btnCreate,
                 qlist.ToPanelLabeled("Quest list"));
@@ -216,9 +230,23 @@ namespace Start_a_Town_
                 ,
                 questsAssigned.ToPanelLabeled("Assigned")
                 );
-            box.ListenToOld((int)Components.Message.Types.QuestDefAssigned, args =>
+            //box.ListenToOld((int)Components.Message.Types.QuestDefAssigned, args =>
+            //{
+            //    var q = args[0] as QuestDef;
+            //    if (q.Giver == actor)
+            //    {
+            //        questsAvailable.RemoveItems(q);
+            //        questsAssigned.AddItems(q);
+            //    }
+            //    else
+            //    {
+            //        questsAssigned.RemoveItems(q);
+            //        questsAvailable.AddItems(q);
+            //    }
+            //});
+            box.ListenTo<QuestDefAssignedEvent>(args =>
             {
-                var q = args[0] as QuestDef;
+                var q = args.Quest;
                 if (q.Giver == actor)
                 {
                     questsAvailable.RemoveItems(q);

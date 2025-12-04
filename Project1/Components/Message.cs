@@ -51,14 +51,8 @@ namespace Start_a_Town_.Components
             NewAdventurerCreated,
             ShopsUpdated,
             ShopUpdated,
-            QuestDefsUpdated,
-            QuestObjectivesUpdated,
-            QuestDefAssigned,
-            QuestReceived,
-            JobUpdated,
             TavernMenuChanged,
             OrderDeleted,
-            QuestAbandoned,
             ItemLost,
             AttackTargetChanged
         }

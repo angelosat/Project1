@@ -30,7 +30,8 @@ namespace Start_a_Town_
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 var job = actor.GetJob(jobDef);
                 job.Read(r);
-                net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
+                //net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
+                net.EventOccured(new JobUpdatedEvent(actor, job.Def));
                 SyncJob(player, actor, job);
             }
 
@@ -40,7 +41,8 @@ namespace Start_a_Town_
                 if (net is Server)
                 {
                     job.Priority = (byte)priority;
-                    net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
+                    net.EventOccured(new JobUpdatedEvent(actor, job.Def));
+                    //net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
                     SyncJob(player, actor, job);
                 }
                 else
@@ -62,7 +64,7 @@ namespace Start_a_Town_
                 var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 actor.ToggleJob(jobDef);
-                net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
+                net.EventOccured(new JobUpdatedEvent(actor, jobDef));
                 if (net is Server)
                     SendLaborToggle(player, actor, jobDef);
             }
@@ -84,7 +86,7 @@ namespace Start_a_Town_
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 var job = actor.GetJob(jobDef);
                 job.Read(r);
-                net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
+                net.EventOccured(new JobUpdatedEvent(actor, jobDef));
             }
         }
         readonly Lazy<Control> UILabors;
@@ -119,10 +121,10 @@ namespace Start_a_Town_
         {
             base.OnTargetSelected(info, target);
         }
-        struct JobUpdatedEvent
+        public class JobUpdatedEvent(Actor actor, JobDef job) : EventPayloadBase
         {
-            public Actor Actor;
-            public JobDef Job;
+            public Actor Actor = actor;
+            public JobDef Job = job;
         }
         Control CreateJobsTable()
         {
@@ -184,13 +186,11 @@ namespace Start_a_Town_
                 btnTogglePriorities,
                 tableBox);
 
-            box.ListenToOld((int)Components.Message.Types.JobUpdated, args =>
-            {
-                var a = args[0] as Actor;
-                var j = args[1] as JobDef;
-                tableAuto.GetItem(a, j).Validate();
-                tableManual.GetItem(a, j).Validate();
-            });
+            //box.ListenTo<JobUpdatedEvent>(args =>
+            //{
+            //    tableAuto.GetItem(args.Actor, args.Job).Validate();
+            //    tableManual.GetItem(args.Actor, args.Job).Validate();
+            //});
 
             return box;
 

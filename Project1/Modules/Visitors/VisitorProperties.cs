@@ -263,14 +263,14 @@ namespace Start_a_Town_
         {
             var actor = this.Actor;
             this.Quests.Add(quest);
-            actor.Net.EventOccured((int)Components.Message.Types.QuestReceived, actor, quest);
+            //actor.Net.EventOccured((int)Components.Message.Types.QuestReceived, actor, quest);
             AILog.SyncWrite(actor, $"Received quest [{quest}] from [{quest.Giver.Name}]");
             return true;
         }
         internal void AbandonQuest(QuestDef quest)
         {
             this.Quests.Remove(quest);
-            this.Actor.Net.EventOccured((int)Components.Message.Types.QuestAbandoned, this.Actor, quest);
+            //this.Actor.Net.EventOccured((int)Components.Message.Types.QuestAbandoned, this.Actor, quest);
             this.Actor.Log.Write($"Abandoned quest [{quest.Name}]");
         }
         internal void CompleteQuest(QuestDef quest)

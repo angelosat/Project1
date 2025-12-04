@@ -56,6 +56,11 @@ namespace Start_a_Town_.Net
             var e = new GameEvent(this.Clock.TotalMilliseconds, eventTypeId, p);
             this.OnGameEvent(e);
         }
+        public void EventOccured<T>(T args)
+        {
+            var e = new GameEvent(this.Clock.TotalMilliseconds, args);
+            this.OnGameEvent(e);
+        }
         protected abstract void OnGameEvent(GameEvent e);
         public abstract BinaryWriter GetOutgoingStreamOrderedReliable();
         public abstract PlayerData GetPlayer(int id);

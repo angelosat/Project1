@@ -10,8 +10,15 @@ using System.Security.AccessControl;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     public class QuestDef : ISerializable, ISaveable, ILoadReferencable
     {
+        static QuestDef()
+        {
+            Registry.GameEvents.Register<QuestObjectivesEvent>();
+            Packets.Init();
+
+        }
         readonly public QuestsManager Manager;
         public int ID;
         int _MaxConcurrent = -1;
@@ -33,11 +40,15 @@ namespace Start_a_Town_
             set
             {
                 this.GiverID = value?.RefId ?? -1;
-                this.Manager.Town.Map.EventOccured(Components.Message.Types.QuestDefAssigned, this);
+                //this.Manager.Town.Map.EventOccured(Components.Message.Types.QuestDefAssigned, this);
+                this.Manager.Town.Map.Net.EventOccured(new QuestDefAssignedEvent() { Quest = this });
             }
         }
         public bool IsValid { get { return this.Objectives.Any(); } }
-        
+        struct QuestDefAssignedEvent
+        {
+            public QuestDef Quest;
+        }
         public QuestDef(QuestsManager manager, int id)
         {
             this.Manager = manager; 
@@ -71,14 +82,16 @@ namespace Start_a_Town_
         public QuestDef AddObjective(QuestObjective objective)
         {
             this.Objectives.Add(objective);
-            this.Manager.Town.Net.EventOccured((int)Components.Message.Types.QuestObjectivesUpdated, new[] { objective }, new QuestObjective[] { });
+            this.Manager.Town.Net.EventOccured(new QuestObjectivesEvent([objective], []));// { Added = [objective] , Removed = [] }); 
+            //this.Manager.Town.Net.EventOccured((int)Components.Message.Types.QuestObjectivesUpdated, new[] { objective }, new QuestObjective[] { });
             this.Manager.QuestModified(this);
             return this;
         }
         internal QuestDef RemoveObjective(QuestObjective objective)
         {
             this.Objectives.Remove(objective);
-            this.Manager.Town.Net.EventOccured((int)Components.Message.Types.QuestObjectivesUpdated, new QuestObjective[] {  }, new[] { objective });
+            this.Manager.Town.Net.EventOccured(new QuestObjectivesEvent([], [objective]));// { Added = [], Removed = [objective] });
+            //this.Manager.Town.Net.EventOccured((int)Components.Message.Types.QuestObjectivesUpdated, new QuestObjective[] {  }, new[] { objective });
             this.Manager.QuestModified(this);
             return this;
         }
@@ -270,10 +283,23 @@ namespace Start_a_Town_
                     action();
             }
 
-            reqList.ListenToOld((int)Components.Message.Types.QuestObjectivesUpdated, args =>
+            //reqList.ListenToOld((int)Components.Message.Types.QuestObjectivesUpdated, args =>
+            //{
+            //    var added = args[0] as QuestObjective[];
+            //    var removed = args[1] as QuestObjective[];
+            //    reqList.AddItems(added);
+            //    reqList.RemoveItems(removed);
+            //    listAvailableReqs.AddItems(removed.Select(o => (o as QuestObjectiveItem).Objective));
+            //    listAvailableReqs.RemoveWhere(o => added.Any(oo =>
+            //    {
+            //        var item = (oo as QuestObjectiveItem).Objective;
+            //        return item.Item == o.Item && item.Material == o.Material;
+            //    }));
+            //});
+            reqList.ListenTo<QuestObjectivesEvent>( args =>
             {
-                var added = args[0] as QuestObjective[];
-                var removed = args[1] as QuestObjective[];
+                var added = args.Added;// args[0] as QuestObjective[];
+                var removed = args.Removed;// args[1] as QuestObjective[];
                 reqList.AddItems(added);
                 reqList.RemoveItems(removed);
                 listAvailableReqs.AddItems(removed.Select(o => (o as QuestObjectiveItem).Objective));
@@ -283,7 +309,6 @@ namespace Start_a_Town_
                     return item.Item == o.Item && item.Material == o.Material;
                 }));
             });
-
             var rewardList = new TableScrollableCompact<QuestReward>()
                 .AddColumn(new(), "quantity", 32, qr => new Label(() => qr.Count.ToString(), () => showAdjustRewardCountGui(qr)), 0f)
                 .AddColumn("minus", "", iconW, q => IconButton.CreateSmall('-', () => confirm(() => Packets.SendAdjustRewardCount(quest.Manager.Net, quest.Manager.Net.GetPlayer(), q, q.Count - 1))), 0f)
@@ -375,23 +400,20 @@ namespace Start_a_Town_
                 context.Show();
             }
         }
-
-        static QuestDef()
+        class QuestObjectivesEvent(QuestObjective[] added, QuestObjective[] removed) : EventPayloadBase
         {
-            Packets.Init();
+            public QuestObjective[] Added = added;
+            public QuestObjective[] Removed = removed;
         }
+        //static QuestDef()
+        //{
+        //    Packets.Init();
+        //}
         class Packets
         {
             static int PacketQuestCreateObjective, PacketQuestModify, PacketQuestRemoveObjective, PacketAutoMatchBudget, PacketAdjustObjectiveCount, PacketAdjustRewardCount;
             internal static void Init()
             {
-                //PacketQuestCreateObjective = Network.RegisterPacketHandler(ReceiveQuestCreateObjective);
-                //PacketQuestModify = Network.RegisterPacketHandler(ReceiveQuestModify);
-                //PacketQuestRemoveObjective = Network.RegisterPacketHandler(ReceiveQuestRemoveObjective);
-                //PacketAutoMatchBudget = Network.RegisterPacketHandler(HandleAutoMatchBudget);
-                //PacketAdjustObjectiveCount = Network.RegisterPacketHandler(HandleAdjustObjectiveCount);
-                //PacketAdjustRewardCount = Network.RegisterPacketHandler(HandleAdjustRewardCount);
-
                 PacketQuestCreateObjective = Registry.PacketHandlers.Register(ReceiveQuestCreateObjective);
                 PacketQuestModify = Registry.PacketHandlers.Register(ReceiveQuestModify);
                 PacketQuestRemoveObjective = Registry.PacketHandlers.Register(ReceiveQuestRemoveObjective);

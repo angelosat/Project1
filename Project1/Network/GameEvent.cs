@@ -15,6 +15,11 @@ namespace Start_a_Town_
         public object[] Parameters;
         public object Payload;
         public object this[int index] => this.Parameters[index];
+        public GameEvent(double timestamp, object payload)
+        {
+            this.TimeStamp = timestamp;
+            this.Payload = payload;
+        }
         public GameEvent(double timestamp, Components.Message.Types type, params object[] parameters)
         {
             this.TimeStamp = timestamp;

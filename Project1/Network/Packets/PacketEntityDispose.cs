@@ -8,8 +8,8 @@ namespace Start_a_Town_
         static readonly int pServerAction, pPlayerRequest;
         static PacketEntityDispose()
         {
-            pServerAction = PacketRegistry.Register(Receive);
-            pPlayerRequest = PacketRegistry.Register(ReceivePlayer);
+            pServerAction = Registry.PacketHandlers.Register(Receive);
+            pPlayerRequest = Registry.PacketHandlers.Register(ReceivePlayer);
         }
 
         internal static void Send(Server server, int entityID, PlayerData player)

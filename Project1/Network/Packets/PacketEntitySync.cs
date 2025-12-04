@@ -9,15 +9,13 @@ namespace Start_a_Town_
         static readonly int _packetTypeId;
         static PacketEntitySync()
         {
-            _packetTypeId = PacketRegistry.Register(Receive);
+            _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(INetEndpoint net, GameObject entity)
+        static public void Send(NetEndpoint net, GameObject entity)
         {
             if (net is Client)
                 throw new Exception();
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write((int)PckType);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, _packetTypeId);
+            var w = net.BeginPacketOld(_packetTypeId);
 
             w.Write(entity.RefId);
             entity.SyncWrite(w);

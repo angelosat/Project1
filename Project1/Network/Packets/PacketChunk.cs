@@ -10,7 +10,7 @@ namespace Start_a_Town_
         static int p;
         static PacketChunk()
         {
-            p = NetEndpoint.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(INetEndpoint net, Vector2 vector2, byte[] chunkData, PlayerData player)
         {

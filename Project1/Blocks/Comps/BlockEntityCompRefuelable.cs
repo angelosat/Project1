@@ -59,7 +59,7 @@ namespace Start_a_Town_
                 var parent = owner.Parent;
                 //var w = parent.Map.Net.GetOutgoingStreamOrderedReliable();
                 //w.Write(def is MaterialDef ? pMaterial : pVariation);
-                var w = parent.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, def is MaterialDef ? pMaterial : pVariation);
+                var w = parent.Map.Net.BeginPacketOld(def is MaterialDef ? pMaterial : pVariation);
                 w.Write(parent.OriginGlobal);
                 item.Write(w);
                 def.Write(w);
@@ -69,7 +69,7 @@ namespace Start_a_Town_
                 var parent = owner.Parent;
                 //var w = parent.Map.Net.GetOutgoingStreamOrderedReliable();
                 //w.Write(pCategory);
-                var w = parent.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, pCategory);
+                var w = parent.Map.Net.BeginPacket(pCategory);
                 w.Write(parent.OriginGlobal);
                 w.Write(category?.Name ?? "");
             }

@@ -12,15 +12,6 @@ namespace Start_a_Town_.Net
         public abstract bool IsServer { get; }
         public abstract bool IsClient { get; }
 
-        static int PacketIDSequence = 20000;
-
-        static protected readonly Dictionary<int, Action<NetEndpoint, Packet>> PacketHandlers = [];
-        internal static int RegisterPacketHandler(Action<NetEndpoint, Packet> handler)
-        {
-            var id = PacketIDSequence++;
-            PacketHandlers.Add(id, handler);
-            return id;
-        }
         protected readonly NetworkStream[] StreamsArray = [new(ReliabilityType.Unreliable), new(ReliabilityType.Reliable), new(ReliabilityType.OrderedReliable)];
         protected NetworkStream GetStream(ReliabilityType reliability)
         {
@@ -29,9 +20,10 @@ namespace Start_a_Town_.Net
                     return s;
             throw new Exception("Stream not found");
         }
-        public BinaryWriter BeginPacket(ReliabilityType rType, int pType)
+
+        public BinaryWriter BeginPacketOld(int pType)
         {
-            var w = this.GetStream(rType).Writer;
+            var w = this.GetStream(ReliabilityType.OrderedReliable).Writer;
             w.Write(pType);
             return w;
         }
@@ -39,14 +31,13 @@ namespace Start_a_Town_.Net
         {
             return PacketBuilder.Create(this.GetStream(rType).Writer, pType);
         }
-
+        public IDataWriter BeginPacket(int pType)
+        {
+            return PacketBuilder.Create(this.GetStream(ReliabilityType.OrderedReliable).Writer, pType);
+        }
         public void HandlePacket(int pType, Packet pck)
         {
-            if (PacketHandlers.TryGetValue(pType, out var handler))
-                handler(this, pck);
-            else if (PacketRegistry.TryGet(pType, out var hh))
-                hh(this, pck);
-            else if (Registry.PacketHandlers.TryGet(pType, out var hhh))
+            if (Registry.PacketHandlers.TryGet(pType, out var hhh))
                 hhh(this, pck);
             // silently drop packet if next data is garbage
         }

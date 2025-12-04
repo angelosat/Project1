@@ -13,13 +13,11 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(INetEndpoint net, IEnumerable<Vector3> list)
+        static public void Send(NetEndpoint net, IEnumerable<Vector3> list)
         {
             if (net is Client)
                 throw new Exception();
-            //var strem = net.GetOutgoingStreamOrderedReliable();
-            //strem.Write(p);
-            var strem = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+            var strem = net.BeginPacket(p);
 
             strem.Write(list);
         }

@@ -12,14 +12,11 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(INetEndpoint net, Vector2 direction)
+        internal static void Send(NetEndpoint net, Vector2 direction)
         {
             if (net is Server)
                 throw new NotImplementedException();
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
-
+            var w = net.BeginPacket(p);
             w.Write(net.GetPlayer().ID);
             w.Write(direction);
         }

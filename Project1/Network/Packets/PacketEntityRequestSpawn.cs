@@ -8,13 +8,11 @@ namespace Start_a_Town_
         static readonly int _packetTypeId;
         static PacketEntityRequestSpawn()
         {
-            _packetTypeId = PacketRegistry.Register(ReceiveTemplate);
+            _packetTypeId = Registry.PacketHandlers.Register(ReceiveTemplate);
         }
-        internal static void SendTemplate(INetEndpoint net, int templateID, TargetArgs target)
+        internal static void SendTemplate(NetEndpoint net, int templateID, TargetArgs target)
         {
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, _packetTypeId);
+            var w = net.BeginPacket(_packetTypeId);
 
             w.Write(templateID);
             target.Write(w);

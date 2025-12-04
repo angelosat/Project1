@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 
@@ -15,12 +14,10 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(INetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
+        static public void Send(NetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
         {
             remove |= designation == null;
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+            var w = net.BeginPacketOld(p);
 
             w.Write(remove);
             w.Write((int)SelectionType.List);
@@ -28,13 +25,10 @@ namespace Start_a_Town_
             if(!remove)
                 designation.Write(w);
         }
-        static public void Send(INetEndpoint net, bool remove, IntVec3 begin, IntVec3 end, DesignationDef designation)
+        static public void Send(NetEndpoint net, bool remove, IntVec3 begin, IntVec3 end, DesignationDef designation)
         {
             remove |= designation == null;
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
-
+            var w = net.BeginPacketOld(p);
             w.Write(remove);
             w.Write((int)SelectionType.Box);
             w.Write(begin);

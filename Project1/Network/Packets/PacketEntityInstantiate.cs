@@ -12,27 +12,21 @@ namespace Start_a_Town_
         static readonly int PckTypeNew;
         static PacketEntityInstantiate()
         {
-            PckType = PacketRegistry.Register(Receive);
-            PckTypeNew = PacketRegistry.Register(ReceiveTemplate);
+            PckType = Registry.PacketHandlers.Register(Receive);
+            PckTypeNew = Registry.PacketHandlers.Register(ReceiveTemplate);
         }
         [Obsolete]
-        static public void Send(INetEndpoint net, GameObject entity)
+        static public void Send(NetEndpoint net, GameObject entity)
         {
             Send(net, [entity]);
         }
-        static public void SendFromTemplate(INetEndpoint net, int templateID, GameObject entity)
+        static public void SendFromTemplate(NetEndpoint net, int templateID, GameObject entity)
         {
             if (net is Client)
                 throw new Exception();
-            //var strem = net.GetOutgoingStreamOrderedReliable();
-            //strem.Write(PckTypeNew);
-            var strem = net.BeginPacket(ReliabilityType.OrderedReliable, PckTypeNew);
-
+            var strem = net.BeginPacketOld(PckTypeNew);
             strem.Write(templateID);
             entity.Write(strem);
-            //var data = entity.Serialize();
-            //strem.Write(data.Length);
-            //strem.Write(data);
         }
         static public void ReceiveTemplate(NetEndpoint net, Packet pck)
         {
@@ -40,20 +34,15 @@ namespace Start_a_Town_
             if (net is Server)
                 throw new Exception();
             var templateID = r.ReadInt32();
-            //var length = r.ReadInt32();
-            //var data = r.ReadBytes(length);
-            //var entity = Network.Deserialize(data, reader=> GameObject.CloneTemplate(templateID, reader));
             var entity = GameObject.CloneTemplate(templateID, r);
             net.Instantiate(entity);
         }
         [Obsolete]
-        static public void Send(INetEndpoint net, IEnumerable<GameObject> entities)
+        static public void Send(NetEndpoint net, IEnumerable<GameObject> entities)
         {
             if (net is Client)
                 throw new Exception();
-            //var strem = net.GetOutgoingStreamOrderedReliable();
-            //strem.Write(PckType);
-            var strem = net.BeginPacket(ReliabilityType.OrderedReliable, PckType);
+            var strem = net.BeginPacketOld(PckType);
             strem.Write(entities.Count());
             foreach(var entity in entities)
             {
@@ -61,9 +50,6 @@ namespace Start_a_Town_
                     throw new Exception();
                 net.Instantiate(entity);
                 entity.Spawn(net.Map);
-                //var data = entity.Serialize();
-                //strem.Write(data.Length);
-                //strem.Write(data);
                 entity.Write(strem);
             }
         }

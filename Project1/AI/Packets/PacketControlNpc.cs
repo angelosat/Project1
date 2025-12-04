@@ -1,5 +1,4 @@
-﻿using System;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -11,27 +10,16 @@ namespace Start_a_Town_
         {
             PType = Registry.PacketHandlers.Register(Receive);
         }
-        //internal static void Send(INetContext net, int entityid)
-        //{
-        //    if (net is Server)
-        //        throw new Exception();
-        //    var plid = net.GetPlayer().ID;
-        //    Send(net, plid, entityid);
-        //}
         internal static void Send(NetEndpoint net, int playerid, int entityid)
         {
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(PType);
-            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, PType);
-
-            //w.Write(playerid);
+            var w = net.BeginPacket(PType);
+            w.Write(playerid);
             w.Write(entityid);
         }
         private static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            //var player = net.GetPlayer(r.ReadInt32());
-            var player = pck.Player;
+            var player = net.GetPlayer(r.ReadInt32());
             var entityid = r.ReadInt32();
             var nextEntity = entityid != -1 ? net.World.GetEntity(entityid) as Actor : null;
             if (nextEntity?.IsPlayerControlled ?? false)

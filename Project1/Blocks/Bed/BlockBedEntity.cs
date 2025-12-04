@@ -165,7 +165,7 @@ namespace Start_a_Town_
 
                 //net.GetOutgoingStreamOrderedReliable().Write(pOwner, playerData.ID, global, owner?.RefId ?? -1);
 
-                var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, pOwner);
+                var w = net.BeginPacket(pOwner);
                 w
                     .Write(playerData.ID)
                     .Write(global)

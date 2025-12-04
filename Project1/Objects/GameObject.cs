@@ -99,7 +99,7 @@ namespace Start_a_Town_
 
         public int RefId;
 
-        public INetEndpoint Net;
+        public NetEndpoint Net;
 
         public WorldBase World { get; set; }
         MapBase _map;
@@ -1367,7 +1367,7 @@ namespace Start_a_Town_
             return Ingame.Instance.ToolManager.ActiveTool?.Target?.Object == this;
         }
 
-        internal void Sync(INetEndpoint net)
+        internal void Sync(NetEndpoint net)
         {
             PacketEntitySync.Send(net, this);
         }
@@ -1516,9 +1516,7 @@ namespace Start_a_Town_
             if (net is Server)
                 this.SetStackSize(v);
 
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(PacketSyncSetStacksize);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketSyncSetStacksize);
+            var w = net.BeginPacket(PacketSyncSetStacksize);
 
             w.Write(this.RefId);
             w.Write(v);
@@ -1549,9 +1547,7 @@ namespace Start_a_Town_
                 throw new Exception();
 
             this.Absorb(obj);
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(PacketSyncAbsorb);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketSyncAbsorb);
+            var w = net.BeginPacket(PacketSyncAbsorb);
 
             w.Write(this.RefId);
             w.Write(obj.RefId);

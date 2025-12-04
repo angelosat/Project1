@@ -19,6 +19,7 @@ namespace Start_a_Town_
         internal IDataWriter Write(IntVec2 v);
         internal IDataWriter Write(List<int> v);
         internal IDataWriter Write(params object[] v);
+        internal IDataWriter WriteASCII(string v);
 
     }
 }

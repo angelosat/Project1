@@ -10,13 +10,11 @@ namespace Start_a_Town_
         static readonly int _packetTypeId;
         static PacketSnapshots()
         {
-            _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
+            _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(NetEndpoint net, ICollection<GameObject> entities)
         {
             var server = net as Server;
-            //var strem = server.OutgoingStreamUnreliable;
-            //strem.Write(_packetTypeId);
             var strem = server.BeginPacketNew(ReliabilityType.Unreliable, _packetTypeId);
             strem.Write(server.Clock.TotalMilliseconds);
             strem.Write(entities.Count);

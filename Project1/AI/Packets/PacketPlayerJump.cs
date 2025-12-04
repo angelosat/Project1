@@ -10,20 +10,13 @@ namespace Start_a_Town_
         static readonly int _packetTypeId;
         static PacketPlayerJump()
         {
-            _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
+            _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Send(NetEndpoint net)
         {
             if (net is Server)
                 throw new Exception();
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
-
-            //var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
-            //w.Write(net.GetPlayer().ID);
-            //net.EndPacket();
-
-            var pck = net.BeginPacketNew(ReliabilityType.OrderedReliable, _packetTypeId);
+            var pck = net.BeginPacket(_packetTypeId);
             pck.Write(net.GetPlayer().ID);
         }
         private static void Receive(NetEndpoint net, Packet pck)

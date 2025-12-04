@@ -9,16 +9,16 @@ namespace Start_a_Town_
         static readonly int p, pNew, pCategory, pVariation;
         static PacketStorageFiltersNew()
         {
-            p = PacketRegistry.Register(Receive);
-            pNew = PacketRegistry.Register(ReceiveNew);
-            pCategory = PacketRegistry.Register(ReceiveCategory);
-            pVariation = PacketRegistry.Register(ReceiveVariation);
+            p = Registry.PacketHandlers.Register(Receive);
+            pNew = Registry.PacketHandlers.Register(ReceiveNew);
+            pCategory = Registry.PacketHandlers.Register(ReceiveCategory);
+            pVariation = Registry.PacketHandlers.Register(ReceiveVariation);
         }
         public static void Send(Stockpile stockpile, ItemDef item, Def v)
         {
             //var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
             //s.Write(pVariation);
-            var s = stockpile.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, pVariation);
+            var s = stockpile.Map.Net.BeginPacket(pVariation);
             s.Write(stockpile.ID);
             s.Write(item.Name);
             s.Write(v.Name);
@@ -39,7 +39,7 @@ namespace Start_a_Town_
         {
             //var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
             //s.Write(pCategory);
-            var s = stockpile.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, pCategory);
+            var s = stockpile.Map.Net.BeginPacket(pCategory);
 
             s.Write(stockpile.ID);
             s.Write(category?.Name ?? "");
@@ -59,7 +59,7 @@ namespace Start_a_Town_
         {
             //var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
             //s.Write(pNew);
-            var s = stockpile.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, pNew);
+            var s = stockpile.Map.Net.BeginPacket(pNew);
 
             s.Write(stockpile.ID);
             s.Write(item.Name);
@@ -87,7 +87,7 @@ namespace Start_a_Town_
         {
             //var s = stockpile.Map.Net.GetOutgoingStreamOrderedReliable();
             //s.Write(p);
-            var s = stockpile.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, p);
+            var s = stockpile.Map.Net.BeginPacket(p);
             s.Write(stockpile.ID);
             s.Write(nodeIndices ?? new int[] { });
             s.Write(leafIndices ?? new int[] { });

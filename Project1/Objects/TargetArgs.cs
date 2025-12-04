@@ -338,6 +338,43 @@ namespace Start_a_Town_
                     return this;
             }
         }
+        public TargetArgs Write(IDataWriter w)
+        {
+            w.Write((int)this.Type);
+            switch (this.Type)
+            {
+                case TargetType.Slot:
+
+                    w.Write(this.Slot.Parent.RefId);
+                    w.Write(this.Slot.ID);
+                    w.Write(this.Slot.ContainerNew.ID);
+                    return this;
+
+                case TargetType.Position:
+                    w.Write(this.Global);
+                    w.Write(this.Face);
+                    w.Write(this.Precise);
+                    return this;
+
+                case TargetType.Entity:
+
+                    w.Write(this.EntityID);
+                    return this;
+
+                case TargetType.Direction:
+                    w.Write(this.Direction);
+                    return this;
+
+                case TargetType.BlockEntitySlot:
+                    w.Write(this.Global);
+                    w.Write(this.Slot.ContainerNew.Name);
+                    w.Write(this.Slot.ID);
+                    return this;
+
+                default:
+                    return this;
+            }
+        }
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name, this.SaveAsList());

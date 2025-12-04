@@ -54,7 +54,7 @@ namespace Start_a_Town_
 
                 //var w = zone.Map.Net.GetOutgoingStreamOrderedReliable();
                 //w.Write(pSync);
-                var w = zone.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, pSync);
+                var w = zone.Map.Net.BeginPacketOld(pSync);
 
                 w.Write(zone.ID);
                 zone.Plant.Write(w);

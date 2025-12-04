@@ -20,24 +20,14 @@ namespace Start_a_Town_
                 PacketPlayerShopAssignCounter = Registry.PacketHandlers.Register(ReceivePlayerShopAssignCounter);
                 //PacketPlayerRenameShop = Network.RegisterPacketHandler(ReceivePlayerRenameShop);
             }
-            //static public void Init()
-            //{
-            //    PacketPlayerCreateShop = Network.RegisterPacketHandler(ReceivePlayerCreateShop);
-            //    PacketPlayerDeleteShop = Network.RegisterPacketHandler(ReceivePlayerDeleteShop);
-            //    PacketPlayerAddStockpileToShop = Network.RegisterPacketHandler(ReceivePlayerAddStockpileToShop);
-            //    PacketPlayerAddShoppingArea = Network.RegisterPacketHandler(ReceivePlayerAddShoppingArea);
-            //    PacketPlayerAssignWorkerToShop = Network.RegisterPacketHandler(HandlePlayerAssignWorkerToShop);
-            //    PacketPlayerShopAssignCounter = Network.RegisterPacketHandler(ReceivePlayerShopAssignCounter);
-            //    PacketPlayerRenameShop = Network.RegisterPacketHandler(ReceivePlayerRenameShop);
-            //}
-            public static void SendPlayerDeleteShop(INetEndpoint net, PlayerData player, int shopid)
+            
+            public static void SendPlayerDeleteShop(NetEndpoint net, PlayerData player, int shopid)
             {
                 if(net is Server)
                 {
                     net.Map.Town.ShopManager.RemoveShop(shopid);
                 }
-                //net.GetOutgoingStreamOrderedReliable().Write(PacketPlayerDeleteShop, player.ID, shopid);
-                net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerDeleteShop).Write(player.ID, shopid);
+                net.BeginPacket(PacketPlayerDeleteShop).Write(player.ID, shopid);
             }
             private static void ReceivePlayerDeleteShop(NetEndpoint net, Packet pck)
             {
@@ -50,11 +40,9 @@ namespace Start_a_Town_
                     SendPlayerDeleteShop(net, pl, shopid);
             }
 
-            static public void SendPlayerShopAssignCounter(INetEndpoint net, PlayerData player, Workplace shop, IntVec3 global)
+            static public void SendPlayerShopAssignCounter(NetEndpoint net, PlayerData player, Workplace shop, IntVec3 global)
             {
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketPlayerShopAssignCounter);
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerShopAssignCounter);
+                var w = net.BeginPacket(PacketPlayerShopAssignCounter);
 
                 w.Write(player.ID);
                 w.Write(shop?.ID ?? -1);
@@ -81,12 +69,9 @@ namespace Start_a_Town_
                     SendPlayerShopAssignCounter(net, player, shop, global);
             }
 
-            static public void SendPlayerAssignWorkerToShop(INetEndpoint net, PlayerData player, Actor actor, Workplace shop)
+            static public void SendPlayerAssignWorkerToShop(NetEndpoint net, PlayerData player, Actor actor, Workplace shop)
             {
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketPlayerAssignWorkerToShop);
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerAssignWorkerToShop);
-
+                var w = net.BeginPacket(PacketPlayerAssignWorkerToShop);
                 w.Write(player.ID);
                 w.Write(actor.RefId);
                 w.Write(shop.ID);
@@ -105,13 +90,11 @@ namespace Start_a_Town_
                     SendPlayerAssignWorkerToShop(net, net.GetPlayer(playerID), actor, shop);
             }
 
-            static public void SendPlayerAddStockpileToShop(INetEndpoint net, int playerID, int shopID, int stockpileID)
+            static public void SendPlayerAddStockpileToShop(NetEndpoint net, int playerID, int shopID, int stockpileID)
             {
                 if (shopID < 0)
                     return;
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketPlayerAddStockpileToShop);
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerAddStockpileToShop);
+                var w = net.BeginPacket(PacketPlayerAddStockpileToShop);
                 w.Write(playerID);
                 w.Write(shopID);
                 w.Write(stockpileID);
@@ -131,13 +114,11 @@ namespace Start_a_Town_
                     SendPlayerAddStockpileToShop(net, playerID, shopid, stockpileid);
             }
             
-            static public void SendPlayerAddShoppingArea(INetEndpoint net, int playerID, int shopID, int stockpileID)
+            static public void SendPlayerAddShoppingArea(NetEndpoint net, int playerID, int shopID, int stockpileID)
             {
                 if (shopID < 0)
                     return;
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketPlayerAddShoppingArea);
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerAddShoppingArea);
+                var w = net.BeginPacket(PacketPlayerAddShoppingArea);
 
                 w.Write(playerID);
                 w.Write(shopID);
@@ -159,12 +140,9 @@ namespace Start_a_Town_
             }
 
 
-            static public void SendPlayerCreateShop(INetEndpoint net, int playerID, Type shopType, int shopID = 0)
+            static public void SendPlayerCreateShop(NetEndpoint net, int playerID, Type shopType, int shopID = 0)
             {
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketPlayerCreateShop);
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerCreateShop);
-
+                var w = net.BeginPacket(PacketPlayerCreateShop);
                 w.Write(playerID);
                 w.Write(shopType.FullName);
                 w.Write(shopID);

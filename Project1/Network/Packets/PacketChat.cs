@@ -9,11 +9,11 @@ namespace Start_a_Town_
         static readonly int p;
         static PacketChat()
         {
-            p = NetEndpoint.RegisterPacketHandler(Receive);
+            p = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(INetEndpoint net, int playerID, string text)
+        internal static void Send(NetEndpoint net, int playerID, string text)
         {
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+            var w = net.BeginPacket(p);
             w.Write(playerID);
             w.WriteASCII(text);
         }

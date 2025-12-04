@@ -11,7 +11,7 @@ namespace Start_a_Town_
             static readonly int PacketStockpileSync;
             static Packets()
             {
-                PacketStockpileSync = PacketRegistry.Register(Receive);
+                PacketStockpileSync = Registry.PacketHandlers.Register(Receive);
             }
             internal static void SyncPriority(IStorageNew storage, StoragePriority p)
             {
@@ -21,7 +21,7 @@ namespace Start_a_Town_
                     stockpile.Settings.Priority = p;
                 //var w = net.GetOutgoingStreamOrderedReliable();
                 //w.Write(PacketStockpileSync);
-                var w = stockpile.Map.Net.BeginPacket(ReliabilityType.OrderedReliable, PacketStockpileSync);
+                var w = stockpile.Map.Net.BeginPacket(PacketStockpileSync);
 
                 w.Write(stockpile.ID);
                 w.Write((byte)p);

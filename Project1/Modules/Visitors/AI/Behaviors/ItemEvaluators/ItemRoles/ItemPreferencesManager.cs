@@ -321,14 +321,12 @@ namespace Start_a_Town_
             static readonly int pSyncPrefsAll;
             static Packets()
             {
-                pSyncPrefsAll = NetEndpoint.RegisterPacketHandler(Receive);
+                pSyncPrefsAll = Registry.PacketHandlers.Register(Receive);
             }
 
-            internal static void Sync(INetEndpoint net, Actor actor, System.Collections.IList oldItems, System.Collections.IList newItems)
+            internal static void Sync(NetEndpoint net, Actor actor, System.Collections.IList oldItems, System.Collections.IList newItems)
             {
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(pSyncPrefsAll);
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, pSyncPrefsAll);
+                var w = net.BeginPacketOld(pSyncPrefsAll);
 
                 w.Write(actor.RefId);
 

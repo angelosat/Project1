@@ -8,7 +8,7 @@ namespace Start_a_Town_
         static readonly int PType;
         static PacketEntityCrouchToggle()
         {
-            PType = PacketRegistry.Register(Receive);
+            PType = Registry.PacketHandlers.Register(Receive);
         }
        
         internal static void Send(INetEndpoint net, int entityID, bool toggle)

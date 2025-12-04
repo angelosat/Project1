@@ -10,13 +10,14 @@ namespace Start_a_Town_
 
         static PacketMap()
         {
-            _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
+            //_packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
+            _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
 
         internal static void Send(NetEndpoint net, PlayerData player)
         {
             var server = net as Server;
-            var w = server.BeginPacket(ReliabilityType.OrderedReliable, _packetTypeId);
+            var w = server.BeginPacketOld(_packetTypeId);
             server.Map.WriteData(w);
         }
         private static void Receive(NetEndpoint net, Packet packet)

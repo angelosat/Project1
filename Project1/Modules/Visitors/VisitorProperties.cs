@@ -143,9 +143,7 @@ namespace Start_a_Town_
             var net = this.Actor.Net;
             if (net is Client)
                 throw new Exception();
-            //net.WriteToStream(PacketSync, this.Actor.RefId);
-            //this.Sync(net.GetOutgoingStreamOrderedReliable());
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketSync);
+            var w = net.BeginPacketOld(PacketSync);
             w.Write(this.Actor.RefId);
             this.Sync(w);
         }

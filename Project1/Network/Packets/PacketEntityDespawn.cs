@@ -8,15 +8,13 @@ namespace Start_a_Town_
         static readonly int _packetTypeId;
         static PacketEntityDespawn()
         {
-            _packetTypeId = PacketRegistry.Register(Receive);
+            _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(INetEndpoint net, Entity entity)
+        static public void Send(NetEndpoint net, Entity entity)
         {
             if (net is Client)
                 return;
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, _packetTypeId);
+            var w = net.BeginPacket(_packetTypeId);
             w.Write(entity.RefId);
         }
         static public void Receive(NetEndpoint net, Packet pck)

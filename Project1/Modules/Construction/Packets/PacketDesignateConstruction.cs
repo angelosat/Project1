@@ -13,17 +13,14 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(INetEndpoint net, ToolBlockBuild.Args a)
+        internal static void Send(NetEndpoint net, ToolBlockBuild.Args a)
         {
             Send(net, null, a);
         }
         
-        static public void Send(INetEndpoint net, ProductMaterialPair item, ToolBlockBuild.Args a)
+        static public void Send(NetEndpoint net, ProductMaterialPair item, ToolBlockBuild.Args a)
         {
-            //var stream = net.GetOutgoingStreamOrderedReliable();
-            //stream.Write(p);
-            var stream = net.BeginPacket(ReliabilityType.OrderedReliable, p);
-
+            var stream = net.BeginPacketOld(p);
             a.Write(stream);
             if(!a.Removing)
                 item.Write(stream);

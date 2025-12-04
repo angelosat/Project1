@@ -9,7 +9,7 @@ namespace Start_a_Town_
         static readonly int PacketInteract;
         static PacketEntityInteract()
         {
-            PacketInteract = PacketRegistry.Register(Receive);
+            PacketInteract = Registry.PacketHandlers.Register(Receive);
         }
 
         internal static void EndInteraction(INetEndpoint net, GameObject entity, bool success)

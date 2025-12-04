@@ -9,14 +9,14 @@ namespace Start_a_Town_
         static readonly int _packetTypeId;
         static PacketChunkReceived()
         {
-            _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
+            _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
         internal static void Init()
         {
         }
         internal static void Send(Client client, PlayerData player, Vector2 chunkCoords)
         {
-            var w = client.BeginPacket(ReliabilityType.OrderedReliable, _packetTypeId);
+            var w = client.BeginPacket(_packetTypeId);
             w.Write(player.ID);
             w.Write(chunkCoords);
         }

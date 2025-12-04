@@ -5,6 +5,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
+using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -61,7 +62,7 @@ namespace Start_a_Town_
         public List<TownComponent> TownComponents = new();
 
         public MapBase Map;
-        public INetEndpoint Net => this.Map.Net;
+        public NetEndpoint Net => this.Map.Net;
 
         public Dictionary<Utility.Types, HashSet<Vector3>> TownUtilitiesNew = new();
 

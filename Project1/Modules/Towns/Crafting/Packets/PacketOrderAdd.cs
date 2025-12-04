@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -9,15 +8,12 @@ namespace Start_a_Town_
         static int p;
         static internal void Init()
         {
-            // TODO
             p = Registry.PacketHandlers.Register(Receive);
         }
 
-        internal static void Send(INetEndpoint net, Vector3 global, Reaction reaction)
+        internal static void Send(NetEndpoint net, Vector3 global, Reaction reaction)
         {
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+            var w = net.BeginPacketOld(p);
 
             w.Write(global);
             reaction.Write(w);

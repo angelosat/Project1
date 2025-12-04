@@ -24,6 +24,7 @@ namespace Start_a_Town_.Net
         public IDataWriter Write(Vector3 v) { this._writer.Write(v); return this; }
         public IDataWriter Write(Vector2 v) { this._writer.Write(v); return this; }
         public IDataWriter Write(List<int> v) { this._writer.Write(v); return this; }
+        public IDataWriter WriteASCII(string v) { this._writer.WriteASCII(v); return this; }
 
         public IDataWriter Write(params object[] v) { this._writer.Write(v); return this; }
         internal void End() { }

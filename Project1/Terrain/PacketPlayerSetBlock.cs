@@ -12,15 +12,12 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        public static void Send(INetEndpoint net, PlayerData player, IntVec3 global, Block block, MaterialDef material, byte data = 0, int variation = 0, int orientation = 0)
+        public static void Send(NetEndpoint net, PlayerData player, IntVec3 global, Block block, MaterialDef material, byte data = 0, int variation = 0, int orientation = 0)
         {
             if (net is Server)
                 Perform(net.Map, global, block, material, data, variation, orientation);
 
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
-
+            var w = net.BeginPacketOld(p);
             w.Write(player.ID);
             w.Write(global);
             w.Write(block);

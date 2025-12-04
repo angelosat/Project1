@@ -43,7 +43,6 @@ namespace Start_a_Town_
 
         void EventOccured(int eventTypeId, params object[] p);
 
-        BinaryWriter BeginPacket(ReliabilityType rType, int pType);
         IDataWriter BeginPacketNew(ReliabilityType rType, int pType);
 
         void WriteToStream(params object[] args);

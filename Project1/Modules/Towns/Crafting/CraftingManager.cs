@@ -50,7 +50,7 @@ namespace Start_a_Town_
             var net = order.Map.Net;
             //var w = net.GetOutgoingStreamOrderedReliable();
             //w.Write(pRestrictions);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, pRestrictions);
+            var w = net.BeginPacket(pRestrictions);
 
             w.Write(order.Workstation);
             w.Write(order.ID);

@@ -64,7 +64,7 @@ namespace Start_a_Town_
 
         public MapBase Map => this.Town.Map;
 
-        public INetEndpoint Net => this.Town.Net;
+        public NetEndpoint Net => this.Town.Net;
 
         public void OpenGui()
         {
@@ -678,16 +678,16 @@ namespace Start_a_Town_
             static int PacketUpdateWorkerRoles, PacketPlayerRenameShop, PacketPlayerToggleShop;
             static Packets()
             {
-                PacketUpdateWorkerRoles = NetEndpoint.RegisterPacketHandler(UpdateWorkerRoles);
-                PacketPlayerRenameShop = NetEndpoint.RegisterPacketHandler(ReceivePlayerRenameShop);
-                PacketPlayerToggleShop = NetEndpoint.RegisterPacketHandler(ReceivePlayerToggleShop);
+                PacketUpdateWorkerRoles = Registry.PacketHandlers.Register(UpdateWorkerRoles);
+                PacketPlayerRenameShop = Registry.PacketHandlers.Register(ReceivePlayerRenameShop);
+                PacketPlayerToggleShop = Registry.PacketHandlers.Register(ReceivePlayerToggleShop);
             }
            
-            public static void UpdateWorkerRoles(INetEndpoint net, PlayerData player, Workplace tavern, JobDef role, Actor actor)
+            public static void UpdateWorkerRoles(NetEndpoint net, PlayerData player, Workplace tavern, JobDef role, Actor actor)
             {
                 if (net is Server)
                     tavern.ToggleJob(actor, role);
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketUpdateWorkerRoles);
+                var w = net.BeginPacket(PacketUpdateWorkerRoles);
                 w.Write(player.ID, tavern.ID, role.Name, actor.RefId);
             }
 
@@ -704,11 +704,11 @@ namespace Start_a_Town_
                     UpdateWorkerRoles(net, player, tavern, role, actor);
             }
 
-            static public void SendPlayerRenameShop(INetEndpoint net, int playerID, int shopID, string name)
+            static public void SendPlayerRenameShop(NetEndpoint net, int playerID, int shopID, string name)
             {
                 if (shopID < 0)
                     return;
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerRenameShop);
+                var w = net.BeginPacket(PacketPlayerRenameShop);
                 w.Write(playerID);
                 w.Write(shopID);
                 w.Write(name);
@@ -728,11 +728,11 @@ namespace Start_a_Town_
                     SendPlayerRenameShop(net, playerID, shopid, name);
             }
 
-            static public void SendPlayerToggleShop(INetEndpoint net, int playerID, int shopID)
+            static public void SendPlayerToggleShop(NetEndpoint net, int playerID, int shopID)
             {
                 if (shopID < 0)
                     return;
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerToggleShop);
+                var w = net.BeginPacket(PacketPlayerToggleShop);
                 w.Write(playerID);
                 w.Write(shopID);
             }

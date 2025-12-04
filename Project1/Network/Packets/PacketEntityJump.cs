@@ -8,7 +8,7 @@ namespace Start_a_Town_
         static readonly int _packetTypeId;
         static PacketEntityJump()
         {
-            _packetTypeId = PacketRegistry.Register(Receive);
+            _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
         
         internal static void Send(INetEndpoint net, int entityID)

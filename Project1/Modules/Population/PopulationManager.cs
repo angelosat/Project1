@@ -15,8 +15,8 @@ namespace Start_a_Town_
             static int PacketVisitorArrived, PacketAdventurerCreated;
             public static void Init()
             {
-                PacketVisitorArrived = PacketRegistry.Register(ReceiveNotifyVisit);
-                PacketAdventurerCreated = PacketRegistry.Register(ReceiveNotifyAdventurerCreated);
+                PacketVisitorArrived = Registry.PacketHandlers.Register(ReceiveNotifyVisit);
+                PacketAdventurerCreated = Registry.PacketHandlers.Register(ReceiveNotifyAdventurerCreated);
             }
 
             public static void SendNotifyVisit(Actor actor)

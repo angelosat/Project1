@@ -9,13 +9,13 @@ namespace Start_a_Town_
         static readonly int _packetTypeId;
         static PacketEntityMoveToggle()
         {
-            _packetTypeId = NetEndpoint.RegisterPacketHandler(Receive);
+            _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
         
         internal static void Send(NetEndpoint net, int entityID, bool toggle)
         {
             var server = net as Server;
-            var w = server.BeginPacket(ReliabilityType.OrderedReliable, _packetTypeId);
+            var w = server.BeginPacket(_packetTypeId);
             w.Write(entityID);
             w.Write(toggle);
         }

@@ -12,7 +12,7 @@ namespace Start_a_Town_
     {
         public Town Town;
         public MapBase Map => this.Town.Map;
-        public INetEndpoint Net => this.Map.Net;
+        public NetEndpoint Net => this.Map.Net;
         public override string Label => this.Name;
         const float UpdateFrequency = 1; // per second
         float UpdateTimerMax = Ticks.PerSecond / UpdateFrequency;

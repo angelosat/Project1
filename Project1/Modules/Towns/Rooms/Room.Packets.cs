@@ -10,18 +10,17 @@ namespace Start_a_Town_
             static readonly int PacketSetOwner, PacketSetRoomType, PacketSetWorkplace, PacketRefresh;
             static Packets()
             {
-                PacketSetOwner = PacketRegistry.Register(SetOwner);
-                PacketSetRoomType = PacketRegistry.Register(SetRoomType);
-                PacketSetWorkplace = PacketRegistry.Register(SetWorkplace);
-                PacketRefresh = PacketRegistry.Register(Refresh);
+                PacketSetOwner = Registry.PacketHandlers.Register(SetOwner);
+                PacketSetRoomType = Registry.PacketHandlers.Register(SetRoomType);
+                PacketSetWorkplace = Registry.PacketHandlers.Register(SetWorkplace);
+                PacketRefresh = Registry.PacketHandlers.Register(Refresh);
             }
 
-            public static void SetRoomType(INetEndpoint net, PlayerData player, Room room, RoomRoleDef roomType)
+            public static void SetRoomType(NetEndpoint net, PlayerData player, Room room, RoomRoleDef roomType)
             {
                 if (net is Server)
                     room.RoomRole = roomType;
-                //net.GetOutgoingStreamOrderedReliable().Write(PacketSetRoomType, player.ID, room.ID, roomType?.Name ?? "");
-                net.BeginPacket(ReliabilityType.OrderedReliable, PacketSetRoomType).Write(player.ID, room.ID, roomType?.Name ?? "");
+                net.BeginPacket(PacketSetRoomType).Write(player.ID, room.ID, roomType?.Name ?? "");
             }
             private static void SetRoomType(NetEndpoint net, Packet pck)
             {
@@ -35,12 +34,12 @@ namespace Start_a_Town_
                     SetRoomType(net, player, room, roomdef);
             }
 
-            public static void SetOwner(INetEndpoint net, PlayerData player, Room room, Actor owner)
+            public static void SetOwner(NetEndpoint net, PlayerData player, Room room, Actor owner)
             {
                 if (net is Server)
                     room.ForceAddOwner(owner);
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketSetOwner, player.ID, room.ID, owner?.RefId ?? -1);
-                net.BeginPacket(ReliabilityType.OrderedReliable, PacketSetOwner).Write(player.ID, room.ID, owner?.RefId ?? -1);
+                net.BeginPacket(PacketSetOwner).Write(player.ID, room.ID, owner?.RefId ?? -1);
             }
             private static void SetOwner(NetEndpoint net, Packet pck)
             {
@@ -55,13 +54,13 @@ namespace Start_a_Town_
                     room.ForceAddOwner(owner);
             }
 
-            internal static void SetWorkplace(INetEndpoint net, PlayerData player, Room room, Workplace wplace)
+            internal static void SetWorkplace(NetEndpoint net, PlayerData player, Room room, Workplace wplace)
             {
                 if (net is Server)
                     room.SetWorkplace(wplace);
                 //var w = net.GetOutgoingStreamOrderedReliable();
                 //w.Write(PacketSetWorkplace);
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketSetWorkplace);
+                var w = net.BeginPacket(PacketSetWorkplace);
                 w.Write(player.ID);
                 w.Write(room.ID);
                 w.Write(wplace?.ID ?? -1);
@@ -80,12 +79,11 @@ namespace Start_a_Town_
                     room.SetWorkplace(wplace);
             }
 
-            internal static void Refresh(INetEndpoint net, PlayerData playerData, Room room, IntVec3 center)
+            internal static void Refresh(NetEndpoint net, PlayerData playerData, Room room, IntVec3 center)
             {
                 if (net is Server)
                     room.Refresh(center);
-                //net.GetOutgoingStreamOrderedReliable().Write(PacketRefresh, playerData.ID, room.ID, center);
-                net.BeginPacket(ReliabilityType.OrderedReliable, PacketRefresh).Write(playerData.ID, room.ID, center);
+                net.BeginPacket(PacketRefresh).Write(playerData.ID, room.ID, center);
             }
             private static void Refresh(NetEndpoint net, Packet pck)
             {

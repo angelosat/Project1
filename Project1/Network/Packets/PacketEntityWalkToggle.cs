@@ -15,7 +15,7 @@ namespace Start_a_Town_
         internal static void Send(NetEndpoint net, int entityID, bool toggle)
         {
             var server = net as Server;
-            var w = server.BeginPacket(ReliabilityType.OrderedReliable, PType);
+            var w = server.BeginPacket(PType);
             w.Write(entityID);
             w.Write(toggle);
         }

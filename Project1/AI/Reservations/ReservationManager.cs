@@ -127,7 +127,7 @@ namespace Start_a_Town_
 
         private void CancelReservation(Reservation r)
         {
-            var actor = this.Map.Net.GetNetworkObject<Actor>(r.Actor);
+            var actor = this.Map.World.GetEntity<Actor>(r.Actor);
             var task = actor.CurrentTask;
             if (task.ID != r.TaskID)
                 throw new Exception();

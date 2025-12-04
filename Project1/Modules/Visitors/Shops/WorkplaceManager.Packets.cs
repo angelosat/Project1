@@ -98,7 +98,7 @@ namespace Start_a_Town_
                 var actorID = r.ReadInt32();
                 var shopID = r.ReadInt32();
                 var manager = net.Map.Town.ShopManager;
-                var actor = net.GetNetworkEntity(actorID) as Actor;
+                var actor = net.World.GetEntity(actorID) as Actor;
                 var shop = manager.GetShop(shopID);
                 shop.AddWorker(actor);
                 if (net is Server)

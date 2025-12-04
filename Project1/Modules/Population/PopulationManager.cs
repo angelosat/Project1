@@ -34,7 +34,7 @@ namespace Start_a_Town_
                 var r = pck.PacketReader;
                 var client = net as Client;
                 var actorID = r.ReadInt32();
-                var actor = client.GetNetworkEntity(actorID) as Actor;
+                var actor = client.World.GetEntity(actorID) as Actor;
                 var world = client.Map.World as StaticWorld;
                 world.Population.RegisterVisitor(actor);
             }
@@ -44,7 +44,7 @@ namespace Start_a_Town_
                 if (net is Server)
                     throw new Exception();
                 var actorID = r.ReadInt32();
-                var actor = net.GetNetworkEntity(actorID) as Actor;
+                var actor = net.World.GetEntity(actorID) as Actor;
                 ReportVisit(net, actor);
             }
 
@@ -92,7 +92,7 @@ namespace Start_a_Town_
         {
             var map = this.World.Map;
             var net = map.Net;
-            var allActors = net.GetNetworkObjects().OfType<Actor>();
+            var allActors = net.World.GetEntities().OfType<Actor>();// GetNetworkObjects().OfType<Actor>();
             var citizens = map.Town.GetAgents();
             foreach (var actor in allActors)
             {
@@ -156,7 +156,7 @@ namespace Start_a_Town_
         private static void AnnounceInhabitantCreated(INetEndpoint net, Actor actor)
         {
             net.Write($"{actor.Name} created");
-            net.EventOccured(Components.Message.Types.NewAdventurerCreated, actor);
+            net.EventOccured((int)Components.Message.Types.NewAdventurerCreated, actor);
         }
 
         private static void MakeVisitor(Actor actor)
@@ -203,7 +203,7 @@ namespace Start_a_Town_
                 {
                     if (!InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
                         return;
-                    ContextMenuManager.PopUp(("Force visit", () => Server.Instance.GetNetworkObject<Actor>(npc.RefId).GetVisitorProperties().ForceVisit()));
+                    ContextMenuManager.PopUp(("Force visit", () => Server.Instance.World.GetEntity<Actor>(npc.RefId).GetVisitorProperties().ForceVisit()));
                 };
 
                 return btn;

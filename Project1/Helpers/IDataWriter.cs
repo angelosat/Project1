@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
@@ -16,5 +17,8 @@ namespace Start_a_Town_
         internal IDataWriter Write(Vector2 v);
         internal IDataWriter Write(IntVec3 v);
         internal IDataWriter Write(IntVec2 v);
+        internal IDataWriter Write(List<int> v);
+        internal IDataWriter Write(params object[] v);
+
     }
 }

@@ -4,13 +4,12 @@ using System.IO;
 
 namespace Start_a_Town_.Net
 {
-    public class PacketBuilder : IDataWriter
+    public class DataWriter : IDataWriter
     {
         readonly BinaryWriter _writer;
-        private PacketBuilder(BinaryWriter writer, int pType)
+        private DataWriter(MemoryStream mem)
         {
-            this._writer = writer;
-            writer.Write(pType);
+            this._writer = new(mem);
         }
         public IDataWriter Write(bool v) { this._writer.Write(v); return this; }
         public IDataWriter Write(byte[] v) { this._writer.Write(v); return this; }
@@ -27,10 +26,6 @@ namespace Start_a_Town_.Net
         public IDataWriter Write(List<int> v) { this._writer.Write(v); return this; }
 
         public IDataWriter Write(params object[] v) { this._writer.Write(v); return this; }
-        internal static PacketBuilder Create(BinaryWriter w, int pType)
-        {
-            return new(w, pType);
-        }
         internal void End() { }
     }
 }

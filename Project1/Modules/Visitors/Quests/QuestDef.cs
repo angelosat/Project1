@@ -28,7 +28,7 @@ namespace Start_a_Town_
         {
             get
             {
-                return this.Manager.Net.GetNetworkEntity(this.GiverID) as Actor;
+                return this.Manager.Town.Map.World.GetEntity(this.GiverID) as Actor;
             }
             set
             {
@@ -71,14 +71,14 @@ namespace Start_a_Town_
         public QuestDef AddObjective(QuestObjective objective)
         {
             this.Objectives.Add(objective);
-            this.Manager.Town.Net.EventOccured(Components.Message.Types.QuestObjectivesUpdated, new[] { objective }, new QuestObjective[] { });
+            this.Manager.Town.Net.EventOccured((int)Components.Message.Types.QuestObjectivesUpdated, new[] { objective }, new QuestObjective[] { });
             this.Manager.QuestModified(this);
             return this;
         }
         internal QuestDef RemoveObjective(QuestObjective objective)
         {
             this.Objectives.Remove(objective);
-            this.Manager.Town.Net.EventOccured(Components.Message.Types.QuestObjectivesUpdated, new QuestObjective[] {  }, new[] { objective });
+            this.Manager.Town.Net.EventOccured((int)Components.Message.Types.QuestObjectivesUpdated, new QuestObjective[] {  }, new[] { objective });
             this.Manager.QuestModified(this);
             return this;
         }

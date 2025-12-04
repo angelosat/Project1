@@ -19,7 +19,7 @@ namespace Start_a_Town_.Modules.AI.Net.Packets
         static public void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var entity = net.GetNetworkEntity(r.ReadInt32()) as Actor;
+            var entity = net.World.GetEntity(r.ReadInt32()) as Actor;
             var entry = r.ReadString();
             entity.Log.Write(entry);
         }

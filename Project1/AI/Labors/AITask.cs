@@ -429,8 +429,8 @@ namespace Start_a_Town_
         protected virtual void Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
-            this.Tool = TargetArgs.Read((INetEndpoint)null, r);
-            this.TargetA = TargetArgs.Read((INetEndpoint)null, r);
+            this.Tool = TargetArgs.Read(null, r);
+            this.TargetA = TargetArgs.Read(null, r);
             this.AmountA = r.ReadInt32();
             this.TargetsA = r.ReadListTargets();
             this.AmountsA = r.ReadListInt();

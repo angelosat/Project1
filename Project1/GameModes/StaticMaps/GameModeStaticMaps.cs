@@ -159,7 +159,7 @@ namespace Start_a_Town_.Core
         {
             // all chunks received, enter world
             "all chunks loaded!".ToConsole();
-            net.EventOccured(Components.Message.Types.ChunksLoaded);
+            net.EventOccured((int)Components.Message.Types.ChunksLoaded);
             var map = net.Map as StaticMap;
             map.Regions.Init();
             map.InitUndiscoveredAreas();

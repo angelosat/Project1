@@ -27,7 +27,7 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             if (net is Server)
                 throw new Exception();
-            var entity = net.GetNetworkEntity(r.ReadInt32());
+            var entity = net.World.GetEntity(r.ReadInt32());
             entity.SyncRead(r);
         }
     }

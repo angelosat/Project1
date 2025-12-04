@@ -21,11 +21,11 @@ namespace Start_a_Town_.Components.Needs
         static public void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var entity = net.GetNetworkEntity(r.ReadInt32());
+            var entity = net.World.GetEntity(r.ReadInt32());
             var needName = r.ReadString();
             var needVal = r.ReadSingle();
             NeedsComponent.ModifyNeed(entity, needName, needVal);
-            net.Map.EventOccured(Components.Message.Types.NeedUpdated, entity, needName, needVal);
+            entity.Map.EventOccured(Components.Message.Types.NeedUpdated, entity, needName, needVal);
         }
     }
 }

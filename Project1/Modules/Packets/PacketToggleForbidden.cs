@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Start_a_Town_.Net;
 
@@ -13,16 +12,16 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(INetEndpoint net, IEnumerable<GameObject> enumerable)
+        internal static void Send(NetEndpoint net, IEnumerable<GameObject> enumerable)
         {
             Send(net, enumerable.Select(o => o.RefId).ToList());
         }
-        internal static void Send(INetEndpoint net, List<int> instanceID)
+        internal static void Send(NetEndpoint net, List<int> instanceID)
         {
            
             //var w = net.GetOutgoingStreamOrderedReliable();
             //w.Write(p);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
 
             w.Write(instanceID);
         }
@@ -31,7 +30,7 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var list = r.ReadListInt();
             foreach (var id in list)
-                net.GetNetworkEntity(id).ToggleForbidden();
+                net.World.GetEntity(id).ToggleForbidden();
             if (net is Server)
                 Send(net, list);
         }

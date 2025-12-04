@@ -10,10 +10,8 @@ namespace Start_a_Town_
         {
             PacketIDPlayerSetItemOwner = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(INetEndpoint net, int itemID, int ownerID)
+        static public void Send(NetEndpoint net, int itemID, int ownerID)
         {
-            //var stream = net.GetOutgoingStreamOrderedReliable();
-            //stream.Write(PacketIDPlayerSetItemOwner);
             var stream = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketIDPlayerSetItemOwner);
             stream.Write(itemID);
             stream.Write(ownerID);
@@ -23,11 +21,11 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var itemID = r.ReadInt32();
             var ownerID = r.ReadInt32();
-            var item = net.GetNetworkEntity(itemID);
+            var item = net.World.GetEntity(itemID);
             
             item.SetOwner(ownerID);
          
-            if (net is Server)
+            if (net.IsServer)
                 Send(net, itemID, ownerID);
         }
     }

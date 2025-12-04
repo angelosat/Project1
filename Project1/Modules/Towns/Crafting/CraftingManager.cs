@@ -88,7 +88,7 @@ namespace Start_a_Town_
             var itemID = r.ReadInt32();
             var add = r.ReadBoolean();
             order.ToggleReagentRestriction(reagent, itemID, add);
-            net.EventOccured(Message.Types.OrderParametersChanged, order);
+            net.EventOccured((int)Message.Types.OrderParametersChanged, order);
 
             if (net is Server server)
                 WriteOrderToggleReagent(server.OutgoingStreamOrderedReliable, order, reagent, itemID, add);

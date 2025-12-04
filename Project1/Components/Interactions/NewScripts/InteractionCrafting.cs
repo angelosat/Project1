@@ -13,7 +13,7 @@ namespace Start_a_Town_.Crafting
         readonly List<ObjectRefIDsAmount> PlacedObjects = new();
         int _unfinishedRefID;
         Entity _unfinished;
-        Entity UnfinishedItem => this._unfinished ??= this.Actor.Net.GetNetworkObject<Entity>(this._unfinishedRefID);
+        Entity UnfinishedItem => this._unfinished ??= this.Actor.World.GetEntity(this._unfinishedRefID);
         Progress _progress = new();
 
         protected override float Progress => this._progress.Percentage;
@@ -61,7 +61,7 @@ namespace Start_a_Town_.Crafting
                 return;
             }
             var actor = this.Actor;
-            var ingr = this.PlacedObjects.Select(o => new ObjectAmount(actor.Net.GetNetworkEntity(o.Object), o.Amount)).ToList();
+            var ingr = this.PlacedObjects.Select(o => new ObjectAmount(actor.World.GetEntity(o.Object), o.Amount)).ToList();
             this.Product = this.Order.Reaction.Products.First().Make(actor, this.Order.Reaction, ingr);
             this._progress.Max = this.Product.WorkAmount;
         }

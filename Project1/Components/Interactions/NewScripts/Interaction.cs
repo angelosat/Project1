@@ -86,7 +86,7 @@ namespace Start_a_Town_
         public virtual void Interrupt(bool success)
         {
             if (!success)
-                this.Actor.Net.EventOccured(Message.Types.InteractionInterrupted, this.Actor, this);
+                this.Actor.Net.EventOccured((int)Message.Types.InteractionInterrupted, this.Actor, this);
             this.State = States.Finished;
             this.Animation?.FadeOutAndRemove();
         }

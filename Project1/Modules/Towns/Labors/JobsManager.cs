@@ -25,11 +25,11 @@ namespace Start_a_Town_
                 var r = pck.PacketReader;
                 var server = net as Server;
                 var player = server.GetPlayer(r.ReadInt32());
-                var actor = server.GetNetworkEntity(r.ReadInt32()) as Actor;
+                var actor = server.World.GetEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 var job = actor.GetJob(jobDef);
                 job.Read(r);
-                net.EventOccured(Components.Message.Types.JobUpdated, actor, job.Def);
+                net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
                 SyncJob(player, actor, job);
             }
 
@@ -39,7 +39,7 @@ namespace Start_a_Town_
                 if (net is Server)
                 {
                     job.Priority = (byte)priority;
-                    net.EventOccured(Components.Message.Types.JobUpdated, actor, job.Def);
+                    net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
                     SyncJob(player, actor, job);
                 }
                 else
@@ -58,7 +58,7 @@ namespace Start_a_Town_
                 if (net is Server)
                 {
                     actor.ToggleJob(jobDef);
-                    net.EventOccured(Components.Message.Types.JobUpdated, actor, jobDef);
+                    net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
                 }
                 //net.GetOutgoingStreamOrderedReliable().Write(pToggle, player.ID, actor.RefId, jobDef.Name);
                 net.BeginPacket(ReliabilityType.Ordered, pToggle).Write(player.ID, actor.RefId, jobDef.Name);
@@ -67,12 +67,12 @@ namespace Start_a_Town_
             {
                 var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
-                var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
+                var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 if (net is Client)
                 {
                     actor.ToggleJob(jobDef);
-                    net.EventOccured(Components.Message.Types.JobUpdated, actor, jobDef);
+                    net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
                 }
                 else
                     SendLaborToggle(player, actor, jobDef);
@@ -90,11 +90,11 @@ namespace Start_a_Town_
                 var r = pck.PacketReader;
                 var client = net as Client;
                 var player = client.GetPlayer(r.ReadInt32());
-                var actor = client.GetNetworkEntity(r.ReadInt32()) as Actor;
+                var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 var job = actor.GetJob(jobDef);
                 job.Read(r);
-                net.EventOccured(Components.Message.Types.JobUpdated, actor, jobDef);
+                net.EventOccured((int)Components.Message.Types.JobUpdated, actor, jobDef);
             }
         }
         readonly Lazy<Control> UILabors;
@@ -175,7 +175,7 @@ namespace Start_a_Town_
                 }, 0);
             }
             var net = this.Town.Net;
-            var actors = this.Town.Members.Select(id => net.GetNetworkEntity(id) as Actor);
+            var actors = this.Town.Members.Select(id => net.World.GetEntity(id) as Actor);
             tableAuto.AddItems(actors);
             tableManual.AddItems(actors);
 

@@ -60,7 +60,7 @@ namespace Start_a_Town_
             this.LvlProgress.Value = remaining;
             var actor = this.Container.Parent;
             actor.Net.ConsoleBox.Write(Log.Entry.Notification(actor, " has reached Level ", this.Level," in ", this, "!"));
-            actor.Net.EventOccured(Message.Types.SkillIncrease, actor, this);
+            actor.Net.EventOccured((int)Message.Types.SkillIncrease, actor, this);
         }
         static Skill()
         {

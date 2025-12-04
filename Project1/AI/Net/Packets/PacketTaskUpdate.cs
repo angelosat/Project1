@@ -20,7 +20,7 @@ namespace Start_a_Town_
         static public void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var entity = net.GetNetworkEntity(r.ReadInt32());
+            var entity = net.World.GetEntity(r.ReadInt32());
             if (entity == null)
                 return;
             var taskString = r.ReadString();

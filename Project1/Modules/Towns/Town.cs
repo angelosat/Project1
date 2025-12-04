@@ -26,7 +26,7 @@ namespace Start_a_Town_
         public ObservableHashSet<int> Members = new();
         public IEnumerable<Actor> GetAgents()
         {
-            return this.Members.Select(id => this.Map.Net.GetNetworkEntity(id) as Actor);
+            return this.Members.Select(id => this.Map.World.GetEntity(id) as Actor);
         }
         public GameObject GetNpc(Guid guid)
         {
@@ -104,7 +104,7 @@ namespace Start_a_Town_
         public void Update()
         {
             foreach (var agent in this.Members.ToArray())
-                if (this.Net.GetNetworkEntity(agent) == null)
+                if (this.Map.World.GetEntity(agent) == null)
                 {
                     this.Members.Remove(agent);
                     $"Removed disposed townie entity with id: {agent}".ToConsole();

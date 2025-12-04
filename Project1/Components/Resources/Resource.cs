@@ -181,7 +181,7 @@ namespace Start_a_Town_
             private static void HandleSyncAdjust(NetEndpoint net, Packet pck)
             {
                 var r = pck.PacketReader;
-                var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
+                var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
                 var resource = Def.GetDef<ResourceDef>(r.ReadString());
                 var value = r.ReadSingle();
                 if (net is Server)

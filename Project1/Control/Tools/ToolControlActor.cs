@@ -246,7 +246,7 @@ namespace Start_a_Town_
             StopMoving();
             StartWalk(false);
             StartSprint(false);
-            PacketControlNpc.Send(Net.Client.Instance, -1);
+            PacketControlNpc.Send(Net.Client.Instance, Net.Client.Instance.GetPlayer().ID, -1);
         }
     }
 }

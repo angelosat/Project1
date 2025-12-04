@@ -11,8 +11,10 @@ using System.Threading;
 
 namespace Start_a_Town_.Net
 {
-    public partial class Server : NetEndpoint// INetEndpoint
+    public partial class Server : NetEndpoint
     {
+        public override bool IsServer => false;
+        public override bool IsClient => true;
         public override double CurrentTick => ServerClock.TotalMilliseconds;
 
         readonly string _name = "Server";
@@ -47,7 +49,7 @@ namespace Start_a_Town_.Net
         /// </summary>
         public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = [];
 
-        void OnGameEvent(GameEvent e)
+        protected override void OnGameEvent(GameEvent e)
         {
             GameMode.Current.HandleEvent(this, e);
             foreach (var item in Game1.Instance.GameComponents)
@@ -55,11 +57,11 @@ namespace Start_a_Town_.Net
 
             Instance.Map.OnGameEvent(e);
         }
-        public override void EventOccured(Message.Types type, params object[] p)
-        {
-            var e = new GameEvent(ServerClock.TotalMilliseconds, type, p);
-            this.OnGameEvent(e);
-        }
+        //public override void EventOccured(Message.Types type, params object[] p)
+        //{
+        //    var e = new GameEvent(ServerClock.TotalMilliseconds, type, p);
+        //    this.OnGameEvent(e);
+        //}
 
         public static CancellationTokenSource ChunkLoaderToken = new();
         static Server _Instance;
@@ -664,28 +666,10 @@ namespace Start_a_Town_.Net
                     Instance.Instantiate(o);
             }
         }
-
-        public override GameObject GetNetworkEntity(int netId)
-        {
-            return this.World.GetEntity(netId);
-        }
-        public override T GetNetworkObject<T>(int netID)
-        {
-            this.World.TryGetEntity<T>(netID, out var entity);
-            return entity;
-        }
-
-        public override IEnumerable<GameObject> GetNetworkObjects()
-        {
-            foreach (var o in this.World.GetEntities())
-                yield return o;
-        }
-
         public override bool TryGetNetworkObject(int netID, out Entity obj)
         {
             return this.World.TryGetEntity(netID, out obj);
         }
-
         public override void PostLocalEvent(GameObject recipient, ObjectEventArgs args)
         {
             args.Network = Instance;
@@ -697,7 +681,6 @@ namespace Start_a_Town_.Net
             a.Network = Instance;
             recipient.PostMessage(a);
         }
-
         private static void SendSnapshots(TimeSpan gt)
         {
             /// always send snapshots every frame, even empty ones. so that the client can interpolate correctly
@@ -784,9 +767,6 @@ namespace Start_a_Town_.Net
         {
             var player = packet.Player;
             var r = packet.PacketReader;
-            //var mem = r.BaseStream;
-            //var lastPos = mem.Position;
-            //var lastPos = r.Position;
             while (r.Position < r.Length)
             {
                 var typeID = r.ReadInt32();

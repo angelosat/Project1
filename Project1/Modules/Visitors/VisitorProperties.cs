@@ -24,7 +24,7 @@ namespace Start_a_Town_
         {
             get
             {
-                return this.CachedActor ??= this.World.Map.Net.GetNetworkEntity(this.ActorID) as Actor;
+                return this.CachedActor ??= this.World.GetEntity(this.ActorID) as Actor;
             }
             set
             {
@@ -37,7 +37,7 @@ namespace Start_a_Town_
         public bool Discovered;
         public void ResolveReferences()
         {
-            this.CachedActor = this.World.Map.Net.GetNetworkEntity(this.ActorID) as Actor;
+            this.CachedActor = this.World.GetEntity(this.ActorID) as Actor;
         }
         
         //public float TownApprovalRating;
@@ -134,7 +134,7 @@ namespace Start_a_Town_
         private static void Sync(NetEndpoint net, Packet packet)
         {
             var r = packet.PacketReader;
-            var actor = net.GetNetworkObject<Actor>(r.ReadInt32());
+            var actor = net.World.GetEntity<Actor>(r.ReadInt32());
             actor.GetVisitorProperties().Sync(r);
         }
 
@@ -247,7 +247,7 @@ namespace Start_a_Town_
             var r = packet.PacketReader;
             if (net is Server)
                 throw new Exception();
-            var props = net.GetNetworkObject<Actor>(r.ReadInt32()).GetVisitorProperties();
+            var props = net.World.GetEntity<Actor>(r.ReadInt32()).GetVisitorProperties();
             props.AwardTownRating(r.ReadSingle());
         }
         public void AwardTownRating(float value)
@@ -265,14 +265,14 @@ namespace Start_a_Town_
         {
             var actor = this.Actor;
             this.Quests.Add(quest);
-            actor.Net.EventOccured(Components.Message.Types.QuestReceived, actor, quest);
+            actor.Net.EventOccured((int)Components.Message.Types.QuestReceived, actor, quest);
             AILog.SyncWrite(actor, $"Received quest [{quest}] from [{quest.Giver.Name}]");
             return true;
         }
         internal void AbandonQuest(QuestDef quest)
         {
             this.Quests.Remove(quest);
-            this.Actor.Net.EventOccured(Components.Message.Types.QuestAbandoned, this.Actor, quest);
+            this.Actor.Net.EventOccured((int)Components.Message.Types.QuestAbandoned, this.Actor, quest);
             this.Actor.Log.Write($"Abandoned quest [{quest.Name}]");
         }
         internal void CompleteQuest(QuestDef quest)

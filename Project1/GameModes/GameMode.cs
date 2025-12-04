@@ -59,7 +59,7 @@ namespace Start_a_Town_
         internal virtual Control GetNewGameGui(Action cancelAction) { return null; }
 
         internal virtual void ChunkReceived(Server server, int playerid, Vector2 vec) { }
-        internal virtual void HandleEvent(INetEndpoint net, GameEvent e) { }
+        internal virtual void HandleEvent(NetEndpoint world, GameEvent e) { }
         internal virtual void HandleEvent(INetEndpoint net, object e, object[] p) { }
         internal virtual void AllChunksReceived(INetEndpoint net) { }
     }

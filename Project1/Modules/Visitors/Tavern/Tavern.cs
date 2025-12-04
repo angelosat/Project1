@@ -32,7 +32,7 @@ namespace Start_a_Town_
             var map = this.Town.Map;
             return this.WorkerProps.Values.Any(p =>
             {
-                var actor = map.Net.GetNetworkObject<Actor>(p.ActorID);
+                var actor = map.World.GetEntity<Actor>(p.ActorID);
                 return
                     p.GetJob(JobInnKeeper).Enabled &&
                     actor.GetState().CurrentTaskBehavior is TaskBehaviorInnKeeper &&
@@ -107,20 +107,20 @@ namespace Start_a_Town_
         public void AddOrder(CraftOrder order)
         {
             this.Orders.Add(order);
-            this.Town.Net.EventOccured(Components.Message.Types.TavernMenuChanged, this, new CraftOrder[] { order }, new CraftOrder[] { });
+            this.Town.Net.EventOccured((int)Components.Message.Types.TavernMenuChanged, this, new CraftOrder[] { order }, new CraftOrder[] { });
         }
         public void RemoveOrder(CraftOrder order)
         {
             this.Orders.Remove(order);
-            this.Town.Net.EventOccured(Components.Message.Types.TavernMenuChanged, this, new CraftOrder[] {  }, new CraftOrder[] { order });
-            this.Town.Net.EventOccured(Components.Message.Types.OrderDeleted, order);
+            this.Town.Net.EventOccured((int)Components.Message.Types.TavernMenuChanged, this, new CraftOrder[] {  }, new CraftOrder[] { order });
+            this.Town.Net.EventOccured((int)Components.Message.Types.OrderDeleted, order);
         }
         public void RemoveOrder(int orderid)
         {
             var order = this.GetOrder(orderid);
             this.Orders.Remove(order);
-            this.Town.Net.EventOccured(Components.Message.Types.TavernMenuChanged, this, new CraftOrder[] { }, new CraftOrder[] { order });
-            this.Town.Net.EventOccured(Components.Message.Types.OrderDeleted, order);
+            this.Town.Net.EventOccured((int)Components.Message.Types.TavernMenuChanged, this, new CraftOrder[] { }, new CraftOrder[] { order });
+            this.Town.Net.EventOccured((int)Components.Message.Types.OrderDeleted, order);
         }
         public void AddTable(IntVec3 global)
         {

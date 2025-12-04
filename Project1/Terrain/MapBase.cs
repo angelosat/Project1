@@ -48,7 +48,7 @@ namespace Start_a_Town_
             {
                 var r = pck.PacketReader;
                 var client = net as Client;
-                var actor = client.GetNetworkEntity(r.ReadInt32());
+                var actor = client.World.GetEntity(r.ReadInt32());
                 var global = r.ReadVector3();
                 var velocity = r.ReadVector3();
                 var map = client.Map;
@@ -81,9 +81,9 @@ namespace Start_a_Town_
         public LightingEngine LightingEngine;
         public WorldBase World;
         public Dictionary<IntVec2, Chunk> ActiveChunks;
-        INetEndpoint _net;
+        NetEndpoint _net;
         public readonly int ID;
-        public INetEndpoint Net => this._net ??= this.World.Net;
+        public NetEndpoint Net => this._net ??= this.World.Net;
         public GameObject PlayerCharacter;
         public ParticleManager ParticleManager;
         public RegionManager Regions;
@@ -236,7 +236,7 @@ namespace Start_a_Town_
             {
                 blockentity.OnRemoved(this, global);
                 blockentity.Dispose();
-                this.Net.EventOccured(Components.Message.Types.BlockEntityRemoved, blockentity, global);
+                this.Net.EventOccured((int)Components.Message.Types.BlockEntityRemoved, blockentity, global);
             }
 
             // reenable physics of entities resting on block
@@ -274,7 +274,7 @@ namespace Start_a_Town_
                 blockentity.OnRemoved(this, global);
                 blockentity.Dispose();
                 if (notify)
-                    this.Net.EventOccured(Message.Types.BlockEntityRemoved, blockentity, global);
+                    this.Net.EventOccured((int)Message.Types.BlockEntityRemoved, blockentity, global);
             }
             foreach (var p in parts)
             {
@@ -712,7 +712,7 @@ namespace Start_a_Town_
        
         public void NotifyBlocksChanged(IEnumerable<IntVec3> positions)
         {
-            this.Net.EventOccured(Components.Message.Types.BlocksChanged, this, positions);
+            this.Net.EventOccured((int)Components.Message.Types.BlocksChanged, this, positions);
             this.Town.OnBlocksChanged(positions);
         }
         public void NotifyBlockChanged(IntVec3 pos)
@@ -752,7 +752,7 @@ namespace Start_a_Town_
         }
         public void EventOccured(Message.Types type, params object[] p)
         {
-            this.Net?.EventOccured(type, p);
+            this.Net?.EventOccured((int)type, p);
         }
 
         public virtual void OnGameEvent(GameEvent e)

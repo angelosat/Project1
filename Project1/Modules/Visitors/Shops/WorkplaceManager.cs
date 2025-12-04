@@ -34,7 +34,7 @@ namespace Start_a_Town_
         {
             this.Shopss.Add(shop);
             this.Shops.Add(shop.ID, shop);
-            this.Town.Net.EventOccured(Components.Message.Types.ShopsUpdated, shop);
+            this.Town.Net.EventOccured((int)Components.Message.Types.ShopsUpdated, shop);
         }
 
         public Workplace FindShop(Stockpile stockpile)
@@ -124,7 +124,7 @@ namespace Start_a_Town_
             var shop = this.Shops[shopid];
             this.Shopss.Remove(shop);
             this.Shops.Remove(shopid);
-            this.Town.Net.EventOccured(Components.Message.Types.ShopsUpdated, shop);
+            this.Town.Net.EventOccured((int)Components.Message.Types.ShopsUpdated, shop);
         }
 
         public bool ShopExists(Workplace shop)

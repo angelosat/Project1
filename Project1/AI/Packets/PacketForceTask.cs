@@ -23,10 +23,10 @@ namespace Start_a_Town_
         static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
+            var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
             var typeName = r.ReadString();
             var taskGiver = Activator.CreateInstance(Type.GetType(typeName)) as TaskGiver;
-            var target = TargetArgs.Read(net, r);
+            var target = TargetArgs.Read(actor.World.Net, r);
             actor.ForceTask(taskGiver, target);
         }
     }

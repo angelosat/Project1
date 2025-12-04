@@ -94,7 +94,7 @@ namespace Start_a_Town_.Components.Resources
                 return;
             value += 2;
             this.Add(value, resource);
-            parent.Net.EventOccured(Message.Types.HealthLost, parent, (int)value);
+            parent.Net.EventOccured((int)Message.Types.HealthLost, parent, (int)value);
         }
 
         public override void OnHealthBarCreated(GameObject parent, UI.Nameplate plate, Resource values)

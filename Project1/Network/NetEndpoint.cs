@@ -4,12 +4,14 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Start_a_Town_.Net
 {
     public abstract partial class NetEndpoint : INetEndpoint
     {
+        public abstract bool IsServer { get; }
+        public abstract bool IsClient { get; }
+
         static int PacketIDSequence = 20000;
 
         static protected readonly Dictionary<int, Action<NetEndpoint, Packet>> PacketHandlers = [];
@@ -58,10 +60,12 @@ namespace Start_a_Town_.Net
         public abstract bool DisposeObject(GameObject obj);
         public abstract bool DisposeObject(int netID);
         public abstract void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType);
-        public abstract void EventOccured(Message.Types type, params object[] p);
-        public abstract GameObject GetNetworkEntity(int netID);
-        public abstract T GetNetworkObject<T>(int netID) where T : Entity;
-        public abstract IEnumerable<GameObject> GetNetworkObjects();
+        public void EventOccured(int eventTypeId, params object[] p)
+        {
+            var e = new GameEvent(this.Clock.TotalMilliseconds, eventTypeId, p);
+            this.OnGameEvent(e);
+        }
+        protected abstract void OnGameEvent(GameEvent e);
         public abstract BinaryWriter GetOutgoingStreamOrderedReliable();
         public abstract PlayerData GetPlayer(int id);
         public abstract PlayerData GetPlayer();

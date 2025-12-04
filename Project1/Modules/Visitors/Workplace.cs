@@ -341,13 +341,13 @@ namespace Start_a_Town_
             this.Town.ShopManager.GetShop<Shop>(actor)?.RemoveWorker(actor);
             this.Workers.Add(actor.RefId);
             this.WorkerProps.Add(actor.RefId, new WorkerProps(actor, this.GetRoleDefs().ToArray()));
-            this.Town.Net.EventOccured(Components.Message.Types.ShopUpdated, this, new[] { actor });
+            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { actor });
         }
 
         internal IEnumerable<Actor> GetWorkers()
         {
             foreach (var actor in this.Workers)
-                yield return this.Town.Net.GetNetworkEntity(actor) as Actor;
+                yield return this.Town.Map.World.GetEntity(actor) as Actor;
         }
 
         internal virtual void OnBlocksChanged(IEnumerable<IntVec3> positions) { }
@@ -361,7 +361,7 @@ namespace Start_a_Town_
         {
             this.Workers.Remove(actor.RefId);
             this.WorkerProps.Remove(actor.RefId);
-            this.Town.Net.EventOccured(Components.Message.Types.ShopUpdated, this, new[] { actor });
+            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { actor });
         }
 
         internal void ResolveReferences()
@@ -471,7 +471,7 @@ namespace Start_a_Town_
                         };
                     });
                 }
-                table.AddItems(tav.Workers.Select(tav.Net.GetNetworkEntity).Cast<Actor>());
+                table.AddItems(tav.Workers.Select(tav.Map.World.GetEntity).Cast<Actor>());
             });
 
             box.AddControlsVertically(
@@ -545,7 +545,7 @@ namespace Start_a_Town_
                 }
             }
             var net = this.Town.Net;
-            var actors = this.Town.Members.Select(id => net.GetNetworkEntity(id) as Actor);
+            var actors = this.Town.Members.Select(id => net.World.GetEntity(id) as Actor);
             tableAuto.AddItems(actors);
             tableManual.AddItems(actors);
 
@@ -614,7 +614,7 @@ namespace Start_a_Town_
                     .AddColumn(null, "delete", Icon.Cross.Width, st => IconButton.CreateSmall(Icon.Cross, () => WorkplaceManager.Packets.SendPlayerShopAssignCounter(st.Map.Net, st.Map.Net.GetPlayer(), this.SelectedShop, st.Global), "remove"));
 
                 var workersTab = new GroupBox() { Name = "Workers" };
-                this.TableJobRoles = new TableCompact<int, Actor>(i => this.SelectedShop.Net.GetNetworkObject<Actor>(i), true) { Name = "Workers" }
+                this.TableJobRoles = new TableCompact<int, Actor>(i => this.SelectedShop.Map.World.GetEntity<Actor>(i), true) { Name = "Workers" }
                 .AddColumn(null, "Worker".ToLabel(), 90, a => new Label(a.Name));
                 this.ListAvailableWorkers = new ListBoxObservable<int, Actor, ButtonNew>(
                          a =>
@@ -656,7 +656,7 @@ namespace Start_a_Town_
                         this.TableJobRoles.AddColumn(null, role.Label, 32, a => new CheckBoxNew());
                     //this.TableJobRoles.Bind(shop.Town.Townies);
                     this.TableJobRoles.Bind(shop.Workers);
-                    this.ListAvailableWorkers.Bind(shop.Town.Members, shop.Net.GetNetworkObject<Actor>);
+                    this.ListAvailableWorkers.Bind(shop.Town.Members, shop.Map.World.GetEntity<Actor>);
                 }
                 this.Window?.SetTitle(shop.Name);
             }
@@ -687,8 +687,6 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     tavern.ToggleJob(actor, role);
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketUpdateWorkerRoles, player.ID, tavern.ID, role.Name, actor.RefId);
                 var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketUpdateWorkerRoles);
                 w.Write(player.ID, tavern.ID, role.Name, actor.RefId);
             }
@@ -699,7 +697,7 @@ namespace Start_a_Town_
                 var player = net.GetPlayer(r.ReadInt32());
                 var tavern = net.Map.Town.GetShop(r.ReadInt32());
                 var role = Def.GetDef<JobDef>(r.ReadString());
-                var actor = net.GetNetworkObject<Actor>(r.ReadInt32());
+                var actor = net.World.GetEntity<Actor>(r.ReadInt32());
                 if (net is Client)
                     tavern.ToggleJob(actor, role);
                 else
@@ -710,10 +708,7 @@ namespace Start_a_Town_
             {
                 if (shopID < 0)
                     return;
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketPlayerRenameShop);
                 var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerRenameShop);
-
                 w.Write(playerID);
                 w.Write(shopID);
                 w.Write(name);
@@ -737,10 +732,7 @@ namespace Start_a_Town_
             {
                 if (shopID < 0)
                     return;
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketPlayerToggleShop);
                 var w = net.BeginPacket(ReliabilityType.OrderedReliable, PacketPlayerToggleShop);
-
                 w.Write(playerID);
                 w.Write(shopID);
             }

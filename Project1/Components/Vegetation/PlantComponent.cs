@@ -150,7 +150,7 @@ namespace Start_a_Town_.Components
                             if (this.IsHarvestable)
                             {
                                 if (prevPercentage < ForageThreshold)
-                                    parent.Net.EventOccured(Message.Types.PlantReady, parent);
+                                    parent.Net.EventOccured((int)Message.Types.PlantReady, parent);
                                 //parent.Body.Sprite = this.PlantProperties.TextureGrown;
                                 parent.Body.Sprite = Sprite.Load(this.PlantProperties.TextureGrown);
                                 this.Parent.Body.FindBone(BoneDefOf.PlantFruit).Sprite = this._spriteFruit;
@@ -223,7 +223,7 @@ namespace Start_a_Town_.Components
                 , parent.Global, parent.Velocity);
 
             this.ResetFruitGrowth(parent);
-            parent.Net.EventOccured(Message.Types.PlantHarvested, parent);
+            parent.Net.EventOccured((int)Message.Types.PlantHarvested, parent);
             return true;
         }
 

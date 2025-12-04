@@ -164,7 +164,7 @@ namespace Start_a_Town_
 
         static void RequestToggleForbidden(List<TargetArgs> obj)
         {
-            PacketToggleForbidden.Send(obj.First().Network, obj.Select(o => o.Object.RefId).ToList());
+            PacketToggleForbidden.Send(obj.First().World.Net, obj.Select(o => o.Object.RefId).ToList());
         }
         static void FollowCam()
         {
@@ -1042,7 +1042,7 @@ namespace Start_a_Town_
         }
         internal void OnDispose()
         {
-            this.Net.EventOccured(Message.Types.ObjectDisposed, this);
+            this.Net.EventOccured((int)Message.Types.ObjectDisposed, this);
             foreach (var c in this.Components.Values)
                 c.OnDispose();
         }
@@ -1152,7 +1152,7 @@ namespace Start_a_Town_
         }
         internal List<GameObject> GetPossesions()
         {
-            return NpcComponent.GetPossesions(this).Select(id => this.Net.GetNetworkEntity(id)).ToList();
+            return NpcComponent.GetPossesions(this).Select(id => this.World.GetEntity(id) as GameObject).ToList();
         }
 
         internal Need GetNeed(NeedDef def)
@@ -1526,7 +1526,7 @@ namespace Start_a_Town_
         private static void SyncSetStacksize(NetEndpoint net, Packet packet)
         {
             var r = packet.PacketReader;
-            var obj = net.GetNetworkEntity(r.ReadInt32());
+            var obj = net.World.GetEntity(r.ReadInt32());
             var value = r.ReadInt32();
             if (net is Client)
                 obj.SetStackSize(value);
@@ -1562,8 +1562,8 @@ namespace Start_a_Town_
             if (net is Server)
                 throw new Exception();
 
-            var master = net.GetNetworkEntity(r.ReadInt32());
-            var slave = net.GetNetworkEntity(r.ReadInt32());
+            var master = net.World.GetEntity(r.ReadInt32());
+            var slave = net.World.GetEntity(r.ReadInt32());
             master.Absorb(slave);
         }
 

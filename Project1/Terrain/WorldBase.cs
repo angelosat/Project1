@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
+using Start_a_Town_.Net;
 
 #nullable enable
 
@@ -24,7 +25,7 @@ namespace Start_a_Town_
         public int MaxHeight { get; set;  }
         public virtual ulong CurrentTick { get; set; }
         public virtual TimeSpan Clock { get; }
-        public INetEndpoint Net { get; set; }
+        public NetEndpoint Net { get; set; }
 
         public byte[] SeedArray { get; set; }
 
@@ -117,5 +118,22 @@ namespace Start_a_Town_
             }
             return true;
         }
+        //public void EventOccured(Components.Message.Types mType, params object[] p)
+        //{
+        //    this.OnGameEvent(new GameEvent(this.Net.Clock, mType, p));
+        //}
+        //public void OnGameEvent(GameEvent e)
+        //{
+        //    GameMode.Current.HandleEvent(this, e);
+
+        //    foreach (var item in Game1.Instance.GameComponents)
+        //        item.OnGameEvent(e);
+        //    if (this.Net.IsClient)
+        //    {
+        //        UI.TooltipManager.OnGameEvent(e);
+        //        ScreenManager.CurrentScreen.OnGameEvent(e);
+        //        ToolManager.OnGameEvent(this, e);
+        //    }
+        //}
     }
 }

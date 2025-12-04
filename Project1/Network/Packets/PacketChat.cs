@@ -13,10 +13,7 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, int playerID, string text)
         {
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
             var w = net.BeginPacket(ReliabilityType.OrderedReliable, p);
-
             w.Write(playerID);
             w.WriteASCII(text);
         }
@@ -32,7 +29,7 @@ namespace Start_a_Town_
             else 
             {
                 var player = net.GetPlayer(playerid);
-                net.EventOccured(Components.Message.Types.ChatPlayer, player, text);
+                net.EventOccured((int)Components.Message.Types.ChatPlayer, player, text);
             }
         }
     }

@@ -74,8 +74,8 @@ namespace Start_a_Town_
             info.AddInfo(new ComboBoxNewNew<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => this.Owner, () => map.Town.GetAgents().Prepend(null)));
             info.AddInfo(new ComboBoxNewNew<Types>(128, "Type", t => t.ToString(), setType, () => this.Type, () => Enum.GetValues(typeof(Types)).Cast<Types>()));
 
-            void setOwner(Actor newOwner) => Packets.SetOwner(map.Net, map.Net.GetPlayer(), vector3, newOwner);
-            void setType(Types newType) => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, newType);
+            void setOwner(Actor newOwner) => Packets.SetOwner(Client.Instance, map.Net.GetPlayer(), vector3, newOwner);
+            void setType(Types newType) => Packets.SetType(Client.Instance, map.Net.GetPlayer(), vector3, newType);
 
             UpdateQuickButtons();
         }
@@ -158,15 +158,18 @@ namespace Start_a_Town_
                 pChangeType = Registry.PacketHandlers.Register(SetType);
             }
 
-            internal static void SetOwner(INetEndpoint net, PlayerData playerData, IntVec3 global, Actor owner)
+            internal static void SetOwner(NetEndpoint net, PlayerData playerData, IntVec3 global, Actor owner)
             {
-                if (net is Server)
-                    BlockBedEntity.SetOwner(net.Map, global, owner);
+                if (net is Server s)
+                    BlockBedEntity.SetOwner(s.Map, global, owner);
 
                 //net.GetOutgoingStreamOrderedReliable().Write(pOwner, playerData.ID, global, owner?.RefId ?? -1);
 
-                var w = net.BeginPacket(ReliabilityType.OrderedReliable, pOwner);
-                w.Write(playerData.ID, global, owner?.RefId ?? -1);
+                var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, pOwner);
+                w
+                    .Write(playerData.ID)
+                    .Write(global)
+                    .Write(owner?.RefId ?? -1);
             }
 
             private static void SetOwner(NetEndpoint net, Packet pck)
@@ -174,20 +177,20 @@ namespace Start_a_Town_
                 var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var global = r.ReadIntVec3();
-                var owner = r.ReadInt32() is int refID && refID > -1 ? net.GetNetworkObject<Actor>(refID) : null;
-                if (net is Client)
-                    BlockBedEntity.SetOwner(net.Map, global, owner);
+                var owner = r.ReadInt32() is int refID && refID > -1 ? net.World.GetEntity<Actor>(refID) : null;
+                if (net is Client c)
+                    BlockBedEntity.SetOwner(c.Map, global, owner);
                 else
                     SetOwner(net, player, global, owner);
             }
 
-            internal static void SetType(INetEndpoint net, PlayerData playerData, IntVec3 vector3, BlockBedEntity.Types type)
+            internal static void SetType(NetEndpoint net, PlayerData playerData, IntVec3 vector3, BlockBedEntity.Types type)
             {
-                if (net is Server)
-                    BlockBedEntity.SetType(net.Map, vector3, type);
+                if (net is Server s)
+                    BlockBedEntity.SetType(s.Map, vector3, type);
 
                 //net.GetOutgoingStreamOrderedReliable().Write(pChangeType, playerData.ID, vector3, (int)type);
-                net.BeginPacket(ReliabilityType.OrderedReliable, pChangeType).Write(playerData.ID, vector3, (int)type);
+                net.BeginPacketNew(ReliabilityType.OrderedReliable, pChangeType).Write(playerData.ID, vector3, (int)type);
             }
 
             private static void SetType(NetEndpoint net, Packet pck)
@@ -196,8 +199,8 @@ namespace Start_a_Town_
                 var player = net.GetPlayer(r.ReadInt32());
                 var vec = r.ReadIntVec3();
                 var type = (BlockBedEntity.Types)r.ReadInt32();
-                if (net is Client)
-                    BlockBedEntity.SetType(net.Map, vec, type);
+                if (net is Client c)
+                    BlockBedEntity.SetType(c.Map, vec, type);
                 else
                     SetType(net, player, vec, type);
             }

@@ -14,8 +14,11 @@ namespace Start_a_Town_.Net
     internal enum PlayerSavingState
     { Saved, Changed, Saving }
 
-    public partial class Client : NetEndpoint// INetEndpoint
+    public partial class Client : NetEndpoint
     {
+        public override bool IsServer => false;
+        public override bool IsClient => true;
+
         private static Client _Instance;
         public static Client Instance => _Instance ??= new Client();
 
@@ -112,7 +115,7 @@ namespace Start_a_Town_.Net
 
             ScreenManager.GameScreens.Clear();
             ScreenManager.Add(MainScreen.Instance);
-            this.EventOccured(Message.Types.ServerNoResponse);
+            this.EventOccured((int)Message.Types.ServerNoResponse);
             this.ClientClock = new TimeSpan();
         }
 
@@ -332,18 +335,18 @@ namespace Start_a_Town_.Net
             foreach (var s in this.StreamsArray)
                 s.Reset();
         }
-        private void OnGameEvent(GameEvent e)
-        {
-            GameMode.Current.HandleEvent(Instance, e);
+        //private void OnGameEvent(GameEvent e)
+        //{
+        //    GameMode.Current.HandleEvent(Instance, e);
 
-            foreach (var item in Game1.Instance.GameComponents)
-                item.OnGameEvent(e);
-            UI.TooltipManager.OnGameEvent(e);
-            ScreenManager.CurrentScreen.OnGameEvent(e);
+        //    foreach (var item in Game1.Instance.GameComponents)
+        //        item.OnGameEvent(e);
+        //    UI.TooltipManager.OnGameEvent(e);
+        //    ScreenManager.CurrentScreen.OnGameEvent(e);
 
-            ToolManager.OnGameEvent(this, e);
-            this.Map?.OnGameEvent(e);
-        }
+        //    ToolManager.OnGameEvent(this, e);
+        //    this.Map?.OnGameEvent(e);
+        //}
 
         [Obsolete]
         private static readonly Dictionary<PacketType, Action<INetEndpoint, IDataReader>> PacketHandlersNew = new();
@@ -354,12 +357,21 @@ namespace Start_a_Town_.Net
             PacketHandlersNew.Add(channel, handler);
         }
 
-        public override void EventOccured(Message.Types type, params object[] p)
+        //public override void EventOccured(int eventTypeId, params object[] p)
+        //{
+        //    var e = new GameEvent(this.ClientClock.TotalMilliseconds, eventTypeId, p);
+        //    this.OnGameEvent(e);
+        //}
+        protected override void OnGameEvent(GameEvent e)
         {
-            var e = new GameEvent(this.ClientClock.TotalMilliseconds, type, p);
-            this.OnGameEvent(e);
-        }
+            GameMode.Current.HandleEvent(this, e);
 
+            foreach (var item in Game1.Instance.GameComponents)
+                item.OnGameEvent(e);
+            UI.TooltipManager.OnGameEvent(e);
+            ScreenManager.CurrentScreen.OnGameEvent(e);
+            ToolManager.OnGameEvent(this.World, e);
+        }
         private void HandleSyncedPackets()
         {
             while (this.SyncedPackets.Count > 0)
@@ -492,7 +504,7 @@ namespace Start_a_Town_.Net
                     GameMode.Current.PlayerIDAssigned(this);
                     this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(msg.Tick - ClientClockDelayMS, 0));
                     this.PlayerData.RemoteOrderedReliableSequence = msg.OrderedReliableID;
-                    Instance.EventOccured(Message.Types.ServerResponseReceived);
+                    Instance.EventOccured((int)Message.Types.ServerResponseReceived);
                     break;
 
                 case PacketType.PlayerDisconnected:
@@ -801,25 +813,6 @@ namespace Start_a_Town_.Net
         {
             return obj;
         }
-
-        public override GameObject GetNetworkEntity(int netID)
-        {
-            this.World.Entities.TryGetValue(netID, out var obj);
-            return obj;
-        }
-
-        public override T GetNetworkObject<T>(int netID)
-        {
-            this.World.Entities.TryGetValue(netID, out var obj);
-            return obj as T;
-        }
-
-        public override IEnumerable<GameObject> GetNetworkObjects()
-        {
-            foreach (var o in this.World.Entities.Values)
-                yield return o;
-        }
-
         public override bool TryGetNetworkObject(int netID, out Entity obj)
         {
             return this.World.TryGetEntity(netID, out obj);
@@ -878,7 +871,7 @@ namespace Start_a_Town_.Net
                 next.Dictionary.TryGetValue(prevSnap.RefID, out var nextSnap);
                 if (nextSnap is null)
                     nextSnap = prevSnap;
-                var entity = this.GetNetworkEntity(prevSnap.RefID);
+                var entity = this.World.GetEntity(prevSnap.RefID);
 
                 entity.SetPosition(prevSnap.Position + (prevSnap.Position - prevSnap.Position) * t);
                 entity.Velocity = prevSnap.Velocity + (prevSnap.Velocity - prevSnap.Velocity) * t;
@@ -894,7 +887,7 @@ namespace Start_a_Town_.Net
                     continue;
 
                 var nextObj = kv.Value;
-                var entity = this.GetNetworkEntity(nextObj.RefID);
+                var entity = this.World.GetEntity(nextObj.RefID);
                 if (entity == null) continue;
 
                 // Policy for spawns: snap to the authoritative snapshot immediately.

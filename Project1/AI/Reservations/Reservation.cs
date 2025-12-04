@@ -64,7 +64,7 @@ namespace Start_a_Town_
             public Reservation(MapBase map, SaveTag tag)
             {
                 this.Actor = tag.GetValue<int>("ActorID");
-                this.Target = new TargetArgs(map.Net, tag["Target"]);
+                this.Target = new TargetArgs(map.World, tag["Target"]);
                 this.Amount = tag.GetValue<int>("Amount");
             }
         }

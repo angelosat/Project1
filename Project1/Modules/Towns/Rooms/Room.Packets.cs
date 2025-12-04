@@ -48,7 +48,7 @@ namespace Start_a_Town_
                 var player = net.GetPlayer(r.ReadInt32());
                 var roomID = r.ReadInt32();
                 var room = net.Map.Town.RoomManager.GetRoom(roomID);
-                var owner = r.ReadInt32() is int id && id != -1 ? net.GetNetworkObject<Actor>(id) : null;
+                var owner = r.ReadInt32() is int id && id != -1 ? net.World.GetEntity<Actor>(id) : null;
                 if (net is Server)
                     SetOwner(net, player, room, owner);
                 else

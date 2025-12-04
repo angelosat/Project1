@@ -39,12 +39,12 @@ namespace Start_a_Town_.Net
         public void Add(PlayerData player)
         {
             this.List.Add(player.ID, player);
-            this.Net.EventOccured(Components.Message.Types.PlayerConnected, player);
+            this.Net.EventOccured((int)Components.Message.Types.PlayerConnected, player);
         }
         public void Remove(PlayerData player)
         {
             this.List.Remove(player.ID);
-            this.Net.EventOccured(Components.Message.Types.PlayerDisconnected, player);
+            this.Net.EventOccured((int)Components.Message.Types.PlayerDisconnected, player);
         }
         internal int GetLowestSpeed()
         {

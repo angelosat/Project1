@@ -52,7 +52,7 @@ namespace Start_a_Town_
         }
         void ReportQuestsUpdated(QuestDef[] added, QuestDef[] removed)
         {
-            this.Town.Net.EventOccured(Components.Message.Types.QuestDefsUpdated, added, removed);
+            this.Town.Net.EventOccured((int)Components.Message.Types.QuestDefsUpdated, added, removed);
         }
         public QuestDef GetQuest(int id)
         {
@@ -85,7 +85,7 @@ namespace Start_a_Town_
         internal Actor GetNextQuestReceiver(Actor giver)
         {
             var id = this.QuestGiverProperties[giver.RefId].GetNextQuestReceiverID();
-            return id != -1 ? this.Town.Net.GetNetworkEntity(id) as Actor : null;
+            return id != -1 ? this.Town.Map.World.GetEntity(id) as Actor : null;
         }
         public IEnumerable<Actor> GetAllVisitorsOnQuest(QuestDef quest)
         {

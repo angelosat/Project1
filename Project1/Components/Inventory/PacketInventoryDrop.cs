@@ -25,8 +25,8 @@ namespace Start_a_Town_
             var actorID = r.ReadInt32();
             var itemID = r.ReadInt32();
             var amount = r.ReadInt32();
-            var item = net.GetNetworkEntity(itemID);
-            var actor = net.GetNetworkEntity(actorID);
+            var item = net.World.GetEntity(itemID);
+            var actor = net.World.GetEntity(actorID);
             actor.Inventory.Drop(item, amount); // TODO: this happens immediately when the game is paused. maybe create an interaction with a 1 frame duration?
             if (amount == item.StackSize)
                 NpcComponent.RemovePossesion(actor, item);

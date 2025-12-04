@@ -39,7 +39,7 @@ namespace Start_a_Town_.Components.Interactions
         }
         protected override void ReadExtra(IDataReader r)
         {
-            this.TargetEquipment = TargetArgs.Read((INetEndpoint)null, r);
+            this.TargetEquipment = TargetArgs.Read(null, r);
         }
         protected override void AddSaveData(SaveTag tag)
         {

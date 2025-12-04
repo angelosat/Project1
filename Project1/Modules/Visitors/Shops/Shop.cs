@@ -111,7 +111,7 @@ namespace Start_a_Town_
         }
         public void RemoveCustomer(int actorID)
         {
-            var actor = this.Town.Net.GetNetworkEntity(actorID) as Actor;
+            var actor = this.Town.Map.World.GetEntity(actorID) as Actor;
             if (this.GetNextCustomer() != actor)
                 return;
             this.CustomerQueue.Dequeue();
@@ -141,12 +141,12 @@ namespace Start_a_Town_
             }
             this.Town.ShopManager.FindShop<Shop>(stockpile)?.RemoveStockpile(stockpile);
             this.StockpilesInput.Add(stockpile.ID);
-            this.Town.Net.EventOccured(Components.Message.Types.ShopUpdated, this, new[] { stockpile });
+            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { stockpile });
         }
         public void RemoveStockpile(Stockpile stockpile)
         {
             this.StockpilesInput.Remove(stockpile.ID);
-            this.Town.Net.EventOccured(Components.Message.Types.ShopUpdated, this, new[] { stockpile });
+            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { stockpile });
         }
 
         public void ToggleShoppingArea(Stockpile stockpile)
@@ -158,13 +158,13 @@ namespace Start_a_Town_
             }
             this.Town.ShopManager.FindShop<Shop>(stockpile)?.RemoveShoppingArea(stockpile);
             this.StockpilesOutput.Add(stockpile.ID);
-            this.Town.Net.EventOccured(Components.Message.Types.ShopUpdated, this, new[] { stockpile });
+            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { stockpile });
         }
 
         private void RemoveShoppingArea(Stockpile stockpile)
         {
             this.StockpilesOutput.Remove(stockpile.ID);
-            this.Town.Net.EventOccured(Components.Message.Types.ShopUpdated, this, new[] { stockpile });
+            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { stockpile });
         }
 
         public IEnumerable<Entity> GetItemsForSale()

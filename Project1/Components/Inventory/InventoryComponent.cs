@@ -20,8 +20,8 @@ namespace Start_a_Town_.Components
                 static void handleSetHaulSlot(NetEndpoint net, Packet pck)
                 {
                     var r = pck.PacketReader;
-                    var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
-                    var item = net.GetNetworkEntity(r.ReadInt32()) as Entity;
+                    var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+                    var item = net.World.GetEntity(r.ReadInt32()) as Entity;
                     actor.Carry(item);
                 }
 
@@ -38,8 +38,8 @@ namespace Start_a_Town_.Components
             private static void HandleSyncInsert(NetEndpoint net, Packet pck)
             {
                 var r = pck.PacketReader;
-                var actor = net.GetNetworkEntity(r.ReadInt32()) as Actor;
-                var item = net.GetNetworkEntity(r.ReadInt32()) as Entity;
+                var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+                var item = net.World.GetEntity(r.ReadInt32()) as Entity;
                 if (net is Server)
                     SendSyncInsert(net, actor, item);
                 else
@@ -207,7 +207,7 @@ namespace Start_a_Town_.Components
             var obj = slot.Object;
 
             if (obj.HasComponent<EquipComponent>())
-                (parent as Actor).Work.Perform(new Interactions.EquipFromInventory(), new TargetArgs(parent.Net, slot));
+                (parent as Actor).Work.Perform(new Interactions.EquipFromInventory(), new TargetArgs(parent.World, slot));
             else
             {
                 this.HaulSlot.Swap(slot);
@@ -330,7 +330,7 @@ namespace Start_a_Town_.Components
             this.Contents.Add(obj);
             objSlot.Clear();
             if (report)
-                parent.Net.EventOccured(Message.Types.ItemGot, parent, obj);
+                parent.Net.EventOccured((int)Message.Types.ItemGot, parent, obj);
             return true;
             // TODO: drop object if can't receive? here? or let whoever called this method do something else if it fails?
         }

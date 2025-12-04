@@ -289,7 +289,7 @@ namespace Start_a_Town_.UI
             this.Show();
 
             if (target.Type == TargetType.Entity)
-                target.Object.Net.EventOccured(Message.Types.SelectedChanged, target);
+                target.Object.Net.EventOccured((int)Message.Types.SelectedChanged, target);
             this.PanelInfo.WindowManager.OnSelectedTargetChanged(target);
             this.PanelInfo.Validate(true);
         }

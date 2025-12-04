@@ -34,7 +34,7 @@ namespace Start_a_Town_.Net
             }
         }
 
-        public static INetEndpoint CurrentNetwork;
+        public static NetEndpoint CurrentNetwork;
 
         static public ConsoleBoxAsync Console { get { return LobbyWindow.Instance.Console; } }
 

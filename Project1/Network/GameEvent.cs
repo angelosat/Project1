@@ -13,5 +13,17 @@ namespace Start_a_Town_
             this.Type = type;
             this.Parameters = parameters;
         }
+        public GameEvent(double timestamp, int eventTypeId, params object[] parameters)
+        {
+            this.TimeStamp = timestamp;
+            this.Type = (Components.Message.Types)eventTypeId;
+            this.Parameters = parameters;
+        }
+        public GameEvent(TimeSpan clock, Components.Message.Types type, params object[] parameters)
+        {
+            this.TimeStamp = clock.TotalMilliseconds;
+            this.Type = type;
+            this.Parameters = parameters;
+        }
     }
 }

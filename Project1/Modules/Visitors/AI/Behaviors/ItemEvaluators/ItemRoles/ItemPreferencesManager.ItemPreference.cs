@@ -79,7 +79,7 @@ namespace Start_a_Town_
 
             internal void ResolveReferences(Actor actor)
             {
-                this.Item = actor.Net.GetNetworkObject<Entity>(this.ItemRefId);
+                this.Item = actor.World.GetEntity<Entity>(this.ItemRefId);
                 this.Refresh(actor);
             }
 

@@ -17,13 +17,6 @@ namespace Start_a_Town_
         MapBase Map { get; }
         WorldBase World { get; }
         int Speed { get; set; }
-
-        GameObject GetNetworkEntity(int netID);
-        T GetNetworkObject<T>(int netID) where T : Entity;// GameObject;
-
-        //IEnumerable<GameObject> GetNetworkObjects(IEnumerable<int> ids);
-        IEnumerable<GameObject> GetNetworkObjects();
-
         bool TryGetNetworkObject(int netID, out Entity obj);
         void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType);
 
@@ -48,7 +41,7 @@ namespace Start_a_Town_
         void PostLocalEvent(GameObject recipient, ObjectEventArgs args);
         void PostLocalEvent(GameObject recipient, Components.Message.Types type, params object[] args);
 
-        void EventOccured(Components.Message.Types type, params object[] p);
+        void EventOccured(int eventTypeId, params object[] p);
 
         BinaryWriter BeginPacket(ReliabilityType rType, int pType);
         IDataWriter BeginPacketNew(ReliabilityType rType, int pType);

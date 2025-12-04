@@ -23,8 +23,8 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var actorID = r.ReadInt32();
             var itemID = r.ReadInt32();
-            var item = net.GetNetworkEntity(itemID);
-            var actor = net.GetNetworkEntity(actorID) as Actor;
+            var item = net.World.GetEntity(itemID);
+            var actor = net.World.GetEntity(actorID) as Actor;
             actor.Equip(item);
             if (net is Server)
                 Send(net, actorID, itemID);

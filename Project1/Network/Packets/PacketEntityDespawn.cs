@@ -23,7 +23,7 @@ namespace Start_a_Town_
         {
             var r = pck.PacketReader;
             var client = net as Client;
-            var actor = client.GetNetworkEntity(r.ReadInt32()) as Actor;
+            var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
             var map = client.Map as StaticMap;
             map.Despawn(actor);
         }

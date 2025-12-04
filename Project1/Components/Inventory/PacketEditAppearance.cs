@@ -12,8 +12,6 @@ namespace Start_a_Town_
         }
         public static void Send(Actor actor, CharacterColors colors)
         {
-            //var w = actor.Net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
             var w = actor.Net.BeginPacket(ReliabilityType.OrderedReliable, p);
             w.Write(actor.RefId);
             colors.Write(w);
@@ -22,7 +20,7 @@ namespace Start_a_Town_
         {
             var r = pck.PacketReader;
             var actorID = r.ReadInt32();
-            var actor = net.GetNetworkEntity(actorID) as Actor;
+            var actor = net.World.GetEntity(actorID) as Actor;
             var colors = new CharacterColors(r);
             actor.Sprite.Customization = colors;
             if (net is Server)

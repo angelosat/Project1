@@ -139,7 +139,7 @@ namespace Start_a_Town_
                 //unequip
                 actor.Inventory.Insert(item);
                 actor.GetComponent<GearComponent>().RefreshStats();
-                actor.Net.EventOccured(Message.Types.ActorGearUpdated, actor, null, item);
+                actor.Net.EventOccured((int)Message.Types.ActorGearUpdated, actor, null, item);
                 return true;
             }
             var slotType = item.Def.GearType;
@@ -155,7 +155,7 @@ namespace Start_a_Town_
             actor.GetComponent<GearComponent>().RefreshStats();
             if (previousItem != null)
                 actor.Inventory.Insert(previousItem);
-            actor.Net.EventOccured(Message.Types.ActorGearUpdated, actor, item, previousItem);
+            actor.Net.EventOccured((int)Message.Types.ActorGearUpdated, actor, item, previousItem);
             return true;
         }
       

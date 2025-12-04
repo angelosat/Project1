@@ -53,7 +53,7 @@ namespace Start_a_Town_
         {
             if (parent.Net == null)
                 return;
-            var owner = parent.Net.GetNetworkEntity(this.OwnerRef);
+            var owner = parent.World.GetEntity(this.OwnerRef);
             //tooltip.AddControlsBottomLeft(new UI.Label("Owner: " + (owner != null ? owner.Name : "<None>"), fill: Color.Lime));
             tooltip.AddControlsBottomLeft(UI.Label.ParseWrap("Owner: ", this.Owner));
         }
@@ -84,7 +84,7 @@ namespace Start_a_Town_
             var setownercombo = new ComboBoxNewNew<GameObject>(150, "Owner",
                 A => A?.Name ?? "None",
                 o => PacketPlayerSetItemOwner.Send(Net.Client.Instance, gameObject.RefId, o != null ? o.RefId : -1),
-                () => comp.OwnerRef == -1 ? null : gameObject.Net.GetNetworkEntity(comp.OwnerRef),
+                () => comp.OwnerRef == -1 ? null : gameObject.World.GetEntity(comp.OwnerRef),
                 () => alllist.Prepend(null));
 
             setownercombo.OnGameEventAction = a =>
@@ -106,7 +106,7 @@ namespace Start_a_Town_
         public void SetOwner(GameObject parent, int actorID)
         {
             this.OwnerRef = actorID;
-            parent.Net.EventOccured(Message.Types.ItemOwnerChanged, parent.RefId);
+            parent.Net.EventOccured((int)Message.Types.ItemOwnerChanged, parent.RefId);
         }
         static Control ActorList;
         internal override void GetSelectionInfo(IUISelection info, GameObject parent)

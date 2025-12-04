@@ -13,11 +13,11 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(INetEndpoint net, Vector3 begin, Vector3 end, bool remove)
+        static public void Send(NetEndpoint net, Vector3 begin, Vector3 end, bool remove)
         {
             //var stream = net.GetOutgoingStreamOrderedReliable();
             //stream.Write(p);
-            var stream = net.BeginPacket(ReliabilityType.OrderedReliable, p);
+            var stream = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
 
             stream.Write(begin);
             stream.Write(end);
@@ -30,8 +30,8 @@ namespace Start_a_Town_
             var end = r.ReadVector3();
             var remove = r.ReadBoolean();
             var positions = new BoundingBox(begin, end).GetBox();
-            net.EventOccured(Components.Message.Types.MiningDesignation, positions, remove);
-            if (net is Server)
+            net.EventOccured((int)Components.Message.Types.MiningDesignation, positions, remove);
+            if (net.IsServer)
                 Send(net, begin, end, remove);
         }
     }

@@ -333,7 +333,7 @@ namespace Start_a_Town_
 
         public Actor GetOwner()
         {
-            return this.Map.Net.GetNetworkEntity(this.OwnerRef) as Actor;
+            return this.Map.World.GetEntity(this.OwnerRef) as Actor;
         }
         public override string ToString()
         {

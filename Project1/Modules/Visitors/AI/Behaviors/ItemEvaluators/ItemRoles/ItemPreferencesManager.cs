@@ -176,7 +176,7 @@ namespace Start_a_Town_
             var items = actor.Inventory.GetItems();
             foreach (var i in this.ToDiscard.ToArray())
             {
-                var item = net.GetNetworkEntity(i) as Entity;
+                var item = net.World.GetEntity(i) as Entity;
                 if (!items.Contains(item))
                 {
                     this.RemoveJunk(item);
@@ -349,7 +349,7 @@ namespace Start_a_Town_
                     throw new Exception();
                 var r = pck.PacketReader;
 
-                var actor = net.GetNetworkObject<Actor>(r.ReadInt32());
+                var actor = net.World.GetEntity<Actor>(r.ReadInt32());
                 var prefs = actor.ItemPreferences as ItemPreferencesManager;
                 var oldItems = new List<ItemPreference>().Read(r);
                 var newItems = new List<ItemPreference>().Read(r);

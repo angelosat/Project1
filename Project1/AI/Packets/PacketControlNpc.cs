@@ -11,33 +11,34 @@ namespace Start_a_Town_
         {
             PType = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(INetEndpoint net, int entityid)
-        {
-            if (net is Server)
-                throw new Exception();
-            var plid = net.GetPlayer().ID;
-            Send(net, plid, entityid);
-        }
-        internal static void Send(INetEndpoint net, int playerid, int entityid)
+        //internal static void Send(INetContext net, int entityid)
+        //{
+        //    if (net is Server)
+        //        throw new Exception();
+        //    var plid = net.GetPlayer().ID;
+        //    Send(net, plid, entityid);
+        //}
+        internal static void Send(NetEndpoint net, int playerid, int entityid)
         {
             //var w = net.GetOutgoingStreamOrderedReliable();
             //w.Write(PType);
-            var w = net.BeginPacket(ReliabilityType.OrderedReliable, PType);
+            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, PType);
 
-            w.Write(playerid);
+            //w.Write(playerid);
             w.Write(entityid);
         }
         private static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var player = net.GetPlayer(r.ReadInt32());
+            //var player = net.GetPlayer(r.ReadInt32());
+            var player = pck.Player;
             var entityid = r.ReadInt32();
-            var nextEntity = entityid != -1 ? net.GetNetworkEntity(entityid) as Actor : null;
+            var nextEntity = entityid != -1 ? net.World.GetEntity(entityid) as Actor : null;
             if (nextEntity?.IsPlayerControlled ?? false)
                 return;
             var lastEntity = player.ControllingEntity;
             player.ControllingEntity = nextEntity;
-            net.EventOccured(Components.Message.Types.PlayerControlNpc, player, nextEntity, lastEntity);
+            net.EventOccured((int)Components.Message.Types.PlayerControlNpc, player, nextEntity, lastEntity);
 
             if (nextEntity is not null)
                 net.Write($"{player.Name} is controlling {nextEntity.Name}");

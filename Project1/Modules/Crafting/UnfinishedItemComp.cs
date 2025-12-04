@@ -52,9 +52,9 @@ namespace Start_a_Town_
         public Progress Progress = new();
         int _creator, _orderid;
         Actor _creatorCached;
-        public Actor Creator => this._creatorCached ??= this.Parent.Net.GetNetworkObject<Actor>(this._creator);
+        public Actor Creator => this._creatorCached ??= this.Parent.World.GetEntity<Actor>(this._creator);
         CraftOrder _orderCached;
-        public CraftOrder Order => this._orderCached ??= this.Parent.Net.Map.Town.CraftingManager.GetOrder(this._orderid);
+        public CraftOrder Order => this._orderCached ??= this.Parent.Map.Town.CraftingManager.GetOrder(this._orderid);
         public ContainerList Contents = new();
         public override object Clone()
         {

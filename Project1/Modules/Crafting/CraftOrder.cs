@@ -142,7 +142,7 @@ namespace Start_a_Town_
             this.Map = map;
             this.Input = this._inputID > -1 ? map.Town.ZoneManager.GetZone<Stockpile>(this._inputID) : null;
             this.Output = this._outputID > -1 ? map.Town.ZoneManager.GetZone<Stockpile>(this._outputID) : null;
-            this.UnfinishedItem = this._unfinishedItemRefID > -1 ? map.Net.GetNetworkObject<Entity>(this._unfinishedItemRefID) : null;
+            this.UnfinishedItem = this._unfinishedItemRefID > -1 ? map.World.GetEntity<Entity>(this._unfinishedItemRefID) : null;
         }
 
         public bool IsItemAllowed(string reagentName, Entity item)

@@ -9,7 +9,7 @@ namespace Start_a_Town_
         static readonly int PType;
         static PacketEntityWalkToggle()
         {
-            PType = NetEndpoint.RegisterPacketHandler(Receive);
+            PType = Registry.PacketHandlers.Register(Receive);
         }
        
         internal static void Send(NetEndpoint net, int entityID, bool toggle)
@@ -23,11 +23,11 @@ namespace Start_a_Town_
         {
             var r = p.PacketReader;
             var id = r.ReadInt32();
-            var entity = net.GetNetworkEntity(id) as Actor;
+            var entity = net.World.GetEntity(id) as Actor;
             var toggle = r.ReadBoolean();
             entity.WalkToggle(toggle);
 
-            if (net is Server)
+            if (net.IsServer)
                 Send(net, entity.RefId, toggle);
         }
     }

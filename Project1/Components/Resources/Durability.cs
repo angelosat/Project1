@@ -10,7 +10,6 @@ namespace Start_a_Town_.Components.Resources
         {
             this.AddThreshold("Durability", 1);
         }
-        
         public override string Description { get; } = "Basic Durability resource";
         public override string Format { get; } = "##0";
 
@@ -22,7 +21,6 @@ namespace Start_a_Town_.Components.Resources
             dur.Initialize(this.BaseMax + totaldensity / count, 1);
             dur.Value = 1; // HACK
         }
-        
         public override Color GetBarColor(Resource resource)
         {
             return Color.LightGray;

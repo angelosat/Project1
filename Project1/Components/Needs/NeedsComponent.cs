@@ -41,21 +41,32 @@ namespace Start_a_Town_.Components
             Timer -= 1;
             if (Timer > 0)
                 return;
-            var parent = this.Parent;
 
             Timer = Ticks.PerSecond;
 
             for (int i = 0; i < this.NeedsNew.Count; i++)
-            {
-                this.NeedsNew[i].Tick(parent);
-            }
+                this.NeedsNew[i].Tick();// this.Parent);
         }
 
         public override object Clone()
         {
             return new NeedsComponent(this.Parent as Actor);
         }
-
+        public override void OnObjectCreated(GameObject parent)
+        {
+            foreach (var n in this.NeedsNew)
+                n.Parent = parent as Actor;
+        }
+        public override void OnObjectSynced(GameObject parent)
+        {
+            foreach (var n in this.NeedsNew)
+                n.Parent = parent as Actor;
+        }
+        public override void OnObjectLoaded(GameObject parent)
+        {
+            foreach (var n in this.NeedsNew)
+                n.Parent = parent as Actor;
+        }
         static public Need ModifyNeed(GameObject actor, string needName, float value)
         {
             var need = actor.GetNeed(needName);

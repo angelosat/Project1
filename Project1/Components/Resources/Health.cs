@@ -23,12 +23,18 @@ namespace Start_a_Town_.Components.Resources
 
         float SpriteFlashTimer;
 
-        public override void Tick(GameObject parent, Resource values)
+        protected override void TickExtra(Resource values)
         {
-            FlashSprite(parent);
-            RecoverHealth(values);
+            FlashSprite(values.Parent);
         }
-
+        protected override void updateRec(Resource resource)
+        {
+            if (resource.Rec.Value > 0)
+            {
+                resource.Rec.Value--;
+                return;
+            }
+        }
         private void FlashSprite(GameObject parent)
         {
             if (this.SpriteFlashTimer > 0)
@@ -41,18 +47,8 @@ namespace Start_a_Town_.Components.Resources
                 }
             }
         }
-
-        private void RecoverHealth(Resource values)
-        {
-            if (values.Rec.Value > 0)
-            {
-                values.Rec.Value--;
-                return;
-            }
-            this.Modify(values, this.GetRate(values));
-
-        }
-        float GetRate(Resource values)
+       
+        protected override float GetRegenRate(Resource values)
         {
             float rate = ((float)Math.Pow(values.Percentage, 2)) / TickRate;
 

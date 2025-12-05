@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public abstract class Need : MetricWrapper, IProgressBar, ISerializable, ISaveable
+    public class Need : MetricWrapper, IProgressBar, ISerializable, ISaveable
     {
         internal void AddMod(NeedLetDef needLetDef, float value, float rate)
         {
@@ -19,7 +19,6 @@ namespace Start_a_Town_
         {
             this.Mods.RemoveAll(n => n.Def == def);
         }
-
         public NeedDef NeedDef;
         public enum Types { Hunger, Water, Sleep, Achievement, Work, Brains, Curiosity, Social, Energy }
         const string Format = "P0";
@@ -33,12 +32,12 @@ namespace Start_a_Town_
             {
                 return this._Value + this.Mods.Sum(m => m.ValueMod);
             }
-            protected set
+            set
             {
                 this._Value = MathHelper.Clamp(value, 0, 100);
             }
         }
-        public Actor Parent;
+        //public Actor Parent;
         public float Min = 0f;
         public float Max = 100f;
         public virtual float Percentage { get { return this.Value / this.Max; } }
@@ -56,15 +55,15 @@ namespace Start_a_Town_
                 txt += $"\n{needlet}";
             return txt;
         }
-        
+
         public Need(Actor parent)
         {
-            this.Parent = parent;
+            //this.Parent = parent;
             this._Value = this.Max;
         }
         public override void Tick()
         {
-
+            this.NeedDef.Worker.Tick(this);
         }
         public virtual void TickLong(GameObject parent) { }
         public virtual void Tick(GameObject parent)

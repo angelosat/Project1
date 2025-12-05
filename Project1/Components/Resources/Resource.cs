@@ -7,13 +7,14 @@ using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
-    public class Resource : MetricWrapper, IProgressBar, ISaveable, ISerializable, INamed
+    public sealed class Resource : MetricWrapper, IProgressBar, ISaveable, ISerializable, INamed
     {
         public readonly ResourceDef ResourceDef;
         public List<ResourceRateModifier> Modifiers = new();
         public int TicksPerRecoverOne, TicksPerDrainOne;
         int TickRecover, TickDrain;
         float _max;
+        
         public float Max
         {
             get => this._max; set
@@ -35,7 +36,7 @@ namespace Start_a_Town_
         public float Min => 0;
 
         public string Name => this.ResourceDef.Name;
-
+       
         public Resource(ResourceDef def)
         {
             this.ResourceDef = def;
@@ -44,11 +45,11 @@ namespace Start_a_Town_
         }
         public override void Tick()
         {
-            
+            this.ResourceDef.Worker.Tick(this);
         }
         public void Tick(GameObject parent)
         {
-            this.ResourceDef.Worker.Tick(parent, this);
+            this.ResourceDef.Worker.Tick(this);
             //this.Value += this.ModValuePerTick;
             if (this.TicksPerRecoverOne > 0)
             {
@@ -68,7 +69,7 @@ namespace Start_a_Town_
             }
         }
 
-        internal virtual void HandleRemoteCall(GameObject parent, ObjectEventArgs e)
+        internal void HandleRemoteCall(GameObject parent, ObjectEventArgs e)
         {
             this.ResourceDef.Worker.HandleRemoteCall(parent, e, this);
         }

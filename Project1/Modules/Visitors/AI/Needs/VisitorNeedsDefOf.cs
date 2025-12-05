@@ -13,7 +13,7 @@ namespace Start_a_Town_
         static public readonly NeedDef Blessing = new("Blessing", typeof(NeedBlessing), NeedCategoryVisitor);
         static public readonly NeedDef InventorySpace = new("Inventory Space", typeof(NeedInventorySpace), NeedCategoryVisitor);
 
-        static public readonly List<NeedDef> All = new() { Guidance, Trading, Blessing, InventorySpace };
+        static public readonly List<NeedDef> All = [Guidance, Trading, Blessing, InventorySpace];
 
         static VisitorNeedsDefOf()
         {

@@ -11,8 +11,8 @@ namespace Start_a_Town_
         public Resource[] Resources;
 
         public override string Name { get; } = "Resources";
-
-        public ResourcesComponent(ItemDef def)
+        
+        public ResourcesComponent(Actor actor, ItemDef def)
         {
             var defs = def.ActorProperties.Resources;
             var count = defs.Length;
@@ -47,9 +47,8 @@ namespace Start_a_Town_
         }
         public override void Tick()
         {
-            var parent = this.Parent;
             foreach (var item in this.Resources)
-                item.Tick(parent);
+                item.Tick();// this.Parent);
         }
 
         public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
@@ -85,6 +84,11 @@ namespace Start_a_Town_
         public override object Clone()
         {
             return new ResourcesComponent(this.Resources);
+        }
+        public override void OnObjectCreated(GameObject parent)
+        {
+            foreach (var r in this.Resources)
+                r.Parent = parent as Actor;
         }
 
         public override string ToString()

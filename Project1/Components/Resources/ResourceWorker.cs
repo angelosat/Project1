@@ -6,7 +6,7 @@ using System;
 
 namespace Start_a_Town_
 {
-    public abstract class ResourceWorker
+    public abstract class ResourceWorker : MetricWorker
     {
         protected ResourceDef ResourceDef;
         static public Progress Recovery { get { return new Progress(0, Ticks.PerSecond, Ticks.PerSecond); } }
@@ -78,12 +78,23 @@ namespace Start_a_Town_
         }
 
         public readonly float BaseMax = 100;
-
-        public virtual void Tick(GameObject parent, Resource resource)
+        public sealed override void Tick(MetricWrapper wrapper)
         {
+            var resource = (Resource)wrapper;
             foreach (var ratemod in resource.Modifiers)
-                this.Modify(resource, ratemod.Def.GetRateMod(parent));
+                this.Modify(resource, ratemod.Def.GetRateMod(resource.Parent));
+            this.TickExtra(resource);
+            this.Modify(resource, this.GetRegenRate(resource));
         }
+        protected virtual void updateRec(Resource resource) { }
+        protected virtual void TickExtra(Resource resource) { }
+        /*public virtual */
+        //void Tick(Resource resource)
+        //{
+        //    foreach (var ratemod in resource.Modifiers)
+        //        this.Modify(resource, ratemod.Def.GetRateMod(resource.Parent));
+        //}
+        protected virtual float GetRegenRate(Resource resource) => 0;
         public virtual bool HandleMessage(Resource resource, GameObject parent, ObjectEventArgs e = null) { return false; }
 
         public virtual string Format => "";

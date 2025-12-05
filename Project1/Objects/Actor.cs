@@ -315,7 +315,7 @@ namespace Start_a_Town_
             obj.AddComponent(new NpcSkillsComponent(def).Randomize());
             obj.AddComponent(new PersonalityComponent(def));//.Randomize());
             obj.AddComponent(new GearComponent(def));
-            obj.AddComponent(new ResourcesComponent(def));
+            obj.AddComponent(new ResourcesComponent(obj, def));
             obj.AddComponent(new NeedsComponent(obj));
             obj.AddComponent(new PossessionsComponent());
             obj.AddComponent(new HaulComponent());

@@ -40,17 +40,16 @@ namespace Start_a_Town_.Components.Resources
             }
         }
 
-        public override void Tick(GameObject parent, Resource values)
+        
+        protected override void updateRec(Resource resource)
         {
-            base.Tick(parent, values);
-            if (values.Rec.Value < values.Rec.Max)
+            if (resource.Rec.Value < resource.Rec.Max)
             {
-                values.Rec.Value++;
+                resource.Rec.Value++;
                 return;
             }
-            this.Modify(values, this.GetRegenRate(values));
         }
-        float GetRegenRate(Resource values)
+        protected override float GetRegenRate(Resource values)
         {
             float rate = (1 + (float)Math.Pow(values.Percentage, 2)) / TickRate;
             return rate;

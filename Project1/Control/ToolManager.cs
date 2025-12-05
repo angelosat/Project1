@@ -256,7 +256,7 @@ namespace Start_a_Town_
         internal static void OnGameEvent(WorldBase world, GameEvent e)
         {
             Instance.ActiveTool?.OnGameEvent(e);
-            switch (e.Type)
+            switch ((Message.Types)e.Type)
             {
                 case Message.Types.PlayerControlNpc:
                     if (e.Parameters[0] == Client.Instance.GetPlayer())

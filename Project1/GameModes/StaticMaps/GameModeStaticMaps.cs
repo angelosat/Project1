@@ -154,12 +154,14 @@ namespace Start_a_Town_.Core
                 ("sending chunk " + first.Key.ToString()).ToConsole();
             }
         }
-
-        internal override void AllChunksReceived(INetEndpoint net)
+        class ChunksLoadedEvent : EventPayloadBase
+        { }
+        internal override void AllChunksReceived(NetEndpoint net)
         {
             // all chunks received, enter world
             "all chunks loaded!".ToConsole();
-            net.EventOccured((int)Components.Message.Types.ChunksLoaded);
+            //net.EventOccured((int)Components.Message.Types.ChunksLoaded);
+            net.Events.Post(new ChunksLoadedEvent());
             var map = net.Map as StaticMap;
             map.Regions.Init();
             map.InitUndiscoveredAreas();

@@ -89,7 +89,7 @@ namespace Start_a_Town_
 
             setownercombo.OnGameEventAction = a =>
             {
-                switch (a.Type)
+                switch ((Message.Types)a.Type)
                 {
                     case Message.Types.NpcsUpdated:
                         alllist.Clear();

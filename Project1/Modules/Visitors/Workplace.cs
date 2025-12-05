@@ -174,7 +174,7 @@ namespace Start_a_Town_
             liststockpiles.OnGameEventAction = e =>
             {
                 var shop = box.Tag as Shop;
-                switch (e.Type)
+                switch ((Components.Message.Types)e.Type)
                 {
                     case Components.Message.Types.ShopUpdated:
                         if (e.Parameters[0] != shop)
@@ -431,7 +431,7 @@ namespace Start_a_Town_
             var tablePanel = boxContainer.ToPanelLabeled("Workers");
             table.OnGameEventAction = e =>
             {
-                switch (e.Type)
+                switch ((Components.Message.Types)e.Type)
                 {
                     case Components.Message.Types.ShopUpdated:
                         if (e.Parameters[0] != tav)

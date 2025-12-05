@@ -15,6 +15,7 @@ namespace Start_a_Town_.Particles
         public ParticleManager(MapBase map)
         {
             this.Map = map;
+            this.Map.World.Events.ListenTo<EntityFootStepEvent>(this.EntityFootStep);
         }
         public void AddEmitter(ParticleEmitter emitter)
         {
@@ -36,12 +37,12 @@ namespace Start_a_Town_.Particles
             foreach (var e in this.Emitters)
                 e.Draw(camera, this.Map, e.Source);
         }
-
+        
         public void OnGameEvent(GameEvent e)
         {
             if (this.Map.Net is Server)
                 return;
-            switch (e.Type)
+            switch ((Components.Message.Types)e.Type)
             {
                 case Message.Types.EntityHitCeiling:
                     this.EntityHitCeiling(e);
@@ -51,9 +52,9 @@ namespace Start_a_Town_.Particles
                     this.EntityHitGround(e);
                     break;
 
-                case Message.Types.EntityFootStep:
-                    this.EntityFootStep(e);
-                    break;
+                //case Message.Types.EntityFootStep:
+                //    this.EntityFootStep(e);
+                //    break;
 
                 default:
                     break;
@@ -84,15 +85,30 @@ namespace Start_a_Town_.Particles
             this.Emitters.Add(emitter);
         }
 
-        void EntityFootStep(GameEvent e)
+        //void EntityFootStep(GameEvent e)
+        //{
+        //    var entity = e.Parameters[0] as GameObject;
+        //    var vec = new Vector3(entity.Global.X, entity.Global.Y, (int)Math.Ceiling(entity.Global.Z) - 1);
+        //    var block = entity.Map.GetBlock(vec);
+        //    var emitter = block.GetEmitter();
+        //    emitter.Source = entity.Global;
+        //    emitter.Emit(10, -entity.Velocity * .1f);
+        //    this.Emitters.Add(emitter);
+        //}
+        void EntityFootStep(EntityFootStepEvent e)
         {
-            var entity = e.Parameters[0] as GameObject;
+            var entity = e.Entity;// e.Parameters[0] as GameObject;
             var vec = new Vector3(entity.Global.X, entity.Global.Y, (int)Math.Ceiling(entity.Global.Z) - 1);
             var block = entity.Map.GetBlock(vec);
             var emitter = block.GetEmitter();
             emitter.Source = entity.Global;
-            emitter.Emit(10, -entity.Velocity * .1f);
+            //emitter.Emit(10, -entity.Velocity * .1f);
+            emitter.Emit(100, -entity.Velocity * .1f);
             this.Emitters.Add(emitter);
         }
+    }
+    class EntityFootStepEvent(Entity entity) : EventPayloadBase
+    {
+        public readonly Entity Entity = entity;
     }
 }

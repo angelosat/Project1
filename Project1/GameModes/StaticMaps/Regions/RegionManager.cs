@@ -25,7 +25,7 @@ namespace Start_a_Town_
         public RegionManager(MapBase map)
         {
             this.Map = map;
-            this.Map.World.ListenTo<BlocksChangedEvent>(this.HandleBlocksChanged);
+            this.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChanged);
         }
 
         internal void Init()

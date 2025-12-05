@@ -413,7 +413,7 @@ namespace Start_a_Town_.UI
         }
         internal void OnGameEvent(GameEvent e)
         {
-            switch (e.Type)
+            switch ((Components.Message.Types)e.Type)
             {
                 //case Message.Types.BlocksChanged:
                 //    var map = e.Parameters[0] as MapBase;
@@ -435,7 +435,7 @@ namespace Start_a_Town_.UI
         }
         internal static void Bind(NetEndpoint net)
         {
-            net.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+            net.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         }
         static void HandleBlocksChanged(BlocksChangedEvent e)
         {

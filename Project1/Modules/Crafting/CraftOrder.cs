@@ -518,7 +518,7 @@ namespace Start_a_Town_
                 .SnapToMouse()
                 .SetGameEventAction(e =>
                 {
-                    if (e.Type == Components.Message.Types.OrderDeleted && e.Parameters[0] == DetailsUIContainer.Tag)
+                    if ((Components.Message.Types)e.Type == Components.Message.Types.OrderDeleted && e.Parameters[0] == DetailsUIContainer.Tag)
                     {
                         DetailsUIContainer.Hide();
                     }

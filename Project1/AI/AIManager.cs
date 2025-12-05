@@ -14,7 +14,7 @@ namespace Start_a_Town_.AI
 
         public override void OnGameEvent(GameEvent e)
         {
-            switch (e.Type)
+            switch ((Message.Types)e.Type)
             {
                 case Message.Types.EntityAttacked:
                     var attacker = e.Parameters[0] as GameObject;

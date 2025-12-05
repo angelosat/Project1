@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Security.AccessControl;
 
 namespace Start_a_Town_
 {
@@ -40,14 +39,13 @@ namespace Start_a_Town_
             set
             {
                 this.GiverID = value?.RefId ?? -1;
-                //this.Manager.Town.Map.EventOccured(Components.Message.Types.QuestDefAssigned, this);
-                this.Manager.Town.Map.Net.EventOccured(new QuestDefAssignedEvent() { Quest = this });
+                this.Manager.Town.Map.Net.Events.Post(new QuestDefAssignedEvent(this));
             }
         }
         public bool IsValid { get { return this.Objectives.Any(); } }
-        struct QuestDefAssignedEvent
+        public class QuestDefAssignedEvent(QuestDef quest) : EventPayloadBase
         {
-            public QuestDef Quest;
+            public QuestDef Quest = quest;
         }
         public QuestDef(QuestsManager manager, int id)
         {
@@ -82,7 +80,7 @@ namespace Start_a_Town_
         public QuestDef AddObjective(QuestObjective objective)
         {
             this.Objectives.Add(objective);
-            this.Manager.Town.Net.EventOccured(new QuestObjectivesEvent([objective], []));// { Added = [objective] , Removed = [] }); 
+            this.Manager.Town.Net.Events.Post(new QuestObjectivesEvent([objective], []));// { Added = [objective] , Removed = [] }); 
             //this.Manager.Town.Net.EventOccured((int)Components.Message.Types.QuestObjectivesUpdated, new[] { objective }, new QuestObjective[] { });
             this.Manager.QuestModified(this);
             return this;
@@ -90,7 +88,7 @@ namespace Start_a_Town_
         internal QuestDef RemoveObjective(QuestObjective objective)
         {
             this.Objectives.Remove(objective);
-            this.Manager.Town.Net.EventOccured(new QuestObjectivesEvent([], [objective]));// { Added = [], Removed = [objective] });
+            this.Manager.Town.Net.Events.Post(new QuestObjectivesEvent([], [objective]));// { Added = [], Removed = [objective] });
             //this.Manager.Town.Net.EventOccured((int)Components.Message.Types.QuestObjectivesUpdated, new QuestObjective[] {  }, new[] { objective });
             this.Manager.QuestModified(this);
             return this;

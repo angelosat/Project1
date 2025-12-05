@@ -12,7 +12,7 @@ namespace Start_a_Town_
         public DiggingManager(Town town)
         {
             this.Town = town;
-            this.Town.Map.World.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+            this.Town.Map.World.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         }
         public override string Name => "Digging";
 

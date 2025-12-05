@@ -90,7 +90,7 @@ namespace Start_a_Town_
         public override void OnSpawn()
         {
             this.State.Leash = this.Parent.Global;
-            this._unListen = this.Parent.Map.World.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
+            this._unListen = this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
         }
         Action _unListen;
         public override void OnDespawn()

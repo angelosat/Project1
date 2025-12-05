@@ -122,7 +122,7 @@ namespace Start_a_Town_.UI
 
         internal static void Bind(NetEndpoint net)
         {
-            net.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+            net.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         }
         static void HandleBlocksChanged(BlocksChangedEvent e)
         {

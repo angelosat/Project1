@@ -13,7 +13,7 @@ namespace Start_a_Town_
         public UndiscoveredAreaManager(MapBase map)
         {
             this.Map = map;
-            this.Map.World.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+            this.Map.World.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         }
         bool Valid;// = true;
         public void Init()

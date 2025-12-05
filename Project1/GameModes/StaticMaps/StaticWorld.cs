@@ -288,9 +288,10 @@ namespace Start_a_Town_
             return name.First().ToString().ToUpper() + name[1..];
         }
 
-        internal override void OnGameEvent(GameEvent a)
-        {
-            this.Map.OnGameEvent(a);
-        }
+        //internal override void Post(GameEvent a)
+        //{
+        //    base.Post(a.Payload);
+        //    this.Map.OnGameEvent(a);
+        //}
     }
 }

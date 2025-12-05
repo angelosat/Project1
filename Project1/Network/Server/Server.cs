@@ -49,12 +49,14 @@ namespace Start_a_Town_.Net
         /// </summary>
         public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = [];
 
-        protected override void OnGameEvent(GameEvent e)
+        protected override void Post(GameEvent e)
         {
+            this.Events.Post(e.Payload);
+            this.World.Events.Post(e.Payload);
+
             GameMode.Current.HandleEvent(this, e);
             foreach (var item in Game1.Instance.GameComponents)
                 item.OnGameEvent(e);
-            Instance.World.OnGameEvent(e);
             //Instance.Map.OnGameEvent(e);
         }
         //public override void EventOccured(Message.Types type, params object[] p)

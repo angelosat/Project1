@@ -203,7 +203,7 @@ namespace Start_a_Town_
         }
         internal override void OnGameEvent(GameEvent e)
         {
-            switch (e.Type)
+            switch ((Components.Message.Types)e.Type)
             {
                 case Components.Message.Types.PlayerControlNpc:
                     if (e.Parameters[0] == Net.Client.Instance.GetPlayer())

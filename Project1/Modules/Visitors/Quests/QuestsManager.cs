@@ -56,7 +56,7 @@ namespace Start_a_Town_
         void ReportQuestsUpdated(QuestDef[] added, QuestDef[] removed)
         {
             //this.Town.Net.EventOccured((int)Components.Message.Types.QuestDefsUpdated, added, removed);
-            this.Town.Net.EventOccured(new QuestDefsUpdatedEvent(added, removed));// { Added = added, Removed = removed });
+            this.Town.Net.Events.Post(new QuestDefsUpdatedEvent(added, removed));// { Added = added, Removed = removed });
         }
         public QuestDef GetQuest(int id)
         {

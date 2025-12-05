@@ -320,7 +320,8 @@ namespace Start_a_Town_.Components
             {
                 if (parent.Velocity.Z != 0)
                     return;
-                parent.Map.EventOccured(Message.Types.EntityFootStep, parent);
+                //parent.Map.EventOccured(Message.Types.EntityFootStep, parent);
+                parent.Map.World.Events.Post(new EntityFootStepEvent(parent as Entity));
             }
         }
 

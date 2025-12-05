@@ -32,7 +32,7 @@ namespace Start_a_Town_.AI
         
         internal override void OnGameEvent(GameEvent e)
         {
-            switch (e.Type)
+            switch ((Components.Message.Types)e.Type)
             {
                 case Message.Types.AILogUpdated:
                     this.Refresh(this.Agent);

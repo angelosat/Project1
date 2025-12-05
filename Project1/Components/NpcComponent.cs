@@ -213,7 +213,7 @@ namespace Start_a_Town_
         }
         internal override void OnGameEvent(GameObject parent, GameEvent e)
         {
-            switch(e.Type)
+            switch((Message.Types)e.Type)
             {
                 case Message.Types.PlayerControlNpc:
                     if (parent.Net is Net.Client)

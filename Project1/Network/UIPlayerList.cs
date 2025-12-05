@@ -34,7 +34,7 @@ namespace Start_a_Town_.Net
 
         internal override void OnGameEvent(GameEvent e)
         {
-            switch(e.Type)
+            switch((Components.Message.Types)e.Type)
             {
                 case Components.Message.Types.PlayerConnected:
                     this.List_Players.AddItems(e.Parameters[0] as PlayerData);

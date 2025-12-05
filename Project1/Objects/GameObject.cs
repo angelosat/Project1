@@ -1040,9 +1040,13 @@ namespace Start_a_Town_
             if (this.Net is Server server)
                 server.SyncDispose(this.RefId);
         }
+        class EntityDisposedEvent(Entity entity) : EventPayloadBase 
+        { public readonly Entity Entity = entity; }
         internal void OnDispose()
         {
-            this.Net.EventOccured((int)Message.Types.ObjectDisposed, this);
+            //this.Net.EventOccured((int)Message.Types.ObjectDisposed, this);
+            this.Net.Map.World.Events.Post(new EntityDisposedEvent(this as Entity));
+
             foreach (var c in this.Components.Values)
                 c.OnDispose();
         }

@@ -30,7 +30,7 @@ namespace Start_a_Town_
                 var job = actor.GetJob(jobDef);
                 job.Read(r);
                 //net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
-                net.EventOccured(new JobUpdatedEvent(actor, job.Def));
+                net.Events.Post(new JobUpdatedEvent(actor, job.Def));
                 SyncJob(player, actor, job);
             }
 
@@ -40,7 +40,7 @@ namespace Start_a_Town_
                 if (net is Server)
                 {
                     job.Priority = (byte)priority;
-                    net.EventOccured(new JobUpdatedEvent(actor, job.Def));
+                    net.Events.Post(new JobUpdatedEvent(actor, job.Def));
                     //net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
                     SyncJob(player, actor, job);
                 }
@@ -63,7 +63,7 @@ namespace Start_a_Town_
                 var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 actor.ToggleJob(jobDef);
-                net.EventOccured(new JobUpdatedEvent(actor, jobDef));
+                net.Events.Post(new JobUpdatedEvent(actor, jobDef));
                 if (net is Server)
                     SendLaborToggle(player, actor, jobDef);
             }
@@ -85,7 +85,7 @@ namespace Start_a_Town_
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 var job = actor.GetJob(jobDef);
                 job.Read(r);
-                net.EventOccured(new JobUpdatedEvent(actor, jobDef));
+                net.Events.Post(new JobUpdatedEvent(actor, jobDef));
             }
         }
         readonly Lazy<Control> UILabors;

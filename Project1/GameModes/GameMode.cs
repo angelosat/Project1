@@ -60,7 +60,7 @@ namespace Start_a_Town_
 
         internal virtual void ChunkReceived(Server server, int playerid, Vector2 vec) { }
         internal virtual void HandleEvent(NetEndpoint world, GameEvent e) { }
-        internal virtual void HandleEvent(INetEndpoint net, object e, object[] p) { }
-        internal virtual void AllChunksReceived(INetEndpoint net) { }
+        internal virtual void HandleEvent(NetEndpoint net, object e, object[] p) { }
+        internal virtual void AllChunksReceived(NetEndpoint net) { }
     }
 }

@@ -228,7 +228,7 @@ namespace Start_a_Town_
             var shoplist = new ListBoxNoScroll<T, Button>(s => new Button(s.Name, () => selectAction?.Invoke(s)));
             shoplist.OnGameEventAction = e =>
             {
-                switch (e.Type)
+                switch ((Components.Message.Types)e.Type)
                 {
                     case Components.Message.Types.ShopsUpdated:
                         var shop = e.Parameters[0] as T;
@@ -275,7 +275,7 @@ namespace Start_a_Town_
 
             shoplist.OnGameEventAction = e =>
             {
-                switch (e.Type)
+                switch ((Components.Message.Types)e.Type)
                 {
                     case Components.Message.Types.ShopsUpdated:
                         var shop = e.Parameters[0] as Workplace;

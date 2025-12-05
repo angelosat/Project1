@@ -116,7 +116,7 @@ namespace Start_a_Town_
 
         public void HandleGameEvent(GameEvent e)
         {
-            switch (e.Type)
+            switch ((Components.Message.Types)e.Type)
             {
                 case Message.Types.EntitySpawned:
                     var entity = e.Parameters[0] as GameObject;

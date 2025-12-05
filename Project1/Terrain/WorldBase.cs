@@ -118,46 +118,35 @@ namespace Start_a_Town_
             }
             return true;
         }
-        internal abstract void OnGameEvent(GameEvent a);
-        Dictionary<int, List<Action<GameEvent>>> _eventBus = [];
-        public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : EventPayloadBase
-        {
-            var id = Registry.GameEvents.Register<TPayload>();
-            if (!_eventBus.TryGetValue(id, out var list))
-            {
-                list = new List<Action<GameEvent>>();
-                _eventBus[id] = list;
-            }
-            //list.Add(e => handler((TPayload)e.Payload));
-            var item = new Action<GameEvent>(e => handler((TPayload)e.Payload));
-            list.Add(item);
-            return () => StopListening<TPayload>(item);
-        }
-        public void StopListening<TPayload>(Action<GameEvent> handler) where TPayload : EventPayloadBase
-        {
-            var id = Registry.GameEvents.Register<TPayload>();
-            if (!_eventBus.TryGetValue(id, out var list))
-            {
-                throw new Exception();
-            }
-            list.Remove(handler);
-        }
-        //public void EventOccured(Components.Message.Types mType, params object[] p)
+        public EventBus Events { get; } = new();
+        //internal virtual void Post(GameEvent a)
         //{
-        //    this.OnGameEvent(new GameEvent(this.Net.Clock, mType, p));
+        //    var id = a.Type;
+        //    if (_eventBus.TryGetValue(id, out var list))
+        //        foreach (var i in list)
+        //            i(a);
         //}
-        //public void OnGameEvent(GameEvent e)
+        //readonly Dictionary<int, List<Action<GameEvent>>> _eventBus = [];
+        //public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : EventPayloadBase
         //{
-        //    GameMode.Current.HandleEvent(this, e);
-
-            //    foreach (var item in Game1.Instance.GameComponents)
-            //        item.OnGameEvent(e);
-            //    if (this.Net.IsClient)
-            //    {
-            //        UI.TooltipManager.OnGameEvent(e);
-            //        ScreenManager.CurrentScreen.OnGameEvent(e);
-            //        ToolManager.OnGameEvent(this, e);
-            //    }
-            //}
+        //    var id = Registry.GameEvents.Register<TPayload>();
+        //    if (!_eventBus.TryGetValue(id, out var list))
+        //    {
+        //        list = new List<Action<GameEvent>>();
+        //        _eventBus[id] = list;
+        //    }
+        //    var item = new Action<GameEvent>(e => handler((TPayload)e.Payload));
+        //    list.Add(item);
+        //    return () => _stopListening<TPayload>(item);
+        //}
+        //void _stopListening<TPayload>(Action<GameEvent> handler) where TPayload : EventPayloadBase
+        //{
+        //    var id = Registry.GameEvents.Register<TPayload>();
+        //    if (!_eventBus.TryGetValue(id, out var list))
+        //    {
+        //        throw new Exception();
+        //    }
+        //    list.Remove(handler);
+        //}
     }
 }

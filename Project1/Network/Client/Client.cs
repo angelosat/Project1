@@ -362,8 +362,11 @@ namespace Start_a_Town_.Net
         //    var e = new GameEvent(this.ClientClock.TotalMilliseconds, eventTypeId, p);
         //    this.OnGameEvent(e);
         //}
-        protected override void OnGameEvent(GameEvent e)
+        protected override void Post(GameEvent e)
         {
+            this.Events.Post(e.Payload);
+            this.World?.Events.Post(e.Payload);
+
             GameMode.Current.HandleEvent(this, e);
 
             foreach (var item in Game1.Instance.GameComponents)
@@ -371,7 +374,6 @@ namespace Start_a_Town_.Net
             UI.TooltipManager.OnGameEvent(e);
             ScreenManager.CurrentScreen.OnGameEvent(e);
             ToolManager.OnGameEvent(this.World, e);
-            Instance.World?.OnGameEvent(e);
         }
         private void HandleSyncedPackets()
         {
@@ -489,7 +491,10 @@ namespace Start_a_Town_.Net
         {
             return this._name;
         }
+        class ServerConnectionAcceptedEvent : EventPayloadBase
+        {
 
+        }
         private void HandleMessage(Packet msg)
         {
             
@@ -505,7 +510,8 @@ namespace Start_a_Town_.Net
                     GameMode.Current.PlayerIDAssigned(this);
                     this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(msg.Tick - ClientClockDelayMS, 0));
                     this.PlayerData.RemoteOrderedReliableSequence = msg.OrderedReliableID;
-                    Instance.EventOccured((int)Message.Types.ServerResponseReceived);
+                    //Instance.EventOccured((int)Message.Types.ServerResponseReceived);
+                    Instance.Events.Post(new ServerConnectionAcceptedEvent());
                     break;
 
                 case PacketType.PlayerDisconnected:

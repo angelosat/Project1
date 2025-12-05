@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using SharpDX.Direct2D1;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using System;
@@ -50,18 +51,15 @@ namespace Start_a_Town_.Net
         public abstract int Speed { get; set; }
         public abstract bool DisposeObject(GameObject obj);
         public abstract bool DisposeObject(int netID);
-        public abstract void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType);
+        public abstract void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType); 
+        [Obsolete]
         public void EventOccured(int eventTypeId, params object[] p)
         {
+            throw new Exception();
             var e = new GameEvent(this.Clock.TotalMilliseconds, eventTypeId, p);
-            this.OnGameEvent(e);
+            //this.Post(e);
         }
-        public void EventOccured<T>(T args)
-        {
-            var e = new GameEvent(this.Clock.TotalMilliseconds, args);
-            this.OnGameEvent(e);
-        }
-        protected abstract void OnGameEvent(GameEvent e);
+        protected abstract void Post(GameEvent e);
         public abstract BinaryWriter GetOutgoingStreamOrderedReliable();
         public abstract PlayerData GetPlayer(int id);
         public abstract PlayerData GetPlayer();
@@ -79,8 +77,80 @@ namespace Start_a_Town_.Net
         public abstract bool TryGetNetworkObject(int netID, out Entity obj);
         public abstract void Write(string text);
         public abstract void WriteToStream(params object[] args);
-        Dictionary<int, List<Action<GameEvent>>> _eventBus = [];
 
+        public EventBus Events { get; } = new();
+
+        //readonly Dictionary<int, List<Action<GameEvent>>> _eventBus = [];
+        
+        //public void Post<T>(T args) where T : EventPayloadBase
+        //{
+        //    if (Registry.GameEvents.TryGet<T>(out var id))
+        //    {
+        //        var e = new GameEvent(this.Clock.TotalMilliseconds, args);
+        //        //if (_eventBus.TryGetValue(id, out var list))
+        //        //    foreach (var i in list)
+        //        //        i(e);
+        //        this.Post(e);
+        //    }
+        //}
+        //protected virtual void Post(GameEvent a)
+        //{
+        //    var id = a.Type;
+        //    if (_eventBus.TryGetValue(id, out var list))
+        //        foreach (var i in list)
+        //            i(a);
+        //}
+        //public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : EventPayloadBase
+        //{
+        //    var id = Registry.GameEvents.Register<TPayload>();
+        //    if (!_eventBus.TryGetValue(id, out var list))
+        //    {
+        //        list = new List<Action<GameEvent>>();
+        //        _eventBus[id] = list;
+        //    }
+        //    var item = new Action<GameEvent>(e => handler((TPayload)e.Payload));
+        //    list.Add(item);
+        //    return () => _stopListening<TPayload>(item);
+        //}
+        //public void _stopListening<TPayload>(Action<GameEvent> handler) where TPayload : EventPayloadBase
+        //{
+        //    var id = Registry.GameEvents.Register<TPayload>();
+        //    if (!_eventBus.TryGetValue(id, out var list))
+        //    {
+        //        throw new Exception();
+        //    }
+        //    list.Remove(handler);
+        //}
+    }
+
+    public class EventBus
+    {
+        readonly Dictionary<int, List<Action<GameEvent>>> _eventBus = [];
+        public void Post<T>(T args) where T : EventPayloadBase
+        {
+            if (Registry.GameEvents.TryGet<T>(out var id))
+            {
+                var e = new GameEvent(id, args);
+                this.Post(e);
+            }
+            else
+                throw new Exception();
+        }
+        public void Post<T>(TimeSpan time, T args) where T : EventPayloadBase
+        {
+            if (Registry.GameEvents.TryGet<T>(out var id))
+            {
+                var e = new GameEvent(time.TotalMilliseconds, id, args);
+                this.Post(e);
+            }
+        }
+        protected virtual void Post(GameEvent a)
+        {
+            var id = a.Type;
+            if (_eventBus.TryGetValue(id, out var list))
+                foreach (var i in list)
+                    i(a);
+        }
         public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : EventPayloadBase
         {
             var id = Registry.GameEvents.Register<TPayload>();
@@ -91,9 +161,9 @@ namespace Start_a_Town_.Net
             }
             var item = new Action<GameEvent>(e => handler((TPayload)e.Payload));
             list.Add(item);
-            return () => StopListening<TPayload>(item);
+            return () => _stopListening<TPayload>(item);
         }
-        public void StopListening<TPayload>(Action<GameEvent> handler) where TPayload : EventPayloadBase
+        public void _stopListening<TPayload>(Action<GameEvent> handler) where TPayload : EventPayloadBase
         {
             var id = Registry.GameEvents.Register<TPayload>();
             if (!_eventBus.TryGetValue(id, out var list))

@@ -138,7 +138,7 @@ namespace Start_a_Town_
 
         internal override void OnGameEvent(GameEvent e)
         {
-            switch (e.Type)
+            switch ((Message.Types)e.Type)
             {
                 case Message.Types.NotEnoughSpace:
                     this.NotEnoughSpace(e.Parameters[0] as GameObject);
@@ -166,7 +166,7 @@ namespace Start_a_Town_
                     break;
 
                 default:
-                    if (this.UIEvents.TryGetValue(e.Type, out var val))
+                    if (this.UIEvents.TryGetValue((Components.Message.Types)e.Type, out var val))
                         val(e);
                     base.OnGameEvent(e);
                     break;

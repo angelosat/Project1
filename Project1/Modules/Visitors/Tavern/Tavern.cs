@@ -228,7 +228,7 @@ namespace Start_a_Town_
             });
             ordersTable.OnGameEventAction = e =>
             {
-                switch (e.Type)
+                switch ((Components.Message.Types)e.Type)
                 {
                     case Components.Message.Types.TavernMenuChanged:
                         var t = e.Parameters[0] as Tavern;

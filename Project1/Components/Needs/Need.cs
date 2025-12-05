@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public abstract class Need : Inspectable, IProgressBar, ISerializable, ISaveable
+    public abstract class Need : MetricWrapper, IProgressBar, ISerializable, ISaveable
     {
         internal void AddMod(NeedLetDef needLetDef, float value, float rate)
         {
@@ -23,7 +23,6 @@ namespace Start_a_Town_
         public NeedDef NeedDef;
         public enum Types { Hunger, Water, Sleep, Achievement, Work, Brains, Curiosity, Social, Energy }
         const string Format = "P0";
-        public virtual Types ID { get; set; }
         public virtual string Name => this.NeedDef.Label;
         public float DecayDelay, DecayDelayMax = 3;
         float _Value;
@@ -63,7 +62,10 @@ namespace Start_a_Town_
             this.Parent = parent;
             this._Value = this.Max;
         }
-        
+        public override void Tick()
+        {
+
+        }
         public virtual void TickLong(GameObject parent) { }
         public virtual void Tick(GameObject parent)
         {

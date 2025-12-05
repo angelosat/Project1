@@ -55,7 +55,7 @@ namespace Start_a_Town_.Net
         [Obsolete]
         public void EventOccured(int eventTypeId, params object[] p)
         {
-            throw new Exception();
+            throw new Exception("obsolete EventOccured method called in NetEndpoint");
             var e = new GameEvent(this.Clock.TotalMilliseconds, eventTypeId, p);
             //this.Post(e);
         }

@@ -7,7 +7,7 @@ using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
-    public class Resource : Inspectable, IProgressBar, ISaveable, ISerializable, INamed
+    public class Resource : MetricWrapper, IProgressBar, ISaveable, ISerializable, INamed
     {
         public readonly ResourceDef ResourceDef;
         public List<ResourceRateModifier> Modifiers = new();
@@ -42,7 +42,10 @@ namespace Start_a_Town_
             this.Max = def.BaseMax;
             this.Value = this.Max;
         }
-
+        public override void Tick()
+        {
+            
+        }
         public void Tick(GameObject parent)
         {
             this.ResourceDef.Worker.Tick(parent, this);

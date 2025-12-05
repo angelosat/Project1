@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using SharpDX.Direct3D9;
 using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 

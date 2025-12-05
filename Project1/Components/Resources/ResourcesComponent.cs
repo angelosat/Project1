@@ -167,5 +167,18 @@ namespace Start_a_Town_
                 this.Defs = defs;
             }
         }
+
+        public override void OnSpawn()
+        {
+            base.OnSpawn();
+            foreach (var r in this.Resources)
+                r.OnSpawn(this.Parent as Entity);
+        }
+        public override void OnDespawn()
+        {
+            base.OnDespawn();
+            foreach (var r in this.Resources)
+                r.OnDespawn(this.Parent as Entity);
+        }
     }
 }

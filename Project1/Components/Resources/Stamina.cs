@@ -16,11 +16,11 @@ namespace Start_a_Town_.Components.Resources
         public override string Format { get; } = "##0.00";
         public override string Description { get; } = "Required for sprinting and hauling heavy objects";
 
-        public override void Add(float add, Resource resource)
+        public override void Modify(Resource resource, float add)
         {
             if (add < 0)
                 resource.Rec.Value = 0;
-            base.Add(add, resource);
+            base.Modify(resource, add);
         }
        
         public float TickRate = Ticks.PerGameMinute / 2f; // 2 ticks per second
@@ -48,7 +48,7 @@ namespace Start_a_Town_.Components.Resources
                 values.Rec.Value++;
                 return;
             }
-            this.Add(this.GetRegenRate(values), values);
+            this.Modify(values, this.GetRegenRate(values));
         }
         float GetRegenRate(Resource values)
         {

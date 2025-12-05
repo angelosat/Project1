@@ -7,9 +7,16 @@ namespace Start_a_Town_.Net
     {
         ListBoxNoScroll<PlayerData, Button> List_Players;
         static readonly int DefaultWidth = 150;
-        public UIPlayerList(IEnumerable<PlayerData> pList)
+        class PlayerConnectedEvent(PlayerData player, bool connected) : EventPayloadBase
+        {
+            public readonly PlayerData Player = player;
+            public readonly bool Connected = connected;
+        }
+        public UIPlayerList(NetEndpoint net)// IEnumerable<PlayerData> pList)
             //: base(150, 300)
         {
+            var pList = net.GetPlayers();
+            this.HideAction = net.Events.ListenTo<PlayerConnectedEvent>(HandlePlayerConnected);
             this.AutoSize = true;
             List_Players = new ListBoxNoScroll<PlayerData, Button>(foo =>
             {
@@ -24,29 +31,19 @@ namespace Start_a_Town_.Net
             this.Refresh(pList);
             this.AddControls(List_Players);
         }
-
+       
         public UIPlayerList Refresh(IEnumerable<PlayerData> pList)
         {
             List_Players.Clear();
             List_Players.AddItems(pList);
             return this;
         }
-
-        internal override void OnGameEvent(GameEvent e)
+        void HandlePlayerConnected(PlayerConnectedEvent e)
         {
-            switch((Components.Message.Types)e.Type)
-            {
-                case Components.Message.Types.PlayerConnected:
-                    this.List_Players.AddItems(e.Parameters[0] as PlayerData);
-                    break;
-
-                case Components.Message.Types.PlayerDisconnected:
-                    this.List_Players.RemoveItems(e.Parameters[0] as PlayerData);
-                    break;
-
-                default:
-                    break;
-            }
+            if(e.Connected)
+                this.List_Players.AddItems(e.Player);
+            else
+                this.List_Players.RemoveItems(e.Player);
         }
     }
 }

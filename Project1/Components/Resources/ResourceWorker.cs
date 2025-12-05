@@ -2,6 +2,7 @@
 using System.Linq;
 using Start_a_Town_.UI;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Start_a_Town_
 {
@@ -13,6 +14,10 @@ namespace Start_a_Town_
         {
             this.ResourceDef = resourceDef;
 
+        }
+        public virtual IEnumerable<(Type eventType, Action<EventPayloadBase> handler)> GetInterests()
+        {
+            yield break;   
         }
         internal virtual void HandleRemoteCall(GameObject parent, ObjectEventArgs e, Resource resource)
         {
@@ -67,9 +72,9 @@ namespace Start_a_Town_
 
         public abstract string Description { get; }
 
-        public virtual void Add(float add, Resource resource)
+        public virtual void Modify(Resource resource, float addValue)
         {
-            resource.Value += add;
+            resource.Value += addValue;
         }
 
         public readonly float BaseMax = 100;
@@ -77,7 +82,7 @@ namespace Start_a_Town_
         public virtual void Tick(GameObject parent, Resource resource)
         {
             foreach (var ratemod in resource.Modifiers)
-                this.Add(ratemod.Def.GetRateMod(parent), resource);
+                this.Modify(resource, ratemod.Def.GetRateMod(parent));
         }
         public virtual bool HandleMessage(Resource resource, GameObject parent, ObjectEventArgs e = null) { return false; }
 
@@ -87,5 +92,6 @@ namespace Start_a_Town_
         public virtual void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, GameObject parent) { }
 
         internal virtual void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials) { }
+
     }
 }

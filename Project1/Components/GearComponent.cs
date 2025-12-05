@@ -29,11 +29,6 @@ namespace Start_a_Town_
             parent.RegisterContainer(this.Equipment);
         }
       
-        public override void OnSpawn()
-        {
-            base.OnSpawn();
-        }
-
         public Container Equipment = new() { Name = "Equipment" };
         public float ArmorTotal;
         public GearComponent()

@@ -75,7 +75,7 @@ namespace Start_a_Town_
         }
         public void Adjust(float add)
         {
-            this.ResourceDef.Worker.Add(add, this);
+            this.ResourceDef.Worker.Modify(this, add);
         }
         public Resource Initialize(float max, float initPercentage)
         {
@@ -158,6 +158,16 @@ namespace Start_a_Town_
         internal void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials)
         {
             this.ResourceDef.Worker.InitMaterials(obj, materials);
+        }
+        Action _unsub;
+        internal void OnSpawn(Entity parent)
+        {
+            foreach(var i in this.ResourceDef.Worker.GetInterests())
+                _unsub += parent.Map.Events.ListenTo(i.eventType, i.handler);
+        }
+        internal void OnDespawn(Entity parent)
+        {
+            this._unsub();
         }
 
         class Packets

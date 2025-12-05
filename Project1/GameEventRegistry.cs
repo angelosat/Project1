@@ -23,5 +23,15 @@ namespace Start_a_Town_
                 $"event {t} not registered".ToConsole();
             return true;
         }
+
+        internal int Register(Type t)
+        {
+            //var t = typeof(TPayload);
+            if (this._registry.TryGetValue(t, out var existing))
+                return existing;
+            var id = this._registry.Count;
+            this._registry[t] = id;
+            return id;
+        }
     }
 }

@@ -196,20 +196,33 @@ namespace Start_a_Town_.Components
             return this;
         }
 
-        public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
-        {
-            switch (e.Type)
-            {
-                case Message.Types.HitGround:
-                case Message.Types.EntityHitGround:
-                    this.AnimationWalk.Frame = 0;
-                    this.OnLanded();
-                    break;
+        //public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case Message.Types.HitGround:
+        //        case Message.Types.EntityHitGround:
+        //            this.AnimationWalk.Frame = 0;
+        //            this.OnLanded();
+        //            break;
 
-                default:
-                    break;
-            }
-            return false;
+        //        default:
+        //            break;
+        //    }
+        //    return false;
+        //}
+        public override void OnSpawn()
+        {
+            base.OnSpawn();
+            this.Parent.Map.Events.ListenTo<EntityHitGroundEvent>(HandleEntityHitGround);
+        }
+
+        private void HandleEntityHitGround(EntityHitGroundEvent e)
+        {
+            if (e.Entity != this.Parent)
+                return;
+            this.AnimationWalk.Frame = 0;
+            this.OnLanded();
         }
 
         private void OnLanded()

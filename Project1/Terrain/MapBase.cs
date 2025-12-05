@@ -1014,5 +1014,7 @@ namespace Start_a_Town_
         {
 
         }
+
+        public readonly EventBus Events = new();
     }
 }

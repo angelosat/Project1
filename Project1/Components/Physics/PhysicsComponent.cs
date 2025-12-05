@@ -47,7 +47,10 @@ namespace Start_a_Town_
         public override void Tick()
         {
             if (this.Parent.Net is Client)
+            {
+                this.DetectEntityCollisions(this.Parent, this.Parent.Global, this.Parent.Global + this.Parent.Velocity);
                 return;
+            }
             var force = this.Force;
             this.Force = Vector3.Zero;
 
@@ -291,10 +294,11 @@ namespace Start_a_Town_
                         var check = global - new Vector3(0, 0, 1 + i);
                         if (IsStandable(map, check))
                         {
+                            var f = speed.Z;
                             //parent.Net.PostLocalEvent(parent, Message.Types.HitGround, Math.Abs(speed.Z));
                             speed.Z = 0;
                             // land
-                            this.HitGround(parent, check);
+                            this.HitGround(parent, check, f);
                             return (int)check.Z + Block.GetBlockHeight(map, check);
                         }
                     }
@@ -314,7 +318,7 @@ namespace Start_a_Town_
                         var f = speed.Z;
                         speed.Z = 0;
                         // land
-                        this.HitGround(parent, next);
+                        this.HitGround(parent, next, f);
 
                         float blockheightbelow = 0;
                         //blockheightbelow = corners.Max(c => Block.GetBlockHeight(map, c));
@@ -414,41 +418,34 @@ namespace Start_a_Town_
                     if (lastDistance >= 1 && nextDistance < 1) // changed the inequality so the item doesn't combine if freefalling on an adjacent block
                     {
                         // collision
-                        obj.PostMessage(ObjectEventArgs.Create(Message.Types.EntityCollision, new object[] { parent }));
+                        //obj.PostMessage(ObjectEventArgs.Create(Message.Types.EntityCollision, [parent]));
                         //obj.Net.EventOccured(Message.Types.EntityCollision, parent, obj); //removing this because object gets disposed as a result of the above line
+                        obj.Map.Events.Post(new EntityCollisionEvent(parent as Entity, obj as Entity));
                     }
                     // TODO: combine items only when an item enters another stationary item's cell?
                 }
             }
         }
-
         public override void OnSpawn()
         {
             this.Enabled = true;
+            this.Parent.Map.Events.ListenTo<EntityCollisionEvent>(this.HandleCollision);
         }
-
-        public override bool HandleMessage(GameObject parent, ObjectEventArgs e)
+        
+        void HandleCollision(EntityCollisionEvent e)
         {
-            Message.Types msg = e.Type;
-            switch (msg)
-            {
-                case Message.Types.EntityCollision:
-                    if (parent.Net is Server)
-                    {
-                        var otherItem = e.Parameters[0] as GameObject;
-                        if (otherItem.CanAbsorb(parent) && !parent.IsReserved) 
-                            /// revmoved the reserved check from canabsorb and placed it here, because canabsorb is called during legit behaviors that involve the items, 
-                            /// which means the items are reserved but still should be absorbable
-                            otherItem.SyncAbsorb(parent);
-                    }
+            var parent = this.Parent;
+            if (!parent.Net.IsServer)
+                return;
+                //throw new Exception("physics shouldn't run in clients");
 
-                    return true;
-
-                default:
-                    return base.HandleMessage(parent, e);
-            }
+            var otherItem = e.Target;
+            if (otherItem.CanAbsorb(parent) && !parent.IsReserved)
+                /// revmoved the reserved check from canabsorb and placed it here, because canabsorb is called during legit behaviors that involve the items, 
+                /// which means the items are reserved but still should be absorbable
+                otherItem.SyncAbsorb(parent);
         }
-
+     
         public override object Clone()
         {
             var phys = new PhysicsComponent(this)
@@ -487,13 +484,14 @@ namespace Start_a_Town_
         /// TODO: pass cell or block in here since i fetch it (by checking if the position is solid) in the check before calling this method
         /// </summary>
         /// <param name="vector3"></param>
-        private void HitGround(GameObject parent, Vector3 vector3)
+        private void HitGround(GameObject parent, Vector3 vector3, float force)
         {
             this.MidAir = false;
             parent.Map.EventOccured(Message.Types.EntityHitGround, parent, vector3);
-            //parent.PostMessage(new(Message.Types.EntityHitGround));
-            parent.Net.PostLocalEvent(parent, Message.Types.HitGround, Math.Abs(vector3.Z));
+            //parent.Net.PostLocalEvent(parent, Message.Types.HitGround, Math.Abs(vector3.Z));
+            parent.Net.Map.Events.Post(new EntityHitGroundEvent(parent as Entity, force));
         }
+        
         private void HitCeiling(GameObject parent, Vector3 vector3)
         {
             parent.Map.EventOccured(Message.Types.EntityHitCeiling, parent, vector3);

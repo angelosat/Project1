@@ -24,8 +24,20 @@ namespace Start_a_Town_.Components.Needs
             var entity = net.World.GetEntity(r.ReadInt32());
             var needName = r.ReadString();
             var needVal = r.ReadSingle();
+            var need = entity.GetNeed(needName);
             NeedsComponent.ModifyNeed(entity, needName, needVal);
-            entity.Map.EventOccured(Components.Message.Types.NeedUpdated, entity, needName, needVal);
+            //entity.Map.EventOccured(Components.Message.Types.NeedUpdated, entity, needName, needVal);
+            entity.Map.World.Events.Post(new ActorNeedUpdatedEvent(entity as Actor, need.NeedDef, needVal));
         }
+    }
+}
+
+namespace Start_a_Town_
+{
+    class ActorNeedUpdatedEvent(Actor actor, NeedDef need, float value) : EventPayloadBase
+    {
+        public readonly Actor Actor = actor;
+        public readonly NeedDef Need = need;
+        public readonly float Value = value;
     }
 }

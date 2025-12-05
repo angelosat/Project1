@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using SharpDX.Direct3D9;
+using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Modules.Base
@@ -11,23 +13,32 @@ namespace Start_a_Town_.Modules.Base
             PacketPlayerDisconnected.Init();
         }
 
-        public override void InitHUD(Hud hud)
+        public override void InitHUD(NetEndpoint net, Hud hud)
         {
             Skill.Init(hud);
-
-            hud.RegisterEventHandler(Components.Message.Types.NeedUpdated, e =>
-            {
-                var actor = e.Parameters[0] as Actor;
-                var need = e.Parameters[1] as Need;
-                var value = (float)e.Parameters[2];
-                FloatingText.Create(actor, string.Format("{0:+;-}{1}", value, need.NeedDef.Name),
-                     ft =>
-                     {
-                         ft.Font = UIManager.FontBold;
-                         ft.ColorFunc = () => value < 0 ? Color.Red : Color.Lime;
-                     }
-                );
-            });
+            net.Events.ListenTo<ActorNeedUpdatedEvent>(HandleActorNeedUpdated);
+            //hud.RegisterEventHandler(Components.Message.Types.NeedUpdated, e =>
+            //{
+            //    var actor = e.Parameters[0] as Actor;
+            //    var need = e.Parameters[1] as Need;
+            //    var value = (float)e.Parameters[2];
+            //    FloatingText.Create(actor, string.Format("{0:+;-}{1}", value, need.NeedDef.Name),
+            //         ft =>
+            //         {
+            //             ft.Font = UIManager.FontBold;
+            //             ft.ColorFunc = () => value < 0 ? Color.Red : Color.Lime;
+            //         }
+            //    );
+            //});
+        }
+        void HandleActorNeedUpdated(ActorNeedUpdatedEvent e)
+        {
+            FloatingText.Create(e.Actor, string.Format("{0:+;-}{1}", e.Value, e.Need.Name),
+                    ft =>
+                    {
+                        ft.Font = UIManager.FontBold;
+                        ft.ColorFunc = () => e.Value < 0 ? Color.Red : Color.Lime;
+                    });
         }
     }
 }

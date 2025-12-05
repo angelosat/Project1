@@ -254,24 +254,21 @@ namespace Start_a_Town_.Components
             parent.Body.Sprite = Sprite.Load(this.PlantProperties.TextureGrowing);
             this.Parent.Body.FindBone(BoneDefOf.PlantFruit).Sprite = null;
         }
+        public override void OnSpawn()
+        {
+            base.OnSpawn();
+            this.Parent.Map.Events.ListenTo<EntityCollisionEvent>(HandleCollisionEvent);
+        }
+
+        private void HandleCollisionEvent(EntityCollisionEvent e)
+        {
+            if (e.Target == this.Parent && this.Parent.Net.IsClient)
+                this.Wiggle();
+        }
 
         public void ResetGrowth(GameObject parent)
         {
             this.Progress.Value = this.Progress.Max = this.Length;
-        }
-
-        public override bool HandleMessage(GameObject parent, ObjectEventArgs e)
-        {
-            switch (e.Type)
-            {
-                case Message.Types.EntityCollision:
-                    this.Wiggle();
-                    break;
-
-                default:
-                    break;
-            }
-            return false;
         }
 
         public override object Clone()

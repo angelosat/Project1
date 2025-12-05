@@ -19,12 +19,15 @@ namespace Start_a_Town_
             HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Open debug console", delegate { DebugConsole.Toggle(); }, System.Windows.Forms.Keys.Oem5);
             HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Spawn objects", delegate { UI.Editor.ObjectTemplatesWindow.Instance.ToggleSmart(); }, System.Windows.Forms.Keys.O);
         }
-        public new void Initialize()
+        //public new void Initialize()
+        //{
+          
+        //}
+        public void Initialize(NetEndpoint net)
         {
             foreach (var item in Game1.Instance.GameComponents)
-                item.InitHUD(this);
+                item.InitHUD(net, this);
         }
-
         readonly Dictionary<Message.Types, Action<GameEvent>> UIEvents = new();
         internal void RegisterEventHandler(Message.Types type, Action<GameEvent> action)
         {
@@ -49,7 +52,7 @@ namespace Start_a_Town_
             //this.Box_Buttons.Anchor = Vector2.One;
         }
 
-        public Hud(INetEndpoint net, Camera camera)
+        public Hud(NetEndpoint net, Camera camera)
         {
             this.AutoSize = false;
             this.Width = UIManager.Width;
@@ -125,11 +128,12 @@ namespace Start_a_Town_
                 );
         }
 
-        private void TogglePlayerList(INetEndpoint net)
+        private void TogglePlayerList(NetEndpoint net)
         {
             if (this.WindowPlayers is null)
             {
-                this.WindowPlayers = new UIPlayerList(net.GetPlayers())
+                this.WindowPlayers = new UIPlayerList(net)
+                    //.ToWindow("Players");
                     .ToWidget("Players");
                 this.WindowPlayers.Layer = UIManager.LayerHud;
             }
@@ -214,10 +218,7 @@ namespace Start_a_Town_
             this.Controls.Add(this.PartyFrame);
             this.PartyFrame.Invalidate(true);
         }
-        public void Initialize(MapBase map)
-        {
-
-        }
+        
         public void AddUnitFrame(GameObject obj)
         {
             this.PartyFrame.Controls.Add(new UnitFrame() { Location = this.PartyFrame.Controls.Last().BottomLeft }.Track(obj));

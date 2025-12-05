@@ -27,8 +27,7 @@ namespace Start_a_Town_
             WindowManager = new UIManager();
             NotificationArea = new NotificationArea();
             this.Hud = new Hud(net, camera);
-            this.Hud.Initialize();
-            this.Hud.Initialize(net.Map);
+            this.Hud.Initialize(net);
             GameMode.Current.OnHudCreated(this.Hud);
             net.Map.World.OnHudCreated(this.Hud);
             this.Hud.Show(WindowManager);

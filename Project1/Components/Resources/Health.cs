@@ -1,7 +1,9 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using SharpDX.Direct3D9;
 using Start_a_Town_.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_.Components.Resources
 {
@@ -47,7 +49,7 @@ namespace Start_a_Town_.Components.Resources
                 values.Rec.Value--;
                 return;
             }
-            this.Add(this.GetRate(values), values);
+            this.Modify(values, this.GetRate(values));
 
         }
         float GetRate(Resource values)
@@ -57,45 +59,61 @@ namespace Start_a_Town_.Components.Resources
             return rate;
         }
 
-        public override bool HandleMessage(Resource resource, GameObject parent, ObjectEventArgs e = null)
-        {
-            switch (e.Type)
-            {
-                case Message.Types.HitGround:
-                    float zForce = (float)e.Parameters[0];
-                    this.HitGround(resource, parent, zForce);
-                    return true;
+        //public override bool HandleMessage(Resource resource, GameObject parent, ObjectEventArgs e = null)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case Message.Types.HitGround:
+        //            float zForce = (float)e.Parameters[0];
+        //            this.HitGround(resource, parent, zForce);
+        //            return true;
 
-                default:
-                    return base.HandleMessage(resource, parent, e);
+        //        default:
+        //            return base.HandleMessage(resource, parent, e);
+        //    }
+        //}
+
+        //internal override void HandleRemoteCall(GameObject parent, ObjectEventArgs e, Resource values)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case Message.Types.HitGround:
+        //            e.Data.Translate(parent.Net, r =>
+        //            {
+        //                float zForce = r.ReadSingle();
+        //                HitGround(values, parent, zForce);
+        //            });
+        //            break;
+
+        //        default: break;
+        //    }
+        //}
+
+
+        private void HandleEntityHitGround(EntityHitGroundEvent e)
+        {
+            var actor = e.Entity as Actor;
+            var force = e.Force;
+            var health = actor.GetResource(ResourceDefOf.Health);
+            if (force > 1)
+            {
+                this.Modify(health, force);
+                actor.Net.EventOccured((int)Message.Types.HealthLost, actor, (int)force);
             }
         }
-
-        internal override void HandleRemoteCall(GameObject parent, ObjectEventArgs e, Resource values)
+        public override IEnumerable<(Type eventType, Action<EventPayloadBase> handler)> GetInterests()
         {
-            switch (e.Type)
-            {
-                case Message.Types.HitGround:
-                    e.Data.Translate(parent.Net, r =>
-                    {
-                        float zForce = r.ReadSingle();
-                        HitGround(values, parent, zForce);
-                    });
-                    break;
-
-                default: break;
-            }
+            yield return (typeof(EntityHitGroundEvent),e => this.HandleEntityHitGround((EntityHitGroundEvent)e));
         }
-
-        private void HitGround(Resource resource, GameObject parent, float zForce)
-        {
-            float value = zForce * 0;
-            if (value >= -3)
-                return;
-            value += 2;
-            this.Add(value, resource);
-            parent.Net.EventOccured((int)Message.Types.HealthLost, parent, (int)value);
-        }
+        //private void HitGround(Resource resource, GameObject parent, float zForce)
+        //{
+        //    float value = zForce * 0;
+        //    if (value >= -3)
+        //        return;
+        //    value += 2;
+        //    this.Modify(resource, value);
+        //    parent.Net.EventOccured((int)Message.Types.HealthLost, parent, (int)value);
+        //}
 
         public override void OnHealthBarCreated(GameObject parent, UI.Nameplate plate, Resource values)
         {

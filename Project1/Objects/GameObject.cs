@@ -378,8 +378,9 @@ namespace Start_a_Town_
             this.StackSize = value;
             return this;
         }
-        
+
         #region Messaging
+        [Obsolete]
         public void PostMessage(ObjectEventArgs a)
         {
             GameObject.PostMessage(this, a);
@@ -683,6 +684,7 @@ namespace Start_a_Town_
                 comp.OnDespawn();
 
             oldmap.EventOccured(Message.Types.EntityDespawned, this);
+            oldmap.Events.Unsubscribe(this);
             //this.Unreserve(); // UNDONE dont unreserve here because the ai might continue manipulating (placing/carrying) the item during the same behavior
         }
         public virtual void OnSpawnNew()
@@ -703,7 +705,12 @@ namespace Start_a_Town_
             foreach (var comp in this.Components.Values)
                 comp.OnSpawn();
 
-            this.Map.EventOccured(Message.Types.EntitySpawned, this);
+            //this.Map.EventOccured(Message.Types.EntitySpawned, this);
+            this.Map.Events.Post(new EntitySpawnedEvent(this as Entity));
+        }
+        class EntitySpawnedEvent(Entity entity) : EventPayloadBase
+        {
+            public Entity Entity = entity;
         }
         public void Spawn(MapBase map, Vector3 global)
         {

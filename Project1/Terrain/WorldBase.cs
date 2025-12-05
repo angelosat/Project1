@@ -119,34 +119,6 @@ namespace Start_a_Town_
             return true;
         }
         public EventBus Events { get; } = new();
-        //internal virtual void Post(GameEvent a)
-        //{
-        //    var id = a.Type;
-        //    if (_eventBus.TryGetValue(id, out var list))
-        //        foreach (var i in list)
-        //            i(a);
-        //}
-        //readonly Dictionary<int, List<Action<GameEvent>>> _eventBus = [];
-        //public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : EventPayloadBase
-        //{
-        //    var id = Registry.GameEvents.Register<TPayload>();
-        //    if (!_eventBus.TryGetValue(id, out var list))
-        //    {
-        //        list = new List<Action<GameEvent>>();
-        //        _eventBus[id] = list;
-        //    }
-        //    var item = new Action<GameEvent>(e => handler((TPayload)e.Payload));
-        //    list.Add(item);
-        //    return () => _stopListening<TPayload>(item);
-        //}
-        //void _stopListening<TPayload>(Action<GameEvent> handler) where TPayload : EventPayloadBase
-        //{
-        //    var id = Registry.GameEvents.Register<TPayload>();
-        //    if (!_eventBus.TryGetValue(id, out var list))
-        //    {
-        //        throw new Exception();
-        //    }
-        //    list.Remove(handler);
-        //}
+        
     }
 }

@@ -17,6 +17,7 @@ namespace Start_a_Town_
         }
         public bool TryGet<T>(out int id) where T : EventPayloadBase
         {
+            return _registry.TryGetValue(typeof(T), out id);
             var t = typeof(T);
             if (!_registry.TryGetValue(t, out id))
                 $"event {t} not registered".ToConsole();

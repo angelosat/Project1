@@ -17,9 +17,16 @@ namespace Start_a_Town_
             this._innerObservable.CollectionChanged += (s, e) => CollectionChanged?.Invoke(this, e);
             this.Entities = new ReadOnlyObservableCollection<Entity>(this._innerObservable);
         }
+        int _nextEntityId = 1;
         public bool Add(Entity entity)
         {
             if (this._inner.ContainsKey(entity.RefId)) throw new Exception("Attempted to register entity with duplicate Id");
+
+            if (entity.RefId == 0)
+                entity.RefId = _nextEntityId++;
+            else
+                _nextEntityId = Math.Max(_nextEntityId, entity.RefId + 1);
+
             this._inner.Add(entity.RefId, entity);
             this._innerObservable.Add(entity);
             return true;

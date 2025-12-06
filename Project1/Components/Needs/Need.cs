@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public class Need : MetricWrapper, IProgressBar, ISerializable, ISaveable
+    public sealed class Need : MetricWrapper, IProgressBar, ISerializable, ISaveable, INamed, ISerializableNew, ISaveableNew
     {
         internal void AddMod(NeedLetDef needLetDef, float value, float rate)
         {
@@ -22,11 +22,11 @@ namespace Start_a_Town_
         public NeedDef NeedDef;
         public enum Types { Hunger, Water, Sleep, Achievement, Work, Brains, Curiosity, Social, Energy }
         const string Format = "P0";
-        public virtual string Name => this.NeedDef.Label;
+        public string Name => this.NeedDef.Label;
         public float DecayDelay, DecayDelayMax = 3;
         float _Value;
         public double LastTick;
-        public virtual float Value
+        public float Value
         {
             get
             {
@@ -40,13 +40,13 @@ namespace Start_a_Town_
         //public Actor Parent;
         public float Min = 0f;
         public float Max = 100f;
-        public virtual float Percentage { get { return this.Value / this.Max; } }
+        public float Percentage { get { return this.Value / this.Max; } }
         public float Decay;
         public float Mod;
         readonly List<NeedLet> Mods = new();
-        public virtual float Tolerance { get; set; }
-        public virtual float Threshold { get { return this.NeedDef.BaseThreshold; } }
-        public virtual bool IsBelowThreshold { get { return this.Value < this.Threshold; } }
+        public float Tolerance { get; set; }
+        public float Threshold { get { return this.NeedDef.BaseThreshold; } }
+        public bool IsBelowThreshold { get { return this.Value < this.Threshold; } }
         public override string ToString()
         {
             var txt = $"{Name}: {this.Percentage:P0}";
@@ -55,18 +55,27 @@ namespace Start_a_Town_
                 txt += $"\n{needlet}";
             return txt;
         }
-
-        public Need(Actor parent)
+        public  Need()
         {
-            //this.Parent = parent;
             this._Value = this.Max;
+
         }
+        public Need(Actor parent) : this()
+        {
+            this.Parent = parent;
+        }
+
+        public Need(Actor parent, NeedDef needDef) : this(parent)
+        {
+            this.NeedDef = needDef;
+        }
+
         public override void Tick()
         {
             this.NeedDef.Worker.Tick(this);
         }
-        public virtual void TickLong(GameObject parent) { }
-        public virtual void Tick(GameObject parent)
+        public void TickLong(GameObject parent) { }
+        public void Tick(GameObject parent)
         {
             this.LastTick = parent.Net.CurrentTick;
             float newValue;
@@ -96,10 +105,10 @@ namespace Start_a_Town_
             }
             SetValue(newValue, parent);
         }
-        protected virtual float FinalDecayMultiplier => 1;
-        public virtual AITask GetTask(GameObject parent) { return null; }
+        protected float FinalDecayMultiplier => 1;
+        public AITask GetTask(GameObject parent) { return null; }
         
-        public virtual TaskGiver TaskGiver { get { return this.NeedDef.TaskGiver; } }
+        public TaskGiver TaskGiver { get { return this.NeedDef.TaskGiver; } }
 
         public void SetValue(float newVal, GameObject parent)
         {
@@ -157,6 +166,17 @@ namespace Start_a_Town_
             this.Mods.Read(r);
             return this;
         }
+        static public ISerializableNew Create(IDataReader r)
+        {
+            var need = new Need();
+            need.NeedDef = r.ReadDef<NeedDef>();
+            need.Value = r.ReadSingle();
+            need.Mod = r.ReadSingle();
+            need.DecayDelay = r.ReadSingle();
+            need.Mods.Read(r);
+            return need;
+        }
+
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
@@ -175,6 +195,17 @@ namespace Start_a_Town_
             tag.TryGetTagValue<float>("DecayTimer", out this.DecayDelay);
             this.Mods.TryLoadMutable(tag, "Mods");
             return this;
+        }
+
+        static public ISaveableNew Create(SaveTag tag)
+        {
+            var need = new Need();
+            tag.TryGetTagValue<string>("Def", v => need.NeedDef = Def.GetDef<NeedDef>(v));
+            tag.TryGetTagValue<float>("Value", out need._Value);
+            tag.TryGetTagValue<float>("Mod", out need.Mod);
+            tag.TryGetTagValue<float>("DecayTimer", out need.DecayDelay);
+            need.Mods.TryLoadMutable(tag, "Mods");
+            return need;
         }
     }
 }

@@ -1,19 +1,29 @@
 ﻿namespace Start_a_Town_
 {
-    class NeedInventorySpaceWorker : NeedWorker { }
-    class NeedInventorySpace : Need
+    class NeedInventorySpace : NeedWorker 
     {
-        public NeedInventorySpace(Actor parent) : base(parent)
+        protected override void TickExtra(Need need)
         {
-        }
-        // TODO Move this to the def
-        public override void Tick(GameObject actor)
-        {
-            //var actor = need.Parent;
+            var actor = need.Parent;
             var inv = actor.Inventory;
             var p = inv.PercentageFull;
-            this.Value = 1 - p * p;
-            this.Value *= 100;
+            need.Value = 1 - p * p;
+            need.Value *= 100;
         }
     }
+    //class NeedInventorySpace : Need
+    //{
+    //    public NeedInventorySpace(Actor parent) : base(parent)
+    //    {
+    //    }
+    //    // TODO Move this to the def
+    //    public override void Tick(GameObject actor)
+    //    {
+    //        //var actor = need.Parent;
+    //        var inv = actor.Inventory;
+    //        var p = inv.PercentageFull;
+    //        this.Value = 1 - p * p;
+    //        this.Value *= 100;
+    //    }
+    //}
 }

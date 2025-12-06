@@ -70,12 +70,8 @@ namespace Start_a_Town_.Net
         static Server _Instance;
         public static Server Instance => _Instance ??= new Server();
 
-        static int _refIdSequence = 1;
+        //static int _refIdSequence = 1;
 
-        public static int GetNextObjID()
-        {
-            return _refIdSequence++;
-        }
         static int _playerID = 1;
         public static int PlayerID => _playerID++;
         private void AdvanceClock()
@@ -612,10 +608,10 @@ namespace Start_a_Town_.Net
         }
         public override void Instantiator(GameObject obj)
         {
-            if (obj.RefId == 0)
-                obj.RefId = GetNextObjID();
-            else
-                _refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
+            //if (obj.RefId == 0)
+            //    obj.RefId = _refIdSequence++;// GetNextObjID();
+            //else
+            //    _refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
             this.World.Register(obj as Entity);
             obj.Net = this;
         }
@@ -658,7 +654,7 @@ namespace Start_a_Town_.Net
             chunk.GetObjects().ForEach(obj =>
             {
                 Instance.Instantiate(obj);
-                _refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
+                //_refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
             });
 
             foreach (var (local, entity) in chunk.GetBlockEntitiesByPosition())

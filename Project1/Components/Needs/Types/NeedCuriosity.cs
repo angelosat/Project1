@@ -1,9 +1,15 @@
 ﻿namespace Start_a_Town_
 {
-    class NeedCuriosity : Need
+    class NeedCuriosity : NeedWorker
     {
-        public NeedCuriosity(Actor parent) : base(parent)
-        {
-        }
+        //public NeedCuriosity(Actor parent) : base(parent)
+        //{
+        //}
     }
+    //class NeedCuriosity : Need
+    //{
+    //    public NeedCuriosity(Actor parent) : base(parent)
+    //    {
+    //    }
+    //}
 }

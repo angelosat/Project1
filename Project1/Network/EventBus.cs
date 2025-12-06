@@ -44,7 +44,7 @@ namespace Start_a_Town_.Net
         /// </summary>
         /// <typeparam name="TPayload"></typeparam>
         /// <param name="handler"></param>
-        /// <returns>An unsubscribe callback. Call it to unregister the listener</returns>
+        /// <returns>Returns an unsubscribe token.</returns>
         public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : EventPayloadBase
         {
             var id = Registry.GameEvents.Register<TPayload>();

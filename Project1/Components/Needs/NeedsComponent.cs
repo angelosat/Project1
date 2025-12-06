@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpDX.Direct3D11;
 using Start_a_Town_.Components.Needs;
 using Start_a_Town_.UI;
 
@@ -22,7 +23,8 @@ namespace Start_a_Town_.Components
 
             for (int i = 0; i < size; i++)
             {
-                this.NeedsNew.Add(defs[i].Create(actor));
+                //this.NeedsNew.Add(defs[i].Create(actor));
+                this.NeedsNew.Add(new Need(actor, defs[i]));
             }
         }
         
@@ -110,21 +112,21 @@ namespace Start_a_Town_.Components
 
         public override void Write(System.IO.BinaryWriter w)
         {
-            this.NeedsNew.WriteAbstract(w);
+            this.NeedsNew.Write(w);
         }
         public override void Read(IDataReader r)
         {
             this.NeedsNew.Clear();
-            this.NeedsNew.InitializeAbstract(r, this.Parent);
+            this.NeedsNew.LoadFrom(r);
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            this.NeedsNew.SaveAbstract(tag, "Needs");
+            tag.Add(this.NeedsNew.Save("Needs"));
         }
         internal override void LoadExtra(SaveTag tag)
         {
             this.NeedsNew.Clear();
-            this.NeedsNew.TryLoadVariableTypes(tag, "Needs", this.Parent);
+            this.NeedsNew.LoadFrom(tag["Needs"]);
         }
         public class Props : ComponentProps
         {

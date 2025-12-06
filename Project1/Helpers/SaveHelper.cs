@@ -108,6 +108,16 @@ namespace Start_a_Town_
             }
             save.Add(list);
         }
+        public static void LoadFrom<T>(this ICollection<T> items, SaveTag save) where T : class, ISaveableNew
+        {
+            var list = save.Value as List<SaveTag>;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var tag = list[i];
+                var item = (T)T.Create(tag);// ["Data"]);
+                items.Add(item);
+            }
+        }
         public static void LoadVariableTypes<T>(this ICollection<T> items, SaveTag save, params object[] ctorArgs) where T : class, ISaveable
         {
             var list = save.Value as List<SaveTag>;
@@ -571,11 +581,22 @@ namespace Start_a_Town_
                 save.TryGetTag(sk.Name, t => sk.Load(t));
             }
         }
+        public static void Load<T>(this IList<T> array, SaveTag save) where T : ISaveable, INamed
+        {
+            for (int i = 0; i < array.Count; i++)
+            {
+                var sk = array[i];
+                save.TryGetTag(sk.Name, t => sk.Load(t));
+            }
+        }
         public static bool TryLoadImmutable<T>(this T[] array, SaveTag tag, string name) where T : ISaveable, INamed
         {
             return tag.TryGetTag(name, t => array.Load(t));
         }
-
+        public static bool TryLoadImmutable<T>(this IList<T> array, SaveTag tag, string name) where T : ISaveable, INamed
+        {
+            return tag.TryGetTag(name, t => array.Load(t));
+        }
         public static void Load<T>(this T list, SaveTag save, string name) where T : ICollection<int>
         {
             list.Clear();
@@ -620,10 +641,27 @@ namespace Start_a_Town_
         {
             saveTag.Add(item.Save(name));
         }
+        /// <summary>
+        /// Immutable means that the collection is already initialized and populated and its items will be updated from the save tag (no new item instantiation)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="saveTag"></param>
+        /// <param name="tagName"></param>
         public static void SaveImmutable<T>(this T[] array, SaveTag saveTag, string tagName) where T : ISaveable, INamed
         {
             var tag = new SaveTag(SaveTag.Types.Compound, tagName);
             for (int i = 0; i < array.Length; i++)
+            {
+                var sk = array[i];
+                tag.Add(sk.Save(sk.Name));
+            }
+            saveTag.Add(tag);
+        }
+        public static void SaveImmutable<T>(this IList<T> array, SaveTag saveTag, string tagName) where T : ISaveable, INamed
+        {
+            var tag = new SaveTag(SaveTag.Types.Compound, tagName);
+            for (int i = 0; i < array.Count; i++)
             {
                 var sk = array[i];
                 tag.Add(sk.Save(sk.Name));

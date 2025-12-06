@@ -1,9 +1,13 @@
 ﻿namespace Start_a_Town_
 {
-    class NeedGuidance : Need
+    class NeedGuidance : NeedWorker
     {
-        public NeedGuidance(Actor parent) : base(parent)
-        {
-        }
+       
     }
+    //class NeedGuidance : Need
+    //{
+    //    public NeedGuidance(Actor parent) : base(parent)
+    //    {
+    //    }
+    //}
 }

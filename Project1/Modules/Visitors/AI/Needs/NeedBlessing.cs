@@ -1,11 +1,11 @@
 ﻿namespace Start_a_Town_
 {
-    class NeedBlessingWorker : NeedWorker { }
+    class NeedBlessing: NeedWorker { }
 
-    class NeedBlessing : Need
-    {
-        public NeedBlessing(Actor parent) : base(parent)
-        {
-        }
-    }
+    //class NeedBlessing : Need
+    //{
+    //    public NeedBlessing(Actor parent) : base(parent)
+    //    {
+    //    }
+    //}
 }

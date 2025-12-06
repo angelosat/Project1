@@ -4,31 +4,28 @@
     {
         static public readonly ActorDef NpcProps = new("NpcProps")
         {
-            Needs = new NeedDef[] {
+            Needs = [
                 NeedDef.Energy,
                 NeedDef.Hunger,
                 NeedDef.Comfort,
                 NeedDef.Social,
-                NeedDef.Work
-            },
-            Attributes = new AttributeDef[] {
+                NeedDef.Work ],
+            Attributes = [
                 AttributeDefOf.Strength,
                 AttributeDefOf.Intelligence,
-                AttributeDefOf.Dexterity },
-            Resources = new ResourceDef[]
-            {
+                AttributeDefOf.Dexterity ],
+            Resources = [
                 ResourceDefOf.Health,
-                ResourceDefOf.Stamina
-            },
-            GearSlots = new GearType[] { GearType.Mainhand,
+                ResourceDefOf.Stamina ],
+            GearSlots = [ 
+                GearType.Mainhand,
                 GearType.Offhand,
                 GearType.Head,
                 GearType.Chest,
                 GearType.Feet,
                 GearType.Hands,
-                GearType.Legs },
-            Skills =
-            new SkillDef[] {
+                GearType.Legs ],
+            Skills = [
                 SkillDefOf.Digging,
                 SkillDefOf.Mining,
                 SkillDefOf.Construction,
@@ -37,17 +34,16 @@
                 SkillDefOf.Argiculture,
                 SkillDefOf.Carpentry,
                 SkillDefOf.Crafting,
-                SkillDefOf.Plantcutting }
+                SkillDefOf.Plantcutting ]
             ,
-            Traits = new TraitDef[]
-            {
+            Traits =
+            [
                 TraitDefOf.Attention,
                 TraitDefOf.Composure,
                 TraitDefOf.Patience,
                 TraitDefOf.Activity,
                 TraitDefOf.Planning,
-                TraitDefOf.Resilience
-            }
+                TraitDefOf.Resilience ]
         };
 
         static public readonly ItemDef Npc = new("Npc")

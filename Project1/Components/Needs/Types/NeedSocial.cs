@@ -1,9 +1,12 @@
 ﻿namespace Start_a_Town_
 {
-    class NeedSocial : Need
+    class NeedSocial : NeedWorker
     {
-        public NeedSocial(Actor parent) : base(parent)
-        {
-        }
     }
+    //class NeedSocial : Need
+    //{
+    //    public NeedSocial(Actor parent) : base(parent)
+    //    {
+    //    }
+    //}
 }

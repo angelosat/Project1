@@ -201,7 +201,7 @@ namespace Start_a_Town_
             var plID = r.ReadInt32();
             var actorID = r.ReadInt32();
             var actor = net.World.GetEntity(actorID);
-            actor.Town.ToggleAgent(actor);
+            actor.Map.Town.ToggleAgent(actor);
             if(net is Server)
             {
                 //var w = net.GetOutgoingStreamOrderedReliable();

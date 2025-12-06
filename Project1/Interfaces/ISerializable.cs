@@ -2,6 +2,11 @@
 
 namespace Start_a_Town_
 {
+    public interface ISerializableNew
+    {
+        void Write(BinaryWriter w);
+        static abstract ISerializableNew Create(IDataReader r);
+    }
     public interface ISerializable
     {
         void Write(BinaryWriter w);

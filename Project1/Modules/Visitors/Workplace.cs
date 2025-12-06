@@ -411,7 +411,7 @@ namespace Start_a_Town_
                  a.GetButton(box.Client.Width,
                  () => a.Workplace != null ? $"Assigned to {a.Workplace.Name}" : "",
                  () => manager.ToggleWorker(a, shop)));
-            listworkers.AddItems(town.GetAgents());
+            listworkers.AddItems(town.GetMembers());
             return listworkers;
         }
         [Obsolete]

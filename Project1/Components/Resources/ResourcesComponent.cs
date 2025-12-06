@@ -171,12 +171,17 @@ namespace Start_a_Town_
                 this.Defs = defs;
             }
         }
-
+        public override void OnObjectSynced(GameObject parent)
+        {
+            base.OnObjectSynced(parent);
+            foreach (var r in this.Resources)
+                r.Resolve(this.Parent as Entity);
+        }
         public override void OnSpawn()
         {
             base.OnSpawn();
             foreach (var r in this.Resources)
-                r.OnSpawn(this.Parent as Entity);
+                r.Resolve(this.Parent as Entity);
         }
         public override void OnDespawn()
         {

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using Start_a_Town_.Net;
+using Start_a_Town_.GameEvents;
 
 namespace Start_a_Town_
 {
@@ -22,10 +23,19 @@ namespace Start_a_Town_
         internal void Init()
         {
             this.RoomManager.Init();
+
+            this.Map.World.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
+            //this.Map.World.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+        }
+        
+        private void OnEntityDisposed(EntityDisposedEvent e)
+        {
+            if(e.Entity is Actor actor && this.Members.Contains(actor.RefId)) 
+                this.RemoveMember(actor);
         }
 
         public ObservableHashSet<int> Members = new();
-        public IEnumerable<Actor> GetAgents()
+        public IEnumerable<Actor> GetMembers()
         {
             return this.Members.Select(id => this.Map.World.GetEntity(id) as Actor);
         }
@@ -122,11 +132,11 @@ namespace Start_a_Town_
                     var entity = e.Parameters[0] as GameObject;
                     break;
 
-                case Message.Types.EntityDespawned:
-                    entity = e.Parameters[0] as GameObject;
-                    if(this.Members.Contains(entity.RefId)) //TODO: dont dismiss despawned entities (they might be active outside the map)
-                        RemoveAgent(entity);
-                    break;
+                //case Message.Types.EntityDespawned:
+                //    entity = e.Parameters[0] as GameObject;
+                //    if(this.Members.Contains(entity.RefId)) //TODO: dont dismiss despawned entities (they might be active outside the map)
+                //        RemoveMember(entity);
+                //    break;
 
                 default:
                     break;
@@ -158,49 +168,50 @@ namespace Start_a_Town_
             return false;
         }
 
-        private void AddAgent(GameObject entity)
+        private void AddMember(GameObject entity)
         {
             if (!entity.HasComponent<AIComponent>())
                 throw new Exception();
-            this.AddCitizen(entity.RefId);
+            this.AddMember(entity.RefId);
             entity.Town = this;
             entity.Net.ConsoleBox.Write($"{entity.Name} has joined the town!");
             this.Map.EventOccured(Message.Types.NpcsUpdated);
         }
 
-        private void RemoveAgent(GameObject entity)
+        private void RemoveMember(GameObject entity)
         {
             if (entity.HasComponent<AIComponent>())
             {
-                this.RemoveCitizen(entity.RefId);
+                this.RemoveMember(entity.RefId);
                 entity.Town = null;
                 this.Net.ConsoleBox.Write($"{entity.Name} was dismissed from the town!");
                 this.Map.EventOccured(Message.Types.NpcsUpdated);
             }
         }
-        public void ToggleAgent(GameObject entity)
-        {
-            if (!this.Members.Contains(entity.RefId))
-                this.AddAgent(entity);
-            else
-                this.RemoveAgent(entity);
-        }
-        public void AddCitizen(Actor actor)
-        {
-            this.AddCitizen(actor.RefId);
-        }
-        public void AddCitizen(int id)
-        {
-            this.Members.Add(id);
-            foreach (var c in this.TownComponents)
-                c.OnCitizenAdded(id);
-        }
-        public void RemoveCitizen(int id)
+        public void RemoveMember(int id)
         {
             this.Members.Remove(id);
             foreach (var c in this.TownComponents)
                 c.OnCitizenRemoved(id);
         }
+        public void ToggleAgent(GameObject entity)
+        {
+            if (!this.Members.Contains(entity.RefId))
+                this.AddMember(entity);
+            else
+                this.RemoveMember(entity);
+        }
+        public void AddCitizen(Actor actor)
+        {
+            this.AddMember(actor.RefId);
+        }
+        public void AddMember(int id)
+        {
+            this.Members.Add(id);
+            foreach (var c in this.TownComponents)
+                c.OnCitizenAdded(id);
+        }
+       
 
         internal void OnCameraRotated(Camera camera)
         {
@@ -295,7 +306,7 @@ namespace Start_a_Town_
                 foreach (var bytes in agentsTag)
                 {
                     var id = (int)bytes.Value;
-                    this.AddCitizen(id);
+                    this.AddMember(id);
                 }
         }
 
@@ -319,7 +330,7 @@ namespace Start_a_Town_
             var acount = r.ReadInt32();
             for (int i = 0; i < acount; i++)
             {
-                this.AddCitizen(r.ReadInt32());
+                this.AddMember(r.ReadInt32());
             }
 
             foreach (var ut in Utility.All())

@@ -74,7 +74,7 @@ namespace Start_a_Town_
                 LeftClickAction = () => this.TogglePlayerList(net)
             };
 
-            this.UnitFrames = new UINpcFrameContainer() { LocationFunc = () => new Vector2(UIManager.Width / 2, 0), Anchor = Vector2.UnitX * .5f };
+            this.UnitFrames = new UINpcFrameContainer(Engine.Map) { LocationFunc = () => new Vector2(UIManager.Width / 2, 0), Anchor = Vector2.UnitX * .5f };
             this.PartyFrame = new Panel();
 
             this.Box_Buttons = new Panel() { AutoSize = true };//, Location = UIManager.Size };//, Color = Color.Black };

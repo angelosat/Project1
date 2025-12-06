@@ -127,11 +127,11 @@ namespace Start_a_Town_
             this.SkyDarkness = 0;
         }
       
-        internal void Despawn(Actor actor)
-        {
-            actor.Despawn();
-            PacketEntityDespawn.Send(this.Net, actor);
-        }
+        //internal void Despawn(Actor actor)
+        //{
+        //    actor.Despawn();
+        //    PacketEntityDespawn.Send(this.Net, actor);
+        //}
 
         #region Updating
         public override void Update()

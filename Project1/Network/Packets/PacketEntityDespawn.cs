@@ -23,7 +23,9 @@ namespace Start_a_Town_
             var client = net as Client;
             var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
             var map = client.Map as StaticMap;
-            map.Despawn(actor);
+            //map.Despawn(actor);
+            actor.Despawn();
+            PacketEntityDespawn.Send(net, actor);
         }
     }
 }

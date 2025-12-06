@@ -93,7 +93,7 @@ namespace Start_a_Town_
             var map = this.World.Map;
             var net = map.Net;
             var allActors = net.World.GetEntities().OfType<Actor>();// GetNetworkObjects().OfType<Actor>();
-            var citizens = map.Town.GetAgents();
+            var citizens = map.Town.GetMembers();
             foreach (var actor in allActors)
             {
                 if (citizens.Contains(actor))

@@ -22,7 +22,7 @@ namespace Start_a_Town_
         Vector3 FindHangSpot(Actor actor)
         {
             var town = actor.Town;
-            var citizens = town.GetAgents().Shuffle(town.Map.Random);
+            var citizens = town.GetMembers().Shuffle(town.Map.Random);
             foreach(var citizen in citizens)
             {
                 foreach (var spot in citizen.Global.ToCell().GetRadial(3))

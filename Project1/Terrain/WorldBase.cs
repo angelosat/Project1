@@ -109,13 +109,15 @@ namespace Start_a_Town_
                 Console.WriteLine($"{this} disposing {obj.DebugName}");
                 obj.OnDispose();
                 this.EntityRegistry.Remove(netId);
-                obj.Net = null;
-                obj.RefId = 0;
+                obj.Net = null; // this also makes gameobject.isdisposed return true
+                //obj.RefId = 0; // dont set it to 0 because systems must be able to remove this entity's reference by id
+                
                 if (obj.IsSpawned)
                     obj.Despawn();
                 //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
                 //    this.DisposeObject(child);
             }
+            this.Events.Post(new EntityDisposedEvent(o));
             return true;
         }
         public EventBus Events { get; } = new();

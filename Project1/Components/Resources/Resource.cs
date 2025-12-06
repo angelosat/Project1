@@ -163,17 +163,17 @@ namespace Start_a_Town_
         {
             this.ResourceDef.Worker.InitMaterials(obj, materials);
         }
-        Action _unsub;
-        internal void OnSpawn(Entity parent)
-        {
-            foreach(var i in this.ResourceDef.Worker.GetInterests())
-                _unsub += parent.Map.Events.ListenTo(i.eventType, i.handler);
-        }
+        Action _unsub = () => { };
+       
         internal void OnDespawn(Entity parent)
         {
             this._unsub();
         }
-
+        internal void Resolve(Entity parent)
+        {
+            foreach (var i in this.ResourceDef.Worker.GetInterests())
+                _unsub += parent.Map?.Events.ListenTo(i.eventType, i.handler);
+        }
         class Packets
         {
             static int PacketSyncAdjust;

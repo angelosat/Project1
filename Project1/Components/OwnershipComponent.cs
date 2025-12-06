@@ -73,12 +73,12 @@ namespace Start_a_Town_
                 {
                     //150, 400
                     var listNpc = new ListBoxNoScroll<GameObject, Label>(o => new Label(o?.Name ?? "None", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, gameObject.RefId, -1)));
-                    listNpc.AddItems(gameObject.Map.Town.GetAgents().Prepend(null));
+                    listNpc.AddItems(gameObject.Map.Town.GetMembers().Prepend(null));
                     listNpc.Toggle();
                 }
             };
             var alllist = new List<GameObject>() { null };
-            alllist.AddRange(gameObject.Map.Town.GetAgents());
+            alllist.AddRange(gameObject.Map.Town.GetMembers());
             
             var comp = gameObject.GetComponent<OwnershipComponent>();
             var setownercombo = new ComboBoxNewNew<GameObject>(150, "Owner",
@@ -94,7 +94,7 @@ namespace Start_a_Town_
                     case Message.Types.NpcsUpdated:
                         alllist.Clear();
                         alllist.Add(null);
-                        alllist.AddRange(gameObject.Map.Town.GetAgents());
+                        alllist.AddRange(gameObject.Map.Town.GetMembers());
                         break;
                     default:
                         break;
@@ -111,7 +111,7 @@ namespace Start_a_Town_
         static Control ActorList;
         internal override void GetSelectionInfo(IUISelection info, GameObject parent)
         {
-            info.AddInfo(new Label() { TextFunc = () => string.Format("Assigned to {0}", parent.Town.GetAgents().FirstOrDefault(a => a.GetPossesions().Contains(parent))?.Name ?? "none") });
+            info.AddInfo(new Label() { TextFunc = () => string.Format("Assigned to {0}", parent.Town.GetMembers().FirstOrDefault(a => a.GetPossesions().Contains(parent))?.Name ?? "none") });
         }
         readonly Button BtnOwner = new("Owner");
         internal override IEnumerable<Button> GetTabs()
@@ -120,7 +120,7 @@ namespace Start_a_Town_
             //dimensions 200, 200, 
             if (ActorList is null)
                 ActorList = new ListBoxNoScroll<Actor, Button>(a => new Button(a?.Name ?? "none", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, parent.RefId, a?.RefId ?? -1)))
-                                                                   .AddItems(parent.Town.GetAgents().Prepend(null))
+                                                                   .AddItems(parent.Town.GetMembers().Prepend(null))
                                                                    .ToPanelLabeled("Select owner")
                                                                    .HideOnRightClick()
                                                                    .HideOnLeftClick()

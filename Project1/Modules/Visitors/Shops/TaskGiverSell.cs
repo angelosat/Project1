@@ -14,7 +14,7 @@ namespace Start_a_Town_
                 // TODO only return a task if there's an available buyer with enough money?
                 // TODO try to sell anyway and drop town rating if unsuccessful?
                 var itemcost = item.GetValueTotal();
-                var worker = actor.Map.Town.GetAgents().FirstOrDefault(a => a.HasMoney(itemcost));
+                var worker = actor.Map.Town.GetMembers().FirstOrDefault(a => a.HasMoney(itemcost));
                 if (worker == null)
                     continue;
                 worker.InitiateTrade(actor, item, itemcost);

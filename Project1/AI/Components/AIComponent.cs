@@ -93,11 +93,15 @@ namespace Start_a_Town_
             //this._unListen = this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
             this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
         }
-        Action _unListen;
-        public override void OnDespawn()
+        public override void OnObjectSynced(GameObject parent)
         {
-            this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
+            this.Parent.Map?.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
         }
+        //Action _unListen;
+        //public override void OnDespawn()
+        //{
+        //    this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
+        //}
         //internal override void OnGameEvent(GameObject gameObject, GameEvent e)
         //{
         //    if (e.Type == Message.Types.BlocksChanged)

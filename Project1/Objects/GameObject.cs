@@ -684,6 +684,7 @@ namespace Start_a_Town_
                 comp.OnDespawn();
 
             oldmap.EventOccured(Message.Types.EntityDespawned, this);
+            oldmap.Events.Post(new EntityDespawnedEvent(this as Entity));
             oldmap.Events.Unsubscribe(this);
             //this.Unreserve(); // UNDONE dont unreserve here because the ai might continue manipulating (placing/carrying) the item during the same behavior
         }

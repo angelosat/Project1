@@ -362,6 +362,8 @@ namespace Start_a_Town_.Net
         //    var e = new GameEvent(this.ClientClock.TotalMilliseconds, eventTypeId, p);
         //    this.OnGameEvent(e);
         //}
+        [Obsolete]
+
         protected override void Post(GameEvent e)
         {
             this.Events.Post(e.Payload);

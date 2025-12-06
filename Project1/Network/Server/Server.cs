@@ -48,6 +48,7 @@ namespace Start_a_Town_.Net
         /// Contains objects that have changed since the last world delta state update
         /// </summary>
         public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = [];
+        [Obsolete]
 
         protected override void Post(GameEvent e)
         {

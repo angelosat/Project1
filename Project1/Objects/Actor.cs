@@ -555,7 +555,7 @@ namespace Start_a_Town_
 
         internal bool OwnsOrCanClaim(Entity item)
         {
-            return this.GetPossesions().Contains(item) || (!this.Map?.Town.GetAgents().Any(a => a.Owns(item)) ?? false);
+            return this.GetPossesions().Contains(item) || (!this.Map?.Town.GetMembers().Any(a => a.Owns(item)) ?? false);
         }
         internal bool Owns(Entity item)
         {

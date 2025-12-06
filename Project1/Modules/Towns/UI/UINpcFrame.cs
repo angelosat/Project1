@@ -37,6 +37,7 @@ namespace Start_a_Town_
             this.Sprite.MouseThrough = true;
 
             this.Npc = actor;
+            this.Tag = actor;
             this.LeftClickAction = () =>
             {
                 if (InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))

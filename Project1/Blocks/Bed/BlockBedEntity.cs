@@ -71,7 +71,7 @@ namespace Start_a_Town_
             if (room is not null)
                 room.GetSelectionInfo(info);
             var roomOwner = room?.Owner;
-            info.AddInfo(new ComboBoxNewNew<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => this.Owner, () => map.Town.GetAgents().Prepend(null)));
+            info.AddInfo(new ComboBoxNewNew<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => this.Owner, () => map.Town.GetMembers().Prepend(null)));
             info.AddInfo(new ComboBoxNewNew<Types>(128, "Type", t => t.ToString(), setType, () => this.Type, () => Enum.GetValues(typeof(Types)).Cast<Types>()));
 
             void setOwner(Actor newOwner) => Packets.SetOwner(Client.Instance, map.Net.GetPlayer(), vector3, newOwner);

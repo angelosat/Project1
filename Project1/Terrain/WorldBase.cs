@@ -106,9 +106,9 @@ namespace Start_a_Town_
                 return false;
             foreach (var obj in o.GetSelfAndChildren())
             {
-                Console.WriteLine($"{this} disposing {obj.DebugName}");
+                $"{this} at {this.Net} disposing {obj.DebugName}".ToConsole();
                 obj.OnDispose();
-                this.EntityRegistry.Remove(netId);
+                this.EntityRegistry.Remove(obj.RefId);
                 obj.Net = null; // this also makes gameobject.isdisposed return true
                 //obj.RefId = 0; // dont set it to 0 because systems must be able to remove this entity's reference by id
                 

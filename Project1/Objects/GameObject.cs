@@ -1053,7 +1053,7 @@ namespace Start_a_Town_
         internal void OnDispose()
         {
             //this.Net.EventOccured((int)Message.Types.ObjectDisposed, this);
-            this.Net.Map.World.Events.Post(new EntityDisposedEvent(this as Entity));
+            //this.Net.Map.World.Events.Post(new EntityDisposedEvent(this as Entity));
 
             foreach (var c in this.Components.Values)
                 c.OnDispose();

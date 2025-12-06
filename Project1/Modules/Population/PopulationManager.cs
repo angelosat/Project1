@@ -74,7 +74,16 @@ namespace Start_a_Town_
         public PopulationManager(StaticWorld world)
         {
             this.World = world;
+            world.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
         }
+
+        private void OnEntityDisposed(EntityDisposedEvent e)
+        {
+            var existing = this.ActorsAdventuring.FirstOrDefault(p => p.Actor == e.Entity);
+            if (existing != null)
+                this.ActorsAdventuring.Remove(existing);
+        }
+
         public void Update(INetEndpoint net)
         {
             if (net is Server)
@@ -199,13 +208,15 @@ namespace Start_a_Town_
                 var btn = ButtonNew.CreateBig(() => SelectionManager.Select(npc), box.Viewport.Width, npc.RenderIcon(), () => npc.Npc.FullName, () => npc.Exists ? "Visiting" : (props.Discovered ? "" : "Unknown"));
 
                 // debugging stuff
-                btn.RightClickActionNew = b => 
+                btn.RightClickActionNew = b =>
                 {
                     if (!InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
                         return;
-                    ContextMenuManager.PopUp(("Force visit", () => Server.Instance.World.GetEntity<Actor>(npc.RefId).GetVisitorProperties().ForceVisit()));
+                    ContextMenuManager.PopUp(
+                        ("Force visit", () => Server.Instance.World.GetEntity<Actor>(npc.RefId).GetVisitorProperties().ForceVisit()),
+                        ("Dispose", () => PacketEntityDispose.Send(Client.Instance, npc.RefId, Client.Instance.PlayerData))
+                    );
                 };
-
                 return btn;
             });
 

@@ -10,9 +10,9 @@
             this.Child = child;
             this.Condition = condition;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
-            this.Child.Execute(parent, state);
+            this.Child.Tick(parent, state);
             var eval = this.Condition.Evaluate(parent, state);
             if (eval)
                 return BehaviorState.Success;

@@ -7,9 +7,9 @@
         {
             this.Child = child;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
-            var result = this.Child.Execute(parent, state);
+            var result = this.Child.Tick(parent, state);
             if (result == BehaviorState.Success)
                 result = BehaviorState.Fail;
             else if (result == BehaviorState.Fail)

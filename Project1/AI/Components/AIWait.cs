@@ -12,7 +12,7 @@ namespace Start_a_Town_.AI.Behaviors
         public AIWait(TimeSpan timer)
         {
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             this.TimerNew--;
             if (this.TimerNew <= 0)

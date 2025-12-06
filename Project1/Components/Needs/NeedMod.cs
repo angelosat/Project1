@@ -2,12 +2,12 @@
 
 namespace Start_a_Town_
 {
-    public class NeedLet : ISerializable, ISaveable
+    public class NeedMod : ISerializable, ISaveable
     {
-        public NeedLetDef Def;
+        public EffectDef Def;
         public float RateMod;
         public float ValueMod;
-        public NeedLet()
+        public NeedMod()
         {
 
         }
@@ -16,7 +16,7 @@ namespace Start_a_Town_
         /// The Rate is applied per tick; duration is managed by the effect that uses this modifier.
         /// </summary>
         /// <param name="valuePerTick">Signed value to apply per tick.</param>
-        public NeedLet(NeedLetDef needLetDef, float valuePerTick)
+        public NeedMod(EffectDef needLetDef, float valuePerTick)
         {
             this.Def = needLetDef;
             this.RateMod = valuePerTick;
@@ -42,7 +42,7 @@ namespace Start_a_Town_
 
         public ISaveable Load(SaveTag tag)
         {
-            tag.LoadDef<NeedLetDef>("Def");
+            tag.LoadDef<EffectDef>("Def");
             tag.TryGetTagValue<float>("RateMod", out this.RateMod);
             tag.TryGetTagValue<float>("ValueMod", out this.ValueMod);
 
@@ -58,7 +58,7 @@ namespace Start_a_Town_
 
         public ISerializable Read(IDataReader r)
         {
-            this.Def = r.ReadDef<NeedLetDef>();
+            this.Def = r.ReadDef<EffectDef>();
             this.RateMod = r.ReadSingle();
             this.ValueMod = r.ReadSingle();
             return this;

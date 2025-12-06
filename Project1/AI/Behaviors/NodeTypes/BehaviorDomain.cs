@@ -13,13 +13,13 @@
             this.Child = child;
             this.Condition = condition;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
-            var cond = this.Condition.Execute(parent, state);
+            var cond = this.Condition.Tick(parent, state);
             if (cond == BehaviorState.Fail)
                 return BehaviorState.Fail;
             else
-                return this.Child.Execute(parent, state);
+                return this.Child.Tick(parent, state);
         }
        
         public override object Clone()

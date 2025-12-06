@@ -23,9 +23,9 @@ namespace Start_a_Town_.AI.Behaviors
                 new BehaviorGetAtNewNew(targetArgs)
             };
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
-            var result = base.Execute(parent, state);
+            var result = base.Tick(parent, state);
             return result;
         }
     }

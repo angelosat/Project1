@@ -13,7 +13,7 @@ namespace Start_a_Town_.AI.Behaviors
             this.Timer = 0;
             this.Period = Ticks.PerSecond;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             if (this.Timer < Period)
             {

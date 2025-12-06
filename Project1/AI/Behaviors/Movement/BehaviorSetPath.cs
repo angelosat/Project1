@@ -9,7 +9,7 @@ namespace Start_a_Town_.AI.Behaviors
         {
             this.Path = path;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             state.Path = state.Blackboard[this.Path] as Path;
             state.Blackboard.Remove(this.Path);

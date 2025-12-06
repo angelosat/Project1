@@ -84,7 +84,7 @@ namespace Start_a_Town_
                 return;
 
             if (this.Enabled)
-                this.Root.Execute(parent as Actor, this.State);
+                this.Root.Tick(parent as Actor, this.State);
         }
 
         public override void OnSpawn()

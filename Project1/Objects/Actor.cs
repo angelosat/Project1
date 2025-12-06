@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Components.Effects;
 using Start_a_Town_.AI;
 using Start_a_Town_.AI.Behaviors;
 using Start_a_Town_.Components;
@@ -329,6 +330,7 @@ namespace Start_a_Town_
             obj.AddComponent(new WorkComponent()); /// MOVED THIS HERE AFTER THE AICOMPONENT, so that when the ai starts an interaction, it gets ticked during the same frame
                                                    /// because when the interaction is received on the client, the packet is processed before the entity even ticks at all
                                                    /// resulting in a one-tick difference in the interaction progress beteween server and client
+            obj.AddComponent(new EffectsComponent());
 
             foreach (var b in obj.Body.GetAllBones())
                 b.Material = def.DefaultMaterial;
@@ -338,6 +340,16 @@ namespace Start_a_Town_
             obj.ObjectCreated();
             return obj;
         }
+        EffectsComponent _effectsCached;
+        public EffectsComponent Effects => _effectsCached ??= this.GetComponent<EffectsComponent>();
+        //public void ApplyEffect(EffectDef effect)
+        //{
+        //    this.GetComponent<EffectsComponent>().Apply(effect);
+        //}
+        //public void RemoveEffect(EffectDef effect)
+        //{
+        //    this.GetComponent<EffectsComponent>().Remove(effect);
+        //}
         public override Color GetNameplateColor()
         {
             if (this.IsPlayerControlled)

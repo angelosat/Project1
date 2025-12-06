@@ -8,7 +8,7 @@ namespace Start_a_Town_.AI.Behaviors
     {
         readonly HashSet<IntVec3> OpenedDoors = new();
 
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             foreach(var door in this.OpenedDoors.ToArray())
             { 

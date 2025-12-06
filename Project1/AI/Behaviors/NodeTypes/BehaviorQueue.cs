@@ -14,11 +14,11 @@ namespace Start_a_Town_.AI.Behaviors
         {
             return this.Current != null ? this.Current.ToString() : "<none>";
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             foreach (var child in this.Children)
             {
-                var result = child.Execute(parent, state);
+                var result = child.Tick(parent, state);
                 
                 if (result != BehaviorState.Fail)
                 {

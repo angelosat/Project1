@@ -23,7 +23,7 @@ namespace Start_a_Town_
         {
             this.TargetInd = targetInd;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             var item = parent.CurrentTask.GetTarget(this.TargetInd);
             return parent.Inventory.Contains(item.Object) ? BehaviorState.Success : BehaviorState.Fail;

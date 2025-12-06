@@ -11,7 +11,7 @@ namespace Start_a_Town_.AI.Behaviors
             this.QueueName = queue;
             this.Targets = targetVar;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             var queue = state.Blackboard[this.QueueName] as Queue<object>;
             if (queue.Count > 0)

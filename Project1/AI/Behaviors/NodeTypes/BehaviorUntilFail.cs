@@ -11,9 +11,9 @@
         {
 
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
-            var result = this.Child.Execute(parent, state);
+            var result = this.Child.Tick(parent, state);
             return result == BehaviorState.Fail ? BehaviorState.Success : BehaviorState.Running;
         }
         public override void Write(System.IO.BinaryWriter w)

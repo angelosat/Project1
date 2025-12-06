@@ -9,7 +9,7 @@ namespace Start_a_Town_
             return new BehaviorHandleResources();
         }
 
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             return BehaviorState.Fail;
         }

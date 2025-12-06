@@ -373,6 +373,7 @@ namespace Start_a_Town_
             }
             return dic;
         }
+        
         public static Dictionary<T, U> ReadNew<T, U>(this Dictionary<T, U> dic, IDataReader r, Func<IDataReader, T> keyReader, Func<IDataReader, U> valueReader)
         {
             var count = r.ReadInt32();
@@ -530,6 +531,18 @@ namespace Start_a_Town_
             {
                 var instance = Activator.CreateInstance(typeof(T), constructorParams) as T;
                 list[i] = instance.Read(r) as T;
+            }
+            return list;
+        }
+        public static List<T> ReadListNew<T>(this IDataReader r) where T : class, ISerializable, new()
+        {
+            var count = r.ReadInt32();
+            var list = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                var instance = new T();
+                //list[i] = instance.Read(r) as T;
+                list.Add(instance.Read(r) as T);
             }
             return list;
         }

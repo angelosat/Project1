@@ -10,7 +10,7 @@ namespace Start_a_Town_
         bool Initialized;
         public Action<Actor, AIState> Init = (parent, state) => { };
         public Action InitAction = () => { };
-        public Action Tick = () => { };
+        public Action TickAction = () => { };
         public Func<Actor, bool> FailCondition = (a) => false;
         public Func<Actor, bool> SuccessCondition = (a) => false;
 
@@ -22,7 +22,7 @@ namespace Start_a_Town_
         {
             this.InitAction = initAction;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             if(!this.Initialized)
             {
@@ -48,7 +48,7 @@ namespace Start_a_Town_
                 return BehaviorState.Fail;
             }
             
-            this.Tick();
+            this.TickAction();
             if (this.Mode== Modes.Instant)
             {
                 this.Initialized = false; 

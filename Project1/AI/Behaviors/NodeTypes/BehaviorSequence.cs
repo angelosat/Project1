@@ -17,13 +17,13 @@ namespace Start_a_Town_.AI.Behaviors
             this.Children = new List<Behavior>(behavs);
             this.Position = 0;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             for (int i = this.Position; i < this.Children.Count; i++)
             {
                 var child = this.Children[i];
                 this.Position = i;
-                var result = child.Execute(parent, state);
+                var result = child.Tick(parent, state);
                 switch (result)
                 {
                     case BehaviorState.Fail:

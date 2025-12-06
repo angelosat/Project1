@@ -21,8 +21,9 @@ namespace Start_a_Town_.Blocks.Bed
             var map = a.Map;
             var bedPos = t.Global; // the bed position passed should be the origin cell
             a.SetPosition(bedPos + new Vector3(0, 0, Block.GetBlockHeight(a.Map, bedPos)));
-            a.GetNeed(NeedDef.Energy).AddMod(NeedLetDefOf.Sleeping, 0, 1);
-            a.GetNeed(NeedDef.Comfort).AddMod(NeedLetDefOf.Sleeping, 20, 0);
+            //a.GetNeed(NeedDef.Energy).AddMod(EffectDefOf.Sleeping, 0, 1);
+            //a.GetNeed(NeedDef.Comfort).AddMod(EffectDefOf.Sleeping, 20, 0);
+            a.Effects.Apply(EffectDefOf.Sleeping);
 
             var bedFeet = map.GetCell(bedPos).GetParts(bedPos).Skip(1).First();
             a.FaceTowards(bedFeet);
@@ -52,8 +53,9 @@ namespace Start_a_Town_.Blocks.Bed
         {
             var a = this.Actor;
             var t = this.Target;
-            a.GetNeed(NeedDef.Energy).RemoveMod(NeedLetDefOf.Sleeping);
-            a.GetNeed(NeedDef.Comfort).RemoveMod(NeedLetDefOf.Sleeping);
+            //a.GetNeed(NeedDef.Energy).RemoveMod(EffectDefOf.Sleeping);
+            //a.GetNeed(NeedDef.Comfort).RemoveMod(EffectDefOf.Sleeping);
+            a.Effects.Remove(EffectDefOf.Sleeping);
 
             var spriteComp = a.GetComponent<SpriteComponent>();
             var body = a.Body;

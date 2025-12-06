@@ -8,13 +8,13 @@ namespace Start_a_Town_.AI.Behaviors
         {
             this.Children = new List<Behavior>(children);
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             var success = true;
             var running = false;
             foreach(var child in this.Children)
             {
-                var result = child.Execute(parent, state);
+                var result = child.Tick(parent, state);
                 success &= result == BehaviorState.Success;
                 running |= result == BehaviorState.Running;
             }

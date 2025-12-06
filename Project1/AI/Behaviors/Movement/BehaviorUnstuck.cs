@@ -8,7 +8,7 @@ namespace Start_a_Town_.AI.Behaviors
         int Timer;
         readonly int TimerMax = Ticks.PerSecond;
         Vector3 LastPosition;
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             var a = parent.Acceleration;
             if (this.Timer == this.TimerMax)

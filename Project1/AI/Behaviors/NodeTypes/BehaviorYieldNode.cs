@@ -13,7 +13,7 @@ namespace Start_a_Town_.AI.Behaviors
         }
         protected virtual IEnumerable<Behavior> GetSteps() { return null; }
         protected virtual IEnumerable<Behavior> GetCurrentStep(Actor parent, AIState state) { return null; }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             if(this.Steps == null)
             {
@@ -24,7 +24,7 @@ namespace Start_a_Town_.AI.Behaviors
             var current = this.Steps.Current;
             if (current != null)
             {
-                var result = current.Execute(parent, state);
+                var result = current.Tick(parent, state);
                 switch (result)
                 {
                     case BehaviorState.Running:

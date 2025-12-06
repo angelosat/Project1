@@ -36,7 +36,7 @@ namespace Start_a_Town_.AI.Behaviors
             this.Direction = dir;
         }
         
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             var net = parent.Net;
 

@@ -10,7 +10,7 @@ namespace Start_a_Town_
 
         TaskGiver CurrentTaskGiver;
 
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             if (parent.Velocity.Z != 0)
                 return BehaviorState.Running;
@@ -25,7 +25,7 @@ namespace Start_a_Town_
 
             if (state.CurrentTaskBehavior != null)
             {
-                var (result, source) = state.CurrentTaskBehavior.Tick(parent, state);
+                var (result, source) = state.CurrentTaskBehavior.TickNew(parent, state);
 
                 if (parent.Resources[ResourceDefOf.Stamina].Value == 0)
                     result = BehaviorState.Fail;

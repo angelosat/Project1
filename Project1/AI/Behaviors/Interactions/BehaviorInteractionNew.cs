@@ -56,7 +56,7 @@ namespace Start_a_Town_
             this.InteractionFactory = interactionFactory;
         }
       
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             this.Actor = parent;
             if (parent.Velocity != Vector3.Zero)

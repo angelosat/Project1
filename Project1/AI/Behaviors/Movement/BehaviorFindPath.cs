@@ -28,7 +28,7 @@ namespace Start_a_Town_.AI.Behaviors
             this.PathName = pathname;
             this.FinishMode = mode;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             // only execute if there's no current path
             if (state.Path != null)

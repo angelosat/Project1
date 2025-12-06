@@ -2,7 +2,7 @@
 {
     class BehaviorStopMoving : Behavior
     {
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             parent.MoveToggle(false);
                 return BehaviorState.Success;

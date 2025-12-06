@@ -17,7 +17,7 @@ namespace Start_a_Town_.AI.Behaviors
         {
             return this.Condition(agent, state);
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             var result = this.Evaluate(parent, state);
             return result ? BehaviorState.Success : BehaviorState.Fail;

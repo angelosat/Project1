@@ -164,7 +164,7 @@ namespace Start_a_Town_
 
             /// def init
             MoodletDef.Init();
-            NeedLetDef.Init();
+            EffectDef.Init();
             ToolDefs.Init();
 
             GameObject.LoadObjects();

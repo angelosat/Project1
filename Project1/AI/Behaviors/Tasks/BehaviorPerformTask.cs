@@ -38,13 +38,13 @@ namespace Start_a_Town_
         {
 
         }
-        public (BehaviorState result, Behavior source) Tick(Actor parent, AIState state)
+        public (BehaviorState result, Behavior source) TickNew(Actor parent, AIState state)
         {
             var current = this.CachedBehaviors[this.CurrentStepIndex];
-            var result = this.Execute(parent, state);
+            var result = this.Tick(parent, state);
             return (result, current);
         }
-        public sealed override BehaviorState Execute(Actor parent, AIState state)
+        public sealed override BehaviorState Tick(Actor parent, AIState state)
         {
             if(this.Task.IsCancelled)
                 return BehaviorState.Fail;
@@ -74,7 +74,7 @@ namespace Start_a_Town_
                 //    return BehaviorState.Fail;
                 //var result = failedorended ? BehaviorState.Fail : current.Execute(parent, state);
 
-                var result = current.Execute(parent, state);
+                var result = current.Tick(parent, state);
                 this.Task.TicksCounter++;
                 /// added the success check because interactioncrafting in behaviorcrafting fails even after the interaction successfuly completes because the ingredients are disposed, and it fails on disposed ingredients
                 /// move the whole if block inside the switch block below?

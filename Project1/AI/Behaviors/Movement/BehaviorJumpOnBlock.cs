@@ -7,7 +7,7 @@ namespace Start_a_Town_.AI.Behaviors
     {
         const float MaxClimbableHeight = .5f;
         const float VelocityFactorForNextStep = 4;
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             if (!parent.Mobile.CanJump)
                 return BehaviorState.Success;

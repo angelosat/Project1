@@ -19,7 +19,7 @@ namespace Start_a_Town_.AI.Behaviors
             //    if (!c.Evaluate(agent, state))
             //        return false;
             foreach (var c in this.List)
-                if (c.Execute(agent as Actor, state) != BehaviorState.Success)
+                if (c.Tick(agent as Actor, state) != BehaviorState.Success)
                     return false;
             return true;
         }

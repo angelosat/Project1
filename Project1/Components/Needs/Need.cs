@@ -8,17 +8,23 @@ namespace Start_a_Town_
 {
     public sealed class Need : MetricWrapper, IProgressBar, ISerializable, ISaveable, INamed, ISerializableNew, ISaveableNew
     {
-        internal void AddMod(NeedLetDef needLetDef, float value, float rate)
+        Dictionary<EffectDef, List<NeedMod>> ModsNew = [];
+        internal void AddMod(EffectDef needLetDef, float value, float rate)
         {
             if (this.Mods.Any(n => n.Def == needLetDef))
                 throw new Exception();
-            var needLet = new NeedLet(needLetDef, rate);//, value, rate);
+            var needLet = new NeedMod(needLetDef, rate);//, value, rate);
             this.Mods.Add(needLet);
         }
-        internal void RemoveMod(NeedLetDef def)
+        internal void AddMod(EntityEffectWrapper source, float rate)
         {
-            this.Mods.RemoveAll(n => n.Def == def);
+            if (this.Mods.Any(n => n.Def == source.Def))
+                throw new Exception();
+            var needLet = new NeedMod(source.Def, rate);//, value, rate);
+            this.Mods.Add(needLet);
         }
+        internal void RemoveMod(EffectDef def) => this.Mods.RemoveAll(n => n.Def == def);
+        
         public NeedDef NeedDef;
         public enum Types { Hunger, Water, Sleep, Achievement, Work, Brains, Curiosity, Social, Energy }
         const string Format = "P0";
@@ -28,26 +34,17 @@ namespace Start_a_Town_
         public double LastTick;
         public float Value
         {
-            get
-            {
-                return this._valueInt;
-                //return this._Value + this.Mods.Sum(m => m.ValueMod);
-            }
-            set
-            {
-                //this._Value = MathHelper.Clamp(value, 0, 100);
-                this._valueInt = (int)MathHelper.Clamp(value, 0, 100);
-            }
+            get => this._valueInt;
+            set => this._valueInt = (int)MathHelper.Clamp(value, 0, 100);
         }
         public int _valueInt = 100;
         public float TicksPerNaturalDecay = 1 / Ticks.FromSeconds(10);
         public float Accumulator;
-        //public Actor Parent;
         public readonly float Min = 0f;
         public readonly float Max = 100f;
-        public float Percentage { get { return this.Value / this.Max; } }
+        public float Percentage => this.Value / this.Max;
         public float Mod;
-        public readonly List<NeedLet> Mods = new();
+        public readonly List<NeedMod> Mods = new();
         public float Tolerance { get; set; }
         public float Threshold { get { return this.NeedDef.BaseThreshold; } }
         public bool IsBelowThreshold { get { return this.Value < this.Threshold; } }
@@ -158,6 +155,7 @@ namespace Start_a_Town_
             w.Write(this.Mod);
             w.Write(this.DecayDelay);
             this.Mods.Write(w);
+            this.ModsNew.WriteNew(w, k => k.Write(w), v => v.Write(w));
         }
         public ISerializable Read(IDataReader r)
         {
@@ -166,6 +164,7 @@ namespace Start_a_Town_
             this.Mod = r.ReadSingle();
             this.DecayDelay = r.ReadSingle();
             this.Mods.Read(r);
+            this.ModsNew.ReadNew(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
             return this;
         }
         static public ISerializableNew Create(IDataReader r)
@@ -176,6 +175,7 @@ namespace Start_a_Town_
             need.Mod = r.ReadSingle();
             need.DecayDelay = r.ReadSingle();
             need.Mods.Read(r);
+            need.ModsNew.ReadNew(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
             return need;
         }
 
@@ -187,6 +187,7 @@ namespace Start_a_Town_
             tag.Add(this.Mod.Save("Mod"));
             tag.Add(this.DecayDelay.Save("DecayTimer"));
             tag.Add(this.Mods.SaveNewBEST("Mods"));
+            tag.Add(this.ModsNew.Save("ModsDic", k => k.Save(), v => v.Save()));
             return tag;
         }
         public ISaveable Load(SaveTag tag)
@@ -196,6 +197,9 @@ namespace Start_a_Town_
             tag.TryGetTagValue<float>("Mod", out this.Mod);
             tag.TryGetTagValue<float>("DecayTimer", out this.DecayDelay);
             this.Mods.TryLoadMutable(tag, "Mods");
+            this.ModsNew.LoadNewNewNew(tag["ModsDic"],
+                                       k => Def.GetDef<EffectDef>((string)k.Value),
+                                       v => v.LoadListNew<NeedMod>());
             return this;
         }
 

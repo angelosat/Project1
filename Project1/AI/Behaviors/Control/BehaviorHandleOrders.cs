@@ -4,11 +4,11 @@
     {
         BehaviorGetAtNewNew CurrentBehav;
         TargetArgs CurrentMoveOrder = TargetArgs.Null;
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             if (this.CurrentBehav is not null && this.CurrentMoveOrder != TargetArgs.Null && state.MoveOrder == this.CurrentMoveOrder)
             {
-                if (this.CurrentBehav.Execute(parent, state) != BehaviorState.Running)
+                if (this.CurrentBehav.Tick(parent, state) != BehaviorState.Running)
                 {
                     this.CurrentBehav = null;
                     state.MoveOrders.Dequeue();

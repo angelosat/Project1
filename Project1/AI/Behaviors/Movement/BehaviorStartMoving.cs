@@ -7,7 +7,7 @@
         {
             this.Sprint = sprint;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             if (state.Path == null)
                 return BehaviorState.Fail;

@@ -94,5 +94,6 @@ namespace Start_a_Town_
         {
             return Database.Values.OfType<T>();
         }
+
     }
 }

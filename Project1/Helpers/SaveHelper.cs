@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.Arm;
+using System.Xml.Linq;
 
 namespace Start_a_Town_
 {
@@ -32,6 +35,18 @@ namespace Start_a_Town_
             {
                 var vkTag = new SaveTag(SaveTag.Types.Compound);
                 vkTag.Add(new SaveTag(keyType, "Key", keySelector(vk.Key)));
+                vkTag.Add(vk.Value.Save("Value"));
+                tag.Add(vkTag);
+            }
+            save.Add(tag);
+        }
+        public static void SaveNew<T, U>(this Dictionary<T, U> dic, SaveTag save, string name) where T : ISaveable where U : ISaveable
+        {
+            var tag = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Compound);
+            foreach (var vk in dic)
+            {
+                var vkTag = new SaveTag(SaveTag.Types.Compound);
+                vkTag.Add(vk.Key.Save("Key"));
                 vkTag.Add(vk.Value.Save("Value"));
                 tag.Add(vkTag);
             }
@@ -535,6 +550,19 @@ namespace Start_a_Town_
             });
             return list;
         }
+        public static void LoadNewNew<T>(this ICollection<T> list, SaveTag t)
+           where T : ISaveable, new()
+        {
+            list.Clear();
+            if (t.Value is List<SaveTag> tags)
+                foreach (var tag in tags)
+                {
+                    var item = new T().Load(tag);
+                    list.Add((T)item);
+                }
+
+        }
+       
         public static T LoadNew<T, U>(this T list, SaveTag tag, string name)
             where U : ISaveable, new()
             where T : ICollection<U>
@@ -572,7 +600,12 @@ namespace Start_a_Town_
                 array[i] = new T().Load(list[i]) as T;
             return array;
         }
-
+        public static List<T> LoadListNew<T>(this SaveTag tag) where T : ISaveable, new()
+        {
+            var list = new List<T>();
+            list.LoadNewNew(tag);
+            return list;
+        }
         public static void Load<T>(this T[] array, SaveTag save) where T : ISaveable, INamed
         {
             for (int i = 0; i < array.Length; i++)
@@ -682,7 +715,7 @@ namespace Start_a_Town_
                 list.Add(new SaveTag(SaveTag.Types.Int, "", item));
             return list;
         }
-        public static SaveTag Save<T>(this IEnumerable<T> saveables, string name) where T : ISaveable, new()
+        public static SaveTag Save<T>(this IEnumerable<T> saveables, string name = "") where T : ISaveable, new()
         {
             var list = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Compound);
             foreach (var item in saveables)
@@ -897,7 +930,34 @@ namespace Start_a_Town_
                 dic.Add(i.k, i.v);
             return dic;
         }
+        public static SaveTag Save<U, T>(this Dictionary<U, T> dic, string name, Func<U, SaveTag> keyFunc, Func<T, SaveTag> valueFunc)
+        {
+            //var tag = new SaveTag(SaveTag.Types.Compound, name);
+            var tag = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Compound);
 
+            foreach (var kv in dic)
+            {
+                var vkTag = new SaveTag(SaveTag.Types.Compound);
+                var ktag = keyFunc(kv.Key);
+                ktag.Name = "Key";
+                var vtag = valueFunc(kv.Value);
+                vtag.Name = "Value";
+                vkTag.Add(ktag);
+                vkTag.Add(vtag);
+                tag.Add(vkTag);
+            }
+            return tag;
+        }
+        public static void LoadNewNewNew<U,T>(this Dictionary<U, T> dic, SaveTag tag, Func<SaveTag, U> keyFunc, Func<SaveTag, T> valueFunc)
+        {
+            var list = tag.Value as List<SaveTag>;
+            foreach (var i in list)
+            {
+                var key = keyFunc(i["Key"]);
+                var value = valueFunc(i["Value"]);
+                dic.Add(key, value);
+            }
+        }
         public static void SaveZip<T>(this Dictionary<string, T> dic, SaveTag save, string name) where T : ISaveable, new()
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);

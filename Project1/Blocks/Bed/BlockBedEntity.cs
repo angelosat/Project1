@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Start_a_Town_.UI;
 using System.Linq;
 using Start_a_Town_.Net;
-using System.IO;
 
 namespace Start_a_Town_
 {
@@ -20,49 +19,6 @@ namespace Start_a_Town_
             : base(originGlobal)
         {
 
-        }
-        public void Sleep(GameObject agent)
-        {
-            if (this.Occupied)
-                throw new Exception();
-            this.CurrentOccupant = agent.RefId;
-            agent.GetComponent<SpriteComponent>().Body = agent.Body.FindBone(BoneDefOf.Head);
-        }
-        public void Wake(GameObject agent)
-        {
-            if (agent.RefId != this.CurrentOccupant)
-                throw new Exception();
-            this.CurrentOccupant = -1;
-            agent.GetComponent<SpriteComponent>().Body = null;
-        }
-        public void ToggleSleep(GameObject agent, IntVec3 bedGlobal)
-        {
-            if (this.CurrentOccupant != -1)
-            {
-                if (agent.RefId != this.CurrentOccupant)
-                    throw new Exception();
-                this.CurrentOccupant = -1;
-                var body = agent.Body;
-                var head = body[BoneDefOf.Head];
-                body.SetEnabled(true, true);
-                body.RestingFrame = new Keyframe(0, Vector2.Zero, 0);
-                head.RestingFrame = new Keyframe(0, Vector2.Zero, 0);
-                agent.GetNeed(NeedDef.Energy).Mod -= 1;
-            }
-            else
-            {
-                this.CurrentOccupant = agent.RefId;
-                var body = agent.Body;
-                var headBone = agent.Body.FindBone(BoneDefOf.Head);
-                body.RestingFrame = new Keyframe(0, agent.Body[BoneDefOf.Head].GetTotalOffset(), 0);
-                body.SetEnabled(false, true);
-                headBone.SetEnabled(true, false);
-                headBone.RestingFrame = new Keyframe(0, Vector2.Zero, -(float)(Math.PI / 3f));
-                var bedPos = this.OriginGlobal;
-                var cell = agent.Map.GetCell(bedPos);
-                agent.SetPosition(bedPos + new IntVec3(0, 0, cell.Block.GetHeight(cell.BlockData, 0, 0)));
-                agent.GetNeed(NeedDef.Energy).Mod += 1;
-            }
         }
 
         internal override void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)

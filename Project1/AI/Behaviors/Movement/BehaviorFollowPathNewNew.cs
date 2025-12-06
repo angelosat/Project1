@@ -14,7 +14,7 @@ namespace Start_a_Town_.AI.Behaviors
         {
             this.Range = range;
         }
-        public override BehaviorState Execute(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor parent, AIState state)
         {
             state.Leash = parent.Global;
             var path = state.Path;

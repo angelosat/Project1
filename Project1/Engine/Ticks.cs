@@ -8,6 +8,10 @@
         public const int PerGameHour = 60 * PerGameMinute;
         public const int PerGameDay = 24 * PerGameHour;
 
+        public static float FromSeconds(float seconds)
+        {
+            return PerSecond * seconds;
+        }
         public static int FromMinutes(int minutes)
         {
             return PerGameMinute * minutes;

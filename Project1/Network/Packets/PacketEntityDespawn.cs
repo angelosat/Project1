@@ -25,7 +25,7 @@ namespace Start_a_Town_
             var map = client.Map as StaticMap;
             //map.Despawn(actor);
             actor.Despawn();
-            PacketEntityDespawn.Send(net, actor);
+            Send(net, actor);
         }
     }
 }

@@ -87,8 +87,10 @@ namespace Start_a_Town_
             {
                 Font = UIManager.FontBold,
                 TextFunc = () => parent.Name,
-                TextColorFunc = parent.GetNameplateColor,
+                //TextColorFunc = parent.GetNameplateColor,
                 //TintFunc = parent.GetNameplateColor, // we dont want tintfunc, we want to change textcolorfunc directly because the default textcolor is UIManager.DefaultTextColor = Color.LightGray
+                TextColor = Color.White, // so i'll just set the text color to white, to get the full tint color
+                TintFunc = parent.GetNameplateColor, // but tintfunc is applied on every draw call for ui controls, while textcolorfunc is applied only on validation for labels
                 MouseThrough = true,
                 TextBackgroundFunc = () => parent.HasFocus() ? this.Quality.Color * .5f : Color.Black * .5f
             });

@@ -147,7 +147,7 @@ namespace Start_a_Town_
             //need.Value = modOldValue(need.Value);
             need.SetValue(modOldValue(need.Value), this);
             //this.Net?.EventOccured((int)Message.Types.NeedUpdated, this, need, need.Value - old);
-            this.Map.World.Events.Post(new ActorNeedUpdatedEvent(this, need.NeedDef, need.Value - old));
+            this.World.Events.Post(new ActorNeedUpdatedEvent(this, need.NeedDef, need.Value - old));
 
         }
 

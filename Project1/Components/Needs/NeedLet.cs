@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    class NeedLet : ISerializable, ISaveable
+    public class NeedLet : ISerializable, ISaveable
     {
         public NeedLetDef Def;
         public float RateMod;
@@ -11,16 +11,23 @@ namespace Start_a_Town_
         {
 
         }
-        public NeedLet(NeedLetDef needLetDef, float value, float rate)
+        /// <summary>
+        /// Creates a modifier that adjusts the associated metric each tick.
+        /// The Rate is applied per tick; duration is managed by the effect that uses this modifier.
+        /// </summary>
+        /// <param name="valuePerTick">Signed value to apply per tick.</param>
+        public NeedLet(NeedLetDef needLetDef, float valuePerTick)
         {
             this.Def = needLetDef;
-            this.RateMod = rate;
-            this.ValueMod = value;
+            this.RateMod = valuePerTick;
+            //this.RateMod = rate;
+            //this.ValueMod = value;
         }
 
         public override string ToString()
         {
-            return string.Format("{0}: ValueMod: {1:+#;-#;0} RateMod: {2:+#;-#;0}", this.Def.Name, this.ValueMod, this.RateMod);
+            //return string.Format("{0}: ValueMod: {1:+#;-#;0} RateMod: {2:+#;-#;0}", this.Def.Name, this.ValueMod, this.RateMod);
+            return $"{this.Def.Name}: ValueMod: {this.ValueMod:+#;-#;0} RateMod: {this.RateMod:+#;-#;0}";
         }
 
         public SaveTag Save(string name = "")

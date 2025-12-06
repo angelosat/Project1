@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SharpDX.Direct3D11;
 using Start_a_Town_.Components.Needs;
 using Start_a_Town_.UI;
 
@@ -35,16 +34,17 @@ namespace Start_a_Town_.Components
         public void AddNeed(params NeedDef[] defs)
         {
             foreach (var d in defs)
-                this.NeedsNew.Add(d.Create(this.Parent as Actor));
+                //this.NeedsNew.Add(d.Create(this.Parent as Actor));
+                this.NeedsNew.Add(new Need(this.Parent as Actor, d));
         }
 
         public override void Tick()
         {
-            Timer -= 1;
-            if (Timer > 0)
-                return;
+            //Timer -= 1;
+            //if (Timer > 0)
+            //    return;
 
-            Timer = Ticks.PerSecond;
+            //Timer = Ticks.PerSecond;
 
             for (int i = 0; i < this.NeedsNew.Count; i++)
                 this.NeedsNew[i].Tick();// this.Parent);

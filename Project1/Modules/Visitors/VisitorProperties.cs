@@ -100,7 +100,7 @@ namespace Start_a_Town_
         private void TickNeeds()
         {
             foreach (var n in this.Actor.GetNeeds())
-                n.Tick(this.Actor);
+                n.Tick();// this.Actor);
         }
         void TryVisitTown()
         {

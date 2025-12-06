@@ -12,7 +12,7 @@ namespace Start_a_Town_
         {
             if (this.Mods.Any(n => n.Def == needLetDef))
                 throw new Exception();
-            var needLet = new NeedLet(needLetDef, value, rate);
+            var needLet = new NeedLet(needLetDef, rate);//, value, rate);
             this.Mods.Add(needLet);
         }
         internal void RemoveMod(NeedLetDef def)
@@ -24,26 +24,30 @@ namespace Start_a_Town_
         const string Format = "P0";
         public string Name => this.NeedDef.Label;
         public float DecayDelay, DecayDelayMax = 3;
-        float _Value;
+        public float _Value;
         public double LastTick;
         public float Value
         {
             get
             {
-                return this._Value + this.Mods.Sum(m => m.ValueMod);
+                return this._valueInt;
+                //return this._Value + this.Mods.Sum(m => m.ValueMod);
             }
             set
             {
-                this._Value = MathHelper.Clamp(value, 0, 100);
+                //this._Value = MathHelper.Clamp(value, 0, 100);
+                this._valueInt = (int)MathHelper.Clamp(value, 0, 100);
             }
         }
+        public int _valueInt = 100;
+        public float TicksPerNaturalDecay = 1 / Ticks.FromSeconds(10);
+        public float Accumulator;
         //public Actor Parent;
-        public float Min = 0f;
-        public float Max = 100f;
+        public readonly float Min = 0f;
+        public readonly float Max = 100f;
         public float Percentage { get { return this.Value / this.Max; } }
-        public float Decay;
         public float Mod;
-        readonly List<NeedLet> Mods = new();
+        public readonly List<NeedLet> Mods = new();
         public float Tolerance { get; set; }
         public float Threshold { get { return this.NeedDef.BaseThreshold; } }
         public bool IsBelowThreshold { get { return this.Value < this.Threshold; } }
@@ -70,42 +74,40 @@ namespace Start_a_Town_
             this.NeedDef = needDef;
         }
 
-        public override void Tick()
+        public sealed override void Tick()
         {
             this.NeedDef.Worker.Tick(this);
+            //return;
+            //this.LastTick = this.Parent.Net.CurrentTick;
+            //float newValue;
+            //var mod = this.Mods.Sum(d => d.RateMod);
+            //if (mod != 0)
+            //{
+            //    newValue = this._Value + mod;
+            //    this.DecayDelay = this.DecayDelayMax;
+            //}
+            //else
+            //{
+            //    if (this.DecayDelay > 0)
+            //    {
+            //        this.DecayDelay--;
+            //        return;
+            //    }
+            //    else
+            //    {
+            //        // TODO: is exponential decay better? maybe have both exp and linear and choose between them for each need?
+            //        var p = 1 - Value / 100f;
+            //        float d = this.Decay * (1 + 5 * p * p);
+            //        d = this.Decay;
+            //        d = this.NeedDef.BaseDecayRate;
+            //        d *= this.FinalDecayMultiplier;
+            //        newValue = this._Value - d;
+            //    }
+            //}
+            //SetValue(newValue, this.Parent);
         }
         public void TickLong(GameObject parent) { }
-        public void Tick(GameObject parent)
-        {
-            this.LastTick = parent.Net.CurrentTick;
-            float newValue;
-            var mod = this.Mods.Sum(d => d.RateMod);
-            if (mod != 0)
-            {
-                newValue = this._Value + mod;
-                this.DecayDelay = this.DecayDelayMax;
-            }
-            else
-            {
-                if (this.DecayDelay > 0)
-                {
-                    this.DecayDelay--;
-                    return;
-                }
-                else
-                {
-                    // TODO: is exponential decay better? maybe have both exp and linear and choose between them for each need?
-                    var p = 1 - Value / 100f;
-                    float d = this.Decay * (1 + 5 * p * p);
-                    d = this.Decay;
-                    d = this.NeedDef.BaseDecayRate;
-                    d *= this.FinalDecayMultiplier;
-                    newValue = this._Value - d;
-                }
-            }
-            SetValue(newValue, parent);
-        }
-        protected float FinalDecayMultiplier => 1;
+        public float FinalDecayMultiplier => 1;
         public AITask GetTask(GameObject parent) { return null; }
         
         public TaskGiver TaskGiver { get { return this.NeedDef.TaskGiver; } }

@@ -40,7 +40,10 @@ namespace Start_a_Town_
             //tag.TryGetTag("ActiveEffects", this.ActiveEffects.LoadFrom);
             tag.TryLoadList("ActiveEffects", ref this.ActiveEffects);
         }
-        
+        internal override GroupBox GetDetailedGui()
+        {
+            return base.GetDetailedGui();
+        }
         public override object Clone()
         {
             return new EffectsComponent();

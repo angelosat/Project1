@@ -1664,6 +1664,8 @@ namespace Start_a_Town_.UI
             foreach (var child in this.Controls)
                 child.OnResolutionChanged();
         }
+
+        
         //public override int Padding 
         //{ 
         //    get => base.Padding;

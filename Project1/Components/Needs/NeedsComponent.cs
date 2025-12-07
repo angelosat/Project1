@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Components
 {
-    class NeedsComponent : EntityComponent
+    class NeedsComponent : EntityComponent, IGui//<NeedsComponent>
     {
         public override string Name { get; } = "Needs";
            
@@ -86,10 +86,10 @@ namespace Start_a_Town_.Components
             return need;
         }
 
-        internal override void GetManagementInterface(GameObject parent, UI.Control box)
-        {
-            box.AddControls(new NeedsUI(parent));
-        }
+        //internal override void GetManagementInterface(GameObject parent, UI.Control box)
+        //{
+        //    box.AddControls(new NeedsMoodsUI(parent));
+        //}
 
         public void GetUI(GameObject parent, UI.Control container)
         {
@@ -109,7 +109,24 @@ namespace Start_a_Town_.Components
             }
             container.AddControls(box);
         }
+        public void GetUI(UI.Control container)
+        {
+            var box = new GroupBox();
 
+            var byCategory = this.NeedsNew.GroupBy(n => n.NeedDef.CategoryDef);
+            foreach (var cat in byCategory)
+            {
+                var panel = new PanelLabeled(cat.Key.Label) { Location = box.BottomLeft };
+                foreach (var n in cat)
+                {
+                    var ui = n.GetUI(this.Parent);
+                    ui.Location = panel.Controls.BottomLeft;
+                    panel.AddControls(ui);
+                }
+                box.AddControls(panel);
+            }
+            container.AddControls(box);
+        }
         public override void Write(System.IO.BinaryWriter w)
         {
             this.NeedsNew.Write(w);
@@ -128,6 +145,23 @@ namespace Start_a_Town_.Components
             this.NeedsNew.Clear();
             this.NeedsNew.LoadFrom(tag["Needs"]);
         }
+        public void NewGui(GroupBox box)
+        {
+            var byCategory = this.NeedsNew.GroupBy(n => n.NeedDef.CategoryDef);
+            foreach (var cat in byCategory)
+            {
+                var panel = new PanelLabeled(cat.Key.Label) { Location = box.BottomLeft };
+                foreach (var n in cat)
+                {
+                    var ui = n.GetUI(this.Parent);
+                    ui.Location = panel.Controls.BottomLeft;
+                    panel.AddControls(ui);
+                }
+                box.AddControls(panel);
+            }
+        }
+
+
         public class Props : ComponentProps
         {
             public override Type CompClass => typeof(NeedsComponent);

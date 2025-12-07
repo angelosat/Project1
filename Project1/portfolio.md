@@ -14,3 +14,25 @@
 	- Demonstrated strong system design and architecture skills by iteratively restructuring complex game networking and event-handling systems. Took initiative in identifying pain points, proposing practical alternatives, and refactoring core subsystems—including packet handling, UI synchronization, and type-safe event dispatch—while maintaining network correctness and performance. Applied strategic judgment in consolidating event registries, designing type-safe payloads, and implementing decoupled, modular event buses for world, entity, and UI layers. Balanced hands-on implementation with selective adoption of expert guidance to create maintainable, extensible, and modder-friendly systems, showcasing the ability to merge high-level architectural thinking with practical, production-ready coding decisions.
 - Event system design
   - Demonstrated advanced architectural reasoning in designing game systems, including event handling and entity-component interactions. Demonstrated careful separation of concerns by evaluating the proper placement of logic across entities, maps, and game modes, balancing flexibility with maintainability. Demonstrated expertise in structuring complex actor metrics through needs and resources, iterating on int-based value representations, modifier accumulation, decay logic, and tick-based updates to ensure performance and precision. Demonstrated thoughtful design of wrappers, workers, and definitions to simplify serialization, maintain clean data ownership, and support dynamic runtime composition. Demonstrated the creation of a flexible effects framework with lifecycle management, UI integration, and controlled modification of actor states. Demonstrated evaluation of trade-offs between abstraction, extensibility, and practical gameplay requirements, including AI behavior driven by dynamic actor states. Demonstrated strong attention to clean, scalable, and future-proof code structures while exploring practical solutions for modding, serialization, and real-time game logic.
+- UI control binding pattern
+  - GUI Architecture & Component-Driven UI Design
+
+Demonstrated advanced design and implementation of a flexible GUI system for a simulation-heavy application. Designed a hybrid UI pattern balancing singleton inspector panels and independent floating windows, enabling multiple actors to be visualized simultaneously without redundant boilerplate.
+
+Engineered a component-driven approach where actor subcomponents (e.g., needs, moods, inventory) expose their UI in a modular way, supporting both in-place composition and reusable drawers.
+
+Developed an abstract GuiBuilder base class to unify creation patterns, manage singleton windows, and encapsulate common lifecycle behavior (build, refresh, and target-change updates).
+
+Explored static vs. instance-based builders, generics, and abstract methods to streamline construction and refresh of UI panels while avoiding reflection where possible.
+
+Implemented safe container composition patterns, preventing child components from interfering with unrelated UI elements while enabling dynamic, actor-specific layouts.
+
+Balanced developer ergonomics and type safety, providing fire-and-forget build methods for floating windows, singleton refresh methods for inspectors, and unified patterns to reduce cognitive overhead when extending the UI.
+
+Engaged with real-world paradigms (RimWorld, OpenTTD, Dungeon Siege) to compare editor-heavy versus simulation-heavy UI approaches, guiding decisions on where abstraction is worthwhile versus when practical simplicity suffices.
+
+Proactively resolved edge cases in UI state management, including refresh semantics, actor switching, and dynamic layout rebuilding, ensuring consistent and predictable user interface behavior across multiple contexts.
+
+This work demonstrates not only technical mastery of C# and GUI architecture, but also a strong capacity for system-level design thinking, bridging gameplay components with maintainable, scalable, and reusable user interface solutions.
+  - Component-Driven GUI Architecture
+Designed a flexible UI system linking actor components to reusable GUI panels. Built a hybrid pattern supporting singleton inspector windows and independent floating panels, with safe, modular composition. Unified construction and refresh logic through an abstract builder pattern, reducing boilerplate while maintaining type safety and flexibility for simulation-heavy interfaces.

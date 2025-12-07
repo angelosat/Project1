@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Start_a_Town_.UI;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
@@ -41,6 +42,11 @@ namespace Start_a_Town_
         public void Write(BinaryWriter w)
         {
             this.Def.Write(w);
+        }
+
+        public Control GetGui()
+        {
+            return new Label($"Effect: {this.Def.Name}");
         }
     }
 }

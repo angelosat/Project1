@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class MoodComp : EntityComponent, IProgressBar
+    public class MoodComp : EntityComponent, IProgressBar, IGui//<MoodComp>
     {
         readonly ObservableCollection<Moodlet> Moodlets = new();
         const float BaseMood = 50;
@@ -127,6 +127,29 @@ namespace Start_a_Town_
         {
             this.Moodlets.Read(r);
             this.Mood = r.ReadSingle();
+        }
+
+        public void NewGui(GroupBox box)
+        {
+            var panelMoodValue = new PanelLabeled("Mood");
+            var bar = new Bar(this);
+            bar.ColorFunc = () => Color.Lerp(Color.Red, Color.Lime, this.Mood / 100f);
+            bar.HoverFunc = () => this.Mood.ToString();
+            bar.NameFunc = () => this.Percentage.ToString("##0%");
+            bar.OnDrawAction = (sb, bounds) =>
+            {
+                var indicator = new Rectangle(bounds.X + (int)Math.Round(bounds.Width * this.ValueTarget / this.Max), bounds.Y, 1, bounds.Height);
+                indicator.DrawHighlight(sb);
+            };
+
+            panelMoodValue.AddControlsBottomLeft(bar);
+
+            var panelMoodlets = new TableObservable<Moodlet>() { BackgroundStyle = BackgroundStyle.TickBox };
+            panelMoodlets.AddColumn("Test", panelMoodValue.Width * 2, m => m.GetUI());
+            panelMoodlets.Bind(this.Moodlets);
+
+            panelMoodlets.Location = panelMoodValue.BottomLeft;
+            box.AddControls(panelMoodValue, panelMoodlets);
         }
     }
 }

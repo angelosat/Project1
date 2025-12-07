@@ -130,7 +130,7 @@ namespace Start_a_Town_.Components
         internal virtual void GetInterface(GameObject parent, UI.Control box) { }
         [Obsolete]
         internal virtual void GetManagementInterface(GameObject gameObject, UI.Control box) { }
-
+        internal virtual GroupBox GetDetailedGui() => null;
         internal virtual void MapLoaded(GameObject parent)
         {
         }

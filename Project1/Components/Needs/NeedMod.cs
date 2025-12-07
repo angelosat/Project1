@@ -43,8 +43,8 @@ namespace Start_a_Town_
         public ISaveable Load(SaveTag tag)
         {
             tag.LoadDef<EffectDef>("Def");
-            tag.TryGetTagValue<float>("RateMod", out this.RateMod);
-            tag.TryGetTagValue<float>("ValueMod", out this.ValueMod);
+            tag.TryGetTagValueOrDefault<float>("RateMod", out this.RateMod);
+            tag.TryGetTagValueOrDefault<float>("ValueMod", out this.ValueMod);
 
             return this;
         }

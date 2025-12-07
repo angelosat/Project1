@@ -123,9 +123,9 @@ namespace Start_a_Town_
 
         protected override void LoadExtra(SaveTag tag)
         {
-            tag.TryGetTagValueNew("Tilling", ref this.Tilling);
-            tag.TryGetTagValueNew("Planting", ref this.Planting);
-            tag.TryGetTagValueNew("Harvesting", ref this.Harvesting);
+            tag.TryGetTagValue("Tilling", ref this.Tilling);
+            tag.TryGetTagValue("Planting", ref this.Planting);
+            tag.TryGetTagValue("Harvesting", ref this.Harvesting);
             tag.TryLoadDef("Plant", ref this.Plant);
         }
         protected override void SaveExtra(SaveTag tag)

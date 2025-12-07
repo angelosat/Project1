@@ -101,7 +101,7 @@ namespace Start_a_Town_
 
         public override void Load(SaveTag tag)
         {
-            tag.TryGetTagValueNew("ShopIDSequence", ref this.CurrentShopID);
+            tag.TryGetTagValue("ShopIDSequence", ref this.CurrentShopID);
             this.Shopss.LoadAbstract(tag, "Shops", this);
             this.Shops = this.Shopss.ToDictionary(i => i.ID, i => i);
         }

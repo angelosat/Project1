@@ -97,7 +97,7 @@ namespace Start_a_Town_
 
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValue("Level", out this.Level);
+            tag.TryGetTagValueOrDefault("Level", out this.Level);
             this.LvlProgress.Max = GetNextLvlXp(this.Level);
             this.LvlProgress.Value = (float)tag["Progress"].Value;
             return this;

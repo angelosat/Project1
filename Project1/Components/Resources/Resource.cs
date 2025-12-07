@@ -126,8 +126,8 @@ namespace Start_a_Town_
 
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValue("Value", out this._value);
-            tag.TryGetTagValue("Max", out this._max);
+            tag.TryGetTagValueOrDefault("Value", out this._value);
+            tag.TryGetTagValueOrDefault("Max", out this._max);
             return this;
         }
 

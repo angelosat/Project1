@@ -199,7 +199,7 @@ namespace Start_a_Town_
         public ISaveable Load(SaveTag tag)
         {
             this.ID = tag.GetValue<int>("ID");
-            tag.TryGetTagValueNew("Name", ref this.Name);
+            tag.TryGetTagValue("Name", ref this.Name);
             //tag.TryGetTagValue<List<SaveTag>>("Positions", v => this.Positions = new HashSet<IntVec3>(new List<Vector3>().Load(v).Select(i => (IntVec3)i)));
             tag.TryGetTag("Positions", v => this.Positions.LoadIntVecs(v));
             this.Hide.TryLoad(tag, "Hide");

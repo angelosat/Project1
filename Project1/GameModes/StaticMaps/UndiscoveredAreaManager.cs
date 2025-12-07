@@ -77,7 +77,7 @@ namespace Start_a_Town_
         }
         internal void Load(SaveTag tag)
         {
-            tag.TryGetTagValueNew("Valid", ref this.Valid);
+            tag.TryGetTagValue("Valid", ref this.Valid);
         }
 
         //internal void OnGameEvent(GameEvent e)

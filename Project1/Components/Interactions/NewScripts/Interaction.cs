@@ -241,7 +241,7 @@ namespace Start_a_Town_
             var name = (string)tag["Name"].Value;
             var inter = Activator.CreateInstance(Type.GetType(name)) as Interaction;
             tag.TryGetTagValue<int>("State", t => inter.State = (States)t);
-            tag.TryGetTagValue("Progress", out inter.CurrentTick);
+            tag.TryGetTagValueOrDefault("Progress", out inter.CurrentTick);
             tag.TryGetTag("Animation", t => inter.Animation = new Animation(t));
             inter.LoadData(tag);
             return inter;

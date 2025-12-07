@@ -294,11 +294,11 @@ namespace Start_a_Town_
         }
         public static bool TryLoad(this ref int value, SaveTag save, string name)
         {
-            return save.TryGetTagValue(name, out value);
+            return save.TryGetTagValueOrDefault(name, out value);
         }
         public static bool TryLoad(this ref float value, SaveTag save, string name)
         {
-            return save.TryGetTagValue(name, out value);
+            return save.TryGetTagValueOrDefault(name, out value);
         }
         public static void Save(this Vector3[] vectors, SaveTag save, string name)
         {
@@ -408,7 +408,7 @@ namespace Start_a_Town_
         public static bool TryLoad(this ICollection<IntVec3> list, SaveTag tag, string name)
         {
             list.Clear();
-            if (!tag.TryGetTagValue(name, out List<SaveTag> positions))
+            if (!tag.TryGetTagValueOrDefault(name, out List<SaveTag> positions))
                 return false;
             foreach (var pos in positions)
                 list.Add((IntVec3)pos.Value);
@@ -641,7 +641,7 @@ namespace Start_a_Town_
         [Obsolete]
         public static List<T> Load<T>(this List<T> list, SaveTag save) where T : class, ISaveable
         {
-            if (!save.TryGetTagValue<string>("Type", out string objTypeName))
+            if (!save.TryGetTagValueOrDefault<string>("Type", out string objTypeName))
                 return list;
             var objType = Type.GetType(objTypeName);
             list.Clear();
@@ -721,6 +721,13 @@ namespace Start_a_Town_
             foreach (var item in saveables)
                 list.Add(item.Save());
             return list;
+        }
+        public static SaveTag Save<T>(this ICollection<T> list, string name) where T : ISaveableNew
+        {
+            var save = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Compound);
+            foreach (var item in list)
+                save.Add(item.Save());
+            return save;
         }
         public static List<int> Load(this List<int> list, List<SaveTag> positions)
         {
@@ -876,7 +883,7 @@ namespace Start_a_Town_
 
         public static bool TryLoad(this ref bool value, SaveTag tag, string name)
         {
-            return tag.TryGetTagValue<bool>(name, out value);
+            return tag.TryGetTagValueOrDefault<bool>(name, out value);
         }
 
         public static bool TryLoadRefs<T>(this IList<T> list, SaveTag save, string name) where T : class, ISaveable

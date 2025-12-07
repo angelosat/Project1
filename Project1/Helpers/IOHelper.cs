@@ -252,6 +252,20 @@ namespace Start_a_Town_
             foreach (var i in list)
                 i.Write(w);
         }
+        public static void WriteNew<T>(this ICollection<T> list, BinaryWriter w) where T : ISerializableNew
+        {
+            var count = list.Count;
+            w.Write(count);
+            foreach (var i in list)
+                i.Write(w);
+        }
+        public static void WriteNew<T>(this BinaryWriter w, ICollection<T> list) where T : ISerializableNew
+        {
+            var count = list.Count;
+            w.Write(count);
+            foreach (var i in list)
+                i.Write(w);
+        }
         public static void WriteImmutable<T>(this ICollection<T> list, BinaryWriter w) where T : ISerializable
         {
             foreach (var i in list)
@@ -523,7 +537,7 @@ namespace Start_a_Town_
             }
             return list;
         }
-        public static T[] ReadList<T>(this IDataReader r, params object[] constructorParams) where T : class, ISerializable
+        public static T[] ReadArray<T>(this IDataReader r, params object[] constructorParams) where T : class, ISerializable
         {
             var count = r.ReadInt32();
             var list = new T[count];
@@ -544,6 +558,14 @@ namespace Start_a_Town_
                 //list[i] = instance.Read(r) as T;
                 list.Add(instance.Read(r) as T);
             }
+            return list;
+        }
+        public static List<T> ReadList<T>(this IDataReader r) where T : class, ISerializableNew
+        {
+            var count = r.ReadInt32();
+            var list = new List<T>(count);
+            for (int i = 0; i < count; i++)
+                list.Add((T)T.Create(r));
             return list;
         }
         public static T[] ReadListAbstract<T>(this IDataReader r, params object[] constructorParams) where T : class, ISerializable
@@ -665,6 +687,10 @@ namespace Start_a_Town_
         {
             writer.Write((int)packetType);
         }
+        //public static void Write(this BinaryWriter writer, ISerializableNew item)
+        //{
+        //    item.Write(writer);
+        //}
         public static void Write(this BinaryWriter w, params object[] args)
         {
             for (int i = 0; i < args.Length; i++)

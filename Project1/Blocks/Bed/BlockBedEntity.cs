@@ -54,7 +54,7 @@ namespace Start_a_Town_
         
         protected override void LoadExtra(SaveTag tag)
         {
-            tag.TryGetTagValue("Occupant", out this.CurrentOccupant);
+            tag.TryGetTagValueOrDefault("Occupant", out this.CurrentOccupant);
             tag.TryGetTagValue<int>("Type", v => this.Type = (Types)v);
         }
 

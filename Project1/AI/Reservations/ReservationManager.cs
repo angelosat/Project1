@@ -240,7 +240,7 @@ namespace Start_a_Town_
                 foreach (var t in list)
                     this.Reservations.Add(new Reservation(this.Town.Map, t));
             });
-            tag.TryGetTagValue<int>("TaskIDSequence", out TaskIDSequence);
+            tag.TryGetTagValueOrDefault<int>("TaskIDSequence", out TaskIDSequence);
         }
     }
 }

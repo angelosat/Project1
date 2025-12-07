@@ -892,7 +892,7 @@ namespace Start_a_Town_
                 if (block == BlockDefOf.Air)
                 {
                     airCount = (int)celltag["Data"].Value;
-                    celltag.TryGetTagValueNew("Discovered", ref airDiscovered);
+                    celltag.TryGetTagValue("Discovered", ref airDiscovered);
                     for (int i = n; i < n + airCount; i++)
                     {
                         var c = this.Cells[i];

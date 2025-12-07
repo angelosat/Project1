@@ -923,12 +923,12 @@ namespace Start_a_Town_
         /// <returns></returns>
         internal static GameObject Load(SaveTag tag)
         {
-            tag.TryGetTagValue("Def", out string defName);
+            tag.TryGetTagValueOrDefault("Def", out string defName);
             var def = Start_a_Town_.Def.GetDef<ItemDef>(defName);
             if (def is null)
                 return null;
             var obj = def.Create();
-            tag.TryGetTagValue("InstanceID", out obj.RefId);
+            tag.TryGetTagValueOrDefault("InstanceID", out obj.RefId);
             tag.TryGetTagValue<int>("Stack", v=> obj._StackSize = v);
             var compData = tag["Components"].Value as Dictionary<string, SaveTag>;
             foreach (var compTag in compData.Values)

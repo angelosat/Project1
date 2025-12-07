@@ -86,7 +86,7 @@ namespace Start_a_Town_.AI.Behaviors
         internal override void Load(SaveTag tag)
         {
             base.Load(tag);
-            tag.TryGetTagValue<int>("Timer", out this.Timer);
+            tag.TryGetTagValueOrDefault<int>("Timer", out this.Timer);
         }
     }
 }

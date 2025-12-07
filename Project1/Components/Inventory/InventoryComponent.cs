@@ -504,7 +504,7 @@ namespace Start_a_Town_.Components
                 foreach (var i in tmpslots.Slots.Where(s => s.HasValue).Select(s => s.Object))
                     this.Contents.Add(i);
             }
-            if (data.TryGetTagValue("IsHauling", out bool isHauling) && isHauling)
+            if (data.TryGetTagValueOrDefault("IsHauling", out bool isHauling) && isHauling)
                 data.TryGetTag("Hauling", tag => this.HaulSlot.Load(tag));
         }
 

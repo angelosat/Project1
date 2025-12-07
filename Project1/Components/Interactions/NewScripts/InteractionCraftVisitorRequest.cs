@@ -100,8 +100,8 @@ namespace Start_a_Town_
         }
         public override void LoadData(SaveTag tag)
         {
-            tag.TryGetTagValue("ShopID", out this.ShopID);
-            tag.TryGetTagValue("OrderID", out this.OrderID);
+            tag.TryGetTagValueOrDefault("ShopID", out this.ShopID);
+            tag.TryGetTagValueOrDefault("OrderID", out this.OrderID);
             this.Progress = new Progress(tag["CraftProgress"]);
             this.PlacedObjects.TryLoadMutable(tag, "PlacedItems");
         }

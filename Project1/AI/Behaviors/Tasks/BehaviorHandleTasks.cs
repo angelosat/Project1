@@ -217,7 +217,7 @@ namespace Start_a_Town_
         internal override void Load(SaveTag tag)
         {
             base.Load(tag);
-            tag.TryGetTagValue("Timer", out this.Timer);
+            tag.TryGetTagValueOrDefault("Timer", out this.Timer);
             tag.TryGetTagValue<string>("CurrentTaskGiver", t => this.CurrentTaskGiver = Activator.CreateInstance(Type.GetType(t)) as TaskGiver);
         }
         internal override void MapLoaded(Actor parent)

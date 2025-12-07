@@ -31,7 +31,7 @@ namespace Start_a_Town_
         }
         public override void LoadData(SaveTag tag)
         {
-            tag.TryGetTagValueNew<int>("RoomID", ref this.RoomID);
+            tag.TryGetTagValue<int>("RoomID", ref this.RoomID);
         }
         protected override void WriteExtra(BinaryWriter w)
         {

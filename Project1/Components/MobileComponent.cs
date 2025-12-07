@@ -416,8 +416,8 @@ namespace Start_a_Town_.Components
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            tag.TryGetTagValue<bool>("Moving", out this.Moving);
-            tag.TryGetTagValue<float>("Acceleration", out this.Acceleration);
+            tag.TryGetTagValueOrDefault<bool>("Moving", out this.Moving);
+            tag.TryGetTagValueOrDefault<float>("Acceleration", out this.Acceleration);
             tag.TryGetTagValue<int>("State", v =>
             {
                 this.CurrentState = State.States[(State.Types)v];

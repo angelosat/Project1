@@ -95,7 +95,7 @@ namespace Start_a_Town_
         }
         public override void LoadData(SaveTag tag)
         {
-            tag.TryGetTagValue<int>("Amount", out this.Amount);
+            tag.TryGetTagValueOrDefault<int>("Amount", out this.Amount);
         }
     }
 }

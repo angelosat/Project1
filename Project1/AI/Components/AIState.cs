@@ -140,7 +140,7 @@ namespace Start_a_Town_.AI
         public void Load(SaveTag tag)
         {
             this.Leash = tag.GetValue<Vector3>("Leash");
-            tag.TryGetTagValue<bool>("HasTask", out var hastask);
+            tag.TryGetTagValueOrDefault<bool>("HasTask", out var hastask);
             if (hastask)
             {
                 var task = AITask.Load(tag["Task"]);

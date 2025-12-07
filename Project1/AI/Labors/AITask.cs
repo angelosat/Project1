@@ -355,9 +355,9 @@ namespace Start_a_Town_
 
             tag.TryGetTag("Tool", t => this.Tool = new TargetArgs(t));
 
-            tag.TryGetTagValue("AmountA", out this.AmountA);
-            tag.TryGetTagValue("AmountB", out this.AmountB);
-            tag.TryGetTagValue("AmountC", out this.AmountC);
+            tag.TryGetTagValueOrDefault("AmountA", out this.AmountA);
+            tag.TryGetTagValueOrDefault("AmountB", out this.AmountB);
+            tag.TryGetTagValueOrDefault("AmountC", out this.AmountC);
 
             tag.TryGetTag("TargetsA", t => this.TargetsA.Load(t));
             tag.TryGetTag("TargetsB", t => this.TargetsB.Load(t));
@@ -367,17 +367,17 @@ namespace Start_a_Town_
             tag.TryGetTag("AmountsB", t => this.AmountsB.Load(t));
             tag.TryGetTag("AmountsC", t => this.AmountsC.Load(t));
 
-            tag.TryGetTagValue("TicksCounter", out this.TicksCounter);
-            tag.TryGetTagValue("TicksWaited", out this.TicksWaited);
-            tag.TryGetTagValue("TicksTimeout", out this.TicksTimeout);
+            tag.TryGetTagValueOrDefault("TicksCounter", out this.TicksCounter);
+            tag.TryGetTagValueOrDefault("TicksWaited", out this.TicksWaited);
+            tag.TryGetTagValueOrDefault("TicksTimeout", out this.TicksTimeout);
 
             tag.TryGetTag("PlacedItems", t => this.PlacedObjects.Load(t));
 
             tag.TryLoadRef("Order", out this.Order);
-            tag.TryGetTagValue("Count", out this.Count);
+            tag.TryGetTagValueOrDefault("Count", out this.Count);
             tag.TryGetTag("Product", t => this.Product = new TargetArgs(t));
-            tag.TryGetTagValue("Forced", out this.Forced);
-            if (tag.TryGetTagValue("Queues", out List<SaveTag> queuestag))
+            tag.TryGetTagValueOrDefault("Forced", out this.Forced);
+            if (tag.TryGetTagValueOrDefault("Queues", out List<SaveTag> queuestag))
             {
                 foreach (var qtag in queuestag)
                 {
@@ -396,8 +396,8 @@ namespace Start_a_Town_
                     this.AmountQueues.Add(clist);
                 }
             }
-            tag.TryGetTagValue("ShopID", out this.ShopID);
-            tag.TryGetTagValue("QuestToAccept", out this.Quest);
+            tag.TryGetTagValueOrDefault("ShopID", out this.ShopID);
+            tag.TryGetTagValueOrDefault("QuestToAccept", out this.Quest);
             tag.TryGetTag("Transaction", v => this.Transaction = new Transaction(v));
         }
 

@@ -354,10 +354,10 @@ namespace Start_a_Town_
             this.Reaction = tag.LoadDef<Reaction>("Reaction");
             tag.TryGetTagValue<int>("Mode", p => this.Mode = (CraftMode)p);
             tag.TryGetTagValue<int>("FinishMode", p => this.FinishMode = CraftOrderFinishMode.GetMode(p));
-            tag.TryGetTagValue<int>("ID", out this.ID);
+            tag.TryGetTagValueOrDefault<int>("ID", out this.ID);
             tag.TryGetTagValue<int>("Quantity", p => this.Quantity = p);
             this.Workstation = tag.LoadIntVec3("Bench");
-            tag.TryGetTagValue("Enabled", out this.Enabled);
+            tag.TryGetTagValueOrDefault("Enabled", out this.Enabled);
             tag.TryGetTag("RestrictionsNew", t =>
                 {
                     var keys = t.LoadStringList("Keys");
@@ -368,9 +368,9 @@ namespace Start_a_Town_
 
             //tag.TryGetTagValue<int>("Input", i => this.Input = i == -1 ? null : this.Map.Town.ZoneManager.GetZone<Stockpile>(i));
             //tag.TryGetTagValue<int>("Output", i => this.Output = i == -1 ? null : this.Map.Town.ZoneManager.GetZone<Stockpile>(i));
-            tag.TryGetTagValue("Input", out this._inputID);
-            tag.TryGetTagValue("Output", out this._outputID);
-            tag.TryGetTagValue("UnfinishedItem", out this._unfinishedItemRefID);
+            tag.TryGetTagValueOrDefault("Input", out this._inputID);
+            tag.TryGetTagValueOrDefault("Output", out this._outputID);
+            tag.TryGetTagValueOrDefault("UnfinishedItem", out this._unfinishedItemRefID);
 
             this.ReagentRestrictions.Clear();
             tag.TryGetTagValue<List<SaveTag>>("Restrictions", restrictionsTag =>

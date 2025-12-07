@@ -61,7 +61,33 @@ namespace Start_a_Town_
                 return true;
             }
         }
-        public bool TryGetTagValueNew<TValue>(string name, ref TValue value)
+        public bool TryGetTag<T>(string name, ref T output) where T : ISaveableNew
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                return false;
+            }
+            else
+            {
+                output = (T)T.Create(tag);
+                return true;
+            }
+        }
+        public bool TryLoadList<T>(string name, ref List<T> output) where T : ISaveableNew
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                return false;
+            }
+            else
+            {
+                //foreach (var i in tag.Value as List<SaveTag>)
+                    //output.Add((T)T.Create(i));
+                output.AddRange((tag.Value as List<SaveTag>).Select(i => (T)T.Create(i)));
+                return true;
+            }
+        }
+        public bool TryGetTagValue<TValue>(string name, ref TValue value)
         {
             if (!this.TryGetTag(name, out var tag))
             {
@@ -73,7 +99,7 @@ namespace Start_a_Town_
                 return true;
             }
         }
-        public bool TryGetTagValue<TValue>(string name, out TValue value)
+        public bool TryGetTagValueOrDefault<TValue>(string name, out TValue value)
         {
             if (!this.TryGetTag(name, out var tag))
             {
@@ -366,6 +392,16 @@ namespace Start_a_Town_
                 (this.Value as List<SaveTag>).Add(tag);
             else if (this.Type == 10)
                 (this.Value as Dictionary<string, SaveTag>).Add(tag.Name, tag);
+        }
+        public void Add<T>(string name, T item) where T : ISaveableNew
+        {
+            var save = item.Save(name);
+            this.Add(save);
+        }
+        public void Add<T>(string name, List<T> item) where T : ISaveableNew
+        {
+            var save = item.Save(name);
+            this.Add(save);
         }
         public int LoadInt(string name)
         {

@@ -360,11 +360,11 @@ namespace Start_a_Town_
         }
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValue<int>("ID", out this.ID);
+            tag.TryGetTagValueOrDefault<int>("ID", out this.ID);
             tag.TryGetTag("Positions", t => this.Interior = new HashSet<IntVec3>().LoadIntVecs(t));
             this.Cells = new(this.Interior);
-            tag.TryGetTagValue("OwnerRef", out this.OwnerRef);
-            tag.TryGetTagValueNew<int>("Workplace", ref this.workplaceID);
+            tag.TryGetTagValueOrDefault("OwnerRef", out this.OwnerRef);
+            tag.TryGetTagValue<int>("Workplace", ref this.workplaceID);
             tag.TryGetTagValue<string>("RoomDef", v => this.roomRole = !v.IsNullEmptyOrWhiteSpace() ? Def.GetDef<RoomRoleDef>(v) : null);
             return this;
         }

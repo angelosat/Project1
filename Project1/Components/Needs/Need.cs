@@ -193,9 +193,9 @@ namespace Start_a_Town_
         public ISaveable Load(SaveTag tag)
         {
             tag.TryGetTagValue<string>("Def", v => this.NeedDef = Def.GetDef<NeedDef>(v));
-            tag.TryGetTagValue<float>("Value", out this._Value);
-            tag.TryGetTagValue<float>("Mod", out this.Mod);
-            tag.TryGetTagValue<float>("DecayTimer", out this.DecayDelay);
+            tag.TryGetTagValueOrDefault<float>("Value", out this._Value);
+            tag.TryGetTagValueOrDefault<float>("Mod", out this.Mod);
+            tag.TryGetTagValueOrDefault<float>("DecayTimer", out this.DecayDelay);
             this.Mods.TryLoadMutable(tag, "Mods");
             this.ModsNew.LoadNewNewNew(tag["ModsDic"],
                                        k => Def.GetDef<EffectDef>((string)k.Value),
@@ -207,9 +207,9 @@ namespace Start_a_Town_
         {
             var need = new Need();
             tag.TryGetTagValue<string>("Def", v => need.NeedDef = Def.GetDef<NeedDef>(v));
-            tag.TryGetTagValue<float>("Value", out need._Value);
-            tag.TryGetTagValue<float>("Mod", out need.Mod);
-            tag.TryGetTagValue<float>("DecayTimer", out need.DecayDelay);
+            tag.TryGetTagValueOrDefault<float>("Value", out need._Value);
+            tag.TryGetTagValueOrDefault<float>("Mod", out need.Mod);
+            tag.TryGetTagValueOrDefault<float>("DecayTimer", out need.DecayDelay);
             need.Mods.TryLoadMutable(tag, "Mods");
             return need;
         }

@@ -48,7 +48,7 @@ namespace Start_a_Town_
 
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValue<float>("Value", out this.Value);
+            tag.TryGetTagValueOrDefault<float>("Value", out this.Value);
             return this;
         }
 

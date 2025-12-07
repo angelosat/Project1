@@ -140,7 +140,7 @@ namespace Start_a_Town_.Components
         }
         internal override void LoadExtra(SaveTag save)
         {
-            if (!save.TryGetTagValue("IsInteracting", out bool isInteracting))
+            if (!save.TryGetTagValueOrDefault("IsInteracting", out bool isInteracting))
                 return;
             if (!isInteracting)
                 return;

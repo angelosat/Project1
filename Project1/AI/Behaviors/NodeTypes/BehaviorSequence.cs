@@ -63,7 +63,7 @@ namespace Start_a_Town_.AI.Behaviors
         internal override void Load(SaveTag tag)
         {
             base.Load(tag);
-            tag.TryGetTagValue<int>("Position", out this.Position);
+            tag.TryGetTagValueOrDefault<int>("Position", out this.Position);
         }
     }
 }

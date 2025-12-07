@@ -116,7 +116,7 @@ namespace Start_a_Town_
         internal override void LoadExtra(SaveTag save)
         {
             this.Moodlets.LoadNewNew(save, "Moodlets");
-            save.TryGetTagValueNew("Value", ref this.Mood);
+            save.TryGetTagValue("Value", ref this.Mood);
         }
         public override void Write(BinaryWriter w)
         {

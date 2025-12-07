@@ -254,8 +254,8 @@ namespace Start_a_Town_
         public override void Load(SaveTag tag)
         {
             this.Rooms.Load(tag, "Rooms", r => { r.Map = this.Map; return r.ID; });
-            tag.TryGetTagValue<int>("RoomIDSequence", out this.RoomIDSequence);
-            tag.TryGetTagValueNew("Valid", ref this.Valid);
+            tag.TryGetTagValueOrDefault<int>("RoomIDSequence", out this.RoomIDSequence);
+            tag.TryGetTagValue("Valid", ref this.Valid);
         }
         public override void Write(BinaryWriter w)
         {

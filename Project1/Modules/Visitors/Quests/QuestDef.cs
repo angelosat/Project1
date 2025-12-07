@@ -206,7 +206,7 @@ namespace Start_a_Town_
         public ISaveable Load(SaveTag tag)
         {
             this.ID = tag.GetValue<int>("ID");
-            tag.TryGetTagValue("GiverID", out this.GiverID);
+            tag.TryGetTagValueOrDefault("GiverID", out this.GiverID);
             tag.TryGetTag("Objectives", t=> this.Objectives.LoadVariableTypes(t, this));
             return this;
         }

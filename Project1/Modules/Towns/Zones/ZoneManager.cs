@@ -147,7 +147,7 @@ namespace Start_a_Town_
         }
         public override void Load(SaveTag tag)
         {
-            tag.TryGetTagValueNew("IDSequence", ref this._zoneIDSequence);
+            tag.TryGetTagValue("IDSequence", ref this._zoneIDSequence);
             this.Zones.TryLoadByValueAbstractTypes(tag, "Zones", zone => zone.ID, this);
         }
         public override void Write(BinaryWriter w)

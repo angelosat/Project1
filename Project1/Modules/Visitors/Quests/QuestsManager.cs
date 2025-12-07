@@ -335,7 +335,7 @@ namespace Start_a_Town_
         }
         public override void Load(SaveTag tag)
         {
-            tag.TryGetTagValue("QuestIDSequence", out this.QuestGiverIDSequence);
+            tag.TryGetTagValueOrDefault("QuestIDSequence", out this.QuestGiverIDSequence);
             this.Quests.TryLoadList<List<QuestDef>, QuestDef>(tag, "Quests", this);
         }
     }

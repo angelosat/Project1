@@ -261,8 +261,8 @@ namespace Start_a_Town_
 
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValue("ID", out this.ID);
-            if (!tag.TryGetTagValue("Name", out this.Name))
+            tag.TryGetTagValueOrDefault("ID", out this.ID);
+            if (!tag.TryGetTagValueOrDefault("Name", out this.Name))
                 this.Name = this.DefaultName;
             this.StockpilesInput.Load(tag, "Stockpiles");
             this.Facilities.Load(tag, "Facilities");
@@ -284,7 +284,7 @@ namespace Start_a_Town_
             this.Workers.Read(r);
             this.Rooms.Read(r);
             this.Counter = r.ReadVector3Nullable();
-            this.WorkerProps = r.ReadList<WorkerProps>().ToDictionary(w => w.ActorID, w => w);
+            this.WorkerProps = r.ReadArray<WorkerProps>().ToDictionary(w => w.ActorID, w => w);
             this.ReadExtra(r);
             return this;
         }

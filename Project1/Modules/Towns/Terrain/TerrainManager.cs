@@ -121,11 +121,11 @@ namespace Start_a_Town_
         }
         public override void Load(SaveTag tag)
         {
-            tag.TryGetTagValue("Validated", out this.DensityValidated);
-            tag.TryGetTagValue("CurrentDensity", out this.CurrentDensity);
-            tag.TryGetTagValue("TotalFertileCells", out this.TotalFertileCells);
-            tag.TryGetTagValue("TotalFertileCellsTemp", out this.TotalFertileCellsTemp);
-            tag.TryGetTagValue("CycleIndex", out this.CycleIndex);
+            tag.TryGetTagValueOrDefault("Validated", out this.DensityValidated);
+            tag.TryGetTagValueOrDefault("CurrentDensity", out this.CurrentDensity);
+            tag.TryGetTagValueOrDefault("TotalFertileCells", out this.TotalFertileCells);
+            tag.TryGetTagValueOrDefault("TotalFertileCellsTemp", out this.TotalFertileCellsTemp);
+            tag.TryGetTagValueOrDefault("CycleIndex", out this.CycleIndex);
         }
     }
 }

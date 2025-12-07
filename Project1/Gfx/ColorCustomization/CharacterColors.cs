@@ -39,7 +39,7 @@ namespace Start_a_Town_
         public CharacterColors(SaveTag tag)
         {
             this.Colors = new Dictionary<string, CharacterColor>();
-            if (!tag.TryGetTagValue<List<SaveTag>>("Colors", out var list))
+            if (!tag.TryGetTagValueOrDefault<List<SaveTag>>("Colors", out var list))
                 return;
             foreach (var item in list)
             {

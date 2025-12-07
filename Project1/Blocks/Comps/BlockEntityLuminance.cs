@@ -72,8 +72,8 @@ namespace Start_a_Town_
         }
         public override void Load(SaveTag tag)
         {
-            tag.TryGetTagValue<int>("Tick", out this.ConsumptionTick);
-            tag.TryGetTagValue<bool>("Powered", out this.Powered);
+            tag.TryGetTagValueOrDefault<int>("Tick", out this.ConsumptionTick);
+            tag.TryGetTagValueOrDefault<bool>("Powered", out this.Powered);
 
         }
         public override void Write(BinaryWriter w)

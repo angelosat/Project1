@@ -30,8 +30,8 @@ namespace Start_a_Town_
         }
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValue("Object", out this.Object);
-            tag.TryGetTagValue("Amount", out this.Amount);
+            tag.TryGetTagValueOrDefault("Object", out this.Object);
+            tag.TryGetTagValueOrDefault("Amount", out this.Amount);
             return this;
         }
 

@@ -221,12 +221,12 @@ namespace Start_a_Town_.Animations
         public void Load(SaveTag tag)
         {
             tag.TryGetTagValue<string>("Def", t => this.Def = Start_a_Town_.Def.GetDef<AnimationDef>(t));
-            tag.TryGetTagValue("Frame", out this.Frame);
-            tag.TryGetTagValue("FadeValue", out this.FadeValue);
-            tag.TryGetTagValue("FadeLength", out this.FadeLength);
-            tag.TryGetTagValue("Weight", out this.Weight);
-            tag.TryGetTagValue("WeightChange", out this.WeightChange);
-            tag.TryGetTagValue("Speed", out this.Speed);
+            tag.TryGetTagValueOrDefault("Frame", out this.Frame);
+            tag.TryGetTagValueOrDefault("FadeValue", out this.FadeValue);
+            tag.TryGetTagValueOrDefault("FadeLength", out this.FadeLength);
+            tag.TryGetTagValueOrDefault("Weight", out this.Weight);
+            tag.TryGetTagValueOrDefault("WeightChange", out this.WeightChange);
+            tag.TryGetTagValueOrDefault("Speed", out this.Speed);
             tag.TryGetTagValue<int>("State", t => this.State = (AnimationStates)t);
         }
 

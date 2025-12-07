@@ -111,7 +111,7 @@ namespace Start_a_Town_.Crafting
             this._progress = new Progress(tag["CraftProgress"]);
             this.PlacedObjects.TryLoadMutable(tag, "PlacedItems");
             tag.TryGetTag("Product", t => this.Product = new Reaction.Product.ProductMaterialPair(t));
-            tag.TryGetTagValue("Unfinished", out this._unfinishedRefID);
+            tag.TryGetTagValueOrDefault("Unfinished", out this._unfinishedRefID);
         }
         protected override void WriteExtra(BinaryWriter w)
         {

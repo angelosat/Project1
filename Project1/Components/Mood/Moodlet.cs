@@ -57,7 +57,7 @@ namespace Start_a_Town_
         public ISaveable Load(SaveTag tag)
         {
             tag.TryGetTagValue<string>("Def", t => this.Def = Start_a_Town_.Def.GetDef<MoodletDef>(t));
-            tag.TryGetTagValue<int>("TicksRemaining", out this.TicksRemaining);
+            tag.TryGetTagValueOrDefault<int>("TicksRemaining", out this.TicksRemaining);
             return this;
         }
 

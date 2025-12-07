@@ -274,7 +274,7 @@ namespace Start_a_Town_
         public void Load(SaveTag save)
         {
             Dictionary<string, SaveTag> compsTag = new Dictionary<string, SaveTag>();
-            if (save.TryGetTagValue("Components", out compsTag))
+            if (save.TryGetTagValueOrDefault("Components", out compsTag))
                 foreach (var tag in compsTag)
                 {
                     var comp = this.TownComponents.FirstOrDefault(c => c.Name == tag.Key);
@@ -284,7 +284,7 @@ namespace Start_a_Town_
            
             LoadAgents(save);
 
-            if (save.TryGetTagValue("Utilities", out List<SaveTag> utilitiesTag))
+            if (save.TryGetTagValueOrDefault("Utilities", out List<SaveTag> utilitiesTag))
             {
                 foreach (var tag in utilitiesTag)
                 {
@@ -302,7 +302,7 @@ namespace Start_a_Town_
         private void LoadAgents(SaveTag save)
         {
             List<SaveTag> agentsTag;
-            if (save.TryGetTagValue("Agents", out agentsTag))
+            if (save.TryGetTagValueOrDefault("Agents", out agentsTag))
                 foreach (var bytes in agentsTag)
                 {
                     var id = (int)bytes.Value;

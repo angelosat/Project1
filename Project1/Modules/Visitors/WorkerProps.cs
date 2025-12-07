@@ -46,7 +46,7 @@ namespace Start_a_Town_
         public ISerializable Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
-            this.Jobs = r.ReadList<Job>().ToDictionary(j => j.Def, j => j);
+            this.Jobs = r.ReadArray<Job>().ToDictionary(j => j.Def, j => j);
             return this;
         }
     }

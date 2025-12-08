@@ -11,11 +11,11 @@ namespace Start_a_Town_.Components
         InventoryComponent Inventory;
         public GameObjectSlot GetSlot()
         {
-            return this.Inventory.GetHauling();
+            return this.Inventory.HaulSlot;
         }
         public GameObject GetObject()
         {
-            return this.Inventory.GetHauling().Object;
+            return this.Inventory.HaulSlot.Object;
         }
 
         public Animation AnimationHaul = new(AnimationDef.Haul) { Weight = 0 };

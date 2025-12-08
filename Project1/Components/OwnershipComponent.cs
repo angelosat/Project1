@@ -120,7 +120,7 @@ namespace Start_a_Town_
             //dimensions 200, 200, 
             if (ActorList is null)
                 ActorList = new ListBoxNoScroll<Actor, Button>(a => new Button(a?.Name ?? "none", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, parent.RefId, a?.RefId ?? -1)))
-                                                                   .AddItems(parent.Town.GetMembers().Prepend(null))
+                                                                   .AddItems(parent.Map.Town.GetMembers().Prepend(null))
                                                                    .ToPanelLabeled("Select owner")
                                                                    .HideOnRightClick()
                                                                    .HideOnLeftClick()

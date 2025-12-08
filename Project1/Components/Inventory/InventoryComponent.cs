@@ -106,10 +106,16 @@ namespace Start_a_Town_.Components
             this.Contents.Parent = parent;
             parent.RegisterContainer(this.HaulContainer);
         }
-        public GameObjectSlot GetHauling()
+        public void Throw(Vector3 velocity, int amount)
         {
-            return this.HaulSlot;
+            if (this.HaulSlot.Object is null)
+                throw new Exception();
+
         }
+        //public GameObjectSlot GetHauling()
+        //{
+        //    return this.HaulSlot;
+        //}
         public override IEnumerable<GameObject> GetChildren()
         {
             if (this.HaulContainer.Slots[0].Object is GameObject obj)
@@ -164,6 +170,10 @@ namespace Start_a_Town_.Components
         public void Drop(GameObject item)
         {
             var parent = this.Parent;
+            if (!this.Contents.Contains(item))
+                throw new Exception();
+            this.Contents.Remove(item);
+            item.Container = null;
             item.Spawn(parent.Map, parent.Global + new Vector3(0, 0, parent.Physics.Height));
         }
         public void HaulFromInventory(GameObject obj, int amount = -1)

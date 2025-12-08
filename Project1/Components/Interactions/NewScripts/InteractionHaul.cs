@@ -1,5 +1,4 @@
 ﻿using System;
-using Start_a_Town_.Components;
 using Start_a_Town_.Animations;
 
 namespace Start_a_Town_
@@ -34,8 +33,8 @@ namespace Start_a_Town_
         }
         public override void OnUpdate()
         {
-            //if (this.Actor.Net.IsClient)
-            //    return;
+            if (this.Actor.Net.IsClient)
+                return;
             var actor = this.Actor;
             var target = this.Target;
             if (target.Object is Actor)
@@ -66,7 +65,11 @@ namespace Start_a_Town_
                         throw new Exception();
                     if (this.Amount > target.Object.StackSize)
                         throw new Exception();
-                    actor.Inventory.PickUp(target.Object, this.Amount == -1 ? target.Object.StackSize : this.Amount);
+                    //actor.Inventory.PickUp(target.Object, this.Amount == -1 ? target.Object.StackSize : this.Amount);
+                    //actor.Inventory.HaulSlot.Object = target.Object;
+
+                    // TODO if picking up partial object, send instantiate packet for new split item first
+                    PacketActorPickUp.Send(actor, target.Object as Entity);
 
                     // if target was in container, remove it from its contents
                     if (this.Amount == prevStackSize && actor.Map.GetBlockEntity(containerGlobal) is BlockStorage.BlockStorageEntity container)

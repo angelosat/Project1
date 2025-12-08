@@ -57,7 +57,7 @@ namespace Start_a_Town_
             var global = r.ReadVector3();
             var velocity = r.ReadVector3();
             var dir = r.ReadVector3();
-            action.Synced(net.Map);
+            action.Resolve(net.Map);
             entity.Work.Perform(action, target);
         }
     }

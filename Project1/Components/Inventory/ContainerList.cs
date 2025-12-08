@@ -68,6 +68,7 @@ namespace Start_a_Town_
 
         public void Add(GameObject item)
         {
+           
             if (item.Container == this)
                 throw new Exception();
 
@@ -80,11 +81,15 @@ namespace Start_a_Town_
 
             ((ICollection<GameObject>)this.Contents).Add(item);
             // despawn here???
+            //if (item.Net.IsClient)
+            //    throw new Exception();
             if (item.IsSpawned)
                 item.Despawn();
             item.Container?.Remove(item);
             item.Slot?.Clear();
             item.Container = this;
+            (this.Parent as Actor).Log.Write($"Stored {item} in inventory");
+
         }
 
         public void Clear()
@@ -133,7 +138,12 @@ namespace Start_a_Town_
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
-                this.Add(GameObject.Create(r));
+            {
+                //this.Add(GameObject.Create(r));
+                var obj = GameObject.Create(r);
+                this.Contents.Add(obj);
+                obj.Container = this;
+            }
             return this;
         }
 
@@ -159,7 +169,11 @@ namespace Start_a_Town_
             var itemList = tag["Contents"].Value as List<SaveTag>;
             foreach (var itemTag in itemList)
                 if(GameObject.Load(itemTag) is GameObject obj)
-                    this.Add(obj);
+                //this.Add(obj);
+                {
+                    this.Contents.Add(obj);
+                    obj.Container = this;
+                }
             return this;
         }
         public override IEnumerable<(string item, object value)> Inspect()

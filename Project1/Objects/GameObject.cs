@@ -338,7 +338,7 @@ namespace Start_a_Town_
         public bool IsPlayerControlled => this.Net.GetPlayers().Any(p => p.ControllingEntity == this); 
         public virtual bool IsHaulable => this.Def.Haulable;
         public bool IsFuel => this.Material?.Fuel?.Value > 0;
-        public GameObject Hauled => this.Inventory?.GetHauling().Object;
+        public GameObject Hauled => this.Inventory?.HaulSlot.Object;
 
         public GameObjectSlot Slot;
         #endregion
@@ -696,7 +696,7 @@ namespace Start_a_Town_
         protected virtual void OnSpawn(MapBase map)
         {
             this.Net = map.Net;
-            this.Container?.Remove(this);
+            //this.Container?.Remove(this);
             this.Parent = null;
 
             if (!map.TryGetChunk(this.Global, out var chunk))
@@ -1162,10 +1162,10 @@ namespace Start_a_Town_
             return obj;
         }
        
-        internal void StoreCarried()
-        {
-            this.Inventory.StoreHauled();
-        }
+        //internal void StoreCarried()
+        //{
+        //    this.Inventory.StoreHauled();
+        //}
         internal List<GameObject> GetPossesions()
         {
             return NpcComponent.GetPossesions(this).Select(id => this.World.GetEntity(id) as GameObject).ToList();

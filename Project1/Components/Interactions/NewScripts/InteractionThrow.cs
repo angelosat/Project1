@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {
@@ -21,13 +20,17 @@ namespace Start_a_Town_
         internal override void InitAction()
         {
             var actor = this.Actor;
+            if (actor.Net.IsClient) return;
             var target = this.Target;
             base.InitAction();
-            
-            var slot = actor.Inventory.GetHauling();
+            PacketActorThrowHauled.Send(actor, Vector3.Zero);
+            return;
+
+            var slot = actor.Inventory.HaulSlot;
             var obj = slot.Object;
             if (obj == null)
-                return;
+                throw new System.Exception();
+
             var all = this.All;
             var newobj = all ? obj : obj.TrySplitOne();
             var velocity = new Vector3(target.Direction, 0) * 0.1f + actor.Velocity;

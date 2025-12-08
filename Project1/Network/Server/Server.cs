@@ -13,8 +13,8 @@ namespace Start_a_Town_.Net
 {
     public partial class Server : NetEndpoint
     {
-        public override bool IsServer => false;
-        public override bool IsClient => true;
+        public override bool IsServer => true;
+        public override bool IsClient => false;
         public override double CurrentTick => ServerClock.TotalMilliseconds;
 
         readonly string _name = "Server";

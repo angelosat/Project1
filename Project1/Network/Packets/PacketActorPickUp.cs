@@ -11,7 +11,7 @@ namespace Start_a_Town_
         {
             pType = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(Entity actor, Entity target)
+        internal static void Send(Entity actor, Entity target)//, bool fromInventory = false)
         {
             var server = actor.Net as Server;
             server.BeginPacket(pType)

@@ -23,7 +23,10 @@ namespace Start_a_Town_
             if (actor.Net.IsClient) return;
             var target = this.Target;
             base.InitAction();
-            PacketActorThrowHauled.Send(actor, Vector3.Zero);
+            var velocity = new Vector3(target.Direction, 0) * 0.1f + actor.Velocity;
+
+            actor.Inventory.Throw(velocity, amount: -1);
+            //PacketActorThrowHauled.Send(actor, Vector3.Zero);
             return;
 
             var slot = actor.Inventory.HaulSlot;
@@ -33,7 +36,6 @@ namespace Start_a_Town_
 
             var all = this.All;
             var newobj = all ? obj : obj.TrySplitOne();
-            var velocity = new Vector3(target.Direction, 0) * 0.1f + actor.Velocity;
 
             /// GLOBAL DOESNT GET SET HERE BECAUSE THE OBJ STILL HAVE THE ACTOR AS THE PARENT AND RETURNS HIS GLOBAL
             //newobj.Global = actor.Global + new Vector3(0, 0, actor.Physics.Height); 

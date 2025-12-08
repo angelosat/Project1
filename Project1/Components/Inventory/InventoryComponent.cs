@@ -106,11 +106,36 @@ namespace Start_a_Town_.Components
             this.Contents.Parent = parent;
             parent.RegisterContainer(this.HaulContainer);
         }
-        public void Throw(Vector3 velocity, int amount)
+        public void Throw(Vector3 velocity, int amount = -1)
         {
             if (this.HaulSlot.Object is null)
                 throw new Exception();
+            Entity thrownItem;
+            var parent = this.Parent;
+            if (amount > 0 && amount <= this.HaulSlot.Object.StackSize)
+            {
+                thrownItem = this.HaulSlot.Object as Entity;
 
+                // TEMP
+                this.HaulSlot.Clear();
+                PacketActorHaulUpdate.Send(parent as Actor, null);
+
+                // split
+                // instantiate new
+                // todo packet send instantiate
+                // todo packet send inventory update
+            }
+            else
+            {
+                thrownItem = this.HaulSlot.Object as Entity;
+                this.HaulSlot.Clear();
+                // todo packet send haul clear packet
+                PacketActorHaulUpdate.Send(parent as Actor, null);
+            }
+            thrownItem.Velocity = velocity;
+            thrownItem.Spawn(parent.Map, parent.Global + parent.Height * Vector3.UnitZ);
+            // todo packet spawn
+            PacketSpawnEntity.Send(thrownItem, parent.Global + parent.Height * Vector3.UnitZ, velocity);
         }
         //public GameObjectSlot GetHauling()
         //{
@@ -228,6 +253,7 @@ namespace Start_a_Town_.Components
         {
             if (this.HaulSlot.Object == null)
                 return false;
+            var obj = this.HaulSlot.Object;
             this.Contents.Add(this.HaulSlot.Object);
             //{
             //    // throw? or return false and raise event so we can handle it and display a message : not enough space?

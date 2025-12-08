@@ -55,7 +55,13 @@ namespace Start_a_Town_
                 case TargetType.Entity:
                     if (actor.Inventory.Contains(target.Object))
                     {
-                        actor.Inventory.HaulFromInventory(target.Object, this.Amount);
+                        if (this.Amount > 0 && this.Amount <= target.Object.StackSize)
+                            throw new NotImplementedException();
+                        //actor.Inventory.HaulFromInventory(target.Object, this.Amount);
+                        actor.Inventory.Remove(target.Object);
+                        actor.Inventory.HaulSlot.Object = target.Object;
+                        PacketActorHaulUpdate.Send(actor, target.Object as Entity); // putting the item in the gameobjectslot, removes it from its current container, so no need to send packetremoveinventoryitem
+                        //PacketRemoveInventoryItem.Send(actor, target.Object as Entity);
                         break;
                     }
                     var containerGlobal = target.Global;

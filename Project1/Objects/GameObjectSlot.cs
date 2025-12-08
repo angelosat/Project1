@@ -58,6 +58,10 @@ namespace Start_a_Town_
             }
         }
         GameObject _object;
+
+        /// <summary>
+        /// If the object is in another container, setting the slot will remove it from the other container.
+        /// </summary>
         public virtual GameObject Object
         {
             get => this.Link ?? _object; 

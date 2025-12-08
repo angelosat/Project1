@@ -1010,6 +1010,16 @@ namespace Start_a_Town_
         internal virtual void OnHudCreated(Hud hud)
         {
         }
+
+        internal void Spawn(Entity entity, Vector3 position, Vector3 velocity)
+        {
+            entity.SetGlobal(position);
+            entity.Velocity = velocity;
+            entity.Net = this.Net;
+            entity.Map = this;
+            entity.OnSpawnNew();
+        }
+
         static MapBase()
         {
 

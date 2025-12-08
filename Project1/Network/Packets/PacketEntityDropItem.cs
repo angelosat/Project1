@@ -4,6 +4,7 @@ using System;
 
 namespace Project1.Network.Packets
 {
+    [EnsureStaticCtorCall]
     internal class PacketEntityDropItem
     {
         static readonly int pType;

@@ -1,35 +1,33 @@
 ﻿using Start_a_Town_.Net;
-using System;
-using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    internal class PacketActorThrowHauled
+    public static class PacketActorHaulUpdate
     {
         static readonly int pType;
-        static PacketActorThrowHauled()
+        static PacketActorHaulUpdate()
         {
             pType = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(Actor actor, Vector3 velocity, int amount = -1)
+
+        public static void Send(Actor actor, Entity newItem, int amount = -1)
         {
             var server = actor.Net as Server;
             server.BeginPacket(pType)
                 .Write(actor.RefId)
-                .Write(velocity)
+                .Write(newItem?.RefId ?? -1)
                 .Write(amount);
-            actor.Inventory.Throw(velocity, amount);
         }
         private static void Receive(NetEndpoint endpoint, Packet packet)
         {
-            if (endpoint is Server)
-                throw new Exception();
+            var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = endpoint.World.GetEntity(r.ReadInt32());
-            var velocity = r.ReadVector3();
+            var actor = client.World.GetEntity(r.ReadInt32());
+            var itemId = r.ReadInt32();
+            var item = itemId > 0 ? client.World.GetEntity(itemId) : null;
             var amount = r.ReadInt32();
-            actor.Inventory.Throw(velocity, amount);
+            actor.Inventory.HaulSlot.Object = item;
         }
     }
 }

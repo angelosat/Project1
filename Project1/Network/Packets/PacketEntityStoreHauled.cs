@@ -3,6 +3,7 @@ using System;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     internal class PacketEntityStoreHauled
     {
         static readonly int pType;

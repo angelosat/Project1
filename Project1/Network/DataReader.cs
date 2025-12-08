@@ -12,6 +12,7 @@ namespace Start_a_Town_.Net
         readonly BinaryReader _reader;
         readonly MemoryStream? _memory;
         bool _disposed;
+
         public DataReader(byte[] payload)
         {
             this._memory = new(payload);
@@ -56,6 +57,6 @@ namespace Start_a_Town_.Net
         public string ReadASCII() => this._reader.ReadASCII();
         public Color ReadColor() => this._reader.ReadColor();
         public List<Vector3> ReadListVector3() => this._reader.ReadListVector3();
-
+        
     }
 }

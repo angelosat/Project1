@@ -4,7 +4,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public sealed class Moodlet : ISaveable, ISerializable, INamed
+    public sealed class Moodlet : ISaveable, ISerializableNew, INamed
     {
         public enum Modes { Finite, Indefinite }
 
@@ -61,17 +61,22 @@ namespace Start_a_Town_
             return this;
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.Def.Name);
             w.Write(this.TicksRemaining);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.Def = Start_a_Town_.Def.GetDef<MoodletDef>(r.ReadString());
             this.TicksRemaining = r.ReadInt32();
             return this;
+        }
+
+        public static ISerializableNew Create(IDataReader r)
+        {
+            return new Moodlet().Read(r);
         }
     }
 }

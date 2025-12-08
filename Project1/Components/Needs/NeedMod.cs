@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    public class NeedMod : ISerializable, ISaveable
+    public class NeedMod : ISerializableNew, ISaveable
     {
         public EffectDef Def;
         public float RateMod;
@@ -49,19 +49,22 @@ namespace Start_a_Town_
             return this;
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.Def.Name);
             w.Write(this.RateMod);
             w.Write(this.ValueMod);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.Def = r.ReadDef<EffectDef>();
             this.RateMod = r.ReadSingle();
             this.ValueMod = r.ReadSingle();
             return this;
         }
+
+        public static ISerializableNew Create(IDataReader r) => new NeedMod().Read(r);
+        
     }
 }

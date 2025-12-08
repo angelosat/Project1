@@ -83,7 +83,7 @@ namespace Start_a_Town_
             return new InteractionHaul(this.Amount);
         }
 
-        protected override void WriteExtra(System.IO.BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Amount);
         }

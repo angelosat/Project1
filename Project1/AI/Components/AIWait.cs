@@ -27,7 +27,7 @@ namespace Start_a_Town_.AI.Behaviors
         {
             return new AIWait();
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             base.Write(w);
             w.Write(this.TimerNew);

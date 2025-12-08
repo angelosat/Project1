@@ -27,7 +27,9 @@ namespace Start_a_Town_
                 {
                     net.Map.Town.ShopManager.RemoveShop(shopid);
                 }
-                net.BeginPacket(PacketPlayerDeleteShop).Write(player.ID, shopid);
+                net.BeginPacket(PacketPlayerDeleteShop)
+                    .Write(player.ID)
+                    .Write(shopid);
             }
             private static void ReceivePlayerDeleteShop(NetEndpoint net, Packet pck)
             {

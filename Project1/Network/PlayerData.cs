@@ -77,8 +77,18 @@ namespace Start_a_Town_.Net
             var col = reader.ReadColor();
             return new PlayerData(name) { ID = id, CharacterID = charID, Ping = rtt, SuggestedSpeed = speed, Color = col };
         }
-
         public void Write(BinaryWriter w)
+        {
+            w.Write(this.ID);
+            byte[] encoded = Encoding.ASCII.GetBytes(this.Name);
+            w.Write(encoded.Length);
+            w.Write(encoded);
+            w.Write(CharacterID);
+            w.Write(Ping);
+            w.Write(this.SuggestedSpeed);
+            w.Write(this.Color);
+        }
+        public void Write(IDataWriter w)
         {
             w.Write(this.ID);
             byte[] encoded = Encoding.ASCII.GetBytes(this.Name);

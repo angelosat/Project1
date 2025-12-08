@@ -16,7 +16,7 @@
             var result = this.Child.Tick(parent, state);
             return result == BehaviorState.Fail ? BehaviorState.Success : BehaviorState.Running;
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.Child.Write(w);
         }

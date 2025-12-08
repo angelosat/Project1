@@ -91,7 +91,7 @@ namespace Start_a_Town_.Components
             return text.TrimEnd('\n');
         }
 
-        public void Write(System.IO.BinaryWriter writer)
+        public void Write(IDataWriter writer)
         {
             writer.Write(this.ID);
             writer.Write(this.Count);

@@ -180,7 +180,7 @@ namespace Start_a_Town_
             return this.Rewards.All(r => r.CanAward());
         }
         #region IO
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.ID);
             this.Objectives.WriteAbstract(w);
@@ -424,7 +424,9 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     quest.AutoMatchBudget();
-                net.BeginPacket(PacketAutoMatchBudget).Write(player.ID, quest.ID);
+                var w = net.BeginPacket(PacketAutoMatchBudget);//.Write(player.ID, quest.ID);
+                w.Write(player.ID);
+                w.Write(quest.ID);
             }
             private static void HandleAutoMatchBudget(NetEndpoint net, Packet pck)
             {
@@ -443,7 +445,7 @@ namespace Start_a_Town_
                 {
                     quest.AddObjective(qobj);
                 }
-                var w = net.BeginPacketOld(PacketQuestCreateObjective);
+                var w = net.BeginPacket(PacketQuestCreateObjective);
                 w.Write(player.ID);
                 w.Write(quest.ID);
                 w.Write(qobj.GetType().FullName);
@@ -470,8 +472,10 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     quest.MaxConcurrent = maxConcurrentModValue;
-                net.BeginPacket(PacketQuestModify).Write(player.ID, quest.ID, maxConcurrentModValue);
-
+                var w = net.BeginPacket(PacketQuestModify);//.Write(player.ID, quest.ID, maxConcurrentModValue);
+                w.Write(player.ID);
+                w.Write(quest.ID);
+                w.Write(maxConcurrentModValue);
             }
             private static void ReceiveQuestModify(NetEndpoint net, Packet pck)
             {
@@ -514,7 +518,11 @@ namespace Start_a_Town_
                 if (net is Server)
                     objective.Count = count;
                 var q = objective.Parent;
-                net.BeginPacket(PacketAdjustObjectiveCount).Write(player.ID, q.ID, q.GetObjectives().ToList().FindIndex(i => i == objective), count);
+                net.BeginPacket(PacketAdjustObjectiveCount)
+                    .Write(player.ID)
+                    .Write(q.ID)
+                    .Write(q.GetObjectives().ToList().FindIndex(i => i == objective))
+                    .Write(count);
 
             }
             private static void HandleAdjustObjectiveCount(NetEndpoint net, Packet pck)
@@ -535,7 +543,10 @@ namespace Start_a_Town_
                 if (net is Server)
                     reward.Count = count;
                 var q = reward.Parent;
-                net.BeginPacket(PacketAdjustRewardCount).Write(player.ID, q.ID, q.GetRewards().ToList().FindIndex(i => i == reward), count);
+                net.BeginPacket(PacketAdjustRewardCount).Write(player.ID)
+                    .Write(q.ID)
+                    .Write(q.GetRewards().ToList().FindIndex(i => i == reward))
+                    .Write(count);
 
             }
             private static void HandleAdjustRewardCount(NetEndpoint net, Packet pck)

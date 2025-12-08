@@ -54,7 +54,7 @@ namespace Start_a_Town_.Components
             data.TryGetTag("Velocity", t => this.Velocity = t.LoadVector3());
             data.TryGetTag("Direction", t => this.Direction = t.LoadVector2());
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.Global);
             w.Write(this.Velocity);

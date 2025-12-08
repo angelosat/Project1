@@ -41,7 +41,7 @@ namespace Start_a_Town_.AI.Behaviors
             this.Position = 0;
             return BehaviorState.Success;
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.Position);
             base.Write(w);

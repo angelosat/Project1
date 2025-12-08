@@ -200,7 +200,7 @@ namespace Start_a_Town_
         {
             return this.Name + ": " + target.ToString();
         }
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.CurrentTick);
             w.Write((int)this.State);
@@ -217,7 +217,7 @@ namespace Start_a_Town_
                 this.Animation.Read(r);
             this.ReadExtra(r);
         }
-        protected virtual void WriteExtra(BinaryWriter w) { }
+        protected virtual void WriteExtra(IDataWriter w) { }
         protected virtual void ReadExtra(IDataReader r) { }
 
         public SaveTag SaveAs(string name = "")

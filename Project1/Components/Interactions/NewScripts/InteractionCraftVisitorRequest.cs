@@ -105,12 +105,12 @@ namespace Start_a_Town_
             this.Progress = new Progress(tag["CraftProgress"]);
             this.PlacedObjects.TryLoadMutable(tag, "PlacedItems");
         }
-        protected override void WriteExtra(System.IO.BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.ShopID);
             w.Write(this.OrderID);
             this.Progress.Write(w);
-            this.PlacedObjects.Write(w);
+            this.PlacedObjects.WriteNew(w);
             this.IngredientsUsed.WriteNew(w, k => w.Write(k), v => v.Write(w));
         }
         protected override void ReadExtra(IDataReader r)
@@ -119,7 +119,7 @@ namespace Start_a_Town_
             this.ShopID = r.ReadInt32();
             this.OrderID = r.ReadInt32();
             this.Progress = new Progress(r);
-            this.PlacedObjects.ReadMutable(r);
+            this.PlacedObjects.ReadMutableNew(r);
             this.IngredientsUsed.ReadNew(r, r => r.ReadString(), r => new ObjectRefIDsAmount().Read(r) as ObjectRefIDsAmount);
         }
 

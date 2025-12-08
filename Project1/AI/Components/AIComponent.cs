@@ -145,7 +145,7 @@ namespace Start_a_Town_
             this.Root.Load(save["Root"]);
         }
 
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.Guid.ToByteArray());
             this.State.Write(w); // i dont want to sync the state for the time being

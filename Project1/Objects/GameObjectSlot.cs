@@ -142,7 +142,7 @@ namespace Start_a_Town_
             return $"{this.ID}: {(!string.IsNullOrWhiteSpace(this.Name) ? this.Name + ":" : "")} + {(Object is not null ? Object.Name + $" ({StackSize})" : "<empty>")}";
         }
 
-        public void Write(System.IO.BinaryWriter writer)
+        public void Write(IDataWriter writer)
         {
             writer.Write(ID);
             writer.Write(this.Name);

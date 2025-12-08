@@ -385,7 +385,7 @@ namespace Start_a_Town_.Components
             Force = .05f
         };
 
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             base.Write(w);
             w.Write(this.Moving);

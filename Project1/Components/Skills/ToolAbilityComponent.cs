@@ -68,7 +68,7 @@ namespace Start_a_Town_
             return box;
         }
 
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.Props is not null); // HACK for loading legacy items which lack Props
             this.Props?.Write(w);

@@ -120,7 +120,7 @@ namespace Start_a_Town_
         {
             return this.Comps.FirstOrDefault(c => c is T) as T;
         }
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.OriginGlobal);
             this.CellsOccupied.Write(w);
@@ -137,7 +137,7 @@ namespace Start_a_Town_
                 c.Read(r);
             this.ReadExtra(r);
         }
-        protected virtual void WriteExtra(BinaryWriter w) { }
+        protected virtual void WriteExtra(IDataWriter w) { }
         protected virtual void ReadExtra(IDataReader r) { }
         internal virtual void HandleRemoteCall(MapBase map, Vector3 vector3, ObjectEventArgs e) { }
 

@@ -201,7 +201,7 @@ namespace Start_a_Town_
             tag.TryGetTagValue<int>("IDSequence", v => this.OrderSequence = v);
         }
 
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.OrderSequence);
         }

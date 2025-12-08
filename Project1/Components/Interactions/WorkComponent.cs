@@ -98,7 +98,7 @@ namespace Start_a_Town_.Components
             this.Task.DrawUI(sb, camera);
         }
 
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             var isInteracting = (this.Task != null);
             w.Write(isInteracting);

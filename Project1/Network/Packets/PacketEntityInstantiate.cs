@@ -24,7 +24,7 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var strem = net.BeginPacketOld(PckTypeNew);
+            var strem = net.BeginPacket(PckTypeNew);
             strem.Write(templateID);
             entity.Write(strem);
         }
@@ -42,7 +42,7 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var strem = net.BeginPacketOld(PckType);
+            var strem = net.BeginPacket(PckType);
             strem.Write(entities.Count());
             foreach(var entity in entities)
             {

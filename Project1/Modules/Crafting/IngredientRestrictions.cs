@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    public class IngredientRestrictions : ISaveable, ISerializable
+    public class IngredientRestrictions : ISaveable, ISerializableNew
     {
         public HashSet<MaterialDef> Material = new();
         public HashSet<MaterialTypeDef> MaterialType = new();
@@ -114,19 +114,21 @@ namespace Start_a_Town_
         }
 
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.ItemDef.Select(d => d.Name).ToArray());
             w.Write(this.Material.Select(d => d.Name).ToArray());
             w.Write(this.MaterialType.Select(d => d.Name).ToArray());
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.ItemDef = new HashSet<ItemDef>(r.ReadStringArray().Select(Def.GetDef<ItemDef>));
             this.Material = new HashSet<MaterialDef>(r.ReadStringArray().Select(Def.GetDef<MaterialDef>));
             this.MaterialType = new HashSet<MaterialTypeDef>(r.ReadStringArray().Select(Def.GetDef<MaterialTypeDef>));
             return this;
         }
+
+        public static ISerializableNew Create(IDataReader r) => new IngredientRestrictions().Read(r);
     }
 }

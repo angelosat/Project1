@@ -316,7 +316,7 @@ namespace Start_a_Town_
             gui.GetData(actor);
             gui.GetWindow().Show();
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.QuestGiverIDSequence);
             this.Quests.Write(w);
@@ -325,7 +325,7 @@ namespace Start_a_Town_
         public override void Read(IDataReader r)
         {
             this.QuestGiverIDSequence = r.ReadInt32();
-            this.Quests.InitializeNew(r, this);
+            this.Quests.Initialize(r, this);
             this.PendingQuestRequests.Read(r);
         }
         protected override void AddSaveData(SaveTag tag)

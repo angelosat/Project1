@@ -5,10 +5,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.Animations;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Start_a_Town_
 {
-    public partial class Bone : Inspectable, ISaveable, ISerializable
+    public partial class Bone : Inspectable, ISaveable, ISerializableNew
     {
         public enum States { Unstarted, Stopped, Running, Finished, Manual }
         public override string Label => this.Def.Label;
@@ -765,7 +766,7 @@ namespace Start_a_Town_
             return offset;
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             //w.Write(this.Material != null ? this.Material.ID : -1);
             w.Write(this.Material != null ? this.Material.Name : "");
@@ -776,7 +777,7 @@ namespace Start_a_Town_
                 j.Bone?.Write(w);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             //this.Material = MaterialDef.GetMaterial(r.ReadInt32());
             if (r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace())
@@ -826,5 +827,7 @@ namespace Start_a_Town_
         public IEnumerable<Bone> Descendants => this.GetAllBones();
         public IEnumerable<Joint> Children => this.Joints.Values;
         public override string ToString() => this.Label;
+
+        public static ISerializableNew Create(IDataReader r) => new Bone().Read(r);
     }
 }

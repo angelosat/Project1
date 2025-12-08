@@ -68,9 +68,9 @@ namespace Start_a_Town_.Components.Crafting
             tag.Add(save);
         }
         bool HasReq => this.Requirement is not null;
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
-            w.Write(this.Block);
+            w.Write(this.Block.BaseID);
             w.Write(this.Data);
             w.Write(this.HasReq);
             if (this.HasReq)

@@ -44,10 +44,10 @@ namespace Start_a_Town_
             yield return new Tuple<Func<string>, Action>(() => $"Build [{HotkeyBuild.GetLabel()}]", () => WindowBuild.Value.Toggle());
         }
 
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.Designations.Write(w);
-            this.PendingDesignations.Values.Write(w);
+            this.PendingDesignations.Values.WriteNew(w);
         }
         public override void Read(IDataReader r)
         {
@@ -265,7 +265,7 @@ namespace Start_a_Town_
                 info.AddInfo(this.UpdatePendingDesignationLabel(pending));
             }
         }
-        class ConstructionParams : Inspectable, ISaveable, ISerializable
+        class ConstructionParams : Inspectable, ISaveable, ISerializableNew
         {
             public IntVec3 Global;
             public int Orientation;
@@ -299,19 +299,21 @@ namespace Start_a_Town_
                 return this;
             }
 
-            public void Write(BinaryWriter w)
+            public void Write(IDataWriter w)
             {
                 w.Write(this.Global);
                 w.Write(this.Orientation);
                 this.Product.Write(w);
             }
-            public ISerializable Read(IDataReader r)
+            public ISerializableNew Read(IDataReader r)
             {
                 this.Global = r.ReadIntVec3();
                 this.Orientation = r.ReadInt32();
                 this.Product = new(r);
                 return this;
             }
+
+            public static ISerializableNew Create(IDataReader r) => new ConstructionParams().Read(r);
 
             //public string GetName()
             //{

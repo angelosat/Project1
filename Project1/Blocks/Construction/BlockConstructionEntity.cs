@@ -126,19 +126,19 @@ namespace Start_a_Town_
             tag.TryGetTag("BuildProgress", v => this.BuildProgress = new Progress(v));
         }
 
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             this.Product.Write(w);
             this.BuildProgress.Write(w);
             w.Write(this.Children);
-            this.Container.Write(w);
+            this.Container.WriteNew(w);
         }
         protected override void ReadExtra(IDataReader r)
         {
             this.Product = new ProductMaterialPair(r);
             this.BuildProgress = new Progress(r);
             this.Children = r.ReadListIntVec3();
-            this.Container.ReadMutable(r);
+            this.Container.ReadMutableNew(r);
         }
     }
 }

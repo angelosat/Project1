@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    public class ItemMaterialAmount : Inspectable, ISerializable, ISaveable, IListable
+    public class ItemMaterialAmount : Inspectable, ISerializableNew, ISaveable, IListable
     {
         public ItemDef Item;
         public MaterialDef Material;
@@ -67,13 +67,13 @@ namespace Start_a_Town_
             this.Amount = tag.GetValue<int>("Amount");
             return this;
         }
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.Item.Name);
             w.Write(this.Material.Name);
             w.Write(this.Amount);
         }
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.Item = Start_a_Town_.Def.GetDef<ItemDef>(r.ReadString());
             this.Material = Start_a_Town_.Def.GetDef<MaterialDef>(r.ReadString());
@@ -85,5 +85,8 @@ namespace Start_a_Town_
         {
             return new Label(this.GetText);
         }
+
+
+        public static ISerializableNew Create(IDataReader r) => new ItemMaterialAmount().Read(r);
     }
 }

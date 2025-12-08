@@ -52,7 +52,7 @@ namespace Start_a_Town_
             rand.NextBytes(array);
             return new Color(array[0], array[1], array[2]);
         }
-        public static void Write(this Color c, BinaryWriter w)
+        public static void Write(this Color c, IDataWriter w)
         {
             w.Write(c.R);
             w.Write(c.G);

@@ -485,7 +485,7 @@ namespace Start_a_Town_
             }
         }
 
-        public override void WriteData(BinaryWriter w)
+        public override void WriteData(IDataWriter w)
         {
             w.Write(this.Name);
             w.Write(this.Coordinates.X);

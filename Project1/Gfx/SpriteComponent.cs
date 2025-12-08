@@ -503,7 +503,7 @@ namespace Start_a_Town_.Components
                 Log.WriteToFile($"{parent.DebugName}'s body material was null, defaulting to {parent.Def.DefaultMaterial?.DebugName}");
             }
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.Customization.Write(w);
             this.Body.Write(w);

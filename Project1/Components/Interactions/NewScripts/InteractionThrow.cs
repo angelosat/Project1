@@ -62,7 +62,7 @@ namespace Start_a_Town_
         {
             return new InteractionThrow(this.All);
         }
-        protected override void WriteExtra(System.IO.BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.All);
         }

@@ -198,7 +198,7 @@ namespace Start_a_Town_
             return new BehaviorHandleTasks();
         }
 
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.Timer);
         }

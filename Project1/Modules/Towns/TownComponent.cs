@@ -57,7 +57,7 @@ namespace Start_a_Town_
         protected virtual void AddSaveData(SaveTag tag) { }
 
         public virtual void Load(SaveTag tag) { }
-        public virtual void Write(BinaryWriter w) { }
+        public virtual void Write(IDataWriter w) { }
         public virtual void Read(IDataReader r) { }
 
 

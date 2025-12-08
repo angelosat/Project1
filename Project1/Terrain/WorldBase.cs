@@ -36,7 +36,7 @@ namespace Start_a_Town_
 
         public T GetTerraformer<T>() where T : Terraformer => this.Terraformers.First(t => t is T) as T;
 
-        public abstract void WriteData(BinaryWriter w);
+        public abstract void WriteData(IDataWriter w);
 
         public abstract MapCollection GetMaps();
 

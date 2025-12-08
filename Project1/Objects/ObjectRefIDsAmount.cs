@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    public class ObjectRefIDsAmount : ISaveable, ISerializable
+    public class ObjectRefIDsAmount : ISaveable, ISerializableNew
     {
         public int Object;
         public int Amount;
@@ -40,12 +40,20 @@ namespace Start_a_Town_
             w.Write(this.Object);
             w.Write(this.Amount);
         }
-
-        public ISerializable Read(IDataReader r)
+        public void Write(IDataWriter w)
+        {
+            w.Write(this.Object);
+            w.Write(this.Amount);
+        }
+        public ISerializableNew Read(IDataReader r)
         {
             this.Object = r.ReadInt32();
             this.Amount = r.ReadInt32();
             return this;
         }
+
+        public static ISerializableNew Create(IDataReader r) => new ObjectRefIDsAmount().Read(r);
+        
+
     }
 }

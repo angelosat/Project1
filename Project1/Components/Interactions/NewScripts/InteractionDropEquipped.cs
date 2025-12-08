@@ -29,7 +29,7 @@ namespace Start_a_Town_
         {
             return new InteractionDropEquipped(this.Type);
         }
-        protected override void WriteExtra(System.IO.BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write((int)this.Type.ID);
         }

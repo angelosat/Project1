@@ -118,7 +118,7 @@ namespace Start_a_Town_
         }
 
         
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
         }
         public override void Read(IDataReader r)

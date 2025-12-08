@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public sealed class Need : MetricWrapper, IProgressBar, ISerializable, ISaveable, INamed, ISerializableNew, ISaveableNew
+    public sealed class Need : MetricWrapper, IProgressBar, ISaveable, INamed, ISerializableNew, ISaveableNew
     {
         Dictionary<EffectDef, List<NeedMod>> ModsNew = [];
         internal void AddMod(EffectDef needLetDef, float value, float rate)
@@ -148,16 +148,16 @@ namespace Start_a_Town_
             return panel;
         }
 
-        public void Write(System.IO.BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             this.NeedDef.Write(w);
             w.Write(this.Value);
             w.Write(this.Mod);
             w.Write(this.DecayDelay);
-            this.Mods.Write(w);
-            this.ModsNew.WriteNew(w, k => k.Write(w), v => v.Write(w));
+            this.Mods.WriteNew(w);
+            this.ModsNew.WriteNew(w, k => k.Write(w), v => v.WriteNew(w));
         }
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.NeedDef = r.ReadDef<NeedDef>();
             this.Value = r.ReadSingle();
@@ -167,17 +167,17 @@ namespace Start_a_Town_
             this.ModsNew.ReadNew(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
             return this;
         }
-        static public ISerializableNew Create(IDataReader r)
-        {
-            var need = new Need();
-            need.NeedDef = r.ReadDef<NeedDef>();
-            need.Value = r.ReadSingle();
-            need.Mod = r.ReadSingle();
-            need.DecayDelay = r.ReadSingle();
-            need.Mods.Read(r);
-            need.ModsNew.ReadNew(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
-            return need;
-        }
+        static public ISerializableNew Create(IDataReader r) => new Need().Read(r);
+        //{
+        //    var need = new Need();
+        //    need.NeedDef = r.ReadDef<NeedDef>();
+        //    need.Value = r.ReadSingle();
+        //    need.Mod = r.ReadSingle();
+        //    need.DecayDelay = r.ReadSingle();
+        //    need.Mods.Read(r);
+        //    need.ModsNew.ReadNew(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
+        //    return need;
+        //}
 
         public SaveTag Save(string name = "")
         {
@@ -213,5 +213,6 @@ namespace Start_a_Town_
             need.Mods.TryLoadMutable(tag, "Mods");
             return need;
         }
+
     }
 }

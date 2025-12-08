@@ -108,7 +108,7 @@ namespace Start_a_Town_.AI
         {
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             this.Jobs.Sync(w);
             this.ItemPreferences.Write(w); // sync to clients?
@@ -116,6 +116,7 @@ namespace Start_a_Town_.AI
         public void Read(IDataReader r)
         {
             this.Jobs.Sync(r);
+            //this.Jobs.Write(r);
             this.ItemPreferences.Read(r); // sync to clients?
         }
         public SaveTag Save(string name)

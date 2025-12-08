@@ -52,7 +52,7 @@ namespace Start_a_Town_
         }
         internal virtual void GetSelectionInfo(SelectionManager info, MapBase map, IntVec3 vector3) { }
 
-        public virtual void Write(BinaryWriter w)
+        public virtual void Write(IDataWriter w)
         {
         }
 

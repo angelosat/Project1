@@ -12,7 +12,7 @@ namespace Start_a_Town_
         }
         public static void Send(Actor actor, CharacterColors colors)
         {
-            var w = actor.Net.BeginPacketOld(p);
+            var w = actor.Net.BeginPacket(p);
             w.Write(actor.RefId);
             colors.Write(w);
         }

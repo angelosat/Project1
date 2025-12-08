@@ -6,8 +6,6 @@ using Start_a_Town_.UI;
 using Start_a_Town_.Net;
 using Microsoft.Xna.Framework;
 using Start_a_Town_;
-using Start_a_Town_.AI;
-using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -284,7 +282,7 @@ namespace Start_a_Town_
             this.Workers.Read(r);
             this.Rooms.Read(r);
             this.Counter = r.ReadVector3Nullable();
-            this.WorkerProps = r.ReadArray<WorkerProps>().ToDictionary(w => w.ActorID, w => w);
+            this.WorkerProps = r.ReadArrayNew<WorkerProps>().ToDictionary(w => w.ActorID, w => w);
             this.ReadExtra(r);
             return this;
         }
@@ -308,7 +306,7 @@ namespace Start_a_Town_
 
         public virtual void Tick() { }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.ID);
             w.Write(this.Name);
@@ -317,7 +315,7 @@ namespace Start_a_Town_
             w.Write(this.Workers);
             w.Write(this.Rooms);
             w.Write(this.Counter);
-            this.WorkerProps.Values.Write(w);
+            this.WorkerProps.Values.WriteNew(w);
             this.WriteExtra(w);
         }
 
@@ -398,7 +396,7 @@ namespace Start_a_Town_
 
         protected virtual void SaveExtra(SaveTag tag) { }
 
-        protected virtual void WriteExtra(BinaryWriter w) { }
+        protected virtual void WriteExtra(IDataWriter w) { }
 
         [Obsolete]
         static Control CreateWorkersUI(Workplace shop)
@@ -610,8 +608,11 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     tavern.ToggleJob(actor, role);
-                var w = net.BeginPacket(PacketUpdateWorkerRoles);
-                w.Write(player.ID, tavern.ID, role.Name, actor.RefId);
+                net.BeginPacket(PacketUpdateWorkerRoles)
+                    .Write(player.ID)
+                    .Write(tavern.ID)
+                    .Write(role.Name)
+                    .Write(actor.RefId);
             }
 
             static void UpdateWorkerRoles(NetEndpoint net, Packet pck)

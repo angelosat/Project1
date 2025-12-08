@@ -81,7 +81,7 @@ namespace Start_a_Town_
         {
             return new UseHauledOnTargetNew(this.Amount);
         }
-        protected override void WriteExtra(System.IO.BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Amount);
         }

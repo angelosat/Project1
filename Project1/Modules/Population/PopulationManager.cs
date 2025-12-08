@@ -265,14 +265,14 @@ namespace Start_a_Town_
             this.ActorsAdventuring.TryLoad(tag, "Population", this);
             return this;
         }
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
-            this.ActorsAdventuring.Write(w);
+            this.ActorsAdventuring.WriteNew(w);
         }
 
         public ISerializable Read(IDataReader r)
         {
-            this.ActorsAdventuring.Initialize(r, this);
+            this.ActorsAdventuring.InitializeNewArgs(r, this);
             return this;
         }
 

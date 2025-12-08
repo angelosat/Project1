@@ -123,7 +123,7 @@ namespace Start_a_Town_
             this.Progress.Load(tag["Progress"]);
             this.Contents.Load(tag["Contents"]);
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.Product.Write(w);
             this.Progress.Write(w);

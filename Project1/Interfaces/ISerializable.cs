@@ -4,12 +4,13 @@ namespace Start_a_Town_
 {
     public interface ISerializableNew
     {
-        void Write(BinaryWriter w);
+        ISerializableNew Read(IDataReader r);
+        void Write(IDataWriter w);
         static abstract ISerializableNew Create(IDataReader r);
     }
     public interface ISerializable
     {
-        void Write(BinaryWriter w);
+        void Write(IDataWriter w);
         ISerializable Read(IDataReader r);
     }
 }

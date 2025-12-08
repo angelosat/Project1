@@ -21,7 +21,7 @@ namespace Start_a_Town_
             this.ActiveEffects.RemoveAll(e => e.Def == effect);
         }
 
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.WriteNew(this.ActiveEffects);
             //this.ActiveEffects.WriteNew(w);

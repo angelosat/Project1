@@ -32,7 +32,7 @@ namespace Start_a_Town_
             return new OwnershipComponent(this.OwnerRef);
         }
 
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.OwnerRef);
         }

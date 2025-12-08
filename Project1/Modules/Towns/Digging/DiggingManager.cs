@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -95,7 +96,7 @@ namespace Start_a_Town_
         {
             tag.TryGetTagValue<List<SaveTag>>("Positions", v => this.AllPositions = new HashSet<IntVec3>(new List<IntVec3>().Load(v)));
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.AllPositions.ToList());
         }

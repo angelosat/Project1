@@ -7,6 +7,9 @@ namespace Start_a_Town_.Net
     public class PacketBuilder : IDataWriter
     {
         readonly BinaryWriter _writer;
+
+        BinaryWriter IDataWriter.ww => this._writer;
+
         private PacketBuilder(BinaryWriter writer, int pType)
         {
             this._writer = writer;
@@ -33,6 +36,30 @@ namespace Start_a_Town_.Net
         internal static PacketBuilder Create(BinaryWriter w, int pType)
         {
             return new(w, pType);
+        }
+        public IDataWriter Write(ICollection<IntVec3> list)
+        {
+            var count = list.Count;
+            this.Write(count);
+            foreach (var i in list)
+                this.Write(i);
+            return this;
+        }
+        public IDataWriter Write(ICollection<TargetArgs> list)
+        {
+            var count = list.Count;
+            this._writer.Write(count);
+            foreach (var i in list)
+                this._writer.Write(i);
+            return this;
+        }
+        public IDataWriter Write<T>(ICollection<T> list) where T : ISerializableNew
+        {
+            var w = this._writer;
+            w.Write(list.Count);
+            foreach (var i in list)
+                i.Write(this);
+            return this;
         }
         internal void End() { }
     }

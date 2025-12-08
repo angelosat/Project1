@@ -60,7 +60,7 @@ namespace Start_a_Town_
             }
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.Valid);
         }

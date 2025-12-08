@@ -459,18 +459,19 @@ namespace Start_a_Town_.Components
         public override object Clone()
         {
             var comp = new InventoryComponent((byte)this.Capacity);
-
-            using BinaryWriter w = new(new MemoryStream());
-            //using BinaryReader r = new(w.BaseStream);
-            using DataReader r = new(w.BaseStream);
-
+            var mem = new MemoryStream();
+            //using BinaryWriter w = new(new MemoryStream());
+            ////using BinaryReader r = new(w.BaseStream);
+            //using DataReader r = new(w.BaseStream);
+            var w = new DataWriter(mem);
+            var r = new DataReader(mem);
             this.Write(w);
-            w.BaseStream.Position = 0;
+            w.Position = 0;
             comp.Read(r);
             return comp;
         }
 
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.Contents.Write(w);
             this.HaulSlot.Write(w);

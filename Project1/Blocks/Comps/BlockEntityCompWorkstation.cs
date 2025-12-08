@@ -85,13 +85,13 @@ namespace Start_a_Town_
         {
             tag.TryLoadRefs(this.Orders, "Orders");
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
-            this._orders.Write(w);
+            this._orders.WriteImmutableNew(w);
         }
         public override ISerializable Read(IDataReader r)
         {
-            this._orders.ReadMutable(r);
+            this._orders.ReadMutableNew(r);
             return this;
         }
         internal override void ResolveReferences(MapBase map, IntVec3 global)

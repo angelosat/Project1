@@ -106,7 +106,7 @@ namespace Start_a_Town_
         }
         public override ZoneDef ZoneDef => ZoneDefOf.Growing;
 
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Tilling);
             w.Write(this.Planting);

@@ -53,7 +53,7 @@ namespace Start_a_Town_
             return Quality.Color;
         }
 
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.CustomName);
             w.Write(this.Quality.Name);

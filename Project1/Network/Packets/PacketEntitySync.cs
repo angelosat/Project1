@@ -15,7 +15,7 @@ namespace Start_a_Town_
         {
             if (net is Client)
                 throw new Exception();
-            var w = net.BeginPacketOld(_packetTypeId);
+            var w = net.BeginPacket(_packetTypeId);
 
             w.Write(entity.RefId);
             entity.SyncWrite(w);

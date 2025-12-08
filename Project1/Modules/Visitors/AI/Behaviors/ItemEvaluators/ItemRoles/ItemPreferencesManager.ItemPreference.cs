@@ -6,7 +6,7 @@ namespace Start_a_Town_
 {
     partial class ItemPreferencesManager
     {
-        public class ItemPreference : Inspectable, ISaveable, ISerializable
+        public class ItemPreference : Inspectable, ISaveable, ISerializableNew
         {
             public ItemRole Role;
             int _itemRefId;
@@ -38,14 +38,14 @@ namespace Start_a_Town_
                 return $"{Role}"+ (this.Item is not null ? $":{this.Item.DebugName}:{Score}" : "");
             }
 
-            public void Write(BinaryWriter w)
+            public void Write(IDataWriter w)
             {
                 w.Write(this.Role.ToString());
                 w.Write(this.ItemRefId);
                 w.Write(this.Score);
             }
 
-            public ISerializable Read(IDataReader r)
+            public ISerializableNew Read(IDataReader r)
             {
                 this.Role = RegistryByName[r.ReadString()];
                 this.ItemRefId = r.ReadInt32();
@@ -89,6 +89,8 @@ namespace Start_a_Town_
                     return;
                 this.Score = this.Role.Score(actor, this.Item);
             }
+
+            public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
         }
     }
 }

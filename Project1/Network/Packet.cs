@@ -173,7 +173,7 @@ namespace Start_a_Town_.Net
             Network.Serialize(this.Write).Send(this.ID, this.PacketType, socket, remoteIP);
         }
 
-        public virtual void Write(BinaryWriter w) { }
+        public virtual void Write(IDataWriter w) { }
 
         public virtual void Read(INetEndpoint net, byte[] data) { }
         public virtual void Read(INetEndpoint net, BinaryReader r) { }

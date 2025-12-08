@@ -340,7 +340,7 @@ namespace Start_a_Town_
         {
             tag.TryGetTag("Settings", t => this.Settings.Load(t));
         }
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             this.Settings.Write(w);
         }

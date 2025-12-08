@@ -86,7 +86,7 @@ namespace Start_a_Town_
             return filter.IsAllowed(obj.PrimaryMaterial);
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write((byte)this.Priority);
             this.Allowed.Values.Sync(w);

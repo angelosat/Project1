@@ -33,7 +33,7 @@ namespace Start_a_Town_.Components.Interactions
         {
             return new DropEquippedTarget(this.TargetEquipment);
         }
-        protected override void WriteExtra(System.IO.BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             this.TargetEquipment.Write(w);
         }

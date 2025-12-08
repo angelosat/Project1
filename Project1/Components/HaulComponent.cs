@@ -47,7 +47,7 @@ namespace Start_a_Town_.Components
         {
             return new HaulComponent();
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.AnimationHaul.Write(w);
 

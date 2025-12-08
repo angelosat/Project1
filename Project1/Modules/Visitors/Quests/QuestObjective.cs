@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    public abstract class QuestObjective : ISerializable, ISaveable
+    public abstract class QuestObjective : ISaveable, ISerializable
     {
         int _Count = 1;
         public int Count
@@ -22,7 +22,7 @@ namespace Start_a_Town_
             this.Parent = parent;
         }
         public abstract int GetValue();
-        public abstract void Write(BinaryWriter w);
+        public abstract void Write(IDataWriter w);
         public abstract ISerializable Read(IDataReader r);
         public abstract bool IsCompleted(Actor actor);
         protected virtual void AddSaveData(SaveTag save) { }

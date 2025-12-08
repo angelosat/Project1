@@ -281,12 +281,12 @@ namespace Start_a_Town_
             this.Customers.SaveNewBEST(tag, "Customers");
             this.Orders.SaveNewBEST(tag, "Orders");
         }
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Tables);
             w.Write(this.Workstations);
             this.Customers.Write(w);
-            this.Orders.Write(w);
+            this.Orders.WriteNew(w);
         }
         protected override void LoadExtra(SaveTag tag)
         {
@@ -299,7 +299,7 @@ namespace Start_a_Town_
         {
             this.Tables.Read(r);
             this.Workstations.Read(r);
-            this.Customers.InitializeNew(r, this);
+            this.Customers.Initialize(r, this);
             this.Orders.Read(r);
         }
     }

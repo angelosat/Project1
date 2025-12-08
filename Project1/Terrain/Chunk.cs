@@ -20,14 +20,15 @@ namespace Start_a_Town_
         public Chunk Clone()
         {
             Chunk chunk;
-            using (BinaryWriter w = new(new MemoryStream()))
-            {
+            var w = new DataWriter();
+            //using (BinaryWriter w = new(new MemoryStream()))
+            //{
                 this.Write(w);
                 w.BaseStream.Position = 0;
                 //using BinaryReader r = new(w.BaseStream);
                 using DataReader r = new(w.BaseStream);
                 chunk = Chunk.Create(r);
-            }
+            //}
             chunk.Map = this.Map;
             return chunk;
         }
@@ -1004,7 +1005,7 @@ namespace Start_a_Town_
                     }
                 }
         }
-        private void WriteBlockEntitiesDistinct(BinaryWriter w)
+        private void WriteBlockEntitiesDistinct(IDataWriter w)
         {
             var distinct = this.GetDistinctBlockEntities();
             w.Write(distinct.Count);
@@ -1151,7 +1152,7 @@ namespace Start_a_Town_
             this.LightCache.Clear();
         }
 
-        void WriteCells(BinaryWriter writer)
+        void WriteCells(IDataWriter writer)
         {
             var w = writer;
             int consecutiveAirblocks = 0;
@@ -1181,16 +1182,16 @@ namespace Start_a_Town_
                     writeAir(w, consecutiveAirblocks, lastDiscovered);
                     consecutiveAirblocks = 0;
                 }
-                w.Write(cell.Block);
+                w.Write(cell.Block.BaseID);
                 w.Write(cell.Data.Data);
                 cell.Material.Write(w);
             }
             if (consecutiveAirblocks > 0)
                 writeAir(w, consecutiveAirblocks, lastDiscovered);
 
-            static void writeAir(BinaryWriter w, int consecutiveAirblocks, bool lastDiscovered)
+            static void writeAir(IDataWriter w, int consecutiveAirblocks, bool lastDiscovered)
             {
-                w.Write(BlockDefOf.Air);
+                w.Write(BlockDefOf.Air.BaseID);
                 w.Write(consecutiveAirblocks);
                 w.Write(lastDiscovered); // because all consecutive air blocks are either all discovered or none is
                 /// NO!!!! when incrementing the cell index, the next cell can be in a different Z level and completely disconnected from the previous cell
@@ -1226,7 +1227,7 @@ namespace Start_a_Town_
             } while (cellIndex < this.Cells.Length);
         }
         #region Serialization
-        public void Write(BinaryWriter writer)
+        public void Write(IDataWriter writer)
         {
             writer.Write(this.MapCoords);
             writer.Write(this.LightValid);

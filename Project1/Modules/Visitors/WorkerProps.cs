@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class WorkerProps : ISaveable, ISerializable
+    public class WorkerProps : ISaveable, ISerializableNew
     {
         public int ActorID;
         public Dictionary<JobDef, Job> Jobs = new();
@@ -38,16 +38,18 @@ namespace Start_a_Town_
             tag.TryGetTag("Jobs", v => this.Jobs = v.LoadList<Job>().ToDictionary(j => j.Def, j => j));
             return this;
         }
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.ActorID);
             this.Jobs.Values.Write(w);
         }
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
             this.Jobs = r.ReadArray<Job>().ToDictionary(j => j.Def, j => j);
             return this;
         }
+
+        public static ISerializableNew Create(IDataReader r) => new WorkerProps().Read(r);
     }
 }

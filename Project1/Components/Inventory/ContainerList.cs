@@ -8,7 +8,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public class ContainerList : Inspectable, IList<GameObject>, ISerializable, ISaveable
+    public class ContainerList : Inspectable, IList<GameObject>, ISerializableNew, ISaveable
     {
         TableObservable<GameObject> _gui;
         public Control Gui
@@ -122,14 +122,14 @@ namespace Start_a_Town_
             return ((IEnumerable)this.Contents).GetEnumerator();
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.Contents.Count);
             foreach (var o in this.Contents)
                 o.Write(w);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -167,5 +167,7 @@ namespace Start_a_Town_
             yield return (nameof(this.Parent), this.Parent);
             yield return (nameof(this.Contents), this.Contents);
         }
+
+        public static ISerializableNew Create(IDataReader r) => new ContainerList().Read(r);
     }
 }

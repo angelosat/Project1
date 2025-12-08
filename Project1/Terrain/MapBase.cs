@@ -650,7 +650,7 @@ namespace Start_a_Town_
         /// </summary>
         public Town Town;
 
-        public abstract void WriteData(BinaryWriter w);
+        public abstract void WriteData(IDataWriter w);
 
         public abstract string GetFolderName();
         public abstract string GetFullPath();

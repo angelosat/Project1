@@ -144,9 +144,9 @@ namespace Start_a_Town_.Components
         {
             this.Attributes.Sync(tag, "Attributes");
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
-            this.Attributes.Write(w);
+            this.Attributes.WriteNew(w);
         }
         public override void Read(IDataReader r)
         {

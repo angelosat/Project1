@@ -146,7 +146,16 @@ namespace Start_a_Town_
         //{
         //    return new StaticMap(this, mapCoords);
         //}
-
+        public override void WriteData(IDataWriter w)
+        {
+            w.Write(this.Name);
+            w.Write(this.Seed);
+            w.Write(this.CurrentTick);
+            w.Write(this.Trees);
+            w.Write(this.DefaultBlock.BaseID);
+            this.Terraformers.WriteAbstract(w);
+            this.Population.Write(w);
+        }
         public void GetFileInfo(out string saveDir, out string worldDir, out string worldFile)
         {
             saveDir = GlobalVars.SaveDir + @"/Worlds/";
@@ -234,16 +243,7 @@ namespace Start_a_Town_
             }
         }
 
-        public override void WriteData(BinaryWriter w)
-        {
-            w.Write(this.Name);
-            w.Write(this.Seed);
-            w.Write(this.CurrentTick);
-            w.Write(this.Trees);
-            w.Write(this.DefaultBlock.BaseID);
-            this.Terraformers.WriteAbstract(w);
-            this.Population.Write(w);
-        }
+        
 
 
         public override void OnHudCreated(Hud hud)

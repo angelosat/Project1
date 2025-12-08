@@ -808,12 +808,17 @@ namespace Start_a_Town_
 
         public byte[] GetSnapshotData()
         {
-            using var w = new BinaryWriter(new MemoryStream());
+            //using var w = new BinaryWriter(new MemoryStream());
+            //this.Write(w);
+            //return (w.BaseStream as MemoryStream).ToArray(); 
+            var mem = new MemoryStream();
+            var w = new DataWriter(mem);
             this.Write(w);
-            return (w.BaseStream as MemoryStream).ToArray();
+            return mem.ToArray();
         }
 
-        public void Write(BinaryWriter w)
+       
+        public void Write(IDataWriter w)
         {
             w.Write(this.Def.Name);
             if (Start_a_Town_.Def.GetDef(this.Def.Name) is null)
@@ -827,7 +832,6 @@ namespace Start_a_Town_
                 comp.Value.Write(w);
             }
         }
-
         public static GameObject Create(IDataReader r)
         {
             string defName = r.ReadString();
@@ -1319,13 +1323,7 @@ namespace Start_a_Town_
         {
             this.GetScreenBounds(camera).DrawHighlightBorder(sb, .5f, camera.Zoom);
         }
-        [Obsolete]
-        internal byte[] Serialize()
-        {
-            throw new Exception();
-            byte[] newData = Network.Serialize(this.Write);
-            return newData;
-        }
+       
         static readonly Vector3[] HitboxCorners = new Vector3[] {
                     new Vector3(.25f, .25f, 0),
                     new Vector3(-.25f, .25f, 0),
@@ -1383,7 +1381,7 @@ namespace Start_a_Town_
         {
             PacketEntitySync.Send(net, this);
         }
-        internal void SyncWrite(BinaryWriter w)
+        internal void SyncWrite(IDataWriter w)
         {
             foreach (var comp in this.Components)
                 comp.Value.SyncWrite(w);
@@ -1509,8 +1507,8 @@ namespace Start_a_Town_
                 throw new Exception();
 
             net.Instantiate(this);
-            var w = server.OutgoingStreamTimestamped;
-            w.Write(PacketSyncInstantiate);
+            var w = server.BeginPacket(PacketSyncInstantiate);// server.OutgoingStreamTimestamped;
+            //w.Write(PacketSyncInstantiate);
             this.Write(w);
         }
         private static void SyncInstantiate(NetEndpoint net, Packet packet)

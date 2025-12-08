@@ -5,14 +5,14 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public class Skill : Inspectable, ISaveable, ISerializable, INamed, IListable
+    public class Skill : Inspectable, ISaveable, ISerializableNew, INamed, IListable
     {
         public NpcSkillsComponent Container;
         public SkillDef Def;
         public int Level = 1;
         Progress LvlProgress = new();
         const int XpToLevelBase = 100;
-
+        Skill() { }
         public Skill(SkillDef def)
         {
             this.Def = def;
@@ -103,14 +103,16 @@ namespace Start_a_Town_
             return this;
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
+            w.Write(this.Def);
             w.Write(this.Level);
             this.LvlProgress.Write(w);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
+            this.Def = r.ReadDef<SkillDef>();
             this.Level = r.ReadInt32();
             this.LvlProgress.Read(r);
             return this;
@@ -123,5 +125,7 @@ namespace Start_a_Town_
         {
             return $"{this.Def.Label}: {this.Level} ({this.CurrentXP} / {this.XpToLevel})";
         }
+
+        public static ISerializableNew Create(IDataReader r) => new Skill().Read(r);
     }
 }

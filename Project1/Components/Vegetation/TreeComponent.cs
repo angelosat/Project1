@@ -57,7 +57,7 @@ namespace Start_a_Town_.Components
             }
         }
 
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.GrowthNew.Write(w);
         }
@@ -78,7 +78,7 @@ namespace Start_a_Town_.Components
             var comp = obj.GetComponent<TreeComponent>();
             return (comp != null && comp.Growth.IsFinished);
         }
-        internal override void SyncWrite(System.IO.BinaryWriter w)
+        internal override void SyncWrite(IDataWriter w)
         {
             w.Write(this.Growth.Value);
         }

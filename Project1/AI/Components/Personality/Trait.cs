@@ -3,7 +3,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public sealed class Trait : Inspectable, ISaveable, ISerializable, IProgressBar, INamed, IListable
+    public sealed class Trait : Inspectable, ISaveable, ISerializableNew, IProgressBar, INamed, IListable
     {
         public float Percentage
         {
@@ -21,7 +21,10 @@ namespace Start_a_Town_
         public float Normalized => this.Value / ValueRange;  //unsigned. do i want this?
         public float Min => MinDefault;
         public float Max => MaxDefault;
-
+        Trait()
+        {
+            
+        }
         public Trait(TraitDef def)
         {
             this.Def = def;
@@ -52,15 +55,22 @@ namespace Start_a_Town_
             return this;
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
+            w.Write(this.Def);
             w.Write(this.Value);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
+            this.Def = r.ReadDef<TraitDef>();
             this.Value = r.ReadSingle();
             return this;
+        }
+
+        public static ISerializableNew Create(IDataReader r)
+        {
+            return new Trait().Read(r);
         }
     }
 }

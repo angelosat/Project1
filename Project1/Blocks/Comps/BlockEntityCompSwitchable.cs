@@ -23,7 +23,7 @@ namespace Start_a_Town_
         {
             tag.TryGetTagValue<bool>("SwitchedOn", v => this.SwitchedOn = v);
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.SwitchedOn);
         }

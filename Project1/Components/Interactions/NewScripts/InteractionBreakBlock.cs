@@ -130,7 +130,7 @@ namespace Start_a_Town_
             this.WorkAppliedTotal = (float)tag["WorkAppliedTotal"].Value;
 
         }
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.WorkAppliedThisBreakStage);
             w.Write(this.WorkAppliedTotal);

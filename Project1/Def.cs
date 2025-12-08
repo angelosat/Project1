@@ -38,6 +38,8 @@ namespace Start_a_Town_
         {
             if (def.Name.IsNullEmptyOrWhiteSpace())
                 throw new Exception();
+            if (Database.ContainsKey(def.Name))
+                throw new Exception($"Def {def} already exists");
             Database.Add(def.Name, def);
         }
 
@@ -85,6 +87,10 @@ namespace Start_a_Town_
         public void Save(SaveTag tag, string name = "")
         {
             tag.Add(this.Name.Save(name));
+        }
+        public void Write(IDataWriter w)
+        {
+            w.Write(this.Name);
         }
         public void Write(BinaryWriter w)
         {

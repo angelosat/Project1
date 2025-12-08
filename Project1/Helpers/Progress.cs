@@ -32,14 +32,14 @@ namespace Start_a_Town_
             this.Value = value;
         }
 
-        public void Write(BinaryWriter io)
+        public void Write(IDataWriter io)
         {
             io.Write(this.Min);
             io.Write(this.Max);
             io.Write(this.Value);
             this.WriteExtra(io);
         }
-        protected virtual void WriteExtra(BinaryWriter w) { }
+        protected virtual void WriteExtra(IDataWriter w) { }
         public void Read(IDataReader io)
         {
             this.Min = io.ReadSingle();

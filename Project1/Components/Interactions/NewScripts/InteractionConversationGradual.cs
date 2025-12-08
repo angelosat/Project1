@@ -33,7 +33,7 @@ namespace Start_a_Town_
             }
         }
 
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             this.Topic.Write(w);
         }

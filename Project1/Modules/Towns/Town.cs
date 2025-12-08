@@ -74,7 +74,7 @@ namespace Start_a_Town_
         public MapBase Map;
         public NetEndpoint Net => this.Map.Net;
 
-        public Dictionary<Utility.Types, HashSet<Vector3>> TownUtilitiesNew = new();
+        public Dictionary<Utility.Types, HashSet<IntVec3>> TownUtilitiesNew = new();
 
         public Town(MapBase map)
         {
@@ -109,7 +109,7 @@ namespace Start_a_Town_
             
             var utilities = (Utility.Types[])Enum.GetValues(typeof(Utility.Types));
             foreach(var u in utilities)
-                this.TownUtilitiesNew[u] = new HashSet<Vector3>();
+                this.TownUtilitiesNew[u] = new HashSet<IntVec3>();
         }
 
         public void Update()
@@ -157,7 +157,7 @@ namespace Start_a_Town_
             if (this.TownUtilitiesNew.Any(ut => ut.Value.Contains(global)))
                 throw new Exception();
         }
-        public IEnumerable<Vector3> GetUtilities(Utility.Types type)
+        public IEnumerable<IntVec3> GetUtilities(Utility.Types type)
         {
             return this.TownUtilitiesNew[type];
         }
@@ -289,8 +289,8 @@ namespace Start_a_Town_
                 foreach (var tag in utilitiesTag)
                 {
                     var utilityType = (Utility.Types)(int)tag["Type"].Value;
-                    var positionList = new List<Vector3>().Load(tag["Positions"].Value as List<SaveTag>);
-                    var hash = new HashSet<Vector3>(positionList);
+                    var positionList = new List<IntVec3>().Load(tag["Positions"].Value as List<SaveTag>);
+                    var hash = new HashSet<IntVec3>(positionList);
                     this.TownUtilitiesNew[utilityType] = hash;
                 }
             }
@@ -310,7 +310,7 @@ namespace Start_a_Town_
                 }
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             foreach (var comp in this.TownComponents)
                 comp.Write(w);

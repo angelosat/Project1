@@ -41,7 +41,7 @@ namespace Start_a_Town_
             this.Overlay = tag.GetValue<string>("Overlay");
             tag.TryGetTag("Color", t => this.Color = t.LoadColor());
         }
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.WriteASCII(this.Name);
             w.Write(this.Overlay);

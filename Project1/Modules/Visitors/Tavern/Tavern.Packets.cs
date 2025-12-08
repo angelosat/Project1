@@ -32,7 +32,10 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     tavern.RemoveOrder(order);
-                net.BeginPacket(PacketOrderRemove).Write(player.ID, tavern.ID, order.ID);
+                net.BeginPacket(PacketOrderRemove)
+                    .Write(player.ID)
+                    .Write(tavern.ID)
+                    .Write(order.ID);
             }
             private static void HandleAddOrder(NetEndpoint net, Packet pck)
             {
@@ -54,7 +57,11 @@ namespace Start_a_Town_
                     id = tavern.MenuItemIDSequence++;
                     tavern.AddOrder(new CraftOrder(reaction) { ID = id });
                 }
-                net.BeginPacket(PacketOrderAdd).Write(player.ID, tavern.ID, reaction, id);
+                net.BeginPacket(PacketOrderAdd)
+                    .Write(player.ID)
+                    .Write(tavern.ID)
+                    .Write(reaction)
+                    .Write(id);
             }
 
             static public void SendOrderSync(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrder order, bool enabled)
@@ -62,7 +69,11 @@ namespace Start_a_Town_
                 if (net is Server)
                     order.Enabled = enabled;
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketOrderSync, player.ID, tavern.ID, order.ID, enabled);
-                net.BeginPacket(PacketOrderSync).Write(player.ID, tavern.ID, order.ID, enabled);
+                net.BeginPacket(PacketOrderSync)
+                    .Write(player.ID)
+                    .Write(tavern.ID)
+                    .Write(order.ID)
+                    .Write(enabled);
             }
             private static void HandleSyncOrder(NetEndpoint net, Packet pck)
             {
@@ -75,7 +86,11 @@ namespace Start_a_Town_
                     order.Enabled = enabled;
                 else
                     //net.GetOutgoingStreamOrderedReliable().Write(PacketOrderSync, pl.ID, tavern.ID, order.ID, enabled);
-                    net.BeginPacket(PacketOrderSync).Write(pl.ID, tavern.ID, order.ID, enabled);
+                    net.BeginPacket(PacketOrderSync)
+                        .Write(pl.ID)
+                        .Write(tavern.ID)
+                        .Write(order.ID)
+                        .Write(enabled);
             }
 
             public static void UpdateOrderIngredients(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrder order, string reagent, ItemDef[] defs, MaterialDef[] mats, MaterialTypeDef[] matTypes)

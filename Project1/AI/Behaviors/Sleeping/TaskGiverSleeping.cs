@@ -51,7 +51,7 @@ namespace Start_a_Town_.AI
         {
             var assignedBedrooms = actor.Map.Town.RoomManager.GetRoomsByOwner(actor).Where(r => r.HasRole(RoomRoleDefOf.Bedroom));
             var allbeds = actor.Map.Town.GetUtilities(Utility.Types.Sleeping);
-            var bedsByRoomm = allbeds.Select<Vector3, (Vector3 bed, Room room)>(b => (b, actor.Town.RoomManager.GetRoomAt(b)));
+            var bedsByRoomm = allbeds.Select<IntVec3, (IntVec3 bed, Room room)>(b => (b, actor.Town.RoomManager.GetRoomAt(b)));
             var bedsByRoom = bedsByRoomm.ToLookup(i => i.room);
 
             var availableBeds = assignedBedrooms.Any() ? assignedBedrooms.SelectMany(room => bedsByRoom[room]).Concat(bedsByRoom[null]) : bedsByRoom[null];

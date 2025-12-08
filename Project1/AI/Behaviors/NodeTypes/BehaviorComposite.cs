@@ -15,7 +15,7 @@ namespace Start_a_Town_.AI.Behaviors
         {
             this.Children = new List<Behavior>(children);
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             foreach (var child in this.Children)
                 child.Write(w);

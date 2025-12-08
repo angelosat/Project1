@@ -16,7 +16,7 @@
                 result = BehaviorState.Success;
             return result;
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.Child.Write(w);
         }

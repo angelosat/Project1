@@ -20,7 +20,7 @@
                 return BehaviorState.Running;
             return BehaviorState.Success;
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             if (this.Child != null)
                 this.Child.Write(w);

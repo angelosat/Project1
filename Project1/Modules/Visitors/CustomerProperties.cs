@@ -21,12 +21,12 @@ namespace Start_a_Town_
         }
         protected virtual void LoadExtra(SaveTag save) { }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.CustomerID);
             this.WriteExtra(w);
         }
-        protected virtual void WriteExtra(BinaryWriter w) { }
+        protected virtual void WriteExtra(IDataWriter w) { }
 
         public ISerializable Read(IDataReader r)
         {

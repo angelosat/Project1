@@ -15,7 +15,7 @@ namespace Start_a_Town_.Net
         {
             this.Net = net;
         }
-        public void Write(BinaryWriter writer)
+        public void Write(IDataWriter writer)
         {
             writer.Write(this.List.Count);
             foreach (var player in this.List.Values)

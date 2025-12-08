@@ -132,7 +132,7 @@ namespace Start_a_Town_
             return this.Shops.ContainsKey(shop.ID);
         }
 
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.CurrentShopID);
             this.Shopss.WriteAbstract(w);

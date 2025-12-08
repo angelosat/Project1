@@ -108,9 +108,9 @@ namespace Start_a_Town_
         {
             this.Resources.TryLoadImmutable(tag, "Resources");
         }
-        public override void Write(System.IO.BinaryWriter writer)
+        public override void Write(IDataWriter writer)
         {
-            this.Resources.Write(writer);
+            this.Resources.WriteNew(writer);
         }
         public override void Read(IDataReader reader)
         {

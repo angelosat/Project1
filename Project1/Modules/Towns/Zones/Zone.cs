@@ -208,7 +208,7 @@ namespace Start_a_Town_
         }
         protected virtual void LoadExtra(SaveTag tag) { }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.ID);
             w.Write(this.Name);
@@ -216,7 +216,7 @@ namespace Start_a_Town_
             this.Positions.Write(w);
             this.WriteExtra(w);
         }
-        protected virtual void WriteExtra(BinaryWriter w) { }
+        protected virtual void WriteExtra(IDataWriter w) { }
 
         public ISerializable Read(IDataReader r)
         {
@@ -240,8 +240,5 @@ namespace Start_a_Town_
             yield break;
         }
 
-     
-
-      
     }
 }

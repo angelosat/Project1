@@ -30,7 +30,7 @@ namespace Start_a_Town_
             if(this.Trade)
                 a.Carry(sellerCarriedItem);
         }
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Trade);
         }

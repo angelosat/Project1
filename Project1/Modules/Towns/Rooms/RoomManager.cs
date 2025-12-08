@@ -257,7 +257,7 @@ namespace Start_a_Town_
             tag.TryGetTagValueOrDefault<int>("RoomIDSequence", out this.RoomIDSequence);
             tag.TryGetTagValue("Valid", ref this.Valid);
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.RoomIDSequence);
             w.Write(this.Rooms.Values.ToList());

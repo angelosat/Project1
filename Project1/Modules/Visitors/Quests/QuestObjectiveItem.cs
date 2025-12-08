@@ -21,7 +21,7 @@ namespace Start_a_Town_
         {
             return this.Objective.Item.BaseValue * this.Objective.Material.Value * this.Objective.Amount ;
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.Objective.Write(w);
         }

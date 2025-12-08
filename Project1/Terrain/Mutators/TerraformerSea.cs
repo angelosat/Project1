@@ -69,7 +69,7 @@ namespace Start_a_Town_.Terraforming.Mutators
             this.SeaLevel = save.TagValueOrDefault("Level", MapBase.MaxHeight / 2 - 1);
         }
 
-        protected override void WriteExtra(System.IO.BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.SeaLevel);
         }

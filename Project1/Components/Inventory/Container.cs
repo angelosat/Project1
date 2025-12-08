@@ -58,7 +58,7 @@ namespace Start_a_Town_.Components
         }
         public int Capacity => this.Slots.Count;
 
-        public void Write(BinaryWriter writer)
+        public void Write(IDataWriter writer)
         {
             var haveObjects = from slot in this.Slots where slot.Object != null select slot;
             writer.Write(haveObjects.Count());

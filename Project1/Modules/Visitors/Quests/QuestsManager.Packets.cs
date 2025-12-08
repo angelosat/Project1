@@ -23,7 +23,10 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     quest.MaxConcurrent = maxConcurrentModValue;
-                net.BeginPacket(pMod).Write(player.ID, quest.ID, maxConcurrentModValue);
+                net.BeginPacket(pMod)
+                    .Write(player.ID)
+                    .Write(quest.ID)
+                    .Write(maxConcurrentModValue);
 
             }
             private static void ReceiveQuestModify(NetEndpoint net, Packet pck)
@@ -42,7 +45,9 @@ namespace Start_a_Town_
             {
                 if(net is Server)
                     quest.Giver = actor;
-                net.BeginPacket(pAssign).Write(player.ID, quest.ID, actor?.RefId ?? -1);
+                net.BeginPacket(pAssign).Write(player.ID)
+                    .Write(quest.ID)
+                    .Write(actor?.RefId ?? -1);
 
             }
             private static void ReceiveQuestGiverAssign(NetEndpoint net, Packet pck)
@@ -87,7 +92,7 @@ namespace Start_a_Town_
                 {
                     quest.AddObjective(qobj);
                 }
-                var w = net.BeginPacketOld(pCreateObj);
+                var w = net.BeginPacket(pCreateObj);
 
                 w.Write(player.ID);
                 w.Write(quest.ID);

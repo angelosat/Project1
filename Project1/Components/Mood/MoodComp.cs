@@ -118,9 +118,9 @@ namespace Start_a_Town_
             this.Moodlets.LoadNewNew(save, "Moodlets");
             save.TryGetTagValue("Value", ref this.Mood);
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
-            this.Moodlets.Write(w);
+            this.Moodlets.WriteNew(w);
             w.Write(this.Mood);
         }
         public override void Read(IDataReader r)

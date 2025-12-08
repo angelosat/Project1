@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public partial class CraftOrder : Inspectable, ILoadReferencable<CraftOrder>, ILoadReferencable, ISerializable, IListable
+    public partial class CraftOrder : Inspectable, ILoadReferencable<CraftOrder>, ILoadReferencable, ISerializableNew, IListable
     {
         enum CraftMode { XTimes, UntilX, Forever }
 
@@ -199,7 +199,7 @@ namespace Start_a_Town_
             });
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.ID);
             //w.Write(this.Reaction.ID);
@@ -224,14 +224,14 @@ namespace Start_a_Town_
             }
 
             w.Write(this.Restrictions.Keys.ToArray());
-            this.Restrictions.Values.Write(w);
+            this.Restrictions.Values.WriteNew(w);
         }
         public void Read(MapBase map, IDataReader r)
         {
             this.Read(r);
             this.Map = map;
         }
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             //this.Reaction = Reaction.Dictionary[r.ReadInt32()];
@@ -261,7 +261,7 @@ namespace Start_a_Town_
 
             var restrictionsKeys = r.ReadStringArray();
             var restrictionValues = new List<IngredientRestrictions>();
-            restrictionValues.ReadMutable(r);
+            restrictionValues.ReadMutableNew(r);
             this.Restrictions = restrictionsKeys.ToDictionary(restrictionValues);
 
             return this;
@@ -270,7 +270,6 @@ namespace Start_a_Town_
         {
             this.Read(map, r);
         }
-
         internal int GetIndex()
         {
             return this.Map.Town.CraftingManager.GetOrdersNew(this.Workstation).FindIndex(c => c == this);
@@ -536,5 +535,7 @@ namespace Start_a_Town_
             container.Tag = this;
             container.GetWindow().SetTitle($"\"{this.Label}\" details");
         }
+
+        public static ISerializableNew Create(IDataReader r) => new CraftOrder().Read(r);
     }
 }

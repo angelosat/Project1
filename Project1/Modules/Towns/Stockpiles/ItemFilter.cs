@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    public record ItemFilter : ISaveable, ISerializable, ISyncable
+    public record ItemFilter : ISaveable, ISerializableNew, ISyncable
     {
         public ItemDef Item { get; private set; }
         public bool Enabled = true;
@@ -76,20 +76,20 @@ namespace Start_a_Town_
             return this;
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             this.Item.Write(w);
             this.Sync(w);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.Item = Def.GetDef<ItemDef>(r.ReadString());
             this.Sync(r);
             return this;
         }
 
-        public ISyncable Sync(BinaryWriter w)
+        public ISyncable Sync(IDataWriter w)
         {
             w.Write(this.Enabled);
             this.DisallowedMaterials.WriteDefs(w);
@@ -113,5 +113,7 @@ namespace Start_a_Town_
             foreach (var m in toCopy.DisallowedVariations)
                 this.DisallowedVariations.Add(m);
         }
+
+        public static ISerializableNew Create(IDataReader r) => new ItemFilter().Read(r);
     }
 }

@@ -563,11 +563,11 @@ namespace Start_a_Town_
         {
             this._weight = value;
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this._weight.HasValue);
             if (this._weight.HasValue)
-                w.Write(this._weight);
+                w.Write(this._weight.Value);
         }
         public override void Read(IDataReader r)
         {

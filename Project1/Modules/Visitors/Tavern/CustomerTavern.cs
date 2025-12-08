@@ -86,7 +86,7 @@ namespace Start_a_Town_
             this.ServedByID = save.GetValue<int>("ServedBy");
             this.OrderTakenByID = save.GetValue<int>("OrderTakenBy");
         }
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Table);
             w.Write(this.TicksWaited);

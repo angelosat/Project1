@@ -29,7 +29,7 @@ namespace Start_a_Town_
         {
             return $"{this.Def.Name}: {this.Priority}";
         }
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.Def.Name);
             w.Write(this._Priority);
@@ -56,5 +56,7 @@ namespace Start_a_Town_
             tag.TryGetTagValue<string>("Def", v => this.Def = Start_a_Town_.Def.GetDef<JobDef>(v));
             return this;
         }
+
+        //public static ISerializableNew Create(IDataReader r) => new Job().Read(r);
     }
 }

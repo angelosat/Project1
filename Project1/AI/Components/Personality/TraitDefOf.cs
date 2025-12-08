@@ -2,6 +2,15 @@
 {
     public class TraitDefOf
     {
+        static TraitDefOf()
+        {
+            Def.Register(Patience);
+            Def.Register(Attention);
+            Def.Register(Composure);
+            Def.Register(Activity);
+            Def.Register(Planning);
+            Def.Register(Resilience);
+        }
         static public readonly TraitDef Patience = new TraitDef("Patience")
         {
             NameNegative = "Impatient",

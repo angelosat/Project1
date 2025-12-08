@@ -68,7 +68,7 @@ namespace Start_a_Town_.AI.Behaviors
             this.Timer = Ticks.PerSecond;
             return this;
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.Seed);
             w.Write(this.Timer);

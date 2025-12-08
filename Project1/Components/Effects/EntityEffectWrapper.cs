@@ -48,5 +48,12 @@ namespace Start_a_Town_
         {
             return new Label($"Effect: {this.Def.Name}");
         }
+
+        public void Write(IDataWriter w)
+        {
+            this.Def.Write(w);
+        }
+
+        public ISerializableNew Read(IDataReader r) => new EntityEffectWrapper().Read(r);
     }
 }

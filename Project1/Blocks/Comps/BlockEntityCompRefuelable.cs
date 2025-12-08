@@ -214,7 +214,7 @@ namespace Start_a_Town_
             this.Fuel.Load(tag["Fuel"]);
             this.StoredFuelItems.TryLoadMutable(tag, "StoredFuelItems");
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.Fuel.Write(w);
             w.Write(this.StoredFuelItems);
@@ -222,7 +222,7 @@ namespace Start_a_Town_
         public override ISerializable Read(IDataReader r)
         {
             this.Fuel.Read(r);
-            this.StoredFuelItems.ReadMutable(r);
+            this.StoredFuelItems.ReadMutableNew(r);
             return this;
         }
 

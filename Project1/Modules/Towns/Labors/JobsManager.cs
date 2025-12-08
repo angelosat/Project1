@@ -47,21 +47,27 @@ namespace Start_a_Town_
                 else
                 {
                     var w = net.BeginPacket(pMod);
-                    w.Write(player.ID, actor.RefId, job.Def.Name, priority);
-
+                    w.Write(player.ID);//, actor.RefId, job.Def.Name, priority);
+                    w.Write(actor.RefId);
+                    w.Write(job.Def);
+                    w.Write(priority);
                 }
             }
             public static void SendLaborToggle(PlayerData player, Actor actor, JobDef jobDef)
             {
                 var net = actor.Net;
-                net.BeginPacket(pToggle).Write(player.ID, actor.RefId, jobDef.Name);
+                var w = net.BeginPacket(pToggle);
+                w.Write(player.ID);
+                w.Write(actor.RefId);
+                w.Write(jobDef);
             }
             private static void HandleLaborToggle(NetEndpoint net, Packet pck)
             {
                 var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
-                var jobDef = Def.GetDef<JobDef>(r.ReadString());
+                //var jobDef = Def.GetDef<JobDef>(r);
+                var jobDef = r.ReadDef<JobDef>();
                 actor.ToggleJob(jobDef);
                 net.Events.Post(new JobUpdatedEvent(actor, jobDef));
                 if (net is Server)
@@ -71,8 +77,11 @@ namespace Start_a_Town_
             public static void SyncJob(PlayerData player, Actor actor, Job job)
             {
                 var net = actor.Net as Server;
-                var w = net.GetOutgoingStreamOrderedReliable();
-                w.Write(pSync, player.ID, actor.RefId);
+                //var w = net.GetOutgoingStreamOrderedReliable();
+                var w = net.BeginPacket(pSync);
+                //w.Write(pSync, player.ID, actor.RefId);
+                w.Write(player.ID);
+                w.Write(actor.RefId);
                 w.Write(job.Def.Name);
                 job.Write(w);
             }

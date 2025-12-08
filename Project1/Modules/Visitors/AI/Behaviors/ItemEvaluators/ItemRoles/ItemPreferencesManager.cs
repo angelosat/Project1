@@ -9,7 +9,7 @@ using System.Linq;
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    partial class ItemPreferencesManager : Inspectable, IItemPreferencesManager, ISaveable, ISerializable
+    partial class ItemPreferencesManager : Inspectable, IItemPreferencesManager, ISaveable, ISerializableNew
     {
         static ItemPreferencesManager()
         {
@@ -267,13 +267,13 @@ namespace Start_a_Town_
             return this;
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             foreach (var r in this.PreferencesNew.Values)
                 r.Write(w);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             foreach (var p in this.PreferencesNew)
                 p.Value.Read(r);
@@ -315,6 +315,8 @@ namespace Start_a_Town_
             return new Label(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
         }
 
+        public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
+
         [EnsureStaticCtorCall]
         static class Packets
         {
@@ -326,19 +328,19 @@ namespace Start_a_Town_
 
             internal static void Sync(NetEndpoint net, Actor actor, System.Collections.IList oldItems, System.Collections.IList newItems)
             {
-                var w = net.BeginPacketOld(pSyncPrefsAll);
+                var w = net.BeginPacket(pSyncPrefsAll);
 
                 w.Write(actor.RefId);
 
                 if (oldItems is null)
                     w.Write(0);
                 else
-                    oldItems.Cast<ItemPreference>().ToList().Write(w);
+                    oldItems.Cast<ItemPreference>().ToList().WriteNew(w);
 
                 if (newItems is null)
                     w.Write(0);
                 else
-                    newItems.Cast<ItemPreference>().ToList().Write(w);
+                    newItems.Cast<ItemPreference>().ToList().WriteNew(w);
             }
 
             private static void Receive(INetEndpoint net, Packet pck)

@@ -71,7 +71,7 @@ namespace Start_a_Town_
 
         public abstract BehaviorState Tick(Actor parent, AIState state);
 
-        public virtual void Write(BinaryWriter w)
+        public virtual void Write(IDataWriter w)
         {
             
         }

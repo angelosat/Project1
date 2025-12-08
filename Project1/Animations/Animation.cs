@@ -230,7 +230,7 @@ namespace Start_a_Town_.Animations
             tag.TryGetTagValue<int>("State", t => this.State = (AnimationStates)t);
         }
 
-        internal void Write(System.IO.BinaryWriter w)
+        internal void Write(IDataWriter w)
         {
             w.Write(this.Def.Name);
             w.Write(this.Frame);

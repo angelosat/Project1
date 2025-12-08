@@ -127,9 +127,9 @@ namespace Start_a_Town_.Components
             }
             container.AddControls(box);
         }
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
-            this.NeedsNew.Write(w);
+            this.NeedsNew.WriteNew(w);
         }
         public override void Read(IDataReader r)
         {

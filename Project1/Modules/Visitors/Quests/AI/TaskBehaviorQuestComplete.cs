@@ -45,7 +45,7 @@ namespace Start_a_Town_
             {
                 this.QuestID.TryLoad(tag, "QuestID");
             }
-            protected override void WriteExtra(BinaryWriter w)
+            protected override void WriteExtra(IDataWriter w)
             {
                 w.Write(this.QuestID);
             }

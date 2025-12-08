@@ -36,7 +36,7 @@ namespace Start_a_Town_
             {
                 tag.TryGetTag("Container", t => this.Container.Load(t));
             }
-            protected override void WriteExtra(System.IO.BinaryWriter io)
+            protected override void WriteExtra(IDataWriter io)
             {
                 this.Container.Write(io);
             }

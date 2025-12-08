@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Start_a_Town_.Net;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Start_a_Town_
 {
-    public sealed class Resource : MetricWrapper, IProgressBar, ISaveable, ISerializable, INamed
+    public sealed class Resource : MetricWrapper, IProgressBar, ISaveable, ISerializableNew, INamed
     {
-        public readonly ResourceDef ResourceDef;
+        public ResourceDef ResourceDef;
         public List<ResourceRateModifier> Modifiers = new();
         public int TicksPerRecoverOne, TicksPerDrainOne;
         int TickRecover, TickDrain;
@@ -36,7 +37,7 @@ namespace Start_a_Town_
         public float Min => 0;
 
         public string Name => this.ResourceDef.Name;
-       
+        Resource() { }
         public Resource(ResourceDef def)
         {
             this.ResourceDef = def;
@@ -131,14 +132,16 @@ namespace Start_a_Town_
             return this;
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
+            w.Write(this.ResourceDef);
             w.Write(this._value);
             w.Write(this.Max);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
+            this.ResourceDef = r.ReadDef<ResourceDef>();
             this._value = r.ReadSingle();
             this.Max = r.ReadSingle();
             return this;
@@ -174,6 +177,9 @@ namespace Start_a_Town_
             foreach (var i in this.ResourceDef.Worker.GetInterests())
                 _unsub += parent.Map?.Events.ListenTo(i.eventType, i.handler);
         }
+
+        public static ISerializableNew Create(IDataReader r) => new Resource().Read(r);
+
         class Packets
         {
             static int PacketSyncAdjust;

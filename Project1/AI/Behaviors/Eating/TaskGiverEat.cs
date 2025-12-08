@@ -19,7 +19,7 @@ namespace Start_a_Town_.AI
                 var foodInInventory = actor.Inventory.First(i => i.IsFood);
                 if (foodInInventory != null)
                 {
-                    IOrderedEnumerable<Vector3> eatingPlaces = FindEatingPlaces(actor);
+                    var eatingPlaces = FindEatingPlaces(actor);
                     if (eatingPlaces.Any())
                     {
                         return new AITask() { BehaviorType = typeof(TaskBehaviorEatWithTable) }
@@ -56,7 +56,7 @@ namespace Start_a_Town_.AI
             var cellBelowFood = actor.Map.GetCell(belowFood);
             if (!map.Town.HasUtility(belowFood, Utility.Types.Eating))
             {
-                    IOrderedEnumerable<Vector3> eatingPlaces = FindEatingPlaces(actor);
+                    var eatingPlaces = FindEatingPlaces(actor);
                 if (eatingPlaces.Any())
                     eatingplace = new TargetArgs(actor.Map, eatingPlaces.First());
             }
@@ -66,7 +66,7 @@ namespace Start_a_Town_.AI
                 return new AITask(typeof(TaskBehaviorEatWithoutTable)).SetTarget(TaskBehaviorEating.FoodInd, food, 1);
         }
 
-        private static IOrderedEnumerable<Vector3> FindEatingPlaces(Actor actor)
+        private static IOrderedEnumerable<IntVec3> FindEatingPlaces(Actor actor)
         {
             return actor.Map.Town.GetUtilities(Utility.Types.Eating).Where(p => actor.CanReserve(p)).OrderBy(p => Vector3.DistanceSquared(p, actor.Global));
         }

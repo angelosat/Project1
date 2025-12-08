@@ -91,7 +91,7 @@ namespace Start_a_Town_
         {
             tag.TryGetTagValue<int>("Level", v => this.Level = v);
         }
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Level);
         }
@@ -159,7 +159,7 @@ namespace Start_a_Town_
         {
             tag.TryGetTagValue<int>("Level", v => this.Level = v);
         }
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Level);
         }

@@ -36,7 +36,7 @@ namespace Start_a_Town_
             UpdateQuickButtons();
         }
 
-        protected override void WriteExtra(System.IO.BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.CurrentOccupant);
             w.Write((int)this.Type);
@@ -146,7 +146,10 @@ namespace Start_a_Town_
                     BlockBedEntity.SetType(s.Map, vector3, type);
 
                 //net.GetOutgoingStreamOrderedReliable().Write(pChangeType, playerData.ID, vector3, (int)type);
-                net.BeginPacketNew(ReliabilityType.OrderedReliable, pChangeType).Write(playerData.ID, vector3, (int)type);
+                var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, pChangeType);//.Write(playerData.ID, vector3, (int)type);
+                w.Write(playerData.ID);
+                w.Write(vector3);
+                w.Write((int)type);
             }
 
             private static void SetType(NetEndpoint net, Packet pck)

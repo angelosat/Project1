@@ -76,14 +76,27 @@ namespace Start_a_Town_.Net
         {
             Packets.SendSyncReport(server, text);
         }
-        static public byte[] Serialize(Action<BinaryWriter> dataGetter)
+        //static public byte[] Serialize(Action<BinaryWriter> dataGetter)
+        //{
+        //    using var m = new MemoryStream();
+        //    using (var str = new BinaryWriter(m))
+        //        dataGetter(str);
+        //    return m.ToArray();
+        //}
+        //static public byte[] Serialize(Action<BinaryWriter> dataGetter)
+        //{
+        //    using var m = new MemoryStream();
+        //    using (var str = new BinaryWriter(m))
+        //        dataGetter(str);
+        //    return m.ToArray();
+        //}
+        static public byte[] Serialize(Action<IDataWriter> dataGetter)
         {
-            using var m = new MemoryStream();
-            using (var str = new BinaryWriter(m))
+            //using var m = new MemoryStream();
+            //using (var str = new BinaryWriter(m))
+            var str = new DataWriter();
                 dataGetter(str);
-            return m.ToArray();
+            return str.BaseStream.ToArray();
         }
-
-
     }
 }

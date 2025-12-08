@@ -200,7 +200,7 @@ namespace Start_a_Town_
                 //tag.TryGetTag(des.Name, v => this.Designations[des].LoadIntVecs(v));
                 tag.TryGetTag(des.Name, v => this.Designations[des].LoadTargets(v));
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             foreach (var des in this.Designations)
                 w.Write(des.Value);

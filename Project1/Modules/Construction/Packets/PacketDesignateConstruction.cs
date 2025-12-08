@@ -20,7 +20,7 @@ namespace Start_a_Town_
         
         static public void Send(NetEndpoint net, ProductMaterialPair item, ToolBlockBuild.Args a)
         {
-            var stream = net.BeginPacketOld(p);
+            var stream = net.BeginPacket(p);
             a.Write(stream);
             if(!a.Removing)
                 item.Write(stream);

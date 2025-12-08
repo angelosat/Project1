@@ -231,7 +231,7 @@ namespace Start_a_Town_
                 this.Orientation = orientation;
                 this.Cheat = cheat;
             }
-            public void Write(BinaryWriter w)
+            public void Write(IDataWriter w)
             {
                 this.ToolDef.Write(w);
                 w.Write(this.Begin);

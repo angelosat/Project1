@@ -40,7 +40,7 @@ namespace Start_a_Town_.AI.Behaviors
             return BehaviorState.Fail;
         }
         
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.Position);
             base.Write(w);

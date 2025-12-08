@@ -20,7 +20,10 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     room.RoomRole = roomType;
-                net.BeginPacket(PacketSetRoomType).Write(player.ID, room.ID, roomType?.Name ?? "");
+                var w = net.BeginPacket(PacketSetRoomType);//.Write(player.ID, room.ID, roomType?.Name ?? "");
+                w.Write(player.ID);
+                w.Write(room.ID);
+                w.Write(roomType?.Name ?? "");
             }
             private static void SetRoomType(NetEndpoint net, Packet pck)
             {
@@ -39,7 +42,10 @@ namespace Start_a_Town_
                 if (net is Server)
                     room.ForceAddOwner(owner);
                 //net.GetOutgoingStreamOrderedReliable().Write(PacketSetOwner, player.ID, room.ID, owner?.RefId ?? -1);
-                net.BeginPacket(PacketSetOwner).Write(player.ID, room.ID, owner?.RefId ?? -1);
+                var w = net.BeginPacket(PacketSetOwner);//.Write(player.ID, room.ID, owner?.RefId ?? -1);
+                w.Write(player.ID);
+                w.Write(room.ID);
+                w.Write(owner?.RefId ?? -1);
             }
             private static void SetOwner(NetEndpoint net, Packet pck)
             {
@@ -83,7 +89,10 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     room.Refresh(center);
-                net.BeginPacket(PacketRefresh).Write(playerData.ID, room.ID, center);
+                var w = net.BeginPacket(PacketRefresh);//.Write(playerData.ID, room.ID, center);
+                w.Write(playerData.ID);
+                w.Write(room.ID);
+                w.Write(center);
             }
             private static void Refresh(NetEndpoint net, Packet pck)
             {

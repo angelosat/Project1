@@ -327,7 +327,7 @@ namespace Start_a_Town_.Components
             }
         }
 
-        public override void Write(System.IO.BinaryWriter writer)
+        public override void Write(IDataWriter writer)
         {
             this.PlantProperties.Write(writer);
             this.GrowthFruit.Write(writer);
@@ -340,7 +340,7 @@ namespace Start_a_Town_.Components
             this.GrowthBody = new Progress(reader);
 
         }
-        internal override void SyncWrite(System.IO.BinaryWriter w)
+        internal override void SyncWrite(IDataWriter w)
         {
             this.Progress.Write(w);
             w.Write(this.Growth.Value);

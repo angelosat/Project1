@@ -29,7 +29,7 @@ namespace Start_a_Town_
             return new InteractionGetQuest(this.QuestID);
         }
 
-        protected override void WriteExtra(BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.QuestID);
         }

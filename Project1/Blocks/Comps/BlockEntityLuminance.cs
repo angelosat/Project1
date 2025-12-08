@@ -76,7 +76,7 @@ namespace Start_a_Town_
             tag.TryGetTagValueOrDefault<bool>("Powered", out this.Powered);
 
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this.Powered);
             w.Write(this.ConsumptionTick);

@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    public class AttributeStat : Inspectable, ISaveable, ISerializable, IListable
+    public class AttributeStat : Inspectable, ISaveable, ISerializableNew, IListable
     {
         public class ValueModifier
         {
@@ -90,12 +90,12 @@ namespace Start_a_Town_
             return this;
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             this.Progress.Write(w);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.Progress.Read(r);
             return this;
@@ -108,5 +108,7 @@ namespace Start_a_Town_
                 TooltipFunc = t => t.AddControls(this.Progress.GetControl())
             };
         }
+
+        public static ISerializableNew Create(IDataReader r) => new AttributeStat().Read(r);
     }
 }

@@ -5,7 +5,7 @@ namespace Start_a_Town_
 {
     public interface IItemPreferenceContext
     { }
-    public interface IItemPreferencesManager : ISaveable, ISerializable
+    public interface IItemPreferencesManager : ISaveable, ISerializableNew
     {
         IItemPreferenceContext GetPreference(Entity item);
         Entity GetPreference(IItemPreferenceContext context);

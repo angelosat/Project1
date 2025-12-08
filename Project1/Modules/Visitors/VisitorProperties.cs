@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    public class VisitorProperties : Inspectable, ITooltippable, ISerializable, ISaveable, ISyncable
+    public class VisitorProperties : Inspectable, ITooltippable, ISerializableNew, ISaveable, ISyncable
     {
         static readonly int PacketSyncAwardTownRating, PacketSync;
         static VisitorProperties()
@@ -57,6 +57,7 @@ namespace Start_a_Town_
         public HashSet<int> RecentlyVisitedShops = new();
         public readonly ObservableCollection<QuestDef> Quests = new();
         public StaticWorld World;
+        VisitorProperties() { }
         public VisitorProperties(IDataReader r, PopulationManager manager)
         {
             this.World = manager.World;
@@ -143,7 +144,7 @@ namespace Start_a_Town_
             var net = this.Actor.Net;
             if (net is Client)
                 throw new Exception();
-            var w = net.BeginPacketOld(PacketSync);
+            var w = net.BeginPacket(PacketSync);
             w.Write(this.Actor.RefId);
             this.Sync(w);
         }
@@ -291,7 +292,7 @@ namespace Start_a_Town_
         {
             return $"Visitor:{this.Actor.Name}";
         }
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.Actor.RefId);
             w.Write(this.Actor.Exists);
@@ -304,7 +305,7 @@ namespace Start_a_Town_
             w.Write(this.Timer.TotalMilliseconds);
             w.Write(this.Quests.Select(q => q.ID).ToArray());
         }
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
             var isspawned = r.ReadBoolean();
@@ -318,7 +319,7 @@ namespace Start_a_Town_
             r.ReadIntArray().ToList().ForEach(i => this.Quests.Add(this.World.Map.Town.QuestManager.GetQuest(i)));
             return this;
         }
-        public ISyncable Sync(BinaryWriter w)
+        public ISyncable Sync(IDataWriter w)
         {
             w.Write(this.Actor.RefId);
             w.Write(this.TownApprovalRating.Value);
@@ -391,5 +392,7 @@ namespace Start_a_Town_
 
             gui.GetWindow().SetTitle(this.Actor.Name).Show();
         }
+
+        public static ISerializableNew Create(IDataReader r) => new VisitorProperties().Read(r);
     }
 }

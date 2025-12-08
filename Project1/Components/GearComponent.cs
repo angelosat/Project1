@@ -48,14 +48,25 @@ namespace Start_a_Town_
         {
             var types = from gear in this.Equipment.Slots select GearType.Dictionary[(GearType.Types)gear.ID];
             var comp = new GearComponent(types.ToArray());
-            using (var w = new BinaryWriter(new MemoryStream()))
-            {
+            //using (var w = new BinaryWriter(new MemoryStream()))
+            //{
+            //    this.Write(w);
+            //    w.BaseStream.Position = 0;
+            //    //using var r = new BinaryReader(w.BaseStream);
+            //    using var r = new DataReader(w.BaseStream);
+            //    comp.Read(r);
+            //}
+            using var mem = new MemoryStream();
+            var w = new DataWriter(mem);
+            using var r = new DataReader(mem);
+            //using (var w = new BinaryWriter(new MemoryStream()))
+            //{
                 this.Write(w);
-                w.BaseStream.Position = 0;
+                w.Position = 0;
                 //using var r = new BinaryReader(w.BaseStream);
-                using var r = new DataReader(w.BaseStream);
+                //using var r = new DataReader(w.BaseStream);
                 comp.Read(r);
-            }
+            //}
             return comp;
         }
         public override IEnumerable<GameObject> GetChildren()
@@ -76,7 +87,7 @@ namespace Start_a_Town_
             return text.TrimEnd('\n');
         }
 
-        public override void Write(BinaryWriter writer)
+        public override void Write(IDataWriter writer)
         {
             this.Equipment.Write(writer);
         }

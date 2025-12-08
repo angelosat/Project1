@@ -47,7 +47,7 @@ namespace Start_a_Town_
         {
             this.Plant = tag.LoadDef<PlantProperties>("Plant");
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             this.Plant.Write(w);
         }

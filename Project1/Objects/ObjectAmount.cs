@@ -4,7 +4,7 @@ using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
-    public class ObjectAmount : ISaveable, ISerializable
+    public class ObjectAmount : ISaveable, ISerializableNew
     {
         TargetArgs ObjectTarget;
         public GameObject Object
@@ -71,17 +71,22 @@ namespace Start_a_Town_
             this.ObjectTarget.InitializeProvider(net);
         }
 
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             this.ObjectTarget.Write(w);
             w.Write(this._amount);
         }
 
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.ObjectTarget = TargetArgs.Read(Network.CurrentNetwork, r);
             this._amount = r.ReadInt32();
             return this;
+        }
+
+        public static ISerializableNew Create(IDataReader r)
+        {
+            return new ObjectAmount().Read(r);
         }
     }
 }

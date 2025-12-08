@@ -40,7 +40,7 @@ namespace Start_a_Town_.Terraforming.Mutators
             this.LandLevel = save.TagValueOrDefault<int>("Level", MapBase.MaxHeight / 2);
         }
 
-        protected override void WriteExtra(System.IO.BinaryWriter w)
+        protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.LandLevel);
         }

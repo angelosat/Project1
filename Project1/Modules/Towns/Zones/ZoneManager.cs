@@ -150,7 +150,7 @@ namespace Start_a_Town_
             tag.TryGetTagValue("IDSequence", ref this._zoneIDSequence);
             this.Zones.TryLoadByValueAbstractTypes(tag, "Zones", zone => zone.ID, this);
         }
-        public override void Write(BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
             w.Write(this._zoneIDSequence);
             this.Zones.Values.WriteAbstract(w);

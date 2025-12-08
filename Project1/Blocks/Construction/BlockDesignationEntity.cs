@@ -91,7 +91,7 @@ namespace Start_a_Town_
                 tag.TryGetTag("BuildProgress", v => this.BuildProgress = new Progress(v));
             }
 
-            protected override void WriteExtra(BinaryWriter w)
+            protected override void WriteExtra(IDataWriter w)
             {
                 this.Product.Write(w);
                 this.BuildProgress.Write(w);

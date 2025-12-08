@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Microsoft.Xna.Framework;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Start_a_Town_
 {
-    public partial class Room : Inspectable, ISelectable, ISaveable, ISerializable
+    public partial class Room : Inspectable, ISelectable, ISaveable, ISerializableNew
     {
         static Room()
         {
@@ -368,7 +369,7 @@ namespace Start_a_Town_
             tag.TryGetTagValue<string>("RoomDef", v => this.roomRole = !v.IsNullEmptyOrWhiteSpace() ? Def.GetDef<RoomRoleDef>(v) : null);
             return this;
         }
-        public void Write(BinaryWriter w)
+        public void Write(IDataWriter w)
         {
             w.Write(this.ID);
             w.Write(this.Interior);
@@ -376,7 +377,7 @@ namespace Start_a_Town_
             w.Write(this.workplaceID);
             w.Write(this.roomRole?.Name ?? "");
         }
-        public ISerializable Read(IDataReader r)
+        public ISerializableNew Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Interior = new HashSet<IntVec3>().ReadIntVec3(r);
@@ -454,6 +455,6 @@ namespace Start_a_Town_
             yield break;
         }
 
-      
+        public static ISerializableNew Create(IDataReader r) => new Room().Read(r);
     }
 }

@@ -129,9 +129,9 @@ namespace Start_a_Town_
             }
         }
 
-        public override void Write(System.IO.BinaryWriter w)
+        public override void Write(IDataWriter w)
         {
-            this.Traits.Write(w);
+            this.Traits.WriteNew(w);
             this.Favorites.WriteDefs(w);
         }
         public override void Read(IDataReader r)

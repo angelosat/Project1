@@ -2,6 +2,7 @@
 using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -260,20 +261,22 @@ namespace Start_a_Town_
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
-                collection.Add(new T());
+                collection.Add((T)new T().Read(r));
         }
-        public static void InitializeNewArgs<T>(this ICollection<T> collection, IDataReader r, params object[] args)
-            where T : class, ISerializableNew
+        public static void InitializeNew<T>(this IList<T> collection, IDataReader r)
+            where T : class, ISerializableNew, new()
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
-            {
-                if (args.Length == 0)
-                    collection.Add(Activator.CreateInstance<T>().Read(r) as T);
-                else
-                    collection.Add((Activator.CreateInstance(typeof(T), args) as T).Read(r) as T);
-            }
+                collection.Add((T)new T().Read(r));
         }
+        //public static void InitializeNewArgs<T>(this ICollection<T> collection, IDataReader r)//, params object[] args)
+        //    where T : class, ISerializableNew, new()
+        //{
+        //    var count = r.ReadInt32();
+        //    for (int i = 0; i < count; i++)
+        //        collection.Add((T)new T().Read(r));
+        //}
         public static void Initialize<T>(this ICollection<T> collection, BinaryReader r, Func<BinaryReader, T> constructor)
             where T : class, ISerializable
         {

@@ -1,9 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+#nullable enable
 namespace Start_a_Town_
 {
     public enum TargetIndex { A, B, C, Tool = 15 }
@@ -218,31 +217,40 @@ namespace Start_a_Town_
 
         public AITask(TaskDef taskDef)
         {
+            if (taskDef is null) throw new Exception();
             this.Def = taskDef;
         }
 
         public AITask(Type behaviorType) : this()
         {
+            throw new Exception();
+
             this.BehaviorType = behaviorType;
         }
         public AITask(Type behaviorType, TargetArgs targetA) : this()
         {
+            throw new Exception();
             this.BehaviorType = behaviorType;
             this.SetTarget(TargetIndex.A, targetA);
         }
         public AITask(TaskDef def, TargetArgs targetA) : this()
         {
+            if (def is null) throw new Exception();
+
             this.Def = def;
             this.SetTarget(TargetIndex.A, targetA);
         }
         public AITask(TaskDef def, TargetArgs targetA, TargetArgs targetB) : this()
         {
+            if (def is null) throw new Exception();
+
             this.Def = def;
             this.SetTarget(TargetIndex.A, targetA);
             this.SetTarget(TargetIndex.B, targetB);
         }
         public AITask(Type behaviorType, TargetArgs targetA, TargetArgs targetB) : this()
         {
+            throw new Exception();
             this.BehaviorType = behaviorType;
             this.SetTarget(TargetIndex.A, targetA);
             this.SetTarget(TargetIndex.B, targetB);

@@ -82,7 +82,7 @@ namespace Start_a_Town_
                 var stamina = parent.GetResource(ResourceDefOf.Stamina);
                 var staminaTaskThreshold = 20;
                 var tired = stamina.Value <= staminaTaskThreshold;
-
+                
                 if (this.CurrentTaskGiver != null && !parent.CurrentTask.Def.Idle)
                 {
                     if (tired)

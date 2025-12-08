@@ -29,7 +29,7 @@ namespace Start_a_Town_
             },
             CompProps = new List<ComponentProps>()
             {
-                new ConsumableComponent.Props(new[] { new NeedEffect(NeedDef.Hunger, 50) })
+                new ConsumableComponent.Props(new[] { new NeedEffect(NeedDefOf.Hunger, 50) })
             },
         }.SetMadeFrom(MaterialTypeDefOf.Fruit);
 
@@ -43,7 +43,7 @@ namespace Start_a_Town_
             ConsumableProperties = new ConsumableProperties(),
             CompProps = new List<ComponentProps>()
             {
-                new ConsumableComponent.Props(new[] { new NeedEffect(NeedDef.Hunger, 50) })
+                new ConsumableComponent.Props(new[] { new NeedEffect(NeedDefOf.Hunger, 50) })
             },
         }.SetMadeFrom(MaterialTypeDefOf.Meat);
 

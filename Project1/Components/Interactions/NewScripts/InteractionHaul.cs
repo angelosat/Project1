@@ -34,6 +34,8 @@ namespace Start_a_Town_
         }
         public override void OnUpdate()
         {
+            //if (this.Actor.Net.IsClient)
+            //    return;
             var actor = this.Actor;
             var target = this.Target;
             if (target.Object is Actor)

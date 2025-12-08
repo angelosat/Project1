@@ -10,27 +10,27 @@
         static public readonly NeedCategoryDef NeedCategoryPhysiological = new NeedCategoryDef("Physiological")
         {
             BaseNeedDefs = new NeedDef[] {
-                NeedDef.Energy,
-                NeedDef.Hunger,
-                NeedDef.Curiosity, }
+                NeedDefOf.Energy,
+                NeedDefOf.Hunger,
+                NeedDefOf.Curiosity, }
         };
 
         static public readonly NeedCategoryDef NeedCategoryRelationships = new NeedCategoryDef("Relationships")
         {
             BaseNeedDefs = new NeedDef[] {
-                NeedDef.Social }
+                NeedDefOf.Social }
         };
 
         static public readonly NeedCategoryDef NeedCategoryEsteem = new NeedCategoryDef("Esteem")
         {
             BaseNeedDefs = new NeedDef[] {
-                NeedDef.Work }
+                NeedDefOf.Work }
         };
 
         static public readonly NeedCategoryDef NeedCategoryCognitive = new NeedCategoryDef("Cognitive")
         {
             BaseNeedDefs = new NeedDef[] {
-                NeedDef.Curiosity }
+                NeedDefOf.Curiosity }
         };
     }
 }

@@ -236,6 +236,7 @@ namespace Start_a_Town_
         {
             foreach (var props in this.ActorsAdventuring) // i added this to add visitor needs to existing visitors because I wasn't saving them in the needscomponent class
             {
+                props.World = this.World;
                 var actor = props.Actor;
                 // TODO move this somewhere else
                 if (this.World.Map.Net is Server)
@@ -272,7 +273,7 @@ namespace Start_a_Town_
 
         public ISerializable Read(IDataReader r)
         {
-            this.ActorsAdventuring.InitializeNewArgs(r, this);
+            this.ActorsAdventuring.InitializeNew(r);//, this);
             return this;
         }
 

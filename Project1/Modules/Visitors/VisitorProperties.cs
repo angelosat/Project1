@@ -17,7 +17,10 @@ namespace Start_a_Town_
             PacketSyncAwardTownRating = Registry.PacketHandlers.Register(SyncAwardTownRating);
             PacketSync = Registry.PacketHandlers.Register(Sync);
         }
-
+        public VisitorProperties()
+        {
+            
+        }
         public int ActorID;
         Actor CachedActor;
         public Actor Actor
@@ -57,7 +60,6 @@ namespace Start_a_Town_
         public HashSet<int> RecentlyVisitedShops = new();
         public readonly ObservableCollection<QuestDef> Quests = new();
         public StaticWorld World;
-        VisitorProperties() { }
         public VisitorProperties(IDataReader r, PopulationManager manager)
         {
             this.World = manager.World;

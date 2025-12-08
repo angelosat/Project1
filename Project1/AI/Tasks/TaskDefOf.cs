@@ -98,7 +98,8 @@ namespace Start_a_Town_
         static public TaskDef Idle = new("Idleing", typeof(TaskBehaviorIdle)) { Idle = true };
         static public TaskDef Wander = new("Wandering", typeof(TaskBehaviorWander)) { Idle = true };
         static public TaskDef Depart = new("Departing", typeof(TaskBehaviorDepart));
-
+        static public TaskDef DropInventory = new("Dropping item from Inventory", typeof(TaskBehaviorDropInventoryItem));
+        static public TaskDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem));
         static TaskDefOf()
         {
             Def.Register(typeof(TaskDefOf));

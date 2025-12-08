@@ -9,7 +9,7 @@ namespace Start_a_Town_.AI
     {
         protected override AITask TryAssignTask(Actor actor)
         {
-            var hunger = actor.GetNeed(NeedDef.Hunger);
+            var hunger = actor.GetNeed(NeedDefOf.Hunger);
             
             var isHungry = hunger.IsBelowThreshold;
 

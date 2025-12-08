@@ -10,7 +10,7 @@ namespace Start_a_Town_.AI
         protected override AITask TryAssignTask(Actor actor)
         {
             var map = actor.Map;
-            var need = actor.GetNeed(NeedDef.Energy);
+            var need = actor.GetNeed(NeedDefOf.Energy);
             var energyValue = need.Value;
 
             if (energyValue > 98)// need.Threshold)

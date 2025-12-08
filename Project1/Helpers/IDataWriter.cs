@@ -26,7 +26,6 @@ namespace Start_a_Town_
         internal IDataWriter Write(List<int> v);
         internal IDataWriter Write(ICollection<int> v) { this.ww.Write(v); return this; }
         public IDataWriter Write(int[] v) { this.ww.Write(v); return this; }
-        //internal IDataWriter Write(params object[] v);
         internal IDataWriter Write(Def def) { this.ww.Write(def); return this; }
         internal IDataWriter Write(ICollection<IntVec3> list);
         internal IDataWriter Write(ICollection<TargetArgs> list);

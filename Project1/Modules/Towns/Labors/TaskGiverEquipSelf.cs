@@ -33,7 +33,8 @@ namespace Start_a_Town_
                         if (!job.Enabled)
                         {
                             manager.RemovePreference(context);
-                            return new AITask(typeof(TaskBehaviorDropItem), preferredTool);
+                            //return new AITask(typeof(TaskBehaviorDropItem), preferredTool);
+                            return new AITask(TaskDefOf.DropCarried) { TargetA = preferredTool };
                         }
                     }
                 }
@@ -65,7 +66,8 @@ namespace Start_a_Town_
         static AITask DropUnnecessaryItems(Actor actor)
         {
             if (actor.Inventory.All.FirstOrDefault(i => !actor.ItemPreferences.IsPreference(i)) is Entity item)
-                return new AITask(typeof(TaskBehaviorDropInventoryItem), item);
+                //return new AITask(typeof(TaskBehaviorDropInventoryItem), item);
+                return new AITask(TaskDefOf.DropInventory) { TargetA = item };
             return null;
         }
 

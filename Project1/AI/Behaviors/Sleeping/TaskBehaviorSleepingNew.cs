@@ -28,7 +28,7 @@ namespace Start_a_Town_
       
         bool IsEnergyFull()
         {
-            var needenergy = this.Actor.GetNeed(NeedDef.Energy);
+            var needenergy = this.Actor.GetNeed(NeedDefOf.Energy);
             return needenergy.Percentage == 1;
         }
 

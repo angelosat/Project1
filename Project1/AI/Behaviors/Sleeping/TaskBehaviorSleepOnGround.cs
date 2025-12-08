@@ -11,7 +11,7 @@ namespace Start_a_Town_
             {
                 Mode = BehaviorCustom.Modes.Continuous,
                 Init = (a, s) => this.Actor.Interact(new InteractionSleepOnGround()),
-                SuccessCondition = a => this.Actor.GetNeed(NeedDef.Energy).Percentage == 1
+                SuccessCondition = a => this.Actor.GetNeed(NeedDefOf.Energy).Percentage == 1
             };
             yield return new BehaviorCustom() { Init = (a, t) => AIManager.EndInteraction(this.Actor, true) };
         }

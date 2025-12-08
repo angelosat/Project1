@@ -8,11 +8,11 @@ namespace Start_a_Town_
     {
         public override void OnStart(Actor actor)
         {
-            actor.GetNeed(NeedDef.Energy).AddMod(EffectDefOf.Sleeping, 0, 1);
+            actor.GetNeed(NeedDefOf.Energy).AddMod(EffectDefOf.Sleeping, 0, 1);
         }
         public override void OnFinish(Actor actor)
         {
-            actor.GetNeed(NeedDef.Energy).RemoveMod(EffectDefOf.Sleeping);
+            actor.GetNeed(NeedDefOf.Energy).RemoveMod(EffectDefOf.Sleeping);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Start_a_Town_.AI.Behaviors.Observe
     {
         protected override AITask TryAssignTask(Actor actor)
         {
-            var need = actor.GetNeed(NeedDef.Curiosity);
+            var need = actor.GetNeed(NeedDefOf.Curiosity);
             if (need.Value > 50)
                 return null;
             var potentialTargets = actor.Map.GetObjects()

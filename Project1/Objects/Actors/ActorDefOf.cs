@@ -5,11 +5,11 @@
         static public readonly ActorDef NpcProps = new("NpcProps")
         {
             Needs = [
-                NeedDef.Energy,
-                NeedDef.Hunger,
-                NeedDef.Comfort,
-                NeedDef.Social,
-                NeedDef.Work ],
+                NeedDefOf.Energy,
+                NeedDefOf.Hunger,
+                NeedDefOf.Comfort,
+                NeedDefOf.Social,
+                NeedDefOf.Work ],
             Attributes = [
                 AttributeDefOf.Strength,
                 AttributeDefOf.Intelligence,

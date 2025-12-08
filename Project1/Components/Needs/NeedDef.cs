@@ -5,7 +5,6 @@ namespace Start_a_Town_
 {
     public class NeedDef : Def
     {
-        //public Type Type;
         public float BaseThreshold = 20;
         public float BaseDecayRate = .1f; // measure decay rate in ticks? how many ticks to drop value by 1
         public float BaseValue = 100;
@@ -13,26 +12,21 @@ namespace Start_a_Town_
         public NeedCategoryDef CategoryDef;
         public NeedWorker Worker;
 
-        //[Obsolete]
-        //public Need Create(Actor actor)
-        //{
-        //    var n = Activator.CreateInstance(this.Type, actor) as Need;
-        //    n.NeedDef = this;
-        //    return n;
-        //}
-        
         public NeedDef(string name, Type needType, NeedCategoryDef category = null) : base(name)
         {
             //this.Type = needType;
             this.Worker = Activator.CreateInstance(needType) as NeedWorker;
             this.CategoryDef = category;
         }
-
+    }
+    [EnsureStaticCtorCall]
+    public static class NeedDefOf
+    {
         static public readonly NeedDef Comfort = new("Comfort", typeof(NeedComfortWorker))
         {
             CategoryDef = NeedCategoryDef.NeedCategoryPhysiological,
             //Worker = new NeedComfortWorker(),
-            BaseDecayRate = 0, 
+            BaseDecayRate = 0,
             BaseValue = 50
         };
         static public readonly NeedDef Hunger = new("Hunger", typeof(NeedHungerWorker))
@@ -65,14 +59,9 @@ namespace Start_a_Town_
         };
 
 
-        static NeedDef()
+        static NeedDefOf()
         {
-            Register(Comfort);
-            Register(Hunger);
-            Register(Energy);
-            Register(Work);
-            Register(Social);
-            Register(Curiosity);
+            Def.Register(typeof(NeedDefOf));
         }
     }
 }

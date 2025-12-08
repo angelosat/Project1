@@ -1,13 +1,11 @@
 ﻿namespace Start_a_Town_.UI
 {
-    public interface IGui
+    public static class GuiExtensions
     {
-        void NewGui(GroupBox box);
-
-        public Control NewGui()
+        public static Control NewGui(this IGui gui)
         {
             var box = new GroupBox();
-            this.NewGui(box);
+            gui.NewGui(box);
             return box;
         }
     }

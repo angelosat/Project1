@@ -7,7 +7,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public class NpcSkillsComponent : EntityComponent
+    public class NpcSkillsComponent : EntityComponent, IGui
     {
         public readonly Skill[] SkillsNew;
         static public Panel UI = new Panel(new Rectangle(0, 0, 500, 400));
@@ -63,26 +63,11 @@ namespace Start_a_Town_
             table.AddItems(this.SkillsNew);
             return table;
         }
-        static readonly ListBoxNoScroll GuiList = new() { Name = "Skills", OnSelectedTargetChangedAction = go => RefreshGui(go.Object as Actor) };
-
-        [Obsolete]       
-        public static Control GetGui(GameObject actor)
+        public void NewGui(GroupBox box)
         {
-            var a = actor as Actor;
-            var win = GuiList.GetWindow();
-            if (win is null)
-                win = GuiList.ToWindow("Skills");
-            GuiList.Clear();
-            GuiList.AddItems(a.Skills.SkillsNew);
-            win.Validate(true);
-            return win;
-        }
-        public static Control RefreshGui(Actor actor)
-        {
-            GuiList.Clear();
-            GuiList.AddItems(actor.Skills.SkillsNew);
-            GuiList.Validate(true);
-            return GuiList;
+            ListBoxNoScroll GuiList = new();
+            GuiList.AddItems(this.SkillsNew);
+            box.AddControls(GuiList);
         }
         internal Skill GetSkill(SkillDef skill)
         {
@@ -119,6 +104,9 @@ namespace Start_a_Town_
         {
             this.SkillsNew.Read(r);
         }
+
+        
+
         public class Props : ComponentProps
         {
             public override Type CompClass => typeof(NpcSkillsComponent);

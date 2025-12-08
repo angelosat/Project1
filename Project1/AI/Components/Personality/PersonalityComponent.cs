@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 namespace Start_a_Town_
 {
     public enum ReactionType { Friendly, Hostile }
-    public class PersonalityComponent : EntityComponent
+    public class PersonalityComponent : EntityComponent, IGui
     {
         static readonly Random Randomizer = new();
 
@@ -152,59 +152,6 @@ namespace Start_a_Town_
             if (!this.Favorites.TryLoadDefs(tag, "Favorites"))
                 this.Favorites = GenerateMaterialPreferences();
         }
-        static Control GUI;
-        internal static Window GetGui(Actor actor)
-        {
-            Window win;
-            if (GUI == null)
-            {
-                GUI = new GroupBox();
-                win = new Window(GUI) { Movable = true, Closable = true };
-                win.OnSelectedTargetChangedAction = t =>
-                {
-                    if (t.Object is not Actor actor)
-                        win.Hide();
-                    else
-                        GetGui(actor);
-                };
-            }
-            else
-                win = GUI.GetWindow();
-            win.Title = $"{actor.Name} personality";
-            GUI.ClearControls();
-            var p = actor.Personality;
-            var boxtraits = new GroupBox();
-            foreach (var t in p.Traits)
-                boxtraits.AddControlsBottomLeft(t.GetListControlGui());
-            GUI.AddControlsVertically(boxtraits.ToPanelLabeled("Traits"), getFavoritesUI(p, boxtraits.Width));
-            return win;
-
-        }
-        static GroupBox guiNew;
-        public static GroupBox CreateGui(Actor actor)
-        {
-            var box = guiNew ??= new GroupBox()
-            {
-                Name = "Personality",
-                OnSelectedTargetChangedAction = target =>
-                {
-                    var actor = target.Object as Actor;
-                    refresh(actor);
-                }
-            };
-            refresh(actor);
-            return box;
-            static void refresh(Actor actor)
-            {
-                var p = actor.Personality;
-                var boxtraits = new GroupBox();
-                foreach (var t in p.Traits)
-                    boxtraits.AddControlsBottomLeft(t.GetListControlGui());
-                guiNew.ClearControls();
-                guiNew.AddControlsVertically(boxtraits.ToPanelLabeled("Traits"), getFavoritesUI(p, boxtraits.Width));
-            }
-        }
-
         static Control getFavoritesUI(PersonalityComponent p, int width)
         {
             var box = UIHelper.Wrap(p.Favorites.Select(m => new Button(m.Label) { TextColorFunc = () => m.Color }), width);
@@ -229,6 +176,18 @@ namespace Start_a_Town_
                     list.Add(type.SubTypes.SelectRandom(Randomizer));
             }
             return list;
+        }
+
+        public void NewGui(GroupBox box)
+        {
+            var actor = this.Parent as Actor;
+            var p = actor.Personality;
+            var boxtraits = new GroupBox();
+            foreach (var t in p.Traits)
+                boxtraits.AddControlsBottomLeft(t.GetListControlGui());
+            box.AddControlsVertically(
+                boxtraits.ToPanelLabeled("Traits"), 
+                getFavoritesUI(p, boxtraits.Width));
         }
     }
 }

@@ -1,21 +1,18 @@
 ﻿using Start_a_Town_.UI;
 
-namespace Start_a_Town_.AI
+namespace Start_a_Town_
 {
-    class PersonalityUI : GroupBox
+    internal class PersonalityUI : GuiBuilder
     {
-        public PersonalityUI()
+        public PersonalityUI() { }
+        public PersonalityUI(Entity entity) : base(entity) { }
+        protected override void Build()
         {
-
+            var actor = this.Entity as Actor;
+            var comp = actor.Personality;
+            var gui = comp.NewGui();
+            this.AddControls(gui);
         }
-        public void Refresh(Actor npc)
-        {
-            this.ClearControls();
-            var p = npc.Personality;
-            foreach (var t in p.Traits)
-            {
-                this.AddControlsBottomLeft(t.GetListControlGui());
-            }
-        }
+        protected override GuiBuilder BuildFor(Entity entity) => new PersonalityUI(entity);
     }
 }

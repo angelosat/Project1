@@ -383,49 +383,37 @@ namespace Start_a_Town_
             return this.GetComponent<MoodComp>().Contains(mdef);
         }
 
-        readonly Button btnLog = new("Log");
-        readonly Button btnSkills = new("Skills");
-        readonly Button btnGear = new("Gear");
-        readonly Button btnPersonality = new("Personality");
-        readonly Button btnNeeds = new("Needs");
-        readonly Button btnStats = new("Stats");
         readonly Button btnVisitor = new("Visitor");
 
-        static NpcLogUINew GuiLog;
-        static InventoryUI GuiInv;
-        static Control GuiPersonality, GuiSkills, GuiStats;
         public override IEnumerable<Control> GetSelectionDetails()
         {
-            yield return GuiLog ??= new NpcLogUINew();
-            yield return (GuiInv ??= new InventoryUI()).Refresh(this);
-            yield return GuiPersonality ??= PersonalityComponent.CreateGui(this);
-            yield return GuiSkills ??= NpcSkillsComponent.RefreshGui(this);
-            //yield return GuiNeeds ??= new NeedsUI().Refresh(this);
-            //yield return GuiNeeds ??= new NeedsMoodsUI(this);
-            //yield return new NeedsMoodsUI(this);
+            yield return GuiBuilder.BuildFloating<SkillsUI>(this);
+            yield return GuiBuilder.BuildFloating<PersonalityUI>(this);
+            yield return GuiBuilder.BuildFloating<NpcLogUINew>(this);
+            yield return GuiBuilder.BuildFloating<InventoryUI>(this);
             yield return GuiBuilder.BuildFloating<NeedsMoodsUI>(this);
-            yield return GuiStats ??= new StatsGui().Refresh(this);
+            yield return GuiBuilder.BuildFloating<StatsGui>(this);
         }
-        //static Window _windowNeedsCached;
-
         protected override IEnumerable<Button> GetInfoTabsExtraNew()
         {
-            yield return this.btnLog.SetLeftClickAction(b => NpcLogUINew.GetGui(this).Toggle()) as Button;
-            yield return this.btnSkills.SetLeftClickAction(b => NpcSkillsComponent.GetGui(this).Toggle()) as Button;
-            yield return this.btnGear.SetLeftClickAction(b => InventoryUI.GetGui(this).Toggle()) as Button;
-            yield return this.btnPersonality.SetLeftClickAction(b => PersonalityComponent.GetGui(this).Toggle()) as Button;
-            //yield return this.btnNeeds.SetLeftClickAction(b => NeedsMoodsUI.GetGui(this).Toggle()) as Button;
-            //Lazy<Window> nmwindow = new(() => new NeedsMoodsUI(this).ToWindow());
-            //yield return this.btnNeeds.SetLeftClickAction(b => nmwindow.Value.Toggle()) as Button;
-            //yield return this.btnNeeds.SetLeftClickAction(b => (_windowNeedsCached ??= new NeedsMoodsUI(this).ToWindow()).SetTitle(this.Name).Toggle()) as Button;
-            //yield return this.btnNeeds.SetLeftClickAction(b => new NeedsMoodsUI(this).RefreshSingleton().SetTitle(this.Name).Toggle()) as Button;
-            yield return this.btnNeeds.SetLeftClickAction(b => GuiBuilder.RefreshSingleton<NeedsMoodsUI>(this).SetTitle(this.Name).Toggle()) as Button;
-            //yield return this.btnNeeds.SetLeftClickAction(b => GuiBuilder.RefreshSingletonStatic<NeedsMoodsUI>(this).SetTitle(this.Name).Toggle()) as Button;
+            yield return new Button("Skills").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<SkillsUI>(this).SetTitle(this.Name).Toggle()) as Button;
+            yield return new Button("Personality").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<PersonalityUI>(this).SetTitle(this.Name).Toggle()) as Button;
+            yield return new Button("Log").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<NpcLogUINew>(this).SetTitle(this.Name).Toggle()) as Button;
+            yield return new Button("Gear").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<InventoryUI>(this).SetTitle(this.Name).Toggle()) as Button;
+            yield return new Button("Needs").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<NeedsMoodsUI>(this).SetTitle(this.Name).Toggle()) as Button;
+            yield return new Button("Stats").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<StatsGui>(this).SetTitle(this.Name).Toggle()) as Button;
 
-            yield return this.btnStats.SetLeftClickAction(b => StatsGui.GetGui(this).Toggle()) as Button;
             if (!this.IsTownMember)
                 yield return this.btnVisitor.SetLeftClickAction(b => this.GetVisitorProperties().ShowGui()) as Button;
         }
+        static readonly (string, Type)[] AvailableInfoTypesTest =
+        [
+            ("Skills", typeof(SkillsUI)),
+            ("Personality", typeof(PersonalityUI)),
+            ("Log", typeof(NpcLogUINew)),
+            ("Gear", typeof(InventoryUI)),
+            ("Needs", typeof(NeedsMoodsUI)),
+            ("Stats", typeof(StatsGui))];
         public bool CanOperate(TargetArgs target)
         {
             if (target.Type != TargetType.Position)

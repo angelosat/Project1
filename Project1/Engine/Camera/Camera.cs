@@ -891,7 +891,7 @@ namespace Start_a_Town_
             fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
 
             this.DrawEntities(scene, objs);
-            map.DrawParticles(this);
+            //map.DrawParticles(this);
             //  // draw entity shadows
             MySpriteBatch shadowsSB = new MySpriteBatch(gd);
             fx.CurrentTechnique = fx.Techniques["EntityShadows"];
@@ -909,6 +909,7 @@ namespace Start_a_Town_
             this.SpriteBatch.Flush();
 
             //  draw particles drawn by entities
+            map.DrawParticles(this);
             fx.CurrentTechnique = fx.Techniques["Particles"];
             fx.CurrentTechnique.Passes["Pass1"].Apply();
             fx.Parameters["s"].SetValue(Block.Atlas.Texture);

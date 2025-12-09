@@ -45,10 +45,11 @@ namespace Start_a_Town_
         {
             var a = this.Actor;
             var t = this.Target;
-            if (a.Net is Net.Client && this.ParticleRects is not null)
+            if (a.Net.IsClient && this.ParticleRects is not null)
             {
                 this.EmitterStrike.Emit(ItemContent.LogsGrayscale.AtlasToken.Atlas.Texture, this.ParticleRects, Vector3.Zero);
                 a.Map.ParticleManager.AddEmitter(this.EmitterStrike);
+                return; /// TODO: separate logic from server and client
             }
             var toolEffect = GetToolEffectiveness();
             var amount = (int)Math.Max(1, toolEffect / WorkDifficulty);

@@ -25,7 +25,7 @@ namespace Start_a_Town_
                 var pos = (IntVec3)target.Global;
                 if (!actor.CanReserve(target))
                     continue;
-                if (!actor.CanReach(target))
+                if (!actor.CanReach(pos))
                     continue;
            
                 if(TaskHelper.TryHaulAside(actor, pos.Above, out var haulAsideTask))

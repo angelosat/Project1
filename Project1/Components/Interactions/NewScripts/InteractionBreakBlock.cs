@@ -70,6 +70,8 @@ namespace Start_a_Town_
 
         protected override void Done()
         {
+            if (this.Actor.Net.IsClient)
+                return;
             var a = this.Actor;
             var t = this.Target;
             var cell = this.Cell;
@@ -78,6 +80,7 @@ namespace Start_a_Town_
                 server.PopLoot(ItemFactory.CreateFrom(productDef, cell.Material), t.Global, Vector3.Zero);
 
             a.Map.RemoveBlock(t.Global);
+            PacketBreakBlocks.Send(a.Map, [t.Global]);
 
             emitBreak();
 

@@ -677,7 +677,7 @@ namespace Start_a_Town_
         }
         public void OnDespawn(MapBase oldMap)
         {
-            if (!this.Map.Remove(this))
+            if (!this.Map.Remove(this)) /// TODO: move this to map.despawn
                 throw new Exception();
             this._map = null;
             foreach (var comp in this.Components.Values.ToList())
@@ -1037,6 +1037,7 @@ namespace Start_a_Town_
             
             return this.Net.DisposeObject(this);
         }
+        [Obsolete("use world.disposeandsync")]
         internal void SyncDispose()
         {
             if (this.Net is Server server)

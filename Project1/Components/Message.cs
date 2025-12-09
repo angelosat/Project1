@@ -31,7 +31,7 @@ namespace Start_a_Town_.Components
             MiningDesignation,
             ObjectDisposed,
             OrderParametersChanged,
-            PlantHarvested,
+            //PlantHarvested,
             PlantReady,
             EntityAttacked,
             ItemOwnerChanged,

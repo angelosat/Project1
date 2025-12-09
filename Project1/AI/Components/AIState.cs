@@ -14,12 +14,12 @@ namespace Start_a_Town_.AI
         public bool Autonomy = true;
         public Queue<AITask> TaskQueue = new();
 
-        private AITask _currentTask;
-        public AITask CurrentTask
-        {
-            get => this._currentTask;
-            set => this._currentTask = value;
-        }
+        //private AITask _currentTask;
+        public AITask CurrentTask;
+        //{
+        //    get => this._currentTask;
+        //    set => this._currentTask = value;
+        //}
 
         private BehaviorPerformTask _currentTaskBehavior;
         public BehaviorPerformTask CurrentTaskBehavior

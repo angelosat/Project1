@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -48,6 +48,37 @@ namespace Start_a_Town_
                     yield return obj;
                 }
             }
+        }
+        public IEnumerable<GameObject> GenerateLoot(RandomThreaded random)
+        {
+            foreach (var i in this.Generate(random))
+                yield return i;
+        }
+        public void PopLoot(RandomThreaded random, Vector3 startPosition, Vector3 startVelocity)
+        {
+            foreach (var obj in this.GenerateLoot(random))
+                PopLoot(random, obj, startPosition, startVelocity);
+        }
+        static void PopLoot(RandomThreaded random, GameObject obj, Vector3 startPosition, Vector3 startVelocity)
+        {
+            double angle = random.NextDouble() * (Math.PI + Math.PI);
+            double w = Math.PI / 4f;
+
+            float verticalForce = .3f;// 0.3f;
+            float horizontalForce = .1f;
+            float x = horizontalForce * (float)(Math.Sin(w) * Math.Cos(angle));
+            float y = horizontalForce * (float)(Math.Sin(w) * Math.Sin(angle));
+            float z = verticalForce * (float)Math.Cos(w);
+
+            var direction = new Vector3(x, y, z);
+            var final = startVelocity + direction;
+
+            obj.Global = startPosition;
+            obj.Velocity = final;
+
+            //if (obj.RefId == 0)
+            //    obj.SyncInstantiate(this);
+            //this.Map.SyncSpawn(obj, startPosition, final);
         }
     }
 }

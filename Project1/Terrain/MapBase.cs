@@ -559,10 +559,16 @@ namespace Start_a_Town_
         {
             if (obj.Map == this)
             {
-                obj.OnDespawn();
+                obj.OnDespawn(this);
                 return true;
             }
             throw new Exception("GameObject.Map mismatch when trying to despawn object");
+            return false;
+        }
+        public bool DespawnAndSync(Entity entity)
+        {
+            if (this.Despawn(entity))
+                PacketEntityDespawn.Send(this.Net as Server, entity);
             return false;
         }
         internal bool Remove(GameObject obj)
@@ -722,7 +728,7 @@ namespace Start_a_Town_
         public void NotifyBlocksChanged(IEnumerable<IntVec3> positions)
         {
             //this.Net.EventOccured((int)Components.Message.Types.BlocksChanged, this, positions);
-            this.Net.Events.Post(new BlocksChangedEvent(this, positions));
+            this.Events.Post(new BlocksChangedEvent(this, positions));
             this.Town.OnBlocksChanged(positions);
         }
         public void NotifyBlockChanged(IntVec3 pos)
@@ -1040,7 +1046,7 @@ namespace Start_a_Town_
         //{
         //    this.Spawn(entity, position, entity.Velocity);
         //}
-        internal void Spawn(Entity entity, Vector3 position, Vector3 velocity)
+        public void Spawn(Entity entity, Vector3 position, Vector3 velocity)
         {
             entity.SetGlobal(position);
             entity.Velocity = velocity;
@@ -1050,7 +1056,11 @@ namespace Start_a_Town_
             entity.OnSpawn(this);
             this.Events.Post(new EntitySpawnedEvent(entity));
         }
-
+        public void SpawnAndSync(Entity entity, Vector3 position, Vector3 velocity)
+        {
+            this.Spawn(entity, position, velocity);
+            PacketSpawnEntity.Send(entity, position, velocity);
+        }
         static MapBase()
         {
 

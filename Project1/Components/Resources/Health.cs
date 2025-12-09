@@ -89,6 +89,8 @@ namespace Start_a_Town_.Components.Resources
         private void HandleEntityHitGround(EntityHitGroundEvent e)
         {
             var actor = e.Entity as Actor;
+            if (actor is null)
+                return;
             var force = e.Force;
             var health = actor.GetResource(ResourceDefOf.Health);
             if (force > 1)

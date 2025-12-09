@@ -12,6 +12,7 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     partial class ItemPreferencesManager : Inspectable, IItemPreferencesManager, ISaveable, ISerializableNew
     {
+        // TODO: item like/dislike registry
         static ItemPreferencesManager()
         {
             Init();
@@ -322,7 +323,7 @@ namespace Start_a_Town_
 
         public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
 
-        public IEnumerable<(IItemPreferenceContext role, Entity item, int score)> EvaluateAll()
+        public IEnumerable<(IItemPreferenceContext role, Entity item, int score)> GetPotential()
         {
             if (notScannedYet.Count == 0)
                 yield break;
@@ -365,6 +366,7 @@ namespace Start_a_Town_
         }
         public void OnDespawn(MapBase oldMap)
         {
+            this.notScannedYet.Clear();
             oldMap.Events.Unsubscribe(this);
         }
         private void enqueueNewSpawnedItem(EntitySpawnedEvent e)

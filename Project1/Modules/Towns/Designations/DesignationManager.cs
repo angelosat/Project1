@@ -68,7 +68,7 @@ namespace Start_a_Town_
             foreach (var r in this.Designations.Values)
                 r.CollectionChanged += this.R_CollectionChanged;
 
-            this.Town.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChanged);
+            this.Town.Map.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChanged);
 
         }
 

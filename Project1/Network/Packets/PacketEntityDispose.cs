@@ -13,7 +13,7 @@ namespace Start_a_Town_
             pPlayerRequest = Registry.PacketHandlers.Register(ReceivePlayerRequest);
         }
 
-        internal static void Send(Server server, int entityID, PlayerData player)
+        internal static void Send(Server server, int entityID)
         {
             //var w = player is null ? server.OutgoingStreamTimestamped : server.GetOutgoingStreamOrderedReliable();
             //w.Write(pServerAction);
@@ -45,7 +45,7 @@ namespace Start_a_Town_
             var id = r.ReadInt32();
             net.DisposeObject(id);
             if (net is Server server)
-                Send(server, id, player);
+                Send(server, id);//, player);
             else
                 throw new System.Exception(); // this shouldn't be handled by clients
         }

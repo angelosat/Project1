@@ -630,10 +630,11 @@ namespace Start_a_Town_.Net
         {
             return this.World.DisposeEntity(netID);
         }
+        [Obsolete("use world.disposeandsync")]
         public void SyncDispose(int refID)
         {
             this.DisposeObject(refID);
-            PacketEntityDispose.Send(this, refID, null);
+            PacketEntityDispose.Send(this, refID);
         }
         public void SetMap(MapBase map)
         {
@@ -693,50 +694,42 @@ namespace Start_a_Town_.Net
         #region Loot
         public override void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity)
         {
-            foreach (var obj in this.GenerateLoot(table))
+            //foreach (var obj in this.GenerateLoot(table))
+            foreach (var obj in table.GenerateLoot(Random))
                 this.PopLoot(obj, startPosition, startVelocity);
         }
+        public RandomThreaded GetRandom() => Random;
         public override void PopLoot(GameObject obj, Vector3 startPosition, Vector3 startVelocity)
         {
-            double angle = Random.NextDouble() * (Math.PI + Math.PI);
-            double w = Math.PI / 4f;
+            //double angle = Random.NextDouble() * (Math.PI + Math.PI);
+            //double w = Math.PI / 4f;
 
-            float verticalForce = .3f;// 0.3f;
-            float horizontalForce = .1f;
-            float x = horizontalForce * (float)(Math.Sin(w) * Math.Cos(angle));
-            float y = horizontalForce * (float)(Math.Sin(w) * Math.Sin(angle));
-            float z = verticalForce * (float)Math.Cos(w);
+            //float verticalForce = .3f;// 0.3f;
+            //float horizontalForce = .1f;
+            //float x = horizontalForce * (float)(Math.Sin(w) * Math.Cos(angle));
+            //float y = horizontalForce * (float)(Math.Sin(w) * Math.Sin(angle));
+            //float z = verticalForce * (float)Math.Cos(w);
 
-            var direction = new Vector3(x, y, z);
-            var final = startVelocity + direction;
+            //var direction = new Vector3(x, y, z);
+            //var final = startVelocity + direction;
 
+            //obj.Global = startPosition;
+            //obj.Velocity = final;
             obj.Global = startPosition;
-            obj.Velocity = final;
+            obj.Velocity = LootManager.RandomPopVelocity(Random);
 
-            if (obj.RefId == 0)
-                obj.SyncInstantiate(this);
-            this.Map.SyncSpawn(obj, startPosition, final);
+
+            //if (obj.RefId == 0)
+            //    obj.SyncInstantiate(this);
+            //this.Map.SyncSpawn(obj, startPosition, final);
         }
-        public IEnumerable<GameObject> GenerateLoot(LootTable lootTable)
-        {
-            foreach (var i in lootTable.Generate(Random))
-                yield return i;
-        }
+        //public IEnumerable<GameObject> GenerateLoot(LootTable lootTable)
+        //{
+        //    foreach (var i in lootTable.Generate(Random))
+        //        yield return i;
+        //}
         #endregion
 
-        public RandomThreaded GetRandom()
-        {
-            return Random;
-        }
-
-        public void SetWorld(WorldBase world)
-        {
-            if (!UnloadWorld())
-                return;
-            this.World = world;
-            if (this.World is not null)
-                this.ConsoleBox.Write(Color.Lime, "SERVER", "World " + World.Name + " loaded");
-        }
         private bool UnloadWorld()
         {
             if (Connections.Count > 0)

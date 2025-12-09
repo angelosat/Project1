@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
 
@@ -31,10 +32,38 @@ namespace Start_a_Town_
 
         protected override void Done()
         {
+            if (this.Actor.Net.IsClient)
+                return;
             var plant = this.Plant;
             var comp = plant.PlantComponent;
             comp.Harvest(plant, this.Actor);
-            comp.CutDown(plant, this.Actor);
+            comp.ChopDown(plant, this.Actor);
+            PacketChopDown.Send(this.Actor, plant);
+        }
+        [EnsureStaticCtorCall]
+        static class PacketChopDown
+        {
+            static readonly int _packetTypeId;
+            static PacketChopDown()
+            {
+                _packetTypeId = Registry.PacketHandlers.Register(Receive);
+            }
+            static public void Send(Actor actor, Plant plant)
+            {
+                var server = actor.Net as Server;
+                server.BeginPacket(_packetTypeId)
+                    .Write(actor.RefId)
+                    .Write(plant.RefId);
+            }
+            private static void Receive(NetEndpoint endpoint, Packet packet)
+            {
+                var client = endpoint as Client;
+                var r = packet.PacketReader;
+                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+                var plant = client.World.GetEntity<Plant>(r.ReadInt32());
+                plant.PlantComponent.Harvest(plant, actor);
+                plant.PlantComponent.ChopDown(plant, actor);
+            }
         }
 
         protected override Color GetParticleColor()

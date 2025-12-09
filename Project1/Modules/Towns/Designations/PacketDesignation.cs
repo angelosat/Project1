@@ -28,7 +28,7 @@ namespace Start_a_Town_
         static public void Send(NetEndpoint net, bool remove, IntVec3 begin, IntVec3 end, DesignationDef designation)
         {
             remove |= designation == null;
-            var w = net.BeginPacketOld(p);
+            var w = net.BeginPacket(p);
             w.Write(remove);
             w.Write((int)SelectionType.Box);
             w.Write(begin);
@@ -45,8 +45,8 @@ namespace Start_a_Town_
             DesignationDef designation;
             if (selectionType == SelectionType.Box)
             {
-                var begin = r.ReadVector3();
-                var end = r.ReadVector3();
+                var begin = r.ReadIntVec3();
+                var end = r.ReadIntVec3();
                 var positions = new BoundingBox(begin, end).GetBoxIntVec3();
                 designation = remove ? null : r.ReadDef<DesignationDef>();
                 if (net is Server)

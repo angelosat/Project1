@@ -882,10 +882,11 @@ namespace Start_a_Town_.Net
                 if (nextSnap is null)
                     nextSnap = prevSnap;
                 var entity = this.World.GetEntity(prevSnap.RefID);
-
-                entity.SetPosition(prevSnap.Position + (prevSnap.Position - prevSnap.Position) * t);
-                entity.Velocity = prevSnap.Velocity + (prevSnap.Velocity - prevSnap.Velocity) * t;
-                entity.Direction = prevSnap.Orientation + (prevSnap.Orientation - prevSnap.Orientation) * t;
+                if (entity is null) /// snapshot for entity that hasn't been spawned but the client yet? silently drop?
+                    continue;
+                entity.SetPosition(prevSnap.Position + (nextSnap.Position - prevSnap.Position) * t);
+                entity.Velocity = prevSnap.Velocity + (nextSnap.Velocity - prevSnap.Velocity) * t;
+                entity.Direction = prevSnap.Orientation + (nextSnap.Orientation - prevSnap.Orientation) * t;
 
                 if (float.IsNaN(entity.Direction.X) || float.IsNaN(entity.Direction.Y))
                     throw new Exception();

@@ -59,8 +59,14 @@ namespace Start_a_Town_
         public void Register(GameObject entity)
         {
             entity.World = this;
+            entity.Net = this.Net;
             foreach(var e in entity.GetSelfAndChildren())
                 this.EntityRegistry.Add(e as Entity);
+        }
+        public void RegisterAndSync(GameObject entity)
+        {
+            this.Register(entity);
+            PacketRegisterEntity.Send(entity);
         }
         public Entity GetEntity(int refId)
         {
@@ -110,21 +116,31 @@ namespace Start_a_Town_
         {
             if (!this.EntityRegistry.TryGetValue(netId, out Entity? o))
                 return false;
+
+            /// TODO: don't flatten, instead make it recursive. detach each child from it's parent before disposing
             foreach (var obj in o.GetSelfAndChildren())
             {
                 $"{this} at {this.Net} disposing {obj.DebugName}".ToConsole();
                 obj.OnDispose();
                 this.EntityRegistry.Remove(obj.RefId);
                 obj.Net = null; // this also makes gameobject.isdisposed return true
-                //obj.RefId = 0; // dont set it to 0 because systems must be able to remove this entity's reference by id
+                                //obj.RefId = 0; // dont set it to 0 because systems must be able to remove this entity's reference by id
+
+                if (obj.IsSpawned || obj.Container is not null || obj.Slot is not null)
+                    throw new Exception("entity must not be spawned, in a container, or in a slot, when disposing");
                 
-                if (obj.IsSpawned)
-                    obj.OnDespawn();
+                    //obj.OnDespawn();
                 //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
                 //    this.DisposeObject(child);
             }
             this.Events.Post(new EntityDisposedEvent(o));
             return true;
+        }
+        public bool DisposeEntityAndSync(Entity entity)
+        {
+            if(this.DisposeEntity(entity.RefId))
+                PacketEntityDispose.Send(this.Net as Server, entity.RefId);
+            return false;
         }
         public EventBus Events { get; } = new();
         

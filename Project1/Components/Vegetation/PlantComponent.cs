@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -218,33 +219,53 @@ namespace Start_a_Town_.Components
             if (yield == 0)
                 return false;
 
-            parent.Net.PopLoot(
-                props.Growth.CreateEntity()
-                , parent.Global, parent.Velocity);
+            if(parent.Net is Server server)
+            {
+                var product = props.Growth.CreateEntity();
+                var rng = server.GetRandom();
+                var velocity = LootManager.RandomPopVelocity(rng);
+                parent.Map.World.Register(product);
+                parent.Map.Spawn(product, parent.Global, velocity);
+                PacketRegisterEntity.Send(product);
+                PacketSpawnEntity.Send(product, parent.Global, velocity);
+            }
 
             this.ResetFruitGrowth(parent);
-            parent.Net.EventOccured((int)Message.Types.PlantHarvested, parent);
+            //parent.Net.EventOccured((int)Message.Types.PlantHarvested, parent);
             return true;
         }
 
-        public void CutDown(GameObject plant, Actor actor)
+        public void ChopDown(GameObject plant, Actor actor)
         {
             var plantdef = this.PlantProperties;
             var yield = (int)(this.GrowthBody.Percentage * plantdef.MaxYieldCutDown);
             if (plantdef.ProductCutDown != null && yield > 0)
             {
-                var product = plantdef.ProductCutDown.CreateFrom(plant.Body.Material ?? MaterialDefOf.LightWood).SetStackSize(yield);
-                actor.Net.PopLoot(product, plant.Global, plant.Velocity);
-
-                /// if the plant doesnt produce fruit, then the only seed source is by cutting the plant itself
-                if(!plantdef.ProducesFruit)
+                if (actor.Net is Server server)
                 {
-                    var seeds = plantdef.CreateSeeds().SetStackSize(yield);
-                    actor.Net.PopLoot(seeds, plant.Global, plant.Velocity);
+                    var rng = server.GetRandom();
+                    var product = plantdef.ProductCutDown.CreateFrom(plant.Body.Material ?? MaterialDefOf.LightWood).SetStackSize(yield) as Entity;
+                    //actor.Net.PopLoot(product, plant.Global, plant.Velocity);
+
+                    actor.Map.World.RegisterAndSync(product);
+                    actor.Map.SpawnAndSync(product, plant.Global, LootManager.RandomPopVelocity(rng));
+
+
+                    /// if the plant doesnt produce fruit, then the only seed source is by cutting the plant itself
+                    if (!plantdef.ProducesFruit)
+                    {
+                        var seeds = plantdef.CreateSeeds().SetStackSize(yield) as Entity;
+                        //actor.Net.PopLoot(seeds, plant.Global, plant.Velocity);
+                        actor.Map.World.RegisterAndSync(seeds);
+                        actor.Map.SpawnAndSync(seeds, plant.Global, LootManager.RandomPopVelocity(rng));
+                    }
                 }
             }
-            plant.OnDespawn();
-            actor.Net.DisposeObject(plant);
+            actor.Map.Despawn(plant);
+            actor.Map.World.DisposeEntityAndSync(plant as Entity);
+            
+            //plant.OnDespawn();
+            //actor.Net.DisposeObject(plant);
         }
 
         private void ResetFruitGrowth(GameObject parent)

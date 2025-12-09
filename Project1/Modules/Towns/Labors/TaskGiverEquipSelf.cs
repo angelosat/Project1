@@ -40,10 +40,7 @@ namespace Start_a_Town_
                 }
             }
 
-            //var allitems = map.GetEntities().OfType<Entity>();
-            var allitems = map.GetEntities<Tool>();
-
-            var allPrefs = manager.EvaluateAll(allitems);
+            var allPrefs = manager.GetPotential();
             foreach(var pref in allPrefs)
             {
                 var item = pref.item;
@@ -55,41 +52,6 @@ namespace Start_a_Town_
                 manager.AddPreference(pref.role, item, pref.score);
                 return new AITask(TaskDefOf.PickUp) { TargetA = item, AmountA = 1 };
             }
-            return null;
-            foreach (var item in allitems)
-            {
-                var roles = manager.FindAllRoles(item);
-                if (!roles.Any())
-                    continue;
-                var finalRoles = roles
-                    .Where(r => jobs.Any(j => j.Enabled && j.Def == r.role))
-                    .Where(r=> manager.GetPreference(r.role, out var existingScore) is var existing && r.score > existingScore);
-                if (!finalRoles.Any())
-                    continue;
-
-                /// TODO: find the best item , dont just pickup the first item. because then the actor will go and and pick up another item
-                /// right now the actor's itempreferencemanager, takes an item and scores it for that actor based on its role. 
-                /// if all checks pass, the itempreference is stored in the manager with the score that was awarded (manager.AddPreference())
-                /// however if next time the taskgiver runs, the next item has a higher score, then the same thing will happen for that item.
-                /// i must pool scores for all items and go for the highest one
-                /// but also somehow prevent scoring all items again every frame . the actor shouldn't scan items every frame to replace his tools with better one. 
-                /// maybe its better to hook to a entityspawnevent and check that if the new spawn item could replace a tool, then make a task
-                /// the manager should hook to the map's onentityspawnevent, and whenever it fires, store tha entity in a notscannedyet queue. 
-                /// then this taskgiver will pull all items from the notscannedyet pool and find the best item to go pick up
-                /// but i must also somehow handle the situtation where while the actor is in the middle of going and picking up a preffered item, that a new item gets spawned that's even better
-                /// then the taskgiver must somehow still run and compare any new items to the one currently going for, and cancel the current behavior
-                /// 
-                /// let's tackle one thing at a time. pooling all item scores. at first step this will pull items form world.getentities, and then it will pull from preferecemanager.getunscanneditems
-
-                if (!actor.CanReserve(item as Entity))
-                    continue;
-                if (!actor.CanReach(item))
-                    continue;
-                foreach (var role in finalRoles)
-                    manager.AddPreference(role.role, item, role.score);
-                return new AITask(TaskDefOf.PickUp) { TargetA = item, AmountA = 1 };
-            }
-
             return null;
         }
         static AITask TryDropUnnecessaryItems(Actor actor)

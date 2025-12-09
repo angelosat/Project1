@@ -38,9 +38,9 @@ namespace Start_a_Town_
             this.GrowthLengthTicks = growthLengthTicks * Ticks.PerSecond;
         }
 
-        public GameObject CreateEntity()
+        public Entity CreateEntity()
         {
-            return this.GrowthItemDef.CreateFrom(this.GrowthMaterial).SetStackSize(this.MaxYieldHarvest);
+            return this.GrowthItemDef.CreateFrom(this.GrowthMaterial).SetStackSize(this.MaxYieldHarvest) as Entity;
         }
     }
 }

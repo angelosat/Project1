@@ -67,6 +67,9 @@ namespace Start_a_Town_.UI
         {
             TintPrimary.PackedValue = uint.TryParse(InterfaceSettings.XTintPrimary.Value, System.Globalization.NumberStyles.HexNumber, null, out uint packed) ? packed : TintPrimaryDefault.PackedValue;
             TintSecondary.PackedValue = uint.TryParse(InterfaceSettings.XTintSecondary.Value, System.Globalization.NumberStyles.HexNumber, null, out packed) ? packed : TintSecondaryDefault.PackedValue;
+            /// hack to quickly test another color
+            TintPrimary = new Color(20,20,20, 255);
+            TintSecondary = TintPrimary;
         }
 
         public static Texture2D FrameSprite, SlotSprite, DefaultButtonSprite, DefaultIconButtonSprite, ItemSheet, DefaultProgressBar, DefaultProgressBarStrip, ProgressBarBorder, DefaultDropdownSprite, DefaultLoadingSprite,

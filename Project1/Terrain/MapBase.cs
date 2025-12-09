@@ -559,7 +559,7 @@ namespace Start_a_Town_
         {
             if (obj.Map == this)
             {
-                obj.Despawn();
+                obj.OnDespawn();
                 return true;
             }
             throw new Exception("GameObject.Map mismatch when trying to despawn object");
@@ -1019,25 +1019,36 @@ namespace Start_a_Town_
         }
         internal void SyncSpawn(GameObject obj)
         {
-            obj.Spawn(this);
+            //obj.Spawn(this);
+            this.Spawn(obj as Entity);
             Packets.SendSpawnEntity(this.Net, obj, this, obj.Global, obj.Velocity);
         }
         internal void SyncSpawnUntimestamped(GameObject obj)
         {
-            obj.Spawn(this);
+            //obj.Spawn(this);
+            this.Spawn(obj as Entity);
             Packets.SendSpawnEntityUntimestamped(this.Net, obj, this, obj.Global, obj.Velocity);
         }
         internal virtual void OnHudCreated(Hud hud)
         {
         }
-
+        internal void Spawn(Entity entity)
+        { 
+            this.Spawn(entity, entity.Global, entity.Velocity);
+        }
+        //internal void Spawn(Entity entity, Vector3 position)
+        //{
+        //    this.Spawn(entity, position, entity.Velocity);
+        //}
         internal void Spawn(Entity entity, Vector3 position, Vector3 velocity)
         {
             entity.SetGlobal(position);
             entity.Velocity = velocity;
             entity.Net = this.Net;
             entity.Map = this;
-            entity.OnSpawnNew();
+            this.Add(entity);
+            entity.OnSpawn(this);
+            this.Events.Post(new EntitySpawnedEvent(entity));
         }
 
         static MapBase()

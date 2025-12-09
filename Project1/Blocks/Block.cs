@@ -730,7 +730,8 @@ namespace Start_a_Town_
             // TODO: handle case where we split the stack when dropping it. instantiate new object with server etc...
 
             // WARNING spawning the item locally by calling its own method because we dont want the server to syncspawn, as is the case my calling server.spawn at the moment
-            dropped.Spawn(actor.Map, target.Global + target.Face + target.Precise);
+            //dropped.Spawn(actor.Map, target.Global + target.Face + target.Precise);
+            actor.Map.Spawn(dropped as Entity, target.Global + target.Face + target.Precise, Vector3.Zero);
         }
 
         public static MaterialDef GetBlockMaterial(MapBase map, IntVec3 global)

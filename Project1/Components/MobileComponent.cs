@@ -211,10 +211,9 @@ namespace Start_a_Town_.Components
         //    }
         //    return false;
         //}
-        public override void OnSpawn()
+        public override void OnSpawn(MapBase newMap)
         {
-            base.OnSpawn();
-            this.Parent.Map.Events.ListenTo<EntityHitGroundEvent>(HandleEntityHitGround);
+            newMap.Events.ListenTo<EntityHitGroundEvent>(HandleEntityHitGround);
         }
 
         private void HandleEntityHitGround(EntityHitGroundEvent e)

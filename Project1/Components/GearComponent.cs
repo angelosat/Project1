@@ -131,7 +131,7 @@ namespace Start_a_Town_
 
             // despawn item's entity from world (if it's spawned in the world)
             if (t.IsSpawned)
-                t.Despawn();
+                t.OnDespawn();
 
             // attempt to store current equipped item in inventory, otherwise drop it if inventory is full
             
@@ -160,7 +160,7 @@ namespace Start_a_Town_
             if (item == previousItem)
                 return false;
 
-            item.Despawn(); // in case the item is equipped from the world instead of from the inventory
+            item.OnDespawn(); // in case the item is equipped from the world instead of from the inventory
                             // DESPAWN BEFORE EQUIPPING because then the item's global become's the actor's global and the item is despawned from the wrong chunk!
 
             gearSlot.SetObject(item);

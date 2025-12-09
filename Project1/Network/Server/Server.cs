@@ -595,7 +595,7 @@ namespace Start_a_Town_.Net
             "connection closed".ToConsole();
             Instance.Players.Remove(existing.Player);
             if (existing.Player.IsActive)
-                existing.Player.ControllingEntity.Despawn();
+                existing.Player.ControllingEntity.OnDespawn();
             Instance.DisposeObject(existing.Player.CharacterID);
             PacketPlayerDisconnected.Send(Instance, existing.Player.ID);
         }

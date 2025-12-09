@@ -426,7 +426,7 @@ namespace Start_a_Town_
                 }
             }
         }
-        public override void OnSpawn()
+        public override void OnSpawn(MapBase newMap)
         {
             this.Enabled = true;
             this.Parent.Map.Events.ListenTo<EntityCollisionEvent>(this.HandleCollision);

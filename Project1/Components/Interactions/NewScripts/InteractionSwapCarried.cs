@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Animations;
+﻿using Microsoft.Xna.Framework;
+using Start_a_Town_.Animations;
 
 namespace Start_a_Town_
 {
@@ -29,7 +30,8 @@ namespace Start_a_Town_
             var actor = a as Actor;
             var prevCarried = actor.Hauled;
             prevCarried.Slot.Clear();
-            prevCarried.Spawn(a.Map, global);
+            //prevCarried.Spawn(a.Map, global);
+            a.Map.Spawn(prevCarried as Entity, global, Vector3.Zero);
             actor.Inventory.Haul(item);
         }
     }

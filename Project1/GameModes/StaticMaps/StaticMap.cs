@@ -1007,8 +1007,10 @@ namespace Start_a_Town_
                 } while (!this.IsStandableIn(current));
                 actor.Global = current;
                 //actor.Spawn(this, current);
-                this.Add(actor);
-                actor.OnSpawnNew();
+
+                //this.Add(actor);
+                //actor.OnSpawnNew(this);
+                this.Spawn(actor);//
             }
         }
     }

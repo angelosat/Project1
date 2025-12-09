@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
     internal sealed class Item : Entity
     {

@@ -48,8 +48,8 @@ namespace Start_a_Town_
             {
                 if (entity.RefId != 0)
                     throw new Exception();
-                net.Instantiate(entity);
-                entity.Spawn(net.Map);
+                net.World.Register(entity);
+                net.Map.Spawn(entity as Entity);
                 entity.Write(strem);
             }
         }
@@ -61,13 +61,12 @@ namespace Start_a_Town_
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                //var length = r.ReadInt32();
-                //var data = r.ReadBytes(length);
-                //var entity = Network.Deserialize<GameObject>(data, GameObject.Create);
                 var entity = GameObject.Create(r);
-                net.Instantiate(entity);
+                //net.Instantiate(entity);
+                net.World.Register(entity);
                 if (entity.Exists)
-                    entity.Spawn(net.Map);
+                    //entity.Spawn(net.Map);
+                    net.Map.Spawn(entity as Entity);
             }
         }
     }

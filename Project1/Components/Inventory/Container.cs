@@ -114,7 +114,7 @@ namespace Start_a_Town_.Components
                 // TODO: handle case where stacksize exceeds stackmax
                 firstStack.StackSize += obj.StackSize;
                 // merge objects to existins object in slot, despawn and dispose old one
-                obj.Despawn();
+                obj.OnDespawn();
                 net.DisposeObject(obj);
                 return true;
             }
@@ -130,7 +130,7 @@ namespace Start_a_Town_.Components
                 return false;
             }
             firstEmpty.SetObject(obj);
-            obj.Despawn();
+            obj.OnDespawn();
             return true;
 
         }
@@ -160,7 +160,7 @@ namespace Start_a_Town_.Components
                 // TODO: handle case where stacksize exceeds stackmax
                 firstStack.StackSize += obj.StackSize;
                 // merge objects to existins object in slot, despawn and dispose old one
-                obj.Despawn();
+                obj.OnDespawn();
                 net.DisposeObject(obj);
                 objSlot.Clear();
                 return true;
@@ -174,7 +174,7 @@ namespace Start_a_Town_.Components
             if (firstEmpty is null)
                 return false;
             firstEmpty.SetObject(obj);
-            obj.Despawn();
+            obj.OnDespawn();
             objSlot.Clear();
             return true;
         }

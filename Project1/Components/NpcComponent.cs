@@ -156,7 +156,7 @@ namespace Start_a_Town_
             tag.TryGetTagValue<string>("LastName", v => this.LastName = v);
         }
        
-        public override void OnDespawn()
+        public override void OnDespawnExtra(MapBase oldMap)
         {
             NpcDirectory.Remove(this.Parent);
         }

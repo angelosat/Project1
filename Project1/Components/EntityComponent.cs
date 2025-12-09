@@ -50,8 +50,14 @@ namespace Start_a_Town_.Components
 
         public virtual void Initialize(GameObject parent) { }
         public virtual void Randomize(GameObject parent, RandomThreaded random) { this.Initialize(parent); }
-        public virtual void OnSpawn() { }
-        public virtual void OnDespawn() { }
+        public virtual void OnSpawn(MapBase newMap) { }
+        public void OnDespawn(MapBase oldmap) 
+        {
+            oldmap.Events.Unsubscribe(this);
+            this.OnDespawnExtra(oldmap);
+        }
+
+        public virtual void OnDespawnExtra(MapBase oldmap) { }
         public virtual void OnDispose() { }
 
         public virtual void OnObjectCreated(GameObject parent) { }
@@ -154,5 +160,6 @@ namespace Start_a_Town_.Components
         internal virtual void ResolveReferences()
         {
         }
+
     }
 }

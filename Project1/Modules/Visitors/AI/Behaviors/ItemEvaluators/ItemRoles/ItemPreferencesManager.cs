@@ -35,6 +35,8 @@ namespace Start_a_Town_
         static readonly Dictionary<GearType, ItemRole> ItemRolesGear = new();
         static readonly Dictionary<JobDef, ItemRole> ItemRolesTool = new();
 
+        readonly Queue<Entity> notScannedYet = new();
+
         static void GenerateItemRolesGear()
         {
             var geardefs = GearType.Dictionary.Values;
@@ -232,6 +234,8 @@ namespace Start_a_Town_
         }
 
         Control _gui;
+        private Action _unsubscribe;
+
         public Control Gui => this._gui ??= this.GetGui();
         Control GetGui()
         {
@@ -318,12 +322,17 @@ namespace Start_a_Town_
 
         public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
 
-        public IEnumerable<(IItemPreferenceContext role, Entity item, int score)> EvaluateAll(IEnumerable<Entity> allitems)
+        public IEnumerable<(IItemPreferenceContext role, Entity item, int score)> EvaluateAll()
         {
+            if (notScannedYet.Count == 0)
+                yield break;
             var jobs = this.Actor.GetJobs();
             var dic = new Dictionary<IItemPreferenceContext, (Entity item, int score)>();
-            foreach (var item in allitems)
+            while(notScannedYet.Count > 0)
             {
+                var item = notScannedYet.Dequeue();
+                if (this.Actor.Map != item.Map)
+                    continue;
                 var roles = this.FindAllRoles(item);
                 if (!roles.Any())
                     continue;
@@ -346,6 +355,21 @@ namespace Start_a_Town_
 
             foreach (var vk in dic)
                 yield return (vk.Key, vk.Value.item, vk.Value.score);
+        }
+
+        public void OnSpawn(MapBase newMap)
+        {
+            foreach (var i in newMap.GetEntities<Item>())
+                this.notScannedYet.Enqueue(i);
+            newMap.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
+        }
+        public void OnDespawn(MapBase oldMap)
+        {
+            oldMap.Events.Unsubscribe(this);
+        }
+        private void enqueueNewSpawnedItem(EntitySpawnedEvent e)
+        {
+            this.notScannedYet.Enqueue(e.Entity);
         }
 
         [EnsureStaticCtorCall]

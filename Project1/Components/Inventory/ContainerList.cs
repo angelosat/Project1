@@ -84,7 +84,7 @@ namespace Start_a_Town_
             //if (item.Net.IsClient)
             //    throw new Exception();
             if (item.IsSpawned)
-                item.Despawn();
+                item.OnDespawn();
             item.Container?.Remove(item);
             item.Slot?.Clear();
             item.Container = this;

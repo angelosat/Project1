@@ -243,7 +243,7 @@ namespace Start_a_Town_.Components
                     actor.Net.PopLoot(seeds, plant.Global, plant.Velocity);
                 }
             }
-            plant.Despawn();
+            plant.OnDespawn();
             actor.Net.DisposeObject(plant);
         }
 
@@ -254,10 +254,9 @@ namespace Start_a_Town_.Components
             parent.Body.Sprite = Sprite.Load(this.PlantProperties.TextureGrowing);
             this.Parent.Body.FindBone(BoneDefOf.PlantFruit).Sprite = null;
         }
-        public override void OnSpawn()
+        public override void OnSpawn(MapBase newMap)
         {
-            base.OnSpawn();
-            this.Parent.Map.Events.ListenTo<EntityCollisionEvent>(HandleCollisionEvent);
+            newMap.Events.ListenTo<EntityCollisionEvent>(HandleCollisionEvent);
         }
 
         private void HandleCollisionEvent(EntityCollisionEvent e)

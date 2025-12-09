@@ -177,15 +177,13 @@ namespace Start_a_Town_
             foreach (var r in this.Resources)
                 r.Resolve(this.Parent as Entity);
         }
-        public override void OnSpawn()
+        public override void OnSpawn(MapBase newMap)
         {
-            base.OnSpawn();
             foreach (var r in this.Resources)
                 r.Resolve(this.Parent as Entity);
         }
-        public override void OnDespawn()
+        public override void OnDespawnExtra(MapBase oldMap)
         {
-            base.OnDespawn();
             foreach (var r in this.Resources)
                 r.OnDespawn(this.Parent as Entity);
         }

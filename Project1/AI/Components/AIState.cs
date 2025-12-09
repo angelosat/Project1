@@ -3,7 +3,6 @@ using Start_a_Town_.AI.Behaviors;
 using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_.AI

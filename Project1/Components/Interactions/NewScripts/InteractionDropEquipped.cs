@@ -22,7 +22,8 @@ namespace Start_a_Town_
             var slot = a.Gear.GetSlot(this.Type);
             if (slot.Object == null)
                 return;
-            slot.Object.Spawn(a.Map, a.Global + new Vector3(0, 0, a.Physics.Height));
+            //slot.Object.Spawn(a.Map, a.Global + new Vector3(0, 0, a.Physics.Height));
+            a.Map.Spawn(slot.Object as Entity, a.Global + new Vector3(0, 0, a.Physics.Height), Vector3.Zero);
             slot.Clear();
         }
         public override object Clone()

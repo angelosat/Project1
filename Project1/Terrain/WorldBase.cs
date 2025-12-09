@@ -119,7 +119,7 @@ namespace Start_a_Town_
                 //obj.RefId = 0; // dont set it to 0 because systems must be able to remove this entity's reference by id
                 
                 if (obj.IsSpawned)
-                    obj.Despawn();
+                    obj.OnDespawn();
                 //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
                 //    this.DisposeObject(child);
             }

@@ -52,7 +52,8 @@ namespace Start_a_Town_
                 }
             }
             else
-                newobj.Spawn(actor.Map, newGlobal);
+                //newobj.Spawn(actor.Map, newGlobal);
+                actor.Map.Spawn(newobj as Entity, newGlobal, Vector3.Zero);
             if (obj == newobj)
                 slot.Clear();
         }

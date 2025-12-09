@@ -87,11 +87,16 @@ namespace Start_a_Town_
                 this.Root.Tick(parent as Actor, this.State);
         }
 
-        public override void OnSpawn()
+        public override void OnSpawn(MapBase newMap)
         {
             this.State.Leash = this.Parent.Global;
             //this._unListen = this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
             this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
+            this.State.ItemPreferences.OnSpawn(newMap);
+        }
+        public override void OnDespawnExtra(MapBase oldmap)
+        {
+            this.State.ItemPreferences.OnDespawn(oldmap);
         }
         public override void OnObjectSynced(GameObject parent)
         {

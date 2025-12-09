@@ -277,7 +277,7 @@ namespace Start_a_Town_
                 if (value == 0)
                 {
                     if (this.IsSpawned)
-                        this.Despawn();
+                        this.OnDespawn();
 
                     if (this.Slot != null)
                         this.Slot.Clear();
@@ -667,64 +667,58 @@ namespace Start_a_Town_
 
             tooltip.AddControlsBottomLeft(new Label(string.Format("InstanceID: {0}", this.RefId)));
         }
-        [Obsolete("use map.despawn instead")]
-        public void Despawn()
+        [Obsolete("use ondespawn(mapbase oldmap) instead")]
+        public void OnDespawn()
         {
             if (!this.IsSpawned)
                 return;
             var oldmap = this.Map;
+            this.OnDespawn(oldmap);
+        }
+        public void OnDespawn(MapBase oldMap)
+        {
             if (!this.Map.Remove(this))
                 throw new Exception();
             this._map = null;
             foreach (var comp in this.Components.Values.ToList())
-                comp.OnDespawn();
+                comp.OnDespawn(oldMap);
 
-            oldmap.EventOccured(Message.Types.EntityDespawned, this);
-            oldmap.Events.Post(new EntityDespawnedEvent(this as Entity));
-            oldmap.Events.Unsubscribe(this);
+            oldMap.EventOccured(Message.Types.EntityDespawned, this);
+            oldMap.Events.Post(new EntityDespawnedEvent(this as Entity));
+            oldMap.Events.Unsubscribe(this);
             //this.Unreserve(); // UNDONE dont unreserve here because the ai might continue manipulating (placing/carrying) the item during the same behavior
         }
-        public virtual void OnSpawnNew()
+        
+        internal virtual void OnSpawn(MapBase newMap)
         {
-            foreach (var comp in this.Components.Values)
-                comp.OnSpawn();
-        }
-        protected virtual void OnSpawn(MapBase map)
-        {
-            this.Net = map.Net;
+            this.Net = newMap.Net;
             //this.Container?.Remove(this);
             this.Parent = null;
-
-            if (!map.TryGetChunk(this.Global, out var chunk))
+            this.Map = newMap;
+            if (!newMap.TryGetChunk(this.Global, out var chunk))
                 throw new Exception("Chunk not loaded");
 
-            map.Add(this);
             foreach (var comp in this.Components.Values)
-                comp.OnSpawn();
-
-            //this.Map.EventOccured(Message.Types.EntitySpawned, this);
-            this.Map.Events.Post(new EntitySpawnedEvent(this as Entity));
+                comp.OnSpawn(newMap);
         }
-        class EntitySpawnedEvent(Entity entity) : EventPayloadBase
-        {
-            public Entity Entity = entity;
-        }
-        public void Spawn(MapBase map, Vector3 global)
-        {
-            this.Global = global;
-            this.Spawn(map);
-        }
-        public void Spawn(MapBase map)
-        {
-            var net = map.Net;
-            this.Net = net;
-            this.Map = map;
-            this.OnSpawn(map);
-        }
+      
+        //public void Spawn(MapBase map, Vector3 global)
+        //{
+        //    this.Global = global;
+        //    this.Spawn(map);
+        //}
+        //public void Spawn(MapBase map)
+        //{
+        //    var net = map.Net;
+        //    this.Net = net;
+        //    this.Map = map;
+        //    this.OnSpawn(map);
+        //}
         public void SyncSpawnNew(MapBase map)
         {
             if (this.RefId != 0)
-                this.Spawn(map);
+                //this.Spawn(map);
+                map.Spawn(this as Entity);
             if (map.Net is not Server)
                 return;
             SyncInstantiate(map.Net as NetEndpoint);
@@ -1543,7 +1537,7 @@ namespace Start_a_Town_
                 return;
 
             this.StackSize += obj.StackSize;
-            obj.Despawn();
+            obj.OnDespawn();
             obj.Dispose();
         }
         public void SyncAbsorb(GameObject obj)

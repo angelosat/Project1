@@ -133,7 +133,9 @@ namespace Start_a_Town_.Components
                 PacketActorHaulUpdate.Send(parent as Actor, null);
             }
             thrownItem.Velocity = velocity;
-            thrownItem.Spawn(parent.Map, parent.Global + parent.Height * Vector3.UnitZ);
+            //thrownItem.Spawn(parent.Map, parent.Global + parent.Height * Vector3.UnitZ);
+            parent.Map.Spawn(thrownItem as Entity, parent.Global + parent.Height * Vector3.UnitZ, Vector3.Zero);
+
             // todo packet spawn
             PacketSpawnEntity.Send(thrownItem, parent.Global + parent.Height * Vector3.UnitZ, velocity);
         }
@@ -188,7 +190,9 @@ namespace Start_a_Town_.Components
                 //obj = slot.Object.Clone();
                 //obj.StackSize = amount;
             }
-            item.Spawn(parent.Map, parent.Global + new Vector3(0, 0, parent.Physics.Height));
+            //item.Spawn(parent.Map, parent.Global + new Vector3(0, 0, parent.Physics.Height));
+            parent.Map.Spawn(item as Entity, parent.Global + new Vector3(0, 0, parent.Physics.Height), Vector3.Zero);
+
             //item.StackSize -= amount;
             return item;
         }
@@ -225,7 +229,9 @@ namespace Start_a_Town_.Components
                 throw new Exception();
             this.Contents.Remove(item);
             item.Container = null;
-            item.Spawn(parent.Map, parent.Global + new Vector3(0, 0, parent.Physics.Height));
+            //item.Spawn(parent.Map, parent.Global + new Vector3(0, 0, parent.Physics.Height));
+            parent.Map.Spawn(item as Entity, parent.Global + new Vector3(0, 0, parent.Physics.Height), Vector3.Zero);
+
         }
 
         void SlotInteraction(GameObject parent, GameObject actor, GameObjectSlot slot)
@@ -373,14 +379,14 @@ namespace Start_a_Town_.Components
                 if (current.CanAbsorb(obj))
                 {
                     current.StackSize++;
-                    obj.Despawn();
+                    obj.OnDespawn();
                     net.DisposeObject(obj);
                     return true;
                 }
 
             this.Throw(Vector3.Zero, true); //or store carried object in backpack? (if available)
 
-            obj.Despawn();
+            obj.OnDespawn();
             this.HaulSlot.Object = obj;
             return true;
         }

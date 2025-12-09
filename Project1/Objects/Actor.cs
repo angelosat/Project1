@@ -599,7 +599,7 @@ namespace Start_a_Town_
         {
             return this.GetVisitorProperties().AcceptQuest(quest);
         }
-        protected override void OnSpawn(MapBase map)
+        internal override void OnSpawn(MapBase map)
         {
             base.OnSpawn(map);
             if (this.GetVisitorProperties() is VisitorProperties props)

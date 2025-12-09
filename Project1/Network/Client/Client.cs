@@ -679,7 +679,7 @@ namespace Start_a_Town_.Net
             this.Players.Remove(player);
             if (Instance.Map != null && player.ControllingEntity != null)
             {
-                Instance.World.Entities[player.CharacterID].Despawn();
+                Instance.World.Entities[player.CharacterID].OnDespawn();
                 Instance.World.DisposeEntity(player.CharacterID);
             }
             Log.Network(this, $"{player.Name} disconnected");

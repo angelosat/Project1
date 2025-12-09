@@ -10,7 +10,7 @@ namespace Start_a_Town_
             // TODO flag jobs for which a tool is already acquired so as to not recheck everything all the time
             if (!actor.IsTownMember)
                 return null; // TODO instead of doing this, check if the tool is claimable
-            if (DropUnnecessaryItems(actor) is AITask task)
+            if (TryDropUnnecessaryItems(actor) is AITask task)
                 return task;
             var map = actor.Map;
             var jobs = actor.GetJobs();
@@ -63,7 +63,7 @@ namespace Start_a_Town_
 
             return null;
         }
-        static AITask DropUnnecessaryItems(Actor actor)
+        static AITask TryDropUnnecessaryItems(Actor actor)
         {
             if (actor.Inventory.All.FirstOrDefault(i => !actor.ItemPreferences.IsPreference(i)) is Entity item)
                 //return new AITask(typeof(TaskBehaviorDropInventoryItem), item);

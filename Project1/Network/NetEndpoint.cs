@@ -65,7 +65,9 @@ namespace Start_a_Town_.Net
         public abstract PlayerData GetPlayer(int id);
         public abstract PlayerData GetPlayer();
         public abstract IEnumerable<PlayerData> GetPlayers();
+        [Obsolete("use world.register instead")]
         public abstract GameObject Instantiate(GameObject obj);
+        [Obsolete("use world.register instead")]
         public abstract void Instantiator(GameObject o);
         public abstract bool LogStateChange(int netID);
         public abstract void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);

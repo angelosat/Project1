@@ -51,10 +51,16 @@ namespace Start_a_Town_
         readonly EntityRegistry EntityRegistry = [];
         public IReadOnlyDictionary<int, Entity> Entities => this.EntityRegistry;
         public ReadOnlyObservableCollection<Entity> EntitiesObservable => this.EntityRegistry.Entities;
-        public void Register(Entity entity)
+        public void RegisterOld(Entity entity)
         {
             entity.World = this;
             this.EntityRegistry.Add(entity);
+        }
+        public void Register(GameObject entity)
+        {
+            entity.World = this;
+            foreach(var e in entity.GetSelfAndChildren())
+                this.EntityRegistry.Add(e as Entity);
         }
         public Entity GetEntity(int refId)
         {

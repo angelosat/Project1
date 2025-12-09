@@ -555,7 +555,16 @@ namespace Start_a_Town_
             }
             return list;
         }
-
+        public bool Despawn(GameObject obj)
+        {
+            if (obj.Map == this)
+            {
+                obj.Despawn();
+                return true;
+            }
+            throw new Exception("GameObject.Map mismatch when trying to despawn object");
+            return false;
+        }
         internal bool Remove(GameObject obj)
         {
             return this.GetChunk(obj.Global).Remove(obj);

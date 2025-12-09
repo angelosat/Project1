@@ -600,19 +600,17 @@ namespace Start_a_Town_.Net
             PacketPlayerDisconnected.Send(Instance, existing.Player.ID);
         }
 
+        [Obsolete("use world.register instead")]
         public override GameObject Instantiate(GameObject obj)
         {
             foreach (var o in obj.GetSelfAndChildren())
                 this.Instantiator(o);
             return obj;
         }
+        [Obsolete("use world.register instead")]
         public override void Instantiator(GameObject obj)
         {
-            //if (obj.RefId == 0)
-            //    obj.RefId = _refIdSequence++;// GetNextObjID();
-            //else
-            //    _refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
-            this.World.Register(obj as Entity);
+            this.World.RegisterOld(obj as Entity);
             obj.Net = this;
         }
 

@@ -192,6 +192,32 @@ namespace Start_a_Town_.Components
             //item.StackSize -= amount;
             return item;
         }
+        public void HaulNew(GameObject target, int amount)
+        {
+            GameObject finalItem;
+            var actor = this.Parent as Actor;
+            if (!target.IsHaulable)
+                throw new Exception();
+            if (amount == 0)
+                throw new Exception("Amount must be initialized");
+            if (amount < 0)
+                amount = target.StackSize;
+            if (amount > target.StackSize)
+                throw new Exception("Cannot take more than stack size");
+            if (amount < target.StackSize)
+            {
+                target.StackSize -= amount;
+                PacketSetStackSize.Send(target, target.StackSize);
+                finalItem = target.Clone();
+                actor.World.Register(finalItem);
+                PacketRegisterEntity.Send(finalItem);
+            }
+            else
+                finalItem = target;
+            actor.Inventory.HaulSlot.SetItem(finalItem, out var _);/// putting the item in the gameobjectslot, removes it from its current container or despawns it, so no need to send packetremoveinventoryitem
+            PacketActorHaulUpdate.Send(actor, finalItem as Entity); 
+        }
+
         public void Drop(GameObject item)
         {
             var parent = this.Parent;
@@ -200,33 +226,6 @@ namespace Start_a_Town_.Components
             this.Contents.Remove(item);
             item.Container = null;
             item.Spawn(parent.Map, parent.Global + new Vector3(0, 0, parent.Physics.Height));
-        }
-        public void HaulFromInventory(GameObject obj, int amount = -1)
-        {
-            if (amount == 0)
-                throw new Exception();
-            amount = amount == -1 ? obj.StackSize : amount;
-            var slots = this.Contents;
-            var parent = this.Parent;
-            var currentAmount = obj.StackSize;
-            if (amount > currentAmount)
-                throw new Exception();
-            else if (amount == currentAmount)
-            {
-                this.Haul(obj);
-            }
-            else if (amount < currentAmount)
-            {
-                obj.StackSize -= amount;
-                if (parent.Net is Server server)
-                {
-                    var splitItem = obj.Clone();
-                    splitItem.StackSize = amount;
-                    splitItem.SyncInstantiate(server);
-                    Packets.SyncSetHaulSlot(server, parent as Actor, splitItem as Entity);
-                    this.Haul(splitItem);
-                }
-            }
         }
 
         void SlotInteraction(GameObject parent, GameObject actor, GameObjectSlot slot)

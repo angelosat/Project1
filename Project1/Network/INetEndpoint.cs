@@ -21,7 +21,7 @@ namespace Start_a_Town_
         IEnumerable<PlayerData> GetPlayers();
         PlayerData GetPlayer(int id);
         PlayerData GetPlayer();
-
+        [Obsolete("use world.register instead")]
         GameObject Instantiate(GameObject obj);
 
         bool DisposeObject(GameObject obj);

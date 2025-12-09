@@ -53,33 +53,7 @@ namespace Start_a_Town_
                 // new: if inventoryable insert to inventory, if carryable carry
                 // dont carry inventoriables (test)
                 case TargetType.Entity:
-                    if (actor.Inventory.Contains(target.Object))
-                    {
-                        if (this.Amount > 0 && this.Amount <= target.Object.StackSize)
-                            throw new NotImplementedException();
-                        //actor.Inventory.HaulFromInventory(target.Object, this.Amount);
-                        actor.Inventory.Remove(target.Object);
-                        actor.Inventory.HaulSlot.Object = target.Object;
-                        PacketActorHaulUpdate.Send(actor, target.Object as Entity); // putting the item in the gameobjectslot, removes it from its current container, so no need to send packetremoveinventoryitem
-                        //PacketRemoveInventoryItem.Send(actor, target.Object as Entity);
-                        break;
-                    }
-                    var containerGlobal = target.Global;
-                    var prevStackSize = target.Object.StackSize;
-
-                    if (!target.Object.IsHaulable)
-                        throw new Exception();
-                    if (this.Amount > target.Object.StackSize)
-                        throw new Exception();
-                    //actor.Inventory.PickUp(target.Object, this.Amount == -1 ? target.Object.StackSize : this.Amount);
-                    //actor.Inventory.HaulSlot.Object = target.Object;
-
-                    // TODO if picking up partial object, send instantiate packet for new split item first
-                    PacketActorPickUp.Send(actor, target.Object as Entity);
-
-                    // if target was in container, remove it from its contents
-                    if (this.Amount == prevStackSize && actor.Map.GetBlockEntity(containerGlobal) is BlockStorage.BlockStorageEntity container)
-                        container.Remove(target.Object);
+                    actor.Inventory.HaulNew(target.Object, this.Amount);
                     break;
 
 

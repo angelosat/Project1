@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SharpDX.Direct3D9;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
+using System;
+using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
@@ -13,7 +14,7 @@ namespace Start_a_Town_
             get { return this.ContainerNew == null ? this._Filter : this.ContainerNew.Filter; }
             set { this._Filter = value; }
         }
-        public Action<GameObject> ObjectChanged = o => { };
+        public Action<GameObject> ObjectChangedAction = o => { };
         public string Name = "";
         public ItemContainer Container { get; set; }
         public Container ContainerNew;
@@ -54,7 +55,7 @@ namespace Start_a_Town_
                 var old = this._link;
                 this._link = value;
                 if (old != this._link)
-                    ObjectChanged(this._link);
+                    ObjectChangedAction(this._link);
             }
         }
         GameObject _object;
@@ -64,7 +65,8 @@ namespace Start_a_Town_
         /// </summary>
         public virtual GameObject Object
         {
-            get => this.Link ?? _object; 
+            get => this.Link ?? _object;
+            [Obsolete]
             set
             {
                 if (value is not null)
@@ -73,11 +75,11 @@ namespace Start_a_Town_
                 if (this._object != null)
                     this._object.Slot = null;
                 _object = value;
-                ObjectChanged(value);
+                ObjectChangedAction(value);
                 OnObjectChanged();
                 if (value != null)
                 {
-                    value.Container?.Remove(value);
+                    var _ = value.Container?.Remove(value) ?? value.Map?.Despawn(value);
                     if (value.Slot is not null && value.Slot != this)
                         value.Slot.Clear();
                     value.Slot = this;
@@ -140,7 +142,31 @@ namespace Start_a_Town_
             this.Object = obj;
             return this;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newItem"></param>
+        /// <returns>The previous item (or null) the slot held.</returns>
+        public bool SetItem(GameObject newItem, out GameObject prevItem)
+        {
+            prevItem = this._object;
+            if (newItem is not null && !this.Filter(newItem))
+                    return false;
+            if (this._object != null)
+                this._object.Slot = null;
+            this._object = newItem;
+            this.ObjectChangedAction(newItem);
+            this.OnObjectChanged();
+            if (newItem != null)
+            {
+                var _ = newItem.Container?.Remove(newItem) ?? newItem.Map?.Despawn(newItem);
+                if (newItem.Slot is not null && newItem.Slot != this)
+                    newItem.Slot.Clear();
+                newItem.Slot = this;
+                newItem.Parent = this.Parent;
+            }
+            return true;
+        }
         public override string ToString()
         {
             return $"{this.ID}: {(!string.IsNullOrWhiteSpace(this.Name) ? this.Name + ":" : "")} + {(Object is not null ? Object.Name + $" ({StackSize})" : "<empty>")}";

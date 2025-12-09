@@ -671,7 +671,7 @@ namespace Start_a_Town_
 
             tooltip.AddControlsBottomLeft(new Label(string.Format("InstanceID: {0}", this.RefId)));
         }
-
+        [Obsolete("use map.despawn instead")]
         public void Despawn()
         {
             if (!this.IsSpawned)

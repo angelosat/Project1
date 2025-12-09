@@ -647,6 +647,7 @@ namespace Start_a_Town_.Net
         /// </summary>
         /// <param name="ob"></param>
         /// <returns></returns>
+        [Obsolete("use world.register instead")]
         public override GameObject Instantiate(GameObject ob)
         {
             foreach (var obj in ob.GetSelfAndChildren())
@@ -658,11 +659,11 @@ namespace Start_a_Town_.Net
         {
             throw new Exception();
         }
-
+        [Obsolete("use world.register instead")]
         public override void Instantiator(GameObject ob)
         {
             ob.Net = this;
-            Instance.World.Register(ob as Entity);
+            Instance.World.RegisterOld(ob as Entity);
         }
 
         internal void AddPlayer(PlayerData player)

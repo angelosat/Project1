@@ -5,7 +5,7 @@ namespace Start_a_Town_
 {
     public class RawMaterialDefOf
     {
-        static public readonly ItemDef Planks = new ItemDef("Plank")
+        static public readonly ItemDef Planks = new ItemDef("Plank", typeof(Item))
         {
             BaseValue = 5,
             Description = "Processed logs",
@@ -21,7 +21,7 @@ namespace Start_a_Town_
             }
         }.SetMadeFrom(MaterialTypeDefOf.Wood);
 
-        static public readonly ItemDef Logs = new ItemDef("Logs")
+        static public readonly ItemDef Logs = new ItemDef("Logs", typeof(Item))
         {
             BaseValue = 1,
             Description = "It came from a tree",
@@ -33,7 +33,7 @@ namespace Start_a_Town_
             DefaultMaterialType = MaterialTypeDefOf.Wood
         }.SetMadeFrom(MaterialTypeDefOf.Wood);
 
-        static public readonly ItemDef Bags = new ItemDef("Bag")
+        static public readonly ItemDef Bags = new ItemDef("Bag", typeof(Item))
         {
             BaseValue = 1,
             Description = "A bag containing grainy material",
@@ -44,7 +44,7 @@ namespace Start_a_Town_
             DefaultMaterialType = MaterialTypeDefOf.Soil,
         }.SetMadeFrom(MaterialTypeDefOf.Soil);
 
-        static public readonly ItemDef Ingots = new ItemDef("Ingot")
+        static public readonly ItemDef Ingots = new ItemDef("Ingot", typeof(Item))
         {
             BaseValue = 5,
             Description = "Used for crafting of weapons, armor, and tools.",
@@ -56,7 +56,7 @@ namespace Start_a_Town_
             CraftingProperties = new CraftingProperties() { IsCraftingMaterial = true, IsBuildingMaterial = true },
         }.SetMadeFrom(MaterialTypeDefOf.Metal);
 
-        static public readonly ItemDef Ore = new ItemDef("Ore")
+        static public readonly ItemDef Ore = new ItemDef("Ore", typeof(Item))
         {
             BaseValue = 1,
             Description = "A piece of mineral ore",
@@ -67,7 +67,7 @@ namespace Start_a_Town_
             DefaultMaterialType = MaterialTypeDefOf.Metal,
         }.SetMadeFrom(MaterialToken.Metal);
 
-        static public readonly ItemDef Boulders = new ItemDef("Boulders")
+        static public readonly ItemDef Boulders = new ItemDef("Boulders", typeof(Item))
         {
             BaseValue = 1,
             Description = "Chunks of rock",
@@ -79,7 +79,7 @@ namespace Start_a_Town_
             CraftingProperties = new CraftingProperties() { IsBuildingMaterial = true, IsCraftingMaterial = true },
         }.SetMadeFrom(MaterialTypeDefOf.Stone);
 
-        static public readonly ItemDef Scraps = new ItemDef("Scraps")
+        static public readonly ItemDef Scraps = new ItemDef("Scraps", typeof(Item))
         {
             StackDimension = 4,
             StackCapacity = 50,

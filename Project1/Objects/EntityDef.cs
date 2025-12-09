@@ -5,15 +5,16 @@ namespace Start_a_Town_
 {
     public class EntityDef : Def
     {
-        public Type ItemClass = typeof(Entity);
+        public readonly Type ItemClass;// = typeof(Entity);
         public string Description;
         public float Height = 1;
         public float Weight = 1;
         public bool Haulable = true;
         public Bone Body;
-        public EntityDef(string name) : base(name)
-        {
 
+        public EntityDef(string name, Type itemClass) : base(name)
+        {
+            this.ItemClass = itemClass;
         }
         
         public List<ComponentProps> CompProps = new List<ComponentProps>();

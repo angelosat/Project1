@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    public class Entity : GameObject
+    public abstract class Entity : GameObject
     {
         private SpriteComponent _sprite;
         [InspectorHidden]
@@ -27,10 +27,10 @@ namespace Start_a_Town_
         [InspectorHidden]
         public OwnershipComponent Ownership => this._ownership ??= this.GetComponent<OwnershipComponent>();
 
-        public override GameObject Create()
-        {
-            return new Entity();
-        }
+        //public override GameObject Create()
+        //{
+        //    return new Entity();
+        //}
         public Entity()
         {
             this.AddComponent(new DefComponent());

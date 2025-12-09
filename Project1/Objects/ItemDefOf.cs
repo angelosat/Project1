@@ -6,9 +6,8 @@ namespace Start_a_Town_
 {
     static class ItemDefOf
     {
-        static public readonly ItemDef Seeds = new("Seeds")
+        static public readonly ItemDef Seeds = new("Seeds", typeof(Item))
         {
-            ItemClass = typeof(Entity),
             StackCapacity = 32,//64,
             Category = ItemCategoryDefOf.RawMaterials,
             Body = new Bone(BoneDefOf.Item, ItemContent.SeedsFull),
@@ -16,9 +15,8 @@ namespace Start_a_Town_
             CompProps = new List<ComponentProps>() { new SeedComponent.Props() }
         };
 
-        static public readonly ItemDef Fruit = new ItemDef("Fruit")
+        static public readonly ItemDef Fruit = new ItemDef("Fruit", typeof(Item))
         {
-            ItemClass = typeof(Entity),
             StackCapacity = 32,
             Category = ItemCategoryDefOf.FoodRaw,
             Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull),
@@ -33,9 +31,8 @@ namespace Start_a_Town_
             },
         }.SetMadeFrom(MaterialTypeDefOf.Fruit);
 
-        static public readonly ItemDef Meat = new ItemDef("Meat")
+        static public readonly ItemDef Meat = new ItemDef("Meat", typeof(Item))
         {
-            ItemClass = typeof(Entity),
             StackCapacity = 8,
             Category = ItemCategoryDefOf.FoodRaw,
             Body = new Bone(BoneDefOf.Item, Sprite.Default),
@@ -47,9 +44,8 @@ namespace Start_a_Town_
             },
         }.SetMadeFrom(MaterialTypeDefOf.Meat);
 
-        static public readonly ItemDef Pie = new ItemDef("Pie")
+        static public readonly ItemDef Pie = new ItemDef("Pie", typeof(Item))
         {
-            ItemClass = typeof(Entity),
             StackCapacity = 4,
             Category = ItemCategoryDefOf.FoodCooked,
             Body = new Bone(BoneDefOf.Item, Sprite.Default),
@@ -72,9 +68,8 @@ namespace Start_a_Town_
             },
         }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Meat);
 
-        static public readonly ItemDef UnfinishedCraft = new ItemDef("UnfinishedCraft")
+        static public readonly ItemDef UnfinishedCraft = new ItemDef("UnfinishedCraft", typeof(Item))
         {
-            ItemClass = typeof(Entity),
             Category = ItemCategoryDefOf.Unfinished,
             Body = new Bone(BoneDefOf.Item, Sprite.Default),
             CompProps = new() { 
@@ -82,9 +77,8 @@ namespace Start_a_Town_
             },
         };
 
-        static public readonly ItemDef Coins = new("Coins")
+        static public readonly ItemDef Coins = new("Coins", typeof(Item))
         {
-            ItemClass = typeof(Entity),
             StackCapacity = ushort.MaxValue,
             Body = new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale),
             Category = ItemCategoryDefOf.RawMaterials,

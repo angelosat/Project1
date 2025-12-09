@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    public class Plant : Entity
+    public sealed class Plant : Entity
     {
         private PlantComponent _plantComponent;
         [InspectorHidden]

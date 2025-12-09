@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Net;
+﻿using Start_a_Town_.AI;
+using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -316,6 +317,36 @@ namespace Start_a_Town_
         }
 
         public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
+
+        public IEnumerable<(IItemPreferenceContext role, Entity item, int score)> EvaluateAll(IEnumerable<Entity> allitems)
+        {
+            var jobs = this.Actor.GetJobs();
+            var dic = new Dictionary<IItemPreferenceContext, (Entity item, int score)>();
+            foreach (var item in allitems)
+            {
+                var roles = this.FindAllRoles(item);
+                if (!roles.Any())
+                    continue;
+                var finalRoles = roles
+                    .Where(r => jobs.Any(j => j.Enabled && j.Def == r.role))
+                    .Where(r => this.GetPreference(r.role, out var existingScore) is var existing && r.score > existingScore);
+
+
+                foreach (var r in finalRoles)
+                {
+                    if (dic.TryGetValue(r.role, out var existing))
+                    {
+                        if (r.score > existing.score)
+                            dic[r.role] = (item, r.score);
+                    }
+                    else
+                        dic.Add(r.role, (item, r.score));
+                }
+            }
+
+            foreach (var vk in dic)
+                yield return (vk.Key, vk.Value.item, vk.Value.score);
+        }
 
         [EnsureStaticCtorCall]
         static class Packets

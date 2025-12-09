@@ -4,7 +4,7 @@ namespace Start_a_Town_
 {
     class ApparelDefOf
     {
-        static public readonly ItemDef Helmet = new("ItemHelmet")
+        static public readonly ItemDef Helmet = new("ItemHelmet", typeof(Item))
         {
             BaseValue = 5,
             QualityLevels = true,

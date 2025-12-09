@@ -14,9 +14,8 @@ namespace Start_a_Town_
                 }
         };
 
-        static public readonly ItemDef Tool = new("Tool")
+        static public readonly ItemDef Tool = new("Tool", typeof(Tool))
         {
-            ItemClass = typeof(Tool),
             QualityLevels = true,
             Category = ItemCategoryDefOf.Equipment,
             MadeFromMaterials = true,

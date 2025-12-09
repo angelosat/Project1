@@ -46,9 +46,8 @@
                 TraitDefOf.Resilience ]
         };
 
-        static public readonly ItemDef Npc = new("Npc")
+        static public readonly ItemDef Npc = new("Npc", typeof(Actor))
         {
-            ItemClass = typeof(Actor),
             Description = "A person.",
             Height = 1.5f,
             Weight = 50,

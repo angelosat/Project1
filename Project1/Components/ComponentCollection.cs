@@ -17,7 +17,7 @@ namespace Start_a_Town_.Components
 
         public EntityComponent this[string key] { get => ((IDictionary<string, EntityComponent>)this.Inner)[key]; set => ((IDictionary<string, EntityComponent>)this.Inner)[key] = value; }
 
-        public void Update()
+        public void Tick()
         {
             foreach (var component in this.Inner.Values)
                 component.Tick();

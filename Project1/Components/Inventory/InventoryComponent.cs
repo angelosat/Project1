@@ -287,71 +287,6 @@ namespace Start_a_Town_.Components
             return true;
         }
 
-        public void PickUp(GameObject obj, int amount)
-        {
-            var parent = this.Parent;
-            /// added this here as a workaround because when hauling partial stacks after carrying nothing, the packet to synchaul the new instantiated item arrived before the interaction is performed
-            /// which results in the interaction being performed while the actor already is carrying the new item, and the pickup amount being further added to the new item
-            //if (parent.Net is Client && amount < obj.StackSize)
-            //{
-            //    obj.StackSize -= amount;
-            //    return;
-            //}
-
-            if (this.HaulSlot.Object is GameObject currentHauled)
-            {
-                if (currentHauled.CanAbsorb(obj))
-                {
-                    var transferAmount = Math.Min(amount == -1 ? obj.StackSize : amount, currentHauled.StackMax - currentHauled.StackSize);
-                    if (transferAmount == 0)
-                        throw new Exception();
-                    currentHauled.StackSize += transferAmount;
-                    obj.StackSize -= transferAmount;
-                    return;
-                }
-                //else
-                // if we maxed out our hauling stack, but there is some remaining amout of item on the ground, store hauled stack and haul the remaining item stack
-                else if (!this.StoreHauled())
-                    return;
-            }
-            else
-            {
-                if (amount == obj.StackSize)
-                {
-                    this.Haul(obj);
-                    return;
-                }
-                else
-                {
-                    /// TEST
-                    /// trying to instantiate the newly split stack locally
-                    /// testing if it is safe or will be the cause of refid conflicts
-                    var newobj = obj.Clone();
-                    newobj.StackSize = amount;
-                    if (parent.Net is Server server)
-                        server.Instantiate(newobj);
-                    /// maybe i can also sync the new object here after it is locally instantiated by the client, to make sure its values are synced
-                    else if (parent.Net is Client client)
-                        client.InstantiateLocal(newobj);
-                    obj.StackSize -= amount;
-                    this.Haul(newobj);
-
-                    /// if instantiating new stack
-                    /// testing local instantiation because 
-                    //if (parent.Net is Server server)
-                    //{
-                    //    var newobj = obj.Clone();
-                    //    newobj.StackSize = amount;
-                    //    newobj.SyncInstantiate(parent.Net);
-                    //    obj.StackSize -= amount;
-                    //    this.Haul(newobj);
-                    //    Packets.SyncSetHaulSlot(server, parent as Actor, newobj as Entity);
-                    //}
-                    return;
-                }
-            }
-        }
-
         public bool Unequip(GameObject item)
         {
             var slot = (this.Parent as Entity).Gear.GetSlot(item);
@@ -495,9 +430,6 @@ namespace Start_a_Town_.Components
         {
             var comp = new InventoryComponent((byte)this.Capacity);
             var mem = new MemoryStream();
-            //using BinaryWriter w = new(new MemoryStream());
-            ////using BinaryReader r = new(w.BaseStream);
-            //using DataReader r = new(w.BaseStream);
             var w = new DataWriter(mem);
             var r = new DataReader(mem);
             this.Write(w);

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Start_a_Town_.Components.Crafting;
 
 namespace Start_a_Town_
 {
@@ -37,7 +36,7 @@ namespace Start_a_Town_
         public string Prefix, Suffix;
         public bool ReplaceName;
 
-        public ItemDef(string name) : base(name)
+        public ItemDef(string name, Type itemClass) : base(name, itemClass)
         {
         }
 

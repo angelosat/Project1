@@ -5,9 +5,8 @@ namespace Start_a_Town_
 {
     public static class PlantDefOf
     {
-        static public ItemDef Tree = new("Tree")
+        static public ItemDef Tree = new("Tree", typeof(Plant))
         {
-            ItemClass = typeof(Plant),
             Description = "A lovely tree",
             Height = 4,
             Weight = 100,
@@ -18,9 +17,8 @@ namespace Start_a_Town_
             Size = ObjectSize.Haulable
         };
 
-        static public ItemDef Bush = new("Bush")
+        static public ItemDef Bush = new("Bush", typeof(Plant))
         {
-            ItemClass = typeof(Plant),
             Description = "A lovely fluffy bush.",
             Height = 1,
             Weight = 5,

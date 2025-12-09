@@ -950,6 +950,17 @@ namespace Start_a_Town_
                         yield return e;
             }
         }
+        public IEnumerable<T> GetEntities<T>() where T : Entity
+        {
+            var chunks = this.ActiveChunks.Values;
+            foreach (var chunk in chunks)
+            {
+                var entities = chunk.Objects;
+                foreach (var e in entities.OfType<T>())
+                    //if (e.Exists) ///why wouldn't it exist if it's in the map/chunk???
+                        yield return e;
+            }
+        }
         public IEnumerable<GameObject> GetObjectsLazy()
         {
             var count = this.CachedObjects.Count;

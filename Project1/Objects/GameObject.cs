@@ -11,9 +11,9 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class GameObject : Inspectable, IEntity, ITooltippable, IContextable, INameplateable, ISlottable, ISelectable//, ILabeled, IInspectable
+    public abstract class GameObject : Inspectable, IEntity, ITooltippable, IContextable, INameplateable, ISlottable, ISelectable//, ILabeled, IInspectable
     {
-        public static Dictionary<int, GameObject> Templates = new();
+        public static readonly Dictionary<int, GameObject> Templates = [];
         public override string Label => this.Name;
         static int GetNextTemplateID()
         {
@@ -357,11 +357,7 @@ namespace Start_a_Town_
             return obj;
         }
 
-        public virtual GameObject Create()
-        {
-            return new GameObject();
-        }
-
+        public abstract GameObject Create();
         public GameObject TrySplitOne()
         {
             throw new NotImplementedException(); // TODO sync instantiate new object
@@ -533,9 +529,9 @@ namespace Start_a_Town_
             return component;
         }
 
-        public virtual void Update()
+        public virtual void Tick()
         {
-            this.Components.Update();
+            this.Components.Tick();
         }
 
         public override string ToString()

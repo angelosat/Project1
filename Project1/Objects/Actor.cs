@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class Actor : Entity
+    public sealed class Actor : Entity
     {
         MobileComponent _cachedMobile;
         [InspectorHidden]
@@ -154,7 +154,6 @@ namespace Start_a_Town_
         internal void Carry(Entity item)
         {
             this.Inventory.Haul(item);
-            //PersonalInventoryComponent.GetHauling(this).Object = item;
         }
 
         /// <summary>

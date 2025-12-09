@@ -9,9 +9,9 @@
         public TraitDef[] Traits;
         public GearType[] GearSlots;
 
-        public ActorDef(string name) : base(name)
+        public ActorDef(string name) : base(name, typeof(Actor))
         {
-            this.ItemClass = typeof(Actor);
+
         }
     }
 }

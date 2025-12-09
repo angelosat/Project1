@@ -6,7 +6,7 @@ namespace Start_a_Town_
 {
     partial class ItemPreferencesManager
     {
-        public class ItemPreference : Inspectable, ISaveable, ISerializableNew
+        public sealed class ItemPreference : Inspectable, ISaveable, ISerializableNew
         {
             public ItemRole Role;
             int _itemRefId;

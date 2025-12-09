@@ -22,5 +22,6 @@ namespace Start_a_Town_
         Control GetListControl(Entity entity);
         (IItemPreferenceContext role, int score) FindBestRole(Entity entity);
         IEnumerable<(IItemPreferenceContext role, int score)> FindAllRoles(Entity entity);
+        IEnumerable<(IItemPreferenceContext role, Entity item, int score)> EvaluateAll(IEnumerable<Entity> allitems);
     }
 }

@@ -45,7 +45,7 @@ namespace Start_a_Town_.AI
        
         public static AIConversationManager ConversationManager = new();
         public AIConversationManager.Conversation CurrentConversation;
-        public IItemPreferencesManager ItemPreferences;
+        public ItemPreferencesManager ItemPreferences;
         public Actor Parent; //use this?
         public Dictionary<string, object> Properties = new();
         public Knowledge Knowledge;

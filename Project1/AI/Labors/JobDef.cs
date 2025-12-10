@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    public sealed class JobDef : Def, IItemPreferenceContext
+    public sealed class JobDef : Def
     {
         readonly TaskGiver[] TaskGivers;
         public ToolUseDef ToolUse;

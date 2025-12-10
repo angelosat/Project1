@@ -24,29 +24,29 @@ namespace Start_a_Town_
             var jobs = actor.GetJobs();
             var manager = actor.ItemPreferences;
 
-            foreach (var job in jobs)
-            {
-                var context = job.Def;
-                var preferredTool = manager.GetPreference(context, out var existingScore);
-                if (preferredTool is not null)
-                {
-                    if (!actor.Inventory.Contains(preferredTool))
-                    {
-                        // if it's not inside inventory, instead of going to pick it up...
-                        // ...remove preference and check for a tool next tick (it might be a leftover from a previous failed behavior, or the item might no longer be available)
-                        /// wait.. WHY NOT go pick it up?
-                        manager.RemovePreference(context);
-                    }
-                    else
-                    {
-                        if (!job.Enabled)
-                        {
-                            manager.RemovePreference(context);
-                            return new AITask(TaskDefOf.DropCarried) { TargetA = preferredTool };
-                        }
-                    }
-                }
-            }
+            //foreach (var job in jobs)
+            //{
+            //    var context = job.Def;
+            //    var preferredTool = manager.GetPreference(context, out var existingScore);
+            //    if (preferredTool is not null)
+            //    {
+            //        if (!actor.Inventory.Contains(preferredTool))
+            //        {
+            //            // if it's not inside inventory, instead of going to pick it up...
+            //            // ...remove preference and check for a tool next tick (it might be a leftover from a previous failed behavior, or the item might no longer be available)
+            //            /// wait.. WHY NOT go pick it up?
+            //            manager.RemovePreference(context);
+            //        }
+            //        else
+            //        {
+            //            if (!job.Enabled)
+            //            {
+            //                manager.RemovePreference(context);
+            //                return new AITask(TaskDefOf.DropCarried) { TargetA = preferredTool };
+            //            }
+            //        }
+            //    }
+            //}
 
             var potentialAll = manager.GetPotential();
             foreach (var pot in potentialAll)

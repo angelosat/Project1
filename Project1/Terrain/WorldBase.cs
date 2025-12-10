@@ -118,7 +118,7 @@ namespace Start_a_Town_
                 return false;
 
             /// TODO: don't flatten, instead make it recursive. detach each child from it's parent before disposing
-            foreach (var obj in o.GetSelfAndChildren())
+            foreach (var obj in o.GetSelfAndChildren().ToList()) /// HACK solidify the list so that children can detach during iteration
             {
                 $"{this} at {this.Net} disposing {obj.DebugName}".ToConsole();
                 obj.OnDispose();
@@ -126,8 +126,11 @@ namespace Start_a_Town_
                 obj.Net = null; // this also makes gameobject.isdisposed return true
                                 //obj.RefId = 0; // dont set it to 0 because systems must be able to remove this entity's reference by id
 
-                if (obj.IsSpawned || obj.Container is not null || obj.Slot is not null)
-                    throw new Exception("entity must not be spawned, in a container, or in a slot, when disposing");
+                obj.Map?.Despawn(obj);
+                obj.Container?.Remove(obj);
+                obj.Slot?.SetItem(null, out var _);
+                //if (obj.IsSpawned || obj.Container is not null || obj.Slot is not null)
+                //    throw new Exception("entity must not be spawned, in a container, or in a slot, when disposing");
                 
                     //obj.OnDespawn();
                 //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)

@@ -1,28 +1,27 @@
 ﻿using Start_a_Town_.Net;
 using System;
-using System.IO;
 
 namespace Start_a_Town_
 {
-    partial class ItemPreferencesManager
+    public partial class ItemPreferencesManager
     {
         public sealed class ItemPreference : Inspectable, ISaveable, ISerializableNew
         {
-            public ItemRole Role;
+            internal ItemRoleDef Role;
             int _itemRefId;
             public int ItemRefId
             {
-                get => this.Item?.RefId ?? this._itemRefId; 
-                private set { this._itemRefId = value; } 
+                get => this.Item?.RefId ?? this._itemRefId;
+                private set { this._itemRefId = value; }
             }
             public Entity Item;
             public int Score;
-            
+
             public ItemPreference()
             {
 
             }
-            public ItemPreference(ItemRole role)
+            internal ItemPreference(ItemRoleDef role)
             {
                 this.Role = role;
             }
@@ -36,7 +35,7 @@ namespace Start_a_Town_
             }
             public override string ToString()
             {
-                return $"{Role}"+ (this.Item is not null ? $":{this.Item.DebugName}:{Score}" : "");
+                return $"{Role}" + (this.Item is not null ? $":{this.Item.DebugName}:{Score}" : "");
             }
 
             public void Write(IDataWriter w)
@@ -48,7 +47,7 @@ namespace Start_a_Town_
 
             public ISerializableNew Read(IDataReader r)
             {
-                this.Role = RegistryByName[r.ReadString()];
+                this.Role = r.ReadDef<ItemRoleDef>();// RegistryByName[r.ReadString()];
                 this.ItemRefId = r.ReadInt32();
                 this.Score = r.ReadInt32();
                 return this;
@@ -65,7 +64,8 @@ namespace Start_a_Town_
 
             public ISaveable Load(SaveTag tag)
             {
-                this.Role = RegistryByName[(string)tag["Role"].Value];
+                //this.Role = RegistryByName[(string)tag["Role"].Value];
+                this.Role = tag.LoadDef<ItemRoleDef>("Role");
                 this.ItemRefId = (int)tag["ItemRefId"].Value;
                 this.Score = (int)tag["Score"].Value;
                 return this;
@@ -88,7 +88,7 @@ namespace Start_a_Town_
             {
                 if (actor.Net is Client)
                     return;
-                this.Score = this.Role.Score(actor, this.Item);
+                this.Score = this.Role.Worker.GetInventoryScore(actor, this.Item, this.Role);
             }
 
             public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);

@@ -88,7 +88,7 @@ namespace Start_a_Town_
             set => this.State.CurrentTaskBehavior = value;
         }
         public AILog Log => AIState.GetState(this).History;
-        public IItemPreferencesManager ItemPreferences => this.GetState().ItemPreferences;
+        public ItemPreferencesManager ItemPreferences => this.GetState().ItemPreferences;
 
         public Room AssignedRoom => this.Town?.RoomManager.FindRoom(this.RefId); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
         internal Workplace Workplace => this.Town?.ShopManager.GetShop(this); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null

@@ -644,7 +644,7 @@ namespace Start_a_Town_.Net
             foreach (var ch in map.GetActiveChunks().Values)
                 InstantiateChunk(ch);
             foreach (var obj in Instance.World.Entities)
-                obj.Value.MapLoaded(Instance.Map);
+                obj.Value.OnMapLoaded(Instance.Map);
             map.ResolveReferences();
             Random = new RandomThreaded(Instance.Map.Random);
         }

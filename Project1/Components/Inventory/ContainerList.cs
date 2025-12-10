@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using Start_a_Town_.UI;
 
@@ -28,11 +27,11 @@ namespace Start_a_Town_
                 void drop(GameObject o)
                 {
                     if (actor.IsSpawned && actor.IsTownMember)
-                        PacketInventoryDrop.Send(o.Net, this.Parent, o, o.StackSize);
+                        PacketDropInventoryItem.Send(o.Net, this.Parent, o, o.StackSize);
                 }
             }
         }
-        readonly ObservableCollection<GameObject> Contents = new();
+        readonly ObservableCollection<GameObject> Contents = [];
         public GameObject Parent;
 
         public int Count => ((ICollection<GameObject>)this.Contents).Count;

@@ -137,7 +137,7 @@ namespace Start_a_Town_.Components
         [Obsolete]
         internal virtual void GetManagementInterface(GameObject gameObject, UI.Control box) { }
         internal virtual GroupBox GetDetailedGui() => null;
-        internal virtual void MapLoaded(GameObject parent)
+        internal virtual void OnMapLoaded(GameObject parent)
         {
         }
         internal virtual void GetQuickButtons(SelectionManager info, GameObject parent) { }

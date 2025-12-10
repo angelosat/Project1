@@ -3,10 +3,10 @@
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    static class PacketInventoryDrop
+    static class PacketDropInventoryItem
     {
         static readonly int p;
-        static PacketInventoryDrop()
+        static PacketDropInventoryItem()
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
@@ -14,7 +14,7 @@ namespace Start_a_Town_
         {
             //var stream = net.GetOutgoingStreamOrderedReliable();
             //stream.Write(p);
-            var stream = actor.Net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
+            var stream = actor.Net.BeginPacket(p);
             stream.Write(actor.RefId);
             stream.Write(item.RefId);
             stream.Write(amount);

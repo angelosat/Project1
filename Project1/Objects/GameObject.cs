@@ -109,6 +109,7 @@ namespace Start_a_Town_
             set => this._map = value; 
         }
 
+        public bool IsSpawnedNew => this.Map != null && this.Parent == null;
         public Town Town;// => this.Map.Town;
 
         internal object GetPath()
@@ -945,7 +946,7 @@ namespace Start_a_Town_
         {
             if (this.Def.GearType is not null)
                 yield return new ContextAction(() => "Equip", () => PacketInventoryEquip.Send(this.Net, actor.RefId, this.RefId));
-            yield return new ContextAction(() => "Drop", () => PacketInventoryDrop.Send(this.Net, actor, this, this.StackSize));
+            yield return new ContextAction(() => "Drop", () => PacketDropInventoryItem.Send(this.Net, actor, this, this.StackSize));
         }
 
         public List<ContextAction> GetRightClickActions()
@@ -1098,11 +1099,11 @@ namespace Start_a_Town_
             throw new Exception();
         }
 
-        internal void MapLoaded(MapBase map)
+        internal void OnMapLoaded(MapBase map)
         {
             //this.Map = map; // DONT set map here because this is called for every networkobject which includes inventory items, and unspawned items must NOT have their map field set
             foreach (var comp in this.Components.Values)
-                comp.MapLoaded(this);
+                comp.OnMapLoaded(this);
         }
 
         internal void HitTest(Camera camera)

@@ -168,7 +168,7 @@ namespace Start_a_Town_.Components
         {
             this.OnObjectLoaded(parent);
         }
-        internal override void MapLoaded(GameObject parent)
+        internal override void OnMapLoaded(GameObject parent)
         {
             if (this.Target != null)
                 //this.Target.Map = parent.Map;

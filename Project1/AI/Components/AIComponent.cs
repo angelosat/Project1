@@ -168,10 +168,11 @@ namespace Start_a_Town_
             base.GetInterface(gameObject, box);
             box.AddControls(new Interface());
         }
-        internal override void MapLoaded(GameObject parent)
+        internal override void OnMapLoaded(GameObject parent)
         {
             this.State.MapLoaded(parent as Actor);
             this.Root.MapLoaded(parent as Actor);
+            this.State.ItemPreferences.OnMapLoaded();
         }
         public override void OnObjectLoaded(GameObject parent)
         {

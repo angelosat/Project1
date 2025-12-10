@@ -1,10 +1,8 @@
-﻿using Start_a_Town_.AI;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -33,10 +31,23 @@ namespace Start_a_Town_
         static readonly Dictionary<string, ItemRole> RegistryByName = new();
         static readonly Dictionary<IItemPreferenceContext, ItemRole> RegistryByContext = new();
 
-        static readonly Dictionary<GearType, ItemRole> ItemRolesGear = new();
-        static readonly Dictionary<JobDef, ItemRole> ItemRolesTool = new();
+        static readonly Dictionary<GearType, ItemRole> ItemRolesGear = [];
+        static readonly Dictionary<JobDef, ItemRole> ItemRolesTool = [];
+
+        readonly Dictionary<int, ItemBias> ItemBiases = [];
 
         readonly Queue<Entity> notScannedYet = new();
+
+        public void ModifyBias(Entity entity, int value)
+        {
+            if (!this.ItemBiases.TryGetValue(entity.RefId, out var bias))
+            {
+                bias = new ItemBias(entity, value);
+                this.ItemBiases.Add(entity.RefId, bias);
+            }
+            else
+                bias.Value += value;
+        }
 
         static void GenerateItemRolesGear()
         {
@@ -56,6 +67,8 @@ namespace Start_a_Town_
         readonly Dictionary<IItemPreferenceContext, ItemPreference> PreferencesNew = new();
         readonly ObservableCollection<ItemPreference> PreferencesObs = new();
         readonly HashSet<int> ToDiscard = new();
+        public IEnumerable<ItemPreference> Preferences => this.PreferencesObs;
+
         readonly Actor Actor;
         public ItemPreferencesManager(Actor actor)
         {
@@ -65,7 +78,22 @@ namespace Start_a_Town_
             this.PreferencesObs.CollectionChanged += this.PreferencesObs_CollectionChanged;
         }
 
-        public IEnumerable<ItemPreference> Preferences => this.PreferencesObs;
+        public void Tick()
+        {
+            this.UpdateBiases();
+        }
+
+        private void UpdateBiases()
+        {
+            List<int> toRemove = [];
+
+            foreach (var (key, bias) in this.ItemBiases)
+                if (bias.Tick() == 0)
+                    toRemove.Add(key);
+
+            foreach (var key in toRemove)
+                this.ItemBiases.Remove(key);
+        }
 
         private void PreferencesObs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -357,10 +385,15 @@ namespace Start_a_Town_
             foreach (var vk in dic)
                 yield return (vk.Key, vk.Value.item, vk.Value.score);
         }
-
+        public void OnMapLoaded()
+        {
+            // HACK TO JUMP START THE SCANNING SYSTEM
+            foreach (var i in this.Actor.Map.GetEntities<Tool>())
+                this.notScannedYet.Enqueue(i);
+        }
         public void OnSpawn(MapBase newMap)
         {
-            foreach (var i in newMap.GetEntities<Item>())
+            foreach (var i in newMap.GetEntities<Tool>())
                 this.notScannedYet.Enqueue(i);
             newMap.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
         }

@@ -796,7 +796,7 @@ namespace Start_a_Town_.Net
             chunk.GetObjects().ForEach(obj =>
             {
                 this.Instantiate(obj);
-                obj.MapLoaded(Instance.Map);
+                obj.OnMapLoaded(Instance.Map);
                 /// why here too? BECAUSE some things dont get initialized properly on client. like initializing sprites from defs
                 //obj.ObjectLoaded();
                 /// FIXED by saving and serializing sprites along bones (by using the assetpath and the static sprite registry)

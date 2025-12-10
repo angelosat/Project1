@@ -1048,6 +1048,9 @@ namespace Start_a_Town_
         //}
         public void Spawn(Entity entity, Vector3 position, Vector3 velocity)
         {
+            entity.Container?.Remove(entity);
+            if(entity.IsSpawned) entity.Map.Despawn(entity);
+            entity.Slot?.Object = null;
             entity.SetGlobal(position);
             entity.Velocity = velocity;
             entity.Net = this.Net;

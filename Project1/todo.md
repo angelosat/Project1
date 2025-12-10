@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- make maps, slots, and containers, implement iowner with an add and remove method, adding to a container, removes it from the last one
 - fix moodlets being checked only in specific context (dont check the noroom moodlet for non town members)
   - [Open MoodletDef.cs](Components/Mood/MoodletDef.cs)
 - fix "visitor" visiting for the first time when not actually the first time 

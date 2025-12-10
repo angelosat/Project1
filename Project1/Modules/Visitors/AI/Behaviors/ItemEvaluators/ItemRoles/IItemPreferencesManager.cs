@@ -25,5 +25,6 @@ namespace Start_a_Town_
         IEnumerable<(IItemPreferenceContext role, Entity item, int score)> GetPotential();
         void OnSpawn(MapBase oldMap);
         void OnDespawn(MapBase oldMap);
+        void OnMapLoaded();
     }
 }

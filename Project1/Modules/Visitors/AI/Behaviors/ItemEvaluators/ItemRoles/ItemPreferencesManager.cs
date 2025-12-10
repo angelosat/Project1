@@ -10,43 +10,42 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     partial class ItemPreferencesManager : Inspectable, IItemPreferencesManager, ISaveable, ISerializableNew
     {
+
+        static readonly Dictionary<GearType, ItemRole> ItemRolesGear = [];
+        static readonly Dictionary<JobDef, ItemRole> ItemRolesTool = [];
+        static readonly Dictionary<IItemPreferenceContext, ItemRole> RegistryByContext = [];
+        static readonly Dictionary<string, ItemRole> RegistryByName = [];
+
+        Control _gui;
+
+        readonly Actor Actor;
+        readonly Dictionary<IItemPreferenceContext, (Entity item, int score)> cache = [];
+
+        readonly Dictionary<int, ItemBias> ItemBiases = [];
+        readonly Queue<Entity> notScannedYet = [];
+
+        readonly Dictionary<IItemPreferenceContext, ItemPreference> PreferencesNew = [];
+        readonly ObservableCollection<ItemPreference> PreferencesObs = [];
+        readonly Dictionary<int, int> TempIgnore = [];
+        readonly HashSet<int> ToDiscard = [];
+
         // TODO: item like/dislike registry
         static ItemPreferencesManager()
         {
             Init();
         }
-        static void Init()
+        public ItemPreferencesManager(Actor actor)
         {
-            GenerateItemRolesGear();
-            GenerateItemRolesTools();
+            this.Actor = actor;
+            this.PopulateRoles();
 
-            // TODO no need to initialize each actor's preferences with empty roles?
-            // TODO find way to avoid checking every role of the same type for items that are invalid for said role type, for example don't check all tool roles for non-tool items
-            foreach (var r in ItemRolesTool.Values.Concat(ItemRolesGear.Values))
-            {
-                RegistryByName[r.ToString()] = r;
-                RegistryByContext[r.Context] = r;
-            }
+            this.PreferencesObs.CollectionChanged += this.PreferencesObs_CollectionChanged;
         }
-        static readonly Dictionary<string, ItemRole> RegistryByName = new();
-        static readonly Dictionary<IItemPreferenceContext, ItemRole> RegistryByContext = new();
 
-        static readonly Dictionary<GearType, ItemRole> ItemRolesGear = [];
-        static readonly Dictionary<JobDef, ItemRole> ItemRolesTool = [];
-
-        readonly Dictionary<int, ItemBias> ItemBiases = [];
-
-        readonly Queue<Entity> notScannedYet = new();
-
-        public void ModifyBias(Entity entity, int value)
+        private void enqueueNewSpawnedItem(EntitySpawnedEvent e)
         {
-            if (!this.ItemBiases.TryGetValue(entity.RefId, out var bias))
-            {
-                bias = new ItemBias(entity, value);
-                this.ItemBiases.Add(entity.RefId, bias);
-            }
-            else
-                bias.Value += value;
+            if (e.Entity is Tool && !this.TempIgnore.ContainsKey(e.Entity.RefId))
+                this.notScannedYet.Enqueue(e.Entity);
         }
 
         static void GenerateItemRolesGear()
@@ -61,211 +60,6 @@ namespace Start_a_Town_
             foreach (var d in defs)
                 ItemRolesTool.Add(d, new ItemRoleTool(d));
         }
-
-        static IEnumerable<ItemRole> AllRoles => ItemRolesGear.Values.Concat(ItemRolesTool.Values);
-
-        readonly Dictionary<IItemPreferenceContext, ItemPreference> PreferencesNew = new();
-        readonly ObservableCollection<ItemPreference> PreferencesObs = new();
-        readonly HashSet<int> ToDiscard = new();
-        public IEnumerable<ItemPreference> Preferences => this.PreferencesObs;
-
-        readonly Actor Actor;
-        public ItemPreferencesManager(Actor actor)
-        {
-            this.Actor = actor;
-            this.PopulateRoles();
-
-            this.PreferencesObs.CollectionChanged += this.PreferencesObs_CollectionChanged;
-        }
-
-        public void Tick()
-        {
-            this.UpdateBiases();
-        }
-
-        private void UpdateBiases()
-        {
-            List<int> toRemove = [];
-
-            foreach (var (key, bias) in this.ItemBiases)
-                if (bias.Tick() == 0)
-                    toRemove.Add(key);
-
-            foreach (var key in toRemove)
-                this.ItemBiases.Remove(key);
-        }
-
-        private void PreferencesObs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (this.Actor.Net is Server)
-                Packets.Sync(this.Actor.Net, this.Actor, e.OldItems, e.NewItems);
-        }
-
-        private void PopulateRoles()
-        {
-            foreach (var r in ItemRolesTool.Values.Concat(ItemRolesGear.Values))
-                this.PreferencesNew.Add(r.Context, new(r));
-        }
-        public (IItemPreferenceContext role, int score) FindBestRole(Entity item)
-        {
-            var allRoles = this.FindAllRoles(item);
-            return allRoles.OrderByDescending(i => i.score).FirstOrDefault();
-
-            //ItemPreference bestPreference = null;
-            //int bestScore = -1;
-            //foreach (var pref in this.PreferencesNew.Values)
-            //{
-            //    var role = pref.Role;
-            //    var score = role.Score(this.Actor, item);
-            //    if (score > bestScore)
-            //    {
-            //        bestPreference = pref;
-            //        bestScore = score;
-            //    }
-            //}
-            //return (bestPreference?.Role.Context, bestScore);
-        }
-        public IEnumerable<(IItemPreferenceContext role, int score)> FindAllRoles(Entity item)
-        {
-            foreach (var pref in this.PreferencesNew.Values)
-            {
-                var role = pref.Role;
-                var score = role.Score(this.Actor, item);
-                if (score > 0)
-                    yield return (role.Context, score);
-            }
-        }
-
-        public void HandleItem(Entity item)
-        {
-            foreach (var pref in this.PreferencesNew.Values)
-            {
-                var role = pref.Role;
-                var score = role.Score(this.Actor, item);
-                if (score < 0)
-                    continue;
-                if (score > pref.Score)
-                {
-                    pref.Item = item;
-                    pref.Score = score;
-                    return; // TODO check 
-                }
-            }
-            if (!this.IsUseful(item))
-                this.ToDiscard.Add(item.RefId);
-        }
-        public IItemPreferenceContext GetPreference(Entity item)
-        {
-            return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item)?.Role.Context;
-        }
-        private Entity GetPreference(ItemRole role)
-        {
-            return this.PreferencesNew[role.Context].Item;
-        }
-
-        public Entity GetPreference(IItemPreferenceContext context, out int score)
-        {
-            var p = this.PreferencesNew[context];
-            score = p.Score;
-            return p.Item;
-        }
-        public Entity GetPreference(IItemPreferenceContext context)
-        {
-            return this.GetPreference(RegistryByContext[context]);
-        }
-
-        public void ResetPreferences()
-        {
-            var items = this.Actor.Inventory.GetItems();
-            foreach (var i in items)
-                this.HandleItem(i);
-        }
-        public IEnumerable<Entity> GetUselessItems(IEnumerable<Entity> entity)
-        {
-            var items = this.Actor.Inventory.GetItems();
-            foreach (var i in items)
-                if (!this.IsUseful(i))
-                    yield return i;
-        }
-        public bool IsUseful(Entity item)
-        {
-            if (item.Def == ItemDefOf.Coins)
-                return true;
-            if (this.PreferencesNew.Values.Any(p => p.Item == item))
-                return true;
-            return false;
-        }
-        public void Validate()
-        {
-            this.ResetPreferences();
-        }
-
-        public IEnumerable<Entity> GetJunk()
-        {
-            this.Validate();
-            var actor = this.Actor;
-            var net = actor.Net;
-            var items = actor.Inventory.GetItems();
-            foreach (var i in this.ToDiscard.ToArray())
-            {
-                var item = net.World.GetEntity(i) as Entity;
-                if (!items.Contains(item))
-                {
-                    this.RemoveJunk(item);
-                    continue;
-                }
-                yield return item;
-            }
-        }
-        public void RemoveJunk(Entity item)
-        {
-            this.ToDiscard.Remove(item.RefId);
-        }
-        public bool AddPreference(Entity item)
-        {
-            var scored = AllRoles
-                .Select(r => (r, r.Score(this.Actor, item)))
-                .Where(rs => rs.Item2 > -1)
-                .OrderByDescending(rs => rs.Item2);
-            if (!scored.Any())
-                return false;
-            var bestRole = scored.First();
-            var pref = this.PreferencesNew[bestRole.r.Context];
-            pref.Item = item;
-            pref.Score = bestRole.Item2;
-            if (!this.PreferencesObs.Contains(pref))
-                this.PreferencesObs.Add(pref);
-            return true;
-        }
-        public void AddPreference(IItemPreferenceContext context, Entity item, int score)
-        {
-            var pref = this.PreferencesNew[context];
-            pref.Item = item;
-            pref.Score = score;
-            //item.Ownership.Owner = this.Actor;
-            if (this.PreferencesObs.Contains(pref))
-                this.PreferencesObs.Remove(pref);
-            this.PreferencesObs.Add(pref); // HACK to trigger observable syncing
-        }
-
-        public void RemovePreference(IItemPreferenceContext tag)
-        {
-            this.PreferencesNew[tag].Clear();
-        }
-        public bool IsPreference(Entity item)
-        {
-            return this.PreferencesNew.Values.Any(p => item == p.Item);
-        }
-
-        public int GetScore(IItemPreferenceContext context, Entity item)
-        {
-            return RegistryByContext[context].Score(this.Actor, item);
-        }
-
-        Control _gui;
-        private Action _unsubscribe;
-
-        public Control Gui => this._gui ??= this.GetGui();
         Control GetGui()
         {
             var table = new TableObservable<ItemPreference>()
@@ -278,42 +72,63 @@ namespace Start_a_Town_
                 .ToWindow($"{this.Actor.Name}'s Item Preferences");
             return box;
         }
-
-        public SaveTag Save(string name = "")
+        private Entity GetPreference(ItemRole role)
         {
-            var tag = new SaveTag(SaveTag.Types.Compound, name);
-            tag.Add(this.PreferencesNew.Values.Where(p => p.Item is not null).Save("Preferences"));
-            return tag;
+            return this.PreferencesNew[role.Context].Item;
         }
-
-        public ISaveable Load(SaveTag tag)
+        static void Init()
         {
-            tag.TryGetTag("Preferences", pt =>
+            GenerateItemRolesGear();
+            GenerateItemRolesTools();
+
+            // TODO no need to initialize each actor's preferences with empty roles?
+            // TODO find way to avoid checking every role of the same type for items that are invalid for said role type, for example don't check all tool roles for non-tool items
+            foreach (var r in ItemRolesTool.Values.Concat(ItemRolesGear.Values))
             {
-                foreach (var p in pt.LoadList<ItemPreference>())
+                RegistryByName[r.ToString()] = r;
+                RegistryByContext[r.Context] = r;
+            }
+        }
+
+        private void PopulateRoles()
+        {
+            foreach (var r in ItemRolesTool.Values.Concat(ItemRolesGear.Values))
+                this.PreferencesNew.Add(r.Context, new(r));
+        }
+
+        private void PreferencesObs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (this.Actor.Net is Server)
+                Packets.Sync(this.Actor.Net, this.Actor, e.OldItems, e.NewItems);
+        }
+
+        private void ScanOne()
+        {
+            var jobs = this.Actor.GetJobs();
+            var item = notScannedYet.Dequeue();
+            if (this.Actor.Map != item.Map)
+                return;
+            var roles = this.Evaluate(item);
+            if (!roles.Any())
+                return;
+            var finalRoles = roles
+                    .Where(r => jobs.Any(j => j.Enabled && j.Def == r.role))
+                    .Where(r => this.GetPreference(r.role, out var existingScore) is var existing && r.score > existingScore);
+
+            foreach (var r in finalRoles)
+            {
+                if (cache.TryGetValue(r.role, out var existing))
                 {
-                    var existing = this.PreferencesNew[p.Role.Context];
-                    existing.CopyFrom(p);
-                    this.PreferencesObs.Add(existing);
+                    if (r.score > existing.score)
+                        cache[r.role] = (item, r.score);
                 }
-            });
-
-            return this;
+                else
+                    cache.Add(r.role, (item, r.score));
+            }
         }
-
-        public void Write(IDataWriter w)
+        private bool StillValid(Entity i)
         {
-            foreach (var r in this.PreferencesNew.Values)
-                r.Write(w);
-        }
-
-        public ISerializableNew Read(IDataReader r)
-        {
-            foreach (var p in this.PreferencesNew)
-                p.Value.Read(r);
-            foreach (var p in this.PreferencesNew.Where(t => t.Value.Score > 0))
-                this.PreferencesObs.Add(p.Value);
-            return this;
+            return i.ExistsOn(this.Actor.Map);
         }
 
         void SyncAddPref(ItemPreference pref)
@@ -336,39 +151,190 @@ namespace Start_a_Town_
                 this.PreferencesObs.Remove(existing);
         }
 
-        public void ResolveReferences()
+        private void UpdateBiases()
         {
-            foreach (var p in this.PreferencesObs)
-                p.ResolveReferences(this.Actor);
+            List<int> toRemove = [];
+
+            foreach (var (key, bias) in this.ItemBiases)
+                if (bias.Tick() == 0)
+                    toRemove.Add(key);
+
+            foreach (var key in toRemove)
+                this.ItemBiases.Remove(key);
         }
 
-        
+        private void UpdateTempIgnore()
+        {
+            //var keys = this.TempIgnore.Keys.ToList();
+            //foreach (var key in keys)
+            //{
+            //    if (this.TempIgnore[key] <= 0)
+            //        this.TempIgnore.Remove(key);
+            //    else
+            //        this.TempIgnore[key]--;
+            //}
+
+            List<int> toRemove = [];
+
+            foreach (var (key, cooldown) in this.TempIgnore)
+                if (cooldown == 0)
+                    toRemove.Add(key);
+                else
+                    this.TempIgnore[key] = cooldown - 1;
+
+            foreach (var key in toRemove)
+            {
+                this.TempIgnore.Remove(key);
+
+                var item = this.Actor.Map.World.GetEntity(key);
+                if (item.ExistsOn(this.Actor.Map))
+                    this.notScannedYet.Enqueue(item);
+            }
+        }
+
+        static IEnumerable<ItemRole> AllRoles => ItemRolesGear.Values.Concat(ItemRolesTool.Values);
+        bool IsScanning => notScannedYet.Count > 0;
+
+        //public bool AddPreference(Entity item)
+        //{
+        //    var scored = AllRoles
+        //        .Select(r => (r, r.Score(this.Actor, item)))
+        //        .Where(rs => rs.Item2 > -1)
+        //        .OrderByDescending(rs => rs.Item2);
+        //    if (!scored.Any())
+        //        return false;
+        //    var bestRole = scored.First();
+        //    var pref = this.PreferencesNew[bestRole.r.Context];
+        //    pref.Item = item;
+        //    pref.Score = bestRole.Item2;
+        //    if (!this.PreferencesObs.Contains(pref))
+        //        this.PreferencesObs.Add(pref);
+        //    return true;
+        //}
+        public void AddPreference(IItemPreferenceContext context, Entity item, int score)
+        {
+            var pref = this.PreferencesNew[context];
+            pref.Item = item;
+            pref.Score = score;
+            //item.Ownership.Owner = this.Actor;
+            if (this.PreferencesObs.Contains(pref))
+                this.PreferencesObs.Remove(pref);
+            this.PreferencesObs.Add(pref); // HACK to trigger observable syncing
+            this.cache.Remove(context);
+        }
+
+        public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
+        public IEnumerable<(IItemPreferenceContext role, int score)> Evaluate(Entity item)
+        {
+            foreach (var pref in this.PreferencesNew.Values)
+            {
+                var role = pref.Role;
+                var score = role.Score(this.Actor, item);
+                if (this.ItemBiases.TryGetValue(item.RefId, out var bias))
+                    score += bias.Value;
+                if (score > 0)
+                    yield return (role.Context, score);
+            }
+        }
+        public (IItemPreferenceContext role, int score) FindBestRole(Entity item)
+        {
+            var allRoles = this.Evaluate(item);
+            return allRoles.OrderByDescending(i => i.score).FirstOrDefault();
+
+            //ItemPreference bestPreference = null;
+            //int bestScore = -1;
+            //foreach (var pref in this.PreferencesNew.Values)
+            //{
+            //    var role = pref.Role;
+            //    var score = role.Score(this.Actor, item);
+            //    if (score > bestScore)
+            //    {
+            //        bestPreference = pref;
+            //        bestScore = score;
+            //    }
+            //}
+            //return (bestPreference?.Role.Context, bestScore);
+        }
+
+        public void ForceDrop(Entity item)
+        {
+            this.ModifyBias(item, -200);
+            this.TempIgnore[item.RefId] = (int)Ticks.FromSeconds(10);
+
+            List<IItemPreferenceContext> prevRoles = [];
+            foreach (var (context, preference) in this.PreferencesNew)
+                if (preference.ItemRefId == item.RefId)
+                {
+                    preference.Clear();
+                    prevRoles.Add(preference.Role.Context);
+                }
+
+            foreach (var i in this.Actor.Map.GetEntities<Tool>())
+                if (i != item)
+                    this.notScannedYet.Enqueue(i);
+        }
+
+        public IEnumerable<Entity> GetJunk()
+        {
+            this.Validate();
+            var actor = this.Actor;
+            var net = actor.Net;
+            var items = actor.Inventory.GetItems();
+            foreach (var i in this.ToDiscard.ToArray())
+            {
+                var item = net.World.GetEntity(i) as Entity;
+                if (!items.Contains(item))
+                {
+                    this.RemoveJunk(item);
+                    continue;
+                }
+                yield return item;
+            }
+        }
+
+
         public Control GetListControl(Entity entity)
         {
             var p = this.GetPreference(entity);
             return new Label(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
         }
-
-        public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
-
         public IEnumerable<(IItemPreferenceContext role, Entity item, int score)> GetPotential()
+        {
+            if (this.IsScanning)
+            {
+                ScanOne();
+                yield break;
+            }
+            var toRemove = new List<IItemPreferenceContext>();
+            foreach (var (context, (i, score)) in this.cache)
+            {
+                if (!StillValid(i))
+                    toRemove.Add(context);
+                else
+                    yield return (context, i, score);
+            }
+            foreach (var role in toRemove)
+                this.cache.Remove(role);
+
+        }
+
+        public IEnumerable<(IItemPreferenceContext role, Entity item, int score)> GetPotentialAll()
         {
             if (notScannedYet.Count == 0)
                 yield break;
             var jobs = this.Actor.GetJobs();
             var dic = new Dictionary<IItemPreferenceContext, (Entity item, int score)>();
-            while(notScannedYet.Count > 0)
+            while (notScannedYet.Count > 0)
             {
                 var item = notScannedYet.Dequeue();
                 if (this.Actor.Map != item.Map)
                     continue;
-                var roles = this.FindAllRoles(item);
+                var roles = this.Evaluate(item);
                 if (!roles.Any())
                     continue;
                 var finalRoles = roles
                     .Where(r => jobs.Any(j => j.Enabled && j.Def == r.role))
                     .Where(r => this.GetPreference(r.role, out var existingScore) is var existing && r.score > existingScore);
-
 
                 foreach (var r in finalRoles)
                 {
@@ -382,11 +348,102 @@ namespace Start_a_Town_
                 }
             }
 
-            foreach (var vk in dic)
-                yield return (vk.Key, vk.Value.item, vk.Value.score);
+            foreach (var (context, pref) in dic)
+                yield return (context, pref.item, pref.score);
+        }
+        public IItemPreferenceContext GetPreference(Entity item)
+        {
+            return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item)?.Role.Context;
+        }
+        public Entity GetPreference(IItemPreferenceContext context)
+        {
+            return this.GetPreference(RegistryByContext[context]);
+        }
+
+        public Entity GetPreference(IItemPreferenceContext context, out int score)
+        {
+            var p = this.PreferencesNew[context];
+            score = p.Score;
+            return p.Item;
+        }
+
+        public int GetScore(IItemPreferenceContext context, Entity item)
+        {
+            return RegistryByContext[context].Score(this.Actor, item);
+        }
+        public IEnumerable<Entity> GetUselessItems(IEnumerable<Entity> entity)
+        {
+            var items = this.Actor.Inventory.GetItems();
+            foreach (var i in items)
+                if (!this.IsUseful(i))
+                    yield return i;
+        }
+
+        public void HandleItem(Entity item)
+        {
+            foreach (var pref in this.PreferencesNew.Values)
+            {
+                var role = pref.Role;
+                var score = role.Score(this.Actor, item);
+                if (score < 0)
+                    continue;
+                if (score > pref.Score)
+                {
+                    pref.Item = item;
+                    pref.Score = score;
+                    return; // TODO check 
+                }
+            }
+            if (!this.IsUseful(item))
+                this.ToDiscard.Add(item.RefId);
+        }
+        public bool IsPreference(Entity item)
+        {
+            return this.PreferencesNew.Values.Any(p => item == p.Item);
+        }
+        public bool IsUseful(Entity item)
+        {
+            if (item.Def == ItemDefOf.Coins)
+                return true;
+            if (this.PreferencesNew.Values.Any(p => p.Item == item))
+                return true;
+            return false;
+        }
+
+        public ISaveable Load(SaveTag tag)
+        {
+            tag.TryGetTag("Preferences", pt =>
+            {
+                foreach (var p in pt.LoadList<ItemPreference>())
+                {
+                    var existing = this.PreferencesNew[p.Role.Context];
+                    existing.CopyFrom(p);
+                    this.PreferencesObs.Add(existing);
+                }
+            });
+
+            return this;
+        }
+
+        public void ModifyBias(Entity entity, int value)
+        {
+            if (!this.ItemBiases.TryGetValue(entity.RefId, out var bias))
+            {
+                bias = new ItemBias(entity, value);
+                this.ItemBiases.Add(entity.RefId, bias);
+            }
+            else
+                bias.Value += value;
+        }
+        public void OnDespawn(MapBase oldMap)
+        {
+            this.notScannedYet.Clear();
+            oldMap.Events.Unsubscribe(this);
         }
         public void OnMapLoaded()
         {
+            this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
+
             // HACK TO JUMP START THE SCANNING SYSTEM
             foreach (var i in this.Actor.Map.GetEntities<Tool>())
                 this.notScannedYet.Enqueue(i);
@@ -397,23 +454,89 @@ namespace Start_a_Town_
                 this.notScannedYet.Enqueue(i);
             newMap.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
         }
-        public void OnDespawn(MapBase oldMap)
+
+        public ISerializableNew Read(IDataReader r)
         {
-            this.notScannedYet.Clear();
-            oldMap.Events.Unsubscribe(this);
+            foreach (var p in this.PreferencesNew)
+                p.Value.Read(r);
+            foreach (var p in this.PreferencesNew.Where(t => t.Value.Score > 0))
+                this.PreferencesObs.Add(p.Value);
+            return this;
         }
-        private void enqueueNewSpawnedItem(EntitySpawnedEvent e)
+        public void RemoveJunk(Entity item)
         {
-            this.notScannedYet.Enqueue(e.Entity);
+            this.ToDiscard.Remove(item.RefId);
         }
+
+        public void RemovePreference(IItemPreferenceContext tag)
+        {
+            this.PreferencesNew[tag].Clear();
+        }
+
+        public void ResetPreferences()
+        {
+            var items = this.Actor.Inventory.GetItems();
+            foreach (var i in items)
+                this.HandleItem(i);
+        }
+
+        public void ResolveReferences()
+        {
+            foreach (var p in this.PreferencesObs)
+                p.ResolveReferences(this.Actor);
+        }
+
+        public SaveTag Save(string name = "")
+        {
+            var tag = new SaveTag(SaveTag.Types.Compound, name);
+            tag.Add(this.PreferencesNew.Values.Where(p => p.Item is not null).Save("Preferences"));
+            return tag;
+        }
+
+        public void Tick()
+        {
+            this.UpdateBiases();
+            this.UpdateTempIgnore();
+        }
+        public void Validate()
+        {
+            this.ResetPreferences();
+        }
+
+        public void Write(IDataWriter w)
+        {
+            foreach (var r in this.PreferencesNew.Values)
+                r.Write(w);
+        }
+
+        public Control Gui => this._gui ??= this.GetGui();
+        public IEnumerable<ItemPreference> Preferences => this.PreferencesObs;
 
         [EnsureStaticCtorCall]
         static class Packets
         {
             static readonly int pSyncPrefsAll;
+
             static Packets()
             {
                 pSyncPrefsAll = Registry.PacketHandlers.Register(Receive);
+            }
+
+            private static void Receive(INetEndpoint net, Packet pck)
+            {
+                if (net is Server)
+                    throw new Exception();
+                var r = pck.PacketReader;
+
+                var actor = net.World.GetEntity<Actor>(r.ReadInt32());
+                var prefs = actor.ItemPreferences as ItemPreferencesManager;
+                var oldItems = new List<ItemPreference>().Read(r);
+                var newItems = new List<ItemPreference>().Read(r);
+
+                foreach (var p in oldItems)
+                    prefs.SyncRemovePref(p);
+                foreach (var p in newItems)
+                    prefs.SyncAddPref(p);
             }
 
             internal static void Sync(NetEndpoint net, Actor actor, System.Collections.IList oldItems, System.Collections.IList newItems)
@@ -431,23 +554,6 @@ namespace Start_a_Town_
                     w.Write(0);
                 else
                     newItems.Cast<ItemPreference>().ToList().WriteNew(w);
-            }
-
-            private static void Receive(INetEndpoint net, Packet pck)
-            {
-                if (net is Server)
-                    throw new Exception();
-                var r = pck.PacketReader;
-
-                var actor = net.World.GetEntity<Actor>(r.ReadInt32());
-                var prefs = actor.ItemPreferences as ItemPreferencesManager;
-                var oldItems = new List<ItemPreference>().Read(r);
-                var newItems = new List<ItemPreference>().Read(r);
-              
-                foreach (var p in oldItems)
-                    prefs.SyncRemovePref(p);
-                foreach (var p in newItems)
-                    prefs.SyncAddPref(p);
             }
         }
     }

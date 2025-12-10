@@ -17,6 +17,7 @@ namespace Start_a_Town_
             }
             public Entity Item;
             public int Score;
+            
             public ItemPreference()
             {
 

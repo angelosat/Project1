@@ -1279,7 +1279,7 @@ namespace Start_a_Town_
         }
 
         public bool Exists => this.IsSpawned;
-       
+        public bool ExistsOn(MapBase map) => this._map == map && this.Parent == null;
 
         internal void MoveOrder(TargetArgs target, bool enqueue)
         {

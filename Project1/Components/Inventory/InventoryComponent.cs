@@ -191,6 +191,7 @@ namespace Start_a_Town_.Components
                 //obj.StackSize = amount;
             }
             //item.Spawn(parent.Map, parent.Global + new Vector3(0, 0, parent.Physics.Height));
+
             parent.Map.Spawn(item as Entity, parent.Global + new Vector3(0, 0, parent.Physics.Height), Vector3.Zero);
 
             //item.StackSize -= amount;

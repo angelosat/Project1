@@ -36,11 +36,12 @@ namespace Start_a_Town_
                     // TODO fail?
                 }
                 task.SetTarget(TargetIndex.C, money, room.Value);
-                actor.Reserve(this.Task, money, money.StackSize);
+                //actor.Reserve(this.Task, money, money.StackSize);
+                this.Reserve(money, money.StackSize);
                 return true;
             });
             // TODO pickup money or leave it to be hauled?
-            yield return BehaviorHaulHelper.StartCarrying(TargetIndex.C);
+            yield return BehaviorHaulHelper.StartCarrying(this, TargetIndex.C);
             yield return new BehaviorInteractionNew(() => new InteractionStoreHauled());
             yield return new BehaviorInteractionNew(Customer, () => new InteractionAssignVisitorRoom(room.ID));
             yield return new BehaviorCustom(() =>

@@ -4,10 +4,10 @@ namespace Start_a_Town_
 {
     static public class ReservationExtensions
     {
-        static public bool Reserve(this Actor obj, AITask task, TargetArgs target, int stackcount = -1)
-        {
-            return obj.Map.Town.ReservationManager.Reserve(obj, task, target, stackcount);
-        }
+        //static public bool Reserve(this Actor obj, AITask task, TargetArgs target, int stackcount = -1)
+        //{
+        //    return obj.Map.Town.ReservationManager.Reserve(obj, task, target, stackcount);
+        //}
         //static public bool Reserve(this Actor obj, TargetArgs target, int stackcount = -1)
         //{
         //    return obj.Map.Town.ReservationManager.Reserve(obj, target, stackcount);

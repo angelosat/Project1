@@ -46,7 +46,7 @@ namespace Start_a_Town_
             var entity = target.BlockEntity as IConstructible;
             foreach (var child in entity.Children)
             {
-                if(!actor.Reserve(task, new TargetArgs(map, child), 1))
+                if(!this.Reserve(new TargetArgs(map, child), 1))
                 {
                     map.Net.ConsoleBox.Write("failed to reserve child of multi-blocked construction");
                     return false;

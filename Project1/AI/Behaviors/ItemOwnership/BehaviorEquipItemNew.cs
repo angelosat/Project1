@@ -21,7 +21,7 @@ namespace Start_a_Town_.AI.Behaviors
         }
         protected override bool InitExtraReservations()
         {
-            return this.Actor.Reserve(this.Task, this.Task.TargetA, 1);
+            return this.Reserve(this.Task.TargetA, 1);
         }
     }
 }

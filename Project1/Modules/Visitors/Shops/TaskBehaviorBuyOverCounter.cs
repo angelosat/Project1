@@ -17,8 +17,8 @@ namespace Start_a_Town_
             this.AddFinishAction(() => actor.Town.ShopManager.GetShop<Shop>(task.ShopID).RemoveCustomer(actor));
             var counter = task.TargetB.Global;
             yield return new BehaviorGetAtNewNew(TargetIndex.A);
-            yield return BehaviorHaulHelper.StartCarrying(TargetIndex.A);
-            yield return BehaviorReserve.Reserve(TargetIndex.A); // reserve item so noone picks it up after placing it on the shop counter
+            yield return BehaviorHaulHelper.StartCarrying(this, TargetIndex.A);
+            yield return BehaviorReserve.Reserve(this, TargetIndex.A); // reserve item so noone picks it up after placing it on the shop counter
             // TODO start checking if the shop has a worker
             // if no worker or all workers busy, wait a bit and then cancel the behavior and drop town approval rating
             yield return new BehaviorGetAtNewNew(TargetIndex.B);
@@ -50,7 +50,8 @@ namespace Start_a_Town_
                 }
             };
             yield return new BehaviorInteractionNew(TargetIndex.C, () => new InteractionHaul(this.Task.AmountC));
-            yield return new BehaviorCustom() { InitAction = () => actor.Reserve(this.Task, actor.Hauled) };
+            //yield return new BehaviorCustom() { InitAction = () => actor.Reserve(this.Task, actor.Hauled) };
+            yield return new BehaviorCustom() { InitAction = () => this.Reserve(actor.Hauled) };
             yield return new BehaviorInteractionNew(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
             // TODO wait for the item to be placed ontop of the counter, and then pick it up
             yield return new BehaviorWait(() => item.Parent == null && item.Global.ToCell() == counter.Above());
@@ -66,7 +67,7 @@ namespace Start_a_Town_
         protected override bool InitExtraReservations()
         {
             return
-                this.Actor.ReserveAsManyAsPossible(this.Task.TargetA, this.Task.TargetA.Object.StackSize);
+                this.ReserveAsManyAsPossible(this.Task.TargetA, this.Task.TargetA.Object.StackSize);
         }
     }
 }

@@ -15,11 +15,11 @@ namespace Start_a_Town_
 
             var gotohaul = new BehaviorGetAtNewNew(ItemInd).FailOn(failCollecting);
             yield return gotohaul;
-            yield return BehaviorHaulHelper.StartCarrying(ItemInd);
-            yield return BehaviorHaulHelper.FindNearbyHaulOpportunity(gotohaul, ItemInd).FailOnNotCarrying();
+            yield return BehaviorHaulHelper.StartCarrying(this, ItemInd);
+            yield return BehaviorHaulHelper.FindNearbyHaulOpportunity(this, gotohaul, ItemInd).FailOnNotCarrying();
 
             var gotoStorage = new BehaviorGetAtNewNew(StorageInd);
-            var findNextStorage = BehaviorHaulHelper.JumpIfNextStorageFound(gotoStorage, StorageInd);
+            var findNextStorage = BehaviorHaulHelper.JumpIfNextStorageFound(this, gotoStorage, StorageInd);
             gotoStorage.JumpIf(deliverFail, findNextStorage);
 
             yield return gotoStorage;
@@ -53,8 +53,8 @@ namespace Start_a_Town_
             var item = task.GetTarget(ItemInd);
             var storageTarget = task.GetTarget(StorageInd);
             return
-                this.Actor.ReserveAsManyAsPossible(item, task.Count) &&
-                this.Actor.Reserve(this.Task, storageTarget, 1);
+                this.ReserveAsManyAsPossible(item, task.Count) &&
+                this.Reserve(storageTarget, 1);
         }
     }
 }

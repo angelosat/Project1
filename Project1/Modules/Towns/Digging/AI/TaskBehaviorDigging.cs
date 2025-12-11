@@ -22,7 +22,8 @@ namespace Start_a_Town_
         protected override bool InitExtraReservations()
         {
             var global = this.Task.GetTarget(MineInd);
-            return this.Actor.Reserve(this.Task, global, 1);
+            //return this.Actor.Reserve(this.Task, global, 1);
+            return this.Reserve(global, 1);
         }
     }
 }

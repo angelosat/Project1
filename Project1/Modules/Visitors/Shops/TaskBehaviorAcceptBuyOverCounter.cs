@@ -43,7 +43,7 @@ namespace Start_a_Town_
                 }
             };
             yield return BehaviorHelper.CarryFromInventoryAndReplaceTarget(Money); // this assigns the new split object to the same target index
-            yield return BehaviorReserve.Reserve(Money); // this reserves just the source object and not the new object from splitting the source object (but CarryFromInventoryAndReplaceTarget replaces the target with the new object)
+            yield return BehaviorReserve.Reserve(this, Money); // this reserves just the source object and not the new object from splitting the source object (but CarryFromInventoryAndReplaceTarget replaces the target with the new object)
 
             yield return new BehaviorInteractionNew(Item, () => new InteractionSwapCarried());
             yield return new BehaviorCustom() { InitAction = () => shop.RemoveCustomer(customer) };

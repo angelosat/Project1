@@ -6,7 +6,7 @@ namespace Start_a_Town_
 {
     class BehaviorHaulHelper
     {
-        static public Behavior FindNearbyHaulOpportunity(Behavior gotoBhav, TargetIndex itemIndex)
+        static public Behavior FindNearbyHaulOpportunity(BehaviorPerformTask source, Behavior gotoBhav, TargetIndex itemIndex)
         {
             var bhav = new BehaviorCustom
             {
@@ -14,7 +14,10 @@ namespace Start_a_Town_
                 {
                     var actor = gotoBhav.Actor;
                     var hauling = actor.Hauled;
-                    var task = actor.CurrentTask;
+                    //var task = actor.CurrentTask;
+                    var task = source.Task;
+                    //var task = actor.AI.State.Current.Value.task;
+                    //var bhav = actor.AI.State.Current.Value.behavior;
                     var desiredAmount = Math.Min(task.Count, hauling.StackAvailableSpace);
                     if (desiredAmount == 0)
                         return;
@@ -32,7 +35,8 @@ namespace Start_a_Town_
                             continue;
                         desiredAmount = Math.Min(desiredAmount, unreservedAmount);
                         var amount = Math.Min(pot.StackSize, desiredAmount);
-                        actor.Reserve(task, pot, amount);
+                        //actor.Reserve(task, pot, amount);
+                        source.Reserve(pot, amount);
                         task.SetTarget(itemIndex, new TargetArgs(pot));
                         //actor.CurrentTaskBehavior.JumpTo(gotoBhav);
                         actor.AI.State.Current.Value.behavior.JumpTo(gotoBhav);
@@ -43,7 +47,7 @@ namespace Start_a_Town_
             };
             return bhav;
         }
-        static public Behavior StartCarrying(TargetIndex storageIndex)
+        static public Behavior StartCarrying(BehaviorPerformTask source, TargetIndex storageIndex)
         {
             var bhav = new BehaviorCustom() { Mode = BehaviorCustom.Modes.Continuous };
             TargetArgs target = null;
@@ -93,7 +97,8 @@ namespace Start_a_Town_
                     if (target.Object != actor.Hauled)
                     {
                         actor.Unreserve(target); // ACTUALLY UNRESERVE SOURCE STACK HERE IN CASE THE HAULED STACK IS SPLIT FROM THE SOURCE ONE
-                        actor.Reserve(task, actor.Hauled);
+                        //actor.Reserve(task, actor.Hauled);
+                        source.Reserve(actor.Hauled);
                         task.SetTarget(storageIndex, actor.Hauled); // replacing task target with combined item because otherwise the behavior will fail since the old item is now disposed
                     }
                     return true;
@@ -136,7 +141,7 @@ namespace Start_a_Town_
             });
             return bhav;
         }
-        static public Behavior JumpIfNextStorageFound(Behavior gotoBhav, TargetIndex storageIndex)
+        static public Behavior JumpIfNextStorageFound(BehaviorPerformTask source, Behavior gotoBhav, TargetIndex storageIndex)
         {
             var bhav = new BehaviorCustom() { Mode = BehaviorCustom.Modes.Instant };
             Entity hauledObj = null;
@@ -157,11 +162,9 @@ namespace Start_a_Town_
                         continue;
                     if (!actor.CanReserve(tar))
                         continue;
-                    actor.Reserve(task, tar, 1);
+                    source.Reserve(tar, 1);
                     task.SetTarget(storageIndex, tar);
-                    //actor.CurrentTaskBehavior.JumpTo(gotoBhav);
                     actor.AI.State.Current.Value.behavior.JumpTo(gotoBhav);
-
                     actor.Net.ConsoleBox.Write("found next storage place " + tar.ToString());
                     return;
                 }

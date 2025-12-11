@@ -18,7 +18,7 @@ namespace Start_a_Town_
             yield return beginHaul;
             yield return BehaviorHelper.MoveTo(ingredientIndex);
             //yield return BehaviorHelper.StartCarrying(ingredientIndex, ingredientIndex);
-            yield return BehaviorHaulHelper.StartCarrying(ingredientIndex);
+            yield return BehaviorHaulHelper.StartCarrying(this, ingredientIndex);
             yield return BehaviorHelper.MoveTo(workstationIndex);
             yield return BehaviorHelper.SetTarget(workstationAbove, (actor.Map, task.GetTarget(workstationIndex).Global.Above()));
             yield return BehaviorHelper.PlaceCarried(workstationAbove);
@@ -32,8 +32,8 @@ namespace Start_a_Town_
             var actor = this.Actor;
             var task = this.Task;
 
-            return task.ReserveAll(actor, TargetIndex.A)
-                && task.Reserve(actor, TargetIndex.B);
+            return this.ReserveAll(TargetIndex.A)
+                && this.Reserve(TargetIndex.B);
         }
     }
 }

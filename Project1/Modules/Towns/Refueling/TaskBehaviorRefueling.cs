@@ -19,7 +19,7 @@ namespace Start_a_Town_
             yield return extract;
             yield return new BehaviorGetAtNewNew(SourceIndex).FailOn(failOnInvalidRefuelable).FailOnForbidden(SourceIndex);
             //yield return BehaviorHelper.StartCarrying(SourceIndex, SourceIndex).FailOn(failOnInvalidRefuelable).FailOnForbidden(SourceIndex);
-            yield return BehaviorHaulHelper.StartCarrying(SourceIndex).FailOn(failOnInvalidRefuelable).FailOnForbidden(SourceIndex);
+            yield return BehaviorHaulHelper.StartCarrying(this, SourceIndex).FailOn(failOnInvalidRefuelable).FailOnForbidden(SourceIndex);
             yield return BehaviorHelper.JumpIfMoreTargets(extract, SourceIndex);
             //yield return new BehaviorGetAtNewNew(DestinationIndex).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
             yield return new BehaviorGetAtNewNew(DestinationIndex, PathEndMode.InteractionSpot).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
@@ -28,8 +28,8 @@ namespace Start_a_Town_
         protected override bool InitExtraReservations()
         {
             return
-                this.Task.ReserveAll(this.Actor, SourceIndex) &&
-                this.Task.Reserve(this.Actor, DestinationIndex);// &&
+                this.ReserveAll(SourceIndex) &&
+                this.Reserve(DestinationIndex);// &&
         }
     }
 }

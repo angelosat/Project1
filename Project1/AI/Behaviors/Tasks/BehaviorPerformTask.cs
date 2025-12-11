@@ -148,6 +148,7 @@ namespace Start_a_Town_
 
             return this.InitExtraReservations();
         }
+
         protected virtual bool InitExtraReservations()
         {
             return true;
@@ -177,6 +178,48 @@ namespace Start_a_Town_
         protected void AddFinishAction(Action a)
         {
             this.FinishActions.Add(a);
+        }
+        internal bool ReserveAll(TargetIndex sourceIndex)
+        {
+            var targets = this.Task.GetTargetQueue(sourceIndex);
+            var amounts = this.Task.GetAmountQueue(sourceIndex);
+            var count = targets.Count;
+            if (count != amounts.Count)
+                throw new Exception();
+            for (int i = 0; i < count; i++)
+            {
+                var target = targets[i];
+                var amount = amounts[i];
+                if (!this.Actor.Town.ReservationManager.Reserve(this.Actor, this.Task, target, amount))
+                    return false;
+            }
+            return true;
+        }
+        internal bool Reserve(TargetIndex index)
+        {
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Task, this.Task.GetTarget(index), this.Task.GetAmount(index));
+        }
+       
+        internal bool Reserve(TargetIndex index, int amount)
+        {
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Task, this.Task.GetTarget(index), amount);
+        }
+        internal bool Reserve(TargetArgs target, int amount = -1)
+        {
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Task, target, amount);
+        }
+        internal bool Reserve(IntVec3 global)
+        {
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Task, new TargetArgs(this.Actor.Map, global), 1);
+        }
+
+        internal bool ReserveAsManyAsPossible(TargetArgs item, int desiredAmount)
+        {
+            return this.Actor.Map.Town.ReservationManager.ReserveAsManyAsPossible(this.Actor, this.Task, item, desiredAmount);
+        }
+        internal bool ReserveAsManyAsPossible(TargetIndex index, int desiredAmount)
+        {
+            return this.Actor.Map.Town.ReservationManager.ReserveAsManyAsPossible(this.Actor, this.Task, this.Task.GetTarget(index), desiredAmount);
         }
     }
 }

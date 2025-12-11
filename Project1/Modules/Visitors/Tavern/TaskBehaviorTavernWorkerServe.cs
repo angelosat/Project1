@@ -13,7 +13,7 @@ namespace Start_a_Town_
             var shop = actor.Workplace as Tavern;
             yield return BehaviorHelper.MoveTo(dishIndex);
             //yield return BehaviorHelper.StartCarrying(dishIndex);
-            yield return BehaviorHaulHelper.StartCarrying(dishIndex);
+            yield return BehaviorHaulHelper.StartCarrying(this, dishIndex);
             yield return BehaviorHelper.MoveTo(tableSurfaceIndex);
             yield return BehaviorHelper.PlaceCarried(tableSurfaceIndex);
             yield return new BehaviorCustom(() =>
@@ -23,7 +23,7 @@ namespace Start_a_Town_
         }
         protected override bool InitExtraReservations()
         {
-            return this.Task.Reserve(this.Actor, TargetIndex.A);
+            return this.Reserve(TargetIndex.A);
         }
     }
 }

@@ -26,38 +26,38 @@ namespace Start_a_Town_
             return this.GetTarget((TargetIndex)targetInd);
         }
 
-        internal bool ReserveAll(Actor actor, TargetIndex sourceIndex)
-        {
-            var targets = this.GetTargetQueue(sourceIndex);
-            var amounts = this.GetAmountQueue(sourceIndex);
-            var count = targets.Count;
-            if (count != amounts.Count)
-                throw new Exception();
-            for (int i = 0; i < count; i++)
-            {
-                var target = targets[i];
-                var amount = amounts[i];
-                if (!actor.Town.ReservationManager.Reserve(actor, this, target, amount))
-                    return false;
-            }
-            return true;
-        }
-        internal bool Reserve(Actor actor, TargetIndex index)
-        {
-            return actor.Town.ReservationManager.Reserve(actor, this, this.GetTarget(index), this.GetAmount(index));
-        }
-        internal bool Reserve(Actor actor, TargetIndex index, int amount)
-        {
-            return actor.Town.ReservationManager.Reserve(actor, this, this.GetTarget(index), amount);
-        }
-        internal bool Reserve(Actor actor, TargetArgs target, int amount)
-        {
-            return actor.Town.ReservationManager.Reserve(actor, this, target, amount);
-        }
-        internal bool Reserve(Actor actor, IntVec3 global)
-        {
-            return actor.Town.ReservationManager.Reserve(actor, this, new TargetArgs(actor.Map, global), 1);
-        }
+        //internal bool ReserveAll(Actor actor, TargetIndex sourceIndex)
+        //{
+        //    var targets = this.GetTargetQueue(sourceIndex);
+        //    var amounts = this.GetAmountQueue(sourceIndex);
+        //    var count = targets.Count;
+        //    if (count != amounts.Count)
+        //        throw new Exception();
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var target = targets[i];
+        //        var amount = amounts[i];
+        //        if (!actor.Town.ReservationManager.Reserve(actor, this, target, amount))
+        //            return false;
+        //    }
+        //    return true;
+        //}
+        //internal bool Reserve(Actor actor, TargetIndex index)
+        //{
+        //    return actor.Town.ReservationManager.Reserve(actor, this, this.GetTarget(index), this.GetAmount(index));
+        //}
+        //internal bool Reserve(Actor actor, TargetIndex index, int amount)
+        //{
+        //    return actor.Town.ReservationManager.Reserve(actor, this, this.GetTarget(index), amount);
+        //}
+        //internal bool Reserve(Actor actor, TargetArgs target, int amount)
+        //{
+        //    return actor.Town.ReservationManager.Reserve(actor, this, target, amount);
+        //}
+        //internal bool Reserve(Actor actor, IntVec3 global)
+        //{
+        //    return actor.Town.ReservationManager.Reserve(actor, this, new TargetArgs(actor.Map, global), 1);
+        //}
         internal int GetAmount(TargetIndex amountInd)
         {
             return amountInd switch

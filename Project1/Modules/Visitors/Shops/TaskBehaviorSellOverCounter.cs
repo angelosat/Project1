@@ -31,7 +31,7 @@ namespace Start_a_Town_
             yield return BehaviorHelper.MoveTo(Counter);
             yield return BehaviorHelper.SetTarget(Item, item);
             yield return BehaviorHelper.CarryFromInventory(Item);
-            yield return BehaviorReserve.Reserve(Item);
+            yield return BehaviorReserve.Reserve(this, Item);
             // TODO place item on counter first? or wait for money on counter and then swap?
             // WTF if i place item on counter first, then i'll have to retrieve it in case of failure
             yield return new BehaviorInteractionNew(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());

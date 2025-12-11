@@ -284,10 +284,7 @@ namespace Start_a_Town_
             return new Actor();
         }
 
-        internal bool ReserveAsManyAsPossible(TargetArgs item, int desiredAmount)
-        {
-            return this.Town.ReservationManager.ReserveAsManyAsPossible(this, this.CurrentTask, item, desiredAmount);
-        }
+        
 
         internal void AddNeed(params NeedDef[] defs)
         {

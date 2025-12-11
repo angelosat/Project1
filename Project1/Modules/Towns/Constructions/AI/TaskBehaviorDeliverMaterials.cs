@@ -19,7 +19,7 @@ namespace Start_a_Town_
             var extractMaterial = BehaviorHelper.ExtractNextTargetAmount(MaterialID);
             yield return extractMaterial;
             yield return new BehaviorGetAtNewNew(MaterialID).FailOn(collectFail);
-            yield return BehaviorHaulHelper.StartCarrying(MaterialID).FailOn(collectFail);
+            yield return BehaviorHaulHelper.StartCarrying(this, MaterialID).FailOn(collectFail);
             yield return BehaviorHelper.JumpIfNextCarryStackable(extractMaterial, MaterialID, MaterialID);
             var extractDestination = BehaviorHelper.ExtractNextTargetAmount(DestinationID);
             yield return extractDestination;
@@ -56,8 +56,9 @@ namespace Start_a_Town_
         protected override bool InitExtraReservations()
         {
             return
-                this.Task.ReserveAll(this.Actor, MaterialID) &&
-                this.Task.GetTargetQueue(DestinationID).All(t => this.Actor.Reserve(this.Task, t, 1));
+                this.ReserveAll(MaterialID) &&
+                //this.Task.GetTargetQueue(DestinationID).All(t => this.Actor.Reserve(this.Task, t, 1));
+                this.Task.GetTargetQueue(DestinationID).All(t => this.Reserve(t, 1));
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Start_a_Town_
             var nextIngredient = BehaviorHelper.ExtractNextTargetAmount(IngredientIndex);
             yield return nextIngredient;
             yield return new BehaviorGetAtNewNew(IngredientIndex).FailOnUnavailableTarget(IngredientIndex).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
-            yield return BehaviorHaulHelper.StartCarrying(IngredientIndex)
+            yield return BehaviorHaulHelper.StartCarrying(this, IngredientIndex)
                 .FailOn(failOnInvalidWorkstation)
                 .FailOn(orderIncompletable)
                 .FailOn(noOperatingPositions);
@@ -69,7 +69,8 @@ namespace Start_a_Town_
                 actor.Map.SyncSpawn(item, this.Workstation.Global.Above(), IntVec3.Zero);
 
                 task.SetTarget(AuxiliaryIndex, item);
-                actor.Reserve(task, item);
+                //actor.Reserve(task, item);
+                this.Reserve(item);
             });
 
             yield return new BehaviorInteractionNew(WorkstationIndex, () => new InteractionCrafting(task.Order, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
@@ -84,7 +85,8 @@ namespace Start_a_Town_
                     var product = this.Task.Product.Object;
                     var productTar = this.Task.Product;
                     var order = this.Task.Order;
-                    this.Actor.Reserve(this.Task, productTar, haulamount); // was using -1 to denote full stack, but want to phase it out
+                    //this.Actor.Reserve(this.Task, productTar, haulamount); // was using -1 to denote full stack, but want to phase it out
+                    this.Reserve(productTar, haulamount); // was using -1 to denote full stack, but want to phase it out
                     if (order.Output is Stockpile stockpile && stockpile.GetPotentialHaulTargets(actor, product) is var places && places.Any())// ; Towns.StockpileManager.GetBestStoragePlace(this.Actor, this.Task.Product.Object as Entity, out TargetArgs target))
                     {
                         var target = places.First();
@@ -102,7 +104,7 @@ namespace Start_a_Town_
             };
 
             yield return new BehaviorGetAtNewNew(IngredientIndex).FailOn(deliverFail).FailOnUnavailableTarget(IngredientIndex);
-            yield return BehaviorHaulHelper.StartCarrying(IngredientIndex).FailOn(deliverFail).FailOnUnavailableTarget(IngredientIndex);
+            yield return BehaviorHaulHelper.StartCarrying(this, IngredientIndex).FailOn(deliverFail).FailOnUnavailableTarget(IngredientIndex);
             yield return new BehaviorGetAtNewNew(WorkstationIndex).FailOn(deliverFail);
             yield return BehaviorHelper.PlaceCarried(WorkstationIndex).FailOn(deliverFail);
 
@@ -166,15 +168,15 @@ namespace Start_a_Town_
             var benchGlobalAbove = benchGlobal.Above;
             var operatingPos = actor.Map.GetFrontOfBlock(benchGlobal);
             var operatingPosBelow = operatingPos.Below;
-            return task.ReserveAll(actor, IngredientIndex)
+            return this.ReserveAll(IngredientIndex)
                 //&& actor.Reserve(task, benchGlobal)
                 //&& actor.Reserve(task, benchGlobalAbove)
                 //&& actor.Reserve(task, operatingPos)
                 //&& actor.Reserve(task, operatingPosBelow);
-                && task.Reserve(actor, benchGlobal)
-                && task.Reserve(actor, benchGlobalAbove)
-                && task.Reserve(actor, operatingPos)
-                && task.Reserve(actor, operatingPosBelow);
+                && this.Reserve(benchGlobal)
+                && this.Reserve(benchGlobalAbove)
+                && this.Reserve(operatingPos)
+                && this.Reserve(operatingPosBelow);
         }
         bool IsValidStorage(TargetArgs target)
         {

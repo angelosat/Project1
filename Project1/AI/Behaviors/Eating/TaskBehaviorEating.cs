@@ -40,10 +40,9 @@ namespace Start_a_Town_.AI.Behaviors
 
         protected override bool InitExtraReservations()
         {
-            var tableaRes = (Table.Type == TargetType.Null) ? true : Actor.Reserve(this.Task, Table, 1) && this.Task.Reserve(this.Actor, Table.Global.Above());
-            //var manager = this.Actor.Map.Town.ReservationManager;
-            var tableRes = (Table.Type == TargetType.Null) ? true : this.Task.Reserve(this.Actor, EatingSurfaceInd, 1) && this.Task.Reserve(this.Actor, EatingSurfaceInd);// Table.Global.Above());
-            return Actor.Reserve(this.Task, Food, 1) && tableRes;
+            var tableaRes = (this.Table.Type == TargetType.Null) ? true : this.Reserve(Table, 1) && this.Reserve(Table.Global.Above());
+            var tableRes = (this.Table.Type == TargetType.Null) ? true : this.Reserve(EatingSurfaceInd, 1) && this.Reserve(EatingSurfaceInd);// Table.Global.Above());
+            return this.Reserve(Food, 1) && tableRes;
         }
 
         private bool IsTableSurfaceEmpty(TargetArgs table)

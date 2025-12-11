@@ -35,8 +35,10 @@ namespace Start_a_Town_
         protected override bool InitExtraReservations()
         {
             return
-                this.Actor.Reserve(this.Task, this.Task.TargetA) &&
-                this.Actor.Reserve(this.Task, this.Task.TargetB)
+                //this.Actor.Reserve(this.Task, this.Task.TargetA) &&
+                //this.Actor.Reserve(this.Task, this.Task.TargetB)
+                this.Reserve(this.Task.TargetA) &&
+                this.Reserve(this.Task.TargetB)
                 ;
         }
     }

@@ -9,7 +9,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return new BehaviorGetAtNewNew(TargetIndex.A);
-            yield return BehaviorHaulHelper.StartCarrying(TargetIndex.A);
+            yield return BehaviorHaulHelper.StartCarrying(this, TargetIndex.A);
             // TODO start checking if the shop has a worker
             // if no worker or all workers busy, wait a bit and then cancel the behavior and drop town approval rating
             yield return new BehaviorGetAtNewNew(TargetIndex.B);
@@ -46,7 +46,7 @@ namespace Start_a_Town_
         protected override bool InitExtraReservations()
         {
             return
-                this.Actor.ReserveAsManyAsPossible(this.Task.TargetA, this.Task.TargetA.Object.StackSize);
+                this.ReserveAsManyAsPossible(this.Task.TargetA, this.Task.TargetA.Object.StackSize);
         }
     }
 }

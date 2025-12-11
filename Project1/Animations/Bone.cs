@@ -4,12 +4,10 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.Animations;
-using System.IO;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Start_a_Town_
 {
-    public partial class Bone : Inspectable, ISaveable, ISerializableNew
+    public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
     {
         public enum States { Unstarted, Stopped, Running, Finished, Manual }
         public override string Label => this.Def.Label;
@@ -777,7 +775,7 @@ namespace Start_a_Town_
                 j.Bone?.Write(w);
         }
 
-        public ISerializableNew Read(IDataReader r)
+        public Bone Read(IDataReader r)
         {
             //this.Material = MaterialDef.GetMaterial(r.ReadInt32());
             if (r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace())
@@ -828,6 +826,6 @@ namespace Start_a_Town_
         public IEnumerable<Joint> Children => this.Joints.Values;
         public override string ToString() => this.Label;
 
-        public static ISerializableNew Create(IDataReader r) => new Bone().Read(r);
+        public static Bone Create(IDataReader r) => new Bone().Read(r);
     }
 }

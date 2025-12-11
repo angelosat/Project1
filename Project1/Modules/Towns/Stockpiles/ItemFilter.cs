@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 
 namespace Start_a_Town_
 {
-    public record ItemFilter : ISaveable, ISerializableNew, ISyncable
+    public record ItemFilter : ISaveable, ISerializableNew<ItemFilter>, ISyncable
     {
         public ItemDef Item { get; private set; }
         public bool Enabled = true;
@@ -82,7 +81,7 @@ namespace Start_a_Town_
             this.Sync(w);
         }
 
-        public ISerializableNew Read(IDataReader r)
+        public ItemFilter Read(IDataReader r)
         {
             this.Item = Def.GetDef<ItemDef>(r.ReadString());
             this.Sync(r);
@@ -114,6 +113,6 @@ namespace Start_a_Town_
                 this.DisallowedVariations.Add(m);
         }
 
-        public static ISerializableNew Create(IDataReader r) => new ItemFilter().Read(r);
+        public static ItemFilter Create(IDataReader r) => new ItemFilter().Read(r);
     }
 }

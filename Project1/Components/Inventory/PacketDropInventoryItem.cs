@@ -12,8 +12,6 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, GameObject actor, GameObject item, int amount)
         {
-            //var stream = net.GetOutgoingStreamOrderedReliable();
-            //stream.Write(p);
             var stream = actor.Net.BeginPacket(p);
             stream.Write(actor.RefId);
             stream.Write(item.RefId);
@@ -27,9 +25,7 @@ namespace Start_a_Town_
             var amount = r.ReadInt32();
             var item = net.World.GetEntity(itemID);
             var actor = net.World.GetEntity<Actor>(actorID);
-            //actor.AI.State.ItemPreferences.OnForcedDrop(item);
             actor.Inventory.Drop(item, amount); // TODO: this happens immediately when the game is paused. maybe create an interaction with a 1 frame duration? NO it's good that it happens while the game is paused
-            //actor.AI.State.ItemPreferences.ModifyBias(item, -200);
             if (amount == item.StackSize)
                 NpcComponent.RemovePossesion(actor, item);
             if (net is Server)

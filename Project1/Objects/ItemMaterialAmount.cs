@@ -1,9 +1,8 @@
 ﻿using Start_a_Town_.UI;
-using System.IO;
 
 namespace Start_a_Town_
 {
-    public class ItemMaterialAmount : Inspectable, ISerializableNew, ISaveable, IListable
+    public class ItemMaterialAmount : Inspectable, ISerializableNew<ItemMaterialAmount>, ISaveable, IListable
     {
         public ItemDef Item;
         public MaterialDef Material;
@@ -73,10 +72,10 @@ namespace Start_a_Town_
             w.Write(this.Material.Name);
             w.Write(this.Amount);
         }
-        public ISerializableNew Read(IDataReader r)
+        public ItemMaterialAmount Read(IDataReader r)
         {
-            this.Item = Start_a_Town_.Def.GetDef<ItemDef>(r.ReadString());
-            this.Material = Start_a_Town_.Def.GetDef<MaterialDef>(r.ReadString());
+            this.Item = Def.GetDef<ItemDef>(r.ReadString());
+            this.Material = Def.GetDef<MaterialDef>(r.ReadString());
             this.Amount = r.ReadInt32();
             return this;
         }
@@ -87,6 +86,6 @@ namespace Start_a_Town_
         }
 
 
-        public static ISerializableNew Create(IDataReader r) => new ItemMaterialAmount().Read(r);
+        public static ItemMaterialAmount Create(IDataReader r) => new ItemMaterialAmount().Read(r);
     }
 }

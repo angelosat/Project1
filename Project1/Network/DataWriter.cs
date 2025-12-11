@@ -53,7 +53,7 @@ namespace Start_a_Town_.Net
                 this._writer.Write(i);
             return this;
         }
-        public IDataWriter Write<T>(ICollection<T> list) where T : ISerializableNew
+        public IDataWriter Write<T>(ICollection<T> list) where T : ISerializableNew<T>
         {
             var w = this._writer;
             w.Write(list.Count);

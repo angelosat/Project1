@@ -5,7 +5,7 @@ namespace Start_a_Town_
 {
     public partial class ItemPreferencesManager
     {
-        public sealed class ItemPreference : Inspectable, ISaveable, ISerializableNew
+        public sealed class ItemPreference : Inspectable, ISaveable, ISerializableNew<ItemPreference>
         {
             internal ItemRoleDef Role;
             int _itemRefId;
@@ -45,7 +45,7 @@ namespace Start_a_Town_
                 w.Write(this.Score);
             }
 
-            public ISerializableNew Read(IDataReader r)
+            public ItemPreference Read(IDataReader r)
             {
                 this.Role = r.ReadDef<ItemRoleDef>();// RegistryByName[r.ReadString()];
                 this.ItemRefId = r.ReadInt32();
@@ -91,7 +91,7 @@ namespace Start_a_Town_
                 this.Score = this.Role.Worker.GetInventoryScore(actor, this.Item, this.Role);
             }
 
-            public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
+            public static ItemPreference Create(IDataReader r) => new ItemPreference().Read(r);
         }
         public void SyncPrefs(System.Collections.Generic.ICollection<ItemPreference> oldItems, System.Collections.Generic.ICollection<ItemPreference> newItems)
         {

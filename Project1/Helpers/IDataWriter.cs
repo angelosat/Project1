@@ -29,7 +29,7 @@ namespace Start_a_Town_
         internal IDataWriter Write(Def def) { this.ww.Write(def); return this; }
         internal IDataWriter Write(ICollection<IntVec3> list);
         internal IDataWriter Write(ICollection<TargetArgs> list);
-        internal IDataWriter Write<T>(ICollection<T> list) where T : ISerializableNew;
+        internal IDataWriter Write<T>(ICollection<T> list) where T : ISerializableNew<T>;
         internal IDataWriter Write(string[] strings) { this.ww.Write(strings); return this; }
         internal IDataWriter Write(Color color) { this.ww.Write(color); return this; }
 

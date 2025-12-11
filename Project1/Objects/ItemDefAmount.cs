@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    public class ItemDefAmount : ISaveable, ISerializableNew
+    public class ItemDefAmount : ISaveable, ISerializableNew<ItemDefAmount>
     {
         public ItemDef Def;
         public int Amount;
@@ -42,13 +42,13 @@ namespace Start_a_Town_
             w.Write(this.Def.Name);
             w.Write(this.Amount);
         }
-        public ISerializableNew Read(IDataReader r)
+        public ItemDefAmount Read(IDataReader r)
         {
             this.Def = Start_a_Town_.Def.GetDef<ItemDef>(r.ReadString());
             this.Amount = r.ReadInt32();
             return this;
         }
 
-        public static ISerializableNew Create(IDataReader r) => new ItemDefAmount().Read(r);
+        public static ItemDefAmount Create(IDataReader r) => new ItemDefAmount().Read(r);
     }
 }

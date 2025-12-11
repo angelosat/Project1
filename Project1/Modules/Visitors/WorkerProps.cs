@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class WorkerProps : ISaveable, ISerializableNew
+    public class WorkerProps : ISaveable, ISerializableNew<WorkerProps>
     {
         public int ActorID;
         public Dictionary<JobDef, Job> Jobs = new();
@@ -43,13 +42,13 @@ namespace Start_a_Town_
             w.Write(this.ActorID);
             this.Jobs.Values.Write(w);
         }
-        public ISerializableNew Read(IDataReader r)
+        public WorkerProps Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
             this.Jobs = r.ReadArray<Job>().ToDictionary(j => j.Def, j => j);
             return this;
         }
 
-        public static ISerializableNew Create(IDataReader r) => new WorkerProps().Read(r);
+        public static WorkerProps Create(IDataReader r) => new WorkerProps().Read(r);
     }
 }

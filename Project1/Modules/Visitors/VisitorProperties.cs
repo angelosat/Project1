@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using Start_a_Town_.UI;
 using Start_a_Town_.Net;
@@ -9,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    public class VisitorProperties : Inspectable, ITooltippable, ISerializableNew, ISaveable, ISyncable
+    public class VisitorProperties : Inspectable, ITooltippable, ISerializableNew<VisitorProperties>, ISaveable, ISyncable
     {
         static readonly int PacketSyncAwardTownRating, PacketSync;
         static VisitorProperties()
@@ -307,7 +306,7 @@ namespace Start_a_Town_
             w.Write(this.Timer.TotalMilliseconds);
             w.Write(this.Quests.Select(q => q.ID).ToArray());
         }
-        public ISerializableNew Read(IDataReader r)
+        public VisitorProperties Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
             var isspawned = r.ReadBoolean();
@@ -395,6 +394,6 @@ namespace Start_a_Town_
             gui.GetWindow().SetTitle(this.Actor.Name).Show();
         }
 
-        public static ISerializableNew Create(IDataReader r) => new VisitorProperties().Read(r);
+        public static VisitorProperties Create(IDataReader r) => new VisitorProperties().Read(r);
     }
 }

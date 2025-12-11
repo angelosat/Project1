@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    public class NeedMod : ISerializableNew, ISaveable
+    public class NeedMod : ISerializableNew<NeedMod>, ISaveable
     {
         public EffectDef Def;
         public float RateMod;
@@ -56,7 +56,7 @@ namespace Start_a_Town_
             w.Write(this.ValueMod);
         }
 
-        public ISerializableNew Read(IDataReader r)
+        public NeedMod Read(IDataReader r)
         {
             this.Def = r.ReadDef<EffectDef>();
             this.RateMod = r.ReadSingle();
@@ -64,7 +64,7 @@ namespace Start_a_Town_
             return this;
         }
 
-        public static ISerializableNew Create(IDataReader r) => new NeedMod().Read(r);
+        public static NeedMod Create(IDataReader r) => new NeedMod().Read(r);
         
     }
 }

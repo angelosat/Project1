@@ -1,26 +1,15 @@
-﻿using SharpDX.MediaFoundation;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 
 namespace Start_a_Town_
 {
-    //[EnsureStaticCtorCall]
-    public partial class ItemPreferencesManager : Inspectable, ISaveable, ISerializableNew //IItemPreferencesManager
+    public partial class ItemPreferencesManager : Inspectable, ISaveable, ISerializableNew<ItemPreferencesManager> //IItemPreferencesManager
     {
-        static Dictionary<ItemRoleContextDef, List<ItemRoleDef>> ContextToItemRolesMap = [];
         static List<ItemRoleDef> _flatItemRolesList;
-        static List<ItemRoleDef> FlatItemRolesList => _flatItemRolesList ??= GenerateItemRolesAll();
-
-        //static readonly Dictionary<GearType, ItemRoleWrapper> ItemRolesGear = [];
-        //static readonly Dictionary<JobDef, ItemRoleWrapper> ItemRolesTool = [];
-
-        //static readonly Dictionary<Def, ItemRoleWrapper> RegistryByContext = [];
-        //static readonly Dictionary<string, ItemRoleWrapper> RegistryByName = [];
+        static Dictionary<ItemRoleContextDef, List<ItemRoleDef>> ContextToItemRolesMap = [];
 
         Control _gui;
 
@@ -29,23 +18,18 @@ namespace Start_a_Town_
 
         readonly Dictionary<int, ItemBias> ItemBiases = [];
         readonly Queue<Entity> notScannedYet = [];
-        //readonly Dictionary<ItemRoleWrapper, ItemPreference> PreferencesNew = [];
         readonly Dictionary<ItemRoleDef, ItemPreference> PreferencesNew = [];
-        //readonly ObservableCollection<ItemPreference> PreferencesView = [];
         readonly Dictionary<int, int> TempIgnore = [];
         readonly HashSet<int> ToDiscard = [];
-
-        // TODO: item like/dislike registry
-        //static ItemPreferencesManager()
-        //{
-        //    Init();
-        //}
+        public ItemPreferencesManager()
+        {
+            
+        }
         public ItemPreferencesManager(Actor actor)
         {
             this.Actor = actor;
-            
         }
-        
+
         private void enqueueNewSpawnedItem(EntitySpawnedEvent e)
         {
             if (e.Entity is Tool && !this.TempIgnore.ContainsKey(e.Entity.RefId))
@@ -76,10 +60,7 @@ namespace Start_a_Town_
                 .ToWindow($"{this.Actor.Name}'s Item Preferences");
             return box;
         }
-        //private Entity GetPreference(ItemRoleDef role)
-        //{
-        //    return this.PreferencesNew[role].Item;
-        //}
+
         static void Init()
         {
             GenerateItemRolesAll();
@@ -95,7 +76,6 @@ namespace Start_a_Town_
             if (!roles.Any())
                 return;
             var finalRoles = roles
-                    //.Where(r => this.GetExistingPreference(r.role, out var existingScore) is var existing && r.score > existingScore);
                     .Where(r => this.GetExistingPreference(r.role).score is int existingScore && r.score > existingScore);
 
             foreach (var r in finalRoles)
@@ -114,33 +94,6 @@ namespace Start_a_Town_
             return i.ExistsOn(this.Actor.Map);
         }
 
-        void SyncAddPref(ItemPreference pref)
-        {
-            if (this.Actor.Net is not Client)
-                throw new Exception();
-            //var existing = this.PreferencesNew[pref.Role];
-            if(!this.PreferencesNew.TryGetValue(pref.Role, out var existing))
-            {
-                existing = new(pref.Role);
-                this.PreferencesNew[pref.Role] = existing;
-            }
-            existing.CopyFrom(pref);
-            existing.ResolveReferences(this.Actor);
-            //if (!this.PreferencesView.Contains(existing))
-            //    this.PreferencesView.Add(existing);
-        }
-        void SyncRemovePref(ItemPreference pref)
-        {
-            if (this.Actor.Net is not Client)
-                throw new Exception();
-            //var existing = this.PreferencesNew[pref.Role];
-            //existing.Clear();
-            if (!this.PreferencesNew.TryGetValue(pref.Role, out var existing))
-                throw new Exception();
-            this.PreferencesNew.Remove(pref.Role);
-            //if (this.PreferencesView.Contains(existing))
-            //    this.PreferencesView.Remove(existing);
-        }
 
         private void UpdateBiases()
         {
@@ -156,15 +109,6 @@ namespace Start_a_Town_
 
         private void UpdateTempIgnore()
         {
-            //var keys = this.TempIgnore.Keys.ToList();
-            //foreach (var key in keys)
-            //{
-            //    if (this.TempIgnore[key] <= 0)
-            //        this.TempIgnore.Remove(key);
-            //    else
-            //        this.TempIgnore[key]--;
-            //}
-
             List<int> toRemove = [];
 
             foreach (var (key, cooldown) in this.TempIgnore)
@@ -183,14 +127,13 @@ namespace Start_a_Town_
             }
         }
 
-        //static IEnumerable<ItemRoleWrapper> AllRoles => ItemRolesGear.Values.Concat(ItemRolesTool.Values);
+        static List<ItemRoleDef> FlatItemRolesList => _flatItemRolesList ??= GenerateItemRolesAll();
+
         bool IsScanning => notScannedYet.Count > 0;
 
 
         internal void Commit(ItemRoleDef role, Entity item, int score)
         {
-            
-            //var pref = this.PreferencesNew[context];
             if (!this.PreferencesNew.TryGetValue(role, out var pref))
             {
                 pref = new(role);// { Role = context, Item = item, Score = score };
@@ -201,7 +144,7 @@ namespace Start_a_Town_
             pref.Item = item;
             pref.Score = score;
             //item.Ownership.Owner = this.Actor;
-            
+
             Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
             this.cache.Remove(role);
         }
@@ -221,6 +164,23 @@ namespace Start_a_Town_
             var allRoles = this.Evaluate(item);
             return allRoles.OrderByDescending(i => i.score).FirstOrDefault();
 
+        }
+        internal (Entity item, int score) GetExistingPreference(ItemRoleDef role)
+        {
+            if (this.PreferencesNew.TryGetValue(role, out var existing))
+                return (existing.Item, existing.Score);
+            return (null, 0);
+        }
+
+        internal Entity GetExistingPreference(ItemRoleDef role, out int score)
+        {
+            if (this.PreferencesNew.TryGetValue(role, out var existing))
+            {
+                score = existing.Score;
+                return existing.Item;
+            }
+            score = 0;
+            return null;
         }
         internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotential()
         {
@@ -274,54 +234,12 @@ namespace Start_a_Town_
             foreach (var (context, pref) in dic)
                 yield return (context, pref.item, pref.score);
         }
-
-        internal Entity GetExistingPreference(ItemRoleDef role, out int score)
-        {
-            if (this.PreferencesNew.TryGetValue(role, out var existing))
-            {
-                score = existing.Score;
-                return existing.Item;
-            }
-            score = 0;
-            return null;
-            //var p = this.PreferencesNew[role];
-            //score = p.Score;
-            //return p.Item;
-        }
-        internal (Entity item, int score) GetExistingPreference(ItemRoleDef role)
-        {
-            if (this.PreferencesNew.TryGetValue(role, out var existing))
-                return (existing.Item, existing.Score);
-            return (null, 0);
-            //var p = this.PreferencesNew[role];
-            //score = p.Score;
-            //return p.Item;
-        }
         internal void RemovePreference(ItemRoleDef tag)
         {
             this.PreferencesNew[tag].Clear();
         }
 
-        public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
-
-        public void OnForcedDrop(Entity item)
-        {
-            this.ModifyBias(item, -200);
-            this.TempIgnore[item.RefId] = (int)Ticks.FromSeconds(10);
-
-            List<ItemPreference> toRemove = [];
-            foreach (var (context, preference) in this.PreferencesNew)
-                if (preference.ItemRefId == item.RefId)
-                    toRemove.Add(preference);
-            foreach (var r in toRemove)
-                this.PreferencesNew.Remove(r.Role);
-
-            Packets.SyncDeltas(this.Actor, [.. toRemove.Select(r => (r.Role, r.Item, (Entity)null, 0))]);
-
-            foreach (var i in this.Actor.Map.GetEntities<Tool>())
-                if (i != item)
-                    this.notScannedYet.Enqueue(i);
-        }
+        public static ItemPreferencesManager Create(IDataReader r) => new ItemPreferencesManager().Read(r);
 
         public IEnumerable<Entity> GetJunk()
         {
@@ -430,14 +348,28 @@ namespace Start_a_Town_
             this.notScannedYet.Clear();
             oldMap.Events.Unsubscribe(this);
         }
+
+        public void OnForcedDrop(Entity item)
+        {
+            this.ModifyBias(item, -200);
+            this.TempIgnore[item.RefId] = (int)Ticks.FromSeconds(10);
+
+            List<ItemPreference> toRemove = [];
+            foreach (var (context, preference) in this.PreferencesNew)
+                if (preference.ItemRefId == item.RefId)
+                    toRemove.Add(preference);
+            foreach (var r in toRemove)
+                this.PreferencesNew.Remove(r.Role);
+
+            Packets.SyncDeltas(this.Actor, [.. toRemove.Select(r => (r.Role, r.Item, (Entity)null, 0))]);
+
+            foreach (var i in this.Actor.Map.GetEntities<Tool>())
+                if (i != item)
+                    this.notScannedYet.Enqueue(i);
+        }
         public void OnMapLoaded()
         {
-            //if (this.Actor.Net.IsServer)
-            //    this.PreferencesView.CollectionChanged += this.PreferencesObs_CollectionChanged;
-
             this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
-
-            // HACK TO JUMP START THE SCANNING SYSTEM
             foreach (var i in this.Actor.Map.GetEntities<Tool>())
                 this.notScannedYet.Enqueue(i);
         }
@@ -448,12 +380,9 @@ namespace Start_a_Town_
             newMap.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
         }
 
-        public ISerializableNew Read(IDataReader r)
+        public ItemPreferencesManager Read(IDataReader r)
         {
-            foreach (var p in this.PreferencesNew)
-                p.Value.Read(r);
-            //foreach (var p in this.PreferencesNew.Where(t => t.Value.Score > 0))
-            //    this.PreferencesView.Add(p.Value);
+            this.PreferencesNew.ReadFromFlat(r, Def.GetDef<ItemRoleDef>, ItemPreference.Create);
             return this;
         }
         public void RemoveJunk(Entity item)
@@ -470,8 +399,6 @@ namespace Start_a_Town_
 
         public void ResolveReferences()
         {
-            //foreach (var p in this.PreferencesView)
-            //    p.ResolveReferences(this.Actor);
         }
 
         public SaveTag Save(string name = "")
@@ -493,12 +420,10 @@ namespace Start_a_Town_
 
         public void Write(IDataWriter w)
         {
-            foreach (var r in this.PreferencesNew.Values)
-                r.Write(w);
+            w.Write(this.PreferencesNew.Values);
         }
 
         public Control Gui => this._gui ??= this.GetGui();
-        //public IEnumerable<ItemPreference> Preferences => this.PreferencesView;
 
         [EnsureStaticCtorCall]
         static class Packets
@@ -507,7 +432,7 @@ namespace Start_a_Town_
 
             static Packets()
             {
-                pSyncPrefsAll = Start_a_Town_.Registry.PacketHandlers.Register(Receive);
+                pSyncPrefsAll = Registry.PacketHandlers.Register(Receive);
             }
 
             private static void Receive(INetEndpoint net, Packet pck)

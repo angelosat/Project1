@@ -120,7 +120,7 @@ namespace Start_a_Town_
             this.OrderID = r.ReadInt32();
             this.Progress = new Progress(r);
             this.PlacedObjects.ReadMutableNew(r);
-            this.IngredientsUsed.ReadNew(r, r => r.ReadString(), r => new ObjectRefIDsAmount().Read(r) as ObjectRefIDsAmount);
+            this.IngredientsUsed.ReadFromFlat(r, r => r.ReadString(), r => new ObjectRefIDsAmount().Read(r) as ObjectRefIDsAmount);
         }
 
         public override void OnUpdate()

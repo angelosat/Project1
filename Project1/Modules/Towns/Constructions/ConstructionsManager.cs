@@ -265,7 +265,7 @@ namespace Start_a_Town_
                 info.AddInfo(this.UpdatePendingDesignationLabel(pending));
             }
         }
-        class ConstructionParams : Inspectable, ISaveable, ISerializableNew
+        class ConstructionParams : Inspectable, ISaveable, ISerializableNew<ConstructionParams>
         {
             public IntVec3 Global;
             public int Orientation;
@@ -305,7 +305,7 @@ namespace Start_a_Town_
                 w.Write(this.Orientation);
                 this.Product.Write(w);
             }
-            public ISerializableNew Read(IDataReader r)
+            public ConstructionParams Read(IDataReader r)
             {
                 this.Global = r.ReadIntVec3();
                 this.Orientation = r.ReadInt32();
@@ -313,7 +313,7 @@ namespace Start_a_Town_
                 return this;
             }
 
-            public static ISerializableNew Create(IDataReader r) => new ConstructionParams().Read(r);
+            public static ConstructionParams Create(IDataReader r) => new ConstructionParams().Read(r);
 
             //public string GetName()
             //{

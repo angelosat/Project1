@@ -2,13 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using Microsoft.Xna.Framework;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Start_a_Town_
 {
-    public partial class Room : Inspectable, ISelectable, ISaveable, ISerializableNew
+    public partial class Room : Inspectable, ISelectable, ISaveable, ISerializableNew<Room>
     {
         static Room()
         {
@@ -377,7 +375,7 @@ namespace Start_a_Town_
             w.Write(this.workplaceID);
             w.Write(this.roomRole?.Name ?? "");
         }
-        public ISerializableNew Read(IDataReader r)
+        public Room Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Interior = new HashSet<IntVec3>().ReadIntVec3(r);
@@ -455,6 +453,6 @@ namespace Start_a_Town_
             yield break;
         }
 
-        public static ISerializableNew Create(IDataReader r) => new Room().Read(r);
+        public static Room Create(IDataReader r) => new Room().Read(r);
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Start_a_Town_
 {
-    public interface ISerializableNew
+    public interface ISerializableNew<T> where T: ISerializableNew<T>
     {
-        ISerializableNew Read(IDataReader r);
+        T Read(IDataReader r);
         void Write(IDataWriter w);
-        static abstract ISerializableNew Create(IDataReader r);
+        static abstract T Create(IDataReader r);
     }
     public interface ISerializable
     {

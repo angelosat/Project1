@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    public class AttributeStat : Inspectable, ISaveable, ISerializableNew, IListable
+    public class AttributeStat : Inspectable, ISaveable, ISerializableNew<AttributeStat>, IListable
     {
         public class ValueModifier
         {
@@ -95,7 +95,7 @@ namespace Start_a_Town_
             this.Progress.Write(w);
         }
 
-        public ISerializableNew Read(IDataReader r)
+        public AttributeStat Read(IDataReader r)
         {
             this.Progress.Read(r);
             return this;
@@ -109,6 +109,6 @@ namespace Start_a_Town_
             };
         }
 
-        public static ISerializableNew Create(IDataReader r) => new AttributeStat().Read(r);
+        public static AttributeStat Create(IDataReader r) => new AttributeStat().Read(r);
     }
 }

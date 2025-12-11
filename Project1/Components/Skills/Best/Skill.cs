@@ -1,11 +1,10 @@
 ﻿using System;
-using System.IO;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public class Skill : Inspectable, ISaveable, ISerializableNew, INamed, IListable
+    public class Skill : Inspectable, ISaveable, ISerializableNew<Skill>, INamed, IListable
     {
         public NpcSkillsComponent Container;
         public SkillDef Def;
@@ -110,7 +109,7 @@ namespace Start_a_Town_
             this.LvlProgress.Write(w);
         }
 
-        public ISerializableNew Read(IDataReader r)
+        public Skill Read(IDataReader r)
         {
             this.Def = r.ReadDef<SkillDef>();
             this.Level = r.ReadInt32();
@@ -126,6 +125,6 @@ namespace Start_a_Town_
             return $"{this.Def.Label}: {this.Level} ({this.CurrentXP} / {this.XpToLevel})";
         }
 
-        public static ISerializableNew Create(IDataReader r) => new Skill().Read(r);
+        public static Skill Create(IDataReader r) => new Skill().Read(r);
     }
 }

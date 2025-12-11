@@ -9,7 +9,7 @@ namespace Start_a_Town_
     {
         public partial class Product
         {
-            public class ProductMaterialPair : ISaveable, ISerializableNew
+            public class ProductMaterialPair : ISaveable, ISerializableNew<ProductMaterialPair>
             {
                 public GameObject Product;
                 public Reaction Reaction;
@@ -74,15 +74,15 @@ namespace Start_a_Town_
                     this.Reaction.Write(w);
                     this.RequirementsNew.WriteNew(w, k => w.Write(k), v => v.Write(w));
                 }
-                public ISerializableNew Read(IDataReader r)
+                public ProductMaterialPair Read(IDataReader r)
                 {
                     this.Product = GameObject.Create(r);
                     this.Reaction = r.ReadDef<Reaction>();
-                    this.RequirementsNew.ReadNew(r, r => r.ReadString(), r => new ObjectAmount().Read(r) as ObjectAmount);
+                    this.RequirementsNew.ReadFromFlat(r, r => r.ReadString(), r => new ObjectAmount().Read(r) as ObjectAmount);
                     return this;
                 }
 
-                public static ISerializableNew Create(IDataReader r)
+                public static ProductMaterialPair Create(IDataReader r)
                 {
                     return new ProductMaterialPair(r);
                 }

@@ -1,10 +1,9 @@
 ﻿using Start_a_Town_.UI;
 using System.IO;
-using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
-    public class EntityEffectWrapper : ISaveableNew, ISerializableNew
+    public class EntityEffectWrapper : ISaveableNew, ISerializableNew<EntityEffectWrapper>
     {
         internal EffectDef Def;
         EntityEffectWrapper()
@@ -24,7 +23,7 @@ namespace Start_a_Town_
             return e;
         }
 
-        public static ISerializableNew Create(IDataReader r)
+        public static EntityEffectWrapper Create(IDataReader r)
         {
             var e = new EntityEffectWrapper();
             //e.Def = Start_a_Town_.Def.GetDef<EffectDef>(r.ReadString());
@@ -54,6 +53,6 @@ namespace Start_a_Town_
             this.Def.Write(w);
         }
 
-        public ISerializableNew Read(IDataReader r) => new EntityEffectWrapper().Read(r);
+        public EntityEffectWrapper Read(IDataReader r) => new EntityEffectWrapper().Read(r);
     }
 }

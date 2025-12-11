@@ -1,9 +1,8 @@
-﻿using System.IO;
-using Start_a_Town_.UI;
+﻿using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public sealed class Trait : Inspectable, ISaveable, ISerializableNew, IProgressBar, INamed, IListable
+    public sealed class Trait : Inspectable, ISaveable, ISerializableNew<Trait>, IProgressBar, INamed, IListable
     {
         public float Percentage
         {
@@ -61,14 +60,14 @@ namespace Start_a_Town_
             w.Write(this.Value);
         }
 
-        public ISerializableNew Read(IDataReader r)
+        public Trait Read(IDataReader r)
         {
             this.Def = r.ReadDef<TraitDef>();
             this.Value = r.ReadSingle();
             return this;
         }
 
-        public static ISerializableNew Create(IDataReader r)
+        public static Trait Create(IDataReader r)
         {
             return new Trait().Read(r);
         }

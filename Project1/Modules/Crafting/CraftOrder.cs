@@ -3,12 +3,11 @@ using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
 {
-    public partial class CraftOrder : Inspectable, ILoadReferencable<CraftOrder>, ILoadReferencable, ISerializableNew, IListable
+    public partial class CraftOrder : Inspectable, ILoadReferencable<CraftOrder>, ILoadReferencable, ISerializableNew<CraftOrder>, IListable
     {
         enum CraftMode { XTimes, UntilX, Forever }
 
@@ -231,7 +230,7 @@ namespace Start_a_Town_
             this.Read(r);
             this.Map = map;
         }
-        public ISerializableNew Read(IDataReader r)
+        public CraftOrder Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             //this.Reaction = Reaction.Dictionary[r.ReadInt32()];
@@ -536,6 +535,6 @@ namespace Start_a_Town_
             container.GetWindow().SetTitle($"\"{this.Label}\" details");
         }
 
-        public static ISerializableNew Create(IDataReader r) => new CraftOrder().Read(r);
+        public static CraftOrder Create(IDataReader r) => new CraftOrder().Read(r);
     }
 }

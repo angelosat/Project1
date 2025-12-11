@@ -1,10 +1,9 @@
 ﻿using System;
-using System.IO;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
-    public class ObjectAmount : ISaveable, ISerializableNew
+    public class ObjectAmount : ISaveable, ISerializableNew<ObjectAmount>
     {
         TargetArgs ObjectTarget;
         public GameObject Object
@@ -77,14 +76,14 @@ namespace Start_a_Town_
             w.Write(this._amount);
         }
 
-        public ISerializableNew Read(IDataReader r)
+        public ObjectAmount Read(IDataReader r)
         {
             this.ObjectTarget = TargetArgs.Read(Network.CurrentNetwork, r);
             this._amount = r.ReadInt32();
             return this;
         }
 
-        public static ISerializableNew Create(IDataReader r)
+        public static ObjectAmount Create(IDataReader r)
         {
             return new ObjectAmount().Read(r);
         }

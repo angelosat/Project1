@@ -1,8 +1,6 @@
-﻿using System.IO;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
-    public class ObjectRefIDsAmount : ISaveable, ISerializableNew
+    public class ObjectRefIDsAmount : ISaveable, ISerializableNew<ObjectRefIDsAmount>
     {
         public int Object;
         public int Amount;
@@ -35,24 +33,19 @@ namespace Start_a_Town_
             return this;
         }
 
-        public void Write(BinaryWriter w)
-        {
-            w.Write(this.Object);
-            w.Write(this.Amount);
-        }
         public void Write(IDataWriter w)
         {
             w.Write(this.Object);
             w.Write(this.Amount);
         }
-        public ISerializableNew Read(IDataReader r)
+        public ObjectRefIDsAmount Read(IDataReader r)
         {
             this.Object = r.ReadInt32();
             this.Amount = r.ReadInt32();
             return this;
         }
 
-        public static ISerializableNew Create(IDataReader r) => new ObjectRefIDsAmount().Read(r);
+        public static ObjectRefIDsAmount Create(IDataReader r) => new ObjectRefIDsAmount().Read(r);
         
 
     }

@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public sealed class Need : MetricWrapper, IProgressBar, ISaveable, INamed, ISerializableNew, ISaveableNew
+    public sealed class Need : MetricWrapper, IProgressBar, ISaveable, INamed, ISerializableNew<Need>, ISaveableNew
     {
         Dictionary<EffectDef, List<NeedMod>> ModsNew = [];
         internal void AddMod(EffectDef needLetDef, float value, float rate)
@@ -157,17 +157,17 @@ namespace Start_a_Town_
             this.Mods.WriteNew(w);
             this.ModsNew.WriteNew(w, k => k.Write(w), v => v.WriteNew(w));
         }
-        public ISerializableNew Read(IDataReader r)
+        public Need Read(IDataReader r)
         {
             this.NeedDef = r.ReadDef<NeedDef>();
             this.Value = r.ReadSingle();
             this.Mod = r.ReadSingle();
             this.DecayDelay = r.ReadSingle();
             this.Mods.Read(r);
-            this.ModsNew.ReadNew(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
+            this.ModsNew.ReadFromFlat(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
             return this;
         }
-        static public ISerializableNew Create(IDataReader r) => new Need().Read(r);
+        static public Need Create(IDataReader r) => new Need().Read(r);
         //{
         //    var need = new Need();
         //    need.NeedDef = r.ReadDef<NeedDef>();

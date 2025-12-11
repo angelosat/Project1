@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Start_a_Town_.Net;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Start_a_Town_
 {
-    public sealed class Resource : MetricWrapper, IProgressBar, ISaveable, ISerializableNew, INamed
+    public sealed class Resource : MetricWrapper, IProgressBar, ISaveable, ISerializableNew<Resource>, INamed
     {
         public ResourceDef ResourceDef;
         public List<ResourceRateModifier> Modifiers = new();
@@ -139,7 +138,7 @@ namespace Start_a_Town_
             w.Write(this.Max);
         }
 
-        public ISerializableNew Read(IDataReader r)
+        public Resource Read(IDataReader r)
         {
             this.ResourceDef = r.ReadDef<ResourceDef>();
             this._value = r.ReadSingle();
@@ -178,7 +177,7 @@ namespace Start_a_Town_
                 _unsub += parent.Map?.Events.ListenTo(i.eventType, i.handler);
         }
 
-        public static ISerializableNew Create(IDataReader r) => new Resource().Read(r);
+        public static Resource Create(IDataReader r) => new Resource().Read(r);
 
         class Packets
         {

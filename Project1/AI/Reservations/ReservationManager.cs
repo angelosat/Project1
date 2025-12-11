@@ -54,8 +54,8 @@ namespace Start_a_Town_
             /// because the behavior might have been a result of player forcing a task
             //if (!actor.CanReserve(target, stackCount))
             //    throw new Exception(); // this will probably throw if the canreserve check has been omitted in a taskgiver, or a reservation has been omitted in the initreservations of another behavior
-           
-            
+
+
 
 
             /// I MOVED THIS TO THE BEGINNING OF THE FUNCTION because I check the stackCount against any existing reservations which are NEVER -1

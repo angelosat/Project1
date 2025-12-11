@@ -46,7 +46,18 @@ namespace Start_a_Town_
         {
             return actor.Town.ReservationManager.Reserve(actor, this, this.GetTarget(index), this.GetAmount(index));
         }
-
+        internal bool Reserve(Actor actor, TargetIndex index, int amount)
+        {
+            return actor.Town.ReservationManager.Reserve(actor, this, this.GetTarget(index), amount);
+        }
+        internal bool Reserve(Actor actor, TargetArgs target, int amount)
+        {
+            return actor.Town.ReservationManager.Reserve(actor, this, target, amount);
+        }
+        internal bool Reserve(Actor actor, IntVec3 global)
+        {
+            return actor.Town.ReservationManager.Reserve(actor, this, new TargetArgs(actor.Map, global), 1);
+        }
         internal int GetAmount(TargetIndex amountInd)
         {
             return amountInd switch

@@ -167,10 +167,14 @@ namespace Start_a_Town_
             var operatingPos = actor.Map.GetFrontOfBlock(benchGlobal);
             var operatingPosBelow = operatingPos.Below;
             return task.ReserveAll(actor, IngredientIndex)
-                && actor.Reserve(task, benchGlobal)
-                && actor.Reserve(task, benchGlobalAbove)
-                && actor.Reserve(task, operatingPos)
-                && actor.Reserve(task, operatingPosBelow);
+                //&& actor.Reserve(task, benchGlobal)
+                //&& actor.Reserve(task, benchGlobalAbove)
+                //&& actor.Reserve(task, operatingPos)
+                //&& actor.Reserve(task, operatingPosBelow);
+                && task.Reserve(actor, benchGlobal)
+                && task.Reserve(actor, benchGlobalAbove)
+                && task.Reserve(actor, operatingPos)
+                && task.Reserve(actor, operatingPosBelow);
         }
         bool IsValidStorage(TargetArgs target)
         {

@@ -21,9 +21,10 @@ namespace Start_a_Town_
         readonly Dictionary<ItemRoleDef, ItemPreference> PreferencesNew = [];
         readonly Dictionary<int, int> TempIgnore = [];
         readonly HashSet<int> ToDiscard = [];
+
         public ItemPreferencesManager()
         {
-            
+
         }
         public ItemPreferencesManager(Actor actor)
         {
@@ -239,8 +240,6 @@ namespace Start_a_Town_
             this.PreferencesNew[tag].Clear();
         }
 
-        public static ItemPreferencesManager Create(IDataReader r) => new ItemPreferencesManager().Read(r);
-
         public IEnumerable<Entity> GetJunk()
         {
             this.Validate();
@@ -318,21 +317,6 @@ namespace Start_a_Town_
             return false;
         }
 
-        public ISaveable Load(SaveTag tag)
-        {
-            tag.TryGetTag("Preferences", pt =>
-            {
-                foreach (var p in pt.LoadList<ItemPreference>())
-                {
-                    var existing = this.PreferencesNew[p.Role];
-                    existing.CopyFrom(p);
-                    //this.PreferencesView.Add(existing);
-                }
-            });
-
-            return this;
-        }
-
         public void ModifyBias(Entity entity, int value)
         {
             if (!this.ItemBiases.TryGetValue(entity.RefId, out var bias))
@@ -379,12 +363,6 @@ namespace Start_a_Town_
                 this.notScannedYet.Enqueue(i);
             newMap.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
         }
-
-        public ItemPreferencesManager Read(IDataReader r)
-        {
-            this.PreferencesNew.ReadFromFlat(r, Def.GetDef<ItemRoleDef>, ItemPreference.Create);
-            return this;
-        }
         public void RemoveJunk(Entity item)
         {
             this.ToDiscard.Remove(item.RefId);
@@ -401,13 +379,6 @@ namespace Start_a_Town_
         {
         }
 
-        public SaveTag Save(string name = "")
-        {
-            var tag = new SaveTag(SaveTag.Types.Compound, name);
-            tag.Add(this.PreferencesNew.Values.Where(p => p.Item is not null).Save("Preferences"));
-            return tag;
-        }
-
         public void Tick()
         {
             this.UpdateBiases();
@@ -416,11 +387,6 @@ namespace Start_a_Town_
         public void Validate()
         {
             this.ResetPreferences();
-        }
-
-        public void Write(IDataWriter w)
-        {
-            w.Write(this.PreferencesNew.Values);
         }
 
         public Control Gui => this._gui ??= this.GetGui();
@@ -471,6 +437,46 @@ namespace Start_a_Town_
                 }
             }
         }
+
+        #region ISaveable implementations
+        public ISaveable Load(SaveTag tag)
+        {
+            tag.TryGetTag("Preferences", pt =>
+            {
+                foreach (var p in pt.LoadList<ItemPreference>())
+                {
+                    var existing = this.PreferencesNew[p.Role];
+                    existing.CopyFrom(p);
+                    //this.PreferencesView.Add(existing);
+                }
+            });
+
+            return this;
+        }
+
+        public SaveTag Save(string name = "")
+        {
+            var tag = new SaveTag(SaveTag.Types.Compound, name);
+            tag.Add(this.PreferencesNew.Values.Where(p => p.Item is not null).Save("Preferences"));
+            return tag;
+        }
+        #endregion
+        #region ISerializableNew implementations
+        public static ItemPreferencesManager Create(IDataReader r) => new ItemPreferencesManager().Read(r);
+
+        public ItemPreferencesManager Read(IDataReader r)
+        {
+            //this.PreferencesNew.ReadFromFlat(r, Def.GetDef<ItemRoleDef>, ItemPreference.Create);
+            //var flat = new List<ItemPreference>().Read(r);
+            this.PreferencesNew.FromValues(new List<ItemPreference>().Read(r), p => p.Role);
+            return this;
+        }
+
+        public void Write(IDataWriter w)
+        {
+            w.Write(this.PreferencesNew.Values);
+        }
+        #endregion
     }
 
     //[EnsureStaticCtorCall]

@@ -93,5 +93,57 @@ namespace Start_a_Town_
 
             public static ISerializableNew Create(IDataReader r) => new ItemPreference().Read(r);
         }
+        public void SyncPrefs(System.Collections.Generic.ICollection<ItemPreference> oldItems, System.Collections.Generic.ICollection<ItemPreference> newItems)
+        {
+            foreach(var old in oldItems)
+            {
+                if (!this.PreferencesNew.TryGetValue(old.Role, out var existing))
+                    throw new Exception();
+                this.PreferencesNew.Remove(old.Role);
+            }
+            foreach(var newPref in newItems)
+            { 
+                if(!this.PreferencesNew.TryGetValue(newPref.Role, out var existing))
+                {
+                    existing = new(newPref.Role);
+                    this.PreferencesNew[newPref.Role] = existing;
+                }
+                existing.CopyFrom(newPref);
+                existing.ResolveReferences(this.Actor);
+            }
+        }
+        internal void ApplyDelta(ItemRoleDef role, Entity olditem, Entity newitem, int score)
+        {
+            if (newitem is null)
+                this.PreferencesNew.Remove(role);
+            else
+            {
+                if (!this.PreferencesNew.TryGetValue(role, out var pref))
+                    pref = new(role);
+                pref.Item = newitem;
+                pref.Score = score;
+                this.PreferencesNew[role] = pref;
+            }
+            //if (olditem is not null)
+            //{
+            //    if (!this.PreferencesNew.TryGetValue(role, out var pref))
+            //        throw new Exception();
+            //    if (newitem is not null)
+            //    {
+            //        pref.Item = newitem;
+            //        pref.Score = score;
+            //    }
+            //    else
+            //        this.PreferencesNew.Remove(role);
+            //}
+            //else
+            //{
+            //    if (this.PreferencesNew.ContainsKey(role))
+            //        throw new Exception();
+            //    if (newitem is null)
+            //        throw new Exception();
+            //    this.PreferencesNew[role] = new(role) { Item = newitem, Score = score };
+            //}
+        }
     }
 }

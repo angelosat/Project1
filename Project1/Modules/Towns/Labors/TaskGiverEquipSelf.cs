@@ -49,15 +49,14 @@ namespace Start_a_Town_
             //}
 
             var potentialAll = manager.GetPotential();
-            foreach (var pot in potentialAll)
+            foreach (var (role, item, score) in potentialAll)
             {
-                var item = pot.item;
                 if (!actor.CanReserve(item as Entity))
                     continue;
                 if (!actor.CanReach(item))
                     continue;
 
-                manager.AddPreference(pot.role, item, pot.score);
+                manager.Commit(role, item, score);
                 return new AITask(TaskDefOf.PickUp) { TargetA = item, AmountA = 1 };
             }
             return null;
@@ -82,7 +81,7 @@ namespace Start_a_Town_
             var (role, score) = itemmanager.FindBestRole(item);
             if (role is null)
                 return null;
-            itemmanager.AddPreference(role, item, score);
+            itemmanager.Commit(role, item, score);
             return new AITask(typeof(TaskBehaviorStoreInInventory)) { TargetA = target, AmountA = 1 };
         }
     }

@@ -5,8 +5,8 @@ using System.Linq;
 #nullable enable
 namespace Start_a_Town_
 {
-    public enum TargetIndex { A, B, C, Tool = 15 }
-    public class AITask
+    public enum TargetIndex { A = 1, B, C, Tool = 15 }
+    public sealed class AITask
     {
         public TargetArgs GetTarget(TargetIndex targetInd)
         {
@@ -172,7 +172,7 @@ namespace Start_a_Town_
         {
             this.ID = ReservationManager.GetNextTaskID();
         }
-        public virtual string Name => "unnamed task";
+        public string Name => "unnamed task";
         public TargetArgs Tool = TargetArgs.Null;
         public TargetArgs TargetA = TargetArgs.Null;
         public TargetArgs TargetB = TargetArgs.Null;
@@ -276,7 +276,8 @@ namespace Start_a_Town_
         }
 
         Type _BehaviorType;
-
+        private int _equipContextTargetIndex;
+        internal TargetArgs? EquipContextTarget => _equipContextTargetIndex > 0 ? this.GetTarget(this._equipContextTargetIndex) : null;
         public Type BehaviorType
         {
             get => this.Def?.BehaviorClass ?? this._BehaviorType;
@@ -349,11 +350,11 @@ namespace Start_a_Town_
             this.AddSaveData(tag);
             return tag;
         }
-        protected virtual void AddSaveData(SaveTag tag)
+        protected void AddSaveData(SaveTag tag)
         {
 
         }
-        public virtual void LoadData(SaveTag tag)
+        public void LoadData(SaveTag tag)
         {
             this.Def = tag.LoadDef<TaskDef>("Def");
             tag.TryGetTagValue<int>("ID", t => this.ID = t);
@@ -409,7 +410,7 @@ namespace Start_a_Town_
             tag.TryGetTag("Transaction", v => this.Transaction = new Transaction(v));
         }
 
-        internal virtual void Write(BinaryWriter w)
+        internal void Write(BinaryWriter w)
         {
             w.Write(this.GetType().FullName);
             w.Write(this.ID);
@@ -434,7 +435,7 @@ namespace Start_a_Town_
 
             this.Transaction.Write(w);
         }
-        protected virtual void Read(IDataReader r)
+        protected void Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Tool = TargetArgs.Read(null, r);
@@ -534,6 +535,11 @@ namespace Start_a_Town_
             this.AmountsA.Add(count);
         }
 
-        protected virtual IEnumerable<TargetArgs> GetCustomTargets() { yield break; }
+        IEnumerable<TargetArgs> GetCustomTargets() { yield break; }
+        public AITask SetEquipContextTargetIndex(TargetIndex targetIndex)
+        {
+            this._equipContextTargetIndex = (int)targetIndex;
+            return this;
+        }
     }
 }

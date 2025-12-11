@@ -26,7 +26,21 @@ namespace Start_a_Town_
                 list.Remove(pair.Key);
             return v;
         }
-
+        public bool TryDequeue(out V found)
+        {
+            // will throw if there isn’t any first element!
+            if (list.Count == 0)
+            { 
+                found = default; 
+                return false; 
+            }
+            var pair = list.First();
+            var v = pair.Value.Dequeue();
+            if (pair.Value.Count == 0) // nothing left of the top priority.
+                list.Remove(pair.Key);
+            found = v;
+            return true;
+        }
         public V Peek()
         {
             var pair = list.First();

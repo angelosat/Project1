@@ -263,7 +263,7 @@ namespace Start_a_Town_
 
         internal void Equip(GameObject item)
         {
-            this.Interact(new Equip(), item);
+            this.Interact(new InteractionEquip(), item);
         }
         internal bool IsEquipping(Entity item)
         {

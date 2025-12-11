@@ -17,7 +17,7 @@ namespace Start_a_Town_.AI.Behaviors
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return new BehaviorMoveTo(this.Task.TargetA, 1);
-            yield return new BehaviorInteractionNew(this.Task.TargetA, new Equip());
+            yield return new BehaviorInteractionNew(this.Task.TargetA, new InteractionEquip());
         }
         protected override bool InitExtraReservations()
         {

@@ -153,7 +153,7 @@ namespace Start_a_Town_
             if (parent.GetEquipmentSlot(GearType.Mainhand) is Entity item)
             {
                 if (parent.ItemPreferences.IsPreference(item))
-                    parent.Interact(new Equip(), new TargetArgs(item)); // equip() currently toggles gear. if target is currently equipped, it unequips it
+                    parent.Interact(new InteractionEquip(), new TargetArgs(item)); // equip() currently toggles gear. if target is currently equipped, it unequips it
                 else
                     parent.Interact(new InteractionDropEquipped(GearType.Mainhand));
             }

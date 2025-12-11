@@ -1,10 +1,10 @@
 ﻿namespace Start_a_Town_
 {
-    class Equip : InteractionPerpetual
+    class InteractionEquip : InteractionPerpetual
     {
         static public int ID = "Equip".GetHashCode();
 
-        public Equip()
+        public InteractionEquip()
             : base("Equip")
         {
             this.CrossFadeAnimationLength = 25;
@@ -28,7 +28,7 @@
 
         public override object Clone()
         {
-            return new Equip();
+            return new InteractionEquip();
         }
     }
 }

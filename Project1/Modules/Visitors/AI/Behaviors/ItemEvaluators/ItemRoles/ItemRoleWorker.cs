@@ -15,7 +15,7 @@ namespace Start_a_Town_
         /// <param name="item"></param>
         /// <returns></returns>
         abstract public int GetInventoryScore(Actor actor, Entity item, ItemRoleDef context);
-        abstract public int GetEquippingScore(Actor actor, Entity item, ItemRoleDef context);
+        abstract public int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context);
         //public Entity FindBest(Actor actor, IEnumerable<Entity> items)
         //{
         //    Entity bestItem = null;

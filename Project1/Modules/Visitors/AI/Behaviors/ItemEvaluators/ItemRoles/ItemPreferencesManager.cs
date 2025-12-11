@@ -54,7 +54,7 @@ namespace Start_a_Town_
             var table = new TableObservable<ItemPreference>()
                 .AddColumn("role", 128, p => new Label(p.Role))
                 .AddColumn("item", 128, p => new Label(() => p.Item?.DebugName ?? "none", () => p.Item?.Select()))
-                .AddColumn("score", 64, p => new Label(() => p.Score.ToString()))
+                .AddColumn("score", 64, p => new Label(() => p.InventoryScore.ToString()))
                 ;//.Bind(this.PreferencesView);
             var box = new ScrollableBoxNewNew(table.RowWidth, table.RowHeight * 16, ScrollModes.Vertical)
                 .AddControls(table)
@@ -141,9 +141,9 @@ namespace Start_a_Town_
                 this.PreferencesNew.Add(role, pref);
             }
             Entity oldItem = pref.Item;
-            int oldScore = pref.Score;
+            int oldScore = pref.InventoryScore;
             pref.Item = item;
-            pref.Score = score;
+            pref.InventoryScore = score;
             //item.Ownership.Owner = this.Actor;
 
             Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
@@ -169,7 +169,7 @@ namespace Start_a_Town_
         internal (Entity item, int score) GetExistingPreference(ItemRoleDef role)
         {
             if (this.PreferencesNew.TryGetValue(role, out var existing))
-                return (existing.Item, existing.Score);
+                return (existing.Item, existing.InventoryScore);
             return (null, 0);
         }
 
@@ -177,7 +177,7 @@ namespace Start_a_Town_
         {
             if (this.PreferencesNew.TryGetValue(role, out var existing))
             {
-                score = existing.Score;
+                score = existing.InventoryScore;
                 return existing.Item;
             }
             score = 0;
@@ -294,10 +294,10 @@ namespace Start_a_Town_
                 var score = role.Worker.GetInventoryScore(this.Actor, item, role);
                 if (score < 0)
                     continue;
-                if (score > pref.Score)
+                if (score > pref.InventoryScore)
                 {
                     pref.Item = item;
-                    pref.Score = score;
+                    pref.InventoryScore = score;
                     return; // TODO check 
                 }
             }

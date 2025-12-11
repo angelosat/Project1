@@ -74,7 +74,7 @@ namespace Start_a_Town_
 
             yield return new BehaviorInteractionNew(WorkstationIndex, () => new InteractionCrafting(task.Order, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
             if (this.Task.Tool?.Type != TargetType.Null) // dont unequip tool if not using any
-                yield return new BehaviorInteractionNew(TargetIndex.Tool, () => new Equip()); // unequip the tool before hauling product // TODO dont do that if no tool equipped
+                yield return new BehaviorInteractionNew(TargetIndex.Tool, () => new InteractionEquip()); // unequip the tool before hauling product // TODO dont do that if no tool equipped
             // assign a new haul behavior directly to the actor instead of adding the steps here?
             yield return new BehaviorCustom()
             {

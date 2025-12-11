@@ -1,5 +1,7 @@
 ﻿using Start_a_Town_.Net;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_
 {
@@ -15,7 +17,7 @@ namespace Start_a_Town_
                 private set { this._itemRefId = value; }
             }
             public Entity Item;
-            public int Score;
+            public int InventoryScore;
 
             public ItemPreference()
             {
@@ -31,25 +33,25 @@ namespace Start_a_Town_
                     throw new Exception();
                 this.Item = pref.Item;
                 this.ItemRefId = pref.ItemRefId;
-                this.Score = pref.Score;
+                this.InventoryScore = pref.InventoryScore;
             }
             public override string ToString()
             {
-                return $"{Role}" + (this.Item is not null ? $":{this.Item.DebugName}:{Score}" : "");
+                return $"{Role}" + (this.Item is not null ? $":{this.Item.DebugName}:{InventoryScore}" : "");
             }
 
             public void Write(IDataWriter w)
             {
                 w.Write(this.Role.ToString());
                 w.Write(this.ItemRefId);
-                w.Write(this.Score);
+                w.Write(this.InventoryScore);
             }
 
             public ItemPreference Read(IDataReader r)
             {
                 this.Role = r.ReadDef<ItemRoleDef>();// RegistryByName[r.ReadString()];
                 this.ItemRefId = r.ReadInt32();
-                this.Score = r.ReadInt32();
+                this.InventoryScore = r.ReadInt32();
                 return this;
             }
 
@@ -58,7 +60,7 @@ namespace Start_a_Town_
                 var tag = new SaveTag(SaveTag.Types.Compound, name);
                 this.Role.ToString().Save(tag, "Role");
                 this.ItemRefId.Save(tag, "ItemRefId");
-                this.Score.Save(tag, "Score");
+                this.InventoryScore.Save(tag, "Score");
                 return tag;
             }
 
@@ -67,7 +69,7 @@ namespace Start_a_Town_
                 //this.Role = RegistryByName[(string)tag["Role"].Value];
                 this.Role = tag.LoadDef<ItemRoleDef>("Role");
                 this.ItemRefId = (int)tag["ItemRefId"].Value;
-                this.Score = (int)tag["Score"].Value;
+                this.InventoryScore = (int)tag["Score"].Value;
                 return this;
             }
 
@@ -75,7 +77,7 @@ namespace Start_a_Town_
             {
                 this.Item = null;
                 this.ItemRefId = 0;
-                this.Score = 0;
+                this.InventoryScore = 0;
             }
 
             internal void ResolveReferences(Actor actor)
@@ -88,22 +90,22 @@ namespace Start_a_Town_
             {
                 if (actor.Net is Client)
                     return;
-                this.Score = this.Role.Worker.GetInventoryScore(actor, this.Item, this.Role);
+                this.InventoryScore = this.Role.Worker.GetInventoryScore(actor, this.Item, this.Role);
             }
 
             public static ItemPreference Create(IDataReader r) => new ItemPreference().Read(r);
         }
         public void SyncPrefs(System.Collections.Generic.ICollection<ItemPreference> oldItems, System.Collections.Generic.ICollection<ItemPreference> newItems)
         {
-            foreach(var old in oldItems)
+            foreach (var old in oldItems)
             {
                 if (!this.PreferencesNew.TryGetValue(old.Role, out var existing))
                     throw new Exception();
                 this.PreferencesNew.Remove(old.Role);
             }
-            foreach(var newPref in newItems)
-            { 
-                if(!this.PreferencesNew.TryGetValue(newPref.Role, out var existing))
+            foreach (var newPref in newItems)
+            {
+                if (!this.PreferencesNew.TryGetValue(newPref.Role, out var existing))
                 {
                     existing = new(newPref.Role);
                     this.PreferencesNew[newPref.Role] = existing;
@@ -121,29 +123,26 @@ namespace Start_a_Town_
                 if (!this.PreferencesNew.TryGetValue(role, out var pref))
                     pref = new(role);
                 pref.Item = newitem;
-                pref.Score = score;
+                pref.InventoryScore = score;
                 this.PreferencesNew[role] = pref;
             }
-            //if (olditem is not null)
-            //{
-            //    if (!this.PreferencesNew.TryGetValue(role, out var pref))
-            //        throw new Exception();
-            //    if (newitem is not null)
-            //    {
-            //        pref.Item = newitem;
-            //        pref.Score = score;
-            //    }
-            //    else
-            //        this.PreferencesNew.Remove(role);
-            //}
-            //else
-            //{
-            //    if (this.PreferencesNew.ContainsKey(role))
-            //        throw new Exception();
-            //    if (newitem is null)
-            //        throw new Exception();
-            //    this.PreferencesNew[role] = new(role) { Item = newitem, Score = score };
-            //}
+        }
+        public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
+        {
+            var potential = this.PreferencesNew.Values.Where(p => filter(p.Item));
+            // TODO: For large inventories, consider replacing SortedDictionary with a simple List<(Entity, int)> + Sort()
+            // to reduce allocations and overhead. Current approach is fine for typical small inventories.
+            var byScore = new SortedDictionary<int, List<(Entity, int)>>(Comparer<int>.Create((a, b) => b.CompareTo(a)));
+            foreach (var pref in potential)
+            {
+                var score = pref.Role.Worker.GetSituationalScore(actor, pref.Item, pref.Role);
+                if (!byScore.TryGetValue(score, out var list))
+                    byScore[score] = list = [];
+                list.Add((pref.Item, score));
+            }
+            foreach (var (score, list) in byScore)
+                foreach (var item in list)
+                    yield return item;
         }
     }
 }

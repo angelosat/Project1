@@ -2,7 +2,7 @@
 {
     class ItemRoleGearWorker : ItemRoleWorker
     {
-        public override int GetEquippingScore(Actor actor, Entity item, ItemRoleDef context)
+        public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)
         {
             throw new System.NotImplementedException();
         }

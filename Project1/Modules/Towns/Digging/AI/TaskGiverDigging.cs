@@ -73,6 +73,7 @@ namespace Start_a_Town_
                 BehaviorType = typeof(TaskBehaviorDigging),
             };
             task.SetTarget(TaskBehaviorDigging.MineInd, target);
+            task.SetEquipContextTargetIndex(TaskBehaviorDigging.MineInd);
             FindTool(actor, task, skill);
             return true;
         }

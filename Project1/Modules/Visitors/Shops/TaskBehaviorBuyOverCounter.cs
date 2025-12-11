@@ -50,7 +50,7 @@ namespace Start_a_Town_
                 }
             };
             yield return new BehaviorInteractionNew(TargetIndex.C, () => new InteractionHaul(this.Task.AmountC));
-            yield return new BehaviorCustom() { InitAction = () => actor.Reserve(actor.Hauled) };
+            yield return new BehaviorCustom() { InitAction = () => actor.Reserve(this.Task, actor.Hauled) };
             yield return new BehaviorInteractionNew(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
             // TODO wait for the item to be placed ontop of the counter, and then pick it up
             yield return new BehaviorWait(() => item.Parent == null && item.Global.ToCell() == counter.Above());

@@ -9,59 +9,44 @@ namespace Start_a_Town_.AI
 {
     public sealed class AIState : Inspectable
     {
-        public SortedSet<Threat> Threats = new();
-        public PathingSync PathFinder = new();
-        public bool Autonomy = true;
-        public Queue<AITask> TaskQueue = new();
 
-        //private AITask _currentTask;
-        public AITask CurrentTask;
-        //{
-        //    get => this._currentTask;
-        //    set => this._currentTask = value;
-        //}
+        public static AIConversationManager ConversationManager = new();
 
         private BehaviorPerformTask _currentTaskBehavior;
-        public BehaviorPerformTask CurrentTaskBehavior
-        {
-            get => this._currentTaskBehavior;
-            set
-            {
-                if (this.Parent.Net is Server)
-                    PacketTaskUpdate.Send(this.Parent.Net as Net.Server, this.Parent.RefId, value?.GetType().Name ?? "Idle");
-                this._currentTaskBehavior = value;
-            }
-        }
-
-        public string TaskString = "none";
-        public override string ToString()
-        {
-            return this.CurrentTask != null ? "Task: " + this.CurrentTask.ToString() : this.TaskString;
-        }
 
         readonly Dictionary<JobDef, Job> Jobs = JobDefOf.All.ToDictionary(i => i, i => new Job(i));
+        public Progress Attention = new();
+        public float AttentionDecay = 1;
+        public float AttentionDecayDefault = 1;
+        public bool Autonomy = true;
 
         public Dictionary<string, object> Blackboard = new();
-       
-        public static AIConversationManager ConversationManager = new();
-        public AIConversationManager.Conversation CurrentConversation;
-        public ItemPreferencesManager ItemPreferences;
-        public Actor Parent; //use this?
-        public Dictionary<string, object> Properties = new();
-        public Knowledge Knowledge;
-        public AILog History = new();
-        public GameObject Target;
-        public List<GameObject> NearbyEntities { get; set; }
-        public bool InSync;
-        public PathFinding.Path Path;
-        public Vector3 Leash;
-        public int JobFindTimer;
-        public GameObject Talker;
-        public Progress Attention = new();
-        public Actor ConversationPartner, TradingPartner;
         public Dictionary<Actor, ConversationTopic> CommunicationPending = new();
-        public float AttentionDecayDefault = 1;
-        public float AttentionDecay = 1;
+        public Actor ConversationPartner, TradingPartner;
+        public AIConversationManager.Conversation CurrentConversation;
+        public AITask CurrentTask => this.Current?.task;
+        public AITask ForcedTask;
+        public AILog History = new();
+        public bool InSync;
+        public ItemPreferencesManager ItemPreferences;
+        public int JobFindTimer;
+        public Knowledge Knowledge;
+
+        public BehaviorPerformTask LastBehavior;
+        public Vector3 Leash;
+
+        public Queue<TargetArgs> MoveOrders = new();
+        public Actor Parent; //use this?
+        public PathFinding.Path Path;
+        public PathingSync PathFinder = new();
+        public Dictionary<string, object> Properties = new();
+        public GameObject Talker;
+        public GameObject Target;
+        public Queue<(AITask task, BehaviorPerformTask behavior)> TaskQueue = [];
+        public Stack<(AITask task, BehaviorPerformTask behavior)> TaskStack = [];
+
+        public string TaskString = "none";
+        public SortedSet<Threat> Threats = new();
 
         public AIState(Actor actor)
         {
@@ -69,101 +54,51 @@ namespace Start_a_Town_.AI
             this.NearbyEntities = new List<GameObject>();
             this.ItemPreferences = new ItemPreferencesManager(actor);
         }
-        public static bool TryGetState(GameObject entity, out AIState state)
+
+        private void Enqueue((AITask task, BehaviorPerformTask bhav) tuple)
         {
-            if (entity.TryGetComponent(out AIComponent ai))
-                state = ai.State;
-            else
-                state = null;
-            return state != null;
-        }
-        public static AIState GetState(GameObject entity)
-        {
-            return entity.GetComponent<AIComponent>().State;
+            this.TaskQueue.Enqueue(tuple);
         }
 
-        public bool HasJob(JobDef job)
+        //public BehaviorPerformTask CurrentTaskBehavior
+        //{
+        //    get => this._currentTaskBehavior;
+        //    set
+        //    {
+        //        if (this.Parent.Net is Server)
+        //            PacketTaskUpdate.Send(this.Parent.Net as Net.Server, this.Parent.RefId, value?.GetType().Name ?? "Idle");
+        //        this._currentTaskBehavior = value;
+        //    }
+        //}
+
+        private void NotifyTaskUpdate()
         {
-            return this.Jobs.TryGetValue(job, out var j) && j.Enabled;
+            if (Parent.Net is Server)
+                PacketTaskUpdate.Send(
+                    Parent.Net as Server,
+                    Parent.RefId,
+                    Current?.behavior?.GetType().Name ?? "Idle"
+                );
         }
-        public void ToggleJob(JobDef job)
+        private void Push((AITask task, BehaviorPerformTask bhav) tuple)
         {
-            this.Jobs[job].Toggle();
+            this.TaskStack.Push(tuple);
         }
-        public bool IsJobEnabled(JobDef job)
+
+        internal void AddMoveOrder(TargetArgs target, bool enqueue)
         {
-            return this.Jobs[job].Enabled;
+            this.Parent.EndCurrentTask();
+            if (!enqueue)
+                this.MoveOrders.Clear();
+            this.MoveOrders.Enqueue(target);
         }
-        public Job GetJob(JobDef def)
+
+        internal void ForceTask(AITask task)
         {
-            return this.Jobs[def];
-        }
-        public IEnumerable<Job> GetJobs()
-        {
-            foreach (var j in this.Jobs.Values)
-                yield return j;
+            this.ForcedTask = task;
         }
         internal void Generate(GameObject npc, RandomThreaded random)
         {
-        }
-
-        public void Write(IDataWriter w)
-        {
-            this.Jobs.Sync(w);
-            this.ItemPreferences.Write(w); // sync to clients?
-        }
-        public void Read(IDataReader r)
-        {
-            this.Jobs.Sync(r);
-            //this.Jobs.Write(r);
-            this.ItemPreferences.Read(r); // sync to clients?
-        }
-        public SaveTag Save(string name)
-        {
-            var tag = new SaveTag(SaveTag.Types.Compound, name);
-            tag.Add(new SaveTag(SaveTag.Types.Vector3, "Leash", this.Leash));
-
-            tag.Add((this.CurrentTask != null).Save("HasTask"));
-            if(this.CurrentTask != null)
-                tag.Add(this.CurrentTask.Save("Task"));
-            if (this.CurrentTaskBehavior != null)
-            {
-                var bhavtag = this.CurrentTaskBehavior.Save("Behavior");
-                bhavtag.Add(this.CurrentTaskBehavior.GetType().FullName.Save("TypeName"));
-                tag.Add(bhavtag);
-            }
-            this.Path.TrySave(tag, "Path");
-            this.Jobs.Save(tag, "Jobs", SaveTag.Types.String, key => key.Name);
-            this.ItemPreferences.Save(tag, "ItemPreferences");
-            return tag;
-        }
-        public void Load(SaveTag tag)
-        {
-            this.Leash = tag.GetValue<Vector3>("Leash");
-            tag.TryGetTagValueOrDefault<bool>("HasTask", out var hastask);
-            if (hastask)
-            {
-                var task = AITask.Load(tag["Task"]);
-                this.CurrentTask = task;
-            }
-            tag.TryGetTag("Behavior", t =>
-            {
-                var bhavtype = (string)t["TypeName"].Value;
-                this.CurrentTaskBehavior = Activator.CreateInstance(Type.GetType(bhavtype)) as BehaviorPerformTask;
-                this.CurrentTaskBehavior.Load(t);
-            });
-            tag.TryLoad("Path", out this.Path);
-            this.Jobs.TrySync(tag, "Jobs", keyTag => Def.TryGetDef<JobDef>((string)keyTag.Value));
-
-            tag.TryGetTag("ItemPreferences", t => this.ItemPreferences.Load(t));
-        }
-
-        internal void Reset()
-        {
-            this.CurrentTask = null;
-            this.LastBehavior = null;
-            this.Path = null;
-            this.CurrentTaskBehavior = null;
         }
 
         internal T1 GetBlackboardValue<T1>(string p)
@@ -190,8 +125,43 @@ namespace Start_a_Town_.AI
             //foreach (var t in targets)
             //    t.Map = parent.Map;
             this.CurrentTask?.MapLoaded(parent);
-            if(this.CurrentTaskBehavior is not null)
-                this.CurrentTaskBehavior.Actor = parent;
+            this.Current?.behavior.Actor = parent;
+            //if (this.CurrentTaskBehavior is not null)
+            //    this.CurrentTaskBehavior.Actor = parent;
+        }
+
+        internal bool NextTask()
+        {
+            this.Current?.behavior.CleanUp();
+            if (this.TaskStack.Count > 0)
+            {
+                TaskStack.Pop();
+                return true;
+            }
+            else if (TaskQueue.Count > 0)
+            {
+                TaskQueue.Dequeue();
+                return true;
+            }
+            return false;
+        }
+
+        internal void ObjectLoaded(GameObject parent)
+        {
+            //this.CurrentTask?.ObjectLoaded(parent);
+            //this.CurrentTaskBehavior?.ObjectLoaded(parent);
+            this.Current?.task.ObjectLoaded(parent);
+            this.Current?.behavior?.ObjectLoaded(parent);
+        }
+
+        internal void Reset()
+        {
+            //this.CurrentTask = null;
+            this.LastBehavior = null;
+            this.Path = null;
+            //this.CurrentTaskBehavior = null;
+            this.TaskQueue.Clear();
+            this.TaskStack.Clear();
         }
 
         internal void ResolveReferences()
@@ -199,30 +169,178 @@ namespace Start_a_Town_.AI
             this.ItemPreferences.ResolveReferences();
         }
 
-        internal void ObjectLoaded(GameObject parent)
+        public void Assign((AITask task, BehaviorPerformTask bhav) task)
         {
-            this.CurrentTask?.ObjectLoaded(parent);
-            this.CurrentTaskBehavior?.ObjectLoaded(parent);
+            if (task.task.IsImmediate)
+                this.Push(task);
+            else
+                this.Enqueue(task);
+        }
+        public Job GetJob(JobDef def)
+        {
+            return this.Jobs[def];
+        }
+        public IEnumerable<Job> GetJobs()
+        {
+            foreach (var j in this.Jobs.Values)
+                yield return j;
+        }
+        public static AIState GetState(GameObject entity)
+        {
+            return entity.GetComponent<AIComponent>().State;
         }
 
-        public BehaviorPerformTask LastBehavior;
+        public bool HasJob(JobDef job)
+        {
+            return this.Jobs.TryGetValue(job, out var j) && j.Enabled;
+        }
+        public bool IsJobEnabled(JobDef job)
+        {
+            return this.Jobs[job].Enabled;
+        }
+        public void Load(SaveTag tag)
+        {
+            this.Leash = tag.GetValue<Vector3>("Leash");
+            //tag.TryGetTagValueOrDefault<bool>("HasTask", out var hastask);
+            //if (hastask)
+            //{
+            //    var task = AITask.Load(tag["Task"]);
+            //    this.CurrentTask = task;
+            //}
+            //tag.TryGetTag("Behavior", t =>
+            //{
+            //    var bhavtype = (string)t["TypeName"].Value;
+            //    this.CurrentTaskBehavior = Activator.CreateInstance(Type.GetType(bhavtype)) as BehaviorPerformTask;
+            //    this.CurrentTaskBehavior.Load(t);
+            //});
 
-        public Queue<TargetArgs> MoveOrders = new();
-        public AITask ForcedTask;
+            //if (hastask)
+            //{
+            //    var task = AITask.Load(tag["Task"]);
+            //    //this.CurrentTask = task;
+            //    tag.TryGetTag("Behavior", t =>
+            //    {
+            //        var bhavtype = (string)t["TypeName"].Value;
+            //        var bhav = Activator.CreateInstance(Type.GetType(bhavtype)) as BehaviorPerformTask;
+            //        bhav.Load(t);
+            //    });
+            //}
+
+            var tagStack = tag["TaskStack"];
+            var listStack = tagStack.Value as List<SaveTag>;
+            foreach(var t in listStack)
+            {
+                var tasktag = t["Task"];
+                var task = AITask.Load(tasktag);
+                var bhavtag = t["Behavior"];
+                var bhavname = (string)bhavtag["TypeName"].Value;
+                var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorPerformTask;
+                bhav.Load(bhavtag);
+                this.TaskStack.Push((task, bhav));
+            }
+            var tagQueue = tag["TaskQueue"];
+            var listQueue = tagQueue.Value as List<SaveTag>;
+            foreach (var t in listQueue)
+            {
+                var tasktag = t["Task"];
+                var task = AITask.Load(tasktag);
+                var bhavtag = t["Behavior"];
+                var bhavname = (string)bhavtag["TypeName"].Value;
+                var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorPerformTask;
+                bhav.Load(bhavtag);
+                this.TaskQueue.Enqueue((task, bhav));
+            }
+
+            tag.TryLoad("Path", out this.Path);
+            this.Jobs.TrySync(tag, "Jobs", keyTag => Def.TryGetDef<JobDef>((string)keyTag.Value));
+
+            tag.TryGetTag("ItemPreferences", t => this.ItemPreferences.Load(t));
+        }
+        public void Read(IDataReader r)
+        {
+            this.Jobs.Sync(r);
+            //this.Jobs.Write(r);
+            this.ItemPreferences.Read(r); // sync to clients?
+        }
+        public SaveTag Save(string name)
+        {
+            var tag = new SaveTag(SaveTag.Types.Compound, name);
+            tag.Add(new SaveTag(SaveTag.Types.Vector3, "Leash", this.Leash));
+
+            //tag.Add((this.CurrentTask != null).Save("HasTask"));
+            //if (this.CurrentTask != null)
+            //    tag.Add(this.CurrentTask.Save("Task"));
+            //if (this.CurrentTaskBehavior != null)
+            //{
+            //    var bhavtag = this.CurrentTaskBehavior.Save("Behavior");
+            //    bhavtag.Add(this.CurrentTaskBehavior.GetType().FullName.Save("TypeName"));
+            //    tag.Add(bhavtag);
+            //}
+            //tag.Add((this.Current is not null).Save("HasTask"));
+            //if (this.Current is not null)
+            //{
+            //    tag.Add(this.Current.Value.task.Save("Task"));
+            //    var bhavtag = this.Current.Value.behavior.Save("Behavior");
+            //    bhavtag.Add(this.Current.Value.behavior.GetType().FullName.Save("TypeName"));
+            //    tag.Add(bhavtag);
+            //}
+
+            var tagStack = new SaveTag(SaveTag.Types.List, "TaskStack", SaveTag.Types.Compound);
+            foreach (var task in this.TaskStack)
+            {
+                var tupleTag = new SaveTag(SaveTag.Types.Compound);
+                tupleTag.Add(task.task.Save("Task"));
+                //tupleTag.Add(task.behavior.Save("Behavior"));
+                var bhavtag = task.behavior.Save("Behavior");
+                bhavtag.Add(task.behavior.GetType().FullName.Save("TypeName"));
+                tupleTag.Add(bhavtag);
+                tagStack.Add(tupleTag);
+            }
+            tag.Add(tagStack);
+            var tagQueue = new SaveTag(SaveTag.Types.List, "TaskQueue", SaveTag.Types.Compound);
+            foreach (var task in this.TaskQueue)
+            {
+                var tupleTag = new SaveTag(SaveTag.Types.Compound);
+                tupleTag.Add(task.task.Save("Task"));
+                var bhavtag = task.behavior.Save("Behavior");
+                bhavtag.Add(task.behavior.GetType().FullName.Save("TypeName"));
+                tupleTag.Add(bhavtag);
+                tagQueue.Add(tupleTag);
+            }
+            tag.Add(tagQueue);
+
+            this.Path.TrySave(tag, "Path");
+            this.Jobs.Save(tag, "Jobs", SaveTag.Types.String, key => key.Name);
+            this.ItemPreferences.Save(tag, "ItemPreferences");
+            return tag;
+        }
+        public void ToggleJob(JobDef job)
+        {
+            this.Jobs[job].Toggle();
+        }
+        public override string ToString()
+        {
+            return this.CurrentTask != null ? "Task: " + this.CurrentTask.ToString() : this.TaskString;
+        }
+        public static bool TryGetState(GameObject entity, out AIState state)
+        {
+            if (entity.TryGetComponent(out AIComponent ai))
+                state = ai.State;
+            else
+                state = null;
+            return state != null;
+        }
+
+        public void Write(IDataWriter w)
+        {
+            this.Jobs.Sync(w);
+            this.ItemPreferences.Write(w); // sync to clients?
+        }
+
+        public IEnumerable<(AITask task, BehaviorPerformTask behavior)> AllPlannedTasks => TaskStack.Concat(TaskQueue);
+        public (AITask task, BehaviorPerformTask behavior)? Current => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
 
         public TargetArgs MoveOrder => this.MoveOrders.Any() ? this.MoveOrders.Peek() : TargetArgs.Null;
-
-        internal void AddMoveOrder(TargetArgs target, bool enqueue)
-        {
-            this.Parent.EndCurrentTask();
-            if (!enqueue)
-                this.MoveOrders.Clear();
-            this.MoveOrders.Enqueue(target);
-        }
-
-        internal void ForceTask(AITask task)
-        {
-            this.ForcedTask = task;
-        }
+        public List<GameObject> NearbyEntities { get; set; }
     }
 }

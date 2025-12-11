@@ -66,7 +66,10 @@ namespace Start_a_Town_
                 var actor = bhav.Actor;
                 var task = actor.CurrentTask;
                 if (task.GetTargetQueue(index)?.Any() ?? false)
-                    actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+                    actor.AI.State.Current.Value.behavior.JumpTo(jumpBhav);
+
+                //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+
             };
             return bhav;
         }
@@ -77,7 +80,9 @@ namespace Start_a_Town_
             {
                 var actor = bhav.Actor;
                 if(predicate())
-                    actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+                    //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+                actor.AI.State.Current.Value.behavior.JumpTo(jumpBhav);
+
             };
             return bhav;
         }
@@ -105,7 +110,9 @@ namespace Start_a_Town_
                         return;
                     var nextTarget = targets[0].Object;
                 if (nextTarget.CanAbsorb(carried))
-                        actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+                        //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+                    actor.AI.State.Current.Value.behavior.JumpTo(jumpBhav);
+
                 }
             };
             return bhav;
@@ -126,7 +133,9 @@ namespace Start_a_Town_
                     var amounts = task.GetAmountQueue(amountInd);
                     var nextAmount = amounts[0];
                     if (carried.CanAbsorb(nextTarget, nextAmount))
-                        actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+                        //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+                    actor.AI.State.Current.Value.behavior.JumpTo(jumpBhav);
+
                 }
             };
             return bhav;

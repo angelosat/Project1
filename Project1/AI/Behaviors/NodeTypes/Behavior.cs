@@ -63,7 +63,9 @@ namespace Start_a_Town_
             this.AddPreTickAction(() =>
             {
                 if (cond())
-                    this.Actor.CurrentTaskBehavior.JumpTo(gotoBhav);
+                    //this.Actor.CurrentTaskBehavior.JumpTo(gotoBhav);
+                    this.Actor.AI.State.Current.Value.behavior.JumpTo(gotoBhav);
+
             });
             return this;
         }

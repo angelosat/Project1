@@ -69,7 +69,7 @@ namespace Start_a_Town_
                 actor.Map.SyncSpawn(item, this.Workstation.Global.Above(), IntVec3.Zero);
 
                 task.SetTarget(AuxiliaryIndex, item);
-                actor.Reserve(item);
+                actor.Reserve(task, item);
             });
 
             yield return new BehaviorInteractionNew(WorkstationIndex, () => new InteractionCrafting(task.Order, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
@@ -84,7 +84,7 @@ namespace Start_a_Town_
                     var product = this.Task.Product.Object;
                     var productTar = this.Task.Product;
                     var order = this.Task.Order;
-                    this.Actor.Reserve(productTar, haulamount); // was using -1 to denote full stack, but want to phase it out
+                    this.Actor.Reserve(this.Task, productTar, haulamount); // was using -1 to denote full stack, but want to phase it out
                     if (order.Output is Stockpile stockpile && stockpile.GetPotentialHaulTargets(actor, product) is var places && places.Any())// ; Towns.StockpileManager.GetBestStoragePlace(this.Actor, this.Task.Product.Object as Entity, out TargetArgs target))
                     {
                         var target = places.First();
@@ -167,10 +167,10 @@ namespace Start_a_Town_
             var operatingPos = actor.Map.GetFrontOfBlock(benchGlobal);
             var operatingPosBelow = operatingPos.Below;
             return task.ReserveAll(actor, IngredientIndex)
-                && actor.Reserve(benchGlobal)
-                && actor.Reserve(benchGlobalAbove)
-                && actor.Reserve(operatingPos)
-                && actor.Reserve(operatingPosBelow);
+                && actor.Reserve(task, benchGlobal)
+                && actor.Reserve(task, benchGlobalAbove)
+                && actor.Reserve(task, operatingPos)
+                && actor.Reserve(task, operatingPosBelow);
         }
         bool IsValidStorage(TargetArgs target)
         {

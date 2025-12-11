@@ -19,6 +19,7 @@ namespace Start_a_Town_
                 _ => throw new Exception(),
             };
         }
+        public bool IsImmediate = true;
 
         internal TargetArgs GetTarget(int targetInd)
         {
@@ -36,14 +37,14 @@ namespace Start_a_Town_
             {
                 var target = targets[i];
                 var amount = amounts[i];
-                if (!actor.Town.ReservationManager.Reserve(actor, target, amount))
+                if (!actor.Town.ReservationManager.Reserve(actor, this, target, amount))
                     return false;
             }
             return true;
         }
         internal bool Reserve(Actor actor, TargetIndex index)
         {
-            return actor.Town.ReservationManager.Reserve(actor, this.GetTarget(index), this.GetAmount(index));
+            return actor.Town.ReservationManager.Reserve(actor, this, this.GetTarget(index), this.GetAmount(index));
         }
 
         internal int GetAmount(TargetIndex amountInd)

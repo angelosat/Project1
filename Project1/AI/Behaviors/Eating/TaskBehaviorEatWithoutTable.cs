@@ -28,7 +28,7 @@ namespace Start_a_Town_.AI.Behaviors
 
         protected override bool InitExtraReservations()
         {
-            return Actor.Reserve(Food, 1);
+            return Actor.Reserve(this.Task, Food, 1);
         }
     }
 }

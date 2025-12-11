@@ -35,7 +35,8 @@ namespace Start_a_Town_
                 var actor = map.World.GetEntity<Actor>(p.ActorID);
                 return
                     p.GetJob(JobInnKeeper).Enabled &&
-                    actor.GetState().CurrentTaskBehavior is TaskBehaviorInnKeeper &&
+                    //actor.GetState().CurrentTaskBehavior is TaskBehaviorInnKeeper &&
+                    actor.GetState().Current?.behavior is TaskBehaviorInnKeeper &&
                     actor.CellIfSpawned.Value == map.GetBehindOfBlock(this.Counter.Value);
             });
         }

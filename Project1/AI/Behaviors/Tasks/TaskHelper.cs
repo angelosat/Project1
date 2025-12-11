@@ -191,7 +191,9 @@ namespace Start_a_Town_
             {
                 if (bhav.Actor.CurrentTask.NextTarget(index) && bhav.Actor.CurrentTask.NextAmount(index))
                     if (bhavRoot != null)
-                        bhav.Actor.CurrentTaskBehavior.JumpTo(bhavRoot);
+                        //bhav.Actor.CurrentTaskBehavior.JumpTo(bhavRoot);
+                bhav.Actor.AI.State.Current.Value.behavior.JumpTo(bhavRoot);
+
             };
             return bhav;
         }

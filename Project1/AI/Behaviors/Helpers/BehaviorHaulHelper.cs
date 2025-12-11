@@ -32,9 +32,10 @@ namespace Start_a_Town_
                             continue;
                         desiredAmount = Math.Min(desiredAmount, unreservedAmount);
                         var amount = Math.Min(pot.StackSize, desiredAmount);
-                        actor.Reserve(pot, amount);
+                        actor.Reserve(task, pot, amount);
                         task.SetTarget(itemIndex, new TargetArgs(pot));
-                        actor.CurrentTaskBehavior.JumpTo(gotoBhav);
+                        //actor.CurrentTaskBehavior.JumpTo(gotoBhav);
+                        actor.AI.State.Current.Value.behavior.JumpTo(gotoBhav);
                         actor.Net.ConsoleBox.Write("found new haul opportunity");
                         return;
                     }
@@ -92,7 +93,7 @@ namespace Start_a_Town_
                     if (target.Object != actor.Hauled)
                     {
                         actor.Unreserve(target); // ACTUALLY UNRESERVE SOURCE STACK HERE IN CASE THE HAULED STACK IS SPLIT FROM THE SOURCE ONE
-                        actor.Reserve(actor.Hauled);
+                        actor.Reserve(task, actor.Hauled);
                         task.SetTarget(storageIndex, actor.Hauled); // replacing task target with combined item because otherwise the behavior will fail since the old item is now disposed
                     }
                     return true;
@@ -156,9 +157,11 @@ namespace Start_a_Town_
                         continue;
                     if (!actor.CanReserve(tar))
                         continue;
-                    actor.Reserve(tar, 1);
+                    actor.Reserve(task, tar, 1);
                     task.SetTarget(storageIndex, tar);
-                    actor.CurrentTaskBehavior.JumpTo(gotoBhav);
+                    //actor.CurrentTaskBehavior.JumpTo(gotoBhav);
+                    actor.AI.State.Current.Value.behavior.JumpTo(gotoBhav);
+
                     actor.Net.ConsoleBox.Write("found next storage place " + tar.ToString());
                     return;
                 }

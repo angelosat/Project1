@@ -36,7 +36,7 @@ namespace Start_a_Town_
                     // TODO fail?
                 }
                 task.SetTarget(TargetIndex.C, money, room.Value);
-                actor.Reserve(money, money.StackSize);
+                actor.Reserve(this.Task, money, money.StackSize);
                 return true;
             });
             // TODO pickup money or leave it to be hauled?

@@ -80,13 +80,13 @@ namespace Start_a_Town_
         internal AITask CurrentTask
         {
             get => this.State.CurrentTask;
-            set => this.State.CurrentTask = value;
+            set => throw new Exception();// this.State.CurrentTask = value;
         }
-        internal BehaviorPerformTask CurrentTaskBehavior
-        {
-            get => this.State.CurrentTaskBehavior;
-            set => this.State.CurrentTaskBehavior = value;
-        }
+        //internal BehaviorPerformTask CurrentTaskBehavior
+        //{
+        //    get => this.State.CurrentTaskBehavior;
+        //    set => this.State.CurrentTaskBehavior = value;
+        //}
         public AILog Log => AIState.GetState(this).History;
         public ItemPreferencesManager ItemPreferences => this.GetState().ItemPreferences;
 

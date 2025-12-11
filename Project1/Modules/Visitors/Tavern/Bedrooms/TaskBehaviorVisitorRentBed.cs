@@ -37,7 +37,7 @@ namespace Start_a_Town_
             var actor = this.Actor;
             var tavern = actor.Town.ShopManager.GetShop<Tavern>(task.ShopID);
             var counter = tavern.Counter.Value;
-            return actor.Reserve(counter);
+            return actor.Reserve(this.Task, counter);
         }
     }
 }

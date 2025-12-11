@@ -54,7 +54,7 @@ namespace Start_a_Town_
             var storageTarget = task.GetTarget(StorageInd);
             return
                 this.Actor.ReserveAsManyAsPossible(item, task.Count) &&
-                this.Actor.Reserve(storageTarget, 1);
+                this.Actor.Reserve(this.Task, storageTarget, 1);
         }
     }
 }

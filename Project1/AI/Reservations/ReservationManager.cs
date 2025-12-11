@@ -21,11 +21,11 @@ namespace Start_a_Town_
         }
 
 
-        public bool Reserve(Actor actor, TargetArgs target, int stackCount = -1)
-        {
-            return this.Reserve(actor, actor.CurrentTask, target, stackCount);
-        }
-        internal bool Reserve(Actor actor, AITask task, TargetArgs target, int stackCount)
+        //public bool Reserve(Actor actor, TargetArgs target, int stackCount = -1)
+        //{
+        //    return this.Reserve(actor, actor.CurrentTask, target, stackCount);
+        //}
+        internal bool Reserve(Actor actor, AITask task, TargetArgs target, int stackCount = -1)
         {
             if (target.Type == TargetType.Null)
                 throw new Exception();

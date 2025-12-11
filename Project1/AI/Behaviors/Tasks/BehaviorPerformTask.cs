@@ -6,11 +6,11 @@ namespace Start_a_Town_
 {
     abstract public class BehaviorPerformTask : Behavior
     {
-        public AITask Task
-        {
-            get => this.Actor.CurrentTask;
-            set => this.Actor.CurrentTask = value;
-        }
+        public AITask Task;
+        //{
+        //    get => this.Actor.CurrentTask;
+        //    set => this.Actor.CurrentTask = value;
+        //}
         protected abstract IEnumerable<Behavior> GetSteps();
         int CurrentStepIndex;
         public bool Finished;
@@ -142,9 +142,9 @@ namespace Start_a_Town_
         }
         public bool InitBaseReservations()
         {
-            if (this.Task.Tool.HasObject)
-                if (!this.Actor.Reserve(this.Task.Tool, 1))
-                    return false;
+            //if (this.Task.Tool.HasObject)
+            //    if (!this.Actor.Reserve(this.Task.Tool, 1))
+            //        return false;
 
             return this.InitExtraReservations();
         }

@@ -16,8 +16,8 @@ namespace Start_a_Town_.AI.Behaviors
         {
             var task = this.Task;
             return
-                this.Actor.Reserve(task.GetTarget(TargetIndex.A), task.Count) &&
-                this.Actor.Reserve(task.GetTarget(TargetIndex.B), 1);
+                this.Actor.Reserve(task, task.GetTarget(TargetIndex.A), task.Count) &&
+                this.Actor.Reserve(task, task.GetTarget(TargetIndex.B), 1);
         }
     }
 }

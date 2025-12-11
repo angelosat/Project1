@@ -9,10 +9,10 @@ namespace Start_a_Town_.AI.Behaviors
         {
 
         }
-        public BehaviorEquipItemNew(AITask task)
-        {
-            this.Task = task;
-        }
+        //public BehaviorEquipItemNew(AITask task)
+        //{
+        //    this.Task = task;
+        //}
         
         protected override IEnumerable<Behavior> GetSteps()
         {
@@ -21,7 +21,7 @@ namespace Start_a_Town_.AI.Behaviors
         }
         protected override bool InitExtraReservations()
         {
-            return this.Actor.Reserve(this.Task.TargetA, 1);
+            return this.Actor.Reserve(this.Task, this.Task.TargetA, 1);
         }
     }
 }

@@ -57,7 +57,7 @@ namespace Start_a_Town_
         {
             return
                 this.Task.ReserveAll(this.Actor, MaterialID) &&
-                this.Task.GetTargetQueue(DestinationID).All(t => this.Actor.Reserve(t, 1));
+                this.Task.GetTargetQueue(DestinationID).All(t => this.Actor.Reserve(this.Task, t, 1));
         }
     }
 }

@@ -152,6 +152,12 @@ namespace Start_a_Town_.Components
         {
             this.Attributes.Read(r);
         }
+
+        internal void Adjust(AttributeDef strength, float energyConsumption)
+        {
+            this.GetAttribute(AttributeDefOf.Strength).Award(this.Parent, energyConsumption);
+        }
+
         public class Props : ComponentProps
         {
             public override Type CompClass => typeof(AttributesComponent);

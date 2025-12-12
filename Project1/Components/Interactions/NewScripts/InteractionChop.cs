@@ -32,13 +32,10 @@ namespace Start_a_Town_
 
         protected override void Done()
         {
-            if (this.Actor.Net.IsClient)
-                return;
             var plant = this.Plant;
             var comp = plant.PlantComponent;
             comp.Harvest(plant, this.Actor);
             comp.ChopDown(plant, this.Actor);
-            //PacketChopDown.Send(this.Actor, plant);
         }
         [EnsureStaticCtorCall]
         static class PacketChopDown

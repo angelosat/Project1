@@ -107,9 +107,15 @@ namespace Start_a_Town_
         }
         internal void AwardAndSync(SkillDef skill, float amount)
         {
-            this[skill].Award(amount);
+            Adjust(skill, amount);
             Skill.Packets.Send(this.Parent as Actor, skill, amount);
         }
+
+        public void Adjust(SkillDef skill, float amount)
+        {
+            this[skill].Award(amount);
+        }
+
         public class Props : ComponentProps
         {
             public override Type CompClass => typeof(NpcSkillsComponent);

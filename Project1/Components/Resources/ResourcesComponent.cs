@@ -190,9 +190,14 @@ namespace Start_a_Town_
 
         internal void AdjustAndSync(ResourceDef def, float v)
         {
+            this.Adjust(def, v);
+            Resource.Packets.SendAdjust(this.Parent as Actor, def, v);
+        }
+
+        internal void Adjust(ResourceDef def, float v)
+        {
             var res = this[def];
             res.Adjust(v);
-            Resource.Packets.SendAdjust(this.Parent as Actor, def, v);
         }
     }
 }

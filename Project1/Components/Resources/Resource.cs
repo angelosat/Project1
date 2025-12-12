@@ -205,7 +205,8 @@ namespace Start_a_Town_
                 var actor = client.World.GetEntity<Actor>(r.ReadInt32());
                 var resDef = r.ReadDef<ResourceDef>();
                 var delta = r.ReadSingle();
-                actor.Resources[resDef].Adjust(delta);
+                //actor.Resources[resDef].Adjust(delta);
+                actor.Resources.Adjust(resDef, delta);
             }
             //internal static void SendSyncAdjust(Entity actor, ResourceDef def, float value)
             //{

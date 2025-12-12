@@ -8,11 +8,13 @@ namespace Start_a_Town_
     {
         public static readonly TaskGiver Idle = new TaskGiverIdle();
 
+        static readonly public List<TaskGiver> UrgentTaskGivers = [new TaskGiverSmartEquip()];
+
         static readonly public List<TaskGiver> EssentialTaskGivers = new()
         {
             new TaskGiverLeaveUnstandableCell(),
             new TaskGiverItemOwnership(),
-            new TaskGiverEquipSelf(),
+            new TaskGiverConsiderItems(),
 
             //new TaskGiverIdle(),
         };
@@ -47,7 +49,10 @@ namespace Start_a_Town_
         };
 
         protected virtual AITask TryAssignTask(Actor actor) { return null; }
-        
+        public AITask FindTaskNew(Actor actor)
+        {
+            return TryAssignTask(actor);
+        }
         public TaskGiverResult FindTask(Actor actor)
         {
             var task = TryAssignTask(actor);

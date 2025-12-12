@@ -4,14 +4,22 @@
     {
         public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
         {
-            var task = actor.CurrentTask;
+            var task = actor.AI.State.Behavior?.Task;
+            if (task is null)
+                return 0;
             var target = task.EquipContextTarget;
             if (target is null)
                 return 0;
-            var targetMaterial = Block.GetBlockMaterial(target.Map, target.Global);
-            if (targetMaterial.Type == MaterialTypeDefOf.Wood && role.Def == ToolUseDefOf.Chopping ||
-                targetMaterial.Type == MaterialTypeDefOf.Soil && role.Def == ToolUseDefOf.Digging ||
-                targetMaterial.Type == MaterialTypeDefOf.Stone && role.Def == ToolUseDefOf.Mining)
+            MaterialTypeDef targetMaterialType;
+            if (target.Type == TargetType.Position)
+                targetMaterialType = Block.GetBlockMaterial(target.Map, target.Global).Type;
+            else if (target.Type == TargetType.Entity)
+                targetMaterialType = target.Object.Body.Material.Type;
+            else
+                return 0;
+            if (targetMaterialType == MaterialTypeDefOf.Wood && role.Def == ToolUseDefOf.Chopping ||
+                   targetMaterialType == MaterialTypeDefOf.Soil && role.Def == ToolUseDefOf.Digging ||
+                   targetMaterialType == MaterialTypeDefOf.Stone && role.Def == ToolUseDefOf.Mining)
                 return 100;
             return 0;
         }

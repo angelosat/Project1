@@ -5,7 +5,7 @@ using System.Linq;
 #nullable enable
 namespace Start_a_Town_
 {
-    public enum TargetIndex { A = 1, B, C, Tool = 15 }
+    public enum TargetIndex { None, A, B, C, Tool = 15 }
     public sealed class AITask
     {
         public TargetArgs GetTarget(TargetIndex targetInd)
@@ -239,6 +239,7 @@ namespace Start_a_Town_
 
             this.BehaviorType = behaviorType;
         }
+        [Obsolete("use a ctor which accepts a taskdef")]
         public AITask(Type behaviorType, TargetArgs targetA) : this()
         {
             throw new Exception();
@@ -288,8 +289,10 @@ namespace Start_a_Town_
         }
 
         Type _BehaviorType;
-        private int _equipContextTargetIndex;
-        internal TargetArgs? EquipContextTarget => _equipContextTargetIndex > 0 ? this.GetTarget(this._equipContextTargetIndex) : null;
+        private TargetIndex _equipContextTargetIndex;
+        internal bool IsUrgent;
+
+        internal TargetArgs? EquipContextTarget => _equipContextTargetIndex != TargetIndex.None ? this.GetTarget(this._equipContextTargetIndex) : null;
         public Type BehaviorType
         {
             get => this.Def?.BehaviorClass ?? this._BehaviorType;
@@ -550,7 +553,7 @@ namespace Start_a_Town_
         IEnumerable<TargetArgs> GetCustomTargets() { yield break; }
         public AITask SetEquipContextTargetIndex(TargetIndex targetIndex)
         {
-            this._equipContextTargetIndex = (int)targetIndex;
+            this._equipContextTargetIndex = targetIndex;
             return this;
         }
     }

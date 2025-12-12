@@ -29,7 +29,8 @@ namespace Start_a_Town_
             //  return TaskHelper.TryStoreEquipped(actor, GearType.Mainhand); 
 
             var task = new AITask(TaskDefOf.Chopping);
-            FindTool(actor, task, JobDefOf.Lumberjack);
+            //FindTool(actor, task, JobDefOf.Lumberjack);
+            task.SetEquipContextTargetIndex(TargetIndex.A); 
             task.TargetA = new TargetArgs(trees.First());
             return task;
         }

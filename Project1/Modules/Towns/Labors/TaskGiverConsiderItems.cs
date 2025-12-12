@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverEquipSelf : TaskGiver
+    class TaskGiverConsiderItems : TaskGiver
     {
         static AITask TryDropUnnecessaryItems(Actor actor)
         {

@@ -64,7 +64,7 @@ namespace Start_a_Town_
             {
                 if (cond())
                     //this.Actor.CurrentTaskBehavior.JumpTo(gotoBhav);
-                    this.Actor.AI.State.Current.Value.behavior.JumpTo(gotoBhav);
+                    this.Actor.AI.State.Behavior.JumpTo(gotoBhav);
 
             });
             return this;

@@ -100,6 +100,7 @@ namespace Start_a_Town_
         static public TaskDef Depart = new("Departing", typeof(TaskBehaviorDepart));
         static public TaskDef DropInventory = new("Dropping item from Inventory", typeof(TaskBehaviorDropInventoryItem));
         static public TaskDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem));
+        static public TaskDef Equip = new("Equipping", typeof(BehaviorEquipItemNew));
         static TaskDefOf()
         {
             Def.Register(typeof(TaskDefOf));

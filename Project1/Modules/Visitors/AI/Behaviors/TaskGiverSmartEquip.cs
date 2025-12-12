@@ -25,7 +25,8 @@ namespace Start_a_Town_.AI.Behaviors
                 }
             }
             if(best.item != null)
-                return new AITask(typeof(BehaviorEquipItemNew), new TargetArgs(best.item));
+                //return new AITask(typeof(BehaviorEquipItemNew), new TargetArgs(best.item));
+                return new AITask(TaskDefOf.Equip, new TargetArgs(best.item));
             return null;
         }
     }

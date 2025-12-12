@@ -12,6 +12,7 @@ namespace Start_a_Town_
 
         public AITask Task;
         public TaskGiver Source;
+
         public TaskGiverResult(AITask task, TaskGiver source)
         {
             this.Task = task;

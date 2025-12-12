@@ -17,7 +17,7 @@ namespace Start_a_Town_
         {
             var tree = this.Task.TargetA.Object;
             var isvalid =
-                !this.Task.Tool.IsForbidden &&
+                //!this.Task.Tool.IsForbidden &&
                 !tree.IsForbidden &&
                 tree != null && tree.Exists;//&& this.Actor.Map.Town.ChoppingManager.IsChoppingTask(tree);
             /// removed the designation check because the behavior might have been created without a specific designation, such as from a growing zone or to clear area for construction

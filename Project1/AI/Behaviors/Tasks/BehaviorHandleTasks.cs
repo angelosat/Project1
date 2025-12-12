@@ -1,12 +1,11 @@
 ﻿using Start_a_Town_.AI;
 using System;
-using System.Drawing;
 
 namespace Start_a_Town_
 {
     sealed class BehaviorHandleTasks : Behavior
     {
-        static readonly int TimerMax = Ticks.PerSecond / 2;
+        static readonly int TimerMax = Ticks.PerSecond / 4;
 
         TaskGiver CurrentTaskGiver;
         int Timer = TimerMax;
@@ -54,7 +53,7 @@ namespace Start_a_Town_
                     continue;
                 }
 
-                state.Assign((task, bhav));
+                state.Assign(bhav);
                 this.CurrentTaskGiver = giver;
                 return task;
             }
@@ -70,7 +69,7 @@ namespace Start_a_Town_
             //state.CurrentTaskBehavior = bhav;
             //state.CurrentTask = task;
             task.IsImmediate = true;
-            state.Assign((task, bhav));
+            state.Assign(bhav);
             return true;
         }
 
@@ -119,11 +118,32 @@ namespace Start_a_Town_
                 this.CleanUp(parent);
                 this.TryForceTask(parent, task, state);
             }
+            else if(!state.Behavior?.Task.IsUrgent ?? true)
+            {
+                foreach(var giver in TaskGiver.UrgentTaskGivers)
+                {
+                    var task = giver.FindTaskNew(parent);
+                    if (task is null)
+                        continue;
+                    task.IsUrgent = true;
+                    state.TryAssign(task);
+                    break;
+                }
+                var taskGiverEnum = TaskGiver.UrgentTaskGivers.GetEnumerator();
+                while 
+                    (
+                    taskGiverEnum.MoveNext() && 
+                    taskGiverEnum.Current.FindTaskNew(parent) is var task && 
+                    task is not null
+                    )
+                    if (state.TryAssign(task))
+                        break;
+            }
 
             //if (state.CurrentTaskBehavior != null)
-            if(state.Current.HasValue)
+            if (state.Behavior != null)
             {
-                var currentBhav = state.Current.Value.behavior;
+                var currentBhav = state.Behavior;
                 var (result, source) = currentBhav.TickNew(parent, state);
 
                 if (parent.Resources[ResourceDefOf.Stamina].Value == 0)
@@ -157,7 +177,7 @@ namespace Start_a_Town_
                         //state.CurrentTaskBehavior.CleanUp();
                         //state.CurrentTaskBehavior = null;
                         state.LastBehavior = currentBhav;
-                        
+
                         state.NextTask();
 
                         // ADDED THIS HERE because when immediately getting a new task from the same taskgiver,
@@ -185,7 +205,7 @@ namespace Start_a_Town_
                 var staminaTaskThreshold = 20;
                 var tired = stamina.Value <= staminaTaskThreshold;
 
-                if (this.CurrentTaskGiver != null && (!state.Current?.task.Def.Idle ?? false)) // && !parent.CurrentTask.Def.Idle)
+                if (this.CurrentTaskGiver != null && (!state.Behavior?.Task.Def.Idle ?? false)) // && !parent.CurrentTask.Def.Idle)
                 {
                     if (tired)
                     {
@@ -202,7 +222,7 @@ namespace Start_a_Town_
                             $"found followup task from same taskgiver {this.CurrentTaskGiver}".ToConsole();
                             //state.CurrentTaskBehavior = bhav;
                             //state.CurrentTask = next.Task;
-                            state.Assign((next.Task, bhav));
+                            state.Assign(bhav);
                             return BehaviorState.Success;
                         }
                         else

@@ -39,7 +39,7 @@ namespace Start_a_Town_
                         source.Reserve(pot, amount);
                         task.SetTarget(itemIndex, new TargetArgs(pot));
                         //actor.CurrentTaskBehavior.JumpTo(gotoBhav);
-                        actor.AI.State.Current.Value.behavior.JumpTo(gotoBhav);
+                        actor.AI.State.Behavior.JumpTo(gotoBhav);
                         actor.Net.ConsoleBox.Write("found new haul opportunity");
                         return;
                     }
@@ -164,7 +164,7 @@ namespace Start_a_Town_
                         continue;
                     source.Reserve(tar, 1);
                     task.SetTarget(storageIndex, tar);
-                    actor.AI.State.Current.Value.behavior.JumpTo(gotoBhav);
+                    actor.AI.State.Behavior.JumpTo(gotoBhav);
                     actor.Net.ConsoleBox.Write("found next storage place " + tar.ToString());
                     return;
                 }

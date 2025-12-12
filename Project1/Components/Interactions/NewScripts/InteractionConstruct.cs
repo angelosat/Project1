@@ -24,7 +24,7 @@ namespace Start_a_Town_.Interactions
             throw new System.NotImplementedException();
         }
 
-        protected override void ApplyWork(float workAmount)
+        protected override void OnApplyWork(float workAmount)
         {
             this.BuildProgress.Value.Value += workAmount;
         }

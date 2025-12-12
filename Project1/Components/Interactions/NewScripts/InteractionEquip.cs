@@ -20,9 +20,12 @@
 
         public override void OnUpdate()
         {
+            if (this.Actor.Net.IsClient)
+                return;
             var a = this.Actor;
             var t = this.Target;
-            GearComponent.EquipToggle(a, t.Object as Entity);
+            //GearComponent.EquipToggle(a, t.Object as Entity);
+            this.Actor.Gear.EquipToggle(t.Object as Entity);
             this.Finish();
         }
 

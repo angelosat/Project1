@@ -560,6 +560,7 @@ namespace Start_a_Town_
             if (obj.Map == this)
             {
                 obj.OnDespawn(this);
+                this.CachedObjects.Remove(obj);
                 return true;
             }
             throw new Exception("GameObject.Map mismatch when trying to despawn object");

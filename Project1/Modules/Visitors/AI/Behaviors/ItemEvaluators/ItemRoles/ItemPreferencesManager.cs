@@ -44,18 +44,7 @@ namespace Start_a_Town_
             if (e.Entity is Tool && !this.TempIgnore.ContainsKey(e.Entity.RefId))
                 this.notScannedYet.Enqueue(e.Entity);
         }
-        static List<ItemRoleDef> GenerateItemRolesAll()
-        {
-            var flat = new List<ItemRoleDef>();
-            foreach (var rDef in Def.GetDefs<ItemRoleDef>())
-            {
-                if (!ContextToItemRolesMap.TryGetValue(rDef.Context, out var list))
-                    ContextToItemRolesMap[rDef.Context] = list = [];
-                list.Add(rDef);
-                flat.Add(rDef);
-            }
-            return flat;
-        }
+        
 
         Control GetGui()
         {
@@ -76,7 +65,7 @@ namespace Start_a_Town_
             GenerateItemRolesAll();
         }
 
-        private void ScanOne()
+        private void EvaluateOne()
         {
             if (notScannedYet.Count == 0)
                 return;
@@ -140,7 +129,18 @@ namespace Start_a_Town_
         }
 
         static List<ItemRoleDef> FlatItemRolesList => _flatItemRolesList ??= GenerateItemRolesAll();
-
+        static List<ItemRoleDef> GenerateItemRolesAll()
+        {
+            var flat = new List<ItemRoleDef>();
+            foreach (var rDef in Def.GetDefs<ItemRoleDef>())
+            {
+                if (!ContextToItemRolesMap.TryGetValue(rDef.Context, out var list))
+                    ContextToItemRolesMap[rDef.Context] = list = [];
+                list.Add(rDef);
+                flat.Add(rDef);
+            }
+            return flat;
+        }
         bool IsScanning => notScannedYet.Count > 0;
 
         internal void UpdatePref(ItemRoleDef role, Entity item, int score)
@@ -452,7 +452,7 @@ namespace Start_a_Town_
 
         public void Tick()
         {
-            this.ScanOne();
+            this.EvaluateOne();
             this.UpdateBiases();
             this.UpdateTempIgnore();
         }

@@ -1,6 +1,9 @@
-﻿using System;
+﻿using SharpDX.MediaFoundation.DirectX;
 using Start_a_Town_.Components;
+using Start_a_Town_.Net;
 using Start_a_Town_.UI;
+using System;
+using static Start_a_Town_.GlobalVars;
 
 namespace Start_a_Town_
 {
@@ -126,5 +129,36 @@ namespace Start_a_Town_
         }
 
         public static Skill Create(IDataReader r) => new Skill().Read(r);
+
+        
+
+        [EnsureStaticCtorCall]
+        internal static class Packets
+        {
+            static int _pTypeIdModifySkill;
+
+            static Packets()
+            {
+                _pTypeIdModifySkill = Registry.PacketHandlers.Register(Receive);
+            }
+            internal static void Send(Actor actor, SkillDef skill, float delta)
+            {
+                var server = actor.Net as Server;
+                server.BeginPacket(_pTypeIdModifySkill)
+                    .Write(actor.RefId)
+                    .Write(skill)
+                    .Write(delta);
+            }
+            private static void Receive(NetEndpoint endpoint, Packet packet)
+            {
+                var client = endpoint as Client;
+                var r = packet.PacketReader;
+                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+                var skill = r.ReadDef<SkillDef>();
+                var delta = r.ReadSingle();
+
+                actor.Skills[skill].Award(delta);
+            }
+        }
     }
 }

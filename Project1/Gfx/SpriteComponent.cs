@@ -548,5 +548,10 @@ namespace Start_a_Town_.Components
             }
             return true;
         }
+
+        internal Animation GetAnimation(AnimationDef animDef)
+        {
+            return this.Animations.First(a => a.Def == animDef);
+        }
     }
 }

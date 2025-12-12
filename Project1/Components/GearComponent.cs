@@ -1,9 +1,12 @@
-﻿using Start_a_Town_.Components;
+﻿using SharpDX.XAudio2;
+using Start_a_Town_.Components;
 using Start_a_Town_.Net;
+using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -140,38 +143,59 @@ namespace Start_a_Town_
 
             return true;
         }
-
-        public static bool EquipToggle(Actor actor, Entity item)
+        protected void Equip(Entity item)
         {
-            if (item is null)
-                return true;
-            if (actor.IsEquipping(item))
-            {
-                //unequip
-                actor.Inventory.Insert(item);
-                actor.GetComponent<GearComponent>().RefreshStats();
-                //actor.Net.EventOccured((int)Message.Types.ActorGearUpdated, actor, null, item);
-                actor.Net.Events.Post(new ActorGearUpdatedEvent(actor, null, item));
-                return true;
-            }
+            if (!this.Parent.Inventory.Contains(item))
+                throw new Exception();
+            var slotType = item.Def.GearType;
+            var slot = this.GetSlot(slotType);
+
+            // the slot implictly removes the new item from the inventory or despawns it from the map and outputs the previous item that occupied the slot
+            slot.SetItem(item, out var previousItem);
+
+            // the previousItem is currently detached from a parent but still exists, so we have to explicitly insert it in the inventory
+            if(previousItem != null)
+                this.Parent.Inventory.Insert(previousItem);
+
+            this.RefreshStats();
+            this.Parent.Net.Events.Post(new ActorGearUpdatedEvent(this.Parent as Actor, item, previousItem as Entity));
+        }
+        protected void Unequip(GearType slotType)
+        {
+            var actor = this.Parent as Actor;
+            var slot = this.GetSlot(slotType);
+            var item = slot.Object;
+            ArgumentNullException.ThrowIfNull(item);
+            // the inventory implicitly removes the item from its previous owner, so no need to clear the slot explicitly
+            actor.Inventory.Insert(item);
+            this.RefreshStats();
+            actor.Net.Events.Post(new ActorGearUpdatedEvent(actor, null, item as Entity));
+        }
+        public bool EquipToggle(Entity item)
+        {
+            ArgumentNullException.ThrowIfNull(item);
+
+            var actor = this.Parent as Actor;
             var slotType = item.Def.GearType;
             var gearSlot = actor.Gear.GetSlot(slotType);
             var previousItem = gearSlot.Object as Entity;
-            if (item == previousItem)
-                return false;
 
-            item.OnDespawn(); // in case the item is equipped from the world instead of from the inventory
-                            // DESPAWN BEFORE EQUIPPING because then the item's global become's the actor's global and the item is despawned from the wrong chunk!
+            if (item == previousItem) // we are implicitly told to unequip the item, assuming it is currently equipped
+            {
+                this.Unequip(slotType);
+                Packets.SendUnequip(actor, slotType);
+                return true;
+            }
 
-            gearSlot.SetObject(item);
-            actor.GetComponent<GearComponent>().RefreshStats();
-            if (previousItem != null)
-                actor.Inventory.Insert(previousItem);
-            //actor.Net.EventOccured((int)Message.Types.ActorGearUpdated, actor, item, previousItem);
-            actor.Net.Events.Post(new ActorGearUpdatedEvent(actor, item, previousItem));
+            //item.OnDespawn(); // in case the item is equipped from the world instead of from the inventory
+            // DESPAWN BEFORE EQUIPPING because then the item's global become's the actor's global and the item is removed from the wrong chunk!
+            Equip(item);
+            Packets.SendEquip(actor, item);
             return true;
         }
-      
+
+        
+
         public void RefreshStats()
         {
             this.ArmorTotal = 0;
@@ -188,6 +212,46 @@ namespace Start_a_Town_
             public Props(params GearType[] defs)
             {
                 this.Slots = defs;
+            }
+        }
+        [EnsureStaticCtorCall]
+        static class Packets
+        {
+            static int _packetTypeIdEquip, _packetTypeIdUnequip;
+            static Packets()
+            {
+                _packetTypeIdEquip = Registry.PacketHandlers.Register(ReceiveEquip);
+                _packetTypeIdUnequip = Registry.PacketHandlers.Register(ReceiveUnequip);
+            }
+            static internal void SendEquip(Actor actor, Entity item)
+            {
+                var server = actor.Net as Server;
+                server.BeginPacket(_packetTypeIdEquip)
+                    .Write(actor.RefId)
+                    .Write(item.RefId);
+            }
+            static internal void SendUnequip(Actor actor, GearType slot)
+            {
+                var server = actor.Net as Server;
+                server.BeginPacket(_packetTypeIdUnequip)
+                    .Write(actor.RefId)
+                    .Write(slot);
+            }
+            static void ReceiveEquip(NetEndpoint net, Packet packet)
+            {
+                var client = net as Client;
+                var r = packet.PacketReader;
+                var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+                var item = net.World.GetEntity(r.ReadInt32());
+                actor.Gear.Equip(item);
+            }
+            static void ReceiveUnequip(NetEndpoint net, Packet packet)
+            {
+                var client = net as Client;
+                var r = packet.PacketReader;
+                var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+                var slot = r.ReadDef<GearType>();
+                actor.Gear.Unequip(slot);
             }
         }
     }

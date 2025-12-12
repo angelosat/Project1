@@ -30,7 +30,7 @@ namespace Start_a_Town_
             throw new NotImplementedException();
         }
 
-        protected override void ApplyWork(float workAmount)
+        protected override void OnApplyWork(float workAmount)
         {
             this._progress.Value += workAmount;
         }

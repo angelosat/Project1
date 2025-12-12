@@ -143,7 +143,7 @@ namespace Start_a_Town_.Crafting
             this._progress = this.UnfinishedItem.GetComponent<UnfinishedItemComp>().Progress;
         }
 
-        protected override void ApplyWork(float workAmount)
+        protected override void OnApplyWork(float workAmount)
         {
             this._progress.Value += workAmount;// 25;
         }

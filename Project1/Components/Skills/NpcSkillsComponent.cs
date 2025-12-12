@@ -1,9 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
+using System;
+using System.IO;
+using System.Linq;
+using static Start_a_Town_.GlobalVars;
 
 namespace Start_a_Town_
 {
@@ -104,9 +105,11 @@ namespace Start_a_Town_
         {
             this.SkillsNew.Read(r);
         }
-
-        
-
+        internal void AwardAndSync(SkillDef skill, float amount)
+        {
+            this[skill].Award(amount);
+            Skill.Packets.Send(this.Parent as Actor, skill, amount);
+        }
         public class Props : ComponentProps
         {
             public override Type CompClass => typeof(NpcSkillsComponent);

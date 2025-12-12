@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
+using Start_a_Town_.Net;
+using Start_a_Town_.Animations;
 
-namespace Start_a_Town_.Animations
+namespace Start_a_Town_
 {
     public sealed class Animation : Inspectable
     {
@@ -251,6 +253,38 @@ namespace Start_a_Town_.Animations
             this.WeightChange = r.ReadSingle();
             this.Speed = r.ReadSingle();
             this.State = (AnimationStates)r.ReadInt32();
+        }
+
+        internal void Sync()
+        {
+            Packets.SyncAnimation(this.Entity as Entity, this);
+        }
+
+        internal static class Packets
+        {
+            static int _packetTypeId;
+            static Packets()
+            {
+                _packetTypeId = Registry.PacketHandlers.Register(Receive);
+            }
+
+            internal static void SyncAnimation(Entity entity, Animation anim)
+            {
+                var server = entity.Net as Server;
+                var w = server.BeginPacket(_packetTypeId);
+                w.Write(entity.RefId);
+                w.Write(anim.Def);
+                anim.Write(w);
+            }
+            private static void Receive(NetEndpoint endpoint, Packet packet)
+            {
+                var client = endpoint as Client;
+                var r = packet.PacketReader;
+                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+                var animDef = r.ReadDef<AnimationDef>();
+                var anim = actor.SpriteComp.GetAnimation(animDef);
+                anim.Read(r);
+            }
         }
     }
 }

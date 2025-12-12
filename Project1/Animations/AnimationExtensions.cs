@@ -17,6 +17,10 @@ namespace Start_a_Town_
             }
             if (anicomp.Any(a => a == animation))
                 throw new Exception();
+
+            // i wasn't using this field until now. i will use it so that the animation knows who its parent is when syncing it self to the clients
+            animation.Entity = obj; 
+
             anicomp.Add(animation);
         }
         static public void CrossFade(this GameObject obj, Animation animation, bool preFade, int fadeLength, Func<float, float, float, float> fadeInterpolation)

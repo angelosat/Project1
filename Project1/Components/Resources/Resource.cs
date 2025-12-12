@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Start_a_Town_.Net;
+using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace Start_a_Town_
 {
@@ -73,13 +75,13 @@ namespace Start_a_Town_
         {
             this.ResourceDef.Worker.HandleRemoteCall(parent, e, this);
         }
-        public void SyncAdjust(Entity parent, float value)
+        //public void SyncAdjust(Entity parent, float value)
+        //{
+        //    Packets.SendSyncAdjust(parent, this.ResourceDef, value);
+        //}
+        public void Adjust(float delta)
         {
-            Packets.SendSyncAdjust(parent, this.ResourceDef, value);
-        }
-        public void Adjust(float add)
-        {
-            this.ResourceDef.Worker.Modify(this, add);
+            this.ResourceDef.Worker.Modify(this, delta);
         }
         public Resource Initialize(float max, float initPercentage)
         {
@@ -179,35 +181,54 @@ namespace Start_a_Town_
 
         public static Resource Create(IDataReader r) => new Resource().Read(r);
 
-        class Packets
+        [EnsureStaticCtorCall]
+        internal class Packets
         {
-            static int PacketSyncAdjust;
-            public static void Init()
+            static int /*PacketSyncAdjust, */_packetTypeIdAdjust;
+            internal static void Init()
             {
-                PacketSyncAdjust = Registry.PacketHandlers.Register(HandleSyncAdjust);
+                //PacketSyncAdjust = Registry.PacketHandlers.Register(HandleSyncAdjust);
+                _packetTypeIdAdjust = Registry.PacketHandlers.Register(HandleAdjust);
             }
-            public static void SendSyncAdjust(Entity actor, ResourceDef def, float value)
+            internal static void SendAdjust(Actor actor, ResourceDef def, float v)
             {
-                var net = actor.Net;
-                if (net is Server)
-                    actor.GetResource(def).Adjust(value);
-                //net.GetOutgoingStreamOrderedReliable().Write(PacketSyncAdjust, actor.RefId, def.Name, value);
-                var pck = actor.Net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketSyncAdjust);
-                pck.Write(actor.RefId);
-                pck.Write(def.Name);
-                pck.Write(value);
+                var server = actor.Net as Server;
+                server.BeginPacket(_packetTypeIdAdjust)
+                    .Write(actor.RefId)
+                    .Write(def)
+                    .Write(v);
             }
-            private static void HandleSyncAdjust(NetEndpoint net, Packet pck)
+            private static void HandleAdjust(NetEndpoint endpoint, Packet packet)
             {
-                var r = pck.PacketReader;
-                var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
-                var resource = Def.GetDef<ResourceDef>(r.ReadString());
-                var value = r.ReadSingle();
-                if (net is Server)
-                    SendSyncAdjust(actor, resource, value);
-                else
-                    actor.GetResource(resource).Adjust(value);
+                var client = endpoint as Client;
+                var r = packet.PacketReader;
+                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+                var resDef = r.ReadDef<ResourceDef>();
+                var delta = r.ReadSingle();
+                actor.Resources[resDef].Adjust(delta);
             }
+            //internal static void SendSyncAdjust(Entity actor, ResourceDef def, float value)
+            //{
+            //    var net = actor.Net;
+            //    if (net is Server)
+            //        actor.GetResource(def).Adjust(value);
+            //    //net.GetOutgoingStreamOrderedReliable().Write(PacketSyncAdjust, actor.RefId, def.Name, value);
+            //    var pck = actor.Net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketSyncAdjust);
+            //    pck.Write(actor.RefId);
+            //    pck.Write(def.Name);
+            //    pck.Write(value);
+            //}
+            //private static void HandleSyncAdjust(NetEndpoint net, Packet pck)
+            //{
+            //    var r = pck.PacketReader;
+            //    var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+            //    var resource = Def.GetDef<ResourceDef>(r.ReadString());
+            //    var value = r.ReadSingle();
+            //    if (net is Server)
+            //        SendSyncAdjust(actor, resource, value);
+            //    else
+            //        actor.GetResource(resource).Adjust(value);
+            //}
         }
     }
 }

@@ -187,5 +187,12 @@ namespace Start_a_Town_
             foreach (var r in this.Resources)
                 r.OnDespawn(this.Parent as Entity);
         }
+
+        internal void AdjustAndSync(ResourceDef def, float v)
+        {
+            var res = this[def];
+            res.Adjust(v);
+            Resource.Packets.SendAdjust(this.Parent as Actor, def, v);
+        }
     }
 }

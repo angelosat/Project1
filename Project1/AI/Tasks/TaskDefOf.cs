@@ -1,4 +1,5 @@
 ﻿using Start_a_Town_.AI.Behaviors;
+using Start_a_Town_.AI.Behaviors.ItemOwnership;
 
 namespace Start_a_Town_
 {
@@ -101,6 +102,7 @@ namespace Start_a_Town_
         static public TaskDef DropInventory = new("Dropping item from Inventory", typeof(TaskBehaviorDropInventoryItem));
         static public TaskDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem));
         static public TaskDef Equip = new("Equipping", typeof(BehaviorEquipItemNew));
+        static public TaskDef Unequip = new("Unquipping", typeof(BehaviorUnequip));
         static TaskDefOf()
         {
             Def.Register(typeof(TaskDefOf));

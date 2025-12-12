@@ -900,6 +900,7 @@ namespace Start_a_Town_.Net
                 var nextObj = kv.Value;
                 var entity = this.World.GetEntity(nextObj.RefID);
                 if (entity == null) continue;
+                if (entity.Map == null) continue; // a snapshot could have been received earlier than the packet to actually spawn an entity that actually is registered in the world but is unspawned
 
                 // Policy for spawns: snap to the authoritative snapshot immediately.
                 // Alternative: treat prev as same as next and interpolate from same => same.

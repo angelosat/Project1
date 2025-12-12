@@ -83,6 +83,8 @@ namespace Start_a_Town_
             if (net is Client) // do i want to run some deterministic behaviors locally too? UPDATE: NO
                 return;
 
+            this.State.Tick();
+
             if (this.Enabled)
                 this.Root.Tick(parent as Actor, this.State);
         }

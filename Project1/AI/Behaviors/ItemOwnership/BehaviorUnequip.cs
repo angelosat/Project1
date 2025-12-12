@@ -9,7 +9,8 @@ namespace Start_a_Town_.AI.Behaviors.ItemOwnership
          
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorInteractionNew(this.Task.TargetA, new UnequipItem());
+            //yield return new BehaviorInteractionNew(this.Task.TargetA, new UnequipItem());
+            yield return new BehaviorInteractionNew(TargetIndex.A, new UnequipItem());
         }
     }
 }

@@ -590,6 +590,17 @@ namespace Start_a_Town_
             return array;
 
         }
+        public static T[] LoadListNew<T>(this SaveTag tag, string name)
+            where T : ISaveableNewNew<T>
+        {
+            var list = tag[name].Value as List<SaveTag>;
+            var count = list.Count;
+            var array = new T[count];
+            for (int i = 0; i < count; i++)
+                array[i] = T.Create(list[i]);
+            return array;
+
+        }
         public static T[] LoadList<T>(this SaveTag tag)
             where T : class, ISaveable, new()
         {

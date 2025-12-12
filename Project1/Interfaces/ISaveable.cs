@@ -16,4 +16,9 @@
         SaveTag Save(string name = "");
         ISaveable Load(SaveTag tag);
     }
+    public interface ISaveableNewNew<T> where T: ISaveableNewNew<T>
+    {
+        SaveTag Save(string name = "");
+        static abstract public T Create(SaveTag tag);
+    }
 }

@@ -7,7 +7,8 @@ namespace Start_a_Town_
 {
     public partial class ItemPreferencesManager
     {
-        public sealed class ItemPreference : Inspectable, ISaveable, IDictionarySyncable<ItemRoleDef, ItemPreference>// ISerializableNew<ItemPreference>, ICopyable<ItemPreference>, IKeyable<ItemRoleDef>
+        //public sealed class ItemPreference : Inspectable, ISaveable, IDictionarySyncable<ItemRoleDef, ItemPreference>// ISerializableNew<ItemPreference>, ICopyable<ItemPreference>, IKeyable<ItemRoleDef>
+        public struct ItemPreference : ISaveable, ISaveableNewNew<ItemPreference>, IDictionarySyncable<ItemRoleDef, ItemPreference>// ISerializableNew<ItemPreference>, ICopyable<ItemPreference>, IKeyable<ItemRoleDef>
         {
             internal ItemRoleDef Role;
             int _itemRefId;
@@ -26,6 +27,11 @@ namespace Start_a_Town_
             internal ItemPreference(ItemRoleDef role)
             {
                 this.Role = role;
+            }
+            internal void Update(Entity item, int score)
+            {
+                this.Item = item;
+                this.InventoryScore = score;
             }
             public ItemPreference CopyFrom(ItemPreference source)
             {
@@ -73,6 +79,7 @@ namespace Start_a_Town_
                 this.InventoryScore = (int)tag["Score"].Value;
                 return this;
             }
+            static public ItemPreference Create(SaveTag tag) => (ItemPreference)new ItemPreference().Load(tag);
 
             internal void Clear()
             {
@@ -112,22 +119,6 @@ namespace Start_a_Town_
             else
                 this.PreferencesNew[role].Set(newitem, score);
         }
-        public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
-        {
-            var potential = this.PreferencesNew.Values.Where(p => filter(p.Item));
-            // TODO: For large inventories, consider replacing SortedDictionary with a simple List<(Entity, int)> + Sort()
-            // to reduce allocations and overhead. Current approach is fine for typical small inventories.
-            var byScore = new SortedDictionary<int, List<(Entity, int)>>(Comparer<int>.Create((a, b) => b.CompareTo(a)));
-            foreach (var pref in potential)
-            {
-                var score = pref.Role.Worker.GetSituationalScore(actor, pref.Item, pref.Role);
-                if (!byScore.TryGetValue(score, out var list))
-                    byScore[score] = list = [];
-                list.Add((pref.Item, score));
-            }
-            foreach (var (score, list) in byScore)
-                foreach (var item in list)
-                    yield return item;
-        }
+        
     }
 }

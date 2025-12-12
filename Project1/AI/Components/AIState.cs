@@ -351,6 +351,10 @@ namespace Start_a_Town_.AI
             this.Jobs.Sync(w);
             this.ItemPreferences.Write(w); // sync to clients?
         }
+        public void Tick()
+        {
+            this.ItemPreferences.Tick();
+        }
 
         public IEnumerable<BehaviorPerformTask> AllPlannedTasks => TaskStack.Concat(TaskQueue);
         //public BehaviorPerformTask Current => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);

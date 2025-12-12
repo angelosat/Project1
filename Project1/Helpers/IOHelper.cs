@@ -240,7 +240,7 @@ namespace Start_a_Town_
                 collection.Add(r.ReadIntVec3());
             return collection;
         }
-        public static List<T> ReadList<T>(this IDataReader r) where T : class, ISerializableNew<T>
+        public static List<T> ReadList<T>(this IDataReader r) where T : ISerializableNew<T>
         {
             var count = r.ReadInt32();
             var list = new List<T>(count);

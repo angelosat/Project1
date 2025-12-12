@@ -8,7 +8,7 @@ namespace Start_a_Town_
         {
             if (actor.Inventory.All.FirstOrDefault(i => !actor.ItemPreferences.IsPreference(i)) is Entity item)
                 //return new AITask(typeof(TaskBehaviorDropInventoryItem), item);
-                return new AITask(TaskDefOf.DropInventory) { TargetA = item };
+                return new AITask(TaskDefOf.DropInventory, item);// { TargetA = item };
             return null;
         }
 
@@ -18,8 +18,8 @@ namespace Start_a_Town_
             // TODO flag jobs for which a tool is already acquired so as to not recheck everything all the time
             if (!actor.IsTownMember)
                 return null; // TODO instead of doing this, check if the tool is claimable
-            if (TryDropUnnecessaryItems(actor) is AITask task)
-                return task;
+            //if (TryDropUnnecessaryItems(actor) is AITask task)
+            //    return task;
             var map = actor.Map;
             var jobs = actor.GetJobs();
             var manager = actor.ItemPreferences;

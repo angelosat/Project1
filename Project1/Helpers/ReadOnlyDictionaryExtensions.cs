@@ -32,7 +32,7 @@ namespace Start_a_Town_
         //        target.CopyFrom(source);
         //    }
         //}
-        public static void Sync<TKey, TValue>(this ReadOnlyDictionary<TKey, TValue> dic, IDataReader r) where TValue : class, ICopyable<TValue>, ISerializableNew<TValue>, IKeyable<TKey>
+        public static void Sync<TKey, TValue>(this ReadOnlyDictionary<TKey, TValue> dic, IDataReader r) where TValue : ICopyable<TValue>, ISerializableNew<TValue>, IKeyable<TKey>
         {
             var list = r.ReadList<TValue>();
             foreach (var source in list)
@@ -45,7 +45,7 @@ namespace Start_a_Town_
                 target.CopyFrom(source);
             }
         }
-        public static void Sync<TKey, TValue>(this ReadOnlyDictionary<TKey, TValue> dic, IDataWriter w) where TValue : class, ICopyable<TValue>, ISerializableNew<TValue>, IKeyable<TKey>
+        public static void Sync<TKey, TValue>(this ReadOnlyDictionary<TKey, TValue> dic, IDataWriter w) where TValue : ICopyable<TValue>, ISerializableNew<TValue>, IKeyable<TKey>
         {
             var toSerialize = dic.Values.Where(v=>v.ShouldCopy()).ToList();
             w.Write(toSerialize);

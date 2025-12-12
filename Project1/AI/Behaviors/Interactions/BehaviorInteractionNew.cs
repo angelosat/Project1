@@ -8,7 +8,8 @@ namespace Start_a_Town_
     class BehaviorInteractionNew : Behavior
     {
         readonly int TargetInd;
-        TargetArgs Target { get => this.TargetGetter?.Invoke() ?? this.Actor.CurrentTask.GetTarget(this.TargetInd); set { } }
+        //TargetArgs Target { get => this.TargetGetter?.Invoke() ?? this.Actor.CurrentTask.GetTarget(this.TargetInd); set { } }
+        TargetArgs Target { get => this.TargetGetter?.Invoke() ?? (this.TargetInd != (int)TargetIndex.None ? this.Actor.CurrentTask.GetTarget(this.TargetInd) : null); set { } }
         Interaction _Interaction;
         public Func<Interaction> InteractionFactory;
         readonly Func<TargetArgs> TargetGetter;

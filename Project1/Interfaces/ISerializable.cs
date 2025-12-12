@@ -6,7 +6,7 @@ namespace Start_a_Town_
         IKeyable<TKey>,
         ICopyable<TValue>,
         ISerializableNew<TValue>
-        where TValue : class, ICopyable<TValue>, ISerializableNew<TValue>
+        where TValue : /*class, */ICopyable<TValue>, ISerializableNew<TValue>
     { }
     public interface IKeyable<T>
     {

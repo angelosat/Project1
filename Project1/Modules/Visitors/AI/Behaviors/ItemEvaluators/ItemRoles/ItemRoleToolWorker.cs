@@ -6,7 +6,7 @@
         {
             var task = actor.AI.State.Behavior?.Task;
             if (task is null)
-                return 0;
+                return -100;
             var target = task.EquipContextTarget;
             if (target is null)
                 return 0;

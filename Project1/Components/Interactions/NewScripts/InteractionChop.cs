@@ -38,7 +38,7 @@ namespace Start_a_Town_
             var comp = plant.PlantComponent;
             comp.Harvest(plant, this.Actor);
             comp.ChopDown(plant, this.Actor);
-            PacketChopDown.Send(this.Actor, plant);
+            //PacketChopDown.Send(this.Actor, plant);
         }
         [EnsureStaticCtorCall]
         static class PacketChopDown

@@ -308,7 +308,8 @@ namespace Start_a_Town_
         public GameObject SetPosition(Vector3 nextGlobal) // TODO: merge this with SetGlobal
         {
             if (this.Map is null) // entity has despawned on client before snapshot received?
-                return this;
+                //return this;
+                throw new Exception("set the object's map before setting its position");
 
             if (this.Map.IsSolid(nextGlobal))// + Vector3.UnitZ * 0.01f))// TODO: FIX THIS
                 return this; // TODO: FIX: problem when desynced from server, block might be empty on server but solid on client

@@ -5,7 +5,6 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -68,7 +67,8 @@ namespace Start_a_Town_
             foreach (var r in this.Designations.Values)
                 r.CollectionChanged += this.R_CollectionChanged;
 
-            this.Town.Map.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChanged);
+            this.Town.Map.Events.ListenTo<BlocksChangedEvent>(this.OnBlocksChanged);
+            this.Town.Map.Events.ListenTo<EntityDespawnedEvent>(this.OnEntityDespawn);
 
         }
 
@@ -177,7 +177,7 @@ namespace Start_a_Town_
         //            break;
         //    }
         //}
-        void HandleBlocksChanged(BlocksChangedEvent e)
+        void OnBlocksChanged(BlocksChangedEvent e)
         {
             foreach (var des in this.Designations)
             {
@@ -188,7 +188,12 @@ namespace Start_a_Town_
                 }
             }
         }
-
+        void OnEntityDespawn(EntityDespawnedEvent obj)
+        {
+            foreach (var designations in this.Designations.Values)
+                if (designations.Contains(obj.Entity))
+                    designations.Remove(obj.Entity);
+        }
         protected override void AddSaveData(SaveTag tag)
         {
             foreach (var des in this.Designations)
@@ -311,5 +316,6 @@ namespace Start_a_Town_
                 }
             }
         }
+        
     }
 }

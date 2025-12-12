@@ -1051,10 +1051,11 @@ namespace Start_a_Town_
             entity.Container?.Remove(entity);
             if(entity.IsSpawned) entity.Map.Despawn(entity);
             entity.Slot?.Object = null;
-            entity.SetGlobal(position);
-            entity.Velocity = velocity;
             entity.Net = this.Net;
             entity.Map = this;
+            //entity.SetGlobal(position);
+            entity.Global = position;
+            entity.Velocity = velocity;
             this.Add(entity);
             entity.OnSpawn(this);
             this.Events.Post(new EntitySpawnedEvent(entity));

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Collections.ObjectModel;
 
 namespace Start_a_Town_
 {
@@ -11,6 +11,9 @@ namespace Start_a_Town_
             dic.Clear();
             foreach(var i in list)
                 dic.Add(keySelector(i), i);
+        
         }
+        
+        
     }
 }

@@ -7,7 +7,7 @@ namespace Start_a_Town_
 {
     public partial class ItemPreferencesManager
     {
-        public sealed class ItemPreference : Inspectable, ISaveable, ISerializableNew<ItemPreference>
+        public sealed class ItemPreference : Inspectable, ISaveable, IDictionarySyncable<ItemRoleDef, ItemPreference>// ISerializableNew<ItemPreference>, ICopyable<ItemPreference>, IKeyable<ItemRoleDef>
         {
             internal ItemRoleDef Role;
             int _itemRefId;
@@ -27,13 +27,14 @@ namespace Start_a_Town_
             {
                 this.Role = role;
             }
-            public void CopyFrom(ItemPreference pref)
+            public ItemPreference CopyFrom(ItemPreference source)
             {
-                if (this.Role != pref.Role)
+                if (this.Role != source.Role)
                     throw new Exception();
-                this.Item = pref.Item;
-                this.ItemRefId = pref.ItemRefId;
-                this.InventoryScore = pref.InventoryScore;
+                this.Item = source.Item;
+                this.ItemRefId = source.ItemRefId;
+                this.InventoryScore = source.InventoryScore;
+                return this;
             }
             public override string ToString()
             {
@@ -94,38 +95,22 @@ namespace Start_a_Town_
             }
 
             public static ItemPreference Create(IDataReader r) => new ItemPreference().Read(r);
-        }
-        public void SyncPrefs(System.Collections.Generic.ICollection<ItemPreference> oldItems, System.Collections.Generic.ICollection<ItemPreference> newItems)
-        {
-            foreach (var old in oldItems)
+            public void Set(Entity entity, int score)
             {
-                if (!this.PreferencesNew.TryGetValue(old.Role, out var existing))
-                    throw new Exception();
-                this.PreferencesNew.Remove(old.Role);
+                this.Item = entity;
+                this.InventoryScore = score;
             }
-            foreach (var newPref in newItems)
-            {
-                if (!this.PreferencesNew.TryGetValue(newPref.Role, out var existing))
-                {
-                    existing = new(newPref.Role);
-                    this.PreferencesNew[newPref.Role] = existing;
-                }
-                existing.CopyFrom(newPref);
-                existing.ResolveReferences(this.Actor);
-            }
+
+            public ItemRoleDef GetKey() => this.Role;
+            public bool ShouldCopy() => this.Item is not null;
         }
+        
         internal void ApplyDelta(ItemRoleDef role, Entity olditem, Entity newitem, int score)
         {
             if (newitem is null)
-                this.PreferencesNew.Remove(role);
+                this.PreferencesNew[role].Set(null, 0);
             else
-            {
-                if (!this.PreferencesNew.TryGetValue(role, out var pref))
-                    pref = new(role);
-                pref.Item = newitem;
-                pref.InventoryScore = score;
-                this.PreferencesNew[role] = pref;
-            }
+                this.PreferencesNew[role].Set(newitem, score);
         }
         public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
         {

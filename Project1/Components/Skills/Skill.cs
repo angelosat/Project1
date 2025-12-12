@@ -1,9 +1,7 @@
-﻿using SharpDX.MediaFoundation.DirectX;
-using Start_a_Town_.Components;
+﻿using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
-using static Start_a_Town_.GlobalVars;
 
 namespace Start_a_Town_
 {
@@ -11,9 +9,18 @@ namespace Start_a_Town_
     {
         public NpcSkillsComponent Container;
         public SkillDef Def;
-        public int Level = 1;
+        int _level = 1;
+        public int Level
+        {
+            get => this._level;
+            set
+            {
+                this._level = value;
+                this.LvlProgress.Max = GetNextLvlXp(value);
+            }
+        }
         Progress LvlProgress = new();
-        const int XpToLevelBase = 100;
+        const int XpToLevelBase = 10;
         Skill() { }
         public Skill(SkillDef def)
         {
@@ -42,6 +49,8 @@ namespace Start_a_Town_
         }
         internal void Award(float v)
         {
+            //for (int i = 0; i < 20; i++)
+            //    GetNextLvlXp(i).ToConsole();
             const int debugMultiplier = 10;
             v *= debugMultiplier;
             if (this.LvlProgress.Value + v < this.LvlProgress.Max)
@@ -99,7 +108,7 @@ namespace Start_a_Town_
 
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValueOrDefault("Level", out this.Level);
+            tag.TryGetTagValueOrDefault("Level", out this._level);
             this.LvlProgress.Max = GetNextLvlXp(this.Level);
             this.LvlProgress.Value = (float)tag["Progress"].Value;
             return this;
@@ -109,14 +118,16 @@ namespace Start_a_Town_
         {
             w.Write(this.Def);
             w.Write(this.Level);
-            this.LvlProgress.Write(w);
+            //this.LvlProgress.Write(w);
+            w.Write(this.LvlProgress.Value);
         }
 
         public Skill Read(IDataReader r)
         {
             this.Def = r.ReadDef<SkillDef>();
             this.Level = r.ReadInt32();
-            this.LvlProgress.Read(r);
+            //this.LvlProgress.Max = GetNextLvlXp(this.Level);
+            this.LvlProgress.Value = r.ReadInt32();
             return this;
         }
         public Skill Clone()
@@ -141,7 +152,7 @@ namespace Start_a_Town_
             {
                 _pTypeIdModifySkill = Registry.PacketHandlers.Register(Receive);
             }
-            internal static void Send(Actor actor, SkillDef skill, float delta)
+            internal static void Send(Actor actor, SkillDef skill, int delta)
             {
                 var server = actor.Net as Server;
                 server.BeginPacket(_pTypeIdModifySkill)
@@ -155,7 +166,7 @@ namespace Start_a_Town_
                 var r = packet.PacketReader;
                 var actor = client.World.GetEntity<Actor>(r.ReadInt32());
                 var skill = r.ReadDef<SkillDef>();
-                var delta = r.ReadSingle();
+                var delta = r.ReadInt32();
 
                 actor.Skills[skill].Award(delta);
             }

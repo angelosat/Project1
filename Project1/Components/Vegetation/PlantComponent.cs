@@ -211,16 +211,17 @@ namespace Start_a_Town_.Components
 
         public bool Harvest(GameObject parent, GameObject actor)
         {
+            var plant = parent as Plant;
+            var props = plant.PlantComponent.PlantProperties;
+            if (props.Growth is null)
+                return false;
+            var yield = (int)(this.GrowthFruit.Percentage * props.Growth.MaxYieldHarvest);
+            if (yield == 0)
+                return false;
+
             if (parent.Net is Server server)
             {
-                var plant = parent as Plant;
-                var props = plant.PlantComponent.PlantProperties;
-                if (props.Growth is null)
-                    return false;
-                var yield = (int)(this.GrowthFruit.Percentage * props.Growth.MaxYieldHarvest);
-                if (yield == 0)
-                    return false;
-
+              
                 var product = props.Growth.CreateEntity();
                 var rng = server.GetRandom();
                 var velocity = LootManager.RandomPopVelocity(rng);

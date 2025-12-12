@@ -105,7 +105,7 @@ namespace Start_a_Town_
         {
             this.SkillsNew.Read(r);
         }
-        internal void AwardAndSync(SkillDef skill, float amount)
+        internal void AwardAndSync(SkillDef skill, int amount)
         {
             Adjust(skill, amount);
             Skill.Packets.Send(this.Parent as Actor, skill, amount);

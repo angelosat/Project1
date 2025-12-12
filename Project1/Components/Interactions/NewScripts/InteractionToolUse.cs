@@ -82,31 +82,6 @@ namespace Start_a_Town_
             this.Finish();
         }
 
-        private void ConsumeEnergyAndSync(int amount, SkillDef skill)
-        {
-            var actor = this.Actor;
-            var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level); //amount / a.Skills[skill].Level;
-            var stamina = actor.Resources[ResourceDefOf.Stamina];
-            stamina.Adjust(-energyConsumption);
-            actor[AttributeDefOf.Strength].Award(actor, energyConsumption);
-            actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
-
-            //actor.Resources.AdjustAndSync(ResourceDefOf.Stamina, -energyConsumption);
-        }
-
-        //private void AwardSkillAndSync(Actor actor, int amount, out SkillDef skill)
-        //{
-        //    skill = this.GetSkill();
-        //    if (this.SkillAwardType == SkillAwardTypes.OnSwing)
-        //        actor.Skills.AwardAndSync(skill, amount);
-        //}
-
-        private void ApplyWorkAndSync(int amount)
-        {
-            this.ApplyWork(amount);
-            Packets.SyncApplyWork(this.Actor, amount);
-        }
-
         private void ApplyWork(int amount)
         {
             this.OnApplyWork(amount);
@@ -140,37 +115,37 @@ namespace Start_a_Town_
         protected abstract SkillDef GetSkill();
         protected abstract List<Rectangle> GetParticleRects();
         protected abstract Color GetParticleColor();
-        [EnsureStaticCtorCall]
-        static class Packets
-        {
-            static int _pTypeId, _pTypeOnUpdate;
-            static Packets()
-            {
-                _pTypeId = Registry.PacketHandlers.Register(Receive);
-            }
-            internal static void SyncOnUpdate(Actor actor, int amount)
-            {
-                var server = actor.Net as Server;
-                server.BeginPacket(_pTypeOnUpdate)
-                    .Write(actor.RefId)
-                    .Write(amount);
-            }
-            internal static void SyncApplyWork(Actor actor, int amount)
-            {
-                var server = actor.Net as Server;
-                server.BeginPacket(_pTypeId)
-                    .Write(actor.RefId)
-                    .Write(amount);
-            }
-            private static void Receive(NetEndpoint endpoint, Packet packet)
-            {
-                var client = endpoint as Client;
-                var r = packet.PacketReader;
-                var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
-                var amount = r.ReadInt32();
-                var task = actor.Work.Task as InteractionToolUse;
-                task.ApplyWork(amount);
-            }
-        }
+        //[EnsureStaticCtorCall]
+        //static class Packets
+        //{
+        //    static int _pTypeId, _pTypeOnUpdate;
+        //    static Packets()
+        //    {
+        //        _pTypeId = Registry.PacketHandlers.Register(Receive);
+        //    }
+        //    internal static void SyncOnUpdate(Actor actor, int amount)
+        //    {
+        //        var server = actor.Net as Server;
+        //        server.BeginPacket(_pTypeOnUpdate)
+        //            .Write(actor.RefId)
+        //            .Write(amount);
+        //    }
+        //    internal static void SyncApplyWork(Actor actor, int amount)
+        //    {
+        //        var server = actor.Net as Server;
+        //        server.BeginPacket(_pTypeId)
+        //            .Write(actor.RefId)
+        //            .Write(amount);
+        //    }
+        //    private static void Receive(NetEndpoint endpoint, Packet packet)
+        //    {
+        //        var client = endpoint as Client;
+        //        var r = packet.PacketReader;
+        //        var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
+        //        var amount = r.ReadInt32();
+        //        var task = actor.Work.Task as InteractionToolUse;
+        //        task.ApplyWork(amount);
+        //    }
+        //}
     }
 }

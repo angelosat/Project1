@@ -8,7 +8,7 @@ namespace Start_a_Town_
 
         public Type WorkerClass;
        
-        public readonly float BaseMax = 100;
+        public readonly int BaseMax = 100;
 
         public ResourceDef(string name, Type workerClass) : base(name)
         {

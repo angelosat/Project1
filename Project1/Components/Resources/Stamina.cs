@@ -16,11 +16,11 @@ namespace Start_a_Town_.Components.Resources
         public override string Format { get; } = "##0.00";
         public override string Description { get; } = "Required for sprinting and hauling heavy objects";
 
-        public override void Modify(Resource resource, float add)
+        public override void Modify(Resource resource, float delta)
         {
-            if (add < 0)
-                resource.Rec.Value = 0;
-            base.Modify(resource, add);
+            if (delta < 0)
+                resource.RegenerateDelay.Value = 0;
+            base.Modify(resource, delta);
         }
        
         public float TickRate = Ticks.PerGameMinute / 2f; // 2 ticks per second
@@ -32,7 +32,7 @@ namespace Start_a_Town_.Components.Resources
             switch (e.Type)
             {
                 case Message.Types.Jumped:
-                    resource.Rec.Value = resource.Rec.Max;
+                    resource.RegenerateDelay.Value = 0;// resource.Rec.Max;
                     return true;
 
                 default:
@@ -43,9 +43,9 @@ namespace Start_a_Town_.Components.Resources
         
         protected override void updateRec(Resource resource)
         {
-            if (resource.Rec.Value < resource.Rec.Max)
+            if (resource.RegenerateDelay.Value < resource.RegenerateDelay.Max)
             {
-                resource.Rec.Value++;
+                resource.RegenerateDelay.Value++;
                 return;
             }
         }
@@ -63,7 +63,7 @@ namespace Start_a_Town_.Components.Resources
         {
             var box = new GroupBox();
             var bar = base.GetControl(res);
-            var bar_StaminaRec = new Bar() { Object = res.Rec, Location = bar.BottomLeft, Height = 2 };
+            var bar_StaminaRec = new Bar() { Object = res.RegenerateDelay, Location = bar.BottomLeft, Height = 2 };
             box.AddControls(bar, bar_StaminaRec);
             return box;
         }

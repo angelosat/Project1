@@ -897,7 +897,7 @@ namespace Start_a_Town_
             fx.CurrentTechnique = fx.Techniques["EntityShadows"];
             gd.DepthStencilState = new DepthStencilState() { DepthBufferWriteEnable = false };
             fx.CurrentTechnique.Passes["Pass1"].Apply();
-            SpriteComponent.DrawShadows(shadowsSB, map, this);
+            SpriteComp.DrawShadows(shadowsSB, map, this);
             gd.SetRenderTarget(this.MapComposite);
             shadowsSB.Flush();
 
@@ -1189,7 +1189,7 @@ namespace Start_a_Town_
             fx.CurrentTechnique = fx.Techniques["EntityShadows"];
             gd.DepthStencilState = new DepthStencilState() { DepthBufferWriteEnable = false };
             fx.CurrentTechnique.Passes["Pass1"].Apply();
-            SpriteComponent.DrawShadows(mySB, map, this);
+            SpriteComp.DrawShadows(mySB, map, this);
             mySB.Flush();
         }
 

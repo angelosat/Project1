@@ -11,21 +11,21 @@ namespace Start_a_Town_
         public partial class Product
         {
             public enum Types { Tools, Workbenches, Furniture, Blocks }
-            public Func<Dictionary<string, Entity>, Entity> ObjectCreator;
+            public Func<Dictionary<string, Entity>, Entity> Factory;
             readonly List<Action<Dictionary<string, Entity>, Entity>> ModifierActions = new();
             public int Quantity = 1;
             public Product(string ingredientCopy)
             {
-                this.ObjectCreator = dic => dic[ingredientCopy];
+                this.Factory = dic => dic[ingredientCopy];
             }
             public Product(Func<Dictionary<string, Entity>, Entity> creator, int quantity = 1)
             {
-                this.ObjectCreator = creator;
+                this.Factory = creator;
                 this.Quantity = quantity;
             }
             public Product(ItemDef def, int quantity = 1)
             {
-                this.ObjectCreator = mats=> def.Factory(def);
+                this.Factory = mats=> def.Factory(def);
                 this.Quantity = quantity;
             }
             public Product GetMaterialFromIngredient(string reagentName)
@@ -43,7 +43,7 @@ namespace Start_a_Town_
                 if (actor.Net is Net.Client)
                     return new ProductMaterialPair(reaction, null, ingrs);
                 var dic = ingrs.ToDictionary(o => o.Key, o => o.Value.Object as Entity);
-                var product = this.ObjectCreator(dic);
+                var product = this.Factory(dic);
                 foreach (var a in this.ModifierActions)
                     a(dic, product);
                 product.SetQuality(DetermineQuality(actor, reaction));

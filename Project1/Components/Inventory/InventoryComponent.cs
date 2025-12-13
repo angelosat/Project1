@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Start_a_Town_.Components
 {
-    public class InventoryComponent : EntityComponent
+    public class InventoryComponent : EntityComp
     {
         class Packets
         {

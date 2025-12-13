@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_.Crafting

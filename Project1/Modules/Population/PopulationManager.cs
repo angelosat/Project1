@@ -58,7 +58,7 @@ namespace Start_a_Town_
         internal static void Init()
         {
             Packets.Init();
-            OffsiteAreaDefOf.Init();
+            //OffsiteAreaDefOf.Init();
             VisitorNeedsDefOf.Init();
         }
 

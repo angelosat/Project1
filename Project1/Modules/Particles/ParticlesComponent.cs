@@ -4,7 +4,7 @@ using Start_a_Town_.Components;
 
 namespace Start_a_Town_.Particles
 {
-    class ParticlesComponent : EntityComponent
+    class ParticlesComponent : EntityComp
     {
         public override string Name { get; } = "ParticleSystem"; 
 

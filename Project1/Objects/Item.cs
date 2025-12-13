@@ -4,11 +4,11 @@
     {
         public Item()
         {
-            
+
         }
         public Item(ItemDef def) : base(def)
         {
-                
+
         }
         public override GameObject Create()
         {

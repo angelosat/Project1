@@ -7,7 +7,7 @@ using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
-    class NpcComponent : EntityComponent
+    class NpcComponent : EntityComp
     {
         static int p;
         internal static void Init()
@@ -18,7 +18,7 @@ namespace Start_a_Town_
         public string FullName => this.FirstName + (this.LastName.IsNullEmptyOrWhiteSpace() ? "" : string.Format(" {0}", this.LastName));
 
         static public List<GameObject> NpcDirectory = new List<GameObject>();
-        public override void OnObjectCreated(GameObject parent)
+        public override void AttachTo(GameObject parent)
         {
             this.GenerateFullName();
         }

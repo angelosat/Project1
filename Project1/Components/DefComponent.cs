@@ -6,7 +6,7 @@ using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {
-    public class DefComponent : EntityComponent
+    public class DefComponent : EntityComp
     {
         public override string Name { get; } = "Info";
        

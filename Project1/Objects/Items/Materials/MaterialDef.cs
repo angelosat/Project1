@@ -7,11 +7,6 @@ namespace Start_a_Town_
     {
         public static readonly Random Randomizer = new();
 
-        public static void Initialize()
-        {
-            MaterialDefOf.Init();
-        }
-
         public override string ToString()
         {
             return this.Name;

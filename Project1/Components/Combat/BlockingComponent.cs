@@ -4,7 +4,7 @@ using Start_a_Town_.Animations;
 namespace Start_a_Town_.Components
 {
     [Obsolete]
-    class BlockingComponent : EntityComponent
+    class BlockingComponent : EntityComp
     {
         public override string Name { get; } = "Blocking"; 
         public override object Clone()

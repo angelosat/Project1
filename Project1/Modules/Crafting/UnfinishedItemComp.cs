@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class UnfinishedItemComp : EntityComponent
+    class UnfinishedItemComp : EntityComp
     {
         [EnsureStaticCtorCall]
         static class Packets
@@ -144,5 +144,6 @@ namespace Start_a_Town_
         {
             this.Order.UnfinishedItem = null;
         }
+        public new class Props : Props<UnfinishedItemComp> { }
     }
 }

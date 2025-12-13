@@ -8,11 +8,8 @@ using System.IO;
 
 namespace Start_a_Town_.Components
 {
-    public abstract class EntityComponent : Inspectable, ICloneable
+    public abstract class EntityComp : Inspectable, ICloneable
     {
-        internal virtual void Initialize(ComponentProps componentProps)
-        {
-        }
         public override string Label => this.Name;
         public abstract string Name { get; }
         public override string ToString()
@@ -25,10 +22,10 @@ namespace Start_a_Town_.Components
 
         public GameObject Parent;
 
-        public EntityComponent()
+        public EntityComp()
         {
         }
-        public EntityComponent(GameObject parent)
+        public EntityComp(GameObject parent)
             : this()
         { }
 
@@ -60,7 +57,7 @@ namespace Start_a_Town_.Components
         public virtual void OnDespawnExtra(MapBase oldmap) { }
         public virtual void OnDispose() { }
 
-        public virtual void OnObjectCreated(GameObject parent) { }
+        public virtual void AttachTo(GameObject parent) { }
         public virtual void OnObjectLoaded(GameObject parent) { }
         public virtual void OnObjectSynced(GameObject parent) { }
         public virtual void SetMaterial(MaterialDef mat) { }
@@ -124,7 +121,7 @@ namespace Start_a_Town_.Components
         {
 
         }
-
+        public virtual Control GetParametrizer() => null;
         public virtual void Write(IDataWriter w) { }
         public virtual void Read(IDataReader r) { }
         internal virtual void GetAvailableTasks(GameObject parent, List<Interaction> list)
@@ -160,6 +157,17 @@ namespace Start_a_Town_.Components
         internal virtual void ResolveReferences()
         {
         }
-
+        public abstract class Props 
+        {
+            internal abstract void Apply(EntityComp props);
+            internal abstract EntityComp CreateComp();
+        }
+        public abstract class Props<T> : Props where T : EntityComp, new()
+        {
+            Type CompClass => typeof(T);
+            internal sealed override T CreateComp() => new T();
+            internal sealed override void Apply(EntityComp comp) => this.ApplyTo((T)comp);
+            protected virtual void ApplyTo(T comp) { }
+        }
     }
 }

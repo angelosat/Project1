@@ -23,8 +23,8 @@ namespace Start_a_Town_
 
         public GameObject Create()
         {
-            var tool = ToolDefs.Tool.CreateNew() as Tool;
-            tool.ToolComponent.Props = this;
+            var tool = ItemDefOf.Tool.CreateNew() as Tool;
+            tool.ToolComponent.ToolProperties = this;
             tool.Body.Sprite = this.SpriteHandle;
             tool.Body[BoneDefOf.ToolHead].Sprite = this.SpriteHead;
             tool.Name = this.Label;
@@ -39,7 +39,7 @@ namespace Start_a_Town_
 
         public StorageFilterNewNew GetFilter()
         {
-            return new(this.Label, ToolDefs.Tool, this);
+            return new(this.Label, ItemDefOf.Tool, this);
         }
     }
 }

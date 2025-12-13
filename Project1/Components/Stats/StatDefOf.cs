@@ -64,8 +64,7 @@
             Def.Register(typeof(StatDefOf));
         }
 
-        public static StatDef[] ToolStatPackage { get; } = { ToolEffectiveness, ToolSpeed };
-        public static StatDef[] NpcStatPackage { get; } = { MaxHaulWeight, Encumberance, WalkSpeed, Armor };
+        
     }
 
     //public static class StatDefOf

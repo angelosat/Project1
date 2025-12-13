@@ -24,7 +24,7 @@ namespace Start_a_Town_
         public ApparelDef ApparelProperties;
         public CraftingProperties CraftingProperties;
         public RecipeProperties RecipeProperties;
-        public ConsumableProperties ConsumableProperties;
+        //public ConsumableProperties ConsumableProperties;
         public GearType GearType;
         public Func<ItemDef, GameObject> Randomizer;
         public List<MaterialToken> MadeFrom = new();
@@ -50,7 +50,8 @@ namespace Start_a_Town_
         }
         public Entity CreateNew()
         {
-            var obj = Activator.CreateInstance(this.ItemClass, this) as Entity;
+            var obj = Activator.CreateInstance(this.ItemClass) as Entity;
+            obj.Def = this;
             obj.InitComps();
             return obj;
         }

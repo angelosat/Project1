@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    public class AIComponent : EntityComponent
+    public class AIComponent : EntityComp
     {
         public override string Name { get; } = "AI";
         public Guid Guid = Guid.NewGuid();

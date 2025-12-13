@@ -5,7 +5,7 @@ using System.Linq;
 namespace Start_a_Town_.Components
 {
     [Obsolete]
-    class BodyComponent : EntityComponent
+    class BodyComponent : EntityComp
     {
         public override string Name { get; } = "Body";
         

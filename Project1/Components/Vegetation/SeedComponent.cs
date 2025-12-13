@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    class SeedComponent : EntityComponent
+    class SeedComponent : EntityComp
     {
         public override string Name { get; } = "Seed";
 
@@ -55,10 +55,10 @@ namespace Start_a_Town_
         {
             this.Plant = Def.GetDef<PlantProperties>(r.ReadString());
         }
-
-        public class Props : ComponentProps
-        {
-            public override Type CompClass => typeof(SeedComponent);
-        }
+        public new class Props : Props<SeedComponent> { }
+        //public class Props : ComponentProps
+        //{
+        //    public override Type CompClass => typeof(SeedComponent);
+        //}
     }
 }

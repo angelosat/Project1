@@ -2,15 +2,16 @@
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.UI;
+using System;
 using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
     public abstract class Entity : GameObject
     {
-        private SpriteComponent _sprite;
+        private SpriteComp _sprite;
         [InspectorHidden]
-        public SpriteComponent Sprite => this._sprite ??= this.GetComponent<SpriteComponent>();
+        public SpriteComp Sprite => this._sprite ??= this.GetComponent<SpriteComp>();
 
         /// <summary>
         /// here or in tool class?
@@ -35,11 +36,12 @@ namespace Start_a_Town_
         {
             this.AddComponent(new DefComponent());
             this.AddComponent<PhysicsComponent>();
+            this.AddComponent<SpriteComp>(); // add this only through comp props
         }
         public Entity(ItemDef def) : this()
         {
             this.Def = def;
-            this.AddComponent(new SpriteComponent(def));
+            //this.AddComponent(new SpriteComp(def));
         }
         internal GameObjectSlot GetEquipmentSlot(GearType.Types type)
         {
@@ -49,24 +51,19 @@ namespace Start_a_Town_
 
         internal void InitComps()
         {
-            foreach (var props in this.Def.CompProps)
+            foreach(var prop in this.Def.CompProps)
             {
-                var compType = props.CompClass;
-                if (this.TryGetComponent(compType, out var c))
-                    c.Initialize(props);
-                else
-                {
-                    var comp = props.CreateComponent();
-                    this.AddComponent(comp);
-                }
+                var comp = prop.CreateComp();
+                prop.Apply(comp);
+                this.AddComponent(comp);
             }
             foreach (var c in this.Components.Values)
-                c.OnObjectCreated(this);
+                c.AttachTo(this);
         }
 
         internal bool ProvidesSkill(ToolUseDef skill)
         {
-            return this.ToolComponent?.Props?.ToolUse == skill;
+            return this.ToolComponent?.ToolProperties?.ToolUse == skill;
         }
 
         internal MaterialDef GetMaterial(BoneDef def)

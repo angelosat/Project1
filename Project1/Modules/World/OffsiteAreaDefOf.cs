@@ -1,5 +1,6 @@
 ﻿namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     static class OffsiteAreaDefOf
     {
         static public readonly OffsiteAreaDef Forest = new OffsiteAreaDef("Forest")
@@ -30,8 +31,7 @@
             (MaterialDefOf.Gold, 10))
         .AddLootCurrency(20, 50)
         ;
-
-        internal static void Init()
+        static OffsiteAreaDefOf()
         {
             Def.Register(Forest);
             Def.Register(Swamp);

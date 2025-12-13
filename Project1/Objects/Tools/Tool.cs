@@ -2,6 +2,10 @@
 {
     class Tool : Entity
     {
+        public Tool()
+        {
+            
+        }
         public Tool(ItemDef def)
             : base(def)
         {

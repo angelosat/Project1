@@ -5,7 +5,7 @@ using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {
-    public class PossessionsComponent : EntityComponent
+    public class PossessionsComponent : EntityComp
     {
         public override string Name { get; } = "Possesions";
         readonly HashSet<Room> Rooms = new();

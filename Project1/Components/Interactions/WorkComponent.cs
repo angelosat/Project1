@@ -4,7 +4,7 @@ using System;
 
 namespace Start_a_Town_.Components
 {
-    public class WorkComponent : EntityComponent
+    public class WorkComponent : EntityComp
     {
         public override string Name { get; } = "Work";
         public override object Clone()

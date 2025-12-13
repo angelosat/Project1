@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     public class RawMaterialDefOf
     {
         static public readonly ItemDef Planks = new ItemDef("Plank", typeof(Item))
@@ -88,22 +89,8 @@ namespace Start_a_Town_
             Category = ItemCategoryDefOf.RawMaterials,
             Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         }.SetMadeFrom(MaterialTypeDefOf.Wood, MaterialTypeDefOf.Stone, MaterialTypeDefOf.Metal);
-
-        static public void Initialize()
-        {
-            var defs = Def.Database.Values.OfType<ItemDef>().ToList();
-            foreach (var def in defs.Where(d => d.DefaultMaterialType != null))
-            {
-                foreach (var m in def.DefaultMaterialType.SubTypes)
-                    GameObject.AddTemplate(def.CreateFrom(m));//  CreateFrom(def, m));
-            }
-
-            foreach (var mt in new[] { MaterialTypeDefOf.Metal, MaterialTypeDefOf.Wood, MaterialTypeDefOf.Stone }) // TODO make scraps from solid rawmaterials
-                foreach (var m in mt.SubTypes)
-                    GameObject.AddTemplate(Scraps.CreateFrom(m));// CreateFrom(Scraps, m));
-
-            InitRecipes();
-        }
+        
+        
 
         static void InitRecipes()
         {
@@ -130,6 +117,23 @@ namespace Start_a_Town_
                 .AddProduct(new Reaction.Product(RawMaterialDefOf.Ingots).GetMaterialFromIngredient("a")
                 );
             Def.Register(smelting);
+
+            Generate();
+        }
+        static void Generate()
+        {
+            var defs = Def.Database.Values.OfType<ItemDef>().ToList();
+            foreach (var def in defs.Where(d => d.DefaultMaterialType != null))
+            {
+                foreach (var m in def.DefaultMaterialType.SubTypes)
+                    GameObject.AddTemplate(def.CreateFrom(m));//  CreateFrom(def, m));
+            }
+
+            foreach (var mt in new[] { MaterialTypeDefOf.Metal, MaterialTypeDefOf.Wood, MaterialTypeDefOf.Stone }) // TODO make scraps from solid rawmaterials
+                foreach (var m in mt.SubTypes)
+                    GameObject.AddTemplate(Scraps.CreateFrom(m));// CreateFrom(Scraps, m));
+
+            InitRecipes();
         }
     }
 }

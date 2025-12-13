@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    public class EffectsComponent : EntityComponent
+    public class EffectsComponent : EntityComp
     {
         public override string Name => "Effects";
 

@@ -5,7 +5,7 @@ using Start_a_Town_.Particles;
 
 namespace Start_a_Town_.Components
 {
-    class BombComponent : EntityComponent
+    class BombComponent : EntityComp
     {
         public override string Name { get; } = "Bomb";
         public override object Clone()
@@ -58,7 +58,7 @@ namespace Start_a_Town_.Components
                         if (d < rsquared)
                             map.RemoveBlock(pos);
                     }
-            parent.GetComponent<SpriteComponent>().Hidden = true;
+            parent.GetComponent<SpriteComp>().Hidden = true;
             var emitter = ParticleEmitter.Dust;
             emitter.ColorBegin = Color.White;
             emitter.ColorEnd = Color.Black;

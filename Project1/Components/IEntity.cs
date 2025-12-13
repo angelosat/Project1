@@ -2,8 +2,8 @@
 {
     public interface IEntity
     {
-        T GetComponent<T>(string name) where T : EntityComponent;
-        bool TryGetComponent<T>(string name, out T component) where T : EntityComponent;
+        T GetComponent<T>(string name) where T : EntityComp;
+        bool TryGetComponent<T>(string name, out T component) where T : EntityComp;
         void Tick();
     }
 }

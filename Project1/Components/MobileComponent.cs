@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_.Components
 {
-    public class MobileComponent : EntityComponent
+    public class MobileComponent : EntityComp
     {
         public class State
         {
@@ -96,7 +96,7 @@ namespace Start_a_Town_.Components
             EmitDust(parent);
         }
 
-        public override void OnObjectCreated(GameObject parent)
+        public override void AttachTo(GameObject parent)
         {
             parent.AddAnimation(this.AnimationJump);
             parent.AddAnimation(this.AnimationWalk); // why not add it on creation?

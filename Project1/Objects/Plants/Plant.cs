@@ -18,12 +18,12 @@ namespace Start_a_Town_
             this.AddComponent(new ResourcesComponent(ResourceDefOf.HitPoints));
         }
 
-        public Plant(ItemDef def)
-            : base()
-        {
-            this.Def = def;
-            this.AddComponent(new SpriteComponent(Def));
-        }
+        //public Plant(ItemDef def)
+        //    : base()
+        //{
+        //    this.Def = def;
+        //    this.AddComponent(new SpriteComp(Def));
+        //}
        
         public bool IsHarvestable => this.PlantComponent.IsHarvestable;
         [InspectorHidden]

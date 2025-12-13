@@ -2,12 +2,9 @@
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     static class MaterialDefOf
     {
-        internal static void Init()
-        {
-        }
-
         static public readonly MaterialDef Iron = new MaterialDef("Iron", MaterialTemplates.Metal)
             .SetPrefix("Iron")
             .SetColor(Color.LightSteelBlue)
@@ -70,31 +67,32 @@ namespace Start_a_Town_
 
         static MaterialDefOf()
         {
-            Def.Register(Iron);
-            Def.Register(Gold);
+            Def.Register(typeof(MaterialDefOf));
+            //Def.Register(Iron);
+            //Def.Register(Gold);
 
-            Def.Register(LightWood);
-            Def.Register(DarkWood);
-            Def.Register(RedWood);
+            //Def.Register(LightWood);
+            //Def.Register(DarkWood);
+            //Def.Register(RedWood);
 
-            Def.Register(Coal);
-            Def.Register(Stone);
+            //Def.Register(Coal);
+            //Def.Register(Stone);
 
-            Def.Register(ShrubStem);
+            //Def.Register(ShrubStem);
 
-            Def.Register(Soil);
-            Def.Register(Sand);
+            //Def.Register(Soil);
+            //Def.Register(Sand);
 
-            Def.Register(Air);
-            Def.Register(Water);
-            Def.Register(Glass);
+            //Def.Register(Air);
+            //Def.Register(Water);
+            //Def.Register(Glass);
 
-            Def.Register(Human);
-            Def.Register(Animal);
-            Def.Register(Insect);
+            //Def.Register(Human);
+            //Def.Register(Animal);
+            //Def.Register(Insect);
 
-            Def.Register(Berry);
-            Def.Register(Seed);
+            //Def.Register(Berry);
+            //Def.Register(Seed);
         }
     }
 }

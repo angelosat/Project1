@@ -6,8 +6,9 @@ using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {
-    public class OwnershipComponent : EntityComponent
+    public class OwnershipComponent : EntityComp
     {
+        public new class Props : Props<OwnershipComponent> { }
         public override string Name { get; } = "Ownership";
         public int OwnerRef { get; private set; } = -1;
         public Actor Owner;

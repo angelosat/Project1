@@ -42,7 +42,7 @@ namespace Start_a_Town_.Components.Resources
                 this.SpriteFlashTimer--;
                 if (this.SpriteFlashTimer <= 0)
                 {
-                    parent.TryGetComponent<SpriteComponent>(t => t.Tint = Color.White);
+                    parent.TryGetComponent<SpriteComp>(t => t.Tint = Color.White);
 
                 }
             }

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class ResourcesComponent : EntityComponent
+    public class ResourcesComponent : EntityComp
     {
         public Resource[] Resources;
 
@@ -37,14 +37,7 @@ namespace Start_a_Town_
             for (int i = 0; i < count; i++)
                 this.Resources[i] = new Resource(defs[i]);
         }
-        internal override void Initialize(ComponentProps componentProps)
-        {
-            var props = componentProps as Props;
-            var count = props.Defs.Length;
-            this.Resources = new Resource[count];
-            for (int i = 0; i < count; i++)
-                this.Resources[i] = new Resource(props.Defs[i]);
-        }
+        
         public override void Tick()
         {
             foreach (var item in this.Resources)
@@ -85,7 +78,7 @@ namespace Start_a_Town_
         {
             return new ResourcesComponent(this.Resources);
         }
-        public override void OnObjectCreated(GameObject parent)
+        public override void AttachTo(GameObject parent)
         {
             foreach (var r in this.Resources)
                 r.Parent = parent as Actor;
@@ -162,15 +155,7 @@ namespace Start_a_Town_
             foreach (var r in this.Resources)
                 tooltip.AddControlsBottomLeft(r.GetControl());
         }
-        public class Props : ComponentProps
-        {
-            public override Type CompClass => typeof(ResourcesComponent);
-            public ResourceDef[] Defs;
-            public Props(params ResourceDef[] defs)
-            {
-                this.Defs = defs;
-            }
-        }
+        
         public override void OnObjectSynced(GameObject parent)
         {
             base.OnObjectSynced(parent);
@@ -198,6 +183,17 @@ namespace Start_a_Town_
         {
             var res = this[def];
             res.Adjust(v);
+        }
+        public new class Props : Props<ResourcesComponent> 
+        {
+            public ResourceDef[] Defs;
+            protected override void ApplyTo(ResourcesComponent comp)
+            {
+                var count = this.Defs.Length;
+                comp.Resources = new Resource[count];
+                for (int i = 0; i < count; i++)
+                    comp.Resources[i] = new Resource(this.Defs[i]);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     public static class PlantDefOf
     {
         static public ItemDef Tree = new("Tree", typeof(Plant))
@@ -29,19 +30,16 @@ namespace Start_a_Town_
         };
         static PlantDefOf()
         {
-        }
-        static public void Init() 
-        {
             Def.Register(Tree);
             Def.Register(Bush);
 
-            var bush = PlantProperties.Berry.CreatePlant();
-            bush.GetComponent<PlantComponent>().SetProperties(PlantProperties.Berry);
+            var bush = PlantPropertiesDefOf.Berry.CreatePlant();
+            bush.GetComponent<PlantComponent>().SetProperties(PlantPropertiesDefOf.Berry);
             bush.GrowthBody = 1;
             bush.GrowthFruit = 1;
             GameObject.AddTemplate(bush);
 
-            var tree = PlantProperties.LightTree.CreatePlant();
+            var tree = PlantPropertiesDefOf.LightTree.CreatePlant();
             tree.GrowthBody = 1;
             GameObject.AddTemplate(tree);
 

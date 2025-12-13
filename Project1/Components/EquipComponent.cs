@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Components
 {
-    class EquipComponent : EntityComponent
+    class EquipComponent : EntityComp
     {
         public override string Name { get; } = "Equippable";
           

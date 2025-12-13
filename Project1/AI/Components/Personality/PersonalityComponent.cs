@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 namespace Start_a_Town_
 {
     public enum ReactionType { Friendly, Hostile }
-    public class PersonalityComponent : EntityComponent, IGui
+    public class PersonalityComponent : EntityComp, IGui
     {
         static readonly Random Randomizer = new();
 
@@ -157,15 +157,7 @@ namespace Start_a_Town_
             var box = UIHelper.Wrap(p.Favorites.Select(m => new Button(m.Label) { TextColorFunc = () => m.Color }), width);
             return box.ToPanelLabeled("Favorite Materials");
         }
-        public class Props : ComponentProps
-        {
-            public override Type CompClass => typeof(NpcSkillsComponent);
-            public TraitDef[] Items;
-            public Props(params TraitDef[] defs)
-            {
-                this.Items = defs;
-            }
-        }
+        
 
         static public HashSet<MaterialDef> GenerateMaterialPreferences()
         {
@@ -189,5 +181,23 @@ namespace Start_a_Town_
                 boxtraits.ToPanelLabeled("Traits"), 
                 getFavoritesUI(p, boxtraits.Width));
         }
+        public new class Props : Props<PersonalityComponent>
+        {
+            public TraitDef[] Items;
+
+            public Props(params TraitDef[] defs)
+            {
+                this.Items = defs;
+            }
+        }
+        //public class PropsOld : ComponentProps
+        //{
+        //    public override Type CompClass => typeof(NpcSkillsComponent);
+        //    public TraitDef[] Items;
+        //    public Props(params TraitDef[] defs)
+        //    {
+        //        this.Items = defs;
+        //    }
+        //}
     }
 }

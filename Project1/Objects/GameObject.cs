@@ -77,9 +77,10 @@ namespace Start_a_Town_
 
         public static void LoadObjects()
         {
-            PlantProperties.Init();
-            PlantDefOf.Init();
-            AddTemplate(ItemFactory.CreateItem(ApparelDefOf.Helmet));
+            //PlantProperties.Init();
+            //PlantDefOf.Init();
+            //AddTemplate(ItemFactory.CreateItem(ItemDefOf.Helmet));
+            AddTemplate(ItemDefOf.Helmet.CreateNew());
             AddTemplate(Actor.Create(ActorDefOf.Npc).SetName("Npc"));
         }
 
@@ -353,7 +354,7 @@ namespace Start_a_Town_
                 obj = this.Create(); //for derived classes
                 obj.Def = this.Def; // TODO pass def in the create method above
                 foreach (var comp in this.Components)
-                    obj.AddComponent(comp.Value.Clone() as EntityComponent);
+                    obj.AddComponent(comp.Value.Clone() as EntityComp);
             }
             obj.ObjectCreated();
             return obj;
@@ -444,9 +445,9 @@ namespace Start_a_Town_
         [InspectorHidden]
         public PhysicsComponent Physics => this._physicsCached ??= this.GetComponent<PhysicsComponent>();
 
-        SpriteComponent _spriteCompCached;
+        SpriteComp _spriteCompCached;
         [InspectorHidden]
-        public SpriteComponent SpriteComp => this._spriteCompCached ??= this.GetComponent<SpriteComponent>();
+        public SpriteComp SpriteComp => this._spriteCompCached ??= this.GetComponent<SpriteComp>();
 
         InventoryComponent _inventoryCached;
         [InspectorHidden]
@@ -469,19 +470,19 @@ namespace Start_a_Town_
 
         public ComponentCollection Components = new();
 
-        public T GetComponent<T>(string name) where T : EntityComponent
+        public T GetComponent<T>(string name) where T : EntityComp
         {
             return this.GetComponent<T>();
         }
       
-        public T GetComponent<T>() where T : EntityComponent
+        public T GetComponent<T>() where T : EntityComp
         {
             return (from comp in Components.Values
                     where comp is T
                     select comp).SingleOrDefault() as T;
         }
 
-        public bool HasComponent<T>() where T : EntityComponent
+        public bool HasComponent<T>() where T : EntityComp
         {
             return this.GetComponent<T>() != null;
         }
@@ -489,21 +490,21 @@ namespace Start_a_Town_
         {
             return this.Components.Values.Any(c => c.GetType() == compType);
         }
-        public bool TryGetComponent(Type compType, out EntityComponent comp)
+        public bool TryGetComponent(Type compType, out EntityComp comp)
         {
             comp = this.Components.Values.FirstOrDefault(c => c.GetType() == compType);
             return comp != null;
         }
-        public bool TryGetComponent<T>(string name, out T component) where T : EntityComponent
+        public bool TryGetComponent<T>(string name, out T component) where T : EntityComp
         {
             return this.TryGetComponent(out component);
         }
-        public bool TryGetComponent<T>(out T component) where T : EntityComponent
+        public bool TryGetComponent<T>(out T component) where T : EntityComp
         {
             component = this.GetComponent<T>();
             return component != null;
         }
-        public bool TryGetComponent<T>(Action<T> action) where T : EntityComponent
+        public bool TryGetComponent<T>(Action<T> action) where T : EntityComp
         {
             T component = this.GetComponent<T>();
             if (component is null)
@@ -515,7 +516,7 @@ namespace Start_a_Town_
             return true;
         }
 
-        public EntityComponent AddComponent(EntityComponent component)
+        public EntityComp AddComponent(EntityComp component)
         {
             this.Components[component.Name] = component;
             component.Parent = this;
@@ -523,7 +524,7 @@ namespace Start_a_Town_
             return component;
         }
 
-        public T AddComponent<T>() where T : EntityComponent, new()
+        public T AddComponent<T>() where T : EntityComp, new()
         {
             T component = new();
             this.Components[component.Name] = component;
@@ -543,7 +544,7 @@ namespace Start_a_Town_
                 //return $"{Name} / RefId: {this.RefId}";
 
             string info = "";
-            foreach (KeyValuePair<string, EntityComponent> comp in Components)
+            foreach (KeyValuePair<string, EntityComp> comp in Components)
             {
                 if (info.Length > 0)
                     info += "\n";
@@ -630,7 +631,7 @@ namespace Start_a_Town_
         {
             GetInfo().OnTooltipCreated(this, tooltip);
             // TODO: LOL fix, i need the object name to be on top
-            foreach (var comp in Components.Except(new KeyValuePair<string, EntityComponent>[] { new KeyValuePair<string, EntityComponent>("Info", GetInfo()) }))
+            foreach (var comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
             {
                 comp.Value.OnTooltipCreated(this, tooltip);
             }
@@ -656,7 +657,7 @@ namespace Start_a_Town_
         {
             GetInfo().OnTooltipCreated(this, tooltip);
             // TODO: LOL fix, i need the object name to be on top
-            foreach (KeyValuePair<string, EntityComponent> comp in Components.Except(new KeyValuePair<string, EntityComponent>[] { new KeyValuePair<string, EntityComponent>("Info", GetInfo()) }))
+            foreach (KeyValuePair<string, EntityComp> comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
             {
                 comp.Value.GetInventoryTooltip(this, tooltip);
             }
@@ -870,16 +871,16 @@ namespace Start_a_Town_
         /// <returns></returns>
         public GameObject ObjectCreated()
         {
-            foreach (KeyValuePair<string, EntityComponent> comp in Components)
+            foreach (KeyValuePair<string, EntityComp> comp in Components)
             {
-                comp.Value.OnObjectCreated(this);
+                comp.Value.AttachTo(this);
             }
 
             return this;
         }
         public GameObject ObjectSynced()
         {
-            foreach (KeyValuePair<string, EntityComponent> comp in Components)
+            foreach (KeyValuePair<string, EntityComp> comp in Components)
             {
                 comp.Value.OnObjectSynced(this);
             }
@@ -1309,7 +1310,7 @@ namespace Start_a_Town_
         
         internal void DrawHighlight(SpriteBatch sb, Camera camera)
         {
-            SpriteComponent.DrawHighlight(this, sb, camera);
+            SpriteComp.DrawHighlight(this, sb, camera);
         }
 
         internal void DrawBorder(SpriteBatch sb, Camera camera)

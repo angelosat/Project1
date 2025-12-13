@@ -4,7 +4,7 @@ using Start_a_Town_.Animations;
 
 namespace Start_a_Town_.Components
 {
-    partial class HaulComponent : EntityComponent
+    partial class HaulComponent : EntityComp
     {
 
         public override string Name { get; } = "Haul"; 
@@ -20,7 +20,7 @@ namespace Start_a_Town_.Components
 
         public Animation AnimationHaul = new(AnimationDef.Haul) { Weight = 0 };
 
-        public override void OnObjectCreated(GameObject parent)
+        public override void AttachTo(GameObject parent)
         {
             this.Inventory = parent.GetComponent<InventoryComponent>();
             if (this.Inventory == null || this.Inventory.Capacity == 0)

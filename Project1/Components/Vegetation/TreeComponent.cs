@@ -4,7 +4,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Components
 {
-    class TreeComponent : EntityComponent
+    class TreeComponent : EntityComp
     {
         public class States
         {
@@ -25,7 +25,7 @@ namespace Start_a_Town_.Components
         {
             this.Growth.Set(parent, this.Growth.Max);
         }
-        public override string Name { get; } = "Tree"; 
+        public override string Name { get; } = "Tree";
         public override object Clone()
         {
             return new TreeComponent();
@@ -86,7 +86,7 @@ namespace Start_a_Town_.Components
         {
             this.Growth.Set(parent, r.ReadInt32());
         }
-        
+
         internal override void GetSelectionInfo(IUISelection info, GameObject parent)
         {
             info.AddInfo(new Bar(this.GrowthNew) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthNew.Percentage.ToString("##0%") });
@@ -102,10 +102,6 @@ namespace Start_a_Town_.Components
                 TextFunc = () => this.GrowthNew.Percentage.ToString("##0%")
             });
         }
-
-        public class Props : ComponentProps
-        {
-            public override Type CompClass => typeof(TreeComponent);
-        }
+        public new class Props : Props<TreeComponent> { }
     }
 }

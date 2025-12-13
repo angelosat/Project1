@@ -7,6 +7,8 @@ namespace Start_a_Town_
     public class StatDef : Def
     {
         public enum Types { Scalar, Percentile };
+        public static StatDef[] ToolStatPackage { get; } = { StatDefOf.ToolEffectiveness, StatDefOf.ToolSpeed };
+        public static StatDef[] NpcStatPackage { get; } = { StatDefOf.MaxHaulWeight, StatDefOf.Encumberance, StatDefOf.WalkSpeed, StatDefOf.Armor };
 
         public float BaseValue;
         public string Description;

@@ -57,7 +57,7 @@ namespace Start_a_Town_.Blocks.Bed
             //a.GetNeed(NeedDef.Comfort).RemoveMod(EffectDefOf.Sleeping);
             a.Effects.Remove(EffectDefOf.Sleeping);
 
-            var spriteComp = a.GetComponent<SpriteComponent>();
+            var spriteComp = a.GetComponent<SpriteComp>();
             var body = a.Body;
             var head = body.FindBone(BoneDefOf.Head);
 

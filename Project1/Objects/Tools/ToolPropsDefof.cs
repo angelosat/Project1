@@ -64,13 +64,13 @@ namespace Start_a_Town_
         {
             Def.Register(typeof(ToolPropsDefof));
 
-            foreach (var toolProp in Def.GetDefs<ToolProps>())
-            {
-                var obj = toolProp.Create();
-                GameObject.AddTemplate(obj);
-            }
+            //foreach (var toolProp in Def.GetDefs<ToolProps>())
+            //{
+            //    var obj = toolProp.Create();
+            //    GameObject.AddTemplate(obj);
+            //}
 
-            GenerateRecipesNew();
+            //GenerateRecipesNew();
         }
 
         private static void GenerateRecipesNew()
@@ -80,7 +80,7 @@ namespace Start_a_Town_
             {
                 var reagents = new List<Reaction.Reagent>();
 
-                foreach (var reagent in ToolDefs.ToolCraftingProperties.Reagents)
+                foreach (var reagent in CraftingProperties.ToolCraftingProperties.Reagents)
                     reagents.Add(reagent.Value);
 
                 var reaction = new Reaction(

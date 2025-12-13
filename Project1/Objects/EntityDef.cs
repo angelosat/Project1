@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.Components;
+using System;
 using System.Collections.Generic;
 
 namespace Start_a_Town_
@@ -17,17 +18,18 @@ namespace Start_a_Town_
             this.ItemClass = itemClass;
         }
         
-        public List<ComponentProps> CompProps = new List<ComponentProps>();
+        //public List<ComponentProps> CompProps = new List<ComponentProps>();
+        public List<EntityComp.Props> CompProps = [];
 
-        public EntityDef AddCompProp(ComponentProps props)
-        {
-            this.CompProps.Add(props);
-            return this;
-        }
-        public T AddCompProp<T>(ComponentProps props) where T : ItemDef
-        {
-            this.CompProps.Add(props);
-            return this as T;
-        }
+        //public EntityDef AddCompProp(ComponentProps props)
+        //{
+        //    this.CompProps.Add(props);
+        //    return this;
+        //}
+        //public T AddCompProp<T>(ComponentProps props) where T : ItemDef
+        //{
+        //    this.CompProps.Add(props);
+        //    return this as T;
+        //}
     }
 }

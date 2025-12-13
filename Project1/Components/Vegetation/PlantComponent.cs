@@ -6,8 +6,10 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_.Components
 {
-    public class PlantComponent : EntityComponent
+    public class PlantComponent : EntityComp
     {
+
+
         const float ForageThreshold = .5f;
 
         public override string Name { get; } = "Plant";
@@ -39,25 +41,15 @@ namespace Start_a_Town_.Components
             set
             {
                 this._plantProps = value;
-                if (this.Parent is not null)
-                    this.UpdateParent();
-                //var parent = this.Parent;
-                //var hitpoints = parent.GetResource(ResourceDefOf.HitPoints);
-                //hitpoints.Max = value.StemMaterial.Density;
-                //hitpoints.TicksPerRecoverOne = value.StemHealRate;
 
-                //this._spriteFruit = _plantProps.TextureFruit is string fruitTexturePath ? Sprite.Load(fruitTexturePath) : null;
-
-                //var body = parent.Body;
-                //body.ScaleFunc = () => .25f + .75f * this.GrowthBody.Percentage;
-                //body.Sprite = Sprite.Load(_plantProps.TextureGrowing);
-                //if(body.TryFindBone(BoneDefOf.PlantFruit, out this._fruitBone))
-                //    this._fruitBone.Material = _plantProps.FruitMaterial;
-                //this.UpdateFruitTexture();
+                // only update parent during attachto(parent)
+                //if (this.Parent is not null)
+                //    this.UpdateParent();
+             
             }
         }
        
-        public override void OnObjectCreated(GameObject parent)
+        public override void AttachTo(GameObject parent)
         {
             if (this.PlantProperties is not null)
                 this.UpdateParent();
@@ -388,9 +380,7 @@ namespace Start_a_Town_.Components
                 return relevantProgress.IsFinished;
             }
         }
-        public class Props : ComponentProps
-        {
-            public override Type CompClass => typeof(PlantComponent);
-        }
+        public new class Props : Props<PlantComponent> { }
+
     }
 }

@@ -6,6 +6,7 @@
         {
         }
     }
+    [EnsureStaticCtorCall]
     public static class BoneDefOf
     {
         static public readonly BoneDef Hips = new("Hips");
@@ -28,22 +29,23 @@
 
         static BoneDefOf()
         {
-            Def.Register(Hips);
-            Def.Register(Torso);
-            Def.Register(RightHand);
-            Def.Register(LeftHand);
-            Def.Register(RightFoot);
-            Def.Register(LeftFoot);
-            Def.Register(Head);
-            Def.Register(Mainhand);
-            Def.Register(Offhand);
-            Def.Register(Hauled);
-            Def.Register(Helmet);
-            Def.Register(ToolHead);
-            Def.Register(ToolHandle);
-            Def.Register(Item);
-            Def.Register(PlantStem);
-            Def.Register(TreeTrunk);
+            Def.Register(typeof(BoneDefOf));
+            //Def.Register(Hips);
+            //Def.Register(Torso);
+            //Def.Register(RightHand);
+            //Def.Register(LeftHand);
+            //Def.Register(RightFoot);
+            //Def.Register(LeftFoot);
+            //Def.Register(Head);
+            //Def.Register(Mainhand);
+            //Def.Register(Offhand);
+            //Def.Register(Hauled);
+            //Def.Register(Helmet);
+            //Def.Register(ToolHead);
+            //Def.Register(ToolHandle);
+            //Def.Register(Item);
+            //Def.Register(PlantStem);
+            //Def.Register(TreeTrunk);
         }
 
         //static public readonly BoneDef Hips = new("Hips");

@@ -6,7 +6,7 @@ using Start_a_Town_.Net;
 
 namespace Start_a_Town_.Components
 {
-    class BloodComponent : EntityComponent
+    class BloodComponent : EntityComp
     {
         public override string Name { get; } = "Blood"; 
         public override object Clone()

@@ -111,7 +111,7 @@ namespace Start_a_Town_
                 this.SetAllow(t, allow);
             return this;
         }
-        public Ingredient SetAllow(ItemCategory category, bool allow)
+        public Ingredient SetAllowed(ItemCategory category, bool allow)
         {
             if (allow)
                 this.SpecifiedCategories.Add(category);

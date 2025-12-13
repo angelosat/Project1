@@ -740,7 +740,7 @@ namespace Start_a_Town_
                 if (!obj.Components.ContainsKey("Sprite"))
                     continue;
 
-                Sprite sprite = obj.GetComponent<SpriteComponent>().Sprite;
+                Sprite sprite = obj.GetComponent<SpriteComp>().Sprite;
                 Rectangle spriteBounds = sprite.GetBounds();
                 Rectangle screenBounds = camera.GetScreenBounds(global, spriteBounds);
                 screenBounds.X -= Graphics.Borders.Thickness;
@@ -755,7 +755,7 @@ namespace Start_a_Town_
                 Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
 
                 obj.Draw(sb, new DrawObjectArgs(camera, controller, map, this, cell, spriteBounds, screenBounds, obj, color, cd));
-                SpriteComponent.DrawShadow(camera, spriteBounds, map, obj, cd, cd);
+                SpriteComp.DrawShadow(camera, spriteBounds, map, obj, cd, cd);
 
                 if (scene.ObjectsDrawn.Contains(obj))
                     throw new Exception();

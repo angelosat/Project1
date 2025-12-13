@@ -8,7 +8,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Components
 {
-    public class SpriteComponent : EntityComponent
+    public class SpriteComp : EntityComp
     {
         public override string Name { get; } = "Sprite";
         readonly static bool PreciseAlphaHitTest = false;
@@ -39,7 +39,7 @@ namespace Start_a_Town_.Components
         public CharacterColors Customization = new();
         readonly Dictionary<BoneDef, Bone.Props> BoneProps = new();
         Dictionary<BoneDef, MaterialDef> Materials = new();
-        public SpriteComponent SetMaterial(BoneDef t, MaterialDef m)
+        public SpriteComp SetMaterial(BoneDef t, MaterialDef m)
         {
             if (this.Body.TryFindBone(t, out Bone b))
                 b.Material = m;
@@ -83,7 +83,7 @@ namespace Start_a_Town_.Components
         /// </summary>
         public Color Tint = Color.White; //Color.Transparent;
 
-        public SpriteComponent()
+        public SpriteComp()
         {
             this.Hidden = false;
             this.Sprite = Sprite.Default;
@@ -96,9 +96,9 @@ namespace Start_a_Town_.Components
             this.Variation = 0;
             this.Orientation = 0;
         }
-    
-        
-        public SpriteComponent(Bone bodySprite, Texture2D texture, Rectangle[][] sourcerect, Vector2 origin, MouseMap mousemap = null)
+
+
+        public SpriteComp(Bone bodySprite, Texture2D texture, Rectangle[][] sourcerect, Vector2 origin, MouseMap mousemap = null)
             : this()
         {
             this.Body = bodySprite;
@@ -108,7 +108,7 @@ namespace Start_a_Town_.Components
             Variation = 0;
             Orientation = 0;
         }
-        public SpriteComponent(Texture2D texture, Rectangle[][] sourcerect, Vector2 origin, MouseMap mousemap = null)
+        public SpriteComp(Texture2D texture, Rectangle[][] sourcerect, Vector2 origin, MouseMap mousemap = null)
             : this()
         {
             this.Sprite = new Sprite(texture, sourcerect, origin, mousemap);
@@ -119,7 +119,7 @@ namespace Start_a_Town_.Components
             Variation = 0;
             Orientation = 0;
         }
-        public SpriteComponent(Bone bodySprite, Sprite fullSprite)
+        public SpriteComp(Bone bodySprite, Sprite fullSprite)
             : this()
         {
             this.Sprite = fullSprite ?? bodySprite.Sprite;
@@ -130,7 +130,23 @@ namespace Start_a_Town_.Components
             Variation = 0;
             Orientation = 0;
         }
-        public SpriteComponent(ItemDef def)
+        public override void AttachTo(GameObject parent)
+        {
+            var def = parent.Def;
+            this.Body = def.Body.Clone();
+            this.Body.Material = def.DefaultMaterial;
+            this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
+
+            this.Sprite = def.DefaultSprite ?? def.Body.Sprite;
+            this.DefaultBody = this.Body;
+
+            InitMaterials(def);
+
+            this.Customization = new CharacterColors(this.Body).Randomize();
+            Variation = 0;
+            Orientation = 0;
+        }
+        public SpriteComp(ItemDef def)
               : this()
         {
             this.Body = def.Body.Clone();
@@ -146,7 +162,7 @@ namespace Start_a_Town_.Components
             Variation = 0;
             Orientation = 0;
         }
-        public SpriteComponent Initialize(Bone bodySprite, Sprite fullSprite)
+        public SpriteComp Initialize(Bone bodySprite, Sprite fullSprite)
         {
             this.Sprite = fullSprite;
             this.Body = bodySprite;
@@ -155,7 +171,7 @@ namespace Start_a_Town_.Components
             Orientation = 0;
             return this;
         }
-        public SpriteComponent Initialize(Sprite fullSprite)
+        public SpriteComp Initialize(Sprite fullSprite)
         {
             this.Sprite = fullSprite;
             this.Body = Bone.Create(BoneDefOf.Item, fullSprite);
@@ -169,16 +185,16 @@ namespace Start_a_Town_.Components
         {
             var queue = new Queue<Bone>();
             queue.Enqueue(def.Body);
-            while(queue.Any())
+            while (queue.Any())
             {
                 var current = queue.Dequeue();
                 this.SetMaterial(current.Def, def.DefaultMaterial);
                 foreach (var j in current.Joints.Values)
-                    if(j.Bone != null)
-                    queue.Enqueue(j.Bone);
+                    if (j.Bone != null)
+                        queue.Enqueue(j.Bone);
             }
         }
-        
+
         internal override void Initialize(Entity parent, Dictionary<string, MaterialDef> ingredients)
         {
             var def = parent.Def;
@@ -193,13 +209,13 @@ namespace Start_a_Town_.Components
             this.Materials[this.Body.Def] = mat;
             this.SetMaterial(this.Body.Def, mat);
         }
-        
+
         /// <summary>
         /// problem with mousemap! (color map)
         /// hit test is done against the default sprite!!!
         /// </summary>
         /// <param name="rootBone"></param>
-        public SpriteComponent(Bone rootBone)
+        public SpriteComp(Bone rootBone)
             : this()
         {
             this.Body = rootBone.Clone();
@@ -208,7 +224,7 @@ namespace Start_a_Town_.Components
             this.Customization = new CharacterColors(this.Body).Randomize();
         }
         [Obsolete]
-        public SpriteComponent(Sprite fullSprite)
+        public SpriteComp(Sprite fullSprite)
             : this()
         {
             this.Sprite = fullSprite;
@@ -263,7 +279,7 @@ namespace Start_a_Town_.Components
             Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(shaderRect);
 
             float depth = global.GetDrawDepth(map, camera);
-          
+
             var body = this.Body;
             // TODO: slow?
             if (Flash)
@@ -292,7 +308,7 @@ namespace Start_a_Town_.Components
 
             this.DrawShadow(camera, spriteBounds, parent);
         }
-      
+
         public override void MakeChildOf(GameObject parent)
         {
             Body.MakeChildOf(parent);
@@ -300,7 +316,7 @@ namespace Start_a_Town_.Components
 
         static public void DrawPreview(SpriteBatch sb, Camera camera, Vector3 global, GameObject obj)
         {
-            if (!obj.TryGetComponent<SpriteComponent>("Sprite", out var spriteComp))
+            if (!obj.TryGetComponent<SpriteComp>("Sprite", out var spriteComp))
                 return;
             Rectangle bounds;
             Vector2 screenLoc;
@@ -323,7 +339,7 @@ namespace Start_a_Town_.Components
             Vector2 direction = parent.Transform.Direction;
             Vector2 finalDir = Coords.Rotate(camera, direction);
             SpriteEffects sprfx = (finalDir.X - finalDir.Y) < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            var mouseovertint =  new Color(1f, 1f, 1f, 0.5f);
+            var mouseovertint = new Color(1f, 1f, 1f, 0.5f);
 
             this.Body.DrawTreeAnimationDeltas(parent as Entity, this.Customization, this.Animations, sb, loc + (this.Body.OriginGroundOffset) * camera.Zoom, Color.White, Color.White, mouseovertint, Color.Transparent, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, .99f);
 
@@ -331,7 +347,7 @@ namespace Start_a_Town_.Components
             camera.Effect.Parameters["s"].SetValue(Sprite.Atlas.Texture);
             sb.Flush();
         }
-        
+
         static public void DrawHighlight(GameObject parent, SpriteBatch sb, Camera camera)
         {
             var comp = parent.SpriteComp;
@@ -348,7 +364,7 @@ namespace Start_a_Town_.Components
         protected bool HitTest(Vector4 bounds, Rectangle src, Camera camera, out Vector3 face)
         {
             face = Vector3.Zero;
-            if(bounds.Intersects(new Vector2(Controller.Instance.MouseRect.X, Controller.Instance.MouseRect.Y)))
+            if (bounds.Intersects(new Vector2(Controller.Instance.MouseRect.X, Controller.Instance.MouseRect.Y)))
             {
                 if (!PreciseAlphaHitTest)
                     return true;
@@ -400,7 +416,7 @@ namespace Start_a_Town_.Components
         {
             return this.Body.ToString();
         }
-        
+
         public void DrawShadow(Camera camera, Rectangle spriteBounds, GameObject parent)
         {
             var global = parent.Global;
@@ -447,7 +463,7 @@ namespace Start_a_Town_.Components
 
         public override object Clone()
         {
-            var comp = new SpriteComponent(this.Body, this.Sprite)
+            var comp = new SpriteComp(this.Body, this.Sprite)
             {
                 Materials = this.Materials.ToDictionary(t => t.Key, t => t.Value)
             };
@@ -456,11 +472,11 @@ namespace Start_a_Town_.Components
 
         static public bool HasOrientation(GameObject obj)
         {
-            SpriteComponent spriteComp = obj.GetComponent<SpriteComponent>("Sprite");
+            SpriteComp spriteComp = obj.GetComponent<SpriteComp>("Sprite");
             Sprite sprite = spriteComp.Sprite;
             return sprite.SourceRects.First().Length > 1;
         }
-       
+
         public override void DrawUI(SpriteBatch sb, Camera camera, GameObject parent)
         {
             DrawForbidden(sb, camera, parent);
@@ -475,13 +491,13 @@ namespace Start_a_Town_.Components
                 return;
             var zoom = 1;
             var pos = camera.GetScreenPosition(parent.Global) - new Vector2(UI.Icon.Cross.SourceRect.Width, UI.Icon.Cross.SourceRect.Height) * zoom / 2; ;// -new Vector2(UI.Icon.Cross.SourceRect.Width / 2, rect.Height * camera.Zoom);
-            pos.Y -= UI.Icon.Cross.SourceRect.Height/2;
+            pos.Y -= UI.Icon.Cross.SourceRect.Height / 2;
             UI.Icon.Cross.Draw(sb, pos, zoom);
         }
-       
+
         internal override List<SaveTag> Save()
         {
-            var list = new List<SaveTag>() { 
+            var list = new List<SaveTag>() {
                 new SaveTag(SaveTag.Types.Int, "Variation", (int)Variation),
                 new SaveTag(SaveTag.Types.Int, "Orientation", (int)Orientation),
                 this.Body.Save("Body")
@@ -497,7 +513,7 @@ namespace Start_a_Town_.Components
                 this.Body.Load(t);
             });
 
-            if(this.Body.Material == null)
+            if (this.Body.Material == null)
             {
                 this.Body.Material = parent.Def.DefaultMaterial;
                 Log.WriteToFile($"{parent.DebugName}'s body material was null, defaulting to {parent.Def.DefaultMaterial?.DebugName}");
@@ -518,7 +534,7 @@ namespace Start_a_Town_.Components
         {
             if (parent == null)
                 return null;
-            return parent.GetComponent<SpriteComponent>().Body;
+            return parent.GetComponent<SpriteComp>().Body;
         }
 
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
@@ -529,11 +545,13 @@ namespace Start_a_Town_.Components
                 tooltip.AddControlsBottomLeft(new Label(string.Format("{0}: {1}", b.Def.Label, mat?.Name ?? "undefined")) { TextColor = mat?.Color ?? Color.Gray });
             }
         }
+        public new class Props : Props<SpriteComp> { }
+        //class Props : ComponentProps
+        //{
+        //    public override Type CompClass => typeof(SpriteComp);
 
-        class Props : ComponentProps
-        {
-            public override Type CompClass => typeof(SpriteComponent);
-        }
+
+        //}
 
         internal bool HasMatchingBody(GameObject otherItem)
         {
@@ -552,6 +570,27 @@ namespace Start_a_Town_.Components
         internal Animation GetAnimation(AnimationDef animDef)
         {
             return this.Animations.First(a => a.Def == animDef);
+        }
+
+        public override Control GetParametrizer()
+        {
+            var parametrizableBones = this.Materials.Keys.Where(b => this.Parent.Def.CraftingProperties?.Reagents.ContainsKey(b) ?? false);
+            var allMats = Def.GetDefs<MaterialDef>();
+            foreach (var bone in parametrizableBones)
+            {
+                MaterialDef currentlySelectedMaterial = null;
+                var box = new GroupBox();
+                var drop = new ComboBoxNewNew<MaterialDef>(allMats, 100, d => d.Name, b => currentlySelectedMaterial = b, () => currentlySelectedMaterial);
+                box.AddControlsHorizontally(new Label(bone), drop);
+
+            }
+            return base.GetParametrizer();
+
+        }
+
+        private void selectMat(MaterialDef def)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Start_a_Town_.Components
 {
-    class AttributesComponent : EntityComponent
+    class AttributesComponent : EntityComp
     {
         public override string Name { get; } = "Attributes";
         public AttributeStat[] Attributes;
@@ -157,15 +157,22 @@ namespace Start_a_Town_.Components
         {
             this.GetAttribute(AttributeDefOf.Strength).Award(this.Parent, energyConsumption);
         }
-
-        public class Props : ComponentProps
+        public new class Props : Props<AttributesComponent>
         {
-            public override Type CompClass => typeof(AttributesComponent);
             public AttributeDef[] Items;
             public Props(params AttributeDef[] defs)
             {
                 this.Items = defs;
             }
         }
+        //public class PropsOld : ComponentProps
+        //{
+        //    public override Type CompClass => typeof(AttributesComponent);
+        //    public AttributeDef[] Items;
+        //    public Props(params AttributeDef[] defs)
+        //    {
+        //        this.Items = defs;
+        //    }
+        //}
     }
 }

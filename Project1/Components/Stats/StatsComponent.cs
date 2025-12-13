@@ -4,7 +4,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Components
 {
-    class StatsComponent : EntityComponent
+    class StatsComponent : EntityComp
     {
         public override string Name { get; } = "StatsNew";
         
@@ -41,7 +41,7 @@ namespace Start_a_Town_.Components
                 .AddColumn("name", "", 128, a => new Label(a.Label) { HoverText = a.Description })
                 .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.GetValue(this.Parent).ToString()));
             gui.ClearItems();
-            gui.AddItems(StatDefOf.NpcStatPackage);
+            gui.AddItems(StatDef.NpcStatPackage);
             box.AddControlsBottomLeft(gui);
         }
         TableScrollableCompact<StatDef> GUITable;
@@ -51,7 +51,7 @@ namespace Start_a_Town_.Components
                 .AddColumn("name", "", 64, a => new Label(a.Label))
                 .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.GetValue(this.Parent).ToString()));
             gui.ClearItems();
-            gui.AddItems(StatDefOf.NpcStatPackage);
+            gui.AddItems(StatDef.NpcStatPackage);
             return GUITable;
         }
 

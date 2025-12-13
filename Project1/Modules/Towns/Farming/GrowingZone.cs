@@ -83,7 +83,7 @@ namespace Start_a_Town_
         public bool Harvesting = true;
         public bool Planting = true;
         public bool Tilling = true;
-        public PlantProperties Plant = PlantProperties.Berry;
+        public PlantProperties Plant = PlantPropertiesDefOf.Berry;
         public float HarvestThreshold = 1;
         public override string UniqueName => $"Zone_Growing_{this.ID}";
         public ItemDef SeedType = PlantDefOf.Bush;

@@ -9,7 +9,7 @@ namespace Start_a_Town_
     {
         static public void AddAnimation(this GameObject obj, Animation animation)
         {
-            var anicomp = obj.GetComponent<SpriteComponent>().Animations;// obj.Animations;
+            var anicomp = obj.GetComponent<SpriteComp>().Animations;// obj.Animations;
             if (anicomp.FirstOrDefault(a => a.Def == animation.Def) is Animation existing)
             {
                 if (existing.WeightChange >= 0 && existing.State != AnimationStates.Removed)

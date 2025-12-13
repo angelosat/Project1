@@ -25,7 +25,7 @@
         }
         public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
         {
-            var ability = item.ToolComponent?.Props?.ToolUse;
+            var ability = item.ToolComponent?.ToolProperties?.ToolUse;
             if (ability is null)
                 return -1;
             if (ability != role.Def)

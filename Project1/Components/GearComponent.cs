@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    public class GearComponent : EntityComponent
+    public class GearComponent : EntityComp
     {
         static GearComponent()
         {
@@ -23,9 +23,9 @@ namespace Start_a_Town_
         {
             base.OnObjectLoaded(parent);
         }
-        public override void OnObjectCreated(GameObject parent)
+        public override void AttachTo(GameObject parent)
         {
-            base.OnObjectCreated(parent);
+            base.AttachTo(parent);
         }
         public override void MakeChildOf(GameObject parent)
         {
@@ -204,16 +204,15 @@ namespace Start_a_Town_
                 this.ArmorTotal += i.Def.ApparelProperties?.ArmorValue ?? 0;
             }
         }
-
-        public class Props : ComponentProps
+        public new class Props : Props<GearComponent>
         {
-            public override Type CompClass => typeof(GearComponent);
             public GearType[] Slots;
             public Props(params GearType[] defs)
             {
                 this.Slots = defs;
             }
         }
+      
         [EnsureStaticCtorCall]
         static class Packets
         {

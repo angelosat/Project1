@@ -8,7 +8,7 @@ using static Start_a_Town_.GlobalVars;
 
 namespace Start_a_Town_
 {
-    public class NpcSkillsComponent : EntityComponent, IGui
+    public class NpcSkillsComponent : EntityComp, IGui
     {
         public readonly Skill[] SkillsNew;
         static public Panel UI = new Panel(new Rectangle(0, 0, 500, 400));
@@ -115,10 +115,8 @@ namespace Start_a_Town_
         {
             this[skill].Award(amount);
         }
-
-        public class Props : ComponentProps
+        public new class Props : Props<NpcSkillsComponent>
         {
-            public override Type CompClass => typeof(NpcSkillsComponent);
             public SkillDef[] Items;
             public Props(params SkillDef[] defs)
             {

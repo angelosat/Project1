@@ -43,18 +43,20 @@ namespace Start_a_Town_
         //    obj.SetQuality(Quality.GetRandom());
         //    return obj;
         //}
-        static public Entity CreateItem(ItemDef def)
-        {
-            var obj = Activator.CreateInstance(def.ItemClass) as Entity;
-            obj.Def = def;
-            obj.AddComponent(new SpriteComponent(def));
-            obj.InitComps();
-            return obj;
-        }
-        
+        [Obsolete($"use {nameof(def.CreateNew)} instead")]
+        static public Entity CreateItem(ItemDef def) => def.CreateNew();
+        //{
+        //    var obj = Activator.CreateInstance(def.ItemClass) as Entity;
+        //    obj.Def = def;
+        //    obj.AddComponent(new SpriteComp(def));
+        //    obj.InitComps();
+        //    return obj;
+        //}
+
         static public Entity CreateFrom(ItemDef def, MaterialDef mat)
         {
-            var obj = CreateItem(def);
+            var obj = def.CreateNew();
+            //var obj = CreateItem(def);
             obj.SetMaterial(mat);
             return obj;
         }

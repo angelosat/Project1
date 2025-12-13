@@ -159,13 +159,13 @@ namespace Start_a_Town_
             Effect = Game1.Instance.Content.Load<Effect>("Effect3");
             MapBase.Initialize();
             // TODO: use this.Content to load your game content here
-            MaterialDef.Initialize();
-            RawMaterialDefOf.Initialize();
+            //MaterialDef.Initialize();
+            //RawMaterialDefOf.Initialize();
 
             /// def init
             MoodletDef.Init();
             EffectDef.Init();
-            ToolDefs.Init();
+            //ToolDefs.Init();
 
             GameObject.LoadObjects();
 

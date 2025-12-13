@@ -4,7 +4,7 @@ using System;
 namespace Start_a_Town_.Components
 {
     [Obsolete]
-    class WeaponComponent : EntityComponent
+    class WeaponComponent : EntityComp
     {
         public override string Name { get; } = "Weapon";
 

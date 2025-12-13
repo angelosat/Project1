@@ -13,7 +13,7 @@ namespace Start_a_Town_.Components
         static public string Drink { get { return "Drink"; } }
     }
 
-    public class ConsumableComponent : EntityComponent
+    public class ConsumableComponent : EntityComp
     {
         public override string Name { get; } = "Consumable";
 
@@ -99,7 +99,9 @@ namespace Start_a_Town_.Components
                 var comp = consumable.GetComponent<ConsumableComponent>();
                 comp.Consume(actor);
 
-                var seeds = consumable.Def.ConsumableProperties.Byproduct?.Invoke(consumable);
+                //var seeds = consumable.Def.ConsumableProperties.Byproduct?.Invoke(consumable);
+                throw new NotImplementedException();
+                Entity seeds = null;
                 if (seeds != null)
                     actor.Net.PopLoot(seeds, actor.Global, actor.Velocity);
 
@@ -111,25 +113,24 @@ namespace Start_a_Town_.Components
                 return new InteractionConsume();
             }
         }
-
-        public class Props : ComponentProps
+        
+        public new class Props : Props<ConsumableComponent>
         {
-            public NeedEffect[] Effects;
-            public override Type CompClass => typeof(ConsumableComponent);
+            public NeedEffect[] Effects = [];
+            public FoodClass[] FoodClasses = [];
+            Func<Entity, Entity> Byproduct;
             public Props()
             {
-                this.Effects = new NeedEffect[] { };
-            }
-            public Props(NeedEffect[] needEffects)
-            {
-                this.Effects = needEffects;
-            }
-        }
 
-        internal override void Initialize(ComponentProps componentProps)
-        {
-            var props = componentProps as Props;
-            this.Effects = new List<ConsumableEffect>(props.Effects);
+            }
+            //public Props(NeedEffect[] needEffects)
+            //{
+            //    this.Effects = needEffects;
+            //}
+            protected override void ApplyTo(ConsumableComponent comp)
+            {
+                comp.Effects = [.. this.Effects];
+            }
         }
     }
 }

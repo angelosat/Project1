@@ -70,6 +70,55 @@ namespace Start_a_Town_
         [Obsolete]
         public int GetCutDownHitPonts(GameObject plant) => (int)(this.StemMaterial.Density * plant.TotalWeight / 5f);
 
+        
+
+        public Plant CreatePlant()
+        {
+            var entity = this.PlantEntity.Create() as Plant;
+            entity.PlantComponent.PlantProperties = this;
+            if (this.PlantEntity == PlantDefOf.Tree)
+                entity.SetMaterial(this.StemMaterial);
+            else if (this.ProducesFruit)
+                entity.Name = entity.Name.Insert(0, $"{this.FruitMaterial.Label} ");
+            return entity;
+        }
+
+        static public void Init()
+        {
+            return;
+            var ser = new XmlSerializer(typeof(List<PlantProperties>));
+            var path = $"{GlobalVars.SaveDir}/{PlantPropertiesDefOf.Berry.Label}.xml";
+            //var path = $"{GlobalVars.SaveDir}/Berry.xml";
+
+            //Register(Berry);
+            //Register(LightTree);
+
+            System.IO.FileStream file = System.IO.File.Create(path);
+            var list = new List<PlantProperties>(GetDefs<PlantProperties>());
+            ser.Serialize(file, list);
+            file.Close();
+        }
+
+        internal GameObject CreateSeeds()
+        {
+            //var seeds = ItemDefOf.Seeds.Create();
+            var seeds = ItemDefOf.Seeds.CreateNew();
+            seeds.GetComponent<SeedComponent>().SetPlant(this);
+            seeds.Name = $"{this.Label} {this.SeedsName}";
+            seeds.Body.Sprite = Sprite.Load(this.TextureSeeds);
+            return seeds;
+        }
+
+        static T FromXml<T>(XmlNode xmlRoot) where T : new()
+        {
+            var obj = new T();
+
+            return obj;
+        }
+    }
+    [EnsureStaticCtorCall]
+    static class PlantPropertiesDefOf
+    {
         static public readonly PlantProperties Berry = new("Berry")
         {
             TextureGrowing = ItemContent.BerryBushGrowing.AssetPath,
@@ -98,47 +147,9 @@ namespace Start_a_Town_
             StemHealRate = Ticks.FromHours(1),
             PlantingSpacing = 1
         };
-
-        public Plant CreatePlant()
+        static PlantPropertiesDefOf()
         {
-            var entity = this.PlantEntity.Create() as Plant;
-            entity.PlantComponent.PlantProperties = this;
-            if (this.PlantEntity == PlantDefOf.Tree)
-                entity.SetMaterial(this.StemMaterial);
-            else if (this.ProducesFruit)
-                entity.Name = entity.Name.Insert(0, $"{this.FruitMaterial.Label} ");
-            return entity;
-        }
-
-        static public void Init()
-        {
-            var ser = new XmlSerializer(typeof(List<PlantProperties>));
-
-            var path = $"{GlobalVars.SaveDir}/{Berry.Label}.xml";
-
-            Register(Berry);
-            Register(LightTree);
-
-            System.IO.FileStream file = System.IO.File.Create(path);
-            var list = new List<PlantProperties>(GetDefs<PlantProperties>());
-            ser.Serialize(file, list);
-            file.Close();
-        }
-
-        internal GameObject CreateSeeds()
-        {
-            var seeds = ItemDefOf.Seeds.Create();
-            seeds.GetComponent<SeedComponent>().SetPlant(this);
-            seeds.Name = $"{this.Label} {this.SeedsName}";
-            seeds.Body.Sprite = Sprite.Load(this.TextureSeeds);
-            return seeds;
-        }
-
-        static T FromXml<T>(XmlNode xmlRoot) where T : new()
-        {
-            var obj = new T();
-
-            return obj;
+            Def.Register(typeof(PlantPropertiesDefOf));
         }
     }
 }

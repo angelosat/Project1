@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_.Components
 {
-    public sealed class PositionComponent : EntityComponent
+    public sealed class PositionComponent : EntityComp
     {
         public override string Name { get; } = "Position";
 
@@ -35,7 +35,7 @@ namespace Start_a_Town_.Components
             return mov;
         }
 
-        public static Rectangle GetScreenBounds(Camera camera, SpriteComponent sprComp, Vector3 global)
+        public static Rectangle GetScreenBounds(Camera camera, SpriteComp sprComp, Vector3 global)
         {
             camera.CullingCheck(global.X, global.Y, global.Z, sprComp.Sprite.GetBounds(), out Rectangle bounds);
             return bounds;

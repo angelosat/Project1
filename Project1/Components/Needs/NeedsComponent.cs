@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Components
 {
-    class NeedsComponent : EntityComponent, IGui//<NeedsComponent>
+    class NeedsComponent : EntityComp, IGui//<NeedsComponent>
     {
         public override string Name { get; } = "Needs";
            
@@ -54,7 +54,7 @@ namespace Start_a_Town_.Components
         {
             return new NeedsComponent(this.Parent as Actor);
         }
-        public override void OnObjectCreated(GameObject parent)
+        public override void AttachTo(GameObject parent)
         {
             foreach (var n in this.NeedsNew)
                 n.Parent = parent as Actor;
@@ -161,10 +161,8 @@ namespace Start_a_Town_.Components
             }
         }
 
-
-        public class Props : ComponentProps
+        public new class Props: Props<NeedsComponent>
         {
-            public override Type CompClass => typeof(NeedsComponent);
             public NeedDef[] Needs;
             public Props(params NeedDef[] defs)
             {

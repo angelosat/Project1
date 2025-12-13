@@ -316,12 +316,12 @@ namespace Start_a_Town_
             obj.AddComponent(new PossessionsComponent());
             obj.AddComponent(new HaulComponent());
             obj.AddComponent(new NpcComponent());
-            obj.AddComponent(new SpriteComponent(def.Body));
+            obj.AddComponent(new SpriteComp(def.Body));
             obj.AddComponent(new InventoryComponent(16));
             obj.AddComponent(new StatsComponent());
             obj.AddComponent(new MobileComponent());
             obj.AddComponent(new MoodComp());
-            obj.AddComponent(new SpriteComponent(def.Body));
+            obj.AddComponent(new SpriteComp(def.Body));
             obj.AddComponent(new WorkComponent()); /// MOVED THIS HERE AFTER THE AICOMPONENT, so that when the ai starts an interaction, it gets ticked during the same frame
                                                    /// because when the interaction is received on the client, the packet is processed before the entity even ticks at all
                                                    /// resulting in a one-tick difference in the interaction progress beteween server and client
@@ -575,7 +575,7 @@ namespace Start_a_Town_
             if (this.Gear.GetSlot(GearType.Mainhand).Object is not Tool tool)
                 return 1;
 
-            var ability = tool.ToolComponent.Props.ToolUse;
+            var ability = tool.ToolComponent.ToolProperties.ToolUse;
             return ability == toolUse ? tool.GetStat(StatDefOf.ToolEffectiveness) : 1;
         }
         public int EvaluateItem(Entity item)

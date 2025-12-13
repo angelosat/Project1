@@ -10,7 +10,7 @@ using Start_a_Town_.Components;
 namespace Start_a_Town_
 {
     public enum ObjectSize { Inventoryable, Haulable, Immovable }
-    public class PhysicsComponent : EntityComponent
+    public class PhysicsComponent : EntityComp
     {
         public override string Name { get; } = "Physics";
         public ObjectSize Size => this.Parent.Def.Size;

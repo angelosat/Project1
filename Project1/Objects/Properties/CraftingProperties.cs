@@ -25,5 +25,14 @@ namespace Start_a_Town_
             this.Ingredients.Add(ing);
             return this;
         }
+
+        public static readonly CraftingProperties ToolCraftingProperties = new()
+        {
+            Reagents = new Dictionary<BoneDef, Reaction.Reagent>()
+                {
+                    { BoneDefOf.ToolHandle, new Reaction.Reagent("Handle", new Ingredient(null, null, null).SetAllowed(ItemCategoryDefOf.Manufactured, true)) }, //.IsBuildingMaterial()
+                    { BoneDefOf.ToolHead, new Reaction.Reagent("Head", new Ingredient(null, null, null).SetAllowed(ItemCategoryDefOf.Manufactured, true))  }
+                }
+        };
     }
 }

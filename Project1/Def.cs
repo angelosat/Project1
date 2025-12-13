@@ -27,7 +27,10 @@ namespace Start_a_Town_
         /// <param name="defOfType"></param>
         public static void Register(Type defOfType)
         {
-            Register(defOfType.GetFields().Select(f => f.GetValue(null) as Def));
+            var fields = defOfType.GetFields().Select(f => f.GetValue(null) as Def);
+            if (fields.Any(f => f is null))
+                throw new ArgumentException($"{defOfType} contains fields other than type {nameof(Def)}");
+            Register(fields);
         }
         public static void Register(IEnumerable<Def> defs)
         {

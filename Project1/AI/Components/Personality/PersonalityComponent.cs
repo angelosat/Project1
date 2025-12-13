@@ -181,13 +181,21 @@ namespace Start_a_Town_
                 boxtraits.ToPanelLabeled("Traits"), 
                 getFavoritesUI(p, boxtraits.Width));
         }
-        public new class Props : Props<PersonalityComponent>
+        public new class Spec : Spec<PersonalityComponent>
         {
             public TraitDef[] Items;
-
-            public Props(params TraitDef[] defs)
+            public Spec(params TraitDef[] defs)
             {
                 this.Items = defs;
+            }
+            protected override void ApplyTo(PersonalityComponent comp)
+            {
+                var count = this.Items.Length;
+                comp.Traits = new Trait[count];
+                for (int i = 0; i < count; i++)
+                    comp.Traits[i] = new Trait(this.Items[i]);
+                
+                comp.Randomize();
             }
         }
         //public class PropsOld : ComponentProps

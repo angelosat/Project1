@@ -1,11 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace Start_a_Town_.Components
 {
     public class WorkComponent : EntityComp
     {
+        public new class Spec : Spec<WorkComponent> { }
+
         public override string Name { get; } = "Work";
         public override object Clone()
         {

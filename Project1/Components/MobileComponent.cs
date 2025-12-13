@@ -8,6 +8,8 @@ namespace Start_a_Town_.Components
 {
     public class MobileComponent : EntityComp
     {
+        public new class Spec : Spec<MobileComponent> { }
+
         public class State
         {
             public enum Types { Walking, Running, Sprinting, Blocking };

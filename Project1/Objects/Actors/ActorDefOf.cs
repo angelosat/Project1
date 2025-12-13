@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Components;
+﻿using Start_a_Town_.AI.Behaviors;
+using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {
@@ -59,7 +60,61 @@ namespace Start_a_Town_
             Factory = Actor.Create,
             Size = ObjectSize.Haulable
         }
-        .AddProp(new SpriteComp.Props(BodyDef.NpcNew));
+            .AddSpec(new SpriteComp.Spec(BodyDef.NpcNew))
+            .AddSpec(new ResourcesComponent.Spec([
+                ResourceDefOf.Health, 
+                ResourceDefOf.Stamina ]))
+            .AddSpec(new NeedsComponent.Spec([
+                NeedDefOf.Energy,
+                NeedDefOf.Hunger,
+                NeedDefOf.Comfort,
+                NeedDefOf.Social,
+                NeedDefOf.Work ]))
+            .AddSpec(new AttributesComponent.Spec([
+                AttributeDefOf.Strength,
+                AttributeDefOf.Intelligence,
+                AttributeDefOf.Dexterity ]))
+            .AddSpec(new NpcSkillsComponent.Spec([
+                SkillDefOf.Digging,
+                SkillDefOf.Mining,
+                SkillDefOf.Construction,
+                SkillDefOf.Cooking,
+                SkillDefOf.Tinkering,
+                SkillDefOf.Argiculture,
+                SkillDefOf.Carpentry,
+                SkillDefOf.Crafting,
+                SkillDefOf.Plantcutting ]))
+            .AddSpec(new GearComponent.Spec([
+                GearType.Mainhand,
+                GearType.Offhand,
+                GearType.Head,
+                GearType.Chest,
+                GearType.Feet,
+                GearType.Hands,
+                GearType.Legs ]))
+            .AddSpec(new PersonalityComponent.Spec([
+                TraitDefOf.Attention,
+                TraitDefOf.Composure,
+                TraitDefOf.Patience,
+                TraitDefOf.Activity,
+                TraitDefOf.Planning,
+                TraitDefOf.Resilience ]))
+            .AddSpec(new AIComponent.Spec(
+                new BehaviorQueue(
+                   new AIMemory(),
+                   new BehaviorHandleResources(),
+                   new BehaviorHandleOrders(),
+                   new BehaviorHandleTasks())))
+            .AddSpec(new PossessionsComponent.Spec())
+            .AddSpec(new HaulComponent.Spec())
+            .AddSpec(new NpcComponent.Spec())
+            .AddSpec(new InventoryComponent.Spec(16))
+            .AddSpec(new StatsComponent.Spec())
+            .AddSpec(new MobileComponent.Spec())
+            .AddSpec(new MoodComp.Spec())
+            .AddSpec(new WorkComponent.Spec())
+            .AddSpec(new EffectsComponent.Spec())
+            ;
 
         static ActorDefOf()
         {

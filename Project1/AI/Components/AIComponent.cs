@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    public class AIComponent : EntityComp
+    public class AIComponent : EntityComp<AIComponent.Spec>
     {
         public override string Name { get; } = "AI";
         public Guid Guid = Guid.NewGuid();
@@ -32,14 +32,15 @@ namespace Start_a_Town_
             // TODO: signal each npc that remembers obj, that obj's state has changed, so that they evaluate it again next time they see it
             throw new NotImplementedException();
         }
-        Behavior Root;
+        Behavior Root => this.Defaults.Root;
         readonly Knowledge Knowledge;
         public AIState State;
         bool Enabled = true;
         public AIComponent()
         {
+            
             this.Knowledge = new Knowledge();
-            this.Root = null;
+            //this.Root = null;
         }
         public override void Randomize(GameObject parent, RandomThreaded random)
         {
@@ -67,7 +68,7 @@ namespace Start_a_Town_
 
         public AIComponent Initialize(Behavior root)
         {
-            this.Root = root;
+            //this.Root = root;
             return this;
         }
 
@@ -130,9 +131,10 @@ namespace Start_a_Town_
 
         public override object Clone()
         {
-            AIComponent ai = new AIComponent().Initialize(
-                this.Root.Clone() as Behavior);
-            return ai;
+            throw new Exception();
+            //AIComponent ai = new AIComponent().Initialize(
+            //    this.Root.Clone() as Behavior);
+            //return ai;
         }
 
         internal override List<SaveTag> Save()
@@ -237,6 +239,20 @@ namespace Start_a_Town_
         internal override void ResolveReferences()
         {
             this.State.ResolveReferences();
+        }
+
+        public new class Spec : Spec<AIComponent>
+        {
+            public readonly Behavior Root;
+
+            public Spec(Behavior root)
+            {
+                this.Root = root;
+            }
+            //protected override void ApplyTo(AIComponent comp)
+            //{
+            //    comp.Root = this.Root;
+            //}
         }
     }
 }

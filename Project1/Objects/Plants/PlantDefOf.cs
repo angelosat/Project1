@@ -17,7 +17,7 @@ namespace Start_a_Town_
             //Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true })
             Size = ObjectSize.Haulable
         }
-        .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull)));
+        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull)));
 
         static public ItemDef Bush = new ItemDef("Bush", typeof(Plant))
         {
@@ -29,7 +29,7 @@ namespace Start_a_Town_
             //Body = new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
             Size = ObjectSize.Haulable
         }
-        .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true })));
+        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true })));
 
         static PlantDefOf()
         {

@@ -33,6 +33,7 @@ namespace Start_a_Town_.Components
         
         public void AddNeed(params NeedDef[] defs)
         {
+            this.NeedsNew = new(defs.Length);
             foreach (var d in defs)
                 //this.NeedsNew.Add(d.Create(this.Parent as Actor));
                 this.NeedsNew.Add(new Need(this.Owner as Actor, d));
@@ -161,12 +162,16 @@ namespace Start_a_Town_.Components
             }
         }
 
-        public new class Props: Props<NeedsComponent>
+        public new class Spec: Spec<NeedsComponent>
         {
             public NeedDef[] Needs;
-            public Props(params NeedDef[] defs)
+            public Spec(params NeedDef[] defs)
             {
                 this.Needs = defs;
+            }
+            protected override void ApplyTo(NeedsComponent comp)
+            {
+                comp.AddNeed(this.Needs);
             }
         }
     }

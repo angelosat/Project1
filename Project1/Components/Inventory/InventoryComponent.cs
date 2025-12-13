@@ -10,6 +10,19 @@ namespace Start_a_Town_.Components
 {
     public class InventoryComponent : EntityComp
     {
+        public new class Spec : Spec<InventoryComponent> 
+        {
+            public readonly int Capacity;
+            public Spec(int size)
+            {
+                this.Capacity = size;
+            }
+            protected override void ApplyTo(InventoryComponent comp)
+            {
+                comp.Capacity = this.Capacity;
+            }
+        }
+
         class Packets
         {
             static int PacketSyncInsert, PacketSetHaulSlot;

@@ -1,16 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
-using System;
-using System.IO;
 using System.Linq;
-using static Start_a_Town_.GlobalVars;
 
 namespace Start_a_Town_
 {
     public class NpcSkillsComponent : EntityComp, IGui
     {
-        public readonly Skill[] SkillsNew;
+        public Skill[] SkillsNew;
         static public Panel UI = new Panel(new Rectangle(0, 0, 500, 400));
 
         public override object Clone()
@@ -26,6 +23,7 @@ namespace Start_a_Town_
                 this.SkillsNew[i] = new Skill(defs[i]) { Container = this };
             }
         }
+        
         public NpcSkillsComponent()
         {
 
@@ -115,12 +113,18 @@ namespace Start_a_Town_
         {
             this[skill].Award(amount);
         }
-        public new class Props : Props<NpcSkillsComponent>
+        public new class Spec : Spec<NpcSkillsComponent>
         {
             public SkillDef[] Items;
-            public Props(params SkillDef[] defs)
+            public Spec(params SkillDef[] defs)
             {
                 this.Items = defs;
+            }
+            protected override void ApplyTo(NpcSkillsComponent comp)
+            {
+                comp.SkillsNew = new Skill[this.Items.Length];
+                for (int i = 0; i < this.Items.Length; i++)
+                    comp.SkillsNew[i] = new Skill(this.Items[i]);
             }
         }
     }

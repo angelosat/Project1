@@ -34,11 +34,11 @@ namespace Start_a_Town_
         public GearComponent()
         {
         }
-        public GearComponent(ItemDef def)
-        {
-            foreach (var slot in def.ActorProperties.GearSlots)
-                this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
-        }
+        //public GearComponent(ItemDef def)
+        //{
+        //    foreach (var slot in def.ActorProperties.GearSlots)
+        //        this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
+        //}
         public GearComponent(params GearType[] types)
         {
             foreach (var slot in types)
@@ -201,12 +201,17 @@ namespace Start_a_Town_
                 this.ArmorTotal += i.Def.ApparelProperties?.ArmorValue ?? 0;
             }
         }
-        public new class Props : Props<GearComponent>
+        public new class Spec : Spec<GearComponent>
         {
             public GearType[] Slots;
-            public Props(params GearType[] defs)
+            public Spec(params GearType[] defs)
             {
                 this.Slots = defs;
+            }
+            protected override void ApplyTo(GearComponent comp)
+            {
+                foreach (var slot in this.Slots)
+                    comp.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = comp.Equipment, Name = slot.Name });
             }
         }
       

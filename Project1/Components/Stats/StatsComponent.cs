@@ -6,6 +6,8 @@ namespace Start_a_Town_.Components
 {
     class StatsComponent : EntityComp
     {
+        public new class Spec : Spec<StatsComponent> { }
+
         public override string Name { get; } = "StatsNew";
         
 

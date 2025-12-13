@@ -9,6 +9,8 @@ namespace Start_a_Town_
 {
     class NpcComponent : EntityComp
     {
+        public new class Spec : Spec<NpcComponent> { }
+
         static int p;
         internal static void Init()
         {

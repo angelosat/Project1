@@ -144,6 +144,6 @@ namespace Start_a_Town_
         {
             this.Order.UnfinishedItem = null;
         }
-        public new class Props : Props<UnfinishedItemComp> { }
+        public new class Props : Spec<UnfinishedItemComp> { }
     }
 }

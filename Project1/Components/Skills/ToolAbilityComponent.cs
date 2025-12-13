@@ -89,6 +89,6 @@ namespace Start_a_Town_
             tag.TryLoadDef("Props", ref this.ToolProperties);
         }
 
-        public new class Props : Props<ToolAbilityComponent> { }
+        public new class Props : Spec<ToolAbilityComponent> { }
     }
 }

@@ -55,7 +55,7 @@ namespace Start_a_Town_
         {
             this.Plant = Def.GetDef<PlantProperties>(r.ReadString());
         }
-        public new class Props : Props<SeedComponent> { }
+        public new class Props : Spec<SeedComponent> { }
         //public class Props : ComponentProps
         //{
         //    public override Type CompClass => typeof(SeedComponent);

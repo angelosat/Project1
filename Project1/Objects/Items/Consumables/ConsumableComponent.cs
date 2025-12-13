@@ -114,7 +114,7 @@ namespace Start_a_Town_.Components
             }
         }
         
-        public new class Props : Props<ConsumableComponent>
+        public new class Props : Spec<ConsumableComponent>
         {
             public NeedEffect[] Effects = [];
             public FoodClass[] FoodClasses = [];

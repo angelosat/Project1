@@ -1,6 +1,5 @@
 ﻿using Start_a_Town_.Components;
 using Start_a_Town_.UI;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -184,9 +183,13 @@ namespace Start_a_Town_
             var res = this[def];
             res.Adjust(v);
         }
-        public new class Props : Props<ResourcesComponent> 
+        public new class Spec : Spec<ResourcesComponent> 
         {
             public ResourceDef[] Defs;
+            public Spec(ResourceDef[] defs)
+            {
+                this.Defs = defs;
+            }
             protected override void ApplyTo(ResourcesComponent comp)
             {
                 var count = this.Defs.Length;

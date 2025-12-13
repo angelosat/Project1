@@ -377,7 +377,7 @@ namespace Start_a_Town_.Components
                 return relevantProgress.IsFinished;
             }
         }
-        public new class Props : Props<PlantComponent> { }
+        public new class Props : Spec<PlantComponent> { }
 
     }
 }

@@ -8,7 +8,7 @@ namespace Start_a_Town_
 {
     public class OwnershipComponent : EntityComp
     {
-        public new class Props : Props<OwnershipComponent> { }
+        public new class Props : Spec<OwnershipComponent> { }
         public override string Name { get; } = "Ownership";
         public int OwnerRef { get; private set; } = -1;
         public Actor Owner;

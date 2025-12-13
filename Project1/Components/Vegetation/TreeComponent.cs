@@ -102,6 +102,6 @@ namespace Start_a_Town_.Components
                 TextFunc = () => this.GrowthNew.Percentage.ToString("##0%")
             });
         }
-        public new class Props : Props<TreeComponent> { }
+        public new class Props : Spec<TreeComponent> { }
     }
 }

@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Start_a_Town_.Components
 {
-    public class SpriteComp : EntityComp<SpriteComp.Props>
+    public class SpriteComp : EntityComp<SpriteComp.Spec>
     {
         public override string Name { get; } = "Sprite";
         readonly static bool PreciseAlphaHitTest = false;
@@ -570,10 +570,10 @@ namespace Start_a_Town_.Components
                 tooltip.AddControlsBottomLeft(new Label(string.Format("{0}: {1}", b.Def.Label, mat?.Name ?? "undefined")) { TextColor = mat?.Color ?? Color.Gray });
             }
         }
-        public new class Props : Props<SpriteComp>
+        public new class Spec : Spec<SpriteComp>
         {
             public readonly Bone RootBone;
-            public Props(Bone rootBone)
+            public Spec(Bone rootBone)
             {
                 this.RootBone = rootBone;
             }

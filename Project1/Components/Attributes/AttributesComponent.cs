@@ -157,12 +157,18 @@ namespace Start_a_Town_.Components
         {
             this.GetAttribute(AttributeDefOf.Strength).Award(this.Owner, energyConsumption);
         }
-        public new class Props : Props<AttributesComponent>
+        public new class Spec : Spec<AttributesComponent>
         {
             public AttributeDef[] Items;
-            public Props(params AttributeDef[] defs)
+            public Spec(params AttributeDef[] defs)
             {
                 this.Items = defs;
+            }
+            protected override void ApplyTo(AttributesComponent comp)
+            {
+                comp.Attributes = new AttributeStat[this.Items.Length];
+                for (int i = 0; i < this.Items.Length; i++)
+                    comp.Attributes[i] = new AttributeStat(this.Items[i]);
             }
         }
         //public class PropsOld : ComponentProps

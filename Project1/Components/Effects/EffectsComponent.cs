@@ -1,12 +1,13 @@
 ﻿using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Start_a_Town_
 {
     public class EffectsComponent : EntityComp
     {
+        public new class Spec : Spec<EffectsComponent> { }
+
         public override string Name => "Effects";
 
         List<EntityEffectWrapper> ActiveEffects = [];

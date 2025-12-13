@@ -10,9 +10,9 @@ using System.Linq;
 namespace Start_a_Town_.Components
 {
     public abstract class EntityComp<TConfig> : EntityComp
-    where TConfig : EntityComp.Props
+    where TConfig : EntityComp.Spec
     {
-        public new TConfig Config => (TConfig)base.Config;
+        public new TConfig Defaults => (TConfig)base.Defaults;
     }
 
     public abstract class EntityComp : Inspectable//, ICloneable
@@ -23,7 +23,7 @@ namespace Start_a_Town_.Components
         {
             return this.Label;
         }
-        internal Props Config { get; private set; }
+        internal Spec Defaults { get; private set; }
         public virtual void OnNameplateCreated(GameObject parent, Nameplate plate) { }
         public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate) { }
 
@@ -177,18 +177,18 @@ namespace Start_a_Town_.Components
         internal virtual void ResolveReferences()
         {
         }
-        public abstract class Props 
+        public abstract class Spec 
         {
             internal abstract void Apply(EntityComp props);
             internal abstract EntityComp CreateComp();
         }
-        public abstract class Props<T> : Props where T : EntityComp, new()
+        public abstract class Spec<T> : Spec where T : EntityComp, new()
         {
             Type CompClass => typeof(T);
             internal sealed override T CreateComp() => new T();
             internal sealed override void Apply(EntityComp comp)
             {
-                comp.Config = this;
+                comp.Defaults = this;
                 this.ApplyTo((T)comp);
             }
             protected virtual void ApplyTo(T comp) { }

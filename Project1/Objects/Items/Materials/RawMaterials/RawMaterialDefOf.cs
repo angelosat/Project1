@@ -23,7 +23,7 @@ namespace Start_a_Town_
                 IsCraftingMaterial = true
             }
         }.SetMadeFrom(MaterialTypeDefOf.Wood)
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.PlanksGrayscale) { DrawMaterialColor = true }));
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.PlanksGrayscale) { DrawMaterialColor = true }));
 
         static public readonly ItemDef Logs = new ItemDef("Logs", typeof(Item))
         {
@@ -36,7 +36,7 @@ namespace Start_a_Town_
             CraftingProperties = new CraftingProperties() { IsBuildingMaterial = true },
             DefaultMaterialType = MaterialTypeDefOf.Wood
         }.SetMadeFrom(MaterialTypeDefOf.Wood)
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.LogsGrayscale) { DrawMaterialColor = true }));
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.LogsGrayscale) { DrawMaterialColor = true }));
 
 
         static public readonly ItemDef Bags = new ItemDef("Bag", typeof(Item))
@@ -49,7 +49,7 @@ namespace Start_a_Town_
             CanProcessInto = new List<Reaction.Product.Types>() { Reaction.Product.Types.Blocks },
             DefaultMaterialType = MaterialTypeDefOf.Soil,
         }.SetMadeFrom(MaterialTypeDefOf.Soil)
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.BagsGrayscale) { DrawMaterialColor = true }));
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.BagsGrayscale) { DrawMaterialColor = true }));
 
 
         static public readonly ItemDef Ingots = new ItemDef("Ingot", typeof(Item))
@@ -63,7 +63,7 @@ namespace Start_a_Town_
             DefaultMaterialType = MaterialTypeDefOf.Metal,
             CraftingProperties = new CraftingProperties() { IsCraftingMaterial = true, IsBuildingMaterial = true },
         }.SetMadeFrom(MaterialTypeDefOf.Metal)
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale) { DrawMaterialColor = true }));
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale) { DrawMaterialColor = true }));
 
 
         static public readonly ItemDef Ore = new ItemDef("Ore", typeof(Item))
@@ -76,7 +76,7 @@ namespace Start_a_Town_
             CanProcessInto = new List<Reaction.Product.Types>() { Reaction.Product.Types.Tools, Reaction.Product.Types.Blocks },
             DefaultMaterialType = MaterialTypeDefOf.Metal,
         }.SetMadeFrom(MaterialToken.Metal)
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.OreGrayscale) { DrawMaterialColor = true }));
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.OreGrayscale) { DrawMaterialColor = true }));
 
 
         static public readonly ItemDef Boulders = new ItemDef("Boulders", typeof(Item))
@@ -90,7 +90,7 @@ namespace Start_a_Town_
             DefaultMaterialType = MaterialTypeDefOf.Stone,
             CraftingProperties = new CraftingProperties() { IsBuildingMaterial = true, IsCraftingMaterial = true },
         }.SetMadeFrom(MaterialTypeDefOf.Stone)
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.OreGrayscale) { DrawMaterialColor = true }));
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.OreGrayscale) { DrawMaterialColor = true }));
             
 
         static public readonly ItemDef Scraps = new ItemDef("Scraps", typeof(Item))
@@ -102,7 +102,7 @@ namespace Start_a_Town_
             Category = ItemCategoryDefOf.RawMaterials,
             //Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         }.SetMadeFrom(MaterialTypeDefOf.Wood, MaterialTypeDefOf.Stone, MaterialTypeDefOf.Metal)
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true }));
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true }));
 
 
 

@@ -7,6 +7,8 @@ namespace Start_a_Town_
 {
     public class PossessionsComponent : EntityComp
     {
+        public new class Spec : Spec<PossessionsComponent> { }
+
         public override string Name { get; } = "Possesions";
         readonly HashSet<Room> Rooms = new();
         readonly HashSet<BlockEntity> Furniture = new();
@@ -38,5 +40,7 @@ namespace Start_a_Town_
         }
 
         public IEnumerable<T> GetOwned<T>() where T : BlockEntity => this.Furniture.OfType<T>();
+
+
     }
 }

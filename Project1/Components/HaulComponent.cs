@@ -1,11 +1,11 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using Start_a_Town_.Animations;
 
 namespace Start_a_Town_.Components
 {
     partial class HaulComponent : EntityComp
     {
+        public new class Spec : Spec<HaulComponent> { }
 
         public override string Name { get; } = "Haul"; 
         InventoryComponent Inventory;

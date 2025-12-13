@@ -87,7 +87,7 @@ namespace Start_a_Town_
             this.ValidMaterialTypes.AddRange(types);
             return this;
         }
-        public ItemDef AddProp(EntityComp.Props prop)
+        public ItemDef AddSpec(EntityComp.Spec prop)
         {
             this.CompProps.Add(prop);
             return this;

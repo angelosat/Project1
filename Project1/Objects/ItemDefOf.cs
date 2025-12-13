@@ -16,8 +16,8 @@ namespace Start_a_Town_
             DefaultMaterial = MaterialDefOf.Seed,
             //CompProps = [new SeedComponent.Props()]
         }
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.SeedsFull)))
-            .AddProp(new SeedComponent.Props());
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.SeedsFull)))
+            .AddSpec(new SeedComponent.Props());
 
         static public readonly ItemDef Fruit = new ItemDef("Fruit", typeof(Item))
         {
@@ -33,12 +33,12 @@ namespace Start_a_Town_
             //],
         }
             .SetMadeFrom(MaterialTypeDefOf.Fruit)
-            .AddProp(new ConsumableComponent.Props()
+            .AddSpec(new ConsumableComponent.Props()
             {
                 FoodClasses = [FoodClass.Fruit],
                 Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]
             })
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.BerriesFull)));
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.BerriesFull)));
 
         static public readonly ItemDef Meat = new ItemDef("Meat", typeof(Item))
         {
@@ -52,8 +52,8 @@ namespace Start_a_Town_
             //    new ConsumableComponent.Props() {
             //        Effects = [new NeedEffect(NeedDefOf.Hunger, 50)] }],
         }.SetMadeFrom(MaterialTypeDefOf.Meat)
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, Sprite.Default)))
-            .AddProp(new ConsumableComponent.Props()
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
+            .AddSpec(new ConsumableComponent.Props()
             {
                 Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]
             });
@@ -82,8 +82,8 @@ namespace Start_a_Town_
             //    new ConsumableComponent.Props() {FoodClasses= [FoodClass.Dish]}
             //],
         }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Meat)
-            .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, Sprite.Default)))
-            .AddProp(new ConsumableComponent.Props() { FoodClasses = [FoodClass.Dish] });
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
+            .AddSpec(new ConsumableComponent.Props() { FoodClasses = [FoodClass.Dish] });
 
 
         static public readonly ItemDef UnfinishedCraft = new ItemDef("UnfinishedCraft", typeof(Item))
@@ -92,8 +92,8 @@ namespace Start_a_Town_
             //Body = new Bone(BoneDefOf.Item, Sprite.Default),
             //CompProps = [new UnfinishedItemComp.Props()]
         }
-        .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, Sprite.Default)))
-        .AddProp(new UnfinishedItemComp.Props());
+        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
+        .AddSpec(new UnfinishedItemComp.Props());
             
 
         static public readonly ItemDef Coins = new ItemDef("Coins", typeof(Item))
@@ -104,7 +104,7 @@ namespace Start_a_Town_
             DefaultMaterial = MaterialDefOf.Gold,
             BaseValue = 1,
         }
-        .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale)));
+        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale)));
 
         static public readonly ItemDef Helmet = new ItemDef("ItemHelmet", typeof(Item))
         {
@@ -120,8 +120,8 @@ namespace Start_a_Town_
             //Body = new Bone(BoneDefOf.Item, ItemContent.HelmetFull),
             //CompProps = [new OwnershipComponent.Props()] /*new List<ComponentProps>() { new ComponentProps() { CompClass = typeof(OwnershipComponent) } }*/
         }
-        .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.Item, ItemContent.HelmetFull)))
-        .AddProp(new OwnershipComponent.Props());
+        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.HelmetFull)))
+        .AddSpec(new OwnershipComponent.Props());
 
         //public static readonly CraftingProperties ToolCraftingProperties = new()
         //{
@@ -148,9 +148,9 @@ namespace Start_a_Town_
             VariationGetter = e => e.ToolComponent.ToolProperties,
             //CompProps = [new ToolAbilityComponent.Props()]
         }
-        .AddProp(new SpriteComp.Props(new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
+        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
                             .AddJoint(Vector2.Zero, new Bone(BoneDefOf.ToolHead, ItemContent.LogsGrayscale) { DrawMaterialColor = true })))
-        .AddProp(new ToolAbilityComponent.Props());
+        .AddSpec(new ToolAbilityComponent.Props());
         static ItemDefOf()
         {
             Def.Register(typeof(ItemDefOf));

@@ -4,13 +4,14 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
 {
     public class MoodComp : EntityComp, IProgressBar, IGui//<MoodComp>
     {
+        public new class Spec : Spec<MoodComp> { }
+
         readonly ObservableCollection<Moodlet> Moodlets = new();
         const float BaseMood = 50;
         public float Mood = BaseMood;

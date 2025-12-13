@@ -11,7 +11,7 @@ namespace Start_a_Town_
         readonly Panel PanelCollapsible;
         readonly GroupBox PanelInfo;
         readonly CheckBoxNew ChkHaulOnFinish;
-        readonly Control ReagentsContainer;
+        readonly GroupBox ReagentsContainer;
         CraftOrder Order => this.Tag as CraftOrder;
         public CraftOrderDetailsGui(CraftOrder order)
             :this()
@@ -22,10 +22,15 @@ namespace Start_a_Town_
         {
             this.AutoSize = true;
 
-            this.ReagentsContainer = new ScrollableBoxNewNew(200, 200, ScrollModes.Vertical);
 
             this.PanelCollapsible = new Panel() { AutoSize = false }.SetClientDimensions(200, 200);
-            this.PanelCollapsible.AddControls(this.ReagentsContainer);
+
+            //this.ReagentsContainer = new ScrollableBoxNewNew(200, 200, ScrollModes.Vertical);
+            this.ReagentsContainer = new GroupBox();
+            //this.ReagentsContainer.AddControls(scrollableBox);
+            var scrollableBox = new ScrollableBoxTest(this.ReagentsContainer, 200, 200, ScrollModes.Vertical);
+
+            this.PanelCollapsible.AddControls(scrollableBox);// this.ReagentsContainer);
 
             var boxinfo = new GroupBox();
             this.PanelInfo = new(128, 128);// this.PanelCollapsible.Size);

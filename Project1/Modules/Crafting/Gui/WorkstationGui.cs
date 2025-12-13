@@ -1,6 +1,5 @@
 ﻿using Start_a_Town_.UI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Start_a_Town_.Modules.Crafting
@@ -31,7 +30,7 @@ namespace Start_a_Town_.Modules.Crafting
 
             var w = panelOrders.Client.ClientSize.Width;
             var h = panelOrders.Client.ClientSize.Height;
-            var list = entity.Orders.GetListControl();
+            var list = entity.Orders.GetListObservableControl();
             this.ListOrders = new ScrollableBoxNewNew(w, h, ScrollModes.Vertical);
             this.ListOrders.AddControls(list);
 
@@ -63,20 +62,6 @@ namespace Start_a_Town_.Modules.Crafting
             PacketOrderAdd.Send(this.Map.Net, this.Global, r);
             this.PanelReactions.Hide();
         }
-        //internal override void OnGameEvent(GameEvent e)
-        //{
-        //    switch (e.Type)
-        //    {
-        //        case Components.Message.Types.BlocksChanged:
-        //            if ((e.Parameters[1] as IEnumerable<IntVec3>).Contains(this.Global))
-        //                this.GetWindow().Hide();
-        //            break;
-
-        //        default:
-        //            base.OnGameEvent(e);
-        //            break;
-        //    }
-        //}
         void HandleBlocksChanged(BlocksUpdatedEvent e)
         {
             if (e.Positions.Contains(this.Global))

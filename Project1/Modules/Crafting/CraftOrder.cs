@@ -223,7 +223,7 @@ namespace Start_a_Town_
             }
 
             w.Write(this.Restrictions.Keys.ToArray());
-            this.Restrictions.Values.WriteNew(w);
+            this.Restrictions.Values.Write(w);
         }
         public void Read(MapBase map, IDataReader r)
         {
@@ -403,9 +403,9 @@ namespace Start_a_Town_
         {
             var box = new GroupBox
             {
-                BackgroundColor = UIManager.DefaultListItemBackgroundColor
+                BackgroundColor = UIManager.DefaultListItemBackgroundColor,
+                MouseThrough = false
             };
-
             var btnUp = new ButtonIcon(Icon.ArrowUp, MoveUp);
             var btnDown = new ButtonIcon(Icon.ArrowDown, MoveDown) { Location = btnUp.BottomLeft };
             box.AddControls(btnUp, btnDown);

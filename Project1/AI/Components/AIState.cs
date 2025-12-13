@@ -273,7 +273,8 @@ namespace Start_a_Town_.AI
         }
         public void Read(IDataReader r)
         {
-            this.Jobs.Sync(r);
+            //this.Jobs.Sync(r);
+            r.ReadValuesWithInferredKeys(this.Jobs, v => v.Def);
             //this.Jobs.Write(r);
             this.ItemPreferences.Read(r); // sync to clients?
         }
@@ -348,7 +349,8 @@ namespace Start_a_Town_.AI
 
         public void Write(IDataWriter w)
         {
-            this.Jobs.Sync(w);
+            //this.Jobs.Sync(w);
+            w.WriteValues(this.Jobs);
             this.ItemPreferences.Write(w); // sync to clients?
         }
         public void Tick()

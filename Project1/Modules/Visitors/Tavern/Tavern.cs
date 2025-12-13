@@ -286,8 +286,8 @@ namespace Start_a_Town_
         {
             w.Write(this.Tables);
             w.Write(this.Workstations);
-            this.Customers.Write(w);
-            this.Orders.WriteNew(w);
+            this.Customers.WriteOld(w);
+            this.Orders.Write(w);
         }
         protected override void LoadExtra(SaveTag tag)
         {

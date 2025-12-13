@@ -129,7 +129,7 @@ namespace Start_a_Town_.Components
         }
         public override void Write(IDataWriter w)
         {
-            this.NeedsNew.WriteNew(w);
+            this.NeedsNew.Write(w);
         }
         public override void Read(IDataReader r)
         {

@@ -131,7 +131,7 @@ namespace Start_a_Town_
             this.Product.Write(w);
             this.BuildProgress.Write(w);
             w.Write(this.Children);
-            this.Container.WriteNew(w);
+            this.Container.Write(w);
         }
         protected override void ReadExtra(IDataReader r)
         {

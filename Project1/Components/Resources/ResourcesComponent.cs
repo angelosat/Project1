@@ -110,7 +110,7 @@ namespace Start_a_Town_
         }
         public override void Write(IDataWriter writer)
         {
-            this.Resources.WriteNew(writer);
+            this.Resources.Write(writer);
         }
         public override void Read(IDataReader reader)
         {

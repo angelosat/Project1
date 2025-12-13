@@ -99,7 +99,7 @@ namespace Start_a_Town_
         }
         public override void Write(IDataWriter w)
         {
-            this.SkillsNew.WriteNew(w);
+            this.SkillsNew.Write(w);
         }
         public override void Read(IDataReader r)
         {

@@ -315,7 +315,7 @@ namespace Start_a_Town_
             w.Write(this.Workers);
             w.Write(this.Rooms);
             w.Write(this.Counter);
-            this.WorkerProps.Values.WriteNew(w);
+            this.WorkerProps.Values.Write(w);
             this.WriteExtra(w);
         }
 

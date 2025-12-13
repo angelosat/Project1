@@ -146,7 +146,7 @@ namespace Start_a_Town_.Components
         }
         public override void Write(IDataWriter w)
         {
-            this.Attributes.WriteNew(w);
+            this.Attributes.Write(w);
         }
         public override void Read(IDataReader r)
         {

@@ -1,6 +1,4 @@
-﻿using Start_a_Town_.Blocks;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
     public class BlockWorkbenchEntity : BlockEntity
     {
@@ -8,7 +6,6 @@ namespace Start_a_Town_
             : base(originGlobal)
         {
             this.AddComp(new BlockEntityCompWorkstation(IsWorkstation.Types.Workbench));
-            //this.AddComp(new BlockEntityCompDeconstructible());
         }
     }
 }

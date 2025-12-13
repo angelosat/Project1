@@ -38,7 +38,6 @@ namespace Start_a_Town_.UI
 
         private void OnBlocksUpdated(BlocksUpdatedEvent e)
         {
-            //throw new NotImplementedException();
             if (this.Selectable is TargetArgs target && target.Type == TargetType.Position && e.Positions.Contains(target.Global))
                 this.Unselect();
         }

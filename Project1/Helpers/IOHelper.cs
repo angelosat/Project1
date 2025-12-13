@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms.VisualStyles;
 
 namespace Start_a_Town_
 {
@@ -207,6 +208,17 @@ namespace Start_a_Town_
                 list.Add(Def.GetDef<T>(r));//.ReadString()));
             return list;
         }
+        public static Dictionary<T, U> ReadFromFlat<T, U>(this Dictionary<T, U> dic, IDataReader r, Func<IDataReader, T> keyReader, Func<IDataReader, U> valueReader)
+        {
+            var count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                var key = keyReader(r);
+                var value = valueReader(r);
+                dic.Add(key, value);
+            }
+            return dic;
+        }
         public static void ReadImmutable<T>(this IList<T> collection, IDataReader r)
             where T : class, ISerializable//, new()
         {
@@ -341,45 +353,20 @@ namespace Start_a_Town_
                 list.Add(r.ReadVector3());
             return list;
         }
-        /// <summary>
-        /// the good one
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="r"></param>
-        public static void ReadMutable<T>(this ICollection<T> collection, IDataReader r)
-            where T : class, ISerializable, new()
-        {
-            var count = r.ReadInt32();
-            for (int i = 0; i < count; i++)
-                collection.Add(new T().Read(r) as T);
-        }
+        [Obsolete("use replace")]
         public static void ReadMutableNew<T>(this ICollection<T> collection, IDataReader r)
-            where T : class, ISerializableNew<T>, new()
+            where T : class, ISerializableNew<T>
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
-                collection.Add(new T().Read(r));
+                collection.Add(T.Create(r));
         }
-        public static Dictionary<T, U> ReadFromFlat<T, U>(this Dictionary<T, U> dic, IDataReader r, Func<IDataReader, T> keyReader, Func<IDataReader, U> valueReader)
+        public static void ReadNewInto<T>(this IDataReader r, ICollection<T> collection)
+            where T : ISerializableNew<T>
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
-            {
-                var key = keyReader(r);
-                var value = valueReader(r);
-                dic.Add(key, value);
-            }
-            return dic;
-        }
-        public static void WriteFlat<T, U>(this Dictionary<T, U> dic, IDataWriter w) where T : ISerializableNew<T> where U : ISerializableNew<U>
-        {
-            w.Write(dic.Count);
-            foreach (var (key, value) in dic)
-            {
-                key.Write(w);
-                value.Write(w);
-            }
+                collection.Add(T.Create(r));
         }
         public static string[] ReadStringArray(this BinaryReader r)
         {
@@ -442,7 +429,18 @@ namespace Start_a_Town_
                 i.Sync(b);
             return list;
         }
-
+        public static void WriteValues<TKey, TValue>(this IDataWriter w, Dictionary<TKey, TValue> dic) where TValue : ISerializableNew<TValue>
+        {
+            w.Write(dic.Values);
+        }
+        public static void ReadValuesWithInferredKeys<TKey, TValue>(this IDataReader r, Dictionary<TKey, TValue> dic, Func<TValue, TKey> keySelector) where TValue : ISerializableNew<TValue>
+        {
+            dic.Clear();
+            var values = new List<TValue>();
+            r.ReadNewInto(values);
+            foreach (var val in values)
+                dic.Add(keySelector(val), val);
+        }
         public static Dictionary<int, U> Sync<U>(this Dictionary<int, U> dic, IDataWriter w) where U : ISerializable
         {
             foreach (var vk in dic)
@@ -461,7 +459,7 @@ namespace Start_a_Town_
             }
             return dic;
         }
-
+        
         //public static Dictionary<int, U> Sync<U>(this Dictionary<int, U> dic, IDataReader r) where U : ISerializable
         //{
         //    for (int i = 0; i < dic.Count; i++)
@@ -587,20 +585,6 @@ namespace Start_a_Town_
             {
                 w.Write(list[i]);
             }
-        }
-        public static void Write<T>(this IDataWriter w, ICollection<T> list) where T : ISerializable
-        {
-            var count = list.Count;
-            w.Write(count);
-            foreach (var i in list)
-                i.Write(w);
-        }
-        public static void Write<T>(this ICollection<T> list, IDataWriter w) where T : ISerializable
-        {
-            var count = list.Count;
-            w.Write(count);
-            foreach (var i in list)
-                i.Write(w);
         }
         public static void Write(this ICollection<Def> list, IDataWriter w)
         {
@@ -785,13 +769,24 @@ namespace Start_a_Town_
             foreach (var i in list)
                 i.Write(w);
         }
+        public static void WriteFlat<T, U>(this Dictionary<T, U> dic, IDataWriter w) where T : ISerializableNew<T> where U : ISerializableNew<U>
+        {
+            w.Write(dic.Count);
+            foreach (var (key, value) in dic)
+            {
+                key.Write(w);
+                value.Write(w);
+            }
+        }
         public static ICollection<T> WriteImmutableNew<T>(this ICollection<T> list, IDataWriter b) where T : ISerializableNew<T>
         {
             foreach (var i in list)
                 i.Write(b);
             return list;
         }
-        public static void WriteNew<T>(this ICollection<T> list, IDataWriter w) where T : ISerializableNew<T>
+
+        [Obsolete("use write(this idatawriter w) instead")]
+        public static void Write<T>(this ICollection<T> list, IDataWriter w) where T : ISerializableNew<T>
         {
             var count = list.Count;
             w.Write(count);
@@ -799,7 +794,8 @@ namespace Start_a_Town_
                 i.Write(w);
         }
 
-        public static void WriteNew<T>(this IDataWriter w, ICollection<T> list) where T : ISerializableNew<T>
+
+        public static void Write<T>(this IDataWriter w, ICollection<T> list) where T : ISerializableNew<T>
         {
             var count = list.Count;
             w.Write(count);
@@ -825,6 +821,14 @@ namespace Start_a_Town_
                 valueWriter(vk.Value);
             }
             return dic;
+        }
+        [Obsolete("use write instead")]
+        public static void WriteOld<T>(this ICollection<T> list, IDataWriter w) where T : ISerializable
+        {
+            var count = list.Count;
+            w.Write(count);
+            foreach (var i in list)
+                i.Write(w);
         }
     }
 }

@@ -20,8 +20,6 @@
             });
             list.AddItems(items.Keys);
             var box = new ScrollableBoxTest(list, 200, 400, ScrollModes.Vertical) { SmallStep = Label.DefaultHeight + list.Spacing };
-            //var box = new ScrollableBoxNewNew(200, 400, ScrollModes.Vertical);
-            //box.AddControls(list);
             this.Client.AddControlsBottomLeft(new SearchBarNew<int>(200, id => items[id].Name).BindTo(list).ToPanelLabeled("Search"));
             this.Client.AddControlsBottomLeft(box.ToPanelLabeled("Templates"));
         }

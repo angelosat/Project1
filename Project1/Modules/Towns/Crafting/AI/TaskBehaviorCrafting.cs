@@ -61,12 +61,14 @@ namespace Start_a_Town_
                 //product.SyncConsumeMaterials(actor.Net);
                 foreach (var o in product.RequirementsNew.Values.Select(o => o.Object).Distinct())
                     //PacketEntityRequestDispose.Send(actor.Net, o.RefID);
-                    o.SyncDispose();
+                    //o.SyncDispose();
+                    actor.Map.World.DisposeEntityAndSync(o as Entity);
                 var item = ItemDefOf.UnfinishedCraft.Create();
                 item.GetComponent<UnfinishedItemComp>().SetProduct(product, actor, order);
                 item.SyncInstantiate(actor.Net as NetEndpoint);
 
-                actor.Map.SyncSpawn(item, this.Workstation.Global.Above(), IntVec3.Zero);
+                //actor.Map.SyncSpawn(item, this.Workstation.Global.Above(), IntVec3.Zero);
+                actor.Map.SpawnAndSync(item, this.Workstation.Global.Above(), IntVec3.Zero);
 
                 task.SetTarget(AuxiliaryIndex, item);
                 //actor.Reserve(task, item);

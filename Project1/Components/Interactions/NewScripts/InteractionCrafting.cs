@@ -91,7 +91,8 @@ namespace Start_a_Town_.Crafting
             {
                 product.Product.Global = global + Vector3.UnitZ;
                 product.Product.SyncInstantiate(server);
-                actor.Map.SyncSpawn(product.Product, global.Above(), Vector3.Zero);
+                //actor.Map.SyncSpawn(product.Product, global.Above(), Vector3.Zero);
+                actor.Map.SpawnAndSync(product.Product as Entity, global.Above(), Vector3.Zero);
             }
             return product.Product;
         }
@@ -117,7 +118,7 @@ namespace Start_a_Town_.Crafting
         {
             w.Write(this.Order.ID);
             this._progress.Write(w);
-            this.PlacedObjects.WriteNew(w);
+            this.PlacedObjects.Write(w);
             w.Write(this.Product is not null);
             if (this.Product is not null)
                 this.Product.Write(w);

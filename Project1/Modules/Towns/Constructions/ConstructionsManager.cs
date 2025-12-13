@@ -47,7 +47,7 @@ namespace Start_a_Town_
         public override void Write(IDataWriter w)
         {
             this.Designations.Write(w);
-            this.PendingDesignations.Values.WriteNew(w);
+            this.PendingDesignations.Values.Write(w);
         }
         public override void Read(IDataReader r)
         {

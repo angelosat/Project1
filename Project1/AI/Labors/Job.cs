@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    public class Job : ISerializable, ISaveable
+    public class Job : ISerializableNew<Job>, ISaveable//, ISerializable
     {
         public JobDef Def;
         const byte InitialPriority = 5, MaxPriority = 10;
@@ -35,13 +35,14 @@ namespace Start_a_Town_
             w.Write(this._Priority);
         }
 
-        public ISerializable Read(IDataReader r)
+        public Job Read(IDataReader r)
         {
             this.Def = Start_a_Town_.Def.GetDef<JobDef>(r.ReadString());
             this.Priority = r.ReadByte();
             return this;
         }
-
+        static public Job Create(IDataReader r) => new Job().Read(r);
+            
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);

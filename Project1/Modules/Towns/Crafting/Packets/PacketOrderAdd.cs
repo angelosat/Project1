@@ -13,8 +13,7 @@ namespace Start_a_Town_
 
         internal static void Send(NetEndpoint net, Vector3 global, Reaction reaction)
         {
-            var w = net.BeginPacketOld(p);
-
+            var w = net.BeginPacket(p);
             w.Write(global);
             reaction.Write(w);
         }

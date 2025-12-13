@@ -120,7 +120,7 @@ namespace Start_a_Town_
         }
         public override void Write(IDataWriter w)
         {
-            this.Moodlets.WriteNew(w);
+            this.Moodlets.Write(w);
             w.Write(this.Mood);
         }
         public override void Read(IDataReader r)

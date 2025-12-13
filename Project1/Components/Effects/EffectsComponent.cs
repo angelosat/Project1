@@ -23,7 +23,7 @@ namespace Start_a_Town_
 
         public override void Write(IDataWriter w)
         {
-            w.WriteNew(this.ActiveEffects);
+            IOHelper.Write(w, this.ActiveEffects);
             //this.ActiveEffects.WriteNew(w);
         }
         public override void Read(IDataReader r)

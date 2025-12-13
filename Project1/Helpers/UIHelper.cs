@@ -212,9 +212,9 @@ namespace Start_a_Town_
             return box;
         }
 
-        public static ListBoxObservable<T> GetListControl<T>(this ObservableCollection<T> collection) where T : class, IListable
+        public static ListBoxObservable<T> GetListObservableControl<T>(this ObservableCollection<T> boundCollection) where T : class, IListable
         {
-            return new ListBoxObservable<T>(collection);
+            return new ListBoxObservable<T>(boundCollection);
         }
     }
 }

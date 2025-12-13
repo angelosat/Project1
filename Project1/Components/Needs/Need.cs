@@ -154,8 +154,8 @@ namespace Start_a_Town_
             w.Write(this.Value);
             w.Write(this.Mod);
             w.Write(this.DecayDelay);
-            this.Mods.WriteNew(w);
-            this.ModsNew.WriteNew(w, k => k.Write(w), v => v.WriteNew(w));
+            this.Mods.Write(w);
+            this.ModsNew.WriteNew(w, k => k.Write(w), v => v.Write(w));
         }
         public Need Read(IDataReader r)
         {

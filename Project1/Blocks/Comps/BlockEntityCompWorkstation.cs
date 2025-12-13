@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -87,11 +86,14 @@ namespace Start_a_Town_
         }
         public override void Write(IDataWriter w)
         {
-            this._orders.WriteImmutableNew(w);
+            //this._orders.WriteImmutableNew(w);
+            //this._orders.Write(w);
+            w.Write(this._orders);
         }
         public override ISerializable Read(IDataReader r)
         {
-            this._orders.ReadMutableNew(r);
+            //this._orders.ReadMutableNew(r);
+            r.ReadNewInto(this._orders);
             return this;
         }
         internal override void ResolveReferences(MapBase map, IntVec3 global)

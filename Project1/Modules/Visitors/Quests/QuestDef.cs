@@ -4,13 +4,12 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    public class QuestDef : ISerializable, ISaveable, ILoadReferencable
+    public class QuestDef : ISerializableNew<QuestDef>, ISaveable, ILoadReferencable
     {
         static QuestDef()
         {
@@ -46,6 +45,10 @@ namespace Start_a_Town_
         public class QuestDefAssignedEvent(QuestDef quest) : EventPayloadBase
         {
             public QuestDef Quest = quest;
+        }
+        public QuestDef()
+        {
+            
         }
         public QuestDef(QuestsManager manager, int id)
         {
@@ -186,14 +189,14 @@ namespace Start_a_Town_
             this.Objectives.WriteAbstract(w);
             w.Write(this.GiverID);
         }
-        public ISerializable Read(IDataReader r)
+        public QuestDef Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Objectives.InitializeAbstract(r, this);
             this.GiverID = r.ReadInt32();
             return this;
         }
-
+        static public QuestDef Create(IDataReader r) => new QuestDef().Read(r);
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);

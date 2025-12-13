@@ -325,7 +325,8 @@ namespace Start_a_Town_
         public override void Read(IDataReader r)
         {
             this.QuestGiverIDSequence = r.ReadInt32();
-            this.Quests.Initialize(r, this);
+            //this.Quests.Initialize(r, this);
+            this.Quests.ReadMutableNew(r);
             this.PendingQuestRequests.Read(r);
         }
         protected override void AddSaveData(SaveTag tag)

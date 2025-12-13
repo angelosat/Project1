@@ -268,7 +268,7 @@ namespace Start_a_Town_
         }
         public void Write(IDataWriter w)
         {
-            this.ActorsAdventuring.WriteNew(w);
+            this.ActorsAdventuring.Write(w);
         }
 
         public ISerializable Read(IDataReader r)

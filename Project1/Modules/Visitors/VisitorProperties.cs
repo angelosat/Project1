@@ -125,7 +125,8 @@ namespace Start_a_Town_
                 {
                     PopulationManager.Packets.SendNotifyVisit(actor);
                     Vector3 coords = map.GetRandomEdgeCell().Above();
-                    map.SyncSpawn(actor, coords, Vector3.Zero);
+                    //map.SyncSpawn(actor, coords, Vector3.Zero);
+                    map.SpawnAndSync(actor, coords, Vector3.Zero);
                     this.Arrive();
                     this.ResetTimer(world.Clock);
                 }

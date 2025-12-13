@@ -18,7 +18,7 @@ namespace Start_a_Town_
         public string FullName => this.FirstName + (this.LastName.IsNullEmptyOrWhiteSpace() ? "" : string.Format(" {0}", this.LastName));
 
         static public List<GameObject> NpcDirectory = new List<GameObject>();
-        public override void AttachTo(GameObject parent)
+        public override void Resolve()
         {
             this.GenerateFullName();
         }
@@ -158,7 +158,7 @@ namespace Start_a_Town_
        
         public override void OnDespawnExtra(MapBase oldMap)
         {
-            NpcDirectory.Remove(this.Parent);
+            NpcDirectory.Remove(this.Owner);
         }
 
         

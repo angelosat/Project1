@@ -13,7 +13,7 @@ namespace Start_a_Town_
     public class PhysicsComponent : EntityComp
     {
         public override string Name { get; } = "Physics";
-        public ObjectSize Size => this.Parent.Def.Size;
+        public ObjectSize Size => this.Owner.Def.Size;
         public bool Solid;
         public float Height;
         float? _weight;
@@ -46,9 +46,9 @@ namespace Start_a_Town_
         /// <param name="chunk"></param>
         public override void Tick()
         {
-            if (this.Parent.Net is Client)
+            if (this.Owner.Net is Client)
             {
-                this.DetectEntityCollisions(this.Parent, this.Parent.Global, this.Parent.Global + this.Parent.Velocity);
+                this.DetectEntityCollisions(this.Owner, this.Owner.Global, this.Owner.Global + this.Owner.Velocity);
                 return;
             }
             var force = this.Force;
@@ -57,7 +57,7 @@ namespace Start_a_Town_
             if (!this.Enabled)
                 return;
 
-            var parent = this.Parent;
+            var parent = this.Owner;
             var map = parent.Map;
             var net = map.Net;
             var lastGlobal = parent.Transform.Global;
@@ -430,16 +430,16 @@ namespace Start_a_Town_
         public override void OnSpawn(MapBase newMap)
         {
             this.Enabled = true;
-            this.Parent.Map.Events.ListenTo<EntityCollisionEvent>(this.HandleCollision);
+            this.Owner.Map.Events.ListenTo<EntityCollisionEvent>(this.HandleCollision);
         }
         
         void HandleCollision(EntityCollisionEvent e)
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             if (!parent.Net.IsServer)
                 return;
             //throw new Exception("physics shouldn't run in clients");
-            if (e.Source != this.Parent)
+            if (e.Source != this.Owner)
                 return;
             var otherItem = e.Target;
             if (otherItem.CanAbsorb(parent) && !parent.IsReserved)
@@ -551,7 +551,7 @@ namespace Start_a_Town_
         //}
         private float UpdateWeight()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             var bones = parent.Body.GetAllBones();
             float w = bones.Sum(b => b.Material.Density) / bones.Count();
             w = this.Size switch

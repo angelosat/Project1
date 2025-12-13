@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -353,8 +354,8 @@ namespace Start_a_Town_
             {
                 obj = this.Create(); //for derived classes
                 obj.Def = this.Def; // TODO pass def in the create method above
-                foreach (var comp in this.Components)
-                    obj.AddComponent(comp.Value.Clone() as EntityComp);
+                foreach (var comp in this.Components.Values)
+                    obj.AddComponent(comp.Clone() as EntityComp);
             }
             obj.ObjectCreated();
             return obj;
@@ -422,10 +423,10 @@ namespace Start_a_Town_
             return this.Map.GetNearbyObjectsNew(this.Global, range, filter).Except(new GameObject[] { this });
         }
 
-        public GameObject()
-        {
-            this.AddComponent<PositionComponent>();
-        }
+        //public GameObject()
+        //{
+        //    this.AddComponent<PositionComponent>();
+        //}
 
         DefComponent _info;
         public DefComponent GetInfo()
@@ -468,7 +469,7 @@ namespace Start_a_Town_
         [InspectorHidden]
         public AttributeStat this[AttributeDef att] => this.GetAttribute(att);
 
-        public ComponentCollection Components = new();
+        public ComponentCollection Components;
 
         public T GetComponent<T>(string name) where T : EntityComp
         {
@@ -518,19 +519,19 @@ namespace Start_a_Town_
 
         public EntityComp AddComponent(EntityComp component)
         {
-            this.Components[component.Name] = component;
-            component.Parent = this;
-            component.MakeChildOf(this);
+            this.Components.Add(component);
+            component.Owner = this;
+            //component.MakeChildOf(this);
             return component;
         }
 
-        public T AddComponent<T>() where T : EntityComp, new()
-        {
-            T component = new();
-            this.Components[component.Name] = component;
-            component.MakeChildOf(this);
-            return component;
-        }
+        //public T AddComponent<T>() where T : EntityComp, new()
+        //{
+        //    T component = new();
+        //    this.Components[component.Name] = component;
+        //    component.MakeChildOf(this);
+        //    return component;
+        //}
 
         public virtual void Tick()
         {
@@ -544,11 +545,11 @@ namespace Start_a_Town_
                 //return $"{Name} / RefId: {this.RefId}";
 
             string info = "";
-            foreach (KeyValuePair<string, EntityComp> comp in Components)
+            foreach (var comp in this.Components.Values)
             {
                 if (info.Length > 0)
                     info += "\n";
-                info += "*" + comp.Key + "\n" + comp.Value.ToString();
+                info += "*" + comp.GetType() + "\n" + comp.ToString();
             }
             if (info.Length > 0)
                 info = info.Remove(info.Length - 1);
@@ -631,9 +632,12 @@ namespace Start_a_Town_
         {
             GetInfo().OnTooltipCreated(this, tooltip);
             // TODO: LOL fix, i need the object name to be on top
-            foreach (var comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
+            //foreach (var comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
+            foreach (var comp in Components.Values)
             {
-                comp.Value.OnTooltipCreated(this, tooltip);
+                //if(comp.GetType() != typeof(DefComponent))
+                if(!comp.GetType().IsAssignableFrom(typeof(DefComponent)))
+                    comp.OnTooltipCreated(this, tooltip);
             }
 
             var value = this.GetValue();
@@ -657,9 +661,11 @@ namespace Start_a_Town_
         {
             GetInfo().OnTooltipCreated(this, tooltip);
             // TODO: LOL fix, i need the object name to be on top
-            foreach (KeyValuePair<string, EntityComp> comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
+            //foreach (KeyValuePair<string, EntityComp> comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
+            foreach(var comp in this.Components.Values)
             {
-                comp.Value.GetInventoryTooltip(this, tooltip);
+                if (!comp.GetType().IsAssignableFrom(typeof(DefComponent)))
+                    comp.GetInventoryTooltip(this, tooltip);
             }
 
             var value = this.GetValue();
@@ -818,12 +824,13 @@ namespace Start_a_Town_
                 throw new Exception();
             w.Write(this.RefId);
             w.Write(this.StackSize);
-            w.Write(this.Components.Count);
-            foreach (var comp in this.Components)
-            {
-                w.Write(comp.Key);
-                comp.Value.Write(w);
-            }
+            //w.Write(this.Components.Count);
+            //foreach (var comp in this.Components)
+            //{
+            //    w.Write(comp.Key);
+            //    comp.Value.Write(w);
+            //}
+            this.Components.Write(w);
         }
         public static GameObject Create(IDataReader r)
         {
@@ -832,13 +839,14 @@ namespace Start_a_Town_
             var obj = def.Create();
             obj.RefId = r.ReadInt32();
             obj.StackSize = r.ReadInt32();
-            int compCount = r.ReadInt32();
-            for (int i = 0; i < compCount; i++)
-            {
-                string compName = r.ReadString();
-                //obj[compName].Read(r);
-                obj.Components[compName].Read(r);
-            }
+            //int compCount = r.ReadInt32();
+            //for (int i = 0; i < compCount; i++)
+            //{
+            //    string compName = r.ReadString();
+            //    //obj[compName].Read(r);
+            //    obj.Components[compName].Read(r);
+            //}
+            obj.Components.Read(r);
             obj.ObjectSynced();
             return obj;
         }
@@ -848,13 +856,14 @@ namespace Start_a_Town_
             _ = reader.ReadString(); // def name not necessary because we copy it from the existing cloned object
             obj.RefId = reader.ReadInt32();
             obj.StackSize = reader.ReadInt32();
-            int compCount = reader.ReadInt32();
-            for (int i = 0; i < compCount; i++)
-            {
-                string compName = reader.ReadString();
-                //obj[compName].Read(reader);
-                obj.Components[compName].Read(reader);
-            }
+            //int compCount = reader.ReadInt32();
+            //for (int i = 0; i < compCount; i++)
+            //{
+            //    string compName = reader.ReadString();
+            //    //obj[compName].Read(reader);
+            //    obj.Components[compName].Read(reader);
+            //}
+            obj.Components.Read(reader);
             obj.ObjectSynced();
             return obj;
         }
@@ -864,25 +873,24 @@ namespace Start_a_Town_
                 comp.OnObjectLoaded(this);
             return this;
         }
-        
+
         /// <summary>
         /// try to make this private
         /// </summary>
         /// <returns></returns>
+        [Obsolete($"use {nameof(Def.CreateNew)} instead")]
         public GameObject ObjectCreated()
         {
-            foreach (KeyValuePair<string, EntityComp> comp in Components)
-            {
-                comp.Value.AttachTo(this);
-            }
+            foreach (var comp in this.Components.Values)
+                comp.Resolve();
 
             return this;
         }
         public GameObject ObjectSynced()
         {
-            foreach (KeyValuePair<string, EntityComp> comp in Components)
+            foreach (var comp in Components.Values)
             {
-                comp.Value.OnObjectSynced(this);
+                comp.OnObjectSynced(this);
             }
 
             this.EnumerateChildren();
@@ -902,14 +910,15 @@ namespace Start_a_Town_
             data.Add(this.Def.Name.Save("Def"));
             data.Add(this.RefId.Save("InstanceID"));
             data.Add(this._StackSize.Save("Stack"));
-            var compData = new SaveTag(SaveTag.Types.Compound, "Components");
-            foreach (var comp in this.Components)
-            {
-                var compSave = comp.Value.SaveAs(comp.Key);
-                if (compSave is not null)
-                    compData.Add(compSave);
-            }
-            data.Add(compData);
+            //var compData = new SaveTag(SaveTag.Types.Compound, "Components");
+            //foreach (var comp in this.Components.Values)
+            //{
+            //    var compSave = comp.SaveAs(comp.GetType().FullName);
+            //    if (compSave is not null)
+            //        compData.Add(compSave);
+            //}
+            //data.Add(compData);
+            data.Add(this.Components.Save("Components"));
             return data;
         }
 
@@ -927,16 +936,17 @@ namespace Start_a_Town_
             var obj = def.Create();
             tag.TryGetTagValueOrDefault("InstanceID", out obj.RefId);
             tag.TryGetTagValue<int>("Stack", v=> obj._StackSize = v);
-            var compData = tag["Components"].Value as Dictionary<string, SaveTag>;
-            foreach (var compTag in compData.Values)
-            {
-                if (compTag.Value == null)
-                    continue;
+            //var compData = tag["Components"].Value as Dictionary<string, SaveTag>;
+            //foreach (var compTag in compData.Values)
+            //{
+            //    if (compTag.Value == null)
+            //        continue;
 
-                if (obj.Components.ContainsKey(compTag.Name))
-                    obj.Components[compTag.Name].Load(obj, compTag);
-                    //obj[compTag.Name].Load(obj, compTag);
-            }
+            //    if (obj.Components.ContainsKey(compTag.Name))
+            //        obj.Components[compTag.Name].Load(obj, compTag);
+            //}
+            obj.Components.Load(tag["Components"]);
+
             //obj.Name = obj.Def.NameGetter?.Invoke(obj) ?? obj.Name; // reset name
             //obj.DefComponent.ParentName = obj.Def.NameGetter?.Invoke(obj) ?? obj.DefComponent.ParentName; // reset name
             obj.ResetName();
@@ -954,25 +964,25 @@ namespace Start_a_Town_
         public List<ContextAction> GetRightClickActions()
         {
             var list = new List<ContextAction>();
-            foreach (var item in this.Components)
-                item.Value.GetRightClickActions(this, list);
+            foreach (var item in this.Components.Values)
+                item.GetRightClickActions(this, list);
             return list;
         }
 
         public List<Interaction> GetHauledActions(TargetArgs a)
         {
             var list = new List<Interaction>();
-            foreach (var item in this.Components)
-                item.Value.GetHauledActions(this, a, list);
+            foreach (var item in this.Components.Values)
+                item.GetHauledActions(this, a, list);
             return list;
         }
 
         internal ContextAction GetContextRB(GameObject player)
         {
             var list = new List<ContextAction>();
-            foreach (var c in this.Components)
+            foreach (var c in this.Components.Values)
             {
-                var a = c.Value.GetContextRB(this, player);
+                var a = c.GetContextRB(this, player);
                 if (a is null)
                     list.Add(a);
             }
@@ -981,9 +991,9 @@ namespace Start_a_Town_
         internal ContextAction GetContextActivate(GameObject player)
         {
             var list = new List<ContextAction>();
-            foreach (var c in this.Components)
+            foreach (var c in this.Components.Values)
             {
-                var a = c.Value.GetContextActivate(this, player);
+                var a = c.GetContextActivate(this, player);
                 if (a is null)
                 {
                     list.Add(a);
@@ -1007,9 +1017,9 @@ namespace Start_a_Town_
         public List<Interaction> GetInteractionsList()
         {
             var list = new List<Interaction>();
-            foreach (var item in this.Components)
+            foreach (var item in this.Components.Values)
             {
-                item.Value.GetInteractions(this, list);
+                item.GetInteractions(this, list);
             }
 
             return list;
@@ -1067,9 +1077,9 @@ namespace Start_a_Town_
       
         internal void RemoteProcedureCall(Components.Message.Types type, BinaryReader r)
         {
-            foreach (var comp in this.Components)
+            foreach (var comp in this.Components.Values)
             {
-                comp.Value.HandleRemoteCall(this, type, r);
+                comp.HandleRemoteCall(this, type, r);
             }
         }
 
@@ -1358,9 +1368,9 @@ namespace Start_a_Town_
         
         internal void OnGameEvent(GameEvent e)
         {
-            foreach (var c in this.Components)
+            foreach (var c in this.Components.Values)
             {
-                c.Value.OnGameEvent(this, e);
+                c.OnGameEvent(this, e);
             }
         }
 
@@ -1377,14 +1387,14 @@ namespace Start_a_Town_
         }
         internal void SyncWrite(IDataWriter w)
         {
-            foreach (var comp in this.Components)
-                comp.Value.SyncWrite(w);
+            foreach (var comp in this.Components.Values)
+                comp.SyncWrite(w);
         }
 
         internal void SyncRead(IDataReader r)
         {
-            foreach (var comp in this.Components)
-                comp.Value.SyncRead(this, r);
+            foreach (var comp in this.Components.Values)
+                comp.SyncRead(this, r);
         }
 
         internal int GetOwner()
@@ -1491,7 +1501,10 @@ namespace Start_a_Town_
             PacketSyncSetStacksize = Registry.PacketHandlers.Register(SyncSetStacksize);
             PacketSyncAbsorb = Registry.PacketHandlers.Register(SyncAbsorb);
         }
-
+        protected GameObject()
+        {
+            this.Components = new(this);
+        }
         public void SyncInstantiate(NetEndpoint net)
         {
             if (net is not Server server)

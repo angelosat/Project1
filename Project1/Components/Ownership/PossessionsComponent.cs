@@ -28,13 +28,13 @@ namespace Start_a_Town_
             if (this.Rooms.Contains(room))
                 throw new Exception();
             this.Rooms.Add(room);
-            room.AddOwner(this.Parent as Actor);
+            room.AddOwner(this.Owner as Actor);
         }
         public void Unclaim(Room room)
         {
             if (!this.Rooms.Remove(room))
                 throw new Exception();
-            room.RemoveOwner(this.Parent as Actor);
+            room.RemoveOwner(this.Owner as Actor);
         }
 
         public IEnumerable<T> GetOwned<T>() where T : BlockEntity => this.Furniture.OfType<T>();

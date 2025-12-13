@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.Animations;
 using Start_a_Town_.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_.Components
 {
-    public class SpriteComp : EntityComp
+    public class SpriteComp : EntityComp<SpriteComp.Props>
     {
         public override string Name { get; } = "Sprite";
         readonly static bool PreciseAlphaHitTest = false;
@@ -130,38 +130,68 @@ namespace Start_a_Town_.Components
             Variation = 0;
             Orientation = 0;
         }
-        public override void AttachTo(GameObject parent)
+
+        public override void Resolve()
         {
-            var def = parent.Def;
-            this.Body = def.Body.Clone();
+            var def = this.Owner.Def;
+            //this.Body = def.Body.Clone();
+            this.Body.MakeChildOf(this.Owner);
             this.Body.Material = def.DefaultMaterial;
             this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
 
-            this.Sprite = def.DefaultSprite ?? def.Body.Sprite;
+            //this.Sprite = def.DefaultSprite ?? def.Body.Sprite;
+            this.Sprite = def.DefaultSprite ?? this.Body.Sprite;
             this.DefaultBody = this.Body;
 
-            InitMaterials(def);
+            //InitMaterials(def);
+            var queue = new Queue<Bone>();
+            queue.Enqueue(this.Body);
+            //queue.Enqueue(def.Body);
+            while (queue.Any())
+            {
+                var current = queue.Dequeue();
+                this.SetMaterial(current.Def, def.DefaultMaterial);
+                foreach (var j in current.Joints.Values)
+                    if (j.Bone != null)
+                        queue.Enqueue(j.Bone);
+            }
+
 
             this.Customization = new CharacterColors(this.Body).Randomize();
             Variation = 0;
             Orientation = 0;
+
+            //var def = this.Owner.Def;
+            //this.Body = def.Body.Clone();
+            //this.Body.MakeChildOf(this.Owner);
+            //this.Body.Material = def.DefaultMaterial;
+            //this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
+
+            //this.Sprite = def.DefaultSprite ?? def.Body.Sprite;
+            //this.DefaultBody = this.Body;
+
+            //InitMaterials(def);
+
+            //this.Customization = new CharacterColors(this.Body).Randomize();
+            //Variation = 0;
+            //Orientation = 0;
         }
-        public SpriteComp(ItemDef def)
-              : this()
-        {
-            this.Body = def.Body.Clone();
-            this.Body.Material = def.DefaultMaterial;
-            this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
+        //public SpriteComp(ItemDef def)
+        //      : this()
+        //{
+        //    this.Body = def.Body.Clone();
+        //    this.Body.Material = def.DefaultMaterial;
+        //    this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
 
-            this.Sprite = def.DefaultSprite ?? def.Body.Sprite;
-            this.DefaultBody = this.Body;
+        //    this.Sprite = def.DefaultSprite ?? def.Body.Sprite;
+        //    this.DefaultBody = this.Body;
 
-            InitMaterials(def);
+        //    InitMaterials(def);
 
-            this.Customization = new CharacterColors(this.Body).Randomize();
-            Variation = 0;
-            Orientation = 0;
-        }
+        //    this.Customization = new CharacterColors(this.Body).Randomize();
+        //    Variation = 0;
+        //    Orientation = 0;
+        //}
         public SpriteComp Initialize(Bone bodySprite, Sprite fullSprite)
         {
             this.Sprite = fullSprite;
@@ -181,19 +211,19 @@ namespace Start_a_Town_.Components
             Orientation = 0;
             return this;
         }
-        private void InitMaterials(ItemDef def)
-        {
-            var queue = new Queue<Bone>();
-            queue.Enqueue(def.Body);
-            while (queue.Any())
-            {
-                var current = queue.Dequeue();
-                this.SetMaterial(current.Def, def.DefaultMaterial);
-                foreach (var j in current.Joints.Values)
-                    if (j.Bone != null)
-                        queue.Enqueue(j.Bone);
-            }
-        }
+        //private void InitMaterials(ItemDef def)
+        //{
+        //    var queue = new Queue<Bone>();
+        //    queue.Enqueue(def.Body);
+        //    while (queue.Any())
+        //    {
+        //        var current = queue.Dequeue();
+        //        this.SetMaterial(current.Def, def.DefaultMaterial);
+        //        foreach (var j in current.Joints.Values)
+        //            if (j.Bone != null)
+        //                queue.Enqueue(j.Bone);
+        //    }
+        //}
 
         internal override void Initialize(Entity parent, Dictionary<string, MaterialDef> ingredients)
         {
@@ -235,7 +265,7 @@ namespace Start_a_Town_.Components
         }
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             if (this.Body == null)
                 this.Body = this.DefaultBody;
             var nextAnimations = new List<Animation>();
@@ -307,11 +337,6 @@ namespace Start_a_Town_.Components
             Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
 
             this.DrawShadow(camera, spriteBounds, parent);
-        }
-
-        public override void MakeChildOf(GameObject parent)
-        {
-            Body.MakeChildOf(parent);
         }
 
         static public void DrawPreview(SpriteBatch sb, Camera camera, Vector3 global, GameObject obj)
@@ -545,7 +570,21 @@ namespace Start_a_Town_.Components
                 tooltip.AddControlsBottomLeft(new Label(string.Format("{0}: {1}", b.Def.Label, mat?.Name ?? "undefined")) { TextColor = mat?.Color ?? Color.Gray });
             }
         }
-        public new class Props : Props<SpriteComp> { }
+        public new class Props : Props<SpriteComp>
+        {
+            public readonly Bone RootBone;
+            public Props(Bone rootBone)
+            {
+                this.RootBone = rootBone;
+            }
+            protected override void ApplyTo(SpriteComp comp)
+            {
+                //comp.Body = rootBone.Clone();
+                comp.DefaultBody = comp.Body = this.RootBone.Clone();
+                comp.CachedMinimumRectangle = comp.Body.GetMinimumRectangle();
+                comp.Customization = new CharacterColors(comp.Body).Randomize();
+            }
+        }
         //class Props : ComponentProps
         //{
         //    public override Type CompClass => typeof(SpriteComp);
@@ -574,7 +613,7 @@ namespace Start_a_Town_.Components
 
         public override Control GetParametrizer()
         {
-            var parametrizableBones = this.Materials.Keys.Where(b => this.Parent.Def.CraftingProperties?.Reagents.ContainsKey(b) ?? false);
+            var parametrizableBones = this.Materials.Keys.Where(b => this.Owner.Def.CraftingProperties?.Reagents.ContainsKey(b) ?? false);
             var allMats = Def.GetDefs<MaterialDef>();
             foreach (var bone in parametrizableBones)
             {

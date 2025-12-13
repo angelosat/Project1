@@ -26,7 +26,7 @@ namespace Start_a_Town_.Components
 
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             if (this.FuseMax == -1)
                 return;
             if (!this.Exploded)

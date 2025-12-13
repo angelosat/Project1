@@ -14,7 +14,7 @@ namespace Start_a_Town_.Components
         public List<Need> NeedsNew;
         public NeedsComponent(Actor actor)
         {
-            this.Parent = actor;
+            this.Owner = actor;
             var def = actor.Def;
             var defs = def.ActorProperties.Needs;
             var size = defs.Length;
@@ -35,7 +35,7 @@ namespace Start_a_Town_.Components
         {
             foreach (var d in defs)
                 //this.NeedsNew.Add(d.Create(this.Parent as Actor));
-                this.NeedsNew.Add(new Need(this.Parent as Actor, d));
+                this.NeedsNew.Add(new Need(this.Owner as Actor, d));
         }
 
         public override void Tick()
@@ -52,12 +52,12 @@ namespace Start_a_Town_.Components
 
         public override object Clone()
         {
-            return new NeedsComponent(this.Parent as Actor);
+            return new NeedsComponent(this.Owner as Actor);
         }
-        public override void AttachTo(GameObject parent)
+        public override void Resolve()
         {
             foreach (var n in this.NeedsNew)
-                n.Parent = parent as Actor;
+                n.Parent = this.Owner as Actor;
         }
         public override void OnObjectSynced(GameObject parent)
         {
@@ -119,7 +119,7 @@ namespace Start_a_Town_.Components
                 var panel = new PanelLabeled(cat.Key.Label) { Location = box.BottomLeft };
                 foreach (var n in cat)
                 {
-                    var ui = n.GetUI(this.Parent);
+                    var ui = n.GetUI(this.Owner);
                     ui.Location = panel.Controls.BottomLeft;
                     panel.AddControls(ui);
                 }
@@ -153,7 +153,7 @@ namespace Start_a_Town_.Components
                 var panel = new PanelLabeled(cat.Key.Label) { Location = box.BottomLeft };
                 foreach (var n in cat)
                 {
-                    var ui = n.GetUI(this.Parent);
+                    var ui = n.GetUI(this.Owner);
                     ui.Location = panel.Controls.BottomLeft;
                     panel.AddControls(ui);
                 }

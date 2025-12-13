@@ -49,9 +49,9 @@ namespace Start_a_Town_
         public Progress Progress = new();
         int _creator, _orderid;
         Actor _creatorCached;
-        public Actor Creator => this._creatorCached ??= this.Parent.World.GetEntity<Actor>(this._creator);
+        public Actor Creator => this._creatorCached ??= this.Owner.World.GetEntity<Actor>(this._creator);
         CraftOrder _orderCached;
-        public CraftOrder Order => this._orderCached ??= this.Parent.Map.Town.CraftingManager.GetOrder(this._orderid);
+        public CraftOrder Order => this._orderCached ??= this.Owner.Map.Town.CraftingManager.GetOrder(this._orderid);
         public ContainerList Contents = new();
         public override object Clone()
         {
@@ -64,9 +64,9 @@ namespace Start_a_Town_
             this._creatorCached = creator;
             this.Product = product;
             this.Progress.Max = product.WorkAmount;
-            this.Parent.Physics.SetWeight(product.Product.Physics.Weight);
-            this.Parent.Name = $"Unfinished {product.Product.Def.Label}";
-            ((Entity)this.Parent).SetMaterial(product.Product.PrimaryMaterial);
+            this.Owner.Physics.SetWeight(product.Product.Physics.Weight);
+            this.Owner.Name = $"Unfinished {product.Product.Def.Label}";
+            ((Entity)this.Owner).SetMaterial(product.Product.PrimaryMaterial);
             foreach (var item in product.RequirementsNew.Values.Select(t => t.Object).Distinct())
                 this.Contents.Add(item);
         }
@@ -97,14 +97,14 @@ namespace Start_a_Town_
         }
         private void Cancel()
         {
-            if (this.Parent.Net is not Server)
+            if (this.Owner.Net is not Server)
                 return;
             foreach(var item in this.Contents.ToList()) //tolist because spawning them automatically removes them from their container
             {
-                item.Global = this.Parent.Global;
-                item.SyncSpawnNew(this.Parent.Map);
+                item.Global = this.Owner.Global;
+                item.SyncSpawnNew(this.Owner.Map);
             }
-            this.Parent.SyncDispose();
+            this.Owner.SyncDispose();
             //this.Order.UnfinishedItem = null;
         }
         internal override void SaveExtra(SaveTag tag)

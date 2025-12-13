@@ -737,10 +737,14 @@ namespace Start_a_Town_
                 Coords.Rotate(camera, x, y, out float rx, out float ry);
                 Vector3 rotated = new(rx, ry, z);
 
-                if (!obj.Components.ContainsKey("Sprite"))
+                //if (!obj.Components.ContainsKey("Sprite"))
+                //    continue;
+
+                if (!obj.TryGetComponent<SpriteComp>(out var spriteComp))
                     continue;
 
-                Sprite sprite = obj.GetComponent<SpriteComp>().Sprite;
+                //Sprite sprite = obj.GetComponent<SpriteComp>().Sprite;
+                Sprite sprite = spriteComp.Sprite;
                 Rectangle spriteBounds = sprite.GetBounds();
                 Rectangle screenBounds = camera.GetScreenBounds(global, spriteBounds);
                 screenBounds.X -= Graphics.Borders.Thickness;

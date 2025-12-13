@@ -14,7 +14,7 @@ namespace Start_a_Town_
         public void Apply(EffectDef effect)
         {
             this.ActiveEffects.Add(new EntityEffectWrapper(effect));
-            effect.Worker.OnStart(this.Parent as Actor);
+            effect.Worker.OnStart(this.Owner as Actor);
         }
         internal void Remove(EffectDef effect)
         {

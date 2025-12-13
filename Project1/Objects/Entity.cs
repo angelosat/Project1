@@ -34,9 +34,10 @@ namespace Start_a_Town_
         //}
         public Entity()
         {
+            this.AddComponent(new PositionComponent());
             this.AddComponent(new DefComponent());
-            this.AddComponent<PhysicsComponent>();
-            this.AddComponent<SpriteComp>(); // add this only through comp props
+            this.AddComponent(new PhysicsComponent());
+            //this.AddComponent(new SpriteComp()); // add this only through comp props
         }
         public Entity(ItemDef def) : this()
         {
@@ -51,14 +52,13 @@ namespace Start_a_Town_
 
         internal void InitComps()
         {
-            foreach(var prop in this.Def.CompProps)
+            foreach (var prop in this.Def.CompProps)
             {
                 var comp = prop.CreateComp();
                 prop.Apply(comp);
                 this.AddComponent(comp);
             }
-            foreach (var c in this.Components.Values)
-                c.AttachTo(this);
+            this.Components.Resolve();
         }
 
         internal bool ProvidesSkill(ToolUseDef skill)

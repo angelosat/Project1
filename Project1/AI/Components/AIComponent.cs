@@ -60,9 +60,9 @@ namespace Start_a_Town_
             this.Enabled = false;
         }
 
-        public override void MakeChildOf(GameObject parent)
+        public override void Resolve()
         {
-            this.State = new AIState(parent as Actor) { Knowledge = this.Knowledge };
+            this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
         }
 
         public AIComponent Initialize(Behavior root)
@@ -78,7 +78,7 @@ namespace Start_a_Town_
 
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             var net = parent.Net;
             if (net is Client) // do i want to run some deterministic behaviors locally too? UPDATE: NO
                 return;
@@ -91,9 +91,9 @@ namespace Start_a_Town_
 
         public override void OnSpawn(MapBase newMap)
         {
-            this.State.Leash = this.Parent.Global;
+            this.State.Leash = this.Owner.Global;
             //this._unListen = this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
-            this.Parent.Map.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
+            this.Owner.Map.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
             this.State.ItemPreferences.OnSpawn(newMap);
         }
         public override void OnDespawnExtra(MapBase oldmap)
@@ -102,7 +102,7 @@ namespace Start_a_Town_
         }
         public override void OnObjectSynced(GameObject parent)
         {
-            this.Parent.Map?.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
+            this.Owner.Map?.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
         }
         //Action _unListen;
         //public override void OnDespawn()
@@ -122,7 +122,7 @@ namespace Start_a_Town_
 
         void HandleBlocksChange(BlocksUpdatedEvent e)
         {
-            if (!this.State.Path?.IsValid(this.Parent as Actor) ?? false)
+            if (!this.State.Path?.IsValid(this.Owner as Actor) ?? false)
             {
                 this.State.Path = null;
             }

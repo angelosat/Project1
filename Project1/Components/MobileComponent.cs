@@ -96,11 +96,11 @@ namespace Start_a_Town_.Components
             EmitDust(parent);
         }
 
-        public override void AttachTo(GameObject parent)
+        public override void Resolve()
         {
-            parent.AddAnimation(this.AnimationJump);
-            parent.AddAnimation(this.AnimationWalk); // why not add it on creation?
-            parent.AddAnimation(this.AnimationCrouch);
+            this.Owner.AddAnimation(this.AnimationJump);
+            this.Owner.AddAnimation(this.AnimationWalk); // why not add it on creation?
+            this.Owner.AddAnimation(this.AnimationCrouch);
         }
 
         public void Toggle(GameObject parent, bool toggle)
@@ -218,7 +218,7 @@ namespace Start_a_Town_.Components
 
         private void HandleEntityHitGround(EntityHitGroundEvent e)
         {
-            if (e.Entity != this.Parent)
+            if (e.Entity != this.Owner)
                 return;
             this.AnimationWalk.Frame = 0;
             this.OnLanded();
@@ -231,7 +231,7 @@ namespace Start_a_Town_.Components
 
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             var midair = parent.Physics.MidAir;
             if (this.JumpCooldown > 0)
                 this.JumpCooldown--;

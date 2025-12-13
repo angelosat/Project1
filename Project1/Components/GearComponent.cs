@@ -23,13 +23,10 @@ namespace Start_a_Town_
         {
             base.OnObjectLoaded(parent);
         }
-        public override void AttachTo(GameObject parent)
+        
+        public override void Resolve()
         {
-            base.AttachTo(parent);
-        }
-        public override void MakeChildOf(GameObject parent)
-        {
-            parent.RegisterContainer(this.Equipment);
+            this.Owner.RegisterContainer(this.Equipment);
         }
       
         public Container Equipment = new() { Name = "Equipment" };
@@ -145,7 +142,7 @@ namespace Start_a_Town_
         }
         protected void Equip(Entity item)
         {
-            if (!this.Parent.Inventory.Contains(item))
+            if (!this.Owner.Inventory.Contains(item))
                 throw new Exception();
             var slotType = item.Def.GearType;
             var slot = this.GetSlot(slotType);
@@ -155,14 +152,14 @@ namespace Start_a_Town_
 
             // the previousItem is currently detached from a parent but still exists, so we have to explicitly insert it in the inventory
             if(previousItem != null)
-                this.Parent.Inventory.Insert(previousItem);
+                this.Owner.Inventory.Insert(previousItem);
 
             this.RefreshStats();
-            this.Parent.Net.Events.Post(new ActorGearUpdatedEvent(this.Parent as Actor, item, previousItem as Entity));
+            this.Owner.Net.Events.Post(new ActorGearUpdatedEvent(this.Owner as Actor, item, previousItem as Entity));
         }
         protected void Unequip(GearType slotType)
         {
-            var actor = this.Parent as Actor;
+            var actor = this.Owner as Actor;
             var slot = this.GetSlot(slotType);
             var item = slot.Object;
             ArgumentNullException.ThrowIfNull(item);
@@ -175,7 +172,7 @@ namespace Start_a_Town_
         {
             ArgumentNullException.ThrowIfNull(item);
 
-            var actor = this.Parent as Actor;
+            var actor = this.Owner as Actor;
             var slotType = item.Def.GearType;
             var gearSlot = actor.Gear.GetSlot(slotType);
             var previousItem = gearSlot.Object as Entity;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -84,6 +85,11 @@ namespace Start_a_Town_
         public ItemDef SetMadeFrom(params MaterialTypeDef[] types)
         {
             this.ValidMaterialTypes.AddRange(types);
+            return this;
+        }
+        public ItemDef AddProp(EntityComp.Props prop)
+        {
+            this.CompProps.Add(prop);
             return this;
         }
         public IEnumerable<MaterialDef> GetValidMaterials()

@@ -117,7 +117,7 @@ namespace Start_a_Town_
         readonly Button BtnOwner = new("Owner");
         internal override IEnumerable<Button> GetTabs()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             //dimensions 200, 200, 
             if (ActorList is null)
                 ActorList = new ListBoxNoScroll<Actor, Button>(a => new Button(a?.Name ?? "none", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, parent.RefId, a?.RefId ?? -1)))

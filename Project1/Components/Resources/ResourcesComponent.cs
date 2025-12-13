@@ -78,10 +78,10 @@ namespace Start_a_Town_
         {
             return new ResourcesComponent(this.Resources);
         }
-        public override void AttachTo(GameObject parent)
+        public override void Resolve()
         {
             foreach (var r in this.Resources)
-                r.Parent = parent as Actor;
+                r.Parent = this.Owner as Actor;
         }
 
         public override string ToString()
@@ -160,23 +160,23 @@ namespace Start_a_Town_
         {
             base.OnObjectSynced(parent);
             foreach (var r in this.Resources)
-                r.Resolve(this.Parent as Entity);
+                r.Resolve(this.Owner as Entity);
         }
         public override void OnSpawn(MapBase newMap)
         {
             foreach (var r in this.Resources)
-                r.Resolve(this.Parent as Entity);
+                r.Resolve(this.Owner as Entity);
         }
         public override void OnDespawnExtra(MapBase oldMap)
         {
             foreach (var r in this.Resources)
-                r.OnDespawn(this.Parent as Entity);
+                r.OnDespawn(this.Owner as Entity);
         }
 
         internal void AdjustAndSync(ResourceDef def, float v)
         {
             this.Adjust(def, v);
-            Resource.Packets.SendAdjust(this.Parent as Actor, def, v);
+            Resource.Packets.SendAdjust(this.Owner as Actor, def, v);
         }
 
         internal void Adjust(ResourceDef def, float v)

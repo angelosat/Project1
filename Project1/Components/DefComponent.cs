@@ -16,7 +16,7 @@ namespace Start_a_Town_
         public string CustomName = "";
         public string ParentName
         {
-            get => string.IsNullOrEmpty(this.CustomName) ? this.Parent.Def.Label : this.CustomName; 
+            get => string.IsNullOrEmpty(this.CustomName) ? this.Owner.Def.Label : this.CustomName; 
             set => this.CustomName = value;
         }
 

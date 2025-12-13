@@ -39,14 +39,14 @@ namespace Start_a_Town_.Components
         {
             this.GrowthNew.Percentage = initialGrowth;
         }
-        public override void MakeChildOf(GameObject parent)
+        public override void Resolve()
         {
-            parent.Body.ScaleFunc = () => .25f + .75f * this.GrowthNew.Percentage;
+            this.Owner.Body.ScaleFunc = () => .25f + .75f * this.GrowthNew.Percentage;
         }
 
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             if (this.GrowthNew.IsFinished)
                 return;
             this.GrowthTick++;

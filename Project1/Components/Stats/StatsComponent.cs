@@ -39,7 +39,7 @@ namespace Start_a_Town_.Components
         {
             var gui = GUITable ??= new TableScrollableCompact<StatDef>()
                 .AddColumn("name", "", 128, a => new Label(a.Label) { HoverText = a.Description })
-                .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.GetValue(this.Parent).ToString()));
+                .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.GetValue(this.Owner).ToString()));
             gui.ClearItems();
             gui.AddItems(StatDef.NpcStatPackage);
             box.AddControlsBottomLeft(gui);
@@ -49,7 +49,7 @@ namespace Start_a_Town_.Components
         {
             var gui = GUITable ??= new TableScrollableCompact<StatDef>()
                 .AddColumn("name", "", 64, a => new Label(a.Label))
-                .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.GetValue(this.Parent).ToString()));
+                .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.GetValue(this.Owner).ToString()));
             gui.ClearItems();
             gui.AddItems(StatDef.NpcStatPackage);
             return GUITable;

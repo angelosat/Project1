@@ -46,7 +46,7 @@ namespace Start_a_Town_.Components
 
         public void Perform(Interaction task, TargetArgs target)
         {
-            var parent = this.Parent as Actor;
+            var parent = this.Owner as Actor;
             task.Actor = parent;
             task.Target = target;
             if (task == null)
@@ -67,7 +67,7 @@ namespace Start_a_Town_.Components
 
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             if (this.Task == null)
                 return;
 
@@ -118,7 +118,7 @@ namespace Start_a_Town_.Components
             this.Target = TargetArgs.Read(null, r);
             var interactionType = r.ReadString();
             var interaction = Activator.CreateInstance(Type.GetType(interactionType)) as Interaction;
-            interaction.Actor = this.Parent as Actor;
+            interaction.Actor = this.Owner as Actor;
             interaction.Target = this.Target;
             if (interaction.Actor is null)
                 throw new Exception();
@@ -147,7 +147,7 @@ namespace Start_a_Town_.Components
             this.Target = new TargetArgs(save["Target"]);
             var interactionTag = save["Interaction"];
             var inter = Interaction.Load(interactionTag);
-            inter.Actor = this.Parent as Actor;
+            inter.Actor = this.Owner as Actor;
             inter.Target = this.Target;
             //inter.Animation?.Load(save["Animation"]);
             this.Task = inter;

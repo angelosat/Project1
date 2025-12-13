@@ -31,7 +31,7 @@ namespace Start_a_Town_
 
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
 
             if (this.TicksRemaining <= 0)
             {

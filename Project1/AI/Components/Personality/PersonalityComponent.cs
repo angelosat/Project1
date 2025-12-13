@@ -172,7 +172,7 @@ namespace Start_a_Town_
 
         public void NewGui(GroupBox box)
         {
-            var actor = this.Parent as Actor;
+            var actor = this.Owner as Actor;
             var p = actor.Personality;
             var boxtraits = new GroupBox();
             foreach (var t in p.Traits)

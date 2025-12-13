@@ -29,7 +29,7 @@ namespace Start_a_Town_.Components
                 this._fruitBone.Sprite = this.IsHarvestable ? this._spriteFruit : null;
         }
         Bone _fruitBone;
-        float GrowthRate => (this.Parent.Map.Sunlight - .5f) * 2;
+        float GrowthRate => (this.Owner.Map.Sunlight - .5f) * 2;
 
         int GrowthTick, FruitGrowthTick;
         public enum GrowthStates { Growing, Ready }
@@ -49,14 +49,12 @@ namespace Start_a_Town_.Components
             }
         }
        
-        public override void AttachTo(GameObject parent)
+        public override void Resolve()
         {
-            if (this.PlantProperties is not null)
-                this.UpdateParent();
-        }
-        private void UpdateParent()
-        {
-            var parent = this.Parent;
+            if (this.PlantProperties is null)
+                return;
+
+            var parent = this.Owner;
             var plant = this.PlantProperties;
             var hitpoints = parent.GetResource(ResourceDefOf.HitPoints);
             hitpoints.Max = plant.StemMaterial.Density;
@@ -71,10 +69,9 @@ namespace Start_a_Town_.Components
                 this._fruitBone.Material = _plantProps.FruitMaterial;
             this.UpdateFruitTexture();
         }
-
         void UpdateFruitTexture()
         {
-            if (_spriteFruit is not null && this.Parent.Body.TryFindBone(BoneDefOf.PlantFruit, out var fruitBone) && this.IsHarvestable)
+            if (_spriteFruit is not null && this.Owner.Body.TryFindBone(BoneDefOf.PlantFruit, out var fruitBone) && this.IsHarvestable)
                 fruitBone.Sprite = this._spriteFruit;
         }
         float Length;
@@ -122,10 +119,10 @@ namespace Start_a_Town_.Components
         
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             var growthRate = this.PlantProperties.GrowthRate;
             this.TickWiggle();
-            var sunlight = this.Parent.Map.Sunlight;
+            var sunlight = this.Owner.Map.Sunlight;
             if (sunlight <= .5f)
                 return;
             float growthAmount = GrowthRate;
@@ -146,7 +143,7 @@ namespace Start_a_Town_.Components
                                     parent.Net.EventOccured((int)Message.Types.PlantReady, parent);
                                 //parent.Body.Sprite = this.PlantProperties.TextureGrown;
                                 parent.Body.Sprite = Sprite.Load(this.PlantProperties.TextureGrown);
-                                this.Parent.Body.FindBone(BoneDefOf.PlantFruit).Sprite = this._spriteFruit;
+                                this.Owner.Body.FindBone(BoneDefOf.PlantFruit).Sprite = this._spriteFruit;
                             }
                         }
                     }
@@ -182,7 +179,7 @@ namespace Start_a_Town_.Components
         }
         private void TickWiggle()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             var t = 1 - this.WiggleTick--/ (float)this.WiggleTickMax;
             if (t >= 1)
                 return;
@@ -257,7 +254,7 @@ namespace Start_a_Town_.Components
             this.GrowthFruit.Value = 0;
             this.FruitGrowthTick = 0;
             parent.Body.Sprite = Sprite.Load(this.PlantProperties.TextureGrowing);
-            this.Parent.Body.FindBone(BoneDefOf.PlantFruit).Sprite = null;
+            this.Owner.Body.FindBone(BoneDefOf.PlantFruit).Sprite = null;
         }
         public override void OnSpawn(MapBase newMap)
         {
@@ -266,7 +263,7 @@ namespace Start_a_Town_.Components
 
         private void HandleCollisionEvent(EntityCollisionEvent e)
         {
-            if (e.Target == this.Parent && this.Parent.Net.IsClient)
+            if (e.Target == this.Owner && this.Owner.Net.IsClient)
                 this.Wiggle();
         }
 

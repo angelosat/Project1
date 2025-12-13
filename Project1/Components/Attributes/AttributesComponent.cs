@@ -46,7 +46,7 @@ namespace Start_a_Town_.Components
         
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             for (int i = 0; i < this.Attributes.Length; i++)
                 this.Attributes[i].Update(parent);
         }
@@ -155,7 +155,7 @@ namespace Start_a_Town_.Components
 
         internal void Adjust(AttributeDef strength, float energyConsumption)
         {
-            this.GetAttribute(AttributeDefOf.Strength).Award(this.Parent, energyConsumption);
+            this.GetAttribute(AttributeDefOf.Strength).Award(this.Owner, energyConsumption);
         }
         public new class Props : Props<AttributesComponent>
         {

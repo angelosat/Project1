@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Start_a_Town_.Components;
+
+namespace Start_a_Town_
 {
     static class ActorDefOf
     {
@@ -46,17 +48,18 @@
                 TraitDefOf.Resilience ]
         };
 
-        static public readonly ItemDef Npc = new("Npc", typeof(Actor))
+        static public readonly ItemDef Npc = new ItemDef("Npc", typeof(Actor))
         {
             Description = "A person.",
             Height = 1.5f,
             Weight = 50,
-            Body = BodyDef.NpcNew,
+            //Body = BodyDef.NpcNew,
             DefaultMaterial = MaterialDefOf.Human,
             ActorProperties = NpcProps,
             Factory = Actor.Create,
             Size = ObjectSize.Haulable
-        };
+        }
+        .AddProp(new SpriteComp.Props(BodyDef.NpcNew));
 
         static ActorDefOf()
         {

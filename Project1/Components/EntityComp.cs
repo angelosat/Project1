@@ -5,10 +5,17 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Start_a_Town_.Components
 {
-    public abstract class EntityComp : Inspectable, ICloneable
+    public abstract class EntityComp<TConfig> : EntityComp
+    where TConfig : EntityComp.Props
+    {
+        public new TConfig Config => (TConfig)base.Config;
+    }
+
+    public abstract class EntityComp : Inspectable//, ICloneable
     {
         public override string Label => this.Name;
         public abstract string Name { get; }
@@ -16,11 +23,11 @@ namespace Start_a_Town_.Components
         {
             return this.Label;
         }
-
+        internal Props Config { get; private set; }
         public virtual void OnNameplateCreated(GameObject parent, Nameplate plate) { }
         public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate) { }
 
-        public GameObject Parent;
+        public GameObject Owner;
 
         public EntityComp()
         {
@@ -29,7 +36,20 @@ namespace Start_a_Town_.Components
             : this()
         { }
 
-        public abstract object Clone();
+        [Obsolete("Use Props-based creation instead.")]
+        public virtual object Clone()
+        {
+            var t = this.GetType(); // concrete component type
+            var props = Owner.Def.CompProps.First(p =>
+            {
+                var typeArg = p.GetType().BaseType.GetGenericArguments()[0];
+                return t.IsAssignableFrom(typeArg);
+            });
+
+            var newComp = props.CreateComp();
+            props.Apply(newComp);
+            return newComp;
+        }
 
         public virtual bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
         {
@@ -57,7 +77,7 @@ namespace Start_a_Town_.Components
         public virtual void OnDespawnExtra(MapBase oldmap) { }
         public virtual void OnDispose() { }
 
-        public virtual void AttachTo(GameObject parent) { }
+        public virtual void Resolve() { }
         public virtual void OnObjectLoaded(GameObject parent) { }
         public virtual void OnObjectSynced(GameObject parent) { }
         public virtual void SetMaterial(MaterialDef mat) { }
@@ -65,7 +85,7 @@ namespace Start_a_Town_.Components
         internal virtual void Initialize(Entity parent, Dictionary<string, MaterialDef> materials) { }
         internal virtual void Initialize(Entity parent, Quality quality) { }
 
-        public virtual void MakeChildOf(GameObject parent) { this.Parent = parent; }
+        //public virtual void MakeChildOf(GameObject parent) { this.Owner = parent; }
 
         public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e) { }
         public virtual void Draw(MySpriteBatch sb, GameObject parent, Camera camera) { }
@@ -166,7 +186,11 @@ namespace Start_a_Town_.Components
         {
             Type CompClass => typeof(T);
             internal sealed override T CreateComp() => new T();
-            internal sealed override void Apply(EntityComp comp) => this.ApplyTo((T)comp);
+            internal sealed override void Apply(EntityComp comp)
+            {
+                comp.Config = this;
+                this.ApplyTo((T)comp);
+            }
             protected virtual void ApplyTo(T comp) { }
         }
     }

@@ -19,7 +19,7 @@ namespace Start_a_Town_.Particles
         }
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
 
             foreach (var emitter in this.Emitters)
                 emitter.Update(parent.Map, parent.Global);

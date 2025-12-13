@@ -80,7 +80,7 @@ namespace Start_a_Town_.Components
 
         internal void SyncInsert(GameObject split)
         {
-            var actor = this.Parent as Actor;
+            var actor = this.Owner as Actor;
             var net = actor.Net;
             if (net is not Server server)
                 throw new Exception();
@@ -99,19 +99,17 @@ namespace Start_a_Town_.Components
             return obj1.Inventory.Contains(obj => obj == obj2) ? Vector3.Zero : null;
         }
 
-        public override void MakeChildOf(GameObject parent)
+        public override void Resolve()
         {
-            this.Parent = parent;
-
-            this.Contents.Parent = parent;
-            parent.RegisterContainer(this.HaulContainer);
+            this.Contents.Parent = this.Owner;
+            this.Owner.RegisterContainer(this.HaulContainer);
         }
         public void Throw(Vector3 velocity, int amount = -1)
         {
             if (this.HaulSlot.Object is null)
                 throw new Exception();
             Entity thrownItem;
-            var parent = this.Parent;
+            var parent = this.Owner;
             if (amount > 0 && amount <= this.HaulSlot.Object.StackSize)
             {
                 thrownItem = this.HaulSlot.Object as Entity;
@@ -157,7 +155,7 @@ namespace Start_a_Town_.Components
         public InventoryComponent()
             : base()
         {
-            this.Parent = null;
+            this.Owner = null;
             this.HaulContainer = new Container(1) { Name = "Hauling" };
             this.HaulSlot = this.HaulContainer.Slots.First();
         }
@@ -182,7 +180,7 @@ namespace Start_a_Town_.Components
         }
         public GameObject Drop(GameObject item, int amount)
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             var slot = this.Contents.First(i => i == item);
             // TODO instantiate new item if necessary
             if (amount < item.StackSize)
@@ -200,7 +198,7 @@ namespace Start_a_Town_.Components
         public void HaulNew(GameObject target, int amount)
         {
             GameObject finalItem;
-            var actor = this.Parent as Actor;
+            var actor = this.Owner as Actor;
             if (!target.IsHaulable)
                 throw new Exception();
             if (amount == 0)
@@ -245,7 +243,7 @@ namespace Start_a_Town_.Components
 
         public void Drop(GameObject item)
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             if (!this.Contents.Contains(item))
                 throw new Exception();
             this.Contents.Remove(item);
@@ -316,14 +314,14 @@ namespace Start_a_Town_.Components
 
         public bool Unequip(GameObject item)
         {
-            var slot = (this.Parent as Entity).Gear.GetSlot(item);
+            var slot = (this.Owner as Entity).Gear.GetSlot(item);
             return this.Receive(slot);
         }
         public bool Receive(GameObjectSlot objSlot, bool report = true)
         {
             // TODO: if can't receive, haul item instead or drop on ground?
             var obj = objSlot.Object as Entity;
-            var parent = this.Parent;
+            var parent = this.Owner;
             this.Contents.Add(obj);
             objSlot.Clear();
             if (report)
@@ -375,7 +373,7 @@ namespace Start_a_Town_.Components
         {
             foreach (var slot in this.Contents)
                 if (slot == item)
-                    return GearComponent.Equip(this.Parent, slot);
+                    return GearComponent.Equip(this.Owner, slot);
             return false;
         }
         public bool CheckWeight(GameObject obj)
@@ -387,7 +385,7 @@ namespace Start_a_Town_.Components
         {
             if (obj is null)
                 return true;
-            var parent = this.Parent;
+            var parent = this.Owner;
             var current = this.HaulSlot.Object;
 
             if (obj == current)
@@ -414,7 +412,7 @@ namespace Start_a_Town_.Components
 
         public bool Throw(Vector3 direction, bool all = false)
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             var velocity = direction * 0.1f + parent.Velocity;
             // throws hauled object, if hauling nothing throws equipped object, make it so it only throws hauled object?
             var slot = this.HaulSlot;

@@ -35,7 +35,7 @@ namespace Start_a_Town_.Components
         }
         public override void Tick()
         {
-            var parent = this.Parent;
+            var parent = this.Owner;
             foreach (var e in this.Emitters.ToList())
             {
                 e.Update(parent.Map, e.Source);

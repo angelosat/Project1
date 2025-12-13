@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
 using Start_a_Town_.Net;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -70,7 +71,9 @@ namespace Start_a_Town_
         }
         public Entity GetEntity(int refId)
         {
-            this.EntityRegistry.TryGetValue(refId, out var obj);
+            if (!this.EntityRegistry.TryGetValue(refId, out var obj))
+                //throw new Exception();
+                return null!; // dont throw because return might be null for early snapshots
             return obj;
         }
         public T? GetEntity<T>(int refId) where T : Entity
@@ -115,7 +118,7 @@ namespace Start_a_Town_
         public bool DisposeEntity(int netId)
         {
             if (!this.EntityRegistry.TryGetValue(netId, out Entity? o))
-                return false;
+                throw new Exception();
 
             /// TODO: don't flatten, instead make it recursive. detach each child from it's parent before disposing
             foreach (var obj in o.GetSelfAndChildren().ToList()) /// HACK solidify the list so that children can detach during iteration
@@ -126,24 +129,28 @@ namespace Start_a_Town_
                 obj.Net = null; // this also makes gameobject.isdisposed return true
                                 //obj.RefId = 0; // dont set it to 0 because systems must be able to remove this entity's reference by id
 
-                obj.Map?.Despawn(obj);
+                // remove from potential slot or container so that it gets detached from the parent entity and map.despawn() can remove if from the correct chunk by its true position,
+                // otherwise its parent position will be read
                 obj.Container?.Remove(obj);
                 obj.Slot?.SetItem(null, out var _);
+                obj.Map?.Despawn(obj);
+
                 //if (obj.IsSpawned || obj.Container is not null || obj.Slot is not null)
                 //    throw new Exception("entity must not be spawned, in a container, or in a slot, when disposing");
-                
-                    //obj.OnDespawn();
+
+                //obj.OnDespawn();
                 //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
                 //    this.DisposeObject(child);
             }
             this.Events.Post(new EntityDisposedEvent(o));
             return true;
         }
-        public bool DisposeEntityAndSync(Entity entity)
+        public void DisposeEntityAndSync(Entity entity)
         {
+            if (this.Net.IsClient)
+                return;
             if(this.DisposeEntity(entity.RefId))
                 PacketEntityDispose.Send(this.Net as Server, entity.RefId);
-            return false;
         }
         public EventBus Events { get; } = new();
         

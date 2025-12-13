@@ -36,7 +36,7 @@ namespace Start_a_Town_.Net
         {
             var id = a.Type;
             if (_eventBus.TryGetValue(id, out var list))
-                foreach (var i in list)
+                foreach (var i in list.ToList())
                     i.WrappedHandler(a);
         }
         /// <summary>

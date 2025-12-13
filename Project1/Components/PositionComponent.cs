@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System.IO;
 
 namespace Start_a_Town_.Components
 {

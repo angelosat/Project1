@@ -29,9 +29,9 @@ namespace Start_a_Town_.Components.Resources
         }
         protected override void updateRec(Resource resource)
         {
-            if (resource.RegenerateDelay.Value > 0)
+            if (resource.RechargingDelay.Value > 0)
             {
-                resource.RegenerateDelay.Value--;
+                resource.RechargingDelay.Value--;
                 return;
             }
         }

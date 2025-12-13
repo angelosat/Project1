@@ -40,7 +40,7 @@ namespace Start_a_Town_.Modules.Crafting
             this.AddControls(panelOrders, btnAddOrder);
             this.AlignTopToBottom();
 
-            this.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+            this.ListenTo<BlocksUpdatedEvent>(HandleBlocksChanged);
         }
         public override void HandleLButtonDown(System.Windows.Forms.HandledMouseEventArgs e)
         {
@@ -77,7 +77,7 @@ namespace Start_a_Town_.Modules.Crafting
         //            break;
         //    }
         //}
-        void HandleBlocksChanged(BlocksChangedEvent e)
+        void HandleBlocksChanged(BlocksUpdatedEvent e)
         {
             if (e.Positions.Contains(this.Global))
                 this.GetWindow().Hide();

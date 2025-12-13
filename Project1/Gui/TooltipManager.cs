@@ -122,9 +122,9 @@ namespace Start_a_Town_.UI
 
         internal static void Bind(NetEndpoint net)
         {
-            net.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+            net.Events.ListenTo<BlocksUpdatedEvent>(HandleBlocksChanged);
         }
-        static void HandleBlocksChanged(BlocksChangedEvent e)
+        static void HandleBlocksChanged(BlocksUpdatedEvent e)
         {
             var map = e.Map;
             var cells = e.Positions;

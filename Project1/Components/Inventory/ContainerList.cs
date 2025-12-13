@@ -79,14 +79,13 @@ namespace Start_a_Town_
             }
 
             ((ICollection<GameObject>)this.Contents).Add(item);
-            // despawn here???
-            //if (item.Net.IsClient)
-            //    throw new Exception();
-            if (item.IsSpawned)
-                item.OnDespawn();
-            item.Container?.Remove(item);
-            item.Slot?.Clear();
+        
+            //item.Container?.Remove(item);
+            //item.Slot?.Clear();
+            //item.Map?.Despawn(item);
+            item.Detach();
             item.Container = this;
+            item.Parent = this.Parent;
             (this.Parent as Actor).Log.Write($"Stored {item} in inventory");
 
         }
@@ -113,6 +112,7 @@ namespace Start_a_Town_
             if (item.Container != this)
                 throw new Exception();
             item.Container = null;
+            item.Parent = null;
             return ((ICollection<GameObject>)this.Contents).Remove(item);
         }
 

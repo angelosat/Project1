@@ -19,7 +19,7 @@ namespace Start_a_Town_.Components.Resources
         public override void Modify(Resource resource, float delta)
         {
             if (delta < 0)
-                resource.RegenerateDelay.Value = 0;
+                resource.RechargingDelay.Value = 0;
             base.Modify(resource, delta);
         }
        
@@ -32,7 +32,7 @@ namespace Start_a_Town_.Components.Resources
             switch (e.Type)
             {
                 case Message.Types.Jumped:
-                    resource.RegenerateDelay.Value = 0;// resource.Rec.Max;
+                    resource.RechargingDelay.Value = 0;// resource.Rec.Max;
                     return true;
 
                 default:
@@ -43,9 +43,9 @@ namespace Start_a_Town_.Components.Resources
         
         protected override void updateRec(Resource resource)
         {
-            if (resource.RegenerateDelay.Value < resource.RegenerateDelay.Max)
+            if (resource.RechargingDelay.Value < resource.RechargingDelay.Max)
             {
-                resource.RegenerateDelay.Value++;
+                resource.RechargingDelay.Value++;
                 return;
             }
         }
@@ -63,7 +63,7 @@ namespace Start_a_Town_.Components.Resources
         {
             var box = new GroupBox();
             var bar = base.GetControl(res);
-            var bar_StaminaRec = new Bar() { Object = res.RegenerateDelay, Location = bar.BottomLeft, Height = 2 };
+            var bar_StaminaRec = new Bar() { Object = res.RechargingDelay, Location = bar.BottomLeft, Height = 2 };
             box.AddControls(bar, bar_StaminaRec);
             return box;
         }

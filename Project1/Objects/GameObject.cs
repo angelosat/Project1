@@ -144,7 +144,7 @@ namespace Start_a_Town_
         }
         internal int GetUnreservedAmount()
         {
-            return this.Town.ReservationManager.GetUnreservedAmount(this);
+            return this.Map.Town.ReservationManager.GetUnreservedAmount(this);
         }
        
         public virtual void GetQuickButtons(SelectionManager info)
@@ -1540,8 +1540,9 @@ namespace Start_a_Town_
                 return;
 
             this.StackSize += obj.StackSize;
-            obj.OnDespawn();
-            obj.Dispose();
+            //obj.OnDespawn();
+            //obj.Dispose();
+            this.Map.World.DisposeEntityAndSync(obj as Entity);
         }
         public void SyncAbsorb(GameObject obj)
         {
@@ -1549,11 +1550,13 @@ namespace Start_a_Town_
             if (net is Client)
                 throw new Exception();
 
-            this.Absorb(obj);
+            // First send the absorb packet 
             var w = net.BeginPacket(PacketSyncAbsorb);
-
             w.Write(this.RefId);
             w.Write(obj.RefId);
+
+            // Otherwise dispose will sync first and the client won't have a target to absorb
+            this.Absorb(obj);
         }
         private static void SyncAbsorb(NetEndpoint net, Packet packet)
         {
@@ -1573,6 +1576,14 @@ namespace Start_a_Town_
         public IEnumerable<IntVec3> GetOccupyingCells()
         {
             return this.Def.OccupyingCellsStanding(this.Global.ToCell());
+        }
+
+        internal void Detach()
+        {
+            this.Container?.Remove(this);
+            this.Slot?.SetItem(null, out var _);
+            this.Parent = null;
+            this.Map?.Despawn(this);
         }
         #endregion
     }

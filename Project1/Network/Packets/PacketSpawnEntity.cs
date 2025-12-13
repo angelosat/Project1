@@ -28,10 +28,8 @@ namespace Start_a_Town_
             var entity = client.World.GetEntity(r.ReadInt32());
             var pos = r.ReadVector3();
             var vel = r.ReadVector3();
-            entity.Global = pos;
-            entity.Velocity = vel;
             //entity.Spawn(client.Map);
-            client.Map.Spawn(entity);
+            client.Map.Spawn(entity, pos, vel);
         }
     }
 }

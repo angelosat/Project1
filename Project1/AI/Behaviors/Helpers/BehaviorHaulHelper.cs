@@ -37,7 +37,7 @@ namespace Start_a_Town_
                         var amount = Math.Min(pot.StackSize, desiredAmount);
                         //actor.Reserve(task, pot, amount);
                         source.Reserve(pot, amount);
-                        task.SetTarget(itemIndex, new TargetArgs(pot));
+                        task.SetTarget(itemIndex, new TargetArgs(pot)); // no need to set the amount here because we can pull it from the reservation manager later
                         //actor.CurrentTaskBehavior.JumpTo(gotoBhav);
                         actor.AI.State.Behavior.JumpTo(gotoBhav);
                         actor.Net.ConsoleBox.Write("found new haul opportunity");

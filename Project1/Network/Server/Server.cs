@@ -556,10 +556,13 @@ namespace Start_a_Town_.Net
                     break;
 
                 case TargetType.Position:
-                    entity.Global = target.Global;
-                    this.Instantiate(entity);
-                    PacketEntityInstantiate.SendFromTemplate(this, templateID, entity);
-                    this.Map.SyncSpawnUntimestamped(entity);
+                    //entity.Global = target.Global;
+                    //this.Instantiate(entity);
+                    //PacketEntityInstantiate.SendFromTemplate(this, templateID, entity);
+                    //this.Map.SyncSpawnUntimestamped(entity);
+
+                    this.Map.World.RegisterAndSync(entity);
+                    this.Map.SpawnAndSync(entity, target.Global, Vector3.Zero);
                     break;
 
                 default:

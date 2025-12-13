@@ -110,6 +110,7 @@ namespace Start_a_Town_
             else if (velocity == Vector3.Zero)
                 this.Enabled = false;
             this.DetectEntityCollisions(parent, lastGlobal, next);
+
             // reset speed according to new position to prevent it from accumulating
             parent.Velocity = velocity;
 
@@ -437,13 +438,16 @@ namespace Start_a_Town_
             var parent = this.Parent;
             if (!parent.Net.IsServer)
                 return;
-                //throw new Exception("physics shouldn't run in clients");
-
+            //throw new Exception("physics shouldn't run in clients");
+            if (e.Source != this.Parent)
+                return;
             var otherItem = e.Target;
             if (otherItem.CanAbsorb(parent) && !parent.IsReserved)
+            {
                 /// revmoved the reserved check from canabsorb and placed it here, because canabsorb is called during legit behaviors that involve the items, 
                 /// which means the items are reserved but still should be absorbable
                 otherItem.SyncAbsorb(parent);
+            }
         }
      
         public override object Clone()

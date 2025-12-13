@@ -729,7 +729,7 @@ namespace Start_a_Town_
         public void NotifyBlocksChanged(IEnumerable<IntVec3> positions)
         {
             //this.Net.EventOccured((int)Components.Message.Types.BlocksChanged, this, positions);
-            this.Events.Post(new BlocksChangedEvent(this, positions));
+            this.Events.Post(new BlocksUpdatedEvent(this, positions));
             this.Town.OnBlocksChanged(positions);
         }
         public void NotifyBlockChanged(IntVec3 pos)
@@ -1017,7 +1017,7 @@ namespace Start_a_Town_
                     yield return kv;
             }
         }
-
+        [Obsolete("use map.spawnandsync()")]
         internal void SyncSpawn(GameObject obj, Vector3 global, Vector3 velocity)
         {
             obj.Global = global;
@@ -1039,8 +1039,10 @@ namespace Start_a_Town_
         internal virtual void OnHudCreated(Hud hud)
         {
         }
+        [Obsolete("use spawn(entity, position, velocity) instead")]
         internal void Spawn(Entity entity)
-        { 
+        {
+            throw new Exception();
             this.Spawn(entity, entity.Global, entity.Velocity);
         }
         //internal void Spawn(Entity entity, Vector3 position)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Start_a_Town_.UI;
 
@@ -45,6 +44,7 @@ namespace Start_a_Town_
             if (!this.Zones.TryGetValue(zoneID, out var zone))
                 throw new Exception();
             this.Zones.Remove(zoneID);
+            this.Map.Events.Post(new ZoneDeletedEvent(zone));
             FloatingText.Create(this.Map, zone.Average(), $"{zone.GetType()} deleted", ft => ft.Font = UIManager.FontBold);
         }
         void RegisterZone(Zone zone)

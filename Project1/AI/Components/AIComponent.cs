@@ -93,7 +93,7 @@ namespace Start_a_Town_
         {
             this.State.Leash = this.Parent.Global;
             //this._unListen = this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
-            this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
+            this.Parent.Map.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
             this.State.ItemPreferences.OnSpawn(newMap);
         }
         public override void OnDespawnExtra(MapBase oldmap)
@@ -102,7 +102,7 @@ namespace Start_a_Town_
         }
         public override void OnObjectSynced(GameObject parent)
         {
-            this.Parent.Map?.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
+            this.Parent.Map?.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
         }
         //Action _unListen;
         //public override void OnDespawn()
@@ -120,7 +120,7 @@ namespace Start_a_Town_
         //    }
         //}
 
-        void HandleBlocksChange(BlocksChangedEvent e)
+        void HandleBlocksChange(BlocksUpdatedEvent e)
         {
             if (!this.State.Path?.IsValid(this.Parent as Actor) ?? false)
             {

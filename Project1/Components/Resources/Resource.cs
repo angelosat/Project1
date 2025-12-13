@@ -32,7 +32,7 @@ namespace Start_a_Town_
         static Progress CreateCooldown() => new(0, Ticks.PerGameMinute, Ticks.PerGameMinute);
 
         public ResourceThreshold CurrentThreshold => this.ResourceDef.Worker.GetCurrentThreshold(this);
-        public Progress RegenerateDelay = CreateCooldown();
+        public Progress RechargingDelay = CreateCooldown();
         public float Percentage { get => this.Value / this.Max; set => this.Value = this.Max * value; }
         public float Min => 0;
 
@@ -46,9 +46,9 @@ namespace Start_a_Town_
         }
         public override void Tick()
         {
-            if(this.RegenerateDelay.Value < this.RegenerateDelay.Max)
+            if(this.RechargingDelay.Value < this.RechargingDelay.Max)
             {
-                this.RegenerateDelay.Value++;
+                this.RechargingDelay.Value++;
                 return;
             }
             this.ResourceDef.Worker.Tick(this);
@@ -87,7 +87,7 @@ namespace Start_a_Town_
         {
             this.ResourceDef.Worker.Modify(this, delta);
             if (delta < 0)
-                this.RegenerateDelay.Value = 0;
+                this.RechargingDelay.Value = 0;
         }
         public Resource Initialize(float max, float initPercentage)
         {
@@ -97,7 +97,7 @@ namespace Start_a_Town_
         }
         internal Resource Clone()
         {
-            return new Resource(this.ResourceDef) { Max = this.Max, Value = this.Value, RegenerateDelay = new Progress(0, this.RegenerateDelay.Max, this.RegenerateDelay.Value) };// this.Rec.Clone() };
+            return new Resource(this.ResourceDef) { Max = this.Max, Value = this.Value, RechargingDelay = new Progress(0, this.RechargingDelay.Max, this.RechargingDelay.Value) };// this.Rec.Clone() };
         }
 
         internal void HandleMessage(GameObject parent, ObjectEventArgs e)

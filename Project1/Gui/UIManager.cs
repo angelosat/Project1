@@ -670,7 +670,7 @@ namespace Start_a_Town_.UI
                 foreach (Control c in wins)
                     c.OnGameEvent(e);
             }
-            SelectionManager.Instance.OnGameEvent(e);
+            //SelectionManager.Instance.OnGameEvent(e);
         }
 
         static List<Rectangle> DivideScreenQuad(Rectangle screen, Rectangle rect)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Animations;
 
@@ -26,19 +27,23 @@ namespace Start_a_Town_
 
         public override void Perform()
         {
+            this.Animation.FadeOutAndRemove();
+            if (this.Actor.Net.IsClient)
+                return;
             var actor = this.Actor;
             var target = this.Target;
             var hauled = actor.Inventory.HaulSlot;// PersonalInventoryComponent.GetHauling(actor);
             var hauledObj = hauled.Object;
             if(hauledObj == null)
             {
+                throw new Exception();
                 actor.Net.ConsoleBox.Write(actor.Name + " tried to drop hauled object but was wan't hauling anything");
                 this.State = States.Failed;
                 return;
             }
             if (this.Amount > hauledObj.StackSize)
                 throw new Exception();
-            this.Animation.FadeOutAndRemove();
+            //this.Animation.FadeOutAndRemove();
 
             switch (target.Type)
             {
@@ -56,7 +61,14 @@ namespace Start_a_Town_
                     if (!o.CanAbsorb(hauledObj, transferAmount))
                         throw new Exception();
                     o.StackSize += transferAmount;
-                    hauledObj.StackSize -= transferAmount;
+                    PacketSetStackSize.Send(o, o.StackSize);
+                    if (hauledObj.StackSize == transferAmount)
+                        actor.Map.World.DisposeEntityAndSync(hauledObj as Entity);
+                    else
+                    {
+                        hauledObj.StackSize -= transferAmount;
+                        PacketSetStackSize.Send(hauledObj, hauledObj.StackSize);
+                    }
                     break;
 
                 default:

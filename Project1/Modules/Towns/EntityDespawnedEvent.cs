@@ -4,4 +4,8 @@
     {
         public readonly Entity Entity = entity;
     }
+    internal class ZoneDeletedEvent(Zone zone) : EventPayloadBase
+    {
+        public readonly Zone Zone = zone;
+    }
 }

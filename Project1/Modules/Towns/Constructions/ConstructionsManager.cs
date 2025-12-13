@@ -29,7 +29,7 @@ namespace Start_a_Town_
         public ConstructionsManager(Town town)
         {
             this.Town = town;
-            this.Town.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChanged);
+            this.Town.Map.World.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChanged);
         }
         readonly Dictionary<IntVec3, ConstructionParams> PendingDesignations = new();
         readonly HashSet<IntVec3> Designations = new();
@@ -84,7 +84,7 @@ namespace Start_a_Town_
         //            break;
         //    }
         //}
-        void HandleBlocksChanged(BlocksChangedEvent e)
+        void HandleBlocksChanged(BlocksUpdatedEvent e)
         {
             foreach (var pos in e.Positions)
                 this.TryHandlePendingDesignation(pos);

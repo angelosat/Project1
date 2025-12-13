@@ -28,7 +28,39 @@ namespace Start_a_Town_.UI
             HoverText = "Slice z-level"
         };
         public static readonly SelectionManager Instance = new();
+        public void Bind(NetEndpoint net)
+        {
+            var map = net.Map;
+            map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+            map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
+            map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
+        }
 
+        private void OnBlocksUpdated(BlocksUpdatedEvent e)
+        {
+            //throw new NotImplementedException();
+            if (this.Selectable is TargetArgs target && target.Type == TargetType.Position && e.Positions.Contains(target.Global))
+                this.Unselect();
+        }
+
+        private void OnEntityDespawned(EntityDespawnedEvent e)
+        {
+            if (this.Selectable == e.Entity)
+                this.Unselect();
+            else
+                 if (this.MultipleSelected.FirstOrDefault(t => t.Object == e.Entity) is TargetArgs t)
+                    this.MultipleSelected.Remove(t);
+        }
+
+        private void OnZoneDeleted(ZoneDeletedEvent e)
+        {
+            if (this.Selectable == e.Zone)
+                this.Unselect();
+        }
+        void Unselect()
+        {
+            this.SelectInternal(TargetArgs.Null);
+        }
         public TargetArgs SelectedSource = TargetArgs.Null;
         ISelectable Selectable;
         Window WindowInfo;
@@ -408,36 +440,36 @@ namespace Start_a_Town_.UI
             }
 
             /// do i really need this? i handle the blockschanged message anyway, and this causes problems for selecting undiscovered air blocks 
-            //if (!this.Selectable.Exists) 
-            //    this.SelectInternal(TargetArgs.Null);
+            if (!this.Selectable.Exists)
+                this.SelectInternal(TargetArgs.Null);
         }
-        internal void OnGameEvent(GameEvent e)
-        {
-            switch ((Components.Message.Types)e.Type)
-            {
-                //case Message.Types.BlocksChanged:
-                //    var map = e.Parameters[0] as MapBase;
-                //    var globals = e.Parameters[1] as IEnumerable<IntVec3>;
-                //    if (globals.Any(t => IsSelected(t)))
-                //        ClearTargets();
-                //    break;
+        //internal void OnGameEvent(GameEvent e)
+        //{
+        //    switch ((Components.Message.Types)e.Type)
+        //    {
+        //        //case Message.Types.BlocksChanged:
+        //        //    var map = e.Parameters[0] as MapBase;
+        //        //    var globals = e.Parameters[1] as IEnumerable<IntVec3>;
+        //        //    if (globals.Any(t => IsSelected(t)))
+        //        //        ClearTargets();
+        //        //    break;
 
-                case Message.Types.EntityDespawned:
-                    // TODO: deselect entity on despawn?
-                    var entity = e.Parameters[0] as GameObject;
-                    if (this.MultipleSelected.FirstOrDefault(t => t.Object == entity) is TargetArgs t)
-                        this.MultipleSelected.Remove(t);
-                    break;
+        //        case Message.Types.EntityDespawned:
+        //            // TODO: deselect entity on despawn?
+        //            var entity = e.Parameters[0] as GameObject;
+        //            if (this.MultipleSelected.FirstOrDefault(t => t.Object == entity) is TargetArgs t)
+        //                this.MultipleSelected.Remove(t);
+        //            break;
 
-                default:
-                    break;
-            }
-        }
-        internal static void Bind(NetEndpoint net)
-        {
-            net.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
-        }
-        static void HandleBlocksChanged(BlocksChangedEvent e)
+        //        default:
+        //            break;
+        //    }
+        //}
+        //internal static void Bind(NetEndpoint net)
+        //{
+        //    net.Events.ListenTo<BlocksUpdatedEvent>(HandleBlocksChanged);
+        //}
+        static void HandleBlocksChanged(BlocksUpdatedEvent e)
         {
             if(Engine.Map == e.Map)
                 if (e.Positions.Any(t => IsSelected(t)))

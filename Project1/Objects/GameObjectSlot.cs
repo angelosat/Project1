@@ -73,7 +73,10 @@ namespace Start_a_Town_
                     if (!this.Filter(value))
                         return;
                 if (this._object != null)
+                {
                     this._object.Slot = null;
+                    this._object.Parent = null;
+                }
                 _object = value;
                 ObjectChangedAction(value);
                 OnObjectChanged();
@@ -152,8 +155,11 @@ namespace Start_a_Town_
             prevItem = this._object;
             if (newItem is not null && !this.Filter(newItem))
                     return false;
-            if (this._object != null)
-                this._object.Slot = null;
+            if (prevItem != null)
+            {
+                prevItem.Slot = null;
+                prevItem.Parent = null;
+            }
             this._object = newItem;
             this.ObjectChangedAction(newItem);
             this.OnObjectChanged();
@@ -196,8 +202,7 @@ namespace Start_a_Town_
 
         public List<SaveTag> Save()
         {
-            List<SaveTag> data = new List<SaveTag>();
-            data.Add(new SaveTag(SaveTag.Types.Compound, "Object", Object.SaveInternal()));
+            List<SaveTag> data = [new SaveTag(SaveTag.Types.Compound, "Object", Object.SaveInternal())];
             return data;
         }
 

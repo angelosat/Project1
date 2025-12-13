@@ -67,7 +67,7 @@ namespace Start_a_Town_
             foreach (var r in this.Designations.Values)
                 r.CollectionChanged += this.R_CollectionChanged;
 
-            this.Town.Map.Events.ListenTo<BlocksChangedEvent>(this.OnBlocksChanged);
+            this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(this.OnBlocksChanged);
             this.Town.Map.Events.ListenTo<EntityDespawnedEvent>(this.OnEntityDespawn);
 
         }
@@ -177,7 +177,7 @@ namespace Start_a_Town_
         //            break;
         //    }
         //}
-        void OnBlocksChanged(BlocksChangedEvent e)
+        void OnBlocksChanged(BlocksUpdatedEvent e)
         {
             foreach (var des in this.Designations)
             {

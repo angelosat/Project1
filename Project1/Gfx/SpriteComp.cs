@@ -573,6 +573,8 @@ namespace Start_a_Town_.Components
         public new class Spec : Spec<SpriteComp>
         {
             public readonly Bone RootBone;
+            //Dictionary<BoneDef, Sprite> Overrides;
+            public (BoneDef, Sprite)[] Overrides;
             public Spec(Bone rootBone)
             {
                 this.RootBone = rootBone;

@@ -46,7 +46,9 @@ namespace Start_a_Town_.Components
                 var server = net as Server;
                 //if (net is Server server)
                 actor.Inventory.Insert(item);
-                server.OutgoingStreamTimestamped.Write(PacketSyncInsert, actor.RefId, item.RefId);
+                server.BeginPacket(PacketSyncInsert)
+                    .Write(actor.RefId)
+                    .Write(item.RefId);
             }
             private static void HandleSyncInsert(NetEndpoint net, Packet pck)
             {
@@ -59,14 +61,14 @@ namespace Start_a_Town_.Components
                     actor.Inventory.Insert(item);
             }
 
-            public static void SyncSetHaulSlot(INetEndpoint net, Actor actor, Entity item)
-            {
-                var server = net as Server;
-                var w = server.OutgoingStreamTimestamped;// .GetOutgoingStream();
-                w.Write(PacketSetHaulSlot);
-                w.Write(actor.RefId);
-                w.Write(item.RefId);
-            }
+            //public static void SyncSetHaulSlot(INetEndpoint net, Actor actor, Entity item)
+            //{
+            //    var server = net as Server;
+            //    var w = server.OutgoingStreamTimestamped;// .GetOutgoingStream();
+            //    w.Write(PacketSetHaulSlot);
+            //    w.Write(actor.RefId);
+            //    w.Write(item.RefId);
+            //}
         }
         static InventoryComponent()
         {

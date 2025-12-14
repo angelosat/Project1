@@ -1,6 +1,4 @@
-﻿using Start_a_Town_.UI;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     static class DesignationDefOf

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class ToolProps : Def, IItemDefVariator
+    public sealed class ToolProps : VariantProps, IItemDefVariator
     {
         public string Description;
         public ToolUseDef ToolUse;
@@ -11,7 +11,7 @@ namespace Start_a_Town_
         public Sprite SpriteHandle, SpriteHead;
         internal SkillDef Skill;
 
-        public ToolProps(string name) : base(name)
+        public ToolProps(string name) : base(ItemDefOf.Tool, name)
         {
         }
         public ToolProps AssociateJob(params JobDef[] jobs)
@@ -20,19 +20,26 @@ namespace Start_a_Town_
                 this.AssociatedJobs.Add(j);
             return this;
         }
-
-        public GameObject Create()
+        //protected override void ApplyTo(Entity item)
+        //{
+        //    item.ToolComponent.ToolProperties = this;
+        //    item.Body.Sprite = this.SpriteHandle;
+        //    item.Body[BoneDefOf.ToolHead].Sprite = this.SpriteHead;
+        //}
+        protected override Entity ApplyTo(Entity obj)
         {
-            var tool = ItemDefOf.Tool.CreateNew() as Tool;
-            tool.ToolComponent.ToolProperties = this;
-            tool.Body.Sprite = this.SpriteHandle;
-            tool.Body[BoneDefOf.ToolHead].Sprite = this.SpriteHead;
-            tool.Name = this.Label;
-            return tool;
+            //var tool = ItemDefOf.Tool.CreateNew() as Tool;
+            //tool.ToolComponent.ToolProperties = this;
+            obj.Body.Sprite = this.SpriteHandle;
+            obj.Body[BoneDefOf.ToolHead].Sprite = this.SpriteHead;
+            obj.Name = this.Label;
+            obj.ToolComponent.ToolUse = this.ToolUse;
+            return obj;
         }
+
         public Entity Create(Dictionary<string, Entity> ingredients)
         {
-            var tool = Create() as Tool;
+            var tool = this.BaseDef.CreateNew();// Create() as Tool;
             tool.SetMaterials(ingredients.ToDictionary(i => i.Key, i => i.Value.PrimaryMaterial));
             return tool;
         }

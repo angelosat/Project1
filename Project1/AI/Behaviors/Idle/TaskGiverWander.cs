@@ -16,7 +16,7 @@ namespace Start_a_Town_
         static Vector2 ChooseDirection(Actor actor)
         {
             var rand = actor.Map.Random;
-            var state = actor.State;
+            var state = actor.AI.State;
             double radians = rand.NextDouble() * 2 * Math.PI;
             var choice = new Vector3((float)Math.Cos(radians), (float)Math.Sin(radians), 0);
             var dist = Math.Min(Vector3.Distance(actor.Global, state.Leash) / (float)MaxRange, 1);

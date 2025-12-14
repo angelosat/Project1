@@ -2,23 +2,32 @@
 using System.Linq;
 using Start_a_Town_.UI;
 using Start_a_Town_.Components;
-using System.IO;
 
 namespace Start_a_Town_
 {
-    public class ToolAbilityComponent : EntityComp
+    public class ToolAbilityComponent : EntityComp<ToolAbilityComponent.Spec>
     {
+        public new class Spec : Spec<SpriteComp>
+        {
+            public readonly ToolUseDef ToolUse;
+            public Spec(ToolUseDef toolUse)
+            {
+                this.ToolUse = toolUse;
+            }
+        }
         public override string Name { get; } = "Tool";
         public override object Clone()
         {
-            return new ToolAbilityComponent(this.ToolProperties);
+            return new ToolAbilityComponent(/*this.ToolProperties*/);
         }
-        public ToolProps ToolProperties;
+        public ToolUseDef ToolUse;
+
+        //public ToolProps ToolProperties;
         readonly List<ToolUseDef> Skills = new();
-        public ToolAbilityComponent(ToolProps props)
-        {
-            this.ToolProperties = props;
-        }
+        //public ToolAbilityComponent(ToolProps props)
+        //{
+        //    this.ToolProperties = props;
+        //}
         public ToolAbilityComponent()
         {
 
@@ -63,32 +72,31 @@ namespace Start_a_Town_
         GroupBox GetUI(GameObject parent)
         {
             var box = new GroupBox();
-            box.AddControlsBottomLeft(new Label(this.ToolProperties.ToolUse));
+            box.AddControlsBottomLeft(new Label(this.Defaults.ToolUse));
                 //box.AddControlsBottomLeft(ToolUseDef.GetUI(ability.Value.Def.ID, ability.Value.Effectiveness));
             return box;
         }
 
         public override void Write(IDataWriter w)
         {
-            w.Write(this.ToolProperties is not null); // HACK for loading legacy items which lack Props
-            this.ToolProperties?.Write(w);
+            //w.Write(this.ToolProperties is not null); // HACK for loading legacy items which lack Props
+            //this.ToolProperties?.Write(w);
         }
         public override void Read(IDataReader r)
         {
-            if (r.ReadBoolean()) // HACK for loading legacy items which lack Props
-                this.ToolProperties = Def.GetDef<ToolProps>(r);
+            //if (r.ReadBoolean()) // HACK for loading legacy items which lack Props
+            //    this.ToolProperties = Def.GetDef<ToolProps>(r);
         }
 
         internal override void SaveExtra(SaveTag tag)
         {
-            this.ToolProperties?.Name.Save(tag, "Props");
+            //this.ToolProperties?.Name.Save(tag, "Props");
         }
 
         internal override void LoadExtra(SaveTag tag)
         {
-            tag.TryLoadDef("Props", ref this.ToolProperties);
+            //tag.TryLoadDef("Props", ref this.ToolProperties);
         }
 
-        public new class Props : Spec<ToolAbilityComponent> { }
     }
 }

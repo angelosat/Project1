@@ -12,25 +12,18 @@ namespace Start_a_Town_
         {
             StackCapacity = 32,//64,
             Category = ItemCategoryDefOf.RawMaterials,
-            //Body = new Bone(BoneDefOf.Item, ItemContent.SeedsFull),
             DefaultMaterial = MaterialDefOf.Seed,
-            //CompProps = [new SeedComponent.Props()]
+            CompTypes = [typeof(SeedComponent)]
         }
-            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.SeedsFull)))
-            .AddSpec(new SeedComponent.Props());
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.SeedsFull)));
+            //.AddSpec(new SeedComponent.Props());
 
         static public readonly ItemDef Fruit = new ItemDef("Fruit", typeof(Item))
         {
             StackCapacity = 32,
             Category = ItemCategoryDefOf.FoodRaw,
-            //Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull),
             ReplaceName = true,
-            //CompProps =
-            //[
-            //    new ConsumableComponent.Props() {
-            //        FoodClasses = [FoodClass.Fruit],
-            //        Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]}
-            //],
+            CompTypes= [typeof(ConsumableComponent)]
         }
             .SetMadeFrom(MaterialTypeDefOf.Fruit)
             .AddSpec(new ConsumableComponent.Props()
@@ -44,13 +37,8 @@ namespace Start_a_Town_
         {
             StackCapacity = 8,
             Category = ItemCategoryDefOf.FoodRaw,
-            //Body = new Bone(BoneDefOf.Item, Sprite.Default),
             DefaultMaterialType = MaterialTypeDefOf.Meat,
-            //ConsumableProperties = new ConsumableProperties(),
-            //CompProps =
-            //[
-            //    new ConsumableComponent.Props() {
-            //        Effects = [new NeedEffect(NeedDefOf.Hunger, 50)] }],
+            CompTypes = [typeof(ConsumableComponent)]
         }.SetMadeFrom(MaterialTypeDefOf.Meat)
             .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
             .AddSpec(new ConsumableComponent.Props()
@@ -63,11 +51,6 @@ namespace Start_a_Town_
         {
             StackCapacity = 4,
             Category = ItemCategoryDefOf.FoodCooked,
-            //Body = new Bone(BoneDefOf.Item, Sprite.Default),
-            //ConsumableProperties = new()
-            //{
-            //    FoodClasses = new[] { FoodClass.Dish }
-            //},
             CraftingProperties = new CraftingProperties().MakeableFrom(ItemCategoryDefOf.FoodRaw),
             RecipeProperties =
                 new RecipeProperties("Bake") { Job = JobDefOf.Cook, Skill = SkillDefOf.Cooking }
@@ -77,10 +60,7 @@ namespace Start_a_Town_
                             .SetAllow(def.ValidMaterialTypes, true)
                             .SetAllowed(ItemCategoryDefOf.FoodRaw, true))
                     .AddProductMaker(def => new Reaction.Product(def).GetMaterialFromIngredient("Filling")),
-            //CompProps =
-            //[
-            //    new ConsumableComponent.Props() {FoodClasses= [FoodClass.Dish]}
-            //],
+            CompTypes = [typeof(ConsumableComponent)]
         }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Meat)
             .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
             .AddSpec(new ConsumableComponent.Props() { FoodClasses = [FoodClass.Dish] });
@@ -89,17 +69,15 @@ namespace Start_a_Town_
         static public readonly ItemDef UnfinishedCraft = new ItemDef("UnfinishedCraft", typeof(Item))
         {
             Category = ItemCategoryDefOf.Unfinished,
-            //Body = new Bone(BoneDefOf.Item, Sprite.Default),
-            //CompProps = [new UnfinishedItemComp.Props()]
+            CompTypes = [typeof(UnfinishedItemComp)]
         }
-        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
-        .AddSpec(new UnfinishedItemComp.Props());
+        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)));
+        //.AddSpec(new UnfinishedItemComp.Props());
             
 
         static public readonly ItemDef Coins = new ItemDef("Coins", typeof(Item))
         {
             StackCapacity = ushort.MaxValue,
-            //Body = new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale),
             Category = ItemCategoryDefOf.RawMaterials,
             DefaultMaterial = MaterialDefOf.Gold,
             BaseValue = 1,
@@ -117,22 +95,12 @@ namespace Start_a_Town_
             GearType = GearType.Head,
             ApparelProperties = new ApparelDef(GearType.Head, 10),
             DefaultMaterial = MaterialDefOf.Iron,
-            //Body = new Bone(BoneDefOf.Item, ItemContent.HelmetFull),
-            //CompProps = [new OwnershipComponent.Props()] /*new List<ComponentProps>() { new ComponentProps() { CompClass = typeof(OwnershipComponent) } }*/
+            CompTypes = [typeof(OwnershipComponent)]
         }
-        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.HelmetFull)))
-        .AddSpec(new OwnershipComponent.Props());
+        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.HelmetFull)));
+        //.AddSpec(new OwnershipComponent.Props());
 
-        //public static readonly CraftingProperties ToolCraftingProperties = new()
-        //{
-        //    Reagents = new Dictionary<BoneDef, Reaction.Reagent>()
-        //        {
-        //            { BoneDefOf.ToolHandle, new Reaction.Reagent("Handle", new Ingredient(null, null, null).SetAllowed(ItemCategoryDefOf.Manufactured, true)) }, //.IsBuildingMaterial()
-        //            { BoneDefOf.ToolHead, new Reaction.Reagent("Head", new Ingredient(null, null, null).SetAllowed(ItemCategoryDefOf.Manufactured, true))  }
-        //        }
-        //};
-
-        static public readonly ItemDef Tool = new ItemDef("Tool", typeof(Tool))
+        static public readonly ItemDef Tool = new ItemDef("Tool", typeof(Item))
         {
             QualityLevels = true,
             Category = ItemCategoryDefOf.Equipment,
@@ -141,16 +109,15 @@ namespace Start_a_Town_
             DefaultMaterial = MaterialDefOf.Iron,
             Factory = d => d.CreateNew(),
             CraftingProperties = CraftingProperties.ToolCraftingProperties,
-            //Body = new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
-                            //.AddJoint(Vector2.Zero, new Bone(BoneDefOf.ToolHead, ItemContent.LogsGrayscale) { DrawMaterialColor = true }),
-            NameGetter = e => e.ToolComponent.ToolProperties.Label,
+            NameGetter = e => e.VariantDef.Label,
+            VariantType = typeof(ToolProps),
             StorageFilterVariations = Def.GetDefs<ToolProps>(),
-            VariationGetter = e => e.ToolComponent.ToolProperties,
-            //CompProps = [new ToolAbilityComponent.Props()]
+            VariationGetter = e => e.VariantDef,
+            CompTypes = [typeof(ToolAbilityComponent), typeof(OwnershipComponent), typeof(ResourcesComponent)]
         }
-        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
+            .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
                             .AddJoint(Vector2.Zero, new Bone(BoneDefOf.ToolHead, ItemContent.LogsGrayscale) { DrawMaterialColor = true })))
-        .AddSpec(new ToolAbilityComponent.Props());
+            .AddSpec(new ResourcesComponent.Spec([ResourceDefOf.Durability]));
         static ItemDefOf()
         {
             Def.Register(typeof(ItemDefOf));

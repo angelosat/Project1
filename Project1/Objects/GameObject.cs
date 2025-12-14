@@ -349,16 +349,18 @@ namespace Start_a_Town_
 
         public GameObject Clone()
         {
-            var obj = this.Def.CreateRandom();
-            if (obj is null)
-            {
-                obj = this.Create(); //for derived classes
-                obj.Def = this.Def; // TODO pass def in the create method above
-                foreach (var comp in this.Components.Values)
-                    obj.AddComponent(comp.Clone() as EntityComp);
-            }
-            obj.ObjectCreated();
-            return obj;
+            return this.Def.CreateNew();
+
+            //var obj = this.Def.CreateRandom();
+            //if (obj is null)
+            //{
+            //    obj = this.Create(); //for derived classes
+            //    obj.Def = this.Def; // TODO pass def in the create method above
+            //    foreach (var comp in this.Components.Values)
+            //        obj.AddComponent(comp.Clone() as EntityComp);
+            //}
+            //obj.ObjectCreated();
+            //return obj;
         }
 
         public abstract GameObject Create();
@@ -478,14 +480,16 @@ namespace Start_a_Town_
       
         public T GetComponent<T>() where T : EntityComp
         {
-            return (from comp in Components.Values
-                    where comp is T
-                    select comp).SingleOrDefault() as T;
+            return this.Components.GetComponent<T>();
+            //return (from comp in Components.Values
+            //        where comp is T
+            //        select comp).SingleOrDefault() as T;
         }
 
         public bool HasComponent<T>() where T : EntityComp
         {
-            return this.GetComponent<T>() != null;
+            return this.Components.TryGetComponent<T>(out var _);
+            //return this.GetComponent<T>() != null;
         }
         public bool HasComponent(Type compType)
         {
@@ -520,7 +524,7 @@ namespace Start_a_Town_
         public EntityComp AddComponent(EntityComp component)
         {
             this.Components.Add(component);
-            component.Owner = this;
+            //component.Owner = this;
             //component.MakeChildOf(this);
             return component;
         }

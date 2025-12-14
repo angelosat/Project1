@@ -28,22 +28,13 @@ namespace Start_a_Town_
             {
                 if (net is not Server server)
                     return;
-                var w = server.OutgoingStreamTimestamped;
-                w.Write(PacketSpawn);
+                var w = server.BeginPacket(PacketSpawn);//.OutgoingStreamTimestamped;
+                //w.Write(PacketSpawn);
                 w.Write(entity.RefId);
                 w.Write(global);
                 w.Write(velocity);
             }
-            public static void SendSpawnEntityUntimestamped(INetEndpoint net, GameObject entity, MapBase map, Vector3 global, Vector3 velocity)
-            {
-                if (net is not Server server)
-                    return;
-                var w = server.GetOutgoingStreamOrderedReliable();
-                w.Write(PacketSpawn);
-                w.Write(entity.RefId);
-                w.Write(global);
-                w.Write(velocity);
-            }
+           
             static void ReceiveSpawnEntity(NetEndpoint net, Packet pck)
             {
                 var r = pck.PacketReader;
@@ -1030,12 +1021,7 @@ namespace Start_a_Town_
             this.Spawn(obj as Entity);
             Packets.SendSpawnEntity(this.Net, obj, this, obj.Global, obj.Velocity);
         }
-        internal void SyncSpawnUntimestamped(GameObject obj)
-        {
-            //obj.Spawn(this);
-            this.Spawn(obj as Entity);
-            Packets.SendSpawnEntityUntimestamped(this.Net, obj, this, obj.Global, obj.Velocity);
-        }
+        
         internal virtual void OnHudCreated(Hud hud)
         {
         }

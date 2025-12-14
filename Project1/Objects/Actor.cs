@@ -11,37 +11,21 @@ namespace Start_a_Town_
 {
     public sealed class Actor : Entity
     {
-        MobileComponent _cachedMobile;
-        [InspectorHidden]
-        public MobileComponent Mobile => this._cachedMobile ??= this.GetComponent<MobileComponent>();
+        public MobileComponent Mobile => this.GetComponent<MobileComponent>();
 
-        private NpcSkillsComponent _skills;
-        [InspectorHidden]
-        internal NpcSkillsComponent Skills => this._skills ??= this.GetComponent<NpcSkillsComponent>();
+        internal NpcSkillsComponent Skills => this.GetComponent<NpcSkillsComponent>();
 
-        private AttributesComponent _attributes;
-        [InspectorHidden]
-        internal AttributesComponent Attributes => this._attributes ??= this.GetComponent<AttributesComponent>();
+        internal AttributesComponent Attributes => this.GetComponent<AttributesComponent>();
 
-        private NpcComponent _npc;
-        [InspectorHidden]
-        internal NpcComponent Npc => this._npc ??= this.GetComponent<NpcComponent>();
+        internal NpcComponent Npc => this.GetComponent<NpcComponent>();
 
-        PossessionsComponent _possessions;
-        [InspectorHidden]
-        public PossessionsComponent Possessions => this._possessions ??= this.GetComponent<PossessionsComponent>();
+        public PossessionsComponent Possessions => this.GetComponent<PossessionsComponent>();
 
-        WorkComponent _work;
-        [InspectorHidden]
-        public WorkComponent Work => this._work ??= this.GetComponent<WorkComponent>();
+        public WorkComponent Work => this.GetComponent<WorkComponent>();
 
-        AIComponent _ai;
-        [InspectorHidden]
-        public AIComponent AI => this._ai ??= this.GetComponent<AIComponent>();
+        public AIComponent AI => this.GetComponent<AIComponent>();
 
-        private PersonalityComponent _personality;
-        [InspectorHidden]
-        internal PersonalityComponent Personality => this._personality ??= this.GetComponent<PersonalityComponent>();
+        internal PersonalityComponent Personality => this.GetComponent<PersonalityComponent>();
 
         [InspectorHidden]
         public Skill this[SkillDef skill] => this.Skills.GetSkill(skill);
@@ -52,9 +36,8 @@ namespace Start_a_Town_
         [InspectorHidden]
         public Entity this[GearType slot] => this.GetEquipmentSlot(slot);
 
-        private MoodComp _mood;
-        [InspectorHidden]
-        public MoodComp Mood => this._mood ??= this.GetComponent<MoodComp>();
+
+        public MoodComp Mood => this.GetComponent<MoodComp>();
 
         public float MoodValue => this.Mood.Mood;
 
@@ -73,12 +56,12 @@ namespace Start_a_Town_
         }
 
         public Interaction CurrentInteraction => this.Work.Task;
-        AIState _state;
+        //AIState _state;
 
-        public AIState State => this._state ??= this.GetComponent<AIComponent>().State;
+        //public AIState State => this._state ??= this.GetComponent<AIComponent>().State;
         internal AITask CurrentTask
         {
-            get => this.State.CurrentTask;
+            get => this.AI.State.CurrentTask;
             set => throw new Exception();// this.State.CurrentTask = value;
         }
         //internal BehaviorPerformTask CurrentTaskBehavior
@@ -339,8 +322,7 @@ namespace Start_a_Town_
             //obj.ObjectCreated();
             return obj;
         }
-        EffectsComponent _effectsCached;
-        public EffectsComponent Effects => _effectsCached ??= this.GetComponent<EffectsComponent>();
+        public EffectsComponent Effects => this.GetComponent<EffectsComponent>();
         //public void ApplyEffect(EffectDef effect)
         //{
         //    this.GetComponent<EffectsComponent>().Apply(effect);
@@ -497,7 +479,7 @@ namespace Start_a_Town_
         {
             var givers = this.GetComponent<NeedsComponent>().NeedsNew.Select(n => n.TaskGiver);
             givers = givers.Concat(TaskGiver.EssentialTaskGivers);
-            var jobs = this.State.GetJobs().Where(j => j.Enabled);
+            var jobs = this.AI.State.GetJobs().Where(j => j.Enabled);
             jobs.OrderBy(j => j.Priority);
             var jobTaskGivers = jobs.SelectMany(j => j.Def.GetTaskGivers());
             givers = this.IsTownMember ? givers.Concat(jobTaskGivers) : givers.Concat(TaskGiver.VisitorTaskGivers);
@@ -579,7 +561,7 @@ namespace Start_a_Town_
             if (this.Gear.GetSlot(GearType.Mainhand).Object is not Tool tool)
                 return 1;
 
-            var ability = tool.ToolComponent.ToolProperties.ToolUse;
+            var ability = tool.ToolComponent.Defaults.ToolUse;
             return ability == toolUse ? tool.GetStat(StatDefOf.ToolEffectiveness) : 1;
         }
         public int EvaluateItem(Entity item)

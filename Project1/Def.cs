@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -103,6 +104,9 @@ namespace Start_a_Town_
         {
             return Database.Values.OfType<T>();
         }
-
+        internal static IEnumerable<Def> GetDefs(Type deftype)
+        {
+            return Database.Values.Where(d => d.GetType().IsAssignableFrom(deftype));
+        }
     }
 }

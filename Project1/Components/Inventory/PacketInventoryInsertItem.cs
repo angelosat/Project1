@@ -16,8 +16,8 @@ namespace Start_a_Town_
             if (net is not Server server)
                 throw new Exception();
 
-            var stream = server.OutgoingStreamTimestamped;
-            stream.Write(p);
+            var stream = server.BeginPacket(p);//.OutgoingStreamTimestamped;
+            //stream.Write(p);
             stream.Write(actor.RefId);
             stream.Write(item.RefId);
             stream.Write(area.Name);

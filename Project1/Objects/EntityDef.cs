@@ -25,14 +25,12 @@ namespace Start_a_Town_
         }
 
         //public List<ComponentProps> CompProps = new List<ComponentProps>();
-        public readonly List<EntityComp.Spec> CompProps = [];// [new SpriteComp.Props()];
 
-        public EntityComp.Spec GetPropsFor<T>() where T: EntityComp
-        {
-            //return this.CompProps.First(p => p.GetType() == typeof(T));
-            return this.CompProps.First(p => typeof(T).IsAssignableFrom(p.GetType()));
-
-        }
+        //public EntityComp.Spec GetPropsFor<T>() where T: EntityComp
+        //{
+        //    //return this.CompProps.First(p => p.GetType() == typeof(T));
+        //    return this.CompProps.First(p => typeof(T).IsAssignableFrom(p.GetType()));
+        //}
 
         //public EntityDef AddCompProp(ComponentProps props)
         //{

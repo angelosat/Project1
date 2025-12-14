@@ -3,7 +3,6 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -21,13 +20,17 @@ namespace Start_a_Town_
 
             public static void SendNotifyVisit(Actor actor)
             {
-                var w = Server.Instance.OutgoingStreamTimestamped;
-                w.Write(PacketVisitorArrived, actor.RefId);
+                //var w = Server.Instance.OutgoingStreamTimestamped;
+                var server = actor.Net as Server;
+                server.BeginPacket(PacketVisitorArrived).Write(actor.RefId);
             }
             public static void SendNotifyAdventurerCreated(Actor actor)
             {
-                var w = Server.Instance.OutgoingStreamTimestamped;
-                w.Write(PacketAdventurerCreated, actor.RefId);
+                //var w = Server.Instance.OutgoingStreamTimestamped;
+                var server = actor.Net as Server;
+                server.BeginPacket(PacketAdventurerCreated).Write(actor.RefId);
+
+                //w.Write(PacketAdventurerCreated, actor.RefId);
             }
             private static void ReceiveNotifyAdventurerCreated(NetEndpoint net, Packet pck)
             {

@@ -41,3 +41,15 @@ Designed a flexible UI system linking actor components to reusable GUI panels. B
 - Item preference system
   - Designed and implemented a flexible item preference and role system that separates long-term inventory intentions from situational decision-making, enabling emergent AI behavior. Built a server-authoritative item management system with synchronized client updates and real-time UI reflection. Created an intelligent equipping system that dynamically selects the optimal item based on context, actor state, and task requirements. Applied robust error-handling and fail-fast patterns to ensure AI decisions remain correct and consistent. Emphasized clarity, maintainability, and future-proof design, with explicit scoring separation and concise logic for decision pipelines.
   - Demonstrated the ability to design and implement a dynamic system for automated decision-making in AI agents, handling both selection and replacement of resources based on situational scoring. Showcased skill in evaluating multiple alternatives, accumulating impact across different categories, and resolving conflicts between currently assigned resources and potential upgrades. Emphasized maintainable logic, clear prioritization, and safety checks while balancing performance and extensibility, ensuring future adaptability for more complex scenarios.
+- Entity parametrizer approach
+  - Component-Based Object System (C# / Software Development)
+
+Architected a flexible, data-driven system separating abstract templates from concrete variant definitions.
+
+Enabled rapid creation and customization of object instances with minimal boilerplate, improving maintainability and scalability.
+
+Designed clear separation of blueprint data, instance-specific properties, and component logic, supporting future extensions and dynamic content.
+
+Structured for developer and modder ease-of-use, allowing new variations to be defined without touching core systems.
+
+Result: Delivered a robust, extensible system that simplifies object creation, supports complex variations, and reduces coupling between templates and runtime instances.

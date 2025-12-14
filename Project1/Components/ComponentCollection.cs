@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Start_a_Town_.Components
 {
@@ -71,6 +70,28 @@ namespace Start_a_Town_.Components
                     v.Load(this._owner, data);
                 }
             }
+        }
+        public void Init()
+        {
+            foreach (var compType in this._owner.Def.CompTypes)
+            {
+                //var comp = prop.CreateComp();
+                //prop.Apply(comp);
+                var comp = (EntityComp)Activator.CreateInstance(compType);
+                this.Add(comp);
+            }
+            foreach (var props in this._owner.Def.Specs)
+            {
+                props.Apply(this._inner[props.CompClass]);
+            }
+            this.Resolve();
+        }
+
+        internal bool TryGetComponent<T>(out T var) where T : EntityComp
+        {
+            this._inner.TryGetValue(typeof(T), out EntityComp existing);
+            var = existing as T;
+            return var != null;
         }
     }
 

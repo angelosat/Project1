@@ -58,7 +58,25 @@ namespace Start_a_Town_
             DefaultMaterial = MaterialDefOf.Human,
             ActorProperties = NpcProps,
             Factory = Actor.Create,
-            Size = ObjectSize.Haulable
+            Size = ObjectSize.Haulable,
+            CompTypes = [
+                typeof(PossessionsComponent),
+                typeof(HaulComponent),
+                typeof(NpcComponent),
+                typeof(InventoryComponent),
+                typeof(StatsComponent),
+                typeof(MobileComponent),
+                typeof(MoodComp),
+                typeof(WorkComponent),
+                typeof(EffectsComponent),
+                typeof(ResourcesComponent),
+                typeof(NeedsComponent),
+                typeof(AttributesComponent),
+                typeof(NpcSkillsComponent),
+                typeof(GearComponent),
+                typeof(PersonalityComponent),
+                typeof(AIComponent),
+            ]
         }
             .AddSpec(new SpriteComp.Spec(BodyDef.NpcNew))
             .AddSpec(new ResourcesComponent.Spec([

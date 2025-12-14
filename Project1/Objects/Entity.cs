@@ -9,24 +9,17 @@ namespace Start_a_Town_
 {
     public abstract class Entity : GameObject
     {
-        private SpriteComp _sprite;
-        [InspectorHidden]
-        public SpriteComp Sprite => this._sprite ??= this.GetComponent<SpriteComp>();
-
+        public SpriteComp Sprite => this.GetComponent<SpriteComp>();
         /// <summary>
         /// here or in tool class?
         /// </summary>
-        ToolAbilityComponent _toolComponent;
-        [InspectorHidden]
-        public ToolAbilityComponent ToolComponent => this._toolComponent ??= this.GetComponent<ToolAbilityComponent>();
+        public ToolAbilityComponent ToolComponent => this.GetComponent<ToolAbilityComponent>();
 
-        GearComponent _gear;
-        [InspectorHidden]
-        public GearComponent Gear => this._gear ??= this.GetComponent<GearComponent>();
+        public GearComponent Gear => this.GetComponent<GearComponent>();
 
-        OwnershipComponent _ownership;
-        [InspectorHidden]
-        public OwnershipComponent Ownership => this._ownership ??= this.GetComponent<OwnershipComponent>();
+        public OwnershipComponent Ownership => this.GetComponent<OwnershipComponent>();
+
+        public VariantProps VariantDef { get; internal set; }
 
         //public override GameObject Create()
         //{
@@ -37,7 +30,7 @@ namespace Start_a_Town_
             this.AddComponent(new PositionComponent());
             this.AddComponent(new DefComponent());
             this.AddComponent(new PhysicsComponent());
-            //this.AddComponent(new SpriteComp()); // add this only through comp props
+            this.AddComponent(new SpriteComp()); // add this only through comp props
         }
         public Entity(ItemDef def) : this()
         {
@@ -52,18 +45,24 @@ namespace Start_a_Town_
 
         internal void InitComps()
         {
-            foreach (var prop in this.Def.CompProps)
-            {
-                var comp = prop.CreateComp();
-                prop.Apply(comp);
-                this.AddComponent(comp);
-            }
-            this.Components.Resolve();
+            this.Components.Init();
+            //foreach (var compType in this.Def.CompTypes)
+            //{
+            //    //var comp = prop.CreateComp();
+            //    //prop.Apply(comp);
+            //    var comp = (EntityComp)Activator.CreateInstance(compType);
+            //    this.AddComponent(comp);
+            //}
+            //foreach(var props in this.Def.Specs)
+            //{
+            //    //th
+            //}
+            //this.Components.Resolve();
         }
 
         internal bool ProvidesSkill(ToolUseDef skill)
         {
-            return this.ToolComponent?.ToolProperties?.ToolUse == skill;
+            return this.ToolComponent?.Defaults.ToolUse == skill;
         }
 
         internal MaterialDef GetMaterial(BoneDef def)
@@ -131,6 +130,11 @@ namespace Start_a_Town_
         internal void ResetName()
         {
             this.DefComponent.ParentName = this.Def.NameGetter?.Invoke(this) ?? this.DefComponent.ParentName; // reset name
+        }
+
+        internal void Resolve()
+        {
+            this.Components.Resolve();
         }
     }
 }

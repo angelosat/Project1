@@ -40,7 +40,7 @@ namespace Start_a_Town_.Components
         public virtual object Clone()
         {
             var t = this.GetType(); // concrete component type
-            var props = Owner.Def.CompProps.First(p =>
+            var props = Owner.Def.Specs.First(p =>
             {
                 var typeArg = p.GetType().BaseType.GetGenericArguments()[0];
                 return t.IsAssignableFrom(typeArg);
@@ -177,14 +177,15 @@ namespace Start_a_Town_.Components
         internal virtual void ResolveReferences()
         {
         }
-        public abstract class Spec 
+        public abstract class Spec
         {
+            public abstract Type CompClass { get; }
             internal abstract void Apply(EntityComp props);
             internal abstract EntityComp CreateComp();
         }
         public abstract class Spec<T> : Spec where T : EntityComp, new()
         {
-            Type CompClass => typeof(T);
+            public override Type CompClass => typeof(T);
             internal sealed override T CreateComp() => new T();
             internal sealed override void Apply(EntityComp comp)
             {

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using Start_a_Town_.Components;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -15,15 +17,7 @@ namespace Start_a_Town_
             Skill = SkillDefOf.Digging,
             AssociatedJobs = new() { JobDefOf.Digger }
         };
-        public static readonly ToolProps Axe = new("Axe")
-        {
-            Description = "Chops down trees.",
-            SpriteHandle = ItemContent.AxeHandle,
-            SpriteHead = ItemContent.AxeHead,
-            ToolUse = ToolUseDefOf.Chopping,
-            Skill = SkillDefOf.Plantcutting,
-            AssociatedJobs = new() { JobDefOf.Lumberjack }
-        };
+      
         public static readonly ToolProps Hammer = new("Hammer")
         {
             Description = "Used for building.",
@@ -60,17 +54,35 @@ namespace Start_a_Town_
             Skill = SkillDefOf.Argiculture,
             AssociatedJobs = new() { JobDefOf.Farmer }
         };
+
+        public static readonly ToolProps Axe = new("Axe")
+        {
+            Description = "Chops down trees.",
+            SpriteHandle = ItemContent.AxeHandle,
+            SpriteHead = ItemContent.AxeHead,
+            ToolUse = ToolUseDefOf.Chopping,
+            Skill = SkillDefOf.Plantcutting,
+            AssociatedJobs = new() { JobDefOf.Lumberjack }
+        };
+        //public static readonly ToolProps AxeNew = new ToolProps("AxeNew")
+        //    .AddSpec(new ToolAbilityComponent.Spec(ToolUseDefOf.Chopping))
+        //    .AddSpec(new SpriteComp.Spec(
+        //        new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
+        //            .AddJoint(Vector2.Zero, new Bone(BoneDefOf.ToolHead, ItemContent.LogsGrayscale) { DrawMaterialColor = true })) 
+        //        { Overrides = [(BoneDefOf.ToolHandle, ItemContent.AxeHandle), (BoneDefOf.ToolHead, ItemContent.AxeHead)] });
+            
+
         static ToolPropsDefof()
         {
             Def.Register(typeof(ToolPropsDefof));
 
-            //foreach (var toolProp in Def.GetDefs<ToolProps>())
-            //{
-            //    var obj = toolProp.Create();
-            //    GameObject.AddTemplate(obj);
-            //}
+            foreach (var toolProp in Def.GetDefs<ToolProps>())
+            {
+                var obj = toolProp.CreateNew();
+                GameObject.AddTemplate(obj);
+            }
 
-            //GenerateRecipesNew();
+            GenerateRecipesNew();
         }
 
         private static void GenerateRecipesNew()

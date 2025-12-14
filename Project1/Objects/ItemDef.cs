@@ -36,6 +36,9 @@ namespace Start_a_Town_
         public ObjectSize Size;
         public string Prefix, Suffix;
         public bool ReplaceName;
+        internal Type VariantType;
+        internal Type[] CompTypes = [];
+        public readonly List<EntityComp.Spec> Specs = [];// [new SpriteComp.Props()];
 
         public ItemDef(string name, Type itemClass) : base(name, itemClass)
         {
@@ -89,7 +92,7 @@ namespace Start_a_Town_
         }
         public ItemDef AddSpec(EntityComp.Spec prop)
         {
-            this.CompProps.Add(prop);
+            this.Specs.Add(prop);
             return this;
         }
         public IEnumerable<MaterialDef> GetValidMaterials()

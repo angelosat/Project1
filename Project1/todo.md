@@ -9,6 +9,9 @@
 - use getbuffer() instead of toarray() for outgoing packet streams [Open Stream.cs](Network/Stream.cs)
 - order town memebers to transfer an inventory item to another member
   - this item is marker for transfer and in the first opportunity a relevant taskgiver will push this task to the owner which will then path to the target actor and perform the interaction
+  - or (easier way maybe) the item can be assigned an owner through its ui, which is also accessible by clicking on it within an actor inventory, and the its owner can be set there.
+	- the mentioned task giver periodically scans the actor inventory for items that have a different owner, and creates task to maybe to give it to them, or move it to a stockpile
+  - instead of single actor ownership / or on top of, maybe create "shared" items, and toggle which ai actors are permitted to use it
 ## networking
 ## gui
 - xml driven
@@ -19,6 +22,7 @@
 ### npc visitors (players)
 - npcs can die and lose their equipment
   - the lost equipment still exists in the world, maybe the enemy that killed them steals it
+  - lost equipment are added to a pool that other adventurers have a chance to come across
 - npc equipment loses durability, when they break they come back to town to buy new
 - npc chance to visit the town increases as:
   - their equipment loses durability or breaks, so they need to repair or buy new

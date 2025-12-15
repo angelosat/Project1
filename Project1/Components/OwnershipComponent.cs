@@ -11,7 +11,7 @@ namespace Start_a_Town_
         public new class Props : Spec<OwnershipComponent> { }
         public override string Name { get; } = "Ownership";
         public int OwnerRef { get; private set; } = -1;
-        public Actor Owner;
+        public Actor ItemOwner;
 
         public new OwnershipComponent Initialize(GameObject owner = null)
         {
@@ -56,7 +56,7 @@ namespace Start_a_Town_
                 return;
             var owner = parent.World.GetEntity(this.OwnerRef);
             //tooltip.AddControlsBottomLeft(new UI.Label("Owner: " + (owner != null ? owner.Name : "<None>"), fill: Color.Lime));
-            tooltip.AddControlsBottomLeft(UI.Label.ParseWrap("Owner: ", this.Owner));
+            tooltip.AddControlsBottomLeft(UI.Label.ParseWrap("Owner: ", this.ItemOwner));
         }
 
         static public bool Owns(GameObject owner, GameObject obj)
@@ -117,15 +117,17 @@ namespace Start_a_Town_
         readonly Button BtnOwner = new("Owner");
         internal override IEnumerable<Button> GetTabs()
         {
-            var parent = this.Owner;
+            //var parent = this.ItemOwner;
             //dimensions 200, 200, 
             if (ActorList is null)
-                ActorList = new ListBoxNoScroll<Actor, Button>(a => new Button(a?.Name ?? "none", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, parent.RefId, a?.RefId ?? -1)))
-                                                                   .AddItems(parent.Map.Town.GetMembers().Prepend(null))
+                ActorList = new ListBoxNoScroll<Actor, Button>(a => new Button(a?.Name ?? "none", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, this.Owner.RefId, a?.RefId ?? -1)))
+                                                                   .AddItems(this.Owner.Map.Town.GetMembers().Prepend(null))
                                                                    .ToPanelLabeled("Select owner")
                                                                    .HideOnRightClick()
                                                                    .HideOnLeftClick()
                                                                    ;
+
+
             yield return BtnOwner.SetLeftClickAction(() => ActorList.SetLocation(UIManager.Mouse).Toggle()) as Button;
             //yield return ("Owner", () => ActorList.SetLocation(UIManager.Mouse).Toggle());
         }

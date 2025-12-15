@@ -106,7 +106,9 @@ namespace Start_a_Town_
             //    else
             //        this.Actor.CrossFade(this.Animation, false, this.CrossFadeAnimationLength);
             //}
-            if (this._animation is null && this.AnimationDef is not null)
+            if (
+                //this._animation is null && 
+                this.AnimationDef is not null)
             {
                 if (this.CrossFadeAnimationLength == 0)
                     /*this._cachedAnimation = */this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
@@ -214,17 +216,18 @@ namespace Start_a_Town_
         {
             w.Write(this.CurrentTick);
             w.Write((int)this.State);
-            w.Write(this._animation is not null);
-            if (this._animation is not null) // added this because InteractionSleepInBed doesn't have an animation
-                this._animation.Write(w);
+            //var hasAnim = this._animation is not null;
+            //w.Write(hasAnim);
+            //if (hasAnim) // added this because InteractionSleepInBed doesn't have an animation
+            //    this._animation.Write(w);
             this.WriteExtra(w);
         }
         public void Read(IDataReader r)
         {
             this.CurrentTick = r.ReadSingle();
             this.State = (States)r.ReadInt32();
-            if (r.ReadBoolean())
-                this._animation.Read(r);
+            //if (r.ReadBoolean())
+            //    this._animation.Read(r);
             this.ReadExtra(r);
         }
         protected virtual void WriteExtra(IDataWriter w) { }

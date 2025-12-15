@@ -7,7 +7,6 @@ namespace Start_a_Town_
     {
         static Entity CreateSeeds(PlantProperties species)
         {
-            //var seeds = (Entity)Activator.CreateInstance(ItemDefOf.Seeds.ItemClass);
             var seeds = ItemDefOf.Seeds.Create();
             seeds.GetComponent<SeedComponent>().SetPlant(species);
             seeds.Name = $"{species.Label} {species.SeedsName}";
@@ -18,7 +17,6 @@ namespace Start_a_Town_
 
         static Entity CreatePlant(PlantProperties species)
         {
-            //var entity = (Entity)Activator.CreateInstance(species.PlantEntity.ItemClass);
             var entity = species.PlantEntity.Create();
             var plantcomp = entity.GetComponent<PlantComponent>();
             plantcomp.SetSpecies(species);

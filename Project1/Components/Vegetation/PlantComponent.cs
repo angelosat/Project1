@@ -59,9 +59,9 @@ namespace Start_a_Town_.Components
         public void SetSpecies(PlantProperties species)
         {
             this.Species = species;
-            this.Resolve();
+            //this.Resolve();
         }
-        internal override void Resolve()
+        internal override void InitializeOnce()// Resolve()
         {
             //if (this.Species is null)
             //    return;

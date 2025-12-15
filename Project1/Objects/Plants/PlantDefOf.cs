@@ -47,14 +47,11 @@ namespace Start_a_Town_
 
             var bush = PlantSpiecesDefOf.Berry.Create(PlantFormDefOf.Plant);
             var plantComp = bush.GetComponent<PlantComponent>();
-            //plantComp.Species = PlantSpiecesDefOf.Berry;
-            plantComp.SetSpecies(PlantSpiecesDefOf.Berry);
             plantComp.GrowthBody.Percentage = 1;
             plantComp.GrowthFruit.Percentage = 1;
             GameObject.AddTemplate(bush);
 
             var tree = PlantSpiecesDefOf.LightTree.Create(PlantFormDefOf.Plant);
-            plantComp.SetSpecies(PlantSpiecesDefOf.LightTree);
             tree.GetComponent<PlantComponent>().GrowthBody.Percentage = 1;
             GameObject.AddTemplate(tree);
 

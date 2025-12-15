@@ -11,7 +11,7 @@
         {
             this.AddComponent(new ResourcesComponent(ResourceDefOf.Durability));
             this.AddComponent(new OwnershipComponent());
-            this.AddComponent(new ToolAbilityComponent());
+            this.AddComponent(new ToolComp());
         }
         public override GameObject Create()
         {

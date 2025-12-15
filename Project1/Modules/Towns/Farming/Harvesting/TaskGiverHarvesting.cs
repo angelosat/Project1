@@ -18,7 +18,7 @@
                     if (!actor.CanReserve(plant as GameObject) ||
                         !actor.CanReach(plant))
                         continue;
-                    if (plant.PlantComponent.PlantProperties.ProducesFruit)
+                    if (plant.PlantComponent.Species.ProducesFruit)
                     {
                         var task = new AITask(TaskDefOf.Harvesting, new TargetArgs(plant));
                         return task;

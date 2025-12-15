@@ -7,7 +7,8 @@ namespace Start_a_Town_
     
     public interface ISlottable : ITooltippable
     {
-        string GetName();
+        //string GetName();
+        string Name { get; }
         Icon GetIcon();
         Color GetSlotColor();
         string GetCornerText();

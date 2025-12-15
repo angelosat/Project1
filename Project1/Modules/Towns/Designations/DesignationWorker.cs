@@ -33,7 +33,7 @@ namespace Start_a_Town_
     {
         public override bool IsValid(TargetArgs target)
         {
-            return target.Object?.GetComponent<PlantComponent>()?.PlantProperties.ProductCutDown != null;
+            return target.Object?.GetComponent<PlantComponent>()?.Species.ProductCutDown != null;
         }
     }
     class DesignationWorkerHarvest : DesignationWorker

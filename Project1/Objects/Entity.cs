@@ -2,7 +2,6 @@
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.UI;
-using System;
 using System.Collections.Generic;
 
 namespace Start_a_Town_
@@ -13,18 +12,14 @@ namespace Start_a_Town_
         /// <summary>
         /// here or in tool class?
         /// </summary>
-        public ToolAbilityComponent ToolComponent => this.GetComponent<ToolAbilityComponent>();
+        public ToolComp ToolComponent => this.GetComponent<ToolComp>();
 
         public GearComponent Gear => this.GetComponent<GearComponent>();
 
         public OwnershipComponent Ownership => this.GetComponent<OwnershipComponent>();
 
-        public VariantProps VariantDef { get; internal set; }
+        //public ItemVariantDef Variant { get; internal set; }
 
-        //public override GameObject Create()
-        //{
-        //    return new Entity();
-        //}
         public Entity()
         {
             this.AddComponent(new PositionComponent());
@@ -43,26 +38,17 @@ namespace Start_a_Town_
         }
 
 
-        internal void InitComps()
+        internal void InitComps(ItemVariantDef def)
         {
-            this.Components.Init();
-            //foreach (var compType in this.Def.CompTypes)
-            //{
-            //    //var comp = prop.CreateComp();
-            //    //prop.Apply(comp);
-            //    var comp = (EntityComp)Activator.CreateInstance(compType);
-            //    this.AddComponent(comp);
-            //}
-            //foreach(var props in this.Def.Specs)
-            //{
-            //    //th
-            //}
-            //this.Components.Resolve();
+            this.Components.Init(def);
         }
-
+        internal void InitComps(ItemDef def)
+        {
+            this.Components.Init(def);
+        }
         internal bool ProvidesSkill(ToolUseDef skill)
         {
-            return this.ToolComponent?.Defaults.ToolUse == skill;
+            return this.ToolComponent?.ToolUse == skill;
         }
 
         internal MaterialDef GetMaterial(BoneDef def)
@@ -135,6 +121,11 @@ namespace Start_a_Town_
         internal void Resolve()
         {
             this.Components.Resolve();
+        }
+
+        internal void ApplySpecs(List<EntityComp.Spec> overrides)
+        {
+            this.Components.ApplySpecs(overrides);
         }
     }
 }

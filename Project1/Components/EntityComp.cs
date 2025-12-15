@@ -47,7 +47,7 @@ namespace Start_a_Town_.Components
             });
 
             var newComp = props.CreateComp();
-            props.Apply(newComp);
+            props.ApplyDefaults(newComp);
             return newComp;
         }
 
@@ -166,7 +166,6 @@ namespace Start_a_Town_.Components
         internal virtual void OnGameEvent(GameObject gameObject, GameEvent e)
         {
         }
-
         internal virtual void SyncWrite(IDataWriter w)
         {
         }
@@ -180,19 +179,19 @@ namespace Start_a_Town_.Components
         public abstract class Spec
         {
             public abstract Type CompClass { get; }
-            internal abstract void Apply(EntityComp props);
+            internal abstract void ApplyDefaults(EntityComp props);
             internal abstract EntityComp CreateComp();
         }
         public abstract class Spec<T> : Spec where T : EntityComp, new()
         {
             public override Type CompClass => typeof(T);
             internal sealed override T CreateComp() => new T();
-            internal sealed override void Apply(EntityComp comp)
+            internal sealed override void ApplyDefaults(EntityComp comp)
             {
                 comp.Defaults = this;
-                this.ApplyTo((T)comp);
+                this.ApplyDefaultsTo((T)comp);
             }
-            protected virtual void ApplyTo(T comp) { }
+            protected virtual void ApplyDefaultsTo(T comp) { }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
+using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {
@@ -29,9 +30,10 @@ namespace Start_a_Town_
                     {
                         var allPlants = this.ValidPlants ??= this.GetValidPlants();
                         var randomPlant = allPlants.SelectRandom(map.Random);
-                        var plant = randomPlant.CreatePlant();
-                        plant.GrowthBody = 1;
-                        plant.GrowthFruit = 1;
+                        var plant = randomPlant.Create(PlantFormDefOf.Plant);
+                        var comp = plant.GetComponent<PlantComponent>();
+                        comp.GrowthBody.Percentage = 1;
+                        comp.GrowthFruit.Percentage = 1;
                         int gx = x + (int)chunk.Start.X, gy = y + (int)chunk.Start.Y;
                         plant.Global = new Vector3(gx, gy, z + 1);
                         chunk.Add(plant);

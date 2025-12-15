@@ -25,7 +25,7 @@ namespace Start_a_Town_
             }
             public Product(ItemDef def, int quantity = 1)
             {
-                this.Factory = mats=> def.Factory(def);
+                this.Factory = mats => def.Create();// def.Factory(def);
                 this.Quantity = quantity;
             }
             public Product GetMaterialFromIngredient(string reagentName)

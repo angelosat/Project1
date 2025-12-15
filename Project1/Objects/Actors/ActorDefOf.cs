@@ -5,30 +5,29 @@ namespace Start_a_Town_
 {
     static class ActorDefOf
     {
-        static public readonly ActorDef NpcProps = new("NpcProps")
-        {
-            Needs = [
+        static public readonly ItemVariantDef NpcProps = new ItemVariantDef(ActorDefOf.Npc, "NpcProps")
+        .AddSpec(new NeedsComponent.Spec([
                 NeedDefOf.Energy,
                 NeedDefOf.Hunger,
                 NeedDefOf.Comfort,
                 NeedDefOf.Social,
-                NeedDefOf.Work ],
-            Attributes = [
+                NeedDefOf.Work ]))
+        .AddSpec(new AttributesComponent.Spec([
                 AttributeDefOf.Strength,
                 AttributeDefOf.Intelligence,
-                AttributeDefOf.Dexterity ],
-            Resources = [
+                AttributeDefOf.Dexterity ]))
+        .AddSpec(new ResourcesComponent.Spec([
                 ResourceDefOf.Health,
-                ResourceDefOf.Stamina ],
-            GearSlots = [ 
+                ResourceDefOf.Stamina ]))
+        .AddSpec(new GearComponent.Spec([
                 GearType.Mainhand,
                 GearType.Offhand,
                 GearType.Head,
                 GearType.Chest,
                 GearType.Feet,
                 GearType.Hands,
-                GearType.Legs ],
-            Skills = [
+                GearType.Legs ]))
+        .AddSpec(new NpcSkillsComponent.Spec([
                 SkillDefOf.Digging,
                 SkillDefOf.Mining,
                 SkillDefOf.Construction,
@@ -37,27 +36,26 @@ namespace Start_a_Town_
                 SkillDefOf.Argiculture,
                 SkillDefOf.Carpentry,
                 SkillDefOf.Crafting,
-                SkillDefOf.Plantcutting ]
-            ,
-            Traits =
-            [
+                SkillDefOf.Plantcutting ]))
+        .AddSpec(new PersonalityComponent.Spec([
                 TraitDefOf.Attention,
                 TraitDefOf.Composure,
                 TraitDefOf.Patience,
                 TraitDefOf.Activity,
                 TraitDefOf.Planning,
-                TraitDefOf.Resilience ]
-        };
+                TraitDefOf.Resilience ]))
+
+        ;
 
         static public readonly ItemDef Npc = new ItemDef("Npc", typeof(Actor))
         {
             Description = "A person.",
             Height = 1.5f,
             Weight = 50,
-            //Body = BodyDef.NpcNew,
+            Body = BodyDef.NpcNew,
             DefaultMaterial = MaterialDefOf.Human,
-            ActorProperties = NpcProps,
-            Factory = Actor.Create,
+            //ActorProperties = NpcProps,
+            //Factory = Actor.Create,
             Size = ObjectSize.Haulable,
             CompTypes = [
                 typeof(PossessionsComponent),
@@ -78,7 +76,7 @@ namespace Start_a_Town_
                 typeof(AIComponent),
             ]
         }
-            .AddSpec(new SpriteComp.Spec(BodyDef.NpcNew))
+            //.AddSpec(new SpriteComp.Spec(BodyDef.NpcNew))
             .AddSpec(new ResourcesComponent.Spec([
                 ResourceDefOf.Health, 
                 ResourceDefOf.Stamina ]))
@@ -117,12 +115,12 @@ namespace Start_a_Town_
                 TraitDefOf.Activity,
                 TraitDefOf.Planning,
                 TraitDefOf.Resilience ]))
-            .AddSpec(new AIComponent.Spec(
-                new BehaviorQueue(
-                   new AIMemory(),
-                   new BehaviorHandleResources(),
-                   new BehaviorHandleOrders(),
-                   new BehaviorHandleTasks())))
+            //.AddSpec(new AIComponent.Spec(
+            //    new BehaviorQueue(
+            //       new AIMemory(),
+            //       new BehaviorHandleResources(),
+            //       new BehaviorHandleOrders(),
+            //       new BehaviorHandleTasks())))
             .AddSpec(new PossessionsComponent.Spec())
             .AddSpec(new HaulComponent.Spec())
             .AddSpec(new NpcComponent.Spec())

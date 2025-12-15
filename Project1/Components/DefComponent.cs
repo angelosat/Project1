@@ -42,10 +42,10 @@ namespace Start_a_Town_
         public override void OnTooltipCreated(GameObject parent, UI.Control tooltip)
         {
             tooltip.Color = GetQualityColor();
-            var namelabel = new Label(Vector2.Zero, parent.GetName(), tooltip.Color, Color.Black, UIManager.FontBold) { TextColorFunc = () => tooltip.Color, TextFunc = parent.GetName };
+            var namelabel = new Label(Vector2.Zero, parent.Name, tooltip.Color, Color.Black, UIManager.FontBold) { TextColorFunc = () => tooltip.Color, TextFunc = () => parent.Name };
             tooltip.Controls.Add(namelabel);
             tooltip.Controls.Add(new Label(this.Quality.Label) { Fill = Color.Gold, Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.Gold });
-            tooltip.Controls.Add(new Label(parent.Description) { Location = tooltip.Controls.BottomLeft });
+            tooltip.Controls.Add(new Label(parent.Def.Description) { Location = tooltip.Controls.BottomLeft });
         }
       
         public Color GetQualityColor()

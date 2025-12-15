@@ -208,7 +208,7 @@ namespace Start_a_Town_
             {
                 this.Slots = defs;
             }
-            protected override void ApplyTo(GearComponent comp)
+            protected override void ApplyDefaultsTo(GearComponent comp)
             {
                 foreach (var slot in this.Slots)
                     comp.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = comp.Equipment, Name = slot.Name });

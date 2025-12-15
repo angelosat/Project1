@@ -34,6 +34,7 @@ namespace Start_a_Town_
         public virtual PopulationManager Population { get; }
 
         public virtual List<Terraformer> Terraformers { get; set; }
+        public ItemSystem Items = new();
 
         public T GetTerraformer<T>() where T : Terraformer => this.Terraformers.First(t => t is T) as T;
 

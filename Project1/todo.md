@@ -7,6 +7,8 @@
   - [Open MoodletDef.cs](Components/Mood/MoodletDef.cs)
 - fix "visitor" visiting for the first time when not actually the first time 
 - use getbuffer() instead of toarray() for outgoing packet streams [Open Stream.cs](Network/Stream.cs)
+- order town memebers to transfer an inventory item to another member
+  - this item is marker for transfer and in the first opportunity a relevant taskgiver will push this task to the owner which will then path to the target actor and perform the interaction
 ## networking
 ## gui
 - xml driven

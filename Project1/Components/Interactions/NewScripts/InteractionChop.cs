@@ -10,7 +10,7 @@ namespace Start_a_Town_
         Resource HitPoints => this.Target.Object.GetResource(ResourceDefOf.HitPoints);
         Plant Plant => this.Target.Object as Plant;
 
-        protected override float WorkDifficulty => this.Plant.PlantComponent.PlantProperties.StemMaterial.Density;
+        protected override float WorkDifficulty => this.Plant.PlantComponent.Species.StemMaterial.Density;
         protected override float Progress => 1 - this.HitPoints.Percentage;
         protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnSwing;
 
@@ -27,7 +27,7 @@ namespace Start_a_Town_
         protected override void OnApplyWork(float workAmount)
         {
             this.HitPoints.Value -= workAmount;
-            this.Plant.PlantComponent.Wiggle((float)Math.PI / 32f, 20, this.Plant.PlantComponent.PlantProperties.StemMaterial.Density);
+            this.Plant.PlantComponent.Wiggle((float)Math.PI / 32f, 20, this.Plant.PlantComponent.Species.StemMaterial.Density);
         }
 
         protected override void Done()
@@ -65,7 +65,7 @@ namespace Start_a_Town_
 
         protected override Color GetParticleColor()
         {
-            return this.Plant.PlantComponent.PlantProperties.StemMaterial.Color;
+            return this.Plant.PlantComponent.Species.StemMaterial.Color;
         }
 
         protected override List<Rectangle> GetParticleRects()

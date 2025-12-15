@@ -17,7 +17,7 @@ namespace Start_a_Town_.Components
     {
         public override string Name { get; } = "Consumable";
 
-        public LootTable Byproducts;
+        //public LootTable Byproducts;
         public List<ConsumableEffect> Effects = new List<ConsumableEffect>();
         public GameObject Seeds;
         public ItemMaterialAmount[] Ingredients;
@@ -55,9 +55,9 @@ namespace Start_a_Town_.Components
             foreach (var effect in this.Effects)
                 effect.Apply(actor);
 
-            if (this.Byproducts == null)
-                return;
-            actor.Net.PopLoot(this.Byproducts, actor.Global, actor.Velocity);
+            //if (this.Byproducts == null)
+            //    return;
+            //actor.Net.PopLoot(this.Byproducts, actor.Global, actor.Velocity);
         }
 
         public override void GetInventoryTooltip(GameObject parent, Control tooltip)
@@ -106,7 +106,7 @@ namespace Start_a_Town_.Components
                     actor.Net.PopLoot(seeds, actor.Global, actor.Velocity);
 
                 consumable.SetStackSize(target.Object.StackSize - 1);
-                actor.AddMoodlet(MoodletDef.JustAte.Create());
+                actor.AddMoodlet(MoodLetDefOf.JustAte.Create());
             }
             public override object Clone()
             {
@@ -127,7 +127,7 @@ namespace Start_a_Town_.Components
             //{
             //    this.Effects = needEffects;
             //}
-            protected override void ApplyTo(ConsumableComponent comp)
+            protected override void ApplyDefaultsTo(ConsumableComponent comp)
             {
                 comp.Effects = [.. this.Effects];
             }

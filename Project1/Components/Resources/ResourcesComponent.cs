@@ -11,14 +11,14 @@ namespace Start_a_Town_
 
         public override string Name { get; } = "Resources";
         
-        public ResourcesComponent(Actor actor, ItemDef def)
-        {
-            var defs = def.ActorProperties.Resources;
-            var count = defs.Length;
-            this.Resources = new Resource[count];
-            for (int i = 0; i < count; i++)
-                this.Resources[i] = new Resource(defs[i]);
-        }
+        //public ResourcesComponent(Actor actor, ItemDef def)
+        //{
+        //    var defs = def.ActorProperties.Resources;
+        //    var count = defs.Length;
+        //    this.Resources = new Resource[count];
+        //    for (int i = 0; i < count; i++)
+        //        this.Resources[i] = new Resource(defs[i]);
+        //}
         public ResourcesComponent()
         {
         }
@@ -190,7 +190,7 @@ namespace Start_a_Town_
             {
                 this.Defs = defs;
             }
-            protected override void ApplyTo(ResourcesComponent comp)
+            protected override void ApplyDefaultsTo(ResourcesComponent comp)
             {
                 var count = this.Defs.Length;
                 comp.Resources = new Resource[count];

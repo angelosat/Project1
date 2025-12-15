@@ -21,7 +21,7 @@ namespace Start_a_Town_
         public Loot(Func<GameObject> factory, float chance, int count, int amount) : this(factory, chance, count, amount, amount)
         {
         }
-        public Loot(ItemDef def, float chance = 1, int count= 1, int amountmin= 1, int amountmax = 1) : this(() => def.Factory(def), chance, count, amountmin, amountmax)
+        public Loot(ItemDef def, float chance = 1, int count = 1, int amountmin = 1, int amountmax = 1) : this(def.Create, chance, count, amountmin, amountmax)
         {
         }
         public Loot(Func<GameObject> factory, float chance, int count, int stackmin, int stackmax)

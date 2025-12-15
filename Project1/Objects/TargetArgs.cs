@@ -6,9 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 #nullable enable
 
@@ -771,18 +768,21 @@ namespace Start_a_Town_
 
         internal T GetBlockEntity<T>() where T : BlockEntity => this.Map.GetBlockEntity(this.Global) as T;
 
-        public string GetName()
+        public string Name
         {
-            switch (this.Type)
+            get
             {
-                case TargetType.Entity:
-                    return this.Object.Name;
+                switch (this.Type)
+                {
+                    case TargetType.Entity:
+                        return this.Object.Name;
 
-                case TargetType.Position:
-                    return this.Block.GetName(this.Map, this.Global);
+                    case TargetType.Position:
+                        return this.Block.GetName(this.Map, this.Global);
 
-                default:
-                    return "";
+                    default:
+                        return "";
+                }
             }
         }
 

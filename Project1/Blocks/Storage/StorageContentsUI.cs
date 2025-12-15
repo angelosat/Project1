@@ -9,7 +9,7 @@ namespace Start_a_Town_
         public StorageContentsUI()
         {
             this.Table = new TableObservable<GameObject>() { BackgroundStyle = BackgroundStyle.Tooltip }
-                .AddColumn("mame", 150, o => new Label() { TextFunc = o.GetName });
+                .AddColumn("mame", 150, o => new Label() { TextFunc = () => o.Name });
             this.AddControls(this.Table);
         }
         public void Refresh(BlockStorage.BlockStorageEntity container)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Graphics;
 using Start_a_Town_.Net;
+using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -37,9 +38,15 @@ namespace Start_a_Town_
         static public void Plant(MapBase map, Vector3 global, GameObject obj)
         {
             var plantdef = obj.GetComponent<SeedComponent>().Plant;
-            var plant = plantdef.CreatePlant();
-            plant.SyncInstantiate(map.Net as NetEndpoint);
+            //var plant = plantdef.CreatePlant();
+            //var plant = ItemFamilyDefOf.Plant.System.Create(plantdef, new PlantSpeciesDef.Args(PlantFormDefOf.Plant));
+            var plant = plantdef.Create(PlantFormDefOf.Plant);
+
+            plant.SyncInstantiate(map.Net);
             plant.SyncSpawn(map, global.Above());
+            map.World.RegisterAndSync(plant);
+            map.SpawnAndSync(plant, global.Above(), Vector3.Zero);
+
             //var placer = new BlockSoil.Placer();
             //placer.Place(map, global);
             Block.Place(BlockDefOf.Soil, map, global, map.GetCell(global).Material, 0, 0, 0);

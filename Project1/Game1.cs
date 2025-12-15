@@ -139,10 +139,11 @@ namespace Start_a_Town_
             TextInput = new TextInputHandler(Window.Handle);
             ScreenManager.Initialize();
             Random = new Random();
+
             base.Initialize();
             Animation.Export();
             this.Network = new Network();
-            EnsureInitHelper.Init();
+            //EnsureInitHelper.Init();
             GameSettings.Init();
         }
 
@@ -163,9 +164,7 @@ namespace Start_a_Town_
             //RawMaterialDefOf.Initialize();
 
             /// def init
-            MoodletDef.Init();
-            EffectDef.Init();
-            //ToolDefs.Init();
+            EnsureInitHelper.Init();
 
             GameObject.LoadObjects();
 

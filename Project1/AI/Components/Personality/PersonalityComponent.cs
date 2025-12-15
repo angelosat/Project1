@@ -24,17 +24,17 @@ namespace Start_a_Town_
 
         public override string Name { get; } = "Personality";
 
-        public PersonalityComponent(ItemDef def)
-        {
-            var traits = def.ActorProperties.Traits;
-            var count = traits.Length;
-            this.Traits = new Trait[count];
-            for (int i = 0; i < count; i++)
-            {
-                this.Traits[i] = new Trait(traits[i]);
-            }
-            this.Randomize();
-        }
+        //public PersonalityComponent(ItemDef def)
+        //{
+        //    var traits = def.ActorProperties.Traits;
+        //    var count = traits.Length;
+        //    this.Traits = new Trait[count];
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        this.Traits[i] = new Trait(traits[i]);
+        //    }
+        //    this.Randomize();
+        //}
         public PersonalityComponent()
         {
 
@@ -188,7 +188,7 @@ namespace Start_a_Town_
             {
                 this.Items = defs;
             }
-            protected override void ApplyTo(PersonalityComponent comp)
+            protected override void ApplyDefaultsTo(PersonalityComponent comp)
             {
                 var count = this.Items.Length;
                 comp.Traits = new Trait[count];

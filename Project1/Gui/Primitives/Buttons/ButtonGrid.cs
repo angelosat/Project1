@@ -22,7 +22,7 @@ namespace Start_a_Town_.UI
                 {
                     BackgroundTexture = UIManager.DefaultIconButtonSprite,
                     Icon = tag.GetIcon(),
-                    HoverText = tag.GetName()
+                    HoverText = tag.Name
                 };
                 btnInit(btn, tag);
                 btn.Location = new Vector2(lastx, lasty);

@@ -83,7 +83,7 @@ namespace Start_a_Town_
         public bool Harvesting = true;
         public bool Planting = true;
         public bool Tilling = true;
-        public PlantProperties Plant = PlantPropertiesDefOf.Berry;
+        public PlantProperties Plant = PlantSpiecesDefOf.Berry;
         public float HarvestThreshold = 1;
         public override string UniqueName => $"Zone_Growing_{this.ID}";
         public ItemDef SeedType = PlantDefOf.Bush;
@@ -241,10 +241,6 @@ namespace Start_a_Town_
         public bool IsValidSeed(GameObject item)
         {
             return this.Plant is not null && item.IsSeedFor(this.Plant);
-        }
-        public override string GetName()
-        {
-            return this.Name;
         }
         public override IEnumerable<(string name, Action action)> GetInfoTabs()
         {

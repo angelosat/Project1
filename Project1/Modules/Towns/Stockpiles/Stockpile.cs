@@ -25,11 +25,6 @@ namespace Start_a_Town_
         {
             preset(this);
         }
-        public override string GetName()
-        {
-            return this.Name;
-        }
-
         public void CacheContents()
         {
             this.CacheContentsNew();

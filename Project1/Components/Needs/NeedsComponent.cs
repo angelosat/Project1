@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Components
 {
-    class NeedsComponent : EntityComp, IGui//<NeedsComponent>
+    public class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui//<NeedsComponent>
     {
         public override string Name { get; } = "Needs";
            
@@ -14,24 +14,26 @@ namespace Start_a_Town_.Components
         public List<Need> NeedsNew;
         public NeedsComponent(Actor actor)
         {
-            this.Owner = actor;
-            var def = actor.Def;
-            var defs = def.ActorProperties.Needs;
-            var size = defs.Length;
-            this.NeedsNew = new List<Need>(size);
+            throw new Exception();
 
-            for (int i = 0; i < size; i++)
-            {
-                //this.NeedsNew.Add(defs[i].Create(actor));
-                this.NeedsNew.Add(new Need(actor, defs[i]));
-            }
+            //this.Owner = actor;
+            //var def = actor.Def;
+            //var defs = (actor.Needs.Defaults as Spec).Needs;// def.ActorProperties.Needs;
+            //var size = defs.Length;
+            //this.NeedsNew = new List<Need>(size);
+
+            //for (int i = 0; i < size; i++)
+            //{
+            //    //this.NeedsNew.Add(defs[i].Create(actor));
+            //    this.NeedsNew.Add(new Need(actor, defs[i]));
+            //}
         }
         
         public NeedsComponent()
         {
         }
         
-        public void AddNeed(params NeedDef[] defs)
+        public void RegisterNeeds(params NeedDef[] defs)
         {
             this.NeedsNew = new(defs.Length);
             foreach (var d in defs)
@@ -169,9 +171,13 @@ namespace Start_a_Town_.Components
             {
                 this.Needs = defs;
             }
-            protected override void ApplyTo(NeedsComponent comp)
+            protected override void ApplyDefaultsTo(NeedsComponent comp)
             {
-                comp.AddNeed(this.Needs);
+                if (this.Needs != null)
+                {
+                    comp.RegisterNeeds(this.Needs);
+                    //comp.Needs = this.Needs;
+                }
             }
         }
     }

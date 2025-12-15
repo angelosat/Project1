@@ -17,7 +17,7 @@ namespace Start_a_Town_.Components
             {
                 this.Capacity = size;
             }
-            protected override void ApplyTo(InventoryComponent comp)
+            protected override void ApplyDefaultsTo(InventoryComponent comp)
             {
                 comp.Capacity = this.Capacity;
             }
@@ -227,6 +227,7 @@ namespace Start_a_Town_.Components
                 target.StackSize -= amount;
                 PacketSetStackSize.Send(target, target.StackSize);
                 finalItem = target.Clone();
+                finalItem.StackSize = amount;
                 actor.World.RegisterAndSync(finalItem);
                 //actor.World.Register(finalItem);
                 //PacketRegisterEntity.Send(finalItem);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.Components;
+using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
@@ -7,87 +8,69 @@ namespace Start_a_Town_
 {
     public class PlantProperties : Def
     {
-        public struct Graphics
-        {
-            public string Growing, Grown;
-
-            public Graphics(string textureGrowing, string textureGrown)
-            {
-                this.Growing = textureGrowing;
-                this.Grown = textureGrown;
-            }
-        }
-        public string TextureFruit, TextureSeeds, SeedsName;
-
-        //public string TextureGrowing, TextureGrown;
+        internal ToolUseDef ToolToCut;
         [XmlIgnore]
-        public string TextureGrown
-        {
-            get => this.Textures.Growing;
-            set => this.Textures.Growing = value;
-        }
-        [XmlIgnore]
-        public string TextureGrowing
-        {
-            get => this.Textures.Grown;
-            set => this.Textures.Grown = value;
-        }
-        public Graphics Textures;
+        public MaterialDef FruitMaterial;
+        public GrowthProperties Growth;
+        public ItemFamilyDef Family;
+        public int GrowthRate = Ticks.PerGameHour; //ticks per 1 growth
         public int GrowTicks;
-        public int YieldThreshold;
         public int MaxYieldCutDown;
-       
+        [XmlIgnore]
+        public ItemDef PlantEntity;
+
+        public int PlantingSpacing;
+        [XmlIgnore]
+        public ItemDef ProductCutDown;
+
         /// <summary>
         /// Ticks per 1 hitpoint recovery.
         /// </summary>
         public int StemHealRate;
-
-        public int PlantingSpacing;
         [XmlIgnore]
         public MaterialDef StemMaterial;
-        [XmlIgnore]
-        public MaterialDef FruitMaterial;
-        [XmlIgnore]
-        public ItemDef PlantEntity;
-        [XmlIgnore]
-        public ItemDef ProductCutDown;
-
-        public int GrowthRate = Ticks.PerGameHour; //ticks per 1 growth
-        public GrowthProperties Growth;
-        internal ToolUseDef ToolToCut;
-
-        public bool ProducesFruit => this.Growth?.GrowthItemDef == ItemDefOf.Fruit;
-
-
-        public PlantProperties()
-        {
-
-        }
+        public string TextureFruit, TextureSeeds;
+        public string SeedsName;
+        public Graphics Textures;
+        public int YieldThreshold;
         public PlantProperties(string name) : base(name)
         {
-
+            
         }
+        static T FromXml<T>(XmlNode xmlRoot) where T : new()
+        {
+            var obj = new T();
+
+            return obj;
+        }
+
+        //internal GameObject CreateSeeds()
+        //{
+        //    //var seeds = ItemDefOf.Seeds.Create();
+        //    var seeds = ItemDefOf.Seeds.CreateBase(this);
+        //    seeds.GetComponent<SeedComponent>().SetPlant(this);
+        //    seeds.Name = $"{this.Label} {this.SeedsName}";
+        //    seeds.Body.Sprite = Sprite.Load(this.TextureSeeds);
+        //    return seeds;
+        //}
+
+        //public Plant CreatePlant()
+        //{
+        //    var entity = this.PlantEntity.Create() as Plant;
+        //    entity.PlantComponent.Species = this;
+        //    if (this.PlantEntity == PlantDefOf.Tree)
+        //        entity.SetMaterial(this.StemMaterial);
+        //    else if (this.ProducesFruit)
+        //        entity.Name = entity.Name.Insert(0, $"{this.FruitMaterial.Label} ");
+        //    return entity;
+        //}
         [Obsolete]
         public int GetCutDownHitPonts(GameObject plant) => (int)(this.StemMaterial.Density * plant.TotalWeight / 5f);
 
-        
-
-        public Plant CreatePlant()
-        {
-            var entity = this.PlantEntity.Create() as Plant;
-            entity.PlantComponent.PlantProperties = this;
-            if (this.PlantEntity == PlantDefOf.Tree)
-                entity.SetMaterial(this.StemMaterial);
-            else if (this.ProducesFruit)
-                entity.Name = entity.Name.Insert(0, $"{this.FruitMaterial.Label} ");
-            return entity;
-        }
-
         static public void Init()
         {
-            return;
             var ser = new XmlSerializer(typeof(List<PlantProperties>));
-            var path = $"{GlobalVars.SaveDir}/{PlantPropertiesDefOf.Berry.Label}.xml";
+            var path = $"{GlobalVars.SaveDir}/{PlantSpiecesDefOf.Berry.Label}.xml";
             //var path = $"{GlobalVars.SaveDir}/Berry.xml";
 
             //Register(Berry);
@@ -99,15 +82,62 @@ namespace Start_a_Town_
             file.Close();
         }
 
-        internal GameObject CreateSeeds()
+        internal Entity Create(PlantFormDef form) => PlantSystem.Create(this, form);
+
+        public bool ProducesFruit => this.Growth?.GrowthItemDef == ItemDefOf.Fruit;
+        [XmlIgnore]
+        public string TextureGrowing
         {
-            //var seeds = ItemDefOf.Seeds.Create();
-            var seeds = ItemDefOf.Seeds.CreateNew();
-            seeds.GetComponent<SeedComponent>().SetPlant(this);
-            seeds.Name = $"{this.Label} {this.SeedsName}";
-            seeds.Body.Sprite = Sprite.Load(this.TextureSeeds);
-            return seeds;
+            get => this.Textures.Grown;
+            set => this.Textures.Grown = value;
         }
+
+        [XmlIgnore]
+        public string TextureGrown
+        {
+            get => this.Textures.Growing;
+            set => this.Textures.Growing = value;
+        }
+
+        public struct Graphics
+        {
+            public string Growing, Grown;
+
+            public Graphics(string textureGrowing, string textureGrown)
+            {
+                this.Growing = textureGrowing;
+                this.Grown = textureGrown;
+            }
+        }
+
+      
+    }
+    public class PlantSpeciesOld : Def
+    {
+        internal ToolUseDef ToolToCut;
+        [XmlIgnore]
+        public MaterialDef FruitMaterial;
+        public GrowthProperties Growth;
+
+        public int GrowthRate = Ticks.PerGameHour; //ticks per 1 growth
+        public int GrowTicks;
+        public int MaxYieldCutDown;
+        [XmlIgnore]
+        public ItemDef PlantEntity;
+
+        public int PlantingSpacing;
+        [XmlIgnore]
+        public ItemDef ProductCutDown;
+
+        /// <summary>
+        /// Ticks per 1 hitpoint recovery.
+        /// </summary>
+        public int StemHealRate;
+        [XmlIgnore]
+        public MaterialDef StemMaterial;
+        public string TextureFruit, TextureSeeds, SeedsName;
+        public Graphics Textures;
+        public int YieldThreshold;
 
         static T FromXml<T>(XmlNode xmlRoot) where T : new()
         {
@@ -115,41 +145,70 @@ namespace Start_a_Town_
 
             return obj;
         }
-    }
-    [EnsureStaticCtorCall]
-    static class PlantPropertiesDefOf
-    {
-        static public readonly PlantProperties Berry = new("Berry")
-        {
-            TextureGrowing = ItemContent.BerryBushGrowing.AssetPath,
-            TextureGrown = ItemContent.BerryBushGrown.AssetPath,
-            TextureFruit = ItemContent.BerryBushFruit.AssetPath,
-            TextureSeeds = ItemContent.SeedsFull.AssetPath,
-            SeedsName = "Seeds",
-            StemMaterial = MaterialDefOf.ShrubStem,
-            FruitMaterial = MaterialDefOf.Berry,
-            Growth = new GrowthProperties(ItemDefOf.Fruit, MaterialDefOf.Berry, 5, 6),
-            PlantEntity = PlantDefOf.Bush,
-        };
 
-        static public readonly PlantProperties LightTree = new("LightTree")
+        //internal GameObject CreateSeeds()
+        //{
+        //    //var seeds = ItemDefOf.Seeds.Create();
+        //    var seeds = ItemDefOf.Seeds.CreateBase(this);
+        //    seeds.GetComponent<SeedComponent>().SetPlant(this);
+        //    seeds.Name = $"{this.Label} {this.SeedsName}";
+        //    seeds.Body.Sprite = Sprite.Load(this.TextureSeeds);
+        //    return seeds;
+        //}
+
+        //public Plant CreatePlant()
+        //{
+        //    var entity = this.PlantEntity.Create() as Plant;
+        //    entity.PlantComponent.Species = this;
+        //    if (this.PlantEntity == PlantDefOf.Tree)
+        //        entity.SetMaterial(this.StemMaterial);
+        //    else if (this.ProducesFruit)
+        //        entity.Name = entity.Name.Insert(0, $"{this.FruitMaterial.Label} ");
+        //    return entity;
+        //}
+        [Obsolete]
+        public int GetCutDownHitPonts(GameObject plant) => (int)(this.StemMaterial.Density * plant.TotalWeight / 5f);
+
+        static public void Init()
         {
-            TextureGrowing = ItemContent.TreeFull.AssetPath,
-            TextureGrown = ItemContent.TreeFull.AssetPath,
-            TextureSeeds = ItemContent.Sapling.AssetPath,
-            SeedsName = "Saplings",
-            StemMaterial = MaterialDefOf.LightWood,
-            ProductCutDown = RawMaterialDefOf.Logs,
-            MaxYieldCutDown = 5,
-            GrowTicks = 6 * Ticks.PerSecond,
-            PlantEntity = PlantDefOf.Tree,
-            ToolToCut = ToolUseDefOf.Chopping,
-            StemHealRate = Ticks.FromHours(1),
-            PlantingSpacing = 1
-        };
-        static PlantPropertiesDefOf()
+            return;
+            var ser = new XmlSerializer(typeof(List<PlantProperties>));
+            var path = $"{GlobalVars.SaveDir}/{PlantSpiecesDefOf.Berry.Label}.xml";
+            //var path = $"{GlobalVars.SaveDir}/Berry.xml";
+
+            //Register(Berry);
+            //Register(LightTree);
+
+            System.IO.FileStream file = System.IO.File.Create(path);
+            var list = new List<PlantProperties>(GetDefs<PlantProperties>());
+            ser.Serialize(file, list);
+            file.Close();
+        }
+
+        public bool ProducesFruit => this.Growth?.GrowthItemDef == ItemDefOf.Fruit;
+        [XmlIgnore]
+        public string TextureGrowing
         {
-            Def.Register(typeof(PlantPropertiesDefOf));
+            get => this.Textures.Grown;
+            set => this.Textures.Grown = value;
+        }
+
+        [XmlIgnore]
+        public string TextureGrown
+        {
+            get => this.Textures.Growing;
+            set => this.Textures.Growing = value;
+        }
+
+        public struct Graphics
+        {
+            public string Growing, Grown;
+
+            public Graphics(string textureGrowing, string textureGrown)
+            {
+                this.Growing = textureGrowing;
+                this.Grown = textureGrown;
+            }
         }
     }
 }

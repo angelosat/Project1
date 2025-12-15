@@ -126,10 +126,7 @@ namespace Start_a_Town_
         {
             return this.RoomRole == role;
         }
-        public string GetName()
-        {
-            return $"Room {this.ID}";
-        }
+        public string Name => $"Room {this.ID}";
         public IEnumerable<IntVec3> GetFurniturePositions(FurnitureDef furniture)
         {
             return this.Interior.Where(g => this.Map.GetBlock(g).Furniture == furniture);
@@ -432,7 +429,7 @@ namespace Start_a_Town_
                 currentRoom = map.Town.RoomManager.GetRoomAt(global);
                 center = global;
                 box.Tag = currentRoom;
-                box.GetWindow().SetTitle(currentRoom.GetName());
+                box.GetWindow().SetTitle(currentRoom.Name);
             });
             box.ToWindow("Room settings");
             return box;

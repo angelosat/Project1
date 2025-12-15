@@ -14,15 +14,15 @@ namespace Start_a_Town_
         {
             return new NpcSkillsComponent(this.SkillsNew.ToArray());
         }
-        public NpcSkillsComponent(ItemDef def)
-        {
-            var defs = def.ActorProperties.Skills;
-            this.SkillsNew = new Skill[defs.Length];
-            for (int i = 0; i < defs.Length; i++)
-            {
-                this.SkillsNew[i] = new Skill(defs[i]) { Container = this };
-            }
-        }
+        //public NpcSkillsComponent(ItemDef def)
+        //{
+        //    var defs = def.ActorProperties.Skills;
+        //    this.SkillsNew = new Skill[defs.Length];
+        //    for (int i = 0; i < defs.Length; i++)
+        //    {
+        //        this.SkillsNew[i] = new Skill(defs[i]) { Container = this };
+        //    }
+        //}
         
         public NpcSkillsComponent()
         {
@@ -120,7 +120,7 @@ namespace Start_a_Town_
             {
                 this.Items = defs;
             }
-            protected override void ApplyTo(NpcSkillsComponent comp)
+            protected override void ApplyDefaultsTo(NpcSkillsComponent comp)
             {
                 comp.SkillsNew = new Skill[this.Items.Length];
                 for (int i = 0; i < this.Items.Length; i++)

@@ -545,7 +545,8 @@ namespace Start_a_Town_.Net
         {
             var template = GameObject.Templates[templateID] as Entity;
             //var entity =.Clone() as Entity;
-            var entity = template.VariantDef.CreateNew();
+            //var entity = template.Variant.CreateNew();
+            var entity = template.Clone() as Entity;
             entity.Randomize(Random);
             target.Map = Instance.Map;
             switch (target.Type)

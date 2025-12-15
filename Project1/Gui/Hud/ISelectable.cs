@@ -6,7 +6,8 @@ namespace Start_a_Town_
 {
     public interface ISelectable
     {
-        string GetName();
+        string Name { get; }
+        //string GetName();
         void GetSelectionInfo(IUISelection panel);
         void GetSelectionInfo(SelectionManager info);
         IEnumerable<(string name, Action action)> GetInfoTabs();

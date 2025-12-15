@@ -32,7 +32,12 @@ namespace Start_a_Town_
             // TODO: signal each npc that remembers obj, that obj's state has changed, so that they evaluate it again next time they see it
             throw new NotImplementedException();
         }
-        Behavior Root => this.Defaults.Root;
+        Behavior _root = new BehaviorQueue(
+                   new AIMemory(),
+                   new BehaviorHandleResources(),
+                   new BehaviorHandleOrders(),
+                   new BehaviorHandleTasks());
+        Behavior Root => _root;//this.Defaults.Root;
         readonly Knowledge Knowledge;
         public AIState State;
         bool Enabled = true;

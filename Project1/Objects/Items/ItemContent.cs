@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     static class ItemContent
     {
         static public readonly Texture2D BlockDepthMap = Game1.Instance.Content.Load<Texture2D>("Graphics/blockDepth09height19");
@@ -51,5 +52,11 @@ namespace Start_a_Town_
         static public readonly Sprite TreeFull = new Sprite("trees/tree1g").SetGroundContact(new Vector2(.5f, 1));
 
         static public readonly Sprite SkeletonFull = new Sprite("mobs/skeleton/full", new Vector2(17 / 2, 38)).SetGroundContact(new Vector2(.5f, 1));
+
+        static ItemContent()
+        {
+            
+        }
     }
+    
 }

@@ -14,8 +14,8 @@ namespace Start_a_Town_
         }
         public Plant() : base()
         {
-            this.AddComponent(new PlantComponent());
-            this.AddComponent(new ResourcesComponent(ResourceDefOf.HitPoints));
+            //this.AddComponent(new PlantComponent());
+            //this.AddComponent(new ResourcesComponent(ResourceDefOf.HitPoints));
         }
 
         //public Plant(ItemDef def)

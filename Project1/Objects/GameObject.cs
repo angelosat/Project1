@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -37,8 +36,8 @@ namespace Start_a_Town_
             return Templates[templateID].Clone();
         }
 
-        public string GetName()
-        { return this.Name; }
+        //public string GetName()
+        //{ return this.Name; }
         public Color GetSlotColor()
         { return this.GetInfo().GetQualityColor(); }
         public string GetCornerText()
@@ -55,11 +54,6 @@ namespace Start_a_Town_
             return this.GetResource(type) != null;
         }
         internal AttributeStat GetAttribute(AttributeDef att) => this.GetComponent<AttributesComponent>().GetAttribute(att);
-
-
-        [Obsolete]
-        public GameObject Debug() { return this; }
-
 
         
         public ItemDef Def;
@@ -78,10 +72,7 @@ namespace Start_a_Town_
 
         public static void LoadObjects()
         {
-            //PlantProperties.Init();
-            //PlantDefOf.Init();
-            //AddTemplate(ItemFactory.CreateItem(ItemDefOf.Helmet));
-            AddTemplate(ItemDefOf.Helmet.CreateNew());
+            //AddTemplate(ItemDefOf.Helmet.CreateBase());
             AddTemplate(Actor.Create(ActorDefOf.Npc).SetName("Npc"));
         }
 
@@ -96,7 +87,7 @@ namespace Start_a_Town_
             }
         }
 
-        public string Description => this.Def.Description; 
+        //public string Description => this.Def.Description; 
         public virtual float Height => this.Physics.Height;
 
         public int RefId;
@@ -349,18 +340,19 @@ namespace Start_a_Town_
 
         public GameObject Clone()
         {
-            return this.Def.CreateNew();
-
-            //var obj = this.Def.CreateRandom();
-            //if (obj is null)
-            //{
-            //    obj = this.Create(); //for derived classes
-            //    obj.Def = this.Def; // TODO pass def in the create method above
-            //    foreach (var comp in this.Components.Values)
-            //        obj.AddComponent(comp.Clone() as EntityComp);
-            //}
+            var obj = this.Def.CreateRandom();
+            if (obj is null)
+            {
+                //obj = this.Create(); //for derived classes
+                obj = (Entity)Activator.CreateInstance(this.Def.ItemClass);
+                obj.Def = this.Def; // TODO pass def in the create method above
+                //obj = this.Def.Create();
+                foreach (var comp in this.Components.Values)
+                    obj.AddComponent(comp.Clone() as EntityComp);
+            }
             //obj.ObjectCreated();
-            //return obj;
+            obj.ResolveReferences();
+            return obj;
         }
 
         public abstract GameObject Create();
@@ -452,9 +444,8 @@ namespace Start_a_Town_
         [InspectorHidden]
         public SpriteComp SpriteComp => this._spriteCompCached ??= this.GetComponent<SpriteComp>();
 
-        InventoryComponent _inventoryCached;
-        [InspectorHidden]
-        public InventoryComponent Inventory => this._inventoryCached ??= this.GetComponent<InventoryComponent>();
+        public InventoryComponent Inventory => this.GetComponent<InventoryComponent>();
+        public NeedsComponent Needs => this.GetComponent<NeedsComponent>();
 
         ResourcesComponent _resourcesCached;
         [InspectorHidden]
@@ -544,6 +535,7 @@ namespace Start_a_Town_
 
         public override string ToString()
         {
+            return $"[{this.RefId}] {this.Def} {this.Name}";
             if (!GlobalVars.DebugMode)
                 return $"[{this.RefId}] {Name}";
                 //return $"{Name} / RefId: {this.RefId}";
@@ -878,18 +870,6 @@ namespace Start_a_Town_
             return this;
         }
 
-        /// <summary>
-        /// try to make this private
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete($"use {nameof(Def.CreateNew)} instead")]
-        public GameObject ObjectCreated()
-        {
-            foreach (var comp in this.Components.Values)
-                comp.Resolve();
-
-            return this;
-        }
         public GameObject ObjectSynced()
         {
             foreach (var comp in Components.Values)

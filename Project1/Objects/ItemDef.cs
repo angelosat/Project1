@@ -18,14 +18,13 @@ namespace Start_a_Town_
         public MaterialTypeDef DefaultMaterialType;
         public List<MaterialDef> CanBeMadeFrom = new();
         public List<MaterialTypeDef> ValidMaterialTypes = new();
-        public Func<ItemDef, Entity> Factory = ItemFactory.CreateItem;
+        //public Func<ItemDef, Entity> Factory = ItemFactory.CreateItem;
         public ActorDef ActorProperties;
         public PlantProperties PlantProperties;
         public ItemToolDef ToolProperties;
         public ApparelDef ApparelProperties;
         public CraftingProperties CraftingProperties;
         public RecipeProperties RecipeProperties;
-        //public ConsumableProperties ConsumableProperties;
         public GearType GearType;
         public Func<ItemDef, GameObject> Randomizer;
         public List<MaterialToken> MadeFrom = new();
@@ -39,6 +38,8 @@ namespace Start_a_Town_
         internal Type VariantType;
         internal Type[] CompTypes = [];
         public readonly List<EntityComp.Spec> Specs = [];// [new SpriteComp.Props()];
+        public ItemFamilyDef Family;
+        public Bone Body;
 
         public ItemDef(string name, Type itemClass) : base(name, itemClass)
         {
@@ -48,18 +49,23 @@ namespace Start_a_Town_
         {
             return this.Randomizer?.Invoke(this);
         }
-        public virtual Entity Create()
+        internal virtual Entity Create()
         {
-            return this.Factory(this);
+            var entity = (Entity)Activator.CreateInstance(this.ItemClass);
+            entity.Def = this;
+            entity.InitComps(this);
+            return entity;
         }
-        public Entity CreateNew()
-        {
-            var obj = Activator.CreateInstance(this.ItemClass) as Entity;
-            obj.Def = this;
-            obj.InitComps();
-            return obj;
-        }
-        public Entity CreateFrom(MaterialDef mat)
+
+        //[Obsolete]
+        //internal Entity CreateBase(ItemVariantDef def)
+        //{
+        //    var obj = Activator.CreateInstance(this.ItemClass) as Entity;
+        //    obj.Def = def;
+        //    obj.InitComps(def);
+        //    return obj;
+        //}
+        internal Entity CreateFrom(MaterialDef mat)
         {
             var item = ItemFactory.CreateFrom(this, mat);
             return item;

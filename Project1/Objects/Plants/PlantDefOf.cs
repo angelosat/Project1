@@ -14,10 +14,15 @@ namespace Start_a_Town_
             Haulable = false,
             DefaultMaterial = MaterialDefOf.LightWood,
             //Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull),
-            //Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true })
-            Size = ObjectSize.Haulable
+            Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
+            Size = ObjectSize.Haulable,
+            CompTypes = [typeof(PlantComponent), typeof(ResourcesComponent)]
         }
-        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull)));
+        //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull)))
+        .AddSpec(new ResourcesComponent.Spec([ResourceDefOf.HitPoints]))
+        //.AddSpec(new PlantComponent.Spec())
+
+        ;
 
         static public ItemDef Bush = new ItemDef("Bush", typeof(Plant))
         {
@@ -26,34 +31,41 @@ namespace Start_a_Town_
             Weight = 5,
             Haulable = false,
             DefaultMaterial = MaterialDefOf.ShrubStem,
-            //Body = new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
-            Size = ObjectSize.Haulable
+            Body = new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
+            Size = ObjectSize.Haulable,
+            CompTypes = [typeof(PlantComponent), typeof(ResourcesComponent)]
         }
-        .AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true })));
+        .AddSpec(new ResourcesComponent.Spec([ResourceDefOf.HitPoints]))
+        //.AddSpec(new PlantComponent.Spec())
+        //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true })))
+            ;
 
         static PlantDefOf()
         {
             Def.Register(Tree);
             Def.Register(Bush);
 
-            var bush = PlantPropertiesDefOf.Berry.CreatePlant();
-            bush.GetComponent<PlantComponent>().SetProperties(PlantPropertiesDefOf.Berry);
-            bush.GrowthBody = 1;
-            bush.GrowthFruit = 1;
+            var bush = PlantSpiecesDefOf.Berry.Create(PlantFormDefOf.Plant);
+            var plantComp = bush.GetComponent<PlantComponent>();
+            //plantComp.Species = PlantSpiecesDefOf.Berry;
+            plantComp.SetSpecies(PlantSpiecesDefOf.Berry);
+            plantComp.GrowthBody.Percentage = 1;
+            plantComp.GrowthFruit.Percentage = 1;
             GameObject.AddTemplate(bush);
 
-            var tree = PlantPropertiesDefOf.LightTree.CreatePlant();
-            tree.GrowthBody = 1;
+            var tree = PlantSpiecesDefOf.LightTree.Create(PlantFormDefOf.Plant);
+            plantComp.SetSpecies(PlantSpiecesDefOf.LightTree);
+            tree.GetComponent<PlantComponent>().GrowthBody.Percentage = 1;
             GameObject.AddTemplate(tree);
 
             var allPlants = Def.GetDefs<PlantProperties>();
-            GameObject.AddTemplates(allPlants.Select(p => p.CreateSeeds()));
+            GameObject.AddTemplates(allPlants.Select(p => p.Create(PlantFormDefOf.Seed)));
 
             Def.Register(new Reaction("Extract Seeds", SkillDefOf.Argiculture)
                 .AddBuildSite(IsWorkstation.Types.PlantProcessing)
                 .AddIngredient("a", new Ingredient()
                     .SetAllow(ItemDefOf.Fruit, true))
-                .AddProduct(new Reaction.Product(i => Def.GetDefs<PlantProperties>().First(d => d.FruitMaterial == i["a"].PrimaryMaterial).CreateSeeds() as Entity, 4))
+                .AddProduct(new Reaction.Product(i => Def.GetDefs<PlantProperties>().First(d => d.FruitMaterial == i["a"].PrimaryMaterial).Create(PlantFormDefOf.Seed) as Entity, 4))
                 );
         }
     }

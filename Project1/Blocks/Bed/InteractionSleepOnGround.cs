@@ -34,8 +34,8 @@ namespace Start_a_Town_
 
             var body = a.Body;
             body.RestingFrame = new Keyframe(0, Vector2.Zero, 0);
-            //body.OriginGroundOffset = a.Def.Body.OriginGroundOffset;
-            body.OriginGroundOffset = a.SpriteComp.Defaults.RootBone.OriginGroundOffset;
+            body.OriginGroundOffset = a.Def.Body.OriginGroundOffset;
+            //body.OriginGroundOffset = a.SpriteComp.Defaults.RootBone.OriginGroundOffset;
         }
         public override object Clone()
         {

@@ -14,14 +14,13 @@ namespace Start_a_Town_
         public NetEndpoint Net => this.Map.Net;
         public override string Label => this.Name;
         public readonly DrawableCellCollection Positions = new(Block.FaceHighlights[IntVec3.UnitZ]);
-        public string Name;
+        public string Name { get; set; }
         public ZoneManager Manager;
         public int ID { get; set; }
         public bool Hide;
         static readonly Random Random = new();
         public abstract ZoneDef ZoneDef { get; }
         public abstract string UniqueName { get; }
-        public abstract string GetName();
 
         public bool Exists => this.Manager.Zones.ContainsKey(this.ID);
 
@@ -198,9 +197,9 @@ namespace Start_a_Town_
         public ISaveable Load(SaveTag tag)
         {
             this.ID = tag.GetValue<int>("ID");
-            tag.TryGetTagValue("Name", ref this.Name);
-            //tag.TryGetTagValue<List<SaveTag>>("Positions", v => this.Positions = new HashSet<IntVec3>(new List<Vector3>().Load(v).Select(i => (IntVec3)i)));
-            tag.TryGetTag("Positions", v => this.Positions.LoadIntVecs(v));
+            if (tag.TryGetTagValueOut("Name", out string name)) this.Name = name;
+            //tag.TryGetTag("Positions", v => this.Positions.LoadIntVecs(v));
+            if (tag.TryGetTag("Positions", out SaveTag t)) this.Positions.LoadIntVecs(t);
             this.Hide.TryLoad(tag, "Hide");
             this.LoadExtra(tag);
             return this;

@@ -1,25 +1,23 @@
 ﻿using Start_a_Town_.UI;
-using System;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_.Components
 {
-    class AttributesComponent : EntityComp
+    class AttributesComponent : EntityComp<AttributesComponent.Spec>
     {
         public override string Name { get; } = "Attributes";
         public AttributeStat[] Attributes;
 
-        public AttributesComponent(ItemDef def)
-        {
-            var atts = def.ActorProperties.Attributes;
-            var count = atts.Length;
-            this.Attributes = new AttributeStat[count];
-            for (int i = 0; i < count; i++)
-            {
-                this.Attributes[i] = new AttributeStat(atts[i]);
-            }
-        }
+        //public AttributesComponent(ItemDef def)
+        //{
+        //    var atts = def.ActorProperties.Attributes;
+        //    var count = atts.Length;
+        //    this.Attributes = new AttributeStat[count];
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        this.Attributes[i] = new AttributeStat(atts[i]);
+        //    }
+        //}
         public AttributesComponent()
         {
         }
@@ -157,6 +155,13 @@ namespace Start_a_Town_.Components
         {
             this.GetAttribute(AttributeDefOf.Strength).Award(this.Owner, energyConsumption);
         }
+
+        internal void ApplyDefaults(AttributeDef[] attributes)
+        {
+            for (int i = 0; i < attributes.Length; i++)
+                this.Attributes[i] = new AttributeStat(attributes[i]);
+        }
+
         public new class Spec : Spec<AttributesComponent>
         {
             public AttributeDef[] Items;
@@ -164,11 +169,16 @@ namespace Start_a_Town_.Components
             {
                 this.Items = defs;
             }
-            protected override void ApplyTo(AttributesComponent comp)
+            protected override void ApplyDefaultsTo(AttributesComponent comp)
             {
-                comp.Attributes = new AttributeStat[this.Items.Length];
-                for (int i = 0; i < this.Items.Length; i++)
-                    comp.Attributes[i] = new AttributeStat(this.Items[i]);
+                if (this.Items != null)
+                {
+                    comp.Attributes = new AttributeStat[this.Items.Length];
+                    for (int i = 0; i < this.Items.Length; i++)
+                        comp.Attributes[i] = new AttributeStat(this.Items[i]);
+
+                    //comp.Defaults.Items = this.Items;
+                }
             }
         }
         //public class PropsOld : ComponentProps

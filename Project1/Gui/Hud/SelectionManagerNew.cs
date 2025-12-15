@@ -279,7 +279,7 @@ namespace Start_a_Town_.UI
             {
                 case TargetType.Entity:
                     var entity = target.Object;
-                    this.LabelName.TextFunc = () => entity.GetName();
+                    this.LabelName.TextFunc = () => entity.Name;
                     this.MultipleSelected.Clear();
                     this.MultipleSelected.Add(target);
                     entity.GetSelectionInfo(this);
@@ -358,7 +358,7 @@ namespace Start_a_Town_.UI
                 return;
             this.SelectedStack.MoveNext();
             var first = this.SelectedStack.Current;
-            this.SetName(first.GetName());
+            this.SetName(first.Name);
             this.Clear();
 
             first.GetSelectionInfo(this);

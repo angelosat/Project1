@@ -5,7 +5,7 @@ using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {
-    public class ToolAbilityComponent : EntityComp<ToolAbilityComponent.Spec>
+    public class ToolComp : EntityComp<ToolComp.Spec>
     {
         public new class Spec : Spec<SpriteComp>
         {
@@ -18,26 +18,26 @@ namespace Start_a_Town_
         public override string Name { get; } = "Tool";
         public override object Clone()
         {
-            return new ToolAbilityComponent(/*this.ToolProperties*/);
+            return new ToolComp(/*this.ToolProperties*/);
         }
         public ToolUseDef ToolUse;
-
+        public ToolProfileDef ToolDef;
         //public ToolProps ToolProperties;
         readonly List<ToolUseDef> Skills = new();
         //public ToolAbilityComponent(ToolProps props)
         //{
         //    this.ToolProperties = props;
         //}
-        public ToolAbilityComponent()
+        public ToolComp()
         {
 
         }
         
-        public ToolAbilityComponent(params ToolUseDef[] skills)
+        public ToolComp(params ToolUseDef[] skills)
         {
 
         }
-        public ToolAbilityComponent Initialize(params ToolUseDef[] skills)
+        public ToolComp Initialize(params ToolUseDef[] skills)
         {
             return this;
         }
@@ -72,7 +72,7 @@ namespace Start_a_Town_
         GroupBox GetUI(GameObject parent)
         {
             var box = new GroupBox();
-            box.AddControlsBottomLeft(new Label(this.Defaults.ToolUse));
+            box.AddControlsBottomLeft(new Label(this.ToolUse));
                 //box.AddControlsBottomLeft(ToolUseDef.GetUI(ability.Value.Def.ID, ability.Value.Effectiveness));
             return box;
         }

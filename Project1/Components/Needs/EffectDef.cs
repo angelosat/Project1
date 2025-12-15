@@ -10,10 +10,5 @@ namespace Start_a_Town_
         {
             this.Worker = worker;
         }
-
-        static public void Init()
-        {
-            Register(EffectDefOf.Sleeping);
-        }
     }
 }

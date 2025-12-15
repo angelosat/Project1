@@ -13,10 +13,7 @@ namespace Start_a_Town_
     {
         public const int HitPointsMax = 4;
 
-        public string GetName()
-        {
-            return this.Block.Label;
-        }
+        public string Name => this.Block.Label;
         public Icon GetIcon()
         {
             return new Icon(this.Block.Variations.First());

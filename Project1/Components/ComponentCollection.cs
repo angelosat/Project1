@@ -71,22 +71,35 @@ namespace Start_a_Town_.Components
                 }
             }
         }
-        public void Init()
+        public void Init(ItemDef def)
         {
-            foreach (var compType in this._owner.Def.CompTypes)
+            foreach (var compType in def.CompTypes)
             {
-                //var comp = prop.CreateComp();
-                //prop.Apply(comp);
                 var comp = (EntityComp)Activator.CreateInstance(compType);
                 this.Add(comp);
             }
-            foreach (var props in this._owner.Def.Specs)
-            {
-                props.Apply(this._inner[props.CompClass]);
-            }
+            this.ApplySpecs(def.Specs);
             this.Resolve();
         }
-
+        public void Init(ItemVariantDef def)
+        {
+            foreach (var compType in def.BaseDef.CompTypes)
+            {
+                var comp = (EntityComp)Activator.CreateInstance(compType);
+                this.Add(comp);
+            }
+            //foreach (var props in def.BaseDef.Specs)
+            //{
+            //    props.ApplyDefaults(this._inner[props.CompClass]);
+            //}
+            this.ApplySpecs(def.BaseDef.Specs);
+            this.Resolve();
+        }
+        public void ApplySpecs(IEnumerable<EntityComp.Spec> overrides)
+        {
+            foreach(var spec in overrides)
+                spec.ApplyDefaults(this._inner[spec.CompClass]);
+        }
         internal bool TryGetComponent<T>(out T var) where T : EntityComp
         {
             this._inner.TryGetValue(typeof(T), out EntityComp existing);

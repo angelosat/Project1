@@ -87,6 +87,19 @@ namespace Start_a_Town_
                 return true;
             }
         }
+        public bool TryGetTagValueOut<TValue>(string name, out TValue value)
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = (TValue)tag.Value;
+                return true;
+            }
+        }
         public bool TryGetTagValue<TValue>(string name, ref TValue value)
         {
             if (!this.TryGetTag(name, out var tag))

@@ -32,20 +32,14 @@ namespace Start_a_Town_
             // TODO: signal each npc that remembers obj, that obj's state has changed, so that they evaluate it again next time they see it
             throw new NotImplementedException();
         }
-        //Behavior _root = new BehaviorQueue(
-        //           new AIMemory(),
-        //           new BehaviorHandleResources(),
-        //           new BehaviorHandleOrders(),
-        //           new BehaviorHandleTasks());
-        Behavior Root;//=> _root;//this.Defaults.Root;
+
+        Behavior Root;
         readonly Knowledge Knowledge;
         public AIState State;
         bool Enabled = true;
         public AIComponent()
         {
-            
             this.Knowledge = new Knowledge();
-            //this.Root = null;
         }
         internal override void CopyFrom(EntityComp source)
         {
@@ -117,22 +111,6 @@ namespace Start_a_Town_
         {
             this.Owner.Map?.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
         }
-        //Action _unListen;
-        //public override void OnDespawn()
-        //{
-        //    this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
-        //}
-        //internal override void OnGameEvent(GameObject gameObject, GameEvent e)
-        //{
-        //    if (e.Type == Message.Types.BlocksChanged)
-        //    {
-        //        if (!this.State.Path?.IsValid(gameObject as Actor) ?? false)
-        //        {
-        //            this.State.Path = null;
-        //        }
-        //    }
-        //}
-
         void HandleBlocksChange(BlocksUpdatedEvent e)
         {
             if (!this.State.Path?.IsValid(this.Owner as Actor) ?? false)

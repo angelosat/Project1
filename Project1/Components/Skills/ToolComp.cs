@@ -16,18 +16,11 @@ namespace Start_a_Town_
             }
         }
         public override string Name { get; } = "Tool";
-        public override object Clone()
-        {
-            return new ToolComp(/*this.ToolProperties*/);
-        }
+        
         public ToolUseDef ToolUse;
         public ToolProfileDef ToolDef;
-        //public ToolProps ToolProperties;
         readonly List<ToolUseDef> Skills = new();
-        //public ToolAbilityComponent(ToolProps props)
-        //{
-        //    this.ToolProperties = props;
-        //}
+     
         public ToolComp()
         {
 
@@ -41,17 +34,6 @@ namespace Start_a_Town_
         {
             return this;
         }
-
-        /// <summary>
-        /// load sprites here on in the Tool.ObjectLoaded method?
-        /// </summary>
-        //public override void OnObjectLoaded(GameObject parent)
-        //{
-        //    if (this.Props is null)
-        //        return;
-        //    this.Parent.Body.Sprite = this.Props.SpriteHandle;
-        //    this.Parent.Body[BoneDef.EquipmentHead].Sprite = this.Props.SpriteHead;
-        //}
         public ToolUseDef Skill { get { return this.Skills.FirstOrDefault(); } }
         
      
@@ -76,27 +58,5 @@ namespace Start_a_Town_
                 //box.AddControlsBottomLeft(ToolUseDef.GetUI(ability.Value.Def.ID, ability.Value.Effectiveness));
             return box;
         }
-
-        public override void Write(IDataWriter w)
-        {
-            //w.Write(this.ToolProperties is not null); // HACK for loading legacy items which lack Props
-            //this.ToolProperties?.Write(w);
-        }
-        public override void Read(IDataReader r)
-        {
-            //if (r.ReadBoolean()) // HACK for loading legacy items which lack Props
-            //    this.ToolProperties = Def.GetDef<ToolProps>(r);
-        }
-
-        internal override void SaveExtra(SaveTag tag)
-        {
-            //this.ToolProperties?.Name.Save(tag, "Props");
-        }
-
-        internal override void LoadExtra(SaveTag tag)
-        {
-            //tag.TryLoadDef("Props", ref this.ToolProperties);
-        }
-
     }
 }

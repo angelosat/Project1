@@ -108,8 +108,6 @@ namespace Start_a_Town_.Components
             this.Target.Write(w);
             w.Write(this.Task.GetType().FullName);
             this.Task.Write(w);
-            //if (this.Task.Animation != null)
-            //    this.Task.Animation.Write(w);
         }
         public override void Read(IDataReader r)
         {
@@ -125,8 +123,6 @@ namespace Start_a_Town_.Components
                 throw new Exception();
             interaction.Read(r);
             this.Task = interaction;
-            //if (this.Task.Animation != null)
-            //    this.Task.Animation.Read(r);
         }
         internal override void SaveExtra(SaveTag tag)
         {
@@ -136,8 +132,6 @@ namespace Start_a_Town_.Components
                 return;
             tag.Add(this.Target.Save("Target"));
             tag.Add(this.Task.SaveAs("Interaction"));
-            //if (this.Task.Animation != null)
-            //    tag.Add(this.Task.Animation.Save("Animation"));
         }
         internal override void LoadExtra(SaveTag save)
         {
@@ -150,24 +144,9 @@ namespace Start_a_Town_.Components
             var inter = Interaction.Load(interactionTag);
             inter.Actor = this.Owner as Actor;
             inter.Target = this.Target;
-            //inter.Animation?.Load(save["Animation"]);
             this.Task = inter;
         }
 
-        public override void OnObjectLoaded(GameObject parent)
-        {
-            // spritecomponent is the owner of animations and handles loading them back
-            return;
-            //if (this.Task != null)
-            //{
-            //    if (this.Task.cachedAnimation != null)
-            //    {
-
-            //        parent.AddAnimation(this.Task.cachedAnimation);
-            //        this.Task.AfterLoad();
-            //    }
-            //}
-        }
         public override void OnObjectSynced(GameObject parent)
         {
             this.OnObjectLoaded(parent);
@@ -175,7 +154,6 @@ namespace Start_a_Town_.Components
         internal override void OnMapLoaded(GameObject parent)
         {
             if (this.Target != null)
-                //this.Target.Map = parent.Map;
                 this.Target.InitializeProvider(parent.Net);
         }
 

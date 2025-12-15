@@ -25,7 +25,6 @@ namespace Start_a_Town_
         public override void Write(IDataWriter w)
         {
             IOHelper.Write(w, this.ActiveEffects);
-            //this.ActiveEffects.WriteNew(w);
         }
         public override void Read(IDataReader r)
         {
@@ -33,12 +32,10 @@ namespace Start_a_Town_
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            //tag.Add(this.ActiveEffects.Save("ActiveEffects"));
             tag.Add("ActiveEffects", this.ActiveEffects);
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            //tag.TryGetTag("ActiveEffects", this.ActiveEffects.LoadFrom);
             tag.TryLoadList("ActiveEffects", ref this.ActiveEffects);
         }
         internal override GroupBox GetDetailedGui()

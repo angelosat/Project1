@@ -8,16 +8,6 @@ namespace Start_a_Town_.Components
         public override string Name { get; } = "Attributes";
         public AttributeStat[] Attributes;
 
-        //public AttributesComponent(ItemDef def)
-        //{
-        //    var atts = def.ActorProperties.Attributes;
-        //    var count = atts.Length;
-        //    this.Attributes = new AttributeStat[count];
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        this.Attributes[i] = new AttributeStat(atts[i]);
-        //    }
-        //}
         public AttributesComponent()
         {
         }
@@ -29,25 +19,6 @@ namespace Start_a_Town_.Components
             for (int i = 0; i < count; i++)
                 this.Attributes[i] = atts[i].Clone();
         }
-        //public AttributesComponent(params AttributeStat[] atts)
-        //    : this()
-        //{
-        //    var count = atts.Length;
-        //    this.Attributes = new AttributeStat[count];
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        this.Attributes[i] = atts[i].Clone();
-        //    }
-        //}
-        //public AttributesComponent(params AttributeDef[] atts)
-        //    : this()
-        //{
-        //    this.Attributes = new AttributeStat[atts.Length];
-        //    for (int i = 0; i < atts.Length; i++)
-        //    {
-        //        this.Attributes[i] = new AttributeStat(atts[i]);
-        //    }
-        //}
         
         public override void Tick()
         {
@@ -55,12 +26,6 @@ namespace Start_a_Town_.Components
             for (int i = 0; i < this.Attributes.Length; i++)
                 this.Attributes[i].Update(parent);
         }
-
-        //public override object Clone()
-        //{
-        //    return new AttributesComponent(this.Attributes);
-        //}
-
         public AttributeStat GetAttribute(AttributeDef def)
         {
             return this.Attributes.FirstOrDefault(att => att.Def == def);
@@ -163,12 +128,6 @@ namespace Start_a_Town_.Components
             this.GetAttribute(AttributeDefOf.Strength).Award(this.Owner, energyConsumption);
         }
 
-        internal void ApplyDefaults(AttributeDef[] attributes)
-        {
-            for (int i = 0; i < attributes.Length; i++)
-                this.Attributes[i] = new AttributeStat(attributes[i]);
-        }
-
         public new class Spec : Spec<AttributesComponent>
         {
             public AttributeDef[] Items;
@@ -188,14 +147,5 @@ namespace Start_a_Town_.Components
                 }
             }
         }
-        //public class PropsOld : ComponentProps
-        //{
-        //    public override Type CompClass => typeof(AttributesComponent);
-        //    public AttributeDef[] Items;
-        //    public Props(params AttributeDef[] defs)
-        //    {
-        //        this.Items = defs;
-        //    }
-        //}
     }
 }

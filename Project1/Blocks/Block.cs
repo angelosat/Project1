@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SharpDX.MediaFoundation;
 using Start_a_Town_.Components;
 using Start_a_Town_.Graphics;
 using Start_a_Town_.Particles;
@@ -8,14 +7,15 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     public abstract partial class Block : Inspectable, ISlottable, ITooltippable
     {
         static Block()
         {
+            Initialize();
         }
         public class Data
         {
@@ -37,7 +37,7 @@ namespace Start_a_Town_
         public static AtlasDepthNormals.Node.Token BlockHighlight;
         public static AtlasDepthNormals.Node.Token BlockHighlightBack;
         public static AtlasDepthNormals.Node.Token BlockBlueprintGrayscale;
-
+        
         public static void Initialize()
         {
             var arraySize = Width * Height;

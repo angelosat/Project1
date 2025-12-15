@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class MoodComp : EntityComp, IProgressBar, IGui//<MoodComp>
+    public class MoodComp : EntityComp, IProgressBar, IGui
     {
         public new class Spec : Spec<MoodComp> { }
 
@@ -95,18 +95,9 @@ namespace Start_a_Town_
             var panelMoodlets = new TableObservable<Moodlet>() { BackgroundStyle = BackgroundStyle.TickBox };
             panelMoodlets.AddColumn("Test", panelMoodValue.Width * 2, m => m.GetUI());
             panelMoodlets.Bind(this.Moodlets);
-            //panelMoodlets.Build(this.Moodlets, false);
 
             panelMoodlets.Location = panelMoodValue.BottomLeft;
             box.AddControls(panelMoodValue, panelMoodlets);
-
-            //panelMoodlets.OnGameEventAction = (e) =>
-            //{
-            //    if (e.Type == Message.Types.MoodletsUpdated && e.Parameters[0] == actor)
-            //    {
-            //        panelMoodlets.Build(this.Moodlets, false);
-            //    }
-            //};
         }
 
         internal override void SaveExtra(SaveTag tag)

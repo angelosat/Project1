@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Start_a_Town_.UI;
 using Start_a_Town_.Components;
-using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -24,17 +23,6 @@ namespace Start_a_Town_
 
         public override string Name { get; } = "Personality";
 
-        //public PersonalityComponent(ItemDef def)
-        //{
-        //    var traits = def.ActorProperties.Traits;
-        //    var count = traits.Length;
-        //    this.Traits = new Trait[count];
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        this.Traits[i] = new Trait(traits[i]);
-        //    }
-        //    this.Randomize();
-        //}
         public PersonalityComponent()
         {
 
@@ -207,14 +195,5 @@ namespace Start_a_Town_
                 comp.Randomize();
             }
         }
-        //public class PropsOld : ComponentProps
-        //{
-        //    public override Type CompClass => typeof(NpcSkillsComponent);
-        //    public TraitDef[] Items;
-        //    public Props(params TraitDef[] defs)
-        //    {
-        //        this.Items = defs;
-        //    }
-        //}
     }
 }

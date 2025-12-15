@@ -1063,14 +1063,6 @@ namespace Start_a_Town_
                     foreach (var chch in ch.GetSelfAndChildren())
                         yield return chch;
         }
-      
-        internal void RemoteProcedureCall(Components.Message.Types type, BinaryReader r)
-        {
-            foreach (var comp in this.Components.Values)
-            {
-                comp.HandleRemoteCall(this, type, r);
-            }
-        }
 
         public bool IsInInteractionRange(TargetArgs target)
         {

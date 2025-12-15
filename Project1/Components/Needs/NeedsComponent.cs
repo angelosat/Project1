@@ -1,42 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Start_a_Town_.Components.Needs;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Components
 {
-    public class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui//<NeedsComponent>
+    public class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui
     {
         public override string Name { get; } = "Needs";
            
         float Timer = Ticks.PerSecond;
         public List<Need> NeedsNew;
-        public NeedsComponent(NeedsComponent source)// Actor actor)
-        {
-            //this.Owner = actor;
-            //var def = actor.Def;
-            //var defs = (actor.Needs.Defaults as Spec).Needs;// def.ActorProperties.Needs;
-            var defs = source.Defaults.Needs;
-            var size = defs.Length;
-            this.NeedsNew = new List<Need>(size);
-
-            for (int i = 0; i < size; i++)
-            {
-                //this.NeedsNew.Add(defs[i].Create(actor));
-                this.NeedsNew.Add(new Need(null, defs[i]));
-            }
-        }
+      
         internal override void CopyFrom(EntityComp source)
         {
             var c = (NeedsComponent)source;
             var count = c.NeedsNew.Count;
             this.NeedsNew = new List<Need>(count);
             for (int i = 0; i < count; i++)
-            {
-                //this.NeedsNew.Add(defs[i].Create(actor));
                 this.NeedsNew.Add(new Need(null, c.NeedsNew[i].NeedDef));
-            }
         }
         public NeedsComponent()
         {
@@ -46,26 +28,15 @@ namespace Start_a_Town_.Components
         {
             this.NeedsNew = new(defs.Length);
             foreach (var d in defs)
-                //this.NeedsNew.Add(d.Create(this.Parent as Actor));
                 this.NeedsNew.Add(new Need(this.Owner as Actor, d));
         }
 
         public override void Tick()
         {
-            //Timer -= 1;
-            //if (Timer > 0)
-            //    return;
-
-            //Timer = Ticks.PerSecond;
-
             for (int i = 0; i < this.NeedsNew.Count; i++)
                 this.NeedsNew[i].Tick();// this.Parent);
         }
 
-        public override object Clone()
-        {
-            return new NeedsComponent(this);//this.Owner as Actor);
-        }
         internal override void Resolve()
         {
             foreach (var n in this.NeedsNew)
@@ -97,12 +68,6 @@ namespace Start_a_Town_.Components
                 PacketNeedModify.Send(actor.Net as Net.Server, actor.RefId, need.NeedDef, value);
             return need;
         }
-
-        //internal override void GetManagementInterface(GameObject parent, UI.Control box)
-        //{
-        //    box.AddControls(new NeedsMoodsUI(parent));
-        //}
-
         public void GetUI(GameObject parent, UI.Control container)
         {
             var box = new GroupBox();

@@ -8,17 +8,8 @@ namespace Start_a_Town_
     public class ResourcesComponent : EntityComp
     {
         public Resource[] Resources;
-
         public override string Name { get; } = "Resources";
 
-        //public ResourcesComponent(Actor actor, ItemDef def)
-        //{
-        //    var defs = def.ActorProperties.Resources;
-        //    var count = defs.Length;
-        //    this.Resources = new Resource[count];
-        //    for (int i = 0; i < count; i++)
-        //        this.Resources[i] = new Resource(defs[i]);
-        //}
         internal override void CopyFrom(EntityComp comp)
         {
             var source = (ResourcesComponent)comp;

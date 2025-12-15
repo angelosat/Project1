@@ -17,10 +17,6 @@ namespace Start_a_Town_.Components
             set => this._global = value;
         }
 
-        //public override void MakeChildOf(GameObject parent)
-        //{
-        //    parent.Transform = this;
-        //}
         public override string ToString()
         {
             return this.Global.ToString() + "\n" +

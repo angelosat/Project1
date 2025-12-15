@@ -15,7 +15,7 @@ namespace Start_a_Town_.Components
         public new TConfig Defaults => (TConfig)base.Defaults;
     }
 
-    public abstract class EntityComp : Inspectable//, ICloneable
+    public abstract class EntityComp : Inspectable
     {
         public override string Label => this.Name;
         public abstract string Name { get; }
@@ -32,9 +32,6 @@ namespace Start_a_Town_.Components
         public EntityComp()
         {
         }
-        public EntityComp(GameObject parent)
-            : this()
-        { }
 
         public virtual object Clone()
         {
@@ -55,14 +52,8 @@ namespace Start_a_Town_.Components
             return false;
         }
         internal virtual void HandleRemoteCall(GameObject gameObject, ObjectEventArgs e) { }
-        internal virtual void HandleRemoteCall(GameObject gameObject, Message.Types type, BinaryReader r) { }
 
         public virtual void Tick() { }
-
-        public void Tick(MapBase map, IBlockEntityCompContainer entity, Vector3 global)
-        {
-            throw new NotImplementedException();
-        }
 
         public virtual void Initialize(GameObject parent) { }
         public virtual void Randomize(GameObject parent, RandomThreaded random) { this.Initialize(parent); }
@@ -88,7 +79,6 @@ namespace Start_a_Town_.Components
         internal virtual void Initialize(Entity parent, Dictionary<string, MaterialDef> materials) { }
         internal virtual void Initialize(Entity parent, Quality quality) { }
 
-        //public virtual void MakeChildOf(GameObject parent) { this.Owner = parent; }
 
         public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e) { }
         public virtual void Draw(MySpriteBatch sb, GameObject parent, Camera camera) { }

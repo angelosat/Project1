@@ -34,48 +34,13 @@ namespace Start_a_Town_
         public GearComponent()
         {
         }
-        //public GearComponent(ItemDef def)
-        //{
-        //    foreach (var slot in def.ActorProperties.GearSlots)
-        //        this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
-        //}
+
         public GearComponent(params GearType[] types)
         {
             foreach (var slot in types)
                 this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
         }
-        //internal override void CopyFrom(EntityComp source)
-        //{
-        //    var comp = (GearComponent)source;
-        //    var types = comp.Equipment; 
-        //    foreach (var slot in types)
-        //        this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
-        //}
-        public override object Clone()
-        {
-            var types = from gear in this.Equipment.Slots select GearType.Dictionary[(GearType.Types)gear.ID];
-            var comp = new GearComponent(types.ToArray());
-            //using (var w = new BinaryWriter(new MemoryStream()))
-            //{
-            //    this.Write(w);
-            //    w.BaseStream.Position = 0;
-            //    //using var r = new BinaryReader(w.BaseStream);
-            //    using var r = new DataReader(w.BaseStream);
-            //    comp.Read(r);
-            //}
-            using var mem = new MemoryStream();
-            var w = new DataWriter(mem);
-            using var r = new DataReader(mem);
-            //using (var w = new BinaryWriter(new MemoryStream()))
-            //{
-                this.Write(w);
-                w.Position = 0;
-                //using var r = new BinaryReader(w.BaseStream);
-                //using var r = new DataReader(w.BaseStream);
-                comp.Read(r);
-            //}
-            return comp;
-        }
+
         public override IEnumerable<GameObject> GetChildren()
         {
             foreach (var o in this.Equipment.Slots.Where(s => s.HasValue).Select(s => s.Object))

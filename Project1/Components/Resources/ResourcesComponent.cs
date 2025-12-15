@@ -10,7 +10,7 @@ namespace Start_a_Town_
         public Resource[] Resources;
 
         public override string Name { get; } = "Resources";
-        
+
         //public ResourcesComponent(Actor actor, ItemDef def)
         //{
         //    var defs = def.ActorProperties.Resources;
@@ -19,6 +19,14 @@ namespace Start_a_Town_
         //    for (int i = 0; i < count; i++)
         //        this.Resources[i] = new Resource(defs[i]);
         //}
+        internal override void CopyFrom(EntityComp comp)
+        {
+            var source = (ResourcesComponent)comp;
+            var count = source.Resources.Length;
+            this.Resources = new Resource[count];
+            for (int i = 0; i < count; i++)
+                this.Resources[i] = source.Resources[i].Clone();
+        }
         public ResourcesComponent()
         {
         }

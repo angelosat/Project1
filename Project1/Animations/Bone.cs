@@ -767,7 +767,7 @@ namespace Start_a_Town_
         public void Write(IDataWriter w)
         {
             //w.Write(this.Material != null ? this.Material.ID : -1);
-            w.Write(this.Material != null ? this.Material.Name : "");
+            w.Write(this.Material?.Name ?? "");
 
             //this.Sprite.Write(w); // i decided to sync sprites as well instead of relying on initializing sprites after gameobject loading/syncing
             w.Write(this.Sprite?.Name ?? "");

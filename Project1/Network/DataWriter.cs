@@ -59,7 +59,7 @@ namespace Start_a_Town_.Net
             w.Write(list.Count);
             foreach(var i in list)
                 i.Write(this);
-        return this;
+            return this;
         }
         internal void End() { }
     }

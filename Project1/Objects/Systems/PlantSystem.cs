@@ -8,10 +8,12 @@ namespace Start_a_Town_
         static Entity CreateSeeds(PlantProperties species)
         {
             var seeds = ItemDefOf.Seeds.Create();
+            seeds.Initialize();
+
             seeds.GetComponent<SeedComponent>().SetPlant(species);
+
             seeds.Name = $"{species.Label} {species.SeedsName}";
             seeds.Body.Sprite = Sprite.Load(species.TextureSeeds);
-            seeds.Initialize();
             return seeds;
         }
 
@@ -19,12 +21,13 @@ namespace Start_a_Town_
         {
             var entity = species.PlantEntity.Create();
             var plantcomp = entity.GetComponent<PlantComponent>();
+            entity.Initialize();
+
             plantcomp.SetSpecies(species);
             if (species.PlantEntity == PlantDefOf.Tree)
                 entity.SetMaterial(species.StemMaterial);
             else if (species.ProducesFruit)
                 entity.Name = entity.Name.Insert(0, $"{species.FruitMaterial.Label} ");
-            entity.Initialize();
             return entity;
         }
 

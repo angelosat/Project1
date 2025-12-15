@@ -25,6 +25,10 @@ namespace Start_a_Town_.Components
         {
             return (T)this._inner[typeof(T)];
         }
+        public EntityComp GetComponent(Type type)
+        {
+            return this._inner[type];
+        }
         public void Add(EntityComp comp)
         {
             //this._inner.Add(comp.GetType(), comp);
@@ -103,13 +107,18 @@ namespace Start_a_Town_.Components
             foreach(var spec in overrides)
                 spec.ApplyDefaults(this._inner[spec.CompClass]);
         }
-        internal bool TryGetComponent<T>(out T var) where T : EntityComp
+        //internal bool TryGetComponent<T>(out T var) where T : EntityComp
+        //{
+        //    this._inner.TryGetValue(typeof(T), out EntityComp existing);
+        //    var = existing as T;
+        //    return var != null;
+        //}
+        public bool TryGetComponent<T>(out T comp) where T : EntityComp
         {
-            this._inner.TryGetValue(typeof(T), out EntityComp existing);
-            var = existing as T;
-            return var != null;
+            var result = this._inner.TryGetValue(typeof(T), out EntityComp c);
+            comp = (T)c;
+            return result;
         }
-
         internal void Initialize()
         {
             foreach (var comp in this._inner.Values)

@@ -240,7 +240,7 @@ namespace Start_a_Town_
         }
         public void Write(IDataWriter w)
         {
-            w.Write(this.Def.Name);
+            w.Write(this.Def);//.Name);
             w.Write(this.Frame);
             w.Write(this.FadeLength);
             w.Write(this.FadeValue);

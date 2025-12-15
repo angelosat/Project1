@@ -179,6 +179,9 @@ namespace Start_a_Town_.Components
         internal virtual void ResolveReferences()
         {
         }
+
+        internal virtual void CopyFrom(EntityComp comp) { }
+
         public abstract class Spec
         {
             public abstract Type CompClass { get; }

@@ -337,18 +337,9 @@ namespace Start_a_Town_
 
         public GameObject Clone()
         {
-            Entity obj = this.Def.CreateRandom() as Entity;
-            if (obj is null)
-            {
-                //obj = this.Create(); //for derived classes
-                obj = (Entity)Activator.CreateInstance(this.Def.ItemClass);
-                obj.Def = this.Def; // TODO pass def in the create method above
-                //obj = this.Def.Create();
-                foreach (var comp in this.Components.Values)
-                    obj.AddComponent(comp.Clone() as EntityComp);
-            }
-            //obj.ObjectCreated();
-            obj.Resolve();
+            var obj = this.Def.Create();
+            foreach (var comp in this.Components.Values)
+                obj.GetComponent(comp.GetType()).CopyFrom(comp);
             return obj;
         }
 
@@ -465,7 +456,10 @@ namespace Start_a_Town_
         {
             return this.GetComponent<T>();
         }
-      
+        public EntityComp GetComponent(Type type)
+        {
+            return this.Components.GetComponent(type);
+        }
         public T GetComponent<T>() where T : EntityComp
         {
             return this.Components.GetComponent<T>();
@@ -494,8 +488,11 @@ namespace Start_a_Town_
         }
         public bool TryGetComponent<T>(out T component) where T : EntityComp
         {
-            component = this.GetComponent<T>();
-            return component != null;
+            //component = this.GetComponent<T>();
+            //return component != null;
+            var result = this.Components.TryGetComponent<T>(out var c);
+            component = (T)c;
+            return result;
         }
         public bool TryGetComponent<T>(Action<T> action) where T : EntityComp
         {
@@ -839,9 +836,9 @@ namespace Start_a_Town_
             //    //obj[compName].Read(r);
             //    obj.Components[compName].Read(r);
             //}
+
             obj.Components.Read(r);
-            //obj.ObjectSynced();
-            obj.Resolve();
+            //obj.Resolve();
             return obj;
         }
         public static GameObject CloneTemplate(int templateID, IDataReader reader)
@@ -932,8 +929,7 @@ namespace Start_a_Town_
             //obj.Name = obj.Def.NameGetter?.Invoke(obj) ?? obj.Name; // reset name
             //obj.DefComponent.ParentName = obj.Def.NameGetter?.Invoke(obj) ?? obj.DefComponent.ParentName; // reset name
             obj.ResetName();
-            //obj.ObjectLoaded();
-            obj.Resolve();
+            //obj.Resolve();
             return obj;
         }
         
@@ -1439,7 +1435,9 @@ namespace Start_a_Town_
 
         internal List<StatNewModifier> GetStatModifiers(StatDef statNewDef)
         {
-            return this.GetComponent<StatsComponent>()?.GetModifiers(statNewDef);
+            this.TryGetComponent<StatsComponent>(out var stats);
+            return stats?.GetModifiers(statNewDef);
+            //return this.GetComponent<StatsComponent>()?.GetModifiers(statNewDef);
         }
 
         internal void AddResourceModifier(ResourceRateModifier resourceModifier)

@@ -11,6 +11,7 @@ namespace Start_a_Town_
                 throw new InvalidOperationException($"{nameof(ToolSystem)} received wrong profile");
 
             var item = ItemDefOf.Tool.Create();
+            item.Initialize();
 
             item.ToolComponent.ToolDef = profile;
 
@@ -24,7 +25,6 @@ namespace Start_a_Town_
 
             item.Name = profile.Label;
 
-            item.Initialize();
 
             return item;
         }
@@ -38,6 +38,7 @@ namespace Start_a_Town_
                 throw new InvalidOperationException($"{nameof(ToolSystem)} received wrong args");
 
             var item = ItemDefOf.Tool.Create();
+            item.Initialize();
 
             item.ToolComponent.ToolDef = profile;
 
@@ -51,7 +52,6 @@ namespace Start_a_Town_
 
             item.Name = profile.Label;
 
-            item.Initialize();
 
             //item.Body[BoneDefOf.ToolHandle].Sprite = profile.SpriteHandle;
             //item.Body[BoneDefOf.ToolHandle].Material = a.HandleMaterial;

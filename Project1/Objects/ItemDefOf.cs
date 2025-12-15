@@ -132,10 +132,10 @@ namespace Start_a_Town_
         {
             Def.Register(typeof(ItemDefOf));
 
-            //GameObject.AddTemplate(ItemFactory.CreateItem(ItemDefOf.Coins).SetStackSize(100));
-            GameObject.AddTemplates(Fruit.CreateFromAllMAterials());
-            GameObject.AddTemplates(Meat.CreateFromAllMAterials());
-            GameObject.AddTemplates(Pie.CreateFromAllMAterials());
+            
+            //GameObject.AddTemplates(Fruit.CreateFromAllMAterials());
+            //GameObject.AddTemplates(Meat.CreateFromAllMAterials());
+            //GameObject.AddTemplates(Pie.CreateFromAllMAterials());
 
             GenerateCookingRecipes();
 

@@ -96,7 +96,7 @@ namespace Start_a_Town_
                 PacketInventoryInsertItem.Send(server, this, loot, area);
             }
             //this.Log.Write($"Looted [{loot.Name},{loot.PrimaryMaterial.Color}] while exploring [{area.Name}]"); // call this before inserting because the item might be absorbed/disposed
-            this.Log.Write($"Looted [{loot.Name},{loot.Body.Material.Color}] while exploring [{area.Name}]"); // call this before inserting because the item might be absorbed/disposed
+            //this.Log.Write($"Looted [{loot.Name},{loot.Body.Material.Color}] while exploring [{area.Name}]"); // call this before inserting because the item might be absorbed/disposed
             this.Inventory.Insert(loot);
         }
         internal bool InitiateTrade(Actor actor, Entity item, int itemcost)

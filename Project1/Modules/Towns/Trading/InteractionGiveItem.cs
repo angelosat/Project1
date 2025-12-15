@@ -13,7 +13,9 @@ namespace Start_a_Town_
         public InteractionGiveItem(bool trade) : base("GiveItem", seconds: .4f)
         {
             this.Trade = trade;
-            this.Animation = new Animation(AnimationDef.TouchItem);
+            //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
+            this.AnimationDef = AnimationDef.TouchItem;
+
         }
         public InteractionGiveItem() : this(false)
         {

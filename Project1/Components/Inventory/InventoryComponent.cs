@@ -114,7 +114,7 @@ namespace Start_a_Town_.Components
             return obj1.Inventory.Contains(obj => obj == obj2) ? Vector3.Zero : null;
         }
 
-        public override void Resolve()
+        internal override void Resolve()
         {
             this.Contents.Parent = this.Owner;
             this.Owner.RegisterContainer(this.HaulContainer);

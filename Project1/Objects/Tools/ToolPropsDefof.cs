@@ -76,7 +76,9 @@ namespace Start_a_Town_
 
             foreach (var toolProp in Def.GetDefs<ToolProfileDef>())
             {
-                var obj = ItemFamilyDefOf.Tool.System.Create(toolProp, new ToolSystem.Args(MaterialDefOf.LightWood, MaterialDefOf.LightWood));
+                //var obj = ItemFamilyDefOf.Tool.System.Create(toolProp, new ToolSystem.Args(MaterialDefOf.LightWood, MaterialDefOf.LightWood));
+                var obj = ToolSystem.Create(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
+
                 GameObject.AddTemplate(obj);
             }
 
@@ -98,7 +100,8 @@ namespace Start_a_Town_
                     Reaction.CanBeMadeAt(IsWorkstation.Types.None, IsWorkstation.Types.Workbench),
                     reagents,
                     new List<Reaction.Product>() {
-                        new Reaction.Product(dic=>ItemFamilyDefOf.Tool.System.Create(toolDef, new ToolSystem.Args(dic["Handle"].Body.Material, dic["Head"].Body.Material))) },
+                        new Reaction.Product(dic=>ToolSystem.Create(toolDef, dic["Handle"].Body.Material, dic["Head"].Body.Material)) },
+                        //new Reaction.Product(dic=>ItemFamilyDefOf.Tool.System.Create(toolDef, new ToolSystem.Args(dic["Handle"].Body.Material, dic["Head"].Body.Material))) },
                     SkillDefOf.Crafting,
                     JobDefOf.Craftsman)
                 { CreatesUnfinishedItem = true }

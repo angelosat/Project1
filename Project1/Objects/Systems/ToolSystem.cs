@@ -3,17 +3,28 @@
 namespace Start_a_Town_
 {
     public abstract class ItemCreationArgs;
-    internal class ToolSystem : IItemCreationSystem
+    internal class ToolSystem// : IItemCreationSystem
     {
-        Entity Create(ToolProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
+        static public Entity Create(ToolProfileDef def, MaterialDef handleMaterial, MaterialDef headMaterial)
         {
-            var item = (Entity)Activator.CreateInstance(ItemDefOf.Tool.ItemClass);
-            item.ToolComponent.ToolDef = profile;
-            item.Body[BoneDefOf.ToolHandle].Sprite = profile.SpriteHandle;
-            item.Body[BoneDefOf.ToolHandle].Material = handleMaterial;
+            if (def is not ToolProfileDef profile)
+                throw new InvalidOperationException($"{nameof(ToolSystem)} received wrong profile");
 
-            item.Body[BoneDefOf.ToolHead].Sprite = profile.SpriteHead;
-            item.Body[BoneDefOf.ToolHead].Material = headMaterial;
+            var item = ItemDefOf.Tool.Create();
+
+            item.ToolComponent.ToolDef = profile;
+
+            var handle = item.Body.FindBone(BoneDefOf.ToolHandle);
+            handle.Sprite = profile.SpriteHandle;
+            handle.Material = headMaterial;
+
+            var head = item.Body.FindBone(BoneDefOf.ToolHead);
+            head.Sprite = profile.SpriteHead;
+            head.Material = handleMaterial;
+
+            item.Name = profile.Label;
+
+            item.Initialize();
 
             return item;
         }
@@ -34,9 +45,13 @@ namespace Start_a_Town_
             handle.Sprite = profile.SpriteHandle;
             handle.Material = a.HandleMaterial;
 
-            var head = item.Body.FindBone(BoneDefOf.ToolHandle);
+            var head = item.Body.FindBone(BoneDefOf.ToolHead);
             head.Sprite = profile.SpriteHead;
             head.Material = a.HeadMaterial;
+
+            item.Name = profile.Label;
+
+            item.Initialize();
 
             //item.Body[BoneDefOf.ToolHandle].Sprite = profile.SpriteHandle;
             //item.Body[BoneDefOf.ToolHandle].Material = a.HandleMaterial;

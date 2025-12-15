@@ -70,10 +70,12 @@ namespace Start_a_Town_
             return new Memory(this, 100, 100, 1, actor);
         }
 
-        public static void LoadObjects()
+        public static void LoadTemplates()
         {
             //AddTemplate(ItemDefOf.Helmet.CreateBase());
-            AddTemplate(Actor.Create(ActorDefOf.Npc).SetName("Npc"));
+
+            //AddTemplate(Actor.Create(ActorDefOf.Npc).SetName("Npc"));
+            AddTemplate(ActorSystem.Create(ActorProfileDefOf.Npc));
         }
 
         #region Common Properties
@@ -230,11 +232,6 @@ namespace Start_a_Town_
             }
         }
 
-        internal void ResolveReferences()
-        {
-            foreach (var comp in this.Components.Values)
-                comp.ResolveReferences();
-        }
 
         public Vector3 Direction
         {
@@ -340,7 +337,7 @@ namespace Start_a_Town_
 
         public GameObject Clone()
         {
-            var obj = this.Def.CreateRandom();
+            Entity obj = this.Def.CreateRandom() as Entity;
             if (obj is null)
             {
                 //obj = this.Create(); //for derived classes
@@ -351,7 +348,7 @@ namespace Start_a_Town_
                     obj.AddComponent(comp.Clone() as EntityComp);
             }
             //obj.ObjectCreated();
-            obj.ResolveReferences();
+            obj.Resolve();
             return obj;
         }
 
@@ -843,7 +840,8 @@ namespace Start_a_Town_
             //    obj.Components[compName].Read(r);
             //}
             obj.Components.Read(r);
-            obj.ObjectSynced();
+            //obj.ObjectSynced();
+            obj.Resolve();
             return obj;
         }
         public static GameObject CloneTemplate(int templateID, IDataReader reader)
@@ -934,7 +932,8 @@ namespace Start_a_Town_
             //obj.Name = obj.Def.NameGetter?.Invoke(obj) ?? obj.Name; // reset name
             //obj.DefComponent.ParentName = obj.Def.NameGetter?.Invoke(obj) ?? obj.DefComponent.ParentName; // reset name
             obj.ResetName();
-            obj.ObjectLoaded();
+            //obj.ObjectLoaded();
+            obj.Resolve();
             return obj;
         }
         

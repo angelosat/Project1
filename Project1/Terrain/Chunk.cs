@@ -244,8 +244,9 @@ namespace Start_a_Town_
         }
         internal void ResolveReferences()
         {
-            foreach (var obj in this.Objects)
-                obj.ResolveReferences();
+            
+            //foreach (var obj in this.Objects)
+            //    obj.Resolve();
         }
 
         public static readonly int Width = Block.Width * Size;

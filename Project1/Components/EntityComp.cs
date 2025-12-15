@@ -36,7 +36,6 @@ namespace Start_a_Town_.Components
             : this()
         { }
 
-        [Obsolete("Use Props-based creation instead.")]
         public virtual object Clone()
         {
             var t = this.GetType(); // concrete component type
@@ -77,7 +76,11 @@ namespace Start_a_Town_.Components
         public virtual void OnDespawnExtra(MapBase oldmap) { }
         public virtual void OnDispose() { }
 
-        public virtual void Resolve() { }
+        internal virtual void Resolve() { }
+        internal virtual void InitializeOnce() { }
+        
+
+
         public virtual void OnObjectLoaded(GameObject parent) { }
         public virtual void OnObjectSynced(GameObject parent) { }
         public virtual void SetMaterial(MaterialDef mat) { }

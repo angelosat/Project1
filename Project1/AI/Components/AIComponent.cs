@@ -66,7 +66,7 @@ namespace Start_a_Town_
             this.Enabled = false;
         }
 
-        public override void Resolve()
+        internal override void Resolve()
         {
             this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
         }
@@ -136,10 +136,9 @@ namespace Start_a_Town_
 
         public override object Clone()
         {
-            throw new Exception();
-            //AIComponent ai = new AIComponent().Initialize(
-            //    this.Root.Clone() as Behavior);
-            //return ai;
+            AIComponent ai = new AIComponent().Initialize(
+                this.Root.Clone() as Behavior);
+            return ai;
         }
 
         internal override List<SaveTag> Save()

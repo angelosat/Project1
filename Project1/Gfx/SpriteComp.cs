@@ -582,6 +582,7 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_.Components
 {
@@ -593,7 +594,8 @@ namespace Start_a_Town_.Components
         static public bool ShadowsEnabled = true;
         readonly static List<Shadow> ShadowList = new();
         public Bone Body, DefaultBody;
-        public List<Animation> Animations = new();
+        //public List<Animation> Animations = new();
+        Dictionary<AnimationDef, Animation> Animations = [];
         public Sprite Sprite;
         public int Variation;
         public int Orientation;
@@ -612,7 +614,38 @@ namespace Start_a_Town_.Components
                 this.CachedMinimumRectangle.Height
                 );
         }
+        public Animation AddAnimation(AnimationDef def, int weight = 1)
+        {
+            if (this.Animations.TryGetValue(def, out var existing))
+            {
+                if (existing.WeightChange >= 0 && existing.State != AnimationStates.Removed)
+                    throw new Exception(); // ANIMATION MIGHT STILL BE FADING OUT WHEN THE NEXT BEHAVIOR BEGINS AND ADDS THE SAME TYPE OF ANIMATION!
+            }
+            // legacy check
+            if (this.Animations.Values.Any(a => a.Def == def))
+                throw new Exception();
 
+            var animation = new Animation(def);
+            animation.Weight = weight;
+            animation.Entity = this.Owner;
+            this.Animations.Add(def, animation);
+            return animation;
+        }
+        
+        internal Animation GetAnimation(AnimationDef def)
+        {
+            return this.Animations[def];
+        }
+        public Animation CrossFade(AnimationDef def, bool preFade, int fadeLength)
+        {
+            return this.CrossFade(def, preFade, fadeLength, Interpolation.Lerp);
+        }
+        public Animation CrossFade(AnimationDef animdef, bool preFade, int fadeLength, Func<float, float, float, float> fadeInterpolation)
+        {
+            var animation = this.AddAnimation(animdef);
+            animation.FadeIn(preFade, fadeLength, fadeInterpolation);
+            return animation;
+        }
         public CharacterColors Customization = new();
         readonly Dictionary<BoneDef, Bone.Props> BoneProps = new();
         Dictionary<BoneDef, MaterialDef> Materials = new();
@@ -708,7 +741,7 @@ namespace Start_a_Town_.Components
             Orientation = 0;
         }
 
-        public override void Resolve()
+        internal override void Resolve()
         {
 
             var def = this.Owner.Def;
@@ -846,12 +879,19 @@ namespace Start_a_Town_.Components
             var parent = this.Owner;
             if (this.Body == null)
                 this.Body = this.DefaultBody;
-            var nextAnimations = new List<Animation>();
-            foreach (var ani in Animations)
+            //var nextAnimations = new List<Animation>();
+            //foreach (var ani in Animations)
+            //{
+            //    ani.Update(parent);
+            //    if (!(ani.State == AnimationStates.Removed && ani.Weight <= 0))
+            //        nextAnimations.Add(ani);
+            //}
+            var nextAnimations = new Dictionary<AnimationDef, Animation>();
+            foreach (var ani in Animations.Values)
             {
                 ani.Update(parent);
                 if (!(ani.State == AnimationStates.Removed && ani.Weight <= 0))
-                    nextAnimations.Add(ani);
+                    nextAnimations.Add(ani.Def, ani);
             }
             this.Animations = nextAnimations;
         }
@@ -909,7 +949,7 @@ namespace Start_a_Town_.Components
                 var fog = camera.GetFogColorNew((int)parent.Global.Z);
                 var test = camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, 0, 0), Vector2.Zero);
                 var finalpos = new Vector2(test.X, test.Y) + (body.OriginGroundOffset * camera.Zoom);
-                body.DrawTreeAnimationDeltas(parent as Entity, this.Customization, this.Animations, sb, finalpos, skyColor, blockColor, this.Tint, fog, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, depth);
+                body.DrawTreeAnimationDeltas(parent as Entity, this.Customization, this.Animations.Values, sb, finalpos, skyColor, blockColor, this.Tint, fog, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, depth);
             }
 
             // DRAW SHADOW
@@ -945,7 +985,7 @@ namespace Start_a_Town_.Components
             SpriteEffects sprfx = (finalDir.X - finalDir.Y) < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             var mouseovertint = new Color(1f, 1f, 1f, 0.5f);
 
-            this.Body.DrawTreeAnimationDeltas(parent as Entity, this.Customization, this.Animations, sb, loc + (this.Body.OriginGroundOffset) * camera.Zoom, Color.White, Color.White, mouseovertint, Color.Transparent, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, .99f);
+            this.Body.DrawTreeAnimationDeltas(parent as Entity, this.Customization, this.Animations.Values, sb, loc + (this.Body.OriginGroundOffset) * camera.Zoom, Color.White, Color.White, mouseovertint, Color.Transparent, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, .99f);
 
             // TODO: handle case where root bone doesn't have a sprite, or draw whole bone tree instead
             camera.Effect.Parameters["s"].SetValue(Sprite.Atlas.Texture);
@@ -1064,14 +1104,26 @@ namespace Start_a_Town_.Components
                     shadow.Draw(sb, map, camera);
             ShadowList.Clear();
         }
-
+        public SpriteComp(SpriteComp source)
+        {
+            this.Sprite = source.Sprite ?? source.Body.Sprite;
+            this.Body = source.Body.Clone();
+            this.DefaultBody = this.Body;
+            this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
+            this.Customization = new CharacterColors(this.Body).Randomize();
+            Variation = 0;
+            Orientation = 0;
+            foreach (var anim in source.Animations.Values)
+                this.Animations.Add(anim.Def, anim.Clone());
+        }
         public override object Clone()
         {
-            var comp = new SpriteComp(this.Body, this.Sprite)
-            {
-                Materials = this.Materials.ToDictionary(t => t.Key, t => t.Value)
-            };
-            return comp;
+            return new SpriteComp(this);
+            //var comp = new SpriteComp(this.Body, this.Sprite)
+            //{
+            //    Materials = this.Materials.ToDictionary(t => t.Key, t => t.Value)
+            //};
+            //return comp;
         }
 
         static public bool HasOrientation(GameObject obj)
@@ -1099,14 +1151,21 @@ namespace Start_a_Town_.Components
             UI.Icon.Cross.Draw(sb, pos, zoom);
         }
 
-        internal override List<SaveTag> Save()
+        //internal override List<SaveTag> Save()
+        //{
+        //    var list = new List<SaveTag>() {
+        //        new SaveTag(SaveTag.Types.Int, "Variation", (int)Variation),
+        //        new SaveTag(SaveTag.Types.Int, "Orientation", (int)Orientation),
+        //        this.Body.Save("Body")
+        //    };
+        //    return list;
+        //}
+        internal override void SaveExtra(SaveTag tag)
         {
-            var list = new List<SaveTag>() {
-                new SaveTag(SaveTag.Types.Int, "Variation", (int)Variation),
-                new SaveTag(SaveTag.Types.Int, "Orientation", (int)Orientation),
-                this.Body.Save("Body")
-            };
-            return list;
+            tag.Add(new SaveTag(SaveTag.Types.Int, "Variation", (int)Variation));
+            tag.Add(new SaveTag(SaveTag.Types.Int, "Orientation", (int)Orientation));
+            tag.Add(this.Body.Save("Body"));
+            tag.Add(this.Animations.SaveValues("Animations"));
         }
         internal override void Load(GameObject parent, SaveTag compTag)
         {
@@ -1122,16 +1181,19 @@ namespace Start_a_Town_.Components
                 this.Body.Material = parent.Def.DefaultMaterial;
                 Log.WriteToFile($"{parent.DebugName}'s body material was null, defaulting to {parent.Def.DefaultMaterial?.DebugName}");
             }
+            this.Animations.LoadValuesWithInferredKeys(compTag["Animations"], v => v.Def);
         }
         public override void Write(IDataWriter w)
         {
             this.Customization.Write(w);
             this.Body.Write(w);
+            w.WriteValues(this.Animations);
         }
         public override void Read(IDataReader r)
         {
             this.Customization = new CharacterColors(r);
             this.Body.Read(r);
+            r.ReadValuesWithInferredKeys(this.Animations, a => a.Def);
         }
 
         public static Bone GetRootBone(GameObject parent)
@@ -1195,10 +1257,7 @@ namespace Start_a_Town_.Components
             return true;
         }
 
-        internal Animation GetAnimation(AnimationDef animDef)
-        {
-            return this.Animations.First(a => a.Def == animDef);
-        }
+       
 
         public override Control GetParametrizer()
         {

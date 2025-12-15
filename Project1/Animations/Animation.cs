@@ -3,10 +3,11 @@ using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 using Start_a_Town_.Animations;
+using System.Configuration;
 
 namespace Start_a_Town_
 {
-    public sealed class Animation : Inspectable
+    public sealed class Animation : Inspectable, ISerializableNew<Animation>, ISaveableNewNew<Animation>
     {
         public override string Label => this.Def.Label;
         public AnimationDef Def { get; private set; }
@@ -203,7 +204,7 @@ namespace Start_a_Town_
         {
         }
 
-        internal SaveTag Save(string name)
+        public SaveTag Save(string name)
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             tag.Add(this.Def.Name.Save("Def"));
@@ -231,8 +232,13 @@ namespace Start_a_Town_
             tag.TryGetTagValueOrDefault("Speed", out this.Speed);
             tag.TryGetTagValue<int>("State", t => this.State = (AnimationStates)t);
         }
-
-        internal void Write(IDataWriter w)
+        public static Animation Create(SaveTag tag)
+        {
+            var animation = new Animation();
+            animation.Load(tag);
+            return animation;
+        }
+        public void Write(IDataWriter w)
         {
             w.Write(this.Def.Name);
             w.Write(this.Frame);
@@ -243,7 +249,7 @@ namespace Start_a_Town_
             w.Write(this.Speed);
             w.Write((int)this.State);
         }
-        internal void Read(IDataReader r)
+        public Animation Read(IDataReader r)
         {
             this.Def = Start_a_Town_.Def.GetDef<AnimationDef>(r.ReadString());
             this.Frame = r.ReadSingle();
@@ -253,8 +259,33 @@ namespace Start_a_Town_
             this.WeightChange = r.ReadSingle();
             this.Speed = r.ReadSingle();
             this.State = (AnimationStates)r.ReadInt32();
+            return this;
+        }
+        static public Animation Create(IDataReader r)
+        {
+            var animation = new Animation().Read(r);
+            return animation;
+        }
+        public Animation(Animation source)
+        {
+            this.Def = source.Def;
+            this.Frame = source.Frame;
+            this.FadeLength = source.FadeLength;
+            this.FadeValue = source.FadeValue;
+            this.Weight = source.Weight;
+            this.WeightChange = source.WeightChange;
+            this.Speed = source.Speed;
+            this.State = source.State;
         }
 
+        public Animation()
+        {
+        }
+
+        internal Animation Clone()
+        {
+            return new Animation(this);   
+        }
         internal void Sync()
         {
             Packets.SyncAnimation(this.Entity as Entity, this);

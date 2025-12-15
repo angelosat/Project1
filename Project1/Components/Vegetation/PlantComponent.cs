@@ -61,7 +61,7 @@ namespace Start_a_Town_.Components
             this.Species = species;
             this.Resolve();
         }
-        public override void Resolve()
+        internal override void Resolve()
         {
             //if (this.Species is null)
             //    return;
@@ -277,7 +277,8 @@ namespace Start_a_Town_.Components
                 if (!this.ProducesFruit)
                 {
                     //var seeds = plantdef.CreateSeeds().SetStackSize(yield) as Entity;
-                    var seeds = ItemFamilyDefOf.Plant.System.Create(this.Species, new PlantSystem.Args(PlantFormDefOf.Seed));
+                    //var seeds = ItemFamilyDefOf.Plant.System.Create(this.Species, new PlantSystem.Args(PlantFormDefOf.Seed));
+                    var seeds = this.Species.Create(PlantFormDefOf.Seed);
                     actor.Map.World.RegisterAndSync(seeds);
                     actor.Map.SpawnAndSync(seeds, plant.Global, LootManager.RandomPopVelocity(rng));
                 }

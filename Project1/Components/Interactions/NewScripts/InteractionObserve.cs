@@ -6,7 +6,8 @@ namespace Start_a_Town_.Components.Interactions
     {
         public InteractionObserve():base("Observe", 4)
         {
-            this.Animation = null;
+            //this.cachedAnimation = null;
+            this.AnimationDef = null;
         }
 
         public override void Perform()

@@ -2,12 +2,15 @@
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.UI;
+using System;
 using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
     public abstract class Entity : GameObject
     {
+        bool _initialized;
+
         public SpriteComp Sprite => this.GetComponent<SpriteComp>();
         /// <summary>
         /// here or in tool class?
@@ -36,15 +39,20 @@ namespace Start_a_Town_
         {
             return this.Gear.GetSlot(GearType.Dictionary[type]);
         }
-
-
-        internal void InitComps(ItemVariantDef def)
+        public void Initialize()
         {
-            this.Components.Init(def);
+            if (this._initialized)
+                throw new InvalidOperationException($"{this} initialized twice");
+            this.Components.Initialize();
         }
+
+        //internal void InitComps(ItemVariantDef def)
+        //{
+        //    this.Components.Init(def);
+        //}
         internal void InitComps(ItemDef def)
         {
-            this.Components.Init(def);
+            this.Components.CreateAndResolve(def);
         }
         internal bool ProvidesSkill(ToolUseDef skill)
         {
@@ -117,11 +125,11 @@ namespace Start_a_Town_
         {
             this.DefComponent.ParentName = this.Def.NameGetter?.Invoke(this) ?? this.DefComponent.ParentName; // reset name
         }
-
         internal void Resolve()
         {
             this.Components.Resolve();
         }
+
 
         internal void ApplySpecs(List<EntityComp.Spec> overrides)
         {

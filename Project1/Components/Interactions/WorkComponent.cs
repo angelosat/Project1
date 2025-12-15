@@ -156,14 +156,17 @@ namespace Start_a_Town_.Components
 
         public override void OnObjectLoaded(GameObject parent)
         {
-            if (this.Task != null)
-            {
-                if (this.Task.Animation != null)
-                {
-                    parent.AddAnimation(this.Task.Animation);
-                    this.Task.AfterLoad();
-                }
-            }
+            // spritecomponent is the owner of animations and handles loading them back
+            return;
+            //if (this.Task != null)
+            //{
+            //    if (this.Task.cachedAnimation != null)
+            //    {
+
+            //        parent.AddAnimation(this.Task.cachedAnimation);
+            //        this.Task.AfterLoad();
+            //    }
+            //}
         }
         public override void OnObjectSynced(GameObject parent)
         {

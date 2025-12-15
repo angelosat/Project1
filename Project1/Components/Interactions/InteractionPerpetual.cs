@@ -6,15 +6,18 @@ namespace Start_a_Town_
     {
         public InteractionPerpetual()
         {
-            this.Animation = new Animation(AnimationDef.Tool);
+            //this.cachedAnimation = new Animation(AnimationDef.Tool);
+            this.AnimationDef = AnimationDef.Tool;
         }
         public InteractionPerpetual(string name)
             : base(name, 0)
         {
             this.RunningType = RunningTypes.Continuous;
-            this.Animation = new Animation(AnimationDef.Tool);
+            //this.cachedAnimation = new Animation(AnimationDef.Tool);
+            this.AnimationDef = AnimationDef.Tool;
+
         }
-        
+
         public abstract void OnUpdate();
         internal override void InitAction()
         {

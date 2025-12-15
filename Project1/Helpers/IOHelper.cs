@@ -429,18 +429,7 @@ namespace Start_a_Town_
                 i.Sync(b);
             return list;
         }
-        public static void WriteValues<TKey, TValue>(this IDataWriter w, Dictionary<TKey, TValue> dic) where TValue : ISerializableNew<TValue>
-        {
-            w.Write(dic.Values);
-        }
-        public static void ReadValuesWithInferredKeys<TKey, TValue>(this IDataReader r, Dictionary<TKey, TValue> dic, Func<TValue, TKey> keySelector) where TValue : ISerializableNew<TValue>
-        {
-            dic.Clear();
-            var values = new List<TValue>();
-            r.ReadNewInto(values);
-            foreach (var val in values)
-                dic.Add(keySelector(val), val);
-        }
+
         public static Dictionary<int, U> Sync<U>(this Dictionary<int, U> dic, IDataWriter w) where U : ISerializable
         {
             foreach (var vk in dic)

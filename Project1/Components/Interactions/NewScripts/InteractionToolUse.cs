@@ -21,7 +21,7 @@ namespace Start_a_Town_
         {
             var a = this.Actor;
             var t = this.Target;
-            this.Animation.Speed = StatDefOf.WorkSpeed.GetValue(a);
+            this._animation.Speed = StatDefOf.WorkSpeed.GetValue(a);
             this.Init();
             var particleColor = this.GetParticleColor();
             this.EmitterStrike = new ParticleEmitterSphere
@@ -70,7 +70,7 @@ namespace Start_a_Town_
             actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
 
             // i moved the multiplication with the stamina threshold to inside the workspeed stat formula
-            this.Animation.Speed = actor[StatDefOf.WorkSpeed];
+            this._animation.Speed = actor[StatDefOf.WorkSpeed];
 
             if (this.Progress < 1)
                 return;

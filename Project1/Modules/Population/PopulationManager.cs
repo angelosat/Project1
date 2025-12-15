@@ -250,7 +250,7 @@ namespace Start_a_Town_
                 if (actor.IsSpawned)
                     props.Discovered = true; // HACK
                 props.OffsiteArea = OffsiteAreaDefOf.Forest; // HACK
-                actor.ResolveReferences();
+                //actor.Resolve();
             }
         }
         public SaveTag Save(string name = "")

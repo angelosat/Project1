@@ -20,14 +20,19 @@ namespace Start_a_Town_.Components
 
         public Animation AnimationHaul = new(AnimationDef.Haul) { Weight = 0 };
 
-        public override void Resolve()
+        internal override void Resolve()
         {
             this.Inventory = this.Owner.GetComponent<InventoryComponent>();
             if (this.Inventory == null || this.Inventory.Capacity == 0)
                 throw new Exception("HaulComponent requires a parent entity with PersonalInventoryComponent and an inventory of at least size 1");
+            
+        }
+        internal override void InitializeOnce()
+        {
             this.Owner.AddResourceModifier(new ResourceRateModifier(ResourceRateModifierDef.HaulingStaminaDrain));
             this.Owner.AddStatModifier(new StatNewModifier(StatModifierDef.WalkSpeedHaulingWeight));
-            this.Owner.AddAnimation(this.AnimationHaul);
+            //this.Owner.AddAnimation(this.AnimationHaul);
+            this.AnimationHaul = this.Owner.SpriteComp.AddAnimation(AnimationDef.Haul, weight: 0);
         }
         
         static public GameObjectSlot GetHolding(GameObject parent)

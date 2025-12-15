@@ -13,7 +13,8 @@ namespace Start_a_Town_
         public InteractionHaul(int amount)
             : base("Haul")
         {
-            this.Animation = new Animation(AnimationDef.TouchItem);
+            //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
+            this.AnimationDef = AnimationDef.TouchItem;
             this.Amount = amount;
             this.CrossFadeAnimationLength = 25;
             //if (amount <= 0)

@@ -273,7 +273,7 @@ namespace Start_a_Town_
         public Vector2 OriginGroundOffset = Vector2.Zero;
         public bool DrawMaterialColor;
 
-        private void Evaluate(List<Animation> animations, ref float availableWeight, ref float finalAngle, ref Vector2 finalOffset)
+        private void Evaluate(IEnumerable<Animation> animations, ref float availableWeight, ref float finalAngle, ref Vector2 finalOffset)
         {
             var byLayer = animations.OrderBy(a => a.Layer);
             foreach (var ani in byLayer.Reverse())
@@ -392,7 +392,7 @@ namespace Start_a_Town_
             }
         }
 
-        public void DrawTreeAnimationDeltas(Entity parent, CharacterColors customization, List<Animation> animations, MySpriteBatch sb, Vector2 screenLoc, Color sky, Color block, Color tint, Color fog, float angle, float zoom, int orientation, SpriteEffects sprFx, float alpha, float depth)
+        public void DrawTreeAnimationDeltas(Entity parent, CharacterColors customization, IEnumerable<Animation> animations, MySpriteBatch sb, Vector2 screenLoc, Color sky, Color block, Color tint, Color fog, float angle, float zoom, int orientation, SpriteEffects sprFx, float alpha, float depth)
         {
             var material = this.Material;
             Sprite sprite = SpriteSlot == null ? this.GetSprite(orientation) : (SpriteSlot.HasValue ? SpriteSlot.Object.Body.Sprite : null);

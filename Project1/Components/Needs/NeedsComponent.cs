@@ -12,23 +12,22 @@ namespace Start_a_Town_.Components
            
         float Timer = Ticks.PerSecond;
         public List<Need> NeedsNew;
-        public NeedsComponent(Actor actor)
+        public NeedsComponent(NeedsComponent source)// Actor actor)
         {
-            throw new Exception();
-
             //this.Owner = actor;
             //var def = actor.Def;
             //var defs = (actor.Needs.Defaults as Spec).Needs;// def.ActorProperties.Needs;
-            //var size = defs.Length;
-            //this.NeedsNew = new List<Need>(size);
+            var defs = source.Defaults.Needs;
+            var size = defs.Length;
+            this.NeedsNew = new List<Need>(size);
 
-            //for (int i = 0; i < size; i++)
-            //{
-            //    //this.NeedsNew.Add(defs[i].Create(actor));
-            //    this.NeedsNew.Add(new Need(actor, defs[i]));
-            //}
+            for (int i = 0; i < size; i++)
+            {
+                //this.NeedsNew.Add(defs[i].Create(actor));
+                this.NeedsNew.Add(new Need(null, defs[i]));
+            }
         }
-        
+
         public NeedsComponent()
         {
         }
@@ -55,9 +54,9 @@ namespace Start_a_Town_.Components
 
         public override object Clone()
         {
-            return new NeedsComponent(this.Owner as Actor);
+            return new NeedsComponent(this);//this.Owner as Actor);
         }
-        public override void Resolve()
+        internal override void Resolve()
         {
             foreach (var n in this.NeedsNew)
                 n.Parent = this.Owner as Actor;

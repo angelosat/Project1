@@ -27,7 +27,10 @@ namespace Start_a_Town_.Components
         }
         public void Add(EntityComp comp)
         {
-            this._inner.Add(comp.GetType(), comp);
+            //this._inner.Add(comp.GetType(), comp);
+
+            // replace existing comps? or throw exception?
+            this._inner[comp.GetType()] = comp;
             comp.Owner = this._owner;
         }
         internal void Write(IDataWriter w)
@@ -71,7 +74,7 @@ namespace Start_a_Town_.Components
                 }
             }
         }
-        public void Init(ItemDef def)
+        public void CreateAndResolve(ItemDef def)
         {
             foreach (var compType in def.CompTypes)
             {
@@ -81,20 +84,20 @@ namespace Start_a_Town_.Components
             this.ApplySpecs(def.Specs);
             this.Resolve();
         }
-        public void Init(ItemVariantDef def)
-        {
-            foreach (var compType in def.BaseDef.CompTypes)
-            {
-                var comp = (EntityComp)Activator.CreateInstance(compType);
-                this.Add(comp);
-            }
-            //foreach (var props in def.BaseDef.Specs)
-            //{
-            //    props.ApplyDefaults(this._inner[props.CompClass]);
-            //}
-            this.ApplySpecs(def.BaseDef.Specs);
-            this.Resolve();
-        }
+        //public void Init(ItemVariantDef def)
+        //{
+        //    foreach (var compType in def.BaseDef.CompTypes)
+        //    {
+        //        var comp = (EntityComp)Activator.CreateInstance(compType);
+        //        this.Add(comp);
+        //    }
+        //    //foreach (var props in def.BaseDef.Specs)
+        //    //{
+        //    //    props.ApplyDefaults(this._inner[props.CompClass]);
+        //    //}
+        //    this.ApplySpecs(def.BaseDef.Specs);
+        //    this.Resolve();
+        //}
         public void ApplySpecs(IEnumerable<EntityComp.Spec> overrides)
         {
             foreach(var spec in overrides)
@@ -105,6 +108,12 @@ namespace Start_a_Town_.Components
             this._inner.TryGetValue(typeof(T), out EntityComp existing);
             var = existing as T;
             return var != null;
+        }
+
+        internal void Initialize()
+        {
+            foreach (var comp in this._inner.Values)
+                comp.InitializeOnce();
         }
     }
 

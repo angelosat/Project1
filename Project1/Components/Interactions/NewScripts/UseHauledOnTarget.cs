@@ -19,7 +19,8 @@ namespace Start_a_Town_
             if (amount == 0)
                 throw new Exception();
             this.Amount = amount;
-            this.Animation = new Animation(AnimationDef.TouchItem);
+            //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
+            this.AnimationDef = AnimationDef.TouchItem;
             this.CrossFadeAnimationLength = 25;
         }
 
@@ -31,7 +32,7 @@ namespace Start_a_Town_
             var hauledObj = hauled.Object;
             if (this.Amount > hauledObj.StackSize) //thrown
                 throw new Exception();
-            this.Animation.FadeOutAndRemove();
+            this._animation.FadeOutAndRemove();
             switch (target.Type)
             {
                 case TargetType.Position:

@@ -23,8 +23,8 @@ namespace Start_a_Town_
         {
             base.OnObjectLoaded(parent);
         }
-        
-        public override void Resolve()
+
+        internal override void Resolve()
         {
             this.Owner.RegisterContainer(this.Equipment);
         }

@@ -58,7 +58,9 @@ namespace Start_a_Town_
         public float CurrentTick;
         public ToolUseDef ToolUse { get; set; }
         public float Seconds { get; set; }
-        public Animation Animation = new(AnimationDef.Work);
+        Animation _cachedAnimation;
+        protected Animation _animation => _cachedAnimation ??= this.Actor.SpriteComp.GetAnimation(this.AnimationDef);// = new(AnimationDef.Work);
+        public AnimationDef AnimationDef = AnimationDef.Work;
         internal Actor Actor;
         internal TargetArgs Target;
 
@@ -88,7 +90,7 @@ namespace Start_a_Town_
             if (!success)
                 this.Actor.Net.EventOccured((int)Message.Types.InteractionInterrupted, this.Actor, this);
             this.State = States.Finished;
-            this.Animation?.FadeOutAndRemove();
+            this._animation?.FadeOutAndRemove();
         }
 
         public virtual void Perform()
@@ -97,12 +99,20 @@ namespace Start_a_Town_
         protected int CrossFadeAnimationLength;
         public void StartBase()
         {
-            if (this.Animation is not null)
+            //if (this.Animation is not null)
+            //{
+            //    if (this.CrossFadeAnimationLength == 0)
+            //        this.Actor.AddAnimation(this.Animation);
+            //    else
+            //        this.Actor.CrossFade(this.Animation, false, this.CrossFadeAnimationLength);
+            //}
+            if (this._animation is null && this.AnimationDef is not null)
             {
                 if (this.CrossFadeAnimationLength == 0)
-                    this.Actor.AddAnimation(this.Animation);
+                    /*this._cachedAnimation = */this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
                 else
-                    this.Actor.CrossFade(this.Animation, false, this.CrossFadeAnimationLength);
+                    //this.Actor.CrossFade(this.Animation, false, this.CrossFadeAnimationLength);
+                    /*this._cachedAnimation = */this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, this.CrossFadeAnimationLength);
             }
             this.Start();
         }
@@ -156,7 +166,7 @@ namespace Start_a_Town_
 
         protected virtual void Stop()
         {
-            this.Animation.FadeOutAndRemove();
+            this._animation.FadeOutAndRemove();
         }
 
         public void GetTooltip(Control tooltip)
@@ -204,9 +214,9 @@ namespace Start_a_Town_
         {
             w.Write(this.CurrentTick);
             w.Write((int)this.State);
-            w.Write(this.Animation is not null);
-            if (this.Animation is not null) // added this because InteractionSleepInBed doesn't have an animation
-                this.Animation.Write(w);
+            w.Write(this._animation is not null);
+            if (this._animation is not null) // added this because InteractionSleepInBed doesn't have an animation
+                this._animation.Write(w);
             this.WriteExtra(w);
         }
         public void Read(IDataReader r)
@@ -214,7 +224,7 @@ namespace Start_a_Town_
             this.CurrentTick = r.ReadSingle();
             this.State = (States)r.ReadInt32();
             if (r.ReadBoolean())
-                this.Animation.Read(r);
+                this._animation.Read(r);
             this.ReadExtra(r);
         }
         protected virtual void WriteExtra(IDataWriter w) { }
@@ -226,7 +236,7 @@ namespace Start_a_Town_
             tag.Add(this.GetType().FullName.Save("Name"));
             tag.Add(((int)this.State).Save("State"));
             tag.Add(this.CurrentTick.Save("Progress"));
-            this.Animation?.Save(tag, "Animation");
+            this._animation?.Save(tag, "Animation");
             this.AddSaveData(tag);
             return tag;
         }
@@ -242,7 +252,8 @@ namespace Start_a_Town_
             var inter = Activator.CreateInstance(Type.GetType(name)) as Interaction;
             tag.TryGetTagValue<int>("State", t => inter.State = (States)t);
             tag.TryGetTagValueOrDefault("Progress", out inter.CurrentTick);
-            tag.TryGetTag("Animation", t => inter.Animation = new Animation(t));
+            // spritecomponent saves/loads animations. cache the animation lazily with a property that pulls it from owner.spritecomp
+            //tag.TryGetTag("Animation", t => inter.cachedAnimation = new Animation(t));
             inter.LoadData(tag);
             return inter;
         }
@@ -267,7 +278,7 @@ namespace Start_a_Town_
         }
         internal virtual void AfterLoad()
         {
-            this.Animation.Entity = this.Actor;
+            this._animation.Entity = this.Actor;
         }
 
         public void DrawProgressBar(Func<Vector3> position, Func<float> progress, Func<string> label)

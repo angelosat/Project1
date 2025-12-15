@@ -12,6 +12,7 @@ namespace Start_a_Town_
             seeds.GetComponent<SeedComponent>().SetPlant(species);
             seeds.Name = $"{species.Label} {species.SeedsName}";
             seeds.Body.Sprite = Sprite.Load(species.TextureSeeds);
+            seeds.Initialize();
             return seeds;
         }
 
@@ -25,6 +26,7 @@ namespace Start_a_Town_
                 entity.SetMaterial(species.StemMaterial);
             else if (species.ProducesFruit)
                 entity.Name = entity.Name.Insert(0, $"{species.FruitMaterial.Label} ");
+            entity.Initialize();
             return entity;
         }
 

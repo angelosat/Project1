@@ -39,7 +39,7 @@ namespace Start_a_Town_.Components
         {
             this.GrowthNew.Percentage = initialGrowth;
         }
-        public override void Resolve()
+        internal override void Resolve()
         {
             this.Owner.Body.ScaleFunc = () => .25f + .75f * this.GrowthNew.Percentage;
         }

@@ -77,7 +77,7 @@ namespace Start_a_Town_
         {
             return new ResourcesComponent(this.Resources);
         }
-        public override void Resolve()
+        internal override void Resolve()
         {
             foreach (var r in this.Resources)
                 r.Parent = this.Owner as Actor;

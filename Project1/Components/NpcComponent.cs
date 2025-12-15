@@ -20,7 +20,7 @@ namespace Start_a_Town_
         public string FullName => this.FirstName + (this.LastName.IsNullEmptyOrWhiteSpace() ? "" : string.Format(" {0}", this.LastName));
 
         static public List<GameObject> NpcDirectory = new List<GameObject>();
-        public override void Resolve()
+        internal override void Resolve()
         {
             this.GenerateFullName();
         }

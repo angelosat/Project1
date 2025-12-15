@@ -21,13 +21,14 @@ namespace Start_a_Town_
             if (amount == 0)
                 throw new Exception();
             this.Amount = amount;
-            this.Animation = new Animation(AnimationDef.TouchItem);
+            //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
+            this.AnimationDef = AnimationDef.TouchItem;
             this.CrossFadeAnimationLength = 25;
         }
 
         public override void Perform()
         {
-            this.Animation.FadeOutAndRemove();
+            this._animation.FadeOutAndRemove();
             if (this.Actor.Net.IsClient)
                 return;
             var actor = this.Actor;

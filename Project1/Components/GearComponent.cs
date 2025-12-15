@@ -1,12 +1,9 @@
-﻿using SharpDX.XAudio2;
-using Start_a_Town_.Components;
+﻿using Start_a_Town_.Components;
 using Start_a_Town_.Net;
-using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -26,6 +23,9 @@ namespace Start_a_Town_
 
         internal override void Resolve()
         {
+            var profile = this.Owner.Profile as ActorProfileDef;
+            foreach (var slot in profile.Gear)
+                this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
             this.Owner.RegisterContainer(this.Equipment);
         }
       
@@ -44,6 +44,13 @@ namespace Start_a_Town_
             foreach (var slot in types)
                 this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
         }
+        //internal override void CopyFrom(EntityComp source)
+        //{
+        //    var comp = (GearComponent)source;
+        //    var types = comp.Equipment; 
+        //    foreach (var slot in types)
+        //        this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
+        //}
         public override object Clone()
         {
             var types = from gear in this.Equipment.Slots select GearType.Dictionary[(GearType.Types)gear.ID];
@@ -210,8 +217,8 @@ namespace Start_a_Town_
             }
             protected override void ApplyDefaultsTo(GearComponent comp)
             {
-                foreach (var slot in this.Slots)
-                    comp.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = comp.Equipment, Name = slot.Name });
+                //foreach (var slot in this.Slots)
+                //    comp.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = comp.Equipment, Name = slot.Name });
             }
         }
       

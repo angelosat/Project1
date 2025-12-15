@@ -55,6 +55,15 @@ namespace Start_a_Town_
             }
             this.Randomize();
         }
+        internal override void CopyFrom(EntityComp source)
+        {
+            var traits = ((PersonalityComponent)source).Traits;
+            var count = traits.Length;
+            this.Traits = new Trait[count];
+            for (int i = 0; i < count; i++)
+                this.Traits[i] = new Trait(traits[i].Def);
+            this.Randomize();
+        }
         public Control GetCreationGui()
         {
             var box = new GroupBox();

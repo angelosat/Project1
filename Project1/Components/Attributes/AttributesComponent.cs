@@ -21,26 +21,33 @@ namespace Start_a_Town_.Components
         public AttributesComponent()
         {
         }
-
-        public AttributesComponent(params AttributeStat[] atts)
-            : this()
+        internal override void CopyFrom(EntityComp source)
         {
+            var atts = ((AttributesComponent)source).Attributes;
             var count = atts.Length;
             this.Attributes = new AttributeStat[count];
             for (int i = 0; i < count; i++)
-            {
                 this.Attributes[i] = atts[i].Clone();
-            }
         }
-        public AttributesComponent(params AttributeDef[] atts)
-            : this()
-        {
-            this.Attributes = new AttributeStat[atts.Length];
-            for (int i = 0; i < atts.Length; i++)
-            {
-                this.Attributes[i] = new AttributeStat(atts[i]);
-            }
-        }
+        //public AttributesComponent(params AttributeStat[] atts)
+        //    : this()
+        //{
+        //    var count = atts.Length;
+        //    this.Attributes = new AttributeStat[count];
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        this.Attributes[i] = atts[i].Clone();
+        //    }
+        //}
+        //public AttributesComponent(params AttributeDef[] atts)
+        //    : this()
+        //{
+        //    this.Attributes = new AttributeStat[atts.Length];
+        //    for (int i = 0; i < atts.Length; i++)
+        //    {
+        //        this.Attributes[i] = new AttributeStat(atts[i]);
+        //    }
+        //}
         
         public override void Tick()
         {
@@ -49,10 +56,10 @@ namespace Start_a_Town_.Components
                 this.Attributes[i].Update(parent);
         }
 
-        public override object Clone()
-        {
-            return new AttributesComponent(this.Attributes);
-        }
+        //public override object Clone()
+        //{
+        //    return new AttributesComponent(this.Attributes);
+        //}
 
         public AttributeStat GetAttribute(AttributeDef def)
         {

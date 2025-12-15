@@ -22,7 +22,6 @@ namespace Start_a_Town_
         public OwnershipComponent Ownership => this.GetComponent<OwnershipComponent>();
 
         //public ItemVariantDef Variant { get; internal set; }
-
         public Entity()
         {
             this.AddComponent(new PositionComponent());

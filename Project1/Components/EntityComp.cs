@@ -180,7 +180,7 @@ namespace Start_a_Town_.Components
         {
         }
 
-        internal virtual void CopyFrom(EntityComp comp) { }
+        internal virtual void CopyFrom(EntityComp source) { }
 
         public abstract class Spec
         {

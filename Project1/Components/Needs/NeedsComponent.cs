@@ -27,7 +27,17 @@ namespace Start_a_Town_.Components
                 this.NeedsNew.Add(new Need(null, defs[i]));
             }
         }
-
+        internal override void CopyFrom(EntityComp source)
+        {
+            var c = (NeedsComponent)source;
+            var count = c.NeedsNew.Count;
+            this.NeedsNew = new List<Need>(count);
+            for (int i = 0; i < count; i++)
+            {
+                //this.NeedsNew.Add(defs[i].Create(actor));
+                this.NeedsNew.Add(new Need(null, c.NeedsNew[i].NeedDef));
+            }
+        }
         public NeedsComponent()
         {
         }

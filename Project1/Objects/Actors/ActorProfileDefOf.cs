@@ -2,6 +2,7 @@
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     public class ActorProfileDefOf
     {
         public static readonly ActorProfileDef Npc = new("Npc")
@@ -50,5 +51,10 @@ namespace Start_a_Town_
                    new BehaviorHandleOrders(),
                    new BehaviorHandleTasks())
         };
+
+        static ActorProfileDefOf()
+        {
+            Def.Register(typeof(ActorProfileDefOf));
+        }
     }
 }

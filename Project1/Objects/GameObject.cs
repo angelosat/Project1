@@ -334,10 +334,11 @@ namespace Start_a_Town_
 
         public GameObjectSlot Slot;
         #endregion
+        public Def Profile;
 
         public GameObject Clone()
         {
-            var obj = this.Def.Create();
+            var obj = this.Def.Create(this.Profile);
             foreach (var comp in this.Components.Values)
                 obj.GetComponent(comp.GetType()).CopyFrom(comp);
             return obj;
@@ -809,7 +810,8 @@ namespace Start_a_Town_
        
         public void Write(IDataWriter w)
         {
-            w.Write(this.Def.Name);
+            w.Write(this.Def);
+            w.Write(this.Profile?.Name ?? "");
             if (Start_a_Town_.Def.GetDef(this.Def.Name) is null)
                 throw new Exception();
             w.Write(this.RefId);
@@ -826,7 +828,11 @@ namespace Start_a_Town_
         {
             string defName = r.ReadString();
             var def = Start_a_Town_.Def.GetDef<ItemDef>(defName);
-            var obj = def.Create();
+            //var profileName = r.ReadString();
+            //var profile = (!string.IsNullOrEmpty(profileName) && !string.IsNullOrWhiteSpace(profileName) ) ? Start_a_Town_.Def.GetDef(profileName) : null;
+            var profile = Start_a_Town_.Def.GetDef(r.ReadString());
+            var obj = def.Create(profile);
+
             obj.RefId = r.ReadInt32();
             obj.StackSize = r.ReadInt32();
             //int compCount = r.ReadInt32();
@@ -887,6 +893,7 @@ namespace Start_a_Town_
         {
             var data = new List<SaveTag>();
             data.Add(this.Def.Name.Save("Def"));
+            data.Add(this.Profile.Save("ProfileID"));
             data.Add(this.RefId.Save("InstanceID"));
             data.Add(this._StackSize.Save("Stack"));
             //var compData = new SaveTag(SaveTag.Types.Compound, "Components");
@@ -910,9 +917,12 @@ namespace Start_a_Town_
         {
             tag.TryGetTagValueOrDefault("Def", out string defName);
             var def = Start_a_Town_.Def.GetDef<ItemDef>(defName);
+            Def profile = null;
+            if (tag.TryGetTagValueOrDefault("ProfileID", out string profileName)) profile = Start_a_Town_.Def.GetDef(profileName);
+
             if (def is null)
                 return null;
-            var obj = def.Create();
+            var obj = def.Create(profile);
             tag.TryGetTagValueOrDefault("InstanceID", out obj.RefId);
             tag.TryGetTagValue<int>("Stack", v=> obj._StackSize = v);
             //var compData = tag["Components"].Value as Dictionary<string, SaveTag>;

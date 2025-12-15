@@ -49,10 +49,11 @@ namespace Start_a_Town_
         {
             return this.Randomizer?.Invoke(this);
         }
-        internal virtual Entity Create()
+        internal virtual Entity Create(Def profile = null)
         {
             var entity = (Entity)Activator.CreateInstance(this.ItemClass);
             entity.Def = this;
+            entity.Profile = profile;
             entity.InitComps(this);
             return entity;
         }

@@ -32,12 +32,12 @@ namespace Start_a_Town_
             // TODO: signal each npc that remembers obj, that obj's state has changed, so that they evaluate it again next time they see it
             throw new NotImplementedException();
         }
-        Behavior _root = new BehaviorQueue(
-                   new AIMemory(),
-                   new BehaviorHandleResources(),
-                   new BehaviorHandleOrders(),
-                   new BehaviorHandleTasks());
-        Behavior Root => _root;//this.Defaults.Root;
+        //Behavior _root = new BehaviorQueue(
+        //           new AIMemory(),
+        //           new BehaviorHandleResources(),
+        //           new BehaviorHandleOrders(),
+        //           new BehaviorHandleTasks());
+        Behavior Root;//=> _root;//this.Defaults.Root;
         readonly Knowledge Knowledge;
         public AIState State;
         bool Enabled = true;
@@ -46,6 +46,11 @@ namespace Start_a_Town_
             
             this.Knowledge = new Knowledge();
             //this.Root = null;
+        }
+        internal override void CopyFrom(EntityComp source)
+        {
+            var c = source as AIComponent;
+            this.Root = c.Root.Clone() as Behavior;
         }
         public override void Randomize(GameObject parent, RandomThreaded random)
         {
@@ -68,6 +73,8 @@ namespace Start_a_Town_
 
         internal override void Resolve()
         {
+            var profile = this.Owner.Profile as ActorProfileDef;
+            this.Root = profile.Behavior.Clone() as Behavior;
             this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
         }
 
@@ -140,6 +147,7 @@ namespace Start_a_Town_
                 this.Root.Clone() as Behavior);
             return ai;
         }
+
 
         internal override List<SaveTag> Save()
         {

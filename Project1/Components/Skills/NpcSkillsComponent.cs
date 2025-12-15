@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
+using System.CodeDom;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -10,10 +11,10 @@ namespace Start_a_Town_
         public Skill[] SkillsNew;
         static public Panel UI = new Panel(new Rectangle(0, 0, 500, 400));
 
-        public override object Clone()
-        {
-            return new NpcSkillsComponent(this.SkillsNew.ToArray());
-        }
+        //public override object Clone()
+        //{
+        //    return new NpcSkillsComponent(this.SkillsNew.ToArray());
+        //}
         //public NpcSkillsComponent(ItemDef def)
         //{
         //    var defs = def.ActorProperties.Skills;
@@ -28,24 +29,32 @@ namespace Start_a_Town_
         {
 
         }
-        public NpcSkillsComponent(params Skill[] skills)
+        //public NpcSkillsComponent(params Skill[] skills)
+        //{
+        //    var count = skills.Length;
+        //    this.SkillsNew = new Skill[count];
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var newSkill = skills[i].Clone();
+        //        newSkill.Container = this;
+        //        this.SkillsNew[i] = newSkill;
+        //    }
+        //}
+        //public NpcSkillsComponent(params SkillDef[] defs)
+        //{
+        //    this.SkillsNew = new Skill[defs.Length];
+        //    for (int i = 0; i < defs.Length; i++)
+        //    {
+        //        this.SkillsNew[i] = new Skill(defs[i]);
+        //    }
+        //}
+        internal override void CopyFrom(EntityComp source)
         {
-            var count = skills.Length;
-            this.SkillsNew = new Skill[count];
-            for (int i = 0; i < count; i++)
-            {
-                var newSkill = skills[i].Clone();
-                newSkill.Container = this;
-                this.SkillsNew[i] = newSkill;
-            }
-        }
-        public NpcSkillsComponent(params SkillDef[] defs)
-        {
-            this.SkillsNew = new Skill[defs.Length];
-            for (int i = 0; i < defs.Length; i++)
-            {
-                this.SkillsNew[i] = new Skill(defs[i]);
-            }
+            var comp = source as NpcSkillsComponent;
+            this.SkillsNew = new Skill[comp.SkillsNew.Length];
+            for (int i = 0; i < comp.SkillsNew.Length; i++)
+                this.SkillsNew[i] = new Skill(comp.SkillsNew[i].Def);
+            this.Randomize();
         }
 
         public override string Name { get; } = "Npc Skills";

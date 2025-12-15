@@ -23,7 +23,9 @@ namespace Start_a_Town_.Components
         }
         public T GetComponent<T>() where T : EntityComp
         {
-            return (T)this._inner[typeof(T)];
+            //return (T)this._inner[typeof(T)];
+            if (this._inner.TryGetValue(typeof(T), out var result)) return (T)result;
+            return null;
         }
         public EntityComp GetComponent(Type type)
         {

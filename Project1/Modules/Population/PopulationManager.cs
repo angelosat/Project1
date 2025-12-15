@@ -153,7 +153,8 @@ namespace Start_a_Town_
 
         private static Actor GenerateInhabitant()
         {
-            var visitor = ActorDefOf.Npc.Create() as Actor;
+            //var visitor = ActorDefOf.Npc.Create() as Actor;
+            var visitor = ActorSystem.Create(ActorProfileDefOf.Npc);
             visitor.Inventory.Insert(ItemDefOf.Coins.Create().SetStackSize(500));
             return visitor;
         }

@@ -312,10 +312,20 @@ namespace Start_a_Town_.Components
 
         public override object Clone()
         {
+            throw new Exception();
             var newcomp = new PlantComponent(this) { Species = this.Species };
             newcomp.GrowthBody.Value = this.GrowthBody.Value;
             newcomp.GrowthFruit.Value = this.GrowthFruit.Value;
             return newcomp;
+        }
+
+        internal override void CopyFrom(EntityComp source)
+        {
+            var plantcomp = source as PlantComponent;
+
+            this.Species = plantcomp.Species;
+            this.GrowthBody.Value = plantcomp.GrowthBody.Value;
+            this.GrowthFruit.Value = plantcomp.GrowthFruit.Value;
         }
 
         public override void OnTooltipCreated(GameObject parent, UI.Control tooltip)

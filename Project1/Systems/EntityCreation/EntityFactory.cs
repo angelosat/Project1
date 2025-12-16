@@ -7,13 +7,13 @@ namespace Start_a_Town_
 
         static public Entity Create(EntityCreationRequest req)
         {
-            return req.Template switch
+            return req.Context switch
             {
                 MaterialDef => RawMaterialSystem.Create(req),
                 ActorDnaDef => ActorSystem.Create(req),
                 PlantSpeciesDef => PlantSystem.Create(req),
                 ToolProfileDef => ToolSystem.Create(req),
-                _ => throw new InvalidOperationException($"No system claims {req.Template.GetType().Name}"),
+                _ => throw new InvalidOperationException($"No system claims {req.Context.GetType().Name}"),
             };
         }
 

@@ -4,6 +4,11 @@ namespace Start_a_Town_
 {
     public static class SkillDefOf
     {
+        static public readonly SkillDef Smithing = new("Smithing")
+        {
+            Description = "Efficiency when working with metals.",
+            Icon = new Icon(UIManager.Icons32, 12, 32)
+        };
         static public readonly SkillDef Digging = new("Digging")
         {
             Description = "Efficiency when digging soil, gravel, mud, and sand.",

@@ -4,5 +4,8 @@
     {
         public readonly (MaterialTypeDef MaterialType, MaterialFormDef Process) Mapping = (type, process);
         public readonly Sprite Sprite = sprite ?? Sprite.Default;
+
+        public MaterialTypeDef MaterialType => this.Mapping.MaterialType;
+        public MaterialFormDef Process => this.Mapping.Process;
     }
 }

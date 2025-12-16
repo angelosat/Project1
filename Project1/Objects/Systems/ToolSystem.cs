@@ -31,7 +31,7 @@ namespace Start_a_Town_
 
         internal static Entity Create(EntityCreationRequest req)
         {
-            return Create(req.Template as ToolProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
+            return Create(req.Context as ToolProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
         }
 
         public Entity Create(Def def, ItemCreationArgs args)

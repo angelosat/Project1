@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Start_a_Town_
 {
@@ -17,6 +18,11 @@ namespace Start_a_Town_
 
         static public Entity Create(MaterialDef material, MaterialFormDef stage)
         {
+            if (stage == null)
+            {
+                Log.Warning($"No stage provided for {material}, defaulting to {MaterialFormDefOf.Raw}.");
+                stage = MaterialFormDefOf.Raw;
+            }
             if (!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
                 return null;
                 //throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");
@@ -44,7 +50,7 @@ namespace Start_a_Town_
 
         internal static Entity Create(EntityCreationRequest req)
         {
-            return Create(req.Template as MaterialDef, req.Stage as MaterialFormDef);
+            return Create(req.Context as MaterialDef, req.Stage as MaterialFormDef);
         }
     }
 }

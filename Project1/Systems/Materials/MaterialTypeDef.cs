@@ -9,7 +9,8 @@ namespace Start_a_Town_
         public readonly MaterialChemistryDef Chemistry;
         public HashSet<MaterialDef> SubTypes = new();
         public float Shininess;
-        public JobDef SkillToExtract;
+        public JobDef JobToExtract;
+        public SkillDef SkillToRefine;
         public MaterialProcessGraphDef ProductionGraph = MaterialProcessGraphDefOf.Default;
 
         public MaterialTypeDef(string name, MaterialChemistryDef chemistry)

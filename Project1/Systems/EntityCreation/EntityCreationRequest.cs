@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
 namespace Start_a_Town_
 {
-    public class EntityCreationRequest(Def template, Def stage, MaterialDef defaultMaterial = null)
+    public class EntityCreationRequest(Def context, Def stage, MaterialDef defaultMaterial = null)
     {
-        public readonly Def Template = template;
+        public readonly Def Context = context;
         public readonly Def Stage = stage;
         public MaterialDef DefaultMaterial = defaultMaterial;
         public readonly Dictionary<BoneDef, MaterialDef> MaterialBindings = [];

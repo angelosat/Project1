@@ -17,7 +17,7 @@ namespace Start_a_Town_
 
         internal static Entity Create(EntityCreationRequest req)
         {
-            return Create(req.Template as ActorDnaDef);
+            return Create(req.Context as ActorDnaDef);
         }
     }
 }

@@ -34,9 +34,17 @@ namespace Start_a_Town_
         {
             var stages = Def.GetDefs<MaterialFormDef>();
             var materials = Def.GetDefs<MaterialDef>();
-            foreach(var stage in stages)
+
+            foreach (var stage in stages)
                 foreach (var material in materials)
-                    yield return Create(material, stage);
+                    yield return EntityFactory
+                        .Request(material, stage)
+                        .Create();
+        }
+
+        internal static Entity Create(EntityCreationRequest req)
+        {
+            return Create(req.Template as MaterialDef, req.Stage as MaterialFormDef);
         }
     }
 }

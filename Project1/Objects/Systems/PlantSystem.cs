@@ -60,6 +60,11 @@ namespace Start_a_Town_
             //return (TEntity)System.Create(profile, args);
         }
 
+        internal static Entity Create(EntityCreationRequest req)
+        {
+            return Create(req.Template as PlantSpeciesDef, req.Stage as PlantStageDef);
+        }
+
         public class Args(PlantStageDef form) : ItemCreationArgs
         {
             public PlantStageDef Form = form;

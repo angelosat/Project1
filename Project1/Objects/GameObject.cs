@@ -75,7 +75,8 @@ namespace Start_a_Town_
             //AddTemplate(ItemDefOf.Helmet.CreateBase());
 
             //AddTemplate(Actor.Create(ActorDefOf.Npc).SetName("Npc"));
-            AddTemplate(ActorSystem.Create(ActorDnaDefOf.Npc));
+            //AddTemplate(ActorSystem.Create(ActorDnaDefOf.Npc));
+            AddTemplate(EntityFactory.Request(ActorDnaDefOf.Npc).Create());
 
             foreach (var t in RawMaterialSystem.GenerateTemplates().Where(t=>t is not null))
                 AddTemplate(t);

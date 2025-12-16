@@ -29,6 +29,11 @@ namespace Start_a_Town_
             return item;
         }
 
+        internal static Entity Create(EntityCreationRequest req)
+        {
+            return Create(req.Template as ToolProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
+        }
+
         public Entity Create(Def def, ItemCreationArgs args)
         {
             if (def is not ToolProfileDef profile)

@@ -1,6 +1,8 @@
-﻿namespace Start_a_Town_
+﻿using System;
+
+namespace Start_a_Town_
 {
-    public class ActorSystem// : IItemCreationSystem
+    public class ActorSystem
     {
         static public Actor Create(ActorDnaDef profile)
         {
@@ -11,6 +13,11 @@
             //entity.AI.Root = typedProfile.Behavior;
             entity.Initialize();
             return entity;
+        }
+
+        internal static Entity Create(EntityCreationRequest req)
+        {
+            return Create(req.Template as ActorDnaDef);
         }
     }
 }

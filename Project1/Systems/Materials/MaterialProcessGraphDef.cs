@@ -1,7 +1,7 @@
 ﻿namespace Start_a_Town_
 {
-    public class MaterialProcessGraphDef(params (MaterialProcessDef source, MaterialProcessDef[] targets)[] nodes)
+    public class MaterialProcessGraphDef(params (MaterialStageDef source, MaterialStageDef[] targets)[] nodes)
     {
-        public (MaterialProcessDef source, MaterialProcessDef[] targets)[] Nodes = nodes;
+        public (MaterialStageDef source, MaterialStageDef[] targets)[] Nodes = nodes;
     }
 }

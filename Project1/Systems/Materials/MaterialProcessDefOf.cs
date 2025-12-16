@@ -3,10 +3,10 @@
     [EnsureStaticCtorCall]
     static public class MaterialProcessDefOf
     {
-        static public readonly MaterialProcessDef Raw = new("Raw");
-        static public readonly MaterialProcessDef Refined = new("Refined");
-        static public readonly MaterialProcessDef Processed = new("Processed");
-        static public readonly MaterialProcessDef Ground = new("Ground");
+        static public readonly MaterialStageDef Raw = new("Raw", RawMaterialDefOfNew.Raw);
+        static public readonly MaterialStageDef Refined = new("Refined", RawMaterialDefOfNew.Refined);
+        static public readonly MaterialStageDef Processed = new("Processed", RawMaterialDefOfNew.Processed);
+        static public readonly MaterialStageDef Ground = new("Ground", RawMaterialDefOfNew.Ground);
         static MaterialProcessDefOf() => Def.Register(typeof(MaterialProcessDefOf));
     }
 }

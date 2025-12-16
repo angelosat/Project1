@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Start_a_Town_.AI.Behaviors;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     public class RawMaterialSystem
     {
-        public static readonly Dictionary<(MaterialTypeDef type, MaterialProcessDef process), MaterialMappingDef> ByTypeAndProcess = [];
+        public static readonly Dictionary<(MaterialTypeDef type, MaterialStageDef process), MaterialMappingDef> ByTypeAndProcess = [];
         static RawMaterialSystem()
         {
             foreach(var mappingDef in Def.GetDefs<MaterialMappingDef>())
@@ -15,14 +17,17 @@ namespace Start_a_Town_
             }
         }
 
-        static public Entity Create(MaterialDef material, MaterialProcessDef process)
+        static public Entity Create(MaterialDef material, MaterialStageDef stage)
         {
-            ByTypeAndProcess.TryGetValue((material.Type, process), out var mapping);
-            if (mapping == null)
-                throw new ArgumentException();
+            if(!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
+                throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");
 
+            var item = stage.Item.Create();
+            item.Initialize();
+            item.Body.Material = material;
+            item.Body.Sprite = mapping.Sprite;
+            item.Name = $"{material.Label} {stage.Label}";
 
-            var item = ItemDefOf.Coins.Create();
             return item;
         }
     }

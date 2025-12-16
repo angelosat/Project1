@@ -76,6 +76,9 @@ namespace Start_a_Town_
 
             //AddTemplate(Actor.Create(ActorDefOf.Npc).SetName("Npc"));
             AddTemplate(ActorSystem.Create(ActorDnaDefOf.Npc));
+
+            foreach (var t in RawMaterialSystem.GenerateTemplates().Where(t=>t is not null))
+                AddTemplate(t);
         }
 
         #region Common Properties

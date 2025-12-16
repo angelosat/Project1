@@ -1,7 +1,5 @@
-﻿using Start_a_Town_.AI.Behaviors;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Start_a_Town_
 {
@@ -19,16 +17,26 @@ namespace Start_a_Town_
 
         static public Entity Create(MaterialDef material, MaterialFormDef stage)
         {
-            if(!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
-                throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");
+            if (!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
+                return null;
+                //throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");
 
             var item = stage.Item.Create();
             item.Initialize();
             item.Body.Material = material;
             item.Body.Sprite = mapping.Sprite;
-            item.Name = $"{material.Label} {stage.Label}";
+            item.Name = $"{material.Label} {mapping.Label}";
 
             return item;
+        }
+
+        static public IEnumerable<Entity> GenerateTemplates()
+        {
+            var stages = Def.GetDefs<MaterialFormDef>();
+            var materials = Def.GetDefs<MaterialDef>();
+            foreach(var stage in stages)
+                foreach (var material in materials)
+                    yield return Create(material, stage);
         }
     }
 }

@@ -67,7 +67,7 @@ namespace Start_a_Town_
 
         internal override void Resolve()
         {
-            var profile = this.Owner.Profile as ActorProfileDef;
+            var profile = this.Owner.Profile as ActorDnaDef;
             this.Root = profile.Behavior.Clone() as Behavior;
             this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
         }

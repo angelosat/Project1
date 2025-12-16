@@ -9,6 +9,7 @@ namespace Start_a_Town_
         public HashSet<MaterialDef> SubTypes = new();
         public float Shininess;
         public JobDef SkillToExtract;
+        public MaterialProcessGraphDef ProductionGraph = MaterialProcessGraphDefOf.Default;
 
         public MaterialTypeDef(string name, MaterialCategory category)
             : base(name)

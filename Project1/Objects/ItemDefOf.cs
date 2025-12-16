@@ -39,10 +39,10 @@ namespace Start_a_Town_
         {
             StackCapacity = 8,
             Category = ItemCategoryDefOf.FoodRaw,
-            DefaultMaterialType = MaterialTypeDefOf.Meat,
+            DefaultMaterialType = MaterialTypeDefOf.Flesh,
             CompTypes = [typeof(ConsumableComponent)],
             Body = new Bone(BoneDefOf.Item, Sprite.Default)
-        }.SetMadeFrom(MaterialTypeDefOf.Meat)
+        }.SetMadeFrom(MaterialTypeDefOf.Flesh)
             //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
             .AddSpec(new ConsumableComponent.Props()
             {
@@ -60,12 +60,12 @@ namespace Start_a_Town_
                 new RecipeProperties("Bake") { Job = JobDefOf.Cook, Skill = SkillDefOf.Cooking }
                     .AddWorkstation(IsWorkstation.Types.Baking)
                     .AddIngredientMaker(def =>
-                        new Ingredient("Filling") { DefaultRestrictions = new IngredientRestrictions().Restrict(MaterialTypeDefOf.Meat) }
+                        new Ingredient("Filling") { DefaultRestrictions = new IngredientRestrictions().Restrict(MaterialTypeDefOf.Flesh) }
                             .SetAllow(def.ValidMaterialTypes, true)
                             .SetAllowed(ItemCategoryDefOf.FoodRaw, true))
                     .AddProductMaker(def => new Reaction.Product(def).GetMaterialFromIngredient("Filling")),
             CompTypes = [typeof(ConsumableComponent)]
-        }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Meat)
+        }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Flesh)
             //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
             .AddSpec(new ConsumableComponent.Props() { FoodClasses = [FoodClass.Dish] });
 

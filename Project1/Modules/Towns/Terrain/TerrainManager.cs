@@ -19,7 +19,7 @@ namespace Start_a_Town_
 
         Action<MapBase, IntVec3>[] SpawnActions;
         
-        PlantProperties[] ValidPlants;
+        PlantSpeciesDef[] ValidPlants;
        
         public override void Tick()
         {
@@ -84,9 +84,9 @@ namespace Start_a_Town_
             if (map.GetBlock(global) == BlockDefOf.Grass)
                 BlockGrass.GrowRandomFlower(map, global);
         }
-        PlantProperties[] GetValidPlants()
+        PlantSpeciesDef[] GetValidPlants()
         {
-            return Def.GetDefs<PlantProperties>().ToArray();
+            return Def.GetDefs<PlantSpeciesDef>().ToArray();
         }
         bool CanGrowOn(IntVec3 global)
         {

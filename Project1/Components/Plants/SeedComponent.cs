@@ -10,7 +10,7 @@ namespace Start_a_Town_
         public override string Name { get; } = "Seed";
 
         public int Level = 1;
-        public PlantProperties Plant;
+        public PlantSpeciesDef Plant;
 
         public SeedComponent()
         {
@@ -21,7 +21,7 @@ namespace Start_a_Town_
             this.Level = toCopy.Level;
         }
 
-        public void SetPlant(PlantProperties props)
+        public void SetPlant(PlantSpeciesDef props)
         {
             /// do all this here or do it wherever this is called from?
             this.Plant = props;
@@ -45,7 +45,7 @@ namespace Start_a_Town_
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            this.Plant = tag.LoadDef<PlantProperties>("Plant");
+            this.Plant = tag.LoadDef<PlantSpeciesDef>("Plant");
         }
         public override void Write(IDataWriter w)
         {
@@ -53,7 +53,7 @@ namespace Start_a_Town_
         }
         public override void Read(IDataReader r)
         {
-            this.Plant = Def.GetDef<PlantProperties>(r.ReadString());
+            this.Plant = Def.GetDef<PlantSpeciesDef>(r.ReadString());
         }
         public new class Props : Spec<SeedComponent> { }
         //public class Props : ComponentProps

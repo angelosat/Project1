@@ -19,7 +19,7 @@ namespace Start_a_Town_
             {
                 pSync = Registry.PacketHandlers.Register(Sync);
             }
-            public static void Send(GrowingZone zone, PlantProperties plant, bool tilling, bool planting, bool harvesting)
+            public static void Send(GrowingZone zone, PlantSpeciesDef plant, bool tilling, bool planting, bool harvesting)
             {
                 var client = zone.Net as Client;
                 var w = client.GetOutgoingStreamOrderedReliable();
@@ -30,7 +30,7 @@ namespace Start_a_Town_
                 w.Write(planting);
                 w.Write(harvesting);
             }
-            public static void SendPlant(GrowingZone zone, PlantProperties plant)
+            public static void SendPlant(GrowingZone zone, PlantSpeciesDef plant)
             {
                 Send(zone, plant, zone.Tilling, zone.Planting, zone.Harvesting);
             }
@@ -66,7 +66,7 @@ namespace Start_a_Town_
             {
                 var r = packet.PacketReader;
                 var zone = net.Map.Town.ZoneManager.GetZone<GrowingZone>(r.ReadInt32());
-                zone.Plant = Def.GetDef<PlantProperties>(r);
+                zone.Plant = Def.GetDef<PlantSpeciesDef>(r);
                 zone.Tilling = r.ReadBoolean();
                 zone.Planting = r.ReadBoolean();
                 zone.Harvesting = r.ReadBoolean();
@@ -83,7 +83,7 @@ namespace Start_a_Town_
         public bool Harvesting = true;
         public bool Planting = true;
         public bool Tilling = true;
-        public PlantProperties Plant = PlantSpiecesDefOf.Berry;
+        public PlantSpeciesDef Plant = PlantSpiecesDefOf.Berry;
         public float HarvestThreshold = 1;
         public override string UniqueName => $"Zone_Growing_{this.ID}";
         public ItemDef SeedType = PlantDefOf.Bush;
@@ -118,7 +118,7 @@ namespace Start_a_Town_
             this.Tilling = r.ReadBoolean();
             this.Planting = r.ReadBoolean();
             this.Harvesting = r.ReadBoolean();
-            this.Plant = r.ReadDef<PlantProperties>();
+            this.Plant = r.ReadDef<PlantSpeciesDef>();
         }
 
         protected override void LoadExtra(SaveTag tag)
@@ -258,7 +258,7 @@ namespace Start_a_Town_
                 GrowingZone growzone = null;
                 var box = new GroupBox();// 300, 200);
                 box.AddControlsVertically(
-                    new ComboBoxNewNew<PlantProperties>(Def.GetDefs<PlantProperties>(), 128, $"Plant: ", d => $"{d?.Label ?? ""}", () => growzone?.Plant, p => Packets.SendPlant(growzone, p)),
+                    new ComboBoxNewNew<PlantSpeciesDef>(Def.GetDefs<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.Label ?? ""}", () => growzone?.Plant, p => Packets.SendPlant(growzone, p)),
                     new CheckBoxNew("Tilling", () => Packets.ToggleTilling(growzone), () => growzone.Tilling),
                     new CheckBoxNew("Planting", () => Packets.TogglePlanting(growzone), () => growzone.Planting),
                     new CheckBoxNew("Harvesting", () => Packets.ToggleHarvesting(growzone), () => growzone.Harvesting)

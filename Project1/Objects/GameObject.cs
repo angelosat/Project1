@@ -75,7 +75,7 @@ namespace Start_a_Town_
             //AddTemplate(ItemDefOf.Helmet.CreateBase());
 
             //AddTemplate(Actor.Create(ActorDefOf.Npc).SetName("Npc"));
-            AddTemplate(ActorSystem.Create(ActorProfileDefOf.Npc));
+            AddTemplate(ActorSystem.Create(ActorDnaDefOf.Npc));
         }
 
         #region Common Properties

@@ -6,7 +6,7 @@ namespace Start_a_Town_
 {
     class GeneratorPlants : Terraformer
     {
-        PlantProperties[] ValidPlants;
+        PlantSpeciesDef[] ValidPlants;
         public GeneratorPlants()
         {
         }
@@ -42,9 +42,9 @@ namespace Start_a_Town_
             }
         }
        
-        PlantProperties[] GetValidPlants()
+        PlantSpeciesDef[] GetValidPlants()
         {
-            return Start_a_Town_.Def.GetDefs<PlantProperties>().ToArray();
+            return Start_a_Town_.Def.GetDefs<PlantSpeciesDef>().ToArray();
         }
     }
 }

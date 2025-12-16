@@ -20,7 +20,7 @@ namespace Start_a_Town_
         public List<MaterialTypeDef> ValidMaterialTypes = new();
         //public Func<ItemDef, Entity> Factory = ItemFactory.CreateItem;
         public ActorDef ActorProperties;
-        public PlantProperties PlantProperties;
+        public PlantSpeciesDef PlantProperties;
         public ItemToolDef ToolProperties;
         public ApparelDef ApparelProperties;
         public CraftingProperties CraftingProperties;

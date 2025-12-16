@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    public class ActorProfileDef : Def
+    public class ActorDnaDef : Def
     {
         public NeedDef[] Needs;
         public AttributeDef[] Attributes;
@@ -12,7 +12,7 @@ namespace Start_a_Town_
         public ResourceDef[] Resources;
         public GearType[] Gear;
         public Behavior Behavior;
-        public ActorProfileDef(string name) : base(name) { }
+        public ActorDnaDef(string name) : base(name) { }
 
         public IEnumerable<EntityComp.Spec> GenerateSpecs()
         {

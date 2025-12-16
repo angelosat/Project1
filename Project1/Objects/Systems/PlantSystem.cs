@@ -5,7 +5,7 @@ namespace Start_a_Town_
 {
     public class PlantSystem : IItemCreationSystem
     {
-        static Entity CreateSeeds(PlantProperties species)
+        static Entity CreateSeeds(PlantSpeciesDef species)
         {
             var seeds = ItemDefOf.Seeds.Create();
             seeds.Initialize();
@@ -17,7 +17,7 @@ namespace Start_a_Town_
             return seeds;
         }
 
-        static Entity CreatePlant(PlantProperties species)
+        static Entity CreatePlant(PlantSpeciesDef species)
         {
             var entity = species.PlantEntity.Create();
             var plantcomp = entity.GetComponent<PlantComponent>();
@@ -35,7 +35,7 @@ namespace Start_a_Town_
         {
             if (args is not Args a)
                 throw new InvalidOperationException($"{nameof(PlantSystem)} received wrong args");
-            if (def is not PlantProperties profile)
+            if (def is not PlantSpeciesDef profile)
                 throw new InvalidOperationException($"{nameof(PlantSystem)} received wrong profile");
             if (a.Form == PlantFormDefOf.Seed)
                 return CreateSeeds(profile);
@@ -44,7 +44,7 @@ namespace Start_a_Town_
             else throw new InvalidOperationException($"{nameof(a.Form)} was invalid");
         }
 
-        public static Entity Create(PlantProperties species, PlantFormDef form)
+        public static Entity Create(PlantSpeciesDef species, PlantFormDef form)
         {
             if (form == PlantFormDefOf.Seed)
                 return CreateSeeds(species);

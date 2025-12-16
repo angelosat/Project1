@@ -1,12 +1,11 @@
-﻿using Start_a_Town_.Components;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
 
 namespace Start_a_Town_
 {
-    public class PlantProperties : Def
+    public class PlantSpeciesDef : Def
     {
         internal ToolUseDef ToolToCut;
         [XmlIgnore]
@@ -33,7 +32,7 @@ namespace Start_a_Town_
         public string SeedsName;
         public Graphics Textures;
         public int YieldThreshold;
-        public PlantProperties(string name) : base(name)
+        public PlantSpeciesDef(string name) : base(name)
         {
             
         }
@@ -69,7 +68,7 @@ namespace Start_a_Town_
 
         static public void Init()
         {
-            var ser = new XmlSerializer(typeof(List<PlantProperties>));
+            var ser = new XmlSerializer(typeof(List<PlantSpeciesDef>));
             var path = $"{GlobalVars.SaveDir}/{PlantSpiecesDefOf.Berry.Label}.xml";
             //var path = $"{GlobalVars.SaveDir}/Berry.xml";
 
@@ -77,7 +76,7 @@ namespace Start_a_Town_
             //Register(LightTree);
 
             System.IO.FileStream file = System.IO.File.Create(path);
-            var list = new List<PlantProperties>(GetDefs<PlantProperties>());
+            var list = new List<PlantSpeciesDef>(GetDefs<PlantSpeciesDef>());
             ser.Serialize(file, list);
             file.Close();
         }
@@ -172,7 +171,7 @@ namespace Start_a_Town_
         static public void Init()
         {
             return;
-            var ser = new XmlSerializer(typeof(List<PlantProperties>));
+            var ser = new XmlSerializer(typeof(List<PlantSpeciesDef>));
             var path = $"{GlobalVars.SaveDir}/{PlantSpiecesDefOf.Berry.Label}.xml";
             //var path = $"{GlobalVars.SaveDir}/Berry.xml";
 
@@ -180,7 +179,7 @@ namespace Start_a_Town_
             //Register(LightTree);
 
             System.IO.FileStream file = System.IO.File.Create(path);
-            var list = new List<PlantProperties>(GetDefs<PlantProperties>());
+            var list = new List<PlantSpeciesDef>(GetDefs<PlantSpeciesDef>());
             ser.Serialize(file, list);
             file.Close();
         }

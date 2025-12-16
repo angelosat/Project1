@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="plant"></param>
         /// <returns></returns>
-        static public bool IsSeedFor(this GameObject entity, PlantProperties plant)
+        static public bool IsSeedFor(this GameObject entity, PlantSpeciesDef plant)
         {
             return entity.Def == ItemDefOf.Seeds && entity.GetComponent<SeedComponent>().Plant == plant;
         }

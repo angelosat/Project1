@@ -3,9 +3,9 @@
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    public class ActorProfileDefOf
+    public class ActorDnaDefOf
     {
-        public static readonly ActorProfileDef Npc = new("Npc")
+        public static readonly ActorDnaDef Npc = new("Npc")
         {
             Needs = [
                 NeedDefOf.Energy,
@@ -45,16 +45,17 @@ namespace Start_a_Town_
                 TraitDefOf.Activity,
                 TraitDefOf.Planning,
                 TraitDefOf.Resilience ],
-            Behavior = new BehaviorQueue(
-                   new AIMemory(),
-                   new BehaviorHandleResources(),
-                   new BehaviorHandleOrders(),
-                   new BehaviorHandleTasks())
+            Behavior = BehaviorPackageDefOf.Npc.Root.Clone() as Behavior
+            //new BehaviorQueue(
+            //       new AIMemory(),
+            //       new BehaviorHandleResources(),
+            //       new BehaviorHandleOrders(),
+            //       new BehaviorHandleTasks())
         };
 
-        static ActorProfileDefOf()
+        static ActorDnaDefOf()
         {
-            Def.Register(typeof(ActorProfileDefOf));
+            Def.Register(typeof(ActorDnaDefOf));
         }
     }
 }

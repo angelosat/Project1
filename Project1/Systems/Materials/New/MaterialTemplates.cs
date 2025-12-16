@@ -47,7 +47,7 @@ namespace Start_a_Town_
           .SetState(MaterialState.Solid)
           .SetDensity(20)
           .SetColor(Color.LightPink)
-          .SetType(MaterialTypeDefOf.Meat)
+          .SetType(MaterialTypeDefOf.Flesh)
           ;
 
         static public readonly MaterialDef PlantStem = new MaterialDef()

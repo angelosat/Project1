@@ -5,7 +5,7 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     static class PlantSpiecesDefOf
     {
-        static public readonly PlantProperties Berry = new("Berry")
+        static public readonly PlantSpeciesDef Berry = new("Berry")
         {
             TextureGrowing = ItemContent.BerryBushGrowing.AssetPath,
             TextureGrown = ItemContent.BerryBushGrown.AssetPath,
@@ -27,7 +27,7 @@ namespace Start_a_Town_
 
         };
 
-        static public readonly PlantProperties LightTree = new("LightTree")
+        static public readonly PlantSpeciesDef LightTree = new("LightTree")
         {
             TextureGrowing = ItemContent.TreeFull.AssetPath,
             TextureGrown = ItemContent.TreeFull.AssetPath,

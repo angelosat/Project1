@@ -2,7 +2,7 @@
 {
     public class ActorSystem// : IItemCreationSystem
     {
-        static public Actor Create(ActorProfileDef profile)
+        static public Actor Create(ActorDnaDef profile)
         {
             //if (profile is not ActorProfileDef typedProfile)
             //    throw new System.Exception();

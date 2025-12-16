@@ -23,7 +23,7 @@ namespace Start_a_Town_
 
         internal override void Resolve()
         {
-            var profile = this.Owner.Profile as ActorProfileDef;
+            var profile = this.Owner.Profile as ActorDnaDef;
             foreach (var slot in profile.Gear)
                 this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
             this.Owner.RegisterContainer(this.Equipment);

@@ -55,8 +55,8 @@ namespace Start_a_Town_.Components
         int GrowthTick, FruitGrowthTick;
         public enum GrowthStates { Growing, Ready }
         public Growth Growth = new(.05f);
-        public PlantProperties Species { get; private set; }
-        public void SetSpecies(PlantProperties species)
+        public PlantSpeciesDef Species { get; private set; }
+        public void SetSpecies(PlantSpeciesDef species)
         {
             this.Species = species;
             //this.Resolve();
@@ -384,7 +384,7 @@ namespace Start_a_Town_.Components
         }
         public override void Read(IDataReader reader)
         {
-            this.Species = Def.GetDef<PlantProperties>(reader.ReadString());
+            this.Species = Def.GetDef<PlantSpeciesDef>(reader.ReadString());
             this.GrowthFruit = new Progress(reader);
             this.GrowthBody = new Progress(reader);
 
@@ -407,7 +407,7 @@ namespace Start_a_Town_.Components
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            this.Species = tag.LoadDef<PlantProperties>("Plant");
+            this.Species = tag.LoadDef<PlantSpeciesDef>("Plant");
             tag.TryGetTag("GrowthNew", t => this.GrowthBody = new Progress(t));
             tag.TryGetTag("FruitGrowth", t => this.GrowthFruit = new Progress(t));
         }

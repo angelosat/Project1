@@ -55,14 +55,14 @@ namespace Start_a_Town_
             tree.GetComponent<PlantComponent>().GrowthBody.Percentage = 1;
             GameObject.AddTemplate(tree);
 
-            var allPlants = Def.GetDefs<PlantProperties>();
+            var allPlants = Def.GetDefs<PlantSpeciesDef>();
             GameObject.AddTemplates(allPlants.Select(p => p.Create(PlantFormDefOf.Seed)));
 
             Def.Register(new Reaction("Extract Seeds", SkillDefOf.Argiculture)
                 .AddBuildSite(IsWorkstation.Types.PlantProcessing)
                 .AddIngredient("a", new Ingredient()
                     .SetAllow(ItemDefOf.Fruit, true))
-                .AddProduct(new Reaction.Product(i => Def.GetDefs<PlantProperties>().First(d => d.FruitMaterial == i["a"].PrimaryMaterial).Create(PlantFormDefOf.Seed) as Entity, 4))
+                .AddProduct(new Reaction.Product(i => Def.GetDefs<PlantSpeciesDef>().First(d => d.FruitMaterial == i["a"].PrimaryMaterial).Create(PlantFormDefOf.Seed) as Entity, 4))
                 );
         }
     }

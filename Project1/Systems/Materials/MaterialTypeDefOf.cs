@@ -8,7 +8,7 @@
         static public readonly MaterialTypeDef Gas = new("Gas", MaterialCategory.Inorganic);
         static public readonly MaterialTypeDef Water = new("Water", MaterialCategory.Inorganic);
         static public readonly MaterialTypeDef Glass = new("Glass", MaterialCategory.Inorganic);
-        static public readonly MaterialTypeDef Meat = new("Meat", MaterialCategory.Creature) { ReactionClass = ReactionClass.Protein };
+        static public readonly MaterialTypeDef Flesh = new("Meat", MaterialCategory.Creature) { ReactionClass = ReactionClass.Protein };
         static public readonly MaterialTypeDef Blood = new("Blood", MaterialCategory.Creature);
         static public readonly MaterialTypeDef Bone = new("Bone", MaterialCategory.Creature);
         static public readonly MaterialTypeDef Fruit = new("Fruit", MaterialCategory.Plant) { ReactionClass = ReactionClass.Protein };

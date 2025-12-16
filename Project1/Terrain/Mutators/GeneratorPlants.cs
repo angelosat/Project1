@@ -30,7 +30,7 @@ namespace Start_a_Town_
                     {
                         var allPlants = this.ValidPlants ??= this.GetValidPlants();
                         var randomPlant = allPlants.SelectRandom(map.Random);
-                        var plant = randomPlant.Create(PlantFormDefOf.Plant);
+                        var plant = randomPlant.Create(PlantStageDefOf.Plant);
                         var comp = plant.GetComponent<PlantComponent>();
                         comp.GrowthBody.Percentage = 1;
                         comp.GrowthFruit.Percentage = 1;

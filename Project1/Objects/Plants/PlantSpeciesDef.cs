@@ -81,7 +81,7 @@ namespace Start_a_Town_
             file.Close();
         }
 
-        internal Entity Create(PlantFormDef form) => PlantSystem.Create(this, form);
+        internal Entity Create(PlantStageDef form) => PlantSystem.Create(this, form);
 
         public bool ProducesFruit => this.Growth?.GrowthItemDef == ItemDefOf.Fruit;
         [XmlIgnore]

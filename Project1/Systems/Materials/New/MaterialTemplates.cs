@@ -53,7 +53,7 @@ namespace Start_a_Town_
         static public readonly MaterialDef PlantStem = new MaterialDef()
             .SetDensity(30)
             .SetState(MaterialState.Solid)
-            .SetType(MaterialTypeDefOf.PlantStem);
+            .SetType(MaterialTypeDefOf.Fiber);
 
         static public readonly MaterialDef Seed = new MaterialDef()
             .SetDensity(40)

@@ -8,7 +8,7 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     public class RawMaterialSystem
     {
-        public static readonly Dictionary<(MaterialTypeDef type, MaterialStageDef process), MaterialMappingDef> ByTypeAndProcess = [];
+        public static readonly Dictionary<(MaterialTypeDef type, MaterialFormDef process), MaterialMappingDef> ByTypeAndProcess = [];
         static RawMaterialSystem()
         {
             foreach(var mappingDef in Def.GetDefs<MaterialMappingDef>())
@@ -17,7 +17,7 @@ namespace Start_a_Town_
             }
         }
 
-        static public Entity Create(MaterialDef material, MaterialStageDef stage)
+        static public Entity Create(MaterialDef material, MaterialFormDef stage)
         {
             if(!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
                 throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");

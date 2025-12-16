@@ -37,18 +37,18 @@ namespace Start_a_Town_
                 throw new InvalidOperationException($"{nameof(PlantSystem)} received wrong args");
             if (def is not PlantSpeciesDef profile)
                 throw new InvalidOperationException($"{nameof(PlantSystem)} received wrong profile");
-            if (a.Form == PlantFormDefOf.Seed)
+            if (a.Form == PlantStageDefOf.Seed)
                 return CreateSeeds(profile);
-            else if (a.Form == PlantFormDefOf.Plant)
+            else if (a.Form == PlantStageDefOf.Plant)
                 return CreatePlant(profile);
             else throw new InvalidOperationException($"{nameof(a.Form)} was invalid");
         }
 
-        public static Entity Create(PlantSpeciesDef species, PlantFormDef form)
+        public static Entity Create(PlantSpeciesDef species, PlantStageDef form)
         {
-            if (form == PlantFormDefOf.Seed)
+            if (form == PlantStageDefOf.Seed)
                 return CreateSeeds(species);
-            else if (form == PlantFormDefOf.Plant)
+            else if (form == PlantStageDefOf.Plant)
                 return CreatePlant(species);
             throw new InvalidOperationException();
         }
@@ -60,9 +60,9 @@ namespace Start_a_Town_
             //return (TEntity)System.Create(profile, args);
         }
 
-        public class Args(PlantFormDef form) : ItemCreationArgs
+        public class Args(PlantStageDef form) : ItemCreationArgs
         {
-            public PlantFormDef Form = form;
+            public PlantStageDef Form = form;
         }
     }
 }

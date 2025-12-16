@@ -40,7 +40,7 @@ namespace Start_a_Town_
             var plantdef = obj.GetComponent<SeedComponent>().Plant;
             //var plant = plantdef.CreatePlant();
             //var plant = ItemFamilyDefOf.Plant.System.Create(plantdef, new PlantSpeciesDef.Args(PlantFormDefOf.Plant));
-            var plant = plantdef.Create(PlantFormDefOf.Plant);
+            var plant = plantdef.Create(PlantStageDefOf.Plant);
 
             plant.SyncInstantiate(map.Net);
             plant.SyncSpawn(map, global.Above());

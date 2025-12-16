@@ -45,24 +45,24 @@ namespace Start_a_Town_
             Def.Register(Tree);
             Def.Register(Bush);
 
-            var bush = PlantSpiecesDefOf.Berry.Create(PlantFormDefOf.Plant);
+            var bush = PlantSpiecesDefOf.Berry.Create(PlantStageDefOf.Plant);
             var plantComp = bush.GetComponent<PlantComponent>();
             plantComp.GrowthBody.Percentage = 1;
             plantComp.GrowthFruit.Percentage = 1;
             GameObject.AddTemplate(bush);
 
-            var tree = PlantSpiecesDefOf.LightTree.Create(PlantFormDefOf.Plant);
+            var tree = PlantSpiecesDefOf.LightTree.Create(PlantStageDefOf.Plant);
             tree.GetComponent<PlantComponent>().GrowthBody.Percentage = 1;
             GameObject.AddTemplate(tree);
 
             var allPlants = Def.GetDefs<PlantSpeciesDef>();
-            GameObject.AddTemplates(allPlants.Select(p => p.Create(PlantFormDefOf.Seed)));
+            GameObject.AddTemplates(allPlants.Select(p => p.Create(PlantStageDefOf.Seed)));
 
             Def.Register(new Reaction("Extract Seeds", SkillDefOf.Argiculture)
                 .AddBuildSite(IsWorkstation.Types.PlantProcessing)
                 .AddIngredient("a", new Ingredient()
                     .SetAllow(ItemDefOf.Fruit, true))
-                .AddProduct(new Reaction.Product(i => Def.GetDefs<PlantSpeciesDef>().First(d => d.FruitMaterial == i["a"].PrimaryMaterial).Create(PlantFormDefOf.Seed) as Entity, 4))
+                .AddProduct(new Reaction.Product(i => Def.GetDefs<PlantSpeciesDef>().First(d => d.FruitMaterial == i["a"].PrimaryMaterial).Create(PlantStageDefOf.Seed) as Entity, 4))
                 );
         }
     }

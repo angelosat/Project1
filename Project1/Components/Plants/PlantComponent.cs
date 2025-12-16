@@ -278,7 +278,7 @@ namespace Start_a_Town_.Components
                 {
                     //var seeds = plantdef.CreateSeeds().SetStackSize(yield) as Entity;
                     //var seeds = ItemFamilyDefOf.Plant.System.Create(this.Species, new PlantSystem.Args(PlantFormDefOf.Seed));
-                    var seeds = this.Species.Create(PlantFormDefOf.Seed);
+                    var seeds = this.Species.Create(PlantStageDefOf.Seed);
                     actor.Map.World.RegisterAndSync(seeds);
                     actor.Map.SpawnAndSync(seeds, plant.Global, LootManager.RandomPopVelocity(rng));
                 }

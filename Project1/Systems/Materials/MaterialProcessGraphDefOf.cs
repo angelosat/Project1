@@ -4,9 +4,9 @@
     static public class MaterialProcessGraphDefOf
     {
         static public readonly MaterialProcessGraphDef Default = new(
-            [(MaterialProcessDefOf.Raw, [MaterialProcessDefOf.Processed, MaterialProcessDefOf.Refined, MaterialProcessDefOf.Ground]),
-            (MaterialProcessDefOf.Refined, [MaterialProcessDefOf.Processed, MaterialProcessDefOf.Ground]),
-            (MaterialProcessDefOf.Processed, [MaterialProcessDefOf.Ground])]
+            [(MaterialFormDefOf.Raw, [MaterialFormDefOf.Processed, MaterialFormDefOf.Refined, MaterialFormDefOf.Ground]),
+            (MaterialFormDefOf.Refined, [MaterialFormDefOf.Processed, MaterialFormDefOf.Ground]),
+            (MaterialFormDefOf.Processed, [MaterialFormDefOf.Ground])]
             );
 
         static MaterialProcessGraphDefOf() => Def.Register(typeof(MaterialProcessGraphDefOf));

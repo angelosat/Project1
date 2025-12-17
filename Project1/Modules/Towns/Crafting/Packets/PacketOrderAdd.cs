@@ -1,31 +1,28 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
+using System;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     class PacketOrderAdd
     {
-        static int p;
+        static int _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder;
         static PacketOrderAdd()
         {
-            p = Registry.PacketHandlers.Register(Receive);
+            _pPlayerCreatedOrder = Registry.PacketHandlers.Register(OnPlayerCreatedOrder);
+            _pPlayerDeletedOrder = Registry.PacketHandlers.Register(OnPlayerDeletedOrder);
+            _pPlayerModifiedOrder = Registry.PacketHandlers.Register(OnPlayerModifiedOrder);
         }
         internal static void PlayerCreatedOrder(BlockEntity workstation, MaterialMappingDef processDef)
         {
             var net = workstation.Map.Net;
-            var w = net.BeginPacket(p);
+            var w = net.BeginPacket(_pPlayerCreatedOrder);
             w.Write(workstation.Map.ID);
             w.Write(workstation.OriginGlobal);
             w.Write(processDef);
         }
-        internal static void Send(NetEndpoint net, Vector3 global, Reaction reaction)
-        {
-            var w = net.BeginPacket(p);
-            w.Write(global);
-            reaction.Write(w);
-        }
-        private static void Receive(NetEndpoint net, Packet pck)
+        private static void OnPlayerCreatedOrder(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
             var mapid = r.ReadInt32();
@@ -42,5 +39,47 @@ namespace Start_a_Town_
             if (net is Server)
                 Send(net, station, reaction);
         }
+        internal static void PlayerDeletedOrder(MapBase map, OrderSettings order)
+        {
+            var net = map.Net;
+            var w = net.BeginPacket(_pPlayerDeletedOrder);
+            w.Write(map.ID);
+            w.Write(order.Id);
+        }
+        private static void OnPlayerDeletedOrder(NetEndpoint net, Packet pck)
+        {
+            var r = pck.PacketReader;
+            var mapid = r.ReadInt32();
+            var map = net.World.GetMap(mapid);
+            var order = net.Map.Town.CraftingManagerNew.DeleteOrder(r.ReadInt32());
+            if (net is Server server)
+                PlayerDeletedOrder(map, order);
+        }
+        internal static void PlayerModifiedOrder(MapBase map, OrderSettings order, int priorityDelta, int amountDelta, OrderSettings.CraftMode mode)
+        {
+            var net = map.Net;
+            var w = net.BeginPacket(_pPlayerDeletedOrder);
+            w.Write(map.ID);
+            w.Write(order.Id);
+            w.Write(priorityDelta);
+            w.Write(amountDelta);
+            w.Write((int)mode);
+        }
+        private static void OnPlayerModifiedOrder(NetEndpoint endpoint, Packet packet)
+        {
+            var r = packet.PacketReader;
+            var mapid = r.ReadInt32();
+            var map = endpoint.World.GetMap(mapid);
+            var order = endpoint.Map.Town.CraftingManagerNew.DeleteOrder(r.ReadInt32());
+            throw new NotImplementedException();
+        }
+        internal static void Send(NetEndpoint net, Vector3 global, Reaction reaction)
+        {
+            var w = net.BeginPacket(_pPlayerCreatedOrder);
+            w.Write(global);
+            reaction.Write(w);
+        }
+        
+        
     }
 }

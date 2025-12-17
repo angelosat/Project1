@@ -41,7 +41,7 @@ namespace Start_a_Town_
         public virtual void OnRemoved(MapBase map, IntVec3 global)
         {
             foreach (var c in this.Comps)
-                c.Remove(map, global, this);
+                c.OnRemoved(map, global, this);
         }
         public virtual void Break(MapBase map, IntVec3 global) { }
         public virtual void OnSpawned(MapBase map, IntVec3 global)

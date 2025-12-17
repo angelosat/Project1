@@ -118,7 +118,7 @@ namespace Start_a_Town_
                     this.StoredFuelItems.RemoveAt(0);
             }
         }
-        internal override void Remove(MapBase map, IntVec3 global, BlockEntity parent)
+        internal override void OnRemoved(MapBase map, IntVec3 global, BlockEntity parent)
         {
             foreach (var i in this.StoredFuelItems)
             {

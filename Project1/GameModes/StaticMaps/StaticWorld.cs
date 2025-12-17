@@ -288,6 +288,8 @@ namespace Start_a_Town_
             return name.First().ToString().ToUpper() + name[1..];
         }
 
+        public override MapBase GetMap(int mapId) => this.Map;
+
         //internal override void Post(GameEvent a)
         //{
         //    base.Post(a.Payload);

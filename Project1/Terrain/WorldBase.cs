@@ -153,6 +153,7 @@ namespace Start_a_Town_
             if(this.DisposeEntity(entity.RefId))
                 PacketEntityDispose.Send(this.Net as Server, entity.RefId);
         }
+        public abstract MapBase GetMap(int mapId);
         public EventBus Events { get; } = new();
         
     }

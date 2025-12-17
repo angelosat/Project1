@@ -27,20 +27,22 @@ namespace Start_a_Town_
         // Minimum skill requirement
         public int SkillFilter;
 
+        public int Id { get; }
         public SkillDef Skill { get; init; }
         public MaterialMappingDef Process { get; init; }
-        public IntVec3 OwnerPosition { get; init; }
-
+        //public IntVec3 OwnerPosition { get; init; }
+        public BlockEntityCompWorkstation Owner { get; init; }
         public string Label => this.Process.Name;
 
         // Optional input constraints
         public Dictionary<MaterialTypeDef, int> RequiredInputs = [];
 
-        public OrderSettings(BlockEntityCompWorkstation owner, MaterialMappingDef mapping)
+        public OrderSettings(int id, BlockEntityCompWorkstation owner, MaterialMappingDef mapping)
         {
+            this.Id = id;
             this.Skill = mapping.MaterialType.SkillToRefine;
             this.Process = mapping;
-            this.OwnerPosition = owner.Global;
+            this.Owner = owner;
             //this.Target = new EntityCreationRequest(stage: mapping.Process)
         }
 
@@ -136,7 +138,7 @@ namespace Start_a_Town_
         }
         void RemoveOrder()
         {
-            //PacketOrderRemove.Send(Client.Instance, this);
+            PacketOrderAdd.PlayerDeletedOrder(this.Settings.Owner.Parent.Map, this.Settings);
         }
         void Minus()
         {

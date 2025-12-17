@@ -44,16 +44,22 @@ namespace Start_a_Town_
 
             var mapEvents = workstation.Parent.Map.Events;
             mapEvents.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
-            mapEvents.ListenTo<CraftOrderCreatedEvent>(OnCraftOrderCreated);
+            mapEvents.ListenTo<CraftOrderAddedEvent>(OnCraftOrderAdded);
+            mapEvents.ListenTo<CraftOrderRemovedEvent>(OnCraftOrderRemoved);
+        }
+
+        private void OnCraftOrderRemoved(CraftOrderRemovedEvent e)
+        {
+            this.ListOrdersNew.RemoveItems(e.Order);
         }
 
         public override bool Show()
         {
-            this.Workstation.Map.Events.ListenTo<CraftOrderCreatedEvent>(OnCraftOrderCreated);
+            this.Workstation.Map.Events.ListenTo<CraftOrderAddedEvent>(OnCraftOrderAdded);
             return base.Show();
         }
 
-        private void OnCraftOrderCreated(CraftOrderCreatedEvent e)
+        private void OnCraftOrderAdded(CraftOrderAddedEvent e)
         {
             if (this.Workstation != e.Comp)
                 return;

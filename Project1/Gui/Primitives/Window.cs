@@ -148,8 +148,8 @@ namespace Start_a_Town_.UI
         {
             if (this.IsDragged)
             {
-                this.Location.X = Math.Max(0, Math.Min(UIManager.Width - this.Width, UIManager.MouseTrue.X - (int)this.MouseOffset.X));
-                this.Location.Y = Math.Max(0, Math.Min(UIManager.Height - this.Height, UIManager.MouseTrue.Y - (int)this.MouseOffset.Y));
+                this.Location.X = Math.Max(0, Math.Min(UIManager.Width - this.Width, UIManager.MouseScaled.X - (int)this.MouseOffset.X));
+                this.Location.Y = Math.Max(0, Math.Min(UIManager.Height - this.Height, UIManager.MouseScaled.Y - (int)this.MouseOffset.Y));
             }
         }
         public override bool MouseThrough
@@ -277,7 +277,7 @@ namespace Start_a_Town_.UI
         private void StartDragging()
         {
             this.IsDragged = this.Movable;
-            this.MouseOffset = UIManager.MouseTrue - this.ScreenLocation;
+            this.MouseOffset = UIManager.MouseScaled - this.ScreenLocation;
         }
 
         public override Rectangle PreferredClientSize

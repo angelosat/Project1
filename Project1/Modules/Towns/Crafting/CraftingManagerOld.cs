@@ -17,7 +17,6 @@ namespace Start_a_Town_
             pQuantity = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderModifyQuantity);
             pRestrictions = Start_a_Town_.Registry.PacketHandlers.Register(SetOrderRestrictions);
 
-            PacketOrderAdd.Init();
             //PacketOrderRemove.Init();
             //PacketCraftingOrderSync.Init();
             PacketCraftOrderToggleHaul.Init();

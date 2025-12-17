@@ -9,9 +9,9 @@ namespace Start_a_Town_
         public PanelWithTabs(int w, int h, IEnumerable<Control> namedControls)
         {
             Panel panel = null;
-            ScrollableBoxTest panelClient = null;
+            ScrollableBoxNewNewNew panelClient = null;
             var groupboxTabs = UIHelper.Wrap(namedControls.Select(tab => new Button(tab.Name, () => selectTab(tab))), w);
-            panelClient = new ScrollableBoxTest(w + ScrollbarV.DefaultWidth, h - groupboxTabs.Height, ScrollModes.Vertical);
+            panelClient = new ScrollableBoxNewNewNew(w + ScrollbarV.DefaultWidth, h - groupboxTabs.Height, ScrollModes.Vertical);
             panel = new() { AutoSize = true };
             panel.AddControls(panelClient);
             Control selectedTab = null;
@@ -36,7 +36,7 @@ namespace Start_a_Town_
     {
         public static readonly int DefaultSize = 256, DefaultTabsListSize = 96; //128
         Control SelectedTab;
-        readonly ScrollableBoxTest PanelClient;
+        readonly ScrollableBoxNewNewNew PanelClient;
         readonly ListBoxNoScroll<Control> TabsList;
         public PanelWithVerticalTabs() : this(DefaultSize, DefaultSize)
         {
@@ -46,11 +46,11 @@ namespace Start_a_Town_
         {
             this.TabsList = new(c => new Button(c.Name, () => SelectTab(c), DefaultTabsListSize) { IsToggledFunc = () => this.SelectedTab == c });
             Panel panel = null, panelTabs;
-            ScrollableBoxTest 
+            ScrollableBoxNewNewNew 
                 panelClientTabs = null;
-            panelClientTabs = new ScrollableBoxTest(DefaultTabsListSize + ScrollbarV.DefaultWidth, h, ScrollModes.Vertical);
+            panelClientTabs = new ScrollableBoxNewNewNew(DefaultTabsListSize + ScrollbarV.DefaultWidth, h, ScrollModes.Vertical);
             panelClientTabs.AddControls(this.TabsList);
-            this.PanelClient = new ScrollableBoxTest(w + ScrollbarV.DefaultWidth, h, ScrollModes.Vertical);
+            this.PanelClient = new ScrollableBoxNewNewNew(w + ScrollbarV.DefaultWidth, h, ScrollModes.Vertical);
             panel = new() { AutoSize = true };
             panelTabs = new() { AutoSize = true };
             panel.AddControls(this.PanelClient);
@@ -82,7 +82,7 @@ namespace Start_a_Town_
     {
         public static readonly int DefaultSize = 256;
         Control SelectedTab;
-        readonly ScrollableBoxTest PanelClient;
+        readonly ScrollableBoxNewNewNew PanelClient;
         readonly ListBoxNoScroll<Control> TabsList;
         public PanelWithVerticalTabs() : this(DefaultSize, DefaultSize)
         {
@@ -93,11 +93,11 @@ namespace Start_a_Town_
             //this.TabsList = new(c => new Button(c.Name, () => SelectTab(c), 128) { IsToggledFunc = () => this.SelectedTab == c });
             this.TabsList = new(c => new T() { Text = c.Name, Active = true, LeftClickAction = () => SelectTab(c), Width = 128, IsToggledFunc = () => this.SelectedTab == c });
             Panel panel = null, panelTabs;
-            ScrollableBoxTest
+            ScrollableBoxNewNewNew
                 panelClientTabs = null;
-            panelClientTabs = new ScrollableBoxTest(128 + ScrollbarV.DefaultWidth, h, ScrollModes.Vertical);
+            panelClientTabs = new ScrollableBoxNewNewNew(128 + ScrollbarV.DefaultWidth, h, ScrollModes.Vertical);
             panelClientTabs.AddControls(this.TabsList);
-            this.PanelClient = new ScrollableBoxTest(w + ScrollbarV.DefaultWidth, h, ScrollModes.Vertical);
+            this.PanelClient = new ScrollableBoxNewNewNew(w + ScrollbarV.DefaultWidth, h, ScrollModes.Vertical);
             panel = new() { AutoSize = true };
             panelTabs = new() { AutoSize = true };
             panel.AddControls(this.PanelClient);

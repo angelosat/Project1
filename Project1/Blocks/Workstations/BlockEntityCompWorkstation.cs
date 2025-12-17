@@ -1,9 +1,9 @@
 ﻿using Start_a_Town_.UI;
-using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 namespace Start_a_Town_
 {
-    internal class BlockEntityCompWorkstation : BlockEntityComp
+    public class BlockEntityCompWorkstation : BlockEntityComp
     {
         public BlockEntityCompWorkstation(WorkstationDef def)
         {
@@ -11,7 +11,8 @@ namespace Start_a_Town_
         }
         public override string Name => "WorkstationComp";
         public WorkstationDef Type;
-        public List<CraftOrderNew> Orders = [];
+        public List<OrderSettings> Orders = [];
+        //public ObservableCollection<OrderSettings> Orders = [];
 
         internal override void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
         {

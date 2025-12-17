@@ -6,7 +6,7 @@ namespace Start_a_Town_.UI
     public class PanelLabeledScrollable : Panel
     {
         public Label Label;
-        public ScrollableBoxTest Client;
+        public ScrollableBoxNewNewNew Client;
         public PanelLabeledScrollable(string label, int width, int height, ScrollModes mode = ScrollModes.Both)
             : base(0, 0, width, height)
         {

@@ -58,7 +58,7 @@ namespace Start_a_Town_.UI
 
         public static Vector2 Size => new(Width, Height);
         public static Vector2 Mouse => Controller.Instance.MouseLocation;// / Scale;
-        public static Vector2 MouseTrue => Controller.Instance.MouseLocation / Scale;
+        public static Vector2 MouseScaled => Controller.Instance.MouseLocation / Scale;
         public static Rectangle MouseRect => new((int)(Mouse.X / Scale), (int)(Mouse.Y / Scale), 1, 1);
         public static SortedList<float, Control> MouseOverList;
         public static SpriteFont Font = Game1.Instance.Content.Load<SpriteFont>("DefaultFont");

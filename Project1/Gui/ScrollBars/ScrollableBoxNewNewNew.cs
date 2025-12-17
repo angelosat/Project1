@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace Start_a_Town_.UI
 {
-    public class ScrollableBoxTest : GroupBox
+    public class ScrollableBoxNewNewNew : GroupBox
     {
         private const int buttonSize = 16;
         readonly ScrollbarV VScroll;
@@ -37,15 +37,15 @@ namespace Start_a_Town_.UI
         {
             set => this.VScroll.SmallStep = value;
         }
-        static public ScrollableBoxTest FromContentsSize(int w, int h, ScrollModes mode = ScrollModes.Both)
+        static public ScrollableBoxNewNewNew FromContentsSize(int w, int h, ScrollModes mode = ScrollModes.Both)
         {
             var mf = ModeFactor(mode);
-            return new ScrollableBoxTest(w + buttonSize * mf.X, h + buttonSize * mf.Y, mode);
+            return new ScrollableBoxNewNewNew(w + buttonSize * mf.X, h + buttonSize * mf.Y, mode);
         }
-        public ScrollableBoxTest(int width, int height, ScrollModes mode = ScrollModes.Both) : this(new(), width, height, mode)
+        public ScrollableBoxNewNewNew(int width, int height, ScrollModes mode = ScrollModes.Both) : this(new(), width, height, mode)
         {
         }
-        public ScrollableBoxTest(GroupBox container, int width, int height, ScrollModes mode = ScrollModes.Both)
+        public ScrollableBoxNewNewNew(GroupBox container, int width, int height, ScrollModes mode = ScrollModes.Both)
             : base(width, height)
         {
             this.Client = container;
@@ -193,14 +193,14 @@ namespace Start_a_Town_.UI
                     return;
                 if (this.WindowManager.ActiveControl == this.Thumb)
                 {
-                    this.ThumbClickOrigin = (int)(UIManager.MouseTrue.Y - this.Thumb.ScreenLocation.Y);
+                    this.ThumbClickOrigin = (int)(UIManager.MouseScaled.Y - this.Thumb.ScreenLocation.Y);
                     this.ThumbMoving = true;
                     e.Handled = true;
                 }
                 else if (this.Area.IsTopMost)
                 {
                     e.Handled = true;
-                    if (UIManager.MouseTrue.Y < this.Thumb.ScreenLocation.Y)
+                    if (UIManager.MouseScaled.Y < this.Thumb.ScreenLocation.Y)
                         this.MoveContainer(this.Container.Location.Y + this.Client.Height);
                     else
                         this.MoveContainer(this.Container.Location.Y - this.Client.Height);
@@ -219,7 +219,7 @@ namespace Start_a_Town_.UI
                 var thumbH = this.Thumb.Height;
                 if (this.ThumbMoving)
                 {
-                    this.Thumb.Location.Y = Math.Max(0, Math.Min(this.Size.Height - 32 - thumbH, UIManager.MouseTrue.Y - this.Area.ScreenLocation.Y  - this.ThumbClickOrigin));
+                    this.Thumb.Location.Y = Math.Max(0, Math.Min(this.Size.Height - 32 - thumbH, UIManager.MouseScaled.Y - this.Area.ScreenLocation.Y  - this.ThumbClickOrigin));
                     var val = max * (this.Thumb.Location.Y / (this.Area.Height - thumbH));
                     this.Container.Location.Y = -(int)val;
                 }
@@ -299,14 +299,14 @@ namespace Start_a_Town_.UI
                     return;
                 if (this.WindowManager.ActiveControl == this.Thumb)
                 {
-                    this.ThumbClickOrigin = (int)(UIManager.MouseTrue.X - this.Thumb.ScreenLocation.X);
+                    this.ThumbClickOrigin = (int)(UIManager.MouseScaled.X - this.Thumb.ScreenLocation.X);
                     this.ThumbMoving = true;
                     e.Handled = true;
                 }
                 else if (this.Area.IsTopMost)
                 {
                     e.Handled = true;
-                    if (UIManager.MouseTrue.X < this.Thumb.ScreenLocation.X)
+                    if (UIManager.MouseScaled.X < this.Thumb.ScreenLocation.X)
                         this.MoveContainer(this.Container.Location.X + this.Client.Width);
                     else
                         this.MoveContainer(this.Container.Location.X - this.Client.Width);
@@ -325,7 +325,7 @@ namespace Start_a_Town_.UI
                 var thumbH = this.Thumb.Width;
                 if (this.ThumbMoving)
                 {
-                    this.Thumb.Location.X = Math.Max(0, Math.Min(this.Size.Width - 32 - thumbH, UIManager.MouseTrue.X - this.Area.ScreenLocation.X - this.ThumbClickOrigin));
+                    this.Thumb.Location.X = Math.Max(0, Math.Min(this.Size.Width - 32 - thumbH, UIManager.MouseScaled.X - this.Area.ScreenLocation.X - this.ThumbClickOrigin));
                     var val = max * (this.Thumb.Location.X / (this.Area.Width - thumbH));
                     this.Container.Location.X = -val;
                 }

@@ -57,6 +57,8 @@ namespace Start_a_Town_
         [InspectorHidden]
         public CraftingManagerOld CraftingManager;
         [InspectorHidden]
+        public CraftingManager CraftingManagerNew;
+        [InspectorHidden]
         public JobsManager JobsManager;
         [InspectorHidden]
         public ReservationManager ReservationManager;
@@ -85,6 +87,7 @@ namespace Start_a_Town_
             this.DesignationManager = new(this);
             this.RoomManager = new(this);
             this.CraftingManager = new(this);
+            this.CraftingManagerNew = new(this);
             this.JobsManager = new(this);
             this.ReservationManager = new(this);
             this.TerrainManager = new(this);
@@ -99,6 +102,7 @@ namespace Start_a_Town_
                 this.DesignationManager,
                 this.RoomManager,
                 this.CraftingManager,
+                this.CraftingManagerNew,
                 this.JobsManager,
                 this.ReservationManager,
                 this.TerrainManager,
@@ -398,7 +402,8 @@ namespace Start_a_Town_
 
             this.QuickMenu = new UIQuickMenu();
             this.QuickMenu.AddItems(actions);
-            this.QuickMenu.Location = UIManager.Mouse;
+            //this.QuickMenu.Location = UIManager.MouseScaled;
+            this.QuickMenu.SnapToMouse();
         }
 
         internal void OnHudCreated(Hud hud)

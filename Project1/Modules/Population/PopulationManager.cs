@@ -205,7 +205,7 @@ namespace Start_a_Town_
         Control CreateGui()
         {
             //var box = new ScrollableBoxNewNew(200, UIManager.LargeButton.Height * 8);
-            var box = new ScrollableBoxTest(200, UIManager.LargeButton.Height * 8);
+            var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 8);
             var list = new ListBoxObservable<VisitorProperties, ButtonNew>(props =>
             {
                 var npc = props.Actor;

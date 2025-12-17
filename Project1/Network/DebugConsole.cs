@@ -47,7 +47,7 @@ namespace Start_a_Town_
         class GuiWorker
         {
             GroupBox Console;
-            public ScrollableBoxTest Container;
+            public ScrollableBoxNewNewNew Container;
 
             static int Width => UIManager.Width;
             public GuiWorker(ObservableCollection<(DateTime, ConsoleEntry, string)> entries)

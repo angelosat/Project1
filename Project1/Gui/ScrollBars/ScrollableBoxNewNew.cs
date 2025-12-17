@@ -3,7 +3,7 @@ using System;
 
 namespace Start_a_Town_.UI
 {
-    [Obsolete($"use {nameof(ScrollableBoxTest)} instead")]
+    [Obsolete($"use {nameof(ScrollableBoxNewNewNew)} instead")]
     public class ScrollableBoxNewNew : GroupBox
     {
         private const int buttonSize = 16;

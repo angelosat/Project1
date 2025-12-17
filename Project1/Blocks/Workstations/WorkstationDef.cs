@@ -1,6 +1,9 @@
-﻿namespace Start_a_Town_
+﻿using System.Collections.Generic;
+
+namespace Start_a_Town_
 {
-    public class WorkstationDef(string name) : Def(name)
+    public class WorkstationDef(string name, MaterialMappingDef[] processesOffered) : Def(name)
     {
+        public readonly HashSet<MaterialMappingDef> Processes = [.. processesOffered];
     }
 }

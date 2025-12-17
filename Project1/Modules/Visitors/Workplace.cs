@@ -92,7 +92,7 @@ namespace Start_a_Town_
                 //}
             );
             int listw = 200, listh = 300;
-            var box = new ScrollableBoxTest(listw, listh, ScrollModes.Vertical);
+            var box = new ScrollableBoxNewNewNew(listw, listh, ScrollModes.Vertical);
 
             //Workplace selectedShop = null;
             //var tablestockpiles = new TableCompact<Stockpile>()
@@ -403,7 +403,7 @@ namespace Start_a_Town_
         {
             var town = shop.Town;
             var manager = town.ShopManager;
-            var box = new ScrollableBoxTest(200, UIManager.LargeButton.Height * 7, ScrollModes.Vertical);
+            var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 7, ScrollModes.Vertical);
             var listworkers = new ListBoxNoScroll<Actor, ButtonNew>(
                  a =>
                  a.GetButton(box.Client.Width,

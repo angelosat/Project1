@@ -28,7 +28,7 @@ namespace Start_a_Town_
             //this.ReagentsContainer = new ScrollableBoxNewNew(200, 200, ScrollModes.Vertical);
             this.ReagentsContainer = new GroupBox();
             //this.ReagentsContainer.AddControls(scrollableBox);
-            var scrollableBox = new ScrollableBoxTest(this.ReagentsContainer, 200, 200, ScrollModes.Vertical);
+            var scrollableBox = new ScrollableBoxNewNewNew(this.ReagentsContainer, 200, 200, ScrollModes.Vertical);
 
             this.PanelCollapsible.AddControls(scrollableBox);// this.ReagentsContainer);
 

@@ -20,22 +20,22 @@ namespace Project1.Gui
         /// <param name="h">input -1 to fit content vertically</param>
         /// <returns></returns>
         /// <exception cref="System.Exception"></exception>
-        static public ScrollableBoxTest MakeScrollable(this GroupBox control, int w, int h)
+        static public ScrollableBoxNewNewNew MakeScrollable(this GroupBox control, int w, int h)
         {
             if (w == -1 && h == -1)
                 throw new System.Exception();
             if(w == -1)
             {
-                return ScrollableBoxTest.FromContentsSize(control.Width, h, ScrollModes.Vertical)
-                   .AddControls(control) as ScrollableBoxTest;
+                return ScrollableBoxNewNewNew.FromContentsSize(control.Width, h, ScrollModes.Vertical)
+                   .AddControls(control) as ScrollableBoxNewNewNew;
             }
             else if(h == -1)
             {
-                return ScrollableBoxTest.FromContentsSize(w, control.Height, ScrollModes.Horizontal)
-                  .AddControls(control) as ScrollableBoxTest;
+                return ScrollableBoxNewNewNew.FromContentsSize(w, control.Height, ScrollModes.Horizontal)
+                  .AddControls(control) as ScrollableBoxNewNewNew;
             }
             else
-                return new ScrollableBoxTest(w, h).AddControls(control) as ScrollableBoxTest;
+                return new ScrollableBoxNewNewNew(w, h).AddControls(control) as ScrollableBoxNewNewNew;
         }
     }
 }

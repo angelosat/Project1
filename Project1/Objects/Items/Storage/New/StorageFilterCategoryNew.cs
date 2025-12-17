@@ -135,7 +135,7 @@ namespace Start_a_Town_
         }
         public Control GetGui()
         {
-            var box = new ScrollableBoxTest(300, 400, ScrollModes.Vertical);
+            var box = new ScrollableBoxNewNewNew(300, 400, ScrollModes.Vertical);
             var listcollapsible = new ListCollapsibleNew(this);
             box.AddControls(listcollapsible);
             return box;

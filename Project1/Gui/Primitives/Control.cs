@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Start_a_Town_;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -317,7 +318,8 @@ namespace Start_a_Town_.UI
 
         internal Control SnapToMouse()
         {
-            this.SetLocation(UIManager.Mouse / UIManager.Scale);
+            //this.SetLocation(UIManager.Mouse / UIManager.Scale);
+            this.Location = UIManager.MouseScaled;
             return this;
         }
 
@@ -1627,7 +1629,7 @@ namespace Start_a_Town_.UI
             if (this.Height > boundsH)
                 mode |= ScrollModes.Vertical;
             //return ScrollableBoxNewNew.FromClientSize(boundsW, boundsH, mode).AddControls(this);
-            return new ScrollableBoxTest(boundsW, boundsH, mode).AddControls(this);
+            return new ScrollableBoxNewNewNew(boundsW, boundsH, mode).AddControls(this);
         }
 
         internal Control SetHoverText(string text)
@@ -1664,6 +1666,8 @@ namespace Start_a_Town_.UI
             foreach (var child in this.Controls)
                 child.OnResolutionChanged();
         }
+
+       
 
         
         //public override int Padding 

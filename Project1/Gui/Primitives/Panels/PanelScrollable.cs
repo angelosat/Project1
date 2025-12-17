@@ -6,7 +6,7 @@ namespace Start_a_Town_.UI
 {
     public class PanelScrollable : Panel
     {
-        public ScrollableBoxTest Client;
+        public ScrollableBoxNewNewNew Client;
         public PanelScrollable(int width, int height, ScrollModes mode = ScrollModes.Both)
             : base(0, 0, width, height)
         {
@@ -17,7 +17,7 @@ namespace Start_a_Town_.UI
             : base()
         {
             this.AutoSize = true;
-            this.Client = ScrollableBoxTest.FromContentsSize(content.Width, Math.Min(UIManager.Height - 2 * this.Padding, content.Height), mode);
+            this.Client = ScrollableBoxNewNewNew.FromContentsSize(content.Width, Math.Min(UIManager.Height - 2 * this.Padding, content.Height), mode);
             this.Client.AddControls(content);
             this.AddControls(this.Client);
         }

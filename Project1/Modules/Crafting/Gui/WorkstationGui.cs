@@ -1,14 +1,14 @@
 ﻿using Start_a_Town_.UI;
 using System;
+using System.Collections;
 using System.Linq;
 
 namespace Start_a_Town_
 {
     class WorkstationGuiNew : GroupBox, ISelectionBound
     {
-        MapBase Map;
         Panel PanelReactions;
-        ScrollableBoxNewNew ListOrders;
+        ListBoxNoScroll<OrderSettings> ListOrdersNew = new(s => s.GetListControlGui());
         BlockEntityCompWorkstation Workstation;
         public WorkstationGuiNew()
         {
@@ -18,59 +18,63 @@ namespace Start_a_Town_
         {
             this.Workstation = workstation;
             var panelOrders = new PanelTitled("Orders", 300, 400);
-            var btnAddOrder = new Button("Add Order", this.AddOrder);
+            var btnAddOrder = new Button("Add Order", this.OnAddOrderClick);
 
             this.PanelReactions = new Panel() { AutoSize = true };
+            this.PanelReactions.HideOnAnyClick();
             var allreactions = Def.GetDefs<Reaction>();
-            //var validreactions = allreactions.Where(r => r.ValidWorkshops.Any(t => this.Workstation.IsWorkstationType(t))).ToList();
-            var validreactions = allreactions;//.Where(r => r.ValidWorkshops.Any(t => this.Workstation.IsWorkstationType(t))).ToList();
+            var manager = workstation.Parent.Map.Town.CraftingManagerNew;
+            var availableProcesses = manager.GetProcessesFor(workstation.Type);
+            var validreactions = allreactions;
 
-            var reactionsList = new ListBoxNoScroll<Reaction>(r => new Label(r.Label, () => this.PlaceOrder(r)));
-            reactionsList.AddItems(validreactions);
+            var reactionsList = new ListBoxNoScroll<MaterialMappingDef>(r => new Label(r.Label, () => this.PlaceOrder(r)));
+            reactionsList.AddItems(availableProcesses);
             var reactionsListContainer = reactionsList.ToScrollableBox(200, 400);
             this.PanelReactions.AddControls(reactionsListContainer);
 
             var w = panelOrders.Client.ClientSize.Width;
             var h = panelOrders.Client.ClientSize.Height;
-            //var list = workstation.Orders.GetListObservableControl();
-            this.ListOrders = new ScrollableBoxNewNew(w, h, ScrollModes.Vertical);
-            //this.ListOrders.AddControls(list);
 
-            panelOrders.AddControls(this.ListOrders);
+            var scrollableContainer = new ScrollableBoxNewNewNew(w, h, ScrollModes.Vertical);
+            scrollableContainer.AddControls(this.ListOrdersNew);
 
+            panelOrders.AddControls(this.ListOrdersNew);
             this.AddControls(panelOrders, btnAddOrder);
             this.AlignTopToBottom();
 
-            this.ListenTo<BlocksUpdatedEvent>(HandleBlocksChanged);
+            var mapEvents = workstation.Parent.Map.Events;
+            mapEvents.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
+            mapEvents.ListenTo<CraftOrderCreatedEvent>(OnCraftOrderCreated);
         }
 
-        public override void HandleLButtonDown(System.Windows.Forms.HandledMouseEventArgs e)
+        public override bool Show()
         {
-            if (!this.PanelReactions.HitTest() && this.PanelReactions.IsOpen)
-                this.PanelReactions.Hide();
-            base.HandleLButtonDown(e);
+            this.Workstation.Map.Events.ListenTo<CraftOrderCreatedEvent>(OnCraftOrderCreated);
+            return base.Show();
         }
-        public override void HandleRButtonDown(System.Windows.Forms.HandledMouseEventArgs e)
+
+        private void OnCraftOrderCreated(CraftOrderCreatedEvent e)
         {
-            this.PanelReactions.Hide();
-            base.HandleRButtonDown(e);
+            if (this.Workstation != e.Comp)
+                return;
+            this.ListOrdersNew.AddItems(e.Order);
+            
         }
-        private void AddOrder()
+        private void OnAddOrderClick()
         {
-            this.PanelReactions.Location = UIManager.Mouse;
+            this.PanelReactions.SnapToMouse();
             this.PanelReactions.Show();
         }
-        void PlaceOrder(Reaction r)
+        private void PlaceOrder(MaterialMappingDef r)
         {
-            PacketOrderAdd.Send(this.Map.Net, this.Workstation.Global, r);
             this.PanelReactions.Hide();
+            PacketOrderAdd.PlayerCreatedOrder(this.Workstation.Parent, r);
         }
-        void HandleBlocksChanged(BlocksUpdatedEvent e)
+        void OnBlocksUpdated(BlocksUpdatedEvent e)
         {
             if (e.Positions.Contains(this.Workstation.Global))
                 this.GetWindow().Hide();
         }
-
         public void Bind(ISelectable selectable)
         {
             if (selectable is TargetArgs target &&

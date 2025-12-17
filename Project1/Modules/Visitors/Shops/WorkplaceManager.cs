@@ -297,7 +297,7 @@ namespace Start_a_Town_
             shoplist.AddItems(this.Shops.Values.ToArray());
             var net = this.Town.Net;
             var selectTypeMenu = selectShopType(t => Packets.SendPlayerCreateShop(net, net.GetPlayer().ID, t));
-            var btnNew = new Button("New", () => selectTypeMenu.Toggle(UIManager.MouseTrue));
+            var btnNew = new Button("New", () => selectTypeMenu.Toggle(UIManager.MouseScaled));
             boxList.AddControlsVertically(shoplistcontainer, btnNew);
             box.AddControlsHorizontally(boxList);//, shopUI.Value.control);
             return box;

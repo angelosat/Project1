@@ -3,10 +3,9 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    internal class CraftingManager : TownComponent
+    public class CraftingManager : TownComponent
     {
         public override string Name => "CraftingManager";
-
         readonly Dictionary<IntVec3, BlockEntityCompWorkstation> _byPosition = [];
         readonly Dictionary<WorkstationDef, List<BlockEntityCompWorkstation>> _byType = [];
         public CraftingManager(Town town) : base(town)
@@ -17,8 +16,11 @@ namespace Start_a_Town_
         }
         internal override void ResolveReferences()
         {
-            this.Town.Map.Events.ListenTo<CraftOrderCreatedEvent>(OnCraftOrderCreated);
             this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
+        }
+        public IEnumerable<MaterialMappingDef> GetProcessesFor(WorkstationDef workstation)
+        {
+            return workstation.Processes;
         }
         private void OnBlocksUpdated(BlocksUpdatedEvent changed)
         {
@@ -40,11 +42,23 @@ namespace Start_a_Town_
                 }
             }
         }
-
-        private void OnCraftOrderCreated(CraftOrderCreatedEvent @event)
+        public OrderSettings CreateOrder(IntVec3 workstationPosition, MaterialMappingDef process)
         {
-            throw new NotImplementedException();
+            var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
+            var comp = workstation.GetComp<BlockEntityCompWorkstation>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockEntityCompWorkstation)}");
+
+            var order = new OrderSettings(comp, process);
+
+            comp.Orders.Add(order);
+
+            this.Map.Events.Post(new CraftOrderCreatedEvent(comp, order));
+            return order;
         }
+        
     }
-    class CraftOrderCreatedEvent : EventPayloadBase { }
+    public class CraftOrderCreatedEvent(BlockEntityCompWorkstation comp, OrderSettings order) : EventPayloadBase
+    {
+        public readonly BlockEntityCompWorkstation Comp = comp;
+        public readonly OrderSettings Order = order;
+    }
 }

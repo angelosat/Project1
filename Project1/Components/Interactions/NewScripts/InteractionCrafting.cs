@@ -127,7 +127,7 @@ namespace Start_a_Town_.Crafting
         {
             var orderID = r.ReadInt32();
             if (this.Actor.Map is not null)
-                this.Order = this.Actor.Map.GetBlockEntity(this.Target.Global).GetComp<BlockEntityCompWorkstation>().GetOrder(orderID);
+                this.Order = this.Actor.Map.GetBlockEntity(this.Target.Global).GetComp<BlockEntityCompWorkstationOld>().GetOrder(orderID);
             else
                 this._orderID = orderID;
             this._progress = new Progress(r);
@@ -139,7 +139,7 @@ namespace Start_a_Town_.Crafting
 
         internal override void ResolveReferences()
         {
-            this.Order = this.Actor.Map.GetBlockEntity(this.Target.Global).GetComp<BlockEntityCompWorkstation>().GetOrder(this.OrderID);
+            this.Order = this.Actor.Map.GetBlockEntity(this.Target.Global).GetComp<BlockEntityCompWorkstationOld>().GetOrder(this.OrderID);
             this._progress = this.UnfinishedItem.GetComponent<UnfinishedItemComp>().Progress;
         }
 

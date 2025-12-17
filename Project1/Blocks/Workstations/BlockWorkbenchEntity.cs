@@ -5,7 +5,8 @@
         public BlockWorkbenchEntity(IntVec3 originGlobal)
             : base(originGlobal)
         {
-            this.AddComp(new BlockEntityCompWorkstation(IsWorkstation.Types.Workbench));
+            //this.AddComp(new BlockEntityCompWorkstationOld(IsWorkstation.Types.Workbench));
+            this.AddComp(new BlockEntityCompWorkstation(WorkstationDefOf.Smeltery));
         }
     }
 }

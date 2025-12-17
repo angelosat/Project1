@@ -55,7 +55,7 @@ namespace Start_a_Town_
         [InspectorHidden]
         public RoomManager RoomManager;
         [InspectorHidden]
-        public CraftingManager CraftingManager;
+        public CraftingManagerOld CraftingManager;
         [InspectorHidden]
         public JobsManager JobsManager;
         [InspectorHidden]

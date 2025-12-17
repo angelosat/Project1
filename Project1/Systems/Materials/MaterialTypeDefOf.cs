@@ -1,5 +1,6 @@
 ﻿namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     static class MaterialTypeDefOf
     {
         static public readonly MaterialTypeDef Soil = new("Soil", MaterialChemistryDefOf.Inorganic) { JobToExtract = JobDefOf.Digger };

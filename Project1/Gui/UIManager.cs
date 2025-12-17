@@ -4,18 +4,22 @@ using Start_a_Town_.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 
 namespace Start_a_Town_.UI
 {
     public class UIManager : IDisposable, IKeyEventHandler
     {
-        static float _scale = 1;
+
+
+        static float _scale = 2;//1;
         public static float Scale
         {
             get => _scale;
             set
             {
+                _scale = 2; // HACK
+                return;
                 if (_scale == value)
                     return;
                 foreach (var manager in WindowManagers)
@@ -30,6 +34,8 @@ namespace Start_a_Town_.UI
                 UITexture = new RenderTarget2D(Game1.Instance.GraphicsDevice, Width, Height);
             }
         }
+
+
         public static int FlashingTimer { get; private set; }
 
         public static float FlashingValue
@@ -46,7 +52,7 @@ namespace Start_a_Town_.UI
 
         public static Rectangle Bounds => new(0, 0, Width, Height);
         public static Vector2 Center => new Vector2(Game1.Bounds.Width, Game1.Bounds.Height) / (2 * Scale);
-        
+
         public static int Width => (int)(Game1.Bounds.Width / Scale);
         public static int Height => (int)(Game1.Bounds.Height / Scale);
 
@@ -68,7 +74,7 @@ namespace Start_a_Town_.UI
             TintPrimary.PackedValue = uint.TryParse(InterfaceSettings.XTintPrimary.Value, System.Globalization.NumberStyles.HexNumber, null, out uint packed) ? packed : TintPrimaryDefault.PackedValue;
             TintSecondary.PackedValue = uint.TryParse(InterfaceSettings.XTintSecondary.Value, System.Globalization.NumberStyles.HexNumber, null, out packed) ? packed : TintSecondaryDefault.PackedValue;
             /// hack to quickly test another color
-            TintPrimary = new Color(20,20,20, 255);
+            TintPrimary = new Color(20, 20, 20, 255);
             TintSecondary = TintPrimary;
         }
 
@@ -198,8 +204,26 @@ namespace Start_a_Town_.UI
 
         internal void OnSelectedTargetChanged(TargetArgs target)
         {
-            foreach(var c in this.ControlsInMemory)
-                    c.OnSelectedTargetChanged(target);
+            foreach (var c in this.ControlsInMemory)
+                c.OnSelectedTargetChanged(target);
+
+            foreach (var (key, window) in _windows)
+            {
+                if (key.Mode != WindowMultiplicity.Singleton)
+                    continue;
+
+                BindAllSelectionBound(window.Client, target);
+
+                window.SetTitle(target.Name);
+            }
+        }
+        public static void BindAllSelectionBound(Control root, ISelectable selection)
+        {
+            if (root is ISelectionBound bound)
+                bound.Bind(selection);
+
+            foreach (var child in root.Controls)
+                BindAllSelectionBound(child, selection);
         }
 
         static RenderTarget2D UITexture;
@@ -300,7 +324,7 @@ namespace Start_a_Town_.UI
         {
             bool closedsomething = false;
             foreach (var win in this.Layers[layer].OfType<Window>().ToList())
-                if(win.Closable)
+                if (win.Closable)
                     closedsomething |= win.Close();
             return closedsomething;
         }
@@ -310,7 +334,7 @@ namespace Start_a_Town_.UI
             var toclose = this.Layers.Values.SelectMany(l => l.OfType<Window>()).ToList();
             if (toclose.Any())
                 foreach (var win in toclose)
-                    if(win.Closable)
+                    if (win.Closable)
                         closedsomething |= win.Close();
             return closedsomething;
         }
@@ -511,7 +535,7 @@ namespace Start_a_Town_.UI
             }
             return false;
         }
-  
+
         public void Dispose()
         {
             WindowManagers.Remove(this);
@@ -743,7 +767,7 @@ namespace Start_a_Town_.UI
         {
             var control = element as Control;
 
-            if(control.Layer == LayerDialog)
+            if (control.Layer == LayerDialog)
             {
                 this.Layers[LayerDialog].Remove(this.DialogBlock);
                 this.Layers[LayerDialog].Add(this.DialogBlock);
@@ -772,6 +796,37 @@ namespace Start_a_Town_.UI
             this.Remove(this.DialogBlock);
             if (enabled)
                 this.Add(this.DialogBlock);
+        }
+        public static void ToggleUnique<T>(ISelectable selectable) where T : Control, ISelectionBound, new()
+        {
+            var key = new WindowKey(typeof(T), selectable, WindowMultiplicity.UniquePerTarget);
+
+            if (_windows.TryGetValue(key, out var win))
+            {
+                win.Close();
+                _windows.Remove(key);
+            }
+            else
+            {
+                var control = new T();
+                control.Bind(selectable);
+                var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
+                window.Client.AddControls(control);
+
+                _windows[key] = window;
+                window.Show();
+            }
+        }
+        private static readonly Dictionary<WindowKey, Window> _windows = [];
+        public readonly record struct WindowKey(
+            Type ContentType,       // type of control inside the window
+            ISelectable? Target,    // the specific object, null for singleton tools
+            WindowMultiplicity Mode // Singleton, UniquePerTarget
+        );
+        public enum WindowMultiplicity
+        {
+            Singleton,
+            UniquePerTarget
         }
     }
 }

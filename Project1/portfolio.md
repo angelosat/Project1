@@ -55,3 +55,18 @@ Structured for developer and modder ease-of-use, allowing new variations to be d
 Result: Delivered a robust, extensible system that simplifies object creation, supports complex variations, and reduces coupling between templates and runtime instances.
   - System Design: Flexible Variant Architecture
 Designed and iterated a modular, type-safe variant system for game entities, balancing flexibility, maintainability, and runtime efficiency. Developed a two-tier architecture where base entity definitions contain core component specs, and variant definitions provide targeted overrides. Introduced a dynamic override mechanism allowing modifications to any supported field while preserving default values, supporting modder-friendly extensibility without hardcoding variants. Explored multiple approaches (explicit mutators, per-field specs, hybrid bags of specs), arriving at a scalable, elegant solution that mirrors professional game architecture practices found in titles like RimWorld, while maintaining a custom, generalized entity-component framework.
+- raw material system stages
+  - Solo-designed and implemented a long-term C# simulation project with a strongly procedural, data-driven architecture.
+
+Core systems avoid hardcoded outcomes in favor of runtime inference from composable definitions (materials, forms, actors, workstations). Gameplay logic is expressed as intent and constraints rather than fixed rules, enabling emergent behavior, mod-friendly extensibility, and minimal content duplication.
+
+The project emphasizes clear system boundaries, late binding, and deterministic simulation suitable for large-scale sandbox gameplay.
+
+If you want it even more engine/system-first and less “gamey”:
+
+Built a long-term solo C# simulation project focused on procedural system composition rather than content scripting.
+Systems derive behavior from structured data and context at runtime instead of static definitions, reducing combinatorial content and enabling emergent interactions across materials, actors, and world entities.
+
+Or the one-bullet CV version (this is often the sweet spot):
+
+Developed a long-term solo C# simulation project using a procedural, data-driven architecture where system behavior is inferred from composable definitions rather than hardcoded rules, enabling emergent gameplay and high extensibility.

@@ -7,7 +7,7 @@ namespace Start_a_Town_
         public BlockSmelteryEntity(IntVec3 originGlobal)
             : base(originGlobal)
         {
-            this.AddComp(new BlockEntityCompWorkstation(IsWorkstation.Types.Smeltery));
+            this.AddComp(new BlockEntityCompWorkstationOld(IsWorkstation.Types.Smeltery));
             //this.AddComp(new BlockEntityCompRefuelable());
         }
     }

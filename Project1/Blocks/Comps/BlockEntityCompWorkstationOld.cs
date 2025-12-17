@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class BlockEntityCompWorkstation : BlockEntityComp
+    public class BlockEntityCompWorkstationOld : BlockEntityComp
     {
         public override string Name { get; } = "Workstation";
         static readonly string OperatingPositionUnreachableString = $"Interaction spot blocked";
@@ -19,7 +19,7 @@ namespace Start_a_Town_
         readonly HashSet<IsWorkstation.Types> WorkstationTypes;
         static Window CraftingWindow;
 
-        public BlockEntityCompWorkstation(params IsWorkstation.Types[] types)
+        public BlockEntityCompWorkstationOld(params IsWorkstation.Types[] types)
         {
             this.WorkstationTypes = new HashSet<IsWorkstation.Types>(types);
         }
@@ -67,7 +67,7 @@ namespace Start_a_Town_
             if (CraftingWindow != null)
                 CraftingWindow.Hide();
 
-            CraftingWindow = new Modules.Crafting.WorkstationGui(map, global, this).ToWindow("Crafting");
+            CraftingWindow = new WorkstationGui(map, global, this).ToWindow("Crafting");
             CraftingWindow.ToggleSmart();
         }
 

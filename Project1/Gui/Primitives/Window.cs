@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 
 namespace Start_a_Town_.UI
 {
@@ -120,11 +121,11 @@ namespace Start_a_Town_.UI
             this.CloseButton.LocationFunc = () => new Vector2(this.Width - this.CloseButton.Width - UIManager.BorderPx - this.ClientLocation.X, UIManager.BorderPx - this.ClientLocation.Y);
             this.CloseButton.LeftClickAction = () => this.Hide();
             this.Label_Title = new Label() { Font = UIManager.FontBold, MouseThrough = true };
-            this.AutoSize = true;
+            this.AutoSize = true; // HACK
             this.Controls.Add(
                 this.Label_Title, 
                 this.CloseButton, this.Client);
-            this.AutoSize = false;
+            this.AutoSize = false; // HACK
             this.Select();
         }
 
@@ -295,6 +296,9 @@ namespace Start_a_Town_.UI
                 return new Rectangle(0, 0, width, height + 2); //monogame hack
             }
         }
+
+        //public Control Content => this.Client.Controls.Single();
+
         public void AlignToMouse(Vector2 loc)
         {
             this.Location = UIManager.Mouse - this.ClientLocation - loc;

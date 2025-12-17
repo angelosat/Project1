@@ -17,6 +17,7 @@ namespace Start_a_Town_
         bool Contains(Element control);
         Rectangle FindBestUncoveredRectangle(Vector2 dimensions);
         void Block(bool enabled);
+        //void ToggleUnique<T>(ISelectable selectable) where T : ISelectionBound;
     }
     //public abstract class IWindowManager
     //{

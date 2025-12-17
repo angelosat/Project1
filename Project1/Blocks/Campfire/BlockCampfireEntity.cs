@@ -13,7 +13,7 @@ namespace Start_a_Town_
                 this.AddComp(switchable);
                 var refuel = new BlockEntityCompRefuelable(100);
                 this.AddComp(refuel);
-                this.AddComp(new BlockEntityCompWorkstation(IsWorkstation.Types.Baking));
+                this.AddComp(new BlockEntityCompWorkstationOld(IsWorkstation.Types.Baking));
                 var lightComp = new BlockEntityLuminance(15, refuel, 1, switchable.IsSwitchedOn);
                 this.AddComp(lightComp);
                 this.AddComp(new BlockEntityCompParticles(ParticleEmitter.Fire.SetRateFunc(() => (lightComp.Powered && switchable.SwitchedOn) ? 1 : 0)));

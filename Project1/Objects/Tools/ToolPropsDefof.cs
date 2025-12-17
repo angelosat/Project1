@@ -74,13 +74,7 @@ namespace Start_a_Town_
         {
             Def.Register(typeof(ToolPropsDefof));
 
-            foreach (var toolProp in Def.GetDefs<ToolProfileDef>())
-            {
-                //var obj = ItemFamilyDefOf.Tool.System.Create(toolProp, new ToolSystem.Args(MaterialDefOf.LightWood, MaterialDefOf.LightWood));
-                var obj = ToolSystem.Create(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
-
-                GameObject.AddTemplate(obj);
-            }
+            
 
             GenerateRecipesNew();
         }

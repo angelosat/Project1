@@ -17,9 +17,9 @@ namespace Start_a_Town_
             };
         }
 
-        static public EntityCreationRequest Request(Def template, Def stage = null)
+        static public EntityCreationRequest Request(Def context, Def state = null)
         {
-            var req = new EntityCreationRequest(template, stage);
+            var req = new EntityCreationRequest(context, state);
             return req;
         }
     }

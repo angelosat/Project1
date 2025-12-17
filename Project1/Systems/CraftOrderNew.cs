@@ -33,7 +33,7 @@ namespace Start_a_Town_
         public CraftOrderNew(MaterialMappingDef mapping)
         {
             this.Skill = mapping.MaterialType.SkillToRefine;
-            this.Target = new EntityCreationRequest(stage: mapping.Process)
+            //this.Target = new EntityCreationRequest(stage: mapping.Process)
         }
 
         public bool CanActorPerform(Actor actor)

@@ -6,7 +6,6 @@ namespace Start_a_Town_
 {
     public class SelectionDetailsGui : GroupBox
     {
-        ISelectable CurrentSelection;
         IEnumerable<Control> Contents;
         PanelWithVerticalTabs<Label> PanelMain;
         public SelectionDetailsGui()
@@ -16,7 +15,6 @@ namespace Start_a_Town_
         }
         public SelectionDetailsGui Refresh(ISelectable target)
         {
-            this.CurrentSelection = target;
             this.Contents = target.GetSelectionDetails();
             this.PanelMain.InitTabs(this.Contents.ToArray());
             this.Validate(true);

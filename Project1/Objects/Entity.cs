@@ -38,11 +38,12 @@ namespace Start_a_Town_
         {
             return this.Gear.GetSlot(GearType.Dictionary[type]);
         }
-        public void Initialize()
+        public Entity Initialize()
         {
             if (this._initialized)
                 throw new InvalidOperationException($"{this} initialized twice");
             this.Components.Initialize();
+            return this;
         }
 
         //internal void InitComps(ItemVariantDef def)

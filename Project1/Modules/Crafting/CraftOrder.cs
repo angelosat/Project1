@@ -156,9 +156,9 @@ namespace Start_a_Town_
             this.FinishMode.OnComplete(this);
         }
 
-        public BlockEntityCompWorkstation GetWorkstation()
+        public BlockEntityCompWorkstationOld GetWorkstation()
         {
-            return this.Map.GetBlockEntity(this.Workstation).GetComp<BlockEntityCompWorkstation>();
+            return this.Map.GetBlockEntity(this.Workstation).GetComp<BlockEntityCompWorkstationOld>();
         }
 
         internal void ToggleReagentRestrictions(string reagent, ItemDef[] defs, MaterialDef[] mats, MaterialTypeDef[] matTypes)
@@ -453,7 +453,7 @@ namespace Start_a_Town_
             }
             void ChangeOrderPriority(bool p)
             {
-                CraftingManager.WriteOrderModifyPriority(Client.Instance.OutgoingStreamUnreliable, this, p);
+                CraftingManagerOld.WriteOrderModifyPriority(Client.Instance.OutgoingStreamUnreliable, this, p);
             }
             void RemoveOrder()
             {
@@ -461,11 +461,11 @@ namespace Start_a_Town_
             }
             void Minus()
             {
-                CraftingManager.WriteOrderModifyQuantityParams(Client.Instance.OutgoingStreamUnreliable, this, -1);
+                CraftingManagerOld.WriteOrderModifyQuantityParams(Client.Instance.OutgoingStreamUnreliable, this, -1);
             }
             void Plus()
             {
-                CraftingManager.WriteOrderModifyQuantityParams(Client.Instance.OutgoingStreamUnreliable, this, 1);
+                CraftingManagerOld.WriteOrderModifyQuantityParams(Client.Instance.OutgoingStreamUnreliable, this, 1);
             }
             void ChangeFinishMode(CraftOrderFinishMode obj)
             {

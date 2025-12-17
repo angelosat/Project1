@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class CraftingManager : TownComponent
+    public class CraftingManagerOld : TownComponent
     {
         static readonly int pReaget, pPriority, pQuantity, pRestrictions;
-        static CraftingManager()
+        static CraftingManagerOld()
         {
             pReaget = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderToggleReagent);
             pPriority = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderModifyPriority);
@@ -27,12 +27,12 @@ namespace Start_a_Town_
         internal IEnumerable<KeyValuePair<IntVec3, ICollection<CraftOrder>>> ByWorkstationNew()
         {
             return this.Map.GetBlockEntitiesCache()
-                .Where(e => e.Value.HasComp<BlockEntityCompWorkstation>())
-                .Select(r => new KeyValuePair<IntVec3, ICollection<CraftOrder>>(r.Key, r.Value.GetComp<BlockEntityCompWorkstation>().Orders));
+                .Where(e => e.Value.HasComp<BlockEntityCompWorkstationOld>())
+                .Select(r => new KeyValuePair<IntVec3, ICollection<CraftOrder>>(r.Key, r.Value.GetComp<BlockEntityCompWorkstationOld>().Orders));
         }
-        internal BlockEntityCompWorkstation GetWorkstation(IntVec3 global)
+        internal BlockEntityCompWorkstationOld GetWorkstation(IntVec3 global)
         {
-            return this.Map.GetBlockEntity(global)?.GetComp<BlockEntityCompWorkstation>();
+            return this.Map.GetBlockEntity(global)?.GetComp<BlockEntityCompWorkstationOld>();
         }
 
         public override string Name => "Crafting";
@@ -40,7 +40,7 @@ namespace Start_a_Town_
 
         // TODO: add order priorities
 
-        public CraftingManager(Town town)
+        public CraftingManagerOld(Town town)
         {
             this.Town = town;
         }
@@ -170,7 +170,7 @@ namespace Start_a_Town_
         internal void AddOrder(IntVec3 station, Reaction reaction)// int reactionID)
         {
             var order = new CraftOrder(this.OrderSequence++, reaction, this.Town.Map, station);
-            var benchEntity = this.Map.GetBlockEntity(station).GetComp<BlockEntityCompWorkstation>();
+            var benchEntity = this.Map.GetBlockEntity(station).GetComp<BlockEntityCompWorkstationOld>();
             benchEntity.Orders.Add(order);
             this.Registry.Add(order.ID, order);
         }
@@ -188,7 +188,7 @@ namespace Start_a_Town_
         }
         internal List<CraftOrder> GetOrdersNew(IntVec3 workstationGlobal)
         {
-            var benchEntity = this.Map.GetBlockEntity(workstationGlobal).GetComp<BlockEntityCompWorkstation>();
+            var benchEntity = this.Map.GetBlockEntity(workstationGlobal).GetComp<BlockEntityCompWorkstationOld>();
             return benchEntity.Orders.ToList();
         }
 

@@ -23,7 +23,7 @@ namespace Start_a_Town_.UI
                 _singletonWindows[type] = win;
             }
             win.Client.ClearControls();
-            win.Client.AddControls(this);// BuildFor(entity));
+            win.Client.AddControls(this);
             return win;
         }
        
@@ -39,7 +39,7 @@ namespace Start_a_Town_.UI
             var actor = target.Object as Actor;
             if (actor is null)
                 return;
-            var newgui = this.BuildFor(actor);// new NeedsMoodsUI(actor);
+            var newgui = this.BuildFor(actor);
             var win = newgui.RefreshSingleton();
             win.SetTitle(actor.Name);
             win.Validate(true);

@@ -80,6 +80,13 @@ namespace Start_a_Town_
 
             foreach (var t in RawMaterialSystem.GenerateTemplates().Where(t=>t is not null))
                 AddTemplate(t);
+
+            foreach (var toolProp in Start_a_Town_.Def.GetDefs<ToolProfileDef>())
+            {
+                //var obj = ItemFamilyDefOf.Tool.System.Create(toolProp, new ToolSystem.Args(MaterialDefOf.LightWood, MaterialDefOf.LightWood));
+                var obj = ToolSystem.Create(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
+                AddTemplate(obj);
+            }
         }
 
         #region Common Properties

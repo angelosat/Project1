@@ -24,10 +24,10 @@
             Category = ItemCategoryDefOf.RawMaterials,
             Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         };
-        static public readonly ItemDef Ground = new ItemDef("Ground", typeof(Item))
+        static public readonly ItemDef Advanced = new ItemDef("Advanced", typeof(Item))
         {
             BaseValue = 1,
-            Description = "Ground Material",
+            Description = "Advanced Material",
             Category = ItemCategoryDefOf.RawMaterials,
             Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         };

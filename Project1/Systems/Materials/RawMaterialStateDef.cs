@@ -1,18 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    public class RawMaterialStateDef(string name) : Def(name)
+    public class RawMaterialStateDef(string name, MaterialTypeDef materialType, Sprite sprite) : Def(name)
     {
-    }
-    [EnsureStaticCtorCall]
-    static internal class RawMaterialStageDefOf
-    {
-        static public readonly RawMaterialStateDef Raw = new("Raw");
-        static public readonly RawMaterialStateDef Refined = new("Refined");
-        static public readonly RawMaterialStateDef Processed = new("Processed");
-        static public readonly RawMaterialStateDef Ground = new("Ground");
-        static RawMaterialStageDefOf()
-        {
-            Def.Register(typeof(RawMaterialStageDefOf));
-        }
+        public readonly Sprite Sprite = sprite;
+        public readonly MaterialTypeDef MaterialType = materialType;
     }
 }

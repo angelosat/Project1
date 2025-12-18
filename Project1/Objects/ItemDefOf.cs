@@ -7,6 +7,14 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     static class ItemDefOf
     {
+        static public readonly ItemDef Ingredient = new ItemDef("Ingredient", typeof(Entity))
+        {
+            BaseValue = 5,
+            Description = "Used as an input for crafting final products",
+            Category = ItemCategoryDefOf.RawMaterials,
+            Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
+        };
+
         static public readonly ItemDef Seeds = new ItemDef("Seeds", typeof(Item))
         {
             StackCapacity = 32,//64,

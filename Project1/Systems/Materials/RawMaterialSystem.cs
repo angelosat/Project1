@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SharpDX.Direct3D9;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Start_a_Town_
@@ -7,7 +9,7 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     public class RawMaterialSystem
     {
-        public static readonly Dictionary<(MaterialTypeDef type, MaterialFormDef process), MaterialMappingDef> ByTypeAndProcess = [];
+        public static readonly Dictionary<(MaterialTypeDef type, RefinementPathDef process), MaterialMappingDef> ByTypeAndProcess = [];
         static RawMaterialSystem()
         {
             foreach(var mappingDef in Def.GetDefs<MaterialMappingDef>())
@@ -15,42 +17,83 @@ namespace Start_a_Town_
                 ByTypeAndProcess[mappingDef.Mapping] = mappingDef;
             }
         }
-
-        static public Entity Create(MaterialDef material, MaterialFormDef stage)
+        static public Entity Create(RawMaterialStateDef stage, MaterialDef material)
         {
-            if (stage == null)
-            {
-                Log.Warning($"No stage provided for {material}, defaulting to {MaterialFormDefOf.Raw}.");
-                stage = MaterialFormDefOf.Raw;
-            }
-            if (!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
-                return null;
-                //throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");
+            //if (stage == null)
+            //{
+            //    Log.Warning($"No stage provided for {material}, defaulting to {RefinementPathDefOf.Raw}.");
+            //    stage = RefinementPathDefOf.Raw;
+            //}
+            //if (!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
+            //    return null;
+            //throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");
 
-            var item = stage.Item.Create();
+            var item = ItemDefOf.Ingredient.Create();
             item.Initialize();
             item.Body.Material = material;
-            item.Body.Sprite = mapping.Sprite;
-            item.Name = $"{material.Label} {mapping.Label}";
+            item.Body.Sprite = stage.Sprite;
+            item.Name = $"{material.Label} {stage.Label}";
 
             return item;
         }
+        //static public Entity Create(RefinementPathDef stage, MaterialDef material)
+        //{
+        //    if (stage == null)
+        //    {
+        //        Log.Warning($"No stage provided for {material}, defaulting to {RefinementPathDefOf.Raw}.");
+        //        stage = RefinementPathDefOf.Raw;
+        //    }
+        //    if (!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
+        //        return null;
+        //    //throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");
+
+        //    var item = stage.Item.Create();
+        //    item.Initialize();
+        //    item.Body.Material = material;
+        //    item.Body.Sprite = mapping.Sprite;
+        //    item.Name = $"{material.Label} {mapping.Label}";
+
+        //    return item;
+        //}
+
+        //static public Entity Create(MaterialDef material, RefinementPathDef stage)
+        //{
+        //    if (stage == null)
+        //    {
+        //        Log.Warning($"No stage provided for {material}, defaulting to {RefinementPathDefOf.Raw}.");
+        //        stage = RefinementPathDefOf.Raw;
+        //    }
+        //    if (!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
+        //        return null;
+        //        //throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");
+
+        //    var item = stage.Item.Create();
+        //    item.Initialize();
+        //    item.Body.Material = material;
+        //    item.Body.Sprite = mapping.Sprite;
+        //    item.Name = $"{material.Label} {mapping.Label}";
+
+        //    return item;
+        //}
 
         static public IEnumerable<Entity> GenerateTemplates()
         {
-            var stages = Def.GetDefs<MaterialFormDef>();
+            //var stages = Def.GetDefs<RefinementPathDef>();
+            var states = Def.GetDefs<RawMaterialStateDef>();
             var materials = Def.GetDefs<MaterialDef>();
 
-            foreach (var stage in stages)
-                foreach (var material in materials)
+            foreach (var state in states)
+                foreach (var material in Def.GetDefs<MaterialDef>().Where(m=>m.Type == state.MaterialType))
                     yield return EntityFactory
-                        .Request(material, stage)
+                        //.Request(material, state)
+                        .Request(state, null, material)
                         .Create();
         }
 
         internal static Entity Create(EntityCreationRequest req)
         {
-            return Create(req.Context as MaterialDef, req.Stage as MaterialFormDef);
+            //return Create(req.Context as MaterialDef, req.Stage as RefinementPathDef);
+            return Create(req.Context as RawMaterialStateDef, req.DefaultMaterial);
         }
     }
 }

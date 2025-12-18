@@ -698,6 +698,7 @@ namespace Start_a_Town_
             // maybe put block entity creation here?
 
             chunk.InvalidateHeightmap(cell.X, cell.Y);
+            // or chunk.InvalidateHeightmap(global.X, global.Y); ?
 
             // maybe i can refresh cell edges here on the spot?
             this.InvalidateCell(global); // do i need to invalidate the cell even after invalidating the heightmap in the line above?

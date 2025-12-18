@@ -9,7 +9,7 @@ namespace Start_a_Town_
         {
             return req.Context switch
             {
-                MaterialDef => RawMaterialSystem.Create(req),
+                RawMaterialStateDef => RawMaterialSystem.Create(req),
                 ActorDnaDef => ActorSystem.Create(req),
                 PlantSpeciesDef => PlantSystem.Create(req),
                 ToolProfileDef => ToolSystem.Create(req),
@@ -17,9 +17,9 @@ namespace Start_a_Town_
             };
         }
 
-        static public EntityCreationRequest Request(Def context, Def state = null)
+        static public EntityCreationRequest Request(Def context, Def state = null, MaterialDef defaultMaterial = null)
         {
-            var req = new EntityCreationRequest(context, state);
+            var req = new EntityCreationRequest(context, state, defaultMaterial);
             return req;
         }
     }

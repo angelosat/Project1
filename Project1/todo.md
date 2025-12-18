@@ -1,5 +1,7 @@
 # todo 2025
 ## immediate
+- ditch chunks, single flat cell[] for the whole map
+- migrate blocks to the def ecosystem and change save/load logic
 - decide wether itempreferencemanager will only be about job related tools or items in general
 - make maps, slots, and containers, implement iowner with an add and remove method, adding to a container, removes it from the last one
   - not 100% necessary if i do entity.map?.despawn(entity), entity.slot?.set(null), entity.container?.remove(entity) at each entry point

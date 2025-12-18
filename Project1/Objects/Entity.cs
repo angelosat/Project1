@@ -7,10 +7,10 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    public abstract class Entity : GameObject
+    public /*abstract*/ class Entity : GameObject
     {
         bool _initialized;
-
+        public override GameObject Create() => new Entity();
         public SpriteComp Sprite => this.GetComponent<SpriteComp>();
         /// <summary>
         /// here or in tool class?

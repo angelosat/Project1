@@ -9,10 +9,10 @@ namespace Start_a_Town_
         static ToolSystem()
         {
             CreateRuleFor(BoneDefOf.ToolHandle)
-                .From(RawMaterialStageDefOf.Processed)
+                //.From(RawMaterialStateDefOf.Processed)
                 .Allow(MaterialTypeDefOf.Wood, MaterialTypeDefOf.Metal);
             CreateRuleFor(BoneDefOf.ToolHead)
-                .From(RawMaterialStageDefOf.Processed)
+                //.From(RawMaterialStateDefOf.Processed)
                 .Allow(MaterialTypeDefOf.Wood, MaterialTypeDefOf.Metal);
         }
         public static CraftingRules CreateRuleFor(BoneDef bone)

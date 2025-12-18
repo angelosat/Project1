@@ -9,7 +9,7 @@ namespace Start_a_Town_
             .SetPrefix("Iron")
             .SetColor(Color.LightSteelBlue)
             .SetValue(20);
-        static public readonly MaterialDef Gold = new MaterialDef("Gold", MaterialTemplates.Metal)
+        static public readonly MaterialDef Gold = new MaterialDef("Gold", MaterialTemplates.Metal) { Shine = 1 }
             .SetPrefix("Golden")
             .SetColor(Color.Gold)
             .SetValue(100);

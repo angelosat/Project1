@@ -2,8 +2,8 @@
 
 namespace Start_a_Town_
 {
-    public class WorkstationDef(string name, MaterialMappingDef[] processesOffered) : Def(name)
+    public class WorkstationDef(string name, RawMaterialStateDef[] processesOffered) : Def(name)
     {
-        public readonly HashSet<MaterialMappingDef> Processes = [.. processesOffered];
+        public readonly HashSet<RawMaterialStateDef> Refinements = [.. processesOffered];
     }
 }

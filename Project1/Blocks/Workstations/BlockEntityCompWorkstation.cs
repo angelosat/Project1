@@ -25,6 +25,24 @@ namespace Start_a_Town_
             UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Parent.Map, this.Parent.OriginGlobal));
         }
 
-        
+        internal void MoveUp(OrderSettings orderSettings)
+        {
+            var currentIndex = this.Orders.IndexOf(orderSettings);
+            if (currentIndex == 0)
+                return;
+            this.Orders.RemoveAt(currentIndex);
+            this.Orders.Insert(currentIndex - 1, orderSettings);
+            this.Map.Events.Post(new CraftOrderReorderedEvent(orderSettings));
+        }
+
+        internal void MoveDown(OrderSettings orderSettings)
+        {
+            var currentIndex = this.Orders.IndexOf(orderSettings);
+            if (currentIndex == this.Orders.Count - 1)
+                return;
+            this.Orders.RemoveAt(currentIndex);
+            this.Orders.Insert(currentIndex + 1, orderSettings);
+            this.Map.Events.Post(new CraftOrderReorderedEvent(orderSettings));
+        }
     }
 }

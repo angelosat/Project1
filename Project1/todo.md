@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- make an input queue and handle it in the main thread
 - ditch chunks, single flat cell[] for the whole map
 - migrate blocks to the def ecosystem and change save/load logic
 - decide wether itempreferencemanager will only be about job related tools or items in general

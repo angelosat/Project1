@@ -1,6 +1,5 @@
 ﻿using Start_a_Town_.UI;
 using System;
-using System.Collections;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -10,6 +9,7 @@ namespace Start_a_Town_
         Panel PanelReactions;
         ListBoxNoScroll<OrderSettings> ListOrdersNew = new(s => s.GetListControlGui());
         BlockEntityCompWorkstation Workstation;
+
         public WorkstationGuiNew()
         {
             
@@ -24,12 +24,12 @@ namespace Start_a_Town_
             this.PanelReactions.HideOnAnyClick();
             var allreactions = Def.GetDefs<Reaction>();
             var manager = workstation.Parent.Map.Town.CraftingManagerNew;
-            var availableProcesses = manager.GetProcessesFor(workstation.Type);
+            var availableRefinements = manager.GetRefinementsBy(workstation.Type);
             var validreactions = allreactions;
 
-            var reactionsList = new ListBoxNoScroll<MaterialMappingDef>(r => new Label(r.Label, () => this.PlaceOrder(r)));
-            reactionsList.AddItems(availableProcesses);
-            var reactionsListContainer = reactionsList.ToScrollableBox(200, 400);
+            var availableRefinementsControl = new ListBoxNoScroll<RawMaterialStateDef>(r => new Label(r.Label, () => this.PlaceOrder(r)));
+            availableRefinementsControl.AddItems(availableRefinements);
+            var reactionsListContainer = availableRefinementsControl.ToScrollableBox(200, 400);
             this.PanelReactions.AddControls(reactionsListContainer);
 
             var w = panelOrders.Client.ClientSize.Width;
@@ -42,10 +42,21 @@ namespace Start_a_Town_
             this.AddControls(panelOrders, btnAddOrder);
             this.AlignTopToBottom();
 
-            var mapEvents = workstation.Parent.Map.Events;
+            var mapEvents = this.Workstation.Parent.Map.Events;
             mapEvents.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
             mapEvents.ListenTo<CraftOrderAddedEvent>(OnCraftOrderAdded);
             mapEvents.ListenTo<CraftOrderRemovedEvent>(OnCraftOrderRemoved);
+            mapEvents.ListenTo<CraftOrderReorderedEvent>(OnOrderReordered);
+        }
+
+        private void OnOrderReordered(CraftOrderReorderedEvent e)
+        {
+            if (e.Order.Owner != this.Workstation)
+                return;
+            //var index = this.ListOrdersNew.IndexOf(e.Order);
+            //this.ListOrdersNew.Move(e.Order, e.Order.Owner.Orders.IndexOf(e.Order));
+            var newindex = e.Order.Owner.Orders.IndexOf(e.Order);
+            this.ListOrdersNew.Move(e.Order, newindex);
         }
 
         private void OnCraftOrderRemoved(CraftOrderRemovedEvent e)
@@ -71,10 +82,10 @@ namespace Start_a_Town_
             this.PanelReactions.SnapToMouse();
             this.PanelReactions.Show();
         }
-        private void PlaceOrder(MaterialMappingDef r)
+        private void PlaceOrder(RawMaterialStateDef r)
         {
             this.PanelReactions.Hide();
-            PacketOrderAdd.PlayerCreatedOrder(this.Workstation.Parent, r);
+            PacketPlayerCraftOrders.PlayerCreatedOrder(this.Workstation.Parent, r);
         }
         void OnBlocksUpdated(BlocksUpdatedEvent e)
         {
@@ -147,7 +158,7 @@ namespace Start_a_Town_
         }
         void PlaceOrder(Reaction r)
         {
-            PacketOrderAdd.Send(this.Map.Net, this.Global, r);
+            PacketPlayerCraftOrders.Send(this.Map.Net, this.Global, r);
             this.PanelReactions.Hide();
         }
         void HandleBlocksChanged(BlocksUpdatedEvent e)

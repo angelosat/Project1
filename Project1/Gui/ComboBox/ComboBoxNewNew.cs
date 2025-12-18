@@ -17,7 +17,7 @@ namespace Start_a_Town_.UI
             var maxVisibleItems = list.Count();
             this.ListControl = new ListBoxNoScroll<T, Button>(i => CreateButton(i, nameGetter, callBack, width))
                 .AddItems(list);
-            this.ListControl.ToPanel()
+            this.ListControl.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
                 .HideOnAnyClick();
 
             this.Controls.Add(this.Button);
@@ -28,7 +28,7 @@ namespace Start_a_Town_.UI
             this.Button = new Button(() => this.CurrentlySelectedGetter != null ? labelGetter(this.CurrentlySelectedGetter()) : "undefined", BtnPress, width);
             this.ListControl = new ListBoxNoScroll<T, Button>(i => CreateButton(i, nameGetter, callBack, width))
                 .AddItems(list);
-            this.ListControl.ToPanel()
+            this.ListControl.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
                 .HideOnAnyClick();
 
             this.Controls.Add(this.Button);
@@ -43,7 +43,7 @@ namespace Start_a_Town_.UI
 
             var itemwidth = width - (int)this.Button.Font.MeasureString(label).X;
             this.ListControl = new ListBoxNoScroll<T, Button>(i => CreateButton(i, nameGetter, callBack, itemwidth));
-            this.ListControl.ToPanel()
+            this.ListControl.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
                 .HideOnAnyClick();
 
             this.Controls.Add(this.Button);

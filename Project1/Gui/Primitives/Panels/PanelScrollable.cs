@@ -1,6 +1,4 @@
-﻿using SharpDX.Direct3D9;
-using System;
-using System.Reflection.Metadata;
+﻿using System;
 
 namespace Start_a_Town_.UI
 {

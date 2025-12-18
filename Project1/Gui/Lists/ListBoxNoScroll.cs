@@ -117,7 +117,22 @@ namespace Start_a_Town_.UI
             this.ControlFactory = controlFactory;
             this.Spacing = spacing;
         }
-
+        public int IndexOf(TObject item)
+        {
+            return this.AllItems.FindIndex(c => c.Tag.Equals(item));
+        }
+        public void Move(TObject item, int targetIndex)
+        {
+            var index = this.AllItems.FindIndex(c => c.Tag.Equals(item));
+            targetIndex = Math.Clamp(targetIndex, 0, this.AllItems.Count - 1);
+            if (index == targetIndex) return;
+            var control = this.AllItems[index];
+            this.AllItems.RemoveAt(index);
+            this.AllItems.Insert(targetIndex, control);
+            this.Clear();
+            this.AddControls(this.AllItems);
+            this.Controls.AlignVertically(this.Spacing);
+        }
         public ListBoxNoScroll<TObject> Clear()
         {
             this.Controls.Clear();

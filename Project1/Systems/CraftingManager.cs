@@ -20,9 +20,9 @@ namespace Start_a_Town_
         {
             this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
         }
-        public IEnumerable<MaterialMappingDef> GetProcessesFor(WorkstationDef workstation)
+        public IEnumerable<RawMaterialStateDef> GetRefinementsBy(WorkstationDef workstation)
         {
-            return workstation.Processes;
+            return workstation.Refinements;
         }
         private void OnBlocksUpdated(BlocksUpdatedEvent changed)
         {
@@ -44,12 +44,12 @@ namespace Start_a_Town_
                 }
             }
         }
-        public OrderSettings CreateOrder(IntVec3 workstationPosition, MaterialMappingDef process)
+        public OrderSettings CreateOrder(IntVec3 workstationPosition, RawMaterialStateDef refinement)
         {
             var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
             var comp = workstation.GetComp<BlockEntityCompWorkstation>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockEntityCompWorkstation)}");
 
-            var order = new OrderSettings(this.NextOrderId++, comp, process);
+            var order = new OrderSettings(this.NextOrderId++, comp, refinement);
 
             comp.Orders.Add(order);
             this._ordersById.Add(order.Id, order);
@@ -67,6 +67,11 @@ namespace Start_a_Town_
             this.Map.Events.Post(new CraftOrderRemovedEvent(comp, order));
             return order;
         }
+
+        internal OrderSettings GetOrderBy(int id)
+        {
+            return this._ordersById[id];
+        }
     }
     public class CraftOrderAddedEvent(BlockEntityCompWorkstation comp, OrderSettings order) : EventPayloadBase
     {
@@ -76,6 +81,14 @@ namespace Start_a_Town_
     public class CraftOrderRemovedEvent(BlockEntityCompWorkstation comp, OrderSettings order) : EventPayloadBase
     {
         public readonly BlockEntityCompWorkstation Comp = comp;
+        public readonly OrderSettings Order = order;
+    }
+    public class CraftOrderModifiedEvent(OrderSettings order) : EventPayloadBase
+    {
+        public readonly OrderSettings Order = order;
+    }
+    public class CraftOrderReorderedEvent(OrderSettings order) : EventPayloadBase
+    {
         public readonly OrderSettings Order = order;
     }
 }

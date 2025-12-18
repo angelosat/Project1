@@ -82,5 +82,14 @@ namespace Start_a_Town_.UI
             foreach (var c in this.Controls)
                 c.Location.Y = (maxh - c.Height) / 2;
         }
+
+        public override void OnLayout(int availableWidth, int availableHeight)
+        {
+            base.OnLayout(availableWidth, availableHeight);
+            var w = availableWidth - this.Padding - this.Padding;
+            var h = availableHeight - this.Padding - this.Padding;
+            foreach(var child in this.Controls)
+                child.Layout(w, h);
+        }
     }
 }

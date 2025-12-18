@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Start_a_Town_.UI
 {
@@ -143,12 +145,14 @@ namespace Start_a_Town_.UI
         {
             foreach (var i in items)
                 this.AddItem(i);
+            //this.Validate();
             return this;
         }
         public ListBoxNoScroll<TObject> AddItems(params TObject[] items)
         {
             foreach (var i in items)
                 this.AddItem(i);
+            //this.Validate();
             return this;
         }
         
@@ -156,9 +160,10 @@ namespace Start_a_Town_.UI
         {
             var control = this.ControlFactory(item);
             control.Tag = item;
-            this.AddControlsBottomLeft(control);
-            if(this.Controls.Count > 1) // HACK
-                control.Location.Y += Spacing;
+            //this.AddControlsBottomLeft(control);
+            this.AddControlsBottomLeft(1, control);
+            //if (this.Controls.Count > 1) // HACK
+            //    control.Location.Y += Spacing;
             this.AllItems.Add(control);
             return control;
         }
@@ -202,10 +207,11 @@ namespace Start_a_Town_.UI
     }
 
     public class ListBoxNoScroll<TObject, TControl> : GroupBox, IListSearchable<TObject>
-      where TControl : Control, new()
+      where TControl : Control//, new()
     {
         public int Spacing = 1;
-
+        public int Count => this.AllItems.Count;
+        public TControl this[int index] => (TControl)this.AllItems[index];
         public TObject SelectedItem { get { return SelectedControl == null ? default : (TObject)SelectedControl.Tag; } }
         TControl SelectedControl;
 
@@ -223,6 +229,7 @@ namespace Start_a_Town_.UI
         {
             this.ControlFactory = controlFactory;
             this.Spacing = spacing;
+            //this.AutoSize = false;
         }
 
         public ListBoxNoScroll<TObject, TControl> Clear()
@@ -246,10 +253,12 @@ namespace Start_a_Town_.UI
                 c.TooltipFunc = tt => { if (i is ITooltippable tooltippable) tooltippable.GetTooltipInfo(tt); };
                 currentY += c.Height + Spacing;
                 this.AllItems.Add(c);
+                c.Layout(this.maxWidth, this.Height);
                 return c;
             });
             var array = newControls.ToArray();
             this.AddControls(array);
+            
             return this;
         }
         public void RemoveItems(params TObject[] items)
@@ -289,6 +298,50 @@ namespace Start_a_Town_.UI
             var validControls = this.AllItems.Where(c => filter((TObject)c.Tag)).ToArray();
             this.AddControlsBottomLeft(this.Spacing, validControls);
         }
+
+        internal TControl GetControlAt(int index)
+        {
+            return (TControl)this.Controls[index];
+        }
+        public int IndexOf(TObject item)
+        {
+            return this.AllItems.FindIndex(c => c.Tag.Equals(item));
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="targetIndex"></param>
+        /// <returns>Returns the control of the relevant item, if the control was actually moved to another index.</returns>
+        public TControl Move(TObject item, int targetIndex)
+        {
+            var index = this.AllItems.FindIndex(c => c.Tag.Equals(item));
+            targetIndex = Math.Clamp(targetIndex, 0, this.AllItems.Count - 1);
+            //if (index == targetIndex) return null;
+            var control = this.AllItems[index];
+            if (index == targetIndex) return null;// (TControl)control;
+
+            this.AllItems.RemoveAt(index);
+            this.AllItems.Insert(targetIndex, control);
+            this.Clear();
+            this.AddControls(this.AllItems);
+            this.Controls.AlignVertically(this.Spacing);
+            return (TControl)control;
+        }
+
+        internal TControl GetControlFor(TObject order)
+        {
+            return (TControl)this.AllItems.First(c => c.Tag.Equals(order));
+        }
+        int maxWidth;
+        public override void OnLayout(int availableWidth, int availableHeight)
+        {
+            maxWidth = availableWidth;
+            //this.Height = availableHeight;
+            foreach (var item in this.AllItems)
+                item.OnLayout(maxWidth, this.Height);
+        }
+
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -88,8 +89,10 @@ namespace Start_a_Town_
         ComboBoxNewNew<OrderSettings.CraftMode> ModeCBox;
         OrderSettings.CraftMode _modePredicted;
         int _amountPredicted;
+        Button btnDetails;
+        private IconButton btnClose;
 
-        public OrderSettingsGui(OrderSettings settings)
+        public OrderSettingsGui(OrderSettings settings/*, int width*/)
         {
             this.Settings = settings;
             this._modePredicted = settings.Mode;
@@ -102,25 +105,28 @@ namespace Start_a_Town_
             this.BackgroundColor = UIManager.DefaultListItemBackgroundColor;
             this.MouseThrough = false;
 
-            var btnUp = new ButtonIcon(Icon.ArrowUp, MoveUp);
-            var btnDown = new ButtonIcon(Icon.ArrowDown, MoveDown) { Location = btnUp.BottomLeft };
-            this.AddControls(btnUp, btnDown);
+            //var btnUp = new ButtonIcon(Icon.ArrowUp, MoveUp);
+            //var btnDown = new ButtonIcon(Icon.ArrowDown, MoveDown) { Location = btnUp.BottomLeft };
+            //this.AddControls(btnUp, btnDown);
 
-            var orderName = new Label(settings.Label) { Location = btnUp.TopRight };
-            this.ModeCBox = new ComboBoxNewNew<OrderSettings.CraftMode>(OrderSettings.AllModes, 100, c => c.ToString(), ChangeFinishMode, () => this._modePredicted) { Location = orderName.BottomLeft };
+            var orderName = new Label(settings.Label);// { Location = btnUp.TopRight };
+            this.ModeCBox = new ComboBoxNewNew<OrderSettings.CraftMode>(OrderSettings.AllModes, 100, c => c.ToString(), ChangeFinishMode, () => this._modePredicted);// { Location = orderName.BottomLeft };
+            this.ModeCBox.AnchorNew = Anchors.Bottom | Anchors.Left;
 
-
-            this.AddControls(orderName,
-                this.ModeCBox);
-
-            var btnClose = new IconButton(Icon.X)
+            this.AddControls(orderName
+                ,
+                this.ModeCBox
+                );
+            var width = 0;// 290;
+            this.btnClose = new IconButton(Icon.X)
             {
-                LocationFunc = () => new Vector2(PanelTitled.GetClientLength(290), 0),
+                //LocationFunc = () => new Vector2(PanelTitled.GetClientLength(width), 0),
                 BackgroundTexture = UIManager.Icon16Background,
-                Anchor = Vector2.UnitX,
+                //Anchor = Vector2.UnitX,
                 LeftClickAction = RemoveOrder
             };
             btnClose.ShowOnParentFocus(true);
+            btnClose.AnchorNew = Anchors.Right | Anchors.Top;
             this.AddControls(btnClose);
 
             var btnMinus = new Button("-", Minus, Button.DefaultHeight) { Location = this.ModeCBox.TopRight };
@@ -131,8 +137,10 @@ namespace Start_a_Town_
 
             //this.DetailsGui = this.DetailsGui ??= new CraftOrderDetailsGui(this);
 
-            var btnDetails = new Button("Details");//, ToggleDetails);
-            this.AddControls(btnDetails.AnchorToBottomRight());
+            this.btnDetails = new Button("Details");//, ToggleDetails);
+            //this.AddControls(btnDetails.AnchorToBottomRight());
+            this.btnDetails.AnchorNew = Anchors.Bottom | Anchors.Right;
+            this.AddControls(btnDetails);
 
             //return box;
 
@@ -146,13 +154,27 @@ namespace Start_a_Town_
             //    if (DetailsWindow.Show())
             //        DetailsWindow.Location = UIManager.Mouse;
             //}
-            
+
+        }
+
+        public override void OnLayout(int availableWidth, int availableHeight)
+        {
+            this.Width = availableWidth;
+            this.Height = availableHeight;
+            base.OnLayout(availableWidth, availableHeight);
+            //this.btnClose.Location.X = this.Width - this.btnClose.Width;
+            //this.btnDetails.Location = new(this.Width - this.btnDetails.Width, this.Height - this.btnDetails.Height);
         }
         public override bool Show()
         {
             this.Settings.Owner.Map.Events.ListenTo<CraftOrderModifiedEvent>(onCraftOrderModified);
             return base.Show();
         }
+        //public override void Draw(SpriteBatch sb, Rectangle viewport)
+        //{
+        //    this.DrawHighlight(sb, Color.Blue * .5f);
+        //    base.Draw(sb, viewport);
+        //}
 
         private void onCraftOrderModified(CraftOrderModifiedEvent e)
         {

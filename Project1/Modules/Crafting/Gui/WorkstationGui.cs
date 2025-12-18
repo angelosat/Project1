@@ -1,4 +1,6 @@
-﻿using Start_a_Town_.UI;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Start_a_Town_.UI;
 using System;
 using System.Linq;
 
@@ -7,39 +9,76 @@ namespace Start_a_Town_
     class WorkstationGuiNew : GroupBox, ISelectionBound
     {
         Panel PanelReactions;
-        ListBoxNoScroll<OrderSettings> ListOrdersNew = new(s => s.GetListControlGui());
+        //ListBoxNoScroll<OrderSettings> ListOrdersNew = new(s => s.GetListControlGui());
+        //ListBoxNoScroll<OrderSettings> ListOrdersNew;
+        ListBoxNoScroll<OrderSettings, OrderContainer> ListOrdersNew;
+
+        
+
         BlockEntityCompWorkstation Workstation;
 
         public WorkstationGuiNew()
         {
-            
+            this.ListOrdersNew = new(s => new OrderContainer(s, s => this.MoveUp(s), s => this.MoveDown(s)));
+        }
+        class OrderContainer : GroupBox
+        {
+            public readonly ButtonIcon Up, Down;
+            Control ItemControl;
+            public OrderContainer(OrderSettings s, Action<OrderSettings> moveUp, Action<OrderSettings> modeDown)
+            {
+                this.Up = new ButtonIcon(Icon.ArrowUp, () => moveUp(s));
+                this.Down = new ButtonIcon(Icon.ArrowDown, () => modeDown(s));
+                this.ItemControl = s.GetListControlGui();
+                this.AddControlsVertically(this.Up, this.Down)
+                    .AddControlsTopRight(this.ItemControl);
+
+                
+            }
+            public override void OnLayout(int availableWidth, int availableHeight)
+            {
+                this.Width = availableWidth;
+                this.ItemControl.OnLayout(this.Width - this.Up.Width, this.Height);
+            }
         }
         void Build(BlockEntityCompWorkstation workstation)
         {
             this.Workstation = workstation;
-            var panelOrders = new PanelTitled("Orders", 300, 400);
+            //var panelOrders = new PanelTitled("Orders", 300, 400);
+            //var panelOrders = new Panel(new Rectangle(0,0, 300, 400));
             var btnAddOrder = new Button("Add Order", this.OnAddOrderClick);
 
             this.PanelReactions = new Panel() { AutoSize = true };
             this.PanelReactions.HideOnAnyClick();
-            var allreactions = Def.GetDefs<Reaction>();
+            //var allreactions = Def.GetDefs<Reaction>();
             var manager = workstation.Parent.Map.Town.CraftingManagerNew;
             var availableRefinements = manager.GetRefinementsBy(workstation.Type);
-            var validreactions = allreactions;
+            //var validreactions = allreactions;
 
             var availableRefinementsControl = new ListBoxNoScroll<RawMaterialStateDef>(r => new Label(r.Label, () => this.PlaceOrder(r)));
             availableRefinementsControl.AddItems(availableRefinements);
             var reactionsListContainer = availableRefinementsControl.ToScrollableBox(200, 400);
             this.PanelReactions.AddControls(reactionsListContainer);
 
-            var w = panelOrders.Client.ClientSize.Width;
-            var h = panelOrders.Client.ClientSize.Height;
-
-            var scrollableContainer = new ScrollableBoxNewNewNew(w, h, ScrollModes.Vertical);
+            //var w = panelOrders.Client.ClientSize.Width;
+            //var h = panelOrders.Client.ClientSize.Height;
+            var scrollableContainer = new ScrollableBoxNewNewNew(300, 400, ScrollModes.Vertical);
             scrollableContainer.AddControls(this.ListOrdersNew);
 
-            panelOrders.AddControls(this.ListOrdersNew);
-            this.AddControls(panelOrders, btnAddOrder);
+            //panelOrders.AddControls(this.ListOrdersNew);
+            //panelOrders.AddControls(scrollableContainer);
+
+            var panell = scrollableContainer.ToPanelLabeled("Orders");
+
+            this.ListOrdersNew.Clear();
+            this.ListOrdersNew.AddItems(workstation.Orders);
+
+            UpdateArrows();
+
+            this.AddControls(
+                //panelOrders,
+                panell,
+                btnAddOrder);
             this.AlignTopToBottom();
 
             var mapEvents = this.Workstation.Parent.Map.Events;
@@ -48,20 +87,60 @@ namespace Start_a_Town_
             mapEvents.ListenTo<CraftOrderRemovedEvent>(OnCraftOrderRemoved);
             mapEvents.ListenTo<CraftOrderReorderedEvent>(OnOrderReordered);
         }
+        //public override void Draw(SpriteBatch sb, Rectangle viewport)
+        //{
+
+        //    base.Draw(sb, viewport);
+        //}
 
         private void OnOrderReordered(CraftOrderReorderedEvent e)
         {
             if (e.Order.Owner != this.Workstation)
                 return;
-            //var index = this.ListOrdersNew.IndexOf(e.Order);
-            //this.ListOrdersNew.Move(e.Order, e.Order.Owner.Orders.IndexOf(e.Order));
             var newindex = e.Order.Owner.Orders.IndexOf(e.Order);
             this.ListOrdersNew.Move(e.Order, newindex);
+            UpdateArrows();
+
+        }
+        private void MoveDown(OrderSettings s)
+        {
+            // local ui prediction
+            var newindex = s.Owner.Orders.IndexOf(s) + 1;
+            this.ListOrdersNew.Move(s, newindex);
+            UpdateArrows();
+            PacketPlayerCraftOrders.PlayerModifiedOrder(s.Owner.Parent.Map, s, 1, 0, s.Mode);
         }
 
+        private void MoveUp(OrderSettings s)
+        {
+            // local ui prediction
+            var newindex = s.Owner.Orders.IndexOf(s) - 1;
+            this.ListOrdersNew.Move(s, newindex);
+            UpdateArrows();
+            PacketPlayerCraftOrders.PlayerModifiedOrder(s.Owner.Parent.Map, s, -1, 0, s.Mode);
+        }
+        void UpdateArrows()
+        {
+            if (this.ListOrdersNew.Count == 0)
+                return;
+            this.ListOrdersNew[0].Up.Remove();
+            this.ListOrdersNew[this.ListOrdersNew.Count - 1].Down.Remove();
+            if (this.ListOrdersNew.Count > 1)
+            {
+                this.ListOrdersNew[0].Down.Add();
+                this.ListOrdersNew[this.ListOrdersNew.Count - 1].Up.Add();
+            }
+            for (int i = 1; i < this.ListOrdersNew.Count - 1; i++)
+            {
+                this.ListOrdersNew[i].Up.Add();
+                this.ListOrdersNew[i].Down.Add();
+            }
+        }
         private void OnCraftOrderRemoved(CraftOrderRemovedEvent e)
         {
             this.ListOrdersNew.RemoveItems(e.Order);
+            UpdateArrows();
+
         }
 
         public override bool Show()
@@ -75,7 +154,9 @@ namespace Start_a_Town_
             if (this.Workstation != e.Comp)
                 return;
             this.ListOrdersNew.AddItems(e.Order);
-            
+            OrderContainer cntr = this.ListOrdersNew.GetControlFor(e.Order);
+            UpdateArrows();
+
         }
         private void OnAddOrderClick()
         {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Windows.Forms;
 
@@ -63,6 +64,7 @@ namespace Start_a_Town_.UI
         {
             this.Client.AddControls(controls);
             this.UpdateScrollbars();
+            this.Client.Layout(this.Viewport.Width, this.Viewport.Height);
             return this;
         }
         public override void RemoveControls(params Control[] controls)
@@ -83,7 +85,14 @@ namespace Start_a_Town_.UI
                 this.EnsureClientWithinBounds();
             }
         }
-
+        
+        //public override void Draw(SpriteBatch sb, Rectangle viewport)
+        //{
+        //    this.DrawHighlight(sb, Color.Blue * .5f);
+        //    this.Viewport.DrawHighlight(sb);
+        //    this.Client.DrawHighlight(sb, Color.Red * .5f);
+        //    base.Draw(sb, viewport);
+        //}
         protected virtual void UpdateScrollbars()
         {
             if (this.Client == null)

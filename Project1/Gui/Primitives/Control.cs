@@ -4,7 +4,6 @@ using Start_a_Town_;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Start_a_Town_.UI
@@ -1383,14 +1382,15 @@ namespace Start_a_Town_.UI
             return false;
         }
 
-        public virtual bool Remove()
+        public void Remove()
         {
-            this.Dispose();
-            this.Hide();
-
-            return false;
+            this.Parent.RemoveControls(this);
         }
-
+        public void Add()
+        {
+            if(!this.Parent.Controls.Contains(this))
+                this.Parent.AddControls(this);
+        }
         public virtual void DrawOnCamera(SpriteBatch sb, Camera camera)
         {
             foreach (var ch in this.Controls)
@@ -1642,6 +1642,10 @@ namespace Start_a_Town_.UI
         {
             sb.Draw(UIManager.Highlight, new Rectangle((int)(this.ScreenLocation.X - this.Origin.X), (int)(this.ScreenLocation.Y - this.Origin.Y), this.BoundsScreen.Width, this.BoundsScreen.Height), null, Color.Lerp(Color.Transparent, Color.White, alpha), 0, Vector2.Zero, SpriteEffects.None, this.Depth);
         }
+        public virtual void DrawHighlight(SpriteBatch sb, Color color)
+        {
+            sb.Draw(UIManager.Highlight, new Rectangle((int)(this.ScreenLocation.X - this.Origin.X), (int)(this.ScreenLocation.Y - this.Origin.Y), this.BoundsScreen.Width, this.BoundsScreen.Height), null, color, 0, Vector2.Zero, SpriteEffects.None, this.Depth);
+        }
         public virtual void DrawHighlight(SpriteBatch sb, Rectangle destinationRect, float alpha = 0.5f)
         {
             sb.Draw(UIManager.Highlight, destinationRect, null, Color.Lerp(Color.Transparent, Color.White, alpha), 0, Vector2.Zero, SpriteEffects.None, this.Depth);
@@ -1667,8 +1671,22 @@ namespace Start_a_Town_.UI
                 child.OnResolutionChanged();
         }
 
-       
 
+        public virtual void OnLayout(int availableWidth, int availableHeight) 
+        { 
+            foreach(var child in this.Controls)
+            {
+                if (child.AnchorNew.HasFlag(Anchors.Left)) child.Location.X = this.Padding;
+                if (child.AnchorNew.HasFlag(Anchors.Right)) child.Location.X = availableWidth - child.Width - this.Padding;
+
+                if (child.AnchorNew.HasFlag(Anchors.Top)) child.Location.Y = this.Padding;
+                if (child.AnchorNew.HasFlag(Anchors.Bottom)) child.Location.Y = availableHeight - child.Height - this.Padding;
+            }
+        }
+        public void Layout(int availableWidth, int availableHeight)
+        {
+            this.OnLayout(availableWidth, availableHeight);
+        }
         
         //public override int Padding 
         //{ 

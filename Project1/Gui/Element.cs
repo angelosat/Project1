@@ -27,6 +27,16 @@ namespace Start_a_Town_
             }
         }
         Vector2 _Anchor = Vector2.Zero;
+        [Flags]
+        public enum Anchors
+        {
+            None = 0,
+            Top = 1,
+            Bottom = 2,
+            Left = 4,
+            Right = 8
+        }
+        public Anchors AnchorNew;
         public virtual Vector2 Anchor
         {
             get => _Anchor; 

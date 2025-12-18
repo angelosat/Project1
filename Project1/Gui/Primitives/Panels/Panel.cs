@@ -56,12 +56,16 @@ namespace Start_a_Town_.UI
             this.Width = rect.Width;
             this.Height = rect.Height;
             //this.Color = DefaultColor;
+            //this.Padding = UIManager.BorderPx;
+
         }
+
         public Panel()
         {
             this.ClientLocation = new Vector2(UIManager.BorderPx);
             this.BackgroundStyle = DefaultStyle;
             //this.Color = DefaultColor;
+            //this.Padding = UIManager.BorderPx;
         }
         public Panel(int x, int y, int w, int h) : this(new Rectangle(x, y, w, h)) { }
 

@@ -10,10 +10,10 @@ namespace Start_a_Town_
     {
         public readonly static TaskGiverResult Empty = new(null, null);
 
-        public AITask Task;
-        public TaskGiver Source;
+        public Plan Task;
+        public Planner Source;
 
-        public TaskGiverResult(AITask task, TaskGiver source)
+        public TaskGiverResult(Plan task, Planner source)
         {
             this.Task = task;
             this.Source = source;

@@ -9,7 +9,7 @@ namespace Start_a_Town_.AI
     {
         public override void Initialize()
         {
-            AITask.Initialize();
+            Plan.Initialize();
         }
 
         public override void OnGameEvent(GameEvent e)

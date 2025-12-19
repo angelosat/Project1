@@ -10,14 +10,22 @@ namespace Start_a_Town_
     public class RawMaterialSystem
     {
         public static readonly Dictionary<(MaterialTypeDef type, RefinementPathDef process), MaterialMappingDef> ByTypeAndProcess = [];
+        public static readonly Dictionary<MaterialTypeDef, HashSet<MaterialDef>> MaterialsByType = [];
         static RawMaterialSystem()
         {
             foreach(var mappingDef in Def.GetDefs<MaterialMappingDef>())
             {
                 ByTypeAndProcess[mappingDef.Mapping] = mappingDef;
             }
+
+            foreach(var matdef in Def.GetDefs<MaterialDef>())
+            {
+                if (!MaterialsByType.TryGetValue(matdef.Type, out var list))
+                    list = [];
+                list.Add(matdef);
+            }
         }
-        static public Entity Create(RawMaterialStateDef stage, MaterialDef material)
+        static public Entity Create(MaterialRefinementDef stage, MaterialDef material)
         {
             //if (stage == null)
             //{
@@ -30,6 +38,7 @@ namespace Start_a_Town_
 
             var item = ItemDefOf.Ingredient.Create();
             item.Initialize();
+            item.Profile = stage;
             item.Body.Material = material;
             item.Body.Sprite = stage.Sprite;
             item.Name = $"{material.Label} {stage.Label}";
@@ -79,7 +88,7 @@ namespace Start_a_Town_
         static public IEnumerable<Entity> GenerateTemplates()
         {
             //var stages = Def.GetDefs<RefinementPathDef>();
-            var states = Def.GetDefs<RawMaterialStateDef>();
+            var states = Def.GetDefs<MaterialRefinementDef>();
             var materials = Def.GetDefs<MaterialDef>();
 
             foreach (var state in states)
@@ -93,7 +102,7 @@ namespace Start_a_Town_
         internal static Entity Create(EntityCreationRequest req)
         {
             //return Create(req.Context as MaterialDef, req.Stage as RefinementPathDef);
-            return Create(req.Context as RawMaterialStateDef, req.DefaultMaterial);
+            return Create(req.Context as MaterialRefinementDef, req.DefaultMaterial);
         }
     }
 }

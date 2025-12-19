@@ -7,7 +7,7 @@ namespace Start_a_Town_
     {
         static readonly int TimerMax = Ticks.PerSecond / 20;
 
-        TaskGiver CurrentTaskGiver;
+        Planner CurrentTaskGiver;
         int Timer = TimerMax;
 
         private void CleanUp(Actor parent)
@@ -33,7 +33,7 @@ namespace Start_a_Town_
             this.CurrentTaskGiver = null;
         }
 
-        AITask FindNewTaskNew(Actor parent, AIState state)
+        Plan FindNewTaskNew(Actor parent, AIState state)
         {
 
             var givers = parent.GetTaskGivers();
@@ -61,7 +61,7 @@ namespace Start_a_Town_
             return null;
         }
 
-        bool TryForceTask(Actor parent, AITask task, AIState state)
+        bool TryForceTask(Actor parent, Plan task, AIState state)
         {
             var bhav = task.CreateBehavior(parent);
             if (!bhav.InitBaseReservations())
@@ -90,7 +90,7 @@ namespace Start_a_Town_
         {
             base.Load(tag);
             tag.TryGetTagValueOrDefault("Timer", out this.Timer);
-            tag.TryGetTagValue<string>("CurrentTaskGiver", t => this.CurrentTaskGiver = Activator.CreateInstance(Type.GetType(t)) as TaskGiver);
+            tag.TryGetTagValue<string>("CurrentTaskGiver", t => this.CurrentTaskGiver = Activator.CreateInstance(Type.GetType(t)) as Planner);
         }
         internal override void MapLoaded(Actor parent)
         {
@@ -120,7 +120,7 @@ namespace Start_a_Town_
             }
             else if(!state.Behavior?.Task.IsUrgent ?? true)
             {
-                foreach(var giver in TaskGiver.UrgentTaskGivers)
+                foreach(var giver in Planner.UrgentTaskGivers)
                 {
                     var task = giver.FindTaskNew(parent);
                     if (task is null)
@@ -129,7 +129,7 @@ namespace Start_a_Town_
                     state.TryAssign(task);
                     break;
                 }
-                var taskGiverEnum = TaskGiver.UrgentTaskGivers.GetEnumerator();
+                var taskGiverEnum = Planner.UrgentTaskGivers.GetEnumerator();
                 while 
                     (
                     taskGiverEnum.MoveNext() && 

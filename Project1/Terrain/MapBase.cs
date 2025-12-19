@@ -601,6 +601,7 @@ namespace Start_a_Town_
             return !this.GetObjects(global).Any();
         }
 
+        [Obsolete($"use {nameof(GetEntitiesAt)} instead")]
         internal virtual IEnumerable<GameObject> GetObjects(IEnumerable<Vector3> positions)
         {
             var chunks = new HashSet<Chunk>();
@@ -610,6 +611,11 @@ namespace Start_a_Town_
             return objects.Where(obj => positions.Contains(obj.Global.ToCell()));
         }
 
+        internal virtual IEnumerable<Entity> GetEntitiesAt(IntVec3 pos)
+        {
+            foreach (var entity in this.CachedObjects.Where(e => (IntVec3)e.Global == pos))
+                yield return (Entity)entity;
+        }
         public abstract bool IsInBounds(Vector3 global);
 
         public abstract void SetSkyLight(IntVec3 global, byte value);

@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class TaskGiverTavernCustomer : TaskGiver
+    class TaskGiverTavernCustomer : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var town = actor.Map.Town;
             var taverns = town.GetBusinesses<Tavern>();
@@ -24,7 +24,7 @@ namespace Start_a_Town_
                 var desiredIngredients = SelectIngredients(town.Map.World.Random, favs, order);
                 var request = new VisitorCraftRequest(order, desiredIngredients);
                 tavern.AddCustomer(actor, table, request);
-                return new AITask(typeof(TaskBehaviorTavernCustomer), new TargetArgs(actor.Map, table)) { ShopID = tavern.ID };
+                return new Plan(typeof(TaskBehaviorTavernCustomer), new TargetArgs(actor.Map, table)) { ShopID = tavern.ID };
             }
             return null;
         }

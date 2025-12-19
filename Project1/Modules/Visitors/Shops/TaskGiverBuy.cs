@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class TaskGiverBuy : TaskGiver
+    class TaskGiverBuy : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             // check available money
             var money = actor.Inventory.Count(ItemDefOf.Coins);
@@ -28,7 +28,7 @@ namespace Start_a_Town_
                 var cost = item.GetValueTotal();
                 if (!worker.InitiateTrade(actor, item, cost))
                     continue;
-                return new AITask(typeof(TaskBehaviorBuy), new TargetArgs(item), new TargetArgs(worker));
+                return new Plan(typeof(TaskBehaviorBuy), new TargetArgs(item), new TargetArgs(worker));
             }
 
             return null;

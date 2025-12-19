@@ -34,21 +34,25 @@ namespace Start_a_Town_
 
         public int Id { get; }
         public SkillDef Skill { get; init; }
-        public RawMaterialStateDef Refinement { get; init; }
+        public MaterialRefinementDef Refinement { get; init; }
         //public IntVec3 OwnerPosition { get; init; }
-        public BlockEntityCompWorkstation Owner { get; init; }
+        public BlockEntityCompWorkstation Workstation { get; init; }
         public string Label => this.Refinement.Label;
 
-        // Optional input constraints
-        public Dictionary<MaterialTypeDef, int> RequiredInputs = [];
+        //// Optional input constraints
+        //public Dictionary<MaterialTypeDef, int> RequiredInputs = [];
 
-        public OrderSettings(int id, BlockEntityCompWorkstation owner, RawMaterialStateDef refinement)
+        public OrderSettings(int id, BlockEntityCompWorkstation owner, MaterialRefinementDef refinement)
         {
             this.Id = id;
             this.Skill = refinement.MaterialType.SkillToRefine;
             this.Refinement = refinement;
-            this.Owner = owner;
+            this.Workstation = owner;
             //this.Target = new EntityCreationRequest(stage: mapping.Process)
+        }
+        public IEnumerable<IngredientRequirement> GetIngredientRequirements()
+        {
+            yield return new(ItemDefOf.Ingredient, this.Refinement.Source, 1, this.Workstation.Global.Above, RawMaterialSystem.MaterialsByType[this.Refinement.MaterialType]);
         }
 
         public bool CanActorPerform(Actor actor)
@@ -77,9 +81,9 @@ namespace Start_a_Town_
         public void ChangePriority(int priorityDelta)
         {
             if (priorityDelta > 0)
-                this.Owner.MoveDown(this);
+                this.Workstation.MoveDown(this);
             else if (priorityDelta < 0)
-                this.Owner.MoveUp(this);
+                this.Workstation.MoveUp(this);
         }
     }
     internal class OrderSettingsGui : GroupBox
@@ -167,7 +171,7 @@ namespace Start_a_Town_
         }
         public override bool Show()
         {
-            this.Settings.Owner.Map.Events.ListenTo<CraftOrderModifiedEvent>(onCraftOrderModified);
+            this.Settings.Workstation.Map.Events.ListenTo<CraftOrderModifiedEvent>(onCraftOrderModified);
             return base.Show();
         }
         //public override void Draw(SpriteBatch sb, Rectangle viewport)
@@ -188,11 +192,11 @@ namespace Start_a_Town_
 
         void MoveDown()
         {
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Owner.Parent.Map, this.Settings, 1, 0, this.Settings.Mode);
+            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 1, 0, this.Settings.Mode);
         }
         void MoveUp()
         {
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Owner.Parent.Map, this.Settings, -1, 0, this.Settings.Mode);
+            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, -1, 0, this.Settings.Mode);
         }
         void ChangeOrderPriority(bool p)
         {
@@ -200,25 +204,59 @@ namespace Start_a_Town_
         }
         void RemoveOrder()
         {
-            PacketPlayerCraftOrders.PlayerDeletedOrder(this.Settings.Owner.Parent.Map, this.Settings);
+            PacketPlayerCraftOrders.PlayerDeletedOrder(this.Settings.Workstation.Parent.Map, this.Settings);
         }
         void Minus()
         {
             //this.LabelAmount.Text = $"{Math.Max(0, this.Settings.Amount - 1)}"; // client prediction
             this._amountPredicted--;
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Owner.Parent.Map, this.Settings, 0, -1, this.Settings.Mode);
+            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, -1, this.Settings.Mode);
         }
         void Plus()
         {
             //this.LabelAmount.Text = $"{this.Settings.Amount + 1}"; // client prediction
             this._amountPredicted++;
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Owner.Parent.Map, this.Settings, 0, 1, this.Settings.Mode);
+            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 1, this.Settings.Mode);
         }
         void ChangeFinishMode(OrderSettings.CraftMode mode)
         {
             //PacketCraftOrderChangeMode.Send(this, (int)obj.Mode);
             this._modePredicted = mode;
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Owner.Parent.Map, this.Settings, 0, 0, mode);
+            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 0, mode);
         }
+
+        
+    }
+    public class IngredientRequirement(ItemDef itemType, Def context, int quantity, IntVec3 workstationSlot, HashSet<MaterialDef> materials)
+    {
+        public readonly ItemDef ItemType = itemType;
+        public readonly Def Context = context;
+        public readonly int Quantity = quantity;
+        public readonly IntVec3 Slot = workstationSlot;
+
+        public readonly HashSet<MaterialDef> FilteredMaterials = materials;
+
+        internal bool Matches(Entity e)
+        {
+            return e.Def == this.ItemType && e.Profile == this.Context && !this.FilteredMaterials.Contains(e.Body.Material);
+        }
+        internal bool MatchesPartial(Entity e, out int missing)
+        {
+            if (e.Def == this.ItemType && e.Profile == this.Context && !this.FilteredMaterials.Contains(e.Body.Material))
+            {
+                missing = this.Quantity - e.StackSize;
+                return true;
+            }
+            missing = -1;
+            return false;
+        }
+        //public IngredientRequirement ToggleMaterial(MaterialDef mat)
+        //{
+        //    if (this.Materials.Contains(mat))
+        //        this.Materials.Remove(mat);
+        //    else
+        //        this.Materials.Add(mat);
+        //    return this;
+        //}
     }
 }

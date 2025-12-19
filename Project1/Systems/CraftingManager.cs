@@ -20,7 +20,12 @@ namespace Start_a_Town_
         {
             this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
         }
-        public IEnumerable<RawMaterialStateDef> GetRefinementsBy(WorkstationDef workstation)
+        public IEnumerable<OrderSettings> GetAllOrdersUnsorted()
+        {
+            foreach (var order in this._ordersById.Values)
+                yield return order;
+        }
+        public IEnumerable<MaterialRefinementDef> GetRefinementsBy(WorkstationDef workstation)
         {
             return workstation.Refinements;
         }
@@ -44,7 +49,7 @@ namespace Start_a_Town_
                 }
             }
         }
-        public OrderSettings CreateOrder(IntVec3 workstationPosition, RawMaterialStateDef refinement)
+        public OrderSettings CreateOrder(IntVec3 workstationPosition, MaterialRefinementDef refinement)
         {
             var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
             var comp = workstation.GetComp<BlockEntityCompWorkstation>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockEntityCompWorkstation)}");
@@ -62,7 +67,7 @@ namespace Start_a_Town_
         {
             if (!this._ordersById.TryGetValue(id, out var order)) throw new ArgumentException($"Order with id: {id} didn't exist");
             this._ordersById.Remove(id);
-            var comp = this.Map.GetBlockEntity(order.Owner.Global).GetComp<BlockEntityCompWorkstation>();
+            var comp = this.Map.GetBlockEntity(order.Workstation.Global).GetComp<BlockEntityCompWorkstation>();
             comp.Orders.Remove(order);
             this.Map.Events.Post(new CraftOrderRemovedEvent(comp, order));
             return order;

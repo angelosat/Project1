@@ -6,7 +6,7 @@ namespace Start_a_Town_
 {
     abstract public class BehaviorPerformTask : Behavior
     {
-        public AITask Task;
+        public Plan Task;
         //{
         //    get => this.Actor.CurrentTask;
         //    set => this.Actor.CurrentTask = value;

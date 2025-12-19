@@ -7,15 +7,15 @@ namespace Start_a_Town_
 {
     class StockpileAIHelper
     {
-        public static AITask FindBestTask(Actor actor, IEnumerable<Entity> items)
+        public static Plan FindBestTask(Actor actor, IEnumerable<Entity> items)
         {
             foreach (var i in items)
-                if (TryHaulNew(actor, i) is AITask task)
+                if (TryHaulNew(actor, i) is Plan task)
                     return task;
             return null;
         }
 
-        public static AITask TryHaulNew(Actor actor, Entity item, bool ignoreOtherReservations = false)
+        public static Plan TryHaulNew(Actor actor, Entity item, bool ignoreOtherReservations = false)
         {
             var unreservedAmount = actor.GetUnreservedAmount(item);
             if (unreservedAmount == 0)
@@ -38,7 +38,7 @@ namespace Start_a_Town_
                 return null;
             var maxweight = Math.Min(item.StackMax, actor.GetHaulStackLimitFromEndurance(item));
             var maxamount = Math.Min(maxweight, unreservedAmount);
-            var task = new AITask(TaskDefOf.Hauling, new TargetArgs(item), bestTarget) { Count = maxamount };
+            var task = new Plan(TaskDefOf.Hauling, new TargetArgs(item), bestTarget) { Count = maxamount };
             if (bestTarget.HasObject)
                 task.Count = Math.Min(task.Count, bestTarget.Object.StackAvailableSpace);
 

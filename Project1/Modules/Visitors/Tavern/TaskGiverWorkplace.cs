@@ -1,8 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    class TaskGiverWorkplace : TaskGiver
+    class TaskGiverWorkplace : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             return actor.Workplace?.GetTask(actor);
         }

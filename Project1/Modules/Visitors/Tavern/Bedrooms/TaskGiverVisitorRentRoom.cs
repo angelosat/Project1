@@ -2,16 +2,16 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverVisitorRentRoom : TaskGiver
+    class TaskGiverVisitorRentRoom : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             if (actor.Possessions.Has(RoomRoleDefOf.Bedroom))
                 return null;
             return SearchByTavern(actor);
         }
 
-        private static AITask SearchByBed(Actor actor)
+        private static Plan SearchByBed(Actor actor)
         {
             var map = actor.Map;
             var town = map.Town;
@@ -33,11 +33,11 @@ namespace Start_a_Town_
                 if (!tavern.CanOfferBed)
                     continue;
                 var customer = tavern.AddCustomer(actor, town.RoomManager.GetRoomAt(bedglobal));
-                return new AITask(typeof(TaskBehaviorSleepingNew), (map, bedglobal), (map, operatingPos)) { ShopID = tavern.ID, CustomerProps = customer };
+                return new Plan(typeof(TaskBehaviorSleepingNew), (map, bedglobal), (map, operatingPos)) { ShopID = tavern.ID, CustomerProps = customer };
             }
             return null;
         }
-        static AITask SearchByTavern(Actor actor)
+        static Plan SearchByTavern(Actor actor)
         {
             var map = actor.Map;
             var town = map.Town;
@@ -52,7 +52,7 @@ namespace Start_a_Town_
                 if (freeBedroom is null)
                     continue;
                 tavern.AddCustomer(actor, freeBedroom);
-                return new AITask(typeof(TaskBehaviorVisitorRentBed)) { ShopID = tavern.ID };
+                return new Plan(typeof(TaskBehaviorVisitorRentBed)) { ShopID = tavern.ID };
             }
             return null;
         }

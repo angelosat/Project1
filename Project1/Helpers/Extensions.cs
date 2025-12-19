@@ -76,7 +76,7 @@ namespace Start_a_Town_
             return global;
         }
         
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+        public static TValue GetValueOrDefaultMy<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
         {
             // Ignore return value
             dictionary.TryGetValue(key, out TValue ret);

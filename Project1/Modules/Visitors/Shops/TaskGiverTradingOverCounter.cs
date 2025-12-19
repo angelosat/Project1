@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverTradingOverCounter : TaskGiver
+    class TaskGiverTradingOverCounter : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var shop = actor.Town.ShopManager.GetShop<Shop>(actor);
             if (shop == null)
@@ -16,9 +16,9 @@ namespace Start_a_Town_
             if (!shop.CanExecuteTransaction(actor, transaction))
                 return null;
             if (transaction.Type == Transaction.Types.Buy)
-                return new AITask(typeof(TaskBehaviorAcceptSellOverCounter), (actor.Map, shop.Counter.Value));
+                return new Plan(typeof(TaskBehaviorAcceptSellOverCounter), (actor.Map, shop.Counter.Value));
             else if (transaction.Type == Transaction.Types.Sell)
-                return new AITask(typeof(TaskBehaviorAcceptBuyOverCounter)) { ShopID = shop.ID, Transaction = transaction }; // shop holds value for counter so no need to pass it to the task as a target
+                return new Plan(typeof(TaskBehaviorAcceptBuyOverCounter)) { ShopID = shop.ID, Transaction = transaction }; // shop holds value for counter so no need to pass it to the task as a target
             else
                 throw new Exception();
         }

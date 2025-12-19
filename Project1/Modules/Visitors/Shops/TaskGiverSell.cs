@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverSell : TaskGiver
+    class TaskGiverSell : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var prefs = actor.ItemPreferences;
             var junk = prefs.GetJunk();
@@ -18,7 +18,7 @@ namespace Start_a_Town_
                 if (worker == null)
                     continue;
                 worker.InitiateTrade(actor, item, itemcost);
-                return new AITask(typeof(TaskBehaviorSell), new TargetArgs(item), new TargetArgs(worker)) { AmountA = item.StackSize };
+                return new Plan(typeof(TaskBehaviorSell), new TargetArgs(item), new TargetArgs(worker)) { AmountA = item.StackSize };
             }
             return null;
         }

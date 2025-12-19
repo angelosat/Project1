@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class TaskGiverDigging : TaskGiver
+    class TaskGiverDigging : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Digger))
                 return null;
@@ -43,7 +43,7 @@ namespace Start_a_Town_
                 if (skill == null)
                     throw new Exception();
 
-                var task = new AITask(TaskDefOf.Digging, target);// new TargetArgs(actor.Map, target));
+                var task = new Plan(TaskDefOf.Digging, target);// new TargetArgs(actor.Map, target));
                 FindTool(actor, task, skill);
 
                 return task;
@@ -51,7 +51,7 @@ namespace Start_a_Town_
             return null;
         }
 
-        static public bool TryGetTask(Actor actor, TargetArgs target, out AITask task)
+        static public bool TryGetTask(Actor actor, TargetArgs target, out Plan task)
         {
             task = null;
             var global = target.Global;
@@ -68,7 +68,7 @@ namespace Start_a_Town_
             if (skill == null)
                 throw new Exception();
            
-            task = new AITask()
+            task = new Plan()
             {
                 BehaviorType = typeof(TaskBehaviorDigging),
             };

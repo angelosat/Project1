@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverTownArrival : TaskGiver
+    class TaskGiverTownArrival : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var props = actor.Map.World.Population.GetVisitorProperties(actor);
             if (!props.HangAroundSpot.HasValue)
@@ -14,7 +14,7 @@ namespace Start_a_Town_
             if (distance < 10)
                 return null;
 
-            var task = new AITask(TaskDefOf.Moving, spot.At(actor.Map)) { Urgent = false };
+            var task = new Plan(TaskDefOf.Moving, spot.At(actor.Map)) { Urgent = false };
 
             return task;
         }

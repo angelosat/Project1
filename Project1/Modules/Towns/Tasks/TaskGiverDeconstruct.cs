@@ -1,8 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    class TaskGiverDeconstruct : TaskGiver
+    class TaskGiverDeconstruct : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Builder))
                 return null;
@@ -16,7 +16,7 @@
                     continue;
                 if (!actor.Map.IsCellEmptyNew(pos.Above))
                     continue;
-                var task = new AITask()
+                var task = new Plan()
                 {
                     BehaviorType = typeof(TaskBehaviorDeconstruct),
                 };

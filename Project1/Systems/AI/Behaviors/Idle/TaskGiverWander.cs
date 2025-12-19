@@ -3,14 +3,14 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    class TaskGiverWander : TaskGiver
+    class TaskGiverWander : Planner
     {
         const float MaxRange = 2;
 
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var direction = new TargetArgs(ChooseDirection(actor));
-            return new AITask(TaskDefOf.Wander, direction) { TicksTimeout = Ticks.PerSecond };
+            return new Plan(TaskDefOf.Wander, direction) { TicksTimeout = Ticks.PerSecond };
         }
 
         static Vector2 ChooseDirection(Actor actor)

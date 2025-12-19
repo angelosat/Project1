@@ -66,7 +66,7 @@ namespace Start_a_Town_.Net
 
         internal PlayerData GetPlayer(int id)
         {
-            return this.List.GetValueOrDefault(id);
+            return this.List.GetValueOrDefaultMy(id);
         }
     }
 }

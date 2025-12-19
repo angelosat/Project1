@@ -57,7 +57,7 @@ namespace Start_a_Town_
         }
         public override MapBase GetMap(Vector2 mapCoords)
         {
-            return this.Maps.GetValueOrDefault(mapCoords);
+            return this.Maps.GetValueOrDefaultMy(mapCoords);
         }
         public Random GetRandom()
         {

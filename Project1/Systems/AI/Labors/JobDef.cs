@@ -5,15 +5,15 @@ namespace Start_a_Town_
 {
     public sealed class JobDef : Def
     {
-        readonly TaskGiver[] TaskGivers;
+        readonly Planner[] TaskGivers;
         public ToolUseDef ToolUse;
         public Icon Icon => Icon.Replace;
 
-        public JobDef(string name, params TaskGiver[] taskGivers) : base(name)
+        public JobDef(string name, params Planner[] taskGivers) : base(name)
         {
             this.TaskGivers = taskGivers;
         }
-        public IEnumerable<TaskGiver> GetTaskGivers()
+        public IEnumerable<Planner> GetTaskGivers()
         {
             for (int i = 0; i < this.TaskGivers.Length; i++)
             {

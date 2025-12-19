@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverForaging : TaskGiver
+    class TaskGiverForaging : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Forager))
                 return null;
@@ -17,7 +17,7 @@ namespace Start_a_Town_
             var plant = plants.FirstOrDefault();
             if (plant == null)
                 return null;
-            var task = new AITask(typeof(TaskBehaviorHarvestingNew)) { TargetA = new TargetArgs(plant) };
+            var task = new Plan(typeof(TaskBehaviorHarvestingNew)) { TargetA = new TargetArgs(plant) };
             return task;
         }
     }

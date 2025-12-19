@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class TaskGiverPlanting : TaskGiver
+    class TaskGiverPlanting : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var map = actor.Map;
             if (!actor.HasJob(JobDefOf.Farmer))
@@ -40,7 +40,7 @@ namespace Start_a_Town_
                 if(!sources.Any() || !destinations.Any())
                     continue;
 
-                var task = new AITask(TaskDefOf.Sowing);
+                var task = new Plan(TaskDefOf.Sowing);
                 task.AddTargets(TaskBehaviorDeliverMaterials.MaterialID, sources);
                 task.AddTargets(TaskBehaviorDeliverMaterials.DestinationID, destinations);
 

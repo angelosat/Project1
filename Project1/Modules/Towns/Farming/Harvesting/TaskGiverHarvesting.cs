@@ -1,8 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    class TaskGiverHarvesting : TaskGiver
+    class TaskGiverHarvesting : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Harvester))
                 return null;
@@ -20,12 +20,12 @@
                         continue;
                     if (plant.PlantComponent.Species.ProducesFruit)
                     {
-                        var task = new AITask(TaskDefOf.Harvesting, new TargetArgs(plant));
+                        var task = new Plan(TaskDefOf.Harvesting, new TargetArgs(plant));
                         return task;
                     }
                     else
                     {
-                        var task = new AITask(TaskDefOf.Chopping, plant)
+                        var task = new Plan(TaskDefOf.Chopping, plant)
                         {
                             Tool = FindTool(actor, JobDefOf.Lumberjack)
                         };

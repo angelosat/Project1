@@ -1,8 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    class TaskGiverQuestComplete : TaskGiver
+    class TaskGiverQuestComplete : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var props = actor.GetVisitorProperties();
             var quests = props.GetQuests();
@@ -12,7 +12,7 @@
                     continue;
                 var qgiver = q.Giver;
                 actor.Town.QuestManager.HandleQuestReceiver(actor, q);
-                return new AITask(typeof(TaskBehaviorQuestComplete), qgiver) { Quest = q.ID };
+                return new Plan(typeof(TaskBehaviorQuestComplete), qgiver) { Quest = q.ID };
             }
             return null;
         }

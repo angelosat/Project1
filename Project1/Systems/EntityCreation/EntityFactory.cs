@@ -9,7 +9,7 @@ namespace Start_a_Town_
         {
             return req.Context switch
             {
-                RawMaterialStateDef => RawMaterialSystem.Create(req),
+                MaterialRefinementDef => RawMaterialSystem.Create(req),
                 ActorDnaDef => ActorSystem.Create(req),
                 PlantSpeciesDef => PlantSystem.Create(req),
                 ToolProfileDef => ToolSystem.Create(req),

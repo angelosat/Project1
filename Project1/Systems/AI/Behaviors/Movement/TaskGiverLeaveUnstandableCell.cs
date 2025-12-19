@@ -1,8 +1,8 @@
 ﻿namespace Start_a_Town_.AI.Behaviors
 {
-    class TaskGiverLeaveUnstandableCell : TaskGiver
+    class TaskGiverLeaveUnstandableCell : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var cell = actor.Global.ToCell();
             var map = actor.Map;
@@ -13,7 +13,7 @@
             {
                 if (!map.IsStandableIn(pos))
                     continue;
-                var task = new AITask(TaskDefOf.Moving, pos.At(map));
+                var task = new Plan(TaskDefOf.Moving, pos.At(map));
                 return task;
             }
             return null;

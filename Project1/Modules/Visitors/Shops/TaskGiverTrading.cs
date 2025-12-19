@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverTrading : TaskGiver
+    class TaskGiverTrading : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var state = actor.GetState();
             var tradepartner = state.TradingPartner;
@@ -12,9 +12,9 @@ namespace Start_a_Town_
                 return null;
             var partnerbhav = tradepartner.CurrentTask.BehaviorType;
             if (partnerbhav == typeof(TaskBehaviorBuy))
-                return new AITask(typeof(TaskBehaviorAcceptSellHandToHand));
+                return new Plan(typeof(TaskBehaviorAcceptSellHandToHand));
             else if (partnerbhav == typeof(TaskBehaviorSell))
-                return new AITask(typeof(TaskBehaviorAcceptBuyHandToHand));
+                return new Plan(typeof(TaskBehaviorAcceptBuyHandToHand));
             else
                 throw new Exception();
         }

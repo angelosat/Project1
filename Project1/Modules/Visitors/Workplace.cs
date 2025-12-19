@@ -221,7 +221,7 @@ namespace Start_a_Town_
             return this.Rooms.Select(manager.GetRoom);
         }
 
-        public virtual AITask GetTask(Actor actor)
+        public virtual Plan GetTask(Actor actor)
         {
             foreach (var role in this.GetWorkerProps(actor).Jobs.Values.Where(j => j.Enabled))
                 foreach (var taskGiver in role.Def.GetTaskGivers())

@@ -2,16 +2,16 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverTilling : TaskGiver
+    class TaskGiverTilling : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Farmer))
                 return null;
             var loc = GetBestTillingLocation(actor);
             if (!loc.HasValue)
                 return null;
-            var task = new AITask(TaskDefOf.Tilling);// typeof(TaskBehaviorTilling));
+            var task = new Plan(TaskDefOf.Tilling);// typeof(TaskBehaviorTilling));
             task.SetTarget(TaskBehaviorTilling.TargetInd, new TargetArgs(actor.Map, loc.Value));
             FindTool(actor, task, JobDefOf.Farmer);
             return task;

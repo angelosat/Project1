@@ -112,7 +112,7 @@ namespace Start_a_Town_.UI
 
         public static Nameplate GetNameplate(INameplateable entity)
         {
-            return Plates.GetValueOrDefault(entity);
+            return Plates.GetValueOrDefaultMy(entity);
         }
         static bool Collision2(Nameplate b1, Nameplate toMove, Camera camera)
         {

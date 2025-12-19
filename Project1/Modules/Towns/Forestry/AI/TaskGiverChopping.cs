@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverChopping : TaskGiver
+    class TaskGiverChopping : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Lumberjack))
                 return null;
@@ -28,7 +28,7 @@ namespace Start_a_Town_
             //if (!trees.Any())
             //  return TaskHelper.TryStoreEquipped(actor, GearType.Mainhand); 
 
-            var task = new AITask(TaskDefOf.Chopping);
+            var task = new Plan(TaskDefOf.Chopping);
             //FindTool(actor, task, JobDefOf.Lumberjack);
             task.SetEquipContextTargetIndex(TargetIndex.A); 
             task.TargetA = new TargetArgs(trees.First());

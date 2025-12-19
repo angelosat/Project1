@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Start_a_Town_.AI.Behaviors
 {
-    internal class TaskGiverSmartEquip : TaskGiver
+    internal class TaskGiverSmartEquip : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var manager = actor.ItemPreferences;
             Dictionary<GearType, (GearType slot, Entity currentItem, Entity newItem, int score)> bestPerSlot = [];
@@ -59,9 +59,9 @@ namespace Start_a_Town_.AI.Behaviors
             if (mostImpactful.item != null)
             {
                 if (mostImpactful.score > 0)
-                    return new AITask(TaskDefOf.Equip, new TargetArgs(mostImpactful.item));
+                    return new Plan(TaskDefOf.Equip, new TargetArgs(mostImpactful.item));
                 else if (mostImpactful.score < 0)
-                    return new AITask(TaskDefOf.Unequip, new TargetArgs(mostImpactful.item));
+                    return new Plan(TaskDefOf.Unequip, new TargetArgs(mostImpactful.item));
             }
 
             return null;

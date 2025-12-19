@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_.AI
 {
-    class TaskGiverSleeping : TaskGiver
+    class TaskGiverSleeping : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var map = actor.Map;
             var need = actor.GetNeed(NeedDefOf.Energy);
@@ -37,13 +37,13 @@ namespace Start_a_Town_.AI
                     // check to reserve operating position solid block below?
                     var operatingPosition = new TargetArgs(map, p);
 
-                    var task = new AITask(TaskDefOf.SleepingOnBed, new TargetArgs(map, bedglobal), operatingPosition);//, bed);
+                    var task = new Plan(TaskDefOf.SleepingOnBed, new TargetArgs(map, bedglobal), operatingPosition);//, bed);
                     return task;
                 }
             }
 
             if (energyValue == 0)
-                return new AITask(TaskDefOf.SleepingOnGround);
+                return new Plan(TaskDefOf.SleepingOnGround);
 
             return null;
         }

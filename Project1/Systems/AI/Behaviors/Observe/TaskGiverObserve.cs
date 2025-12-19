@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Start_a_Town_.AI.Behaviors.Observe
 {
-    class TaskGiverObserve : TaskGiver
+    class TaskGiverObserve : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var need = actor.GetNeed(NeedDefOf.Curiosity);
             if (need.Value > 50)
@@ -19,7 +19,7 @@ namespace Start_a_Town_.AI.Behaviors.Observe
                 var obj = randomized.Dequeue();
                 if (obj == actor)
                     continue;
-                return new AITask(typeof(BehaviorTaskObserveNew)) { TargetA = new TargetArgs(obj) };
+                return new Plan(typeof(BehaviorTaskObserveNew)) { TargetA = new TargetArgs(obj) };
             }
             return null;
         }

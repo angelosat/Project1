@@ -6,7 +6,7 @@ using System.Linq;
 namespace Start_a_Town_
 {
     public enum TargetIndex { None, A, B, C, Tool = 15 }
-    public sealed class AITask
+    public sealed class Plan
     {
         public TargetArgs GetTarget(TargetIndex targetInd)
         {
@@ -93,7 +93,7 @@ namespace Start_a_Town_
             };
         }
 
-        internal AITask SetTarget(TargetIndex targetInd, GameObject target, int amount)
+        internal Plan SetTarget(TargetIndex targetInd, GameObject target, int amount)
         {
             this.SetAmount(targetInd, amount);
             return this.SetTarget(targetInd, new TargetArgs(target));
@@ -104,7 +104,7 @@ namespace Start_a_Town_
         //    return this.SetTarget(targetInd, target.At(map));
         //}
        
-        internal AITask SetTarget(TargetIndex targetInd, TargetArgs targetArgs)
+        internal Plan SetTarget(TargetIndex targetInd, TargetArgs targetArgs)
         {
             switch (targetInd)
             {
@@ -170,9 +170,9 @@ namespace Start_a_Town_
             return true;
         }
 
-        public static AITask Load(SaveTag tag)
+        public static Plan Load(SaveTag tag)
         {
-            var task = new AITask();
+            var task = new Plan();
             task.LoadData(tag);
             return task;
         }
@@ -180,7 +180,7 @@ namespace Start_a_Town_
         internal static void Initialize()
         {
         }
-        public AITask()
+        public Plan()
         {
             this.ID = ReservationManager.GetNextTaskID();
         }
@@ -203,7 +203,9 @@ namespace Start_a_Town_
         public List<Entity> CraftedItems = new();
 
         public List<Func<bool>> FailConditions = new();
-        public CraftOrder Order;
+        public CraftOrder OrderOld;
+        public OrderSettings Order;
+
         public Dictionary<string, ObjectRefIDsAmount> IngredientsUsed = new();
 
         public TargetArgs Product = TargetArgs.Null;
@@ -227,33 +229,33 @@ namespace Start_a_Town_
         public TaskDef Def;
         public int ID { get; internal set; }
 
-        public AITask(TaskDef taskDef)
+        public Plan(TaskDef taskDef)
         {
             if (taskDef is null) throw new Exception();
             this.Def = taskDef;
         }
 
-        public AITask(Type behaviorType) : this()
+        public Plan(Type behaviorType) : this()
         {
             throw new Exception();
 
             this.BehaviorType = behaviorType;
         }
         [Obsolete("use a ctor which accepts a taskdef")]
-        public AITask(Type behaviorType, TargetArgs targetA) : this()
+        public Plan(Type behaviorType, TargetArgs targetA) : this()
         {
             throw new Exception();
             this.BehaviorType = behaviorType;
             this.SetTarget(TargetIndex.A, targetA);
         }
-        public AITask(TaskDef def, TargetArgs targetA) : this()
+        public Plan(TaskDef def, TargetArgs targetA) : this()
         {
             if (def is null) throw new Exception();
 
             this.Def = def;
             this.SetTarget(TargetIndex.A, targetA);
         }
-        public AITask(TaskDef def, TargetArgs targetA, TargetArgs targetB) : this()
+        public Plan(TaskDef def, TargetArgs targetA, TargetArgs targetB) : this()
         {
             if (def is null) throw new Exception();
 
@@ -261,7 +263,7 @@ namespace Start_a_Town_
             this.SetTarget(TargetIndex.A, targetA);
             this.SetTarget(TargetIndex.B, targetB);
         }
-        public AITask(Type behaviorType, TargetArgs targetA, TargetArgs targetB) : this()
+        public Plan(Type behaviorType, TargetArgs targetA, TargetArgs targetB) : this()
         {
             throw new Exception();
             this.BehaviorType = behaviorType;
@@ -331,7 +333,7 @@ namespace Start_a_Town_
 
             tag.Add(this.PlacedObjects.SaveOld("PlacedItems"));
             tag.Add(this.Count.Save("Count"));
-            tag.TrySaveRef(this.Order, "Order");
+            tag.TrySaveRef(this.OrderOld, "Order");
             tag.Add(this.Product.Save("Product"));
             tag.Add(this.Forced.Save("Forced"));
 
@@ -397,7 +399,7 @@ namespace Start_a_Town_
 
             tag.TryGetTag("PlacedItems", t => this.PlacedObjects.Load(t));
 
-            tag.TryLoadRef("Order", out this.Order);
+            tag.TryLoadRef("Order", out this.OrderOld);
             tag.TryGetTagValueOrDefault("Count", out this.Count);
             tag.TryGetTag("Product", t => this.Product = new TargetArgs(t));
             tag.TryGetTagValueOrDefault("Forced", out this.Forced);
@@ -551,7 +553,7 @@ namespace Start_a_Town_
         }
 
         IEnumerable<TargetArgs> GetCustomTargets() { yield break; }
-        public AITask SetEquipContextTargetIndex(TargetIndex targetIndex)
+        public Plan SetEquipContextTargetIndex(TargetIndex targetIndex)
         {
             this._equipContextTargetIndex = targetIndex;
             return this;

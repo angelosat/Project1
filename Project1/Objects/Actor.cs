@@ -59,7 +59,7 @@ namespace Start_a_Town_
         //AIState _state;
 
         //public AIState State => this._state ??= this.GetComponent<AIComponent>().State;
-        internal AITask CurrentTask
+        internal Plan CurrentTask
         {
             get => this.AI.State.CurrentTask;
             set => throw new Exception();// this.State.CurrentTask = value;
@@ -164,7 +164,7 @@ namespace Start_a_Town_
             this.Direction.Normalize();
             this.Net.LogStateChange(this.RefId);
         }
-        internal void ForceTask(TaskGiver taskGiver, TargetArgs target)
+        internal void ForceTask(Planner taskGiver, TargetArgs target)
         {
             var task = taskGiver.TryTaskOn(this, target, true);
             if (task is not null)
@@ -431,15 +431,15 @@ namespace Start_a_Town_
 
         public GameObject AttackTarget => null;//.GetComponent<AttackComponent>().Target;
 
-        public IEnumerable<TaskGiver> GetTaskGivers()
+        public IEnumerable<Planner> GetTaskGivers()
         {
             var givers = this.GetComponent<NeedsComponent>().NeedsNew.Select(n => n.TaskGiver);
-            givers = givers.Concat(TaskGiver.EssentialTaskGivers);
+            givers = givers.Concat(Planner.EssentialTaskGivers);
             var jobs = this.AI.State.GetJobs().Where(j => j.Enabled);
             jobs.OrderBy(j => j.Priority);
             var jobTaskGivers = jobs.SelectMany(j => j.Def.GetTaskGivers());
-            givers = this.IsTownMember ? givers.Concat(jobTaskGivers) : givers.Concat(TaskGiver.VisitorTaskGivers);
-            givers = givers.Append(TaskGiver.Idle);
+            givers = this.IsTownMember ? givers.Concat(jobTaskGivers) : givers.Concat(Planner.VisitorTaskGivers);
+            givers = givers.Append(Planner.Idle);
             return givers;
         }
 
@@ -477,11 +477,11 @@ namespace Start_a_Town_
             this.Mobile.Jump(this);
         }
 
-        internal IEnumerable<(TaskDef task, TaskGiver giver)> CanForceTaskOn(TargetArgs target)
+        internal IEnumerable<(TaskDef task, Planner giver)> CanForceTaskOn(TargetArgs target)
         {
             if (target == null || target.Type == TargetType.Null)
                 yield break;
-            var givers = TaskGiver.CitizenTaskGivers.Concat(TaskGiver.EssentialTaskGivers);
+            var givers = Planner.CitizenTaskGivers.Concat(Planner.EssentialTaskGivers);
             foreach (var giver in givers)
                 if (giver.CanGiveTask(this, target) is TaskDef taskDef)
                     yield return (taskDef, giver);

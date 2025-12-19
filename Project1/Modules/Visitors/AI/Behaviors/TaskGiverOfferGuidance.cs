@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverOfferGuidance : TaskGiver
+    class TaskGiverOfferGuidance : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Guide))
                 return null;
@@ -24,7 +24,7 @@ namespace Start_a_Town_
             visitor.Actor.GetState().ConversationPartner = actor;
             actor.GetState().ConversationPartner = visitor.Actor;
             actor.EnqueueCommunication(visitor.Actor, ConversationTopic.Guidance);
-            return new AITask(TaskDefOf.Chatting, new TargetArgs(visitor.Actor));
+            return new Plan(TaskDefOf.Chatting, new TargetArgs(visitor.Actor));
         }
     }
 }

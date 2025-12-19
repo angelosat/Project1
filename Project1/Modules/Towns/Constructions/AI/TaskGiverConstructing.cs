@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    class TaskGiverConstructing : TaskGiver
+    class TaskGiverConstructing : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Builder))
                 return null;
@@ -66,7 +66,7 @@ namespace Start_a_Town_
             var any = nodes.Any(n => map.IsStandableOn(n.Global));
             return any;
         }
-        AITask TryBuild(Actor actor, Vector3 global, IConstructible cachedBlockEntity )
+        Plan TryBuild(Actor actor, Vector3 global, IConstructible cachedBlockEntity )
         {
             if (!actor.CanReserve(global))
                 return null;
@@ -95,7 +95,7 @@ namespace Start_a_Town_
             //if (items.Any()) // return null if failure to return haul aside task
             //    return null;
 
-            var buildtask = new AITask(TaskDefOf.Construct);
+            var buildtask = new Plan(TaskDefOf.Construct);
             buildtask.SetTarget(TaskBehaviorConstruct.ConstructionsID, new TargetArgs(actor.Map, global));
 
             var construction = cachedBlockEntity as BlockConstructionEntity;
@@ -111,7 +111,7 @@ namespace Start_a_Town_
         /// <param name="global"></param>
         /// <param name="clearAreaTask"></param>
         /// <returns></returns>
-        static bool TryClearArea(Actor actor, IntVec3 global, out AITask clearAreaTask)
+        static bool TryClearArea(Actor actor, IntVec3 global, out Plan clearAreaTask)
         {
             clearAreaTask = null;
             //var items = actor.Map.GetObjects(global);
@@ -124,7 +124,7 @@ namespace Start_a_Town_
                     continue;
                 if (i is Plant && actor.CanReserve(i))
                 {
-                    var plantCutTask = new AITask(TaskDefOf.Chopping, i)
+                    var plantCutTask = new Plan(TaskDefOf.Chopping, i)
                     {
                         Tool = FindTool(actor, JobDefOf.Lumberjack)
                     };
@@ -140,11 +140,11 @@ namespace Start_a_Town_
             }
             return false;
         }
-        AITask TryDeliverMaterialNewNew(Actor actor, Vector3 origin, IEnumerable<IntVec3> allConstructions, ItemDef ingredientDef, MaterialDef ingredientMat)
+        Plan TryDeliverMaterialNewNew(Actor actor, Vector3 origin, IEnumerable<IntVec3> allConstructions, ItemDef ingredientDef, MaterialDef ingredientMat)
         {
             if (!IsOperatable(actor, origin))
                 return null;
-            var task = new AITask(TaskDefOf.DeliverMaterials);
+            var task = new Plan(TaskDefOf.DeliverMaterials);
             var allObjects = actor.Map.GetObjectsLazy();
             var enduranceLimit = Math.Min(actor.GetHaulStackLimitFromEndurance(ingredientDef), ingredientDef.StackCapacity);
             var maxDeliverable = 0;

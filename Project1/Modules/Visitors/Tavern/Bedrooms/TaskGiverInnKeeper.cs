@@ -1,8 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    class TaskGiverInnKeeper : TaskGiver
+    class TaskGiverInnKeeper : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var workplace = actor.Workplace as Tavern;
             var customers = workplace.Customers;
@@ -11,7 +11,7 @@
                 if (customer.Bedroom is not null && 
                     !customer.Customer.Possessions.Owns(customer.Bedroom))
                 {
-                    return new AITask(typeof(TaskBehaviorInnKeeper), customer.Customer);
+                    return new Plan(typeof(TaskBehaviorInnKeeper), customer.Customer);
                 }
             }
             return null;

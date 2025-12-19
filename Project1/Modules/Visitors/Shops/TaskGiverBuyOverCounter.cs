@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class TaskGiverBuyOverCounter : TaskGiver
+    class TaskGiverBuyOverCounter : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             // check available money
             var money = actor.Inventory.Count(ItemDefOf.Coins);
@@ -37,7 +37,7 @@ namespace Start_a_Town_
                     continue;
                 if (!shop.HandleCustomer(actor, item))
                     continue;
-                return new AITask(typeof(TaskBehaviorBuyOverCounter), item, (actor.Map, shop.Counter.Value)) { ShopID = shop.ID };
+                return new Plan(typeof(TaskBehaviorBuyOverCounter), item, (actor.Map, shop.Counter.Value)) { ShopID = shop.ID };
             }
 
             return null;

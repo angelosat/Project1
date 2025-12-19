@@ -42,7 +42,7 @@ namespace Start_a_Town_
         }
         public Joint GetJoint(BoneDef type)
         {
-            return this.Joints.GetValueOrDefault(type);
+            return this.Joints.GetValueOrDefaultMy(type);
         }
 
         //public Bone AddBone(Bone bone)

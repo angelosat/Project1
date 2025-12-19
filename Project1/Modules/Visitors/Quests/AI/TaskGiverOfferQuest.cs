@@ -1,14 +1,14 @@
 ﻿namespace Start_a_Town_
 {
-    class TaskGiverOfferQuest : TaskGiver
+    class TaskGiverOfferQuest : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var manager = actor.Map.Town.QuestManager;
             var nextQuestReceiver = manager.GetNextQuestReceiver(actor);
             if (nextQuestReceiver == null)
                 return null;
-            return new AITask(typeof(TaskBehaviorOfferQuest), nextQuestReceiver);
+            return new Plan(typeof(TaskBehaviorOfferQuest), nextQuestReceiver);
         }
     }
 }

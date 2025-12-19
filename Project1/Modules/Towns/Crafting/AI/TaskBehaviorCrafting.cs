@@ -20,7 +20,7 @@ namespace Start_a_Town_
             /// TODO constantly check for operating positions? or let pathing fail when no free operating position found?
             //this.FailOn(noOperatingPositions);
             var task = this.Task;
-            var order = task.Order;
+            var order = task.OrderOld;
 
             var nextIngredient = BehaviorHelper.ExtractNextTargetAmount(IngredientIndex);
             yield return nextIngredient;
@@ -75,7 +75,7 @@ namespace Start_a_Town_
                 this.Reserve(item);
             });
 
-            yield return new BehaviorInteractionNew(WorkstationIndex, () => new InteractionCrafting(task.Order, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
+            yield return new BehaviorInteractionNew(WorkstationIndex, () => new InteractionCrafting(task.OrderOld, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
             if (this.Task.Tool?.Type != TargetType.Null) // dont unequip tool if not using any
                 yield return new BehaviorInteractionNew(TargetIndex.Tool, () => new InteractionEquip()); // unequip the tool before hauling product // TODO dont do that if no tool equipped
             // assign a new haul behavior directly to the actor instead of adding the steps here?
@@ -86,7 +86,7 @@ namespace Start_a_Town_
                     var haulamount = this.Task.Product.Object.StackSize;
                     var product = this.Task.Product.Object;
                     var productTar = this.Task.Product;
-                    var order = this.Task.Order;
+                    var order = this.Task.OrderOld;
                     //this.Actor.Reserve(this.Task, productTar, haulamount); // was using -1 to denote full stack, but want to phase it out
                     this.Reserve(productTar, haulamount); // was using -1 to denote full stack, but want to phase it out
                     if (order.Output is Stockpile stockpile && stockpile.GetPotentialHaulTargets(actor, product) is var places && places.Any())// ; Towns.StockpileManager.GetBestStoragePlace(this.Actor, this.Task.Product.Object as Entity, out TargetArgs target))
@@ -112,7 +112,7 @@ namespace Start_a_Town_
 
             bool orderIncompletable()
             {
-                var val = !this.Task.Order.IsActive || !this.Task.Order.IsCompletable();
+                var val = !this.Task.OrderOld.IsActive || !this.Task.OrderOld.IsCompletable();
                 if (val)
                     "order incompletable".ToConsole();
                 return val;
@@ -123,7 +123,7 @@ namespace Start_a_Town_
             };
             bool deliverFail()
             {
-                if (this.Task.Order.HaulOnFinish)
+                if (this.Task.OrderOld.HaulOnFinish)
                     return !HaulHelper.IsValidStorage(this.Task.GetTarget(WorkstationIndex), this.Actor.Map, this.Task.Product.Object);
                 else
                     return !this.IsValidStorage(this.Task.GetTarget(WorkstationIndex));

@@ -56,13 +56,13 @@ namespace Start_a_Town_
     class CraftingRules
     {
         public BoneDef Bone;
-        public RawMaterialStateDef State;
+        public MaterialRefinementDef State;
         public readonly HashSet<MaterialTypeDef> Types = [];
         public CraftingRules()
         {
                 
         }
-        public CraftingRules(BoneDef bone, RawMaterialStateDef state, MaterialTypeDef[] types)
+        public CraftingRules(BoneDef bone, MaterialRefinementDef state, MaterialTypeDef[] types)
         {
             this.State = state;
             this.Bone = bone;
@@ -80,7 +80,7 @@ namespace Start_a_Town_
             this.Bone = bone;
             return this;
         }
-        public CraftingRules From(RawMaterialStateDef state)
+        public CraftingRules From(MaterialRefinementDef state)
         {
             this.State = state;
             return this;

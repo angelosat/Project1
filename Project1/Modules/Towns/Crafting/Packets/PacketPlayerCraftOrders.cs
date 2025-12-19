@@ -14,7 +14,7 @@ namespace Start_a_Town_
             _pPlayerDeletedOrder = Registry.PacketHandlers.Register(OnPlayerDeletedOrder);
             _pPlayerModifiedOrder = Registry.PacketHandlers.Register(OnPlayerModifiedOrder);
         }
-        internal static void PlayerCreatedOrder(BlockEntity workstation, RawMaterialStateDef processDef)
+        internal static void PlayerCreatedOrder(BlockEntity workstation, MaterialRefinementDef processDef)
         {
             var net = workstation.Map.Net;
             var w = net.BeginPacket(_pPlayerCreatedOrder);
@@ -27,7 +27,7 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var mapid = r.ReadInt32();
             var workstationPosition = r.ReadIntVec3();// net.Map.GetBlockEntity();
-            var refinement = r.ReadDef<RawMaterialStateDef>();
+            var refinement = r.ReadDef<MaterialRefinementDef>();
             net.Map.Town.CraftingManagerNew.CreateOrder(workstationPosition, refinement);
             if (net is Server server)
                 PlayerCreatedOrder(net.Map.GetBlockEntity(workstationPosition), refinement);

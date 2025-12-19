@@ -4,13 +4,13 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    abstract public class TaskGiver
+    abstract public class Planner
     {
-        public static readonly TaskGiver Idle = new TaskGiverIdle();
+        public static readonly Planner Idle = new TaskGiverIdle();
 
-        static readonly public List<TaskGiver> UrgentTaskGivers = [new TaskGiverSmartEquip()];
+        static readonly public List<Planner> UrgentTaskGivers = [new TaskGiverSmartEquip()];
 
-        static readonly public List<TaskGiver> EssentialTaskGivers = new()
+        static readonly public List<Planner> EssentialTaskGivers = new()
         {
             new TaskGiverLeaveUnstandableCell(),
             new TaskGiverItemOwnership(),
@@ -19,7 +19,7 @@ namespace Start_a_Town_
             //new TaskGiverIdle(),
         };
 
-        static readonly public List<TaskGiver> CitizenTaskGivers = new()
+        static readonly public List<Planner> CitizenTaskGivers = new()
         {
             new TaskGiverConstructing(),
             new TaskGiverRefueling(),
@@ -31,14 +31,14 @@ namespace Start_a_Town_
             new TaskGiverTilling(),
             new TaskGiverPlanting(),
             new TaskGiverHarvesting(),
-            new TaskGiverCrafting(),
+            new CraftingPlanner(),
             new TaskGiverHaulToStockpile(),
             new TaskGiverTradingOverCounter(),
             new TaskGiverOfferQuest(),
             new TaskGiverWorkplace()
         };
 
-        static readonly public List<TaskGiver> VisitorTaskGivers = new()
+        static readonly public List<Planner> VisitorTaskGivers = new()
         { 
             new TaskGiverVisitorRentRoom(),
             new TaskGiverBeTalkedTo(),
@@ -48,17 +48,17 @@ namespace Start_a_Town_
             new TaskGiverDepart()
         };
 
-        protected virtual AITask TryAssignTask(Actor actor) { return null; }
-        public AITask FindTaskNew(Actor actor)
+        protected virtual Plan TryPlan(Actor actor) { return null; }
+        public Plan FindTaskNew(Actor actor)
         {
-            return TryAssignTask(actor);
+            return TryPlan(actor);
         }
         public TaskGiverResult FindTask(Actor actor)
         {
-            var task = TryAssignTask(actor);
+            var task = TryPlan(actor);
             return task != null ? new TaskGiverResult(task, this) : TaskGiverResult.Empty;
         }
-        public static void FindTool(Actor actor, AITask task, JobDef job)
+        public static void FindTool(Actor actor, Plan task, JobDef job)
         {
             task.Tool = FindTool(actor, job);
         }
@@ -74,7 +74,7 @@ namespace Start_a_Town_
                 return TaskHelper.FindItemAnywhere(actor, o => o is Tool tool && tool.ProvidesSkill(job.ToolUse));
         }
         
-        public virtual AITask TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false) { return null; }
+        public virtual Plan TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false) { return null; }
         public virtual TaskDef CanGiveTask(Actor actor, TargetArgs target) { return null; }
     }
 }

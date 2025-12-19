@@ -2,10 +2,10 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverDepart : TaskGiver
+    class TaskGiverDepart : Planner
     {
         const int MaxTries = 5;
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var visitor = actor.GetVisitorProperties();
             var chance = visitor.GetDepartChance();
@@ -16,7 +16,7 @@ namespace Start_a_Town_
                 {
                     var exit = map.GetRandomEdgeCell().Above();
                     if (actor.CanReach(exit))
-                        return new AITask(TaskDefOf.Depart, (map, exit));
+                        return new Plan(TaskDefOf.Depart, (map, exit));
                 }
                 actor.Net.Report($"Failed to find a reachable exit for {actor.Name}'s departure");
             }

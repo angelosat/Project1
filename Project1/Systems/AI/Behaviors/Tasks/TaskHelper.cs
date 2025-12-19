@@ -7,7 +7,7 @@ namespace Start_a_Town_
 {
     static class TaskHelper
     {
-        public static bool TryClearArea(Actor actor, IntVec3 global, IEnumerable<GameObject> exclude, out AITask clearTask)
+        public static bool TryClearArea(Actor actor, IntVec3 global, IEnumerable<GameObject> exclude, out Plan clearTask)
         {
             var exclusions = new HashSet<GameObject>(exclude);
             clearTask = null;
@@ -22,9 +22,9 @@ namespace Start_a_Town_
                     continue;
                 if (i is Plant && actor.CanReserve(i))
                 {
-                    var plantCutTask = new AITask(TaskDefOf.Chopping, i)
+                    var plantCutTask = new Plan(TaskDefOf.Chopping, i)
                     {
-                        Tool = TaskGiver.FindTool(actor, JobDefOf.Lumberjack)
+                        Tool = Planner.FindTool(actor, JobDefOf.Lumberjack)
                     };
                     clearTask = plantCutTask;
                     return false;
@@ -38,7 +38,7 @@ namespace Start_a_Town_
             }
             return false;
         }
-        static public AITask TryHaulAside(Actor actor, Entity item)
+        static public Plan TryHaulAside(Actor actor, Entity item)
         {
             if (!item.IsHaulable)
                 return null;
@@ -49,9 +49,9 @@ namespace Start_a_Town_
 
             var count = Math.Min(unreservedCount, actor.GetHaulStackLimitFromEndurance(item));
 
-            return new AITask(TaskDefOf.HaulAside, new TargetArgs(item), place) { Count = count };
+            return new Plan(TaskDefOf.HaulAside, new TargetArgs(item), place) { Count = count };
         }
-        static public bool TryHaulAside(Actor actor, Vector3 global, out AITask task)
+        static public bool TryHaulAside(Actor actor, Vector3 global, out Plan task)
         {
             task = null;
             var map = actor.Map;

@@ -1,8 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    class TaskGiverSwitchToggle : TaskGiver
+    class TaskGiverSwitchToggle : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var sites = actor.Map.Town.DesignationManager.GetDesignations(DesignationDefOf.Switch);
 
@@ -13,7 +13,7 @@
                     !actor.CanReach(target))
                     continue;
 
-                var task = new AITask(typeof(TaskBehaviorSwitchToggle), target);// new TargetArgs(actor.Map, target));
+                var task = new Plan(typeof(TaskBehaviorSwitchToggle), target);// new TargetArgs(actor.Map, target));
                 return task;
             }
 

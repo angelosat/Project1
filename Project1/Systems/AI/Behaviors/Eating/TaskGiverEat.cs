@@ -5,9 +5,9 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_.AI
 {
-    class TaskGiverEat : TaskGiver
+    class TaskGiverEat : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var hunger = actor.GetNeed(NeedDefOf.Hunger);
             
@@ -22,13 +22,13 @@ namespace Start_a_Town_.AI
                     var eatingPlaces = FindEatingPlaces(actor);
                     if (eatingPlaces.Any())
                     {
-                        return new AITask() { BehaviorType = typeof(TaskBehaviorEatWithTable) }
+                        return new Plan() { BehaviorType = typeof(TaskBehaviorEatWithTable) }
                             .SetTarget(TaskBehaviorEating.FoodInd, foodInInventory, 1)
                             .SetTarget(TaskBehaviorEating.EatingSurfaceInd, eatingPlaces.First().At(actor.Map));
                     }
                     else
                     {
-                        return new AITask() { BehaviorType = typeof(TaskBehaviorEatWithoutTable) }
+                        return new Plan() { BehaviorType = typeof(TaskBehaviorEatWithoutTable) }
                             .SetTarget(TaskBehaviorEating.FoodInd, foodInInventory, 1);
                     }
                 }
@@ -61,9 +61,9 @@ namespace Start_a_Town_.AI
                     eatingplace = new TargetArgs(actor.Map, eatingPlaces.First());
             }
             if(eatingplace != TargetArgs.Null)
-                return new AITask(typeof(TaskBehaviorEatWithTable)).SetTarget(TaskBehaviorEating.FoodInd, food, 1).SetTarget(TaskBehaviorEating.EatingSurfaceInd, eatingplace);
+                return new Plan(typeof(TaskBehaviorEatWithTable)).SetTarget(TaskBehaviorEating.FoodInd, food, 1).SetTarget(TaskBehaviorEating.EatingSurfaceInd, eatingplace);
             else
-                return new AITask(typeof(TaskBehaviorEatWithoutTable)).SetTarget(TaskBehaviorEating.FoodInd, food, 1);
+                return new Plan(typeof(TaskBehaviorEatWithoutTable)).SetTarget(TaskBehaviorEating.FoodInd, food, 1);
         }
 
         private static IOrderedEnumerable<IntVec3> FindEatingPlaces(Actor actor)

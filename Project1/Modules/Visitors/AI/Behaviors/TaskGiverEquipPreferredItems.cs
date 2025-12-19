@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverEquipPreferredItems : TaskGiver
+    class TaskGiverEquipPreferredItems : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var prefs = actor.ItemPreferences;
             foreach(var gt in actor.GetGearTypes())
@@ -15,7 +15,7 @@ namespace Start_a_Town_
                     continue;
                 else
                 {
-                    return new AITask(typeof(BehaviorEquipItemNew), new TargetArgs(item));
+                    return new Plan(typeof(BehaviorEquipItemNew), new TargetArgs(item));
                     // TODO check world incase the item is available in the map but not inside inveotry? return a pickup task in that case?
                     // TODO return equipping taskbehavior
                     // add previously equipped to todiscard?

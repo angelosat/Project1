@@ -2,17 +2,17 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverEquipSelf : TaskGiver
+    class TaskGiverEquipSelf : Planner
     {
-        static AITask TryDropUnnecessaryItems(Actor actor)
+        static Plan TryDropUnnecessaryItems(Actor actor)
         {
             if (actor.Inventory.All.FirstOrDefault(i => !actor.ItemPreferences.IsPreference(i)) is Entity item)
                 //return new AITask(typeof(TaskBehaviorDropInventoryItem), item);
-                return new AITask(TaskDefOf.DropInventory, item);// { TargetA = item };
+                return new Plan(TaskDefOf.DropInventory, item);// { TargetA = item };
             return null;
         }
 
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             // TODO associate labors with tool, if labor is enabled, look for and store tools in inventory. if labor is disabled, remove unnecessary tools from inventory
             // TODO flag jobs for which a tool is already acquired so as to not recheck everything all the time
@@ -57,7 +57,7 @@ namespace Start_a_Town_
                     continue;
 
                 manager.Commit(role, item, score);
-                return new AITask(TaskDefOf.PickUp) { TargetA = item, AmountA = 1 };
+                return new Plan(TaskDefOf.PickUp) { TargetA = item, AmountA = 1 };
             }
             return null;
         }
@@ -73,7 +73,7 @@ namespace Start_a_Town_
             return null;
         }
 
-        public override AITask TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false)
+        public override Plan TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false)
         {
             if (target.Object is not Entity item)
                 return null;
@@ -82,7 +82,7 @@ namespace Start_a_Town_
             if (role is null)
                 return null;
             itemmanager.Commit(role, item, score);
-            return new AITask(typeof(TaskBehaviorStoreInInventory)) { TargetA = target, AmountA = 1 };
+            return new Plan(typeof(TaskBehaviorStoreInInventory)) { TargetA = target, AmountA = 1 };
         }
     }
 }

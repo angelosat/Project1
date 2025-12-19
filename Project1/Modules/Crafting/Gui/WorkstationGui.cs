@@ -55,7 +55,7 @@ namespace Start_a_Town_
             var availableRefinements = manager.GetRefinementsBy(workstation.Type);
             //var validreactions = allreactions;
 
-            var availableRefinementsControl = new ListBoxNoScroll<RawMaterialStateDef>(r => new Label(r.Label, () => this.PlaceOrder(r)));
+            var availableRefinementsControl = new ListBoxNoScroll<MaterialRefinementDef>(r => new Label(r.Label, () => this.PlaceOrder(r)));
             availableRefinementsControl.AddItems(availableRefinements);
             var reactionsListContainer = availableRefinementsControl.ToScrollableBox(200, 400);
             this.PanelReactions.AddControls(reactionsListContainer);
@@ -95,9 +95,9 @@ namespace Start_a_Town_
 
         private void OnOrderReordered(CraftOrderReorderedEvent e)
         {
-            if (e.Order.Owner != this.Workstation)
+            if (e.Order.Workstation != this.Workstation)
                 return;
-            var newindex = e.Order.Owner.Orders.IndexOf(e.Order);
+            var newindex = e.Order.Workstation.Orders.IndexOf(e.Order);
             this.ListOrdersNew.Move(e.Order, newindex);
             UpdateArrows();
 
@@ -105,19 +105,19 @@ namespace Start_a_Town_
         private void MoveDown(OrderSettings s)
         {
             // local ui prediction
-            var newindex = s.Owner.Orders.IndexOf(s) + 1;
+            var newindex = s.Workstation.Orders.IndexOf(s) + 1;
             this.ListOrdersNew.Move(s, newindex);
             UpdateArrows();
-            PacketPlayerCraftOrders.PlayerModifiedOrder(s.Owner.Parent.Map, s, 1, 0, s.Mode);
+            PacketPlayerCraftOrders.PlayerModifiedOrder(s.Workstation.Parent.Map, s, 1, 0, s.Mode);
         }
 
         private void MoveUp(OrderSettings s)
         {
             // local ui prediction
-            var newindex = s.Owner.Orders.IndexOf(s) - 1;
+            var newindex = s.Workstation.Orders.IndexOf(s) - 1;
             this.ListOrdersNew.Move(s, newindex);
             UpdateArrows();
-            PacketPlayerCraftOrders.PlayerModifiedOrder(s.Owner.Parent.Map, s, -1, 0, s.Mode);
+            PacketPlayerCraftOrders.PlayerModifiedOrder(s.Workstation.Parent.Map, s, -1, 0, s.Mode);
         }
         void UpdateArrows()
         {
@@ -163,7 +163,7 @@ namespace Start_a_Town_
             this.PanelReactions.SnapToMouse();
             this.PanelReactions.Show();
         }
-        private void PlaceOrder(RawMaterialStateDef r)
+        private void PlaceOrder(MaterialRefinementDef r)
         {
             this.PanelReactions.Hide();
             PacketPlayerCraftOrders.PlayerCreatedOrder(this.Workstation.Parent, r);

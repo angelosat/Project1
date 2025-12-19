@@ -105,9 +105,9 @@ namespace Start_a_Town_
         }
         public void TickLong(GameObject parent) { }
         public float FinalDecayMultiplier => 1;
-        public AITask GetTask(GameObject parent) { return null; }
+        public Plan GetTask(GameObject parent) { return null; }
         
-        public TaskGiver TaskGiver { get { return this.NeedDef.TaskGiver; } }
+        public Planner TaskGiver { get { return this.NeedDef.TaskGiver; } }
 
         public void SetValue(float newVal, GameObject parent)
         {

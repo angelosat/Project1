@@ -3,17 +3,17 @@ using System;
 
 namespace Start_a_Town_
 {
-    class TaskGiverIdle : TaskGiver
+    class TaskGiverIdle : Planner
     {
         const float MaxRange = 2;
 
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             int BaseWaitTime = 5;
             var composure = actor[TraitDefOf.Composure].Normalized;
             var waitTicks = (int)((BaseWaitTime + (.5f * BaseWaitTime * composure)) * Ticks.PerSecond);
             var dir = ChooseDirection(actor);
-            return new AITask(TaskDefOf.Idle, new TargetArgs(dir)) { TicksTimeout = waitTicks };
+            return new Plan(TaskDefOf.Idle, new TargetArgs(dir)) { TicksTimeout = waitTicks };
         }
 
         static Vector2 ChooseDirection(Actor actor)

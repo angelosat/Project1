@@ -22,7 +22,7 @@ namespace Start_a_Town_
             }
 
             public int TaskID;
-            public AITask Task { set { this.TaskID = value.ID; } }
+            public Plan Task { set { this.TaskID = value.ID; } }
             public override string ToString()
             {
                 return string.Format("Actor: {0} Target: {1} Amount: {2}", this.Actor, this.Target, this.Amount);

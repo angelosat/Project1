@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverGetQuests : TaskGiver
+    class TaskGiverGetQuests : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var town = actor.Map.Town;
             var quests = town.QuestManager.GetQuestDefs();
@@ -25,7 +25,7 @@ namespace Start_a_Town_
                 if (!Decide(actor, q))
                     continue;
                 actor.Town.QuestManager.HandleQuestReceiver(actor, q);
-                return new AITask(QuestTaskDefOf.AcceptQuest, giver) { Quest = q.ID };
+                return new Plan(QuestTaskDefOf.AcceptQuest, giver) { Quest = q.ID };
             }
             return null;
         }

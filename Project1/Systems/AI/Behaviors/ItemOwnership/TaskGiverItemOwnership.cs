@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_.AI.Behaviors.ItemOwnership
 {
-    class TaskGiverItemOwnership : TaskGiver
+    class TaskGiverItemOwnership : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var possesions = actor.GetPossesions();
 
@@ -15,7 +15,7 @@ namespace Start_a_Town_.AI.Behaviors.ItemOwnership
             var itemToDrop = carriedItems.Where(i => !actor.OwnsOrCanClaim(i)).FirstOrDefault();
 
             if (itemToDrop != null)
-                return new AITask(typeof(TaskBehaviorDropItem)) { TargetA = new TargetArgs(itemToDrop) };
+                return new Plan(typeof(TaskBehaviorDropItem)) { TargetA = new TargetArgs(itemToDrop) };
 
             // then continue to try and go pick up any owned items in the world
             foreach (var item in possesions)
@@ -24,19 +24,19 @@ namespace Start_a_Town_.AI.Behaviors.ItemOwnership
                     continue;
                 if (!actor.Inventory.Contains(item))
                 {
-                    return new AITask(typeof(BehaviorPickUpItemNew)) { TargetA = new TargetArgs(item) };
+                    return new Plan(typeof(BehaviorPickUpItemNew)) { TargetA = new TargetArgs(item) };
                 }
             }
             return null;
         }
 
-        public override AITask TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false)
+        public override Plan TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false)
         {
             if (target.Object is not Entity item)
                 return null;
             if (!item.IsHaulable)
                 return null;
-            return new AITask(typeof(BehaviorPickUpItemNew), target);
+            return new Plan(typeof(BehaviorPickUpItemNew), target);
         }
     }
 }

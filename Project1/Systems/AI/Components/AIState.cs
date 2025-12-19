@@ -24,8 +24,8 @@ namespace Start_a_Town_.AI
         public Dictionary<Actor, ConversationTopic> CommunicationPending = new();
         public Actor ConversationPartner, TradingPartner;
         public AIConversationManager.Conversation CurrentConversation;
-        public AITask CurrentTask => this.Behavior?.Task;
-        public AITask ForcedTask;
+        public Plan CurrentTask => this.Behavior?.Task;
+        public Plan ForcedTask;
         public AILog History = new();
         public bool InSync;
         public ItemPreferencesManager ItemPreferences;
@@ -95,7 +95,7 @@ namespace Start_a_Town_.AI
             this.MoveOrders.Enqueue(target);
         }
 
-        internal void ForceTask(AITask task)
+        internal void ForceTask(Plan task)
         {
             this.ForcedTask = task;
         }
@@ -178,7 +178,7 @@ namespace Start_a_Town_.AI
             else
                 this.Enqueue(bhav);
         }
-        public bool TryAssign(AITask task)
+        public bool TryAssign(Plan task)
         {
             var bhav = task.CreateBehavior(this.Parent);
             if (!bhav.InitBaseReservations())
@@ -244,7 +244,7 @@ namespace Start_a_Town_.AI
             foreach(var t in listStack)
             {
                 var tasktag = t["Task"];
-                var task = AITask.Load(tasktag);
+                var task = Plan.Load(tasktag);
                 var bhavtag = t["Behavior"];
                 var bhavname = (string)bhavtag["TypeName"].Value;
                 var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorPerformTask;
@@ -257,7 +257,7 @@ namespace Start_a_Town_.AI
             foreach (var t in listQueue)
             {
                 var tasktag = t["Task"];
-                var task = AITask.Load(tasktag);
+                var task = Plan.Load(tasktag);
                 var bhavtag = t["Behavior"];
                 var bhavname = (string)bhavtag["TypeName"].Value;
                 var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorPerformTask;

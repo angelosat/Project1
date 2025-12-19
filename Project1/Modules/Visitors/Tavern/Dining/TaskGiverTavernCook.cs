@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class TaskGiverTavernCook : TaskGiver
+    class TaskGiverTavernCook : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var tavern = actor.Workplace as Tavern;
             var map = actor.Map;
@@ -27,12 +27,12 @@ namespace Start_a_Town_
                                 return null; // TODO start delivering materials even if not all of them are currently available?
                             foundIngredients.Add((reagentName, foundItem));
                         }
-                        var task = new AITask(typeof(TaskBehaviorTavernWorkerPrepareOrder));
+                        var task = new Plan(typeof(TaskBehaviorTavernWorkerPrepareOrder));
                         foreach (var (reagent, item) in foundIngredients)
                             task.AddTarget(TargetIndex.A, item, 1);
                         task.SetTarget(TargetIndex.B, availableKitchen.Value.At(map));
                         task.IngredientsUsed = foundIngredients.ToDictionary(i => i.reagent, i => new ObjectRefIDsAmount(i.item, 1));
-                        task.Order = order.Order;
+                        task.OrderOld = order.Order;
                         task.CustomerProps = customer;
                         return task;
                     }

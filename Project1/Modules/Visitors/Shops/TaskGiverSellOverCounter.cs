@@ -2,9 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverSellOverCounter : TaskGiver
+    class TaskGiverSellOverCounter : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var shops = actor.Town.ShopManager.GetShops().OfType<Shop>();
 
@@ -27,7 +27,7 @@ namespace Start_a_Town_
 
                     if (!shop.RequestTransactionSell(actor, item, cost, out var transaction))
                         continue;
-                    return new AITask(typeof(TaskBehaviorSellOverCounter), item) { ShopID = shop.ID, Transaction = transaction };
+                    return new Plan(typeof(TaskBehaviorSellOverCounter), item) { ShopID = shop.ID, Transaction = transaction };
                 }
             }
             return null;

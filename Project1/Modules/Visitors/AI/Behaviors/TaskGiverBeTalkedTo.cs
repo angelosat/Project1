@@ -1,13 +1,13 @@
 ﻿namespace Start_a_Town_
 {
-    class TaskGiverBeTalkedTo : TaskGiver
+    class TaskGiverBeTalkedTo : Planner
     {
-        protected override AITask TryAssignTask(Actor actor)
+        protected override Plan TryPlan(Actor actor)
         {
             var state = actor.GetState();
             if(state.ConversationPartner == null)
                 return null;
-            return new AITask(typeof(TaskBehaviorBeTalkedTo));
+            return new Plan(typeof(TaskBehaviorBeTalkedTo));
         }
     }
 }

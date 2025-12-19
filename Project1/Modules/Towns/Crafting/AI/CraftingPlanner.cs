@@ -31,7 +31,8 @@ namespace Start_a_Town_
                 {
                     if (CanDeliverCarriedItemToOrder(actor, order, out var carriedTargetSlot))
                     {
-                        return new Plan(TaskDefOf.DropCarried, new TargetArgs(carried), new TargetArgs(actor.Map, carriedTargetSlot));
+                        //return new Plan(TaskDefOf.GoPlace, new TargetArgs(carried), new TargetArgs(actor.Map, carriedTargetSlot));
+                        return new Plan(TaskDefOf.GoPlace, new TargetArgs(actor.Map, carriedTargetSlot));
                     }
                     else if (IsCarriedItemUsefulForOrder(actor, order))
                     {
@@ -41,7 +42,7 @@ namespace Start_a_Town_
                             .FirstOrDefault(a => a.stack == carried);
 
                         if (allocation.stack != null)
-                            return new Plan(TaskDefOf.PickUp, new TargetArgs(allocation.stack)) { AmountA = allocation.quantity };
+                            return new Plan(TaskDefOf.GoHaul, new TargetArgs(allocation.stack)) { AmountA = allocation.quantity };
 
                         // should not reach here if allocations are accurate
                         throw new InvalidOperationException();
@@ -54,7 +55,7 @@ namespace Start_a_Town_
                 // If carried is null, just go find a world item to pick up:
                 var nextItem = FindNextWorldItemForOrder(actor, order, collectResult.allocations);
                 if(nextItem != null)
-                    return new Plan(TaskDefOf.PickUp, new TargetArgs(nextItem.Value.stack)) { AmountA = nextItem.Value.quantity };
+                    return new Plan(TaskDefOf.GoHaul, new TargetArgs(nextItem.Value.stack)) { AmountA = nextItem.Value.quantity };
 
 
                 //var result = TryCollectIngredients(actor, order);
@@ -102,11 +103,20 @@ namespace Start_a_Town_
 
             foreach (var req in order.GetIngredientRequirements())
             {
-                if (req.MatchesPartial(carried, out var _))
+                //if (req.MatchesPartial(carried, out var _))
+                //{
+                //    targetSlot = req.Slot;
+                //    return true;
+                //}
+                var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);
+                int slotQuantity = slotEntities.Sum(e => req.MatchesPartial(e, out var q) ? q : 0);
+
+                if (req.Matches(carried) && carried.StackSize + slotQuantity >= req.Quantity)
                 {
                     targetSlot = req.Slot;
                     return true;
                 }
+                //return false;
             }
 
             return false;
@@ -134,20 +144,7 @@ namespace Start_a_Town_
             }
             return false;
         }
-        struct IngredientAvailability
-        {
-            public int Required;
-            public int InSlot;
-            public int Carried;
-            public int Missing => Math.Max(0, Required - InSlot - Carried);
-        }
-        IngredientAvailability EvaluateRequirement(
-            Actor actor,
-            OrderSettings order,
-            IngredientRequirement req)
-        {
-
-        }
+       
 
         bool IsCarriedItemRelevantForAnyOrder(Actor actor)
         {
@@ -261,13 +258,16 @@ namespace Start_a_Town_
                 var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);
                 foreach (var entity in slotEntities)
                 {
-                    if (req.MatchesPartial(entity, out var qtyUsed))
-                    {
-                        primaryMatch = entity;
-                        missingQuantity -= qtyUsed;
-                        break;
-                    }
+                    //if (req.MatchesPartial(entity, out var qtyUsed))
+                    //{
+                    //    primaryMatch = entity;
+                    //    missingQuantity -= qtyUsed;
+                    //    break;
+                    //}
                 }
+
+                if (slotEntities.Any(entity => req.Matches(entity) && req.Quantity == entity.StackSize))
+                    break;
 
                 var carried = actor.Hauled as Entity;
                 if (missingQuantity > 0 && carried != null && req.Matches(carried))

@@ -103,6 +103,10 @@ namespace Start_a_Town_
         static public TaskDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem));
         static public TaskDef Equip = new("Equipping", typeof(BehaviorEquipItemNew));
         static public TaskDef Unequip = new("Unquipping", typeof(BehaviorUnequip));
+
+        static public TaskDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul));
+        static public TaskDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace));
+
         static TaskDefOf()
         {
             Def.Register(typeof(TaskDefOf));

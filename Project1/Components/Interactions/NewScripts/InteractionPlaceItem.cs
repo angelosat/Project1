@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Animations;
 
 namespace Start_a_Town_
 {
-    class UseHauledOnTargetNew : Interaction
+    class InteractionPlaceItem : Interaction
     {
         int Amount;
 
-        public UseHauledOnTargetNew()
+        public InteractionPlaceItem()
              : this(-1)
         {
         }
 
-        public UseHauledOnTargetNew(int amount) // -1 means whole stack
+        public InteractionPlaceItem(int amount) // -1 means whole stack
             : base(
             "UseHauledOnTarget", .4f)
         {
@@ -92,7 +91,7 @@ namespace Start_a_Town_
         }
         public override object Clone()
         {
-            return new UseHauledOnTargetNew(this.Amount);
+            return new InteractionPlaceItem(this.Amount);
         }
         protected override void WriteExtra(IDataWriter w)
         {

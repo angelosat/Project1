@@ -541,7 +541,7 @@ namespace Start_a_Town_
 
         public override string ToString()
         {
-            return $"[{this.RefId}] {this.Def} {this.Name}";
+            return $"[{this.RefId}] {this.Def} {this.Profile} {this.Name}";
             if (!GlobalVars.DebugMode)
                 return $"[{this.RefId}] {Name}";
                 //return $"{Name} / RefId: {this.RefId}";

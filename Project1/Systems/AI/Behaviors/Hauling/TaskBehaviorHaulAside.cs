@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Start_a_Town_.AI.Behaviors
 {
@@ -11,7 +10,7 @@ namespace Start_a_Town_.AI.Behaviors
             yield return BehaviorHaulHelper.StartCarrying(this, TargetIndex.A);
             yield return new BehaviorGetAtNewNew(TargetIndex.B);
             //yield return BehaviorHaulHelper.DropInStorage(TargetIndex.B);
-            yield return new BehaviorInteractionNew(TargetIndex.B, () => new UseHauledOnTargetNew());
+            yield return new BehaviorInteractionNew(TargetIndex.B, () => new InteractionPlaceItem());
         }
         protected override bool InitExtraReservations()
         {

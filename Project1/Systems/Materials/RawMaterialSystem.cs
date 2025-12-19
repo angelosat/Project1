@@ -21,7 +21,7 @@ namespace Start_a_Town_
             foreach(var matdef in Def.GetDefs<MaterialDef>())
             {
                 if (!MaterialsByType.TryGetValue(matdef.Type, out var list))
-                    list = [];
+                    MaterialsByType[matdef.Type] = list = [];
                 list.Add(matdef);
             }
         }

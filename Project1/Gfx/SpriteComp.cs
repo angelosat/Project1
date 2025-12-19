@@ -38,6 +38,24 @@ namespace Start_a_Town_.Components
         }
         public Animation AddAnimation(AnimationDef def, int weight = 1)
         {
+            if (!this.Animations.TryGetValue(def, out var ani))
+            {
+                ani = new Animation(def);
+                ani.Entity = this.Owner;
+                this.Animations.Add(def, ani);
+            }
+            // legacy check
+            //if (this.Animations.Values.Any(a => a.Def == def))
+            //    throw new Exception();
+            //if (ani.WeightChange >= 0 && ani.State != AnimationStates.Removed)
+            //    throw new Exception(); // ANIMATION MIGHT STILL BE FADING OUT WHEN THE NEXT BEHAVIOR BEGINS AND ADDS THE SAME TYPE OF ANIMATION!
+            //var animation = new Animation(def);
+            ani.Restart();
+            ani.Weight = weight;
+            return ani;
+        }
+        public Animation AddAnimationOld(AnimationDef def, int weight = 1)
+        {
             if (this.Animations.TryGetValue(def, out var existing))
             {
                 if (existing.WeightChange >= 0 && existing.State != AnimationStates.Removed)

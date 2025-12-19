@@ -85,6 +85,10 @@ namespace Start_a_Town_
             else if (priorityDelta < 0)
                 this.Workstation.MoveUp(this);
         }
+        //public override string ToString()
+        //{
+        //    return $"{this}:{this.Refinement}";
+        //}
     }
     internal class OrderSettingsGui : GroupBox
     {
@@ -225,7 +229,7 @@ namespace Start_a_Town_
             PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 0, mode);
         }
 
-        
+       
     }
     public class IngredientRequirement(ItemDef itemType, Def context, int quantity, IntVec3 workstationSlot, HashSet<MaterialDef> materials)
     {
@@ -238,7 +242,7 @@ namespace Start_a_Town_
 
         internal bool Matches(Entity e)
         {
-            return e.Def == this.ItemType && e.Profile == this.Context && !this.FilteredMaterials.Contains(e.Body.Material);
+            return e.Def == this.ItemType && e.Profile == this.Context && this.FilteredMaterials.Contains(e.Body.Material);
         }
         internal bool MatchesPartial(Entity e, out int missing)
         {

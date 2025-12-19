@@ -114,7 +114,7 @@ namespace Start_a_Town_
             bhav.PreInitAction = () =>
             {
                 var actor = bhav.Actor;
-                var interaction = new UseHauledOnTargetNew();
+                var interaction = new InteractionPlaceItem();
                 hauledObj = actor.Hauled;
                 var task = actor.CurrentTask;
                 var target = task.GetTarget(storageIndex);

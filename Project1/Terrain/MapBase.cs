@@ -613,7 +613,7 @@ namespace Start_a_Town_
 
         internal virtual IEnumerable<Entity> GetEntitiesAt(IntVec3 pos)
         {
-            foreach (var entity in this.CachedObjects.Where(e => (IntVec3)e.Global == pos))
+            foreach (var entity in this.GetObjectsAtChunk(pos).Where(e => (IntVec3)e.Global == pos))
                 yield return (Entity)entity;
         }
         public abstract bool IsInBounds(Vector3 global);

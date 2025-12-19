@@ -5,7 +5,7 @@ namespace Start_a_Town_
 {
     public static class PathingHelper
     {
-        public static IEnumerable<Entity> OrderByReachableRegionDistance(this IEnumerable<Entity> targets, Actor actor)
+        public static IEnumerable<Entity> SortByReachableRegionDistance(this IEnumerable<Entity> targets, Actor actor)
         {
             return from t in targets
                    let dist = actor.Map.GetRegionDistance(actor.GetCellStandingOn(), t.Global.ToCell(), actor)

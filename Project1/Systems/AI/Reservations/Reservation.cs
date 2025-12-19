@@ -36,7 +36,7 @@ namespace Start_a_Town_
                 this.Target = target;
                 this.Amount = stackcount;
                 if (target.HasObject && stackcount > target.Object.StackSize)
-                    throw new Exception();
+                    throw new InvalidOperationException($"reservation quantity request exceeded target item's current stacksize");
             }
             public void Write(BinaryWriter w)
             {

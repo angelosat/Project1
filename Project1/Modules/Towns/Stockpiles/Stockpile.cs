@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 
 namespace Start_a_Town_
 {
@@ -93,7 +94,7 @@ namespace Start_a_Town_
             return emptyCells;
         }
 
-        public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazy(Actor actor, GameObject obj)
+        public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazy(GameObject obj)
         {
             var emptyCells = new List<Vector3>();
             foreach (var pos in this.Positions)
@@ -160,8 +161,34 @@ namespace Start_a_Town_
         {
             if (!this.Accepts(item))
                 yield break;
-            foreach (var target in this.DistributeToStorageSpotsNewLazy(actor, item))
+            foreach (var target in this.DistributeToStorageSpotsNewLazy(item))
                 yield return target;
+        }
+        public TargetArgs FindPlaceFor(Entity item)
+        {
+            if (!this.Accepts(item))
+                return null;
+            return this.DistributeToStorageSpotsNewLazy(item).FirstOrDefault();
+        }
+        internal int AvailableCapacityFor(Entity item)
+        {
+            if (!this.Accepts(item))
+                return 0;
+            var availableCapacity = 0;
+            foreach(var cell in this.Positions)
+            {
+                var cellEntities = this.Map.GetEntitiesAt(cell);
+                if (!cellEntities.Any())
+                    return item.StackMax;
+                foreach (var entity in cellEntities)
+                    if (entity.CanAbsorb(item))
+                    {
+                        availableCapacity += entity.StackMax - entity.StackSize;
+                        if (availableCapacity >= entity.StackMax)
+                            return entity.StackMax;
+                    }
+            }
+            return availableCapacity;
         }
         public Dictionary<TargetArgs, int> GetPotentialHaulTargets(Actor actor, GameObject item, out int maxAmount)
         {
@@ -355,5 +382,7 @@ namespace Start_a_Town_
         {
             PacketStorageFiltersNew.Send(this, category);
         }
+
+        
     }
 }

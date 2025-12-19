@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -417,7 +418,7 @@ namespace Start_a_Town_
                                    where stack.IsHaulable
                                    where !handled.Contains(stack)
                                    where order.IsItemAllowed(reagent.Name, stack)
-                                   select stack).OrderByReachableRegionDistance(actor); // closest to actor or workstation?
+                                   select stack).SortByReachableRegionDistance(actor); // closest to actor or workstation?
                 var reqAmount = reagent.Quantity; 
                 var totalfound = 0;
                 var currentStack = 0;

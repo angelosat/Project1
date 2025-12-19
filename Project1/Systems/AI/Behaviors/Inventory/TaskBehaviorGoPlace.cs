@@ -3,16 +3,15 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorStoreInInventory : BehaviorPerformTask
+    class TaskBehaviorGoPlace : BehaviorPerformTask
     {
-        public override string Name { get; } = "Storing item in inventory";
+        public override string Name { get; } = "Delivering item";
 
         protected override IEnumerable<Behavior> GetSteps()
         {
             var index = TargetIndex.A;
             yield return new BehaviorGetAtNewNew(index, PathEndMode.Any);
-            yield return new BehaviorInteractionNew(index, () => new InteractionHaul(this.Actor.CurrentTask.GetAmount(index)));
-            yield return new BehaviorInteractionNew(index, () => new InteractionStoreHauled());
+            yield return new BehaviorInteractionNew(index, () => new InteractionPlaceItem(this.Actor.CurrentTask.GetAmount(index)));
         }
         protected override bool InitExtraReservations()
         {

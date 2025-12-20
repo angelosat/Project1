@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -41,6 +42,11 @@ namespace Start_a_Town_
 
         //// Optional input constraints
         //public Dictionary<MaterialTypeDef, int> RequiredInputs = [];
+
+        public IEnumerable<BoneDef> GetSlotMapping()
+        {
+            yield return BoneDefOf.Item;
+        }
 
         public OrderSettings(int id, BlockEntityCompWorkstation owner, MaterialRefinementDef refinement)
         {

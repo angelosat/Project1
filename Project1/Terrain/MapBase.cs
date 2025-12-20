@@ -1056,8 +1056,18 @@ namespace Start_a_Town_
             entity.OnSpawn(this);
             this.Events.Post(new EntitySpawnedEvent(entity));
         }
+        /// <summary>
+        /// Spawns the given entity at the specified position with the specified velocity,
+        /// ensuring it is registered in the world and synchronized to all clients.
+        /// If the entity is not yet registered (RefId == 0), it will be registered automatically.
+        /// </summary>
+        /// <param name="entity">The entity to spawn and sync.</param>
+        /// <param name="position">The world position to spawn the entity at.</param>
+        /// <param name="velocity">The initial velocity of the entity.</param>
         public void SpawnAndSync(Entity entity, Vector3 position, Vector3 velocity)
         {
+            if(entity.RefId == 0)
+                this.World.RegisterAndSync(entity);
             this.Spawn(entity, position, velocity);
             PacketSpawnEntity.Send(entity, position, velocity);
         }

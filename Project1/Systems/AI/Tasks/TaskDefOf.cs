@@ -6,9 +6,9 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     public static class TaskDefOf
     {
-        static public TaskDef Crafting = new("Crafting", typeof(TaskBehaviorCrafting))
+        static public TaskDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft))//typeof(TaskBehaviorCrafting))
         {
-            Format = "Force crafting at {0}", 
+            Format = "Force crafting at {0}",
             GetPrimaryTarget = t => t.GetTarget(TaskBehaviorCrafting.WorkstationIndex)
         };
 

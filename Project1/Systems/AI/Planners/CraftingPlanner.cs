@@ -23,11 +23,23 @@ namespace Start_a_Town_
             var allOrders = manager.GetAllOrdersUnsorted();
             foreach (var order in allOrders)
             {
-                var collectResult = TryCollectIngredients(actor, order);
+                //var (result, allocations) = TryCollectIngredients(actor, order);
+                var result = TryCollectIngredients(actor, order);
                 // If the crafting flow cannot be completed fully, abort planner
-                if (!collectResult.result)
+                //if (!result)
+                if (result.State == CraftingOrderState.NotEnoughItems)
                     return null;
                 var carried = actor.Hauled as Entity;
+
+                //if(!allocations.Any())
+                if (result.State == CraftingOrderState.ReadyToCraft && carried == null)
+                {
+                    var plan = new Plan(TaskDefOf.Crafting, new TargetArgs(actor.Map, order.Workstation.Parent.OriginGlobal)) { Order = order };
+                    foreach(var inSlot in result.InSlots)
+                        plan.AddTarget(TargetIndex.A, inSlot.entity);
+                    return plan;
+                }
+                var allocations = result.ToTransfer;
                 if (carried != null)
                 {
                     if (CanDeliverCarriedItemToOrder(actor, order, out var carriedTargetSlot))
@@ -38,7 +50,7 @@ namespace Start_a_Town_
                     else if (IsCarriedItemUsefulForOrder(actor, order))
                     {
                         // Use precomputed allocation from TryCollectIngredients
-                        var allocation = collectResult.allocations
+                        var allocation = allocations
                             .SelectMany(a => a.pair)
                             .FirstOrDefault(a => a.stack == carried);
 
@@ -54,7 +66,7 @@ namespace Start_a_Town_
                     }
                 }
                 // If carried is null, just go find a world item to pick up:
-                var nextItem = FindNextWorldItemForOrder(actor, order, collectResult.allocations);
+                var nextItem = FindNextWorldItemForOrder(actor, order, allocations);
                 if(nextItem != null)
                     return new Plan(TaskDefOf.GoHaul, new TargetArgs(nextItem.Value.stack)) { AmountA = nextItem.Value.quantity };
 
@@ -247,29 +259,42 @@ namespace Start_a_Town_
         {
             return AllReagentsAvailable(actor, allObjects, ref itemAmounts, materialsUsed, order);
         }
-        private static (bool result, IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> allocations) TryCollectIngredients(Actor actor, OrderSettings order)
+        enum CraftingOrderState
+        {
+            NotEnoughItems,      // No ingredients available at all
+            NeedsTransfer,       // Ingredients exist on the map but not in slots
+            ReadyToCraft         // All required ingredients are already in slots
+        }
+        struct CraftingCollectionResult
+        {
+            public CraftingOrderState State;  // NotEnoughItems, NeedsTransfer, ReadyToCraft
+            public IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> ToTransfer; // map items to move to slots
+            public IEnumerable<(IntVec3 slot, Entity entity)> InSlots;       // items already in slots
+
+            public CraftingCollectionResult(CraftingOrderState state, IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> toTransfer, IEnumerable<(IntVec3 slot, Entity entity)> inSlots)
+            {
+                State = state;
+                ToTransfer = toTransfer;
+                InSlots = inSlots;
+            }
+        }
+        private static CraftingCollectionResult TryCollectIngredients(Actor actor, OrderSettings order)
         {
             var mapEntities = actor.Map.GetEntities<Entity>();
             Dictionary<Entity, int> allocatedSoFar = [];
             List<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)> allFound = [];
+            List<(IntVec3 slot, Entity entity)> inSlots = [];
             foreach (var req in order.GetIngredientRequirements())
             {
-                Entity primaryMatch = null;
                 var missingQuantity = req.Quantity;
                 var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);
-                foreach (var entity in slotEntities)
+
+                //if (slotEntities.Any(entity => req.Matches(entity) && req.Quantity == entity.StackSize))
+                if (slotEntities.FirstOrDefault(entity => req.Matches(entity) && req.Quantity == entity.StackSize) is Entity inSlot)
                 {
-                    //if (req.MatchesPartial(entity, out var qtyUsed))
-                    //{
-                    //    primaryMatch = entity;
-                    //    missingQuantity -= qtyUsed;
-                    //    break;
-                    //}
-                }
-
-                if (slotEntities.Any(entity => req.Matches(entity) && req.Quantity == entity.StackSize))
+                    inSlots.Add((req.Slot, inSlot));
                     break;
-
+                }
                 var carried = actor.Hauled as Entity;
                 if (missingQuantity > 0 && carried != null && req.Matches(carried))
                 {
@@ -283,11 +308,46 @@ namespace Start_a_Town_
                 var validStacks = mapEntities.Where(req.Matches);
                 var allocation = AllocateRequirement(actor, validStacks, missingQuantity, allocatedSoFar);
                 if (allocation is null)
-                    return (false, Enumerable.Empty<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)>());
+                    //return (false, Enumerable.Empty<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)>());
+                    return new CraftingCollectionResult(CraftingOrderState.NotEnoughItems, null, null);
                 allFound.Add((allocation, req.Slot));
             }
-            return (true, allFound);
+            if (!allFound.Any())
+                return new(CraftingOrderState.ReadyToCraft, null, inSlots);
+            return new(CraftingOrderState.NeedsTransfer, allFound, null);
+            //return (true, allFound);
         }
+        //private static (bool result, IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> allocations) TryCollectIngredients(Actor actor, OrderSettings order)
+        //{
+        //    var mapEntities = actor.Map.GetEntities<Entity>();
+        //    Dictionary<Entity, int> allocatedSoFar = [];
+        //    List<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)> allFound = [];
+        //    foreach (var req in order.GetIngredientRequirements())
+        //    {
+        //        var missingQuantity = req.Quantity;
+        //        var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);
+
+        //        if (slotEntities.Any(entity => req.Matches(entity) && req.Quantity == entity.StackSize))
+        //            break;
+
+        //        var carried = actor.Hauled as Entity;
+        //        if (missingQuantity > 0 && carried != null && req.Matches(carried))
+        //        {
+        //            var used = Math.Min(carried.StackSize, missingQuantity);
+        //            missingQuantity -= used;
+        //        }
+
+        //        Debug.Assert(missingQuantity >= 0);
+        //        if (missingQuantity == 0)
+        //            continue;
+        //        var validStacks = mapEntities.Where(req.Matches);
+        //        var allocation = AllocateRequirement(actor, validStacks, missingQuantity, allocatedSoFar);
+        //        if (allocation is null)
+        //            return (false, Enumerable.Empty<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)>());
+        //        allFound.Add((allocation, req.Slot));
+        //    }
+        //    return (true, allFound);
+        //}
         private static (bool result, IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> allocations) TryCollectIngredientsLessOld(Actor actor, OrderSettings order)
         {
             var mapEntities = actor.Map.GetEntities<Entity>();

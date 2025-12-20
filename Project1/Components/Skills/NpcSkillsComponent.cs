@@ -19,7 +19,7 @@ namespace Start_a_Town_
             var comp = source as NpcSkillsComponent;
             this.SkillsNew = new Skill[comp.SkillsNew.Length];
             for (int i = 0; i < comp.SkillsNew.Length; i++)
-                this.SkillsNew[i] = new Skill(comp.SkillsNew[i].Def);
+                this.SkillsNew[i] = new Skill(this, comp.SkillsNew[i].Def);
             this.Randomize();
         }
 
@@ -99,7 +99,7 @@ namespace Start_a_Town_
             {
                 comp.SkillsNew = new Skill[this.Items.Length];
                 for (int i = 0; i < this.Items.Length; i++)
-                    comp.SkillsNew[i] = new Skill(this.Items[i]);
+                    comp.SkillsNew[i] = new Skill(comp, this.Items[i]);
             }
         }
     }

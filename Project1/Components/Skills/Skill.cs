@@ -7,7 +7,7 @@ namespace Start_a_Town_
 {
     public class Skill : Inspectable, ISaveable, ISerializableNew<Skill>, INamed, IListable
     {
-        public NpcSkillsComponent Container;
+        public NpcSkillsComponent Owner;
         public SkillDef Def;
         int _level = 1;
         public int Level
@@ -22,8 +22,9 @@ namespace Start_a_Town_
         Progress LvlProgress = new();
         const int XpToLevelBase = 10;
         Skill() { }
-        public Skill(SkillDef def)
+        public Skill(NpcSkillsComponent owner, SkillDef def)
         {
+            this.Owner = owner;
             this.Def = def;
         }
 
@@ -51,7 +52,7 @@ namespace Start_a_Town_
         {
             //for (int i = 0; i < 20; i++)
             //    GetNextLvlXp(i).ToConsole();
-            const int debugMultiplier = 10;
+            const int debugMultiplier = 500;
             v *= debugMultiplier;
             if (this.LvlProgress.Value + v < this.LvlProgress.Max)
             {
@@ -69,7 +70,7 @@ namespace Start_a_Town_
             this.Level += levelsGained;
             this.LvlProgress.Max = GetNextLvlXp(this.Level);
             this.LvlProgress.Value = remaining;
-            var actor = this.Container.Owner;
+            var actor = this.Owner.Owner;
             actor.Net.ConsoleBox.Write(Log.Entry.Notification(actor, " has reached Level ", this.Level," in ", this, "!"));
             actor.Net.EventOccured((int)Message.Types.SkillIncrease, actor, this);
         }
@@ -130,10 +131,10 @@ namespace Start_a_Town_
             this.LvlProgress.Value = r.ReadInt32();
             return this;
         }
-        public Skill Clone()
-        {
-            return new Skill(this.Def) { LvlProgress = new Progress(this.LvlProgress), Level = this.Level };
-        }
+        //public Skill Clone()
+        //{
+        //    return new Skill(this.Def) { LvlProgress = new Progress(this.LvlProgress), Level = this.Level };
+        //}
         public override string ToString()
         {
             return $"{this.Def.Label}: {this.Level} ({this.CurrentXP} / {this.XpToLevel})";

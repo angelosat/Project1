@@ -5,6 +5,131 @@ using System.Linq;
 
 namespace Start_a_Town_.Crafting
 {
+    class InteractionCraftingNew : InteractionToolUse
+    {
+        OrderSettings Order;
+        Progress _progress = new();
+
+        protected override float Progress => this._progress.Percentage;//throw new System.NotImplementedException();
+
+        protected override float WorkDifficulty => 1;//throw new System.NotImplementedException();
+
+        protected override SkillAwardTypes SkillAwardType => SkillAwardTypes.OnFinish;// throw new System.NotImplementedException();
+
+        public InteractionCraftingNew(/*OrderSettings order*/) : base("Craft")
+        {
+            //this.Order = order;
+        }
+
+        public override object Clone()
+        {
+            throw new System.Exception();
+        }
+        
+        void Craft()
+        {
+            var actor = this.Actor;
+            if (actor.Net.IsClient)
+                return;
+            var map = actor.Map;
+            var plan = actor.CurrentTask;
+            var order = plan.Order;
+            var workstation = this.Target;
+            var inSlots = plan.TargetsA.Select(t => t.Entity as Entity);
+            var creationReq = new EntityCreationRequest(order.Refinement, null);
+            var targetBones = order.GetSlotMapping();
+            var mapping = targetBones.Zip(inSlots);
+            foreach (var pair in mapping)
+            {
+                creationReq.Override(pair.First, pair.Second.Body.Material);
+                map.World.DisposeEntityAndSync(pair.Second);
+            }
+            var product = EntityFactory.Create(creationReq);
+            //map.World.RegisterAndSync(product);
+            map.SpawnAndSync(product, workstation.Global.Above(), Vector3.Zero);
+        }
+
+        protected override void AddSaveData(SaveTag tag)
+        {
+            //tag.TrySaveRef(this.Order, "Order");
+            //tag.Add(this._progress.Save("CraftProgress"));
+            //tag.Add(this.PlacedObjects.SaveNewBEST("PlacedItems"));
+            //if (this.Product is not null)
+            //    this.Product.Save(tag, "Product");
+            //tag.Add("Unfinished", this.UnfinishedItem?.RefId ?? -1);
+        }
+        public override void LoadData(SaveTag tag)
+        {
+            //tag.TryLoadRef("Order", out this.Order);
+            //this._progress = new Progress(tag["CraftProgress"]);
+            //this.PlacedObjects.TryLoadMutable(tag, "PlacedItems");
+            //tag.TryGetTag("Product", t => this.Product = new Reaction.Product.ProductMaterialPair(t));
+            //tag.TryGetTagValueOrDefault("Unfinished", out this._unfinishedRefID);
+        }
+        protected override void WriteExtra(IDataWriter w)
+        {
+            //w.Write(this.Order.Id);
+            //this._progress.Write(w);
+            //this.PlacedObjects.Write(w);
+            //w.Write(this.Product is not null);
+            //if (this.Product is not null)
+            //    this.Product.Write(w);
+            //w.Write(this.UnfinishedItem?.RefId ?? -1);
+        }
+        protected override void ReadExtra(IDataReader r)
+        {
+            //var orderID = r.ReadInt32();
+            //this.Order = this.Actor.Map.Town.CraftingManagerNew.GetOrderBy(orderID);
+            //if (this.Actor.Map is not null)
+            //    this.Order = this.Actor.Map.GetBlockEntity(this.Target.Global).GetComp<BlockEntityCompWorkstationOld>().GetOrder(orderID);
+            //else
+            //    this._orderID = orderID;
+            //this._progress = new Progress(r);
+            //this.PlacedObjects.ReadMutableNew(r);
+            //if (r.ReadBoolean())
+            //    this.Product = new Reaction.Product.ProductMaterialPair(r);
+            //this._unfinishedRefID = r.ReadInt32();
+        }
+
+        internal override void ResolveReferences()
+        {
+            //this.Order = this.Actor.Map.GetBlockEntity(this.Target.Global).GetComp<BlockEntityCompWorkstationOld>().GetOrder(this.OrderID);
+            //this._progress = this.UnfinishedItem.GetComponent<UnfinishedItemComp>().Progress;
+        }
+
+        protected override void OnApplyWork(float workAmount)
+        {
+            this._progress.Value += workAmount;// 25;
+        }
+
+        protected override void Done()
+        {
+            this.Craft();
+            //var a = this.Actor;
+            //var t = this.Target;
+            //var product = this.ProduceWithMaterialsOnTopNew();
+            //if (a.Net is Server)
+            //{
+            //    var task = a.CurrentTask;
+            //    if (task is not null)
+            //        task.Product = new TargetArgs(product);
+            //}
+        }
+
+        protected override List<Rectangle> GetParticleRects()
+        {
+            return null;
+        }
+
+        protected override Color GetParticleColor()
+        {
+            return default;
+        }
+
+        protected override ToolUseDef GetToolUse() => null;
+
+        protected override SkillDef GetSkill() => SkillDefOf.Crafting;
+    }
     class InteractionCrafting : InteractionToolUse
     {
         CraftOrder Order;

@@ -25,7 +25,7 @@ namespace Start_a_Town_
                 list.Add(matdef);
             }
         }
-        static public Entity Create(MaterialRefinementDef stage, MaterialDef material)
+        static public Entity Create(MaterialRefinementDef stage, Dictionary<BoneDef, MaterialDef> materials)//MaterialDef material)
         {
             //if (stage == null)
             //{
@@ -39,9 +39,14 @@ namespace Start_a_Town_
             var item = ItemDefOf.Ingredient.Create();
             item.Initialize();
             item.Profile = stage;
-            item.Body.Material = material;
             item.Body.Sprite = stage.Sprite;
-            item.Name = $"{material.Label} {stage.Label}";
+            //item.Body.Material = material;
+            foreach(var (bone, mat) in materials)
+            {
+                item.Body.FindBone(bone).Material = mat;
+            }
+            //item.Name = $"{material.Label} {stage.Label}";
+            item.Name = $"{item.Body.Material.Label} {stage.Label}";
 
             return item;
         }
@@ -95,14 +100,15 @@ namespace Start_a_Town_
                 foreach (var material in Def.GetDefs<MaterialDef>().Where(m=>m.Type == state.MaterialType))
                     yield return EntityFactory
                         //.Request(material, state)
-                        .Request(state, null, material)
+                        .Request(state, null)
+                        .Override(BoneDefOf.Item, material)
                         .Create();
         }
 
         internal static Entity Create(EntityCreationRequest req)
         {
             //return Create(req.Context as MaterialDef, req.Stage as RefinementPathDef);
-            return Create(req.Context as MaterialRefinementDef, req.DefaultMaterial);
+            return Create(req.Context as MaterialRefinementDef, req.MaterialBindings);// req.DefaultMaterial);
         }
     }
 }

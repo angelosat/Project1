@@ -18,7 +18,7 @@ namespace Start_a_Town_
             Type CompType;
 
         }
-        public Type[] BlockEntityComps;
+        public BlockEntityComp.Spec[] BlockEntityCompSpecs;
         static Block()
         {
             Initialize();
@@ -873,12 +873,13 @@ namespace Start_a_Town_
        
         internal void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
         {
-            var e = map.GetBlockEntity(vector3);
-            e?.GetQuickButtons(uISelectedInfo, map, vector3);
+            //var e = map.GetBlockEntity(vector3);
+            //e?.GetQuickButtons(uISelectedInfo, map, vector3);
             if (this.Furniture is not null)
                 uISelectedInfo.AddTabAction("Room", () => { });
             this.GetQuickButtonsEx(uISelectedInfo, map, vector3);
         }
+
         protected virtual void GetQuickButtonsEx(SelectionManager info, MapBase map, IntVec3 vector3) { }
         internal virtual bool IsValidHaulDestination(MapBase map, IntVec3 global, GameObject obj)
         {
@@ -935,18 +936,6 @@ namespace Start_a_Town_
             {
                 return "";
             }
-        }
-    }
-    public static class BlockEntityFactory
-    {
-        public static BlockEntity Create(Block block, IntVec3 originGlobal)
-        {
-            if (block.BlockEntityComps is null)
-                return null;
-            var entity = new BlockEntity(originGlobal);
-            foreach (var comp in block.BlockEntityComps)
-                entity.AddComp((BlockEntityComp)Activator.CreateInstance(comp));
-            return entity;
         }
     }
 }

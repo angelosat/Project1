@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.UI;
+﻿using Start_a_Town_.UI;
 using System;
 using System.Linq;
 
@@ -175,10 +173,11 @@ namespace Start_a_Town_
         }
         public void Bind(ISelectable selectable)
         {
-            if (selectable is TargetArgs target &&
-                target.BlockEntity is BlockEntity block &&
-                block.GetComp<BlockWorkstationComp>() is BlockWorkstationComp comp)
-                this.Build(comp);
+            if (!(selectable is TargetArgs target &&
+                target.BlockEntityOld is BlockEntity block &&
+                block.GetComp<BlockWorkstationComp>() is BlockWorkstationComp comp))
+                throw new Exception();
+            this.Build(comp);
         }
     }
     class WorkstationGui : GroupBox

@@ -10,6 +10,7 @@ namespace Start_a_Town_
 {
     public class BlockEntity : Inspectable, IDisposable//, IEntityCompContainer<BlockEntityComp>//, IHasChildren
     {
+        public string Name = nameof(BlockEntity);
         public HashSet<IntVec3> CellsOccupied = [];
         public MapBase Map;
         public bool Exists => this.Map is not null;
@@ -125,6 +126,7 @@ namespace Start_a_Town_
         
         public void Write(IDataWriter w)
         {
+            w.Write(this.Name);
             w.Write(this.OriginGlobal);
             this.CellsOccupied.Write(w);
 
@@ -134,6 +136,7 @@ namespace Start_a_Town_
         }
         public void Read(IDataReader r)
         {
+            this.Name = r.ReadString();
             this.OriginGlobal = r.ReadIntVec3();
             this.CellsOccupied.Read(r);
             foreach (var c in this.Comps.Values)
@@ -159,10 +162,20 @@ namespace Start_a_Town_
         }
         protected virtual void OnDrawUI(SpriteBatch sb, Camera cam, IntVec3 global) { }
     
-        internal virtual void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
+        //internal virtual void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
+        //{
+        //    foreach (var c in this.Comps.Values)
+        //        c.GetQuickButtons(uISelectedInfo, map, vector3);
+        //}
+        //internal virtual void GetQuickButtons(Action<string, Action> register, MapBase map, IntVec3 vector3)
+        //{
+        //    foreach (var c in this.Comps.Values)
+        //        c.GetQuickButtons(register, map, vector3);
+        //}
+        internal virtual void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3)
         {
             foreach (var c in this.Comps.Values)
-                c.GetQuickButtons(uISelectedInfo, map, vector3);
+                c.GetQuickButtons(register, map, vector3);
         }
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
@@ -202,7 +215,13 @@ namespace Start_a_Town_
             foreach (var comp in this.Comps.Values)
                 comp.OnNeighborChanged(map, source);
         }
-
-        
+        bool _initialized;
+        internal void Initialize()
+        {
+            if (this._initialized)
+                throw new Exception();
+            foreach (var c in this.Comps.Values)
+                c.Initialize();
+        }
     }
 }

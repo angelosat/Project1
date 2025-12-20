@@ -25,7 +25,7 @@ namespace Start_a_Town_
     {
         public override bool IsValid(TargetArgs target)
         {
-            return target.BlockEntity?.HasComp<BlockEntityCompSwitchable>() ?? false;
+            return target.BlockEntityOld?.HasComp<BlockEntityCompSwitchable>() ?? false;
         }
     }
 

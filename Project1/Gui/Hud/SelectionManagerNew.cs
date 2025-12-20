@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
-using Start_a_Town_.Net;
 
 namespace Start_a_Town_.UI
 {
@@ -292,13 +293,21 @@ namespace Start_a_Town_.UI
                     this.MultipleSelected.Clear();
                     this.MultipleSelected.Add(target);
                     var selectables = target.Map.Town.QuerySelectables(target);
-                    if (selectables.Any())
-                    {
+                    //if (selectables.Any()) // no need to call .any() because QuerySelectables internally returns the target itself as well, also any() call moves the enumerator??
+                    //{
                         this.SelectedStack = selectables.GetEnumerator();
                         this.CycleTargets();
                         if (target.Map.IsUndiscovered(target.Global))
                             this.LabelName.TextFunc = () => "Unknown block";
-                    }
+                    //}
+                    break;
+
+                case TargetType.BlockEntity:
+                    this.MultipleSelected.Clear();
+                    this.MultipleSelected.Add(target);
+                    //this.SetName(target.BlockEntity.GetType().Name);
+                    this.SelectedStack = new List<TargetArgs>() { target }.GetEnumerator();
+                    this.CycleTargets();
                     break;
 
                 case TargetType.Null:
@@ -486,6 +495,13 @@ namespace Start_a_Town_.UI
                 var map = first.Map;
                 if (first.Type == TargetType.Position)
                     Renderer.DrawBlocks(map, camera, this.MultipleSelected.Select(t => (IntVec3)t.Global));
+                else if(first.Type == TargetType.BlockEntity)
+                {
+                    Renderer.DrawBlocks(map, camera, first.BlockEntity.CellsOccupied);
+
+                    // HACK: using this to make the origin block draw its interaction spot, if any
+                    map.GetBlock(first.BlockEntity.OriginGlobal).DrawSelected(sb, camera, map, first.BlockEntity.OriginGlobal);
+                }
                 if (SingleSelectedCell.HasValue)
                 {
                     var singleCell = SingleSelectedCell.Value;
@@ -500,6 +516,10 @@ namespace Start_a_Town_.UI
                     var map = this.SelectedSource.Map;
                     var global = this.SelectedSource.Global;
                     map.GetBlock(global).DrawSelected(sb, camera, map, global);
+                }
+                if(this.SelectedSource.Type == TargetType.BlockEntitySlot)
+                {
+
                 }
             }
         }
@@ -642,6 +662,6 @@ namespace Start_a_Town_.UI
         internal static TargetArgs SingleSelected => Instance.MultipleSelected.Count == 1 ? Instance.MultipleSelected.Single() : null;
         internal static Entity SingleSelectedEntity => SingleSelected?.Object as Entity;
         internal static IntVec3? SingleSelectedCell => (SingleSelected is TargetArgs target && target.Type == TargetType.Position) ? target.Global : null;
-        internal static BlockEntity SelectedBlockEntity => (SingleSelected is TargetArgs target && target.Type == TargetType.Position) ? target.BlockEntity : null;
+        internal static BlockEntity SelectedBlockEntity => (SingleSelected is TargetArgs target && target.Type == TargetType.Position) ? target.BlockEntityOld : null;
     }
 }

@@ -112,7 +112,16 @@ namespace Start_a_Town_
                 //    }
                 //}
                 //else
-                    SelectionManager.Select(target);
+                if(target.Type == TargetType.Position)
+                {
+                    if (target.Map.TryGetBlockEntity(target.Global, out var blockEntity))
+                    {
+                        SelectionManager.Select(new TargetArgs(blockEntity));
+                        return;
+                    }
+                }
+                SelectionManager.Select(target);
+
             }
         }
 

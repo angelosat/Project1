@@ -45,7 +45,7 @@ namespace Start_a_Town_
         internal virtual void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity) { }
         internal virtual void OnRemoved(MapBase map, IntVec3 global, BlockEntity parent) { }
         internal virtual void OnNeighborChanged(MapBase map, IntVec3 source) { }
-        internal virtual void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3) { }
+        //internal virtual void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3) { }
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
             //var list = new ListBoxObservable<string, GroupBox>(this.Errors, e => new GroupBox().AddControlsLineWrap(UI.Label.ParseNewNew(e)));// new UI.Label(e));
@@ -81,6 +81,9 @@ namespace Start_a_Town_
         {
         }
 
+        //internal virtual void GetQuickButtons(Action<string, Action> register, MapBase map, IntVec3 vector3) { }
+        internal virtual void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3) { }
 
+        internal virtual void Initialize() { }
     }
 }

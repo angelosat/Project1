@@ -797,6 +797,26 @@ namespace Start_a_Town_.UI
             if (enabled)
                 this.Add(this.DialogBlock);
         }
+        public static void ToggleUnique(Type type, ISelectable selectable)
+        {
+            var key = new WindowKey(type, selectable, WindowMultiplicity.UniquePerTarget);
+
+            if (_windows.TryGetValue(key, out var win))
+            {
+                win.Close();
+                _windows.Remove(key);
+            }
+            else
+            {
+                var control = (ISelectionBound)Activator.CreateInstance(type);// new T();
+                control.Bind(selectable);
+                var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
+                window.Client.AddControls(control as Control);
+
+                _windows[key] = window;
+                window.Show();
+            }
+        }
         public static void ToggleUnique<T>(ISelectable selectable) where T : Control, ISelectionBound, new()
         {
             var key = new WindowKey(typeof(T), selectable, WindowMultiplicity.UniquePerTarget);

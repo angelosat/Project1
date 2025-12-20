@@ -43,7 +43,7 @@ namespace Start_a_Town_
             var map = actor.Map;
 
             var target = task.GetTarget(ConstructionsID);
-            var entity = target.BlockEntity as IConstructible;
+            var entity = target.BlockEntityOld as IConstructible;
             foreach (var child in entity.Children)
             {
                 if(!this.Reserve(new TargetArgs(map, child), 1))

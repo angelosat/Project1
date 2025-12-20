@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public enum TargetType { Null, Entity, Slot, BlockEntitySlot, Position, Direction }
+    public enum TargetType { Null, Entity, Slot, BlockEntitySlot, Position, Direction, BlockEntity }
 
     public class TargetArgs : Inspectable, ITooltippable, IContextable, ISelectable, ILabeled
     {
@@ -98,6 +98,7 @@ namespace Start_a_Town_
                 {
                     TargetType.Entity => this._resolvedEntity?.Map,
                     TargetType.Position => _resolvedMap,// ??= this.World.Map,
+                    TargetType.BlockEntity => _resolvedMap,
                     _ => null
                 };
             }
@@ -107,6 +108,7 @@ namespace Start_a_Town_
                 this._resolvedMap = value;
             }
         }
+        public BlockEntity BlockEntity;
         GameObject? _resolvedEntity;
         public GameObject? Entity => this._resolvedEntity ??= this.World.GetEntity(this.EntityID);
         public GameObject Object
@@ -162,6 +164,12 @@ namespace Start_a_Town_
         }
 
         TargetArgs() { }
+        public TargetArgs(BlockEntity blockEntity)
+        {
+            this.BlockEntity = blockEntity;
+            this.Type = TargetType.BlockEntity;
+            this._resolvedMap = blockEntity.Map;
+        }
         public TargetArgs(GameObject obj)
         {
             this.Type = TargetType.Entity;
@@ -761,7 +769,7 @@ namespace Start_a_Town_
         }
         Block BlockCached;
         public Block Block => BlockCached ??= this.Type == TargetType.Position ? this.Map.GetBlock(this.Global) : null;
-        public BlockEntity BlockEntity => this.Type == TargetType.Position ? this.Map.GetBlockEntity(this.Global) : null;
+        public BlockEntity BlockEntityOld => this.Type == TargetType.Position ? this.Map.GetBlockEntity(this.Global) : null;
         public RegionNode Node => this.Map.Regions.GetNodeAt(this.Global);
         public Region Region => this.Node?.Region;
         public RegionRoom RegionRoom => this.Region?.Room;
@@ -772,17 +780,13 @@ namespace Start_a_Town_
         {
             get
             {
-                switch (this.Type)
+                return this.Type switch
                 {
-                    case TargetType.Entity:
-                        return this.Object.Name;
-
-                    case TargetType.Position:
-                        return this.Block.GetName(this.Map, this.Global);
-
-                    default:
-                        return "";
-                }
+                    TargetType.Entity => this.Object.Name,
+                    TargetType.Position => this.Block.GetName(this.Map, this.Global),
+                    TargetType.BlockEntity => this.BlockEntity.Name,
+                    _ => "",
+                };
             }
         }
 
@@ -850,6 +854,16 @@ namespace Start_a_Town_
 
                 case TargetType.Position:
                     this.Block.GetQuickButtons(info, this.Map, this.Global);
+                    break;
+
+                case TargetType.BlockEntity:
+                    //this.BlockEntity.GetQuickButtons(info, this.Map, this.Global);
+                    //this.BlockEntity.GetQuickButtons(info.AddTabAction, this.Map, this.Global);
+                    this.BlockEntity.GetQuickButtons(
+                        (string name, Type guiType) => 
+                            info.AddTabAction(name, () => UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
+                        this.Map, 
+                        this.Global);
                     break;
 
                 default:

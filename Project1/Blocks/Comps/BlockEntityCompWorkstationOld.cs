@@ -57,10 +57,10 @@ namespace Start_a_Town_
             return true;
         }
 
-        internal override void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
-        {
-            uISelectedInfo.AddTabAction("Orders", () => this.ShowUI(map, vector3));
-        }
+        //internal override void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
+        //{
+        //    uISelectedInfo.AddTabAction("Orders", () => this.ShowUI(map, vector3));
+        //}
 
         public void ShowUI(MapBase map, IntVec3 global)
         {

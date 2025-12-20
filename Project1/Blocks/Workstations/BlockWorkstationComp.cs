@@ -29,6 +29,10 @@ namespace Start_a_Town_
         public override string Name => "WorkstationComp";
         public WorkstationDef WorkstationType = WorkstationDefOf.Smeltery; // default
         public List<OrderSettings> Orders = [];
+        internal override void Initialize()
+        {
+            this.Parent.Name = this.WorkstationType.Label;
+        }
         //public ObservableCollection<OrderSettings> Orders = [];
         //public IntVec3 MasterCell;
         //BlockEntityCompWorkstation _cachedMaster;
@@ -142,15 +146,22 @@ namespace Start_a_Town_
         //        }
         //    }
         //}
-        internal override void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
+        //internal override void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
+        //{
+        //    uISelectedInfo.AddTabAction("Orders", this.ShowUI);
+        //}
+        //internal override void GetQuickButtons(Action<string, Action> register, MapBase map, IntVec3 vector3)
+        //{
+        //    register("Orders", this.ShowUI);
+        //}
+        internal override void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3)
         {
-            uISelectedInfo.AddTabAction("Orders", this.ShowUI);
+            register("Orders", typeof(WorkstationGuiNew));
         }
-
-        public void ShowUI()
-        {
-            UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Parent.Map, this.Parent.OriginGlobal));
-        }
+        //public void ShowUI()
+        //{
+        //    UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Parent.Map, this.Parent.OriginGlobal));
+        //}
 
         internal void MoveUp(OrderSettings orderSettings)
         {

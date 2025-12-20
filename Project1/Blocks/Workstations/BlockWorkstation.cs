@@ -26,22 +26,31 @@ namespace Start_a_Town_
         {
             return this.Orientations[orientation];
         }
-        public override BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
+        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {
             // Find all adjacent existing workstation block entities
-            var neighbors = new List<BlockWorkbenchEntity>();
+            //var neighbors = new List<BlockWorkbenchEntity>();
+            var neighbors = new List<BlockEntity>();
+            var typedArgs = (BlockWorkstationComp.Spec)args ?? new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery); // HACK
             foreach (var dir in IntVec3.AdjacentIntVec3)
             {
                 var neighborPos = originGlobal + dir;
-                if (map.TryGetBlockEntity<BlockWorkbenchEntity>(neighborPos, out var neighbor))
-                    neighbors.Add(neighbor);
+                //if (map.TryGetBlockEntity<BlockWorkbenchEntity>(neighborPos, out var neighbor))
+                if (map.TryGetBlockEntity(neighborPos, out var neighbor))
+                {
+                    if(neighbor.GetComp<BlockWorkstationComp>()?.WorkstationType == typedArgs.WorkstationType)
+                        neighbors.Add(neighbor);
+                }
             }
 
             if (neighbors.Count == 0)
             {
                 // No neighbors: create a new block entity for this block
-                var entity = Activator.CreateInstance(this.BlockEntityType, originGlobal) as BlockWorkbenchEntity;
-                entity.CellsOccupied.Add(originGlobal); // register this cell
+                //var entity = Activator.CreateInstance(this.BlockEntityType, originGlobal) as BlockWorkbenchEntity;
+                //var entity = new BlockEntity(originGlobal);
+                var entity = BlockEntityFactory.Create(this, originGlobal);
+
+                //entity.CellsOccupied.Add(originGlobal); // register this cell
                 return entity;
             }
             else
@@ -61,7 +70,7 @@ namespace Start_a_Town_
             //var masterCell = map.GetBlockEntityComp<BlockEntityCompWorkstation>(global).MasterCell;
             //if(masterCell == IntVec3.Zero)
             //    yield return Cell.FrontDefault;
-            var entity = map.GetBlockEntity<BlockWorkbenchEntity>(global);
+            var entity = map.GetBlockEntity(global);
             if(entity.OriginGlobal == global)
                 yield return Cell.FrontDefault;
 

@@ -1,6 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
-using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
 
@@ -8,6 +7,11 @@ namespace Start_a_Town_
 {
     public abstract class BlockEntityComp : Inspectable, IBlockEntityComp, ISerializable
     {
+        public abstract class Spec 
+        {
+            public abstract Type CompType { get; }
+            public abstract BlockEntityComp CreateComp();
+        }
         public BlockEntity Parent;
         public MapBase Map => this.Parent.Map;
         public IntVec3 Global => this.Parent.OriginGlobal;

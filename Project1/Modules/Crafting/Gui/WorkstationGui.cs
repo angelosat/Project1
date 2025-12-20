@@ -15,7 +15,7 @@ namespace Start_a_Town_
 
         
 
-        BlockEntityCompWorkstation Workstation;
+        BlockWorkstationComp Workstation;
 
         public WorkstationGuiNew()
         {
@@ -41,7 +41,7 @@ namespace Start_a_Town_
                 this.ItemControl.OnLayout(this.Width - this.Up.Width, this.Height);
             }
         }
-        void Build(BlockEntityCompWorkstation workstation)
+        void Build(BlockWorkstationComp workstation)
         {
             this.Workstation = workstation;
             //var panelOrders = new PanelTitled("Orders", 300, 400);
@@ -177,7 +177,7 @@ namespace Start_a_Town_
         {
             if (selectable is TargetArgs target &&
                 target.BlockEntity is BlockEntity block &&
-                block.GetComp<BlockEntityCompWorkstation>() is BlockEntityCompWorkstation comp)
+                block.GetComp<BlockWorkstationComp>() is BlockWorkstationComp comp)
                 this.Build(comp);
         }
     }

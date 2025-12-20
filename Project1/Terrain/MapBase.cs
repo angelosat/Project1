@@ -320,7 +320,7 @@ namespace Start_a_Town_
             entity.CellsOccupied.Add(global);
             Chunk chunk = this.GetChunk(global);
             var local = global.ToLocal();
-            chunk.AddBlockEntity(entity, local);
+            chunk.SetBlockEntity(entity, local);
             entity.OnSpawned(this, global);
         }
 

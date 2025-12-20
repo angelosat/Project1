@@ -1,114 +1,61 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class BlockEntityCompCollection : Inspectable, ICollection<BlockEntityComp>
+    public class BlockEntityCompCollection : Inspectable
     {
-        //readonly BlockEntity Parent;
-        readonly Collection<BlockEntityComp> Comps = new();
+        readonly BlockEntity Owner;
+        readonly Dictionary<Type, BlockEntityComp> _inner = [];
+        public IEnumerable<BlockEntityComp> Values => this._inner.Values;
 
+        internal T GetComp<T>() where T : BlockEntityComp
+        {
+            return (T)this._inner[typeof(T)];
+        }
+        internal bool TryGetComp<T>(out T comp) where T : BlockEntityComp
+        {
+            comp = null;
+            if (!this._inner.TryGetValue(typeof(T), out var found))
+                return false;
+            comp = (T)found;
+            return true;
+        }
+        internal void AddComp(BlockEntityComp comp)
+        {
+            this._inner.Add(comp.GetType(), comp);
+        }
         public override IEnumerable<(string item, object value)> Inspect()
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this._inner.Values)
                 foreach (var i in c.Inspect())
                     yield return i;
         }
 
-        //public BlockEntityCompCollection(BlockEntity parent)
-        //{
-        //    this.Parent = parent;
-        //}
+        public BlockEntityCompCollection(BlockEntity owner)
+        {
+            this.Owner = owner;
+        }
 
-        public int Count => ((ICollection<BlockEntityComp>)this.Comps).Count;
+        public int Count => ((ICollection<BlockEntityComp>)this._inner).Count;
 
-        public bool IsReadOnly => ((ICollection<BlockEntityComp>)this.Comps).IsReadOnly;
+        public bool IsReadOnly => ((ICollection<BlockEntityComp>)this._inner).IsReadOnly;
 
         public virtual SaveTag Save(string name)
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            if (!this.Comps.Any())
+            if (!this._inner.Any())
                 return tag;
-            foreach (var c in this.Comps)
+            foreach (var c in this._inner.Values)
                 tag.Add(c.Save(c.GetType().FullName));
             return tag;
         }
         public virtual void Load(SaveTag tag)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this._inner.Values)
                 tag.TryGetTag(c.GetType().FullName, ct => c.Load(ct));
         }
 
-        public void Add(BlockEntityComp item)
-        {
-            //item.Parent = this.Parent;
-            ((ICollection<BlockEntityComp>)this.Comps).Add(item);
-        }
-
-        public void Clear()
-        {
-            ((ICollection<BlockEntityComp>)this.Comps).Clear();
-        }
-
-        public bool Contains(BlockEntityComp item)
-        {
-            return ((ICollection<BlockEntityComp>)this.Comps).Contains(item);
-        }
-
-        public void CopyTo(BlockEntityComp[] array, int arrayIndex)
-        {
-            ((ICollection<BlockEntityComp>)this.Comps).CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(BlockEntityComp item)
-        {
-            return ((ICollection<BlockEntityComp>)this.Comps).Remove(item);
-        }
-
-        public IEnumerator<BlockEntityComp> GetEnumerator()
-        {
-            return ((IEnumerable<BlockEntityComp>)this.Comps).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)this.Comps).GetEnumerator();
-        }
-    }
-    public class BlockEntityCompCollection<T> : List<T> where T : IBlockEntityComp
-    {
-        public virtual SaveTag Save(string name)
-        {
-            var tag = new SaveTag(SaveTag.Types.Compound, name);
-            if (!this.Any())
-                return tag;
-            foreach (var c in this)
-                tag.Add(c.Save(c.GetType().FullName));
-            return tag;
-        }
-        public virtual void Load(SaveTag tag)
-        {
-            foreach (var c in this)
-                tag.TryGetTag(c.GetType().FullName, ct => c.Load(ct));
-        }
-    }
-    public class BlockEntityCompCollectionNew : List<BlockEntityComp> 
-    {
-        public virtual SaveTag Save(string name)
-        {
-            var tag = new SaveTag(SaveTag.Types.Compound, name);
-            if (!this.Any())
-                return tag;
-            foreach (var c in this)
-                tag.Add(c.Save(c.GetType().FullName));
-            return tag;
-        }
-        public virtual void Load(SaveTag tag)
-        {
-            foreach (var c in this)
-                tag.TryGetTag(c.GetType().FullName, ct => c.Load(ct));
-        }
     }
 }

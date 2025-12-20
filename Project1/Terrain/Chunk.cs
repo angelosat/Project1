@@ -983,19 +983,24 @@ namespace Start_a_Town_
 
                     if (this.Contains(origin))
                     {
-                        var entity = this[origin.ToLocal()].Block.CreateBlockEntity(this.Map, origin);
+                        //var entity = this[origin.ToLocal()].Block.CreateBlockEntity(this.Map, origin);
                         // TODO dont query blocks to create entities, load block entities from the data. LOL
+                        //var entity = new BlockWorkbenchEntity(origin);
+                        var block = this[origin.ToLocal()].Block;
+                        //var entity = new BlockEntity(origin);
+                        //BlockEntity entity = block.CreateBlockEntity();
+                        var entity = BlockEntityFactory.Create(block, origin);
 
                         tag.TryGetTag("Entity", t => entity.Load(t));
 
                         foreach (var global in entity.CellsOccupied)
                         {
                             if (this.Contains(global))
-                                this.AddBlockEntity(entity, global.ToLocal()); // TODO add chunk in map before finishing loading??
+                                this.SetBlockEntity(entity, global.ToLocal()); // TODO add chunk in map before finishing loading??
                             else
                             {
                                 if (this.Map.TryGetChunk(global, out var nchunk))
-                                    nchunk.AddBlockEntity(entity, global.ToLocal());
+                                    nchunk.SetBlockEntity(entity, global.ToLocal());
                             }
                         }
                     }
@@ -1044,11 +1049,11 @@ namespace Start_a_Town_
                     foreach (var global in entity.CellsOccupied)
                     {
                         if (this.Contains(global))
-                            this.AddBlockEntity(entity, global.ToLocal());
+                            this.SetBlockEntity(entity, global.ToLocal());
                         else
                         {
                             if (this.Map.TryGetChunk(global, out var nchunk))
-                                nchunk.AddBlockEntity(entity, global.ToLocal());
+                                nchunk.SetBlockEntity(entity, global.ToLocal());
                         }
                     }
                 }
@@ -1684,7 +1689,7 @@ namespace Start_a_Town_
             return this.BlockEntitiesByPosition.TryGetValue(local, out entity);
         }
 
-        public void AddBlockEntity(BlockEntity entity, IntVec3 local)
+        public void SetBlockEntity(BlockEntity entity, IntVec3 local)
         {
             entity.Map = this.Map;
             this.BlockEntitiesByPosition[local] = entity;

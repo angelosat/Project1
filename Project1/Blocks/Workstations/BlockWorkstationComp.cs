@@ -1,17 +1,33 @@
 ﻿using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 namespace Start_a_Town_
 {
-    public class BlockEntityCompWorkstation : BlockEntityComp
+    public class BlockWorkstationComp : BlockEntityComp
     {
-        public BlockEntityCompWorkstation(WorkstationDef def)
+        public new class Spec(WorkstationDef type) : BlockEntityComp.Spec
         {
-            this.WorkstationType = def;
+            public override Type CompType => typeof(BlockWorkstationComp);
+            public WorkstationDef WorkstationType = type;
+            public override BlockEntityComp CreateComp()
+            {
+                return new BlockWorkstationComp(this);
+            }
+        }
+        //public BlockWorkstationComp(WorkstationDef def)
+        //{
+        //    this.WorkstationType = def;
+        //}
+        public BlockWorkstationComp()
+        {
+            
+        }
+        public BlockWorkstationComp(Spec args)
+        {
+            this.WorkstationType = args.WorkstationType;
         }
         public override string Name => "WorkstationComp";
-        public WorkstationDef WorkstationType;
+        public WorkstationDef WorkstationType = WorkstationDefOf.Smeltery; // default
         public List<OrderSettings> Orders = [];
         //public ObservableCollection<OrderSettings> Orders = [];
         //public IntVec3 MasterCell;
@@ -160,5 +176,23 @@ namespace Start_a_Town_
         //{
         //    this.LinkedModules.Add(module);
         //}
+        public override void AddSaveData(SaveTag tag)
+        {
+            tag.Add(this.WorkstationType.Save("Type"));
+        }
+        public override void Load(SaveTag tag)
+        {
+            //if (tag.TryGetTagValueOut<string>("Type", out var defName)) this.WorkstationType = Def.GetDef<WorkstationDef>(defName);
+            this.WorkstationType = tag.LoadDef<WorkstationDef>("Type");
+        }
+        public override void Write(IDataWriter w)
+        {
+            this.WorkstationType.Write(w);
+        }
+        public override ISerializable Read(IDataReader r)
+        {
+            this.WorkstationType = r.ReadDef<WorkstationDef>();
+            return this;
+        }
     }
 }

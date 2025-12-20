@@ -31,7 +31,7 @@
         static public readonly Block Conveyor = new BlockConveyor();
         static public readonly Block Construction = new BlockConstruction();
         static public readonly Block ShopCounter = new BlockShopCounter();
-        static public readonly Block Workbench = new BlockWorkstation("Workbench", typeof(BlockWorkbenchEntity));
+        static public readonly Block Workbench = new BlockWorkstation("Workbench", typeof(BlockWorkbenchEntity)) { BlockEntityComps = [typeof(BlockWorkstationComp)] };
         static public readonly Block Kitchen = new BlockWorkstation("Kitchen", typeof(BlockKitchenEntity));
         static public readonly Block PlantProcessingBench = new BlockWorkstation("PlantProcessing", typeof(BlockPlantProcessingEntity));
         static public readonly Block CarpentryBench = new BlockWorkstation("CarpenterBench", typeof(BlockCarpentryEntity));

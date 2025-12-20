@@ -56,7 +56,7 @@ namespace Start_a_Town_
             var e = target.GetBlockEntity<BlockConstructionEntity>();
             e.HandleDepositedItem(dropped, amount);
         }
-        public override BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
+        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {
             return new BlockConstructionEntity(originGlobal);
         }

@@ -5,147 +5,147 @@
     /// </summary>
     class BlockDefOfNew
     {
-        public static readonly BlockDef Air = new("Air")
-        {
-            BlockType = typeof(BlockAir)
-        };
-        public static readonly BlockDef Grass = new("Grass")
-        {
-            BlockType = typeof(BlockGrass)
-        };
-        public static readonly BlockDef Stone = new("Bedrock")
-        {
-            BlockType = typeof(BlockBedrock)
-        };
-        public static readonly BlockDef Farmland = new("Farmland")
-        {
-            BlockType = typeof(BlockFarmland)
-        };
-        public static readonly BlockDef Cobblestone = new("Stone")
-        {
-            BlockType = typeof(BlockStone)
-        };
-        public static readonly BlockDef Mineral = new("Mineral")
-        {
-            BlockType = typeof(BlockMineral)
-        };
-        public static readonly BlockDef Sand = new("Sand")
-        {
-            BlockType = typeof(BlockSand)
-        };
-        public static readonly BlockDef WoodenDeck = new("Wooden Deck")
-        {
-            BlockType = typeof(BlockWoodenDeck)
-        };
-        public static readonly BlockDef Soil = new("Soil")
-        {
-            BlockType = typeof(BlockSoil)
-        };
-        public static readonly BlockDef Door = new("Door")
-        {
-            BlockType = typeof(BlockDoor)
-        };
-        public static readonly BlockDef Bed = new("Bed")
-        {
-            BlockType = typeof(BlockBed)
-        };
-        public static readonly BlockDef WoodPaneling = new("WoodPaneling")
-        {
-            BlockType = typeof(BlockWoodPaneling)
-        };
-        public static readonly BlockDef Chest = new("Chest")
-        {
-            BlockType = typeof(BlockChest)
-        };
-        public static readonly BlockDef Bin = new("Bin")
-        {
-            BlockType = typeof(BlockStorage)
-        };
-        public static readonly BlockDef Fluid = new("Fluid")
-        {
-            BlockType = typeof(BlockFluid)
-        };
-        public static readonly BlockDef Stool = new("Stool")
-        {
-            BlockType = typeof(BlockStool)
-        };
-        public static readonly BlockDef Chair = new("Chair")
-        {
-            BlockType = typeof(BlockChair)
-        };
-        public static readonly BlockDef Bricks = new("Bricks")
-        {
-            BlockType = typeof(BlockBricks)
-        };
-        public static readonly BlockDef Campfire = new("Campfire")
-        {
-            BlockType = typeof(BlockCampfire)
-        };
-        public static readonly BlockDef Window = new("Window")
-        {
-            BlockType = typeof(BlockWindow)
-        };
-        public static readonly BlockDef Roof = new("Roof")
-        {
-            BlockType = typeof(BlockRoof)
-        };
-        public static readonly BlockDef Stairs = new("Stairs")
-        {
-            BlockType = typeof(BlockStairs)
-        };
-        public static readonly BlockDef Counter = new("Counter")
-        {
-            BlockType = typeof(BlockCounter)
-        };
-        public static readonly BlockDef Designation = new("Designation")
-        {
-            BlockType = typeof(BlockDesignation)
-        };
-        public static readonly BlockDef Slab = new("Slab")
-        {
-            BlockType = typeof(BlockSlab)
-        };
-        public static readonly BlockDef Conveyor = new("Conveyor")
-        {
-            BlockType = typeof(BlockConveyor)
-        };
-        public static readonly BlockDef Prefab = new("Prefab")
-        {
-            BlockType = typeof(BlockPrefab)
-        };
-        public static readonly BlockDef Construction = new("Construction")
-        {
-            BlockType = typeof(BlockConstruction)
-        };
-        public static readonly BlockDef ShopCounter = new("ShopCounter")
-        {
-            BlockType = typeof(BlockShopCounter)
-        };
-        public static readonly BlockDef Workbench = new("Workbench")
-        {
-            BlockType = typeof(BlockWorkstation),
-            BlockEntityType = typeof(BlockWorkbenchEntity)
-        };
-        public static readonly BlockDef Kitchen = new("Kitchen")
-        {
-            BlockType = typeof(BlockWorkstation),
-            BlockEntityType = typeof(BlockKitchenEntity)
-        };
-        public static readonly BlockDef PlantProcessingBench = new("PlantProcessingBench")
-        {
-            BlockType = typeof(BlockWorkstation),
-            BlockEntityType = typeof(BlockPlantProcessingEntity)
-        };
-        public static readonly BlockDef CarpentryBench = new("CarpentryBench")
-        {
-            BlockType = typeof(BlockWorkstation),
-            BlockEntityType = typeof(BlockCarpentryEntity)
-        };
-        public static readonly BlockDef Smeltery = new("Smeltery")
-        {
-            BlockType = typeof(BlockWorkstation),
-            BlockEntityType = typeof(BlockSmelteryEntity)
-        };
+        //public static readonly BlockDef Air = new("Air")
+        //{
+        //    BlockType = typeof(BlockAir)
+        //};
+        //public static readonly BlockDef Grass = new("Grass")
+        //{
+        //    BlockType = typeof(BlockGrass)
+        //};
+        //public static readonly BlockDef Stone = new("Bedrock")
+        //{
+        //    BlockType = typeof(BlockBedrock)
+        //};
+        //public static readonly BlockDef Farmland = new("Farmland")
+        //{
+        //    BlockType = typeof(BlockFarmland)
+        //};
+        //public static readonly BlockDef Cobblestone = new("Stone")
+        //{
+        //    BlockType = typeof(BlockStone)
+        //};
+        //public static readonly BlockDef Mineral = new("Mineral")
+        //{
+        //    BlockType = typeof(BlockMineral)
+        //};
+        //public static readonly BlockDef Sand = new("Sand")
+        //{
+        //    BlockType = typeof(BlockSand)
+        //};
+        //public static readonly BlockDef WoodenDeck = new("Wooden Deck")
+        //{
+        //    BlockType = typeof(BlockWoodenDeck)
+        //};
+        //public static readonly BlockDef Soil = new("Soil")
+        //{
+        //    BlockType = typeof(BlockSoil)
+        //};
+        //public static readonly BlockDef Door = new("Door")
+        //{
+        //    BlockType = typeof(BlockDoor)
+        //};
+        //public static readonly BlockDef Bed = new("Bed")
+        //{
+        //    BlockType = typeof(BlockBed)
+        //};
+        //public static readonly BlockDef WoodPaneling = new("WoodPaneling")
+        //{
+        //    BlockType = typeof(BlockWoodPaneling)
+        //};
+        //public static readonly BlockDef Chest = new("Chest")
+        //{
+        //    BlockType = typeof(BlockChest)
+        //};
+        //public static readonly BlockDef Bin = new("Bin")
+        //{
+        //    BlockType = typeof(BlockStorage)
+        //};
+        //public static readonly BlockDef Fluid = new("Fluid")
+        //{
+        //    BlockType = typeof(BlockFluid)
+        //};
+        //public static readonly BlockDef Stool = new("Stool")
+        //{
+        //    BlockType = typeof(BlockStool)
+        //};
+        //public static readonly BlockDef Chair = new("Chair")
+        //{
+        //    BlockType = typeof(BlockChair)
+        //};
+        //public static readonly BlockDef Bricks = new("Bricks")
+        //{
+        //    BlockType = typeof(BlockBricks)
+        //};
+        //public static readonly BlockDef Campfire = new("Campfire")
+        //{
+        //    BlockType = typeof(BlockCampfire)
+        //};
+        //public static readonly BlockDef Window = new("Window")
+        //{
+        //    BlockType = typeof(BlockWindow)
+        //};
+        //public static readonly BlockDef Roof = new("Roof")
+        //{
+        //    BlockType = typeof(BlockRoof)
+        //};
+        //public static readonly BlockDef Stairs = new("Stairs")
+        //{
+        //    BlockType = typeof(BlockStairs)
+        //};
+        //public static readonly BlockDef Counter = new("Counter")
+        //{
+        //    BlockType = typeof(BlockCounter)
+        //};
+        //public static readonly BlockDef Designation = new("Designation")
+        //{
+        //    BlockType = typeof(BlockDesignation)
+        //};
+        //public static readonly BlockDef Slab = new("Slab")
+        //{
+        //    BlockType = typeof(BlockSlab)
+        //};
+        //public static readonly BlockDef Conveyor = new("Conveyor")
+        //{
+        //    BlockType = typeof(BlockConveyor)
+        //};
+        //public static readonly BlockDef Prefab = new("Prefab")
+        //{
+        //    BlockType = typeof(BlockPrefab)
+        //};
+        //public static readonly BlockDef Construction = new("Construction")
+        //{
+        //    BlockType = typeof(BlockConstruction)
+        //};
+        //public static readonly BlockDef ShopCounter = new("ShopCounter")
+        //{
+        //    BlockType = typeof(BlockShopCounter)
+        //};
+        //public static readonly BlockDef Workbench = new("Workbench")
+        //{
+        //    BlockType = typeof(BlockWorkstation),
+        //    BlockEntityType = typeof(BlockWorkbenchEntity)
+        //};
+        //public static readonly BlockDef Kitchen = new("Kitchen")
+        //{
+        //    BlockType = typeof(BlockWorkstation),
+        //    BlockEntityType = typeof(BlockKitchenEntity)
+        //};
+        //public static readonly BlockDef PlantProcessingBench = new("PlantProcessingBench")
+        //{
+        //    BlockType = typeof(BlockWorkstation),
+        //    BlockEntityType = typeof(BlockPlantProcessingEntity)
+        //};
+        //public static readonly BlockDef CarpentryBench = new("CarpentryBench")
+        //{
+        //    BlockType = typeof(BlockWorkstation),
+        //    BlockEntityType = typeof(BlockCarpentryEntity)
+        //};
+        //public static readonly BlockDef Smeltery = new("Smeltery")
+        //{
+        //    BlockType = typeof(BlockWorkstation),
+        //    BlockEntityType = typeof(BlockSmelteryEntity)
+        //};
         static BlockDefOfNew()
         {
             //Def.Register(typeof(BlockDefOfNew));

@@ -37,7 +37,7 @@ namespace Start_a_Town_
         public SkillDef Skill { get; init; }
         public MaterialRefinementDef Refinement { get; init; }
         //public IntVec3 OwnerPosition { get; init; }
-        public BlockEntityCompWorkstation Workstation { get; init; }
+        public BlockWorkstationComp Workstation { get; init; }
         public string Label => this.Refinement.Label;
 
         //// Optional input constraints
@@ -48,7 +48,7 @@ namespace Start_a_Town_
             yield return BoneDefOf.Item;
         }
 
-        public OrderSettings(int id, BlockEntityCompWorkstation owner, MaterialRefinementDef refinement)
+        public OrderSettings(int id, BlockWorkstationComp owner, MaterialRefinementDef refinement)
         {
             this.Id = id;
             this.Skill = refinement.MaterialType.SkillToRefine;

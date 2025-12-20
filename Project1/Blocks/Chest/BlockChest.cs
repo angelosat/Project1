@@ -19,7 +19,7 @@ namespace Start_a_Town_
         {
             return Def.GetDefs<MaterialDef>().Where(mat => mat.Type == MaterialTypeDefOf.Wood || mat.Type == MaterialTypeDefOf.Metal);
         }
-        public override BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
+        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {
             return new BlockChestEntity(originGlobal, 16);
         }

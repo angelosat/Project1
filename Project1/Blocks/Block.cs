@@ -13,6 +13,12 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     public abstract partial class Block : Inspectable, ISlottable, ITooltippable
     {
+        struct BlockEntityCompDef
+        {
+            Type CompType;
+
+        }
+        public Type[] BlockEntityComps;
         static Block()
         {
             Initialize();
@@ -207,7 +213,7 @@ namespace Start_a_Town_
         public virtual Color[] UV => BlockCoordinatesFull;
         public virtual MouseMap MouseMap => BlockMouseMap;
         // TODO find a way to make this method required for blocks tha have entity
-        public virtual BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
+        public virtual BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         { return null; }
        
         public IEnumerable<IntVec3> GetChildren(MapBase map, IntVec3 originGlobal)
@@ -426,7 +432,7 @@ namespace Start_a_Town_
         protected virtual void Place(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
             map.SetBlock(global, this, material, data, variation, orientation, notify);
-            var entity = this.CreateBlockEntity(map, global);
+            var entity = this.GetBlockEntityOrNew(map, global, null);
             if (entity != null)
             {
                 map.AddBlockEntity(global, entity);
@@ -911,6 +917,7 @@ namespace Start_a_Town_
             var col = interactionCells.All(c => map.Contains(c) && !map.IsSolid(c)) ? Color.Lime : Color.Red;
             cam.DrawCellHighlights(sb, Block.BlockHighlight, interactionCells, col * .5f);
         }
+
         public class DefaultState : IBlockState
         {
             public void Apply(MapBase map, Vector3 global)
@@ -928,6 +935,18 @@ namespace Start_a_Town_
             {
                 return "";
             }
+        }
+    }
+    public static class BlockEntityFactory
+    {
+        public static BlockEntity Create(Block block, IntVec3 originGlobal)
+        {
+            if (block.BlockEntityComps is null)
+                return null;
+            var entity = new BlockEntity(originGlobal);
+            foreach (var comp in block.BlockEntityComps)
+                entity.AddComp((BlockEntityComp)Activator.CreateInstance(comp));
+            return entity;
         }
     }
 }

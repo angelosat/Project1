@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public abstract class BlockEntity : Inspectable, IDisposable, IEntityCompContainer<BlockEntityComp>//, IHasChildren
+    public class BlockEntity : Inspectable, IDisposable//, IEntityCompContainer<BlockEntityComp>//, IHasChildren
     {
         public HashSet<IntVec3> CellsOccupied = [];
         public MapBase Map;
@@ -19,18 +19,21 @@ namespace Start_a_Town_
         public IEnumerable<IntVec3> ReservedInteractionCells => this.InteractionSpots.SelectMany(ActorDefOf.Npc.OccupyingCellsStanding);
 
         public IntVec3 OriginGlobal;
-        public readonly BlockEntityCompCollectionNew Comps = new();
+        //public readonly BlockEntityCompCollectionNew Comps = new();
+        public readonly BlockEntityCompCollection Comps;// = new();
         public ObservableCollection<string> Errors = new();
-
+    
         public BlockEntity(IntVec3 originGlobal)
         {
+            this.Comps = new(this);
             this.OriginGlobal = originGlobal;
+            this.CellsOccupied.Add(originGlobal);
         }
 
         public virtual void Tick(MapBase map, IntVec3 global)
         {
-            foreach (var comp in this.Comps)
-                comp.Tick();
+            foreach (var c in this.Comps.Values)
+                c.Tick();
         }
         public virtual void GetTooltip(Control tooltip) { }
 
@@ -40,13 +43,13 @@ namespace Start_a_Town_
         public virtual void Dispose() { } // maybe make this abstract so i don't forget it?
         public virtual void OnRemoved(MapBase map, IntVec3 global)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.OnRemoved(map, global, this);
         }
         public virtual void Break(MapBase map, IntVec3 global) { }
         public virtual void OnSpawned(MapBase map, IntVec3 global)
         {
-            foreach (var comp in this.Comps)
+            foreach (var comp in this.Comps.Values)
                 comp.OnSpawned(this, map, global);
         }
 
@@ -61,26 +64,30 @@ namespace Start_a_Town_
         /// <returns></returns>
         public virtual IEnumerable<GameObject> GetChildren() { yield break; }
 
-        public bool HasComp<T>() where T : class, IBlockEntityComp
+        public bool HasComp<T>() where T : BlockEntityComp// class, IBlockEntityComp
         {
-            return this.GetComp<T>() != null;
+            //return this.Comps.GetComp<T>() != null;
+            return this.Comps.TryGetComp<T>(out _);
         }
         public BlockEntity AddComp(BlockEntityComp comp)
         {
             comp.Parent = this;
-            this.Comps.Add(comp);
+            this.Comps.AddComp(comp);
             return this;
         }
-
+        public T GetComp<T>() where T : BlockEntityComp// class, IBlockEntityComp
+        {
+            return (T)this.Comps.GetComp<T>();//.FirstOrDefault(c => c is T) as T;
+        }
         internal void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity)
         {
-            foreach (var comp in this.Comps)
+            foreach (var comp in this.Comps.Values)
                 comp.OnDrop(actor, item, target, quantity);
         }
 
         internal void IsMadeFrom(ItemMaterialAmount[] itemDefMaterialAmounts)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.IsMadeFrom(itemDefMaterialAmounts);
         }
 
@@ -91,10 +98,10 @@ namespace Start_a_Town_
 
         internal virtual void Deconstruct(GameObject actor, IntVec3 global)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.Deconstruct(actor, global);
         }
-
+        
         protected virtual void AddSaveData(SaveTag tag)
         {
         }
@@ -115,16 +122,13 @@ namespace Start_a_Town_
             this.LoadExtra(tag);
         }
         protected virtual void LoadExtra(SaveTag tag) { }
-        public T GetComp<T>() where T : class, IBlockEntityComp
-        {
-            return this.Comps.FirstOrDefault(c => c is T) as T;
-        }
+        
         public void Write(IDataWriter w)
         {
             w.Write(this.OriginGlobal);
             this.CellsOccupied.Write(w);
 
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.Write(w);
             this.WriteExtra(w);
         }
@@ -132,7 +136,7 @@ namespace Start_a_Town_
         {
             this.OriginGlobal = r.ReadIntVec3();
             this.CellsOccupied.Read(r);
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.Read(r);
             this.ReadExtra(r);
         }
@@ -142,12 +146,12 @@ namespace Start_a_Town_
 
         public void Draw(Camera camera, MapBase map, IntVec3 global)
         {
-            foreach (var comp in this.Comps)
+            foreach (var comp in this.Comps.Values)
                 comp.Draw(camera, map, global);
         }
         public void DrawUI(SpriteBatch sb, Camera cam, IntVec3 global)
         {
-            foreach (var comp in this.Comps)
+            foreach (var comp in this.Comps.Values)
                 comp.DrawUI(sb, cam);
             if (this.Errors.Any())
                 Icon.Cross.DrawFloating(sb, cam, this.OriginGlobal);
@@ -157,28 +161,28 @@ namespace Start_a_Town_
     
         internal virtual void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.GetQuickButtons(uISelectedInfo, map, vector3);
         }
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.GetSelectionInfo(info, map, vector3);
         }
         internal virtual void GetSelectionInfo(SelectionManager info, MapBase map, IntVec3 vector3)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.GetSelectionInfo(info, map, vector3);
         }
         internal void OnBlockBelowChanged(MapBase map, IntVec3 global)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.OnBlockBelowChanged(map, global);
         }
 
         internal void ResolveReferences(MapBase map, IntVec3 global)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.ResolveReferences(map, global);
             this.OnMapLoaded(map, global);
         }
@@ -189,13 +193,13 @@ namespace Start_a_Town_
 
         internal void DrawSelected(MySpriteBatch sb, Camera cam, MapBase map, IntVec3 global)
         {
-            foreach (var c in this.Comps)
+            foreach (var c in this.Comps.Values)
                 c.DrawSelected(sb, cam, map, global);
         }
 
         internal void OnNeighborChanged(MapBase map, IntVec3 source)
         {
-            foreach (var comp in this.Comps)
+            foreach (var comp in this.Comps.Values)
                 comp.OnNeighborChanged(map, source);
         }
 

@@ -183,6 +183,8 @@ namespace Start_a_Town_
             {
                 foreach (var target in e.Positions)
                 {
+                    if (!des.Value.Contains(new TargetArgs(this.Map, target)))
+                        continue;
                     if (!des.Key.IsValid(this.Map, target))
                         des.Value.Remove(target.At(this.Map));
                 }

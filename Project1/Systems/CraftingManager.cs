@@ -7,8 +7,8 @@ namespace Start_a_Town_
     {
         private int NextOrderId = 1;
         public override string Name => "CraftingManager";
-        readonly Dictionary<IntVec3, BlockEntityCompWorkstation> _byPosition = [];
-        readonly Dictionary<WorkstationDef, List<BlockEntityCompWorkstation>> _byType = [];
+        readonly Dictionary<IntVec3, BlockWorkstationComp> _byPosition = [];
+        readonly Dictionary<WorkstationDef, List<BlockWorkstationComp>> _byType = [];
         readonly Dictionary<int, OrderSettings> _ordersById = [];
         public CraftingManager(Town town) : base(town)
         {
@@ -34,7 +34,7 @@ namespace Start_a_Town_
             var map = this.Town.Map;
             foreach (var pos in changed.Positions)
             {
-                var workstation = map.GetBlockEntity(pos)?.GetComp<BlockEntityCompWorkstation>();
+                var workstation = map.GetBlockEntity(pos)?.GetComp<BlockWorkstationComp>();
                 if (workstation is not null)
                 {
                     if (this._byPosition.TryGetValue(pos, out var existing))
@@ -52,7 +52,7 @@ namespace Start_a_Town_
         public OrderSettings CreateOrder(IntVec3 workstationPosition, MaterialRefinementDef refinement)
         {
             var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
-            var comp = workstation.GetComp<BlockEntityCompWorkstation>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockEntityCompWorkstation)}");
+            var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
 
             var order = new OrderSettings(this.NextOrderId++, comp, refinement);
 
@@ -67,7 +67,7 @@ namespace Start_a_Town_
         {
             if (!this._ordersById.TryGetValue(id, out var order)) throw new ArgumentException($"Order with id: {id} didn't exist");
             this._ordersById.Remove(id);
-            var comp = this.Map.GetBlockEntity(order.Workstation.Global).GetComp<BlockEntityCompWorkstation>();
+            var comp = this.Map.GetBlockEntity(order.Workstation.Global).GetComp<BlockWorkstationComp>();
             comp.Orders.Remove(order);
             this.Map.Events.Post(new CraftOrderRemovedEvent(comp, order));
             return order;
@@ -78,14 +78,14 @@ namespace Start_a_Town_
             return this._ordersById[id];
         }
     }
-    public class CraftOrderAddedEvent(BlockEntityCompWorkstation comp, OrderSettings order) : EventPayloadBase
+    public class CraftOrderAddedEvent(BlockWorkstationComp comp, OrderSettings order) : EventPayloadBase
     {
-        public readonly BlockEntityCompWorkstation Comp = comp;
+        public readonly BlockWorkstationComp Comp = comp;
         public readonly OrderSettings Order = order;
     }
-    public class CraftOrderRemovedEvent(BlockEntityCompWorkstation comp, OrderSettings order) : EventPayloadBase
+    public class CraftOrderRemovedEvent(BlockWorkstationComp comp, OrderSettings order) : EventPayloadBase
     {
-        public readonly BlockEntityCompWorkstation Comp = comp;
+        public readonly BlockWorkstationComp Comp = comp;
         public readonly OrderSettings Order = order;
     }
     public class CraftOrderModifiedEvent(OrderSettings order) : EventPayloadBase

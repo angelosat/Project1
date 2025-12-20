@@ -27,11 +27,11 @@ namespace Start_a_Town_
             yield return MaterialDefOf.Water;
         }
         
-        public override BlockEntity CreateBlockEntity(IntVec3 originGlobal)
+        public override BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
         {
             return new BlockFluidEntity(originGlobal);
         }
-        public override void NeighborChanged(MapBase map, IntVec3 global)
+        public override void OnNeighborChanged(MapBase map, IntVec3 global, IntVec3 source)
         {
             map.AddBlockEntity(global, new BlockFluidEntity(global));
         }

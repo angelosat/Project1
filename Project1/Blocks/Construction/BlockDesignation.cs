@@ -24,7 +24,7 @@ namespace Start_a_Town_
             return canvas.Designations.DrawBlock(Block.Atlas.Texture, screenBounds, token, camera.Zoom, fog, color, sunlight, blocklight, depth, this, global);
         }
        
-        public override BlockEntity CreateBlockEntity(IntVec3 originGlobal)
+        public override BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
         {
             return new BlockDesignationEntity(originGlobal);
         }

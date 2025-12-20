@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.MediaFoundation;
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.Particles;
@@ -345,11 +346,35 @@ namespace Start_a_Town_
                 return false;
             return chunk.TryGetBlockEntity(global.ToLocal(), out entity);
         }
+        public bool TryGetBlockEntity<T>(IntVec3 global, out T entity) where T : BlockEntity
+        {
+            BlockEntity e = null;
+            entity = null;
+            if (this.GetChunk(global) is not Chunk chunk)
+                return false;
+            chunk.TryGetBlockEntity(global.ToLocal(), out e);
+            entity = e as T;
+            return entity is not null;
+        }
         public BlockEntity GetBlockEntity(IntVec3 global)
         {
             Chunk chunk = this.GetChunk(global);
             chunk.TryGetBlockEntity(global.ToLocal(), out var entity);
             return entity;
+        }
+        public T GetBlockEntityComp<T>(IntVec3 global) where T: BlockEntityComp
+        {
+            return this.GetBlockEntity(global).GetComp<T>();
+        }
+        public bool TryGetBlockEntityComp<T>(IntVec3 global, out T comp) where T : BlockEntityComp
+        {
+            if (!this.TryGetBlockEntity(global, out var entity))
+            {
+                comp = null;
+                return false; 
+            }
+            comp = entity.GetComp<T>();
+            return comp is not null;
         }
         public T GetBlockEntity<T>(IntVec3 global) where T : BlockEntity
         {
@@ -717,7 +742,7 @@ namespace Start_a_Town_
                     this.InvalidateCell(n);
 
                 if (nblock != null)
-                    nblock.NeighborChanged(this, n);
+                    nblock.OnNeighborChanged(this, global, n);
             }
             if (raiseEvent)
                 this.NotifyBlockChanged(global);

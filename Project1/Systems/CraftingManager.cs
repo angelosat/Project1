@@ -38,14 +38,14 @@ namespace Start_a_Town_
                 if (workstation is not null)
                 {
                     if (this._byPosition.TryGetValue(pos, out var existing))
-                        this._byType[existing.Type].Remove(existing);
+                        this._byType[existing.WorkstationType].Remove(existing);
                     this._byPosition[pos] = workstation;
-                    this._byType[workstation.Type].Add(workstation);
+                    this._byType[workstation.WorkstationType].Add(workstation);
                 }
                 else if (this._byPosition.TryGetValue(pos, out var existing))
                 {
                     this._byPosition.Remove(pos);
-                    this._byType[existing.Type].Remove(existing);
+                    this._byType[existing.WorkstationType].Remove(existing);
                 }
             }
         }

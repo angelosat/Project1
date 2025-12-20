@@ -10,12 +10,12 @@ namespace Start_a_Town_
 {
     public abstract class BlockEntity : Inspectable, IDisposable, IEntityCompContainer<BlockEntityComp>//, IHasChildren
     {
-        public HashSet<IntVec3> CellsOccupied = new();
+        public HashSet<IntVec3> CellsOccupied = [];
         public MapBase Map;
         public bool Exists => this.Map is not null;
 
         //public virtual IEnumerable<IntVec3> InteractionSpots { get { yield break; } }
-        public IEnumerable<IntVec3> InteractionSpots => this.Map.GetCell(this.OriginGlobal).GetInteractionSpots(this.OriginGlobal);
+        public IEnumerable<IntVec3> InteractionSpots => this.Map.GetCell(this.OriginGlobal).GetInteractionSpots(this.Map, this.OriginGlobal);
         public IEnumerable<IntVec3> ReservedInteractionCells => this.InteractionSpots.SelectMany(ActorDefOf.Npc.OccupyingCellsStanding);
 
         public IntVec3 OriginGlobal;
@@ -193,11 +193,12 @@ namespace Start_a_Town_
                 c.DrawSelected(sb, cam, map, global);
         }
 
-        internal void NeighborChanged()
+        internal void OnNeighborChanged(MapBase map, IntVec3 source)
         {
             foreach (var comp in this.Comps)
-                comp.NeighborChanged();
+                comp.OnNeighborChanged(map, source);
         }
+
         
     }
 }

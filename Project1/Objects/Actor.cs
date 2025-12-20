@@ -371,7 +371,7 @@ namespace Start_a_Town_
         }
         public IntVec3? FindOperatablePosition(IntVec3 facilityGlobal)
         {
-            var operatingPositions = this.Map.GetCell(facilityGlobal).GetInteractionSpotLocal();
+            var operatingPositions = this.Map.GetCell(facilityGlobal).GetInteractionSpotLocal(this.Map, facilityGlobal);
             if (!operatingPositions.Any())
                 return null;
             foreach (var pos in operatingPositions)

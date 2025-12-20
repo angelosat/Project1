@@ -192,7 +192,7 @@ namespace Start_a_Town_
                 sb.DrawBlock(Atlas.Texture, map, top, topSrc, cam, Color.Transparent, tint, Color.White, Vector4.One);
             }
         }
-        public override BlockEntity CreateBlockEntity(IntVec3 originGlobal)
+        public override BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
         {
             return new BlockBedEntity(originGlobal);
         }

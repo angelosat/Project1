@@ -40,7 +40,7 @@ namespace Start_a_Town_
 
         internal virtual void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity) { }
         internal virtual void OnRemoved(MapBase map, IntVec3 global, BlockEntity parent) { }
-
+        internal virtual void OnNeighborChanged(MapBase map, IntVec3 source) { }
         internal virtual void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3) { }
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
@@ -77,9 +77,6 @@ namespace Start_a_Town_
         {
         }
 
-        internal virtual void NeighborChanged()
-        {
-        }
 
     }
 }

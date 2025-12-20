@@ -52,7 +52,7 @@ namespace Start_a_Town_
             this.PanelReactions.HideOnAnyClick();
             //var allreactions = Def.GetDefs<Reaction>();
             var manager = workstation.Parent.Map.Town.CraftingManagerNew;
-            var availableRefinements = manager.GetRefinementsBy(workstation.Type);
+            var availableRefinements = manager.GetRefinementsBy(workstation.WorkstationType);
             //var validreactions = allreactions;
 
             var availableRefinementsControl = new ListBoxNoScroll<MaterialRefinementDef>(r => new Label(r.Label, () => this.PlaceOrder(r)));

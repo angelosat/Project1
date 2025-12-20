@@ -983,7 +983,8 @@ namespace Start_a_Town_
 
                     if (this.Contains(origin))
                     {
-                        var entity = this[origin.ToLocal()].Block.CreateBlockEntity(origin);
+                        var entity = this[origin.ToLocal()].Block.CreateBlockEntity(this.Map, origin);
+                        // TODO dont query blocks to create entities, load block entities from the data. LOL
 
                         tag.TryGetTag("Entity", t => entity.Load(t));
 

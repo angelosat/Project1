@@ -23,7 +23,7 @@ namespace Start_a_Town_
                     );
             return table;
         }
-        public override BlockEntity CreateBlockEntity(IntVec3 originGlobal)
+        public override BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
         {
             return new BlockCampfireEntity(originGlobal);
         }

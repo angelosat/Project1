@@ -253,17 +253,17 @@ namespace Start_a_Town_
             return this;
         }
        
-        internal IEnumerable<IntVec3> GetInteractionSpotLocal()
+        internal IEnumerable<IntVec3> GetInteractionSpotLocal(MapBase map, IntVec3 global)
         {
-            return this.Block.GetInteractionSpotsLocal(this.Orientation);
+            return this.Block.GetInteractionSpotsLocal(map, global, this.Orientation);
         }
-        internal IEnumerable<IntVec3> GetInteractionSpots(IntVec3 global)
+        internal IEnumerable<IntVec3> GetInteractionSpots(MapBase map, IntVec3 global)
         {
-            return this.Block.GetInteractionSpots(this, global);
+            return this.Block.GetInteractionSpots(this, map, global);
         }
         public static IEnumerable<IntVec3> GetFreeInteractionSpots(MapBase map, IntVec3 global, Actor actor)
         {
-            var interactionSpots = map.GetCell(global).GetInteractionSpots(global);
+            var interactionSpots = map.GetCell(global).GetInteractionSpots(map, global);
             return interactionSpots.Where(s => actor.CanStandInNew(s));
         }
 

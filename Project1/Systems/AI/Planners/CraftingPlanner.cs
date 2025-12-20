@@ -205,7 +205,7 @@ namespace Start_a_Town_
                         continue;
                     if (!actor.CanReserve(benchglobal.Above))
                         continue;
-                    var operatingPos = map.GetCell(benchglobal).GetInteractionSpots(benchglobal).First();
+                    var operatingPos = map.GetCell(benchglobal).GetInteractionSpots(map, benchglobal).First();
                     if (!actor.CanStandInNew(operatingPos))
                         continue;
                     if (actor.Def.OccupyingCellsStandingWithBase(operatingPos).Any(c => !actor.CanReserve(c)))

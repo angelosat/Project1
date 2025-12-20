@@ -27,7 +27,7 @@ namespace Start_a_Town_.AI
                 if (!actor.CanReserve(bedglobal))
                     continue;
                 var bedCell = map.GetCell(bedglobal);
-                var operatingPositions = bedCell.GetInteractionSpots(bedglobal);
+                var operatingPositions = bedCell.GetInteractionSpots(map, bedglobal);
                 foreach (var p in operatingPositions)
                 {
                     if (!actor.CanReach(p))

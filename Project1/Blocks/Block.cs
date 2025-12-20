@@ -207,7 +207,7 @@ namespace Start_a_Town_
         public virtual Color[] UV => BlockCoordinatesFull;
         public virtual MouseMap MouseMap => BlockMouseMap;
         // TODO find a way to make this method required for blocks tha have entity
-        public virtual BlockEntity CreateBlockEntity(IntVec3 originGlobal)
+        public virtual BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
         { return null; }
        
         public IEnumerable<IntVec3> GetChildren(MapBase map, IntVec3 originGlobal)
@@ -389,10 +389,10 @@ namespace Start_a_Town_
         /// TODO: maybe pass position of neighbor that changed?
         /// </summary>
         /// <param name="net"></param>
-        /// <param name="global"></param>
-        public virtual void NeighborChanged(MapBase map, IntVec3 global) 
+        /// <param name="source"></param>
+        public virtual void OnNeighborChanged(MapBase map, IntVec3 current, IntVec3 source) 
         {
-            map.GetBlockEntity(global)?.NeighborChanged();
+            map.GetBlockEntity(current)?.OnNeighborChanged(map, source);
         }
 
         public void Deconstruct(GameObject actor, Vector3 global)
@@ -426,7 +426,7 @@ namespace Start_a_Town_
         protected virtual void Place(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
             map.SetBlock(global, this, material, data, variation, orientation, notify);
-            var entity = this.CreateBlockEntity(global);
+            var entity = this.CreateBlockEntity(map, global);
             if (entity != null)
             {
                 map.AddBlockEntity(global, entity);
@@ -829,17 +829,20 @@ namespace Start_a_Town_
             return renderTarget;
         }
         protected virtual IEnumerable<IntVec3> GetInteractionSpotsLocal() { yield break; }
-        internal IEnumerable<IntVec3> GetInteractionSpotsLocal(int orientation)
+        protected virtual IEnumerable<IntVec3> GetInteractionSpotsLocal(MapBase map, IntVec3 global) { yield break; }
+        protected virtual bool HasInteractionSpots => false;
+        internal IEnumerable<IntVec3> GetInteractionSpotsLocal(MapBase map, IntVec3 global, int orientation)
         {
-            return this.GetInteractionSpotsLocal().Select(s => Coords.Rotate(s, orientation));   
+            // main entry
+            return this.GetInteractionSpotsLocal(map, global).Select(s => Coords.Rotate(s, orientation));   
         }
         internal IEnumerable<IntVec3> GetInteractionSpots(IntVec3 global, int orientation)
         {
             return this.GetInteractionSpotsLocal().Select(s => global + Coords.Rotate(s, orientation));
         }
-        internal IEnumerable<IntVec3> GetInteractionSpots(Cell cell, IntVec3 global)
+        internal IEnumerable<IntVec3> GetInteractionSpots(Cell cell, MapBase map, IntVec3 global)
         {
-            foreach (var p in this.GetInteractionSpotsLocal(cell.Orientation))
+            foreach (var p in this.GetInteractionSpotsLocal(map, global, cell.Orientation))
                 yield return p + global;
         }
         internal IEnumerable<IntVec3> GetInteractionSpots(MapBase map, IntVec3 global)
@@ -849,7 +852,7 @@ namespace Start_a_Town_
                 yield break;
             global = Cell.GetOrigin(map, global);
             var cell = map.GetCell(global);
-            foreach (var p in this.GetInteractionSpotsLocal(cell.Orientation))
+            foreach (var p in this.GetInteractionSpotsLocal(map, global, cell.Orientation))
                 yield return p + global;
         }
         internal IEnumerable<IntVec3> GetReservedInteractionCells(IntVec3 global, int orientation) => this.GetInteractionSpots(global, orientation).SelectMany(ActorDefOf.Npc.OccupyingCellsStanding);

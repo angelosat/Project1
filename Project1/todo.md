@@ -1,6 +1,8 @@
 # todo 2025
 ## immediate
+- lumberjacking: two distinct designations: 1)chop down explicitly: forces actors to clear trees immediately, 2)chop down only when wood stocks lower than min set limit
 - crafting: clear workstation surface from irrelevant items before working
+- interactions: finally untangle interactions. make them def based instead of subclassing everything
 - make an input queue and handle it in the main thread
 - ditch chunks, single flat cell[] for the whole map
 - migrate blocks to the def ecosystem and change save/load logic

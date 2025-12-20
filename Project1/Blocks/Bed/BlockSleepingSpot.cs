@@ -34,7 +34,7 @@ namespace Start_a_Town_
         {
             return 0;
         }
-        public override BlockEntity CreateBlockEntity(IntVec3 originGlobal)
+        public override BlockEntity CreateBlockEntity(MapBase map, IntVec3 originGlobal)
         {
             return new BlockBedEntity(originGlobal);
         }

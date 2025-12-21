@@ -6,6 +6,7 @@ using Start_a_Town_.Terraforming;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -1538,6 +1539,7 @@ namespace Start_a_Town_
         }
         public void ValidateSlicesNew(Camera cam)
         {
+            var frontmost = UpdateFrontmostXY(cam);
             var count = this.Slices.Length;
             for (int i = 0; i < count; i++)
             {
@@ -1549,7 +1551,7 @@ namespace Start_a_Town_
                 }
                 if (slice.Valid)
                     continue;
-                this.BuildSliceNew(slice, cam, this.Map, i);
+                this.BuildSliceNew(slice, cam, this.Map, i, frontmost);
                 slice.Valid = true;
             }
             //TESTING IF REMOVING THIS BREAKS ANYTHING
@@ -1557,6 +1559,30 @@ namespace Start_a_Town_
             //foreach (var sl in this.Slices)
             //    sl.Valid = true;
         }
+
+        private (int x, int y) UpdateFrontmostXY(Camera cam)
+        {
+            int frontCellX = 0, frontCellY = 0;
+            var mapSizeInChunks = this.Map.GetSizeInChunks();
+            switch ((int)cam.Rotation)
+            {
+                case 0:
+                    frontCellX = frontCellY = mapSizeInChunks * Size - 1;
+                    break;
+                case 1:
+                    frontCellX = mapSizeInChunks * Size - 1;
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    frontCellY = mapSizeInChunks * Size - 1;
+                    break;
+                default:
+                    break;
+            }
+            return (frontCellX, frontCellY);
+        }
+
         public void BuildSlice(Slice slice, Camera camera, MapBase map, int z)
         {
             var unknown = new List<Cell>();
@@ -1618,58 +1644,45 @@ namespace Start_a_Town_
             slice.Cover = topCover;
             slice.Unknown = unknownSlice;
         }
-        public void BuildSliceNew(Slice slice, Camera camera, MapBase map, int z)
+        public void BuildSliceNew(Slice slice, Camera camera, MapBase map, int z, (int x, int y) frontCells)
         {
-            var mapSizeInChunks = this.Map.GetSizeInChunks();
-            var chunkX = this.MapCoords.X;
-            var chunkY = this.MapCoords.Y;
-            int edgeX = 0, edgeY = 0;
-            switch ((int)camera.Rotation)
-            {
-                case 0:
-                    edgeX = mapSizeInChunks - 1;
-                    edgeY = mapSizeInChunks - 1;
-                    break;
-                case 1:
-                    edgeX = mapSizeInChunks - 1;
-                    edgeY = 0;
-                    break;
-                case 2:
-                    edgeX = 0;
-                    edgeY = 0;
-                    break;
-                case 3:
-                    edgeX = 0;
-                    edgeY = mapSizeInChunks - 1;
-                    break;
-                default:
-                    break;
-            }
-
-            var obstructed = new List<Cell>();
-            var mysterious = new List<Cell>();
-            var visible = new List<Cell>();
-
+            var maxCapacity = Size * Size;
+            var obstructed = new List<Cell>(maxCapacity);
+            var mysterious = new List<Cell>(maxCapacity);
+            var visible = new List<Cell>(maxCapacity);
+            var frontmost = new List<Cell>(maxCapacity);
+            var frontmostMysterious = new List<Cell>(maxCapacity);
             for (int i = 0; i < Chunk.Size; i++)
                 for (int j = 0; j < Chunk.Size; j++)
                 {
                     var local = new IntVec3(i, j, z);
                     var cell = this.Cells[GetCellIndex(local)];
                     var global = local.ToGlobal(this);
-                    var isobstructed = !map.IsVisible(global);
+                    var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);
                     var isundiscovered = map.IsUndiscovered(global);
                     var isair = cell.Block == BlockDefOf.Air;
                     var ismysterious = camera.MysteriousBlocks && isundiscovered;
-                    if (ismysterious)
-                        mysterious.Add(cell);
+
+                    if (global.X == frontCells.x || global.Y == frontCells.y)
+                    {
+                        if (ismysterious)
+                            frontmostMysterious.Add(cell);
+                        if (!isair)
+                            frontmost.Add(cell);
+                    }
                     else
                     {
-                        if (!isair)
+                        if (ismysterious)
+                            mysterious.Add(cell);
+                        else
                         {
-                            if (isobstructed)
-                                obstructed.Add(cell);
-                            else
-                                visible.Add(cell);
+                            if (!isair)
+                            {
+                                if (isobstructed)
+                                    obstructed.Add(cell);
+                                else
+                                    visible.Add(cell);
+                            }
                         }
                     }
                 }
@@ -1682,16 +1695,58 @@ namespace Start_a_Town_
             foreach(var cell in mysterious)
                 camera.DrawUnknown(topCover, map, this, cell);
 
-            var visibleCount = visible.Count;
-            var canvas = new Canvas(Game1.Instance.GraphicsDevice, visibleCount);
+            var canvas = new Canvas(Game1.Instance.GraphicsDevice, visible.Count + frontmost.Count + frontmostMysterious.Count);
 
             foreach(var cell in visible)
                 camera.DrawCell(canvas, map, this, cell);
 
+            foreach(var cell in frontmost)
+                camera.DrawCell(canvas, map, this, cell);
+
+            foreach (var cell in frontmostMysterious)
+                camera.DrawUnknown(canvas, map, this, cell);
+
             slice.Canvas = canvas;
             slice.Cover = topCover;
         }
-        
+        public void BuildFrontmostBlocksNewSlicesNew(Camera camera)
+        {
+            var chunkX = this.MapCoords.X;
+            var chunkY = this.MapCoords.Y;
+            var mapSizeInChunks = this.Map.GetSizeInChunks();
+            int edgeX = 0, edgeY = 0;
+            IntVec3 offset;
+            switch ((int)camera.Rotation)
+            {
+                case 0:
+                    edgeX = mapSizeInChunks - 1;
+                    edgeY = mapSizeInChunks - 1;
+                    offset.X = Chunk.Size - 1;
+                    offset.Y = Chunk.Size - 1;
+                    break;
+                case 1:
+                    edgeX = mapSizeInChunks - 1;
+                    edgeY = 0;
+                    offset.X = Chunk.Size - 1;
+
+                    break;
+                case 2:
+                    edgeX = 0;
+                    edgeY = 0;
+                    break;
+                case 3:
+                    edgeX = 0;
+                    edgeY = mapSizeInChunks - 1;
+                    offset.Y = Chunk.Size - 1;
+                    break;
+                default:
+                    break;
+            }
+            var maxheight = this.Map.GetMaxHeight();
+            var map = this.Map;
+            
+        }
+
         public void BuildFrontmostBlocksNewSlices(Camera camera)
         {
             var chunkX = this.MapCoords.X;

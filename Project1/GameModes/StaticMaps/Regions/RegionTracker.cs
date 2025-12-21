@@ -555,44 +555,6 @@ namespace Start_a_Town_
             if (!this.Regions.Contains(newNode.Region)) // no idea why i had removed this from here but regions weren't getting added when removing a batch blocks containing the edges of neighboring chunks
                 this.Regions.Add(newNode.Region);
         }
-        [Obsolete]
-        public HashSet<Region> Init2Height()
-        {
-            this.Regions.Clear();
-            var maxz = this.Chunk.Map.GetMaxHeight() - 1;
-            var handled = new HashSet<IntVec3>();
-            var size = Chunk.Size;
-            for (int x = 0; x < size; x++)
-                for (int y = 0; y < size; y++)
-                {
-                    bool foundSolid = false;
-                    var lastSolidZ = 0;
-                    for (int z = 0; z < maxz; z++)
-                    {
-                        var vec = new IntVec3(x, y, z);
-                        var global = vec.ToGlobal(this.Chunk);
-                        var cell = this.Chunk[x, y, z];
-                        if (cell.IsSolid() && cell.Block is not BlockDoor)
-                        {
-                            foundSolid = true;
-                            lastSolidZ = z;
-                        }
-                        else
-                        {
-                            var existing = this.GetRegionAt(global - new IntVec3(0, 0, 2)); // why 2?
-                            if (foundSolid && lastSolidZ == z - 2 && existing == null)
-                            {
-                                foreach (var region in this.FloodNew(handled, x, y, lastSolidZ))
-                                {
-                                    this.Regions.Add(region);
-                                }
-                                foundSolid = false;
 
-                            }
-                        }
-                    }
-                }
-            return this.Regions;
-        }
     }
 }

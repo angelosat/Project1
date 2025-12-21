@@ -149,6 +149,7 @@ namespace Start_a_Town_
         public byte X; // 1 byte
         public byte Y; // 1 byte
         public byte Z; // 1 byte
+        public byte Sunlight = 15, Blocklight = 0;
         public Block Block = BlockDefOf.Air; // 4 bytes
         public MaterialDef Material = MaterialDefOf.Air;
         public BitVector32 Data; // 4 bytes

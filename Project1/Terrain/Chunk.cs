@@ -281,9 +281,10 @@ namespace Start_a_Town_
         {
             this.Cells = new Cell[Chunk.Size * Chunk.Size * MapBase.MaxHeight];
             this.Objects = new List<GameObject>();
-            this.Sunlight = new List<byte>(Volume);
+            //this.Sunlight = new List<byte>(Volume);
             for (int i = 0; i < Volume; i++)
-                this.Sunlight.Add(15);
+                //this.Sunlight.Add(15);
+                this.Sunlight[i] = 15;
             this.HeightMap = new int[Size][];
             for (int i = 0; i < Size; i++)
                 this.HeightMap[i] = new int[Size];
@@ -357,8 +358,9 @@ namespace Start_a_Town_
             //return (local.Z * Size + local.X) * Size + local.Y;
         }
         public static int Volume = Size * Size * MapBase.MaxHeight;
-        public List<byte> Sunlight;
+        //public List<byte> Sunlight;
         public byte[] BlockLight = new byte[Volume];
+        public byte[] Sunlight = new byte[Volume];
 
         void ResetCellLight()
         {
@@ -944,20 +946,19 @@ namespace Start_a_Town_
 
             }
 
-            //Cell[] oldCells = this.Cells;
-            Cell[] newCells = new Cell[this.Cells.Length];
-            for (int z = 0; z < MapBase.MaxHeight; z++)
-                for (int y = 0; y < Size; y++)
-                    for (int x = 0; x < Size; x++)
-                    {
-                        int oldIndex = (z * Size + x) * Size + y;
-                        int newIndex = (z * Size + y) * Size + x;
-                        var cell = this.Cells[oldIndex];
-                        newCells[newIndex] = cell;
-                        cell.X = (byte)x;
-                        cell.Y = (byte)y;
-                    }
-            this.Cells = newCells;
+            //Cell[] newCells = new Cell[this.Cells.Length];
+            //for (int z = 0; z < MapBase.MaxHeight; z++)
+            //    for (int y = 0; y < Size; y++)
+            //        for (int x = 0; x < Size; x++)
+            //        {
+            //            int oldIndex = (z * Size + x) * Size + y;
+            //            int newIndex = (z * Size + y) * Size + x;
+            //            var cell = this.Cells[oldIndex];
+            //            newCells[newIndex] = cell;
+            //            cell.X = (byte)x;
+            //            cell.Y = (byte)y;
+            //        }
+            //this.Cells = newCells;
         }
      
         private Dictionary<BlockEntity, List<IntVec3>> GetDistinctBlockEntities()
@@ -1332,7 +1333,7 @@ namespace Start_a_Town_
                 for (int j = 0; j < Size; j++)
                     this.HeightMap[i][j] = reader.ReadInt32();
 
-            this.Sunlight = reader.ReadBytes(Volume).ToList();
+            this.Sunlight = reader.ReadBytes(Volume);//.ToList();
 
 
             this.BlockLight = reader.ReadBytes(Volume);
@@ -1497,21 +1498,21 @@ namespace Start_a_Town_
                         n++;
                     }
 
-            var newSun = new List<byte>(this.Sunlight.Count);
-            var newBlock = new byte[this.BlockLight.Length];
-            var nn = 0;
-            for (int z = 0; z < MapBase.MaxHeight; z++)
-                for (int y = 0; y < Size; y++)
-                    for (int x = 0; x < Size; x++)
-                    {
-                        int oldIndex = (z * Size + x) * Size + y;
-                        int newIndex = (z * Size + y) * Size + x;
-                        newSun.Add(this.Sunlight[oldIndex]);
-                        newBlock[newIndex] = this.BlockLight[oldIndex];
-                        nn++;
-                    }
-            this.Sunlight = newSun;
-            this.BlockLight = newBlock;
+            //var newSun = new List<byte>(this.Sunlight.Count);
+            //var newBlock = new byte[this.BlockLight.Length];
+            //var nn = 0;
+            //for (int z = 0; z < MapBase.MaxHeight; z++)
+            //    for (int y = 0; y < Size; y++)
+            //        for (int x = 0; x < Size; x++)
+            //        {
+            //            int oldIndex = (z * Size + x) * Size + y;
+            //            int newIndex = (z * Size + y) * Size + x;
+            //            newSun.Add(this.Sunlight[oldIndex]);
+            //            newBlock[newIndex] = this.BlockLight[oldIndex];
+            //            nn++;
+            //        }
+            //this.Sunlight = newSun;
+            //this.BlockLight = newBlock;
 
             var heightTag = chunktag["Heightmap"].Value as List<SaveTag>;
             n = 0;

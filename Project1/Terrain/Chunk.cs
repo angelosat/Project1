@@ -325,21 +325,21 @@ namespace Start_a_Town_
         {
             return this.Cells[GetCellIndex(x, y, z)];
         }
-        public Cell GetCellLocal(IntVec3 local)
-        {
-            // local bounds check (XY only)
-            if ((uint)local.X >= Size ||
-                (uint)local.Y >= Size)
-                return null;
+        //public Cell GetCellLocal(IntVec3 local)
+        //{
+        //    // local bounds check (XY only)
+        //    if ((uint)local.X >= Size ||
+        //        (uint)local.Y >= Size)
+        //        return null;
 
-            IntVec3 global = new IntVec3(
-                this.Start.X + local.X,
-                this.Start.Y + local.Y,
-                local.Z
-            );
+        //    IntVec3 global = new IntVec3(
+        //        this.Start.X + local.X,
+        //        this.Start.Y + local.Y,
+        //        local.Z
+        //    );
 
-            return this.Map.GetCell(global);
-        }
+        //    return this.Map.GetCell(global);
+        //}
         public static int IndexToGlobal(int x, int y, int z) => (z * Size + x) * Size + y;
 
         public static int GetCellIndex(int x, int y, int z) => (z * Size + x) * Size + y;
@@ -528,9 +528,11 @@ namespace Start_a_Town_
 
                 this.SetSunlight(localx, localy, z, light);
                 if (z <= firstContact)
-                    //lightsourcesToHandle.Enqueue(cell.LocalCoords.ToGlobal(this));
-                    lightsourcesToHandle.Enqueue(cell.Global);
-                z--;
+                    //lightsourcesToHandle.Enqueue(cell.Local.ToGlobal(this));
+                    //lightsourcesToHandle.Enqueue(cell.Local);
+                    lightsourcesToHandle.Enqueue(cell.GetGlobalCoords(this));
+
+                    z--;
             }
 
             if (light > 0)
@@ -547,7 +549,7 @@ namespace Start_a_Town_
                 {
                     Cell cell = this.CellsToValidate.Dequeue();
                     //this.Map.LightingEngine.HandleImmediate(new IntVec3[] { cell.LocalCoords.ToGlobal(this) });
-                    this.Map.LightingEngine.HandleImmediate(new IntVec3[] { cell.Global });
+                    this.Map.LightingEngine.HandleImmediate(new IntVec3[] { cell.GetGlobalCoords(this) });
                     cell.Valid = true;
                     this.InvalidateSlice(cell.Z);
                     this.InvalidateMesh();
@@ -636,7 +638,7 @@ namespace Start_a_Town_
         }
         public bool InvalidateLight(Cell cell)
         {
-            return this.InvalidateLight(cell.Global);
+            return this.InvalidateLight(cell.GetGlobalCoords(this));
         }
         public bool InvalidateLight(IntVec3 global)
         {
@@ -778,7 +780,7 @@ namespace Start_a_Town_
                 if (!camera.ViewPort.Intersects(screenBounds))
                     continue;
                 float cd = global.GetDrawDepth(map, camera);
-                var local = cell.GetLocalCoords(this);
+                var local = cell.LocalCoords;// GetLocalCoords(this);
                 byte light = Math.Max((byte)(this.GetSunlight(local) - map.GetSkyDarkness()), this.GetBlockLight(local));
                 float l = (light + 1) / 16f;
                 Color color = new Color(l, l, l, 1);

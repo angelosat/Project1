@@ -168,7 +168,7 @@ namespace Start_a_Town_.Core
             map.Init();
             map.FinishLoading();
             map.ResolveReferences();
-            map.HACKpopulateCellArrayFromChunks();
+            //map.HACKpopulateCellArrayFromChunks();
 
             var client = net as Client;
 

@@ -405,12 +405,12 @@ namespace Start_a_Town_
 
             var block = cell.Block;
 
-            //int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
-            //int z = cell.Z;
+            int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+            int z = cell.Z;
 
-            int gx = cell.X, gy = cell.Y, z = cell.Z;
-            int lx = gx - (int)chunk.Start.X;
-            int ly = gy - (int)chunk.Start.Y;
+            //int gx = cell.X, gy = cell.Y, z = cell.Z;
+            //int lx = gx - (int)chunk.Start.X;
+            //int ly = gy - (int)chunk.Start.Y;
 
             var light = GetFinalLight(this, map, chunk, cell, gx, gy, z);
 
@@ -458,12 +458,12 @@ namespace Start_a_Town_
         }
         public bool DrawUnknown(Canvas canvas, MapBase map, Chunk chunk, Cell cell)
         {
-            //int z = cell.Z;
-            //int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+            int z = cell.Z;
+            int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
 
-            int gx = cell.X, gy = cell.Y, z = cell.Z;
-            int lx = gx - (int)chunk.Start.X;
-            int ly = gy - (int)chunk.Start.Y;
+            //int gx = cell.X, gy = cell.Y, z = cell.Z;
+            //int lx = gx - (int)chunk.Start.X;
+            //int ly = gy - (int)chunk.Start.Y;
 
             var mapOffset = map.GetOffset();
             Coords.Rotate(this, gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);
@@ -479,12 +479,12 @@ namespace Start_a_Town_
         }
         public bool DrawUnknown(MySpriteBatch sb, MapBase map, Chunk chunk, Cell cell)
         {
-            //int z = cell.Z;
-            //int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+            int z = cell.Z;
+            int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
 
-            int gx = cell.X, gy = cell.Y, z = cell.Z;
-            int lx = gx - (int)chunk.Start.X;
-            int ly = gy - (int)chunk.Start.Y;
+            //int gx = cell.X, gy = cell.Y, z = cell.Z;
+            //int lx = gx - (int)chunk.Start.X;
+            //int ly = gy - (int)chunk.Start.Y;
 
             var mapOffset = map.GetOffset();
             Coords.Rotate(this, gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);

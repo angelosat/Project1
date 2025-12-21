@@ -37,7 +37,7 @@ namespace Start_a_Town_
             nextLight = GetNextSunLightImmediate(thisCell, thisChunk, gx, gy, z, lx, ly, neighbors);
 
             oldLight = thisChunk.GetSunlight(lx, ly, z);
-            var local = thisCell.GetLocalCoords(thisChunk);
+            var local = thisCell.LocalCoords;// GetLocalCoords(thisChunk);
             int d = nextLight - oldLight;
             if (d != 0)
                 thisChunk.SetSunlight(local, nextLight);
@@ -74,7 +74,7 @@ namespace Start_a_Town_
                             continue;
                         if (ncell.Opaque)
                             continue;
-                        var local = ncell.GetLocalCoords(nchunk);
+                        var local = ncell.LocalCoords;// GetLocalCoords(nchunk);
                         var l = nchunk.GetSunlight(local);
                         maxAdjLight = Math.Max(maxAdjLight, l);
                     }
@@ -96,7 +96,7 @@ namespace Start_a_Town_
                 if (!this.Map.TryGetAll(current, out var chunk, out var cell))
                     continue;
 
-                var local = cell.GetLocalCoords(chunk);
+                var local = cell.LocalCoords;// GetLocalCoords(chunk);
                 if (chunk.IsAboveHeightMap(local))
                     continue;
                 chunk.SetSunlight(local, 0);
@@ -106,7 +106,7 @@ namespace Start_a_Town_
                 {
                     if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
                         continue;
-                    var nlocal = ncell.GetLocalCoords(nchunk);
+                    var nlocal = ncell.LocalCoords;// GetLocalCoords(nchunk);
                     if (nchunk.IsAboveHeightMap(nlocal))
                     {
                         if (!queued.Contains(current))
@@ -133,7 +133,7 @@ namespace Start_a_Town_
             queued.Remove(global);
             if (!this.Map.TryGetAll(global, out var thisChunk, out var thisCell))
                 return;
-            var local = thisCell.GetLocalCoords(thisChunk);
+            var local = thisCell.LocalCoords;// GetLocalCoords(thisChunk);
             var thisLight = thisChunk.GetBlockLight(local);
 
             nextLight = GetNextBlockLightImmediate(thisCell, global);
@@ -170,7 +170,7 @@ namespace Start_a_Town_
                     continue;
                 if (ncell.Opaque)
                     continue;
-                var local = ncell.GetLocalCoords(nchunk);
+                var local = ncell.LocalCoords;// GetLocalCoords(nchunk);
                 byte l = nchunk.GetBlockLight(local);
                 maxAdjLight = Math.Max(maxAdjLight, l);
             }
@@ -202,7 +202,7 @@ namespace Start_a_Town_
                     continue;
                 if (cell.Opaque)
                     continue;
-                var local = cell.GetLocalCoords(chunk);
+                var local = cell.LocalCoords;// GetLocalCoords(chunk);
 
                 var prevLight = chunk.GetBlockLight(local);
                 chunk.SetBlockLight(local, cell.Luminance);
@@ -213,7 +213,7 @@ namespace Start_a_Town_
                     var n = global + adj[i];
                     if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
                         continue;
-                    var nlocal = ncell.GetLocalCoords(nchunk);
+                    var nlocal = ncell.LocalCoords;// GetLocalCoords(nchunk);
 
                     var nlight = nchunk.GetBlockLight(nlocal);
 

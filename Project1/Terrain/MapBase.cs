@@ -427,7 +427,7 @@ namespace Start_a_Town_
         }
         public virtual Cell GetCell(Vector3 global)
         {
-            throw new Exception();
+            //throw new Exception();
             var globalRound = new Vector3((int)Math.Round(global.X), (int)Math.Round(global.Y), (int)Math.Floor(global.Z));
             if (this.TryGetChunk(globalRound, out var chunk))
                 return chunk[globalRound.X - chunk.Start.X, globalRound.Y - chunk.Start.Y, globalRound.Z];

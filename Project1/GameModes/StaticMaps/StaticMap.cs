@@ -17,7 +17,7 @@ namespace Start_a_Town_
     public class StaticMap : MapBase, ITooltippable
     {
         public override float LoadProgress => this.ActiveChunks.Count / (float)(this.Size.Chunks * this.Size.Chunks);
-        Cell[] Cells;
+        //Cell[] Cells;
        
         public MapSize Size;
         public class MapSize : INamed
@@ -292,42 +292,42 @@ namespace Start_a_Town_
             }
             this.InitChunks();
 
-            this.HACKpopulateCellArrayFromChunks();
+            //this.HACKpopulateCellArrayFromChunks();
         }
 
-        public void HACKpopulateCellArrayFromChunks()
-        {
-            var chunkSize = Chunk.Size;
-            var mapWidth = Size.Blocks;
-            var mapHeight = Size.Blocks;
-            this.Cells = new Cell[mapWidth * mapHeight * MapBase.MaxHeight];
+        //public void HACKpopulateCellArrayFromChunks()
+        //{
+        //    var chunkSize = Chunk.Size;
+        //    var mapWidth = Size.Blocks;
+        //    var mapHeight = Size.Blocks;
+        //    this.Cells = new Cell[mapWidth * mapHeight * MapBase.MaxHeight];
            
-            foreach (var chunk in this.ActiveChunks.Values)
-            {
-                for (int z = 0; z < MapBase.MaxHeight; z++)
-                    for (int y = 0; y < chunkSize; y++)
-                        for (int x = 0; x < chunkSize; x++)
-                        {
-                            var local = new IntVec3(x, y, z);
-                            var cell = chunk.Cells[Chunk.GetCellIndex(local)];
+        //    foreach (var chunk in this.ActiveChunks.Values)
+        //    {
+        //        for (int z = 0; z < MapBase.MaxHeight; z++)
+        //            for (int y = 0; y < chunkSize; y++)
+        //                for (int x = 0; x < chunkSize; x++)
+        //                {
+        //                    var local = new IntVec3(x, y, z);
+        //                    var cell = chunk.Cells[Chunk.GetCellIndex(local)];
 
-                            int gx = chunk.Start.X + x;
-                            int gy = chunk.Start.Y + y;
-                            int gz = z;
+        //                    int gx = chunk.Start.X + x;
+        //                    int gy = chunk.Start.Y + y;
+        //                    int gz = z;
 
-                            cell.X = (byte)gx;
-                            cell.Y = (byte)gy;
-                            cell.Z = (byte)gz;
+        //                    cell.X = (byte)gx;
+        //                    cell.Y = (byte)gy;
+        //                    cell.Z = (byte)gz;
 
-                            int mapIndex =
-                                gx +
-                                gy * mapWidth +
-                                gz * mapWidth * mapHeight;
+        //                    int mapIndex =
+        //                        gx +
+        //                        gy * mapWidth +
+        //                        gz * mapWidth * mapHeight;
 
-                            this.Cells[mapIndex] = cell;
-                        }
-            }
-        }
+        //                    this.Cells[mapIndex] = cell;
+        //                }
+        //    }
+        //}
 
         public override void GenerateThumbnails()
         {
@@ -1053,18 +1053,18 @@ namespace Start_a_Town_
                 this.Spawn(actor);//
             }
         }
-        public override Cell GetCell(Vector3 g)
-        {
-            //int index = this.Index(g);
-            var index = this.Index(g);// (g.Z * this.Size.Blocks + y) * this.Size.Blocks + x;
-            return this.GetCell(index);
-        }
-        Cell GetCell(int index)
-        {
-            if (index < 0 || index >= Cells.Length)
-                return null;
-            return this.Cells[index];
-        }
+        //public override Cell GetCell(Vector3 g)
+        //{
+        //    //int index = this.Index(g);
+        //    var index = this.Index(g);// (g.Z * this.Size.Blocks + y) * this.Size.Blocks + x;
+        //    return this.GetCell(index);
+        //}
+        //Cell GetCell(int index)
+        //{
+        //    if (index < 0 || index >= Cells.Length)
+        //        return null;
+        //    return this.Cells[index];
+        //}
         int Index(int x, int y, int z)
         {
             var index = (z * this.Size.Blocks + y) * this.Size.Blocks + x;

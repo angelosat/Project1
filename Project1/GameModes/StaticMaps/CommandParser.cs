@@ -61,7 +61,7 @@ namespace Start_a_Town_
                             foreach (var cell in ch.Value.Cells)
                                 if (cell.Block == toremove)
                                     //net.Map.RemoveBlock(cell.LocalCoords.ToGlobal(ch.Value));
-                                    net.Map.RemoveBlock(cell.Global);
+                                    net.Map.RemoveBlock(cell.LocalCoords);
                         if (net is Server)
                             (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), ReliabilityType.OrderedReliable);
                         break;

@@ -23,14 +23,14 @@ namespace Start_a_Town_
         GameObject Following;
         Vector2 _Coordinates;
         bool _hideUnknownBlocks = true;
-        public bool HideUnknownBlocks // TODO: make it static
+        public bool MysteriousBlocks // TODO: make it static
         {
             get => this._hideUnknownBlocks;
             set
             {
                 this._hideUnknownBlocks = value;
                 Ingame.CurrentMap.InvalidateChunks();
-                this.TopSliceChanged = true;
+                //this.TopSliceChanged = true;
             }
         }
         bool _drawTopSlice = true;
@@ -61,10 +61,10 @@ namespace Start_a_Town_
             {
                 var oldvalue = this._DrawLevel;
                 this._DrawLevel = value;
-                if (oldvalue != value)
-                {
-                    this.TopSliceChanged = true;
-                }
+                //if (oldvalue != value)
+                //{
+                //    this.TopSliceChanged = true;
+                //}
 
                 if (InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu))
                 {
@@ -138,7 +138,7 @@ namespace Start_a_Town_
                 this.Location = this.Coordinates - new Vector2((int)((this.Width / 2) / this.Zoom), (int)((this.Height / 2) / this.Zoom));
             }
         }
-        public bool TopSliceChanged = true;
+        //public bool TopSliceChanged = true;
 
         public Camera()
             : this(Game1.Bounds.Width, Game1.Bounds.Height)
@@ -394,7 +394,6 @@ namespace Start_a_Town_
         }
         public bool DrawCell(Canvas canvas, MapBase map, Chunk chunk, Cell cell)
         {
-            int z = cell.Z;
             var cellTile = cell.Block;
             if (cellTile is BlockAir)
             {
@@ -406,7 +405,13 @@ namespace Start_a_Town_
 
             var block = cell.Block;
 
-            int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+            //int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+            //int z = cell.Z;
+
+            int gx = cell.X, gy = cell.Y, z = cell.Z;
+            int lx = gx - (int)chunk.Start.X;
+            int ly = gy - (int)chunk.Start.Y;
+
             var light = GetFinalLight(this, map, chunk, cell, gx, gy, z);
 
             var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
@@ -418,7 +423,7 @@ namespace Start_a_Town_
             var isDiscovered = !map.IsUndiscovered(global);
             /// DONT ERASE
             ///if (cell.AllEdges == 0 && HideUnknownBlocks)  // do i want cells that have already been discoverd, to remain visible even if they become obstructed again?
-            if (!isDiscovered && this.HideUnknownBlocks)// && isAir) // do i want cells that have already been discoverd, to remain visible even if they become obstructed again?
+            if (!isDiscovered && this.MysteriousBlocks)// && isAir) // do i want cells that have already been discoverd, to remain visible even if they become obstructed again?
                 Block.DrawUnknown(canvas.Opaque, new IntVec3(gx, gy, z), this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth);
             else
                 block.Draw(canvas, chunk, new IntVec3(gx, gy, z), this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, cell);//.Variation, cell.Orientation, cell.BlockData, cell.Material);
@@ -450,8 +455,13 @@ namespace Start_a_Town_
         }
         public bool DrawUnknown(Canvas canvas, MapBase map, Chunk chunk, Cell cell)
         {
-            int z = cell.Z;
-            int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+            //int z = cell.Z;
+            //int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+
+            int gx = cell.X, gy = cell.Y, z = cell.Z;
+            int lx = gx - (int)chunk.Start.X;
+            int ly = gy - (int)chunk.Start.Y;
+
             var mapOffset = map.GetOffset();
             Coords.Rotate(this, gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);
             var light = GetFinalLight(this, map, chunk, cell, gx, gy, z, false);
@@ -466,8 +476,12 @@ namespace Start_a_Town_
         }
         public bool DrawUnknown(MySpriteBatch sb, MapBase map, Chunk chunk, Cell cell)
         {
-            int z = cell.Z;
-            int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+            //int z = cell.Z;
+            //int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+
+            int gx = cell.X, gy = cell.Y, z = cell.Z;
+            int lx = gx - (int)chunk.Start.X;
+            int ly = gy - (int)chunk.Start.Y;
 
             var mapOffset = map.GetOffset();
             Coords.Rotate(this, gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);
@@ -786,7 +800,7 @@ namespace Start_a_Town_
                 chunk.DrawOpaqueLayers(this, this.Effect); // TODO: is it faster to pass only the effectparameters?
                 continue;
             }
-            this.TopSliceChanged = false;
+            //this.TopSliceChanged = false;
 
             // TODO: these temporarily only work with static maps
             this.DepthNear = this.GetNearDepth(map);
@@ -1362,10 +1376,11 @@ namespace Start_a_Town_
                     //    arrays.Add(slice.Unknown.vertices);
                     if (j == this.MaxDrawZ)
                     {
-                        if(this.HideUnknownBlocks)
-                            arrays = arrays.Append(slice.Unknown.vertices);
-                        else
-                            arrays = arrays.Concat(slice.TopCover.GetMouseoverableMeshes());
+                        // i've consolidated mysterious blocks into the "cover" canvas, and removed the "unknown" spritebatch from the slice structure
+                        //if(this.MysteriousBlocks)
+                        //    arrays = arrays.Append(slice.Unknown.vertices);
+                        //else
+                            arrays = arrays.Concat(slice.Cover.GetMouseoverableMeshes());
                     }
 
                     foreach (var array in arrays)
@@ -1376,10 +1391,9 @@ namespace Start_a_Town_
                             if (!this.EarlyOutMousePicking(array, i, mousex, mousey, chunkx, chunky, rectw, recth, out int rectx, out int recty, out Vector3 global))
                                 continue;
 
-                            // TODO: check intersection in previous stages
-                            //if (rectx <= mousex && mousex < rectx + rectw && recty <= mousey && mousey < recty + recth)
-                            //{
-                            var block = chunk.GetBlockFromGlobal(global.X, global.Y, global.Z);
+
+                            //var block = chunk.GetBlockFromGlobal(global.X, global.Y, global.Z);
+                            var block = map.GetCell(global).Block;
 
                             if (!block.IsTargetable(global))
                                 continue;

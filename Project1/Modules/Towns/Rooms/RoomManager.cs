@@ -75,7 +75,7 @@ namespace Start_a_Town_
             {
                 foreach (var cell in chunk.Cells)
                 {
-                    var global = cell.GetGlobalCoords(chunk);
+                    var global = cell.Global;// GetGlobalCoords(chunk);
                     if (handled.Contains(global))
                         continue;
                     if (cell.IsRoomBorder)

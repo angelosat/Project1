@@ -197,11 +197,11 @@ namespace Start_a_Town_
                 r.Refresh();
         }
         
-        internal void Handle(Vector3 global)
+        internal void Handle(IntVec3 global)
         {
             var isSolid = this.Map.IsSolid(global);// TODO: dont fetch cell twice!!!
-            var below = global.Below();
-            var belowbelow = below.Below();
+            var below = global.Below;
+            var belowbelow = below.Below;
 
             RegionNode newNode = null;
             var cell = this.Map.GetCell(global);// TODO: dont fetch cell twice!!!

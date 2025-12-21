@@ -7,7 +7,6 @@ using Start_a_Town_.Particles;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -426,8 +425,9 @@ namespace Start_a_Town_
             var cell = chunk[x - chunk.Start.X, y - chunk.Start.Y, z];
             return cell;
         }
-        public Cell GetCell(Vector3 global)
+        public virtual Cell GetCell(Vector3 global)
         {
+            throw new Exception();
             var globalRound = new Vector3((int)Math.Round(global.X), (int)Math.Round(global.Y), (int)Math.Floor(global.Z));
             if (this.TryGetChunk(globalRound, out var chunk))
                 return chunk[globalRound.X - chunk.Start.X, globalRound.Y - chunk.Start.Y, globalRound.Z];

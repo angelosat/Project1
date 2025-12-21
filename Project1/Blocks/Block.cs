@@ -150,7 +150,7 @@ namespace Start_a_Town_
             tooltip.Controls.Add(new Label($"Global: {global}") { Location = tooltip.Controls.BottomLeft });
             tooltip.Controls.Add(new Label($"Local: {global.ToLocal()}") { Location = tooltip.Controls.BottomLeft });
             tooltip.Controls.Add(new Label("Chunk: " + map.GetChunk(global).MapCoords.ToString()) { Location = tooltip.Controls.BottomLeft });
-            if (map.Camera.HideUnknownBlocks && map.IsUndiscovered(global))
+            if (map.Camera.MysteriousBlocks && map.IsUndiscovered(global))
             {
                 tooltip.AddControlsBottomLeft(new Label("Undiscovered area") { Font = UIManager.FontBold, TextColor = Color.Goldenrod });
                 return;
@@ -259,7 +259,7 @@ namespace Start_a_Town_
         public List<Sprite> Sprites = new();
 
         /// <summary>
-        /// Defines wether the block fully obscures adjanent block faces.
+        /// Defines wether the block fully obscures adjacent block faces.
         /// </summary>
         public bool HidingAdjacent = true;
 

@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Start_a_Town_
 {
@@ -34,31 +36,31 @@ namespace Start_a_Town_
         }
 
         #region Initialization
-        [Obsolete]
-        public Dictionary<IntVec3, double> InitCells(List<Terraformer> mutators)
-        {
-            var gradientCache = new Dictionary<IntVec3, double>();
-            var world = this.Map.World;
-            int n = 0; ;
-            var grad = new GradientLowRes(this.World, this);
-            mutators.ForEach(m => m.SetWorld(this.World));
-            var mingrad = double.MaxValue;
-            for (int z = 0; z < MapBase.MaxHeight; z++)
-                for (int i = 0; i < Size; i++)
-                    for (int j = 0; j < Size; j++)
-                    {
-                        Cell cell = new(i, j, z);
-                        double gradient = grad.GetGradient(i, j, z);
-                        gradientCache.Add(new IntVec3(i, j, z), gradient);
-                        foreach (var m in mutators)
-                            m.Initialize(world, cell, this.Start.X + i, this.Start.Y + j, z, gradient);
-                        this.Cells[n++] = cell;
-                        if (gradient < mingrad)
-                            mingrad = gradient;
-                    }
-            $"mingrad = {mingrad}".ToConsole();
-            return gradientCache;
-        }
+        //[Obsolete]
+        //public Dictionary<IntVec3, double> InitCells(List<Terraformer> mutators)
+        //{
+        //    var gradientCache = new Dictionary<IntVec3, double>();
+        //    var world = this.Map.World;
+        //    int n = 0; ;
+        //    var grad = new GradientLowRes(this.World, this);
+        //    mutators.ForEach(m => m.SetWorld(this.World));
+        //    var mingrad = double.MaxValue;
+        //    for (int z = 0; z < MapBase.MaxHeight; z++)
+        //        for (int i = 0; i < Size; i++)
+        //            for (int j = 0; j < Size; j++)
+        //            {
+        //                Cell cell = new(i, j, z);
+        //                double gradient = grad.GetGradient(i, j, z);
+        //                gradientCache.Add(new IntVec3(i, j, z), gradient);
+        //                foreach (var m in mutators)
+        //                    m.Initialize(world, cell, this.Start.X + i, this.Start.Y + j, z, gradient);
+        //                this.Cells[n++] = cell;
+        //                if (gradient < mingrad)
+        //                    mingrad = gradient;
+        //            }
+        //    $"mingrad = {mingrad}".ToConsole();
+        //    return gradientCache;
+        //}
         public double GetGradientAt(int localx, int localy, int localz)
         {
             throw new NotImplementedException();
@@ -322,13 +324,33 @@ namespace Start_a_Town_
         {
             return this.Cells[GetCellIndex(x, y, z)];
         }
-        public static int GetCellIndex(int x, int y, int z)
-        { return (z * Chunk.Size + x) * Chunk.Size + y; }
+        public Cell GetCellLocal(IntVec3 local)
+        {
+            // local bounds check (XY only)
+            if ((uint)local.X >= Size ||
+                (uint)local.Y >= Size)
+                return null;
+
+            IntVec3 global = new IntVec3(
+                this.Start.X + local.X,
+                this.Start.Y + local.Y,
+                local.Z
+            );
+
+            return this.Map.GetCell(global);
+        }
+        public static int IndexToGlobal(int x, int y, int z) => (z * Size + x) * Size + y;
+
+        public static int GetCellIndex(int x, int y, int z) => (z * Size + x) * Size + y;
         public static int GetCellIndex(float x, float y, float z)
-        { return (int)((Math.Round(z) * Chunk.Size + Math.Round(x)) * Chunk.Size + Math.Round(y)); }
+        {
+            return GetCellIndex((int)Math.Round(x), (int)Math.Round(y), (int)Math.Round(z));
+            //return (int)((Math.Round(z) * Chunk.Size + Math.Round(x)) * Chunk.Size + Math.Round(y));
+        }
         public static int GetCellIndex(IntVec3 local)
         {
-            return (local.Z * Size + local.X) * Size + local.Y;
+            return GetCellIndex(local.X, local.Y, local.Z);
+            //return (local.Z * Size + local.X) * Size + local.Y;
         }
         public static int Volume = Size * Size * MapBase.MaxHeight;
         public List<byte> Sunlight;
@@ -505,7 +527,8 @@ namespace Start_a_Town_
 
                 this.SetSunlight(localx, localy, z, light);
                 if (z <= firstContact)
-                    lightsourcesToHandle.Enqueue(cell.LocalCoords.ToGlobal(this));
+                    //lightsourcesToHandle.Enqueue(cell.LocalCoords.ToGlobal(this));
+                    lightsourcesToHandle.Enqueue(cell.Global);
                 z--;
             }
 
@@ -522,7 +545,8 @@ namespace Start_a_Town_
                 while (this.CellsToValidate.Count > 0)
                 {
                     Cell cell = this.CellsToValidate.Dequeue();
-                    this.Map.LightingEngine.HandleImmediate(new IntVec3[] { cell.LocalCoords.ToGlobal(this) });
+                    //this.Map.LightingEngine.HandleImmediate(new IntVec3[] { cell.LocalCoords.ToGlobal(this) });
+                    this.Map.LightingEngine.HandleImmediate(new IntVec3[] { cell.Global });
                     cell.Valid = true;
                     this.InvalidateSlice(cell.Z);
                     this.InvalidateMesh();
@@ -611,7 +635,7 @@ namespace Start_a_Town_
         }
         public bool InvalidateLight(Cell cell)
         {
-            return this.InvalidateLight(cell.GetGlobalCoords(this));
+            return this.InvalidateLight(cell.Global);
         }
         public bool InvalidateLight(IntVec3 global)
         {
@@ -753,8 +777,8 @@ namespace Start_a_Town_
                 if (!camera.ViewPort.Intersects(screenBounds))
                     continue;
                 float cd = global.GetDrawDepth(map, camera);
-
-                byte light = Math.Max((byte)(this.GetSunlight(cell.LocalCoords) - map.GetSkyDarkness()), this.GetBlockLight(cell.LocalCoords));
+                var local = cell.GetLocalCoords(this);
+                byte light = Math.Max((byte)(this.GetSunlight(local) - map.GetSkyDarkness()), this.GetBlockLight(local));
                 float l = (light + 1) / 16f;
                 Color color = new Color(l, l, l, 1);
                 Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
@@ -911,6 +935,7 @@ namespace Start_a_Town_
                 }
                 var cell = this.Cells[n++];
                 cell.Load(celltag);
+
             }
         }
 
@@ -1309,7 +1334,8 @@ namespace Start_a_Town_
 
         public void Build(Camera cam)
         {
-            this.ValidateSlices(cam);
+            //this.ValidateSlices(cam);
+            this.ValidateSlicesNew(cam);
             this.Valid = true;
         }
 
@@ -1328,6 +1354,8 @@ namespace Start_a_Town_
             {
                 var slice = this.Slices[i];
                 slice.Canvas.Opaque.Draw();
+                if (i == cam.MaxDrawZ && cam.DrawTopSlice)
+                    slice.Cover.Opaque.Draw();
                 if (!cam.HideWalls)
                     slice.Canvas.WallHidable.Draw();
             }
@@ -1337,21 +1365,23 @@ namespace Start_a_Town_
             {
                 var slice = this.Slices[i];
                 slice.Canvas.NonOpaque.Draw();
+                if (i == cam.MaxDrawZ && cam.DrawTopSlice)
+                    slice.Cover.NonOpaque.Draw();
             }
-
-            if (cam.DrawTopSlice)
-            {
-                if (cam.HideUnknownBlocks)
-                {
-                    effectHideWalls.SetValue(Engine.HideWalls);
-                    effect.CurrentTechnique.Passes["Pass1"].Apply();
-                    this.Slices[cam.MaxDrawZ].Unknown.Draw();
-                }
-                else
-                    this.Slices[cam.MaxDrawZ].TopCover.Opaque.Draw();
-            }
+            
+            //if (cam.DrawTopSlice)
+            //{
+            //    if (cam.MysteriousBlocks)
+            //    {
+            //        effectHideWalls.SetValue(Engine.HideWalls);
+            //        effect.CurrentTechnique.Passes["Pass1"].Apply();
+            //        this.Slices[cam.MaxDrawZ].Unknown.Draw();
+            //    }
+            //    else
+            //        this.Slices[cam.MaxDrawZ].Cover.Opaque.Draw();
+            //}
             foreach (var blockentity in this.BlockEntitiesByPosition)
-                blockentity.Value.Draw(cam, this.Map, blockentity.Key.ToGlobal(this));
+            blockentity.Value.Draw(cam, this.Map, blockentity.Key.ToGlobal(this));
         }
         public void DrawTransparentLayers(Camera cam, Effect effect)
         {
@@ -1369,12 +1399,12 @@ namespace Start_a_Town_
                 if (cam.DrawZones)
                     slice.Canvas.Designations.Draw();
             }
-            if (cam.DrawTopSlice && !cam.HideUnknownBlocks)
+            if (cam.DrawTopSlice && !cam.MysteriousBlocks)
             {
                 var slice = this.Slices[cam.MaxDrawZ];
-                slice.TopCover.Transparent.Draw();
+                slice.Cover.Transparent.Draw();
                 if (cam.DrawZones)
-                    slice.TopCover.Designations.Draw();
+                    slice.Cover.Designations.Draw();
             }
         }
         internal bool Contains(Vector3 global)
@@ -1506,6 +1536,27 @@ namespace Start_a_Town_
             foreach (var sl in this.Slices)
                 sl.Valid = true;
         }
+        public void ValidateSlicesNew(Camera cam)
+        {
+            var count = this.Slices.Length;
+            for (int i = 0; i < count; i++)
+            {
+                var slice = this.Slices[i];
+                if (slice is null)
+                {
+                    slice = new Slice();
+                    this.Slices[i] = slice;
+                }
+                if (slice.Valid)
+                    continue;
+                this.BuildSliceNew(slice, cam, this.Map, i);
+                slice.Valid = true;
+            }
+            //TESTING IF REMOVING THIS BREAKS ANYTHING
+            //this.BuildFrontmostBlocksNewSlices(cam);
+            //foreach (var sl in this.Slices)
+            //    sl.Valid = true;
+        }
         public void BuildSlice(Slice slice, Camera camera, MapBase map, int z)
         {
             var unknown = new List<Cell>();
@@ -1520,7 +1571,7 @@ namespace Start_a_Town_
                     var global = local.ToGlobal(this);
 
                     // DO I NEED THIS?
-                    if (!camera.HideUnknownBlocks)
+                    if (!camera.MysteriousBlocks)
                     {
                         if (cell.Block != BlockDefOf.Air)
                         {
@@ -1550,7 +1601,7 @@ namespace Start_a_Town_
 
             foreach (var cell in unknown)
             {
-                if (camera.HideUnknownBlocks)
+                if (camera.MysteriousBlocks)
                     camera.DrawUnknown(unknownSlice, map, this, cell);
                 else
                     camera.DrawCell(topCover, map, this, cell);
@@ -1558,18 +1609,91 @@ namespace Start_a_Town_
 
             var visibleCount = visible.Count;
             var canvas = new Canvas(Game1.Instance.GraphicsDevice, visibleCount);
-            slice.Canvas = canvas;
             for (int i = 0; i < visibleCount; i++)
             {
                 var cell = visible[i];
-                camera.DrawCell(slice.Canvas, map, this, cell);
+                camera.DrawCell(canvas, map, this, cell);
             }
-            slice.TopCover = topCover;
+            slice.Canvas = canvas;
+            slice.Cover = topCover;
             slice.Unknown = unknownSlice;
         }
+        public void BuildSliceNew(Slice slice, Camera camera, MapBase map, int z)
+        {
+            var mapSizeInChunks = this.Map.GetSizeInChunks();
+            var chunkX = this.MapCoords.X;
+            var chunkY = this.MapCoords.Y;
+            int edgeX = 0, edgeY = 0;
+            switch ((int)camera.Rotation)
+            {
+                case 0:
+                    edgeX = mapSizeInChunks - 1;
+                    edgeY = mapSizeInChunks - 1;
+                    break;
+                case 1:
+                    edgeX = mapSizeInChunks - 1;
+                    edgeY = 0;
+                    break;
+                case 2:
+                    edgeX = 0;
+                    edgeY = 0;
+                    break;
+                case 3:
+                    edgeX = 0;
+                    edgeY = mapSizeInChunks - 1;
+                    break;
+                default:
+                    break;
+            }
+
+            var obstructed = new List<Cell>();
+            var mysterious = new List<Cell>();
+            var visible = new List<Cell>();
+
+            for (int i = 0; i < Chunk.Size; i++)
+                for (int j = 0; j < Chunk.Size; j++)
+                {
+                    var local = new IntVec3(i, j, z);
+                    var cell = this.Cells[GetCellIndex(local)];
+                    var global = local.ToGlobal(this);
+                    var isobstructed = !map.IsVisible(global);
+                    var isundiscovered = map.IsUndiscovered(global);
+                    var isair = cell.Block == BlockDefOf.Air;
+                    var ismysterious = camera.MysteriousBlocks && isundiscovered;
+                    if (ismysterious)
+                        mysterious.Add(cell);
+                    else
+                    {
+                        if (!isair)
+                        {
+                            if (isobstructed)
+                                obstructed.Add(cell);
+                            else
+                                visible.Add(cell);
+                        }
+                    }
+                }
+
+            var topCover = new Canvas(Game1.Instance.GraphicsDevice, obstructed.Count + mysterious.Count);
+
+            foreach(var cell in obstructed)
+                camera.DrawCell(topCover, map, this, cell);
+
+            foreach(var cell in mysterious)
+                camera.DrawUnknown(topCover, map, this, cell);
+
+            var visibleCount = visible.Count;
+            var canvas = new Canvas(Game1.Instance.GraphicsDevice, visibleCount);
+
+            foreach(var cell in visible)
+                camera.DrawCell(canvas, map, this, cell);
+
+            slice.Canvas = canvas;
+            slice.Cover = topCover;
+        }
+        
         public void BuildFrontmostBlocksNewSlices(Camera camera)
         {
-            //return;
             var chunkX = this.MapCoords.X;
             var chunkY = this.MapCoords.Y;
             var mapSizeInChunks = this.Map.GetSizeInChunks();
@@ -1607,7 +1731,7 @@ namespace Start_a_Town_
                     for (int i = 0; i < Chunk.Size; i++)
                     {
                         {
-                            Cell cell;
+                            //Cell cell;
                             var pos = new IntVec3(Chunk.Size - 1, i, j);
                             switch ((int)camera.Rotation)
                             {
@@ -1623,10 +1747,12 @@ namespace Start_a_Town_
                                 default:
                                     break;
                             }
-                            var cellIndex = Chunk.GetCellIndex(pos.X, pos.Y, pos.Z);// FASTER WITH INTS
-                            cell = this.Cells[cellIndex];
+                            //var cellIndex = Chunk.GetCellIndex(pos.X, pos.Y, pos.Z);// FASTER WITH INTS
+                            //var cell = this.Cells[cellIndex];
+                            var global = pos.ToGlobal(this);
+                            var cell = this.Map.GetCell(global);
 
-                            if (camera.HideUnknownBlocks && map.IsUndiscovered(pos.ToGlobal(this)))
+                            if (camera.MysteriousBlocks && map.IsUndiscovered(global))// pos.ToGlobal(this)))
                                 camera.DrawUnknown(slice.Canvas, map, this, cell);
                             // TESTING IF REMOVING THIS BREAKS ANYTHING
                             else if (cell.Block != BlockDefOf.Air)
@@ -1645,7 +1771,7 @@ namespace Start_a_Town_
                     for (int i = 0; i < Chunk.Size; i++)
                     {
                         {
-                            Cell cell;
+                            //Cell cell;
                             var pos = new IntVec3(i, Chunk.Size - 1, j);
                             switch ((int)camera.Rotation)
                             {
@@ -1661,9 +1787,11 @@ namespace Start_a_Town_
                                 default:
                                     break;
                             }
-                            var cellIndex = Chunk.GetCellIndex(pos.X, pos.Y, pos.Z);// FASTER WITH INTS
-                            cell = this.Cells[cellIndex];
-                            if (camera.HideUnknownBlocks && map.IsUndiscovered(pos.ToGlobal(this)))
+                            //var cellIndex = Chunk.GetCellIndex(pos.X, pos.Y, pos.Z);// FASTER WITH INTS
+                            //var cell = this.Cells[cellIndex];
+                            var global = pos.ToGlobal(this);
+                            var cell = this.Map.GetCell(global);
+                            if (camera.MysteriousBlocks && map.IsUndiscovered(global))//pos.ToGlobal(this)))
                                 camera.DrawUnknown(slice.Canvas, map, this, cell);
                             // TESTING IF REMOVING THIS BREAKS ANYTHING
                             else if (cell.Block != BlockDefOf.Air)
@@ -1673,7 +1801,7 @@ namespace Start_a_Town_
                 }
             }
         }
-
+        
         [InspectorHidden]
         public Slice[] Slices = new Slice[128];
 
@@ -1681,7 +1809,7 @@ namespace Start_a_Town_
         {
             public bool Valid;
             public Canvas Canvas;
-            public Canvas TopCover;
+            public Canvas Cover;
             public MySpriteBatch Unknown;
         }
         public bool TryGetBlockEntity(IntVec3 local, out BlockEntity entity)

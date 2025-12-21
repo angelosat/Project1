@@ -37,10 +37,10 @@ namespace Start_a_Town_
             nextLight = GetNextSunLightImmediate(thisCell, thisChunk, gx, gy, z, lx, ly, neighbors);
 
             oldLight = thisChunk.GetSunlight(lx, ly, z);
-
+            var local = thisCell.GetLocalCoords(thisChunk);
             int d = nextLight - oldLight;
             if (d != 0)
-                thisChunk.SetSunlight(thisCell.LocalCoords, nextLight);
+                thisChunk.SetSunlight(local, nextLight);
          
             if (d > 1)
             {
@@ -74,8 +74,8 @@ namespace Start_a_Town_
                             continue;
                         if (ncell.Opaque)
                             continue;
-
-                        var l = nchunk.GetSunlight(ncell.LocalCoords);
+                        var local = ncell.GetLocalCoords(nchunk);
+                        var l = nchunk.GetSunlight(local);
                         maxAdjLight = Math.Max(maxAdjLight, l);
                     }
                     next = (byte)Math.Max(0, maxAdjLight - 1);
@@ -96,7 +96,7 @@ namespace Start_a_Town_
                 if (!this.Map.TryGetAll(current, out var chunk, out var cell))
                     continue;
 
-                var local = cell.LocalCoords;
+                var local = cell.GetLocalCoords(chunk);
                 if (chunk.IsAboveHeightMap(local))
                     continue;
                 chunk.SetSunlight(local, 0);
@@ -106,8 +106,8 @@ namespace Start_a_Town_
                 {
                     if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
                         continue;
-
-                    if (nchunk.IsAboveHeightMap(ncell.LocalCoords))
+                    var nlocal = ncell.GetLocalCoords(nchunk);
+                    if (nchunk.IsAboveHeightMap(nlocal))
                     {
                         if (!queued.Contains(current))
                         {
@@ -116,7 +116,7 @@ namespace Start_a_Town_
                         }
                         continue;
                     }
-                    nlight = nchunk.GetSunlight(ncell.LocalCoords);
+                    nlight = nchunk.GetSunlight(nlocal);
 
                     if (!ncell.Opaque)
                         if (!queueToDarkenQueued.Contains(n))
@@ -133,7 +133,7 @@ namespace Start_a_Town_
             queued.Remove(global);
             if (!this.Map.TryGetAll(global, out var thisChunk, out var thisCell))
                 return;
-            var local = thisCell.LocalCoords;
+            var local = thisCell.GetLocalCoords(thisChunk);
             var thisLight = thisChunk.GetBlockLight(local);
 
             nextLight = GetNextBlockLightImmediate(thisCell, global);
@@ -170,7 +170,8 @@ namespace Start_a_Town_
                     continue;
                 if (ncell.Opaque)
                     continue;
-                byte l = nchunk.GetBlockLight(ncell.LocalCoords);
+                var local = ncell.GetLocalCoords(nchunk);
+                byte l = nchunk.GetBlockLight(local);
                 maxAdjLight = Math.Max(maxAdjLight, l);
             }
 
@@ -201,7 +202,7 @@ namespace Start_a_Town_
                     continue;
                 if (cell.Opaque)
                     continue;
-                var local = cell.LocalCoords;
+                var local = cell.GetLocalCoords(chunk);
 
                 var prevLight = chunk.GetBlockLight(local);
                 chunk.SetBlockLight(local, cell.Luminance);
@@ -212,8 +213,9 @@ namespace Start_a_Town_
                     var n = global + adj[i];
                     if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
                         continue;
+                    var nlocal = ncell.GetLocalCoords(nchunk);
 
-                    var nlight = nchunk.GetBlockLight(ncell.LocalCoords);
+                    var nlight = nchunk.GetBlockLight(nlocal);
 
                     // if neighbor light was less then current previous light, it means that the neighbor was lit from the current cell. so turn the neighbor light off
                     if (nlight < prevLight) // maybe i have to remvoe this line as i did with the darkenskyblocks?

@@ -113,7 +113,7 @@ namespace Start_a_Town_
             if (pressed.Contains(System.Windows.Forms.Keys.F6))
             {
                 DrawServer = !DrawServer;
-                GetMap().Camera.TopSliceChanged = true;
+                //GetMap().Camera.TopSliceChanged = true;
                 this.Hud.Chat.Write(Log.EntryTypes.System, string.Format("draw server: {0}", DrawServer));
             }
         }

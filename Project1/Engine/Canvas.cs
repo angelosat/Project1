@@ -5,7 +5,7 @@ namespace Start_a_Town_
 {
     public class Canvas
     {
-        public MySpriteBatch Opaque, NonOpaque, Transparent, Designations, WallHidable;
+        public MySpriteBatch Opaque, NonOpaque, Transparent, Designations, WallHidable;//, Cover;
         public readonly MySpriteBatch[] MouseOverableMeshes;
         public Canvas(GraphicsDevice gd)
         {

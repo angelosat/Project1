@@ -81,21 +81,6 @@ namespace Start_a_Town_
             return null;
         }
 
-        //internal void OnGameEvent(GameEvent e)
-        //{
-        //    switch (e.Type)
-        //    {
-        //        case Components.Message.Types.BlocksChanged:
-        //            IEnumerable<IntVec3> positions;
-        //            GameEvents.EventBlocksChanged.Read(e.Parameters, out MapBase map, out positions);
-        //            this.Update(positions);
-        //            break;
-
-        //        default:
-        //            break;
-        //    }
-        //}
-
         void HandleBlocksChanged(BlocksUpdatedEvent e)
         {
             if(e.Map == this.Map)

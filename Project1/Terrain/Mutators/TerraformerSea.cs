@@ -45,7 +45,7 @@ namespace Start_a_Town_.Terraforming.Mutators
                     continue;
                 if (c.Material != MaterialDefOf.Soil)
                     continue;
-                var cellCoords = c.LocalCoords;
+                var cellCoords = c.GetLocalCoords(chunk);
                 var soilGradient = zNormal + gradients[cellCoords];
                 if (sandThreshold <= soilGradient && soilGradient < landThreshold)
                 {

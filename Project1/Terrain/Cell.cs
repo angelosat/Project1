@@ -201,13 +201,18 @@ namespace Start_a_Town_
             set => this.Data[_luminance] = value;
         }
         public float Fertility => this.Block.GetFertility(this);
-        public IntVec3 LocalCoords => new(this.X, this.Y, this.Z);
+        //public IntVec3 LocalCoords => new(this.X, this.Y, this.Z);
 
         public IntVec3 SizeRotated => Coords.Rotate(this.Block.Size, this.Orientation);
-
-        public IntVec3 GetGlobalCoords(Chunk chunk)
+        public IntVec3 Global => new IntVec3(this.X, this.Y, this.Z);
+        //public IntVec3 GetGlobalCoords()
+        //{
+        //    //return new IntVec3(chunk.Start.X + this.X, chunk.Start.Y + this.Y, this.Z);
+        //    return new IntVec3(this.X, this.Y, this.Z);
+        //}
+        public IntVec3 GetLocalCoords(Chunk chunk)
         {
-            return new IntVec3(chunk.Start.X + this.X, chunk.Start.Y + this.Y, this.Z);
+            return new IntVec3(this.X - chunk.Start.X, this.Y - chunk.Start.Y, this.Z);
         }
         public bool IsSolid()
         {

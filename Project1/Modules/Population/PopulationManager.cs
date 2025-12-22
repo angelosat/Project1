@@ -128,35 +128,45 @@ namespace Start_a_Town_
         void InitializeInhabitants()
         {
             for (int i = 0; i < WorldPopulationCap; i++)
-                this.RegisterVisitor(GenerateInhabitant());
+            {
+                var actor = GenerateInhabitant();
+                this.World.Register(actor);
+                this.RegisterVisitor(actor);
+            }
         }
 
         void Tick(INetEndpoint net)
         {
-            this.PopulateNew(net);
+            this.PopulateRare(net);
         }
 
-        private Actor PopulateNew(INetEndpoint net)
+        private Actor PopulateRare(INetEndpoint net)
         {
             if (net is Server && this.ActorsAdventuring.Count < WorldPopulationCap)
             {
                 Actor actor = GenerateInhabitant();
-                actor.SyncInstantiate(Server.Instance);
+                //this.World.RegisterAndSync(actor);//
+                //Packets.SendNotifyAdventurerCreated(actor);
+                //this.RegisterVisitor(actor);
+                //AnnounceInhabitantCreated(net, actor);
+                this.World.RegisterAndSync(actor);//
                 Packets.SendNotifyAdventurerCreated(actor);
-                //this.RegisterActor(Server.Instance, actor);
+                //this.RegisterVisitor(actor);
+                AnnounceInhabitantCreated(this.World.Net, actor);
                 this.RegisterVisitor(actor);
-                AnnounceInhabitantCreated(net, actor);
+
                 return actor;
             }
             return null;
         }
-
-        private static Actor GenerateInhabitant()
+       
+        private Actor GenerateInhabitant()
         {
             //var visitor = ActorDefOf.Npc.Create() as Actor;
-            var visitor = ActorSystem.Create(ActorDnaDefOf.Npc);
-            visitor.Inventory.Insert(ItemDefOf.Coins.Create().SetStackSize(500));
-            return visitor;
+            var actor = ActorSystem.Create(ActorDnaDefOf.Npc);
+            actor.Inventory.Insert(ItemDefOf.Coins.Create().SetStackSize(500));
+            
+            return actor;
         }
 
         private void RegisterVisitor(Actor actor)
@@ -246,8 +256,8 @@ namespace Start_a_Town_
                 if (this.World.Map.Net is Server)
                     if (!actor.GetNeeds(VisitorNeedsDefOf.NeedCategoryVisitor).Any())
                         MakeVisitor(actor);
-                if (!actor.IsSpawned) // hacky. in process of finding best way to save unspawned actors
-                    this.World.Map.Net.Instantiate(actor);
+                //if (!actor.IsSpawned) // hacky. in process of finding best way to save unspawned actors
+                //    this.World.Map.Net.Instantiate(actor);
                 if (actor.IsSpawned)
                     props.Discovered = true; // HACK
                 props.OffsiteArea = OffsiteAreaDefOf.Forest; // HACK

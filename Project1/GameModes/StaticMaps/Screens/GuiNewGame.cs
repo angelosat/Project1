@@ -127,7 +127,7 @@ namespace Start_a_Town_.Core
             loadingtasks = loadingtasks.Concat(map.GetGenerationTasks());
             var taskCount = loadingtasks.Count();
             var i = 0;
-            Server.Start();
+            //Server.Start();
 
             Task.Factory.StartNew(() =>
             {
@@ -143,12 +143,14 @@ namespace Start_a_Town_.Core
 
         private static void OnMapGenerated(Actor[] actors, StaticWorld world, StaticMap map)
         {
-            map.AddStartingActors(actors);
+            //map.AddStartingActors(actors);
             world.Maps.Add(map.Coordinates, map);
             string localHost = "127.0.0.1";
             UIConnecting.Create(localHost);
             map.CameraRecenter();
+            Server.Start();
             Server.Instance.SetMap(map);
+            map.AddStartingActors(actors);
 
             foreach (var a in actors)
                 map.Town.AddCitizen(a);

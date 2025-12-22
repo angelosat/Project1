@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
     public class ActorSystem
     {

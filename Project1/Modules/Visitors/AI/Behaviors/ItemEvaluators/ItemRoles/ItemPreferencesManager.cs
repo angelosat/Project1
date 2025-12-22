@@ -422,12 +422,12 @@ namespace Start_a_Town_
                 total += role.GetSituationalScore(this.Actor, item);
             return total;
         }
-        public void OnMapLoaded()
-        {
-            this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
-            foreach (var i in this.Actor.Map.GetEntities<Tool>())
-                this.notScannedYet.Enqueue(i);
-        }
+        //public void OnMapLoaded()
+        //{
+        //    this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
+        //    foreach (var i in this.Actor.Map.GetEntities<Tool>())
+        //        this.notScannedYet.Enqueue(i);
+        //}
         public void OnSpawn(MapBase newMap)
         {
             foreach (var i in newMap.GetEntities<Tool>())

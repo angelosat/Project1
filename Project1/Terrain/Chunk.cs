@@ -37,31 +37,6 @@ namespace Start_a_Town_
         }
 
         #region Initialization
-        //[Obsolete]
-        //public Dictionary<IntVec3, double> InitCells(List<Terraformer> mutators)
-        //{
-        //    var gradientCache = new Dictionary<IntVec3, double>();
-        //    var world = this.Map.World;
-        //    int n = 0; ;
-        //    var grad = new GradientLowRes(this.World, this);
-        //    mutators.ForEach(m => m.SetWorld(this.World));
-        //    var mingrad = double.MaxValue;
-        //    for (int z = 0; z < MapBase.MaxHeight; z++)
-        //        for (int i = 0; i < Size; i++)
-        //            for (int j = 0; j < Size; j++)
-        //            {
-        //                Cell cell = new(i, j, z);
-        //                double gradient = grad.GetGradient(i, j, z);
-        //                gradientCache.Add(new IntVec3(i, j, z), gradient);
-        //                foreach (var m in mutators)
-        //                    m.Initialize(world, cell, this.Start.X + i, this.Start.Y + j, z, gradient);
-        //                this.Cells[n++] = cell;
-        //                if (gradient < mingrad)
-        //                    mingrad = gradient;
-        //            }
-        //    $"mingrad = {mingrad}".ToConsole();
-        //    return gradientCache;
-        //}
         public double GetGradientAt(int localx, int localy, int localz)
         {
             throw new NotImplementedException();
@@ -76,8 +51,8 @@ namespace Start_a_Town_
             var grad = new GradientLowRes(this.World, this);
             var maxh = MapBase.MaxHeight;
             for (int z = 0; z < maxh; z++)
-                for (int i = 0; i < Size; i++)
-                    for (int j = 0; j < Size; j++)
+                for (int j = 0; j < Size; j++)
+                    for (int i = 0; i < Size; i++)
                     {
                         Cell cell = new(i, j, z);
                         double gradient = grad.GetGradient(i, j, z);
@@ -92,8 +67,8 @@ namespace Start_a_Town_
             var maxh = MapBase.MaxHeight;
             int n = 0;
             for (int z = 0; z < maxh; z++)
-                for (int i = 0; i < Size; i++)
-                    for (int j = 0; j < Size; j++)
+                for (int j = 0; j < Size; j++)
+                    for (int i = 0; i < Size; i++)
                     {
                         var cell = this.Cells[n++];
                         m.Initialize(this.Map.World, cell, this.Start.X + i, this.Start.Y + j, z, gradient[new IntVec3(i, j, z)]);
@@ -105,9 +80,8 @@ namespace Start_a_Town_
         {
             int n = 0;
             for (int z = 0; z < MapBase.MaxHeight; z++)
-                    for (int j = 0; j < Size; j++)
+                for (int j = 0; j < Size; j++)
                     for (int i = 0; i < Size; i++)
-                    //for (int j = 0; j < Size; j++)
                     {
                         Cell cell = new(i, j, z);
                         this.Cells[n++] = cell;
@@ -1286,9 +1260,9 @@ namespace Start_a_Town_
                 obj.Write(writer);
 
             this.WriteBlockEntitiesDistinct(writer);
-
-            for (int i = 0; i < Size; i++)
-                for (int j = 0; j < Size; j++)
+            for (int j = 0; j < Size; j++)
+                for (int i = 0; i < Size; i++)
+                //for (int j = 0; j < Size; j++)
                     writer.Write(this.HeightMap[i][j]);
 
             writer.Write(this.Sunlight);
@@ -1323,9 +1297,9 @@ namespace Start_a_Town_
                 this.Add(GameObject.Create(reader));
 
             this.ReadBlockEntitiesDistinct(reader);
-
-            for (int i = 0; i < Size; i++)
-                for (int j = 0; j < Size; j++)
+            for (int j = 0; j < Size; j++)
+                for (int i = 0; i < Size; i++)
+                //for (int j = 0; j < Size; j++)
                     this.HeightMap[i][j] = reader.ReadInt32();
 
             this.Sunlight = reader.ReadBytes(Volume);//.ToList();
@@ -1481,8 +1455,9 @@ namespace Start_a_Town_
 
             var n = 0;
             for (int h = 0; h < MapBase.MaxHeight; h++)
-                for (int i = 0; i < Size; i++)
-                    for (int j = 0; j < Size; j++)
+                for (int j = 0; j < Size; j++)
+                    for (int i = 0; i < Size; i++)
+                    //for (int j = 0; j < Size; j++)
                     {
                         byte light = (byte)lightTag[n].Value;
                         var sunlight = (byte)((light & 0xF0) >> 4);

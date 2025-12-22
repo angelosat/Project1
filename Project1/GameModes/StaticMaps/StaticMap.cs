@@ -1046,11 +1046,9 @@ namespace Start_a_Town_
                     current = radial.Current;
                 } while (!this.IsStandableIn(current));
                 actor.Global = current;
-                //actor.Spawn(this, current);
-
-                //this.Add(actor);
-                //actor.OnSpawnNew(this);
-                this.Spawn(actor);//
+                //this.Spawn(actor);//
+                this.World.Register(actor);
+                this.Spawn(actor, actor.Global, Vector3.Zero);
             }
         }
         //public override Cell GetCell(Vector3 g)

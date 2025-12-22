@@ -166,7 +166,7 @@ namespace Start_a_Town_
         {
             this.State.MapLoaded(parent as Actor);
             this.Root.MapLoaded(parent as Actor);
-            this.State.ItemPreferences.OnMapLoaded();
+            //this.State.ItemPreferences.OnMapLoaded();
         }
         public override void OnObjectLoaded(GameObject parent)
         {

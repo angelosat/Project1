@@ -10,7 +10,10 @@ namespace Start_a_Town_
         
         public GuiActorCreation(List<Actor> actors)
         {
-            actors.AddRange(new[] { Actor.Create(ActorDefOf.Npc), Actor.Create(ActorDefOf.Npc), Actor.Create(ActorDefOf.Npc) });
+            int startingActors = 3;
+            //actors.AddRange(new[] { Actor.Create(ActorDefOf.Npc), Actor.Create(ActorDefOf.Npc), Actor.Create(ActorDefOf.Npc) });
+            for (int i = 0; i < 3; i++)
+                actors.Add(ActorSystem.Create(ActorDnaDefOf.Npc));
             var actorslistbox = new ScrollableBoxNewNew(200, UIManager.LargeButton.Height * 8, ScrollModes.Vertical);
 
             Panel editbox = null;

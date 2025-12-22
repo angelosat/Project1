@@ -904,6 +904,7 @@ namespace Start_a_Town_
         {
             var data = new List<SaveTag>();
             data.Add(this.Def.Name.Save("Def"));
+            // todo : items without profile (coins for now)
             data.Add(this.Profile.Save("ProfileID"));
             data.Add(this.RefId.Save("InstanceID"));
             data.Add(this._StackSize.Save("Stack"));

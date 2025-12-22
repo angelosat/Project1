@@ -56,11 +56,11 @@ namespace Start_a_Town_
             return false;
         }
 
-        internal override void HandleRemoteCall(GameObject parent, ObjectEventArgs e)
-        {
-            foreach (var item in this.Resources)
-                item.HandleRemoteCall(parent, e);
-        }
+        //internal override void HandleRemoteCall(GameObject parent, ObjectEventArgs e)
+        //{
+        //    foreach (var item in this.Resources)
+        //        item.HandleRemoteCall(parent, e);
+        //}
 
         public override void OnNameplateCreated(GameObject parent, UI.Nameplate plate)
         {

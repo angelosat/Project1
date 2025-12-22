@@ -34,7 +34,6 @@ namespace Start_a_Town_.Components
             //this.Owner.AddAnimation(this.AnimationHaul);
             this.AnimationHaul = this.Owner.SpriteComp.AddAnimation(AnimationDef.Haul, weight: 0);
         }
-        
         static public GameObjectSlot GetHolding(GameObject parent)
         {
             return parent.GetComponent<HaulComponent>().Holding;
@@ -48,10 +47,10 @@ namespace Start_a_Town_.Components
             }
         }
 
-        public override object Clone()
-        {
-            return new HaulComponent();
-        }
+        //public override object Clone()
+        //{
+        //    return new HaulComponent();
+        //}
         public override void Write(IDataWriter w)
         {
             this.AnimationHaul.Write(w);

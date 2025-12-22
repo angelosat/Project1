@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Start_a_Town_.Net;
+using System.Threading;
 
 namespace Start_a_Town_
 {
@@ -75,10 +76,10 @@ namespace Start_a_Town_
             }
         }
 
-        internal void HandleRemoteCall(GameObject parent, ObjectEventArgs e)
-        {
-            this.ResourceDef.Worker.HandleRemoteCall(parent, e, this);
-        }
+        //internal void HandleRemoteCall(GameObject parent, ObjectEventArgs e)
+        //{
+        //    this.ResourceDef.Worker.HandleRemoteCall(parent, e, this);
+        //}
         //public void SyncAdjust(Entity parent, float value)
         //{
         //    Packets.SendSyncAdjust(parent, this.ResourceDef, value);
@@ -97,7 +98,14 @@ namespace Start_a_Town_
         }
         internal Resource Clone()
         {
-            return new Resource(this.ResourceDef) { Max = this.Max, Value = this.Value, RechargingDelay = new Progress(0, this.RechargingDelay.Max, this.RechargingDelay.Value) };// this.Rec.Clone() };
+            var res =  new Resource(this.ResourceDef) { 
+                Max = this.Max, 
+                Value = this.Value, 
+                RechargingDelay = new Progress(0, this.RechargingDelay.Max, this.RechargingDelay.Value) 
+            };// this.Rec.Clone() };
+            foreach (var r in this.Modifiers)
+                res.AddModifier(new ResourceRateModifier(r.Def));
+            return res;
         }
 
         internal void HandleMessage(GameObject parent, ObjectEventArgs e)

@@ -62,7 +62,8 @@ namespace Start_a_Town_
             this.Scene.ObjectsDrawn = new HashSet<GameObject>();
 
             var map = GetMap();
-            map.Draw(ToolManager, WindowManager, Scene);
+            //map.Draw(ToolManager, WindowManager, Scene);
+            map.Camera.DrawMap(map, ToolManager, WindowManager, Scene);
 
             /// i moved this to camera.newdraw method
             /// DONT ERASE

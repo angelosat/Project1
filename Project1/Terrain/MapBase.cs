@@ -961,10 +961,10 @@ namespace Start_a_Town_
         {
         }
 
-        internal void Draw(ToolManager toolManager, UIManager windowManager, SceneState scene)
-        {
-            this.Camera.DrawMap(this, toolManager, windowManager, scene);
-        }
+        //internal void Draw(ToolManager toolManager, UIManager windowManager, SceneState scene)
+        //{
+        //    this.Camera.DrawMap(this, toolManager, windowManager, scene);
+        //}
         internal virtual void CameraRecenter()
         {
 

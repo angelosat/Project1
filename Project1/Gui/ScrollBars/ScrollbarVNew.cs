@@ -58,14 +58,14 @@ namespace Start_a_Town_.UI
                 return;
             if (this.WindowManager.ActiveControl == this.Thumb)
             {
-                this.ThumbClickOrigin = (int)(UIManager.Mouse.Y - this.Thumb.Location.Y);
+                this.ThumbClickOrigin = (int)(UIManager.MouseScaled.Y - this.Thumb.ScreenLocation.Y);
                 this.ThumbMoving = true;
                 e.Handled = true;
             }
             else if (this.Area.IsTopMost)
             {
                 e.Handled = true;
-                if (UIManager.Mouse.Y < this.Thumb.ScreenLocation.Y)
+                if (UIManager.MouseScaled.Y < this.Thumb.ScreenLocation.Y)
                     this.ThumbValueChangeFunc(this.ValueFunc() - this.LargeStep);
                 else
                     this.ThumbValueChangeFunc(this.ValueFunc() + this.LargeStep);
@@ -86,7 +86,7 @@ namespace Start_a_Town_.UI
             float pos = (this.Area.Height - thumbH) * currentval / (float)this.MaxValue;
             if (this.ThumbMoving)
             {
-                this.Thumb.Location.Y = Math.Max(0, Math.Min(this.Size.Height - 32 - thumbH, (UIManager.Mouse.Y - this.ThumbClickOrigin) / UIManager.Scale));
+                this.Thumb.Location.Y = Math.Max(0, Math.Min(this.Size.Height - 32 - thumbH, UIManager.MouseScaled.Y - this.Area.ScreenLocation.Y - this.ThumbClickOrigin));
                 var val = this.MaxValue * (this.Thumb.Location.Y / (this.Area.Height - thumbH));
                 this.ThumbValueChangeFunc((int)val);
             }

@@ -105,7 +105,7 @@ namespace Start_a_Town_
 
         public int RefId;
 
-        public NetEndpoint Net;
+        public NetEndpoint Net { get => this.World.Net; set { } }
 
         public WorldBase World { get; set; }
         MapBase _map;

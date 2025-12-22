@@ -145,7 +145,7 @@ namespace Start_a_Town_
             if (!IsOperatable(actor, origin))
                 return null;
             var task = new Plan(TaskDefOf.DeliverMaterials);
-            var allObjects = actor.Map.GetObjectsLazy();
+            var allObjects = actor.Map.GetEntities();
             var enduranceLimit = Math.Min(actor.GetHaulStackLimitFromEndurance(ingredientDef), ingredientDef.StackCapacity);
             var maxDeliverable = 0;
             var similarNearbyConstructions = GetNearbyConstructionsWithSameMaterialNewNewInclusive(actor, allConstructions, origin, ingredientDef);

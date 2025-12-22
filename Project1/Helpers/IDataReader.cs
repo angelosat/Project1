@@ -24,7 +24,7 @@ namespace Start_a_Town_
         internal int[] ReadIntArray();
         internal Vector3? ReadVector3Nullable();
         internal string[] ReadStringArray();
-        internal List<int> ReadListInt();
+        internal List<int> ReadListInt32();
         internal string ReadASCII();
         internal Color ReadColor();
         internal List<Vector3> ReadListVector3();

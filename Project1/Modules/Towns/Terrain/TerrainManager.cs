@@ -103,7 +103,7 @@ namespace Start_a_Town_
        
         private float GetCurrentPlantDensity(int totalFertileCells)
         {
-            var plants = this.Map.GetObjects().Where(o => o.IsPlant()).Count();
+            var plants = this.Map.GetEntities().Where(o => o.IsPlant()).Count();
             return plants / (float)totalFertileCells;
         }
 

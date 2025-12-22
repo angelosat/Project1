@@ -28,7 +28,7 @@ namespace Start_a_Town_
         static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var list = r.ReadListInt();
+            var list = r.ReadListInt32();
             foreach (var id in list)
                 net.World.GetEntity(id).ToggleForbidden();
             if (net is Server)

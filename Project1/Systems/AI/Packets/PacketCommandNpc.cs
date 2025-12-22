@@ -21,7 +21,7 @@ namespace Start_a_Town_
         static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var npcids = r.ReadListInt();
+            var npcids = r.ReadListInt32();
             var target = TargetArgs.Read(net, r);
             var enqueue = r.ReadBoolean();
             foreach(var npc in net.World.GetEntities(npcids))

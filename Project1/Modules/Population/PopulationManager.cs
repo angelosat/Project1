@@ -20,17 +20,13 @@ namespace Start_a_Town_
 
             public static void SendNotifyVisit(Actor actor)
             {
-                //var w = Server.Instance.OutgoingStreamTimestamped;
                 var server = actor.Net as Server;
                 server.BeginPacket(PacketVisitorArrived).Write(actor.RefId);
             }
             public static void SendNotifyAdventurerCreated(Actor actor)
             {
-                //var w = Server.Instance.OutgoingStreamTimestamped;
                 var server = actor.Net as Server;
                 server.BeginPacket(PacketAdventurerCreated).Write(actor.RefId);
-
-                //w.Write(PacketAdventurerCreated, actor.RefId);
             }
             private static void ReceiveNotifyAdventurerCreated(NetEndpoint net, Packet pck)
             {
@@ -66,8 +62,8 @@ namespace Start_a_Town_
         }
 
         bool Populated;
-        readonly ObservableCollection<VisitorProperties> ActorsAdventuring = new();// ActorsCap);
-        public IEnumerable<VisitorProperties> AllActors => this.ActorsAdventuring;
+        readonly ObservableCollection<VisitorProfile> ActorsAdventuring = new();// ActorsCap);
+        public IEnumerable<VisitorProfile> AllActors => this.ActorsAdventuring;
         public readonly StaticWorld World;
         const int WorldPopulationCap = 8;
         const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
@@ -171,7 +167,7 @@ namespace Start_a_Town_
 
         private void RegisterVisitor(Actor actor)
         {
-            var props = new VisitorProperties(this.World, actor, InitialChance, InitialApproval) { OffsiteArea = OffsiteAreaDefOf.Forest };
+            var props = new VisitorProfile(this.World, actor, InitialChance, InitialApproval) { OffsiteArea = OffsiteAreaDefOf.Forest };
             this.ActorsAdventuring.Add(props);
             MakeVisitor(actor);
         }
@@ -188,18 +184,18 @@ namespace Start_a_Town_
             actor.ModifyNeed(VisitorNeedsDefOf.Guidance, n => 10);
         }
 
-        public IEnumerable<VisitorProperties> Find(Func<VisitorProperties, bool> pred)
+        public IEnumerable<VisitorProfile> Find(Func<VisitorProfile, bool> pred)
         {
             foreach (var v in this.ActorsAdventuring.Where(pred))
                 yield return v;
         }
 
-        internal IEnumerable<VisitorProperties> GetVisitorProperties()
+        internal IEnumerable<VisitorProfile> GetVisitorProperties()
         {
             foreach (var v in this.ActorsAdventuring)
                 yield return v;
         }
-        internal VisitorProperties GetVisitorProperties(Actor actor)
+        internal VisitorProfile GetVisitorProperties(Actor actor)
         {
             return this.ActorsAdventuring.FirstOrDefault(v => v.Actor == actor);
         }
@@ -216,7 +212,7 @@ namespace Start_a_Town_
         {
             //var box = new ScrollableBoxNewNew(200, UIManager.LargeButton.Height * 8);
             var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 8);
-            var list = new ListBoxObservable<VisitorProperties, ButtonNew>(props =>
+            var list = new ListBoxObservable<VisitorProfile, ButtonNew>(props =>
             {
                 var npc = props.Actor;
                 var btn = ButtonNew.CreateBig(() => SelectionManager.Select(npc), box.Viewport.Width, npc.RenderIcon(), () => npc.Npc.FullName, () => npc.Exists ? "Visiting" : (props.Discovered ? "" : "Unknown"));
@@ -234,7 +230,7 @@ namespace Start_a_Town_
                 return btn;
             });
 
-            Func<VisitorProperties, bool>
+            Func<VisitorProfile, bool>
                 filterUndiscovered = i => !i.Discovered,
                 filterVisiting = i => i.Actor.Exists,
                 filterAway = i => !i.Actor.Exists && i.Discovered;

@@ -459,13 +459,13 @@ namespace Start_a_Town_
             this.TargetA = TargetArgs.Read(null, r);
             this.AmountA = r.ReadInt32();
             this.TargetsA = r.ReadListTargets();
-            this.AmountsA = r.ReadListInt();
+            this.AmountsA = r.ReadListInt32();
             var targetqueuecount = r.ReadInt32();
             for (int i = 0; i < targetqueuecount; i++)
                 this.TargetQueues.Add(r.ReadListTargets());
             var amountqueuecount = r.ReadInt32();
             for (int i = 0; i < amountqueuecount; i++)
-                this.AmountQueues.Add(r.ReadListInt());
+                this.AmountQueues.Add(r.ReadListInt32());
             this.Count = r.ReadInt32();
             this.Quest = r.ReadInt32();
             this.ShopID = r.ReadInt32();

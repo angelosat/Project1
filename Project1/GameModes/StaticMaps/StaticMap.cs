@@ -145,7 +145,7 @@ namespace Start_a_Town_
             this.TryPerformQueuedRandomBlockUpdates();
             this.CachedAmbientColor = this.UpdateAmbientColor();
 
-            this.CacheObjects();
+            //this.CacheObjects();
             this.CacheBlockEntities();
 
             foreach (var chunk in this.ActiveChunks.Values.ToList())
@@ -410,7 +410,7 @@ namespace Start_a_Town_
             this.Regions.Init();
             callback?.Invoke("Cacheing objects", 0);
 
-            this.FinishLoading();
+            //this.FinishLoading();
 
             return true;
         }
@@ -423,7 +423,7 @@ namespace Start_a_Town_
                 $"chunk edges reset in {sw.ElapsedMilliseconds} ms".ToConsole();
             });
             yield return ("Initializing Regions", this.Regions.Init);
-            yield return ("Caching objects", this.FinishLoading);
+            //yield return ("Caching objects", this.FinishLoading);
         }
         void ResetChunkEdges()
         {
@@ -499,25 +499,25 @@ namespace Start_a_Town_
 
             this.CachedBlockEntities = list;
         }
-        public void CacheObjects()
-        {
-            var list = new List<GameObject>();
-            foreach (var chunk in this.ActiveChunks)
-                list.AddRange(chunk.Value.GetObjects());
+        //public void CacheObjects()
+        //{
+        //    var list = new List<GameObject>();
+        //    foreach (var chunk in this.ActiveChunks)
+        //        list.AddRange(chunk.Value.GetObjects());
 
-            this.CachedObjects = list;
-        }
-        public override IEnumerable<GameObject> GetObjects()
-        {
-            return this.CachedObjects.Where(o => o.Exists); // because an object might have despawned during an earlier operation on the current frame
-        }
+        //    this.CachedObjects = list;
+        //}
+        //public override IEnumerable<GameObject> GetObjects()
+        //{
+        //    return this.CachedObjects.Where(o => o.Exists); // because an object might have despawned during an earlier operation on the current frame
+        //}
         public override IEnumerable<GameObject> GetObjects(Vector3 min, Vector3 max)
         {
             return this.GetObjects(new BoundingBox(min, max));
         }
         public override IEnumerable<GameObject> GetObjects(BoundingBox box)
         {
-            foreach (var o in this.CachedObjects)
+            foreach (var o in this.GetEntities())
             {
                 var type = box.Contains(o.Global);
                 if (type != ContainmentType.Disjoint)
@@ -992,10 +992,10 @@ namespace Start_a_Town_
             this.UpdateLight(queued);
         }
 
-        internal void FinishLoading()
-        {
-            this.CacheObjects();
-        }
+        //internal void FinishLoading()
+        //{
+        //    this.CacheObjects();
+        //}
         readonly UndiscoveredAreaManager UndiscoveredAreaManager;
         internal void InitUndiscoveredAreas(Action<string, float> callback = null)
         {

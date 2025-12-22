@@ -33,7 +33,7 @@ namespace Start_a_Town_.AI
                     }
                 }
             }
-            var food = actor.Map.GetObjects()
+            var food = actor.Map.GetEntities()
                 .Where(obj => obj.HasComponent<ConsumableComponent>() && actor.GetUnreservedAmount(obj) > 0)
                 .Select(o => new TargetArgs(o))
                 .OrderByReachableRegionDistance(actor)

@@ -78,7 +78,7 @@ namespace Start_a_Town_
         public GameObject PlayerCharacter;
         public ParticleManager ParticleManager;
         public RegionManager Regions;
-        protected List<GameObject> CachedObjects = new();
+        //protected List<GameObject> CachedObjects = new();
         protected Dictionary<IntVec3, BlockEntity> CachedBlockEntities = new();
         public float Sunlight;
         public abstract Color GetAmbientColor();
@@ -116,7 +116,7 @@ namespace Start_a_Town_
         public Random Random => this.World.Random;
         public abstract Dictionary<IntVec2, Chunk> GetActiveChunks();
         public abstract bool AddChunk(Chunk chunk);
-        public abstract IEnumerable<GameObject> GetObjects();
+        //public abstract IEnumerable<GameObject> GetObjects();
         public abstract IEnumerable<GameObject> GetObjects(Vector3 min, Vector3 max);
         public abstract IEnumerable<GameObject> GetObjects(BoundingBox box);
         IEnumerable<BlockEntity> BlockEntities => this.ActiveChunks.Values.SelectMany(ch => ch.BlockEntities).Distinct();
@@ -576,7 +576,7 @@ namespace Start_a_Town_
             if (obj.Map == this)
             {
                 obj.OnDespawn(this);
-                this.CachedObjects.Remove(obj);
+                //this.CachedObjects.Remove(obj);
                 return true;
             }
             throw new Exception("GameObject.Map mismatch when trying to despawn object");
@@ -798,7 +798,7 @@ namespace Start_a_Town_
         public virtual void OnGameEvent(GameEvent e)
         {
             this.ParticleManager.OnGameEvent(e);
-            foreach (var obj in this.CachedObjects)
+            foreach (var obj in this.GetEntities())
                 obj.OnGameEvent(e);
         }
         public float GetSolidObjectHeight(Vector3 global)
@@ -969,6 +969,7 @@ namespace Start_a_Town_
         {
 
         }
+        public IEnumerable<GameObject> Entities => this.ActiveChunks.Values.SelectMany(c => c.Objects);
         public IEnumerable<GameObject> GetEntities()
         {
             var chunks = this.ActiveChunks.Values;
@@ -991,25 +992,25 @@ namespace Start_a_Town_
                         yield return e;
             }
         }
-        public IEnumerable<GameObject> GetObjectsLazy()
-        {
-            var count = this.CachedObjects.Count;
-            for (int i = 0; i < count; i++)
-            {
-                var obj = this.CachedObjects[i];
-                if (obj.Exists)
-                    yield return obj;
-            }
-        }
+        //public IEnumerable<GameObject> GetObjectsLazy()
+        //{
+        //    var count = this.CachedObjects.Count;
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var obj = this.CachedObjects[i];
+        //        if (obj.Exists)
+        //            yield return obj;
+        //    }
+        //}
         public IEnumerable<Entity> Find(Func<Entity, bool> filter)
         {
-            foreach (Entity o in this.GetObjectsLazy())
+            foreach (Entity o in this.GetEntities())
                 if (filter(o))
                     yield return o;
         }
         public IEnumerable<T> Find<T>(Func<T, bool> filter) where T : Entity
         {
-            foreach (T o in this.GetObjectsLazy().OfType<T>())
+            foreach (T o in this.GetEntities<T>())
                 if (filter(o))
                     yield return o;
         }

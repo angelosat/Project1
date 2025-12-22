@@ -5,6 +5,7 @@ using Start_a_Town_.Net;
 using Start_a_Town_.Terraforming;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -1247,27 +1248,7 @@ namespace Start_a_Town_
             } while (cellIndex < this.Cells.Length);
         }
         #region Serialization
-        public void Write(IDataWriter writer)
-        {
-            writer.Write(this.MapCoords);
-            writer.Write(this.LightValid);
-            writer.Write(this.EdgesValid);
-
-            this.WriteCells(writer);
-
-            writer.Write(this.Objects.Count);
-            foreach (var obj in this.Objects.ToList())
-                obj.Write(writer);
-
-            this.WriteBlockEntitiesDistinct(writer);
-            for (int j = 0; j < Size; j++)
-                for (int i = 0; i < Size; i++)
-                //for (int j = 0; j < Size; j++)
-                    writer.Write(this.HeightMap[i][j]);
-
-            writer.Write(this.Sunlight);
-            writer.Write(this.BlockLight);
-        }
+      
 
         public static Chunk Create(MapBase map, IDataReader reader)
         {
@@ -1281,6 +1262,30 @@ namespace Start_a_Town_
             chunk.Read(reader);
             return chunk;
         }
+        public void Write(IDataWriter writer)
+        {
+            writer.Write(this.MapCoords);
+            writer.Write(this.LightValid);
+            writer.Write(this.EdgesValid);
+
+            this.WriteCells(writer);
+
+            //writer.Write(this.Objects.Count);
+            //foreach (var obj in this.Objects.ToList())
+            //    obj.Write(writer);
+
+            // save only entity refids, for entities to be claimed from the world entity registry during deserialization
+            writer.Write(this.Objects.Select(o => o.RefId).ToList());
+
+            this.WriteBlockEntitiesDistinct(writer);
+            for (int j = 0; j < Size; j++)
+                for (int i = 0; i < Size; i++)
+                    //for (int j = 0; j < Size; j++)
+                    writer.Write(this.HeightMap[i][j]);
+
+            writer.Write(this.Sunlight);
+            writer.Write(this.BlockLight);
+        }
         void Read(IDataReader reader)
         {
             this.MapCoords = reader.ReadVector2();
@@ -1292,9 +1297,13 @@ namespace Start_a_Town_
             this.InitCells();
             this.ReadCells(reader);
 
-            int objCount = reader.ReadInt32();
-            for (int i = 0; i < objCount; i++)
-                this.Add(GameObject.Create(reader));
+            //int objCount = reader.ReadInt32();
+            //for (int i = 0; i < objCount; i++)
+            //    this.Add(GameObject.Create(reader));
+
+            var entityRefIds = reader.ReadListInt32();
+            foreach (var refId in entityRefIds)
+                this.Add(this.Map.World.GetEntity(refId));
 
             this.ReadBlockEntitiesDistinct(reader);
             for (int j = 0; j < Size; j++)
@@ -1401,7 +1410,6 @@ namespace Start_a_Town_
             var chunktag = new SaveTag(SaveTag.Types.Compound, "Chunk");
 
             var heightTag = new SaveTag(SaveTag.Types.List, "Heightmap", SaveTag.Types.Byte);
-            var entitiestag = new SaveTag(SaveTag.Types.List, "Entities", SaveTag.Types.Compound);
             var visibleCells = new SaveTag(SaveTag.Types.List, "VisibleCells", SaveTag.Types.Int);
             var lightTag = new SaveTag(SaveTag.Types.List, "Light", SaveTag.Types.Byte);
 
@@ -1427,8 +1435,11 @@ namespace Start_a_Town_
             sw.Stop();
             string.Format("heightmap saved in {0} ms", sw.ElapsedMilliseconds).ToConsole();
 
-            foreach (GameObject obj in this.Objects)
-                entitiestag.Add(new SaveTag(SaveTag.Types.Compound, obj.Name, obj.SaveInternal()));
+            //var entitiestag = new SaveTag(SaveTag.Types.List, "Entities", SaveTag.Types.Compound);
+            //foreach (GameObject obj in this.Objects)
+            //    entitiestag.Add(new SaveTag(SaveTag.Types.Compound, obj.Name, obj.SaveInternal()));
+            var entityRefIds = this.Objects.Select(e => e.RefId).ToList();
+            var entitiestag = entityRefIds.Save("Entities");
 
             var blockEntitiesTag = this.SaveBlockEntitiesDistinct();
 
@@ -1489,14 +1500,22 @@ namespace Start_a_Town_
                 for (int i = 0; i < Size; i++)
                     this.HeightMap[i][j] = (byte)heightTag[n++].Value;
 
-            var entitytags = chunktag["Entities"].Value as List<SaveTag>;
 
-            foreach (SaveTag tag in entitytags)
-            {
-                GameObject obj = GameObject.Load(tag);
-                if (obj is not null)
-                    this.Add(obj);
-            }
+            //var entitytags = chunktag["Entities"].Value as List<SaveTag>;
+            //foreach (SaveTag tag in entitytags)
+            //{
+            //    GameObject obj = GameObject.Load(tag);
+            //    if (obj is not null)
+            //        this.Add(obj);
+            //}
+           
+            //if (chunktag.TryGetTag("Entities", out var entitesTag))
+            //{
+                var list = chunktag.LoadListInt("Entities");
+                foreach (var refId in list)
+                    this.Add(this.Map.World.GetEntity(refId));
+            //}
+
 
             this.LoadBlockEntitiesDistinct(chunktag);
 

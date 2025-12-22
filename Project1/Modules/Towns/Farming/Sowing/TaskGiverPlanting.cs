@@ -31,7 +31,7 @@ namespace Start_a_Town_
                 if (!allSowablePositions.Any())
                     continue;
 
-                var allseeds = actor.Map.GetObjectsLazy().Where(c => c.IsSeedFor(plant));// && actor.CanReserve(c));//
+                var allseeds = actor.Map.GetEntities().Where(c => c.IsSeedFor(plant));// && actor.CanReserve(c));//
                                                                                                                 //).OrderByReachableRegionDistance(actor);
                 var encumberanceLimit = actor.MaxCarryable(ItemDefOf.Seeds);
 

@@ -50,9 +50,13 @@ namespace Start_a_Town_
 
         public abstract void ResolveReferences();
 
-        readonly EntityRegistry EntityRegistry = [];
+        readonly EntityRegistry EntityRegistry;
         public IReadOnlyDictionary<int, Entity> Entities => this.EntityRegistry;
         public ReadOnlyObservableCollection<Entity> EntitiesObservable => this.EntityRegistry.Entities;
+        protected WorldBase()
+        {
+            this.EntityRegistry = new(this);
+        }
         public void RegisterOld(Entity entity)
         {
             entity.World = this;
@@ -155,6 +159,24 @@ namespace Start_a_Town_
         }
         public abstract MapBase GetMap(int mapId);
         public EventBus Events { get; } = new();
-        
+
+        internal SaveTag Save()
+        {
+            var savetag = new SaveTag(SaveTag.Types.Compound, "World");
+            savetag.Add(this.EntityRegistry.Save("Registry"));
+            return savetag;
+        }
+        internal void Load(SaveTag savetag)
+        {
+            if(savetag.TryGetTag("Registry", out var tag)) this.EntityRegistry.Load(tag);
+        }
+        internal void Write(IDataWriter w)
+        {
+            this.EntityRegistry.Write(w);
+        }
+        internal void Read(IDataReader r)
+        {
+            this.EntityRegistry.Read(r);
+        }
     }
 }

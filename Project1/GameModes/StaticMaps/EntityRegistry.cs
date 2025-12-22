@@ -9,11 +9,13 @@ namespace Start_a_Town_
 {
     internal class EntityRegistry : IEnumerable<Entity>, INotifyCollectionChanged, IReadOnlyDictionary<int, Entity>, IReadOnlyCollection<Entity>
     {
+        readonly WorldBase World;
         readonly Dictionary<int, Entity> _inner = [];
         readonly ObservableCollection<Entity> _innerObservable = [];
         public readonly ReadOnlyObservableCollection<Entity> Entities;
-        public EntityRegistry()
+        public EntityRegistry(WorldBase world)
         {
+            this.World = world;
             this._innerObservable.CollectionChanged += (s, e) => CollectionChanged?.Invoke(this, e);
             this.Entities = new ReadOnlyObservableCollection<Entity>(this._innerObservable);
         }
@@ -42,6 +44,44 @@ namespace Start_a_Town_
         {
             return (from o in this._inner where netIds.Contains(o.Key) select o.Value);
         }
+
+        internal SaveTag Save(string tagName)
+        {
+            var entitiesList = new SaveTag(SaveTag.Types.List, "Registry", SaveTag.Types.Compound);
+            foreach (var entity in this._inner.Values)
+            {
+                var entitytag = new SaveTag(SaveTag.Types.Compound, "", entity.SaveInternal());
+                entitiesList.Add(entitytag);
+            }
+            return entitiesList;
+        }
+        internal void Load(SaveTag tag)
+        {
+            var list = tag.Value as List<SaveTag>;
+            foreach (var entityTag in list)
+            {
+                var obj = GameObject.Load(entityTag) as Entity ?? throw new NullReferenceException();
+                obj.World = this.World;
+                this.Add(obj);
+            }
+        }
+        internal void Write(IDataWriter w)
+        {
+            w.Write(this._inner.Count);
+            foreach (var entity in this._inner.Values)
+                entity.Write(w);
+        }
+        internal void Read(IDataReader r)
+        {
+            var count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                var entity = GameObject.Create(r) as Entity;
+                entity.World = this.World;
+                this.Add(entity);
+            }
+        }
+
         public Entity this[int key] => this._inner[key];
 
         public IEnumerable<int> Keys => this._inner.Keys;

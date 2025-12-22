@@ -78,7 +78,7 @@ namespace Start_a_Town_
             return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
         }
 
-        StaticWorld()
+        StaticWorld() : base()
         {
             this.MaxHeight = 128;
             this.DefaultBlock = BlockDefOf.Soil;
@@ -109,6 +109,8 @@ namespace Start_a_Town_
         public StaticWorld(SaveTag save)
             : this()
         {
+            base.Load(save);
+
             this.Name = (string)save["Name"].Value;
             this.Seed = (int)save["Seed"].Value;
             save.TryGetTagValue<int>("RandomState", v =>
@@ -134,6 +136,7 @@ namespace Start_a_Town_
         public StaticWorld(IDataReader r)
            : this()
         {
+            base.Read(r);
             this.Name = r.ReadString();
             this.Seed = r.ReadInt32();
             this.CurrentTick = r.ReadUInt64();
@@ -148,6 +151,7 @@ namespace Start_a_Town_
         //}
         public override void WriteData(IDataWriter w)
         {
+            base.Write(w);
             w.Write(this.Name);
             w.Write(this.Seed);
             w.Write(this.CurrentTick);
@@ -165,7 +169,7 @@ namespace Start_a_Town_
 
         internal SaveTag SaveToTag()
         {
-            var tag = new SaveTag(SaveTag.Types.Compound, "World");
+            var tag = base.Save();// new SaveTag(SaveTag.Types.Compound, "World");
             tag.Add(new SaveTag(SaveTag.Types.Int, "Seed", this.Seed));
             var currentRandomState = this.Random.Next();
             this.Random = new Random(currentRandomState);

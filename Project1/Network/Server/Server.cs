@@ -646,14 +646,14 @@ namespace Start_a_Town_.Net
             this.World = map.World;
             this.World.Net = Instance;
             Instance.Map = map;
-            foreach (var ch in map.GetActiveChunks().Values)
-                InstantiateChunk(ch);
+            //foreach (var ch in map.GetActiveChunks().Values)
+            //    ResolveChunkReferences(ch);
             foreach (var obj in Instance.World.Entities)
                 obj.Value.OnMapLoaded(Instance.Map);
             map.ResolveReferences();
             Random = new RandomThreaded(Instance.Map.Random);
         }
-        private static void InstantiateChunk(Chunk chunk)
+        private static void ResolveChunkReferences(Chunk chunk)
         {
             chunk.GetObjects().ForEach(obj =>
             {

@@ -541,7 +541,7 @@ namespace Start_a_Town_
         internal override void OnSpawn(MapBase map)
         {
             base.OnSpawn(map);
-            if (this.GetVisitorProperties() is VisitorProperties props)
+            if (this.GetVisitorProperties() is VisitorProfile props)
                 props.OffsiteArea = null;
         }
     }

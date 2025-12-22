@@ -53,7 +53,7 @@ namespace Start_a_Town_.Net
         public int[] ReadIntArray() => this._reader.ReadIntArray();
         public Vector3? ReadVector3Nullable() => this._reader.ReadVector3Nullable();
         public string[] ReadStringArray() => this._reader.ReadStringArray();
-        public List<int> ReadListInt() => this._reader.ReadListInt();
+        public List<int> ReadListInt32() => this._reader.ReadListInt();
         public string ReadASCII() => this._reader.ReadASCII();
         public Color ReadColor() => this._reader.ReadColor();
         public List<Vector3> ReadListVector3() => this._reader.ReadListVector3();

@@ -12,22 +12,22 @@ namespace Start_a_Town_
         public int LootWeightRawMaterial = 1;
         public int LootWeightEquipment = 1;
         public int LootWeightCurrency = 1;
-        readonly Action<VisitorProperties>[] TickActions;
+        readonly Action<VisitorProfile>[] TickActions;
         Loot LootCurrency;
         public OffsiteAreaDef(string name) : base(name)
         {
-            this.TickActions = new Action<VisitorProperties>[] {
+            this.TickActions = new Action<VisitorProfile>[] {
                 AwardLoot,
                 Quest,
                 Damage
             };
         }
-        public void Tick(VisitorProperties props)
+        public void Tick(VisitorProfile props)
         {
             this.TickActions.SelectRandomWeighted(props.World.Random, p => 1)(props);
         }
 
-        private void Damage(VisitorProperties visitor)
+        private void Damage(VisitorProfile visitor)
         {
             var min = 1;
             var max = 5;
@@ -39,14 +39,14 @@ namespace Start_a_Town_
             AILog.SyncWrite(actor, $"[Lost {dmg} health,{Color.Red}] while exploring {this.Name}");
         }
 
-        private void Quest(VisitorProperties visitor)
+        private void Quest(VisitorProfile visitor)
         {
             var actor = visitor.Actor;
             foreach (var q in visitor.GetQuests())
                 q.TryComplete(actor, this);
         }
 
-        private void AwardLoot(VisitorProperties visitor)
+        private void AwardLoot(VisitorProfile visitor)
         {
             var actor = visitor.Actor;
             var world = visitor.World;

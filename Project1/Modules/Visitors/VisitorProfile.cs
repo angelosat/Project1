@@ -8,15 +8,15 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    public class VisitorProperties : Inspectable, ITooltippable, ISerializableNew<VisitorProperties>, ISaveable, ISyncable
+    public class VisitorProfile : Inspectable, ITooltippable, ISerializableNew<VisitorProfile>, ISaveable, ISyncable
     {
         static readonly int PacketSyncAwardTownRating, PacketSync;
-        static VisitorProperties()
+        static VisitorProfile()
         {
             PacketSyncAwardTownRating = Registry.PacketHandlers.Register(ReceiveAwardTownRating);
             PacketSync = Registry.PacketHandlers.Register(ReceiveSync);
         }
-        public VisitorProperties()
+        public VisitorProfile()
         {
             
         }
@@ -59,17 +59,17 @@ namespace Start_a_Town_
         public HashSet<int> RecentlyVisitedShops = new();
         public readonly ObservableCollection<QuestDef> Quests = new();
         public StaticWorld World;
-        public VisitorProperties(IDataReader r, PopulationManager manager)
+        public VisitorProfile(IDataReader r, PopulationManager manager)
         {
             this.World = manager.World;
             this.Read(r);
         }
-        public VisitorProperties(SaveTag save, PopulationManager manager)
+        public VisitorProfile(SaveTag save, PopulationManager manager)
         {
             this.World = manager.World;
             this.Load(save);
         }
-        public VisitorProperties(StaticWorld world, Actor actor, float townVisitChance, int townApprovalRating)
+        public VisitorProfile(StaticWorld world, Actor actor, float townVisitChance, int townApprovalRating)
         {
             this.World = world;
             this.Timer = world.Clock;
@@ -155,7 +155,7 @@ namespace Start_a_Town_
         {
         }
 
-        internal VisitorProperties AddRecentlyVisitedShop(Workplace shop)
+        internal VisitorProfile AddRecentlyVisitedShop(Workplace shop)
         {
             this.RecentlyVisitedShops.Add(shop.ID);
             return this;
@@ -309,7 +309,7 @@ namespace Start_a_Town_
             w.Write(this.Timer.TotalMilliseconds);
             w.Write(this.Quests.Select(q => q.ID).ToArray());
         }
-        public VisitorProperties Read(IDataReader r)
+        public VisitorProfile Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
             var isspawned = r.ReadBoolean();
@@ -397,6 +397,6 @@ namespace Start_a_Town_
             gui.GetWindow().SetTitle(this.Actor.Name).Show();
         }
 
-        public static VisitorProperties Create(IDataReader r) => new VisitorProperties().Read(r);
+        public static VisitorProfile Create(IDataReader r) => new VisitorProfile().Read(r);
     }
 }

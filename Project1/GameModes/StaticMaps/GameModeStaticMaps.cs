@@ -166,7 +166,7 @@ namespace Start_a_Town_.Core
             map.Regions.Init();
             map.InitUndiscoveredAreas();
             map.Init();
-            map.FinishLoading();
+            //map.FinishLoading();
             map.ResolveReferences();
             //map.HACKpopulateCellArrayFromChunks();
 

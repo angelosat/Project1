@@ -792,7 +792,14 @@ namespace Start_a_Town_.Net
                 return;
             }
             chunk.Map = this.Map;
+            //ResolveChunkReferences(chunk);
 
+            Instance.Map.AddChunk(chunk);
+            return;
+        }
+
+        private void ResolveChunkReferences(Chunk chunk)
+        {
             chunk.GetObjects().ForEach(obj =>
             {
                 this.Instantiate(obj);
@@ -810,9 +817,6 @@ namespace Start_a_Town_.Net
                 foreach (var o in entity.GetChildren())
                     Instance.Instantiate(o);
             }
-
-            Instance.Map.AddChunk(chunk);
-            return;
         }
 
         /// <summary>

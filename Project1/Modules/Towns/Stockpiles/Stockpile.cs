@@ -62,7 +62,7 @@ namespace Start_a_Town_
         public List<GameObject> ScanExistingStoredItems()
         {
             var list = new List<GameObject>();
-            var objects = this.Town.Map.GetObjects();
+            var objects = this.Town.Map.GetEntities();
             foreach (var pos in this.Positions)
                 list.AddRange(from obj in objects where this.Accepts(obj) where obj.Global - Vector3.UnitZ == (Vector3)pos select obj); // TODO: this is shit
             return list;

@@ -93,7 +93,7 @@ namespace Start_a_Town_
         }
         public static IEnumerable<Entity> GetPotentialItemsNew(Actor actor, bool ignoreOtherReservations = false)
         {
-            var objs = actor.Map.GetObjectsLazy();
+            var objs = actor.Map.GetEntities();
             foreach (var obj in objs)
             {
                 var item = obj as Entity;

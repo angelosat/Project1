@@ -139,7 +139,7 @@ namespace Start_a_Town_
         public override void Read(IDataReader r)
         {
             base.Read(r);
-            this.Possesions = new HashSet<int>(r.ReadListInt());
+            this.Possesions = new HashSet<int>(r.ReadListInt32());
             this.FirstName = r.ReadString();
             this.LastName = r.ReadString();
         }

@@ -58,7 +58,7 @@ namespace Start_a_Town_
                     continue;
                 var fuelProgress = refComp.Fuel;
                 var fuelMissing = fuelProgress.Max - fuelProgress.Value;
-                var allObjects = actor.Map.GetObjectsLazy();
+                var allObjects = actor.Map.GetEntities();
                 var handled = new HashSet<GameObject>();
                 foreach (var fuel in allObjects)
                 {

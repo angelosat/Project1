@@ -15,7 +15,7 @@ namespace Start_a_Town_.AI.Behaviors
                 if (!parent.Intersects(door))
                 {
                     // if the actor's boundingbox doesn't intersect the doors boundingdoor, close the door UNLESS IT'S OBSTRUCTED by another entity
-                    var allobj = parent.Map.GetObjectsLazy();
+                    var allobj = parent.Map.GetEntities();
                     var intersecting = allobj.Where(o => o.Intersects(door)); // TODO not very fast
                     if (!intersecting.Any())   // if the door is obstructed, leave it open
                         parent.Interact(new InteractionToggleDoor(), door);

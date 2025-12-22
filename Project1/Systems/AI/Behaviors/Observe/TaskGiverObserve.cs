@@ -10,7 +10,7 @@ namespace Start_a_Town_.AI.Behaviors.Observe
             var need = actor.GetNeed(NeedDefOf.Curiosity);
             if (need.Value > 50)
                 return null;
-            var potentialTargets = actor.Map.GetObjects()
+            var potentialTargets = actor.Map.GetEntities()
                 .Where(o=>actor.CanReserve(o));
             var randomized = new Queue<GameObject>(potentialTargets.Shuffle(actor.Map.Random));
 

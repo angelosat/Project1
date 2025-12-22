@@ -89,7 +89,7 @@ namespace Start_a_Town_
             }
             else
             {
-                var nearbyItems = actor.Map.GetObjects().OfType<Entity>();
+                var nearbyItems = actor.Map.GetEntities().OfType<Entity>();
                 var item = nearbyItems
                     .Where(i => condition(i) && actor.CanReserve(i))
                     .SortByReachableRegionDistance(actor)

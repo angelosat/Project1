@@ -72,6 +72,7 @@ namespace Start_a_Town_
             var profile = this.Owner.Profile as ActorDnaDef;
             this.Root = profile.Behavior.Clone() as Behavior;
             this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
+            //this.Meta.Actor = this.Owner as Actor;
         }
 
         public AIComponent Initialize(Behavior root)
@@ -104,12 +105,10 @@ namespace Start_a_Town_
             //this._unListen = this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
             this.Owner.Map.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
             this.State.ItemPreferences.OnSpawn(newMap);
-            this.Meta.LastMapTransitionTick = this.Owner.World.CurrentTick;
         }
         public override void OnDespawnExtra(MapBase oldmap)
         {
             this.State.ItemPreferences.OnDespawn(oldmap);
-            this.Meta.LastMapTransitionTick = this.Owner.World.CurrentTick;
         }
         public override void OnObjectSynced(GameObject parent)
         {
@@ -161,6 +160,7 @@ namespace Start_a_Town_
             this.State.Read(r);// i dont want to sync the state for the time being
             this.Root.Read(r);
             this.Meta = r.ReadDef<RoleMetaDef>().CreateWrapper();
+            this.Meta.Actor = this.Owner as Actor;
         }
 
         internal override void GetInterface(GameObject gameObject, Control box)

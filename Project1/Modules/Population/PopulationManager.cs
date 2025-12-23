@@ -137,20 +137,11 @@ namespace Start_a_Town_
             if (net is Server && this.ActorsAdventuring.Count < WorldPopulationCap)
             {
                 Actor actor = GenerateInhabitant();
-                //this.World.RegisterAndSync(actor);//
-                //Packets.SendNotifyAdventurerCreated(actor);
-                //this.RegisterVisitor(actor);
-                //AnnounceInhabitantCreated(net, actor);
                 this.World.RegisterAndSync(actor);//
                 Packets.SendNotifyAdventurerCreated(actor);
-                //this.RegisterVisitor(actor);
-                var chosenPlace = this.World.Space.PlaceAtRandom(actor);//
-
+                var chosenPlace = this.World.Space.PlaceAtRandomAndSync(actor);//
                 AnnounceInhabitantCreated(this.World.Net, actor, chosenPlace);
-
                 this.RegisterVisitor(actor);
-                
-
                 return actor;
             }
             return null;
@@ -161,7 +152,8 @@ namespace Start_a_Town_
             //var visitor = ActorDefOf.Npc.Create() as Actor;
             var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
             actor.Inventory.Insert(ItemDefOf.Coins.Create().SetStackSize(500));
-            
+            var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
+            need.Value = this.World.Random.Next(0, 100);
             return actor;
         }
 

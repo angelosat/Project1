@@ -23,6 +23,7 @@ namespace Start_a_Town_
             AIState state = AIState.GetState(entity);
             PacketAILogWrite.Send(net as Server, entity.RefId, text);
             state.History.Write(text);
+            
         }
         static public bool TryWrite(GameObject entity, string text)
         {

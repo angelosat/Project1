@@ -20,6 +20,7 @@ namespace Start_a_Town_
         internal void Remove(EffectDef effect)
         {
             this.ActiveEffects.RemoveAll(e => e.Def == effect);
+            effect.Worker.OnFinish(this.Owner as Actor);
         }
 
         public override void Write(IDataWriter w)

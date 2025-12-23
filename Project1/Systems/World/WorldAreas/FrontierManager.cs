@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using static Start_a_Town_.FrontierManager;
 
 namespace Start_a_Town_
@@ -13,7 +14,7 @@ namespace Start_a_Town_
         void Enter(Actor actor);
         void Exit(Actor actor);
         FrontierDef PlaceAtRandom(Actor actor);
-        void PlaceAtRandomAndSync(Actor actor);
+        FrontierDef PlaceAtRandomAndSync(Actor actor);
 
         void Tick(StaticWorld staticWorld);
     }
@@ -42,7 +43,7 @@ namespace Start_a_Town_
                 var r = packet.PacketReader;
                 var actor = client.World.GetEntity<Actor>(r.ReadInt32());
                 var pos = r.ReadSingle();
-                (actor.World as StaticWorld).Space.PlaceAtRandom(actor);
+                ((actor.World as StaticWorld).Space as FrontierManager).PlaceAt(actor, pos);
             }
         }
 
@@ -72,24 +73,31 @@ namespace Start_a_Town_
                 // if current distance from town is not the target distance, step towards it
                 var nextDistance = distance;
                 if (distance != target)
+                {
                     // actors should settle in the middle of the zone (or maybe jitter around the middle to influence the chances of encounters)
-                    nextDistance = Math.Max(Math.Max(0, target + .5f), Math.Min(distance + ((target < distance) ? -step : step), target - .5f));
-
+                    //nextDistance = Math.Max(Math.Max(0, target + .5f), Math.Min(distance + ((target < distance) ? -step : step), target - .5f));
+                    //nextDistance = Math.Max(0, Math.Min(distance + ((target - .5f < distance) ? -step : step), target - .5f));
+                    nextDistance = distance + ((target - .5f < distance) ? -step : step);
+                    nextDistance = Math.Clamp(nextDistance, 0, this.Frontiers.Count);
+                }
                 // if current distance == 0 it means the actor has arrived in town and should spawn 
                 if (nextDistance == 0)
                 {
-                    //this.Actors.Remove(actor);
                     if (world.Net is Server server)
                     {
                         world.Map.SpawnAndSync(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
                         server.SyncReport($"{actor.Name} has arrived!");
+                        AILog.SyncWrite(actor, "I arrived in town!");
                     }
+                    this.Exit(actor);
                     continue;
                 }
                 
                 this.Actors[actor] = nextDistance;
                 var currentFrontier = this.GetFrontier(actor);
                 currentFrontier.Tick(actor);
+
+                actor.AI.Meta.Tick();
             }
         }
 
@@ -106,6 +114,7 @@ namespace Start_a_Town_
         public void Exit(Actor actor)
         {
             this.Actors.Remove(actor);
+            actor.Effects.Remove(EffectDefOf.Adventuring);
             //if (!this.Actors.Remove(actor))
             //    throw new InvalidOperationException($"Tried to remove {actor} but wasn't found");
         }
@@ -119,10 +128,11 @@ namespace Start_a_Town_
             actor.Map.DespawnAndSync(actor);
             server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.Label}!");
         }
-        public void PlaceAtRandomAndSync(Actor actor)
+        public FrontierDef PlaceAtRandomAndSync(Actor actor)
         {
-            this.PlaceAtRandom(actor);
+            var fr = this.PlaceAtRandom(actor);
             Packets.SendPlaceAt(actor, this.Actors[actor]);
+            return fr;
         }
         public FrontierDef PlaceAtRandom(Actor actor)
         {
@@ -130,11 +140,14 @@ namespace Start_a_Town_
             this.PlaceAt(actor, tier);
             return this.GetFrontier(actor).Def;
         }
-        public void PlaceAt(Actor actor, int tier)
+        public void PlaceAt(Actor actor, float tier)
         {
             this.Actors.Add(actor, tier);
             actor.AI.Meta.TargetFrontier = this.GetFrontier(actor).Def;
-            actor.Map?.DespawnAndSync(actor);
+            actor.Effects.Apply(EffectDefOf.Adventuring);
+
+            //actor.Map?.DespawnAndSync(actor);
+            actor.Map?.Despawn(actor);
         }
         public class FrontierWrapper
         {

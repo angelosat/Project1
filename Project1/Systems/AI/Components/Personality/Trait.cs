@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    public sealed class Trait : Inspectable, ISaveable, ISerializableNew<Trait>, IProgressBar, INamed, IListable
+    public sealed class Trait : Inspectable, ISaveableNewNew<Trait>, IDefWrapper<TraitDef>, ISerializableNew<Trait>, IProgressBar, INamed, IListable
     {
         public float Percentage
         {
@@ -10,9 +10,10 @@ namespace Start_a_Town_
             set => this.Value = (MaxDefault - MinDefault) * value;
         }
 
-        public TraitDef Def;
-        public string Name => this.Def.Name;
-        public override string Label => this.Value >= 0 ? this.Def.NamePositive : this.Def.NameNegative;
+        public TraitDef TraitDef;
+        public TraitDef Def => this.TraitDef;
+        public string Name => this.TraitDef.Name;
+        public override string Label => this.Value >= 0 ? this.TraitDef.NamePositive : this.TraitDef.NameNegative;
         public const float MinDefault = -100;
         public const float MaxDefault = 100;
         public const float ValueRange = 100;
@@ -20,49 +21,51 @@ namespace Start_a_Town_
         public float Normalized => this.Value / ValueRange;  //unsigned. do i want this?
         public float Min => MinDefault;
         public float Max => MaxDefault;
-        Trait()
+        public Trait()
         {
             
         }
         public Trait(TraitDef def)
         {
-            this.Def = def;
+            this.TraitDef = def;
         }
         public override string ToString()
         {
-            return $"{this.Def.Name}: {this.Value}";
+            return $"{this.TraitDef.Name}: {this.Value}";
         }
 
         public Control GetListControlGui()
         {
             var box = new Panel() { AutoSize = true, BackgroundStyle = BackgroundStyle.TickBox };
-            var bar = new BarSigned() { Object = this, TextFunc = () => this.Label, HoverFunc = () => $"{this.Def.Name}: {this.Value} ({this.Label})\n{this.Def.Description.Wrap(TooltipManager.Width)}" };
+            var bar = new BarSigned() { Object = this, TextFunc = () => this.Label, HoverFunc = () => $"{this.TraitDef.Name}: {this.Value} ({this.Label})\n{this.TraitDef.Description.Wrap(TooltipManager.Width)}" };
             box.AddControls(bar);
             return box;
         }
 
         public SaveTag Save(string name = "")
         {
-            var tag = new SaveTag(SaveTag.Types.Compound, this.Def.Name);
+            var tag = new SaveTag(SaveTag.Types.Compound, this.TraitDef.Name);
+            tag.SaveDef("Def", this.TraitDef);
             tag.Add(this.Value.Save("Value"));
             return tag;
         }
 
-        public ISaveable Load(SaveTag tag)
+        public static Trait Create(SaveTag tag)
         {
-            tag.TryGetTagValueOrDefault<float>("Value", out this.Value);
-            return this;
+            var trait = new Trait();
+            trait.TraitDef = tag.LoadDef<TraitDef>("Def");
+            tag.TryGetTagValueOrDefault<float>("Value", out trait.Value);
+            return trait;
         }
-
         public void Write(IDataWriter w)
         {
-            w.Write(this.Def);
+            w.Write(this.TraitDef);
             w.Write(this.Value);
         }
 
         public Trait Read(IDataReader r)
         {
-            this.Def = r.ReadDef<TraitDef>();
+            this.TraitDef = r.ReadDef<TraitDef>();
             this.Value = r.ReadSingle();
             return this;
         }
@@ -71,5 +74,7 @@ namespace Start_a_Town_
         {
             return new Trait().Read(r);
         }
+
+        
     }
 }

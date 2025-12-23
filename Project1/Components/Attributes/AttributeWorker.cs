@@ -9,8 +9,8 @@
             this.Def = def;
         }
 
-        public abstract void Tick(GameObject obj, AttributeStat attributeStat);
-        internal virtual void Award(GameObject obj, AttributeStat attributeStat, float p)
+        public abstract void Tick(GameObject obj, AttributeRuntime attributeStat);
+        internal virtual void Award(GameObject obj, AttributeRuntime attributeStat, float p)
         {
             attributeStat.AddToProgress(p);
         }

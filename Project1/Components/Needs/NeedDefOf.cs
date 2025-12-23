@@ -9,7 +9,7 @@ namespace Start_a_Town_
         {
             CategoryDef = NeedCategoryDef.NeedCategoryPhysiological,
             //Worker = new NeedComfortWorker(),
-            BaseDecayRate = 0,
+            //BaseDecayRate = 0,
             BaseValue = 50
         };
         static public readonly NeedDef Hunger = new("Hunger", typeof(NeedHungerWorker))

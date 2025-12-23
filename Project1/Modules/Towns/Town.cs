@@ -172,23 +172,24 @@ namespace Start_a_Town_
             return false;
         }
 
-        private void AddMember(GameObject entity)
+        private void AddMember(Actor actor)
         {
-            if (!entity.HasComponent<AIComponent>())
+            if (!actor.HasComponent<AIComponent>())
                 throw new Exception();
-            this.AddMember(entity.RefId);
-            entity.Town = this;
-            entity.Net.ConsoleBox.Write($"{entity.Name} has joined the town!");
+            this.AddMember(actor.RefId);
+            RoleMetaDefOf.TownMember.AssignTo(actor);
+            actor.Town = this;
+            actor.Net.ConsoleBox.Write($"{actor.Name} has joined the town!");
             this.Map.EventOccured(Message.Types.NpcsUpdated);
         }
 
-        private void RemoveMember(GameObject entity)
+        private void RemoveMember(Actor actor)
         {
-            if (entity.HasComponent<AIComponent>())
+            if (actor.HasComponent<AIComponent>())
             {
-                this.RemoveMember(entity.RefId);
-                entity.Town = null;
-                this.Net.ConsoleBox.Write($"{entity.Name} was dismissed from the town!");
+                this.RemoveMember(actor.RefId);
+                actor.Town = null;
+                this.Net.ConsoleBox.Write($"{actor.Name} was dismissed from the town!");
                 this.Map.EventOccured(Message.Types.NpcsUpdated);
             }
         }
@@ -198,7 +199,7 @@ namespace Start_a_Town_
             foreach (var c in this.TownComponents)
                 c.OnCitizenRemoved(id);
         }
-        public void ToggleAgent(GameObject entity)
+        public void ToggleMember(Actor entity)
         {
             if (!this.Members.Contains(entity.RefId))
                 this.AddMember(entity);

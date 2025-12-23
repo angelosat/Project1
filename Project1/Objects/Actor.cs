@@ -435,7 +435,7 @@ namespace Start_a_Town_
 
         internal Trait GetTrait(TraitDef trait)
         {
-            return this.GetComponent<PersonalityComponent>().Traits.First(t => t.Def == trait);
+            return this.GetComponent<PersonalityComponent>().Traits[trait];//.First(t => t.TraitDef == trait);
         }
 
         internal void WalkToggle(bool toggle)

@@ -53,7 +53,7 @@ namespace Start_a_Town_
         {
             return this.GetResource(type) != null;
         }
-        internal AttributeStat GetAttribute(AttributeDef att) => this.GetComponent<AttributesComponent>().GetAttribute(att);
+        internal AttributeRuntime GetAttribute(AttributeDef att) => this.GetComponent<AttributesComponent>().GetAttribute(att);
 
         
         public ItemDef Def;
@@ -460,7 +460,7 @@ namespace Start_a_Town_
         [InspectorHidden]
         public Resource this[ResourceDef resource] => this.Resources[resource];
         [InspectorHidden]
-        public AttributeStat this[AttributeDef att] => this.GetAttribute(att);
+        public AttributeRuntime this[AttributeDef att] => this.GetAttribute(att);
 
         public ComponentCollection Components;
 
@@ -1170,23 +1170,23 @@ namespace Start_a_Town_
 
         internal Need GetNeed(NeedDef def)
         {
-            return this.GetComponent<NeedsComponent>().NeedsNew.First(n => n.NeedDef == def);
+            return this.GetComponent<NeedsComponent>().NeedsNew[def];//.First(n => n.NeedDef == def);
         }
         internal IEnumerable<Need> GetNeeds(NeedCategoryDef cat)
         {
-            return this.GetComponent<NeedsComponent>().NeedsNew.Where(n => n.NeedDef.CategoryDef == cat);
+            return this.GetComponent<NeedsComponent>().NeedsNew.Values.Where(n => n.NeedDef.CategoryDef == cat);
         }
         public IEnumerable<Need> GetNeeds()
         {
-            foreach (var n in this.GetComponent<NeedsComponent>().NeedsNew)
+            foreach (var n in this.GetComponent<NeedsComponent>().NeedsNew.Values)
             {
                 yield return n;
             }
         }
-        internal Need GetNeed(string needName)
-        {
-            return this.GetComponent<NeedsComponent>().NeedsNew.First(n => n.NeedDef.Name == needName);
-        }
+        //internal Need GetNeed(string needName)
+        //{
+        //    return this.GetComponent<NeedsComponent>().NeedsNew.First(n => n.NeedDef.Name == needName);
+        //}
      
       
         internal BehaviorPerformTask GetLastBehavior()

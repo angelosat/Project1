@@ -37,7 +37,7 @@ namespace Start_a_Town_
         }
         static IEnumerable<Planner> GetTaskGivers(Actor actor)
         {
-            var givers = actor.GetComponent<NeedsComponent>().NeedsNew.Select(n => n.TaskGiver);
+            var givers = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.TaskGiver);
             givers = givers.Concat(Planner.EssentialTaskGivers);
             var jobs = actor.AI.State.GetJobs().Where(j => j.Enabled);
             jobs.OrderBy(j => j.Priority);

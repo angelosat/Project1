@@ -6,8 +6,9 @@
         {
             var actor = ActorDefOf.Npc.Create(profile) as Actor;
             actor.Components.ApplySpecs(profile.GenerateSpecs());
-            var roleWrapper = roleMeta.Create();
-            roleWrapper.AssignTo(actor);
+            //var roleWrapper = roleMeta.Create();
+            //roleWrapper.AssignTo(actor);
+            roleMeta.AssignTo(actor);
             actor.Initialize();
             return actor;
         }

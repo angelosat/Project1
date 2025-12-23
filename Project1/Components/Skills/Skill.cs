@@ -5,10 +5,11 @@ using System;
 
 namespace Start_a_Town_
 {
-    public class Skill : Inspectable, ISaveable, ISerializableNew<Skill>, INamed, IListable
+    public class Skill : Inspectable, ISaveableNewNew<Skill>, IDefWrapper<SkillDef>, ISerializableNew<Skill>, INamed, IListable
     {
         public NpcSkillsComponent Owner;
-        public SkillDef Def;
+        public SkillDef SkillDef;
+        public SkillDef Def => this.SkillDef;
         int _level = 1;
         public int Level
         {
@@ -21,16 +22,16 @@ namespace Start_a_Town_
         }
         Progress LvlProgress = new();
         const int XpToLevelBase = 10;
-        Skill() { }
+        public Skill() { }
         public Skill(NpcSkillsComponent owner, SkillDef def)
         {
             this.Owner = owner;
-            this.Def = def;
+            this.SkillDef = def;
         }
 
         public int XpToLevel => (int)this.LvlProgress.Max;
         public float CurrentXP => this.LvlProgress.Value;
-        public string Name => this.Def.Label;
+        public string Name => this.SkillDef.Label;
         public override string Label => this.Name;
 
         //static int GetNextLvlXpTest1(int currentLvl) => (int)Math.Pow(XpToLevelBase, currentLvl + 1);
@@ -46,7 +47,7 @@ namespace Start_a_Town_
         {
             var actor = a.Parameters[0] as GameObject;
             var skill = (Skill)a.Parameters[1];
-            FloatingText.Create(actor, $"{skill.Def.Label} increased!", ft => ft.Font = UIManager.FontBold);
+            FloatingText.Create(actor, $"{skill.SkillDef.Label} increased!", ft => ft.Font = UIManager.FontBold);
         }
         internal void Award(float v)
         {
@@ -87,11 +88,11 @@ namespace Start_a_Town_
             var label = new Bar(this.LvlProgress)// Label()
             {
                 Width = 200,
-                TextFunc = () => $"{this.Def.Label}: {this.Level}",
+                TextFunc = () => $"{this.SkillDef.Label}: {this.Level}",
                 TooltipFunc = (t) =>
                 {
                     t.AddControlsBottomLeft(
-                        new Label(this.Def.Description),
+                        new Label(this.SkillDef.Description),
                         new Label() { TextFunc = () => $"Current Level: {this.Level}" },
                         new Label() { TextFunc = () => $"Experience: {this.CurrentXP} / {this.XpToLevel}" });
                 }
@@ -99,25 +100,12 @@ namespace Start_a_Town_
             return label;
         }
 
-        public SaveTag Save(string name = "")
-        {
-            var tag = new SaveTag(SaveTag.Types.Compound, this.Name);
-            tag.Add(this.Level.Save("Level"));
-            tag.Add(this.LvlProgress.Value.Save("Progress"));
-            return tag;
-        }
+        
 
-        public ISaveable Load(SaveTag tag)
-        {
-            tag.TryGetTagValueOrDefault("Level", out this._level);
-            this.LvlProgress.Max = GetNextLvlXp(this.Level);
-            this.LvlProgress.Value = (float)tag["Progress"].Value;
-            return this;
-        }
-
+       
         public void Write(IDataWriter w)
         {
-            w.Write(this.Def);
+            w.Write(this.SkillDef);
             w.Write(this.Level);
             //this.LvlProgress.Write(w);
             w.Write(this.LvlProgress.Value);
@@ -125,7 +113,7 @@ namespace Start_a_Town_
 
         public Skill Read(IDataReader r)
         {
-            this.Def = r.ReadDef<SkillDef>();
+            this.SkillDef = r.ReadDef<SkillDef>();
             this.Level = r.ReadInt32();
             //this.LvlProgress.Max = GetNextLvlXp(this.Level);
             this.LvlProgress.Value = r.ReadInt32();
@@ -137,13 +125,28 @@ namespace Start_a_Town_
         //}
         public override string ToString()
         {
-            return $"{this.Def.Label}: {this.Level} ({this.CurrentXP} / {this.XpToLevel})";
+            return $"{this.SkillDef.Label}: {this.Level} ({this.CurrentXP} / {this.XpToLevel})";
         }
 
         public static Skill Create(IDataReader r) => new Skill().Read(r);
 
-        
-
+        public static Skill Create(SaveTag tag)
+        {
+            var skill = new Skill();
+            skill.SkillDef = tag.LoadDef<SkillDef>("Def");
+            tag.TryGetTagValueOrDefault("Level", out skill._level);
+            skill.LvlProgress.Max = GetNextLvlXp(skill.Level);
+            skill.LvlProgress.Value = (float)tag["Progress"].Value;
+            return skill;
+        }
+        public SaveTag Save(string name = "")
+        {
+            var tag = new SaveTag(SaveTag.Types.Compound, this.Name);
+            tag.SaveDef("Def", this.Def);
+            tag.Add(this.Level.Save("Level"));
+            tag.Add(this.LvlProgress.Value.Save("Progress"));
+            return tag;
+        }
         [EnsureStaticCtorCall]
         internal static class Packets
         {

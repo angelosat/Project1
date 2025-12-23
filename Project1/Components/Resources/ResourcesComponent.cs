@@ -7,54 +7,63 @@ namespace Start_a_Town_
 {
     public class ResourcesComponent : EntityComp
     {
-        public Resource[] Resources;
+        //public Resource[] Resources = [];
+        public Dictionary<ResourceDef, Resource> Resources = [];
         public override string Name { get; } = "Resources";
 
         internal override void CopyFrom(EntityComp comp)
         {
             var source = (ResourcesComponent)comp;
-            var count = source.Resources.Length;
-            this.Resources = new Resource[count];
-            for (int i = 0; i < count; i++)
-                this.Resources[i] = source.Resources[i].Clone();
+            //var count = source.Resources.Length;
+            //this.Resources = new Resource[count];
+            //for (int i = 0; i < count; i++)
+            //    this.Resources[i] = source.Resources[i].Clone();
+            foreach (var r in source.Resources.Values)
+                this.Add(r.Def);
+                //this.Resources.Add(r.Def, new(r.Def) { Owner = this.Owner as Actor });
+        }
+        public void Add(ResourceDef def)
+        {
+            this.Resources.Add(def, new(def) { Owner = this.Owner as Actor });
         }
         public ResourcesComponent()
         {
         }
-        public ResourcesComponent(params Resource[] resources)
-        {
-            var count = resources.Length;
-            this.Resources = new Resource[count];
-            for (int i = 0; i < count; i++)
-                this.Resources[i] = resources[i].Clone();
-        }
+        //public ResourcesComponent(params Resource[] resources)
+        //{
+        //    var count = resources.Length;
+        //    this.Resources = new Resource[count];
+        //    for (int i = 0; i < count; i++)
+        //        this.Resources[i] = resources[i].Clone();
+        //}
         public ResourcesComponent(params ResourceDef[] defs)
         {
-            var count = defs.Length;
-            this.Resources = new Resource[count];
-            for (int i = 0; i < count; i++)
-                this.Resources[i] = new Resource(defs[i]);
+            throw new System.Exception();
+            //var count = defs.Length;
+            //this.Resources = new Resource[count];
+            //for (int i = 0; i < count; i++)
+            //    this.Resources[i] = new Resource(defs[i]);
         }
         
         public override void Tick()
         {
-            foreach (var item in this.Resources)
+            foreach (var item in this.Resources.Values)
                 item.Tick();// this.Parent);
         }
 
-        public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
-        {
+        //public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
+        //{
 
-            foreach (var item in this.Resources)
-                item.HandleMessage(parent, e);
+        //    foreach (var item in this.Resources)
+        //        item.HandleMessage(parent, e);
 
-            switch (e.Type)
-            {
-                default:
-                    break;
-            }
-            return false;
-        }
+        //    switch (e.Type)
+        //    {
+        //        default:
+        //            break;
+        //    }
+        //    return false;
+        //}
 
         //internal override void HandleRemoteCall(GameObject parent, ObjectEventArgs e)
         //{
@@ -64,23 +73,23 @@ namespace Start_a_Town_
 
         public override void OnNameplateCreated(GameObject parent, UI.Nameplate plate)
         {
-            foreach (var res in this.Resources)
+            foreach (var res in this.Resources.Values)
                 res.OnNameplateCreated(parent, plate);
         }
         public override void OnHealthBarCreated(GameObject parent, UI.Nameplate plate)
         {
-            foreach (var res in this.Resources)
+            foreach (var res in this.Resources.Values)
                 res.OnHealthBarCreated(parent, plate);
         }
-        public override object Clone()
-        {
-            return new ResourcesComponent(this.Resources);
-        }
-        internal override void Resolve()
-        {
-            foreach (var r in this.Resources)
-                r.Owner = this.Owner as Actor;
-        }
+        //public override object Clone()
+        //{
+        //    return new ResourcesComponent(this.Resources);
+        //}
+        //internal override void Resolve()
+        //{
+        //    foreach (var r in this.Resources)
+        //        r.Owner = this.Owner as Actor;
+        //}
 
         public override string ToString()
         {
@@ -92,25 +101,29 @@ namespace Start_a_Town_
 
         internal override void SaveExtra(SaveTag tag)
         {
-            this.Resources.SaveImmutable(tag, "Resources");
-
+            //this.Resources.SaveImmutable(tag, "Resources");
+            tag.SaveDefWrappers("Resources", this.Resources);
         }
         internal override void Load(GameObject parent, SaveTag tag)
         {
-            this.Resources.TryLoadImmutable(tag, "Resources");
+            //this.Resources.TryLoadImmutable(tag, "Resources");
+            tag.LoadDefWrappers("Resources", this.Resources);
         }
         public override void Write(IDataWriter writer)
         {
-            this.Resources.Write(writer);
+            //this.Resources.Values.Write(writer);
+            writer.WriteValues(this.Resources);
         }
         public override void Read(IDataReader reader)
         {
-            this.Resources.Read(reader);
+            //this.Resources.Read(reader);
+            reader.ReadDefWrappers(this.Resources);
         }
 
         internal Resource GetResource(ResourceDef def)
         {
-            return this.Resources.FirstOrDefault(r => r.ResourceDef == def);
+            return this.Resources[def];
+            //return this.Resources.FirstOrDefault(r => r.ResourceDef == def);
         }
         [InspectorHidden]
         public Resource this[ResourceDef def] => this.GetResource(def);
@@ -122,8 +135,8 @@ namespace Start_a_Town_
                 if (this._cachedGui is null)
                 {
                     this._cachedGui = new GroupBox();
-                    for (int i = 0; i < this.Resources.Length; i++)
-                        this._cachedGui.AddControlsBottomLeft(this.Resources[i].GetControl());
+                    foreach(var r in this.Resources.Values)
+                        this._cachedGui.AddControlsBottomLeft(r.GetControl());
                 }
                 return this._cachedGui;
             }
@@ -143,33 +156,40 @@ namespace Start_a_Town_
         }
         internal override void Initialize(Entity parent, Dictionary<string, MaterialDef> materials)
         {
-            for (int i = 0; i < this.Resources.Length; i++)
-            {
-                this.Resources[i].InitMaterials(parent, materials);
-            }
+            //for (int i = 0; i < this.Resources.Length; i++)
+            //{
+            //    this.Resources[i].InitMaterials(parent, materials);
+            //}
+            foreach(var r in this.Resources.Values)
+                r.InitMaterials(parent, materials);
         }
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
-            foreach (var r in this.Resources)
+            foreach (var r in this.Resources.Values)
                 tooltip.AddControlsBottomLeft(r.GetControl());
+        }
+        internal override void Resolve()
+        {
+            foreach (var r in this.Resources.Values)
+                r.Owner = this.Owner as Entity;
         }
         
         public override void OnObjectSynced(GameObject parent)
         {
             base.OnObjectSynced(parent);
-            foreach (var r in this.Resources)
-                r.Resolve(this.Owner as Entity);
+            //foreach (var r in this.Resources.Values)
+            //    r.Resolve(this.Owner as Entity);
         }
-        public override void OnSpawn(MapBase newMap)
-        {
-            foreach (var r in this.Resources)
-                r.Resolve(this.Owner as Entity);
-        }
-        public override void OnDespawnExtra(MapBase oldMap)
-        {
-            foreach (var r in this.Resources)
-                r.OnDespawn(this.Owner as Entity);
-        }
+        //public override void OnSpawn(MapBase newMap)
+        //{
+        //    foreach (var r in this.Resources)
+        //        r.Resolve(this.Owner as Entity);
+        //}
+        //public override void OnDespawnExtra(MapBase oldMap)
+        //{
+        //    foreach (var r in this.Resources)
+        //        r.OnDespawn(this.Owner as Entity);
+        //}
 
         internal void AdjustAndSync(ResourceDef def, float v)
         {
@@ -191,10 +211,12 @@ namespace Start_a_Town_
             }
             protected override void ApplyDefaultsTo(ResourcesComponent comp)
             {
-                var count = this.Defs.Length;
-                comp.Resources = new Resource[count];
-                for (int i = 0; i < count; i++)
-                    comp.Resources[i] = new Resource(this.Defs[i]);
+                //var count = this.Defs.Length;
+                //comp.Resources = new Resource[count];
+                //for (int i = 0; i < count; i++)
+                //    comp.Resources[i] = new Resource(this.Defs[i]);
+                foreach (var def in this.Defs)
+                    comp.Add(def);
             }
         }
     }

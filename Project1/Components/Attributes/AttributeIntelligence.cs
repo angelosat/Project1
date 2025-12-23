@@ -6,7 +6,7 @@
         {
         }
 
-        public override void Tick(GameObject obj, AttributeStat attributeStat)
+        public override void Tick(GameObject obj, AttributeRuntime attributeStat)
         {
         }
     }

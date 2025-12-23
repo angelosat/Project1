@@ -5,7 +5,7 @@ namespace Start_a_Town_
     public class NeedDef : Def
     {
         public float BaseThreshold = 20;
-        public float BaseDecayRate = .1f; // measure decay rate in ticks? how many ticks to drop value by 1
+        //public float BaseDecayRate = .1f; // measure decay rate in ticks? how many ticks to drop value by 1
         public float BaseValue = 100;
         public Planner TaskGiver;
         public NeedCategoryDef CategoryDef;

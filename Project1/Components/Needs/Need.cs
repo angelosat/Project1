@@ -6,7 +6,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public sealed class Need : MetricWrapper, IProgressBar, ISaveable, INamed, ISerializableNew<Need>, ISaveableNew
+    public sealed class Need : MetricWrapper, IProgressBar, ISaveable, INamed, ISerializableNew<Need>, ISaveableNewNew<Need>//, ISaveableNew,
     {
         Dictionary<EffectDef, List<NeedMod>> ModsNew = [];
         internal void AddMod(EffectDef needLetDef, float value, float rate)
@@ -203,7 +203,7 @@ namespace Start_a_Town_
             return this;
         }
 
-        static public ISaveableNew Create(SaveTag tag)
+        static public Need Create(SaveTag tag)
         {
             var need = new Need();
             tag.TryGetTagValue<string>("Def", v => need.NeedDef = Def.GetDef<NeedDef>(v));

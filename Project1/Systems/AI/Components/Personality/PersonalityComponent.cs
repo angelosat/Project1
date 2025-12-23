@@ -11,15 +11,16 @@ namespace Start_a_Town_
     {
         static readonly Random Randomizer = new();
 
-        public override object Clone()
-        {
-            return new PersonalityComponent(this.Traits.Select(d => d.Def).ToArray());
-        }
+        //public override object Clone()
+        //{
+        //    return new PersonalityComponent(this.Traits.Select(d => d.TraitDef).ToArray());
+        //}
 
         public ReactionType Reaction;
         public List<string> Hatelist;
         HashSet<MaterialDef> Favorites = new();
-        public Trait[] Traits;
+        //public Trait[] Traits;
+        public Dictionary<TraitDef, Trait> Traits = [];
 
         public override string Name { get; } = "Personality";
 
@@ -27,41 +28,48 @@ namespace Start_a_Town_
         {
 
         }
-        public PersonalityComponent(ReactionType reaction = ReactionType.Friendly, params string[] hatedTypes)
-        {
-            this.Hatelist = new List<string>(hatedTypes);
-            this.Reaction = reaction;
+        //public PersonalityComponent(ReactionType reaction = ReactionType.Friendly, params string[] hatedTypes)
+        //{
+        //    this.Hatelist = new List<string>(hatedTypes);
+        //    this.Reaction = reaction;
 
-        }
-        public PersonalityComponent(params TraitDef[] traits)
-        {
-            var count = traits.Length;
-            this.Traits = new Trait[count];
-            for (int i = 0; i < count; i++)
-            {
-                this.Traits[i] = new Trait(traits[i]);
-            }
-            this.Randomize();
-        }
+        //}
+        //public PersonalityComponent(params TraitDef[] traits)
+        //{
+        //    var count = traits.Length;
+        //    this.Traits = new Trait[count];
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        this.Traits[i] = new Trait(traits[i]);
+        //    }
+        //    this.Randomize();
+        //}
         internal override void CopyFrom(EntityComp source)
         {
             var traits = ((PersonalityComponent)source).Traits;
-            var count = traits.Length;
-            this.Traits = new Trait[count];
-            for (int i = 0; i < count; i++)
-                this.Traits[i] = new Trait(traits[i].Def);
+            //var count = traits.Length;
+            //this.Traits = new Trait[count];
+            //for (int i = 0; i < count; i++)
+            //    this.Traits[i] = new Trait(traits[i].TraitDef);
+            foreach (var trait in traits.Keys)
+                this.AddTrait(trait);
             this.Randomize();
+        }
+        public void AddTrait(TraitDef def)
+        {
+            this.Traits.Add(def, new Trait(def));
         }
         public Control GetCreationGui()
         {
             var box = new GroupBox();
-            foreach (var t in this.Traits)
+            foreach (var t in this.Traits.Values)
                 box.AddControlsBottomLeft(t.GetListControlGui());
             return box;
         }
         public Trait GetTrait(TraitDef def)
         {
-            return this.Traits.First(t => t.Def == def);
+            //return this.Traits.First(t => t.TraitDef == def);
+            return this.Traits[def];
         }
         public IEnumerable<MaterialDef> GetFavorites()
         {
@@ -87,7 +95,8 @@ namespace Start_a_Town_
         {
             int budget = 0; //placeholder
             var random = Randomizer;
-            var count = this.Traits.Length;
+            var snapshot = this.Traits.Values.ToList();
+            var count = snapshot.Count;
             double sum = 0;
             double[] values = new double[count];
             double min = -1, max = 1;
@@ -115,7 +124,7 @@ namespace Start_a_Town_
             for (int i = 0; i < count; i++)
             {
                 var value = values[i];
-                this.Traits[i].Value = (int)(value * Trait.ValueRange);
+                snapshot[i].Value = (int)(value * Trait.ValueRange);
                 if (Math.Abs(value) > Trait.ValueRange)
                     throw new Exception();
             }
@@ -128,23 +137,27 @@ namespace Start_a_Town_
 
         public override void Write(IDataWriter w)
         {
-            this.Traits.Write(w);
+            //this.Traits.Write(w);
+            w.WriteValues(this.Traits);
             this.Favorites.WriteDefs(w);
         }
         public override void Read(IDataReader r)
         {
-            this.Traits.Read(r);
+            //this.Traits.Read(r);
+            r.ReadDefWrappers(this.Traits);
             this.Favorites.Clear();
             this.Favorites.ReadDefs(r);
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            this.Traits.SaveImmutable(tag, "Traits");
+            //this.Traits.SaveImmutable(tag, "Traits");
+            tag.SaveDefWrappers("Traits", this.Traits);
             this.Favorites.SaveDefs(tag, "Favorites");
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            this.Traits.TryLoadImmutable(tag, "Traits");
+            //this.Traits.TryLoadImmutable(tag, "Traits");
+            tag.LoadDefWrappers("Traits", this.Traits);
             this.Favorites.Clear();
             if (!this.Favorites.TryLoadDefs(tag, "Favorites"))
                 this.Favorites = GenerateMaterialPreferences();
@@ -172,7 +185,7 @@ namespace Start_a_Town_
             var actor = this.Owner as Actor;
             var p = actor.Personality;
             var boxtraits = new GroupBox();
-            foreach (var t in p.Traits)
+            foreach (var t in p.Traits.Values)
                 boxtraits.AddControlsBottomLeft(t.GetListControlGui());
             box.AddControlsVertically(
                 boxtraits.ToPanelLabeled("Traits"), 
@@ -187,11 +200,12 @@ namespace Start_a_Town_
             }
             protected override void ApplyDefaultsTo(PersonalityComponent comp)
             {
-                var count = this.Items.Length;
-                comp.Traits = new Trait[count];
-                for (int i = 0; i < count; i++)
-                    comp.Traits[i] = new Trait(this.Items[i]);
-                
+                //var count = this.Items.Length;
+                //comp.Traits = new Trait[count];
+                //for (int i = 0; i < count; i++)
+                //    comp.Traits[i] = new Trait(this.Items[i]);
+                foreach (var trait in this.Items)
+                    comp.AddTrait(trait);
                 comp.Randomize();
             }
         }

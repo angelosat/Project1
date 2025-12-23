@@ -192,25 +192,24 @@ namespace Start_a_Town_
         private void ToggleCitizenship(List<TargetArgs> actors)
         {
             var actor = actors.First();
-            var w = Client.Instance.GetOutgoingStreamOrderedReliable();
-            w.Write(p);
-            w.Write(Net.Client.Instance.GetPlayer().ID);
-            w.Write(actor.Object.RefId);
+            Client.Instance.BeginPacket(p)
+                .Write(Net.Client.Instance.GetPlayer().ID)
+                .Write(actor.Object.RefId);
         }
         private static void ReceiveCitizenshipToggle(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
             var plID = r.ReadInt32();
             var actorID = r.ReadInt32();
-            var actor = net.World.GetEntity(actorID);
-            actor.Map.Town.ToggleAgent(actor);
+            var actor = net.World.GetEntity<Actor>(actorID);
+            actor.Map.Town.ToggleMember(actor);
             if(net is Server)
             {
                 //var w = net.GetOutgoingStreamOrderedReliable();
                 //w.Write(p);
-                var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
-                w.Write(Net.Client.Instance.GetPlayer().ID);
-                w.Write(actor.RefId);
+                net.BeginPacket(p)
+                    .Write(Net.Client.Instance.GetPlayer().ID)
+                    .Write(actor.RefId);
             }
         }
         internal override void OnGameEvent(GameObject parent, GameEvent e)

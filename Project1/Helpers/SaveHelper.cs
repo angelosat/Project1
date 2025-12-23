@@ -750,6 +750,13 @@ namespace Start_a_Town_
                 save.Add(item.Save());
             return save;
         }
+        public static void Save<T>(this SaveTag tag, ICollection<T> list, string name) where T : ISaveableNewNew<T>
+        {
+            var save = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Compound);
+            foreach (var item in list)
+                save.Add(item.Save());
+            tag.Add(save);
+        }
         public static List<int> Load(this List<int> list, List<SaveTag> positions)
         {
             foreach (var pos in positions)
@@ -809,6 +816,10 @@ namespace Start_a_Town_
         public static T LoadDef<T>(this SaveTag tag, string name) where T : Def
         {
             return Def.GetDef<T>(tag[name].Value as string);
+        }
+        public static T LoadDef<T>(this SaveTag tag) where T : Def
+        {
+            return Def.GetDef<T>(tag.Value as string);
         }
         public static bool TryLoadDef<T>(this SaveTag tag, string name, ref T target) where T : Def
         {
@@ -1004,5 +1015,7 @@ namespace Start_a_Town_
                 dic.Add(i.k, i.v);
             return dic;
         }
+
+        
     }
 }

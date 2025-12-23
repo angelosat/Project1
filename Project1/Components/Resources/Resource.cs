@@ -7,14 +7,17 @@ using System.Threading;
 
 namespace Start_a_Town_
 {
-    public sealed class Resource : MetricWrapper, IProgressBar, ISaveable, ISerializableNew<Resource>, INamed
+    public sealed class Resource : MetricWrapper, IProgressBar, ISaveableNewNew<Resource>, IDefWrapper<ResourceDef>, ISerializableNew<Resource>, INamed
     {
         public ResourceDef ResourceDef;
         public List<ResourceRateModifier> Modifiers = new();
         public int TicksPerRecoverOne, TicksPerDrainOne;
         int TickRecover, TickDrain;
         float _max;
-
+        public Resource()
+        {
+            
+        }
         public float Max
         {
             get => this._max; set
@@ -38,7 +41,9 @@ namespace Start_a_Town_
         public float Min => 0;
 
         public string Name => this.ResourceDef.Name;
-        Resource() { }
+
+        public ResourceDef Def => this.ResourceDef;
+
         public Resource(ResourceDef def)
         {
             this.ResourceDef = def;
@@ -136,17 +141,26 @@ namespace Start_a_Town_
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, this.ResourceDef.Name);
+            tag.SaveDef("Def", this.Def);
             tag.Add(this.Value.Save("Value"));
             tag.Add(this.Max.Save("Max"));
             return tag;
         }
-
-        public ISaveable Load(SaveTag tag)
+        public static Resource Create(SaveTag tag)
         {
-            tag.TryGetTagValueOrDefault("Value", out this._value);
-            tag.TryGetTagValueOrDefault("Max", out this._max);
-            return this;
+            var def = tag.LoadDef<ResourceDef>("Def");
+            var resource = new Resource(def);
+            tag.TryGetTagValueOrDefault("Value", out resource._value);
+            tag.TryGetTagValueOrDefault("Max", out resource._max);
+            return resource;
         }
+        //public ISaveable Load(SaveTag tag)
+        //{
+        //    tag.TryGetTagValueOrDefault("Value", out this._value);
+        //    tag.TryGetTagValueOrDefault("Max", out this._max);
+        //    return this;
+        //}
+        public static Resource Create(IDataReader r) => new Resource().Read(r);
 
         public void Write(IDataWriter w)
         {
@@ -194,7 +208,7 @@ namespace Start_a_Town_
                 _unsub += parent.Map?.Events.ListenTo(i.eventType, i.handler);
         }
 
-        public static Resource Create(IDataReader r) => new Resource().Read(r);
+        
 
         [EnsureStaticCtorCall]
         internal class Packets

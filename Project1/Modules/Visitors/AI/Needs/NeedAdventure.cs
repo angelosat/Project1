@@ -4,7 +4,7 @@
     {
         protected override void TickExtra(Need need)
         {
-            need.Value = (need.Owner.World.CurrentTick - need.Owner.AI.Meta.LastMapTransitionTick) / 100;
+            need.Value = (need.Owner.World.CurrentTick - (need.Owner as Actor).AI.Meta.LastMapTransitionTick) / 100;
         }
     }
 }

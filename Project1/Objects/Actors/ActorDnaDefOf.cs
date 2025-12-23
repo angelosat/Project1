@@ -11,8 +11,7 @@ namespace Start_a_Town_
                 NeedDefOf.Energy,
                 NeedDefOf.Hunger,
                 NeedDefOf.Comfort,
-                NeedDefOf.Social,
-                NeedDefOf.Work ],
+                NeedDefOf.Social ],
             Attributes = [
                 AttributeDefOf.Strength,
                 AttributeDefOf.Intelligence,

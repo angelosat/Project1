@@ -37,7 +37,7 @@ namespace Start_a_Town_.UI
             this.Label_Name = new Label(Panel_Picture.TopRight, obj.Name);
             this.Panel_Bars.Controls.Clear();
 
-            foreach (var r in obj.GetComponent<ResourcesComponent>().Resources)
+            foreach (var r in obj.GetComponent<ResourcesComponent>().Resources.Values)
             {
                 var ui = r.GetControl();
                 if (ui == null)

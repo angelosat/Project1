@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    public class AttributeStat : Inspectable, ISaveable, ISerializableNew<AttributeStat>, IListable
+    public class AttributeRuntime : Inspectable, ISaveableNewNew<AttributeRuntime>, ISerializableNew<AttributeRuntime>, IListable, IDefWrapper<AttributeDef>
     {
         public class ValueModifier
         {
@@ -33,33 +33,34 @@ namespace Start_a_Town_
         public float DecayRate = -0.5f;
         public float GainRate = 0;
         public List<ValueModifier> Modifiers = new();
-        ProgressLeveledExp Progress;
-        public AttributeDef Def;
+        public ProgressLeveledExp Progress;
+        public AttributeDef AttributeDef;
+        public AttributeDef Def => this.AttributeDef;
 
         public int Level { get => this.Progress.Level; set => this.Progress.Level = value; }//.SetLevel(value); }
         public int Min = 10;
         const int BaseXpToLevel = 100;//5; //placeholder
-        public AttributeStat(AttributeDef def, int value = 10)
+        public AttributeRuntime(AttributeDef def, int value = 10)
         {
-            this.Def = def;
+            this.AttributeDef = def;
             this.Progress = new ProgressLeveledExp(BaseXpToLevel, value);
         }
-        public AttributeStat()
+        public AttributeRuntime()
         {
             this.Progress = new ProgressLeveledExp(BaseXpToLevel, 10);
         }
         public void Update(GameObject parent)
         {
-            this.Def.Worker.Tick(parent, this);
+            this.AttributeDef.Worker.Tick(parent, this);
         }
 
         public override string ToString()
         {
-            return this.Def.Name + ": " + this.Level;
+            return this.AttributeDef.Name + ": " + this.Level;
         }
         public void Award(GameObject parent, float p)
         {
-            this.Def.Worker.Award(parent, this, p);
+            this.AttributeDef.Worker.Award(parent, this, p);
         }
         internal void AddToProgress(float p)
         {
@@ -73,42 +74,57 @@ namespace Start_a_Town_
             return this.Progress.GetControl();
         }
 
-        public AttributeStat Clone()
+        public AttributeRuntime Clone()
         {
-            return new AttributeStat(this.Def, this.Level);
+            return new AttributeRuntime(this.AttributeDef, this.Level);
         }
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
+            //tag.Add(this.AttributeDef.Save("Def"));
+            tag.SaveDef("Def", this.AttributeDef);
             tag.Add(this.Progress.Save("Progress"));
             return tag;
         }
 
-        public ISaveable Load(SaveTag tag)
+        //public ISaveable Load(SaveTag tag)
+        //{
+        //    //tag.TryGetTag("Def", out var def) 
+        //    this.Def = tag["Def"].LoadDef<AttributeDef>();
+        //    tag.TryGetTag("Progress", this.Progress.Load);
+        //    return this;
+        //}
+        public static AttributeRuntime Create(SaveTag tag)
         {
-            tag.TryGetTag("Progress", this.Progress.Load);
-            return this;
+            var att = new AttributeRuntime();
+            att.AttributeDef = tag["Def"].LoadDef<AttributeDef>();
+            tag.TryGetTag("Progress", att.Progress.Load);
+            //att.Load(tag);
+            return att;
         }
-
         public void Write(IDataWriter w)
         {
+            w.Write(this.Def);
             this.Progress.Write(w);
         }
 
-        public AttributeStat Read(IDataReader r)
+        public AttributeRuntime Read(IDataReader r)
         {
+            this.AttributeDef = r.ReadDef<AttributeDef>();
             this.Progress.Read(r);
             return this;
         }
 
         public Control GetListControlGui()
         {
-            return new Bar(this.Progress, 200, () => $"{this.Def.Label}: {this.Level}")
+            return new Bar(this.Progress, 200, () => $"{this.AttributeDef.Label}: {this.Level}")
             {
                 TooltipFunc = t => t.AddControls(this.Progress.GetControl())
             };
         }
 
-        public static AttributeStat Create(IDataReader r) => new AttributeStat().Read(r);
+        public static AttributeRuntime Create(IDataReader r) => new AttributeRuntime().Read(r);
+
+       
     }
 }

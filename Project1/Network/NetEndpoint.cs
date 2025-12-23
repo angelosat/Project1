@@ -74,11 +74,20 @@ namespace Start_a_Town_.Net
         public abstract void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);
         public abstract void PostLocalEvent(GameObject recipient, ObjectEventArgs args);
         public abstract void PostLocalEvent(GameObject recipient, Message.Types type, params object[] args);
-        public abstract void Report(string text);
         public abstract void SetSpeed(int playerID, int speed);
-        public abstract void SyncReport(string text);
+        //public abstract void SyncReport(string text);
         public abstract bool TryGetNetworkObject(int netID, out Entity obj);
-        public abstract void Write(string text);
+        //public abstract void Write(string text);
+        public abstract void Report(string text);
+
+        //public void Write(string text)
+        //{
+        //    Log.Write(text);
+        //}
+        //public void Report(string text)
+        //{
+        //    Log.Write($"[{this}] {text}");
+        //}
         public abstract void WriteToStream(params object[] args);
 
         public EventBus Events { get; } = new();

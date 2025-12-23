@@ -1061,19 +1061,16 @@ namespace Start_a_Town_.Net
             this.Speed = newspeed;
         }
 
-        public override void Write(string text)
-        {
-            Log.Write(text);
-        }
+        //public override void Write(string text)
+        //{
+        //    Log.Write(text);
+        //}
 
         public override void Report(string text)
         {
-            this.Write(text);
+            Log.Write($"{this}: {text}");
         }
 
-        public override void SyncReport(string text)
-        {
-        }
 
         public override void WriteToStream(params object[] args)
         {

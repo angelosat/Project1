@@ -1019,7 +1019,7 @@ namespace Start_a_Town_
                 var chunk = this.GetChunk(global);
                 chunk.InvalidateMesh();
             }
-            this.Net.Write("Area discovered!");
+            this.Net.Report("Area discovered!");
         }
         internal override void CameraRecenter()
         {

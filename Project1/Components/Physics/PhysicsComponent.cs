@@ -514,7 +514,7 @@ namespace Start_a_Town_
                     new Vector3(box.Max.X, box.Min.Y, global.Z),
                     new Vector3(box.Max.X, box.Max.Y, global.Z)
                 };
-            return corners.Any(c => map.GetBlock(c + new Vector3(0, 0, gravity)).Density > 0);
+            return corners.Any(c => map.GetBlock(c + new Vector3(0, 0, gravity))?.Density > 0);
         }
 
         public static Vector3 Decelerate(Vector3 velocity)

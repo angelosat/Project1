@@ -5,12 +5,14 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_.Net
 {
+  
     public class Network
     {
+        [EnsureStaticCtorCall]
         public class Packets
         {
             static public int PacketSyncReport, PacketTimestamped;
-            static public void Init()
+            static Packets()
             {
                 PacketSyncReport = Registry.PacketHandlers.Register(HandleSyncReport);
                 PacketTimestamped = Registry.PacketHandlers.Register(ReceiveTimestamped);
@@ -23,7 +25,8 @@ namespace Start_a_Town_.Net
             }
             public static void SendSyncReport(Server server, string text)
             {
-                server.GetOutgoingStreamOrderedReliable().Write(PacketSyncReport, text);
+                server.BeginPacket(PacketSyncReport).Write(text);
+                server.Report(text);
             }
             private static void HandleSyncReport(NetEndpoint net, Packet packet)
             {
@@ -55,10 +58,10 @@ namespace Start_a_Town_.Net
         {
             this.Server = Server.Instance;
         }
-        static Network()
-        {
-            Packets.Init();
-        }
+        //static Network()
+        //{
+        //    Packets.Init();
+        //}
         public Network()
         {
             this.CreateClient();

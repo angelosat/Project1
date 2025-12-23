@@ -63,22 +63,11 @@ namespace Start_a_Town_
             this.Scene.ObjectsDrawn = new HashSet<GameObject>();
 
             var map = GetMap();
-            //map.Draw(ToolManager, WindowManager, Scene);
             map.Camera.DrawMap(map, ToolManager, WindowManager, Scene);
 
-            /// i moved this to camera.newdraw method
-            /// DONT ERASE
-            //sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.DepthRead, RasterizerState.CullNone);
-            //map.DrawInterface(sb, map.Camera);
-            //sb.End();
-            /// DONT ERASE
-            /// 
-
             ToolManager.DrawUI(sb, map);
-            //NameplateManager.Draw(sb);
             DrawInterface(sb, Scene);
             NotificationArea.Draw(sb);
-            //this.NameplateManager.Update(this.Scene);
         }
 
         private void DrawInterface(SpriteBatch sb, SceneState scene)

@@ -29,7 +29,7 @@ namespace Start_a_Town_
 
         void Instantiator(GameObject o);
 
-        void SyncReport(string text);
+        //void SyncReport(string text);
 
         bool LogStateChange(int netID);
 
@@ -46,7 +46,7 @@ namespace Start_a_Town_
         void WriteToStream(params object[] args);
 
         void SetSpeed(int playerID, int speed);
-        void Write(string text);
+        //void Write(string text);
         void Report(string text);
     }
 }

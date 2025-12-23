@@ -801,16 +801,18 @@ namespace Start_a_Town_.Net
             this.Speed = newspeed;
         }
 
-        public override void Write(string text)
-        {
-        }
+        //public override void Write(string text)
+        //{
+        //    Log.Write(text);
+        //}
 
         public override void Report(string text)
         {
-            this.Write(text);
+            $"{this}: {text}".ToConsole();
+            //Log.Write($"{this}: {text}");
         }
 
-        public override void SyncReport(string text)
+        public void SyncReport(string text)
         {
             this.Report(text);
             Network.SyncReport(this, text);

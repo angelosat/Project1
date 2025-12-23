@@ -172,7 +172,7 @@ namespace Start_a_Town_
 
         private static void AnnounceInhabitantCreated(INetEndpoint net, Actor actor)
         {
-            net.Write($"{actor.Name} created");
+            net.Report($"{actor.Name} created");
             //net.EventOccured((int)Components.Message.Types.NewAdventurerCreated, actor);
         }
 

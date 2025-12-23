@@ -29,9 +29,9 @@ namespace Start_a_Town_
             net.EventOccured((int)Components.Message.Types.PlayerControlNpc, player, nextEntity, lastEntity);
 
             if (nextEntity is not null)
-                net.Write($"{player.Name} is controlling {nextEntity.Name}");
+                net.Report($"{player.Name} is assuming direct control over {nextEntity.Name}");
             else
-                net.Write($"{player.Name} no longer controlling {lastEntity.Name}");
+                net.Report($"{player.Name} no longer controlling {lastEntity.Name}");
 
             if (net is Server)
             {

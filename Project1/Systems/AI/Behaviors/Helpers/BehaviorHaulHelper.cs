@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Start_a_Town_.Core;
+using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -68,7 +69,7 @@ namespace Start_a_Town_
                     amountFromTask = amountFromTask == -1 ? item.StackSize : amountFromTask;
                     if (reservedAmount != amountFromTask)
                         //throw new Exception(); // TODO not sure i should be getting the haul amount from the reservation instead of the amount propert in the task
-                        actor.Net.SyncReport($"Reserved amount [{reservedAmount}] different than target amount [{amountFromTask}] in [{actor.Name}]'s [{bhav.GetType()}] behavior");
+                        (actor.Net as Server)?.SyncReport($"Reserved amount [{reservedAmount}] different than target amount [{amountFromTask}] in [{actor.Name}]'s [{bhav.GetType()}] behavior");
 
                     //// the item stacksize might have been increased since the behavior initialization 
                     //if (amountFromTask > reservedAmount)

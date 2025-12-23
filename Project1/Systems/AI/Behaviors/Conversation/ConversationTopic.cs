@@ -14,7 +14,7 @@ namespace Start_a_Town_
                 {
                     p.ModifyNeed(AdventurerNeedsDefOf.Guidance, n => 50);
                     var props = pop.GetVisitorProperties(p);
-                    actor.Net.Write($"{p.Name} received guidance by {actor.Name}");
+                    actor.Net.Report($"{p.Name} received guidance by {actor.Name}");
                 }
             },
             ApplyNew = (source, target) =>

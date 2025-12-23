@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.Net;
+using System;
 
 namespace Start_a_Town_.AI.Behaviors
 {
@@ -62,7 +63,7 @@ namespace Start_a_Town_.AI.Behaviors
                     }
                     else
                     {
-                        parent.Net.SyncReport($"{parent.Name} failed to find path from {parent.GetCellStandingOn().Above()} to {this.Target.Global}! {state.PathFinder.Ticks}");
+                        (parent.Net as Server)?.SyncReport($"{parent.Name} failed to find path from {parent.GetCellStandingOn().Above()} to {this.Target.Global}! {state.PathFinder.Ticks}");
                         return BehaviorState.Fail;
                     }
 

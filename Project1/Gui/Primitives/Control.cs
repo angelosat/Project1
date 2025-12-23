@@ -1382,11 +1382,11 @@ namespace Start_a_Town_.UI
             return false;
         }
 
-        public void Remove()
+        public void RemoveFromParent()
         {
             this.Parent.RemoveControls(this);
         }
-        public void Add()
+        public void AddToParent()
         {
             if(!this.Parent.Controls.Contains(this))
                 this.Parent.AddControls(this);

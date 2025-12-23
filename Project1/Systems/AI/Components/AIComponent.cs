@@ -46,6 +46,7 @@ namespace Start_a_Town_
         {
             var c = source as AIComponent;
             this.Root = c.Root.Clone() as Behavior;
+            this.Meta = c.Meta.Def.CreateWrapper();
         }
         public override void Randomize(GameObject parent, RandomThreaded random)
         {
@@ -103,10 +104,12 @@ namespace Start_a_Town_
             //this._unListen = this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
             this.Owner.Map.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
             this.State.ItemPreferences.OnSpawn(newMap);
+            this.Meta.LastMapTransitionTick = this.Owner.World.CurrentTick;
         }
         public override void OnDespawnExtra(MapBase oldmap)
         {
             this.State.ItemPreferences.OnDespawn(oldmap);
+            this.Meta.LastMapTransitionTick = this.Owner.World.CurrentTick;
         }
         public override void OnObjectSynced(GameObject parent)
         {
@@ -150,12 +153,14 @@ namespace Start_a_Town_
             w.Write(this.Guid.ToByteArray());
             this.State.Write(w); // i dont want to sync the state for the time being
             this.Root.Write(w);
+            w.Write(this.Meta.Def);
         }
         public override void Read(IDataReader r)
         {
             this.Guid = new Guid(r.ReadBytes(16));
             this.State.Read(r);// i dont want to sync the state for the time being
             this.Root.Read(r);
+            this.Meta = r.ReadDef<RoleMetaDef>().CreateWrapper();
         }
 
         internal override void GetInterface(GameObject gameObject, Control box)

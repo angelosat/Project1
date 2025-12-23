@@ -47,11 +47,11 @@ namespace Start_a_Town_.Components
                 n.Tick();
         }
 
-        //internal override void Resolve()
-        //{
-        //    foreach (var n in this.NeedsNew.Values)
-        //        n.Owner = this.Owner as Actor;
-        //}
+        internal override void Resolve()
+        {
+            foreach (var n in this.NeedsNew.Values)
+                n.Owner = this.Owner as Actor;
+        }
         //public override void OnObjectSynced(GameObject parent)
         //{
         //    foreach (var n in this.NeedsNew.Values)
@@ -123,7 +123,9 @@ namespace Start_a_Town_.Components
         {
             //this.NeedsNew.Clear();
             //this.NeedsNew.LoadFrom(r);
-            r.ReadValuesWithInferredKeys(this.NeedsNew, i => i.NeedDef);
+            //r.ReadValuesWithInferredKeys(this.NeedsNew, i => i.NeedDef);
+            r.ReadDefWrappers(this.NeedsNew);
+            this.Resolve();
         }
         internal override void SaveExtra(SaveTag tag)
         {
@@ -134,7 +136,19 @@ namespace Start_a_Town_.Components
         {
             //this.NeedsNew.Clear();
             //this.NeedsNew.LoadFrom(tag["Needs"]);
-            tag["Needs"].LoadValuesWithInferredKeys(this.NeedsNew, n => n.NeedDef);
+            //tag["Needs"].LoadValuesWithInferredKeys(this.NeedsNew, n => n.NeedDef);
+            tag.LoadDefWrappers("Needs", this.NeedsNew);
+        }
+        void Rebuild()
+        {
+            this.NeedsNew.Clear();
+            var profile = this.Owner.Profile as ActorDnaDef;
+            var profileneeds = profile.Needs;
+            var role = this.Owner.GetComponent<AIComponent>().Meta;
+            var roleneeds = role.Def.Needs;
+            var allneeds = profileneeds.Concat(roleneeds);
+            foreach (var n in allneeds)
+                this.Add(n);
         }
         public void NewGui(GroupBox box)
         {

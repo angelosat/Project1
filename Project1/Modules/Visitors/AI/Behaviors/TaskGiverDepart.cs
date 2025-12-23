@@ -9,6 +9,9 @@ namespace Start_a_Town_
         {
             var visitor = actor.GetVisitorProperties();
             var chance = visitor.GetDepartChance();
+
+            var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
+            chance = .7f;// - need.Percentage;
             if (actor.Map.World.Random.Chance(chance))
             {
                 var map = actor.Map as StaticMap;

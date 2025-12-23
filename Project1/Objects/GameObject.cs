@@ -308,9 +308,10 @@ namespace Start_a_Town_
         /// <returns></returns>
         public GameObject SetPosition(Vector3 nextGlobal) // TODO: merge this with SetGlobal
         {
+            // entity despawned and immediately respawned on the serve and sent a new snapshot while on client the entity's map was null
             if (this.Map is null) // entity has despawned on client before snapshot received?
-                //return this;
-                throw new Exception("set the object's map before setting its position");
+                return this;
+                //throw new Exception("set the object's map before setting its position");
 
             if (this.Map.IsSolid(nextGlobal))// + Vector3.UnitZ * 0.01f))// TODO: FIX THIS
                 return this; // TODO: FIX: problem when desynced from server, block might be empty on server but solid on client
@@ -694,7 +695,7 @@ namespace Start_a_Town_
             foreach (var comp in this.Components.Values.ToList())
                 comp.OnDespawn(oldMap);
 
-            oldMap.EventOccured(Message.Types.EntityDespawned, this);
+            //oldMap.EventOccured(Message.Types.EntityDespawned, this);
             oldMap.Events.Post(new EntityDespawnedEvent(this as Entity));
             oldMap.Events.Unsubscribe(this);
             //this.Unreserve(); // UNDONE dont unreserve here because the ai might continue manipulating (placing/carrying) the item during the same behavior

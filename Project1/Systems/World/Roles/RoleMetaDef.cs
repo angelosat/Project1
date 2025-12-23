@@ -8,7 +8,7 @@ namespace Start_a_Town_
         //public readonly Planner[] Planners = [.. planners.Select(ActivatorSafe<Planner>.CreateInstance)];
         public readonly NeedDef[] Needs = needs;
 
-        public RoleMetaWrapper Create()
+        public RoleMetaWrapper CreateWrapper()
         {
             var roleWrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(this.WrapperType);
             roleWrapper.Def = this;

@@ -29,14 +29,18 @@ namespace Start_a_Town_
 
         public void Tick(StaticWorld world)
         {
+            if (world.Net.IsClient)
+                return;
             float step = 1 / Ticks.PerGameMinute;
-            foreach (var (actor, distance) in Actors.ToList())
+            var snapshot = Actors.ToList();
+            foreach (var (actor, distance) in snapshot)
             {
                 var target = actor.AI.Meta.TargetFrontier?.Tier ?? 0;
                 if (distance == 0)
                 {
                     world.Map.SpawnAndSync(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
                     this.Actors.Remove(actor);
+                    continue;
                 }
                 if (distance != target)
                     this.Actors[actor] = Math.Max(0, Math.Min(distance + ((target < distance) ? -step : step), this.FrontiersByTier.Last().Key));
@@ -58,15 +62,19 @@ namespace Start_a_Town_
 
         public void Depart(Actor actor)
         {
+            // server-authoritative or let clients despawn?
+            if (actor.Net.IsClient)
+                return;
             this.Actors.Add(actor, 0);
             actor.Map.DespawnAndSync(actor);
+            //actor.Map.Despawn(actor);
             actor.Net.Report($"{actor.Name} has departed!");
         }
         public void PlaceRandom(Actor actor)
         {
             var tier = Random.Shared.Next(this.Frontiers.Count - 1);
             this.Actors.Add(actor, tier);
-            actor.Map.DespawnAndSync(actor);
+            actor.Map?.DespawnAndSync(actor);
         }
         public class FrontierWrapper
         {

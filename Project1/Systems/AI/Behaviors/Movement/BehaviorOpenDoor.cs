@@ -32,15 +32,18 @@ namespace Start_a_Town_.AI.Behaviors
             var occupiedCells = corners.Select(c => c.ToCell()).Distinct();
             foreach (var cellVec in occupiedCells)
             {
-                var door = Cell.GetOrigin(map, cellVec);
-                var cell = map.GetCell(door);
-                if (cell == null) // why check this? is actor at the edge of map? departing?
+                var cell = map.GetCell(cellVec);
+                if (cell is null)
                     continue;
-                if (cell.Block is not BlockDoor)
+                var door = Cell.GetOrigin(map, cellVec);
+                var cellOrigin = map.GetCell(door);
+                if (cellOrigin == null) // why check this? is actor at the edge of map? departing?
+                    continue;
+                if (cellOrigin.Block is not BlockDoor)
                     continue;
                 if (this.OpenedDoors.Contains(door))
                     continue;
-                var (open, locked) = BlockDoor.GetState(cell.BlockData);
+                var (open, locked) = BlockDoor.GetState(cellOrigin.BlockData);
                 this.OpenedDoors.Add(door);
                 if (!open)
                 {

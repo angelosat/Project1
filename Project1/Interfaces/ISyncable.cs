@@ -7,4 +7,9 @@ namespace Start_a_Town_
         ISyncable Sync(IDataWriter w);
         ISyncable Sync(IDataReader r);
     }
+
+    public interface ICopyable
+    {
+        void CopyFrom(ICopyable source);
+    }
 }

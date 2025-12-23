@@ -82,6 +82,15 @@ namespace Start_a_Town_
                 if(!dic.TryAdd(n.Def, n))
                     throw new InvalidDataException($"Duplicate def '{n.Def}' while loading {typeof(TValue).Name}");
         }
+        public static void LoadDefWrappersCopyFrom<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic) where TValue : ICopyable, ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
+        {
+            dic.Clear();
+            var values = tag.LoadListNewNew<TValue>();
+            foreach (var n in values)
+                    if (dic.TryGetValue(n.Def, out var nvalue)) nvalue.CopyFrom(n);
+                else
+                    throw new InvalidDataException($"Missing def '{n.Def}' while loading {typeof(TValue).Name}");
+        }
         public static void LoadDefWrappers<TKey, TValue>(this SaveTag tag, string name, Dictionary<TKey, TValue> dic) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
         {
             tag[name].LoadDefWrappers(dic);

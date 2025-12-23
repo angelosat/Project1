@@ -12,7 +12,7 @@ namespace Start_a_Town_
         static public Ingame Instance => _instance ??= new();
             
         public NotificationArea NotificationArea;
-        public NameplateManager NameplateManager = new();
+        public NameplateManager NameplateManager;// = new();
         public static readonly HotkeyContext HotkeyContext = new("Ingame");
 
         bool HideInterface = false;
@@ -31,6 +31,7 @@ namespace Start_a_Town_
             GameMode.Current.OnHudCreated(this.Hud);
             net.Map.World.OnHudCreated(this.Hud);
             this.Hud.Show(WindowManager);
+            this.NameplateManager = new NameplateManager(net);
             this.NameplateManager.Show(WindowManager);
             ToolManager = ToolManager.Instance;
             KeyHandlers.Clear();
@@ -52,7 +53,7 @@ namespace Start_a_Town_
             ToolManager.Update(map, this.Scene);
             map.Camera.Update(map);
             WindowManager.Update(game, gt);
-            this.NameplateManager.Update(this.Scene);
+            //this.NameplateManager.Update(this.Scene);
             NotificationArea.Update();
         }
 
@@ -77,7 +78,7 @@ namespace Start_a_Town_
             //NameplateManager.Draw(sb);
             DrawInterface(sb, Scene);
             NotificationArea.Draw(sb);
-            this.NameplateManager.Update(this.Scene);
+            //this.NameplateManager.Update(this.Scene);
         }
 
         private void DrawInterface(SpriteBatch sb, SceneState scene)

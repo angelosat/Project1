@@ -11,6 +11,7 @@ namespace Start_a_Town_
         {
             var oldRole = actor.AI.Meta;
             if (oldRole is not null) oldRole.RemoveFrom(actor);
+            actor.AI.Meta = this;
             actor.Needs.Add(this.Def.Needs);
         }
 

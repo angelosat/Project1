@@ -88,6 +88,7 @@ namespace Start_a_Town_
             this.Trees = true;
             this.Maps = new MapCollection();
             this.PopulationManager = new PopulationManager(this);
+            this.Space = new FrontierManager();
         }
         public StaticWorld(string name, List<Terraformer> mutators)
            : this()

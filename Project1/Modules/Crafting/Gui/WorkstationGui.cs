@@ -121,17 +121,17 @@ namespace Start_a_Town_
         {
             if (this.ListOrdersNew.Count == 0)
                 return;
-            this.ListOrdersNew[0].Up.Remove();
-            this.ListOrdersNew[this.ListOrdersNew.Count - 1].Down.Remove();
+            this.ListOrdersNew[0].Up.RemoveFromParent();
+            this.ListOrdersNew[this.ListOrdersNew.Count - 1].Down.RemoveFromParent();
             if (this.ListOrdersNew.Count > 1)
             {
-                this.ListOrdersNew[0].Down.Add();
-                this.ListOrdersNew[this.ListOrdersNew.Count - 1].Up.Add();
+                this.ListOrdersNew[0].Down.AddToParent();
+                this.ListOrdersNew[this.ListOrdersNew.Count - 1].Up.AddToParent();
             }
             for (int i = 1; i < this.ListOrdersNew.Count - 1; i++)
             {
-                this.ListOrdersNew[i].Up.Add();
-                this.ListOrdersNew[i].Down.Add();
+                this.ListOrdersNew[i].Up.AddToParent();
+                this.ListOrdersNew[i].Down.AddToParent();
             }
         }
         private void OnCraftOrderRemoved(CraftOrderRemovedEvent e)

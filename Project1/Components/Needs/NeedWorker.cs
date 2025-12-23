@@ -16,9 +16,10 @@ namespace Start_a_Town_
             {
                 need.Accumulator -= whole;
                 need._valueInt += whole;
+                this.TickExtra(need);
+
             }
 
-            this.TickExtra(need);
         }
 
         protected virtual void TickExtra(Need need) { }

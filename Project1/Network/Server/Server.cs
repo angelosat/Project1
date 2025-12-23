@@ -145,7 +145,7 @@ namespace Start_a_Town_.Net
             {
                 ReceiveMessage(ar);
             }, state);
-            Instance.ConsoleBox.Write(Color.Yellow, "SERVER", "Listening to port " + Port + "...");
+            Instance.ConsoleBox.Write(Color.Yellow, "SERVER", $"Listening to port {Port} ...");
         }
         int _Speed = 0;// 1;
         public override int Speed { get => this._Speed; set => this._Speed = value; }

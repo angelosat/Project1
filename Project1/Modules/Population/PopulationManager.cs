@@ -56,7 +56,7 @@ namespace Start_a_Town_
             }
         }
         bool Populated;
-        readonly ObservableCollection<VisitorProfile> ActorsAdventuring = new();// ActorsCap);
+        readonly ObservableCollection<VisitorProfile> ActorsAdventuring = [];
         public IEnumerable<VisitorProfile> AllActors => this.ActorsAdventuring;
         public readonly StaticWorld World;
         const int WorldPopulationCap = 8;
@@ -144,10 +144,12 @@ namespace Start_a_Town_
                 this.World.RegisterAndSync(actor);//
                 Packets.SendNotifyAdventurerCreated(actor);
                 //this.RegisterVisitor(actor);
-                AnnounceInhabitantCreated(this.World.Net, actor);
+                var chosenPlace = this.World.Space.PlaceAtRandom(actor);//
 
-                this.World.Space.PlaceRandom(actor);//
+                AnnounceInhabitantCreated(this.World.Net, actor, chosenPlace);
+
                 this.RegisterVisitor(actor);
+                
 
                 return actor;
             }
@@ -170,9 +172,9 @@ namespace Start_a_Town_
             MakeVisitor(actor);
         }
 
-        private static void AnnounceInhabitantCreated(INetEndpoint net, Actor actor)
+        private static void AnnounceInhabitantCreated(INetEndpoint net, Actor actor, FrontierDef frontier)
         {
-            net.Report($"{actor.Name} created");
+            net.Report($"{actor.Name} created and placed at {frontier.Label}");
             //net.EventOccured((int)Components.Message.Types.NewAdventurerCreated, actor);
         }
 

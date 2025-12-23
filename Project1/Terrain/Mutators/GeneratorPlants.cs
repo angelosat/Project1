@@ -18,7 +18,7 @@ namespace Start_a_Town_
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    if (rand.Chance(0.5f))
+                    if (rand.Roll(0.5f))
                         continue;
                     var x = rand.Next(0, size);
                     var y = rand.Next(0, size);

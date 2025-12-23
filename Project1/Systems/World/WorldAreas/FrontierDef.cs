@@ -89,7 +89,7 @@ namespace Start_a_Town_
                 return null;
             if (!found.TryGetValue(material, out var foundChance))
                 return null;
-            if (!rand.Chance(chance))
+            if (!rand.Roll(chance))
                 return null;
             return def.CreateFrom(material);
         }

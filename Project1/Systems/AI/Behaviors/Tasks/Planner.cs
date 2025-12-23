@@ -45,7 +45,7 @@ namespace Start_a_Town_
             new TaskGiverQuestComplete(),
             new TaskGiverGetQuests(),
             new TaskGiverTavernCustomer(),
-            new TaskGiverDepart()
+            new DeparturePlanner()
         };
 
         protected virtual Plan TryPlan(Actor actor) { return null; }

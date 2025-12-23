@@ -418,7 +418,7 @@ namespace Start_a_Town_
             return grayscale;
         }
 
-        public static bool Chance(this Random rand, double chance)
+        public static bool Roll(this Random rand, double chance)
         {
             return chance > 0 && (chance >= 1 || rand.NextDouble() <= chance);
         }

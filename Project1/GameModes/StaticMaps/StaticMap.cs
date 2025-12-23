@@ -75,8 +75,8 @@ namespace Start_a_Town_
         internal IntVec3 GetRandomEdgeCell()
         {
             var i = (int)(this.Size.Blocks * this.Random.NextDouble());
-            var j = this.Random.Chance(.5f) ? 0 : this.Size.Blocks - 1;
-            var vec2 = this.Random.Chance(.5f) ? new IntVec2(i, j) : new IntVec2(j, i);
+            var j = this.Random.Roll(.5f) ? 0 : this.Size.Blocks - 1;
+            var vec2 = this.Random.Roll(.5f) ? new IntVec2(i, j) : new IntVec2(j, i);
             return new IntVec3(vec2.X, vec2.Y, this.GetHeightmapValue(vec2.X, vec2.Y));
         }
 

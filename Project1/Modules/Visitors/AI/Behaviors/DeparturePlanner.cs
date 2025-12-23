@@ -1,8 +1,6 @@
-﻿using Start_a_Town_.Core;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
-    class TaskGiverDepart : Planner
+    class DeparturePlanner : Planner
     {
         const int MaxTries = 5;
         protected override Plan TryPlan(Actor actor)
@@ -11,13 +9,13 @@ namespace Start_a_Town_
             var chance = visitor.GetDepartChance();
 
             var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
-            chance = .7f;// - need.Percentage;
+            chance = 1 - need.Percentage;
 
             // multi step task giver:
             // if targetfrontier is not null, to to map edge and depart
             // if targetfrontier is null, decide which frontier to visit
 
-            if (actor.Map.World.Random.Chance(chance))
+            if (actor.Map.World.Random.Roll(chance))
             {
                 var map = actor.Map as StaticMap;
                 actor.AI.Meta.TargetFrontier = FrontierDefOf.Forest; // HACK

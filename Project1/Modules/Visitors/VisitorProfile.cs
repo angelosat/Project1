@@ -121,7 +121,7 @@ namespace Start_a_Town_
             }
             else
             {
-                if (world.Random.Chance(this.GetVisitChance()))
+                if (world.Random.Roll(this.GetVisitChance()))
                 {
                     PopulationManager.Packets.SendNotifyVisit(actor);
                     Vector3 coords = map.GetRandomEdgeCell().Above;

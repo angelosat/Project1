@@ -81,7 +81,7 @@ namespace Start_a_Town_
             var net = actor.Net;
             if (net is Client)
                 return;
-            if (actor.Map.Random.Chance(TramplingChance))
+            if (actor.Map.Random.Roll(TramplingChance))
                 Packets.SyncTrample(actor.Map, global);
         }
 

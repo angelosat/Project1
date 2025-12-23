@@ -55,7 +55,7 @@ namespace Start_a_Town_
                 if (fertility > 0 )
                 {
                     this.TotalFertileCellsTemp++;
-                    if (!this.IsSaturated() && rand.Chance(this.Map.PlantDensityTarget) && this.CanGrowOn(global))
+                    if (!this.IsSaturated() && rand.Roll(this.Map.PlantDensityTarget) && this.CanGrowOn(global))
                     {
                         var action = (SpawnActions ??= initSpawnActions()).SelectRandom(rand);
                         action(map, new IntVec3(x, y, z));

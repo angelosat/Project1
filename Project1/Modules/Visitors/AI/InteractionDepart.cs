@@ -11,7 +11,7 @@ namespace Start_a_Town_
             //a.VisitOffsiteArea(area);
             //a.OnDespawn();
             var world = a.World as StaticWorld;
-            world.Space.Depart(a);
+            world.Space.Enter(a);
         }
         public override object Clone()
         {

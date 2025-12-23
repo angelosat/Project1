@@ -1072,6 +1072,8 @@ namespace Start_a_Town_
         {
             entity.Container?.Remove(entity);
             if(entity.IsSpawned) entity.Map.Despawn(entity);
+            if(entity is Actor actor) (this.World as StaticWorld).Space.Exit(actor);
+
             entity.Slot?.Object = null;
             entity.Net = this.Net;
             entity.Map = this;

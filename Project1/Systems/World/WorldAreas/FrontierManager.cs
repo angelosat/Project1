@@ -1,19 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
+using System;
+using System.Collections.Generic;
+using System.DirectoryServices;
+using System.Linq;
+using static Start_a_Town_.FrontierManager;
 
 namespace Start_a_Town_
 {
     public interface IWorldSpaceManager
     {
-        void Depart(Actor actor);
-        void PlaceRandom(Actor actor);
+        void Enter(Actor actor);
+        void Exit(Actor actor);
+        FrontierDef PlaceAtRandom(Actor actor);
+        void PlaceAtRandomAndSync(Actor actor);
+
         void Tick(StaticWorld staticWorld);
     }
     public class FrontierManager : IWorldSpaceManager
     {
+        [EnsureStaticCtorCall]
+        static class Packets
+        {
+            static readonly int _pPlaceAt;
+            static Packets()
+            {
+                _pPlaceAt = Registry.PacketHandlers.Register(ReceivePlaceAt);
+            }
+
+            static internal void SendPlaceAt(Actor actor, float pos)
+            {
+                (actor.Net as Server).BeginPacket(_pPlaceAt)
+                    .Write(actor.RefId)
+                    .Write(pos);
+            }
+            private static void ReceivePlaceAt(NetEndpoint endpoint, Packet packet)
+            {
+                var client = endpoint as Client;
+                if (client is null)
+                    throw new Exception();
+                var r = packet.PacketReader;
+                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+                var pos = r.ReadSingle();
+                (actor.World as StaticWorld).Space.PlaceAtRandom(actor);
+            }
+        }
+
         Dictionary<FrontierDef, FrontierWrapper> Frontiers = [];
         Dictionary<int, FrontierWrapper> FrontiersByTier = [];
         Dictionary<Actor, float> Actors = [];
@@ -30,8 +62,8 @@ namespace Start_a_Town_
 
         public void Tick(StaticWorld world)
         {
-            if (world.Net is not Server server)
-                return;
+            //if (world.Net is not Server server)
+            //    return;
             float step = 1f / Ticks.PerGameMinute;
             var snapshot = Actors.ToList();
             foreach (var (actor, distance) in snapshot)
@@ -46,9 +78,12 @@ namespace Start_a_Town_
                 // if current distance == 0 it means the actor has arrived in town and should spawn 
                 if (nextDistance == 0)
                 {
-                    world.Map.SpawnAndSync(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
-                    this.Actors.Remove(actor);
-                    server.SyncReport($"{actor.Name} has arrived!");
+                    //this.Actors.Remove(actor);
+                    if (world.Net is Server server)
+                    {
+                        world.Map.SpawnAndSync(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
+                        server.SyncReport($"{actor.Name} has arrived!");
+                    }
                     continue;
                 }
                 
@@ -66,21 +101,39 @@ namespace Start_a_Town_
                 if (i < distance && distance <= i + 1)
                     return this.FrontiersByTier[i+1];
             }
-            throw new Exception("actor distance out of bounds");
+            throw new Exception("Actor distance out of bounds");
         }
-
-        public void Depart(Actor actor)
+        public void Exit(Actor actor)
         {
+            this.Actors.Remove(actor);
+            //if (!this.Actors.Remove(actor))
+            //    throw new InvalidOperationException($"Tried to remove {actor} but wasn't found");
+        }
+        public void Enter(Actor actor)
+        {
+            //var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
+            actor.Effects.Apply(EffectDefOf.Adventuring);
+            this.Actors.Add(actor, 0);
             if (actor.Net is not Server server)
                 return;
-            this.Actors.Add(actor, 0);
             actor.Map.DespawnAndSync(actor);
             server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.Label}!");
         }
-        public void PlaceRandom(Actor actor)
+        public void PlaceAtRandomAndSync(Actor actor)
         {
-            var tier = Random.Shared.Next(this.Frontiers.Count - 1);
+            this.PlaceAtRandom(actor);
+            Packets.SendPlaceAt(actor, this.Actors[actor]);
+        }
+        public FrontierDef PlaceAtRandom(Actor actor)
+        {
+            var tier = 1 + actor.World.Random.Next(this.Frontiers.Count);
+            this.PlaceAt(actor, tier);
+            return this.GetFrontier(actor).Def;
+        }
+        public void PlaceAt(Actor actor, int tier)
+        {
             this.Actors.Add(actor, tier);
+            actor.AI.Meta.TargetFrontier = this.GetFrontier(actor).Def;
             actor.Map?.DespawnAndSync(actor);
         }
         public class FrontierWrapper

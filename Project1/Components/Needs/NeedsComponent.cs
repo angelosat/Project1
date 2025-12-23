@@ -25,12 +25,18 @@ namespace Start_a_Town_.Components
         public NeedsComponent()
         {
         }
-        
+        public Need AddNeed(NeedDef def)
+        {
+            var need = new Need(this.Owner as Actor, def);
+            this.NeedsNew.Add(def, need);
+            return need;
+        }
         public void Add(params NeedDef[] defs)
         {
             //this.NeedsNew = new(defs.Length);
             foreach (var d in defs)
-                this.NeedsNew.Add(d, new Need(this.Owner as Actor, d));
+                this.AddNeed(d);
+                //this.NeedsNew.Add(d, new Need(this.Owner as Actor, d));
         }
         public void Remove(params NeedDef[] defs)
         {

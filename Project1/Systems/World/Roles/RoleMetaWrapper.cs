@@ -9,8 +9,7 @@ namespace Start_a_Town_
         public ulong LastMapTransitionTick;
         internal virtual void AssignTo(Actor actor)
         {
-            var oldRole = actor.AI.Meta;
-            if (oldRole is not null) oldRole.RemoveFrom(actor);
+            actor.AI.Meta?.RemoveFrom(actor);
             actor.AI.Meta = this;
             actor.Needs.Add(this.Def.Needs);
         }
@@ -20,6 +19,11 @@ namespace Start_a_Town_
             actor.Needs.Remove(this.Def.Needs);
         }
 
-        internal virtual void Tick() { }
+        internal virtual void Tick(Actor actor) => this.Def.Worker.Tick(actor);
+
+        internal void ReturnToTown()
+        {
+            this.TargetFrontier = null;
+        }
     }
 }

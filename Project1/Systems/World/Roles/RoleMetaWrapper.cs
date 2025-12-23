@@ -6,14 +6,10 @@ namespace Start_a_Town_
     {
         public struct MetaDecision
         {
-            ulong NextEvaluationTick;
+            ulong NextTick;
             int FailureStreak;
 
-            internal bool CanEvaluate(ulong currentTick)
-            {
-                return currentTick >= this.NextEvaluationTick;
-            }
-
+            internal bool CanEvaluate(ulong now) => now >= this.NextTick;
             internal void RegisterFailure()
             {
                 this.FailureStreak++;
@@ -26,7 +22,7 @@ namespace Start_a_Town_
             {
                 var basedelay = (ulong)world.Random.Next(Ticks.FromHours(2), Ticks.FromHours(4));
                 var damping = (ulong)(this.FailureStreak * Ticks.FromHours(2));
-                this.NextEvaluationTick = world.CurrentTick + basedelay + damping;
+                this.NextTick = world.CurrentTick + basedelay + damping;
             }
         }
 

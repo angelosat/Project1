@@ -8,18 +8,18 @@ namespace Start_a_Town_
         {
             var need = (Need)wrapper;
 
-            need.Accumulator += need.Mods.Sum(m => m.RateMod);
-            need.Accumulator -= need.TicksPerNaturalDecay;
+            if (need.Mods.Count > 0)
+                need.Accumulator += need.Mods.Sum(m => m.RateMod);
+            else
+                need.Accumulator -= need.TicksPerNaturalDecay;
 
             int whole = (int)need.Accumulator;
             if (whole != 0)
             {
                 need.Accumulator -= whole;
-                need._valueInt += whole;
+                need.Value += whole;
                 this.TickExtra(need);
-
             }
-
         }
 
         protected virtual void TickExtra(Need need) { }

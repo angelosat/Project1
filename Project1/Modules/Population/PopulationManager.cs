@@ -83,13 +83,13 @@ namespace Start_a_Town_
         {
             if (net is Server)
                 this.HandleErrors();
-            foreach (var v in this.ActorsAdventuring)
-                v.Tick();
+            //foreach (var v in this.ActorsAdventuring)
+            //    v.Tick();
             this.TickCount--;
             if (this.TickCount > 0)
                 return;
             this.TickCount = (int)(Ticks.PerSecond / TickRate);
-            this.Tick(net);
+            this.PopulateRuntime(net);
         }
 
         private void HandleErrors()
@@ -127,10 +127,6 @@ namespace Start_a_Town_
             }
         }
 
-        void Tick(INetEndpoint net)
-        {
-            this.PopulateRuntime(net);
-        }
 
         private Actor PopulateRuntime(INetEndpoint net)
         {
@@ -155,6 +151,7 @@ namespace Start_a_Town_
             var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
             need.Value = this.World.Random.Next(0, 100);
             actor.Skills.Randomize();
+            actor.AI.Meta.LocationDecision.ScheduleNext(this.World);
             return actor;
         }
 

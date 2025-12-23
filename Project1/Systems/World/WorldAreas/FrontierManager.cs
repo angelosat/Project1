@@ -96,7 +96,7 @@ namespace Start_a_Town_
                 this.Actors[actor] = nextDistance;
                 var currentFrontier = this.GetFrontier(actor);
                 currentFrontier.Tick(actor);
-
+                actor.Needs.Tick();
                 actor.AI.Meta.Tick();
             }
         }

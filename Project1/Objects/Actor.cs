@@ -325,7 +325,9 @@ namespace Start_a_Town_
 
         internal override IEnumerable<(string label, Type guiType)> GetQuickButtons()
         {
+            yield return ("Log", typeof(NpcLogUINewNew));
             yield return ("Skills", typeof(SkillsUINew));
+            yield return ("Needs", typeof(NeedsMoodsUINew));
         }
         public override IEnumerable<Control> GetSelectionDetails()
         {

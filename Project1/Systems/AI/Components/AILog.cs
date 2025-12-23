@@ -13,7 +13,7 @@ namespace Start_a_Town_
     public class AILog
     {
         const int Capacity = 64;
-        readonly ObservableCollection<Entry> Inner = new();
+        public readonly ObservableCollection<Entry> Inner = new();
 
         static public void SyncWrite(GameObject entity, string text)
         {

@@ -9,11 +9,11 @@ namespace Start_a_Town_
     public sealed class Need : MetricWrapper, IProgressBar, /*ISaveable,*/ IDefWrapper<NeedDef>, INamed, ISerializableNew<Need>, ISaveableNewNew<Need>//, ISaveableNew,
     {
         Dictionary<EffectDef, List<NeedMod>> ModsNew = [];
-        internal void AddMod(EffectDef needLetDef, float value, float rate)
+        internal void AddMod(EffectDef needLetDef, float ticksUntilChange)
         {
             if (this.Mods.Any(n => n.Def == needLetDef))
                 throw new Exception();
-            var needLet = new NeedMod(needLetDef, rate);//, value, rate);
+            var needLet = new NeedMod(needLetDef, 1f / ticksUntilChange);//, value, rate);
             this.Mods.Add(needLet);
         }
         internal void AddMod(EntityEffectWrapper source, float rate)

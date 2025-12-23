@@ -27,6 +27,7 @@ namespace Start_a_Town_
                 this.Add(s.SkillDef);
             this.Randomize();
         }
+        public IEnumerable<Skill> All => this.SkillsNew.Values;
         public void Add(SkillDef def)
         {
             this.SkillsNew.Add(def, new Skill(this, def));

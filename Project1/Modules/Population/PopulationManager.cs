@@ -154,6 +154,7 @@ namespace Start_a_Town_
             actor.Inventory.Insert(ItemDefOf.Coins.Create().SetStackSize(500));
             var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
             need.Value = this.World.Random.Next(0, 100);
+            actor.Skills.Randomize();
             return actor;
         }
 

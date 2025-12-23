@@ -202,29 +202,7 @@ namespace Start_a_Town_.UI
                 Scale = 1;
         }
 
-        internal void OnSelectedTargetChanged(TargetArgs target)
-        {
-            foreach (var c in this.ControlsInMemory)
-                c.OnSelectedTargetChanged(target);
-
-            foreach (var (key, window) in _windows)
-            {
-                if (key.Mode != WindowMultiplicity.Singleton)
-                    continue;
-
-                BindAllSelectionBound(window.Client, target);
-
-                window.SetTitle(target.Name);
-            }
-        }
-        public static void BindAllSelectionBound(Control root, ISelectable selection)
-        {
-            if (root is ISelectionBound bound)
-                bound.Bind(selection);
-
-            foreach (var child in root.Controls)
-                BindAllSelectionBound(child, selection);
-        }
+        
 
         static RenderTarget2D UITexture;
         public UIManager()
@@ -501,6 +479,22 @@ namespace Start_a_Town_.UI
 
         public bool RemoveWindow(Window window)
         {
+            if (window.Client.Controls.Count == 1 && window.Client.Controls[0] is ISelectionBound sBound)
+            {
+                var key = new WindowKey(sBound.GetType(), null);
+                if (_windowsSingleton.ContainsKey(key))
+                {
+                    _windowLastPositions[sBound.GetType()] = window.Location;
+                    _windowsSingleton.Remove(key);
+                }
+                else
+                {
+                    key = new WindowKey(sBound.GetType(), sBound.CurrentSelection);
+                    if (_windowsUnique.ContainsKey(key))
+                        _windowsUnique.Remove(key);
+                }
+            }
+
             /// if the window was a dialog, move the dialogblock behind the next topmost window, or remove it if there are no other dialogs
             if (this.Layers[window.Layer].Remove(window))
             {
@@ -797,31 +791,52 @@ namespace Start_a_Town_.UI
             if (enabled)
                 this.Add(this.DialogBlock);
         }
-        public static void ToggleUnique(Type type, ISelectable selectable)
+        public static void ToggleSingleton(Type type, ISelectable selectable)
         {
-            var key = new WindowKey(type, selectable, WindowMultiplicity.UniquePerTarget);
+            var key = new WindowKey(type, null);//, mode);
 
-            if (_windows.TryGetValue(key, out var win))
+            if (_windowsSingleton.TryGetValue(key, out var win))
             {
                 win.Close();
-                _windows.Remove(key);
+                _windowsSingleton.Remove(key);
             }
             else
             {
                 var control = (ISelectionBound)Activator.CreateInstance(type);// new T();
-                control.Bind(selectable);
+                control.OnBind(selectable);
                 var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
                 window.Client.AddControls(control as Control);
+                if (_windowLastPositions.TryGetValue(type, out var loc))
+                    window.Location = loc;
+                _windowsSingleton[key] = window;
+                window.Show();
+            }
+        }
+        public static void ToggleUnique(Type type, ISelectable selectable)
+        {
+            var key = new WindowKey(type, selectable);
 
-                _windows[key] = window;
+            if (_windowsUnique.TryGetValue(key, out var win))
+            {
+                win.Close();
+                _windowsUnique.Remove(key);
+            }
+            else
+            {
+                var control = (ISelectionBound)Activator.CreateInstance(type);// new T();
+                control.OnBind(selectable);
+                var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
+                window.Client.AddControls(control as Control);
+                window.SmartPosition();
+                _windowsUnique[key] = window;
                 window.Show();
             }
         }
         public static void ToggleUnique<T>(ISelectable selectable) where T : Control, ISelectionBound, new()
         {
-            var key = new WindowKey(typeof(T), selectable, WindowMultiplicity.UniquePerTarget);
+            var key = new WindowKey(typeof(T), selectable);//, WindowMultiplicity.UniquePerTarget);
 
-            if (_windows.TryGetValue(key, out var win))
+            if (_windowsUnique.TryGetValue(key, out var win))
             {
                 win.Close();
                 _windows.Remove(key);
@@ -829,7 +844,7 @@ namespace Start_a_Town_.UI
             else
             {
                 var control = new T();
-                control.Bind(selectable);
+                control.OnBind(selectable);
                 var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
                 window.Client.AddControls(control);
 
@@ -838,15 +853,44 @@ namespace Start_a_Town_.UI
             }
         }
         private static readonly Dictionary<WindowKey, Window> _windows = [];
+
+        private static readonly Dictionary<WindowKey, Window> _windowsUnique = [];
+        private static readonly Dictionary<WindowKey, Window> _windowsSingleton = [];
+
+        private static readonly Dictionary<Type, Vector2> _windowLastPositions = [];
+
         public readonly record struct WindowKey(
             Type ContentType,       // type of control inside the window
-            ISelectable? Target,    // the specific object, null for singleton tools
-            WindowMultiplicity Mode // Singleton, UniquePerTarget
+            ISelectable? Target//,    // the specific object, null for singleton tools
+            //WindowMultiplicity Mode // Singleton, UniquePerTarget
         );
         public enum WindowMultiplicity
         {
             Singleton,
             UniquePerTarget
+        }
+        internal void OnSelectedTargetChanged(TargetArgs target)
+        {
+            foreach (var c in this.ControlsInMemory)
+                c.OnSelectedTargetChanged(target);
+
+            foreach (var (key, window) in _windowsSingleton)
+            {
+                //if (key.Mode != WindowMultiplicity.Singleton)
+                //    continue;
+
+                BindAllSelectionBound(window.Client, target);
+
+                window.SetTitle(target.Name);
+            }
+        }
+        public static void BindAllSelectionBound(Control root, ISelectable selection)
+        {
+            if (root is ISelectionBound bound)
+                bound.OnBind(selection);
+
+            foreach (var child in root.Controls)
+                BindAllSelectionBound(child, selection);
         }
     }
 }

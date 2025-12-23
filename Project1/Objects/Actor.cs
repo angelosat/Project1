@@ -323,6 +323,10 @@ namespace Start_a_Town_
 
         readonly Button btnVisitor = new("Visitor");
 
+        internal override IEnumerable<(string label, Type guiType)> GetQuickButtons()
+        {
+            yield return ("Skills", typeof(SkillsUINew));
+        }
         public override IEnumerable<Control> GetSelectionDetails()
         {
             yield return GuiBuilder.BuildFloating<SkillsUI>(this);

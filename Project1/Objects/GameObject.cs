@@ -152,7 +152,7 @@ namespace Start_a_Town_
         {
             return this.Map.Town.ReservationManager.GetUnreservedAmount(this);
         }
-       
+        internal virtual IEnumerable<(string label, Type guiType)> GetQuickButtons() { yield break; }
         public virtual void GetQuickButtons(SelectionManager info)
         {
             if (this.IsForbiddable())

@@ -15,6 +15,8 @@ namespace Start_a_Town_
 
         BlockWorkstationComp Workstation;
 
+        public ISelectable CurrentSelection { get; set; }
+
         public WorkstationGuiNew()
         {
             this.ListOrdersNew = new(s => new OrderContainer(s, s => this.MoveUp(s), s => this.MoveDown(s)));
@@ -171,7 +173,7 @@ namespace Start_a_Town_
             if (e.Positions.Contains(this.Workstation.Global))
                 this.GetWindow().Hide();
         }
-        public void Bind(ISelectable selectable)
+        public void OnBind(ISelectable selectable)
         {
             if (!(selectable is TargetArgs target &&
                 target.BlockEntityOld is BlockEntity block &&

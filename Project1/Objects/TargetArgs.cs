@@ -849,7 +849,9 @@ namespace Start_a_Town_
             switch (this.Type)
             {
                 case TargetType.Entity:
+                    throw new Exception();
                     this.Object.GetQuickButtons(info);
+                    
                     break;
 
                 case TargetType.Position:
@@ -861,7 +863,8 @@ namespace Start_a_Town_
                     //this.BlockEntity.GetQuickButtons(info.AddTabAction, this.Map, this.Global);
                     this.BlockEntity.GetQuickButtons(
                         (string name, Type guiType) => 
-                            info.AddTabAction(name, () => UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
+                            //info.AddTabAction(name, () => UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
+                            info.AddTabAction(name, () => UIManager.ToggleUnique(guiType, new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
                         this.Map, 
                         this.Global);
                     break;

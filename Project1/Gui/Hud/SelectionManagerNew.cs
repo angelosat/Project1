@@ -284,7 +284,8 @@ namespace Start_a_Town_.UI
                     this.MultipleSelected.Add(target);
                     entity.GetSelectionInfo(this);
                     entity.GetQuickButtons(this);
-                    this.InitInfoTabs(entity.GetTabs());
+                    //this.InitInfoTabs(entity.GetTabs());
+                    this.InitInfoTabs(entity.GetQuickButtons(), target);
                     entity.Map?.Town?.Select(target, this);
                     this.InitInfoTabs(entity.Map?.Town?.GetTabs(target));
                     break;
@@ -374,6 +375,12 @@ namespace Start_a_Town_.UI
             this.InitInfoTabs(first.GetInfoTabs());
             Net.Client.Instance.Map.Town.Select(first, this);
             this.Selectable = first;
+        }
+        void InitInfoTabs(IEnumerable<(string, Type)> tabs, ISelectable selectable)
+        {
+            foreach (var (label, guiType) in tabs)
+                this.AddTabAction(label, () => UIManager.ToggleSingleton(guiType, selectable), Color.Orange);
+                //this.AddTabAction(label, () => UIManager.ToggleUnique(guiType, selectable), Color.Orange);
         }
         void InitInfoTabs(IEnumerable<(string name, Action action)> tabs)
         {

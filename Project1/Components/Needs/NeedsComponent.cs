@@ -24,11 +24,16 @@ namespace Start_a_Town_.Components
         {
         }
         
-        public void RegisterNeeds(params NeedDef[] defs)
+        public void Add(params NeedDef[] defs)
         {
             this.NeedsNew = new(defs.Length);
             foreach (var d in defs)
                 this.NeedsNew.Add(new Need(this.Owner as Actor, d));
+        }
+        public void Remove(params NeedDef[] defs)
+        {
+            //this.NeedsNew.RemoveAll(n => n.NeedDef == def);
+            this.NeedsNew.RemoveAll(n => defs.Contains(n.NeedDef));
         }
 
         public override void Tick()
@@ -40,17 +45,17 @@ namespace Start_a_Town_.Components
         internal override void Resolve()
         {
             foreach (var n in this.NeedsNew)
-                n.Parent = this.Owner as Actor;
+                n.Owner = this.Owner as Actor;
         }
         public override void OnObjectSynced(GameObject parent)
         {
             foreach (var n in this.NeedsNew)
-                n.Parent = parent as Actor;
+                n.Owner = parent as Actor;
         }
         public override void OnObjectLoaded(GameObject parent)
         {
             foreach (var n in this.NeedsNew)
-                n.Parent = parent as Actor;
+                n.Owner = parent as Actor;
         }
         static public Need ModifyNeed(GameObject actor, string needName, float value)
         {
@@ -149,7 +154,7 @@ namespace Start_a_Town_.Components
             {
                 if (this.Needs != null)
                 {
-                    comp.RegisterNeeds(this.Needs);
+                    comp.Add(this.Needs);
                     //comp.Needs = this.Needs;
                 }
             }

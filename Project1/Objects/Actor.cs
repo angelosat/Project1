@@ -87,7 +87,7 @@ namespace Start_a_Town_
             return this;
         }
 
-        internal void Loot(Entity loot, OffsiteAreaDef area)
+        internal void Loot(Entity loot, FrontierDef area)
         {
             var net = this.Net;
             if (net is Server server)
@@ -271,7 +271,7 @@ namespace Start_a_Town_
 
         internal void AddNeed(params NeedDef[] defs)
         {
-            this.GetComponent<NeedsComponent>().RegisterNeeds(defs);
+            this.GetComponent<NeedsComponent>().Add(defs);
         }
         [Obsolete]
         public static Actor Create(ItemDef def)
@@ -431,17 +431,7 @@ namespace Start_a_Town_
 
         public GameObject AttackTarget => null;//.GetComponent<AttackComponent>().Target;
 
-        public IEnumerable<Planner> GetTaskGivers()
-        {
-            var givers = this.GetComponent<NeedsComponent>().NeedsNew.Select(n => n.TaskGiver);
-            givers = givers.Concat(Planner.EssentialTaskGivers);
-            var jobs = this.AI.State.GetJobs().Where(j => j.Enabled);
-            jobs.OrderBy(j => j.Priority);
-            var jobTaskGivers = jobs.SelectMany(j => j.Def.GetTaskGivers());
-            givers = this.IsTownMember ? givers.Concat(jobTaskGivers) : givers.Concat(Planner.VisitorTaskGivers);
-            givers = givers.Append(Planner.Idle);
-            return givers;
-        }
+        
 
         internal Trait GetTrait(TraitDef trait)
         {

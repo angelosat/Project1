@@ -63,7 +63,7 @@ namespace Start_a_Town_
         }
         public Need(Actor parent) : this()
         {
-            this.Parent = parent;
+            this.Owner = parent;
         }
 
         public Need(Actor parent, NeedDef needDef) : this(parent)

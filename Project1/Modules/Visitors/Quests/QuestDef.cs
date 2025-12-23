@@ -126,7 +126,7 @@ namespace Start_a_Town_
             this.Manager.QuestModified(this);
 
         }
-        public void TryComplete(Actor actor, OffsiteAreaDef area)
+        public void TryComplete(Actor actor, FrontierDef area)
         {
             if (this.IsCompleted(actor))
                 return;

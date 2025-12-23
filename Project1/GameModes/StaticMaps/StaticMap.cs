@@ -72,12 +72,12 @@ namespace Start_a_Town_
             this.Town.Init();
         }
 
-        internal Vector3 GetRandomEdgeCell()
+        internal IntVec3 GetRandomEdgeCell()
         {
             var i = (int)(this.Size.Blocks * this.Random.NextDouble());
             var j = this.Random.Chance(.5f) ? 0 : this.Size.Blocks - 1;
             var vec2 = this.Random.Chance(.5f) ? new IntVec2(i, j) : new IntVec2(j, i);
-            return new Vector3(vec2.X, vec2.Y, this.GetHeightmapValue(vec2.X, vec2.Y));
+            return new IntVec3(vec2.X, vec2.Y, this.GetHeightmapValue(vec2.X, vec2.Y));
         }
 
         public List<GameObject> SavedPlayers = new();

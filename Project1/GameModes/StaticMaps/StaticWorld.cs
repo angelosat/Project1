@@ -42,6 +42,7 @@ namespace Start_a_Town_
         public MapCollection Maps;
         public StaticMap Map => this.Maps.Values.First() as StaticMap;
         public override PopulationManager Population => this.PopulationManager;
+        public IWorldSpaceManager Space;
         ulong currentTick;
         public override ulong CurrentTick { get => this.currentTick; set => this.currentTick = value; }
 
@@ -49,6 +50,7 @@ namespace Start_a_Town_
         public override void Tick(INetEndpoint net)
         {
             this.PopulationManager.Update(net);
+            this.Space.Tick(this);
             this.CurrentTick++;
         }
         public string GetName()

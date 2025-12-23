@@ -79,7 +79,7 @@ namespace Start_a_Town_
         internal override void Resolve()
         {
             foreach (var r in this.Resources)
-                r.Parent = this.Owner as Actor;
+                r.Owner = this.Owner as Actor;
         }
 
         public override string ToString()

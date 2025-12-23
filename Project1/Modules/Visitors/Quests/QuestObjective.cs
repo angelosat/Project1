@@ -54,7 +54,7 @@ namespace Start_a_Town_
             this.Parent.RemoveObjective(this);
         }
 
-        internal virtual void TryComplete(Actor actor, OffsiteAreaDef area)
+        internal virtual void TryComplete(Actor actor, FrontierDef area)
         {
         }
 

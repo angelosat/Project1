@@ -51,7 +51,7 @@ namespace Start_a_Town_
         //public float TownRating => this.TownApprovalRating >= 0 ? this.TownApprovalRating / ApprovalMax : this.TownApprovalRating / ApprovalMin;
         public TimeSpan Timer = new();
 
-        public OffsiteAreaDef OffsiteArea;
+        public FrontierDef OffsiteArea;
         static readonly int OffsiteTickLength = Ticks.PerSecond * 10;
         int OffsiteTick;
         float VisitChanceModifier;
@@ -124,7 +124,7 @@ namespace Start_a_Town_
                 if (world.Random.Chance(this.GetVisitChance()))
                 {
                     PopulationManager.Packets.SendNotifyVisit(actor);
-                    Vector3 coords = map.GetRandomEdgeCell().Above();
+                    Vector3 coords = map.GetRandomEdgeCell().Above;
                     //map.SyncSpawn(actor, coords, Vector3.Zero);
                     map.SpawnAndSync(actor, coords, Vector3.Zero);
                     this.Arrive();
@@ -203,7 +203,7 @@ namespace Start_a_Town_
         }
         double GetVisitChanceFromNeeds()
         {
-            var value = this.Actor.GetNeeds(VisitorNeedsDefOf.NeedCategoryVisitor).Average(n => n.Percentage);
+            var value = this.Actor.GetNeeds(AdventurerNeedsDefOf.NeedCategoryVisitor).Average(n => n.Percentage);
             return 1 - value;
         }
         public void ForceVisit()

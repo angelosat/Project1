@@ -5,17 +5,20 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    public class OffsiteAreaDef : Def
+    // todo: instead of loot tables, add finite loot pools, and add regeneration rate of said loot pools
+    public class FrontierDef : Def
     {
         readonly Dictionary<ItemDef, Dictionary<MaterialDef, int>> ResourcesNew = new();
         public LootTable LootTable;
         public int LootWeightRawMaterial = 1;
         public int LootWeightEquipment = 1;
         public int LootWeightCurrency = 1;
+        public readonly int Tier;
         readonly Action<VisitorProfile>[] TickActions;
         Loot LootCurrency;
-        public OffsiteAreaDef(string name) : base(name)
+        public FrontierDef(string name, int tier) : base(name)
         {
+            this.Tier = tier;
             this.TickActions = new Action<VisitorProfile>[] {
                 AwardLoot,
                 Quest,
@@ -65,7 +68,7 @@ namespace Start_a_Town_
             var obj = factory();
             return obj as Entity;
         }
-        public OffsiteAreaDef AddLoot(ItemDef def, MaterialDef mat, float chance)
+        public FrontierDef AddLoot(ItemDef def, MaterialDef mat, float chance)
         {
             return this;
         }
@@ -102,12 +105,12 @@ namespace Start_a_Town_
             return true;
         }
        
-        public OffsiteAreaDef AddLoot(Loot loot)
+        public FrontierDef AddLoot(Loot loot)
         {
             this.LootTable.Add(loot);
             return this;
         }
-        public OffsiteAreaDef AddLootRawMaterial(ItemDef item, params (MaterialDef mat, int weight)[] mats)
+        public FrontierDef AddLootRawMaterial(ItemDef item, params (MaterialDef mat, int weight)[] mats)
         {
             if (this.ResourcesNew.TryGetValue(item, out var array))
                 foreach (var mat in mats)
@@ -117,7 +120,7 @@ namespace Start_a_Town_
                
             return this;
         }
-        public OffsiteAreaDef AddLootCurrency(int min, int max)
+        public FrontierDef AddLootCurrency(int min, int max)
         {
             this.LootCurrency = new Loot(ItemDefOf.Coins, amountmin: min, amountmax: max);
             return this;

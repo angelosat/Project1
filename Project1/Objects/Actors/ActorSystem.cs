@@ -2,20 +2,19 @@
 {
     public class ActorSystem
     {
-        static public Actor Create(ActorDnaDef profile)
+        static public Actor Create(ActorDnaDef profile, RoleMetaDef roleMeta)
         {
-            //if (profile is not ActorProfileDef typedProfile)
-            //    throw new System.Exception();
-            var entity = ActorDefOf.Npc.Create(profile) as Actor;
-            entity.Components.ApplySpecs(profile.GenerateSpecs());
-            //entity.AI.Root = typedProfile.Behavior;
-            entity.Initialize();
-            return entity;
+            var actor = ActorDefOf.Npc.Create(profile) as Actor;
+            actor.Components.ApplySpecs(profile.GenerateSpecs());
+            var roleWrapper = roleMeta.Create();
+            roleWrapper.AssignTo(actor);
+            actor.Initialize();
+            return actor;
         }
 
         internal static Entity Create(EntityCreationRequest req)
         {
-            return Create(req.Context as ActorDnaDef);
+            return Create(req.Context as ActorDnaDef, req.Stage as RoleMetaDef);
         }
     }
 }

@@ -36,6 +36,7 @@ namespace Start_a_Town_
         Behavior Root;
         readonly Knowledge Knowledge;
         public AIState State;
+        public RoleMetaWrapper Meta;
         bool Enabled = true;
         public AIComponent()
         {

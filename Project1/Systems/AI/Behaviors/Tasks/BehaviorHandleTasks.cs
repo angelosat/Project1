@@ -1,5 +1,8 @@
 ﻿using Start_a_Town_.AI;
+using Start_a_Town_.Components;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_
 {
@@ -32,11 +35,24 @@ namespace Start_a_Town_
             state.Reset();
             this.CurrentTaskGiver = null;
         }
+        static IEnumerable<Planner> GetTaskGivers(Actor actor)
+        {
+            var givers = actor.GetComponent<NeedsComponent>().NeedsNew.Select(n => n.TaskGiver);
+            givers = givers.Concat(Planner.EssentialTaskGivers);
+            var jobs = actor.AI.State.GetJobs().Where(j => j.Enabled);
+            jobs.OrderBy(j => j.Priority);
+            var jobTaskGivers = jobs.SelectMany(j => j.Def.GetTaskGivers());
 
+            // replace this when meta-roles are fully implemented
+            givers = actor.IsTownMember ? givers.Concat(jobTaskGivers) : givers.Concat(Planner.VisitorTaskGivers);
+
+            givers = givers.Append(Planner.Idle);
+            return givers;
+        }
         Plan FindNewTaskNew(Actor parent, AIState state)
         {
 
-            var givers = parent.GetTaskGivers();
+            var givers = GetTaskGivers(parent);
 
             foreach (var giver in givers)
             {

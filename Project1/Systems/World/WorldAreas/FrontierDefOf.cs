@@ -1,9 +1,9 @@
 ﻿namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    static class OffsiteAreaDefOf
+    static class FrontierDefOf
     {
-        static public readonly OffsiteAreaDef Forest = new OffsiteAreaDef("Forest")
+        static public readonly FrontierDef Forest = new FrontierDef("Forest", 1)
         {
             LootWeightRawMaterial = 1,
             LootWeightCurrency = 9
@@ -18,7 +18,7 @@
         .AddLootCurrency(1, 20)
         ;
 
-        static public readonly OffsiteAreaDef Swamp = new OffsiteAreaDef("Swamp")
+        static public readonly FrontierDef Swamp = new FrontierDef("Swamp", 2)
         {
             LootWeightRawMaterial = 1,
             LootWeightCurrency = 9
@@ -31,7 +31,7 @@
             (MaterialDefOf.Gold, 10))
         .AddLootCurrency(20, 50)
         ;
-        static OffsiteAreaDefOf()
+        static FrontierDefOf()
         {
             Def.Register(Forest);
             Def.Register(Swamp);

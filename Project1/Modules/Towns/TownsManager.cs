@@ -6,7 +6,6 @@ namespace Start_a_Town_.Towns
     {
         public override void Initialize()
         {
-            PopulationManager.Init();
             NpcComponent.Init();
         }
 

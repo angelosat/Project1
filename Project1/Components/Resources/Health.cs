@@ -25,7 +25,7 @@ namespace Start_a_Town_.Components.Resources
 
         protected override void TickExtra(Resource values)
         {
-            FlashSprite(values.Parent);
+            FlashSprite(values.Owner);
         }
         protected override void updateRec(Resource resource)
         {

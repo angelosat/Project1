@@ -8,7 +8,7 @@ namespace Start_a_Town_
         {
             if (!actor.HasJob(JobDefOf.Guide))
                 return null;
-            var visitors = actor.Map.World.Population.Find(v => v.Actor.Map == actor.Map && v.Actor.GetNeed(VisitorNeedsDefOf.Guidance).Value < 50);
+            var visitors = actor.Map.World.Population.Find(v => v.Actor.Map == actor.Map && v.Actor.GetNeed(AdventurerNeedsDefOf.Guidance).Value < 50);
 
             // TODO sort visitors here by urgency
             var visitor = visitors.FirstOrDefault();

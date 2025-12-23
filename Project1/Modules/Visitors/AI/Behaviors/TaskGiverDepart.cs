@@ -14,7 +14,7 @@ namespace Start_a_Town_
                 var map = actor.Map as StaticMap;
                 for (int i = 0; i < MaxTries; i++)
                 {
-                    var exit = map.GetRandomEdgeCell().Above();
+                    var exit = map.GetRandomEdgeCell().Above;
                     if (actor.CanReach(exit))
                         return new Plan(TaskDefOf.Depart, (map, exit));
                 }

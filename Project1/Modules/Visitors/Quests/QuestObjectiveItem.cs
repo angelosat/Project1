@@ -43,7 +43,7 @@ namespace Start_a_Town_
         {
             return actor.Inventory.Count(this.Objective.Item, this.Objective.Material) >= this.Objective.Amount;
         }
-        internal override void TryComplete(Actor actor, OffsiteAreaDef area)
+        internal override void TryComplete(Actor actor, FrontierDef area)
         {
             if (this.IsCompleted(actor))
                 return;

@@ -9,10 +9,11 @@ namespace Start_a_Town_
 {
     public class PopulationManager : Inspectable, ISaveable, ISerializable
     {
+        [EnsureStaticCtorCall]
         internal static class Packets
         {
             static int PacketVisitorArrived, PacketAdventurerCreated;
-            public static void Init()
+            static Packets()
             {
                 PacketVisitorArrived = Registry.PacketHandlers.Register(ReceiveNotifyVisit);
                 PacketAdventurerCreated = Registry.PacketHandlers.Register(ReceiveNotifyAdventurerCreated);
@@ -54,13 +55,6 @@ namespace Start_a_Town_
                 props.Discovered = true;
             }
         }
-        internal static void Init()
-        {
-            Packets.Init();
-            //OffsiteAreaDefOf.Init();
-            VisitorNeedsDefOf.Init();
-        }
-
         bool Populated;
         readonly ObservableCollection<VisitorProfile> ActorsAdventuring = new();// ActorsCap);
         public IEnumerable<VisitorProfile> AllActors => this.ActorsAdventuring;
@@ -68,6 +62,8 @@ namespace Start_a_Town_
         const int WorldPopulationCap = 8;
         const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
         const int InitialApproval = 50;
+        HashSet<Actor> Discovered = [];
+        HashSet<Actor> Undiscovered = [];
 
         int TickCount = (int)(Ticks.PerSecond / TickRate);
         public PopulationManager(StaticWorld world)
@@ -133,10 +129,10 @@ namespace Start_a_Town_
 
         void Tick(INetEndpoint net)
         {
-            this.PopulateRare(net);
+            this.PopulateRuntime(net);
         }
 
-        private Actor PopulateRare(INetEndpoint net)
+        private Actor PopulateRuntime(INetEndpoint net)
         {
             if (net is Server && this.ActorsAdventuring.Count < WorldPopulationCap)
             {
@@ -149,6 +145,8 @@ namespace Start_a_Town_
                 Packets.SendNotifyAdventurerCreated(actor);
                 //this.RegisterVisitor(actor);
                 AnnounceInhabitantCreated(this.World.Net, actor);
+
+                this.World.Space.PlaceRandom(actor);//
                 this.RegisterVisitor(actor);
 
                 return actor;
@@ -159,7 +157,7 @@ namespace Start_a_Town_
         private Actor GenerateInhabitant()
         {
             //var visitor = ActorDefOf.Npc.Create() as Actor;
-            var actor = ActorSystem.Create(ActorDnaDefOf.Npc);
+            var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
             actor.Inventory.Insert(ItemDefOf.Coins.Create().SetStackSize(500));
             
             return actor;
@@ -167,7 +165,7 @@ namespace Start_a_Town_
 
         private void RegisterVisitor(Actor actor)
         {
-            var props = new VisitorProfile(this.World, actor, InitialChance, InitialApproval) { OffsiteArea = OffsiteAreaDefOf.Forest };
+            var props = new VisitorProfile(this.World, actor, InitialChance, InitialApproval) { OffsiteArea = FrontierDefOf.Forest };
             this.ActorsAdventuring.Add(props);
             MakeVisitor(actor);
         }
@@ -180,8 +178,8 @@ namespace Start_a_Town_
 
         private static void MakeVisitor(Actor actor)
         {
-            actor.AddNeed(VisitorNeedsDefOf.All.ToArray());
-            actor.ModifyNeed(VisitorNeedsDefOf.Guidance, n => 10);
+            //actor.AddNeed(AdventurerNeedsDefOf.All.ToArray());
+            //actor.ModifyNeed(AdventurerNeedsDefOf.Guidance, n => 10);
         }
 
         public IEnumerable<VisitorProfile> Find(Func<VisitorProfile, bool> pred)
@@ -250,13 +248,13 @@ namespace Start_a_Town_
                 var actor = props.Actor;
                 // TODO move this somewhere else
                 if (this.World.Map.Net is Server)
-                    if (!actor.GetNeeds(VisitorNeedsDefOf.NeedCategoryVisitor).Any())
+                    if (!actor.GetNeeds(AdventurerNeedsDefOf.NeedCategoryVisitor).Any())
                         MakeVisitor(actor);
                 //if (!actor.IsSpawned) // hacky. in process of finding best way to save unspawned actors
                 //    this.World.Map.Net.Instantiate(actor);
                 if (actor.IsSpawned)
                     props.Discovered = true; // HACK
-                props.OffsiteArea = OffsiteAreaDefOf.Forest; // HACK
+                props.OffsiteArea = FrontierDefOf.Forest; // HACK
                 //actor.Resolve();
             }
         }

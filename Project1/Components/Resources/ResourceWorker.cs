@@ -82,7 +82,7 @@ namespace Start_a_Town_
         {
             var resource = (Resource)wrapper;
             foreach (var ratemod in resource.Modifiers)
-                this.Modify(resource, ratemod.Def.GetRateMod(resource.Parent));
+                this.Modify(resource, ratemod.Def.GetRateMod(resource.Owner));
             this.TickExtra(resource);
             this.Modify(resource, this.GetRegenRate(resource));
         }

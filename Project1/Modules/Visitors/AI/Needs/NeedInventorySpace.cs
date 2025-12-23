@@ -4,7 +4,7 @@
     {
         protected override void TickExtra(Need need)
         {
-            var actor = need.Parent;
+            var actor = need.Owner;
             var inv = actor.Inventory;
             var p = inv.PercentageFull;
             need.Value = 1 - p * p;

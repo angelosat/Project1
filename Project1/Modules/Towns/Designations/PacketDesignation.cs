@@ -56,6 +56,8 @@ namespace Start_a_Town_
             else if (selectionType == SelectionType.List)
             {
                 targetList = r.ReadListTargets(net);
+                foreach (var t in targetList)
+                    t.Map = net.Map;
                 designation = remove ? null : r.ReadDef<DesignationDef>();
                 if (net is Server)
                     Send(net, remove, targetList, designation);

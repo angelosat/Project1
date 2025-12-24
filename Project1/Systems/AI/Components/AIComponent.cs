@@ -52,7 +52,7 @@ namespace Start_a_Town_
         {
             this.State.Generate(parent, random);
         }
-
+        
         internal T FindBehavior<T>() where T : Behavior
         {
             return (this.Root as BehaviorComposite).Find(typeof(T)) as T;
@@ -71,6 +71,7 @@ namespace Start_a_Town_
         {
             var profile = this.Owner.Profile as ActorDnaDef;
             this.Root = profile.Behavior.Clone() as Behavior;
+            this.Root.AttachTo(this.Owner as Actor);
             this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
             //this.Meta.Actor = this.Owner as Actor;
         }

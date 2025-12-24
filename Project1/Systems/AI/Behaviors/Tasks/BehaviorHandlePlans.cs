@@ -208,8 +208,8 @@ namespace Start_a_Town_
                 var staminaTaskThreshold = 20;
                 var tired = stamina.Value <= staminaTaskThreshold;
 
-                if (this.CurrentPlanner != null && (!state.Behavior?.Task.Def.Idle ?? false)) 
-                //if (HasIntent && !IsIdle)
+                //if (this.CurrentPlanner != null && (!state.Behavior?.Task.Def.Idle ?? false)) 
+                if (HasIntent && !IsIdle)
                 {
                     if (tired)
                     {

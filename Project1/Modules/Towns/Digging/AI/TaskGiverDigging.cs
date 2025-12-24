@@ -44,7 +44,7 @@ namespace Start_a_Town_
                     throw new Exception();
 
                 var task = new Plan(TaskDefOf.Digging, target);// new TargetArgs(actor.Map, target));
-                FindTool(actor, task, skill);
+                //FindTool(actor, task, skill);
 
                 return task;
             }

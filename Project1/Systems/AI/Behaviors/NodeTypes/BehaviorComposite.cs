@@ -7,6 +7,12 @@ namespace Start_a_Town_.AI.Behaviors
     abstract class BehaviorComposite : Behavior
     {
         internal List<Behavior> Children;
+        internal override void AttachTo(Actor owner)
+        {
+            base.AttachTo(owner);
+            foreach (var child in this.Children)
+                child.AttachTo(owner);
+        }
         internal Behavior Find(Type bhavType)
         {
             return this.Children.Find(t => t.GetType() == bhavType);

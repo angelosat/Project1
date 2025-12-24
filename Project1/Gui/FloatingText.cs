@@ -68,10 +68,10 @@ namespace Start_a_Town_.UI
 
         public override void Update()
         {
-            Camera cam = ScreenManager.CurrentScreen.Camera;
+            var cam = ScreenManager.CurrentScreen.Camera;
 
             var global = this.GetGlobal();
-            Vector2 origin = cam.GetScreenPosition(global);
+            Vector2 origin = cam.GetScreenPosition(global) / UIManager.Scale;
             Location = origin + Position;
             Position += Velocity;
             Velocity.Y += Gravity;

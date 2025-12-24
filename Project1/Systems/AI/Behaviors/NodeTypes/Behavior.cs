@@ -110,6 +110,8 @@ namespace Start_a_Town_
             
         }
 
+        internal virtual void AttachTo(Actor owner) => this.Actor = owner;
+    
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Start_a_Town_.UI
 {
@@ -10,16 +11,18 @@ namespace Start_a_Town_.UI
         {
             this.AutoSize = true;
             this.Closable = false;
-            var panel = new Panel() { AutoSize = true };
+            //var panel = new Panel() { AutoSize = true };
             var newgame = new Button("Play", this.Newgame, 100);
             var load = new Button("Load", this.Load, 100);
             var online = new Button("Multiplayer", this.Online, 100);
             var settings = new Button("Settings", this.Settings, 100);
             var quit = new Button("Quit", this.Quit, 100);
 
-            panel.AddControlsVertically(newgame, load, online, settings, quit);
+            //panel.AddControlsVertically(newgame, load, online, settings, quit);
+            this.Client.AddControlsVertically(newgame, load, online, settings, quit);
 
-            this.Client.Controls.Add(panel);
+            //this.Client.Controls.Add(panel);
+            //this.Client.AddControls(panel);
             this.AnchorToScreenCenter();
             this.Title = "Start-a-Town!";
         }

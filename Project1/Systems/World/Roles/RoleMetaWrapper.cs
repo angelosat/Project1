@@ -20,8 +20,8 @@ namespace Start_a_Town_
             }
             internal void ScheduleNext(WorldBase world)
             {
-                var basedelay = (ulong)world.Random.Next(Ticks.FromHours(2), Ticks.FromHours(4));
-                var damping = (ulong)(this.FailureStreak * Ticks.FromHours(2));
+                var basedelay = (ulong)world.Random.Next(Ticks.FromHours(1), Ticks.FromHours(2));
+                var damping = (ulong)(this.FailureStreak * Ticks.FromHours(1));
                 this.NextTick = world.CurrentTick + basedelay + damping;
             }
         }

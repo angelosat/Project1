@@ -22,6 +22,7 @@ namespace Start_a_Town_.Components
             this.Attributes.Clear();
             foreach (var a in atts)
                 this.Attributes.Add(a.AttributeDef, new AttributeRuntime(a.AttributeDef, (int)a.Progress.Value));
+            this.Randomize();
         }
         public void Add(AttributeDef def)
         {

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using Start_a_Town_.Net;
-using Start_a_Town_.GameEvents;
 
 namespace Start_a_Town_
 {
@@ -179,7 +177,9 @@ namespace Start_a_Town_
             this.AddMember(actor.RefId);
             RoleMetaDefOf.TownMember.AssignTo(actor);
             actor.Town = this;
-            actor.Net.ConsoleBox.Write($"{actor.Name} has joined the town!");
+            //actor.Net.ConsoleBox.Write($"{actor.Name} has joined the town!");
+            actor.Net.Report($"{actor.Name} has joined the town!");
+            actor.AI.State.History.Write("I joined the town!");
             this.Map.EventOccured(Message.Types.NpcsUpdated);
         }
 

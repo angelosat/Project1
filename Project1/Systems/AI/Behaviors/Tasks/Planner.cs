@@ -8,9 +8,9 @@ namespace Start_a_Town_
     {
         public static readonly Planner Idle = new TaskGiverIdle();
 
-        static readonly public List<Planner> UrgentTaskGivers = [new TaskGiverSmartEquip()];
+        static readonly public List<Planner> UrgentPlanners = [new TaskGiverSmartEquip()];
 
-        static readonly public List<Planner> EssentialTaskGivers = new()
+        static readonly public List<Planner> EssentialPlanners = new()
         {
             new TaskGiverLeaveUnstandableCell(),
             new TaskGiverItemOwnership(),
@@ -38,7 +38,7 @@ namespace Start_a_Town_
             new TaskGiverWorkplace()
         };
 
-        static readonly public List<Planner> VisitorTaskGivers = new()
+        static readonly public List<Planner> VisitorPlanners = new()
         { 
             new TaskGiverVisitorRentRoom(),
             new TaskGiverBeTalkedTo(),
@@ -49,14 +49,14 @@ namespace Start_a_Town_
         };
 
         protected virtual Plan TryPlan(Actor actor) { return null; }
-        public Plan FindTaskNew(Actor actor)
+        public Plan FindPlanNew(Actor actor)
         {
             return TryPlan(actor);
         }
-        public TaskGiverResult FindTask(Actor actor)
+        public PlannerResult FindPlan(Actor actor)
         {
             var task = TryPlan(actor);
-            return task != null ? new TaskGiverResult(task, this) : TaskGiverResult.Empty;
+            return task != null ? new PlannerResult(task, this) : PlannerResult.Empty;
         }
         public static void FindTool(Actor actor, Plan task, JobDef job)
         {

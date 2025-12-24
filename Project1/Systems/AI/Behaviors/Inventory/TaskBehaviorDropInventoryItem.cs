@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorDropInventoryItem : BehaviorPerformTask
+    class TaskBehaviorDropInventoryItem : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {

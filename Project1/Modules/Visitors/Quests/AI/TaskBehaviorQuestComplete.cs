@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorQuestComplete : BehaviorPerformTask
+    class TaskBehaviorQuestComplete : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {

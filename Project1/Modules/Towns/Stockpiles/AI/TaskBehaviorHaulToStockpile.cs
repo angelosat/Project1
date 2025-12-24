@@ -3,7 +3,7 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorHaulToStockpile : BehaviorPerformTask
+    class TaskBehaviorHaulToStockpile : BehaviorExecutePlan
     {
         public const TargetIndex ItemInd = TargetIndex.A, StorageInd = TargetIndex.B;
         TargetArgs Item => this.Task.GetTarget(ItemInd);

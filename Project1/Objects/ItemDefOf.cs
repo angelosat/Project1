@@ -95,6 +95,7 @@ namespace Start_a_Town_
             Category = ItemCategoryDefOf.RawMaterials,
             DefaultMaterial = MaterialDefOf.Gold,
             BaseValue = 1,
+            Weight = .01f,
             Body = new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale)
         };
         //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale)));

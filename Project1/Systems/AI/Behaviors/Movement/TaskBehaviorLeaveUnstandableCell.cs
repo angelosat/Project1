@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_.AI.Behaviors
 {
-    class TaskBehaviorLeaveUnstandableCell : BehaviorPerformTask
+    class TaskBehaviorLeaveUnstandableCell : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {

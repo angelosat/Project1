@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_.AI.Behaviors
 {
-    class TaskBehaviorHaulAside : BehaviorPerformTask
+    class TaskBehaviorHaulAside : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {

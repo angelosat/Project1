@@ -68,7 +68,7 @@ namespace Start_a_Town_.UI
             return this;
         }
         public Label Label_Title;
-        public GroupBox Client;
+        public Control Client;
         protected IconButton CloseButton;
         protected override void OnClientSizeChanged()
         {
@@ -114,8 +114,12 @@ namespace Start_a_Town_.UI
             //this.ColorFunc = () => UIManager.Tint;
             this.TintFunc = () => UIManager.TintPrimary;
             this.ClientLocation = new Vector2(UIManager.BorderPx, UIManager.BorderPx);
-            this.Client = new GroupBox() { Name = "Window client area", MouseThrough = true, Size = ClientSize,
-                Location = new Vector2(0, Label.DefaultHeight)
+            this.Client = new GroupBox() { 
+                Name = "Window client area", 
+                MouseThrough = true,
+                Size = ClientSize,
+                Location = new Vector2(0, Label.DefaultHeight),
+                //BackgroundColor = Color.Black * .5f, 
             };
             this.CloseButton = IconButton.CreateCloseButton();
             this.CloseButton.LocationFunc = () => new Vector2(this.Width - this.CloseButton.Width - UIManager.BorderPx - this.ClientLocation.X, UIManager.BorderPx - this.ClientLocation.Y);

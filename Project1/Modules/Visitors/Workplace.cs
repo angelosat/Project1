@@ -224,9 +224,9 @@ namespace Start_a_Town_
         public virtual Plan GetTask(Actor actor)
         {
             foreach (var role in this.GetWorkerProps(actor).Jobs.Values.Where(j => j.Enabled))
-                foreach (var taskGiver in role.Def.GetTaskGivers())
-                    if (taskGiver.FindTask(actor) is TaskGiverResult result)
-                        return result.Task;
+                foreach (var taskGiver in role.Def.GetPlanners())
+                    if (taskGiver.FindPlan(actor) is PlannerResult result)
+                        return result.Plan;
             return null;
         }
 

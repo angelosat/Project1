@@ -3,7 +3,7 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_.AI
 {
-    class BehaviorPickUpItemNew : BehaviorPerformTask
+    class BehaviorPickUpItemNew : BehaviorExecutePlan
     {
         public override string Name => "Picking up item";
        

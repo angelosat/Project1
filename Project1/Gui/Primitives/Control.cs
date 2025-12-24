@@ -438,9 +438,9 @@ namespace Start_a_Town_.UI
             set
             {
                 this._BackgroundStyle = value;
-                this.ClientLocation = new Vector2(this._BackgroundStyle.Border);
-                this.Width = this.ClientSize.Width + 2 * this._BackgroundStyle.Border;
-                this.Height = this.ClientSize.Height + this._BackgroundStyle.Border * 2;
+                this.ClientLocation = new Vector2(this._BackgroundStyle.Padding);
+                this.Width = this.ClientSize.Width + 2 * this._BackgroundStyle.Padding;
+                this.Height = this.ClientSize.Height + this._BackgroundStyle.Padding * 2;
             }
         }
 
@@ -747,8 +747,8 @@ namespace Start_a_Town_.UI
 
                 if (this.AutoSize)
                 {
-                    this.Width = this.ClientSize.Width + (this._BackgroundStyle != null ? 2 * this._BackgroundStyle.Border : 0);
-                    this.Height = this.ClientSize.Height + (this._BackgroundStyle != null ? 2 * this._BackgroundStyle.Border : 0);
+                    this.Width = this.ClientSize.Width + (this._BackgroundStyle != null ? 2 * this._BackgroundStyle.Padding : 0);
+                    this.Height = this.ClientSize.Height + (this._BackgroundStyle != null ? 2 * this._BackgroundStyle.Padding : 0);
                 }
                 this.Invalidate();
                 this.OnClientSizeChanged();
@@ -795,7 +795,7 @@ namespace Start_a_Town_.UI
             {
                 this.Width = value.Width;
                 this.Height = value.Height;
-                var border = this.BackgroundStyle != null ? this.BackgroundStyle.Border : 0;
+                var border = this.BackgroundStyle != null ? this.BackgroundStyle.Padding : 0;
                 this._clientSize.Width = this.Width - 2 * border;
                 this._clientSize.Height = this.Height - 2 * border;
             }
@@ -837,9 +837,9 @@ namespace Start_a_Town_.UI
         {
             if (this.BackgroundStyle != null)
             {
-                this.ClientLocation = new Vector2(this.BackgroundStyle.Border);
-                this.Width = this.ClientSize.Width + 2 * this.BackgroundStyle.Border;
-                this.Height = this.ClientSize.Height + this.BackgroundStyle.Border * 2;
+                this.ClientLocation = new Vector2(this.BackgroundStyle.Padding);
+                this.Width = this.ClientSize.Width + 2 * this.BackgroundStyle.Padding;
+                this.Height = this.ClientSize.Height + this.BackgroundStyle.Padding * 2;
             }
             //else if (this is not UI.Window) // HACK
             //{
@@ -1619,18 +1619,7 @@ namespace Start_a_Town_.UI
             this.FlashingBorder = enabled;
             return this;
         }
-        internal Control ToScrollableBox(int boundsW, int boundsH)
-        {
-            if (this.Width <= boundsW && this.Height <= boundsH)
-                return new GroupBox().AddControls(this);
-            var mode = ScrollModes.None;
-            if (this.Width > boundsW)
-                mode = ScrollModes.Horizontal;
-            if (this.Height > boundsH)
-                mode |= ScrollModes.Vertical;
-            //return ScrollableBoxNewNew.FromClientSize(boundsW, boundsH, mode).AddControls(this);
-            return new ScrollableBoxNewNewNew(boundsW, boundsH, mode).AddControls(this);
-        }
+        
 
         internal Control SetHoverText(string text)
         {

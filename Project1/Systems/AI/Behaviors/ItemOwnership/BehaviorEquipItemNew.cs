@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_.AI.Behaviors
 {
-    class BehaviorEquipItemNew : BehaviorPerformTask
+    class BehaviorEquipItemNew : BehaviorExecutePlan
     {
         public override string Name => "Equipping item";
         public BehaviorEquipItemNew()

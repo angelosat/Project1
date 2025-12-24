@@ -13,7 +13,7 @@ namespace Start_a_Town_
         {
             this.TaskGivers = taskGivers;
         }
-        public IEnumerable<Planner> GetTaskGivers()
+        public IEnumerable<Planner> GetPlanners()
         {
             for (int i = 0; i < this.TaskGivers.Length; i++)
             {

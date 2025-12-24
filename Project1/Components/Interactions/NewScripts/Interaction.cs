@@ -90,7 +90,8 @@ namespace Start_a_Town_
             if (!success)
                 this.Actor.Net.EventOccured((int)Message.Types.InteractionInterrupted, this.Actor, this);
             this.State = States.Finished;
-            this._animation?.FadeOutAndRemove();
+            if (this.AnimationDef is not null)
+                this._animation?.FadeOutAndRemove();
         }
 
         public virtual void Perform()

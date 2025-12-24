@@ -3,7 +3,7 @@ using Start_a_Town_.AI;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorSleepOnGround : BehaviorPerformTask
+    class TaskBehaviorSleepOnGround : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {

@@ -3,7 +3,7 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorChopping : BehaviorPerformTask
+    class TaskBehaviorChopping : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {

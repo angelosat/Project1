@@ -115,9 +115,10 @@ namespace Start_a_Town_.UI
             var bounds = entity.GetSprite().GetBounds();
             var offset = MapBase.IconOffset;
             scale *= camera.Zoom;
-            var pos = camera.GetScreenPosition(entity.Global) - new Vector2(this.SourceRect.Width, this.SourceRect.Height) * scale / 2; ;
+            var rect = this.AtlasToken?.Rectangle ?? this.SourceRect;
+            var pos = camera.GetScreenPosition(entity.Global) - new Vector2(rect.Width, rect.Height) * scale / 2; ;
             pos.Y -= bounds.Height * camera.Zoom;
-            pos.Y += offset * this.SourceRect.Height / 4 * scale;
+            pos.Y += offset * rect.Height / 4 * scale;
             this.Draw(sb, pos, scale, alpha: .5f);
         }
         public void DrawFloating(SpriteBatch sb, Camera camera, Vector3 global, float scale = .5f)

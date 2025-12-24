@@ -4,7 +4,7 @@ namespace Start_a_Town_.AI.Behaviors
 {
     static class BehaviorReserve
     { 
-        static public Behavior Reserve(BehaviorPerformTask source, TargetIndex targetInd)
+        static public Behavior Reserve(BehaviorExecutePlan source, TargetIndex targetInd)
         {
             var bhav = new BehaviorCustom();
             bhav.InitAction = () =>

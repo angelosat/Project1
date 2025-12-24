@@ -3,7 +3,7 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorSellOverCounter : BehaviorPerformTask
+    class TaskBehaviorSellOverCounter : BehaviorExecutePlan
     {
         const TargetIndex Item = TargetIndex.A;
         const TargetIndex Counter = TargetIndex.B;

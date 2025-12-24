@@ -7,7 +7,7 @@ namespace Start_a_Town_
 {
     public class Skill : Inspectable, ISaveableNewNew<Skill>, IDefWrapper<SkillDef>, ISerializableNew<Skill>, INamed, IListable
     {
-        public NpcSkillsComponent Owner;
+        public NpcSkillsComponent Comp;
         public SkillDef SkillDef;
         public SkillDef Def => this.SkillDef;
         int _level = 1;
@@ -25,7 +25,7 @@ namespace Start_a_Town_
         public Skill() { }
         public Skill(NpcSkillsComponent owner, SkillDef def)
         {
-            this.Owner = owner;
+            this.Comp = owner;
             this.SkillDef = def;
         }
 
@@ -71,7 +71,7 @@ namespace Start_a_Town_
             this.Level += levelsGained;
             this.LvlProgress.Max = GetNextLvlXp(this.Level);
             this.LvlProgress.Value = remaining;
-            var actor = this.Owner.Owner;
+            var actor = this.Comp.Owner;
             actor.Net.ConsoleBox.Write(Log.Entry.Notification(actor, " has reached Level ", this.Level," in ", this, "!"));
             actor.Net.EventOccured((int)Message.Types.SkillIncrease, actor, this);
         }

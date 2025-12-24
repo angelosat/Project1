@@ -81,7 +81,7 @@ namespace Start_a_Town_.Components
             var need = actor.GetNeed(type);
             need.SetValue(need.Value + value, actor);
             if (actor.Net is Net.Server)
-                PacketNeedModify.Send(actor.Net as Net.Server, actor.RefId, need.NeedDef, value);
+                PacketNeedModify.SendModify(actor.Net as Net.Server, actor.RefId, need.NeedDef, value);
             return need;
         }
         public void GetUI(GameObject parent, UI.Control container)

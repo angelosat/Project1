@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorTavernWorkerServe : BehaviorPerformTask
+    class TaskBehaviorTavernWorkerServe : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {

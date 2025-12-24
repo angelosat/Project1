@@ -27,7 +27,7 @@ namespace Start_a_Town_.UI
                 this.ClientSize = new Rectangle(0, 0, this.Width - 2 * UIManager.BorderPx, this.Height - 2 * UIManager.BorderPx);
             }
         }
-        public override int Padding => this.BackgroundStyle.Border;
+        public override int Padding => this.BackgroundStyle.Padding;
         public Panel(Vector2 location)
             : base(location)
         {
@@ -106,22 +106,22 @@ namespace Start_a_Town_.UI
         public Panel SetClientDimensions(Rectangle clientSize)
         {
             this.ClientSize = clientSize;
-            this.Width = this.ClientSize.Width + 2 * this.BackgroundStyle.Border;
-            this.Height = this.ClientSize.Height + 2 * this.BackgroundStyle.Border;
+            this.Width = this.ClientSize.Width + 2 * this.BackgroundStyle.Padding;
+            this.Height = this.ClientSize.Height + 2 * this.BackgroundStyle.Padding;
             return this;
         }
         public Panel SetClientDimensions(Vector2 clientDimensions)
         {
             this.ClientSize = new Rectangle(0, 0, (int)clientDimensions.X, (int)clientDimensions.Y);
-            this.Width = this.ClientSize.Width + 2 * this.BackgroundStyle.Border;
-            this.Height = this.ClientSize.Height + 2 * this.BackgroundStyle.Border;
+            this.Width = this.ClientSize.Width + 2 * this.BackgroundStyle.Padding;
+            this.Height = this.ClientSize.Height + 2 * this.BackgroundStyle.Padding;
             return this;
         }
         public Panel SetClientDimensions(int w, int h)
         {
             this.ClientSize = new Rectangle(0, 0, w, h);
-            this.Width = this.ClientSize.Width + 2 * this.BackgroundStyle.Border;
-            this.Height = this.ClientSize.Height + 2 * this.BackgroundStyle.Border;
+            this.Width = this.ClientSize.Width + 2 * this.BackgroundStyle.Padding;
+            this.Height = this.ClientSize.Height + 2 * this.BackgroundStyle.Padding;
             return this;
         }
     }

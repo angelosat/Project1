@@ -12,7 +12,7 @@ namespace Start_a_Town_.AI
 
         public static AIConversationManager ConversationManager = new();
 
-        private BehaviorPerformTask _currentTaskBehavior;
+        private BehaviorExecutePlan _currentTaskBehavior;
 
         readonly Dictionary<JobDef, Job> Jobs = JobDefOf.All.ToDictionary(i => i, i => new Job(i));
         public Progress Attention = new();
@@ -32,7 +32,7 @@ namespace Start_a_Town_.AI
         public int JobFindTimer;
         public Knowledge Knowledge;
 
-        public BehaviorPerformTask LastBehavior;
+        public BehaviorExecutePlan LastBehavior;
         public Vector3 Leash;
 
         public Queue<TargetArgs> MoveOrders = new();
@@ -44,8 +44,8 @@ namespace Start_a_Town_.AI
         public GameObject Target;
         //public Queue<(AITask task, BehaviorPerformTask behavior)> TaskQueue = [];
         //public Stack<(AITask task, BehaviorPerformTask behavior)> TaskStack = [];
-        public Queue<BehaviorPerformTask> TaskQueue = [];
-        public Stack<BehaviorPerformTask> TaskStack = [];
+        public Queue<BehaviorExecutePlan> TaskQueue = [];
+        public Stack<BehaviorExecutePlan> TaskStack = [];
 
         public string TaskString = "none";
         public SortedSet<Threat> Threats = new();
@@ -57,7 +57,7 @@ namespace Start_a_Town_.AI
             this.ItemPreferences = new ItemPreferencesManager(actor);
         }
 
-        private void Enqueue(BehaviorPerformTask bhav)
+        private void Enqueue(BehaviorExecutePlan bhav)
         {
             this.TaskQueue.Enqueue(bhav);
         }
@@ -82,7 +82,7 @@ namespace Start_a_Town_.AI
                     Behavior?.GetType().Name ?? "Idle"
                 );
         }
-        private void Push(BehaviorPerformTask bhav)
+        private void Push(BehaviorExecutePlan bhav)
         {
             this.TaskStack.Push(bhav);
         }
@@ -138,13 +138,18 @@ namespace Start_a_Town_.AI
             if (this.TaskStack.Count > 0)
             {
                 TaskStack.Pop();
+                if(TaskStack.Count > 0)
+                    PacketReportPlan.SendReportBehavior(this.Parent, TaskStack.Peek());
                 return true;
             }
             else if (TaskQueue.Count > 0)
             {
                 TaskQueue.Dequeue();
+                if (TaskQueue.Count > 0)
+                    PacketReportPlan.SendReportBehavior(this.Parent, TaskQueue.Peek());
                 return true;
             }
+            PacketReportPlan.SendReportBehavior(this.Parent, null);
             return false;
         }
 
@@ -164,6 +169,8 @@ namespace Start_a_Town_.AI
             //this.CurrentTaskBehavior = null;
             this.TaskQueue.Clear();
             this.TaskStack.Clear();
+            PacketReportPlan.SendReportBehavior(this.Parent, null);
+
         }
 
         internal void ResolveReferences()
@@ -171,8 +178,10 @@ namespace Start_a_Town_.AI
             this.ItemPreferences.ResolveReferences();
         }
 
-        public void Assign(BehaviorPerformTask bhav)
+        public void Assign(BehaviorExecutePlan bhav)
         {
+            PacketReportPlan.SendReportBehavior(this.Parent, bhav);
+
             if (bhav.Task.IsImmediate)
                 this.Push(bhav);
             else
@@ -247,7 +256,7 @@ namespace Start_a_Town_.AI
                 var task = Plan.Load(tasktag);
                 var bhavtag = t["Behavior"];
                 var bhavname = (string)bhavtag["TypeName"].Value;
-                var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorPerformTask;
+                var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorExecutePlan;
                 bhav.Task = task;
                 bhav.Load(bhavtag);
                 this.TaskStack.Push(bhav);
@@ -260,7 +269,7 @@ namespace Start_a_Town_.AI
                 var task = Plan.Load(tasktag);
                 var bhavtag = t["Behavior"];
                 var bhavname = (string)bhavtag["TypeName"].Value;
-                var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorPerformTask;
+                var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorExecutePlan;
                 bhav.Task = task;
                 bhav.Load(bhavtag);
                 this.TaskQueue.Enqueue(bhav);
@@ -356,9 +365,9 @@ namespace Start_a_Town_.AI
             this.ItemPreferences.Tick();
         }
 
-        public IEnumerable<BehaviorPerformTask> AllPlannedTasks => TaskStack.Concat(TaskQueue);
+        public IEnumerable<BehaviorExecutePlan> AllPlannedTasks => TaskStack.Concat(TaskQueue);
         //public BehaviorPerformTask Current => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
-        public BehaviorPerformTask Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
+        public BehaviorExecutePlan Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
 
         public TargetArgs MoveOrder => this.MoveOrders.Any() ? this.MoveOrders.Peek() : TargetArgs.Null;
         public List<GameObject> NearbyEntities { get; set; }

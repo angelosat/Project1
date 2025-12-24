@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -280,7 +281,7 @@ namespace Start_a_Town_
         public Def GetPreference(Entity item)
         {
             //return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item)?.Role.Context;
-            return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item).Role.Context;
+            return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item).Role?.Context; // if itempreferences are struct, then the default returned will have role == null
         }
         public Entity GetPreference(Def context)
         {
@@ -335,7 +336,7 @@ namespace Start_a_Town_
         }
         public bool IsUseful(Entity item)
         {
-            if (item.Def == ItemDefOf.Coins)
+            if (item.Def == ItemDefOf.Coins) // HACK
                 return true;
             if (this.PreferencesNew.Values.Any(p => p.Item == item))
                 return true;

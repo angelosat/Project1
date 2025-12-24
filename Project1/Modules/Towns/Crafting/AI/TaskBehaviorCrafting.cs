@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorCrafting : BehaviorPerformTask
+    class TaskBehaviorCrafting : BehaviorExecutePlan
     {
         TargetArgs Workstation => this.Task.GetTarget(WorkstationIndex);
         public static TargetIndex AuxiliaryIndex = TargetIndex.C;

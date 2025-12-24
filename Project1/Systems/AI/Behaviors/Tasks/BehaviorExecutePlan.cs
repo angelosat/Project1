@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Start_a_Town_.AI;
+using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
-    abstract public class BehaviorPerformTask : Behavior
+    abstract public class BehaviorExecutePlan : Behavior
     {
         public Plan Task;
         //{
@@ -34,7 +35,7 @@ namespace Start_a_Town_
             }
         }
         Behavior CurrentBehavior => this.CachedBehaviors[this.CurrentStepIndex];
-        public BehaviorPerformTask()
+        public BehaviorExecutePlan()
         {
 
         }
@@ -220,6 +221,17 @@ namespace Start_a_Town_
         internal bool ReserveAsManyAsPossible(TargetIndex index, int desiredAmount)
         {
             return this.Actor.Map.Town.ReservationManager.ReserveAsManyAsPossible(this.Actor, this.Task, this.Task.GetTarget(index), desiredAmount);
+        }
+
+        internal void SyncToClients(IDataWriter w)
+        {
+            this.Task.SyncToClients(w);
+        }
+        internal void SyncFromServer(NetEndpoint provider, IDataReader r)
+        {
+            var plan = new Plan();
+            plan.SyncFromServer(provider, r);
+            this.Task = plan;
         }
     }
 }

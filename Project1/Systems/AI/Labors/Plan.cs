@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.Net;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -103,7 +104,7 @@ namespace Start_a_Town_
         //{
         //    return this.SetTarget(targetInd, target.At(map));
         //}
-       
+
         internal Plan SetTarget(TargetIndex targetInd, TargetArgs targetArgs)
         {
             switch (targetInd)
@@ -301,9 +302,9 @@ namespace Start_a_Town_
             set => this._BehaviorType = value;
         }
 
-        public BehaviorPerformTask CreateBehavior(Actor actor)
+        public BehaviorExecutePlan CreateBehavior(Actor actor)
         {
-            var behav = Activator.CreateInstance(this.BehaviorType) as BehaviorPerformTask;
+            var behav = Activator.CreateInstance(this.BehaviorType) as BehaviorExecutePlan;
             behav.Actor = actor;
             behav.Task = this;
             return behav;
@@ -426,7 +427,14 @@ namespace Start_a_Town_
             tag.TryGetTagValueOrDefault("QuestToAccept", out this.Quest);
             tag.TryGetTag("Transaction", v => this.Transaction = new Transaction(v));
         }
-
+        internal void SyncToClients(IDataWriter w)
+        {
+            this.TargetA.Write(w);
+        }
+        internal void SyncFromServer(NetEndpoint provider, IDataReader r)
+        {
+            this.TargetA = TargetArgs.Read(provider, r);
+        }
         internal void Write(BinaryWriter w)
         {
             w.Write(this.GetType().FullName);
@@ -452,7 +460,7 @@ namespace Start_a_Town_
 
             this.Transaction.Write(w);
         }
-        protected void Read(IDataReader r)
+        internal void Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Tool = TargetArgs.Read(null, r);
@@ -476,6 +484,8 @@ namespace Start_a_Town_
 
             this.Transaction = new Transaction(r);
         }
+
+        
 
         public void ObjectLoaded(GameObject parent)
         {

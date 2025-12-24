@@ -13,9 +13,6 @@ namespace Start_a_Town_
         }
         static public void Send(Server server, int agentID, string taskString)
         {
-            //server.OutgoingStreamOrderedReliable.Write(p);
-            //server.OutgoingStreamOrderedReliable.Write(agentID);
-            //server.OutgoingStreamOrderedReliable.Write(taskString);
             server.BeginPacket(_packetTypeId)
                 .Write(agentID)
                 .Write(taskString);

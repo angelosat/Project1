@@ -225,7 +225,7 @@ namespace Start_a_Town_.UI
             set
             {
                 this._BackgroundStyle = value;
-                this.ClientLocation = new Vector2(this._BackgroundStyle.Border);
+                this.ClientLocation = new Vector2(this._BackgroundStyle.Padding);
             }
         }
 

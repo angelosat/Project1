@@ -3,6 +3,37 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
+    class StatsGuiNew : GroupBox, ISelectionBound
+    {
+        PanelLabeledNew PanelAttributes;
+        PanelLabeledNew PanelStats;
+
+        public ISelectable CurrentSelection { get; set; }
+
+        public void OnBind(ISelectable selectable)
+        {
+            if (selectable is TargetArgs target && target.Object is Actor actor)
+                this.Build(actor);
+        }
+
+        protected void Build(Actor actor)
+        {
+            this.Name = "Stats";
+
+            this.PanelAttributes = new PanelLabeledNew("Attributes") { AutoSize = true };
+            this.PanelStats = new PanelLabeledNew("Stats") { AutoSize = true };
+            var comp = actor.GetComponent<StatsComponent>();
+            this.ClearControls();
+
+            this.PanelAttributes.Client.ClearControls();
+            PanelAttributes.Client.AddControls(actor.Attributes.GetGui());
+            this.AddControlsTopRight(this.PanelAttributes);
+
+            this.PanelStats.Client.ClearControls();
+            comp.GetInterface(actor, this.PanelStats.Client);
+            this.AddControlsBottomLeft(this.PanelStats);
+        }
+    }
     class StatsGui : GuiBuilder
     {
         PanelLabeledNew PanelAttributes;

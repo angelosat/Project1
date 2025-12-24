@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorIdle : BehaviorPerformTask
+    class TaskBehaviorIdle : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {

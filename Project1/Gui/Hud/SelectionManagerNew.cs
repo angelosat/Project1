@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
-using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 
 namespace Start_a_Town_.UI
@@ -534,7 +533,7 @@ namespace Start_a_Town_.UI
         {
             if (this.MultipleSelected.Any())
                 foreach (var obj in this.MultipleSelected)
-                    if (obj.Type == TargetType.Entity)
+                    if (obj.Type == TargetType.Entity && obj.Object.Map == Ingame.CurrentMap)
                         obj.Object.DrawBorder(sb, camera);
                     else if (this.SelectedSource != null)
                         if (this.SelectedSource.Type == TargetType.Entity)

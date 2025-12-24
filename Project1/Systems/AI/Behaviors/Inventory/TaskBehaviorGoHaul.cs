@@ -3,7 +3,7 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorGoHaul : BehaviorPerformTask
+    class TaskBehaviorGoHaul : BehaviorExecutePlan
     {
         public override string Name { get; } = "Picking up item";
 

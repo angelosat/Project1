@@ -65,7 +65,7 @@ namespace Start_a_Town_
         {
             //if (world.Net is not Server server)
             //    return;
-            float step = 1f / Ticks.PerGameMinute;
+            float step = 1f / Ticks.PerGameHour;
             var snapshot = Actors.ToList();
             foreach (var (actor, distance) in snapshot)
             {

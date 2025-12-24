@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Windows.Forms;
 
@@ -49,6 +48,7 @@ namespace Start_a_Town_.UI
         public ScrollableBoxNewNewNew(GroupBox container, int width, int height, ScrollModes mode = ScrollModes.Both)
             : base(width, height)
         {
+            //this.BackgroundColor = Color.Black * .5f;
             this.Client = container;
             this.Mode = mode;
             var modeFactor = new IntVec2((mode & ScrollModes.Vertical) == ScrollModes.Vertical ? 1 : 0, (mode & ScrollModes.Horizontal) == ScrollModes.Horizontal ? 1 : 0);

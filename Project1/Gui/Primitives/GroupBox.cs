@@ -91,5 +91,19 @@ namespace Start_a_Town_.UI
             foreach(var child in this.Controls)
                 child.Layout(w, h);
         }
+
+        internal Control ToScrollableBox(int boundsW, int boundsH)
+        {
+            if (this.Width <= boundsW && this.Height <= boundsH)
+                return new GroupBox().AddControls(this);
+            var mode = ScrollModes.None;
+            if (this.Width > boundsW)
+                mode = ScrollModes.Horizontal;
+            if (this.Height > boundsH)
+                mode |= ScrollModes.Vertical;
+            //return ScrollableBoxNewNew.FromClientSize(boundsW, boundsH, mode).AddControls(this);
+            //return new ScrollableBoxNewNewNew(this, boundsW, boundsH, mode);//.AddControls();
+            return new ScrollableBoxNewNewNew(boundsW, boundsH, mode).AddControls(this);
+        }
     }
 }

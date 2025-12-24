@@ -35,7 +35,7 @@ namespace Start_a_Town_.UI
         }
         static public int GetClientLength(int totallength)
         {
-            return totallength - BackgroundStyle.Window.Border - BackgroundStyle.Window.Border;
+            return totallength - BackgroundStyle.Window.Padding - BackgroundStyle.Window.Padding;
         }
     }
 }

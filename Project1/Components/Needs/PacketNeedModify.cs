@@ -1,23 +1,44 @@
 ﻿using Start_a_Town_.Net;
+using System;
 
 namespace Start_a_Town_.Components.Needs
 {
     [EnsureStaticCtorCall]
     static class PacketNeedModify
     {
-        static readonly int p;
+        static readonly int pModify, pSet;
         static PacketNeedModify()
         {
-            p = Registry.PacketHandlers.Register(Receive);
+            pModify = Registry.PacketHandlers.Register(ReceiveModify);
+            pSet = Registry.PacketHandlers.Register(ReceiveSet);
         }
-        static public void Send(Server server, int agentID, NeedDef needDef, float value)
+
+        
+        static public void SendSet(NetEndpoint net, int agentID, NeedDef needDef, float value)
         {
-            server.BeginPacket(p)
+            net.BeginPacket(pSet)
                 .Write(agentID)
                 .Write(needDef)
                 .Write(value);
         }
-        static public void Receive(NetEndpoint net, Packet pck)
+        private static void ReceiveSet(NetEndpoint net, Packet pck)
+        {
+            var r = pck.PacketReader;
+            var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+            var need = r.ReadDef<NeedDef>();
+            var value = r.ReadSingle();
+            actor.GetNeed(need).Value = value;
+            if(net is Server server)
+                SendSet(net, actor.RefId, need, value);
+        }
+        static public void SendModify(Server server, int agentID, NeedDef needDef, float value)
+        {
+            server.BeginPacket(pModify)
+                .Write(agentID)
+                .Write(needDef)
+                .Write(value);
+        }
+        static public void ReceiveModify(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
             var entity = net.World.GetEntity(r.ReadInt32());

@@ -46,7 +46,7 @@ namespace Start_a_Town_.UI
             this.Build();
             return this;
         }
-
+        public int TotalWidth => this.Columns.Sum(c => c.Width);
         /// <summary>
         /// 
         /// </summary>
@@ -106,7 +106,8 @@ namespace Start_a_Town_.UI
             this.ColumnLabels.Controls.AlignCenterHorizontally();
             this.BoxItems = new((TObject item) =>
             {
-                var panel = new GroupBox() { BackgroundColor = Color.SlateGray * .2f };// this.ClientBoxColor };
+                //var panel = new GroupBox() { BackgroundColor = Color.SlateGray * .2f };// this.ClientBoxColor };
+                var panel = new GroupBox() { BackgroundColor = Color.White * .1f };// this.ClientBoxColor };
                 panel.Tag = item;
                 var offset = 0;
                 Dictionary<object, Control> controls = new();

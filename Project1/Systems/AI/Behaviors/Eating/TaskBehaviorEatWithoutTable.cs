@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_.AI.Behaviors
 {
-    class TaskBehaviorEatWithoutTable : BehaviorPerformTask
+    class TaskBehaviorEatWithoutTable : BehaviorExecutePlan
     {
         TargetArgs Food { get { return this.Task.GetTarget(FoodInd); } }
         public const TargetIndex FoodInd = TargetIndex.A, EatingSurfaceInd = TargetIndex.B;

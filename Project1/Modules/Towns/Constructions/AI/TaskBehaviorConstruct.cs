@@ -4,7 +4,7 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorConstruct : BehaviorPerformTask
+    class TaskBehaviorConstruct : BehaviorExecutePlan
     {
         TargetArgs Construction { get { return this.Task.GetTarget(ConstructionsID); } }
         public const TargetIndex ConstructionsID = TargetIndex.A;

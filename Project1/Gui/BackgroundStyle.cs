@@ -21,7 +21,7 @@ namespace Start_a_Town_.UI
                 Center;
         public Color Color;
         public Texture2D SpriteSheet;
-        public int Border;
+        public int Padding;
 
         public override string ToString()
         {
@@ -41,7 +41,7 @@ namespace Start_a_Town_.UI
             Center = new Rectangle(11, 11, 1, 1),
             Color = Color.White,
             SpriteSheet = UIManager.FrameSprite,
-            Border = 11,// 5;// 11;
+            Padding = 5,// 11,// 5;// 11;
             Name = "Window"
         };
         public static readonly BackgroundStyle PanelNew = new BackgroundStyle()
@@ -57,7 +57,7 @@ namespace Start_a_Town_.UI
             Center = new Rectangle(11, 11, 1, 1),
             Color = Color.White,
             SpriteSheet = UIManager.FrameSprite,
-            Border = 5,// 5;// 11;
+            Padding = 5,// 5;// 11;
             Name = "PanelNew"
         };
         public static BackgroundStyle Tooltip = new BackgroundStyle()
@@ -73,7 +73,7 @@ namespace Start_a_Town_.UI
             Center = new Rectangle(11, 11, 1, 1),
             Color = Color.Black,
             SpriteSheet = UIManager.FrameSprite,
-            Border = 11,
+            Padding = 11,
             Name = "Tooltip"
         };
 
@@ -122,14 +122,14 @@ namespace Start_a_Town_.UI
                 Center = new Rectangle(18, 18, 1, 1),
                 Color = Color.White,
                 SpriteSheet = UIManager.SlotSprite,
-                Border = 5,
+                Padding = 5,
                 Name = "Panel"
         };
 
         const int TickBoxCorner = 11;
         public static readonly BackgroundStyle TickBox = new BackgroundStyle()
         {
-            Border = 5,
+            Padding = 5,
             TopLeft = new Rectangle(0, 0, TickBoxCorner, TickBoxCorner),
             TopRight = new Rectangle(TickBoxCorner, 0, TickBoxCorner, TickBoxCorner),
             BottomLeft = new Rectangle(0, TickBoxCorner, TickBoxCorner, TickBoxCorner),

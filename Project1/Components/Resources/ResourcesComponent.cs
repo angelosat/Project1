@@ -13,17 +13,16 @@ namespace Start_a_Town_
 
         internal override void CopyFrom(EntityComp comp)
         {
+         
             var source = (ResourcesComponent)comp;
-            //var count = source.Resources.Length;
-            //this.Resources = new Resource[count];
-            //for (int i = 0; i < count; i++)
-            //    this.Resources[i] = source.Resources[i].Clone();
+            
             foreach (var r in source.Resources.Values)
                 this.Add(r.Def);
-                //this.Resources.Add(r.Def, new(r.Def) { Owner = this.Owner as Actor });
         }
         public void Add(ResourceDef def)
         {
+            this.Resources[def] = new(def) { Owner = this.Owner as Actor };
+            return;
             this.Resources.Add(def, new(def) { Owner = this.Owner as Actor });
         }
         public ResourcesComponent()

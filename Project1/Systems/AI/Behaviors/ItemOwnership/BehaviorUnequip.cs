@@ -3,7 +3,7 @@ using Start_a_Town_.Components.Interactions;
 
 namespace Start_a_Town_.AI.Behaviors.ItemOwnership
 {
-    class BehaviorUnequip : BehaviorPerformTask
+    class BehaviorUnequip : BehaviorExecutePlan
     {
         public override string Name => "Unequipping";
          

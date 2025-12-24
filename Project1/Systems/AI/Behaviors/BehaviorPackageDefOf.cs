@@ -9,7 +9,7 @@ namespace Start_a_Town_
                                                                        new AIMemory(),
                                                                        new BehaviorHandleResources(),
                                                                        new BehaviorHandleOrders(),
-                                                                       new BehaviorHandleTasks()));
+                                                                       new BehaviorHandlePlans()));
         static BehaviorPackageDefOf()
         {
             Def.Register(typeof(BehaviorPackageDefOf));

@@ -4,7 +4,7 @@ using Start_a_Town_.AI;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorSleepingNew : BehaviorPerformTask
+    class TaskBehaviorSleepingNew : BehaviorExecutePlan
     {
         static public TargetIndex BedIndex = TargetIndex.A;
        

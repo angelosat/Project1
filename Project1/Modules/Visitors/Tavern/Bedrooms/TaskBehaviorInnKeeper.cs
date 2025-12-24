@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorInnKeeper : BehaviorPerformTask
+    class TaskBehaviorInnKeeper : BehaviorExecutePlan
     {
         const TargetIndex Customer = TargetIndex.A;
         const TargetIndex Counter = TargetIndex.B;

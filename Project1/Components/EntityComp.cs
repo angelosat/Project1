@@ -66,7 +66,7 @@ namespace Start_a_Town_.Components
 
         public virtual void OnDespawnExtra(MapBase oldmap) { }
         public virtual void OnDispose() { }
-
+        internal virtual void ResolveReferences() { }
         internal virtual void Resolve() { }
         internal virtual void InitializeOnce() { }
         
@@ -166,9 +166,7 @@ namespace Start_a_Town_.Components
         {
         }
 
-        internal virtual void ResolveReferences()
-        {
-        }
+        
 
         internal virtual void CopyFrom(EntityComp source) { }
 

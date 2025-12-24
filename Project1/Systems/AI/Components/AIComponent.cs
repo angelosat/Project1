@@ -228,9 +228,13 @@ namespace Start_a_Town_
             }
         }
         readonly Label CachedGuiLabelCurrentTask = new();
-        internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        //{
+        //    info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(()=> $"Current Task: {this.State.TaskString}"));
+        //}
+        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
-            info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(()=> $"Current Task: {this.State.TaskString}"));
+            info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => $"Current Task: {this.State.Behavior?.Name} {this.State.Behavior?.Task.TargetA}"));
         }
         internal override void ResolveReferences()
         {

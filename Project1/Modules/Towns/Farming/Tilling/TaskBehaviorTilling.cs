@@ -4,7 +4,7 @@ using Start_a_Town_.Components.Interactions;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorTilling : BehaviorPerformTask
+    class TaskBehaviorTilling : BehaviorExecutePlan
     {
         public const TargetIndex TargetInd = TargetIndex.A;
         TargetArgs Target { get { return this.Task.GetTarget(TargetInd); } }

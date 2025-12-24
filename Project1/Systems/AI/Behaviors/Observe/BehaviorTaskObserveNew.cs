@@ -4,7 +4,7 @@ using Start_a_Town_.Components.Interactions;
 
 namespace Start_a_Town_.AI
 {
-    class BehaviorTaskObserveNew : BehaviorPerformTask
+    class BehaviorTaskObserveNew : BehaviorExecutePlan
     {
         public override string Name
         {

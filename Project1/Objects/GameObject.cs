@@ -1190,7 +1190,7 @@ namespace Start_a_Town_
         //}
      
       
-        internal BehaviorPerformTask GetLastBehavior()
+        internal BehaviorExecutePlan GetLastBehavior()
         {
             return AIState.GetState(this).LastBehavior;
         }

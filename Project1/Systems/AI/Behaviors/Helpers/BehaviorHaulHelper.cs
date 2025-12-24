@@ -7,7 +7,7 @@ namespace Start_a_Town_
 {
     class BehaviorHaulHelper
     {
-        static public Behavior FindNearbyHaulOpportunity(BehaviorPerformTask source, Behavior gotoBhav, TargetIndex itemIndex)
+        static public Behavior FindNearbyHaulOpportunity(BehaviorExecutePlan source, Behavior gotoBhav, TargetIndex itemIndex)
         {
             var bhav = new BehaviorCustom
             {
@@ -48,7 +48,7 @@ namespace Start_a_Town_
             };
             return bhav;
         }
-        static public Behavior StartCarrying(BehaviorPerformTask source, TargetIndex storageIndex)
+        static public Behavior StartCarrying(BehaviorExecutePlan source, TargetIndex storageIndex)
         {
             var bhav = new BehaviorCustom() { Mode = BehaviorCustom.Modes.Continuous };
             TargetArgs target = null;
@@ -142,7 +142,7 @@ namespace Start_a_Town_
             });
             return bhav;
         }
-        static public Behavior JumpIfNextStorageFound(BehaviorPerformTask source, Behavior gotoBhav, TargetIndex storageIndex)
+        static public Behavior JumpIfNextStorageFound(BehaviorExecutePlan source, Behavior gotoBhav, TargetIndex storageIndex)
         {
             var bhav = new BehaviorCustom() { Mode = BehaviorCustom.Modes.Instant };
             Entity hauledObj = null;

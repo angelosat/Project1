@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorTavernWorkerPrepareOrder : BehaviorPerformTask
+    class TaskBehaviorTavernWorkerPrepareOrder : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {

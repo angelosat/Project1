@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorVisitorRentBed : BehaviorPerformTask
+    class TaskBehaviorVisitorRentBed : BehaviorExecutePlan
     {
         const TargetIndex Counter = TargetIndex.B;
         protected override IEnumerable<Behavior> GetSteps()

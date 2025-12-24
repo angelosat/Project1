@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_.AI.Behaviors.ItemOwnership
 {
-    class BehaviorDropCarried : BehaviorPerformTask
+    class BehaviorDropCarried : BehaviorExecutePlan
     {
         public override string Name => "Dropping carried";
        

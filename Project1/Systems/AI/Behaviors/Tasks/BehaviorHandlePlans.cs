@@ -6,12 +6,13 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    sealed class BehaviorHandleTasks : Behavior
+    sealed class BehaviorHandlePlans : Behavior
     {
         static readonly int TimerMax = Ticks.PerSecond / 20;
 
-        Planner CurrentTaskGiver;
+        Planner CurrentPlanner;
         int Timer = TimerMax;
+        readonly Timer IdleTimer = new(TimerMax);
 
         private void CleanUp(Actor parent)
         {
@@ -33,33 +34,33 @@ namespace Start_a_Town_
             parent.Unreserve();
 
             state.Reset();
-            this.CurrentTaskGiver = null;
+            this.CurrentPlanner = null;
         }
-        static IEnumerable<Planner> GetTaskGivers(Actor actor)
+        static IEnumerable<Planner> GetPlanners(Actor actor)
         {
-            var givers = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.TaskGiver);
-            givers = givers.Concat(Planner.EssentialTaskGivers);
+            var givers = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);
+            givers = givers.Concat(Planner.EssentialPlanners);
             var jobs = actor.AI.State.GetJobs().Where(j => j.Enabled);
             jobs.OrderBy(j => j.Priority);
-            var jobTaskGivers = jobs.SelectMany(j => j.Def.GetTaskGivers());
+            var jobPlanners = jobs.SelectMany(j => j.Def.GetPlanners());
 
             // replace this when meta-roles are fully implemented
-            givers = actor.IsTownMember ? givers.Concat(jobTaskGivers) : givers.Concat(Planner.VisitorTaskGivers);
+            givers = actor.IsTownMember ? givers.Concat(jobPlanners) : givers.Concat(Planner.VisitorPlanners);
 
             givers = givers.Append(Planner.Idle);
             return givers;
         }
-        Plan FindNewTaskNew(Actor parent, AIState state)
+        Plan FindNewPlan(Actor parent, AIState state)
         {
 
-            var givers = GetTaskGivers(parent);
+            var givers = GetPlanners(parent);
 
             foreach (var giver in givers)
             {
                 if (giver == null)
                     continue;
-                var giverResult = giver.FindTask(parent);
-                var task = giverResult.Task;
+                var giverResult = giver.FindPlan(parent);
+                var task = giverResult.Plan;
                 if (task == null)
                     continue;
                 var bhav = task.CreateBehavior(parent);
@@ -70,14 +71,14 @@ namespace Start_a_Town_
                 }
 
                 state.Assign(bhav);
-                this.CurrentTaskGiver = giver;
+                this.CurrentPlanner = giver;
                 return task;
             }
 
             return null;
         }
 
-        bool TryForceTask(Actor parent, Plan task, AIState state)
+        bool TryForcePlan(Actor parent, Plan task, AIState state)
         {
             var bhav = task.CreateBehavior(parent);
             if (!bhav.InitBaseReservations())
@@ -94,11 +95,11 @@ namespace Start_a_Town_
             base.AddSaveData(tag);
             tag.Add(this.Timer.Save("Timer"));
 
-            if (this.CurrentTaskGiver is not null)
-                tag.Add(this.CurrentTaskGiver.GetType().FullName.Save("CurrentTaskGiver")); ;
+            if (this.CurrentPlanner is not null)
+                tag.Add(this.CurrentPlanner.GetType().FullName.Save("CurrentTaskGiver")); ;
         }
 
-        internal void EndCurrentTask(Actor actor)
+        internal void EndCurrentPlan(Actor actor)
         {
             this.CleanUp(actor);
         }
@@ -106,7 +107,7 @@ namespace Start_a_Town_
         {
             base.Load(tag);
             tag.TryGetTagValueOrDefault("Timer", out this.Timer);
-            tag.TryGetTagValue<string>("CurrentTaskGiver", t => this.CurrentTaskGiver = Activator.CreateInstance(Type.GetType(t)) as Planner);
+            tag.TryGetTagValue<string>("CurrentTaskGiver", t => this.CurrentPlanner = Activator.CreateInstance(Type.GetType(t)) as Planner);
         }
         internal override void MapLoaded(Actor parent)
         {
@@ -115,7 +116,7 @@ namespace Start_a_Town_
 
         public override object Clone()
         {
-            return new BehaviorHandleTasks();
+            return new BehaviorHandlePlans();
         }
         public override void Read(IDataReader r)
         {
@@ -132,32 +133,31 @@ namespace Start_a_Town_
                 var task = state.ForcedTask;
                 state.ForcedTask = null;
                 this.CleanUp(parent);
-                this.TryForceTask(parent, task, state);
+                this.TryForcePlan(parent, task, state);
             }
             else if(!state.Behavior?.Task.IsUrgent ?? true)
             {
-                foreach(var giver in Planner.UrgentTaskGivers)
+                foreach(var giver in Planner.UrgentPlanners)
                 {
-                    var task = giver.FindTaskNew(parent);
+                    var task = giver.FindPlanNew(parent);
                     if (task is null)
                         continue;
                     task.IsUrgent = true;
                     state.TryAssign(task);
                     break;
                 }
-                var taskGiverEnum = Planner.UrgentTaskGivers.GetEnumerator();
+                var plannerEnum = Planner.UrgentPlanners.GetEnumerator();
                 while 
                     (
-                    taskGiverEnum.MoveNext() && 
-                    taskGiverEnum.Current.FindTaskNew(parent) is var task && 
+                    plannerEnum.MoveNext() && 
+                    plannerEnum.Current.FindPlanNew(parent) is var task && 
                     task is not null
                     )
                     if (state.TryAssign(task))
                         break;
             }
 
-            //if (state.CurrentTaskBehavior != null)
-            if (state.Behavior != null)
+            if (state.Behavior is not null)
             {
                 var currentBhav = state.Behavior;
                 var (result, source) = currentBhav.TickNew(parent, state);
@@ -174,24 +174,11 @@ namespace Start_a_Town_
                     case BehaviorState.Success:
                         parent.MoveToggle(false);
 
-                        /// LATEST FINDINGS:
-                        /// the problem ended up not being that this call was canceling the interaction at the client, 
-                        /// but that the interaction wasn't being serialized properly. its state wasnt synced to the client, and was left as unstarted
-                        /// which resulted in the the intearction starting again and re-adding its animation to the entity
-                        /// after fixing that, the cancelinteraction now seem to work even after a success
-
-                        parent.CancelInteraction(); // (the following is not true anymore, see above comment) THIS CANNOT BE HERE BECAUSE IT WILL CANCEL THE CLIENT ENTITY'S INTERACTION WHILE THE ANIMATION IS ON THE LAST FRAME
-
-                        //if (result == BehaviorState.Fail) // ONLY CANCEL INTERACTION ON FAILURE?
-                        //parent.CancelInteraction(); 
-                        // DO I ACTUALLY NEED IT? i dont remember why i added this here
-                        // i think i was only cancelling the interaction server-side and the problem appeared after sync-cancelling to the clients
+                        parent.CancelInteraction();
 
                         // TODO: unreserve here?
                         parent.Unreserve();
-                        //state.LastBehavior = state.CurrentTaskBehavior;
-                        //state.CurrentTaskBehavior.CleanUp();
-                        //state.CurrentTaskBehavior = null;
+              
                         state.LastBehavior = currentBhav;
 
                         state.NextTask();
@@ -221,23 +208,22 @@ namespace Start_a_Town_
                 var staminaTaskThreshold = 20;
                 var tired = stamina.Value <= staminaTaskThreshold;
 
-                if (this.CurrentTaskGiver != null && (!state.Behavior?.Task.Def.Idle ?? false)) // && !parent.CurrentTask.Def.Idle)
+                if (this.CurrentPlanner != null && (!state.Behavior?.Task.Def.Idle ?? false)) 
+                //if (HasIntent && !IsIdle)
                 {
                     if (tired)
                     {
                         this.CleanUp(parent, state);
                         return BehaviorState.Fail;
                     }
-                    var next = this.CurrentTaskGiver.FindTask(parent);
+                    var next = this.CurrentPlanner.FindPlan(parent);
 
-                    if (next.Task != null)
+                    if (next.Plan is not null)
                     {
-                        var bhav = next.Task.CreateBehavior(parent);
+                        var bhav = next.Plan.CreateBehavior(parent);
                         if (bhav.InitBaseReservations())
                         {
-                            $"found followup task from same taskgiver {this.CurrentTaskGiver}".ToConsole();
-                            //state.CurrentTaskBehavior = bhav;
-                            //state.CurrentTask = next.Task;
+                            $"found followup task from same planner {this.CurrentPlanner}".ToConsole();
                             state.Assign(bhav);
                             return BehaviorState.Success;
                         }
@@ -254,22 +240,38 @@ namespace Start_a_Town_
 
                 if (!tired)
                 {
-                    if (this.Timer < TimerMax)
-                        this.Timer++;
-                    else
+                    this.IdleTimer.Tick();
+                    if (this.IdleTimer.Fired)
                     {
-                        this.Timer = 0;
-                        var task = this.FindNewTaskNew(parent, state); // TODO: needs optimization
+                        var task = this.FindNewPlan(parent, state); // TODO: needs optimization
                         if (task is not null)
+                        {
+                            this.IdleTimer.Reset();
                             return BehaviorState.Success;
+                        }
                     }
+                    //if (this.Timer < TimerMax)
+                    //    this.Timer++;
+                    //else
+                    //{
+                    //    this.Timer = 0;
+                    //    var task = this.FindNewPlan(parent, state); // TODO: needs optimization
+                    //    if (task is not null)
+                    //        return BehaviorState.Success;
+                    //}
                 }
             }
             if (parent.CurrentInteraction is not null) // added this here because when cleaning up, an unequip interaction might be in progress. and we dont want to interrupt it by starting another task
                 return BehaviorState.Running; // returning running until clean up interaction finishes, otherwise it might get interrupted by the next behaviors, like BehaviorIdle
             return BehaviorState.Fail;
         }
-
+        //void TickIdleTimer()
+        //{
+        //    this.Timer++;
+        //}
+        //bool IdleTimerFired => this.Timer >= TimerMax;
+        bool HasIntent => this.CurrentPlanner is not null;
+        bool IsIdle => this.Actor.AI.State.Behavior?.Task.Def.Idle ?? true;
         public override void Write(IDataWriter w)
         {
             w.Write(this.Timer);

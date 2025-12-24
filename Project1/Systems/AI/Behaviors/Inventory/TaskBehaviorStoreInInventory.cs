@@ -3,7 +3,7 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorStoreInInventory : BehaviorPerformTask
+    class TaskBehaviorStoreInInventory : BehaviorExecutePlan
     {
         public override string Name { get; } = "Storing item in inventory";
 

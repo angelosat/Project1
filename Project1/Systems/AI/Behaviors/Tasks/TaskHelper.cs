@@ -147,7 +147,7 @@ namespace Start_a_Town_
             });
             return bhav;
         }
-        static public Behavior FailOnRanOutOfPatienceWaiting(this BehaviorPerformTask bhav, Action failAction = null)
+        static public Behavior FailOnRanOutOfPatienceWaiting(this BehaviorExecutePlan bhav, Action failAction = null)
         {
             var actor = bhav.Actor;
             var patienceTrait = actor.GetTrait(TraitDefOf.Patience);
@@ -162,11 +162,11 @@ namespace Start_a_Town_
             });
             return bhav;
         }
-        static public void FailOnNoDesignation(this BehaviorPerformTask bhav, TargetIndex targetInd, DesignationDef designation)
+        static public void FailOnNoDesignation(this BehaviorExecutePlan bhav, TargetIndex targetInd, DesignationDef designation)
         {
             bhav.FailOnNoDesignation((int)targetInd, designation);
         }
-        static public void FailOnNoDesignation(this BehaviorPerformTask bhav, int targetInd, DesignationDef designation)
+        static public void FailOnNoDesignation(this BehaviorExecutePlan bhav, int targetInd, DesignationDef designation)
         {
             bhav.FailOn(() =>
             {
@@ -174,7 +174,7 @@ namespace Start_a_Town_
                 return !bhav.Actor.Town.DesignationManager.IsDesignation(global, designation);
             });
         }
-        static public void FailOnCellStandedOn(this BehaviorPerformTask bhav, TargetIndex targetInd)
+        static public void FailOnCellStandedOn(this BehaviorExecutePlan bhav, TargetIndex targetInd)
         {
             bhav.FailOn(() =>
             {

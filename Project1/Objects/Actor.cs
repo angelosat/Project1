@@ -299,7 +299,7 @@ namespace Start_a_Town_
         internal void EndCurrentTask()
         {
             this.Work.Interrupt();
-            this.GetComponent<AIComponent>().FindBehavior<BehaviorHandleTasks>().EndCurrentTask(this);
+            this.GetComponent<AIComponent>().FindBehavior<BehaviorHandlePlans>().EndCurrentPlan(this);
         }
         internal void MoveToggle(bool toggle)
         {
@@ -328,6 +328,8 @@ namespace Start_a_Town_
             yield return ("Log", typeof(NpcLogUINewNew));
             yield return ("Skills", typeof(SkillsUINew));
             yield return ("Needs", typeof(NeedsMoodsUINew));
+            yield return ("Gear", typeof(InventoryUINew));
+            yield return ("Stats", typeof(StatsGuiNew));
         }
         public override IEnumerable<Control> GetSelectionDetails()
         {
@@ -477,7 +479,7 @@ namespace Start_a_Town_
         {
             if (target == null || target.Type == TargetType.Null)
                 yield break;
-            var givers = Planner.CitizenTaskGivers.Concat(Planner.EssentialTaskGivers);
+            var givers = Planner.CitizenTaskGivers.Concat(Planner.EssentialPlanners);
             foreach (var giver in givers)
                 if (giver.CanGiveTask(this, target) is TaskDef taskDef)
                     yield return (taskDef, giver);

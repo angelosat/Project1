@@ -4,7 +4,7 @@ using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorHarvestingNew : BehaviorPerformTask
+    class TaskBehaviorHarvestingNew : BehaviorExecutePlan
     {
         public const TargetIndex PlantIndex = TargetIndex.A;
         protected override IEnumerable<Behavior> GetSteps()

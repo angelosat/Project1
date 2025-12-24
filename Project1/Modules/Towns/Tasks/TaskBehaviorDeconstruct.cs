@@ -3,7 +3,7 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorDeconstruct : BehaviorPerformTask
+    class TaskBehaviorDeconstruct : BehaviorExecutePlan
     {
         public const TargetIndex DeconstructInd = TargetIndex.A;
         protected override IEnumerable<Behavior> GetSteps()

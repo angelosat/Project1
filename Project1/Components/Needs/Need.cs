@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using SharpDX.Direct3D9;
+using Start_a_Town_.Components.Needs;
+using Start_a_Town_.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
@@ -107,7 +109,7 @@ namespace Start_a_Town_
         public float FinalDecayMultiplier => 1;
         public Plan GetTask(GameObject parent) { return null; }
         
-        public Planner TaskGiver { get { return this.NeedDef.TaskGiver; } }
+        public Planner Planner { get { return this.NeedDef.TaskGiver; } }
 
         public NeedDef Def => this.NeedDef;
 
@@ -137,6 +139,9 @@ namespace Start_a_Town_
                 if (InputState.IsKeyDown(System.Windows.Forms.Keys.ControlKey))
                 {
                     "todo: request need change from server".ToConsole();
+                    var val = 100 - (bar.ScreenLocation.X + bar.Width - UIManager.MouseScaled.X);
+                    //this.Value = val;
+                    PacketNeedModify.SendSet(parent.Net, parent.RefId, this.Def, val);
                     return;
                 }
             };

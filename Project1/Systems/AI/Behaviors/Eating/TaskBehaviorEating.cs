@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_.AI.Behaviors
 {
-    class TaskBehaviorEating : BehaviorPerformTask
+    class TaskBehaviorEating : BehaviorExecutePlan
     {
         TargetArgs Food { get { return this.Task.GetTarget(FoodInd); } }
         TargetArgs Table { get { return this.Task.GetTarget(EatingSurfaceInd); } }

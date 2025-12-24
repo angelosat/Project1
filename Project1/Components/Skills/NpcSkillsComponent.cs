@@ -30,7 +30,12 @@ namespace Start_a_Town_
         public IEnumerable<Skill> All => this.SkillsNew.Values;
         public void Add(SkillDef def)
         {
-            this.SkillsNew.Add(def, new Skill(this, def));
+            this.SkillsNew.Add(def, new Skill(this, def) { Comp = this });
+        }
+        internal override void Resolve()
+        {
+            foreach (var s in this.SkillsNew.Values)
+                s.Comp = this;
         }
         public override string Name { get; } = "Npc Skills";
 
@@ -91,6 +96,7 @@ namespace Start_a_Town_
         {
             //this.SkillsNew.Read(r);
             r.ReadDefWrappers(this.SkillsNew);
+            this.Resolve();
         }
         internal void AwardAndSync(SkillDef skill, int amount)
         {

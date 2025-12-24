@@ -12,9 +12,9 @@ namespace Start_a_Town_.Modules.AI.Net.Packets
         }
         static public void Send(Server server, int agentID, string entry)
         {
-            server.OutgoingStreamOrderedReliable.Write(p);
-            server.OutgoingStreamOrderedReliable.Write(agentID);
-            server.OutgoingStreamOrderedReliable.Write(entry);
+            server.BeginPacket(p)
+                .Write(agentID)
+                .Write(entry);
         }
         static public void Receive(NetEndpoint net, Packet pck)
         {

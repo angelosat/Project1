@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorRefueling : BehaviorPerformTask
+    class TaskBehaviorRefueling : BehaviorExecutePlan
     {
         Vector3 RefualableGlobal => this.Task.GetTarget(DestinationIndex).Global;
         Entity Fuel => this.Task.GetTarget(SourceIndex).Object as Entity;

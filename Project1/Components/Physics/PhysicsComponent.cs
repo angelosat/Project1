@@ -552,8 +552,8 @@ namespace Start_a_Town_
         private float UpdateWeight()
         {
             var parent = this.Owner;
-            var bones = parent.Body.GetAllBones();
-            float w = bones.Sum(b => b.Material.Density) / bones.Count();
+            var bones = parent.Body.GetAllBones().ToList();
+            float w = parent.Def.Weight * bones.Sum(b => b.Material.Density) / bones.Count;
             w = this.Size switch
             {
                 ObjectSize.Immovable => w,

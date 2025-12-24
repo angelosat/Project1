@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorTavernCustomer : BehaviorPerformTask
+    class TaskBehaviorTavernCustomer : BehaviorExecutePlan
     {
         static int Patience = Ticks.PerGameMinute; // TODO get patience value from actor
 

@@ -3,7 +3,7 @@ using Start_a_Town_.Components.Interactions;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorDropItem : BehaviorPerformTask
+    class TaskBehaviorDropItem : BehaviorExecutePlan
     {
         public override string Name => "Dropping Item";
            

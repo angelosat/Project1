@@ -4,7 +4,7 @@ using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorDeliverMaterials : BehaviorPerformTask
+    class TaskBehaviorDeliverMaterials : BehaviorExecutePlan
     {
         TargetArgs Material { get { return this.Task.GetTarget(MaterialID); } }
         TargetArgs Destination { get { return this.Task.GetTarget(DestinationID); } }

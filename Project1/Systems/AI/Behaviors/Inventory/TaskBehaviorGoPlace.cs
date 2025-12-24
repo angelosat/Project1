@@ -4,7 +4,7 @@ using Start_a_Town_.Crafting;
 
 namespace Start_a_Town_
 {
-    class TaskBehaviorGoPlace : BehaviorPerformTask
+    class TaskBehaviorGoPlace : BehaviorExecutePlan
     {
         public override string Name { get; } = "Delivering item";
 
@@ -20,7 +20,7 @@ namespace Start_a_Town_
         }
     }
 
-    class TaskBehaviorGoCraft : BehaviorPerformTask
+    class TaskBehaviorGoCraft : BehaviorExecutePlan
     {
         public override string Name { get; } = "Crafting";
 

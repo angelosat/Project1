@@ -26,7 +26,8 @@ namespace Start_a_Town_
             UInt32,
             Bool,
             Vector3,
-            Reference
+            Reference,
+            UInt64
         }
 
         static readonly Dictionary<string, SaveTag> SaveReferences = new();
@@ -295,6 +296,9 @@ namespace Start_a_Town_
                 case 15: // reference
                     writer.Write((string)this.Value);
                     break;
+                case 16: // ulong (uint64)
+                    writer.Write((ulong)this.Value);
+                    break;
                 default:
                     break;
             }
@@ -361,6 +365,8 @@ namespace Start_a_Town_
                     return reader.ReadVector3();
                 case 15: //references
                     return reader.ReadString();
+                case 16:
+                    return reader.ReadUInt64();
             }
             return null;
         }
@@ -419,6 +425,14 @@ namespace Start_a_Town_
         public int LoadInt(string name)
         {
             return (int)this[name].Value;
+        }
+        public ulong LoadUlong(string name)
+        {
+            return (ulong)this[name].Value;
+        }
+        public ulong LoadUlong()
+        {
+            return (ulong)this.Value;
         }
         public IntVec3 LoadIntVec3(string name)
         {

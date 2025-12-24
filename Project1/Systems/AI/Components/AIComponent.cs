@@ -137,7 +137,8 @@ namespace Start_a_Town_
             {
                 new SaveTag(SaveTag.Types.ByteArray, "Guid", this.Guid.ToByteArray()),
                 this.State.Save("State"),
-                this.Root.Save("Root")
+                this.Root.Save("Root"),
+                this.Meta.Save("Meta")
             };
             return save;
         }
@@ -146,6 +147,8 @@ namespace Start_a_Town_
             save.TryGetTagValue<byte[]>("Guid", v => this.Guid = new Guid(v));
             this.State.Load(save["State"]);
             this.Root.Load(save["Root"]);
+            //this.Meta = save.Load<RoleMetaWrapper>("Meta");
+            if (save.TryLoadNew<RoleMetaWrapper>("Meta", out var meta)) this.Meta = meta;
         }
 
         public override void Write(IDataWriter w)

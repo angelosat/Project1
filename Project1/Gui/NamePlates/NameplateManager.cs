@@ -27,6 +27,8 @@ namespace Start_a_Town_
             this.MouseThrough = true;
             net.Map.Events.ListenTo<EntityDespawnedEvent>(onEntityDespawned);
             net.Map.Events.ListenTo<EntitySpawnedEvent>(onEntitySpawned);
+            foreach (var entity in net.Map.GetEntities())
+                this.CreateNameplateFor(entity as Entity);
         }
 
         private void onEntityDespawned(EntityDespawnedEvent despawned)
@@ -36,11 +38,17 @@ namespace Start_a_Town_
         private void onEntitySpawned(EntitySpawnedEvent spawned)
         {
             var entity = spawned.Entity;
+            CreateNameplateFor(entity);
+        }
+
+        private void CreateNameplateFor(Entity entity)
+        {
             var plate = Nameplate.Create(entity);
-            var targetContainer = spawned.Entity is Actor ? this.ContainerActors : this.Container;
+            var targetContainer = entity is Actor ? this.ContainerActors : this.Container;
             targetContainer.AddControls(plate);
             this.Cache.Add(entity, plate);
         }
+
         private void DisposeNameplate(GameObject entity)
         {
             if (!this.Cache.TryGetValue(entity, out var plate))

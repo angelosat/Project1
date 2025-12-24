@@ -12,7 +12,8 @@ namespace Start_a_Town_
         {
             var index = TargetIndex.A;
             yield return new BehaviorGetAtNewNew(index, PathEndMode.Any);
-            yield return new BehaviorInteractionNew(index, () => new InteractionPlaceItem(this.Actor.CurrentTask.GetAmount(index)));
+            //yield return new BehaviorInteractionNew(index, () => new InteractionPlaceItem(this.Actor.CurrentTask.GetAmount(index)));
+            yield return new BehaviorInteractionNew(InteractionDefOf.Place, countInd: index);// index, () => new InteractionPlaceItem(this.Actor.CurrentTask.GetAmount(index)));
         }
         protected override bool InitExtraReservations()
         {

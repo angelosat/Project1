@@ -276,6 +276,10 @@ namespace Start_a_Town_
         {
             save.Add(value.Save(name));
         }
+        public static void Save(this SaveTag save, string name, int value)
+        {
+            save.Add(value.Save(name));
+        }
         public static void Save(this byte value, SaveTag save, string name)
         {
             save.Add(value.Save(name));
@@ -288,9 +292,17 @@ namespace Start_a_Town_
         {
             save.Add(value.Save(name));
         }
+        public static void Save(this SaveTag save, string name, bool value)
+        {
+            save.Add(value.Save(name));
+        }
         public static void Save(this ulong value, SaveTag save, string name)
         {
             save.Add(((double)value).Save(name)); // cast ulong to double for saving
+        }
+        public static void Save(this SaveTag tag, string name, ulong value)
+        {
+            tag.Add(value.Save(name)); 
         }
         public static bool TryLoad(this ref int value, SaveTag save, string name)
         {
@@ -300,6 +312,14 @@ namespace Start_a_Town_
         {
             return save.TryGetTagValueOrDefault(name, out value);
         }
+        public static void Save<T>(this SaveTag tag, string name, T value) where T : ISaveableNewNew<T>
+        {
+            tag.Add(value.Save(name));
+        }
+        //public static void SaveDef<T>(this SaveTag tag, string name, T value) where T: Def
+        //{
+        //    tag.Add(value.Save(name));
+        //}
         public static void Save(this Vector3[] vectors, SaveTag save, string name)
         {
             var list = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Vector3);
@@ -813,6 +833,20 @@ namespace Start_a_Town_
         {
             return GameObject.Load(tag[name]);
         }
+        public static T Load<T>(this SaveTag tag, string name) where T : ISaveableNewNew<T>
+        {
+            return T.Create(tag[name]);
+        }
+        public static bool TryLoadNew<T>(this SaveTag tag, string name, out T value) where T : ISaveableNewNew<T>
+        {
+            if (tag.TryGetTag(name, out var t))
+            { 
+                value = T.Create(t);
+                return true;
+            }
+            value = default;
+            return false;
+        }
         public static T LoadDef<T>(this SaveTag tag, string name) where T : Def
         {
             return Def.GetDef<T>(tag[name].Value as string);
@@ -825,6 +859,16 @@ namespace Start_a_Town_
         {
             if (!tag.TryGetTag(name, out var deftag))
                 return false;
+            target = Def.GetDef<T>((string)deftag.Value);
+            return true;
+        }
+        public static bool TryLoadDefNew<T>(this SaveTag tag, string name, out T target) where T : Def
+        {
+            if (!tag.TryGetTag(name, out var deftag))
+            {
+                target = default;
+                return false;
+            }
             target = Def.GetDef<T>((string)deftag.Value);
             return true;
         }
@@ -895,6 +939,10 @@ namespace Start_a_Town_
         public static SaveTag Save(this double value, string name)
         {
             return new SaveTag(SaveTag.Types.Double, name, value);
+        }
+        public static SaveTag Save(this ulong value, string name)
+        {
+            return new SaveTag(SaveTag.Types.UInt64, name, value);
         }
         public static SaveTag Save(this byte value, string name)
         {

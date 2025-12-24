@@ -1,6 +1,4 @@
-﻿using SharpDX.MediaFoundation;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace Start_a_Town_
 {

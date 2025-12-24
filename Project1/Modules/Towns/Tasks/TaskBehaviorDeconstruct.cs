@@ -16,7 +16,7 @@ namespace Start_a_Town_
         }
         protected override bool InitExtraReservations()
         {
-            return this.Reserve(this.Task.GetTarget(DeconstructInd), 1);
+            return this.Reserve(this.Plan.GetTarget(DeconstructInd), 1);
         }
     }
 }

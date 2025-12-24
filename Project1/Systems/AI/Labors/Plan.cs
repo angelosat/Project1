@@ -9,6 +9,7 @@ namespace Start_a_Town_
     public enum TargetIndex { None, A, B, C, Tool = 15 }
     public sealed class Plan
     {
+        public string Status => $"{this.Def.Interaction.Label} : {this.TargetA}";
         public TargetArgs GetTarget(TargetIndex targetInd)
         {
             return targetInd switch
@@ -227,10 +228,10 @@ namespace Start_a_Town_
 
         public bool IsReserved => this.ReservedBy > -1;
 
-        public TaskDef Def;
+        public PlanDef Def;
         public int ID { get; internal set; }
 
-        public Plan(TaskDef taskDef)
+        public Plan(PlanDef taskDef)
         {
             if (taskDef is null) throw new Exception();
             this.Def = taskDef;
@@ -249,14 +250,14 @@ namespace Start_a_Town_
             this.BehaviorType = behaviorType;
             this.SetTarget(TargetIndex.A, targetA);
         }
-        public Plan(TaskDef def, TargetArgs targetA) : this()
+        public Plan(PlanDef def, TargetArgs targetA) : this()
         {
             if (def is null) throw new Exception();
 
             this.Def = def;
             this.SetTarget(TargetIndex.A, targetA);
         }
-        public Plan(TaskDef def, TargetArgs targetA, TargetArgs targetB) : this()
+        public Plan(PlanDef def, TargetArgs targetA, TargetArgs targetB) : this()
         {
             if (def is null) throw new Exception();
 
@@ -306,7 +307,7 @@ namespace Start_a_Town_
         {
             var behav = Activator.CreateInstance(this.BehaviorType) as BehaviorExecutePlan;
             behav.Actor = actor;
-            behav.Task = this;
+            behav.Plan = this;
             return behav;
         }
 
@@ -374,7 +375,7 @@ namespace Start_a_Town_
         }
         public void LoadData(SaveTag tag)
         {
-            this.Def = tag.LoadDef<TaskDef>("Def");
+            this.Def = tag.LoadDef<PlanDef>("Def");
             tag.TryGetTagValue<int>("ID", t => this.ID = t);
             tag.TryGetTag("TargetA", t => this.TargetA = new TargetArgs(t));
             tag.TryGetTag("TargetB", t => this.TargetB = new TargetArgs(t));
@@ -429,10 +430,12 @@ namespace Start_a_Town_
         }
         internal void SyncToClients(IDataWriter w)
         {
+            w.Write(this.Def);
             this.TargetA.Write(w);
         }
         internal void SyncFromServer(NetEndpoint provider, IDataReader r)
         {
+            this.Def = r.ReadDef<PlanDef>();
             this.TargetA = TargetArgs.Read(provider, r);
         }
         internal void Write(BinaryWriter w)

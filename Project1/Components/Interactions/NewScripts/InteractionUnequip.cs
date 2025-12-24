@@ -1,8 +1,8 @@
-﻿namespace Start_a_Town_.Components.Interactions
+﻿namespace Start_a_Town_
 {
-    class UnequipItem : Interaction
+    class InteractionUnequip : Interaction
     {
-        public UnequipItem() : base("Unequipping", 0) { }
+        public InteractionUnequip() : base("Unequipping", 0) { }
 
         public override void Perform()
         {
@@ -13,7 +13,7 @@
 
         public override object Clone()
         {
-            return new UnequipItem();
+            return new InteractionUnequip();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Start_a_Town_
     public enum BehaviorState { Running, Success, Fail }
     public abstract class Behavior : ICloneable
     {
+        //public virtual string Status => $"{this}";
         public virtual string Name { get; } = string.Empty;
         public string Label;
         /// <summary>

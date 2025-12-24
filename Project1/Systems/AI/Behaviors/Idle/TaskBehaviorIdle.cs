@@ -7,7 +7,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
             yield return new BehaviorWait(() => task.TicksWaited >= task.TicksTimeout);
             yield return new BehaviorCustom(delegate
             {

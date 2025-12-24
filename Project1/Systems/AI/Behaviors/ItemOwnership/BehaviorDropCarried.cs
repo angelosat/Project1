@@ -8,8 +8,8 @@ namespace Start_a_Town_.AI.Behaviors.ItemOwnership
        
         protected override IEnumerable<Behavior> GetSteps()
         {
-            var target = this.Task.TargetA;
-            var amount = this.Task.AmountA;
+            var target = this.Plan.TargetA;
+            var amount = this.Plan.AmountA;
             yield return new BehaviorGetAtNewNew(target);
             yield return new BehaviorInteractionNew(target, new UseHauledOnTarget(amount));
         }

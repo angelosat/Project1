@@ -9,7 +9,6 @@ namespace Start_a_Town_
     sealed class BehaviorHandlePlans : Behavior
     {
         static readonly int TimerMax = Ticks.PerSecond / 20;
-
         Planner CurrentPlanner;
         int Timer = TimerMax;
         readonly Timer IdleTimer = new(TimerMax);
@@ -135,7 +134,7 @@ namespace Start_a_Town_
                 this.CleanUp(parent);
                 this.TryForcePlan(parent, task, state);
             }
-            else if(!state.Behavior?.Task.IsUrgent ?? true)
+            else if(!state.Behavior?.Plan.IsUrgent ?? true)
             {
                 foreach(var giver in Planner.UrgentPlanners)
                 {
@@ -271,7 +270,7 @@ namespace Start_a_Town_
         //}
         //bool IdleTimerFired => this.Timer >= TimerMax;
         bool HasIntent => this.CurrentPlanner is not null;
-        bool IsIdle => this.Actor.AI.State.Behavior?.Task.Def.Idle ?? true;
+        bool IsIdle => this.Actor.AI.State.Behavior?.Plan.Def.Idle ?? true;
         public override void Write(IDataWriter w)
         {
             w.Write(this.Timer);

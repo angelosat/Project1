@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    internal class InteractionDef : Def
+    public class InteractionDef : Def
     {
         public readonly Type InteractionClass;
 

@@ -20,7 +20,7 @@ namespace Start_a_Town_
             yield return new BehaviorCustom()
             {
                 Mode = BehaviorCustom.Modes.Continuous,
-                Init = (a, s) => this.Actor.Interact(new Blocks.Bed.InteractionSleepInBed(), this.Task.TargetA),
+                Init = (a, s) => this.Actor.Interact(new Blocks.Bed.InteractionSleepInBed(), this.Plan.TargetA),
                 SuccessCondition = a => IsEnergyFull()
             };
             yield return new BehaviorCustom() { Init = (a, t) => AIManager.EndInteraction(this.Actor, true) };
@@ -37,8 +37,8 @@ namespace Start_a_Town_
             return
                 //this.Actor.Reserve(this.Task, this.Task.TargetA) &&
                 //this.Actor.Reserve(this.Task, this.Task.TargetB)
-                this.Reserve(this.Task.TargetA) &&
-                this.Reserve(this.Task.TargetB)
+                this.Reserve(this.Plan.TargetA) &&
+                this.Reserve(this.Plan.TargetB)
                 ;
         }
     }

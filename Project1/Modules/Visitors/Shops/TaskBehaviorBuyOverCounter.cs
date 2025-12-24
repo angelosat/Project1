@@ -9,7 +9,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
             
             this.FailOnRanOutOfPatienceWaiting(() => actor.GetVisitorProperties().BlacklistShop(task.ShopID));
             var item = task.TargetA.Object as Entity;
@@ -41,15 +41,15 @@ namespace Start_a_Town_
             {
                 InitAction = () =>
                 {
-                    var item = this.Task.TargetA.Object as Entity;
-                    this.Task.SetTarget(TargetIndex.C, this.Actor.Inventory.First(i => i.Def == ItemDefOf.Coins));
+                    var item = this.Plan.TargetA.Object as Entity;
+                    this.Plan.SetTarget(TargetIndex.C, this.Actor.Inventory.First(i => i.Def == ItemDefOf.Coins));
                     var totalvalue = item.GetValueTotal();
                     if (totalvalue <= 0)
                         throw new Exception();
-                    this.Task.SetAmount(TargetIndex.C, totalvalue);
+                    this.Plan.SetAmount(TargetIndex.C, totalvalue);
                 }
             };
-            yield return new BehaviorInteractionNew(TargetIndex.C, () => new InteractionHaul(this.Task.AmountC));
+            yield return new BehaviorInteractionNew(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
             //yield return new BehaviorCustom() { InitAction = () => actor.Reserve(this.Task, actor.Hauled) };
             yield return new BehaviorCustom() { InitAction = () => this.Reserve(actor.Hauled) };
             yield return new BehaviorInteractionNew(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
@@ -67,7 +67,7 @@ namespace Start_a_Town_
         protected override bool InitExtraReservations()
         {
             return
-                this.ReserveAsManyAsPossible(this.Task.TargetA, this.Task.TargetA.Object.StackSize);
+                this.ReserveAsManyAsPossible(this.Plan.TargetA, this.Plan.TargetA.Object.StackSize);
         }
     }
 }

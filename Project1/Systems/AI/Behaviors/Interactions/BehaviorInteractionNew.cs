@@ -7,10 +7,14 @@ namespace Start_a_Town_
 {
     class BehaviorInteractionNew : Behavior
     {
+        //public override string Status => $"{this.InteractionDef.Label} : {this.Target}";
+
         readonly int TargetInd;
+        readonly TargetIndex CountInd;
         //TargetArgs Target { get => this.TargetGetter?.Invoke() ?? this.Actor.CurrentTask.GetTarget(this.TargetInd); set { } }
         TargetArgs Target { get => this.TargetGetter?.Invoke() ?? (this.TargetInd != (int)TargetIndex.None ? this.Actor.CurrentTask.GetTarget(this.TargetInd) : null); set { } }
         Interaction _interaction;
+        public InteractionDef InteractionDef;
         public Func<Interaction> InteractionFactory;
         readonly Func<TargetArgs> TargetGetter;
         Interaction Interaction
@@ -18,7 +22,7 @@ namespace Start_a_Town_
             get
             {
                 if (this._interaction is null)
-                    this._interaction = this.InteractionFactory();
+                    this._interaction = this.InteractionFactory?.Invoke() ?? ActivatorSafe<Interaction>.CreateInstance(this.InteractionDef.InteractionClass);
                 return this._interaction;
             }
             set => this._interaction = value;
@@ -27,6 +31,12 @@ namespace Start_a_Town_
         { }
         public BehaviorInteractionNew(TargetIndex targetInd, Func<Interaction> interactionFactory) : this((int)targetInd, interactionFactory)
         { }
+        public BehaviorInteractionNew(InteractionDef def, TargetIndex targetInd = TargetIndex.A, TargetIndex countInd = TargetIndex.None)
+        {
+            this.InteractionDef = def;
+            this.TargetInd = (int)targetInd;
+            this.CountInd = countInd;
+        }
         public BehaviorInteractionNew(Func<TargetArgs> targetGetter, Func<Interaction> interactionFactory)
         {
             this.InteractionFactory = interactionFactory;
@@ -69,12 +79,21 @@ namespace Start_a_Town_
             }
 
             TargetArgs target = this.Target;
-            Interaction goal = this.Interaction;
+            //Interaction goal = this.Interaction;
+            int count = this.CountInd == TargetIndex.None ? -1 : parent.CurrentTask.GetAmount(this.CountInd);
 
-            switch (goal.State)
+            var interaction = Actor.Work.Task;
+            if(interaction is null)
+            {
+                interaction = ActivatorSafe<Interaction>.CreateInstance(parent.CurrentTask.Def.Interaction.InteractionClass);
+            }
+
+            //switch (goal.State)
+            switch (interaction.State)
             {
                 case Interaction.States.Unstarted:
-                    AIManager.Interact(parent, goal, target);
+                    //throw new Exception();
+                    AIManager.Interact(parent, interaction, target, count);
                     return BehaviorState.Running;
 
                 case Interaction.States.Running:

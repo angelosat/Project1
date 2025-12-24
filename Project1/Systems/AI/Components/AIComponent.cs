@@ -235,7 +235,8 @@ namespace Start_a_Town_
         //}
         internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
-            info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => $"Current Task: {this.State.Behavior?.Name} {this.State.Behavior?.Task.TargetA}"));
+            //info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => $"Current Task: {this.State.Behavior?.Name} {this.State.Behavior?.Task.TargetA}"));
+            info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentTask?.Status ?? "Idle"));
         }
         internal override void ResolveReferences()
         {

@@ -9,11 +9,11 @@ namespace Start_a_Town_
            
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorInteractionNew(this.Task.TargetA, new DropInventoryItem());
+            yield return new BehaviorInteractionNew(this.Plan.TargetA, new DropInventoryItem());
         }
         public override bool HasFailedOrEnded()
         {
-            return this.Actor.GetPossesions().Contains(this.Task.TargetA.Object);
+            return this.Actor.GetPossesions().Contains(this.Plan.TargetA.Object);
         }
     }
 }

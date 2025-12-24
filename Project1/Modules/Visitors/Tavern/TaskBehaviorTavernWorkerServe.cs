@@ -7,7 +7,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
             var dishIndex = TargetIndex.A;
             var tableSurfaceIndex = TargetIndex.B;
             var shop = actor.Workplace as Tavern;

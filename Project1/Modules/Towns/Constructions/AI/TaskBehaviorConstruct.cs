@@ -6,7 +6,7 @@ namespace Start_a_Town_
 {
     class TaskBehaviorConstruct : BehaviorExecutePlan
     {
-        TargetArgs Construction { get { return this.Task.GetTarget(ConstructionsID); } }
+        TargetArgs Construction { get { return this.Plan.GetTarget(ConstructionsID); } }
         public const TargetIndex ConstructionsID = TargetIndex.A;
 
         protected override IEnumerable<Behavior> GetSteps()
@@ -38,7 +38,7 @@ namespace Start_a_Town_
 
         protected override bool InitExtraReservations()
         {
-            var task = this.Task;
+            var task = this.Plan;
             var actor = this.Actor;
             var map = actor.Map;
 

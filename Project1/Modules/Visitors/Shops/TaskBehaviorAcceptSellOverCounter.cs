@@ -12,7 +12,7 @@ namespace Start_a_Town_
             // TODO send reply / complete transaction
             var actor = this.Actor;
             var state = this.Actor.GetState();
-            var task = this.Task;
+            var task = this.Plan;
             var shop = actor.Town.GetShop(task.ShopID) as Shop;
 
             yield return new BehaviorCustom()

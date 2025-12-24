@@ -9,7 +9,7 @@ namespace Start_a_Town_.AI
        
         protected override IEnumerable<Behavior> GetSteps()
         {
-            var item = this.Task.TargetA;
+            var item = this.Plan.TargetA;
             yield return new BehaviorGetAtNewNew(item);
             yield return new BehaviorInteractionNew(item, new InteractionHaul());
             yield return new BehaviorInteractionNew(item, new InteractionStoreHauled());
@@ -21,7 +21,7 @@ namespace Start_a_Town_.AI
         }
         protected override bool InitExtraReservations()
         {
-            return this.Reserve(this.Task.TargetA);
+            return this.Reserve(this.Plan.TargetA);
         }
     }
 }

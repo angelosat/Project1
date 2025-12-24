@@ -16,7 +16,7 @@ namespace Start_a_Town_
                     var actor = gotoBhav.Actor;
                     var hauling = actor.Hauled;
                     //var task = actor.CurrentTask;
-                    var task = source.Task;
+                    var task = source.Plan;
                     //var task = actor.AI.State.Current.Value.task;
                     //var bhav = actor.AI.State.Current.Value.behavior;
                     var desiredAmount = Math.Min(task.Count, hauling.StackAvailableSpace);

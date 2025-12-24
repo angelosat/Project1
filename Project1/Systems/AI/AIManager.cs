@@ -54,12 +54,12 @@ namespace Start_a_Town_.AI
                 return;
         }
 
-        internal static void Interact(Actor entity, Interaction action, TargetArgs target)
+        internal static void Interact(Actor entity, Interaction action, TargetArgs target, int count = -1)
         {
             if (entity.Net is Server) // interactions only initiated server-side?
             {
-                entity.Work.Perform(action, target);
-                PacketEntityInteract.Send(Server.Instance, entity, action, target);
+                entity.Work.Perform(action, target, count);
+                PacketEntityInteract.Send(Server.Instance, entity, action, target, count);
             }
         }
 

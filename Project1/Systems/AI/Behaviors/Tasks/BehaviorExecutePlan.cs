@@ -7,7 +7,8 @@ namespace Start_a_Town_
 {
     abstract public class BehaviorExecutePlan : Behavior
     {
-        public Plan Task;
+
+        public Plan Plan;
         //{
         //    get => this.Actor.CurrentTask;
         //    set => this.Actor.CurrentTask = value;
@@ -34,6 +35,8 @@ namespace Start_a_Town_
                 return this._CachedBehaviors;
             }
         }
+        //public override string Status => $"{this.CurrentBehavior.Status}";
+
         Behavior CurrentBehavior => this.CachedBehaviors[this.CurrentStepIndex];
         public BehaviorExecutePlan()
         {
@@ -47,7 +50,7 @@ namespace Start_a_Town_
         }
         public sealed override BehaviorState Tick(Actor parent, AIState state)
         {
-            if(this.Task.IsCancelled)
+            if(this.Plan.IsCancelled)
                 return BehaviorState.Fail;
             if (this.HasFailedOrEnded())
                 return BehaviorState.Fail;
@@ -76,7 +79,7 @@ namespace Start_a_Town_
                 //var result = failedorended ? BehaviorState.Fail : current.Execute(parent, state);
 
                 var result = current.Tick(parent, state);
-                this.Task.TicksCounter++;
+                this.Plan.TicksCounter++;
                 /// added the success check because interactioncrafting in behaviorcrafting fails even after the interaction successfuly completes because the ingredients are disposed, and it fails on disposed ingredients
                 /// move the whole if block inside the switch block below?
                 //if (result != BehaviorState.Success && current.HasFailedOrEnded())
@@ -163,7 +166,7 @@ namespace Start_a_Town_
         internal override void MapLoaded(Actor parent)
         {
             this.Actor = parent;
-            this.Task.MapLoaded(parent);
+            this.Plan.MapLoaded(parent);
         }
         bool FromJump = false;
         public void JumpTo(Behavior bhav)
@@ -182,8 +185,8 @@ namespace Start_a_Town_
         }
         internal bool ReserveAll(TargetIndex sourceIndex)
         {
-            var targets = this.Task.GetTargetQueue(sourceIndex);
-            var amounts = this.Task.GetAmountQueue(sourceIndex);
+            var targets = this.Plan.GetTargetQueue(sourceIndex);
+            var amounts = this.Plan.GetAmountQueue(sourceIndex);
             var count = targets.Count;
             if (count != amounts.Count)
                 throw new Exception();
@@ -191,47 +194,47 @@ namespace Start_a_Town_
             {
                 var target = targets[i];
                 var amount = amounts[i];
-                if (!this.Actor.Town.ReservationManager.Reserve(this.Actor, this.Task, target, amount))
+                if (!this.Actor.Town.ReservationManager.Reserve(this.Actor, this.Plan, target, amount))
                     return false;
             }
             return true;
         }
         internal bool Reserve(TargetIndex index)
         {
-            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Task, this.Task.GetTarget(index), this.Task.GetAmount(index));
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, this.Plan.GetTarget(index), this.Plan.GetAmount(index));
         }
        
         internal bool Reserve(TargetIndex index, int amount)
         {
-            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Task, this.Task.GetTarget(index), amount);
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, this.Plan.GetTarget(index), amount);
         }
         internal bool Reserve(TargetArgs target, int amount = -1)
         {
-            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Task, target, amount);
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, target, amount);
         }
         internal bool Reserve(IntVec3 global)
         {
-            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Task, new TargetArgs(this.Actor.Map, global), 1);
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, new TargetArgs(this.Actor.Map, global), 1);
         }
 
         internal bool ReserveAsManyAsPossible(TargetArgs item, int desiredAmount)
         {
-            return this.Actor.Map.Town.ReservationManager.ReserveAsManyAsPossible(this.Actor, this.Task, item, desiredAmount);
+            return this.Actor.Map.Town.ReservationManager.ReserveAsManyAsPossible(this.Actor, this.Plan, item, desiredAmount);
         }
         internal bool ReserveAsManyAsPossible(TargetIndex index, int desiredAmount)
         {
-            return this.Actor.Map.Town.ReservationManager.ReserveAsManyAsPossible(this.Actor, this.Task, this.Task.GetTarget(index), desiredAmount);
+            return this.Actor.Map.Town.ReservationManager.ReserveAsManyAsPossible(this.Actor, this.Plan, this.Plan.GetTarget(index), desiredAmount);
         }
 
-        internal void SyncToClients(IDataWriter w)
-        {
-            this.Task.SyncToClients(w);
-        }
-        internal void SyncFromServer(NetEndpoint provider, IDataReader r)
-        {
-            var plan = new Plan();
-            plan.SyncFromServer(provider, r);
-            this.Task = plan;
-        }
+        //internal void SyncToClients(IDataWriter w)
+        //{
+        //    this.Task.SyncToClients(w);
+        //}
+        //internal void SyncFromServer(NetEndpoint provider, IDataReader r)
+        //{
+        //    var plan = new Plan();
+        //    plan.SyncFromServer(provider, r);
+        //    this.Task = plan;
+        //}
     }
 }

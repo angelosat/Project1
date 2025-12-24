@@ -19,21 +19,21 @@ namespace Start_a_Town_
             {
                 InitAction = () =>
                 {
-                    var item = this.Task.TargetA.Object as Entity;
-                    this.Task.SetTarget(TargetIndex.A, this.Actor.Inventory.First(i => i.Def == ItemDefOf.Coins));
+                    var item = this.Plan.TargetA.Object as Entity;
+                    this.Plan.SetTarget(TargetIndex.A, this.Actor.Inventory.First(i => i.Def == ItemDefOf.Coins));
                     var totalvalue = item.GetValueTotal();
                     if (totalvalue <= 0)
                         throw new Exception();
-                    this.Task.SetAmount(TargetIndex.A, totalvalue);
+                    this.Plan.SetAmount(TargetIndex.A, totalvalue);
                 }
             };
-            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionHaul(this.Task.AmountA));
+            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionHaul(this.Plan.AmountA));
             yield return new BehaviorInteractionNew(TargetIndex.B, () => new InteractionGiveItem(true));
             yield return new BehaviorCustom()
             {
                 InitAction = () =>
                 {
-                    var target = this.Task.TargetB.Object as Actor;
+                    var target = this.Plan.TargetB.Object as Actor;
                     target.GetState().TradingPartner = null;
                 }
             };
@@ -46,7 +46,7 @@ namespace Start_a_Town_
         protected override bool InitExtraReservations()
         {
             return
-                this.ReserveAsManyAsPossible(this.Task.TargetA, this.Task.TargetA.Object.StackSize);
+                this.ReserveAsManyAsPossible(this.Plan.TargetA, this.Plan.TargetA.Object.StackSize);
         }
     }
 }

@@ -6,8 +6,8 @@ namespace Start_a_Town_
 {
     class TaskBehaviorDeliverMaterials : BehaviorExecutePlan
     {
-        TargetArgs Material { get { return this.Task.GetTarget(MaterialID); } }
-        TargetArgs Destination { get { return this.Task.GetTarget(DestinationID); } }
+        TargetArgs Material { get { return this.Plan.GetTarget(MaterialID); } }
+        TargetArgs Destination { get { return this.Plan.GetTarget(DestinationID); } }
         public const TargetIndex MaterialID = TargetIndex.A, DestinationID = TargetIndex.B;
         protected override IEnumerable<Behavior> GetSteps()
         {
@@ -32,7 +32,7 @@ namespace Start_a_Town_
             bool collectFail()
             {
                 var o = Material.Object;
-                foreach (var d in this.Task.GetTargetQueue(DestinationID))
+                foreach (var d in this.Plan.GetTargetQueue(DestinationID))
                     if (!d.IsValidHaulDestinationNew(map, Material.Object))
                     {
                         "failed collecting".ToConsole();
@@ -58,7 +58,7 @@ namespace Start_a_Town_
             return
                 this.ReserveAll(MaterialID) &&
                 //this.Task.GetTargetQueue(DestinationID).All(t => this.Actor.Reserve(this.Task, t, 1));
-                this.Task.GetTargetQueue(DestinationID).All(t => this.Reserve(t, 1));
+                this.Plan.GetTargetQueue(DestinationID).All(t => this.Reserve(t, 1));
         }
     }
 }

@@ -4,7 +4,7 @@
     {
         public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
         {
-            var task = actor.AI.State.Behavior?.Task;
+            var task = actor.AI.State.Behavior?.Plan;
             if (task is null)
                 return -100;
             var target = task.EquipContextTarget;

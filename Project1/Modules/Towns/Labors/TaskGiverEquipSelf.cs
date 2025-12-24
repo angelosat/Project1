@@ -62,7 +62,7 @@ namespace Start_a_Town_
             return null;
         }
 
-        public override TaskDef CanGiveTask(Actor actor, TargetArgs target)
+        public override PlanDef CanGiveTask(Actor actor, TargetArgs target)
         {
             if (target.Object is not Entity item)
                 return null;

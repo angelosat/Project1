@@ -155,7 +155,7 @@ namespace Start_a_Town_
             var patience = patienceBase * (1 + patienceTrait.Percentage * .5f);
             bhav.FailOn(() =>
             {
-                if (bhav.Task.TicksWaited < patience)
+                if (bhav.Plan.TicksWaited < patience)
                     return false;
                 failAction?.Invoke();
                 return true;
@@ -170,7 +170,7 @@ namespace Start_a_Town_
         {
             bhav.FailOn(() =>
             {
-                var global = bhav.Task.GetTarget(targetInd).Global;
+                var global = bhav.Plan.GetTarget(targetInd).Global;
                 return !bhav.Actor.Town.DesignationManager.IsDesignation(global, designation);
             });
         }
@@ -178,7 +178,7 @@ namespace Start_a_Town_
         {
             bhav.FailOn(() =>
             {
-                var global = bhav.Task.GetTarget(targetInd).Global;
+                var global = bhav.Plan.GetTarget(targetInd).Global;
                 var actor = bhav.Actor;
                 var objects = actor.Map.GetObjects(global.Above());
                 return objects.Any() && (objects.SingleOrDefault(o => o == actor) != actor);

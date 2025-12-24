@@ -13,7 +13,7 @@ namespace Start_a_Town_
         {
             var actor = this.Actor;
             var state = this.Actor.GetState();
-            var task = this.Task;
+            var task = this.Plan;
             var shop = actor.Town.ShopManager.GetShop<Shop>(task.ShopID);
             var transaction = task.Transaction;
             var customer = transaction.Customer;

@@ -7,7 +7,7 @@ namespace Start_a_Town_
     class TaskBehaviorTilling : BehaviorExecutePlan
     {
         public const TargetIndex TargetInd = TargetIndex.A;
-        TargetArgs Target { get { return this.Task.GetTarget(TargetInd); } }
+        TargetArgs Target { get { return this.Plan.GetTarget(TargetInd); } }
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
@@ -25,7 +25,7 @@ namespace Start_a_Town_
         }
         protected override bool InitExtraReservations()
         {
-            return this.Reserve(this.Task.TargetA, 1);
+            return this.Reserve(this.Plan.TargetA, 1);
         }
     }
 }

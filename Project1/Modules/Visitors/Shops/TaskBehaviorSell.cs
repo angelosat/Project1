@@ -8,9 +8,9 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return new BehaviorGetAtNewNew(TargetIndex.B);
-            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionHaul(this.Task.AmountA));
-            var tradePartner = this.Task.TargetB.Object as Actor;
-            var item = this.Task.TargetA.Object as Entity;
+            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionHaul(this.Plan.AmountA));
+            var tradePartner = this.Plan.TargetB.Object as Actor;
+            var item = this.Plan.TargetA.Object as Entity;
             var itemvalue = item.GetValueTotal();
             yield return new BehaviorWait(() =>
             {

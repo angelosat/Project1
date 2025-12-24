@@ -10,7 +10,7 @@ namespace Start_a_Town_
 
         protected override IEnumerable<Behavior> GetSteps()
         {
-            var task = this.Task;
+            var task = this.Plan;
             var actor = this.Actor;
             var map = actor.Map;
             var shop = actor.Workplace as Tavern;

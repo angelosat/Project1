@@ -7,7 +7,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             var parent = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
             yield return new BehaviorCustom(delegate
             {
                 parent.Direction = new(task.TargetA.Direction, 0);

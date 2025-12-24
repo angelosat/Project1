@@ -6,8 +6,8 @@ namespace Start_a_Town_.AI.Behaviors
 {
     class TaskBehaviorEating : BehaviorExecutePlan
     {
-        TargetArgs Food { get { return this.Task.GetTarget(FoodInd); } }
-        TargetArgs Table { get { return this.Task.GetTarget(EatingSurfaceInd); } }
+        TargetArgs Food { get { return this.Plan.GetTarget(FoodInd); } }
+        TargetArgs Table { get { return this.Plan.GetTarget(EatingSurfaceInd); } }
         public const TargetIndex FoodInd = TargetIndex.A, EatingSurfaceInd = TargetIndex.B;
 
         public override string Name => "Eating";
@@ -15,7 +15,7 @@ namespace Start_a_Town_.AI.Behaviors
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
             yield return BehaviorHelper.InteractInInventoryOrWorld(FoodInd, () => new InteractionHaul(task.GetAmount(FoodInd)));
             yield return BehaviorHelper.SetTarget(FoodInd, () =>
             {
@@ -31,7 +31,7 @@ namespace Start_a_Town_.AI.Behaviors
 
             yield return new BehaviorGetAtNewNew(EatingSurfaceInd);
             var auxIndex = TargetIndex.C;
-            yield return new BehaviorCustom() { InitAction = () => { this.Task.SetTarget(auxIndex, Table.Global.Above().At(actor.Map)); } };
+            yield return new BehaviorCustom() { InitAction = () => { this.Plan.SetTarget(auxIndex, Table.Global.Above().At(actor.Map)); } };
             yield return new BehaviorInteractionNew(auxIndex, new UseHauledOnTarget());
 
             yield return eat;

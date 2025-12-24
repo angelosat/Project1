@@ -10,7 +10,7 @@ namespace Start_a_Town_
             yield return new BehaviorStopMoving();
             var actor = this.Actor;
             var state = actor.GetState();
-            var task = this.Task;
+            var task = this.Plan;
             yield return new BehaviorWait(() =>
             {
                 return state.ConversationPartner == null;

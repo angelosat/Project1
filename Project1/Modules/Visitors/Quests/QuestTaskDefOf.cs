@@ -2,6 +2,6 @@
 {
     class QuestTaskDefOf
     {
-        static public TaskDef AcceptQuest = new("AcceptQuest", typeof(TaskBehaviorGetQuest));
+        static public PlanDef AcceptQuest = new("AcceptQuest", typeof(TaskBehaviorGetQuest));
     }
 }

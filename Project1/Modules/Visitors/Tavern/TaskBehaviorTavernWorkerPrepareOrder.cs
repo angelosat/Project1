@@ -8,7 +8,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
             var ingredientIndex = TargetIndex.A;
             var workstationIndex = TargetIndex.B;
             var workstationAbove = TargetIndex.C;
@@ -30,7 +30,7 @@ namespace Start_a_Town_
         protected override bool InitExtraReservations()
         {
             var actor = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
 
             return this.ReserveAll(TargetIndex.A)
                 && this.Reserve(TargetIndex.B);

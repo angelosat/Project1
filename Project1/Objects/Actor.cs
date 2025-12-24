@@ -149,7 +149,7 @@ namespace Start_a_Town_
             throw new NotImplementedException();
         }
 
-        internal void ForceTask(TaskDef taskdef, TargetArgs target)
+        internal void ForceTask(PlanDef taskdef, TargetArgs target)
         {
             throw new NotImplementedException();
         }
@@ -475,13 +475,13 @@ namespace Start_a_Town_
             this.Mobile.Jump(this);
         }
 
-        internal IEnumerable<(TaskDef task, Planner giver)> CanForceTaskOn(TargetArgs target)
+        internal IEnumerable<(PlanDef task, Planner giver)> CanForceTaskOn(TargetArgs target)
         {
             if (target == null || target.Type == TargetType.Null)
                 yield break;
             var givers = Planner.CitizenTaskGivers.Concat(Planner.EssentialPlanners);
             foreach (var giver in givers)
-                if (giver.CanGiveTask(this, target) is TaskDef taskDef)
+                if (giver.CanGiveTask(this, target) is PlanDef taskDef)
                     yield return (taskDef, giver);
         }
 

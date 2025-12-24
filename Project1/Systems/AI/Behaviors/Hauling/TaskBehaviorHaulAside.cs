@@ -15,7 +15,7 @@ namespace Start_a_Town_.AI.Behaviors
         protected override bool InitExtraReservations()
         {
             return
-                this.Reserve(TargetIndex.A, this.Task.Count) &&
+                this.Reserve(TargetIndex.A, this.Plan.Count) &&
                 this.Reserve(TargetIndex.B, 1);
             //var task = this.Task;
             //return

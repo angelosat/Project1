@@ -6,8 +6,8 @@ namespace Start_a_Town_
     class TaskBehaviorHaulToStockpile : BehaviorExecutePlan
     {
         public const TargetIndex ItemInd = TargetIndex.A, StorageInd = TargetIndex.B;
-        TargetArgs Item => this.Task.GetTarget(ItemInd);
-        TargetArgs Storage => this.Task.GetTarget(StorageInd);
+        TargetArgs Item => this.Plan.GetTarget(ItemInd);
+        TargetArgs Storage => this.Plan.GetTarget(StorageInd);
 
         protected override IEnumerable<Behavior> GetSteps()
         {
@@ -31,7 +31,7 @@ namespace Start_a_Town_
                 var o = this.Actor.Hauled;
                 if (o == null)
                     return true;
-                var fail = !HaulHelper.IsValidStorage(this.Task.GetTarget(StorageInd), this.Actor.Map, o);
+                var fail = !HaulHelper.IsValidStorage(this.Plan.GetTarget(StorageInd), this.Actor.Map, o);
                 if (fail)
                     this.Actor.StopPathing();
                 return fail;
@@ -39,8 +39,8 @@ namespace Start_a_Town_
             bool failCollecting()
             {
                 var map = this.Actor.Map;
-                var o = this.Task.GetTarget(ItemInd).Object;
-                foreach (var destination in this.Task.GetTargetQueue(StorageInd))
+                var o = this.Plan.GetTarget(ItemInd).Object;
+                foreach (var destination in this.Plan.GetTargetQueue(StorageInd))
                     if (!destination.IsValidStorage(map, o))
                         return true;
                 return false;
@@ -49,7 +49,7 @@ namespace Start_a_Town_
 
         protected override bool InitExtraReservations()
         {
-            var task = this.Task;
+            var task = this.Plan;
             var item = task.GetTarget(ItemInd);
             var storageTarget = task.GetTarget(StorageInd);
             return

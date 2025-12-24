@@ -7,7 +7,7 @@ namespace Start_a_Town_
         const TargetIndex Counter = TargetIndex.B;
         protected override IEnumerable<Behavior> GetSteps()
         {
-            var task = this.Task;
+            var task = this.Plan;
             var actor = this.Actor;
             var map = actor.Map;
             var tavern = actor.Town.ShopManager.GetShop<Tavern>(task.ShopID);
@@ -33,7 +33,7 @@ namespace Start_a_Town_
 
         protected override bool InitExtraReservations()
         {
-            var task = this.Task;
+            var task = this.Plan;
             var actor = this.Actor;
             var tavern = actor.Town.ShopManager.GetShop<Tavern>(task.ShopID);
             var counter = tavern.Counter.Value;

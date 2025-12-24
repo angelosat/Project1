@@ -9,7 +9,6 @@ namespace Start_a_Town_.AI
 {
     public sealed class AIState : Inspectable
     {
-
         public static AIConversationManager ConversationManager = new();
 
         private BehaviorExecutePlan _currentTaskBehavior;
@@ -24,7 +23,7 @@ namespace Start_a_Town_.AI
         public Dictionary<Actor, ConversationTopic> CommunicationPending = new();
         public Actor ConversationPartner, TradingPartner;
         public AIConversationManager.Conversation CurrentConversation;
-        public Plan CurrentTask => this.Behavior?.Task;
+        public Plan CurrentTask => this.Behavior?.Plan;
         public Plan ForcedTask;
         public AILog History = new();
         public bool InSync;
@@ -47,8 +46,10 @@ namespace Start_a_Town_.AI
         public Queue<BehaviorExecutePlan> TaskQueue = [];
         public Stack<BehaviorExecutePlan> TaskStack = [];
 
+        //public string Status => this.Behavior?.Status ?? "Idle";
         public string TaskString = "none";
         public SortedSet<Threat> Threats = new();
+
 
         public AIState(Actor actor)
         {
@@ -157,7 +158,7 @@ namespace Start_a_Town_.AI
         {
             //this.CurrentTask?.ObjectLoaded(parent);
             //this.CurrentTaskBehavior?.ObjectLoaded(parent);
-            this.Behavior?.Task.ObjectLoaded(parent);
+            this.Behavior?.Plan.ObjectLoaded(parent);
             this.Behavior?.ObjectLoaded(parent);
         }
 
@@ -182,7 +183,7 @@ namespace Start_a_Town_.AI
         {
             PacketReportPlan.SendReportBehavior(this.Parent, bhav);
 
-            if (bhav.Task.IsImmediate)
+            if (bhav.Plan.IsImmediate)
                 this.Push(bhav);
             else
                 this.Enqueue(bhav);
@@ -257,7 +258,7 @@ namespace Start_a_Town_.AI
                 var bhavtag = t["Behavior"];
                 var bhavname = (string)bhavtag["TypeName"].Value;
                 var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorExecutePlan;
-                bhav.Task = task;
+                bhav.Plan = task;
                 bhav.Load(bhavtag);
                 this.TaskStack.Push(bhav);
             }
@@ -270,7 +271,7 @@ namespace Start_a_Town_.AI
                 var bhavtag = t["Behavior"];
                 var bhavname = (string)bhavtag["TypeName"].Value;
                 var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorExecutePlan;
-                bhav.Task = task;
+                bhav.Plan = task;
                 bhav.Load(bhavtag);
                 this.TaskQueue.Enqueue(bhav);
             }
@@ -313,7 +314,7 @@ namespace Start_a_Town_.AI
             foreach (var bhav in this.TaskStack)
             {
                 var tupleTag = new SaveTag(SaveTag.Types.Compound);
-                tupleTag.Add(bhav.Task.Save("Task"));
+                tupleTag.Add(bhav.Plan.Save("Task"));
                 //tupleTag.Add(task.behavior.Save("Behavior"));
                 var bhavtag = bhav.Save("Behavior");
                 bhavtag.Add(bhav.GetType().FullName.Save("TypeName"));
@@ -325,7 +326,7 @@ namespace Start_a_Town_.AI
             foreach (var bhav in this.TaskQueue)
             {
                 var tupleTag = new SaveTag(SaveTag.Types.Compound);
-                tupleTag.Add(bhav.Task.Save("Task"));
+                tupleTag.Add(bhav.Plan.Save("Task"));
                 var bhavtag = bhav.Save("Behavior");
                 bhavtag.Add(bhav.GetType().FullName.Save("TypeName"));
                 tupleTag.Add(bhavtag);

@@ -8,7 +8,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
             var qgiver = TargetIndex.A;
             yield return BehaviorHelper.MoveTo(qgiver);
             yield return new BehaviorInteractionNew(qgiver, () => new InteractionQuestDeliver(task.Quest));
@@ -16,7 +16,7 @@ namespace Start_a_Town_
         public override void CleanUp()
         {
             var actor = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
             actor.Town.QuestManager.RemoveQuestReceiver(task.Quest);
         }
         class InteractionQuestDeliver : Interaction

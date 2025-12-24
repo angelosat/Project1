@@ -10,7 +10,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
-            var task = this.Task;
+            var task = this.Plan;
             var tableindex = TargetIndex.A;
             var table = task.GetTarget(tableindex);
             var tavern = actor.Town.GetShop(task.ShopID) as Tavern;
@@ -44,7 +44,7 @@ namespace Start_a_Town_
             });
             yield return BehaviorHelper.SetTarget(TargetIndex.A, ()=> customerProps.Dish);
             yield return new BehaviorInteractionNew(TargetIndex.A, new Components.ConsumableComponent.InteractionConsume());
-            yield return new BehaviorInteractionNew(TargetIndex.C, () => new InteractionHaul(this.Task.AmountC));
+            yield return new BehaviorInteractionNew(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
             yield return BehaviorHelper.SetTarget(TargetIndex.B, table.Global.Above());
             yield return BehaviorHelper.PlaceCarried(TargetIndex.B);
             yield return new BehaviorCustom(() => actor.GetVisitorProperties().AddRecentlyVisitedShop(tavern));

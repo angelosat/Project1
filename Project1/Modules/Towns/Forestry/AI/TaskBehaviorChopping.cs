@@ -7,15 +7,16 @@ namespace Start_a_Town_
     {
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorGrabTool();
+            //yield return new BehaviorGrabTool();
             yield return new BehaviorGetAtNewNew(TargetIndex.A);
             //yield return new BehaviorInteractionNew(TargetIndex.A, new InteractionChoppingSimple());
-            yield return new BehaviorInteractionNew(TargetIndex.A, new InteractionChop());
+            //yield return new BehaviorInteractionNew(TargetIndex.A, new InteractionChop());
+            yield return new BehaviorInteractionNew(InteractionDefOf.Chop, TargetIndex.A);
         }
 
         public override bool HasFailedOrEnded()
         {
-            var tree = this.Task.TargetA.Object;
+            var tree = this.Plan.TargetA.Object;
             var isvalid =
                 //!this.Task.Tool.IsForbidden &&
                 !tree.IsForbidden &&

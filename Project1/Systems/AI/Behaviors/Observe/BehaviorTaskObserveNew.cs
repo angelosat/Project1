@@ -15,8 +15,8 @@ namespace Start_a_Town_.AI
         }
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorGetAtNewNew(this.Task.TargetA);
-            yield return new BehaviorInteractionNew(this.Task.TargetA, new InteractionObserve());
+            yield return new BehaviorGetAtNewNew(this.Plan.TargetA);
+            yield return new BehaviorInteractionNew(this.Plan.TargetA, new InteractionObserve());
         }
     }
 }

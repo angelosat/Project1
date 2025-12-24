@@ -22,7 +22,7 @@ namespace Start_a_Town_
             w.Write(false);
             w.Write(success);
         }
-        internal static void Send(NetEndpoint net, GameObject entity, Interaction action, TargetArgs target)
+        internal static void Send(NetEndpoint net, GameObject entity, Interaction action, TargetArgs target, int count)
         {
             var server = net as Server;
             //var w = server.OutgoingStreamTimestamped;
@@ -31,6 +31,7 @@ namespace Start_a_Town_
             w.Write(entity.RefId);
             w.Write(true);
             target.Write(w);
+            w.Write(count);
             w.Write(action.GetType().FullName);
             action.Write(w);
             w.Write(entity.Global);
@@ -50,9 +51,11 @@ namespace Start_a_Town_
                 return;
             }
             var target = TargetArgs.Read(net, r);
+            var count = r.ReadInt32();
             var action = Activator.CreateInstance(Type.GetType(r.ReadString())) as Interaction;
             action.Actor = entity;
             action.Target = target;
+            action.Count = count;
             action.Read(r);
             var global = r.ReadVector3();
             var velocity = r.ReadVector3();

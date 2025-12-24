@@ -63,6 +63,7 @@ namespace Start_a_Town_
         public AnimationDef AnimationDef = AnimationDef.Work;
         internal Actor Actor;
         internal TargetArgs Target;
+        internal int Count;
 
         private bool _drawProgressBar;
         public Func<Vector3> BarPosition;

@@ -16,13 +16,13 @@ namespace Start_a_Town_
             {
                 if (tradingpartner.Hauled != null)
                 {
-                    this.Task.TargetA = actor.GetMoney();
-                    this.Task.AmountA = tradingpartner.Hauled.GetValueTotal();
+                    this.Plan.TargetA = actor.GetMoney();
+                    this.Plan.AmountA = tradingpartner.Hauled.GetValueTotal();
                     return true;
                 }
                 return false;
             });
-            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionHaul(this.Task.AmountA));
+            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionHaul(this.Plan.AmountA));
             yield return new BehaviorWait(() => state.TradingPartner == null);
             yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionStoreHauled());
         }

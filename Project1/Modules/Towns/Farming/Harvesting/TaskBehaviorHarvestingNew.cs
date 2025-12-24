@@ -11,7 +11,7 @@ namespace Start_a_Town_
         {
             this.FailOn(() =>
             {
-                var target = this.Task.GetTarget(PlantIndex);
+                var target = this.Plan.GetTarget(PlantIndex);
                 var plant = target.Object as Plant;
                 if (plant == null)
                     return true;
@@ -27,7 +27,7 @@ namespace Start_a_Town_
         }
         protected override bool InitExtraReservations()
         {
-            return this.Reserve(this.Task.GetTarget(PlantIndex));
+            return this.Reserve(this.Plan.GetTarget(PlantIndex));
         }
     }
 }

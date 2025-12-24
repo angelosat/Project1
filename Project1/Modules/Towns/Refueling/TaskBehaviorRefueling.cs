@@ -6,8 +6,8 @@ namespace Start_a_Town_
 {
     class TaskBehaviorRefueling : BehaviorExecutePlan
     {
-        Vector3 RefualableGlobal => this.Task.GetTarget(DestinationIndex).Global;
-        Entity Fuel => this.Task.GetTarget(SourceIndex).Object as Entity;
+        Vector3 RefualableGlobal => this.Plan.GetTarget(DestinationIndex).Global;
+        Entity Fuel => this.Plan.GetTarget(SourceIndex).Object as Entity;
         public const TargetIndex DestinationIndex = TargetIndex.B, SourceIndex = TargetIndex.A;
         protected override IEnumerable<Behavior> GetSteps()
         {

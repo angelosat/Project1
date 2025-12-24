@@ -75,6 +75,6 @@ namespace Start_a_Town_
         }
         
         public virtual Plan TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false) { return null; }
-        public virtual TaskDef CanGiveTask(Actor actor, TargetArgs target) { return null; }
+        public virtual PlanDef CanGiveTask(Actor actor, TargetArgs target) { return null; }
     }
 }

@@ -45,11 +45,12 @@ namespace Start_a_Town_.Components
             this.Task.OnToolContact();
         }
 
-        public void Perform(Interaction task, TargetArgs target)
+        public void Perform(Interaction task, TargetArgs target, int quantity = -1)
         {
             var parent = this.Owner as Actor;
             task.Actor = parent;
             task.Target = target;
+            task.Count = quantity;
             if (task == null)
                 throw new ArgumentException();
             this.Interrupt();

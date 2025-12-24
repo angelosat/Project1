@@ -8,7 +8,7 @@ namespace Start_a_Town_
 {
     class TaskBehaviorCrafting : BehaviorExecutePlan
     {
-        TargetArgs Workstation => this.Task.GetTarget(WorkstationIndex);
+        TargetArgs Workstation => this.Plan.GetTarget(WorkstationIndex);
         public static TargetIndex AuxiliaryIndex = TargetIndex.C;
         public static TargetIndex IngredientIndex = TargetIndex.B;
         public static TargetIndex WorkstationIndex = TargetIndex.A;
@@ -19,7 +19,7 @@ namespace Start_a_Town_
             var actor = this.Actor;
             /// TODO constantly check for operating positions? or let pathing fail when no free operating position found?
             //this.FailOn(noOperatingPositions);
-            var task = this.Task;
+            var task = this.Plan;
             var order = task.OrderOld;
 
             var nextIngredient = BehaviorHelper.ExtractNextTargetAmount(IngredientIndex);
@@ -34,7 +34,7 @@ namespace Start_a_Town_
             yield return new BehaviorCustom()
             {
                 InitAction = () =>
-                    this.Task.SetTarget(AuxiliaryIndex, new TargetArgs(this.Actor.Map, this.Workstation.Global.Above()))
+                    this.Plan.SetTarget(AuxiliaryIndex, new TargetArgs(this.Actor.Map, this.Workstation.Global.Above()))
             };
             yield return new BehaviorGetAtNewNew(WorkstationIndex, PathEndMode.InteractionSpot).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
             yield return new BehaviorInteractionNew(AuxiliaryIndex, () => new UseHauledOnTarget()).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
@@ -50,14 +50,14 @@ namespace Start_a_Town_
             {
                 if (order.UnfinishedItem is not null)
                 {
-                    this.Task.SetTarget(AuxiliaryIndex, order.UnfinishedItem);
+                    this.Plan.SetTarget(AuxiliaryIndex, order.UnfinishedItem);
                     return;
                 }
                 if (!order.Reaction.CreatesUnfinishedItem)
                     return;
 
                 //var ingr = this.Task.PlacedObjects.Select(o => new ObjectAmount(actor.Net.GetNetworkObject(o.Object), o.Amount)).ToList();
-                var product = order.Reaction.Products.First().Make(actor, order.Reaction, this.Task.PlacedObjects);
+                var product = order.Reaction.Products.First().Make(actor, order.Reaction, this.Plan.PlacedObjects);
                 //product.SyncConsumeMaterials(actor.Net);
                 foreach (var o in product.RequirementsNew.Values.Select(o => o.Object).Distinct())
                     //PacketEntityRequestDispose.Send(actor.Net, o.RefID);
@@ -76,29 +76,29 @@ namespace Start_a_Town_
             });
 
             yield return new BehaviorInteractionNew(WorkstationIndex, () => new InteractionCrafting(task.OrderOld, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
-            if (this.Task.Tool?.Type != TargetType.Null) // dont unequip tool if not using any
+            if (this.Plan.Tool?.Type != TargetType.Null) // dont unequip tool if not using any
                 yield return new BehaviorInteractionNew(TargetIndex.Tool, () => new InteractionEquip()); // unequip the tool before hauling product // TODO dont do that if no tool equipped
             // assign a new haul behavior directly to the actor instead of adding the steps here?
             yield return new BehaviorCustom()
             {
                 InitAction = () =>
                 {
-                    var haulamount = this.Task.Product.Object.StackSize;
-                    var product = this.Task.Product.Object;
-                    var productTar = this.Task.Product;
-                    var order = this.Task.OrderOld;
+                    var haulamount = this.Plan.Product.Object.StackSize;
+                    var product = this.Plan.Product.Object;
+                    var productTar = this.Plan.Product;
+                    var order = this.Plan.OrderOld;
                     //this.Actor.Reserve(this.Task, productTar, haulamount); // was using -1 to denote full stack, but want to phase it out
                     this.Reserve(productTar, haulamount); // was using -1 to denote full stack, but want to phase it out
                     if (order.Output is Stockpile stockpile && stockpile.GetPotentialHaulTargets(actor, product) is var places && places.Any())// ; Towns.StockpileManager.GetBestStoragePlace(this.Actor, this.Task.Product.Object as Entity, out TargetArgs target))
                     {
                         var target = places.First();
-                        this.Task.SetTarget(WorkstationIndex, target);
-                        this.Task.SetTarget(IngredientIndex, productTar, haulamount);
+                        this.Plan.SetTarget(WorkstationIndex, target);
+                        this.Plan.SetTarget(IngredientIndex, productTar, haulamount);
                     }
-                    else if (HaulHelper.TryFindNearbyPlace(actor, product, this.Task.GetTarget(WorkstationIndex).Global, out TargetArgs nearby))
+                    else if (HaulHelper.TryFindNearbyPlace(actor, product, this.Plan.GetTarget(WorkstationIndex).Global, out TargetArgs nearby))
                     {
-                        this.Task.SetTarget(WorkstationIndex, nearby);
-                        this.Task.SetTarget(IngredientIndex, productTar, haulamount);
+                        this.Plan.SetTarget(WorkstationIndex, nearby);
+                        this.Plan.SetTarget(IngredientIndex, productTar, haulamount);
                     }
                     else
                         this.Actor.EndCurrentTask();
@@ -112,7 +112,7 @@ namespace Start_a_Town_
 
             bool orderIncompletable()
             {
-                var val = !this.Task.OrderOld.IsActive || !this.Task.OrderOld.IsCompletable();
+                var val = !this.Plan.OrderOld.IsActive || !this.Plan.OrderOld.IsCompletable();
                 if (val)
                     "order incompletable".ToConsole();
                 return val;
@@ -123,10 +123,10 @@ namespace Start_a_Town_
             };
             bool deliverFail()
             {
-                if (this.Task.OrderOld.HaulOnFinish)
-                    return !HaulHelper.IsValidStorage(this.Task.GetTarget(WorkstationIndex), this.Actor.Map, this.Task.Product.Object);
+                if (this.Plan.OrderOld.HaulOnFinish)
+                    return !HaulHelper.IsValidStorage(this.Plan.GetTarget(WorkstationIndex), this.Actor.Map, this.Plan.Product.Object);
                 else
-                    return !this.IsValidStorage(this.Task.GetTarget(WorkstationIndex));
+                    return !this.IsValidStorage(this.Plan.GetTarget(WorkstationIndex));
             };
             bool noOperatingPositions()
             {
@@ -142,7 +142,7 @@ namespace Start_a_Town_
             };
             bool placedObjectsChanged()
             {
-                if (this.Task.TargetC?.Object is Entity unf && unf.Def == ItemDefOf.UnfinishedCraft)
+                if (this.Plan.TargetC?.Object is Entity unf && unf.Def == ItemDefOf.UnfinishedCraft)
                 {
                     if (unf.IsDisposed || unf.IsForbidden || unf.CellIfSpawned != this.Workstation.Global.Above())
                         return true;
@@ -150,7 +150,7 @@ namespace Start_a_Town_
                         return false;
                 }
 
-                foreach (var t in this.Task.PlacedObjects)
+                foreach (var t in this.Plan.PlacedObjects)
                 {
                     if (t.Object.IsDisposed)
                         return true;
@@ -164,7 +164,7 @@ namespace Start_a_Town_
         }
         protected override bool InitExtraReservations()
         {
-            var task = this.Task;
+            var task = this.Plan;
             var actor = this.Actor;
             var benchGlobal = (IntVec3)this.Workstation.Global;
             var benchGlobalAbove = benchGlobal.Above;
@@ -184,7 +184,7 @@ namespace Start_a_Town_
         {
             if (target.HasObject)
             {
-                return !target.Object.IsForbidden && target.Object.CanAbsorb(this.Task.Product.Object);
+                return !target.Object.IsForbidden && target.Object.CanAbsorb(this.Plan.Product.Object);
             }
             else
             {

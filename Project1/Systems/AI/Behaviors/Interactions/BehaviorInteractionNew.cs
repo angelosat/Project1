@@ -10,18 +10,18 @@ namespace Start_a_Town_
         readonly int TargetInd;
         //TargetArgs Target { get => this.TargetGetter?.Invoke() ?? this.Actor.CurrentTask.GetTarget(this.TargetInd); set { } }
         TargetArgs Target { get => this.TargetGetter?.Invoke() ?? (this.TargetInd != (int)TargetIndex.None ? this.Actor.CurrentTask.GetTarget(this.TargetInd) : null); set { } }
-        Interaction _Interaction;
+        Interaction _interaction;
         public Func<Interaction> InteractionFactory;
         readonly Func<TargetArgs> TargetGetter;
         Interaction Interaction
         {
             get
             {
-                if (this._Interaction is null)
-                    this._Interaction = this.InteractionFactory();
-                return this._Interaction;
+                if (this._interaction is null)
+                    this._interaction = this.InteractionFactory();
+                return this._interaction;
             }
-            set => this._Interaction = value;
+            set => this._interaction = value;
         }
         public BehaviorInteractionNew(TargetIndex targetInd, Interaction interaction) : this((int)targetInd, interaction)
         { }

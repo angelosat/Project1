@@ -237,7 +237,7 @@ namespace Start_a_Town_
                     for (int k = 0; k < this.Size.Z; k++)
                     {
                         var local = new IntVec3(i, j, k);
-                        var parent = new IntVec3(i == 0 ? 0 : -1, j == 0 ? 0 : -1, k == 0 ? 0 : -1);
+                        var parent = new IntVec3(i == 0 ? 0 : -1, j == 0 ? 0 : -1, k == 0 ? 0 : -1); // slaves can only extend up to (1,1,1), that's why they have to point at most back to (-1,-1,-1)
                         yield return (Coords.Rotate(local, ori), Coords.Rotate(parent, ori));
                     }
                 }
@@ -418,10 +418,12 @@ namespace Start_a_Town_
         }
 
         public virtual bool IsValidPosition(MapBase map, IntVec3 global, int orientation) { return true; }
-       
+
+        [Obsolete($"use {nameof(MapBase.SetBlock)}")]
         public static void Place(Block block, MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
-            block.Place(map, global, material, data, variation, orientation, false);// notify);
+            throw new Exception();
+            block.OnPlaced(map, global, material, data, variation, orientation, false);// notify);
             var children = block.GetChildrenWithSource(global, orientation);
             foreach (var (child, source) in children)
                 map.GetCell(child).Origin = source;
@@ -429,16 +431,25 @@ namespace Start_a_Town_
             if (notify)
                 map.NotifyBlocksChanged(children.Select(c => c.global));
         }
-        protected virtual void Place(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
+        
+
+        internal virtual void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
-            map.SetBlock(global, this, material, data, variation, orientation, notify);
-            var entity = this.GetBlockEntityOrNew(map, global, null);
-            if (entity != null)
-            {
-                map.AddBlockEntity(global, entity);
-                map.EventOccured(Message.Types.BlockEntityAdded, entity, global);
-            }
-            map.SetBlockLuminance(global, this.Luminance);
+            //map.SetBlock(global, this, material, data, variation, orientation, notify);
+            //var entity = this.GetBlockEntityOrNew(map, global, null);
+            //if (entity != null)
+            //{
+            //    map.AddBlockEntity(global, entity);
+            //    map.EventOccured(Message.Types.BlockEntityAdded, entity, global);
+            //}
+            //map.SetBlockLuminance(global, this.Luminance);
+
+            //var children = this.GetChildrenWithSource(global, orientation);
+            //foreach (var (child, source) in children)
+            //    map.GetCell(child).Origin = source;
+
+            //if (notify)
+            //    map.NotifyBlocksChanged(children.Select(c => c.global));
         }
 
         public void BlockBelowChanged(MapBase map, IntVec3 global)
@@ -918,7 +929,16 @@ namespace Start_a_Town_
             var col = interactionCells.All(c => map.Contains(c) && !map.IsSolid(c)) ? Color.Lime : Color.Red;
             cam.DrawCellHighlights(sb, Block.BlockHighlight, interactionCells, col * .5f);
         }
-
+        public BlockEntity CreateEntity(IntVec3 origin)
+        {
+            if (this.BlockEntityCompSpecs is null)
+                return null;
+            var entity = new BlockEntity(origin);
+            foreach (var spec in this.BlockEntityCompSpecs)
+                entity.AddComp(spec.CreateComp());
+            entity.Initialize();
+            return entity;
+        }
         public class DefaultState : IBlockState
         {
             public void Apply(MapBase map, Vector3 global)
@@ -936,6 +956,8 @@ namespace Start_a_Town_
             {
                 return "";
             }
+
+            
         }
     }
 }

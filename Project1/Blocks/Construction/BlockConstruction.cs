@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Graphics;
-using Start_a_Town_.Blocks;
 
 namespace Start_a_Town_
 {
@@ -19,7 +18,8 @@ namespace Start_a_Town_
         {
             var entity = chunk.Map.GetBlockEntity(global) as BlockConstructionEntity;
             var block = entity.Product.Block;
-            
+
+
             AtlasDepthNormals.Node.Token token;
                 token = block.GetToken(variation, orientation, (int)camera.Rotation, data);
 

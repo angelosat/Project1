@@ -828,6 +828,7 @@ namespace Start_a_Town_
         }
         public void GetSelectionInfo(SelectionManager info)
         {
+            var box = new GroupBox();
             switch (this.Type)
             {
                 case TargetType.Entity:
@@ -835,14 +836,19 @@ namespace Start_a_Town_
                     break;
 
                 case TargetType.Position:
-                    //this.Block.GetSelectionInfo(info, this.Map, this.Global);
-                    this.Cell.GetSelectionInfo(info, this.Map, this.Global);
+                    this.Cell.GetSelectionInfo(box);
+                    break;
+                  
+                case TargetType.BlockEntity:
+                    this.BlockEntity.GetSelectionInfo(box);
                     break;
 
                 default:
                     return;
             }
-            this.Map.OnTargetSelected(info, this);
+            box.AlignTopToBottom();
+            info.AddInfo(box);
+            this.Map!.OnTargetSelected(info, this);
         }
         public void GetQuickButtons(SelectionManager info)
         {

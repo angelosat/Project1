@@ -240,7 +240,11 @@ namespace Start_a_Town_
         public void PlaceDesignation(IntVec3 global, byte data, int variation, int orientation, ProductMaterialPair product)
         {
             var map = this.Map;
-            BlockDesignation.Place(map, global, data, variation, orientation, product);
+            //BlockDesignation.Place(map, global, data, variation, orientation, product);
+            var result = map.SetBlock(global, BlockDefOf.Designation, MaterialDefOf.Air, data, variation, orientation);
+            var comp = result.Entity.GetComp<BlockConstructionComp>();
+            comp.Block = product.Block;
+
             this.Designations.Add(global);
         }
 

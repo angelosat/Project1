@@ -64,9 +64,9 @@ namespace Start_a_Town_
             var o = (data + cameraRotation) % 4;
             return this.Parts[o];
         }
-        protected override void Place(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
+        internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
-            base.Place(map, global, material, GetData(orientation), variation, orientation, notify);
+            base.OnPlaced(map, global, material, GetData(orientation), variation, orientation, notify);
         }
         public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {

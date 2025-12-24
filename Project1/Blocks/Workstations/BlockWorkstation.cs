@@ -1,5 +1,4 @@
-﻿using SharpDX.MediaFoundation;
-using Start_a_Town_.Graphics;
+﻿using Start_a_Town_.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;

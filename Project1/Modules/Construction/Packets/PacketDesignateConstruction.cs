@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 using Start_a_Town_.Components.Crafting;
 using System.Linq;
 

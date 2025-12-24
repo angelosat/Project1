@@ -1000,15 +1000,10 @@ namespace Start_a_Town_
 
                     if (this.Contains(origin))
                     {
-                        //var entity = this[origin.ToLocal()].Block.CreateBlockEntity(this.Map, origin);
-                        // TODO dont query blocks to create entities, load block entities from the data. LOL
-                        //var entity = new BlockWorkbenchEntity(origin);
                         var block = this[origin.ToLocal()].Block;
-                        //var entity = new BlockEntity(origin);
-                        //BlockEntity entity = block.CreateBlockEntity();
                         var entity = BlockEntityFactory.Create(block, origin);
 
-                        tag.TryGetTag("Entity", t => entity.Load(t));
+                        tag.TryGetTag("Entity", entity.Load);
 
                         foreach (var global in entity.CellsOccupied)
                         {
@@ -1468,7 +1463,6 @@ namespace Start_a_Town_
             for (int h = 0; h < MapBase.MaxHeight; h++)
                 for (int j = 0; j < Size; j++)
                     for (int i = 0; i < Size; i++)
-                    //for (int j = 0; j < Size; j++)
                     {
                         byte light = (byte)lightTag[n].Value;
                         var sunlight = (byte)((light & 0xF0) >> 4);
@@ -1478,44 +1472,15 @@ namespace Start_a_Town_
                         n++;
                     }
 
-            //var newSun = new List<byte>(this.Sunlight.Count);
-            //var newBlock = new byte[this.BlockLight.Length];
-            //var nn = 0;
-            //for (int z = 0; z < MapBase.MaxHeight; z++)
-            //    for (int y = 0; y < Size; y++)
-            //        for (int x = 0; x < Size; x++)
-            //        {
-            //            int oldIndex = (z * Size + x) * Size + y;
-            //            int newIndex = (z * Size + y) * Size + x;
-            //            newSun.Add(this.Sunlight[oldIndex]);
-            //            newBlock[newIndex] = this.BlockLight[oldIndex];
-            //            nn++;
-            //        }
-            //this.Sunlight = newSun;
-            //this.BlockLight = newBlock;
-
             var heightTag = chunktag["Heightmap"].Value as List<SaveTag>;
             n = 0;
             for (int j = 0; j < Size; j++)
                 for (int i = 0; i < Size; i++)
                     this.HeightMap[i][j] = (byte)heightTag[n++].Value;
 
-
-            //var entitytags = chunktag["Entities"].Value as List<SaveTag>;
-            //foreach (SaveTag tag in entitytags)
-            //{
-            //    GameObject obj = GameObject.Load(tag);
-            //    if (obj is not null)
-            //        this.Add(obj);
-            //}
-           
-            //if (chunktag.TryGetTag("Entities", out var entitesTag))
-            //{
-                var list = chunktag.LoadListInt("Entities");
-                foreach (var refId in list)
-                    this.Add(this.Map.World.GetEntity(refId));
-            //}
-
+            var list = chunktag.LoadListInt("Entities");
+            foreach (var refId in list)
+                this.Add(this.Map.World.GetEntity(refId));
 
             this.LoadBlockEntitiesDistinct(chunktag);
 

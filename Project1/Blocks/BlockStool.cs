@@ -16,9 +16,9 @@ namespace Start_a_Town_
             this.UtilitiesProvided.Add(Utility.Types.Eating);
         }
 
-        protected override void Place(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
+        internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
-            base.Place(map, global, material, data, variation, orientation, notify);
+            base.OnPlaced(map, global, material, data, variation, orientation, notify);
             map.Town.AddUtility(Utility.Types.Eating, global);
         }
       

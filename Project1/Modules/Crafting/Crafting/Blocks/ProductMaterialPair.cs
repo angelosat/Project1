@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Start_a_Town_.Components.Crafting
+﻿namespace Start_a_Town_.Components.Crafting
 {
     public class ProductMaterialPair : Inspectable
     {

@@ -34,7 +34,10 @@ namespace Start_a_Town_
             var map = this.Town.Map;
             foreach (var pos in changed.Positions)
             {
-                var workstation = map.GetBlockEntity(pos)?.GetComp<BlockWorkstationComp>();
+                //var workstation = map.GetBlockEntity(pos)?.GetComp<BlockWorkstationComp>();
+                BlockWorkstationComp workstation = default;
+                if (!map.GetBlockEntity(pos)?.Comps.TryGetComp(out workstation) ?? false)
+                    continue;
                 if (workstation is not null)
                 {
                     if (this._byPosition.TryGetValue(pos, out var existing))

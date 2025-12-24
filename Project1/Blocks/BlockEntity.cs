@@ -78,7 +78,7 @@ namespace Start_a_Town_
         }
         public T GetComp<T>() where T : BlockEntityComp// class, IBlockEntityComp
         {
-            return (T)this.Comps.GetComp<T>();//.FirstOrDefault(c => c is T) as T;
+            return this.Comps.GetComp<T>();//.FirstOrDefault(c => c is T) as T;
         }
         internal void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity)
         {
@@ -176,6 +176,11 @@ namespace Start_a_Town_
         {
             foreach (var c in this.Comps.Values)
                 c.GetQuickButtons(register, map, vector3);
+        }
+        internal virtual void GetSelectionInfo(Control container)
+        {
+            foreach (var c in this.Comps.Values)
+                c.GetSelectionInfo(container);
         }
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {

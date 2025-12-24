@@ -1,6 +1,4 @@
 ﻿using Start_a_Town_.Net;
-using System;
-using System.IO;
 
 namespace Start_a_Town_
 {
@@ -53,10 +51,13 @@ namespace Start_a_Town_
             // so 1) query their contents and dispose them here? 
             //    2) call something like dispose() on them and let them dispose them themselves?
             // TODO: DECIDE!
-            map.RemoveBlock(global);
 
+
+            map.RemoveBlock(global);
             if (block != BlockDefOf.Air)
-                Block.Place(block, map, global, material, data, variation, orientation);
+                //Block.Place(block, map, global, material, data, variation, orientation);
+                map.SetBlock(global, block, material, data, variation, orientation);
+
         }
     }
 }

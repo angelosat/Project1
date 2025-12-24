@@ -54,10 +54,10 @@ namespace Start_a_Town_
             return data;
         }
 
-        protected override void Place(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
+        internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
-            base.Place(map, global, material, GetData(0), variation, orientation);
-            base.Place(map, global + IntVec3.UnitZ, material, GetData(1), variation, orientation, notify);
+            base.OnPlaced(map, global, material, GetData(0), variation, orientation);
+            base.OnPlaced(map, global + IntVec3.UnitZ, material, GetData(1), variation, orientation, notify);
         }
      
         public override void DrawPreview(MySpriteBatch sb, MapBase map, IntVec3 global, Camera cam, byte data, MaterialDef material, int variation = 0, int orientation = 0)

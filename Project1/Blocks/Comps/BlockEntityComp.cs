@@ -85,5 +85,7 @@ namespace Start_a_Town_
         internal virtual void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3) { }
 
         internal virtual void Initialize() { }
+
+        internal virtual void GetSelectionInfo(Control container) { }
     }
 }

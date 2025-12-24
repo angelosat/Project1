@@ -28,11 +28,11 @@ namespace Start_a_Town_
             return new BlockCampfireEntity(originGlobal);
         }
 
-        protected override void Place(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
+        internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
             if (!map.GetBlock(global - IntVec3.UnitZ).Opaque)
                 return;
-            base.Place(map, global, material, data, variation, orientation, notify);
+            base.OnPlaced(map, global, material, data, variation, orientation, notify);
         }
         public override bool IsRoomBorder => false;
         public override bool IsDeconstructible => true;

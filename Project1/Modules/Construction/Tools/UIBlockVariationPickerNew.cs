@@ -58,7 +58,7 @@ namespace Start_a_Town_.Towns.Constructions
 
             Instance.AddControls(Instance.Panel);
             if (Instance.Show())
-                Instance.Location = UIManager.Mouse;
+                Instance.Location = UIManager.MouseScaled;
         }
 
         public override void HandleRButtonUp(System.Windows.Forms.HandledMouseEventArgs e)

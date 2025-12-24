@@ -26,7 +26,7 @@
         static public readonly Block Roof = new BlockRoof();
         static public readonly Block Stairs = new BlockStairs();
         static public readonly Block Counter = new BlockCounter();
-        static public readonly Block Designation = new BlockDesignation();
+        static public readonly Block Designation = new BlockDesignation() { BlockEntityCompSpecs = [new BlockConstructionComp.Spec()] };
         static public readonly Block Slab = new BlockSlab();
         static public readonly Block Conveyor = new BlockConveyor();
         static public readonly Block Construction = new BlockConstruction();

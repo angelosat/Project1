@@ -702,23 +702,23 @@ namespace Start_a_Town_
         public abstract void DrawBeforeWorld(MySpriteBatch sb, Camera cam);
 
         public abstract void GetTooltipInfo(Control tooltip);
-        public virtual bool SetBlock(IntVec3 global, Block block, MaterialDef material, byte data, int variation = 0, int orientation = 0, bool raiseEvent = true)
+        public virtual PlaceBlockResult SetBlock(IntVec3 global, Block block, MaterialDef material, byte data, int variation = 0, int orientation = 0, bool raiseEvent = true)
         {
             return this.SetBlock(global, block, material, data, IntVec3.Zero, variation, orientation, raiseEvent);
         }
-        public virtual bool SetBlock(IntVec3 global, Block block, MaterialDef material, byte data, IntVec3 source, int variation = 0, int orientation = 0, bool raiseEvent = true)
+        public virtual PlaceBlockResult SetBlock(IntVec3 global, Block block, MaterialDef material, byte data, IntVec3 source, int variation = 0, int orientation = 0, bool raiseEvent = true)
         {
             if (global.Z == 0)
-                return false;
+                return new PlaceBlockResult(null, null, false);
             var cell = this.GetCell(global);
 
             if (cell is null)
-                return false;
+                return new PlaceBlockResult(null, null, false);
 
             var chunk = this.GetChunk(global);
 
             if (cell.Block == BlockDefOf.Air && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
-                return false;
+                return new PlaceBlockResult(null, cell, false);
 
             cell.Block = block;
             cell.Material = material;
@@ -726,10 +726,23 @@ namespace Start_a_Town_
             cell.BlockData = data;
             cell.Orientation = orientation;
             cell.Origin = source;
-            // maybe put block entity creation here?
+
+            var entity = block.CreateEntity(global);
+            if (entity is not null)
+                this.AddBlockEntity(global, entity);
+            // todo: query block for multi-cell footprint
+            block.OnPlaced(this, global, material, data, variation, orientation);
+
+            this.SetBlockLuminance(global, block.Luminance);
+
+            var children = block.GetChildrenWithSource(global, orientation);
+            foreach (var (child, parent) in children)
+                this.GetCell(child).Origin = parent;
+
+            if (raiseEvent)
+                this.NotifyBlocksChanged(children.Select(c => c.global));
 
             chunk.InvalidateHeightmap(cell.X, cell.Y);
-            // or chunk.InvalidateHeightmap(global.X, global.Y); ?
 
             // maybe i can refresh cell edges here on the spot?
             this.InvalidateCell(global); // do i need to invalidate the cell even after invalidating the heightmap in the line above?
@@ -741,14 +754,26 @@ namespace Start_a_Town_
                 if (nblock != BlockDefOf.Air)
                     this.InvalidateCell(n);
 
-                if (nblock != null)
-                    nblock.OnNeighborChanged(this, global, n);
+                nblock?.OnNeighborChanged(this, global, n);
             }
             if (raiseEvent)
                 this.NotifyBlockChanged(global);
-            return true;
+
+            return new PlaceBlockResult(entity, cell, true);
         }
-       
+        public struct PlaceBlockResult
+        {
+            public BlockEntity Entity;
+            public Cell Cell;
+            public bool Success;
+
+            public PlaceBlockResult(BlockEntity entity, Cell cell, bool success = true)
+            {
+                Entity = entity;
+                Cell = cell;
+                Success = success;
+            }
+        }
         public void NotifyBlocksChanged(IEnumerable<IntVec3> positions)
         {
             //this.Net.EventOccured((int)Components.Message.Types.BlocksChanged, this, positions);
@@ -1099,6 +1124,7 @@ namespace Start_a_Town_
             this.Spawn(entity, position, velocity);
             PacketSpawnEntity.Send(entity, position, velocity);
         }
+
         static MapBase()
         {
 

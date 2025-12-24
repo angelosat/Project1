@@ -103,7 +103,7 @@ namespace Start_a_Town_
             return map.GetBlockEntity(global) is BlockBedEntity;
         }
 
-        protected override void Place(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
+        internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
             if (!IsValidPosition(map, global, orientation))
                 return;

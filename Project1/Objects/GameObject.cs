@@ -382,10 +382,13 @@ namespace Start_a_Town_
         }
         public GameObject Split(int amount)
         {
-            var obj = this.Clone();
-            obj._stackSize = amount;
+            if (amount <= 0 || amount >= _stackSize)
+                throw new ArgumentOutOfRangeException(nameof(amount));
+            var newObject = this.Clone();
+            newObject._stackSize = amount;
+            this.World.RegisterAndSync(newObject);
             this.Consume(amount);
-            return obj;
+            return newObject;
         }
         //public abstract GameObject Create();
         public GameObject TrySplitOne()
@@ -745,18 +748,7 @@ namespace Start_a_Town_
                 comp.OnSpawn(newMap);
         }
       
-        //public void Spawn(MapBase map, Vector3 global)
-        //{
-        //    this.Global = global;
-        //    this.Spawn(map);
-        //}
-        //public void Spawn(MapBase map)
-        //{
-        //    var net = map.Net;
-        //    this.Net = net;
-        //    this.Map = map;
-        //    this.OnSpawn(map);
-        //}
+        
         public void SyncSpawnNew(MapBase map)
         {
             if (this.RefId != 0)
@@ -871,24 +863,12 @@ namespace Start_a_Town_
         {
             string defName = r.ReadString();
             var def = Start_a_Town_.Def.GetDef<ItemDef>(defName);
-            //var profileName = r.ReadString();
-            //var profile = (!string.IsNullOrEmpty(profileName) && !string.IsNullOrWhiteSpace(profileName) ) ? Start_a_Town_.Def.GetDef(profileName) : null;
             var profile = Start_a_Town_.Def.GetDef(r.ReadString());
             var obj = def.Create(profile);
-
             obj.RefId = r.ReadInt32();
             var amount = r.ReadInt32();
             obj._stackSize = amount < 0 ? def.StackCapacity : amount;
-            //int compCount = r.ReadInt32();
-            //for (int i = 0; i < compCount; i++)
-            //{
-            //    string compName = r.ReadString();
-            //    //obj[compName].Read(r);
-            //    obj.Components[compName].Read(r);
-            //}
-
             obj.Components.Read(r);
-            //obj.Resolve();
             return obj;
         }
         public static GameObject CloneTemplate(int templateID, IDataReader reader)
@@ -897,24 +877,11 @@ namespace Start_a_Town_
             _ = reader.ReadString(); // def name not necessary because we copy it from the existing cloned object
             obj.RefId = reader.ReadInt32();
             obj.StackSize = reader.ReadInt32();
-            //int compCount = reader.ReadInt32();
-            //for (int i = 0; i < compCount; i++)
-            //{
-            //    string compName = reader.ReadString();
-            //    //obj[compName].Read(reader);
-            //    obj.Components[compName].Read(reader);
-            //}
             obj.Components.Read(reader);
             obj.ObjectSynced();
             return obj;
         }
-        GameObject ObjectLoaded()
-        {
-            foreach (var comp in this.Components.Values)
-                comp.OnObjectLoaded(this);
-            return this;
-        }
-
+       
         public GameObject ObjectSynced()
         {
             foreach (var comp in Components.Values)

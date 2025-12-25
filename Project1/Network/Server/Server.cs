@@ -653,22 +653,7 @@ namespace Start_a_Town_.Net
             map.ResolveReferences();
             Random = new RandomThreaded(Instance.Map.Random);
         }
-        private static void ResolveChunkReferences(Chunk chunk)
-        {
-            chunk.GetObjects().ForEach(obj =>
-            {
-                Instance.Instantiate(obj);
-                //_refIdSequence = Math.Max(_refIdSequence, obj.RefId + 1);
-            });
-
-            foreach (var (local, entity) in chunk.GetBlockEntitiesByPosition())
-            {
-                var global = local.ToGlobal(chunk);
-                entity.ResolveReferences(Instance.Map, global);
-                foreach (var o in entity.GetChildren())
-                    Instance.Instantiate(o);
-            }
-        }
+    
         public override bool TryGetNetworkObject(int netID, out Entity obj)
         {
             return this.World.TryGetEntity(netID, out obj);

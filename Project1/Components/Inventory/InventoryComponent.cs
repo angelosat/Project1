@@ -225,22 +225,16 @@ namespace Start_a_Town_.Components
             if (amount < target.StackSize)
             {
                 target.Consume(amount);
-                //PacketSetStackSize.Send(target, target.StackSize);
                 finalItem = target.Split(amount) as Entity;
-                actor.World.RegisterAndSync(finalItem);
-                //actor.World.Register(finalItem);
-                //PacketRegisterEntity.Send(finalItem);
             }
             else
                 finalItem = target;
 
             // if currently hauling something else, it must be made sure that it's of the same type so we can increase its stacksize. otherwise there has been a bug earlier
-            //var existing = actor.Inventory.HaulSlot.Object;
-            //if (existing is not null)
             if(actor.Inventory.HaulSlot.Object is not GameObject existing)
             {
                 actor.Inventory.HaulSlot.SetItem(finalItem, out var _);/// putting the item in the gameobjectslot, removes it from its current container or despawns it, so no need to send packetremoveinventoryitem
-                PacketActorHaulUpdate.Send(actor, finalItem as Entity);
+                //PacketActorHaulUpdate.Send(actor, finalItem as Entity);
                 return;
             }
             if (!existing.CanAbsorb(finalItem))
@@ -248,12 +242,9 @@ namespace Start_a_Town_.Components
             // if the amount specified to haul will make the existing hauled item exceed the stackmax, there's been a bug
             if (existing.StackSize + amount > existing.StackMax)
                 throw new Exception();
-            //existing.StackSize += amount;
             existing.Add(amount);
             finalItem.Consume(amount);
             //PacketSetStackSize.Send(existing, existing.StackSize);
-            //if(finalItem.StackSize == amount)
-            //    actor.Map.World.DisposeEntityAndSync(finalItem as Entity);
         }
 
         public void Drop(GameObject item)

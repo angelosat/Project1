@@ -1089,10 +1089,7 @@ namespace Start_a_Town_
             throw new Exception();
             this.Spawn(entity, entity.Global, entity.Velocity);
         }
-        //internal void Spawn(Entity entity, Vector3 position)
-        //{
-        //    this.Spawn(entity, position, entity.Velocity);
-        //}
+  
         public void Spawn(Entity entity, Vector3 position, Vector3 velocity)
         {
             entity.Container?.Remove(entity);

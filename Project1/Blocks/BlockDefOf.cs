@@ -20,7 +20,7 @@
         static public readonly Block Fluid = new BlockFluid();
         static public readonly Block Stool = new BlockStool();
         static public readonly Block Chair = new BlockChair();
-        static public readonly Block Bricks = new BlockBricks();
+        static public readonly Block Bricks = new BlockBricks() { ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])};
         static public readonly Block Campfire = new BlockCampfire();
         static public readonly Block Window = new BlockWindow();
         static public readonly Block Roof = new BlockRoof();

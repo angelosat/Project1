@@ -82,6 +82,7 @@ namespace Start_a_Town_
 
         public static void Place(MapBase map, IntVec3 global, byte data, int variation, int orientation, ProductMaterialPair product)
         {
+            throw new Exception();
             var entity = new BlockDesignation.BlockDesignationEntity(product, global);
             bool ismulti = product.Block.Multi;
 

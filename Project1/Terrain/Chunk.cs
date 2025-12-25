@@ -1611,12 +1611,24 @@ namespace Start_a_Town_
             var visible = new List<Cell>(maxCapacity);
             var frontmost = new List<Cell>(maxCapacity);
             var frontmostMysterious = new List<Cell>(maxCapacity);
+
+            var canvas = new Canvas(Game1.Instance.GraphicsDevice, visible.Count + frontmost.Count + frontmostMysterious.Count);
+
             for (int i = 0; i < Chunk.Size; i++)
                 for (int j = 0; j < Chunk.Size; j++)
                 {
                     var local = new IntVec3(i, j, z);
                     var cell = this.Cells[GetCellIndex(local)];
                     var global = local.ToGlobal(this);
+
+                    if (this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global))
+                    {
+                        camera.DrawBlock(canvas, BlockDefOf.Designation, map, this, local);
+                        //camera.DrawBlockSelectionGlobal(
+                        //    canvas.Designations,
+                        //    local);
+                    }
+
                     var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);
                     var isundiscovered = map.IsUndiscovered(global);
                     var isair = cell.Block == BlockDefOf.Air;
@@ -1654,7 +1666,6 @@ namespace Start_a_Town_
             foreach(var cell in mysterious)
                 camera.DrawUnknown(topCover, map, this, cell);
 
-            var canvas = new Canvas(Game1.Instance.GraphicsDevice, visible.Count + frontmost.Count + frontmostMysterious.Count);
 
             foreach(var cell in visible)
                 camera.DrawCell(canvas, map, this, cell);

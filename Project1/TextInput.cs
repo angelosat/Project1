@@ -244,8 +244,8 @@ namespace Start_a_Town_
                         var btnlwp = (Buttons)GetLowWord64(longwp);
 
                         var hwp = GetHighWord64(longwp);
-
-                        var hmea = new HandledMouseEventArgs(TranslateButton(btnlwp), 0, llp, hlp, hwp / 120);
+                        int wheelDelta = unchecked((short)(msg.WParam.ToInt64() >> 16));
+                        var hmea = new HandledMouseEventArgs(TranslateButton(btnlwp), 0, llp, hlp, wheelDelta / 120);// hwp / 120);
                         this.OnMouseWheel(hmea);
 
                         //this.OnMouseWheel(new HandledMouseEventArgs(TranslateButton((Buttons)GetLowWord((int)msg.WParam)), 0, GetLowWord((int)msg.LParam), GetHighWord((int)msg.LParam), GetHighWord(msg.WParam.ToInt32()) / 120));

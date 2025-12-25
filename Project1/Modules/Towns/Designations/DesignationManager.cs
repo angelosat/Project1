@@ -15,7 +15,7 @@ namespace Start_a_Town_
         public override string Name => "Designation Manager";
 
         readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>> Designations;
-        readonly Dictionary<DesignationDef, BlockRendererObservable> Renderers = [];
+        public readonly Dictionary<DesignationDef, BlockRendererObservable> Renderers = [];
 
         static DesignationManager()
         {
@@ -133,7 +133,6 @@ namespace Start_a_Town_
             }
             this.UpdateQuickButtons();
         }
-
         public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
         {
             foreach (var r in this.Renderers)

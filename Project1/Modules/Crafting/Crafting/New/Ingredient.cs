@@ -206,5 +206,21 @@ namespace Start_a_Town_
         {
             return new Label($"{this.Amount}x material");
         }
+
+        class Modifier
+        {
+            public string Label;
+            Predicate<ItemDef> Condition;
+
+            public Modifier(string label, Predicate<ItemDef> condition)
+            {
+                Label = label;
+                Condition = condition;
+            }
+            public bool Evaluate(ItemDef def)
+            {
+                return this.Condition(def);
+            }
+        }
     }
 }

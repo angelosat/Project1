@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.Components;
 using Start_a_Town_.Graphics;
 using Start_a_Town_.Particles;
 using Start_a_Town_.UI;
@@ -249,6 +248,7 @@ namespace Start_a_Town_
         }
 
         public IntVec3 Size = IntVec3.One;
+        public ConstructionProfile ConstructionProfile;
         public BuildProperties BuildProperties = new();
         public FurnitureDef Furniture;
         public List<Utility.Types> UtilitiesProvided = new();
@@ -556,7 +556,7 @@ namespace Start_a_Town_
                 this.Variations.Add(token);
             }
         }
-       
+        
         public virtual void Draw(MySpriteBatch sb, Rectangle screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
             if (this == BlockDefOf.Air)

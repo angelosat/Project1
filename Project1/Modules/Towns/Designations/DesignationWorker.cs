@@ -14,6 +14,13 @@ namespace Start_a_Town_
             return target.Block?.IsDeconstructible ?? false;
         }
     }
+    class DesignationWorkerConstruct : DesignationWorker
+    {
+        public override bool IsValid(TargetArgs target)
+        {
+            return target.Block is BlockAir;
+        }
+    }
     class DesignationWorkerMine : DesignationWorker
     {
         public override bool IsValid(TargetArgs target)

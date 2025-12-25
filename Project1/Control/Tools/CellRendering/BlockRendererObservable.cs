@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using SharpDX.Direct3D9;
 using Start_a_Town_.Graphics;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -10,7 +9,7 @@ namespace Start_a_Town_
     public class BlockRendererObservable
     {
         readonly ObservableHashSet<TargetArgs> Cells;
-        readonly Dictionary<int, MySpriteBatch> Slices = [];
+        public readonly Dictionary<int, MySpriteBatch> Slices = [];
         readonly HashSet<int> InvalidatedSlices = [];
         readonly AtlasDepthNormals.Node.Token BlockToken;
 
@@ -70,6 +69,7 @@ namespace Start_a_Town_
             var world = Matrix.CreateTranslation(new Vector3(0, 0, (rotx + roty) * Chunk.Size));
             camera.Effect.Parameters["World"].SetValue(world);
             camera.Effect.CurrentTechnique.Passes["Pass1"].Apply();
+
             foreach (var slice in this.Slices)
                 if (slice.Key <= camera.DrawLevel)
                     slice.Value.Draw();

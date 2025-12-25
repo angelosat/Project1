@@ -392,8 +392,26 @@ namespace Start_a_Town_
         {
             this.Rotation = 0;
         }
+        public void DrawBlock(Canvas canvas, Block block, MapBase map, Chunk chunk, IntVec3 local)
+        {
+            int lx = local.X, ly = local.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
+            int z = local.Z;
+            var light = GetFinalLight(this, map, chunk, local);
+
+            var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
+            Coords.Rotate(this, lx, ly, out int rlx, out int rly);
+            var depth = rlx + rly;
+
+            var finalFogColor = Color.Transparent; // i calculate fog inside the shader from now on
+            var global = new IntVec3(gx, gy, z);
+            var isDiscovered = !map.IsUndiscovered(global);
+
+            //block.Draw(canvas, chunk, new IntVec3(gx, gy, z), this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, variation: 0);//.Variation, cell.Orientation, cell.BlockData, cell.Material);
+            block.Draw(canvas, chunk, global, this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, 0, 0, 0, null);
+        }
         public bool DrawCell(Canvas canvas, MapBase map, Chunk chunk, Cell cell)
         {
+        
             var cellTile = cell.Block;
             if (cellTile is BlockAir)
             {
@@ -579,7 +597,52 @@ namespace Start_a_Town_
             this.Effect.Parameters["OutlineThreshold"].SetValue((1) / (this.DepthNear - this.DepthFar));
 
         }
+        public static LightToken GetFinalLight(Camera camera, MapBase map, Chunk chunk, IntVec3 local, bool updateblockfaces = true)
+        {
+            // UNCOMMENT THIS?
+            //if (chunk.LightCache.TryGetValue(new Vector3(gx, gy, z), out color))
+            //    return color;
+            //if (cell.Light != null)
+            //    return cell.Light;
+            //var global = new Vector3(gx, gy, z);
+            var global = local.ToGlobal(chunk);
+            var gx = global.X;
+            var gy = global.Y;
+            var z = local.Z;
+            if (chunk.LightCache.TryGetValue(global, out LightToken cached))
+                return cached;
 
+            // update block exposed faces too here?
+            // TESTING IF REMOVING THIS BREAKS ANYTHING
+            //if (updateblockfaces)
+            //    chunk.UpdateBlockFaces(cell); // COMMENT if i want to see visible horizontal slices of the map
+
+            Coords.Rotate(camera, 1, 0, out int rightx, out int righty);
+            Coords.Rotate(camera, 0, 1, out int leftx, out int lefty);
+
+            Chunk.TryGetFinalLight(map, gx + rightx, gy - righty, z, out byte suneast, out byte blockeast);
+            Chunk.TryGetFinalLight(map, gx - leftx, gy + lefty, z, out byte sunsouth, out byte blocksouth);
+            Chunk.TryGetFinalLight(map, gx, gy, z, out byte sunCenter, out byte blockCenter);
+
+            byte suntop, blocktop;
+            if (z + 1 < MapBase.MaxHeight)
+            {
+                suntop = Math.Max((byte)0, chunk.GetSunlight(local.X, local.Y, z + 1));
+                blocktop = chunk.GetBlockLight(local.X, local.Y, z + 1);
+            }
+            else
+            {
+                suntop = 15;
+                blocktop = 15;
+            }
+            // add the current cell's light as the 4th coord?
+            Color sun = new((suneast + 1) / 16f, (sunsouth + 1) / 16f, (suntop + 1) / 16f, (sunCenter + 1) / 16f);
+            Vector4 block = new((blockeast + 1) / 16f, (blocksouth + 1) / 16f, (blocktop + 1) / 16f, (blockCenter + 1) / 16f);// 1f);
+
+            var light = new LightToken(global, sun, block);
+            chunk.LightCache[global] = light;
+            return light;
+        }
         public static LightToken GetFinalLight(Camera camera, MapBase map, Chunk chunk, Cell cell, int gx, int gy, int z, bool updateblockfaces = true)
         {
             // UNCOMMENT THIS?
@@ -829,7 +892,8 @@ namespace Start_a_Town_
             fx.CurrentTechnique = fx.Techniques["BlockHighlight"];
             fx.CurrentTechnique.Passes["Pass1"].Apply();
             ui.DrawWorld(this.SpriteBatch, this);
-            map.DrawBeforeWorld(this.SpriteBatch, this);
+            map.DrawBeforeWorld(this.SpriteBatch, this); // should i move this to draw right after the regular map drawing (specifically drawtransparent layers)
+                                                         // so that designation manager can draw designations with correct transparency?
             foreach (var entity in objs)
                 entity.DrawAfter(this.SpriteBatch, this); // cull non visible entities
 
@@ -853,6 +917,7 @@ namespace Start_a_Town_
 
             // combine scenes and apply ambient light
             gd.SetRenderTarget(this.MapComposite);
+
             gd.Clear(new Color(fogColor));
 
             fx.Parameters["s"].SetValue(this.MapRender);
@@ -897,6 +962,7 @@ namespace Start_a_Town_
             // TODO: Must draw entities before final composition, so fog is applied over them accordingly
             fx.CurrentTechnique = fx.Techniques["CompositeWater"];
             fx.CurrentTechnique.Passes["Pass1"].Apply();
+
             this.SpriteBatch.Flush();
 
             //sort objects back to front for proper semitraspanrent rendering
@@ -1375,6 +1441,7 @@ namespace Start_a_Town_
                  
                     var arrays = slice.Canvas.GetMouseoverableMeshes();
 
+                    
                     //if (j == this.MaxDrawZ)
                     //    arrays.Add(slice.Unknown.vertices);
                     if (j == this.MaxDrawZ)
@@ -1385,6 +1452,11 @@ namespace Start_a_Town_
                         //else
                             arrays = arrays.Concat(slice.Cover.GetMouseoverableMeshes());
                     }
+
+                    // HACK
+                    if(map.Town.DesignationManager.Renderers[DesignationDefOf.Construct].Slices.TryGetValue(j, out var constructionDesignationMesh))
+                        arrays = arrays.Append(constructionDesignationMesh.vertices);
+
 
                     foreach (var array in arrays)
                     {

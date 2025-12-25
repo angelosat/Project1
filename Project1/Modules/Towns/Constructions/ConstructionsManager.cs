@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static Start_a_Town_.PacketDesignateConstruction;
 
 namespace Start_a_Town_
 {
@@ -33,6 +34,7 @@ namespace Start_a_Town_
         }
         readonly Dictionary<IntVec3, ConstructionParams> PendingDesignations = new();
         readonly HashSet<IntVec3> Designations = new();
+        readonly HashSet<BlockEntity> DesignationEntities = [];
 
         internal IEnumerable<IntVec3> GetAllBuildableCurrently()
         {
@@ -174,6 +176,23 @@ namespace Start_a_Town_
 
             static void cancel(List<TargetArgs> positions) => PacketDesignation.Send(Client.Instance, false, positions, null);
         }
+        internal void Designate(ToolBlockBuild.Args tool, ConstructionDesignationArgs args)
+        {
+            var map = this.Town.Map;
+            var positions = tool.ToolDef.Worker.GetPositions(tool.Begin, tool.End);
+
+            if (tool.Removing)
+            {
+                RemoveNew(positions);
+                return;
+            }
+            foreach (var pos in positions)
+            {
+                if (!map.IsValidBuildSpot(pos))
+                    continue;
+                this.PlaceDesignation(pos, args);
+            }
+        }
         public void Handle(ToolBlockBuild.Args args, ProductMaterialPair product, List<IntVec3> positions)
         {
             this.PlaceDesignations(args, product, positions);
@@ -184,20 +203,7 @@ namespace Start_a_Town_
             var map = this.Town.Map;
             if (args.Removing)
             {
-                foreach (var pos in positions)
-                {
-                    if (map.GetBlockEntity(pos) is BlockDesignation.BlockDesignationEntity desEntity)
-                        this.Designations.Remove(desEntity.OriginGlobal);
-                    else if (this.PendingDesignations.ContainsKey(pos))
-                    {
-                        var cell = map.GetCell(pos);
-                        var existingBlockRemovalDesignation = this.DetermineBlockRemovalDesignation(cell);
-                        this.Town.DesignationManager.RemoveDesignation(existingBlockRemovalDesignation, pos);
-                        //this.PendingDesignations.Remove(pos);
-                        this.RemovePendingDesignation(pos);
-                    }
-                }
-                map.RemoveBlocks(positions.Where(vec => map.GetBlock(vec) == BlockDefOf.Designation), false);
+                Remove(positions);
             }
             else
                 foreach (var pos in positions)
@@ -210,19 +216,38 @@ namespace Start_a_Town_
                         product.Place(map, pos);
                         return;
                     }
-                    var cell = map.GetCell(pos);
+                    var targetCell = map.GetCell(pos);
 
-                    if (cell.Block == BlockDefOf.Air)
+                    if (targetCell.Block == BlockDefOf.Air)
                         this.PlaceDesignation(pos, 0, 0, args.Orientation, product);
-                    else if(cell.Block != BlockDefOf.Designation)
+                    else if(targetCell.Block != BlockDefOf.Designation)
                     {
-                        var existingBlockRemovalDesignation = this.DetermineBlockRemovalDesignation(cell);
+                        var existingBlockRemovalDesignation = this.DetermineBlockRemovalDesignation(targetCell);
                         this.Town.DesignationManager.Add(existingBlockRemovalDesignation, pos.At(map));
                         this.AddPendingDesignation(pos, args.Orientation, product);
                     }
                 }
         }
-       
+        
+        private void Remove(IEnumerable<IntVec3> positions)
+        {
+            var map = this.Town.Map;
+            foreach (var pos in positions)
+            {
+                if (map.GetBlockEntity(pos) is BlockDesignation.BlockDesignationEntity desEntity)
+                    this.Designations.Remove(desEntity.OriginGlobal);
+                else if (this.PendingDesignations.ContainsKey(pos))
+                {
+                    var cell = map.GetCell(pos);
+                    var existingBlockRemovalDesignation = this.DetermineBlockRemovalDesignation(cell);
+                    this.Town.DesignationManager.RemoveDesignation(existingBlockRemovalDesignation, pos);
+                    //this.PendingDesignations.Remove(pos);
+                    this.RemovePendingDesignation(pos);
+                }
+            }
+            map.RemoveBlocks(positions.Where(vec => map.GetBlock(vec) == BlockDefOf.Designation), false);
+        }
+
         DesignationDef DetermineBlockRemovalDesignation(Cell cell)
         {
             if (cell.Block.IsDeconstructible)
@@ -247,7 +272,38 @@ namespace Start_a_Town_
 
             this.Designations.Add(global);
         }
+        public void PlaceDesignation(IntVec3 global, ConstructionDesignationArgs args)
+        {
+            var map = this.Map;
+            //var result = map.SetBlock(global, BlockDefOf.Designation, MaterialDefOf.Air, data: 0, 0, orientation: args.Orientation);
+            //var entity = result.Entity;
 
+            var entity = BlockDefOf.Designation.CreateEntity(global);
+            this.DesignationEntities.Add(entity);
+            map.AddBlockEntity(global, entity);
+            var comp = entity.GetComp<BlockConstructionComp>();
+            comp.SetArgs(args);
+            //this.Town.DesignationManager.Add(DesignationDefOf.Construct, new TargetArgs(map, global));
+            //map.GetChunk(global).Slices[global.Z].Valid = false;
+            map.GetChunk(global).InvalidateSlice(global.Z);
+            this.Designations.Add(global);
+        }
+        private void RemoveNew(IEnumerable<IntVec3> positions)
+        {
+            var map = this.Town.Map;
+
+            foreach (var pos in positions)
+            {
+                var entity = this.DesignationEntities.FirstOrDefault(e => e.CellsOccupied.Contains(pos));
+                if (entity is not null)
+                {
+                    this.DesignationEntities.Remove(entity);
+                    foreach(var child in entity.CellsOccupied)
+                        this.Designations.Remove(child);
+                    map.GetChunk(pos).InvalidateSlice(pos.Z);
+                }
+            }
+        }
         public IEnumerable<(string name, Action action)> GetInfoTabs()
         {
             throw new NotImplementedException();
@@ -269,6 +325,9 @@ namespace Start_a_Town_
                 info.AddInfo(this.UpdatePendingDesignationLabel(pending));
             }
         }
+
+       
+
         class ConstructionParams : Inspectable, ISaveable, ISerializableNew<ConstructionParams>
         {
             public IntVec3 Global;

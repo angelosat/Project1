@@ -19,7 +19,7 @@ namespace Start_a_Town_.Core
         {
             this.Panel_Blocks = new Panel() { AutoSize = true };
             this.ToolBox = new UIToolsBox(this.OnToolSelectedNew);
-            var categories = Block.Registry.Values.Where(b => b.BuildProperties.Category is not null).GroupBy(b => b.BuildProperties.Category); // blocks without ingredients are buildable (sleeping spots)
+            var categories = Block.Registry.Values.Where(b => b.BuildProperties.Category is not null).GroupBy(b => b.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
             foreach (var cat in categories)
             {
                 var list = cat;
@@ -28,26 +28,7 @@ namespace Start_a_Town_.Core
                     slot.Tag = block;
                     slot.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolBlockBuild drawing && drawing.Block == block;
                     slot.PaintAction = () => block.PaintIcon(slot.Width, slot.Height, 0, this.GetLastSelectedVariantOrDefault(block).Requirement?.Material);
-                    slot.LeftClickAction = () =>
-                    {
-                        this.CurrentSelected = block;
-                        var product = this.GetLastSelectedVariantOrDefault(block);
-                        this.ToolBox.SetProduct(product);
-                        this.OnToolSelectedNew(this.ToolBox.LastSelectedTool);
-                        var win = this.ToolBox.GetWindow();
-                        if (win is null)
-                        {
-                            win = this.ToolBox.ToWidget("Brushes");
-                            win.HideAction = () => ToolManager.SetTool(null);
-                        }
-                        //if (win.Show())
-                        //    win.Location = this.GetWindow().BottomLeft;
-                        if(!win.IsOpen)
-                        {
-                            win.Location = this.GetWindow().BottomLeft;
-                            win.Show();
-                        }
-                    };
+                    slot.LeftClickAction = () => StartPainting(block);
                     slot.RightClickAction = () => UIBlockVariationPickerNew.Refresh(block, this.OnVariationSelected);
                     slot.HoverFunc = () => $"{block.Name}\n{this.GetLastSelectedVariantOrDefault(block).Requirement}\nTool necessity: {block.BuildProperties.ToolSensitivity:##0%}\nRight click to select variation";
                 })
@@ -78,13 +59,43 @@ namespace Start_a_Town_.Core
                 );
         }
 
+        private void StartPainting(Block block)
+        {
+            this.CurrentSelected = block;
+            var product = this.GetLastSelectedVariantOrDefault(block);
+            this.ToolBox.SetProduct(product);
+            this.OnToolSelectedNew(this.ToolBox.LastSelectedTool);
+            var win = this.ToolBox.GetWindow();
+            if (win is null)
+            {
+                win = this.ToolBox.ToWidget("Brushes");
+                win.HideAction = () => ToolManager.SetTool(null);
+            }
+            //if (win.Show())
+            //    win.Location = this.GetWindow().BottomLeft;
+            if (!win.IsOpen)
+            {
+                win.Location = this.GetWindow().BottomLeft;
+                win.Show();
+            }
+        }
+
         void OnToolSelectedNew(BuildToolDef toolDef)
         {
-            var tool = this.SelectedCategory.GetTool(toolDef, this.GetLastSelectedVariantOrDefault(this.CurrentSelected));
+            //var tool = this.SelectedCategory.GetTool(toolDef, this.GetLastSelectedVariantOrDefault(this.CurrentSelected));
+            var tool = this.SelectedCategory.GetTool(toolDef, this.GetLastSelectedVariantOrDefaultNew(this.CurrentSelected));
             this.ToolBox.LastSelectedTool = toolDef;
             ToolManager.SetTool(tool);
         }
-
+        private ConstructionDesignationArgs GetLastSelectedVariantOrDefaultNew(Block block)
+        {
+            var profile = block.ConstructionProfile;
+            //var validMats = Def.GetDefs<MaterialDef>().Where(m => profile.Refinements.Any(r => r.MaterialType == m.Type)).GroupBy(m=>m.Type).ToList();
+            var refinement = profile.Refinements.First();
+            var validMats = Def.GetDefs<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
+            var defaultMat = validMats.First();
+            return new ConstructionDesignationArgs(block, refinement, defaultMat, 0);
+        }
         private ProductMaterialPair GetLastSelectedVariantOrDefault(Block block)
         {
             if (!this.LastSelectedVariant.TryGetValue(block, out var lastVariant))

@@ -5,15 +5,11 @@ using Start_a_Town_.Net;
 using Start_a_Town_.Terraforming;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Collections.Specialized;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace Start_a_Town_
 {
@@ -1620,13 +1616,13 @@ namespace Start_a_Town_
                     var local = new IntVec3(i, j, z);
                     var cell = this.Cells[GetCellIndex(local)];
                     var global = local.ToGlobal(this);
+                    var isair = cell.Block == BlockDefOf.Air;
 
-                    if (this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global)) // HACK
+                    if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global)) // HACK
                         camera.DrawBlock(canvas, BlockDefOf.Designation, map, this, local);
 
                     var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);
                     var isundiscovered = map.IsUndiscovered(global);
-                    var isair = cell.Block == BlockDefOf.Air;
                     var ismysterious = camera.MysteriousBlocks && isundiscovered;
 
                     if (global.X == frontCells.x || global.Y == frontCells.y)

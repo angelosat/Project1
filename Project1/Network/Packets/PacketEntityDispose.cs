@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -18,6 +17,7 @@ namespace Start_a_Town_
             //var w = player is null ? server.OutgoingStreamTimestamped : server.GetOutgoingStreamOrderedReliable();
             //w.Write(pServerAction);
             var w = server.BeginPacket(pServerAction);
+            //var w = server.BeginTimestamped(pServerAction);
             w.Write(entityID);
         }
         internal static void Send(Client client, int entityID, PlayerData player)

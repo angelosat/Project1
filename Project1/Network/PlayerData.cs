@@ -77,6 +77,10 @@ namespace Start_a_Town_.Net
             var col = reader.ReadColor();
             return new PlayerData(name) { ID = id, CharacterID = charID, Ping = rtt, SuggestedSpeed = speed, Color = col };
         }
+        public PacketBuilder BeginReliable(int pType)
+        {
+            return PacketBuilder.Create(this.StreamReliable, pType);
+        }
         public void Write(BinaryWriter w)
         {
             w.Write(this.ID);

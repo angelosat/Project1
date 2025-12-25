@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Components;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -231,11 +230,12 @@ namespace Start_a_Town_.Net
                 /// some packets might have been written already during packet handling before the map ticking
                 /// (for example as a response to player input) and we don't want to clear them
                 //this.OutgoingStreamTimestamped = new(new MemoryStream());
-
-                auxStream.Write(this.Map.World.CurrentTick);
-                auxStream.Write(this.CurrentTick);
+                //auxStream.Write(this.Map.World.CurrentTick);
+                //auxStream.Write(this.CurrentTick);
                 this.Map.World.Tick(Instance);
                 this.Map.Tick();
+                auxStream.Write(this.Map.World.CurrentTick);
+                auxStream.Write(this.CurrentTick);
                 var length = this.OutgoingStreamTimestamped.BaseStream.Position;
                 auxStream.Write(length);// write length
                 if (length > 0)
@@ -262,6 +262,10 @@ namespace Start_a_Town_.Net
                 this.OutgoingStreamOrderedReliable.Write(Network.Packets.PacketTimestamped);
                 auxStream.BaseStream.CopyTo(this.OutgoingStreamOrderedReliable.BaseStream);
             }
+        }
+        public new IDataWriter BeginPacket(int pType)
+        {
+            return PacketBuilder.Create(this.OutgoingStreamTimestamped, pType);
         }
 
         public static int RandomBlockUpdatesCount = 1;

@@ -44,8 +44,11 @@ namespace Start_a_Town_
                 throw new ArgumentException($"deposited quantity: {quantity} larger than missing quantity: {this.Fulfiment.Missing}");
             this.Fulfiment.Current += quantity;
             entity.Consume(quantity);
-            //if (entity.IsEmpty)
-            //    this.Map.World.DisposeEntityAndSync(entity);
+
+            // solidify the designation into a construction block 
+            foreach(var cell in this.Parent.CellsOccupied)
+                this.Map.SetBlock(cell, BlockDefOf.Construction, this.Args.Material, 0, 0, this.Args.Orientation);
+
             if (this.IsReady)
                 this.Map.Events.Post(new ConstructionReadyEvent(this));
         }

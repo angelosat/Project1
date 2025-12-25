@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_

@@ -276,27 +276,27 @@ namespace Start_a_Town_.Net
         public void HandleTimestamped(Packet packet)
         {
             var r = packet.Reader;
-            var currenttick = this.Map.World.CurrentTick;
+            var thisWorldTick = this.Map.World.CurrentTick;
             for (int i = 0; i < this.Speed; i++)
             {
-                var mapTick = r.ReadUInt64();
+                var remoteWorldTick = r.ReadUInt64();
                 var serverTick = r.ReadDouble();
                 var length = r.ReadInt64();
                 int frameStart = (int)r.BaseStream.Position;
                 if (length > 0)
                     r.BaseStream.Position += length; // skip data, dont read them. because i read them when handling them
 
-                if (mapTick == currenttick)
+                if (remoteWorldTick == thisWorldTick)
                 {
                     r.BaseStream.Position = frameStart;
                     this.UnmergePackets(packet, (int)length);
                 }
                 else
-                    this.BufferTimestampedNew[mapTick] = (mapTick, serverTick, packet, frameStart, (int)length);
+                    this.BufferTimestampedNew[remoteWorldTick] = (remoteWorldTick, serverTick, packet, frameStart, (int)length);
 
-                if (mapTick < this.lasttickreceived)
+                if (remoteWorldTick < this.lasttickreceived)
                     throw new Exception();
-                this.lasttickreceived = mapTick;
+                this.lasttickreceived = remoteWorldTick;
             }
         }
 

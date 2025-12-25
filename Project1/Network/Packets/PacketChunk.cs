@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 
 namespace Start_a_Town_
@@ -15,8 +14,8 @@ namespace Start_a_Town_
         internal static void Send(INetEndpoint net, Vector2 vector2, byte[] chunkData, PlayerData player)
         {
             var server = net as Server;
-            var w = player.StreamReliable;
-            w.Write(p);
+            var w = player.BeginReliable(p);
+            //w.Write(p);
             w.Write(chunkData);
         }
         internal static void Receive(NetEndpoint net, Packet pck)

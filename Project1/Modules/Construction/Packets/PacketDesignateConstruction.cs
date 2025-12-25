@@ -71,5 +71,6 @@ namespace Start_a_Town_
         public MaterialRefinementDef Refinement = refinement;
         public MaterialDef Material = material;
         public byte Orientation = orientation;
+        public override string ToString() => $"{this.Material.Label} {this.Refinement.Label}";
     }
 }

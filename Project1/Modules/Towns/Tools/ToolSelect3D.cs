@@ -171,14 +171,16 @@ namespace Start_a_Town_.Towns
             int dy = (int)Math.Abs(this.Begin.Y - this.End.Y);
             int dz = (int)Math.Abs(this.Begin.Z - this.End.Z);
 
-            var minBegin = new Vector3(x, y, z);
+            var minBegin = new IntVec3(x, y, z);
+            
+
             for (int i = 0; i <= dx; i++)
             {
                 for (int j = 0; j <= dy; j++)
                 {
                     for (int k = 0; k <= dz; k++)
                     {
-                        Vector3 global = minBegin + new Vector3(i, j, k);
+                        Vector3 global = minBegin + new IntVec3(i, j, k);
                         cam.DrawGridBlock(sb, Block.BlockBlueprint, Color.Red, global);
                     }
                 }

@@ -22,7 +22,7 @@ namespace Start_a_Town_
                     continue;
                 if (i is Plant && actor.CanReserve(i))
                 {
-                    var plantCutTask = new Plan(TaskDefOf.Chopping, i)
+                    var plantCutTask = new Plan(PlanDefOf.Chopping, i)
                     {
                         Tool = Planner.FindTool(actor, JobDefOf.Lumberjack)
                     };
@@ -49,7 +49,7 @@ namespace Start_a_Town_
 
             var count = Math.Min(unreservedCount, actor.GetHaulStackLimitFromEndurance(item));
 
-            return new Plan(TaskDefOf.HaulAside, new TargetArgs(item), place) { Count = count };
+            return new Plan(PlanDefOf.HaulAside, new TargetArgs(item), place) { Count = count };
         }
         static public bool TryHaulAside(Actor actor, Vector3 global, out Plan task)
         {

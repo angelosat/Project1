@@ -29,8 +29,9 @@ namespace Start_a_Town_
             return new BlockDesignationEntity(originGlobal);
         }
         
-        public override void OnDrop(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
+        public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
         {
+            throw new Exception();
             var des = actor.Map.GetBlockEntity(target.Global) as BlockDesignationEntity;
             var product = des.Product;
             var global = target.Global;
@@ -65,7 +66,7 @@ namespace Start_a_Town_
            
             if (amount == -1)
                 throw new Exception();
-            dropped.StackSize -= amount;
+            dropped.Consume(amount);
         }
         
         internal override bool IsValidHaulDestination(MapBase map, IntVec3 global, GameObject obj)

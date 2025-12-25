@@ -38,7 +38,7 @@ namespace Start_a_Town_
                 return null;
             var maxweight = Math.Min(item.StackMax, actor.GetHaulStackLimitFromEndurance(item));
             var maxamount = Math.Min(maxweight, unreservedAmount);
-            var task = new Plan(TaskDefOf.Hauling, new TargetArgs(item), bestTarget) { Count = maxamount };
+            var task = new Plan(PlanDefOf.Hauling, new TargetArgs(item), bestTarget) { Count = maxamount };
             if (bestTarget.HasObject)
                 task.Count = Math.Min(task.Count, bestTarget.Object.StackAvailableSpace);
 

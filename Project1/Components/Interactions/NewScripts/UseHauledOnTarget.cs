@@ -36,7 +36,7 @@ namespace Start_a_Town_
             switch (target.Type)
             {
                 case TargetType.Position:
-                    actor.Map.GetBlock(target.Global).OnDrop(actor, hauledObj, target, this.Amount == -1 ? hauledObj.StackSize : this.Amount);
+                    actor.Map.GetBlock(target.Global).TryConsume(actor, hauledObj, target, this.Amount == -1 ? hauledObj.StackSize : this.Amount);
                     actor.CurrentTask?.AddPlacedObject(hauledObj);
                     break;
 
@@ -48,8 +48,8 @@ namespace Start_a_Town_
                     if (!o.CanAbsorb(hauledObj, amount))
                         throw new Exception();
                     var transferAmount = Math.Min(o.StackAvailableSpace, amount);
-                    o.StackSize += transferAmount;
-                    hauledObj.StackSize -= transferAmount;
+                    o.Add(transferAmount);
+                    hauledObj.Consume(transferAmount);
                     break;
 
                 default:

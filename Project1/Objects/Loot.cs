@@ -9,22 +9,21 @@ namespace Start_a_Town_
     {
         public int Count, ObjID, AmountMin = 1, AmountMax = 1;
         public float Chance;
-        public Func<GameObject> Factory;
+        public Func<int, GameObject> Factory;
         public ItemDef ItemDef;
         public GameObject GenerateNew(Random rand)
         {
-            var obj = this.Factory();
             var stacksize = rand.Next(this.AmountMin, this.AmountMax);
-            obj.StackSize = stacksize;
+            var obj = this.Factory(stacksize);
             return obj;
         }
-        public Loot(Func<GameObject> factory, float chance, int count, int amount) : this(factory, chance, count, amount, amount)
+        public Loot(Func<int, GameObject> factory, float chance, int count, int amount) : this(factory, chance, count, amount, amount)
         {
         }
-        public Loot(ItemDef def, float chance = 1, int count = 1, int amountmin = 1, int amountmax = 1) : this(()=>def.Create(), chance, count, amountmin, amountmax)
+        public Loot(ItemDef def, float chance = 1, int count = 1, int amountmin = 1, int amountmax = 1) : this(x=>def.Create(amount: x), chance, count, amountmin, amountmax)
         {
         }
-        public Loot(Func<GameObject> factory, float chance, int count, int stackmin, int stackmax)
+        public Loot(Func<int, GameObject> factory, float chance, int count, int stackmin, int stackmax)
         {
             this.Factory = factory;
             Chance = chance;
@@ -32,13 +31,13 @@ namespace Start_a_Town_
             this.AmountMin = stackmin;
             this.AmountMax = stackmax;
         }
-        public Loot(Func<GameObject> factory, float chance, int count)
+        public Loot(Func<int, GameObject> factory, float chance, int count)
         {
             this.Factory = factory;
             Chance = chance;
             Count = count;
         }
-        public Loot(Func<GameObject> factory)
+        public Loot(Func<int, GameObject> factory)
             : this(factory, 1, 1)
         {
         }
@@ -75,17 +74,22 @@ namespace Start_a_Town_
                 var minPerItem = (amount - cap) / (count - 1);
                 for (int i = 0; i < count; i++)
                 {
-                    var obj = this.Factory();
+                    //var obj = this.Factory();
+                    int allocated = 0;
                     if (i < count - 1)
                     {
-                        obj.StackSize = rand.Next(minPerItem, cap);
-                        amountRemaining -= obj.StackSize;
+                        allocated = rand.Next(minPerItem, cap);
+                        amountRemaining -= allocated;
+                        //obj.StackSize = rand.Next(minPerItem, cap);
+                        //amountRemaining -= obj.StackSize;
                     }
                     else
                     {
                         Debug.Assert(amountRemaining <= cap);
-                        obj.StackSize = amountRemaining;
+                        allocated = amountRemaining;
                     }
+                    var obj = this.Factory(allocated);
+
                     yield return obj;
                 }
             }
@@ -93,9 +97,8 @@ namespace Start_a_Town_
             {
                 for (int i = 0; i < this.GetRandomCount(rand); i++)
                 {
-                    var obj = this.Factory();
-                    var stacksize = rand.Next(this.AmountMin, this.AmountMax);
-                    obj.StackSize = stacksize;
+                    var allocated = rand.Next(this.AmountMin, this.AmountMax);
+                    var obj = this.Factory(allocated);
                     yield return obj;
                 }
             }

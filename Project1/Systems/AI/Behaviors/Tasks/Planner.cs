@@ -21,7 +21,7 @@ namespace Start_a_Town_
 
         static readonly public List<Planner> CitizenTaskGivers = new()
         {
-            new TaskGiverConstructing(),
+            new ConstructingPlanner(),
             new TaskGiverRefueling(),
             new TaskGiverSwitchToggle(),
             new TaskGiverChopping(),

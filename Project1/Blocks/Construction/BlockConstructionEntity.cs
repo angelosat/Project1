@@ -69,7 +69,7 @@ namespace Start_a_Town_
                 throw new Exception();
             var req = this.Container.FirstOrDefault(r => r.Item == dropped.Def);
             req.Amount += amount;
-            dropped.StackSize -= amount;
+            dropped.Consume(amount);
             if (req.Amount > this.Product.Requirement.Amount)
                 throw new Exception();
         }

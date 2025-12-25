@@ -14,7 +14,7 @@ namespace Start_a_Town_
             if (distance < 10)
                 return null;
 
-            var task = new Plan(TaskDefOf.Moving, spot.At(actor.Map)) { Urgent = false };
+            var task = new Plan(PlanDefOf.Moving, spot.At(actor.Map)) { Urgent = false };
 
             return task;
         }

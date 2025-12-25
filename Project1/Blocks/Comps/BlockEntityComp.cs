@@ -87,5 +87,7 @@ namespace Start_a_Town_
         internal virtual void Initialize() { }
 
         internal virtual void GetSelectionInfo(Control container) { }
+
+        internal virtual bool TryConsume(Entity item) => false;
     }
 }

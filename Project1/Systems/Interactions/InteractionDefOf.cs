@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Start_a_Town_.Interactions;
 
 namespace Start_a_Town_
 {
@@ -14,6 +12,7 @@ namespace Start_a_Town_
         public static readonly InteractionDef Store = new("Store", typeof(InteractionStoreHauled));
         public static readonly InteractionDef Equip = new("Equip", typeof(InteractionEquip));
         public static readonly InteractionDef Unequip = new("Unequip", typeof(InteractionUnequip));
+        public static readonly InteractionDef Construct = new("Construct", typeof(InteractionConstruct));
 
         static InteractionDefOf()
         {

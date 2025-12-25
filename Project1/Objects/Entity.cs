@@ -10,7 +10,7 @@ namespace Start_a_Town_
     public /*abstract*/ class Entity : GameObject
     {
         bool _initialized;
-        public override GameObject Create() => new Entity();
+        //public override GameObject Create() => new Entity();
         public SpriteComp Sprite => this.GetComponent<SpriteComp>();
         /// <summary>
         /// here or in tool class?
@@ -29,10 +29,15 @@ namespace Start_a_Town_
             this.AddComponent(new PhysicsComponent());
             this.AddComponent(new SpriteComp()); // add this only through comp props
         }
-        public Entity(ItemDef def) : this()
+        //public Entity(int stackSize): this() { this._stackSize = stackSize >= 0 ? stackSize : StackMax; }
+        public Entity(ItemDef def, int amount) : base(def, amount)
         {
-            this.Def = def;
+            //this.Def = def;
             //this.AddComponent(new SpriteComp(def));
+            this.AddComponent(new PositionComponent());
+            this.AddComponent(new DefComponent());
+            this.AddComponent(new PhysicsComponent());
+            this.AddComponent(new SpriteComp()); // add this only through comp props
         }
         internal GameObjectSlot GetEquipmentSlot(GearType.Types type)
         {

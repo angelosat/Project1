@@ -40,7 +40,7 @@ namespace Start_a_Town_
                 if(!sources.Any() || !destinations.Any())
                     continue;
 
-                var task = new Plan(TaskDefOf.Sowing);
+                var task = new Plan(PlanDefOf.Sowing);
                 task.AddTargets(TaskBehaviorDeliverMaterials.MaterialID, sources);
                 task.AddTargets(TaskBehaviorDeliverMaterials.DestinationID, destinations);
 

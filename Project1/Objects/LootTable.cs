@@ -42,9 +42,8 @@ namespace Start_a_Town_
                 var l = loot[k];
                 for (int i = 0; i < l.GetRandomCount(rand); i++)
                 {
-                    var obj = l.Factory();
-                    var stacksize = rand.Next(l.AmountMin, l.AmountMax);
-                    obj.StackSize = stacksize;
+                    var amount = rand.Next(l.AmountMin, l.AmountMax);
+                    var obj = l.Factory(amount);
                     yield return obj;
                 }
             }

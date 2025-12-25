@@ -25,7 +25,7 @@
                     if (actor.CanReach(exit))
                     {
                         AILog.SyncWrite(actor, $"I'm departing for {actor.AI.Meta.TargetFrontier}");
-                        return new Plan(TaskDefOf.Depart, (map, exit));
+                        return new Plan(PlanDefOf.Depart, (map, exit));
                     }
                 }
                 actor.Net.Report($"Failed to find a reachable exit for {actor.Name}'s departure");

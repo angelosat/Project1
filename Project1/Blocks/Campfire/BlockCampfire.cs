@@ -19,7 +19,7 @@ namespace Start_a_Town_
         {
             var table =
                 new LootTable(
-                    new Loot(() => ItemFactory.CreateFrom(RawMaterialDefOf.Logs, MaterialDefOf.Human)) // TODO
+                    new Loot(a => ItemFactory.CreateFrom(RawMaterialDefOf.Logs, MaterialDefOf.Human)) // TODO
                     );
             return table;
         }

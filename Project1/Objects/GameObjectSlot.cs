@@ -41,8 +41,10 @@ namespace Start_a_Town_
                     return;
                 }
                 if (this.HasValue)
-                    this.Object.StackSize = value;
-                
+                {
+                    throw new NotImplementedException();
+                    //this.Object.StackSize = value;
+                }
             }
         }
         public int StackMax => this.Object is null ? 1 : Object.StackMax;
@@ -271,7 +273,7 @@ namespace Start_a_Town_
             if (this.Object is null)
                 return;
             if (this.Object.StackSize > amount)
-                this.Object.StackSize-=amount;
+                this.Object.Consume(amount);
             else
             {
                 this.Object.Net.DisposeObject(this.Object);

@@ -73,7 +73,7 @@ namespace Start_a_Town_
                         continue;
                     if (fuel.Material?.Fuel?.Value > 0)
                     {
-                        var task = new Plan(TaskDefOf.Refueling);// 
+                        var task = new Plan(PlanDefOf.Refueling);// 
                         task.SetTarget(TaskBehaviorRefueling.DestinationIndex, new TargetArgs(actor.Map, target.Key));
                         foreach (var similar in CollectUntilFull(actor, refComp, fuel, fuelMissing, handled))
                             task.AddTarget(TaskBehaviorRefueling.SourceIndex, new TargetArgs(similar.Key), similar.Value);

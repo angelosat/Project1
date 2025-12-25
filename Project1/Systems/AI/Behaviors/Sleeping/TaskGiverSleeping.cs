@@ -37,13 +37,13 @@ namespace Start_a_Town_.AI
                     // check to reserve operating position solid block below?
                     var operatingPosition = new TargetArgs(map, p);
 
-                    var task = new Plan(TaskDefOf.SleepingOnBed, new TargetArgs(map, bedglobal), operatingPosition);//, bed);
+                    var task = new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bedglobal), operatingPosition);//, bed);
                     return task;
                 }
             }
 
             if (energyValue == 0)
-                return new Plan(TaskDefOf.SleepingOnGround);
+                return new Plan(PlanDefOf.SleepingOnGround);
 
             return null;
         }

@@ -34,7 +34,7 @@ namespace Start_a_Town_
                 //if(!allocations.Any())
                 if (result.State == CraftingOrderState.ReadyToCraft && carried == null)
                 {
-                    var plan = new Plan(TaskDefOf.Crafting, new TargetArgs(actor.Map, order.Workstation.Parent.OriginGlobal)) { Order = order };
+                    var plan = new Plan(PlanDefOf.Crafting, new TargetArgs(actor.Map, order.Workstation.Parent.OriginGlobal)) { Order = order };
                     foreach(var inSlot in result.InSlots)
                         plan.AddTarget(TargetIndex.A, inSlot.entity);
                     return plan;
@@ -45,7 +45,7 @@ namespace Start_a_Town_
                     if (CanDeliverCarriedItemToOrder(actor, order, out var carriedTargetSlot))
                     {
                         //return new Plan(TaskDefOf.GoPlace, new TargetArgs(carried), new TargetArgs(actor.Map, carriedTargetSlot));
-                        return new Plan(TaskDefOf.GoPlace, new TargetArgs(actor.Map, carriedTargetSlot));
+                        return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, carriedTargetSlot));
                     }
                     else if (IsCarriedItemUsefulForOrder(actor, order))
                     {
@@ -55,7 +55,7 @@ namespace Start_a_Town_
                             .FirstOrDefault(a => a.stack == carried);
 
                         if (allocation.stack != null)
-                            return new Plan(TaskDefOf.GoHaul, new TargetArgs(allocation.stack)) { AmountA = allocation.quantity };
+                            return new Plan(PlanDefOf.GoHaul, new TargetArgs(allocation.stack)) { AmountA = allocation.quantity };
 
                         // should not reach here if allocations are accurate
                         throw new InvalidOperationException();
@@ -68,7 +68,7 @@ namespace Start_a_Town_
                 // If carried is null, just go find a world item to pick up:
                 var nextItem = FindNextWorldItemForOrder(actor, order, allocations);
                 if(nextItem != null)
-                    return new Plan(TaskDefOf.GoHaul, new TargetArgs(nextItem.Value.stack)) { AmountA = nextItem.Value.quantity };
+                    return new Plan(PlanDefOf.GoHaul, new TargetArgs(nextItem.Value.stack)) { AmountA = nextItem.Value.quantity };
 
 
                 //var result = TryCollectIngredients(actor, order);
@@ -221,7 +221,7 @@ namespace Start_a_Town_
                             return clearTask;
                         }
                         var workstationTarget = new TargetArgs(map, benchglobal);
-                        var task = new Plan(TaskDefOf.Crafting);
+                        var task = new Plan(PlanDefOf.Crafting);
                         task.OrderOld = order;
                         task.AddTarget(TaskBehaviorCrafting.IngredientIndex, unf, 1);
                         task.SetTarget(TaskBehaviorCrafting.WorkstationIndex, workstationTarget);
@@ -240,7 +240,7 @@ namespace Start_a_Town_
                         }
 
                         var workstationTarget = new TargetArgs(map, benchglobal);
-                        var task = new Plan(TaskDefOf.Crafting);
+                        var task = new Plan(PlanDefOf.Crafting);
                         foreach (var dic in itemAmounts)
                             foreach (var itemAmount in dic)
                                 task.AddTarget(TaskBehaviorCrafting.IngredientIndex, itemAmount.Key, itemAmount.Value);

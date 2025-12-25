@@ -18,7 +18,7 @@ namespace Start_a_Town_
             bool endCond()
             {
                 var constrTar = Construction;
-                var result = constrTar.Type == TargetType.Null || !manager.IsBuildableCurrently(constrTar.Global);
+                var result = constrTar.Type == TargetType.Null || !manager.IsSupported(constrTar.Global);
                 return result;
             }
             this.FailOn(endCond);

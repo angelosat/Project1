@@ -6,13 +6,11 @@
         {
 
         }
-        public Item(ItemDef def) : base(def)
-        {
-
-        }
-        public override GameObject Create()
-        {
-            return new Item(this.Def);
-        }
+        public Item(ItemDef def, int amount) : base(def, amount) { }
+   
+        //public override GameObject Create()
+        //{
+        //    return new Item(this.Def);
+        //}
     }
 }

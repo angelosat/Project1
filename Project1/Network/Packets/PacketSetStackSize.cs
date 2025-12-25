@@ -27,7 +27,8 @@ namespace Start_a_Town_
             var client = endpoint as Client;
             var r = packet.PacketReader;
             var entity = client.World.GetEntity(r.ReadInt32());
-            entity.StackSize = r.ReadInt32();
+            throw new NotImplementedException();
+            //entity.StackSize = r.ReadInt32();
         }
     }
 }

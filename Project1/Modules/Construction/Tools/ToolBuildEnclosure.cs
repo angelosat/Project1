@@ -19,7 +19,6 @@ namespace Start_a_Town_
             if (!this.Enabled)
                 return;
             var end = this.End + IntVec3.UnitZ * this.Height;
-
             var box = this.Begin.GetBox(end);
             if (Math.Abs(this.End.X - this.Begin.X) > 1 && Math.Abs(this.End.Y - this.Begin.Y) > 1)
             {

@@ -251,7 +251,29 @@ namespace Start_a_Town_
             }
             return list;
         }
+        static public IEnumerable<IntVec3> GetBoxHollow(this IntVec3 begin, IntVec3 end)
+        {
+            var xmin = Math.Min(begin.X, end.X);
+            var ymin = Math.Min(begin.Y, end.Y);
+            var zmin = Math.Min(begin.Z, end.Z);
+            var xmax = begin.X + end.X - xmin;
+            var ymax = begin.Y + end.Y - ymin;
+            var zmax = begin.Z + end.Z - zmin;
+            var dx = xmax - xmin + 1;
+            var dy = ymax - ymin + 1;
+            var dz = zmax - zmin + 1;
 
+            var origin = new IntVec3(xmin, ymin, zmin);
+            var target = new IntVec3(xmax, ymax, zmax);
+
+            var boxfull = origin.GetBoxLazy(target);
+
+            if (dx <= 2 || dy <= 2 || dz <= 2)
+                return boxfull;
+
+            var boxHollow = boxfull.Except((origin + IntVec3.One).GetBox(target - IntVec3.One));
+            return boxHollow;
+        }
         static public List<IntVec3> GetBox(this IntVec3 begin, IntVec3 end)
         {
             var xmin = Math.Min(begin.X, end.X);

@@ -11,7 +11,7 @@ namespace Start_a_Town_
             var loc = GetBestTillingLocation(actor);
             if (!loc.HasValue)
                 return null;
-            var task = new Plan(TaskDefOf.Tilling);// typeof(TaskBehaviorTilling));
+            var task = new Plan(PlanDefOf.Tilling);// typeof(TaskBehaviorTilling));
             task.SetTarget(TaskBehaviorTilling.TargetInd, new TargetArgs(actor.Map, loc.Value));
             FindTool(actor, task, JobDefOf.Farmer);
             return task;

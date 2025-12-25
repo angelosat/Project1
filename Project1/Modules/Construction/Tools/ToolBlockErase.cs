@@ -40,6 +40,7 @@ namespace Start_a_Town_
                 return;
             var positions = this.Begin.GetBox(this.End)
                 .Where(v => map.GetBlock(v) != BlockDefOf.Air);
+            positions = this.Begin.GetBoxHollow(this.End);
             camera.DrawCellHighlights(sb, Block.BlockBlueprint, positions, Color.Red);
         }
         internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, PlayerData player)

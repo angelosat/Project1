@@ -26,7 +26,7 @@ namespace Start_a_Town_
 
                         if (place is not null)
                             // emit godeliver task at place
-                            return new Plan(TaskDefOf.GoPlace, place);
+                            return new Plan(PlanDefOf.GoPlace, place);
                     }
                 } 
                 // else if stack < stackmax
@@ -49,10 +49,10 @@ namespace Start_a_Town_
                                     continue; // skip items already properly stored
                                 //until a valid one is found and emit gohaul with target amount math.min(diff, target.stacksize)
                                 if (carried.CanAbsorb(item))
-                                    return new Plan(TaskDefOf.GoHaul, item) { AmountA = Math.Min(diff, item.StackSize) };
+                                    return new Plan(PlanDefOf.GoHaul, item) { AmountA = Math.Min(diff, item.StackSize) };
                             }
                             var place = stockpile.FindPlaceFor(carried);
-                            return new Plan(TaskDefOf.GoPlace, place);
+                            return new Plan(PlanDefOf.GoPlace, place);
                         }
                     }
                 }
@@ -75,7 +75,7 @@ namespace Start_a_Town_
                     if (currentStockpile == null || 
                         !currentStockpile.Accepts(item) || 
                         stockpile.Priority >= currentStockpile.Priority)
-                        return new Plan(TaskDefOf.GoHaul, item) { AmountA = Math.Min(item.StackSize, availableCapacity) };
+                        return new Plan(PlanDefOf.GoHaul, item) { AmountA = Math.Min(item.StackSize, availableCapacity) };
                 }
             }
             

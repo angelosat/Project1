@@ -147,8 +147,7 @@ namespace Start_a_Town_
                 throw new Exception();
             var actualAmountToAdd = Math.Min(amount, desiredAmount);
             var actualFuelToAdd = actualAmountToAdd * fuel;
-            item.StackSize -= actualAmountToAdd;
-
+            item.Consume(actualAmountToAdd);
             // add fuel immediately or store item and consume it when power is requested?
             this.Fuel.Value += actualFuelToAdd;
             this.StoreFuel(item.Def, item.PrimaryMaterial, actualAmountToAdd);

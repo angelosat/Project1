@@ -24,7 +24,7 @@ namespace Start_a_Town_
             visitor.Actor.GetState().ConversationPartner = actor;
             actor.GetState().ConversationPartner = visitor.Actor;
             actor.EnqueueCommunication(visitor.Actor, ConversationTopic.Guidance);
-            return new Plan(TaskDefOf.Chatting, new TargetArgs(visitor.Actor));
+            return new Plan(PlanDefOf.Chatting, new TargetArgs(visitor.Actor));
         }
     }
 }

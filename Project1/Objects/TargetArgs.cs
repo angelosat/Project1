@@ -940,6 +940,7 @@ namespace Start_a_Town_
             return Type switch
             {
                 TargetType.Entity => this.EntityID == o.EntityID,
+                TargetType.BlockEntity => this.BlockEntity.OriginGlobal == o.BlockEntity.OriginGlobal,
                 TargetType.Position => this.Global == o.Global,
                 TargetType.Direction => this.Direction == o.Direction,
                 _ => false
@@ -949,6 +950,7 @@ namespace Start_a_Town_
         Type switch
         {
             TargetType.Entity => HashCode.Combine((int)Type, this.EntityID),
+            TargetType.BlockEntity => HashCode.Combine((int)Type, this.BlockEntity.OriginGlobal.X, this.BlockEntity.OriginGlobal.Y, this.BlockEntity.OriginGlobal.Z),
             TargetType.Position => HashCode.Combine((int)Type, this.Global.X, this.Global.Y, this.Global.Z),
             TargetType.Direction => HashCode.Combine((int)Type, this.Direction.X, this.Direction.Y),
             _ => (int)Type

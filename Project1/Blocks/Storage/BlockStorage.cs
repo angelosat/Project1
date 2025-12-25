@@ -25,8 +25,9 @@ namespace Start_a_Town_
         {
             return new BlockStorageEntity(originGlobal);
         }
-        public override void OnDrop(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
+        public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
         {
+            throw new System.Exception();
             var binEntity = actor.Map.GetBlockEntity(target.Global) as BlockStorageEntity;
             binEntity.Insert(dropped);
             actor.ClearCarried();

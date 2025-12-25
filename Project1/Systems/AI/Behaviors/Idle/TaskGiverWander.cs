@@ -10,7 +10,7 @@ namespace Start_a_Town_
         protected override Plan TryPlan(Actor actor)
         {
             var direction = new TargetArgs(ChooseDirection(actor));
-            return new Plan(TaskDefOf.Wander, direction) { TicksTimeout = Ticks.PerSecond };
+            return new Plan(PlanDefOf.Wander, direction) { TicksTimeout = Ticks.PerSecond };
         }
 
         static Vector2 ChooseDirection(Actor actor)

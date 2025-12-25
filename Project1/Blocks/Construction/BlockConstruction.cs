@@ -34,9 +34,9 @@ namespace Start_a_Town_
                 var remaining = mat.Amount;
                 while (remaining > 0)
                 {
-                    var obj = this.Ingredient.ItemDef.Create();
-                    obj.StackSize = Math.Min(obj.StackMax, remaining);
-                    remaining -= obj.StackSize;
+                    var amount = Math.Min(this.Ingredient.ItemDef.StackCapacity, remaining);
+                    var obj = this.Ingredient.ItemDef.Create(amount: amount);
+                    remaining -= amount;
                     map.Net.PopLoot(obj, global, Vector3.Zero);
                 }
             }
@@ -50,8 +50,9 @@ namespace Start_a_Town_
             var entity = map.GetBlockEntity(global) as BlockConstructionEntity;
             return entity.IsValidHaulDestination(obj.Def);
         }
-        public override void OnDrop(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
+        public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
         {
+            throw new Exception();
             amount = amount < 0 ? dropped.StackSize : amount;
             var e = target.GetBlockEntity<BlockConstructionEntity>();
             e.HandleDepositedItem(dropped, amount);

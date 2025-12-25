@@ -1621,13 +1621,8 @@ namespace Start_a_Town_
                     var cell = this.Cells[GetCellIndex(local)];
                     var global = local.ToGlobal(this);
 
-                    if (this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global))
-                    {
+                    if (this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global)) // HACK
                         camera.DrawBlock(canvas, BlockDefOf.Designation, map, this, local);
-                        //camera.DrawBlockSelectionGlobal(
-                        //    canvas.Designations,
-                        //    local);
-                    }
 
                     var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);
                     var isundiscovered = map.IsUndiscovered(global);

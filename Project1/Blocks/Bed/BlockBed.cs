@@ -57,7 +57,7 @@ namespace Start_a_Town_
         {
             var table =
                 new LootTable(
-                    new Loot(() => ItemFactory.CreateFrom(RawMaterialDefOf.Planks, MaterialDefOf.Human))// this.GetMaterial(data)))
+                    new Loot(a => ItemFactory.CreateFrom(RawMaterialDefOf.Planks, MaterialDefOf.Human))// this.GetMaterial(data)))
                     );
             return table;
         }

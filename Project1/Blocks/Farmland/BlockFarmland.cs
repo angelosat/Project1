@@ -28,12 +28,16 @@ namespace Start_a_Town_
             return data == 1;
         }
         
-        public override void OnDrop(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
+        public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
         {
             if (dropped.HasComponent<SeedComponent>())
+            {
                 Plant(actor.Map, target.Global, dropped);
-            else
-                base.OnDrop(actor, dropped, target, amount);
+                return true;
+            }
+            return false;
+            //else
+            //    base.TryConsume(actor, dropped, target, amount);
         }
         static public void Plant(MapBase map, Vector3 global, GameObject obj)
         {
@@ -51,7 +55,8 @@ namespace Start_a_Town_
             //placer.Place(map, global);
             Block.Place(BlockDefOf.Soil, map, global, map.GetCell(global).Material, 0, 0, 0);
             map.Town.ZoneManager.GetZoneAt(global)?.Invalidate();
-            obj.StackSize--;
+            //obj.StackSize--;
+            obj.Consume(1);
         }
     }
 }

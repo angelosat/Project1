@@ -78,7 +78,7 @@ namespace Start_a_Town_
             //AddTemplate(ActorSystem.Create(ActorDnaDefOf.Npc));
             AddTemplate(EntityFactory.Request(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer).Create());
 
-            foreach (var t in RawMaterialSystem.GenerateTemplates().Where(t=>t is not null))
+            foreach (var t in RawMaterialSystem.GenerateTemplates().Where(t => t is not null))
                 AddTemplate(t);
 
             foreach (var toolProp in Start_a_Town_.Def.GetDefs<ToolProfileDef>())
@@ -260,13 +260,36 @@ namespace Start_a_Town_
             }
         }
         public int StackMax => this.Def.StackCapacity;
+        public bool IsEmpty => this.StackSize == 0;
+        public void Consume(int amount)
+        {
+            if (amount <= 0)
+                return;
+            this.StackSize -= amount;
+            if (this.IsEmpty)
+                this.Destroy();
+        }
+        public void Destroy()
+        {
+            if (this.Net.IsServer)
+                this.World.DisposeEntityAndSync(this as Entity);
+        }
+        public void Add(int amount)
+        {
+            if (amount <= 0)
+                return;
 
-        int _StackSize = 1;
+            this.StackSize += amount;
+        }
+        protected int _stackSize = 1;
+
         public int StackSize
         {
-            get { return this._StackSize; }
-            set
+            get { return this._stackSize; }
+            private set
             {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException();
                 var oldSize = this.StackSize;
                 var newSize = Math.Min(value, this.StackMax);
                 if (oldSize == newSize)
@@ -275,16 +298,18 @@ namespace Start_a_Town_
                 }
 
                 value = newSize;
-                this._StackSize = value;
+                this._stackSize = value;
                 if (value == 0)
                 {
-                    if (this.IsSpawned)
-                        this.OnDespawn();
+                    //if (this.IsSpawned)
+                    //    this.OnDespawn();
 
-                    if (this.Slot != null)
-                        this.Slot.Clear();
+                    //if (this.Slot != null)
+                    //    this.Slot.Clear();
 
-                    this.Dispose();
+                    //this.Dispose();
+                    //if (this.Net.IsServer)
+                    //    this.World.DisposeEntityAndSync(this as Entity);
                 }
                 else if (value < 0)
                     throw new Exception();
@@ -355,13 +380,19 @@ namespace Start_a_Town_
                 obj.GetComponent(comp.GetType()).CopyFrom(comp);
             return obj;
         }
-
-        public abstract GameObject Create();
+        public GameObject Split(int amount)
+        {
+            var obj = this.Clone();
+            obj._stackSize = amount;
+            this.Consume(amount);
+            return obj;
+        }
+        //public abstract GameObject Create();
         public GameObject TrySplitOne()
         {
             throw new NotImplementedException(); // TODO sync instantiate new object
         }
-        public GameObject Split(int amount)
+        public GameObject SplitOld(int amount)
         {
             if (amount >= this.StackSize)
                 throw new Exception();
@@ -846,7 +877,8 @@ namespace Start_a_Town_
             var obj = def.Create(profile);
 
             obj.RefId = r.ReadInt32();
-            obj.StackSize = r.ReadInt32();
+            var amount = r.ReadInt32();
+            obj._stackSize = amount < 0 ? def.StackCapacity : amount;
             //int compCount = r.ReadInt32();
             //for (int i = 0; i < compCount; i++)
             //{
@@ -908,7 +940,7 @@ namespace Start_a_Town_
             // todo : items without profile (coins for now)
             data.Add(this.Profile.Save("ProfileID"));
             data.Add(this.RefId.Save("InstanceID"));
-            data.Add(this._StackSize.Save("Stack"));
+            data.Add(this._stackSize.Save("Stack"));
             //var compData = new SaveTag(SaveTag.Types.Compound, "Components");
             //foreach (var comp in this.Components.Values)
             //{
@@ -937,7 +969,7 @@ namespace Start_a_Town_
                 return null;
             var obj = def.Create(profile);
             tag.TryGetTagValueOrDefault("InstanceID", out obj.RefId);
-            tag.TryGetTagValue<int>("Stack", v=> obj._StackSize = v);
+            tag.TryGetTagValue<int>("Stack", v=> obj._stackSize = v);
             //var compData = tag["Components"].Value as Dictionary<string, SaveTag>;
             //foreach (var compTag in compData.Values)
             //{
@@ -1500,6 +1532,11 @@ namespace Start_a_Town_
         protected GameObject()
         {
             this.Components = new(this);
+        }
+        protected GameObject(ItemDef def, int amount) : this()
+        {
+            this.Def = def;
+            this._stackSize = amount;
         }
         public void SyncInstantiate(NetEndpoint net)
         {

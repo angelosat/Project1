@@ -1119,7 +1119,9 @@ namespace Start_a_Town_
         /// <param name="velocity">The initial velocity of the entity.</param>
         public void SpawnAndSync(Entity entity, Vector3 position, Vector3 velocity)
         {
-            if(entity.RefId == 0)
+            if (this.Net.IsClient)
+                return;
+            if (entity.RefId == 0)
                 this.World.RegisterAndSync(entity);
             this.Spawn(entity, position, velocity);
             PacketSpawnEntity.Send(entity, position, velocity);

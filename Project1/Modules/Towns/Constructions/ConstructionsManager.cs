@@ -3,9 +3,7 @@ using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using static Start_a_Town_.PacketDesignateConstruction;
 
 namespace Start_a_Town_
 {
@@ -17,6 +15,12 @@ namespace Start_a_Town_
 
         static readonly Lazy<GuiConstructionsBrowser> WindowBuild = new();
         static readonly IHotkey HotkeyBuild;
+
+        readonly Dictionary<IntVec3, ConstructionParams> PendingDesignations = new();
+        readonly HashSet<IntVec3> Designations = new();
+        //readonly Dictionary<IntVec3, BlockConstructionComp> DesignationsByCell = [];
+        readonly HashSet<BlockConstructionComp> DesignationEntities = [];
+
         static ConstructionsManager()
         {
             HotkeyBuild = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Build", ToggleConstructionWindow, System.Windows.Forms.Keys.B);
@@ -30,15 +34,77 @@ namespace Start_a_Town_
         public ConstructionsManager(Town town)
         {
             this.Town = town;
-            this.Town.Map.World.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChanged);
+            this.Town.Map.World.Events.ListenTo<BlocksUpdatedEvent>(this.OnBlocksChanged);
+            this.Town.Map.World.Events.ListenTo<ConstructionReadyEvent>(this.OnConstructionReady);
         }
-        readonly Dictionary<IntVec3, ConstructionParams> PendingDesignations = new();
-        readonly HashSet<IntVec3> Designations = new();
-        readonly HashSet<BlockEntity> DesignationEntities = [];
 
+        private void OnConstructionReady(ConstructionReadyEvent e)
+        {
+            if (!this.DesignationEntities.Contains(e.Comp))
+                throw new KeyNotFoundException($"Received {nameof(ConstructionReadyEvent)} for non-registered construction designation");
+            this._dirty = true;
+        }
+        bool _dirty;
+        void OnBlocksChanged(BlocksUpdatedEvent e)
+        {
+            foreach (var pos in e.Positions)
+            {
+                this.TryHandlePendingDesignation(pos);
+
+                if (!this._dirty)
+                    foreach (var n in pos.GetAdjacentLazy())
+                    {
+                        var entity = this.Map.GetBlockEntity(n);
+                        if (entity != null && 
+                            entity.Comps.TryGetComp<BlockConstructionComp>(out var comp) 
+                            && this.DesignationEntities.Contains(comp))
+                            this._dirty = true;
+                    }
+            }
+        }
+        //internal Dictionary<bool, BlockConstructionComp> GetConstructionsByReadiness()
+        //{
+        //    if (this._snapshotByReadiness is null || this._dirty)
+        //        this.CacheReadiness();
+        //    return this._snapshotByReadiness;
+        //}
+        internal HashSet<BlockConstructionComp> GetConstructionsReady()
+        {
+            if (this._snapshotByReadiness is null || this._dirty)
+                this.CacheReadiness();
+            return this._snapshotByReadiness[true];
+        }
+        internal HashSet<BlockConstructionComp> GetConstructionsUnready()
+        {
+            if (this._snapshotByReadiness is null || this._dirty)
+                this.CacheReadiness();
+            return this._snapshotByReadiness[false];
+        }
         internal IEnumerable<IntVec3> GetAllBuildableCurrently()
         {
-            return this.Designations.Where(this.IsBuildableCurrently);
+            return this.Designations.Where(this.IsSupported);
+        }
+        internal IEnumerable<BlockConstructionComp> GetAllBuildableEntities()
+        {
+            return this.DesignationEntities.Where(e => e.Parent.CellsOccupied.All(this.IsSupported));
+        }
+        internal IEnumerable<BlockConstructionComp> GetReadyForConstruction()
+        {
+            return this.DesignationEntities.Where(e => e.IsReady && e.Parent.CellsOccupied.All(this.IsSupported));
+        }
+        Dictionary<bool, HashSet<BlockConstructionComp>> _snapshotByReadiness = new() { { false, new() }, { true, new() } };
+        void CacheReadiness()
+        {
+            // TODO incremental tracking
+            _snapshotByReadiness[false].Clear();
+            _snapshotByReadiness[true].Clear();
+            foreach(var e in this.DesignationEntities)
+            {
+                if (e.IsReady && e.Parent.CellsOccupied.Any(this.IsSupported))
+                    _snapshotByReadiness[true].Add(e);
+                else
+                    _snapshotByReadiness[false].Add(e);
+            }
         }
 
         internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
@@ -68,29 +134,7 @@ namespace Start_a_Town_
             this.PendingDesignations.Load(tag, "PendingDesignations", i => i.Global);
         }
 
-        //internal override void OnGameEvent(GameEvent e)
-        //{
-        //    switch (e.Type)
-        //    {
-        //        /// I ACTUALLY NEED IT TO ADD PENDING DESIGNATIONS
-        //        case Components.Message.Types.BlocksChanged:
-        //            foreach (var pos in e.Parameters[1] as IEnumerable<IntVec3>)
-        //                this.TryHandlePendingDesignation(pos);
-        //            break;
-
-        //        //case Components.Message.Types.ZoneDesignation:
-        //        //    this.Add(e.Parameters[0] as DesignationDef, e.Parameters[1] as List<IntVec3>, (bool)e.Parameters[2]);
-        //        //    break;
-
-        //        default:
-        //            break;
-        //    }
-        //}
-        void HandleBlocksChanged(BlocksUpdatedEvent e)
-        {
-            foreach (var pos in e.Positions)
-                this.TryHandlePendingDesignation(pos);
-        }
+        
         
         private void Add(DesignationDef designation, List<IntVec3> positions, bool remove)
         {
@@ -149,7 +193,7 @@ namespace Start_a_Town_
         {
             return this.Designations.Contains(vector3);
         }
-        internal bool IsBuildableCurrently(IntVec3 global)
+        internal bool IsSupported(IntVec3 global)
         {
             if (!this.IsDesignatedConstruction(global))
                 return false;
@@ -279,30 +323,46 @@ namespace Start_a_Town_
             //var entity = result.Entity;
 
             var entity = BlockDefOf.Designation.CreateEntity(global);
-            this.DesignationEntities.Add(entity);
             map.AddBlockEntity(global, entity);
             var comp = entity.GetComp<BlockConstructionComp>();
+            this.DesignationEntities.Add(comp);
+            //foreach (var cell in comp.Parent.CellsOccupied)
+            //    this.DesignationsByCell.Add(cell, comp);
+
             comp.SetArgs(args);
             //this.Town.DesignationManager.Add(DesignationDefOf.Construct, new TargetArgs(map, global));
             //map.GetChunk(global).Slices[global.Z].Valid = false;
             map.GetChunk(global).InvalidateSlice(global.Z);
             this.Designations.Add(global);
+            this._dirty = true;
         }
         private void RemoveNew(IEnumerable<IntVec3> positions)
         {
             var map = this.Town.Map;
-
-            foreach (var pos in positions)
+            var snapshot = positions.ToHashSet();
+            var comps = this.DesignationEntities.Where(c => c.Parent.CellsOccupied.Any(snapshot.Contains));
+            foreach(var comp in comps)
             {
-                var entity = this.DesignationEntities.FirstOrDefault(e => e.CellsOccupied.Contains(pos));
-                if (entity is not null)
+                var entity = comp.Parent;
+                this.DesignationEntities.Remove(comp);
+                foreach (var child in entity.CellsOccupied)
                 {
-                    this.DesignationEntities.Remove(entity);
-                    foreach(var child in entity.CellsOccupied)
-                        this.Designations.Remove(child);
-                    map.GetChunk(pos).InvalidateSlice(pos.Z);
+                    this.Designations.Remove(child);
+                    map.GetChunk(child).InvalidateSlice(child.Z);
                 }
             }
+
+            //foreach (var pos in positions)
+            //{
+            //    var entity = this.DesignationEntities.FirstOrDefault(e => e.Parent.CellsOccupied.Contains(pos));
+            //    if (entity is not null)
+            //    {
+            //        this.DesignationEntities.Remove(entity);
+            //        foreach(var child in entity.Parent.CellsOccupied)
+            //            this.Designations.Remove(child);
+            //        map.GetChunk(pos).InvalidateSlice(pos.Z);
+            //    }
+            //}
         }
         public IEnumerable<(string name, Action action)> GetInfoTabs()
         {

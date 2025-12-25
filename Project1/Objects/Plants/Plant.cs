@@ -8,23 +8,25 @@ namespace Start_a_Town_
         [InspectorHidden]
         public PlantComponent PlantComponent => this._plantComponent ??= this.GetComponent<PlantComponent>();
       
-        public override GameObject Create()
-        {
-            return new Plant();
-        }
+        //public override GameObject Create()
+        //{
+        //    return new Plant();
+        //}
         public Plant() : base()
         {
             //this.AddComponent(new PlantComponent());
             //this.AddComponent(new ResourcesComponent(ResourceDefOf.HitPoints));
         }
-
+        public Plant(ItemDef def, int amount) : base(def, amount)
+        {
+        }
         //public Plant(ItemDef def)
         //    : base()
         //{
         //    this.Def = def;
         //    this.AddComponent(new SpriteComp(Def));
         //}
-       
+
         public bool IsHarvestable => this.PlantComponent.IsHarvestable;
         [InspectorHidden]
         public float GrowthBody

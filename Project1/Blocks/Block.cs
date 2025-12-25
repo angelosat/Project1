@@ -12,6 +12,7 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     public abstract partial class Block : Inspectable, ISlottable, ITooltippable
     {
+        public bool HasEntity => this.BlockEntityCompSpecs is not null;//.Length > 0;
         struct BlockEntityCompDef
         {
             Type CompType;
@@ -414,7 +415,7 @@ namespace Start_a_Town_
             var material = cell.Material;
             var scraps = RawMaterialDefOf.Scraps;
             var materialQuantity = this.Ingredient.Amount;
-            actor.Net.PopLoot(new LootTable(new Loot(() => scraps.CreateFrom(material), 1, materialQuantity, scraps.StackCapacity / 2, scraps.StackCapacity)), global, Vector3.Zero);
+            actor.Net.PopLoot(new LootTable(new Loot(a => scraps.CreateFrom(material), 1, materialQuantity, scraps.StackCapacity / 2, scraps.StackCapacity)), global, Vector3.Zero);
         }
 
         public virtual bool IsValidPosition(MapBase map, IntVec3 global, int orientation) { return true; }
@@ -737,18 +738,14 @@ namespace Start_a_Town_
        
         public virtual void OnSteppedOn(GameObject actor, IntVec3 global) { }
 
-        public virtual void OnDrop(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
+        public virtual bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
         {
-            if (actor.Net.IsClient)
-                return;
-            dropped.Global = target.Global + target.Face + target.Precise;
-            // no need to do the following anymore: spawning implicitly removes entities from their previous owner
-            //if (dropped.Slot is not null)
-            //    dropped.Slot.Clear(); // ugly
-
-            // TODO: handle case where we split the stack when dropping it. instantiate new object with server etc...
-
-            actor.Map.SpawnAndSync(dropped as Entity, target.Global + target.Face + target.Precise, Vector3.Zero);
+            //if (actor.Net.IsClient)
+            //    return;
+            //dropped.Global = target.Global + target.Face + target.Precise;
+            //actor.Map.SpawnAndSync(dropped as Entity, target.Global + target.Face + target.Precise, Vector3.Zero);
+       
+            return false;
         }
 
         public static MaterialDef GetBlockMaterial(MapBase map, IntVec3 global)

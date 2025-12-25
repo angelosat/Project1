@@ -59,9 +59,9 @@ namespace Start_a_Town_.AI.Behaviors
             if (mostImpactful.item != null)
             {
                 if (mostImpactful.score > 0)
-                    return new Plan(TaskDefOf.Equip, new TargetArgs(mostImpactful.item));
+                    return new Plan(PlanDefOf.Equip, new TargetArgs(mostImpactful.item));
                 else if (mostImpactful.score < 0)
-                    return new Plan(TaskDefOf.Unequip, new TargetArgs(mostImpactful.item));
+                    return new Plan(PlanDefOf.Unequip, new TargetArgs(mostImpactful.item));
             }
 
             return null;

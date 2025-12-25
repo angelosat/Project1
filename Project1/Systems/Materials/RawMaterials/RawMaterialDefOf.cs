@@ -139,7 +139,7 @@ namespace Start_a_Town_
                 );
             Def.Register(smelting);
 
-            Generate();
+            //Generate();
         }
         static void Generate()
         {

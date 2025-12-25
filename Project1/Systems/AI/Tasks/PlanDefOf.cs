@@ -4,7 +4,7 @@ using Start_a_Town_.AI.Behaviors.ItemOwnership;
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    public static class TaskDefOf
+    public static class PlanDefOf
     {
         static public PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft))//typeof(TaskBehaviorCrafting))
         {
@@ -28,11 +28,11 @@ namespace Start_a_Town_
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-        static public PlanDef Construct = new("Construct", typeof(TaskBehaviorConstruct))
-        {
-            Format = "Construct {0}",
-            GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
-        };
+        //static public PlanDef Construct = new("Construct", typeof(TaskBehaviorConstruct))
+        //{
+        //    Format = "Construct {0}",
+        //    GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
+        //};
 
         static public PlanDef DeliverMaterials = new("DeliverMaterials", typeof(TaskBehaviorDeliverMaterials))
         {
@@ -96,19 +96,19 @@ namespace Start_a_Town_
             Format = "Chop down {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        static public PlanDef Idle = new("Idleing", typeof(TaskBehaviorIdle)) { Idle = true };
-        static public PlanDef Wander = new("Wandering", typeof(TaskBehaviorWander)) { Idle = true };
-        static public PlanDef Depart = new("Departing", typeof(TaskBehaviorDepart));
-        static public PlanDef DropInventory = new("Dropping item from Inventory", typeof(TaskBehaviorDropInventoryItem));
-        static public PlanDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem));
-        static public PlanDef Equip = new("Equipping", typeof(BehaviorEquipItemNew), InteractionDefOf.Equip);
-        static public PlanDef Unequip = new("Unquipping", typeof(BehaviorUnequip), InteractionDefOf.Unequip);
-        static public PlanDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul), InteractionDefOf.Pick);
-        static public PlanDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace), InteractionDefOf.Place);
-
-        static TaskDefOf()
+        static public readonly PlanDef Idle = new("Idleing", typeof(TaskBehaviorIdle)) { Idle = true };
+        static public readonly PlanDef Wander = new("Wandering", typeof(TaskBehaviorWander)) { Idle = true };
+        static public readonly PlanDef Depart = new("Departing", typeof(TaskBehaviorDepart));
+        static public readonly PlanDef DropInventory = new("Dropping item from Inventory", typeof(TaskBehaviorDropInventoryItem));
+        static public readonly PlanDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem));
+        static public readonly PlanDef Equip = new("Equipping", typeof(BehaviorEquipItemNew), InteractionDefOf.Equip);
+        static public readonly PlanDef Unequip = new("Unquipping", typeof(BehaviorUnequip), InteractionDefOf.Unequip);
+        static public readonly PlanDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul), InteractionDefOf.Pick);
+        static public readonly PlanDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace), InteractionDefOf.Place);
+        static public readonly PlanDef Construct = new("Construct", typeof(TaskBehaviorConstruct), InteractionDefOf.Construct); 
+        static PlanDefOf()
         {
-            Def.Register(typeof(TaskDefOf));
+            Def.Register(typeof(PlanDefOf));
         }
     }
 }

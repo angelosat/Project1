@@ -28,12 +28,12 @@ namespace Start_a_Town_
         public override void Perform()
         {
             this._animation.FadeOutAndRemove();
-            if (this.Actor.Net.IsClient)
-                return;
+            //if (this.Actor.Net.IsClient)
+            //    return;
             var actor = this.Actor;
             var target = this.Target;
             var hauled = actor.Inventory.HaulSlot;// PersonalInventoryComponent.GetHauling(actor);
-            var hauledObj = hauled.Object;
+            var hauledObj = hauled.Object as Entity;
             if(hauledObj == null)
             {
                 throw new Exception();
@@ -44,31 +44,36 @@ namespace Start_a_Town_
             if (this.Amount > hauledObj.StackSize)
                 throw new Exception();
             //this.Animation.FadeOutAndRemove();
-
+            var global = target.Global;
             switch (target.Type)
             {
                 case TargetType.Position:
-                    actor.Map.GetBlock(target.Global).OnDrop(actor, hauledObj, target, this.Amount == -1 ? hauledObj.StackSize : this.Amount);
-                    actor.CurrentTask?.AddPlacedObject(hauledObj);
+                    if (actor.Map.GetBlockEntity(global)?.TryConsume(hauledObj) ?? false)
+                        return;
+                    if (actor.Map.GetBlock(target.Global).TryConsume(actor, hauledObj, target, this.Amount == -1 ? hauledObj.StackSize : this.Amount))
+                        return;
+                    actor.Map.SpawnAndSync(hauledObj, global, actor.Velocity);
+                    //actor.CurrentTask?.AddPlacedObject(hauledObj);
                     break;
 
                 case TargetType.Entity:
-                    var o = target.Object;
-                    var amount = (this.Amount == -1) ? hauledObj.StackSize : this.Amount;
-                    var transferAmount = Math.Min(o.StackAvailableSpace, amount); // do i want to check this here? 
-                    if (o.StackSize + transferAmount > o.StackMax)
-                        throw new Exception();
-                    if (!o.CanAbsorb(hauledObj, transferAmount))
-                        throw new Exception();
-                    o.StackSize += transferAmount;
-                    PacketSetStackSize.Send(o, o.StackSize);
-                    if (hauledObj.StackSize == transferAmount)
-                        actor.Map.World.DisposeEntityAndSync(hauledObj as Entity);
-                    else
-                    {
-                        hauledObj.StackSize -= transferAmount;
-                        PacketSetStackSize.Send(hauledObj, hauledObj.StackSize);
-                    }
+                    throw new NotImplementedException();
+                    //var o = target.Object;
+                    //var amount = (this.Amount == -1) ? hauledObj.StackSize : this.Amount;
+                    //var transferAmount = Math.Min(o.StackAvailableSpace, amount); // do i want to check this here? 
+                    //if (o.StackSize + transferAmount > o.StackMax)
+                    //    throw new Exception();
+                    //if (!o.CanAbsorb(hauledObj, transferAmount))
+                    //    throw new Exception();
+                    //o.Add(transferAmount);
+                    //PacketSetStackSize.Send(o, o.StackSize);
+                    //if (hauledObj.StackSize == transferAmount)
+                    //    actor.Map.World.DisposeEntityAndSync(hauledObj as Entity);
+                    //else
+                    //{
+                    //    hauledObj.Consume(transferAmount);
+                    //    PacketSetStackSize.Send(hauledObj, hauledObj.StackSize);
+                    //}
                     break;
 
                 default:

@@ -13,7 +13,7 @@
             {
                 if (!map.IsStandableIn(pos))
                     continue;
-                var task = new Plan(TaskDefOf.Moving, pos.At(map));
+                var task = new Plan(PlanDefOf.Moving, pos.At(map));
                 return task;
             }
             return null;

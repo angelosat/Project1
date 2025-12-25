@@ -82,18 +82,18 @@ namespace Start_a_Town_
             //Interaction goal = this.Interaction;
             int count = this.CountInd == TargetIndex.None ? -1 : parent.CurrentTask.GetAmount(this.CountInd);
 
-            var interaction = Actor.Work.Task;
-            if(interaction is null)
+            //var interaction = Actor.Work.Task;
+            if(_interaction is null)
             {
-                interaction = ActivatorSafe<Interaction>.CreateInstance(parent.CurrentTask.Def.Interaction.InteractionClass);
+                _interaction = ActivatorSafe<Interaction>.CreateInstance(parent.CurrentTask.Def.Interaction.InteractionClass);
             }
 
             //switch (goal.State)
-            switch (interaction.State)
+            switch (_interaction.State)
             {
                 case Interaction.States.Unstarted:
                     //throw new Exception();
-                    AIManager.Interact(parent, interaction, target, count);
+                    AIManager.Interact(parent, _interaction, target, count);
                     return BehaviorState.Running;
 
                 case Interaction.States.Running:

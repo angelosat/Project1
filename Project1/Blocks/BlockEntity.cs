@@ -228,5 +228,14 @@ namespace Start_a_Town_
             foreach (var c in this.Comps.Values)
                 c.Initialize();
         }
+
+        internal bool TryConsume(Entity item)
+        {
+            bool consumed = false;
+            foreach (var c in this.Comps.Values)
+                consumed |= c.TryConsume(item);
+            return consumed;
+                
+        }
     }
 }

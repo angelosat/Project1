@@ -43,7 +43,7 @@ namespace Start_a_Town_
                 if (skill == null)
                     throw new Exception();
 
-                var task = new Plan(TaskDefOf.Digging, target);// new TargetArgs(actor.Map, target));
+                var task = new Plan(PlanDefOf.Digging, target);// new TargetArgs(actor.Map, target));
                 //FindTool(actor, task, skill);
 
                 return task;

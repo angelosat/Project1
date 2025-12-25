@@ -20,12 +20,12 @@
                         continue;
                     if (plant.PlantComponent.Species.ProducesFruit)
                     {
-                        var task = new Plan(TaskDefOf.Harvesting, new TargetArgs(plant));
+                        var task = new Plan(PlanDefOf.Harvesting, new TargetArgs(plant));
                         return task;
                     }
                     else
                     {
-                        var task = new Plan(TaskDefOf.Chopping, plant)
+                        var task = new Plan(PlanDefOf.Chopping, plant)
                         {
                             Tool = FindTool(actor, JobDefOf.Lumberjack)
                         };

@@ -13,7 +13,7 @@ namespace Start_a_Town_
             var composure = actor[TraitDefOf.Composure].Normalized;
             var waitTicks = (int)((BaseWaitTime + (.5f * BaseWaitTime * composure)) * Ticks.PerSecond);
             var dir = ChooseDirection(actor);
-            return new Plan(TaskDefOf.Idle, new TargetArgs(dir)) { TicksTimeout = waitTicks };
+            return new Plan(PlanDefOf.Idle, new TargetArgs(dir)) { TicksTimeout = waitTicks };
         }
 
         static Vector2 ChooseDirection(Actor actor)

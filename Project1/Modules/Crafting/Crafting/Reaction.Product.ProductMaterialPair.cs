@@ -40,7 +40,7 @@ namespace Start_a_Town_
                         var item = req.Value;
                         if (item.Amount > item.Object.StackSize)
                             throw new Exception("required amount is larger than actual amount");
-                        item.Object.StackSize -= item.Amount;
+                        item.Object.Consume(item.Amount);
                     }
                     if (this.RequirementsNew.Values.Any(o => o.Object.StackSize > 0))
                     {

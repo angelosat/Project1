@@ -8,7 +8,7 @@ namespace Start_a_Town_
         {
             if (actor.Inventory.All.FirstOrDefault(i => !actor.ItemPreferences.IsPreference(i)) is Entity item)
                 //return new AITask(typeof(TaskBehaviorDropInventoryItem), item);
-                return new Plan(TaskDefOf.DropInventory, item);// { TargetA = item };
+                return new Plan(PlanDefOf.DropInventory, item);// { TargetA = item };
             return null;
         }
 
@@ -57,7 +57,7 @@ namespace Start_a_Town_
                     continue;
 
                 manager.Commit(role, item, score);
-                return new Plan(TaskDefOf.PickUp) { TargetA = item, AmountA = 1 };
+                return new Plan(PlanDefOf.PickUp) { TargetA = item, AmountA = 1 };
             }
             return null;
         }
@@ -69,7 +69,7 @@ namespace Start_a_Town_
             var itemmanager = actor.ItemPreferences;
             var (role, _) = itemmanager.FindBestRole(item);
             if (role is not null)
-                return TaskDefOf.PickUp;
+                return PlanDefOf.PickUp;
             return null;
         }
 

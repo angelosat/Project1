@@ -49,6 +49,7 @@ namespace Start_a_Town_
             min = new IntVec3(xmin, ymin, zmin);
             max = new IntVec3(xmax, ymax, zmax);
         }
+
         static public void GetMinMaxVector3(Vector3 vec1, Vector3 vec2, out Vector3 min, out Vector3 max)
         {
             var xmin = Math.Min(vec1.X, vec2.X);
@@ -341,5 +342,6 @@ namespace Start_a_Town_
         {
             return global + Vector3.UnitY;
         }
+
     }
 }

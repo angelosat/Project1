@@ -224,10 +224,9 @@ namespace Start_a_Town_.Components
                 throw new Exception("Cannot take more than stack size");
             if (amount < target.StackSize)
             {
-                target.StackSize -= amount;
-                PacketSetStackSize.Send(target, target.StackSize);
-                finalItem = target.Clone();
-                finalItem.StackSize = amount;
+                target.Consume(amount);
+                //PacketSetStackSize.Send(target, target.StackSize);
+                finalItem = target.Split(amount) as Entity;
                 actor.World.RegisterAndSync(finalItem);
                 //actor.World.Register(finalItem);
                 //PacketRegisterEntity.Send(finalItem);
@@ -249,12 +248,12 @@ namespace Start_a_Town_.Components
             // if the amount specified to haul will make the existing hauled item exceed the stackmax, there's been a bug
             if (existing.StackSize + amount > existing.StackMax)
                 throw new Exception();
-            existing.StackSize += amount;
-            PacketSetStackSize.Send(existing, existing.StackSize);
-            if(finalItem.StackSize == amount)
-            {
-                actor.Map.World.DisposeEntityAndSync(finalItem as Entity);
-            }
+            //existing.StackSize += amount;
+            existing.Add(amount);
+            finalItem.Consume(amount);
+            //PacketSetStackSize.Send(existing, existing.StackSize);
+            //if(finalItem.StackSize == amount)
+            //    actor.Map.World.DisposeEntityAndSync(finalItem as Entity);
         }
 
         public void Drop(GameObject item)
@@ -413,7 +412,7 @@ namespace Start_a_Town_.Components
             if (current != null)
                 if (current.CanAbsorb(obj))
                 {
-                    current.StackSize++;
+                    current.Add(1);
                     obj.OnDespawn();
                     net.DisposeObject(obj);
                     return true;
@@ -437,9 +436,7 @@ namespace Start_a_Town_.Components
             GameObject newobj;
             if (!all && slot.Object.StackSize > 1)
             {
-                newobj = slot.Object.Clone();
-                newobj.StackSize = 1;
-                slot.Object.StackSize -= 1;
+                newobj = slot.Object.Split(1);
             }
             else
                 newobj = slot.Object;

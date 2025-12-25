@@ -45,7 +45,10 @@ namespace Start_a_Town_
         {
 
         }
-
+        public Actor(ItemDef def, int amount) : base(def, amount)
+        {
+            
+        }
         public override float Height => this.Physics.Height - (this.Mobile.Crouching ? 1 : 0);
         public override bool IsHaulable => false;
 
@@ -262,10 +265,10 @@ namespace Start_a_Town_
             this.GetState().Path = null;
         }
 
-        public override GameObject Create()
-        {
-            return new Actor();
-        }
+        //public override GameObject Create()
+        //{
+        //    return new Actor();
+        //}
 
         
 

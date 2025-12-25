@@ -5,9 +5,100 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    class TaskGiverConstructing : Planner
+    class ConstructingPlanner : Planner
     {
         protected override Plan TryPlan(Actor actor)
+        {
+            if (!actor.HasJob(JobDefOf.Builder))
+                return null;
+            var manager = actor.Map.Town.ConstructionsManager;
+
+            var buildablesReady = manager.GetConstructionsReady();
+            var buildablesUnready = manager.GetConstructionsUnready();
+
+            var carried = actor.Hauled as Entity;
+            if (carried is not null)
+            {
+                var (target, cell) = GetCarriedUsefulness(actor, buildablesUnready);
+                if (target is not null)
+                {
+                    var missing = target.Missing;
+                    return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, cell)) { AmountA = missing };
+                }
+                return null;
+            }
+
+            foreach (var comp in buildablesReady)
+                foreach (var c in comp.Parent.CellsOccupied)
+                    if (actor.CanReach(c))
+                        return new Plan(PlanDefOf.Construct, new TargetArgs(actor.Map, c));
+
+            //var byRefinement = buildables[false].ToLookup(c => c.Requirement.refinement);
+            //var byRefinementAndMaterial =
+            //        byRefinement.ToDictionary(
+            //            grp => grp.Key,
+            //            grp => grp
+            //                .ToLookup(c => c.Requirement.material)
+            //                .ToDictionary(
+            //                    g => g.Key,
+            //                    g => g.ToList()
+            //                )
+            //        );
+            var byRefinementAndMaterial = new Dictionary<MaterialRefinementDef, Dictionary<MaterialDef, List<BlockConstructionComp>>>();
+            foreach (var b in buildablesUnready)
+            {
+                var r = b.Requirement.refinement;
+                var m = b.Requirement.material;
+                if (!byRefinementAndMaterial.TryGetValue(r, out var byMaterial))
+                    byRefinementAndMaterial[r] = byMaterial = new Dictionary<MaterialDef, List<BlockConstructionComp>>();
+                if (!byMaterial.TryGetValue(m, out var list))
+                    byMaterial[m] = list = new List<BlockConstructionComp>();
+                list.Add(b);
+            }
+            foreach (var item in actor.Map.Entities)
+            {
+                if (item.Def != ItemDefOf.Ingredient)
+                    continue;
+                var refinementDef = (MaterialRefinementDef)item.Profile;
+                if (byRefinementAndMaterial.TryGetValue(refinementDef, out var byMaterial))
+                    if (byMaterial.TryGetValue(item.PrimaryMaterial, out var candidates))
+                        if (actor.CanReach(item) && actor.CanReserve(item))
+                            foreach (var comp in candidates)
+                                if (comp.Parent.CellsOccupied.Any(c => actor.CanReach(c)))
+                                    return new Plan(PlanDefOf.GoHaul, new TargetArgs(item));
+            }
+            return null;
+        }
+
+        private static (BlockConstructionComp comp, IntVec3 target) IsItemUsefulForAnyConstruction(Actor actor, IEnumerable<BlockConstructionComp> buildings)
+        {
+            var item = actor.Hauled as Entity;
+            //return buildings.First(b => b.Accepts(carried) && );
+            foreach(var b in buildings.Where(b=>b.Accepts(item)))
+            {
+                foreach (var cell in b.Parent.CellsOccupied)
+                    if (actor.CanReach(cell))
+                        return (b, cell);
+            }
+            return (null, default);
+        }
+        private static (BlockConstructionComp target, IntVec3 cell) GetCarriedUsefulness(Actor actor, IEnumerable<BlockConstructionComp> buildings)
+        {
+            var item = actor.Hauled as Entity;
+            foreach (var b in buildings)
+            {
+                if (!b.Accepts(item)) continue;
+                foreach (var cell in b.Parent.CellsOccupied)
+                    if (actor.CanReach(cell))
+                        return (b, cell);
+            }
+            return (null, default);
+        }
+        Entity ScanForIngredients(BlockConstructionComp comp)
+        {
+            return null;
+        }
+        protected Plan TryPlanOld(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Builder))
                 return null;
@@ -95,7 +186,7 @@ namespace Start_a_Town_
             //if (items.Any()) // return null if failure to return haul aside task
             //    return null;
 
-            var buildtask = new Plan(TaskDefOf.Construct);
+            var buildtask = new Plan(PlanDefOf.Construct);
             buildtask.SetTarget(TaskBehaviorConstruct.ConstructionsID, new TargetArgs(actor.Map, global));
 
             var construction = cachedBlockEntity as BlockConstructionEntity;
@@ -124,7 +215,7 @@ namespace Start_a_Town_
                     continue;
                 if (i is Plant && actor.CanReserve(i))
                 {
-                    var plantCutTask = new Plan(TaskDefOf.Chopping, i)
+                    var plantCutTask = new Plan(PlanDefOf.Chopping, i)
                     {
                         Tool = FindTool(actor, JobDefOf.Lumberjack)
                     };
@@ -144,7 +235,7 @@ namespace Start_a_Town_
         {
             if (!IsOperatable(actor, origin))
                 return null;
-            var task = new Plan(TaskDefOf.DeliverMaterials);
+            var task = new Plan(PlanDefOf.DeliverMaterials);
             var allObjects = actor.Map.GetEntities();
             var enduranceLimit = Math.Min(actor.GetHaulStackLimitFromEndurance(ingredientDef), ingredientDef.StackCapacity);
             var maxDeliverable = 0;

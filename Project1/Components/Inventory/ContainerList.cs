@@ -73,7 +73,9 @@ namespace Start_a_Town_
 
             if(this.Contents.FirstOrDefault(i=>i.CanAbsorb(item)) is GameObject existing)
             {
-                existing.StackSize += item.StackSize;
+                //existing.StackSize += item.StackSize;
+                existing.Add(item.StackSize);
+                throw new NotImplementedException();
                 item.Dispose();
                 return;
             }

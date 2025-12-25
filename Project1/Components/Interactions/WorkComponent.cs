@@ -34,6 +34,8 @@ namespace Start_a_Town_.Components
         {
             if (this.Task == null)
                 return;
+            if(this.Owner.Net.IsClient)
+                $"{this.Owner.Net} interrupt".ToConsole();
             this.Task.Interrupt(success);
             this.Task.FinishAction();
             this.Task = null;

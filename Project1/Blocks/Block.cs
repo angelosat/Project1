@@ -423,7 +423,6 @@ namespace Start_a_Town_
         [Obsolete($"use {nameof(MapBase.SetBlock)}")]
         public static void Place(Block block, MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
-            throw new Exception();
             block.OnPlaced(map, global, material, data, variation, orientation, false);// notify);
             var children = block.GetChildrenWithSource(global, orientation);
             foreach (var (child, source) in children)

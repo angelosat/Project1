@@ -14,10 +14,9 @@ namespace Start_a_Town_
 
         internal static void EndInteraction(NetEndpoint net, GameObject entity, bool success)
         {
+            return; // let client finish interaction?
             var server = net as Server;
-            //var w = server.OutgoingStreamTimestamped;
             var w = server.BeginPacket(PacketInteract);
-            //w.Write(PacketInteract);
             w.Write(entity.RefId);
             w.Write(false);
             w.Write(success);

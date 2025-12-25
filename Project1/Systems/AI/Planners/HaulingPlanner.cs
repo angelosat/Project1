@@ -29,7 +29,7 @@ namespace Start_a_Town_
                             return new Plan(PlanDefOf.GoPlace, place);
                     }
                 } 
-                // else if stack < stackmax
+                // else if can carry more
                 else
                 {
                     // start iterating stockpiles until

@@ -173,7 +173,7 @@ namespace Start_a_Town_
                     case BehaviorState.Success:
                         parent.MoveToggle(false);
 
-                        parent.CancelInteraction();
+                        parent.EndInteraction();
 
                         // TODO: unreserve here?
                         parent.Unreserve();

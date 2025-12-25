@@ -22,11 +22,19 @@ namespace Start_a_Town_
                 var (target, cell) = GetCarriedUsefulness(actor, buildablesUnready);
                 if (target is not null)
                 {
-                    var missing = target.Missing;
-                    return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, cell)) { AmountA = missing };
+                    var extraCapacity = target.Missing - carried.StackSize;
+                    if (extraCapacity > 0)
+                    {
+                        (Entity item, int amount) = FindMoreFor(carried, target);
+                        if (item is not null)
+                            return new Plan(PlanDefOf.GoHaul, new TargetArgs(item)) { AmountA = amount };
+                    }
+                    var amountToDeposit = target.Missing;
+                    return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, cell)) { AmountA = amountToDeposit };
                 }
                 return null;
             }
+
 
             foreach (var comp in buildablesReady)
                 foreach (var c in comp.Parent.CellsOccupied)
@@ -68,6 +76,19 @@ namespace Start_a_Town_
                                     return new Plan(PlanDefOf.GoHaul, new TargetArgs(item));
             }
             return null;
+        }
+
+        private static (Entity item, int amount) FindMoreFor(Entity carried, BlockConstructionComp target)
+        {
+            var mapItems = target.Map.Entities;
+            foreach(var item in mapItems)
+            {
+                if (!target.Accepts(item as Entity)) continue;
+                if (!carried.CanAbsorb(item)) continue;
+                var amountToTake = Math.Min(item.StackSize, Math.Min(target.Missing, carried.StackAvailableSpace));
+                return (item as Entity, amountToTake);
+            }
+            return default;
         }
 
         private static (BlockConstructionComp comp, IntVec3 target) IsItemUsefulForAnyConstruction(Actor actor, IEnumerable<BlockConstructionComp> buildings)

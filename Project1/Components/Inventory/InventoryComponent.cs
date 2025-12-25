@@ -231,7 +231,7 @@ namespace Start_a_Town_.Components
                 finalItem = target;
 
             // if currently hauling something else, it must be made sure that it's of the same type so we can increase its stacksize. otherwise there has been a bug earlier
-            if(actor.Inventory.HaulSlot.Object is not GameObject existing)
+            if (actor.Inventory.HaulSlot.Object is not GameObject existing)
             {
                 actor.Inventory.HaulSlot.SetItem(finalItem, out var _);/// putting the item in the gameobjectslot, removes it from its current container or despawns it, so no need to send packetremoveinventoryitem
                 //PacketActorHaulUpdate.Send(actor, finalItem as Entity);
@@ -245,6 +245,39 @@ namespace Start_a_Town_.Components
             existing.Add(amount);
             finalItem.Consume(amount);
             //PacketSetStackSize.Send(existing, existing.StackSize);
+            //GameObject finalItem;
+            //var actor = this.Owner as Actor;
+            //if (!target.IsHaulable)
+            //    throw new Exception();
+            //if (amount == 0)
+            //    throw new Exception("Amount must be initialized");
+            //if (amount < 0)
+            //    amount = target.StackSize;
+            //if (amount > target.StackSize)
+            //    throw new Exception("Cannot take more than stack size");
+            //if (amount < target.StackSize)
+            //{
+            //    target.Consume(amount);
+            //    finalItem = target.Split(amount) as Entity;
+            //}
+            //else
+            //    finalItem = target;
+
+            //// if currently hauling something else, it must be made sure that it's of the same type so we can increase its stacksize. otherwise there has been a bug earlier
+            //if(actor.Inventory.HaulSlot.Object is not GameObject existing)
+            //{
+            //    actor.Inventory.HaulSlot.SetItem(finalItem, out var _);/// putting the item in the gameobjectslot, removes it from its current container or despawns it, so no need to send packetremoveinventoryitem
+            //    //PacketActorHaulUpdate.Send(actor, finalItem as Entity);
+            //    return;
+            //}
+            //if (!existing.CanAbsorb(finalItem))
+            //    throw new Exception();
+            //// if the amount specified to haul will make the existing hauled item exceed the stackmax, there's been a bug
+            //if (existing.StackSize + amount > existing.StackMax)
+            //    throw new Exception();
+            //existing.Add(amount);
+            //finalItem.Consume(amount);
+            ////PacketSetStackSize.Send(existing, existing.StackSize);
         }
 
         public void Drop(GameObject item)

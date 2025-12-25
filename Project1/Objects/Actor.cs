@@ -242,7 +242,7 @@ namespace Start_a_Town_
         {
             AIManager.Interact(this, interaction, new TargetArgs(target));
         }
-        internal void CancelInteraction()
+        internal void EndInteraction()
         {
             AIManager.EndInteraction(this);
         }

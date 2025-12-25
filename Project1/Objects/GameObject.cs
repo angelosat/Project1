@@ -271,8 +271,7 @@ namespace Start_a_Town_
         }
         public void Destroy()
         {
-            if (this.Net.IsServer)
-                this.World.DisposeEntityAndSync(this as Entity);
+            this.World.DisposeEntityAndSync(this as Entity);
         }
         public void Add(int amount)
         {
@@ -373,11 +372,12 @@ namespace Start_a_Town_
         #endregion
         public Def Profile;
 
-        public GameObject Clone()
+        public GameObject Clone(int amount = -1)
         {
             var obj = this.Def.Create(this.Profile);
             foreach (var comp in this.Components.Values)
                 obj.GetComponent(comp.GetType()).CopyFrom(comp);
+            obj._stackSize = amount < 0 ? this.StackSize : amount;
             return obj;
         }
         public GameObject Split(int amount)
@@ -1503,7 +1503,8 @@ namespace Start_a_Town_
         protected GameObject(ItemDef def, int amount) : this()
         {
             this.Def = def;
-            this._stackSize = amount;
+            this._stackSize = amount < 0 ? this.Def.StackCapacity : amount;
+            //ArgumentOutOfRangeException.ThrowIfNegative(amount);
         }
         public void SyncInstantiate(NetEndpoint net)
         {

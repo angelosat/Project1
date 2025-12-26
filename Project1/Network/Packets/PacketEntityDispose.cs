@@ -16,7 +16,7 @@ namespace Start_a_Town_
         {
             //var w = player is null ? server.OutgoingStreamTimestamped : server.GetOutgoingStreamOrderedReliable();
             //w.Write(pServerAction);
-            var w = server.BeginPacket(pServerAction);
+            var w = server.BeginTimestamped(pServerAction);
             //var w = server.BeginTimestamped(pServerAction);
             w.Write(entityID);
         }

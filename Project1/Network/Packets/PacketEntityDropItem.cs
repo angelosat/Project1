@@ -15,7 +15,7 @@ namespace Project1.Network.Packets
         internal static void Send(Entity actor, Entity target)
         {
             var server = actor.Net as Server;
-            server.BeginPacket(pType)
+            server.BeginTimestamped(pType)
                 .Write(actor.RefId)
                 .Write(target.RefId);
             actor.Inventory.Drop(target);

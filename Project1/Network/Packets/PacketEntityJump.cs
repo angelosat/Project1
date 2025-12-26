@@ -14,7 +14,7 @@ namespace Start_a_Town_
         internal static void Send(INetEndpoint net, int entityID)
         {
             var server = net as Server;
-            server.BeginPacket(_packetTypeId)
+            server.BeginTimestamped(_packetTypeId)
                 .Write(entityID);
         }
         internal static void Receive(NetEndpoint net, Packet pck)

@@ -1,7 +1,4 @@
 ﻿using Start_a_Town_.Net;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Start_a_Town_
 {

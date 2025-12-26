@@ -92,6 +92,11 @@ namespace Start_a_Town_
             var slot = this.Equipment.Slots.FirstOrDefault(s => s.Object == item);
             return slot;
         }
+        internal override IEnumerable<GameObjectSlot> GetSlots()
+        {
+            foreach (var slot in this.Equipment.Slots)
+                yield return slot;
+        }
         public static bool Equip(GameObject a, GameObject t)
         {
             if (t is null)
@@ -102,14 +107,14 @@ namespace Start_a_Town_
             GameObjectSlot gearSlot = a.GetComponent<GearComponent>().Equipment.Slots[geartype];
 
             // despawn item's entity from world (if it's spawned in the world)
-            if (t.IsSpawned)
-                t.OnDespawn();
+            //if (t.IsSpawned)
+            //    t.OnDespawn();
 
             // attempt to store current equipped item in inventory, otherwise drop it if inventory is full
             
             // equip new item
-            gearSlot.Object = t;
-
+            //gearSlot.Object = t;
+            gearSlot.Assign(t);
             return true;
         }
         protected void Equip(Entity item)
@@ -120,7 +125,7 @@ namespace Start_a_Town_
             var slot = this.GetSlot(slotType);
 
             // the slot implictly removes the new item from the inventory or despawns it from the map and outputs the previous item that occupied the slot
-            slot.SetItem(item, out var previousItem);
+            slot.Assign(item, out var previousItem);
 
             // the previousItem is currently detached from a parent but still exists, so we have to explicitly insert it in the inventory
             if(previousItem != null)

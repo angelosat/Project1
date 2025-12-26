@@ -236,6 +236,7 @@ namespace Start_a_Town_.Net
 
             if (Instance.Map is not null)
             {
+
                 var size = Instance.Map.GetSizeInChunks();
                 var maxChunks = size * size;
                 if (Instance.Map.ActiveChunks.Count == maxChunks && !IsSaving)
@@ -269,31 +270,38 @@ namespace Start_a_Town_.Net
         int simLossStreak;
         Random _random = new();
         private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, byte[] data)> BufferTimestamped = [];
-        private readonly SortedDictionary<ulong, (ulong worldtick, double servertick, Packet packet, int payloadPos, int frameLength)> BufferTimestampedNew = [];
+        private readonly SortedDictionary<ulong, (ulong worldtick, /*double servertick, */Packet packet, int payloadPos, int frameLength)> BufferTimestampedNew = [];
 
-        private ulong lasttickreceived;
 
         public void HandleTimestamped(Packet packet)
         {
             var r = packet.Reader;
             var thisWorldTick = this.Map.World.CurrentTick;
+            //var clientTick = this.CurrentTick;
             for (int i = 0; i < this.Speed; i++)
             {
                 var remoteWorldTick = r.ReadUInt64();
-                var serverTick = r.ReadDouble();
                 var length = r.ReadInt64();
+                if (length == 0)
+                    continue;
                 int frameStart = (int)r.BaseStream.Position;
-                if (length > 0)
-                    r.BaseStream.Position += length; // skip data, dont read them. because i read them when handling them
+                //var test1 = r.ReadInt32();
+                //var test2 = r.ReadInt32();
+                //var test3 = r.ReadInt32();
+                //r.BaseStream.Position = frameStart;
+                //if (length > 0)
+                //r.BaseStream.Position += length; // skip data, dont read them. because i read them when handling them
 
                 if (remoteWorldTick == thisWorldTick)
                 {
-                    r.BaseStream.Position = frameStart;
+                    //r.BaseStream.Position = frameStart;
                     this.UnmergePackets(packet, (int)length);
                 }
                 else
-                    this.BufferTimestampedNew[remoteWorldTick] = (remoteWorldTick, serverTick, packet, frameStart, (int)length);
-
+                {
+                    r.BaseStream.Position += length; // skip data, dont read them. because i read them when handling them
+                    this.BufferTimestampedNew[remoteWorldTick] = (remoteWorldTick, packet, frameStart, (int)length);
+                }
                 if (remoteWorldTick < this.lasttickreceived)
                     throw new Exception();
                 this.lasttickreceived = remoteWorldTick;
@@ -302,6 +310,7 @@ namespace Start_a_Town_.Net
 
         private void HandleBufferedTimestampedNew()
         {
+            var packetsHandled = 0;
             while (this.BufferTimestampedNew.Count != 0)
             {
                 var item = this.BufferTimestampedNew.First();
@@ -311,9 +320,11 @@ namespace Start_a_Town_.Net
                 var packet = item.Value.packet;
                 packet.Reader.BaseStream.Position = item.Value.payloadPos;
                 this.UnmergePackets(item.Value.packet, item.Value.frameLength);
+                packetsHandled++;
                 this.BufferTimestampedNew.Remove(item.Key);
             }
         }
+     
         private void TickMap()
         {
             this.HandleBufferedTimestampedNew();
@@ -418,6 +429,7 @@ namespace Start_a_Town_.Net
                 double curr = this.ClientClock.TotalMilliseconds;
                 double smoothed = curr + (target - curr) * 0.15;
                 this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(smoothed, 0));
+                //this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(curr, target));//
 
                 //this.ClientClock = TimeSpan.FromMilliseconds(target);
                 // for ordered packets, only handle last one (store most recent and discard and older ones)
@@ -473,6 +485,7 @@ namespace Start_a_Town_.Net
             {
                 var id = r.ReadInt32();
                 var type = (PacketType)id;
+                //var test = r.ReadInt32();
                 lastPos = r.Position;
 
                 if (PacketHandlersNew.TryGetValue(type, out Action<INetEndpoint, IDataReader> handlerAction))
@@ -535,7 +548,8 @@ namespace Start_a_Town_.Net
                     obj.Parent = parent;
                     int childIndex = r.ReadInt32();
                     var slot = parent.GetChildren()[childIndex];
-                    slot.Object = obj;
+                    //slot.Object = obj;
+                    slot.Assign(obj);
                     return;
 
                 case PacketType.ServerBroadcast:
@@ -781,6 +795,7 @@ namespace Start_a_Town_.Net
         }
 
         public HashSet<Vector2> ChunkRequests = new();
+        private ulong lasttickreceived;
 
         public void ReceiveChunk(Chunk chunk)
         {
@@ -1008,7 +1023,8 @@ namespace Start_a_Town_.Net
                 }
                 else
                     sourceSlot.Clear();
-                targetSlot.Object = obj;
+                //targetSlot.Object = obj;
+                targetSlot.Assign(obj);
                 return;
             }
             if (targetSlot.Object.CanAbsorb(sourceSlot.Object))

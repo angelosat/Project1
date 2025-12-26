@@ -16,14 +16,20 @@ namespace Start_a_Town_
             w.Write(playerid);
             target.Write(w);
         }
+        //static internal void Send(Server server, int playerid, TargetArgs target)
+        //{
+        //    var w = server.BeginUntimestamped(_packetTypeId);
+        //    w.Write(playerid);
+        //    target.Write(w);
+        //}
         static internal void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
             var playerid = r.ReadInt32();
             var target = TargetArgs.Read(net, r);
             net.GetPlayer(playerid)?.UpdateTarget(target);
-            if (net is Server)
-                Send(net, playerid, target);
+            if (net is Server server)
+                Send(server, playerid, target);
         }
     }
 }

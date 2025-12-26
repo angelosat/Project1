@@ -3,32 +3,32 @@
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    public static class PacketActorHaulUpdate
+    public static class PacketSlotAssign
     {
         static readonly int pType;
-        static PacketActorHaulUpdate()
+        static PacketSlotAssign()
         {
             pType = Registry.PacketHandlers.Register(Receive);
         }
 
-        public static void Send(Actor actor, Entity newItem, int amount = -1)
+        public static void Send(Entity owner, int slotId, Entity item)
         {
-            var server = actor.Net as Server;
+            var server = owner.Net as Server;
             server.BeginTimestamped(pType)
-                .Write(actor.RefId)
-                .Write(newItem?.RefId ?? -1)
-                .Write(amount);
+                .Write(owner.RefId)
+                .Write(slotId)
+                .Write(item?.RefId ?? -1);
         }
         private static void Receive(NetEndpoint endpoint, Packet packet)
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity(r.ReadInt32());
+            var ownerId = r.ReadInt32();
+            var owner = client.World.GetEntity<Actor>(ownerId);
+            var slotId = r.ReadInt32();
             var itemId = r.ReadInt32();
             var item = itemId > 0 ? client.World.GetEntity(itemId) : null;
-            var amount = r.ReadInt32();
-            //actor.Inventory.HaulSlot.Object = item;
-            actor.Inventory.HaulSlot.Assign(item);
+            owner.GetSlot(slotId).Assign(item);
         }
     }
 }

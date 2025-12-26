@@ -15,11 +15,20 @@ namespace Start_a_Town_
         public static void Send(Entity entity, Vector3 position, Vector3 velocity)//, Vector2 direction)
         {
             var server = entity.Net as Server;
-            server.BeginPacket(_packetTypeId)
+            server.BeginTimestamped(_packetTypeId)
                 .Write(entity.RefId)
                 .Write(position)
                 .Write(velocity);
                 //.Write(direction);
+        }
+        public static void Immediate(Entity entity, Vector3 position, Vector3 velocity)//, Vector2 direction)
+        {
+            var server = entity.Net as Server;
+            server.BeginPacket(_packetTypeId)
+                .Write(entity.RefId)
+                .Write(position)
+                .Write(velocity);
+            //.Write(direction);
         }
         private static void Receive(NetEndpoint endpoint, Packet packet)
         {

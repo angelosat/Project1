@@ -77,7 +77,6 @@ namespace Start_a_Town_
         public Entity GetEntity(int refId)
         {
             if (!this.EntityRegistry.TryGetValue(refId, out var obj))
-                //throw new Exception();
                 return null!; // dont throw because return might be null for early snapshots
             return obj;
         }
@@ -137,7 +136,7 @@ namespace Start_a_Town_
                 // remove from potential slot or container so that it gets detached from the parent entity and map.despawn() can remove if from the correct chunk by its true position,
                 // otherwise its parent position will be read
                 obj.Container?.Remove(obj);
-                obj.Slot?.SetItem(null, out var _);
+                obj.Slot?.Assign(null, out var _);
                 obj.Map?.Despawn(obj);
 
                 //if (obj.IsSpawned || obj.Container is not null || obj.Slot is not null)

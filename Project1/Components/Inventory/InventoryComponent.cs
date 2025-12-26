@@ -210,6 +210,10 @@ namespace Start_a_Town_.Components
             //item.StackSize -= amount;
             return item;
         }
+        internal override IEnumerable<GameObjectSlot> GetSlots()
+        {
+            yield return this.HaulSlot;
+        }
         public void HaulNew(GameObject target, int amount)
         {
             GameObject finalItem;
@@ -233,7 +237,8 @@ namespace Start_a_Town_.Components
             // if currently hauling something else, it must be made sure that it's of the same type so we can increase its stacksize. otherwise there has been a bug earlier
             if (actor.Inventory.HaulSlot.Object is not GameObject existing)
             {
-                actor.Inventory.HaulSlot.SetItem(finalItem, out var _);/// putting the item in the gameobjectslot, removes it from its current container or despawns it, so no need to send packetremoveinventoryitem
+                //actor.Inventory.HaulSlot.SetItem(finalItem, out var _);/// putting the item in the gameobjectslot, removes it from its current container or despawns it, so no need to send packetremoveinventoryitem
+                actor.Inventory.HaulSlot.AssignAndSync(finalItem, out var _);
                 //PacketActorHaulUpdate.Send(actor, finalItem as Entity);
                 return;
             }
@@ -444,8 +449,9 @@ namespace Start_a_Town_.Components
 
             this.Throw(Vector3.Zero, true); //or store carried object in backpack? (if available)
 
-            obj.OnDespawn();
-            this.HaulSlot.Object = obj;
+            //obj.OnDespawn();
+            //this.HaulSlot.Object = obj;
+            this.HaulSlot.Assign(obj);
             return true;
         }
 

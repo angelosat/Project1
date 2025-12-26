@@ -169,6 +169,7 @@ namespace Start_a_Town_.Components
         
 
         internal virtual void CopyFrom(EntityComp source) { }
+        internal virtual IEnumerable<GameObjectSlot> GetSlots() { yield break; }
 
         public abstract class Spec
         {

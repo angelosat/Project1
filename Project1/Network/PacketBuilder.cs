@@ -12,6 +12,8 @@ namespace Start_a_Town_.Net
 
         private PacketBuilder(BinaryWriter writer, int pType)
         {
+            //if (pType == 40050)
+            //    "test".ToConsole();
             this._writer = writer;
             writer.Write(pType);
         }
@@ -35,6 +37,7 @@ namespace Start_a_Town_.Net
         public IDataWriter Write(params object[] v) { this._writer.Write(v); return this; }
         internal static PacketBuilder Create(BinaryWriter w, int pType)
         {
+            
             return new(w, pType);
         }
         public IDataWriter Write(ICollection<IntVec3> list)

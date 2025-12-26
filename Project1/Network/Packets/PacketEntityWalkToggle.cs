@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {
@@ -14,8 +13,9 @@ namespace Start_a_Town_
        
         internal static void Send(NetEndpoint net, int entityID, bool toggle)
         {
+            return;
             var server = net as Server;
-            var w = server.BeginPacket(PType);
+            var w = server.BeginTimestamped(PType);
             w.Write(entityID);
             w.Write(toggle);
         }

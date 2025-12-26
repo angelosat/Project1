@@ -214,7 +214,8 @@ namespace Start_a_Town_.Components
                 var slot = GameObjectSlot.Create(itemTag);
                 slot.ContainerNew = this;
                 slot.ID = (byte)index;
-                this.Slots[index].Object = slot.Object;
+                //this.Slots[index].Object = slot.Object;
+                this.Slots[index].Assign(slot.Object);
             }
             return this;
         }

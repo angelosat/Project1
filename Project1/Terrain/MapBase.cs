@@ -575,18 +575,24 @@ namespace Start_a_Town_
         {
             if (obj.Map == this)
             {
+                $"{this} at {this.Net} despawning {obj.DebugName} on tick {this.CurrentTick}".ToConsole();
                 obj.OnDespawn(this);
+                if (!this.Remove(obj)) /// TODO: move this to map.despawn
+                    throw new Exception();
+                obj.Map = null;
                 //this.CachedObjects.Remove(obj);
                 return true;
             }
             throw new Exception("GameObject.Map mismatch when trying to despawn object");
             return false;
         }
-        public bool DespawnAndSync(Entity entity)
+        public void DespawnAndSync(Entity entity)
         {
+            if (entity.Net.IsClient)
+                return;
             if (this.Despawn(entity))
                 PacketEntityDespawn.Send(this.Net as Server, entity);
-            return false;
+            //return false;
         }
         internal bool Remove(GameObject obj)
         {
@@ -1096,7 +1102,8 @@ namespace Start_a_Town_
             if(entity.IsSpawned) entity.Map.Despawn(entity);
             if(entity is Actor actor) (this.World as StaticWorld).Space.Exit(actor);
 
-            entity.Slot?.Object = null;
+            //entity.Slot?.Object = null;
+            entity.Slot?.Assign(null);
             entity.Net = this.Net;
             entity.Map = this;
             //entity.SetGlobal(position);

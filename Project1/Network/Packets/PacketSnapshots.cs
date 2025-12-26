@@ -14,6 +14,7 @@ namespace Start_a_Town_
         }
         static public void Send(NetEndpoint net, ICollection<GameObject> entities)
         {
+            //return;
             var server = net as Server;
             var strem = server.BeginPacketNew(ReliabilityType.Unreliable, _packetTypeId);
             strem.Write(server.Clock.TotalMilliseconds);

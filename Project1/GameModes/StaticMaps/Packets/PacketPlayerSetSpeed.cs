@@ -10,11 +10,12 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(INetEndpoint net, int playerID, int speed)
+        internal static void Send(NetEndpoint net, int playerID, int speed)
         {
             //var w = net.GetOutgoingStreamOrderedReliable();
             //w.Write(p);
-            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
+            //var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
+            var w = net.BeginPacket(p);
             w.Write(playerID);
             w.Write(speed);
         }

@@ -15,6 +15,7 @@ namespace Start_a_Town_.Net
         public long PacketSequenceIncrement => _packetSeq++;
         public long OrderedReliableSequence = 0;//1;
         public long RemoteOrderedReliableSequence = -1;//0;
+        public bool SendSnapshots;
 
         public Color Color;
         public ConcurrentQueue<Packet> IncomingAll = new();

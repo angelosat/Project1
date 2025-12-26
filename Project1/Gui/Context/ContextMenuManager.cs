@@ -64,7 +64,7 @@ namespace Start_a_Town_
             var box = new ListBoxNoScroll<(string, Action), Button>(createButton, 0).AddItems(items);
             box.BackgroundColor = Microsoft.Xna.Framework.Color.Black * .5f;
             var win = box.ToWindow(title);//.Transparent();
-            win.Location = Controller.Instance.MouseLocation;
+            win.Location = UIManager.MouseScaled;// Controller.Instance.MouseLocation;
             return win;
 
             static Button createButton((string label, Action action) item)

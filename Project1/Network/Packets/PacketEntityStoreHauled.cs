@@ -14,7 +14,7 @@ namespace Start_a_Town_
         internal static void Send(Entity actor)
         {
             var server = actor.Net as Server;
-            server.BeginPacket(pType)
+            server.BeginTimestamped(pType)
                 .Write(actor.RefId);
             //actor.Inventory.Drop(target);
             actor.Inventory.StoreHauled();

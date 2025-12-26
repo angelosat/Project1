@@ -1,5 +1,4 @@
-﻿using SharpDX.Direct3D9;
-using Start_a_Town_.Components;
+﻿using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -29,7 +28,7 @@ namespace Start_a_Town_
                     this.Object.Parent = value;
             }
         }
-        public byte ID { get; set; }
+        public int ID { get; set; } = -1;
         public int StackSize
         {
             get { return this.HasValue ? this.Object.StackSize : 0; }
@@ -68,29 +67,33 @@ namespace Start_a_Town_
         public virtual GameObject Object
         {
             get => this.Link ?? _object;
-            [Obsolete]
-            set
-            {
-                if (value is not null)
-                    if (!this.Filter(value))
-                        return;
-                if (this._object != null)
-                {
-                    this._object.Slot = null;
-                    this._object.Parent = null;
-                }
-                _object = value;
-                ObjectChangedAction(value);
-                OnObjectChanged();
-                if (value != null)
-                {
-                    var _ = value.Container?.Remove(value) ?? value.Map?.Despawn(value);
-                    if (value.Slot is not null && value.Slot != this)
-                        value.Slot.Clear();
-                    value.Slot = this;
-                    value.Parent = this.Parent;
-                }
-            }
+            private set => this._object = value;
+            //[Obsolete]
+            //set
+            //{
+            //    throw new Exception();
+            //    if (value is not null)
+            //        if (!this.Filter(value))
+            //            return;
+            //    if (this._object != null)
+            //    {
+            //        this._object.Slot = null;
+            //        this._object.Parent = null;
+            //    }
+            //    _object = value;
+            //    ObjectChangedAction(value);
+            //    OnObjectChanged();
+            //    if (value != null)
+            //    {
+
+            //        value.Container?.Remove(value);
+            //            value.Map?.Despawn(value);
+            //        if (value.Slot is not null && value.Slot != this)
+            //            value.Slot.Clear();
+            //        value.Slot = this;
+            //        value.Parent = this.Parent;
+            //    }
+            //}
         }
         public bool HasValue => this.Object != null;
         public Func<Icon> GetIcon;
@@ -152,7 +155,7 @@ namespace Start_a_Town_
         /// </summary>
         /// <param name="newItem"></param>
         /// <returns>The previous item (or null) the slot held.</returns>
-        public bool SetItem(GameObject newItem, out GameObject prevItem)
+        public bool Assign(GameObject newItem, out GameObject prevItem)
         {
             prevItem = this._object;
             if (newItem is not null && !this.Filter(newItem))
@@ -167,13 +170,51 @@ namespace Start_a_Town_
             this.OnObjectChanged();
             if (newItem != null)
             {
-                var _ = newItem.Container?.Remove(newItem) ?? newItem.Map?.Despawn(newItem);
-                if (newItem.Slot is not null && newItem.Slot != this)
-                    newItem.Slot.Clear();
+                newItem.Container?.Remove(newItem);
+                //newItem.Map?.DespawnAndSync(newItem as Entity);
+                newItem.Map?.Despawn(newItem as Entity);
+                //if (newItem.Slot is not null && newItem.Slot != this)
+                //    newItem.Slot.Clear();
+                newItem.Slot?.Object = prevItem;
                 newItem.Slot = this;
                 newItem.Parent = this.Parent;
             }
             return true;
+        }
+        public bool AssignAndSync(GameObject newItem, out GameObject prevItem)
+        {
+            if (this.Parent.Net.IsClient)
+            {
+                prevItem = null;
+                return false;
+            }
+            var result = this.Assign(newItem, out prevItem);
+            //prevItem = this._object;
+            //if (newItem is not null && !this.Filter(newItem))
+            //    return false;
+            //if (prevItem != null)
+            //{
+            //    prevItem.Slot = null;
+            //    prevItem.Parent = null;
+            //}
+            //this._object = newItem;
+            //this.ObjectChangedAction(newItem);
+            //this.OnObjectChanged();
+            //if (newItem != null)
+            //{
+            //    newItem.Container?.Remove(newItem);
+            //    newItem.Map?.DespawnAndSync(newItem as Entity);
+            //    if (newItem.Slot is not null && newItem.Slot != this)
+            //        newItem.Slot.Clear();
+            //    newItem.Slot = this;
+            //    newItem.Parent = this.Parent;
+            //}
+            PacketSlotAssign.Send(this.Parent as Entity, this.ID, newItem as Entity);
+            return result;
+        }
+        public bool Assign(GameObject newItem)
+        {
+            return this.Assign(newItem, out _);
         }
         public override string ToString()
         {
@@ -182,7 +223,7 @@ namespace Start_a_Town_
 
         public void Write(IDataWriter writer)
         {
-            writer.Write(ID);
+            writer.Write(this.ID);
             writer.Write(this.Name);
             writer.Write(this.HasValue);
             if (this.HasValue)
@@ -190,7 +231,7 @@ namespace Start_a_Town_
         }
         public void Read(IDataReader reader)
         {
-            this.ID = reader.ReadByte();
+            this.ID = reader.ReadInt32();
             this.Name = reader.ReadString();
             if (!reader.ReadBoolean()) // if not having a value
                 return;

@@ -10,22 +10,23 @@ namespace Start_a_Town_
         {
             _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(NetEndpoint net, Entity entity)
+        static public void Send(Server server, Entity entity)
         {
-            if (net is Client)
-                return;
-            var w = net.BeginPacket(_packetTypeId);
+            //if (net is Client)
+            //    return;
+            var w = server.BeginTimestamped(_packetTypeId);
             w.Write(entity.RefId);
         }
         static public void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
             var client = net as Client;
-            var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
+            var refid = r.ReadInt32();
+            var entity = client.World.GetEntity(refid);
             var map = client.Map as StaticMap;
-            //map.Despawn(actor);
-            actor.OnDespawn();
-            Send(net, actor);
+            map.Despawn(entity);
+            //actor.OnDespawn();
+            //Send(net, actor);
         }
     }
 }

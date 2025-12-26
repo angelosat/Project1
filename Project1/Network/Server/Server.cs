@@ -186,24 +186,30 @@ namespace Start_a_Town_.Net
         private void CreatePacketsFromStreams()
         {
             foreach (var stream in this.StreamsArray)
-            if (stream.Writer.BaseStream.Position > 0 
-                    || stream.Reliability == ReliabilityType.Unreliable) // send empty "heartbeat" packets to advance client's clock
+            //if (stream.Writer.BaseStream.Position > 0
+            //        || stream.Reliability == ReliabilityType.Unreliable
+                    //) // send empty "heartbeat" packets to advance client's clock
                 {
-                // append per-player data
+                // append per-player specific data
                 foreach (var player in this.GetPlayers())
                 {
                     MemoryStream mem = stream.Reliability switch
                     {
                         ReliabilityType.Unreliable => (MemoryStream)player.StreamUnreliable.BaseStream,
                         ReliabilityType.OrderedReliable => (MemoryStream)player.StreamReliable.BaseStream,
-                        _ => throw new Exception(),
+                        _ => null// throw new Exception(),
                     };
+                    if (mem is null)
+                        break;
                     //if (stream.Reliability != ReliabilityType.Unreliable && stream.Writer.BaseStream.Position == 0)
                     //    continue;
                     var data = stream.GetBytes(mem);
+                    //if (data.Length == 0)
+                    //    continue;
                     var p = Packet.Create(player, PacketType.MergedPackets, data, stream.Reliability);
                     p.Synced = true;
                     p.Tick = this.Clock.TotalMilliseconds;
+                    //p.Tick += Client.ClientClockDelayMS;
                     this.Enqueue(player, p);
                 }
             }
@@ -229,19 +235,39 @@ namespace Start_a_Town_.Net
                 /// i moved this from the start of the loop to the end of the loop because
                 /// some packets might have been written already during packet handling before the map ticking
                 /// (for example as a response to player input) and we don't want to clear them
-                //this.OutgoingStreamTimestamped = new(new MemoryStream());
-                //auxStream.Write(this.Map.World.CurrentTick);
+                this.OutgoingStreamTimestamped = new(new MemoryStream());
+                auxStream.Write(this.Map.World.CurrentTick + 1);
                 //auxStream.Write(this.CurrentTick);
                 this.Map.World.Tick(Instance);
                 this.Map.Tick();
-                auxStream.Write(this.Map.World.CurrentTick);
-                auxStream.Write(this.CurrentTick);
+                //auxStream.Write(this.Map.World.CurrentTick);
+                //auxStream.Write(this.CurrentTick + Client.ClientClockDelayMS);
                 var length = this.OutgoingStreamTimestamped.BaseStream.Position;
                 auxStream.Write(length);// write length
                 if (length > 0)
                 {
+                    //var start = auxStream.BaseStream.Position;
+                    //auxStream.BaseStream.Position = 0;
+
+                    //var reader = new BinaryReader(auxStream.BaseStream);
+                    //var test1 = reader.ReadInt32();
+                    //var test2 = reader.ReadInt32();
+                    //var test3 = reader.ReadInt32();
+                    //var test4 = reader.ReadInt32();
+                    //var test5 = reader.ReadInt32();
+                    //var test6 = reader.ReadInt32();
+
                     this.OutgoingStreamTimestamped.BaseStream.Position = 0;
+                    //var reader = new BinaryReader(OutgoingStreamTimestamped.BaseStream);
+                    //var test1 = reader.ReadInt32();
+                    //var test2 = reader.ReadInt32();
+                    //var test3 = reader.ReadInt32();
+                    //var test4 = reader.ReadInt32();
+                    //var test5 = reader.ReadInt32();
+                    //var test6 = reader.ReadInt32();
                     this.OutgoingStreamTimestamped.BaseStream.CopyTo(auxStream.BaseStream);
+                    //auxStream.BaseStream.Position = start;
+                    
                 }
 
                 this.BlockUpdateTimer--;
@@ -254,19 +280,56 @@ namespace Start_a_Town_.Net
                 /// i moved this from the start of the loop to the end of the loop because
                 /// some packets might have been written already during packet handling before the map ticking
                 /// (for example as a response to player input) and we don't want to clear them
-                this.OutgoingStreamTimestamped = new(new MemoryStream());
+                //this.OutgoingStreamTimestamped = new(new MemoryStream());
             }
             if (auxStream.BaseStream.Position > 0)
             {
+                //auxStream.BaseStream.Position = 0;
+                //var reader = new BinaryReader(auxStream.BaseStream);
+                //var test1 = reader.ReadInt32();
+                //var test2 = reader.ReadInt32();
+                //var test3 = reader.ReadInt32();
                 auxStream.BaseStream.Position = 0;
                 this.OutgoingStreamOrderedReliable.Write(Network.Packets.PacketTimestamped);
                 auxStream.BaseStream.CopyTo(this.OutgoingStreamOrderedReliable.BaseStream);
             }
         }
-        public new IDataWriter BeginPacket(int pType)
+        //public override IDataWriter BeginPacket(int pType)
+        //{
+        //    return PacketBuilder.Create(this.OutgoingStreamTimestamped, pType);
+        //}
+        public IDataWriter BeginTimestamped(int pType)
         {
             return PacketBuilder.Create(this.OutgoingStreamTimestamped, pType);
+
+            var testStream = new BinaryWriter(new MemoryStream());
+            $"pre: {testStream.BaseStream.Position}".ToConsole();
+            var pb = PacketBuilder.Create(testStream, pType);
+            $"after: {testStream.BaseStream.Position}".ToConsole();
+
+            testStream.BaseStream.Position = 0;
+            var reader = new BinaryReader(testStream.BaseStream);
+            var test1 = reader.ReadInt32();
+            $"test1: {test1}".ToConsole();
+
+            var test2 = reader.ReadInt32();
+            $"test2: {test2}".ToConsole();
+
+            var test3 = reader.ReadInt32();
+            $"test3: {test3}".ToConsole();
+
+            var test4 = reader.ReadInt32();
+            $"test4: {test4}".ToConsole();
+
+            var test5 = reader.ReadInt32();
+            $"test5: {test5}".ToConsole();
+
+            var test6 = reader.ReadInt32();
+            $"test6: {test6}".ToConsole();
+
+            return pb;
         }
+
 
         public static int RandomBlockUpdatesCount = 1;
         static int RandomBlockUpdateIndex = 0;
@@ -557,18 +620,17 @@ namespace Start_a_Town_.Net
             {
                 case TargetType.Slot:
                     Instance.Instantiate(entity);
-                    target.Slot.Object = entity;
+                    //target.Slot.Object = entity;
+                    target.Slot.Assign(entity);
                     Instance.SyncChild(entity, target.Slot.Parent, target.Slot.ID);
                     break;
 
                 case TargetType.Position:
-                    //entity.Global = target.Global;
-                    //this.Instantiate(entity);
-                    //PacketEntityInstantiate.SendFromTemplate(this, templateID, entity);
-                    //this.Map.SyncSpawnUntimestamped(entity);
-
+                    //this.Map.World.RegisterAndSync(entity);
+                    //this.Map.SpawnAndSync(entity, target.Global, Vector3.Zero);
                     this.Map.World.RegisterAndSync(entity);
-                    this.Map.SpawnAndSync(entity, target.Global, Vector3.Zero);
+                    this.Map.Spawn(entity, target.Global, Vector3.Zero);
+                    PacketSpawnEntity.Immediate(entity, target.Global, Vector3.Zero);
                     break;
 
                 default:

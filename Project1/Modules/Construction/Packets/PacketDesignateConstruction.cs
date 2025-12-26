@@ -20,13 +20,19 @@ namespace Start_a_Town_
         
         static public void Send(NetEndpoint net, ProductMaterialPair item, ToolBlockBuild.Args a)
         {
-            var stream = net.BeginPacket(p);
+            //var stream = net.BeginPacket(p);
+            var server = net as Server;
+            var stream = server.BeginPacket(p);
             a.Write(stream);
             //if(!a.Removing)
             //    item.Write(stream);
         }
         static public void Send(NetEndpoint net, ToolBlockBuild.Args a, ConstructionDesignationArgs args)
         {
+            //IDataWriter w;
+            //if (net is Server server)
+            //    w = server.BeginUntimestamped(p);
+            //else
             var w = net.BeginPacket(p);
             a.Write(w);
             if (!a.Removing)

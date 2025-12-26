@@ -15,7 +15,7 @@ namespace Start_a_Town_
         internal static void Send(NetEndpoint net, int entityID, bool toggle)
         {
             var server = net as Server;
-            var w = server.BeginPacket(_packetTypeId);
+            var w = server.BeginTimestamped(_packetTypeId);
             w.Write(entityID);
             w.Write(toggle);
         }
@@ -24,6 +24,7 @@ namespace Start_a_Town_
             var r = packet.PacketReader;
             var id = r.ReadInt32();
             var entity = net.World.GetEntity(id) as Actor;
+            //var test = r.ReadInt32();
             var toggle = r.ReadBoolean();
             entity.MoveToggle(toggle);
             if (net is Server)

@@ -272,6 +272,7 @@ namespace Start_a_Town_
         public void Destroy()
         {
             this.World.DisposeEntityAndSync(this as Entity);
+            //this.World.DisposeEntity(this.RefId);
         }
         public void Add(int amount)
         {
@@ -659,7 +660,18 @@ namespace Start_a_Town_
             this.ChildrenSequence = 0;
             return this;
         }
-
+        GameObjectSlot[] _cachedSlots;
+        public GameObject EnumerateSlots()
+        {
+            this._cachedSlots = [.. Components.Values
+                .SelectMany(c => c.GetSlots())
+                .Select((slot, index) => { slot.ID = index; return slot; })];
+            return this;
+        }
+        public GameObjectSlot GetSlot(int slotId)
+        {
+            return this._cachedSlots[slotId];
+        }
         public Window GetUi()
         {
             throw new Exception();
@@ -716,6 +728,7 @@ namespace Start_a_Town_
         [Obsolete("use ondespawn(mapbase oldmap) instead")]
         public void OnDespawn()
         {
+            throw new Exception();
             if (!this.IsSpawned)
                 return;
             var oldmap = this.Map;
@@ -723,9 +736,7 @@ namespace Start_a_Town_
         }
         public void OnDespawn(MapBase oldMap)
         {
-            if (!this.Map.Remove(this)) /// TODO: move this to map.despawn
-                throw new Exception();
-            this._map = null;
+            
             foreach (var comp in this.Components.Values.ToList())
                 comp.OnDespawn(oldMap);
 
@@ -1596,7 +1607,7 @@ namespace Start_a_Town_
         internal void Detach()
         {
             this.Container?.Remove(this);
-            this.Slot?.SetItem(null, out var _);
+            this.Slot?.Assign(null, out var _);
             this.Parent = null;
             this.Map?.Despawn(this);
         }

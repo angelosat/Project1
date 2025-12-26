@@ -51,13 +51,11 @@ namespace Start_a_Town_
             return this;
         }
 
-        //internal void InitComps(ItemVariantDef def)
-        //{
-        //    this.Components.Init(def);
-        //}
+        
         internal void InitComps(ItemDef def)
         {
             this.Components.CreateAndResolve(def);
+            this.EnumerateSlots();
         }
         internal bool ProvidesSkill(ToolUseDef skill)
         {

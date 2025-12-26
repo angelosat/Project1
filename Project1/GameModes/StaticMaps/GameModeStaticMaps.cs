@@ -126,6 +126,8 @@ namespace Start_a_Town_.Core
         {
             var player = server.GetPlayer(playerid);
             player.SentChunks.Remove(vec);
+            if (player.SentChunks.Count == 0 && player.PendingChunks.Count == 0)
+                player.SendSnapshots = true;
         }
 
         internal override void Update(Server server)

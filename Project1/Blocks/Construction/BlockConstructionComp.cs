@@ -24,6 +24,8 @@ namespace Start_a_Town_
         }
         IngredientFulfilment Fulfiment;
         ConstructionDesignationArgs Args;
+        internal Progress Progress;
+
         public (MaterialRefinementDef refinement, MaterialDef material) Requirement => (this.Args.Refinement, this.Args.Material);
         public bool IsReady => this.Fulfiment.Current >= this.Fulfiment.Required;
         public int Missing => this.Fulfiment.Missing;
@@ -50,7 +52,10 @@ namespace Start_a_Town_
                 this.Map.SetBlock(cell, BlockDefOf.Construction, this.Args.Material, 0, 0, this.Args.Orientation);
 
             if (this.IsReady)
+            {
                 this.Map.Events.Post(new ConstructionReadyEvent(this));
+                this.Progress = new();
+            }
         }
 
         internal bool Accepts(Entity entity)
@@ -68,6 +73,25 @@ namespace Start_a_Town_
                 return false;
             this.Deposit(item, item.StackSize);
             return true;
+        }
+
+        public void Advance(int work)
+        {
+            if (!this.IsReady)
+                throw new InvalidOperationException("Tried to advance construction without all materials present");
+            this.Progress.Add(work);
+            if (this.Progress.IsFinished)
+                this.Complete();
+            return;
+        }
+
+        public void Complete()
+        {
+            var map = this.Parent.Map;
+            foreach(var cell in this.Parent.CellsOccupied)
+                map.SetBlock(cell, this.Args.Block, this.Args.Material, 0, 0, this.Args.Orientation);
+            map.RemoveBlockEntity(this.Parent);
+            map.Events.Post(new ConstructionFinishedEvent(this));
         }
 
         struct IngredientFulfilment

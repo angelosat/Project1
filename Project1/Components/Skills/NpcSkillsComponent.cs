@@ -86,6 +86,7 @@ namespace Start_a_Town_
         {
             //this.SkillsNew.TryLoadImmutable(tag, "Skills");
             tag.LoadDefWrappers("Skills", this.SkillsNew);
+            this.Resolve();
         }
         public override void Write(IDataWriter w)
         {

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 //#nullable enable
 
@@ -376,6 +377,10 @@ namespace Start_a_Town_
                     w.Write(this.Slot.ID);
                     return this;
 
+                //case TargetType.BlockEntity:
+                //    w.Write(this.BlockEntity.CellsOccupied.First());
+                //    return this;
+
                 default:
                     return this;
             }
@@ -439,7 +444,7 @@ namespace Start_a_Town_
                     return new TargetArgs(provider.World, netID);
 
                 case TargetType.Position:
-                    return new TargetArgs(provider.World, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());// { Map = net.Map };
+                    return new TargetArgs(provider.World, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3()) { Map = provider.Map };
 
                 case TargetType.Slot:
                     int parentID = reader.ReadInt32();
@@ -459,6 +464,11 @@ namespace Start_a_Town_
 
                 case TargetType.Direction:
                     return new TargetArgs(reader.ReadVector2());
+
+                //case TargetType.BlockEntity:
+                //    var global = reader.ReadIntVec3();
+                //    var blockentity = 
+
 
                 default:
                     throw new Exception("Invalid target type " + type.ToString());
@@ -775,6 +785,7 @@ namespace Start_a_Town_
         public RegionRoom RegionRoom => this.Region?.Room;
 
         internal T GetBlockEntity<T>() where T : BlockEntity => this.Map.GetBlockEntity(this.Global) as T;
+        internal BlockEntity GetBlockEntity() => this.Map.GetBlockEntity(this.Global);
 
         public string Name
         {

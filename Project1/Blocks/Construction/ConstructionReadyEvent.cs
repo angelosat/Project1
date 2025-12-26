@@ -1,8 +1,11 @@
 ﻿namespace Start_a_Town_
 {
-    public class ConstructionReadyEvent(BlockConstructionComp comp/*, bool ready*/) : EventPayloadBase
+    public class ConstructionReadyEvent(BlockConstructionComp comp) : EventPayloadBase
     {
         public readonly BlockConstructionComp Comp = comp;
-        //public readonly bool Ready = ready;
+    }
+    public class ConstructionFinishedEvent(BlockConstructionComp comp) : EventPayloadBase
+    {
+        public readonly BlockConstructionComp Comp = comp;
     }
 }

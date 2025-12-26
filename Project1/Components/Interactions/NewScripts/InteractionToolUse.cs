@@ -3,7 +3,6 @@ using Start_a_Town_.Net;
 using Start_a_Town_.Particles;
 using System;
 using System.Collections.Generic;
-using static Start_a_Town_.GlobalVars;
 
 namespace Start_a_Town_
 {

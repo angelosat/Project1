@@ -34,8 +34,16 @@ namespace Start_a_Town_
         public ConstructionsManager(Town town)
         {
             this.Town = town;
-            this.Town.Map.World.Events.ListenTo<BlocksUpdatedEvent>(this.OnBlocksChanged);
-            this.Town.Map.World.Events.ListenTo<ConstructionReadyEvent>(this.OnConstructionReady);
+            this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(this.OnBlocksChanged);
+            this.Town.Map.Events.ListenTo<ConstructionReadyEvent>(this.OnConstructionReady);
+            this.Town.Map.Events.ListenTo<ConstructionFinishedEvent>(this.OnConstructionFinished);
+        }
+
+        private void OnConstructionFinished(ConstructionFinishedEvent e)
+        {
+            var comp = e.Comp;
+            this.DesignationEntities.Remove(comp);
+            this._dirty = true;
         }
 
         private void OnConstructionReady(ConstructionReadyEvent e)

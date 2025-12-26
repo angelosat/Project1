@@ -25,7 +25,8 @@ namespace Start_a_Town_
 
             var color = Color.White;
             //var targetMesh = canvas.Designations;
-            var targetMesh = canvas.Opaque;
+            //var targetMesh = canvas.Opaque;
+            var targetMesh = canvas.Transparent;
             return targetMesh.DrawBlock(Block.Atlas.Texture, screenBounds, token, camera.Zoom, fog, color, sunlight, blocklight, depth, this, global);
         }
         internal override void PreRemove(MapBase map, IntVec3 global)

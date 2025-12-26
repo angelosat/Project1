@@ -20,7 +20,21 @@ namespace Start_a_Town_
             return this.Reserve(TargetIndex.A);
         }
     }
+    class TaskBehaviorGoConstruct : BehaviorExecutePlan
+    {
+        public override string Name { get; } = "Finishing Construction";
 
+        protected override IEnumerable<Behavior> GetSteps()
+        {
+            var index = TargetIndex.A;
+            yield return new BehaviorGetAtNewNew(index, PathEndMode.Any);
+            yield return new BehaviorInteractionNew(index);
+        }
+        protected override bool InitExtraReservations()
+        {
+            return this.Reserve(TargetIndex.A);
+        }
+    }
     class TaskBehaviorGoCraft : BehaviorExecutePlan
     {
         public override string Name { get; } = "Crafting";

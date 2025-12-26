@@ -9,7 +9,7 @@ namespace Start_a_Town_
     {
         static public readonly ItemDef Ingredient = new ItemDef("Ingredient", typeof(Entity))
         {
-            StackCapacity = 10,
+            StackCapacity = 5,
             BaseValue = 5,
             Description = "Used as an input for crafting final products",
             Category = ItemCategoryDefOf.RawMaterials,

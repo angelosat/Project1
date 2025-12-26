@@ -105,7 +105,7 @@ namespace Start_a_Town_
         static public readonly PlanDef Unequip = new("Unquipping", typeof(BehaviorUnequip), InteractionDefOf.Unequip);
         static public readonly PlanDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul), InteractionDefOf.Pick);
         static public readonly PlanDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace), InteractionDefOf.Place);
-        static public readonly PlanDef Construct = new("Construct", typeof(TaskBehaviorConstruct), InteractionDefOf.Construct); 
+        static public readonly PlanDef Construct = new("Construct", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct); 
         static PlanDefOf()
         {
             Def.Register(typeof(PlanDefOf));

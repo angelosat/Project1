@@ -122,5 +122,9 @@ namespace Start_a_Town_
                 HoverFunc = () => $"{this.Value:0.00} / {this.Max:0}"
             };
         }
+        public void Add(int work)
+        {
+            this.Value += work;
+        }
     }
 }

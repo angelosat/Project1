@@ -9,11 +9,12 @@ namespace Start_a_Town_.Interactions
         public InteractionConstruct()
             : base("Construct")
         {
-            this.BuildProgress = new(() => this.Target.GetBlockEntity<BlockConstructionEntity>().BuildProgress); // why has this thrown null?
+            //this.BuildProgress = new(() => Comp.Progress); // why has this thrown null?
         }
-
-        readonly Lazy<Progress> BuildProgress;
-        protected override float Progress => this.BuildProgress.Value.Percentage;
+        BlockConstructionComp _cachedComp;
+        BlockConstructionComp Comp => this._cachedComp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockConstructionComp>();
+        //readonly Lazy<Progress> BuildProgress;
+        protected override float Progress => this.Comp.Progress.Percentage;// this.BuildProgress.Value.Percentage;
 
         protected override float WorkDifficulty { get; } = 1;
 
@@ -26,24 +27,25 @@ namespace Start_a_Town_.Interactions
 
         protected override void OnApplyWork(float workAmount)
         {
-            this.BuildProgress.Value.Value += workAmount;
+            //this.BuildProgress.Value.Value += workAmount;
+            this.Comp.Advance((int)workAmount);
         }
 
         protected override void Done()
         {
-            var a = this.Actor;
-            var t = this.Target;
-            var global = t.Global;
-            var map = a.Map;
-            var entity = t.GetBlockEntity<BlockConstructionEntity>();
-            entity.Container.Clear(); // clear materials because they get ejected when the blockconstruction remove method is called
-            var block = entity.Product.Block;
-            var cell = map.GetCell(global);
-            var ori = cell.Orientation;
-            foreach (var child in entity.Children)
-                map.RemoveBlock(child, false);
-            Block.Place(block, map, entity.OriginGlobal, entity.Product.Material, entity.Product.Data, 0, ori, true);
-            map.GetBlockEntity(t.Global)?.IsMadeFrom(new ItemMaterialAmount[] { entity.Product.Requirement });
+            //var a = this.Actor;
+            //var t = this.Target;
+            //var global = t.Global;
+            //var map = a.Map;
+            //var entity = t.GetBlockEntity<BlockConstructionEntity>();
+            //entity.Container.Clear(); // clear materials because they get ejected when the blockconstruction remove method is called
+            //var block = entity.Product.Block;
+            //var cell = map.GetCell(global);
+            //var ori = cell.Orientation;
+            //foreach (var child in entity.Children)
+            //    map.RemoveBlock(child, false);
+            //Block.Place(block, map, entity.OriginGlobal, entity.Product.Material, entity.Product.Data, 0, ori, true);
+            //map.GetBlockEntity(t.Global)?.IsMadeFrom(new ItemMaterialAmount[] { entity.Product.Requirement });
         }
 
         protected override Color GetParticleColor() => default;

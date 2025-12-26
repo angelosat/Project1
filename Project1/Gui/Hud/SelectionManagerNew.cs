@@ -41,7 +41,7 @@ namespace Start_a_Town_.UI
 
         private void OnPlayerSelection(PlayerSelectionEvent e)
         {
-            Select(e.Target);
+            Select(e.Single);
         }
 
         private void OnBlocksUpdated(BlocksUpdatedEvent e)

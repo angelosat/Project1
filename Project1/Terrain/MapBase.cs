@@ -305,6 +305,11 @@ namespace Start_a_Town_
             return cell.Block;
         }
 
+        public void RemoveBlockEntity(BlockEntity entity)
+        {
+            foreach (var cell in entity.CellsOccupied)
+                this.RemoveBlockEntity(cell);
+        }
         public BlockEntity RemoveBlockEntity(IntVec3 global)
         {
             var chunk = this.GetChunk(global);

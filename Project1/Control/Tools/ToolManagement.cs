@@ -4,11 +4,18 @@ using Start_a_Town_.Net;
 using Start_a_Town_.PlayerControl;
 using Start_a_Town_.UI;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace Start_a_Town_
 {
+    class PlayerSelectionEvent(TargetArgs single = null, TargetArgs add = null, List<TargetArgs> multiple = null) : EventPayloadBase
+    {
+        public readonly TargetArgs Single = single;
+        public readonly TargetArgs Add = add;
+        public readonly List<TargetArgs> Multiple = multiple;
+    }
     [EnsureStaticCtorCall]
     public class ToolManagement : DefaultTool
     {
@@ -116,15 +123,16 @@ namespace Start_a_Town_
                 {
                     if (target.Map.TryGetBlockEntity(target.Global, out var blockEntity))
                     {
-                        SelectionManager.Select(new TargetArgs(blockEntity));
+                        Ingame.Instance.Events.Post(new PlayerSelectionEvent(single: new TargetArgs(blockEntity)));
+                        //SelectionManager.Select(new TargetArgs(blockEntity));
                         return;
                     }
                 }
-                SelectionManager.Select(target);
-
+                //SelectionManager.Select(target);
+                Ingame.Instance.Events.Post(new PlayerSelectionEvent(single: target));
             }
         }
-
+        
         private void MouseScroll()
         {
             var currentMouse = UIManager.Mouse;

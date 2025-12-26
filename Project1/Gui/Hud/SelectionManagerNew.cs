@@ -34,6 +34,15 @@ namespace Start_a_Town_.UI
             map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
             map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
         }
+        internal void Init(Ingame ingame)
+        {
+            ingame.Events.ListenTo<PlayerSelectionEvent>(OnPlayerSelection);
+        }
+
+        private void OnPlayerSelection(PlayerSelectionEvent e)
+        {
+            Select(e.Target);
+        }
 
         private void OnBlocksUpdated(BlocksUpdatedEvent e)
         {
@@ -46,10 +55,13 @@ namespace Start_a_Town_.UI
             if (this.Selectable == e.Entity)
                 this.Unselect();
             else
-                 if (this.MultipleSelected.FirstOrDefault(t => t.Object == e.Entity) is TargetArgs t)
+            {
+                if (this.MultipleSelected.FirstOrDefault(t => t.Object == e.Entity) is TargetArgs t)
                     this.MultipleSelected.Remove(t);
+                if (this.MultipleSelected.Count == 0)
+                    this.PanelInfo.Hide();
+            }
         }
-
         private void OnZoneDeleted(ZoneDeletedEvent e)
         {
             if (this.Selectable == e.Zone)

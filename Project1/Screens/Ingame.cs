@@ -3,10 +3,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
 using Start_a_Town_.Net;
+using Project1.Systems.Networking;
 
 namespace Start_a_Town_
 {
-    class Ingame : GameScreen
+    internal class Ingame : GameScreen
     {
         static Ingame _instance;
         static public Ingame Instance => _instance ??= new();
@@ -14,6 +15,7 @@ namespace Start_a_Town_
         public NotificationArea NotificationArea;
         public NameplateManager NameplateManager;// = new();
         public static readonly HotkeyContext HotkeyContext = new("Ingame");
+        public EventBus Events = new();
 
         bool HideInterface = false;
         public SceneState Scene = new();
@@ -40,7 +42,9 @@ namespace Start_a_Town_
             KeyHandlers.Push(ContextMenuManager.Instance);
             KeyHandlers.Push(this.Camera);
             SelectionManager.Instance.Bind(net);
+            SelectionManager.Instance.Init(this);
             TooltipManager.Bind(net);
+            this.Events.ListenTo<EventPayloadBase>(e => { if (e is INetworkSendable ns) ns.SendTo(Client.Instance); });
             return this;
         }
 

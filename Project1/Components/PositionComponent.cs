@@ -13,7 +13,8 @@ namespace Start_a_Town_.Components
         Vector3 _global;
         public Vector3 Global
         {
-            get => this.ParentEntity?.Global ?? this._global;
+            //get => this.ParentEntity?.Global ?? this._global;
+            get => this._global;
             set => this._global = value;
         }
 

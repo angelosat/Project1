@@ -91,11 +91,12 @@ namespace Start_a_Town_
             Format = "Force equip {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        static public PlanDef Chopping = new("Chopping", typeof(TaskBehaviorChopping), InteractionDefOf.Chop)
+        static public PlanDef Chop = new("Chopping Designated", typeof(PlanBehaviorInteraction), InteractionDefOf.Chop)
         {
             Format = "Chop down {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
+
         static public readonly PlanDef Idle = new("Idleing", typeof(TaskBehaviorIdle)) { Idle = true };
         static public readonly PlanDef Wander = new("Wandering", typeof(TaskBehaviorWander)) { Idle = true };
         static public readonly PlanDef Depart = new("Departing", typeof(TaskBehaviorDepart));

@@ -25,7 +25,7 @@
                     }
                     else
                     {
-                        var task = new Plan(PlanDefOf.Chopping, plant)
+                        var task = new Plan(PlanDefOf.Chop, plant)
                         {
                             Tool = FindTool(actor, JobDefOf.Lumberjack)
                         };

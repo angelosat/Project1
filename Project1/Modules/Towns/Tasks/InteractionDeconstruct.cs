@@ -12,7 +12,7 @@ namespace Start_a_Town_
         MaterialDef Material => this.Cell.Material;
 
         protected override float WorkDifficulty => this.Block.BuildComplexity;
-        protected override float Progress => this._progress.Percentage;
+        //protected override float Progress => this._progress.Percentage;
         protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnFinish;
 
         public InteractionDeconstruct() : base("Deconstructing")
@@ -30,7 +30,7 @@ namespace Start_a_Town_
             throw new NotImplementedException();
         }
 
-        protected override void OnApplyWork(float workAmount)
+        protected override void OnApplyWork(int workAmount)
         {
             this._progress.Value += workAmount;
         }

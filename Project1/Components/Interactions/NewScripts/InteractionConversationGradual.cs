@@ -39,7 +39,7 @@ namespace Start_a_Town_
         }
         protected override void ReadExtra(IDataReader r)
         {
-            this.Topic = Def.GetDef<ConversationTopic>(r.ReadString());
+            this.Topic = Start_a_Town_.Def.GetDef<ConversationTopic>(r.ReadString());
         }
     }
 }

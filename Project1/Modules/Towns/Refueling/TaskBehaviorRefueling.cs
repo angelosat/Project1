@@ -23,7 +23,7 @@ namespace Start_a_Town_
             yield return BehaviorHelper.JumpIfMoreTargets(extract, SourceIndex);
             //yield return new BehaviorGetAtNewNew(DestinationIndex).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
             yield return new BehaviorResolvePath(DestinationIndex, PathEndMode.InteractionSpot).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
-            yield return new BehaviorBeginInteraction(DestinationIndex,  () => new UseHauledOnTarget()).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
+            yield return new BehaviorResolveInteraction(DestinationIndex,  () => new UseHauledOnTarget()).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
         }
         protected override bool InitExtraReservations()
         {

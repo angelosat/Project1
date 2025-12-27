@@ -37,7 +37,7 @@ namespace Start_a_Town_
                     this.Plan.SetTarget(AuxiliaryIndex, new TargetArgs(this.Actor.Map, this.Workstation.Global.Above()))
             };
             yield return new BehaviorResolvePath(WorkstationIndex, PathEndMode.InteractionSpot).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
-            yield return new BehaviorBeginInteraction(AuxiliaryIndex, () => new UseHauledOnTarget()).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
+            yield return new BehaviorResolveInteraction(AuxiliaryIndex, () => new UseHauledOnTarget()).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
             yield return BehaviorHelper.JumpIfMoreTargets(nextIngredient, IngredientIndex);
             ///NO!!!! if they collected more than one item in the same stack, this code will only add the last (disposed) target that was merged to the stack
             ///add code in usehauledontarget interaction instead
@@ -75,9 +75,9 @@ namespace Start_a_Town_
                 this.Reserve(item);
             });
 
-            yield return new BehaviorBeginInteraction(WorkstationIndex, () => new InteractionCrafting(task.OrderOld, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
+            yield return new BehaviorResolveInteraction(WorkstationIndex, () => new InteractionCrafting(task.OrderOld, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
             if (this.Plan.Tool?.Type != TargetType.Null) // dont unequip tool if not using any
-                yield return new BehaviorBeginInteraction(TargetIndex.Tool, () => new InteractionEquip()); // unequip the tool before hauling product // TODO dont do that if no tool equipped
+                yield return new BehaviorResolveInteraction(TargetIndex.Tool, () => new InteractionEquip()); // unequip the tool before hauling product // TODO dont do that if no tool equipped
             // assign a new haul behavior directly to the actor instead of adding the steps here?
             yield return new BehaviorCustom()
             {

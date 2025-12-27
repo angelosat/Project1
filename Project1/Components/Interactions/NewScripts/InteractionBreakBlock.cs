@@ -18,7 +18,7 @@ namespace Start_a_Town_
 
         protected override float WorkDifficulty => this.Material.Density;
         float TotalHp;
-        protected override float Progress => this.WorkAppliedTotal / this.TotalHp;
+        //protected override float Progress => this.WorkAppliedTotal / this.TotalHp;
         protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnFinish;
 
         public InteractionBreakBlock() : base("MineDig")
@@ -54,7 +54,7 @@ namespace Start_a_Town_
             throw new NotImplementedException();
         }
 
-        protected override void OnApplyWork(float workAmount)
+        protected override void OnApplyWork(int workAmount)
         {
             this.WorkAppliedThisBreakStage += workAmount;
             this.WorkAppliedTotal += workAmount;

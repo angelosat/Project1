@@ -10,9 +10,9 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             var index = TargetIndex.A;
-            var cache = this.Plan.Def.Interaction.CreateCache(this.Actor, this.Plan.GetTarget(index));
-            yield return new BehaviorResolvePath(index, PathEndMode.Any).FailOn(() => this.Plan.Def.Interaction.Worker.CanPerform(cache));
-            yield return new BehaviorBeginInteraction(index);
+            var ctx = this.Plan.Def.Interaction.CreateContext(this.Actor, this.Plan.GetTarget(index));
+            yield return new BehaviorResolvePath(index, PathEndMode.Any).FailOn(() => !this.Plan.Def.Interaction.Logic.CanPerform(ctx));
+            yield return new BehaviorResolveInteraction(index);
         }
         protected override bool InitExtraReservations()
         {

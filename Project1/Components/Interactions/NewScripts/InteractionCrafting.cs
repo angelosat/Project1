@@ -10,7 +10,7 @@ namespace Start_a_Town_.Crafting
         OrderSettings Order;
         Progress _progress = new();
 
-        protected override float Progress => this._progress.Percentage;//throw new System.NotImplementedException();
+        //protected override float Progress => this._progress.Percentage;//throw new System.NotImplementedException();
 
         protected override float WorkDifficulty => 1;//throw new System.NotImplementedException();
 
@@ -97,7 +97,7 @@ namespace Start_a_Town_.Crafting
             //this._progress = this.UnfinishedItem.GetComponent<UnfinishedItemComp>().Progress;
         }
 
-        protected override void OnApplyWork(float workAmount)
+        protected override void OnApplyWork(int workAmount)
         {
             this._progress.Value += workAmount;// 25;
         }
@@ -140,7 +140,7 @@ namespace Start_a_Town_.Crafting
         Entity UnfinishedItem => this._unfinished ??= this.Actor.World.GetEntity(this._unfinishedRefID);
         Progress _progress = new();
 
-        protected override float Progress => this._progress.Percentage;
+        //protected override float Progress => this._progress.Percentage;
         protected override float WorkDifficulty => 1;
         protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnFinish;
 
@@ -268,7 +268,7 @@ namespace Start_a_Town_.Crafting
             this._progress = this.UnfinishedItem.GetComponent<UnfinishedItemComp>().Progress;
         }
 
-        protected override void OnApplyWork(float workAmount)
+        protected override void OnApplyWork(int workAmount)
         {
             this._progress.Value += workAmount;// 25;
         }

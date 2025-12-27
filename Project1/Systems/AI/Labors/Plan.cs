@@ -203,6 +203,7 @@ namespace Start_a_Town_
         public List<int> AmountsC = new();
         public List<ObjectAmount> PlacedObjects = new();
         public List<Entity> CraftedItems = new();
+        public DesignationDef Designation;
 
         public List<Func<bool>> FailConditions = new();
         public CraftOrder OrderOld;

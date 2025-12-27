@@ -13,7 +13,7 @@ namespace Start_a_Town_
             var index = TargetIndex.A;
             yield return new BehaviorResolvePath(index, PathEndMode.Any);
             //yield return new BehaviorInteractionNew(index, () => new InteractionCrafting(this.Actor.CurrentTask.GetAmount(index)));
-            yield return new BehaviorBeginInteraction(index, () => new InteractionCraftingNew());
+            yield return new BehaviorResolveInteraction(index, () => new InteractionCraftingNew());
         }
         protected override bool InitExtraReservations()
         {

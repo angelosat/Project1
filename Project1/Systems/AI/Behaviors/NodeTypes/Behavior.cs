@@ -59,6 +59,7 @@ namespace Start_a_Town_
             });
             return this;
         }
+       
         public Behavior JumpIf(Func<bool> cond, Behavior gotoBhav)
         {
             this.AddPreTickAction(() =>

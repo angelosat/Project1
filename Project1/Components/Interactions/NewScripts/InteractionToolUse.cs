@@ -2,7 +2,6 @@
 using Start_a_Town_.Particles;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Start_a_Town_
 {
@@ -47,7 +46,7 @@ namespace Start_a_Town_
         {
             if (!this.CanPerform())
             {
-                this.State = States.Failed;
+                this.Fail();
                 return;
             }
             var actor = this.Actor;
@@ -56,7 +55,7 @@ namespace Start_a_Town_
             var amount = (int)Math.Max(1, toolEffect / WorkDifficulty);
             if(this.WillFinish(amount) && !this.CanFinish())
             {
-                this.State = States.Failed;
+                this.Fail();
                 return;
             }
             if (actor.Net.IsClient && this.ParticleRects is not null)
@@ -92,7 +91,7 @@ namespace Start_a_Town_
             this.Finish();
         }
 
-        bool WillFinish(int amount) => this.ProgressNew.Value + amount >= this.ProgressNew.Max;
+        bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
 
         private void ApplyWork(int amount)
         {
@@ -118,11 +117,12 @@ namespace Start_a_Town_
             return fromToolWeight;
         }
 
-        protected abstract float Progress { get; }
+        //protected abstract float Progress { get; }
+        protected float Progress => this.Context.ProgressPercentage;
         protected abstract float WorkDifficulty { get; }
         protected abstract SkillAwardTypes SkillAwardType { get; }
         protected virtual void Init() { }
-        protected abstract void OnApplyWork(float workAmount);
+        protected abstract void OnApplyWork(int workAmount);
         protected abstract void Done();
         protected abstract ToolUseDef GetToolUse();
         protected abstract SkillDef GetSkill();

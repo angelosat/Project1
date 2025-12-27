@@ -10,7 +10,7 @@ namespace Start_a_Town_.AI.Behaviors
             yield return BehaviorHaulHelper.StartCarrying(this, TargetIndex.A);
             yield return new BehaviorResolvePath(TargetIndex.B);
             //yield return BehaviorHaulHelper.DropInStorage(TargetIndex.B);
-            yield return new BehaviorBeginInteraction(TargetIndex.B, () => new InteractionPlaceItem());
+            yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionPlaceItem());
         }
         protected override bool InitExtraReservations()
         {

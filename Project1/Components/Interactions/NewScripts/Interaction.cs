@@ -11,15 +11,15 @@ namespace Start_a_Town_
     public abstract class Interaction : Inspectable, ICloneable
     {
         public InteractionDef Def;
-        public InteractionCache Cache;
+        public InteractionContext Context;
         public override string Label => this.Name;
         public bool IsFinished => this.State == States.Finished;
         public static readonly float DefaultRange = (float)Math.Sqrt(2);
 
         static readonly Dictionary<string, Func<Interaction>> Factory = new();
         
-        protected bool CanPerform() => this.Def.Worker.CanPerform(this.Cache);
-        protected bool CanFinish() => this.Def.Worker.CanFinish(this.Cache);
+        protected bool CanPerform() => this.Def.Logic.CanPerform(this.Context);
+        protected bool CanFinish() => this.Def.Logic.CanFinish(this.Context);
 
         public static void AddInteraction<T>(Func<Interaction> factory)
         {
@@ -144,7 +144,10 @@ namespace Start_a_Town_
             }
 
             if (this.State == States.Unstarted)
+            {
                 this.StartBase();
+                this.State = States.Running;
+            }
             else if (this.State == States.Finished)
             {
                 this.Stop();
@@ -152,7 +155,7 @@ namespace Start_a_Town_
                 return;
             }
 
-            this.State = States.Running;
+            //this.State = States.Running;
             if (this.RunningType == RunningTypes.Continuous)
             {
                 this.Perform();
@@ -176,7 +179,11 @@ namespace Start_a_Town_
         {
             this._animation.FadeOutAndRemove();
         }
-
+        protected virtual void Fail()
+        {
+            this._animation.FadeOutAndRemove();
+            this.State = States.Failed;
+        }
         public void GetTooltip(Control tooltip)
         {
             var panel = new PanelLabeled("Interact") { AutoSize = true, Location = tooltip.Controls.BottomLeft };

@@ -9,7 +9,7 @@ namespace Start_a_Town_
         {
             this.FailOnNoDesignation(TargetIndex.A, DesignationDefOf.Switch);
             yield return new BehaviorResolvePath(TargetIndex.A);
-            yield return new BehaviorBeginInteraction(TargetIndex.A, () => new InteractionFlipSwitch());
+            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionFlipSwitch());
         }
     }
 }

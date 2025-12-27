@@ -25,7 +25,7 @@ namespace Start_a_Town_
             };
             yield return new BehaviorResolvePath(TargetIndex.A);
             yield return new BehaviorWait(() => task.TargetB.Object.Parent == null && task.TargetB.Object.Global.ToCell() == task.TargetA.Global.Above());
-            yield return new BehaviorBeginInteraction(TargetIndex.B, () => new InteractionHaul());
+            yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionHaul());
             // TODO wait until money on counter
             yield return new BehaviorWait(() =>
             {
@@ -36,10 +36,10 @@ namespace Start_a_Town_
                 task.SetTarget(TargetIndex.C, money);
                 return true;
             });
-            yield return new BehaviorBeginInteraction(() => task.TargetC, () => new InteractionSwapCarried());
+            yield return new BehaviorResolveInteraction(() => task.TargetC, () => new InteractionSwapCarried());
 
             // if carrying coins, store in inventory. otherwise drop or haul to stockpile
-            yield return new BehaviorBeginInteraction(TargetIndex.A, () =>
+            yield return new BehaviorResolveInteraction(TargetIndex.A, () =>
             {
                 if (this.Actor.Hauled.Def == ItemDefOf.Coins)
                     return new InteractionStoreHauled();

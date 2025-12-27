@@ -3,6 +3,24 @@ using Start_a_Town_.Animations;
 
 namespace Start_a_Town_
 {
+    class InteractionHaulWorker : InteractionLogic
+    {
+        public sealed class Context : InteractionContext
+        {
+
+        }
+        protected override Context CreateContextInternal() => new Context();
+        public override bool CanPerform(InteractionContext ctx)
+        {
+            if (ctx.Target.Object.Map != ctx.Actor.Map)
+                return false;
+            return true;
+        }
+        public override bool CanFinish(InteractionContext ctx)
+        {
+            return this.CanPerform(ctx);
+        }
+    }
     class InteractionHaul : InteractionPerpetual
     {
         int Amount;
@@ -13,24 +31,17 @@ namespace Start_a_Town_
         public InteractionHaul(int amount)
             : base("Haul")
         {
-            //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
             this.AnimationDef = AnimationDef.TouchItem;
             this.Amount = amount;
             this.CrossFadeAnimationLength = 25;
-            //if (amount <= 0)
-            //    throw new Exception();
         }
 
-        public override string ToString()
-        {
-            return "Haul " + (this.Amount == -1 ? " All" : " x" + this.Amount.ToString());
-        }
+        public override string ToString() => "Haul " + (this.Amount == -1 ? " All" : " x" + this.Amount.ToString());
+        
 
         protected override void Start()
         {
             var a = this.Actor;
-            return;
-            //a.CrossFade(this.Animation, false, 25);
         }
         public override void OnUpdate()
         {

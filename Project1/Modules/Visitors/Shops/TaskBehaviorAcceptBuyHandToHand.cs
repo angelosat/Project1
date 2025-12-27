@@ -22,9 +22,9 @@ namespace Start_a_Town_
                 }
                 return false;
             });
-            yield return new BehaviorBeginInteraction(TargetIndex.A, () => new InteractionHaul(this.Plan.AmountA));
+            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionHaul(this.Plan.AmountA));
             yield return new BehaviorWait(() => state.TradingPartner == null);
-            yield return new BehaviorBeginInteraction(TargetIndex.A, () => new InteractionStoreHauled());
+            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionStoreHauled());
         }
     }
 }

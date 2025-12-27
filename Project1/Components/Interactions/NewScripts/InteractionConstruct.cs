@@ -1,20 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Start_a_Town_.Interactions
 {
-    public class InteractionConstructCache : InteractionCache
+    class InteractionConstructLogic : InteractionLogic
     {
-        public BlockConstructionComp CachedComp;
-    }
-    class InteractionConstructWorker : InteractionWorker
-    {
-        public override bool CanPerform(InteractionCache ctx)
+        public sealed class Context : InteractionContext
         {
-            var cache = (InteractionConstructCache)ctx;
-            var target = cache.Target;
-            var comp = cache.CachedComp ??= target.Map.GetBlockEntity(target.Global).Comps.GetComp<BlockConstructionComp>();
+            BlockConstructionComp _cachedComp;
+            public BlockConstructionComp CachedComp => this._cachedComp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockConstructionComp>();
+        }
+        protected override InteractionContext CreateContextInternal() => new Context();
+        public override bool CanPerform(InteractionContext ctx) => this.CanPerform((Context)ctx);
+        public override bool CanFinish(InteractionContext ctx) => this.CanFinish((Context)ctx);
+        public override void ApplyWork(InteractionContext ctx, int workAmount) => this.ApplyWork((Context)ctx, workAmount);
+        bool CanPerform(Context ctx)
+        {
+            var target = ctx.Target;
+            var comp = ctx.CachedComp;
             if (comp.Map is null)
                 return false;
             var manager = comp.Parent.Map.Town.ConstructionsManager;
@@ -24,14 +30,18 @@ namespace Start_a_Town_.Interactions
                 return false;
             return true;
         }
-        public override bool CanFinish(InteractionCache ctx)
+
+        bool CanFinish(Context ctx)
         {
-            var cache = (InteractionConstructCache)ctx;
-            var target = cache.Target;
-            var comp = cache.CachedComp ??= target.Map.GetBlockEntity(target.Global).Comps.GetComp<BlockConstructionComp>();
+            var target = ctx.Target;
+            var comp = ctx.CachedComp;
             if (comp.Parent.CellsOccupied.Any(c => comp.Parent.Map.GetEntitiesAt(c).Any()))
                 return false;
             return true;
+        }
+        void ApplyWork(Context ctx, int workAmount)
+        {
+            ctx.CachedComp.Advance(workAmount);
         }
     }
     class InteractionConstruct : InteractionToolUse
@@ -39,13 +49,9 @@ namespace Start_a_Town_.Interactions
         public InteractionConstruct()
             : base("Construct")
         {
-            //this.BuildProgress = new(() => Comp.Progress); // why has this thrown null?
         }
-        InteractionConstructCache _cache;
-        InteractionConstructCache TypedCache => _cache ??= (InteractionConstructCache)this.Cache;
-        //BlockConstructionComp _cachedComp;
-        //BlockConstructionComp Comp => this._cachedComp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockConstructionComp>();
-        protected override float Progress => this.ProgressNew.Percentage;// this.BuildProgress.Value.Percentage;
+
+        //protected override float Progress => this.ProgressNew.Percentage;// this.BuildProgress.Value.Percentage;
         //protected override Progress ProgressNew => this.Comp.Progress;
         protected override float WorkDifficulty { get; } = 1;
 
@@ -56,10 +62,9 @@ namespace Start_a_Town_.Interactions
             throw new System.NotImplementedException();
         }
 
-        protected override void OnApplyWork(float workAmount)
+        protected override void OnApplyWork(int workAmount)
         {
-            //this.BuildProgress.Value.Value += workAmount;
-            this.TypedCache.CachedComp.Advance((int)workAmount);
+            this.Def.Logic.ApplyWork(this.Context, (int)workAmount);
         }
 
         protected override void Done()

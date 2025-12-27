@@ -33,14 +33,14 @@ namespace Start_a_Town_
         }
         internal static Behavior CarryFromInventory(TargetIndex item)
         {
-            return new BehaviorBeginInteraction(item, () => new InteractionHaul());
+            return new BehaviorResolveInteraction(item, () => new InteractionHaul());
         }
         internal static Behavior CarryFromInventoryAndReplaceTarget(TargetIndex item)
         {
             var bhav = new BehaviorCustom();
             bhav.InitAction = () => bhav.Actor.CurrentTask.SetTarget(item, bhav.Actor.Hauled);
             return new BehaviorSequence(
-                new BehaviorBeginInteraction(item, () => new InteractionHaul()),
+                new BehaviorResolveInteraction(item, () => new InteractionHaul()),
                 bhav);
         }
 
@@ -143,18 +143,18 @@ namespace Start_a_Town_
         [Obsolete]
         static public Behavior StartCarrying(TargetIndex index)
         {
-            return new BehaviorBeginInteraction(index, () => new InteractionHaul()).FailOnUnavailableTarget(index);
+            return new BehaviorResolveInteraction(index, () => new InteractionHaul()).FailOnUnavailableTarget(index);
         }
         [Obsolete]
         static public Behavior StartCarrying(TargetIndex index, TargetIndex amountIndex)
         {
-            var bhav = new BehaviorBeginInteraction(index);
+            var bhav = new BehaviorResolveInteraction(index);
             bhav.InteractionFactory = () => new InteractionHaul(bhav.Actor.CurrentTask.GetAmount(amountIndex));
             return bhav;
         }
         static public Behavior PlaceCarried(TargetIndex index)
         {
-            return new BehaviorBeginInteraction(index, ()=> new UseHauledOnTarget());
+            return new BehaviorResolveInteraction(index, ()=> new UseHauledOnTarget());
         }
 
         static public Behavior MoveTo(TargetIndex targetIndex)
@@ -198,7 +198,7 @@ namespace Start_a_Town_
                         new BehaviorSelector(
                             new BehaviorItemIsInInventory(itemIndex),
                             new BehaviorResolvePath(itemIndex)),
-                        new BehaviorBeginInteraction(itemIndex, interactionFactory())
+                        new BehaviorResolveInteraction(itemIndex, interactionFactory())
                         )
                 }
             };

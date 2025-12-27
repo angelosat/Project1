@@ -22,7 +22,7 @@ namespace Start_a_Town_
                     continue;
                 if (i is Plant && actor.CanReserve(i))
                 {
-                    var plantCutTask = new Plan(PlanDefOf.Chopping, i)
+                    var plantCutTask = new Plan(PlanDefOf.Chop, i)
                     {
                         Tool = Planner.FindTool(actor, JobDefOf.Lumberjack)
                     };

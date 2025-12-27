@@ -22,8 +22,8 @@ namespace Start_a_Town_.AI.Behaviors
                     actor.Unreserve(previousStack);
                 return carried;
             });
-            yield return new BehaviorBeginInteraction(FoodInd, new Components.ConsumableComponent.InteractionConsume());
-            yield return new BehaviorBeginInteraction(() => new InteractionThrow());
+            yield return new BehaviorResolveInteraction(FoodInd, new Components.ConsumableComponent.InteractionConsume());
+            yield return new BehaviorResolveInteraction(() => new InteractionThrow());
         }
 
         protected override bool InitExtraReservations()

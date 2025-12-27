@@ -24,7 +24,7 @@ namespace Start_a_Town_
             new ConstructingPlanner(),
             new TaskGiverRefueling(),
             new TaskGiverSwitchToggle(),
-            new TaskGiverChopping(),
+            new ChoppingPlanner(),
             new TaskGiverForaging(),
             new TaskGiverDigging(),
             new TaskGiverDeconstruct(),

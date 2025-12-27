@@ -28,9 +28,9 @@ namespace Start_a_Town_.AI.Behaviors
             yield return new BehaviorResolvePath(EatingSurfaceInd);
             var onTable = TargetIndex.C;
             yield return BehaviorHelper.SetTarget(onTable, Table.Global.Above());
-            yield return new BehaviorBeginInteraction(onTable, new UseHauledOnTarget());
-            yield return new BehaviorBeginInteraction(FoodInd, new Components.ConsumableComponent.InteractionConsume());
-            yield return new BehaviorBeginInteraction(() => new InteractionThrow()); // in case somehow more food than necessary is been carried
+            yield return new BehaviorResolveInteraction(onTable, new UseHauledOnTarget());
+            yield return new BehaviorResolveInteraction(FoodInd, new Components.ConsumableComponent.InteractionConsume());
+            yield return new BehaviorResolveInteraction(() => new InteractionThrow()); // in case somehow more food than necessary is been carried
         }
 
         protected override bool InitExtraReservations()

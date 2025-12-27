@@ -34,11 +34,11 @@ namespace Start_a_Town_
             yield return BehaviorReserve.Reserve(this, Item);
             // TODO place item on counter first? or wait for money on counter and then swap?
             // WTF if i place item on counter first, then i'll have to retrieve it in case of failure
-            yield return new BehaviorBeginInteraction(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());
+            yield return new BehaviorResolveInteraction(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());
             yield return BehaviorHelper.WaitForItem(Money, counterSurface, o => o.Def == ItemDefOf.Coins && o.StackSize >= cost);
-            yield return new BehaviorBeginInteraction(Money, () => new InteractionHaul());
+            yield return new BehaviorResolveInteraction(Money, () => new InteractionHaul());
             // TODO retrieve item if behavior fails while waiting (if going with placing the item on the counter before the money)
-            yield return new BehaviorBeginInteraction(() => new InteractionStoreHauled());
+            yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
         }
     }
 }

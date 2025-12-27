@@ -23,7 +23,7 @@ namespace Start_a_Town_
             });
             this.FailOnForbidden(PlantIndex);
             yield return new BehaviorResolvePath(PlantIndex);
-            yield return new BehaviorBeginInteraction(PlantIndex, () => new InteractionHarvest());
+            yield return new BehaviorResolveInteraction(PlantIndex, () => new InteractionHarvest());
         }
         protected override bool InitExtraReservations()
         {

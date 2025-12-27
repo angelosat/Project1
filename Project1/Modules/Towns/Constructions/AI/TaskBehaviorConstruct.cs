@@ -33,7 +33,7 @@ namespace Start_a_Town_
             }
             yield return new BehaviorGrabTool();
             yield return new BehaviorResolvePath(ConstructionsID).FailOn(designationOccupied);
-            yield return new BehaviorBeginInteraction(ConstructionsID, new Interactions.InteractionConstruct()).FailOn(designationOccupied);
+            yield return new BehaviorResolveInteraction(ConstructionsID, new Interactions.InteractionConstruct()).FailOn(designationOccupied);
         }
 
         protected override bool InitExtraReservations()

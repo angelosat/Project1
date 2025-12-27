@@ -16,7 +16,7 @@ namespace Start_a_Town_.AI
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return new BehaviorResolvePath(this.Plan.TargetA);
-            yield return new BehaviorBeginInteraction(this.Plan.TargetA, new InteractionObserve());
+            yield return new BehaviorResolveInteraction(this.Plan.TargetA, new InteractionObserve());
         }
     }
 }

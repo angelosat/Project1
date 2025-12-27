@@ -24,7 +24,7 @@ namespace Start_a_Town_
             yield return new BehaviorResolvePath(TargetIndex.B);
             
            
-            yield return new BehaviorBeginInteraction(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
+            yield return new BehaviorResolveInteraction(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
             //        // TODO shop worker reserves dropped item immediately
 
             yield return new BehaviorWait(() => {
@@ -49,14 +49,14 @@ namespace Start_a_Town_
                     this.Plan.SetAmount(TargetIndex.C, totalvalue);
                 }
             };
-            yield return new BehaviorBeginInteraction(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
+            yield return new BehaviorResolveInteraction(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
             //yield return new BehaviorCustom() { InitAction = () => actor.Reserve(this.Task, actor.Hauled) };
             yield return new BehaviorCustom() { InitAction = () => this.Reserve(actor.Hauled) };
-            yield return new BehaviorBeginInteraction(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
+            yield return new BehaviorResolveInteraction(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
             // TODO wait for the item to be placed ontop of the counter, and then pick it up
             yield return new BehaviorWait(() => item.Parent == null && item.Global.ToCell() == counter.Above());
-            yield return new BehaviorBeginInteraction(TargetIndex.A, () => new InteractionHaul());
-            yield return new BehaviorBeginInteraction(() => new InteractionStoreHauled());
+            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionHaul());
+            yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
            
             // TODO behavior negotiate price
             // TODO behavior wait for reply

@@ -16,7 +16,7 @@ namespace Start_a_Town_
             this.FailOn(failOnInvalidTarget);
             yield return new BehaviorGrabTool().FailOnForbidden(TargetIndex.Tool);
             yield return new BehaviorResolvePath(TargetInd);
-            yield return new BehaviorBeginInteraction(TargetInd, new InteractionTilling());
+            yield return new BehaviorResolveInteraction(TargetInd, new InteractionTilling());
             bool failOnInvalidTarget()
             {
                 var zone = town.ZoneManager.GetZoneAt<GrowingZone>(Target.Global); // capture zone outside method? and check if it still exists?

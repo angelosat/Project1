@@ -23,7 +23,7 @@ namespace Start_a_Town_
                         new BehaviorSelector(
                             new BehaviorItemIsInInventory(TargetIndex.Tool),
                             new BehaviorResolvePath(TargetIndex.Tool)),
-                        new BehaviorBeginInteraction(TargetIndex.Tool, new InteractionEquip())
+                        new BehaviorResolveInteraction(TargetIndex.Tool, new InteractionEquip())
                         )
             };
         }

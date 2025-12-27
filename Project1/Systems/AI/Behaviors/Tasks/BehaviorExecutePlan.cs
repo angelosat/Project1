@@ -13,6 +13,10 @@ namespace Start_a_Town_
         //    get => this.Actor.CurrentTask;
         //    set => this.Actor.CurrentTask = value;
         //}
+        protected Behavior FailOnNoDesignation(TargetIndex index, DesignationDef def)
+        {
+            return this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.GetTarget(index), def));
+        }
         protected abstract IEnumerable<Behavior> GetSteps();
         int CurrentStepIndex;
         public bool Finished;

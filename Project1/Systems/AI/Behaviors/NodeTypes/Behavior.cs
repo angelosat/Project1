@@ -9,6 +9,11 @@ namespace Start_a_Town_
     public enum BehaviorState { Running, Success, Fail }
     public abstract class Behavior : ICloneable
     {
+        public Behavior FailOnPreInteractionCheck(Actor actor, Plan plan) //FailOnInvalidInteraction()
+        {
+            var ctx = plan.Def.Interaction.CreateContext(actor, plan.TargetA);
+            return this.FailOn(() => !plan.Def.Interaction.Logic.CanPerform(ctx));
+        }
         //public virtual string Status => $"{this}";
         public virtual string Name { get; } = string.Empty;
         public string Label;
@@ -59,7 +64,7 @@ namespace Start_a_Town_
             });
             return this;
         }
-       
+        
         public Behavior JumpIf(Func<bool> cond, Behavior gotoBhav)
         {
             this.AddPreTickAction(() =>

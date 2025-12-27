@@ -55,7 +55,7 @@ namespace Start_a_Town_.Interactions
         //protected override Progress ProgressNew => this.Comp.Progress;
         protected override float WorkDifficulty { get; } = 1;
 
-        protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnSwing;
+        //protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnSwing;
 
         public override object Clone()
         {
@@ -64,7 +64,7 @@ namespace Start_a_Town_.Interactions
 
         protected override void OnApplyWork(int workAmount)
         {
-            this.Def.Logic.ApplyWork(this.Context, (int)workAmount);
+            this.Def.Logic.ApplyWork(this.Context, workAmount);
         }
 
         protected override void Done()

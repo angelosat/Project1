@@ -21,7 +21,7 @@ namespace Start_a_Town_
             var a = this.Actor;
             var t = this.Target;
             this._animation.Speed = StatDefOf.WorkSpeed.GetValue(a);
-            this.Init();
+            //this.Init();
             var particleColor = this.GetParticleColor();
             this.EmitterStrike = new ParticleEmitterSphere
             {
@@ -40,6 +40,8 @@ namespace Start_a_Town_
                 Rate = 0
             };
             this.ParticleRects = GetParticleRects();
+            this.Init();
+
         }
 
         public sealed override void OnUpdate()
@@ -60,7 +62,14 @@ namespace Start_a_Town_
             }
             if (actor.Net.IsClient && this.ParticleRects is not null)
             {
-                this.EmitterStrike.Emit(ItemContent.LogsGrayscale.AtlasToken.Atlas.Texture, this.ParticleRects, Vector3.Zero);
+                //this.EmitterStrike.Emit(ItemContent.LogsGrayscale.AtlasToken.Atlas.Texture, this.ParticleRects, Vector3.Zero);
+                //var token = BlockDefOf.Soil.Variations[0];
+                ////var token = ItemContent.LogsGrayscale.AtlasToken;
+                //this.ParticleRects = token.Rectangle.Divide(25);
+                //this.EmitterStrike.Texture = token.Atlas.Texture;
+                this.EmitterStrike.Emit(this.ParticleRects, Vector3.Zero);
+                //if (this.EmitterStrike.Texture != Block.Atlas.Texture)
+                //    throw new Exception();
                 actor.Map.ParticleManager.AddEmitter(this.EmitterStrike);
             }
 
@@ -120,7 +129,7 @@ namespace Start_a_Town_
         //protected abstract float Progress { get; }
         protected float Progress => this.Context.ProgressPercentage;
         protected abstract float WorkDifficulty { get; }
-        protected abstract SkillAwardTypes SkillAwardType { get; }
+        protected SkillAwardTypes SkillAwardType;//{ get; }
         protected virtual void Init() { }
         protected abstract void OnApplyWork(int workAmount);
         protected abstract void Done();

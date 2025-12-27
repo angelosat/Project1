@@ -35,7 +35,7 @@ namespace Start_a_Town_
             .SetValue(20);
 
 
-        static public readonly MaterialDef Soil = new(MaterialTypeDefOf.Soil, "Soil", "Dirt", Color.SandyBrown, 20) { ValueBase = 2, BreakResistance = 20 };
+        static public readonly MaterialDef Soil = new(MaterialTypeDefOf.Soil, "Soil", "Dirt", Color.SandyBrown, 20) { ValueBase = 2, BreakResistance = 2 };
         static public readonly MaterialDef Sand = new(MaterialTypeDefOf.Soil, "Sand", "Sand", Color.BlanchedAlmond, 10) { ValueBase = 2 };
 
 

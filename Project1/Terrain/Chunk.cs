@@ -295,6 +295,10 @@ namespace Start_a_Town_
         {
             return this.Cells[GetCellIndex(x, y, z)];
         }
+        public Cell GetLocalCell(IntVec3 local)
+        {
+            return this.Cells[GetCellIndex(local)];
+        }
         //public Cell GetCellLocal(IntVec3 local)
         //{
         //    // local bounds check (XY only)
@@ -542,6 +546,7 @@ namespace Start_a_Town_
 
         public bool InvalidateCell(Cell cell)
         {
+            this.BlockTokens.Remove(cell.LocalCoords);
             if (cell is null)
                 throw new Exception();
             this.InvalidateLight(cell);
@@ -597,8 +602,8 @@ namespace Start_a_Town_
         /// <summary>
         /// TODO: optimize: convert to dictionary for speed
         /// </summary>
-        public Dictionary<IntVec3, LightToken> LightCache = new();
-
+        public Dictionary<IntVec3, LightToken> LightCache = [];
+        internal Dictionary<IntVec3, BlockHealthToken> BlockTokens = [];
         public static bool InvalidateLight(MapBase map, IntVec3 global)
         {
             if (map.TryGetAll(global.X, global.Y, global.Z, out Chunk chunk, out Cell cell, out int lx, out int ly))
@@ -692,16 +697,37 @@ namespace Start_a_Town_
         }
         public void Tick()
         {
-            this.UpdateEntities();
-            this.UpdateBlockEntities();
+            this.TickEntities();
+            this.TickBlockEntities();
+            this.TickBlockTokens();
         }
+        void TickBlockTokens()
+        {
+            var keysToRemove = new List<IntVec3>(this.BlockTokens.Count);
+            foreach (var (pos, token) in this.BlockTokens)
+            {
+                token.Tick();
+                if (token.HasExpired)
+                    keysToRemove.Add(pos);
+            }
+            foreach (var k in keysToRemove)
+                this.BlockTokens.Remove(k);
 
-        private void UpdateBlockEntities()
+            //var nextDic = new Dictionary<IntVec3, BlockHealthToken>(this.BlockHealthTokens.Count);
+            //foreach(var (pos, token) in this.BlockHealthTokens)
+            //{
+            //    token.Tick();
+            //    if (!token.HasExpired)
+            //        nextDic.Add(pos, token);
+            //}
+            //this.BlockHealthTokens = nextDic;
+        }
+        private void TickBlockEntities()
         {
             foreach (var blockentity in this.BlockEntitiesByPosition.ToList())
                 blockentity.Value.Tick(this.Map, blockentity.Key.ToGlobal(this));
         }
-        private void UpdateEntities()
+        private void TickEntities()
         {
             var objectList = this.Objects.ToArray();
             var objCount = objectList.Length;
@@ -772,7 +798,18 @@ namespace Start_a_Town_
                 obj.DrawInterface(sb, cam);
             foreach (var blockentity in this.BlockEntitiesByPosition)
                 blockentity.Value.DrawUI(sb, cam, blockentity.Key.ToGlobal(this));
+            this.DrawBlockTokens(sb, cam);
         }
+        static readonly float BlockTokenDrawThreshold = Ticks.FromSeconds(2);
+        private void DrawBlockTokens(SpriteBatch sb, Camera camera)
+        {
+            if (camera.Zoom < 1)
+                return;
+            foreach(var (pos, token) in this.BlockTokens)
+                if(token.Lifetime < BlockTokenDrawThreshold)
+                    UI.Bar.Draw(sb, camera, pos.ToGlobal(this), "Block HitPoints", token.HealthPercentage, camera.Zoom * .2f);
+        }
+
         public void DrawHighlight(SpriteBatch sb, Rectangle bounds)
         {
             sb.Draw(UI.UIManager.Highlight, bounds, null, Color.Lerp(Color.White, Color.Transparent, 0.5f), 0, Vector2.Zero, SpriteEffects.None, 0);
@@ -1740,5 +1777,17 @@ namespace Start_a_Town_
             foreach (var be in this.BlockEntitiesByPosition)
                 yield return (be.Key, be.Value);
         }
+
+        internal void ApplyBlockWork(IntVec3 local, int work)
+        {
+            if (!this.BlockTokens.TryGetValue(local, out var token))
+            {
+                token = new(this.GetLocalCell(local));
+                this.BlockTokens.Add(local, token);
+            }
+            if (token.ApplyWork(work))
+                this.InvalidateSlice(token.Cell.Z);
+        }
+      
     }
 }

@@ -116,7 +116,7 @@ namespace Start_a_Town_
         }
         public static List<Rectangle> Divide(this Rectangle rect, int count)
         {
-            var list = new List<Rectangle>();
+            var list = new List<Rectangle>(count);
             var sqrt = (int)Math.Sqrt(count);
             var w = rect.Width / sqrt;
             var h = rect.Height / sqrt;

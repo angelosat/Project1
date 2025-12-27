@@ -14,7 +14,7 @@ namespace Start_a_Town_.Crafting
 
         protected override float WorkDifficulty => 1;//throw new System.NotImplementedException();
 
-        protected override SkillAwardTypes SkillAwardType => SkillAwardTypes.OnFinish;// throw new System.NotImplementedException();
+        //protected override SkillAwardTypes SkillAwardType => SkillAwardTypes.OnFinish;// throw new System.NotImplementedException();
 
         public InteractionCraftingNew(/*OrderSettings order*/) : base("Craft")
         {
@@ -142,7 +142,7 @@ namespace Start_a_Town_.Crafting
 
         //protected override float Progress => this._progress.Percentage;
         protected override float WorkDifficulty => 1;
-        protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnFinish;
+        //protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnFinish;
 
         int _orderID;
         private int OrderID => this.Order?.ID ?? this._orderID;

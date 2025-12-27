@@ -131,6 +131,19 @@ namespace Start_a_Town_
             });
             return bhav;
         }
+        static public Behavior FailOnTargetDespawned(this Behavior bhav, TargetIndex targetInd)
+        {
+            bhav.FailOn(() =>
+            {
+                var t = bhav.Actor.CurrentTask.GetTarget(targetInd);
+                return (t.Object.Map != bhav.Actor.Map);
+            });
+            return bhav;
+        }
+        static public Behavior FailOnTargetDespawned(this Behavior bhav)
+        {
+            return bhav.FailOnTargetDespawned(TargetIndex.A);
+        }
         static public Behavior FailOnUnavailablePlacedItems(this Behavior bhav)
         {
             bhav.FailOn(() =>

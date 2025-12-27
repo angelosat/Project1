@@ -1,26 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using Start_a_Town_.AI;
+﻿using Start_a_Town_.AI;
 using Start_a_Town_.Net;
+using System;
+using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
     abstract public class BehaviorExecutePlan : Behavior
     {
 
-        public Plan Plan;
-        //{
-        //    get => this.Actor.CurrentTask;
-        //    set => this.Actor.CurrentTask = value;
-        //}
-        protected Behavior FailOnNoDesignation(TargetIndex index, DesignationDef def)
+
+        
+        /// <summary>
+        /// Attaches a fail condition to the behavior that checks interaction feasibility while the actor is moving toward the target.
+        /// Once the interaction is instantiated, the interaction itself performs the authoritative validity checks.
+        /// This ensures mid-transit failures are caught early without duplicating the interaction logic.
+        /// </summary>
+        
+        protected Behavior FailOnNoDesignation(DesignationDef def)
         {
-            return this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.GetTarget(index), def));
+            return this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.TargetA, def));
+        }
+        protected Behavior FailOnNoDesignation()
+        {
+            return this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.TargetA, this.Plan.Designation));
         }
         protected abstract IEnumerable<Behavior> GetSteps();
         int CurrentStepIndex;
         public bool Finished;
         readonly List<Action> FinishActions = new();
+        public Plan Plan;
 
         List<Behavior> _CachedBehaviors;
         List<Behavior> CachedBehaviors

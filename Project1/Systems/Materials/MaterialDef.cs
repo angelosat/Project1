@@ -25,7 +25,7 @@ namespace Start_a_Town_
         public MaterialState State;
         public MaterialCategory Category;
         public Fuel Fuel;
-        public float BreakResistance = 1;
+        public int BreakResistance = 1;
         public int ValueBase = 1;
         public float ValueMultiplier = 1;
 

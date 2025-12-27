@@ -7,26 +7,12 @@ namespace Start_a_Town_
     {
         protected override IEnumerable<Behavior> GetSteps()
         {
-            var target = this.Plan.GetTarget(TargetIndex.A);
-            var ctx = this.Plan.Def.Interaction.CreateContext(this.Actor, target);
             if(this.Plan.Designation is not null)
-                this.FailOnNoDesignation(TargetIndex.A, this.Plan.Designation);// DesignationDefOf.Chop);
-            yield return new BehaviorResolvePath(TargetIndex.A)
-                .FailOn(() => !this.Plan.Def.Interaction.Logic.CanPerform(ctx));
-            yield return new BehaviorResolveInteraction(TargetIndex.A);
-
-
-            //var target = this.Plan.GetTarget(TargetIndex.A);
-            //var ctx = this.Plan.Def.Interaction.CreateContext(this.Actor, target);
-            //bool designationFail() => !this.Actor.Town.DesignationManager.IsDesignation(target, DesignationDefOf.Chop);
-            //yield return new BehaviorResolvePath(TargetIndex.A)
-            //    .FailOn(() => !this.Plan.Def.Interaction.Logic.CanPerform(ctx))
-            //    .FailOn(designationFail);
-            //yield return new BehaviorResolveInteraction(TargetIndex.A)
-            //    .FailOn(designationFail);
+                this.FailOnNoDesignation(this.Plan.Designation);
+            yield return new BehaviorResolvePath(PathEndMode.Any)
+                .FailOnPreInteractionCheck(this.Actor, this.Plan);
+            yield return new BehaviorResolveInteraction();
         }
-
-
 
         public override bool HasFailedOrEnded()
         {

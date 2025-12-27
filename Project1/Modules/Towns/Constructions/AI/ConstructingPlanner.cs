@@ -39,7 +39,7 @@ namespace Start_a_Town_
             foreach (var comp in buildablesReady)
                 foreach (var c in comp.Parent.CellsOccupied)
                     if (actor.CanReach(c))
-                        return new Plan(PlanDefOf.Construct, new TargetArgs(actor.Map, c));
+                        return new Plan(PlanDefOf.Construct, new TargetArgs(actor.Map, c)) { Designation = DesignationDefOf.Construct };
 
             //var byRefinement = buildables[false].ToLookup(c => c.Requirement.refinement);
             //var byRefinementAndMaterial =

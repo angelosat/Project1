@@ -51,13 +51,16 @@ namespace Start_a_Town_
 
         protected override float WorkDifficulty => this.Plant.PlantComponent.Species.StemMaterial.Density;
         //protected override float Progress => 1 - this.HitPoints.Percentage;
-        protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnSwing;
+        //protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnSwing;
 
         public InteractionChop() : base("Chopping")
         {
 
         }
-
+        protected override void Init()
+        {
+            this.EmitterStrike.Texture = ItemContent.LogsGrayscale.Texture;
+        }
         public override object Clone()
         {
             throw new NotImplementedException();

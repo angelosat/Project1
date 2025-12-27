@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Particles;
 
@@ -21,6 +22,7 @@ namespace Start_a_Town_
         }
         public override ParticleEmitterSphere GetEmitter()
         {
+            return base.GetEmitter();
             var e = base.GetDustEmitter();
 
             e.ColorBegin = e.ColorEnd = Color.Gold;

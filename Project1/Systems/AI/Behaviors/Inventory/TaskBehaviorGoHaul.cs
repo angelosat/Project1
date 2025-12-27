@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using Start_a_Town_.AI.Behaviors;
+﻿using Start_a_Town_.AI.Behaviors;
+using System.Collections.Generic;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Start_a_Town_
 {
@@ -9,11 +10,10 @@ namespace Start_a_Town_
 
         protected override IEnumerable<Behavior> GetSteps()
         {
-            var index = TargetIndex.A;
-            yield return new BehaviorResolvePath(index, PathEndMode.Any);
-            //yield return new BehaviorInteractionNew(index, () => new InteractionHaul(this.Actor.CurrentTask.GetAmount(index)));
-            //yield return new BehaviorInteractionNew(InteractionDefOf.Pick, countInd: index);
-            yield return new BehaviorResolveInteraction(index);
+            this.FailOnTargetDespawned();
+            yield return new BehaviorResolvePath(PathEndMode.Any)
+                .FailOnPreInteractionCheck(this.Actor, this.Plan);
+            yield return new BehaviorResolveInteraction();
         }
         protected override bool InitExtraReservations()
         {

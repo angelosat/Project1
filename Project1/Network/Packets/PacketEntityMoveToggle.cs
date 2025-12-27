@@ -24,11 +24,10 @@ namespace Start_a_Town_
             var r = packet.PacketReader;
             var id = r.ReadInt32();
             var entity = net.World.GetEntity(id) as Actor;
-            //var test = r.ReadInt32();
             var toggle = r.ReadBoolean();
             entity.MoveToggle(toggle);
-            if (net is Server)
-                Send(net, entity.RefId, toggle);
+            //if (net is Server)
+            //    Send(net, entity.RefId, toggle);
         }
     }
 }

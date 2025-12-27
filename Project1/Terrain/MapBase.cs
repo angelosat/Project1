@@ -1138,6 +1138,12 @@ namespace Start_a_Town_
             PacketSpawnEntity.Send(entity, position, velocity);
         }
 
+        internal void ApplyBlockWork(IntVec3 global, int workAmount)
+        {
+            if (this.TryGetChunk(global, out var chunk))
+                chunk.ApplyBlockWork(global.ToLocal(), workAmount);
+        }
+
         static MapBase()
         {
 

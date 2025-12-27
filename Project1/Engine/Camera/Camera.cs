@@ -993,11 +993,13 @@ namespace Start_a_Town_
             //  draw particles drawn by entities
             map.DrawParticles(this);
             fx.CurrentTechnique = fx.Techniques["Particles"];
-            fx.CurrentTechnique.Passes["Pass1"].Apply();
+            //fx.CurrentTechnique.Passes["Pass1"].Apply();
             fx.Parameters["s"].SetValue(Block.Atlas.Texture);
+            fx.CurrentTechnique.Passes["Pass1"].Apply();
 
             this.BlockParticlesSpriteBatch.Flush();
             fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
+            fx.CurrentTechnique.Passes["Pass1"].Apply();
 
             this.ParticlesSpriteBatch.Flush();
 

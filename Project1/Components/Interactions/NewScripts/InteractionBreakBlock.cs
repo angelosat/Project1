@@ -1,12 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using Microsoft.Xna.Framework;
+using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.Particles;
 
 namespace Start_a_Town_
 {
+    public class InteractionBreakBlockLogic : InteractionLogic
+    {
+        class Context : InteractionContext
+        {
+            Cell _cellCached;
+            internal Cell Cell => _cellCached ??= this.Actor.Map.GetCell(this.Target.Global);
+            int? _totalHp;
+            internal int TotalHp => _totalHp ??= this.Cell.Material.BreakResistance * this.Cell.HitPoints;
+            WorkComponent _actorWork;
+            //WorkComponent ActorWorkComp => this._actorWork ??= this.Actor.GetComponent<WorkComponent>();
+            //public override float ProgressPercentage => this.ActorWorkComp.AccumulatedWork / this.TotalHp;
+            public override float ProgressPercentage => 1 - (float)this.Cell.HitPoints / Cell.HitPointsMax;
+        }
+        public override void ApplyWork(InteractionContext ctx, int workAmount) => this.ApplyWork((Context)ctx, workAmount);
+        public override bool CanFinish(InteractionContext ctx) => this.CanFinish((Context)ctx);
+        public override bool CanPerform(InteractionContext ctx) => this.CanPerform((Context)ctx);
+        protected override InteractionContext CreateContextInternal() => new Context();
+        bool CanPerform(Context ctx)
+        {
+            return ctx.Cell.Block is not BlockAir;
+        }
+        bool CanFinish(Context ctx)
+        {
+            var global = ctx.Target.Global;
+            var actor = ctx.Actor;
+            var objects = actor.Map.GetObjects(global.Above());
+            return !objects.Any();
+        }
+        void ApplyWork(Context ctx, int workAmount)
+        {
+            ctx.Actor.Map.ApplyBlockWork(ctx.Target.Global, -workAmount);
+
+            //ctx.Cell.Damage++;
+            //var vec = ctx.Target.Global;
+            //ctx.Actor.Map.GetChunk(vec).InvalidateSlice((byte)vec.Z);
+        }
+    }
     class InteractionBreakBlock : InteractionToolUse
     {
         ParticleEmitterSphere EmitterBreak;
@@ -14,12 +52,12 @@ namespace Start_a_Town_
         Cell Cell => _cellCached ??= this.Actor.Map.GetCell(this.Target.Global);
         Block Block => this.Cell.Block;
         MaterialDef Material => this.Cell.Material;
-        float WorkAppliedThisBreakStage, WorkAppliedTotal;
+        float AccumulatedWorkThisBreakStage, AccumulatedWorkTotal;
 
         protected override float WorkDifficulty => this.Material.Density;
         float TotalHp;
         //protected override float Progress => this.WorkAppliedTotal / this.TotalHp;
-        protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnFinish;
+        //protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnFinish;
 
         public InteractionBreakBlock() : base("MineDig")
         {
@@ -35,19 +73,10 @@ namespace Start_a_Town_
             var global = this.Target.Global;
             this.TotalHp = this.Cell.Material.BreakResistance * this.Cell.HitPoints;
 
-            this.EmitterBreak = this.Block.GetEmitter();
-            this.EmitterBreak.Source = global + Vector3.UnitZ * 0.5f;
-            this.EmitterBreak.SizeBegin = 1;
-            this.EmitterBreak.SizeEnd = 1;
-            this.EmitterBreak.ParticleWeight = 1;
-            this.EmitterBreak.Radius = 1f;// .5f;
-            this.EmitterBreak.Force = .1f;
-            this.EmitterBreak.Friction = .5f;
-            this.EmitterBreak.AlphaBegin = 1;
-            this.EmitterBreak.AlphaEnd = 0;
-            this.EmitterBreak.ColorBegin = Color.White;
-            this.EmitterBreak.ColorEnd = Color.White;
-            this.EmitterBreak.Lifetime = Ticks.PerSecond * 2;
+            var blockEmitter = this.Block.GetEmitter();
+            //this.EmitterStrike = blockEmitter;
+            this.EmitterStrike.Texture = Block.Atlas.Texture;
+            this.ParticleRects = this.GetParticleRects();
         }
         public override object Clone()
         {
@@ -56,23 +85,33 @@ namespace Start_a_Town_
 
         protected override void OnApplyWork(int workAmount)
         {
-            this.WorkAppliedThisBreakStage += workAmount;
-            this.WorkAppliedTotal += workAmount;
+            this.Def.Logic.ApplyWork(this.Context, workAmount);
+            //if (this.Target.Cell.HitPoints == 0)
+            //    this.Done();
+            return;
+            this.AccumulatedWorkThisBreakStage += workAmount;
+            this.AccumulatedWorkTotal += workAmount;
             var resistance = this.Cell.Material.BreakResistance;
-            if (this.WorkAppliedThisBreakStage >= resistance)
+            if (this.AccumulatedWorkThisBreakStage >= resistance)
             {
+                this.AccumulatedWorkThisBreakStage -= resistance;
                 this.Cell.Damage++;
                 var vec = this.Target.Global;
                 this.Actor.Map.GetChunk(vec).InvalidateSlice((byte)vec.Z);
-                this.WorkAppliedThisBreakStage -= resistance;
+                this.AccumulatedWorkThisBreakStage -= resistance;
             }
         }
 
         protected override void Done()
         {
-            if (this.Actor.Net.IsClient)
-                return;
             var a = this.Actor;
+
+
+            //if (this.Actor.Net.IsClient)
+            //{
+            //    emitBreak();
+            //    return;
+            //}
             var t = this.Target;
             var cell = this.Cell;
 
@@ -80,9 +119,9 @@ namespace Start_a_Town_
                 server.PopLoot(ItemFactory.CreateFrom(productDef, cell.Material), t.Global, Vector3.Zero);
 
             a.Map.RemoveBlock(t.Global);
-            PacketBreakBlocks.Send(a.Map, [t.Global]);
+            // test: letting client perform the last interaction tick so that it has a chance to emit particles
+            //PacketBreakBlocks.Send(a.Map, [t.Global]);
 
-            emitBreak();
 
             void emitBreak()
             {
@@ -99,6 +138,8 @@ namespace Start_a_Town_
 
         protected override List<Rectangle> GetParticleRects()
         {
+            //return BlockDefOf.Grass.Variations[0].Rectangle.Divide(25);
+            //return ItemContent.LogsGrayscale.AtlasToken.Rectangle.Divide(25);
             return this.Block.GetParticleRects(25);
         }
 
@@ -124,24 +165,24 @@ namespace Start_a_Town_
 
         protected override void AddSaveData(SaveTag tag)
         {
-            this.WorkAppliedThisBreakStage.Save(tag, "WorkAppliedThisStage");
-            this.WorkAppliedTotal.Save(tag, "WorkAppliedTotal");
+            this.AccumulatedWorkThisBreakStage.Save(tag, "WorkAppliedThisStage");
+            this.AccumulatedWorkTotal.Save(tag, "WorkAppliedTotal");
         }
         public override void LoadData(SaveTag tag)
         {
-            this.WorkAppliedThisBreakStage = (float)tag["WorkAppliedThisStage"].Value;
-            this.WorkAppliedTotal = (float)tag["WorkAppliedTotal"].Value;
+            this.AccumulatedWorkThisBreakStage = (float)tag["WorkAppliedThisStage"].Value;
+            this.AccumulatedWorkTotal = (float)tag["WorkAppliedTotal"].Value;
 
         }
         protected override void WriteExtra(IDataWriter w)
         {
-            w.Write(this.WorkAppliedThisBreakStage);
-            w.Write(this.WorkAppliedTotal);
+            w.Write(this.AccumulatedWorkThisBreakStage);
+            w.Write(this.AccumulatedWorkTotal);
         }
         protected override void ReadExtra(IDataReader r)
         {
-            this.WorkAppliedThisBreakStage = r.ReadSingle();
-            this.WorkAppliedTotal = r.ReadSingle();
+            this.AccumulatedWorkThisBreakStage = r.ReadSingle();
+            this.AccumulatedWorkTotal = r.ReadSingle();
         }
     }
 }

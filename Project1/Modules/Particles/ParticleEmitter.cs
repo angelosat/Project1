@@ -140,6 +140,10 @@ namespace Start_a_Town_.Particles
                     throw new Exception();
             }
         }
+        public void Emit(List<Rectangle> pieces, Vector3 force)
+        {
+            this.Emit(this.Texture, pieces, force);
+        }
         public void Emit(Texture2D texture, List<Rectangle> pieces, Vector3 force)
         {
             this.Texture = texture;

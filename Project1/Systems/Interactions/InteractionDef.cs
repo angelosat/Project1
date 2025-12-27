@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic;
 using Start_a_Town_.Interactions;
 using System;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Start_a_Town_
 {
@@ -34,6 +35,7 @@ namespace Start_a_Town_
         public virtual bool CanFinish(InteractionContext ctx) { return true; }
         public virtual bool WillFinish(InteractionContext ctx, int workAmount) { return true; }
         public virtual void ApplyWork(InteractionContext ctx, int workAmount) { }
+        //protected virtual InteractionContext CreateContextInternal(Actor actor, TargetArgs target) => new(actor, target);
         protected virtual InteractionContext CreateContextInternal() => new();
         internal InteractionContext CreateContext(Actor actor, TargetArgs target)
         {
@@ -43,9 +45,10 @@ namespace Start_a_Town_
             return ctx;
         }
     }
-    public class InteractionContext
+    public class InteractionContext//(Actor actor, TargetArgs target)
     {
-        public MapBase Map;
+        //public Actor Actor = actor;
+        //public TargetArgs Target = target;
         public Actor Actor;
         public TargetArgs Target;
         public virtual float ProgressPercentage { get; }

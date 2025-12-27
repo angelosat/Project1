@@ -46,7 +46,10 @@ namespace Start_a_Town_
         {
             this.TargetInd = (int)targetInd;
         }
-
+        public BehaviorResolveInteraction()
+        {
+            this.TargetInd = (int)TargetIndex.A;
+        }
         public BehaviorResolveInteraction(int targetInd, Func<Interaction> interactionFactory)
         {
             this.TargetInd = targetInd;

@@ -9,10 +9,10 @@ namespace Start_a_Town_.AI.Behaviors
         {
 
         }
+
         public BehaviorResolvePath(TargetArgs target)
             : this(target, PathEndMode.Touching)
         {
-
         }
         public BehaviorResolvePath(TargetArgs target, PathEndMode mode)
         {
@@ -28,6 +28,11 @@ namespace Start_a_Town_.AI.Behaviors
         }
         public BehaviorResolvePath(TargetIndex targetInd, PathEndMode mode)
             :this((int)targetInd, mode)
+        {
+
+        }
+        public BehaviorResolvePath(PathEndMode mode)
+            : this((int)TargetIndex.A, mode)
         {
 
         }

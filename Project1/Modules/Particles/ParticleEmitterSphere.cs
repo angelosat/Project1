@@ -1,12 +1,12 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Start_a_Town_.Particles
 {
     public class ParticleEmitterSphere : ParticleEmitter
     {
         public float Force = .01f;
-
         public ParticleEmitterSphere()
         {
 

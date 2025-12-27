@@ -22,8 +22,8 @@ namespace Start_a_Town_
                 return false;
             });
             this.FailOnForbidden(PlantIndex);
-            yield return new BehaviorGetAtNewNew(PlantIndex);
-            yield return new BehaviorInteractionNew(PlantIndex, () => new InteractionHarvest());
+            yield return new BehaviorResolvePath(PlantIndex);
+            yield return new BehaviorBeginInteraction(PlantIndex, () => new InteractionHarvest());
         }
         protected override bool InitExtraReservations()
         {

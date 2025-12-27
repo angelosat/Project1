@@ -10,7 +10,7 @@ namespace Start_a_Town_.AI.Behaviors
             {
                 new BehaviorDomain(new IsAt(targetKey),
                     new BehaviorStopMoving()),
-                new BehaviorGetAtNewNew(targetKey)//, range)
+                new BehaviorResolvePath(targetKey)//, range)
             };
         }
 
@@ -20,7 +20,7 @@ namespace Start_a_Town_.AI.Behaviors
             {
                 new BehaviorDomain(new IsAt(targetArgs),
                     new BehaviorStopMoving()),
-                new BehaviorGetAtNewNew(targetArgs)
+                new BehaviorResolvePath(targetArgs)
             };
         }
         public override BehaviorState Tick(Actor parent, AIState state)

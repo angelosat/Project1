@@ -42,8 +42,8 @@ namespace Start_a_Town_
             });
             // TODO pickup money or leave it to be hauled?
             yield return BehaviorHaulHelper.StartCarrying(this, TargetIndex.C);
-            yield return new BehaviorInteractionNew(() => new InteractionStoreHauled());
-            yield return new BehaviorInteractionNew(Customer, () => new InteractionAssignVisitorRoom(room.ID));
+            yield return new BehaviorBeginInteraction(() => new InteractionStoreHauled());
+            yield return new BehaviorBeginInteraction(Customer, () => new InteractionAssignVisitorRoom(room.ID));
             yield return new BehaviorCustom(() =>
             {
             });

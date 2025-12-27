@@ -935,6 +935,17 @@ namespace Start_a_Town_
             entity.Initialize();
             return entity;
         }
+
+        public IEnumerable<ConstructionDesignationArgs> GetConstructionOptions()
+        {
+            var profile = this.ConstructionProfile;
+            foreach (var refinement in profile.Refinements)
+            {
+                var validMats = Def.GetDefs<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
+                foreach (var mat in validMats)
+                    yield return new ConstructionDesignationArgs(this, refinement, mat, ItemDefOf.Ingredient.StackCapacity); // HACK
+            }
+        } 
         public class DefaultState : IBlockState
         {
             public void Apply(MapBase map, Vector3 global)

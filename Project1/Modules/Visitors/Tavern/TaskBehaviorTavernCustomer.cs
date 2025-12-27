@@ -43,8 +43,8 @@ namespace Start_a_Town_
                 task.SetTarget(TargetIndex.C, money, Math.Min(money.StackSize, customerProps.Dish.GetValueTotal())); // HACK temporary solution
             });
             yield return BehaviorHelper.SetTarget(TargetIndex.A, ()=> customerProps.Dish);
-            yield return new BehaviorInteractionNew(TargetIndex.A, new Components.ConsumableComponent.InteractionConsume());
-            yield return new BehaviorInteractionNew(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
+            yield return new BehaviorBeginInteraction(TargetIndex.A, new Components.ConsumableComponent.InteractionConsume());
+            yield return new BehaviorBeginInteraction(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
             yield return BehaviorHelper.SetTarget(TargetIndex.B, table.Global.Above());
             yield return BehaviorHelper.PlaceCarried(TargetIndex.B);
             yield return new BehaviorCustom(() => actor.GetVisitorProperties().AddRecentlyVisitedShop(tavern));

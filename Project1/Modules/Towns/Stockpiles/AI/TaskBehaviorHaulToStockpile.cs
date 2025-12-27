@@ -13,12 +13,12 @@ namespace Start_a_Town_
         {
             this.FailOnForbidden(ItemInd);
 
-            var gotohaul = new BehaviorGetAtNewNew(ItemInd).FailOn(failCollecting);
+            var gotohaul = new BehaviorResolvePath(ItemInd).FailOn(failCollecting);
             yield return gotohaul;
             yield return BehaviorHaulHelper.StartCarrying(this, ItemInd);
             yield return BehaviorHaulHelper.FindNearbyHaulOpportunity(this, gotohaul, ItemInd).FailOnNotCarrying();
 
-            var gotoStorage = new BehaviorGetAtNewNew(StorageInd);
+            var gotoStorage = new BehaviorResolvePath(StorageInd);
             var findNextStorage = BehaviorHaulHelper.JumpIfNextStorageFound(this, gotoStorage, StorageInd);
             gotoStorage.JumpIf(deliverFail, findNextStorage);
 

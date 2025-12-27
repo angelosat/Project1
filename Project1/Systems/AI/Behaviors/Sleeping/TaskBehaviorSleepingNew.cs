@@ -16,7 +16,7 @@ namespace Start_a_Town_
         }
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorGetAtNewNew(TargetIndex.B, PathEndMode.Exact);//, 1);
+            yield return new BehaviorResolvePath(TargetIndex.B, PathEndMode.Exact);//, 1);
             yield return new BehaviorCustom()
             {
                 Mode = BehaviorCustom.Modes.Continuous,

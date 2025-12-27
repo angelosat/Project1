@@ -24,11 +24,11 @@ namespace Start_a_Town_
             this.AddControls(
                 this.PanelButtons);
         }
-        public void SetProduct(ProductMaterialPair product)
+        public void SetProduct(Block block)
         {
-            if (product is not null)
+            if (block is not null)
             {
-                var cat = product.Block.ConstructionCategory;
+                var cat = block.ConstructionCategory;
                 if (cat != this.CurrentCategory)
                 {
                     this.Refresh(cat.Tools);

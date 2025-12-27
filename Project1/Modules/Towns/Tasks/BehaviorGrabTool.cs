@@ -22,8 +22,8 @@ namespace Start_a_Town_
                     new BehaviorSequence(
                         new BehaviorSelector(
                             new BehaviorItemIsInInventory(TargetIndex.Tool),
-                            new BehaviorGetAtNewNew(TargetIndex.Tool)),
-                        new BehaviorInteractionNew(TargetIndex.Tool, new InteractionEquip())
+                            new BehaviorResolvePath(TargetIndex.Tool)),
+                        new BehaviorBeginInteraction(TargetIndex.Tool, new InteractionEquip())
                         )
             };
         }

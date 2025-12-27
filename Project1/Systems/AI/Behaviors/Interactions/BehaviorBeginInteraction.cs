@@ -5,7 +5,7 @@ using System;
 
 namespace Start_a_Town_
 {
-    class BehaviorInteractionNew : Behavior
+    class BehaviorBeginInteraction : Behavior
     {
         //public override string Status => $"{this.InteractionDef.Label} : {this.Target}";
 
@@ -27,42 +27,42 @@ namespace Start_a_Town_
             }
             set => this._interaction = value;
         }
-        public BehaviorInteractionNew(TargetIndex targetInd, Interaction interaction) : this((int)targetInd, interaction)
+        public BehaviorBeginInteraction(TargetIndex targetInd, Interaction interaction) : this((int)targetInd, interaction)
         { }
-        public BehaviorInteractionNew(TargetIndex targetInd, Func<Interaction> interactionFactory) : this((int)targetInd, interactionFactory)
+        public BehaviorBeginInteraction(TargetIndex targetInd, Func<Interaction> interactionFactory) : this((int)targetInd, interactionFactory)
         { }
-        public BehaviorInteractionNew(InteractionDef def, TargetIndex targetInd = TargetIndex.A, TargetIndex countInd = TargetIndex.None)
+        public BehaviorBeginInteraction(InteractionDef def, TargetIndex targetInd = TargetIndex.A, TargetIndex countInd = TargetIndex.None)
         {
             this.InteractionDef = def;
             this.TargetInd = (int)targetInd;
             this.CountInd = countInd;
         }
-        public BehaviorInteractionNew(Func<TargetArgs> targetGetter, Func<Interaction> interactionFactory)
+        public BehaviorBeginInteraction(Func<TargetArgs> targetGetter, Func<Interaction> interactionFactory)
         {
             this.InteractionFactory = interactionFactory;
             this.TargetGetter = targetGetter;
         }
-        public BehaviorInteractionNew(TargetIndex targetInd)
+        public BehaviorBeginInteraction(TargetIndex targetInd)
         {
             this.TargetInd = (int)targetInd;
         }
 
-        public BehaviorInteractionNew(int targetInd, Func<Interaction> interactionFactory)
+        public BehaviorBeginInteraction(int targetInd, Func<Interaction> interactionFactory)
         {
             this.TargetInd = targetInd;
             this.InteractionFactory = interactionFactory;
         }
-        public BehaviorInteractionNew(int targetInd, Interaction interaction)
+        public BehaviorBeginInteraction(int targetInd, Interaction interaction)
         {
             this.TargetInd = targetInd;
             this.Interaction = interaction;
         }
-        public BehaviorInteractionNew(TargetArgs targetArgs, Interaction interaction)
+        public BehaviorBeginInteraction(TargetArgs targetArgs, Interaction interaction)
         {
             this.Target = targetArgs;
             this.Interaction = interaction;
         }
-        public BehaviorInteractionNew(Func<Interaction> interactionFactory)
+        public BehaviorBeginInteraction(Func<Interaction> interactionFactory)
         {
             this.InteractionFactory = interactionFactory;
         }
@@ -85,7 +85,8 @@ namespace Start_a_Town_
             //var interaction = Actor.Work.Task;
             if(_interaction is null)
             {
-                _interaction = ActivatorSafe<Interaction>.CreateInstance(parent.CurrentTask.Def.Interaction.InteractionClass);
+                //_interaction = ActivatorSafe<Interaction>.CreateInstance(parent.CurrentTask.Def.Interaction.InteractionClass);
+                _interaction = parent.CurrentTask.Def.Interaction.Create(parent, target);
             }
 
             //switch (goal.State)
@@ -119,7 +120,7 @@ namespace Start_a_Town_
         }
         public override object Clone()
         {
-            return new BehaviorInteractionNew(this.TargetInd, this.InteractionFactory);// this.Interaction.Clone() as Interaction);
+            return new BehaviorBeginInteraction(this.TargetInd, this.InteractionFactory);// this.Interaction.Clone() as Interaction);
         }
     }
 }

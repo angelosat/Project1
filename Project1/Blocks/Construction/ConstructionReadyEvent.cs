@@ -2,10 +2,10 @@
 {
     public class ConstructionReadyEvent(BlockConstructionComp comp) : EventPayloadBase
     {
-        public readonly BlockConstructionComp Comp = comp;
+        public readonly BlockConstructionComp Source = comp;
     }
     public class ConstructionFinishedEvent(BlockConstructionComp comp) : EventPayloadBase
     {
-        public readonly BlockConstructionComp Comp = comp;
+        public readonly BlockConstructionComp Source = comp;
     }
 }

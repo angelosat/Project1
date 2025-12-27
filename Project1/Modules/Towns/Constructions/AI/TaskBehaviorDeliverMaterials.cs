@@ -18,14 +18,14 @@ namespace Start_a_Town_
             this.FailOnForbidden(MaterialID);
             var extractMaterial = BehaviorHelper.ExtractNextTargetAmount(MaterialID);
             yield return extractMaterial;
-            yield return new BehaviorGetAtNewNew(MaterialID).FailOn(collectFail);
+            yield return new BehaviorResolvePath(MaterialID).FailOn(collectFail);
             yield return BehaviorHaulHelper.StartCarrying(this, MaterialID).FailOn(collectFail);
             yield return BehaviorHelper.JumpIfNextCarryStackable(extractMaterial, MaterialID, MaterialID);
             var extractDestination = BehaviorHelper.ExtractNextTargetAmount(DestinationID);
             yield return extractDestination;
-            var gotoStorage = new BehaviorGetAtNewNew(DestinationID).FailOn(deliverFail);
+            var gotoStorage = new BehaviorResolvePath(DestinationID).FailOn(deliverFail);
             yield return gotoStorage;
-            yield return new BehaviorInteractionNew(DestinationID, () => new UseHauledOnTarget(this.Actor.CurrentTask.GetAmount(DestinationID))
+            yield return new BehaviorBeginInteraction(DestinationID, () => new UseHauledOnTarget(this.Actor.CurrentTask.GetAmount(DestinationID))
             ).FailOn(deliverFail);
             yield return BehaviorHelper.JumpIfMoreTargets(extractDestination, DestinationID);
 

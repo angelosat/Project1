@@ -8,29 +8,31 @@ namespace Start_a_Town_.Core
 {
     class BlockBrowserConstruction : GroupBox
     {
-        readonly Dictionary<Block, ProductMaterialPair> LastSelectedVariant = new();
+        readonly Dictionary<Block, ConstructionDesignationArgs> LastSelectedVariant = new();
         ConstructionCategoryDef SelectedCategory;
         readonly Panel Panel_Blocks;
         readonly UIToolsBox ToolBox;
         Block CurrentSelected;
         readonly Dictionary<ConstructionCategoryDef, ButtonGridIcons<Block>> Categories = new();
-
+        UIBlockVariationPicker Picker;
         public BlockBrowserConstruction()
         {
+            this.Picker = new();
             this.Panel_Blocks = new Panel() { AutoSize = true };
             this.ToolBox = new UIToolsBox(this.OnToolSelectedNew);
             var categories = Block.Registry.Values.Where(b => b.BuildProperties.Category is not null).GroupBy(b => b.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
             foreach (var cat in categories)
             {
-                var list = cat;
+                var list = cat.Where(b => b.ConstructionProfile is not null);
                 var grid = new ButtonGridIcons<Block>(4, 6, list, (slot, block) =>
                 {
                     slot.Tag = block;
                     slot.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolBlockBuild drawing && drawing.Block == block;
-                    slot.PaintAction = () => block.PaintIcon(slot.Width, slot.Height, 0, this.GetLastSelectedVariantOrDefault(block).Requirement?.Material);
+                    slot.PaintAction = () => block.PaintIcon(slot.Width, slot.Height, 0, this.GetLastSelectedVariantOrDefaultNew(block).Material);
                     slot.LeftClickAction = () => StartPainting(block);
-                    slot.RightClickAction = () => UIBlockVariationPickerNew.Refresh(block, this.OnVariationSelected);
-                    slot.HoverFunc = () => $"{block.Name}\n{this.GetLastSelectedVariantOrDefault(block).Requirement}\nTool necessity: {block.BuildProperties.ToolSensitivity:##0%}\nRight click to select variation";
+                    //slot.RightClickAction = () => UIBlockVariationPickerOld.Refresh(block, this.OnVariationSelected);
+                    slot.RightClickAction = () => this.Picker.Refresh(block, this.OnVariationSelectedNew);
+                    slot.HoverFunc = () => $"{block.Name}\nTool necessity: {block.BuildProperties.ToolSensitivity:##0%}\nRight click to select variation";
                 })
                 { Location = this.Panel_Blocks.Controls.BottomLeft };
                 this.Categories[cat.Key] = grid;
@@ -62,8 +64,8 @@ namespace Start_a_Town_.Core
         private void StartPainting(Block block)
         {
             this.CurrentSelected = block;
-            var product = this.GetLastSelectedVariantOrDefault(block);
-            this.ToolBox.SetProduct(product);
+            //var variant = this.GetLastSelectedVariantOrDefaultNew(block);
+            this.ToolBox.SetProduct(block);
             this.OnToolSelectedNew(this.ToolBox.LastSelectedTool);
             var win = this.ToolBox.GetWindow();
             if (win is null)
@@ -71,8 +73,6 @@ namespace Start_a_Town_.Core
                 win = this.ToolBox.ToWidget("Brushes");
                 win.HideAction = () => ToolManager.SetTool(null);
             }
-            //if (win.Show())
-            //    win.Location = this.GetWindow().BottomLeft;
             if (!win.IsOpen)
             {
                 win.Location = this.GetWindow().BottomLeft;
@@ -82,42 +82,44 @@ namespace Start_a_Town_.Core
 
         void OnToolSelectedNew(BuildToolDef toolDef)
         {
-            //var tool = this.SelectedCategory.GetTool(toolDef, this.GetLastSelectedVariantOrDefault(this.CurrentSelected));
             var tool = this.SelectedCategory.GetTool(toolDef, this.GetLastSelectedVariantOrDefaultNew(this.CurrentSelected));
             this.ToolBox.LastSelectedTool = toolDef;
             ToolManager.SetTool(tool);
         }
         private ConstructionDesignationArgs GetLastSelectedVariantOrDefaultNew(Block block)
         {
+            if (this.LastSelectedVariant.TryGetValue(block, out var lastVariant))
+            {
+                return lastVariant;// new ConstructionDesignationArgs(block, lastVariant.refinement, lastVariant.material, 0);
+            }
             var profile = block.ConstructionProfile;
-            //var validMats = Def.GetDefs<MaterialDef>().Where(m => profile.Refinements.Any(r => r.MaterialType == m.Type)).GroupBy(m=>m.Type).ToList();
             var refinement = profile.Refinements.First();
             var validMats = Def.GetDefs<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
             var defaultMat = validMats.First();
             return new ConstructionDesignationArgs(block, refinement, defaultMat, 0);
         }
-        private ProductMaterialPair GetLastSelectedVariantOrDefault(Block block)
+        //private ProductMaterialPair GetLastSelectedVariantOrDefault(Block block)
+        //{
+        //    if (!this.LastSelectedVariant.TryGetValue(block, out var lastVariant))
+        //    {
+        //        lastVariant = new ProductMaterialPair(block, block.GetAllValidConstructionMaterialsNew().FirstOrDefault()); // building might have no construction materials (sleeping spots)
+        //        this.LastSelectedVariant[block] = lastVariant;
+        //    }
+        //    return lastVariant;
+        //}
+        void OnVariationSelectedNew(ConstructionDesignationArgs args)
         {
-            if (!this.LastSelectedVariant.TryGetValue(block, out var lastVariant))
-            {
-                lastVariant = new ProductMaterialPair(block, block.GetAllValidConstructionMaterialsNew().FirstOrDefault()); // building might have no construction materials (sleeping spots)
-                this.LastSelectedVariant[block] = lastVariant;
-            }
-            return lastVariant;
-        }
-        private void OnVariationSelected(ProductMaterialPair product)
-        {
-            if (product is null)
-                return;
-            this.LastSelectedVariant[product.Block] = product;
-            this.CurrentSelected = product.Block;
+            var block = args.Block;
+            this.LastSelectedVariant[block] = args;
+            this.CurrentSelected = block;
             if (this.ToolBox.LastSelectedTool != null)
             {
-                var tool = this.SelectedCategory.GetTool(this.ToolBox.LastSelectedTool, product);
+                //var args = new ConstructionDesignationArgs(block, variant.refinement, variant.material, 0);
+                var tool = this.SelectedCategory.GetTool(this.ToolBox.LastSelectedTool, args);
                 this.ToolBox.LastSelectedTool = tool.ToolDef;
                 ToolManager.SetTool(tool);
             }
-            this.Categories[this.SelectedCategory].FindChild(c => c.Tag == product.Block).Invalidate();
+            this.Categories[this.SelectedCategory].FindChild(c => c.Tag == block).Invalidate();
         }
         public override bool Hide()
         {
@@ -127,5 +129,6 @@ namespace Start_a_Town_.Core
             ToolManager.SetTool(null);
             return base.Hide();
         }
+        
     }
 }

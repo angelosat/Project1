@@ -18,9 +18,9 @@ namespace Start_a_Town_.AI.Behaviors
         {
             //yield return new BehaviorMoveTo(this.Task.TargetA, 1);
             //yield return new BehaviorInteractionNew(this.Task.TargetA, new InteractionEquip());
-            yield return new BehaviorGetAtNewNew(TargetIndex.A);
+            yield return new BehaviorResolvePath(TargetIndex.A);
             //yield return new BehaviorInteractionNew(TargetIndex.A, new InteractionEquip());
-            yield return new BehaviorInteractionNew(InteractionDefOf.Equip);
+            yield return new BehaviorBeginInteraction(InteractionDefOf.Equip);
         }
         protected override bool InitExtraReservations()
         {

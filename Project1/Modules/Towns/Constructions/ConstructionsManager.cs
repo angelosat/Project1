@@ -41,14 +41,14 @@ namespace Start_a_Town_
 
         private void OnConstructionFinished(ConstructionFinishedEvent e)
         {
-            var comp = e.Comp;
+            var comp = e.Source;
             this.DesignationEntities.Remove(comp);
             this._dirty = true;
         }
 
         private void OnConstructionReady(ConstructionReadyEvent e)
         {
-            if (!this.DesignationEntities.Contains(e.Comp))
+            if (!this.DesignationEntities.Contains(e.Source))
                 throw new KeyNotFoundException($"Received {nameof(ConstructionReadyEvent)} for non-registered construction designation");
             this._dirty = true;
         }
@@ -200,6 +200,10 @@ namespace Start_a_Town_
         internal bool IsDesignatedConstruction(IntVec3 vector3)
         {
             return this.Designations.Contains(vector3);
+        }
+        internal bool IsDesignatedConstruction(BlockConstructionComp comp)
+        {
+            return this.DesignationEntities.Contains(comp);
         }
         internal bool IsSupported(IntVec3 global)
         {

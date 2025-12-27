@@ -6,11 +6,11 @@ namespace Start_a_Town_.AI.Behaviors
     {
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorGetAtNewNew(TargetIndex.A);
+            yield return new BehaviorResolvePath(TargetIndex.A);
             yield return BehaviorHaulHelper.StartCarrying(this, TargetIndex.A);
-            yield return new BehaviorGetAtNewNew(TargetIndex.B);
+            yield return new BehaviorResolvePath(TargetIndex.B);
             //yield return BehaviorHaulHelper.DropInStorage(TargetIndex.B);
-            yield return new BehaviorInteractionNew(TargetIndex.B, () => new InteractionPlaceItem());
+            yield return new BehaviorBeginInteraction(TargetIndex.B, () => new InteractionPlaceItem());
         }
         protected override bool InitExtraReservations()
         {

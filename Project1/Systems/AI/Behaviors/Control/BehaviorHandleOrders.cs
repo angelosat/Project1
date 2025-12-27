@@ -2,7 +2,7 @@
 {
     class BehaviorHandleOrders : Behavior
     {
-        BehaviorGetAtNewNew CurrentBehav;
+        BehaviorResolvePath CurrentBehav;
         TargetArgs CurrentMoveOrder = TargetArgs.Null;
         public override BehaviorState Tick(Actor parent, AIState state)
         {
@@ -28,7 +28,7 @@
                     parent.StopPathing();
                     var target = new TargetArgs(parent.Map, destination);
                     parent.CurrentTask = new Plan() { TargetA = target };
-                    this.CurrentBehav = new BehaviorGetAtNewNew(TargetIndex.A, PathEndMode.Exact);
+                    this.CurrentBehav = new BehaviorResolvePath(TargetIndex.A, PathEndMode.Exact);
                     this.CurrentMoveOrder = state.MoveOrder;
                     return BehaviorState.Running;
                 }

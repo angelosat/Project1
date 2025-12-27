@@ -70,13 +70,14 @@ namespace Start_a_Town_
 
         
     }
-    public struct ConstructionDesignationArgs(Block block, MaterialRefinementDef refinement, MaterialDef material, byte orientation)
+    public struct ConstructionDesignationArgs(Block block, MaterialRefinementDef refinement, MaterialDef material, int amount, byte orientation = 0)
     {
         //public List<IntVec3> Positions = positions;
         public Block Block = block;
         public MaterialRefinementDef Refinement = refinement;
         public MaterialDef Material = material;
+        public int Amount = amount;
         public byte Orientation = orientation;
-        public override string ToString() => $"{this.Material.Label} {this.Refinement.Label}";
+        public override string ToString() => $"{this.Material.Label} {this.Refinement.Label} x{this.Amount}";
     }
 }

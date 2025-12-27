@@ -25,17 +25,17 @@ namespace Start_a_Town_.AI.Behaviors
                     actor.Unreserve(previousStack);
                 return carried;
             });
-            var eat = new BehaviorInteractionNew(FoodInd, new Components.ConsumableComponent.InteractionConsume());
+            var eat = new BehaviorBeginInteraction(FoodInd, new Components.ConsumableComponent.InteractionConsume());
 
             yield return BehaviorHelper.JumpIfTrue(eat, () => this.Table.Type == TargetType.Null);
 
-            yield return new BehaviorGetAtNewNew(EatingSurfaceInd);
+            yield return new BehaviorResolvePath(EatingSurfaceInd);
             var auxIndex = TargetIndex.C;
             yield return new BehaviorCustom() { InitAction = () => { this.Plan.SetTarget(auxIndex, Table.Global.Above().At(actor.Map)); } };
-            yield return new BehaviorInteractionNew(auxIndex, new UseHauledOnTarget());
+            yield return new BehaviorBeginInteraction(auxIndex, new UseHauledOnTarget());
 
             yield return eat;
-            yield return new BehaviorInteractionNew(() => new InteractionThrow());
+            yield return new BehaviorBeginInteraction(() => new InteractionThrow());
         }
 
         protected override bool InitExtraReservations()

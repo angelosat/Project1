@@ -12,7 +12,7 @@ namespace Start_a_Town_
         public static readonly InteractionDef Store = new("Store", typeof(InteractionStoreHauled));
         public static readonly InteractionDef Equip = new("Equip", typeof(InteractionEquip));
         public static readonly InteractionDef Unequip = new("Unequip", typeof(InteractionUnequip));
-        public static readonly InteractionDef Construct = new("Construct", typeof(InteractionConstruct));
+        public static readonly InteractionDef Construct = new("Construct", typeof(InteractionConstruct), typeof(InteractionConstructWorker), typeof(InteractionConstructCache));
 
         static InteractionDefOf()
         {

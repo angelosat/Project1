@@ -7,8 +7,8 @@ namespace Start_a_Town_
     {
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorGetAtNewNew(TargetIndex.A);
-            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionConversationGradual(this.Actor.GetNextConversationTopicFor(this.Plan.TargetA.Object as Actor)));
+            yield return new BehaviorResolvePath(TargetIndex.A);
+            yield return new BehaviorBeginInteraction(TargetIndex.A, () => new InteractionConversationGradual(this.Actor.GetNextConversationTopicFor(this.Plan.TargetA.Object as Actor)));
         }
     }
 }

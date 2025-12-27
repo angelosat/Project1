@@ -1,9 +1,39 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_.Interactions
 {
+    public class InteractionConstructCache : InteractionCache
+    {
+        public BlockConstructionComp CachedComp;
+    }
+    class InteractionConstructWorker : InteractionWorker
+    {
+        public override bool CanPerform(InteractionCache ctx)
+        {
+            var cache = (InteractionConstructCache)ctx;
+            var target = cache.Target;
+            var comp = cache.CachedComp ??= target.Map.GetBlockEntity(target.Global).Comps.GetComp<BlockConstructionComp>();
+            if (comp.Map is null)
+                return false;
+            var manager = comp.Parent.Map.Town.ConstructionsManager;
+            if (!manager.IsDesignatedConstruction(comp))
+                return false;
+            if (comp.Parent.CellsOccupied.Any(c => !manager.IsSupported(c)))
+                return false;
+            return true;
+        }
+        public override bool CanFinish(InteractionCache ctx)
+        {
+            var cache = (InteractionConstructCache)ctx;
+            var target = cache.Target;
+            var comp = cache.CachedComp ??= target.Map.GetBlockEntity(target.Global).Comps.GetComp<BlockConstructionComp>();
+            if (comp.Parent.CellsOccupied.Any(c => comp.Parent.Map.GetEntitiesAt(c).Any()))
+                return false;
+            return true;
+        }
+    }
     class InteractionConstruct : InteractionToolUse
     {
         public InteractionConstruct()
@@ -11,11 +41,12 @@ namespace Start_a_Town_.Interactions
         {
             //this.BuildProgress = new(() => Comp.Progress); // why has this thrown null?
         }
-        BlockConstructionComp _cachedComp;
-        BlockConstructionComp Comp => this._cachedComp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockConstructionComp>();
-        //readonly Lazy<Progress> BuildProgress;
-        protected override float Progress => this.Comp.Progress.Percentage;// this.BuildProgress.Value.Percentage;
-
+        InteractionConstructCache _cache;
+        InteractionConstructCache TypedCache => _cache ??= (InteractionConstructCache)this.Cache;
+        //BlockConstructionComp _cachedComp;
+        //BlockConstructionComp Comp => this._cachedComp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockConstructionComp>();
+        protected override float Progress => this.ProgressNew.Percentage;// this.BuildProgress.Value.Percentage;
+        //protected override Progress ProgressNew => this.Comp.Progress;
         protected override float WorkDifficulty { get; } = 1;
 
         protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnSwing;
@@ -28,7 +59,7 @@ namespace Start_a_Town_.Interactions
         protected override void OnApplyWork(float workAmount)
         {
             //this.BuildProgress.Value.Value += workAmount;
-            this.Comp.Advance((int)workAmount);
+            this.TypedCache.CachedComp.Advance((int)workAmount);
         }
 
         protected override void Done()
@@ -48,6 +79,7 @@ namespace Start_a_Town_.Interactions
             //map.GetBlockEntity(t.Global)?.IsMadeFrom(new ItemMaterialAmount[] { entity.Product.Requirement });
         }
 
+        
         protected override Color GetParticleColor() => default;
 
         protected override List<Rectangle> GetParticleRects() => null;

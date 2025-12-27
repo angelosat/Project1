@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
 using Start_a_Town_.Particles;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Start_a_Town_
 {
@@ -12,6 +12,7 @@ namespace Start_a_Town_
         protected ParticleEmitterSphere EmitterStrike;
         protected List<Rectangle> ParticleRects;
         float TotalWorkAmount;
+        protected virtual Progress ProgressNew { get; }
         protected InteractionToolUse(string name) : base(name)
         {
             this.DrawProgressBar(() => this.Actor.Global, () => this.Progress, () => this.Name);
@@ -44,15 +45,25 @@ namespace Start_a_Town_
 
         public sealed override void OnUpdate()
         {
+            if (!this.CanPerform())
+            {
+                this.State = States.Failed;
+                return;
+            }
             var actor = this.Actor;
             var t = this.Target;
+            var toolEffect = GetToolEffectiveness();
+            var amount = (int)Math.Max(1, toolEffect / WorkDifficulty);
+            if(this.WillFinish(amount) && !this.CanFinish())
+            {
+                this.State = States.Failed;
+                return;
+            }
             if (actor.Net.IsClient && this.ParticleRects is not null)
             {
                 this.EmitterStrike.Emit(ItemContent.LogsGrayscale.AtlasToken.Atlas.Texture, this.ParticleRects, Vector3.Zero);
                 actor.Map.ParticleManager.AddEmitter(this.EmitterStrike);
             }
-            var toolEffect = GetToolEffectiveness();
-            var amount = (int)Math.Max(1, toolEffect / WorkDifficulty);
 
             this.OnApplyWork(amount);
             this.TotalWorkAmount += amount;
@@ -80,6 +91,8 @@ namespace Start_a_Town_
             this.Done();
             this.Finish();
         }
+
+        bool WillFinish(int amount) => this.ProgressNew.Value + amount >= this.ProgressNew.Max;
 
         private void ApplyWork(int amount)
         {

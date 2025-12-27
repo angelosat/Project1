@@ -9,11 +9,11 @@ namespace Start_a_Town_
 
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorGetAtNewNew(TargetIndex.A, PathEndMode.Any);
+            yield return new BehaviorResolvePath(TargetIndex.A, PathEndMode.Any);
             //yield return new BehaviorInteractionNew(index, () => new InteractionHaul(this.Actor.CurrentTask.GetAmount(index)));
             //yield return new BehaviorInteractionNew(index, () => new InteractionStoreHauled());
-            yield return new BehaviorInteractionNew(InteractionDefOf.Pick, countInd: TargetIndex.A);
-            yield return new BehaviorInteractionNew(InteractionDefOf.Store);
+            yield return new BehaviorBeginInteraction(InteractionDefOf.Pick, countInd: TargetIndex.A);
+            yield return new BehaviorBeginInteraction(InteractionDefOf.Store);
         }
         protected override bool InitExtraReservations()
         {

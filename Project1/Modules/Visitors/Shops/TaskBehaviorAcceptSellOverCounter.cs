@@ -23,9 +23,9 @@ namespace Start_a_Town_
                     task.SetTarget(TargetIndex.B, shop.GetNextSaleItem());
                 }
             };
-            yield return new BehaviorGetAtNewNew(TargetIndex.A);
+            yield return new BehaviorResolvePath(TargetIndex.A);
             yield return new BehaviorWait(() => task.TargetB.Object.Parent == null && task.TargetB.Object.Global.ToCell() == task.TargetA.Global.Above());
-            yield return new BehaviorInteractionNew(TargetIndex.B, () => new InteractionHaul());
+            yield return new BehaviorBeginInteraction(TargetIndex.B, () => new InteractionHaul());
             // TODO wait until money on counter
             yield return new BehaviorWait(() =>
             {
@@ -36,10 +36,10 @@ namespace Start_a_Town_
                 task.SetTarget(TargetIndex.C, money);
                 return true;
             });
-            yield return new BehaviorInteractionNew(() => task.TargetC, () => new InteractionSwapCarried());
+            yield return new BehaviorBeginInteraction(() => task.TargetC, () => new InteractionSwapCarried());
 
             // if carrying coins, store in inventory. otherwise drop or haul to stockpile
-            yield return new BehaviorInteractionNew(TargetIndex.A, () =>
+            yield return new BehaviorBeginInteraction(TargetIndex.A, () =>
             {
                 if (this.Actor.Hauled.Def == ItemDefOf.Coins)
                     return new InteractionStoreHauled();

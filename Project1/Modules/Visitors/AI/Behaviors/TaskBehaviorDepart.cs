@@ -7,7 +7,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return BehaviorHelper.MoveTo(TargetIndex.A);
-            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionDepart());
+            yield return new BehaviorBeginInteraction(TargetIndex.A, () => new InteractionDepart());
         }
     }
 }

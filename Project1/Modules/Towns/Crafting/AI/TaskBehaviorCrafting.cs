@@ -24,7 +24,7 @@ namespace Start_a_Town_
 
             var nextIngredient = BehaviorHelper.ExtractNextTargetAmount(IngredientIndex);
             yield return nextIngredient;
-            yield return new BehaviorGetAtNewNew(IngredientIndex).FailOnUnavailableTarget(IngredientIndex).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
+            yield return new BehaviorResolvePath(IngredientIndex).FailOnUnavailableTarget(IngredientIndex).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
             yield return BehaviorHaulHelper.StartCarrying(this, IngredientIndex)
                 .FailOn(failOnInvalidWorkstation)
                 .FailOn(orderIncompletable)
@@ -36,14 +36,14 @@ namespace Start_a_Town_
                 InitAction = () =>
                     this.Plan.SetTarget(AuxiliaryIndex, new TargetArgs(this.Actor.Map, this.Workstation.Global.Above()))
             };
-            yield return new BehaviorGetAtNewNew(WorkstationIndex, PathEndMode.InteractionSpot).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
-            yield return new BehaviorInteractionNew(AuxiliaryIndex, () => new UseHauledOnTarget()).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
+            yield return new BehaviorResolvePath(WorkstationIndex, PathEndMode.InteractionSpot).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
+            yield return new BehaviorBeginInteraction(AuxiliaryIndex, () => new UseHauledOnTarget()).FailOn(failOnInvalidWorkstation).FailOn(orderIncompletable).FailOn(noOperatingPositions);
             yield return BehaviorHelper.JumpIfMoreTargets(nextIngredient, IngredientIndex);
             ///NO!!!! if they collected more than one item in the same stack, this code will only add the last (disposed) target that was merged to the stack
             ///add code in usehauledontarget interaction instead
 
             yield return new BehaviorGrabTool();
-            yield return new BehaviorGetAtNewNew(WorkstationIndex, PathEndMode.InteractionSpot).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
+            yield return new BehaviorResolvePath(WorkstationIndex, PathEndMode.InteractionSpot).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
 
             /// create unfinished item
             yield return new BehaviorCustom(delegate
@@ -75,9 +75,9 @@ namespace Start_a_Town_
                 this.Reserve(item);
             });
 
-            yield return new BehaviorInteractionNew(WorkstationIndex, () => new InteractionCrafting(task.OrderOld, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
+            yield return new BehaviorBeginInteraction(WorkstationIndex, () => new InteractionCrafting(task.OrderOld, task.PlacedObjects, task.GetTarget(AuxiliaryIndex).Object as Entity)).FailOn(placedObjectsChanged).FailOn(orderIncompletable);
             if (this.Plan.Tool?.Type != TargetType.Null) // dont unequip tool if not using any
-                yield return new BehaviorInteractionNew(TargetIndex.Tool, () => new InteractionEquip()); // unequip the tool before hauling product // TODO dont do that if no tool equipped
+                yield return new BehaviorBeginInteraction(TargetIndex.Tool, () => new InteractionEquip()); // unequip the tool before hauling product // TODO dont do that if no tool equipped
             // assign a new haul behavior directly to the actor instead of adding the steps here?
             yield return new BehaviorCustom()
             {
@@ -105,9 +105,9 @@ namespace Start_a_Town_
                 }
             };
 
-            yield return new BehaviorGetAtNewNew(IngredientIndex).FailOn(deliverFail).FailOnUnavailableTarget(IngredientIndex);
+            yield return new BehaviorResolvePath(IngredientIndex).FailOn(deliverFail).FailOnUnavailableTarget(IngredientIndex);
             yield return BehaviorHaulHelper.StartCarrying(this, IngredientIndex).FailOn(deliverFail).FailOnUnavailableTarget(IngredientIndex);
-            yield return new BehaviorGetAtNewNew(WorkstationIndex).FailOn(deliverFail);
+            yield return new BehaviorResolvePath(WorkstationIndex).FailOn(deliverFail);
             yield return BehaviorHelper.PlaceCarried(WorkstationIndex).FailOn(deliverFail);
 
             bool orderIncompletable()

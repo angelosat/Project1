@@ -339,7 +339,10 @@ namespace Start_a_Town_.UI
             maxWidth = availableWidth;
             //this.Height = availableHeight;
             foreach (var item in this.AllItems)
+            {
+                item.AutoSize = false;
                 item.OnLayout(maxWidth, this.Height);
+            }
         }
 
     }

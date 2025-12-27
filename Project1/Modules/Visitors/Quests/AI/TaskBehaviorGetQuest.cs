@@ -11,7 +11,7 @@ namespace Start_a_Town_
             var qgiver = TargetIndex.A;
             var quest = task.Quest;
             yield return BehaviorHelper.MoveTo(qgiver);
-            yield return new BehaviorInteractionNew(qgiver, () => new InteractionGetQuest(quest));
+            yield return new BehaviorBeginInteraction(qgiver, () => new InteractionGetQuest(quest));
         }
         public override void CleanUp()
         {

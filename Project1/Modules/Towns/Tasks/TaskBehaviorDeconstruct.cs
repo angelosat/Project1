@@ -11,8 +11,8 @@ namespace Start_a_Town_
             this.FailOnNoDesignation(DeconstructInd, DesignationDefOf.Deconstruct);
             this.FailOnCellStandedOn(DeconstructInd);
             yield return new BehaviorGrabTool();
-            yield return new BehaviorGetAtNewNew(DeconstructInd);
-            yield return new BehaviorInteractionNew(DeconstructInd, () => new InteractionDeconstruct()); //()=>new InteractionDeconstruct());
+            yield return new BehaviorResolvePath(DeconstructInd);
+            yield return new BehaviorBeginInteraction(DeconstructInd, () => new InteractionDeconstruct()); //()=>new InteractionDeconstruct());
         }
         protected override bool InitExtraReservations()
         {

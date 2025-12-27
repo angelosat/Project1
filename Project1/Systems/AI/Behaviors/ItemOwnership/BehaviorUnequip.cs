@@ -11,7 +11,7 @@ namespace Start_a_Town_.AI.Behaviors.ItemOwnership
         {
             //yield return new BehaviorInteractionNew(this.Task.TargetA, new UnequipItem());
             //yield return new BehaviorInteractionNew(TargetIndex.A, new InteractionUnequip());
-            yield return new BehaviorInteractionNew(InteractionDefOf.Unequip);
+            yield return new BehaviorBeginInteraction(InteractionDefOf.Unequip);
         }
     }
 }

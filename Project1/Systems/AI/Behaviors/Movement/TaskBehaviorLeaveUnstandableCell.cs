@@ -7,7 +7,7 @@ namespace Start_a_Town_.AI.Behaviors
         protected override IEnumerable<Behavior> GetSteps()
         {
             this.FailOn(() => !this.Actor.Map.IsStandableIn(this.Plan.GetTarget(TargetIndex.A).Global));
-            yield return new BehaviorGetAtNewNew(TargetIndex.A, PathEndMode.Exact);
+            yield return new BehaviorResolvePath(TargetIndex.A, PathEndMode.Exact);
         }
     }
 }

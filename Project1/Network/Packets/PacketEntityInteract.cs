@@ -31,7 +31,8 @@ namespace Start_a_Town_
             w.Write(true);
             target.Write(w);
             w.Write(count);
-            w.Write(action.GetType().FullName);
+            //w.Write(action.GetType().FullName);
+            w.Write(action.Def);
             action.Write(w);
             w.Write(entity.Global);
             w.Write(entity.Velocity);
@@ -51,9 +52,10 @@ namespace Start_a_Town_
             }
             var target = TargetArgs.Read(net, r);
             var count = r.ReadInt32();
-            var action = Activator.CreateInstance(Type.GetType(r.ReadString())) as Interaction;
-            action.Actor = entity;
-            action.Target = target;
+            //var action = Activator.CreateInstance(Type.GetType(r.ReadString())) as Interaction;
+            var action = r.ReadDef<InteractionDef>().Create(entity, target);
+            //action.Actor = entity;
+            //action.Target = target;
             action.Count = count;
             action.Read(r);
             var global = r.ReadVector3();

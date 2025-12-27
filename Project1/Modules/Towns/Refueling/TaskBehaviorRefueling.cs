@@ -17,13 +17,13 @@ namespace Start_a_Town_
             };
             var extract = BehaviorHelper.ExtractNextTargetAmount(SourceIndex);
             yield return extract;
-            yield return new BehaviorGetAtNewNew(SourceIndex).FailOn(failOnInvalidRefuelable).FailOnForbidden(SourceIndex);
+            yield return new BehaviorResolvePath(SourceIndex).FailOn(failOnInvalidRefuelable).FailOnForbidden(SourceIndex);
             //yield return BehaviorHelper.StartCarrying(SourceIndex, SourceIndex).FailOn(failOnInvalidRefuelable).FailOnForbidden(SourceIndex);
             yield return BehaviorHaulHelper.StartCarrying(this, SourceIndex).FailOn(failOnInvalidRefuelable).FailOnForbidden(SourceIndex);
             yield return BehaviorHelper.JumpIfMoreTargets(extract, SourceIndex);
             //yield return new BehaviorGetAtNewNew(DestinationIndex).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
-            yield return new BehaviorGetAtNewNew(DestinationIndex, PathEndMode.InteractionSpot).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
-            yield return new BehaviorInteractionNew(DestinationIndex,  () => new UseHauledOnTarget()).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
+            yield return new BehaviorResolvePath(DestinationIndex, PathEndMode.InteractionSpot).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
+            yield return new BehaviorBeginInteraction(DestinationIndex,  () => new UseHauledOnTarget()).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
         }
         protected override bool InitExtraReservations()
         {

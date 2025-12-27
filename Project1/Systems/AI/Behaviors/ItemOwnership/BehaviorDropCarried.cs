@@ -10,8 +10,8 @@ namespace Start_a_Town_.AI.Behaviors.ItemOwnership
         {
             var target = this.Plan.TargetA;
             var amount = this.Plan.AmountA;
-            yield return new BehaviorGetAtNewNew(target);
-            yield return new BehaviorInteractionNew(target, new UseHauledOnTarget(amount));
+            yield return new BehaviorResolvePath(target);
+            yield return new BehaviorBeginInteraction(target, new UseHauledOnTarget(amount));
         }
     }
 }

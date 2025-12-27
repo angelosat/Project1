@@ -8,8 +8,8 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             this.FailOnNoDesignation(TargetIndex.A, DesignationDefOf.Switch);
-            yield return new BehaviorGetAtNewNew(TargetIndex.A);
-            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionFlipSwitch());
+            yield return new BehaviorResolvePath(TargetIndex.A);
+            yield return new BehaviorBeginInteraction(TargetIndex.A, () => new InteractionFlipSwitch());
         }
     }
 }

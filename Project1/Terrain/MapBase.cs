@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SharpDX.MediaFoundation;
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.Particles;
@@ -316,7 +315,10 @@ namespace Start_a_Town_
             var local = global.ToLocal();
 
             if (chunk.TryRemoveBlockEntity(local, out var entity))
+            {
+                entity.Map = null;
                 return entity;
+            }
             throw new Exception(); // for debugging
         }
         public void AddBlockEntity(IntVec3 global, BlockEntity entity)

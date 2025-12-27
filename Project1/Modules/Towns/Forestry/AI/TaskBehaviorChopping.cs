@@ -8,10 +8,10 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             //yield return new BehaviorGrabTool();
-            yield return new BehaviorGetAtNewNew(TargetIndex.A);
+            yield return new BehaviorResolvePath(TargetIndex.A);
             //yield return new BehaviorInteractionNew(TargetIndex.A, new InteractionChoppingSimple());
             //yield return new BehaviorInteractionNew(TargetIndex.A, new InteractionChop());
-            yield return new BehaviorInteractionNew(InteractionDefOf.Chop, TargetIndex.A);
+            yield return new BehaviorBeginInteraction(InteractionDefOf.Chop, TargetIndex.A);
         }
 
         public override bool HasFailedOrEnded()

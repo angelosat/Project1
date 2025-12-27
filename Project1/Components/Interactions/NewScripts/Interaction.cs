@@ -5,17 +5,21 @@ using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Start_a_Town_
 {
     public abstract class Interaction : Inspectable, ICloneable
     {
+        public InteractionDef Def;
+        public InteractionCache Cache;
         public override string Label => this.Name;
         public bool IsFinished => this.State == States.Finished;
         public static readonly float DefaultRange = (float)Math.Sqrt(2);
 
         static readonly Dictionary<string, Func<Interaction>> Factory = new();
+        
+        protected bool CanPerform() => this.Def.Worker.CanPerform(this.Cache);
+        protected bool CanFinish() => this.Def.Worker.CanFinish(this.Cache);
 
         public static void AddInteraction<T>(Func<Interaction> factory)
         {
@@ -25,7 +29,7 @@ namespace Start_a_Town_
         {
             Factory[typeof(T).FullName] = () => new T();
         }
-
+        
         internal virtual void OnToolContact()
         {
         }

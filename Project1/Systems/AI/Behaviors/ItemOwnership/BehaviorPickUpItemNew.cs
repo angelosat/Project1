@@ -10,9 +10,9 @@ namespace Start_a_Town_.AI
         protected override IEnumerable<Behavior> GetSteps()
         {
             var item = this.Plan.TargetA;
-            yield return new BehaviorGetAtNewNew(item);
-            yield return new BehaviorInteractionNew(item, new InteractionHaul());
-            yield return new BehaviorInteractionNew(item, new InteractionStoreHauled());
+            yield return new BehaviorResolvePath(item);
+            yield return new BehaviorBeginInteraction(item, new InteractionHaul());
+            yield return new BehaviorBeginInteraction(item, new InteractionStoreHauled());
         }
 
         public override bool HasFailedOrEnded()

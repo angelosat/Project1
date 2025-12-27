@@ -91,7 +91,11 @@ namespace Start_a_Town_.UI
             this.AutoSize = false;
             this.Width = width;
         }
-       
+        public override void OnLayout(int availableWidth, int availableHeight)
+        {
+            this.Width = availableWidth;
+            this.Validate();
+        }
         public ButtonNew(string text, int width = 0)
             : this()
         {

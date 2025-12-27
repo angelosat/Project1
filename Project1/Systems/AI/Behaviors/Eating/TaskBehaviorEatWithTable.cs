@@ -25,12 +25,12 @@ namespace Start_a_Town_.AI.Behaviors
                     actor.Unreserve(previousStack);
                 return carried;
             });
-            yield return new BehaviorGetAtNewNew(EatingSurfaceInd);
+            yield return new BehaviorResolvePath(EatingSurfaceInd);
             var onTable = TargetIndex.C;
             yield return BehaviorHelper.SetTarget(onTable, Table.Global.Above());
-            yield return new BehaviorInteractionNew(onTable, new UseHauledOnTarget());
-            yield return new BehaviorInteractionNew(FoodInd, new Components.ConsumableComponent.InteractionConsume());
-            yield return new BehaviorInteractionNew(() => new InteractionThrow()); // in case somehow more food than necessary is been carried
+            yield return new BehaviorBeginInteraction(onTable, new UseHauledOnTarget());
+            yield return new BehaviorBeginInteraction(FoodInd, new Components.ConsumableComponent.InteractionConsume());
+            yield return new BehaviorBeginInteraction(() => new InteractionThrow()); // in case somehow more food than necessary is been carried
         }
 
         protected override bool InitExtraReservations()

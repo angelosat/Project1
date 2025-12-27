@@ -16,15 +16,15 @@ namespace Start_a_Town_
 
             this.AddFinishAction(() => actor.Town.ShopManager.GetShop<Shop>(task.ShopID).RemoveCustomer(actor));
             var counter = task.TargetB.Global;
-            yield return new BehaviorGetAtNewNew(TargetIndex.A);
+            yield return new BehaviorResolvePath(TargetIndex.A);
             yield return BehaviorHaulHelper.StartCarrying(this, TargetIndex.A);
             yield return BehaviorReserve.Reserve(this, TargetIndex.A); // reserve item so noone picks it up after placing it on the shop counter
             // TODO start checking if the shop has a worker
             // if no worker or all workers busy, wait a bit and then cancel the behavior and drop town approval rating
-            yield return new BehaviorGetAtNewNew(TargetIndex.B);
+            yield return new BehaviorResolvePath(TargetIndex.B);
             
            
-            yield return new BehaviorInteractionNew(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
+            yield return new BehaviorBeginInteraction(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
             //        // TODO shop worker reserves dropped item immediately
 
             yield return new BehaviorWait(() => {
@@ -49,14 +49,14 @@ namespace Start_a_Town_
                     this.Plan.SetAmount(TargetIndex.C, totalvalue);
                 }
             };
-            yield return new BehaviorInteractionNew(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
+            yield return new BehaviorBeginInteraction(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
             //yield return new BehaviorCustom() { InitAction = () => actor.Reserve(this.Task, actor.Hauled) };
             yield return new BehaviorCustom() { InitAction = () => this.Reserve(actor.Hauled) };
-            yield return new BehaviorInteractionNew(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
+            yield return new BehaviorBeginInteraction(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
             // TODO wait for the item to be placed ontop of the counter, and then pick it up
             yield return new BehaviorWait(() => item.Parent == null && item.Global.ToCell() == counter.Above());
-            yield return new BehaviorInteractionNew(TargetIndex.A, () => new InteractionHaul());
-            yield return new BehaviorInteractionNew(() => new InteractionStoreHauled());
+            yield return new BehaviorBeginInteraction(TargetIndex.A, () => new InteractionHaul());
+            yield return new BehaviorBeginInteraction(() => new InteractionStoreHauled());
            
             // TODO behavior negotiate price
             // TODO behavior wait for reply

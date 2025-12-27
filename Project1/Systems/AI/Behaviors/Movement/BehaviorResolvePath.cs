@@ -2,19 +2,19 @@
 
 namespace Start_a_Town_.AI.Behaviors
 {
-    class BehaviorGetAtNewNew : BehaviorQueue
+    class BehaviorResolvePath : BehaviorQueue
     {
-        public BehaviorGetAtNewNew(TargetIndex targetInd)
+        public BehaviorResolvePath(TargetIndex targetInd)
             : this((int)targetInd, PathEndMode.Touching)
         {
 
         }
-        public BehaviorGetAtNewNew(TargetArgs target)
+        public BehaviorResolvePath(TargetArgs target)
             : this(target, PathEndMode.Touching)
         {
 
         }
-        public BehaviorGetAtNewNew(TargetArgs target, PathEndMode mode)
+        public BehaviorResolvePath(TargetArgs target, PathEndMode mode)
         {
             this.Children = new List<Behavior>(){
                     new BehaviorOpenDoor(),
@@ -26,12 +26,12 @@ namespace Start_a_Town_.AI.Behaviors
                         new BehaviorFollowPathNewNew()) // TODO: if path is invalidated while following, return to the find path behavior to find a new path
             };
         }
-        public BehaviorGetAtNewNew(TargetIndex targetInd, PathEndMode mode)
+        public BehaviorResolvePath(TargetIndex targetInd, PathEndMode mode)
             :this((int)targetInd, mode)
         {
 
         }
-        public BehaviorGetAtNewNew(int targetInd, PathEndMode mode)
+        public BehaviorResolvePath(int targetInd, PathEndMode mode)
         {
             this.Children = new List<Behavior>(){
                     new BehaviorOpenDoor(),
@@ -43,7 +43,7 @@ namespace Start_a_Town_.AI.Behaviors
                         new BehaviorFollowPathNewNew())
             };
         }
-        public BehaviorGetAtNewNew(string target)
+        public BehaviorResolvePath(string target)
         {
             this.Children = new List<Behavior>(){
                     new BehaviorInverter(new BehaviorJumpOnBlock()),

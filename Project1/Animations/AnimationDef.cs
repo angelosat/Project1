@@ -96,7 +96,8 @@ namespace Start_a_Town_.Animations
                 new Keyframe(0, Vector2.Zero, 0),
                 new Keyframe(10, new Vector2(0, -8), 0, Interpolation.Sine),
                 new Keyframe(20, new Vector2(0, 0), 0, Interpolation.Sine))
-            .AddEvent(20, e => Components.MobileComponent.OnFootDown(e))
+            .AddEvent(20, Components.MobileComponent.OnFootDown)
+            .AddEvent(40, Components.MobileComponent.OnFootDown)
             .AddClip(BoneDefOf.RightHand, WarpMode.Loop,
                 new Keyframe(0, Vector2.Zero, 0),
                 new Keyframe(10, Vector2.Zero, -(float)Math.PI / 2f, Interpolation.Sine),

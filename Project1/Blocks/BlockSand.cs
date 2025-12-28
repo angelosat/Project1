@@ -22,8 +22,8 @@ namespace Start_a_Town_
         }
         public override ParticleEmitterSphere GetEmitter()
         {
-            return base.GetEmitter();
-            var e = base.GetDustEmitter();
+            //return base.GetEmitter();
+            var e = base.GetDirtEmitter();// base.GetDustEmitter();
 
             e.ColorBegin = e.ColorEnd = Color.Gold;
             return e;

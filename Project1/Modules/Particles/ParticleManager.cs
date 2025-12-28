@@ -103,7 +103,8 @@ namespace Start_a_Town_.Particles
             var emitter = block.GetEmitter();
             emitter.Source = entity.Global;
             //emitter.Emit(10, -entity.Velocity * .1f);
-            emitter.Emit(100, -entity.Velocity * .1f);
+            //emitter.Emit(100, -entity.Velocity * .1f);
+            emitter.Emit(10, entity.Velocity);
             this.Emitters.Add(emitter);
         }
     }

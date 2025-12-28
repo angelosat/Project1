@@ -344,7 +344,7 @@ namespace Start_a_Town_.Components
 
         static public void EmitDust(GameObject parent)
         {
-            if (parent.Net is Net.Client)
+            if (parent.Net.IsClient)
             {
                 if (parent.Velocity.Z != 0)
                     return;

@@ -16,14 +16,10 @@ namespace Start_a_Town_
         /// This ensures mid-transit failures are caught early without duplicating the interaction logic.
         /// </summary>
         
-        protected Behavior FailOnNoDesignation(DesignationDef def)
-        {
-            return this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.TargetA, def));
-        }
-        protected Behavior FailOnNoDesignation()
-        {
-            return this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.TargetA, this.Plan.Designation));
-        }
+        protected Behavior FailOnNoDesignation(DesignationDef def) => this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.TargetA, def));
+        protected Behavior FailOnNoDesignation() => this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.TargetA, this.Plan.Designation));
+        protected Behavior FailOnNoConstructionDesignation() => this.FailOn(() => !this.Actor.Town.ConstructionsManager.IsDesignatedConstruction(this.Plan.TargetA.Global));
+        
         protected abstract IEnumerable<Behavior> GetSteps();
         int CurrentStepIndex;
         public bool Finished;

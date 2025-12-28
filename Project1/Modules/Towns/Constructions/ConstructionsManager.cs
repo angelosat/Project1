@@ -41,8 +41,9 @@ namespace Start_a_Town_
 
         private void OnConstructionFinished(ConstructionFinishedEvent e)
         {
-            var comp = e.Source;
-            this.DesignationEntities.Remove(comp);
+            //var comp = e.Source;
+            //this.DesignationEntities.Remove(comp);
+            this.RemoveDesignatedEntity(e.Source);
             this._dirty = true;
         }
 
@@ -344,8 +345,12 @@ namespace Start_a_Town_
             comp.SetArgs(args);
             //this.Town.DesignationManager.Add(DesignationDefOf.Construct, new TargetArgs(map, global));
             //map.GetChunk(global).Slices[global.Z].Valid = false;
-            map.GetChunk(global).InvalidateSlice(global.Z);
-            this.Designations.Add(global);
+            foreach (var pos in entity.CellsOccupied)
+            {
+                map.GetChunk(pos).InvalidateSlice(pos.Z);
+                this.Designations.Add(global);
+                //this.Town.DesignationManager.Add(DesignationDefOf.Construct, new TargetArgs(this.Map, pos));
+            }
             this._dirty = true;
         }
         private void RemoveNew(IEnumerable<IntVec3> positions)
@@ -355,13 +360,7 @@ namespace Start_a_Town_
             var comps = this.DesignationEntities.Where(c => c.Parent.CellsOccupied.Any(snapshot.Contains));
             foreach(var comp in comps)
             {
-                var entity = comp.Parent;
-                this.DesignationEntities.Remove(comp);
-                foreach (var child in entity.CellsOccupied)
-                {
-                    this.Designations.Remove(child);
-                    map.GetChunk(child).InvalidateSlice(child.Z);
-                }
+                this.RemoveDesignatedEntity(comp);
             }
 
             //foreach (var pos in positions)
@@ -376,6 +375,19 @@ namespace Start_a_Town_
             //    }
             //}
         }
+
+        private void RemoveDesignatedEntity(BlockConstructionComp comp)
+        {
+            var entity = comp.Parent;
+            this.DesignationEntities.Remove(comp);
+            foreach (var child in entity.CellsOccupied)
+            {
+                this.Designations.Remove(child);
+                //this.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Construct, new TargetArgs(this.Map, child));
+                this.Map.GetChunk(child).InvalidateSlice(child.Z);
+            }
+        }
+
         public IEnumerable<(string name, Action action)> GetInfoTabs()
         {
             throw new NotImplementedException();

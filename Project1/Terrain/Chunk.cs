@@ -1654,8 +1654,9 @@ namespace Start_a_Town_
                     var cell = this.Cells[GetCellIndex(local)];
                     var global = local.ToGlobal(this);
                     var isair = cell.Block == BlockDefOf.Air;
-
-                    if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global)) // HACK
+                    // HACK
+                    if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global)) 
+                     //if (isair && this.Map.Town.DesignationManager.IsDesignation(global, DesignationDefOf.Construct)) // HACK
                         camera.DrawBlock(canvas, BlockDefOf.Designation, map, this, local);
 
                     var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);

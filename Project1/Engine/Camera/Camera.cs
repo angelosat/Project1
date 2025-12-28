@@ -1456,8 +1456,8 @@ namespace Start_a_Town_
                     }
 
                     // HACK
-                    if(map.Town.DesignationManager.Renderers[DesignationDefOf.Construct].Slices.TryGetValue(j, out var constructionDesignationMesh))
-                        arrays = arrays.Append(constructionDesignationMesh.vertices);
+                    //if(map.Town.DesignationManager.Renderers[DesignationDefOf.Construct].Slices.TryGetValue(j, out var constructionDesignationMesh))
+                    //    arrays = arrays.Append(constructionDesignationMesh.vertices);
 
 
                     foreach (var array in arrays)

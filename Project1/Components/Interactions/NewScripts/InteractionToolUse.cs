@@ -46,6 +46,8 @@ namespace Start_a_Town_
 
         public sealed override void OnUpdate()
         {
+            if (this.Actor.Net.IsClient)
+                return;
             if (!this.CanPerform())
             {
                 this.Fail();
@@ -62,14 +64,7 @@ namespace Start_a_Town_
             }
             if (actor.Net.IsClient && this.ParticleRects is not null)
             {
-                //this.EmitterStrike.Emit(ItemContent.LogsGrayscale.AtlasToken.Atlas.Texture, this.ParticleRects, Vector3.Zero);
-                //var token = BlockDefOf.Soil.Variations[0];
-                ////var token = ItemContent.LogsGrayscale.AtlasToken;
-                //this.ParticleRects = token.Rectangle.Divide(25);
-                //this.EmitterStrike.Texture = token.Atlas.Texture;
                 this.EmitterStrike.Emit(this.ParticleRects, Vector3.Zero);
-                //if (this.EmitterStrike.Texture != Block.Atlas.Texture)
-                //    throw new Exception();
                 actor.Map.ParticleManager.AddEmitter(this.EmitterStrike);
             }
 
@@ -79,13 +74,17 @@ namespace Start_a_Town_
             var skill = this.GetSkill();
 
             if (this.SkillAwardType == SkillAwardTypes.OnSwing)
-                actor.Skills.Adjust(skill, amount);
+                //actor.Skills.Adjust(skill, amount);
+                actor.Skills.AwardAndSync(skill, amount);
+
 
             var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level); //amount / a.Skills[skill].Level;
 
             // "transfer" energy from stamina to strength
-            actor.Attributes.Adjust(AttributeDefOf.Strength, energyConsumption);
-            actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
+            //actor.Attributes.Adjust(AttributeDefOf.Strength, energyConsumption);
+            //actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
+            actor.Attributes.AdjustAndSync(AttributeDefOf.Strength, energyConsumption);
+            actor.Resources.AdjustAndSync(ResourceDefOf.Stamina, -energyConsumption);
 
             // i moved the multiplication with the stamina threshold to inside the workspeed stat formula
             this._animation.Speed = actor[StatDefOf.WorkSpeed];
@@ -94,8 +93,10 @@ namespace Start_a_Town_
                 return;
 
             if (this.SkillAwardType == SkillAwardTypes.OnFinish)
+            {
+                throw new NotImplementedException();
                 actor.Skills.Adjust(skill, this.TotalWorkAmount);
-
+            }
             this.Done();
             this.Finish();
         }

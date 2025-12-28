@@ -266,8 +266,13 @@ namespace Start_a_Town_
             if (amount <= 0)
                 return;
             this.StackSize -= amount;
+            if (this.Net.IsClient)
+                return;
             if (this.IsEmpty)
-                this.Destroy();
+                this.World.DisposeEntityAndSync(this as Entity);
+            else
+                PacketSyncStackSize.Send(this);
+            //this.Destroy();
         }
         public void Destroy()
         {
@@ -281,6 +286,9 @@ namespace Start_a_Town_
                 return;
 
             this.StackSize += amount;
+            if (this.Net.IsClient)
+                return;
+            PacketSyncStackSize.Send(this);
         }
         protected int _stackSize = 1;
 

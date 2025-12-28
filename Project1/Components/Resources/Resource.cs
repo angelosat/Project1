@@ -188,10 +188,6 @@ namespace Start_a_Town_
         {
             return this.ResourceDef.Worker.GetThresholdValue(this, index);
         }
-        static Resource()
-        {
-            Packets.Init();
-        }
         internal void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials)
         {
             this.ResourceDef.Worker.InitMaterials(obj, materials);
@@ -214,7 +210,7 @@ namespace Start_a_Town_
         internal class Packets
         {
             static int /*PacketSyncAdjust, */_packetTypeIdAdjust;
-            internal static void Init()
+            static Packets()
             {
                 //PacketSyncAdjust = Registry.PacketHandlers.Register(HandleSyncAdjust);
                 _packetTypeIdAdjust = Registry.PacketHandlers.Register(HandleAdjust);

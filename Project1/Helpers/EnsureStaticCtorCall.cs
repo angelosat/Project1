@@ -23,7 +23,9 @@ namespace Start_a_Town_
         public static void Init()
         {
             CachedTypes ??= Assembly.GetExecutingAssembly().GetTypes();
-            foreach (var tt in CachedTypes.Where(t => t.GetCustomAttribute<EnsureStaticCtorCall>() is not null))
+            foreach (var tt in CachedTypes.Where(t => t.GetCustomAttribute<EnsureStaticCtorCall>() is not null)
+                .OrderBy(c => c.FullName) // for more determinism
+                )
                 RuntimeHelpers.RunClassConstructor(tt.TypeHandle);
         }
         public static void ImportConfig()

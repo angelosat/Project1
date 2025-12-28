@@ -127,7 +127,11 @@ namespace Start_a_Town_.Components
         {
             this.GetAttribute(AttributeDefOf.Strength).Award(this.Owner, energyConsumption);
         }
-
+        internal void AdjustAndSync(AttributeDef def, float v)
+        {
+            this.Adjust(def, v);
+            AttributeRuntime.Packets.SendAdjust(this.Owner as Actor, def, v);
+        }
         public new class Spec : Spec<AttributesComponent>
         {
             public AttributeDef[] Items;

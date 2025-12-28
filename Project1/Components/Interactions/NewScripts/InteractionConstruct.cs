@@ -10,6 +10,7 @@ namespace Start_a_Town_.Interactions
         {
             BlockConstructionComp _cachedComp;
             public BlockConstructionComp CachedComp => this._cachedComp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockConstructionComp>();
+            public override float ProgressPercentage => this.CachedComp.Progress.Percentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         public override bool CanPerform(InteractionContext ctx) => this.CanPerform((Context)ctx);
@@ -40,7 +41,9 @@ namespace Start_a_Town_.Interactions
         void ApplyWork(Context ctx, int workAmount)
         {
             ctx.CachedComp.Advance(workAmount);
+            PacketsConstruction.Sync(ctx.CachedComp);
         }
+        
     }
     class InteractionConstruct : InteractionToolUse
     {
@@ -52,7 +55,6 @@ namespace Start_a_Town_.Interactions
         //protected override float Progress => this.ProgressNew.Percentage;// this.BuildProgress.Value.Percentage;
         //protected override Progress ProgressNew => this.Comp.Progress;
         protected override float WorkDifficulty { get; } = 1;
-
         //protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnSwing;
 
         public override object Clone()

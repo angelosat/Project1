@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.UI;
+﻿using Start_a_Town_.Net;
+using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -125,6 +126,32 @@ namespace Start_a_Town_
 
         public static AttributeRuntime Create(IDataReader r) => new AttributeRuntime().Read(r);
 
-       
+
+        [EnsureStaticCtorCall]
+        internal class Packets
+        {
+            static int _packetTypeIdAdjust;
+            static Packets()
+            {
+                _packetTypeIdAdjust = Registry.PacketHandlers.Register(HandleAdjust);
+            }
+            internal static void SendAdjust(Actor actor, AttributeDef def, float v)
+            {
+                var server = actor.Net as Server;
+                server.BeginPacket(_packetTypeIdAdjust)
+                    .Write(actor.RefId)
+                    .Write(def)
+                    .Write(v);
+            }
+            private static void HandleAdjust(NetEndpoint endpoint, Packet packet)
+            {
+                var client = endpoint as Client;
+                var r = packet.PacketReader;
+                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+                var def = r.ReadDef<AttributeDef>();
+                var delta = r.ReadSingle();
+                actor.Attributes.Adjust(def, delta);
+            }
+        }
     }
 }

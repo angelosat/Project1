@@ -28,19 +28,13 @@ namespace Start_a_Town_
         public override void Perform()
         {
             this._animation.FadeOutAndRemove();
-            //if (this.Actor.Net.IsClient)
-            //    return;
+            if (this.Actor.Net.IsClient)
+                return;
             var actor = this.Actor;
             var target = this.Target;
             var hauled = actor.Inventory.HaulSlot;// PersonalInventoryComponent.GetHauling(actor);
             var hauledObj = hauled.Object as Entity;
-            if(hauledObj == null)
-            {
-                throw new Exception();
-                actor.Net.ConsoleBox.Write(actor.Name + " tried to drop hauled object but was wan't hauling anything");
-                this.State = States.Failed;
-                return;
-            }
+            ArgumentNullException.ThrowIfNull(hauledObj);
             if (this.Amount > hauledObj.StackSize)
                 throw new Exception();
             //this.Animation.FadeOutAndRemove();
@@ -52,8 +46,8 @@ namespace Start_a_Town_
                         return;
                     if (actor.Map.GetBlock(target.Global).TryConsume(actor, hauledObj, target, this.Amount == -1 ? hauledObj.StackSize : this.Amount))
                         return;
-                    //actor.Map.SpawnAndSync(hauledObj, global, actor.Velocity);
-                    actor.Map.Spawn(hauledObj, global, actor.Velocity);
+                    actor.Map.SpawnAndSync(hauledObj, global, actor.Velocity);
+                    //actor.Map.Spawn(hauledObj, global, actor.Velocity);
                     //actor.CurrentTask?.AddPlacedObject(hauledObj);
                     break;
 

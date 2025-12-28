@@ -715,6 +715,10 @@ namespace Start_a_Town_
         public abstract void DrawBeforeWorld(MySpriteBatch sb, Camera cam);
 
         public abstract void GetTooltipInfo(Control tooltip);
+        public virtual PlaceBlockResult SetBlock(SetBlockArgs args)
+        {
+            return this.SetBlock(args.Global, args.Block, args.Material, args.Data, args.Source, orientation: args.Orientation);
+        }
         public virtual PlaceBlockResult SetBlock(IntVec3 global, Block block, MaterialDef material, byte data, int variation = 0, int orientation = 0, bool raiseEvent = true)
         {
             return this.SetBlock(global, block, material, data, IntVec3.Zero, variation, orientation, raiseEvent);
@@ -771,7 +775,8 @@ namespace Start_a_Town_
             }
             if (raiseEvent)
                 this.NotifyBlockChanged(global);
-
+            if (this.Net.IsServer)
+                PacketSetBlock.Send(this.Net as Server, new SetBlockArgs(global, block, material, data, orientation, source));
             return new PlaceBlockResult(entity, cell, true);
         }
         public struct PlaceBlockResult

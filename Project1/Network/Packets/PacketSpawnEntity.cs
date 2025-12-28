@@ -15,7 +15,8 @@ namespace Start_a_Town_
         public static void Send(Entity entity, Vector3 position, Vector3 velocity)//, Vector2 direction)
         {
             var server = entity.Net as Server;
-            server.BeginTimestamped(_packetTypeId)
+            //server.BeginTimestamped(_packetTypeId)
+            server.BeginPacket(_packetTypeId)
                 .Write(entity.RefId)
                 .Write(position)
                 .Write(velocity);

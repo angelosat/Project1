@@ -24,8 +24,8 @@ namespace Start_a_Town_
         internal static void Send(NetEndpoint net, GameObject entity, Interaction action, TargetArgs target, int count)
         {
             var server = net as Server;
-            //var w = server.OutgoingStreamTimestamped;
-            var w = server.BeginTimestamped(PacketInteract);
+            //var w = server.BeginTimestamped(PacketInteract);
+            var w = server.BeginPacket(PacketInteract);
             //w.Write(PacketInteract);
             w.Write(entity.RefId);
             w.Write(true);

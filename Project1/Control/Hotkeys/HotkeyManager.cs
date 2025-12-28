@@ -97,6 +97,8 @@ namespace Start_a_Town_
             if (Hotkeys.FirstOrDefault(h => h.Context == context && h.ShortcutKeys.Contains(key)) is Hotkey hotkey && !hotkey.Pressed)
             {
                 hotkey.Pressed = true;
+                $"{hotkey} pressing".ToConsole();
+
                 hotkey.ActionPress();
                 return true;
             }
@@ -107,7 +109,10 @@ namespace Start_a_Town_
             if (Hotkeys.FirstOrDefault(h => h.Context == context && h.ShortcutKeys.Contains(key)) is Hotkey hotkey && hotkey.Pressed)
             {
                 hotkey.Pressed = false;
+                $"{hotkey} released".ToConsole();
+
                 hotkey.ActionRelease();
+
                 return true;
             }
             return false;

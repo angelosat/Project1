@@ -14,7 +14,8 @@ namespace Start_a_Town_
         public static void Send(Actor actor, Entity newItem, int amount = -1)
         {
             var server = actor.Net as Server;
-            server.BeginTimestamped(pType)
+            //server.BeginTimestamped(pType)
+            server.BeginPacket(pType)
                 .Write(actor.RefId)
                 .Write(newItem?.RefId ?? -1)
                 .Write(amount);

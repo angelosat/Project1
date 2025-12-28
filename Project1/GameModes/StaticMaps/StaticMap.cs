@@ -135,9 +135,9 @@ namespace Start_a_Town_
         //}
 
         #region Updating
-        public override void Update()
+        public override void Validate()
         {
-            IconOffset = (float)Math.Sin(this.Net.Clock.TotalMilliseconds / Ticks.PerSecond);
+            IconOffset = (float)Math.Sin(this.Net.CurrentTick / Ticks.PerSecond);
             this.Sunlight = 1 - (float)this.GetDayTimeNormal();
             this.TryPerformQueuedRandomBlockUpdates();
             this.CachedAmbientColor = this.UpdateAmbientColor();

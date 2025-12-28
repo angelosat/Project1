@@ -1,5 +1,6 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
+using System.IO;
+using static Start_a_Town_.HotkeyManager;
 
 namespace Start_a_Town_
 {
@@ -16,6 +17,8 @@ namespace Start_a_Town_
             //w.Write(p);
             //var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
             var w = net.BeginPacket(p);
+            $"{net.CurrentTick} : {net} sending speed: {speed}".ToConsole();
+
             w.Write(playerID);
             w.Write(speed);
         }

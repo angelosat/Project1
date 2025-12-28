@@ -43,7 +43,7 @@ namespace Start_a_Town_.Net
         }
         public abstract ConsoleBoxAsync ConsoleBox { get; }
         public abstract PlayerData CurrentPlayer { get; }
-        public abstract TimeSpan Clock { get; }
+        //public abstract TimeSpan Clock { get; }
         public abstract double CurrentTick { get; }
         public abstract MapBase Map { get; set; }
         public abstract WorldBase World { get; set; }
@@ -55,7 +55,7 @@ namespace Start_a_Town_.Net
         public void EventOccured(int eventTypeId, params object[] p)
         {
             //throw new Exception("obsolete EventOccured method called in NetEndpoint");
-            var e = new GameEvent(this.Clock.TotalMilliseconds, eventTypeId, p);
+            var e = new GameEvent(this.CurrentTick, eventTypeId, p);
             this.Post(e);
         }
         [Obsolete]

@@ -3,7 +3,7 @@ using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 using Start_a_Town_.Animations;
-using System.Configuration;
+//using System.Drawing.Drawing2D;
 
 namespace Start_a_Town_
 {
@@ -16,13 +16,14 @@ namespace Start_a_Town_
         public float Weight = 1;
         public float WeightChange;
         public float Speed = 1;
-        public float Frame;
+        public float Frame = -1;
+        public double StartTick = -1;
         public float Layer => this.Def.Layer;
         public float Fade { get { return this.FadeValue / (float)this.FadeLength; } }
         public string Name;
         private bool PreFade;
         private int FadeLength;
-        private int FadeValue;
+        private float FadeValue;
         private Func<float, float, float, float> FadeInterpolation;
         public AnimationStates State;
         public Action FinishAction = () => { };
@@ -57,9 +58,11 @@ namespace Start_a_Town_
 
         public void Restart()
         {
+            this.StartTick = -1;
             this.Frame = 0;
             this.Weight = 1;
             this.WeightChange = 0;
+            
             this.State = AnimationStates.Running;
         }
 
@@ -110,12 +113,51 @@ namespace Start_a_Town_
         {
             return this.Def.KeyFrames.TryGetValue(type, out ani);
         }
-        
-        public void Update(GameObject entity)
+        public void Tick(GameObject entity)
         {
+            if (this.StartTick == -1)
+                this.StartTick = entity.Net.CurrentTick;
+            var prevFrame = this.Frame;
+
+            var elapsedServerTicks = (float)(entity.Net.CurrentTick - this.StartTick);// / Server.ClockIntervalMS;
+            elapsedServerTicks /= this.Speed;
+            if (this.Weight > 0)
+            {
+                this.Frame = elapsedServerTicks;
+
+                // Handle looping first, so frame delta is correct for events
+                this.Loop();
+
+                // Fire keyframe events
+                this.PerformActionsNew(prevFrame, this.Frame, entity);
+            }
+            // Fade logic: now deterministic per server tick
             if (this.FadeValue < this.FadeLength)
             {
-                this.FadeValue++;
+                this.FadeValue = elapsedServerTicks; // directly proportional to elapsed time
+                this.Weight = this.FadeInterpolation(0, 1, this.Fade);
+                if (this.Fade >= 1)
+                    this.OnFadeIn();
+
+                if (this.PreFade)
+                    return; // optionally skip main update while fading in
+            }
+
+            // Weight accumulation independent of frames
+            var step = elapsedServerTicks - prevFrame;
+            this.Weight += step * (this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange);
+            this.Weight = MathHelper.Clamp(this.Weight, 0f, 1f);
+        }
+        public void Tickold(GameObject entity)
+        {
+            if (this.StartTick == -1)
+                this.StartTick = entity.Net.CurrentTick;
+            var elapsedServerTicks = (float)(entity.Net.CurrentTick - this.StartTick);// / Server.ClockIntervalMS;
+            elapsedServerTicks /= this.Speed;
+            var step = elapsedServerTicks - this.Frame;
+            if (this.FadeValue < this.FadeLength)
+            {
+                this.FadeValue = elapsedServerTicks;
                 this.Weight = this.FadeInterpolation(0, 1, this.Fade);
                 if (this.Fade >= 1)
                     this.OnFadeIn();
@@ -126,28 +168,48 @@ namespace Start_a_Town_
             if (this.Weight > 0)
             {
                 var prevframe = this.Frame;
-                this.Frame += this.Speed;
-                this.PerformActions(prevframe, this.Frame, entity);
-                if (this.Frame >= this.Def.FrameCount)
+                this.Frame = elapsedServerTicks;
+                this.Loop();
+                this.PerformActionsNew(prevframe, this.Frame, entity);
+            }
+            this.Weight += step * (this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange);
+            this.Weight = MathHelper.Clamp(this.Weight, 0, 1);
+        }
+
+        private void Loop()
+        {
+            if (this.Frame >= this.Def.FrameCount)
+            {
+                switch (this.Def.WarpMode)
                 {
-                    switch (this.Def.WarpMode)
-                    {
-                        case WarpMode.Loop:
-                            this.Frame -= this.Def.FrameCount;
-                            break;
+                    case WarpMode.Loop:
+                        this.Frame %= this.Def.FrameCount;
+                        break;
 
-                        case WarpMode.Once:
-                        case WarpMode.Clamp:
-                            this.Frame = this.Def.FrameCount;
-                            break;
+                    case WarpMode.Once:
+                    case WarpMode.Clamp:
+                        this.Frame = this.Def.FrameCount;
+                        break;
 
-                        default:
-                            break;
-                    }
+                    default:
+                        break;
                 }
             }
-            this.Weight += this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange;
-            this.Weight = MathHelper.Clamp(this.Weight, 0, 1);
+        }
+
+        private void PerformActionsNew(float prevFrame, float nextFrame, GameObject entity)
+        {
+            if (this.State == AnimationStates.Removed)
+                return;
+            foreach (var action in Def.Events)
+            {
+                float key = action.Key;
+                // handle looping correctly
+                if (prevFrame < key && key <= nextFrame)
+                    action.Value(entity);
+                else if (this.Def.WarpMode == Animations.WarpMode.Loop && prevFrame > nextFrame && (key > prevFrame || key <= nextFrame))
+                    action.Value(entity);
+            }
         }
         private void PerformActions(float prevframe, float nextframe, GameObject entity)
         {

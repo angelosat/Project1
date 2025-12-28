@@ -70,9 +70,9 @@ namespace Start_a_Town_.Net
         public void Update(GameTime gt)
         {
             CurrentNetwork = this.Server;
-            this.Server.Update(gt);
+            this.Server.Tick(gt);
             CurrentNetwork = this.Client;
-            this.Client.Update();
+            this.Client.Tick();
             CurrentNetwork = null;
         }
         public static void SyncReport(Server server, string text)

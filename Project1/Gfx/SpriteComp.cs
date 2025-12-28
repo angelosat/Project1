@@ -296,7 +296,7 @@ namespace Start_a_Town_.Components
             var nextAnimations = new Dictionary<AnimationDef, Animation>();
             foreach (var ani in Animations.Values)
             {
-                ani.Update(parent);
+                ani.Tick(parent);
                 if (!(ani.State == AnimationStates.Removed && ani.Weight <= 0))
                     nextAnimations.Add(ani.Def, ani);
             }

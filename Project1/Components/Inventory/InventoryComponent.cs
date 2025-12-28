@@ -229,7 +229,7 @@ namespace Start_a_Town_.Components
             if (amount < target.StackSize)
             {
                 target.Consume(amount);
-                finalItem = target.Split(amount) as Entity;
+                finalItem = target.Split(amount) as Entity; // this creates a new entity and if it'
             }
             else
                 finalItem = target;
@@ -238,8 +238,11 @@ namespace Start_a_Town_.Components
             if (actor.Inventory.HaulSlot.Object is not GameObject existing)
             {
                 //actor.Inventory.HaulSlot.SetItem(finalItem, out var _);/// putting the item in the gameobjectslot, removes it from its current container or despawns it, so no need to send packetremoveinventoryitem
-                actor.Inventory.HaulSlot.AssignAndSync(finalItem, out var _);
-                //PacketActorHaulUpdate.Send(actor, finalItem as Entity);
+                
+                if(finalItem.IsRegistered)
+                    actor.Inventory.HaulSlot.Assign(finalItem, out var _);
+                else
+                    actor.Inventory.HaulSlot.AssignAndSync(finalItem, out var _);
                 return;
             }
             if (!existing.CanAbsorb(finalItem))

@@ -189,26 +189,6 @@ namespace Start_a_Town_
                 return false;
             }
             var result = this.Assign(newItem, out prevItem);
-            //prevItem = this._object;
-            //if (newItem is not null && !this.Filter(newItem))
-            //    return false;
-            //if (prevItem != null)
-            //{
-            //    prevItem.Slot = null;
-            //    prevItem.Parent = null;
-            //}
-            //this._object = newItem;
-            //this.ObjectChangedAction(newItem);
-            //this.OnObjectChanged();
-            //if (newItem != null)
-            //{
-            //    newItem.Container?.Remove(newItem);
-            //    newItem.Map?.DespawnAndSync(newItem as Entity);
-            //    if (newItem.Slot is not null && newItem.Slot != this)
-            //        newItem.Slot.Clear();
-            //    newItem.Slot = this;
-            //    newItem.Parent = this.Parent;
-            //}
             PacketSlotAssign.Send(this.Parent as Entity, this.ID, newItem as Entity);
             return result;
         }

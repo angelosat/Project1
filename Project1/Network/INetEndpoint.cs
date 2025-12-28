@@ -10,7 +10,7 @@ namespace Start_a_Town_
     {
         ConsoleBoxAsync ConsoleBox { get; }
         PlayerData CurrentPlayer { get; }
-        TimeSpan Clock { get; }
+        //TimeSpan Clock { get; }
         double CurrentTick { get; }
         MapBase Map { get; }
         WorldBase World { get; }

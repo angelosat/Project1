@@ -21,9 +21,9 @@ namespace Start_a_Town_.Net
 
         private static Client _Instance;
         public static Client Instance => _Instance ??= new Client();
-
-        public override double CurrentTick => this.ClientClock.TotalMilliseconds;
-
+        double _tick;
+        public override double CurrentTick { get => this._tick; }// set => this._tick = value; }// this.ClientClock.TotalMilliseconds;
+        public double TickTarget;
         private UI.ConsoleBoxAsync _Console;
         public override UI.ConsoleBoxAsync ConsoleBox => this._Console ??= new UI.ConsoleBoxAsync(new Rectangle(0, 0, 400, 400)) { FadeText = false }; //new Rectangle(0, 0, 800, 600)
 
@@ -64,11 +64,11 @@ namespace Start_a_Town_.Net
         private readonly PriorityQueue<long, Packet> IncomingOrderedReliable = new();
         private readonly PriorityQueue<long, Packet> IncomingSynced = new();
         private ConcurrentDictionary<Vector2, ConcurrentQueue<Action<Chunk>>> ChunkCallBackEvents;
-        private TimeSpan ClientClock = new();
+        //private TimeSpan ClientClock = new();
         private double LastReceivedTime = int.MinValue;
         public static bool IsSaving;
 
-        public override TimeSpan Clock => this.ClientClock;
+        //public override TimeSpan Clock => this.ClientClock;
 
 
         public BinaryWriter OutgoingStreamUnreliable => this.GetStream(ReliabilityType.Unreliable).Writer;// this[ReliabilityType.Unreliable];
@@ -85,6 +85,7 @@ namespace Start_a_Town_.Net
         private readonly Queue<WorldSnapshot> WorldStateBuffer = new();
         private readonly int WorldStateBufferSize = 10;
         public const int ClientClockDelayMS = Server.SnapshotIntervalMS * 4;
+        public const int ClientTickDelay = 4;
         private int _Speed = 0;// 1;
         public override int Speed { get => this._Speed; set => this._Speed = value; }
 
@@ -96,8 +97,8 @@ namespace Start_a_Town_.Net
             this.Timeout = -1;
             Packet.Create(this.NextPacketID, PacketType.PlayerDisconnected).BeginSendTo(this.Host, this.RemoteIP, a => { });
             this.IncomingAll = new ConcurrentQueue<Packet>();
-            this.ClientClock = new TimeSpan();
-            this.SyncedPackets = new Queue<Packet>();
+            //this.ClientClock = new TimeSpan();
+            this.PacketsBuffer = new Queue<Packet>();
         }
 
         /// <summary>
@@ -111,12 +112,12 @@ namespace Start_a_Town_.Net
             this.World = null;
             Engine.Map = null;
             this.IncomingAll = new ConcurrentQueue<Packet>();
-            this.SyncedPackets = new Queue<Packet>();
+            this.PacketsBuffer = new Queue<Packet>();
 
             ScreenManager.GameScreens.Clear();
             ScreenManager.Add(MainScreen.Instance);
             this.EventOccured((int)Message.Types.ServerNoResponse);
-            this.ClientClock = new TimeSpan();
+            //this.ClientClock = new TimeSpan();
         }
 
         public void Connect(string address, string playername, AsyncCallback callBack)
@@ -127,7 +128,7 @@ namespace Start_a_Town_.Net
         public void Connect(string address, PlayerData playerData, AsyncCallback callBack)
         {
             this.PlayerData = playerData;
-            this.SyncedPackets = new Queue<Packet>();
+            this.PacketsBuffer = new Queue<Packet>();
             this.Timeout = this.TimeoutLength;
             this.LastReceivedTime = int.MinValue;
             this.IsRunning = true;
@@ -139,7 +140,7 @@ namespace Start_a_Town_.Net
             this.IncomingOrdered.Clear();
             this.IncomingSynced.Clear();
             this.IncomingAll = new ConcurrentQueue<Packet>();
-            this.ClientClock = new TimeSpan();
+            //this.ClientClock = new TimeSpan();
             this.Players = new PlayerList(this);
             if (this.Host != null)
                 this.Host.Close();
@@ -176,7 +177,7 @@ namespace Start_a_Town_.Net
 
         public void Connect(IPAddress ipAddress, PlayerData playerData, AsyncCallback callBack)
         {
-            this.SyncedPackets = new Queue<Packet>();
+            this.PacketsBuffer = new Queue<Packet>();
             this.Timeout = this.TimeoutLength;
             this.LastReceivedTime = int.MinValue;
             this.IsRunning = true;
@@ -189,7 +190,7 @@ namespace Start_a_Town_.Net
             this.IncomingOrdered.Clear();
             this.IncomingSynced.Clear();
             this.IncomingAll = new ConcurrentQueue<Packet>();
-            this.ClientClock = new TimeSpan();
+            //this.ClientClock = new TimeSpan();
             this.Players = new PlayerList(this);
             if (this.Host != null)
                 this.Host.Close();
@@ -220,31 +221,35 @@ namespace Start_a_Town_.Net
             return this.Players.GetList();
         }
 
-        public void Update()
+        public void Tick()
         {
+
             this.Timeout--;
             if (this.Timeout == 0)
                 this.Disconnected();
             if (!this.IsRunning)
                 return;
-
+            this.ProcessIncomingPackets();
             this.HandleOrderedPackets();
             this.HandleOrderedReliablePackets();
-            this.HandleSyncedPackets();
-            this.ProcessIncomingPackets();
+            this.HandleBufferedPackets();
             GameMode.Current?.Update(Instance);
 
             if (Instance.Map is not null)
             {
-
                 var size = Instance.Map.GetSizeInChunks();
                 var maxChunks = size * size;
                 if (Instance.Map.ActiveChunks.Count == maxChunks && !IsSaving)
                 {
-                    for (int i = 0; i < Instance.Speed; i++)
+                    //for (int i = 0; i < Instance.Speed; i++)
+                    this.Map.Validate(); 
+                    while (this._tick < this.TickTarget)
+                    {
+                        this._tick++;
                         this.TickMap();
-                    this.Map.Update();
-                    this.UpdateWorldState();
+                        //this.Map.Update();
+                        this.UpdateWorldState();
+                    }
                 }
             }
             //this.ClientClock = this.ClientClock.Add(TimeSpan.FromMilliseconds(Server.ClockIntervalMS));
@@ -277,7 +282,6 @@ namespace Start_a_Town_.Net
         {
             var r = packet.Reader;
             var thisWorldTick = this.Map.World.CurrentTick;
-            //var clientTick = this.CurrentTick;
             for (int i = 0; i < this.Speed; i++)
             {
                 var remoteWorldTick = r.ReadUInt64();
@@ -285,16 +289,9 @@ namespace Start_a_Town_.Net
                 if (length == 0)
                     continue;
                 int frameStart = (int)r.BaseStream.Position;
-                //var test1 = r.ReadInt32();
-                //var test2 = r.ReadInt32();
-                //var test3 = r.ReadInt32();
-                //r.BaseStream.Position = frameStart;
-                //if (length > 0)
-                //r.BaseStream.Position += length; // skip data, dont read them. because i read them when handling them
-
+                
                 if (remoteWorldTick == thisWorldTick)
                 {
-                    //r.BaseStream.Position = frameStart;
                     this.UnmergePackets(packet, (int)length);
                 }
                 else
@@ -388,14 +385,14 @@ namespace Start_a_Town_.Net
             ScreenManager.CurrentScreen.OnGameEvent(e);
             ToolManager.OnGameEvent(this.World, e);
         }
-        private void HandleSyncedPackets()
+        private void HandleBufferedPackets()
         {
-            while (this.SyncedPackets.Count > 0)
+            while (this.PacketsBuffer.Count > 0)
             {
-                var next = this.SyncedPackets.Peek();
-                if (next.Tick > this.ClientClock.TotalMilliseconds)
+                var next = this.PacketsBuffer.Peek();
+                if (next.Tick > this.CurrentTick)
                     return;
-                this.SyncedPackets.Dequeue();
+                this.PacketsBuffer.Dequeue();
                 this.HandleMessage(next);
             }
         }
@@ -425,13 +422,13 @@ namespace Start_a_Town_.Net
                     this.RecentPackets.Dequeue();
 
                 // clock correction happens first, for all packets
-                double target = packet.Tick - ClientClockDelayMS;
-                double curr = this.ClientClock.TotalMilliseconds;
+                double target = packet.Tick - ClientTickDelay;
+                double curr = this.CurrentTick;
                 double smoothed = curr + (target - curr) * 0.15;
-                this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(smoothed, 0));
-                //this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(curr, target));//
-
-                //this.ClientClock = TimeSpan.FromMilliseconds(target);
+                //this.CurrentTick = Math.Max(smoothed, 0);
+                this.TickTarget = smoothed;
+                //this._tick = Math.Max(packet.Tick - ClientTickDelay, 0);
+                //this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(smoothed, 0));
                 // for ordered packets, only handle last one (store most recent and discard and older ones)
                 if (packet.Reliability == ReliabilityType.Ordered)
                 {
@@ -523,7 +520,8 @@ namespace Start_a_Town_.Net
                     this.Speed = r.ReadInt32();
                     Log.Network(this, $"Connected to {this.RemoteIP}");
                     GameMode.Current.PlayerIDAssigned(this);
-                    this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(msg.Tick - ClientClockDelayMS, 0));
+                    //this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(msg.Tick - ClientClockDelayMS, 0));
+                    this._tick = Math.Max(msg.Tick - ClientTickDelay, 0);
                     this.PlayerData.RemoteOrderedReliableSequence = msg.OrderedReliableID;
                     //Instance.EventOccured((int)Message.Types.ServerResponseReceived);
                     Instance.Events.Post(new ServerConnectionAcceptedEvent());
@@ -578,21 +576,21 @@ namespace Start_a_Town_.Net
             Log.System(IsSaving ? "Saving..." : "Game saved");
         }
 
-        private void SyncTime(double serverMS)
-        {
-            if (this.LastReceivedTime > serverMS)
-            {
-                ("sync time packet dropped (last: " + this.LastReceivedTime.ToString() + ", received: " + serverMS.ToString()).ToConsole();// + "server: " + Server.ServerClock.TotalMilliseconds.ToString() + ")").ToConsole();
-                return;
-            }
+        //private void SyncTime(double serverMS)
+        //{
+        //    if (this.LastReceivedTime > serverMS)
+        //    {
+        //        ("sync time packet dropped (last: " + this.LastReceivedTime.ToString() + ", received: " + serverMS.ToString()).ToConsole();// + "server: " + Server.ServerClock.TotalMilliseconds.ToString() + ")").ToConsole();
+        //        return;
+        //    }
 
-            this.LastReceivedTime = serverMS;
-            var newtime = serverMS - ClientClockDelayMS;
+        //    this.LastReceivedTime = serverMS;
+        //    var newtime = serverMS - ClientClockDelayMS;
 
-            var serverTime = TimeSpan.FromMilliseconds(newtime);
+        //    var serverTime = TimeSpan.FromMilliseconds(newtime);
 
-            this.ClientClock = serverTime;
-        }
+        //    this.ClientClock = serverTime;
+        //}
 
         private void ParseCommand(string command)
         {
@@ -615,7 +613,7 @@ namespace Start_a_Town_.Net
             }
         }
 
-        private Queue<Packet> SyncedPackets = new();
+        private Queue<Packet> PacketsBuffer = new();
 
         private void HandleOrderedReliablePackets()
         {
@@ -627,15 +625,15 @@ namespace Start_a_Town_.Net
                 {
                     this.PlayerData.RemoteOrderedReliableSequence = nextid;
                     Packet packet = this.IncomingOrderedReliable.Dequeue();
-                    if (next.Tick > Instance.Clock.TotalMilliseconds) // TODO maybe use this while changing clock to ad
+                    if (next.Tick > this.CurrentTick) // Clock.TotalMilliseconds) // TODO maybe use this while changing clock to ad
                     {
-                        this.SyncedPackets.Enqueue(next);
+                        this.PacketsBuffer.Enqueue(next);
                         continue;
                     }
-                    this.HandleMessage(packet);
-                    this.OrderedReliablePacketsHistory.Enqueue(packet);
-                    while (this.OrderedReliablePacketsHistory.Count > OrderedReliablePacketsHistoryCapacity)
-                        this.OrderedReliablePacketsHistory.Dequeue();
+                        this.HandleMessage(packet);
+                        this.OrderedReliablePacketsHistory.Enqueue(packet);
+                        while (this.OrderedReliablePacketsHistory.Count > OrderedReliablePacketsHistoryCapacity)
+                            this.OrderedReliablePacketsHistory.Dequeue();
                 }
                 else
                     return;
@@ -860,9 +858,9 @@ namespace Start_a_Town_.Net
         //internal void ReadSnapshot(BinaryReader reader)
         internal void ReadSnapshot(IDataReader reader)
         {
-            double totalMs = reader.ReadDouble();
+            //double totalMs = reader.ReadDouble();
 
-            var time = TimeSpan.FromMilliseconds(totalMs);
+            var time = reader.ReadDouble(); // TimeSpan.FromMilliseconds(totalMs);
             var worldState = new WorldSnapshot(time, reader);
 
             // insert world snapshot to world snapshot history
@@ -881,7 +879,7 @@ namespace Start_a_Town_.Net
                     prev = list[i],
                     next = list[i + 1];
 
-                if (this.ClientClock >= prev.Time && this.ClientClock < next.Time)
+                if (this.CurrentTick >= prev.Time && this.CurrentTick < next.Time)
                 {
                     this.SnapObjectPositions(prev, next);
                     return;
@@ -890,8 +888,8 @@ namespace Start_a_Town_.Net
         }
         private void SnapObjectPositions(WorldSnapshot prev, WorldSnapshot next)
         {
-            float t = (float)((ClientClock.TotalMilliseconds - prev.Time.TotalMilliseconds) /
-                  (next.Time.TotalMilliseconds - prev.Time.TotalMilliseconds));
+            float t = (float)((this.CurrentTick - prev.Time) /
+                  (next.Time - prev.Time));
             t = Math.Clamp(t, 0f, 1f);
 
             foreach (var kv in prev.Dictionary)
@@ -1075,6 +1073,7 @@ namespace Start_a_Town_.Net
             else
                 Log.Network(this, $"{player.Name} wants to set speed to {playerSpeed}"); // TODO prevent spam
             this.Speed = newspeed;
+            $"client speed set to {newspeed}".ToConsole();
         }
 
         //public override void Write(string text)

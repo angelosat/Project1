@@ -15,7 +15,7 @@ namespace Start_a_Town_
         {
             return;
             var server = net as Server;
-            var w = server.BeginTimestamped(PType);
+            var w = server.BeginPacket(PType);
             w.Write(entityID);
             w.Write(toggle);
         }

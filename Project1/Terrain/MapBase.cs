@@ -582,7 +582,7 @@ namespace Start_a_Town_
         {
             if (obj.Map == this)
             {
-                $"{this.Net} despawning {obj.DebugName} on tick {this.CurrentTick}".ToConsole();
+                $"{this.Net} despawning {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
                 obj.OnDespawn(this);
                 if (!this.Remove(obj)) /// TODO: move this to map.despawn
                     throw new Exception();
@@ -686,7 +686,7 @@ namespace Start_a_Town_
         public abstract byte GetBlockData(IntVec3 global);
         public abstract byte SetBlockData(IntVec3 global, byte data = 0);
 
-        public abstract void Update();
+        public abstract void Validate();
         public virtual void Tick() { }
         public abstract SaveTag Save();
 

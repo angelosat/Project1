@@ -15,7 +15,8 @@ namespace Start_a_Town_
         internal static void Send(NetEndpoint net, int entityID, bool toggle)
         {
             var server = net as Server;
-            var w = server.BeginTimestamped(_packetTypeId);
+            //var w = server.BeginTimestamped(_packetTypeId);
+            var w = server.BeginPacket(_packetTypeId);
             w.Write(entityID);
             w.Write(toggle);
         }

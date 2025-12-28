@@ -14,7 +14,8 @@ namespace Start_a_Town_
         public static void Send(Entity owner, int slotId, Entity item)
         {
             var server = owner.Net as Server;
-            server.BeginTimestamped(pType)
+            //server.BeginTimestamped(pType)
+            server.BeginPacket(pType)
                 .Write(owner.RefId)
                 .Write(slotId)
                 .Write(item?.RefId ?? -1);

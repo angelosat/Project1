@@ -147,7 +147,9 @@ namespace Start_a_Town_
         {
             //var visitor = ActorDefOf.Npc.Create() as Actor;
             var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
-            actor.Inventory.Insert(ItemDefOf.Coins.Create().SetStackSize(500));
+            var coins = ItemDefOf.Coins.Create().SetStackSize(500);
+            //this.World.RegisterAndSync(coins);
+            actor.Inventory.Insert(coins);
             var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
             need.Value = this.World.Random.Next(0, 100);
             actor.Skills.Randomize();

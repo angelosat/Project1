@@ -14,7 +14,8 @@ namespace Start_a_Town_.Net
     {
         public override bool IsServer => true;
         public override bool IsClient => false;
-        public override double CurrentTick => ServerClock.TotalMilliseconds;
+        double _tick;
+        public override double CurrentTick => this._tick;// ServerClock.TotalMilliseconds;
 
         readonly string _name = "Server";
         public override string ToString()
@@ -23,8 +24,8 @@ namespace Start_a_Town_.Net
         }
         // TODO: figure out why it's glitching out if I set it lower than 10
         public const int ClockIntervalMS = 10;// 10 is working
-        public override TimeSpan Clock => ServerClock;
-        static TimeSpan ServerClock;
+        //public override TimeSpan Clock => ServerClock;
+        //static TimeSpan ServerClock;
 
         static bool IsRunning;
 
@@ -75,7 +76,8 @@ namespace Start_a_Town_.Net
         public static int PlayerID => _playerID++;
         private void AdvanceClock()
         {
-            ServerClock = ServerClock.Add(TimeSpan.FromMilliseconds(ClockIntervalMS));
+            this._tick++;
+            //ServerClock = ServerClock.Add(TimeSpan.FromMilliseconds(ClockIntervalMS));
         }
 
         public override MapBase Map { get; set; }
@@ -103,7 +105,7 @@ namespace Start_a_Town_.Net
             IsRunning = false;
             Instance.Map = null;
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
-            ServerClock = new TimeSpan();
+            //ServerClock = new TimeSpan();
             Instance.Speed = 0;
         }
         public static void Start()
@@ -114,7 +116,7 @@ namespace Start_a_Town_.Net
 
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
             //Instance.NetworkObjects.Clear();
-            ServerClock = new TimeSpan();
+            //ServerClock = new TimeSpan();
             Instance.ConsoleBox.Write("SERVER", "Started");
             if (Listener != null)
                 Listener.Close();
@@ -151,7 +153,7 @@ namespace Start_a_Town_.Net
         readonly float BlockUpdateTimerMax = 1;
         float BlockUpdateTimer = 0;
 
-        public void Update(GameTime gt)
+        public void Tick(GameTime gt)
         {
             if (!IsRunning)
                 return;
@@ -164,15 +166,15 @@ namespace Start_a_Town_.Net
             if (!Instance.IsSaving)
             {
                 this.TickMap();
-                this.Map.Update();
-                SendSnapshots(ServerClock);
+                this.Map.Validate();
+                SendSnapshots();
             }
 
             /// THESE MUST BE CALLED FROM WITHIN THE GAMESPEED LOOP
             this.WritePlayerSpecificNew();
             this.CreatePacketsFromStreams();
             this.ResetOutgoingStreams();
-            this.AdvanceClock();
+            //this.AdvanceClock();
             this.SendPackets();
         }
         private void WritePlayerSpecificNew()
@@ -208,7 +210,7 @@ namespace Start_a_Town_.Net
                     //    continue;
                     var p = Packet.Create(player, PacketType.MergedPackets, data, stream.Reliability);
                     p.Synced = true;
-                    p.Tick = this.Clock.TotalMilliseconds;
+                    p.Tick = this.CurrentTick;//.Clock.TotalMilliseconds;
                     //p.Tick += Client.ClientClockDelayMS;
                     this.Enqueue(player, p);
                 }
@@ -232,42 +234,20 @@ namespace Start_a_Town_.Net
             var auxStream = new BinaryWriter(new MemoryStream());
             for (int i = 0; i < this.Speed; i++)
             {
+                
                 /// i moved this from the start of the loop to the end of the loop because
                 /// some packets might have been written already during packet handling before the map ticking
                 /// (for example as a response to player input) and we don't want to clear them
                 this.OutgoingStreamTimestamped = new(new MemoryStream());
                 auxStream.Write(this.Map.World.CurrentTick + 1);
-                //auxStream.Write(this.CurrentTick);
                 this.Map.World.Tick(Instance);
                 this.Map.Tick();
-                //auxStream.Write(this.Map.World.CurrentTick);
-                //auxStream.Write(this.CurrentTick + Client.ClientClockDelayMS);
                 var length = this.OutgoingStreamTimestamped.BaseStream.Position;
                 auxStream.Write(length);// write length
                 if (length > 0)
                 {
-                    //var start = auxStream.BaseStream.Position;
-                    //auxStream.BaseStream.Position = 0;
-
-                    //var reader = new BinaryReader(auxStream.BaseStream);
-                    //var test1 = reader.ReadInt32();
-                    //var test2 = reader.ReadInt32();
-                    //var test3 = reader.ReadInt32();
-                    //var test4 = reader.ReadInt32();
-                    //var test5 = reader.ReadInt32();
-                    //var test6 = reader.ReadInt32();
-
                     this.OutgoingStreamTimestamped.BaseStream.Position = 0;
-                    //var reader = new BinaryReader(OutgoingStreamTimestamped.BaseStream);
-                    //var test1 = reader.ReadInt32();
-                    //var test2 = reader.ReadInt32();
-                    //var test3 = reader.ReadInt32();
-                    //var test4 = reader.ReadInt32();
-                    //var test5 = reader.ReadInt32();
-                    //var test6 = reader.ReadInt32();
                     this.OutgoingStreamTimestamped.BaseStream.CopyTo(auxStream.BaseStream);
-                    //auxStream.BaseStream.Position = start;
-                    
                 }
 
                 this.BlockUpdateTimer--;
@@ -281,14 +261,10 @@ namespace Start_a_Town_.Net
                 /// some packets might have been written already during packet handling before the map ticking
                 /// (for example as a response to player input) and we don't want to clear them
                 //this.OutgoingStreamTimestamped = new(new MemoryStream());
+                this.AdvanceClock();
             }
             if (auxStream.BaseStream.Position > 0)
             {
-                //auxStream.BaseStream.Position = 0;
-                //var reader = new BinaryReader(auxStream.BaseStream);
-                //var test1 = reader.ReadInt32();
-                //var test2 = reader.ReadInt32();
-                //var test3 = reader.ReadInt32();
                 auxStream.BaseStream.Position = 0;
                 this.OutgoingStreamOrderedReliable.Write(Network.Packets.PacketTimestamped);
                 auxStream.BaseStream.CopyTo(this.OutgoingStreamOrderedReliable.BaseStream);
@@ -428,7 +404,7 @@ namespace Start_a_Town_.Net
             {
                 var p = Packet.Create(player, type, data, reliability);
                 p.Synced = sync;
-                p.Tick = this.Clock.TotalMilliseconds;
+                p.Tick = this.CurrentTick;// Clock.TotalMilliseconds;
                 this.Enqueue(player, p);
             }
         }
@@ -437,7 +413,7 @@ namespace Start_a_Town_.Net
             if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
             {
                 if (packet.Reliability == ReliabilityType.OrderedReliable)
-                    packet.Tick = this.Clock.TotalMilliseconds;
+                    packet.Tick = this.CurrentTick;// Clock.TotalMilliseconds;
                 player.OutReliable.Enqueue(packet);
             }
             else
@@ -465,9 +441,9 @@ namespace Start_a_Town_.Net
             foreach (var player in this.Players.GetList().Where(player => player.IsWithin(global)))
             {
                 var p = Packet.Create(player, type, data, send);
-                var t = this.Clock.TotalMilliseconds;
+                //var t = this.CurrentTick;// Clock.TotalMilliseconds;
                 p.Synced = sync;
-                p.Tick = this.Clock.TotalMilliseconds;
+                p.Tick = this.CurrentTick;// Clock.TotalMilliseconds;
                 this.Enqueue(player, p);
             }
         }
@@ -735,7 +711,7 @@ namespace Start_a_Town_.Net
             a.Network = Instance;
             recipient.PostMessage(a);
         }
-        private static void SendSnapshots(TimeSpan gt)
+        private static void SendSnapshots()
         {
             /// always send snapshots every frame, even empty ones. so that the client can interpolate correctly
             PacketSnapshots.Send(Instance, Instance.ObjectsChangedSinceLastSnapshot);

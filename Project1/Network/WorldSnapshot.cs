@@ -12,12 +12,13 @@ namespace Start_a_Town_.Net
     /// <param name="capacity">for initial array allocation</param>
     public class WorldSnapshot
     {
-        public readonly TimeSpan Time;
+        //public readonly TimeSpan Time;
+        public readonly double Time;
         public IEnumerable<ObjectSnapshot> ObjectSnapshots => this.Dictionary.Values;
         private readonly Dictionary<int, ObjectSnapshot> _dic;
         public IReadOnlyDictionary<int, ObjectSnapshot> Dictionary => this._dic;
         //public WorldSnapshot(TimeSpan time, BinaryReader r)
-        public WorldSnapshot(TimeSpan time, IDataReader r)
+        public WorldSnapshot(double time, IDataReader r)
         {
             this.Time = time;
             var count = r.ReadInt32();

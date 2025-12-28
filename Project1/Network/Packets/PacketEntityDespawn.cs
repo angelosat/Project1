@@ -14,7 +14,8 @@ namespace Start_a_Town_
         {
             //if (net is Client)
             //    return;
-            var w = server.BeginTimestamped(_packetTypeId);
+            //var w = server.BeginTimestamped(_packetTypeId);
+            var w = server.BeginPacket(_packetTypeId);
             w.Write(entity.RefId);
         }
         static public void Receive(NetEndpoint net, Packet pck)

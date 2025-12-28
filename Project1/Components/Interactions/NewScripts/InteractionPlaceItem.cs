@@ -52,7 +52,8 @@ namespace Start_a_Town_
                         return;
                     if (actor.Map.GetBlock(target.Global).TryConsume(actor, hauledObj, target, this.Amount == -1 ? hauledObj.StackSize : this.Amount))
                         return;
-                    actor.Map.SpawnAndSync(hauledObj, global, actor.Velocity);
+                    //actor.Map.SpawnAndSync(hauledObj, global, actor.Velocity);
+                    actor.Map.Spawn(hauledObj, global, actor.Velocity);
                     //actor.CurrentTask?.AddPlacedObject(hauledObj);
                     break;
 

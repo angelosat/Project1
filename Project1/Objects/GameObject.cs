@@ -105,7 +105,7 @@ namespace Start_a_Town_
 
         public int RefId;
 
-        public NetEndpoint Net { get => this.World.Net; set { } }
+        public NetEndpoint Net { get => this.World?.Net; set { } }
 
         public WorldBase World { get; set; }
         MapBase _map;
@@ -271,7 +271,8 @@ namespace Start_a_Town_
         }
         public void Destroy()
         {
-            this.World.DisposeEntityAndSync(this as Entity);
+            //this.World.DisposeEntityAndSync(this as Entity);
+            this.World.DisposeEntity(this.RefId);
             //this.World.DisposeEntity(this.RefId);
         }
         public void Add(int amount)
@@ -577,7 +578,7 @@ namespace Start_a_Town_
 
         public override string ToString()
         {
-            return $"[{this.RefId}] {this.Def} {this.Profile} {this.Name}";
+            return $"{this.Net?.ToString()} [{this.RefId}] {this.Def} {this.Profile} {this.Name}";
             if (!GlobalVars.DebugMode)
                 return $"[{this.RefId}] {Name}";
                 //return $"{Name} / RefId: {this.RefId}";
@@ -1457,6 +1458,8 @@ namespace Start_a_Town_
         }
 
         public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
+
+        public bool IsRegistered => this.RefId > 0;
 
         internal List<StatNewModifier> GetStatModifiers(StatDef statNewDef)
         {

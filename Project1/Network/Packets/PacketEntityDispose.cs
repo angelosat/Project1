@@ -15,9 +15,8 @@ namespace Start_a_Town_
         internal static void Send(Server server, int entityID)
         {
             //var w = player is null ? server.OutgoingStreamTimestamped : server.GetOutgoingStreamOrderedReliable();
-            //w.Write(pServerAction);
-            var w = server.BeginTimestamped(pServerAction);
             //var w = server.BeginTimestamped(pServerAction);
+            var w = server.BeginPacket(pServerAction);
             w.Write(entityID);
         }
         internal static void Send(Client client, int entityID, PlayerData player)

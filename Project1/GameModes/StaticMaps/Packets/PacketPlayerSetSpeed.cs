@@ -1,9 +1,8 @@
 ﻿using Start_a_Town_.Net;
-using System.IO;
-using static Start_a_Town_.HotkeyManager;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     class PacketPlayerSetSpeed
     {
         static int p;
@@ -16,9 +15,11 @@ namespace Start_a_Town_
             //var w = net.GetOutgoingStreamOrderedReliable();
             //w.Write(p);
             //var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
-            var w = net.BeginPacket(p);
-            $"{net.CurrentTick} : {net} sending speed: {speed}".ToConsole();
 
+            //var w = net is Server server ? server.BeginPacketPlayerCommand(p) : net.BeginPacket(p);
+            var w = net.BeginPacketImmediate(p);
+
+            $"{net.CurrentTick} : {net} sending speed: {speed}".ToConsole();
             w.Write(playerID);
             w.Write(speed);
         }
@@ -27,9 +28,12 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var playerID = r.ReadInt32();
             int speed = r.ReadInt32();
+            $"{net} seting speed {speed}".ToConsole();
             net.SetSpeed(playerID, speed);
             if (net is Server)
                 Send(net, playerID, speed);
+            else
+                "asd".ToConsole();
         }
     }
 }

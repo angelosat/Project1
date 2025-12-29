@@ -266,8 +266,8 @@ namespace Start_a_Town_
             if (amount <= 0)
                 return;
             this.StackSize -= amount;
-            if (this.Net.IsClient)
-                return;
+            //if (this.Net.IsClient)
+            //    return;
             //if (this.IsEmpty)
             //    this.World.DisposeEntityAndSync(this as Entity);
             //else
@@ -275,7 +275,7 @@ namespace Start_a_Town_
             if (this.IsEmpty)
                 this.World.DisposeEntity(this.RefId);
             else
-                this.Owner.Map.Events.Post(new EntityStackIncreased(this.Owner as Entity, amount));
+                this.World.Events.Post(new EntityStackDecreased(this as Entity, amount));
 
             //this.Destroy();
         }
@@ -289,12 +289,8 @@ namespace Start_a_Town_
         {
             if (amount <= 0)
                 return;
-
             this.StackSize += amount;
-            if (this.Net.IsClient)
-                return;
-            //PacketSyncStackSize.Send(this);
-            this.Owner.Map.Events.Post(new EntityStackIncreased(this.Owner as Entity, amount));
+            this.World.Events.Post(new EntityStackIncreased(this as Entity, amount));
         }
         protected int _stackSize = 1;
 
@@ -1153,6 +1149,9 @@ namespace Start_a_Town_
                 return false;
 
             if (otherItem.Def != null && this.Def != otherItem.Def)
+                return false;
+
+            if (otherItem.Profile is not null && this.Profile != otherItem.Profile)
                 return false;
 
             if (!this.HasMatchingBody(otherItem))

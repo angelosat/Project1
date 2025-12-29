@@ -25,7 +25,7 @@ namespace Start_a_Town_
                 list.Add(matdef);
             }
         }
-        static public Entity Create(MaterialRefinementDef stage, Dictionary<BoneDef, MaterialDef> materials)//MaterialDef material)
+        static public Entity Create(MaterialRefinementDef stage, Dictionary<BoneDef, MaterialDef> materials, int stackSize = -1)//MaterialDef material)
         {
             //if (stage == null)
             //{
@@ -35,8 +35,7 @@ namespace Start_a_Town_
             //if (!ByTypeAndProcess.TryGetValue((material.Type, stage), out var mapping))
             //    return null;
             //throw new ArgumentException($"No {nameof(MaterialMappingDef)} for {material.Label} / {stage.Label}");
-
-            var item = ItemDefOf.Ingredient.Create();
+            var item = ItemDefOf.Ingredient.Create(amount: stackSize);
             item.Initialize();
             item.Profile = stage;
             item.Body.Sprite = stage.Sprite;
@@ -108,7 +107,7 @@ namespace Start_a_Town_
         internal static Entity Create(EntityCreationRequest req)
         {
             //return Create(req.Context as MaterialDef, req.Stage as RefinementPathDef);
-            return Create(req.Context as MaterialRefinementDef, req.MaterialBindings);// req.DefaultMaterial);
+            return Create(req.Context as MaterialRefinementDef, req.MaterialBindings, req.StackSize);// req.DefaultMaterial);
         }
     }
 }

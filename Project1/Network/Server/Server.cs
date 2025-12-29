@@ -10,6 +10,14 @@ using System.Threading;
 
 namespace Start_a_Town_.Net
 {
+    public struct SimulationTick
+    {
+        public double Value;
+        public static readonly SimulationTick Immediate = new() { Value = -1 };
+        public static implicit operator double(SimulationTick t) => t.Value;
+        public static implicit operator SimulationTick(double i) => new() { Value = i };
+        public override string ToString() => this.Value.ToString();
+    }
     public partial class Server : NetEndpoint
     {
         public override bool IsServer => true;
@@ -43,7 +51,7 @@ namespace Start_a_Town_.Net
 
         public const int SnapshotIntervalMS = 10;// send 60 snapshots per second to clients
         public const int LightIntervalMS = 10;// send 60 light updates per second to clients
-
+        readonly NetworkStream PlayerCommandsStream = new(ReliabilityType.OrderedReliable, false);
         /// <summary>
         /// Contains objects that have changed since the last world delta state update
         /// </summary>
@@ -187,10 +195,7 @@ namespace Start_a_Town_.Net
         }
         private void CreatePacketsFromStreams()
         {
-            foreach (var stream in this.StreamsArray)
-            //if (stream.Writer.BaseStream.Position > 0
-            //        || stream.Reliability == ReliabilityType.Unreliable
-                    //) // send empty "heartbeat" packets to advance client's clock
+            foreach (var stream in this.StreamsArray.Append(this.PlayerCommandsStream))
                 {
                 // append per-player specific data
                 foreach (var player in this.GetPlayers())
@@ -199,19 +204,14 @@ namespace Start_a_Town_.Net
                     {
                         ReliabilityType.Unreliable => (MemoryStream)player.StreamUnreliable.BaseStream,
                         ReliabilityType.OrderedReliable => (MemoryStream)player.StreamReliable.BaseStream,
-                        _ => null// throw new Exception(),
+                        _ => null
                     };
                     if (mem is null)
                         break;
-                    //if (stream.Reliability != ReliabilityType.Unreliable && stream.Writer.BaseStream.Position == 0)
-                    //    continue;
                     var data = stream.GetBytes(mem);
-                    //if (data.Length == 0)
-                    //    continue;
                     var p = Packet.Create(player, PacketType.MergedPackets, data, stream.Reliability);
                     p.Synced = true;
-                    p.Tick = this.CurrentTick;//.Clock.TotalMilliseconds;
-                    //p.Tick += Client.ClientClockDelayMS;
+                    p.Tick = stream.IsSimulation ? this.CurrentTick : SimulationTick.Immediate;
                     this.Enqueue(player, p);
                 }
             }
@@ -225,7 +225,7 @@ namespace Start_a_Town_.Net
 
         protected void ResetOutgoingStreams()
         {
-            foreach (var s in this.StreamsArray)
+            foreach (var s in this.StreamsArray.Append(this.PlayerCommandsStream))
                 s.Reset();
         }
 
@@ -234,7 +234,7 @@ namespace Start_a_Town_.Net
             var auxStream = new BinaryWriter(new MemoryStream());
             for (int i = 0; i < this.Speed; i++)
             {
-                
+
                 /// i moved this from the start of the loop to the end of the loop because
                 /// some packets might have been written already during packet handling before the map ticking
                 /// (for example as a response to player input) and we don't want to clear them
@@ -265,15 +265,19 @@ namespace Start_a_Town_.Net
             }
             if (auxStream.BaseStream.Position > 0)
             {
-                auxStream.BaseStream.Position = 0;
-                this.OutgoingStreamOrderedReliable.Write(Network.Packets.PacketTimestamped);
-                auxStream.BaseStream.CopyTo(this.OutgoingStreamOrderedReliable.BaseStream);
+                //auxStream.BaseStream.Position = 0;
+                //this.OutgoingStreamOrderedReliable.Write(Network.Packets.PacketTimestamped);
+                //auxStream.BaseStream.CopyTo(this.OutgoingStreamOrderedReliable.BaseStream);
             }
         }
         //public override IDataWriter BeginPacket(int pType)
         //{
         //    return PacketBuilder.Create(this.OutgoingStreamTimestamped, pType);
         //}
+        public override IDataWriter BeginPacketImmediate(PacketId pType)
+        {
+            return PacketBuilder.Create(this.PlayerCommandsStream.Writer, pType);
+        }
         public IDataWriter BeginTimestamped(int pType)
         {
             return PacketBuilder.Create(this.OutgoingStreamTimestamped, pType);
@@ -404,7 +408,7 @@ namespace Start_a_Town_.Net
             {
                 var p = Packet.Create(player, type, data, reliability);
                 p.Synced = sync;
-                p.Tick = this.CurrentTick;// Clock.TotalMilliseconds;
+                //p.Tick = this.CurrentTick;
                 this.Enqueue(player, p);
             }
         }
@@ -412,8 +416,8 @@ namespace Start_a_Town_.Net
         {
             if ((packet.Reliability & ReliabilityType.Reliable) == ReliabilityType.Reliable)
             {
-                if (packet.Reliability == ReliabilityType.OrderedReliable)
-                    packet.Tick = this.CurrentTick;// Clock.TotalMilliseconds;
+                //if (packet.Reliability == ReliabilityType.OrderedReliable)
+                //    packet.Tick = this.CurrentTick;
                 player.OutReliable.Enqueue(packet);
             }
             else
@@ -441,9 +445,8 @@ namespace Start_a_Town_.Net
             foreach (var player in this.Players.GetList().Where(player => player.IsWithin(global)))
             {
                 var p = Packet.Create(player, type, data, send);
-                //var t = this.CurrentTick;// Clock.TotalMilliseconds;
                 p.Synced = sync;
-                p.Tick = this.CurrentTick;// Clock.TotalMilliseconds;
+                //p.Tick = this.CurrentTick;
                 this.Enqueue(player, p);
             }
         }
@@ -604,9 +607,9 @@ namespace Start_a_Town_.Net
                 case TargetType.Position:
                     //this.Map.World.RegisterAndSync(entity);
                     //this.Map.SpawnAndSync(entity, target.Global, Vector3.Zero);
-                    this.Map.World.RegisterAndSync(entity);
-                    this.Map.Spawn(entity, target.Global, Vector3.Zero);
-                    PacketSpawnEntity.Immediate(entity, target.Global, Vector3.Zero);
+                    this.Map.World.Register(entity);
+                    this.Map.Spawn(entity, target.Global, Vector3.Zero, immediate: true);
+                    //PacketSpawnEntity.Immediate(entity, target.Global, Vector3.Zero);
                     break;
 
                 default:

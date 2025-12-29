@@ -1,7 +1,5 @@
 ﻿using Start_a_Town_.Net;
 using Start_a_Town_.Components.Crafting;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
@@ -33,7 +31,9 @@ namespace Start_a_Town_
             //if (net is Server server)
             //    w = server.BeginUntimestamped(p);
             //else
-            var w = net.BeginPacket(p);
+            //var w = net.BeginPacket(p);
+            //var w = net is Server server ? server.BeginPacketPlayerCommand(p) : net.BeginPacket(p);
+            var w = net.BeginPacketImmediate(p);
             a.Write(w);
             if (!a.Removing)
             {

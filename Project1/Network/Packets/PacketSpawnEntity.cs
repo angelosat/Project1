@@ -25,7 +25,7 @@ namespace Start_a_Town_
         public static void Immediate(Entity entity, Vector3 position, Vector3 velocity)//, Vector2 direction)
         {
             var server = entity.Net as Server;
-            server.BeginPacket(_packetTypeId)
+            server.BeginPacketImmediate(_packetTypeId)
                 .Write(entity.RefId)
                 .Write(position)
                 .Write(velocity);

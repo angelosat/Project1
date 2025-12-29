@@ -91,12 +91,16 @@ namespace Start_a_Town_
         {
             PauseResume();
         }
-
+        static int _lastSpeed;
         static void PauseResume()
         {
-            int nextSpeed = Client.Instance.Speed == 0 ? LastSpeed : 0;
-            if (Client.Instance.Speed != 0)
-                LastSpeed = Client.Instance.Speed;
+            //int nextSpeed = Client.Instance.Speed == 0 ? LastSpeed : 0;
+            //if (Client.Instance.Speed != 0)
+            //    LastSpeed = Client.Instance.Speed;
+            if (_lastSpeed == 0)
+                _lastSpeed = 1;
+            else _lastSpeed = 0;
+            var nextSpeed = _lastSpeed;
             PacketPlayerSetSpeed.Send(Client.Instance, Client.Instance.PlayerData.ID, nextSpeed);
         }
 

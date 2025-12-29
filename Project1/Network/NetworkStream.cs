@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SharpDX.Direct3D9;
+using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_.Net
 {
@@ -22,10 +24,12 @@ namespace Start_a_Town_.Net
         public readonly ReliabilityType Reliability;
         readonly MemoryStream Memory = new();
         public readonly BinaryWriter Writer;
-        public NetworkStream(ReliabilityType reliability)
+        public readonly bool IsSimulation;
+        public NetworkStream(ReliabilityType reliability, bool isSimulation = true)
         {
             this.Reliability = reliability;
             this.Writer = new BinaryWriter(this.Memory);
+            this.IsSimulation = isSimulation;
         }
         public void Reset() => this.Writer.BaseStream.SetLength(0);
         public ArraySegment<byte> GetBuffer()

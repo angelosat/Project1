@@ -37,7 +37,8 @@ namespace Start_a_Town_
 
         private static void SendEntitySpawned(EntitySpawnedEvent @event)
         {
-            Server.Instance.BeginPacket(_pSpawn)
+            var w = @event.Immediate ? Server.Instance.BeginPacketImmediate(_pSpawn) : Server.Instance.BeginPacket(_pSpawn);
+            w
                 .Write(@event.Entity.RefId)
                 .Write(@event.Entity.Global)
                 .Write(@event.Entity.Velocity);
@@ -84,7 +85,7 @@ namespace Start_a_Town_
 
         private static void SendEntityRegistered(EntityRegisteredEvent e)
         {
-            e.Entity.Write(Server.Instance.BeginPacket(_pRegister));
+            e.Entity.Write(Server.Instance.BeginPacketImmediate(_pRegister));
         }
         private static void OnRegister(NetEndpoint endpoint, Packet packet)
         {

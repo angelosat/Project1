@@ -12,16 +12,10 @@ namespace Start_a_Town_
         }
         static internal void Send(NetEndpoint net, int playerid, TargetArgs target)
         {
-            var w = net.BeginPacket(_packetTypeId);
+            var w = net.BeginPacketImmediate(_packetTypeId);
             w.Write(playerid);
             target.Write(w);
         }
-        //static internal void Send(Server server, int playerid, TargetArgs target)
-        //{
-        //    var w = server.BeginUntimestamped(_packetTypeId);
-        //    w.Write(playerid);
-        //    target.Write(w);
-        //}
         static internal void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;

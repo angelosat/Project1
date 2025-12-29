@@ -31,7 +31,8 @@ namespace Start_a_Town_.Net
         public EndPoint Sender;
         public EndPoint Recipient;
         public ReliabilityType Reliability;
-        public double Tick;
+        //public double Tick;
+        public SimulationTick Tick;
         public bool IsCompressed = true; //until i remove the code that blindly compressed everything
         public bool Synced;
         /// <summary>
@@ -77,7 +78,6 @@ namespace Start_a_Town_.Net
             byte[] decompressed = isCompressed ? payload.Decompress() : payload; // TODO: FIX: i already have a decompressed payload and i still deserialize everything when handling packets???
             bool synced = reader.ReadBoolean();
             double tick = reader.ReadDouble();
-
             var r = new BinaryReader(new MemoryStream(decompressed));
             return new Packet(id, type, length, payload)
             {

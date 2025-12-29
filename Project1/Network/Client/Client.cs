@@ -223,7 +223,6 @@ namespace Start_a_Town_.Net
 
         public void Tick()
         {
-
             this.Timeout--;
             if (this.Timeout == 0)
                 this.Disconnected();
@@ -241,18 +240,15 @@ namespace Start_a_Town_.Net
                 var maxChunks = size * size;
                 if (Instance.Map.ActiveChunks.Count == maxChunks && !IsSaving)
                 {
-                    //for (int i = 0; i < Instance.Speed; i++)
                     this.Map.Validate(); 
                     while (this._tick < this.TickTarget)
                     {
                         this._tick++;
                         this.TickMap();
-                        //this.Map.Update();
-                        this.UpdateWorldState();
+                        this.ApplyEntitySnapshots();
                     }
                 }
             }
-            //this.ClientClock = this.ClientClock.Add(TimeSpan.FromMilliseconds(Server.ClockIntervalMS));
 
             if (this.PlayerData is not null && this.Map is not null)
                 PacketMousePosition.Send(Instance, this.PlayerData.ID, ToolManager.CurrentTarget); // TODO: do this at the toolmanager class instead of here
@@ -282,6 +278,7 @@ namespace Start_a_Town_.Net
         {
             var r = packet.Reader;
             var thisWorldTick = this.Map.World.CurrentTick;
+            throw new Exception();
             for (int i = 0; i < this.Speed; i++)
             {
                 var remoteWorldTick = r.ReadUInt64();
@@ -441,12 +438,6 @@ namespace Start_a_Town_.Net
                 }
                 else
                 {
-                    //var clientms = packet.Tick - ClientClockDelayMS;
-                    //if (this.CurrentTick < clientms)
-                    //{
-                    //    this.ClientClock = TimeSpan.FromMilliseconds(clientms);
-                    //    "client clock caught up".ToConsole();
-                    //}
                     this.HandleMessage(packet);
                 }
             }
@@ -625,15 +616,20 @@ namespace Start_a_Town_.Net
                 {
                     this.PlayerData.RemoteOrderedReliableSequence = nextid;
                     Packet packet = this.IncomingOrderedReliable.Dequeue();
+                    if (packet.Tick == SimulationTick.Immediate)
+                    {
+                        this.HandleMessage(packet);
+                        continue;
+                    }
                     if (next.Tick > this.CurrentTick) // Clock.TotalMilliseconds) // TODO maybe use this while changing clock to ad
                     {
                         this.PacketsBuffer.Enqueue(next);
                         continue;
                     }
-                        this.HandleMessage(packet);
-                        this.OrderedReliablePacketsHistory.Enqueue(packet);
-                        while (this.OrderedReliablePacketsHistory.Count > OrderedReliablePacketsHistoryCapacity)
-                            this.OrderedReliablePacketsHistory.Dequeue();
+                    this.HandleMessage(packet);
+                    this.OrderedReliablePacketsHistory.Enqueue(packet);
+                    while (this.OrderedReliablePacketsHistory.Count > OrderedReliablePacketsHistoryCapacity)
+                        this.OrderedReliablePacketsHistory.Dequeue();
                 }
                 else
                     return;
@@ -869,7 +865,7 @@ namespace Start_a_Town_.Net
                 this.WorldStateBuffer.Dequeue();
         }
 
-        private void UpdateWorldState()
+        private void ApplyEntitySnapshots()
         {
             // iterate through the state buffer and find position
             List<WorldSnapshot> list = this.WorldStateBuffer.ToList();
@@ -1072,7 +1068,7 @@ namespace Start_a_Town_.Net
                 Log.Network(this, $"Speed set to to {newspeed}"); // TODO prevent spam
             else
                 Log.Network(this, $"{player.Name} wants to set speed to {playerSpeed}"); // TODO prevent spam
-            this.Speed = newspeed;
+            //this.Speed = newspeed;
             $"client speed set to {newspeed}".ToConsole();
         }
 
@@ -1114,6 +1110,11 @@ namespace Start_a_Town_.Net
         {
             this.World = world;
             world.Net = this;
+        }
+
+        public override IDataWriter BeginPacketImmediate(PacketId pType)
+        {
+            return this.BeginPacket(pType);
         }
     }
 }

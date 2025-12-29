@@ -12,12 +12,10 @@ namespace Start_a_Town_
         }
         internal static void SendTemplate(NetEndpoint net, int templateID, TargetArgs target)
         {
-            var w = net.BeginPacket(_packetTypeId);
-
+            var w = net.BeginPacketImmediate(_packetTypeId);
             w.Write(templateID);
             target.Write(w);
         }
-        
         internal static void ReceiveTemplate(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;

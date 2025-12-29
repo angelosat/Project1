@@ -31,6 +31,7 @@ namespace Start_a_Town_.Net
         {
             return PacketBuilder.Create(this.GetStream(rType).Writer, pType);
         }
+        public abstract IDataWriter BeginPacketImmediate(PacketId pType);
         public IDataWriter BeginPacket(int pType)
         {
             return PacketBuilder.Create(this.GetStream(ReliabilityType.OrderedReliable).Writer, pType);

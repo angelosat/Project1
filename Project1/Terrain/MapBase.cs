@@ -1118,8 +1118,18 @@ namespace Start_a_Town_
             this.Spawn(this.World.GetEntity(entityRefId), position, velocity);
         }
 
-        public void Spawn(Entity entity, Vector3 position, Vector3 velocity)
+        public void Spawn(Entity entity, Vector3 position, Vector3 velocity, bool immediate = false)
         {
+            var entitiesAtCell = this.GetEntitiesAt(position);
+            if(entitiesAtCell.FirstOrDefault(e => e.CanAbsorb(entity)) is Entity absorbingEntity)
+            {
+                if (entity.StackSize <= absorbingEntity.StackAvailableSpace)
+                {
+                    absorbingEntity.Add(entity.StackSize);
+                    entity.Consume(entity.StackSize);
+                    return;
+                }
+            }
             entity.Container?.Remove(entity);
             if(entity.IsSpawned) entity.Map.Despawn(entity);
             if(entity is Actor actor) (this.World as StaticWorld).Space.Exit(actor);
@@ -1133,7 +1143,7 @@ namespace Start_a_Town_
             entity.Velocity = velocity;
             this.Add(entity);
             entity.OnSpawn(this);
-            this.Events.Post(new EntitySpawnedEvent(entity));
+            this.Events.Post(new EntitySpawnedEvent(entity, immediate));
         }
         /// <summary>
         /// Spawns the given entity at the specified position with the specified velocity,

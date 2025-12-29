@@ -586,7 +586,7 @@ namespace Start_a_Town_
         {
             if (obj.Map == this)
             {
-                $"{this.Net} despawning {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
+                //$"{this.Net} despawning {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
                 obj.OnDespawn(this);
                 if (!this.Remove(obj)) /// TODO: move this to map.despawn
                     throw new Exception();

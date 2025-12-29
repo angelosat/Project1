@@ -3,7 +3,6 @@ using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Start_a_Town_.Components;
 
@@ -15,7 +14,7 @@ namespace Start_a_Town_
         public override string Name { get; } = "Physics";
         public ObjectSize Size => this.Owner.Def.Size;
         public bool Solid;
-        public float Height;
+        public float Height => this.Owner.Def.Height;
         float? _weight;
         public float Weight => this._weight ??= this.UpdateWeight();
         public bool Enabled = true;
@@ -31,10 +30,10 @@ namespace Start_a_Town_
         {
             //this.Initialize();
         }
-        public PhysicsComponent(PhysicsComponent toCopy)
-        {
-            this.Height = toCopy.Height;
-        }
+        //public PhysicsComponent(PhysicsComponent toCopy)
+        //{
+        //    //this.Height = toCopy.Height;
+        //}
        
         public int Reach => (int)Math.Ceiling(this.Height) + 2;
 
@@ -450,15 +449,15 @@ namespace Start_a_Town_
             }
         }
      
-        public override object Clone()
-        {
-            var phys = new PhysicsComponent(this)
-            {
-                Height = this.Height,
-                Solid = this.Solid
-            };
-            return phys;
-        }
+        //public override object Clone()
+        //{
+        //    var phys = new PhysicsComponent(this)
+        //    {
+        //        //Height = this.Height,
+        //        Solid = this.Solid
+        //    };
+        //    return phys;
+        //}
 
         public override void OnTooltipCreated(GameObject parent, UI.Control tooltip)
         {

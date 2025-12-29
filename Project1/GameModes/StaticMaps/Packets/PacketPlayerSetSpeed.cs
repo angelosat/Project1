@@ -19,7 +19,7 @@ namespace Start_a_Town_
             //var w = net is Server server ? server.BeginPacketPlayerCommand(p) : net.BeginPacket(p);
             var w = net.BeginPacketImmediate(p);
 
-            $"{net.CurrentTick} : {net} sending speed: {speed}".ToConsole();
+            //$"{net.CurrentTick} : {net} sending speed: {speed}".ToConsole();
             w.Write(playerID);
             w.Write(speed);
         }
@@ -28,12 +28,10 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var playerID = r.ReadInt32();
             int speed = r.ReadInt32();
-            $"{net} seting speed {speed}".ToConsole();
+            //$"{net} seting speed {speed}".ToConsole();
             net.SetSpeed(playerID, speed);
             if (net is Server)
                 Send(net, playerID, speed);
-            else
-                "asd".ToConsole();
         }
     }
 }

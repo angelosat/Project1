@@ -136,7 +136,7 @@ namespace Start_a_Town_
             /// TODO: don't flatten, instead make it recursive. detach each child from it's parent before disposing
             foreach (var obj in o.GetSelfAndChildren().ToList()) /// HACK solidify the list so that children can detach during iteration
             {
-                $"{this.Net} disposing {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
+                //$"{this.Net} disposing {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
                 obj.OnDispose();
                 this.EntityRegistry.Remove(obj.RefId);
                 obj.Net = null; // this also makes gameobject.isdisposed return true

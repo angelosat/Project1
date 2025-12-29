@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Intrinsics.X86;
 
 namespace Start_a_Town_.Net
 {
@@ -245,8 +246,8 @@ namespace Start_a_Town_.Net
                     {
                         this._tick++;
                         this.TickMap();
-                        this.ApplyEntitySnapshots();
                     }
+                    this.ApplyEntitySnapshots();
                 }
             }
 
@@ -418,12 +419,15 @@ namespace Start_a_Town_.Net
                 if (this.RecentPackets.Count > this.RecentPacketBufferSize)
                     this.RecentPackets.Dequeue();
 
-                // clock correction happens first, for all packets
-                double target = packet.Tick - ClientTickDelay;
-                double curr = this.CurrentTick;
-                double smoothed = curr + (target - curr) * 0.15;
-                //this.CurrentTick = Math.Max(smoothed, 0);
-                this.TickTarget = smoothed;
+                if (packet.Tick != SimulationTick.Immediate)
+                {
+                    // clock correction happens first, for all packets
+                    double target = packet.Tick - ClientTickDelay;
+                    double curr = this.CurrentTick;
+                    double smoothed = curr + (target - curr) * 0.15;
+                    //this.CurrentTick = Math.Max(smoothed, 0);
+                    this.TickTarget = smoothed;
+                }
                 //this._tick = Math.Max(packet.Tick - ClientTickDelay, 0);
                 //this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(smoothed, 0));
                 // for ordered packets, only handle last one (store most recent and discard and older ones)
@@ -892,11 +896,22 @@ namespace Start_a_Town_.Net
             {
                 var prevSnap = kv.Value;
                 next.Dictionary.TryGetValue(prevSnap.RefID, out var nextSnap);
-                if (nextSnap is null)
-                    nextSnap = prevSnap;
                 var entity = this.World.GetEntity(prevSnap.RefID);
                 if (entity is null) /// snapshot for entity that hasn't been spawned but the client yet? silently drop?
                     continue;
+                if (nextSnap is null)
+                {
+                    // extrapolation
+                    double dt = CurrentTick - prev.Time;
+                    var predictedPos = entity.Global + entity.Velocity * (float)dt;
+                    entity.SetPosition(predictedPos);
+                    continue;
+                    //
+                    nextSnap = prevSnap;
+                }
+                //var entity = this.World.GetEntity(prevSnap.RefID);
+                //if (entity is null) /// snapshot for entity that hasn't been spawned but the client yet? silently drop?
+                //    continue;
                 entity.SetPosition(prevSnap.Position + (nextSnap.Position - prevSnap.Position) * t);
                 entity.Velocity = prevSnap.Velocity + (nextSnap.Velocity - prevSnap.Velocity) * t;
                 entity.Direction = prevSnap.Orientation + (nextSnap.Orientation - prevSnap.Orientation) * t;

@@ -9,7 +9,7 @@ namespace Start_a_Town_
     public enum TargetIndex { None, A, B, C, Tool = 15 }
     public sealed class Plan
     {
-        public string Status => $"{this.Def.Interaction.Label} : {this.TargetA}";
+        public string Status => $"{this.Def.Interaction?.Label} : {this.TargetA}";
         public TargetArgs GetTarget(TargetIndex targetInd)
         {
             return targetInd switch

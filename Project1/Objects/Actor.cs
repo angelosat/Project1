@@ -277,19 +277,19 @@ namespace Start_a_Town_
         {
             this.GetComponent<NeedsComponent>().Add(defs);
         }
-        [Obsolete]
-        public static Actor Create(ItemDef def)
-        {
-            //var obj = def.CreateBase() as Actor;
-            var obj = ActorDefOf.Npc.Create() as Actor;
-            obj.Physics.Height = def.Height;
+        //[Obsolete]
+        //public static Actor Create(ItemDef def)
+        //{
+        //    //var obj = def.CreateBase() as Actor;
+        //    var obj = ActorDefOf.Npc.Create() as Actor;
+        //    //obj.Physics.Height = def.Height;
 
-            foreach (var b in obj.Body.GetAllBones())
-                b.Material = def.DefaultMaterial;
+        //    foreach (var b in obj.Body.GetAllBones())
+        //        b.Material = def.DefaultMaterial;
 
-            obj.Sprite.Customization = new CharacterColors(obj.Body).Randomize();
-            return obj;
-        }
+        //    obj.Sprite.Customization = new CharacterColors(obj.Body).Randomize();
+        //    return obj;
+        //}
         public EffectsComponent Effects => this.GetComponent<EffectsComponent>();
         public override Color GetNameplateColor()
         {

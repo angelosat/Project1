@@ -101,7 +101,7 @@ namespace Start_a_Town_
         }
 
         //public string Description => this.Def.Description; 
-        public virtual float Height => this.Physics.Height;
+        public virtual float Height => this.Def.Height;// this.Physics.Height;
 
         public int RefId;
 

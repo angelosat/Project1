@@ -127,6 +127,7 @@ namespace Start_a_Town_
         {
             this.EntityRegistry.Remove(netId);
         }
+        public bool DisposeEntity(Entity entity) => this.DisposeEntity(entity.RefId);
         public bool DisposeEntity(int netId)
         {
             if (!this.EntityRegistry.TryGetValue(netId, out Entity? o))

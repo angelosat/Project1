@@ -94,6 +94,7 @@ namespace Start_a_Town_
             this.ResourceDef.Worker.Modify(this, delta);
             if (delta < 0)
                 this.RechargingDelay.Value = 0;
+            this.Owner.Map.Events.Post(new ResourceAdjustedEvent(this.Owner as Entity, this.Def, delta));
         }
         public Resource Initialize(float max, float initPercentage)
         {

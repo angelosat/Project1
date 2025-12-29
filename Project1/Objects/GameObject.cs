@@ -1070,7 +1070,7 @@ namespace Start_a_Town_
             return list;
         }
 
-        public bool IsDisposed => this.RefId > 0 && this.Net is null;//.GetNetworkObject(this.RefID) is null;
+        public bool IsDisposed => this.RefId > 0 && this.Net is null;
 
         public bool Dispose()
         {
@@ -1086,9 +1086,6 @@ namespace Start_a_Town_
         { public readonly Entity Entity = entity; }
         internal void OnDispose()
         {
-            //this.Net.EventOccured((int)Message.Types.ObjectDisposed, this);
-            //this.Net.Map.World.Events.Post(new EntityDisposedEvent(this as Entity));
-
             foreach (var c in this.Components.Values)
                 c.OnDispose();
         }

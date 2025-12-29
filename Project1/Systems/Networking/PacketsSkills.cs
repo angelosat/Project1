@@ -21,15 +21,6 @@ namespace Start_a_Town_
                 .Write(e.Skill)
                 .Write(e.Delta);
         }
-
-        //internal static void Send(Actor actor, SkillDef skill, int delta)
-        //{
-        //    var server = actor.Net as Server;
-        //    server.BeginPacket(_pTypeIdModifySkill)
-        //        .Write(actor.RefId)
-        //        .Write(skill)
-        //        .Write(delta);
-        //}
         private static void Receive(NetEndpoint endpoint, Packet packet)
         {
             var client = endpoint as Client;

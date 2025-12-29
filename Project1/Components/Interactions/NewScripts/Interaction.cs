@@ -108,22 +108,12 @@ namespace Start_a_Town_
         protected int CrossFadeAnimationLength;
         public void StartBase()
         {
-            //if (this.Animation is not null)
-            //{
-            //    if (this.CrossFadeAnimationLength == 0)
-            //        this.Actor.AddAnimation(this.Animation);
-            //    else
-            //        this.Actor.CrossFade(this.Animation, false, this.CrossFadeAnimationLength);
-            //}
-            if (
-                //this._animation is null && 
-                this.AnimationDef is not null)
+            if (this.AnimationDef is not null)
             {
                 if (this.CrossFadeAnimationLength == 0)
-                    /*this._cachedAnimation = */this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
+                    this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
                 else
-                    //this.Actor.CrossFade(this.Animation, false, this.CrossFadeAnimationLength);
-                    /*this._cachedAnimation = */this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, this.CrossFadeAnimationLength);
+                    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, this.CrossFadeAnimationLength);
             }
             this.Start();
         }
@@ -197,7 +187,7 @@ namespace Start_a_Town_
             tooltip.Controls.Add(panel);
         }
 
-        public float Percentage => (float)(1 - this.CurrentTick / this.Length);
+        public virtual float Percentage => (float)(1 - this.CurrentTick / this.Length);
         public virtual void DrawUI(SpriteBatch sb, Camera camera)
         {
             var parent = this.Actor;
@@ -310,6 +300,9 @@ namespace Start_a_Town_
             this.BarProgress = progress;
             this.BarLabel = label;
         }
+
+        internal virtual void AddProgress(int v) { }
+
         public bool HasFinished => this.State == States.Finished;
     }
 }

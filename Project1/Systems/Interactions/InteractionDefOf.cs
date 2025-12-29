@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Interactions;
+﻿using Start_a_Town_.Crafting;
+using Start_a_Town_.Interactions;
 
 namespace Start_a_Town_
 {
@@ -13,6 +14,7 @@ namespace Start_a_Town_
         public static readonly InteractionDef Equip = new("Equip", typeof(InteractionEquip));
         public static readonly InteractionDef Unequip = new("Unequip", typeof(InteractionUnequip));
         public static readonly InteractionDef Construct = new("Construct", typeof(InteractionConstruct), typeof(InteractionConstructLogic));
+        public static readonly InteractionDef Craft = new("Craft", typeof(InteractionCraftingNew), typeof(InteractionCraftingLogic));
 
         static InteractionDefOf()
         {

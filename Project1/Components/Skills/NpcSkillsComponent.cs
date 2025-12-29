@@ -83,18 +83,15 @@ namespace Start_a_Town_
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            //this.SkillsNew.TryLoadImmutable(tag, "Skills");
             tag.LoadDefWrappers("Skills", this.SkillsNew);
             this.Resolve();
         }
         public override void Write(IDataWriter w)
         {
-            //this.SkillsNew.Write(w);
             w.WriteValues(this.SkillsNew);
         }
         public override void Read(IDataReader r)
         {
-            //this.SkillsNew.Read(r);
             r.ReadDefWrappers(this.SkillsNew);
             this.Resolve();
         }
@@ -102,7 +99,6 @@ namespace Start_a_Town_
         public void Increase(SkillDef skill, int amount)
         {
             this[skill].Award(amount);
-            //this.Owner.Map.Events.Post(new SkillIncreaseEvent(this.Owner as Actor, skill, amount));
         }
         public new class Spec : Spec<NpcSkillsComponent>
         {

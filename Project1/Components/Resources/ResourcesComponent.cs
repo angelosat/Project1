@@ -107,6 +107,8 @@ namespace Start_a_Town_
         {
             //this.Resources.TryLoadImmutable(tag, "Resources");
             tag.LoadDefWrappers("Resources", this.Resources);
+            this.Resolve();
+
         }
         public override void Write(IDataWriter writer)
         {
@@ -117,6 +119,7 @@ namespace Start_a_Town_
         {
             //this.Resources.Read(reader);
             reader.ReadDefWrappers(this.Resources);
+            this.Resolve();
         }
 
         internal Resource GetResource(ResourceDef def)
@@ -190,11 +193,12 @@ namespace Start_a_Town_
         //        r.OnDespawn(this.Owner as Entity);
         //}
 
-        internal void AdjustAndSync(ResourceDef def, float v)
-        {
-            this.Adjust(def, v);
-            Resource.Packets.SendAdjust(this.Owner as Actor, def, v);
-        }
+        //internal void AdjustAndSync(ResourceDef def, float v)
+        //{
+        //    this.Adjust(def, v);
+        //    Resource.Packets.SendAdjust(this.Owner as Actor, def, v);
+        //}
+        
 
         internal void Adjust(ResourceDef def, float v)
         {
@@ -210,10 +214,6 @@ namespace Start_a_Town_
             }
             protected override void ApplyDefaultsTo(ResourcesComponent comp)
             {
-                //var count = this.Defs.Length;
-                //comp.Resources = new Resource[count];
-                //for (int i = 0; i < count; i++)
-                //    comp.Resources[i] = new Resource(this.Defs[i]);
                 foreach (var def in this.Defs)
                     comp.Add(def);
             }

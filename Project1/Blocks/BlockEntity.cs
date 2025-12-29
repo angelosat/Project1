@@ -126,7 +126,6 @@ namespace Start_a_Town_
         
         public void Write(IDataWriter w)
         {
-            w.Write(this.Name);
             w.Write(this.OriginGlobal);
             this.CellsOccupied.Write(w);
 
@@ -136,7 +135,6 @@ namespace Start_a_Town_
         }
         public void Read(IDataReader r)
         {
-            this.Name = r.ReadString();
             this.OriginGlobal = r.ReadIntVec3();
             this.CellsOccupied.Read(r);
             foreach (var c in this.Comps.Values)

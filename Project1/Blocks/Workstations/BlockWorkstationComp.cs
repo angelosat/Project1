@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 namespace Start_a_Town_
 {
     public class BlockWorkstationComp : BlockEntityComp
@@ -13,10 +14,7 @@ namespace Start_a_Town_
                 return new BlockWorkstationComp(this);
             }
         }
-        //public BlockWorkstationComp(WorkstationDef def)
-        //{
-        //    this.WorkstationType = def;
-        //}
+
         public BlockWorkstationComp()
         {
             
@@ -195,6 +193,11 @@ namespace Start_a_Town_
             //if (tag.TryGetTagValueOut<string>("Type", out var defName)) this.WorkstationType = Def.GetDef<WorkstationDef>(defName);
             this.WorkstationType = tag.LoadDef<WorkstationDef>("Type");
         }
+        internal bool IngredientsInPlace(List<TargetArgs> targetsA)
+        {
+            var slots = this.Parent.CellsOccupied.Zip(targetsA);
+            return slots.All(s => this.Parent.Map.GetEntitiesAt(s.First.Above).Any(c => c == s.Second.Object));
+        }
         public override void Write(IDataWriter w)
         {
             this.WorkstationType.Write(w);
@@ -204,5 +207,7 @@ namespace Start_a_Town_
             this.WorkstationType = r.ReadDef<WorkstationDef>();
             return this;
         }
+
+        
     }
 }

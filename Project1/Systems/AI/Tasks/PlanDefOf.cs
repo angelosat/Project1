@@ -6,23 +6,23 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     public static class PlanDefOf
     {
-        static public PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft))//typeof(TaskBehaviorCrafting))
-        {
+        static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft)
+        { 
             Format = "Force crafting at {0}",
             GetPrimaryTarget = t => t.GetTarget(TaskBehaviorCrafting.WorkstationIndex)
         };
 
-        static public PlanDef Hauling = new("Hauling", typeof(TaskBehaviorHaulToStockpile))
+        static public readonly PlanDef Hauling = new("Hauling", typeof(TaskBehaviorHaulToStockpile))
         {
             Format = "Force haul {0}",
             GetPrimaryTarget = t => t.GetTarget(TaskBehaviorHaulToStockpile.ItemInd)
         };
-        public static PlanDef Refueling = new("Refueling", typeof(TaskBehaviorRefueling))
+        static public readonly PlanDef Refueling = new("Refueling", typeof(TaskBehaviorRefueling))
         {
             Format = "Refuel {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        static public PlanDef HaulAside = new("HaulAside", typeof(TaskBehaviorHaulAside))
+        static public readonly PlanDef HaulAside = new("HaulAside", typeof(TaskBehaviorHaulAside))
         {
             Format = "Haul aside {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
@@ -34,64 +34,64 @@ namespace Start_a_Town_
         //    GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         //};
 
-        static public PlanDef DeliverMaterials = new("DeliverMaterials", typeof(TaskBehaviorDeliverMaterials))
+        static public readonly PlanDef DeliverMaterials = new("DeliverMaterials", typeof(TaskBehaviorDeliverMaterials))
         {
             Format = "Deliver materials to {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-        static public PlanDef Sowing = new("Sowing", typeof(TaskBehaviorDeliverMaterials))
+        static public readonly PlanDef Sowing = new("Sowing", typeof(TaskBehaviorDeliverMaterials))
         {
             Format = "Sow {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        static public PlanDef Tilling = new("Tilling", typeof(TaskBehaviorTilling))
+        static public readonly PlanDef Tilling = new("Tilling", typeof(TaskBehaviorTilling))
         {
             Format = "Till {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        static public PlanDef Moving = new("Moving", typeof(TaskBehaviorLeaveUnstandableCell))
+        static public readonly PlanDef Moving = new("Moving", typeof(TaskBehaviorLeaveUnstandableCell))
         {
             Format = "Move {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-        static public PlanDef Harvesting = new("Harvesting", typeof(TaskBehaviorHarvestingNew))
+        static public readonly PlanDef Harvesting = new("Harvesting", typeof(TaskBehaviorHarvestingNew))
         {
             Format = "Harvest {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-        static public PlanDef Digging = new("Digging", typeof(TaskBehaviorDigging), InteractionDefOf.Dig)
+        static public readonly PlanDef Digging = new("Digging", typeof(TaskBehaviorDigging), InteractionDefOf.Dig)
         {
             Format = "Dig {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-        static public PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround))
+        static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround))
         {
             Format = "Sleep on ground",
             GetPrimaryTarget = t => TargetArgs.Null
         };
 
-        static public PlanDef SleepingOnBed = new("SleepingOnBed", typeof(TaskBehaviorSleepingNew))
+        static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(TaskBehaviorSleepingNew))
         {
             Format = "Sleep on bed",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-        static public PlanDef Chatting = new("Chatting", typeof(TaskBehaviorTalkToAboutTopic))
+        static public readonly PlanDef Chatting = new("Chatting", typeof(TaskBehaviorTalkToAboutTopic))
         {
             Format = "Chat",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-        static public PlanDef PickUp = new("Picking Up", typeof(TaskBehaviorStoreInInventory))
+        static public readonly PlanDef PickUp = new("Picking Up", typeof(TaskBehaviorStoreInInventory))
         {
             Format = "Force equip {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        static public PlanDef Chop = new("Chopping Designated", typeof(PlanBehaviorInteraction), InteractionDefOf.Chop)
+        static public readonly PlanDef Chop = new("Chopping Designated", typeof(PlanBehaviorInteraction), InteractionDefOf.Chop)
         {
             Format = "Chop down {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)

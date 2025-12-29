@@ -52,10 +52,7 @@ namespace Start_a_Town_.Interactions
         {
         }
 
-        //protected override float Progress => this.ProgressNew.Percentage;// this.BuildProgress.Value.Percentage;
-        //protected override Progress ProgressNew => this.Comp.Progress;
         protected override float WorkDifficulty { get; } = 1;
-        //protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnSwing;
 
         public override object Clone()
         {

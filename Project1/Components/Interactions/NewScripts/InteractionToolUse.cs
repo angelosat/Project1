@@ -10,7 +10,7 @@ namespace Start_a_Town_
         protected enum SkillAwardTypes { OnSwing, OnFinish }
         protected ParticleEmitterSphere EmitterStrike;
         protected List<Rectangle> ParticleRects;
-        float TotalWorkAmount;
+        protected float TotalWorkAmount;
         protected virtual Progress ProgressNew { get; }
         protected InteractionToolUse(string name) : base(name)
         {
@@ -21,7 +21,6 @@ namespace Start_a_Town_
             var a = this.Actor;
             var t = this.Target;
             this._animation.Speed = StatDefOf.WorkSpeed.GetValue(a);
-            //this.Init();
             var particleColor = this.GetParticleColor();
             this.EmitterStrike = new ParticleEmitterSphere
             {
@@ -74,17 +73,13 @@ namespace Start_a_Town_
             var skill = this.GetSkill();
 
             if (this.SkillAwardType == SkillAwardTypes.OnSwing)
-                //actor.Skills.Adjust(skill, amount);
                 actor.Skills.Increase(skill, amount);
 
-
-            var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level); //amount / a.Skills[skill].Level;
+            var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level); 
 
             // "transfer" energy from stamina to strength
-            //actor.Attributes.Adjust(AttributeDefOf.Strength, energyConsumption);
-            //actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
-            actor.Attributes.AdjustAndSync(AttributeDefOf.Strength, energyConsumption);
-            actor.Resources.AdjustAndSync(ResourceDefOf.Stamina, -energyConsumption);
+            actor.Attributes.Adjust(AttributeDefOf.Strength, energyConsumption);
+            actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
 
             // i moved the multiplication with the stamina threshold to inside the workspeed stat formula
             this._animation.Speed = actor[StatDefOf.WorkSpeed];
@@ -94,8 +89,8 @@ namespace Start_a_Town_
 
             if (this.SkillAwardType == SkillAwardTypes.OnFinish)
             {
-                throw new NotImplementedException();
-                //actor.Skills.Increase(skill, this.TotalWorkAmount);
+                //throw new NotImplementedException();
+                actor.Skills.Increase(skill, (int)this.TotalWorkAmount);
             }
             this.Done();
             this.Finish();

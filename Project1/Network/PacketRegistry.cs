@@ -16,5 +16,6 @@ namespace Start_a_Town_.Net
         }
         public bool TryGet(int id, out Action<NetEndpoint, Packet> handler)
             => _handlers.TryGetValue(id, out handler);
+
     }
 }

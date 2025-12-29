@@ -80,6 +80,11 @@ namespace Start_a_Town_
         {
             return this._ordersById[id];
         }
+
+        internal float GetProgressFor(Actor actor)
+        {
+            throw new NotImplementedException();
+        }
     }
     public class CraftOrderAddedEvent(BlockWorkstationComp comp, OrderSettings order) : EventPayloadBase
     {

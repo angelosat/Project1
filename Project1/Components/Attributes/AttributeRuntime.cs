@@ -62,6 +62,7 @@ namespace Start_a_Town_
         public void Award(GameObject parent, float p)
         {
             this.AttributeDef.Worker.Award(parent, this, p);
+            parent.Map.Events.Post(new AttributeIncreasedEvent(parent as Actor, this.Def, p));
         }
         internal void AddToProgress(float p)
         {

@@ -299,34 +299,14 @@ namespace Start_a_Town_
         {
             return this.Cells[GetCellIndex(local)];
         }
-        //public Cell GetCellLocal(IntVec3 local)
-        //{
-        //    // local bounds check (XY only)
-        //    if ((uint)local.X >= Size ||
-        //        (uint)local.Y >= Size)
-        //        return null;
-
-        //    IntVec3 global = new IntVec3(
-        //        this.Start.X + local.X,
-        //        this.Start.Y + local.Y,
-        //        local.Z
-        //    );
-
-        //    return this.Map.GetCell(global);
-        //}
-        //public static int IndexToGlobal(int x, int y, int z) => (z * Size + x) * Size + y;
-
-        //public static int GetCellIndex(int x, int y, int z) => (z * Size + x) * Size + y;
         public static int GetCellIndex(int x, int y, int z) => (z * Size + y) * Size + x;
         public static int GetCellIndex(float x, float y, float z)
         {
             return GetCellIndex((int)Math.Round(x), (int)Math.Round(y), (int)Math.Round(z));
-            //return (int)((Math.Round(z) * Chunk.Size + Math.Round(x)) * Chunk.Size + Math.Round(y));
         }
         public static int GetCellIndex(IntVec3 local)
         {
             return GetCellIndex(local.X, local.Y, local.Z);
-            //return (local.Z * Size + local.X) * Size + local.Y;
         }
         public static int Volume = Size * Size * MapBase.MaxHeight;
         public byte[] BlockLight = new byte[Volume];
@@ -1089,7 +1069,8 @@ namespace Start_a_Town_
                 if (this.Contains(originGlobal))
                 {
                     var str = r.ReadString();
-                    var entity = Activator.CreateInstance(Type.GetType(str), originGlobal) as BlockEntity;
+                    //var entity = Activator.CreateInstance(Type.GetType(str), originGlobal) as BlockEntity;
+                    var entity = this.GetLocalCell(originGlobal.ToLocal()).Block.CreateEntity(originGlobal);
                     entity.Read(r);
                     foreach (var global in entity.CellsOccupied)
                     {
@@ -1332,7 +1313,6 @@ namespace Start_a_Town_
             var entityRefIds = reader.ReadListInt32();
             foreach (var refId in entityRefIds)
                 this.Add(this.Map.World.GetEntity(refId));
-
             this.ReadBlockEntitiesDistinct(reader);
             for (int j = 0; j < Size; j++)
                 for (int i = 0; i < Size; i++)

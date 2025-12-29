@@ -112,28 +112,12 @@ namespace Start_a_Town_.Components
         {
             this.Progress = new Progress();
         }
-        //public void SetProperties(PlantProperties props)
-        //{
-        //    this.PlantProperties = props;
-        //    this.Length = props.GrowTicks;
-        //    this.Progress = new Progress(0, this.Length, 0);
-        //}
-        //public PlantComponent(PlantProperties props)
-        //{
-        //    this.PlantProperties = props;
-        //}
 
         internal void SetGrowth(float growth, float fruitGrowth)
         {
             this.GrowthBody.Percentage = growth;
             this.GrowthFruit.Percentage = fruitGrowth;
         }
-
-        //public PlantComponent(float fruitGrowTicks)
-        //{
-        //    this.Length = fruitGrowTicks;
-        //    this.Progress = new Progress(0, this.Length, 0);
-        //}
 
         public PlantComponent(PlantComponent toCopy)
         {
@@ -144,9 +128,6 @@ namespace Start_a_Town_.Components
         public override void OnObjectLoaded(GameObject parent)
         {
             this.Resolve();
-            //parent.Body.Sprite = Sprite.Load(this.IsHarvestable ? this.PlantProperties.TextureGrown : this.PlantProperties.TextureGrowing);
-            //parent.Body.Sprite = this.IsHarvestable ? this.Species.TextureGrown : this.Species.TextureGrowing;
-            //this.UpdateFruitTexture();
         }
         
         public override void Tick()
@@ -250,8 +231,6 @@ namespace Start_a_Town_.Components
                 var velocity = LootManager.RandomPopVelocity(rng);
                 parent.Map.World.Register(product);
                 parent.Map.Spawn(product, parent.Global, velocity);
-                //PacketsEntities.Send(product);
-                //PacketSpawnEntity.Send(product, parent.Global, velocity);
             }
 
             this.ResetFruitGrowth(parent);

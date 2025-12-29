@@ -156,12 +156,6 @@ namespace Start_a_Town_
             var prevItem = this.Object;
             if (item is not null)
             {
-                //item.Container?.Remove(item);
-                //item.Slot?.Clear();
-                //item.Map?.Despawn(item);
-                //item.Slot = this;
-                //item.Container = null;
-                //item.Map = null;
                 item.Detach();
                 item.Owner = this.Owner;
             }

@@ -7,18 +7,14 @@ namespace Start_a_Town_.Components
     class AttributesComponent : EntityComp<AttributesComponent.Spec>
     {
         public override string Name { get; } = "Attributes";
-        //public AttributeRuntime[] Attributes;
         public Dictionary<AttributeDef, AttributeRuntime> Attributes = [];
+        public AttributeRuntime this[AttributeDef def] => this.GetAttribute(def);
         public AttributesComponent()
         {
         }
         internal override void CopyFrom(EntityComp source)
         {
             var atts = ((AttributesComponent)source).Attributes.Values;
-            //var count = atts.Length;
-            //this.Attributes = new AttributeRuntime[count];
-            //for (int i = 0; i < count; i++)
-            //    this.Attributes[i] = atts[i].Clone();
             this.Attributes.Clear();
             foreach (var a in atts)
                 this.Attributes.Add(a.AttributeDef, new AttributeRuntime(a.AttributeDef, (int)a.Progress.Value));
@@ -77,15 +73,10 @@ namespace Start_a_Town_.Components
         static readonly ListBoxNoScroll GuiList = new();
         public Control GetGui()
         {
-            //var win = GuiList.GetWindow();
-            //if (win is null)
-            //    win = GuiList.ToWindow("Skills");
             GuiList.Clear();
             GuiList.AddItems(this.Attributes.Values);
             GuiList.Validate(true);
-            return GuiList;//
-            //win.Validate(true);
-            //return win;
+            return GuiList;
         }
         public AttributesComponent Randomize()
         {
@@ -102,36 +93,26 @@ namespace Start_a_Town_.Components
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            //this.Attributes.SaveNewBEST(tag, "Attributes");
-            //tag.SaveValues(this.Attributes, "Attributes");
             tag.SaveDefWrappers("Attributes", this.Attributes);
         }
         internal override void Load(GameObject parent, SaveTag tag)
         {
-            //this.Attributes.Sync(tag, "Attributes");
-            //tag["Attributes"].LoadValuesWithInferredKeys(this.Attributes, a => a.AttributeDef);
             tag.LoadDefWrappers("Attributes", this.Attributes);
         }
         public override void Write(IDataWriter w)
         {
-            //this.Attributes.Write(w);
             w.WriteValues(this.Attributes);
         }
         public override void Read(IDataReader r)
         {
-            //this.Attributes.Read(r);
             r.ReadDefWrappers(this.Attributes);
         }
 
-        internal void Adjust(AttributeDef strength, float energyConsumption)
+        internal void Adjust(AttributeDef def, float energyConsumption)
         {
-            this.GetAttribute(AttributeDefOf.Strength).Award(this.Owner, energyConsumption);
+            this.GetAttribute(def).Award(this.Owner, energyConsumption);
         }
-        internal void AdjustAndSync(AttributeDef def, float v)
-        {
-            this.Adjust(def, v);
-            AttributeRuntime.Packets.SendAdjust(this.Owner as Actor, def, v);
-        }
+       
         public new class Spec : Spec<AttributesComponent>
         {
             public AttributeDef[] Items;
@@ -143,9 +124,6 @@ namespace Start_a_Town_.Components
             {
                 if (this.Items != null)
                 {
-                    //comp.Attributes = new AttributeRuntime[this.Items.Length];
-                    //for (int i = 0; i < this.Items.Length; i++)
-                    //    comp.Attributes[i] = new AttributeRuntime(this.Items[i]);
                     foreach (var a in this.Items)
                         comp.Add(a);
                 }

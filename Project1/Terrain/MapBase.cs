@@ -578,6 +578,10 @@ namespace Start_a_Town_
             }
             return list;
         }
+        public bool Despawn(EntityRefId entityRefId)
+        {
+            return this.Despawn(this.World.GetEntity(entityRefId));
+        }
         public bool Despawn(GameObject obj)
         {
             if (obj.Map == this)
@@ -588,6 +592,7 @@ namespace Start_a_Town_
                     throw new Exception();
                 obj.Map = null;
                 //this.CachedObjects.Remove(obj);
+                this.Events.Post(new EntityDespawnedEvent(obj as Entity));
                 return true;
             }
             throw new Exception("GameObject.Map mismatch when trying to despawn object");
@@ -595,11 +600,12 @@ namespace Start_a_Town_
         }
         public void DespawnAndSync(Entity entity)
         {
-            if (entity.Net.IsClient)
-                return;
-            if (this.Despawn(entity))
-                PacketEntityDespawn.Send(this.Net as Server, entity);
-            //return false;
+            this.Despawn(entity);
+            //return;
+            //if (entity.Net.IsClient)
+            //    return;
+            //if (this.Despawn(entity))
+            //    PacketEntityDespawn.Send(this.Net as Server, entity);
         }
         internal bool Remove(GameObject obj)
         {
@@ -1107,7 +1113,11 @@ namespace Start_a_Town_
             throw new Exception();
             this.Spawn(entity, entity.Global, entity.Velocity);
         }
-  
+        public void Spawn(EntityRefId entityRefId, Vector3 position, Vector3 velocity)
+        {
+            this.Spawn(this.World.GetEntity(entityRefId), position, velocity);
+        }
+
         public void Spawn(Entity entity, Vector3 position, Vector3 velocity)
         {
             entity.Container?.Remove(entity);
@@ -1135,6 +1145,8 @@ namespace Start_a_Town_
         /// <param name="velocity">The initial velocity of the entity.</param>
         public void SpawnAndSync(Entity entity, Vector3 position, Vector3 velocity)
         {
+            this.Spawn(entity, position, velocity);
+            return;
             if (this.Net.IsClient)
                 return;
             if (entity.RefId == 0)

@@ -29,7 +29,7 @@ namespace Start_a_Town_
 
             yield return new BehaviorWait(() => {
                 // wait until a shop worker has picked the item up and is in their carry slot
-                var worker = item.Parent; // HACK this will just wait for the first person to pick up the item. check if it's a worker of the current shop
+                var worker = item.Owner; // HACK this will just wait for the first person to pick up the item. check if it's a worker of the current shop
                 if (worker == null)
                     return false;
                 if (worker.Hauled != item)
@@ -54,7 +54,7 @@ namespace Start_a_Town_
             yield return new BehaviorCustom() { InitAction = () => this.Reserve(actor.Hauled) };
             yield return new BehaviorResolveInteraction(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
             // TODO wait for the item to be placed ontop of the counter, and then pick it up
-            yield return new BehaviorWait(() => item.Parent == null && item.Global.ToCell() == counter.Above());
+            yield return new BehaviorWait(() => item.Owner == null && item.Global.ToCell() == counter.Above());
             yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionHaul());
             yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
            

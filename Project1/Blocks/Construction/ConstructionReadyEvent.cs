@@ -8,4 +8,8 @@
     {
         public readonly BlockConstructionComp Source = comp;
     }
+    public class ConstructionUpdatedEvent(BlockConstructionComp comp) : EventPayloadBase
+    {
+        public readonly BlockConstructionComp Source = comp;
+    }
 }

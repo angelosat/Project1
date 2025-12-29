@@ -543,7 +543,7 @@ namespace Start_a_Town_.Net
                     if (!Instance.World.TryGetEntity(parentID, out var parent))
                         throw (new Exception("Parent doesn't exist"));
 
-                    obj.Parent = parent;
+                    obj.Owner = parent;
                     int childIndex = r.ReadInt32();
                     var slot = parent.GetChildren()[childIndex];
                     //slot.Object = obj;
@@ -1000,8 +1000,8 @@ namespace Start_a_Town_.Net
 
         public void InventoryOperation(GameObjectSlot sourceSlot, GameObjectSlot targetSlot, int amount)
         {
-            var sourceParent = sourceSlot.Parent;
-            var destinationParent = targetSlot.Parent;
+            var sourceParent = sourceSlot.Owner;
+            var destinationParent = targetSlot.Owner;
             if (targetSlot == sourceSlot)
                 return;
             if (!targetSlot.Filter(sourceSlot.Object))
@@ -1101,6 +1101,19 @@ namespace Start_a_Town_.Net
                     if (data.Length > 0)
                         this.Send(PacketType.MergedPackets, data, i.Reliability);
                 }
+        }
+
+        internal void SetMap(MapBase map)
+        {
+            this.Map = map;
+            this.World = map.World;
+            Registry.MapEventHooksClient.HookTo(map.Events);
+        }
+
+        internal void SetWorld(StaticWorld world)
+        {
+            this.World = world;
+            world.Net = this;
         }
     }
 }

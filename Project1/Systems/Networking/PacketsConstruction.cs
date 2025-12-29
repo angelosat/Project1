@@ -1,9 +1,8 @@
 ﻿using Start_a_Town_.Net;
-using System;
-using System.Net;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     internal class PacketsConstruction
     {
         static readonly int _pSync, _pReady, _pFinished;
@@ -13,13 +12,19 @@ namespace Start_a_Town_
             _pSync = Registry.PacketHandlers.Register(OnSync);
             _pReady = Registry.PacketHandlers.Register(OnReady);
             _pFinished = Registry.PacketHandlers.Register(OnFinished);
+            
+            Registry.MapEventHooks.Register<ConstructionFinishedEvent>(SendFinished);
+            Registry.MapEventHooks.Register<ConstructionReadyEvent>(SendReady);
+            Registry.MapEventHooks.Register<ConstructionUpdatedEvent>(SendSync);
+
         }
-        internal static void Finished(BlockConstructionComp comp)
+
+        private static void SendFinished(ConstructionFinishedEvent e)
         {
-            var server = comp.Map.Net as Server;
-            var w = server.BeginPacket(_pFinished)
-                .Write(comp.Parent.OriginGlobal);
+            Server.Instance.BeginPacket(_pFinished)
+                .Write(e.Source.Parent.OriginGlobal);
         }
+
         static void OnFinished(NetEndpoint endpoint, Packet packet)
         {
             var client = endpoint as Client;
@@ -27,11 +32,10 @@ namespace Start_a_Town_
             var comp = client.Map.GetBlockEntityComp<BlockConstructionComp>(r.ReadIntVec3());
             comp.Map.Events.Post(new ConstructionFinishedEvent(comp));
         }
-        public static void Ready(BlockConstructionComp comp)
+        public static void SendReady(ConstructionReadyEvent e)
         {
-            var server = comp.Map.Net as Server;
-            var w = server.BeginPacket(_pReady)
-                .Write(comp.Parent.OriginGlobal);
+            Server.Instance.BeginPacket(_pReady)
+                .Write(e.Source.Parent.OriginGlobal);
         }
         private static void OnReady(NetEndpoint endpoint, Packet packet)
         {
@@ -41,12 +45,11 @@ namespace Start_a_Town_
             comp.Map.Events.Post(new ConstructionReadyEvent(comp));
         }
 
-        public static void Sync(BlockConstructionComp comp)
+        public static void SendSync(ConstructionUpdatedEvent e)
         {
-            var server = comp.Map.Net as Server;
-            var w = server.BeginPacket(_pSync)
-                .Write(comp.Parent.OriginGlobal);
-            comp.Write(w);
+            var w = Server.Instance.BeginPacket(_pSync)
+                .Write(e.Source.Parent.OriginGlobal);
+            e.Source.Write(w);
         }
         private static void OnSync(NetEndpoint endpoint, Packet packet)
         {

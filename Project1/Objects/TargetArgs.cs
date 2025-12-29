@@ -255,7 +255,7 @@ namespace Start_a_Town_
         }
         public TargetArgs(GameObjectSlot slot)
         {
-            this.World = slot.Parent.World;
+            this.World = slot.Owner.World;
             this.Type = TargetType.Slot;
             this.Slot = slot;
         }
@@ -314,7 +314,7 @@ namespace Start_a_Town_
             {
                 case TargetType.Slot:
 
-                    w.Write(this.Slot.Parent.RefId);
+                    w.Write(this.Slot.Owner.RefId);
                     w.Write(this.Slot.ID);
                     w.Write(this.Slot.ContainerNew.ID);
                     return this;
@@ -351,7 +351,7 @@ namespace Start_a_Town_
             {
                 case TargetType.Slot:
 
-                    w.Write(this.Slot.Parent.RefId);
+                    w.Write(this.Slot.Owner.RefId);
                     w.Write(this.Slot.ID);
                     w.Write(this.Slot.ContainerNew.ID);
                     return this;
@@ -397,7 +397,7 @@ namespace Start_a_Town_
             switch (this.Type)
             {
                 case TargetType.Slot:
-                    tag.Add(new SaveTag(SaveTag.Types.Int, "ParentID", this.Slot.Parent.RefId));
+                    tag.Add(new SaveTag(SaveTag.Types.Int, "ParentID", this.Slot.Owner.RefId));
                     tag.Add(new SaveTag(SaveTag.Types.Int, "SlotID", this.Slot.ID));
                     tag.Add(new SaveTag(SaveTag.Types.Int, "ContainerID", this.Slot.ContainerNew.ID));
                     break;

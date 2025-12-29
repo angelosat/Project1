@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
 using Start_a_Town_.Net;
 using System.Diagnostics;
+using System.CodeDom;
 
 #nullable enable
 
@@ -66,18 +67,23 @@ namespace Start_a_Town_
         {
             entity.World = this;
             entity.Net = this.Net;
-            foreach(var e in entity.GetSelfAndChildren())
+            foreach (var e in entity.GetSelfAndChildren())
                 this.EntityRegistry.Add(e as Entity);
+            this.Events.Post(new EntityRegisteredEvent(entity as Entity));
         }
         public void RegisterAndSync(GameObject entity)
         {
+            this.Register(entity);
+            return;
             if (this.Net.IsClient)
                 throw new Exception();
             this.Register(entity);
-            PacketRegisterEntity.Send(entity);
+            //PacketsEntities.Send(entity);
         }
         public Entity GetEntity(int refId)
         {
+            if (refId == EntityRefId.Null)
+                return null!;
             if (!this.EntityRegistry.TryGetValue(refId, out var obj))
                 return null!; // dont throw because return might be null for early snapshots
             return obj;
@@ -147,16 +153,19 @@ namespace Start_a_Town_
                 //obj.OnDespawn();
                 //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
                 //    this.DisposeObject(child);
+                //this.Events.Post(new EntityDisposedEvent(o));
+
             }
             this.Events.Post(new EntityDisposedEvent(o));
             return true;
         }
         public void DisposeEntityAndSync(Entity entity)
         {
-            if (this.Net.IsClient)
-                return;
-            if(this.DisposeEntity(entity.RefId))
-                PacketEntityDispose.Send(this.Net as Server, entity.RefId);
+            this.DisposeEntity(entity.RefId);
+            //if (this.Net.IsClient)
+            //    return;
+            //if(this.DisposeEntity(entity.RefId))
+            //    PacketEntityDispose.Send(this.Net as Server, entity.RefId);
         }
         public abstract MapBase GetMap(int mapId);
         public EventBus Events { get; } = new();

@@ -110,12 +110,12 @@ namespace Start_a_Town_
         public WorldBase World { get; set; }
         MapBase _map;
         public MapBase Map 
-        { 
-            get => this.Parent?.Map ?? this._map; 
+        {
+            get => this._map;//this.Owner?.Map ?? this._map; 
             set => this._map = value; 
         }
 
-        public bool IsSpawnedNew => this.Map != null && this.Parent == null;
+        public bool IsSpawnedNew => this.Map != null && this.Owner == null;
         public Town Town;// => this.Map.Town;
 
         internal object GetPath()
@@ -171,7 +171,7 @@ namespace Start_a_Town_
 
         static void RequestToggleForbidden(List<TargetArgs> obj)
         {
-            PacketToggleForbidden.Send(obj.First().World.Net, obj.Select(o => o.Object.RefId).ToList());
+            PacketToggleForbidden.Send(obj.First().World.Net, obj.Select(o => (int)o.Object.RefId).ToList());
         }
         static void FollowCam()
         {
@@ -207,7 +207,7 @@ namespace Start_a_Town_
             return this.DefComponent.Quality.Color;
         }
 
-        public GameObject Parent
+        public GameObject Owner
         {
             get => this.Transform.ParentEntity;
             set => this.Transform.ParentEntity = value;
@@ -268,10 +268,15 @@ namespace Start_a_Town_
             this.StackSize -= amount;
             if (this.Net.IsClient)
                 return;
+            //if (this.IsEmpty)
+            //    this.World.DisposeEntityAndSync(this as Entity);
+            //else
+            //    PacketSyncStackSize.Send(this);
             if (this.IsEmpty)
-                this.World.DisposeEntityAndSync(this as Entity);
+                this.World.DisposeEntity(this.RefId);
             else
-                PacketSyncStackSize.Send(this);
+                this.Owner.Map.Events.Post(new EntityStackIncreased(this.Owner as Entity, amount));
+
             //this.Destroy();
         }
         public void Destroy()
@@ -288,7 +293,8 @@ namespace Start_a_Town_
             this.StackSize += amount;
             if (this.Net.IsClient)
                 return;
-            PacketSyncStackSize.Send(this);
+            //PacketSyncStackSize.Send(this);
+            this.Owner.Map.Events.Post(new EntityStackIncreased(this.Owner as Entity, amount));
         }
         protected int _stackSize = 1;
 
@@ -750,7 +756,7 @@ namespace Start_a_Town_
                 comp.OnDespawn(oldMap);
 
             //oldMap.EventOccured(Message.Types.EntityDespawned, this);
-            oldMap.Events.Post(new EntityDespawnedEvent(this as Entity));
+            //oldMap.Events.Post(new EntityDespawnedEvent(this as Entity));
             oldMap.Events.Unsubscribe(this);
             //this.Unreserve(); // UNDONE dont unreserve here because the ai might continue manipulating (placing/carrying) the item during the same behavior
         }
@@ -759,7 +765,7 @@ namespace Start_a_Town_
         {
             this.Net = newMap.Net;
             //this.Container?.Remove(this);
-            this.Parent = null;
+            this.Owner = null;
             this.Map = newMap;
             if (!newMap.TryGetChunk(this.Global, out var chunk))
                 throw new Exception("Chunk not loaded");
@@ -926,7 +932,7 @@ namespace Start_a_Town_
             data.Add(this.Def.Name.Save("Def"));
             // todo : items without profile (coins for now)
             data.Add(this.Profile.Save("ProfileID"));
-            data.Add(this.RefId.Save("InstanceID"));
+            data.Add(((int)this.RefId).Save("InstanceID"));
             data.Add(this._stackSize.Save("Stack"));
             //var compData = new SaveTag(SaveTag.Types.Compound, "Components");
             //foreach (var comp in this.Components.Values)
@@ -1074,8 +1080,7 @@ namespace Start_a_Town_
         [Obsolete("use world.disposeandsync")]
         internal void SyncDispose()
         {
-            if (this.Net is Server server)
-                server.SyncDispose(this.RefId);
+            throw new Exception();
         }
         class EntityDisposedEvent(Entity entity) : EventPayloadBase 
         { public readonly Entity Entity = entity; }
@@ -1304,7 +1309,7 @@ namespace Start_a_Town_
         }
 
         public bool Exists => this.IsSpawned;
-        public bool ExistsOn(MapBase map) => this._map == map && this.Parent == null;
+        public bool ExistsOn(MapBase map) => this._map == map && this.Owner == null;
 
         internal void MoveOrder(TargetArgs target, bool enqueue)
         {
@@ -1618,9 +1623,12 @@ namespace Start_a_Town_
         internal void Detach()
         {
             this.Container?.Remove(this);
+            this.Container = null;
             this.Slot?.Assign(null, out var _);
-            this.Parent = null;
+            this.Slot = null;
             this.Map?.Despawn(this);
+            this.Map = null;
+            this.Owner = null;
         }
         #endregion
     }

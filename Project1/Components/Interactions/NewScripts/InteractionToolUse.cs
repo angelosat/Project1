@@ -43,16 +43,16 @@ namespace Start_a_Town_
             this.Init();
 
         }
-
+       
         public sealed override void OnUpdate()
         {
-            if (this.Actor.Net.IsClient)
-                return;
             if (!this.CanPerform())
             {
                 this.Fail();
                 return;
             }
+            if (this.Actor.Net.IsClient)
+                return;
             var actor = this.Actor;
             var t = this.Target;
             var toolEffect = GetToolEffectiveness();
@@ -75,7 +75,7 @@ namespace Start_a_Town_
 
             if (this.SkillAwardType == SkillAwardTypes.OnSwing)
                 //actor.Skills.Adjust(skill, amount);
-                actor.Skills.AwardAndSync(skill, amount);
+                actor.Skills.Increase(skill, amount);
 
 
             var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level); //amount / a.Skills[skill].Level;
@@ -95,7 +95,7 @@ namespace Start_a_Town_
             if (this.SkillAwardType == SkillAwardTypes.OnFinish)
             {
                 throw new NotImplementedException();
-                actor.Skills.Adjust(skill, this.TotalWorkAmount);
+                //actor.Skills.Increase(skill, this.TotalWorkAmount);
             }
             this.Done();
             this.Finish();

@@ -71,6 +71,11 @@ namespace Start_a_Town_
             this.WeightChange = -0.1f;
             this.State = AnimationStates.Removed;
         }
+        internal void FadeOutAndRemove(float rate)
+        {
+            this.WeightChange = rate;
+            this.State = AnimationStates.Removed;
+        }
         internal void FadeOut(float perTick)
         {
             this.WeightChange = -perTick;
@@ -118,31 +123,33 @@ namespace Start_a_Town_
             if (this.StartTick == -1)
                 this.StartTick = entity.Net.CurrentTick;
             var prevFrame = this.Frame;
-
             var elapsedServerTicks = (float)(entity.Net.CurrentTick - this.StartTick);// / Server.ClockIntervalMS;
-            elapsedServerTicks /= this.Speed;
-            if (this.Weight > 0)
+            if (this.Speed > 0)
             {
-                this.Frame = elapsedServerTicks;
+                var elapsedTicks = elapsedServerTicks / this.Speed;
 
-                // Handle looping first, so frame delta is correct for events
-                this.Loop();
+                if (this.Weight > 0)
+                {
+                    this.Frame = elapsedTicks;
 
-                // Fire keyframe events
-                this.PerformActionsNew(prevFrame, this.Frame, entity);
+                    // Handle looping first, so frame delta is correct for events
+                    this.Loop();
+
+                    // Fire keyframe events
+                    this.PerformActionsNew(prevFrame, this.Frame, entity);
+                }
+                // Fade logic: now deterministic per server tick
+                if (this.FadeValue < this.FadeLength)
+                {
+                    this.FadeValue = elapsedTicks; // directly proportional to elapsed time
+                    this.Weight = this.FadeInterpolation(0, 1, this.Fade);
+                    if (this.Fade >= 1)
+                        this.OnFadeIn();
+
+                    if (this.PreFade)
+                        return; // optionally skip main update while fading in
+                }
             }
-            // Fade logic: now deterministic per server tick
-            if (this.FadeValue < this.FadeLength)
-            {
-                this.FadeValue = elapsedServerTicks; // directly proportional to elapsed time
-                this.Weight = this.FadeInterpolation(0, 1, this.Fade);
-                if (this.Fade >= 1)
-                    this.OnFadeIn();
-
-                if (this.PreFade)
-                    return; // optionally skip main update while fading in
-            }
-
             // Weight accumulation independent of frames
             var step = elapsedServerTicks - prevFrame;
             this.Weight += step * (this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange);

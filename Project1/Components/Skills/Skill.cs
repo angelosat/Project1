@@ -1,11 +1,11 @@
 ﻿using Start_a_Town_.Components;
-using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
+using static Start_a_Town_.GlobalVars;
 
 namespace Start_a_Town_
 {
-    public class Skill : Inspectable, ISaveableNewNew<Skill>, IDefWrapper<SkillDef>, ISerializableNew<Skill>, INamed, IListable
+    public partial class Skill : Inspectable, ISaveableNewNew<Skill>, IDefWrapper<SkillDef>, ISerializableNew<Skill>, INamed, IListable
     {
         public NpcSkillsComponent Comp;
         public SkillDef SkillDef;
@@ -39,17 +39,17 @@ namespace Start_a_Town_
         //static int GetNextLvlXpTest3(int currentLvl) => (currentLvl + 1) * XpToLevelBaseNew + (currentLvl == 0 ? 0 : GetNextLvlXpTest3(currentLvl - 1));
         static int GetNextLvlXp(int currentLvl) => (int)Math.Pow(2, currentLvl - 1) * XpToLevelBase;
 
-        static public void Init(Hud hud)
-        {
-            hud.RegisterEventHandler(Components.Message.Types.SkillIncrease, OnSkillIncrease);
-        }
-        static void OnSkillIncrease(GameEvent a)
-        {
-            var actor = a.Parameters[0] as GameObject;
-            var skill = (Skill)a.Parameters[1];
-            FloatingText.Create(actor, $"{skill.SkillDef.Label} increased!", ft => ft.Font = UIManager.FontBold);
-        }
-        internal void Award(float v)
+        //static public void Init(Hud hud)
+        //{
+        //    hud.RegisterEventHandler(Components.Message.Types.SkillIncrease, OnSkillIncrease);
+        //}
+        //static void OnSkillIncrease(GameEvent a)
+        //{
+        //    var actor = a.Parameters[0] as GameObject;
+        //    var skill = (Skill)a.Parameters[1];
+        //    FloatingText.Create(actor, $"{skill.SkillDef.Label} increased!", ft => ft.Font = UIManager.FontBold);
+        //}
+        internal void Award(int v)
         {
             //for (int i = 0; i < 20; i++)
             //    GetNextLvlXp(i).ToConsole();
@@ -73,7 +73,9 @@ namespace Start_a_Town_
             this.LvlProgress.Value = remaining;
             var actor = this.Comp.Owner;
             actor.Net.ConsoleBox.Write(Log.Entry.Notification(actor, " has reached Level ", this.Level," in ", this, "!"));
-            actor.Net.EventOccured((int)Message.Types.SkillIncrease, actor, this);
+            //actor.Net.EventOccured((int)Message.Types.SkillIncrease, actor, this);
+            actor.Map.Events.Post(new SkillIncreaseEvent(actor as Actor, this.Def, v));
+
         }
         static Skill()
         {
@@ -146,34 +148,6 @@ namespace Start_a_Town_
             tag.Add(this.Level.Save("Level"));
             tag.Add(this.LvlProgress.Value.Save("Progress"));
             return tag;
-        }
-        [EnsureStaticCtorCall]
-        internal static class Packets
-        {
-            static int _pTypeIdModifySkill;
-
-            static Packets()
-            {
-                _pTypeIdModifySkill = Registry.PacketHandlers.Register(Receive);
-            }
-            internal static void Send(Actor actor, SkillDef skill, int delta)
-            {
-                var server = actor.Net as Server;
-                server.BeginPacket(_pTypeIdModifySkill)
-                    .Write(actor.RefId)
-                    .Write(skill)
-                    .Write(delta);
-            }
-            private static void Receive(NetEndpoint endpoint, Packet packet)
-            {
-                var client = endpoint as Client;
-                var r = packet.PacketReader;
-                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
-                var skill = r.ReadDef<SkillDef>();
-                var delta = r.ReadInt32();
-
-                actor.Skills[skill].Award(delta);
-            }
         }
     }
 }

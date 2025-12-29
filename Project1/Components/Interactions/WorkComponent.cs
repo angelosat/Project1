@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.DirectoryServices;
 
 namespace Start_a_Town_.Components
 {
@@ -38,8 +39,7 @@ namespace Start_a_Town_.Components
                 $"{this.Owner.Net} interrupt".ToConsole();
             this.Task.Interrupt(success);
             this.Task.FinishAction();
-            this.Task = null;
-            this.Target = null;
+            this.Stop();
         }
 
         internal void OnToolContact()
@@ -61,7 +61,7 @@ namespace Start_a_Town_.Components
             parent.FaceTowards(this.Target);
             this.Task.InitAction();
             if (this.Task.HasFinished)
-                this.Task = null;
+                this.Stop();
         }
 
         public void End(bool success = false)
@@ -91,8 +91,17 @@ namespace Start_a_Town_.Components
             }
 
             this.Task.FinishAction();
+            Stop();
+        }
+
+        public void Stop()
+        {
+            if (this.Task is null)
+                return;
+            this.Task.Stop();
             this.Task = null;
             this.Target = null;
+            this.Owner.Map.Events.Post<InteractionStoppedEvent>(new(this.Owner as Actor));
         }
 
         public override void DrawUI(SpriteBatch sb, Camera camera, GameObject parent)

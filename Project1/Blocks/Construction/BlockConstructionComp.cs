@@ -59,6 +59,8 @@ namespace Start_a_Town_
                 this.Map.SetBlock(cell, BlockDefOf.Construction, this.Args.Material, 0, 0, this.Args.Orientation);
 
             this.ValidateReadiness();
+            this.Map.Events.Post(new ConstructionUpdatedEvent(this));
+
         }
 
         private void ValidateReadiness()
@@ -92,8 +94,10 @@ namespace Start_a_Town_
             if (!this.IsReady)
                 throw new InvalidOperationException("Tried to advance construction without all materials present");
             this.Progress.Add(work);
+            var map = this.Map; // capture map in case the construction is completed and the block entity gets removed from the map
             if (this.Progress.IsFinished)
                 this.Complete();
+            map.Events.Post(new ConstructionUpdatedEvent(this));
             return;
         }
 

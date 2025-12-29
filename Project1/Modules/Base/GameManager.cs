@@ -14,7 +14,7 @@ namespace Start_a_Town_.Modules.Base
 
         public override void InitHUD(NetEndpoint net, Hud hud)
         {
-            Skill.Init(hud);
+            //Skill.Init(hud);
             net.Events.ListenTo<ActorNeedUpdatedEvent>(HandleActorNeedUpdated);
             //hud.RegisterEventHandler(Components.Message.Types.NeedUpdated, e =>
             //{

@@ -18,14 +18,14 @@ namespace Start_a_Town_
         public ItemContainer Container { get; set; }
         public Container ContainerNew;
         GameObject _parent;
-        public GameObject Parent
+        public GameObject Owner
         {
             get => this.Container == null ? this._parent : this.Container.Parent;
             set
             {
                 this._parent = value;
                 if (this.HasValue)
-                    this.Object.Parent = value;
+                    this.Object.Owner = value;
             }
         }
         public int ID { get; set; } = -1;
@@ -150,6 +150,24 @@ namespace Start_a_Town_
             this.Object = obj;
             return this;
         }
+        public void Assign(EntityRefId refId)
+        {
+            var item = this.Owner.World.GetEntity(refId);
+            var prevItem = this.Object;
+            if (item is not null)
+            {
+                //item.Container?.Remove(item);
+                //item.Slot?.Clear();
+                //item.Map?.Despawn(item);
+                //item.Slot = this;
+                //item.Container = null;
+                //item.Map = null;
+                item.Detach();
+                item.Owner = this.Owner;
+            }
+            this.Object = item;
+            if(item != prevItem) this.Owner.Map.Events.Post(new SlotUpdatedEvent(this));
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -159,11 +177,11 @@ namespace Start_a_Town_
         {
             prevItem = this._object;
             if (newItem is not null && !this.Filter(newItem))
-                    return false;
+                return false;
             if (prevItem != null)
             {
                 prevItem.Slot = null;
-                prevItem.Parent = null;
+                prevItem.Owner = null;
             }
             this._object = newItem;
             this.ObjectChangedAction(newItem);
@@ -177,19 +195,20 @@ namespace Start_a_Town_
                 //    newItem.Slot.Clear();
                 newItem.Slot?.Object = prevItem;
                 newItem.Slot = this;
-                newItem.Parent = this.Parent;
+                newItem.Owner = this.Owner;
             }
+            this.Owner.Map.Events.Post(new SlotUpdatedEvent(this));
             return true;
         }
         public bool AssignAndSync(GameObject newItem, out GameObject prevItem)
         {
-            if (this.Parent.Net.IsClient)
+            if (this.Owner.Net.IsClient)
             {
                 prevItem = null;
                 return false;
             }
             var result = this.Assign(newItem, out prevItem);
-            PacketSlotAssign.Send(this.Parent as Entity, this.ID, newItem as Entity);
+            PacketSlotAssign.Send(this.Owner as Entity, this.ID, newItem as Entity);
             return result;
         }
         public bool Assign(GameObject newItem)
@@ -217,7 +236,7 @@ namespace Start_a_Town_
                 return;
             // set backing field instead of property so inventorychanged event isn't raised
             this._object = GameObject.Create(reader);
-            this._object.Parent = this.Parent;
+            this._object.Owner = this.Owner;
             this._object.Slot = this;
             // no need to set stacksize here since it's saved along with the object
             // PLUS i don't want to raise inventorychanged event that's raised in the property setter
@@ -269,7 +288,7 @@ namespace Start_a_Town_
         public GameObjectSlot Clone()
         {
             // maybe return new object?
-            return new GameObjectSlot(Object, StackSize) { Filter = this.Filter, Container = this.Container, Parent = this.Parent };
+            return new GameObjectSlot(Object, StackSize) { Filter = this.Filter, Container = this.Container, Owner = this.Owner };
         }
 
         static public GameObjectSlot Empty

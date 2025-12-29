@@ -43,16 +43,16 @@ namespace Start_a_Town_
         {
             //var comp = e.Source;
             //this.DesignationEntities.Remove(comp);
-            if (this.Net.IsServer)
-                PacketsConstruction.Finished(e.Source);
+            //if (this.Net.IsServer)
+            //    PacketsConstruction.Finished(e.Source);
             this.RemoveDesignatedEntity(e.Source);
             this._dirty = true;
         }
 
         private void OnConstructionReady(ConstructionReadyEvent e)
         {
-            if(this.Net.IsServer)
-                PacketsConstruction.Ready(e.Source);
+            //if(this.Net.IsServer)
+            //    PacketsConstruction.Ready(e.Source);
             if (!this.DesignationEntities.Contains(e.Source))
                 throw new KeyNotFoundException($"Received {nameof(ConstructionReadyEvent)} for non-registered construction designation");
             this._dirty = true;

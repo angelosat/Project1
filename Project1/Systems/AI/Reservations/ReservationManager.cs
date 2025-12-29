@@ -146,7 +146,7 @@ namespace Start_a_Town_
         }
         internal bool CanReserve(GameObject actor, TargetArgs target, int stackcount = -1, bool ignoreOtherReservations = false)
         {
-            if (target.Type == TargetType.Entity && target.Object.Parent == actor)
+            if (target.Type == TargetType.Entity && target.Object.Owner == actor)
                 return true;
             if (target.Type == TargetType.Position && stackcount > 1)
                 throw new Exception();

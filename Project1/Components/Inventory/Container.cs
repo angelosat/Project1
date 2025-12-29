@@ -18,7 +18,7 @@ namespace Start_a_Town_.Components
             {
                 this._Parent = value;
                 foreach (var slot in this.Slots)
-                    slot.Parent = value;
+                    slot.Owner = value;
             }
         }
         public List<GameObjectSlot> Slots = new();

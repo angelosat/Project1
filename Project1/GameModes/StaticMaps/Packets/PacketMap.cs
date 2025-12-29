@@ -37,7 +37,8 @@ namespace Start_a_Town_
             StaticMap map = StaticMap.ReadData(client, r);
             map.World = client.World as StaticWorld;
             map.World.GetMaps().Add(map.Coordinates, map);
-            client.Map = map;
+            //client.Map = map;
+            client.SetMap(map);
             GameMode.Current.MapReceived(map);
         }
     }

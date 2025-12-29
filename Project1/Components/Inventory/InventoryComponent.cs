@@ -216,8 +216,8 @@ namespace Start_a_Town_.Components
         }
         public void HaulNew(GameObject target, int amount)
         {
-            if (this.Owner.Net.IsClient)
-                return;
+            //if (this.Owner.Net.IsClient)
+            //    return;
             GameObject finalItem;
             var actor = this.Owner as Actor;
             if (!target.IsHaulable)
@@ -239,8 +239,7 @@ namespace Start_a_Town_.Components
             // if currently hauling something else, it must be made sure that it's of the same type so we can increase its stacksize. otherwise there has been a bug earlier
             if (actor.Inventory.HaulSlot.Object is not GameObject existing)
             {
-                //actor.Inventory.HaulSlot.SetItem(finalItem, out var _);/// putting the item in the gameobjectslot, removes it from its current container or despawns it, so no need to send packetremoveinventoryitem
-                actor.Inventory.HaulSlot.AssignAndSync(finalItem, out var _);
+                actor.Inventory.HaulSlot.Assign(finalItem, out var _);
                 return;
             }
             if (!existing.CanAbsorb(finalItem))

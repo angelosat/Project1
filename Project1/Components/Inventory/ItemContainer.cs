@@ -16,7 +16,7 @@ namespace Start_a_Town_.Components
             {
                 this._parent = value;
                 foreach (var slot in this)
-                    slot.Parent = value;
+                    slot.Owner = value;
             }
         }
         public List<ItemContainer> Children { get; set; }

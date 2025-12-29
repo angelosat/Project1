@@ -29,8 +29,9 @@ namespace Start_a_Town_
                 //"world already received, dropping packet".ToConsole();
             }
             var world = new StaticWorld(r);
-            client.World = world;
-            world.Net = client;
+            //client.World = world;
+            client.SetWorld(world);
+            //world.Net = client;
         }
     }
 }

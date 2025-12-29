@@ -87,7 +87,7 @@ namespace Start_a_Town_
             //item.Map?.Despawn(item);
             item.Detach();
             item.Container = this;
-            item.Parent = this.Parent;
+            item.Owner = this.Parent;
             (this.Parent as Actor).Log.Write($"Stored {item} in inventory");
 
         }
@@ -114,7 +114,7 @@ namespace Start_a_Town_
             if (item.Container != this)
                 throw new Exception();
             item.Container = null;
-            item.Parent = null;
+            item.Owner = null;
             return ((ICollection<GameObject>)this.Contents).Remove(item);
         }
 

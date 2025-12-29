@@ -36,6 +36,7 @@ namespace Start_a_Town_.Net
         public long Length => this._reader.BaseStream.Length;
         public long Position => this._reader.BaseStream.Position;
         public byte ReadByte() => this._reader.ReadByte();
+        public int ReadEntityRefId() => new EntityRefId(this._reader.ReadInt32());
         public int ReadInt32() => this._reader.ReadInt32();
         public bool ReadBoolean() => this._reader.ReadBoolean();
         public double ReadDouble() => this._reader.ReadDouble();

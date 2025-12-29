@@ -96,7 +96,10 @@ namespace Start_a_Town_
                 this.Actor.Net.EventOccured((int)Message.Types.InteractionInterrupted, this.Actor, this);
             this.State = States.Finished;
             if (this.AnimationDef is not null)
-                this._animation?.FadeOutAndRemove();
+            {
+                this._animation?.FadeOutAndRemove(-.005f);
+                this._animation.Speed = 0;
+            }
         }
 
         public virtual void Perform()
@@ -175,13 +178,16 @@ namespace Start_a_Town_
             }
         }
 
-        protected virtual void Stop()
+        internal virtual void Stop()
         {
-            this._animation.FadeOutAndRemove();
+            this._animation.FadeOutAndRemove(-.005f);
+            this._animation.Speed = 0;
         }
         protected virtual void Fail()
         {
-            this._animation.FadeOutAndRemove();
+            this._animation.FadeOutAndRemove(-.005f);
+            this._animation.Speed = 0;
+
             this.State = States.Failed;
         }
         public void GetTooltip(Control tooltip)

@@ -598,7 +598,7 @@ namespace Start_a_Town_.Net
                     Instance.Instantiate(entity);
                     //target.Slot.Object = entity;
                     target.Slot.Assign(entity);
-                    Instance.SyncChild(entity, target.Slot.Parent, target.Slot.ID);
+                    Instance.SyncChild(entity, target.Slot.Owner, target.Slot.ID);
                     break;
 
                 case TargetType.Position:
@@ -677,19 +677,14 @@ namespace Start_a_Town_.Net
         {
             return this.World.DisposeEntity(netID);
         }
-        [Obsolete("use world.disposeandsync")]
-        public void SyncDispose(int refID)
-        {
-            this.DisposeObject(refID);
-            PacketEntityDispose.Send(this, refID);
-        }
+       
         public void SetMap(MapBase map)
         {
+            this.Map = map;
             this.World = map.World;
-            this.World.Net = Instance;
-            Instance.Map = map;
-            //foreach (var ch in map.GetActiveChunks().Values)
-            //    ResolveChunkReferences(ch);
+            this.World.Net = this;
+            Registry.MapEventHooks.HookTo(map.Events);
+            Registry.WorldEventHooks.HookTo(map.World.Events);
             foreach (var obj in Instance.World.Entities)
                 obj.Value.OnMapLoaded(Instance.Map);
             map.ResolveReferences();

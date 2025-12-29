@@ -24,14 +24,14 @@ namespace Start_a_Town_.Net
             //else
             //    throw new Exception();
         }
-        public void Post<T>(TimeSpan time, T args) where T : EventPayloadBase
-        {
-            if (Registry.GameEvents.TryGet<T>(out var id))
-            {
-                var e = new GameEvent(time.TotalMilliseconds, id, args);
-                this.Post(e);
-            }
-        }
+        //public void Post<T>(TimeSpan time, T args) where T : EventPayloadBase
+        //{
+        //    if (Registry.GameEvents.TryGet<T>(out var id))
+        //    {
+        //        var e = new GameEvent(time.TotalMilliseconds, id, args);
+        //        this.Post(e);
+        //    }
+        //}
         protected virtual void Post(GameEvent a)
         {
             var id = a.Type;

@@ -250,8 +250,8 @@ namespace Start_a_Town_.Components
                 var velocity = LootManager.RandomPopVelocity(rng);
                 parent.Map.World.Register(product);
                 parent.Map.Spawn(product, parent.Global, velocity);
-                PacketRegisterEntity.Send(product);
-                PacketSpawnEntity.Send(product, parent.Global, velocity);
+                //PacketsEntities.Send(product);
+                //PacketSpawnEntity.Send(product, parent.Global, velocity);
             }
 
             this.ResetFruitGrowth(parent);

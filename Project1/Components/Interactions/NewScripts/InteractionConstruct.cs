@@ -41,7 +41,7 @@ namespace Start_a_Town_.Interactions
         void ApplyWork(Context ctx, int workAmount)
         {
             ctx.CachedComp.Advance(workAmount);
-            PacketsConstruction.Sync(ctx.CachedComp);
+            //PacketsConstruction.Sync(ctx.CachedComp);
         }
         
     }

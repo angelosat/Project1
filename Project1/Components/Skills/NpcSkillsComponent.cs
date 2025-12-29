@@ -8,7 +8,6 @@ namespace Start_a_Town_
 {
     public class NpcSkillsComponent : EntityComp, IGui
     {
-        //public Skill[] SkillsNew;
         public Dictionary<SkillDef, Skill> SkillsNew = [];
         static public Panel UI = new Panel(new Rectangle(0, 0, 500, 400));
 
@@ -99,15 +98,11 @@ namespace Start_a_Town_
             r.ReadDefWrappers(this.SkillsNew);
             this.Resolve();
         }
-        internal void AwardAndSync(SkillDef skill, int amount)
-        {
-            Adjust(skill, amount);
-            Skill.Packets.Send(this.Owner as Actor, skill, amount);
-        }
-
-        public void Adjust(SkillDef skill, float amount)
+        
+        public void Increase(SkillDef skill, int amount)
         {
             this[skill].Award(amount);
+            //this.Owner.Map.Events.Post(new SkillIncreaseEvent(this.Owner as Actor, skill, amount));
         }
         public new class Spec : Spec<NpcSkillsComponent>
         {
@@ -126,5 +121,11 @@ namespace Start_a_Town_
                     comp.Add(s);
             }
         }
+    }
+    internal class SkillIncreaseEvent(Actor actor, SkillDef skill, int delta) : EventPayloadBase
+    {
+        public readonly Actor Actor = actor;
+        public readonly SkillDef Skill = skill;
+        public readonly int Delta = delta;
     }
 }

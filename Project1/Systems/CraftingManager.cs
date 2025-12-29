@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_
 {
@@ -16,10 +17,29 @@ namespace Start_a_Town_
             foreach (var def in workstationDefs)
                 this._byType.Add(def, []);
         }
+        public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byPosition.Values;
+        
         internal override void ResolveReferences()
         {
             this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
+            this.RegisterWorkstationsFromMap();
         }
+
+        private void RegisterWorkstationsFromMap()
+        {
+            foreach (var comp in this.Town.Map.BlockEntities
+                            .Select(e =>
+                            {
+                                e.Comps.TryGetComp<BlockWorkstationComp>(out var c);
+                                return c;
+                            })
+                            .Where(c => c is not null))
+            {
+                foreach (var cell in comp.Parent.CellsOccupied)
+                    this.RegisterWorkstation(cell, comp);
+            }
+        }
+
         public IEnumerable<OrderSettings> GetAllOrdersUnsorted()
         {
             foreach (var order in this._ordersById.Values)
@@ -40,10 +60,7 @@ namespace Start_a_Town_
                     continue;
                 if (workstation is not null)
                 {
-                    if (this._byPosition.TryGetValue(pos, out var existing))
-                        this._byType[existing.WorkstationType].Remove(existing);
-                    this._byPosition[pos] = workstation;
-                    this._byType[workstation.WorkstationType].Add(workstation);
+                    RegisterWorkstation(pos, workstation);
                 }
                 else if (this._byPosition.TryGetValue(pos, out var existing))
                 {
@@ -52,6 +69,15 @@ namespace Start_a_Town_
                 }
             }
         }
+
+        private void RegisterWorkstation(IntVec3 pos, BlockWorkstationComp workstation)
+        {
+            if (this._byPosition.TryGetValue(pos, out var existing))
+                this._byType[existing.WorkstationType].Remove(existing);
+            this._byPosition[pos] = workstation;
+            this._byType[workstation.WorkstationType].Add(workstation);
+        }
+
         public OrderSettings CreateOrder(IntVec3 workstationPosition, MaterialRefinementDef refinement)
         {
             var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");

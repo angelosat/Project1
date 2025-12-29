@@ -101,7 +101,7 @@ namespace Start_a_Town_
         static public readonly PlanDef Wander = new("Wandering", typeof(TaskBehaviorWander)) { Idle = true };
         static public readonly PlanDef Depart = new("Departing", typeof(TaskBehaviorDepart));
         static public readonly PlanDef DropInventory = new("Dropping item from Inventory", typeof(TaskBehaviorDropInventoryItem));
-        static public readonly PlanDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem));
+        static public readonly PlanDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem), InteractionDefOf.Drop);
         static public readonly PlanDef Equip = new("Equipping", typeof(BehaviorEquipItemNew), InteractionDefOf.Equip);
         static public readonly PlanDef Unequip = new("Unquipping", typeof(BehaviorUnequip), InteractionDefOf.Unequip);
         static public readonly PlanDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul), InteractionDefOf.Pick);

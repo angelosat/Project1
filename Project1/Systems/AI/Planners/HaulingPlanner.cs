@@ -56,6 +56,9 @@ namespace Start_a_Town_
                         }
                     }
                 }
+                // carried item is useless so place it in current cell (or throw/let it drop)
+                return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
+                //return new Plan(PlanDefOf.DropCarried, new TargetArgs(actor.Map, actor.Cell));
             }
             // if actor has empty hands
             // iterate map items

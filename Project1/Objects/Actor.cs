@@ -159,7 +159,8 @@ namespace Start_a_Town_
 
         internal void FaceTowards(TargetArgs targetA)
         {
-            this.FaceTowards(targetA.Global);
+            if(targetA is not null)
+                this.FaceTowards(targetA.Global);
         }
         internal void FaceTowards(Vector3 global)
         {

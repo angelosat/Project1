@@ -121,6 +121,13 @@ namespace Start_a_Town_.Components
         }
         public void Throw(Vector3 velocity, int amount = -1)
         {
+            var thrownItem = this.HaulSlot.Object as Entity;
+            ArgumentNullException.ThrowIfNull(thrownItem);
+            var parent = this.Owner;
+            parent.Map.Spawn(thrownItem, parent.Global + (1 + parent.Height) * Vector3.UnitZ, this.Owner.Velocity + velocity);
+        }
+        public void ThrowOld(Vector3 velocity, int amount = -1)
+        {
             if (this.HaulSlot.Object is null)
                 throw new Exception();
             Entity thrownItem;

@@ -118,7 +118,7 @@ namespace Start_a_Town_
         //public abstract IEnumerable<GameObject> GetObjects();
         public abstract IEnumerable<GameObject> GetObjects(Vector3 min, Vector3 max);
         public abstract IEnumerable<GameObject> GetObjects(BoundingBox box);
-        IEnumerable<BlockEntity> BlockEntities => this.ActiveChunks.Values.SelectMany(ch => ch.BlockEntities).Distinct();
+        public IEnumerable<BlockEntity> BlockEntities => this.ActiveChunks.Values.SelectMany(ch => ch.BlockEntities).Distinct();
 
         public IEnumerable<T> GetBlockEntities<T>() where T : BlockEntity
         {

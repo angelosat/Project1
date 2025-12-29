@@ -13,12 +13,15 @@ namespace Start_a_Town_
             if (!actor.HasJob(JobDefOf.Craftsman))
                 return null;
             var map = actor.Map;
+            var carried = actor.Hauled as Entity;
 
             // Guard: don’t interfere with other planners
-            if (actor.Hauled != null && !IsCarriedItemRelevantForAnyOrder(actor))
+            if (carried is not null && !IsCarriedItemRelevantForAnyOrder(actor))
                 return null;
 
             var manager = map.Town.CraftingManagerNew;
+
+            
 
             var allOrders = manager.GetAllOrdersUnsorted();
             foreach (var order in allOrders)
@@ -28,19 +31,18 @@ namespace Start_a_Town_
                 // If the crafting flow cannot be completed fully, abort planner
                 //if (!result)
                 if (result.State == CraftingOrderState.NotEnoughItems)
-                    return null;
-                var carried = actor.Hauled as Entity;
+                    continue;
 
-                //if(!allocations.Any())
-                if (result.State == CraftingOrderState.ReadyToCraft && carried == null)
+                if (result.State == CraftingOrderState.ReadyToCraft && carried is null)
                 {
                     var plan = new Plan(PlanDefOf.Crafting, new TargetArgs(actor.Map, order.Workstation.Parent.OriginGlobal)) { Order = order };
                     foreach(var (slot, entity) in result.InSlots)
                         plan.AddTarget(TargetIndex.A, entity);
                     return plan;
                 }
+
                 var allocations = result.ToTransfer;
-                if (carried != null)
+                if (carried is not null)
                 {
                     if (CanDeliverCarriedItemToOrder(actor, order, out var carriedTargetSlot))
                     {
@@ -54,6 +56,7 @@ namespace Start_a_Town_
                             .SelectMany(a => a.pair)
                             .FirstOrDefault(a => a.stack == carried);
 
+                        // If an allocation is found and valid, issue a go pick up plan
                         if (allocation.stack != null)
                             return new Plan(PlanDefOf.GoHaul, new TargetArgs(allocation.stack)) { AmountA = allocation.quantity };
 
@@ -92,6 +95,20 @@ namespace Start_a_Town_
                 // Fallthrough: all ingredients are already on workstation
                 //return new Plan(TaskDefOf.Crafting, new TargetArgs(actor.Map, order.Workstation.Global));
             }
+
+            // Try to clear up workbench surfaces
+            if (carried is null)
+                if (TryClearWorkstations(actor, manager) is Entity junk)
+                    return new Plan(PlanDefOf.GoHaul, new TargetArgs(junk));
+
+            return null;
+        }
+        static Entity TryClearWorkstations(Actor actor, CraftingManager manager)
+        {
+            foreach (var workstation in manager.AllWorkstations)
+                foreach(var junk in workstation.GetJunk())
+                    if(actor.CanReach(junk) && actor.CanReserve(junk))
+                        return junk;
             return null;
         }
         static (Entity stack, int quantity)? FindNextWorldItemForOrder(Actor actor, OrderSettings order, IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> collectResult)

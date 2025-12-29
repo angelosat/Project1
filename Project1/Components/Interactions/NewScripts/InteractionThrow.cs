@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Start_a_Town_
 {
@@ -16,17 +17,29 @@ namespace Start_a_Town_
         {
             this.All = all;
         }
-
-        internal override void InitAction()
+        public override void Update()
         {
+            base.Update();
             var actor = this.Actor;
             if (actor.Net.IsClient) return;
             var target = this.Target;
+            var velocity = new Vector3(target.Direction, 0) * 0.1f + actor.Velocity;
+            // TODO use this.All to throw the whole item stack vs only one
+            actor.Inventory.Throw(velocity, amount: -1);
+        }
+        internal override void InitAction()
+        {
             base.InitAction();
+            return;
+            var actor = this.Actor;
+            var target = this.Target;
+            if (actor.Net.IsClient) return;
             var velocity = new Vector3(target.Direction, 0) * 0.1f + actor.Velocity;
 
             // TODO use this.All to throw the whole item stack vs only one
             actor.Inventory.Throw(velocity, amount: -1);
+
+
             //PacketActorThrowHauled.Send(actor, Vector3.Zero);
             //return;
 

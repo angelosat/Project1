@@ -97,8 +97,10 @@ namespace Start_a_Town_
             this.State = States.Finished;
             if (this.AnimationDef is not null)
             {
-                this._animation?.FadeOutAndRemove(-.005f);
-                this._animation.Speed = 0;
+                this._animation?.FadeOutAndRemove();
+
+                //this._animation?.FadeOutAndRemove(-.005f);
+                //this._animation.Speed = 0;
             }
         }
 
@@ -170,14 +172,11 @@ namespace Start_a_Town_
 
         internal virtual void Stop()
         {
-            this._animation.FadeOutAndRemove(-.005f);
-            this._animation.Speed = 0;
+            this._animation.FadeOutAndRemove();
         }
         protected virtual void Fail()
         {
-            this._animation.FadeOutAndRemove(-.005f);
-            this._animation.Speed = 0;
-
+            this._animation.FadeOutAndRemove();
             this.State = States.Failed;
         }
         public void GetTooltip(Control tooltip)
@@ -275,11 +274,11 @@ namespace Start_a_Town_
 
         internal virtual void InitAction()
         {
-            if (this.Length == 0)
-            {
-                this.Perform();
-                this.Finish();
-            }
+            //if (this.Length == 0)
+            //{
+            //    this.Perform();
+            //    this.Finish();
+            //}
         }
         internal virtual void FinishAction()
         {

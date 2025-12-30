@@ -38,7 +38,8 @@ namespace Start_a_Town_
         public void SetArgs(ConstructionDesignationArgs args)
         {
             this.Block = args.Block;
-            var ingredientCount = this.Block.Size.Volume * ItemDefOf.Ingredient.StackCapacity / this.Block.ConstructionProfile.Dimension;
+            //var ingredientCount = this.Block.Size.Volume * ItemDefOf.Ingredient.StackCapacity / this.Block.ConstructionProfile.Dimension;
+            var ingredientCount = this.Block.Size.Volume / this.Block.ConstructionProfile.Dimension;
             this.Fulfilment.Required = ingredientCount;
             this.Args = args;
         }
@@ -49,8 +50,11 @@ namespace Start_a_Town_
                 throw new ArgumentException($"deposited {entity} in construction is not a {ItemDefOf.Ingredient}");
             if (entity.Profile != this.Args.Refinement)
                 throw new ArgumentException($"deposited {entity} in construction is not a {this.Args.Refinement}");
-            if (quantity > this.Fulfilment.Missing)
-                throw new ArgumentException($"deposited quantity: {quantity} larger than missing quantity: {this.Fulfilment.Missing}");
+            //if (quantity > this.Fulfilment.Missing)
+            //    throw new ArgumentException($"deposited quantity: {quantity} larger than missing quantity: {this.Fulfilment.Missing}");
+
+            // only take what i need
+            quantity = Math.Min(quantity, this.Missing);
             this.Fulfilment.Current += quantity;
             entity.Consume(quantity);
 
@@ -80,7 +84,14 @@ namespace Start_a_Town_
                 entity.Profile == this.Args.Refinement &&
                 entity.PrimaryMaterial == this.Args.Material;
         }
-
+        public int DemandFor(Entity entity)
+        {
+            if (this.Missing == 0)
+                return 0;
+            if (this.Accepts(entity))
+                return this.Missing;
+            return 0;
+        }
         internal override bool TryConsume(Entity item)
         {
             if (!this.Accepts(item))

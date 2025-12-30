@@ -22,10 +22,12 @@ namespace Start_a_Town_
                 var (target, cell) = GetCarriedUsefulness(actor, buildablesUnready);
                 if (target is not null)
                 {
-                    var extraCapacity = target.Missing - carried.StackSize;
+                    // can i collect more of what i'm carrying that is near me and is useful for the target or any other target around it?
+                    var extraCapacity = carried.StackAvailableSpace;// target.Missing - carried.StackSize;
                     if (extraCapacity > 0)
                     {
-                        (Entity item, int amount) = FindMoreFor(carried, target);
+                        //(Entity item, int amount) = FindMoreFor(carried, target);
+                        (Entity item, int amount) = FindMoreForNew(actor, carried, target);
                         if (item is not null)
                             return new Plan(PlanDefOf.GoHaul, new TargetArgs(item)) { AmountA = amount };
                     }
@@ -77,7 +79,54 @@ namespace Start_a_Town_
             }
             return null;
         }
+        IEnumerable<BlockConstructionComp> GetUnreadyNearby(IEnumerable<BlockConstructionComp> unready, IntVec3 cell)
+        {
+            var area = cell.GetRadial(2);
+            return unready.Where(comp => area.Contains(comp.Parent.OriginGlobal));
+        }
+        private static int TryCoverDemand(BlockConstructionComp target, Entity carried, IEnumerable<BlockConstructionComp> unready)
+        {
+            int totalDemand = target.Missing, maxDemand = carried.StackMax;
+            foreach(var comp in unready)
+            {
+                totalDemand += comp.DemandFor(carried);
+                if (totalDemand > maxDemand)
+                    return maxDemand;
+            }
+            return totalDemand;
+        }
+        private (Entity item, int amount) FindMoreForNew(Actor actor, Entity carried, BlockConstructionComp target)
+        {
+            if (carried.IsStackFull)
+                return default;
 
+            var allUnready = target.Map.Town.ConstructionsManager.GetConstructionsUnready();
+            var totalDemand = TryCoverDemand(
+                target, 
+                carried, 
+                allUnready
+                    .SkipWhile(c => c == target)
+                    .Where(c => target.Global.GetRadial(2)
+                    .Contains(c.Global)));
+
+            var remaining = totalDemand - carried.StackSize;
+            if (remaining == 0)
+                return default;
+
+            var mapItems = target.Map.Entities;
+            foreach (var item in mapItems)
+            {
+                var itemDistance = Vector3.DistanceSquared(actor.Global, item.Global);
+                var constructionDistance = Vector3.DistanceSquared(actor.Global, target.Global);
+
+                if (itemDistance > constructionDistance) continue;
+                //if (!target.Accepts(item as Entity)) continue;
+                if (!carried.CanAbsorb(item)) continue;
+                var amountToTake = Math.Min(item.StackSize, Math.Min(remaining, carried.StackAvailableSpace));
+                return (item as Entity, amountToTake);
+            }
+            return default;
+        }
         private static (Entity item, int amount) FindMoreFor(Entity carried, BlockConstructionComp target)
         {
             var mapItems = target.Map.Entities;

@@ -906,12 +906,7 @@ namespace Start_a_Town_.Net
                     var predictedPos = entity.Global + entity.Velocity * (float)dt;
                     entity.SetPosition(predictedPos);
                     continue;
-                    //
-                    nextSnap = prevSnap;
                 }
-                //var entity = this.World.GetEntity(prevSnap.RefID);
-                //if (entity is null) /// snapshot for entity that hasn't been spawned but the client yet? silently drop?
-                //    continue;
                 entity.SetPosition(prevSnap.Position + (nextSnap.Position - prevSnap.Position) * t);
                 entity.Velocity = prevSnap.Velocity + (nextSnap.Velocity - prevSnap.Velocity) * t;
                 entity.Direction = prevSnap.Orientation + (nextSnap.Orientation - prevSnap.Orientation) * t;

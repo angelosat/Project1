@@ -11,9 +11,10 @@ namespace Start_a_Town_
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(NetEndpoint net, ToolBlockBuild.Args a)
+        internal static void SendRemove(NetEndpoint net, ToolBlockBuild.Args a)
         {
-            Send(net, null, a);
+            //Send(net, null, a);
+            Send(net, a, default);
         }
         
         static public void Send(NetEndpoint net, ProductMaterialPair item, ToolBlockBuild.Args a)

@@ -31,7 +31,7 @@ namespace Start_a_Town_
         {
             //var a = new ToolBlockBuildOld.Args(ToolBlockBuildOld.Modes.Box, min, max, true, InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu), false, 0);
             var a = new ToolBlockBuild.Args(BuildToolDefOf.Box, min, max, true, InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu), false, 0);
-            PacketDesignateConstruction.Send(Client.Instance, a);
+            PacketDesignateConstruction.SendRemove(Client.Instance, a);
         }
        
         internal override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera camera)

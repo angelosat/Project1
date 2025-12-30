@@ -162,11 +162,11 @@ namespace Start_a_Town_
             };
         }
     
-        public SaveTag SerializeToNbt(Chunk chunk)
+        public void Serialize(Chunk chunk, SaveTag chunkTag)
         {
             var snapshot = this.BuildSnapshot(chunk);
 
-            var chunkTag = new SaveTag(SaveTag.Types.Compound, "Chunk");
+            //var chunkTag = new SaveTag(SaveTag.Types.Compound, "Chunk");
 
             // --- Air runs ---
             var airTag = new SaveTag(SaveTag.Types.List, "Air", SaveTag.Types.Compound);
@@ -228,9 +228,9 @@ namespace Start_a_Town_
             }
             chunkTag.Add(materialTag);
 
-            return chunkTag;
+            //return chunkTag;
         }
-        private ChunkSnapshot BuildSnapshotFromNbt(SaveTag chunkTag)
+        public void Deserialize(Chunk chunk, SaveTag chunkTag)
         {
             var snapshot = new ChunkSnapshot();
 
@@ -326,11 +326,11 @@ namespace Start_a_Town_
             }
             snapshot.MaterialDefRuns = materialRunList.ToArray();
 
-            return snapshot;
+            // --- Apply snapshot to chunk ---
+            this.ApplySnapshot(chunk, snapshot);
         }
 
-        // --- Public API ---
-        public void WriteToBinary(Chunk chunk, IDataWriter writer)
+        public void Serialize(Chunk chunk, IDataWriter writer)
         {
             var snapshot = BuildSnapshot(chunk);
 
@@ -379,7 +379,7 @@ namespace Start_a_Town_
                 }
             }
         }
-        public void ReadFromBinary(Chunk chunk, IDataReader reader)
+        public void Deserialize(Chunk chunk, IDataReader reader)
         {
             // --- Build snapshot by reading from reader ---
             var snapshot = new ChunkSnapshot();
@@ -456,7 +456,7 @@ namespace Start_a_Town_
             snapshot.MaterialDefRuns = materialRuns;
 
             // --- Apply snapshot to chunk ---
-            ApplySnapshot(chunk, snapshot);
+            this.ApplySnapshot(chunk, snapshot);
         }
 
         private void ApplySnapshot(Chunk chunk, ChunkSnapshot snapshot)

@@ -1659,86 +1659,7 @@ namespace Start_a_Town_
             this.LightCache.Clear();
         }
 
-        void WriteCells(IDataWriter writer)
-        {
-            var w = writer;
-            int consecutiveAirblocks = 0;
-            bool lastDiscovered = false;
-            bool foundAir = false;
-            for(int z= 0;z<MapBase.MaxHeight; z++)
-            for(int y= 0;y<Size; y++)
-            for(int x= 0;x< Size; x++)
-                        //foreach (var cell in this.Cells)
-            {
-                        var cell = this.GetLocalCell(x, y, z);
-                if (cell.Block == BlockDefOfNew.Air.Worker)
-                {
-                    consecutiveAirblocks++;
-                    if (!foundAir)
-                    {
-                        foundAir = true;
-                        lastDiscovered = cell.Discovered;
-                    }
-                    else if (lastDiscovered != cell.Discovered)
-                    {
-                        foundAir = false;
-                        writeAir(w, consecutiveAirblocks, lastDiscovered);
-                        consecutiveAirblocks = 0;
-                    }
-                    continue;
-                }
-                if (consecutiveAirblocks > 0)
-                {
-                    foundAir = false;
-                    writeAir(w, consecutiveAirblocks, lastDiscovered);
-                    consecutiveAirblocks = 0;
-                }
-                w.Write(cell.Block.BaseID);
-                w.Write(cell.Data.Data);
-                cell.Material.Write(w);
-            }
-            if (consecutiveAirblocks > 0)
-                writeAir(w, consecutiveAirblocks, lastDiscovered);
-
-            static void writeAir(IDataWriter w, int consecutiveAirblocks, bool lastDiscovered)
-            {
-                w.Write(BlockDefOfNew.Air.Worker.BaseID);
-                w.Write(consecutiveAirblocks);
-                w.Write(lastDiscovered); // because all consecutive air blocks are either all discovered or none is
-                /// NO!!!! when incrementing the cell index, the next cell can be in a different Z level and completely disconnected from the previous cell
-            }
-        }
-        void ReadCells(IDataReader r)
-        {
-            int cellIndex = 0;
-            Block block;
-            do
-            {
-                block = Block.GetBlock(r);// r.ReadBlock();
-                if (block == BlockDefOfNew.Air.Worker)
-                {
-                    // read length of consecutive air blocks
-                    int consecutiveAirblocks = r.ReadInt32();
-                    bool discovered = r.ReadBoolean();
-                    for (int j = 0; j < consecutiveAirblocks; j++)
-                    {
-                        var c = this.Cells[cellIndex++];
-                        c.Block = BlockDefOfNew.Air.Worker;
-                        c.Material = MaterialDefOf.Air;
-                        c.Discovered = discovered;
-                    }
-                }
-                else
-                {
-                    var cell = this.Cells[cellIndex++];
-                    cell.Block = block;
-                    cell.Data = new BitVector32(r.ReadInt32());
-                    cell.Material = Def.GetDef<MaterialDef>(r);
-                }
-            } while (cellIndex < this.Cells.Length);
-        }
         #region Serialization
-      
 
         public static Chunk Create(MapBase map, IDataReader reader)
         {
@@ -1758,11 +1679,8 @@ namespace Start_a_Town_
             writer.Write(this.LightValid);
             writer.Write(this.EdgesValid);
 
-            this.WriteCells(writer);
-
-            //writer.Write(this.Objects.Count);
-            //foreach (var obj in this.Objects.ToList())
-            //    obj.Write(writer);
+            var serializer = new ChunkSerializer();
+            serializer.Serialize(this, writer);
 
             // save only entity refids, for entities to be claimed from the world entity registry during deserialization
             var refids = this.Objects.Select(o => o.RefId).ToList();
@@ -1788,11 +1706,9 @@ namespace Start_a_Town_
 
             // TODO: OPTIMIZE
             this.InitCells();
-            this.ReadCells(reader);
 
-            //int objCount = reader.ReadInt32();
-            //for (int i = 0; i < objCount; i++)
-            //    this.Add(GameObject.Create(reader));
+            var serializer = new ChunkSerializer();
+            serializer.Deserialize(this, reader);
 
             var entityRefIds = reader.ReadListInt32();
             foreach (var refId in entityRefIds)
@@ -1800,7 +1716,6 @@ namespace Start_a_Town_
             this.ReadBlockEntitiesDistinct(reader);
             for (int j = 0; j < Size; j++)
                 for (int i = 0; i < Size; i++)
-                //for (int j = 0; j < Size; j++)
                     this.HeightMap[i][j] = reader.ReadInt32();
 
             this.Sunlight = reader.ReadBytes(Volume);//.ToList();
@@ -1817,7 +1732,6 @@ namespace Start_a_Town_
 
         public void Build(Camera cam)
         {
-            //this.ValidateSlices(cam);
             this.ValidateSlicesNew(cam);
             this.Valid = true;
         }
@@ -1851,18 +1765,7 @@ namespace Start_a_Town_
                 if (i == cam.MaxDrawZ && cam.DrawTopSlice)
                     slice.Cover.NonOpaque.Draw();
             }
-            
-            //if (cam.DrawTopSlice)
-            //{
-            //    if (cam.MysteriousBlocks)
-            //    {
-            //        effectHideWalls.SetValue(Engine.HideWalls);
-            //        effect.CurrentTechnique.Passes["Pass1"].Apply();
-            //        this.Slices[cam.MaxDrawZ].Unknown.Draw();
-            //    }
-            //    else
-            //        this.Slices[cam.MaxDrawZ].Cover.Opaque.Draw();
-            //}
+         
             foreach (var blockentity in this.BlockEntitiesByPosition)
             blockentity.Value.Draw(cam, this.Map, blockentity.Key.ToGlobal(this));
         }
@@ -1906,9 +1809,10 @@ namespace Start_a_Town_
             var lightTag = new SaveTag(SaveTag.Types.List, "Light", SaveTag.Types.Byte);
 
             var sw = Stopwatch.StartNew();
-            //this.SaveCellsToTagCompressed(chunktag);
-            //this.SaveCellsToTagCompressedAsBlockDefs(chunktag);
-            this.SaveCellsToTagCompressedOptimized(chunktag);
+  
+            var serializer = new ChunkSerializer();
+            serializer.Serialize(this, chunktag);
+
             sw.Stop();
             string.Format("cells saved in {0} ms", sw.ElapsedMilliseconds).ToConsole();
 
@@ -1929,9 +1833,6 @@ namespace Start_a_Town_
             sw.Stop();
             string.Format("heightmap saved in {0} ms", sw.ElapsedMilliseconds).ToConsole();
 
-            //var entitiestag = new SaveTag(SaveTag.Types.List, "Entities", SaveTag.Types.Compound);
-            //foreach (GameObject obj in this.Objects)
-            //    entitiestag.Add(new SaveTag(SaveTag.Types.Compound, obj.Name, obj.SaveInternal()));
             var entityRefIds = this.Objects.Select(e => e.RefId).ToList();
             var entitiestag = entityRefIds.Save("Entities");
 
@@ -1956,9 +1857,8 @@ namespace Start_a_Town_
 
             var lightTag = chunktag["Light"].Value as List<SaveTag>;
 
-            //this.LoadCellsFromTagCompressed(chunktag);
-            //this.LoadCellsFromTagCompressedAsBlockDefs(chunktag);
-            this.LoadCellsFromTagCompressedOptimized(chunktag);
+            var serializer = new ChunkSerializer();
+            serializer.Deserialize(this, chunktag);
 
             var n = 0;
             for (int h = 0; h < MapBase.MaxHeight; h++)

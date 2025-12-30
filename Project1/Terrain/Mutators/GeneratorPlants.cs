@@ -36,6 +36,7 @@ namespace Start_a_Town_
                         comp.GrowthFruit.Percentage = 1;
                         int gx = x + (int)chunk.Start.X, gy = y + (int)chunk.Start.Y;
                         plant.Global = new Vector3(gx, gy, z + 1);
+                        chunk.World.Register(plant);
                         chunk.Add(plant);
                     }
                 }

@@ -451,7 +451,7 @@ namespace Start_a_Town_.Net
         {
             var tag = new SaveTag(SaveTag.Types.Compound, "Character");
 
-            var charTag = new SaveTag(SaveTag.Types.Compound, "PlayerCharacter", actor.SaveInternal());
+            var charTag = new SaveTag(SaveTag.Types.Compound, "PlayerCharacter", actor.Save());
 
             // save metadata such as hotbar
 

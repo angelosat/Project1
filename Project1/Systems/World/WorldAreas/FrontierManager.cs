@@ -113,6 +113,8 @@ namespace Start_a_Town_
         }
         public void Exit(Actor actor)
         {
+            if (!this.Actors.ContainsKey(actor))
+                return;
             this.Actors.Remove(actor);
             actor.Effects.Remove(EffectDefOf.Adventuring);
             //if (!this.Actors.Remove(actor))

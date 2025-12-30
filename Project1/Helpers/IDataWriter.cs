@@ -24,6 +24,17 @@ namespace Start_a_Town_
 
         internal IDataWriter Write(IntVec2 v);
         internal IDataWriter Write(List<int> v);
+        internal IDataWriter Write(List<EntityRefId> v)
+        {
+            this.Write(v.Count);
+            foreach (var i in v)
+            {
+                if (i == 0)
+                    throw new System.Exception();
+                this.Write(i);
+            }
+            return this;
+        }
         internal IDataWriter Write(ICollection<int> v) { this.ww.Write(v); return this; }
         public IDataWriter Write(int[] v) { this.ww.Write(v); return this; }
         internal IDataWriter Write(Def def) { this.ww.Write(def); return this; }

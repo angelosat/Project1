@@ -136,7 +136,7 @@ namespace Start_a_Town_.Core
         }
         private void SendPendingChunks(Server server)
         {
-            foreach (var pl in server.Players.GetList())
+            foreach (var pl in server.Players?.GetList())
             {
                 if (pl.SentChunks.Count > 0)
                 {

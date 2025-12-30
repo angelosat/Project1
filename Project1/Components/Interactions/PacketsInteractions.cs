@@ -44,29 +44,6 @@ namespace Start_a_Town_
         }
     }
 
-    public readonly struct PacketId(int value)
-    {
-        public readonly int Value = value;
-        public static implicit operator PacketId(int v) => new(v);
-        public static implicit operator int(PacketId v) => v.Value;
-    }
-    public readonly struct EntityRefId(int value)
-    {
-        internal static readonly EntityRefId Null = new(0);
-        public readonly int Value = value;
-        public static implicit operator EntityRefId(int v) => new(v);
-        public static implicit operator int(EntityRefId v) => v.Value;
-        public override string ToString() => $"{nameof(EntityRefId)}: {this.Value}";
-    }
-    public readonly struct SlotIndex(int value)
-    {
-        internal static readonly SlotIndex Null = new(-1);
-        public readonly int Value = value;
-        public static implicit operator SlotIndex(int v) => new(v);
-        public static implicit operator int(SlotIndex v) => v.Value;
-        public override string ToString() => $"{nameof(SlotIndex)}: {this.Value}";
-    }
-
     internal class InteractionProgressEvent : EventPayloadBase
     {
         public readonly Actor Actor;

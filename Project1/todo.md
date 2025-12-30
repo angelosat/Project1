@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- cleanup interactions/blocks
 - intercept disposed/despawned entity events to close inspector window for them
 - construction designations: instead of drawing on the chunk's meshes, let construction manager have its own mesh. this way it will only serve as a layer/interface to select cells, intead of actually placing dummy "designation" blocks
 - lumberjacking: two distinct designations: 1)chop down explicitly: forces actors to clear trees immediately, 2)chop down only when wood stocks lower than min set limit

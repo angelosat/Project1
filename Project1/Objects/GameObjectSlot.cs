@@ -238,7 +238,7 @@ namespace Start_a_Town_
 
         public List<SaveTag> Save()
         {
-            List<SaveTag> data = [new SaveTag(SaveTag.Types.Compound, "Object", Object.SaveInternal())];
+            List<SaveTag> data = [new SaveTag(SaveTag.Types.Compound, "Object", Object.Save())];
             return data;
         }
 

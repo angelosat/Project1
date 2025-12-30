@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static Start_a_Town_.Block;
 
 namespace Start_a_Town_
 {
@@ -920,27 +921,27 @@ namespace Start_a_Town_
         }
         public SaveTag Save(string name = "")
         {
-            return new SaveTag(SaveTag.Types.Compound, name, this.SaveInternal());
-        }
-        internal List<SaveTag> SaveInternal()
-        {
-            var data = new List<SaveTag>();
-            data.Add(this.Def.Name.Save("Def"));
+            //return new SaveTag(SaveTag.Types.Compound, name, this.SaveInternal());
+            var save = new SaveTag(SaveTag.Types.Compound, name);
+            save.Add(this.Def.Name.Save("Def"));
             // todo : items without profile (coins for now)
-            data.Add(this.Profile.Save("ProfileID"));
-            data.Add(((int)this.RefId).Save("InstanceID"));
-            data.Add(this._stackSize.Save("Stack"));
-            //var compData = new SaveTag(SaveTag.Types.Compound, "Components");
-            //foreach (var comp in this.Components.Values)
-            //{
-            //    var compSave = comp.SaveAs(comp.GetType().FullName);
-            //    if (compSave is not null)
-            //        compData.Add(compSave);
-            //}
-            //data.Add(compData);
-            data.Add(this.Components.Save("Components"));
-            return data;
+            this.Profile?.Save(save, "ProfileID");
+            save.Add(((int)this.RefId).Save("InstanceID"));
+            save.Add(this._stackSize.Save("Stack"));
+            save.Add(this.Components.Save("Components"));
+            return save;
         }
+        //internal List<SaveTag> SaveInternal()
+        //{
+        //    var data = new List<SaveTag>();
+        //    data.Add(this.Def.Name.Save("Def"));
+        //    // todo : items without profile (coins for now)
+        //    data.Add(this.Profile.Save("ProfileID"));
+        //    data.Add(((int)this.RefId).Save("InstanceID"));
+        //    data.Add(this._stackSize.Save("Stack"));
+        //    data.Add(this.Components.Save("Components"));
+        //    return data;
+        //}
 
         /// <summary>
         /// Creates an object from a savetag node.

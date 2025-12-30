@@ -81,7 +81,7 @@ namespace Start_a_Town_
                 var contents = new SaveTag(SaveTag.Types.List, "Contents", SaveTag.Types.Compound);
                 foreach (var obj in this.Contents)
                 {
-                    contents.Add(new SaveTag(SaveTag.Types.Compound, "", obj.SaveInternal()));
+                    contents.Add(new SaveTag(SaveTag.Types.Compound, "", obj.Save()));
                 }
 
                 save.Add(contents);

@@ -77,7 +77,10 @@ namespace Start_a_Town_.Net
         public static CancellationTokenSource ChunkLoaderToken = new();
         static Server _Instance;
         public static Server Instance => _Instance ??= new Server();
-
+        public Server()
+        {
+            this.Players = new PlayerList(this);
+        }
         //static int _refIdSequence = 1;
 
         static int _playerID = 1;
@@ -130,7 +133,7 @@ namespace Start_a_Town_.Net
                 Listener.Close();
             Listener = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             Listener.ReceiveBufferSize = Listener.SendBufferSize = Packet.Size;
-            Instance.Players = new PlayerList(Instance);
+            //Instance.Players = new PlayerList(Instance);
             var anyIP = new IPEndPoint(IPAddress.Any, Port);
             Listener.Bind(anyIP);
 

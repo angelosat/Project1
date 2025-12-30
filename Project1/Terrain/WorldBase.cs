@@ -23,7 +23,7 @@ namespace Start_a_Town_
         public abstract MapBase GetMap(Vector2 mapCoords);
         public Random Random { get; set; }
         public virtual float Gravity { get; }
-        public int Seed { get; set; }
+        public WorldSeed Seed { get; set; }
         public int MaxHeight { get; set;  }
         public virtual ulong CurrentTick { get; set; }
         public virtual TimeSpan Clock { get; }

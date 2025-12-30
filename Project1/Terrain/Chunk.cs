@@ -1284,8 +1284,11 @@ namespace Start_a_Town_
             //    obj.Write(writer);
 
             // save only entity refids, for entities to be claimed from the world entity registry during deserialization
-            writer.Write(this.Objects.Select(o => o.RefId).ToList());
-
+            var refids = this.Objects.Select(o => o.RefId).ToList();
+            if (refids.Any(c => c == 0))
+                throw new Exception();
+            writer.Write(refids);
+            
             this.WriteBlockEntitiesDistinct(writer);
             for (int j = 0; j < Size; j++)
                 for (int i = 0; i < Size; i++)

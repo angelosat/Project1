@@ -6,9 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
-//#nullable enable
+#nullable enable
 
 namespace Start_a_Town_
 {
@@ -111,7 +110,7 @@ namespace Start_a_Town_
         }
         public BlockEntity BlockEntity;
         GameObject? _resolvedEntity;
-        public GameObject? Entity => this._resolvedEntity ??= this.World.GetEntity(this.EntityID);
+        public GameObject? Entity => this._resolvedEntity ??= this.World?.GetEntity(this.EntityID);
         public GameObject Object
         {
             get

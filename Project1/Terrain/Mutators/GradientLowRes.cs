@@ -8,7 +8,7 @@ namespace Start_a_Town_.Terraforming
     {
         public WorldBase World;
         readonly int StartX, StartY;
-        static readonly int Hash = "gradient".GetHashCode();
+        static readonly WorldSeed Hash = "gradient".GetStableHash();//.GetHashCode();
         readonly byte[] Seed;
         readonly int Resolution = 8;
         readonly int Turbulence = 1;
@@ -17,7 +17,7 @@ namespace Start_a_Town_.Terraforming
             this.World = world;
             this.StartX = chunk.Start.X;
             this.StartY = chunk.Start.Y;
-            this.Seed = BitConverter.GetBytes(this.World.Seed + Hash);
+            this.Seed = BitConverter.GetBytes(this.World.Seed.MixWith(Hash));
             this.Turbulence = turb;
         }
         public GradientLowRes(WorldBase world, int startX, int startY, int turb = 1)
@@ -25,7 +25,7 @@ namespace Start_a_Town_.Terraforming
             this.World = world;
             this.StartX = startX;
             this.StartY = startY;
-            this.Seed = BitConverter.GetBytes(this.World.Seed + Hash);
+            this.Seed = BitConverter.GetBytes(this.World.Seed.MixWith(Hash));
             this.Turbulence = turb;
         }
 

@@ -24,7 +24,7 @@ namespace Start_a_Town_.Terraforming.Mutators
                     continue;
                 else if (z == this.SeaLevel)
                 {
-                    if (c.Block == BlockDefOf.Air)
+                    if (c.Block == BlockDefOfNew.Air.Worker)
                     {
                         c.Block = BlockDefOf.Fluid;
                         c.Material = MaterialDefOf.Water;
@@ -33,7 +33,7 @@ namespace Start_a_Town_.Terraforming.Mutators
                 }
                 else
                 {
-                    if (c.Block == BlockDefOf.Air)
+                    if (c.Block == BlockDefOfNew.Air.Worker)
                     {
                         c.Block = BlockDefOf.Fluid;
                         c.Material = MaterialDefOf.Water;

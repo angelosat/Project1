@@ -33,7 +33,7 @@ namespace Start_a_Town_
 
         public override void RandomBlockUpdate(INetEndpoint net, IntVec3 global, Cell celll)
         {
-            if (net.Map.GetBlock(global + IntVec3.UnitZ) != BlockDefOf.Air)
+            if (net.Map.GetBlock(global + IntVec3.UnitZ) != BlockDefOfNew.Air.Worker)
                 return;
             if (net.Map.GetSunLight(global + IntVec3.UnitZ) < 8)
                 return;

@@ -217,7 +217,7 @@ namespace Start_a_Town_
         {
             return
                 Block.GetBlockMaterial(map, arg) == MaterialDefOf.Soil
-                && map.GetBlock(arg + Vector3.UnitZ) == BlockDefOf.Air;
+                && map.GetBlock(arg + Vector3.UnitZ) == BlockDefOfNew.Air.Worker;
         }
 
         internal IEnumerable<Plant> GetHarvestablePlantsLazy()

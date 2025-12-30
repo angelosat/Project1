@@ -39,7 +39,7 @@ namespace Start_a_Town_
             if (!this.Enabled)
                 return;
             var positions = this.Begin.GetBox(this.End)
-                .Where(v => map.GetBlock(v) != BlockDefOf.Air);
+                .Where(v => map.GetBlock(v) != BlockDefOfNew.Air.Worker);
             positions = this.Begin.GetBoxHollow(this.End);
             camera.DrawCellHighlights(sb, Block.BlockBlueprint, positions, Color.Red);
         }
@@ -48,7 +48,7 @@ namespace Start_a_Town_
             if (!this.Enabled)
                 return;
             var positions = this.Begin.GetBox(this.End)
-                .Where(v => map.GetBlock(v) != BlockDefOf.Air);
+                .Where(v => map.GetBlock(v) != BlockDefOfNew.Air.Worker);
             camera.DrawCellHighlights(sb, Block.BlockBlueprint, positions, Color.Red);
         }
     }

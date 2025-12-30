@@ -50,7 +50,7 @@ namespace Start_a_Town_
         protected override void OnBlockBelowChanged(MapBase map, IntVec3 global)
         {
             map.GetBlock(global.Below, out var cell);
-            if (cell.Block == BlockDefOf.Air)
+            if (cell.Block == BlockDefOfNew.Air.Worker)
                 map.RemoveBlock(global);
         }
     }

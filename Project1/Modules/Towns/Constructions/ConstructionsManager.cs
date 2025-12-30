@@ -279,7 +279,7 @@ namespace Start_a_Town_
                     }
                     var targetCell = map.GetCell(pos);
 
-                    if (targetCell.Block == BlockDefOf.Air)
+                    if (targetCell.Block == BlockDefOfNew.Air.Worker)
                         this.PlaceDesignation(pos, 0, 0, args.Orientation, product);
                     else if(targetCell.Block != BlockDefOf.Designation)
                     {

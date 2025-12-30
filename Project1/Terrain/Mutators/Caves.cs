@@ -23,7 +23,7 @@ namespace Start_a_Town_.Terraforming.Mutators
             Watch.Start();
             if (z == 0)
                 return;
-            if (c.Block == BlockDefOf.Air ||
+            if (c.Block == BlockDefOfNew.Air.Worker ||
                 c.Block == BlockDefOf.Fluid ||
                 c.Block == BlockDefOf.Sand)
                 return;
@@ -34,7 +34,7 @@ namespace Start_a_Town_.Terraforming.Mutators
 
             if (ridged > -this.Threshold && ridged < this.Threshold && ridged2 > -this.Threshold && ridged2 < this.Threshold)
                 if (z > 0)
-                    c.Block = BlockDefOf.Air;
+                    c.Block = BlockDefOfNew.Air.Worker;
             Watch.Stop();
         }
 
@@ -43,7 +43,7 @@ namespace Start_a_Town_.Terraforming.Mutators
             float sealevel = MapBase.MaxHeight / 2f;
             float distanceFromSeaLevel = (sealevel - z) / sealevel;
             if (ridged * distanceFromSeaLevel < -.2f)
-                c.Block = BlockDefOf.Air;
+                c.Block = BlockDefOfNew.Air.Worker;
         }
         public override Terraformer SetWorld(WorldBase w)
         {

@@ -22,7 +22,7 @@ namespace Start_a_Town_
             /// flow downwards
             var below = current.Below;
             var belowBlock = this.Map.GetBlock(below);
-            if (belowBlock == BlockDefOf.Air)
+            if (belowBlock == BlockDefOfNew.Air.Worker)
             {
                 Block.Place(BlockDefOf.Fluid, map, below, mat, 1, 0, 0);
                 this.Map.SetBlock(below, BlockDefOf.Fluid, mat, 1);
@@ -32,7 +32,7 @@ namespace Start_a_Town_
                 foreach (var n in global.GetAdjacentHorLazy())
                 {
                     var nblock = this.Map.GetBlock(n);
-                    if (nblock != BlockDefOf.Air)
+                    if (nblock != BlockDefOfNew.Air.Worker)
                         continue;
                     Block.Place(BlockDefOf.Fluid, map, n, mat, 0, 0, 0);
                 }

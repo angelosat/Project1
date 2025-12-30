@@ -179,7 +179,7 @@ namespace Start_a_Town_
             var underfeetBlockCoords = underfeet.ToBlock();
             var underfeetCell = map.GetCell(underfeet);
             var underfeetBlock = underfeetCell.Block;
-            if (underfeetBlock != BlockDefOf.Air)
+            if (underfeetBlock != BlockDefOfNew.Air.Worker)
             {
                 blocktransform = underfeetCell.Block.GetVelocityTransform(underfeetCell.BlockData, underfeetBlockCoords);
             }
@@ -248,7 +248,7 @@ namespace Start_a_Town_
                 {
                     var cellglobal = (underfeet + check).ToRounded();
                     contactCell = map.GetCell(cellglobal);
-                    if (contactCell == null || contactCell.Block == BlockDefOf.Air)
+                    if (contactCell == null || contactCell.Block == BlockDefOfNew.Air.Worker)
                     {
                         continue;
                     }

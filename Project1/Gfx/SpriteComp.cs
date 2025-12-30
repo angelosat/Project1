@@ -495,7 +495,7 @@ namespace Start_a_Town_.Components
             bool drawn = false;
             while (z >= 0 && !drawn)
             {
-                if (map.TryGetCell(new Vector3(global.X, global.Y, z), out var cellShadow) && cellShadow.Block != BlockDefOf.Air)
+                if (map.TryGetCell(new Vector3(global.X, global.Y, z), out var cellShadow) && cellShadow.Block != BlockDefOfNew.Air.Worker)
                 {
                     if (camera.CullingCheck(global.X, global.Y, z + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out _))
                         ShadowList.Add(new Shadow(parent, new Vector3(global.X, global.Y, z + 1)));

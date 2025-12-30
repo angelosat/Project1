@@ -49,7 +49,7 @@ namespace Start_a_Town_
             if (!this.Enabled)
                 return;
             var box = this.Begin.GetBox(this.End)
-                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air : map.GetBlock(vec) == BlockDefOf.Air);
+                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOfNew.Air.Worker : map.GetBlock(vec) == BlockDefOfNew.Air.Worker);
             cam.DrawCellHighlights(sb, Block.BlockBlueprint, box, color);
         }
        
@@ -60,7 +60,7 @@ namespace Start_a_Town_
             var targetArgs = player.Target;
             this.End = targetArgs.Type != TargetType.Null ? GetEnd(this.Begin, targetArgs.Global) : this.End;
             var box = this.Begin.GetBox(this.End)
-                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air : map.GetBlock(vec) == BlockDefOf.Air);
+                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOfNew.Air.Worker : map.GetBlock(vec) == BlockDefOfNew.Air.Worker);
 
             camera.DrawCellHighlights(sb, Block.BlockBlueprint, box, Color.Red);
         }

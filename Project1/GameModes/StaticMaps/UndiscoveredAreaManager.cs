@@ -42,7 +42,7 @@ namespace Start_a_Town_
                 throw new Exception(); // was a test
             cell.Discovered = value;
             map.GetChunk(begin).InvalidateSlice(begin.Z);
-            if (cell.Block != BlockDefOf.Air)
+            if (cell.Block != BlockDefOfNew.Air.Worker)
                 return;
             var tohandle = new Queue<IntVec3>();
             tohandle.Enqueue(current);

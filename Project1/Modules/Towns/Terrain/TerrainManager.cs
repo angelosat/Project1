@@ -94,7 +94,7 @@ namespace Start_a_Town_
             return
                 this.Map.GetSunLight(above) == 15 &&
                 !this.Map.GetObjects(above).Any() && 
-                this.Map.GetBlock(above) == BlockDefOf.Air;
+                this.Map.GetBlock(above) == BlockDefOfNew.Air.Worker;
         }
         bool IsSaturated()
         {

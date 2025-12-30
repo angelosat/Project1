@@ -51,7 +51,7 @@ namespace Start_a_Town_.Components
                     {
                         var pos = origin + new Vector3(i, j, k);
                         var block = map.GetBlock(pos);
-                        if (block == null || block == BlockDefOf.Air)
+                        if (block == null || block == BlockDefOfNew.Air.Worker)
                             continue;
             
                         var d = Vector3.DistanceSquared(pos, origin);

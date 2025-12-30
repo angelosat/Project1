@@ -286,7 +286,7 @@ namespace Start_a_Town_
 
         internal void RemoveBlocks(IEnumerable<IntVec3> positions, bool notify = true)
         {
-            var nonAirPositions = positions.Where(vec => this.GetBlock(vec) != BlockDefOf.Air).ToList();
+            var nonAirPositions = positions.Where(vec => this.GetBlock(vec) != BlockDefOfNew.Air.Worker).ToList();
             foreach (var global in nonAirPositions)
                 this.RemoveBlock(global, false);
             if (notify)
@@ -551,7 +551,7 @@ namespace Start_a_Town_
         public virtual bool IsEmpty(Vector3 global)
         {
             global = global.ToRounded();
-            if (this.GetBlock(global) != BlockDefOf.Air)
+            if (this.GetBlock(global) != BlockDefOfNew.Air.Worker)
                 return false;
             var blockbox = new BoundingBox(global - (Vector3.UnitX + Vector3.UnitY) * .5f, global + Vector3.UnitZ + (Vector3.UnitX + Vector3.UnitY) * .5f);
             var entities = this.GetObjectsAtChunk(global);
@@ -777,7 +777,7 @@ namespace Start_a_Town_
             foreach (var n in neighbors)
             {
                 var nblock = this.GetBlock(n);
-                if (nblock != BlockDefOf.Air)
+                if (nblock != BlockDefOfNew.Air.Worker)
                     this.InvalidateCell(n);
 
                 nblock?.OnNeighborChanged(this, global, n);
@@ -856,7 +856,7 @@ namespace Start_a_Town_
         public float GetSolidObjectHeight(Vector3 global)
         {
             var cell = this.GetCell(global);
-            if (cell.Block != BlockDefOf.Air)
+            if (cell.Block != BlockDefOfNew.Air.Worker)
                 return cell.Block.GetHeight(cell.BlockData, global.ToBlock());
 
             var entities = this.GetObjects(global - new Vector3(5), global + new Vector3(5));
@@ -968,7 +968,7 @@ namespace Start_a_Town_
 
         internal bool IsAir(Vector3 global)
         {
-            return this.GetBlock(global) == BlockDefOf.Air;
+            return this.GetBlock(global) == BlockDefOfNew.Air.Worker;
         }
 
         internal void RandomBlockUpdate(IntVec3 global)

@@ -387,7 +387,7 @@ namespace Start_a_Town_
             {
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
-                    if (cell.Block != BlockDefOf.Air)
+                    if (cell.Block != BlockDefOfNew.Air.Worker)
                     {
                         hit = true;
                     }
@@ -433,7 +433,7 @@ namespace Start_a_Town_
             {
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
-                    if (cell.Block != BlockDefOf.Air)
+                    if (cell.Block != BlockDefOfNew.Air.Worker)
                     {
                         hit = true;
                     }
@@ -469,7 +469,7 @@ namespace Start_a_Town_
             {
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
-                    if (cell.Block != BlockDefOf.Air)
+                    if (cell.Block != BlockDefOfNew.Air.Worker)
                     {
                         hit = true;
                         firstContact = z;
@@ -874,7 +874,7 @@ namespace Start_a_Town_
                 var cell = Cells[i];
 
                 // --- Air run handling ---
-                if (cell.Block == BlockDefOf.Air)
+                if (cell.Block == BlockDefOfNew.Air.Worker)
                 {
                     if (airRunStart == -1)
                     {
@@ -1102,7 +1102,7 @@ namespace Start_a_Town_
             for (int i = 0; i < this.Cells.Length; i++)
             {
                 var cell = this.Cells[i];
-                if (cell.Block == BlockDefOf.Air)
+                if (cell.Block == BlockDefOfNew.Air.Worker)
                 {
                     if (!airRun)
                     {
@@ -1192,7 +1192,7 @@ namespace Start_a_Town_
             for (int i = 0; i < this.Cells.Length; i++)
             {
                 var cell = this.Cells[i];
-                if (cell.Block == BlockDefOf.Air)
+                if (cell.Block == BlockDefOfNew.Air.Worker)
                 {
                     // start air run
                     if (!airRun)
@@ -1266,7 +1266,7 @@ namespace Start_a_Town_
             bool foundAir = false;
             foreach (var cell in this.Cells)
             {
-                if (cell.Block == BlockDefOf.Air)
+                if (cell.Block == BlockDefOfNew.Air.Worker)
                 {
                     airLength++;
                     if (!foundAir)
@@ -1302,7 +1302,7 @@ namespace Start_a_Town_
             static void saveAirTag(SaveTag cellstag, int airLength, bool airIsDiscovered)
             {
                 var airtag = new SaveTag(SaveTag.Types.Compound);
-                airtag.Save(BlockDefOf.Air, "Block");
+                airtag.Save(BlockDefOfNew.Air.Worker, "Block");
                 airtag.Add(new SaveTag(SaveTag.Types.Int, "Data", airLength));
                 airtag.Add(new SaveTag(SaveTag.Types.Bool, "Discovered", airIsDiscovered));
                 cellstag.Add(airtag);
@@ -1671,7 +1671,7 @@ namespace Start_a_Town_
                         //foreach (var cell in this.Cells)
             {
                         var cell = this.GetLocalCell(x, y, z);
-                if (cell.Block == BlockDefOf.Air)
+                if (cell.Block == BlockDefOfNew.Air.Worker)
                 {
                     consecutiveAirblocks++;
                     if (!foundAir)
@@ -1702,7 +1702,7 @@ namespace Start_a_Town_
 
             static void writeAir(IDataWriter w, int consecutiveAirblocks, bool lastDiscovered)
             {
-                w.Write(BlockDefOf.Air.BaseID);
+                w.Write(BlockDefOfNew.Air.Worker.BaseID);
                 w.Write(consecutiveAirblocks);
                 w.Write(lastDiscovered); // because all consecutive air blocks are either all discovered or none is
                 /// NO!!!! when incrementing the cell index, the next cell can be in a different Z level and completely disconnected from the previous cell
@@ -1715,7 +1715,7 @@ namespace Start_a_Town_
             do
             {
                 block = Block.GetBlock(r);// r.ReadBlock();
-                if (block == BlockDefOf.Air)
+                if (block == BlockDefOfNew.Air.Worker)
                 {
                     // read length of consecutive air blocks
                     int consecutiveAirblocks = r.ReadInt32();
@@ -1723,7 +1723,7 @@ namespace Start_a_Town_
                     for (int j = 0; j < consecutiveAirblocks; j++)
                     {
                         var c = this.Cells[cellIndex++];
-                        c.Block = BlockDefOf.Air;
+                        c.Block = BlockDefOfNew.Air.Worker;
                         c.Material = MaterialDefOf.Air;
                         c.Discovered = discovered;
                     }
@@ -2059,7 +2059,7 @@ namespace Start_a_Town_
                     // DO I NEED THIS?
                     if (!camera.MysteriousBlocks)
                     {
-                        if (cell.Block != BlockDefOf.Air)
+                        if (cell.Block != BlockDefOfNew.Air.Worker)
                         {
                             if (!map.IsVisible(global))
                                 unknown.Add(cell);
@@ -2075,7 +2075,7 @@ namespace Start_a_Town_
                         }
                         else
                         {
-                            if (cell.Block != BlockDefOf.Air)
+                            if (cell.Block != BlockDefOfNew.Air.Worker)
                                 visible.Add(cell);
                         }
                     }

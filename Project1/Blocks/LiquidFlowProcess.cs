@@ -49,7 +49,7 @@ namespace Start_a_Town_
 
             var below = current - Vector3.UnitZ;
             var belowBlock = this.Map.GetBlock(below);
-            if (belowBlock == BlockDefOf.Air)
+            if (belowBlock == BlockDefOfNew.Air.Worker)
             {
                 this.Map.SetBlock(below, BlockDefOf.Fluid, MaterialDefOf.Water, 1, Rand.Next(4));
                 if (!this.Handled.Contains(below))
@@ -65,7 +65,7 @@ namespace Start_a_Town_
             foreach (var n in new List<Vector3>() { east, south, west, north })
             {
                 var nblock = this.Map.GetBlock(n);
-                if (nblock != BlockDefOf.Air)
+                if (nblock != BlockDefOfNew.Air.Worker)
                     continue;
                 this.Map.SetBlock(n, BlockDefOf.Fluid, MaterialDefOf.Water, 0, Rand.Next(4));
                 FlowProcesses.Add(new LiquidFlowProcess(this.Map, this.Source, n));

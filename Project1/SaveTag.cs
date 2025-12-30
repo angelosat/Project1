@@ -264,13 +264,13 @@ namespace Start_a_Town_
                 case 8:
                     writer.Write((string)this.Value);
                     break;
-                case 9:
+                case 9: //list
                     writer.Write(this.ListType);
                     writer.Write((this.Value as List<SaveTag>).Count);
                     foreach (SaveTag tag in (List<SaveTag>)this.Value)
                         tag.Write(writer);
                     break;
-                case 10:
+                case 10: //compound
                     Dictionary<string, SaveTag> Tags = (Dictionary<string, SaveTag>)this.Value;
                     writer.Write(Tags.Count);
                     foreach (SaveTag tag in Tags.Values)
@@ -588,5 +588,14 @@ namespace Start_a_Town_
             }
             return false;
         }
+
+        internal List<SaveTag> GetList(string v) => this[v].Value as List<SaveTag>;
+        internal List<SaveTag> GetList() => this.Value as List<SaveTag>;
+        internal Dictionary<string, SaveTag> GetCompound(string v) => this[v].Value as Dictionary<string, SaveTag>;
+        internal int GetInt(string v) => (int)this[v].Value;
+        internal int GetInt() => (int)this.Value;
+        internal bool GetBool(string v) => (bool)this[v].Value;
+
+
     }
 }

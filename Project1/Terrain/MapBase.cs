@@ -268,7 +268,8 @@ namespace Start_a_Town_
             }
             foreach (var p in parts)
             {
-                this.SetBlock(p, BlockDefOf.Air, MaterialDefOf.Air, 0, 0, 0, notify);
+                //this.SetBlock(p, BlockDefOf.Air, MaterialDefOf.Air, 0, 0, 0, notify);
+                this.SetBlock(p, BlockDefOfNew.Air.Worker, MaterialDefOf.Air, 0, 0, 0, notify);
                 this.SetBlockLuminance(p, 0);
                 // reenable physics of entities resting on block
                 foreach (var entity in this.GetObjects(p - new IntVec3(1, 1, 0), p + new IntVec3(1, 1, 2)))
@@ -740,7 +741,8 @@ namespace Start_a_Town_
 
             var chunk = this.GetChunk(global);
 
-            if (cell.Block == BlockDefOf.Air && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
+            //if (cell.Block == BlockDefOf.Air && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
+            if (cell.Block == BlockDefOfNew.Air.Worker && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
                 return new PlaceBlockResult(null, cell, false);
 
             cell.Block = block;
@@ -750,7 +752,8 @@ namespace Start_a_Town_
             cell.Orientation = orientation;
             cell.Origin = source;
 
-            var entity = block.CreateEntity(global);
+            //var entity = block.CreateEntity(global);
+            var entity = block.BlockDef.CreateEntity(global);
             if (entity is not null)
                 this.AddBlockEntity(global, entity);
             // todo: query block for multi-cell footprint

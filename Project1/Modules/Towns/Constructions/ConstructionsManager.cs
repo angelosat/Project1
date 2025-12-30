@@ -339,7 +339,7 @@ namespace Start_a_Town_
             //var result = map.SetBlock(global, BlockDefOf.Designation, MaterialDefOf.Air, data: 0, 0, orientation: args.Orientation);
             //var entity = result.Entity;
 
-            var entity = BlockDefOf.Designation.CreateEntity(global);
+            var entity = BlockDefOfNew.Designation.CreateEntity(global);
             map.AddBlockEntity(global, entity);
             var comp = entity.GetComp<BlockConstructionComp>();
             this.DesignationEntities.Add(comp);

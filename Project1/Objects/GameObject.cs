@@ -921,7 +921,7 @@ namespace Start_a_Town_
         }
         public SaveTag Save(string name = "")
         {
-            //return new SaveTag(SaveTag.Types.Compound, name, this.SaveInternal());
+            return new SaveTag(SaveTag.Types.Compound, name, this.SaveInternal());
             var save = new SaveTag(SaveTag.Types.Compound, name);
             save.Add(this.Def.Name.Save("Def"));
             // todo : items without profile (coins for now)
@@ -931,17 +931,17 @@ namespace Start_a_Town_
             save.Add(this.Components.Save("Components"));
             return save;
         }
-        //internal List<SaveTag> SaveInternal()
-        //{
-        //    var data = new List<SaveTag>();
-        //    data.Add(this.Def.Name.Save("Def"));
-        //    // todo : items without profile (coins for now)
-        //    data.Add(this.Profile.Save("ProfileID"));
-        //    data.Add(((int)this.RefId).Save("InstanceID"));
-        //    data.Add(this._stackSize.Save("Stack"));
-        //    data.Add(this.Components.Save("Components"));
-        //    return data;
-        //}
+        internal List<SaveTag> SaveInternal()
+        {
+            var data = new List<SaveTag>();
+            data.Add(this.Def.Name.Save("Def"));
+            // todo : items without profile (coins for now)
+            data.Add(this.Profile?.Save("ProfileID"));
+            data.Add(((int)this.RefId).Save("InstanceID"));
+            data.Add(this._stackSize.Save("Stack"));
+            data.Add(this.Components.Save("Components"));
+            return data;
+        }
 
         /// <summary>
         /// Creates an object from a savetag node.

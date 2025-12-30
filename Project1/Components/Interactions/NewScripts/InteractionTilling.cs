@@ -8,7 +8,7 @@
         {
             var a = this.Actor;
             var t = this.Target;
-            a.Map.SetBlock(t.Global, BlockDefOf.Farmland, a.Map.GetCell(t.Global).Material, 0);
+            a.Map.SetBlock(t.Global, BlockDefOfNew.Farmland.Worker, a.Map.GetCell(t.Global).Material, 0);
             this.Finish();
         }
 

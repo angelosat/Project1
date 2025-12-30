@@ -36,7 +36,7 @@ namespace Start_a_Town_.Terraforming.Mutators
             w.GroundAirThreshold = this.GroundAirThreshold;
             if (z == 0)
             {
-                c.Block = BlockDefOf.Stone;
+                c.Block = BlockDefOfNew.Stone.Worker;
                 return;
             }
             var maxZ = (float)MapBase.MaxHeight;

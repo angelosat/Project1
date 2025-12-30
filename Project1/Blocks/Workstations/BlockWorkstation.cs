@@ -10,12 +10,15 @@ namespace Start_a_Town_
         readonly AtlasDepthNormals.Node.Token[] Orientations = Block.TexturesCounter;
         readonly Type BlockEntityType;
         public override bool IsDeconstructible => true;
-
-        public BlockWorkstation(string name, Type blockEntityType)
+        public BlockWorkstation() : base("Workstation", opaque: false, solid: true)
+        {
+            
+        }
+        public BlockWorkstation(string name)//, Type blockEntityType)
             : base(name, opaque: false, solid: true)
         {
             this.HidingAdjacent = false;
-            this.BlockEntityType = blockEntityType;
+            //this.BlockEntityType = blockEntityType;
             this.Variations.Add(this.Orientations.First());
             this.BuildProperties.Category = ConstructionCategoryDefOf.Production;
             this.BuildProperties.Dimension = 4;
@@ -45,11 +48,8 @@ namespace Start_a_Town_
             if (neighbors.Count == 0)
             {
                 // No neighbors: create a new block entity for this block
-                //var entity = Activator.CreateInstance(this.BlockEntityType, originGlobal) as BlockWorkbenchEntity;
-                //var entity = new BlockEntity(originGlobal);
-                var entity = BlockEntityFactory.Create(this, originGlobal);
-
-                //entity.CellsOccupied.Add(originGlobal); // register this cell
+                //var entity = BlockEntityFactory.Create(this, originGlobal);
+                var entity = this.BlockDef.CreateEntity(originGlobal);
                 return entity;
             }
             else

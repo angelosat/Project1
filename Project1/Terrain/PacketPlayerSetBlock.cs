@@ -18,7 +18,7 @@ namespace Start_a_Town_
             var w = net.BeginPacketOld(p);
             w.Write(player.ID);
             w.Write(global);
-            w.Write(block);
+            w.Write(block.BlockDef);
             material.Write(w);
             w.Write(data);
             w.Write(variation);
@@ -29,7 +29,8 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
             var global = r.ReadIntVec3();
-            var block = Block.GetBlock(r);
+            //var block = Block.GetBlock(r);
+            var block = r.ReadDef<BlockDef>().Worker;//.GetBlock(r);
             var material = Def.GetDef<MaterialDef>(r);
             var data = r.ReadByte();
             var variation = r.ReadInt32();
@@ -54,7 +55,8 @@ namespace Start_a_Town_
 
 
             map.RemoveBlock(global);
-            if (block != BlockDefOf.Air)
+            //if (block != BlockDefOf.Air)
+            if (block != BlockDefOfNew.Air.Worker)
                 //Block.Place(block, map, global, material, data, variation, orientation);
                 map.SetBlock(global, block, material, data, variation, orientation);
 

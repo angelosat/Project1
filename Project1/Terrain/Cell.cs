@@ -227,7 +227,13 @@ namespace Start_a_Town_
         {
             return cell.IsInvisible();
         }
-
+        public SaveTag SaveNew()
+        {
+            var data = new SaveTag(SaveTag.Types.Compound);
+            this.Material.Save(data, "Material");
+            this.Data.Data.Save(data, "Data");
+            return data;
+        }
         public SaveTag Save()
         {
             var data = new SaveTag(SaveTag.Types.Compound);
@@ -235,6 +241,12 @@ namespace Start_a_Town_
             this.Material.Save(data, "Material");
             this.Data.Data.Save(data, "Data");
             return data;
+        }
+        public Cell LoadWithoutBlock(SaveTag data)
+        {
+            this.Data = new BitVector32((int)data["Data"].Value);
+            this.Material = data.LoadDef<MaterialDef>("Material");
+            return this;
         }
         public Cell Load(SaveTag data)
         {
@@ -291,6 +303,14 @@ namespace Start_a_Town_
         {
             var offset = vec3.ToBlock();
             return this.Block.GetHeight(this.BlockData, offset.X, offset.Y);
+        }
+
+        internal void Set(Block worker, MaterialDef material, int data, bool discovered)
+        {
+            this.Block = worker;
+            this.Material = material;
+            this.Data = new BitVector32(data);
+            this.Discovered = discovered;
         }
     }
 }

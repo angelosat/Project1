@@ -50,7 +50,7 @@ namespace Start_a_Town_
             var entitiesList = new SaveTag(SaveTag.Types.List, "Registry", SaveTag.Types.Compound);
             foreach (var entity in this._inner.Values)
             {
-                var entitytag = new SaveTag(SaveTag.Types.Compound, "", entity.Save());
+                var entitytag = new SaveTag(SaveTag.Types.Compound, "", entity.SaveInternal());
                 entitiesList.Add(entitytag);
             }
             return entitiesList;

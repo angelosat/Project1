@@ -1,154 +1,47 @@
 ﻿namespace Start_a_Town_
 {
-    /// <summary>
-    /// not yet in use
-    /// </summary>
+    [EnsureStaticCtorCall]
     class BlockDefOfNew
     {
-        //public static readonly BlockDef Air = new("Air")
-        //{
-        //    BlockType = typeof(BlockAir)
-        //};
-        //public static readonly BlockDef Grass = new("Grass")
-        //{
-        //    BlockType = typeof(BlockGrass)
-        //};
-        //public static readonly BlockDef Stone = new("Bedrock")
-        //{
-        //    BlockType = typeof(BlockBedrock)
-        //};
-        //public static readonly BlockDef Farmland = new("Farmland")
-        //{
-        //    BlockType = typeof(BlockFarmland)
-        //};
-        //public static readonly BlockDef Cobblestone = new("Stone")
-        //{
-        //    BlockType = typeof(BlockStone)
-        //};
-        //public static readonly BlockDef Mineral = new("Mineral")
-        //{
-        //    BlockType = typeof(BlockMineral)
-        //};
-        //public static readonly BlockDef Sand = new("Sand")
-        //{
-        //    BlockType = typeof(BlockSand)
-        //};
-        //public static readonly BlockDef WoodenDeck = new("Wooden Deck")
-        //{
-        //    BlockType = typeof(BlockWoodenDeck)
-        //};
-        //public static readonly BlockDef Soil = new("Soil")
-        //{
-        //    BlockType = typeof(BlockSoil)
-        //};
-        //public static readonly BlockDef Door = new("Door")
-        //{
-        //    BlockType = typeof(BlockDoor)
-        //};
-        //public static readonly BlockDef Bed = new("Bed")
-        //{
-        //    BlockType = typeof(BlockBed)
-        //};
-        //public static readonly BlockDef WoodPaneling = new("WoodPaneling")
-        //{
-        //    BlockType = typeof(BlockWoodPaneling)
-        //};
-        //public static readonly BlockDef Chest = new("Chest")
-        //{
-        //    BlockType = typeof(BlockChest)
-        //};
-        //public static readonly BlockDef Bin = new("Bin")
-        //{
-        //    BlockType = typeof(BlockStorage)
-        //};
-        //public static readonly BlockDef Fluid = new("Fluid")
-        //{
-        //    BlockType = typeof(BlockFluid)
-        //};
-        //public static readonly BlockDef Stool = new("Stool")
-        //{
-        //    BlockType = typeof(BlockStool)
-        //};
-        //public static readonly BlockDef Chair = new("Chair")
-        //{
-        //    BlockType = typeof(BlockChair)
-        //};
-        //public static readonly BlockDef Bricks = new("Bricks")
-        //{
-        //    BlockType = typeof(BlockBricks)
-        //};
-        //public static readonly BlockDef Campfire = new("Campfire")
-        //{
-        //    BlockType = typeof(BlockCampfire)
-        //};
-        //public static readonly BlockDef Window = new("Window")
-        //{
-        //    BlockType = typeof(BlockWindow)
-        //};
-        //public static readonly BlockDef Roof = new("Roof")
-        //{
-        //    BlockType = typeof(BlockRoof)
-        //};
-        //public static readonly BlockDef Stairs = new("Stairs")
-        //{
-        //    BlockType = typeof(BlockStairs)
-        //};
-        //public static readonly BlockDef Counter = new("Counter")
-        //{
-        //    BlockType = typeof(BlockCounter)
-        //};
-        //public static readonly BlockDef Designation = new("Designation")
-        //{
-        //    BlockType = typeof(BlockDesignation)
-        //};
-        //public static readonly BlockDef Slab = new("Slab")
-        //{
-        //    BlockType = typeof(BlockSlab)
-        //};
-        //public static readonly BlockDef Conveyor = new("Conveyor")
-        //{
-        //    BlockType = typeof(BlockConveyor)
-        //};
-        //public static readonly BlockDef Prefab = new("Prefab")
-        //{
-        //    BlockType = typeof(BlockPrefab)
-        //};
-        //public static readonly BlockDef Construction = new("Construction")
-        //{
-        //    BlockType = typeof(BlockConstruction)
-        //};
-        //public static readonly BlockDef ShopCounter = new("ShopCounter")
-        //{
-        //    BlockType = typeof(BlockShopCounter)
-        //};
-        //public static readonly BlockDef Workbench = new("Workbench")
-        //{
-        //    BlockType = typeof(BlockWorkstation),
-        //    BlockEntityType = typeof(BlockWorkbenchEntity)
-        //};
-        //public static readonly BlockDef Kitchen = new("Kitchen")
-        //{
-        //    BlockType = typeof(BlockWorkstation),
-        //    BlockEntityType = typeof(BlockKitchenEntity)
-        //};
-        //public static readonly BlockDef PlantProcessingBench = new("PlantProcessingBench")
-        //{
-        //    BlockType = typeof(BlockWorkstation),
-        //    BlockEntityType = typeof(BlockPlantProcessingEntity)
-        //};
-        //public static readonly BlockDef CarpentryBench = new("CarpentryBench")
-        //{
-        //    BlockType = typeof(BlockWorkstation),
-        //    BlockEntityType = typeof(BlockCarpentryEntity)
-        //};
-        //public static readonly BlockDef Smeltery = new("Smeltery")
-        //{
-        //    BlockType = typeof(BlockWorkstation),
-        //    BlockEntityType = typeof(BlockSmelteryEntity)
-        //};
+        static public readonly BlockDef Air = new("Air", typeof(BlockAir));
+        static public readonly BlockDef Grass = new("Grass", typeof(BlockGrass));
+        static public readonly BlockDef Stone = new("Stone", typeof(BlockBedrock));
+        static public readonly BlockDef Farmland = new("Farmland", typeof(BlockFarmland));
+        static public readonly BlockDef Cobblestone = new("Cobblestone", typeof(BlockStone));
+        static public readonly BlockDef Mineral = new("Mineral", typeof(BlockMineral));
+        static public readonly BlockDef Sand = new("Sand", typeof(BlockSand));
+        static public readonly BlockDef WoodenDeck = new("WoodenDeck", typeof(BlockWoodenDeck));
+        static public readonly BlockDef Soil = new("Soil", typeof(BlockSoil));
+        static public readonly BlockDef Door = new("Door", typeof(BlockDoor)); // TODO: different door materials???
+        static public readonly BlockDef Bed = new("Bed", typeof(BlockBed));
+        static public readonly BlockDef SleepingSpot = new("SleepingSpot", typeof(BlockSleepingSpot));
+        static public readonly BlockDef WoodPaneling = new("WoodPaneling", typeof(BlockWoodPaneling));
+        static public readonly BlockDef Chest = new("Chest", typeof(BlockChest));
+        static public readonly BlockDef Bin = new("Bin", typeof(BlockStorage));
+        static public readonly BlockDef Fluid = new("Fluid", typeof(BlockFluid));
+        static public readonly BlockDef Stool = new("Stool", typeof(BlockStool));
+        static public readonly BlockDef Chair = new("Chair", typeof(BlockChair));
+        static public readonly BlockDef Bricks = new("Bricks", typeof(BlockBricks)) { ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]) };
+        static public readonly BlockDef Campfire = new("Campfire", typeof(BlockCampfire));
+        static public readonly BlockDef Window = new("Window", typeof(BlockWindow));
+        static public readonly BlockDef Roof = new("Roof", typeof(BlockRoof));
+        static public readonly BlockDef Stairs = new("Stairs", typeof(BlockStairs));
+        static public readonly BlockDef Counter = new("Counter", typeof(BlockCounter));
+        static public readonly BlockDef Designation = new("Designation", typeof(BlockDesignation)) { BlockEntityCompSpecs = [new BlockConstructionComp.Spec()] };
+        static public readonly BlockDef Slab = new("Slab", typeof(BlockSlab));
+        static public readonly BlockDef Conveyor = new("Conveyor", typeof(BlockConveyor));
+        static public readonly BlockDef Construction = new("Construction", typeof(BlockConstruction));
+        static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(BlockShopCounter));
+        static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Workbench)] };
+        static public readonly BlockDef Smeltery = new("Smeltery", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery)] };
+        static public readonly BlockDef Kitchen = new("Kitchen", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen)] };
+        //static public readonly BlockDef Kitchen = new BlockDef("Kitchen", typeof(BlockWorkstation("Kitchen", typeof(BlockKitchenEntity));
+        //static public readonly BlockDef PlantProcessingBench = new BlockDef("PlantProcessingBench", typeof(BlockWorkstation("PlantProcessing", typeof(BlockPlantProcessingEntity));
+        //static public readonly BlockDef CarpentryBench = new BlockDef("CarpentryBench", typeof(BlockWorkstation("CarpenterBench", typeof(BlockCarpentryEntity));
+        //static public readonly BlockDef Smeltery = new BlockDef("Smeltery", typeof(BlockWorkstation("Smeltery", typeof(BlockSmelteryEntity));
         static BlockDefOfNew()
         {
-            //Def.Register(typeof(BlockDefOfNew));
+            Def.Register(typeof(BlockDefOfNew));
         }
 
         //[EnsureStaticCtorCall]

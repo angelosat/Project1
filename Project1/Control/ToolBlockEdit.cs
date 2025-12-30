@@ -68,7 +68,8 @@ namespace Start_a_Town_.PlayerControl
             bool isDelete = InputState.IsKeyDown(this.KeyRemove);
             bool isReplace = InputState.IsKeyDown(this.KeyReplace);
             var global = this.Target.Global + ((isDelete || isReplace) ? Vector3.Zero : this.Target.Face);
-            var block = isDelete ? BlockDefOf.Air : this.Block;
+            //var block = isDelete ? BlockDefOf.Air : this.Block;
+            var block = isDelete ? BlockDefOfNew.Air.Worker : this.Block;
             byte state = isDelete ? (byte)0 : this.State;
 
             if (global != this.LastPainted)

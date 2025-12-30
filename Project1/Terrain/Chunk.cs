@@ -848,6 +848,416 @@ namespace Start_a_Town_
             Console.WriteLine(filename + " saved in " + (DateTime.Now - now).ToString());
             return directory + GetFilename(this.MapCoords);
         }
+        private void SaveCellsToTagCompressedOptimized(SaveTag chunktag)
+        {
+            // --- Run tracking ---
+            int airRunStart = -1;
+            int airRunCount = 0;
+            bool airRunDiscovered = false;
+            List<(int start, int count, bool discovered)> airRuns = new();
+
+            int solidRunStart = -1;
+            List<BitVector32> solidRunData = new();
+            List<(int start, List<BitVector32> data)> solidRuns = new();
+
+            // Run-based block/material tracking
+            Dictionary<BlockDef, List<(int start, int count)>> blockRuns = new();
+            Dictionary<MaterialDef, List<(int start, int count)>> materialRuns = new();
+
+            BlockDef? currentBlock = null;
+            MaterialDef? currentMaterial = null;
+            int currentBlockRunStart = 0;
+            int currentMaterialRunStart = 0;
+
+            for (int i = 0; i < Cells.Length; i++)
+            {
+                var cell = Cells[i];
+
+                // --- Air run handling ---
+                if (cell.Block == BlockDefOf.Air)
+                {
+                    if (airRunStart == -1)
+                    {
+                        // start new air run
+                        airRunStart = i;
+                        airRunCount = 1;
+                        airRunDiscovered = cell.Discovered;
+                    }
+                    else
+                    {
+                        airRunCount++;
+                    }
+
+                    // flush solid run if it exists
+                    if (solidRunStart != -1)
+                    {
+                        solidRuns.Add((solidRunStart, solidRunData));
+                        solidRunData = new List<BitVector32>();
+                        solidRunStart = -1;
+                    }
+
+                    // flush block/material runs if needed
+                    if (currentBlock != null)
+                    {
+                        var runs = blockRuns[currentBlock];
+                        runs.Add((currentBlockRunStart, i - currentBlockRunStart));
+                        currentBlock = null;
+                    }
+                    if (currentMaterial != null)
+                    {
+                        var runs = materialRuns[currentMaterial];
+                        runs.Add((currentMaterialRunStart, i - currentMaterialRunStart));
+                        currentMaterial = null;
+                    }
+
+                    continue;
+                }
+
+                // --- Non-air cell ---
+                if (airRunStart != -1)
+                {
+                    // flush air run
+                    airRuns.Add((airRunStart, airRunCount, airRunDiscovered));
+                    airRunStart = -1;
+                    airRunCount = 0;
+                }
+
+                // --- Solid run ---
+                if (solidRunStart == -1)
+                    solidRunStart = i;
+                solidRunData.Add(cell.Data); // BitVector32
+
+                // --- BlockDef run ---
+                if (currentBlock != cell.Block.BlockDef)
+                {
+                    if (currentBlock != null)
+                        blockRuns[currentBlock].Add((currentBlockRunStart, i - currentBlockRunStart));
+
+                    currentBlock = cell.Block.BlockDef;
+                    if (!blockRuns.ContainsKey(currentBlock))
+                        blockRuns[currentBlock] = new List<(int, int)>();
+                    currentBlockRunStart = i;
+                }
+
+                // --- MaterialDef run ---
+                if (currentMaterial != cell.Material)
+                {
+                    if (currentMaterial != null)
+                        materialRuns[currentMaterial].Add((currentMaterialRunStart, i - currentMaterialRunStart));
+
+                    currentMaterial = cell.Material;
+                    if (!materialRuns.ContainsKey(currentMaterial))
+                        materialRuns[currentMaterial] = new List<(int, int)>();
+                    currentMaterialRunStart = i;
+                }
+            }
+
+            // --- Final flushes ---
+            if (airRunStart != -1)
+                airRuns.Add((airRunStart, airRunCount, airRunDiscovered));
+            if (solidRunStart != -1)
+                solidRuns.Add((solidRunStart, solidRunData));
+            if (currentBlock != null)
+                blockRuns[currentBlock].Add((currentBlockRunStart, Cells.Length - currentBlockRunStart));
+            if (currentMaterial != null)
+                materialRuns[currentMaterial].Add((currentMaterialRunStart, Cells.Length - currentMaterialRunStart));
+
+            // --- Serialize air runs ---
+            var airTag = new SaveTag(SaveTag.Types.List, "Air", SaveTag.Types.Compound);
+            foreach (var (start, count, discovered) in airRuns)
+            {
+                var runTag = new SaveTag(SaveTag.Types.Compound);
+                runTag.Add(new SaveTag(SaveTag.Types.Int, "StartIndex", start));
+                runTag.Add(new SaveTag(SaveTag.Types.Int, "Count", count));
+                runTag.Add(new SaveTag(SaveTag.Types.Bool, "Discovered", discovered));
+                airTag.Add(runTag);
+            }
+            chunktag.Add(airTag);
+
+            // --- Serialize solid runs ---
+            var solidTag = new SaveTag(SaveTag.Types.List, "Solid", SaveTag.Types.Compound);
+            foreach (var (start, data) in solidRuns)
+            {
+                var runTag = new SaveTag(SaveTag.Types.Compound);
+                runTag.Add(new SaveTag(SaveTag.Types.Int, "StartIndex", start));
+                var dataTag = new SaveTag(SaveTag.Types.List, "Data", SaveTag.Types.Int);
+                foreach (var bits in data)
+                    dataTag.Add(new SaveTag(SaveTag.Types.Int, "Data", bits.Data)); // store BitVector32 as int
+                runTag.Add(dataTag);
+                solidTag.Add(runTag);
+            }
+            chunktag.Add(solidTag);
+
+
+
+            // --- Serialize block runs ---
+            var blockRunsTag = new SaveTag(SaveTag.Types.Compound, "IndicesByBlock");
+            //var blockRunsTag = new SaveTag(SaveTag.Types.List, "IndicesByBlock", SaveTag.Types.List);
+            foreach (var kvp in blockRuns)
+            {
+                var blockTag = new SaveTag(SaveTag.Types.List, kvp.Key.Name, SaveTag.Types.Compound);
+                foreach (var (start, count) in kvp.Value)
+                {
+                    var runTag = new SaveTag(SaveTag.Types.Compound);
+                    runTag.Add(new SaveTag(SaveTag.Types.Int, "StartIndex", start));
+                    runTag.Add(new SaveTag(SaveTag.Types.Int, "Count", count));
+                    blockTag.Add(runTag);
+                }
+                blockRunsTag.Add(blockTag);
+            }
+            chunktag.Add(blockRunsTag);
+
+            // --- Serialize material runs ---
+            var materialRunsTag = new SaveTag(SaveTag.Types.Compound, "IndicesByMaterial");
+            //var materialRunsTag = new SaveTag(SaveTag.Types.List, "IndicesByMaterial", SaveTag.Types.List);
+            foreach (var kvp in materialRuns)
+            {
+                var matTag = new SaveTag(SaveTag.Types.List, kvp.Key.Name, SaveTag.Types.Compound);
+                foreach (var (start, count) in kvp.Value)
+                {
+                    var runTag = new SaveTag(SaveTag.Types.Compound);
+                    runTag.Add(new SaveTag(SaveTag.Types.Int, "StartIndex", start));
+                    runTag.Add(new SaveTag(SaveTag.Types.Int, "Count", count));
+                    matTag.Add(runTag);
+                }
+                materialRunsTag.Add(matTag);
+            }
+            chunktag.Add(materialRunsTag);
+        }
+        private void LoadCellsFromTagCompressedOptimized(SaveTag chunktag)
+        {
+            var airRunsTag = chunktag.GetList("Air");
+            foreach (var runTag in airRunsTag)
+            {
+                int startIndex = runTag.GetInt("StartIndex");
+                int count = runTag.GetInt("Count");
+                bool discovered = runTag.GetBool("Discovered");
+
+                for (int i = startIndex; i < startIndex + count; i++)
+                {
+                    var cell = Cells[i];
+                    cell.Block = BlockDefOfNew.Air.Worker;
+                    cell.Discovered = discovered;
+                    // BitVector32 or material not needed for air
+                }
+            }
+            var solidRunsTag = chunktag.GetList("Solid");
+            foreach (var runTag in solidRunsTag)
+            {
+                int startIndex = runTag.GetInt("StartIndex");
+                var dataListTag = runTag.GetList("Data");
+
+                for (int offset = 0; offset < dataListTag.Count; offset++)
+                {
+                    var cell = Cells[startIndex + offset];
+                    cell.Data = new BitVector32(dataListTag[offset].GetInt());
+                    // BlockDef and MaterialDef will be reconstructed from run-based indices
+                }
+            }
+            var blockRunsTag = chunktag.GetCompound("IndicesByBlock"); // chunktag["IndicesByBlock"].Value as SaveTag;//
+            foreach (var runTags in blockRunsTag)
+            {
+                if (runTags.Key.IsNullEmptyOrWhiteSpace())
+                    continue;
+                //var runsTag = blockRunsTag[blockName].GetList();
+                var blockDef = Def.GetDef<BlockDef>(runTags.Key); // your lookup method
+                var listTag = runTags.Value.GetList();
+                foreach (var runTag in listTag)
+                {
+                    int start = runTag.GetInt("StartIndex");
+                    int count = runTag.GetInt("Count");
+                    for (int i = start; i < start + count; i++)
+                        Cells[i].Block = blockDef.Worker;
+                }
+            }
+
+            var materialRunsTag = chunktag.GetCompound("IndicesByMaterial");
+            foreach (var runTags in materialRunsTag)
+            {
+                if (runTags.Key.IsNullEmptyOrWhiteSpace())
+                    continue;
+                var runsTag2 = runTags.Value.GetList();
+                var materialDef = Def.GetDef<MaterialDef>(runTags.Key);
+                foreach (var runTag in runsTag2)
+                {
+                    int start = runTag.GetInt("StartIndex");
+                    int count = runTag.GetInt("Count");
+                    for (int i = start; i < start + count; i++)
+                        Cells[i].Material = materialDef;
+                }
+            }
+
+        }
+        private void SaveCellsToTagCompressedAsBlockDefsNew(SaveTag chunktag)
+        {
+            var consecutiveAir = 0;
+            bool airIsDiscovered = false;
+            bool airRun = false;
+            int airRunStartIndex = 0;
+            int solidStartIndex = 0;
+            Dictionary<BlockDef, List<int>> indicesByBlock = [];
+            List<(int startIndex, int count, bool discovered)> airIndicesCounts = [];
+            List<(int startIndex, List<Cell> cells)> solidRuns = [];
+            List<Cell> currentSolidRunData = [];
+            for (int i = 0; i < this.Cells.Length; i++)
+            {
+                var cell = this.Cells[i];
+                if (cell.Block == BlockDefOf.Air)
+                {
+                    if (!airRun)
+                    {
+                        // flush solid run
+                        if (i > solidStartIndex)
+                        {
+                            solidRuns.Add((solidStartIndex, currentSolidRunData));
+                            currentSolidRunData = [];
+                        }
+                        // start air run
+                        airRun = true;
+                        airRunStartIndex = i;
+                        airIsDiscovered = cell.Discovered;
+                    }
+                    consecutiveAir++;
+                    continue;
+                }
+                if (airRun)
+                {
+                    // flush air run
+                    if (i > airRunStartIndex)
+                    {
+                        airIndicesCounts.Add((airRunStartIndex, consecutiveAir, airIsDiscovered));
+                        airRun = false;
+                        consecutiveAir = 0;
+                    }
+
+                    // start solid run
+                    solidStartIndex = i;
+                }
+
+                var blockDef = cell.Block.BlockDef;
+                if (!indicesByBlock.TryGetValue(blockDef, out var list))
+                    indicesByBlock[blockDef] = list = [];
+                list.Add(i);
+                currentSolidRunData.Add(cell);
+            }
+            // wrap final run
+            if (airRun)
+                airIndicesCounts.Add((airRunStartIndex, consecutiveAir, airIsDiscovered));
+            else
+                solidRuns.Add((solidStartIndex, currentSolidRunData));
+
+
+            // save air runs
+            var airtag = new SaveTag(SaveTag.Types.List, "Air", SaveTag.Types.Compound);
+            foreach (var (startIndex, count, discovered) in airIndicesCounts)
+            {
+                var currentairtag = new SaveTag(SaveTag.Types.Compound);
+                currentairtag.Add(new SaveTag(SaveTag.Types.Int, "StartIndex", startIndex));
+                currentairtag.Add(new SaveTag(SaveTag.Types.Int, "Count", count));
+                currentairtag.Add(new SaveTag(SaveTag.Types.Bool, "Discovered", discovered));
+                airtag.Add(currentairtag);
+            }
+            chunktag.Add(airtag);
+
+            // save solid runs
+            var solidtag = new SaveTag(SaveTag.Types.List, "Solid", SaveTag.Types.Compound);
+            foreach (var (startIndex, cells) in solidRuns)
+            {
+                var currentsolidruntag = new SaveTag(SaveTag.Types.Compound);
+                currentsolidruntag.Add(new SaveTag(SaveTag.Types.Int, "StartIndex", startIndex));
+                foreach(var cell in cells)
+                    currentsolidruntag.Add(cell.SaveNew());
+                solidtag.Add(currentsolidruntag);
+            }
+            chunktag.Add(solidtag);
+
+            List<SaveTag> asd = [];
+            foreach (var (blockDef, indices) in indicesByBlock)
+                asd.Add(indices.Save(blockDef.Name));
+            var indicesByBlockTag = new SaveTag(SaveTag.Types.Compound, "IndicesByBlock", asd);
+            chunktag.Add(indicesByBlockTag);
+        }
+        private void SaveCellsToTagCompressedAsBlockDefs(SaveTag chunktag)
+        {
+            SaveTag cellstag = new(SaveTag.Types.List, "Cells", SaveTag.Types.Compound);
+            var consecutiveAir = 0;
+            bool airIsDiscovered = false;
+            bool airRun = false;
+            //bool solidRun = false;
+            int airRunStartIndex = 0;
+            int solidStartIndex = 0;
+            Dictionary<BlockDef, List<int>> indicesByBlock = [];
+            List<(int startIndex, int count, bool discovered)> airIndicesCounts = [];
+            List<(int startIndex, List<(MaterialDef material, int data)>)> solidRuns = [];
+            for (int i = 0; i < this.Cells.Length; i++)
+            {
+                var cell = this.Cells[i];
+                if (cell.Block == BlockDefOf.Air)
+                {
+                    // start air run
+                    if (!airRun)
+                    {
+                        airRun = true;
+                        airRunStartIndex = i;
+                        airIsDiscovered = cell.Discovered;
+                    }
+                    consecutiveAir++;
+                    continue;
+                }
+                else
+                {
+                    if(airRun)
+                    {
+                        airIndicesCounts.Add((airRunStartIndex, consecutiveAir, airIsDiscovered));
+                        airRun = false;
+                        consecutiveAir = 0;
+                    }
+                }
+                
+                var blockDef = cell.Block.BlockDef;
+                if (!indicesByBlock.TryGetValue(blockDef, out var list))
+                    indicesByBlock[blockDef] = list = [];
+                list.Add(i);
+                cellstag.Add(cell.SaveNew());
+            }
+            // wrap final air run
+            if(airRun)
+            {
+                airIndicesCounts.Add((airRunStartIndex, consecutiveAir, airIsDiscovered));
+            }
+            // save air runs
+            var airtag = new SaveTag(SaveTag.Types.List, "Air", SaveTag.Types.Compound);
+            foreach (var (startIndex, count, discovered) in airIndicesCounts)
+            {
+                var currentairtag = new SaveTag(SaveTag.Types.Compound);
+                currentairtag.Add(new SaveTag(SaveTag.Types.Int, "StartIndex", startIndex));
+                currentairtag.Add(new SaveTag(SaveTag.Types.Int, "Count", count));
+                currentairtag.Add(new SaveTag(SaveTag.Types.Bool, "Discovered", discovered));
+                airtag.Add(currentairtag);
+            }
+            chunktag.Add(airtag);
+
+            List<SaveTag> asd = new();
+            foreach (var (blockDef, indices) in indicesByBlock)
+                asd.Add(indices.Save(blockDef.Name));
+            var indicesByBlockTag = new SaveTag(SaveTag.Types.Compound, "IndicesByBlock", asd);
+            chunktag.Add(indicesByBlockTag);
+
+            //// TODO when the last cell in the cell array is air, the air savetag isn't written
+            //if (consecutiveAir > 0)
+            //    saveAirTag(cellstag, consecutiveAir, airIsDiscovered);
+
+            chunktag.Add(cellstag);
+
+            static void saveAirTag(SaveTag cellstag, int airLength, bool airIsDiscovered)
+            {
+                var airtag = new SaveTag(SaveTag.Types.Compound);
+                //airtag.Save(BlockDefOf.Air, "Block");
+                airtag.Add(new SaveTag(SaveTag.Types.Int, "Data", airLength));
+                airtag.Add(new SaveTag(SaveTag.Types.Bool, "Discovered", airIsDiscovered));
+                cellstag.Add(airtag);
+            }
+        }
         private void SaveCellsToTagCompressed(SaveTag chunktag)
         {
             SaveTag cellstag = new(SaveTag.Types.List, "Cells", SaveTag.Types.Compound);
@@ -898,9 +1308,77 @@ namespace Start_a_Town_
                 cellstag.Add(airtag);
             }
         }
+        private void LoadCellsFromTagCompressedAsBlockDefs(SaveTag chunktag)
+        {
+            var celllist = chunktag["Cells"].Value as List<SaveTag>;
+            var airlist = chunktag["Air"].Value as List<SaveTag>;
+            var byblock = chunktag["IndicesByBlock"].Value as List<SaveTag>;
+            int n = 0;
+            var airCount = 0;
+            bool airDiscovered = true;
+            var listPosition = 0;
+            var maxn = Size * Size * MapBase.MaxHeight;
+            for(int i = 0; i < this.Cells.Length; i++)
+            {
+
+            }
+            foreach(var airtag in airlist)
+            {
+                var index = airtag.GetValue<int>("StartIndex");
+                var count = airtag.GetValue<int>("Count");
+                var discovered = airtag.GetValue<bool>("Discovered");
+                for(int i = index; i < count; i++)
+                    this.Cells[i].Set(BlockDefOfNew.Air.Worker, MaterialDefOf.Air, 0, discovered);
+            }
+            foreach(var blockindices in byblock)
+            {
+                var bdef = Def.GetDef<BlockDef>(blockindices.Name);
+                foreach (var inttag in blockindices.Value as List<SaveTag>)
+                {
+                    var index = (int)inttag.Value;
+
+                }
+            }
+            while (n < maxn)
+            {
+
+            }
+            while (listPosition < celllist.Count)
+            {
+                var celltag = celllist[listPosition++];
+                var block = celltag.LoadBlock("Block");
+                if (block.BlockDef == BlockDefOfNew.Air)
+                {
+                    airCount = (int)celltag["Data"].Value;
+                    celltag.TryGetTagValue("Discovered", ref airDiscovered);
+                    for (int i = n; i < n + airCount; i++)
+                    {
+                        var c = this.Cells[i];
+                        c.Block = BlockDefOfNew.Air.Worker;
+                        c.Discovered = airDiscovered;
+                    }
+
+                    n += airCount;
+
+                    continue;
+                }
+                var cell = this.Cells[n++];
+                cell.LoadWithoutBlock(celltag);
+            }
+
+            var indicesByBlock = chunktag["IndicesByBlock"].Value as List<SaveTag>;
+            foreach(var tag in indicesByBlock)
+            {
+                var blockDef = Def.GetDef<BlockDef>(tag.Name);
+                var worker = blockDef.Worker;
+                foreach(var index in tag.Value as List<int>)
+                    this.Cells[index].Block = worker;
+            }
+        }
         private void LoadCellsFromTagCompressed(SaveTag chunktag)
         {
             var celllist = chunktag["Cells"].Value as List<SaveTag>;
+  
             int n = 0;
             var airCount = 0;
             bool airDiscovered = true;
@@ -910,7 +1388,8 @@ namespace Start_a_Town_
             {
                 var celltag = celllist[listPosition++];
                 var block = celltag.LoadBlock("Block");
-                if (block == BlockDefOf.Air)
+                //if (block == BlockDefOf.Air)
+                if (block.BlockDef == BlockDefOfNew.Air)
                 {
                     airCount = (int)celltag["Data"].Value;
                     celltag.TryGetTagValue("Discovered", ref airDiscovered);
@@ -1014,7 +1493,8 @@ namespace Start_a_Town_
                     if (this.Contains(origin))
                     {
                         var block = this[origin.ToLocal()].Block;
-                        var entity = BlockEntityFactory.Create(block, origin);
+                        //var entity = BlockEntityFactory.Create(block, origin);
+                        var entity = block.BlockDef.CreateEntity(origin);
 
                         tag.TryGetTag("Entity", entity.Load);
 
@@ -1070,7 +1550,8 @@ namespace Start_a_Town_
                 {
                     var str = r.ReadString();
                     //var entity = Activator.CreateInstance(Type.GetType(str), originGlobal) as BlockEntity;
-                    var entity = this.GetLocalCell(originGlobal.ToLocal()).Block.CreateEntity(originGlobal);
+                    //var entity = this.GetLocalCell(originGlobal.ToLocal()).Block.CreateEntity(originGlobal);
+                    var entity = this.GetLocalCell(originGlobal.ToLocal()).Block.BlockDef.CreateEntity(originGlobal);
                     entity.Read(r);
                     foreach (var global in entity.CellsOccupied)
                     {
@@ -1425,7 +1906,9 @@ namespace Start_a_Town_
             var lightTag = new SaveTag(SaveTag.Types.List, "Light", SaveTag.Types.Byte);
 
             var sw = Stopwatch.StartNew();
-            this.SaveCellsToTagCompressed(chunktag);
+            //this.SaveCellsToTagCompressed(chunktag);
+            //this.SaveCellsToTagCompressedAsBlockDefs(chunktag);
+            this.SaveCellsToTagCompressedOptimized(chunktag);
             sw.Stop();
             string.Format("cells saved in {0} ms", sw.ElapsedMilliseconds).ToConsole();
 
@@ -1473,7 +1956,9 @@ namespace Start_a_Town_
 
             var lightTag = chunktag["Light"].Value as List<SaveTag>;
 
-            this.LoadCellsFromTagCompressed(chunktag);
+            //this.LoadCellsFromTagCompressed(chunktag);
+            //this.LoadCellsFromTagCompressedAsBlockDefs(chunktag);
+            this.LoadCellsFromTagCompressedOptimized(chunktag);
 
             var n = 0;
             for (int h = 0; h < MapBase.MaxHeight; h++)
@@ -1636,7 +2121,7 @@ namespace Start_a_Town_
                     var local = new IntVec3(i, j, z);
                     var cell = this.Cells[GetCellIndex(local)];
                     var global = local.ToGlobal(this);
-                    var isair = cell.Block == BlockDefOf.Air;
+                    var isair = cell.Block == BlockDefOfNew.Air.Worker;// BlockDefOf.Air;
                     // HACK
                     if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global)) 
                      //if (isair && this.Map.Town.DesignationManager.IsDesignation(global, DesignationDefOf.Construct)) // HACK

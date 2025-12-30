@@ -67,6 +67,7 @@ namespace Start_a_Town_
             Type CompType;
 
         }
+        public BlockDef BlockDef;
         public BlockEntityComp.Spec[] BlockEntityCompSpecs;
         static Block()
         {
@@ -972,16 +973,6 @@ namespace Start_a_Town_
             var interactionCells = this.GetReservedInteractionCells(global, orientation);
             var col = interactionCells.All(c => map.Contains(c) && !map.IsSolid(c)) ? Color.Lime : Color.Red;
             cam.DrawCellHighlights(sb, Block.BlockHighlight, interactionCells, col * .5f);
-        }
-        public BlockEntity CreateEntity(IntVec3 origin)
-        {
-            if (this.BlockEntityCompSpecs is null)
-                return null;
-            var entity = new BlockEntity(origin);
-            foreach (var spec in this.BlockEntityCompSpecs)
-                entity.AddComp(spec.CreateComp());
-            entity.Initialize();
-            return entity;
         }
 
         public IEnumerable<ConstructionDesignationArgs> GetConstructionOptions()

@@ -9,7 +9,8 @@ namespace Start_a_Town_
 
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorResolvePath(PathEndMode.Any);
+            //yield return new BehaviorResolvePath(PathEndMode.Any);
+            yield return new BehaviorResolvePath(PathEndMode.InteractionSpot);
             yield return new BehaviorResolveInteraction();
             //var index = TargetIndex.A;
             //yield return new BehaviorResolvePath(index, PathEndMode.Any);
@@ -17,6 +18,7 @@ namespace Start_a_Town_
         }
         protected override bool InitExtraReservations()
         {
+            return this.ReserveAll();
             return this.Reserve(TargetIndex.A);
         }
     }

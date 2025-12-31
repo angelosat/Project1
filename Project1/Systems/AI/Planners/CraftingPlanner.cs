@@ -21,8 +21,6 @@ namespace Start_a_Town_
 
             var manager = map.Town.CraftingManagerNew;
 
-            
-
             var allOrders = manager.GetAllOrdersUnsorted();
             foreach (var order in allOrders)
             {
@@ -298,23 +296,28 @@ namespace Start_a_Town_
         }
         private static CraftingCollectionResult TryCollectIngredients(Actor actor, OrderSettings order)
         {
-            var mapEntities = actor.Map.GetEntities<Entity>();
+            var mapEntities = actor.Map.GetEntities<Entity>().Where(actor.CanReachAndReserve);
             Dictionary<Entity, int> allocatedSoFar = [];
             List<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)> allFound = [];
             List<(IntVec3 slot, Entity entity)> inSlots = [];
-            foreach (var req in order.GetIngredientRequirements())
+            var ingredients = order.GetIngredientRequirements().ToList();
+            foreach (var req in ingredients)
             {
                 var missingQuantity = req.Quantity;
                 var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);
 
                 //if (slotEntities.Any(entity => req.Matches(entity) && req.Quantity == entity.StackSize))
-                if (slotEntities.FirstOrDefault(entity => req.Matches(entity) && req.Quantity == entity.StackSize) is Entity inSlot)
+                if (slotEntities.FirstOrDefault(
+                    entity => 
+                        req.Matches(entity) && 
+                        req.Quantity == entity.StackSize &&
+                        actor.CanReachAndReserve(entity)) 
+                    is Entity inSlot)
                 {
                     inSlots.Add((req.Slot, inSlot));
                     break;
                 }
-                var carried = actor.Hauled as Entity;
-                if (missingQuantity > 0 && carried != null && req.Matches(carried))
+                if (missingQuantity > 0 && actor.Hauled is Entity carried && req.Matches(carried))
                 {
                     var used = Math.Min(carried.StackSize, missingQuantity);
                     missingQuantity -= used;
@@ -326,90 +329,12 @@ namespace Start_a_Town_
                 var validStacks = mapEntities.Where(req.Matches);
                 var allocation = AllocateRequirement(actor, validStacks, missingQuantity, allocatedSoFar);
                 if (allocation is null)
-                    //return (false, Enumerable.Empty<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)>());
                     return new CraftingCollectionResult(CraftingOrderState.NotEnoughItems, null, null);
                 allFound.Add((allocation, req.Slot));
             }
-            if (!allFound.Any())
+            if (allFound.Count == 0)
                 return new(CraftingOrderState.ReadyToCraft, null, inSlots);
             return new(CraftingOrderState.NeedsTransfer, allFound, null);
-            //return (true, allFound);
-        }
-        //private static (bool result, IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> allocations) TryCollectIngredients(Actor actor, OrderSettings order)
-        //{
-        //    var mapEntities = actor.Map.GetEntities<Entity>();
-        //    Dictionary<Entity, int> allocatedSoFar = [];
-        //    List<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)> allFound = [];
-        //    foreach (var req in order.GetIngredientRequirements())
-        //    {
-        //        var missingQuantity = req.Quantity;
-        //        var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);
-
-        //        if (slotEntities.Any(entity => req.Matches(entity) && req.Quantity == entity.StackSize))
-        //            break;
-
-        //        var carried = actor.Hauled as Entity;
-        //        if (missingQuantity > 0 && carried != null && req.Matches(carried))
-        //        {
-        //            var used = Math.Min(carried.StackSize, missingQuantity);
-        //            missingQuantity -= used;
-        //        }
-
-        //        Debug.Assert(missingQuantity >= 0);
-        //        if (missingQuantity == 0)
-        //            continue;
-        //        var validStacks = mapEntities.Where(req.Matches);
-        //        var allocation = AllocateRequirement(actor, validStacks, missingQuantity, allocatedSoFar);
-        //        if (allocation is null)
-        //            return (false, Enumerable.Empty<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)>());
-        //        allFound.Add((allocation, req.Slot));
-        //    }
-        //    return (true, allFound);
-        //}
-        private static (bool result, IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> allocations) TryCollectIngredientsLessOld(Actor actor, OrderSettings order)
-        {
-            var mapEntities = actor.Map.GetEntities<Entity>();
-            Dictionary<Entity, int> allocatedSoFar = [];
-            List<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)> allFound = [];
-            foreach (var req in order.GetIngredientRequirements())
-            {
-                Entity primaryMatch = null;
-                var missingQuantity = req.Quantity;
-                var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);
-                foreach(var entity in slotEntities)
-                {
-                    if(req.MatchesPartial(entity, out var qtyUsed))
-                    {
-                        primaryMatch = entity;
-                        missingQuantity -= qtyUsed;
-                        break;
-                    }
-                }
-                Debug.Assert(missingQuantity >= 0);
-                if (missingQuantity == 0)
-                    continue;
-                var validStacks = mapEntities.Where(req.Matches);
-                var allocation = AllocateRequirement(actor, validStacks, missingQuantity, allocatedSoFar);
-                if (allocation is null)
-                    return (false, Enumerable.Empty<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)>());
-                allFound.Add((allocation, req.Slot));
-            }
-            return (true, allFound);
-        }
-        private static (bool result, IEnumerable<IEnumerable<(Entity stack, int quantity)>> allocations) TryCollectIngredientsOld(Actor actor, OrderSettings order)
-        {
-            var mapEntities = actor.Map.GetEntities<Entity>();
-            Dictionary<Entity, int> allocatedSoFar = [];
-            List<IEnumerable<(Entity stack, int quantity)>> allFound = [];
-            foreach (var req in order.GetIngredientRequirements())
-            {
-                var missingQuantity = req.Quantity;
-                var validStacks = mapEntities.Where(e => req.Matches(e));
-                var allocation = AllocateRequirement(actor, validStacks, missingQuantity, allocatedSoFar);
-                if (allocatedSoFar is not null)
-                allFound.Add(allocation);
-            }
-            return (true, allFound);
         }
         /// <summary>
         /// Attempts to allocate a specific ingredient requirement from available stacks, considering reservations.

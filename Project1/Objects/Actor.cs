@@ -546,5 +546,9 @@ namespace Start_a_Town_
             if (this.GetVisitorProperties() is WorldInhabitantView props)
                 props.OffsiteArea = null;
         }
+        public bool CanReachAndReserve(Entity e)
+        {
+            return this.CanReach(e) && this.CanReserve(e);
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace Start_a_Town_
         {
             var carried = actor.Hauled as Entity;
 
-            var stockpiles = actor.Town.ZoneManager.GetZones<Stockpile>().OrderByDescending(i => i.Priority);
+            var stockpiles = actor.Map.Town.ZoneManager.GetZones<Stockpile>().OrderByDescending(i => i.Priority);
             var mapItems = actor.Map.GetEntities().Where(e => actor.CanReach(e) && actor.CanReserve(e)).Cast<Entity>().SortByReachableRegionDistance(actor).ToList();
 
             // if actor is currently carrying something

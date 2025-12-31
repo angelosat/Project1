@@ -24,7 +24,6 @@ namespace Start_a_Town_.Crafting
     }
     class InteractionCraftingNew : InteractionToolUse
     {
-        OrderSettings Order;
         Progress _progress = new();
         protected override Progress ProgressNew => this._progress;
 

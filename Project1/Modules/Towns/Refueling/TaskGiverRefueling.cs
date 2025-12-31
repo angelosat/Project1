@@ -45,6 +45,7 @@ namespace Start_a_Town_
         //}
         protected override Plan TryPlan(Actor actor)
         {
+            return null;
             var refuelables = actor.Town.GetRefuelablesNew();
             foreach (var target in refuelables)
             {

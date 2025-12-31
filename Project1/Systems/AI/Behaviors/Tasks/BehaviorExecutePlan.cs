@@ -191,6 +191,13 @@ namespace Start_a_Town_
         {
             this.FinishActions.Add(a);
         }
+        internal bool ReserveAll()
+        {
+            return
+                this.ReserveAll(TargetIndex.A) &&
+                this.ReserveAll(TargetIndex.B) &&
+                this.ReserveAll(TargetIndex.C);
+        }
         internal bool ReserveAll(TargetIndex sourceIndex)
         {
             var targets = this.Plan.GetTargetQueue(sourceIndex);
@@ -202,7 +209,7 @@ namespace Start_a_Town_
             {
                 var target = targets[i];
                 var amount = amounts[i];
-                if (!this.Actor.Town.ReservationManager.Reserve(this.Actor, this.Plan, target, amount))
+                if (!this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, target, amount))
                     return false;
             }
             return true;

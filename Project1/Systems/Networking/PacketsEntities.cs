@@ -85,7 +85,8 @@ namespace Start_a_Town_
 
         private static void SendEntityRegistered(EntityRegisteredEvent e)
         {
-            e.Entity.Write(Server.Instance.BeginPacketImmediate(_pRegister));
+            //e.Entity.Write(Server.Instance.BeginPacketImmediate(_pRegister));
+            e.Entity.Write(Server.Instance.BeginPacket(_pRegister));
         }
         private static void OnRegister(NetEndpoint endpoint, Packet packet)
         {

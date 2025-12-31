@@ -149,6 +149,7 @@ namespace Start_a_Town_
             this.Root.Load(save["Root"]);
             //this.Meta = save.Load<RoleMetaWrapper>("Meta");
             if (save.TryLoadNew<RoleMetaWrapper>("Meta", out var meta)) this.Meta = meta;
+            this.Meta.Actor = this.Owner as Actor;
         }
 
         public override void Write(IDataWriter w)

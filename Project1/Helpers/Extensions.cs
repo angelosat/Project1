@@ -442,7 +442,12 @@ namespace Start_a_Town_
 
         public static bool Roll(this Random rand, double chance)
         {
-            return chance > 0 && (chance >= 1 || rand.NextDouble() <= chance);
+            if (chance <= 0)
+                return false;
+            if (chance >= 1)
+                return true;
+            var roll = rand.NextDouble();
+            return roll <= chance;
         }
       
         static public Dictionary<T, U> ToDictionary<T,U>(this IList<T> listA, IList<U> listB)

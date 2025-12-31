@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Start_a_Town_.Components.Needs;
 using Start_a_Town_.UI;
@@ -170,6 +171,13 @@ namespace Start_a_Town_.Components
                 }
                 box.AddControls(panel);
             }
+        }
+
+        internal void OverridePercentage(NeedDef adventuring, float percentage)
+        {
+            var need = this.NeedsNew[adventuring];
+            need.SetValue(need.Max * percentage, this.Owner);
+            this.Owner.Map.Events.Post(new ActorNeedOverridenEvent(this.Owner as Actor, need.Def, need.Value));
         }
 
         public new class Spec: Spec<NeedsComponent>

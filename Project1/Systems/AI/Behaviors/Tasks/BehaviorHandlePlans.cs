@@ -44,7 +44,7 @@ namespace Start_a_Town_
             var jobPlanners = jobs.SelectMany(j => j.Def.GetPlanners());
 
             // replace this when meta-roles are fully implemented
-            givers = actor.IsTownMember ? givers.Concat(jobPlanners) : givers.Concat(Planner.VisitorPlanners);
+            //givers = actor.IsTownMember ? givers.Concat(jobPlanners) : givers.Concat(Planner.VisitorPlanners);
 
             givers = givers.Append(Planner.Idle);
             return givers;

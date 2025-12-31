@@ -207,8 +207,10 @@ namespace Start_a_Town_.UI
             this.Items.Add(control);
             if (this.Controls.Any())
             {
-                this.AddControlsBottomLeft(control);
-                control.Location.Y += Spacing;
+                //this.AddControlsBottomLeft(control);
+                //control.Location.Y += Spacing;
+                this.AddControlsBottomLeft(this.Spacing, control);
+
             }
             else
                 this.AddControls(control);

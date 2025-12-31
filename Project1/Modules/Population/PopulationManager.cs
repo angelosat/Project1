@@ -9,58 +9,11 @@ namespace Start_a_Town_
 {
     public class PopulationManager : Inspectable, ISaveable, ISerializable
     {
-        [EnsureStaticCtorCall]
-        internal static class Packets
-        {
-            private static readonly int PacketVisitorArrived, PacketAdventurerCreated;
-
-            static Packets()
-            {
-                PacketVisitorArrived = Registry.PacketHandlers.Register(ReceiveNotifyVisit);
-                PacketAdventurerCreated = Registry.PacketHandlers.Register(ReceiveNotifyAdventurerCreated);
-            }
-
-            public static void SendNotifyVisit(Actor actor)
-            {
-                var server = actor.Net as Server;
-                server.BeginPacket(PacketVisitorArrived).Write(actor.RefId);
-            }
-            public static void SendNotifyAdventurerCreated(Actor actor)
-            {
-                var server = actor.Net as Server;
-                server.BeginPacket(PacketAdventurerCreated).Write(actor.RefId);
-            }
-            private static void ReceiveNotifyAdventurerCreated(NetEndpoint net, Packet pck)
-            {
-                var r = pck.PacketReader;
-                var client = net as Client;
-                var actorID = r.ReadInt32();
-                var actor = client.World.GetEntity(actorID) as Actor;
-                var world = client.Map.World as StaticWorld;
-                world.Population.RegisterVisitor(actor);
-            }
-            private static void ReceiveNotifyVisit(NetEndpoint net, Packet pck)
-            {
-                var r = pck.PacketReader;
-                if (net is Server)
-                    throw new Exception();
-                var actorID = r.ReadInt32();
-                var actor = net.World.GetEntity(actorID) as Actor;
-                ReportVisit(net, actor);
-            }
-
-            private static void ReportVisit(INetEndpoint net, Actor actor)
-            {
-                var props = actor.GetVisitorProperties();
-                net.Report($"{actor.Name} is {(!actor.Exists ? ("visiting" + (props.Discovered ? "" : " for the first time!")) : "departing")}");
-                props.Discovered = true;
-            }
-        }
         bool Populated;
         readonly ObservableCollection<WorldInhabitantView> WorldInhabitants = [];
         public IEnumerable<WorldInhabitantView> AllActors => this.WorldInhabitants;
         public readonly StaticWorld World;
-        const int WorldPopulationCap = 8;
+        const int WorldPopulationCap = 16;
         public int WorldPopulationCount { get; private set; }
         const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
         const int InitialApproval = 50;
@@ -83,9 +36,7 @@ namespace Start_a_Town_
                 this.WorldInhabitants.Remove(view);
                 this.WorldPopulationCount--;
             }
-            //var existing = this.ActorsAdventuring.FirstOrDefault(p => p.Actor == e.Entity);
-            //if (existing != null)
-            //    this.ActorsAdventuring.Remove(existing);
+  
         }
         private void OnEntityRegistered(EntityRegisteredEvent e)
         {
@@ -97,14 +48,10 @@ namespace Start_a_Town_
                 this.WorldPopulationCount++;
                 this.Undiscovered.Add(actor.RefId);
             }
-            //var existing = this.ActorsAdventuring.FirstOrDefault(p => p.Actor == e.Entity);
-            //if (existing != null)
-            //    this.ActorsAdventuring.Remove(existing);
+ 
         }
         public void Update(INetEndpoint net)
         {
-            //if (net is Server)
-            //    this.HandleErrors();
             this.TickCount--;
             if (this.TickCount > 0)
                 return;
@@ -112,25 +59,6 @@ namespace Start_a_Town_
             this.PopulateRuntime(net);
         }
 
-        //private void HandleErrors()
-        //{
-        //    var map = this.World.Map;
-        //    var net = map.Net;
-        //    var allActors = net.World.GetEntities<Actor>();
-        //    var citizens = map.Town.GetMembers();
-        //    foreach (var actor in allActors)
-        //    {
-        //        if (citizens.Contains(actor))
-        //            continue;
-        //        if (!this.WorldInhabitants.Any(v => v.Actor == actor))
-        //        {
-        //            this.Populated = true;
-        //            Packets.SendNotifyAdventurerCreated(actor);
-        //            this.RegisterVisitor(actor);
-        //            Log.WriteToFile($"{actor.Name} is not a town member and was missing from the world population list.");
-        //        }
-        //    }
-        //}
 
         internal void Initialize()
         {
@@ -150,16 +78,11 @@ namespace Start_a_Town_
 
         private Actor PopulateRuntime(INetEndpoint net)
         {
-            //if (net is Server && this.ActorsAdventuring.Count < WorldPopulationCap)
             if (net is Server && this.WorldPopulationCount < WorldPopulationCap)
             {
                 Actor actor = GenerateInhabitant();
-                Packets.SendNotifyAdventurerCreated(actor);
-                //var chosenPlace = this.World.Space.PlaceAtRandomAndSync(actor);//
                 var chosenPlace = this.World.PlaceAtRandom(actor);//
-                //this.World.Events.Post(new WorldInhabitantGeneratedEvent(actor, chosenPlace));
-                this.AnnounceInhabitantCreated(this.World.Net, actor, chosenPlace);
-                //this.RegisterVisitor(actor);
+                net.Report($"{actor.Name} created and placed at {chosenPlace.Label}");
                 return actor;
             }
             return null;
@@ -167,17 +90,14 @@ namespace Start_a_Town_
        
         private Actor GenerateInhabitant()
         {
-            //var visitor = ActorDefOf.Npc.Create() as Actor;
             var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
             var coins = ItemDefOf.Coins.Create().SetStackSize(500);
-            //this.World.RegisterAndSync(coins);
             actor.Inventory.Insert(coins);
             var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
             need.Value = this.World.Random.Next(0, 100);
             actor.Skills.Randomize();
             actor.AI.Meta.LocationDecision.ScheduleNext(this.World);
-            this.World.Register(actor);// AndSync(actor);//
-            //this.ActorsAdventuring.Add(new WorldInhabitantView(actor));
+            this.World.Register(actor);
             return actor;
         }
 
@@ -188,16 +108,9 @@ namespace Start_a_Town_
             MakeVisitor(actor);
         }
 
-        public void AnnounceInhabitantCreated(INetEndpoint net, Actor actor, FrontierDef frontier)
-        {
-            net.Report($"{actor.Name} created and placed at {frontier.Label}");
-            //net.EventOccured((int)Components.Message.Types.NewAdventurerCreated, actor);
-        }
 
         private static void MakeVisitor(Actor actor)
         {
-            //actor.AddNeed(AdventurerNeedsDefOf.All.ToArray());
-            //actor.ModifyNeed(AdventurerNeedsDefOf.Guidance, n => 10);
         }
 
         public IEnumerable<WorldInhabitantView> Find(Func<WorldInhabitantView, bool> pred)
@@ -237,7 +150,7 @@ namespace Start_a_Town_
                     //() => npc.Npc.FullName,
                     new Label(() => npc.Npc.FullName) { TextColorFunc = ()=> npc.GetNameplateColor()},
                     //() => npc.Exists ? "Visiting" : (props.Discovered ? "" : "Unknown"));
-                    new Label(() => $"{props.CurrentWorldLocation?.ToString() ?? "In town"}"));
+                    new Label(() => $"{props.CurrentWorldLocation?.Label ?? "In town"}"));
 
                 // debugging stuff
                 btn.RightClickActionNew = b =>
@@ -245,7 +158,7 @@ namespace Start_a_Town_
                     if (!InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
                         return;
                     ContextMenuManager.PopUp(
-                        ("Force visit", () => Server.Instance.World.GetEntity<Actor>(npc.RefId).GetVisitorProperties().ForceVisit()),
+                        ("Force visit", () => this.ForceVisitDepart(npc)),
                         ("Dispose", () => PacketEntityDispose.Send(Client.Instance, npc.RefId, Client.Instance.PlayerData))
                     );
                 };
@@ -262,6 +175,15 @@ namespace Start_a_Town_
             list.Bind(this.WorldInhabitants);
             box.AddControlsVertically(filters, list);
             return box;
+        }
+        void ForceVisitDepart(Actor actor)
+        {
+            var serverActor = Server.Instance.World.GetEntity<Actor>(actor.RefId);
+            var newPercentage = actor.Map == this.World.Map ? 0 : 1f;
+            serverActor.Needs.OverridePercentage(AdventurerNeedsDefOf.Adventuring, newPercentage);
+            var debugmsg = $"{actor.Name}'s visit chance modifier set to 1";
+            Server.Instance.ConsoleBox.Write(debugmsg);
+            DebugConsole.Write(DebugConsole.Debug, debugmsg);
         }
         public void ResolveReferences()
         {

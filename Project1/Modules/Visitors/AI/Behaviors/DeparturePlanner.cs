@@ -5,11 +5,11 @@
         const int MaxTries = 5;
         protected override Plan TryPlan(Actor actor)
         {
-            var visitor = actor.GetVisitorProperties();
-            var chance = visitor.GetDepartChance();
+            //var visitor = actor.GetVisitorProperties();
+            //var chance = visitor.GetDepartChance();
 
             var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
-            chance = 1 - need.Percentage;
+            var chance = 1 - need.Percentage;
 
             // multi step task giver:
             // if targetfrontier is not null, to to map edge and depart

@@ -124,6 +124,8 @@ namespace Start_a_Town_
             if (!this.ActorPositions.ContainsKey(actor))
                 return null;
             var distance = (int)Math.Ceiling(this.ActorPositions[actor]);
+            if (distance == 0)
+                return null;
             for (int i = 0; i < this.FrontiersByTier.Count; i++)
             {
                 if (i < distance && distance <= i + 1)
@@ -172,7 +174,7 @@ namespace Start_a_Town_
 
             //actor.Map?.DespawnAndSync(actor);
             actor.Map?.Despawn(actor);
-            this.World.Events.Post(new WorldInhabitantGeneratedEvent(actor, pos));
+            this.World.Events.Post(new InhabitantPlacedInWorldEvent(actor, pos));
             return this.GetFrontier(actor).Def;
         }
         public class FrontierWrapper

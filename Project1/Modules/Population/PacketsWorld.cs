@@ -14,10 +14,10 @@ namespace Start_a_Town_
         {
             _pInhabitantGenerated = Registry.PacketHandlers.Register(OnInhabitantGenerated);
 
-            Registry.WorldEventHooksServer.Register<WorldInhabitantGeneratedEvent>(SendWorldInhabitantGenerated);
+            Registry.WorldEventHooksServer.Register<InhabitantPlacedInWorldEvent>(SendWorldInhabitantGenerated);
         }
 
-        private static void SendWorldInhabitantGenerated(WorldInhabitantGeneratedEvent e)
+        private static void SendWorldInhabitantGenerated(InhabitantPlacedInWorldEvent e)
         {
             Server.Instance.BeginPacket(_pInhabitantGenerated)
                 .Write(e.Actor.RefId)
@@ -30,7 +30,7 @@ namespace Start_a_Town_
             var r = packet.PacketReader;
             var actor = client.World.GetEntity<Actor>(r.ReadInt32());
             var worldPos = WorldSpacePosition.ReadFrom(r);
-            actor.World.PlaceAt(actor, worldPos);
+            client.World.PlaceAt(actor, worldPos);
         }
     }
 }

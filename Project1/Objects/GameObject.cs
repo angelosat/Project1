@@ -109,11 +109,18 @@ namespace Start_a_Town_
         public NetEndpoint Net { get => this.World?.Net; set { } }
 
         public WorldBase World { get; set; }
+
         MapBase _map;
-        public MapBase Map 
+        public MapBase LastMap { get; private set; }
+        public MapBase Map
         {
             get => this._map;//this.Owner?.Map ?? this._map; 
-            set => this._map = value; 
+            set
+            {
+                this._map = value;
+                if (value is not null)
+                    this.LastMap = value;
+            }
         }
 
         public bool IsSpawnedNew => this.Map != null && this.Owner == null;

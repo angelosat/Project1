@@ -38,7 +38,7 @@ namespace Start_a_Town_
         }
         static public void Unreserve(this Actor obj)
         {
-            obj.Map.Town.ReservationManager.Unreserve(obj);
+            obj.LastMap.Town.ReservationManager.Unreserve(obj);
         }
         static public void Unreserve(this Actor obj, GameObject tar)
         {

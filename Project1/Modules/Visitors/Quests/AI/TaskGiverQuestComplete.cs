@@ -4,6 +4,7 @@
     {
         protected override Plan TryPlan(Actor actor)
         {
+            return null;
             var props = actor.GetVisitorProperties();
             var quests = props.GetQuests();
             foreach(var q in quests)

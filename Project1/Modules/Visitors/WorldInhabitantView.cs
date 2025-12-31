@@ -8,39 +8,27 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    public class WorldInhabitantView : Inspectable, ITooltippable, ISaveable, ISyncable
+    public class WorldInhabitantView : Inspectable, ITooltippable
     {
-        static readonly int PacketSyncAwardTownRating, PacketSync;
+        static readonly int PacketSyncAwardTownRating;
         static WorldInhabitantView()
         {
             PacketSyncAwardTownRating = Registry.PacketHandlers.Register(ReceiveAwardTownRating);
-            PacketSync = Registry.PacketHandlers.Register(ReceiveSync);
         }
      
         public int ActorID;
-        Actor CachedActor;
         public Actor Actor;
       
 
         public bool Discovered;
-        public void ResolveReferences()
-        {
-            this.CachedActor = this.World.GetEntity(this.ActorID) as Actor;
-        }
         
-        //public float TownApprovalRating;
-        //int ApprovalMin = -100, ApprovalMax = 100;
         public TownApproval TownApprovalRating = new ();
         public HashSet<int> JunkItems = new();
         public IntVec3? HangAroundSpot;
 
-        //public float TownRating => this.TownApprovalRating >= 0 ? this.TownApprovalRating / ApprovalMax : this.TownApprovalRating / ApprovalMin;
         public TimeSpan Timer = new();
         public FrontierDef CurrentWorldLocation => this.Actor.World.GetFrontierOf(this.Actor);
         public FrontierDef OffsiteArea;
-        static readonly int OffsiteTickLength = Ticks.PerSecond * 10;
-        int OffsiteTick;
-        float VisitChanceModifier;
         public HashSet<int> ShopBlacklist = new();
         public HashSet<int> RecentlyVisitedShops = new();
         public readonly ObservableCollection<QuestDef> Quests = new();
@@ -49,98 +37,14 @@ namespace Start_a_Town_
         {
             this.Actor = actor;
         }
-        public WorldInhabitantView(IDataReader r, PopulationManager manager)
-        {
-            this.World = manager.World;
-            this.Read(r);
-        }
-        public WorldInhabitantView(SaveTag save, PopulationManager manager)
-        {
-            this.World = manager.World;
-            this.Load(save);
-        }
         public WorldInhabitantView(StaticWorld world, Actor actor, float townVisitChance, int townApprovalRating)
         {
             this.World = world;
             this.Timer = world.Clock;
             this.Actor = actor;
-            //TownApprovalRating = townApprovalRating;
             this.TownApprovalRating.Value = townApprovalRating;
         }
-        public void Tick()
-        {
-            var actor = this.Actor;
-            if (actor.IsSpawned)
-                return;
-            if (this.OffsiteTick < OffsiteTickLength)
-            {
-                this.OffsiteTick++;
-                return;
-            }
-            this.OffsiteTick = 0;
-
-            this.TryVisitTown();
-            if (actor.Exists) // return if the actor is now spawned as result of the tryvisit function
-                return;
-
-            var net = actor.Net;
-            if (net is Server)
-                this.OffsiteArea?.Tick(this);
-
-            this.TickNeeds();
-        }
-        private void TickNeeds()
-        {
-            foreach (var n in this.Actor.GetNeeds())
-                n.Tick();// this.Actor);
-        }
-        void TryVisitTown()
-        {
-            var actor = this.Actor;
-            var net = actor.Net;
-            if (net is Client)
-                return;
-
-
-            var isVisiting = actor.Exists;
-            var map = Net.Server.Instance.Map as StaticMap;
-            var world = this.World;
-            if (isVisiting)
-            {
-                throw new Exception(); // this shouldn't have been called if the actor is spawned
-            }
-            else
-            {
-                if (world.Random.Roll(this.GetVisitChance()))
-                {
-                    PopulationManager.Packets.SendNotifyVisit(actor);
-                    Vector3 coords = map.GetRandomEdgeCell().Above;
-                    //map.SyncSpawn(actor, coords, Vector3.Zero);
-                    map.SpawnAndSync(actor, coords, Vector3.Zero);
-                    this.Arrive();
-                    this.ResetTimer(world.Clock);
-                }
-            }
-            this.Sync();
-        }
        
-        private static void ReceiveSync(NetEndpoint net, Packet packet)
-        {
-            var r = packet.PacketReader;
-            var actor = net.World.GetEntity<Actor>(r.ReadInt32());
-            actor.GetVisitorProperties().Sync(r);
-        }
-
-        private void Sync()
-        {
-            var net = this.Actor.Net;
-            if (net is Client)
-                throw new Exception();
-            var w = net.BeginPacket(PacketSync);
-            w.Write(this.Actor.RefId);
-            this.Sync(w);
-        }
-
         public void GetTooltipInfo(Control tooltip)
         {
         }
@@ -158,25 +62,11 @@ namespace Start_a_Town_
         {
             this.Timer = clock;
         }
-        internal TimeSpan GetTimer()
-        {
-            return this.Timer;
-        }
-        
         internal TimeSpan GetTimeElapsed()
         {
             return this.World.Clock - this.Timer;
         }
         
-        public double GetVisitChance()
-        {
-            if (this.GetQuests().Any(q => q.IsCompleted(this.Actor)))
-                return 1;
-            var fromTime = this.FromTimeElapsed();
-            var fromNeeds = this.GetVisitChanceFromNeeds();
-            var fromTownRating = (.5 + this.TownApprovalRating.Rating);
-            return fromTime * fromNeeds * fromTownRating + this.VisitChanceModifier;
-        }
         public double GetDepartChance()
         {
             if (this.GetQuests().Any(q => !q.IsCompleted(this.Actor)))
@@ -191,18 +81,7 @@ namespace Start_a_Town_
             var fromElapsed = a * a;
             return fromElapsed;
         }
-        double GetVisitChanceFromNeeds()
-        {
-            var value = this.Actor.GetNeeds(AdventurerNeedsDefOf.NeedCategoryVisitor).Average(n => n.Percentage);
-            return 1 - value;
-        }
-        public void ForceVisit()
-        {
-            this.VisitChanceModifier = 1;
-            var debugmsg = $"{this.Actor.Name}'s visit chance modifier set to 1";
-            Server.Instance.ConsoleBox.Write(debugmsg);
-            DebugConsole.Write(DebugConsole.Debug, debugmsg);
-        }
+       
         internal void BlacklistShop(int shopID)
         {
             this.ShopBlacklist.Add(shopID);
@@ -210,21 +89,12 @@ namespace Start_a_Town_
             var shop = this.Actor.Town.ShopManager.GetShop(shopID);
             AILog.SyncWrite(this.Actor, $"Blacklisted {shop.Name} because of bad service");
         }
-        internal void BlacklistShop(Workplace shop)
-        {
-            this.BlacklistShop(shop.ID);
-        }
-
+       
         internal bool IsBlacklisted(Workplace shop)
         {
             return this.ShopBlacklist.Contains(shop.ID);
         }
 
-        internal void Arrive()
-        {
-            this.VisitChanceModifier = 0;
-            this.ShopBlacklist.Clear();
-        }
         public void SyncAwardTownRating(float value)
         {
             var net = this.Actor.Net;
@@ -286,79 +156,7 @@ namespace Start_a_Town_
         {
             return $"Visitor:{this.Actor.Name}";
         }
-        public void Write(IDataWriter w)
-        {
-            w.Write(this.Actor.RefId);
-            w.Write(this.Actor.Exists);
-            if (!this.Actor.Exists)
-                this.Actor.Write(w);
-            w.Write(this.TownApprovalRating.Value);
-            w.Write(this.ShopBlacklist);
-            w.Write(this.RecentlyVisitedShops);
-            w.Write(this.Discovered);
-            w.Write(this.Timer.TotalMilliseconds);
-            w.Write(this.Quests.Select(q => q.ID).ToArray());
-        }
-        public WorldInhabitantView Read(IDataReader r)
-        {
-            this.ActorID = r.ReadInt32();
-            var isspawned = r.ReadBoolean();
-            if (!isspawned)
-                this.Actor = GameObject.Create(r) as Actor;
-            this.TownApprovalRating.Value = r.ReadSingle();
-            this.ShopBlacklist = [.. r.ReadIntArray()];
-            this.RecentlyVisitedShops = [.. r.ReadIntArray()];
-            this.Discovered = r.ReadBoolean();
-            this.Timer = TimeSpan.FromMilliseconds(r.ReadDouble());
-            r.ReadIntArray().ToList().ForEach(i => this.Quests.Add(this.World.Map.Town.QuestManager.GetQuest(i)));
-            return this;
-        }
-        public ISyncable Sync(IDataWriter w)
-        {
-            w.Write(this.Actor.RefId);
-            w.Write(this.TownApprovalRating.Value);
-            w.Write(this.ShopBlacklist);
-            w.Write(this.RecentlyVisitedShops);
-            w.Write(this.Discovered);
-            w.Write(this.Timer.TotalMilliseconds);
-            return this;
-        }
-        public ISyncable Sync(IDataReader r)
-        {
-            this.ActorID = r.ReadInt32();
-            this.TownApprovalRating.Value = r.ReadSingle();
-            this.ShopBlacklist = new(r.ReadIntArray());
-            this.RecentlyVisitedShops = new(r.ReadIntArray());
-            this.Discovered = r.ReadBoolean();
-            this.Timer = TimeSpan.FromMilliseconds(r.ReadDouble());
-            return this;
-        }
-        public SaveTag Save(string name = "")
-        {
-            var tag = new SaveTag(SaveTag.Types.Compound, name);
-            this.Actor.RefId.Save(tag, "ActorID");
-            if (!this.Actor.Exists)
-                tag.Add(this.Actor.Save("ActorObject"));
-            this.TownApprovalRating.Value.Save(tag, "TownApprovalRating");
-            this.ShopBlacklist.Save(tag, "ShopBlacklist");
-            this.RecentlyVisitedShops.Save(tag, "RecentlyVisitedShops");
-            this.Discovered.Save(tag, "Discovered");
-            this.Quests.TrySaveRefs(tag, "Quests");
-            this.Timer.TotalMilliseconds.Save(tag, "Timer");
-            return tag;
-        }
-        public ISaveable Load(SaveTag tag)
-        {
-            this.ActorID.TryLoad(tag, "ActorID");
-            tag.TryGetTag("ActorObject", t => this.Actor = GameObject.Load(t) as Actor);
-            this.TownApprovalRating.Value.TryLoad(tag, "TownApprovalRating");
-            this.ShopBlacklist.TryLoad(tag, "ShopBlacklist");
-            this.RecentlyVisitedShops.TryLoad(tag, "RecentlyVisitedShops");
-            this.Discovered.TryLoad(tag, "Discovered");
-            this.Quests.TryLoadRefs(tag, "Quests");
-            tag.TryGetTagValue<double>("Timer", v => this.Timer = TimeSpan.FromMilliseconds(v));
-            return this;
-        }
+       
 
         internal void ShowQuestsGUI()
         {
@@ -387,6 +185,5 @@ namespace Start_a_Town_
             gui.GetWindow().SetTitle(this.Actor.Name).Show();
         }
 
-        //public static WorldInhabitantView Create(IDataReader r) => new WorldInhabitantView().Read(r);
     }
 }

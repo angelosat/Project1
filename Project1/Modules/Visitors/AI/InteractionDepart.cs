@@ -4,6 +4,10 @@ namespace Start_a_Town_
 {
     class InteractionDepart : Interaction
     {
+        public InteractionDepart()
+        {
+            this.AnimationDef = null;
+        }
         public override void Perform()
         {
             var a = this.Actor;

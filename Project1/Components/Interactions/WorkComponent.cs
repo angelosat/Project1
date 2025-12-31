@@ -112,7 +112,7 @@ namespace Start_a_Town_.Components
             this.Task.Stop();
             this.Task = null;
             this.Target = null;
-            this.Owner.Map.Events.Post<InteractionStoppedEvent>(new(this.Owner as Actor));
+            this.Owner.LastMap.Events.Post<InteractionStoppedEvent>(new(this.Owner as Actor));
         }
 
         public override void DrawUI(SpriteBatch sb, Camera camera, GameObject parent)

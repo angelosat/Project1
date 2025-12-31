@@ -132,7 +132,8 @@ namespace Start_a_Town_
 
         internal void Stop()
         {
-            this._animation.FadeOutAndRemove();
+            if(this.AnimationDef is not null)
+                this._animation.FadeOutAndRemove();
         }
         protected virtual void Fail()
         {

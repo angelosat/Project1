@@ -24,18 +24,18 @@ namespace Start_a_Town_.Terraforming.Mutators
                     continue;
                 else if (z == this.SeaLevel)
                 {
-                    if (c.Block == BlockDefOfNew.Air.Worker)
+                    if (c.Block == BlockDefOf.Air.Worker)
                     {
-                        c.Block = BlockDefOf.Fluid;
+                        c.Block = BlockDefOf.Fluid.Worker;
                         c.Material = MaterialDefOf.Water;
                         continue;
                     }
                 }
                 else
                 {
-                    if (c.Block == BlockDefOfNew.Air.Worker)
+                    if (c.Block == BlockDefOf.Air.Worker)
                     {
-                        c.Block = BlockDefOf.Fluid;
+                        c.Block = BlockDefOf.Fluid.Worker;
                         c.Material = MaterialDefOf.Water;
                         c.BlockData = BlockFluid.GetData(1);
                         continue;
@@ -49,7 +49,7 @@ namespace Start_a_Town_.Terraforming.Mutators
                 var soilGradient = zNormal + gradients[cellCoords];
                 if (sandThreshold <= soilGradient && soilGradient < landThreshold)
                 {
-                    c.Block = BlockDefOf.Sand;
+                    c.Block = BlockDefOf.Sand.Worker;
                     c.Material = MaterialDefOf.Sand;
                 }
             }

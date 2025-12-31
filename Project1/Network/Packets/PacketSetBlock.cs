@@ -15,7 +15,7 @@ namespace Start_a_Town_
         static public SetBlockArgs ReadFrom(IDataReader r)
         {
             var global = r.ReadIntVec3();
-            var block = Block.GetBlock(r);
+            var block = r.ReadDef<BlockDef>().Worker;
             var material = r.ReadDef<MaterialDef>();
             var data = r.ReadByte();
             var orientation = r.ReadInt32();
@@ -35,7 +35,7 @@ namespace Start_a_Town_
         {
             server.BeginPacket(_pType)
                 .Write(args.Global)
-                .Write(args.Block.BaseID)
+                .Write(args.Block.BlockDef)
                 .Write(args.Material)
                 .Write(args.Data)
                 .Write(args.Orientation)

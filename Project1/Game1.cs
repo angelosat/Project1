@@ -169,7 +169,6 @@ namespace Start_a_Town_
             GameObject.LoadTemplates();
 
             Sprite.Initialize(); // why did i put it before the previous call? i have to bake the sprite atlas after initializing item templates
-            BlockDefOf.Init();
 
             Block.Initialize();
 

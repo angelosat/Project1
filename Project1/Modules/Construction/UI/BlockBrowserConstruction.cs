@@ -1,5 +1,4 @@
-﻿using Start_a_Town_.Components.Crafting;
-using Start_a_Town_.Towns.Constructions;
+﻿using Start_a_Town_.Towns.Constructions;
 using Start_a_Town_.UI;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +19,8 @@ namespace Start_a_Town_.Core
             this.Picker = new();
             this.Panel_Blocks = new Panel() { AutoSize = true };
             this.ToolBox = new UIToolsBox(this.OnToolSelectedNew);
-            var categories = Block.Registry.Values.Where(b => b.BuildProperties.Category is not null).GroupBy(b => b.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
+            //var categories = Block.Registry.Values.Where(b => b.BuildProperties.Category is not null).GroupBy(b => b.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
+            var categories = Def.GetDefs<BlockDef>().Select(b=>b.Worker).Where(b => b.BuildProperties.Category is not null).GroupBy(b => b.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
             foreach (var cat in categories)
             {
                 var list = cat.Where(b => b.ConstructionProfile is not null);

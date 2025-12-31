@@ -150,7 +150,7 @@ namespace Start_a_Town_
         public byte Y; // 1 byte
         public byte Z; // 1 byte
         //public byte Sunlight = 15, Blocklight = 0;
-        public Block Block = BlockDefOfNew.Air.Worker; // 4 bytes
+        public Block Block = BlockDefOf.Air.Worker; // 4 bytes
         public MaterialDef Material = MaterialDefOf.Air;
         public BitVector32 Data; // 4 bytes
 
@@ -237,7 +237,7 @@ namespace Start_a_Town_
         public SaveTag Save()
         {
             var data = new SaveTag(SaveTag.Types.Compound);
-            data.Save(this.Block, "Block");
+            data.SaveDef("Block", this.Block.BlockDef);
             this.Material.Save(data, "Material");
             this.Data.Data.Save(data, "Data");
             return data;
@@ -250,7 +250,7 @@ namespace Start_a_Town_
         }
         public Cell Load(SaveTag data)
         {
-            this.Block = data.LoadBlock("Block");
+            this.Block = data.LoadDef<BlockDef>("Block").Worker;
             this.Data = new BitVector32((int)data["Data"].Value);
             this.Material = data.LoadDef<MaterialDef>("Material");
             return this;
@@ -258,14 +258,14 @@ namespace Start_a_Town_
 
         public void Write(BinaryWriter w)
         {
-            w.Write(this.Block);
+            w.Write(this.Block.BlockDef);
             this.Material.Write(w);
             w.Write(this.Data.Data);
 
         }
         public Cell Read(IDataReader r)
         {
-            this.Block = Block.GetBlock(r);// r.ReadBlock();
+            this.Block = r.ReadDef<BlockDef>().Worker;
             this.Material = Def.GetDef<MaterialDef>(r);
             this.Data = new BitVector32(r.ReadInt32());
             return this;

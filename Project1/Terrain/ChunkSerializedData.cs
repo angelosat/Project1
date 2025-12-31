@@ -69,7 +69,7 @@ namespace Start_a_Town_
                 var cell = cells[i];
 
                 // --- Air run ---
-                if (cell.Block == BlockDefOfNew.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Worker)
                 {
                     if (airRunStart == -1)
                     {
@@ -469,7 +469,7 @@ namespace Start_a_Town_
                 for (int i = 0; i < run.Count; i++)
                 {
                     var cell = cells[run.StartIndex + i];
-                    cell.Block = BlockDefOfNew.Air.Worker;
+                    cell.Block = BlockDefOf.Air.Worker;
                     cell.Discovered = run.Discovered;
                     // BitVector32 / material not needed for air
                 }

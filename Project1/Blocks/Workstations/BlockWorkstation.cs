@@ -12,7 +12,11 @@ namespace Start_a_Town_
         public override bool IsDeconstructible => true;
         public BlockWorkstation() : base("Workstation", opaque: false, solid: true)
         {
-            
+            this.HidingAdjacent = false;
+            this.Variations.Add(this.Orientations.First());
+            this.BuildProperties.Category = ConstructionCategoryDefOf.Production;
+            this.BuildProperties.Dimension = 4;
+            this.Ingredient = new Ingredient(amount: 4).IsBuildingMaterial();
         }
         public BlockWorkstation(string name)//, Type blockEntityType)
             : base(name, opaque: false, solid: true)

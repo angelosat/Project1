@@ -1709,7 +1709,44 @@ namespace Start_a_Town_
                 Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, cd);
             sb.Flush(); // flush here because i might have to switch textures in an overriden tool draw call
         }
-       
+        public void DrawBlockMouseover(MySpriteBatch sb, MapBase map, TargetArgs target, Color color)
+        {
+            var global = target.Global;
+            if (global.Z > this.DrawLevel)
+                return;
+
+            Rectangle bounds = Block.Bounds;
+            this.GetEverything(map, global, bounds, out float cd, out Rectangle screenBounds, out Vector2 screenLoc);
+            var scrbnds = this.GetScreenBoundsVector4(global.X, global.Y, global.Z, bounds, Vector2.Zero);
+            screenLoc = new Vector2(scrbnds.X, scrbnds.Y);
+            cd = global.GetDrawDepth(map, this);
+
+            Block.Atlas.Begin(this.Effect);
+            var c = color * .5f;
+            var zoom = new Vector2(this.Zoom);
+            // this draws the back faces highlight
+            //sb.Draw(Block.Atlas.Texture, screenLoc, Block.BlockHighlightBack.Rectangle, 0, Vector2.Zero, zoom,
+            //    Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, cd);
+
+            // this code draw individual faces instead of the whole highlight
+            //if(target.Face == Vector3.UnitX)
+            //sb.Draw(Block.Atlas.Texture, screenLoc, Block.FaceHighlights[-IntVec3.UnitX].Rectangle, 0, Vector2.Zero, zoom,
+            //  Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, global.West().GetDrawDepth(map, this));
+            //else if(target.Face == Vector3.UnitY)
+            //    sb.Draw(Block.Atlas.Texture, screenLoc, Block.FaceHighlights[-IntVec3.UnitY].Rectangle, 0, Vector2.Zero, zoom,
+            //  Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, global.North().GetDrawDepth(map, this));
+            //else if (target.Face == Vector3.UnitZ)
+            //    sb.Draw(Block.Atlas.Texture, screenLoc, Block.FaceHighlights[IntVec3.UnitZ].Rectangle, 0, Vector2.Zero, zoom,
+            //              Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, global.Below().GetDrawDepth(map, this));
+
+            sb.Draw(Block.Atlas.Texture, screenLoc, Block.FaceHighlights[target.Face].Rectangle, 0, Vector2.Zero, zoom,
+            Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, (global + target.Face).GetDrawDepth(map, this));
+
+            // this draws the front faces highlight
+            //sb.Draw(Block.Atlas.Texture, screenLoc, Block.BlockHighlight.Rectangle, 0, Vector2.Zero, zoom,
+            //    Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, cd);
+            sb.Flush(); // flush here because i might have to switch textures in an overriden tool draw call
+        }
         internal bool IsDrawable(MapBase map, Vector3 global)
         {
             return global.Z <= this.GetMaxDrawLevel(map) + 1;

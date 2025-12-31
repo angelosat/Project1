@@ -69,7 +69,7 @@ namespace Start_a_Town_.PlayerControl
             bool isReplace = InputState.IsKeyDown(this.KeyReplace);
             var global = this.Target.Global + ((isDelete || isReplace) ? Vector3.Zero : this.Target.Face);
             //var block = isDelete ? BlockDefOf.Air : this.Block;
-            var block = isDelete ? BlockDefOfNew.Air.Worker : this.Block;
+            var block = isDelete ? BlockDefOf.Air.Worker : this.Block;
             byte state = isDelete ? (byte)0 : this.State;
 
             if (global != this.LastPainted)
@@ -130,12 +130,12 @@ namespace Start_a_Town_.PlayerControl
         }
         protected override void WriteData(System.IO.BinaryWriter w)
         {
-            w.Write(this.Block.BaseID);
+            w.Write(this.Block.BlockDef);
             w.Write(this.State);
         }
         protected override void ReadData(IDataReader r)
         {
-            this.Block = Block.Registry[r.ReadInt32()];
+            this.Block = r.ReadDef<BlockDef>().Worker;
             this.State = r.ReadByte();
         }
     }

@@ -369,7 +369,8 @@ namespace Start_a_Town_
         {
             var cam = map.Camera;
             if(this.Target is TargetArgs tar && tar.Type == TargetType.Position)
-                cam.DrawBlockMouseover(sb, map, tar.Global, Color.White);
+                cam.DrawBlockMouseover(sb, map, tar, Color.White);
+                //cam.DrawBlockMouseover(sb, map, tar.Global, Color.White);
             if (this.Target is null || this.Target.Type == TargetType.Null)
                 return;
             if (Engine.DrawRegions && this.Target.Type != TargetType.Null)

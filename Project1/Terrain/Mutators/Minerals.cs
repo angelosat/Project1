@@ -66,9 +66,9 @@ namespace Start_a_Town_.Terraforming.Mutators
                     var next = new Vector3(x, y, z);
 
                     var c = map.GetCell(next);
-                    if (c.Block != BlockDefOf.Cobblestone)
+                    if (c.Block != BlockDefOf.Cobblestone.Worker)
                         continue;
-                    c.Block = BlockDefOf.Mineral;
+                    c.Block = BlockDefOf.Mineral.Worker;
                     c.Material = ore.Material;
 
                     for (int j = 0; j < ore.MaxVeinSize; j++)
@@ -79,10 +79,10 @@ namespace Start_a_Town_.Terraforming.Mutators
                         if (!map.IsInBounds(next))
                             continue;
                         c = map.GetCell(next);
-                        if (c.Block != BlockDefOf.Cobblestone)
+                        if (c.Block != BlockDefOf.Cobblestone.Worker)
                             continue;
 
-                        c.Block = BlockDefOf.Mineral;
+                        c.Block = BlockDefOf.Mineral.Worker;
                         c.Material = ore.Material;
                     }
                 }

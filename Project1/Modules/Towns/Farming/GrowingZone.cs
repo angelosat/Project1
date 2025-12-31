@@ -196,7 +196,7 @@ namespace Start_a_Town_
                 var cell = this.Town.Map.GetCell(pos);
                 var block = cell.Block;
                 var cellData = cell.BlockData;
-                if (block == BlockDefOfNew.Farmland.Worker)
+                if (block == BlockDefOf.Farmland.Worker)
                 {
                     if (!this.Town.Map.GetObjects(pos.Above).Any(o => o.IsPlant()))
                         if (!BlockFarmland.IsSeeded(cellData))
@@ -217,7 +217,7 @@ namespace Start_a_Town_
         {
             return
                 Block.GetBlockMaterial(map, arg) == MaterialDefOf.Soil
-                && map.GetBlock(arg + Vector3.UnitZ) == BlockDefOfNew.Air.Worker;
+                && map.GetBlock(arg + Vector3.UnitZ) == BlockDefOf.Air.Worker;
         }
 
         internal IEnumerable<Plant> GetHarvestablePlantsLazy()

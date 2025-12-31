@@ -29,45 +29,45 @@ namespace Start_a_Town_
             return new BlockDesignationEntity(originGlobal);
         }
         
-        public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
-        {
-            throw new Exception();
-            var des = actor.Map.GetBlockEntity(target.Global) as BlockDesignationEntity;
-            var product = des.Product;
-            var global = target.Global;
-            amount = amount == -1 ? dropped.StackSize : amount;
-            BlockConstructionEntity constr = new(product, global, dropped, amount);
-            constr.Children = des.Children;
-            var map = actor.Map;
-            var positions = des.CellsOccupied;
-            bool requiresConstruction = product.Block.RequiresConstruction;
-            var isReady = constr.IsReadyToBuild(out _, out _, out _);
+        //public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
+        //{
+        //    throw new Exception();
+        //    var des = actor.Map.GetBlockEntity(target.Global) as BlockDesignationEntity;
+        //    var product = des.Product;
+        //    var global = target.Global;
+        //    amount = amount == -1 ? dropped.StackSize : amount;
+        //    BlockConstructionEntity constr = new(product, global, dropped, amount);
+        //    constr.Children = des.Children;
+        //    var map = actor.Map;
+        //    var positions = des.CellsOccupied;
+        //    bool requiresConstruction = product.Block.RequiresConstruction;
+        //    var isReady = constr.IsReadyToBuild(out _, out _, out _);
 
-            // TODO instead of doing this here, use a function in BlockConstructionEntity
-            if (requiresConstruction)
-            {
-                foreach (var p in positions)
-                {
-                    map.AddBlockEntity(p, constr);
-                    var pcell = map.GetCell(p);
-                    map.SetBlock(p, BlockDefOf.Construction, product.Material, pcell.BlockData, pcell.Variation, pcell.Orientation, false);
-                }
-                map.NotifyBlocksChanged(positions);
-            }
-            else if(isReady)
-            {
-                foreach (var p in positions)
-                    map.RemoveBlock(p, false);
-                var block = product.Block;
-                var cell = map.GetCell(global);
-                Block.Place(block, map, global, product.Material, product.Data, 0, cell.Orientation, true);
-                map.GetBlockEntity(global)?.IsMadeFrom(new ItemMaterialAmount[] { product.Requirement });
-            }
+        //    // TODO instead of doing this here, use a function in BlockConstructionEntity
+        //    if (requiresConstruction)
+        //    {
+        //        foreach (var p in positions)
+        //        {
+        //            map.AddBlockEntity(p, constr);
+        //            var pcell = map.GetCell(p);
+        //            map.SetBlock(p, BlockDefOfNew.Construction.Worker, product.Material, pcell.BlockData, pcell.Variation, pcell.Orientation, false);
+        //        }
+        //        map.NotifyBlocksChanged(positions);
+        //    }
+        //    else if(isReady)
+        //    {
+        //        foreach (var p in positions)
+        //            map.RemoveBlock(p, false);
+        //        var block = product.Block;
+        //        var cell = map.GetCell(global);
+        //        Block.Place(block, map, global, product.Material, product.Data, 0, cell.Orientation, true);
+        //        map.GetBlockEntity(global)?.IsMadeFrom(new ItemMaterialAmount[] { product.Requirement });
+        //    }
            
-            if (amount == -1)
-                throw new Exception();
-            dropped.Consume(amount);
-        }
+        //    if (amount == -1)
+        //        throw new Exception();
+        //    dropped.Consume(amount);
+        //}
         
         internal override bool IsValidHaulDestination(MapBase map, IntVec3 global, GameObject obj)
         {
@@ -81,33 +81,5 @@ namespace Start_a_Town_
             return $"{e.Product.Block.Name} (Designation)";
         }
 
-        public static void Place(MapBase map, IntVec3 global, byte data, int variation, int orientation, ProductMaterialPair product)
-        {
-            throw new Exception();
-            var entity = new BlockDesignation.BlockDesignationEntity(product, global);
-            bool ismulti = product.Block.Multi;
-
-            // LATEST DECISION: add the same entity to all occupied cells
-            // NOT FOR BLOCKDESIGNATION because i add every entity and child entities should have their origin field set
-            if (ismulti)
-            {
-                //var parts = product.Block.GetParts(global, orientation);
-                var parts = product.Block.GetChildrenWithSource(orientation).Select(c => (global + c.local, c.source));
-                foreach (var p in parts)
-                {
-                    var pos = p.Item1;
-                    var source = p.Item2;
-                    map.AddBlockEntity(pos, entity);// DIDNT I DECIDE THAT BLOCKENTITIES WILL BE PLACE ONLY IN THE ORIGIN CELL???
-                    entity.Children.Add(pos);
-                    map.SetBlock(pos, BlockDefOf.Designation, MaterialDefOf.Air, 0, source, variation, orientation, false);
-                }
-            }
-            else
-            {
-                map.AddBlockEntity(global, entity);// DIDNT I DECIDE THAT BLOCKENTITIES WILL BE PLACE ONLY IN THE ORIGIN CELL???
-                entity.Children.Add(global);
-                map.SetBlock(global, BlockDefOf.Designation, MaterialDefOf.Air, data, variation, orientation, false); // i put this last because there are blockchanged event handlers that look up the block entity which hadn't beeen added yet when I set the block beforehand
-            }
-        }
     }
 }

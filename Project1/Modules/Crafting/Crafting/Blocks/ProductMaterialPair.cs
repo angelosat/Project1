@@ -20,8 +20,7 @@
 
         public ProductMaterialPair(IDataReader r)
         {
-            //this.Block = r.ReadBlock();
-            this.Block = Block.GetBlock(r.ReadInt32());
+            this.Block = r.ReadDef<BlockDef>().Worker;
             this.Data = r.ReadByte();
             if(r.ReadBoolean()) // has requirement
                 this.Requirement = new ItemMaterialAmount(r);
@@ -29,7 +28,7 @@
 
         public ProductMaterialPair(SaveTag tag)
         {
-            this.Block = tag.LoadBlock("Product");
+            this.Block = tag.LoadDef<BlockDef>("Product").Worker;
             this.Data = tag.TagValueOrDefault<byte>("Data", 0);
             //this.Requirement = new ItemMaterialAmount(tag["Requirement"]);
             tag.TryGetTag("Requirement", t => this.Requirement = new ItemMaterialAmount(t));
@@ -59,7 +58,7 @@
         internal void Save(SaveTag tag, string name)
         {
             var save = new SaveTag(SaveTag.Types.Compound, name);
-            save.Save(this.Block, "Product");
+            save.SaveDef("Product", this.Block.BlockDef);
             this.Data.Save(save, "Data");
             if(this.HasReq)
                 this.Requirement.Save(save, "Requirement");
@@ -68,7 +67,7 @@
         bool HasReq => this.Requirement is not null;
         public void Write(IDataWriter w)
         {
-            w.Write(this.Block.BaseID);
+            w.Write(this.Block.BlockDef);
             w.Write(this.Data);
             w.Write(this.HasReq);
             if (this.HasReq)

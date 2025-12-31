@@ -41,13 +41,13 @@ namespace Start_a_Town_.Terraforming.Mutators
                 var c = map.GetCell(current);
                 if (c is null)
                     continue;
-                if (c.Block == BlockDefOfNew.Air.Worker ||
-                    c.Block == BlockDefOf.Fluid
+                if (c.Block == BlockDefOf.Air.Worker ||
+                    c.Block == BlockDefOf.Fluid.Worker
                     //||
                     //c.Block == BlockDefOf.Sand
                     )
                     continue;
-                c.Block = BlockDefOfNew.Air.Worker;
+                c.Block = BlockDefOf.Air.Worker;
             }
         }
       

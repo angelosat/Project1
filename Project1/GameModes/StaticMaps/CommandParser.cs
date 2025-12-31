@@ -30,9 +30,11 @@ namespace Start_a_Town_
                         break;
 
                     case "replace":
-                        var old = Block.GetBlock(p[1]);
-                        var replace = Block.GetBlock(p[2]);
-                        if (replace == BlockDefOfNew.Air.Worker || old == BlockDefOfNew.Air.Worker)
+                        //var old = Block.GetBlock(p[1]);
+                        //var replace = Block.GetBlock(p[2]);
+                        var old = Def.GetDef<BlockDef>(p[1]).Worker;
+                        var replace = Def.GetDef<BlockDef>(p[2]).Worker;
+                        if (replace == BlockDefOf.Air.Worker || old == BlockDefOf.Air.Worker)
                             break;
                         foreach (var ch in net.Map.GetActiveChunks())
                             foreach (var cell in ch.Value.Cells)
@@ -54,8 +56,9 @@ namespace Start_a_Town_
                         break;
 
                     case "remove":
-                        var toremove = Block.GetBlock(p[1]);
-                        if (toremove == BlockDefOfNew.Air.Worker)
+                        //var toremove = Block.GetBlock(p[1]);
+                        var toremove = Def.GetDef<BlockDef>(p[1]).Worker;
+                        if (toremove == BlockDefOf.Air.Worker)
                             break;
                         foreach (var ch in net.Map.GetActiveChunks())
                             foreach (var cell in ch.Value.Cells)

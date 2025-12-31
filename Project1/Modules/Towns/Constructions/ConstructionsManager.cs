@@ -254,71 +254,7 @@ namespace Start_a_Town_
                 this.PlaceDesignation(pos, args);
             }
         }
-        public void Handle(ToolBlockBuild.Args args, ProductMaterialPair product, List<IntVec3> positions)
-        {
-            this.PlaceDesignations(args, product, positions);
-        }
-
-        private void PlaceDesignations(ToolBlockBuild.Args args, ProductMaterialPair product, List<IntVec3> positions)
-        {
-            var map = this.Town.Map;
-            if (args.Removing)
-            {
-                Remove(positions);
-            }
-            else
-                foreach (var pos in positions)
-                {
-                    if (!map.IsValidBuildSpot(pos))
-                        continue;
-
-                    if(product.Requirement is null)
-                    {
-                        product.Place(map, pos);
-                        return;
-                    }
-                    var targetCell = map.GetCell(pos);
-
-                    if (targetCell.Block == BlockDefOfNew.Air.Worker)
-                        this.PlaceDesignation(pos, 0, 0, args.Orientation, product);
-                    else if(targetCell.Block != BlockDefOf.Designation)
-                    {
-                        var existingBlockRemovalDesignation = this.DetermineBlockRemovalDesignation(targetCell);
-                        this.Town.DesignationManager.Add(existingBlockRemovalDesignation, pos.At(map));
-                        this.AddPendingDesignation(pos, args.Orientation, product);
-                    }
-                }
-        }
-        
-        private void Remove(IEnumerable<IntVec3> positions)
-        {
-            var map = this.Town.Map;
-            foreach (var pos in positions)
-            {
-                if (map.GetBlockEntity(pos) is BlockDesignation.BlockDesignationEntity desEntity)
-                    this.Designations.Remove(desEntity.OriginGlobal);
-                else if (this.PendingDesignations.ContainsKey(pos))
-                {
-                    var cell = map.GetCell(pos);
-                    var existingBlockRemovalDesignation = this.DetermineBlockRemovalDesignation(cell);
-                    this.Town.DesignationManager.RemoveDesignation(existingBlockRemovalDesignation, pos);
-                    //this.PendingDesignations.Remove(pos);
-                    this.RemovePendingDesignation(pos);
-                }
-            }
-            map.RemoveBlocks(positions.Where(vec => map.GetBlock(vec) == BlockDefOf.Designation), false);
-        }
-
-        DesignationDef DetermineBlockRemovalDesignation(Cell cell)
-        {
-            if (cell.Block.IsDeconstructible)
-                return DesignationDefOf.Deconstruct;
-            else if (cell.Block.IsMinable)
-                return DesignationDefOf.Mine;
-            else
-                throw new Exception();
-        }
-       
+ 
         public void TabGetter(Action<string, Action> getter)
         {
             throw new NotImplementedException();
@@ -327,7 +263,7 @@ namespace Start_a_Town_
         {
             var map = this.Map;
             //BlockDesignation.Place(map, global, data, variation, orientation, product);
-            var result = map.SetBlock(global, BlockDefOf.Designation, MaterialDefOf.Air, data, variation, orientation);
+            var result = map.SetBlock(global, BlockDefOf.Designation.Worker, MaterialDefOf.Air, data, variation, orientation);
             var comp = result.Entity.GetComp<BlockConstructionComp>();
             comp.Block = product.Block;
 
@@ -339,7 +275,7 @@ namespace Start_a_Town_
             //var result = map.SetBlock(global, BlockDefOf.Designation, MaterialDefOf.Air, data: 0, 0, orientation: args.Orientation);
             //var entity = result.Entity;
 
-            var entity = BlockDefOfNew.Designation.CreateEntity(global);
+            var entity = BlockDefOf.Designation.CreateEntity(global);
             map.AddBlockEntity(global, entity);
             var comp = entity.GetComp<BlockConstructionComp>();
             this.DesignationEntities.Add(comp);

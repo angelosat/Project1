@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 
@@ -78,13 +79,13 @@ namespace Start_a_Town_
             this.DrawAfterWorld(sb, map);
         }
 
-        protected override void WriteData(System.IO.BinaryWriter w)
+        protected override void WriteData(BinaryWriter w)
         {
-            w.Write(this.Block);
+            w.Write(this.Block.BlockDef);
         }
         protected override void ReadData(IDataReader r)
         {
-            this.Block = Block.GetBlock(r);// r.ReadBlock();
+            this.Block = r.ReadDef<BlockDef>().Worker;
         }
         internal override void RotateAntiClockwise()
         {

@@ -20,7 +20,7 @@ namespace Start_a_Town_.Terraforming.Mutators
         {
             if (z > this.LandLevel)
             {
-                c.Block = BlockDefOfNew.Air.Worker;
+                c.Block = BlockDefOf.Air.Worker;
                 return;
             }
             c.Block = w.DefaultBlock;

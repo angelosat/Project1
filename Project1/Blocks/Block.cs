@@ -249,8 +249,8 @@ namespace Start_a_Town_
 
         public virtual string Name => this.Label;
         public override string Label { get; }
-        static int BaseIDSequence = 1;
-        public readonly int BaseID;
+        //static int BaseIDSequence = 1;
+        //public readonly int BaseID;
         public static readonly int Width = 32, Depth = 16, Height = 40, BlockHeight = 20;
         public static readonly Vector2 OriginCenter = new(Width / 2f, Height - Depth / 2f);
 
@@ -338,13 +338,10 @@ namespace Start_a_Town_
         {
             this.Label = name;
             this.Transparency = transparency;
-            //this.BaseID = name.GetHashCode();
-            this.BaseID = BaseIDSequence++;
             this.Density = density;
             this.Opaque = opaque;
             this.Solid = solid;
             this.LootTable = new LootTable();
-            Registry[this.BaseID] = this;
         }
 
         /// <summary>
@@ -582,20 +579,7 @@ namespace Start_a_Town_
         public virtual void RandomBlockUpdate(INetEndpoint net, IntVec3 global, Cell cell) { }
         protected virtual void HandleMessage(Vector3 global, ObjectEventArgs e) { }
 
-        public static Dictionary<int, Block> Registry = new();
-        public static Block GetBlock(IDataReader r)
-        {
-            return GetBlock(r.ReadInt32());
-        }
-        public static Block GetBlock(int hash)
-        {
-            return Registry[hash];
-        }
-        public static Block GetBlock(string name)
-        {
-            return Registry[name.GetHashCode()];
-        }
-      
+        
 
         protected void LoadVariations(params string[] assetNames)
         {
@@ -608,21 +592,21 @@ namespace Start_a_Town_
         
         public virtual void Draw(MySpriteBatch sb, Rectangle screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
-            if (this == BlockDefOfNew.Air.Worker)
+            if (this == BlockDefOf.Air.Worker)
                 return;
 
             sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[Math.Min(cell.Variation, this.Variations.Count - 1)], zoom, fog, tint, sunlight, blocklight, depth);
         }
         public virtual void Draw(MySpriteBatch sb, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
-            if (this == BlockDefOfNew.Air.Worker)
+            if (this == BlockDefOf.Air.Worker)
                 return;
 
             sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[Math.Min(cell.Variation, this.Variations.Count - 1)], zoom, fog, tint, sunlight, blocklight, depth, this);
         }
         public virtual MyVertex[] Draw(MySpriteBatch sb, Vector3 blockCoordinates, float zoom, int rotation, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            if (this == BlockDefOfNew.Air.Worker)
+            if (this == BlockDefOf.Air.Worker)
                 return null;
 
             var material = this.DrawMaterialColor ? mat.ColorVector : DefaultColorVector;// this.GetColorVector(data);
@@ -635,7 +619,7 @@ namespace Start_a_Town_
         }
         public virtual MyVertex[] Draw(MySpriteBatch sb, Vector3 blockCoordinates, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            if (this == BlockDefOfNew.Air.Worker)
+            if (this == BlockDefOf.Air.Worker)
                 return null;
 
             var material = this.DrawMaterialColor ? mat.ColorVector : DefaultColorVector;// this.GetColorVector(data);
@@ -648,7 +632,7 @@ namespace Start_a_Town_
         }
         public virtual MyVertex[] Draw(Chunk chunk, IntVec3 blockCoordinates, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            if (this == BlockDefOfNew.Air.Worker)
+            if (this == BlockDefOf.Air.Worker)
                 return null;
 
             //var material = this.GetColorVector(data);
@@ -668,7 +652,7 @@ namespace Start_a_Town_
 
         public virtual MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            if (this == BlockDefOfNew.Air.Worker)
+            if (this == BlockDefOf.Air.Worker)
                 return null;
 
             //var material = this.GetColorVector(data);
@@ -688,7 +672,7 @@ namespace Start_a_Town_
         }
         public virtual void Draw(MySpriteBatch sb, Vector2 screenPos, Color sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)
         {
-            if (this == BlockDefOfNew.Air.Worker)
+            if (this == BlockDefOf.Air.Worker)
                 return;
 
             sb.DrawBlock(Atlas.Texture, screenPos, this.Variations[cell.Variation], zoom, tint, sunlight, blocklight, depth);

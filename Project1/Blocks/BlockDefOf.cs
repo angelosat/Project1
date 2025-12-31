@@ -1,44 +1,47 @@
 ﻿namespace Start_a_Town_
 {
-    static class BlockDefOf
+    [EnsureStaticCtorCall]
+    class BlockDefOf
     {
-        static public readonly Block Air = BlockDefOfNew.Air.Worker;// new BlockAir();
-        static public readonly Block Grass = BlockDefOfNew.Grass.Worker;// new BlockGrass();
-        static public readonly Block Stone = BlockDefOfNew.Stone.Worker;// new BlockBedrock();
-        static public readonly Block Cobblestone = BlockDefOfNew.Cobblestone.Worker;// new BlockStone();
-        static public readonly Block Mineral = BlockDefOfNew.Mineral.Worker;// new BlockMineral();
-        static public readonly Block Sand = BlockDefOfNew.Sand.Worker;// new BlockSand();
-        static public readonly Block Fluid = BlockDefOfNew.Fluid.Worker;// new BlockFluid();
-        static public readonly Block Soil = BlockDefOfNew.Soil.Worker;// new BlockSoil();
-        static public readonly Block Door = BlockDefOfNew.Door.Worker;// new BlockDoor(); // TODO: different door materials???
-        static public readonly Block Bed = BlockDefOfNew.Bed.Worker;// new BlockBed();
-        static public readonly Block SleepingSpot = BlockDefOfNew.SleepingSpot.Worker;// new BlockSleepingSpot();
-        static public readonly Block WoodPaneling = BlockDefOfNew.WoodPaneling.Worker;//  new BlockWoodPaneling();
-        static public readonly Block Chest = BlockDefOfNew.Chest.Worker;// new BlockChest();
-        static public readonly Block Bin = BlockDefOfNew.Bin.Worker;// new BlockStorage();
-        static public readonly Block Bricks = BlockDefOfNew.Bricks.Worker;// new BlockBricks() { ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])};
-        static public readonly Block Campfire = BlockDefOfNew.Campfire.Worker;//new BlockCampfire();
-        static public readonly Block Window = BlockDefOfNew.Window.Worker;//new BlockWindow();
-        static public readonly Block Roof = BlockDefOfNew.Roof.Worker;//new BlockRoof();
-        static public readonly Block Stairs = BlockDefOfNew.Stairs.Worker;//new BlockStairs();
-        static public readonly Block Counter = BlockDefOfNew.Counter.Worker;//new BlockCounter();
-        static public readonly Block Designation = BlockDefOfNew.Designation.Worker;//new BlockDesignation() { BlockEntityCompSpecs = [new BlockConstructionComp.Spec()] };
-        static public readonly Block Slab = BlockDefOfNew.Slab.Worker;//new BlockSlab();
-        static public readonly Block Conveyor = BlockDefOfNew.Conveyor.Worker;// new BlockConveyor();
-        static public readonly Block Construction = BlockDefOfNew.Construction.Worker;//new BlockConstruction();
-        static public readonly Block ShopCounter = BlockDefOfNew.ShopCounter.Worker;//new BlockShopCounter();
-        static public readonly Block Workbench = new BlockWorkstation("Workbench") { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery)] };
-        static public readonly Block Kitchen = new BlockWorkstation("Kitchen");
-        //static public readonly Block PlantProcessingBench = new BlockWorkstation("PlantProcessing");
-        //static public readonly Block CarpentryBench = new BlockWorkstation("CarpenterBench");
-        //static public readonly Block Smeltery = new BlockWorkstation("Smeltery");
-        //static public readonly Block Workbench = new BlockWorkstation("Workbench", typeof(BlockWorkbenchEntity)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery)] };
-        //static public readonly Block Kitchen = new BlockWorkstation("Kitchen", typeof(BlockKitchenEntity));
-        //static public readonly Block PlantProcessingBench = new BlockWorkstation("PlantProcessing", typeof(BlockPlantProcessingEntity));
-        //static public readonly Block CarpentryBench = new BlockWorkstation("CarpenterBench", typeof(BlockCarpentryEntity));
-        //static public readonly Block Smeltery = new BlockWorkstation("Smeltery", typeof(BlockSmelteryEntity));
-        static BlockDefOf() { }
-        internal static void Init() { }
-
+        static public readonly BlockDef Air = new("Air", typeof(BlockAir));
+        static public readonly BlockDef Grass = new("Grass", typeof(BlockGrass));
+        static public readonly BlockDef Stone = new("Stone", typeof(BlockBedrock));
+        static public readonly BlockDef Farmland = new("Farmland", typeof(BlockFarmland));
+        static public readonly BlockDef Cobblestone = new("Cobblestone", typeof(BlockStone));
+        static public readonly BlockDef Mineral = new("Mineral", typeof(BlockMineral));
+        static public readonly BlockDef Sand = new("Sand", typeof(BlockSand));
+        static public readonly BlockDef WoodenDeck = new("WoodenDeck", typeof(BlockWoodenDeck));
+        static public readonly BlockDef Soil = new("Soil", typeof(BlockSoil));
+        static public readonly BlockDef Door = new("Door", typeof(BlockDoor)); // TODO: different door materials???
+        static public readonly BlockDef Bed = new("Bed", typeof(BlockBed));
+        static public readonly BlockDef SleepingSpot = new("SleepingSpot", typeof(BlockSleepingSpot));
+        static public readonly BlockDef WoodPaneling = new("WoodPaneling", typeof(BlockWoodPaneling));
+        static public readonly BlockDef Chest = new("Chest", typeof(BlockChest));
+        static public readonly BlockDef Bin = new("Bin", typeof(BlockStorage));
+        static public readonly BlockDef Fluid = new("Fluid", typeof(BlockFluid));
+        static public readonly BlockDef Stool = new("Stool", typeof(BlockStool));
+        static public readonly BlockDef Chair = new("Chair", typeof(BlockChair));
+        static public readonly BlockDef Bricks = new("Bricks", typeof(BlockBricks)) { ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]) };
+        static public readonly BlockDef Campfire = new("Campfire", typeof(BlockCampfire));
+        static public readonly BlockDef Window = new("Window", typeof(BlockWindow));
+        static public readonly BlockDef Roof = new("Roof", typeof(BlockRoof));
+        static public readonly BlockDef Stairs = new("Stairs", typeof(BlockStairs));
+        static public readonly BlockDef Counter = new("Counter", typeof(BlockCounter));
+        static public readonly BlockDef Designation = new("Designation", typeof(BlockDesignation)) { BlockEntityCompSpecs = [new BlockConstructionComp.Spec()] };
+        static public readonly BlockDef Slab = new("Slab", typeof(BlockSlab));
+        static public readonly BlockDef Conveyor = new("Conveyor", typeof(BlockConveyor));
+        static public readonly BlockDef Construction = new("Construction", typeof(BlockConstruction));
+        static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(BlockShopCounter));
+        static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Workbench)] };
+        static public readonly BlockDef Smeltery = new("Smeltery", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery)] };
+        static public readonly BlockDef Kitchen = new("Kitchen", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen)] };
+        //static public readonly BlockDef Kitchen = new BlockDef("Kitchen", typeof(BlockWorkstation("Kitchen", typeof(BlockKitchenEntity));
+        //static public readonly BlockDef PlantProcessingBench = new BlockDef("PlantProcessingBench", typeof(BlockWorkstation("PlantProcessing", typeof(BlockPlantProcessingEntity));
+        //static public readonly BlockDef CarpentryBench = new BlockDef("CarpentryBench", typeof(BlockWorkstation("CarpenterBench", typeof(BlockCarpentryEntity));
+        //static public readonly BlockDef Smeltery = new BlockDef("Smeltery", typeof(BlockWorkstation("Smeltery", typeof(BlockSmelteryEntity));
+        static BlockDefOf()
+        {
+            Def.Register(typeof(BlockDefOf));
+        }
     }
 }

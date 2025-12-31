@@ -169,7 +169,7 @@ namespace Start_a_Town_
 
         public static void Toggle(MapBase map, IntVec3 global)
         {
-            var children = BlockDefOf.Door.GetChildren(map, global);
+            var children = BlockDefOf.Door.Worker.GetChildren(map, global);
             var chunk = map.GetChunk(global);
             foreach (var g in children)
             {

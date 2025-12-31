@@ -81,7 +81,7 @@ namespace Start_a_Town_
         }
         private void SpawnBlock(MapBase map, IntVec3 global)
         {
-            if (map.GetBlock(global) == BlockDefOf.Grass)
+            if (map.GetBlock(global) == BlockDefOf.Grass.Worker)
                 BlockGrass.GrowRandomFlower(map, global);
         }
         PlantSpeciesDef[] GetValidPlants()
@@ -94,7 +94,7 @@ namespace Start_a_Town_
             return
                 this.Map.GetSunLight(above) == 15 &&
                 !this.Map.GetObjects(above).Any() && 
-                this.Map.GetBlock(above) == BlockDefOfNew.Air.Worker;
+                this.Map.GetBlock(above) == BlockDefOf.Air.Worker;
         }
         bool IsSaturated()
         {

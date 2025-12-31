@@ -71,7 +71,7 @@ namespace Start_a_Town_
         static void Trample(MapBase map, IntVec3 global)
         {
             var cell = map.GetCell(global);
-            Block.Place(BlockDefOf.Soil, map, global, cell.Material, 0, cell.Variation, 0);
+            Block.Place(BlockDefOf.Soil.Worker, map, global, cell.Material, 0, cell.Variation, 0);
         }
 
         public override void OnSteppedOn(GameObject actor, IntVec3 global)

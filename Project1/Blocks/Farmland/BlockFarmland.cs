@@ -53,7 +53,7 @@ namespace Start_a_Town_
 
             //var placer = new BlockSoil.Placer();
             //placer.Place(map, global);
-            Block.Place(BlockDefOf.Soil, map, global, map.GetCell(global).Material, 0, 0, 0);
+            Block.Place(BlockDefOf.Soil.Worker, map, global, map.GetCell(global).Material, 0, 0, 0);
             map.Town.ZoneManager.GetZoneAt(global)?.Invalidate();
             //obj.StackSize--;
             obj.Consume(1);

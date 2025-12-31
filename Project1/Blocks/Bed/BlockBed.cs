@@ -131,7 +131,7 @@ namespace Start_a_Town_
                 3 => global - IntVec3.UnitY,
                 _ => throw new Exception()
             });
-            if (positions.Any(pos => map.GetBlock(pos) != BlockDefOfNew.Air.Worker))
+            if (positions.Any(pos => map.GetBlock(pos) != BlockDefOf.Air.Worker))
                 return false;
             return true;
         }

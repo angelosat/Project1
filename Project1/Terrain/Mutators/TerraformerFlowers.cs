@@ -20,7 +20,7 @@ namespace Start_a_Town_.Terraforming.Mutators
                 for (int ly = 0; ly < size; ly++)
                 {
                     var cell = chunk.GetLocalCell(lx, ly, chunk.HeightMap[lx][ly]);
-                    if (cell.Block != BlockDefOf.Grass)
+                    if (cell.Block != BlockDefOf.Grass.Worker)
                         continue;
 
                     int gx = lx + chunk.Start.X, gy = ly + chunk.Start.Y;

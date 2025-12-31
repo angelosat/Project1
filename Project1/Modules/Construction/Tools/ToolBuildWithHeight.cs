@@ -122,7 +122,7 @@ namespace Start_a_Town_
             if (!this.Enabled)
                 return;
             var positions = this.GetPositionsNew(this.Begin, this.End)
-                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOfNew.Air.Worker : map.GetBlock(vec) == BlockDefOfNew.Air.Worker);
+                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air.Worker : map.GetBlock(vec) == BlockDefOf.Air.Worker);
             cam.DrawCellHighlights(sb, Block.BlockBlueprint, positions, color);
         }
         protected virtual IEnumerable<IntVec3> GetPositionsNew(IntVec3 a, IntVec3 b) { yield break; }

@@ -26,7 +26,7 @@ namespace Start_a_Town_
                     var cell = chunk.GetLocalCell(x, y, z);
 
                     if (
-                        cell.Block == BlockDefOf.Grass)
+                        cell.Block == BlockDefOf.Grass.Worker)
                     {
                         var allPlants = this.ValidPlants ??= this.GetValidPlants();
                         var randomPlant = allPlants.SelectRandom(map.Random);

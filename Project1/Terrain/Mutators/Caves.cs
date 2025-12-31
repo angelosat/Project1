@@ -23,9 +23,9 @@ namespace Start_a_Town_.Terraforming.Mutators
             Watch.Start();
             if (z == 0)
                 return;
-            if (c.Block == BlockDefOfNew.Air.Worker ||
-                c.Block == BlockDefOf.Fluid ||
-                c.Block == BlockDefOf.Sand)
+            if (c.Block == BlockDefOf.Air.Worker ||
+                c.Block == BlockDefOf.Fluid.Worker ||
+                c.Block == BlockDefOf.Sand.Worker)
                 return;
 
             double ridged = Generator.Perlin3D(x, y, z, this.CaveFrequency, this.RidgedSeed);
@@ -34,7 +34,7 @@ namespace Start_a_Town_.Terraforming.Mutators
 
             if (ridged > -this.Threshold && ridged < this.Threshold && ridged2 > -this.Threshold && ridged2 < this.Threshold)
                 if (z > 0)
-                    c.Block = BlockDefOfNew.Air.Worker;
+                    c.Block = BlockDefOf.Air.Worker;
             Watch.Stop();
         }
 
@@ -43,7 +43,7 @@ namespace Start_a_Town_.Terraforming.Mutators
             float sealevel = MapBase.MaxHeight / 2f;
             float distanceFromSeaLevel = (sealevel - z) / sealevel;
             if (ridged * distanceFromSeaLevel < -.2f)
-                c.Block = BlockDefOfNew.Air.Worker;
+                c.Block = BlockDefOf.Air.Worker;
         }
         public override Terraformer SetWorld(WorldBase w)
         {

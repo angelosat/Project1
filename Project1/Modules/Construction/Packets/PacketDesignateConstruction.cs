@@ -38,13 +38,13 @@ namespace Start_a_Town_
             a.Write(w);
             if (!a.Removing)
             {
-                w.Write(args.Block.BaseID);
+                w.Write(args.Block.BlockDef);
                 w.Write(args.Refinement);
                 w.Write(args.Material);
                 w.Write(args.Orientation);
             }
         }
-        
+
         static public void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
@@ -53,14 +53,14 @@ namespace Start_a_Town_
             MaterialRefinementDef refinement = null;
             MaterialDef material = null;
             byte orientation;
-            if(!args.Removing)
+            if (!args.Removing)
             {
-                block = Block.GetBlock(r.ReadInt32());
+                block = r.ReadDef<BlockDef>().Worker;
                 refinement = r.ReadDef<MaterialRefinementDef>();
                 material = r.ReadDef<MaterialDef>();
                 orientation = r.ReadByte();
             }
-     
+
             var constructionArgs = new ConstructionDesignationArgs(block, refinement, material, (byte)args.Orientation);
             net.Map.Town.ConstructionsManager.Designate(args, constructionArgs);
 
@@ -68,8 +68,6 @@ namespace Start_a_Town_
                 Send(net, args, constructionArgs);
             return;
         }
-
-        
     }
     public struct ConstructionDesignationArgs(Block block, MaterialRefinementDef refinement, MaterialDef material, int amount, byte orientation = 0)
     {

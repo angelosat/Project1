@@ -31,7 +31,7 @@ namespace Start_a_Town_
         protected void Validate(MapBase map, Camera camera)
         {
             var positions = this.Begin.GetBox(this.End)
-                .Where(v => map.GetBlock(v) != BlockDefOfNew.Air.Worker || map.IsUndiscovered(v));
+                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Worker || map.IsUndiscovered(v));
             this.Renderer.CreateMesh(camera, positions);
         }
         public override void UpdateRemote(TargetArgs target)
@@ -56,7 +56,7 @@ namespace Start_a_Town_
             if (!this.Enabled)
                 return;
             var positions = this.Begin.GetBox(this.End)
-                .Where(v => map.GetBlock(v) != BlockDefOfNew.Air.Worker);
+                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Worker);
             camera.DrawCellHighlights(sb, Block.BlockBlueprint, positions, Color.Red);
         }
     }

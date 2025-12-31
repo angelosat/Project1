@@ -387,7 +387,7 @@ namespace Start_a_Town_
             {
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
-                    if (cell.Block != BlockDefOfNew.Air.Worker)
+                    if (cell.Block != BlockDefOf.Air.Worker)
                     {
                         hit = true;
                     }
@@ -433,7 +433,7 @@ namespace Start_a_Town_
             {
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
-                    if (cell.Block != BlockDefOfNew.Air.Worker)
+                    if (cell.Block != BlockDefOf.Air.Worker)
                     {
                         hit = true;
                     }
@@ -469,7 +469,7 @@ namespace Start_a_Town_
             {
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
-                    if (cell.Block != BlockDefOfNew.Air.Worker)
+                    if (cell.Block != BlockDefOf.Air.Worker)
                     {
                         hit = true;
                         firstContact = z;
@@ -874,7 +874,7 @@ namespace Start_a_Town_
                 var cell = Cells[i];
 
                 // --- Air run handling ---
-                if (cell.Block == BlockDefOfNew.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Worker)
                 {
                     if (airRunStart == -1)
                     {
@@ -1036,7 +1036,7 @@ namespace Start_a_Town_
                 for (int i = startIndex; i < startIndex + count; i++)
                 {
                     var cell = Cells[i];
-                    cell.Block = BlockDefOfNew.Air.Worker;
+                    cell.Block = BlockDefOf.Air.Worker;
                     cell.Discovered = discovered;
                     // BitVector32 or material not needed for air
                 }
@@ -1102,7 +1102,7 @@ namespace Start_a_Town_
             for (int i = 0; i < this.Cells.Length; i++)
             {
                 var cell = this.Cells[i];
-                if (cell.Block == BlockDefOfNew.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Worker)
                 {
                     if (!airRun)
                     {
@@ -1192,7 +1192,7 @@ namespace Start_a_Town_
             for (int i = 0; i < this.Cells.Length; i++)
             {
                 var cell = this.Cells[i];
-                if (cell.Block == BlockDefOfNew.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Worker)
                 {
                     // start air run
                     if (!airRun)
@@ -1266,7 +1266,7 @@ namespace Start_a_Town_
             bool foundAir = false;
             foreach (var cell in this.Cells)
             {
-                if (cell.Block == BlockDefOfNew.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Worker)
                 {
                     airLength++;
                     if (!foundAir)
@@ -1302,7 +1302,7 @@ namespace Start_a_Town_
             static void saveAirTag(SaveTag cellstag, int airLength, bool airIsDiscovered)
             {
                 var airtag = new SaveTag(SaveTag.Types.Compound);
-                airtag.Save(BlockDefOfNew.Air.Worker, "Block");
+                airtag.SaveDef("Block", BlockDefOf.Air);
                 airtag.Add(new SaveTag(SaveTag.Types.Int, "Data", airLength));
                 airtag.Add(new SaveTag(SaveTag.Types.Bool, "Discovered", airIsDiscovered));
                 cellstag.Add(airtag);
@@ -1328,7 +1328,7 @@ namespace Start_a_Town_
                 var count = airtag.GetValue<int>("Count");
                 var discovered = airtag.GetValue<bool>("Discovered");
                 for(int i = index; i < count; i++)
-                    this.Cells[i].Set(BlockDefOfNew.Air.Worker, MaterialDefOf.Air, 0, discovered);
+                    this.Cells[i].Set(BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, discovered);
             }
             foreach(var blockindices in byblock)
             {
@@ -1346,15 +1346,15 @@ namespace Start_a_Town_
             while (listPosition < celllist.Count)
             {
                 var celltag = celllist[listPosition++];
-                var block = celltag.LoadBlock("Block");
-                if (block.BlockDef == BlockDefOfNew.Air)
+                var block = celltag.LoadDef<BlockDef>("Block").Worker;
+                if (block.BlockDef == BlockDefOf.Air)
                 {
                     airCount = (int)celltag["Data"].Value;
                     celltag.TryGetTagValue("Discovered", ref airDiscovered);
                     for (int i = n; i < n + airCount; i++)
                     {
                         var c = this.Cells[i];
-                        c.Block = BlockDefOfNew.Air.Worker;
+                        c.Block = BlockDefOf.Air.Worker;
                         c.Discovered = airDiscovered;
                     }
 
@@ -1387,9 +1387,10 @@ namespace Start_a_Town_
             while (listPosition < celllist.Count)
             {
                 var celltag = celllist[listPosition++];
-                var block = celltag.LoadBlock("Block");
+                var block = celltag.LoadDef<BlockDef>("Block").Worker;
+
                 //if (block == BlockDefOf.Air)
-                if (block.BlockDef == BlockDefOfNew.Air)
+                if (block.BlockDef == BlockDefOf.Air)
                 {
                     airCount = (int)celltag["Data"].Value;
                     celltag.TryGetTagValue("Discovered", ref airDiscovered);
@@ -1959,7 +1960,7 @@ namespace Start_a_Town_
                     // DO I NEED THIS?
                     if (!camera.MysteriousBlocks)
                     {
-                        if (cell.Block != BlockDefOfNew.Air.Worker)
+                        if (cell.Block != BlockDefOf.Air.Worker)
                         {
                             if (!map.IsVisible(global))
                                 unknown.Add(cell);
@@ -1975,7 +1976,7 @@ namespace Start_a_Town_
                         }
                         else
                         {
-                            if (cell.Block != BlockDefOfNew.Air.Worker)
+                            if (cell.Block != BlockDefOf.Air.Worker)
                                 visible.Add(cell);
                         }
                     }
@@ -2021,11 +2022,11 @@ namespace Start_a_Town_
                     var local = new IntVec3(i, j, z);
                     var cell = this.Cells[GetCellIndex(local)];
                     var global = local.ToGlobal(this);
-                    var isair = cell.Block == BlockDefOfNew.Air.Worker;// BlockDefOf.Air;
+                    var isair = cell.Block == BlockDefOf.Air.Worker;// BlockDefOf.Air;
                     // HACK
                     if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global)) 
                      //if (isair && this.Map.Town.DesignationManager.IsDesignation(global, DesignationDefOf.Construct)) // HACK
-                        camera.DrawBlock(canvas, BlockDefOf.Designation, map, this, local);
+                        camera.DrawBlock(canvas, BlockDefOf.Designation.Worker, map, this, local);
 
                     var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);
                     var isundiscovered = map.IsUndiscovered(global);

@@ -56,7 +56,7 @@ namespace Start_a_Town_
 
             map.RemoveBlock(global);
             //if (block != BlockDefOf.Air)
-            if (block != BlockDefOfNew.Air.Worker)
+            if (block != BlockDefOf.Air.Worker)
                 //Block.Place(block, map, global, material, data, variation, orientation);
                 map.SetBlock(global, block, material, data, variation, orientation);
 

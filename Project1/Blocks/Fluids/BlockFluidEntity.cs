@@ -22,19 +22,19 @@ namespace Start_a_Town_
             /// flow downwards
             var below = current.Below;
             var belowBlock = this.Map.GetBlock(below);
-            if (belowBlock == BlockDefOfNew.Air.Worker)
+            if (belowBlock == BlockDefOf.Air.Worker)
             {
-                Block.Place(BlockDefOf.Fluid, map, below, mat, 1, 0, 0);
-                this.Map.SetBlock(below, BlockDefOf.Fluid, mat, 1);
+                Block.Place(BlockDefOf.Fluid.Worker, map, below, mat, 1, 0, 0);
+                this.Map.SetBlock(below, BlockDefOf.Fluid.Worker, mat, 1);
             }
             else
             {
                 foreach (var n in global.GetAdjacentHorLazy())
                 {
                     var nblock = this.Map.GetBlock(n);
-                    if (nblock != BlockDefOfNew.Air.Worker)
+                    if (nblock != BlockDefOf.Air.Worker)
                         continue;
-                    Block.Place(BlockDefOf.Fluid, map, n, mat, 0, 0, 0);
+                    Block.Place(BlockDefOf.Fluid.Worker, map, n, mat, 0, 0, 0);
                 }
             }
             /// remove entity after updating once, all flowing must complete in first update

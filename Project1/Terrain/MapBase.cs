@@ -269,7 +269,7 @@ namespace Start_a_Town_
             foreach (var p in parts)
             {
                 //this.SetBlock(p, BlockDefOf.Air, MaterialDefOf.Air, 0, 0, 0, notify);
-                this.SetBlock(p, BlockDefOfNew.Air.Worker, MaterialDefOf.Air, 0, 0, 0, notify);
+                this.SetBlock(p, BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, 0, 0, notify);
                 this.SetBlockLuminance(p, 0);
                 // reenable physics of entities resting on block
                 foreach (var entity in this.GetObjects(p - new IntVec3(1, 1, 0), p + new IntVec3(1, 1, 2)))
@@ -286,7 +286,7 @@ namespace Start_a_Town_
 
         internal void RemoveBlocks(IEnumerable<IntVec3> positions, bool notify = true)
         {
-            var nonAirPositions = positions.Where(vec => this.GetBlock(vec) != BlockDefOfNew.Air.Worker).ToList();
+            var nonAirPositions = positions.Where(vec => this.GetBlock(vec) != BlockDefOf.Air.Worker).ToList();
             foreach (var global in nonAirPositions)
                 this.RemoveBlock(global, false);
             if (notify)
@@ -551,7 +551,7 @@ namespace Start_a_Town_
         public virtual bool IsEmpty(Vector3 global)
         {
             global = global.ToRounded();
-            if (this.GetBlock(global) != BlockDefOfNew.Air.Worker)
+            if (this.GetBlock(global) != BlockDefOf.Air.Worker)
                 return false;
             var blockbox = new BoundingBox(global - (Vector3.UnitX + Vector3.UnitY) * .5f, global + Vector3.UnitZ + (Vector3.UnitX + Vector3.UnitY) * .5f);
             var entities = this.GetObjectsAtChunk(global);
@@ -742,7 +742,7 @@ namespace Start_a_Town_
             var chunk = this.GetChunk(global);
 
             //if (cell.Block == BlockDefOf.Air && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
-            if (cell.Block == BlockDefOfNew.Air.Worker && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
+            if (cell.Block == BlockDefOf.Air.Worker && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
                 return new PlaceBlockResult(null, cell, false);
 
             cell.Block = block;
@@ -777,7 +777,7 @@ namespace Start_a_Town_
             foreach (var n in neighbors)
             {
                 var nblock = this.GetBlock(n);
-                if (nblock != BlockDefOfNew.Air.Worker)
+                if (nblock != BlockDefOf.Air.Worker)
                     this.InvalidateCell(n);
 
                 nblock?.OnNeighborChanged(this, global, n);
@@ -856,7 +856,7 @@ namespace Start_a_Town_
         public float GetSolidObjectHeight(Vector3 global)
         {
             var cell = this.GetCell(global);
-            if (cell.Block != BlockDefOfNew.Air.Worker)
+            if (cell.Block != BlockDefOf.Air.Worker)
                 return cell.Block.GetHeight(cell.BlockData, global.ToBlock());
 
             var entities = this.GetObjects(global - new Vector3(5), global + new Vector3(5));
@@ -968,7 +968,7 @@ namespace Start_a_Town_
 
         internal bool IsAir(Vector3 global)
         {
-            return this.GetBlock(global) == BlockDefOfNew.Air.Worker;
+            return this.GetBlock(global) == BlockDefOf.Air.Worker;
         }
 
         internal void RandomBlockUpdate(IntVec3 global)

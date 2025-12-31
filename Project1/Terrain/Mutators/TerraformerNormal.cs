@@ -36,7 +36,7 @@ namespace Start_a_Town_.Terraforming.Mutators
             w.GroundAirThreshold = this.GroundAirThreshold;
             if (z == 0)
             {
-                c.Block = BlockDefOfNew.Stone.Worker;
+                c.Block = BlockDefOf.Stone.Worker;
                 return;
             }
             var maxZ = (float)MapBase.MaxHeight;
@@ -47,15 +47,15 @@ namespace Start_a_Town_.Terraforming.Mutators
 
             if (gradientRock < this.GroundAirThreshold)
             {
-                c.Block = BlockDefOf.Cobblestone;
+                c.Block = BlockDefOf.Cobblestone.Worker;
                 c.Material = MaterialDefOf.Stone;
                 return;
             }
 
             if (gradientSoil <= this.GroundAirThreshold)
             {
-                c.Variation = (byte)this.SoilRandomizer.Next(BlockDefOf.Soil.Variations.Count);
-                c.Block = BlockDefOf.Soil;
+                c.Variation = (byte)this.SoilRandomizer.Next(BlockDefOf.Soil.Worker.Variations.Count);
+                c.Block = BlockDefOf.Soil.Worker;
                 c.Material = MaterialDefOf.Soil;
                 return;
             }

@@ -83,7 +83,7 @@ namespace Start_a_Town_
         StaticWorld() : base()
         {
             this.MaxHeight = 128;
-            this.DefaultBlock = BlockDefOf.Soil;
+            this.DefaultBlock = BlockDefOf.Soil.Worker;
             this.Terraformers = new List<Terraformer>();
             this.Trees = true;
             this.Maps = new MapCollection();
@@ -106,7 +106,7 @@ namespace Start_a_Town_
             this.Seed = BitConverter.ToInt32(this.SeedArray, 0);
             this.Random = new Random(this.Seed);
             this.Terraformers = mutators;//.Select(mdef => mdef.Create()).ToList();// new List<Terraformer>(mutators);
-            this.DefaultBlock = BlockDefOf.Soil;
+            this.DefaultBlock = BlockDefOf.Soil.Worker;
         }
 
         public StaticWorld(SaveTag save)
@@ -124,8 +124,12 @@ namespace Start_a_Town_
                 this.Flat = (bool)flatTag.Value;
             save.TryGetTagValue<double>("CurrentTick", v => this.CurrentTick = (ulong)v);
 
-            if (!save.TryGetTagValue<int>("DefaultBlock", v => { this.DefaultBlock = Block.GetBlock(v); }))
-                this.DefaultBlock = BlockDefOf.Soil;
+            //if (!save.TryGetTagValue<int>("DefaultBlock", v => { this.DefaultBlock = Block.GetBlock(v); }))
+            //    this.DefaultBlock = BlockDefOf.Soil.Worker;
+            if (save.TryLoadDefNew<BlockDef>("DefaultBlock", out var bd))
+                this.DefaultBlock = bd.Worker;
+            else
+                this.DefaultBlock = BlockDefOf.Soil.Worker;
             this.Name = (string)save["Name"].Value;
             this.Terraformers.LoadAbstract(save, "Mutators");
             this.Population.TryLoad(save, "Population");
@@ -144,7 +148,7 @@ namespace Start_a_Town_
             this.Seed = r.ReadInt32();
             this.CurrentTick = r.ReadUInt64();
             this.Trees = r.ReadBoolean();
-            this.DefaultBlock = Block.GetBlock(r.ReadInt32());
+            this.DefaultBlock = r.ReadDef<BlockDef>().Worker;
             this.Terraformers.ReadListAbstract(r);
             this.Population.Read(r);
         }
@@ -159,7 +163,7 @@ namespace Start_a_Town_
             w.Write(this.Seed);
             w.Write(this.CurrentTick);
             w.Write(this.Trees);
-            w.Write(this.DefaultBlock.BaseID);
+            w.Write(this.DefaultBlock.BlockDef);
             this.Terraformers.WriteAbstract(w);
             this.Population.Write(w);
         }
@@ -179,7 +183,8 @@ namespace Start_a_Town_
             tag.Add(new SaveTag(SaveTag.Types.Int, "RandomState", currentRandomState));
             tag.Add(new SaveTag(SaveTag.Types.Double, "Time", this.Clock.TotalSeconds));
             this.CurrentTick.Save(tag, "CurrentTick");
-            this.DefaultBlock.BaseID.Save(tag, "DefaultBlock");
+            //this.DefaultBlock.BaseID.Save(tag, "DefaultBlock");
+            tag.SaveDef("DefaultBlock", this.DefaultBlock.BlockDef);
             this.Name.Save(tag, "Name");
             this.Population.Save(tag, "Population");
             this.Terraformers.SaveAbstract(tag, "Mutators");

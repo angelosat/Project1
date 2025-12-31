@@ -37,7 +37,7 @@ namespace Start_a_Town_
         }
         static IEnumerable<Planner> GetPlanners(Actor actor)
         {
-            var givers = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);
+            var givers = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner).OfType<Planner>();
             givers = givers.Concat(Planner.EssentialPlanners);
             var jobs = actor.AI.State.GetJobs().Where(j => j.Enabled);
             jobs.OrderBy(j => j.Priority);
@@ -45,7 +45,7 @@ namespace Start_a_Town_
 
             // replace this when meta-roles are fully implemented
             //givers = actor.IsTownMember ? givers.Concat(jobPlanners) : givers.Concat(Planner.VisitorPlanners);
-
+            givers = givers.Concat(jobPlanners);
             givers = givers.Append(Planner.Idle);
             return givers;
         }

@@ -88,6 +88,7 @@ namespace Start_a_Town_
         }
         internal Actor GetNextQuestReceiver(Actor giver)
         {
+            return null;
             var id = this.QuestGiverProperties[giver.RefId].GetNextQuestReceiverID();
             return id != -1 ? this.Town.Map.World.GetEntity(id) as Actor : null;
         }

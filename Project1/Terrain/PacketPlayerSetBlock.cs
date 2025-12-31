@@ -12,10 +12,11 @@ namespace Start_a_Town_
         }
         public static void Send(NetEndpoint net, PlayerData player, IntVec3 global, Block block, MaterialDef material, byte data = 0, int variation = 0, int orientation = 0)
         {
-            if (net is Server)
-                Perform(net.Map, global, block, material, data, variation, orientation);
+            //if (net is Server)
+            //    Perform(net.Map, global, block, material, data, variation, orientation);
 
-            var w = net.BeginPacketOld(p);
+            //var w = net.BeginPacketOld(p);
+            var w = net.BeginPacket(p);
             w.Write(player.ID);
             w.Write(global);
             w.Write(block.BlockDef);
@@ -36,10 +37,10 @@ namespace Start_a_Town_
             var variation = r.ReadInt32();
             var orientation = r.ReadInt32();
 
-            if (net is Server)
-                Send(net, player, global, block, material, data, variation, orientation);
-            else
-                Perform(net.Map, global, block, material, data, variation, orientation);
+            //if (net is Server)
+            //    Send(net, player, global, block, material, data, variation, orientation);
+            
+            Perform(net.Map, global, block, material, data, variation, orientation);
         }
 
         private static void Perform(MapBase map, IntVec3 global, Block block, MaterialDef material, byte data, int variation, int orientation)

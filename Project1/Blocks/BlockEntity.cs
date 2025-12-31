@@ -235,5 +235,11 @@ namespace Start_a_Town_
             return consumed;
                 
         }
+
+        internal void Attach(IntVec3 global)
+        {
+            this.CellsOccupied.Add(global);
+            this.Map.AddBlockEntity(global, this);
+        }
     }
 }

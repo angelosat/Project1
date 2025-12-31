@@ -751,11 +751,14 @@ namespace Start_a_Town_
             cell.BlockData = data;
             cell.Orientation = orientation;
             cell.Origin = source;
-
             //var entity = block.CreateEntity(global);
-            var entity = block.BlockDef.CreateEntity(global);
-            if (entity is not null)
+            //var entity = block.BlockDef.CreateEntity(global);
+            if (block.TryLinkToAdjacentBlockEntity(this, global) is not BlockEntity entity)
+            {
+                entity = block.BlockDef.CreateEntity(global);
+                //if (entity is not null)
                 this.AddBlockEntity(global, entity);
+            }
             // todo: query block for multi-cell footprint
             block.OnPlaced(this, global, material, data, variation, orientation);
 
@@ -788,18 +791,11 @@ namespace Start_a_Town_
                 PacketSetBlock.Send(this.Net as Server, new SetBlockArgs(global, block, material, data, orientation, source));
             return new PlaceBlockResult(entity, cell, true);
         }
-        public struct PlaceBlockResult
+        public struct PlaceBlockResult(BlockEntity entity, Cell cell, bool success = true)
         {
-            public BlockEntity Entity;
-            public Cell Cell;
-            public bool Success;
-
-            public PlaceBlockResult(BlockEntity entity, Cell cell, bool success = true)
-            {
-                Entity = entity;
-                Cell = cell;
-                Success = success;
-            }
+            public BlockEntity Entity = entity;
+            public Cell Cell = cell;
+            public bool Success = success;
         }
         public void NotifyBlocksChanged(IEnumerable<IntVec3> positions)
         {

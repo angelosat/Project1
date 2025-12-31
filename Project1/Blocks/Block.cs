@@ -263,9 +263,10 @@ namespace Start_a_Town_
         public virtual Color[] UV => BlockCoordinatesFull;
         public virtual MouseMap MouseMap => BlockMouseMap;
         // TODO find a way to make this method required for blocks tha have entity
+        
         public virtual BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         { return null; }
-       
+        internal virtual BlockEntity TryLinkToAdjacentBlockEntity(MapBase map, IntVec3 global) => null;
         public IEnumerable<IntVec3> GetChildren(MapBase map, IntVec3 originGlobal)
         {
             return this.GetChildren(map.GetCell(originGlobal).Orientation).Select(l => originGlobal + l);

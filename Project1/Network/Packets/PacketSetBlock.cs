@@ -49,30 +49,4 @@ namespace Start_a_Town_
             client.Map.SetBlock(args);
         }
     }
-
-    //internal static class PacketSkillIncrease
-    //{
-    //    static readonly int _pType;
-    //    static PacketSkillIncrease()
-    //    {
-    //        _pType = Registry.PacketHandlers.Register(Receive);
-    //    }
-    //    internal static void Send(Actor actor, SkillDef skill, int amount)
-    //    {
-    //        var server = actor.Net as Server;
-    //        server.BeginPacket(_pType)
-    //            .Write(actor.RefId)
-    //            .Write(skill)
-    //            .Write(amount);
-    //    }
-    //    private static void Receive(NetEndpoint endpoint, Packet packet)
-    //    {
-    //        var client = endpoint as Client;
-    //        var r = packet.PacketReader;
-    //        var actorid = r.ReadInt32();
-    //        var actor = endpoint.World.GetEntity<Actor>(actorid);
-    //        var skill = r.ReadDef<SkillDef>();
-    //        var amount = r.ReadInt32();
-    //    }
-    //}
 }

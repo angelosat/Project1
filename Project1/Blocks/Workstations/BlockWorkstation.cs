@@ -32,6 +32,32 @@ namespace Start_a_Town_
         {
             return this.Orientations[orientation];
         }
+        internal override BlockEntity TryLinkToAdjacentBlockEntity(MapBase map, IntVec3 global)
+        {
+            var neighbors = new List<BlockEntity>();
+            //var typedArgs = (BlockWorkstationComp.Spec)args ?? new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery); // HACK
+            var workstationType = this.BlockDef.BlockEntityCompSpecs.OfType<BlockWorkstationComp.Spec>().SingleOrDefault()?.WorkstationType;
+            
+            foreach (var dir in IntVec3.AdjacentIntVec3)
+            {
+                var neighborPos = global + dir;
+                if (map.TryGetBlockEntity(neighborPos, out var neighbor))
+                {
+                    if (neighbor.GetComp<BlockWorkstationComp>()?.WorkstationType == workstationType)
+                        neighbors.Add(neighbor);
+                }
+            }
+
+            if (neighbors.Count == 0)
+                return null;
+            else
+            {
+                // Neighbor(s) exist: expand the first neighbor's entity
+                var primaryEntity = neighbors[0];   // pick one neighbor as the authoritative entity
+                primaryEntity.Attach(global);
+                return primaryEntity;// return primaryEntity;
+            }
+        }
         public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {
             // Find all adjacent existing workstation block entities

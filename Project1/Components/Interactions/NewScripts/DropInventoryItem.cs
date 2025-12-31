@@ -20,10 +20,5 @@ namespace Start_a_Town_.Components.Interactions
             //this.Actor.Inventory.Drop(this.Target.Object);
             PacketEntityDropItem.Send(this.Actor, this.Target.Object as Entity);
         }
-
-        public override object Clone()
-        {
-            return new DropInventoryItem();
-        }
     }
 }

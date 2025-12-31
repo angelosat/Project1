@@ -718,8 +718,6 @@ namespace Start_a_Town_
                     obj.Tick(); // make an item stack merge itself to the other stack instead of the other way around? so that i don't have to do this check
             }
         }
-
-
         #endregion
 
         #region Drawing

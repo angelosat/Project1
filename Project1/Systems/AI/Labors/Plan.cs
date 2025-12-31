@@ -439,55 +439,55 @@ namespace Start_a_Town_
             this.Def = r.ReadDef<PlanDef>();
             this.TargetA = TargetArgs.Read(provider, r);
         }
-        internal void Write(BinaryWriter w)
-        {
-            w.Write(this.GetType().FullName);
-            w.Write(this.ID);
-            this.Tool.Write(w);
-            this.TargetA.Write(w);
-            w.Write(this.AmountA);
-            w.Write(this.TargetsA);
-            w.Write(this.AmountsA);
-            w.Write(this.TargetQueues.Count);
-            foreach (var i in this.TargetQueues)
-                w.Write(i);
-            w.Write(this.AmountQueues.Count);
-            foreach (var i in this.AmountQueues)
-                w.Write(i);
-            w.Write(this.Count);
-            w.Write(this.Quest);
-            w.Write(this.ShopID);
+        //internal void Write(BinaryWriter w)
+        //{
+        //    w.Write(this.GetType().FullName);
+        //    w.Write(this.ID);
+        //    this.Tool.Write(w);
+        //    this.TargetA.Write(w);
+        //    w.Write(this.AmountA);
+        //    w.Write(this.TargetsA);
+        //    w.Write(this.AmountsA);
+        //    w.Write(this.TargetQueues.Count);
+        //    foreach (var i in this.TargetQueues)
+        //        w.Write(i);
+        //    w.Write(this.AmountQueues.Count);
+        //    foreach (var i in this.AmountQueues)
+        //        w.Write(i);
+        //    w.Write(this.Count);
+        //    w.Write(this.Quest);
+        //    w.Write(this.ShopID);
 
-            w.Write(this.TicksWaited);
-            w.Write(this.TicksCounter);
-            w.Write(this.TicksTimeout);
+        //    w.Write(this.TicksWaited);
+        //    w.Write(this.TicksCounter);
+        //    w.Write(this.TicksTimeout);
 
-            this.Transaction.Write(w);
-        }
-        internal void Read(IDataReader r)
-        {
-            this.ID = r.ReadInt32();
-            this.Tool = TargetArgs.Read(null, r);
-            this.TargetA = TargetArgs.Read(null, r);
-            this.AmountA = r.ReadInt32();
-            this.TargetsA = r.ReadListTargets();
-            this.AmountsA = r.ReadListInt32();
-            var targetqueuecount = r.ReadInt32();
-            for (int i = 0; i < targetqueuecount; i++)
-                this.TargetQueues.Add(r.ReadListTargets());
-            var amountqueuecount = r.ReadInt32();
-            for (int i = 0; i < amountqueuecount; i++)
-                this.AmountQueues.Add(r.ReadListInt32());
-            this.Count = r.ReadInt32();
-            this.Quest = r.ReadInt32();
-            this.ShopID = r.ReadInt32();
+        //    this.Transaction.Write(w);
+        //}
+        //internal void Read(IDataReader r)
+        //{
+        //    this.ID = r.ReadInt32();
+        //    this.Tool = TargetArgs.Read(null, r);
+        //    this.TargetA = TargetArgs.Read(null, r);
+        //    this.AmountA = r.ReadInt32();
+        //    this.TargetsA = r.ReadListTargets();
+        //    this.AmountsA = r.ReadListInt32();
+        //    var targetqueuecount = r.ReadInt32();
+        //    for (int i = 0; i < targetqueuecount; i++)
+        //        this.TargetQueues.Add(r.ReadListTargets());
+        //    var amountqueuecount = r.ReadInt32();
+        //    for (int i = 0; i < amountqueuecount; i++)
+        //        this.AmountQueues.Add(r.ReadListInt32());
+        //    this.Count = r.ReadInt32();
+        //    this.Quest = r.ReadInt32();
+        //    this.ShopID = r.ReadInt32();
 
-            this.TicksWaited = r.ReadInt32();
-            this.TicksCounter = r.ReadInt32();
-            this.TicksTimeout = r.ReadInt32();
+        //    this.TicksWaited = r.ReadInt32();
+        //    this.TicksCounter = r.ReadInt32();
+        //    this.TicksTimeout = r.ReadInt32();
 
-            this.Transaction = new Transaction(r);
-        }
+        //    this.Transaction = new Transaction(r);
+        //}
 
         
 

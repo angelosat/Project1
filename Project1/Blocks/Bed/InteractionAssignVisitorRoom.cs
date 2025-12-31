@@ -21,10 +21,6 @@ namespace Start_a_Town_
             var room = a.Map.Town.RoomManager.GetRoom(this.RoomID);
             roomOwner.Possessions.Claim(room);
         }
-        public override object Clone()
-        {
-            return new InteractionAssignVisitorRoom(this.RoomID);
-        }
         protected override void AddSaveData(SaveTag tag)
         {
             this.RoomID.Save(tag, "RoomID");

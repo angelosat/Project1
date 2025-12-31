@@ -25,10 +25,5 @@
             target.Slot.Consume(1);
 
         }
-
-        public override object Clone()
-        {
-            return new InteractionConsume(this.Comp);
-        }
     }
 }

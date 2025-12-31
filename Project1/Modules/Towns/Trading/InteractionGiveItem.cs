@@ -6,16 +6,11 @@ namespace Start_a_Town_
     class InteractionGiveItem : Interaction
     {
         bool Trade;
-        public override object Clone()
-        {
-            return new InteractionGiveItem(this.Trade);
-        }
+
         public InteractionGiveItem(bool trade) : base("GiveItem", seconds: .4f)
         {
             this.Trade = trade;
-            //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
             this.AnimationDef = AnimationDef.TouchItem;
-
         }
         public InteractionGiveItem() : this(false)
         {

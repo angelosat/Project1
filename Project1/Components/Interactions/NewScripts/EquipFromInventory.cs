@@ -15,10 +15,5 @@
             var t = this.Target;
             a.Inventory.Equip(t.Object);
         }
-
-        public override object Clone()
-        {
-            return new EquipFromInventory();
-        }
     }
 }

@@ -89,10 +89,6 @@ namespace Start_a_Town_
             var targetBox = new BoundingBox(t.Global - Vector3.One, t.Global + Vector3.One);
             return actorBox.Intersects(targetBox);
         }
-        public override object Clone()
-        {
-            return new InteractionPlaceItem(this.Amount);
-        }
         protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Amount);

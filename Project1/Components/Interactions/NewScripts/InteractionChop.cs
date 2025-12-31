@@ -50,9 +50,6 @@ namespace Start_a_Town_
         Plant Plant => this.Target.Object as Plant;
 
         protected override float WorkDifficulty => this.Plant.PlantComponent.Species.StemMaterial.Density;
-        //protected override float Progress => 1 - this.HitPoints.Percentage;
-        //protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnSwing;
-
         public InteractionChop() : base("Chopping")
         {
 
@@ -61,11 +58,6 @@ namespace Start_a_Town_
         {
             this.EmitterStrike.Texture = ItemContent.LogsGrayscale.Texture;
         }
-        public override object Clone()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void OnApplyWork(int workAmount)
         {
             this.Def.Logic.ApplyWork(this.Context, workAmount);

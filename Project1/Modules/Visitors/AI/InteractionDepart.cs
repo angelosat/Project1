@@ -13,9 +13,5 @@ namespace Start_a_Town_
             var world = a.World as StaticWorld;
             world.Space.Enter(a);
         }
-        public override object Clone()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

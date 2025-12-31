@@ -53,10 +53,6 @@ namespace Start_a_Town_
             {
                 this.QuestID = r.ReadInt32();
             }
-            public override object Clone()
-            {
-                return new InteractionQuestDeliver(this.QuestID);
-            }
         }
     }
 }

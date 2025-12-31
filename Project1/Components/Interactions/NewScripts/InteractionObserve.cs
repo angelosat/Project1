@@ -14,10 +14,5 @@ namespace Start_a_Town_.Components.Interactions
         {
             throw new NotImplementedException();
         }
-
-        public override object Clone()
-        {
-            return new InteractionObserve();
-        }
     }
 }

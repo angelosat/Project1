@@ -16,7 +16,7 @@ namespace Start_a_Town_
         {
             this.DrawProgressBar(() => this.Actor.Global, () => this.Progress, () => this.Name);
         }
-        protected sealed override void Start()
+        protected sealed override void OnStart()
         {
             var a = this.Actor;
             var t = this.Target;

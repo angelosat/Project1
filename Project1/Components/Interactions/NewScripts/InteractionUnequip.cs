@@ -10,10 +10,5 @@
             var t = this.Target;
             a.Inventory.Unequip(t.Object);
         }
-
-        public override object Clone()
-        {
-            return new InteractionUnequip();
-        }
     }
 }

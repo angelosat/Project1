@@ -8,49 +8,27 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    public abstract class Interaction : Inspectable, ICloneable
+    public abstract class Interaction : Inspectable
     {
         public InteractionDef Def;
         public InteractionContext Context;
         public override string Label => this.Name;
-        public bool IsFinished => this.State == States.Finished;
         public static readonly float DefaultRange = (float)Math.Sqrt(2);
-
-        static readonly Dictionary<string, Func<Interaction>> Factory = new();
-        
+        public bool IsFinished => this.State == States.Finished || this.State == States.Failed;
         protected bool CanPerform() => this.Def.Logic.CanPerform(this.Context);
         protected bool CanFinish() => this.Def.Logic.CanFinish(this.Context);
-
-        public static void AddInteraction<T>(Func<Interaction> factory)
-        {
-            Factory[typeof(T).FullName] = factory;
-        }
-        public static void AddInteraction<T>() where T : Interaction, new()
-        {
-            Factory[typeof(T).FullName] = () => new T();
-        }
-        
         internal virtual void OnToolContact()
         {
         }
-
         public static void Initialize()
         {
-
         }
         public override string ToString()
         {
-            return "Interaction: " + this.Name;
+            return $"Interaction: {this.Name}";
         }
-
         public enum States { Unstarted, Running, Finished, Failed }
         public enum RunningTypes { Once, Continuous }
-
-        public int GetID()
-        {
-            return this.Name.GetHashCode();
-        }
-
         public States State { get; protected set; } = States.Unstarted;
 
         public RunningTypes RunningType = RunningTypes.Once;
@@ -60,13 +38,12 @@ namespace Start_a_Town_
 
         public float Length { get; set; }
         public float CurrentTick;
-        public ToolUseDef ToolUse { get; set; }
         public float Seconds { get; set; }
         Animation _cachedAnimation;
         protected Animation _animation => _cachedAnimation ??= this.Actor.SpriteComp.GetAnimation(this.AnimationDef);// = new(AnimationDef.Work);
         public AnimationDef AnimationDef = AnimationDef.Work;
-        internal Actor Actor;
-        internal TargetArgs Target;
+        internal Actor Actor => this.Context.Actor;
+        internal TargetArgs Target => this.Context.Target;
         internal int Count;
 
         private bool _drawProgressBar;
@@ -77,11 +54,9 @@ namespace Start_a_Town_
         // TODO: i need a method that returns satisfaction score based on ai entity's state
         static readonly Dictionary<Need.Types, float> _needSatisfaction = new();
         public virtual Dictionary<Need.Types, float> NeedSatisfaction => _needSatisfaction;
-
         public Interaction()
         {
         }
-
         protected Interaction(string name, float seconds = 0)
             : this()
         {
@@ -96,19 +71,14 @@ namespace Start_a_Town_
                 this.Actor.Net.EventOccured((int)Message.Types.InteractionInterrupted, this.Actor, this);
             this.State = States.Finished;
             if (this.AnimationDef is not null)
-            {
                 this._animation?.FadeOutAndRemove();
-
-                //this._animation?.FadeOutAndRemove(-.005f);
-                //this._animation.Speed = 0;
-            }
         }
 
         public virtual void Perform()
         {
         }
         protected int CrossFadeAnimationLength;
-        public void StartBase()
+        public void Start()
         {
             if (this.AnimationDef is not null)
             {
@@ -117,17 +87,9 @@ namespace Start_a_Town_
                 else
                     this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, this.CrossFadeAnimationLength);
             }
-            this.Start();
+            this.OnStart();
         }
-        protected virtual void Start()
-        {
-
-        }
-        internal bool Evaluate()
-        {
-            return true;
-        }
-
+        protected virtual void OnStart() { }
         public virtual void Update()
         {
             var actor = this.Actor;
@@ -140,7 +102,7 @@ namespace Start_a_Town_
 
             if (this.State == States.Unstarted)
             {
-                this.StartBase();
+                this.Start();
                 this.State = States.Running;
             }
             else if (this.State == States.Finished)
@@ -149,8 +111,6 @@ namespace Start_a_Town_
                 AILog.TryWrite(actor, "Success: " + this.GetCompletedText(actor, target));
                 return;
             }
-
-            //this.State = States.Running;
             if (this.RunningType == RunningTypes.Continuous)
             {
                 this.Perform();
@@ -170,7 +130,7 @@ namespace Start_a_Town_
             }
         }
 
-        internal virtual void Stop()
+        internal void Stop()
         {
             this._animation.FadeOutAndRemove();
         }
@@ -214,7 +174,7 @@ namespace Start_a_Town_
         {
         }
 
-        public abstract object Clone();
+        //public abstract object Clone();
 
         public virtual string GetCompletedText(Actor actor, TargetArgs target)
         {
@@ -270,15 +230,6 @@ namespace Start_a_Town_
         }
         internal virtual void Resolve(MapBase map)
         {
-        }
-
-        internal virtual void InitAction()
-        {
-            //if (this.Length == 0)
-            //{
-            //    this.Perform();
-            //    this.Finish();
-            //}
         }
         internal virtual void FinishAction()
         {

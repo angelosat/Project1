@@ -15,11 +15,6 @@ namespace Start_a_Town_
         {
             this.Verb = this.Name;
         }
-        public override object Clone()
-        {
-            return new InteractionConversationGradual(this.Topic);
-        }
-
         public override void OnUpdate()
         {
             var a = this.Actor;

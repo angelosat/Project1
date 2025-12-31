@@ -108,10 +108,6 @@ namespace Start_a_Town_.Components
                 consumable.SetStackSize(target.Object.StackSize - 1);
                 actor.AddMoodlet(MoodLetDefOf.JustAte.Create());
             }
-            public override object Clone()
-            {
-                return new InteractionConsume();
-            }
         }
         
         public new class Props : Spec<ConsumableComponent>
@@ -123,10 +119,6 @@ namespace Start_a_Town_.Components
             {
 
             }
-            //public Props(NeedEffect[] needEffects)
-            //{
-            //    this.Effects = needEffects;
-            //}
             protected override void ApplyDefaultsTo(ConsumableComponent comp)
             {
                 comp.Effects = [.. this.Effects];

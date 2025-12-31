@@ -16,9 +16,5 @@
                 throw new System.Exception();
             plant.PlantComponent.Harvest(t.Object, a);
         }
-        public override object Clone()
-        {
-            return new InteractionHarvest();
-        }
     }
 }

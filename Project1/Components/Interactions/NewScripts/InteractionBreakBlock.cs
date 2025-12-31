@@ -78,11 +78,6 @@ namespace Start_a_Town_
             this.EmitterStrike.Texture = Block.Atlas.Texture;
             this.ParticleRects = this.GetParticleRects();
         }
-        public override object Clone()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void OnApplyWork(int workAmount)
         {
             this.Def.Logic.ApplyWork(this.Context, workAmount);

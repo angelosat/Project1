@@ -63,12 +63,6 @@ namespace Start_a_Town_
         {
             this.Progress.Value += 25;
         }
-       
-        public override object Clone()
-        {
-            return new InteractionCraftVisitorRequest(this.ShopID, this.OrderID, this.PlacedObjects);
-        }
-
         GameObject ProduceWithMaterialsOnTopNew(Actor actor, Vector3 global, CraftOrder order)
         {
             var ingr = this.IngredientsUsed.ToDictionary(vk => vk.Key, vk => new ObjectAmount(actor.World.GetEntity(vk.Value.Object), vk.Value.Amount));

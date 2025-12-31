@@ -12,11 +12,7 @@ namespace Start_a_Town_
             )
         {
         }
-        public override object Clone()
-        {
-            return new InteractionSwapCarried();
-        }
-        protected override void Start()
+        protected override void OnStart()
         {
             var a = this.Actor;
             //this.cachedAnimation = new Animation(AnimationDef.TouchItem);

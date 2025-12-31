@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Start_a_Town_
 {
@@ -28,6 +27,6 @@ namespace Start_a_Town_
         internal string ReadASCII();
         internal Color ReadColor();
         internal List<Vector3> ReadListVector3();
-
+        internal TargetArgs ReadTarget(MapBase map);// => TargetArgs.Read(map, this);
     }
 }

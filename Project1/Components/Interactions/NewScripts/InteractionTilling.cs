@@ -11,10 +11,5 @@
             a.Map.SetBlock(t.Global, BlockDefOf.Farmland.Worker, a.Map.GetCell(t.Global).Material, 0);
             this.Finish();
         }
-
-        public override object Clone()
-        {
-            return new InteractionTilling();
-        }
     }
 }

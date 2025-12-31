@@ -109,10 +109,6 @@ namespace Start_a_Town_.Components
         class InteractionSetFuse : Interaction
         {
             Func<int> FuseSet;
-            public override object Clone()
-            {
-                return new InteractionSetFuse(this.FuseSet);
-            }
             public InteractionSetFuse(Func<int> callback)
             {
                 this.Name = "Set fuse";

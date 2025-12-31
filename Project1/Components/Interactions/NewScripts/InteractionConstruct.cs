@@ -51,14 +51,7 @@ namespace Start_a_Town_.Interactions
             : base("Construct")
         {
         }
-
         protected override float WorkDifficulty { get; } = 1;
-
-        public override object Clone()
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected override void OnApplyWork(int workAmount)
         {
             this.Def.Logic.ApplyWork(this.Context, workAmount);

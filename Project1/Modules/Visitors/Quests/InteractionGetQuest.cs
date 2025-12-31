@@ -23,12 +23,6 @@ namespace Start_a_Town_
 
             actor.AcceptQuest(this.QuestID);
         }
-
-        public override object Clone()
-        {
-            return new InteractionGetQuest(this.QuestID);
-        }
-
         protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.QuestID);

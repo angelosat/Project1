@@ -28,10 +28,5 @@
             this.Actor.Gear.EquipToggle(t.Object as Entity);
             this.Finish();
         }
-
-        public override object Clone()
-        {
-            return new InteractionEquip();
-        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.DirectoryServices;
 
 namespace Start_a_Town_.Components
 {
@@ -46,12 +45,25 @@ namespace Start_a_Town_.Components
         {
             this.Task.OnToolContact();
         }
-
+        public Interaction Perform(InteractionDef taskDef, TargetArgs target, int quantity = -1)
+        {
+            var interaction = taskDef.Create(this.Owner as Actor, target);
+            this.Start(interaction);
+            this.Owner.Map.Events.Post(new InteractionStartedEvent(this.Owner as Actor, taskDef, target));
+            return interaction;
+        }
+        public void Start(Interaction task)
+        {
+            ArgumentNullException.ThrowIfNull(task);
+            var parent = this.Owner as Actor;
+            this.Interrupt();
+            this.Task = task;
+            this.Target = task.Target;
+            parent.FaceTowards(this.Target);
+        }
         public void Perform(Interaction task, TargetArgs target, int quantity = -1)
         {
             var parent = this.Owner as Actor;
-            task.Actor = parent;
-            task.Target = target;
             task.Count = quantity;
             if (task == null)
                 throw new ArgumentException();
@@ -59,7 +71,6 @@ namespace Start_a_Town_.Components
             this.Task = task;
             this.Target = target;
             parent.FaceTowards(this.Target);
-            this.Task.InitAction();
             if (this.Task.HasFinished)
                 this.Stop();
         }
@@ -118,7 +129,7 @@ namespace Start_a_Town_.Components
             if (!isInteracting)
                 return;
             this.Target.Write(w);
-            w.Write(this.Task.GetType().FullName);
+            w.Write(this.Task.Def);
             this.Task.Write(w);
         }
         public override void Read(IDataReader r)
@@ -126,13 +137,9 @@ namespace Start_a_Town_.Components
             var isinteracting = r.ReadBoolean();
             if (!isinteracting)
                 return;
-            this.Target = TargetArgs.Read(null, r);
-            var interactionType = r.ReadString();
-            var interaction = Activator.CreateInstance(Type.GetType(interactionType)) as Interaction;
-            interaction.Actor = this.Owner as Actor;
-            interaction.Target = this.Target;
-            if (interaction.Actor is null)
-                throw new Exception();
+            this.Target = TargetArgs.Read(this.Owner.Map, r);
+            var interactionDef = r.ReadDef<InteractionDef>();
+            var interaction = interactionDef.Create(this.Owner as Actor, this.Target);
             interaction.Read(r);
             this.Task = interaction;
         }
@@ -154,8 +161,8 @@ namespace Start_a_Town_.Components
             this.Target = new TargetArgs(save["Target"]);
             var interactionTag = save["Interaction"];
             var inter = Interaction.Load(interactionTag);
-            inter.Actor = this.Owner as Actor;
-            inter.Target = this.Target;
+            //inter.Actor = this.Owner as Actor;
+            //inter.Target = this.Target;
             this.Task = inter;
         }
 

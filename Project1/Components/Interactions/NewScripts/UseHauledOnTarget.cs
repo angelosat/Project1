@@ -62,11 +62,6 @@ namespace Start_a_Town_
         {
             return this.Name + (this.Amount != -1 ? " x" + this.Amount.ToString() : "All");
         }
-        
-        public override object Clone()
-        {
-            return new UseHauledOnTarget(this.Amount);
-        }
         protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Amount);

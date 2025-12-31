@@ -10,9 +10,5 @@
             e.GetComp<BlockEntityCompSwitchable>().Toggle(a, t);
             this.Finish();
         }
-        public override object Clone()
-        {
-            return new InteractionFlipSwitch();
-        }
     }
 }

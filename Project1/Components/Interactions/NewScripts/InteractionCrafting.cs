@@ -35,11 +35,6 @@ namespace Start_a_Town_.Crafting
         {
             this.SkillAwardType = SkillAwardTypes.OnFinish;
         }
-
-        public override object Clone()
-        {
-            throw new System.Exception();
-        }
         public override float Percentage => this.TotalWorkAmount / 100; // HACK
         internal override void AddProgress(int v)
         {
@@ -138,10 +133,10 @@ namespace Start_a_Town_.Crafting
             this.DrawProgressBar(() => this.Target.Global.Above(), () => this.Progress, () => this.Order.Label);
         }
 
-        public override object Clone()
-        {
-            return new InteractionCrafting(this.Order, this.PlacedObjects);
-        }
+        //public override object Clone()
+        //{
+        //    return new InteractionCrafting(this.Order, this.PlacedObjects);
+        //}
         protected override void Init()
         {
             if (this.Order.Reaction.CreatesUnfinishedItem)

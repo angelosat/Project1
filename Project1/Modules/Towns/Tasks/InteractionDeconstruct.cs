@@ -25,11 +25,6 @@ namespace Start_a_Town_
             this._progress = new Progress(0, maxWork, 0);
 
         }
-        public override object Clone()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void OnApplyWork(int workAmount)
         {
             this._progress.Value += workAmount;

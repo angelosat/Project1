@@ -215,7 +215,7 @@ namespace Start_a_Town_
         {
             foreach (var des in this.Designations.Keys.ToList())
                 //this.Designations[des].ReadIntVec3(r);
-                this.Designations[des].ReadTargets(r);
+                this.Designations[des].ReadTargets(this.Map, r);
         }
 
         internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()

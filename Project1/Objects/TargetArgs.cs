@@ -427,11 +427,13 @@ namespace Start_a_Town_
             }
             return tag;
         }
-
         static public TargetArgs Read(NetEndpoint provider, IDataReader reader)
         {
-            if (provider is null)
-                "pass the world object instead the netendpoint, so that it's never null".ToConsole();
+            return Read(provider.Map, reader);
+        }
+        static public TargetArgs Read(MapBase map, IDataReader reader)
+        {
+            ArgumentNullException.ThrowIfNull(map);
             TargetType type = (TargetType)reader.ReadInt32();
             switch (type)
             {
@@ -440,26 +442,26 @@ namespace Start_a_Town_
 
                 case TargetType.Entity:
                     int netID = reader.ReadInt32();
-                    return new TargetArgs(provider.World, netID);
+                    return new TargetArgs(map.World, netID);
 
                 case TargetType.Position:
-                    return new TargetArgs(provider.World, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3()) { Map = provider.Map };
+                    return new TargetArgs(map.World, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3()) { Map = map };
 
                 case TargetType.Slot:
                     int parentID = reader.ReadInt32();
-                    GameObject parent = provider.World.GetEntity(parentID);
+                    GameObject parent = map.World.GetEntity(parentID);
                     byte slotID = reader.ReadByte();
                     int containerID = reader.ReadInt32();
                     var slot = parent.GetChild(containerID, slotID);
-                    return new TargetArgs(provider.World, slot);
+                    return new TargetArgs(map.World, slot);
 
                 case TargetType.BlockEntitySlot:
                     var vector3 = reader.ReadVector3();
-                    var blockentity = provider.Map.GetBlockEntity(vector3);
+                    var blockentity = map!.GetBlockEntity(vector3);
                     var containerName = reader.ReadString();
                     var slotid = reader.ReadByte();
                     var s = blockentity.GetChild(containerName, slotid);
-                    return new TargetArgs(provider, vector3, s);
+                    return new TargetArgs(map.Net, vector3, s);
 
                 case TargetType.Direction:
                     return new TargetArgs(reader.ReadVector2());

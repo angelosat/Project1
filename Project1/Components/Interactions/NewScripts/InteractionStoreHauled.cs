@@ -23,10 +23,5 @@ namespace Start_a_Town_
             //actor.Log.Write(string.Format("Stored {0} in inventory", cachedObject));
             PacketEntityStoreHauled.Send(actor);
         }
-
-        public override object Clone()
-        {
-            return new InteractionStoreHauled();
-        }
     }
 }

@@ -15,8 +15,8 @@ namespace Start_a_Town_
         {
             this.Type = type;
         }
-        
-        internal override void InitAction()
+
+        protected override void OnStart()
         {
             var a = this.Actor;
             var slot = a.Gear.GetSlot(this.Type);
@@ -25,10 +25,6 @@ namespace Start_a_Town_
             //slot.Object.Spawn(a.Map, a.Global + new Vector3(0, 0, a.Physics.Height));
             a.Map.Spawn(slot.Object as Entity, a.Global + new Vector3(0, 0, a.Physics.Height), Vector3.Zero);
             slot.Clear();
-        }
-        public override object Clone()
-        {
-            return new InteractionDropEquipped(this.Type);
         }
         protected override void WriteExtra(IDataWriter w)
         {

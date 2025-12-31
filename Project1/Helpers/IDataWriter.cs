@@ -43,7 +43,7 @@ namespace Start_a_Town_
         internal IDataWriter Write<T>(ICollection<T> list) where T : ISerializableNew<T>;
         internal IDataWriter Write(string[] strings) { this.ww.Write(strings); return this; }
         internal IDataWriter Write(Color color) { this.ww.Write(color); return this; }
-
+        internal IDataWriter Write(TargetArgs target) { target.Write(ww); return this; }
         internal IDataWriter WriteASCII(string v);
         internal IDataWriter Write(IntVec3[] v);
 

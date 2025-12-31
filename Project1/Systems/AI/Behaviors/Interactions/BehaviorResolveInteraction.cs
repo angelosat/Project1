@@ -7,11 +7,8 @@ namespace Start_a_Town_
 {
     class BehaviorResolveInteraction : Behavior
     {
-        //public override string Status => $"{this.InteractionDef.Label} : {this.Target}";
-
         readonly int TargetInd;
         readonly TargetIndex CountInd;
-        //TargetArgs Target { get => this.TargetGetter?.Invoke() ?? this.Actor.CurrentTask.GetTarget(this.TargetInd); set { } }
         TargetArgs Target { get => this.TargetGetter?.Invoke() ?? (this.TargetInd != (int)TargetIndex.None ? this.Actor.CurrentTask.GetTarget(this.TargetInd) : null); set { } }
         Interaction _interaction;
         public InteractionDef InteractionDef;
@@ -69,8 +66,50 @@ namespace Start_a_Town_
         {
             this.InteractionFactory = interactionFactory;
         }
-      
-        public override BehaviorState Tick(Actor parent, AIState state)
+        public override BehaviorState Tick(Actor actor, AIState state)
+        {
+            this.Actor = actor;
+            if (actor.Velocity != Vector3.Zero)
+            {
+                var acceleration = actor.GetComponent<MobileComponent>().Acceleration;
+                if (acceleration != 0)
+                    actor.MoveToggle(false);
+                return BehaviorState.Running;
+            }
+
+            var target = this.Target;
+            int count = this.CountInd == TargetIndex.None ? -1 : actor.CurrentTask.GetAmount(this.CountInd);
+
+            this._interaction ??= actor.Work.Perform(actor.CurrentTask.Def.Interaction, target);
+            //_interaction ??= actor.CurrentTask.Def.Interaction.Create(actor, target);
+
+            if(this._interaction.IsFinished)
+                return BehaviorState.Success;
+            return BehaviorState.Running;
+
+            switch (_interaction.State)
+            {
+                case Interaction.States.Unstarted:
+                    AIManager.Interact(actor, _interaction, target, count);
+                    return BehaviorState.Running;
+
+                case Interaction.States.Running:
+                    return BehaviorState.Running;
+
+                case Interaction.States.Finished:
+                    this.Interaction = null; // THIS IS REQUIRED because when ths behavior is run again (in loops) it needs to create a new instance of the interaction
+                    // WHY HAVE I COMMENTED IT OUT?
+                    return BehaviorState.Success;
+
+                case Interaction.States.Failed:
+                    return BehaviorState.Fail;
+
+                default:
+                    break;
+            }
+            return BehaviorState.Running;
+        }
+        public BehaviorState TickOld(Actor parent, AIState state)
         {
             this.Actor = parent;
             if (parent.Velocity != Vector3.Zero)
@@ -81,22 +120,14 @@ namespace Start_a_Town_
                 return BehaviorState.Running;
             }
 
-            TargetArgs target = this.Target;
-            //Interaction goal = this.Interaction;
+            var target = this.Target;
             int count = this.CountInd == TargetIndex.None ? -1 : parent.CurrentTask.GetAmount(this.CountInd);
 
-            //var interaction = Actor.Work.Task;
-            if(_interaction is null)
-            {
-                //_interaction = ActivatorSafe<Interaction>.CreateInstance(parent.CurrentTask.Def.Interaction.InteractionClass);
-                _interaction = parent.CurrentTask.Def.Interaction.Create(parent, target);
-            }
+            _interaction ??= parent.CurrentTask.Def.Interaction.Create(parent, target);
 
-            //switch (goal.State)
             switch (_interaction.State)
             {
                 case Interaction.States.Unstarted:
-                    //throw new Exception();
                     AIManager.Interact(parent, _interaction, target, count);
                     return BehaviorState.Running;
 

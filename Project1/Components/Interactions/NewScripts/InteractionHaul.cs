@@ -39,7 +39,7 @@ namespace Start_a_Town_
         public override string ToString() => "Haul " + (this.Amount == -1 ? " All" : " x" + this.Amount.ToString());
         
 
-        protected override void Start()
+        protected override void OnStart()
         {
             var a = this.Actor;
         }
@@ -73,12 +73,6 @@ namespace Start_a_Town_
             }
             this.Finish();
         }
-
-        public override object Clone()
-        {
-            return new InteractionHaul(this.Amount);
-        }
-
         protected override void WriteExtra(IDataWriter w)
         {
             w.Write(this.Amount);

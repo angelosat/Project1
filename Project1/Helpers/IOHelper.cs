@@ -379,12 +379,12 @@ namespace Start_a_Town_
             }
             return array;
         }
-        public static T ReadTargets<T>(this T collection, IDataReader r)
+        public static T ReadTargets<T>(this T collection, MapBase map, IDataReader r)
            where T : ICollection<TargetArgs>, new()
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
-                collection.Add(TargetArgs.Read(null, r));
+                collection.Add(TargetArgs.Read(map, r));
             return collection;
         }
         public static Vector2 ReadVector2(this BinaryReader reader)

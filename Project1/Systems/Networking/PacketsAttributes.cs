@@ -8,7 +8,7 @@ namespace Start_a_Town_
         readonly static PacketId _pAttributeIncreased;
         static PacketsAttributes()
         {
-            Registry.MapEventHooks.Register<AttributeIncreasedEvent>(SendAttributeIncreased);
+            Registry.MapEventHooksServer.Register<AttributeIncreasedEvent>(SendAttributeIncreased);
             _pAttributeIncreased = Registry.PacketHandlers.Register(OnAttributeIncreased);
         }
         private static void SendAttributeIncreased(AttributeIncreasedEvent @event)
@@ -32,7 +32,7 @@ namespace Start_a_Town_
         readonly static PacketId _pResourceAdjusted;
         static PacketsResources()
         {
-            Registry.MapEventHooks.Register<ResourceAdjustedEvent>(SendResourceAdjusted);
+            Registry.MapEventHooksServer.Register<ResourceAdjustedEvent>(SendResourceAdjusted);
             _pResourceAdjusted = Registry.PacketHandlers.Register(OnResourceAdjusted);
         }
         private static void SendResourceAdjusted(ResourceAdjustedEvent @event)

@@ -15,12 +15,12 @@ namespace Start_a_Town_
             _pSpawn = Registry.PacketHandlers.Register(OnSpawn);
             _pDespawn = Registry.PacketHandlers.Register(OnDespawn);
 
-            Registry.WorldEventHooks.Register<EntityRegisteredEvent>(SendEntityRegistered);
-            Registry.WorldEventHooks.Register<EntityStackIncreased>(SendEntityStackIncreased);
-            Registry.WorldEventHooks.Register<EntityStackDecreased>(SendEntityStackDecreased);
-            Registry.WorldEventHooks.Register<EntityDisposedEvent>(SendEntityDisposed);
-            Registry.MapEventHooks.Register<EntitySpawnedEvent>(SendEntitySpawned);
-            Registry.MapEventHooks.Register<EntityDespawnedEvent>(SendEntityDespawned);
+            Registry.WorldEventHooksServer.Register<EntityRegisteredEvent>(SendEntityRegistered);
+            Registry.WorldEventHooksServer.Register<EntityStackIncreased>(SendEntityStackIncreased);
+            Registry.WorldEventHooksServer.Register<EntityStackDecreased>(SendEntityStackDecreased);
+            Registry.WorldEventHooksServer.Register<EntityDisposedEvent>(SendEntityDisposed);
+            Registry.MapEventHooksServer.Register<EntitySpawnedEvent>(SendEntitySpawned);
+            Registry.MapEventHooksServer.Register<EntityDespawnedEvent>(SendEntityDespawned);
         }
 
         private static void SendEntityDespawned(EntityDespawnedEvent @event)

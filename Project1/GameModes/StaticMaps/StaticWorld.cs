@@ -50,7 +50,7 @@ namespace Start_a_Town_
         public override void Tick(INetEndpoint net)
         {
             this.PopulationManager.Update(net);
-            this.Space.Tick(this);
+            this.Space.Tick();
             this.CurrentTick++;
         }
         public string GetName()
@@ -88,7 +88,7 @@ namespace Start_a_Town_
             this.Trees = true;
             this.Maps = new MapCollection();
             this.PopulationManager = new PopulationManager(this);
-            this.Space = new FrontierManager();
+            this.Space = new FrontierManager(this);
         }
         public StaticWorld(string name, List<Terraformer> mutators)
            : this()
@@ -139,6 +139,8 @@ namespace Start_a_Town_
                 var map = StaticMap.Load(this, Vector2.Zero, tag);
                 this.Maps.Add(map.Coordinates, map);
             }
+
+            //this.PopulationManager.ResolveReferences();
         }
         public StaticWorld(IDataReader r)
            : this()
@@ -254,10 +256,6 @@ namespace Start_a_Town_
                 map.Value.GetThumb().Draw(sb, cam);
             }
         }
-
-        
-
-
         public override void OnHudCreated(Hud hud)
         {
             var win = new Window(this.CreateUI()) { Movable = true, Closable = true };
@@ -302,10 +300,17 @@ namespace Start_a_Town_
 
         public override MapBase GetMap(int mapId) => this.Map;
 
-        //internal override void Post(GameEvent a)
-        //{
-        //    base.Post(a.Payload);
-        //    this.Map.OnGameEvent(a);
-        //}
+        internal FrontierDef PlaceAtRandom(Actor actor)
+        {
+            return this.Space.PlaceAtRandom(actor);
+        }
+        public override FrontierDef PlaceAt(Entity entity, WorldSpacePosition pos)
+        {
+            return this.Space.PlaceAt(entity, pos);
+        }
+        public override FrontierDef GetFrontierOf(Entity entity)
+        {
+            return this.Space.GetFrontier(entity)?.Def;
+        }
     }
 }

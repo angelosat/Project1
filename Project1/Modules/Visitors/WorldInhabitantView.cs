@@ -8,33 +8,19 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    public class VisitorProfile : Inspectable, ITooltippable, ISerializableNew<VisitorProfile>, ISaveable, ISyncable
+    public class WorldInhabitantView : Inspectable, ITooltippable, ISaveable, ISyncable
     {
         static readonly int PacketSyncAwardTownRating, PacketSync;
-        static VisitorProfile()
+        static WorldInhabitantView()
         {
             PacketSyncAwardTownRating = Registry.PacketHandlers.Register(ReceiveAwardTownRating);
             PacketSync = Registry.PacketHandlers.Register(ReceiveSync);
         }
-        public VisitorProfile()
-        {
-            
-        }
+     
         public int ActorID;
         Actor CachedActor;
-        public Actor Actor
-        {
-            get
-            {
-                return this.CachedActor ??= this.World.GetEntity(this.ActorID) as Actor;
-            }
-            set
-            {
-                this.CachedActor = value;
-                this.ActorID = value.RefId;
-            }
-        }
-
+        public Actor Actor;
+      
 
         public bool Discovered;
         public void ResolveReferences()
@@ -50,7 +36,7 @@ namespace Start_a_Town_
 
         //public float TownRating => this.TownApprovalRating >= 0 ? this.TownApprovalRating / ApprovalMax : this.TownApprovalRating / ApprovalMin;
         public TimeSpan Timer = new();
-
+        public FrontierDef CurrentWorldLocation => this.Actor.World.GetFrontierOf(this.Actor);
         public FrontierDef OffsiteArea;
         static readonly int OffsiteTickLength = Ticks.PerSecond * 10;
         int OffsiteTick;
@@ -59,17 +45,21 @@ namespace Start_a_Town_
         public HashSet<int> RecentlyVisitedShops = new();
         public readonly ObservableCollection<QuestDef> Quests = new();
         public StaticWorld World;
-        public VisitorProfile(IDataReader r, PopulationManager manager)
+        public WorldInhabitantView(Actor actor)
+        {
+            this.Actor = actor;
+        }
+        public WorldInhabitantView(IDataReader r, PopulationManager manager)
         {
             this.World = manager.World;
             this.Read(r);
         }
-        public VisitorProfile(SaveTag save, PopulationManager manager)
+        public WorldInhabitantView(SaveTag save, PopulationManager manager)
         {
             this.World = manager.World;
             this.Load(save);
         }
-        public VisitorProfile(StaticWorld world, Actor actor, float townVisitChance, int townApprovalRating)
+        public WorldInhabitantView(StaticWorld world, Actor actor, float townVisitChance, int townApprovalRating)
         {
             this.World = world;
             this.Timer = world.Clock;
@@ -155,7 +145,7 @@ namespace Start_a_Town_
         {
         }
 
-        internal VisitorProfile AddRecentlyVisitedShop(Workplace shop)
+        internal WorldInhabitantView AddRecentlyVisitedShop(Workplace shop)
         {
             this.RecentlyVisitedShops.Add(shop.ID);
             return this;
@@ -309,7 +299,7 @@ namespace Start_a_Town_
             w.Write(this.Timer.TotalMilliseconds);
             w.Write(this.Quests.Select(q => q.ID).ToArray());
         }
-        public VisitorProfile Read(IDataReader r)
+        public WorldInhabitantView Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
             var isspawned = r.ReadBoolean();
@@ -397,6 +387,6 @@ namespace Start_a_Town_
             gui.GetWindow().SetTitle(this.Actor.Name).Show();
         }
 
-        public static VisitorProfile Create(IDataReader r) => new VisitorProfile().Read(r);
+        //public static WorldInhabitantView Create(IDataReader r) => new WorldInhabitantView().Read(r);
     }
 }

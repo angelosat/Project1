@@ -543,7 +543,7 @@ namespace Start_a_Town_
         internal override void OnSpawn(MapBase map)
         {
             base.OnSpawn(map);
-            if (this.GetVisitorProperties() is VisitorProfile props)
+            if (this.GetVisitorProperties() is WorldInhabitantView props)
                 props.OffsiteArea = null;
         }
     }

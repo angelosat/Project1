@@ -2,7 +2,7 @@
 {
     static class ExtensionsVisitors
     {
-        internal static VisitorProfile GetVisitorProperties(this Actor actor)
+        internal static WorldInhabitantView GetVisitorProperties(this Actor actor)
         {
             return actor.Net.Map.World.Population.GetVisitorProperties(actor);
         }

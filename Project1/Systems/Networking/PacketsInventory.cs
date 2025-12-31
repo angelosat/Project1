@@ -13,8 +13,8 @@ namespace Start_a_Town_
             _pSync = Registry.PacketHandlers.Register(OnInventorySync);
             _pSlot = Registry.PacketHandlers.Register(OnSlotUpdated);
 
-            Registry.MapEventHooks.Register<InventoryUpdatedEvent>(SendInventoryUpdated);
-            Registry.MapEventHooks.Register<SlotUpdatedEvent>(SendSlotUpdated);
+            Registry.MapEventHooksServer.Register<InventoryUpdatedEvent>(SendInventoryUpdated);
+            Registry.MapEventHooksServer.Register<SlotUpdatedEvent>(SendSlotUpdated);
 
         }
         private static void SendSlotUpdated(SlotUpdatedEvent e)

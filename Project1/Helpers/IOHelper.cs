@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms.VisualStyles;
 
 namespace Start_a_Town_
 {
@@ -110,6 +109,7 @@ namespace Start_a_Town_
         public static T Read<T>(this T collection, IDataReader r)
             where T : ICollection<int>
         {
+            collection.Clear();
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
                 collection.Add(r.ReadInt32());
@@ -122,7 +122,7 @@ namespace Start_a_Town_
                 list.Add(r.ReadIntVec3());
             return list;
         }
-
+       
         public static ICollection<Def> Read(this ICollection<Def> list, BinaryReader r)
         {
             var count = r.ReadInt32();

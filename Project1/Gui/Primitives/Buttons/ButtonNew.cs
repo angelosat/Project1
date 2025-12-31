@@ -1,6 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 
 namespace Start_a_Town_.UI
 {
@@ -128,8 +130,7 @@ namespace Start_a_Town_.UI
         {
             UIManager.DrawStringOutlined(sb, this.Text, position, this.Anchor);
         }
-
-        static public ButtonNew CreateBig(Action leftClickAction, int width, Texture2D graphic, Func<string> textTop, Func<string> textBottom = null)
+        static public ButtonNew CreateBig(Action leftClickAction, int width, Texture2D graphic, Label topLabel, Label bottomLabel)
         {
             var btn = new ButtonNew(width)
             {
@@ -140,13 +141,39 @@ namespace Start_a_Town_.UI
             btn.Width = width;
             var padding = btn.BackgroundStyle.Left.Width;
             var picbox = new PictureBox(graphic) { MouseThrough = true, Location = new Vector2(padding, btn.Height / 2), Anchor = new Vector2(0, .5f) };//) { DrawAction = () => block.PaintIcon(Block.Width, Block.Height, variant.Data) });
-            var label = new Label() { TextFunc = textTop, Location = picbox.TopRight + Vector2.UnitX * padding, MouseThrough = true };
 
-            btn.AddControls(picbox, label);
-            if(textBottom != null)
-                btn.AddControls( new Label() { TextFunc = textBottom, Location = picbox.BottomRight + Vector2.UnitX * padding, Anchor = Vector2.UnitY, MouseThrough = true });
+            topLabel.Location = picbox.TopRight + Vector2.UnitX * padding;
+            topLabel.MouseThrough = true;
 
+            btn.AddControls(picbox, topLabel);
+            if (bottomLabel is not null)
+            {
+                bottomLabel.Location = picbox.BottomRight + Vector2.UnitX * padding;
+                bottomLabel.Anchor = Vector2.UnitY;
+                bottomLabel.MouseThrough = true;
+                btn.AddControls(bottomLabel);
+            }
             return btn;
+        }
+        static public ButtonNew CreateBig(Action leftClickAction, int width, Texture2D graphic, Func<string> textTop, Func<string> textBottom = null)
+        {
+            return CreateBig(leftClickAction, width, graphic, new Label(textTop), new Label(textBottom));
+            //var btn = new ButtonNew(width)
+            //{
+            //    AutoSize = false,
+            //    BackgroundStyle = BackgroundStyle.LargeButton,
+            //    LeftClickAction = leftClickAction
+            //};
+            //btn.Width = width;
+            //var padding = btn.BackgroundStyle.Left.Width;
+            //var picbox = new PictureBox(graphic) { MouseThrough = true, Location = new Vector2(padding, btn.Height / 2), Anchor = new Vector2(0, .5f) };//) { DrawAction = () => block.PaintIcon(Block.Width, Block.Height, variant.Data) });
+            //var label = new Label() { TextFunc = textTop, Location = picbox.TopRight + Vector2.UnitX * padding, MouseThrough = true };
+
+            //btn.AddControls(picbox, label);
+            //if(textBottom != null)
+            //    btn.AddControls( new Label() { TextFunc = textBottom, Location = picbox.BottomRight + Vector2.UnitX * padding, Anchor = Vector2.UnitY, MouseThrough = true });
+
+            //return btn;
         }
    
         static public ButtonNew CreateBig(Action leftClickAction, int width, Func<string> textTop, Func<string> textBottom = null)

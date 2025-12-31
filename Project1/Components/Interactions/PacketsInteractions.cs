@@ -13,9 +13,9 @@ namespace Start_a_Town_
             _pProgress = Registry.PacketHandlers.Register(OnInteractionProgress);
             _pStarted = Registry.PacketHandlers.Register(OnInteractionStarted);
 
-            Registry.MapEventHooks.Register<InteractionStoppedEvent>(SendInteractionStopped);
-            Registry.MapEventHooks.Register<InteractionProgressEvent>(SendInteractionProgress);
-            Registry.MapEventHooks.Register<InteractionStartedEvent>(SendInteractionStarted);
+            Registry.MapEventHooksServer.Register<InteractionStoppedEvent>(SendInteractionStopped);
+            Registry.MapEventHooksServer.Register<InteractionProgressEvent>(SendInteractionProgress);
+            Registry.MapEventHooksServer.Register<InteractionStartedEvent>(SendInteractionStarted);
         }
         private static void SendInteractionStarted(InteractionStartedEvent e)
         {

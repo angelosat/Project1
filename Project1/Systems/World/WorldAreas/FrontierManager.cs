@@ -2,21 +2,33 @@
 using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
-using System.DirectoryServices;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using static Start_a_Town_.FrontierManager;
 
 namespace Start_a_Town_
 {
+    public record struct WorldSpacePosition(float Value)
+    {
+        public static implicit operator float(WorldSpacePosition pos) => (float)pos.Value;
+        public static implicit operator WorldSpacePosition(float pos) => new(pos);
+
+        public static WorldSpacePosition ReadFrom(IDataReader r) => new(r.ReadSingle());
+    }
+    internal record struct FrontierTier(int Value)
+    {
+        public static implicit operator int(FrontierTier pos) => (int)pos.Value;
+        public static implicit operator FrontierTier(int pos) => new(pos);
+    }
     public interface IWorldSpaceManager
     {
         void Enter(Actor actor);
         void Exit(Actor actor);
-        FrontierDef PlaceAtRandom(Actor actor);
-        FrontierDef PlaceAtRandomAndSync(Actor actor);
-
-        void Tick(StaticWorld staticWorld);
+        FrontierDef PlaceAtRandom(Entity entity);
+        //FrontierDef PlaceAtRandomAndSync(Actor actor);
+        FrontierDef PlaceAt(Entity entity, WorldSpacePosition pos);
+        FrontierWrapper GetFrontier(Entity entity);
+        void Tick();
     }
     public class FrontierManager : IWorldSpaceManager
     {
@@ -47,26 +59,30 @@ namespace Start_a_Town_
             }
         }
 
-        Dictionary<FrontierDef, FrontierWrapper> Frontiers = [];
-        Dictionary<int, FrontierWrapper> FrontiersByTier = [];
-        Dictionary<Actor, float> Actors = [];
+        readonly Dictionary<FrontierDef, FrontierWrapper> Frontiers = [];
+        readonly Dictionary<FrontierTier, FrontierWrapper> FrontiersByTier = [];
+        readonly Dictionary<Actor, WorldSpacePosition> ActorPositions = [];
 
-        public FrontierManager()
+        public StaticWorld World { get; }
+
+        public FrontierManager(StaticWorld world)
         {
+            this.World = world;
             foreach (var areadef in Def.GetDefs<FrontierDef>())
                 this.Frontiers.Add(areadef, new FrontierWrapper(areadef));
 
             var byTier = this.Frontiers.Values.ToList();
             byTier.Sort((a, b) => a.Def.Tier.CompareTo(b.Def.Tier));
-            this.FrontiersByTier = byTier.ToDictionary(f => f.Def.Tier, f => f);
+            this.FrontiersByTier = byTier.ToDictionary(f => new FrontierTier(f.Def.Tier), f => f);
         }
 
-        public void Tick(StaticWorld world)
+        public void Tick()
         {
             //if (world.Net is not Server server)
             //    return;
+            var world = this.World;
             float step = 1f / Ticks.PerGameHour;
-            var snapshot = Actors.ToList();
+            var snapshot = ActorPositions.ToList();
             foreach (var (actor, distance) in snapshot)
             {
                 var target = actor.AI.Meta.TargetFrontier?.Tier ?? 0;
@@ -93,7 +109,7 @@ namespace Start_a_Town_
                     continue;
                 }
                 
-                this.Actors[actor] = nextDistance;
+                this.ActorPositions[actor] = nextDistance;
                 var currentFrontier = this.GetFrontier(actor);
                 currentFrontier.Tick(actor);
                 actor.Needs.Tick();
@@ -101,9 +117,13 @@ namespace Start_a_Town_
             }
         }
 
-        FrontierWrapper GetFrontier(Actor actor)
+        public FrontierWrapper GetFrontier(Entity entity)
         {
-            var distance = (int)Math.Ceiling(this.Actors[actor]);
+            if (entity is not Actor actor)
+                throw new NotImplementedException();
+            if (!this.ActorPositions.ContainsKey(actor))
+                return null;
+            var distance = (int)Math.Ceiling(this.ActorPositions[actor]);
             for (int i = 0; i < this.FrontiersByTier.Count; i++)
             {
                 if (i < distance && distance <= i + 1)
@@ -113,9 +133,9 @@ namespace Start_a_Town_
         }
         public void Exit(Actor actor)
         {
-            if (!this.Actors.ContainsKey(actor))
+            if (!this.ActorPositions.ContainsKey(actor))
                 return;
-            this.Actors.Remove(actor);
+            this.ActorPositions.Remove(actor);
             actor.Effects.Remove(EffectDefOf.Adventuring);
             //if (!this.Actors.Remove(actor))
             //    throw new InvalidOperationException($"Tried to remove {actor} but wasn't found");
@@ -124,32 +144,36 @@ namespace Start_a_Town_
         {
             //var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
             actor.Effects.Apply(EffectDefOf.Adventuring);
-            this.Actors.Add(actor, 0);
+            this.ActorPositions.Add(actor, 0);
             if (actor.Net is not Server server)
                 return;
             actor.Map.DespawnAndSync(actor);
             server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.Label}!");
         }
-        public FrontierDef PlaceAtRandomAndSync(Actor actor)
+        //public FrontierDef PlaceAtRandomAndSync(Actor actor)
+        //{
+        //    var fr = this.PlaceAtRandom(actor);
+        //    Packets.SendPlaceAt(actor, this.ActorPositions[actor]);
+        //    return fr;
+        //}
+        public FrontierDef PlaceAtRandom(Entity entity)
         {
-            var fr = this.PlaceAtRandom(actor);
-            Packets.SendPlaceAt(actor, this.Actors[actor]);
-            return fr;
+            var tier = 1 + entity.World.Random.Next(this.Frontiers.Count);
+            return this.PlaceAt(entity, tier);
         }
-        public FrontierDef PlaceAtRandom(Actor actor)
+        public FrontierDef PlaceAt(Entity entity, WorldSpacePosition pos)
         {
-            var tier = 1 + actor.World.Random.Next(this.Frontiers.Count);
-            this.PlaceAt(actor, tier);
-            return this.GetFrontier(actor).Def;
-        }
-        public void PlaceAt(Actor actor, float tier)
-        {
-            this.Actors.Add(actor, tier);
+            // TODO sort entities to actors and non-actors. for example, if the entity is an item, place it in the target zone's treasure pool
+            if (entity is not Actor actor)
+                return null;
+            this.ActorPositions.Add(actor, pos);
             actor.AI.Meta.TargetFrontier = this.GetFrontier(actor).Def;
             actor.Effects.Apply(EffectDefOf.Adventuring);
 
             //actor.Map?.DespawnAndSync(actor);
             actor.Map?.Despawn(actor);
+            this.World.Events.Post(new WorldInhabitantGeneratedEvent(actor, pos));
+            return this.GetFrontier(actor).Def;
         }
         public class FrontierWrapper
         {

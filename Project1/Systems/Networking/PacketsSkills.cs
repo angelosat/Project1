@@ -11,7 +11,7 @@ namespace Start_a_Town_
         {
             _pTypeIdModifySkill = Registry.PacketHandlers.Register(Receive);
 
-            Registry.MapEventHooks.Register<SkillIncreaseEvent>(SendSkillIncrease);
+            Registry.MapEventHooksServer.Register<SkillIncreaseEvent>(SendSkillIncrease);
         }
 
         private static void SendSkillIncrease(SkillIncreaseEvent e)

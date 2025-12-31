@@ -14,23 +14,23 @@ namespace Start_a_Town_
         public int LootWeightEquipment = 1;
         public int LootWeightCurrency = 1;
         public readonly int Tier;
-        readonly Action<VisitorProfile>[] TickActions;
+        readonly Action<WorldInhabitantView>[] TickActions;
         Loot LootCurrency;
         public FrontierDef(string name, int tier) : base(name)
         {
             this.Tier = tier;
-            this.TickActions = new Action<VisitorProfile>[] {
+            this.TickActions = new Action<WorldInhabitantView>[] {
                 AwardLoot,
                 Quest,
                 Damage
             };
         }
-        public void Tick(VisitorProfile props)
+        public void Tick(WorldInhabitantView props)
         {
             this.TickActions.SelectRandomWeighted(props.World.Random, p => 1)(props);
         }
 
-        private void Damage(VisitorProfile visitor)
+        private void Damage(WorldInhabitantView visitor)
         {
             var min = 1;
             var max = 5;
@@ -42,14 +42,14 @@ namespace Start_a_Town_
             AILog.SyncWrite(actor, $"[Lost {dmg} health,{Color.Red}] while exploring {this.Name}");
         }
 
-        private void Quest(VisitorProfile visitor)
+        private void Quest(WorldInhabitantView visitor)
         {
             var actor = visitor.Actor;
             foreach (var q in visitor.GetQuests())
                 q.TryComplete(actor, this);
         }
 
-        private void AwardLoot(VisitorProfile visitor)
+        private void AwardLoot(WorldInhabitantView visitor)
         {
             var actor = visitor.Actor;
             var world = visitor.World;

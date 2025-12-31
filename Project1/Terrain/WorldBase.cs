@@ -99,6 +99,10 @@ namespace Start_a_Town_
             foreach (var o in this.EntityRegistry.Values)
                 yield return o;
         }
+        public IEnumerable<TEntity> GetEntities<TEntity>() where TEntity : Entity
+        {
+            return this.EntityRegistry.Values.OfType<TEntity>();
+        }
         public IEnumerable<Entity> GetEntities(IEnumerable<int> netIds)
         {
             return this.EntityRegistry.GetEntities(netIds);
@@ -181,6 +185,7 @@ namespace Start_a_Town_
         internal void Load(SaveTag savetag)
         {
             if(savetag.TryGetTag("Registry", out var tag)) this.EntityRegistry.Load(tag);
+            
         }
         internal void Write(IDataWriter w)
         {
@@ -190,5 +195,8 @@ namespace Start_a_Town_
         {
             this.EntityRegistry.Read(r);
         }
+
+        public abstract FrontierDef PlaceAt(Entity entity, WorldSpacePosition pos);
+        public abstract FrontierDef GetFrontierOf(Entity entity);
     }
 }

@@ -689,8 +689,8 @@ namespace Start_a_Town_.Net
             this.Map = map;
             this.World = map.World;
             this.World.Net = this;
-            Registry.MapEventHooks.HookTo(map.Events);
-            Registry.WorldEventHooks.HookTo(map.World.Events);
+            Registry.MapEventHooksServer.HookTo(map.Events);
+            Registry.WorldEventHooksServer.HookTo(map.World.Events);
             foreach (var obj in Instance.World.Entities)
                 obj.Value.OnMapLoaded(Instance.Map);
             map.ResolveReferences();

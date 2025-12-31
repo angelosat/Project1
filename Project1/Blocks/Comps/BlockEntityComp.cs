@@ -5,6 +5,7 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
+
     public abstract class BlockEntityComp : Inspectable, IBlockEntityComp, ISerializable
     {
         public abstract class Spec 
@@ -12,6 +13,7 @@ namespace Start_a_Town_
             public abstract Type CompType { get; }
             public abstract BlockEntityComp CreateComp();
         }
+
         public BlockEntity Parent;
         public MapBase Map => this.Parent.Map;
         public IntVec3 Global => this.Parent.OriginGlobal;

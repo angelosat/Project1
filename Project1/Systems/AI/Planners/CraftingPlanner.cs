@@ -34,7 +34,6 @@ namespace Start_a_Town_
                 if (result.State == CraftingOrderState.ReadyToCraft && carried is null)
                 {
                     var plan = new Plan(PlanDefOf.Crafting, new TargetArgs(actor.Map, order.Workstation.Parent.OriginGlobal)) { Order = order };
-                    //var plan = new Plan(PlanDefOf.Crafting, new TargetArgs(actor.Map, order.Workstation.Parent.InteractionSpots.First())) { Order = order };
                     foreach(var (slot, entity) in result.InSlots)
                         plan.AddTarget(TargetIndex.A, entity);
                     return plan;

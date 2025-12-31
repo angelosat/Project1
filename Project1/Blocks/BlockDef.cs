@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Start_a_Town_
 {
@@ -7,13 +8,18 @@ namespace Start_a_Town_
         public readonly Type BlockType;
         public readonly Type[] BlockEntityComps;
         public readonly Block Worker;
+        public Def Profile;
         public ConstructionProfile ConstructionProfile;
         public BlockEntityComp.Spec[] BlockEntityCompSpecs;
 
-        //public BlockDef()
-        //{
+        public T GetSpec<T>() where T: BlockEntityComp.Spec
+        {
+            return this.BlockEntityCompSpecs.OfType<T>().SingleOrDefault();
+        }
 
-        //}
+        public T GetProfile<T>() where T : Def => (T)this.Profile;
+        
+      
         public BlockDef(string name, Type blockType, Type[] entityComps = null) : base(name)
         {
             this.Worker = ActivatorSafe<Block>.CreateInstance(blockType);

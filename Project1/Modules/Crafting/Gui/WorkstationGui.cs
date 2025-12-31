@@ -7,11 +7,7 @@ namespace Start_a_Town_
     class WorkstationGuiNew : GroupBox, ISelectionBound
     {
         Panel PanelReactions;
-        //ListBoxNoScroll<OrderSettings> ListOrdersNew = new(s => s.GetListControlGui());
-        //ListBoxNoScroll<OrderSettings> ListOrdersNew;
-        ListBoxNoScroll<OrderSettings, OrderContainer> ListOrdersNew;
-
-        
+        readonly ListBoxNoScroll<OrderSettings, OrderContainer> ListOrdersNew;
 
         BlockWorkstationComp Workstation;
 
@@ -32,8 +28,6 @@ namespace Start_a_Town_
                 this.ItemControl = s.GetListControlGui();
                 this.AddControlsVertically(this.Up, this.Down)
                     .AddControlsTopRight(this.ItemControl);
-
-                
             }
             public override void OnLayout(int availableWidth, int availableHeight)
             {

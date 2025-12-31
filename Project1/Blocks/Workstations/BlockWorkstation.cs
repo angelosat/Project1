@@ -48,15 +48,29 @@ namespace Start_a_Town_
                 }
             }
 
-            if (neighbors.Count == 0)
-                return null;
-            else
-            {
-                // Neighbor(s) exist: expand the first neighbor's entity
-                var primaryEntity = neighbors[0];   // pick one neighbor as the authoritative entity
-                primaryEntity.Attach(global);
-                return primaryEntity;// return primaryEntity;
-            }
+            //if (neighbors.Count == 0)
+            //    return null;
+            //else
+            //{
+            // find the first neighbor that hasn't reach max number of modules
+            var maxModules = this.BlockDef.GetSpec<BlockWorkstationComp.Spec>().WorkstationType.MaxModules;
+
+            foreach (var n in neighbors)
+                {
+                    var moduleCount = n.CellsOccupied.Count;
+                    if (moduleCount < maxModules)
+                    {
+                        n.Attach(global);
+                        return n;
+                    }
+                }
+
+                //// Neighbor(s) exist: expand the first neighbor's entity
+                //var primaryEntity = neighbors[0];   // pick one neighbor as the authoritative entity
+                //primaryEntity.Attach(global);
+                //return primaryEntity;// return primaryEntity;
+            //}
+            return null;
         }
         public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {

@@ -32,7 +32,7 @@
         static public readonly BlockDef Conveyor = new("Conveyor", typeof(BlockConveyor));
         static public readonly BlockDef Construction = new("Construction", typeof(BlockConstruction));
         static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(BlockShopCounter));
-        static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Workbench)] };
+        static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation)) { Profile = WorkstationDefOf.Workbench, BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Workbench)] };
         static public readonly BlockDef Smeltery = new("Smeltery", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery)] };
         static public readonly BlockDef Kitchen = new("Kitchen", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen)] };
         //static public readonly BlockDef Kitchen = new BlockDef("Kitchen", typeof(BlockWorkstation("Kitchen", typeof(BlockKitchenEntity));

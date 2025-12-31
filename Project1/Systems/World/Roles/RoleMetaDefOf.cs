@@ -1,9 +1,4 @@
-﻿using Start_a_Town_;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     internal class RoleMetaDefOf

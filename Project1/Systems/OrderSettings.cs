@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class OrderSettings : IListable
+    public class OrderSettings : IListable, ISaveableNewNew<OrderSettings>, ISerializableNew<OrderSettings>
     {
         public enum CraftMode
         {
@@ -31,14 +31,18 @@ namespace Start_a_Town_
         // Minimum skill requirement
         public int SkillFilter;
 
-        public int Id { get; }
+        public int Id { get; private set; }
         public SkillDef Skill { get; init; }
         public MaterialRefinementDef Refinement { get; init; }
-        public Def ProductDef { get; init; }
-        public BlockWorkstationComp Workstation { get; init; }
+        public Def ProductDef { get; internal set; }
+        public BlockWorkstationComp Workstation { get; internal set; }
         public string Label => this.ProductDef.Label;
 
         public IEnumerable<BoneDef> GetSlotMapping() => CraftingSystem.GetSlotMapping(this.ProductDef);
+        OrderSettings()
+        {
+            
+        }
         public OrderSettings(int id, BlockWorkstationComp owner, Def recipe)
         {
             this.Id = id;
@@ -107,6 +111,49 @@ namespace Start_a_Town_
             this.Amount--;
             this.Workstation.Map.Events.Post(new CraftOrderUpdatedEvent(this));
             this.Workstation.Map.Events.Post(new CraftOrderCompletedEvent(this, actor));
+        }
+
+        public SaveTag Save(string name = "")
+        {
+            var tag = new SaveTag(SaveTag.Types.Compound, name);
+            this.Id.Save(tag, "Id");
+            ((int)this.Mode).Save(tag, "Mode");
+            this.Amount.Save(tag, "Amount");
+            this.ProductDef.Save(tag, "Product");
+
+            return tag;
+        }
+
+        public static OrderSettings Create(SaveTag tag)
+        {
+            var order = new OrderSettings();
+            if (tag.TryLoadInt("Id", out var id)) order.Id = id;
+            if (tag.TryLoadInt("Mode", out var mode)) order.Mode = (CraftMode)mode;
+            if (tag.TryLoadInt("Amount", out var amount)) order.Amount = amount;
+            if (tag.TryLoadDefOut<Def>("Product", out var def)) order.ProductDef = def;
+            return order;
+        }
+
+        public OrderSettings Read(IDataReader r)
+        {
+            this.Id = r.ReadInt32();
+            this.Mode = (CraftMode)r.ReadInt32();
+            this.Amount = r.ReadInt32();
+            this.ProductDef = r.ReadDef();
+            return this;
+        }
+
+        public void Write(IDataWriter w)
+        {
+            w.Write(this.Id);
+            w.Write((int)this.Mode);
+            w.Write(this.Amount);
+            w.Write(this.ProductDef);
+        }
+
+        public static OrderSettings Create(IDataReader r)
+        {
+            return new OrderSettings().Read(r);
         }
     }
     public record IngredientRequirementNew(HashSet<MaterialRefinementDef> Refinements, int Quantity, IntVec3 Slot, List<Entity> InSlot)

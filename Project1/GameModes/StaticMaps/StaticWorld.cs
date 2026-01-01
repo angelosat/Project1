@@ -126,7 +126,7 @@ namespace Start_a_Town_
 
             //if (!save.TryGetTagValue<int>("DefaultBlock", v => { this.DefaultBlock = Block.GetBlock(v); }))
             //    this.DefaultBlock = BlockDefOf.Soil.Worker;
-            if (save.TryLoadDefNew<BlockDef>("DefaultBlock", out var bd))
+            if (save.TryLoadDefOut<BlockDef>("DefaultBlock", out var bd))
                 this.DefaultBlock = bd.Worker;
             else
                 this.DefaultBlock = BlockDefOf.Soil.Worker;

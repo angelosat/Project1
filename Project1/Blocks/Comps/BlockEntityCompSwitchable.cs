@@ -15,7 +15,7 @@ namespace Start_a_Town_
             this.SwitchedOn = !this.SwitchedOn;
             actor.Map.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Switch, target.Global);
         }
-        public override void AddSaveData(SaveTag tag)
+        protected override void SaveExtra(SaveTag tag)
         {
             tag.Add(this.SwitchedOn.Save("SwitchedOn"));
         }

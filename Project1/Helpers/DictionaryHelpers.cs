@@ -55,7 +55,7 @@ namespace Start_a_Town_
         public static void SaveValues<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic, string name) where TValue : ISaveableNewNew<TValue>
         {
             //tag.Add(dic.Values.Save(name));
-            tag.Save(dic.Values, name);
+            tag.Save(name, dic.Values);
         }
         public static void LoadValuesWithInferredKeys<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic, Func<TValue, TKey> keySelector) where TValue : ISaveableNewNew<TValue>, new()
         {
@@ -72,7 +72,7 @@ namespace Start_a_Town_
         }
         public static void SaveDefWrappers<TKey, TValue>(this SaveTag tag, string name, Dictionary<TKey, TValue> dic) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
         {
-            tag.Save(dic.Values, name);
+            tag.Save(name, dic.Values);
         }
         public static void LoadDefWrappers<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
         {

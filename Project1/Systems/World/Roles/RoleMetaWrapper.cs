@@ -102,7 +102,7 @@ namespace Start_a_Town_
             wrapper.Def = def;
             wrapper.LocationDecision = tag.Load<MetaDecision>("LocationDecision");// MetaDecision.Create(tag["LocationDecision"]);
             //wrapper.TargetFrontier = tag.LoadDef<FrontierDef>("TargetFrontier");
-            if (tag.TryLoadDefNew<FrontierDef>("TargetFrontier", out var frontDef)) wrapper.TargetFrontier = frontDef;
+            if (tag.TryLoadDefOut<FrontierDef>("TargetFrontier", out var frontDef)) wrapper.TargetFrontier = frontDef;
             return wrapper;
         }
 

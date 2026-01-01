@@ -88,6 +88,38 @@ namespace Start_a_Town_
                 return true;
             }
         }
+        public bool TryLoadListOut<T>(string name, out List<T> output) where T : ISaveableNewNew<T>
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                output = null;
+                return false;
+            }
+            else
+            {
+                output = [.. (tag.Value as List<SaveTag>).Select(T.Create)];
+                return true;
+            }
+        }
+        public List<T> LoadListOrDefault<T>(string name) where T : ISaveableNewNew<T>
+        {
+            if (!this.TryGetTag(name, out var tag)) return [];
+            else return [.. (tag.Value as List<SaveTag>).Select(T.Create)];
+        }
+        public bool TryLoadInt(string name, out int value)
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = (int)tag.Value;
+                return true;
+            }
+        }
+
         public bool TryGetTagValueOut<TValue>(string name, out TValue value)
         {
             if (!this.TryGetTag(name, out var tag))

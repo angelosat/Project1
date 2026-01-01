@@ -9,7 +9,7 @@ namespace Start_a_Town_
         private int NextOrderId = 1;
         public override string Name => "CraftingManager";
         readonly Dictionary<IntVec3, BlockWorkstationComp> _byPosition = [];
-        readonly Dictionary<WorkstationDef, List<BlockWorkstationComp>> _byType = [];
+        readonly Dictionary<WorkstationDef, HashSet<BlockWorkstationComp>> _byType = [];
         readonly Dictionary<int, OrderSettings> _ordersById = [];
         public CraftingManager(Town town) : base(town)
         {
@@ -22,10 +22,11 @@ namespace Start_a_Town_
         internal override void ResolveReferences()
         {
             this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
-            this.RegisterWorkstationsFromMap();
+            this.ScanWorkstations();
+            this.ScanOrders();
         }
 
-        private void RegisterWorkstationsFromMap()
+        private void ScanWorkstations()
         {
             foreach (var comp in this.Town.Map.BlockEntities
                             .Select(e =>
@@ -38,6 +39,15 @@ namespace Start_a_Town_
                 foreach (var cell in comp.Parent.CellsOccupied)
                     this.RegisterWorkstation(cell, comp);
             }
+        }
+        void ScanOrders()
+        {
+            foreach (var workstation in this._byType.SelectMany(c => c.Value))
+                foreach (var order in workstation.Orders)
+                {
+                    this._ordersById.Add(order.Id, order);
+                    this.NextOrderId = Math.Max(this.NextOrderId, order.Id + 1);
+                }
         }
 
         public IEnumerable<OrderSettings> GetAllOrdersUnsorted()

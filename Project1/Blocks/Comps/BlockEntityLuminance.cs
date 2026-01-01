@@ -65,7 +65,7 @@ namespace Start_a_Town_
             map.SetBlockLuminance(global, (byte)0);
         }
 
-        public override void AddSaveData(SaveTag tag)
+        protected override void SaveExtra(SaveTag tag)
         {
             tag.Add(this.ConsumptionTick.Save("Tick"));
             tag.Add(this.Powered.Save("Powered"));

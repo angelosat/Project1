@@ -76,7 +76,7 @@ namespace Start_a_Town_
             // draw workstation operating position
             //cam.DrawGridCells(sb, Color.White * .5f, new IntVec3[] { global + map.GetCell(global).Front });
         }
-        public override void AddSaveData(SaveTag tag)
+        protected override void SaveExtra(SaveTag tag)
         {
             tag.TrySaveRefs(this.Orders, "Orders");
         }

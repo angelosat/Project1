@@ -29,10 +29,10 @@ namespace Start_a_Town_
         public SaveTag Save(string name)
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            this.AddSaveData(tag);
+            this.SaveExtra(tag);
             return tag;
         }
-        public virtual void AddSaveData(SaveTag tag)
+        protected virtual void SaveExtra(SaveTag tag)
         {
         }
 

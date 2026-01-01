@@ -19,6 +19,7 @@ namespace Start_a_Town_
         internal ulong ReadUInt64();
         internal long ReadInt64();
         internal T ReadDef<T>() where T : Def;
+        internal Def ReadDef();
         internal List<IntVec3> ReadListIntVec3();
         internal int[] ReadIntArray();
         internal Vector3? ReadVector3Nullable();

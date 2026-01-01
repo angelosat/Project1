@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.Arm;
@@ -381,7 +382,12 @@ namespace Start_a_Town_
         {
             return ((Vector2)vec2).Save(name);
         }
+        [Obsolete("use tag.save() instead")]
         public static void Save(this IntVec3 vec3, SaveTag save, string name)
+        {
+            save.Add(new SaveTag(SaveTag.Types.Vector3, name, (Vector3)vec3));
+        }
+        public static void Save(this SaveTag save, string name, IntVec3 vec3)
         {
             save.Add(new SaveTag(SaveTag.Types.Vector3, name, (Vector3)vec3));
         }
@@ -389,7 +395,15 @@ namespace Start_a_Town_
         {
             return new SaveTag(SaveTag.Types.Vector3, name, (Vector3)vec3);
         }
+        [Obsolete("use tag.save() instead")]
         public static void Save(this ICollection<IntVec3> vectors, SaveTag save, string name)
+        {
+            var list = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Vector3);
+            foreach (var pos in vectors)
+                list.Add(new SaveTag(SaveTag.Types.Vector3, "", (Vector3)pos));
+            save.Add(list);
+        }
+        public static void Save(this SaveTag save, string name, ICollection<IntVec3> vectors)
         {
             var list = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Vector3);
             foreach (var pos in vectors)
@@ -770,7 +784,7 @@ namespace Start_a_Town_
                 save.Add(item.Save());
             return save;
         }
-        public static void Save<T>(this SaveTag tag, ICollection<T> list, string name) where T : ISaveableNewNew<T>
+        public static void Save<T>(this SaveTag tag, string name, ICollection<T> list) where T : ISaveableNewNew<T>
         {
             var save = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Compound);
             foreach (var item in list)
@@ -862,7 +876,7 @@ namespace Start_a_Town_
             target = Def.GetDef<T>((string)deftag.Value);
             return true;
         }
-        public static bool TryLoadDefNew<T>(this SaveTag tag, string name, out T target) where T : Def
+        public static bool TryLoadDefOut<T>(this SaveTag tag, string name, out T target) where T : Def
         {
             if (!tag.TryGetTag(name, out var deftag))
             {
@@ -1064,6 +1078,9 @@ namespace Start_a_Town_
             return dic;
         }
 
-        
+        public static void Save<T>(this SaveTag tag, ICollection<T> list) where T : ISaveableNewNew<T>
+        {
+
+        }
     }
 }

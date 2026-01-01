@@ -109,8 +109,8 @@ namespace Start_a_Town_
         public SaveTag Save(string name)
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            this.CellsOccupied.Save(tag, "CellsOccupied");
-            this.OriginGlobal.Save(tag, "OriginGlobal");
+            tag.Save("CellsOccupied", this.CellsOccupied);
+            tag.Save("OriginGlobal", this.OriginGlobal);
             tag.Add(this.Comps.Save("Components"));
             this.AddSaveData(tag);
             return tag;

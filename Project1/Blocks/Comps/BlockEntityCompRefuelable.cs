@@ -202,7 +202,7 @@ namespace Start_a_Town_
             return this.Fuel.Value;
         }
 
-        public override void AddSaveData(SaveTag tag)
+        protected override void SaveExtra(SaveTag tag)
         {
             tag.Add(this.Fuel.Save("Fuel"));
             tag.Add(this.StoredFuelItems.SaveNewBEST("StoredFuelItems"));

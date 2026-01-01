@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
-using System;
 
 namespace Start_a_Town_
 {
-
     [EnsureStaticCtorCall]
     class PacketsCrafting
     {

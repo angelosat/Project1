@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Start_a_Town_
 {
-    public class BlockWorkstationComp : BlockEntityComp
+    public sealed class BlockWorkstationComp : BlockEntityComp
     {
         public new class Spec(WorkstationDef type) : BlockEntityComp.Spec
         {
@@ -43,10 +43,6 @@ namespace Start_a_Town_
         {
             register("Orders", typeof(WorkstationGuiNew));
         }
-        //public void ShowUI()
-        //{
-        //    UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Parent.Map, this.Parent.OriginGlobal));
-        //}
 
         internal void MoveUp(OrderSettings orderSettings)
         {
@@ -68,19 +64,24 @@ namespace Start_a_Town_
             this.Map.Events.Post(new CraftOrderReorderedEvent(orderSettings));
         }
 
-        //internal void AddCell(IntVec3 module)
-        //{
-        //    this.LinkedModules.Add(module);
-        //}
-        public override void AddSaveData(SaveTag tag)
+        protected override void SaveExtra(SaveTag tag)
         {
             tag.Add(this.WorkstationType.Save("Type"));
+            tag.Save("Orders", this.Orders);
         }
         public override void Load(SaveTag tag)
         {
-            //if (tag.TryGetTagValueOut<string>("Type", out var defName)) this.WorkstationType = Def.GetDef<WorkstationDef>(defName);
             this.WorkstationType = tag.LoadDef<WorkstationDef>("Type");
+            this.Orders = tag.LoadListOrDefault<OrderSettings>("Orders");
+            this.Resolve();
         }
+
+        private void Resolve()
+        {
+            foreach (var order in this.Orders)
+                order.Workstation = this;
+        }
+
         internal bool IngredientsInPlace(List<TargetArgs> targetsA)
         {
             var slots = this.Parent.CellsOccupied.Zip(targetsA);
@@ -89,13 +90,15 @@ namespace Start_a_Town_
         public override void Write(IDataWriter w)
         {
             this.WorkstationType.Write(w);
+            w.Write(this.Orders);
         }
         public override ISerializable Read(IDataReader r)
         {
             this.WorkstationType = r.ReadDef<WorkstationDef>();
+            this.Orders = r.ReadList<OrderSettings>();
+            this.Resolve();
+
             return this;
         }
-
-        
     }
 }

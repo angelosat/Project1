@@ -11,7 +11,7 @@ namespace Start_a_Town_
         private readonly List<Action<EventBus>> _attach = [];
         private readonly HashSet<(Type, MethodInfo)> _registered = [];
 
-        public void Register<T>(Action<T> callback) where T : EventPayloadBase
+        public void Register<T>(Action<T> callback) where T : IEventPayload
         {
             var key = (typeof(T), callback.Method);
             if (!_registered.Add(key))

@@ -161,12 +161,12 @@ namespace Start_a_Town_
             var window = gui.GetWindow() ?? gui.ToPanelLabeled().ToWindow(title);
             window.Toggle();
         }
-        class QuestDefsUpdatedEvent(QuestDef[] added, QuestDef[] removed) : EventPayloadBase
+        class QuestDefsUpdatedEvent(QuestDef[] added, QuestDef[] removed) : IEventPayload
         {
             public QuestDef[] Added = added;
             public QuestDef[] Removed = removed;
         }
-        class QuestDefAssignedEvent(QuestDef quest) : EventPayloadBase
+        class QuestDefAssignedEvent(QuestDef quest) : IEventPayload
         {
             public QuestDef Quest = quest;
         }

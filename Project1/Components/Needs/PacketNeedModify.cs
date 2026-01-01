@@ -54,7 +54,7 @@ namespace Start_a_Town_.Components.Needs
 
 namespace Start_a_Town_
 {
-    class ActorNeedUpdatedEvent(Actor actor, NeedDef need, float value) : EventPayloadBase
+    class ActorNeedUpdatedEvent(Actor actor, NeedDef need, float value) : IEventPayload
     {
         public readonly Actor Actor = actor;
         public readonly NeedDef Need = need;

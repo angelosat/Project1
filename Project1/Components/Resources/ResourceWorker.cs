@@ -15,7 +15,7 @@ namespace Start_a_Town_
             this.ResourceDef = resourceDef;
 
         }
-        public virtual IEnumerable<(Type eventType, Action<EventPayloadBase> handler)> GetInterests()
+        public virtual IEnumerable<(Type eventType, Action<IEventPayload> handler)> GetInterests()
         {
             yield break;   
         }

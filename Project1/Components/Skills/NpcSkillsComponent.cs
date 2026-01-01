@@ -118,7 +118,7 @@ namespace Start_a_Town_
             }
         }
     }
-    internal class SkillIncreaseEvent(Actor actor, SkillDef skill, int delta) : EventPayloadBase
+    internal class SkillIncreaseEvent(Actor actor, SkillDef skill, int delta) : IEventPayload
     {
         public readonly Actor Actor = actor;
         public readonly SkillDef Skill = skill;

@@ -1,5 +1,4 @@
-﻿using Start_a_Town_.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,7 +18,7 @@ namespace Start_a_Town_
                 this._byType.Add(def, []);
         }
         public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byPosition.Values;
-        
+
         internal override void ResolveReferences()
         {
             this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
@@ -122,7 +121,7 @@ namespace Start_a_Town_
             return order;
         }
 
-        internal OrderSettings GetOrderBy(int id)
+        internal OrderSettings GetOrder(int id)
         {
             return this._ordersById[id];
         }
@@ -132,22 +131,8 @@ namespace Start_a_Town_
             throw new NotImplementedException();
         }
     }
-    public class CraftOrderAddedEvent(BlockWorkstationComp comp, OrderSettings order) : EventPayloadBase
-    {
-        public readonly BlockWorkstationComp Comp = comp;
-        public readonly OrderSettings Order = order;
-    }
-    public class CraftOrderRemovedEvent(BlockWorkstationComp comp, OrderSettings order) : EventPayloadBase
-    {
-        public readonly BlockWorkstationComp Comp = comp;
-        public readonly OrderSettings Order = order;
-    }
-    public class CraftOrderModifiedEvent(OrderSettings order) : EventPayloadBase
-    {
-        public readonly OrderSettings Order = order;
-    }
-    public class CraftOrderReorderedEvent(OrderSettings order) : EventPayloadBase
-    {
-        public readonly OrderSettings Order = order;
-    }
+    public sealed record CraftOrderAddedEvent(BlockWorkstationComp Comp, OrderSettings Order) : IEventPayload { }
+    public sealed record CraftOrderRemovedEvent(BlockWorkstationComp Comp, OrderSettings Order) : IEventPayload { }
+    public sealed record CraftOrderUpdatedEvent(OrderSettings Order) : IEventPayload { }
+    public sealed record CraftOrderReorderedEvent(OrderSettings Order) : IEventPayload { }
 }

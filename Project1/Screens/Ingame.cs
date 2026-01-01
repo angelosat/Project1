@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
 using Start_a_Town_.Net;
-using Project1.Systems.Networking;
 
 namespace Start_a_Town_
 {
@@ -44,7 +43,7 @@ namespace Start_a_Town_
             SelectionManager.Instance.Bind(net);
             SelectionManager.Instance.Init(this);
             TooltipManager.Bind(net);
-            this.Events.ListenTo<EventPayloadBase>(e => { if (e is INetworkSendable ns) ns.SendTo(Client.Instance); });
+            //this.Events.ListenTo<IEventPayload>(e => { if (e is INetworkSendable ns) ns.SendTo(Client.Instance); });
             Registry.PlayerInputEventHooks.HookTo(this.Events);
             return this;
         }

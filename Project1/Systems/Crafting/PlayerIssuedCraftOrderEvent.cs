@@ -1,6 +1,6 @@
 ﻿namespace Start_a_Town_
 {
-    internal class PlayerIssuedCraftOrderEvent(BlockWorkstationComp workstation, Def craftable) : EventPayloadBase
+    internal class PlayerIssuedCraftOrderEvent(BlockWorkstationComp workstation, Def craftable) : IEventPayload
     {
         //internal PlayerId Player;
         public readonly BlockWorkstationComp Workstation = workstation;

@@ -14,7 +14,7 @@ namespace Start_a_Town_.Net
         }
 
         readonly Dictionary<int, List<Subscription>> _eventBus = [];
-        public void Post<T>(T args) where T : EventPayloadBase
+        public void Post<T>(T args) where T : IEventPayload
         {
             if (Registry.GameEvents.TryGet<T>(out var id))
             {
@@ -45,7 +45,7 @@ namespace Start_a_Town_.Net
         /// <typeparam name="TPayload"></typeparam>
         /// <param name="handler"></param>
         /// <returns>Returns an unsubscribe token.</returns>
-        public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : EventPayloadBase
+        public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : IEventPayload
         {
             var id = Registry.GameEvents.Register<TPayload>();
             if (!_eventBus.TryGetValue(id, out var list))
@@ -55,7 +55,7 @@ namespace Start_a_Town_.Net
 
             return () => _unsubscribe(handler);
         }
-        public Action ListenTo(Type payloadType, Action<EventPayloadBase> handler)
+        public Action ListenTo(Type payloadType, Action<IEventPayload> handler)
         {
             var id = Registry.GameEvents.Register(payloadType);
             if (!_eventBus.TryGetValue(id, out var list))
@@ -65,7 +65,7 @@ namespace Start_a_Town_.Net
 
             return () => _unsubscribe(handler);
         }
-        void _unsubscribe<TPayload>(Action<TPayload> handler) where TPayload : EventPayloadBase
+        void _unsubscribe<TPayload>(Action<TPayload> handler) where TPayload : IEventPayload
         {
             var id = Registry.GameEvents.Register<TPayload>();
             if (_eventBus.TryGetValue(id, out var list))

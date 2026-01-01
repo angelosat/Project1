@@ -108,19 +108,19 @@ namespace Start_a_Town_
         }
     }
 
-    internal class EntityStackDecreased(Entity entity, int amount) : EventPayloadBase
+    internal class EntityStackDecreased(Entity entity, int amount) : IEventPayload
     {
         public readonly Entity Entity = entity;
         public readonly int Amount = amount;
     }
 
-    internal class EntityStackIncreased(Entity entity, int amount) : EventPayloadBase
+    internal class EntityStackIncreased(Entity entity, int amount) : IEventPayload
     {
         public readonly Entity Entity = entity;
         public readonly int Amount = amount;
     }
 
-    internal class EntityRegisteredEvent(Entity entity) : EventPayloadBase
+    internal class EntityRegisteredEvent(Entity entity) : IEventPayload
     {
         public readonly Entity Entity = entity;
     }

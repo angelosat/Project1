@@ -1,14 +1,6 @@
-﻿using Start_a_Town_.Net;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
-    public abstract class EventPayloadBase
-    {
-    }
+    public interface IEventPayload { }
 
     //public abstract class WorldEventPayload : EventPayloadBase { }
     //public abstract class NetEventPayload : EventPayloadBase { }

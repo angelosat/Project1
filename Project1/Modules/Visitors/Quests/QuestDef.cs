@@ -42,7 +42,7 @@ namespace Start_a_Town_
             }
         }
         public bool IsValid { get { return this.Objectives.Any(); } }
-        public class QuestDefAssignedEvent(QuestDef quest) : EventPayloadBase
+        public class QuestDefAssignedEvent(QuestDef quest) : IEventPayload
         {
             public QuestDef Quest = quest;
         }
@@ -401,7 +401,7 @@ namespace Start_a_Town_
                 context.Show();
             }
         }
-        class QuestObjectivesEvent(QuestObjective[] added, QuestObjective[] removed) : EventPayloadBase
+        class QuestObjectivesEvent(QuestObjective[] added, QuestObjective[] removed) : IEventPayload
         {
             public QuestObjective[] Added = added;
             public QuestObjective[] Removed = removed;

@@ -7,7 +7,7 @@ namespace Start_a_Town_
     class WorkstationGuiNew : GroupBox, ISelectionBound
     {
         Panel PanelReactions;
-        readonly ListBoxNoScroll<OrderSettings, OrderContainer> ListOrdersNew;
+        readonly ListBoxNoScroll<OrderSettings, OrderGuiContainer> ListOrdersNew;
 
         BlockWorkstationComp Workstation;
 
@@ -15,13 +15,13 @@ namespace Start_a_Town_
 
         public WorkstationGuiNew()
         {
-            this.ListOrdersNew = new(s => new OrderContainer(s, s => this.MoveUp(s), s => this.MoveDown(s)));
+            this.ListOrdersNew = new(s => new OrderGuiContainer(s, s => this.MoveUp(s), s => this.MoveDown(s)));
         }
-        class OrderContainer : GroupBox
+        class OrderGuiContainer : GroupBox
         {
             public readonly ButtonIcon Up, Down;
-            Control ItemControl;
-            public OrderContainer(OrderSettings s, Action<OrderSettings> moveUp, Action<OrderSettings> modeDown)
+            readonly Control ItemControl;
+            public OrderGuiContainer(OrderSettings s, Action<OrderSettings> moveUp, Action<OrderSettings> modeDown)
             {
                 this.Up = new ButtonIcon(Icon.ArrowUp, () => moveUp(s));
                 this.Down = new ButtonIcon(Icon.ArrowDown, () => modeDown(s));
@@ -150,7 +150,7 @@ namespace Start_a_Town_
             if (this.Workstation != e.Comp)
                 return;
             this.ListOrdersNew.AddItems(e.Order);
-            OrderContainer cntr = this.ListOrdersNew.GetControlFor(e.Order);
+            OrderGuiContainer cntr = this.ListOrdersNew.GetControlFor(e.Order);
             UpdateArrows();
 
         }

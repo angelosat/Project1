@@ -8,25 +8,36 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     class PacketsCrafting
     {
-        static int _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder;
+        readonly static int _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder, _pOrderUpdated;
         static PacketsCrafting()
         {
             _pPlayerCreatedOrder = Registry.PacketHandlers.Register(OnPlayerCreatedOrder);
             _pPlayerDeletedOrder = Registry.PacketHandlers.Register(OnPlayerDeletedOrder);
             _pPlayerModifiedOrder = Registry.PacketHandlers.Register(OnPlayerModifiedOrder);
+            _pOrderUpdated = Registry.PacketHandlers.Register(OnCraftOrderUpdated);
             Registry.PlayerInputEventHooks.Register<PlayerIssuedCraftOrderEvent>(HandlePlayerIssuedCraftOrderEvent);
+            Registry.MapEventHooksServer.Register<CraftOrderCompletedEvent>(HandleCraftOrderCompletedEvent);
         }
+        private static void HandleCraftOrderCompletedEvent(CraftOrderCompletedEvent e)
+        {
+            e.Order.Workstation.Map.Net.BeginPacket(_pOrderUpdated)
+                .Write(e.Order.Id)
+                .Write(e.Actor.RefId);
+        }
+        private static void OnCraftOrderUpdated(NetEndpoint endpoint, Packet packet)
+        {
+            var r = packet.PacketReader;
+            var order = endpoint.Map.Town.CraftingManagerNew.GetOrder(r.ReadInt32());
+            var actor = endpoint.World.GetEntity<Actor>(r.ReadInt32());
+            order.CompletedBy(actor);
+        }
+
         private static void HandlePlayerIssuedCraftOrderEvent(PlayerIssuedCraftOrderEvent e)
         {
             var workstation = e.Workstation;
             var net = workstation.Map.World.Net;
             if(net is Client)
                 SendPlayerCreatedOrderNew(e.Workstation.Parent, e.Craftable);
-            //var client = net as Client;
-            //client.BeginPacket(_pPlayerCreatedOrder)
-            //    .Write(workstation.Map.ID)
-            //    .Write(workstation.Parent.OriginGlobal)
-            //    .Write(e.Craftable);
         }
         internal static void SendPlayerCreatedOrderNew(BlockEntity workstation, Def recipeDef)
         {
@@ -93,7 +104,7 @@ namespace Start_a_Town_
             var r = packet.PacketReader;
             var mapid = r.ReadInt32();
             var map = endpoint.World.GetMap(mapid);
-            var order = endpoint.Map.Town.CraftingManagerNew.GetOrderBy(r.ReadInt32());
+            var order = endpoint.Map.Town.CraftingManagerNew.GetOrder(r.ReadInt32());
             var priorityDelta = r.ReadInt32();
             var amountDelta = r.ReadInt32();
             var mode = (OrderSettings.CraftMode)r.ReadInt32();
@@ -103,7 +114,7 @@ namespace Start_a_Town_
             order.ChangePriority(priorityDelta);
 
             order.Mode = mode;
-            map.Events.Post(new CraftOrderModifiedEvent(order));
+            map.Events.Post(new CraftOrderUpdatedEvent(order));
             if (endpoint is Server server)
                 PlayerModifiedOrder(map, order, priorityDelta, amountDelta, mode);
         }

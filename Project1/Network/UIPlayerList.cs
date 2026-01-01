@@ -7,7 +7,7 @@ namespace Start_a_Town_.Net
     {
         ListBoxNoScroll<PlayerData, Button> List_Players;
         static readonly int DefaultWidth = 150;
-        class PlayerConnectedEvent(PlayerData player, bool connected) : EventPayloadBase
+        class PlayerConnectedEvent(PlayerData player, bool connected) : IEventPayload
         {
             public readonly PlayerData Player = player;
             public readonly bool Connected = connected;

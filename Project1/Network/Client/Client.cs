@@ -498,7 +498,7 @@ namespace Start_a_Town_.Net
         {
             return this._name;
         }
-        class ServerConnectionAcceptedEvent : EventPayloadBase
+        class ServerConnectionAcceptedEvent : IEventPayload
         {
 
         }

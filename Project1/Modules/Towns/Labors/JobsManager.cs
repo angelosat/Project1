@@ -129,7 +129,7 @@ namespace Start_a_Town_
         {
             base.OnTargetSelected(info, target);
         }
-        public class JobUpdatedEvent(Actor actor, JobDef job) : EventPayloadBase
+        public class JobUpdatedEvent(Actor actor, JobDef job) : IEventPayload
         {
             public readonly Actor Actor = actor;
             public readonly JobDef Job = job;

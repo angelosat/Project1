@@ -99,7 +99,7 @@ namespace Start_a_Town_.Components.Resources
                 actor.Net.EventOccured((int)Message.Types.HealthLost, actor, (int)force);
             }
         }
-        public override IEnumerable<(Type eventType, Action<EventPayloadBase> handler)> GetInterests()
+        public override IEnumerable<(Type eventType, Action<IEventPayload> handler)> GetInterests()
         {
             yield return (typeof(EntityHitGroundEvent),e => this.HandleEntityHitGround((EntityHitGroundEvent)e));
         }

@@ -61,12 +61,12 @@ namespace Start_a_Town_
         }
     }
 
-    internal class InteractionProgressEvent(Actor actor, int workAmount) : EventPayloadBase
+    internal class InteractionProgressEvent(Actor actor, int workAmount) : IEventPayload
     {
         public readonly Actor Actor = actor;
         public readonly int WorkAmount = workAmount;
     }
-    internal class InteractionStartedEvent(Actor actor, InteractionDef interactionDef, TargetArgs target) : EventPayloadBase
+    internal class InteractionStartedEvent(Actor actor, InteractionDef interactionDef, TargetArgs target) : IEventPayload
     {
         public readonly Actor Actor = actor;
         public readonly InteractionDef InteractionDef = interactionDef;

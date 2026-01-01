@@ -7,14 +7,14 @@ namespace Start_a_Town_
         public double TimeStamp;
         public int Type;
         public object[] Parameters;
-        public EventPayloadBase Payload;
+        public IEventPayload Payload;
         public object this[int index] => this.Parameters[index];
-        public GameEvent(int id, EventPayloadBase payload)
+        public GameEvent(int id, IEventPayload payload)
         {
             this.Type = id;
             this.Payload = payload;
         }
-        public GameEvent(double timestamp, EventPayloadBase payload)
+        public GameEvent(double timestamp, IEventPayload payload)
         {
             //this.Type = id;
             this.TimeStamp = timestamp;

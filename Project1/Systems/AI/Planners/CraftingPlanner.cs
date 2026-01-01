@@ -22,7 +22,9 @@ namespace Start_a_Town_
 
             var manager = map.Town.CraftingManagerNew;
 
-            var allOrders = manager.GetAllOrdersUnsorted().Where(o => actor.CanReachAndReserve(o.Workstation.Parent));
+            var allOrders = manager.GetAllOrdersUnsorted()
+                .Where(o => o.Pending && 
+                actor.CanReachAndReserve(o.Workstation.Parent));
             foreach (var order in allOrders)
             {
                 //var (result, allocations) = TryCollectIngredients(actor, order);

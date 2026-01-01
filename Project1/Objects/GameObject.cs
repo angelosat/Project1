@@ -1086,7 +1086,7 @@ namespace Start_a_Town_
         {
             throw new Exception();
         }
-        class EntityDisposedEvent(Entity entity) : EventPayloadBase 
+        sealed record EntityDisposedEvent(Entity entity) : IEventPayload 
         { public readonly Entity Entity = entity; }
         internal void OnDispose()
         {

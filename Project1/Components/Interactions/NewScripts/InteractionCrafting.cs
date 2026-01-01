@@ -60,6 +60,7 @@ namespace Start_a_Town_.Crafting
             var product = EntityFactory.Create(creationReq);
             map.World.Register(product);
             map.Spawn(product, workstation.Global.Above(), Vector3.Zero);
+            order.CompletedBy(this.Actor);
         }
         protected override void OnApplyWork(int workAmount)
         {

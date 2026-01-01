@@ -156,7 +156,7 @@ namespace Start_a_Town_.Core
                 ("sending chunk " + first.Key.ToString()).ToConsole();
             }
         }
-        class ChunksLoadedEvent : EventPayloadBase
+        class ChunksLoadedEvent : IEventPayload
         { }
         internal override void AllChunksReceived(NetEndpoint net)
         {

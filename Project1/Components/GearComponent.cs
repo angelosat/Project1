@@ -233,7 +233,7 @@ namespace Start_a_Town_
             }
         }
     }
-    class ActorGearUpdatedEvent(Actor actor, Entity newItem, Entity oldItem) : EventPayloadBase
+    class ActorGearUpdatedEvent(Actor actor, Entity newItem, Entity oldItem) : IEventPayload
     {
         public readonly Actor Actor = actor;
         public readonly Entity NewItem = newItem, OldItem = oldItem;

@@ -42,7 +42,7 @@ namespace Start_a_Town_.Net
             //this.Net.EventOccured((int)Components.Message.Types.PlayerConnected, player);
             this.Net.Events.Post(new PlayerConnectionEvent(player, true));
         }
-        class PlayerConnectionEvent(PlayerData player, bool connected) : EventPayloadBase
+        class PlayerConnectionEvent(PlayerData player, bool connected) : IEventPayload
         {
             readonly PlayerData Player = player;
             readonly bool Connected = connected;

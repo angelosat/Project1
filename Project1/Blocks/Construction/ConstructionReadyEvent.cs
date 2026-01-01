@@ -1,15 +1,6 @@
 ﻿namespace Start_a_Town_
 {
-    public class ConstructionReadyEvent(BlockConstructionComp comp) : EventPayloadBase
-    {
-        public readonly BlockConstructionComp Source = comp;
-    }
-    public class ConstructionFinishedEvent(BlockConstructionComp comp) : EventPayloadBase
-    {
-        public readonly BlockConstructionComp Source = comp;
-    }
-    public class ConstructionUpdatedEvent(BlockConstructionComp comp) : EventPayloadBase
-    {
-        public readonly BlockConstructionComp Source = comp;
-    }
+    public sealed record ConstructionReadyEvent(BlockConstructionComp Source) : IEventPayload { }
+    public sealed record ConstructionFinishedEvent(BlockConstructionComp Source) : IEventPayload { }
+    public sealed record ConstructionUpdatedEvent(BlockConstructionComp Source) : IEventPayload { }
 }

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Start_a_Town_
 {
-    class PlayerSelectionEvent(TargetArgs single = null, TargetArgs add = null, List<TargetArgs> multiple = null) : EventPayloadBase
+    class PlayerSelectionEvent(TargetArgs single = null, TargetArgs add = null, List<TargetArgs> multiple = null) : IEventPayload
     {
         public readonly TargetArgs Single = single;
         public readonly TargetArgs Add = add;

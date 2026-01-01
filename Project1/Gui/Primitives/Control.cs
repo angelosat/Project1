@@ -1465,7 +1465,7 @@ namespace Start_a_Town_.UI
             //this.ListenersOld.Add(msgType, e => action(e));
         }
         readonly Dictionary<int, Action<GameEvent>> Listeners = new();
-        public void ListenTo<T>(Action<T> action) where T : EventPayloadBase
+        public void ListenTo<T>(Action<T> action) where T : IEventPayload
         {
             if (Registry.GameEvents.TryGet<T>(out var id))
                 this.Listeners.Add(id, e => action((T)e.Payload));

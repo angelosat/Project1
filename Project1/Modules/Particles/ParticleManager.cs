@@ -108,7 +108,7 @@ namespace Start_a_Town_.Particles
             this.Emitters.Add(emitter);
         }
     }
-    class EntityFootStepEvent(Entity entity) : EventPayloadBase
+    class EntityFootStepEvent(Entity entity) : IEventPayload
     {
         public readonly Entity Entity = entity;
     }

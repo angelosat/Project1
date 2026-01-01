@@ -1,4 +1,5 @@
-﻿using Start_a_Town_;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Start_a_Town_;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,18 +22,19 @@ namespace Start_a_Town_
 
             var manager = map.Town.CraftingManagerNew;
 
-            var allOrders = manager.GetAllOrdersUnsorted();
+            var allOrders = manager.GetAllOrdersUnsorted().Where(o => actor.CanReachAndReserve(o.Workstation.Parent));
             foreach (var order in allOrders)
             {
                 //var (result, allocations) = TryCollectIngredients(actor, order);
-                var result = TryCollectIngredients(actor, order);
+                var result = TryCollectIngredientsNew(actor, order);
                 // If the crafting flow cannot be completed fully, abort planner
                 //if (!result)
                 if (result.State == CraftingOrderState.NotEnoughItems)
                     continue;
 
+                //if (result.State == CraftingOrderState.ReadyToCraft && carried is null)
                 if (result.State == CraftingOrderState.ReadyToCraft && carried is null)
-                {
+                    {
                     var plan = new Plan(PlanDefOf.Crafting, new TargetArgs(actor.Map, order.Workstation.Parent.OriginGlobal)) { Order = order };
                     foreach(var (slot, entity) in result.InSlots)
                         plan.AddTarget(TargetIndex.A, entity);
@@ -66,11 +68,18 @@ namespace Start_a_Town_
                         return null; // irrelevant carried item → fallback planner will drop it
                     }
                 }
+                
+                
+
                 // If carried is null, just go find a world item to pick up:
                 var nextItem = FindNextWorldItemForOrder(actor, order, allocations);
-                if(nextItem != null)
+                if (nextItem != null)
+                {
+                    // If the target workstation slots are occupied, try to clear them
+                    if (TryClearWorkstations(actor, manager) is Entity junk)
+                        return new Plan(PlanDefOf.GoHaul, new TargetArgs(junk));
                     return new Plan(PlanDefOf.GoHaul, new TargetArgs(nextItem.Value.stack)) { AmountA = nextItem.Value.quantity };
-
+                }
 
                 //var result = TryCollectIngredients(actor, order);
                 //if (!result.result)
@@ -95,17 +104,17 @@ namespace Start_a_Town_
             }
 
             // Try to clear up workbench surfaces
-            if (carried is null)
-                if (TryClearWorkstations(actor, manager) is Entity junk)
-                    return new Plan(PlanDefOf.GoHaul, new TargetArgs(junk));
+            //if (carried is null)
+            //    if (TryClearWorkstations(actor, manager) is Entity junk)
+            //        return new Plan(PlanDefOf.GoHaul, new TargetArgs(junk));
 
             return null;
         }
         static Entity TryClearWorkstations(Actor actor, CraftingManager manager)
         {
             foreach (var workstation in manager.AllWorkstations)
-                foreach(var junk in workstation.GetJunk())
-                    if(actor.CanReach(junk) && actor.CanReserve(junk))
+                foreach (var junk in workstation.GetJunk().Where(j => j is not Actor))
+                    if (actor.CanReachAndReserve(junk))
                         return junk;
             return null;
         }
@@ -139,7 +148,10 @@ namespace Start_a_Town_
                 var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);
                 int slotQuantity = slotEntities.Sum(e => req.MatchesPartial(e, out var q) ? q : 0);
 
-                if (req.Matches(carried) && carried.StackSize + slotQuantity >= req.Quantity)
+                if (req.Matches(carried) && 
+                    carried.StackSize + slotQuantity >= req.Quantity &&
+                    actor.CanReachAndReserve(req.Slot)
+                    )
                 {
                     targetSlot = req.Slot;
                     return true;
@@ -293,14 +305,63 @@ namespace Start_a_Town_
                 InSlots = inSlots;
             }
         }
+        private static CraftingCollectionResult TryCollectIngredientsNew(Actor actor, OrderSettings order)
+        {
+            var mapItems = actor.Map.GetEntities<Entity>().Where(actor.CanReachAndReserve);
+            Dictionary<Entity, int> allocatedSoFar = [];
+            List<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)> allFound = [];
+            List<(IntVec3 slot, Entity entity)> inSlots = [];
+            var ingredients = order.GetIngredientRequirements().ToList();
+            foreach (var req in ingredients)
+            {
+           
+                var missingQuantity = req.Quantity;
+                //var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);
+                //if (slotEntities.Any(entity => req.Matches(entity) && req.Quantity == entity.StackSize))
+                if (req.InSlot.FirstOrDefault(
+                    entity =>
+                        req.Matches(entity) &&
+                        req.Quantity == entity.StackSize &&
+                        actor.CanReachAndReserve(entity))
+                    is Entity inSlot)
+                {
+                    inSlots.Add((req.Slot, inSlot));
+                    continue;
+                }
+                if (!actor.CanReachAndReserve(req.Slot))
+                    break;
+                if (missingQuantity > 0 && actor.Hauled is Entity carried && req.Matches(carried))
+                {
+                    var used = Math.Min(carried.StackSize, missingQuantity);
+                    missingQuantity -= used;
+                }
+
+                Debug.Assert(missingQuantity >= 0);
+                if (missingQuantity == 0)
+                    continue;
+                var validStacks = mapItems.Where(req.Matches);
+                var allocation = AllocateRequirement(actor, validStacks, missingQuantity, allocatedSoFar);
+                if (allocation is null)
+                    return new CraftingCollectionResult(CraftingOrderState.NotEnoughItems, null, null);
+                allFound.Add((allocation, req.Slot));
+            }
+            if (inSlots.Count == ingredients.Count && allFound.Count != 0)
+                throw new Exception("nothing else should be returned as found if slots are already fulfilled");
+            if (inSlots.Count == ingredients.Count)
+                return new(CraftingOrderState.ReadyToCraft, null, inSlots);
+            //if (allFound.Count == 0)
+            //    return new(CraftingOrderState.ReadyToCraft, null, inSlots);
+            
+            return new(CraftingOrderState.NeedsTransfer, allFound, null);
+        }
         private static CraftingCollectionResult TryCollectIngredients(Actor actor, OrderSettings order)
         {
             var mapEntities = actor.Map.GetEntities<Entity>().Where(actor.CanReachAndReserve);
             Dictionary<Entity, int> allocatedSoFar = [];
             List<(IEnumerable<(Entity stack, int quantity)>, IntVec3 slot)> allFound = [];
             List<(IntVec3 slot, Entity entity)> inSlots = [];
-            var ingredients = order.GetIngredientRequirements().ToList();
-            foreach (var req in ingredients)
+          
+            foreach (var req in order.GetIngredientRequirements())
             {
                 var missingQuantity = req.Quantity;
                 var slotEntities = order.Workstation.Map.GetEntitiesAt(req.Slot);

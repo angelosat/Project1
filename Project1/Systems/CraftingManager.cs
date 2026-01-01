@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -76,6 +77,25 @@ namespace Start_a_Town_
                 this._byType[existing.WorkstationType].Remove(existing);
             this._byPosition[pos] = workstation;
             this._byType[workstation.WorkstationType].Add(workstation);
+        }
+        public OrderSettings CreateOrderNew(IntVec3 workstationPosition, Def recipe)
+        {
+            var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
+            var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
+
+            var reqs = CraftingSystem.GetValidIngredientsPerSlot(recipe);
+            if (reqs.Count() > workstation.CellsOccupied.Count)
+            {
+                Log.Error($"Not enough workstation modules to craft {recipe.Label}");
+                return null;
+            }
+            var order = new OrderSettings(this.NextOrderId++, comp, recipe);
+
+            comp.Orders.Add(order);
+            this._ordersById.Add(order.Id, order);
+
+            this.Map.Events.Post(new CraftOrderAddedEvent(comp, order));
+            return order;
         }
 
         public OrderSettings CreateOrder(IntVec3 workstationPosition, MaterialRefinementDef refinement)

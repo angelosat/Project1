@@ -50,6 +50,7 @@ namespace Start_a_Town_.Net
         public ulong ReadUInt64() => this._reader.ReadUInt64();
         public long ReadInt64() => this._reader.ReadInt64();
         public T ReadDef<T>() where T : Def => Def.GetDef<T>(this._reader.ReadString());
+        public Def ReadDef() => Def.GetDef(this._reader.ReadString());
         public List<IntVec3> ReadListIntVec3() => this._reader.ReadListIntVec3();
         public int[] ReadIntArray() => this._reader.ReadIntArray();
         public Vector3? ReadVector3Nullable() => this._reader.ReadVector3Nullable();

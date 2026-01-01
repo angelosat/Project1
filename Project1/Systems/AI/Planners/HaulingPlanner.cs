@@ -57,8 +57,9 @@ namespace Start_a_Town_
                     }
                 }
                 // carried item is useless so place it in current cell (or throw/let it drop)
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
-                //return new Plan(PlanDefOf.DropCarried, new TargetArgs(actor.Map, actor.Cell));
+                // TODO: return null and let a final cleanup planner drop it at feet or at nearest empty cell
+                //IntVec3 empty = actor.FindNearestEmptyCellOrCurrent();
+                return new Plan(PlanDefOf.DropCarried, new TargetArgs(actor.Map, actor.Cell));
             }
             // if actor has empty hands
             // iterate map items

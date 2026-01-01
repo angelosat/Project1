@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- change regionnodes to be the actual cell the actors stand in, instead of the cell below (WHAT WAS I THINKING)
 - cleanup interactions/blocks
 - intercept disposed/despawned entity events to close inspector window for them
 - construction designations: instead of drawing on the chunk's meshes, let construction manager have its own mesh. this way it will only serve as a layer/interface to select cells, intead of actually placing dummy "designation" blocks

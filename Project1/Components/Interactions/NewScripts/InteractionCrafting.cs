@@ -49,7 +49,7 @@ namespace Start_a_Town_.Crafting
             var order = plan.Order;
             var workstation = this.Target;
             var inSlots = plan.TargetsA.Select(t => t.Entity as Entity);
-            var creationReq = new EntityCreationRequest(order.Refinement, null, stackSize: 1);
+            var creationReq = order.GetCreationRequest(); /*new EntityCreationRequest(order.Refinement, null, stackSize: 1);*/
             var targetBones = order.GetSlotMapping();
             var mapping = targetBones.Zip(inSlots);
             foreach (var pair in mapping)

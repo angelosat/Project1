@@ -1170,6 +1170,15 @@ namespace Start_a_Town_
                 chunk.ApplyBlockWork(global.ToLocal(), workAmount);
         }
 
+        internal IEnumerable<IntVec3> FindNearestEmptyCellsOrCurrent(IntVec3 current, int reach)
+        {
+            var potential = this.Regions.GetSurroundingNodesOffset(current, reach)
+                .Where(offset => this.IsCellEmptyNew(current.Above + offset));
+            foreach (var offset in potential)
+                yield return current.Above + offset;
+            yield return current.Above;
+        }
+
         static MapBase()
         {
 

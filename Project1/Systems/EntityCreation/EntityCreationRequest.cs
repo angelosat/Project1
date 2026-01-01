@@ -9,7 +9,7 @@ namespace Start_a_Town_
         public readonly Dictionary<BoneDef, MaterialDef> MaterialBindings = [];
         public readonly int StackSize = stackSize;
 
-        public EntityCreationRequest Override (BoneDef bone, MaterialDef material)
+        public EntityCreationRequest Override(BoneDef bone, MaterialDef material)
         {
             this.MaterialBindings.Add(bone, material);
             return this;

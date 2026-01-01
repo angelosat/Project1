@@ -9,5 +9,6 @@ namespace Start_a_Town_
         public static readonly EventHooks MapEventHooksServer = new();
         public static readonly EventHooks MapEventHooksClient = new();
         public static readonly EventHooks WorldEventHooksServer = new();
+        public static readonly EventHooks PlayerInputEventHooks = new();
     }
 }

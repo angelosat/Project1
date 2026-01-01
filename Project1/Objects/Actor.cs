@@ -407,6 +407,18 @@ namespace Start_a_Town_
             //old
             //return this.Map.GetRegionDistance(this.GetCellStandingOn(), global.ToCell(), this as Actor) != -1;
         }
+        public bool CanReachAndReserve(Entity e)
+        {
+            return this.CanReach(e) && this.CanReserve(e);
+        }
+        public bool CanReachAndReserve(IntVec3 pos)
+        {
+            return this.CanReach(pos) && this.CanReserve(pos);
+        }
+        public bool CanReachAndReserve(BlockEntity entity)
+        {
+            return entity.CellsOccupied.All(pos => this.CanReach(pos) && this.CanReserve(pos));
+        }
         internal int GetHaulStackLimitFromEndurance(ItemDef def)
         {
             var maxHaulWeight = StatDefOf.MaxHaulWeight.GetValue(this);
@@ -546,9 +558,7 @@ namespace Start_a_Town_
             if (this.GetVisitorProperties() is WorldInhabitantView props)
                 props.OffsiteArea = null;
         }
-        public bool CanReachAndReserve(Entity e)
-        {
-            return this.CanReach(e) && this.CanReserve(e);
-        }
+
+        
     }
 }

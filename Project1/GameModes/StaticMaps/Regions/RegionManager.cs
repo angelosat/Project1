@@ -151,7 +151,26 @@ namespace Start_a_Town_
 
             return adjRegions;
         }
-        
+        public IEnumerable<IntVec3> GetSurroundingNodesOffset(IntVec3 global, int reach)
+        {
+            HashSet<RegionNode> handled = [];
+            Queue<RegionNode> toHandle = [];
+            toHandle.Enqueue(this.GetNodeAt(global));
+            for (int i = 0; i < reach; i++)
+            {
+                if (toHandle.Count == 0)
+                    break;
+                var current = toHandle.Dequeue();
+                handled.Add(current);
+                foreach (var adj in current.Adjacent)
+                    if (adj is RegionNode node)
+                    {
+                        if (!handled.Contains(node))
+                            toHandle.Enqueue(node);
+                        yield return node.Global - global;
+                    }
+            }
+        }
         public IEnumerable<RegionNode> GetPotentialNodesAroundDestination(int reach, Vector3 global)
         {
             var n = global.North();

@@ -45,6 +45,7 @@ namespace Start_a_Town_
             SelectionManager.Instance.Init(this);
             TooltipManager.Bind(net);
             this.Events.ListenTo<EventPayloadBase>(e => { if (e is INetworkSendable ns) ns.SendTo(Client.Instance); });
+            Registry.PlayerInputEventHooks.HookTo(this.Events);
             return this;
         }
 

@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.Pkcs;
 
 namespace Start_a_Town_
 {
@@ -36,31 +38,39 @@ namespace Start_a_Town_
         public int Id { get; }
         public SkillDef Skill { get; init; }
         public MaterialRefinementDef Refinement { get; init; }
-        //public IntVec3 OwnerPosition { get; init; }
+        public Def ProductDef { get; init; }
         public BlockWorkstationComp Workstation { get; init; }
-        public string Label => this.Refinement.Label;
+        public string Label => this.ProductDef.Label;
 
-        //// Optional input constraints
-        //public Dictionary<MaterialTypeDef, int> RequiredInputs = [];
-
-        public IEnumerable<BoneDef> GetSlotMapping()
+        public IEnumerable<BoneDef> GetSlotMapping() => CraftingSystem.GetSlotMapping(this.ProductDef);
+        public OrderSettings(int id, BlockWorkstationComp owner, Def recipe)
         {
-            yield return BoneDefOf.Item;
+            this.Id = id;
+            this.Skill = CraftingSystem.GetCraftingSkill(recipe);
+            this.ProductDef = recipe;
+            this.Workstation = owner;
         }
-
         public OrderSettings(int id, BlockWorkstationComp owner, MaterialRefinementDef refinement)
         {
             this.Id = id;
             this.Skill = refinement.MaterialType.SkillToRefine;
             this.Refinement = refinement;
             this.Workstation = owner;
-            //this.Target = new EntityCreationRequest(stage: mapping.Process)
         }
-        public IEnumerable<IngredientRequirement> GetIngredientRequirements()
+        public IEnumerable<IngredientRequirement> GetIngredientRequirementsOld()
         {
             yield return new(ItemDefOf.Ingredient, this.Refinement.Source, 1, this.Workstation.Global.Above, RawMaterialSystem.MaterialsByType[this.Refinement.MaterialType]);
         }
-
+        public IEnumerable<IngredientRequirementNew> GetIngredientRequirements()
+        {
+            var n = 0;
+            var slots = this.Workstation.Parent.CellsOccupied.ToArray();
+            foreach (var (validRefinements, quantity) in CraftingSystem.GetValidIngredientsPerSlot(this.ProductDef))
+            {
+                var slot = slots[n++].Above;
+                yield return new([.. validRefinements], quantity, slot, [.. this.Workstation.Map.GetEntitiesAt(slot)]);
+            } 
+        }
         public bool CanActorPerform(Actor actor)
         {
             if (!this.Enabled) return false;
@@ -68,7 +78,6 @@ namespace Start_a_Town_
             if (actor.Skills.GetSkill(this.Skill).Level < SkillFilter) return false;
             return true;
         }
-
         public bool ShouldQueue(int currentStock)
         {
             return Mode switch
@@ -91,10 +100,11 @@ namespace Start_a_Town_
             else if (priorityDelta < 0)
                 this.Workstation.MoveUp(this);
         }
-        //public override string ToString()
-        //{
-        //    return $"{this}:{this.Refinement}";
-        //}
+
+        internal EntityCreationRequest GetCreationRequest()
+        {
+            return new EntityCreationRequest(this.ProductDef, null, stackSize: 1);
+        }
     }
     internal class OrderSettingsGui : GroupBox
     {
@@ -106,22 +116,14 @@ namespace Start_a_Town_
         Button btnDetails;
         private IconButton btnClose;
 
-        public OrderSettingsGui(OrderSettings settings/*, int width*/)
+        public OrderSettingsGui(OrderSettings settings)
         {
             this.Settings = settings;
             this._modePredicted = settings.Mode;
             this._amountPredicted = settings.Amount;
-            //var box = new GroupBox
-            //{
-            //    BackgroundColor = UIManager.DefaultListItemBackgroundColor,
-            //    MouseThrough = false
-            //};
+           
             this.BackgroundColor = UIManager.DefaultListItemBackgroundColor;
             this.MouseThrough = false;
-
-            //var btnUp = new ButtonIcon(Icon.ArrowUp, MoveUp);
-            //var btnDown = new ButtonIcon(Icon.ArrowDown, MoveDown) { Location = btnUp.BottomLeft };
-            //this.AddControls(btnUp, btnDown);
 
             var orderName = new Label(settings.Label);// { Location = btnUp.TopRight };
             this.ModeCBox = new ComboBoxNewNew<OrderSettings.CraftMode>(OrderSettings.AllModes, 100, c => c.ToString(), ChangeFinishMode, () => this._modePredicted);// { Location = orderName.BottomLeft };
@@ -202,11 +204,11 @@ namespace Start_a_Town_
 
         void MoveDown()
         {
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 1, 0, this.Settings.Mode);
+            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 1, 0, this.Settings.Mode);
         }
         void MoveUp()
         {
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, -1, 0, this.Settings.Mode);
+            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, -1, 0, this.Settings.Mode);
         }
         void ChangeOrderPriority(bool p)
         {
@@ -214,29 +216,55 @@ namespace Start_a_Town_
         }
         void RemoveOrder()
         {
-            PacketPlayerCraftOrders.PlayerDeletedOrder(this.Settings.Workstation.Parent.Map, this.Settings);
+            PacketsCrafting.PlayerDeletedOrder(this.Settings.Workstation.Parent.Map, this.Settings);
         }
         void Minus()
         {
             //this.LabelAmount.Text = $"{Math.Max(0, this.Settings.Amount - 1)}"; // client prediction
             this._amountPredicted--;
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, -1, this.Settings.Mode);
+            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, -1, this.Settings.Mode);
         }
         void Plus()
         {
             //this.LabelAmount.Text = $"{this.Settings.Amount + 1}"; // client prediction
             this._amountPredicted++;
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 1, this.Settings.Mode);
+            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 1, this.Settings.Mode);
         }
         void ChangeFinishMode(OrderSettings.CraftMode mode)
         {
-            //PacketCraftOrderChangeMode.Send(this, (int)obj.Mode);
             this._modePredicted = mode;
-            PacketPlayerCraftOrders.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 0, mode);
+            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 0, mode);
         }
 
        
     }
+    public record IngredientRequirementNew(HashSet<MaterialRefinementDef> Refinements, int Quantity, IntVec3 Slot, List<Entity> InSlot)
+    {
+        public readonly HashSet<MaterialDef> FilteredMaterials = [];
+        internal bool Matches(Entity e)
+        {
+            return e.Def == ItemDefOf.Ingredient && this.Refinements.Contains(e.Profile) && !this.FilteredMaterials.Contains(e.Body.Material);
+        }
+        internal bool MatchesPartial(Entity e, out int missing)
+        {
+            if (e.Def == ItemDefOf.Ingredient && this.Refinements.Contains(e.Profile) && !this.FilteredMaterials.Contains(e.Body.Material))
+            {
+                missing = this.Quantity - e.StackSize;
+                return true;
+            }
+            missing = -1;
+            return false;
+        }
+        public IngredientRequirementNew ToggleMaterial(MaterialDef mat)
+        {
+            if (this.FilteredMaterials.Contains(mat))
+                this.FilteredMaterials.Remove(mat);
+            else
+                this.FilteredMaterials.Add(mat);
+            return this;
+        }
+    }
+
     public class IngredientRequirement(ItemDef itemType, Def context, int quantity, IntVec3 workstationSlot, HashSet<MaterialDef> materials)
     {
         public readonly ItemDef ItemType = itemType;

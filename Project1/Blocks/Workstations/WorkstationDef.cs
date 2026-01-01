@@ -6,5 +6,6 @@ namespace Start_a_Town_
     {
         public readonly HashSet<MaterialRefinementDef> Refinements = [.. processesOffered];
         public int MaxModules = maxModules;
+        public CraftableDef[] Craftables;
     }
 }

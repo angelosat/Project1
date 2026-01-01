@@ -4,15 +4,37 @@ using System;
 
 namespace Start_a_Town_
 {
+
     [EnsureStaticCtorCall]
-    class PacketPlayerCraftOrders
+    class PacketsCrafting
     {
         static int _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder;
-        static PacketPlayerCraftOrders()
+        static PacketsCrafting()
         {
             _pPlayerCreatedOrder = Registry.PacketHandlers.Register(OnPlayerCreatedOrder);
             _pPlayerDeletedOrder = Registry.PacketHandlers.Register(OnPlayerDeletedOrder);
             _pPlayerModifiedOrder = Registry.PacketHandlers.Register(OnPlayerModifiedOrder);
+            Registry.PlayerInputEventHooks.Register<PlayerIssuedCraftOrderEvent>(HandlePlayerIssuedCraftOrderEvent);
+        }
+        private static void HandlePlayerIssuedCraftOrderEvent(PlayerIssuedCraftOrderEvent e)
+        {
+            var workstation = e.Workstation;
+            var net = workstation.Map.World.Net;
+            if(net is Client)
+                SendPlayerCreatedOrderNew(e.Workstation.Parent, e.Craftable);
+            //var client = net as Client;
+            //client.BeginPacket(_pPlayerCreatedOrder)
+            //    .Write(workstation.Map.ID)
+            //    .Write(workstation.Parent.OriginGlobal)
+            //    .Write(e.Craftable);
+        }
+        internal static void SendPlayerCreatedOrderNew(BlockEntity workstation, Def recipeDef)
+        {
+            var net = workstation.Map.Net;
+            var w = net.BeginPacket(_pPlayerCreatedOrder)
+                .Write(workstation.Map.ID)
+                .Write(workstation.OriginGlobal)
+                .Write(recipeDef);
         }
         internal static void PlayerCreatedOrder(BlockEntity workstation, MaterialRefinementDef processDef)
         {
@@ -27,10 +49,11 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var mapid = r.ReadInt32();
             var workstationPosition = r.ReadIntVec3();// net.Map.GetBlockEntity();
-            var refinement = r.ReadDef<MaterialRefinementDef>();
-            net.Map.Town.CraftingManagerNew.CreateOrder(workstationPosition, refinement);
-            if (net is Server server)
-                PlayerCreatedOrder(net.Map.GetBlockEntity(workstationPosition), refinement);
+            var refinement = r.ReadDef();
+            //net.Map.Town.CraftingManagerNew.CreateOrder(workstationPosition, refinement);
+            if(net.Map.Town.CraftingManagerNew.CreateOrderNew(workstationPosition, refinement) is OrderSettings order &&
+                net is Server server)
+                SendPlayerCreatedOrderNew(net.Map.GetBlockEntity(workstationPosition), refinement);
 
             return;
             var station = r.ReadVector3();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Start_a_Town_
 {
@@ -14,7 +15,7 @@ namespace Start_a_Town_
         {
             return $"Global: {this.Global}\nRegion: {this.Region.RegionID}\nLinks: {this.GetLinks().Count()}";
         }
-        
+        public IEnumerable<RegionNode> Adjacent => [this.North, this.West, this.South, this.East];
         public Region Region;
         public RegionRoom Room { get { return this.Region.Room; } }
         public Chunk Chunk { get { return this.Region.Chunk; } }

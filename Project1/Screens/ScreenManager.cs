@@ -5,6 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
 using System.Windows.Forms;
 using System.Linq;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
+using System.Xml.Linq;
+using Microsoft.Xna.Framework.Input;
 
 namespace Start_a_Town_
 {
@@ -15,7 +19,7 @@ namespace Start_a_Town_
         public static Stack<GameScreen> GameScreens = new Stack<GameScreen>();
         static ScreenManager _Instance;
         public static ScreenManager Instance => _Instance ??= new ScreenManager();
-
+        static readonly ConcurrentQueue<Action> MouseInputQueue = [];
         static public void LoadContent()
         {
             MainScreen.LoadContent();
@@ -24,19 +28,20 @@ namespace Start_a_Town_
         static public void Initialize()
         {
             //Game1.Instance.Window.TextInput += Window_TextInput;
-            Game1.TextInput.KeyPress += new KeyPressEventHandler(Instance.TextInput_KeyPress);
-            Game1.TextInput.KeyDown += new KeyEventHandler(Instance.TextInput_KeyDown);
-            Game1.TextInput.KeyUp += new KeyEventHandler(Instance.TextInput_KeyUp);
-            Game1.TextInput.MouseMove += new EventHandler<HandledMouseEventArgs>(TextInput_MouseMove);
-            Game1.TextInput.LButtonDown += new EventHandler<HandledMouseEventArgs>(TextInput_LButtonDown);
-            Game1.TextInput.LMouseUp += new EventHandler<HandledMouseEventArgs>(TextInput_LMouseUp);
-            Game1.TextInput.RMouseDown += new EventHandler<HandledMouseEventArgs>(TextInput_RMouseDown);
-            Game1.TextInput.RMouseUp += new EventHandler<HandledMouseEventArgs>(TextInput_RMouseUp);
-            Game1.TextInput.MMouseUp += new EventHandler<HandledMouseEventArgs>(TextInput_MiddleUp);
-            Game1.TextInput.MMouseDown += new EventHandler<HandledMouseEventArgs>(TextInput_MiddleDown);
-            Game1.TextInput.MouseWheel += new EventHandler<HandledMouseEventArgs>(TextInput_MouseWheel);
-            Game1.TextInput.LButtonDblClk += new EventHandler<HandledMouseEventArgs>(TextInput_LButtonDblClk);
+            Game1.Input.KeyPress += new KeyPressEventHandler(Instance.TextInput_KeyPress);
+            Game1.Input.KeyDown += new KeyEventHandler(Instance.TextInput_KeyDown);
+            Game1.Input.KeyUp += new KeyEventHandler(Instance.TextInput_KeyUp);
+            Game1.Input.MouseMove += new EventHandler<HandledMouseEventArgs>(TextInput_MouseMove);
+            Game1.Input.LMouseDown += new EventHandler<HandledMouseEventArgs>(TextInput_LMouseDown);
+            Game1.Input.LMouseUp += new EventHandler<HandledMouseEventArgs>(TextInput_LMouseUp);
+            Game1.Input.RMouseDown += new EventHandler<HandledMouseEventArgs>(TextInput_RMouseDown);
+            Game1.Input.RMouseUp += new EventHandler<HandledMouseEventArgs>(TextInput_RMouseUp);
+            Game1.Input.MMouseUp += new EventHandler<HandledMouseEventArgs>(TextInput_MiddleUp);
+            Game1.Input.MMouseDown += new EventHandler<HandledMouseEventArgs>(TextInput_MiddleDown);
+            Game1.Input.MouseWheel += new EventHandler<HandledMouseEventArgs>(TextInput_MouseWheel);
+            Game1.Input.LButtonDblClk += new EventHandler<HandledMouseEventArgs>(TextInput_LButtonDblClk);
         }
+
 
         //private static void Window_TextInput(object sender, TextInputEventArgs e)
         //{
@@ -45,86 +50,68 @@ namespace Start_a_Town_
 
         private static void TextInput_LButtonDblClk(object sender, HandledMouseEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            GameScreens.Peek().HandleLButtonDoubleClick(e);
+            MouseInputQueue.Enqueue(() => GameScreens.Peek()?.HandleLButtonDoubleClick(e));
         }
 
         static void TextInput_RMouseUp(object sender, HandledMouseEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            GameScreens.Peek().HandleRButtonUp(e);
+            MouseInputQueue.Enqueue(() => GameScreens.Peek()?.HandleRButtonUp(e));
         }
 
         static void TextInput_MouseWheel(object sender, HandledMouseEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            GameScreens.Peek().HandleMouseWheel(e);
+            MouseInputQueue.Enqueue(() => GameScreens.Peek()?.HandleMouseWheel(e));
         }
         static void TextInput_MiddleDown(object sender, HandledMouseEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            GameScreens.Peek().HandleMiddleDown(e);
+            MouseInputQueue.Enqueue(() => GameScreens.Peek()?.HandleMiddleDown(e));
         }
         static void TextInput_MiddleUp(object sender, HandledMouseEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            GameScreens.Peek().HandleMiddleUp(e);
+            MouseInputQueue.Enqueue(() => GameScreens.Peek()?.HandleMiddleUp(e));
         }
         static void TextInput_RMouseDown(object sender, HandledMouseEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            DragDropManager.Instance.HandleRButtonDown(e);
-            GameScreens.Peek().HandleRButtonDown(e);
+            MouseInputQueue.Enqueue(() =>
+            {
+                DragDropManager.Instance.HandleRButtonDown(e);
+                GameScreens.Peek()?.HandleRButtonDown(e);
+            });
         }
 
         static void TextInput_LMouseUp(object sender, HandledMouseEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            DragDropManager.Instance.HandleLButtonUp(e);
-            GameScreens.Peek().HandleLButtonUp(e);
+            MouseInputQueue.Enqueue(() => { 
+                DragDropManager.Instance.HandleLButtonUp(e);
+                GameScreens.Peek()?.HandleLButtonUp(e);
+            });
         }
 
-        static void TextInput_LButtonDown(object sender, HandledMouseEventArgs e)
+        static void TextInput_LMouseDown(object sender, HandledMouseEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            DragDropManager.Instance.HandleLButtonDown(e);
-            GameScreens.Peek().HandleLButtonDown(e);
+            MouseInputQueue.Enqueue(() => { 
+                DragDropManager.Instance.HandleLButtonDown(e);
+                GameScreens.Peek()?.HandleLButtonDown(e);
+            });
         }
-
         static void TextInput_MouseMove(object sender, HandledMouseEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            GameScreens.Peek().HandleMouseMove(e);
+            MouseInputQueue.Enqueue(() => GameScreens.Peek()?.HandleMouseMove(e));
         }
 
         void TextInput_KeyDown(object sender, KeyEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            GameScreens.Peek().HandleKeyDown(e);
+            GameScreens.Peek()?.HandleKeyDown(e);
         }
 
         void TextInput_KeyUp(object sender, KeyEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            GameScreens.Peek().HandleKeyUp(e);
+            GameScreens.Peek()?.HandleKeyUp(e);
         }
 
         void TextInput_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!GameScreens.Any())
-                return;
-            GameScreens.Peek().HandleKeyPress(e);
+            GameScreens.Peek()?.HandleKeyPress(e);
         }
 
         public ScreenManager()
@@ -170,6 +157,10 @@ namespace Start_a_Town_
                 return;
 
             Controller.Input.Update();
+
+            while(MouseInputQueue.TryDequeue(out var e))
+                e.Invoke();
+
             //this.WindowManager.Update(game, gt);
         }
 

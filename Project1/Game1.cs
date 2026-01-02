@@ -28,7 +28,7 @@ namespace Start_a_Town_
         public GameScreen CurrentRoom;
         public Random Random;
         public static Game1 Instance;
-        public static TextInputHandler TextInput;
+        public static TextInputHandler Input;
         double FpsTimer;
         int Fps;
 
@@ -136,7 +136,7 @@ namespace Start_a_Town_
         protected override void Initialize()
         {
             Engine.Init(this);
-            TextInput = new TextInputHandler(Window.Handle);
+            Input = new TextInputHandler(Window.Handle);
             ScreenManager.Initialize();
             Random = new Random();
 

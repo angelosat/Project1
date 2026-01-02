@@ -253,13 +253,11 @@ namespace Start_a_Town_
 
                             // had to make double click fire a left click event because dragdropping on the same slot quickly, resulted in glitch where object disappeared
                         case WindowMessage.WM_LBUTTONDBLCLK:
-                            //"dbl".ToConsole();
                             this.OnLButtonDblClk(new HandledMouseEventArgs(TranslateButton((Buttons)GetLowWord((int)msg.WParam)), 0, GetLowWord((int)msg.LParam), GetHighWord((int)msg.LParam), GetHighWord(msg.WParam.ToInt32()) / 120));
                             //this.OnLButtonDown(new HandledMouseEventArgs(TranslateButton((Buttons)GetLowWord((int)msg.WParam)), 0, GetLowWord((int)msg.LParam), GetHighWord((int)msg.LParam), GetHighWord(msg.WParam.ToInt32()) / 120));
                             break;
 
                         case WindowMessage.WM_RBUTTONDBLCLK:
-                            //"dbl".ToConsole();
                             this.OnRMouseDown(new HandledMouseEventArgs(TranslateButton((Buttons)GetLowWord((int)msg.WParam)), 0, GetLowWord((int)msg.LParam), GetHighWord((int)msg.LParam), GetHighWord(msg.WParam.ToInt32()) / 120));
                             break;
                     }
@@ -303,10 +301,10 @@ namespace Start_a_Town_
             if (this.MouseMove != null) this.MouseMove(this, e);
         }
 
-        public event EventHandler<System.Windows.Forms.HandledMouseEventArgs> LButtonDown;
+        public event EventHandler<System.Windows.Forms.HandledMouseEventArgs> LMouseDown;
         protected virtual void OnLButtonDown(System.Windows.Forms.HandledMouseEventArgs e)
         {
-            if (this.LButtonDown != null) this.LButtonDown(this, e);
+            if (this.LMouseDown != null) this.LMouseDown(this, e);
         }
 
         public event EventHandler<System.Windows.Forms.HandledMouseEventArgs> LMouseUp;

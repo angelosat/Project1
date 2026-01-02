@@ -240,6 +240,9 @@ namespace Start_a_Town_
         {
             foreach (var memberId in this.Members)
                 this.Map.World.GetEntity(memberId).Town = this;
+
+            foreach (var comp in this.TownComponents)
+                comp.ResolveReferences();
         }
 
         public SaveTag Save(string name)
@@ -300,8 +303,8 @@ namespace Start_a_Town_
                 }
             }
 
-            foreach (var c in this.TownComponents)
-                c.ResolveReferences();
+            //foreach (var c in this.TownComponents)
+            //    c.ResolveReferences();
         }
 
         private void LoadAgents(SaveTag save)

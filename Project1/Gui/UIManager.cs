@@ -809,6 +809,7 @@ namespace Start_a_Town_.UI
                 if (_windowLastPositions.TryGetValue(type, out var loc))
                     window.Location = loc;
                 _windowsSingleton[key] = window;
+                window.HideAction += () => _windowsSingleton.Remove(key);
                 window.Show();
             }
         }
@@ -830,6 +831,7 @@ namespace Start_a_Town_.UI
                 window.SmartPosition();
                 _windowsUnique[key] = window;
                 window.Show();
+                window.HideAction += () => _windowsUnique.Remove(key);
             }
         }
         public static void ToggleUnique<T>(ISelectable selectable) where T : Control, ISelectionBound, new()
@@ -850,6 +852,7 @@ namespace Start_a_Town_.UI
 
                 _windows[key] = window;
                 window.Show();
+                window.HideAction += () => _windows.Remove(key);
             }
         }
         private static readonly Dictionary<WindowKey, Window> _windows = [];

@@ -10,16 +10,27 @@ namespace Start_a_Town_
     public class ConstructionsManager : TownComponent
     {
         public static readonly QuickButton IconCancel = new QuickButton(UI.Icon.X, KeyBind.Cancel) { HoverText = "Cancel designation" };
-
         public override string Name => "Constructions";
 
         static readonly Lazy<GuiConstructionsBrowser> WindowBuild = new();
         static readonly IHotkey HotkeyBuild;
 
-        readonly Dictionary<IntVec3, ConstructionParams> PendingDesignations = new();
-        readonly HashSet<IntVec3> Designations = new();
-        //readonly Dictionary<IntVec3, BlockConstructionComp> DesignationsByCell = [];
+        readonly Dictionary<IntVec3, ConstructionParams> PendingDesignations = [];
+        readonly HashSet<IntVec3> DesignationLocations = [];
         readonly HashSet<BlockConstructionComp> DesignationEntities = [];
+
+        internal override void ResolveReferences()
+        {
+            foreach (var blockentity in this.Map.BlockEntities)
+            {
+                if (blockentity.Comps.TryGetComp<BlockConstructionComp>(out var comp))
+                {
+                    this.DesignationEntities.Add(comp);
+                    foreach (var pos in blockentity.CellsOccupied)
+                        this.DesignationLocations.Add(pos);
+                }
+            }
+        }
 
         static ConstructionsManager()
         {
@@ -41,18 +52,12 @@ namespace Start_a_Town_
 
         private void OnConstructionFinished(ConstructionFinishedEvent e)
         {
-            //var comp = e.Source;
-            //this.DesignationEntities.Remove(comp);
-            //if (this.Net.IsServer)
-            //    PacketsConstruction.Finished(e.Source);
             this.RemoveDesignatedEntity(e.Source);
             this._dirty = true;
         }
 
         private void OnConstructionReady(ConstructionReadyEvent e)
         {
-            //if(this.Net.IsServer)
-            //    PacketsConstruction.Ready(e.Source);
             if (!this.DesignationEntities.Contains(e.Source))
                 throw new KeyNotFoundException($"Received {nameof(ConstructionReadyEvent)} for non-registered construction designation");
             this._dirty = true;
@@ -75,12 +80,6 @@ namespace Start_a_Town_
                     }
             }
         }
-        //internal Dictionary<bool, BlockConstructionComp> GetConstructionsByReadiness()
-        //{
-        //    if (this._snapshotByReadiness is null || this._dirty)
-        //        this.CacheReadiness();
-        //    return this._snapshotByReadiness;
-        //}
         internal HashSet<BlockConstructionComp> GetConstructionsReady()
         {
             if (this._snapshotByReadiness is null || this._dirty)
@@ -95,7 +94,7 @@ namespace Start_a_Town_
         }
         internal IEnumerable<IntVec3> GetAllBuildableCurrently()
         {
-            return this.Designations.Where(this.IsSupported);
+            return this.DesignationLocations.Where(this.IsSupported);
         }
         internal IEnumerable<BlockConstructionComp> GetAllBuildableEntities()
         {
@@ -127,23 +126,23 @@ namespace Start_a_Town_
 
         public override void Write(IDataWriter w)
         {
-            this.Designations.Write(w);
+            this.DesignationLocations.Write(w);
             this.PendingDesignations.Values.Write(w);
         }
         public override void Read(IDataReader r)
         {
-            this.Designations.Read(r);
+            this.DesignationLocations.Read(r);
             this.PendingDesignations.Read(r, i => i.Global);
         }
 
         protected override void AddSaveData(SaveTag tag)
         {
-            this.Designations.Save(tag, "Designations");
+            this.DesignationLocations.Save(tag, "Designations");
             this.PendingDesignations.Values.SaveNewBEST(tag, "PendingDesignations");
         }
         public override void Load(SaveTag tag)
         {
-            this.Designations.Load(tag, "Designations");
+            this.DesignationLocations.Load(tag, "Designations");
             this.PendingDesignations.Load(tag, "PendingDesignations", i => i.Global);
         }
 
@@ -194,17 +193,17 @@ namespace Start_a_Town_
                     return true;
                 }
             }
-            else if (this.Designations.Contains(global))
+            else if (this.DesignationLocations.Contains(global))
             {
                 if (block is not BlockDesignation && block is not BlockConstruction)
-                    this.Designations.Remove(global);
+                    this.DesignationLocations.Remove(global);
             }
             return false;
         }
 
         internal bool IsDesignatedConstruction(IntVec3 vector3)
         {
-            return this.Designations.Contains(vector3);
+            return this.DesignationLocations.Contains(vector3);
         }
         internal bool IsDesignatedConstruction(BlockConstructionComp comp)
         {
@@ -230,7 +229,7 @@ namespace Start_a_Town_
         {
             var cells = SelectionManager.SelectedCells;
             var distinctCellOrigins = cells.Select(c => Cell.GetOrigin(this.Map, c)).Distinct();
-            var selectedDesignations = distinctCellOrigins.Intersect(this.Designations);
+            var selectedDesignations = distinctCellOrigins.Intersect(this.DesignationLocations);
             if (!selectedDesignations.Any())
                 return;
             SelectionManager.AddButton(IconCancel, cancel, selectedDesignations);
@@ -262,34 +261,26 @@ namespace Start_a_Town_
         public void PlaceDesignation(IntVec3 global, byte data, int variation, int orientation, ProductMaterialPair product)
         {
             var map = this.Map;
-            //BlockDesignation.Place(map, global, data, variation, orientation, product);
             var result = map.SetBlock(global, BlockDefOf.Designation.Worker, MaterialDefOf.Air, data, variation, orientation);
             var comp = result.Entity.GetComp<BlockConstructionComp>();
             comp.Block = product.Block;
 
-            this.Designations.Add(global);
+            this.DesignationLocations.Add(global);
         }
         public void PlaceDesignation(IntVec3 global, ConstructionDesignationArgs args)
         {
             var map = this.Map;
-            //var result = map.SetBlock(global, BlockDefOf.Designation, MaterialDefOf.Air, data: 0, 0, orientation: args.Orientation);
-            //var entity = result.Entity;
 
             var entity = BlockDefOf.Designation.CreateEntity(global);
             map.AddBlockEntity(global, entity);
             var comp = entity.GetComp<BlockConstructionComp>();
             this.DesignationEntities.Add(comp);
-            //foreach (var cell in comp.Parent.CellsOccupied)
-            //    this.DesignationsByCell.Add(cell, comp);
 
             comp.SetArgs(args);
-            //this.Town.DesignationManager.Add(DesignationDefOf.Construct, new TargetArgs(map, global));
-            //map.GetChunk(global).Slices[global.Z].Valid = false;
             foreach (var pos in entity.CellsOccupied)
             {
                 map.GetChunk(pos).InvalidateSlice(pos.Z);
-                this.Designations.Add(global);
-                //this.Town.DesignationManager.Add(DesignationDefOf.Construct, new TargetArgs(this.Map, pos));
+                this.DesignationLocations.Add(global);
             }
             this._dirty = true;
         }
@@ -302,18 +293,6 @@ namespace Start_a_Town_
             {
                 this.RemoveDesignatedEntity(comp);
             }
-
-            //foreach (var pos in positions)
-            //{
-            //    var entity = this.DesignationEntities.FirstOrDefault(e => e.Parent.CellsOccupied.Contains(pos));
-            //    if (entity is not null)
-            //    {
-            //        this.DesignationEntities.Remove(entity);
-            //        foreach(var child in entity.Parent.CellsOccupied)
-            //            this.Designations.Remove(child);
-            //        map.GetChunk(pos).InvalidateSlice(pos.Z);
-            //    }
-            //}
         }
 
         private void RemoveDesignatedEntity(BlockConstructionComp comp)
@@ -322,7 +301,7 @@ namespace Start_a_Town_
             this.DesignationEntities.Remove(comp);
             foreach (var child in entity.CellsOccupied)
             {
-                this.Designations.Remove(child);
+                this.DesignationLocations.Remove(child);
                 //this.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Construct, new TargetArgs(this.Map, child));
                 this.Map.GetChunk(child).InvalidateSlice(child.Z);
             }
@@ -401,31 +380,6 @@ namespace Start_a_Town_
             }
 
             public static ConstructionParams Create(IDataReader r) => new ConstructionParams().Read(r);
-
-            //public string GetName()
-            //{
-            //    throw new NotImplementedException();
-            //}
-
-            //public void GetSelectionInfo(IUISelection panel)
-            //{
-            //    throw new NotImplementedException();
-            //}
-
-            //public IEnumerable<(string name, Action action)> GetInfoTabs()
-            //{
-            //    throw new NotImplementedException();
-            //}
-
-            //public void GetQuickButtons(SelectionManager panel)
-            //{
-            //    throw new NotImplementedException();
-            //}
-
-            //public void TabGetter(Action<string, Action> getter)
-            //{
-            //    throw new NotImplementedException();
-            //}
         }
     }
 }

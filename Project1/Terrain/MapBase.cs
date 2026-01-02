@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace Start_a_Town_
 {
@@ -803,6 +804,17 @@ namespace Start_a_Town_
             public BlockEntity Entity = entity;
             public Cell Cell = cell;
             public bool Success = success;
+        }
+        void SetBlockInternal(IntVec3 global, Block block, MaterialDef material, byte data, int variation = 0, int orientation = 0)
+        {
+            this.TryGetAll(global, out var chunk, out var cell);
+            cell.Block = block;
+            cell.Material = material;
+            cell.BlockData = data;
+            cell.Variation = variation;
+            cell.Orientation = orientation;
+            chunk.InvalidateHeightmap(cell.X, cell.Y);
+            chunk.InvalidateCell(cell); // do i need to invalidate the cell even after invalidating the heightmap in the line above?
         }
         public void NotifyBlocksChanged(IEnumerable<IntVec3> positions)
         {

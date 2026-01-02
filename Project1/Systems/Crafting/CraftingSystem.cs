@@ -21,6 +21,20 @@ namespace Start_a_Town_
                 _ => throw new ArgumentException("Def was not of a craftable item", nameof(recipe))
             };
         }
+        static public IEnumerable<(BoneDef bone, MaterialRefinementDef[] validRefinements, int quantity)> GetCraftingRules(Def recipe)
+        {
+            if (recipe is MaterialRefinementDef matRefinement)
+            {
+                yield return (BoneDefOf.Item, [matRefinement.Source], 1);
+            }
+            else if (recipe is ToolProfileDef tool)
+            {
+                foreach (var rule in ToolSystem.GetRules())
+                    yield return (rule.Bone, rule.Types.ToArray(), 1);
+            }
+            else
+                throw new ArgumentException("Def was not of a craftable item", nameof(recipe));
+        }
         static public IEnumerable<(MaterialRefinementDef[] validRefinements, int quantity)> GetValidIngredientsPerSlot(Def recipe)
         {
             if (recipe is MaterialRefinementDef matRefinement)

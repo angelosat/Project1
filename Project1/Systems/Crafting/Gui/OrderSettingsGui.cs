@@ -1,5 +1,4 @@
 ﻿using Start_a_Town_.UI;
-using static Start_a_Town_.GlobalVars;
 
 namespace Start_a_Town_
 {
@@ -54,7 +53,7 @@ namespace Start_a_Town_
 
             //this.DetailsGui = this.DetailsGui ??= new CraftOrderDetailsGui(this);
 
-            this.btnDetails = new Button("Details");//, ToggleDetails);
+            this.btnDetails = new Button("Details", ToggleDetails);
             //this.AddControls(btnDetails.AnchorToBottomRight());
             this.btnDetails.AnchorNew = Anchors.Bottom | Anchors.Right;
             this.AddControls(btnDetails);
@@ -73,7 +72,11 @@ namespace Start_a_Town_
             //}
 
         }
-
+        void ToggleDetails()
+        {
+            var win = new OrderSettingsGuiDetails(this.Settings).ToWindow();
+            win.ToggleSmart();
+        }
         public override void OnLayout(int availableWidth, int availableHeight)
         {
             this.Width = availableWidth;

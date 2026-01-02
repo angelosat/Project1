@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace Start_a_Town_.UI
@@ -14,7 +15,7 @@ namespace Start_a_Town_.UI
         public List<ListBoxCollapsibleNode> Children = new();
         public Func<Control> ControlGetter;
         public PictureBox Arrow;
-        public GroupBox ChildGroupBox = new();// { BackgroundColor = Color.Red * .2f };
+        public GroupBox ChildrenGroupBox = new() { BackgroundColor = Color.Red * .2f };
         public static readonly int IndentWidth = UIManager.ArrowRight.Rectangle.Width;
 
         public string Name;
@@ -36,7 +37,7 @@ namespace Start_a_Town_.UI
         public ListBoxCollapsibleNode(string name)
         {
             this.Name = name;
-            this.ChildGroupBox.Name = name;
+            this.ChildrenGroupBox.Name = name;
         }
         public ListBoxCollapsibleNode(string name, Func<ListBoxCollapsibleNode, Control> controlGetter) : this(name)
         {
@@ -45,6 +46,10 @@ namespace Start_a_Town_.UI
         public ListBoxCollapsibleNode(string name, Func<Control> controlGetter) : this(name)
         {
             this.ControlGetter = controlGetter;
+        }
+        public ListBoxCollapsibleNode(string name, Control control) : this(name)
+        {
+            this.Control = control;
         }
         public ListBoxCollapsibleNode AddNode(ListBoxCollapsibleNode node)
         {
@@ -61,8 +66,8 @@ namespace Start_a_Town_.UI
         {
             //leaf.BackgroundColor = UIManager.DefaultListItemBackgroundColor;
             this.LeafControls.Add(leaf);
-            this.ChildGroupBox.AddControlsBottomLeft(leaf);
-            leaf.Location.X = IndentWidth;
+            this.ChildrenGroupBox.AddControlsBottomLeft(leaf);
+            //leaf.Location.X = IndentWidth;
             leaf.Validate(true);
             return this;
         }

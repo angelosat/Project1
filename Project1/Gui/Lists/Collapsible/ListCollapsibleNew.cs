@@ -50,7 +50,7 @@ namespace Start_a_Town_.UI
                 nodeContainer.AddControls(nodeItem);
 
                 node.Parent?.ChildControls.Add(nodeContainer);
-                node.Parent?.ChildGroupBox.Controls.Insert(0, nodeContainer);
+                node.Parent?.ChildrenGroupBox.Controls.Insert(0, nodeContainer);
 
                 label.LeftClickAction = expand;
                 void expand()
@@ -59,19 +59,19 @@ namespace Start_a_Town_.UI
                     {
                         node.Expanded = true;
                         node.Arrow.SetTexture(UIManager.ArrowDown);
-                        node.ChildGroupBox.Location = nodeItem.BottomLeft + new Vector2(ListBoxCollapsibleNode.IndentWidth, Spacing);
-                        nodeContainer.AddControls(node.ChildGroupBox);
+                        node.ChildrenGroupBox.Location = nodeItem.BottomLeft + new Vector2(ListBoxCollapsibleNode.IndentWidth, Spacing);
+                        nodeContainer.AddControls(node.ChildrenGroupBox);
                     }
                     else
                     {
                         node.Expanded = false;
                         node.Arrow.SetTexture(UIManager.ArrowRight);
-                        nodeContainer.RemoveControls(node.ChildGroupBox);
+                        nodeContainer.RemoveControls(node.ChildrenGroupBox);
                     }
                     var parent = node;
                     while (parent is not null)
                     {
-                        parent.ChildGroupBox?.AlignTopToBottom(this.Spacing);
+                        parent.ChildrenGroupBox?.AlignTopToBottom(this.Spacing);
                         parent = parent.Parent;
                     }
                     this.AlignTopToBottom(this.Spacing);

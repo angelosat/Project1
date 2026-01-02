@@ -7,12 +7,12 @@ namespace Start_a_Town_.Core
 {
     class BlockBrowserConstruction : GroupBox
     {
-        readonly Dictionary<Block, ConstructionDesignationArgs> LastSelectedVariant = new();
+        readonly Dictionary<BlockDef, ConstructionDesignationArgs> LastSelectedVariant = new();
         ConstructionCategoryDef SelectedCategory;
         readonly Panel Panel_Blocks;
         readonly UIToolsBox ToolBox;
-        Block CurrentSelected;
-        readonly Dictionary<ConstructionCategoryDef, ButtonGridIcons<Block>> Categories = new();
+        BlockDef CurrentSelected;
+        readonly Dictionary<ConstructionCategoryDef, ButtonGridIcons<BlockDef>> Categories = new();
         UIBlockVariationPicker Picker;
         public BlockBrowserConstruction()
         {
@@ -20,19 +20,19 @@ namespace Start_a_Town_.Core
             this.Panel_Blocks = new Panel() { AutoSize = true };
             this.ToolBox = new UIToolsBox(this.OnToolSelectedNew);
             //var categories = Block.Registry.Values.Where(b => b.BuildProperties.Category is not null).GroupBy(b => b.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
-            var categories = Def.GetDefs<BlockDef>().Select(b=>b.Worker).Where(b => b.BuildProperties.Category is not null).GroupBy(b => b.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
+            var categories = Def.GetDefs<BlockDef>()/*.Select(b => b.Worker)*/.Where(b => b.Worker.BuildProperties.Category is not null).GroupBy(b => b.Worker.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
             foreach (var cat in categories)
             {
                 var list = cat.Where(b => b.ConstructionProfile is not null);
-                var grid = new ButtonGridIcons<Block>(4, 6, list, (slot, block) =>
+                var grid = new ButtonGridIcons<BlockDef>(4, 6, list, (slot, block) =>
                 {
                     slot.Tag = block;
-                    slot.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolBlockBuild drawing && drawing.Block == block;
-                    slot.PaintAction = () => block.PaintIcon(slot.Width, slot.Height, 0, this.GetLastSelectedVariantOrDefaultNew(block).Material);
+                    slot.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolBlockBuild drawing && drawing.Block == block.Worker;
+                    slot.PaintAction = () => block.Worker.PaintIcon(slot.Width, slot.Height, 0, this.GetLastSelectedVariantOrDefaultNew(block).Material);
                     slot.LeftClickAction = () => StartPainting(block);
                     //slot.RightClickAction = () => UIBlockVariationPickerOld.Refresh(block, this.OnVariationSelected);
                     slot.RightClickAction = () => this.Picker.Refresh(block, this.OnVariationSelectedNew);
-                    slot.HoverFunc = () => $"{block.Name}\nTool necessity: {block.BuildProperties.ToolSensitivity:##0%}\nRight click to select variation";
+                    //slot.HoverFunc = () => $"{block.Name}\nTool necessity: {block.BuildProperties.ToolSensitivity:##0%}\nRight click to select variation";
                 })
                 { Location = this.Panel_Blocks.Controls.BottomLeft };
                 this.Categories[cat.Key] = grid;
@@ -61,11 +61,11 @@ namespace Start_a_Town_.Core
                 );
         }
 
-        private void StartPainting(Block block)
+        private void StartPainting(BlockDef block)
         {
             this.CurrentSelected = block;
             //var variant = this.GetLastSelectedVariantOrDefaultNew(block);
-            this.ToolBox.SetProduct(block);
+            this.ToolBox.SetProduct(block.Worker);
             this.OnToolSelectedNew(this.ToolBox.LastSelectedTool);
             var win = this.ToolBox.GetWindow();
             if (win is null)
@@ -86,7 +86,7 @@ namespace Start_a_Town_.Core
             this.ToolBox.LastSelectedTool = toolDef;
             ToolManager.SetTool(tool);
         }
-        private ConstructionDesignationArgs GetLastSelectedVariantOrDefaultNew(Block block)
+        private ConstructionDesignationArgs GetLastSelectedVariantOrDefaultNew(BlockDef block)
         {
             if (this.LastSelectedVariant.TryGetValue(block, out var lastVariant))
             {

@@ -25,7 +25,7 @@ namespace Start_a_Town_
         }
         public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {
-            return new BlockCampfireEntity(originGlobal);
+            return new BlockCampfireEntity(this.BlockDef, originGlobal);
         }
 
         internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)

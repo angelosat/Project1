@@ -36,7 +36,7 @@ namespace Start_a_Town_
         }
         public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {
-            return new BlockBedEntity(originGlobal);
+            return new BlockBedEntity(this.BlockDef, originGlobal);
         }
     }
 }

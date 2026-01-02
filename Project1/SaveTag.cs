@@ -454,10 +454,9 @@ namespace Start_a_Town_
             var save = item.Save(name);
             this.Add(save);
         }
-        public int LoadInt(string name)
-        {
-            return (int)this[name].Value;
-        }
+        public int LoadInt(string name) => (int)this[name].Value;
+        public byte LoadByte(string name) => (byte)this[name].Value;
+        
         public ulong LoadUlong(string name)
         {
             return (ulong)this[name].Value;

@@ -13,9 +13,9 @@ namespace Start_a_Town_.Towns.Constructions
         {
 
         }
-        public void Refresh(Block block, Action<ConstructionDesignationArgs> callback)
+        public void Refresh(BlockDef block, Action<ConstructionDesignationArgs> callback)
         {
-            var variants = block.GetConstructionOptions().ToList();
+            var variants = block.Worker.GetConstructionOptions().ToList();
             //var variants = block.GetAllValidConstructionMaterialsNew().Select(m => new ProductMaterialPair(block, m)).GroupBy(p => p.Requirement.Material).ToList();
             //if (!variants.Any())
             //    return;
@@ -26,7 +26,7 @@ namespace Start_a_Town_.Towns.Constructions
 
             //var container = count <= 8 ? new GroupBox() : ScrollableBoxNewNew.FromClientSize(160, UIManager.LargeButton.Height * 8 + UIManager.LargeButton.Height / 2, ScrollModes.Vertical);
 
-            var list = new ListBoxNoScroll<ConstructionDesignationArgs, ButtonNew>(variant => CreateButton(block, callback, variant))
+            var list = new ListBoxNoScroll<ConstructionDesignationArgs, ButtonNew>(variant => CreateButton(block.Worker, callback, variant))
             {
                 Spacing = 0
             };

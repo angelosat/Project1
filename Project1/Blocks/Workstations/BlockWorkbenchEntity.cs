@@ -2,8 +2,8 @@
 {
     public class BlockWorkbenchEntity : BlockEntity
     {
-        public BlockWorkbenchEntity(IntVec3 originGlobal)
-            : base(originGlobal)
+        public BlockWorkbenchEntity(BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
         {
             throw new System.Exception();
             //this.AddComp(new BlockEntityCompWorkstationOld(IsWorkstation.Types.Workbench));

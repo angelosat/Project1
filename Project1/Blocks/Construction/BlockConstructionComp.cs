@@ -1,16 +1,10 @@
-﻿using Start_a_Town_.Net;
-using Start_a_Town_.UI;
+﻿using Start_a_Town_.UI;
 using System;
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     public class BlockConstructionComp : BlockEntityComp
     {
-        
-       
-
-        
-
         internal new class Spec : BlockEntityComp.Spec
         {
             public override Type CompType => typeof(BlockConstructionComp);
@@ -22,26 +16,26 @@ namespace Start_a_Town_
         }
         public override string Name => $"{this}";
 
-        public Block Block;
+        public Block Block => this.Args.Block.Worker;
         internal override void GetSelectionInfo(Control container)
         {
             container.AddControls(new Label($"Construction: {this.Block}"));
-            container.AddControls(new Label($"Materials: {this.Args} {this.Fulfilment}"));
+            container.AddControls(new Label($"Materials: {this.Args} {this.Fulfillment}"));
         }
-        IngredientFulfilment Fulfilment;
         ConstructionDesignationArgs Args;
-        internal Progress Progress = new();
+        internal ProgressInt Progress, Fulfillment;
 
         public (MaterialRefinementDef refinement, MaterialDef material) Requirement => (this.Args.Refinement, this.Args.Material);
-        public bool IsReady => this.Fulfilment.Current >= this.Fulfilment.Required;
-        public int Missing => this.Fulfilment.Missing;
+        public bool IsReady => this.Fulfillment.IsFinished;
+        public int Missing => this.Fulfillment.Missing;
         public void SetArgs(ConstructionDesignationArgs args)
         {
-            this.Block = args.Block;
+            //this.Block = args.Block.Worker;
             //var ingredientCount = this.Block.Size.Volume * ItemDefOf.Ingredient.StackCapacity / this.Block.ConstructionProfile.Dimension;
-            var ingredientCount = this.Block.Size.Volume / this.Block.ConstructionProfile.Dimension;
-            this.Fulfilment.Required = ingredientCount;
+            var ingredientCount = this.Block.Size.Volume / this.Block.BlockDef.ConstructionProfile.Dimension;
+            this.Fulfillment = new(ingredientCount);
             this.Args = args;
+            this.Progress = new(100);
         }
        
         internal void Deposit(Entity entity, int quantity)
@@ -55,7 +49,7 @@ namespace Start_a_Town_
 
             // only take what i need
             quantity = Math.Min(quantity, this.Missing);
-            this.Fulfilment.Current += quantity;
+            this.Fulfillment.Add(quantity);
             entity.Consume(quantity);
 
             // solidify the designation into a construction block 
@@ -72,14 +66,13 @@ namespace Start_a_Town_
             if (this.IsReady)
             {
                 this.Map.Events.Post(new ConstructionReadyEvent(this));
-                //this.Progress = new();
             }
         }
 
         internal bool Accepts(Entity entity)
         {
             return 
-                this.Fulfilment.Missing > 0 &&
+                this.Fulfillment.Missing > 0 &&
                 entity.Def == ItemDefOf.Ingredient &&
                 entity.Profile == this.Args.Refinement &&
                 entity.PrimaryMaterial == this.Args.Material;
@@ -118,33 +111,88 @@ namespace Start_a_Town_
             map.Events.Post(new ConstructionFinishedEvent(this));
 
             foreach (var cell in this.Parent.CellsOccupied)
-                map.SetBlock(cell, this.Args.Block, this.Args.Material, 0, 0, this.Args.Orientation);
+                map.SetBlock(cell, this.Args.Block.Worker, this.Args.Material, 0, 0, this.Args.Orientation);
             map.RemoveBlockEntity(this.Parent);
         }
+
+        protected override void SaveExtra(SaveTag tag)
+        {
+            tag.Add(this.Fulfillment.Save("Fulfillment"));
+            tag.Add(this.Progress.Save("Progress"));
+            tag.Add(this.Args.Save("Args"));
+        }
+        public override void Load(SaveTag tag)
+        {
+            this.Progress = ProgressInt.Create(tag["Progress"]);
+            this.Fulfillment = ProgressInt.Create(tag["Fulfillment"]);
+            this.Args = ConstructionDesignationArgs.Create(tag["Args"]);
+        }
+
         public override void Write(IDataWriter w)
         {
-            w.Write(this.Fulfilment.Current);
-            w.Write(this.IsReady);
-            if (this.IsReady)
-                w.Write(this.Progress.Value);
+            this.Progress.Write(w);
+            this.Fulfillment.Write(w);
+            this.Args.Write(w);
         }
         public override ISerializable Read(IDataReader r)
         {
-            this.Fulfilment.Current = r.ReadInt32();
-            if(r.ReadBoolean())
-            {
-                if (this.Progress is null)
-                    new Progress();
-                this.Progress.Value = r.ReadSingle();
-            }
+            this.Progress = ProgressInt.Create(r);
+            this.Fulfillment = ProgressInt.Create(r);
+            this.Args = ConstructionDesignationArgs.Create(r);
+            return this;
+        }
+    }
+    public record struct ConstructionDesignationArgs(BlockDef Block, MaterialRefinementDef Refinement, MaterialDef Material, int Amount, byte Orientation = 0)
+        : ISerializableNew<ConstructionDesignationArgs>
+        , ISaveableNewNew<ConstructionDesignationArgs>
+    {
+        //public Block Block = block;
+        //public MaterialRefinementDef Refinement = refinement;
+        //public MaterialDef Material = material;
+        //public int Amount = amount;
+        //public byte Orientation = orientation;
+        //public override readonly string ToString() => $"{this.Material.Label} {this.Refinement.Label} x{this.Amount}";
+        public static ConstructionDesignationArgs Create(IDataReader r) => new ConstructionDesignationArgs().Read(r);
+
+        public static ConstructionDesignationArgs Create(SaveTag tag)
+        {
+            var args = new ConstructionDesignationArgs();
+            args.Block = tag.LoadDef<BlockDef>("Block");
+            args.Refinement = tag.LoadDef<MaterialRefinementDef>("Refinement");
+            args.Material = tag.LoadDef<MaterialDef>("Material");
+            args.Amount = tag.LoadInt("Amount");
+            args.Orientation = tag.LoadByte("Orientation");
+            return args;
+        }
+
+        public ConstructionDesignationArgs Read(IDataReader r)
+        {
+            this.Block = r.ReadDef<BlockDef>();
+            this.Refinement = r.ReadDef<MaterialRefinementDef>();
+            this.Material = r.ReadDef<MaterialDef>();
+            this.Amount = r.ReadInt32();
+            this.Orientation = r.ReadByte();
             return this;
         }
 
-        struct IngredientFulfilment
+        public SaveTag Save(string name = "")
         {
-            internal int Required, Current;
-            public readonly int Missing => Required - Current;
-            public override readonly string ToString() => $"{this.Current} / {this.Required}";
+            var tag = new SaveTag(SaveTag.Types.Compound, name);
+            tag.Save("Block", this.Block);
+            tag.Save("Refinement", this.Refinement);
+            tag.Save("Material", this.Material);
+            tag.Save("Amount", this.Amount);
+            tag.Save("Orientation", this.Orientation);
+            return tag;
+        }
+
+        public void Write(IDataWriter w)
+        {
+            w.Write(this.Block);
+            w.Write(this.Refinement);
+            w.Write(this.Material);
+            w.Write(this.Amount);
+            w.Write(this.Orientation);
         }
     }
 }

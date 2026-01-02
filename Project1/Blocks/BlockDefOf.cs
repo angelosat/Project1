@@ -3,7 +3,7 @@
     [EnsureStaticCtorCall]
     class BlockDefOf
     {
-        static public readonly BlockDef Air = new("Air", typeof(BlockAir));
+        static public readonly BlockDef Air = new("Air", typeof(BlockAir)) { DefaultMaterial = MaterialDefOf.Air };
         static public readonly BlockDef Grass = new("Grass", typeof(BlockGrass));
         static public readonly BlockDef Stone = new("Stone", typeof(BlockBedrock));
         static public readonly BlockDef Farmland = new("Farmland", typeof(BlockFarmland));

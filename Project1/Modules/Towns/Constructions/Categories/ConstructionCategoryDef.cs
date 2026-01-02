@@ -38,7 +38,7 @@ namespace Start_a_Town_
         internal ToolBlockBuild GetTool(BuildToolDef toolDef, ConstructionDesignationArgs args, byte data = 0)
         {
             var tool = toolDef.Create(a => PacketDesignateConstruction.Send(Client.Instance, a, args)); // TODO improve
-            tool.Block = args.Block;
+            tool.Block = args.Block.Worker;
             tool.Material = args.Material;
             tool.State = data;
             return tool;

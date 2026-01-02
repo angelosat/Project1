@@ -6,7 +6,8 @@ namespace Start_a_Town_
 {
     public abstract class BlockEntityWorkstation : BlockEntity
     {
-        protected BlockEntityWorkstation(IntVec3 originGlobal) : base(originGlobal)
+        protected BlockEntityWorkstation(BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
         {
         }
 

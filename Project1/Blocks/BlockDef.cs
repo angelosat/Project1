@@ -11,6 +11,7 @@ namespace Start_a_Town_
         public Def Profile;
         public ConstructionProfile ConstructionProfile;
         public BlockEntityComp.Spec[] BlockEntityCompSpecs;
+        internal MaterialDef DefaultMaterial;
 
         public T GetSpec<T>() where T: BlockEntityComp.Spec
         {
@@ -30,7 +31,7 @@ namespace Start_a_Town_
         {
             if (this.BlockEntityCompSpecs is null)
                 return null;
-            var entity = new BlockEntity(origin);
+            var entity = new BlockEntity(this, origin);
             foreach (var spec in this.BlockEntityCompSpecs)
                 entity.AddComp(spec.CreateComp());
             entity.Initialize();

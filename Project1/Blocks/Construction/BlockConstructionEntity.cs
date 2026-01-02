@@ -14,13 +14,13 @@ namespace Start_a_Town_
         public Progress BuildProgress { get; set; }
         public List<IntVec3> Children { get; set; } = new List<IntVec3>();
 
-        public BlockConstructionEntity(IntVec3 origin)
-            : base (origin)
+        public BlockConstructionEntity(BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
         {
 
         }
-        public BlockConstructionEntity(ProductMaterialPair product, IntVec3 origin, GameObject initialMaterial, int amount)
-            : this(origin)
+        public BlockConstructionEntity(ProductMaterialPair product, BlockDef def,  IntVec3 origin, GameObject initialMaterial, int amount)
+            : this(def, origin)
         {
             this.Product = product;
             if (amount > initialMaterial.StackSize)

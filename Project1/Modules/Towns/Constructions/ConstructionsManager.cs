@@ -67,7 +67,7 @@ namespace Start_a_Town_
         {
             foreach (var pos in e.Positions)
             {
-                this.TryHandlePendingDesignation(pos);
+                //this.TryHandlePendingDesignation(pos);
 
                 if (!this._dirty)
                     foreach (var n in pos.GetAdjacentLazy())
@@ -124,28 +124,27 @@ namespace Start_a_Town_
             yield return new Tuple<Func<string>, Action>(() => $"Build [{HotkeyBuild.GetLabel()}]", () => WindowBuild.Value.Toggle());
         }
 
-        public override void Write(IDataWriter w)
-        {
-            this.DesignationLocations.Write(w);
-            this.PendingDesignations.Values.Write(w);
-        }
-        public override void Read(IDataReader r)
-        {
-            this.DesignationLocations.Read(r);
-            this.PendingDesignations.Read(r, i => i.Global);
-        }
+        //public override void Write(IDataWriter w)
+        //{
+        //    this.DesignationLocations.Write(w);
+        //    this.PendingDesignations.Values.Write(w);
+        //}
+        //public override void Read(IDataReader r)
+        //{
+        //    this.DesignationLocations.Read(r);
+        //    this.PendingDesignations.Read(r, i => i.Global);
+        //}
 
-        protected override void AddSaveData(SaveTag tag)
-        {
-            this.DesignationLocations.Save(tag, "Designations");
-            this.PendingDesignations.Values.SaveNewBEST(tag, "PendingDesignations");
-        }
-        public override void Load(SaveTag tag)
-        {
-            this.DesignationLocations.Load(tag, "Designations");
-            this.PendingDesignations.Load(tag, "PendingDesignations", i => i.Global);
-        }
-
+        //protected override void AddSaveData(SaveTag tag)
+        //{
+        //    this.DesignationLocations.Save(tag, "Designations");
+        //    this.PendingDesignations.Values.SaveNewBEST(tag, "PendingDesignations");
+        //}
+        //public override void Load(SaveTag tag)
+        //{
+        //    this.DesignationLocations.Load(tag, "Designations");
+        //    this.PendingDesignations.Load(tag, "PendingDesignations", i => i.Global);
+        //}
         
         
         private void Add(DesignationDef designation, List<IntVec3> positions, bool remove)
@@ -179,27 +178,27 @@ namespace Start_a_Town_
                 if (SelectionManager.SingleSelectedCell == pos)
                     SelectionManager.RemoveInfo(this.PendingDesignationLabel);
         }
-        bool TryHandlePendingDesignation(IntVec3 global)
-        {
-            var map = this.Map;
-            var block = map.GetBlock(global);
-            if (this.PendingDesignations.TryGetValue(global, out var pending))
-            {
-                if (block is BlockAir)
-                {
-                    this.PlaceDesignation(global, 0, 0, pending.Orientation, pending.Product);
-                    //this.PendingDesignations.Remove(global);
-                    this.RemovePendingDesignation(global);
-                    return true;
-                }
-            }
-            else if (this.DesignationLocations.Contains(global))
-            {
-                if (block is not BlockDesignation && block is not BlockConstruction)
-                    this.DesignationLocations.Remove(global);
-            }
-            return false;
-        }
+        //bool TryHandlePendingDesignation(IntVec3 global)
+        //{
+        //    var map = this.Map;
+        //    var block = map.GetBlock(global);
+        //    if (this.PendingDesignations.TryGetValue(global, out var pending))
+        //    {
+        //        if (block is BlockAir)
+        //        {
+        //            this.PlaceDesignation(global, 0, 0, pending.Orientation, pending.Product);
+        //            //this.PendingDesignations.Remove(global);
+        //            this.RemovePendingDesignation(global);
+        //            return true;
+        //        }
+        //    }
+        //    else if (this.DesignationLocations.Contains(global))
+        //    {
+        //        if (block is not BlockDesignation && block is not BlockConstruction)
+        //            this.DesignationLocations.Remove(global);
+        //    }
+        //    return false;
+        //}
 
         internal bool IsDesignatedConstruction(IntVec3 vector3)
         {
@@ -258,15 +257,15 @@ namespace Start_a_Town_
         {
             throw new NotImplementedException();
         }
-        public void PlaceDesignation(IntVec3 global, byte data, int variation, int orientation, ProductMaterialPair product)
-        {
-            var map = this.Map;
-            var result = map.SetBlock(global, BlockDefOf.Designation.Worker, MaterialDefOf.Air, data, variation, orientation);
-            var comp = result.Entity.GetComp<BlockConstructionComp>();
-            comp.Block = product.Block;
+        //public void PlaceDesignation(IntVec3 global, byte data, int variation, int orientation, ProductMaterialPair product)
+        //{
+        //    var map = this.Map;
+        //    var result = map.SetBlock(global, BlockDefOf.Designation.Worker, MaterialDefOf.Air, data, variation, orientation);
+        //    var comp = result.Entity.GetComp<BlockConstructionComp>();
+        //    //comp.Block = product.Block;
 
-            this.DesignationLocations.Add(global);
-        }
+        //    this.DesignationLocations.Add(global);
+        //}
         public void PlaceDesignation(IntVec3 global, ConstructionDesignationArgs args)
         {
             var map = this.Map;

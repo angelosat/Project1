@@ -6,7 +6,8 @@ namespace Start_a_Town_
     {
         int FlowTimer;
 
-        public BlockFluidEntity(IntVec3 originGlobal) : base(originGlobal)
+        public BlockFluidEntity(BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
         {
         }
 

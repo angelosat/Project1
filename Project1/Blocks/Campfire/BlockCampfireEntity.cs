@@ -6,8 +6,8 @@ namespace Start_a_Town_
     {
         class BlockCampfireEntity : BlockEntity
         {
-            public BlockCampfireEntity(IntVec3 originGlobal)
-                : base(originGlobal)
+            public BlockCampfireEntity(BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
             {
                 var switchable = new BlockEntityCompSwitchable();
                 this.AddComp(switchable);

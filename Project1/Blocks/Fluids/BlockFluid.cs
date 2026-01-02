@@ -29,12 +29,12 @@ namespace Start_a_Town_
         
         public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {
-            return new BlockFluidEntity(originGlobal);
+            return new BlockFluidEntity(this.BlockDef, originGlobal);
         }
         public override void OnNeighborChanged(MapBase map, IntVec3 global, IntVec3 source)
         {
             return;
-            map.AddBlockEntity(global, new BlockFluidEntity(global));
+            map.AddBlockEntity(global, new BlockFluidEntity(this.BlockDef, global));
         }
 
         public override bool IsTargetable(Vector3 global)

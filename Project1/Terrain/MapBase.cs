@@ -266,17 +266,18 @@ namespace Start_a_Town_
                 if (notify)
                     this.Net.EventOccured((int)Message.Types.BlockEntityRemoved, blockentity, global);
             }
-            foreach (var p in parts)
-            {
-                //this.SetBlock(p, BlockDefOf.Air, MaterialDefOf.Air, 0, 0, 0, notify);
-                this.SetBlock(p, BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, 0, 0, notify);
-                this.SetBlockLuminance(p, 0);
-                // reenable physics of entities resting on block
-                foreach (var entity in this.GetObjects(p - new IntVec3(1, 1, 0), p + new IntVec3(1, 1, 2)))
-                    PhysicsComponent.Enable(entity);
-                var above = p.Above;
-                this.GetBlock(above)?.BlockBelowChanged(this, above);
-            }
+            else
+                foreach (var p in parts)
+                {
+                    //this.SetBlock(p, BlockDefOf.Air, MaterialDefOf.Air, 0, 0, 0, notify);
+                    this.SetBlock(p, BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, 0, 0, notify);
+                    this.SetBlockLuminance(p, 0);
+                    // reenable physics of entities resting on block
+                    foreach (var entity in this.GetObjects(p - new IntVec3(1, 1, 0), p + new IntVec3(1, 1, 2)))
+                        PhysicsComponent.Enable(entity);
+                    var above = p.Above;
+                    this.GetBlock(above)?.BlockBelowChanged(this, above);
+                }
         }
         /// <summary>
         /// starts and returns an async task handling map generation
@@ -317,6 +318,8 @@ namespace Start_a_Town_
 
             if (chunk.TryRemoveBlockEntity(local, out var entity))
             {
+                foreach (var cell in entity.CellsOccupied)
+                    this.SetBlock(cell, BlockDefOf.Air);
                 entity.Map = null;
                 return entity;
             }
@@ -726,6 +729,10 @@ namespace Start_a_Town_
         {
             return this.SetBlock(args.Global, args.Block, args.Material, args.Data, args.Source, orientation: args.Orientation);
         }
+        public PlaceBlockResult SetBlock(IntVec3 global, BlockDef block)
+        {
+            return this.SetBlock(global, block.Worker, block.DefaultMaterial, 0);
+        }
         public virtual PlaceBlockResult SetBlock(IntVec3 global, Block block, MaterialDef material, byte data, int variation = 0, int orientation = 0, bool raiseEvent = true)
         {
             return this.SetBlock(global, block, material, data, IntVec3.Zero, variation, orientation, raiseEvent);
@@ -756,7 +763,7 @@ namespace Start_a_Town_
             if (block.TryLinkToAdjacentBlockEntity(this, global) is not BlockEntity entity)
             {
                 entity = block.BlockDef.CreateEntity(global);
-                //if (entity is not null)
+                if (entity is not null)
                 this.AddBlockEntity(global, entity);
             }
             // todo: query block for multi-cell footprint

@@ -4,8 +4,8 @@ namespace Start_a_Town_
 {
     public class BlockKitchenEntity : BlockEntity
     {
-        public BlockKitchenEntity(IntVec3 originGlobal)
-            : base(originGlobal)
+        public BlockKitchenEntity(BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
         {
             this.AddComp(new BlockEntityCompWorkstationOld(IsWorkstation.Types.Baking, IsWorkstation.Types.PlantProcessing));
             //this.AddComp(new BlockEntityCompDeconstructible());

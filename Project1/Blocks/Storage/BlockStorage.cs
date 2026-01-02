@@ -23,7 +23,7 @@ namespace Start_a_Town_
         }
         public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {
-            return new BlockStorageEntity(originGlobal);
+            return new BlockStorageEntity(this.BlockDef, originGlobal);
         }
         public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
         {

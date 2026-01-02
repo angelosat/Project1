@@ -4,8 +4,8 @@
     {
         class BlockPrefabEntity : BlockEntity
         {
-            public BlockPrefabEntity(IntVec3 originGlobal)
-                : base(originGlobal)
+            public BlockPrefabEntity(BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
             {
 
             }

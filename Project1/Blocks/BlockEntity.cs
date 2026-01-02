@@ -8,11 +8,12 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class BlockEntity : Inspectable, IDisposable//, IEntityCompContainer<BlockEntityComp>//, IHasChildren
+    public class BlockEntity : Inspectable, IDisposable, ISerializableNew<BlockEntity>, ISaveableNewNew<BlockEntity>//, IEntityCompContainer<BlockEntityComp>//, IHasChildren
     {
         public string Name = nameof(BlockEntity);
         public HashSet<IntVec3> CellsOccupied = [];
         public MapBase Map;
+        public BlockDef Def { get; private set; }
         public bool Exists => this.Map is not null;
 
         //public virtual IEnumerable<IntVec3> InteractionSpots { get { yield break; } }
@@ -24,11 +25,12 @@ namespace Start_a_Town_
         public readonly BlockEntityCompCollection Comps;// = new();
         public ObservableCollection<string> Errors = new();
     
-        public BlockEntity(IntVec3 originGlobal)
+        public BlockEntity(BlockDef def, IntVec3 originGlobal)
         {
             this.Comps = new(this);
             this.OriginGlobal = originGlobal;
             this.CellsOccupied.Add(originGlobal);
+            this.Def = def;
         }
 
         public virtual void Tick(MapBase map, IntVec3 global)
@@ -109,6 +111,7 @@ namespace Start_a_Town_
         public SaveTag Save(string name)
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
+            tag.Save("Def", this.Def);
             tag.Save("CellsOccupied", this.CellsOccupied);
             tag.Save("OriginGlobal", this.OriginGlobal);
             tag.Add(this.Comps.Save("Components"));
@@ -118,14 +121,23 @@ namespace Start_a_Town_
         public void Load(SaveTag tag)
         {
             tag.TryGetTag("Components", this.Comps.Load);
-            tag.TryGetTagValue<Vector3>("OriginGlobal", v => this.OriginGlobal = v);
+            //tag.TryGetTagValue<IntVec3>("OriginGlobal", v => this.OriginGlobal = v);
             this.CellsOccupied.Load(tag, "CellsOccupied");
             this.LoadExtra(tag);
+        }
+        public static BlockEntity Create(SaveTag tag)
+        {
+            var def = tag.LoadDef<BlockDef>("Def");
+            var global = tag.LoadIntVec3("OriginGlobal");
+            var entity = def.CreateEntity(global);
+            entity.Load(tag);
+            return entity;
         }
         protected virtual void LoadExtra(SaveTag tag) { }
         
         public void Write(IDataWriter w)
         {
+            w.Write(this.Def);
             w.Write(this.OriginGlobal);
             this.CellsOccupied.Write(w);
 
@@ -133,13 +145,24 @@ namespace Start_a_Town_
                 c.Write(w);
             this.WriteExtra(w);
         }
-        public void Read(IDataReader r)
+        public BlockEntity Read(IDataReader r)
         {
-            this.OriginGlobal = r.ReadIntVec3();
+            //this.Def = r.ReadDef<BlockDef>();
+            //this.OriginGlobal = r.ReadIntVec3();
             this.CellsOccupied.Read(r);
             foreach (var c in this.Comps.Values)
                 c.Read(r);
             this.ReadExtra(r);
+            return this;
+        }
+
+        public static BlockEntity Create(IDataReader r)
+        {
+            var def = r.ReadDef<BlockDef>();
+            var global = r.ReadIntVec3();
+            var entity = def.CreateEntity(global);
+            entity.Read(r);
+            return entity;
         }
         protected virtual void WriteExtra(IDataWriter w) { }
         protected virtual void ReadExtra(IDataReader r) { }
@@ -231,5 +254,7 @@ namespace Start_a_Town_
             this.CellsOccupied.Add(global);
             this.Map.AddBlockEntity(global, this);
         }
+
+        
     }
 }

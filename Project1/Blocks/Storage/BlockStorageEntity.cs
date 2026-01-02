@@ -19,8 +19,8 @@ namespace Start_a_Town_
             public bool IsFull => this.Contents.Count == this.Capacity;
 
             MapBase IStorage.Map => this.Map;
-            public BlockStorageEntity(IntVec3 originGlobal)
-                : base(originGlobal)
+            public BlockStorageEntity(BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
             { 
             }
             public bool Accepts(Entity item)

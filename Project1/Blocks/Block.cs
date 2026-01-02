@@ -300,7 +300,7 @@ namespace Start_a_Town_
         }
 
         public IntVec3 Size = IntVec3.One;
-        public ConstructionProfile ConstructionProfile;
+        //public ConstructionProfile ConstructionProfile;
         public BuildProperties BuildProperties = new();
         public FurnitureDef Furniture;
         public List<Utility.Types> UtilitiesProvided = new();
@@ -962,12 +962,12 @@ namespace Start_a_Town_
 
         public IEnumerable<ConstructionDesignationArgs> GetConstructionOptions()
         {
-            var profile = this.ConstructionProfile;
+            var profile = this.BlockDef.ConstructionProfile;
             foreach (var refinement in profile.Refinements)
             {
                 var validMats = Def.GetDefs<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
                 foreach (var mat in validMats)
-                    yield return new ConstructionDesignationArgs(this, refinement, mat, ItemDefOf.Ingredient.StackCapacity); // HACK
+                    yield return new ConstructionDesignationArgs(this.BlockDef, refinement, mat, ItemDefOf.Ingredient.StackCapacity); // HACK
             }
         } 
         public class DefaultState : IBlockState

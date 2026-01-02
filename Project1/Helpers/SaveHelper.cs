@@ -281,6 +281,10 @@ namespace Start_a_Town_
         {
             save.Add(value.Save(name));
         }
+        public static void Save(this SaveTag save, string name, string value)
+        {
+            save.Add(value.Save(name));
+        }
         public static void Save(this byte value, SaveTag save, string name)
         {
             save.Add(value.Save(name));
@@ -1077,10 +1081,8 @@ namespace Start_a_Town_
                 dic.Add(i.k, i.v);
             return dic;
         }
-
-        public static void Save<T>(this SaveTag tag, ICollection<T> list) where T : ISaveableNewNew<T>
-        {
-
-        }
+        
+        public static void Save(this SaveTag tag, string name, Def def) => tag.Save(name, def.Name);
+        
     }
 }

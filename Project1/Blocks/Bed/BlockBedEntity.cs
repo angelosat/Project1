@@ -15,8 +15,8 @@ namespace Start_a_Town_
         public int CurrentOccupant = -1;
         public Actor Owner;
         public Types Type = Types.Citizen;
-        public BlockBedEntity(IntVec3 originGlobal)
-            : base(originGlobal)
+        public BlockBedEntity(BlockDef def, IntVec3 originGlobal)
+            : base(def, originGlobal)
         {
 
         }

@@ -38,7 +38,7 @@ namespace Start_a_Town_
             a.Write(w);
             if (!a.Removing)
             {
-                w.Write(args.Block.BlockDef);
+                w.Write(args.Block);
                 w.Write(args.Refinement);
                 w.Write(args.Material);
                 w.Write(args.Orientation);
@@ -49,13 +49,13 @@ namespace Start_a_Town_
         {
             var r = pck.PacketReader;
             var args = new ToolBlockBuild.Args(r);
-            Block block = null;
+            BlockDef block = null;
             MaterialRefinementDef refinement = null;
             MaterialDef material = null;
             byte orientation;
             if (!args.Removing)
             {
-                block = r.ReadDef<BlockDef>().Worker;
+                block = r.ReadDef<BlockDef>();
                 refinement = r.ReadDef<MaterialRefinementDef>();
                 material = r.ReadDef<MaterialDef>();
                 orientation = r.ReadByte();
@@ -69,14 +69,5 @@ namespace Start_a_Town_
             return;
         }
     }
-    public struct ConstructionDesignationArgs(Block block, MaterialRefinementDef refinement, MaterialDef material, int amount, byte orientation = 0)
-    {
-        //public List<IntVec3> Positions = positions;
-        public Block Block = block;
-        public MaterialRefinementDef Refinement = refinement;
-        public MaterialDef Material = material;
-        public int Amount = amount;
-        public byte Orientation = orientation;
-        public override string ToString() => $"{this.Material.Label} {this.Refinement.Label} x{this.Amount}";
-    }
+  
 }

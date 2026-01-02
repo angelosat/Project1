@@ -23,15 +23,15 @@ namespace Start_a_Town_
             }
             public Progress BuildProgress { get; set; }
             public List<IntVec3> Children { get; set; } = new List<IntVec3>();
-            public BlockDesignationEntity(IntVec3 origin)
-                : base(origin)
+            public BlockDesignationEntity(BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
             {
 
             }
-            public BlockDesignationEntity(ProductMaterialPair product, IntVec3 origin)
-                : this(origin)
+            public BlockDesignationEntity(ProductMaterialPair product, BlockDef def, IntVec3 originGlobal)
+                : base(def, originGlobal)
             {
-                this.OriginGlobal = origin;
+                //this.OriginGlobal = origin;
                 this.Product = product;
             }
 

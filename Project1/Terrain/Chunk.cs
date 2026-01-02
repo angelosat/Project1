@@ -1491,11 +1491,11 @@ namespace Start_a_Town_
 
                     if (this.Contains(origin))
                     {
-                        var block = this[origin.ToLocal()].Block;
-                        //var entity = BlockEntityFactory.Create(block, origin);
-                        var entity = block.BlockDef.CreateEntity(origin);
-
-                        tag.TryGetTag("Entity", entity.Load);
+                        //var block = this[origin.ToLocal()].Block;
+                        //var entity = block.BlockDef.CreateEntity(origin);
+                        //tag.TryGetTag("Entity", entity.Load);
+                        //entity.Def = block.BlockDef;
+                        var entity = BlockEntity.Create(tag["Entity"]);
 
                         foreach (var global in entity.CellsOccupied)
                         {
@@ -1530,7 +1530,6 @@ namespace Start_a_Town_
                 w.Write(entity.OriginGlobal);
                 if (this.Contains(entity.OriginGlobal))
                 {
-                    w.Write(ent.Key.GetType().FullName);
                     ent.Key.Write(w);
                 }
                 else
@@ -1547,11 +1546,9 @@ namespace Start_a_Town_
                 var originGlobal = r.ReadIntVec3();
                 if (this.Contains(originGlobal))
                 {
-                    var str = r.ReadString();
-                    //var entity = Activator.CreateInstance(Type.GetType(str), originGlobal) as BlockEntity;
-                    //var entity = this.GetLocalCell(originGlobal.ToLocal()).Block.CreateEntity(originGlobal);
-                    var entity = this.GetLocalCell(originGlobal.ToLocal()).Block.BlockDef.CreateEntity(originGlobal);
-                    entity.Read(r);
+                    //var entity = this.GetLocalCell(originGlobal.ToLocal()).Block.BlockDef.CreateEntity(originGlobal);
+                    //entity.Read(r);
+                    var entity = BlockEntity.Create(r);
                     foreach (var global in entity.CellsOccupied)
                     {
                         if (this.Contains(global))

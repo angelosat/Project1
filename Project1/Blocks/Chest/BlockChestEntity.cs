@@ -10,8 +10,8 @@ namespace Start_a_Town_
             public Container Container;
 
 
-            public BlockChestEntity(IntVec3 originGlobal, int capacity)
-                : base(originGlobal)
+            public BlockChestEntity(BlockDef def, IntVec3 originGlobal, int capacity)
+                : base(def, originGlobal)
             {
                 this.Container = new Container(capacity) { Name = "Container" };
             }

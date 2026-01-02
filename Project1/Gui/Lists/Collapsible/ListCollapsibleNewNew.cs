@@ -22,12 +22,15 @@ namespace Start_a_Town_.UI
                 foreach (var entry in group.Entries)
                 {
                     //var nodeContainer = new GroupBox() { Name = "container", BackgroundColor = UIManager.DefaultListItemBackgroundColor };
-                    var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxNew() { IsToggledFunc = entry.IsAllowed, LeftClickAction = entry.Toggle });
+                    var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxNew() { TickedFunc = entry.IsAllowed, LeftClickAction = entry.Toggle });
+                    //var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxTest("", entry.IsAllowed, entry.Toggle));
                     entryNode.Control = Build(entryNode);
                     foreach (var child in entry.Children)
                     {
                         //var entryContainer = new GroupBox() { Name = "item" };
-                        entryNode.AddLeaf(new CheckBoxNew(child.Label) { IsToggledFunc = child.IsAllowed, LeftClickAction = child.Toggle });
+                        var chk = new CheckBoxNew(child.Label) { TickedFunc = child.IsAllowed, LeftClickAction = child.Toggle };
+                        //var chk = new CheckBoxTest(child.Label, child.IsAllowed, child.Toggle);
+                        entryNode.AddLeaf(chk);
                     }
                     entryNode.ChildrenGroupBox.AlignTopToBottom();
                     //groupNode.AddNode(entryNode);

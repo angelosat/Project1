@@ -1,21 +1,55 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
+using System;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     class PacketsCrafting
     {
-        readonly static int _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder, _pOrderUpdated;
+        readonly static int _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder, _pOrderUpdated, _pPlayerModifiedOrderFilters;
         static PacketsCrafting()
         {
             _pPlayerCreatedOrder = Registry.PacketHandlers.Register(OnPlayerCreatedOrder);
             _pPlayerDeletedOrder = Registry.PacketHandlers.Register(OnPlayerDeletedOrder);
             _pPlayerModifiedOrder = Registry.PacketHandlers.Register(OnPlayerModifiedOrder);
+            _pPlayerModifiedOrderFilters = Registry.PacketHandlers.Register(OnPlayerModifiedOrderFilters);
             _pOrderUpdated = Registry.PacketHandlers.Register(OnCraftOrderUpdated);
             Registry.PlayerInputEventHooks.Register<PlayerIssuedCraftOrderEvent>(HandlePlayerIssuedCraftOrderEvent);
+            Registry.PlayerInputEventHooks.Register<PlayerModifiedOrderFiltersEvent>(HandlePlayerModifiedOrderFilters);
             Registry.MapEventHooksServer.Register<CraftOrderCompletedEvent>(HandleCraftOrderCompletedEvent);
         }
+        private static void HandlePlayerModifiedOrderFilters(PlayerModifiedOrderFiltersEvent e)
+        {
+            //e.Order.Workstation.Map.Net.BeginPacket(_pPlayerModifiedOrderFilters)
+            //    .Write(e.Order.Id)
+            //    .Write(e.Bone)
+            //    .Write(e.Refinement)
+            //    .Write(e.Material?.Name ?? "");
+            SendPlayerModifiedOrderFilters(Client.Instance, e.Order, e.Bone, e.Refinement, e.Material);
+        }
+        static void SendPlayerModifiedOrderFilters(NetEndpoint net, OrderSettings order, BoneDef bone, MaterialRefinementDef form, MaterialDef material)
+        {
+            net.BeginPacket(_pPlayerModifiedOrderFilters)
+                .Write(order.Id)
+                .Write(bone)
+                .Write(form)
+                .Write(material?.Name ?? "");
+        }
+        private static void OnPlayerModifiedOrderFilters(NetEndpoint endpoint, Packet packet)
+        {
+            var r = packet.PacketReader;
+            var order = endpoint.Map.Town.CraftingManagerNew.GetOrder(r.ReadInt32());
+            var bone = r.ReadDef<BoneDef>();
+            var refinement = r.ReadDef<MaterialRefinementDef>();  //r.ReadString() is string refName && !refName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<MaterialRefinementDef>(refName) : null;
+            var material = r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<MaterialDef>(matName) : null;
+            order.Toggle(bone, refinement, material);
+            if (endpoint is Server)
+                SendPlayerModifiedOrderFilters(endpoint, order, bone, refinement, material);
+        }
+
+        
+
         private static void HandleCraftOrderCompletedEvent(CraftOrderCompletedEvent e)
         {
             e.Order.Workstation.Map.Net.BeginPacket(_pOrderUpdated)

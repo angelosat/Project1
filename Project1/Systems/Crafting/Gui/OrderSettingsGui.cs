@@ -58,23 +58,10 @@ namespace Start_a_Town_
             this.btnDetails.AnchorNew = Anchors.Bottom | Anchors.Right;
             this.AddControls(btnDetails);
 
-            //return box;
-
-            //void ToggleDetails()
-            //{
-            //    if (DetailsWindow is null)
-            //        DetailsWindow = new Window() { Movable = true, Closable = true };
-            //    DetailsWindow.Client.ClearControls();
-            //    DetailsWindow.Client.AddControls(this.DetailsGui);
-            //    DetailsWindow.SetTitle(this.Name);
-            //    if (DetailsWindow.Show())
-            //        DetailsWindow.Location = UIManager.Mouse;
-            //}
-
         }
         void ToggleDetails()
         {
-            var win = new OrderSettingsGuiDetails(this.Settings).ToWindow();
+            var win = new OrderSettingsGuiDetails(this.Settings).ToWindow("Filters");
             win.ToggleSmart();
         }
         public override void OnLayout(int availableWidth, int availableHeight)

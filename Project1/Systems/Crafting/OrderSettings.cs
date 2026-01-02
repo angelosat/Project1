@@ -37,18 +37,43 @@ namespace Start_a_Town_
         public Def ProductDef { get; internal set; }
         public BlockWorkstationComp Workstation { get; internal set; }
         public string Label => this.ProductDef.Label;
-
-        public IEnumerable<BoneDef> GetSlotMapping() => CraftingSystem.GetSlotMapping(this.ProductDef);
-        OrderSettings()
+        public Dictionary<BoneDef, HashSet<MaterialDef>> Filters = [];
+        public bool IsAllowed(BoneDef bone, MaterialDef mat) => !this.Filters[bone].Contains(mat);
+        public bool IsAllowed(BoneDef bone, MaterialRefinementDef form) => RawMaterialSystem.MaterialsByType[form.MaterialType].All(mat => !this.Filters[bone].Contains(mat));
+        internal void Toggle(BoneDef bone, MaterialRefinementDef form, MaterialDef material)
         {
-            
+            var filters = this.Filters[bone];
+            if(material is not null)
+            {
+                if (filters.Contains(material))
+                    filters.Remove(material);
+                else
+                    filters.Add(material);
+            }
+            else
+            {
+                var allMats = RawMaterialSystem.MaterialsByType[form.MaterialType];
+                if (allMats.Any(filters.Contains))
+                    foreach (var mat in allMats)
+                        filters.Remove(mat);
+                else
+                    foreach (var mat in allMats)
+                        filters.Add(mat);
+            }
         }
-        public OrderSettings(int id, BlockWorkstationComp owner, Def recipe)
+        public IEnumerable<BoneDef> GetSlotMapping() => CraftingSystem.GetSlotMapping(this.ProductDef);
+        OrderSettings(Def recipe)
+        {
+            this.ProductDef = recipe;
+            this.CreateFilters();
+        }
+        public OrderSettings(int id, BlockWorkstationComp owner, Def recipe) : this(recipe)
         {
             this.Id = id;
             this.Skill = CraftingSystem.GetCraftingSkill(recipe);
-            this.ProductDef = recipe;
+            //this.ProductDef = recipe;
             this.Workstation = owner;
+            //this.CreateFilters();
         }
         public OrderSettings(int id, BlockWorkstationComp owner, MaterialRefinementDef refinement)
         {
@@ -56,6 +81,11 @@ namespace Start_a_Town_
             this.Skill = refinement.MaterialType.SkillToRefine;
             this.Refinement = refinement;
             this.Workstation = owner;
+        }
+        void CreateFilters()
+        {
+            foreach(var rule in CraftingSystem.GetCraftingRules(this.ProductDef))
+                this.Filters.Add(rule.bone, []);
         }
         public IEnumerable<IngredientRequirement> GetIngredientRequirementsOld()
         {
@@ -126,11 +156,11 @@ namespace Start_a_Town_
 
         public static OrderSettings Create(SaveTag tag)
         {
-            var order = new OrderSettings();
+            var order = new OrderSettings(tag.LoadDef<Def>("Product"));
             if (tag.TryLoadInt("Id", out var id)) order.Id = id;
             if (tag.TryLoadInt("Mode", out var mode)) order.Mode = (CraftMode)mode;
             if (tag.TryLoadInt("Amount", out var amount)) order.Amount = amount;
-            if (tag.TryLoadDefOut<Def>("Product", out var def)) order.ProductDef = def;
+            //if (tag.TryLoadDefOut<Def>("Product", out var def)) order.ProductDef = def;
             return order;
         }
 
@@ -139,22 +169,25 @@ namespace Start_a_Town_
             this.Id = r.ReadInt32();
             this.Mode = (CraftMode)r.ReadInt32();
             this.Amount = r.ReadInt32();
-            this.ProductDef = r.ReadDef();
+            //this.ProductDef = r.ReadDef();
             return this;
         }
 
         public void Write(IDataWriter w)
         {
+            w.Write(this.ProductDef);
             w.Write(this.Id);
             w.Write((int)this.Mode);
             w.Write(this.Amount);
-            w.Write(this.ProductDef);
         }
 
         public static OrderSettings Create(IDataReader r)
         {
-            return new OrderSettings().Read(r);
+            var product = r.ReadDef();
+            return new OrderSettings(product).Read(r);
         }
+
+        
     }
     public record IngredientRequirementNew(HashSet<MaterialRefinementDef> Refinements, int Quantity, IntVec3 Slot, List<Entity> InSlot)
     {

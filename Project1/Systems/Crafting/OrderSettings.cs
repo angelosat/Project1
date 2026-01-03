@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Start_a_Town_.OrderSettings.OrderFeasibilityResult;
 
 namespace Start_a_Town_
 {
@@ -38,6 +39,9 @@ namespace Start_a_Town_
         public BlockWorkstationComp Workstation { get; internal set; }
         public string Label => this.ProductDef.Label;
         public Dictionary<BoneDef, HashSet<MaterialDef>> Filters = [];
+        public Dictionary<BoneDef, IngredientRequirementNew> FiltersNew = [];
+        public Dictionary<BoneDef, CraftingRule> Rules = [];
+        Dictionary<BoneDef, MaterialDef[]> AcceptableMaterials = [];
         public bool IsAllowed(BoneDef bone, MaterialDef mat) => !this.Filters[bone].Contains(mat);
         public bool IsAllowed(BoneDef bone, MaterialRefinementDef form) => RawMaterialSystem.MaterialsByType[form.MaterialType].All(mat => !this.Filters[bone].Contains(mat));
         internal void Toggle(BoneDef bone, MaterialRefinementDef form, MaterialDef material)
@@ -60,6 +64,7 @@ namespace Start_a_Town_
                     foreach (var mat in allMats)
                         filters.Add(mat);
             }
+            this.CacheAcceptableMaterials(bone);
         }
         public IEnumerable<BoneDef> GetSlotMapping() => CraftingSystem.GetSlotMapping(this.ProductDef);
         OrderSettings(Def recipe)
@@ -71,9 +76,7 @@ namespace Start_a_Town_
         {
             this.Id = id;
             this.Skill = CraftingSystem.GetCraftingSkill(recipe);
-            //this.ProductDef = recipe;
             this.Workstation = owner;
-            //this.CreateFilters();
         }
         public OrderSettings(int id, BlockWorkstationComp owner, MaterialRefinementDef refinement)
         {
@@ -84,9 +87,33 @@ namespace Start_a_Town_
         }
         void CreateFilters()
         {
-            foreach(var rule in CraftingSystem.GetCraftingRules(this.ProductDef))
-                this.Filters.Add(rule.bone, []);
+            foreach (var rule in CraftingSystem.GetCraftingRulesStruct(this.ProductDef))
+            {
+                this.Rules.Add(rule.Bone, rule);
+                this.Filters.Add(rule.Bone, []);
+                CacheAcceptableMaterials(rule.Bone);
+            }
         }
+
+        private void CacheAcceptableMaterials(BoneDef bone)
+        {
+            this.AcceptableMaterials[bone] =
+                                this.Rules[bone].Forms
+                                    .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
+                                    .Where(m => !Filters[bone].Contains(m))
+                                    .ToArray();
+        }
+
+        //void CreateFiltersNew()
+        //{
+        //    var n = 0;
+        //    var slots = this.Workstation.Parent.CellsOccupied.ToArray();
+        //    foreach (var (bone, validRefinements, quantity) in CraftingSystem.GetCraftingRules(this.ProductDef))
+        //    {
+        //        var slot = slots[n++].Above;
+        //        this.FiltersNew.Add(bone, new([.. validRefinements], quantity, slot, [.. this.Workstation.Map.GetEntitiesAt(slot)]));
+        //    }
+        //}
         public IEnumerable<IngredientRequirement> GetIngredientRequirementsOld()
         {
             yield return new(ItemDefOf.Ingredient, this.Refinement.Source, 1, this.Workstation.Global.Above, RawMaterialSystem.MaterialsByType[this.Refinement.MaterialType]);
@@ -99,7 +126,372 @@ namespace Start_a_Town_
             {
                 var slot = slots[n++].Above;
                 yield return new([.. validRefinements], quantity, slot, [.. this.Workstation.Map.GetEntitiesAt(slot)]);
-            } 
+            }
+        }
+        (IntVec3 cell, IEnumerable<Entity> cellEntities) GetEntitiesAtWorkstationSlot(BoneDef bone)
+        {
+            var slots = this.Workstation.Parent.CellsOccupied.ToArray();
+            var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef).ToList();
+            var slotId = rules.FindIndex(r => r.Bone == bone);
+            var slot = slots[slotId].Above;
+            return (slot, this.Workstation.Map.GetEntitiesAt(slot));
+        }
+        public bool Matches(Entity item)
+        {
+            var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef);
+            foreach(var rule in rules)
+            {
+                if (!rule.Matches(item, out _))
+                    return false;
+                if (this.Filters[rule.Bone].Contains(item.PrimaryMaterial))
+                    return false;
+            }
+            return true;
+        }
+        public bool MatchesPartial(Entity item, out int demand)
+        {
+            if (item.Def == ItemDefOf.Ingredient)
+            {
+                var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef);
+                foreach (var rule in rules)
+                {
+                    if (!rule.Matches(item, out _) && this.Filters[rule.Bone].Contains(item.PrimaryMaterial))
+                        continue;
+                    demand = rule.Quantity;
+                    var slotEntities = this.GetEntitiesAtWorkstationSlot(rule.Bone);
+                    foreach (var inSlot in slotEntities.cellEntities)
+                        if (rule.Matches(inSlot, out var alreadyCovered))
+                            demand -= alreadyCovered;
+                    if (demand > 0)
+                        return true;
+                }
+            }
+            demand = -1;
+            return false;
+        }
+        public IEnumerable<Entity> AlreadyBoundInSlots()
+        {
+            foreach (var (bone, rule) in this.Rules)
+            {
+                var items = this.GetEntitiesAtWorkstationSlot(bone);
+                foreach (var item in items.cellEntities)
+                    if (rule.Matches(item, out _))
+                        yield return item;
+            }
+        }
+        public bool IsReadyToCraft(out List<Entity> handled)
+        {
+            handled = new();
+            foreach (var (bone, rule) in this.Rules)
+            {
+                var items = this.GetEntitiesAtWorkstationSlot(bone);
+                handled.AddRange(items.cellEntities);
+                if (!items.cellEntities.Any(item => rule.Matches(item, out var missing) && missing == 0))
+                    return false;
+            }
+            return true;
+        }
+        //public bool IsFeasibleNew(IReadOnlyList<Entity> items, out (Entity bestEntity, int bestAmount) allocation)
+        //{
+        //    allocation = default;
+        //    Dictionary<MaterialDef, MaterialPoolEntry> pool = [];
+        //    Dictionary<Entity, IntVec3> entityToSlot = [];
+        //    foreach (var i in items)
+        //    {
+        //        if(!pool.TryGetValue(i.PrimaryMaterial, out var entry))
+        //        {
+        //            entry = new();
+        //            pool[i.PrimaryMaterial] = entry;
+        //        }
+        //        entry.Available += i.StackSize;
+        //        entry.Candidates.Add(i);
+        //    }
+        //    // sort rules by more restrictive first
+        //    var sortedRules = this.Rules.Values
+        //        .OrderBy(rule => rule.Forms.SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType]).Count(m => !this.Filters[rule.Bone].Contains(m)));
+        //    foreach (var rule in sortedRules)
+        //    {
+        //        var disallowed = this.Filters[rule.Bone];
+
+        //        var matchedMaterial = rule.Forms
+        //            .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
+        //            .Where(m => !this.Filters[rule.Bone].Contains(m))
+        //            .FirstOrDefault(m => pool.TryGetValue(m, out var c) && c.Available >= rule.Quantity);
+
+        //        if (matchedMaterial is null)
+        //            return false; // slot cannot be satisfied
+
+        //        var entry = pool[matchedMaterial];
+        //        entry.Available -= rule.Quantity; // consume
+        //        if (allocation.bestEntity is null)
+        //        {
+        //            var nextItem = entry.Candidates.First();
+        //            allocation = (nextItem, Math.Min(rule.Quantity, nextItem.StackSize));
+        //        }
+        //    }
+        //    return true;
+        //}
+        public OrderFeasibilityResult IsFeasibleNew(
+            IReadOnlyList<Entity> candidates, 
+            HashSet<IntVec3> excludedSlots,
+            Entity preferredEntity // usually the carried item, or null
+        )
+        {
+            var result = new OrderFeasibilityResult();
+
+            // 1. Build pool by material
+            var pool = new Dictionary<(MaterialDef, Def), MaterialPoolEntry>();
+            foreach (var e in candidates)
+            {
+                if (!pool.TryGetValue((e.PrimaryMaterial, e.Profile), out var entry))
+                {
+                    entry = new MaterialPoolEntry();
+                    pool[(e.PrimaryMaterial, e.Profile)] = entry;
+                }
+                entry.Available += e.StackSize;
+                entry.Candidates.Add(e);
+            }
+
+
+            // 2. Sort rules by restrictiveness (fewest valid materials first)
+            var sortedRules = this.Rules.Values
+                .OrderBy(rule => GetAcceptableMaterials(rule.Bone).Length);
+
+            // 3. Allocate each slot
+            foreach (var rule in sortedRules)
+            {
+                var acceptableMaterials = GetAcceptableMaterials(rule.Bone);
+
+                // 3a. Check if slot already satisfied by in-slot entity
+                var (slotCell, slotEntities) = GetEntitiesAtWorkstationSlot(rule.Bone);
+                if (slotEntities.FirstOrDefault(e => rule.Matches(e, out _)) is Entity inSlot)
+                {
+                    //result.FilledSlots.Add(slotCell);
+                    result.ArmedSlots.Add((slotCell, inSlot));
+                    continue;
+                }
+
+                // Skip this slot if it’s excluded (already being deposited into by another actor)
+                if (excludedSlots.Contains(slotCell))
+                    continue;
+
+                if (preferredEntity != null &&
+                    rule.Matches(preferredEntity, out _) &&
+                    pool.TryGetValue((preferredEntity.PrimaryMaterial, preferredEntity.Profile), out var entry) &&
+                    entry.Available > 0)
+                {
+                    entry.Available -= rule.Quantity;
+
+                    // Record allocation
+                    result.Allocations.Add(new Allocation
+                    {
+                        Entity = preferredEntity,
+                        Slot = slotCell,
+                        Quantity = Math.Min(rule.Quantity, preferredEntity.StackSize)
+                    });
+                    continue;
+                }
+
+                // 3b. Find a material that can satisfy this slot
+                //var matchedMaterial = acceptableMaterials
+                //    .FirstOrDefault(m => pool.TryGetValue((m, out var p) && p.Available >= rule.Quantity);
+
+                //if (matchedMaterial == null)
+                //{
+                //    // This slot cannot be satisfied; order is infeasible
+                //    result.State = CraftingOrderState.NotEnoughItems;
+                //    return result;
+                //}
+
+                //// 3c. Consume from pool
+                //var matEntry = pool[matchedMaterial];
+                var matchedMaterialForm = GetAcceptableMaterialForms(rule.Bone)
+    .FirstOrDefault(mf => pool.TryGetValue(mf, out var entry) && entry.Available >= rule.Quantity);
+
+                if (matchedMaterialForm == default)
+                {
+                    result.State = CraftingOrderState.NotEnoughItems;
+                    return result;
+                }
+
+                var matEntry = pool[matchedMaterialForm];
+                matEntry.Available -= rule.Quantity;
+
+                // 3d. Pick candidate entity to satisfy this slot
+                var nextEntity = matEntry.Candidates.First();
+                var allocatedQuantity = Math.Min(rule.Quantity, nextEntity.StackSize);
+
+                result.Allocations.Add(new OrderFeasibilityResult.Allocation
+                {
+                    Entity = nextEntity,
+                    Slot = slotCell,
+                    Quantity = allocatedQuantity
+                });
+            }
+
+            // 4. Determine overall state
+            //result.State = result.FilledSlots.Count == this.Rules.Count
+            //    ? CraftingOrderState.ReadyToCraft
+            //    : CraftingOrderState.NeedsTransfer;
+            result.State =
+                result.ArmedSlots.Count == Rules.Count
+                    ? CraftingOrderState.ReadyToCraft
+                    : CraftingOrderState.NeedsTransfer;
+
+            return result;
+        }
+
+        public OrderFeasibilityResult IsFeasibleNewPrevious(IReadOnlyList<Entity> candidates)
+        {
+            var result = new OrderFeasibilityResult();
+
+            // 1. Build pool by material
+            var pool = new Dictionary<MaterialDef, MaterialPoolEntry>();
+            foreach (var e in candidates)
+            {
+                if (!pool.TryGetValue(e.PrimaryMaterial, out var entry))
+                {
+                    entry = new MaterialPoolEntry();
+                    pool[e.PrimaryMaterial] = entry;
+                }
+                entry.Available += e.StackSize;
+                entry.Candidates.Add(e);
+            }
+
+            // 2. Sort rules by restrictiveness (fewest valid materials first)
+            var sortedRules = this.Rules.Values
+                .OrderBy(rule => GetAcceptableMaterials(rule.Bone).Length);
+
+            // 3. Allocate each slot
+            foreach (var rule in sortedRules)
+            {
+                var acceptableMaterials = GetAcceptableMaterials(rule.Bone);
+
+                // 3a. Check if slot already satisfied by in-slot entity
+                var (slotCell, slotEntities) = GetEntitiesAtWorkstationSlot(rule.Bone);
+                if (slotEntities.FirstOrDefault(e => rule.Matches(e, out _)) is Entity inSlot)
+                {
+                    result.FilledSlots.Add(slotCell);
+                    continue;
+                }
+
+                // 3b. Find a material that can satisfy this slot
+                var matchedMaterial = acceptableMaterials
+                    .FirstOrDefault(m => pool.TryGetValue(m, out var p) && p.Available >= rule.Quantity);
+
+                if (matchedMaterial == null)
+                {
+                    result.State = CraftingOrderState.NotEnoughItems;
+                    return result; // slot impossible → order impossible
+                }
+
+                // 3c. Consume from pool
+                var matEntry = pool[matchedMaterial];
+                matEntry.Available -= rule.Quantity;
+
+                // 3d. Pick candidate entity to satisfy this slot
+                var nextEntity = matEntry.Candidates.First();
+                var allocatedQuantity = Math.Min(rule.Quantity, nextEntity.StackSize);
+
+                result.Allocations.Add(new OrderFeasibilityResult.Allocation
+                {
+                    Entity = nextEntity,
+                    Slot = slotCell,
+                    Quantity = allocatedQuantity
+                });
+            }
+
+            // 4. Determine overall state
+            result.State = result.FilledSlots.Count == this.Rules.Count
+                ? CraftingOrderState.ReadyToCraft
+                : CraftingOrderState.NeedsTransfer;
+
+            return result;
+        }
+
+        // Helper to get cached acceptable materials (dynamic filters)
+        private MaterialDef[] GetAcceptableMaterials(BoneDef bone)
+        {
+            if (!AcceptableMaterials.TryGetValue(bone, out var mats))
+            {
+                var rule = this.Rules[bone];
+                mats = rule.Forms
+                    .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
+                    .Where(m => !Filters[bone].Contains(m))
+                    .ToArray();
+                AcceptableMaterials[bone] = mats;
+            }
+            return mats;
+        }
+        // Helper to get cached acceptable materials (dynamic filters)
+        public (MaterialDef Material, MaterialRefinementDef Form)[] GetAcceptableMaterialForms(BoneDef bone)
+        {
+            return this.Rules[bone].Forms
+                .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType]
+                    .Where(m => !Filters[bone].Contains(m))
+                    .Select(m => (m, f))) // pair material + form
+                .ToArray();
+        }
+
+
+        public enum CraftingOrderState
+        {
+            NotEnoughItems,      // No ingredients available at all
+            NeedsTransfer,       // Ingredients exist on the map but not in slots
+            ReadyToCraft         // All required ingredients are already in slots
+        }
+        sealed class MaterialPoolEntry
+        {
+            public int Available;
+            public List<Entity> Candidates = new();
+            public Dictionary<Entity, int> Remaining = new();
+            public MaterialRefinementDef Form;
+        }
+
+        /// <summary>
+        /// Result returned to planner
+        /// </summary>
+        public class OrderFeasibilityResult
+        {
+            public CraftingOrderState State;
+            public List<IntVec3> FilledSlots = new(); // slots already satisfied
+                                                      // Slots that already contain valid ingredients
+            public List<(IntVec3 Slot, Entity Entity)> ArmedSlots = new();
+            public struct Allocation
+            {
+                public Entity Entity;
+                public IntVec3 Slot;
+                public int Quantity;
+            }
+
+            public List<Allocation> Allocations = new();
+        }
+
+
+        public bool IsFeasible(IReadOnlyList<Entity> items)
+        {
+            Dictionary<MaterialDef, int> pool = [];
+            foreach (var i in items)
+                pool[i.PrimaryMaterial] += i.StackSize;
+
+            // sort rules by more restrictive first
+            var sortedRules = this.Rules.Values
+                .OrderBy(rule => rule.Forms.SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType]).Count(m => !this.Filters[rule.Bone].Contains(m)));
+            foreach (var rule in sortedRules)
+            {
+                var disallowed = this.Filters[rule.Bone];
+
+                var matchedMaterial = rule.Forms
+                    .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
+                    .Where(m => !this.Filters[rule.Bone].Contains(m))
+                    .FirstOrDefault(m => pool.TryGetValue(m, out var c) && c >= rule.Quantity);
+
+                if (matchedMaterial is null)
+                    return false; // slot cannot be satisfied
+
+                pool[matchedMaterial] -= rule.Quantity; // consume
+            }
+            return true;
         }
         public bool CanActorPerform(Actor actor)
         {
@@ -160,7 +552,6 @@ namespace Start_a_Town_
             if (tag.TryLoadInt("Id", out var id)) order.Id = id;
             if (tag.TryLoadInt("Mode", out var mode)) order.Mode = (CraftMode)mode;
             if (tag.TryLoadInt("Amount", out var amount)) order.Amount = amount;
-            //if (tag.TryLoadDefOut<Def>("Product", out var def)) order.ProductDef = def;
             return order;
         }
 
@@ -169,7 +560,6 @@ namespace Start_a_Town_
             this.Id = r.ReadInt32();
             this.Mode = (CraftMode)r.ReadInt32();
             this.Amount = r.ReadInt32();
-            //this.ProductDef = r.ReadDef();
             return this;
         }
 

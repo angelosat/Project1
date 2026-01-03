@@ -200,6 +200,19 @@ namespace Start_a_Town_
         }
         internal bool ReserveAll(TargetIndex sourceIndex)
         {
+            // TODO: interperet amount by target type:
+            // for entities do if -1 then amount = entity.stacksize
+            // for intvec3 and blockentities, do amount  = 1
+            if (this.Plan.GetTarget(sourceIndex) is TargetArgs singleTarget && singleTarget != TargetArgs.Null)
+            {
+                var amountSpecified = this.Plan.GetAmount(sourceIndex);
+                var amountToReserve = singleTarget.Type switch
+                {
+                    TargetType.Entity => amountSpecified > 0 ? amountSpecified : singleTarget.Object.StackSize,
+                    _ => 1
+                };
+                this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, singleTarget, amountToReserve);
+            }
             var targets = this.Plan.GetTargetQueue(sourceIndex);
             var amounts = this.Plan.GetAmountQueue(sourceIndex);
             var count = targets.Count;

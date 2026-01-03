@@ -1150,6 +1150,8 @@ namespace Start_a_Town_
         public int StackAvailableSpace { get { return this.StackMax - this.StackSize; } }
         public bool CanAbsorb(GameObject otherItem, int amount = -1)
         {
+            ArgumentNullException.ThrowIfNull(otherItem);
+                
             if (this == otherItem)
                 return false;
 

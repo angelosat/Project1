@@ -65,6 +65,7 @@ namespace Start_a_Town_
                         filters.Add(mat);
             }
             this.CacheAcceptableMaterials(bone);
+            this.Workstation.Map.Events.Post(new CraftOrderUpdatedEvent(this));
         }
         public IEnumerable<BoneDef> GetSlotMapping() => CraftingSystem.GetSlotMapping(this.ProductDef);
         OrderSettings(Def recipe)

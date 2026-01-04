@@ -18,22 +18,18 @@ namespace Start_a_Town_.UI
             foreach (var group in groups)
             {
                 var groupNode = new ListBoxCollapsibleNode(group.Label);
-                //groupNode.Control = Build(groupNode);
                 foreach (var entry in group.Entries)
                 {
-                    //var nodeContainer = new GroupBox() { Name = "container", BackgroundColor = UIManager.DefaultListItemBackgroundColor };
-                    var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxNew() { TickedFunc = entry.IsAllowed, LeftClickAction = entry.Toggle });
-                    //var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxTest("", entry.IsAllowed, entry.Toggle));
+                    //var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxNew() { TickedFunc = entry.IsAllowed, LeftClickAction = entry.Toggle });
+                    var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxFinal("", entry.Toggle, entry.IsAllowed));
                     entryNode.Control = Build(entryNode);
                     foreach (var child in entry.Children)
                     {
-                        //var entryContainer = new GroupBox() { Name = "item" };
-                        var chk = new CheckBoxNew(child.Label) { TickedFunc = child.IsAllowed, LeftClickAction = child.Toggle };
-                        //var chk = new CheckBoxTest(child.Label, child.IsAllowed, child.Toggle);
+                        //var chk = new CheckBoxNew(child.Label) { TickedFunc = child.IsAllowed, LeftClickAction = child.Toggle };
+                        var chk = new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed);
                         entryNode.AddLeaf(chk);
                     }
                     entryNode.ChildrenGroupBox.AlignTopToBottom();
-                    //groupNode.AddNode(entryNode);
                     entryNode.Parent = groupNode;
                     groupNode.Children.Add(entryNode);
                     groupNode.AddLeaf(entryNode.Control);
@@ -48,9 +44,7 @@ namespace Start_a_Town_.UI
             {
                 node.Expanded = true;
                 node.Arrow.SetTexture(UIManager.ArrowDown);
-                //node.ChildGroupBox.Location = node.Control.BottomLeft + new Vector2(ListBoxCollapsibleNode.IndentWidth, Spacing);
                 node.ChildrenGroupBox.Location = new Vector2(ListBoxCollapsibleNode.IndentWidth, node.Control.Height + Spacing);
-                //node.ChildrenGroupBox.Location = new Vector2(0, node.Control.Height + Spacing);
                 node.Control.AddControls(node.ChildrenGroupBox);
             }
             else
@@ -63,9 +57,7 @@ namespace Start_a_Town_.UI
             var parent = node;
             while (parent is not null)
             {
-                ////parent.ChildrenGroupBox?.AlignTopToBottom(this.Spacing);
                 parent.ChildrenGroupBox.AlignTopToBottom(this.Spacing);
-                //parent.Control.AlignTopToBottom(this.Spacing);
                 parent = parent.Parent;
             }
             this.AlignTopToBottom(this.Spacing);

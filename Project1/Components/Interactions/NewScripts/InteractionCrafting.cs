@@ -11,7 +11,7 @@ namespace Start_a_Town_.Crafting
         {
             BlockWorkstationComp _comp;
             public BlockWorkstationComp Comp => this._comp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
-            public override float ProgressPercentage => this.Actor.Work.Task.Percentage;
+            public override float ProgressPercentage => this.Actor.Work.Task.PercentageComplete;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         public override bool CanFinish(InteractionContext ctx) => this.CanFinish((Context)ctx);
@@ -34,10 +34,13 @@ namespace Start_a_Town_.Crafting
         {
             this.SkillAwardType = SkillAwardTypes.OnFinish;
         }
-        public override float Percentage => this.TotalWorkAmount / 100; // HACK
-        internal override void AddProgress(int v)
+        public override float PercentageComplete => this.TotalWorkApplied / 100; // HACK
+        protected override void OnAddProgress(int v)
         {
-            this.TotalWorkAmount += v;
+            //this.OnApplyWork(v);
+            //this.TotalWorkAmount += v;
+            this._progress.Value += v;// 25;
+            //this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
         }
         protected override void Done()
         {
@@ -62,12 +65,12 @@ namespace Start_a_Town_.Crafting
             map.Spawn(product, workstation.Global.Above(), Vector3.Zero);
             order.CompletedBy(this.Actor);
         }
-        protected override void OnApplyWork(int workAmount)
-        {
-            this._progress.Value += workAmount;// 25;
-            this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, workAmount));
-        }
-        
+        //protected override void OnApplyWork(int workAmount)
+        //{
+        //    this._progress.Value += workAmount;// 25;
+        //    this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, workAmount));
+        //}
+
         internal override void ResolveReferences()
         {
             //this.Order = this.Actor.Map.GetBlockEntity(this.Target.Global).GetComp<BlockEntityCompWorkstationOld>().GetOrder(this.OrderID);

@@ -20,9 +20,8 @@ namespace Start_a_Town_
         internal virtual void OnToolContact()
         {
         }
-        public static void Initialize()
-        {
-        }
+        public void Initialize() => this.OnInitialize(this.Actor, this.Target); 
+        protected virtual void OnInitialize(Actor actor, TargetArgs target) { }
         public override string ToString()
         {
             return $"Interaction: {this.Name}";
@@ -147,7 +146,7 @@ namespace Start_a_Town_
             tooltip.Controls.Add(panel);
         }
 
-        public virtual float Percentage => (float)(1 - this.CurrentTick / this.Length);
+        public virtual float PercentageComplete => (float)(1 - this.CurrentTick / this.Length);
         public virtual void DrawUI(SpriteBatch sb, Camera camera)
         {
             var parent = this.Actor;
@@ -167,7 +166,7 @@ namespace Start_a_Town_
             var barLoc = scrLoc - new Vector2(InteractionBar.DefaultWidth / 2, InteractionBar.DefaultHeight / 2);
             var textLoc = new Vector2(barLoc.X, scrLoc.Y);
 
-            InteractionBar.Draw(sb, barLoc, InteractionBar.DefaultWidth, this.Percentage);
+            InteractionBar.Draw(sb, barLoc, InteractionBar.DefaultWidth, this.PercentageComplete);
             UIManager.DrawStringOutlined(sb, this.Verb, textLoc, Alignment.Horizontal.Left, Alignment.Vertical.Center, 0.5f);
         }
 
@@ -252,7 +251,12 @@ namespace Start_a_Town_
             this.BarLabel = label;
         }
 
-        internal virtual void AddProgress(int v) { }
+        internal void AddProgress(int v)
+        {
+            this.OnAddProgress(v);
+            this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
+        }
+        protected virtual void OnAddProgress(int v) { }
 
         public bool HasFinished => this.State == States.Finished;
     }

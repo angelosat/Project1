@@ -183,7 +183,6 @@ namespace Start_a_Town_
             foreach (var item in this.GameComponents)
                 item.Initialize();
 
-            Interaction.Initialize();
 
 
             // bake atlases

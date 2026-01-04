@@ -10,7 +10,7 @@ namespace Start_a_Town_
         protected enum SkillAwardTypes { OnSwing, OnFinish }
         protected ParticleEmitterSphere EmitterStrike;
         protected List<Rectangle> ParticleRects;
-        protected float TotalWorkAmount;
+        protected float TotalWorkApplied;
         protected virtual Progress ProgressNew { get; }
         protected InteractionToolUse(string name) : base(name)
         {
@@ -66,9 +66,8 @@ namespace Start_a_Town_
                 this.EmitterStrike.Emit(this.ParticleRects, Vector3.Zero);
                 actor.Map.ParticleManager.AddEmitter(this.EmitterStrike);
             }
-
-            this.OnApplyWork(amount);
-            this.TotalWorkAmount += amount;
+            this.AddProgress(amount);
+            this.TotalWorkApplied += amount;
 
             var skill = this.GetSkill();
 
@@ -90,7 +89,7 @@ namespace Start_a_Town_
             if (this.SkillAwardType == SkillAwardTypes.OnFinish)
             {
                 //throw new NotImplementedException();
-                actor.Skills.Increase(skill, (int)this.TotalWorkAmount);
+                actor.Skills.Increase(skill, (int)this.TotalWorkApplied);
             }
             this.Done();
             this.Finish();
@@ -101,7 +100,7 @@ namespace Start_a_Town_
         private void ApplyWork(int amount)
         {
             this.OnApplyWork(amount);
-            this.TotalWorkAmount += amount;
+            this.TotalWorkApplied += amount;
         }
 
        
@@ -123,47 +122,17 @@ namespace Start_a_Town_
         }
 
         //protected abstract float Progress { get; }
-        protected float Progress => this.Context.ProgressPercentage;
+        protected virtual float Progress => this.Context.ProgressPercentage;
         protected abstract float WorkDifficulty { get; }
         protected SkillAwardTypes SkillAwardType;//{ get; }
         protected virtual void Init() { }
-        protected abstract void OnApplyWork(int workAmount);
+        [Obsolete($"use {nameof(this.OnAddProgress)}")]
+        protected virtual void OnApplyWork(int workAmount) { }
         protected abstract void Done();
         protected abstract ToolUseDef GetToolUse();
         protected abstract SkillDef GetSkill();
         protected abstract List<Rectangle> GetParticleRects();
         protected abstract Color GetParticleColor();
-        //[EnsureStaticCtorCall]
-        //static class Packets
-        //{
-        //    static int _pTypeId, _pTypeOnUpdate;
-        //    static Packets()
-        //    {
-        //        _pTypeId = Registry.PacketHandlers.Register(Receive);
-        //    }
-        //    internal static void SyncOnUpdate(Actor actor, int amount)
-        //    {
-        //        var server = actor.Net as Server;
-        //        server.BeginPacket(_pTypeOnUpdate)
-        //            .Write(actor.RefId)
-        //            .Write(amount);
-        //    }
-        //    internal static void SyncApplyWork(Actor actor, int amount)
-        //    {
-        //        var server = actor.Net as Server;
-        //        server.BeginPacket(_pTypeId)
-        //            .Write(actor.RefId)
-        //            .Write(amount);
-        //    }
-        //    private static void Receive(NetEndpoint endpoint, Packet packet)
-        //    {
-        //        var client = endpoint as Client;
-        //        var r = packet.PacketReader;
-        //        var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
-        //        var amount = r.ReadInt32();
-        //        var task = actor.Work.Task as InteractionToolUse;
-        //        task.ApplyWork(amount);
-        //    }
-        //}
+        
     }
 }

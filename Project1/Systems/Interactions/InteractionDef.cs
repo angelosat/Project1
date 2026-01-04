@@ -18,6 +18,7 @@ namespace Start_a_Town_
             var interaction = ActivatorSafe<Interaction>.CreateInstance(this.InteractionClass);
             interaction.Def = this;
             interaction.Context = this.CreateContext(actor, target);
+            interaction.Initialize();
             return interaction;
         }
 

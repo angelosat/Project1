@@ -62,7 +62,10 @@ namespace Start_a_Town_.UI
                 if (this.MultipleSelected.FirstOrDefault(t => t.Object == e.Entity) is TargetArgs t)
                     this.MultipleSelected.Remove(t);
                 if (this.MultipleSelected.Count == 0)
+                {
                     this.PanelInfo.Hide();
+                    this.BoxTabs.Hide();
+                }
             }
         }
         private void OnBlockEntityRemoved(BlockEntityRemovedEvent e)
@@ -74,7 +77,10 @@ namespace Start_a_Town_.UI
                 if (this.MultipleSelected.FirstOrDefault(t => t.BlockEntity == e.Entity) is TargetArgs t)
                     this.MultipleSelected.Remove(t);
                 if (this.MultipleSelected.Count == 0)
+                {
                     this.PanelInfo.Hide();
+                    this.BoxTabs.Hide();
+                }
             }
         }
         private void OnZoneDeleted(ZoneDeletedEvent e)

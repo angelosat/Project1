@@ -29,11 +29,11 @@ namespace Start_a_Town_
             return data == 1;
         }
         
-        public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
+        public override bool TryConsume(GameObject actor, GameObject dropped, IntVec3 global, int amount = -1)
         {
             if (dropped.HasComponent<SeedComponent>())
             {
-                Plant(actor.Map, target.Global, dropped);
+                Plant(actor.Map, global, dropped);
                 return true;
             }
             return false;

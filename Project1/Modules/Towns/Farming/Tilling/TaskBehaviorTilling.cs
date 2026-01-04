@@ -9,7 +9,8 @@ namespace Start_a_Town_
         TargetArgs Target { get { return this.Plan.GetTarget(TargetInd); } }
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorResolvePath(PathEndMode.Touching);
+            yield return new BehaviorResolvePath(PathEndMode.Touching)
+                .FailOnPreInteractionCheck(this.Actor, this.Plan);
             yield return new BehaviorResolveInteraction();
         }
         protected IEnumerable<Behavior> GetStepsOld()

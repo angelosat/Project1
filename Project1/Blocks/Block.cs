@@ -771,7 +771,7 @@ namespace Start_a_Town_
        
         public virtual void OnSteppedOn(GameObject actor, IntVec3 global) { }
 
-        public virtual bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
+        public virtual bool TryConsume(GameObject actor, GameObject dropped, IntVec3 global, int amount = -1)
         {
             //if (actor.Net.IsClient)
             //    return;

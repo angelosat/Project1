@@ -45,13 +45,14 @@ namespace Start_a_Town_
        
         public sealed override void OnUpdate()
         {
+            if (this.Actor.Net.IsClient)
+                return;
             if (!this.CanPerform())
             {
                 this.Fail();
                 return;
             }
-            if (this.Actor.Net.IsClient)
-                return;
+        
             var actor = this.Actor;
             var t = this.Target;
             var toolEffect = GetToolEffectiveness();
@@ -66,6 +67,8 @@ namespace Start_a_Town_
                 this.EmitterStrike.Emit(this.ParticleRects, Vector3.Zero);
                 actor.Map.ParticleManager.AddEmitter(this.EmitterStrike);
             }
+            //if (this.Actor.Net.IsClient)
+            //    return;
             this.AddProgress(amount);
             this.TotalWorkApplied += amount;
 

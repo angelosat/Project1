@@ -1,0 +1,43 @@
+﻿using Start_a_Town_.Particles;
+using Microsoft.Xna.Framework;
+
+namespace Start_a_Town_
+{
+    [EnsureStaticCtorCall]
+    internal static class VFXParticles
+    {
+        static VFXParticles()
+        {
+            Registry.MapEventHooksClient.Register<BlockHitEvent>(OnBlockHit);
+        }
+
+        private static void OnBlockHit(BlockHitEvent e)
+        {
+            var map = e.Map;
+            var global = e.Global;
+            var emitter = new ParticleEmitterSphere
+            {
+                Source = global + IntVec3.UnitZ,
+                SizeBegin = 1,
+                SizeEnd = 1,
+                ParticleWeight = 1,
+                Radius = 1f,// .5f;
+                Force = .1f,
+                Friction = .5f,
+                AlphaBegin = 1,
+                AlphaEnd = 0,
+                //ColorBegin = particleColor,
+                //ColorEnd = particleColor,
+                Lifetime = Ticks.PerSecond * 2,
+                Rate = 0
+            };
+
+            var block = map.GetBlock(global);
+            //var emitter = block.GetEmitter();
+            emitter.Texture = Block.Atlas.Texture;
+            var rects = block.GetParticleRects(25);
+            emitter.Emit(rects, Vector3.Zero);
+            map.ParticleManager.AddEmitter(emitter);
+        }
+    }
+}

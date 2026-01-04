@@ -36,7 +36,7 @@ namespace Start_a_Town_
             switch (target.Type)
             {
                 case TargetType.Position:
-                    actor.Map.GetBlock(target.Global).TryConsume(actor, hauledObj, target, this.Amount == -1 ? hauledObj.StackSize : this.Amount);
+                    actor.Map.GetBlock(target.Global).TryConsume(actor, hauledObj, target.Global, this.Amount == -1 ? hauledObj.StackSize : this.Amount);
                     actor.CurrentTask?.AddPlacedObject(hauledObj);
                     break;
 

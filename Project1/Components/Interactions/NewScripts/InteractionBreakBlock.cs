@@ -39,7 +39,7 @@ namespace Start_a_Town_
         void ApplyWork(Context ctx, int workAmount)
         {
             ctx.Actor.Map.ApplyBlockWork(ctx.Target.Global, -workAmount);
-
+            ctx.Actor.Map.Events.Post(new BlockHitEvent(ctx.Target.Map, ctx.Target.Global));
             //ctx.Cell.Damage++;
             //var vec = ctx.Target.Global;
             //ctx.Actor.Map.GetChunk(vec).InvalidateSlice((byte)vec.Z);
@@ -78,24 +78,29 @@ namespace Start_a_Town_
             this.EmitterStrike.Texture = Block.Atlas.Texture;
             this.ParticleRects = this.GetParticleRects();
         }
-        protected override void OnApplyWork(int workAmount)
+        protected override void OnAddProgress(int v)
         {
-            this.Def.Logic.ApplyWork(this.Context, workAmount);
-            //if (this.Target.Cell.HitPoints == 0)
-            //    this.Done();
-            return;
-            this.AccumulatedWorkThisBreakStage += workAmount;
-            this.AccumulatedWorkTotal += workAmount;
-            var resistance = this.Cell.Material.BreakResistance;
-            if (this.AccumulatedWorkThisBreakStage >= resistance)
-            {
-                this.AccumulatedWorkThisBreakStage -= resistance;
-                this.Cell.Damage++;
-                var vec = this.Target.Global;
-                this.Actor.Map.GetChunk(vec).InvalidateSlice((byte)vec.Z);
-                this.AccumulatedWorkThisBreakStage -= resistance;
-            }
+            this.Def.Logic.ApplyWork(this.Context, v);
         }
+
+        //protected override void OnApplyWork(int workAmount)
+        //{
+        //    this.Def.Logic.ApplyWork(this.Context, workAmount);
+        //    //if (this.Target.Cell.HitPoints == 0)
+        //    //    this.Done();
+        //    return;
+        //    this.AccumulatedWorkThisBreakStage += workAmount;
+        //    this.AccumulatedWorkTotal += workAmount;
+        //    var resistance = this.Cell.Material.BreakResistance;
+        //    if (this.AccumulatedWorkThisBreakStage >= resistance)
+        //    {
+        //        this.AccumulatedWorkThisBreakStage -= resistance;
+        //        this.Cell.Damage++;
+        //        var vec = this.Target.Global;
+        //        this.Actor.Map.GetChunk(vec).InvalidateSlice((byte)vec.Z);
+        //        this.AccumulatedWorkThisBreakStage -= resistance;
+        //    }
+        //}
 
         protected override void Done()
         {

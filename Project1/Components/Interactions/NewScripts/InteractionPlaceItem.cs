@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Project1.Systems.Interactions;
 using Start_a_Town_.Animations;
 
 namespace Start_a_Town_
@@ -42,34 +43,16 @@ namespace Start_a_Town_
             switch (target.Type)
             {
                 case TargetType.Position:
-                    if (actor.Map.GetBlockEntity(global)?.TryConsume(hauledObj) ?? false)
-                        return;
-                    if (actor.Map.GetBlock(target.Global).TryConsume(actor, hauledObj, target, this.Amount == -1 ? hauledObj.StackSize : this.Amount))
-                        return;
-                    actor.Map.Spawn(hauledObj, global, actor.Velocity);
+                    InteractionHelpers.TryDepositCarriedItemInsideBlockOrSpawn(actor, global, this.Amount);
+                    //if (actor.Map.GetBlockEntity(global)?.TryConsume(hauledObj) ?? false)
+                    //    return;
+                    //if (actor.Map.GetBlock(global).TryConsume(actor, hauledObj, global, this.Amount == -1 ? hauledObj.StackSize : this.Amount))
+                    //    return;
                     //actor.Map.Spawn(hauledObj, global, actor.Velocity);
-                    //actor.CurrentTask?.AddPlacedObject(hauledObj);
                     break;
 
                 case TargetType.Entity:
                     throw new NotImplementedException();
-                    //var o = target.Object;
-                    //var amount = (this.Amount == -1) ? hauledObj.StackSize : this.Amount;
-                    //var transferAmount = Math.Min(o.StackAvailableSpace, amount); // do i want to check this here? 
-                    //if (o.StackSize + transferAmount > o.StackMax)
-                    //    throw new Exception();
-                    //if (!o.CanAbsorb(hauledObj, transferAmount))
-                    //    throw new Exception();
-                    //o.Add(transferAmount);
-                    //PacketSetStackSize.Send(o, o.StackSize);
-                    //if (hauledObj.StackSize == transferAmount)
-                    //    actor.Map.World.DisposeEntityAndSync(hauledObj as Entity);
-                    //else
-                    //{
-                    //    hauledObj.Consume(transferAmount);
-                    //    PacketSetStackSize.Send(hauledObj, hauledObj.StackSize);
-                    //}
-                    break;
 
                 default:
                     break;

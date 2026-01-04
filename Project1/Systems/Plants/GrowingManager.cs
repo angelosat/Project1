@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -81,6 +82,15 @@ namespace Start_a_Town_
             }
             //yield break;
         }
+
+        internal bool IsValidTillingTarget(IntVec3 global)
+        {
+            var growzone = this.Town.ZoneManager.GetZoneAt<GrowingZone>(global);
+            if (growzone is null)
+                return false;
+            return growzone.IsValidTilling(global);
+        }
+
         public override string Name => "GrowingManager";
     }
 

@@ -25,10 +25,10 @@ namespace Start_a_Town_
         {
             return new BlockStorageEntity(this.BlockDef, originGlobal);
         }
-        public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
+        public override bool TryConsume(GameObject actor, GameObject dropped, IntVec3 global, int amount = -1)
         {
             throw new System.Exception();
-            var binEntity = actor.Map.GetBlockEntity(target.Global) as BlockStorageEntity;
+            var binEntity = actor.Map.GetBlockEntity(global) as BlockStorageEntity;
             binEntity.Insert(dropped);
             actor.ClearCarried();
         }

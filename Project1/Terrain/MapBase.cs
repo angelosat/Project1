@@ -332,6 +332,8 @@ namespace Start_a_Town_
             var local = global.ToLocal();
             chunk.SetBlockEntity(entity, local);
             entity.OnSpawned(this, global);
+            this.Events.Post(new BlockEntityAddedEvent(entity));
+
         }
 
         internal IntVec3 GetFrontOfBlock(IntVec3 global)

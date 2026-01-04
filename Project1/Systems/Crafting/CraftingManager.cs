@@ -23,6 +23,7 @@ namespace Start_a_Town_
         {
             this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
             this.Town.Map.Events.ListenTo<BlockEntityRemovedEvent>(OnBlockEntityRemoved);
+            this.Town.Map.Events.ListenTo<BlockEntityAddedEvent>(OnBlockEntityAdded);
             this.ScanWorkstations();
             this.ScanOrders();
         }
@@ -64,29 +65,23 @@ namespace Start_a_Town_
         {
             var map = this.Town.Map;
             foreach (var pos in changed.Positions)
-            {
-                BlockWorkstationComp workstation = default;
-                if (!map.GetBlockEntity(pos)?.Comps.TryGetComp(out workstation) ?? false)
-                    continue;
-                if (workstation is not null)
-                {
-                    RegisterWorkstation(pos, workstation);
-                }
-                else if (this._byPosition.TryGetValue(pos, out var existing))
+                if (this._byPosition.TryGetValue(pos, out var existing))
                 {
                     this._byPosition.Remove(pos);
                     this._byType[existing.WorkstationType].Remove(existing);
                 }
-            }
         }
-
+        private void OnBlockEntityAdded(BlockEntityAddedEvent e)
+        {
+            if (e.Entity.Def.Worker is not BlockWorkstation)
+                return;
+            this.RegisterWorkstation(e.Entity.GetComp<BlockWorkstationComp>());
+        }
         private void OnBlockEntityRemoved(BlockEntityRemovedEvent e)
         {
-            var workstation = e.Entity;
-            var map = this.Town.Map;
-            if (!workstation.Comps.TryGetComp<BlockWorkstationComp>(out var comp))
+            if (e.Entity.Def.Worker is not BlockWorkstation)
                 return;
-            this.UnregisterWorkstation(comp);
+            this.UnregisterWorkstation(e.Entity.GetComp<BlockWorkstationComp>());
         }
 
         private bool UnregisterWorkstation(BlockWorkstationComp comp)
@@ -104,6 +99,14 @@ namespace Start_a_Town_
             if (this._byPosition.TryGetValue(pos, out var existing))
                 this._byType[existing.WorkstationType].Remove(existing);
             this._byPosition[pos] = workstation;
+            this._byType[workstation.WorkstationType].Add(workstation);
+        }
+        private void RegisterWorkstation(BlockWorkstationComp workstation)
+        {
+            var entity = workstation.Parent;
+            foreach(var cell in entity.CellsOccupied)
+                this._byPosition.Add(cell, workstation);
+
             this._byType[workstation.WorkstationType].Add(workstation);
         }
         public OrderSettings CreateOrderNew(IntVec3 workstationPosition, Def recipe)

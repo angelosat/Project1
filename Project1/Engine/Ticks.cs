@@ -2,7 +2,7 @@
 {
     static class Ticks
     {
-        public const int IngameMillisecondsPerTick = 1440; // one tick is 1.44 ingame seconds
+        public const int IngameMillisecondsPerTick = 1000;// 1440; // one tick is 1.44 ingame seconds
         public const int PerSecond = 60;
         public const int PerGameMinute = (int)(PerSecond * 1.44f);
         public const int PerGameHour = 60 * PerGameMinute;

@@ -21,7 +21,7 @@ namespace Start_a_Town_.UI
                 foreach (var entry in group.Entries)
                 {
                     //var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxNew() { TickedFunc = entry.IsAllowed, LeftClickAction = entry.Toggle });
-                    var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxFinal("", entry.Toggle, entry.IsAllowed));
+                    var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxFinal(entry.Toggle, entry.IsAllowed));
                     entryNode.Control = Build(entryNode);
                     foreach (var child in entry.Children)
                     {

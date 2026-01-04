@@ -24,7 +24,11 @@ namespace Start_a_Town_.UI
             base.Update();
         }
         readonly Func<bool> TickedFunc;
-      
+
+        public CheckBoxFinal(Action clickAction, Func<bool> tickedFunc) : this("", clickAction, tickedFunc)
+        {
+            
+        }
         public CheckBoxFinal(string text, Action clickAction, Func<bool> tickedFunc)
         {
             BackgroundTexture = UIManager.TextureTickBox;

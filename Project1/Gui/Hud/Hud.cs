@@ -90,6 +90,7 @@ namespace Start_a_Town_
             var camWidget = new CameraWidget(camera);
             camWidget.AnchorToTopRight();
 
+
             var uiSpeed = new UIGameSpeed(net)
             {
                 LocationFunc = () => this.Box_Buttons.TopRight,
@@ -102,7 +103,7 @@ namespace Start_a_Town_
                 Anchor = Vector2.One,
                 BackgroundColorFunc = () => Color.Black * .5f,
                 //TextFunc = () => string.Format("Day {0}, {1:%h}h", (int)net.Map.World.Clock.TotalDays, net.Map.World.Clock)
-                TextFunc = () => $"Day {(int)net.Map.World.Clock.TotalDays}, {net.Map.World.Clock:%h}h"
+                TextFunc = () => $"Day {(int)net.Map.World.Clock.TotalDays}, {net.Map.World.Clock:%h}h {net.Map.World.Clock:%m}m"
             };
 
             this.Chat = UIChat.Instance;

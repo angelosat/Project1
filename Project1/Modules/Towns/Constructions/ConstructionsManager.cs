@@ -72,6 +72,8 @@ namespace Start_a_Town_
                 if (!this._dirty)
                     foreach (var n in pos.GetAdjacentLazy())
                     {
+                        if (!this.Map.IsInBounds(n))
+                            continue;
                         var entity = this.Map.GetBlockEntity(n);
                         if (entity != null && 
                             entity.Comps.TryGetComp<BlockConstructionComp>(out var comp) 

@@ -22,6 +22,7 @@ namespace Start_a_Town_
         internal override void ResolveReferences()
         {
             this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
+            this.Town.Map.Events.ListenTo<BlockEntityRemovedEvent>(OnBlockEntityRemoved);
             this.ScanWorkstations();
             this.ScanOrders();
         }
@@ -64,7 +65,6 @@ namespace Start_a_Town_
             var map = this.Town.Map;
             foreach (var pos in changed.Positions)
             {
-                //var workstation = map.GetBlockEntity(pos)?.GetComp<BlockWorkstationComp>();
                 BlockWorkstationComp workstation = default;
                 if (!map.GetBlockEntity(pos)?.Comps.TryGetComp(out workstation) ?? false)
                     continue;
@@ -78,6 +78,25 @@ namespace Start_a_Town_
                     this._byType[existing.WorkstationType].Remove(existing);
                 }
             }
+        }
+
+        private void OnBlockEntityRemoved(BlockEntityRemovedEvent e)
+        {
+            var workstation = e.Entity;
+            var map = this.Town.Map;
+            if (!workstation.Comps.TryGetComp<BlockWorkstationComp>(out var comp))
+                return;
+            this.UnregisterWorkstation(comp);
+        }
+
+        private bool UnregisterWorkstation(BlockWorkstationComp comp)
+        {
+            this._byType[comp.WorkstationType].Remove(comp);
+            foreach (var pos in comp.Parent.CellsOccupied)
+                this._byPosition.Remove(pos);
+            foreach (var order in comp.Orders)
+                this._ordersById.Remove(order.Id);
+            return true;
         }
 
         private void RegisterWorkstation(IntVec3 pos, BlockWorkstationComp workstation)

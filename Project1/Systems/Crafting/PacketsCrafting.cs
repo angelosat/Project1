@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
-using System;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    class PacketsCrafting
+    static class PacketsCrafting
     {
         readonly static int _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder, _pOrderUpdated, _pPlayerModifiedOrderFilters;
         static PacketsCrafting()
@@ -21,11 +20,6 @@ namespace Start_a_Town_
         }
         private static void HandlePlayerModifiedOrderFilters(PlayerModifiedOrderFiltersEvent e)
         {
-            //e.Order.Workstation.Map.Net.BeginPacket(_pPlayerModifiedOrderFilters)
-            //    .Write(e.Order.Id)
-            //    .Write(e.Bone)
-            //    .Write(e.Refinement)
-            //    .Write(e.Material?.Name ?? "");
             SendPlayerModifiedOrderFilters(Client.Instance, e.Order, e.Bone, e.Refinement, e.Material);
         }
         static void SendPlayerModifiedOrderFilters(NetEndpoint net, OrderSettings order, BoneDef bone, MaterialRefinementDef form, MaterialDef material)
@@ -91,9 +85,8 @@ namespace Start_a_Town_
         {
             var r = pck.PacketReader;
             var mapid = r.ReadInt32();
-            var workstationPosition = r.ReadIntVec3();// net.Map.GetBlockEntity();
+            var workstationPosition = r.ReadIntVec3();
             var refinement = r.ReadDef();
-            //net.Map.Town.CraftingManagerNew.CreateOrder(workstationPosition, refinement);
             if(net.Map.Town.CraftingManagerNew.CreateOrderNew(workstationPosition, refinement) is OrderSettings order &&
                 net is Server server)
                 SendPlayerCreatedOrderNew(net.Map.GetBlockEntity(workstationPosition), refinement);
@@ -144,7 +137,6 @@ namespace Start_a_Town_
 
             // todo reorder based on priority delta
             order.ChangePriority(priorityDelta);
-
             order.Mode = mode;
             map.Events.Post(new CraftOrderUpdatedEvent(order));
             if (endpoint is Server server)

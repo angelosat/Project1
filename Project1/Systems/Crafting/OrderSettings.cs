@@ -23,7 +23,7 @@ namespace Start_a_Town_
             set => this._amount = Math.Max(value, 0);
         }
         public bool Enabled;
-        public bool Pending => this.Amount > 0;
+        public bool Pending => this.Mode == CraftMode.Infinite || this.Mode == CraftMode.FixedAmount && this.Amount > 0;
         public EntityCreationRequest Target { get; init; }
 
         // Explicit actor restriction
@@ -530,7 +530,7 @@ namespace Start_a_Town_
 
         internal void CompletedBy(Actor actor)
         {
-            this.Amount--;
+            if(this.Mode == CraftMode.FixedAmount) this.Amount--;
             this.Workstation.Map.Events.Post(new CraftOrderUpdatedEvent(this));
             this.Workstation.Map.Events.Post(new CraftOrderCompletedEvent(this, actor));
         }

@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Schema;
 
 namespace Start_a_Town_
 {
@@ -270,7 +269,6 @@ namespace Start_a_Town_
             else
                 foreach (var p in parts)
                 {
-                    //this.SetBlock(p, BlockDefOf.Air, MaterialDefOf.Air, 0, 0, 0, notify);
                     this.SetBlock(p, BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, 0, 0, notify);
                     this.SetBlockLuminance(p, 0);
                     // reenable physics of entities resting on block
@@ -322,6 +320,7 @@ namespace Start_a_Town_
                 foreach (var cell in entity.CellsOccupied)
                     this.SetBlock(cell, BlockDefOf.Air);
                 entity.Map = null;
+                this.Events.Post(new BlockEntityRemovedEvent(entity));
                 return entity;
             }
             throw new Exception(); // for debugging

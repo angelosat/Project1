@@ -21,6 +21,8 @@ namespace Start_a_Town_
         static readonly Random Random = new();
         public abstract ZoneDef ZoneDef { get; }
         public abstract string UniqueName { get; }
+        protected bool _dirty;
+        public IntVec3 this[int index] => this.Positions[index];
 
         public bool Exists => this.Manager.Zones.ContainsKey(this.ID);
 
@@ -111,9 +113,9 @@ namespace Start_a_Town_
             else
                 this.RemovePositions(inputpositions);
         }
-        public void Invalidate()
+        public void MarkDirty()
         {
-            this.Validate();
+            this._dirty = false;
         }
         protected virtual void Validate() { }
         internal void OnBlockChangedNew(IntVec3 pos)
@@ -122,7 +124,8 @@ namespace Start_a_Town_
                 return;
             if (!this.ZoneDef.Worker.IsValidLocation(this.Map, pos))
                 this.RemovePosition(pos);
-            this.Validate();
+            this.MarkDirty();
+            //this.Validate();
         }
         internal bool Contains(GameObject obj)
         {

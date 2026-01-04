@@ -4,7 +4,6 @@ using Start_a_Town_.UI;
 using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -89,7 +88,6 @@ namespace Start_a_Town_
         public ItemDef SeedType = PlantDefOf.Bush;
         readonly HashSet<IntVec3> CachedTilling = new();
         readonly HashSet<IntVec3> CachedSowing = new();
-        bool Valid;
 
         public GrowingZone(IDataReader r)
             : base()
@@ -161,15 +159,18 @@ namespace Start_a_Town_
 
         public IEnumerable<IntVec3> GetSowingPositions()
         {
-            if (!this.Valid)
-                this.Validate();
+            this.Validate();
             foreach (var pos in this.CachedSowing)
                 yield return pos;
         }
+        public IntVec3? GetNextSowingPosition()
+        {
+            this.Validate();
+            return this.CachedSowing.Count > 0 ? this.CachedSowing.First() : null;
+        }
         public IEnumerable<IntVec3> GetSowingPositions(int spacing)
         {
-            if (!this.Valid)
-                this.Validate();
+            this.Validate();
             var first = this.Positions.First();
             foreach(var pos in this.CachedSowing)
             { 
@@ -180,15 +181,16 @@ namespace Start_a_Town_
         }
         public IEnumerable<IntVec3> GetTillingPositions()
         {
-            if (!this.Valid)
-                this.Validate();
+            this.Validate();
             foreach (var pos in this.CachedTilling)
                 yield return pos;
         }
 
         protected override void Validate()
         {
-            this.Valid = true;
+            if (this._dirty)
+                return;
+            this._dirty = true;
             this.CachedTilling.Clear();
             this.CachedSowing.Clear();
             foreach (var pos in this.Positions)
@@ -240,7 +242,7 @@ namespace Start_a_Town_
         }
         public bool IsValidSeed(GameObject item)
         {
-            return this.Plant is not null && item.IsSeedFor(this.Plant);
+            return this.Plant is not null && item.Profile == this.Plant;
         }
         public override IEnumerable<(string name, Action action)> GetInfoTabs()
         {
@@ -294,7 +296,7 @@ namespace Start_a_Town_
                 return false;
             if (!this.CachedSowing.Contains(pos))
                 return false;
-            return obj.IsSeedFor(this.Plant);
+            return obj.Profile == this.Plant;
         }
     }
 }

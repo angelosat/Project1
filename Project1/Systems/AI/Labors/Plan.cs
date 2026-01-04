@@ -258,6 +258,22 @@ namespace Start_a_Town_
             this.Def = def;
             this.SetTarget(TargetIndex.A, targetA);
         }
+        public Plan(PlanDef def, MapBase map, IntVec3 pos, int amount) : this()
+        {
+            if (def is null) throw new Exception();
+
+            this.Def = def;
+            this.SetTarget(TargetIndex.A, new TargetArgs(map, pos));
+            this.SetAmount(TargetIndex.A, amount);
+        }
+        public Plan(PlanDef def, Entity item, int amount = -1) : this()
+        {
+            if (def is null) throw new Exception();
+
+            this.Def = def;
+            this.SetTarget(TargetIndex.A, new TargetArgs(item));
+            this.SetAmount(TargetIndex.A, amount);
+        }
         public Plan(PlanDef def, TargetArgs targetA, TargetArgs targetB) : this()
         {
             if (def is null) throw new Exception();

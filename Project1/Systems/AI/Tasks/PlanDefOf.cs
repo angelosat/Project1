@@ -45,11 +45,6 @@ namespace Start_a_Town_
             Format = "Sow {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        static public readonly PlanDef Tilling = new("Tilling", typeof(TaskBehaviorTilling))
-        {
-            Format = "Till {0}",
-            GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
-        };
         static public readonly PlanDef Moving = new("Moving", typeof(TaskBehaviorLeaveUnstandableCell))
         {
             Format = "Move {0}",
@@ -106,7 +101,9 @@ namespace Start_a_Town_
         static public readonly PlanDef Unequip = new("Unquipping", typeof(BehaviorUnequip), InteractionDefOf.Unequip);
         static public readonly PlanDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul), InteractionDefOf.Pick);
         static public readonly PlanDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace), InteractionDefOf.Place);
-        static public readonly PlanDef Construct = new("Construct", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct); 
+        static public readonly PlanDef Construct = new("Constructing", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct);
+        static public readonly PlanDef GoTill = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
+
         static PlanDefOf()
         {
             Def.Register(typeof(PlanDefOf));

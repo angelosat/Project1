@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Start_a_Town_.AI.Behaviors;
-using Start_a_Town_.Components.Interactions;
 
 namespace Start_a_Town_
 {
@@ -9,6 +8,11 @@ namespace Start_a_Town_
         public const TargetIndex TargetInd = TargetIndex.A;
         TargetArgs Target { get { return this.Plan.GetTarget(TargetInd); } }
         protected override IEnumerable<Behavior> GetSteps()
+        {
+            yield return new BehaviorResolvePath(PathEndMode.Touching);
+            yield return new BehaviorResolveInteraction();
+        }
+        protected IEnumerable<Behavior> GetStepsOld()
         {
             var actor = this.Actor;
             var map = actor.Map;

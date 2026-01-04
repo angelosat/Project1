@@ -10,8 +10,8 @@ namespace Start_a_Town_
             var seeds = ItemDefOf.Seeds.Create();
             seeds.Initialize();
 
-            seeds.GetComponent<SeedComponent>().SetPlant(species);
-
+            //seeds.GetComponent<SeedComponent>().SetPlant(species);
+            seeds.Profile = species;
             seeds.Name = $"{species.Label} {species.SeedsName}";
             seeds.Body.Sprite = Sprite.Load(species.TextureSeeds);
             return seeds;

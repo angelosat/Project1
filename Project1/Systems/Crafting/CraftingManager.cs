@@ -63,13 +63,13 @@ namespace Start_a_Town_
         }
         private void OnBlocksUpdated(BlocksUpdatedEvent changed)
         {
-            var map = this.Town.Map;
-            foreach (var pos in changed.Positions)
-                if (this._byPosition.TryGetValue(pos, out var existing))
-                {
-                    this._byPosition.Remove(pos);
-                    this._byType[existing.WorkstationType].Remove(existing);
-                }
+            //var map = this.Town.Map;
+            //foreach (var pos in changed.Positions)
+            //    if (this._byPosition.TryGetValue(pos, out var existing))
+            //    {
+            //        this._byPosition.Remove(pos);
+            //        this._byType[existing.WorkstationType].Remove(existing);
+            //    }
         }
         private void OnBlockEntityAdded(BlockEntityAddedEvent e)
         {

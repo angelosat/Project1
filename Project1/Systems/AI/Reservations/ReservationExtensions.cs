@@ -18,7 +18,12 @@ namespace Start_a_Town_
         //    var map = obj.Map;
         //    return map.Town.ReservationManager.Reserve(obj, task, new TargetArgs(map, target), 1);
         //}
-
+        static public bool CanReach(this Actor actor, Zone zone) => actor.CanReach(zone[0]);
+        static public bool CanReserve(this Actor obj, IntVec3 target)
+        {
+            var map = obj.Map;
+            return map.Town.ReservationManager.CanReserve(obj, new TargetArgs(map, target), 1, false);
+        }
         static public bool CanReserve(this Actor obj, Vector3 target, int stackcount = -1, bool force = false)
         {
             var map = obj.Map;

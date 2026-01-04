@@ -2133,7 +2133,10 @@ namespace Start_a_Town_
         public bool TryRemoveBlockEntity(IntVec3 local, out BlockEntity entity)
         {
             if (this.BlockEntitiesByPosition.TryGetValue(local, out entity))
-                this.BlockEntitiesByPosition.Remove(local);
+            {
+                foreach(var cell in entity.CellsOccupied)
+                    this.BlockEntitiesByPosition.Remove(cell.ToLocal());
+            }
             return entity is not null;
         }
 

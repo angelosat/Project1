@@ -4,8 +4,5 @@
     {
         public readonly Entity Entity = entity;
     }
-    internal class ZoneDeletedEvent(Zone zone) : IEventPayload
-    {
-        public readonly Zone Zone = zone;
-    }
+    
 }

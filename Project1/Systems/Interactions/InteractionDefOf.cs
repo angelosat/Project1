@@ -17,6 +17,7 @@ namespace Start_a_Town_
         public static readonly InteractionDef Craft = new("Craft", typeof(InteractionCraftingNew), typeof(InteractionCraftingLogic));
         public static readonly InteractionDef Drop = new("Drop", typeof(InteractionThrow));
         public static readonly InteractionDef Depart = new("Depart", typeof(InteractionDepart));
+        public static readonly InteractionDef Till = new("Till", typeof(InteractionTilling));
 
         static InteractionDefOf()
         {

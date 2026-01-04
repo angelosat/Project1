@@ -23,7 +23,7 @@ namespace Start_a_Town_
                 this.Invalidate();
             }
         }
-
+        public IntVec3 this[int index] => this.Cells[index];
         public int Count => ((ICollection<IntVec3>)this.Cells).Count;
 
         public bool IsReadOnly => ((ICollection<IntVec3>)this.Cells).IsReadOnly;

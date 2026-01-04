@@ -100,6 +100,11 @@ namespace Start_a_Town_.Components
                 this._fruitBone.Material = this.Species.FruitMaterial;
             this.UpdateFruitTexture();
         }
+        internal override void Resolve()
+        {
+            var body = this.Owner.Body;
+            body.ScaleFunc = () => .25f + .75f * this.GrowthBody.Percentage;
+        }
         void UpdateFruitTexture()
         {
             if (_spriteFruit is not null && this.Owner.Body.TryFindBone(BoneDefOf.PlantFruit, out var fruitBone) && this.IsHarvestable)
@@ -129,11 +134,11 @@ namespace Start_a_Town_.Components
         {
             this.Resolve();
         }
-        
+        const int debugGrowthMod = 100;
         public override void Tick()
         {
             var parent = this.Owner;
-            var growthRate = this.Species.GrowthRate;
+            var growthRate = this.Species.GrowthRate / debugGrowthMod;
             this.TickWiggle();
             var sunlight = this.Owner.Map.Sunlight;
             if (sunlight <= .5f)
@@ -327,7 +332,7 @@ namespace Start_a_Town_.Components
         //    if (this.PlantProperties.ProducesFruit)
         //        info.AddInfo(new Bar(this.GrowthFruit) { Color = Color.MediumAquamarine, Name = "Fruit: ", TextFunc = () => this.GrowthFruit.Percentage.ToString("##0%") });
         //}
-        internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
             var guisunlight = UI.Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"));
             var guigrowth = UI.Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));
@@ -339,6 +344,18 @@ namespace Start_a_Town_.Components
 
             info.AddInfo(new GroupBox().AddControlsVertically(1, boxBars, guisunlight, guigrowth));
         }
+        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        //{
+        //    var guisunlight = UI.Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"));
+        //    var guigrowth = UI.Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));
+        //    var bargrowth = new Bar(this.GrowthBody) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthBody.Percentage.ToString("##0%") };
+        //    var boxBars = new GroupBox().AddControls(bargrowth);
+
+        //    if (this.Species.ProducesFruit)
+        //        boxBars.AddControlsTopRight(1, new Bar(this.GrowthFruit) { Color = Color.MediumAquamarine, Name = "Fruit: ", TextFunc = () => this.GrowthFruit.Percentage.ToString("##0%") });
+
+        //    info.AddInfo(new GroupBox().AddControlsVertically(1, boxBars, guisunlight, guigrowth));
+        //}
         string GrowthTimeSpan
         {
             get

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Start_a_Town_.Components;
 using Start_a_Town_.Graphics;
 using Start_a_Town_.Net;
 using System.Runtime.CompilerServices;
@@ -43,6 +44,7 @@ namespace Start_a_Town_
         {
             var plantdef = obj.Profile as PlantSpeciesDef;
             var plant = plantdef.Create(PlantStageDefOf.Plant);
+            var plantcomp = plant.GetComponent<PlantComponent>();
             map.World.Register(plant);
             map.Spawn(plant, global.Above, Vector3.Zero);
             //plant.SyncInstantiate(map.Net);

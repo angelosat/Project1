@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- change camera zoom to only be >=1 , and for <1 make it actually reduce the rendertarget bounds (for 1-1 pixel mapping)
 - change regionnodes to be the actual cell the actors stand in, instead of the cell below (WHAT WAS I THINKING)
 - cleanup interactions/blocks
 - intercept disposed/despawned entity events to close inspector window for them

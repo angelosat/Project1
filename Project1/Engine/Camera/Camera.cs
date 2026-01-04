@@ -1109,7 +1109,14 @@ namespace Start_a_Town_
             fx.CurrentTechnique = fx.Techniques["Normal"];
 
             fx.CurrentTechnique.Passes["Pass1"].Apply();
-            this.SpriteBatch.Draw(this.FinalScene, this.FinalScene.Bounds, gd.Viewport.Bounds, Color.White);
+            //this.SpriteBatch.Draw(this.FinalScene, this.FinalScene.Bounds, gd.Viewport.Bounds, Color.White);
+            var vp = gd.Viewport.Bounds;
+            //vp.Width = (int)(vp.Width / this.Zoom);
+            //vp.Height = (int)(vp.Height / this.Zoom);
+            var fc = this.FinalScene.Bounds;
+            //fc.Width = (int)(fc.Width / 4);
+            //fc.Height = (int)(fc.Height / 4);
+            this.SpriteBatch.Draw(this.FinalScene, fc, vp, Color.White);
 
             /// added this here to draw the final scene with depth, but i have to change the shader to read depth from the depth texture
             //gd.DepthStencilState = DepthStencilState.Default;

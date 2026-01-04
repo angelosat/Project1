@@ -34,13 +34,12 @@ namespace Start_a_Town_.Crafting
         {
             this.SkillAwardType = SkillAwardTypes.OnFinish;
         }
-        public override float PercentageComplete => this.TotalWorkApplied / 100; // HACK
+        public override float PercentageComplete => this._progress.Percentage;// this.TotalWorkApplied / 100; // HACK
         protected override void OnAddProgress(int v)
         {
             //this.OnApplyWork(v);
             //this.TotalWorkAmount += v;
             this._progress.Value += v;// 25;
-            //this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
         }
         protected override void Done()
         {

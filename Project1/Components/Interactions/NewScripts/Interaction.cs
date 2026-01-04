@@ -184,18 +184,12 @@ namespace Start_a_Town_
         {
             w.Write(this.CurrentTick);
             w.Write((int)this.State);
-            //var hasAnim = this._animation is not null;
-            //w.Write(hasAnim);
-            //if (hasAnim) // added this because InteractionSleepInBed doesn't have an animation
-            //    this._animation.Write(w);
             this.WriteExtra(w);
         }
         public void Read(IDataReader r)
         {
             this.CurrentTick = r.ReadSingle();
             this.State = (States)r.ReadInt32();
-            //if (r.ReadBoolean())
-            //    this._animation.Read(r);
             this.ReadExtra(r);
         }
         protected virtual void WriteExtra(IDataWriter w) { }
@@ -207,7 +201,6 @@ namespace Start_a_Town_
             tag.Add(this.GetType().FullName.Save("Name"));
             tag.Add(((int)this.State).Save("State"));
             tag.Add(this.CurrentTick.Save("Progress"));
-            this._animation?.Save(tag, "Animation");
             this.AddSaveData(tag);
             return tag;
         }
@@ -223,8 +216,6 @@ namespace Start_a_Town_
             var inter = Activator.CreateInstance(Type.GetType(name)) as Interaction;
             tag.TryGetTagValue<int>("State", t => inter.State = (States)t);
             tag.TryGetTagValueOrDefault("Progress", out inter.CurrentTick);
-            // spritecomponent saves/loads animations. cache the animation lazily with a property that pulls it from owner.spritecomp
-            //tag.TryGetTag("Animation", t => inter.cachedAnimation = new Animation(t));
             inter.LoadData(tag);
             return inter;
         }

@@ -14,40 +14,34 @@ namespace Start_a_Town_
         {
             Cell _cellCached;
             internal Cell Cell => _cellCached ??= this.Actor.Map.GetCell(this.Target.Global);
-            int? _totalHp;
-            internal int TotalHp => _totalHp ??= this.Cell.Material.BreakResistance * this.Cell.HitPoints;
-            WorkComponent _actorWork;
-            //WorkComponent ActorWorkComp => this._actorWork ??= this.Actor.GetComponent<WorkComponent>();
-            //public override float ProgressPercentage => this.ActorWorkComp.AccumulatedWork / this.TotalHp;
+            //int? _totalHp;
+            //internal int TotalHp => _totalHp ??= this.Cell.Material.BreakResistance * this.Cell.HitPoints;
             public override float ProgressPercentage => 1 - (float)this.Cell.HitPoints / Cell.HitPointsMax;
         }
-        public override void ApplyWork(InteractionContext ctx, int workAmount) => this.ApplyWork((Context)ctx, workAmount);
-        public override bool CanFinish(InteractionContext ctx) => this.CanFinish((Context)ctx);
-        public override bool CanPerform(InteractionContext ctx) => this.CanPerform((Context)ctx);
+        public override void ApplyWork(InteractionContext ctx, int workAmount) => ApplyWork((Context)ctx, workAmount);
+        public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
+        public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
         protected override InteractionContext CreateContextInternal() => new Context();
-        bool CanPerform(Context ctx)
+        static bool CanPerform(Context ctx)
         {
             return ctx.Cell.Block is not BlockAir;
         }
-        bool CanFinish(Context ctx)
+        static bool CanFinish(Context ctx)
         {
             var global = ctx.Target.Global;
             var actor = ctx.Actor;
             var objects = actor.Map.GetObjects(global.Above());
             return !objects.Any();
         }
-        void ApplyWork(Context ctx, int workAmount)
+        static void ApplyWork(Context ctx, int workAmount)
         {
             ctx.Actor.Map.ApplyBlockWork(ctx.Target.Global, -workAmount);
             ctx.Actor.Map.Events.Post(new BlockHitEvent(ctx.Target.Map, ctx.Target.Global));
-            //ctx.Cell.Damage++;
-            //var vec = ctx.Target.Global;
-            //ctx.Actor.Map.GetChunk(vec).InvalidateSlice((byte)vec.Z);
         }
     }
     class InteractionBreakBlock : InteractionToolUse
     {
-        ParticleEmitterSphere EmitterBreak;
+        //ParticleEmitterSphere EmitterBreak;
         Cell _cellCached;
         Cell Cell => _cellCached ??= this.Actor.Map.GetCell(this.Target.Global);
         Block Block => this.Cell.Block;
@@ -55,7 +49,7 @@ namespace Start_a_Town_
         float AccumulatedWorkThisBreakStage, AccumulatedWorkTotal;
 
         protected override float WorkDifficulty => this.Material.Density;
-        float TotalHp;
+        //float TotalHp;
         //protected override float Progress => this.WorkAppliedTotal / this.TotalHp;
         //protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnFinish;
 
@@ -70,10 +64,10 @@ namespace Start_a_Town_
             else if (matType == MaterialTypeDefOf.Stone || matType == MaterialTypeDefOf.Metal)
                 this.Name = "Mining";
 
-            var global = this.Target.Global;
-            this.TotalHp = this.Cell.Material.BreakResistance * this.Cell.HitPoints;
+            //var global = this.Target.Global;
+            //this.TotalHp = this.Cell.Material.BreakResistance * this.Cell.HitPoints;
 
-            var blockEmitter = this.Block.GetEmitter();
+            //var blockEmitter = this.Block.GetEmitter();
             //this.EmitterStrike = blockEmitter;
             this.EmitterStrike.Texture = Block.Atlas.Texture;
             this.ParticleRects = this.GetParticleRects();
@@ -105,29 +99,22 @@ namespace Start_a_Town_
         protected override void Done()
         {
             var a = this.Actor;
-
-
-            //if (this.Actor.Net.IsClient)
-            //{
-            //    emitBreak();
-            //    return;
-            //}
             var t = this.Target;
-            var cell = this.Cell;
+            //var cell = this.Cell;
 
-            if (a.Net is Server server && cell.Block.BreakProduct is ItemDef productDef)
-                server.PopLoot(ItemFactory.CreateFrom(productDef, cell.Material), t.Global, Vector3.Zero);
+            //if (a.Net is Server server && cell.Block.BreakProduct is ItemDef productDef)
+            //    server.PopLoot(ItemFactory.CreateFrom(productDef, cell.Material), t.Global, Vector3.Zero);
 
             a.Map.RemoveBlock(t.Global);
             // test: letting client perform the last interaction tick so that it has a chance to emit particles
             //PacketBreakBlocks.Send(a.Map, [t.Global]);
 
 
-            void emitBreak()
-            {
-                this.EmitterBreak.Emit(Block.Atlas.Texture, this.ParticleRects, Vector3.Zero);
-                a.Map.ParticleManager.AddEmitter(this.EmitterBreak);
-            }
+            //void emitBreak()
+            //{
+            //    this.EmitterBreak.Emit(Block.Atlas.Texture, this.ParticleRects, Vector3.Zero);
+            //    a.Map.ParticleManager.AddEmitter(this.EmitterBreak);
+            //}
         }
 
         protected override Color GetParticleColor()

@@ -105,7 +105,8 @@ namespace Start_a_Town_
         {
             var entity = workstation.Parent;
             foreach(var cell in entity.CellsOccupied)
-                this._byPosition.Add(cell, workstation);
+                //this._byPosition.Add(cell, workstation);
+                this._byPosition[cell] = workstation;
 
             this._byType[workstation.WorkstationType].Add(workstation);
         }

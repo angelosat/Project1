@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    public class ItemDef : EntityDef, IInspectable
+    public class ItemDef : Def// EntityDef, IInspectable
     {
         public int StackCapacity = 1;
         public int StackDimension = 1;
@@ -40,9 +40,15 @@ namespace Start_a_Town_
         public readonly List<EntityComp.Spec> Specs = [];// [new SpriteComp.Props()];
         public ItemFamilyDef Family;
         public Bone Body;
+        public readonly Type ItemClass;
+        public float Weight = 1;
+        public float Height = 1;
+        public bool Haulable = true;
+        public string Description;
 
-        public ItemDef(string name, Type itemClass) : base(name, itemClass)
+        public ItemDef(string name, Type itemClass) : base(name)//, itemClass)
         {
+            this.ItemClass = itemClass;
         }
 
         internal GameObject CreateRandom()

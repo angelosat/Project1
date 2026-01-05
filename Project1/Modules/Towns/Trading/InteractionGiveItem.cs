@@ -1,7 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Animations;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
     class InteractionGiveItem : Interaction
     {
@@ -10,7 +7,7 @@ namespace Start_a_Town_
         public InteractionGiveItem(bool trade) : base("GiveItem", seconds: .4f)
         {
             this.Trade = trade;
-            this.AnimationDef = AnimationDef.TouchItem;
+            //this.AnimationDef = AnimationDef.TouchItem;
         }
         public InteractionGiveItem() : this(false)
         {

@@ -14,13 +14,13 @@ namespace Start_a_Town_
         protected virtual Progress ProgressNew { get; }
         protected InteractionToolUse(string name) : base(name)
         {
-            this.DrawProgressBar(() => this.Actor.Global, () => this.Progress, () => this.Name);
+            this.DrawProgressBar(() => this.Actor.Global, () => this.ProgressPercentage, () => this.Name);
         }
         protected sealed override void OnStart()
         {
             var a = this.Actor;
             var t = this.Target;
-            this._animation.Speed = StatDefOf.WorkSpeed.GetValue(a);
+            this.CachedAnimation.Speed = StatDefOf.WorkSpeed.GetValue(a);
             var particleColor = this.GetParticleColor();
             this.EmitterStrike = new ParticleEmitterSphere
             {
@@ -43,7 +43,7 @@ namespace Start_a_Town_
 
         }
        
-        public sealed override void OnUpdate()
+        protected sealed override void OnUpdate()
         {
             if (this.Actor.Net.IsClient)
                 return;
@@ -67,12 +67,13 @@ namespace Start_a_Town_
                 this.EmitterStrike.Emit(this.ParticleRects, Vector3.Zero);
                 actor.Map.ParticleManager.AddEmitter(this.EmitterStrike);
             }
+            var skill = this.GetSkill();
+
             //if (this.Actor.Net.IsClient)
             //    return;
             this.AddProgress(amount);
             this.TotalWorkApplied += amount;
 
-            var skill = this.GetSkill();
 
             if (this.SkillAwardType == SkillAwardTypes.OnSwing)
                 actor.Skills.Increase(skill, amount);
@@ -84,9 +85,11 @@ namespace Start_a_Town_
             actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
 
             // i moved the multiplication with the stamina threshold to inside the workspeed stat formula
-            this._animation.Speed = actor[StatDefOf.WorkSpeed];
+            this.CachedAnimation.Speed = actor[StatDefOf.WorkSpeed];
 
-            if (this.Progress < 1)
+            //if (this.PercentageComplete < 1)
+                //return;
+            if(!this.Progress.IsFinished)
                 return;
 
             if (this.SkillAwardType == SkillAwardTypes.OnFinish)
@@ -124,8 +127,7 @@ namespace Start_a_Town_
             return fromToolWeight;
         }
 
-        //protected abstract float Progress { get; }
-        protected virtual float Progress => this.Context.ProgressPercentage;
+        //protected virtual float Progress => this.Context.ProgressPercentage;
         protected abstract float WorkDifficulty { get; }
         protected SkillAwardTypes SkillAwardType;//{ get; }
         protected virtual void Init() { }

@@ -626,7 +626,7 @@ namespace Start_a_Town_
             var customization = parent.GetComponent<Components.SpriteComp>().Customization;
             var grounddistancefromcenter = renderTarget.Height / 2 + OriginGroundOffset.Y * scale;
             var loc = new Vector2(renderTarget.Width / 2, renderTarget.Height / 2 + grounddistancefromcenter);
-            body.DrawTreeAnimationDeltas(parent, customization, new List<Animation>() { new Animation(AnimationDef.Null) }, mysb, loc, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
+            body.DrawTreeAnimationDeltas(parent, customization, new List<Animation>() { new Animation(AnimationDefOf.Null) }, mysb, loc, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
 
             mysb.Flush();
             var texture = new Texture2D(gd, w, h);
@@ -661,7 +661,7 @@ namespace Start_a_Town_
 
             var grounddistancefromcenter = rect.Height / 2 + OriginGroundOffset.Y * scale;
             var loc = new Vector2(rect.Width / 2, rect.Height / 2 + grounddistancefromcenter);
-            body.DrawTreeAnimationDeltas(parent, customization, new List<Animation>() { new Animation(AnimationDef.Null) }, mysb, loc, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
+            body.DrawTreeAnimationDeltas(parent, customization, new List<Animation>() { new Animation(AnimationDefOf.Null) }, mysb, loc, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
 
             mysb.Flush();
         }

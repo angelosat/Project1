@@ -246,6 +246,12 @@ namespace Start_a_Town_
             this.GetCell(global).BlockData = v;
             this.InvalidateCell(global);
         }
+        private void DestroyBlock(IntVec3 global)
+        {
+            var block = this.GetBlock(global);
+            this.RemoveBlock(global);
+            //this.Events.Post(new BlockDestroyedEvent(block, this, global));
+        }
         public void RemoveBlock(IntVec3 vec, bool notify = true)
         {
             var global = Cell.GetOrigin(this, vec);
@@ -744,7 +750,7 @@ namespace Start_a_Town_
             if (global.Z == 0)
                 return new PlaceBlockResult(null, null, false);
             var cell = this.GetCell(global);
-
+         
             if (cell is null)
                 return new PlaceBlockResult(null, null, false);
 
@@ -796,8 +802,8 @@ namespace Start_a_Town_
             }
             if (raiseEvent)
                 this.NotifyBlockChanged(global);
-            if (this.Net.IsServer)
-                PacketSetBlock.Send(this.Net as Server, new SetBlockArgs(global, block, material, data, orientation, source));
+            var setblockargs = new SetBlockArgs(global, block, material, data, orientation, source);
+            this.Events.Post(new BlockSetEvent(setblockargs));
             return new PlaceBlockResult(entity, cell, true);
         }
         public struct PlaceBlockResult(BlockEntity entity, Cell cell, bool success = true)
@@ -1187,8 +1193,18 @@ namespace Start_a_Town_
         internal void ApplyBlockWork(IntVec3 global, int workAmount)
         {
             if (this.TryGetChunk(global, out var chunk))
+            {
+                var block = this.GetBlock(global);
+                if (block.BlockDef == BlockDefOf.Air)
+                    throw new Exception();
                 chunk.ApplyBlockWork(global.ToLocal(), workAmount);
+                this.Events.Post(new BlockHitEvent(block, this, global, workAmount));
+                if (this.GetCell(global).HitPoints == 0)
+                    this.RemoveBlock(global);
+            }
         }
+
+        
 
         internal IEnumerable<IntVec3> FindNearestEmptyCellsOrCurrent(IntVec3 current, int reach)
         {

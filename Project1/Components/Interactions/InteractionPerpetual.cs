@@ -1,21 +1,17 @@
-﻿using Start_a_Town_.Animations;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
     public abstract class InteractionPerpetual : Interaction
     {
         public InteractionPerpetual()
         {
-            this.AnimationDef = AnimationDef.Tool;
         }
         public InteractionPerpetual(string name)
             : base(name, 0)
         {
             this.RunningType = RunningTypes.Continuous;
-            this.AnimationDef = AnimationDef.Tool;
         }
 
-        public abstract void OnUpdate();
+        protected abstract void OnUpdate();
 
         internal override void AfterLoad()
         {

@@ -18,7 +18,7 @@
         //    a.CrossFade(this.Animation, false, 25);
         //}
 
-        public override void OnUpdate()
+        protected sealed override void OnUpdate()
         {
             if (this.Actor.Net.IsClient)
                 return;

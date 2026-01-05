@@ -15,7 +15,7 @@ namespace Start_a_Town_
         {
             this.Verb = this.Name;
         }
-        public override void OnUpdate()
+        protected sealed override void OnUpdate()
         {
             var a = this.Actor;
             var t = this.Target;

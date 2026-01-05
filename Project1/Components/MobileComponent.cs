@@ -66,9 +66,9 @@ namespace Start_a_Town_.Components
         public float Acceleration;
 
         Animation _walkAni, _jumpAni, _crouchAni;
-        Animation AnimationWalk => _walkAni ??= this.Owner.SpriteComp.GetAnimation(AnimationDef.Walk);
-        Animation AnimationJump => _jumpAni ??= this.Owner.SpriteComp.GetAnimation(AnimationDef.Jump);
-        Animation AnimationCrouch => _crouchAni ??= this.Owner.SpriteComp.GetAnimation(AnimationDef.Crouch);
+        Animation AnimationWalk => _walkAni ??= this.Owner.SpriteComp.GetAnimation(AnimationDefOf.Walk);
+        Animation AnimationJump => _jumpAni ??= this.Owner.SpriteComp.GetAnimation(AnimationDefOf.Jump);
+        Animation AnimationCrouch => _crouchAni ??= this.Owner.SpriteComp.GetAnimation(AnimationDefOf.Crouch);
 
         public bool Moving;
 
@@ -100,25 +100,11 @@ namespace Start_a_Town_.Components
 
         internal override void InitializeOnce()
         {
-            //this.Owner.AddAnimation(this.AnimationJump);
-            //this.Owner.AddAnimation(this.AnimationWalk); // why not add it on creation?
-            //this.Owner.AddAnimation(this.AnimationCrouch);
-
-            this.Owner.SpriteComp.AddAnimation(AnimationDef.Jump, weight: 0);
-            this.Owner.SpriteComp.AddAnimation(AnimationDef.Walk, weight: 0);
-            this.Owner.SpriteComp.AddAnimation(AnimationDef.Crouch, weight: 0);
-            //this.CurrentState.Apply(this);
-
+            this.Owner.SpriteComp.AddAnimation(AnimationDefOf.Jump, weight: 0);
+            this.Owner.SpriteComp.AddAnimation(AnimationDefOf.Walk, weight: 0);
+            this.Owner.SpriteComp.AddAnimation(AnimationDefOf.Crouch, weight: 0);
         }
-        internal override void Resolve()
-        {
-            //this.AnimationJump = this.Owner.SpriteComp.GetAnimation(AnimationDef.Jump);
-            //this.AnimationWalk = this.Owner.SpriteComp.GetAnimation(AnimationDef.Walk);
-            //this.AnimationCrouch = this.Owner.SpriteComp.GetAnimation(AnimationDef.Crouch);
-            //this.Owner.AddAnimation(this.AnimationJump);
-            //this.Owner.AddAnimation(this.AnimationWalk); // why not add it on creation?
-            //this.Owner.AddAnimation(this.AnimationCrouch);
-        }
+      
         public void Toggle(GameObject parent, bool toggle)
         {
             if (toggle)

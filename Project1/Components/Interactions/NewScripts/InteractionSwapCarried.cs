@@ -16,7 +16,7 @@ namespace Start_a_Town_
         {
             var a = this.Actor;
             //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
-            this.AnimationDef = AnimationDef.TouchItem;
+            //this.AnimationDef = AnimationDef.TouchItem;
 
         }
         public override void Perform()

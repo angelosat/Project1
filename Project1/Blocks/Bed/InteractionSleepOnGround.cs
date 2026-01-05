@@ -10,7 +10,7 @@ namespace Start_a_Town_
             : base("Sleeping on ground")
         {
             this.RunningType = RunningTypes.Continuous;
-            this.AnimationDef = null;
+            //this.AnimationDef = null;
         }
         protected override void OnStart()
         {

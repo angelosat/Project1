@@ -9,12 +9,21 @@ namespace Start_a_Town_
         static VFXParticles()
         {
             Registry.MapEventHooksClient.Register<BlockHitEvent>(OnBlockHit);
-        }
+            Registry.MapEventHooksClient.Register<BlockDestroyedEvent>(OnBlockDestroyed);
 
+        }
+        private static void OnBlockDestroyed(BlockDestroyedEvent e)
+        {
+            EmitBlockParticles(e.Block, e.Map, e.Global);
+
+        }
         private static void OnBlockHit(BlockHitEvent e)
         {
-            var map = e.Map;
-            var global = e.Global;
+            EmitBlockParticles(e.Block, e.Map, e.Global);
+        }
+
+        private static void EmitBlockParticles(Block block, MapBase map, IntVec3 global)
+        {
             var emitter = new ParticleEmitterSphere
             {
                 Source = global + IntVec3.UnitZ,
@@ -32,7 +41,6 @@ namespace Start_a_Town_
                 Rate = 0
             };
 
-            var block = map.GetBlock(global);
             //var emitter = block.GetEmitter();
             emitter.Texture = Block.Atlas.Texture;
             var rects = block.GetParticleRects(25);

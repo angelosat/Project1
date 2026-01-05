@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.Components;
-using Start_a_Town_.Net;
-using Start_a_Town_.Particles;
 
 namespace Start_a_Town_
 {
@@ -36,7 +34,8 @@ namespace Start_a_Town_
         static void ApplyWork(Context ctx, int workAmount)
         {
             ctx.Actor.Map.ApplyBlockWork(ctx.Target.Global, -workAmount);
-            ctx.Actor.Map.Events.Post(new BlockHitEvent(ctx.Target.Map, ctx.Target.Global));
+            $"{ctx.Cell.HitPoints} / {Cell.HitPointsMax} : {ctx.ProgressPercentage}".ToConsole();
+            //ctx.Actor.Map.Events.Post(new BlockHitEvent(ctx.Target.Map, ctx.Target.Global));
         }
     }
     class InteractionBreakBlock : InteractionToolUse
@@ -98,6 +97,7 @@ namespace Start_a_Town_
 
         protected override void Done()
         {
+            return; // i have the map remove block automatically when hp == 0
             var a = this.Actor;
             var t = this.Target;
             //var cell = this.Cell;

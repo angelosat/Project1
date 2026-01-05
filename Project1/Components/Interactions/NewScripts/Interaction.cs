@@ -39,8 +39,8 @@ namespace Start_a_Town_
         public float CurrentTick;
         public float Seconds { get; set; }
         Animation _cachedAnimation;
-        protected Animation _animation => _cachedAnimation ??= this.Actor.SpriteComp.GetAnimation(this.AnimationDef);// = new(AnimationDef.Work);
-        public AnimationDef AnimationDef = AnimationDef.Work;
+        protected Animation CachedAnimation => _cachedAnimation ??= this.Actor.SpriteComp.GetAnimation(this.AnimationDef);// = new(AnimationDef.Work);
+        public AnimationDef AnimationDef => this.Def.Animation;// = AnimationDefOf.Work;
         internal Actor Actor => this.Context.Actor;
         internal TargetArgs Target => this.Context.Target;
         internal int Count;
@@ -49,6 +49,10 @@ namespace Start_a_Town_
         public Func<Vector3> BarPosition;
         public Func<float> BarProgress;
         private Func<string> BarLabel;
+
+        public readonly ProgressInt Progress = new(100);
+        //public virtual float PercentageComplete => (float)(1 - this.CurrentTick / this.Length);
+        public float ProgressPercentage => this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage;
 
         // TODO: i need a method that returns satisfaction score based on ai entity's state
         static readonly Dictionary<Need.Types, float> _needSatisfaction = new();
@@ -70,7 +74,7 @@ namespace Start_a_Town_
                 this.Actor.Net.EventOccured((int)Message.Types.InteractionInterrupted, this.Actor, this);
             this.State = States.Finished;
             if (this.AnimationDef is not null)
-                this._animation?.FadeOutAndRemove();
+                this.CachedAnimation?.FadeOutAndRemove();
         }
 
         public virtual void Perform()
@@ -89,7 +93,49 @@ namespace Start_a_Town_
             this.OnStart();
         }
         protected virtual void OnStart() { }
-        public virtual void Update()
+        public void Update()
+        {
+            var actor = this.Actor;
+            var target = this.Target;
+            if (this.State == States.Unstarted)
+            {
+                this.Start();
+                this.State = States.Running;
+            }
+            if (this.Def.ProgressHandler?.IsFinished(this) ?? this.State == States.Finished) // TODO: maybe check for failed state too?
+            {
+                this.Stop();
+                return;
+            }
+            if (this.Def.ProgressHandler is not null)
+                this.Def.ProgressHandler.Tick(this);
+            else this.Perform();
+            
+            //else if (this.State == States.Finished)
+            //{
+            //    this.Stop();
+            //    AILog.TryWrite(actor, "Success: " + this.GetCompletedText(actor, target));
+            //    return;
+            //}
+            //if (this.RunningType == RunningTypes.Continuous)
+            //{
+            //    this.Perform();
+            //    if (this.State == States.Finished)
+            //    {
+            //        this.Stop();
+            //        AILog.TryWrite(actor, "Success: " + this.GetCompletedText(actor, target));
+            //    }
+            //    return;
+            //}
+            //this.CurrentTick--;
+            //if (this.CurrentTick <= 0)
+            //{
+            //    this.Finish();
+            //    this.Stop();
+            //    this.Perform();
+            //}
+        }
+        public void UpdateOld()
         {
             var actor = this.Actor;
             var target = this.Target;
@@ -131,12 +177,13 @@ namespace Start_a_Town_
 
         internal void Stop()
         {
-            if(this.AnimationDef is not null)
-                this._animation.FadeOutAndRemove();
+            this.State = States.Finished;
+            if (this.AnimationDef is not null)
+                this.CachedAnimation.FadeOutAndRemove();
         }
         protected virtual void Fail()
         {
-            this._animation.FadeOutAndRemove();
+            this.CachedAnimation.FadeOutAndRemove();
             this.State = States.Failed;
         }
         public void GetTooltip(Control tooltip)
@@ -145,8 +192,7 @@ namespace Start_a_Town_
             panel.Controls.Add(new Label(this.Name + (this.Length > 0 ? TimeSpan.FromMilliseconds(this.Length).TotalSeconds.ToString(" #0.##s") : "")) { Location = panel.Controls.BottomLeft }); //this.Length.ToString("#0.##s")
             tooltip.Controls.Add(panel);
         }
-
-        public virtual float PercentageComplete => (float)(1 - this.CurrentTick / this.Length);
+     
         public virtual void DrawUI(SpriteBatch sb, Camera camera)
         {
             var parent = this.Actor;
@@ -166,7 +212,7 @@ namespace Start_a_Town_
             var barLoc = scrLoc - new Vector2(InteractionBar.DefaultWidth / 2, InteractionBar.DefaultHeight / 2);
             var textLoc = new Vector2(barLoc.X, scrLoc.Y);
 
-            InteractionBar.Draw(sb, barLoc, InteractionBar.DefaultWidth, this.PercentageComplete);
+            InteractionBar.Draw(sb, barLoc, InteractionBar.DefaultWidth, this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage);
             UIManager.DrawStringOutlined(sb, this.Verb, textLoc, Alignment.Horizontal.Left, Alignment.Vertical.Center, 0.5f);
         }
 
@@ -231,7 +277,7 @@ namespace Start_a_Town_
         }
         internal virtual void AfterLoad()
         {
-            this._animation.Entity = this.Actor;
+            this.CachedAnimation.Entity = this.Actor;
         }
 
         public void DrawProgressBar(Func<Vector3> position, Func<float> progress, Func<string> label)
@@ -244,10 +290,19 @@ namespace Start_a_Town_
 
         internal void AddProgress(int v)
         {
-            this.OnAddProgress(v);
             this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
+
+            if (this.Def.ProgressHandler is not null)
+                this.Def.ProgressHandler.AddProgress(this, v);
+            else
+                this.OnAddProgress(v);
+            //this.Progress.Add(v);
+            //this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
         }
-        protected virtual void OnAddProgress(int v) { }
+        protected virtual void OnAddProgress(int v)
+        {
+            this.Progress.Add(v);
+        }
 
         public bool HasFinished => this.State == States.Finished;
     }

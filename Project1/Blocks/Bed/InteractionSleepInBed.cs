@@ -12,7 +12,7 @@ namespace Start_a_Town_.Blocks.Bed
             : base("Sleeping in bed")
         {
             this.RunningType = RunningTypes.Continuous;
-            this.AnimationDef = null;
+            //this.AnimationDef = null;
         }
         protected override void OnStart()
         {

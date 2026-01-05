@@ -18,7 +18,7 @@ namespace Start_a_Town_.Components
             return this.Inventory.HaulSlot.Object;
         }
 
-        public Animation AnimationHaul = new(AnimationDef.Haul) { Weight = 0 };
+        public Animation AnimationHaul = new(AnimationDefOf.Haul) { Weight = 0 };
 
         internal override void Resolve()
         {
@@ -32,7 +32,7 @@ namespace Start_a_Town_.Components
             this.Owner.AddResourceModifier(new ResourceRateModifier(ResourceRateModifierDef.HaulingStaminaDrain));
             this.Owner.AddStatModifier(new StatNewModifier(StatModifierDef.WalkSpeedHaulingWeight));
             //this.Owner.AddAnimation(this.AnimationHaul);
-            this.AnimationHaul = this.Owner.SpriteComp.AddAnimation(AnimationDef.Haul, weight: 0);
+            this.AnimationHaul = this.Owner.SpriteComp.AddAnimation(AnimationDefOf.Haul, weight: 0);
         }
         static public GameObjectSlot GetHolding(GameObject parent)
         {

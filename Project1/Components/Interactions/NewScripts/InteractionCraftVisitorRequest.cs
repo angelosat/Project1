@@ -118,7 +118,7 @@ namespace Start_a_Town_
             this.IngredientsUsed.ReadFromFlat(r, r => r.ReadString(), r => new ObjectRefIDsAmount().Read(r) as ObjectRefIDsAmount);
         }
 
-        public override void OnUpdate()
+        protected sealed override void OnUpdate()
         {
             throw new System.NotImplementedException();
         }

@@ -6,7 +6,7 @@ namespace Start_a_Town_
     {
         public InteractionDepart()
         {
-            this.AnimationDef = null;
+            //this.AnimationDef = null;
         }
         public override void Perform()
         {

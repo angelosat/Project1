@@ -9,55 +9,6 @@ using System.Linq;
 
 namespace Start_a_Town_
 {
-    internal class BlockHealthToken
-    {
-        readonly static int TimerMax = Ticks.FromHours(1);
-        int Timer = TimerMax;
-        internal int Lifetime => TimerMax - this.Timer;
-        internal float HealthPercentage => (float)this.CurrentHp / this.TotalHp;
-        void Refresh() => this.Timer = TimerMax;
-        internal void Tick() => this.Timer--;
-        internal bool HasExpired => this.Timer <= 0;
-        readonly internal Cell Cell;
-        private readonly int TotalHp;
-        private int CurrentHp;
-
-        internal BlockHealthToken(Cell cell)
-        {
-            this.TotalHp = Cell.HitPointsMax * cell.Material.BreakResistance;
-            this.CurrentHp = cell.HitPoints * cell.Material.BreakResistance;
-            this.Cell = cell;
-        }
-        /// <summary>
-        /// Returns true if chunk z-slice needs invalidation
-        /// </summary>
-        internal bool ApplyWork(int work)
-        {
-            this.Refresh();
-            this.CurrentHp = Math.Min(this.TotalHp, Math.Max(0, this.CurrentHp + work));
-            if (this.CurrentHp == 0)
-            {
-                this.Cell.HitPoints = 0;
-                return true;
-            }
-            var nextDamageStage = Cell.HitPointsMax - 1 - this.CurrentHp / this.Cell.Material.BreakResistance;
-            var currentDamageStage = this.Cell.Damage;
-            if (nextDamageStage != currentDamageStage)
-            {
-                this.Cell.Damage = nextDamageStage;
-                
-                return true;
-            }
-            //var nextStage = this.CurrentHp / this.Cell.Material.BreakResistance;
-            //var currentStage = this.Cell.HitPoints;
-            //if (currentStage != nextStage)
-            //{
-            //    this.Cell.HitPoints = nextStage;
-            //    return true;
-            //}
-            return false;
-        }
-    }
     [EnsureStaticCtorCall]
     public abstract partial class Block : Inspectable, ISlottable, ITooltippable
     {

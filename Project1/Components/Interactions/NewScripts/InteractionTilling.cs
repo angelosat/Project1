@@ -44,13 +44,14 @@ namespace Start_a_Town_
 
         protected override float WorkDifficulty => 1;
 
-        ProgressInt _progress;
-        protected override float Progress => this._progress.Percentage;
-        public override float PercentageComplete => this._progress.Percentage;
+        //ProgressInt _progress;
+        //protected override float Progress => this._progress.Percentage;
+        //public override float PercentageComplete => this._progress.Percentage;
         protected override void OnInitialize(Actor actor, TargetArgs target)
         {
             // TODO: derive progress max by soil hardness?
-            this._progress = new(50); // placeholder
+            //this._progress = new(50); // placeholder
+            this.Progress.SetMax(50);
         }
         protected override void Done() 
         {
@@ -66,9 +67,9 @@ namespace Start_a_Town_
         protected override SkillDef GetSkill() => SkillDefOf.Argiculture;
         protected override ToolUseDef GetToolUse() => ToolUseDefOf.Argiculture;
 
-        protected override void OnAddProgress(int workAmount)
-        {
-            this._progress.Add(workAmount);
-        }
+        //protected override void OnAddProgress(int workAmount)
+        //{
+        //    this._progress.Add(workAmount);
+        //}
     }
 }

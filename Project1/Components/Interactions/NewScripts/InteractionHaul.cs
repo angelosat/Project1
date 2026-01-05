@@ -31,7 +31,7 @@ namespace Start_a_Town_
         public InteractionHaul(int amount)
             : base("Haul")
         {
-            this.AnimationDef = AnimationDef.TouchItem;
+            //this.AnimationDef = AnimationDef.TouchItem;
             this.Amount = amount;
             this.CrossFadeAnimationLength = 25;
         }
@@ -43,7 +43,7 @@ namespace Start_a_Town_
         {
             var a = this.Actor;
         }
-        public override void OnUpdate()
+        protected sealed override void OnUpdate()
         {
             if (this.Actor.Net.IsClient) return;
             var actor = this.Actor;

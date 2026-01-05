@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.Animations;
+using System;
 
 namespace Start_a_Town_
 {
@@ -6,6 +7,8 @@ namespace Start_a_Town_
     {
         public readonly Type InteractionClass;
         public readonly InteractionLogic Logic;
+        public AnimationDef Animation;
+        public IInteractionProgressHandler ProgressHandler;
 
         public InteractionDef(string name, Type interactionClass, Type workerType = null) : base(name)
         {

@@ -5,7 +5,7 @@ using Start_a_Town_.Animations;
 
 namespace Start_a_Town_
 {
-    class InteractionPlaceItem : Interaction
+    class InteractionPlaceItem : InteractionPerpetual
     {
         int Amount;
 
@@ -16,19 +16,19 @@ namespace Start_a_Town_
 
         public InteractionPlaceItem(int amount) // -1 means whole stack
             : base(
-            "UseHauledOnTarget", .4f)
+            "UseHauledOnTarget")//, .4f)
         {
             if (amount == 0)
                 throw new Exception();
             this.Amount = amount;
             //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
-            this.AnimationDef = AnimationDef.TouchItem;
+            //this.AnimationDef = AnimationDef.TouchItem;
             this.CrossFadeAnimationLength = 25;
         }
 
-        public override void Perform()
+        protected sealed override void OnUpdate()
         {
-            this._animation.FadeOutAndRemove();
+            this.CachedAnimation.FadeOutAndRemove();
             if (this.Actor.Net.IsClient)
                 return;
             var actor = this.Actor;
@@ -57,8 +57,10 @@ namespace Start_a_Town_
                 default:
                     break;
             }
+            this.Finish();
+
         }
-        
+
         // TODO: make it so i have access to the carried item's stacksize, and include it in the name ( Throw 1 vs Throw 16 for example)
         public override string ToString()
         {

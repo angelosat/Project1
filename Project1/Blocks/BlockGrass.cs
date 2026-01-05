@@ -24,9 +24,6 @@ namespace Start_a_Town_
         public BlockGrass()
             : base("Grass", 0, 1, true, true)
         {
-            //this.LootTable = new LootTable(
-            //            new Loot(() => ItemFactory.CreateFrom(RawMaterialDef.Bags, MaterialDefOf.Soil), 1f, 1, RawMaterialDef.Bags.StackCapacity)
-            //            );
             this.BreakProduct = RawMaterialDefOf.Bags;
 
             this.LoadVariations("grass/grass1", "grass/grass2", "grass/grass3", "grass/grass4");

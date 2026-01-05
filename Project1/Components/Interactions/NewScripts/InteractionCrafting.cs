@@ -11,7 +11,7 @@ namespace Start_a_Town_.Crafting
         {
             BlockWorkstationComp _comp;
             public BlockWorkstationComp Comp => this._comp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
-            public override float ProgressPercentage => this.Actor.Work.Task.PercentageComplete;
+            public override float ProgressPercentage => this.Actor.Work.Task.ProgressPercentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         public override bool CanFinish(InteractionContext ctx) => this.CanFinish((Context)ctx);
@@ -24,8 +24,8 @@ namespace Start_a_Town_.Crafting
     }
     class InteractionCraftingNew : InteractionToolUse
     {
-        Progress _progress = new();
-        protected override Progress ProgressNew => this._progress;
+        //Progress _progress = new();
+        //protected override Progress ProgressNew => this._progress;
 
         protected override float WorkDifficulty => 1;//throw new System.NotImplementedException();
 
@@ -34,13 +34,11 @@ namespace Start_a_Town_.Crafting
         {
             this.SkillAwardType = SkillAwardTypes.OnFinish;
         }
-        public override float PercentageComplete => this._progress.Percentage;// this.TotalWorkApplied / 100; // HACK
-        protected override void OnAddProgress(int v)
-        {
-            //this.OnApplyWork(v);
-            //this.TotalWorkAmount += v;
-            this._progress.Value += v;// 25;
-        }
+        //public override float PercentageComplete => this._progress.Percentage;// this.TotalWorkApplied / 100; // HACK
+        //protected override void OnAddProgress(int v)
+        //{
+        //    this._progress.Add(v);// 25;
+        //}
         protected override void Done()
         {
             var actor = this.Actor;
@@ -132,7 +130,7 @@ namespace Start_a_Town_.Crafting
         public InteractionCrafting()
             : base("Produce")
         {
-            this.DrawProgressBar(() => this.Target.Global.Above(), () => this.Progress, () => this.Order.Label);
+            this.DrawProgressBar(() => this.Target.Global.Above(), () => this.Progress.Percentage, () => this.Order.Label);
         }
 
         //public override object Clone()

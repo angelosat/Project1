@@ -26,7 +26,7 @@ namespace Start_a_Town_
         //    // TODO use this.All to throw the whole item stack vs only one
         //    actor.Inventory.Throw(velocity, amount: -1);
         //}
-        internal override void OnToolContact()
+        protected override void Done()
         {
             var actor = this.Actor;
             if (actor.Net.IsClient) return;

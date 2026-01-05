@@ -43,7 +43,7 @@ namespace Start_a_Town_
         {
             var a = this.Actor;
         }
-        protected sealed override void OnUpdate()
+        protected override void Done()
         {
             if (this.Actor.Net.IsClient) return;
             var actor = this.Actor;

@@ -29,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Blocks\Helpers\" />
+    <Folder Include="Modules\Towns\Crafting\AI\" />
     <Folder Include="Modules\Towns\Farming\Sowing\" />
     <Folder Include="Properties\" />
   </ItemGroup>

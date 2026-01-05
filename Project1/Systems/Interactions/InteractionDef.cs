@@ -9,8 +9,12 @@ namespace Start_a_Town_
         public readonly InteractionLogic Logic;
         public AnimationDef Animation;
         public IInteractionProgressHandler ProgressHandler;
-
-        public InteractionDef(string name, Type interactionClass, Type workerType = null) : base(name)
+        public InteractionDef(string name, Type workerType) : base(name)
+        {
+            this.InteractionClass = typeof(Interaction);
+            this.Logic = ActivatorSafe<InteractionLogic>.CreateInstance(workerType ?? typeof(InteractionLogic));
+        }
+        public InteractionDef(string name, Type interactionClass, Type workerType) : base(name)
         {
             this.InteractionClass = interactionClass;
             this.Logic = ActivatorSafe<InteractionLogic>.CreateInstance(workerType ?? typeof(InteractionLogic));
@@ -45,6 +49,7 @@ namespace Start_a_Town_
             ctx.Target = target;
             return ctx;
         }
+        internal virtual void Done(InteractionContext ctx) { }
     }
     public class InteractionContext//(Actor actor, TargetArgs target)
     {

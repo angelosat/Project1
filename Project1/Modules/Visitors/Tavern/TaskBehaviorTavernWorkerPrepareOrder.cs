@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -23,7 +24,8 @@ namespace Start_a_Town_
             yield return BehaviorHelper.SetTarget(workstationAbove, (actor.Map, task.GetTarget(workstationIndex).Global.Above()));
             yield return BehaviorHelper.PlaceCarried(workstationAbove);
             yield return BehaviorHelper.JumpIfMoreTargets(beginHaul, ingredientIndex);
-            yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionCraftVisitorRequest(shop, task.OrderOld, task.IngredientsUsed));
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionCraftingNew(shop, task.OrderOld, task.IngredientsUsed));
             yield return new BehaviorCustom(() => customerProps.Dish = task.CraftedItems.First());
         }
 

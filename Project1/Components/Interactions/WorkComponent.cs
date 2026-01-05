@@ -71,8 +71,8 @@ namespace Start_a_Town_.Components
             this.Task = task;
             this.Target = target;
             parent.FaceTowards(this.Target);
-            if (this.Task.HasFinished)
-                this.Stop();
+            //if (this.Task.HasFinished)
+            //    this.Stop();
         }
 
         public void End(bool success = false)

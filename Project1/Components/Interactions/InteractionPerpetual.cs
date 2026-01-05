@@ -10,16 +10,9 @@
         {
             this.RunningType = RunningTypes.Continuous;
         }
-
-        protected abstract void OnUpdate();
-
         internal override void AfterLoad()
         {
             base.AfterLoad();
-        }
-        internal override void OnToolContact()
-        {
-            this.OnUpdate();
         }
     }
 }

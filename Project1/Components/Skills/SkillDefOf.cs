@@ -34,6 +34,11 @@ namespace Start_a_Town_
             Description = "Tinkering description",
             Icon = new Icon(UIManager.Icons32, 12, 32)
         };
+        static public readonly SkillDef Social = new("Social")
+        {
+            Description = "Social description",
+            Icon = new Icon(UIManager.Icons32, 12, 32)
+        };
         static public readonly SkillDef Argiculture = new("Argiculture")
         {
             Description = "Argiculture description",

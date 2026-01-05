@@ -21,12 +21,9 @@ namespace Start_a_Town_
             if (amount == 0)
                 throw new Exception();
             this.Amount = amount;
-            //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
-            //this.AnimationDef = AnimationDef.TouchItem;
             this.CrossFadeAnimationLength = 25;
         }
-
-        protected sealed override void OnUpdate()
+        protected override void Done()
         {
             this.CachedAnimation.FadeOutAndRemove();
             if (this.Actor.Net.IsClient)

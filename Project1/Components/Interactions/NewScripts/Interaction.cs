@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    public abstract class Interaction : Inspectable
+    public class Interaction : Inspectable
     {
         public InteractionDef Def;
         public InteractionContext Context;
@@ -17,9 +17,7 @@ namespace Start_a_Town_
         public bool IsFinished => this.State == States.Finished || this.State == States.Failed;
         protected bool CanPerform() => this.Def.Logic.CanPerform(this.Context);
         protected bool CanFinish() => this.Def.Logic.CanFinish(this.Context);
-        internal virtual void OnToolContact()
-        {
-        }
+        
         public void Initialize() => this.OnInitialize(this.Actor, this.Target); 
         protected virtual void OnInitialize(Actor actor, TargetArgs target) { }
         public override string ToString()
@@ -195,19 +193,20 @@ namespace Start_a_Town_
      
         public virtual void DrawUI(SpriteBatch sb, Camera camera)
         {
-            var parent = this.Actor;
-            if (this._drawProgressBar)
-            {
-                Bar.Draw(sb, camera, this.BarPosition(), this.BarLabel(), this.BarProgress(), camera.Zoom * .2f);
-                return;
-            }
+            var actor = this.Actor;
+            //if (this._drawProgressBar)
+            //{
+            //Bar.Draw(sb, camera, this.BarPosition(), this.BarLabel(), this.BarProgress(), camera.Zoom * .2f);
+            Bar.Draw(sb, camera, this.Actor.Global, "Interaction", this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
+            return;
+            //}
             if (this.RunningType == RunningTypes.Continuous)
                 return;
             if (this.Length <= Ticks.PerSecond)
                 return;
-            var global = parent.Global;
+            var global = actor.Global;
 
-            var bounds = camera.GetScreenBounds(global, parent.GetSprite().GetBounds());
+            var bounds = camera.GetScreenBounds(global, actor.GetSprite().GetBounds());
             var scrLoc = new Vector2(bounds.X + bounds.Width / 2f, bounds.Y);//
             var barLoc = scrLoc - new Vector2(InteractionBar.DefaultWidth / 2, InteractionBar.DefaultHeight / 2);
             var textLoc = new Vector2(barLoc.X, scrLoc.Y);
@@ -296,14 +295,89 @@ namespace Start_a_Town_
                 this.Def.ProgressHandler.AddProgress(this, v);
             else
                 this.OnAddProgress(v);
-            //this.Progress.Add(v);
-            //this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
         }
         protected virtual void OnAddProgress(int v)
         {
             this.Progress.Add(v);
         }
+        internal void OnToolContact()
+        {
+            if (this.Actor.Net.IsClient)
+                return;
+            if (!this.CanPerform())
+            {
+                this.Fail();
+                return;
+            }
 
-        public bool HasFinished => this.State == States.Finished;
+            var actor = this.Actor;
+            var toolEffect = GetToolEffectiveness();
+            var amount = (int)Math.Max(1, toolEffect / WorkDifficulty);
+            if (this.WillFinish(amount) && !this.CanFinish())
+            {
+                this.Fail();
+                return;
+            }
+            var skill = this.GetSkill();
+
+            this.AddProgress(amount);
+            this.TotalWorkApplied += amount;
+            this.CachedAnimation.Speed = actor[StatDefOf.WorkSpeed];
+
+
+
+            if (skill is not null)
+            {
+                if (this.SkillAwardType == SkillAwardTypes.OnSwing)
+                    actor.Skills.Increase(skill, amount);
+
+                var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level);
+
+                // "transfer" energy from stamina to strength
+                actor.Attributes.Adjust(AttributeDefOf.Strength, energyConsumption);
+                actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
+            }
+            // i moved the multiplication with the stamina threshold to inside the workspeed stat formula
+
+            if (!this.Progress.IsFinished)
+                return;
+
+            if (skill is not null && this.SkillAwardType == SkillAwardTypes.OnFinish)
+            {
+                //throw new NotImplementedException();
+                actor.Skills.Increase(skill, (int)this.TotalWorkApplied);
+            }
+            this.Done();
+            this.Finish();
+        }
+        bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
+        protected virtual float WorkDifficulty { get; } = 1;
+
+        protected virtual void Done() => this.Def.Logic?.Done(this.Context);
+
+        protected virtual float GetToolEffectiveness()
+        {
+            //if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolProperties.ToolUse == this.GetToolUse())
+            if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolUse == this.GetToolUse())
+                return tool[StatDefOf.ToolEffectiveness];
+            else
+                return this.Actor.GetMaterial(BoneDefOf.RightHand).Density;
+        }
+        protected virtual float GetEnergyConsumption(float workAmount, int skillLevel)
+        {
+            var toolWeight = this.Actor[GearType.Mainhand]?.TotalWeight ?? 1;
+            var strength = this.Actor[AttributeDefOf.Strength].Level;
+            var fromToolWeight = //10 * 
+                toolWeight / strength;
+            return fromToolWeight;
+        }
+        protected float TotalWorkApplied;
+
+        protected virtual ToolUseDef GetToolUse() => null;
+        protected virtual SkillDef GetSkill() => null;
+        protected enum SkillAwardTypes { OnSwing, OnFinish }
+
+        protected SkillAwardTypes SkillAwardType;//{ get; }
+
     }
 }

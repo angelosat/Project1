@@ -28,7 +28,6 @@ namespace Start_a_Town_
         {
             this.Refresh();
             this.CurrentHp = Math.Min(this.TotalHp, Math.Max(0, this.CurrentHp + work));
-            $"currenthp: {this.CurrentHp}".ToConsole();
             if (this.CurrentHp == 0)
             {
                 this.Cell.HitPoints = 0;

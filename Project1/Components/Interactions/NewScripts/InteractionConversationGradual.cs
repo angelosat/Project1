@@ -15,7 +15,8 @@ namespace Start_a_Town_
         {
             this.Verb = this.Name;
         }
-        protected sealed override void OnUpdate()
+        protected override void OnAddProgress(int v)
+
         {
             var a = this.Actor;
             var t = this.Target;
@@ -27,7 +28,7 @@ namespace Start_a_Town_
                 this.Finish();
             }
         }
-
+        protected override SkillDef GetSkill() => SkillDefOf.Social;
         protected override void WriteExtra(IDataWriter w)
         {
             this.Topic.Write(w);

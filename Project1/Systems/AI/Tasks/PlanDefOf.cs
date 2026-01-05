@@ -6,11 +6,6 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     public static class PlanDefOf
     {
-        static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft)
-        { 
-            Format = "Force crafting at {0}",
-            GetPrimaryTarget = t => t.GetTarget(TaskBehaviorCrafting.WorkstationIndex)
-        };
 
         static public readonly PlanDef Hauling = new("Hauling", typeof(TaskBehaviorHaulToStockpile))
         {
@@ -103,6 +98,7 @@ namespace Start_a_Town_
         static public readonly PlanDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace), InteractionDefOf.Place);
         static public readonly PlanDef Construct = new("Constructing", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct);
         static public readonly PlanDef GoTill = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
+        static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);
 
         static PlanDefOf()
         {

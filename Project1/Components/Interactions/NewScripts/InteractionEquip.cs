@@ -10,15 +10,7 @@
             this.CrossFadeAnimationLength = 25;
         }
 
-        //protected override void Start()
-        //{
-        //    var a = this.Actor;
-        //    var t = this.Target;
-        //    return;
-        //    a.CrossFade(this.Animation, false, 25);
-        //}
-
-        protected sealed override void OnUpdate()
+        protected override void Done()
         {
             if (this.Actor.Net.IsClient)
                 return;

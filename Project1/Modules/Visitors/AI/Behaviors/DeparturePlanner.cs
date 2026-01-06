@@ -18,13 +18,16 @@
             if (actor.Map.World.Random.Roll(chance))
             {
                 var map = actor.Map as StaticMap;
-                actor.AI.Meta.TargetFrontier = FrontierDefOf.Forest; // HACK
+                //actor.AI.Meta.TargetFrontier = FrontierDefOf.Forest; // HACK
+                actor.AI.Meta.SetTargetFrontier(FrontierDefOf.Forest);
+                actor.AI.Meta.LocationDecision.ScheduleNext(actor.World);
                 for (int i = 0; i < MaxTries; i++)
                 {
                     var exit = map.GetRandomEdgeCell().Above;
                     if (actor.CanReach(exit))
                     {
-                        AILog.SyncWrite(actor, $"I'm departing for {actor.AI.Meta.TargetFrontier}");
+                        //AILog.SyncWrite(actor, $"I'm departing for {actor.AI.Meta.TargetFrontier}");
+                        actor.AI.State.Log.Write($"I'm departing for {actor.AI.Meta.TargetFrontier}");
                         return new Plan(PlanDefOf.Depart, (map, exit));
                     }
                 }

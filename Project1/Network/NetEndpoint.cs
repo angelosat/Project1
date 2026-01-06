@@ -12,7 +12,7 @@ namespace Start_a_Town_.Net
         public abstract bool IsServer { get; }
         public abstract bool IsClient { get; }
 
-        protected readonly NetworkStream[] StreamsArray = [new(ReliabilityType.Unreliable), new(ReliabilityType.Reliable), new(ReliabilityType.OrderedReliable)];
+        protected readonly NetworkStream[] StreamsArray = [new(ReliabilityType.Unreliable, false), new(ReliabilityType.Reliable), new(ReliabilityType.OrderedReliable)];
         protected NetworkStream GetStream(ReliabilityType reliability)
         {
             foreach (var s in this.StreamsArray)
@@ -35,6 +35,10 @@ namespace Start_a_Town_.Net
         public IDataWriter BeginPacket(int pType)
         {
             return PacketBuilder.Create(this.GetStream(ReliabilityType.OrderedReliable).Writer, pType);
+            //var s = this.GetStream(ReliabilityType.OrderedReliable);
+            //var w = PacketBuilder.Create(s.Writer, pType);
+            //w.Write(s.IsSimulation ? this.CurrentTick : SimulationTick.Immediate);
+            //return w;
         }
         public void HandlePacket(int pType, Packet pck)
         {

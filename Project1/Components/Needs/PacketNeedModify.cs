@@ -16,7 +16,7 @@ namespace Start_a_Town_.Components.Needs
         
         static public void SendSet(NetEndpoint net, int agentID, NeedDef needDef, float value)
         {
-            net.BeginPacket(pSet)
+            net.BeginPacketImmediate(pSet)
                 .Write(agentID)
                 .Write(needDef)
                 .Write(value);

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Start_a_Town_
 {
@@ -60,7 +61,7 @@ namespace Start_a_Town_
 
         public Actor Actor;
         public RoleMetaDef Def;
-        public FrontierDef TargetFrontier;
+        public FrontierDef TargetFrontier { get; private set; }
         public MetaDecision LocationDecision;
         internal virtual void AssignTo(Actor actor)
         {
@@ -126,6 +127,13 @@ namespace Start_a_Town_
             var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.WrapperType);
             wrapper.Read(r);
             return wrapper;
+        }
+
+        internal void SetTargetFrontier(FrontierDef frontier)
+        {
+            this.TargetFrontier = frontier;
+            this.Actor.World.Events.Post(new AILocationDecisionEvent(this.Actor, frontier));
+            
         }
     }
 }

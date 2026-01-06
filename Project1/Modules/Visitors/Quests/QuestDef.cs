@@ -135,7 +135,7 @@ namespace Start_a_Town_
                 this.Objectives[i].TryComplete(actor, area);
             }
             if (this.IsCompleted(actor))
-                AILog.SyncWrite(actor, $"Received reward for completing [{this.Name}]");
+                actor.AI.State.Log.Write($"Received reward for completing [{this.Name}]");
         }
         public IEnumerable<ObjectAmount> GetQuestItemsInInventory(Actor actor)
         {

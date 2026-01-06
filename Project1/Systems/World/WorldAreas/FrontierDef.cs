@@ -39,7 +39,7 @@ namespace Start_a_Town_
             var dmg = min + rand.Next(max - min);
             //actor.Resources.AdjustAndSync(ResourceDefOf.Health, -dmg);
             actor.Resources.Adjust(ResourceDefOf.Health, -dmg);
-            AILog.SyncWrite(actor, $"[Lost {dmg} health,{Color.Red}] while exploring {this.Name}");
+            actor.AI.State.Log.Write($"[Lost {dmg} health,{Color.Red}] while exploring {this.Name}");
         }
 
         private void Quest(WorldInhabitantView visitor)

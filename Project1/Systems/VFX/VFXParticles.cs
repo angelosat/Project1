@@ -10,8 +10,24 @@ namespace Start_a_Town_
         {
             Registry.MapEventHooksClient.Register<BlockHitEvent>(OnBlockHit);
             Registry.MapEventHooksClient.Register<BlockDestroyedEvent>(OnBlockDestroyed);
-
+            Registry.MapEventHooksClient.Register<PlantChoppedEvent>(OnPlantChopped);
         }
+
+        private static void OnPlantChopped(PlantChoppedEvent e)
+        {
+            var actor = e.Actor;
+            var plant = e.Target.Object;
+            var intensity = e.Intensity;
+            var global = plant.Global;
+            var rects = ItemContent.LogsGrayscale.AtlasToken.Rectangle.Divide(25);
+            var emitter = NewEmitter(global);
+            emitter.Texture = ItemContent.LogsGrayscale.Texture;
+            emitter.ColorBegin = plant.PrimaryMaterial.Color;
+            emitter.ColorEnd = plant.PrimaryMaterial.Color;
+            emitter.Emit(rects, Vector3.Zero);
+            plant.Map.ParticleManager.AddEmitter(emitter);
+        }
+
         private static void OnBlockDestroyed(BlockDestroyedEvent e)
         {
             EmitBlockParticles(e.Block, e.Map, e.Global);
@@ -23,6 +39,15 @@ namespace Start_a_Town_
         }
 
         private static void EmitBlockParticles(Block block, MapBase map, IntVec3 global)
+        {
+            var emitter = NewEmitter(global);
+            emitter.Texture = Block.Atlas.Texture;
+            var rects = block.GetParticleRects(25);
+            emitter.Emit(rects, Vector3.Zero);
+            map.ParticleManager.AddEmitter(emitter);
+        }
+
+        private static ParticleEmitterSphere NewEmitter(IntVec3 global)
         {
             var emitter = new ParticleEmitterSphere
             {
@@ -40,12 +65,7 @@ namespace Start_a_Town_
                 Lifetime = Ticks.PerSecond * 2,
                 Rate = 0
             };
-
-            //var emitter = block.GetEmitter();
-            emitter.Texture = Block.Atlas.Texture;
-            var rects = block.GetParticleRects(25);
-            emitter.Emit(rects, Vector3.Zero);
-            map.ParticleManager.AddEmitter(emitter);
+            return emitter;
         }
     }
 }

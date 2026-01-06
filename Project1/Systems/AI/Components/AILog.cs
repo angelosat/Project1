@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Start_a_Town_.Components;
-using Start_a_Town_.Modules.AI.Net.Packets;
-using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using Start_a_Town_.AI;
 
@@ -14,40 +11,20 @@ namespace Start_a_Town_
     {
         const int Capacity = 64;
         public readonly ObservableCollection<Entry> Inner = new();
+        private Actor Owner;
 
-        static public void SyncWrite(GameObject entity, string text)
+        public AILog(Actor owner)
         {
-            var net = entity.Net;
-            if (net is not Server)
-                return;
-            AIState state = AIState.GetState(entity);
-            PacketAILogWrite.Send(net as Server, entity.RefId, text);
-            state.History.Write(text);
-            
+            this.Owner = owner;
         }
-        static public bool TryWrite(GameObject entity, string text)
-        {
-            if (!entity.HasComponent<AIComponent>())
-                return false;
-            var state = AIState.GetState(entity);
-            state.History.WriteEntry(entity as Actor, text);
-            return true;
-        }
-        public Entry WriteEntry(GameObject entity, string text)
-        {
-            var entry = new Entry(DateTime.Now, text);
-            this.Inner.Add(entry);
-            if (this.Inner.Count > Capacity)
-                this.Inner.RemoveAt(0);
-            entity.Net.Map.EventOccured(Message.Types.AILogUpdated, entity, this, entry);
-            return entry;
-        }
+      
         public Entry Write(string text)
         {
             var entry = new Entry(DateTime.Now, text);
             this.Inner.Add(entry);
             if (this.Inner.Count > Capacity)
                 this.Inner.RemoveAt(0);
+            this.Owner.World.Events.Post(new AILogEntry(this.Owner, text));
             return entry;
         }
         
@@ -60,7 +37,7 @@ namespace Start_a_Town_
         {
             static readonly Lazy<TableScrollableCompact<Entry>> EntriesGUI = new(()=> new TableScrollableCompact<Entry>()
                     .AddColumn(null, "Time", (int)UIManager.Font.MeasureString("HH:mm:ss").X, (e) => new Label(e.Time.ToString("HH:mm:ss")), 0)
-                    .AddColumn(null, "Description", 400, (e) => new GroupBox().AddControlsLineWrap(Label.ParseNew(e.Text)), 0));
+                    .AddColumn(null, "Description", 1000, (e) => new GroupBox().AddControlsLineWrap(Label.ParseNew(e.Text)), 0));
 
             static public Control GetGUI(Actor actor)
             {

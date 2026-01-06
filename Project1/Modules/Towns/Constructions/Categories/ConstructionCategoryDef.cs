@@ -19,22 +19,10 @@ namespace Start_a_Town_
      
         string INamed.Name => this.Label;
 
-        static void CallBack(Func<ProductMaterialPair> itemGetter, ToolBlockBuild.Args a)
-        {
-            PacketDesignateConstruction.Send(Client.Instance, itemGetter(), a);
-        }
 
         static public Window WindowToolsBox;
         static public UIToolsBox ToolsBox;
 
-        internal ToolBlockBuild GetTool(BuildToolDef toolDef, ProductMaterialPair productMaterialPair)
-        {
-            var tool = toolDef.Create(a => CallBack(() => productMaterialPair, a)); // TODO improve
-            tool.Block = productMaterialPair.Block;
-            tool.Material = productMaterialPair.Material;
-            tool.State = productMaterialPair.Data;
-            return tool;
-        }
         internal ToolBlockBuild GetTool(BuildToolDef toolDef, ConstructionDesignationArgs args, byte data = 0)
         {
             var tool = toolDef.Create(a => PacketDesignateConstruction.Send(Client.Instance, a, args)); // TODO improve

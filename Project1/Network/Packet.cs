@@ -8,8 +8,8 @@ namespace Start_a_Town_.Net
 {
     public enum PacketType
     {
-        PlayerConnecting = 1, 
-        PlayerDisconnected, 
+        //PlayerConnecting = 1, 
+        PlayerDisconnected = 1, 
         PlayerEnterWorld, 
         AssignCharacter, 
         RequestConnection,
@@ -141,7 +141,8 @@ namespace Start_a_Town_.Net
 
         public override string ToString()
         {
-            return "ID: " + this.ID + " / Type: " + this.PacketType + " / Size: " + this.Length + " / Attempts: " + Retries;
+            //return "ID: " + this.ID + " / Type: " + this.PacketType + " / Size: " + this.Length + " / Attempts: " + Retries;
+            return $"ID: {this.ID} / Tick: {this.Tick} / Type: {this.PacketType} / Size: {this.Length} / Attempts: {this.Retries}";
         }
 
         public void BeginSendTo(Socket socket, EndPoint ip)

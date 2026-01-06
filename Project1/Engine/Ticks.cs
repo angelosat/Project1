@@ -4,7 +4,9 @@
     {
         public const int IngameMillisecondsPerTick = 1000;// 1440; // one tick is 1.44 ingame seconds
         public const int PerSecond = 60;
-        public const int PerGameMinute = (int)(PerSecond * 1.44f);
+        public const int PerGameSecond = PerSecond * IngameMillisecondsPerTick / 1000;
+        //public const int PerGameMinute = (int)(PerSecond * 1.44f);
+        public const int PerGameMinute = PerGameSecond;
         public const int PerGameHour = 60 * PerGameMinute;
         public const int PerGameDay = 24 * PerGameHour;
 

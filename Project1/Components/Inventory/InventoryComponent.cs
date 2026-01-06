@@ -126,43 +126,7 @@ namespace Start_a_Town_.Components
             var parent = this.Owner;
             parent.Map.Spawn(thrownItem, parent.Global + (1 + parent.Height) * Vector3.UnitZ, this.Owner.Velocity + velocity);
         }
-        public void ThrowOld(Vector3 velocity, int amount = -1)
-        {
-            if (this.HaulSlot.Object is null)
-                throw new Exception();
-            Entity thrownItem;
-            var parent = this.Owner;
-            if (amount > 0 && amount <= this.HaulSlot.Object.StackSize)
-            {
-                thrownItem = this.HaulSlot.Object as Entity;
-
-                // TEMP
-                this.HaulSlot.Clear();
-                PacketActorHaulUpdate.Send(parent as Actor, null);
-
-                // split
-                // instantiate new
-                // todo packet send instantiate
-                // todo packet send inventory update
-            }
-            else
-            {
-                thrownItem = this.HaulSlot.Object as Entity;
-                this.HaulSlot.Clear();
-                // todo packet send haul clear packet
-                PacketActorHaulUpdate.Send(parent as Actor, null);
-            }
-            thrownItem.Velocity = velocity;
-            //thrownItem.Spawn(parent.Map, parent.Global + parent.Height * Vector3.UnitZ);
-            parent.Map.Spawn(thrownItem as Entity, parent.Global + parent.Height * Vector3.UnitZ, Vector3.Zero);
-
-            // todo packet spawn
-            PacketSpawnEntity.Send(thrownItem, parent.Global + parent.Height * Vector3.UnitZ, velocity);
-        }
-        //public GameObjectSlot GetHauling()
-        //{
-        //    return this.HaulSlot;
-        //}
+  
         public override IEnumerable<GameObject> GetChildren()
         {
             if (this.HaulContainer.Slots[0].Object is GameObject obj)

@@ -60,6 +60,6 @@ namespace Start_a_Town_
         }
     }
 
-    internal sealed record InteractionProgressEvent(Actor Actor, int WorkAmount) : IEventPayload { }
-    internal sealed record InteractionStartedEvent(Actor Actor, InteractionDef InteractionDef, TargetArgs Target) : IEventPayload { }
+    internal record struct InteractionProgressEvent(Actor Actor, int WorkAmount) : IEventPayload { }
+    internal record struct InteractionStartedEvent(Actor Actor, InteractionDef InteractionDef, TargetArgs Target) : IEventPayload { }
 }

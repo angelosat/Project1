@@ -182,7 +182,7 @@ namespace Start_a_Town_
             actor.Town = this;
             //actor.Net.ConsoleBox.Write($"{actor.Name} has joined the town!");
             actor.Net.Report($"{actor.Name} has joined the town!");
-            actor.AI.State.History.Write("I joined the town!");
+            actor.AI.State.Log.Write("I joined the town!");
             this.Map.EventOccured(Message.Types.NpcsUpdated);
         }
 

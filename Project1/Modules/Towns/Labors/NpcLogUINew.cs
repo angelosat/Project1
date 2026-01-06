@@ -7,7 +7,7 @@ namespace Start_a_Town_.AI
     {
         private readonly TableScrollableCompact<AILog.Entry> Table = new TableScrollableCompact<AILog.Entry>()
                     .AddColumn(null, "Time", (int)UIManager.Font.MeasureString("HH:mm:ss").X, (e) => new Label(e.Time.ToString("HH:mm:ss")), 0)
-                    .AddColumn(null, "Description", 200, (e) => new GroupBox().AddControlsLineWrap(Label.ParseNew(e.Text)), 0);
+                    .AddColumn(null, "Description", 400, (e) => new GroupBox().AddControlsLineWrap(Label.ParseNew(e.Text)), 0);
         public ISelectable CurrentSelection { get; set; }
 
         public NpcLogUINewNew()
@@ -31,7 +31,7 @@ namespace Start_a_Town_.AI
             if (selectable is TargetArgs target &&
                 target.Object is Actor actor)
             {
-                this.Table.Bind(actor.AI.State.History.Inner);
+                this.Table.Bind(actor.AI.State.Log.Inner);
                 //this.RemoveControls(this.Table);
                 //this.AddControls(this.Table);
                 //this.Layout(this.Table.Width, 500);
@@ -49,21 +49,7 @@ namespace Start_a_Town_.AI
         public NpcLogUINew(Entity entity) : base(entity)
         {
         }
-        
-        internal override void OnGameEvent(GameEvent e)
-        {
-            switch ((Components.Message.Types)e.Type)
-            {
-                case Message.Types.AILogUpdated:
-                    throw new System.Exception();
-                    //this.Refresh(this.Entity);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
+       
 
         protected override void Build()
         {

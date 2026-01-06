@@ -25,28 +25,4 @@ namespace Start_a_Town_
                 .Attributes.Adjust(packet.PacketReader.ReadDef<AttributeDef>(), packet.PacketReader.ReadSingle());
         }
     }
-
-    [EnsureStaticCtorCall]
-    internal static class PacketsResources
-    {
-        readonly static PacketId _pResourceAdjusted;
-        static PacketsResources()
-        {
-            Registry.MapEventHooksServer.Register<ResourceAdjustedEvent>(SendResourceAdjusted);
-            _pResourceAdjusted = Registry.PacketHandlers.Register(OnResourceAdjusted);
-        }
-        private static void SendResourceAdjusted(ResourceAdjustedEvent @event)
-        {
-            Server.Instance.BeginPacket(_pResourceAdjusted)
-                .Write(@event.Owner.RefId)
-                .Write(@event.Def)
-                .Write(@event.Delta);
-        }
-        static void OnResourceAdjusted(NetEndpoint endpoint, Packet packet)
-        {
-            endpoint.World
-                .GetEntity(packet.PacketReader.ReadEntityRefId())
-                .Resources.Adjust(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
-        }
-    }
 }

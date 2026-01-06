@@ -87,7 +87,7 @@ namespace Start_a_Town_
             this.ShopBlacklist.Add(shopID);
             this.SyncAwardTownRating(-50);
             var shop = this.Actor.Town.ShopManager.GetShop(shopID);
-            AILog.SyncWrite(this.Actor, $"Blacklisted {shop.Name} because of bad service");
+            this.Actor.AI.State.Log.Write($"Blacklisted {shop.Name} because of bad service");
         }
        
         internal bool IsBlacklisted(Workplace shop)
@@ -129,7 +129,7 @@ namespace Start_a_Town_
             var actor = this.Actor;
             this.Quests.Add(quest);
             //actor.Net.EventOccured((int)Components.Message.Types.QuestReceived, actor, quest);
-            AILog.SyncWrite(actor, $"Received quest [{quest}] from [{quest.Giver.Name}]");
+            actor.AI.State.Log.Write($"Received quest [{quest}] from [{quest.Giver.Name}]");
             return true;
         }
         internal void AbandonQuest(QuestDef quest)

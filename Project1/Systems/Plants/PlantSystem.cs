@@ -20,10 +20,11 @@ namespace Start_a_Town_
         static Entity CreatePlant(PlantSpeciesDef species)
         {
             var entity = species.PlantEntity.Create();
+            entity.Profile = species;
+
             var plantcomp = entity.GetComponent<PlantComponent>();
             entity.Initialize();
-
-            plantcomp.SetSpecies(species);
+            //plantcomp.SetSpecies(species);
             if (species.PlantEntity == PlantDefOf.Tree)
                 entity.SetMaterial(species.StemMaterial);
             else if (species.ProducesFruit)

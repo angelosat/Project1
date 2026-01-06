@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
     public class NeedMod : ISerializableNew<NeedMod>, ISaveable
     {
@@ -20,14 +18,11 @@ namespace Start_a_Town_
         {
             this.Def = needLetDef;
             this.RateMod = valuePerTick;
-            //this.RateMod = rate;
-            //this.ValueMod = value;
         }
 
         public override string ToString()
         {
-            //return string.Format("{0}: ValueMod: {1:+#;-#;0} RateMod: {2:+#;-#;0}", this.Def.Name, this.ValueMod, this.RateMod);
-            return $"{this.Def.Name}: ValueMod: {this.ValueMod:+#;-#;0} RateMod: {this.RateMod:+#;-#;0}";
+            return $"{this.Def.Name}: ValueMod: {this.ValueMod:+#;-#;0} RateMod: 1 every {1 / (Ticks.PerSecond * this.RateMod)} seconds";//:+#;-#;0}";
         }
 
         public SaveTag Save(string name = "")

@@ -42,7 +42,7 @@ namespace Start_a_Town_
         }
     }
 
-    internal class SlotUpdatedEvent : IEventPayload//, ISerializableNew<SlotUpdatedEvent>
+    internal sealed class SlotUpdatedEvent : IEventPayload//, ISerializableNew<SlotUpdatedEvent>
     {
         public readonly SlotIndex SlotIndex;
         public readonly EntityRefId Owner;

@@ -25,7 +25,7 @@ namespace Start_a_Town_.AI
         public AIConversationManager.Conversation CurrentConversation;
         public Plan CurrentTask => this.Behavior?.Plan;
         public Plan ForcedTask;
-        public AILog History = new();
+        public AILog Log;
         public bool InSync;
         public ItemPreferencesManager ItemPreferences;
         public int JobFindTimer;
@@ -35,7 +35,7 @@ namespace Start_a_Town_.AI
         public Vector3 Leash;
 
         public Queue<TargetArgs> MoveOrders = new();
-        public Actor Parent; //use this?
+        public Actor Owner; //use this?
         public PathFinding.Path Path;
         public PathingSync PathFinder = new();
         public Dictionary<string, object> Properties = new();
@@ -53,9 +53,10 @@ namespace Start_a_Town_.AI
 
         public AIState(Actor actor)
         {
-            this.Parent = actor;
+            this.Owner = actor;
             this.NearbyEntities = new List<GameObject>();
             this.ItemPreferences = new ItemPreferencesManager(actor);
+            this.Log = new(actor);
         }
 
         private void Enqueue(BehaviorExecutePlan bhav)
@@ -76,10 +77,10 @@ namespace Start_a_Town_.AI
 
         private void NotifyTaskUpdate()
         {
-            if (Parent.Net is Server)
+            if (Owner.Net is Server)
                 PacketTaskUpdate.Send(
-                    Parent.Net as Server,
-                    Parent.RefId,
+                    Owner.Net as Server,
+                    Owner.RefId,
                     Behavior?.GetType().Name ?? "Idle"
                 );
         }
@@ -90,7 +91,7 @@ namespace Start_a_Town_.AI
 
         internal void AddMoveOrder(TargetArgs target, bool enqueue)
         {
-            this.Parent.EndCurrentTask();
+            this.Owner.EndCurrentTask();
             if (!enqueue)
                 this.MoveOrders.Clear();
             this.MoveOrders.Enqueue(target);
@@ -140,17 +141,17 @@ namespace Start_a_Town_.AI
             {
                 TaskStack.Pop();
                 if(TaskStack.Count > 0)
-                    PacketReportPlan.SendReportBehavior(this.Parent, TaskStack.Peek());
+                    PacketReportPlan.SendReportBehavior(this.Owner, TaskStack.Peek());
                 return true;
             }
             else if (TaskQueue.Count > 0)
             {
                 TaskQueue.Dequeue();
                 if (TaskQueue.Count > 0)
-                    PacketReportPlan.SendReportBehavior(this.Parent, TaskQueue.Peek());
+                    PacketReportPlan.SendReportBehavior(this.Owner, TaskQueue.Peek());
                 return true;
             }
-            PacketReportPlan.SendReportBehavior(this.Parent, null);
+            PacketReportPlan.SendReportBehavior(this.Owner, null);
             return false;
         }
 
@@ -170,7 +171,7 @@ namespace Start_a_Town_.AI
             //this.CurrentTaskBehavior = null;
             this.TaskQueue.Clear();
             this.TaskStack.Clear();
-            PacketReportPlan.SendReportBehavior(this.Parent, null);
+            PacketReportPlan.SendReportBehavior(this.Owner, null);
 
         }
 
@@ -181,7 +182,7 @@ namespace Start_a_Town_.AI
 
         public void Assign(BehaviorExecutePlan bhav)
         {
-            PacketReportPlan.SendReportBehavior(this.Parent, bhav);
+            PacketReportPlan.SendReportBehavior(this.Owner, bhav);
 
             if (bhav.Plan.IsImmediate)
                 this.Push(bhav);
@@ -190,10 +191,10 @@ namespace Start_a_Town_.AI
         }
         public bool TryAssign(Plan task)
         {
-            var bhav = task.CreateBehavior(this.Parent);
+            var bhav = task.CreateBehavior(this.Owner);
             if (!bhav.ReserveBase())
             {
-                this.Parent.Unreserve();
+                this.Owner.Unreserve();
                 return false;
             }
             this.Assign(bhav);

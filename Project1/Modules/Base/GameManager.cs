@@ -8,7 +8,7 @@ namespace Start_a_Town_.Modules.Base
     {
         public override void Initialize()
         {
-            PacketPlayerConnecting.Init();
+            //PacketPlayerConnecting.Init();
             PacketPlayerDisconnected.Init();
         }
 

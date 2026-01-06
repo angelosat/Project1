@@ -84,7 +84,7 @@ namespace Start_a_Town_.Net
         public BinaryWriter OutgoingStreamTimestamped = new(new MemoryStream());
 
         private readonly Queue<WorldSnapshot> WorldStateBuffer = new();
-        private readonly int WorldStateBufferSize = 10;
+        private readonly int WorldStateBufferSize = 20;
         public const int ClientClockDelayMS = Server.SnapshotIntervalMS * 4;
         public const int ClientTickDelay = 4;
         private int _Speed = 0;// 1;

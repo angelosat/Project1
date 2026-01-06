@@ -10,13 +10,11 @@ using System.Threading;
 
 namespace Start_a_Town_.Net
 {
-    public struct SimulationTick
+    public record struct SimulationTick(double Value)
     {
-        public double Value;
         public static readonly SimulationTick Immediate = new() { Value = -1 };
         public static implicit operator double(SimulationTick t) => t.Value;
         public static implicit operator SimulationTick(double i) => new() { Value = i };
-        public override string ToString() => this.Value.ToString();
     }
     public partial class Server : NetEndpoint
     {
@@ -185,9 +183,9 @@ namespace Start_a_Town_.Net
             //if (this.Speed == 0)
             //{
                 this.WritePlayerSpecificNew();
-                this.CreatePacketsFromStreams();
+                this.FlushStreams(false);
             //}
-            this.ResetOutgoingStreams();
+            //this.ResetOutgoingStreams();
             //this.AdvanceClock();
             this.SendPackets();
         }
@@ -199,9 +197,11 @@ namespace Start_a_Town_.Net
                 PacketAcks.Send(player);
             }
         }
-        private void CreatePacketsFromStreams()
+        private void FlushStreams(bool isSimulation)
         {
-            foreach (var stream in this.StreamsArray.Append(this.PlayerCommandsStream))
+            //if (!isSimulation)
+            //    return;
+            foreach (var stream in this.StreamsArray.Append(this.PlayerCommandsStream).Where(s => s.IsSimulation == isSimulation))
                 {
                 // append per-player specific data
                 foreach (var player in this.GetPlayers())
@@ -220,6 +220,7 @@ namespace Start_a_Town_.Net
                     p.Tick = stream.IsSimulation ? this.CurrentTick : SimulationTick.Immediate;
                     this.Enqueue(player, p);
                 }
+                stream.Reset();
             }
         }
         private void SendPackets()
@@ -244,17 +245,22 @@ namespace Start_a_Town_.Net
                 /// i moved this from the start of the loop to the end of the loop because
                 /// some packets might have been written already during packet handling before the map ticking
                 /// (for example as a response to player input) and we don't want to clear them
-                this.OutgoingStreamTimestamped = new(new MemoryStream());
-                auxStream.Write(this.Map.World.CurrentTick + 1);
+                /// 
+                //this.OutgoingStreamTimestamped = new(new MemoryStream());
+                //auxStream.Write(this.Map.World.CurrentTick + 1);
+
+
                 this.Map.World.Tick(Instance);
                 this.Map.Tick();
-                var length = this.OutgoingStreamTimestamped.BaseStream.Position;
-                auxStream.Write(length);// write length
-                if (length > 0)
-                {
-                    this.OutgoingStreamTimestamped.BaseStream.Position = 0;
-                    this.OutgoingStreamTimestamped.BaseStream.CopyTo(auxStream.BaseStream);
-                }
+
+
+                //var length = this.OutgoingStreamTimestamped.BaseStream.Position;
+                //auxStream.Write(length);// write length
+                //if (length > 0)
+                //{
+                //    this.OutgoingStreamTimestamped.BaseStream.Position = 0;
+                //    this.OutgoingStreamTimestamped.BaseStream.CopyTo(auxStream.BaseStream);
+                //}
 
                 this.BlockUpdateTimer--;
                 if (this.BlockUpdateTimer <= 0)
@@ -267,8 +273,9 @@ namespace Start_a_Town_.Net
                 /// some packets might have been written already during packet handling before the map ticking
                 /// (for example as a response to player input) and we don't want to clear them
                 //this.OutgoingStreamTimestamped = new(new MemoryStream());
-                //this.WritePlayerSpecificNew();
-                //this.CreatePacketsFromStreams();
+
+                this.FlushStreams(true);
+
                 this.AdvanceClock();
             }
             if (auxStream.BaseStream.Position > 0)
@@ -278,10 +285,8 @@ namespace Start_a_Town_.Net
                 //auxStream.BaseStream.CopyTo(this.OutgoingStreamOrderedReliable.BaseStream);
             }
         }
-        //public override IDataWriter BeginPacket(int pType)
-        //{
-        //    return PacketBuilder.Create(this.OutgoingStreamTimestamped, pType);
-        //}
+
+        
         public override IDataWriter BeginPacketImmediate(PacketId pType)
         {
             return PacketBuilder.Create(this.PlayerCommandsStream.Writer, pType);
@@ -289,33 +294,6 @@ namespace Start_a_Town_.Net
         public IDataWriter BeginTimestamped(int pType)
         {
             return PacketBuilder.Create(this.OutgoingStreamTimestamped, pType);
-
-            var testStream = new BinaryWriter(new MemoryStream());
-            $"pre: {testStream.BaseStream.Position}".ToConsole();
-            var pb = PacketBuilder.Create(testStream, pType);
-            $"after: {testStream.BaseStream.Position}".ToConsole();
-
-            testStream.BaseStream.Position = 0;
-            var reader = new BinaryReader(testStream.BaseStream);
-            var test1 = reader.ReadInt32();
-            $"test1: {test1}".ToConsole();
-
-            var test2 = reader.ReadInt32();
-            $"test2: {test2}".ToConsole();
-
-            var test3 = reader.ReadInt32();
-            $"test3: {test3}".ToConsole();
-
-            var test4 = reader.ReadInt32();
-            $"test4: {test4}".ToConsole();
-
-            var test5 = reader.ReadInt32();
-            $"test5: {test5}".ToConsole();
-
-            var test6 = reader.ReadInt32();
-            $"test6: {test6}".ToConsole();
-
-            return pb;
         }
 
 
@@ -615,7 +593,7 @@ namespace Start_a_Town_.Net
                 case TargetType.Position:
                     //this.Map.World.RegisterAndSync(entity);
                     //this.Map.SpawnAndSync(entity, target.Global, Vector3.Zero);
-                    this.Map.World.Register(entity);
+                    this.Map.World.Register(entity, immediate: true);
                     this.Map.Spawn(entity, target.Global, Vector3.Zero, immediate: true);
                     //PacketSpawnEntity.Immediate(entity, target.Global, Vector3.Zero);
                     break;

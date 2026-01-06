@@ -85,8 +85,11 @@ namespace Start_a_Town_
 
         private static void SendEntityRegistered(EntityRegisteredEvent e)
         {
-            //e.Entity.Write(Server.Instance.BeginPacketImmediate(_pRegister));
-            e.Entity.Write(Server.Instance.BeginPacket(_pRegister));
+
+            var w = e.Immediate ? Server.Instance.BeginPacketImmediate(_pRegister) : Server.Instance.BeginPacket(_pSpawn);
+            e.Entity.Write(w);
+
+            //e.Entity.Write(Server.Instance.BeginPacket(_pRegister));
         }
         private static void OnRegister(NetEndpoint endpoint, Packet packet)
         {
@@ -108,20 +111,8 @@ namespace Start_a_Town_
         }
     }
 
-    internal class EntityStackDecreased(Entity entity, int amount) : IEventPayload
-    {
-        public readonly Entity Entity = entity;
-        public readonly int Amount = amount;
-    }
-
-    internal class EntityStackIncreased(Entity entity, int amount) : IEventPayload
-    {
-        public readonly Entity Entity = entity;
-        public readonly int Amount = amount;
-    }
-
-    internal class EntityRegisteredEvent(Entity entity) : IEventPayload
-    {
-        public readonly Entity Entity = entity;
-    }
+    internal record struct EntityStackDecreased(Entity Entity, int Amount) : IEventPayload { }
+    internal record struct EntityStackIncreased(Entity Entity, int Amount) : IEventPayload { }
+    internal record struct EntityRegisteredEvent(Entity Entity, bool Immediate = false) : IEventPayload { }
+    internal record struct EntitySpawnedEvent(Entity Entity, bool Immediate = false) : IEventPayload { }
 }

@@ -958,7 +958,8 @@ namespace Start_a_Town_
         public override double GetDayTimeNormal()
         {
             //double normal = (this.Clock.TotalMinutes - Ticks.PerSecond * (Zenith - 12)) / 1440f;
-            double normal = (this.Clock.TotalMinutes - Ticks.PerGameMinute * (Zenith - 12)) / 1440f;
+            double normal = (this.Clock.TotalMinutes - Ticks.PerGameMinute * (Zenith - 12)) / Ticks.IngameMillisecondsPerTick;// 1440f;
+            //double normal = (this.Clock.TotalMinutes / Ticks.IngameMillisecondsPerTick - (Zenith - 12));// 1440f;
             double nn = normal * 2 * Math.PI;
             nn = 3 * Math.Cos(nn);
             return Math.Max(0, Math.Min(1, (1 + nn) / 2f));

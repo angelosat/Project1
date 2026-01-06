@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using SharpDX.Direct3D9;
 using Start_a_Town_.Components.Needs;
 using Start_a_Town_.UI;
 using System;
@@ -10,7 +9,7 @@ namespace Start_a_Town_
 {
     public sealed class Need : MetricWrapper, IProgressBar, /*ISaveable,*/ IDefWrapper<NeedDef>, INamed, ISerializableNew<Need>, ISaveableNewNew<Need>//, ISaveableNew,
     {
-        Dictionary<EffectDef, List<NeedMod>> ModsNew = [];
+        //Dictionary<EffectDef, List<NeedMod>> ModsNew = [];
         internal void AddMod(EffectDef needLetDef, float ticksUntilChange)
         {
             if (this.Mods.Any(n => n.Def == needLetDef))
@@ -18,13 +17,13 @@ namespace Start_a_Town_
             var needLet = new NeedMod(needLetDef, 1f / ticksUntilChange);//, value, rate);
             this.Mods.Add(needLet);
         }
-        internal void AddMod(EntityEffectWrapper source, float rate)
-        {
-            if (this.Mods.Any(n => n.Def == source.Def))
-                throw new Exception();
-            var needLet = new NeedMod(source.Def, rate);//, value, rate);
-            this.Mods.Add(needLet);
-        }
+        //internal void AddMod(EntityEffectWrapper source, float rate)
+        //{
+        //    if (this.Mods.Any(n => n.Def == source.Def))
+        //        throw new Exception();
+        //    var needLet = new NeedMod(source.Def, rate);//, value, rate);
+        //    this.Mods.Add(needLet);
+        //}
         internal void RemoveMod(EffectDef def) => this.Mods.RemoveAll(n => n.Def == def);
         
         public NeedDef NeedDef;
@@ -76,34 +75,6 @@ namespace Start_a_Town_
         public sealed override void Tick()
         {
             this.NeedDef.Worker.Tick(this);
-            //return;
-            //this.LastTick = this.Parent.Net.CurrentTick;
-            //float newValue;
-            //var mod = this.Mods.Sum(d => d.RateMod);
-            //if (mod != 0)
-            //{
-            //    newValue = this._Value + mod;
-            //    this.DecayDelay = this.DecayDelayMax;
-            //}
-            //else
-            //{
-            //    if (this.DecayDelay > 0)
-            //    {
-            //        this.DecayDelay--;
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        // TODO: is exponential decay better? maybe have both exp and linear and choose between them for each need?
-            //        var p = 1 - Value / 100f;
-            //        float d = this.Decay * (1 + 5 * p * p);
-            //        d = this.Decay;
-            //        d = this.NeedDef.BaseDecayRate;
-            //        d *= this.FinalDecayMultiplier;
-            //        newValue = this._Value - d;
-            //    }
-            //}
-            //SetValue(newValue, this.Parent);
         }
         public void TickLong(GameObject parent) { }
         public float FinalDecayMultiplier => 1;
@@ -162,7 +133,7 @@ namespace Start_a_Town_
             w.Write(this.Mod);
             w.Write(this.DecayDelay);
             this.Mods.Write(w);
-            this.ModsNew.WriteNew(w, k => k.Write(w), v => v.Write(w));
+            //this.ModsNew.WriteNew(w, k => k.Write(w), v => v.Write(w));
         }
         public Need Read(IDataReader r)
         {
@@ -171,21 +142,11 @@ namespace Start_a_Town_
             this.Mod = r.ReadSingle();
             this.DecayDelay = r.ReadSingle();
             this.Mods.Read(r);
-            this.ModsNew.ReadFromFlat(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
+            //this.ModsNew.ReadFromFlat(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
             return this;
         }
         static public Need Create(IDataReader r) => new Need().Read(r);
-        //{
-        //    var need = new Need();
-        //    need.NeedDef = r.ReadDef<NeedDef>();
-        //    need.Value = r.ReadSingle();
-        //    need.Mod = r.ReadSingle();
-        //    need.DecayDelay = r.ReadSingle();
-        //    need.Mods.Read(r);
-        //    need.ModsNew.ReadNew(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
-        //    return need;
-        //}
-
+   
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
@@ -194,22 +155,10 @@ namespace Start_a_Town_
             tag.Add(this.Mod.Save("Mod"));
             tag.Add(this.DecayDelay.Save("DecayTimer"));
             tag.Add(this.Mods.SaveNewBEST("Mods"));
-            tag.Add(this.ModsNew.Save("ModsDic", k => k.Save(), v => v.Save()));
+            //tag.Add(this.ModsNew.Save("ModsDic", k => k.Save(), v => v.Save()));
             return tag;
         }
-        //public ISaveable Load(SaveTag tag)
-        //{
-        //    tag.TryGetTagValue<string>("Def", v => this.NeedDef = Def.GetDef<NeedDef>(v));
-        //    tag.TryGetTagValueOrDefault<float>("Value", out this._Value);
-        //    tag.TryGetTagValueOrDefault<float>("Mod", out this.Mod);
-        //    tag.TryGetTagValueOrDefault<float>("DecayTimer", out this.DecayDelay);
-        //    this.Mods.TryLoadMutable(tag, "Mods");
-        //    this.ModsNew.LoadNewNewNew(tag["ModsDic"],
-        //                               k => Def.GetDef<EffectDef>((string)k.Value),
-        //                               v => v.LoadListNew<NeedMod>());
-        //    return this;
-        //}
-
+      
         static public Need Create(SaveTag tag)
         {
             var need = new Need();

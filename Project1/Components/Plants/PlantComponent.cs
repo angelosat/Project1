@@ -55,12 +55,12 @@ namespace Start_a_Town_.Components
         int GrowthTick, FruitGrowthTick;
         public enum GrowthStates { Growing, Ready }
         public Growth Growth = new(.05f);
-        public PlantSpeciesDef Species { get; private set; }
-        public void SetSpecies(PlantSpeciesDef species)
-        {
-            this.Species = species;
-            //this.Resolve();
-        }
+        public PlantSpeciesDef Species => this.Owner.Profile as PlantSpeciesDef;// { get; private set; }
+        //public void SetSpecies(PlantSpeciesDef species)
+        //{
+        //    this.Species = species;
+        //    //this.Resolve();
+        //}
         internal override void InitializeOnce()// Resolve()
         {
             //if (this.Species is null)
@@ -254,8 +254,8 @@ namespace Start_a_Town_.Components
                 var rng = server.GetRandom();
                 var product = plantdef.ProductCutDown.CreateFrom(plant.Body.Material ?? MaterialDefOf.LightWood).SetStackSize(yield) as Entity;
 
-                actor.Map.World.RegisterAndSync(product);
-                actor.Map.SpawnAndSync(product, plant.Global, LootManager.RandomPopVelocity(rng));
+                actor.Map.World.Register(product);
+                actor.Map.Spawn(product, plant.Global, LootManager.RandomPopVelocity(rng));
 
                 /// if the plant doesnt produce fruit, then the only seed source is by cutting the plant itself
                 if (!this.ProducesFruit)
@@ -263,11 +263,11 @@ namespace Start_a_Town_.Components
                     //var seeds = plantdef.CreateSeeds().SetStackSize(yield) as Entity;
                     //var seeds = ItemFamilyDefOf.Plant.System.Create(this.Species, new PlantSystem.Args(PlantFormDefOf.Seed));
                     var seeds = this.Species.Create(PlantStageDefOf.Seed);
-                    actor.Map.World.RegisterAndSync(seeds);
-                    actor.Map.SpawnAndSync(seeds, plant.Global, LootManager.RandomPopVelocity(rng));
+                    actor.Map.World.Register(seeds);
+                    actor.Map.Spawn(seeds, plant.Global, LootManager.RandomPopVelocity(rng));
                 }
             }
-            actor.Map.World.DisposeEntityAndSync(plant as Entity);  // disposing also despawns implicitly
+            actor.Map.World.DisposeEntity(plant as Entity);  // disposing also despawns implicitly
         }
 
         private void ResetFruitGrowth(GameObject parent)
@@ -275,7 +275,6 @@ namespace Start_a_Town_.Components
             this.GrowthFruit.Value = 0;
             this.FruitGrowthTick = 0;
             parent.Body.Sprite = Sprite.Load(this.Species.TextureGrowing);
-            //parent.Body.Sprite = this.Species.TextureGrowing;
             this.Owner.Body.FindBone(BoneDefOf.PlantFruit).Sprite = null;
         }
         public override void OnSpawn(MapBase newMap)
@@ -294,20 +293,9 @@ namespace Start_a_Town_.Components
             this.Progress.Value = this.Progress.Max = this.Length;
         }
 
-        public override object Clone()
-        {
-            throw new Exception();
-            var newcomp = new PlantComponent(this) { Species = this.Species };
-            newcomp.GrowthBody.Value = this.GrowthBody.Value;
-            newcomp.GrowthFruit.Value = this.GrowthFruit.Value;
-            return newcomp;
-        }
-
         internal override void CopyFrom(EntityComp source)
         {
             var plantcomp = source as PlantComponent;
-
-            this.Species = plantcomp.Species;
             this.GrowthBody.Value = plantcomp.GrowthBody.Value;
             this.GrowthFruit.Value = plantcomp.GrowthFruit.Value;
         }
@@ -323,15 +311,7 @@ namespace Start_a_Town_.Components
                 TextFunc = () => this.GrowthBody.Percentage.ToString("##0%")
             });
         }
-        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
-        //{
-        //    //info.AddInfo(UI.Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"), new Func<string>(()=> parent.Map.Sunlight > .5f ? "" : "(not growing)")));
-        //    info.AddInfo(UI.Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}")));
-        //    info.AddInfo(UI.Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}")));
-        //    info.AddInfo(new Bar(this.GrowthBody) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthBody.Percentage.ToString("##0%") });
-        //    if (this.PlantProperties.ProducesFruit)
-        //        info.AddInfo(new Bar(this.GrowthFruit) { Color = Color.MediumAquamarine, Name = "Fruit: ", TextFunc = () => this.GrowthFruit.Percentage.ToString("##0%") });
-        //}
+    
         internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
             var guisunlight = UI.Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"));
@@ -344,18 +324,7 @@ namespace Start_a_Town_.Components
 
             info.AddInfo(new GroupBox().AddControlsVertically(1, boxBars, guisunlight, guigrowth));
         }
-        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
-        //{
-        //    var guisunlight = UI.Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"));
-        //    var guigrowth = UI.Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));
-        //    var bargrowth = new Bar(this.GrowthBody) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthBody.Percentage.ToString("##0%") };
-        //    var boxBars = new GroupBox().AddControls(bargrowth);
-
-        //    if (this.Species.ProducesFruit)
-        //        boxBars.AddControlsTopRight(1, new Bar(this.GrowthFruit) { Color = Color.MediumAquamarine, Name = "Fruit: ", TextFunc = () => this.GrowthFruit.Percentage.ToString("##0%") });
-
-        //    info.AddInfo(new GroupBox().AddControlsVertically(1, boxBars, guisunlight, guigrowth));
-        //}
+     
         string GrowthTimeSpan
         {
             get
@@ -374,13 +343,13 @@ namespace Start_a_Town_.Components
 
         public override void Write(IDataWriter writer)
         {
-            this.Species.Write(writer);
+            //this.Species.Write(writer);
             this.GrowthFruit.Write(writer);
             this.GrowthBody.Write(writer);
         }
         public override void Read(IDataReader reader)
         {
-            this.Species = Def.GetDef<PlantSpeciesDef>(reader.ReadString());
+            //this.Species = Def.GetDef<PlantSpeciesDef>(reader.ReadString());
             this.GrowthFruit = new Progress(reader);
             this.GrowthBody = new Progress(reader);
 
@@ -397,13 +366,13 @@ namespace Start_a_Town_.Components
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            this.Species.Save(tag, "Species");
+            //this.Species.Save(tag, "Species");
             tag.Add(this.GrowthBody.Save("GrowthNew"));
             tag.Add(this.GrowthFruit.Save("FruitGrowth"));
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            this.Species = tag.LoadDef<PlantSpeciesDef>("Plant");
+            //this.Species = tag.LoadDef<PlantSpeciesDef>("Plant");
             tag.TryGetTag("GrowthNew", t => this.GrowthBody = new Progress(t));
             tag.TryGetTag("FruitGrowth", t => this.GrowthFruit = new Progress(t));
         }
@@ -412,6 +381,8 @@ namespace Start_a_Town_.Components
             base.GetClientActions(parent, actions);
             actions.Add(new ContextAction("Debug: Grow", () => { return false; }));
         }
+
+
         public bool ProducesFruit => this.Species.Growth?.GrowthItemDef == ItemDefOf.Fruit;
 
         internal bool IsHarvestable

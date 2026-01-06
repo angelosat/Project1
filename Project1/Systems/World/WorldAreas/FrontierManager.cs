@@ -101,9 +101,10 @@ namespace Start_a_Town_
                 {
                     if (world.Net is Server server)
                     {
-                        world.Map.SpawnAndSync(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
+                        world.Map.Spawn(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
                         server.SyncReport($"{actor.Name} has arrived!");
-                        AILog.SyncWrite(actor, "I arrived in town!");
+                        //AILog.SyncWrite(actor, "I arrived in town!");
+                        actor.AI.State.Log.Write("I arrived in town.");
                     }
                     this.Exit(actor);
                     continue;
@@ -170,10 +171,9 @@ namespace Start_a_Town_
             if (entity is not Actor actor)
                 return null;
             this.ActorPositions.Add(actor, pos);
-            actor.AI.Meta.TargetFrontier = this.GetFrontier(actor).Def;
+            actor.AI.Meta.SetTargetFrontier(this.GetFrontier(actor).Def);
             actor.Effects.Apply(EffectDefOf.Adventuring);
 
-            //actor.Map?.DespawnAndSync(actor);
             actor.Map?.Despawn(actor);
             this.World.Events.Post(new InhabitantPlacedInWorldEvent(actor, pos));
             return this.GetFrontier(actor).Def;

@@ -154,7 +154,7 @@ namespace Start_a_Town_
             else if (this.State == States.Finished)
             {
                 this.Stop();
-                AILog.TryWrite(actor, "Success: " + this.GetCompletedText(actor, target));
+                actor.AI.State.Log.Write("Success: " + this.GetCompletedText(actor, target));
                 return;
             }
             if (this.RunningType == RunningTypes.Continuous)
@@ -163,7 +163,7 @@ namespace Start_a_Town_
                 if (this.State == States.Finished)
                 {
                     this.Stop();
-                    AILog.TryWrite(actor, "Success: " + this.GetCompletedText(actor, target));
+                    actor.AI.State.Log.Write("Success: " + this.GetCompletedText(actor, target));
                 }
                 return;
             }

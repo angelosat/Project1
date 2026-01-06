@@ -61,13 +61,13 @@ namespace Start_a_Town_
             entity.World = this;
             this.EntityRegistry.Add(entity);
         }
-        public void Register(GameObject entity)
+        public void Register(GameObject entity, bool immediate = false)
         {
             entity.World = this;
             entity.Net = this.Net;
             foreach (var e in entity.GetSelfAndChildren())
                 this.EntityRegistry.Add(e as Entity);
-            this.Events.Post(new EntityRegisteredEvent(entity as Entity));
+            this.Events.Post(new EntityRegisteredEvent(entity as Entity, immediate));
         }
         public void RegisterAndSync(GameObject entity)
         {

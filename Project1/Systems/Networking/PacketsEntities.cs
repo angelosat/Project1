@@ -38,21 +38,27 @@ namespace Start_a_Town_
             endpoint.Map.Despawn(entity);
         }
 
-        private static void SendEntitySpawned(EntitySpawnedEvent @event)
+        private static void SendEntitySpawned(EntitySpawnedEvent e)
         {
-            var w = @event.Immediate ? Server.Instance.BeginPacketImmediate(_pSpawn) : Server.Instance.BeginPacket(_pSpawn);
+            var w = 
+                e.Immediate ? 
+                Server.Instance.BeginPacketImmediate(_pSpawn) 
+                :  Server.Instance.BeginPacket(_pSpawn)
+                ;
             w
-                .Write(@event.Entity.RefId)
-                .Write(@event.Entity.Global)
-                .Write(@event.Entity.Velocity);
+                .Write((int)e.Entity.RefId)
+                .Write(e.Entity.Global)
+                .Write(e.Entity.Velocity);
         }
 
         private static void OnSpawn(NetEndpoint endpoint, Packet packet)
         {
-            endpoint.Map.Spawn(
-                packet.PacketReader.ReadEntityRefId(),
-                packet.PacketReader.ReadVector3(),
-                packet.PacketReader.ReadVector3());
+            var r = packet.PacketReader;
+            var id = r.ReadEntityRefId();
+            var global = r.ReadVector3();
+            var vel = r.ReadVector3();
+            var entity = endpoint.World.GetEntity(id);
+            endpoint.Map.Spawn(entity, global, vel);
         }
 
         private static void SendEntityStackIncreased(EntityStackIncreased increased)
@@ -85,7 +91,7 @@ namespace Start_a_Town_
         }
         private static void SendEntityRegistered(EntityRegisteredEvent e)
         {
-            var w = e.Immediate ? Server.Instance.BeginPacketImmediate(_pRegister) : Server.Instance.BeginPacket(_pSpawn);
+            var w = e.Immediate ? Server.Instance.BeginPacketImmediate(_pRegister) : Server.Instance.BeginPacket(_pRegister);
             e.Entity.Write(w);
         }
         private static void OnRegister(NetEndpoint endpoint, Packet packet)

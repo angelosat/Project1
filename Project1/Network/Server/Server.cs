@@ -732,7 +732,7 @@ namespace Start_a_Town_.Net
             //obj.Global = startPosition;
             //obj.Velocity = final;
             obj.Global = startPosition;
-            obj.Velocity = LootManager.RandomPopVelocity(Random);
+            obj.Velocity = LootSystem.RandomPopVelocity(Random);
 
 
             //if (obj.RefId == 0)

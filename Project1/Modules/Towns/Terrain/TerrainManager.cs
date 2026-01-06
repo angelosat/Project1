@@ -74,10 +74,7 @@ namespace Start_a_Town_
         {
             var allPlants = this.ValidPlants ??= this.GetValidPlants();
             var randomPlant = allPlants.SelectRandom(map.Random);
-            //var plant = randomPlant.CreatePlant();
             var plant = randomPlant.Create(PlantStageDefOf.Plant);
-            //map.World.RegisterAndSync(plant);
-            //map.SpawnAndSync(plant, global.Above, Vector3.Zero);
             map.World.Register(plant);
             map.Spawn(plant, global.Above, Vector3.Zero);
         }

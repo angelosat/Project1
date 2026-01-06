@@ -233,7 +233,7 @@ namespace Start_a_Town_.Components
               
                 var product = props.Growth.CreateEntity();
                 var rng = server.GetRandom();
-                var velocity = LootManager.RandomPopVelocity(rng);
+                var velocity = LootSystem.RandomPopVelocity(rng);
                 parent.Map.World.Register(product);
                 parent.Map.Spawn(product, parent.Global, velocity);
             }
@@ -241,34 +241,51 @@ namespace Start_a_Town_.Components
             this.ResetFruitGrowth(parent);
             return true;
         }
-        
-        public void ChopDown(GameObject plant, Actor actor)
+        internal override void OnKill()
         {
-            if (actor.Net is not Server server)
-                return;
-            //var plantdef = this.PlantProperties;
+            var owner = this.Owner;
             var plantdef = this.Species;
             var yield = (int)(this.GrowthBody.Percentage * plantdef.MaxYieldCutDown);
             if (plantdef.ProductCutDown != null && yield > 0)
             {
-                var rng = server.GetRandom();
-                var product = plantdef.ProductCutDown.CreateFrom(plant.Body.Material ?? MaterialDefOf.LightWood).SetStackSize(yield) as Entity;
-
-                actor.Map.World.Register(product);
-                actor.Map.Spawn(product, plant.Global, LootManager.RandomPopVelocity(rng));
+                var product = plantdef.ProductCutDown.CreateFrom(owner.Body.Material ?? MaterialDefOf.LightWood).SetStackSize(yield) as Entity;
+                owner.Map.Events.Post(new LootPopEvent([product], this.Owner as Entity));
 
                 /// if the plant doesnt produce fruit, then the only seed source is by cutting the plant itself
                 if (!this.ProducesFruit)
                 {
-                    //var seeds = plantdef.CreateSeeds().SetStackSize(yield) as Entity;
-                    //var seeds = ItemFamilyDefOf.Plant.System.Create(this.Species, new PlantSystem.Args(PlantFormDefOf.Seed));
                     var seeds = this.Species.Create(PlantStageDefOf.Seed);
-                    actor.Map.World.Register(seeds);
-                    actor.Map.Spawn(seeds, plant.Global, LootManager.RandomPopVelocity(rng));
+                    owner.Map.Events.Post(new LootPopEvent([seeds], this.Owner as Entity));
                 }
             }
-            actor.Map.World.DisposeEntity(plant as Entity);  // disposing also despawns implicitly
         }
+        //public void ChopDown(GameObject plant, Actor actor)
+        //{
+        //    if (actor.Net is not Server server)
+        //        return;
+        //    //var plantdef = this.PlantProperties;
+        //    var plantdef = this.Species;
+        //    var yield = (int)(this.GrowthBody.Percentage * plantdef.MaxYieldCutDown);
+        //    if (plantdef.ProductCutDown != null && yield > 0)
+        //    {
+        //        var rng = server.GetRandom();
+        //        var product = plantdef.ProductCutDown.CreateFrom(plant.Body.Material ?? MaterialDefOf.LightWood).SetStackSize(yield) as Entity;
+
+        //        actor.Map.World.Register(product);
+        //        actor.Map.Spawn(product, plant.Global, LootSystem.RandomPopVelocity(rng));
+
+        //        /// if the plant doesnt produce fruit, then the only seed source is by cutting the plant itself
+        //        if (!this.ProducesFruit)
+        //        {
+        //            //var seeds = plantdef.CreateSeeds().SetStackSize(yield) as Entity;
+        //            //var seeds = ItemFamilyDefOf.Plant.System.Create(this.Species, new PlantSystem.Args(PlantFormDefOf.Seed));
+        //            var seeds = this.Species.Create(PlantStageDefOf.Seed);
+        //            actor.Map.World.Register(seeds);
+        //            actor.Map.Spawn(seeds, plant.Global, LootSystem.RandomPopVelocity(rng));
+        //        }
+        //    }
+        //    actor.Map.World.DisposeEntity(plant as Entity);  // disposing also despawns implicitly
+        //}
 
         private void ResetFruitGrowth(GameObject parent)
         {

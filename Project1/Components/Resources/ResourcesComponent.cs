@@ -21,9 +21,9 @@ namespace Start_a_Town_
         }
         public void Add(ResourceDef def)
         {
-            this.Resources[def] = new(def) { Owner = this.Owner as Actor };
+            this.Resources[def] = new(def) { Owner = this.Owner as Entity };
             return;
-            this.Resources.Add(def, new(def) { Owner = this.Owner as Actor });
+            this.Resources.Add(def, new(def) { Owner = this.Owner as Entity });
         }
         public ResourcesComponent()
         {
@@ -176,12 +176,12 @@ namespace Start_a_Town_
                 r.Owner = this.Owner as Entity;
         }
         
-        public override void OnObjectSynced(GameObject parent)
-        {
-            base.OnObjectSynced(parent);
-            //foreach (var r in this.Resources.Values)
-            //    r.Resolve(this.Owner as Entity);
-        }
+        //public override void OnObjectSynced(GameObject parent)
+        //{
+        //    base.OnObjectSynced(parent);
+        //    //foreach (var r in this.Resources.Values)
+        //    //    r.Resolve(this.Owner as Entity);
+        //}
         //public override void OnSpawn(MapBase newMap)
         //{
         //    foreach (var r in this.Resources)

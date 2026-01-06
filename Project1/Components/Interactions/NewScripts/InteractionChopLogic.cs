@@ -41,13 +41,5 @@ namespace Start_a_Town_
                 return;
             ctx.HitPoints.Adjust(-workAmount);
         }
-        internal override void OnFinish(InteractionContext ctx)
-        {
-            throw new Exception();
-            var plant = ctx.Target.Object;
-            var comp = plant.GetComponent<PlantComponent>();
-            comp.Harvest(plant, ctx.Actor);
-            comp.ChopDown(plant, ctx.Actor);
-        }
     }
 }

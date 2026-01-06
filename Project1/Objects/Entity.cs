@@ -138,5 +138,13 @@ namespace Start_a_Town_
         {
             this.Components.ApplySpecs(overrides);
         }
+        public bool IsDead { get; private set; }
+        internal void Kill()
+        {
+            this.IsDead = true;
+            foreach (var comp in this.Components.Values)
+                comp.OnKill();
+            this.Map.Events.Post(new EntityKilledEvent(this));
+        }
     }
 }

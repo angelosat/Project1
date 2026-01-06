@@ -39,7 +39,7 @@ namespace Start_a_Town_
                 //this.Root?.GetThresholdValue(index) ?? 
                 0;
         }
-
+        protected virtual void OnDepleted(Resource res) { }
         public string GetLabel(Resource res)
         {
             return this.GetCurrentThreshold(res)?.Label ?? "";
@@ -75,6 +75,8 @@ namespace Start_a_Town_
         public virtual void Modify(Resource resource, float addValue)
         {
             resource.Value += addValue;
+            if (resource.Value <= 0)
+                this.OnDepleted(resource);
         }
 
         public readonly float BaseMax = 100;

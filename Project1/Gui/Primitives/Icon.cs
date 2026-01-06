@@ -113,7 +113,7 @@ namespace Start_a_Town_.UI
         public void DrawFloating(SpriteBatch sb, Camera camera, GameObject entity, float scale = .5f)
         {
             var bounds = entity.GetSprite().GetBounds();
-            var offset = MapBase.IconOffset;
+            var offset = -1 + 2 * UIManager.FlashingValue;
             scale *= camera.Zoom;
             var rect = this.AtlasToken?.Rectangle ?? this.SourceRect;
             var pos = camera.GetScreenPosition(entity.Global) - new Vector2(rect.Width, rect.Height) * scale / 2; ;
@@ -125,7 +125,6 @@ namespace Start_a_Town_.UI
         {
             var bounds = Block.Bounds;
             var offset = -1 + 2*UIManager.FlashingValue;
-            //var offset = MapBase.IconOffset;
             scale *= camera.Zoom;
             var pos = camera.GetScreenPosition(global) - new Vector2(this.SourceRect.Width, this.SourceRect.Height) * scale / 2; ;
             pos.Y -= (bounds.Height / 2) * camera.Zoom ;

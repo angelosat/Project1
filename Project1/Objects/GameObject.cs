@@ -1588,9 +1588,7 @@ namespace Start_a_Town_
                 return;
 
             this.StackSize += obj.StackSize;
-            //obj.OnDespawn();
-            //obj.Dispose();
-            this.Map.World.DisposeEntityAndSync(obj as Entity);
+            this.Map.World.DisposeEntity(obj as Entity);
         }
         public void SyncAbsorb(GameObject obj)
         {

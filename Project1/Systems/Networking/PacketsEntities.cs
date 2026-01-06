@@ -31,8 +31,11 @@ namespace Start_a_Town_
 
         private static void OnDespawn(NetEndpoint endpoint, Packet packet)
         {
-            endpoint.Map.Despawn(
-                packet.PacketReader.ReadEntityRefId());
+            var entityId = packet.PacketReader.ReadEntityRefId();
+            var entity = endpoint.World.GetEntity(entityId);
+            if (entity is null)
+                return;
+            endpoint.Map.Despawn(entity);
         }
 
         private static void SendEntitySpawned(EntitySpawnedEvent @event)
@@ -80,16 +83,10 @@ namespace Start_a_Town_
             var amount = r.ReadInt32();
             entity.Consume(amount);
         }
-
-
-
         private static void SendEntityRegistered(EntityRegisteredEvent e)
         {
-
             var w = e.Immediate ? Server.Instance.BeginPacketImmediate(_pRegister) : Server.Instance.BeginPacket(_pSpawn);
             e.Entity.Write(w);
-
-            //e.Entity.Write(Server.Instance.BeginPacket(_pRegister));
         }
         private static void OnRegister(NetEndpoint endpoint, Packet packet)
         {
@@ -107,12 +104,15 @@ namespace Start_a_Town_
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            client.World.DisposeEntity(r.ReadEntityRefId());
+            var refid = r.ReadEntityRefId();
+            client.World.TryDisposeEntity(refid);
         }
     }
 
     internal record struct EntityStackDecreased(Entity Entity, int Amount) : IEventPayload { }
     internal record struct EntityStackIncreased(Entity Entity, int Amount) : IEventPayload { }
     internal record struct EntityRegisteredEvent(Entity Entity, bool Immediate = false) : IEventPayload { }
+    internal record struct EntityDisposedEvent(Entity Entity) : IEventPayload { }
     internal record struct EntitySpawnedEvent(Entity Entity, bool Immediate = false) : IEventPayload { }
+    internal record struct EntityDespawnedEvent(Entity Entity) : IEventPayload { }
 }

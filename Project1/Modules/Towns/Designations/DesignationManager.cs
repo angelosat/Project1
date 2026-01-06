@@ -48,17 +48,6 @@ namespace Start_a_Town_
             var desDefs = Def.GetDefs<DesignationDef>();
 
             this.Designations = new ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>>(desDefs.ToDictionary(d => d, d => new ObservableHashSet<TargetArgs>()));
-            //this.Designations = new ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>>(new Dictionary<DesignationDef, ObservableHashSet<TargetArgs>>() {
-            //    { DesignationDefOf.Deconstruct, new ObservableHashSet<TargetArgs>() },
-            //    { DesignationDefOf.Mine, new ObservableHashSet<TargetArgs>()},
-            //    { DesignationDefOf.Switch, new ObservableHashSet<TargetArgs>()},
-            //    { DesignationDefOf.Chop, new ObservableHashSet<TargetArgs>()},
-            //    { DesignationDefOf.Harvest, new ObservableHashSet<TargetArgs>()}
-            //           });
-
-            //this.Renderers.Add(DesignationDefOf.Deconstruct, new(this.Designations[DesignationDefOf.Deconstruct]));
-            //this.Renderers.Add(DesignationDefOf.Mine, new(this.Designations[DesignationDefOf.Mine]));
-            //this.Renderers.Add(DesignationDefOf.Switch, new(this.Designations[DesignationDefOf.Switch]));
 
             foreach (var d in desDefs)
                 if (d.AffectsBlocks)
@@ -69,18 +58,12 @@ namespace Start_a_Town_
 
             this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(this.OnBlocksChanged);
             this.Town.Map.Events.ListenTo<EntityDespawnedEvent>(this.OnEntityDespawn);
-
         }
 
         private void R_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (Network.CurrentNetwork != Ingame.Net)
                 return;
-
-            //var removed = e.OldItems?.Cast<IntVec3>() ?? [];
-            //foreach (var pos in removed)
-            //    if (SelectionManager.SingleSelectedCell == pos)
-            //        SelectionManager.RemoveInfo(this.PendingDesignationLabel);
 
             var removed = e.OldItems?.Cast<TargetArgs>() ?? [];
             foreach (var target in removed)
@@ -92,10 +75,6 @@ namespace Start_a_Town_
                         SelectionManager.RemoveInfo(this.PendingDesignationLabel);
                 }
             }
-            //var added = e.NewItems?.Cast<IntVec3>() ?? Enumerable.Empty<IntVec3>();
-            //foreach (var pos in added)
-            //    if (SelectionManager.SingleSelectedCell == pos)
-            //        SelectionManager.AddInfoNew(this.UpdatePendingDesignationLabel(this.Designations.First(d => d.Value.Contains(pos)).Key));
 
             var added = e.NewItems?.Cast<TargetArgs>() ?? Enumerable.Empty<TargetArgs>();
             foreach (var target in added)
@@ -107,10 +86,6 @@ namespace Start_a_Town_
                 }
         }
 
-        internal void Add(DesignationDef designation, TargetArgs position, bool remove = false)
-        {
-            this.Add(designation, [position], remove);
-        }
         internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool remove)
         {
             if (designation is null)
@@ -160,22 +135,7 @@ namespace Start_a_Town_
             var contains = this.Designations[desType].Contains(global);
             return contains;
         }
-        //internal override void OnGameEvent(GameEvent e)
-        //{
-        //    switch (e.Type)
-        //    {
-        //        case Components.Message.Types.BlocksChanged:
-        //            this.HandleBlocksChanged(e.Parameters[1] as IEnumerable<IntVec3>);
-        //            break;
 
-        //        //case Components.Message.Types.ZoneDesignation:
-        //        //    this.Add(e.Parameters[0] as DesignationDef, e.Parameters[1] as List<TargetArgs>, (bool)e.Parameters[2]);
-        //        //    break;
-
-        //        default:
-        //            break;
-        //    }
-        //}
         void OnBlocksChanged(BlocksUpdatedEvent e)
         {
             foreach (var des in this.Designations)
@@ -317,6 +277,5 @@ namespace Start_a_Town_
                 }
             }
         }
-        
     }
 }

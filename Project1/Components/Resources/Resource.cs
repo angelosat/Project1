@@ -81,20 +81,12 @@ namespace Start_a_Town_
             }
         }
 
-        //internal void HandleRemoteCall(GameObject parent, ObjectEventArgs e)
-        //{
-        //    this.ResourceDef.Worker.HandleRemoteCall(parent, e, this);
-        //}
-        //public void SyncAdjust(Entity parent, float value)
-        //{
-        //    Packets.SendSyncAdjust(parent, this.ResourceDef, value);
-        //}
         public void Adjust(float delta)
         {
             this.ResourceDef.Worker.Modify(this, delta);
             if (delta < 0)
                 this.RechargingDelay.Value = 0;
-            this.Owner.Map.Events.Post(new ResourceAdjustedEvent(this.Owner as Entity, this.Def, delta));
+            this.Owner.Map.Events.Post(new ResourceAdjustedEvent(this.Owner, this.Def, delta));
         }
         public Resource Initialize(float max, float initPercentage)
         {

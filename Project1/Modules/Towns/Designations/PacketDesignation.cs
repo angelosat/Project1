@@ -17,11 +17,12 @@ namespace Start_a_Town_
         static public void Send(NetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
         {
             remove |= designation == null;
-            var w = net.BeginPacketOld(p);
+            //var w = net.BeginPacketOld(p);
+            var w = net.BeginPacketImmediate(p);
 
             w.Write(remove);
             w.Write((int)SelectionType.List);
-            w.Write(targets);
+            w.Write(targets.ToList());
             if(!remove)
                 designation.Write(w);
         }

@@ -129,6 +129,13 @@ namespace Start_a_Town_
         {
             this.EntityRegistry.Remove(netId);
         }
+        public bool TryDisposeEntity(EntityRefId id)
+        {
+            var entity = this.GetEntity(id);
+            if (entity is not null)
+                return this.DisposeEntity(entity);
+            return false;
+        }
         public bool DisposeEntity(Entity entity) => this.DisposeEntity(entity.RefId);
         public bool DisposeEntity(int netId)
         {
@@ -162,14 +169,7 @@ namespace Start_a_Town_
             this.Events.Post(new EntityDisposedEvent(o));
             return true;
         }
-        public void DisposeEntityAndSync(Entity entity)
-        {
-            this.DisposeEntity(entity.RefId);
-            //if (this.Net.IsClient)
-            //    return;
-            //if(this.DisposeEntity(entity.RefId))
-            //    PacketEntityDispose.Send(this.Net as Server, entity.RefId);
-        }
+        
         public abstract MapBase GetMap(int mapId);
         public EventBus Events { get; } = new();
 

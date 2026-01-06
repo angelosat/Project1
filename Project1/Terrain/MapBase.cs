@@ -77,6 +77,9 @@ namespace Start_a_Town_
         public GameObject PlayerCharacter;
         public ParticleManager ParticleManager;
         public RegionManager Regions;
+        internal EntityLifecycleManager EntityLifecycleManager;
+
+
         //protected List<GameObject> CachedObjects = new();
         protected Dictionary<IntVec3, BlockEntity> CachedBlockEntities = new();
         public float Sunlight;

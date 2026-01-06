@@ -14,8 +14,10 @@ namespace Start_a_Town_
     public class StaticMap : MapBase, ITooltippable
     {
         public override float LoadProgress => this.ActiveChunks.Count / (float)(this.Size.Chunks * this.Size.Chunks);
+
+
         //Cell[] Cells;
-       
+
         public MapSize Size;
         public class MapSize : INamed
         {
@@ -99,6 +101,7 @@ namespace Start_a_Town_
             this.Regions = new RegionManager(this);
             this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
             this.ParticleManager = new Particles.ParticleManager(this);
+            this.EntityLifecycleManager = new EntityLifecycleManager(this);
         }
         public StaticMap(StaticWorld world, Vector2 coords, string name = "")
             : this(world, name)
@@ -171,6 +174,7 @@ namespace Start_a_Town_
         {
             this.AddTime();
             this.Regions.Update();
+            this.EntityLifecycleManager.Tick();
             foreach (var chunk in this.ActiveChunks.Values.ToList())
                 chunk.Tick();
 
@@ -917,6 +921,7 @@ namespace Start_a_Town_
 
         static readonly Dictionary<float, Color> AmbientColors = new() { { 0, Color.White }, { 0.5f, Color.Red }, { 1f, Color.Blue } };
         Color CachedAmbientColor;
+
         /// <summary>
         /// TODO: move ambient color to biome class
         /// </summary>

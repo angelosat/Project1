@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using SharpDX.Direct3D9;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,11 @@ namespace Start_a_Town_.Components.Resources
         public float TickRate = Ticks.PerSecond / 2f;
 
         float SpriteFlashTimer;
-
+        protected override void OnDepleted(Resource res)
+        {
+            var entity = res.Owner;
+            entity.Kill();
+        }
         protected override void TickExtra(Resource values)
         {
             FlashSprite(values.Owner);
@@ -54,37 +57,6 @@ namespace Start_a_Town_.Components.Resources
 
             return rate;
         }
-
-        //public override bool HandleMessage(Resource resource, GameObject parent, ObjectEventArgs e = null)
-        //{
-        //    switch (e.Type)
-        //    {
-        //        case Message.Types.HitGround:
-        //            float zForce = (float)e.Parameters[0];
-        //            this.HitGround(resource, parent, zForce);
-        //            return true;
-
-        //        default:
-        //            return base.HandleMessage(resource, parent, e);
-        //    }
-        //}
-
-        //internal override void HandleRemoteCall(GameObject parent, ObjectEventArgs e, Resource values)
-        //{
-        //    switch (e.Type)
-        //    {
-        //        case Message.Types.HitGround:
-        //            e.Data.Translate(parent.Net, r =>
-        //            {
-        //                float zForce = r.ReadSingle();
-        //                HitGround(values, parent, zForce);
-        //            });
-        //            break;
-
-        //        default: break;
-        //    }
-        //}
-
 
         private void HandleEntityHitGround(EntityHitGroundEvent e)
         {

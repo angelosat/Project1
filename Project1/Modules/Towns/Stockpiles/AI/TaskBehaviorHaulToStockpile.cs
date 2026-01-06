@@ -47,7 +47,7 @@ namespace Start_a_Town_
             }
         }
 
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             var task = this.Plan;
             var item = task.GetTarget(ItemInd);

@@ -763,6 +763,8 @@ namespace Start_a_Town_
                 return false;
             if (this.Type == TargetType.Entity && this.Object != null && this.Object == target.Object)
                 return true;
+            if (this.Type == TargetType.BlockEntity && this.BlockEntity != null && this.BlockEntity == target.BlockEntity)
+                return true;
             else if (this.Type == TargetType.Position && this.Global == target.Global
                 && this.Face == target.Face) // newly added
                 return true;

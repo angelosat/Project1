@@ -152,16 +152,16 @@ namespace Start_a_Town_
         {
             throw new NotImplementedException();
         }
-        public bool InitBaseReservations()
+        public bool ReserveBase()
         {
             //if (this.Task.Tool.HasObject)
             //    if (!this.Actor.Reserve(this.Task.Tool, 1))
             //        return false;
 
-            return this.InitExtraReservations();
+            return this.ReserveExtra();
         }
 
-        protected virtual bool InitExtraReservations()
+        protected virtual bool ReserveExtra()
         {
             return true;
         }

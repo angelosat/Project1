@@ -14,7 +14,7 @@ namespace Start_a_Town_
             //yield return new BehaviorInteractionNew(index, () => new InteractionPlaceItem(this.Actor.CurrentTask.GetAmount(index)));
             yield return new BehaviorResolveInteraction(InteractionDefOf.Place, countInd: index);// index, () => new InteractionPlaceItem(this.Actor.CurrentTask.GetAmount(index)));
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return this.Reserve(TargetIndex.A);
         }

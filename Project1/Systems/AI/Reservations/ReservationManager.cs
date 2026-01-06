@@ -203,7 +203,8 @@ namespace Start_a_Town_
                 amount = target.Object.StackSize - sum;
             else if (target.Type == TargetType.Position)
                 amount = 1 - sum;
-
+            else if (target.Type == TargetType.BlockEntity)
+                amount = 1 - sum;
             if (amount < 0)
                 throw new Exception(); // CHECK if probably the item was partially reserved for a haul action and it wasn't unreserved after the split stack was picked up
 

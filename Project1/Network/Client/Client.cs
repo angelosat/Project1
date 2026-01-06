@@ -232,7 +232,7 @@ namespace Start_a_Town_.Net
             this.ProcessIncomingPackets();
             this.HandleOrderedPackets();
             this.HandleOrderedReliablePackets();
-            this.HandleBufferedPackets();
+            //this.HandleBufferedPackets();
             GameMode.Current?.Update(Instance);
 
             if (Instance.Map is not null)
@@ -242,8 +242,10 @@ namespace Start_a_Town_.Net
                 if (Instance.Map.ActiveChunks.Count == maxChunks && !IsSaving)
                 {
                     this.Map.Validate(); 
-                    while (this._tick < this.TickTarget)
+                    while (this.CurrentTick < this.TickTarget)
                     {
+                        // moved this here because on speed > 0 the map wasn't ticked and logic wasn't executed between handling consecutive tick packets
+                        this.HandleBufferedPackets();
                         this._tick++;
                         this.TickMap();
                     }

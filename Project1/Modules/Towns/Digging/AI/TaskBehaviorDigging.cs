@@ -17,7 +17,7 @@ namespace Start_a_Town_
             // no need to find next task here, just finish and let taskgiver give next one
         }
 
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             var global = this.Plan.GetTarget(MineInd);
             //return this.Actor.Reserve(this.Task, global, 1);

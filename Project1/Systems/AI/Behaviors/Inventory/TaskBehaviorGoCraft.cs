@@ -16,7 +16,7 @@ namespace Start_a_Town_
             //yield return new BehaviorResolvePath(index, PathEndMode.Any);
             //yield return new BehaviorResolveInteraction(index, () => new InteractionCraftingNew());
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return this.ReserveAll();
             return this.Reserve(TargetIndex.A);

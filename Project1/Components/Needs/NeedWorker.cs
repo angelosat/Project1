@@ -9,9 +9,9 @@ namespace Start_a_Town_
             var need = (Need)wrapper;
 
             if (need.Mods.Count > 0)
-                need.Accumulator += need.Mods.Sum(m => m.RateMod);
+                need.Accumulator += need.Mods.Sum(m => m.RateMod) * need.Def.BaseRate;
             else
-                need.Accumulator -= need.TicksPerNaturalDecay;
+                need.Accumulator -= need.TicksPerNaturalDecay * need.Def.BaseRate;
 
             int whole = (int)need.Accumulator;
             if (whole != 0)

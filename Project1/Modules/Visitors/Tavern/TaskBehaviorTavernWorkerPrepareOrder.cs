@@ -29,7 +29,7 @@ namespace Start_a_Town_
             yield return new BehaviorCustom(() => customerProps.Dish = task.CraftedItems.First());
         }
 
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             var actor = this.Actor;
             var task = this.Plan;

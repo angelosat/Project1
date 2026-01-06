@@ -81,6 +81,8 @@ namespace Start_a_Town_
         protected int CrossFadeAnimationLength;
         public void Start()
         {
+            //this.Progress.SetMax(this.Def.Logic.CalculateMax(this.Context));
+            this.Def.Logic.OnStart(this);
             if (this.AnimationDef is not null)
             {
                 if (this.CrossFadeAnimationLength == 0)
@@ -99,6 +101,7 @@ namespace Start_a_Town_
             {
                 this.Start();
                 this.State = States.Running;
+                return; // give one tick buffer for insteractions that finish instantly to have a chance to be ticked on clients
             }
             if (this.Def.ProgressHandler?.IsFinished(this) ?? this.State == States.Finished) // TODO: maybe check for failed state too?
             {
@@ -197,7 +200,7 @@ namespace Start_a_Town_
             //if (this._drawProgressBar)
             //{
             //Bar.Draw(sb, camera, this.BarPosition(), this.BarLabel(), this.BarProgress(), camera.Zoom * .2f);
-            Bar.Draw(sb, camera, this.Actor.Global, "Interaction", this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
+            Bar.Draw(sb, camera, this.Actor.Global, this.Def.Label, this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
             return;
             //}
             if (this.RunningType == RunningTypes.Continuous)
@@ -318,7 +321,7 @@ namespace Start_a_Town_
                 this.Fail();
                 return;
             }
-            var skill = this.GetSkill();
+            var skill = this.Def.Skill;
 
             this.AddProgress(amount);
             this.TotalWorkApplied += amount;
@@ -353,12 +356,12 @@ namespace Start_a_Town_
         bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
         protected virtual float WorkDifficulty { get; } = 1;
 
-        protected virtual void Done() => this.Def.Logic?.Done(this.Context);
+        protected virtual void Done() => this.Def.Logic?.OnFinish(this.Context);
 
         protected virtual float GetToolEffectiveness()
         {
             //if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolProperties.ToolUse == this.GetToolUse())
-            if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolUse == this.GetToolUse())
+            if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolUse == this.Def.ToolUse)
                 return tool[StatDefOf.ToolEffectiveness];
             else
                 return this.Actor.GetMaterial(BoneDefOf.RightHand).Density;
@@ -373,8 +376,8 @@ namespace Start_a_Town_
         }
         protected float TotalWorkApplied;
 
-        protected virtual ToolUseDef GetToolUse() => null;
-        protected virtual SkillDef GetSkill() => null;
+        //protected virtual ToolUseDef GetToolUse() => null;
+        //protected virtual SkillDef GetSkill() => null;
         protected enum SkillAwardTypes { OnSwing, OnFinish }
 
         protected SkillAwardTypes SkillAwardType;//{ get; }

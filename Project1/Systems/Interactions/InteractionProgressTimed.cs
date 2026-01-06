@@ -2,6 +2,13 @@
 {
     internal class InteractionProgressInstant : IInteractionProgressHandler
     {
+        public void Tick(Interaction interaction) => interaction.Progress.Complete();
+        public void AddProgress(Interaction interaction, int progress) { }
+        public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;
+        public float GetProgressPercentage(Interaction interaction) => 1f;
+    }
+    internal class InteractionProgressFirstContact : IInteractionProgressHandler
+    {
         public void Tick(Interaction interaction) { }
         public void AddProgress(Interaction interaction, int progress) => interaction.Progress.Complete();                 
         public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;

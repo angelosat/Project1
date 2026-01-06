@@ -191,7 +191,7 @@ namespace Start_a_Town_.AI
         public bool TryAssign(Plan task)
         {
             var bhav = task.CreateBehavior(this.Parent);
-            if (!bhav.InitBaseReservations())
+            if (!bhav.ReserveBase())
             {
                 this.Parent.Unreserve();
                 return false;

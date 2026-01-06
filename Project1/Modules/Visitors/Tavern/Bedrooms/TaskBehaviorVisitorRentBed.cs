@@ -31,7 +31,7 @@ namespace Start_a_Town_
             // TODO wait until visitor has ownership of the bed stored in customerprops 
         }
 
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             var task = this.Plan;
             var actor = this.Actor;

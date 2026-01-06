@@ -4,7 +4,7 @@
     {
         public override void OnStart(Actor actor)
         {
-            actor.GetNeed(AdventurerNeedsDefOf.Adventuring).AddMod(EffectDefOf.Adventuring, Ticks.FromSeconds(2));
+            actor.GetNeed(AdventurerNeedsDefOf.Adventuring).AddMod(EffectDefOf.Adventuring, Ticks.FromSeconds(1)); //Ticks.FromSeconds(2));
         }
         public override void OnFinish(Actor actor)
         {

@@ -135,7 +135,7 @@ namespace Start_a_Town_
 
         public List<GameObject> Objects;
         readonly Dictionary<IntVec3, BlockEntity> BlockEntitiesByPosition = new();
-        public IEnumerable<BlockEntity> BlockEntities => this.BlockEntitiesByPosition.Values;
+        public IEnumerable<BlockEntity> BlockEntities => this.BlockEntitiesByPosition.Values.Distinct();
 
         public bool IsQueuedForLight;
         public const int Size = 16;

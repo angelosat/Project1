@@ -15,7 +15,7 @@ namespace Start_a_Town_
             yield return new BehaviorResolveInteraction(InteractionDefOf.Pick, countInd: TargetIndex.A);
             yield return new BehaviorResolveInteraction(InteractionDefOf.Store);
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return this.Reserve(TargetIndex.A);
         }

@@ -32,9 +32,9 @@ namespace Start_a_Town_
         {
             //this.Block = args.Block.Worker;
             //var ingredientCount = this.Block.Size.Volume * ItemDefOf.Ingredient.StackCapacity / this.Block.ConstructionProfile.Dimension;
+            this.Args = args;
             var ingredientCount = this.Block.Size.Volume / this.Block.BlockDef.ConstructionProfile.Dimension;
             this.Fulfillment = new(ingredientCount);
-            this.Args = args;
             this.Progress = new(100);
         }
        
@@ -98,10 +98,12 @@ namespace Start_a_Town_
             if (!this.IsReady)
                 throw new InvalidOperationException("Tried to advance construction without all materials present");
             this.Progress.Add(work);
+
             var map = this.Map; // capture map in case the construction is completed and the block entity gets removed from the map
             if (this.Progress.IsFinished)
                 this.Complete();
-            map.Events.Post(new ConstructionUpdatedEvent(this));
+            else
+                map.Events.Post(new ConstructionUpdatedEvent(this));
             return;
         }
 
@@ -110,9 +112,12 @@ namespace Start_a_Town_
             var map = this.Parent.Map;
             map.Events.Post(new ConstructionFinishedEvent(this));
 
-            foreach (var cell in this.Parent.CellsOccupied)
-                map.SetBlock(cell, this.Args.Block.Worker, this.Args.Material, 0, 0, this.Args.Orientation);
+            var cells = this.Parent.CellsOccupied;
+            // remove block entity first because this implicitly sets all occupied cells to air
             map.RemoveBlockEntity(this.Parent);
+
+            foreach (var cell in cells)
+                map.SetBlock(cell, this.Args.Block.Worker, this.Args.Material, 0, 0, this.Args.Orientation);
         }
 
         protected override void SaveExtra(SaveTag tag)

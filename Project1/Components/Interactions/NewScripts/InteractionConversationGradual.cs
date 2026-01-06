@@ -28,7 +28,7 @@ namespace Start_a_Town_
                 this.Finish();
             }
         }
-        protected override SkillDef GetSkill() => SkillDefOf.Social;
+        //protected override SkillDef GetSkill() => SkillDefOf.Social;
         protected override void WriteExtra(IDataWriter w)
         {
             this.Topic.Write(w);

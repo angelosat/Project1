@@ -64,7 +64,7 @@ namespace Start_a_Town_
             // TODO insert item to inventory
         }
 
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return
                 this.ReserveAsManyAsPossible(this.Plan.TargetA, this.Plan.TargetA.Object.StackSize);

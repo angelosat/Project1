@@ -21,7 +21,7 @@ namespace Start_a_Town_
                 shop.RemoveCustomer(task.CustomerID);
             });
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return this.Reserve(TargetIndex.A);
         }

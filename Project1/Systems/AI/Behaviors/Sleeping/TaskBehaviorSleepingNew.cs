@@ -32,7 +32,7 @@ namespace Start_a_Town_
             return needenergy.Percentage == 1;
         }
 
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return
                 //this.Actor.Reserve(this.Task, this.Task.TargetA) &&

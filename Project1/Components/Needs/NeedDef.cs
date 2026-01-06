@@ -7,6 +7,7 @@ namespace Start_a_Town_
         public float BaseThreshold = 20;
         //public float BaseDecayRate = .1f; // measure decay rate in ticks? how many ticks to drop value by 1
         public float BaseValue = 100;
+        public float BaseRate = 1;
         public Planner TaskGiver;
         public NeedCategoryDef CategoryDef;
         public NeedWorker Worker;

@@ -14,8 +14,9 @@ namespace Start_a_Town_
                 .FailOnPreInteractionCheck(this.Actor, this.Plan);
             yield return new BehaviorResolveInteraction();
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
+            return this.ReserveAll();
             return this.Reserve(TargetIndex.A);
         }
     }

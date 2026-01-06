@@ -12,7 +12,7 @@ namespace Start_a_Town_.AI.Behaviors
             //yield return BehaviorHaulHelper.DropInStorage(TargetIndex.B);
             yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionPlaceItem());
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return
                 this.Reserve(TargetIndex.A, this.Plan.Count) &&

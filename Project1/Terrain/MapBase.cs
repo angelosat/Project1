@@ -329,6 +329,7 @@ namespace Start_a_Town_
                 this.Events.Post(new BlockEntityRemovedEvent(entity));
                 return entity;
             }
+            return null;
             throw new Exception(); // for debugging
         }
         public void AddBlockEntity(IntVec3 global, BlockEntity entity)
@@ -596,19 +597,17 @@ namespace Start_a_Town_
         }
         public bool Despawn(GameObject obj)
         {
-            if (obj.Map == this)
-            {
-                //$"{this.Net} despawning {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
-                obj.OnDespawn(this);
-                if (!this.Remove(obj)) /// TODO: move this to map.despawn
-                    throw new Exception();
-                obj.Map = null;
-                //this.CachedObjects.Remove(obj);
-                this.Events.Post(new EntityDespawnedEvent(obj as Entity));
-                return true;
-            }
-            throw new Exception("GameObject.Map mismatch when trying to despawn object");
-            return false;
+            if (obj.Map != this)
+                //throw new Exception();
+                return false;
+            //$"{this.Net} despawning {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
+            obj.OnDespawn(this);
+            if (!this.Remove(obj)) /// TODO: move this to map.despawn
+                throw new Exception();
+            obj.Map = null;
+            //this.CachedObjects.Remove(obj);
+            this.Events.Post(new EntityDespawnedEvent(obj as Entity));
+            return true;
         }
         public void DespawnAndSync(Entity entity)
         {
@@ -1043,7 +1042,7 @@ namespace Start_a_Town_
         {
 
         }
-        public IEnumerable<GameObject> Entities => this.ActiveChunks.Values.SelectMany(c => c.Objects);
+        public IEnumerable<Entity> Entities => this.ActiveChunks.Values.SelectMany(c => c.Objects).Cast<Entity>();
         public IEnumerable<GameObject> GetEntities()
         {
             var chunks = this.ActiveChunks.Values;

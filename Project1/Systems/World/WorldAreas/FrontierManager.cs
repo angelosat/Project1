@@ -147,9 +147,10 @@ namespace Start_a_Town_
             //var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
             actor.Effects.Apply(EffectDefOf.Adventuring);
             this.ActorPositions.Add(actor, 0);
+            actor.Map.Despawn(actor);
+
             if (actor.Net is not Server server)
                 return;
-            actor.Map.DespawnAndSync(actor);
             server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.Label}!");
         }
         //public FrontierDef PlaceAtRandomAndSync(Actor actor)

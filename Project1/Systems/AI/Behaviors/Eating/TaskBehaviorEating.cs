@@ -38,7 +38,7 @@ namespace Start_a_Town_.AI.Behaviors
             yield return new BehaviorResolveInteraction(() => new InteractionThrow());
         }
 
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             var tableaRes = (this.Table.Type == TargetType.Null) ? true : this.Reserve(Table, 1) && this.Reserve(Table.Global.Above());
             var tableRes = (this.Table.Type == TargetType.Null) ? true : this.Reserve(EatingSurfaceInd, 1) && this.Reserve(EatingSurfaceInd);// Table.Global.Above());

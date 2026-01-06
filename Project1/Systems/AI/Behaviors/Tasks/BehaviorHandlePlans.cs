@@ -63,7 +63,7 @@ namespace Start_a_Town_
                 if (task == null)
                     continue;
                 var bhav = task.CreateBehavior(parent);
-                if (!bhav.InitBaseReservations())
+                if (!bhav.ReserveBase())
                 {
                     parent.Unreserve();
                     continue;
@@ -80,7 +80,7 @@ namespace Start_a_Town_
         bool TryForcePlan(Actor parent, Plan task, AIState state)
         {
             var bhav = task.CreateBehavior(parent);
-            if (!bhav.InitBaseReservations())
+            if (!bhav.ReserveBase())
                 return false;
             //state.CurrentTaskBehavior = bhav;
             //state.CurrentTask = task;
@@ -220,7 +220,7 @@ namespace Start_a_Town_
                     if (next.Plan is not null)
                     {
                         var bhav = next.Plan.CreateBehavior(parent);
-                        if (bhav.InitBaseReservations())
+                        if (bhav.ReserveBase())
                         {
                             $"found followup task from same planner {this.CurrentPlanner}".ToConsole();
                             state.Assign(bhav);

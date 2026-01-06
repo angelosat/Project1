@@ -1,6 +1,5 @@
 ﻿using Start_a_Town_.AI.Behaviors;
 using System.Collections.Generic;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Start_a_Town_
 {
@@ -15,9 +14,10 @@ namespace Start_a_Town_
                 .FailOnPreInteractionCheck(this.Actor, this.Plan);
             yield return new BehaviorResolveInteraction();
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
-            return this.Reserve(this.Plan.TargetA, this.Plan.AmountA);
+            return this.ReserveAll();
+            //return this.Reserve(this.Plan.TargetA, this.Plan.AmountA);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Start_a_Town_
             yield return new BehaviorResolvePath(DestinationIndex, PathEndMode.InteractionSpot).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
             yield return new BehaviorResolveInteraction(DestinationIndex,  () => new UseHauledOnTarget()).FailOnNotCarrying().FailOn(failOnInvalidRefuelable);
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return
                 this.ReserveAll(SourceIndex) &&

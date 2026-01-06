@@ -19,7 +19,7 @@ namespace Start_a_Town_.AI
         {
             return false;
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return this.Reserve(this.Plan.TargetA);
         }

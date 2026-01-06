@@ -182,8 +182,11 @@ namespace Start_a_Town_.Net
             }
 
             /// THESE MUST BE CALLED FROM WITHIN THE GAMESPEED LOOP
-            this.WritePlayerSpecificNew();
-            this.CreatePacketsFromStreams();
+            //if (this.Speed == 0)
+            //{
+                this.WritePlayerSpecificNew();
+                this.CreatePacketsFromStreams();
+            //}
             this.ResetOutgoingStreams();
             //this.AdvanceClock();
             this.SendPackets();
@@ -264,6 +267,8 @@ namespace Start_a_Town_.Net
                 /// some packets might have been written already during packet handling before the map ticking
                 /// (for example as a response to player input) and we don't want to clear them
                 //this.OutgoingStreamTimestamped = new(new MemoryStream());
+                //this.WritePlayerSpecificNew();
+                //this.CreatePacketsFromStreams();
                 this.AdvanceClock();
             }
             if (auxStream.BaseStream.Position > 0)

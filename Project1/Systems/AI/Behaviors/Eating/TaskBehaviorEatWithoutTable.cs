@@ -26,7 +26,7 @@ namespace Start_a_Town_.AI.Behaviors
             yield return new BehaviorResolveInteraction(() => new InteractionThrow());
         }
 
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return this.Reserve(Food, 1);
         }

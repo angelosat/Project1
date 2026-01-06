@@ -81,72 +81,12 @@ namespace Start_a_Town_
             int count = this.CountInd == TargetIndex.None ? -1 : actor.CurrentTask.GetAmount(this.CountInd);
 
             this._interaction ??= actor.Work.Perform(actor.CurrentTask.Def.Interaction, target);
-            //_interaction ??= actor.CurrentTask.Def.Interaction.Create(actor, target);
 
             if(this._interaction.IsFinished)
                 return BehaviorState.Success;
             return BehaviorState.Running;
-
-            switch (_interaction.State)
-            {
-                case Interaction.States.Unstarted:
-                    AIManager.Interact(actor, _interaction, target, count);
-                    return BehaviorState.Running;
-
-                case Interaction.States.Running:
-                    return BehaviorState.Running;
-
-                case Interaction.States.Finished:
-                    this.Interaction = null; // THIS IS REQUIRED because when ths behavior is run again (in loops) it needs to create a new instance of the interaction
-                    // WHY HAVE I COMMENTED IT OUT?
-                    return BehaviorState.Success;
-
-                case Interaction.States.Failed:
-                    return BehaviorState.Fail;
-
-                default:
-                    break;
-            }
-            return BehaviorState.Running;
         }
-        public BehaviorState TickOld(Actor parent, AIState state)
-        {
-            this.Actor = parent;
-            if (parent.Velocity != Vector3.Zero)
-            {
-                var acceleration = parent.GetComponent<MobileComponent>().Acceleration;
-                if (acceleration != 0)
-                    parent.MoveToggle(false);
-                return BehaviorState.Running;
-            }
 
-            var target = this.Target;
-            int count = this.CountInd == TargetIndex.None ? -1 : parent.CurrentTask.GetAmount(this.CountInd);
-
-            _interaction ??= parent.CurrentTask.Def.Interaction.Create(parent, target);
-
-            switch (_interaction.State)
-            {
-                case Interaction.States.Unstarted:
-                    AIManager.Interact(parent, _interaction, target, count);
-                    return BehaviorState.Running;
-
-                case Interaction.States.Running:
-                    return BehaviorState.Running;
-
-                case Interaction.States.Finished:
-                    this.Interaction = null; // THIS IS REQUIRED because when ths behavior is run again (in loops) it needs to create a new instance of the interaction
-                    // WHY HAVE I COMMENTED IT OUT?
-                    return BehaviorState.Success;
-
-                case Interaction.States.Failed:
-                    return BehaviorState.Fail;
-
-                default:
-                    break;
-            }
-            return BehaviorState.Running;
-        }
         internal override void ObjectLoaded(GameObject parent)
         {
             // TODO: don't replace fresh stored interaction with null, if parent isn't currently interacting? very hacky

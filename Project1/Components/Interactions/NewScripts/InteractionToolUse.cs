@@ -42,71 +42,71 @@ namespace Start_a_Town_
             this.Init();
 
         }
-        internal void OnToolContactOld()
-        {
-            if (this.Actor.Net.IsClient)
-                return;
-            if (!this.CanPerform())
-            {
-                this.Fail();
-                return;
-            }
+        //internal void OnToolContactOld()
+        //{
+        //    if (this.Actor.Net.IsClient)
+        //        return;
+        //    if (!this.CanPerform())
+        //    {
+        //        this.Fail();
+        //        return;
+        //    }
         
-            var actor = this.Actor;
-            var toolEffect = GetToolEffectiveness();
-            var amount = (int)Math.Max(1, toolEffect / WorkDifficulty);
-            if(this.WillFinish(amount) && !this.CanFinish())
-            {
-                this.Fail();
-                return;
-            }
-            var skill = this.GetSkill();
+        //    var actor = this.Actor;
+        //    var toolEffect = GetToolEffectiveness();
+        //    var amount = (int)Math.Max(1, toolEffect / WorkDifficulty);
+        //    if(this.WillFinish(amount) && !this.CanFinish())
+        //    {
+        //        this.Fail();
+        //        return;
+        //    }
+        //    var skill = this.GetSkill();
 
-            this.AddProgress(amount);
-            this.TotalWorkApplied += amount;
+        //    this.AddProgress(amount);
+        //    this.TotalWorkApplied += amount;
 
-            if (this.SkillAwardType == SkillAwardTypes.OnSwing)
-                actor.Skills.Increase(skill, amount);
+        //    if (this.SkillAwardType == SkillAwardTypes.OnSwing)
+        //        actor.Skills.Increase(skill, amount);
 
-            var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level); 
+        //    var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level); 
 
-            // "transfer" energy from stamina to strength
-            actor.Attributes.Adjust(AttributeDefOf.Strength, energyConsumption);
-            actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
+        //    // "transfer" energy from stamina to strength
+        //    actor.Attributes.Adjust(AttributeDefOf.Strength, energyConsumption);
+        //    actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
 
-            // i moved the multiplication with the stamina threshold to inside the workspeed stat formula
-            this.CachedAnimation.Speed = actor[StatDefOf.WorkSpeed];
+        //    // i moved the multiplication with the stamina threshold to inside the workspeed stat formula
+        //    this.CachedAnimation.Speed = actor[StatDefOf.WorkSpeed];
 
-            if(!this.Progress.IsFinished)
-                return;
+        //    if(!this.Progress.IsFinished)
+        //        return;
 
-            if (this.SkillAwardType == SkillAwardTypes.OnFinish)
-            {
-                //throw new NotImplementedException();
-                actor.Skills.Increase(skill, (int)this.TotalWorkApplied);
-            }
-            this.Done();
-            this.Finish();
-        }
+        //    if (this.SkillAwardType == SkillAwardTypes.OnFinish)
+        //    {
+        //        //throw new NotImplementedException();
+        //        actor.Skills.Increase(skill, (int)this.TotalWorkApplied);
+        //    }
+        //    this.Done();
+        //    this.Finish();
+        //}
 
         bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
 
-        protected virtual float GetToolEffectiveness()
-        {
-            //if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolProperties.ToolUse == this.GetToolUse())
-            if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolUse == this.GetToolUse())
-                return tool[StatDefOf.ToolEffectiveness];
-            else
-                return this.Actor.GetMaterial(BoneDefOf.RightHand).Density;
-        }
-        protected virtual float GetEnergyConsumption(float workAmount, int skillLevel)
-        {
-            var toolWeight = this.Actor[GearType.Mainhand]?.TotalWeight ?? 1;
-            var strength = this.Actor[AttributeDefOf.Strength].Level;
-            var fromToolWeight = //10 * 
-                toolWeight / strength;
-            return fromToolWeight;
-        }
+        //protected virtual float GetToolEffectiveness()
+        //{
+        //    //if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolProperties.ToolUse == this.GetToolUse())
+        //    if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolUse == this.GetToolUse())
+        //        return tool[StatDefOf.ToolEffectiveness];
+        //    else
+        //        return this.Actor.GetMaterial(BoneDefOf.RightHand).Density;
+        //}
+        //protected virtual float GetEnergyConsumption(float workAmount, int skillLevel)
+        //{
+        //    var toolWeight = this.Actor[GearType.Mainhand]?.TotalWeight ?? 1;
+        //    var strength = this.Actor[AttributeDefOf.Strength].Level;
+        //    var fromToolWeight = //10 * 
+        //        toolWeight / strength;
+        //    return fromToolWeight;
+        //}
 
         //protected virtual float Progress => this.Context.ProgressPercentage;
         //protected abstract float WorkDifficulty { get; }

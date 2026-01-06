@@ -53,7 +53,7 @@ namespace Start_a_Town_
                 return false;
             }
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return
                 this.ReserveAll(MaterialID) &&

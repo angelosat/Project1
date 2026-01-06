@@ -9,6 +9,8 @@ namespace Start_a_Town_
         public readonly InteractionLogic Logic;
         public AnimationDef Animation;
         public IInteractionProgressHandler ProgressHandler;
+        public SkillDef Skill;
+        public ToolUseDef ToolUse;
         public InteractionDef(string name, Type workerType) : base(name)
         {
             this.InteractionClass = typeof(Interaction);
@@ -49,7 +51,9 @@ namespace Start_a_Town_
             ctx.Target = target;
             return ctx;
         }
-        internal virtual void Done(InteractionContext ctx) { }
+        internal virtual void OnStart(Interaction i) { }
+        internal virtual void OnFinish(InteractionContext ctx) { }
+        internal virtual int CalculateMax(InteractionContext ctx) => 100;
     }
     public class InteractionContext//(Actor actor, TargetArgs target)
     {

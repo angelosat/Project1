@@ -65,24 +65,24 @@ namespace Start_a_Town_
             return this.Block.GetParticleRects(25);
         }
 
-        protected override SkillDef GetSkill()
-        {
-            var matType = this.Material.Type;
-            if (matType == MaterialTypeDefOf.Soil)
-                return SkillDefOf.Digging;
-            else if (matType == MaterialTypeDefOf.Stone || matType == MaterialTypeDefOf.Metal)
-                return SkillDefOf.Mining;
-            throw new Exception();
-        }
+        //protected override SkillDef GetSkill()
+        //{
+        //    var matType = this.Material.Type;
+        //    if (matType == MaterialTypeDefOf.Soil)
+        //        return SkillDefOf.Digging;
+        //    else if (matType == MaterialTypeDefOf.Stone || matType == MaterialTypeDefOf.Metal)
+        //        return SkillDefOf.Mining;
+        //    throw new Exception();
+        //}
 
-        protected override ToolUseDef GetToolUse()
-        {
-            var matType = this.Material.Type;
-            if (matType == MaterialTypeDefOf.Soil)
-                return ToolUseDefOf.Digging;
-            else if (matType == MaterialTypeDefOf.Stone || matType == MaterialTypeDefOf.Metal)
-                return ToolUseDefOf.Mining;
-            throw new Exception();
-        }
+        //protected override ToolUseDef GetToolUse()
+        //{
+        //    var matType = this.Material.Type;
+        //    if (matType == MaterialTypeDefOf.Soil)
+        //        return ToolUseDefOf.Digging;
+        //    else if (matType == MaterialTypeDefOf.Stone || matType == MaterialTypeDefOf.Metal)
+        //        return ToolUseDefOf.Mining;
+        //    throw new Exception();
+        //}
     }
 }

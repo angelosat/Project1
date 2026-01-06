@@ -108,14 +108,14 @@ namespace Start_a_Town_
             return ItemContent.LogsGrayscale.AtlasToken.Rectangle.Divide(25);
         }
 
-        protected override SkillDef GetSkill()
-        {
-            return SkillDefOf.Plantcutting;
-        }
+        //protected override SkillDef GetSkill()
+        //{
+        //    return SkillDefOf.Plantcutting;
+        //}
 
-        protected override ToolUseDef GetToolUse()
-        {
-            return ToolUseDefOf.Chopping;
-        }
+        //protected override ToolUseDef GetToolUse()
+        //{
+        //    return ToolUseDefOf.Chopping;
+        //}
     }
 }

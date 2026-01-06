@@ -14,7 +14,7 @@ namespace Start_a_Town_
             var manager = map.Town.GrowingManager;
             var zones = manager.AllGrowingZones;
             var mapItems = actor.Map.GetEntities();
-            if (actor.Hauled is Entity carried)
+            if (actor.Hauled is Entity carried && carried.Def == ItemDefOf.Seeds)
             {
                 var batches = GetReachableBatches(actor, manager.GetSowingTargetsAll(carried));
                 if (!batches.Any())

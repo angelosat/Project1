@@ -22,7 +22,7 @@ namespace Start_a_Town_.AI.Behaviors
             //yield return new BehaviorInteractionNew(TargetIndex.A, new InteractionEquip());
             yield return new BehaviorResolveInteraction(InteractionDefOf.Equip);
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return this.Reserve(this.Plan.TargetA, 1);
         }

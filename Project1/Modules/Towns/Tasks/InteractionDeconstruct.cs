@@ -45,14 +45,14 @@ namespace Start_a_Town_
             return this.Block.GetParticleRects(25);
         }
 
-        protected override SkillDef GetSkill()
-        {
-            return SkillDefOf.Construction;
-        }
+        //protected override SkillDef GetSkill()
+        //{
+        //    return SkillDefOf.Construction;
+        //}
 
-        protected override ToolUseDef GetToolUse()
-        {
-            return ToolUseDefOf.Building;
-        }
+        //protected override ToolUseDef GetToolUse()
+        //{
+        //    return ToolUseDefOf.Building;
+        //}
     }
 }

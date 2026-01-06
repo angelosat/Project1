@@ -25,7 +25,7 @@ namespace Start_a_Town_
             yield return new BehaviorResolvePath(PlantIndex);
             yield return new BehaviorResolveInteraction(PlantIndex, () => new InteractionHarvest());
         }
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             return this.Reserve(this.Plan.GetTarget(PlantIndex));
         }

@@ -33,7 +33,7 @@ namespace Start_a_Town_.AI.Behaviors
             yield return new BehaviorResolveInteraction(() => new InteractionThrow()); // in case somehow more food than necessary is been carried
         }
 
-        protected override bool InitExtraReservations()
+        protected override bool ReserveExtra()
         {
             var tableRes = (Table.Type == TargetType.Null) ? true : this.Reserve(Table, 1) && this.Reserve(Table.Global.Above());
             return this.Reserve(Food, 1) && tableRes;

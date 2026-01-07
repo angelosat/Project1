@@ -37,8 +37,8 @@ namespace Start_a_Town_
             ctx.PlantComp.Wiggle((float)Math.PI / 32f, 20, ctx.PlantComp.Species.StemMaterial.Density);
             ctx.Target.Map.Events.Post(new PlantChoppedEvent(ctx.Actor, ctx.Target, workAmount));
 
-            if (ctx.Actor.Net.IsClient)
-                return;
+            //if (ctx.Actor.Net.IsClient)
+            //    return;
             ctx.HitPoints.Adjust(-workAmount);
         }
     }

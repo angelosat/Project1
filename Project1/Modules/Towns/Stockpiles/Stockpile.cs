@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 
 namespace Start_a_Town_
 {
@@ -252,7 +251,15 @@ namespace Start_a_Town_
             foreach (var pos in this.Positions)
                 yield return pos;
         }
-
+        public override IEnumerable<(string name, Action action)> GetInfoTabs()
+        {
+            yield return ("Filters", () =>
+            {
+                var win = new StockpileFiltersGui(this).ToWindow("Filters");
+                win.ToggleSmart();
+            }
+            );
+        }
         public override void GetSelectionInfo(IUISelection panel)
         {
             panel.AddTabAction("Stockpile", this.ToggleFiltersUI);

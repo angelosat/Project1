@@ -1,7 +1,7 @@
-﻿using Start_a_Town_.Components;
+﻿using Microsoft.Xna.Framework;
+using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using System;
-using static Start_a_Town_.GlobalVars;
 
 namespace Start_a_Town_
 {
@@ -16,11 +16,11 @@ namespace Start_a_Town_
             get => this._level;
             set
             {
-                this._level = value;
-                this.LvlProgress.Max = GetNextLvlXp(value);
+                this._level = Math.Max(1, value);
+                this.LvlProgress.SetMax(GetNextLvlXp(this._level));
             }
         }
-        Progress LvlProgress = new();
+        public readonly ProgressInt LvlProgress = new(10);
         const int XpToLevelBase = 10;
         public Skill() { }
         public Skill(NpcSkillsComponent owner, SkillDef def)
@@ -38,6 +38,7 @@ namespace Start_a_Town_
         //static int GetNextLvlXpTest2(int currentLvl) => currentLvl > 0 ? (int)Math.Pow(XpToLevelBase, currentLvl) * (XpToLevelBase - 1) : XpToLevelBase;
         //static int GetNextLvlXpTest3(int currentLvl) => (currentLvl + 1) * XpToLevelBaseNew + (currentLvl == 0 ? 0 : GetNextLvlXpTest3(currentLvl - 1));
         static int GetNextLvlXp(int currentLvl) => (int)Math.Pow(2, currentLvl - 1) * XpToLevelBase;
+        static int GetLevel(int xp) => (int)(Math.Log2(xp / XpToLevelBase) + 1);
 
         //static public void Init(Hud hud)
         //{
@@ -51,13 +52,17 @@ namespace Start_a_Town_
         //}
         internal void Award(int v)
         {
+            var actor = this.Comp.Owner;
+
             //for (int i = 0; i < 20; i++)
             //    GetNextLvlXp(i).ToConsole();
-            const int debugMultiplier = 500;
+            const int debugMultiplier = 5;// 00;
             v *= debugMultiplier;
             if (this.LvlProgress.Value + v < this.LvlProgress.Max)
             {
-                this.LvlProgress.Value += v;
+                //this.LvlProgress.Value += v;
+                this.LvlProgress.Add(v);
+                actor.Map.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
                 return;
             }
             var remaining = this.LvlProgress.Value + v;
@@ -69,13 +74,25 @@ namespace Start_a_Town_
                 nextLvlXp = GetNextLvlXp(this.Level + levelsGained++);
             } while (remaining >= nextLvlXp);
             this.Level += levelsGained;
-            this.LvlProgress.Max = GetNextLvlXp(this.Level);
-            this.LvlProgress.Value = remaining;
-            var actor = this.Comp.Owner;
+            //this.LvlProgress.Max = GetNextLvlXp(this.Level);
+            //this.LvlProgress.Value = remaining;
+            this.LvlProgress.SetMax(GetNextLvlXp(this.Level));
+            this.LvlProgress.SetValue(remaining);
             actor.Net.ConsoleBox.Write(Log.Entry.Notification(actor, " has reached Level ", this.Level," in ", this, "!"));
             //actor.Net.EventOccured((int)Message.Types.SkillIncrease, actor, this);
-            actor.Map.Events.Post(new SkillIncreaseEvent(actor as Actor, this.Def, v));
+            actor.Map.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
+            actor.Map.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
 
+        }
+        public void SetValue(int level, int xp)
+        {
+            var oldLevel = this.Level;
+            var actor = this.Comp.Owner;
+            this.Level = level;
+            this.LvlProgress.SetValue(xp);
+            actor.Map.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
+            if (this.Level != oldLevel)
+                actor.Map.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
         }
         static Skill()
         {
@@ -118,7 +135,7 @@ namespace Start_a_Town_
             this.SkillDef = r.ReadDef<SkillDef>();
             this.Level = r.ReadInt32();
             //this.LvlProgress.Max = GetNextLvlXp(this.Level);
-            this.LvlProgress.Value = r.ReadInt32();
+            this.LvlProgress.SetValue(r.ReadInt32());
             return this;
         }
         //public Skill Clone()
@@ -136,9 +153,10 @@ namespace Start_a_Town_
         {
             var skill = new Skill();
             skill.SkillDef = tag.LoadDef<SkillDef>("Def");
-            tag.TryGetTagValueOrDefault("Level", out skill._level);
-            skill.LvlProgress.Max = GetNextLvlXp(skill.Level);
-            skill.LvlProgress.Value = (float)tag["Progress"].Value;
+            //tag.TryGetTagValueOrDefault("Level", out skill._level);
+            skill.Level = tag.LoadInt("Level");
+            skill.LvlProgress.SetMax(GetNextLvlXp(skill.Level));
+            skill.LvlProgress.SetValue((int)tag["Progress"].Value);
             return skill;
         }
         public SaveTag Save(string name = "")
@@ -149,5 +167,6 @@ namespace Start_a_Town_
             tag.Add(this.LvlProgress.Value.Save("Progress"));
             return tag;
         }
+       
     }
 }

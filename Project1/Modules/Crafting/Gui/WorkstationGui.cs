@@ -104,7 +104,7 @@ namespace Start_a_Town_
             var newindex = s.Workstation.Orders.IndexOf(s) + 1;
             this.ListOrdersNew.Move(s, newindex);
             UpdateArrows();
-            PacketsCrafting.PlayerModifiedOrder(s.Workstation.Parent.Map, s, 1, 0, s.Mode);
+            PacketsCrafting.SendPlayerModifiedOrder(s.Workstation.Parent.Map, s, 1, 0, s.Mode);
         }
 
         private void MoveUp(OrderSettings s)
@@ -113,7 +113,7 @@ namespace Start_a_Town_
             var newindex = s.Workstation.Orders.IndexOf(s) - 1;
             this.ListOrdersNew.Move(s, newindex);
             UpdateArrows();
-            PacketsCrafting.PlayerModifiedOrder(s.Workstation.Parent.Map, s, -1, 0, s.Mode);
+            PacketsCrafting.SendPlayerModifiedOrder(s.Workstation.Parent.Map, s, -1, 0, s.Mode);
         }
         void UpdateArrows()
         {

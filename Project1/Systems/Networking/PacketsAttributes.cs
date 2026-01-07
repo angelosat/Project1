@@ -5,24 +5,24 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     internal static class PacketsAttributes
     {
-        readonly static PacketId _pAttributeIncreased;
+        readonly static PacketId _pAttributeAdjusted;
         static PacketsAttributes()
         {
-            Registry.MapEventHooksServer.Register<AttributeIncreasedEvent>(SendAttributeIncreased);
-            _pAttributeIncreased = Registry.PacketHandlers.Register(OnAttributeIncreased);
+            Registry.MapEventHooksServer.Register<AttributeAdjustedEvent>(SendAttributeAdjusted);
+            _pAttributeAdjusted = Registry.PacketHandlers.Register(OnAttributeAdjusted);
         }
-        private static void SendAttributeIncreased(AttributeIncreasedEvent @event)
+        private static void SendAttributeAdjusted(AttributeAdjustedEvent @event)
         {
-            Server.Instance.BeginPacket(_pAttributeIncreased)
+            Server.Instance.BeginPacket(_pAttributeAdjusted)
                 .Write(@event.Owner.RefId)
                 .Write(@event.Def)
-                .Write(@event.Delta);
+                .Write(@event.Value);
         }
-        static void OnAttributeIncreased(NetEndpoint endpoint, Packet packet)
+        static void OnAttributeAdjusted(NetEndpoint endpoint, Packet packet)
         {
             endpoint.World
                 .GetEntity<Actor>(packet.PacketReader.ReadEntityRefId())
-                .Attributes.Adjust(packet.PacketReader.ReadDef<AttributeDef>(), packet.PacketReader.ReadSingle());
+                .Attributes.SetValue(packet.PacketReader.ReadDef<AttributeDef>(), packet.PacketReader.ReadSingle());
         }
     }
 }

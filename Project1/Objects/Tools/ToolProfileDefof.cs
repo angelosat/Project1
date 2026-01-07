@@ -5,7 +5,7 @@ using System.Linq;
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    static class ToolPropsDefof
+    static class ToolProfileDefof
     {
         public static readonly ToolProfileDef Shovel = new("Shovel")
         {
@@ -70,9 +70,9 @@ namespace Start_a_Town_
         //    .AddSpec(new ToolComp.Spec(ToolUseDefOf.Chopping))
         //    ;
 
-        static ToolPropsDefof()
+        static ToolProfileDefof()
         {
-            Def.Register(typeof(ToolPropsDefof));
+            Def.Register(typeof(ToolProfileDefof));
 
             
 

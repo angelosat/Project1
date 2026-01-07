@@ -7,13 +7,13 @@ namespace Start_a_Town_
     {
         static VFXFloatingTexts()
         {
-            Registry.MapEventHooksClient.Register<SkillIncreaseEvent>(OnSkillIncreased);
+            Registry.MapEventHooksClient.Register<SkillLevelUpEvent>(OnSkillIncreased);
         }
 
-        private static void OnSkillIncreased(SkillIncreaseEvent e)
+        private static void OnSkillIncreased(SkillLevelUpEvent e)
         {
             var actor = e.Actor;
-            var skill = e.Actor.Skills[e.Skill];
+            var skill = e.Actor.Skills[e.Skill.Def];
             //FloatingText.Create(actor, $"{skill.SkillDef.Label} increased!", ft => ft.Font = UIManager.FontBold);
             FloatingText.Create(actor.Map, actor.Global, $"{skill.SkillDef.Label} increased!", ft => ft.Font = UIManager.FontBold);
         }

@@ -62,7 +62,7 @@ namespace Start_a_Town_
         public void Award(GameObject parent, float p)
         {
             this.AttributeDef.Worker.Award(parent, this, p);
-            parent.Map.Events.Post(new AttributeIncreasedEvent(parent as Actor, this.Def, p));
+            parent.Map.Events.Post(new AttributeAdjustedEvent(parent as Actor, this.Def, this.Progress.Value));
         }
         internal void AddToProgress(float p)
         {
@@ -127,6 +127,10 @@ namespace Start_a_Town_
 
         public static AttributeRuntime Create(IDataReader r) => new AttributeRuntime().Read(r);
 
+        internal void SetValue(float value)
+        {
+            this.Progress.Value = value;
+        }
 
         [EnsureStaticCtorCall]
         internal class Packets

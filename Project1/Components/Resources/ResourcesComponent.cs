@@ -205,6 +205,10 @@ namespace Start_a_Town_
             var res = this[def];
             res.Adjust(v);
         }
+        public void SetValue(ResourceDef def, float value)
+        {
+            this[def].SetValue(value);
+        }
         public new class Spec : Spec<ResourcesComponent> 
         {
             public ResourceDef[] Defs;

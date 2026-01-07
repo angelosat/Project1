@@ -68,7 +68,7 @@ namespace Start_a_Town_
         internal static void SendPlayerCreatedOrderNew(BlockEntity workstation, Def recipeDef)
         {
             var net = workstation.Map.Net;
-            var w = net.BeginPacket(_pPlayerCreatedOrder)
+            var w = net.BeginPacketImmediate(_pPlayerCreatedOrder)
                 .Write(workstation.Map.ID)
                 .Write(workstation.OriginGlobal)
                 .Write(recipeDef);
@@ -98,10 +98,10 @@ namespace Start_a_Town_
             if (net is Server)
                 Send(net, station, reaction);
         }
-        internal static void PlayerDeletedOrder(MapBase map, OrderSettings order)
+        internal static void SendPlayerDeletedOrder(MapBase map, OrderSettings order)
         {
             var net = map.Net;
-            var w = net.BeginPacket(_pPlayerDeletedOrder);
+            var w = net.BeginPacketImmediate(_pPlayerDeletedOrder);
             w.Write(map.ID);
             w.Write(order.Id);
         }
@@ -112,12 +112,12 @@ namespace Start_a_Town_
             var map = net.World.GetMap(mapid);
             var order = net.Map.Town.CraftingManagerNew.DeleteOrder(r.ReadInt32());
             if (net is Server server)
-                PlayerDeletedOrder(map, order);
+                SendPlayerDeletedOrder(map, order);
         }
-        internal static void PlayerModifiedOrder(MapBase map, OrderSettings order, int priorityDelta, int amountDelta, OrderSettings.CraftMode mode)
+        internal static void SendPlayerModifiedOrder(MapBase map, OrderSettings order, int priorityDelta, int amountDelta, OrderSettings.CraftMode mode)
         {
             var net = map.Net;
-            var w = net.BeginPacket(_pPlayerModifiedOrder);
+            var w = net.BeginPacketImmediate(_pPlayerModifiedOrder);
             w.Write(map.ID);
             w.Write(order.Id);
             w.Write(priorityDelta);
@@ -140,15 +140,13 @@ namespace Start_a_Town_
             order.Mode = mode;
             map.Events.Post(new CraftOrderUpdatedEvent(order));
             if (endpoint is Server server)
-                PlayerModifiedOrder(map, order, priorityDelta, amountDelta, mode);
+                SendPlayerModifiedOrder(map, order, priorityDelta, amountDelta, mode);
         }
         internal static void Send(NetEndpoint net, Vector3 global, Reaction reaction)
         {
-            var w = net.BeginPacket(_pPlayerCreatedOrder);
+            var w = net.BeginPacketImmediate(_pPlayerCreatedOrder);
             w.Write(global);
             reaction.Write(w);
         }
-        
-        
     }
 }

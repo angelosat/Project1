@@ -71,14 +71,14 @@ namespace Start_a_Town_.Components
         internal void Load(SaveTag tag)
         {
             var compData = tag.Value as Dictionary<string, SaveTag>;
-            foreach (var compTag in compData.Values)
-            {
+            //foreach (var compTag in compData.Values)
+            //{
                 foreach(var (k, v) in this._inner)
                 {
                     var data = compData[k.FullName];
                     v.Load(this._owner, data);
                 }
-            }
+            //}
         }
         public void CreateAndResolve(ItemDef def)
         {

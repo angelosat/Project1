@@ -95,11 +95,11 @@ namespace Start_a_Town_
 
         void MoveDown()
         {
-            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 1, 0, this.Settings.Mode);
+            PacketsCrafting.SendPlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 1, 0, this.Settings.Mode);
         }
         void MoveUp()
         {
-            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, -1, 0, this.Settings.Mode);
+            PacketsCrafting.SendPlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, -1, 0, this.Settings.Mode);
         }
         void ChangeOrderPriority(bool p)
         {
@@ -107,24 +107,24 @@ namespace Start_a_Town_
         }
         void RemoveOrder()
         {
-            PacketsCrafting.PlayerDeletedOrder(this.Settings.Workstation.Parent.Map, this.Settings);
+            PacketsCrafting.SendPlayerDeletedOrder(this.Settings.Workstation.Parent.Map, this.Settings);
         }
         void Minus()
         {
             //this.LabelAmount.Text = $"{Math.Max(0, this.Settings.Amount - 1)}"; // client prediction
             this._amountPredicted--;
-            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, -1, this.Settings.Mode);
+            PacketsCrafting.SendPlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, -1, this.Settings.Mode);
         }
         void Plus()
         {
             //this.LabelAmount.Text = $"{this.Settings.Amount + 1}"; // client prediction
             this._amountPredicted++;
-            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 1, this.Settings.Mode);
+            PacketsCrafting.SendPlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 1, this.Settings.Mode);
         }
         void ChangeFinishMode(OrderSettings.CraftMode mode)
         {
             this._modePredicted = mode;
-            PacketsCrafting.PlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 0, mode);
+            PacketsCrafting.SendPlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 0, mode);
         }
 
        

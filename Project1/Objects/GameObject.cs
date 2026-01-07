@@ -398,6 +398,7 @@ namespace Start_a_Town_
             foreach (var comp in this.Components.Values)
                 obj.GetComponent(comp.GetType()).CopyFrom(comp);
             obj._stackSize = amount < 0 ? this.StackSize : amount;
+            obj.Name = this.Name;
             return obj;
         }
         public GameObject Split(int amount)

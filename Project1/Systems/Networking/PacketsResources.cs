@@ -16,13 +16,13 @@ namespace Start_a_Town_
             Server.Instance.BeginPacket(_pResourceAdjusted)
                 .Write(@event.Owner.RefId)
                 .Write(@event.Def)
-                .Write(@event.Delta);
+                .Write(@event.Value);
         }
         static void OnResourceAdjusted(NetEndpoint endpoint, Packet packet)
         {
             endpoint.World
                 .GetEntity(packet.PacketReader.ReadEntityRefId())
-                .Resources.Adjust(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
+                .Resources.SetValue(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
         }
     }
 }

@@ -11,15 +11,16 @@ namespace Start_a_Town_
         {
             _pTypeIdModifySkill = Registry.PacketHandlers.Register(Receive);
 
-            Registry.MapEventHooksServer.Register<SkillIncreaseEvent>(SendSkillIncrease);
+            Registry.MapEventHooksServer.Register<SkillAdjustedEvent>(SendSkillIncrease);
         }
 
-        private static void SendSkillIncrease(SkillIncreaseEvent e)
+        private static void SendSkillIncrease(SkillAdjustedEvent e)
         {
             Server.Instance.BeginPacket(_pTypeIdModifySkill)
                 .Write(e.Actor.RefId)
-                .Write(e.Skill)
-                .Write(e.Delta);
+                .Write(e.Skill.Def)
+                .Write(e.Skill.Level)
+                .Write(e.Skill.LvlProgress.Value);
         }
         private static void Receive(NetEndpoint endpoint, Packet packet)
         {
@@ -27,9 +28,11 @@ namespace Start_a_Town_
             var r = packet.PacketReader;
             var actor = client.World.GetEntity<Actor>(r.ReadInt32());
             var skill = r.ReadDef<SkillDef>();
-            var delta = r.ReadInt32();
-
-            actor.Skills.Increase(skill, delta);
+            //var delta = r.ReadInt32();
+            var level = r.ReadInt32();
+            var xp = r.ReadInt32();
+            //actor.Skills.Increase(skill, delta);
+            actor.Skills.SetValue(skill, level, xp);
         }
     }
 }

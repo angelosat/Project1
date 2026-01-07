@@ -60,6 +60,15 @@ namespace Start_a_Town_
             return this;
         }
         public static ProgressInt Create(SaveTag tag) => new ProgressInt().Load(tag);
+
+        internal void SetValue(int value)
+        {
+            this.Value = value;
+        }
+        internal void SetValue(float value)
+        {
+            this.Value = (int)value;
+        }
     }
     public class Progress : IProgressBar
     {

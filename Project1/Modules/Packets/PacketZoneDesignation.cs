@@ -11,11 +11,10 @@ namespace Start_a_Town_
         {
             PacketPlayerZoneDesignation = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(INetEndpoint net, ZoneDef zoneDef, int zoneID, Vector3 begin, int w, int h, bool remove)
+        static public void Send(NetEndpoint net, ZoneDef zoneDef, int zoneID, Vector3 begin, int w, int h, bool remove)
         {
-            //var stream = net.GetOutgoingStreamOrderedReliable();
-            //stream.Write();
-            var stream = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketPlayerZoneDesignation);
+            //var stream = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketPlayerZoneDesignation);
+            var stream = net.BeginPacketImmediate(PacketPlayerZoneDesignation);
 
             stream.Write(zoneDef.Name);
             stream.Write(zoneID);

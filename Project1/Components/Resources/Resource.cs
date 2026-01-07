@@ -86,7 +86,7 @@ namespace Start_a_Town_
             this.ResourceDef.Worker.Modify(this, delta);
             if (delta < 0)
                 this.RechargingDelay.Value = 0;
-            this.Owner.Map.Events.Post(new ResourceAdjustedEvent(this.Owner, this.Def, delta));
+            this.Owner.Map.Events.Post(new ResourceAdjustedEvent(this.Owner, this.Def, this.Value));
         }
         public Resource Initialize(float max, float initPercentage)
         {
@@ -197,7 +197,10 @@ namespace Start_a_Town_
                 _unsub += parent.Map?.Events.ListenTo(i.eventType, i.handler);
         }
 
-        
+        internal void SetValue(float value)
+        {
+            this.Value = value;
+        }
 
         [EnsureStaticCtorCall]
         internal class Packets

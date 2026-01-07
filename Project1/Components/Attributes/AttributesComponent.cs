@@ -112,7 +112,10 @@ namespace Start_a_Town_.Components
         {
             this.GetAttribute(def).Award(this.Owner, energyConsumption);
         }
-       
+        internal void SetValue(AttributeDef def, float value)
+        {
+            this.GetAttribute(def).SetValue(value);
+        }
         public new class Spec : Spec<AttributesComponent>
         {
             public AttributeDef[] Items;

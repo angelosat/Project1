@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -71,7 +72,7 @@ namespace Start_a_Town_
             for (int i = 0; i < snapshot.Count; i++)
             {
                 var skill = snapshot[i];
-                skill.Level = (int)(average * (1 + values[i]));
+                skill.Level = 1 + (int)(average * (1 + values[i]));
             }
             return this;
         }
@@ -100,6 +101,12 @@ namespace Start_a_Town_
         {
             this[skill].Award(amount);
         }
+
+        internal void SetValue(SkillDef skill, int level, int xp)
+        {
+            this[skill].SetValue(level, xp);
+        }
+
         public new class Spec : Spec<NpcSkillsComponent>
         {
             public SkillDef[] Items;
@@ -118,10 +125,5 @@ namespace Start_a_Town_
             }
         }
     }
-    internal class SkillIncreaseEvent(Actor actor, SkillDef skill, int delta) : IEventPayload
-    {
-        public readonly Actor Actor = actor;
-        public readonly SkillDef Skill = skill;
-        public readonly int Delta = delta;
-    }
+    
 }

@@ -10,19 +10,9 @@ namespace Start_a_Town_
         static ToolSystem()
         {
             CreateRuleFor(BoneDefOf.ToolHandle)
-                //.ForBone(BoneDefOf.ToolHandle)
                 .Allow(MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots);
             CreateRuleFor(BoneDefOf.ToolHead)
                 .Allow(MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Chunk);
-            //CreateRuleFor(BoneDefOf.ToolHandle)
-            //    .From(MaterialRefinementDefOf.Ingots)
-            //    .From(MaterialRefinementDefOf.Planks)
-            //    .Allow(MaterialTypeDefOf.Wood, MaterialTypeDefOf.Metal);
-            //CreateRuleFor(BoneDefOf.ToolHead)
-            //    .From(MaterialRefinementDefOf.Ingots)
-            //    .From(MaterialRefinementDefOf.Planks)
-            //    .From(MaterialRefinementDefOf.Chunk)
-            //    .Allow(MaterialTypeDefOf.Wood, MaterialTypeDefOf.Metal, MaterialTypeDefOf.Stone);
         }
         public static CraftingRules CreateRuleFor(BoneDef bone)
         {
@@ -57,50 +47,23 @@ namespace Start_a_Town_
         {
             return Create(req.Context as ToolProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
         }
+
     }
     record CraftingRules(BoneDef Bone)
     {
-        //public BoneDef Bone;
         public MaterialRefinementDef Refinement;
         public readonly HashSet<MaterialRefinementDef> Types = [];
-        //public CraftingRules()
-        //{
-                
-        //}
-        //public CraftingRules(BoneDef bone, MaterialRefinementDef state, MaterialTypeDef[] types)
-        //{
-        //    this.Refinement = state;
-        //    this.Bone = bone;
-        //    foreach (var type in types)
-        //        this.Types.Add(type);
-        //}
-        //public CraftingRules Allow(params MaterialTypeDef[] types)
-        //{
-        //    foreach (var type in types)
-        //        this.Types.Add(type);
-        //    return this;
-        //}
         public CraftingRules Allow(params MaterialRefinementDef[] types)
         {
             foreach (var type in types)
                 this.Types.Add(type);
             return this;
         }
-        //public CraftingRules ForBone(BoneDef bone)
-        //{
-        //    this.Bone = bone;
-        //    return this;
-        //}
+
         public CraftingRules From(MaterialRefinementDef state)
         {
             this.Refinement = state;
             return this;
         }
-        //public CraftingRules Disallow(params MaterialTypeDef[] types)
-        //{
-        //    foreach (var type in types)
-        //        this.Types.Remove(type);
-        //    return this;
-        //}
     }
 }

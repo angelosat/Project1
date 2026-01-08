@@ -1,5 +1,4 @@
-﻿using Start_a_Town_.Net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -69,7 +68,7 @@ namespace Start_a_Town_
                 {
                     Label = $"{item.Label}",
                     Toggle = () => events.Post(new PlayerModifiedStockpileFiltersEvent(stockpile, item, null, null)),
-                    IsAllowed = () => true
+                    IsAllowed = () => stockpile.IsAllowed(item)
                 };
                 group.Entries.Add(entry);
                 foreach (var (profile, materials) in mappings)
@@ -78,7 +77,7 @@ namespace Start_a_Town_
                     {
                         Label = profile.Label,
                         Toggle = () => events.Post(new PlayerModifiedStockpileFiltersEvent(stockpile, item, profile, null)),
-                        IsAllowed = () => true
+                        IsAllowed = () => stockpile.IsAllowed(item) && stockpile.IsAllowed(profile)
                     };
                     entry.Children.Add(profileEntry);
                     foreach (var material in materials)
@@ -87,7 +86,7 @@ namespace Start_a_Town_
                         {
                             Label = material.Label,
                             Toggle = () => events.Post(new PlayerModifiedStockpileFiltersEvent(stockpile, item, profile, material)),
-                            IsAllowed = () => true
+                            IsAllowed = () => stockpile.IsAllowed(item) && stockpile.IsAllowed(profile, material)//!stockpile.FiltersNew.Contains((profile, material))
                         };
                         profileEntry.Children.Add(materialEntry);
                     }
@@ -124,7 +123,7 @@ namespace Start_a_Town_
                         IsAllowed = () => true
                     };
                     entry.Children.Add(profileEntry);
-                    foreach(var material in materials)
+                    foreach (var material in materials)
                     {
                         var materialEntry = new IngredientGuiEntry()
                         {
@@ -142,4 +141,5 @@ namespace Start_a_Town_
 
     internal record struct PlayerModifiedOrderFiltersEvent(OrderSettings Order, BoneDef Bone, MaterialRefinementDef Refinement, MaterialDef Material) : IEventPayload { }
     internal record struct PlayerModifiedStockpileFiltersEvent(Stockpile Stockpile, ItemDef Item, Def Profile, MaterialDef Material) : IEventPayload { }
+    internal record struct StockpileUpdatedEvent(Stockpile Stockpile) : IEventPayload { }
 }

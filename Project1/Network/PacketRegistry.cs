@@ -8,7 +8,7 @@ namespace Start_a_Town_.Net
         int _nextId = 40000;
 
         readonly Dictionary<int, Action<NetEndpoint, Packet>> _handlers = [];
-        internal int Register(Action<NetEndpoint, Packet> handler)
+        internal PacketId Register(Action<NetEndpoint, Packet> handler)
         {
             var id = _nextId++;
             _handlers.Add(id, handler);

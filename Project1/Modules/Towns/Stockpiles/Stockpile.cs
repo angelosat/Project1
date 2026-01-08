@@ -13,12 +13,15 @@ namespace Start_a_Town_
         public StorageSettings Settings { get; } = new();
         public int Priority => (int)this.Settings.Priority;
         static StorageFilterCategoryNewNew FiltersView = InitFilters();
+        readonly StockpileSettings SettingsNew;
+
         public override string UniqueName => $"Zone_Stockpile_{this.ID}";
-        readonly List<GameObject> Cache = new();
-        public readonly ObservableCollection<GameObject> CacheObservable = new();
+        readonly List<GameObject> Cache = [];
+        public readonly ObservableCollection<GameObject> CacheObservable = [];
 
         public Stockpile(ZoneManager manager) : base(manager)
         {
+            this.SettingsNew = new(this);
             this.Settings.Initialize(FiltersView);
         }
         public Stockpile(ZoneManager manager, Action<Stockpile> preset) : this(manager)
@@ -389,7 +392,9 @@ namespace Start_a_Town_
         {
             PacketStorageFiltersNew.Send(this, category);
         }
-
-        
+        public void Toggle(ItemDef item, Def profile, MaterialDef material) => this.SettingsNew.Toggle(item, profile, material);
+        public bool IsAllowed(ItemDef itemDef) => this.SettingsNew.IsAllowed(itemDef);
+        public bool IsAllowed(Def def) => this.SettingsNew.IsAllowed(def);
+        public bool IsAllowed(Def profile, MaterialDef material) => this.SettingsNew.IsAllowed(profile, material);
     }
 }

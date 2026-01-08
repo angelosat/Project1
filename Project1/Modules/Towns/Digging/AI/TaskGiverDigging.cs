@@ -27,13 +27,13 @@ namespace Start_a_Town_
                 if (!actor.CanReach(pos))
                     continue;
            
-                if(TaskHelper.TryHaulAside(actor, pos.Above, out var haulAsideTask))
-                {
-                    if (haulAsideTask != null)
-                        return haulAsideTask;
-                }
-                else
-                    continue;
+                //if(TaskHelper.TryHaulAside(actor, pos.Above, out var haulAsideTask))
+                //{
+                //    if (haulAsideTask != null)
+                //        return haulAsideTask;
+                //}
+                //else
+                //    continue;
 
                 var block = map.GetBlock(pos);
                 var material = map.GetMaterial(pos);

@@ -9,8 +9,6 @@ namespace Start_a_Town_
         void FiltersGuiCallback(ItemDef item, MaterialDef material);
         void FiltersGuiCallback(ItemDef item, Def variation);
         void FiltersGuiCallback(ItemCategory category);
-        Dictionary<TargetArgs, int> GetPotentialHaulTargets(Actor actor, GameObject item, out int maxamount);
-        IEnumerable<TargetArgs> GetPotentialHaulTargets(Actor actor, GameObject item);
     }
     [Obsolete]
     public interface IStorage

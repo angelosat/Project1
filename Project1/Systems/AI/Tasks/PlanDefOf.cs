@@ -7,21 +7,16 @@ namespace Start_a_Town_
     public static class PlanDefOf
     {
 
-        static public readonly PlanDef Hauling = new("Hauling", typeof(TaskBehaviorHaulToStockpile))
-        {
-            Format = "Force haul {0}",
-            GetPrimaryTarget = t => t.GetTarget(TaskBehaviorHaulToStockpile.ItemInd)
-        };
         static public readonly PlanDef Refueling = new("Refueling", typeof(TaskBehaviorRefueling))
         {
             Format = "Refuel {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        static public readonly PlanDef HaulAside = new("HaulAside", typeof(TaskBehaviorHaulAside))
-        {
-            Format = "Haul aside {0}",
-            GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
-        };
+        //static public readonly PlanDef HaulAside = new("HaulAside", typeof(TaskBehaviorHaulAside))
+        //{
+        //    Format = "Haul aside {0}",
+        //    GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
+        //};
 
         //static public PlanDef Construct = new("Construct", typeof(TaskBehaviorConstruct))
         //{
@@ -99,6 +94,7 @@ namespace Start_a_Town_
         static public readonly PlanDef Construct = new("Constructing", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct);
         static public readonly PlanDef GoTill = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
         static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);
+        static public readonly PlanDef HaulToStockpile = new("StockpileHauling", typeof(TaskBehaviorHaulToStockpile), InteractionDefOf.Place);
 
         static PlanDefOf()
         {

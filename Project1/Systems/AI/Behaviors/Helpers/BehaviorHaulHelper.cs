@@ -7,47 +7,7 @@ namespace Start_a_Town_
 {
     class BehaviorHaulHelper
     {
-        static public Behavior FindNearbyHaulOpportunity(BehaviorExecutePlan source, Behavior gotoBhav, TargetIndex itemIndex)
-        {
-            var bhav = new BehaviorCustom
-            {
-                InitAction = () =>
-                {
-                    var actor = gotoBhav.Actor;
-                    var hauling = actor.Hauled;
-                    //var task = actor.CurrentTask;
-                    var task = source.Plan;
-                    //var task = actor.AI.State.Current.Value.task;
-                    //var bhav = actor.AI.State.Current.Value.behavior;
-                    var desiredAmount = Math.Min(task.Count, hauling.StackAvailableSpace);
-                    if (desiredAmount == 0)
-                        return;
-                    var map = actor.Map;
-                    var item = task.GetTarget(itemIndex).Object;
-                    var count = task.Count;
-
-                    var potentialItems = HaulHelper.GetPotentialItemsNew(actor);
-                    foreach (var pot in potentialItems)
-                    {
-                        if (!item.CanAbsorb(pot))
-                            continue;
-                        var unreservedAmount = actor.GetUnreservedAmount(pot);
-                        if (unreservedAmount == 0)
-                            continue;
-                        desiredAmount = Math.Min(desiredAmount, unreservedAmount);
-                        var amount = Math.Min(pot.StackSize, desiredAmount);
-                        //actor.Reserve(task, pot, amount);
-                        source.Reserve(pot, amount);
-                        task.SetTarget(itemIndex, new TargetArgs(pot)); // no need to set the amount here because we can pull it from the reservation manager later
-                        //actor.CurrentTaskBehavior.JumpTo(gotoBhav);
-                        actor.AI.State.Behavior.JumpTo(gotoBhav);
-                        actor.Net.ConsoleBox.Write("found new haul opportunity");
-                        return;
-                    }
-                }
-            };
-            return bhav;
-        }
+        
         static public Behavior StartCarrying(BehaviorExecutePlan source, TargetIndex storageIndex)
         {
             var bhav = new BehaviorCustom() { Mode = BehaviorCustom.Modes.Continuous };
@@ -142,41 +102,7 @@ namespace Start_a_Town_
             });
             return bhav;
         }
-        static public Behavior JumpIfNextStorageFound(BehaviorExecutePlan source, Behavior gotoBhav, TargetIndex storageIndex)
-        {
-            var bhav = new BehaviorCustom() { Mode = BehaviorCustom.Modes.Instant };
-            Entity hauledObj = null;
-            bhav.InitAction = () =>
-            {
-                var actor = gotoBhav.Actor;
-                hauledObj = actor.Hauled as Entity;
-                if (hauledObj == null)
-                    return;
-                var task = actor.CurrentTask;
-                var target = task.GetTarget(storageIndex);
-                var cell = target.Global.ToCell();
-                var targets = GetMoreValidStoragePlaces(actor, hauledObj, cell);
-
-                foreach (var tar in targets)
-                {
-                    if (tar.HasObject && !tar.Object.CanAbsorb(hauledObj))
-                        continue;
-                    if (!actor.CanReserve(tar))
-                        continue;
-                    source.Reserve(tar, 1);
-                    task.SetTarget(storageIndex, tar);
-                    actor.AI.State.Behavior.JumpTo(gotoBhav);
-                    actor.Net.ConsoleBox.Write("found next storage place " + tar.ToString());
-                    return;
-                }
-            };
-            return bhav;
-        }
-        static public IEnumerable<TargetArgs> GetMoreValidStoragePlaces(Actor actor, Entity item, IntVec3 center)
-        {
-            var storage = item.Map.Town.ZoneManager.GetZoneAt<Stockpile>(center.Below);
-            foreach (var spot in storage.GetPotentialHaulTargets(actor, item))
-                yield return spot;
-        }
+        
+        
     }
 }

@@ -91,32 +91,8 @@ namespace Start_a_Town_
             target = null;
             return false;
         }
-        public static IEnumerable<Entity> GetPotentialItemsNew(Actor actor, bool ignoreOtherReservations = false)
-        {
-            var objs = actor.Map.GetEntities();
-            foreach (var obj in objs)
-            {
-                var item = obj as Entity;
-                if (item == null)
-                    continue;
-                if (item.Physics.Size == ObjectSize.Immovable)
-                    continue;
-                if (!item.IsStockpilable())
-                    continue;
-                if (!actor.CanReach(item))
-                    continue;
-                if (!actor.CanReserve(item))
-                    continue;
-                if (StockpileAIHelper.IsItemAtBestStockpile(item))
-                    continue;
-                yield return item;
-            }
-        }
-
-        public static int MaxCarryable(this Actor actor, Entity item)
-        {
-            return actor.MaxCarryable(item.Def);
-        }
+       
+        
         public static int MaxCarryable(this Actor actor, ItemDef def)
         {
             return actor.GetHaulStackLimitFromEndurance(def);

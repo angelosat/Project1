@@ -16,7 +16,7 @@ namespace Start_a_Town_
             Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         };
 
-        static public readonly ItemDef Seeds = new ItemDef("Seeds", typeof(Item))
+        static public readonly ItemDef Seeds = new ItemDef("Seeds", typeof(Entity))
         {
             StackCapacity = 32,//64,
             Category = ItemCategoryDefOf.RawMaterials,
@@ -27,7 +27,7 @@ namespace Start_a_Town_
               //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.SeedsFull)))
               //.AddSpec(new SeedComponent.Props());
               ;
-        static public readonly ItemDef Fruit = new ItemDef("Fruit", typeof(Item))
+        static public readonly ItemDef Fruit = new ItemDef("Fruit", typeof(Entity))
         {
             StackCapacity = 32,
             Category = ItemCategoryDefOf.FoodRaw,
@@ -44,7 +44,7 @@ namespace Start_a_Town_
             //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.BerriesFull)))
             ;
 
-        static public readonly ItemDef Meat = new ItemDef("Meat", typeof(Item))
+        static public readonly ItemDef Meat = new ItemDef("Meat", typeof(Entity))
         {
             StackCapacity = 8,
             Category = ItemCategoryDefOf.FoodRaw,
@@ -59,7 +59,7 @@ namespace Start_a_Town_
             });
 
 
-        static public readonly ItemDef Pie = new ItemDef("Pie", typeof(Item))
+        static public readonly ItemDef Pie = new ItemDef("Pie", typeof(Entity))
         {
             StackCapacity = 4,
             Category = ItemCategoryDefOf.FoodCooked,
@@ -79,7 +79,7 @@ namespace Start_a_Town_
             .AddSpec(new ConsumableComponent.Props() { FoodClasses = [FoodClass.Dish] });
 
 
-        static public readonly ItemDef UnfinishedCraft = new ItemDef("UnfinishedCraft", typeof(Item))
+        static public readonly ItemDef UnfinishedCraft = new ItemDef("UnfinishedCraft", typeof(Entity))
         {
             Category = ItemCategoryDefOf.Unfinished,
             CompTypes = [typeof(UnfinishedItemComp)],
@@ -89,7 +89,7 @@ namespace Start_a_Town_
         //.AddSpec(new UnfinishedItemComp.Props());
 
 
-        static public readonly ItemDef Coins = new ItemDef("Coins", typeof(Item))
+        static public readonly ItemDef Coins = new ItemDef("Coins", typeof(Entity))
         {
             StackCapacity = ushort.MaxValue,
             Category = ItemCategoryDefOf.RawMaterials,
@@ -100,7 +100,7 @@ namespace Start_a_Town_
         };
         //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale)));
 
-        static public readonly ItemDef Helmet = new ItemDef("ItemHelmet", typeof(Item))
+        static public readonly ItemDef Helmet = new ItemDef("ItemHelmet", typeof(Entity))
         {
             BaseValue = 5,
             QualityLevels = true,
@@ -117,7 +117,7 @@ namespace Start_a_Town_
         //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.HelmetFull)));
         //.AddSpec(new OwnershipComponent.Props());
 
-        static public readonly ItemDef Tool = new ItemDef("Tool", typeof(Item))
+        static public readonly ItemDef Tool = new ItemDef("Tool", typeof(Entity))
         {
             QualityLevels = true,
             Category = ItemCategoryDefOf.Equipment,

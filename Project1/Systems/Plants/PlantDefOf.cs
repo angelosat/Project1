@@ -6,12 +6,12 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     public static class PlantDefOf
     {
-        static public ItemDef Tree = new ItemDef("Tree", typeof(Plant))
+        static public ItemDef Tree = new ItemDef("Tree", typeof(Entity))
         {
             Description = "A lovely tree",
             Height = 4,
             Weight = 100,
-            Haulable = false,
+            IsHaulable = false,
             DefaultMaterial = MaterialDefOf.LightWood,
             //Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull),
             Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
@@ -24,12 +24,12 @@ namespace Start_a_Town_
 
         ;
 
-        static public ItemDef Bush = new ItemDef("Bush", typeof(Plant))
+        static public ItemDef Bush = new ItemDef("Bush", typeof(Entity))
         {
             Description = "A lovely fluffy bush.",
             Height = 1,
             Weight = 5,
-            Haulable = false,
+            IsHaulable = false,
             DefaultMaterial = MaterialDefOf.ShrubStem,
             Body = new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
             Size = ObjectSize.Haulable,
@@ -45,13 +45,13 @@ namespace Start_a_Town_
             Def.Register(Tree);
             Def.Register(Bush);
 
-            var bush = PlantSpiecesDefOf.Berry.Create(PlantStageDefOf.Plant);
+            var bush = PlantSpeciesDefOf.Berry.Create(PlantStageDefOf.Plant);
             var plantComp = bush.GetComponent<PlantComponent>();
             plantComp.GrowthBody.Percentage = 1;
             plantComp.GrowthFruit.Percentage = 1;
             GameObject.AddTemplate(bush);
 
-            var tree = PlantSpiecesDefOf.LightTree.Create(PlantStageDefOf.Plant);
+            var tree = PlantSpeciesDefOf.LightTree.Create(PlantStageDefOf.Plant);
             tree.GetComponent<PlantComponent>().GrowthBody.Percentage = 1;
             GameObject.AddTemplate(tree);
 

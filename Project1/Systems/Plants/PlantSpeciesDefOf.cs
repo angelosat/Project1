@@ -3,7 +3,7 @@
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    static class PlantSpiecesDefOf
+    static class PlantSpeciesDefOf
     {
         static public readonly PlantSpeciesDef Berry = new("Berry")
         {
@@ -42,9 +42,9 @@ namespace Start_a_Town_
             StemHealRate = Ticks.FromHours(1),
             PlantingSpacing = 1
         };
-        static PlantSpiecesDefOf()
+        static PlantSpeciesDefOf()
         {
-            Def.Register(typeof(PlantSpiecesDefOf));
+            Def.Register(typeof(PlantSpeciesDefOf));
         }
     }
 }

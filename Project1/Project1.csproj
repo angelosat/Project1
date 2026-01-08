@@ -31,7 +31,9 @@
     <Folder Include="Blocks\Helpers\" />
     <Folder Include="Modules\Towns\Crafting\AI\" />
     <Folder Include="Modules\Towns\Farming\Sowing\" />
+    <Folder Include="Modules\Towns\Stockpiles\AI\" />
     <Folder Include="Properties\" />
+    <Folder Include="Systems\AI\Behaviors\Hauling\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

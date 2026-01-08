@@ -61,15 +61,6 @@ namespace Start_a_Town_
         }
 
 
-        public List<GameObject> ScanExistingStoredItems()
-        {
-            var list = new List<GameObject>();
-            var objects = this.Town.Map.GetEntities();
-            foreach (var pos in this.Positions)
-                list.AddRange(from obj in objects where this.Accepts(obj) where obj.Global - Vector3.UnitZ == (Vector3)pos select obj); // TODO: this is shit
-            return list;
-        }
-        
         public override bool Accepts(Entity obj, IntVec3 pos)
         {
             if (!this.Positions.Contains(pos))
@@ -77,14 +68,14 @@ namespace Start_a_Town_
             return this.Accepts(obj);
         }
        
-        internal bool Accepts(GameObject obj)
-        {
-            return obj is Entity item && this.Settings.Accepts(item);
-        }
-        public bool CanAccept(GameObject item)
-        {
-            return this.Accepts(item) && this.GetAvailableCells().Any();
-        }
+        internal bool Accepts(Entity item) => this.SettingsNew.Accepts(item);
+        //{
+        //    return obj is Entity item && this.Settings.Accepts(item);
+        //}
+        //public bool CanAccept(GameObject item)
+        //{
+        //    return this.Accepts(item) && this.GetAvailableCells().Any();
+        //}
 
         public IEnumerable<IntVec3> GetAvailableCells()
         {
@@ -112,7 +103,7 @@ namespace Start_a_Town_
                 {
                     if (!existing.IsHaulable) // not really necessary?
                         continue;
-                    if (!this.Accepts(existing))
+                    if (!this.SettingsNew.Accepts(existing as Entity))
                         continue;
                     if (!existing.CanAbsorb(obj))
                         continue;
@@ -128,44 +119,7 @@ namespace Start_a_Town_
                 yield return new TargetArgs(this.Map, cell);
             }
         }
-        public Dictionary<TargetArgs, int> DistributeToStorageSpotsNew(Actor actor, GameObject obj, out int maxamount)
-        {
-            var valid = new Dictionary<TargetArgs, int>();
-            var currentSimilarContents = this.ScanExistingStoredItems().Where(o => o.CanAbsorb(obj) && this.Accepts(o) && o.StackSize < o.StackMax);
-
-            maxamount = 0;
-            foreach (var item in currentSimilarContents)
-            {
-                if (!actor.CanReserve(item))
-                    continue;
-                var validAmount = item.StackMax - item.StackSize;
-                valid.Add(new TargetArgs(item), validAmount);
-                maxamount += validAmount;
-            }
-            var emptyCells =
-                this.Positions
-                .Where(pos => !this.Town.Map.GetObjects(pos.Above)
-                    .Where(t => t != actor)
-                    .Any())
-                .Select(p => p.Above).ToList();
-
-            foreach (var pos in emptyCells)
-            {
-                if (!actor.CanReserve(pos))
-                    continue;
-                valid.Add(pos.At(this.Map), obj.StackMax);
-                maxamount += obj.StackMax;
-            }
-            return valid;
-        }
-
-        public IEnumerable<TargetArgs> GetPotentialHaulTargets(Actor actor, GameObject item)
-        {
-            if (!this.Accepts(item))
-                yield break;
-            foreach (var target in this.DistributeToStorageSpotsNewLazy(item))
-                yield return target;
-        }
+       
         public TargetArgs FindPlaceFor(Entity item)
         {
             if (!this.Accepts(item))
@@ -191,10 +145,6 @@ namespace Start_a_Town_
                     }
             }
             return availableCapacity;
-        }
-        public Dictionary<TargetArgs, int> GetPotentialHaulTargets(Actor actor, GameObject item, out int maxAmount)
-        {
-            return this.DistributeToStorageSpotsNew(actor, item, out maxAmount);
         }
 
         internal override void OnBlockChanged(IntVec3 global)

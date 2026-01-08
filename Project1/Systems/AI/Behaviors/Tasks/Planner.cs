@@ -32,7 +32,7 @@ namespace Start_a_Town_
             new SowingPlanner(),
             new TaskGiverHarvesting(),
             new CraftingPlanner(),
-            new TaskGiverHaulToStockpile(),
+            //new TaskGiverHaulToStockpile(),
             new TaskGiverTradingOverCounter(),
             new TaskGiverOfferQuest(),
             new TaskGiverWorkplace()

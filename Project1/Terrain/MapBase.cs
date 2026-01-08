@@ -1045,6 +1045,8 @@ namespace Start_a_Town_
         {
 
         }
+        public IEnumerable<Entity> Haulables => this.ActiveChunks.Values.SelectMany(c => c.Objects.Where(e => e.Def.IsHaulable)).Cast<Entity>();
+
         public IEnumerable<Entity> Entities => this.ActiveChunks.Values.SelectMany(c => c.Objects).Cast<Entity>();
         public IEnumerable<GameObject> GetEntities()
         {

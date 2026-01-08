@@ -7,72 +7,42 @@ namespace Start_a_Town_
 {
     static class TaskHelper
     {
-        public static bool TryClearArea(Actor actor, IntVec3 global, IEnumerable<GameObject> exclude, out Plan clearTask)
-        {
-            var exclusions = new HashSet<GameObject>(exclude);
-            clearTask = null;
-            var items = actor.Map.GetObjectsOccupyingCell(global).Except(exclusions);
-            if (!items.Any()) 
-                return true;
-            if (items.HasSingle(out var single) && single == actor)
-                return true;
-            foreach (var i in items)
-            {
-                if (i is not Entity ientity)
-                    continue;
-                if (i is Plant && actor.CanReserve(i))
-                {
-                    var plantCutTask = new Plan(PlanDefOf.Chop, i)
-                    {
-                        Tool = Planner.FindTool(actor, JobDefOf.Lumberjack)
-                    };
-                    clearTask = plantCutTask;
-                    return false;
-                }
-                var haulAsideTask = TryHaulAside(actor, ientity);
-                if (haulAsideTask != null)
-                {
-                    clearTask = haulAsideTask;
-                    return false;
-                }
-            }
-            return false;
-        }
-        static public Plan TryHaulAside(Actor actor, Entity item)
-        {
-            if (!item.IsHaulable)
-                return null;
-            if (!actor.TryGetUnreservedAmount(item, out var unreservedCount))
-                return null;
-            if (!HaulHelper.TryFindNearbyPlace(actor, item, out var place))
-                return null;
+        
+        //static public Plan TryHaulAside(Actor actor, Entity item)
+        //{
+        //    if (!item.IsHaulable)
+        //        return null;
+        //    if (!actor.TryGetUnreservedAmount(item, out var unreservedCount))
+        //        return null;
+        //    if (!HaulHelper.TryFindNearbyPlace(actor, item, out var place))
+        //        return null;
 
-            var count = Math.Min(unreservedCount, actor.GetHaulStackLimitFromEndurance(item));
+        //    var count = Math.Min(unreservedCount, actor.GetHaulStackLimitFromEndurance(item));
 
-            return new Plan(PlanDefOf.HaulAside, new TargetArgs(item), place) { Count = count };
-        }
-        static public bool TryHaulAside(Actor actor, Vector3 global, out Plan task)
-        {
-            task = null;
-            var map = actor.Map;
-            var objectsAbove = map.GetObjects(global);
-            if (!objectsAbove.Any())
-                return true;
-            if (objectsAbove.SingleOrDefault(o => o == actor) != null)
-                return true;
-            foreach (var objAbove in objectsAbove)
-            {
-                if (objAbove == actor)
-                    continue;
-                var haulAsideTask = TaskHelper.TryHaulAside(actor, objAbove as Entity);
-                if (haulAsideTask != null)
-                {
-                    task = haulAsideTask;
-                    return true;
-                }
-            }
-            return false; // if there are any items above the cell and a haulasidetask hasn't been returned, it means that there are immovable objects
-        }
+        //    return new Plan(PlanDefOf.HaulAside, new TargetArgs(item), place) { Count = count };
+        //}
+        //static public bool TryHaulAside(Actor actor, Vector3 global, out Plan task)
+        //{
+        //    task = null;
+        //    var map = actor.Map;
+        //    var objectsAbove = map.GetObjects(global);
+        //    if (!objectsAbove.Any())
+        //        return true;
+        //    if (objectsAbove.SingleOrDefault(o => o == actor) != null)
+        //        return true;
+        //    foreach (var objAbove in objectsAbove)
+        //    {
+        //        if (objAbove == actor)
+        //            continue;
+        //        var haulAsideTask = TaskHelper.TryHaulAside(actor, objAbove as Entity);
+        //        if (haulAsideTask != null)
+        //        {
+        //            task = haulAsideTask;
+        //            return true;
+        //        }
+        //    }
+        //    return false; // if there are any items above the cell and a haulasidetask hasn't been returned, it means that there are immovable objects
+        //}
         /// <summary>
         /// Looks in actor's inventory or in map for item that satisfies provided condition
         /// </summary>

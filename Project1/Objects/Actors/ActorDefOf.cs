@@ -54,6 +54,7 @@ namespace Start_a_Town_
             Weight = 50,
             Body = BodyDef.NpcNew,
             DefaultMaterial = MaterialDefOf.Human,
+            IsHaulable = false,
             //ActorProperties = NpcProps,
             //Factory = Actor.Create,
             Size = ObjectSize.Haulable,

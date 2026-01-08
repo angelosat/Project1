@@ -69,7 +69,7 @@ namespace Start_a_Town_
         static public void Init()
         {
             var ser = new XmlSerializer(typeof(List<PlantSpeciesDef>));
-            var path = $"{GlobalVars.SaveDir}/{PlantSpiecesDefOf.Berry.Label}.xml";
+            var path = $"{GlobalVars.SaveDir}/{PlantSpeciesDefOf.Berry.Label}.xml";
             //var path = $"{GlobalVars.SaveDir}/Berry.xml";
 
             //Register(Berry);
@@ -172,7 +172,7 @@ namespace Start_a_Town_
         {
             return;
             var ser = new XmlSerializer(typeof(List<PlantSpeciesDef>));
-            var path = $"{GlobalVars.SaveDir}/{PlantSpiecesDefOf.Berry.Label}.xml";
+            var path = $"{GlobalVars.SaveDir}/{PlantSpeciesDefOf.Berry.Label}.xml";
             //var path = $"{GlobalVars.SaveDir}/Berry.xml";
 
             //Register(Berry);

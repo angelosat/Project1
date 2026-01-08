@@ -43,7 +43,7 @@ namespace Start_a_Town_
         public readonly Type ItemClass;
         public float Weight = 1;
         public float Height = 1;
-        public bool Haulable = true;
+        public bool IsHaulable = true;
         public string Description;
 
         public ItemDef(string name, Type itemClass) : base(name)//, itemClass)

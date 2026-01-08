@@ -10,7 +10,7 @@ namespace Start_a_Town_
             var carried = actor.Hauled as Entity;
 
             var stockpiles = actor.Map.Town.ZoneManager.GetZones<Stockpile>().OrderByDescending(i => i.Priority);
-            var mapItems = actor.Map.Entities.Where(actor.CanReachAndReserve).SortByReachableRegionDistance(actor).ToList();
+            var mapItems = actor.Map.Haulables.Where(actor.CanReachAndReserve).SortByReachableRegionDistance(actor).ToList();
 
             // if actor is currently carrying something
             if (carried is not null)
@@ -26,7 +26,7 @@ namespace Start_a_Town_
 
                         if (place is not null)
                             // emit godeliver task at place
-                            return new Plan(PlanDefOf.GoPlace, place);
+                            return new Plan(PlanDefOf.HaulToStockpile, place);
                     }
                 } 
                 // else if can carry more
@@ -52,7 +52,7 @@ namespace Start_a_Town_
                                     return new Plan(PlanDefOf.GoHaul, item) { AmountA = Math.Min(diff, item.StackSize) };
                             }
                             var place = stockpile.FindPlaceFor(carried);
-                            return new Plan(PlanDefOf.GoPlace, place);
+                            return new Plan(PlanDefOf.HaulToStockpile, place);
                         }
                     }
                 }
@@ -97,20 +97,20 @@ namespace Start_a_Town_
 
         // then emit simple gohaul task to pick up stockpile.howmanycanacceptof(item) quantity of the target item
 
-        static bool IsItemAtBestStockpile(Entity item)
-        {
-            var stockpiles = item.Map.Town.ZoneManager.GetZones<Stockpile>();
-            var currentStockpile = stockpiles.FirstOrDefault(s => s.Contains(item));
-            if (currentStockpile == null)
-                return false;
-            var betterStockpile = stockpiles
-                .Where(s =>
-                    s != currentStockpile && 
-                    s.Priority > currentStockpile.Priority &&
-                    s.CanAccept(item))
-                .OrderByDescending(s => s.Priority)
-                .FirstOrDefault();
-            return betterStockpile == null && currentStockpile.Accepts(item);
-        }
+        //static bool IsItemAtBestStockpile(Entity item)
+        //{
+        //    var stockpiles = item.Map.Town.ZoneManager.GetZones<Stockpile>();
+        //    var currentStockpile = stockpiles.FirstOrDefault(s => s.Contains(item));
+        //    if (currentStockpile == null)
+        //        return false;
+        //    var betterStockpile = stockpiles
+        //        .Where(s =>
+        //            s != currentStockpile && 
+        //            s.Priority > currentStockpile.Priority &&
+        //            s.CanAccept(item))
+        //        .OrderByDescending(s => s.Priority)
+        //        .FirstOrDefault();
+        //    return betterStockpile == null && currentStockpile.Accepts(item);
+        //}
     }
 }

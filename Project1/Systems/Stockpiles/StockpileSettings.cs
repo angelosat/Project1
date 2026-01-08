@@ -39,5 +39,9 @@ namespace Start_a_Town_
             _ => throw new ArgumentException()
         };
         public bool IsAllowed(Def profile, MaterialDef material) => !this.FiltersNew.Contains((profile, null)) && !this.FiltersNew.Contains((profile, material));
+        public bool Accepts(Entity entity) => 
+            !this.FiltersBase.Contains(entity.Def) && 
+            !this.FiltersNew.Contains((entity.Profile, null)) && 
+            !this.FiltersNew.Contains((entity.Profile, entity.PrimaryMaterial));
     }
 }

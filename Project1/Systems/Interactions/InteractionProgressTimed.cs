@@ -35,4 +35,11 @@
         public void AddProgress(Interaction interaction, int progress) => interaction.Def.Logic.ApplyWork(interaction.Context, progress);
         public bool IsFinished(Interaction interaction) => interaction.Context.ProgressPercentage >= 1;
     }
+    internal class InteractionProgressPassive : IInteractionProgressHandler
+    {
+        public float GetProgressPercentage(Interaction interaction) => interaction.Context.ProgressPercentage;
+        public void Tick(Interaction interaction) { }
+        public void AddProgress(Interaction interaction, int progress) { }
+        public bool IsFinished(Interaction interaction) => interaction.Context.ProgressPercentage >= 1;
+    }
 }

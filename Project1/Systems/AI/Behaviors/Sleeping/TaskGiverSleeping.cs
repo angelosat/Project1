@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_.AI
 {
@@ -13,11 +12,11 @@ namespace Start_a_Town_.AI
             var need = actor.GetNeed(NeedDefOf.Energy);
             var energyValue = need.Value;
 
-            if (energyValue > 98)// need.Threshold)
+            if (energyValue > 99)// need.Threshold)
                 return null;
 
             var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();
-            if(!possibleBeds.Any())
+            if (!possibleBeds.Any())
                 possibleBeds = map.GetBlockEntities<BlockBedEntity>().Where(b => b.Owner is null);// FindOrClaimBedNew(actor);
 
             foreach (var bed in possibleBeds)
@@ -42,7 +41,7 @@ namespace Start_a_Town_.AI
                 }
             }
 
-            if (energyValue == 0)
+            if (energyValue <= 99)//0) 
                 return new Plan(PlanDefOf.SleepingOnGround);
 
             return null;

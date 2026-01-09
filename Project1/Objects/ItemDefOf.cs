@@ -89,7 +89,7 @@ namespace Start_a_Town_
         //.AddSpec(new UnfinishedItemComp.Props());
 
 
-        static public readonly ItemDef Coins = new ItemDef("Coins", typeof(Entity))
+        static public readonly ItemDef Coins = new("Coins", typeof(Entity))
         {
             StackCapacity = ushort.MaxValue,
             Category = ItemCategoryDefOf.RawMaterials,

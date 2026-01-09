@@ -7,6 +7,10 @@ namespace Start_a_Town_
     {
         protected override IEnumerable<Behavior> GetSteps()
         {
+            yield return new BehaviorResolveInteraction();
+        }
+        protected IEnumerable<Behavior> GetStepsOld()
+        {
             yield return new BehaviorCustom()
             {
                 Mode = BehaviorCustom.Modes.Continuous,

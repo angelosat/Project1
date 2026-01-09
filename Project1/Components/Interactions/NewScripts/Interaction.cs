@@ -111,30 +111,6 @@ namespace Start_a_Town_
             if (this.Def.ProgressHandler is not null)
                 this.Def.ProgressHandler.Tick(this);
             else this.Perform();
-            
-            //else if (this.State == States.Finished)
-            //{
-            //    this.Stop();
-            //    AILog.TryWrite(actor, "Success: " + this.GetCompletedText(actor, target));
-            //    return;
-            //}
-            //if (this.RunningType == RunningTypes.Continuous)
-            //{
-            //    this.Perform();
-            //    if (this.State == States.Finished)
-            //    {
-            //        this.Stop();
-            //        AILog.TryWrite(actor, "Success: " + this.GetCompletedText(actor, target));
-            //    }
-            //    return;
-            //}
-            //this.CurrentTick--;
-            //if (this.CurrentTick <= 0)
-            //{
-            //    this.Finish();
-            //    this.Stop();
-            //    this.Perform();
-            //}
         }
         public void UpdateOld()
         {
@@ -175,9 +151,13 @@ namespace Start_a_Town_
                 this.Perform();
             }
         }
-
+        public void Finish()
+        {
+            this.State = States.Finished;
+        }
         internal void Stop()
         {
+            this.Def.Logic.OnFinish(this); // or done()?
             this.State = States.Finished;
             if (this.AnimationDef is not null)
                 this.CachedAnimation.FadeOutAndRemove();
@@ -273,10 +253,7 @@ namespace Start_a_Town_
         internal virtual void FinishAction()
         {
         }
-        public void Finish()
-        {
-            this.State = States.Finished;
-        }
+        
         internal virtual void AfterLoad()
         {
             this.CachedAnimation.Entity = this.Actor;
@@ -356,7 +333,7 @@ namespace Start_a_Town_
         bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
         protected virtual float WorkDifficulty { get; } = 1;
 
-        protected virtual void Done() => this.Def.Logic?.OnFinish(this.Context);
+        protected virtual void Done() => this.Def.Logic?.OnFinish(this);
 
         protected virtual float GetToolEffectiveness()
         {

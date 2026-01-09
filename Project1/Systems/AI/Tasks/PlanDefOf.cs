@@ -53,11 +53,6 @@ namespace Start_a_Town_
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-        static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround))
-        {
-            Format = "Sleep on ground",
-            GetPrimaryTarget = t => TargetArgs.Null
-        };
 
         static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(TaskBehaviorSleepingNew))
         {
@@ -95,6 +90,7 @@ namespace Start_a_Town_
         static public readonly PlanDef GoTill = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
         static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);
         static public readonly PlanDef HaulToStockpile = new("StockpileHauling", typeof(TaskBehaviorHaulToStockpile), InteractionDefOf.Place);
+        static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround), InteractionDefOf.SleepOnGround);
 
         static PlanDefOf()
         {

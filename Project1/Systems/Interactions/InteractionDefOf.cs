@@ -51,7 +51,10 @@ namespace Start_a_Town_
             Skill = SkillDefOf.Argiculture,
             ToolUse = ToolUseDefOf.Argiculture
         };
-
+        public static readonly InteractionDef SleepOnGround = new("SleepOnGround", typeof(InteractionSleepOnGroundLogic))
+        {
+            ProgressHandler = new InteractionProgressPassive()
+        };
         static InteractionDefOf()
         {
             Def.Register(typeof(InteractionDefOf));

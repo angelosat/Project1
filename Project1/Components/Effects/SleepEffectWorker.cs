@@ -4,7 +4,7 @@
     {
         public override void OnStart(Actor actor)
         {
-            actor.GetNeed(NeedDefOf.Energy).AddMod(EffectDefOf.Sleeping, Ticks.FromMinutes(3));
+            actor.GetNeed(NeedDefOf.Energy).AddMod(EffectDefOf.Sleeping, Ticks.FromMinutes(1));// 3));
         }
         public override void OnFinish(Actor actor)
         {

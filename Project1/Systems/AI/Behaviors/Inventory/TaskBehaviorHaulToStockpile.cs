@@ -11,7 +11,9 @@ namespace Start_a_Town_
         {
             var actor = this.Actor;
             var cell = this.Plan.TargetA;
-            this.FailOn(() => actor.Map.Town.GetZoneAt(cell.Global.Below()) is not Stockpile stockpile || !stockpile.Accepts(actor.Hauled as Entity));
+            this.FailOn(() => 
+                actor.Map.Town.GetZoneAt(cell.Global.Below()) is not Stockpile stockpile ||
+                (actor.Hauled is Entity carried && !stockpile.Accepts(actor.Hauled as Entity)));
             yield return new BehaviorResolvePath(PathEndMode.Any);
             yield return new BehaviorResolveInteraction();
         }

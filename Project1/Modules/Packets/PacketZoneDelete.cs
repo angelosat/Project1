@@ -11,14 +11,15 @@ namespace Start_a_Town_
         {
             PacketPlayerZoneDelete = Registry.PacketHandlers.Register(Receive);
         }
-        public static void Send(INetEndpoint net, Type zoneType, int zoneID)
+        public static void Send(NetEndpoint net, Type zoneType, int zoneID)
         {
             //var w = net.GetOutgoingStreamOrderedReliable();
             //w.Write();
-            var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketPlayerZoneDelete);
+            //var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketPlayerZoneDelete);
 
-            w.Write(zoneType.FullName);
-            w.Write(zoneID);
+            net.BeginPacketImmediate(PacketPlayerZoneDelete)
+                .Write(zoneType.FullName)
+                .Write(zoneID);
         }
         public static void Receive(NetEndpoint net, Packet pck)
         {

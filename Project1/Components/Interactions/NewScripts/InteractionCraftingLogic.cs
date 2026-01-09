@@ -19,10 +19,10 @@ namespace Start_a_Town_
         {
             return ctx.Comp.IngredientsInPlace(ctx.Actor.CurrentTask.TargetsA);
         }
-        internal override void OnFinish(InteractionContext ctx)
+        internal override void OnFinish(Interaction i)
         {
-            var actor = ctx.Actor;
-            var target = ctx.Target;
+            var actor = i.Actor;
+            var target = i.Target;
             if (actor.Net.IsClient)
                 return;
             var map = actor.Map;

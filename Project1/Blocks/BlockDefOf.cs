@@ -21,7 +21,10 @@
         static public readonly BlockDef Fluid = new("Fluid", typeof(BlockFluid));
         static public readonly BlockDef Stool = new("Stool", typeof(BlockStool));
         static public readonly BlockDef Chair = new("Chair", typeof(BlockChair));
-        static public readonly BlockDef Bricks = new("Bricks", typeof(BlockBricks)) { ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]) };
+        static public readonly BlockDef Bricks = new("Bricks", typeof(BlockBricks))
+        {
+            ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
+        };
         static public readonly BlockDef Campfire = new("Campfire", typeof(BlockCampfire));
         static public readonly BlockDef Window = new("Window", typeof(BlockWindow));
         static public readonly BlockDef Roof = new("Roof", typeof(BlockRoof));
@@ -32,9 +35,22 @@
         static public readonly BlockDef Conveyor = new("Conveyor", typeof(BlockConveyor));
         static public readonly BlockDef Construction = new("Construction", typeof(BlockConstruction));
         static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(BlockShopCounter));
-        static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation)) { Profile = WorkstationDefOf.Workbench, BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Workbench)] };
-        static public readonly BlockDef Smeltery = new("Smeltery", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery)] };
-        static public readonly BlockDef Kitchen = new("Kitchen", typeof(BlockWorkstation)) { BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen)] };
+        static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation))
+        {
+            Profile = WorkstationDefOf.Workbench,
+            BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Workbench)],
+            ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
+        };
+        static public readonly BlockDef Smeltery = new("Smeltery", typeof(BlockWorkstation))
+        {
+            BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery)],
+            ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Chunk])
+        };
+        static public readonly BlockDef Kitchen = new("Kitchen", typeof(BlockWorkstation))
+        {
+            BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen)],
+            ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
+        };
         //static public readonly BlockDef Kitchen = new BlockDef("Kitchen", typeof(BlockWorkstation("Kitchen", typeof(BlockKitchenEntity));
         //static public readonly BlockDef PlantProcessingBench = new BlockDef("PlantProcessingBench", typeof(BlockWorkstation("PlantProcessing", typeof(BlockPlantProcessingEntity));
         //static public readonly BlockDef CarpentryBench = new BlockDef("CarpentryBench", typeof(BlockWorkstation("CarpenterBench", typeof(BlockCarpentryEntity));

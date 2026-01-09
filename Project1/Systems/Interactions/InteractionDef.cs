@@ -36,25 +36,6 @@ namespace Start_a_Town_
             return this.Logic.CreateContext(actor, target);
         }
     }
-    public class InteractionLogic
-    {
-        public virtual bool CanPerform(InteractionContext ctx) { return true; }
-        public virtual bool CanFinish(InteractionContext ctx) { return true; }
-        public virtual bool WillFinish(InteractionContext ctx, int workAmount) { return true; }
-        public virtual void ApplyWork(InteractionContext ctx, int workAmount) { }
-        //protected virtual InteractionContext CreateContextInternal(Actor actor, TargetArgs target) => new(actor, target);
-        protected virtual InteractionContext CreateContextInternal() => new();
-        internal InteractionContext CreateContext(Actor actor, TargetArgs target)
-        {
-            var ctx = this.CreateContextInternal();
-            ctx.Actor = actor;
-            ctx.Target = target;
-            return ctx;
-        }
-        internal virtual void OnStart(Interaction i) { }
-        internal virtual void OnFinish(InteractionContext ctx) { }
-        internal virtual int CalculateMax(InteractionContext ctx) => 100;
-    }
     public class InteractionContext//(Actor actor, TargetArgs target)
     {
         //public Actor Actor = actor;

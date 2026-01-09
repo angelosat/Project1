@@ -29,10 +29,10 @@
         {
             return base.CreateContextInternal();
         }
-        internal override void OnFinish(InteractionContext ctx)
+        internal override void OnFinish(Interaction i)
         {
-            var map = ctx.Actor.Map;
-            var global = ctx.Target.Global;
+            var map = i.Actor.Map;
+            var global = i.Target.Global;
             map.SetBlock(global, BlockDefOf.Farmland.Worker, map.GetCell(global).Material, 0);
         }
         internal override int CalculateMax(InteractionContext ctx) => 50;

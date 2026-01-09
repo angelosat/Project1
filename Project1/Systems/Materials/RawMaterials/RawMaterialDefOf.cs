@@ -6,7 +6,7 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     public class RawMaterialDefOf
     {
-        static public readonly ItemDef Planks = new ItemDef("Plank", typeof(Item))
+        static public readonly ItemDef Planks = new ItemDef("Plank", typeof(Entity))
         {
             BaseValue = 5,
             Description = "Processed logs",
@@ -25,7 +25,7 @@ namespace Start_a_Town_
             //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.PlanksGrayscale) { DrawMaterialColor = true }))
             ;
 
-        static public readonly ItemDef Logs = new ItemDef("Logs", typeof(Item))
+        static public readonly ItemDef Logs = new ItemDef("Logs", typeof(Entity))
         {
             BaseValue = 1,
             Description = "It came from a tree",
@@ -40,7 +40,7 @@ namespace Start_a_Town_
             ;
 
 
-        static public readonly ItemDef Bags = new ItemDef("Bag", typeof(Item))
+        static public readonly ItemDef Bags = new ItemDef("Bag", typeof(Entity))
         {
             BaseValue = 1,
             Description = "A bag containing grainy material",
@@ -54,7 +54,7 @@ namespace Start_a_Town_
             ;
 
 
-        static public readonly ItemDef Ingots = new ItemDef("Ingot", typeof(Item))
+        static public readonly ItemDef Ingots = new ItemDef("Ingot", typeof(Entity))
         {
             BaseValue = 5,
             Description = "Used for crafting of weapons, armor, and tools.",
@@ -69,7 +69,7 @@ namespace Start_a_Town_
             ;
 
 
-        static public readonly ItemDef Ore = new ItemDef("Ore", typeof(Item))
+        static public readonly ItemDef Ore = new ItemDef("Ore", typeof(Entity))
         {
             BaseValue = 1,
             Description = "A piece of mineral ore",
@@ -83,7 +83,7 @@ namespace Start_a_Town_
             ;
 
 
-        static public readonly ItemDef Boulders = new ItemDef("Boulders", typeof(Item))
+        static public readonly ItemDef Boulders = new ItemDef("Boulders", typeof(Entity))
         {
             BaseValue = 1,
             Description = "Chunks of rock",
@@ -98,7 +98,7 @@ namespace Start_a_Town_
             ;
             
 
-        static public readonly ItemDef Scraps = new ItemDef("Scraps", typeof(Item))
+        static public readonly ItemDef Scraps = new ItemDef("Scraps", typeof(Entity))
         {
             StackDimension = 4,
             StackCapacity = 50,

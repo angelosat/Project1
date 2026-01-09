@@ -9,21 +9,28 @@ namespace Start_a_Town_
         static PacketPlayerSetBlock()
         {
             p = Registry.PacketHandlers.Register(Receive);
+            Registry.PlayerInputEventHooks.Register<PlayerPaintedBlockEvent>(HandlePlayerPaintedBlock);
         }
+
+        private static void HandlePlayerPaintedBlock(PlayerPaintedBlockEvent e)
+        {
+            Send(Client.Instance, Client.Instance.GetPlayer(), e.Global, e.Block, e.Material, e.State, e.Variation, e.Orientation);
+        }
+
         public static void Send(NetEndpoint net, PlayerData player, IntVec3 global, Block block, MaterialDef material, byte data = 0, int variation = 0, int orientation = 0)
         {
             //if (net is Server)
             //    Perform(net.Map, global, block, material, data, variation, orientation);
 
             //var w = net.BeginPacketOld(p);
-            var w = net.BeginPacket(p);
-            w.Write(player.ID);
-            w.Write(global);
-            w.Write(block.BlockDef);
-            material.Write(w);
-            w.Write(data);
-            w.Write(variation);
-            w.Write(orientation);
+            net.BeginPacketImmediate(p)
+               .Write(player.ID)
+               .Write(global)
+               .Write(block.BlockDef)
+               .Write(material)
+               .Write(data)
+               .Write(variation)
+               .Write(orientation);
         }
         private static void Receive(NetEndpoint net, Packet pck)
         {
@@ -41,6 +48,11 @@ namespace Start_a_Town_
             //    Send(net, player, global, block, material, data, variation, orientation);
             
             Perform(net.Map, global, block, material, data, variation, orientation);
+
+            // send packet to servers in immediate mode:
+            // clients will also receive a syncing of removeblock() and setblock() internally but they will perform a no-op
+            if (net is Server server)
+                Send(server, player, global, block, material, data, variation, orientation);
         }
 
         private static void Perform(MapBase map, IntVec3 global, Block block, MaterialDef material, byte data, int variation, int orientation)
@@ -54,13 +66,16 @@ namespace Start_a_Town_
             //    2) call something like dispose() on them and let them dispose them themselves?
             // TODO: DECIDE!
 
+            var op = new CellOperation(map);
+            var existing = map.GetBlock(global);
+            //existing.Remove(map, global, op);
+            //block.Place(map, global, op);
+            op.Paint([global], block, material, data, variation, orientation);
+            op.Flush();
 
             map.RemoveBlock(global);
-            //if (block != BlockDefOf.Air)
-            if (block != BlockDefOf.Air.Worker)
-                //Block.Place(block, map, global, material, data, variation, orientation);
+            if (block.BlockDef != BlockDefOf.Air)
                 map.SetBlock(global, block, material, data, variation, orientation);
-
         }
     }
 }

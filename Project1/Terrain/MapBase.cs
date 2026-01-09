@@ -1,13 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.Direct3D9;
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.Particles;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using static Start_a_Town_.Block;
 
 namespace Start_a_Town_
 {
@@ -735,6 +738,72 @@ namespace Start_a_Town_
         public abstract void DrawBeforeWorld(MySpriteBatch sb, Camera cam);
 
         public abstract void GetTooltipInfo(Control tooltip);
+        internal void AddBlockEntityInternal(BlockEntity entity)
+        {
+            foreach(var global in entity.CellsOccupied)
+            {
+                var chunk = this.GetChunk(global);
+                var local = global.ToLocal();
+                chunk.SetBlockEntity(entity, local);
+            }
+            entity.OnSpawned(this);
+            this.Events.Post(new BlockEntityAddedEvent(entity));
+        }
+        internal void RemoveBlockEntityInternal(BlockEntity entity)
+        {
+            foreach (var global in entity.CellsOccupied)
+            {
+                var chunk = this.GetChunk(global);
+                var local = global.ToLocal();
+
+                if (chunk.TryRemoveBlockEntity(local, out var found))
+                {
+                    if (found != entity)
+                        throw new Exception();
+                    entity.Map = null;
+                }
+            }
+            this.Events.Post(new BlockEntityRemovedEvent(entity));
+        }
+        internal void SetBlockInternal(Dictionary<IntVec3, SetBlockArgs> changes)
+        {
+            HashSet<(int x, int y)> heightMapChanges = [];
+            foreach(var (global, args) in changes)
+            {
+                if (global.Z == 0)
+                    throw new Exception();
+
+                this.TryGetAll(global, out var chunk, out var cell);
+                //var cell = this.GetCell(global);
+                cell.Block = args.Block;
+                cell.Material = args.Material;
+                cell.Variation = 0;
+                cell.BlockData = args.Data;
+                cell.Orientation = args.Orientation;
+                cell.Origin = args.Source;
+
+                chunk.InvalidateCell(cell);
+
+                heightMapChanges.Add((global.X, global.Y));
+            }
+
+            foreach(var (x, y) in heightMapChanges)
+            {
+                var chunk = this.GetChunk(x, y);
+                chunk.InvalidateHeightmap(x % Chunk.Size, y % Chunk.Size);
+            }
+
+        }
+        public void SetBlockInternal(IntVec3 global, Block block, MaterialDef material, byte data, IntVec3 source, int variation = 0, int orientation = 0)
+        {
+            var cell = this.GetCell(global);
+            cell.Block = block;
+            cell.Material = material;
+            cell.Variation = (byte)variation;
+            cell.BlockData = data;
+            cell.Orientation = orientation;
+            cell.Origin = source;
+        }
         public virtual PlaceBlockResult SetBlock(SetBlockArgs args)
         {
             return this.SetBlock(args.Global, args.Block, args.Material, args.Data, args.Source, orientation: args.Orientation);
@@ -1200,6 +1269,7 @@ namespace Start_a_Town_
                 yield return current.Above + offset;
             yield return current.Above;
         }
+
 
         static MapBase()
         {

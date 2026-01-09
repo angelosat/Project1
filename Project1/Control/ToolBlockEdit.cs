@@ -73,7 +73,8 @@ namespace Start_a_Town_.PlayerControl
             byte state = isDelete ? (byte)0 : this.State;
 
             if (global != this.LastPainted)
-                PacketPlayerSetBlock.Send(Client.Instance, Client.Instance.GetPlayer(), global, block, this.Material, state, this.Variation, this.Orientation);
+                Ingame.Instance.Events.Post(new PlayerPaintedBlockEvent(global, block, this.Material, state, this.Variation, this.Orientation));
+                //PacketPlayerSetBlock.Send(Client.Instance, Client.Instance.GetPlayer(), global, block, this.Material, state, this.Variation, this.Orientation);
             this.LastPainted = global;
 
             this.Variation = this.Random.Next(block.Variations.Count);
@@ -139,4 +140,6 @@ namespace Start_a_Town_.PlayerControl
             this.State = r.ReadByte();
         }
     }
+
+    
 }

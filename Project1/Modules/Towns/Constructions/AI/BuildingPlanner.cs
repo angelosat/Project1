@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    class ConstructingPlanner : Planner
+    class BuildingPlanner : Planner
     {
         protected override Plan TryPlan(Actor actor)
         {
@@ -65,7 +65,7 @@ namespace Start_a_Town_
                     byMaterial[m] = list = new List<BlockConstructionComp>();
                 list.Add(b);
             }
-            foreach (var item in actor.Map.Entities)//.Where(actor.CanReachAndReserve))
+            foreach (var item in actor.Map.Haulables)//.Where(actor.CanReachAndReserve))
             {
                 if (item.Def != ItemDefOf.Ingredient)
                     continue;

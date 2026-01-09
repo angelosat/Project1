@@ -27,8 +27,6 @@ namespace Start_a_Town_
             if (carried != null && !allOrders.Any(o => o.Matches(carried)))
                 return null;
 
-            
-
             foreach (var order in allOrders)
             {
                 // Track slots we want to exclude (already being deposited into by others)

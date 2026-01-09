@@ -32,6 +32,7 @@ namespace Start_a_Town_.Core
                     slot.LeftClickAction = () => StartPainting(block);
                     //slot.RightClickAction = () => UIBlockVariationPickerOld.Refresh(block, this.OnVariationSelected);
                     slot.RightClickAction = () => this.Picker.Refresh(block, this.OnVariationSelectedNew);
+                    slot.HoverText = block.Label;
                     //slot.HoverFunc = () => $"{block.Name}\nTool necessity: {block.BuildProperties.ToolSensitivity:##0%}\nRight click to select variation";
                 })
                 { Location = this.Panel_Blocks.Controls.BottomLeft };

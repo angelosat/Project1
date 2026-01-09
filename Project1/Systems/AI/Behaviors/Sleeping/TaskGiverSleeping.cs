@@ -12,7 +12,7 @@ namespace Start_a_Town_.AI
             var need = actor.GetNeed(NeedDefOf.Energy);
             var energyValue = need.Value;
 
-            if (energyValue > 99)// need.Threshold)
+            if (energyValue > 50)// need.Threshold)
                 return null;
 
             var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();
@@ -41,7 +41,7 @@ namespace Start_a_Town_.AI
                 }
             }
 
-            if (energyValue <= 99)//0) 
+            if (energyValue <= 10)//0) 
                 return new Plan(PlanDefOf.SleepingOnGround);
 
             return null;

@@ -920,7 +920,26 @@ namespace Start_a_Town_
                 foreach (var mat in validMats)
                     yield return new ConstructionDesignationArgs(this.BlockDef, refinement, mat, ItemDefOf.Ingredient.StackCapacity); // HACK
             }
-        } 
+        }
+
+        internal virtual void Place(MapBase map, IntVec3 global, ICellChangeRecorder recorder) 
+        {
+            var block = map.GetBlock(global);
+            if (block != this)
+                throw new InvalidOperationException();
+            if (this.TryLinkToAdjacentBlockEntity(map, global) is not BlockEntity entity)
+            {
+                entity = this.BlockDef.CreateEntity(global);
+                if (entity is not null)
+                    recorder.AddEntity(entity);
+            }
+        }
+        internal virtual void Remove(MapBase map, IntVec3 global, ICellChangeRecorder recorder) 
+        {
+            var blockentity = map.GetBlockEntity(global);
+
+        }
+
         public class DefaultState : IBlockState
         {
             public void Apply(MapBase map, Vector3 global)

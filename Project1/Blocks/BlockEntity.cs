@@ -55,7 +55,11 @@ namespace Start_a_Town_
             foreach (var comp in this.Comps.Values)
                 comp.OnSpawned(this, map, global);
         }
-
+        public virtual void OnSpawned(MapBase map)
+        {
+            foreach (var comp in this.Comps.Values)
+                comp.OnSpawned(this, map, this.CellsOccupied.First());
+        }
         public virtual GameObjectSlot GetChild(string containerName, int slotID)
         {
             throw new NotImplementedException();

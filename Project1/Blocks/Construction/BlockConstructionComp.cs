@@ -22,7 +22,7 @@ namespace Start_a_Town_
             container.AddControls(new Label($"Construction: {this.Block}"));
             container.AddControls(new Label($"Materials: {this.Args} {this.Fulfillment}"));
         }
-        ConstructionDesignationArgs Args;
+        internal ConstructionDesignationArgs Args { get; private set; }
         internal ProgressInt Progress, Fulfillment;
 
         public (MaterialRefinementDef refinement, MaterialDef material) Requirement => (this.Args.Refinement, this.Args.Material);
@@ -100,25 +100,26 @@ namespace Start_a_Town_
             this.Progress.Add(work);
 
             var map = this.Map; // capture map in case the construction is completed and the block entity gets removed from the map
-            if (this.Progress.IsFinished)
-                this.Complete();
-            else
+            //if (this.Progress.IsFinished)
+            //    this.Complete();
+            //else
                 map.Events.Post(new ConstructionUpdatedEvent(this));
             return;
         }
+        public bool IsFinished => this.Progress.IsFinished;
+        //public void Complete()
+        //{
+        //    var map = this.Parent.Map;
+        //    map.Events.Post(new ConstructionFinishedEvent(this));
 
-        public void Complete()
-        {
-            var map = this.Parent.Map;
-            map.Events.Post(new ConstructionFinishedEvent(this));
-
-            var cells = this.Parent.CellsOccupied;
-            // remove block entity first because this implicitly sets all occupied cells to air
-            map.RemoveBlockEntity(this.Parent);
-
-            foreach (var cell in cells)
-                map.SetBlock(cell, this.Args.Block.Worker, this.Args.Material, 0, 0, this.Args.Orientation);
-        }
+        //    var cells = this.Parent.CellsOccupied;
+        //    // remove block entity first because this implicitly sets all occupied cells to air
+        //    map.RemoveBlockEntity(this.Parent);
+        //    //MapEdit.Paint(map, cells, this.Args.Block.Worker, this.Args.Material, 0, 0, this.Args.Orientation);
+        //    //return;
+        //    foreach (var cell in cells)
+        //        map.SetBlock(cell, this.Args.Block.Worker, this.Args.Material, 0, 0, this.Args.Orientation);
+        //}
 
         protected override void SaveExtra(SaveTag tag)
         {

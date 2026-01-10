@@ -1,6 +1,7 @@
 ﻿using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_
 {
@@ -10,11 +11,12 @@ namespace Start_a_Town_
         void AddEntity(BlockEntity entity);
         void RemoveEntity(BlockEntity entity);
     }
-    internal class CellOperation(MapBase map) : ICellChangeRecorder
+    internal class MapEdit(MapBase map) : ICellChangeRecorder
     {
-        Dictionary<IntVec3, SetBlockArgs> Changes = [];
-        HashSet<BlockEntity> EntitiesAdded = [], EntitiesRemoved = [];
-        Dictionary<BlockEntity, List<IntVec3>> CellsToAttach = [];
+        readonly Dictionary<IntVec3, SetBlockArgs> Changes = [];
+        readonly HashSet<BlockEntity> EntitiesAdded = [];
+        readonly HashSet<BlockEntity> EntitiesRemoved = [];
+        readonly Dictionary<BlockEntity, List<IntVec3>> CellsToAttach = [];
         MapBase Map = map;
         CellOperationContext Context;
         public void Record(IntVec3 global, SetBlockArgs args)
@@ -29,10 +31,17 @@ namespace Start_a_Town_
                 foreach (var cell in cells)
                     entity.Attach(cell);
             this.Map.SetBlockInternal(this.Changes);
+            this.Map.Events.Post(new BlocksUpdatedEvent(this.Map, this.Changes.Keys));
             foreach (var entity in this.EntitiesRemoved)
+            {
                 this.Map.RemoveBlockEntityInternal(entity);
+                this.Map.Events.Post(new BlockEntityRemovedEvent(entity));
+            }
             foreach (var entity in this.EntitiesAdded)
+            {
                 this.Map.AddBlockEntityInternal(entity);
+                this.Map.Events.Post(new BlockEntityAddedEvent(entity));
+            }
         }
         internal void Paint(IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
         {
@@ -76,6 +85,12 @@ namespace Start_a_Town_
             }
             // todo: set source correctly
             this.Changes[global] = new SetBlockArgs(global, worker, material, data, orientation, IntVec3.Zero);
+        }
+        internal static void Paint(MapBase map, IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
+        {
+            var op = new MapEdit(map);
+            op.Paint(targets, block, material, data, variation, orientation);
+            op.Flush();
         }
     }
     internal class CellOperationContext //{ Simulation, Dev }

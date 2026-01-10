@@ -1,16 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SharpDX.Direct3D9;
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.Particles;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using static Start_a_Town_.Block;
 
 namespace Start_a_Town_
 {
@@ -319,8 +316,9 @@ namespace Start_a_Town_
 
         public void RemoveBlockEntity(BlockEntity entity)
         {
-            foreach (var cell in entity.CellsOccupied)
-                this.RemoveBlockEntity(cell);
+            //foreach (var cell in entity.CellsOccupied)
+            //    this.RemoveBlockEntity(cell);
+            this.RemoveBlockEntity(entity.OriginGlobal);
         }
         public BlockEntity RemoveBlockEntity(IntVec3 global)
         {
@@ -747,7 +745,6 @@ namespace Start_a_Town_
                 chunk.SetBlockEntity(entity, local);
             }
             entity.OnSpawned(this);
-            this.Events.Post(new BlockEntityAddedEvent(entity));
         }
         internal void RemoveBlockEntityInternal(BlockEntity entity)
         {
@@ -763,7 +760,6 @@ namespace Start_a_Town_
                     entity.Map = null;
                 }
             }
-            this.Events.Post(new BlockEntityRemovedEvent(entity));
         }
         internal void SetBlockInternal(Dictionary<IntVec3, SetBlockArgs> changes)
         {

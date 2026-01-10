@@ -24,7 +24,7 @@ namespace Start_a_Town_
         public static readonly InteractionDef Store = new("Storing", typeof(InteractionStoreHauled), null);
         public static readonly InteractionDef Equip = new("Equipping", typeof(InteractionEquip), null);
         public static readonly InteractionDef Unequip = new("Unequipping", typeof(InteractionUnequip), null);
-        public static readonly InteractionDef Construct = new("Building", typeof(InteractionConstructLogic))
+        public static readonly InteractionDef Construct = new("Building", typeof(InteractionBuildLogic))
         {
             Animation = AnimationDefOf.Tool,
             ProgressHandler = new InteractionProgressToolExternal(),

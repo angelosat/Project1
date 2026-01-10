@@ -66,16 +66,15 @@ namespace Start_a_Town_
             //    2) call something like dispose() on them and let them dispose them themselves?
             // TODO: DECIDE!
 
-            var op = new CellOperation(map);
-            var existing = map.GetBlock(global);
-            //existing.Remove(map, global, op);
-            //block.Place(map, global, op);
-            op.Paint([global], block, material, data, variation, orientation);
-            op.Flush();
+            //var op = new MapEdit(map);
+            //op.Paint([global], block, material, data, variation, orientation);
+            //op.Flush();
 
-            map.RemoveBlock(global);
-            if (block.BlockDef != BlockDefOf.Air)
-                map.SetBlock(global, block, material, data, variation, orientation);
+            MapEdit.Paint(map, [global], block, material, data, variation, orientation);
+
+            //map.RemoveBlock(global);
+            //if (block.BlockDef != BlockDefOf.Air)
+            //    map.SetBlock(global, block, material, data, variation, orientation);
         }
     }
 }

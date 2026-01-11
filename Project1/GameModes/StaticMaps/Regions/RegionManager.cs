@@ -25,7 +25,7 @@ namespace Start_a_Town_
         public RegionManager(MapBase map)
         {
             this.Map = map;
-            this.Map.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChanged);
+            this.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChanged);
         }
 
         internal void Init()
@@ -81,7 +81,7 @@ namespace Start_a_Town_
             return null;
         }
 
-        void HandleBlocksChanged(BlocksUpdatedEvent e)
+        void HandleBlocksChanged(CellsInvalidatedEvent e)
         {
             if(e.Map == this.Map)
                 this.Update(e.Positions);

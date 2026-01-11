@@ -13,7 +13,7 @@ namespace Start_a_Town_
         public UndiscoveredAreaManager(MapBase map)
         {
             this.Map = map;
-            this.Map.Events.ListenTo<BlocksUpdatedEvent>(HandleBlocksChanged);
+            this.Map.Events.ListenTo<CellsInvalidatedEvent>(HandleBlocksChanged);
         }
         bool Valid;// = true;
         public void Init()
@@ -93,7 +93,7 @@ namespace Start_a_Town_
         //            break;
         //    }
         //}
-        void HandleBlocksChanged(BlocksUpdatedEvent e)
+        void HandleBlocksChanged(CellsInvalidatedEvent e)
         {
             if(this.Map == e.Map)
                 foreach (var pos in e.Positions)

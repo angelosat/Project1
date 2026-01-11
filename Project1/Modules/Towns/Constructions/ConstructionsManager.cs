@@ -45,7 +45,7 @@ namespace Start_a_Town_
         public ConstructionsManager(Town town)
         {
             this.Town = town;
-            this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(this.OnBlocksChanged);
+            this.Town.Map.Events.ListenTo<CellsInvalidatedEvent>(this.OnBlocksChanged);
             this.Town.Map.Events.ListenTo<ConstructionReadyEvent>(this.OnConstructionReady);
             this.Town.Map.Events.ListenTo<ConstructionFinishedEvent>(this.OnConstructionFinished);
             //this.Town.Map.Events.ListenTo<BlockEntityRemovedEvent>(this.OnBlockEntityRemoved);
@@ -64,7 +64,7 @@ namespace Start_a_Town_
             this._dirty = true;
         }
         bool _dirty;
-        void OnBlocksChanged(BlocksUpdatedEvent e)
+        void OnBlocksChanged(CellsInvalidatedEvent e)
         {
             foreach (var pos in e.Positions)
             {

@@ -104,7 +104,7 @@ namespace Start_a_Town_
         {
             this.State.Leash = this.Owner.Global;
             //this._unListen = this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
-            this.Owner.Map.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
+            this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
             this.State.ItemPreferences.OnSpawn(newMap);
         }
         public override void OnDespawnExtra(MapBase oldmap)
@@ -113,9 +113,9 @@ namespace Start_a_Town_
         }
         public override void OnObjectSynced(GameObject parent)
         {
-            this.Owner.Map?.Events.ListenTo<BlocksUpdatedEvent>(this.HandleBlocksChange);
+            this.Owner.Map?.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
         }
-        void HandleBlocksChange(BlocksUpdatedEvent e)
+        void HandleBlocksChange(CellsInvalidatedEvent e)
         {
             if (!this.State.Path?.IsValid(this.Owner as Actor) ?? false)
             {

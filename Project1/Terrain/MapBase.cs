@@ -911,7 +911,7 @@ namespace Start_a_Town_
         public void NotifyBlocksChanged(IEnumerable<IntVec3> positions)
         {
             //this.Net.EventOccured((int)Components.Message.Types.BlocksChanged, this, positions);
-            this.Events.Post(new BlocksUpdatedEvent(this, positions));
+            this.Events.Post(new CellsInvalidatedEvent(this, positions));
             this.Town.OnBlocksChanged(positions);
         }
         public void NotifyBlockChanged(IntVec3 pos)

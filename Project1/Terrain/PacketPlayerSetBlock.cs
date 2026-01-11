@@ -51,30 +51,18 @@ namespace Start_a_Town_
 
             // send packet to servers in immediate mode:
             // clients will also receive a syncing of removeblock() and setblock() internally but they will perform a no-op
-            if (net is Server server)
-                Send(server, player, global, block, material, data, variation, orientation);
+            //if (net is Server server)
+            //    Send(server, player, global, block, material, data, variation, orientation);
         }
 
         private static void Perform(MapBase map, IntVec3 global, Block block, MaterialDef material, byte data, int variation, int orientation)
         {
             if (!map.IsInBounds(global))
                 return;
-            // DONT CALL PREVIOUS BLOCK'S REMOVE METHOD
-            // when in block editing mode, we don't want to call block's remove method, so for example they don't pop out their contents or have any other effects to the world
-            // HOWEVER we want to dispose their contents (gameobjects) if any! 
-            // so 1) query their contents and dispose them here? 
-            //    2) call something like dispose() on them and let them dispose them themselves?
-            // TODO: DECIDE!
+          
 
-            //var op = new MapEdit(map);
-            //op.Paint([global], block, material, data, variation, orientation);
-            //op.Flush();
+            MapEdit.Paint(MapEditContext.Player, map, [global], block, material, data, variation, orientation);
 
-            MapEdit.Paint(map, [global], block, material, data, variation, orientation);
-
-            //map.RemoveBlock(global);
-            //if (block.BlockDef != BlockDefOf.Air)
-            //    map.SetBlock(global, block, material, data, variation, orientation);
         }
     }
 }

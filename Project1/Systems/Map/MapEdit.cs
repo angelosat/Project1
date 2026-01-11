@@ -4,6 +4,7 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Start_a_Town_
@@ -20,8 +21,8 @@ namespace Start_a_Town_
         readonly HashSet<BlockEntity> EntitiesAdded = [];
         readonly HashSet<BlockEntity> EntitiesRemoved = [];
         readonly Dictionary<BlockEntity, List<IntVec3>> CellsToAttach = [];
-        MapBase Map = map;
-        CellOperationContext Context;
+        readonly MapBase Map = map;
+        MapEditContext Context;
         public void Record(IntVec3 global, SetBlockArgs args)
         {
             this.Changes[global] = args;
@@ -34,19 +35,22 @@ namespace Start_a_Town_
                 foreach (var cell in cells)
                     entity.Attach(cell);
             this.Map.SetBlockInternal(this.Changes);
-            this.Map.Events.Post(new BlocksChangedEvent(this.Map, this.Changes.Values));
-            this.Map.Events.Post(new BlocksUpdatedEvent(this.Map, this.Changes.Keys));
+           
             foreach (var entity in this.EntitiesRemoved)
-            {
                 this.Map.RemoveBlockEntityInternal(entity);
-                this.Map.Events.Post(new BlockEntityRemovedEvent(entity));
-            }
             foreach (var entity in this.EntitiesAdded)
-            {
                 this.Map.AddBlockEntityInternal(entity);
+
+            // fire events
+            this.Map.Events.Post(new BlocksChangedEvent(this.Map, this.Changes.Values));
+            this.Map.Events.Post(new CellsInvalidatedEvent(this.Map, this.Changes.Keys));
+            foreach (var entity in this.EntitiesRemoved)
+                this.Map.Events.Post(new BlockEntityRemovedEvent(entity));
+            foreach (var entity in this.EntitiesAdded)
                 this.Map.Events.Post(new BlockEntityAddedEvent(entity));
-            }
         }
+
+        
         internal void Paint(IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
         {
             foreach (var cell in targets)
@@ -59,14 +63,21 @@ namespace Start_a_Town_
                 var origin = first.global;
                 if (block.TryLinkToAdjacentBlockEntity(this.Map, cell) is BlockEntity entityExisting)
                     this.RecordAttachCellToEntity(cell, entityExisting);
-                //else if(block.BlockDef.CreateEntity(cell) is BlockEntity entity)
-                //    this.EntitiesAdded.Add(entity);
-                else if (block.BlockDef.CreateEntity() is BlockEntity entity)
-                    this.EntitiesAdded.Add(entity.SetFootprint(plan.Select(c => c.global)));
+                //else if (block.BlockDef.CreateEntity() is BlockEntity entity)
+                //    this.EntitiesAdded.Add(entity.SetFootprint(plan.Select(c => c.global)));
+                else if (block.TryCreateNewBlockEntity(map, cell, orientation) is BlockEntity entity)
+                    this.EntitiesAdded.Add(entity);//.SetFootprint(plan.Select(c => c.global)));
                 foreach (var target in plan)
                     this.Changes[target.global] = new SetBlockArgs(target.global, block, material, target.data, orientation, origin - target.global);
-                //this.Place(cell, block.BlockDef, material, data, variation, orientation);
             }
+        }
+        internal void PaintWithOrigin(HashSet<IntVec3> footprint, Block block, MaterialDef material, byte data, int variation, int orientation)
+        {
+            var origin = footprint.First();
+            //foreach (var cell in footprint)
+            //    this.Remove(cell);
+            foreach (var cell in footprint)
+                this.Changes[cell] = new SetBlockArgs(cell, block, material, data, orientation, origin - cell);
         }
         void Remove(IntVec3 global)
         {
@@ -110,15 +121,30 @@ namespace Start_a_Town_
             list.Add(global);
         }
 
-        internal static void Paint(MapBase map, IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
+        internal static void Paint(MapEditContext context, MapBase map, IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
         {
             var op = new MapEdit(map);
             op.Paint(targets, block, material, data, variation, orientation);
             op.Flush();
+            map.Events.Post(new MapEditEvent(context, MapEditType.Create, map, [.. targets], block, material, data, variation, orientation));
+
         }
-    }
-    internal class CellOperationContext //{ Simulation, Dev }
-    {
+        internal static void PaintWithOrigin(MapEditContext context, MapBase map, HashSet<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
+        {
+            var op = new MapEdit(map);
+            op.PaintWithOrigin(targets, block, material, data, variation, orientation);
+            op.Flush();
+            map.Events.Post(new MapEditEvent(context, MapEditType.Replace, map, targets, block, material, data, variation, orientation));
+        }
 
     }
+
+    internal record struct MapEditEvent(MapEditContext Context, MapEditType Type, MapBase Map, HashSet<IntVec3> Targets, Block Block, MaterialDef Material, byte Data, int Variation, int Orientation) : IEventPayload { }
+    internal enum MapEditContext { Simulation, Player }
+    internal enum MapEditType { Create, Replace }
+    //internal class MapEditContext //{ Simulation, Dev }
+    //{
+    //    internal static readonly MapEditContext Simulation = new();
+    //    internal static readonly MapEditContext PlayerInput = new();
+    //}
 }

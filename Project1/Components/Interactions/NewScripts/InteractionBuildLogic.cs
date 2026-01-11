@@ -54,7 +54,8 @@ namespace Start_a_Town_.Interactions
             map.RemoveBlockEntity(comp.Parent);
             var args = comp.Args;
 
-            MapEdit.Paint(map, [origin], args.Block.Worker, args.Material, 0, 0, args.Orientation);
+            MapEdit.Paint(MapEditContext.Simulation, map, [origin], args.Block.Worker, args.Material, 0, 0, args.Orientation);
+            //MapEdit.PaintWithOrigin(MapEditContext.Simulation, map, [origin], args.Block.Worker, args.Material, 0, 0, args.Orientation);
             return;
 
 

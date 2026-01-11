@@ -21,7 +21,7 @@ namespace Start_a_Town_
 
         internal override void ResolveReferences()
         {
-            this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
+            this.Town.Map.Events.ListenTo<CellsInvalidatedEvent>(OnBlocksUpdated);
             this.Town.Map.Events.ListenTo<BlockEntityRemovedEvent>(OnBlockEntityRemoved);
             this.Town.Map.Events.ListenTo<BlockEntityAddedEvent>(OnBlockEntityAdded);
             this.ScanWorkstations();
@@ -61,7 +61,7 @@ namespace Start_a_Town_
         {
             return workstation.Refinements;
         }
-        private void OnBlocksUpdated(BlocksUpdatedEvent changed)
+        private void OnBlocksUpdated(CellsInvalidatedEvent changed)
         {
             //var map = this.Town.Map;
             //foreach (var pos in changed.Positions)

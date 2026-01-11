@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Graphics;
+using System;
 
 namespace Start_a_Town_
 {
@@ -13,7 +13,12 @@ namespace Start_a_Town_
             this.Variations.Add(Block.Atlas.Load("blocks/blockblueprint"));
         }
         public override bool IsStandableIn => false;
-       
+        internal override BlockEntity TryCreateNewBlockEntity(MapBase map, IntVec3 global, int orientation)
+        {
+            if (map.GetBlockEntity(global) is not BlockEntity existing || !existing.Comps.TryGetComp<BlockConstructionComp>(out _))
+                throw new InvalidOperationException("Missing or unexpected block entity in construction block placement");
+            return null;
+        }
         public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
             //var entity = chunk.Map.GetBlockEntity(global) as BlockConstructionEntity;

@@ -13,7 +13,7 @@ namespace Start_a_Town_
         public DiggingManager(Town town)
         {
             this.Town = town;
-            this.Town.Map.Events.ListenTo<BlocksUpdatedEvent>(HandleBlocksChanged);
+            this.Town.Map.Events.ListenTo<CellsInvalidatedEvent>(HandleBlocksChanged);
         }
         public override string Name => "Digging";
 
@@ -46,7 +46,7 @@ namespace Start_a_Town_
         //    }
         //}
 
-        void HandleBlocksChanged(BlocksUpdatedEvent e)
+        void HandleBlocksChanged(CellsInvalidatedEvent e)
         {
             foreach (var global in e.Positions)
                 if (this.AllPositions.Contains(global))

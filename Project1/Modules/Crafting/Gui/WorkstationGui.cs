@@ -78,7 +78,7 @@ namespace Start_a_Town_
             this.AlignTopToBottom();
 
             var mapEvents = this.Workstation.Parent.Map.Events;
-            mapEvents.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
+            mapEvents.ListenTo<CellsInvalidatedEvent>(OnBlocksUpdated);
             mapEvents.ListenTo<CraftOrderAddedEvent>(OnCraftOrderAdded);
             mapEvents.ListenTo<CraftOrderRemovedEvent>(OnCraftOrderRemoved);
             mapEvents.ListenTo<CraftOrderReorderedEvent>(OnOrderReordered);
@@ -170,7 +170,7 @@ namespace Start_a_Town_
             Ingame.Instance.Events.Post(new PlayerIssuedCraftOrderEvent(this.Workstation, craftableProfile));
             //PacketsCrafting.PlayerCreatedOrder(this.Workstation.Parent, r);
         }
-        void OnBlocksUpdated(BlocksUpdatedEvent e)
+        void OnBlocksUpdated(CellsInvalidatedEvent e)
         {
             if (e.Positions.Contains(this.Workstation.Global))
                 this.GetWindow().Hide();
@@ -222,7 +222,7 @@ namespace Start_a_Town_
             this.AddControls(panelOrders, btnAddOrder);
             this.AlignTopToBottom();
 
-            this.ListenTo<BlocksUpdatedEvent>(HandleBlocksChanged);
+            this.ListenTo<CellsInvalidatedEvent>(HandleBlocksChanged);
         }
         public override void HandleLButtonDown(System.Windows.Forms.HandledMouseEventArgs e)
         {
@@ -245,7 +245,7 @@ namespace Start_a_Town_
             PacketsCrafting.Send(this.Map.Net, this.Global, r);
             this.PanelReactions.Hide();
         }
-        void HandleBlocksChanged(BlocksUpdatedEvent e)
+        void HandleBlocksChanged(CellsInvalidatedEvent e)
         {
             if (e.Positions.Contains(this.Global))
                 this.GetWindow().Hide();

@@ -44,17 +44,16 @@ namespace Start_a_Town_
                 throw new ArgumentException($"deposited {entity} in construction is not a {ItemDefOf.Ingredient}");
             if (entity.Profile != this.Args.Refinement)
                 throw new ArgumentException($"deposited {entity} in construction is not a {this.Args.Refinement}");
-            //if (quantity > this.Fulfilment.Missing)
-            //    throw new ArgumentException($"deposited quantity: {quantity} larger than missing quantity: {this.Fulfilment.Missing}");
 
             // only take what i need
             quantity = Math.Min(quantity, this.Missing);
             this.Fulfillment.Add(quantity);
             entity.Consume(quantity);
-
+            var args = this.Args;
             // solidify the designation into a construction block 
-            foreach (var cell in this.Parent.CellsOccupied)
-                this.Map.SetBlock(cell, BlockDefOf.Construction.Worker, this.Args.Material, 0, this.Parent.OriginGlobal - cell, 0, this.Args.Orientation);
+            //foreach (var cell in this.Parent.CellsOccupied)
+            //    this.Map.SetBlock(cell, BlockDefOf.Construction.Worker, this.Args.Material, 0, this.Parent.OriginGlobal - cell, 0, this.Args.Orientation);
+            MapEdit.PaintWithOrigin(MapEditContext.Simulation, this.Map, this.Parent.CellsOccupied, BlockDefOf.Construction.Worker, args.Material, 0, 0, args.Orientation);
 
             this.ValidateReadiness();
             this.Map.Events.Post(new ConstructionUpdatedEvent(this));

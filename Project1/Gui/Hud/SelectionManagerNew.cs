@@ -34,7 +34,7 @@ namespace Start_a_Town_.UI
             map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
             map.Events.ListenTo<BlockEntityRemovedEvent>(OnBlockEntityRemoved);
             map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
-            map.Events.ListenTo<BlocksUpdatedEvent>(OnBlocksUpdated);
+            map.Events.ListenTo<CellsInvalidatedEvent>(OnBlocksUpdated);
         }
 
 
@@ -48,7 +48,7 @@ namespace Start_a_Town_.UI
             Select(e.Single);
         }
 
-        private void OnBlocksUpdated(BlocksUpdatedEvent e)
+        private void OnBlocksUpdated(CellsInvalidatedEvent e)
         {
             if (this.Selectable is TargetArgs target && target.Type == TargetType.Position && e.Positions.Contains(target.Global))
                 this.Unselect();
@@ -525,7 +525,7 @@ namespace Start_a_Town_.UI
         //{
         //    net.Events.ListenTo<BlocksUpdatedEvent>(HandleBlocksChanged);
         //}
-        static void HandleBlocksChanged(BlocksUpdatedEvent e)
+        static void HandleBlocksChanged(CellsInvalidatedEvent e)
         {
             if(Engine.Map == e.Map)
                 if (e.Positions.Any(t => IsSelected(t)))

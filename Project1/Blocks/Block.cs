@@ -219,6 +219,11 @@ namespace Start_a_Town_
         public virtual BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         { return null; }
         internal virtual BlockEntity TryLinkToAdjacentBlockEntity(MapBase map, IntVec3 global) => null;
+        internal virtual BlockEntity TryCreateNewBlockEntity(MapBase map, IntVec3 global, int orientation)
+        {
+            var entity = this.BlockDef.CreateEntity();
+            return entity.SetFootprint(this.GetFootprint(map, global, orientation).Select(c=>c.global));
+        }
         public IEnumerable<IntVec3> GetChildren(MapBase map, IntVec3 originGlobal)
         {
             return this.GetChildren(map.GetCell(originGlobal).Orientation).Select(l => originGlobal + l);

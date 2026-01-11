@@ -4,6 +4,7 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace Start_a_Town_
 {
@@ -61,7 +62,12 @@ namespace Start_a_Town_
                     );
             return table;
         }
-      
+        //AtlasDepthNormals.Node.Token GetToken(MapBase map, IntVec3 global, Camera camera, int orientation)
+        //{
+        //    var origin = Cell.GetOrigin(map, global);// map.GetCell(global)
+        //    var part = origin == global ? Part.Top : Part.Bottom;
+        //    return this.Parts[(int)part][(orientation + (int)camera.Rotation) % 4];
+        //}
         public override AtlasDepthNormals.Node.Token GetToken(int variation, int orientation, int cameraRotation, byte data)
         {
             GetState(data, out var part, out var ori);
@@ -103,6 +109,16 @@ namespace Start_a_Town_
             return map.GetBlockEntity(global) is BlockBedEntity;
         }
 
+        internal override IEnumerable<(IntVec3 global, byte data)> GetFootprint(MapBase map, IntVec3 global, int orientation)
+        {
+            var top = global;
+            var bottom = global + Coords.Rotate(IntVec3.UnitY, orientation);
+            //var entity = this.BlockDef.CreateEntity(top);
+            //entity.CellsOccupied.Add(bottom);
+            yield return (top, 0);
+            yield return (bottom, 0);
+        }
+        [Obsolete]
         internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
             if (!IsValidPosition(map, global, orientation))
@@ -115,7 +131,7 @@ namespace Start_a_Town_
             map.SetBlock(top, this, material, 0, 0, orientation, notify);
 
             var entity = new BlockBedEntity(this.BlockDef, global);
-            map.AddBlockEntity(top, entity);
+            map.AddBlockEntity(entity);
             map.Town.AddUtility(Utility.Types.Sleeping, top);
         }
         
@@ -135,7 +151,12 @@ namespace Start_a_Town_
                 return false;
             return true;
         }
-
+        public override AtlasDepthNormals.Node.Token GetToken(int cameraRotation, Cell cell)
+        {
+            var origin = cell.Origin;
+            var part = origin == IntVec3.Zero ? Part.Top : Part.Bottom;
+            return this.Parts[(int)part][(cell.Orientation + cameraRotation) % 4];
+        }
         public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
             //GetState(data, out var part, out var ori);
@@ -143,9 +164,15 @@ namespace Start_a_Town_
             var map = chunk.Map;
             var origin = Cell.GetOrigin(map, global);// map.GetCell(global)
             var part = origin == global ? Part.Top : Part.Bottom;
-            var entity = chunk.Map.GetBlockEntity<BlockBedEntity>(origin);
-            var col = entity.GetColorFromType();
             var token = this.Parts[(int)part][(orientation + (int)camera.Rotation) % 4];
+
+
+            //var entity = chunk.Map.GetBlockEntity<BlockBedEntity>(origin);
+            //var col = entity.GetColorFromType();
+
+            var comp = chunk.Map.GetBlockEntityComp<BlockBedComp>(origin);
+            var col = comp.GetColorFromType();
+
             return canvas.NonOpaque.DrawBlock(Block.Atlas.Texture, screenBounds, token, camera.Zoom, fog, col /*Color.White*/, sunlight, blocklight, depth, this, global);
         }
         public override void DrawPreview(MySpriteBatch sb, MapBase map, IntVec3 global, Camera cam, Color tint, byte data, MaterialDef material, int variation = 0, int orientation = 0)

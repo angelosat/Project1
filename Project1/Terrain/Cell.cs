@@ -55,6 +55,11 @@ namespace Start_a_Town_
             _damage = BitVector32.CreateSection(HitPointsMax, _originz); //3 bits // sum: 23bits
 
         }
+        public static IntVec3 GetOrigin(int data)
+        {
+            var vec = new BitVector32(data);
+            return new(vec[_originx], vec[_originy], vec[_originz]);
+        }
         public float HitPointsPercentage => this.HitPoints / (float)HitPointsMax;
         public int HitPoints
         {

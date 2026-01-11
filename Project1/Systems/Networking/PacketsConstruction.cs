@@ -13,7 +13,7 @@ namespace Start_a_Town_
             _pReady = Registry.PacketHandlers.Register(OnReady);
             _pFinished = Registry.PacketHandlers.Register(OnFinished);
             
-            //Registry.MapEventHooksServer.Register<ConstructionFinishedEvent>(SendFinished);
+            Registry.MapEventHooksServer.Register<ConstructionFinishedEvent>(SendFinished);
             Registry.MapEventHooksServer.Register<ConstructionReadyEvent>(SendReady);
             Registry.MapEventHooksServer.Register<ConstructionUpdatedEvent>(SendSync);
 

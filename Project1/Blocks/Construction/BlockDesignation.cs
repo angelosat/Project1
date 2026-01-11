@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Start_a_Town_.Components.Crafting;
+﻿using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {

@@ -1,7 +1,10 @@
-﻿using SharpDX.Direct3D9;
+﻿using SharpDX.Direct2D1.Effects;
+using SharpDX.Direct3D9;
+using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Start_a_Town_
 {
@@ -31,7 +34,7 @@ namespace Start_a_Town_
                 foreach (var cell in cells)
                     entity.Attach(cell);
             this.Map.SetBlockInternal(this.Changes);
-            this.Map.Events.Post(new BlocksUpdatedEvent(this.Map, this.Changes.Keys));
+            this.Map.Events.Post(new BlocksChangedEvent(this.Map, this.Changes.Values));
             foreach (var entity in this.EntitiesRemoved)
             {
                 this.Map.RemoveBlockEntityInternal(entity);
@@ -45,10 +48,24 @@ namespace Start_a_Town_
         }
         internal void Paint(IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
         {
-            foreach(var cell in targets)
+            foreach (var cell in targets)
                 this.Remove(cell);
-            foreach(var cell in targets)
-                this.Place(cell, block.BlockDef, material, data, variation, orientation);
+            foreach (var cell in targets)
+            {
+                var cellmutations = new List<(IntVec3, byte)>();
+                var plan = block.GetFootprint(this.Map, cell, orientation);
+                var first = plan.First();
+                var origin = first.global;
+                if (block.TryLinkToAdjacentBlockEntity(this.Map, cell) is BlockEntity entityExisting)
+                    this.RecordAttachCellToEntity(cell, entityExisting);
+                //else if(block.BlockDef.CreateEntity(cell) is BlockEntity entity)
+                //    this.EntitiesAdded.Add(entity);
+                else if (block.BlockDef.CreateEntity() is BlockEntity entity)
+                    this.EntitiesAdded.Add(entity.SetFootprint(plan.Select(c => c.global)));
+                foreach (var target in plan)
+                    this.Changes[target.global] = new SetBlockArgs(target.global, block, material, target.data, orientation, origin - target.global);
+                //this.Place(cell, block.BlockDef, material, data, variation, orientation);
+            }
         }
         void Remove(IntVec3 global)
         {
@@ -66,16 +83,14 @@ namespace Start_a_Town_
             foreach (var p in parts)
                 this.Changes[p] = new SetBlockArgs(p, BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, 0, IntVec3.Zero);
         }
-
+        
         void Place(IntVec3 global, BlockDef block, MaterialDef material, byte data, int variation, int orientation)
         {
             var worker = block.Worker;
             var map = this.Map;
             if (worker.TryLinkToAdjacentBlockEntity(map, global) is BlockEntity entity)
             {
-                if(!this.CellsToAttach.TryGetValue(entity, out var list))
-                    this.CellsToAttach[entity] = list = [];
-                list.Add(global);
+                RecordAttachCellToEntity(global, entity);
             }
             else
             {
@@ -86,6 +101,14 @@ namespace Start_a_Town_
             // todo: set source correctly
             this.Changes[global] = new SetBlockArgs(global, worker, material, data, orientation, IntVec3.Zero);
         }
+
+        private void RecordAttachCellToEntity(IntVec3 global, BlockEntity entity)
+        {
+            if (!this.CellsToAttach.TryGetValue(entity, out var list))
+                this.CellsToAttach[entity] = list = [];
+            list.Add(global);
+        }
+
         internal static void Paint(MapBase map, IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
         {
             var op = new MapEdit(map);

@@ -336,14 +336,25 @@ namespace Start_a_Town_
             return null;
             throw new Exception(); // for debugging
         }
-        public void AddBlockEntity(IntVec3 global, BlockEntity entity)
+        public void AddBlockEntity(BlockEntity entity)
+        {
+            foreach (var cell in entity.CellsOccupied)
+            {
+                var chunk = this.GetChunk(cell);
+                var local = cell.ToLocal();
+                chunk.SetBlockEntity(entity, local);
+            }
+            entity.OnSpawned(this);
+            this.Events.Post(new BlockEntityAddedEvent(entity));
+        }
+        public void AttachCellToEntity(IntVec3 global, BlockEntity entity)
         {
             entity.CellsOccupied.Add(global);
             Chunk chunk = this.GetChunk(global);
             var local = global.ToLocal();
             chunk.SetBlockEntity(entity, local);
-            entity.OnSpawned(this, global);
-            this.Events.Post(new BlockEntityAddedEvent(entity));
+            //entity.OnSpawned(this, global);
+            //this.Events.Post(new BlockEntityAddedEvent(entity));
 
         }
 
@@ -746,6 +757,13 @@ namespace Start_a_Town_
             }
             entity.OnSpawned(this);
         }
+        internal void RemoveBlockEntityInternal(IntVec3 originGlobal)
+        {
+            var entity = this.GetBlockEntity(originGlobal);
+            if (entity.OriginGlobal != originGlobal)
+                throw new Exception();
+            this.RemoveBlockEntityInternal(entity);
+        }
         internal void RemoveBlockEntityInternal(BlockEntity entity)
         {
             foreach (var global in entity.CellsOccupied)
@@ -839,7 +857,7 @@ namespace Start_a_Town_
             {
                 entity = block.BlockDef.CreateEntity(global);
                 if (entity is not null)
-                this.AddBlockEntity(global, entity);
+                    this.AddBlockEntity(entity);
             }
             // todo: query block for multi-cell footprint
             block.OnPlaced(this, global, material, data, variation, orientation);
@@ -847,8 +865,8 @@ namespace Start_a_Town_
             this.SetBlockLuminance(global, block.Luminance);
 
             var children = block.GetChildrenWithSource(global, orientation);
-            foreach (var (child, parent) in children)
-                this.GetCell(child).Origin = parent;
+            //foreach (var (child, parent) in children)
+            //    this.GetCell(child).Origin = parent;
 
             if (raiseEvent)
                 this.NotifyBlocksChanged(children.Select(c => c.global));

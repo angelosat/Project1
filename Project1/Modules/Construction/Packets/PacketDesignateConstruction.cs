@@ -1,5 +1,4 @@
 ﻿using Start_a_Town_.Net;
-using Start_a_Town_.Components.Crafting;
 
 namespace Start_a_Town_
 {

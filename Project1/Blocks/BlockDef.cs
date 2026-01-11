@@ -37,5 +37,16 @@ namespace Start_a_Town_
             entity.Initialize();
             return entity;
         }
+        public BlockEntity CreateEntity()
+        {
+            if (this.BlockEntityCompSpecs is null)
+                return null;
+            var entity = new BlockEntity(this);
+            foreach (var spec in this.BlockEntityCompSpecs)
+                entity.AddComp(spec.CreateComp());
+            entity.Initialize();
+            return entity;
+        }
+
     }
 }

@@ -49,11 +49,15 @@ namespace Start_a_Town_.Interactions
             map.Events.Post(new ConstructionFinishedEvent(comp));
 
             var cells = comp.Parent.CellsOccupied;
+            var origin = comp.Parent.OriginGlobal;
             // remove block entity first because this implicitly sets all occupied cells to air
             map.RemoveBlockEntity(comp.Parent);
-            //MapEdit.Paint(map, cells, this.Args.Block.Worker, this.Args.Material, 0, 0, this.Args.Orientation);
-            //return;
             var args = comp.Args;
+
+            MapEdit.Paint(map, [origin], args.Block.Worker, args.Material, 0, 0, args.Orientation);
+            return;
+
+
             foreach (var cell in cells)
                 map.SetBlock(cell, args.Block.Worker, args.Material, 0, 0, args.Orientation);
         }

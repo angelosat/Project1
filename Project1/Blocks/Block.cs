@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Start_a_Town_;
 using Start_a_Town_.Graphics;
 using Start_a_Town_.Particles;
 using Start_a_Town_.UI;
@@ -430,7 +431,15 @@ namespace Start_a_Town_
                 map.NotifyBlocksChanged(children.Select(c => c.global));
         }
         
-
+        internal virtual void GetPlacementPlan(MapBase map, IntVec3 global, int orientation, List<(IntVec3 global, byte data)> cellMutations, out BlockEntity entity)
+        {
+            entity = null;
+            cellMutations.Add((global, 0));
+        }
+        internal virtual IEnumerable<(IntVec3 global, byte data)> GetFootprint(MapBase map, IntVec3 global, int orientation)
+        {
+            yield return (global, 0);
+        }
         internal virtual void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
             //map.SetBlock(global, this, material, data, variation, orientation, notify);
@@ -650,9 +659,13 @@ namespace Start_a_Town_
             var cracksTexture = Cracks[damage - 1];
             opaquemesh.DrawBlock(Atlas.Texture, screenBounds, cracksTexture, camera.Zoom, fog, Color.White, Color.White, sunlight, blocklight, Vector4.Zero, depth, null, blockCoordinates);
         }
-        public virtual AtlasDepthNormals.Node.Token GetToken(int variation, int orientation, int cameraRotation, byte data)
+        public virtual AtlasDepthNormals.Node.Token GetToken(int variation, int orientation, int cameraRotation, byte blockdata)
         {
             return this.Variations[Math.Min(variation, this.Variations.Count - 1)];
+        }
+        public virtual AtlasDepthNormals.Node.Token GetToken(int cameraRotation, Cell cell)
+        {
+            return this.Variations[Math.Min(cell.Variation, this.Variations.Count - 1)];
         }
         public virtual AtlasDepthNormals.Node.Token GetPreviewToken(int variation, int orientation, int cameraRotation, byte data)
         {
@@ -939,6 +952,7 @@ namespace Start_a_Town_
             var blockentity = map.GetBlockEntity(global);
 
         }
+        
 
         public class DefaultState : IBlockState
         {

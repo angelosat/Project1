@@ -20,7 +20,7 @@ namespace Start_a_Town_
         public override string Label => this.Name;
         public ObservableCollection<string> Errors => this.Parent.Errors;
         public abstract string Name { get; }
-        public virtual void OnSpawned(BlockEntity entity, MapBase map, IntVec3 global) { }
+        public virtual void OnSpawned(BlockEntity entity, MapBase map) { }
         public virtual void Draw(Camera camera, MapBase map, IntVec3 global) { }
         public virtual void DrawUI(SpriteBatch sb, Camera camera) { }
         public virtual void Load(SaveTag tag)

@@ -34,7 +34,7 @@ namespace Start_a_Town_
         public override void OnNeighborChanged(MapBase map, IntVec3 global, IntVec3 source)
         {
             return;
-            map.AddBlockEntity(global, new BlockFluidEntity(this.BlockDef, global));
+            //map.AddBlockEntity(global, new BlockFluidEntity(this.BlockDef, global));
         }
 
         public override bool IsTargetable(Vector3 global)

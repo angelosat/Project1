@@ -1,6 +1,4 @@
 ﻿using System;
-using Start_a_Town_.Components;
-using Start_a_Town_.Animations;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.UI;
 using System.Linq;

@@ -54,7 +54,7 @@ namespace Start_a_Town_
 
             // solidify the designation into a construction block 
             foreach (var cell in this.Parent.CellsOccupied)
-                this.Map.SetBlock(cell, BlockDefOf.Construction.Worker, this.Args.Material, 0, 0, this.Args.Orientation);
+                this.Map.SetBlock(cell, BlockDefOf.Construction.Worker, this.Args.Material, 0, this.Parent.OriginGlobal - cell, 0, this.Args.Orientation);
 
             this.ValidateReadiness();
             this.Map.Events.Post(new ConstructionUpdatedEvent(this));

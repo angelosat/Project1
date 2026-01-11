@@ -130,9 +130,9 @@ namespace Start_a_Town_
         {
             this.AddFuelNew(item, quantity);
         }
-        public override void OnSpawned(BlockEntity entity, MapBase map, IntVec3 global)
+        public override void OnSpawned(BlockEntity entity, MapBase map)
         {
-            var material = map.GetMaterial(global);
+            var material = map.GetMaterial(this.Parent.OriginGlobal);
             this.Fuel.Value += material.Fuel.Value;
         }
         private void AddFuelNew(GameObject item, int quantity)

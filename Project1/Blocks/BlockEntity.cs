@@ -32,7 +32,18 @@ namespace Start_a_Town_
             this.CellsOccupied.Add(originGlobal);
             this.Def = def;
         }
-
+        public BlockEntity(BlockDef def)
+        {
+            this.Comps = new(this);
+            this.Def = def;
+        }
+        public BlockEntity SetFootprint(IEnumerable<IntVec3> cells)
+        {
+            foreach (var cell in cells)
+                this.CellsOccupied.Add(cell);
+            this.OriginGlobal = cells.First();
+            return this;
+        }
         public virtual void Tick(MapBase map, IntVec3 global)
         {
             foreach (var c in this.Comps.Values)
@@ -53,12 +64,12 @@ namespace Start_a_Town_
         public virtual void OnSpawned(MapBase map, IntVec3 global)
         {
             foreach (var comp in this.Comps.Values)
-                comp.OnSpawned(this, map, global);
+                comp.OnSpawned(this, map);
         }
         public virtual void OnSpawned(MapBase map)
         {
             foreach (var comp in this.Comps.Values)
-                comp.OnSpawned(this, map, this.CellsOccupied.First());
+                comp.OnSpawned(this, map);
         }
         public virtual GameObjectSlot GetChild(string containerName, int slotID)
         {
@@ -255,10 +266,9 @@ namespace Start_a_Town_
 
         internal void Attach(IntVec3 global)
         {
-            this.CellsOccupied.Add(global);
-            this.Map.AddBlockEntity(global, this);
+            //this.CellsOccupied.Add(global);
+            this.Map.AttachCellToEntity(global, this);
         }
-
         
     }
 }

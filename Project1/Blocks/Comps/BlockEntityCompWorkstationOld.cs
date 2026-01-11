@@ -124,7 +124,7 @@ namespace Start_a_Town_
                 this.Errors.Remove(OperatingPositionUnreachableString);
         }
 
-        public override void OnSpawned(BlockEntity entity, MapBase map, IntVec3 global)
+        public override void OnSpawned(BlockEntity entity, MapBase map)
         {
             this.CheckOperatingPositions();
         }

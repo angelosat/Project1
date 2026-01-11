@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 
 namespace Start_a_Town_.UI
@@ -339,8 +340,17 @@ namespace Start_a_Town_.UI
                     this.MultipleSelected.Clear();
                     this.MultipleSelected.Add(target);
                     //this.SetName(target.BlockEntity.GetType().Name);
-                    this.SelectedStack = new List<TargetArgs>() { target }.GetEnumerator();
-                    this.CycleTargets();
+
+                    this.SetName(target.Name);
+                    this.Clear();
+
+                    target.GetSelectionInfo(this);
+                    target.GetQuickButtons(this);
+                    this.InitInfoTabs(target.GetInfoTabs());
+                    target.Map.Town.Select(target, this);
+
+                    //this.SelectedStack = new List<TargetArgs>() { target }.GetEnumerator();
+                    //this.CycleTargets();
                     break;
 
                 case TargetType.Null:

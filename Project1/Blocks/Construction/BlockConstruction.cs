@@ -21,7 +21,8 @@ namespace Start_a_Town_
             var block = chunk.Map.GetBlockEntityComp<BlockConstructionComp>(global).Block;
 
             AtlasDepthNormals.Node.Token token;
-                token = block.GetToken(variation, orientation, (int)camera.Rotation, data);
+                //token = block.GetToken((int)camera.Rotation, chunk.Map.GetCell(global));
+                token = block.GetToken((int)camera.Rotation, chunk.Map.GetCell(global));
 
             var color = Color.White;
             //var targetMesh = canvas.Designations;

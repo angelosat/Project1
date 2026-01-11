@@ -55,6 +55,10 @@ namespace Start_a_Town_
         {
             ProgressHandler = new InteractionProgressPassive()
         };
+        public static readonly InteractionDef SleepInBed = new("SleepInBed", typeof(InteractionSleepInBedLogic))
+        {
+            ProgressHandler = new InteractionProgressPassive()
+        };
         static InteractionDefOf()
         {
             Def.Register(typeof(InteractionDefOf));

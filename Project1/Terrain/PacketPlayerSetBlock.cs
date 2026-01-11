@@ -59,10 +59,7 @@ namespace Start_a_Town_
         {
             if (!map.IsInBounds(global))
                 return;
-          
-
             MapEdit.Paint(MapEditContext.Player, map, [global], block, material, data, variation, orientation);
-
         }
     }
 }

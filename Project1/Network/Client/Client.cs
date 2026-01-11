@@ -241,7 +241,9 @@ namespace Start_a_Town_.Net
                 var maxChunks = size * size;
                 if (Instance.Map.ActiveChunks.Count == maxChunks && !IsSaving)
                 {
-                    this.Map.Validate(); 
+                    this.Map.Validate();
+                    this.ApplyEntitySnapshots();
+
                     while (this.CurrentTick < this.TickTarget)
                     {
                         // moved this here because on speed > 0 the map wasn't ticked and logic wasn't executed between handling consecutive tick packets
@@ -249,7 +251,7 @@ namespace Start_a_Town_.Net
                         this._tick++;
                         this.TickMap();
                     }
-                    this.ApplyEntitySnapshots();
+                    //this.ApplyEntitySnapshots();
                 }
             }
 

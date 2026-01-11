@@ -15,10 +15,33 @@ namespace Start_a_Town_.AI
             if (energyValue > 50)// need.Threshold)
                 return null;
 
+            //var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();
+            //if (!possibleBeds.Any())
+            //    possibleBeds = map.GetBlockEntities<BlockBedEntity>().Where(b => b.Owner is null);// FindOrClaimBedNew(actor);
+            var possibleBeds = actor.Map.BlockEntities.Where(e => e.HasComp<BlockBedComp>() && actor.CanReserve(e));
+            foreach (var bed in possibleBeds)
+            {
+                var cell = map.GetCell(bed.OriginGlobal);
+                var interactionSpot = bed.OriginGlobal + cell.Block.GetInteractionSpotsLocal(map, bed.OriginGlobal, cell.Orientation).First();
+                return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };//, bed);
+            }
+            if (energyValue <= 10)//0) 
+                return new Plan(PlanDefOf.SleepingOnGround);
+
+            return null;
+        }
+        protected Plan TryPlanOld(Actor actor)
+        {
+            var map = actor.Map;
+            var need = actor.GetNeed(NeedDefOf.Energy);
+            var energyValue = need.Value;
+
+            if (energyValue > 99)// need.Threshold)
+                return null;
+
             var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();
             if (!possibleBeds.Any())
                 possibleBeds = map.GetBlockEntities<BlockBedEntity>().Where(b => b.Owner is null);// FindOrClaimBedNew(actor);
-
             foreach (var bed in possibleBeds)
             {
                 // determine exact cell from which to operate bed

@@ -239,5 +239,9 @@ namespace Start_a_Town_
         {
             yield return new IntVec3(-1, 0, 0);
         }
+        protected override IEnumerable<IntVec3> GetInteractionSpotsLocal(MapBase map, IntVec3 global)//int orientation)
+        {
+            yield return -IntVec3.UnitX;
+        }
     }
 }

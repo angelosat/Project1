@@ -13,7 +13,7 @@ namespace Start_a_Town_
             _pBlocksUpdated = Registry.PacketHandlers.Register(OnBlocksUpdated);
             _pBlockSet = Registry.PacketHandlers.Register(OnBlockSet);
             _pBlockEntityAdded = Registry.PacketHandlers.Register(OnBlockEntityAdded);
-            //Registry.MapEventHooksServer.Register<BlockEntityRemovedEvent>(SendBlockEntityRemoved);
+            Registry.MapEventHooksServer.Register<BlockEntityRemovedEvent>(SendBlockEntityRemoved);
             //Registry.MapEventHooksServer.Register<BlockEntityAddedEvent>(SendBlockEntityAdded);
             //Registry.MapEventHooksServer.Register<BlockSetEvent>(SendBlockSet);
             //Registry.MapEventHooksServer.Register<BlocksChangedEvent>(SendBlocksChanged);

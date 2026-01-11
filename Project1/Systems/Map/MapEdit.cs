@@ -35,6 +35,7 @@ namespace Start_a_Town_
                     entity.Attach(cell);
             this.Map.SetBlockInternal(this.Changes);
             this.Map.Events.Post(new BlocksChangedEvent(this.Map, this.Changes.Values));
+            this.Map.Events.Post(new BlocksUpdatedEvent(this.Map, this.Changes.Keys));
             foreach (var entity in this.EntitiesRemoved)
             {
                 this.Map.RemoveBlockEntityInternal(entity);

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 namespace Start_a_Town_
 {
+    public enum WorkstationIOType
+    {
+        Input,
+        Output
+    }
     public sealed class BlockWorkstationComp : BlockEntityComp
     {
         public new class Spec(WorkstationDef type) : BlockEntityComp.Spec
@@ -26,6 +31,7 @@ namespace Start_a_Town_
         public override string Name => "WorkstationComp";
         public WorkstationDef WorkstationType = WorkstationDefOf.Smeltery; // default
         public List<OrderSettings> Orders = [];
+        public ZoneId? Input, Output;
         internal override void Initialize()
         {
             this.Parent.Name = this.WorkstationType.Label;
@@ -99,6 +105,24 @@ namespace Start_a_Town_
             this.Resolve();
 
             return this;
+        }
+
+        internal void SetStockpile(WorkstationIOType iotype, Stockpile stockpile)
+        {
+            switch (iotype)
+            {
+                case WorkstationIOType.Input:
+                    this.Input = stockpile?.ID;
+                    break;
+
+                case WorkstationIOType.Output:
+                    this.Output = stockpile?.ID;
+                    break;
+
+                default:
+                    throw new Exception();
+            }
+            this.Map.Events.Post(new WorkstationUpdatedEvent(this));
         }
     }
 }

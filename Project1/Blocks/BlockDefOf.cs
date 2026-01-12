@@ -16,7 +16,7 @@
         static public readonly BlockDef Bed = new("Bed", typeof(BlockBed))
         {
             ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]),
-            BlockEntityCompSpecs = [new BlockBedComp.Spec()]
+            BlockEntityCompSpecs = [new BlockBedComp.Spec(), new BlockOwnershipComp.Spec()]
         };
         static public readonly BlockDef SleepingSpot = new("SleepingSpot", typeof(BlockSleepingSpot));
         static public readonly BlockDef WoodPaneling = new("WoodPaneling", typeof(BlockWoodPaneling));

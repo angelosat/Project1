@@ -12,6 +12,7 @@ namespace Start_a_Town_
         public override string Name { get; } = "Possesions";
         readonly HashSet<Room> Rooms = new();
         readonly HashSet<BlockEntity> Furniture = new();
+        readonly HashSet<IntVec3> FurnitureNew = [];
         public override object Clone()
         {
             return new PossessionsComponent();
@@ -24,7 +25,7 @@ namespace Start_a_Town_
         {
             return this.Rooms.Any(r => r.RoomRole == roomDef);
         }
-
+        internal void Add(BlockEntity entity) => this.FurnitureNew.Add(entity.OriginGlobal);
         public void Claim(Room room)
         {
             if (this.Rooms.Contains(room))

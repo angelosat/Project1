@@ -164,8 +164,8 @@ namespace Start_a_Town_
             throw new NotImplementedException();
         }
     }
-    public sealed record CraftOrderAddedEvent(BlockWorkstationComp Comp, OrderSettings Order) : IEventPayload { }
-    public sealed record CraftOrderRemovedEvent(BlockWorkstationComp Comp, OrderSettings Order) : IEventPayload { }
-    public sealed record CraftOrderUpdatedEvent(OrderSettings Order) : IEventPayload { }
-    public sealed record CraftOrderReorderedEvent(OrderSettings Order) : IEventPayload { }
+    public record struct CraftOrderAddedEvent(BlockWorkstationComp Comp, OrderSettings Order) : IEventPayload { }
+    public record struct CraftOrderRemovedEvent(BlockWorkstationComp Comp, OrderSettings Order) : IEventPayload { }
+    public record struct CraftOrderUpdatedEvent(OrderSettings Order) : IEventPayload { }
+    public record struct CraftOrderReorderedEvent(OrderSettings Order) : IEventPayload { }
 }

@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static Start_a_Town_.Block;
 
 namespace Start_a_Town_
 {

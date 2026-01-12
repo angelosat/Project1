@@ -1,6 +1,4 @@
 ﻿using Start_a_Town_.Net;
-using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace Start_a_Town_
 {

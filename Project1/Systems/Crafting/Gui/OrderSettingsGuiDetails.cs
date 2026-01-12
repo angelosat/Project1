@@ -14,7 +14,8 @@ namespace Start_a_Town_
             this.ListCollapsible.Build(entries);
             Net.Client.Instance.Map.Events.ListenTo<CraftOrderUpdatedEvent>(OnOrderUpdated);
             var panel = new Panel() { AutoSize = false }.SetClientDimensions(200, 200);
-            var box = this.ListCollapsible.ToScrollableBox(200, 400);
+            //var box = this.ListCollapsible.ToScrollableBox(200, 400);
+            var box = new ScrollableBoxNewNewNew(this.ListCollapsible, 200, 400, ScrollModes.Vertical);
             panel.AddControls(box);
             this.AddControls(panel);
         }

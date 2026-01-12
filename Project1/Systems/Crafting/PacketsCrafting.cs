@@ -1,14 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
+using System;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     static class PacketsCrafting
     {
-        readonly static int _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder, _pOrderUpdated, _pPlayerModifiedOrderFilters;
+        readonly static PacketId _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder, _pOrderUpdated, _pPlayerModifiedOrderFilters, _pPlayerSetWorkstationIO;
         static PacketsCrafting()
         {
+            _pPlayerSetWorkstationIO = Registry.PacketHandlers.Register(OnPlayerSetWorkstationIO);
+
             _pPlayerCreatedOrder = Registry.PacketHandlers.Register(OnPlayerCreatedOrder);
             _pPlayerDeletedOrder = Registry.PacketHandlers.Register(OnPlayerDeletedOrder);
             _pPlayerModifiedOrder = Registry.PacketHandlers.Register(OnPlayerModifiedOrder);
@@ -16,7 +19,32 @@ namespace Start_a_Town_
             _pOrderUpdated = Registry.PacketHandlers.Register(OnCraftOrderUpdated);
             Registry.PlayerInputEventHooks.Register<PlayerIssuedCraftOrderEvent>(HandlePlayerIssuedCraftOrderEvent);
             Registry.PlayerInputEventHooks.Register<PlayerModifiedOrderFiltersEvent>(HandlePlayerModifiedOrderFilters);
+            Registry.PlayerInputEventHooks.Register<PlayerSetWorkstationZoneEvent>(HandlePlayerSetWorkstationZoneEvent);
             Registry.MapEventHooksServer.Register<CraftOrderCompletedEvent>(HandleCraftOrderCompletedEvent);
+        }
+
+        private static void HandlePlayerSetWorkstationZoneEvent(PlayerSetWorkstationZoneEvent e)
+        {
+            SendPlayerSetWorkstationZone(Client.Instance, e.Workstation, e.IOType, e.Stockpile);
+        }
+        static void SendPlayerSetWorkstationZone(NetEndpoint net, BlockWorkstationComp comp, WorkstationIOType iotype, Stockpile stockpile)
+        {
+            net.BeginPacketImmediate(_pPlayerSetWorkstationIO)
+                .Write(comp.Parent.OriginGlobal)
+                .Write((int)iotype)
+                .Write(stockpile?.ID ?? 0);
+        }
+        private static void OnPlayerSetWorkstationIO(NetEndpoint endpoint, Packet packet)
+        {
+            var r = packet.PacketReader;
+            var entity = endpoint.Map.GetBlockEntity(r.ReadIntVec3());
+            var comp = entity.GetComp<BlockWorkstationComp>();
+            var iotype = (WorkstationIOType)r.ReadInt32();
+            var zoneid = r.ReadInt32();
+            var stockpile = zoneid == 0 ? null : endpoint.Map.Town.ZoneManager.GetZone<Stockpile>(zoneid);
+            comp.SetStockpile(iotype, stockpile);
+            if (endpoint is Server server)
+                SendPlayerSetWorkstationZone(server, comp, iotype, stockpile);
         }
         private static void HandlePlayerModifiedOrderFilters(PlayerModifiedOrderFiltersEvent e)
         {

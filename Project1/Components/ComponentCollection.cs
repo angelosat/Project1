@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_.Components
 {
-    public class ComponentCollection
+    public class ComponentCollection : Inspectable
     {
         readonly Dictionary<Type, EntityComp> _inner = [];
         GameObject _owner;
         public IEnumerable<EntityComp> Values => this._inner.Values;
+
+
         public ComponentCollection(GameObject owner)
         {
             this._owner = owner;
@@ -126,6 +128,7 @@ namespace Start_a_Town_.Components
             foreach (var comp in this._inner.Values)
                 comp.InitializeOnce();
         }
+
     }
 
     //public class ComponentCollection : IDictionary<string, EntityComp>, IEnumerable<EntityComp>

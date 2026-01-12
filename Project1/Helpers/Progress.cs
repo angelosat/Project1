@@ -43,6 +43,7 @@ namespace Start_a_Town_
             w.Write(this.Max);
             w.Write(this.Value);
         }
+        public override string ToString() => $"{this.Value} / {this.Max}";
 
         public static ProgressInt Create(IDataReader r) => new ProgressInt().Read(r);
 
@@ -157,11 +158,7 @@ namespace Start_a_Town_
             this.Max = toCopy.Max;
             this.Value = toCopy.Value;
         }
-
-        public override string ToString()
-        {
-            return this.Value.ToString() + "/" + this.Max.ToString();
-        }
+        public override string ToString() => $"{this.Value} / {this.Max}";
         public string ToStringAsSeconds()
         {
             if (this.Max == 0)

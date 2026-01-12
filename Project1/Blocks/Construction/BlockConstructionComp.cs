@@ -14,13 +14,17 @@ namespace Start_a_Town_
                 return new BlockConstructionComp();
             }
         }
+        internal override void Initialize()
+        {
+            this.Parent.Name = $"Construction: {this.Args.Block.Label}";
+        }
         public override string Name => $"{this}";
 
         public Block Block => this.Args.Block.Worker;
         internal override void GetSelectionInfo(Control container)
         {
-            container.AddControls(new Label($"Construction: {this.Block}"));
-            container.AddControls(new Label($"Materials: {this.Args} {this.Fulfillment}"));
+            //container.AddControls(new Label($"Construction: {this.Block}"));
+            container.AddControls(new Label($"Materials: {this.Fulfillment} {this.Args}"));
         }
         internal ConstructionDesignationArgs Args { get; private set; }
         internal ProgressInt Progress, Fulfillment;
@@ -156,7 +160,7 @@ namespace Start_a_Town_
         //public MaterialDef Material = material;
         //public int Amount = amount;
         //public byte Orientation = orientation;
-        //public override readonly string ToString() => $"{this.Material.Label} {this.Refinement.Label} x{this.Amount}";
+        public override readonly string ToString() => $"{this.Material.Label} {this.Refinement.Label} x{this.Amount}";
         public static ConstructionDesignationArgs Create(IDataReader r) => new ConstructionDesignationArgs().Read(r);
 
         public static ConstructionDesignationArgs Create(SaveTag tag)
@@ -180,7 +184,7 @@ namespace Start_a_Town_
             return this;
         }
 
-        public SaveTag Save(string name = "")
+        public readonly SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             tag.Save("Block", this.Block);
@@ -191,7 +195,7 @@ namespace Start_a_Town_
             return tag;
         }
 
-        public void Write(IDataWriter w)
+        public readonly void Write(IDataWriter w)
         {
             w.Write(this.Block);
             w.Write(this.Refinement);

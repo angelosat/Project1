@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.UI;
+﻿using Start_a_Town_.AI.Behaviors;
+using Start_a_Town_.UI;
 using System;
 using System.Linq;
 
@@ -8,7 +9,7 @@ namespace Start_a_Town_
     {
         Panel PanelReactions;
         readonly ListBoxNoScroll<OrderSettings, OrderGuiContainer> ListOrdersNew;
-
+        Table<(string label, Func<ZoneId?> zoneIdGetter, WorkstationIOType iotype)> IOTable;
         BlockWorkstationComp Workstation;
 
         public ISelectable CurrentSelection { get; set; }
@@ -16,6 +17,7 @@ namespace Start_a_Town_
         public WorkstationGuiNew()
         {
             this.ListOrdersNew = new(s => new OrderGuiContainer(s, s => this.MoveUp(s), s => this.MoveDown(s)));
+
         }
         class OrderGuiContainer : GroupBox
         {
@@ -71,10 +73,29 @@ namespace Start_a_Town_
 
             UpdateArrows();
 
+            var map = workstation.Parent.Map;
+            //this.PanelStockpiles = new("Linked Stockpiles") { AutoSize = true };
+            var zonemanager = map.Town.ZoneManager;
+            var stockpiles = zonemanager.GetZones<Stockpile>().Prepend(null);
+
+            this.IOTable = new Table<(string label, Func<ZoneId?> zoneIdGetter, WorkstationIOType iotype)>()
+                .AddColumn("iotype", 100, item => new Label(item.label), anchorX: 1)
+                .AddColumn("control", 200, item => new ComboBoxNewNew<Stockpile>(stockpiles, 200, s => s?.Name ?? "-None-", s => select(item.iotype, s), () => item.zoneIdGetter().HasValue ? zonemanager.GetZone<Stockpile>(item.zoneIdGetter().Value) : null));
+
+            this.IOTable.AddItems([
+                ("Input", ()=>workstation.Input, WorkstationIOType.Input),
+                ("Output", ()=>workstation.Output, WorkstationIOType.Output)
+                ]);
+            var linkedStockpiledPanel = this.IOTable.ToPanelLabeled("Linked Stockpiles");
+
+            void select(WorkstationIOType iotype, Stockpile stockpile) =>
+                Ingame.Instance.Events.Post(new PlayerSetWorkstationZoneEvent(workstation, iotype, stockpile));
+
             this.AddControls(
                 //panelOrders,
                 panell,
-                btnAddOrder);
+                btnAddOrder, linkedStockpiledPanel //comboinput, combooutput//
+                );
             this.AlignTopToBottom();
 
             var mapEvents = this.Workstation.Parent.Map.Events;
@@ -82,7 +103,17 @@ namespace Start_a_Town_
             mapEvents.ListenTo<CraftOrderAddedEvent>(OnCraftOrderAdded);
             mapEvents.ListenTo<CraftOrderRemovedEvent>(OnCraftOrderRemoved);
             mapEvents.ListenTo<CraftOrderReorderedEvent>(OnOrderReordered);
+
+            mapEvents.ListenTo<WorkstationUpdatedEvent>(OnWorkstationUpdated);
         }
+
+        private void OnWorkstationUpdated(WorkstationUpdatedEvent e)
+        {
+            if (e.Comp != this.Workstation)
+                return;
+            this.IOTable.Invalidate(true);
+        }
+
         //public override void Draw(SpriteBatch sb, Rectangle viewport)
         //{
 
@@ -184,6 +215,8 @@ namespace Start_a_Town_
             this.Build(comp);
         }
     }
+
+
     class WorkstationGui : GroupBox
     {
         IntVec3 Global;

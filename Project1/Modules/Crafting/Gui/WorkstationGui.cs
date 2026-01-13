@@ -1,5 +1,4 @@
-﻿using Start_a_Town_.AI.Behaviors;
-using Start_a_Town_.UI;
+﻿using Start_a_Town_.UI;
 using System;
 using System.Linq;
 
@@ -9,7 +8,7 @@ namespace Start_a_Town_
     {
         Panel PanelReactions;
         readonly ListBoxNoScroll<OrderSettings, OrderGuiContainer> ListOrdersNew;
-        Table<(string label, Func<ZoneId?> zoneIdGetter, WorkstationIOType iotype)> IOTable;
+        Table<(string label, Func<ZoneId> zoneIdGetter, WorkstationIOType iotype)> IOTable;
         BlockWorkstationComp Workstation;
 
         public ISelectable CurrentSelection { get; set; }
@@ -40,31 +39,20 @@ namespace Start_a_Town_
         void Build(BlockWorkstationComp workstation)
         {
             this.Workstation = workstation;
-            //var panelOrders = new PanelTitled("Orders", 300, 400);
-            //var panelOrders = new Panel(new Rectangle(0,0, 300, 400));
             var btnAddOrder = new Button("Add Order", this.OnAddOrderClick);
 
             this.PanelReactions = new Panel() { AutoSize = true };
             this.PanelReactions.HideOnAnyClick();
-            //var allreactions = Def.GetDefs<Reaction>();
             var manager = workstation.Parent.Map.Town.CraftingManagerNew;
-            //var availableRecipes = manager.GetRefinementsBy(workstation.WorkstationType);
             var availableRecipes = CraftingSystem.GetCraftables(workstation.WorkstationType.Craftables.First()); // HACK
-            //var validreactions = allreactions;
 
-            //var availableRefinementsControl = new ListBoxNoScroll<MaterialRefinementDef>(r => new Label(r.Label, () => this.PlaceOrder(r)));
             var availableRefinementsControl = new ListBoxNoScroll<Def>(r => new Label(r.Label, () => this.PlaceOrderNew(r)));
             availableRefinementsControl.AddItems(availableRecipes);
             var reactionsListContainer = availableRefinementsControl.ToScrollableBox(200, 400);
             this.PanelReactions.AddControls(reactionsListContainer);
 
-            //var w = panelOrders.Client.ClientSize.Width;
-            //var h = panelOrders.Client.ClientSize.Height;
             var scrollableContainer = new ScrollableBoxNewNewNew(300, 400, ScrollModes.Vertical);
             scrollableContainer.AddControls(this.ListOrdersNew);
-
-            //panelOrders.AddControls(this.ListOrdersNew);
-            //panelOrders.AddControls(scrollableContainer);
 
             var panell = scrollableContainer.ToPanelLabeled("Orders");
 
@@ -74,13 +62,13 @@ namespace Start_a_Town_
             UpdateArrows();
 
             var map = workstation.Parent.Map;
-            //this.PanelStockpiles = new("Linked Stockpiles") { AutoSize = true };
             var zonemanager = map.Town.ZoneManager;
             var stockpiles = zonemanager.GetZones<Stockpile>().Prepend(null);
 
-            this.IOTable = new Table<(string label, Func<ZoneId?> zoneIdGetter, WorkstationIOType iotype)>()
-                .AddColumn("iotype", 100, item => new Label(item.label), anchorX: 1)
-                .AddColumn("control", 200, item => new ComboBoxNewNew<Stockpile>(stockpiles, 200, s => s?.Name ?? "-None-", s => select(item.iotype, s), () => item.zoneIdGetter().HasValue ? zonemanager.GetZone<Stockpile>(item.zoneIdGetter().Value) : null));
+            this.IOTable = new Table<(string label, Func<ZoneId> zoneIdGetter, WorkstationIOType iotype)>()
+                .AddColumn("iotype", 100, item => new LabelNew(item.label), anchorX: 1)
+                //.AddColumn("control", 200, item => new ComboBoxFinal<Stockpile>(stockpiles, 200, s => s?.Name ?? "-None-", s => select(item.iotype, s), () => (item.zoneIdGetter() is ZoneId id && id != ZoneId.Null ? zonemanager.GetZone<Stockpile>(id) : null)));
+                .AddColumn("control", 200, item => new ComboBoxFinal<Stockpile>(stockpiles, 200, s => s?.Name ?? "-None-", s => select(item.iotype, s), () => zonemanager.GetZone<Stockpile>(item.zoneIdGetter())));
 
             this.IOTable.AddItems([
                 ("Input", ()=>workstation.Input, WorkstationIOType.Input),
@@ -92,9 +80,8 @@ namespace Start_a_Town_
                 Ingame.Instance.Events.Post(new PlayerSetWorkstationZoneEvent(workstation, iotype, stockpile));
 
             this.AddControls(
-                //panelOrders,
                 panell,
-                btnAddOrder, linkedStockpiledPanel //comboinput, combooutput//
+                btnAddOrder, linkedStockpiledPanel
                 );
             this.AlignTopToBottom();
 
@@ -113,12 +100,6 @@ namespace Start_a_Town_
                 return;
             this.IOTable.Invalidate(true);
         }
-
-        //public override void Draw(SpriteBatch sb, Rectangle viewport)
-        //{
-
-        //    base.Draw(sb, viewport);
-        //}
 
         private void OnOrderReordered(CraftOrderReorderedEvent e)
         {

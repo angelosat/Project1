@@ -11,9 +11,9 @@ namespace Start_a_Town_
             pPlayerRequest = Registry.PacketHandlers.Register(ReceivePlayerRequest);
         }
 
-        internal static void Send(Client client, int entityID, PlayerData player)
+        internal static void Send(NetEndpoint net, int entityID, PlayerData player)
         {
-            var w = client.BeginPacket(pPlayerRequest);
+            var w = net.BeginPacketImmediate(pPlayerRequest);
             w.Write(player.ID);
             w.Write(entityID);
         }
@@ -23,7 +23,10 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
             var id = r.ReadInt32();
-            net.DisposeObject(id);
+            net.World.DisposeEntity(id);
+            if (net is Server server)
+                Send(server, id, player);
+            //net.DisposeObject(id);
         }
     }
 }

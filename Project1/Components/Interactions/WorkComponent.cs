@@ -45,9 +45,9 @@ namespace Start_a_Town_.Components
         {
             this.Task.OnToolContact();
         }
-        public Interaction Perform(InteractionDef taskDef, TargetArgs target, int quantity = -1)
+        public Interaction Perform(InteractionDef taskDef, TargetArgs target, int count = -1)
         {
-            var interaction = taskDef.Create(this.Owner as Actor, target);
+            var interaction = taskDef.Create(this.Owner as Actor, target, count);
             this.Start(interaction);
             this.Owner.Map.Events.Post(new InteractionStartedEvent(this.Owner as Actor, taskDef, target));
             return interaction;

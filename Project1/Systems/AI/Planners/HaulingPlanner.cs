@@ -21,12 +21,18 @@ namespace Start_a_Town_
                     // iterate stockpiles by priority 
                     foreach (var stockpile in stockpiles)
                     {
-                        //until the first one that accepts it - intvec3? or targetargs place = stockpile.findplacefor(item)
-                        var place = stockpile.FindPlaceFor(carried);
+                        ////until the first one that accepts it - intvec3? or targetargs place = stockpile.findplacefor(item)
+                        //var place = stockpile.FindPlaceFor(carried);
 
-                        if (place is not null)
+                        //if (place is not null)
+                        //    // emit godeliver task at place
+                        //    return new Plan(PlanDefOf.HaulToStockpile, place);
+
+                        //until the first one that accepts it - intvec3? or targetargs place = stockpile.findplacefor(item)
+                        var places = stockpile.FindPlacesFor(carried).Where(actor.CanReachAndReserve);
+                        foreach(var cell in places)
                             // emit godeliver task at place
-                            return new Plan(PlanDefOf.HaulToStockpile, place);
+                            return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell));
                     }
                 } 
                 // else if can carry more
@@ -51,8 +57,12 @@ namespace Start_a_Town_
                                 if (carried.CanAbsorb(item))
                                     return new Plan(PlanDefOf.GoHaul, item) { AmountA = Math.Min(diff, item.StackSize) };
                             }
-                            var place = stockpile.FindPlaceFor(carried);
-                            return new Plan(PlanDefOf.HaulToStockpile, place);
+                            //var place = stockpile.FindPlaceFor(carried);
+                            //return new Plan(PlanDefOf.HaulToStockpile, place);
+                            var places = stockpile.FindPlacesFor(carried).Where(actor.CanReachAndReserve);
+                            foreach (var cell in places)
+                                // emit godeliver task at place
+                                return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell));
                         }
                     }
                 }

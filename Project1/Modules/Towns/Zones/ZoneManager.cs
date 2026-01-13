@@ -58,8 +58,10 @@ namespace Start_a_Town_
             this.Map.Events.Post(new ZoneCreatedEvent(zone));
         }
 
-        internal T GetZone<T>(int zoneID) where T : Zone
+        internal T GetZone<T>(ZoneId zoneID) where T : Zone
         {
+            if (zoneID == ZoneId.Null)
+                return null;
             return this.Zones[zoneID] as T;
         }
 
@@ -100,7 +102,7 @@ namespace Start_a_Town_
                     zone.Edit(a, a + new IntVec3(w - 1, h - 1, 0), remove);
             else
                 if (zoneID == 0)
-                return RegisterNewZone(zoneType, a.GetBoxLazy(a + new IntVec3(w - 1, h - 1, 0)));
+                    return RegisterNewZone(zoneType, a.GetBoxLazy(a + new IntVec3(w - 1, h - 1, 0)));
             else
                 this.Zones[zoneID].Edit(a, a + new IntVec3(w - 1, h - 1, 0), remove);
             return null;

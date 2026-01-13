@@ -75,7 +75,38 @@ namespace Start_a_Town_.UI
             //    this.Width = width;
             return this;
         }
+        public GroupBox AddControlsLineWrap(int width, params ButtonBaseNew[] labels)
+        {
+            return this.AddControlsLineWrap(labels, width);
+        }
+        public GroupBox AddControlsLineWrap(params ButtonBaseNew[] labels)
+        {
+            return this.AddControlsLineWrap(labels as IEnumerable<ButtonBaseNew>);
+        }
+        public virtual GroupBox AddControlsLineWrap(IEnumerable<ButtonBaseNew> labels, int width = int.MaxValue)
+        {
+            if (!this.Controls.Any() && labels.Count() == 1)
+                return this.AddControls(labels.First()) as GroupBox;
 
+            var lastControl = this.Controls.LastOrDefault();
+            var currentX = lastControl?.Right ?? 0;
+            var currentY = lastControl?.Top ?? 0;
+            var space = (int)UIManager.Font.MeasureString(" ").X;
+            foreach (var l in labels)
+            {
+                if (currentX + l.Width > width)
+                {
+                    currentX = 0;
+                    currentY += l.Height;
+                }
+                l.Location = new IntVec2(currentX, currentY);
+                currentX += l.Width + space;
+                this.AddControls(l);
+            }
+            //if (width != int.MaxValue)
+            //    this.Width = width;
+            return this;
+        }
         internal void CenterControlsAlignmentVertically()
         {
             var maxh = this.Controls.Max(c => c.Height);

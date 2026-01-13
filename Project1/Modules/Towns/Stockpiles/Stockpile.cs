@@ -17,6 +17,8 @@ namespace Start_a_Town_
 
         public override string UniqueName => $"Zone_Stockpile_{this.ID}";
         readonly List<GameObject> Cache = [];
+        readonly HashSet<Entity> CacheNew = [];
+        public IReadOnlyList<Entity> Items => [.. this.CacheNew];
         public readonly ObservableCollection<GameObject> CacheObservable = [];
 
         public Stockpile(ZoneManager manager) : base(manager)
@@ -119,12 +121,43 @@ namespace Start_a_Town_
                 yield return new TargetArgs(this.Map, cell);
             }
         }
-       
+        public IEnumerable<IntVec3> DistributeToStorageSpotsCellsOnly(Entity item)
+        {
+            var emptyCells = new List<Vector3>();
+            foreach (var pos in this.Positions)
+            {
+                var above = pos.Above;
+                var itemsInCell = this.Map.GetEntitiesAt(above);
+                if (!itemsInCell.Any())
+                {
+                    emptyCells.Add(above);
+                    continue;
+                }
+                foreach (var existing in itemsInCell)
+                {
+                    if (!existing.IsHaulable) // not really necessary?
+                        continue;
+                    if (!this.SettingsNew.Accepts(existing as Entity))
+                        continue;
+                    if (!existing.CanAbsorb(item))
+                        continue;
+                    yield return pos;
+                }
+            }
+            foreach (var cell in emptyCells)
+                yield return cell;
+        }
         public TargetArgs FindPlaceFor(Entity item)
         {
             if (!this.Accepts(item))
                 return null;
             return this.DistributeToStorageSpotsNewLazy(item).FirstOrDefault();
+        }
+        public IEnumerable<IntVec3> FindPlacesFor(Entity item)
+        {
+            if (!this.Accepts(item))
+                return null;
+            return this.DistributeToStorageSpotsCellsOnly(item);
         }
         internal int AvailableCapacityFor(Entity item)
         {
@@ -346,5 +379,8 @@ namespace Start_a_Town_
         public bool IsAllowed(ItemDef itemDef) => this.SettingsNew.IsAllowed(itemDef);
         public bool IsAllowed(Def def) => this.SettingsNew.IsAllowed(def);
         public bool IsAllowed(Def profile, MaterialDef material) => this.SettingsNew.IsAllowed(profile, material);
+
+        internal void AddItem(Entity entity) => this.CacheNew.Add(entity);
+        internal void RemoveItem(Entity entity) => this.CacheNew.Remove(entity);
     }
 }

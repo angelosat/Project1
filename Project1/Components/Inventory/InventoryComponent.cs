@@ -201,7 +201,7 @@ namespace Start_a_Town_.Components
                 throw new Exception("Cannot take more than stack size");
             if (amount < target.StackSize)
             {
-                target.Consume(amount);
+                //target.Consume(amount);
                 finalItem = target.Split(amount) as Entity; // this creates a new entity
             }
             else
@@ -448,7 +448,9 @@ namespace Start_a_Town_.Components
             // TODO instantiate new obj as necessary
             newobj.Global = parent.Global + new Vector3(0, 0, parent.Physics.Height);
             newobj.Velocity = velocity;
-            newobj.Physics.Enabled = true;
+            //newobj.Physics.Enabled = true;
+            newobj.Physics.Enable();
+
             newobj.SyncSpawnNew(parent.Map);
 
             if (all)

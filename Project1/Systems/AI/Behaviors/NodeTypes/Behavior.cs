@@ -11,7 +11,7 @@ namespace Start_a_Town_
     {
         public Behavior FailOnPreInteractionCheck(Actor actor, Plan plan) //FailOnInvalidInteraction()
         {
-            var ctx = plan.Def.Interaction.CreateContext(actor, plan.TargetA);
+            var ctx = plan.Def.Interaction.CreateContext(actor, plan.TargetA, plan.AmountA);
             return this.FailOn(() => !plan.Def.Interaction.Logic.CanPerform(ctx));
         }
         //public virtual string Status => $"{this}";

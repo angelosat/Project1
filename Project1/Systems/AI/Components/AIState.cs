@@ -166,7 +166,7 @@ namespace Start_a_Town_.AI
         internal void Reset()
         {
             //this.CurrentTask = null;
-            this.LastBehavior = null;
+            //this.LastBehavior = null;
             this.Path = null;
             //this.CurrentTaskBehavior = null;
             this.TaskQueue.Clear();

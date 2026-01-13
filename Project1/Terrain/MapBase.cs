@@ -77,6 +77,7 @@ namespace Start_a_Town_
         public GameObject PlayerCharacter;
         public ParticleManager ParticleManager;
         public RegionManager Regions;
+        public StockpileManager Stockpiles;
         internal EntityLifecycleManager EntityLifecycleManager;
 
 
@@ -216,6 +217,7 @@ namespace Start_a_Town_
         {
             this.World.ResolveReferences();
             this.Town.ResolveReferences();
+            this.Stockpiles.ResolveReferences();
             foreach (var chunk in this.ActiveChunks.Values)
                 chunk.ResolveReferences();
         }
@@ -234,7 +236,8 @@ namespace Start_a_Town_
 
             // reenable physics of entities resting on block
             foreach (var entity in this.GetObjects(global.Above()))
-                PhysicsComponent.Enable(entity);
+                entity.Physics.Enable();
+                //PhysicsComponent.Enable(entity);
 
             this.SetBlock(global, block, material, data, variation, orientation, raiseEvent);
         }
@@ -282,7 +285,9 @@ namespace Start_a_Town_
                     this.SetBlockLuminance(p, 0);
                     // reenable physics of entities resting on block
                     foreach (var entity in this.GetObjects(p - new IntVec3(1, 1, 0), p + new IntVec3(1, 1, 2)))
-                        PhysicsComponent.Enable(entity);
+                        entity.Physics.Enable();
+                        //PhysicsComponent.Enable(entity);
+
                     var above = p.Above;
                     this.GetBlock(above)?.BlockBelowChanged(this, above);
                 }

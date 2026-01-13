@@ -146,7 +146,7 @@ namespace Start_a_Town_
         }
         public void RequestDelete()
         {
-            PacketZoneDelete.Send(Client.Instance, this.GetType(), this.ID);
+            PacketPlayerZoneDelete.Send(Client.Instance, this.GetType(), this.ID);
         }
         public void Edit()
         {

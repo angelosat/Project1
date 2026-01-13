@@ -35,10 +35,17 @@ namespace Start_a_Town_
                 if (excludedSlots.Count == workstationSlots.Count)
                     continue;
 
-                var mapEntities = map.GetEntities<Entity>().Where(i=>i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
+                //IEnumerable<Entity> itemPool =
+                //    order.Workstation.Input != ZoneId.Null ?
+                //    map.Town.ZoneManager.GetZone<Stockpile>(order.Workstation.Input).Items :
+                //    map.Stockpiles.Items;
+
+                var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(i => i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
+                //var candidateIngredients = map.GetEntities<Entity>().Where(i=>i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
+
                 if (carried is not null)
-                    mapEntities = mapEntities.Prepend(carried);
-                var candidates = mapEntities.ToList();
+                    candidateIngredients = candidateIngredients.Prepend(carried);
+                var candidates = candidateIngredients.ToList();
 
                 // Build candidate pool (carried first if exists)
                 //var candidates = carried != null

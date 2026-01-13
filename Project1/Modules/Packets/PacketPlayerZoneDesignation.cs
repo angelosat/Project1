@@ -4,17 +4,17 @@ using Microsoft.Xna.Framework;
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    static class PacketZoneDesignation
+    static class PacketPlayerZoneDesignation
     {
-        static readonly int PacketPlayerZoneDesignation;
-        static PacketZoneDesignation()
+        static readonly int _pPlayerZoneDesignation;
+        static PacketPlayerZoneDesignation()
         {
-            PacketPlayerZoneDesignation = Registry.PacketHandlers.Register(Receive);
+            _pPlayerZoneDesignation = Registry.PacketHandlers.Register(Receive);
         }
         static public void Send(NetEndpoint net, ZoneDef zoneDef, int zoneID, Vector3 begin, int w, int h, bool remove)
         {
             //var stream = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketPlayerZoneDesignation);
-            var stream = net.BeginPacketImmediate(PacketPlayerZoneDesignation);
+            var stream = net.BeginPacketImmediate(_pPlayerZoneDesignation);
 
             stream.Write(zoneDef.Name);
             stream.Write(zoneID);

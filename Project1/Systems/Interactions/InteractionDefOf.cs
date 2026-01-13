@@ -5,7 +5,12 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     internal static class InteractionDefOf
     {
-        public static readonly InteractionDef Pick = new("Picking", typeof(InteractionHaul), null) { Animation = AnimationDefOf.TouchItem, ProgressHandler = new InteractionProgressFirstContact() }; 
+        //public static readonly InteractionDef Pick = new("Picking", typeof(InteractionHaul), null) { Animation = AnimationDefOf.TouchItem, ProgressHandler = new InteractionProgressFirstContact() };
+        public static readonly InteractionDef Pick = new("Picking", typeof(InteractionHaulLogic))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = new InteractionProgressFirstContact()
+        };
         public static readonly InteractionDef Place = new("Placing", typeof(InteractionPlaceItem), null) { Animation = AnimationDefOf.TouchItem, ProgressHandler = new InteractionProgressFirstContact() };
         public static readonly InteractionDef Chop = new("Chopping", typeof(InteractionChopLogic)) 
         { 

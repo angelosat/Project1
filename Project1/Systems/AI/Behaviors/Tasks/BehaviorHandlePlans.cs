@@ -178,7 +178,7 @@ namespace Start_a_Town_
                         // TODO: unreserve here?
                         parent.Unreserve();
               
-                        state.LastBehavior = currentBhav;
+                        //state.LastBehavior = currentBhav;
 
                         state.NextTask();
 
@@ -207,8 +207,9 @@ namespace Start_a_Town_
                 var staminaTaskThreshold = 20;
                 var tired = stamina.Value <= staminaTaskThreshold;
 
-                //if (this.CurrentPlanner != null && (!state.Behavior?.Task.Def.Idle ?? false)) 
-                if (HasIntent && !IsIdle)
+                //if (this.CurrentPlanner != null && (!state.Behavior?.Plan.Def.Idle ?? false))
+                //if (this.HasIntent && !this.IsIdle)
+                if(this.CurrentPlanner is not null && this.CurrentPlanner is not TaskGiverIdle)
                 {
                     if (tired)
                     {

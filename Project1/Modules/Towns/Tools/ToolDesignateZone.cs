@@ -22,7 +22,7 @@
         }
         void Perform(IntVec3 arg1, int arg2, int arg3, bool arg4)
         {
-            PacketZoneDesignation.Send(this.Town.Net, this.Def, this.EditingZone, arg1, arg2, arg3, arg4);
+            PacketPlayerZoneDesignation.Send(this.Town.Net, this.Def, this.EditingZone, arg1, arg2, arg3, arg4);
         }
 
         public override Messages MouseLeftPressed(System.Windows.Forms.HandledMouseEventArgs e)

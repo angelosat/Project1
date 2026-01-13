@@ -1,9 +1,8 @@
 ﻿using System;
-using Start_a_Town_.Animations;
 
 namespace Start_a_Town_
 {
-    class InteractionHaulWorker : InteractionLogic
+    class InteractionHaulLogic : InteractionLogic
     {
         public sealed class Context : InteractionContext
         {
@@ -19,6 +18,14 @@ namespace Start_a_Town_
         public override bool CanFinish(InteractionContext ctx)
         {
             return this.CanPerform(ctx);
+        }
+        internal override void OnFinish(Interaction i)
+        {
+            var actor = i.Context.Actor;
+            var target = i.Context.Target;
+            var count = i.Context.Count;
+            if (actor.Net.IsClient) return;
+            actor.Inventory.HaulNew(target.Object, count);
         }
     }
     class InteractionHaul : InteractionPerpetual

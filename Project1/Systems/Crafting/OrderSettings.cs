@@ -307,7 +307,7 @@ namespace Start_a_Town_
                 //// 3c. Consume from pool
                 //var matEntry = pool[matchedMaterial];
                 var matchedMaterialForm = GetAcceptableMaterialForms(rule.Bone)
-    .FirstOrDefault(mf => pool.TryGetValue(mf, out var entry) && entry.Available >= rule.Quantity);
+                    .FirstOrDefault(mf => pool.TryGetValue(mf, out var entry) && entry.Available >= rule.Quantity);
 
                 if (matchedMaterialForm == default)
                 {

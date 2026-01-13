@@ -99,6 +99,7 @@ namespace Start_a_Town_
             this.Thumbnails = new Texture2D[3];
             this.Town = new Town(this);
             this.Regions = new RegionManager(this);
+            this.Stockpiles = new(this);
             this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
             this.ParticleManager = new Particles.ParticleManager(this);
             this.EntityLifecycleManager = new EntityLifecycleManager(this);

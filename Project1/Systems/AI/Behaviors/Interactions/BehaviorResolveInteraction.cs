@@ -28,7 +28,7 @@ namespace Start_a_Town_
         { }
         public BehaviorResolveInteraction(TargetIndex targetInd, Func<Interaction> interactionFactory) : this((int)targetInd, interactionFactory)
         { }
-        public BehaviorResolveInteraction(InteractionDef def, TargetIndex targetInd = TargetIndex.A, TargetIndex countInd = TargetIndex.None)
+        public BehaviorResolveInteraction(InteractionDef def, TargetIndex targetInd = TargetIndex.A, TargetIndex countInd = TargetIndex.A)
         {
             this.InteractionDef = def;
             this.TargetInd = (int)targetInd;
@@ -46,6 +46,7 @@ namespace Start_a_Town_
         public BehaviorResolveInteraction()
         {
             this.TargetInd = (int)TargetIndex.A;
+            this.CountInd = TargetIndex.A;
         }
         public BehaviorResolveInteraction(int targetInd, Func<Interaction> interactionFactory)
         {
@@ -80,7 +81,7 @@ namespace Start_a_Town_
             var target = this.Target;
             int count = this.CountInd == TargetIndex.None ? -1 : actor.CurrentTask.GetAmount(this.CountInd);
 
-            this._interaction ??= actor.Work.Perform(actor.CurrentTask.Def.Interaction, target);
+            this._interaction ??= actor.Work.Perform(actor.CurrentTask.Def.Interaction, target, count);
 
             if(this._interaction.IsFinished)
                 return BehaviorState.Success;

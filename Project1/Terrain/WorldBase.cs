@@ -137,7 +137,7 @@ namespace Start_a_Town_
             return false;
         }
         public bool DisposeEntity(Entity entity) => this.DisposeEntity(entity.RefId);
-        public bool DisposeEntity(int netId)
+        public bool DisposeEntity(EntityRefId netId)
         {
             if (!this.EntityRegistry.TryGetValue(netId, out Entity? o))
                 throw new Exception();

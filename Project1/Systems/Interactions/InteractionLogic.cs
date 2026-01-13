@@ -8,11 +8,12 @@
         public virtual void ApplyWork(InteractionContext ctx, int workAmount) { }
         //protected virtual InteractionContext CreateContextInternal(Actor actor, TargetArgs target) => new(actor, target);
         protected virtual InteractionContext CreateContextInternal() => new();
-        internal InteractionContext CreateContext(Actor actor, TargetArgs target)
+        internal InteractionContext CreateContext(Actor actor, TargetArgs target, int count)
         {
             var ctx = this.CreateContextInternal();
             ctx.Actor = actor;
             ctx.Target = target;
+            ctx.Count = count;
             return ctx;
         }
         internal virtual void OnStart(Interaction i) { }

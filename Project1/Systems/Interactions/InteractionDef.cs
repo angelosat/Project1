@@ -22,18 +22,18 @@ namespace Start_a_Town_
             this.Logic = ActivatorSafe<InteractionLogic>.CreateInstance(workerType ?? typeof(InteractionLogic));
         }
 
-        public Interaction Create(Actor actor, TargetArgs target)
+        public Interaction Create(Actor actor, TargetArgs target, int count = -1)
         {
             var interaction = ActivatorSafe<Interaction>.CreateInstance(this.InteractionClass);
             interaction.Def = this;
-            interaction.Context = this.CreateContext(actor, target);
+            interaction.Context = this.CreateContext(actor, target, count);
             interaction.Initialize();
             return interaction;
         }
 
-        internal InteractionContext CreateContext(Actor actor, TargetArgs target)
+        internal InteractionContext CreateContext(Actor actor, TargetArgs target, int count)
         {
-            return this.Logic.CreateContext(actor, target);
+            return this.Logic.CreateContext(actor, target, count);
         }
     }
     public class InteractionContext//(Actor actor, TargetArgs target)
@@ -42,6 +42,7 @@ namespace Start_a_Town_
         //public TargetArgs Target = target;
         public Actor Actor;
         public TargetArgs Target;
+        public int Count;
         public virtual float ProgressPercentage { get; }
 
     }

@@ -246,7 +246,8 @@ namespace Start_a_Town_
 
                 this.Transform.Velocity = value;
                 if (value != Vector3.Zero)
-                    PhysicsComponent.Enable(this);
+                    this.Physics.Enable();
+                    //PhysicsComponent.Enable(this);
             }
         }
 
@@ -376,7 +377,8 @@ namespace Start_a_Town_
                 nextChunk.Add(this);
             }
 
-            this.Physics.Enabled = true;
+            //this.Physics.Enabled = true;
+            this.Physics.Enable();
             return this;
         }
         public bool IsForbidden;
@@ -1214,17 +1216,6 @@ namespace Start_a_Town_
                 yield return n;
             }
         }
-        //internal Need GetNeed(string needName)
-        //{
-        //    return this.GetComponent<NeedsComponent>().NeedsNew.First(n => n.NeedDef.Name == needName);
-        //}
-     
-      
-        internal BehaviorExecutePlan GetLastBehavior()
-        {
-            return AIState.GetState(this).LastBehavior;
-        }
-        
         internal BoundingBox GetBoundingBox(Vector3 global)
         {
             return this.Physics.GetBoundingBox(global);

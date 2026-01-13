@@ -17,13 +17,19 @@ namespace Start_a_Town_
         public float Height => this.Owner.Def.Height;
         float? _weight;
         public float Weight => this._weight ??= this.UpdateWeight();
-        public bool Enabled = true;
+        public bool Enabled { get; private set; } = true;
         const float FrictionFactor = .5f;
         public static float Jump = 0.2f;//-0.04f;// -0.05f; //35f;
         public static float Friction = 0.02f;// 0.005f; // TODO move this to blocks? 
         public bool MidAir { get; private set; } // => this.Parent.Velocity.Z != 0;// HACK because checking velocity.z == 0 returns true at the peak of the jump 
         public const int KnockbackMagnitude = 3;
         public Vector3 Force;
+        public void Enable()
+        {
+            if (!this.Enabled)
+                this.Owner.Map.Events.Post(new EntityAtRestEvent(this.Owner as Entity, false));
+            this.Enabled = true;
+        }
 
         public PhysicsComponent()
             : base()
@@ -107,7 +113,11 @@ namespace Start_a_Town_
             if (lastGlobal != next)
                 parent.SetPosition(next);
             else if (velocity == Vector3.Zero)
+            {
+                if (this.Enabled)
+                    this.Owner.Map.Events.Post(new EntityAtRestEvent(this.Owner as Entity, true));
                 this.Enabled = false;
+            }
             this.DetectEntityCollisions(parent, lastGlobal, next);
 
             // reset speed according to new position to prevent it from accumulating
@@ -347,6 +357,8 @@ namespace Start_a_Town_
         internal void Applyforce(Vector3 nextvelocity)
         {
             this.Force += nextvelocity;
+            if (!this.Enabled)
+                this.Owner.Map.Events.Post(new EntityAtRestEvent(this.Owner as Entity, false));
             this.Enabled = true;
         }
 
@@ -428,6 +440,7 @@ namespace Start_a_Town_
         }
         public override void OnSpawn(MapBase newMap)
         {
+
             this.Enabled = true;
             this.Owner.Map.Events.ListenTo<EntityCollisionEvent>(this.HandleCollision);
         }
@@ -473,15 +486,13 @@ namespace Start_a_Town_
                 );
         }
       
-        public override string ToString()
-        {
-            return "Enabled: " + this.Enabled.ToString() + "\n" + base.ToString();
-        }
+        public override string ToString() => $"Enabled: {this.Enabled}";
+        
 
-        public static void Enable(GameObject parent)
-        {
-            parent.TryGetComponent<PhysicsComponent>(f => f.Enabled = true);
-        }
+        //public static void Enable(GameObject parent)
+        //{
+        //    parent.TryGetComponent<PhysicsComponent>(f => f.Enabled = true);
+        //}
 
         /// <summary>
         /// TODO: pass cell or block in here since i fetch it (by checking if the position is solid) in the check before calling this method

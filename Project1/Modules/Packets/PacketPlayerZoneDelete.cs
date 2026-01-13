@@ -4,12 +4,12 @@ using Start_a_Town_.Net;
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    static class PacketZoneDelete
+    static class PacketPlayerZoneDelete
     {
-        static readonly int PacketPlayerZoneDelete;
-        static PacketZoneDelete()
+        static readonly int _pPlayerZoneDelete;
+        static PacketPlayerZoneDelete()
         {
-            PacketPlayerZoneDelete = Registry.PacketHandlers.Register(Receive);
+            _pPlayerZoneDelete = Registry.PacketHandlers.Register(Receive);
         }
         public static void Send(NetEndpoint net, Type zoneType, int zoneID)
         {
@@ -17,7 +17,7 @@ namespace Start_a_Town_
             //w.Write();
             //var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketPlayerZoneDelete);
 
-            net.BeginPacketImmediate(PacketPlayerZoneDelete)
+            net.BeginPacketImmediate(_pPlayerZoneDelete)
                 .Write(zoneType.FullName)
                 .Write(zoneID);
         }

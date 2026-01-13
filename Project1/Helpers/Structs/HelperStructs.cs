@@ -11,6 +11,12 @@
         public static implicit operator PacketId(int v) => new(v);
         public static implicit operator int(PacketId v) => v.Value;
     }
+    public readonly record struct ZoneId(int Value)
+    {
+        internal static readonly ZoneId Null = new(0);
+        public static implicit operator ZoneId(int v) => new(v);
+        public static implicit operator int(ZoneId v) => v.Value;
+    }
     public readonly record struct SlotIndex(int Value)
     {
         internal static readonly SlotIndex Null = new(-1);

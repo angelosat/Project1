@@ -85,10 +85,12 @@ namespace Start_a_Town_
             this.Def.Logic.OnStart(this);
             if (this.AnimationDef is not null)
             {
-                if (this.CrossFadeAnimationLength == 0)
-                    this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
-                else
-                    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, this.CrossFadeAnimationLength);
+                this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 25);
+
+                //if (this.CrossFadeAnimationLength == 0)
+                //    this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
+                //else
+                //    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, this.CrossFadeAnimationLength);
             }
             this.OnStart();
         }
@@ -157,8 +159,8 @@ namespace Start_a_Town_
         }
         internal void Stop()
         {
-            this.Def.Logic.OnFinish(this); // or done()?
-            this.State = States.Finished;
+            //this.Def.Logic.OnFinish(this); // or done()?
+            //this.State = States.Finished;
             if (this.AnimationDef is not null)
                 this.CachedAnimation.FadeOutAndRemove();
         }

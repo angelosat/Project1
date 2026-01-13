@@ -40,8 +40,9 @@ namespace Start_a_Town_
             var entity = endpoint.Map.GetBlockEntity(r.ReadIntVec3());
             var comp = entity.GetComp<BlockWorkstationComp>();
             var iotype = (WorkstationIOType)r.ReadInt32();
-            var zoneid = r.ReadInt32();
-            var stockpile = zoneid == 0 ? null : endpoint.Map.Town.ZoneManager.GetZone<Stockpile>(zoneid);
+            var zoneid = (ZoneId)r.ReadInt32();
+            //var stockpile = zoneid == ZoneId.Null ? null : endpoint.Map.Town.ZoneManager.GetZone<Stockpile>(zoneid);
+            var stockpile = endpoint.Map.Town.ZoneManager.GetZone<Stockpile>(zoneid);
             comp.SetStockpile(iotype, stockpile);
             if (endpoint is Server server)
                 SendPlayerSetWorkstationZone(server, comp, iotype, stockpile);

@@ -31,7 +31,8 @@ namespace Start_a_Town_
         public override string Name => "WorkstationComp";
         public WorkstationDef WorkstationType = WorkstationDefOf.Smeltery; // default
         public List<OrderSettings> Orders = [];
-        public ZoneId? Input, Output;
+        //public ZoneId? Input, Output;
+        public ZoneId Input = ZoneId.Null, Output = ZoneId.Null;
         internal override void Initialize()
         {
             this.Parent.Name = this.WorkstationType.Label;
@@ -74,11 +75,17 @@ namespace Start_a_Town_
         {
             tag.Add(this.WorkstationType.Save("Type"));
             tag.Save("Orders", this.Orders);
+            //if (this.Input.HasValue) tag.Save("Input", this.Input.Value);
+            //if (this.Output.HasValue) tag.Save("Output", this.Output.Value);
+            tag.Save("Input", this.Input);
+            tag.Save("Output", this.Output);
         }
         public override void Load(SaveTag tag)
         {
             this.WorkstationType = tag.LoadDef<WorkstationDef>("Type");
             this.Orders = tag.LoadListOrDefault<OrderSettings>("Orders");
+            if (tag.TryLoadInt("Input", out var inputid)) this.Input = inputid;
+            if (tag.TryLoadInt("Output", out var outputid)) this.Output = outputid;
             this.Resolve();
         }
 
@@ -97,11 +104,24 @@ namespace Start_a_Town_
         {
             this.WorkstationType.Write(w);
             w.Write(this.Orders);
+            //w.Write(this.Input.HasValue ? this.Input.Value : -1);
+            //w.Write(this.Output.HasValue ? this.Output.Value : -1);
+            w.Write(this.Input);
+            w.Write(this.Output);
         }
         public override ISerializable Read(IDataReader r)
         {
             this.WorkstationType = r.ReadDef<WorkstationDef>();
             this.Orders = r.ReadList<OrderSettings>();
+            //var inputid = r.ReadInt32();
+            //if (inputid > -1)
+            //    this.Input = inputid;
+            //var outputid = r.ReadInt32();
+            //if (outputid > -1)
+            //    this.Output = outputid;
+            this.Input = r.ReadInt32();
+            this.Output = r.ReadInt32();
+
             this.Resolve();
 
             return this;
@@ -112,11 +132,13 @@ namespace Start_a_Town_
             switch (iotype)
             {
                 case WorkstationIOType.Input:
-                    this.Input = stockpile?.ID;
+                    //this.Input = stockpile?.ID;
+                    this.Input = stockpile?.ID ?? -1;
                     break;
 
                 case WorkstationIOType.Output:
-                    this.Output = stockpile?.ID;
+                    //this.Output = stockpile?.ID;
+                    this.Output = stockpile?.ID ?? -1;
                     break;
 
                 default:

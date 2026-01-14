@@ -132,7 +132,16 @@ namespace Start_a_Town_
         {
             this.Components.Resolve();
         }
-
+        public Entity Take(int? amount)
+        {
+            if (!amount.HasValue)
+                return this;
+            if (amount.Value == this.StackSize)
+                return this;
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(amount.Value, this.StackSize);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount.Value);
+            return this.Split(amount.Value) as Entity;
+        }
 
         internal void ApplySpecs(List<EntityComp.Spec> overrides)
         {

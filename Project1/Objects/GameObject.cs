@@ -402,6 +402,24 @@ namespace Start_a_Town_
             obj.Name = this.Name;
             return obj;
         }
+        public bool TrySplit(int amount, out Entity result)
+        {
+            if(amount <=0 || amount > this.StackSize)
+            {
+                result = null;
+                return false;
+            }
+
+            if (amount == StackSize)
+            {
+                result = this as Entity;
+                return true;
+            }
+
+            result = this.Split(amount) as Entity;
+            return true;
+        }
+        
         public GameObject Split(int amount)
         {
             if (amount <= 0 || amount >= _stackSize)

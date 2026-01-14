@@ -8,9 +8,9 @@ namespace Start_a_Town_
         protected override Plan TryPlan(Actor actor)
         {
             var carried = actor.Hauled as Entity;
-
-            var stockpiles = actor.Map.Town.ZoneManager.GetZones<Stockpile>().OrderByDescending(i => i.Priority);
-            var mapItems = actor.Map.Haulables.Where(actor.CanReachAndReserve).SortByReachableRegionDistance(actor).ToList();
+            var map = actor.Map;
+            var stockpiles = map.Town.ZoneManager.GetZones<Stockpile>().OrderByDescending(i => i.Priority);
+            var mapItems = map.Haulables.Where(actor.CanReachAndReserve).SortByReachableRegionDistance(actor).ToList();
 
             // if actor is currently carrying something
             if (carried is not null)
@@ -68,6 +68,7 @@ namespace Start_a_Town_
                 }
                 // carried item is useless so place it in current cell (or throw/let it drop)
                 // TODO: return null and let a final cleanup planner drop it at feet or at nearest empty cell
+                // this is the final cleanup planner??
                 //IntVec3 empty = actor.FindNearestEmptyCellOrCurrent();
                 return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
                 //return new Plan(PlanDefOf.DropCarried, new TargetArgs(actor.Map, actor.Cell));
@@ -87,10 +88,16 @@ namespace Start_a_Town_
                     if (availableCapacity == 0)
                         continue;
                     // TODO only consider unreserved quantity of the stack
-                    if (currentStockpile == null || 
-                        !currentStockpile.Accepts(item) || 
-                        stockpile.Priority >= currentStockpile.Priority)
-                        return new Plan(PlanDefOf.GoHaul, item) { AmountA = Math.Min(item.StackSize, availableCapacity) };
+
+
+                    if (currentStockpile is null ||
+                        !currentStockpile.Accepts(item) ||
+                        stockpile.Priority > currentStockpile.Priority)
+                    {
+                        var t = new TargetArgs(item);
+                        var unreservedAmount = map.Town.ReservationManager.GetUnreservedAmount(t);
+                        return new Plan(PlanDefOf.GoHaul, item) { AmountA = Math.Min(unreservedAmount, availableCapacity) };
+                    }
                 }
             }
             

@@ -1,10 +1,33 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Project1.Systems.Interactions;
-using Start_a_Town_.Animations;
 
 namespace Start_a_Town_
 {
+    class InteractionPlaceItemLogic : InteractionLogic
+    {
+        class Context : InteractionContext
+        {
+            Cell _cachedCell;
+            internal Cell Cell => _cachedCell ??= this.Target.Map.GetCell(this.Target.Global.Below());
+        }
+        protected override InteractionContext CreateContextInternal() => new Context();
+        public override bool CanPerform(InteractionContext ctx) => ((Context)ctx).Cell.IsSolid();
+        public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
+        internal override void OnFinish(Interaction i)
+        {
+            var ctx = i.Context;
+            var actor = ctx.Actor;
+            if (actor.Net.IsClient)
+                return;
+            var global = ctx.Target.Global;
+            var count = ctx.Count;
+            var hauled = actor.Hauled;
+            ArgumentNullException.ThrowIfNull(hauled);
+            if (count > hauled.StackSize)
+                throw new Exception();
+            InteractionHelpers.TryDepositCarriedItemInsideBlockOrSpawn(actor, global, count);
+        }
+    }
     class InteractionPlaceItem : InteractionPerpetual
     {
         int Amount;

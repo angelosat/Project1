@@ -11,7 +11,12 @@ namespace Start_a_Town_
             Animation = AnimationDefOf.TouchItem,
             ProgressHandler = new InteractionProgressFirstContact()
         };
-        public static readonly InteractionDef Place = new("Placing", typeof(InteractionPlaceItem), null) { Animation = AnimationDefOf.TouchItem, ProgressHandler = new InteractionProgressFirstContact() };
+        //public static readonly InteractionDef Place = new("Placing", typeof(InteractionPlaceItem), null) { Animation = AnimationDefOf.TouchItem, ProgressHandler = new InteractionProgressFirstContact() };
+        public static readonly InteractionDef Place = new("Placing", typeof(InteractionPlaceItemLogic))
+        { 
+            Animation = AnimationDefOf.TouchItem, 
+            ProgressHandler = new InteractionProgressFirstContact() 
+        };
         public static readonly InteractionDef Chop = new("Chopping", typeof(InteractionChopLogic)) 
         { 
             Animation = AnimationDefOf.Tool, 

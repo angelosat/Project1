@@ -408,7 +408,8 @@ namespace Start_a_Town_
                 throw new ArgumentOutOfRangeException(nameof(amount));
             var newObject = this.Clone();
             newObject._stackSize = amount;
-            this.World.RegisterAndSync(newObject);
+            //this.World.RegisterAndSync(newObject);
+            this.World.Register(newObject);
             this.Consume(amount);
             return newObject;
         }

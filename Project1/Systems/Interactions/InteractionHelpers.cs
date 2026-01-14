@@ -1,8 +1,7 @@
-﻿using Start_a_Town_;
-using System;
+﻿using System;
 
-namespace Project1.Systems.Interactions
-{
+namespace Start_a_Town_
+{ 
     public static class InteractionHelpers
     {
         /// <summary>
@@ -34,7 +33,15 @@ namespace Project1.Systems.Interactions
                 return;
             if (actor.Map.GetBlock(global).TryConsume(actor, carried, global, amount == -1 ? carried.StackSize : amount))
                 return;
-            actor.Map.Spawn(carried, global, actor.Velocity);
+
+            //actor.Map.Spawn(carried, global, actor.Velocity);
+
+            var finalItem = 
+                amount > 0 && amount < carried.StackSize ? 
+                carried.Split(amount) as Entity : 
+                carried;
+            
+            actor.Map.Spawn(finalItem, global, actor.Velocity);
         }
     }
 }

@@ -116,14 +116,24 @@ namespace Start_a_Town_
                         };
                     }
                 }
+                //foreach (var alloc in feasibility.Allocations)
+                //{
+                //    return new Plan(PlanDefOf.GoHaul, new TargetArgs(alloc.Entity))
+                //    {
+                //        AmountA = alloc.Quantity
+                //    };
+                //}
 
+                // Consolidate allocations if they're from the same stack
+                Entity targetStack = feasibility.Allocations.First().Entity;
+                int totalQuantity = 0;
                 foreach (var alloc in feasibility.Allocations)
+                    if (alloc.Entity == targetStack)
+                        totalQuantity += alloc.Quantity;
+                return new Plan(PlanDefOf.GoHaul, new TargetArgs(targetStack))
                 {
-                    return new Plan(PlanDefOf.GoHaul, new TargetArgs(alloc.Entity))
-                    {
-                        AmountA = alloc.Quantity
-                    };
-                }
+                    AmountA = totalQuantity
+                };
                 // Otherwise, pick up next needed item
                 //foreach (var alloc in feasibility.Allocations)
                 //{

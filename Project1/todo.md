@@ -1,5 +1,7 @@
 # todo 2025
 ## immediate
+- change pathing nodes to intvec3 instead of vector3
+- change camera.rotation to int instead of double
 - influence resource for having visitors help with town jobs? or only when a certain reputation thershold has been reached?
 - change camera zoom to only be >=1 , and for <1 make it actually reduce the rendertarget bounds (for 1-1 pixel mapping)
 - change regionnodes to be the actual cell the actors stand in, instead of the cell below (WHAT WAS I THINKING)

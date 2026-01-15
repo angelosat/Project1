@@ -24,6 +24,8 @@ namespace Start_a_Town_
         public bool MidAir { get; private set; } // => this.Parent.Velocity.Z != 0;// HACK because checking velocity.z == 0 returns true at the peak of the jump 
         public const int KnockbackMagnitude = 3;
         public Vector3 Force;
+        public BoundingBox CurrentAABB { get; private set; }
+        public BoundingBox NextAABB { get; private set; }
         public void Enable()
         {
             if (!this.Enabled)
@@ -83,6 +85,8 @@ namespace Start_a_Town_
 
             float nx, ny, nz;
             var box = this.GetBoundingBox(parent, lastGlobal);
+            this.CurrentAABB = box;
+            this.NextAABB = (parent as Entity).GetBoundingBoxNext();
 
             ///moved this after the friction application to fix velocity being larger while jumping
             //nz = this.ResolveVertical(parent, map, box, ref velocity, density); 

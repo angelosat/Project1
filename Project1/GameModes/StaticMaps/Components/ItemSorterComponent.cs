@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
@@ -24,6 +23,10 @@ namespace Start_a_Town_
 
         Dictionary<ItemRoleDef, List<Entity>> _byRole = [];
         Queue<Entity> _notScannedYet;
+
+        public ItemSorterComponent(MapBase map) : base(map)
+        {
+        }
 
         public override void Tick()
         {

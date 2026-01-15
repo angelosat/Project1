@@ -61,7 +61,9 @@ namespace Start_a_Town_
         }
         public override AtlasDepthNormals.Node.Token GetToken(int variation, int orientation, int cameraRotation, byte data)
         {
-            var o = (data + cameraRotation) % 4;
+            //var o = (data + cameraRotation) % 4;
+            var o = (orientation + cameraRotation) % 4;
+
             return this.Parts[o];
         }
         internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)

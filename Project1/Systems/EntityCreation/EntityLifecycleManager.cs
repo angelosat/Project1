@@ -4,11 +4,9 @@ namespace Start_a_Town_
 {
     internal class EntityLifecycleManager : MapComponent
     {
-        readonly MapBase Map;
         readonly Queue<Entity> KilledEntities = [];
-        public EntityLifecycleManager(MapBase map)
+        public EntityLifecycleManager(MapBase map) : base(map)
         {
-            this.Map = map;
             map.Events.ListenTo<EntityKilledEvent>(OnEntityKilled);
         }
 

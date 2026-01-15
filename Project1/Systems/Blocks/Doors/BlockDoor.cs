@@ -36,7 +36,8 @@ namespace Start_a_Town_
         public override bool IsDeconstructible => true;
         public override bool IsRoomBorder => true;
         public override bool Multi => true;
-        public override BoundingBox GetBoundingBox(MapBase map, IntVec3 global) => new(new(global.X - .5f, global.Y - .5f, global.Z), new(global.X + .5f, global.Y + .5f, global.Z + 2));
+        public override BoundingBox GetBoundingBox(MapBase map, IntVec3 global) => 
+            new(new(global.X - .5f, global.Y - .5f, global.Z), new(global.X + .5f, global.Y + .5f, global.Z + 2));
 
         public static byte GetData(bool open, bool locked)
         {

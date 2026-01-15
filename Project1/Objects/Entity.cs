@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.Components;
 using Start_a_Town_.Net;
 using Start_a_Town_.UI;
@@ -154,6 +155,16 @@ namespace Start_a_Town_
             foreach (var comp in this.Components.Values)
                 comp.OnKill();
             this.Map.Events.Post(new EntityKilledEvent(this));
+        }
+
+        public BoundingBox GetBoundingBoxNext()
+        {
+            var x = this.Global.X + this.Velocity.X;
+            var y = this.Global.Y + this.Velocity.Y;
+            var z = this.Global.Z + this.Velocity.Z;
+            return new(
+                new(x - .25f, y - .25f, z),
+                new(x + .25f, y + .25f, z + this.Def.Height));
         }
     }
 }

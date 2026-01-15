@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -12,11 +11,8 @@ namespace Start_a_Town_
         public IReadOnlyList<Stockpile> Stockpiles => this._allStockpiles;
         public IEnumerable<Entity> AllItems => this._allStockpiles.SelectMany(s => s.Items);
         public IEnumerable<Entity> GetItems(ZoneId stockpileId) => stockpileId != ZoneId.Null ? this._allStockpilesById[stockpileId].Items : this.AllItems;
-        readonly MapBase Map;
-        public StockpileManager(MapBase map)
+        public StockpileManager(MapBase map) : base(map)
         {
-            this.Map = map;
-
             map.Events.ListenTo<ZoneCreatedEvent>(OnZoneCreated);
             map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
 

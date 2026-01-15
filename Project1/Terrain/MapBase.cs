@@ -1289,6 +1289,10 @@ namespace Start_a_Town_
             yield return current.Above;
         }
 
+        internal void GetQuickButtons(Action<string, Type> register, IntVec3 global)
+        {
+            this.Town.GetQuickButtons(register, global);
+        }
 
         static MapBase()
         {

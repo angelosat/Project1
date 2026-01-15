@@ -876,6 +876,9 @@ namespace Start_a_Town_
 
                 case TargetType.Position:
                     this.Block.GetQuickButtons(info, this.Map, this.Global);
+                    this.Map.GetQuickButtons((name, guiType) =>
+                            //info.AddTabAction(name, () => UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
+                            info.AddTabAction(name, () => UIManager.ToggleUnique(guiType, this)), this.Global);
                     break;
 
                 case TargetType.BlockEntity:

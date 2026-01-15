@@ -478,5 +478,11 @@ namespace Start_a_Town_
             foreach (var c in this.TownComponents)
                 c.OnBlocksChanged(positions);
         }
+
+        internal void GetQuickButtons(Action<string, Type> register, IntVec3 global)
+        {
+            foreach (var comp in this.TownComponents)
+                comp.GetQuickButtons(register, global);
+        }
     }
 }

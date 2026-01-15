@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
-    public partial class Room : Inspectable, ISelectable, ISaveable, ISerializableNew<Room>
+    public class Room : Inspectable, ISelectable, ISaveable, ISerializableNew<Room>
     {
         static Room()
         {
@@ -434,17 +434,19 @@ namespace Start_a_Town_
             box.ToWindow("Room settings");
             return box;
 
-            void setRoomDef(RoomRoleDef rdef) => Packets.SetRoomType(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, rdef);
-            void setOwner(Actor actor) => Packets.SetOwner(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, actor);
-            void setWorkplace(Workplace wplace) => Packets.SetWorkplace(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, wplace);
-            void refresh() => Packets.Refresh(currentRoom.Map.Net, currentRoom.Map.Net.GetPlayer(), currentRoom, center);
+            void setRoomDef(RoomRoleDef rdef) => PacketsRooms.SetRoomType(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, rdef);
+            void setOwner(Actor actor) => PacketsRooms.SetOwner(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, actor);
+            void setWorkplace(Workplace wplace) => PacketsRooms.SetWorkplace(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, wplace);
+            void refresh() => PacketsRooms.Refresh(currentRoom.Map.Net, currentRoom.Map.Net.GetPlayer(), currentRoom, center);
         }
-
         public IEnumerable<(string name, Action action)> GetInfoTabs()
         {
-            throw new NotImplementedException();
+            yield break;
         }
-
+        public IEnumerable<(string Label, Type GuiType)> GetTabs()
+        {
+            yield return ("Room Settings", typeof(RoomGui));
+        }
         public IEnumerable<Control> GetSelectionDetails()
         {
             yield break;

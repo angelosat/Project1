@@ -1,9 +1,10 @@
 ﻿using Start_a_Town_.Net;
 using Start_a_Town_.UI;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace Start_a_Town_
 {
@@ -19,8 +20,14 @@ namespace Start_a_Town_
         public RoomManager(Town town)
         {
             this.Town = town;
-        }
+            town.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChangedEvent);
 
+        }
+        void HandleBlocksChangedEvent(BlocksChangedEvent e)
+        {
+            foreach (var cell in e.Changes.Select(c => c.Global))
+                this.Handle(cell);
+        }
         internal override void OnBlocksChanged(IEnumerable<IntVec3> positions)
         {
             foreach (var pos in positions)
@@ -208,11 +215,20 @@ namespace Start_a_Town_
             if (this.GetRoomAt(selected.FaceGlobal) is Room r)
                 info.AddTabAction("Roomm", () => r.ShowGUI(selected.FaceGlobal));
         }
+       
         public override ISelectable QuerySelectable(TargetArgs selected)
         {
+            if (this.GetRoomAt(selected.FaceGlobal) is Room r)
+                return r;
             return null; // instead of selecting the room itself, add a tab when selecting a block that is contained in the room
         }
-
+        internal override void GetQuickButtons(Action<string, Type> register, IntVec3 global)
+        {
+            if (this.GetRoomBorderAt(global) is not Room room)
+                return;
+            foreach (var item in room.GetTabs())
+                register(item.Label, item.GuiType);
+        }
         public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
         {
             if (!Engine.DrawRooms)
@@ -269,5 +285,6 @@ namespace Start_a_Town_
             this.Rooms.Read(r, room => room.ID, this.Map);
             this.Valid = r.ReadBoolean();
         }
+       
     }
 }

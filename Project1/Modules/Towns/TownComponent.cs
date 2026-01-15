@@ -94,5 +94,7 @@ namespace Start_a_Town_
         internal virtual void OnHudCreated(Hud hud) { }
 
         internal virtual void OnCameraRotated(Camera camera) { }
+
+        internal virtual void GetQuickButtons(Action<string, Type> register, IntVec3 global) { }
     }
 }

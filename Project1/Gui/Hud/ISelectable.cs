@@ -15,5 +15,7 @@ namespace Start_a_Town_
         void GetQuickButtons(SelectionManager panel);
         bool Exists { get; }
         void TabGetter(Action<string, Action> getter);
+        //IEnumerable<(string Label, T GuiType)> GetTabs<T>() where T : ISelectionBound { yield break; }
+        IEnumerable<(string Label, Type GuiType)> GetTabs() { yield break; }
     }
 }

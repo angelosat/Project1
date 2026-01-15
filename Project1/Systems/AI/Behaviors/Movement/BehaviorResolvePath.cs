@@ -17,7 +17,7 @@ namespace Start_a_Town_.AI.Behaviors
         public BehaviorResolvePath(TargetArgs target, PathEndMode mode)
         {
             this.Children = new List<Behavior>(){
-                    new BehaviorOpenDoor(),
+                    new BehaviorResolveDoors(),
                     new BehaviorInverter(new BehaviorJumpOnBlock()),
                     new BehaviorInverter(new BehaviorCrouch()),
                     new BehaviorInverter(new BehaviorUnstuck()),
@@ -39,7 +39,7 @@ namespace Start_a_Town_.AI.Behaviors
         public BehaviorResolvePath(int targetInd, PathEndMode mode)
         {
             this.Children = new List<Behavior>(){
-                    new BehaviorOpenDoor(),
+                    new BehaviorResolveDoors(),
                     new BehaviorInverter(new BehaviorJumpOnBlock()),
                     new BehaviorInverter(new BehaviorCrouch()),
                     new BehaviorInverter(new BehaviorUnstuck()),

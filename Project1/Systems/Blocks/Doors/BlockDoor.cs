@@ -36,6 +36,7 @@ namespace Start_a_Town_
         public override bool IsDeconstructible => true;
         public override bool IsRoomBorder => true;
         public override bool Multi => true;
+        public override BoundingBox GetBoundingBox(MapBase map, IntVec3 global) => new(new(global.X - .5f, global.Y - .5f, global.Z), new(global.X + .5f, global.Y + .5f, global.Z + 2));
 
         public static byte GetData(bool open, bool locked)
         {
@@ -143,7 +144,7 @@ namespace Start_a_Town_
         {
             return Def.GetDefs<MaterialDef>().Where(m => m.Type == MaterialTypeDefOf.Stone || m.Type == MaterialTypeDefOf.Metal || m.Type == MaterialTypeDefOf.Wood);
         }
-
+        
         public override void GetTooltip(UI.Control tooltip, MapBase map, IntVec3 global, IntVec3 face)
         {
             base.GetTooltip(tooltip, map, global, face);
@@ -166,7 +167,11 @@ namespace Start_a_Town_
         {
             return Orientations[orientation];
         }
-
+        internal override IEnumerable<(IntVec3 global, byte data)> GetFootprint(MapBase map, IntVec3 global, int orientation)
+        {
+            yield return (global, 0);
+            yield return (global.Above, 0);
+        }
         public static void Toggle(MapBase map, IntVec3 global)
         {
             var children = BlockDefOf.Door.Worker.GetChildren(map, global);

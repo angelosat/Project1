@@ -4,7 +4,6 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace Start_a_Town_
 {
@@ -24,18 +23,18 @@ namespace Start_a_Town_
             this.Ingredient = new Ingredient().IsBuildingMaterial();
             this.BuildProperties.Complexity = 10;
             this.BuildProperties.Category = ConstructionCategoryDefOf.Furniture;
-            this.TopParts = new AtlasDepthNormals.Node.Token[] {
+            this.TopParts = [
                 Atlas.Load("blocks/bed/bedslimtop2", "blocks/bed/bedslimtop2depth", "blocks/bed/bedslimtop2normal"),
                 Atlas.Load("blocks/bed/bedslimbottom", "blocks/bed/bedslimbottomdepth", "blocks/bed/bedslimbottomnormal"),
                 Atlas.Load("blocks/bed/bedslimbottom2", "blocks/bed/bedslimbottom2depth", "blocks/bed/bedslimbottom2normal"),
                 Atlas.Load("blocks/bed/bedslimtop", "blocks/bed/bedslimtopdepth", "blocks/bed/bedslimtopnormal")
-            };
-            this.BottomParts = new AtlasDepthNormals.Node.Token[] {
+            ];
+            this.BottomParts = [
                 Atlas.Load("blocks/bed/bedslimbottom2", "blocks/bed/bedslimbottom2depth", "blocks/bed/bedslimbottom2normal"),
                 Atlas.Load("blocks/bed/bedslimtop", "blocks/bed/bedslimtopdepth", "blocks/bed/bedslimtopnormal"),
                 Atlas.Load("blocks/bed/bedslimtop2", "blocks/bed/bedslimtop2depth", "blocks/bed/bedslimtop2normal"),
                 Atlas.Load("blocks/bed/bedslimbottom", "blocks/bed/bedslimbottomdepth", "blocks/bed/bedslimbottomnormal")
-            };
+            ];
 
             this.Variations.Add(this.BottomParts.First());
 
@@ -104,7 +103,7 @@ namespace Start_a_Town_
             return IsTop(map, global) ? this.Furniture : null;
         }
 
-        private bool IsTop(MapBase map, IntVec3 global)
+        private static bool IsTop(MapBase map, IntVec3 global)
         {
             return map.GetBlockEntity(global) is BlockBedEntity;
         }
@@ -113,8 +112,6 @@ namespace Start_a_Town_
         {
             var top = global;
             var bottom = global + Coords.Rotate(IntVec3.UnitY, orientation);
-            //var entity = this.BlockDef.CreateEntity(top);
-            //entity.CellsOccupied.Add(bottom);
             yield return (top, 0);
             yield return (bottom, 0);
         }

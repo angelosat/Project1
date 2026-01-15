@@ -4,30 +4,39 @@ using System.Linq;
 
 namespace Start_a_Town_.AI.Behaviors
 {
-    class BehaviorOpenDoor : Behavior
+    class BehaviorResolveDoors : Behavior
     {
         readonly HashSet<IntVec3> OpenedDoors = new();
 
         public override BehaviorState Tick(Actor parent, AIState state)
         {
-            foreach(var door in this.OpenedDoors.ToArray())
-            { 
-                if (!parent.Intersects(door))
+            var actorBox = parent.GetBoundingboxNext();
+            foreach (var door in this.OpenedDoors.ToArray())
+            {
+                var doorBox = BlockDefOf.Door.Worker.GetBoundingBox(parent.Map, door);
+                if (!actorBox.Intersects(doorBox))
                 {
-                    // if the actor's boundingbox doesn't intersect the doors boundingdoor, close the door UNLESS IT'S OBSTRUCTED by another entity
-                    var allobj = parent.Map.GetEntities();
-                    var intersecting = allobj.Where(o => o.Intersects(door)); // TODO not very fast
-                    if (!intersecting.Any())   // if the door is obstructed, leave it open
-                        parent.Interact(new InteractionToggleDoor(), door);
+                    parent.Work.Perform(InteractionDefOf.ToggleDoor, new TargetArgs(parent.Map, door));
                     this.OpenedDoors.Remove(door);
                 }
+                //if (!parent.Intersects(door))
+                //{
+                //    // if the actor's boundingbox doesn't intersect the doors boundingdoor, close the door UNLESS IT'S OBSTRUCTED by another entity
+                //    var allobj = parent.Map.GetEntities();
+                //    var intersecting = allobj.Where(o => o.Intersects(door)); // TODO not very fast
+                //    if (!intersecting.Any())   // if the door is obstructed, leave it open
+                //        //parent.Interact(new InteractionToggleDoor(), door);
+                //        parent.Work.Perform(InteractionDefOf.ToggleDoor, new TargetArgs(parent.Map, door));
+                //    this.OpenedDoors.Remove(door);
+                //}
             }
             return HandleByCorners(parent);
         }
         private BehaviorState HandleByCorners(Actor parent)
         {
             // THE CHECKS TO OPEN OR CLOSE DOOR MUST BE THE SAME
-            var corners = parent.GetBoundingBoxCorners(parent.Global + parent.Velocity);
+            //var corners = parent.GetBoundingBoxCorners(parent.Global + parent.Velocity);
+            var corners = parent.GetBoundingboxNext().GetCorners();
             var map = parent.Map;
             var occupiedCells = corners.Select(c => c.ToCell()).Distinct();
             foreach (var cellVec in occupiedCells)
@@ -47,8 +56,10 @@ namespace Start_a_Town_.AI.Behaviors
                 this.OpenedDoors.Add(door);
                 if (!open)
                 {
-                    var openInteraction = new InteractionToggleDoor();
-                    parent.Interact(openInteraction, door);
+                    //var openInteraction = new InteractionToggleDoor();
+                    //parent.Interact(openInteraction, door);
+                    parent.Work.Perform(InteractionDefOf.ToggleDoor, new TargetArgs(parent.Map, door));
+
                 }
                 return BehaviorState.Fail;
             }

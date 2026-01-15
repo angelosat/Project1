@@ -140,12 +140,12 @@ namespace Start_a_Town_
                 }
             }
         }
-        static Vector3[] BoundingBoxCorners = { 
-            new Vector3(-.25f, -.25f, 0), 
-            new Vector3(-.25f, .25f, 0), 
-            new Vector3(.25f, -.25f, 0), 
-            new Vector3(.25f, .25f, 0) };
-        public IEnumerable<Vector3> GetFootprintCorners(Vector3 global)
+        static readonly Vector3[] BoundingBoxCorners = { 
+            new(-.25f, -.25f, 0), 
+            new(-.25f, .25f, 0), 
+            new(.25f, -.25f, 0), 
+            new(.25f, .25f, 0) };
+        public static IEnumerable<Vector3> GetFootprintCorners(Vector3 global)
         {
             yield return global + BoundingBoxCorners[0];
             yield return global + BoundingBoxCorners[1];
@@ -167,6 +167,7 @@ namespace Start_a_Town_
                 yield return global + BoundingBoxCorners[3] + zVec;
             }
         }
+        
         public BoundingBox GetBoundingBox(Vector3 global)
         {
             return new BoundingBox(global - new Vector3(.25f, .25f, 0), global + new Vector3(.25f, .25f, this.Height));

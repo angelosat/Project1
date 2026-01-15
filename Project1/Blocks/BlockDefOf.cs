@@ -12,7 +12,10 @@
         static public readonly BlockDef Sand = new("Sand", typeof(BlockSand));
         static public readonly BlockDef WoodenDeck = new("WoodenDeck", typeof(BlockWoodenDeck));
         static public readonly BlockDef Soil = new("Soil", typeof(BlockSoil));
-        static public readonly BlockDef Door = new("Door", typeof(BlockDoor)); // TODO: different door materials???
+        static public readonly BlockDef Door = new("Door", typeof(BlockDoor))
+        {
+            BlockEntityCompSpecs = [new BlockDoorComp.Spec()]
+        }; // TODO: different door materials???
         static public readonly BlockDef Bed = new("Bed", typeof(BlockBed))
         {
             ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]),

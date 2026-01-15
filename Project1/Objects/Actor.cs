@@ -247,7 +247,15 @@ namespace Start_a_Town_
         {
             AIManager.EndInteraction(this);
         }
-
+        public BoundingBox GetBoundingboxNext()
+        {
+            var x = this.Global.X + this.Velocity.X;
+            var y = this.Global.Y + this.Velocity.Y;
+            var z = this.Global.Z + this.Velocity.Z;
+            return new(
+                new(x - .25f, y - .25f, z), 
+                new(x + .25f, y + .25f, z + this.Def.Height));
+        }
         internal void Equip(GameObject item)
         {
             this.Interact(new InteractionEquip(), item);

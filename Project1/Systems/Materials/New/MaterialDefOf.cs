@@ -5,10 +5,22 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     static class MaterialDefOf
     {
+        static public readonly MaterialDef Copper = new MaterialDef("Copper", MaterialTemplates.Metal)
+          .SetPrefix("Copper")
+          .SetColor(Color.IndianRed)
+          .SetValue(20);
         static public readonly MaterialDef Iron = new MaterialDef("Iron", MaterialTemplates.Metal)
             .SetPrefix("Iron")
             .SetColor(Color.LightSteelBlue)
-            .SetValue(20);
+            .SetValue(40);
+        static public readonly MaterialDef Cobalt = new MaterialDef("Cobalt", MaterialTemplates.Metal)
+            .SetPrefix("Cobalt")
+            .SetColor(Color.DodgerBlue)
+            .SetValue(60);
+        static public readonly MaterialDef Silver = new MaterialDef("Silver", MaterialTemplates.Metal) { Shine = 1 }
+            .SetPrefix("Silver")
+            .SetColor(Color.White)
+            .SetValue(80);
         static public readonly MaterialDef Gold = new MaterialDef("Gold", MaterialTemplates.Metal) { Shine = 1 }
             .SetPrefix("Golden")
             .SetColor(Color.Gold)
@@ -33,7 +45,14 @@ namespace Start_a_Town_
             .SetPrefix("Red Wood")
             .SetColor(Color.Brown)
             .SetValue(20);
-
+        static public readonly MaterialDef VineWood = new MaterialDef("Vine Wood", MaterialTemplates.Wood) { Shine = .5f }
+            .SetPrefix("Vine Wood")
+            .SetColor(Color.GreenYellow)
+            .SetValue(30);
+        static public readonly MaterialDef BlackWood = new MaterialDef("Black Wood", MaterialTemplates.Wood) { Shine = .5f }
+            .SetPrefix("Black Wood")
+            .SetColor(Color.DarkSlateGray)
+            .SetValue(40);
 
         static public readonly MaterialDef Soil = new(MaterialTypeDefOf.Soil, "Soil", "Dirt", Color.SandyBrown, 20) { ValueBase = 2, BreakResistance = 2 };
         static public readonly MaterialDef Sand = new(MaterialTypeDefOf.Soil, "Sand", "Sand", Color.BlanchedAlmond, 10) { ValueBase = 2 };

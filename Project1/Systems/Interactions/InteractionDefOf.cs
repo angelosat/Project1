@@ -69,6 +69,10 @@ namespace Start_a_Town_
         {
             ProgressHandler = new InteractionProgressPassive()
         };
+        public static readonly InteractionDef ToggleDoor = new("ToggleDoor", typeof(InteractionToggleDoorLogic))
+        {
+            ProgressHandler = new InteractionProgressInstant()
+        };
         static InteractionDefOf()
         {
             Def.Register(typeof(InteractionDefOf));

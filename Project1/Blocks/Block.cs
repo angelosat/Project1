@@ -211,6 +211,7 @@ namespace Start_a_Town_
         }
 
         public static Rectangle Bounds = new(-(int)OriginCenter.X, -(int)OriginCenter.Y, Width, Height);
+        public virtual BoundingBox GetBoundingBox(MapBase map, IntVec3 global) => new(new(global.X - .5f, global.Y - .5f, global.Z), new(global.X + .5f, global.Y + .5f, global.Z + 1));
 
         public virtual Color[] UV => BlockCoordinatesFull;
         public virtual MouseMap MouseMap => BlockMouseMap;
@@ -222,6 +223,8 @@ namespace Start_a_Town_
         internal virtual BlockEntity TryCreateNewBlockEntity(MapBase map, IntVec3 global, int orientation)
         {
             var entity = this.BlockDef.CreateEntity();
+            if (entity is null)
+                return null;
             return entity.SetFootprint(this.GetFootprint(map, global, orientation).Select(c=>c.global));
         }
         public IEnumerable<IntVec3> GetChildren(MapBase map, IntVec3 originGlobal)

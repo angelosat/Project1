@@ -86,8 +86,11 @@ namespace Start_a_Town_.UI
         {
             if (this.ItemsGetter is not null)
                 this.Initialize(this.ItemsGetter());
-            var panel = this.ListControl.TopLevelControl as PanelScrollable;
+            var panel = this.ListControl.ToPanelScrollable(ScrollModes.Vertical)
+                .HideOnAnyClick(); //this.ListControl.TopLevelControl as PanelScrollable;
             panel.Layer = this.TopLevelControl.Layer;
+
+
             //if(panel.Height > UIManager.Height)
             //{
             //    // shorten list and enable scrollbars

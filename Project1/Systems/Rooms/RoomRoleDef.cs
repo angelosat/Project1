@@ -15,9 +15,6 @@ namespace Start_a_Town_
                 this.Furniture.Add(f);
             return this;
         }
-        static public IEnumerable<RoomRoleDef> ByFurniture(FurnitureDef furn)
-        {
-            return RoomRoleDefOf.All.Where(r => r.Furniture.Contains(furn));
-        }
+        
     }
 }

@@ -77,6 +77,7 @@ namespace Start_a_Town_
             this.Owner = actor;
             if (this.workplace != null)
                 this.Workplace = null;
+            this.Map.Events.Post(new RoomUpdatedEvent(this));
         }
         internal void RemoveOwner(Actor actor)
         {
@@ -413,7 +414,7 @@ namespace Start_a_Town_
             Room currentRoom = null;
             IntVec3 center = default;
             box.AddControlsVertically(
-                new ComboBoxNewNew<RoomRoleDef>(128, "Role", r => r?.Label ?? "none", setRoomDef, () => currentRoom?.RoomRole, () => currentRoom.Furnitures.SelectMany(f => RoomRoleDef.ByFurniture(f)).Distinct().Prepend(null)),
+                new ComboBoxNewNew<RoomRoleDef>(128, "Role", r => r?.Label ?? "none", setRoomDef, () => currentRoom?.RoomRole, () => currentRoom.Furnitures.SelectMany(f => RoomSystem.ByFurniture(f)).Distinct().Prepend(null)),
                 new ComboBoxNewNew<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => currentRoom?.GetOwner(), () => currentRoom?.Map.Town.GetMembers().Prepend(null)),
                 new ComboBoxNewNew<Workplace>(128, "Workplace", w => w?.Name ?? "none", setWorkplace, () => currentRoom?.Workplace, () => currentRoom.Map.Town.ShopManager.GetShops().Where(sh => sh.IsValidRoom(currentRoom)).Prepend(null)),
                 new Label(() => $"Interior: {currentRoom?.Interior.Count} cells"),
@@ -454,4 +455,6 @@ namespace Start_a_Town_
 
         public static Room Create(IDataReader r) => new Room().Read(r);
     }
+
+    internal record struct RoomUpdatedEvent(Room Room) : IEventPayload { }
 }

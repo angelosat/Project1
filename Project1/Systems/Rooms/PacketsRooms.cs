@@ -39,7 +39,7 @@ namespace Start_a_Town_
             if (net is Server)
                 room.ForceAddOwner(owner);
             //net.GetOutgoingStreamOrderedReliable().Write(PacketSetOwner, player.ID, room.ID, owner?.RefId ?? -1);
-            var w = net.BeginPacket(PacketSetOwner);//.Write(player.ID, room.ID, owner?.RefId ?? -1);
+            var w = net.BeginPacketImmediate(PacketSetOwner);//.Write(player.ID, room.ID, owner?.RefId ?? -1);
             w.Write(player.ID);
             w.Write(room.ID);
             w.Write(owner?.RefId ?? -1);

@@ -1,4 +1,5 @@
 ﻿using Start_a_Town_.UI;
+using System;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -11,16 +12,34 @@ namespace Start_a_Town_
         ComboBoxFinal<RoomRoleDef> CboxRole, CboxOwner, CboxWorkplace;
         public void OnBind(ISelectable selectable)
         {
-            this.Build(selectable as Room);
+            var target = selectable as TargetArgs;
+            var room = target.Map.Town.RoomManager.GetRoomBorderAt(target.Global.ToCell());
+            if (room is null)
+                return;
+            this.CurrentSelection = room;
+            this.Build(room);
+            room.Map.Events.ListenTo<RoomUpdatedEvent>(OnRoomUpdated);
         }
+
+        private void OnRoomUpdated(RoomUpdatedEvent e)
+        {
+            if (e.Room != this.CurrentSelection)
+                return;
+            this.Invalidate(true);
+        }
+
         void Build(Room room)
         {
+            var map = room.Map;
+            var owners = map.Town.GetMembers().Prepend(null);
+            var cboxowners = new ComboBoxFinal<Actor>(owners, 128, "Owner", a => a?.Name ?? "none", () => room?.GetOwner(), setOwner);
             //var box = new GroupBox();
             //Room currentRoom = null;
             //IntVec3 center = default;
             this.AddControlsVertically(
-                new ComboBoxFinal<RoomRoleDef>(128, "Role", r => r?.Label ?? "none", setRoomDef, () => room?.RoomRole, () => room.Furnitures.SelectMany(f => RoomRoleDef.ByFurniture(f)).Distinct().Prepend(null)),
-                new ComboBoxFinal<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => room?.GetOwner(), () => room?.Map.Town.GetMembers().Prepend(null)),
+                new ComboBoxFinal<RoomRoleDef>(128, "Role", r => r?.Label ?? "none", setRoomDef, () => room?.RoomRole, () => room.Furnitures.SelectMany(f => RoomSystem.ByFurniture(f)).Distinct().Prepend(null)),
+            //cboxowners,
+                new ComboBoxFinal<Actor>(128, "Owner", a => a?.Name ?? "none",  setOwner, () => room?.GetOwner(), ()=> map.Town.GetMembers().Prepend(null)),
                 new ComboBoxFinal<Workplace>(128, "Workplace", w => w?.Name ?? "none", setWorkplace, () => room?.Workplace, () => room.Map.Town.ShopManager.GetShops().Where(sh => sh.IsValidRoom(room)).Prepend(null)),
                 new Label(() => $"Interior: {room?.Interior.Count} cells"),
                 new Label(() => $"Edges: {room?.Border.Count} cells"),

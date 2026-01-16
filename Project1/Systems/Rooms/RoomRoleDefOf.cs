@@ -1,5 +1,6 @@
 ﻿namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     static class RoomRoleDefOf
     {
         static public readonly RoomRoleDef Bedroom = new RoomRoleDef("Bedroom").AddFurniture(FurnitureDefOf.Bed);
@@ -10,12 +11,7 @@
 
         static RoomRoleDefOf()
         {
-            Def.Register(Bedroom);
-            Def.Register(Dining);
-            Def.Register(Inn);
-            Def.Register(Tavern);
-            Def.Register(Shop);
+            Def.Register(typeof(RoomRoleDefOf));
         }
-        static public readonly RoomRoleDef[] All = { Bedroom, Dining, Inn, Tavern, Shop };
     }
 }

@@ -111,14 +111,15 @@ namespace Start_a_Town_
             public ItemRoleDef GetKey() => this.Role;
             public bool ShouldCopy() => this.Item is not null;
         }
-        
-        internal void ApplyDelta(ItemRoleDef role, Entity olditem, Entity newitem, int score)
-        {
-            if (newitem is null)
-                this.PreferencesNew[role].Set(null, 0);
-            else
-                this.PreferencesNew[role].Set(newitem, score);
-        }
-        
+
+        //internal void ApplyDelta(ItemRoleDef role, Entity olditem, Entity newitem, int score)
+        //{
+        //    this.UpdatePref(role, newitem, score);
+
+        //    //if (newitem is null)
+        //    //    this.PreferencesNew[role].Set(null, 0);
+        //    //else
+        //    //    this.PreferencesNew[role].Set(newitem, score);
+        //}
     }
 }

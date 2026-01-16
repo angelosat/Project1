@@ -48,6 +48,14 @@ namespace Start_a_Town_
             //    }
             //}
 
+            // if carrying an item that's set as an itempreference, then store it in inventory
+            if (actor.Hauled is Entity carried)
+            {
+                if (manager.IsUseful(carried))
+                    return new Plan(PlanDefOf.StoreInInventory);
+            }
+
+            // otherwise query manager for potential map items to go carry/pick up
             var potentialAll = manager.GetPotential();
             foreach (var (role, item, score) in potentialAll)
             {
@@ -57,7 +65,8 @@ namespace Start_a_Town_
                     continue;
 
                 manager.Commit(role, item, score);
-                return new Plan(PlanDefOf.PickUp) { TargetA = item, AmountA = 1 };
+                //return new Plan(PlanDefOf.PickUp) { TargetA = item, AmountA = 1 };
+                return new Plan(PlanDefOf.GoHaul) { TargetA = item, AmountA = 1 };
             }
             return null;
         }

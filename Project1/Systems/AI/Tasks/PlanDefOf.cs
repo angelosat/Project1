@@ -52,10 +52,6 @@ namespace Start_a_Town_
             Format = "Dig {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-
-
-        
-
         static public readonly PlanDef Chatting = new("Chatting", typeof(TaskBehaviorTalkToAboutTopic))
         {
             Format = "Chat",
@@ -82,6 +78,7 @@ namespace Start_a_Town_
         static public readonly PlanDef Unequip = new("Unquipping", typeof(BehaviorUnequip), InteractionDefOf.Unequip);
         static public readonly PlanDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul), InteractionDefOf.Pick);
         static public readonly PlanDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace), InteractionDefOf.Place);
+        static public readonly PlanDef StoreInInventory = new("Storing", typeof(TaskBehaviorStoreInInventory), InteractionDefOf.Store);
         static public readonly PlanDef Construct = new("Constructing", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct);
         static public readonly PlanDef GoTill = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
         static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);

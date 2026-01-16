@@ -281,7 +281,7 @@ namespace Start_a_Town_
         public Def GetPreference(Entity item)
         {
             //return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item)?.Role.Context;
-            return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item).Role?.Context; // if itempreferences are struct, then the default returned will have role == null
+            return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item).Role?.Def; // if itempreferences are struct, then the default returned will have role == null
         }
         public Entity GetPreference(Def context)
         {
@@ -484,10 +484,15 @@ namespace Start_a_Town_
                 for (int i = 0; i < length; i++)
                 {
                     var role = r.ReadDef<ItemRoleDef>();
-                    var olditem = (r.ReadInt32() is int oldid && oldid > 0) ? actor.Map.World.GetEntity(oldid) : null;
-                    var newitem = (r.ReadInt32() is int newid && newid > 0) ? actor.Map.World.GetEntity(newid) : null;
+                    //var olditem = (r.ReadInt32() is int oldid && oldid > 0) ? actor.Map.World.GetEntity(oldid) : null;
+                    //var newitem = (r.ReadInt32() is int newid && newid > 0) ? actor.Map.World.GetEntity(newid) : null;
+                    var olditemid = r.ReadInt32();
+                    var newitemid = r.ReadInt32();
+                    var olditem = olditemid > 0 ? actor.Map.World.GetEntity(olditemid) : null;
+                    var newitem = newitemid > 0 ? actor.Map.World.GetEntity(newitemid) : null;
                     var score = r.ReadInt32();
-                    manager.ApplyDelta(role, olditem, newitem, score);
+                    //manager.ApplyDelta(role, olditem, newitem, score);
+                    manager.UpdatePref(role, newitem, score);
                 }
             }
 

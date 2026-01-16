@@ -28,7 +28,7 @@ namespace Start_a_Town_
         static public Entity Create(ToolProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
         {
             var item = ItemDefOf.Tool.Create().Initialize();
-
+            item.Profile = profile;
             item.ToolComponent.ToolDef = profile;
 
             var handle = item.Body.FindBone(BoneDefOf.ToolHandle);

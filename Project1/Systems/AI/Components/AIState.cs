@@ -177,9 +177,13 @@ namespace Start_a_Town_.AI
 
         internal void ResolveReferences()
         {
-            this.ItemPreferences.ResolveReferences();
+            //this.ItemPreferences.ResolveReferences();
         }
+        internal void OnAttachedToMap()
+        {
+            this.ItemPreferences.OnAttachedToMap();
 
+        }
         public void Assign(BehaviorExecutePlan bhav)
         {
             PacketReportPlan.SendReportBehavior(this.Owner, bhav);
@@ -366,6 +370,8 @@ namespace Start_a_Town_.AI
         {
             this.ItemPreferences.Tick();
         }
+
+        
 
         public IEnumerable<BehaviorExecutePlan> AllPlannedTasks => TaskStack.Concat(TaskQueue);
         //public BehaviorPerformTask Current => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);

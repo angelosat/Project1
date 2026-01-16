@@ -170,7 +170,8 @@ namespace Start_a_Town_.Components
         internal virtual IEnumerable<GameObjectSlot> GetSlots() { yield break; }
 
         internal virtual void OnKill() { }
-    
+
+        internal virtual void OnAttachedToMap() { }
 
         public abstract class Spec
         {

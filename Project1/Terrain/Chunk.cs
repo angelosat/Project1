@@ -278,7 +278,8 @@ namespace Start_a_Town_
 
         public void Add(GameObject obj)
         {
-            obj.Map = this.Map;
+            //obj.Map = this.Map;
+            obj.AttachToMap(this.Map);
             if (this.Objects.Contains(obj))
                 throw new Exception();
             this.Objects.Add(obj);

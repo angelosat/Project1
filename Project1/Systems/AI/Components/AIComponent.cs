@@ -75,7 +75,14 @@ namespace Start_a_Town_
             this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
             //this.Meta.Actor = this.Owner as Actor;
         }
-
+        internal override void ResolveReferences()
+        {
+            this.State.ResolveReferences();
+        }
+        internal override void OnAttachedToMap()
+        {
+            this.State.OnAttachedToMap();
+        }
         public AIComponent Initialize(Behavior root)
         {
             //this.Root = root;
@@ -150,6 +157,7 @@ namespace Start_a_Town_
             //this.Meta = save.Load<RoleMetaWrapper>("Meta");
             if (save.TryLoadNew<RoleMetaWrapper>("Meta", out var meta)) this.Meta = meta;
             this.Meta.Actor = this.Owner as Actor;
+            this.State.ResolveReferences();
         }
 
         public override void Write(IDataWriter w)
@@ -166,6 +174,7 @@ namespace Start_a_Town_
             this.Root.Read(r);
             this.Meta = r.ReadDef<RoleMetaDef>().CreateWrapper();
             this.Meta.Actor = this.Owner as Actor;
+            this.State.ResolveReferences();
         }
 
         internal override void GetInterface(GameObject gameObject, Control box)
@@ -242,10 +251,7 @@ namespace Start_a_Town_
             //info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => $"Current Task: {this.State.Behavior?.Name} {this.State.Behavior?.Task.TargetA}"));
             info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentTask?.Status ?? "Idle"));
         }
-        internal override void ResolveReferences()
-        {
-            this.State.ResolveReferences();
-        }
+        
 
         public new class Spec : Spec<AIComponent>
         {

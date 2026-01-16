@@ -35,8 +35,15 @@ namespace Start_a_Town_
             return this;
         }
         public ToolUseDef Skill { get { return this.Skills.FirstOrDefault(); } }
-        
-     
+
+        internal override void CopyFrom(EntityComp source)
+        {
+            var comp = (ToolComp)source;
+            this.ToolUse = comp.ToolUse;
+            this.ToolDef = comp.ToolDef;
+            foreach (var sk in comp.Skills)
+                this.Skills.Add(sk);
+        }
         public override string ToString()
         {
             if (this.Skills.Count == 0)

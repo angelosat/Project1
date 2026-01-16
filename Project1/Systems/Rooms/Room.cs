@@ -400,14 +400,12 @@ namespace Start_a_Town_
                 scell.Block is BlockAir && !this.Interior.Contains(south) ||
                 ecell.Block is BlockAir && !this.Interior.Contains(east);
         }
-
         internal void ShowGUI(IntVec3 global)
         {
             var gui = GUI ??= Create();
             gui.GetData((this.Map, global));
             gui.GetWindow().Show();
         }
-
         static GroupBox Create()
         {
 

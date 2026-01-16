@@ -129,6 +129,11 @@ namespace Start_a_Town_.Components
                 comp.InitializeOnce();
         }
 
+        internal void OnAttachedToMap()
+        {
+            foreach (var c in this._inner.Values)
+                c.OnAttachedToMap();
+        }
     }
 
     //public class ComponentCollection : IDictionary<string, EntityComp>, IEnumerable<EntityComp>

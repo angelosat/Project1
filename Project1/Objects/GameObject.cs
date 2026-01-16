@@ -1644,6 +1644,11 @@ namespace Start_a_Town_
             this.Map = null;
             this.Owner = null;
         }
+        public void AttachToMap(MapBase map)
+        {
+            this.Map = map;
+            this.Components.OnAttachedToMap();
+        }
         #endregion
     }
 }

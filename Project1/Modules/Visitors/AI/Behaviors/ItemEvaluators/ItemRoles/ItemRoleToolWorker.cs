@@ -25,12 +25,18 @@
         }
         public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
         {
-            var ability = item.ToolComponent?.ToolUse;
-            if (ability is null)
+            if (item.Profile is not ToolProfileDef toolProfile)
                 return -1;
-            if (ability != role.Def)
+            if (toolProfile.ToolUse != role.Def)
                 return -1;
             return (int)StatDefOf.ToolEffectiveness.GetValue(item);
+
+            //var ability = item.ToolComponent?.ToolDef;
+            //if (ability is null)
+            //    return -1;
+            //if (ability != role.Def)
+            //    return -1;
+            //return (int)StatDefOf.ToolEffectiveness.GetValue(item);
         }
     }
 }

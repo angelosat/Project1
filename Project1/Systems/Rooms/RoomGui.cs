@@ -1,5 +1,4 @@
 ﻿using Start_a_Town_.UI;
-using System;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -20,14 +19,12 @@ namespace Start_a_Town_
             this.Build(room);
             room.Map.Events.ListenTo<RoomUpdatedEvent>(OnRoomUpdated);
         }
-
         private void OnRoomUpdated(RoomUpdatedEvent e)
         {
             if (e.Room != this.CurrentSelection)
                 return;
             this.Invalidate(true);
         }
-
         void Build(Room room)
         {
             var map = room.Map;

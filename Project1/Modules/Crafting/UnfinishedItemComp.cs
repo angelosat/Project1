@@ -66,8 +66,8 @@ namespace Start_a_Town_
             this.Progress.Max = product.WorkAmount;
             this.Owner.Physics.SetWeight(product.Product.Physics.Weight);
             this.Owner.Name = $"Unfinished {product.Product.Def.Label}";
-            ((Entity)this.Owner).SetMaterial(product.Product.PrimaryMaterial);
-            foreach (var item in product.RequirementsNew.Values.Select(t => t.Object).Distinct())
+            this.Owner.SetMaterial(product.Product.PrimaryMaterial);
+            foreach (var item in product.RequirementsNew.Values.Select(t => t.Object as Entity).Distinct())
                 this.Contents.Add(item);
         }
 

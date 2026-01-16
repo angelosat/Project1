@@ -25,7 +25,7 @@ namespace Start_a_Town_.Components
         public virtual void OnNameplateCreated(GameObject parent, Nameplate plate) { }
         public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate) { }
 
-        public GameObject Owner;
+        public Entity Owner;
 
         public EntityComp()
         {

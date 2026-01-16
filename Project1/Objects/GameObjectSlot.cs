@@ -182,7 +182,7 @@ namespace Start_a_Town_
             this.OnObjectChanged();
             if (newItem != null)
             {
-                newItem.Container?.Remove(newItem);
+                newItem.Container?.Remove(newItem as Entity);
                 //newItem.Map?.DespawnAndSync(newItem as Entity);
                 newItem.Map?.Despawn(newItem as Entity);
                 //if (newItem.Slot is not null && newItem.Slot != this)

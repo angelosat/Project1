@@ -7,23 +7,21 @@ using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
-    public class ContainerList : Inspectable, IList<GameObject>, ISerializableNew<ContainerList>, ISaveable
+    public class ContainerList : Inspectable, IList<Entity>, ISerializableNew<ContainerList>, ISaveable
     {
-        TableObservable<GameObject> _gui;
+        TableObservable<Entity> _gui;
         public Control Gui
         {
             get
             {
                 var actor = this.Parent as Actor;
-                if (_gui is null)
-                {
-                    _gui = new TableObservable<GameObject>()
+                _gui ??= new TableObservable<Entity>()
                         .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o))/* SelectionManager.Select(o)) */{ TooltipFunc = o.GetInventoryTooltip })
-                        .AddColumn("preference", 96, o => actor.ItemPreferences.GetListControl(o as Entity))
+                        .AddColumn("preference", 96, o => actor.ItemPreferences.GetListControl(o))
                         .AddColumn("weight", 32, o => new Label(() => o.TotalWeight.ToString("0.# kg")))
                         .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, delegate { drop(o); }, "Drop").ShowOnParentFocus(true));
-                }
-                return _gui.Bind(this.Contents);
+                throw new Exception();
+                return null;// _gui.Bind(this.Contents);
                 void drop(GameObject o)
                 {
                     if (actor.IsSpawned && actor.IsTownMember)
@@ -32,27 +30,29 @@ namespace Start_a_Town_
                 }
             }
         }
-        readonly ObservableCollection<GameObject> Contents = [];
-        public GameObject Parent;
+        public event Action<Entity> ItemAdded, ItemRemoved; 
+        //readonly ObservableCollection<Entity> Contents = [];
+        readonly List<Entity> Contents = [];
+        public Entity Parent;
 
-        public int Count => ((ICollection<GameObject>)this.Contents).Count;
+        public int Count => ((ICollection<Entity>)this.Contents).Count;
 
-        public bool IsReadOnly => ((ICollection<GameObject>)this.Contents).IsReadOnly;
+        public bool IsReadOnly => ((ICollection<Entity>)this.Contents).IsReadOnly;
 
         public override string Label => this.ToString();
 
-        public GameObject this[int index] { get => ((IList<GameObject>)this.Contents)[index]; set => ((IList<GameObject>)this.Contents)[index] = value; }
+        public Entity this[int index] { get => ((IList<Entity>)this.Contents)[index]; set => ((IList<Entity>)this.Contents)[index] = value; }
 
-        public int IndexOf(GameObject item)
+        public int IndexOf(Entity item)
         {
-            return ((IList<GameObject>)this.Contents).IndexOf(item);
+            return ((IList<Entity>)this.Contents).IndexOf(item);
         }
 
-        public void Insert(int index, GameObject item)
+        public void Insert(int index, Entity item)
         {
             if (item.Container == this)
                 throw new Exception();
-            ((IList<GameObject>)this.Contents).Insert(index, item);
+            ((IList<Entity>)this.Contents).Insert(index, item);
             item.Container?.Remove(item);
             item.Container = this;
         }
@@ -63,15 +63,15 @@ namespace Start_a_Town_
             if (item.Container != this)
                 throw new Exception();
             item.Container = null;
-            ((IList<GameObject>)this.Contents).RemoveAt(index);
+            ((IList<Entity>)this.Contents).RemoveAt(index);
         }
 
-        public void Add(GameObject item)
+        public void Add(Entity item)
         {
             if (item.Container == this)
                 throw new Exception();
 
-            if(this.Contents.FirstOrDefault(i=>i.CanAbsorb(item)) is GameObject existing)
+            if(this.Contents.FirstOrDefault(i=>i.CanAbsorb(item)) is Entity existing)
             {
                 //existing.StackSize += item.StackSize;
                 existing.Add(item.StackSize);
@@ -80,8 +80,8 @@ namespace Start_a_Town_
                 return;
             }
 
-            ((ICollection<GameObject>)this.Contents).Add(item);
-            item.World.Events.Post(new ItemAddedToInventoryEvent(this.Parent as Actor, item as Entity));
+            ((ICollection<Entity>)this.Contents).Add(item);
+            item.World.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
             //item.Container?.Remove(item);
             //item.Slot?.Clear();
             //item.Map?.Despawn(item);
@@ -89,12 +89,14 @@ namespace Start_a_Town_
             item.Container = this;
             item.Owner = this.Parent;
             (this.Parent as Actor).Log.Write($"Stored {item} in inventory");
-
+            this.ItemAdded?.Invoke(item);
         }
         internal void AddInternal(Entity item)
         {
-            ((ICollection<GameObject>)this.Contents).Add(item);
+            this.Contents.Add(item);
+            this.ItemAdded?.Invoke(item);
         }
+
         public void Clear()
         {
             foreach (var i in this.Contents)
@@ -102,28 +104,30 @@ namespace Start_a_Town_
             ((ICollection<GameObject>)this.Contents).Clear();
         }
 
-        public bool Contains(GameObject item)
+        public bool Contains(Entity item)
         {
-            return ((ICollection<GameObject>)this.Contents).Contains(item);
+            return ((ICollection<Entity>)this.Contents).Contains(item);
         }
 
-        public void CopyTo(GameObject[] array, int arrayIndex)
+        public void CopyTo(Entity[] array, int arrayIndex)
         {
-            ((ICollection<GameObject>)this.Contents).CopyTo(array, arrayIndex);
+            ((ICollection<Entity>)this.Contents).CopyTo(array, arrayIndex);
         }
 
-        public bool Remove(GameObject item)
+        public bool Remove(Entity item)
         {
             if (item.Container != this)
                 throw new Exception();
             item.Container = null;
             item.Owner = null;
-            return ((ICollection<GameObject>)this.Contents).Remove(item);
+            this.ItemRemoved?.Invoke(item);
+            return ((ICollection<Entity>)this.Contents).Remove(item);
+
         }
 
-        public IEnumerator<GameObject> GetEnumerator()
+        public IEnumerator<Entity> GetEnumerator()
         {
-            return ((IEnumerable<GameObject>)this.Contents).GetEnumerator();
+            return ((IEnumerable<Entity>)this.Contents).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -144,7 +148,7 @@ namespace Start_a_Town_
             for (int i = 0; i < count; i++)
             {
                 //this.Add(GameObject.Create(r));
-                var obj = GameObject.Create(r);
+                var obj = GameObject.Create(r) as Entity;
                 this.Contents.Add(obj);
                 obj.Container = this;
             }
@@ -172,7 +176,7 @@ namespace Start_a_Town_
             //return this; // added this to reset inventory contents of every entity to do some work that will break existing items
             var itemList = tag["Contents"].Value as List<SaveTag>;
             foreach (var itemTag in itemList)
-                if(GameObject.Load(itemTag) is GameObject obj)
+                if(GameObject.Load(itemTag) is Entity obj)
                 //this.Add(obj);
                 {
                     this.Contents.Add(obj);

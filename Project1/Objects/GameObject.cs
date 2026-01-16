@@ -1541,7 +1541,7 @@ namespace Start_a_Town_
         }
         protected GameObject()
         {
-            this.Components = new(this);
+            this.Components = new(this as Entity);
         }
         protected GameObject(ItemDef def, int amount) : this()
         {
@@ -1636,7 +1636,7 @@ namespace Start_a_Town_
 
         internal void Detach()
         {
-            this.Container?.Remove(this);
+            this.Container?.Remove(this as Entity);
             this.Container = null;
             this.Slot?.Assign(null, out var _);
             this.Slot = null;

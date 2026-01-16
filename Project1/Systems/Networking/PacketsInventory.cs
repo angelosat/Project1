@@ -20,7 +20,7 @@ namespace Start_a_Town_
 
             Registry.PlayerInputEventHooks.Register<PlayerForcedDropInventoryItemEvent>(HandlePlayerForcedDropInventoryItem);
 
-            Registry.WorldEventHooksServer.Register<ItemAddedToInventoryEvent>(HandleItemAddedToInventory);
+            Registry.WorldEventHooksServer.Register<InventoryItemAddedEvent>(HandleItemAddedToInventory);
         }
 
         private static void OnInventoryDelta(NetEndpoint endpoint, Packet packet)
@@ -32,7 +32,7 @@ namespace Start_a_Town_
             actor.Inventory.Contents.AddInternal(item);
         }
 
-        private static void HandleItemAddedToInventory(ItemAddedToInventoryEvent e)
+        private static void HandleItemAddedToInventory(InventoryItemAddedEvent e)
         {
             var server = e.Actor.Net as Server;
             server.BeginPacket(_pInventoryDelta)

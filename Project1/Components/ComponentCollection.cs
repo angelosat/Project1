@@ -6,11 +6,11 @@ namespace Start_a_Town_.Components
     public class ComponentCollection : Inspectable
     {
         readonly Dictionary<Type, EntityComp> _inner = [];
-        GameObject _owner;
+        Entity _owner;
         public IEnumerable<EntityComp> Values => this._inner.Values;
 
 
-        public ComponentCollection(GameObject owner)
+        public ComponentCollection(Entity owner)
         {
             this._owner = owner;
         }

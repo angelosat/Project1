@@ -84,6 +84,8 @@ namespace Start_a_Town_.Components
         public readonly GameObjectSlot HaulSlot;
         public ContainerList Contents = new();
 
+
+
         internal void Remove(Entity obj)
         {
             this.Contents.Remove(obj);
@@ -260,7 +262,7 @@ namespace Start_a_Town_.Components
             ////PacketSetStackSize.Send(existing, existing.StackSize);
         }
 
-        public void Drop(GameObject item)
+        public void Drop(Entity item)
         {
             var parent = this.Owner;
             if (!this.Contents.Contains(item))
@@ -296,7 +298,7 @@ namespace Start_a_Town_.Components
         {
             if (this.HaulSlot.Object is null)
                 return false;
-            this.Contents.Add(this.HaulSlot.Object);
+            this.Contents.Add(this.HaulSlot.Object as Entity);
             //{
             //    // throw? or return false and raise event so we can handle it and display a message : not enough space?
             //    //inv.Throw(parent, Vector3.Zero);
@@ -513,7 +515,7 @@ namespace Start_a_Town_.Components
                 data.TryGetTag("Inventory", tag => tmpslots.Load(tag));
 
                 /// temp
-                foreach (var i in tmpslots.Slots.Where(s => s.HasValue).Select(s => s.Object))
+                foreach (var i in tmpslots.Slots.Where(s => s.HasValue).Select(s => s.Object as Entity))
                     this.Contents.Add(i);
             }
             if (data.TryGetTagValueOrDefault("IsHauling", out bool isHauling) && isHauling)

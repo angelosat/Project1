@@ -55,7 +55,7 @@ namespace Start_a_Town_.UI
             this.AddItems(e.NewItems?.Cast<TObject>());
             this.RemoveItems(e.OldItems?.Cast<TObject>());
         }
-
+        public void AddItem(TObject item) => this.AddItems([item]);
         public void AddItems(IEnumerable<TObject> items)
         {
             if (items is null)

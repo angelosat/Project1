@@ -31,7 +31,12 @@ namespace Start_a_Town_
             Skill = SkillDefOf.Mining,
             ToolUse = ToolUseDefOf.Mining
         };
-        public static readonly InteractionDef Store = new("Storing", typeof(InteractionStoreHauled), null);
+        //public static readonly InteractionDef Store = new("Storing", typeof(InteractionStoreHauled), null);
+        public static readonly InteractionDef Store = new("Storing", typeof(InteractionStoreCarriedLogic))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = new InteractionProgressFirstContact()
+        };
         public static readonly InteractionDef Equip = new("Equipping", typeof(InteractionEquip), null);
         public static readonly InteractionDef Unequip = new("Unequipping", typeof(InteractionUnequip), null);
         public static readonly InteractionDef Construct = new("Building", typeof(InteractionBuildLogic))

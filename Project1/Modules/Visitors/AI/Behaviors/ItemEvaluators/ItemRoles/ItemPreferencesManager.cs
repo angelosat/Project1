@@ -359,7 +359,7 @@ namespace Start_a_Town_
             oldMap.Events.Unsubscribe(this);
         }
 
-        public void OnForcedDrop(Entity item)
+        public void ForceDrop(Entity item)
         {
             this.ModifyBias(item, -200);
             this.TempIgnore[item.RefId] = (int)Ticks.FromSeconds(10);

@@ -30,7 +30,7 @@ namespace Start_a_Town_
                 NpcComponent.RemovePossesion(actor, item);
             if (net is Server)
             {
-                actor.AI.State.ItemPreferences.OnForcedDrop(item); /// TODO better make the ItemPreferencesmanager subscribe to a entitydropitem event, or even a entityspawnevent (slower to check)
+                actor.AI.State.ItemPreferences.ForceDrop(item); /// TODO better make the ItemPreferencesmanager subscribe to a entitydropitem event, or even a entityspawnevent (slower to check)
                 Send(net, actor, item, amount);
             }
         }

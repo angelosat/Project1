@@ -294,9 +294,8 @@ namespace Start_a_Town_.Components
 
         public bool StoreHauled()
         {
-            if (this.HaulSlot.Object == null)
+            if (this.HaulSlot.Object is null)
                 return false;
-            var obj = this.HaulSlot.Object;
             this.Contents.Add(this.HaulSlot.Object);
             //{
             //    // throw? or return false and raise event so we can handle it and display a message : not enough space?

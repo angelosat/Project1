@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 using System;
 
 namespace Start_a_Town_
@@ -7,16 +6,75 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     internal static class PacketsInventory
     {
-        static readonly int _pSync, _pSlot;
+        static readonly PacketId _pSync, _pSlot, _pPlayerForcedDropInventoryItem, _pInventoryDelta;
         static PacketsInventory()
         {
             _pSync = Registry.PacketHandlers.Register(OnInventorySync);
             _pSlot = Registry.PacketHandlers.Register(OnSlotUpdated);
+            _pPlayerForcedDropInventoryItem = Registry.PacketHandlers.Register(OnReceivePlayerForcedDropInventoryItem);
+
+            _pInventoryDelta = Registry.PacketHandlers.Register(OnInventoryDelta);
 
             Registry.MapEventHooksServer.Register<InventoryUpdatedEvent>(SendInventoryUpdated);
             Registry.MapEventHooksServer.Register<SlotUpdatedEvent>(SendSlotUpdated);
 
+            Registry.PlayerInputEventHooks.Register<PlayerForcedDropInventoryItemEvent>(HandlePlayerForcedDropInventoryItem);
+
+            Registry.WorldEventHooksServer.Register<ItemAddedToInventoryEvent>(HandleItemAddedToInventory);
         }
+
+        private static void OnInventoryDelta(NetEndpoint endpoint, Packet packet)
+        {
+            var client = endpoint as Client;
+            var r = packet.PacketReader;
+            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var item = client.World.GetEntity(r.ReadInt32());
+            actor.Inventory.Contents.AddInternal(item);
+        }
+
+        private static void HandleItemAddedToInventory(ItemAddedToInventoryEvent e)
+        {
+            var server = e.Actor.Net as Server;
+            server.BeginPacket(_pInventoryDelta)
+                .Write(e.Actor.RefId)
+                .Write(e.Item.RefId);
+        }
+
+        private static void OnReceivePlayerForcedDropInventoryItem(NetEndpoint endpoint, Packet packet)
+        {
+            var server = endpoint as Server;
+            var map = server.Map;
+            var r = packet.PacketReader;
+            var ownerid = r.ReadInt32();
+            var owner = map.World.GetEntity<Actor>(ownerid);
+            var itemid = r.ReadInt32();
+            var item = map.World.GetEntity(itemid);
+            var count = r.ReadInt32();
+            owner.AI.State.ItemPreferences.ForceDrop(item); 
+            //if (endpoint is Server server)
+            //    SendPlayerForceDropInventoryItem(server, owner, item, count);
+        }
+
+        private static void HandlePlayerForcedDropInventoryItem(PlayerForcedDropInventoryItemEvent e)
+        {
+            var owner = e.Owner as Actor;
+            var item = e.Item;
+            var count = e.Count;
+            var net = owner.Net;
+            if (net is Client client)
+                SendPlayerForceDropInventoryItem(client, owner, item, count);
+            else if (net is Server server)
+                owner.AI.State.ItemPreferences.ForceDrop(item);
+        }
+
+        private static void SendPlayerForceDropInventoryItem(NetEndpoint net, Entity owner, Entity item, int count)
+        {
+            net.BeginPacketImmediate(_pPlayerForcedDropInventoryItem)
+                .Write(owner.RefId)
+                .Write(owner.RefId)
+                .Write(count);
+        }
+
         private static void SendSlotUpdated(SlotUpdatedEvent e)
         {
             e.Write(Server.Instance.BeginPacket(_pSlot));

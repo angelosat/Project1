@@ -1,7 +1,13 @@
-﻿using Start_a_Town_.Components;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
+    class InteractionStoreCarriedLogic : InteractionLogic
+    {
+        internal override void OnFinish(Interaction i)
+        {
+            var actor = i.Context.Actor;
+            actor.Inventory.StoreHauled();
+        }
+    }
     class InteractionStoreHauled : Interaction
     {
         public InteractionStoreHauled()

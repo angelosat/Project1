@@ -27,7 +27,8 @@ namespace Start_a_Town_
                 void drop(GameObject o)
                 {
                     if (actor.IsSpawned && actor.IsTownMember)
-                        PacketDropInventoryItem.Send(o.Net, this.Parent, o, o.StackSize);
+                        Ingame.Instance.Events.Post(new PlayerForcedDropInventoryItemEvent(this.Parent as Entity, o as Entity, o.StackSize));
+                        //PacketDropInventoryItem.Send(o.Net, this.Parent, o, o.StackSize);
                 }
             }
         }
@@ -67,7 +68,6 @@ namespace Start_a_Town_
 
         public void Add(GameObject item)
         {
-           
             if (item.Container == this)
                 throw new Exception();
 
@@ -81,7 +81,7 @@ namespace Start_a_Town_
             }
 
             ((ICollection<GameObject>)this.Contents).Add(item);
-        
+            item.World.Events.Post(new ItemAddedToInventoryEvent(this.Parent as Actor, item as Entity));
             //item.Container?.Remove(item);
             //item.Slot?.Clear();
             //item.Map?.Despawn(item);
@@ -91,7 +91,10 @@ namespace Start_a_Town_
             (this.Parent as Actor).Log.Write($"Stored {item} in inventory");
 
         }
-
+        internal void AddInternal(Entity item)
+        {
+            ((ICollection<GameObject>)this.Contents).Add(item);
+        }
         public void Clear()
         {
             foreach (var i in this.Contents)

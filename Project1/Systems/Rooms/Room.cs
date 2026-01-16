@@ -410,6 +410,7 @@ namespace Start_a_Town_
 
         static GroupBox Create()
         {
+
             var box = new GroupBox();
             Room currentRoom = null;
             IntVec3 center = default;

@@ -469,7 +469,7 @@ namespace Start_a_Town_
                     this.PrefsInternal.Add(p.Role, p);
                 }
             });
-
+            this.BuildItemsToPrefsCache();
             return this;
         }
         internal void ResolveReferences() 
@@ -487,13 +487,26 @@ namespace Start_a_Town_
         #endregion
         #region ISerializableNew implementations
         public static ItemPreferencesManager Create(IDataReader r) => new ItemPreferencesManager().Read(r);
-
+        public ItemPreferencesManager()
+        {
+            
+        }
         public ItemPreferencesManager Read(IDataReader r)
         {
             r.ReadValuesWithInferredKeys(this.PrefsInternal, r => r.Role);
+            this.BuildItemsToPrefsCache();
             return this;
         }
-
+        void BuildItemsToPrefsCache()
+        {
+            this.ItemsToPrefs.Clear();
+            foreach(var pref in this.PrefsInternal.Values)
+            {
+                if(!this.ItemsToPrefs.TryGetValue(pref.Item, out var roleList))
+                    this.ItemsToPrefs[pref.Item] = roleList = [];
+                roleList.Add(pref);
+            }
+        }
         public void Write(IDataWriter w)
         {
             w.WriteValues(this.PrefsInternal);

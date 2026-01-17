@@ -11,9 +11,11 @@ namespace Start_a_Town_
         protected override Context CreateContextInternal() => new Context();
         public override bool CanPerform(InteractionContext ctx)
         {
-            if (ctx.Target.Object.Map != ctx.Actor.Map)
-                return false;
-            return true;
+            if (ctx.Target.Object.Map == ctx.Actor.Map)
+                return true;
+            if (ctx.Actor.Inventory.Contains(ctx.Target.Object))
+                return true;
+            return false;
         }
         public override bool CanFinish(InteractionContext ctx)
         {

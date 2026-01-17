@@ -338,7 +338,7 @@ namespace Start_a_Town_
         {
             if (item.Def == ItemDefOf.Coins) // HACK
                 return true;
-            if (this.PreferencesNew.Values.Any(p => p.Item == item))
+            if (this.PreferencesNew.Values.Any(p => p.Item == item && p.InventoryScore > 0))
                 return true;
             return false;
         }
@@ -371,7 +371,6 @@ namespace Start_a_Town_
                     //preference.Item = null;
                     //preference.InventoryScore = 0;
                     this.UpdatePref(context, null, 0);
-
                     toSync.Add(preference);
                 }
             //foreach (var r in toRemove)
@@ -379,7 +378,7 @@ namespace Start_a_Town_
 
             Packets.SyncDeltas(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]);
 
-            foreach (var i in this.Actor.Map.GetEntities<Tool>())
+            foreach (var i in this.Actor.Map.Entities)
                 if (i != item)
                     this.notScannedYet.Enqueue(i);
         }

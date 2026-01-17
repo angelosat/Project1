@@ -96,7 +96,11 @@ namespace Start_a_Town_
             this.Contents.Add(item);
             this.ItemAdded?.Invoke(item);
         }
-
+        internal void RemoveInternal(Entity item)
+        {
+            this.Contents.Remove(item);
+            this.ItemRemoved ?.Invoke(item);
+        }
         public void Clear()
         {
             foreach (var i in this.Contents)
@@ -121,6 +125,7 @@ namespace Start_a_Town_
             item.Container = null;
             item.Owner = null;
             this.ItemRemoved?.Invoke(item);
+            item.World.Events.Post(new InventoryItemRemovedEvent(this.Parent as Actor, item));
             return ((ICollection<Entity>)this.Contents).Remove(item);
 
         }

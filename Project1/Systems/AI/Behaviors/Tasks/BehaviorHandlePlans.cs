@@ -19,8 +19,9 @@ namespace Start_a_Town_
         }
         private void CleanUp(Actor parent, AIState state)
         {
-            if (parent.Hauled is not null)
-                parent.Interact(new InteractionThrow(true));
+            // dont drop carried item here, let the last cleanup behavior (idle) handle it?
+            //if (parent.Hauled is not null)
+            //    parent.Interact(new InteractionThrow(true));
 
             if (parent.GetEquipmentSlot(GearType.Mainhand) is Entity item)
             {

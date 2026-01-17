@@ -9,6 +9,11 @@ namespace Start_a_Town_
 
         protected override Plan TryPlan(Actor actor)
         {
+            // make this the last fall-back/clean-up planner?
+            // drop any carried item at this point
+            if(actor.Hauled is Entity carried)
+                return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
+
             int BaseWaitTime = 5;
             var composure = actor[TraitDefOf.Composure].Normalized;
             var waitTicks = (int)((BaseWaitTime + (.5f * BaseWaitTime * composure)) * Ticks.PerSecond);

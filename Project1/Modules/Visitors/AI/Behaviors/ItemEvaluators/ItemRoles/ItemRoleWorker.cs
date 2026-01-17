@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
     abstract class ItemRoleWorker
     {

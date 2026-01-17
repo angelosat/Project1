@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverEquipSelf : Planner
+    class EquippingPlanner : Planner
     {
         static Plan TryDropUnnecessaryItems(Actor actor)
         {
@@ -53,9 +53,11 @@ namespace Start_a_Town_
             {
                 if (manager.IsUseful(carried))
                     return new Plan(PlanDefOf.StoreInInventory);
+                else // else fallback to next planner
+                    return null;
             }
 
-            // otherwise query manager for potential map items to go carry/pick up
+            // Query manager for potential map items to go carry/pick up
             var potentialAll = manager.GetPotential();
             foreach (var (role, item, score) in potentialAll)
             {
@@ -68,6 +70,12 @@ namespace Start_a_Town_
                 //return new Plan(PlanDefOf.PickUp) { TargetA = item, AmountA = 1 };
                 return new Plan(PlanDefOf.GoHaul) { TargetA = item, AmountA = 1 };
             }
+
+            // take out from inventory items that are not an item preference
+            if (actor.Inventory.All.FirstOrDefault(i => !actor.ItemPreferences.IsUseful(i)) is Entity junk)
+                //return new Plan(PlanDefOf.DropInventory, item);
+                return new Plan(PlanDefOf.HaulFromInv, junk);
+
             return null;
         }
 

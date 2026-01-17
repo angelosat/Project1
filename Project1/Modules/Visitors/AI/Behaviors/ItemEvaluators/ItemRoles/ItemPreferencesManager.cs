@@ -2,12 +2,12 @@
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     public partial class ItemPreferencesManager : Inspectable, ISaveable, ISerializableNew<ItemPreferencesManager> //IItemPreferencesManager
     {
         static List<ItemRoleDef> _flatItemRolesList;
@@ -16,32 +16,22 @@ namespace Start_a_Town_
         Control _gui;
 
         readonly Actor Actor;
-        readonly Dictionary<ItemRoleDef, (Entity item, int score)> cache = [];
+        readonly Dictionary<ItemRoleDef, (Entity item, int score)> PreCommitScanCache = [];
 
         readonly Dictionary<int, ItemBias> ItemBiases = [];
         readonly Queue<Entity> notScannedYet = [];
         readonly Dictionary<ItemRoleDef, ItemPreference> PrefsInternal = [];
-
-        readonly ReadOnlyDictionary<ItemRoleDef, ItemPreference> PreferencesNew;
+        readonly Dictionary<Entity, List<ItemPreference>> ItemsToPrefs = [];
         readonly Dictionary<int, int> TempIgnore = [];
         readonly HashSet<int> ToDiscard = [];
 
-        ItemPreferencesManager()
-        {
-            //Dictionary<ItemRoleDef, ItemPreference> _preferences = [];
-            foreach (var role in Def.GetDefs<ItemRoleDef>())
-                this.PrefsInternal[role] = new ItemPreference(role);
-            this.PreferencesNew = new(this.PrefsInternal);
-        }
-
-        public ItemPreferencesManager(Actor actor) : this()
+        public ItemPreferencesManager(Actor actor)
         {
             this.Actor = actor;
         }
 
         private void EnqueueNewSpawnedItem(EntitySpawnedEvent e)
         {
-            //if (e.Entity is Tool && !this.TempIgnore.ContainsKey(e.Entity.RefId))
             if (!this.TempIgnore.ContainsKey(e.Entity.RefId))
                 this.notScannedYet.Enqueue(e.Entity);
         }
@@ -54,24 +44,11 @@ namespace Start_a_Town_
                 //.AddColumn("item", 128, p => new Label(() => p.Item?.DebugName ?? "none", () => p.Item?.Select()))
                 .AddColumn("item", 64, p => new Label(() => p.Item?.Label ?? "none", () => p.Item?.Select()))
                 .AddColumn("score", 32, p => new Label(() => p.InventoryScore.ToString()));
-            table.AddItems(this.PreferencesNew.Values);
+            table.AddItems(this.PrefsInternal.Values);
                 
             var box = new ScrollableBoxNewNewNew(table, table.RowWidth, table.RowHeight * 16, ScrollModes.Vertical)
                 .ToWindow($"{this.Actor.Name}'s Item Preferences");
             return box;
-            
-
-
-            throw new Exception();
-            //var table = new TableObservable<ItemPreference>()
-            //    .AddColumn("role", 128, p => new Label(p.Role))
-            //    .AddColumn("item", 128, p => new Label(() => p.Item?.DebugName ?? "none", () => p.Item?.Select()))
-            //    .AddColumn("score", 64, p => new Label(() => p.InventoryScore.ToString()))
-            //    ;//.Bind(this.PreferencesView);
-            //var box = new ScrollableBoxNewNew(table.RowWidth, table.RowHeight * 16, ScrollModes.Vertical)
-            //    .AddControls(table)
-            //    .ToWindow($"{this.Actor.Name}'s Item Preferences");
-            //return box;
         }
 
         static void Init()
@@ -88,20 +65,14 @@ namespace Start_a_Town_
             if (this.Actor.Map != item.Map)
                 return;
             var roles = this.Evaluate(item);
-            if (!roles.Any())
-                return;
-            var finalRoles = roles
-                    .Where(r => this.GetExistingPreference(r.role).score is int existingScore && r.score > existingScore);
-
-            foreach (var r in finalRoles)
+            
+            foreach (var (role, score) in roles)
             {
-                if (cache.TryGetValue(r.role, out var existing))
-                {
-                    if (r.score > existing.score)
-                        cache[r.role] = (item, r.score);
-                }
-                else
-                    cache.Add(r.role, (item, r.score));
+                if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score &&
+                    this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+                    continue;
+
+                this.PreCommitScanCache[role] = (item, score);
             }
         }
         private bool StillValid(Entity i)
@@ -159,20 +130,27 @@ namespace Start_a_Town_
 
         internal void UpdatePref(ItemRoleDef role, Entity item, int score)
         {
-            var pref = this.PrefsInternal[role];
-            pref.Update(item, score);
-            this.PrefsInternal[role] = pref;
+            if (score <= 0)
+            {
+                this.PrefsInternal.Remove(role);
+                return;
+            }
+            this.PrefsInternal[role] = new(role, item, score);
         }
         internal void Commit(ItemRoleDef role, Entity item, int score)
         {
-            var pref = this.PreferencesNew[role];
-            Entity oldItem = pref.Item;
-            int oldScore = pref.InventoryScore;
-            this.UpdatePref(role, item, score);
-            //item.Ownership.Owner = this.Actor;
-
-            Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
-            this.cache.Remove(role);
+            if (this.PrefsInternal.TryGetValue(role, out var oldPref))
+            {
+                var oldItem = oldPref.Item;
+                int oldScore = oldPref.InventoryScore;
+                Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
+            }
+            var pref = new ItemPreference(role, item, score);
+            this.PrefsInternal[role] = pref;
+            if (!this.ItemsToPrefs.TryGetValue(item, out var list))
+                this.ItemsToPrefs[item] = list = [];
+            list.Add(pref);
+            this.PreCommitScanCache.Remove(role);
         }
         internal IEnumerable<(ItemRoleDef role, int score)> Evaluate(Entity item)
         {
@@ -191,16 +169,9 @@ namespace Start_a_Town_
             return allRoles.OrderByDescending(i => i.score).FirstOrDefault();
 
         }
-        internal (Entity item, int score) GetExistingPreference(ItemRoleDef role)
-        {
-            if (this.PreferencesNew.TryGetValue(role, out var existing))
-                return (existing.Item, existing.InventoryScore);
-            return (null, 0);
-        }
-
         internal Entity GetExistingPreference(ItemRoleDef role, out int score)
         {
-            if (this.PreferencesNew.TryGetValue(role, out var existing))
+            if (this.PrefsInternal.TryGetValue(role, out var existing))
             {
                 score = existing.InventoryScore;
                 return existing.Item;
@@ -215,10 +186,10 @@ namespace Start_a_Town_
                 //ScanOne();
                 yield break;
             }
-            if (this.cache.Count == 0)
+            if (this.PreCommitScanCache.Count == 0)
                 yield break;
             var toRemove = new List<ItemRoleDef>();
-            foreach (var (con, (i, score)) in this.cache)
+            foreach (var (con, (i, score)) in this.PreCommitScanCache)
             {
                 if (!StillValid(i))
                     toRemove.Add(con);
@@ -226,7 +197,7 @@ namespace Start_a_Town_
                     yield return (con, i, score);
             }
             foreach (var r in toRemove)
-                this.cache.Remove(r);
+                this.PreCommitScanCache.Remove(r);
 
         }
 
@@ -262,11 +233,6 @@ namespace Start_a_Town_
             foreach (var (context, pref) in dic)
                 yield return (context, pref.item, pref.score);
         }
-        internal void RemovePreference(ItemRoleDef tag)
-        {
-            this.PreferencesNew[tag].Clear();
-        }
-
         public IEnumerable<Entity> GetJunk()
         {
             this.Validate();
@@ -294,18 +260,12 @@ namespace Start_a_Town_
         public Def GetPreference(Entity item)
         {
             //return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item)?.Role.Context;
-            return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item).Role?.Def; // if itempreferences are struct, then the default returned will have role == null
+            return this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item).Role?.Def; // if itempreferences are struct, then the default returned will have role == null
         }
         public Entity GetPreference(Def context)
         {
             throw new Exception();
-            //return this.GetPreference(RegistryByContext[context]);
         }
-
-        //public int GetScore(Def context, Entity item)
-        //{
-        //    return RegistryByContext[context].Score(this.Actor, item);
-        //}
         public IEnumerable<Entity> GetUselessItems(IEnumerable<Entity> entity)
         {
             var items = this.Actor.Inventory.GetItems();
@@ -316,19 +276,6 @@ namespace Start_a_Town_
 
         public void HandleItem(Entity item)
         {
-            //foreach (var pref in this.PreferencesNew.Values)
-            //{
-            //    var role = pref.Role;
-            //    var score = role.Worker.GetInventoryScore(this.Actor, item, role);
-            //    if (score < 0)
-            //        continue;
-            //    if (score > pref.InventoryScore)
-            //    {
-            //        pref.Item = item;
-            //        pref.InventoryScore = score;
-            //        return; // TODO check 
-            //    }
-            //}
             foreach (var (role, pref) in this.PrefsInternal)
             {
                 var score = role.Worker.GetInventoryScore(this.Actor, item, role);
@@ -345,13 +292,15 @@ namespace Start_a_Town_
         }
         public bool IsPreference(Entity item)
         {
-            return this.PreferencesNew.Values.Any(p => item == p.Item);
+            return this.PrefsInternal.Values.Any(p => item == p.Item);
         }
         public bool IsUseful(Entity item)
         {
             if (item.Def == ItemDefOf.Coins) // HACK
                 return true;
-            if (this.PreferencesNew.Values.Any(p => p.Item == item && p.InventoryScore > 0))
+            //if (this.PrefsInternal.Values.Any(p => p.Item == item && p.InventoryScore > 0))
+            //    return true;
+            if (this.ItemsToPrefs.ContainsKey(item))
                 return true;
             return false;
         }
@@ -378,16 +327,11 @@ namespace Start_a_Town_
             this.TempIgnore[item.RefId] = (int)Ticks.FromSeconds(10);
 
             List<ItemPreference> toSync = [];
-            foreach (var (context, preference) in this.PreferencesNew)
-                if (preference.Item == item)
-                {
-                    //preference.Item = null;
-                    //preference.InventoryScore = 0;
-                    this.UpdatePref(context, null, 0);
-                    toSync.Add(preference);
-                }
-            //foreach (var r in toRemove)
-            //    this.PreferencesNew.Remove(r.Role);
+          
+            if(this.ItemsToPrefs.TryGetValue(item, out var prefs))
+                foreach(var pref in prefs)
+                    this.PrefsInternal.Remove(pref.Role);
+            this.ItemsToPrefs.Remove(item);
 
             Packets.SyncDeltas(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]);
 
@@ -397,20 +341,20 @@ namespace Start_a_Town_
         }
         public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
         {
-            var potential = this.PreferencesNew.Values.Where(p => p.Item != null && filter(p.Item));
+            //var potential = this.PrefsInternal.Values.Where(p => p.Item != null && filter(p.Item));
+            var potential = this.ItemsToPrefs
+                    .Where(e => filter(e.Key))
+                    .SelectMany(e => e.Value);
+
             // TODO: For large inventories, consider replacing SortedDictionary with a simple List<(Entity, int)> + Sort()
             // to reduce allocations and overhead. Current approach is fine for typical small inventories.
-            var byScore = new SortedDictionary<int, List<(Entity, int)>>(Comparer<int>.Create((a, b) => b.CompareTo(a)));
-            foreach (var pref in potential)
-            {
-                var score = pref.Role.Worker.GetSituationalScore(actor, pref.Item, pref.Role);
-                if (!byScore.TryGetValue(score, out var list))
-                    byScore[score] = list = [];
-                list.Add((pref.Item, score));
-            }
-            foreach (var (score, list) in byScore)
-                foreach (var item in list)
-                    yield return item;
+            var scored = potential
+                .Select(pref => (pref.Item, pref.Role.Worker.GetSituationalScore(actor, pref.Item, pref.Role)))
+                .Where(t => t.Item2 != 0)
+                .ToList();
+            scored.Sort((a, b) => b.Item2.CompareTo(a.Item2));
+            foreach (var t in scored)
+                yield return t;
         }
         public IEnumerable<ItemPreference> GetItemsBySituationalScoreNew(Actor actor, Func<Entity, bool> filter)
         {
@@ -435,12 +379,6 @@ namespace Start_a_Town_
                 total += role.GetSituationalScore(this.Actor, item);
             return total;
         }
-        //public void OnMapLoaded()
-        //{
-        //    this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(enqueueNewSpawnedItem);
-        //    foreach (var i in this.Actor.Map.GetEntities<Tool>())
-        //        this.notScannedYet.Enqueue(i);
-        //}
         public void OnSpawn(MapBase newMap)
         {
             foreach (var i in newMap.Entities)
@@ -496,14 +434,11 @@ namespace Start_a_Town_
                 for (int i = 0; i < length; i++)
                 {
                     var role = r.ReadDef<ItemRoleDef>();
-                    //var olditem = (r.ReadInt32() is int oldid && oldid > 0) ? actor.Map.World.GetEntity(oldid) : null;
-                    //var newitem = (r.ReadInt32() is int newid && newid > 0) ? actor.Map.World.GetEntity(newid) : null;
                     var olditemid = r.ReadInt32();
                     var newitemid = r.ReadInt32();
                     var olditem = olditemid > 0 ? actor.Map.World.GetEntity(olditemid) : null;
                     var newitem = newitemid > 0 ? actor.Map.World.GetEntity(newitemid) : null;
                     var score = r.ReadInt32();
-                    //manager.ApplyDelta(role, olditem, newitem, score);
                     manager.UpdatePref(role, newitem, score);
                 }
             }
@@ -531,9 +466,7 @@ namespace Start_a_Town_
             {
                 foreach (var p in pt.LoadListNew<ItemPreference>())
                 {
-                    var existing = this.PreferencesNew[p.Role];
-                    existing.CopyFrom(p);
-                    //this.PreferencesView.Add(existing);
+                    this.PrefsInternal.Add(p.Role, p);
                 }
             });
 
@@ -548,7 +481,7 @@ namespace Start_a_Town_
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            tag.Add(this.PreferencesNew.Values.Where(p => p.Item is not null).Save("Preferences"));
+            tag.Add(this.PrefsInternal.Values.Save("Preferences"));
             return tag;
         }
         #endregion
@@ -557,13 +490,13 @@ namespace Start_a_Town_
 
         public ItemPreferencesManager Read(IDataReader r)
         {
-            this.PreferencesNew.Sync(r);
+            r.ReadValuesWithInferredKeys(this.PrefsInternal, r => r.Role);
             return this;
         }
 
         public void Write(IDataWriter w)
         {
-            this.PreferencesNew.Sync(w);
+            w.WriteValues(this.PrefsInternal);
         }
         #endregion
     }

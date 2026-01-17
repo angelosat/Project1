@@ -28,6 +28,11 @@ namespace Start_a_Town_
             {
                 this.Role = role;
             }
+            internal ItemPreference(ItemRoleDef role, Entity item, int score) : this(role)
+            {
+                this.Item = item;
+                this.InventoryScore = score;
+            }
             internal void Update(Entity item, int score)
             {
                 this.Item = item;

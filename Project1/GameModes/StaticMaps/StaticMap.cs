@@ -293,6 +293,8 @@ namespace Start_a_Town_
                 this.ActiveChunks.Add(key, chunk);
             }
             this.InitChunks();
+            foreach (var entity in this.Entities)
+                entity.ResolveReferences();
 
             //this.HACKpopulateCellArrayFromChunks();
         }
@@ -303,7 +305,7 @@ namespace Start_a_Town_
         //    var mapWidth = Size.Blocks;
         //    var mapHeight = Size.Blocks;
         //    this.Cells = new Cell[mapWidth * mapHeight * MapBase.MaxHeight];
-           
+
         //    foreach (var chunk in this.ActiveChunks.Values)
         //    {
         //        for (int z = 0; z < MapBase.MaxHeight; z++)

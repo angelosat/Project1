@@ -129,10 +129,10 @@ namespace Start_a_Town_.Components
                 comp.InitializeOnce();
         }
 
-        internal void OnAttachedToMap()
+        internal void ResolveReferences()
         {
             foreach (var c in this._inner.Values)
-                c.OnAttachedToMap();
+                c.ResolveReferencesNew();
         }
     }
 

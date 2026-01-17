@@ -181,7 +181,7 @@ namespace Start_a_Town_.AI
         }
         internal void OnAttachedToMap()
         {
-            this.ItemPreferences.OnAttachedToMap();
+            this.ItemPreferences.ResolveReferences();
 
         }
         public void Assign(BehaviorExecutePlan bhav)

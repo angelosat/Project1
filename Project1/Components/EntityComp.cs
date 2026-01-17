@@ -171,7 +171,7 @@ namespace Start_a_Town_.Components
 
         internal virtual void OnKill() { }
 
-        internal virtual void OnAttachedToMap() { }
+        internal virtual void ResolveReferencesNew() { }
 
         public abstract class Spec
         {

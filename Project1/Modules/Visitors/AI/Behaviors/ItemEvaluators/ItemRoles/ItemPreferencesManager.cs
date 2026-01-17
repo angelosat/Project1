@@ -49,6 +49,19 @@ namespace Start_a_Town_
 
         Control GetGui()
         {
+            var table = new Table<ItemPreference>()
+                .AddColumn("role", 128, p => new Label(p.Role.Label))
+                //.AddColumn("item", 128, p => new Label(() => p.Item?.DebugName ?? "none", () => p.Item?.Select()))
+                .AddColumn("item", 64, p => new Label(() => p.Item?.Label ?? "none", () => p.Item?.Select()))
+                .AddColumn("score", 32, p => new Label(() => p.InventoryScore.ToString()));
+            table.AddItems(this.PreferencesNew.Values);
+                
+            var box = new ScrollableBoxNewNewNew(table, table.RowWidth, table.RowHeight * 16, ScrollModes.Vertical)
+                .ToWindow($"{this.Actor.Name}'s Item Preferences");
+            return box;
+            
+
+
             throw new Exception();
             //var table = new TableObservable<ItemPreference>()
             //    .AddColumn("role", 128, p => new Label(p.Role))
@@ -430,7 +443,7 @@ namespace Start_a_Town_
         //}
         public void OnSpawn(MapBase newMap)
         {
-            foreach (var i in newMap.GetEntities<Tool>())
+            foreach (var i in newMap.Entities)
                 this.notScannedYet.Enqueue(i);
             newMap.Events.ListenTo<EntitySpawnedEvent>(EnqueueNewSpawnedItem);
         }
@@ -526,8 +539,10 @@ namespace Start_a_Town_
 
             return this;
         }
-        internal void OnAttachedToMap() 
+        internal void ResolveReferences() 
         {
+            foreach (var i in this.Actor.Map.Entities)
+                this.notScannedYet.Enqueue(i);
             this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(EnqueueNewSpawnedItem);
         }
         public SaveTag Save(string name = "")

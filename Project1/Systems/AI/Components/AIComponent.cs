@@ -79,7 +79,7 @@ namespace Start_a_Town_
         {
             this.State.ResolveReferences();
         }
-        internal override void OnAttachedToMap()
+        internal override void ResolveReferencesNew()
         {
             this.State.OnAttachedToMap();
         }

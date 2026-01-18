@@ -1303,7 +1303,8 @@ namespace Start_a_Town_
         {
             get
             {
-                return this.GetComponent<ConsumableComponent>()?.Effects.OfType<NeedEffect>().Any(e => e.Type == NeedDefOf.Hunger) ?? false;
+                throw new Exception();
+                //return this.GetComponent<ConsumableComponent>()?.Effects.OfType<NeedEffect>().Any(e => e.Type == NeedDefOf.Hunger) ?? false;
             }
         }
         

@@ -18,42 +18,48 @@ namespace Start_a_Town_.Components
         public override string Name { get; } = "Consumable";
 
         //public LootTable Byproducts;
-        public List<ConsumableEffect> Effects = new List<ConsumableEffect>();
+        //public List<ConsumableEffect> Effects = [];
+        public List<EntityEffectWrapper> EffectsNew = [];
         public GameObject Seeds;
         public ItemMaterialAmount[] Ingredients;
 
-        public ConsumableComponent InitIngredients(params ItemMaterialAmount[] ingredients)
-        {
-            this.Ingredients = ingredients;
-            return this;
-        }
+        //public ConsumableComponent InitIngredients(params ItemMaterialAmount[] ingredients)
+        //{
+        //    this.Ingredients = ingredients;
+        //    return this;
+        //}
 
-        public ConsumableComponent()
-        {
+        //public ConsumableComponent()
+        //{
 
-        }
-        public ConsumableComponent(ConsumableComponent toCopy)
-        {
-            this.Effects = toCopy.Effects;
-        }
+        //}
+        //public ConsumableComponent(ConsumableComponent toCopy)
+        //{
+        //    this.Effects = toCopy.Effects;
+        //}
         
         public override void OnTooltipCreated(GameObject parent, UI.Control tooltip)
         {
-            foreach (var effect in this.Effects)
+            //foreach (var effect in this.Effects)
+            //    tooltip.Controls.Add(
+            //        new Label(effect.ToString()) { Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.ForestGreen }
+            //        );
+            foreach (var effect in this.EffectsNew)
                 tooltip.Controls.Add(
-                    new Label(effect.ToString()) { Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.ForestGreen }
+                    new Label(effect) { Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.ForestGreen }
                     );
         }
-
-        public override object Clone()
+        internal override void CopyFrom(EntityComp source)
         {
-            return new ConsumableComponent(this);
+            var comp = source as ConsumableComponent;
+            foreach (var f in comp.EffectsNew)
+                this.EffectsNew.Add(new EntityEffectWrapper(f.Def,  f.Target, f.Value));
         }
 
         internal void Consume(GameObject actor)
         {
-            foreach (var effect in this.Effects)
-                effect.Apply(actor);
+            //foreach (var effect in this.Effects)
+            //    effect.Apply(actor);
 
             //if (this.Byproducts == null)
             //    return;
@@ -70,6 +76,15 @@ namespace Start_a_Town_.Components
         public override void GetInteractions(GameObject parent, List<Interaction> actions)
         {
             actions.Add(new InteractionConsume());
+        }
+
+        public override void Write(IDataWriter w)
+        {
+            w.Write(this.EffectsNew);
+        }
+        public override void Read(IDataReader r)
+        {
+            this.EffectsNew = r.ReadList<EntityEffectWrapper>();
         }
 
         public class InteractionConsume : Interaction
@@ -110,18 +125,18 @@ namespace Start_a_Town_.Components
             }
         }
         
-        public new class Props : Spec<ConsumableComponent>
+        public new class Spec : Spec<ConsumableComponent>
         {
             public NeedEffect[] Effects = [];
             public FoodClass[] FoodClasses = [];
             Func<Entity, Entity> Byproduct;
-            public Props()
+            public Spec()
             {
 
             }
             protected override void ApplyDefaultsTo(ConsumableComponent comp)
             {
-                comp.Effects = [.. this.Effects];
+                //comp.Effects = [.. this.Effects];
             }
         }
     }

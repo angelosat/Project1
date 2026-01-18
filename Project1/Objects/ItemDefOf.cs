@@ -35,13 +35,12 @@ namespace Start_a_Town_
             CompTypes = [typeof(ConsumableComponent)],
             Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull)
         }
-            .SetMadeFrom(MaterialTypeDefOf.Fruit)
-            .AddSpec(new ConsumableComponent.Props()
-            {
-                FoodClasses = [FoodClass.Fruit],
-                Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]
-            })
-            //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.BerriesFull)))
+            //.SetMadeFrom(MaterialTypeDefOf.Fruit)
+            //.AddSpec(new ConsumableComponent.Spec()
+            //{
+            //    FoodClasses = [FoodClass.Fruit],
+            //    Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]
+            //})
             ;
 
         static public readonly ItemDef Meat = new ItemDef("Meat", typeof(Entity))
@@ -53,7 +52,7 @@ namespace Start_a_Town_
             Body = new Bone(BoneDefOf.Item, Sprite.Default)
         }.SetMadeFrom(MaterialTypeDefOf.Flesh)
             //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
-            .AddSpec(new ConsumableComponent.Props()
+            .AddSpec(new ConsumableComponent.Spec()
             {
                 Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]
             });
@@ -76,7 +75,7 @@ namespace Start_a_Town_
             CompTypes = [typeof(ConsumableComponent)]
         }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Flesh)
             //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
-            .AddSpec(new ConsumableComponent.Props() { FoodClasses = [FoodClass.Dish] });
+            .AddSpec(new ConsumableComponent.Spec() { FoodClasses = [FoodClass.Dish] });
 
 
         static public readonly ItemDef UnfinishedCraft = new ItemDef("UnfinishedCraft", typeof(Entity))

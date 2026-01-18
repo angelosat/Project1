@@ -2,13 +2,8 @@
 
 namespace Start_a_Town_
 {
-    public class EffectDef : Def
+    public class EffectDef(string name, EntityEffectWorker worker) : Def(name)
     {
-        internal EntityEffectWorker Worker;
-
-        public EffectDef(string name, EntityEffectWorker worker):base(name)
-        {
-            this.Worker = worker;
-        }
+        internal EntityEffectWorker Worker = worker;
     }
 }

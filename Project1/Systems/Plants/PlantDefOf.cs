@@ -57,6 +57,7 @@ namespace Start_a_Town_
 
             var allPlants = Def.GetDefs<PlantSpeciesDef>();
             GameObject.AddTemplates(allPlants.Select(p => p.Create(PlantStageDefOf.Seed)));
+            GameObject.AddTemplates(allPlants.Where(p => p.ProducesFruit).Select(p => p.Create(PlantStageDefOf.Fruit)));
 
             Def.Register(new Reaction("Extract Seeds", SkillDefOf.Argiculture)
                 .AddBuildSite(IsWorkstation.Types.PlantProcessing)

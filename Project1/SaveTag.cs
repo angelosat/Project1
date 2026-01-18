@@ -455,6 +455,7 @@ namespace Start_a_Town_
             this.Add(save);
         }
         public int LoadInt(string name) => (int)this[name].Value;
+        public float LoadSingle(string name) => (float)this[name].Value;
         public byte LoadByte(string name) => (byte)this[name].Value;
         
         public ulong LoadUlong(string name)

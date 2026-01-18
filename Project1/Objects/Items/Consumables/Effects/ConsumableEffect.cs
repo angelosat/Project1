@@ -2,6 +2,9 @@
 {
     public abstract class ConsumableEffect
     {
+        EffectDef Def;
+        Def Tag;
+        float Delta;
         public abstract void Apply(GameObject actor);
     }
 }

@@ -31,7 +31,16 @@ namespace Start_a_Town_
                 entity.Name = entity.Name.Insert(0, $"{species.FruitMaterial.Label} ");
             return entity;
         }
-
+        static Entity CreateFruit(PlantSpeciesDef species)
+        {
+            var entity = ItemDefOf.Fruit.Create();
+            entity.Profile = species;
+            var comp = entity.GetComponent<ConsumableComponent>();
+            comp.EffectsNew.Add(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, 20));
+            entity.Name = $"{species.Label}";
+            entity.SetMaterial(species.FruitMaterial);
+            return entity;
+        }
         //public Entity Create(Def def, ItemCreationArgs args)
         //{
         //    if (args is not Args a)
@@ -54,6 +63,7 @@ namespace Start_a_Town_
             }
             if (form == PlantStageDefOf.Seed) return CreateSeeds(species);
             else if (form == PlantStageDefOf.Plant) return CreatePlant(species);
+            else if (form == PlantStageDefOf.Fruit) return CreateFruit(species);
             throw new InvalidOperationException();
         }
 

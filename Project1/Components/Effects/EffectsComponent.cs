@@ -1,6 +1,8 @@
 ﻿using Start_a_Town_.Components;
 using Start_a_Town_.UI;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_
 {
@@ -11,16 +13,30 @@ namespace Start_a_Town_
         public override string Name => "Effects";
 
         List<EntityEffectWrapper> ActiveEffects = [];
-
+        public void Apply(EntityEffectWrapper effect)
+        {
+            this.ActiveEffects.Add(effect);
+            effect.Def.Worker.OnStart(this.Owner as Actor, effect);
+        }
+        [Obsolete("add EntityEffectWrapper instead")]
         public void Apply(EffectDef effect)
         {
-            this.ActiveEffects.Add(new EntityEffectWrapper(effect));
-            effect.Worker.OnStart(this.Owner as Actor);
+            var wrapper = new EntityEffectWrapper(effect, null, 1);
+            this.ActiveEffects.Add(wrapper);
+            wrapper.Start(this.Owner as Actor);
+            //effect.Worker.OnStart(this.Owner as Actor, wrapper);
         }
         internal void Remove(EffectDef effect)
         {
-            this.ActiveEffects.RemoveAll(e => e.Def == effect);
-            effect.Worker.OnFinish(this.Owner as Actor);
+            var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect);
+            foreach (var f in relevantEffects)
+            {
+                //f.Def.Worker.OnFinish(this.Owner as Actor, f);
+                f.Finish(this.Owner as Actor);
+                this.ActiveEffects.Remove(f);
+            }
+            //this.ActiveEffects.RemoveAll(e => e.Def == effect);
+            //effect.Worker.OnFinish(this.Owner as Actor);
         }
 
         public override void Write(IDataWriter w)

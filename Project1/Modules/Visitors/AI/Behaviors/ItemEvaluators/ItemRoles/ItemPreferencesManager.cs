@@ -45,9 +45,24 @@ namespace Start_a_Town_
                 .AddColumn("item", 64, p => new Label(() => p.Item?.Label ?? "none", () => p.Item?.Select()))
                 .AddColumn("score", 32, p => new Label(() => p.InventoryScore.ToString()));
             table.AddItems(this.PrefsInternal.Values);
-                
-            var box = new ScrollableBoxNewNewNew(table, table.RowWidth, table.RowHeight * 16, ScrollModes.Vertical)
+
+            this.PrefUpdated += addOrUpdate;
+            this.PrefRemoved += table.RemoveItem;
+
+            void addOrUpdate(ItemPreference pref)
+            {
+                if (table.GetControlFromItem(pref) is Control control) control.Invalidate(true);
+                else table.AddItem(pref);
+            }
+            
+            //var box = new ScrollableBoxNewNewNew(table, table.RowWidth, table.RowHeight * 16, ScrollModes.Vertical)
+            var box = new ScrollableBoxNewNewNew(table, table.RowWidth, 200, ScrollModes.Vertical)
                 .ToWindow($"{this.Actor.Name}'s Item Preferences");
+            box.HideAction = () =>
+            {
+                this.PrefUpdated -= table.AddItem;
+                this.PrefRemoved -= table.RemoveItem;
+            };
             return box;
         }
 
@@ -127,15 +142,20 @@ namespace Start_a_Town_
             return flat;
         }
         bool IsScanning => notScannedYet.Count > 0;
-
+        event Action<ItemPreference> PrefUpdated;
+        event Action<ItemPreference> PrefRemoved;
         internal void UpdatePref(ItemRoleDef role, Entity item, int score)
         {
             if (score <= 0)
             {
+                if(this.PrefsInternal.TryGetValue(role, out var existing))
+                    this.PrefRemoved?.Invoke(existing);
                 this.PrefsInternal.Remove(role);
                 return;
             }
-            this.PrefsInternal[role] = new(role, item, score);
+            var pref = new ItemPreference(role, item, score);
+            this.PrefsInternal[role] = pref;
+            this.PrefUpdated?.Invoke(pref);
         }
         internal void Commit(ItemRoleDef role, Entity item, int score)
         {
@@ -144,12 +164,14 @@ namespace Start_a_Town_
                 var oldItem = oldPref.Item;
                 int oldScore = oldPref.InventoryScore;
                 Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
+                return;
             }
             var pref = new ItemPreference(role, item, score);
             this.PrefsInternal[role] = pref;
             if (!this.ItemsToPrefs.TryGetValue(item, out var list))
                 this.ItemsToPrefs[item] = list = [];
             list.Add(pref);
+            Packets.SyncDeltas(this.Actor, [(role, null, item, score)]);
             this.PreCommitScanCache.Remove(role);
         }
         internal IEnumerable<(ItemRoleDef role, int score)> Evaluate(Entity item)
@@ -327,10 +349,13 @@ namespace Start_a_Town_
             this.TempIgnore[item.RefId] = (int)Ticks.FromSeconds(10);
 
             List<ItemPreference> toSync = [];
-          
-            if(this.ItemsToPrefs.TryGetValue(item, out var prefs))
-                foreach(var pref in prefs)
+
+            if (this.ItemsToPrefs.TryGetValue(item, out var prefs))
+                foreach (var pref in prefs)
+                {
                     this.PrefsInternal.Remove(pref.Role);
+                    toSync.Add(pref);
+                }
             this.ItemsToPrefs.Remove(item);
 
             Packets.SyncDeltas(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]);

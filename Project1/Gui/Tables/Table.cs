@@ -91,6 +91,7 @@ namespace Start_a_Town_.UI
             });
             this.AddControls(newControls.ToArray());
         }
+        internal Control GetControlFromItem(TObject tag) => this.Controls.FirstOrDefault(c => c.Tag.Equals(tag));
         //Control AddItem(TObject item)
         //{
         //    //var row = new GroupBox(this.RowWidth, Label.DefaultHeight) { BackgroundColor = DefaultRowColor };
@@ -137,6 +138,8 @@ namespace Start_a_Town_.UI
             var validControls = this.Controls.Where(c => filter((TObject)c.Tag)).ToArray();
             this.AddControlsBottomLeft(validControls);
         }
+
+       
 
         class Column
         {

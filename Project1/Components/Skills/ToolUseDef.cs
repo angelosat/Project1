@@ -1,6 +1,6 @@
 ﻿namespace Start_a_Town_
 {
-    public class ToolUseDef : Def/*, IItemPreferenceContext*/
+    public class ToolUseDef : Def
     {
         public string Description { get; protected set; }
 

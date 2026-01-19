@@ -60,7 +60,7 @@ namespace Start_a_Town_
         }
         public static void FindTool(Actor actor, Plan task, JobDef job)
         {
-            task.Tool = FindTool(actor, job);
+            //task.Tool = FindTool(actor, job);
         }
         public static TargetArgs FindTool(Actor actor, JobDef job)
         {

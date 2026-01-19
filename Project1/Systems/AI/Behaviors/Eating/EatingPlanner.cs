@@ -9,24 +9,18 @@ namespace Start_a_Town_.AI
         protected override Plan TryPlan(Actor actor)
         {
             // if food in hands, eat it
-            if (actor.Hauled is Entity carried)
-            {
-                // if carrying non-consumable, exit
-                if (!carried.TryGetComponent<ConsumableComponent>(out var comp))
-                    return null;
+            if (actor.Hauled is not Entity carried)
+                return null;
 
-                // if carrying non-food, exit
-                if (!comp.HasEffectTarget(NeedDefOf.Hunger))
-                    return null;
+            // if carrying non-consumable, exit
+            if (!carried.TryGetComponent<ConsumableComponent>(out var comp))
+                return null;
 
-                return new Plan(PlanDefOf.Eating, carried);
-            }
+            // if carrying non-food, exit
+            if (!comp.HasEffectTarget(NeedDefOf.Hunger))
+                return null;
 
-            // if no food in hands, move food from inventory to hands, if any
-
-            // if no food in inventory search the map?
-
-            return null;
+            return new Plan(PlanDefOf.Eating, carried);
         }
         protected Plan TryPlanOld(Actor actor)
         {

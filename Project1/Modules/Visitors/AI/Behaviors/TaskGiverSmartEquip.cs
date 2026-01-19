@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Start_a_Town_.AI.Behaviors
 {
@@ -23,15 +21,15 @@ namespace Start_a_Town_.AI.Behaviors
                 if (currentItemScore > 0)
                     bestInSlot = (slot: gt, item: current, score: currentItemScore);
 
-                foreach (var candidate in candidates)
+                foreach (var (item, score) in candidates)
                 {
-                    if (candidate.score > 0)
+                    if (score > 0)
                     {
-                        if (!actor.Inventory.Contains(candidate.item))
+                        if (!actor.Inventory.Contains(item))
                             continue;
                         //do more checks here if necessary
-                        if (candidate.score > bestInSlot.score)
-                            bestInSlot = (gt, candidate.item, candidate.score);
+                        if (score > bestInSlot.score)
+                            bestInSlot = (gt, item, score);
                     }
                 }
                 bestPerSlot[gt] = new(gt, current, bestInSlot.item, bestInSlot.score);
@@ -63,6 +61,21 @@ namespace Start_a_Town_.AI.Behaviors
                 else if (mostImpactful.score < 0)
                     return new Plan(PlanDefOf.Unequip, new TargetArgs(mostImpactful.item));
             }
+
+            // evaluate if there's an item to be moved from inventory to the haul/carry slot
+            (Entity item, int score) best = default; 
+            foreach(var item in actor.Inventory.Contents)
+            {
+                var score = manager.GetTotalSituationalScoreFor(item);
+                if (score <= 0)
+                    continue;
+                if (score < best.score)
+                    continue;
+                best.item = item;
+                best.score = score;
+            }
+            if (best.item is not null)
+                return new Plan(PlanDefOf.RetrieveFromInventory, best.item);
 
             return null;
         }

@@ -90,7 +90,7 @@ namespace Start_a_Town_
         {
             var bhav = new BehaviorCustom()
             {
-                FailCondition = a => a.CurrentTask.Tool.HasObject,
+                FailCondition = a => throw new Exception(),// a.CurrentTask.Tool.HasObject,
                 Label = "ToolNotRequired"
             };
             return bhav;

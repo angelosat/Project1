@@ -26,9 +26,10 @@
                     else
                     {
                         var task = new Plan(PlanDefOf.Chop, plant)
-                        {
-                            Tool = FindTool(actor, JobDefOf.Lumberjack)
-                        };
+                        //{
+                        //    Tool = FindTool(actor, JobDefOf.Lumberjack)
+                        //}
+                        ;
                         return task;
                     }
                 }

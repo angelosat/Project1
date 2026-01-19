@@ -331,8 +331,8 @@ namespace Start_a_Town_
                 //throw new NotImplementedException();
                 actor.Skills.Increase(skill, (int)this.TotalWorkApplied);
             }
-            this.Done();
-            this.Finish();
+            //this.Done();
+            //this.Finish();
         }
         bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
         protected virtual float WorkDifficulty { get; } = 1;

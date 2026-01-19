@@ -1,11 +1,11 @@
 ﻿using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 #nullable enable
 namespace Start_a_Town_
 {
+    public enum PlannerContinuation { Continue, Yield }
     public enum TargetIndex { None, A, B, C, Tool = 15 }
     public sealed class Plan
     {
@@ -14,7 +14,7 @@ namespace Start_a_Town_
         {
             return targetInd switch
             {
-                TargetIndex.Tool => this.Tool,
+                //TargetIndex.Tool => this.Tool,
                 TargetIndex.A => this.TargetA,
                 TargetIndex.B => this.TargetB,
                 TargetIndex.C => this.TargetC,
@@ -187,7 +187,8 @@ namespace Start_a_Town_
             this.ID = ReservationManager.GetNextTaskID();
         }
         public string Name => "unnamed task";
-        public TargetArgs Tool = TargetArgs.Null;
+        //public TargetArgs Tool = TargetArgs.Null;
+        public PlannerContinuation Continuation;
         public TargetArgs TargetA = TargetArgs.Null;
         public TargetArgs TargetB = TargetArgs.Null;
         public TargetArgs TargetC = TargetArgs.Null;
@@ -333,7 +334,7 @@ namespace Start_a_Town_
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             this.Def.Save(tag, "Def");
             tag.Add(this.ID.Save("ID"));
-            tag.Add(this.Tool.Save("Tool"));
+            //tag.Add(this.Tool.Save("Tool"));
             tag.Add(this.TargetA.Save("TargetA"));
             tag.Add(this.TargetB.Save("TargetB"));
             tag.Add(this.TargetC.Save("TargetC"));
@@ -383,6 +384,8 @@ namespace Start_a_Town_
             this.Quest.Save(tag, "QuestToAccept");
             this.Transaction.Save(tag, "Transaction");
 
+            tag.Save("Continuation", (int)this.Continuation);
+
             this.AddSaveData(tag);
             return tag;
         }
@@ -398,7 +401,7 @@ namespace Start_a_Town_
             tag.TryGetTag("TargetB", t => this.TargetB = new TargetArgs(t));
             tag.TryGetTag("TargetC", t => this.TargetC = new TargetArgs(t));
 
-            tag.TryGetTag("Tool", t => this.Tool = new TargetArgs(t));
+            //tag.TryGetTag("Tool", t => this.Tool = new TargetArgs(t));
 
             tag.TryGetTagValueOrDefault("AmountA", out this.AmountA);
             tag.TryGetTagValueOrDefault("AmountB", out this.AmountB);
@@ -444,6 +447,8 @@ namespace Start_a_Town_
             tag.TryGetTagValueOrDefault("ShopID", out this.ShopID);
             tag.TryGetTagValueOrDefault("QuestToAccept", out this.Quest);
             tag.TryGetTag("Transaction", v => this.Transaction = new Transaction(v));
+
+            tag.TryGetTagValue<int>("Continuation", v => this.Continuation = (PlannerContinuation)v);
         }
         internal void SyncToClients(IDataWriter w)
         {
@@ -515,7 +520,7 @@ namespace Start_a_Town_
         internal void MapLoaded(GameObject parent)
         {
             var net = parent.Net;
-            this.Tool.InitializeProvider(net);
+            //this.Tool.InitializeProvider(net);
             this.TargetA.InitializeProvider(net);
             this.TargetB.InitializeProvider(net);
             this.TargetC.InitializeProvider(net);

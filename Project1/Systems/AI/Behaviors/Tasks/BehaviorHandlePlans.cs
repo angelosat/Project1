@@ -71,7 +71,9 @@ namespace Start_a_Town_
                 }
 
                 state.Assign(bhav);
-                this.CurrentPlanner = giver;
+                //return task;
+                // test without planner retention
+                this.CurrentPlanner = task.Continuation == PlannerContinuation.Continue ? giver : null;
                 return task;
             }
 
@@ -146,15 +148,15 @@ namespace Start_a_Town_
                     state.TryAssign(task);
                     break;
                 }
-                var plannerEnum = Planner.UrgentPlanners.GetEnumerator();
-                while 
-                    (
-                    plannerEnum.MoveNext() && 
-                    plannerEnum.Current.FindPlanNew(parent) is var task && 
-                    task is not null
-                    )
-                    if (state.TryAssign(task))
-                        break;
+                //var plannerEnum = Planner.UrgentPlanners.GetEnumerator();
+                //while 
+                //    (
+                //    plannerEnum.MoveNext() && 
+                //    plannerEnum.Current.FindPlanNew(parent) is var task && 
+                //    task is not null
+                //    )
+                //    if (state.TryAssign(task))
+                //        break;
             }
 
             if (state.Behavior is not null)

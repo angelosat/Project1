@@ -193,6 +193,9 @@ namespace Start_a_Town_.Components
             //    return;
             GameObject finalItem;
             var actor = this.Owner as Actor;
+            if (target == actor.Hauled)
+                throw new Exception();
+
             if (!target.IsHaulable)
                 throw new Exception();
             if (amount == 0)

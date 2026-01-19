@@ -286,7 +286,7 @@ namespace Start_a_Town_
         }
         public Entity GetPreference(Def context)
         {
-            throw new Exception();
+            return null;
         }
         public IEnumerable<Entity> GetUselessItems(IEnumerable<Entity> entity)
         {

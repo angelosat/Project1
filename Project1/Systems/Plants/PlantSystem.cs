@@ -36,7 +36,7 @@ namespace Start_a_Town_
             var entity = ItemDefOf.Fruit.Create();
             entity.Profile = species;
             var comp = entity.GetComponent<ConsumableComponent>();
-            comp.EffectsNew.Add(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, 20));
+            comp.EffectsNew.Add(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, Budget: 5, Rate: 0));
             entity.Name = $"{species.Label}";
             entity.SetMaterial(species.FruitMaterial);
             return entity;

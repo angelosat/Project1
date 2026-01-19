@@ -25,7 +25,7 @@ namespace Start_a_Town_.AI.Behaviors
                     actor.Unreserve(previousStack);
                 return carried;
             });
-            var eat = new BehaviorResolveInteraction(FoodInd, new Components.ConsumableComponent.InteractionConsume());
+            var eat = new BehaviorResolveInteraction(FoodInd, new ConsumableComponent.InteractionConsume());
 
             yield return BehaviorHelper.JumpIfTrue(eat, () => this.Table.Type == TargetType.Null);
 

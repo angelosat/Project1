@@ -33,7 +33,7 @@ namespace Start_a_Town_
         public float DecayDelay, DecayDelayMax = 3;
         public float _Value;
         public double LastTick;
-        public float Value
+        public int Value
         {
             get => this._valueInt;
             set => this._valueInt = (int)MathHelper.Clamp(value, 0, 100);
@@ -84,7 +84,12 @@ namespace Start_a_Town_
 
         public NeedDef Def => this.NeedDef;
 
-        public void SetValue(float newVal, GameObject parent)
+        public void SetValue(int value)
+        {
+            this.Value = value;
+            this.Owner.World.Events.Post(new ActorNeedUpdatedEvent(this));
+        }
+        public void SetValue(int newVal, GameObject parent)
         {
             float oldVal = Value;
             if (oldVal >= Tolerance && newVal < Tolerance)
@@ -94,7 +99,12 @@ namespace Start_a_Town_
             if (this.Value > oldVal)
                 this.DecayDelay = DecayDelayMax;
         }
-
+        public void ApplyDelta(int delta)
+        {
+            this.SetValue(this.Value + delta);
+            //this.Value += delta;
+            //this.Owner.World.Events.Post(new event)
+        }
         public Bar ToBar(GameObject parent)
         {
             var bar = new Bar()
@@ -138,7 +148,7 @@ namespace Start_a_Town_
         public Need Read(IDataReader r)
         {
             this.NeedDef = r.ReadDef<NeedDef>();
-            this.Value = r.ReadSingle();
+            this.Value = r.ReadInt32();
             this.Mod = r.ReadSingle();
             this.DecayDelay = r.ReadSingle();
             this.Mods.Read(r);
@@ -164,7 +174,9 @@ namespace Start_a_Town_
             var need = new Need();
             //tag.TryGetTagValue<string>("Def", v => need.NeedDef = Def.GetDef<NeedDef>(v));
             need.NeedDef = tag.LoadDef<NeedDef>("Def");
-            tag.TryGetTagValueOrDefault<float>("Value", out need._Value);
+            //tag.TryGetTagValueOrDefault<float>("Value", out need._Value);
+            //need.Value = tag.LoadInt("Value");
+            need.Value = tag.LoadInt("Value");
             tag.TryGetTagValueOrDefault<float>("Mod", out need.Mod);
             tag.TryGetTagValueOrDefault<float>("DecayTimer", out need.DecayDelay);
             need.Mods.TryLoadMutable(tag, "Mods");

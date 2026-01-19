@@ -4,11 +4,16 @@
     {
         public override void OnStart(Actor actor, EntityEffectWrapper wrapper)
         {
-            actor.GetNeed((NeedDef)wrapper.Target).AddMod(EffectDefOf.ModifyNeed, Ticks.FromMinutes(1));
+            var need = actor.GetNeed((NeedDef)wrapper.Target);
+            if (wrapper.IsInstant)
+                need.ApplyDelta(wrapper.Budget);
+            else
+                need.AddMod(EffectDefOf.ModifyNeed, wrapper.Rate);// Ticks.FromMinutes(1));
         }
         public override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
         {
-            actor.GetNeed((NeedDef)wrapper.Target).RemoveMod(EffectDefOf.ModifyNeed);
+            if (!wrapper.IsInstant)
+                actor.GetNeed((NeedDef)wrapper.Target).RemoveMod(EffectDefOf.ModifyNeed);
         }
     }
 }

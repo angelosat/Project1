@@ -3,9 +3,9 @@
     public class NeedEffect : ConsumableEffect
     {
         public NeedDef Type;
-        public float Value;
+        public int Value;
 
-        public NeedEffect(NeedDef type, float value)
+        public NeedEffect(NeedDef type, int value)
         {
             this.Type = type;
             this.Value = value;

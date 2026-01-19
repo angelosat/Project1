@@ -29,7 +29,7 @@ namespace Start_a_Town_.AI.Behaviors
             var onTable = TargetIndex.C;
             yield return BehaviorHelper.SetTarget(onTable, Table.Global.Above());
             yield return new BehaviorResolveInteraction(onTable, new UseHauledOnTarget());
-            yield return new BehaviorResolveInteraction(FoodInd, new Components.ConsumableComponent.InteractionConsume());
+            yield return new BehaviorResolveInteraction(FoodInd, new ConsumableComponent.InteractionConsume());
             yield return new BehaviorResolveInteraction(() => new InteractionThrow()); // in case somehow more food than necessary is been carried
         }
 

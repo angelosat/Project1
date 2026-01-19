@@ -126,16 +126,16 @@ namespace Start_a_Town_
             return this.Inventory.Count(o => o.Def == ItemDefOf.Coins);
         }
 
-        internal void ModifyNeed(NeedDef def, Func<float, float> modOldValue)
-        {
-            var need = this.GetNeed(def);
-            var old = need.Value;
-            //need.Value = modOldValue(need.Value);
-            need.SetValue(modOldValue(need.Value), this);
-            //this.Net?.EventOccured((int)Message.Types.NeedUpdated, this, need, need.Value - old);
-            this.World.Events.Post(new ActorNeedUpdatedEvent(this, need.NeedDef, need.Value - old));
+        //internal void ModifyNeed(NeedDef def, Func<int, int> modOldValue)
+        //{
+        //    var need = this.GetNeed(def);
+        //    var old = need.Value;
+        //    //need.Value = modOldValue(need.Value);
+        //    need.SetValue(modOldValue(need.Value), this);
+        //    //this.Net?.EventOccured((int)Message.Types.NeedUpdated, this, need, need.Value - old);
+        //    this.World.Events.Post(new ActorNeedUpdatedEvent(this, need.NeedDef, need.Value - old));
 
-        }
+        //}
 
         internal void Carry(Entity item)
         {

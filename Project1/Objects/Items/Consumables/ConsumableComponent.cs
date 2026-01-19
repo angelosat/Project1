@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.UI;
 
-namespace Start_a_Town_.Components
+namespace Start_a_Town_
 {
     enum ConsumableType { Food, Drink }
     class Verbs
@@ -22,6 +23,8 @@ namespace Start_a_Town_.Components
         public List<EntityEffectWrapper> EffectsNew = [];
         public GameObject Seeds;
         public ItemMaterialAmount[] Ingredients;
+
+        public bool HasEffectTarget(Def target) => this.EffectsNew.Any(f => f.Target == target);
 
         //public ConsumableComponent InitIngredients(params ItemMaterialAmount[] ingredients)
         //{
@@ -53,7 +56,7 @@ namespace Start_a_Town_.Components
         {
             var comp = source as ConsumableComponent;
             foreach (var f in comp.EffectsNew)
-                this.EffectsNew.Add(new EntityEffectWrapper(f.Def,  f.Target, f.Value));
+                this.EffectsNew.Add(new EntityEffectWrapper(f.Def,  f.Target, f.Budget, f.Rate));
         }
 
         internal void Consume(GameObject actor)
@@ -69,8 +72,8 @@ namespace Start_a_Town_.Components
         public override void GetInventoryTooltip(GameObject parent, Control tooltip)
         {
             this.OnTooltipCreated(parent, tooltip);
-            var label = new Label("Use: " + new Interactions.InteractionConsume(this).Name) { Font = UIManager.FontBold, TextColorFunc = () => Color.Lime, Location = tooltip.Controls.BottomLeft };
-            tooltip.Controls.Add(label);
+            //var label = new Label("Use: " + new Interactions.InteractionConsume(this).Name) { Font = UIManager.FontBold, TextColorFunc = () => Color.Lime, Location = tooltip.Controls.BottomLeft };
+            //tooltip.Controls.Add(label);
         }
 
         public override void GetInteractions(GameObject parent, List<Interaction> actions)
@@ -86,7 +89,14 @@ namespace Start_a_Town_.Components
         {
             this.EffectsNew = r.ReadList<EntityEffectWrapper>();
         }
-
+        internal override void SaveExtra(SaveTag tag)
+        {
+            tag.Save("Effects", this.EffectsNew);
+        }
+        internal override void LoadExtra(SaveTag tag)
+        {
+            this.EffectsNew = tag.LoadList<EntityEffectWrapper>("Effects");
+        }
         public class InteractionConsume : Interaction
         {
             public InteractionConsume()
@@ -127,7 +137,7 @@ namespace Start_a_Town_.Components
         
         public new class Spec : Spec<ConsumableComponent>
         {
-            public NeedEffect[] Effects = [];
+            //public NeedEffect[] Effects = [];
             public FoodClass[] FoodClasses = [];
             Func<Entity, Entity> Byproduct;
             public Spec()

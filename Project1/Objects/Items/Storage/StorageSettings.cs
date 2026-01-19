@@ -110,7 +110,7 @@ namespace Start_a_Town_
         {
             tag.TryGetTag("Filters", t =>
             {
-                var list = t.LoadList<ItemFilter>();
+                var list = t.LoadArray<ItemFilter>();
                 foreach (var r in list)
                 {
                     if (r is null) // in case an itemdef has been changed/removed

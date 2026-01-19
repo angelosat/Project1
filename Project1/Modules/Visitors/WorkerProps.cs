@@ -34,7 +34,7 @@ namespace Start_a_Town_
         public ISaveable Load(SaveTag tag)
         {
             this.ActorID = tag.GetValue<int>("ActorID");
-            tag.TryGetTag("Jobs", v => this.Jobs = v.LoadList<Job>().ToDictionary(j => j.Def, j => j));
+            tag.TryGetTag("Jobs", v => this.Jobs = v.LoadArray<Job>().ToDictionary(j => j.Def, j => j));
             return this;
         }
         public void Write(IDataWriter w)

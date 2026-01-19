@@ -9,7 +9,7 @@ namespace Start_a_Town_
         {
             if (!item.TryGetComponent<ConsumableComponent>(out var consumableComp))
                 return -100;
-            var nutrition = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Value);
+            var nutrition = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Budget);
             if (nutrition <= 0)
                 return -100;
             var hungerDeficit = actor.GetNeed(NeedDefOf.Hunger).Deficit;
@@ -19,8 +19,8 @@ namespace Start_a_Town_
         {
             if (!item.TryGetComponent<ConsumableComponent>(out var consumableComp))
                 return -1;
-            var nutrition = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Value);
-            return (int)nutrition;
+            var nutrition = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Budget);
+            return nutrition * item.StackMax;
         }
     }
 }

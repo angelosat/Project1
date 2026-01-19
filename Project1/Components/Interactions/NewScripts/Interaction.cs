@@ -107,6 +107,7 @@ namespace Start_a_Town_
             }
             if (this.Def.ProgressHandler?.IsFinished(this) ?? this.State == States.Finished) // TODO: maybe check for failed state too?
             {
+                this.Finish();
                 this.Stop();
                 return;
             }
@@ -156,6 +157,7 @@ namespace Start_a_Town_
         public void Finish()
         {
             this.State = States.Finished;
+            this.Def.Logic.OnFinish(this); 
         }
         internal void Stop()
         {

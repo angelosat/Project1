@@ -18,11 +18,13 @@ namespace Start_a_Town_.Modules.Base
         }
         void HandleActorNeedUpdated(ActorNeedUpdatedEvent e)
         {
-            FloatingText.Create(e.Actor, string.Format("{0:+;-}{1}", e.Value, e.Need.Name),
+            var actor = e.Need.Owner;
+            var value = e.Need.Value;
+            FloatingText.Create(actor, string.Format("{0:+;-}{1}", value, e.Need.Name),
                     ft =>
                     {
                         ft.Font = UIManager.FontBold;
-                        ft.ColorFunc = () => e.Value < 0 ? Color.Red : Color.Lime;
+                        ft.ColorFunc = () => value < 0 ? Color.Red : Color.Lime;
                     });
         }
     }

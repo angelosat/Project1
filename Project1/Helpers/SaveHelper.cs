@@ -617,7 +617,7 @@ namespace Start_a_Town_
             });
             return list;
         }
-        public static T[] LoadList<T>(this SaveTag tag, string name)
+        public static T[] LoadArray<T>(this SaveTag tag, string name)
             where T : class, ISaveable, new()
         {
             var list = tag[name].Value as List<SaveTag>;
@@ -628,7 +628,7 @@ namespace Start_a_Town_
             return array;
 
         }
-        public static T[] LoadListNew<T>(this SaveTag tag, string name)
+        public static T[] LoadArrayNew<T>(this SaveTag tag, string name)
             where T : ISaveableNewNew<T>
         {
             var list = tag[name].Value as List<SaveTag>;
@@ -637,9 +637,18 @@ namespace Start_a_Town_
             for (int i = 0; i < count; i++)
                 array[i] = T.Create(list[i]);
             return array;
-
         }
-        public static T[] LoadList<T>(this SaveTag tag)
+        public static List<T> LoadList<T>(this SaveTag tag, string name)
+            where T : ISaveableNewNew<T>
+        {
+            var listTags = tag[name].Value as List<SaveTag>;
+            var count = listTags.Count;
+            var list = new List<T>(count);
+            for (int i = 0; i < count; i++)
+                list.Add(T.Create(listTags[i]));
+            return list;
+        }
+        public static T[] LoadArray<T>(this SaveTag tag)
             where T : class, ISaveable, new()
         {
             var list = tag.Value as List<SaveTag>;
@@ -649,7 +658,7 @@ namespace Start_a_Town_
                 array[i] = new T().Load(list[i]) as T;
             return array;
         }
-        public static T[] LoadListNewNew<T>(this SaveTag tag)
+        public static T[] LoadArrayNewNew<T>(this SaveTag tag)
             where T : ISaveableNewNew<T>, new()
         {
             var list = tag.Value as List<SaveTag>;
@@ -788,6 +797,7 @@ namespace Start_a_Town_
                 save.Add(item.Save());
             return save;
         }
+        
         public static void Save<T>(this SaveTag tag, string name, ICollection<T> list) where T : ISaveableNewNew<T>
         {
             var save = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Compound);

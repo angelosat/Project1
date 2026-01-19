@@ -47,7 +47,7 @@ namespace Start_a_Town_
         {
             dic.Clear();
             //var values = new List<TValue>();
-            var values = tag.LoadListNewNew<TValue>();
+            var values = tag.LoadArrayNewNew<TValue>();
             foreach(var value in values)
                 dic.Add(keySelector(value), value);
         }
@@ -60,7 +60,7 @@ namespace Start_a_Town_
         public static void LoadValuesWithInferredKeys<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic, Func<TValue, TKey> keySelector) where TValue : ISaveableNewNew<TValue>, new()
         {
             dic.Clear();
-            var values = tag.LoadListNewNew<TValue>();
+            var values = tag.LoadArrayNewNew<TValue>();
             foreach (var n in values)
                 dic.Add(keySelector(n), n);
             //var taglist = tag[name].Value as List<SaveTag>;
@@ -77,7 +77,7 @@ namespace Start_a_Town_
         public static void LoadDefWrappers<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
         {
             dic.Clear();
-            var values = tag.LoadListNewNew<TValue>();
+            var values = tag.LoadArrayNewNew<TValue>();
             foreach (var n in values)
                 if(!dic.TryAdd(n.Def, n))
                     throw new InvalidDataException($"Duplicate def '{n.Def}' while loading {typeof(TValue).Name}");
@@ -85,7 +85,7 @@ namespace Start_a_Town_
         public static void LoadDefWrappersCopyFrom<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic) where TValue : ICopyable, ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
         {
             dic.Clear();
-            var values = tag.LoadListNewNew<TValue>();
+            var values = tag.LoadArrayNewNew<TValue>();
             foreach (var n in values)
                     if (dic.TryGetValue(n.Def, out var nvalue)) nvalue.CopyFrom(n);
                 else

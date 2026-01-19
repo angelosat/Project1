@@ -5,6 +5,7 @@
         public EffectDef Def;
         public float RateMod;
         public float ValueMod;
+        public int? TotalBudget;
         public NeedMod()
         {
 

@@ -17,7 +17,7 @@
     internal class InteractionProgressTimed : IInteractionProgressHandler
     {
         public float GetProgressPercentage(Interaction interaction) => interaction.Progress.Percentage;
-        public void Tick(Interaction interaction) => interaction.AddProgress(1);
+        public void Tick(Interaction interaction) => interaction.Progress.Add(1);// interaction.AddProgress(1);
         public void AddProgress(Interaction interaction, int progress) { }
         public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;
     }

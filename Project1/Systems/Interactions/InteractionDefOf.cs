@@ -78,6 +78,10 @@ namespace Start_a_Town_
         {
             ProgressHandler = new InteractionProgressInstant()
         };
+        public static readonly InteractionDef Eat = new("Eat", typeof(InteractionEatingLogic))
+        {
+            ProgressHandler = new InteractionProgressTimed()
+        };
         static InteractionDefOf()
         {
             Def.Register(typeof(InteractionDefOf));

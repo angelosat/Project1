@@ -77,12 +77,13 @@ namespace Start_a_Town_.Components
         //        PacketNeedModify.Send(actor.Net as Net.Server, actor.RefId, need.NeedDef, value);
         //    return need;
         //}
-        static public Need ModifyNeed(GameObject actor, NeedDef type, float value)
+        static public Need ModifyNeed(GameObject actor, NeedDef type, int value)
         {
             var need = actor.GetNeed(type);
-            need.SetValue(need.Value + value, actor);
-            if (actor.Net is Net.Server)
-                PacketNeedModify.SendModify(actor.Net as Net.Server, actor.RefId, need.NeedDef, value);
+            need.ApplyDelta(value);
+            //need.SetValue(need.Value + value, actor);
+            //if (actor.Net is Net.Server)
+            //    PacketNeedModify.SendModify(actor.Net as Net.Server, actor.RefId, need.NeedDef, value);
             return need;
         }
         public void GetUI(GameObject parent, UI.Control container)
@@ -145,6 +146,8 @@ namespace Start_a_Town_.Components
             //this.NeedsNew.LoadFrom(tag["Needs"]);
             //tag["Needs"].LoadValuesWithInferredKeys(this.NeedsNew, n => n.NeedDef);
             tag.LoadDefWrappers("Needs", this.NeedsNew);
+            this.Resolve();
+
         }
         void Rebuild()
         {
@@ -176,8 +179,8 @@ namespace Start_a_Town_.Components
         internal void OverridePercentage(NeedDef adventuring, float percentage)
         {
             var need = this.NeedsNew[adventuring];
-            need.SetValue(need.Max * percentage, this.Owner);
-            this.Owner.Map.Events.Post(new ActorNeedOverridenEvent(this.Owner as Actor, need.Def, need.Value));
+            need.SetValue((int)(need.Max * percentage), this.Owner);
+            this.Owner.World.Events.Post(new ActorNeedOverridenEvent(this.Owner as Actor, need.Def, need.Value));
         }
 
         public new class Spec: Spec<NeedsComponent>

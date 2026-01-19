@@ -50,12 +50,13 @@ namespace Start_a_Town_
             DefaultMaterialType = MaterialTypeDefOf.Flesh,
             CompTypes = [typeof(ConsumableComponent)],
             Body = new Bone(BoneDefOf.Item, Sprite.Default)
-        }.SetMadeFrom(MaterialTypeDefOf.Flesh)
-            //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
-            .AddSpec(new ConsumableComponent.Spec()
-            {
-                Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]
-            });
+        }
+        //.SetMadeFrom(MaterialTypeDefOf.Flesh)
+            //.AddSpec(new ConsumableComponent.Spec()
+            //{
+            //    Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]
+            //})
+            ;
 
 
         static public readonly ItemDef Pie = new ItemDef("Pie", typeof(Entity))

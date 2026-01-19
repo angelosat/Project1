@@ -1,5 +1,4 @@
-﻿using Start_a_Town_.Components;
-using Start_a_Town_.UI;
+﻿using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +14,19 @@ namespace Start_a_Town_
         List<EntityEffectWrapper> ActiveEffects = [];
         public void Apply(EntityEffectWrapper effect)
         {
-            this.ActiveEffects.Add(effect);
-            effect.Def.Worker.OnStart(this.Owner as Actor, effect);
+            effect.Start(this.Owner as Actor);
+            if (!effect.IsInstant)
+                this.ActiveEffects.Add(effect);
+            else
+                effect.Finish(this.Owner as Actor);
         }
         [Obsolete("add EntityEffectWrapper instead")]
-        public void Apply(EffectDef effect)
+        public void Apply(EffectDef effectt)
         {
-            var wrapper = new EntityEffectWrapper(effect, null, 1);
-            this.ActiveEffects.Add(wrapper);
-            wrapper.Start(this.Owner as Actor);
-            //effect.Worker.OnStart(this.Owner as Actor, wrapper);
+            var wrapper = new EntityEffectWrapper(effectt, null, 1, 0);
+            this.Apply(wrapper);
+            //this.ActiveEffects.Add(wrapper);
+            //wrapper.Start(this.Owner as Actor);
         }
         internal void Remove(EffectDef effect)
         {
@@ -49,11 +51,13 @@ namespace Start_a_Town_
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            tag.Add("ActiveEffects", this.ActiveEffects);
+            //tag.Add("ActiveEffects", this.ActiveEffects);
+            tag.Save("ActiveEffects", this.ActiveEffects);
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            tag.TryLoadList("ActiveEffects", ref this.ActiveEffects);
+            //tag.TryLoadList("ActiveEffects", ref this.ActiveEffects);
+            this.ActiveEffects = tag.LoadList<EntityEffectWrapper>("ActiveEffects");
         }
         internal override GroupBox GetDetailedGui()
         {

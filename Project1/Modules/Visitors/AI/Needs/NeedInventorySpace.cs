@@ -7,8 +7,8 @@
             var actor = need.Owner;
             var inv = actor.Inventory;
             var p = inv.PercentageFull;
-            need.Value = 1 - p * p;
-            need.Value *= 100;
+            need.Value = (int)(need.Max * (1 - p * p));
+            //need.Value *= 100;
         }
     }
     //class NeedInventorySpace : Need

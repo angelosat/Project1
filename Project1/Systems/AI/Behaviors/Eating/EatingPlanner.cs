@@ -1,13 +1,34 @@
 ﻿using System.Linq;
-using Start_a_Town_.Components;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_.AI
 {
-    class TaskGiverEat : Planner
+    class EatingPlanner : Planner
     {
         protected override Plan TryPlan(Actor actor)
+        {
+            // if food in hands, eat it
+            if (actor.Hauled is Entity carried)
+            {
+                // if carrying non-consumable, exit
+                if (!carried.TryGetComponent<ConsumableComponent>(out var comp))
+                    return null;
+
+                // if carrying non-food, exit
+                if (!comp.HasEffectTarget(NeedDefOf.Hunger))
+                    return null;
+
+                return new Plan(PlanDefOf.Eating, carried);
+            }
+
+            // if no food in hands, move food from inventory to hands, if any
+
+            // if no food in inventory search the map?
+
+            return null;
+        }
+        protected Plan TryPlanOld(Actor actor)
         {
             var hunger = actor.GetNeed(NeedDefOf.Hunger);
             

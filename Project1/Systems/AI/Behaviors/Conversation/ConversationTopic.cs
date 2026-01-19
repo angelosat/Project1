@@ -12,14 +12,16 @@ namespace Start_a_Town_
                 var pop = actor.Map.World.Population;
                 foreach (var p in convo.GetParticipants().Where(a => a != actor))
                 {
-                    p.ModifyNeed(AdventurerNeedsDefOf.Guidance, n => 50);
+                    //p.ModifyNeed(AdventurerNeedsDefOf.Guidance, n => 50);
+                    p.GetNeed(AdventurerNeedsDefOf.Guidance).SetValue(50);
                     var props = pop.GetVisitorProperties(p);
                     actor.Net.Report($"{p.Name} received guidance by {actor.Name}");
                 }
             },
             ApplyNew = (source, target) =>
             {
-                target.ModifyNeed(AdventurerNeedsDefOf.Guidance, n => n + 15);
+                //target.ModifyNeed(AdventurerNeedsDefOf.Guidance, n => n + 15);
+                target.GetNeed(AdventurerNeedsDefOf.Guidance).ApplyDelta(15);
                 target.Net.Report($"{source.Name} received guidance by {target.Name}");
             },
             Tick = (source, target) =>

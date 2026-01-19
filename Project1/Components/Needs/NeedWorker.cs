@@ -21,8 +21,6 @@ namespace Start_a_Town_
                 this.TickExtra(need);
             }
         }
-
         protected virtual void TickExtra(Need need) { }
-       
     }
 }

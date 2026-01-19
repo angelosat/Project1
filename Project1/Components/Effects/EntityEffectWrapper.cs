@@ -1,16 +1,16 @@
 ﻿using Start_a_Town_.UI;
-using System.IO;
-
 namespace Start_a_Town_
 {
-    public record EntityEffectWrapper(EffectDef Def, Def Target, float Value) : ISaveableNew, ISerializableNew<EntityEffectWrapper>
+    public record EntityEffectWrapper(EffectDef Def, Def Target, int Budget, int Rate) : ISaveableNewNew<EntityEffectWrapper>, ISerializableNew<EntityEffectWrapper>
     {
+        public bool IsInstant => this.Rate == 0;
+
         //internal EffectDef Def;
         //internal Def Target;
         //internal float Value;
         //EntityEffectWrapper()
         //{
-            
+
         //}
         //public EntityEffectWrapper(EffectDef def)
         //{
@@ -19,24 +19,26 @@ namespace Start_a_Town_
         internal void Start(Actor actor) => this.Def.Worker.OnStart(actor, this);
         internal void Finish(Actor actor) => this.Def.Worker.OnFinish(actor, this);
         
-        public static ISaveableNew Create(SaveTag tag)
-        {
-            var def = tag.LoadDef<EffectDef>("Def");
-            var target = tag.LoadDef<Def>("Target");
-            var value = tag.LoadSingle("Value");
-            return new EntityEffectWrapper(def, target, value);
-            //var e = new EntityEffectWrapper();
-            ////tag.TryGetTagValue<string>("Def", t => e.Def = Start_a_Town_.Def.GetDef<EffectDef>(t));
-            //tag.TryLoadDef("Def", ref e.Def);
-            //return e;
-        }
+        //public static ISaveableNew Create(SaveTag tag)
+        //{
+        //    var def = tag.LoadDef<EffectDef>("Def");
+        //    var target = tag.LoadDef<Def>("Target");
+        //    var value = (int)tag.LoadSingle("Value");
+        //    var rate = tag.LoadInt("Value");
+        //    return new EntityEffectWrapper(def, target, value, rate);
+        //    //var e = new EntityEffectWrapper();
+        //    ////tag.TryGetTagValue<string>("Def", t => e.Def = Start_a_Town_.Def.GetDef<EffectDef>(t));
+        //    //tag.TryLoadDef("Def", ref e.Def);
+        //    //return e;
+        //}
 
         public static EntityEffectWrapper Create(IDataReader r)
         {
             var def = r.ReadDef<EffectDef>();
             var target = r.ReadDef();
-            var value = r.ReadSingle();
-            return new(def, target, value);
+            var value = r.ReadInt32();
+            var rate = r.ReadInt32();
+            return new(def, target, value, rate);
             //var e = new EntityEffectWrapper();
             //e.Def = r.ReadDef<EffectDef>();
             //return e;
@@ -47,7 +49,8 @@ namespace Start_a_Town_
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             this.Def.Save(tag, "Def");
             this.Target.Save(tag, "Target");
-            this.Value.Save(tag, "Value");
+            this.Budget.Save(tag, "Value");
+            this.Rate.Save(tag, "Rate");
             return tag;
         }
 
@@ -60,9 +63,19 @@ namespace Start_a_Town_
         {
             w.Write(this.Def);
             w.Write(this.Target);
-            w.Write(this.Value);
+            w.Write(this.Budget);
+            w.Write(this.Rate);
         }
 
         public EntityEffectWrapper Read(IDataReader r) => throw new System.Exception();// new EntityEffectWrapper().Read(r);
+
+        public static EntityEffectWrapper Create(SaveTag tag)
+        {
+            var def = tag.LoadDef<EffectDef>("Def");
+            var target = tag.LoadDef<Def>("Target");
+            var value = tag.LoadInt("Value");
+            var rate = tag.LoadInt("Rate");
+            return new EntityEffectWrapper(def, target, value, rate);
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace Start_a_Town_
         };
         static public readonly NeedDef Hunger = new("Hunger", typeof(NeedHungerWorker))
         {
-            TaskGiver = new TaskGiverEat(),
+            TaskGiver = new EatingPlanner(),
             //Worker = new NeedHungerWorker(),
             CategoryDef = NeedCategoryDef.NeedCategoryPhysiological
         };

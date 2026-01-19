@@ -1,5 +1,4 @@
 ﻿using Start_a_Town_.Net;
-using System;
 
 namespace Start_a_Town_.Components.Needs
 {
@@ -9,7 +8,7 @@ namespace Start_a_Town_.Components.Needs
         static readonly int pModify, pSet;
         static PacketNeedModify()
         {
-            pModify = Registry.PacketHandlers.Register(ReceiveModify);
+            //pModify = Registry.PacketHandlers.Register(ReceiveModify);
             pSet = Registry.PacketHandlers.Register(ReceiveSet);
         }
 
@@ -19,15 +18,16 @@ namespace Start_a_Town_.Components.Needs
             net.BeginPacketImmediate(pSet)
                 .Write(agentID)
                 .Write(needDef)
-                .Write(value);
+                .Write((int)value);
         }
         private static void ReceiveSet(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
             var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
             var need = r.ReadDef<NeedDef>();
-            var value = r.ReadSingle();
-            actor.GetNeed(need).Value = value;
+            var value = r.ReadInt32();
+            //actor.GetNeed(need).Value = value;
+            actor.GetNeed(need).SetValue(value);
             if(net is Server server)
                 SendSet(net, actor.RefId, need, value);
         }
@@ -43,21 +43,11 @@ namespace Start_a_Town_.Components.Needs
             var r = pck.PacketReader;
             var entity = net.World.GetEntity(r.ReadInt32());
             var need = r.ReadDef<NeedDef>();
-            var value = r.ReadSingle();
+            var value = r.ReadInt32();
             //var need = entity.GetNeed(needName);
             NeedsComponent.ModifyNeed(entity, need, value);
             //entity.Map.EventOccured(Components.Message.Types.NeedUpdated, entity, needName, needVal);
-            entity.Map.World.Events.Post(new ActorNeedUpdatedEvent(entity as Actor, need, value));
+            //entity.Map.World.Events.Post(new ActorNeedUpdatedEvent(need));
         }
-    }
-}
-
-namespace Start_a_Town_
-{
-    class ActorNeedUpdatedEvent(Actor actor, NeedDef need, float value) : IEventPayload
-    {
-        public readonly Actor Actor = actor;
-        public readonly NeedDef Need = need;
-        public readonly float Value = value;
     }
 }

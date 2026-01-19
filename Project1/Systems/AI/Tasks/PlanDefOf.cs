@@ -86,6 +86,7 @@ namespace Start_a_Town_
         static public readonly PlanDef HaulToStockpile = new("StockpileHauling", typeof(TaskBehaviorHaulToStockpile), InteractionDefOf.Place);
         static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround), InteractionDefOf.SleepOnGround);
         static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(TaskBehaviorSleepingNew), InteractionDefOf.SleepInBed);
+        static public readonly PlanDef Eating = new("Eating", typeof(TaskBehaviorEatingNew), InteractionDefOf.Eat);
         static PlanDefOf()
         {
             Def.Register(typeof(PlanDefOf));

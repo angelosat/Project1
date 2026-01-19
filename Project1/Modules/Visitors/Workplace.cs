@@ -266,7 +266,7 @@ namespace Start_a_Town_
             this.Facilities.Load(tag, "Facilities");
             this.Workers.Load(tag, "Workers");
             this.Rooms.TryLoad(tag, "Rooms");
-            if (!tag.TryGetTag("WorkerProps", v => this.WorkerProps = v.LoadList<WorkerProps>().ToDictionary(i => i.ActorID, i => i)))
+            if (!tag.TryGetTag("WorkerProps", v => this.WorkerProps = v.LoadArray<WorkerProps>().ToDictionary(i => i.ActorID, i => i)))
                 this.InitWorkerProps();
             tag.TryGetTagValue<Vector3>("Counter", v => this.Counter = v);
             this.LoadExtra(tag);

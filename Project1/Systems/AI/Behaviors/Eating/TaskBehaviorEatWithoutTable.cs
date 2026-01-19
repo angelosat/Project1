@@ -22,7 +22,7 @@ namespace Start_a_Town_.AI.Behaviors
                     actor.Unreserve(previousStack);
                 return carried;
             });
-            yield return new BehaviorResolveInteraction(FoodInd, new Components.ConsumableComponent.InteractionConsume());
+            yield return new BehaviorResolveInteraction(FoodInd, new ConsumableComponent.InteractionConsume());
             yield return new BehaviorResolveInteraction(() => new InteractionThrow());
         }
 

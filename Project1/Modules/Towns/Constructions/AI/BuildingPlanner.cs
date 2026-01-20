@@ -119,7 +119,7 @@ namespace Start_a_Town_
                 //if (!target.Accepts(item as Entity)) continue;
                 if (!carried.CanAbsorb(item)) continue;
                 var amountToTake = Math.Min(item.StackSize, Math.Min(remaining, carried.StackAvailableSpace));
-                return (item as Entity, amountToTake);
+                return (item, amountToTake);
             }
             return default;
         }

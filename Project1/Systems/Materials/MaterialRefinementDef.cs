@@ -5,5 +5,6 @@
         public readonly Sprite Sprite = sprite;
         public readonly MaterialTypeDef MaterialType = materialType;
         internal MaterialRefinementDef Source = source;
+        public int FuelConsumption, FuelProduction;
     }
 }

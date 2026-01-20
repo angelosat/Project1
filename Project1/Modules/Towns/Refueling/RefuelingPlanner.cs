@@ -1,11 +1,40 @@
-﻿using System;
+﻿using SharpDX.Direct3D9;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace Start_a_Town_
 {
-    class TaskGiverRefueling : Planner
+    class RefuelingPlanner : Planner
     {
+        protected override Plan TryPlan(Actor actor)
+        {
+            var map = actor.Map;
+
+            if (actor.Hauled is Entity carried)
+            {
+                var refuelables = GetRefuelables(map);
+                foreach(var e in refuelables)
+                {
+                    var blockEntity = e.Parent;
+                    foreach(var cell in blockEntity.CellsOccupied)
+                        if(actor.CanReachAndReserve(cell))
+                            return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, cell)) { TargetB = new TargetArgs(blockEntity) };
+                }
+            }
+            var items = map.Stockpiles.AllItems.Where(CraftingSystem.IsFuel);
+            //var fuelitems = items.Where(IsFuel);
+            foreach (var i in items)
+            {
+                if (!actor.CanReachAndReserve(i))
+                    continue;
+                return new Plan(PlanDefOf.GoHaul, i);
+            }
+
+            return null;
+        }
+        static IEnumerable<BlockFuelComp> GetRefuelables(MapBase map) => map.BlockEntities.Where(e => e.HasComp<BlockFuelComp>()).Select(e => e.GetComp<BlockFuelComp>());
+        
+
         //protected override AITask TryAssignTask(Actor actor)
         //{
         //    var refuelables = actor.Town.GetRefuelablesNew();
@@ -43,7 +72,7 @@ namespace Start_a_Town_
         //    }
         //    return null;
         //}
-        protected override Plan TryPlan(Actor actor)
+        protected Plan TryPlanOld(Actor actor)
         {
             return null;
             var refuelables = actor.Town.GetRefuelablesNew();

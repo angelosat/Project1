@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace Start_a_Town_
 {
-    class PlayerSelectionEvent(TargetArgs single = null, TargetArgs add = null, List<TargetArgs> multiple = null) : IEventPayload
+    record struct PlayerSelectionEvent(TargetArgs Single = null, TargetArgs Add = null, List<TargetArgs> Multiple = null) : IEventPayload
     {
-        public readonly TargetArgs Single = single;
-        public readonly TargetArgs Add = add;
-        public readonly List<TargetArgs> Multiple = multiple;
+        //public readonly TargetArgs Single = single;
+        //public readonly TargetArgs Add = add;
+        //public readonly List<TargetArgs> Multiple = multiple;
     }
     [EnsureStaticCtorCall]
     public class ToolManagement : DefaultTool
@@ -127,13 +127,13 @@ namespace Start_a_Town_
                 {
                     if (target.Map.TryGetBlockEntity(target.Global, out var blockEntity))
                     {
-                        Ingame.Instance.Events.Post(new PlayerSelectionEvent(single: new TargetArgs(blockEntity)));
+                        Ingame.Instance.Events.Post(new PlayerSelectionEvent(Single: new TargetArgs(blockEntity)));
                         //SelectionManager.Select(new TargetArgs(blockEntity));
                         return;
                     }
                 }
                 //SelectionManager.Select(target);
-                Ingame.Instance.Events.Post(new PlayerSelectionEvent(single: target));
+                Ingame.Instance.Events.Post(new PlayerSelectionEvent(Single: target));
             }
         }
         

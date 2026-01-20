@@ -11,13 +11,13 @@ namespace Start_a_Town_
         {
             PType = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(Planner def, Actor actor, TargetArgs target)
+        internal static void Send(PlannerDef plannerDef, Actor actor, TargetArgs target)
         {
             var client = actor.Map.Net as Client;
             var w = client.GetOutgoingStreamOrderedReliable();
             w.Write(PType);
             w.Write(actor.RefId);
-            w.Write(def.GetType().FullName);
+            w.Write(plannerDef);
             target.Write(w);
         }
         static void Receive(NetEndpoint net, Packet pck)
@@ -25,9 +25,10 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
             var typeName = r.ReadString();
-            var taskGiver = Activator.CreateInstance(Type.GetType(typeName)) as Planner;
+            //var taskGiver = Activator.CreateInstance(Type.GetType(typeName)) as Planner;
+            var planner = r.ReadDef<PlannerDef>();
             var target = TargetArgs.Read(actor.World.Net, r);
-            actor.ForceTask(taskGiver, target);
+            actor.ForceTask(planner, target);
         }
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
-using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 
 namespace Start_a_Town_.UI
@@ -33,10 +32,11 @@ namespace Start_a_Town_.UI
             var map = net.Map;
             map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
             map.Events.ListenTo<BlockEntityRemovedEvent>(OnBlockEntityRemoved);
+            map.Events.ListenTo<BlockEntityUpdatedEvent>(OnBlockEntityUpdated);
+
             map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
             map.Events.ListenTo<CellsInvalidatedEvent>(OnBlocksUpdated);
         }
-
 
         internal void Init(Ingame ingame)
         {
@@ -83,6 +83,11 @@ namespace Start_a_Town_.UI
                     this.BoxTabs.Hide();
                 }
             }
+        }
+        private void OnBlockEntityUpdated(BlockEntityUpdatedEvent e)
+        {
+            if (this.Selectable == e.Entity)
+                this.PanelInfo.Invalidate(true);
         }
         private void OnZoneDeleted(ZoneDeletedEvent e)
         {

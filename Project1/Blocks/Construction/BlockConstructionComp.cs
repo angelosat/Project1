@@ -14,10 +14,10 @@ namespace Start_a_Town_
                 return new BlockConstructionComp();
             }
         }
-        internal override void Initialize()
-        {
-            this.Parent.Name = $"Construction: {this.Args.Block.Label}";
-        }
+        //internal override void Initialize()
+        //{
+        //    this.Parent.Name = $"Construction: {this.Args.Block.Label}";
+        //}
         public override string Name => $"{this}";
 
         public Block Block => this.Args.Block.Worker;
@@ -37,6 +37,8 @@ namespace Start_a_Town_
             //this.Block = args.Block.Worker;
             //var ingredientCount = this.Block.Size.Volume * ItemDefOf.Ingredient.StackCapacity / this.Block.ConstructionProfile.Dimension;
             this.Args = args;
+            this.Parent.Name = $"Construction: {this.Args.Block.Label}";
+
             var ingredientCount = this.Block.Size.Volume / this.Block.BlockDef.ConstructionProfile.Dimension;
             this.Fulfillment = new(ingredientCount);
             this.Progress = new(100);

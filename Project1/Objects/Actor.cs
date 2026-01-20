@@ -168,9 +168,9 @@ namespace Start_a_Town_
             this.Direction.Normalize();
             this.Net.LogStateChange(this.RefId);
         }
-        internal void ForceTask(Planner taskGiver, TargetArgs target)
+        internal void ForceTask(PlannerDef planner, TargetArgs target)
         {
-            var task = taskGiver.TryTaskOn(this, target, true);
+            var task = planner.Worker.TryTaskOn(this, target, true);
             if (task is not null)
                 this.GetState().ForceTask(task);
         }
@@ -491,14 +491,14 @@ namespace Start_a_Town_
             this.Mobile.Jump(this);
         }
 
-        internal IEnumerable<(PlanDef task, Planner giver)> CanForceTaskOn(TargetArgs target)
+        internal IEnumerable<(PlanDef task, PlannerDef giver)> CanForceTaskOn(TargetArgs target)
         {
             if (target == null || target.Type == TargetType.Null)
                 yield break;
-            var givers = Planner.CitizenTaskGivers.Concat(Planner.EssentialPlanners);
-            foreach (var giver in givers)
-                if (giver.CanGiveTask(this, target) is PlanDef taskDef)
-                    yield return (taskDef, giver);
+            var planners = Planner.CitizenTaskGivers.Concat(Planner.EssentialPlanners);
+            foreach (var planner in planners)
+                if (planner.Worker.CanGiveTask(this, target) is PlanDef taskDef)
+                    yield return (taskDef, planner);
         }
 
         internal bool OwnsOrCanClaim(Entity item)

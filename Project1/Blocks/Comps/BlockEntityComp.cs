@@ -14,6 +14,9 @@ namespace Start_a_Town_
             public abstract BlockEntityComp CreateComp();
         }
 
+        protected event Action Updated;
+        protected void NotifyUpdated() => this.Updated?.Invoke();
+
         public BlockEntity Parent;
         public MapBase Map => this.Parent.Map;
         public IntVec3 Global => this.Parent.OriginGlobal;

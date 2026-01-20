@@ -9,10 +9,11 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     internal static class PacketsBlocks
     {
-            readonly static PacketId _pBlockEntityRemoved, _pBlockEntityAdded, _pBlockSet, _pBlocksUpdated, _pOwnerChanged, _pOwnerChangedByPlayer;
+            readonly static PacketId _pBlockEntityRemoved, _pBlockEntityAdded, _pBlockEntityCompUpdated, _pBlockSet, _pBlocksUpdated, _pOwnerChanged, _pOwnerChangedByPlayer;
         static PacketsBlocks()
         {
             _pBlockEntityRemoved = Registry.PacketHandlers.Register(OnBlockEntityRemoved);
+            _pBlockEntityCompUpdated = Registry.PacketHandlers.Register(OnBlockEntityCompUpdated);
             _pBlocksUpdated = Registry.PacketHandlers.Register(OnBlocksUpdated);
             _pBlockSet = Registry.PacketHandlers.Register(OnBlockSet);
             _pBlockEntityAdded = Registry.PacketHandlers.Register(OnBlockEntityAdded);
@@ -26,6 +27,26 @@ namespace Start_a_Town_
             _pOwnerChanged = Registry.PacketHandlers.Register(OnBlockOwnerChanged);
             _pOwnerChangedByPlayer = Registry.PacketHandlers.Register(OnBlockOwnerChangedByPlayer);
 
+            Registry.MapEventHooksServer.Register<BlockEntityCompUpdatedEvent>(SendBlockEntityCompUpdated);
+
+        }
+
+        private static void OnBlockEntityCompUpdated(NetEndpoint endpoint, Packet packet)
+        {
+            var client = endpoint as Client;
+            var r = packet.PacketReader;
+            _ = r.ReadInt32();
+            var originglobal = r.ReadIntVec3();
+            var blockentity = client.Map.GetBlockEntity(originglobal);
+            //var type = new Type
+        }
+
+        private static void SendBlockEntityCompUpdated(BlockEntityCompUpdatedEvent e)
+        {
+            Server.Instance.BeginPacket(_pBlockEntityCompUpdated)
+                .Write(e.Comp.Parent.Map.ID)
+                .Write(e.Comp.Parent.OriginGlobal)
+                .Write(e.Comp.GetType().FullName);
         }
 
         private static void HandlePlayerChangedBlockOwnerEvent(PlayerChangedBlockOwnerEvent e)

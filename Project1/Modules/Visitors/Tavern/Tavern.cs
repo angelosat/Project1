@@ -55,9 +55,9 @@ namespace Start_a_Town_
             return this.Customers.Any(c => c.Bedroom == r);
         }
 
-        static public readonly JobDef JobWaiter = new("JobTavernWaiter", new TaskGiverTavernWaiter());
-        static public readonly JobDef JobCook = new("JobTavernCook", new TaskGiverTavernCook());
-        static public readonly JobDef JobInnKeeper = new("JobTavernInnKeeper", new TaskGiverInnKeeper());
+        static public readonly JobDef JobWaiter = new("JobTavernWaiter");//, new TaskGiverTavernWaiter());
+        static public readonly JobDef JobCook = new("JobTavernCook");//, new TaskGiverTavernCook());
+        static public readonly JobDef JobInnKeeper = new("JobTavernInnKeeper");//, new TaskGiverInnKeeper());
         static public readonly JobDef[] RolesAll = { JobWaiter, JobCook, JobInnKeeper };
 
         static public readonly HashSet<RoomRoleDef> ValidRooms = new() { RoomRoleDefOf.Bedroom };

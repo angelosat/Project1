@@ -24,7 +24,7 @@ namespace Start_a_Town_
         static public PlannerDef Digging = new("Digging", typeof(DiggingPlanner));
         static public PlannerDef Departure = new("Departure", typeof(DeparturePlanner));
         static public PlannerDef Sleeping = new("Sleeping", typeof(SleepingPlanner));
-        static public PlannerDef Refueling = new("Refueling", typeof(TaskGiverRefueling));
+        static public PlannerDef Refueling = new("Refueling", typeof(RefuelingPlanner));
         static public PlannerDef Inventory = new("Inventory", typeof(InventoryPlanner));
         static public PlannerDef QuestGiving = new("QuestGiving", typeof(TaskGiverOfferQuest));
         static public PlannerDef Switching = new("Switching", typeof(TaskGiverSwitchToggle));

@@ -8,7 +8,7 @@ namespace Start_a_Town_
     {
         public int OwnerID;
 
-        static public readonly JobDef JobRegistry = new("Registry", new TaskGiverTradingOverCounter());
+        static public readonly JobDef JobRegistry = new("Registry");//, new TaskGiverTradingOverCounter());
         static public readonly JobDef JobeRestock = new("Restock");
         static public readonly JobDef[] RolesAll = { JobRegistry, JobeRestock };
 

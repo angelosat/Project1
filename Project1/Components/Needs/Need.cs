@@ -80,7 +80,7 @@ namespace Start_a_Town_
         public float FinalDecayMultiplier => 1;
         public Plan GetTask(GameObject parent) { return null; }
         
-        public Planner Planner { get { return this.NeedDef.Planner.Worker; } }
+        public PlannerDef Planner { get { return this.NeedDef.Planner; } }
 
         public NeedDef Def => this.NeedDef;
 

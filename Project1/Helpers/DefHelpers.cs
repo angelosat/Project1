@@ -6,5 +6,9 @@
         {
             tag.Add(def.Save(name));
         }
+        //public static void Save(this SaveTag tag, string name, Def def)
+        //{
+        //    tag.Add(def.Save(name));
+        //}
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpDX.Direct2D1;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -78,12 +79,21 @@ namespace Start_a_Town_
                 throw new ArgumentException("Def was not of a craftable item", nameof(recipe));
 
         }
+        public static bool IsFuel(Entity i)
+        {
+            return GetFuelValue(i) > 0;
+            //return i.Def == ItemDefOf.Ingredient &&
+            //                i.Profile is MaterialRefinementDef matRefDef &&
+            //                matRefDef.FuelProduction > 0;
+        }
+        public static int GetFuelValue(Entity i) => i.Def == ItemDefOf.Ingredient && i.Profile is MaterialRefinementDef matRefDef ? matRefDef.FuelProduction : 0;
+
     }
-    public record struct CraftingRule(BoneDef Bone, HashSet<MaterialRefinementDef> Forms, int Quantity) 
-    { 
+    public record struct CraftingRule(BoneDef Bone, HashSet<MaterialRefinementDef> Forms, int Quantity)
+    {
         public readonly bool Matches(Entity item, out int missingAmount)
         {
-            if(item.Def == ItemDefOf.Ingredient && this.Forms.Contains(item.Profile))
+            if (item.Def == ItemDefOf.Ingredient && this.Forms.Contains(item.Profile))
             {
                 missingAmount = Quantity - item.StackSize;
                 return true;

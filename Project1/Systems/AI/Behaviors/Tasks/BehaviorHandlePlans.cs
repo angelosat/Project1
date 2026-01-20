@@ -9,7 +9,7 @@ namespace Start_a_Town_
     sealed class BehaviorHandlePlans : Behavior
     {
         static readonly int TimerMax = Ticks.PerSecond / 20;
-        Planner CurrentPlanner;
+        PlannerDef CurrentPlanner;
         int Timer = TimerMax;
         readonly Timer IdleTimer = new(TimerMax);
 
@@ -36,7 +36,7 @@ namespace Start_a_Town_
             state.Reset();
             this.CurrentPlanner = null;
         }
-        static IEnumerable<Planner> GetPlanners(Actor actor)
+        static IEnumerable<PlannerDef> GetPlanners(Actor actor)
         {
             var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);//.OfType<Planner>();
             planners = planners.Concat(Planner.EssentialPlanners);
@@ -47,7 +47,7 @@ namespace Start_a_Town_
             // replace this when meta-roles are fully implemented
             //givers = actor.IsTownMember ? givers.Concat(jobPlanners) : givers.Concat(Planner.VisitorPlanners);
             planners = planners.Concat(jobPlanners);
-            planners = planners.Append(Planner.Idle);
+            planners = planners.Append(PlannerDefOf.Idle);
             return planners;
         }
         Plan FindNewPlan(Actor parent, AIState state)
@@ -59,7 +59,7 @@ namespace Start_a_Town_
             {
                 if (planner is null)
                     continue;
-                var giverResult = planner.FindPlan(parent);
+                var giverResult = planner.Worker.FindPlan(parent);
                 var task = giverResult.Plan;
                 if (task is null)
                     continue;
@@ -96,7 +96,8 @@ namespace Start_a_Town_
             tag.Add(this.Timer.Save("Timer"));
 
             if (this.CurrentPlanner is not null)
-                tag.Add(this.CurrentPlanner.GetType().FullName.Save("CurrentTaskGiver")); ;
+                //tag.Add(this.CurrentPlanner.GetType().FullName.Save("CurrentTaskGiver")); ;
+                tag.Save("CurrentPlanner", this.CurrentPlanner);
         }
 
         internal void EndCurrentPlan(Actor actor)
@@ -107,7 +108,8 @@ namespace Start_a_Town_
         {
             base.Load(tag);
             tag.TryGetTagValueOrDefault("Timer", out this.Timer);
-            tag.TryGetTagValue<string>("CurrentTaskGiver", t => this.CurrentPlanner = Activator.CreateInstance(Type.GetType(t)) as Planner);
+            //tag.TryGetTagValue<string>("CurrentPlanner", t => this.CurrentPlanner = Activator.CreateInstance(Type.GetType(t)) as Planner);
+            tag.TryLoadDefOut("CurrentPlanner", out this.CurrentPlanner);
         }
         internal override void MapLoaded(Actor parent)
         {
@@ -210,14 +212,14 @@ namespace Start_a_Town_
 
                 //if (this.CurrentPlanner != null && (!state.Behavior?.Plan.Def.Idle ?? false))
                 //if (this.HasIntent && !this.IsIdle)
-                if(this.CurrentPlanner is not null && this.CurrentPlanner is not TaskGiverIdle)
+                if(this.CurrentPlanner is not null && this.CurrentPlanner != PlannerDefOf.Idle)
                 {
                     if (tired)
                     {
                         this.CleanUp(parent, state);
                         return BehaviorState.Fail;
                     }
-                    var next = this.CurrentPlanner.FindPlan(parent);
+                    var next = this.CurrentPlanner.Worker.FindPlan(parent);
 
                     if (next.Plan is not null)
                     {

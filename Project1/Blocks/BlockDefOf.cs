@@ -50,7 +50,9 @@
         };
         static public readonly BlockDef Smeltery = new("Smeltery", typeof(BlockWorkstation))
         {
-            BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery)],
+            BlockEntityCompSpecs = [
+                new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery),
+                new BlockFuelComp.Spec()],
             ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Chunk])
         };
         static public readonly BlockDef Kitchen = new("Kitchen", typeof(BlockWorkstation))

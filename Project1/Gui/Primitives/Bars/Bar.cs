@@ -4,6 +4,48 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Start_a_Town_.UI
 {
+    public class Subscription(Action unsubscribe) : IDisposable
+    {
+        Action unsub = unsubscribe;
+        bool disposed;
+
+        public void Dispose()
+        {
+            if (disposed) return;
+            unsub?.Invoke();
+            disposed = true;
+            unsub = null;
+        }
+    }
+    public class BarFinal : ButtonBaseNew
+    {
+        IDisposable subscription;
+        public override Texture2D BackgroundTexture => UIManager.DefaultProgressBar;
+        ProgressInt Progress; 
+        public bool Invert;
+        public BarFinal(ProgressInt progress)
+        {
+            this.Progress = progress;
+            this.Height = UIManager.DefaultProgressBarStrip.Bounds.Height;
+            this.Width = 100;
+            this.BackgroundColor = Color.Black * 0.5f;
+            subscription = progress.Subscribe(() => this.Invalidate(true));
+        }
+        protected override void OnHidden()
+        {
+            subscription.Dispose();
+            subscription = null;
+            base.OnHidden();
+        }
+        public override void OnPaint(SpriteBatch sb)
+        {
+            var percentage = Invert ? (1 - this.Progress.Percentage) : this.Progress.Percentage;
+            var fill = (int)Math.Round(this.Width * percentage);
+            sb.Draw(this.BackgroundTexture, Vector2.Zero, new Rectangle(0, 0, fill, this.Height), Color);//Color.White);
+            var txt = (this.TextFunc != null ? this.TextFunc() : "");
+            UIManager.DrawStringOutlined(sb, Name + txt, Dimensions * 0.5f, new Vector2(0.5f));
+        }
+    }
     public class Bar : ButtonBase
     {
         public bool Invert;

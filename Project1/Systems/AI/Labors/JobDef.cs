@@ -13,12 +13,11 @@ namespace Start_a_Town_
         {
             this.Planners = planners;
         }
-        public IEnumerable<Planner> GetPlanners()
+        public IEnumerable<PlannerDef> GetPlanners()
         {
-            for (int i = 0; i < this.Planners.Length; i++)
-            {
-                yield return this.Planners[i].Worker;
-            }
+            foreach (var p in this.Planners) yield return p;
+            //for (int i = 0; i < this.Planners.Length; i++)
+            //    yield return this.Planners[i];
         }
         public override string ToString()
         {

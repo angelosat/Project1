@@ -38,30 +38,30 @@ namespace Start_a_Town_
         }
         static IEnumerable<Planner> GetPlanners(Actor actor)
         {
-            var givers = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner).OfType<Planner>();
-            givers = givers.Concat(Planner.EssentialPlanners);
+            var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);//.OfType<Planner>();
+            planners = planners.Concat(Planner.EssentialPlanners);
             var jobs = actor.AI.State.GetJobs().Where(j => j.Enabled);
-            jobs.OrderBy(j => j.Priority);
+            jobs = jobs.OrderBy(j => j.Priority);
             var jobPlanners = jobs.SelectMany(j => j.Def.GetPlanners());
 
             // replace this when meta-roles are fully implemented
             //givers = actor.IsTownMember ? givers.Concat(jobPlanners) : givers.Concat(Planner.VisitorPlanners);
-            givers = givers.Concat(jobPlanners);
-            givers = givers.Append(Planner.Idle);
-            return givers;
+            planners = planners.Concat(jobPlanners);
+            planners = planners.Append(Planner.Idle);
+            return planners;
         }
         Plan FindNewPlan(Actor parent, AIState state)
         {
 
-            var givers = GetPlanners(parent);
+            var planners = GetPlanners(parent);
 
-            foreach (var giver in givers)
+            foreach (var planner in planners)
             {
-                if (giver == null)
+                if (planner is null)
                     continue;
-                var giverResult = giver.FindPlan(parent);
+                var giverResult = planner.FindPlan(parent);
                 var task = giverResult.Plan;
-                if (task == null)
+                if (task is null)
                     continue;
                 var bhav = task.CreateBehavior(parent);
                 if (!bhav.ReserveBase())
@@ -71,9 +71,7 @@ namespace Start_a_Town_
                 }
 
                 state.Assign(bhav);
-                //return task;
-                // test without planner retention
-                this.CurrentPlanner = task.Continuation == PlannerContinuation.Continue ? giver : null;
+                this.CurrentPlanner = task.Continuation == PlannerContinuation.Continue ? planner : null;
                 return task;
             }
 

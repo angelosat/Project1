@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    class EquippingPlanner : Planner
+    class InventoryPlanner : Planner
     {
         static Plan TryDropUnnecessaryItems(Actor actor)
         {

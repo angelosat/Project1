@@ -6,47 +6,53 @@ namespace Start_a_Town_
 {
     abstract public class Planner
     {
-        public static readonly Planner Idle = new TaskGiverIdle();
+        static readonly public Planner Idle = PlannerDefOf.Idle.Worker;// new TaskGiverIdle();
 
-        static readonly public List<Planner> UrgentPlanners = [new TaskGiverSmartEquip()];
+        static readonly public List<Planner> UrgentPlanners = [PlannerDefOf.SmartEquip.Worker];// [new SmartEquipPlanner()];
 
-        static readonly public List<Planner> EssentialPlanners = new()
-        {
+        static readonly public List<Planner> EssentialPlanners =
+        [
             new TaskGiverLeaveUnstandableCell(),
             new TaskGiverItemOwnership(),
-            new EquippingPlanner(),
-
+            PlannerDefOf.Inventory.Worker
             //new TaskGiverIdle(),
-        };
+        ];
 
-        static readonly public List<Planner> CitizenTaskGivers = new()
-        {
-            new BuildingPlanner(),
+        static readonly public List<Planner> CitizenTaskGivers =
+        [
+            //new BuildingPlanner(),
+            PlannerDefOf.Building.Worker,
             new TaskGiverRefueling(),
             new TaskGiverSwitchToggle(),
-            new ChoppingPlanner(),
+            //new ChoppingPlanner(),
+            PlannerDefOf.Chopping.Worker,
             new TaskGiverForaging(),
-            new TaskGiverDigging(),
+            //new DiggingPlanner(),
+            PlannerDefOf.Digging.Worker,
             new TaskGiverDeconstruct(),
-            new TillingPlanner(),
-            new SowingPlanner(),
+            //new TillingPlanner(),
+            PlannerDefOf.Tilling.Worker,
+            //new SowingPlanner(),
+            PlannerDefOf.Sowing.Worker,
             new TaskGiverHarvesting(),
-            new CraftingPlanner(),
+            //new CraftingPlanner(),
+            PlannerDefOf.Crafting.Worker,
             //new TaskGiverHaulToStockpile(),
             new TaskGiverTradingOverCounter(),
             new TaskGiverOfferQuest(),
             new TaskGiverWorkplace()
-        };
+        ];
 
-        static readonly public List<Planner> VisitorPlanners = new()
-        { 
+        static readonly public List<Planner> VisitorPlanners =
+        [
             new TaskGiverVisitorRentRoom(),
             new TaskGiverBeTalkedTo(),
             new TaskGiverQuestComplete(),
             new TaskGiverGetQuests(),
             new TaskGiverTavernCustomer(),
-            new DeparturePlanner()
-        };
+            //new DeparturePlanner(),
+            PlannerDefOf.Departure.Worker
+        ];
 
         protected virtual Plan TryPlan(Actor actor) { return null; }
         public Plan FindPlanNew(Actor actor)

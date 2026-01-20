@@ -2,7 +2,7 @@
 
 namespace Start_a_Town_
 {
-    class TaskGiverDigging : Planner
+    class DiggingPlanner : Planner
     {
         protected override Plan TryPlan(Actor actor)
         {

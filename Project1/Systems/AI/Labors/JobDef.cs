@@ -5,19 +5,19 @@ namespace Start_a_Town_
 {
     public sealed class JobDef : Def
     {
-        readonly Planner[] TaskGivers;
+        readonly PlannerDef[] Planners;
         public ToolUseDef ToolUse;
         public Icon Icon => Icon.Replace;
 
-        public JobDef(string name, params Planner[] taskGivers) : base(name)
+        public JobDef(string name, params PlannerDef[] planners) : base(name)
         {
-            this.TaskGivers = taskGivers;
+            this.Planners = planners;
         }
         public IEnumerable<Planner> GetPlanners()
         {
-            for (int i = 0; i < this.TaskGivers.Length; i++)
+            for (int i = 0; i < this.Planners.Length; i++)
             {
-                yield return this.TaskGivers[i];
+                yield return this.Planners[i].Worker;
             }
         }
         public override string ToString()

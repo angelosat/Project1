@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Start_a_Town_.AI
 {
-    class TaskGiverSleeping : Planner
+    class SleepingPlanner : Planner
     {
         protected override Plan TryPlan(Actor actor)
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_.AI.Behaviors
 {
-    internal class TaskGiverSmartEquip : Planner
+    internal class SmartEquipPlanner : Planner
     {
         protected override Plan TryPlan(Actor actor)
         {

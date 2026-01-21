@@ -40,7 +40,7 @@ namespace Start_a_Town_
             var mapping = targetBones.Zip(inSlots);
             foreach (var pair in mapping)
             {
-                creationReq.Override(pair.First, pair.Second.Body.Material);
+                creationReq.OverrideMaterial(pair.First, pair.Second.Body.Material);
                 map.World.DisposeEntity(pair.Second);
             }
             var product = EntityFactory.Create(creationReq);

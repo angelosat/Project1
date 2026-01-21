@@ -40,7 +40,7 @@ namespace Start_a_Town_
                 foreach (var material in Def.GetDefs<MaterialDef>().Where(m => m.Type == state.MaterialType))
                     yield return EntityFactory
                         .Request(state, null)
-                        .Override(BoneDefOf.Item, material)
+                        .OverrideMaterial(BoneDefOf.Item, material)
                         .Create();
         }
         internal static Entity Create(EntityCreationRequest req)

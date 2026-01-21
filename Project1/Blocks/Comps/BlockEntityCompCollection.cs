@@ -8,12 +8,12 @@ namespace Start_a_Town_
     {
         readonly BlockEntity Owner;
         readonly Dictionary<Type, BlockEntityComp> _inner = [];
+        readonly List<BlockEntityComp> compList = [];
         public IEnumerable<BlockEntityComp> Values => this._inner.Values;
-
-        internal T GetComp<T>() where T : BlockEntityComp
-        {
-            return (T)this._inner[typeof(T)];
-        }
+        //public int IndexOf(BlockEntityComp comp) => this.compList.IndexOf(comp);
+        internal T GetComp<T>() where T : BlockEntityComp => (T)this._inner[typeof(T)];
+        internal BlockEntityComp GetComp(Type compType) => this._inner[compType];
+        internal BlockEntityComp GetComp(int compIndex) => this.compList[compIndex];
         internal bool TryGetComp<T>(out T comp) where T : BlockEntityComp
         {
             comp = null;
@@ -25,6 +25,8 @@ namespace Start_a_Town_
         internal void AddComp(BlockEntityComp comp)
         {
             this._inner.Add(comp.GetType(), comp);
+            comp.RuntimeIndex = this.compList.Count;
+            this.compList.Add(comp);
         }
         public override IEnumerable<(string item, object value)> Inspect()
         {

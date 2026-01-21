@@ -29,6 +29,10 @@ namespace Start_a_Town_
 
             foreach (var order in allOrders)
             {
+                // Check fuel requirement
+                if (!order.CheckFuelReq())
+                    continue;
+
                 // Track slots we want to exclude (already being deposited into by others)
                 var workstationSlots = order.Workstation.Parent.CellsOccupied;
                 var excludedSlots = workstationSlots.Select(c => c.Above).Where(c => !actor.CanReachAndReserve(c)).ToHashSet();

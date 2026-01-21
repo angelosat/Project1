@@ -21,22 +21,26 @@ namespace Start_a_Town_.UI
     {
         IDisposable subscription;
         public override Texture2D BackgroundTexture => UIManager.DefaultProgressBar;
-        ProgressInt Progress; 
+        readonly ProgressInt Progress; 
         public bool Invert;
-        public BarFinal(ProgressInt progress)
+        public BarFinal(ProgressInt progress, Func<string> textGetter = null)
         {
             this.Progress = progress;
             this.Height = UIManager.DefaultProgressBarStrip.Bounds.Height;
             this.Width = 100;
             this.BackgroundColor = Color.Black * 0.5f;
             subscription = progress.Subscribe(() => this.Invalidate(true));
+            this.TextFunc = textGetter;
+            this.HoverFunc = () => $"{this.TextFunc()} {progress}";
         }
-        protected override void OnHidden()
+      
+        protected override void OnRemoved()
         {
             subscription.Dispose();
             subscription = null;
-            base.OnHidden();
+            base.OnRemoved();
         }
+        
         public override void OnPaint(SpriteBatch sb)
         {
             var percentage = Invert ? (1 - this.Progress.Percentage) : this.Progress.Percentage;

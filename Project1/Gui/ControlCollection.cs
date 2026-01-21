@@ -158,5 +158,10 @@ namespace Start_a_Town_.UI
         {
             return this.Items.First(p);
         }
+
+        internal void OnRemoved()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -32,7 +32,7 @@ namespace Start_a_Town_
                     this.CellsToStockpiles[cell] = s;
             }
             foreach (var entity in this.Map.Entities)
-                if (this.CellsToStockpiles.TryGetValue(entity.Cell, out var stockpile))
+                if (this.CellsToStockpiles.TryGetValue(entity.Cell.Below, out var stockpile))
                     if (stockpile.Accepts(entity))
                         stockpile.AddItem(entity);
         }

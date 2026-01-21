@@ -29,6 +29,10 @@ namespace Start_a_Town_
             var plan = actor.CurrentTask;
             var order = plan.Order;
             var workstation = target;
+
+            // consume fuel
+            order.CheckFuelReq
+
             var inSlots = plan.TargetsA.Select(t => t.Entity as Entity);
             var creationReq = order.GetCreationRequest(); /*new EntityCreationRequest(order.Refinement, null, stackSize: 1);*/
             var targetBones = order.GetSlotMapping();
@@ -44,8 +48,4 @@ namespace Start_a_Town_
             order.CompletedBy(actor);
         }
     }
-
-    
-
-    
 }

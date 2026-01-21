@@ -1,5 +1,4 @@
-﻿using SharpDX.Direct3D9;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 namespace Start_a_Town_
@@ -9,17 +8,25 @@ namespace Start_a_Town_
         protected override Plan TryPlan(Actor actor)
         {
             var map = actor.Map;
+            var refuelables = GetRefuelables(map);
+
+            var target = refuelables.FirstOrDefault(c => 
+                c.Fuel.Percentage < .5f && 
+                actor.CanReachAndReserve(c.Parent.OriginGlobal));
+
+            if (target is null)
+                return null;
 
             if (actor.Hauled is Entity carried)
             {
-                var refuelables = GetRefuelables(map);
-                foreach(var e in refuelables)
-                {
-                    var blockEntity = e.Parent;
-                    foreach(var cell in blockEntity.CellsOccupied)
-                        if(actor.CanReachAndReserve(cell))
-                            return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, cell)) { TargetB = new TargetArgs(blockEntity) };
-                }
+                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, target.Parent.OriginGlobal)) { TargetB = new TargetArgs(target.Parent) };
+                //foreach(var e in refuelables)
+                //{
+                //    var blockEntity = e.Parent;
+                //    foreach(var cell in blockEntity.CellsOccupied)
+                //        if(actor.CanReachAndReserve(cell))
+                //            return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, cell)) { TargetB = new TargetArgs(blockEntity) };
+                //}
             }
             var items = map.Stockpiles.AllItems.Where(CraftingSystem.IsFuel);
             //var fuelitems = items.Where(IsFuel);

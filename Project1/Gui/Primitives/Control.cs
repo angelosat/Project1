@@ -970,8 +970,17 @@ namespace Start_a_Town_.UI
 
         public virtual void ClearControls()
         {
+            foreach (var ch in this.Controls)
+                ch.OnRemoved();
             this.Controls.Clear();
         }
+
+        protected virtual void OnRemoved()
+        {
+            foreach (var ch in this.Controls)
+                ch.OnRemoved();
+        }
+
         public Control AddControlsVertically(IEnumerable<Control> controls)
         {
             return this.AddControlsVertically(controls.ToArray());

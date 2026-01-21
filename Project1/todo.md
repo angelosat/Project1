@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- list<control> controls make it private
 - change pathing nodes to intvec3 instead of vector3
 - change camera.rotation to int instead of double
 - influence resource for having visitors help with town jobs? or only when a certain reputation thershold has been reached?

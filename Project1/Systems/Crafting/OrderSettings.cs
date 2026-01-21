@@ -192,6 +192,28 @@ namespace Start_a_Town_
             }
             return true;
         }
+        public bool CheckFuelReq()
+        {
+            if (this.ProductDef is not MaterialRefinementDef refinement)
+                return true;
+            var fuelReq = refinement.FuelConsumption;
+            var workstation = this.Workstation.Parent;
+            var fuelcomp = workstation.GetComp<BlockFuelComp>();
+            return fuelReq <= fuelcomp.FuelAvailable;
+        }
+        public int GetFuelReq()
+        {
+            if (this.ProductDef is not MaterialRefinementDef refinement)
+                return 0;
+            return refinement.FuelConsumption;
+        }
+        public void ConsumeFuel()
+        {
+            var fuel = this.GetFuelReq();
+            var workstation = this.Workstation.Parent;
+            var fuelcomp = workstation.GetComp<BlockFuelComp>();
+            fuelcomp.ConsumeFuel(fuel);
+        }
         //public bool IsFeasibleNew(IReadOnlyList<Entity> items, out (Entity bestEntity, int bestAmount) allocation)
         //{
         //    allocation = default;

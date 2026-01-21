@@ -18,6 +18,7 @@ namespace Start_a_Town_
         internal IDataWriter Write(long v);
         internal IDataWriter Write(Vector3 v);
         internal IDataWriter Write(Vector2 v);
+        internal IDataWriter Write(ISerializable s) { s.Write(this); return this; }
         internal IDataWriter Write(IntVec3 v);
         internal IDataWriter Write(IntVec3? v) { this.ww.Write(v); return this; }
 

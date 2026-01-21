@@ -282,7 +282,7 @@ namespace Start_a_Town_
         }
         protected virtual void OnAddProgress(int v)
         {
-            this.Progress.Add(v);
+            this.Progress.ApplyDelta(v);
         }
         internal void OnToolContact()
         {

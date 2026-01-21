@@ -13,7 +13,7 @@ namespace Start_a_Town_
             public abstract Type CompType { get; }
             public abstract BlockEntityComp CreateComp();
         }
-
+        public int RuntimeIndex;
         protected event Action Updated;
         protected void NotifyUpdated() => this.Updated?.Invoke();
 

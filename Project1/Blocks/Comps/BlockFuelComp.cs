@@ -14,32 +14,38 @@ namespace Start_a_Town_
         public override string Name => "Fuel";
 
         int FuelCurrent;
-        ProgressInt Fuel = new(max: 100);
-
+        public readonly ProgressInt Fuel = new(max: 100);
+        public int FuelAvailable => this.Fuel.Value;
+        internal void ConsumeFuel(int fuel)
+        {
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(fuel, this.FuelAvailable);
+            this.Fuel.ApplyDelta(-fuel);
+        }
         internal override bool TryConsume(Entity item)
         {
-            if (!CraftingSystem.IsFuel(item))
-                throw new ArgumentException($"{item} is not fuel");
-
             var fuel = CraftingSystem.GetFuelValue(item);
-            this.FuelCurrent += fuel;
+            if (fuel == 0)
+                throw new ArgumentException($"{item} is not fuel");
+            var deficit = this.Fuel.Missing;
+            var totake = deficit / fuel;
+            if (totake == 0)
+                throw new InvalidOperationException($"{nameof(totake)} was 0");
+            this.Fuel.ApplyDelta(fuel * totake);
+            item.Consume(totake);
             this.Parent.Map.Events.Post(new BlockEntityCompUpdatedEvent(this));
-            //this.Parent.Map.Events.Post(new BlockEntityUpdatedEvent(this.Parent));
-
-            return false;
+            return true;
         }
         internal override void GetSelectionInfo(Control container)
         {
-            container.AddControls(new Label($"Fuel: {this.FuelCurrent}"));
-            container.AddControls(new BarFinal(this.Fuel));
+            container.AddControls(new BarFinal(this.Fuel, () => "Fuel"));
         }
         public override void Write(IDataWriter w)
         {
-            w.Write(this.FuelCurrent);
+            w.Write(this.Fuel.Value);
         }
         public override ISerializable Read(IDataReader r)
         {
-            this.FuelCurrent = r.ReadInt32();
+            this.Fuel.SetValue(r.ReadInt32());
             return this;
         }
         protected override void SaveExtra(SaveTag tag)
@@ -50,5 +56,7 @@ namespace Start_a_Town_
         {
             this.FuelCurrent = tag.LoadInt("FuelCurrent");
         }
+
+        
     }
 }

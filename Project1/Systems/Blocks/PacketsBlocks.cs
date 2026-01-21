@@ -13,7 +13,6 @@ namespace Start_a_Town_
         static PacketsBlocks()
         {
             _pBlockEntityRemoved = Registry.PacketHandlers.Register(OnBlockEntityRemoved);
-            _pBlockEntityCompUpdated = Registry.PacketHandlers.Register(OnBlockEntityCompUpdated);
             _pBlocksUpdated = Registry.PacketHandlers.Register(OnBlocksUpdated);
             _pBlockSet = Registry.PacketHandlers.Register(OnBlockSet);
             _pBlockEntityAdded = Registry.PacketHandlers.Register(OnBlockEntityAdded);
@@ -28,6 +27,7 @@ namespace Start_a_Town_
             _pOwnerChangedByPlayer = Registry.PacketHandlers.Register(OnBlockOwnerChangedByPlayer);
 
             Registry.MapEventHooksServer.Register<BlockEntityCompUpdatedEvent>(SendBlockEntityCompUpdated);
+            _pBlockEntityCompUpdated = Registry.PacketHandlers.Register(OnBlockEntityCompUpdated);
 
         }
 
@@ -38,7 +38,9 @@ namespace Start_a_Town_
             _ = r.ReadInt32();
             var originglobal = r.ReadIntVec3();
             var blockentity = client.Map.GetBlockEntity(originglobal);
-            //var type = new Type
+            var compindex = r.ReadInt32();
+            var comp = blockentity.Comps.GetComp(compindex);
+            comp.Read(r);
         }
 
         private static void SendBlockEntityCompUpdated(BlockEntityCompUpdatedEvent e)
@@ -46,7 +48,8 @@ namespace Start_a_Town_
             Server.Instance.BeginPacket(_pBlockEntityCompUpdated)
                 .Write(e.Comp.Parent.Map.ID)
                 .Write(e.Comp.Parent.OriginGlobal)
-                .Write(e.Comp.GetType().FullName);
+                .Write(e.Comp.RuntimeIndex)
+                .Write(e.Comp);
         }
 
         private static void HandlePlayerChangedBlockOwnerEvent(PlayerChangedBlockOwnerEvent e)

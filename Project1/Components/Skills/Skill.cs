@@ -61,7 +61,7 @@ namespace Start_a_Town_
             if (this.LvlProgress.Value + v < this.LvlProgress.Max)
             {
                 //this.LvlProgress.Value += v;
-                this.LvlProgress.Add(v);
+                this.LvlProgress.ApplyDelta(v);
                 actor.Map.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
                 return;
             }

@@ -53,7 +53,7 @@ namespace Start_a_Town_
 
             // only take what i need
             quantity = Math.Min(quantity, this.Missing);
-            this.Fulfillment.Add(quantity);
+            this.Fulfillment.ApplyDelta(quantity);
             entity.Consume(quantity);
             var args = this.Args;
             // solidify the designation into a construction block 
@@ -102,7 +102,7 @@ namespace Start_a_Town_
         {
             if (!this.IsReady)
                 throw new InvalidOperationException("Tried to advance construction without all materials present");
-            this.Progress.Add(work);
+            this.Progress.ApplyDelta(work);
 
             var map = this.Map; // capture map in case the construction is completed and the block entity gets removed from the map
             //if (this.Progress.IsFinished)

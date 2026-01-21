@@ -31,7 +31,8 @@ namespace Start_a_Town_
             var workstation = target;
 
             // consume fuel
-            order.CheckFuelReq
+            if (!order.TryConsumeFuel())
+                return;
 
             var inSlots = plan.TargetsA.Select(t => t.Entity as Entity);
             var creationReq = order.GetCreationRequest(); /*new EntityCreationRequest(order.Refinement, null, stackSize: 1);*/

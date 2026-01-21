@@ -16,10 +16,13 @@ namespace Start_a_Town_
         int FuelCurrent;
         public readonly ProgressInt Fuel = new(max: 100);
         public int FuelAvailable => this.Fuel.Value;
-        internal void ConsumeFuel(int fuel)
+        internal bool TryConsumeFuel(int fuel)
         {
-            ArgumentOutOfRangeException.ThrowIfGreaterThan(fuel, this.FuelAvailable);
+            //ArgumentOutOfRangeException.ThrowIfGreaterThan(fuel, this.FuelAvailable);
+            if (fuel > this.FuelAvailable)
+                return false;
             this.Fuel.ApplyDelta(-fuel);
+            return true;
         }
         internal override bool TryConsume(Entity item)
         {

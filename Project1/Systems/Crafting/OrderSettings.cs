@@ -207,12 +207,12 @@ namespace Start_a_Town_
                 return 0;
             return refinement.FuelConsumption;
         }
-        public void ConsumeFuel()
+        public bool TryConsumeFuel()
         {
             var fuel = this.GetFuelReq();
             var workstation = this.Workstation.Parent;
             var fuelcomp = workstation.GetComp<BlockFuelComp>();
-            fuelcomp.ConsumeFuel(fuel);
+            return fuelcomp.TryConsumeFuel(fuel);
         }
         //public bool IsFeasibleNew(IReadOnlyList<Entity> items, out (Entity bestEntity, int bestAmount) allocation)
         //{

@@ -39,7 +39,8 @@ namespace Start_a_Town_.UI
         }
         internal override void OnControlResized(Control control)
         {
-            this.ClientSize = PreferredClientSize;
+            //this.ClientSize = PreferredClientSize;
+            this.ApplyAutoSize();
             this.Parent?.OnControlResized(this);
         }
        

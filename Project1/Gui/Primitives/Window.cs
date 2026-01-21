@@ -45,7 +45,8 @@ namespace Start_a_Town_.UI
                         this.Controls.Remove(this.CloseButton);
 
                     if (this.AutoSize)
-                        this.ClientSize = this.PreferredClientSize;
+                        this.ApplyAutoSize();
+                        //this.ClientSize = this.PreferredClientSize;
                 }
             }
         }
@@ -234,7 +235,8 @@ namespace Start_a_Town_.UI
                 }
 
             }
-            this.ClientSize = this.PreferredClientSize;
+            //this.ClientSize = this.GetPreferredClientSize();
+            this.ApplyAutoSize();
         }
 
         public override Vector2 Dimensions
@@ -284,10 +286,10 @@ namespace Start_a_Town_.UI
             this.MouseOffset = UIManager.MouseScaled - this.ScreenLocation;
         }
 
-        public override Rectangle PreferredClientSize
+        public override Rectangle GetPreferredClientSize()
         {
-            get
-            {
+            //get
+            //{
                 int width = 0;
                 int height = 0;
                 foreach (var control in this.Client.Controls)
@@ -298,7 +300,7 @@ namespace Start_a_Town_.UI
                     height = Math.Max(height, (int)control.TopLeft.Y + control.Height - (int)control.Origin.Y);
                 }
                 return new Rectangle(0, 0, width, height + 2); //monogame hack
-            }
+            //}
         }
 
         //public Control Content => this.Client.Controls.Single();

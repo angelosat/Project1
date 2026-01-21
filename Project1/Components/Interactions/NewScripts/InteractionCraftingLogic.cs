@@ -12,13 +12,11 @@ namespace Start_a_Town_
             public override float ProgressPercentage => this.Actor.Work.Task.ProgressPercentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
-        public override bool CanFinish(InteractionContext ctx) => this.CanFinish((Context)ctx);
-        bool CanFinish(Context ctx) => this.CanPerform(ctx);
-        public override bool CanPerform(InteractionContext ctx) => this.CanPerform((Context)ctx);
-        bool CanPerform(Context ctx)
-        {
-            return ctx.Comp.IngredientsInPlace(ctx.Actor.CurrentTask.TargetsA);
-        }
+        public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
+        static bool CanFinish(Context ctx) => CanPerform(ctx);
+        public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
+        static bool CanPerform(Context ctx) => ctx.Comp.IngredientsInPlace(ctx.Actor.CurrentTask.TargetsA);
+        
         internal override void OnFinish(Interaction i)
         {
             var actor = i.Actor;

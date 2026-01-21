@@ -34,7 +34,7 @@ namespace Start_a_Town_.UI
             this.HoverFunc = () => $"{this.TextFunc()} {progress}";
         }
       
-        protected override void OnRemoved()
+        internal override void OnRemoved()
         {
             subscription.Dispose();
             subscription = null;

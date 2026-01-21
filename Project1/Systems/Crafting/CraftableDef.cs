@@ -4,17 +4,18 @@ namespace Start_a_Town_
 {
     public class CraftableDef : Def
     {
-        public readonly Type CraftableDefType;
+        public readonly Type ProfileCategory;
+        public Def[] Specific = [];
 
         public CraftableDef(string name, Type type) : base(name)
         {
-            this.CraftableDefType = type;
+            this.ProfileCategory = type;
         }
     }
     [EnsureStaticCtorCall]
     internal static class CraftableDefOf
     {
-        static public readonly CraftableDef Smelting = new("Smelting", typeof(MaterialRefinementDef));
+        static public readonly CraftableDef Smelting = new("Smelting", typeof(MaterialRefinementDef)) { Specific = [MaterialRefinementDefOf.Ingots] };
         static public readonly CraftableDef ToolMaking = new("ToolMaking", typeof(ToolProfileDef));
         //static public readonly CraftableDef Cooking = new(typeof(ToolProfileDef));
         static CraftableDefOf()

@@ -22,6 +22,7 @@ namespace Start_a_Town_
             if (fuel > this.FuelAvailable)
                 return false;
             this.Fuel.ApplyDelta(-fuel);
+            this.Parent.Map.Events.Post(new BlockEntityCompUpdatedEvent(this));
             return true;
         }
         internal override bool TryConsume(Entity item)

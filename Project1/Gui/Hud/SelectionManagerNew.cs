@@ -618,7 +618,8 @@ namespace Start_a_Town_.UI
         public void AddInfo(Control ctrl)
         {
             this.BoxInfo.AddControls(ctrl);
-            this.BoxInfo.AlignVertically();
+            //this.BoxInfo.AlignVertically();
+            this.BoxInfo.Controls.AlignVertically();
         }
         public static void RemoveInfo(Control ctrl)
         {

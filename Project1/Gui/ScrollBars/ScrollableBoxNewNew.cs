@@ -63,7 +63,7 @@ namespace Start_a_Town_.UI
 
         protected virtual void UpdateScrollbars()
         {
-            var prefsize = this.Client.PreferredClientSize;
+            var prefsize = this.Client.GetPreferredClientSize();
             var prefw = prefsize.Width;
             if ((this.Mode & ScrollModes.Horizontal) == ScrollModes.Horizontal && this.Client.Width < prefw)
             {
@@ -101,14 +101,16 @@ namespace Start_a_Town_.UI
         public override void AlignTopToBottom(int spacing = 0)
         {
             this.Client.Controls.AlignVertically(spacing);
-            this.Client.ClientSize = this.Client.PreferredClientSize;
-            this.Client.ConformToClientSize();
+            //this.Client.ClientSize = this.Client.PreferredClientSize;
+            this.Client.ApplyAutoSize();
+            this.Client.ApplyPadding();
             this.UpdateClientSize();
         }
 
         protected void UpdateClientSize()
         {
-            this.Client.ClientSize = this.Client.PreferredClientSize;
+            //this.Client.ClientSize = this.Client.PreferredClientSize;
+            this.Client.ApplyAutoSize();
             this.EnsureClientWithinBounds(); // should i do this here?
             this.UpdateScrollbars(); // should i do this here?
         }

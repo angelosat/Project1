@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -243,7 +244,7 @@ namespace Start_a_Town_.UI
                 return;
             this.Location = this.Location * ratio - (new Vector2(this.Size.Width - this.Size.Width * ratio.X, this.Size.Height - this.Size.Height * ratio.Y) * this.Anchor);
         }
-
+        [Obsolete($"use {nameof(ControlCollection.AlignVertically)}")]
         public void AlignVertically(Alignment.Horizontal alignment = Alignment.Horizontal.Left)
         {
             switch (alignment)
@@ -826,14 +827,14 @@ namespace Start_a_Town_.UI
         {
             if (this.AutoSize)
             {
-                this.ClientSize = this.PreferredClientSize;
-                this.ConformToClientSize();
+                this.ApplyAutoSize();//.ClientSize = this.GetPreferredClientSize();
+                this.ApplyPadding();
             }
             this.Parent?.OnControlAdded(control);
             this.ControlsChangedAction();
         }
 
-        public void ConformToClientSize()
+        public void ApplyPadding()
         {
             if (this.BackgroundStyle != null)
             {
@@ -852,20 +853,23 @@ namespace Start_a_Town_.UI
         {
             if (this.AutoSize)
             {
-                this.ClientSize = this.PreferredClientSize;
-                this.ConformToClientSize();
+                this.ApplyAutoSize();//ClientSize = this.GetPreferredClientSize();
+                this.ApplyPadding();
             }
             this.Parent?.OnControlRemoved(control);
             this.ControlsChangedAction();
         }
 
         public Vector2 Origin = new Vector2(0);
-      
-
-        public virtual Rectangle PreferredClientSize
+        
+        internal void ApplyAutoSize()
         {
-            get
-            {
+            this.ClientSize = this.GetPreferredClientSize();
+        }
+        public virtual Rectangle GetPreferredClientSize()
+        {
+            //get
+            //{
                 int width = 0, height = 0;
                 foreach (var control in this.Controls)
                 {
@@ -873,7 +877,7 @@ namespace Start_a_Town_.UI
                     height = Math.Max(height, (int)control.TopLeft.Y + control.Height - (int)control.Origin.Y);
                 }
                 return new Rectangle(this._clientSize.X, this._clientSize.Y, width, height);
-            }
+            //}
         }
 
         public virtual void OnBeforeDraw(SpriteBatch sb, Rectangle viewport) { }
@@ -968,18 +972,7 @@ namespace Start_a_Town_.UI
                 this.Validate(); // i put this here after calling base.update because if the size of the control was changed then for one frame it was drawn stretched
         }
 
-        public virtual void ClearControls()
-        {
-            foreach (var ch in this.Controls)
-                ch.OnRemoved();
-            this.Controls.Clear();
-        }
-
-        protected virtual void OnRemoved()
-        {
-            foreach (var ch in this.Controls)
-                ch.OnRemoved();
-        }
+        
 
         public Control AddControlsVertically(IEnumerable<Control> controls)
         {
@@ -1685,7 +1678,7 @@ namespace Start_a_Town_.UI
         {
             this.OnLayout(availableWidth, availableHeight);
         }
-        
+
         //public override int Padding 
         //{ 
         //    get => base.Padding;
@@ -1696,6 +1689,165 @@ namespace Start_a_Town_.UI
         //        //this.ClientSize = new Rectangle(0, 0, this.Width - 2 * value, this.Height - 2 * value);
         //    }
         //}
+        public virtual void ClearControls()
+        {
+            //foreach (var ch in this.Controls)
+            //    ch.OnRemoved();
+            this.Controls.Clear();
+        }
 
+        internal virtual void OnRemoved()
+        {
+            foreach (var ch in this.Controls)
+                ch.OnRemoved();
+        }
+        public class ControlCollection(Control owner) : Collection<Control>
+        {
+            readonly Control Parent = owner;
+
+            public Vector2 BottomRight
+            {
+                get
+                {
+                    float xMax = 0, yMax = 0;
+                    foreach (var c in this)
+                    {
+                        xMax = Math.Max(xMax, c.Location.X + c.Width);
+                        yMax = Math.Max(yMax, c.Location.Y + c.Height);
+                    }
+                    return new Vector2(xMax, yMax);
+                }
+            }
+            public Vector2 TopRight
+            {
+                get
+                {
+                    float xMax = 0, y = 0;
+                    foreach (var c in this)
+                    {
+                        xMax = Math.Max(xMax, c.Location.X + c.Width);
+                        y = Math.Min(y, c.Location.Y);
+                    }
+                    return new Vector2(xMax, y);
+                }
+            }
+            public Vector2 BottomLeft
+            {
+                get
+                {
+                    if (this.Count == 0)
+                        return Vector2.Zero;
+
+                    int x = 0, y = 0;
+                    foreach (var c in this)
+                    {
+                        x = Math.Min(x, c.Left);
+                        y = Math.Max(y, c.Bottom);
+                    }
+                    return new Vector2(x, y);
+                }
+            }
+            public int Bottom
+            {
+                get
+                {
+                    if (this.Count == 0)
+                        return 0;
+
+                    int y = 0;
+                    foreach (var c in this)
+                    {
+                        y = Math.Max(y, c.Bottom);
+                    }
+                    return y;
+                }
+            }
+
+            public void Add(params Control[] controls)
+            {
+                foreach (var control in controls)
+                {
+                    if (this.Contains(control))
+                        throw new Exception();
+                    if (control == this.Parent)
+                        throw new Exception();
+                    if (control == null)
+                        throw new Exception();
+                    control.Parent?.Controls.Remove(control);
+                    control.Parent = Parent;
+                    base.Add(control);
+                }
+            }
+            public void Insert(int index, IEnumerable<Control> controls)
+            {
+                foreach (var c in controls)
+                    this.InsertItem(index++, c);
+            }
+            protected override void InsertItem(int index, Control item)
+            {
+                base.InsertItem(index, item);
+                item.Parent = Parent;
+                Parent.OnControlAdded(item);
+            }
+            public void AlignVertically(int spacing = 0)
+            {
+                var prev = 0;
+                foreach (var c in this)
+                {
+                    c.Location.Y = prev;
+                    prev = c.Bottom + spacing;
+                }
+                if (this.Parent.AutoSize)
+                    this.Parent.ApplyAutoSize();//ClientSize = this.Parent.GetPreferredClientSize();
+            }
+            public void AlignHorizontally(int spacing = 0)
+            {
+                var prev = 0;
+                foreach (var c in this)
+                {
+                    c.Location.X = prev;
+                    prev = c.Right + spacing;
+                }
+                if (this.Parent.AutoSize)
+                    this.Parent.ApplyAutoSize();//ClientSize = this.Parent.GetPreferredClientSize();
+            }
+            public void AlignCenterHorizontally()
+            {
+                var maxheight = this.Max(c => c.Height);
+                foreach (var c in this)
+                {
+                    c.Location = new Vector2(c.Location.X, maxheight / 2);
+                    c.Anchor = new Vector2(c.Anchor.X, .5f); // DONT reset contrl's x anchor
+                }
+            }
+            public void RemoveAll(Func<Control, bool> predicate)
+            {
+                var toremove = this.Items.Where(predicate).ToList();
+                foreach (var c in toremove)
+                    this.Remove(c);
+            }
+            protected override void RemoveItem(int index)
+            {
+                var ctrl = this[index];
+                ctrl.OnRemoved();
+                base.RemoveItem(index);
+                this.Parent.OnControlRemoved(ctrl);
+            }
+            protected override void ClearItems()
+            {
+                foreach (var c in this)
+                    c.OnRemoved();
+                base.ClearItems();
+            }
+            public int FindIndex(Func<Control, bool> p)
+            {
+                return this.IndexOf(this.Find(p));
+            }
+
+            public Control Find(Func<Control, bool> p)
+            {
+                return this.Items.First(p);
+            }
+        }
     }
 }

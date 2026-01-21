@@ -79,7 +79,7 @@ namespace Start_a_Town_.UI
         }
         public virtual void Remeasure()
         {
-            var clientDesiredSize = this.Client.PreferredClientSize;
+            var clientDesiredSize = this.Client.GetPreferredClientSize();
             var prefw = clientDesiredSize.Width;
             if (this.Width < prefw)
             {
@@ -109,7 +109,7 @@ namespace Start_a_Town_.UI
         }
         protected virtual void UpdateScrollbars()
         {
-            var prefsize = this.Client.PreferredClientSize;
+            var prefsize = this.Client.GetPreferredClientSize();
             var prefw = prefsize.Width;
             if (this.Client.Width < prefw)
             {
@@ -148,8 +148,9 @@ namespace Start_a_Town_.UI
         public override void AlignTopToBottom(int spacing = 0)
         {
             this.Client.Controls.AlignVertically(spacing);
-            this.Client.ClientSize = this.Client.PreferredClientSize;
-            this.Client.ConformToClientSize();
+            //this.Client.ClientSize = this.Client.PreferredClientSize;
+            this.Client.ApplyAutoSize();
+            this.Client.ApplyPadding();
             this.Remeasure();
         }
 
@@ -160,7 +161,8 @@ namespace Start_a_Town_.UI
 
         public void UpdateClientSize()
         {
-            this.Client.ClientSize = this.Client.PreferredClientSize;
+            //this.Client.ClientSize = this.Client.PreferredClientSize;
+            this.Client.ApplyAutoSize();
             this.EnsureClientWithinBounds(); // should i do this here?
             this.UpdateScrollbars(); // should i do this here?
         }

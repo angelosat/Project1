@@ -197,7 +197,7 @@ namespace Start_a_Town_
         }
     }
 
-
+    [Obsolete]
     class WorkstationGui : GroupBox
     {
         IntVec3 Global;

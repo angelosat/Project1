@@ -1,5 +1,4 @@
-﻿using SharpDX.Direct2D1;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,8 +8,10 @@ namespace Start_a_Town_
     {
         static public IEnumerable<Def> GetCraftables(CraftableDef craftableDef)
         {
-            var specific = craftableDef.CraftableDefType;
+            var specific = craftableDef.ProfileCategory;
             var defs = Def.GetDefs(specific);
+            if (craftableDef.Specific.Any())
+                defs = defs.Intersect(craftableDef.Specific);
             return defs;
         }
         static public SkillDef GetCraftingSkill(Def recipe)

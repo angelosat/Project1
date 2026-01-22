@@ -14,7 +14,7 @@ namespace Start_a_Town_.Components
             HealthLost,
             SlotInteraction,
             HitGround,
-            Jumped,
+            //Jumped,
             ChatPlayer,
             EntityCollision,
             BlockEntityAdded,

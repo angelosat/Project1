@@ -170,7 +170,7 @@ namespace Start_a_Town_.Components
                 parent.Physics.Applyforce(force);
                 //parent.Velocity += force;
             }
-            parent.Net.PostLocalEvent(parent, Message.Types.Jumped);
+            //parent.Net.PostLocalEvent(parent, Message.Types.Jumped);
         }
 
         public void ToggleWalk(bool toggle)

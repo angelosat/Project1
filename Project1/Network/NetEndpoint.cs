@@ -75,8 +75,8 @@ namespace Start_a_Town_.Net
         public abstract bool LogStateChange(int netID);
         public abstract void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);
         public abstract void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);
-        public abstract void PostLocalEvent(GameObject recipient, ObjectEventArgs args);
-        public abstract void PostLocalEvent(GameObject recipient, Message.Types type, params object[] args);
+        //public abstract void PostLocalEvent(GameObject recipient, ObjectEventArgs args);
+        //public abstract void PostLocalEvent(GameObject recipient, Message.Types type, params object[] args);
         public abstract void SetSpeed(int playerID, int speed);
         //public abstract void SyncReport(string text);
         public abstract bool TryGetNetworkObject(int netID, out Entity obj);

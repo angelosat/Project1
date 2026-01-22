@@ -963,18 +963,18 @@ namespace Start_a_Town_.Net
         /// Posts event data to a local object
         /// </summary>
         /// <param name="data">A serialized ObjectEventArgs array</param>
-        public override void PostLocalEvent(GameObject recipient, ObjectEventArgs args)
-        {
-            args.Network = Instance;
-            recipient.PostMessage(args);
-        }
+        //public override void PostLocalEvent(GameObject recipient, ObjectEventArgs args)
+        //{
+        //    args.Network = Instance;
+        //    recipient.PostMessage(args);
+        //}
 
-        public override void PostLocalEvent(GameObject recipient, Components.Message.Types type, params object[] args)
-        {
-            ObjectEventArgs a = ObjectEventArgs.Create(type, args);
-            a.Network = Instance;
-            recipient.PostMessage(a);
-        }
+        //public override void PostLocalEvent(GameObject recipient, Components.Message.Types type, params object[] args)
+        //{
+        //    ObjectEventArgs a = ObjectEventArgs.Create(type, args);
+        //    a.Network = Instance;
+        //    recipient.PostMessage(a);
+        //}
 
         public override void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity)
         { }

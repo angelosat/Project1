@@ -36,8 +36,8 @@ namespace Start_a_Town_
         void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);
         void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);
 
-        void PostLocalEvent(GameObject recipient, ObjectEventArgs args);
-        void PostLocalEvent(GameObject recipient, Components.Message.Types type, params object[] args);
+        //void PostLocalEvent(GameObject recipient, ObjectEventArgs args);
+        //void PostLocalEvent(GameObject recipient, Components.Message.Types type, params object[] args);
 
         void EventOccured(int eventTypeId, params object[] p);
 

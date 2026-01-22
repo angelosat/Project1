@@ -27,18 +27,18 @@ namespace Start_a_Town_.Components.Resources
         public float Timer = 0;
         public float RegenerationRate = 1;
 
-        public override bool HandleMessage(Resource resource, GameObject parent, ObjectEventArgs e = null)
-        {
-            switch (e.Type)
-            {
-                case Message.Types.Jumped:
-                    resource.RechargingDelay.Value = 0;// resource.Rec.Max;
-                    return true;
+        //public override bool HandleMessage(Resource resource, GameObject parent, ObjectEventArgs e = null)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case Message.Types.Jumped:
+        //            resource.RechargingDelay.Value = 0;// resource.Rec.Max;
+        //            return true;
 
-                default:
-                    return base.HandleMessage(resource, parent, e);
-            }
-        }
+        //        default:
+        //            return base.HandleMessage(resource, parent, e);
+        //    }
+        //}
 
         
         protected override void updateRec(Resource resource)

@@ -16,19 +16,19 @@ namespace Start_a_Town_.Components
         public Interaction Task { get; set; }
         public TargetArgs Target { get; set; }
 
-        public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
-        {
-            switch (e.Type)
-            {
-                case Message.Types.Jumped:
-                    this.Interrupt();
-                    break;
+        //public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case Message.Types.Jumped:
+        //            this.Interrupt();
+        //            break;
 
-                default:
-                    break;
-            }
-            return false;
-        }
+        //        default:
+        //            break;
+        //    }
+        //    return false;
+        //}
 
         public void Interrupt(bool success = false)
         {

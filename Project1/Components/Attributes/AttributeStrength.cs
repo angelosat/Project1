@@ -8,7 +8,7 @@
 
         public override void Tick(GameObject obj, AttributeRuntime attributeStat)
         {
-            var enc = StatDefOf.Encumberance.GetValue(obj);
+            var enc = StatDefOf.Encumberance.CalculateFor(obj);
             this.Award(obj, attributeStat, enc);
         }
         internal override void Award(GameObject obj, AttributeRuntime attributeStat, float p)

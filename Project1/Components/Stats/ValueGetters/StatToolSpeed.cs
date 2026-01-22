@@ -2,13 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class StatToolSpeed : StatValueGetter
+    class StatToolSpeed : StatWorker
     {
-        public StatToolSpeed(StatDef parent) : base(parent)
-        {
-        }
-
-        public override float GetValue(GameObject obj)
+        public override float CalculateStat(GameObject obj)
         {
             var tool = obj as Entity;
             var material = tool?.GetMaterial(BoneDefOf.ToolHandle);

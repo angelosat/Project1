@@ -1,12 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    class StatMaxHaulWeight : StatValueGetter
+    class StatMaxHaulWeight : StatWorker
     {
-        public StatMaxHaulWeight(StatDef parent) : base(parent)
-        {
-        }
-
-        public override float GetValue(GameObject obj)
+        public override float CalculateStat(GameObject obj)
         {
             return obj[AttributeDefOf.Strength]?.Level ?? 0;
         }

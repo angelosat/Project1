@@ -1,11 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    class StatStaminaWorkThreshold : StatValueGetter
+    class StatStaminaWorkThreshold : StatWorker
     {
-        public StatStaminaWorkThreshold(StatDef parent) : base(parent)
-        {
-        }
-        public override float GetValue(GameObject obj)
+        public override float CalculateStat(GameObject obj)
         {
             var actor = obj as Actor;
             var staminaBaseThreshold = .25f; //placeholder?

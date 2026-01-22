@@ -92,14 +92,14 @@ namespace Start_a_Town_
         internal Entity SetMaterials(Dictionary<string, MaterialDef> materials)
         {
             foreach (var c in this.Components.Values)
-                c.Initialize(this, materials);
+                c.ApplyMaterials(this, materials);
             return this;
         }
         internal Entity SetQuality(Quality quality)
         {
             if (this.Def.QualityLevels)
                 foreach (var c in this.Components.Values)
-                    c.Initialize(this, quality);
+                    c.ApplyQuality(this, quality);
             return this;
         }
 

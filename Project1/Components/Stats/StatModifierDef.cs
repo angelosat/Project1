@@ -20,7 +20,7 @@ namespace Start_a_Town_
             DurationType = DurationTypes.Permanent,
             Mod = (a,v)=>
             {
-                var encumberance = StatDefOf.Encumberance.GetValue(a);
+                var encumberance = StatDefOf.Encumberance.CalculateFor(a);
                 var carryingw = a.Hauled?.TotalWeight ?? 0;
                 if (carryingw == 0)
                     return v;

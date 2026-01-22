@@ -2,13 +2,9 @@
 
 namespace Start_a_Town_
 {
-    class StatArmor : StatValueGetter
+    class StatArmor : StatWorker
     {
-        public StatArmor(StatDef parent) : base(parent)
-        {
-        }
-
-        public override float GetValue(GameObject obj)
+        public override float CalculateStat(GameObject obj)
         {
             var actor = obj as Actor;
             var gear = actor.GetGear();

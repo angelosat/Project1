@@ -74,8 +74,8 @@ namespace Start_a_Town_
         public virtual void OnObjectSynced(GameObject parent) { }
         public virtual void SetMaterial(MaterialDef mat) { }
 
-        internal virtual void Initialize(Entity parent, Dictionary<string, MaterialDef> materials) { }
-        internal virtual void Initialize(Entity parent, Quality quality) { }
+        internal virtual void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials) { }
+        internal virtual void ApplyQuality(Entity parent, Quality quality) { }
 
 
         public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e) { }

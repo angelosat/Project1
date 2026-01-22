@@ -1,12 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    class StatToolEffectiveness : StatValueGetter
+    class StatToolEffectiveness : StatWorker
     {
-        public StatToolEffectiveness(StatDef parent) : base(parent)
-        {
-        }
-
-        public override float GetValue(GameObject obj)
+        public override float CalculateStat(GameObject obj)
         {
             var tool = obj as Entity;
             var material = tool.GetMaterial(BoneDefOf.ToolHead);

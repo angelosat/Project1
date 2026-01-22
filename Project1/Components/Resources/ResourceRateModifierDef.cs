@@ -22,7 +22,7 @@ namespace Start_a_Town_
             Function = 
                 actor =>
                 {
-                    var val = StatDefOf.Encumberance.GetValue(actor);
+                    var val = StatDefOf.Encumberance.CalculateFor(actor);
                     var factor = .1f;
                     val *= factor;
                     return -val;

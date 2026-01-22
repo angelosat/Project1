@@ -20,7 +20,7 @@ namespace Start_a_Town_
             set => this.CustomName = value;
         }
 
-        internal override void Initialize(Entity parent, Quality quality)
+        internal override void ApplyQuality(Entity parent, Quality quality)
         {
             this.Quality = quality;
         }

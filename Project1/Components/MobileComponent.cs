@@ -252,7 +252,7 @@ namespace Start_a_Town_.Components
 
             var stamina = parent.GetResource(ResourceDefOf.Stamina);
 
-            var newwalk = StatDefOf.WalkSpeed.GetValue(parent);
+            var newwalk = StatDefOf.WalkSpeed.CalculateFor(parent);
             var walkSpeed = newwalk * Acceleration * NormalWalkSpeed * (this.CurrentState.Speed + this.CurrentState.SprintSpeed * stamina.Percentage);
 
             if (this.CurrentState.Type == State.Types.Sprinting)

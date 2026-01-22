@@ -19,8 +19,11 @@ namespace Start_a_Town_
         
         public ToolUseDef ToolUse;
         public ToolProfileDef ToolDef;
-        readonly List<ToolUseDef> Skills = new();
-     
+        readonly List<ToolUseDef> Skills = [];
+        internal override void ResolveReferencesNew()
+        {
+            ToolSystem.BakeStats(this.Owner);
+        }
         public ToolComp()
         {
 

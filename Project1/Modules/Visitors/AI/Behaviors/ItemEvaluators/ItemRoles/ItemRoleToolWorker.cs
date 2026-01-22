@@ -29,7 +29,7 @@
                 return -1;
             if (toolProfile.ToolUse != role.Def)
                 return -1;
-            return (int)StatDefOf.ToolEffectiveness.GetValue(item);
+            return (int)StatDefOf.ToolEffectiveness.CalculateFor(item);
 
             //var ability = item.ToolComponent?.ToolDef;
             //if (ability is null)

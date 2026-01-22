@@ -532,7 +532,7 @@ namespace Start_a_Town_
         internal StatsComponent Stats => _stats ??= this.GetComponent<StatsComponent>();
 
         [InspectorHidden]
-        public float this[StatDef stat] => stat.GetValue(this);
+        public float this[StatDef stat] => stat.CalculateFor(this);
         [InspectorHidden]
         public Resource this[ResourceDef resource] => this.Resources[resource];
         [InspectorHidden]
@@ -729,22 +729,16 @@ namespace Start_a_Town_
                     comp.OnTooltipCreated(this, tooltip);
             }
 
-            var value = this.GetValue();
+            var value = this.GetValueScore();
             if (value > 0)
-            {
-                tooltip.AddControlsBottomLeft(new Label(string.Format("Value: {0} ({1})", value * this.StackSize, value)));
-            }
+                tooltip.AddControlsBottomLeft(new Label($"Value: {value * this.StackSize} ({value})"));
 
-            var stats = this.Def.Category?.Stats;
-            if (stats is not null)
-            {
-                foreach (var stat in stats)
-                {
-                    tooltip.AddControlsBottomLeft(new Label($"{stat.Label}: {stat.GetValue(this).ToString(stat.StringFormat)}"));
-                }
-            }
+            //var stats = this.Def.Category?.Stats;
+            //if (stats is not null)
+            //    foreach (var stat in stats)
+            //        tooltip.AddControlsBottomLeft(new Label($"{stat.Label}: {stat.CalculateFor(this).ToString(stat.StringFormat)}"));
 
-            tooltip.AddControlsBottomLeft(new Label(string.Format("InstanceID: {0}", this.RefId)));
+            tooltip.AddControlsBottomLeft(new Label($"{nameof(this.RefId)}: {this.RefId}"));
         }
         public void GetInventoryTooltip(UI.Control tooltip)
         {
@@ -757,7 +751,7 @@ namespace Start_a_Town_
                     comp.GetInventoryTooltip(this, tooltip);
             }
 
-            var value = this.GetValue();
+            var value = this.GetValueScore();
             if (value > 0)
             {
                 tooltip.AddControlsBottomLeft(new Label(string.Format("Value: {0} ({1})", value * this.StackSize, value)));
@@ -1299,14 +1293,7 @@ namespace Start_a_Town_
         {
             return this.Def?.Category != null;
         }
-        public bool IsFood
-        {
-            get
-            {
-                throw new Exception();
-                //return this.GetComponent<ConsumableComponent>()?.Effects.OfType<NeedEffect>().Any(e => e.Type == NeedDefOf.Hunger) ?? false;
-            }
-        }
+        
         
         public static void DrawIcon(Bone body, int w, int h, float scale = 1)
         {
@@ -1508,7 +1495,7 @@ namespace Start_a_Town_
             this.GetComponent<StatsComponent>().AddModifier(statNewModifier);
         }
 
-        public int GetValue()
+        public int GetValueScore()
         {
             if (this.Def.BaseValue == 0)
             {
@@ -1526,7 +1513,7 @@ namespace Start_a_Town_
         }
         public int GetValueTotal()
         {
-            return this.GetValue() * this.StackSize;
+            return this.GetValueScore() * this.StackSize;
         }
         public virtual IEnumerable<Control> GetSelectionDetails()
         {

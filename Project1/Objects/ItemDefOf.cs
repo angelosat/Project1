@@ -131,7 +131,7 @@ namespace Start_a_Town_
             //StorageFilterVariations = Def.GetDefs<ToolProps>(),
             StorageFilterVariations = Def.GetDefs<ToolProfileDef>(),
             VariationGetter = e => e.Def,
-            CompTypes = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComponent)],
+            CompTypes = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComponent), typeof(StatsComponent)],
             Body = new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
                             .AddJoint(Vector2.Zero, new Bone(BoneDefOf.ToolHead, ItemContent.LogsGrayscale) { DrawMaterialColor = true })
         }

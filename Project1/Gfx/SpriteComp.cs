@@ -243,7 +243,7 @@ namespace Start_a_Town_.Components
         //    }
         //}
 
-        internal override void Initialize(Entity parent, Dictionary<string, MaterialDef> ingredients)
+        internal override void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> ingredients)
         {
             var def = parent.Def;
             this.Materials.Clear();

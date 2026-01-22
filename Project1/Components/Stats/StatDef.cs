@@ -15,8 +15,8 @@ namespace Start_a_Town_
         public Types Type = Types.Scalar;
         public string StringFormat = "";
         readonly Type ValueGetterType;
-        StatValueGetter _valueGetter;
-        StatValueGetter ValueGetter => this._valueGetter ??= Activator.CreateInstance(this.ValueGetterType, this) as StatValueGetter;
+        StatWorker _valueGetter;
+        StatWorker ValueGetter => this._valueGetter ??= ActivatorSafe<StatWorker>.CreateInstance(this.ValueGetterType);
 
         public StatDef(string name) : base(name)
         {
@@ -34,11 +34,11 @@ namespace Start_a_Town_
                     value = mod.Def.Mod(parent, value);
             return value;
         }
-        public float GetValue(GameObject parent)
+        public float CalculateFor(GameObject parent)
         {
             if (this.Type == Types.Scalar)
             {
-                var value = this.ValueGetter.GetValue(parent);
+                var value = this.ValueGetter.CalculateStat(parent);
                 var modified = this.ApplyModifiers(parent, value);
                 return this.BaseValue + modified;
             }
@@ -52,7 +52,7 @@ namespace Start_a_Town_
         {
             return new Label()
             {
-                TextFunc = () => $"{this.Name}: {this.GetValue(parent)}",
+                TextFunc = () => $"{this.Name}: {this.CalculateFor(parent)}",
             };
         }
 

@@ -20,7 +20,7 @@ namespace Start_a_Town_
         {
             var a = this.Actor;
             var t = this.Target;
-            this.CachedAnimation.Speed = StatDefOf.WorkSpeed.GetValue(a);
+            this.CachedAnimation.Speed = StatDefOf.WorkSpeed.CalculateFor(a);
             var particleColor = this.GetParticleColor();
             this.EmitterStrike = new ParticleEmitterSphere
             {

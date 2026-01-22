@@ -10,7 +10,7 @@ namespace Start_a_Town_
         {
         }
         public override string Text => $"{this.Reward.Object.Label} x{this.Reward.Amount}";
-        public override int Budget => this.Reward.Object.GetValue() * this.Reward.Amount;
+        public override int Budget => this.Reward.Object.GetValueScore() * this.Reward.Amount;
         public override string Label => this.Reward.Object.Label;
         public override int Count { get => this.Reward.Amount; set => this.Reward.Amount = value; }
 

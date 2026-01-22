@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Start_a_Town_.Components;
+using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
@@ -41,13 +42,20 @@ namespace Start_a_Town_
 
             item.Name = profile.Label;
 
+            BakeStats(item);
+
             return item;
+        }
+        static internal void BakeStats(Entity tool)
+        {
+            var comp = tool.GetComponent<StatsComponent>();
+            comp.Bake(StatDefOf.ToolSpeed, BoneDefOf.ToolHandle);
+            comp.Bake(StatDefOf.ToolEffectiveness, BoneDefOf.ToolHead);
         }
         internal static Entity Create(EntityCreationRequest req)
         {
             return Create(req.Context as ToolProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
         }
-
     }
     record CraftingRules(BoneDef Bone)
     {

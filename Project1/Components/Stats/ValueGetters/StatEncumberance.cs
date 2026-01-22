@@ -2,18 +2,14 @@
 
 namespace Start_a_Town_
 {
-    class StatEncumberance : StatValueGetter
+    class StatEncumberance : StatWorker
     {
-        public StatEncumberance(StatDef parent) : base(parent)
-        {
-        }
-
-        public override float GetValue(GameObject obj)
+        public override float CalculateStat(GameObject obj)
         {
             var haulWeight = obj.Hauled?.TotalWeight ?? 0;
             if (haulWeight == 0)
                 return 0;
-            var maxWeight = StatDefOf.MaxHaulWeight.GetValue(obj);
+            var maxWeight = StatDefOf.MaxHaulWeight.CalculateFor(obj);
             var ratio = haulWeight / maxWeight;
             ratio = MathHelper.Clamp(ratio, 0, 1);
             return ratio;

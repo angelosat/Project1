@@ -37,7 +37,7 @@ namespace Start_a_Town_
             if (this.TicksRemaining <= 0)
             {
                 var target = this.ValueTarget;
-                var resilience = StatDefOf.MoodChangeRate.GetValue(parent);
+                var resilience = StatDefOf.MoodChangeRate.CalculateFor(parent);
                 var rate = this.Rate;
                 if (target < this.Mood)
                     this.Mood = Math.Max(this.Mood - rate, target);

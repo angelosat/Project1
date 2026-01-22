@@ -421,7 +421,7 @@ namespace Start_a_Town_
         }
         internal int GetHaulStackLimitFromEndurance(ItemDef def)
         {
-            var maxHaulWeight = StatDefOf.MaxHaulWeight.GetValue(this);
+            var maxHaulWeight = StatDefOf.MaxHaulWeight.CalculateFor(this);
             var activityLevel = this.GetTrait(TraitDefOf.Activity)?.Normalized ?? 0;
             var maxDesiredEncumberance = maxHaulWeight + maxHaulWeight * activityLevel * .5f;
             var unitWeight = def.Weight;
@@ -447,7 +447,7 @@ namespace Start_a_Town_
             {
                 var stamina = this.GetResource(ResourceDefOf.Stamina);
                 var staminaPercentage = stamina.Percentage;
-                var threshold = StatDefOf.StaminaThresholdForWork.GetValue(this);
+                var threshold = StatDefOf.StaminaThresholdForWork.CalculateFor(this);
                 var tired = staminaPercentage < threshold;
                 return tired;
             }

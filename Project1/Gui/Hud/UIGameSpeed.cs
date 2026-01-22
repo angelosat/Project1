@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.Net;
+using System.Linq;
 
 namespace Start_a_Town_.UI
 {
@@ -33,22 +33,22 @@ namespace Start_a_Town_.UI
             //this.AddControlsHorizontally(1, this.BtnPause, this.Btn1x, this.Btn2x, this.Btn3x);
 
 
-            var btn0 = ButtonNew.CreateMedium("▪", () => this.SetSpeed(net, 0));
+            var btn0 = ButtonNew.CreateMedium("▪", () => SetSpeed(net, 0));
             btn0.IsToggledFunc = () => net.GetPlayer().SuggestedSpeed == 0;
             btn0.HoverFunc = () => GetAdditionalHoverText("Pause", 0);
             btn0.Tag = 0;
 
-            var btn1 = ButtonNew.CreateMedium(">", () => this.SetSpeed(net, 1));
+            var btn1 = ButtonNew.CreateMedium(">", () => SetSpeed(net, 1));
             btn1.IsToggledFunc = () => net.GetPlayer().SuggestedSpeed == 1;
             btn1.HoverFunc = () => GetAdditionalHoverText("Normal", 1);
             btn1.Tag = 0;
 
-            var btn2 = ButtonNew.CreateMedium(">>", () => this.SetSpeed(net, 2));
+            var btn2 = ButtonNew.CreateMedium(">>", () => SetSpeed(net, 2));
             btn2.IsToggledFunc = () => net.GetPlayer().SuggestedSpeed == 2;
             btn2.HoverFunc = () => GetAdditionalHoverText("Fast", 2);
             btn2.Tag = 0;
 
-            var btn3 = ButtonNew.CreateMedium(">>>", () => this.SetSpeed(net, 3));
+            var btn3 = ButtonNew.CreateMedium(">>>", () => SetSpeed(net, 3));
             btn3.IsToggledFunc = () => net.GetPlayer().SuggestedSpeed == 3;
             btn3.HoverFunc = () => GetAdditionalHoverText("Fastest", 3);
             btn3.Tag = 0;
@@ -70,9 +70,10 @@ namespace Start_a_Town_.UI
                 text += pl.Name + '\n';
             return text.TrimEnd('\n');
         }
-        void SetSpeed(NetEndpoint net, int s)
+        static void SetSpeed(NetEndpoint net, int s)
         {
-            PacketPlayerSetSpeed.Send(net, net.GetPlayer().ID, s);
+            //PacketPlayerSetSpeed.Send(net, net.GetPlayer().ID, s);
+            Ingame.Instance.Events.Post(new PlayerChangedSpeedEvent(s));
         }
         public override void Draw(SpriteBatch sb, Rectangle viewport)
         {

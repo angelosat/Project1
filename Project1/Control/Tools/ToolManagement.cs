@@ -10,12 +10,7 @@ using System.Windows.Forms;
 
 namespace Start_a_Town_
 {
-    record struct PlayerSelectionEvent(TargetArgs Single = null, TargetArgs Add = null, List<TargetArgs> Multiple = null) : IEventPayload
-    {
-        //public readonly TargetArgs Single = single;
-        //public readonly TargetArgs Add = add;
-        //public readonly List<TargetArgs> Multiple = multiple;
-    }
+    record struct PlayerSelectionEvent(TargetArgs Single = null, TargetArgs Add = null, List<TargetArgs> Multiple = null) : IEventPayload { }
     [EnsureStaticCtorCall]
     public class ToolManagement : DefaultTool
     {
@@ -97,11 +92,14 @@ namespace Start_a_Town_
             //int nextSpeed = Client.Instance.Speed == 0 ? LastSpeed : 0;
             //if (Client.Instance.Speed != 0)
             //    LastSpeed = Client.Instance.Speed;
+
+            
             if (_lastSpeed == 0)
                 _lastSpeed = 1;
             else _lastSpeed = 0;
             var nextSpeed = _lastSpeed;
-            PacketPlayerSetSpeed.Send(Client.Instance, Client.Instance.PlayerData.ID, nextSpeed);
+            Ingame.Instance.Events.Post(new PlayerChangedSpeedEvent(nextSpeed));
+            //PacketPlayerSetSpeed.Send(Client.Instance, Client.Instance.PlayerData.ID, nextSpeed);
         }
 
         private void SelectEntity(TargetArgs target)
@@ -209,7 +207,11 @@ namespace Start_a_Town_
 
         private static void SetSpeed(int value)
         {
-            PacketPlayerSetSpeed.Send(Client.Instance, Client.Instance.PlayerData.ID, value);
+            if(value != 0)
+                _lastSpeed = value;
+            Ingame.Instance.Events.Post(new PlayerChangedSpeedEvent(value));
+
+            //PacketPlayerSetSpeed.Send(Client.Instance, Client.Instance.PlayerData.ID, value);
         }
 
         public override void HandleKeyUp(KeyEventArgs e)

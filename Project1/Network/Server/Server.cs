@@ -30,8 +30,6 @@ namespace Start_a_Town_.Net
         }
         // TODO: figure out why it's glitching out if I set it lower than 10
         public const int ClockIntervalMS = 10;// 10 is working
-        //public override TimeSpan Clock => ServerClock;
-        //static TimeSpan ServerClock;
 
         static bool IsRunning;
 
@@ -55,7 +53,6 @@ namespace Start_a_Town_.Net
         /// </summary>
         public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = [];
         [Obsolete]
-
         protected override void Post(GameEvent e)
         {
             this.Events.Post(e.Payload);
@@ -64,13 +61,7 @@ namespace Start_a_Town_.Net
             GameMode.Current.HandleEvent(this, e);
             foreach (var item in Game1.Instance.GameComponents)
                 item.OnGameEvent(e);
-            //Instance.Map.OnGameEvent(e);
         }
-        //public override void EventOccured(Message.Types type, params object[] p)
-        //{
-        //    var e = new GameEvent(ServerClock.TotalMilliseconds, type, p);
-        //    this.OnGameEvent(e);
-        //}
 
         public static CancellationTokenSource ChunkLoaderToken = new();
         static Server _Instance;
@@ -104,7 +95,7 @@ namespace Start_a_Town_.Net
 
         public static void Stop()
         {
-            Server.ChunkLoaderToken.Cancel();
+            ChunkLoaderToken.Cancel();
             Listener?.Close();
 
             Instance.ConsoleBox?.Write("SERVER", "Stopped");
@@ -114,7 +105,6 @@ namespace Start_a_Town_.Net
             IsRunning = false;
             Instance.Map = null;
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
-            //ServerClock = new TimeSpan();
             Instance.Speed = 0;
         }
         public static void Start()
@@ -124,14 +114,11 @@ namespace Start_a_Town_.Net
             Instance.ResetOutgoingStreams();
 
             Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
-            //Instance.NetworkObjects.Clear();
-            //ServerClock = new TimeSpan();
             Instance.ConsoleBox.Write("SERVER", "Started");
             if (Listener != null)
                 Listener.Close();
             Listener = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             Listener.ReceiveBufferSize = Listener.SendBufferSize = Packet.Size;
-            //Instance.Players = new PlayerList(Instance);
             var anyIP = new IPEndPoint(IPAddress.Any, Port);
             Listener.Bind(anyIP);
 
@@ -168,8 +155,7 @@ namespace Start_a_Town_.Net
                 return;
             HandleIncoming();
             HandleIncomingOrdered();
-            if (GameMode.Current is not null)
-                GameMode.Current.Update(Instance);
+            GameMode.Current?.Update(Instance);
             if (Instance.Map is null)
                 return;
             if (!Instance.IsSaving)
@@ -178,15 +164,8 @@ namespace Start_a_Town_.Net
                 this.Map.Validate();
                 SendSnapshots();
             }
-
-            /// THESE MUST BE CALLED FROM WITHIN THE GAMESPEED LOOP
-            //if (this.Speed == 0)
-            //{
-                this.WritePlayerSpecificNew();
-                this.FlushStreams(false);
-            //}
-            //this.ResetOutgoingStreams();
-            //this.AdvanceClock();
+            this.WritePlayerSpecificNew();
+            this.FlushStreams(false);
             this.SendPackets();
         }
         private void WritePlayerSpecificNew()
@@ -229,60 +208,25 @@ namespace Start_a_Town_.Net
             this.TryResendPacketsFirst(); //try resend first or all?
             this.SendOrderedReliable();
         }
-
         protected void ResetOutgoingStreams()
         {
             foreach (var s in this.StreamsArray.Append(this.PlayerCommandsStream))
                 s.Reset();
         }
-
         private void TickMap()
         {
-            var auxStream = new BinaryWriter(new MemoryStream());
             for (int i = 0; i < this.Speed; i++)
             {
-
-                /// i moved this from the start of the loop to the end of the loop because
-                /// some packets might have been written already during packet handling before the map ticking
-                /// (for example as a response to player input) and we don't want to clear them
-                /// 
-                //this.OutgoingStreamTimestamped = new(new MemoryStream());
-                //auxStream.Write(this.Map.World.CurrentTick + 1);
-
-
                 this.Map.World.Tick(Instance);
                 this.Map.Tick();
-
-
-                //var length = this.OutgoingStreamTimestamped.BaseStream.Position;
-                //auxStream.Write(length);// write length
-                //if (length > 0)
-                //{
-                //    this.OutgoingStreamTimestamped.BaseStream.Position = 0;
-                //    this.OutgoingStreamTimestamped.BaseStream.CopyTo(auxStream.BaseStream);
-                //}
-
                 this.BlockUpdateTimer--;
                 if (this.BlockUpdateTimer <= 0)
                 {
                     this.BlockUpdateTimer = Instance.BlockUpdateTimerMax;
                     this.SendRandomBlockUpdates();
                 }
-
-                /// i moved this from the start of the loop to the end of the loop because
-                /// some packets might have been written already during packet handling before the map ticking
-                /// (for example as a response to player input) and we don't want to clear them
-                //this.OutgoingStreamTimestamped = new(new MemoryStream());
-
                 this.FlushStreams(true);
-
                 this.AdvanceClock();
-            }
-            if (auxStream.BaseStream.Position > 0)
-            {
-                //auxStream.BaseStream.Position = 0;
-                //this.OutgoingStreamOrderedReliable.Write(Network.Packets.PacketTimestamped);
-                //auxStream.BaseStream.CopyTo(this.OutgoingStreamOrderedReliable.BaseStream);
             }
         }
 
@@ -699,6 +643,10 @@ namespace Start_a_Town_.Net
         private static void SendSnapshots()
         {
             /// always send snapshots every frame, even empty ones. so that the client can interpolate correctly
+            
+            // i had to stop sending empty snapshots because after resuming from pause, entities "jumpbed" to their real position in the clients
+            if (Instance.ObjectsChangedSinceLastSnapshot.Count == 0)
+                return;
             PacketSnapshots.Send(Instance, Instance.ObjectsChangedSinceLastSnapshot);
             Instance.ObjectsChangedSinceLastSnapshot.Clear();
         }

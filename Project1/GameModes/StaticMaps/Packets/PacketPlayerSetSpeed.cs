@@ -1,15 +1,29 @@
 ﻿using Start_a_Town_.Net;
+using System;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     class PacketPlayerSetSpeed
     {
-        static int p;
+        static int _pSpeedChange;
         internal static void Init()
         {
-            p = Registry.PacketHandlers.Register(Receive);
+            _pSpeedChange = Registry.PacketHandlers.Register(Receive);
+
+            Registry.PlayerInputEventHooks.Register<PlayerChangedSpeedEvent>(HandlePlayerChangedSpeed);
         }
+
+        private static void HandlePlayerChangedSpeed(PlayerChangedSpeedEvent e)
+        {
+            // if server, set speed straight away
+            // if client, request speed change
+            Send(Client.Instance, Client.Instance.PlayerData.ID, e.Speed);
+            //Client.Instance.BeginPacketImmediate(_pSpeedChange)
+            //    .Write(Client.Instance.PlayerData.ID)
+            //    .Write(e.Speed);
+        }
+
         internal static void Send(NetEndpoint net, int playerID, int speed)
         {
             //var w = net.GetOutgoingStreamOrderedReliable();
@@ -17,7 +31,7 @@ namespace Start_a_Town_
             //var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
 
             //var w = net is Server server ? server.BeginPacketPlayerCommand(p) : net.BeginPacket(p);
-            var w = net.BeginPacketImmediate(p);
+            var w = net.BeginPacketImmediate(_pSpeedChange);
 
             //$"{net.CurrentTick} : {net} sending speed: {speed}".ToConsole();
             w.Write(playerID);

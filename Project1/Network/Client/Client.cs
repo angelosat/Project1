@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.Intrinsics.X86;
 
 namespace Start_a_Town_.Net
 {
@@ -330,14 +329,6 @@ namespace Start_a_Town_.Net
             this.Map.UpdateParticles();
             this.Map.World.Tick(Instance);
             this.Map.Tick();
-            //this.HandleBufferedTimestamped();
-            /// move this to after the map ticks because workcomponent ticks before aicomponent,
-            /// which results new interactions getting ticked in the next frame on the server,
-            /// but getting ticked in the same frame when received on the client
-            /// SOLUTIONS:
-            /// 1) manually add aicomponent before workcomponent inside entities
-            /// 2) process packets after ticking map
-            /// 3) add a timestamp on the actual interaction class during the frame that it's first ticked on the server, and make clients tick it only then as well
         }
 
         void ResetStreams()
@@ -345,19 +336,7 @@ namespace Start_a_Town_.Net
             foreach (var s in this.StreamsArray)
                 s.Reset();
         }
-        //private void OnGameEvent(GameEvent e)
-        //{
-        //    GameMode.Current.HandleEvent(Instance, e);
-
-        //    foreach (var item in Game1.Instance.GameComponents)
-        //        item.OnGameEvent(e);
-        //    UI.TooltipManager.OnGameEvent(e);
-        //    ScreenManager.CurrentScreen.OnGameEvent(e);
-
-        //    ToolManager.OnGameEvent(this, e);
-        //    this.Map?.OnGameEvent(e);
-        //}
-
+        
         [Obsolete]
         private static readonly Dictionary<PacketType, Action<INetEndpoint, IDataReader>> PacketHandlersNew = new();
 
@@ -367,11 +346,6 @@ namespace Start_a_Town_.Net
             PacketHandlersNew.Add(channel, handler);
         }
 
-        //public override void EventOccured(int eventTypeId, params object[] p)
-        //{
-        //    var e = new GameEvent(this.ClientClock.TotalMilliseconds, eventTypeId, p);
-        //    this.OnGameEvent(e);
-        //}
         [Obsolete]
 
         protected override void Post(GameEvent e)
@@ -1071,7 +1045,6 @@ namespace Start_a_Town_.Net
         {
             throw new Exception();
         }
-
         public override void SetSpeed(int playerID, int playerSpeed)
         {
             var player = this.GetPlayer(playerID);

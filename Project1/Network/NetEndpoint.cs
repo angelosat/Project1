@@ -48,7 +48,6 @@ namespace Start_a_Town_.Net
         }
         public abstract ConsoleBoxAsync ConsoleBox { get; }
         public abstract PlayerData CurrentPlayer { get; }
-        //public abstract TimeSpan Clock { get; }
         public abstract double CurrentTick { get; }
         public abstract MapBase Map { get; set; }
         public abstract WorldBase World { get; set; }

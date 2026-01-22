@@ -17,7 +17,6 @@ namespace Start_a_Town_
     {
         static public readonly CraftableDef Smelting = new("Smelting", typeof(MaterialRefinementDef)) { Specific = [MaterialRefinementDefOf.Ingots] };
         static public readonly CraftableDef ToolMaking = new("ToolMaking", typeof(ToolProfileDef));
-        //static public readonly CraftableDef Cooking = new(typeof(ToolProfileDef));
         static CraftableDefOf()
         {
             Def.Register(typeof(CraftableDefOf));

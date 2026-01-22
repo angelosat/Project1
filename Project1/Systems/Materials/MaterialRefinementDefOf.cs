@@ -3,10 +3,6 @@
     [EnsureStaticCtorCall]
     static internal class MaterialRefinementDefOf
     {
-        //static public readonly RawMaterialStateDef Raw = new("Raw");
-        //static public readonly RawMaterialStateDef Refined = new("Refined");
-        //static public readonly RawMaterialStateDef Processed = new("Processed");
-        //static public readonly RawMaterialStateDef Ground = new("Ground");
         static public readonly MaterialRefinementDef Ore = new("Ore", null, MaterialTypeDefOf.Metal, ItemContent.OreGrayscale);
         static public readonly MaterialRefinementDef Ingots = new("Ingots", Ore, MaterialTypeDefOf.Metal, ItemContent.BarsGrayscale) { FuelConsumption = 10 };
 

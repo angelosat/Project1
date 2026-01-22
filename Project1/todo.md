@@ -1,7 +1,6 @@
 # todo 2025
 ## immediate
 - list<control> controls make it private
-- change pathing nodes to intvec3 instead of vector3
 - change camera.rotation to int instead of double
 - influence resource for having visitors help with town jobs? or only when a certain reputation thershold has been reached?
 - change camera zoom to only be >=1 , and for <1 make it actually reduce the rendertarget bounds (for 1-1 pixel mapping)
@@ -22,7 +21,7 @@
 - fix "visitor" visiting for the first time when not actually the first time 
 - use getbuffer() instead of toarray() for outgoing packet streams [Open Stream.cs](Network/Stream.cs)
 - order town memebers to transfer an inventory item to another member
-  - this item is marker for transfer and in the first opportunity a relevant taskgiver will push this task to the owner which will then path to the target actor and perform the interaction
+  - this item is marked for transfer and in the first opportunity a relevant taskgiver will push this task to the owner which will then path to the target actor and perform the interaction
   - or (easier way maybe) the item can be assigned an owner through its ui, which is also accessible by clicking on it within an actor inventory, and the its owner can be set there.
 	- the mentioned task giver periodically scans the actor inventory for items that have a different owner, and creates task to maybe to give it to them, or move it to a stockpile
   - instead of single actor ownership / or on top of, maybe create "shared" items, and toggle which ai actors are permitted to use it

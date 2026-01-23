@@ -9,7 +9,8 @@ namespace Start_a_Town_
         public static readonly Quality Uncommon = new("Uncommon", Color.Lime, 1.2f, 30, 5);
         public static readonly Quality Rare = new("Rare", Color.DodgerBlue, 1.4f, 10, 10);
         public static readonly Quality Epic = new("Epic", Color.BlueViolet, 1.6f, 4, 15);
-        public static readonly Quality Legendary = new("Legendary", Color.DarkOrange, 1.8f, 1, 20);
+        public static readonly Quality Legendary = new("Legendary", Color.DarkOrange, 1.8f, 2, 20);
+        public static readonly Quality Artifact = new("Artifact", Color.Yellow, 2f, 1, 25);
         public static readonly Quality Unique = new("Unique", Color.Yellow, 2f, 0);
         public static readonly Quality Cheating = new("Cheating", Color.LightSkyBlue, 100f, 0);
 

@@ -2,6 +2,7 @@
 
 namespace Start_a_Town_
 {
+    [EnsureStaticCtorCall]
     public static class SkillDefOf
     {
         static public readonly SkillDef Smithing = new("Smithing")
@@ -12,7 +13,10 @@ namespace Start_a_Town_
         static public readonly SkillDef Digging = new("Digging")
         {
             Description = "Efficiency when digging soil, gravel, mud, and sand.",
-            Icon = new Icon(UIManager.Icons32, 12, 32)
+            Icon = new Icon(UIManager.Icons32, 12, 32),
+            AffectedStats = [StatDefOf.ToolSpeed, StatDefOf.ToolEffectiveness],
+            //RelevantTool = ToolProfileDefOf.Shovel,
+            //RelevantWorkType = ToolUseDefOf.Digging
         };
         static public readonly SkillDef Mining = new("Mining")
         {
@@ -59,18 +63,19 @@ namespace Start_a_Town_
             Description = "Plantcutting description",
             Icon = new Icon(UIManager.Icons32, 12, 32)
         };
-        static public readonly SkillDef[] All = { Digging, Mining, Construction, Cooking, Tinkering, Argiculture, Carpentry, Crafting, Plantcutting };
+        //static public readonly SkillDef[] All = { Digging, Mining, Construction, Cooking, Tinkering, Argiculture, Carpentry, Crafting, Plantcutting };
         static SkillDefOf()
         {
-            Def.Register(Digging);
-            Def.Register(Mining);
-            Def.Register(Construction);
-            Def.Register(Cooking);
-            Def.Register(Tinkering);
-            Def.Register(Argiculture);
-            Def.Register(Carpentry);
-            Def.Register(Crafting);
-            Def.Register(Plantcutting);
+            Def.Register(typeof(SkillDefOf));
+            //Def.Register(Digging);
+            //Def.Register(Mining);
+            //Def.Register(Construction);
+            //Def.Register(Cooking);
+            //Def.Register(Tinkering);
+            //Def.Register(Argiculture);
+            //Def.Register(Carpentry);
+            //Def.Register(Crafting);
+            //Def.Register(Plantcutting);
         }
     }
 }

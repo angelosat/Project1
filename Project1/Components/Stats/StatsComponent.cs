@@ -22,12 +22,14 @@ namespace Start_a_Town_.Components
     }
     class StatsComponent : EntityComp
     {
-        readonly Dictionary<BoneDef, List<StatContribution>> Contributions = [];
+        readonly Dictionary<BoneDef, List<StatContribution>> ContributionsBySource = [];
+        readonly Dictionary<StatDef, List<StatContribution>> ContributionsByStat = [];
         internal void Bake(StatDef def, BoneDef source)
         {
-            if (!this.Contributions.TryGetValue(source, out var list))
-                this.Contributions[source] = list = [];
-            list.Add(new StatContribution(this.Owner, def, source));
+            this.Register(def, source);
+            //if (!this.ContributionsBySource.TryGetValue(source, out var list))
+            //    this.ContributionsBySource[source] = list = [];
+            //list.Add(new StatContribution(this.Owner, def, source));
         }
         //void RefreshAll()
         //{
@@ -38,6 +40,28 @@ namespace Start_a_Town_.Components
         //internal override void ResolveReferencesNew()
         //{
         //    this.RefreshAll();
+        //}
+        public float this[StatDef def]
+        {
+            get
+            {
+                if (!this.ContributionsByStat.TryGetValue(def, out var list))
+                    return 0;
+                return list.Sum(c => c.Value);
+            }
+        }
+        //public float GetStat(StatDef stat)
+        //{
+        //    //float total = 0;
+        //    //foreach (var (bone, list) in this.ContributionsBySource)
+        //    //    foreach (var c in list)
+        //    //        if (c.Def == stat)
+        //    //            total += c.Value;
+        //    //return total;
+
+        //    if (!this.ContributionsByStat.TryGetValue(stat, out var list))
+        //        return 0;
+        //    return list.Sum(c => c.Value);
         //}
         public new class Spec : Spec<StatsComponent> { }
         public override string Name { get; } = "StatsNew";
@@ -88,25 +112,42 @@ namespace Start_a_Town_.Components
         }
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
-            foreach (var (source, list) in this.Contributions)
+            tooltip.AddControlsBottomLeft(new Label("by source"));
+            foreach (var (source, list) in this.ContributionsBySource)
+                foreach (var stat in list)
+                    tooltip.AddControlsBottomLeft(stat.CreateGui());
+            tooltip.AddControlsBottomLeft(new Label("by stat"));
+            foreach (var (source, list) in this.ContributionsByStat)
                 foreach (var stat in list)
                     tooltip.AddControlsBottomLeft(stat.CreateGui());
         }
         internal override void CopyFrom(EntityComp source)
         {
             var comp = (StatsComponent)source;
-            foreach (var (bone, list) in comp.Contributions)
+            foreach (var (bone, list) in comp.ContributionsBySource)
             {
                 var newlist = new List<StatContribution>();
-                this.Contributions[bone] = newlist;
+                this.ContributionsBySource[bone] = newlist;
                 foreach (var stat in list)
                     newlist.Add(new StatContribution(this.Owner, stat.Def, bone));
             }
         }
+        void Register(StatDef def, BoneDef source, float? value = null)
+        {
+            var c = new StatContribution(this.Owner, def, source);
+            if (value.HasValue)
+                c.SetValue(value.Value);
+            if (!this.ContributionsBySource.TryGetValue(source, out var list))
+                this.ContributionsBySource[source] = list = [];
+            if(!this.ContributionsByStat.TryGetValue(def, out var liststat))
+                this.ContributionsByStat[def] = liststat = [];
+            liststat.Add(c);
+            list.Add(c);
+        }
         public override void Write(IDataWriter w)
         {
-            w.Write(this.Contributions.Count);
-            foreach (var (bone, list) in this.Contributions)
+            w.Write(this.ContributionsBySource.Count);
+            foreach (var (bone, list) in this.ContributionsBySource)
             {
                 w.Write(bone);
                 w.Write(list.Count);
@@ -122,16 +163,18 @@ namespace Start_a_Town_.Components
             var bonecount = r.ReadInt32();
             for (int i = 0; i < bonecount; i++)
             {
-                var list = new List<StatContribution>();
+                //var list = new List<StatContribution>();
                 var bone = r.ReadDef<BoneDef>();
-                this.Contributions[bone] = list;
+                //this.ContributionsBySource[bone] = list;
                 var count = r.ReadInt32();
                 for (int j = 0; j < count; j++)
                 {
                     var def = r.ReadDef<StatDef>();
-                    var stat = new StatContribution(this.Owner, def, bone);
-                    stat.SetValue(r.ReadSingle());
-                    list.Add(stat);
+                    //var stat = new StatContribution(this.Owner, def, bone);
+                    var value = r.ReadSingle();
+                    //stat.SetValue();
+                    //list.Add(stat);
+                    this.Register(def, bone, value);
                 }
             }
         }

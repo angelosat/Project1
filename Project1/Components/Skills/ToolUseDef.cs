@@ -1,17 +1,8 @@
 ﻿namespace Start_a_Town_
 {
-    public class ToolUseDef : Def
+    public class ToolUseDef(string name, string description, SkillDef skill) : Def(name)
     {
-        public string Description { get; protected set; }
-
-        public ToolUseDef(string name, string description) : base(name)
-        {
-            this.Description = description;
-        }
-
-        public override string ToString()
-        {
-            return this.Name;
-        }
+        public string Description { get; protected set; } = description;
+        public SkillDef Skill = skill;
     }
 }

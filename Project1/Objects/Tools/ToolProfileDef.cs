@@ -6,9 +6,10 @@ namespace Start_a_Town_
     {
         //public string Description;
         public ToolUseDef ToolUse;
+        public DamageDef Damage;
         public HashSet<JobDef> AssociatedJobs = new();
         public Sprite SpriteHandle, SpriteHead;
-        internal SkillDef Skill;
+        public SkillDef Skill;
         public string Description;
 
         public ToolProfileDef(string name) : base(name)

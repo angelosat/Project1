@@ -295,8 +295,8 @@ namespace Start_a_Town_
             }
 
             var actor = this.Actor;
-            var toolEffect = GetToolEffectiveness();
-            var amount = (int)Math.Max(1, toolEffect / WorkDifficulty);
+            //var amount = this.CalculateWorkAmount();
+            this.Calculate(out var amount, out var speed);
             if (this.WillFinish(amount) && !this.CanFinish())
             {
                 this.Fail();
@@ -306,10 +306,10 @@ namespace Start_a_Town_
 
             this.AddProgress(amount);
             this.TotalWorkApplied += amount;
-            this.CachedAnimation.Speed = actor[StatDefOf.WorkSpeed];
 
-
-
+            //var speed = InteractionResolverDefOf.WorkSpeed.Worker.Resolve(actor);
+            //this.CachedAnimation.Speed = actor[StatDefOf.WorkSpeed];
+            this.CachedAnimation.Speed = speed;
             if (skill is not null)
             {
                 if (this.SkillAwardType == SkillAwardTypes.OnSwing)
@@ -338,11 +338,66 @@ namespace Start_a_Town_
         protected virtual float WorkDifficulty { get; } = 1;
 
         protected virtual void Done() => this.Def.Logic?.OnFinish(this);
+        protected virtual int CalculateWorkAmount()
+        {
+            var toolUse = this.Def.ToolUse;
+            if (this.Actor.Gear.GetGear(GearType.Mainhand) is not Entity tool)
+                return 1;
+            var comp = tool.GetComponent<ToolComp>();
+            var total = comp.GetWorkValue(toolUse) ?? 1;
 
+            var skill = this.Actor.Skills[toolUse.Skill];
+            var skillMult = skill.Level / 100f;
+            total *= skillMult;
+
+            total = Math.Max(1, total / this.WorkDifficulty);
+
+            return (int)total;
+        }
+        protected virtual float CalculateNextSwingSpeed()
+        {
+            var toolUse = this.Def.ToolUse;
+            var actor = this.Actor;
+            if (actor.Gear.GetGear(GearType.Mainhand) is not Entity tool)
+                return 1;
+            var comp = tool.GetComponent<ToolComp>();
+            var toolspeed = InteractionResolverDefOf.WorkSpeed.Worker.Resolve(actor);
+
+            var skill = actor.Skills[toolUse.Skill];
+            var skillMult = skill.Level / 100f;
+            toolspeed /= toolspeed * (1 + skillMult);
+
+            return toolspeed;
+        }
+        protected void Calculate(out int workamount, out float speed)
+        {
+            if (this.Actor.Gear.GetGear(GearType.Mainhand) is not Entity tool)
+            {
+                workamount = 1;
+                speed = 1;
+                return;
+            }
+            var toolUse = this.Def.ToolUse;
+
+            var comp = tool.GetComponent<ToolComp>();
+            var total = comp.GetWorkValue(toolUse) ?? 1;
+
+            var skill = this.Actor.Skills[toolUse.Skill];
+            var skillMult = skill.Level / 100f;
+            total *= skillMult;
+
+            total = Math.Max(1, total / this.WorkDifficulty);
+
+            var toolspeed = 1 + tool?.Stats[StatDefOf.ToolSpeed] ?? 0;
+            toolspeed /= 1 + skillMult;
+
+            workamount = (int)total;
+            speed = toolspeed;
+        }
         protected virtual float GetToolEffectiveness()
         {
             //if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolProperties.ToolUse == this.GetToolUse())
-            if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolUse == this.Def.ToolUse)
+            if (this.Actor.Gear.GetGear(GearType.Mainhand) is Entity tool && tool.ToolComponent.ToolUse == this.Def.ToolUse)
                 return tool[StatDefOf.ToolEffectiveness];
             else
                 return this.Actor.GetMaterial(BoneDefOf.RightHand).Density;

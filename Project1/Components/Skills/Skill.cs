@@ -1,7 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Components;
-using Start_a_Town_.UI;
+﻿using Start_a_Town_.UI;
 using System;
+using Microsoft.Xna.Framework;
 
 namespace Start_a_Town_
 {
@@ -34,22 +33,10 @@ namespace Start_a_Town_
         public string Name => this.SkillDef.Label;
         public override string Label => this.Name;
 
-        //static int GetNextLvlXpTest1(int currentLvl) => (int)Math.Pow(XpToLevelBase, currentLvl + 1);
-        //static int GetNextLvlXpTest2(int currentLvl) => currentLvl > 0 ? (int)Math.Pow(XpToLevelBase, currentLvl) * (XpToLevelBase - 1) : XpToLevelBase;
-        //static int GetNextLvlXpTest3(int currentLvl) => (currentLvl + 1) * XpToLevelBaseNew + (currentLvl == 0 ? 0 : GetNextLvlXpTest3(currentLvl - 1));
         static int GetNextLvlXp(int currentLvl) => (int)Math.Pow(2, currentLvl - 1) * XpToLevelBase;
         static int GetLevel(int xp) => (int)(Math.Log2(xp / XpToLevelBase) + 1);
 
-        //static public void Init(Hud hud)
-        //{
-        //    hud.RegisterEventHandler(Components.Message.Types.SkillIncrease, OnSkillIncrease);
-        //}
-        //static void OnSkillIncrease(GameEvent a)
-        //{
-        //    var actor = a.Parameters[0] as GameObject;
-        //    var skill = (Skill)a.Parameters[1];
-        //    FloatingText.Create(actor, $"{skill.SkillDef.Label} increased!", ft => ft.Font = UIManager.FontBold);
-        //}
+      
         internal void Award(int v)
         {
             var actor = this.Comp.Owner;
@@ -74,12 +61,9 @@ namespace Start_a_Town_
                 nextLvlXp = GetNextLvlXp(this.Level + levelsGained++);
             } while (remaining >= nextLvlXp);
             this.Level += levelsGained;
-            //this.LvlProgress.Max = GetNextLvlXp(this.Level);
-            //this.LvlProgress.Value = remaining;
             this.LvlProgress.SetMax(GetNextLvlXp(this.Level));
             this.LvlProgress.SetValue(remaining);
             actor.Net.ConsoleBox.Write(Log.Entry.Notification(actor, " has reached Level ", this.Level," in ", this, "!"));
-            //actor.Net.EventOccured((int)Message.Types.SkillIncrease, actor, this);
             actor.Map.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
             actor.Map.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
 
@@ -94,14 +78,6 @@ namespace Start_a_Town_
             if (this.Level != oldLevel)
                 actor.Map.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
         }
-        static Skill()
-        {
-            //for (int i = 1; i < 10; i++)
-            //{
-            //    $"{i}: {GetNextLvlXp(i)}".ToConsole();
-            //}
-        }
-      
         public Control GetListControlGui()
         {
             var label = new Bar(this.LvlProgress)// Label()
@@ -114,19 +90,22 @@ namespace Start_a_Town_
                         new Label(this.SkillDef.Description),
                         new Label() { TextFunc = () => $"Current Level: {this.Level}" },
                         new Label() { TextFunc = () => $"Experience: {this.CurrentXP} / {this.XpToLevel}" });
+                    //foreach (var stat in this.Def.AffectedStats)
+                    //    t.AddControlsBottomLeft(new Label($"{stat.Label}: +{stat.Worker.CalculateStat(this)}%") { TextColorFunc = () => Color.Lime });
+                    //if(this.Def.RelevantWorkType is ToolUseDef worktype)
+                    //if(StatSystem.SkillToInteraction.TryGetValue(this.Def, out var intertaction))
+                    foreach(var interaction in StatSystem.GetAffectedInteractionsFor(this.Def))
+                        t.AddControlsBottomLeft(new Label($"Improves {interaction.Label} efficiency by {this.Level}%") { TextColorFunc = () => Color.Lime });
+                        //t.AddControlsBottomLeft(new Label($"{intertaction.Label}: +{this.Level}%") { TextColorFunc = () => Color.Lime });
                 }
             };
             return label;
         }
 
-        
-
-       
         public void Write(IDataWriter w)
         {
             w.Write(this.SkillDef);
             w.Write(this.Level);
-            //this.LvlProgress.Write(w);
             w.Write(this.LvlProgress.Value);
         }
 
@@ -134,14 +113,10 @@ namespace Start_a_Town_
         {
             this.SkillDef = r.ReadDef<SkillDef>();
             this.Level = r.ReadInt32();
-            //this.LvlProgress.Max = GetNextLvlXp(this.Level);
             this.LvlProgress.SetValue(r.ReadInt32());
             return this;
         }
-        //public Skill Clone()
-        //{
-        //    return new Skill(this.Def) { LvlProgress = new Progress(this.LvlProgress), Level = this.Level };
-        //}
+       
         public override string ToString()
         {
             return $"{this.SkillDef.Label}: {this.Level} ({this.CurrentXP} / {this.XpToLevel})";

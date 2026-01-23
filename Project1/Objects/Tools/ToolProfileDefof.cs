@@ -1,11 +1,10 @@
-﻿using Start_a_Town_.Components;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
-    static class ToolProfileDefof
+    static class ToolProfileDefOf
     {
         public static readonly ToolProfileDef Shovel = new("Shovel")
         {
@@ -13,6 +12,7 @@ namespace Start_a_Town_
             SpriteHandle = ItemContent.ShovelHandle,
             SpriteHead = ItemContent.ShovelHead,
             ToolUse = ToolUseDefOf.Digging,
+            Damage = DamageDefOf.Digging,
             Skill = SkillDefOf.Digging,
             AssociatedJobs = new() { JobDefOf.Digger }
         };
@@ -23,6 +23,7 @@ namespace Start_a_Town_
             SpriteHandle = ItemContent.HammerHandle,
             SpriteHead = ItemContent.HammerHead,
             ToolUse = ToolUseDefOf.Building,
+            Damage = DamageDefOf.Blunt,
             Skill = SkillDefOf.Construction,
             AssociatedJobs = new() { JobDefOf.Builder }
         };
@@ -32,6 +33,7 @@ namespace Start_a_Town_
             SpriteHandle = ItemContent.PickaxeHandle,
             SpriteHead = ItemContent.PickaxeHead,
             ToolUse = ToolUseDefOf.Mining,
+            Damage = DamageDefOf.Mining,
             Skill = SkillDefOf.Mining,
             AssociatedJobs = new() { JobDefOf.Miner }
         };
@@ -41,6 +43,7 @@ namespace Start_a_Town_
             SpriteHandle = ItemContent.HandsawHandle,
             SpriteHead = ItemContent.HandsawHead,
             ToolUse = ToolUseDefOf.Carpentry,
+            Damage = DamageDefOf.Sawing,
             Skill = SkillDefOf.Carpentry,
             AssociatedJobs = new() { JobDefOf.Carpenter }
         };
@@ -50,6 +53,7 @@ namespace Start_a_Town_
             SpriteHandle = ItemContent.HoeHandle,
             SpriteHead = ItemContent.HoeHead,
             ToolUse = ToolUseDefOf.Argiculture,
+            Damage = DamageDefOf.Tilling,
             Skill = SkillDefOf.Argiculture,
             AssociatedJobs = new() { JobDefOf.Farmer }
         };
@@ -60,6 +64,7 @@ namespace Start_a_Town_
             SpriteHandle = ItemContent.AxeHandle,
             SpriteHead = ItemContent.AxeHead,
             ToolUse = ToolUseDefOf.Chopping,
+            Damage = DamageDefOf.Chopping,
             Skill = SkillDefOf.Plantcutting,
             AssociatedJobs = new() { JobDefOf.Lumberjack }
         };
@@ -70,9 +75,9 @@ namespace Start_a_Town_
         //    .AddSpec(new ToolComp.Spec(ToolUseDefOf.Chopping))
         //    ;
 
-        static ToolProfileDefof()
+        static ToolProfileDefOf()
         {
-            Def.Register(typeof(ToolProfileDefof));
+            Def.Register(typeof(ToolProfileDefOf));
 
             
 

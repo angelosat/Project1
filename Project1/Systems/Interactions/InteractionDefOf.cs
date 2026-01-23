@@ -24,12 +24,19 @@ namespace Start_a_Town_
             Skill = SkillDefOf.Plantcutting,
             ToolUse = ToolUseDefOf.Chopping
         };
-        public static readonly InteractionDef Dig = new("Digging", typeof(InteractionBreakBlock), typeof(InteractionBreakBlockLogic))
+        public static readonly InteractionDef Mine = new("Mining", typeof(InteractionBreakBlock), typeof(InteractionBreakBlockLogic))
         {
             Animation = AnimationDefOf.Tool,
             ProgressHandler = new InteractionProgressToolExternal(),
             Skill = SkillDefOf.Mining,
             ToolUse = ToolUseDefOf.Mining
+        };
+        public static readonly InteractionDef Dig = new("Digging", typeof(InteractionBreakBlock), typeof(InteractionBreakBlockLogic))
+        {
+            Animation = AnimationDefOf.Tool,
+            ProgressHandler = new InteractionProgressToolExternal(),
+            Skill = SkillDefOf.Digging,
+            ToolUse = ToolUseDefOf.Digging
         };
         //public static readonly InteractionDef Store = new("Storing", typeof(InteractionStoreHauled), null);
         public static readonly InteractionDef Store = new("Storing", typeof(InteractionStoreCarriedLogic))

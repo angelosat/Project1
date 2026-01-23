@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Start_a_Town_
+﻿namespace Start_a_Town_
 {
-    class StatToolSpeed : StatWorker
+    class StatToolSwingSpeed : StatWorker
     {
         public override float CalculateStat(GameObject obj)
         {

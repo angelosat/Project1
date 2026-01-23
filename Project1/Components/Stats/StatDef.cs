@@ -16,7 +16,7 @@ namespace Start_a_Town_
         public string StringFormat = "";
         readonly Type ValueGetterType;
         StatWorker _valueGetter;
-        StatWorker ValueGetter => this._valueGetter ??= ActivatorSafe<StatWorker>.CreateInstance(this.ValueGetterType);
+        public StatWorker Worker => this._valueGetter ??= ActivatorSafe<StatWorker>.CreateInstance(this.ValueGetterType);
 
         public StatDef(string name) : base(name)
         {
@@ -38,7 +38,7 @@ namespace Start_a_Town_
         {
             if (this.Type == Types.Scalar)
             {
-                var value = this.ValueGetter.CalculateStat(parent);
+                var value = this.Worker.CalculateStat(parent);
                 var modified = this.ApplyModifiers(parent, value);
                 return this.BaseValue + modified;
             }

@@ -40,7 +40,7 @@
             StringFormat = "0"
         };
 
-        public static readonly StatDef ToolSpeed = new("Tool Speed", typeof(StatToolSpeed))
+        public static readonly StatDef ToolSpeed = new("Tool Speed", typeof(StatToolSwingSpeed))
         {
             Description = "Determines time between each tool strike.",
             Type = StatDef.Types.Scalar,

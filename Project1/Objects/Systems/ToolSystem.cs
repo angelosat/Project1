@@ -28,7 +28,7 @@ namespace Start_a_Town_
         public static IEnumerable<CraftingRules> GetRules() => Rules.Values;
         static public Entity Create(ToolProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
         {
-            var item = ItemDefOf.Tool.Create().Initialize();
+            var item = ItemDefOf.Tool.Create();//.Initialize();
             item.Profile = profile;
             item.ToolComponent.ToolDef = profile;
 
@@ -43,9 +43,10 @@ namespace Start_a_Town_
             item.Name = profile.Label;
 
             BakeStats(item);
-
+            item.Initialize();
             return item;
         }
+        
         static internal void BakeStats(Entity tool)
         {
             var comp = tool.GetComponent<StatsComponent>();

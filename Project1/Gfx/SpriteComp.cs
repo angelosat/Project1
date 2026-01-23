@@ -634,7 +634,8 @@ namespace Start_a_Town_.Components
             foreach (var b in this.Body.GetAllBones())
             {
                 var mat = b.Material;
-                tooltip.AddControlsBottomLeft(new Label(string.Format("{0}: {1}", b.Def.Label, mat?.Name ?? "undefined")) { TextColor = mat?.Color ?? Color.Gray });
+                //tooltip.AddControlsBottomLeft(new Label(string.Format("{0}: {1}", b.Def.Label, mat?.Name ?? "undefined")) { TextColor = mat?.Color ?? Color.Gray });
+                tooltip.AddControlsBottomLeft(new Label($"{b.Def.Label}: {mat?.Label ?? "undefined"}") { TextColor = mat?.Color ?? Color.Gray });
             }
         }
         //public new class Spec : Spec<SpriteComp>

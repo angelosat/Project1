@@ -36,14 +36,16 @@
         public static readonly StatDef ToolEffectiveness = new("Tool Effectiveness", typeof(StatToolEffectiveness))
         {
             Description = "Amount of work produced with each hit of the tool.",
-            Type = StatDef.Types.Scalar
+            Type = StatDef.Types.Scalar,
+            StringFormat = "0"
         };
 
         public static readonly StatDef ToolSpeed = new("Tool Speed", typeof(StatToolSpeed))
         {
             Description = "Determines time between each tool strike.",
             Type = StatDef.Types.Scalar,
-            StringFormat = "+##0%"
+            StringFormat = "0.##"
+            //StringFormat = "+##0%"
         };
 
         public static readonly StatDef WorkSpeed = new("Work Speed", typeof(StatWorkSpeed))

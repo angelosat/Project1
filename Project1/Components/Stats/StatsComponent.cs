@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.UI;
-using Microsoft.Xna.Framework;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Start_a_Town_.Components
 {
-    class StatContribution(GameObject owner, StatDef def, BoneDef source)
+
+    class StatContribution(GameObject owner, StatDef def, BoneDef source)//, StatContribution.ContributionType cType)
     {
-        enum ContributionType { Additive, Multiplicative, Override }
+        internal enum ContributionType { Additive, Multiplicative }
+
+        internal ContributionType CType;// = cType;
         internal readonly StatDef Def = def;
         float? _value;
         internal float Value => this._value ??= this.Def.CalculateFor(this.Owner);
@@ -16,7 +18,7 @@ namespace Start_a_Town_.Components
         internal readonly BoneDef Source = source;
         internal GameObject Owner = owner;
         internal string Label => $"{this.Def.Label}: {this.Value.ToString(this.Def.StringFormat)}";
-        internal Control CreateGui() => new Label($"{this.Label} ({this.Source.Label}: {this.Owner.Body[this.Source].Material.Label})") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };
+        internal Control CreateGui() => new Label($"{this.Label} ({this.Source.Label}: {this.Owner.Body.FindBone(this.Source).Material.Label} x{this.Owner.Quality.Multiplier:0.00} from {this.Owner.Quality.Label} Quality)") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };
     }
     class StatsComponent : EntityComp
     {

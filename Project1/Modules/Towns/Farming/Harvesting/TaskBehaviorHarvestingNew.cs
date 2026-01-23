@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Start_a_Town_.AI.Behaviors;
-using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {

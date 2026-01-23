@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using static Start_a_Town_.OrderSettings;
-using static Start_a_Town_.OrderSettings.OrderFeasibilityResult;
 
 namespace Start_a_Town_
 {

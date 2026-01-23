@@ -31,7 +31,7 @@ namespace Start_a_Town_.Components
         }
 
 
-        const float ForageThreshold = .5f;
+        const float HarvestThreshold = .5f;
 
         public override string Name { get; } = "Plant";
 
@@ -143,22 +143,23 @@ namespace Start_a_Town_.Components
             var sunlight = this.Owner.Map.Sunlight;
             if (sunlight <= .5f)
                 return;
-            float growthAmount = GrowthRate;
-            if (this.GrowthBody.Percentage >= ForageThreshold)
+            float growthStep = GrowthRate;
+            if (this.GrowthBody.Percentage >= HarvestThreshold)
             {
                 if (this.ProducesFruit)
                     if (!this.GrowthFruit.IsFinished)
                     {
                         if (this.FruitGrowthTick++ >= growthRate)
                         {
-                            this.FruitGrowthTick = 0;
+                            this.FruitGrowthTick -= growthRate;
                             var prevPercentage = this.GrowthFruit.Percentage;
                             //this.GrowthFruit.Value++;
-                            this.GrowthFruit.Value += growthAmount;
+                            this.GrowthFruit.Value += growthStep;
                             if (this.IsHarvestable)
                             {
-                                if (prevPercentage < ForageThreshold)
-                                    parent.Net.EventOccured((int)Message.Types.PlantReady, parent);
+                                if (prevPercentage < HarvestThreshold)
+                                    //parent.Net.EventOccured((int)Message.Types.PlantReady, parent);
+                                    parent.Map.Events.Post(new PlantHarvestableEvent(this.Owner));
                                 //parent.Body.Sprite = this.PlantProperties.TextureGrown;
                                 parent.Body.Sprite = Sprite.Load(this.Species.TextureGrown);
                                 //parent.Body.Sprite = this.Species.TextureGrown;
@@ -171,9 +172,9 @@ namespace Start_a_Town_.Components
                 return;
             if (this.GrowthTick++ >= growthRate)
             {
-                this.GrowthTick = 0;
+                this.GrowthTick -= growthRate;
                 //this.GrowthBody.Value++;
-                this.GrowthBody.Value += growthAmount;
+                this.GrowthBody.Value += growthStep;
             }
             return;
         }
@@ -216,7 +217,10 @@ namespace Start_a_Town_.Components
         const int WiggleIntensityDefault = 1;
         int WiggleDirection;
         private Sprite _spriteFruit;
-
+        public bool Harvest(Actor actor)
+        {
+            return this.Harvest(this.Owner, actor);
+        }
         public bool Harvest(GameObject parent, GameObject actor)
         {
             var plant = parent as Plant;
@@ -239,6 +243,7 @@ namespace Start_a_Town_.Components
             }
 
             this.ResetFruitGrowth(parent);
+            this.Owner.Map.Events.Post(new PlantHarvestedEvent(this.Owner));
             return true;
         }
         internal override void OnKill()
@@ -410,7 +415,9 @@ namespace Start_a_Town_.Components
                 return relevantProgress.IsFinished;
             }
         }
-        public new class Props : Spec<PlantComponent> { }
-
     }
+
+    internal record struct PlantHarvestableEvent(Entity Entity) : IEventPayload { }
+    internal record struct PlantHarvestedEvent(Entity Entity) : IEventPayload { }
+  
 }

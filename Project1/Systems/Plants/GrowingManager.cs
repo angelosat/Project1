@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Start_a_Town_.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +10,56 @@ namespace Start_a_Town_
         readonly List<GrowingZone> GrowZones = [];
         public ILookup<PlantSpeciesDef, GrowingZone> BySpecies => this.GrowZones.ToLookup(z => z.Plant);
         public IReadOnlyList<GrowingZone> AllGrowingZones => this.GrowZones;
+        //public HashSet<Entity> PlantsHarvestable = [];
         public GrowingManager(Town town) : base(town)
         {
             town.Map.Events.ListenTo<ZoneCreatedEvent>(OnZoneCreated);
             town.Map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
+            town.Map.Events.ListenTo<PlantHarvestableEvent>(OnPlantHarvestable);
+            town.Map.Events.ListenTo<PlantHarvestedEvent>(OnPlantHarvested);
+            town.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+            town.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
         }
+
+       
+
+        private void OnEntitySpawned(EntitySpawnedEvent e)
+        {
+            this.RegisterHarvestable(e.Entity);
+        }
+
+        private void OnEntityDespawned(EntityDespawnedEvent e)
+        {
+            this.UnregisterHarvestable(e.Entity);
+        }
+        private void OnPlantHarvested(PlantHarvestedEvent e)
+        {
+            this.UnregisterHarvestable(e.Entity);
+        }
+        private void OnPlantHarvestable(PlantHarvestableEvent e)
+        {
+            this.RegisterHarvestable(e.Entity);
+        }
+        void RegisterHarvestable(Entity entity)
+        {
+            var entitycell = entity.Cell.Below;
+            if (!entity.TryGetComponent<PlantComponent>(out var comp))
+                return;
+            if (!comp.IsHarvestable)
+                return;
+            if (this.Map.Town.GetZoneAt(entitycell) is not GrowingZone zone)
+                return;
+            //this.AllGrowingZones.Any(z => z.Contains(entitycell)))
+            zone.AddHarvestable(entity);
+        }
+        void UnregisterHarvestable(Entity entity)
+        {
+            var entitycell = entity.Cell.Below;
+            if (this.Map.Town.GetZoneAt(entitycell) is not GrowingZone zone)
+                return;
+            zone.RemoveHarvestable(entity);
+        }
+
         internal override void ResolveReferences()
         {
             var growzones = this.Town.ZoneManager.GetZones<GrowingZone>();
@@ -32,15 +77,21 @@ namespace Start_a_Town_
                 return;
             this.GrowZones.Remove(growzone);
         }
+        public IEnumerable<Entity> GetHarvestablePlants()
+        {
+            return this.PlantsHarvestable;
+
+            //return this.AllGrowingZones.SelectMany(z => z.GetHarvestablePlantsLazy());
+        }
         public IEnumerable<IntVec3> GetNextTillingPos()
         {
             return this.AllGrowingZones
                 .SelectMany(z => z.GetTillingPositions());
         }
-        public IEnumerable<IntVec3> GetSowingTargets(Entity preferredEntity)// = null)
+        public IEnumerable<IntVec3> GetSowingTargets(Entity preferredSeed)// = null)
         {
-            if (preferredEntity.Profile is not PlantSpeciesDef seed)
-                throw new ArgumentException($"{nameof(preferredEntity)} not a seed");
+            if (preferredSeed.Profile is not PlantSpeciesDef seed)
+                throw new ArgumentException($"{nameof(preferredSeed)} not a seed");
             return this.GetSowingTargets(seed);
         }
         //public IEnumerable<(GrowingZone zone, IEnumerable<IntVec3> targets)> GetSowingTargetsAll(Entity preferredEntity)// = null)
@@ -49,10 +100,11 @@ namespace Start_a_Town_
         //        throw new ArgumentException($"{nameof(preferredEntity)} not a seed");
         //    return this.GetSowingTargetsAll(seed);
         //}
-        public IEnumerable<SowingBatch> GetSowingTargetsAll(Entity preferredEntity)
+
+        public IEnumerable<SowingBatch> GetSowingTargetsAll(Entity preferredSeed)
         {
-            if (preferredEntity.Profile is not PlantSpeciesDef seed)
-                throw new ArgumentException($"{nameof(preferredEntity)} not a seed");
+            if (preferredSeed.Profile is not PlantSpeciesDef seed)
+                throw new ArgumentException($"{nameof(preferredSeed)} not a seed");
             return this.GetSowingTargetsAll(seed);
         }
         public IEnumerable<SowingBatch> GetSowingTargetsAll(PlantSpeciesDef species)

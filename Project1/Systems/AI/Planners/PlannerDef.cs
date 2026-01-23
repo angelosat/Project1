@@ -19,7 +19,7 @@ namespace Start_a_Town_
         static public PlannerDef Chopping = new("Chopping", typeof(ChoppingPlanner));
         static public PlannerDef Tilling = new("Tilling", typeof(TillingPlanner));
         static public PlannerDef Sowing = new("Sowing", typeof(SowingPlanner));
-        static public PlannerDef Harvesting = new("Harvesting", typeof(TaskGiverHarvesting));
+        static public PlannerDef Harvesting = new("Harvesting", typeof(HarvestingPlanner));
         static public PlannerDef Foraging = new("Foraging", typeof(TaskGiverForaging));
         static public PlannerDef Digging = new("Digging", typeof(DiggingPlanner));
         static public PlannerDef Departure = new("Departure", typeof(DeparturePlanner));

@@ -13,7 +13,7 @@ namespace Start_a_Town_
                 return null;
             var manager = map.Town.GrowingManager;
             var zones = manager.AllGrowingZones;
-            var mapItems = actor.Map.GetEntities();
+            var mapItems = actor.Map.Entities;
             if (actor.Hauled is Entity carried && carried.Def == ItemDefOf.Seeds)
             {
                 var batches = GetReachableBatches(actor, manager.GetSowingTargetsAll(carried));

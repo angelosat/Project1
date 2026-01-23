@@ -1,8 +1,15 @@
-﻿namespace Start_a_Town_
+﻿using Start_a_Town_.Components;
+
+namespace Start_a_Town_
 {
-    class TaskGiverHarvesting : Planner
+    class HarvestingPlanner : Planner
     {
         protected override Plan TryPlan(Actor actor)
+        {
+
+            return null;
+        }
+        protected Plan TryPlanOld(Actor actor)
         {
             if (!actor.HasJob(JobDefOf.Harvester))
                 return null;
@@ -18,7 +25,8 @@
                     if (!actor.CanReserve(plant as GameObject) ||
                         !actor.CanReach(plant))
                         continue;
-                    if (plant.PlantComponent.Species.ProducesFruit)
+                    var comp = plant.GetComponent<PlantComponent>();
+                    if (comp.Species.ProducesFruit)
                     {
                         var task = new Plan(PlanDefOf.Harvesting, new TargetArgs(plant));
                         return task;

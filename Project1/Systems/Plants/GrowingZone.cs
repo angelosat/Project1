@@ -86,9 +86,9 @@ namespace Start_a_Town_
         public float HarvestThreshold = 1;
         public override string UniqueName => $"Zone_Growing_{this.ID}";
         public ItemDef SeedType = PlantDefOf.Bush;
-        readonly HashSet<IntVec3> CachedTilling = new();
-        readonly HashSet<IntVec3> CachedSowing = new();
-
+        readonly HashSet<IntVec3> CachedTilling = [];
+        readonly HashSet<IntVec3> CachedSowing = [];
+        readonly HashSet<Entity> PlantsHarvestable = [];
         public GrowingZone(IDataReader r)
             : base()
         {
@@ -222,14 +222,19 @@ namespace Start_a_Town_
                 && map.GetBlock(arg + Vector3.UnitZ) == BlockDefOf.Air.Worker;
         }
 
-        internal IEnumerable<Plant> GetHarvestablePlantsLazy()
+        internal IEnumerable<Entity> GetHarvestablePlantsLazy()
         {
             foreach (var pos in this.Positions)
             {
                 var above = pos.Above;
-                var grownPlants = this.Town.Map.GetObjects(above).OfType<Plant>().Where(p => p.PlantComponent.IsHarvestable);
-                foreach (var obj in grownPlants)
-                    yield return obj;
+                //var grownPlants = this.Town.Map.GetObjects(above).Where(p => p.PlantComponent.IsHarvestable);
+                //foreach (var obj in grownPlants)
+                //    yield return obj;
+                var plants = this.Town.Map.GetEntitiesAt(above);
+                foreach (var p in plants)
+                    if (p.TryGetComponent<PlantComponent>(out var comp) && comp.IsHarvestable)
+                        yield return p;
+                
             }
         }
         internal IEnumerable<GameObject> GetHarvestablePlants()
@@ -244,6 +249,8 @@ namespace Start_a_Town_
         {
             return this.Plant is not null && item.Profile == this.Plant;
         }
+        public void AddHarvestable(Entity entity) => this.PlantsHarvestable.Add(entity);
+        public void RemoveHarvestable(Entity entity) => this.PlantsHarvestable.Remove(entity);
         public override IEnumerable<(string name, Action action)> GetInfoTabs()
         {
             yield return ("Plant", this.ToggleGui);

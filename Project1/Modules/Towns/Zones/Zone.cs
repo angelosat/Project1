@@ -13,22 +13,26 @@ namespace Start_a_Town_
         public MapBase Map => this.Town.Map;
         public NetEndpoint Net => this.Map.Net;
         public override string Label => this.Name;
-        public readonly DrawableCellCollection Positions = new(Block.FaceHighlights[IntVec3.UnitZ]);
+        public readonly DrawableCellCollection Cells = new(Block.FaceHighlights[IntVec3.UnitZ]);
         public string Name { get; set; }
         public ZoneManager Manager;
         public int ID { get; set; }
         public bool Hide;
         static readonly Random Random = new();
+        internal readonly HashSet<Entity> CacheNew = [];
+        public IReadOnlyList<Entity> Items => [.. this.CacheNew];
+
         public abstract ZoneDef ZoneDef { get; }
         public abstract string UniqueName { get; }
-        protected bool _dirty;
-        public IntVec3 this[int index] => this.Positions[index];
+        protected bool _dirty = true;
+        public IntVec3 this[int index] => this.Cells[index];
 
         public bool Exists => this.Manager.Zones.ContainsKey(this.ID);
 
+
         protected Zone()
         {
-            this.Positions.Color = GetRandomColor();
+            this.Cells.Color = GetRandomColor();
         }
         public Zone(ZoneManager manager) : this()
         {
@@ -37,12 +41,12 @@ namespace Start_a_Town_
         public Zone(ZoneManager manager, IEnumerable<IntVec3> cells) : this()
         {
             this.Manager = manager;
-            this.Positions.Add(cells);
+            this.Cells.Add(cells);
         }
 
         public IntVec3 Average()
         {
-            return this.Positions.Average();
+            return this.Cells.Average();
         }
         public void Delete()
         {
@@ -61,12 +65,12 @@ namespace Start_a_Town_
         {
             var map = this.Map;
             var below = global.Below;
-            if (this.Positions.Contains(global) && !Block.IsBlockSolid(map, global))
+            if (this.Cells.Contains(global) && !Block.IsBlockSolid(map, global))
             {
                 this.RemovePosition(global);
                 return;
             }
-            else if (this.Positions.Contains(below) && !map.IsAir(global))
+            else if (this.Cells.Contains(below) && !map.IsAir(global))
             {
                 this.RemovePosition(below);
                 return;
@@ -80,18 +84,18 @@ namespace Start_a_Town_
         public void RemovePositions(IEnumerable<IntVec3> positions)
         {
             foreach (var pos in positions)
-                this.Positions.Remove(pos);
-            if (!this.Positions.Any())
+                this.Cells.Remove(pos);
+            if (!this.Cells.Any())
             {
                 this.Delete();
                 return;
             }
-            var splitgraphs = this.Positions.GetAllConnectedSubGraphs();
+            var splitgraphs = this.Cells.GetAllConnectedSubGraphs();
             if (splitgraphs.Count == 1)
                 return;
             var largest = splitgraphs.OrderByDescending(g => g.Count).First();
-            foreach (var pos in this.Positions.Except(largest).ToList())
-                this.Positions.Remove(pos);
+            foreach (var pos in this.Cells.Except(largest).ToList())
+                this.Cells.Remove(pos);
         }
 
         internal void Edit(IntVec3 begin, IntVec3 end, bool remove)
@@ -100,27 +104,28 @@ namespace Start_a_Town_
 
             if (!remove)
             {
-                var finalPositions = inputpositions.Where(pos => this.Town.GetZoneAt(pos) == null).Union(this.Positions);
+                var finalPositions = inputpositions.Where(pos => this.Town.GetZoneAt(pos) == null).Union(this.Cells);
                 if (!finalPositions.IsConnectedNew())
                 {
                     this.Manager.RegisterNewZone(this.ZoneDef, inputpositions);
                     return;
                 }
-                foreach (var pos in inputpositions.Except(this.Positions))
+                foreach (var pos in inputpositions.Except(this.Cells))
                     if (this.Town.GetZoneAt(pos) is null)
-                        this.Positions.Add(pos);
+                        this.Cells.Add(pos);
             }
             else
                 this.RemovePositions(inputpositions);
         }
         public void MarkDirty()
         {
-            this._dirty = false;
+            this._dirty = true;
         }
         protected virtual void Validate() { }
+
         internal void OnBlockChangedNew(IntVec3 pos)
         {
-            if (!this.Positions.Contains(pos))
+            if (!this.Cells.Contains(pos))
                 return;
             if (!this.ZoneDef.Worker.IsValidLocation(this.Map, pos))
                 this.RemovePosition(pos);
@@ -133,7 +138,7 @@ namespace Start_a_Town_
         }
         internal bool Contains(IntVec3 pos)
         {
-            return this.Positions.Contains(pos);// TODO use a hashset
+            return this.Cells.Contains(pos);// TODO use a hashset
         }
 
         internal static bool IsPositionValid(MapBase map, Vector3 pos)
@@ -176,13 +181,13 @@ namespace Start_a_Town_
         }
         internal void OnCameraRotated(Camera cam)
         {
-            this.Positions.Invalidate();
+            this.Cells.Invalidate();
         }
         internal void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
         {
             if (this.Hide)
                 return;
-            this.Positions.DrawBlocks(map, cam);
+            this.Cells.DrawBlocks(map, cam);
         }
 
         public SaveTag Save(string name = "")
@@ -190,7 +195,7 @@ namespace Start_a_Town_
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             this.ID.Save(tag, "ID");
             this.Name.Save(tag, "Name");
-            this.Positions.Save(tag, "Positions");
+            this.Cells.Save(tag, "Positions");
             this.Hide.Save(tag, "Hide");
             this.SaveExtra(tag);
             return tag;
@@ -202,7 +207,7 @@ namespace Start_a_Town_
             this.ID = tag.GetValue<int>("ID");
             if (tag.TryGetTagValueOut("Name", out string name)) this.Name = name;
             //tag.TryGetTag("Positions", v => this.Positions.LoadIntVecs(v));
-            if (tag.TryGetTag("Positions", out SaveTag t)) this.Positions.LoadIntVecs(t);
+            if (tag.TryGetTag("Positions", out SaveTag t)) this.Cells.LoadIntVecs(t);
             this.Hide.TryLoad(tag, "Hide");
             this.LoadExtra(tag);
             return this;
@@ -214,7 +219,7 @@ namespace Start_a_Town_
             w.Write(this.ID);
             w.Write(this.Name);
             w.Write(this.Hide);
-            this.Positions.Write(w);
+            this.Cells.Write(w);
             this.WriteExtra(w);
         }
         protected virtual void WriteExtra(IDataWriter w) { }
@@ -224,7 +229,7 @@ namespace Start_a_Town_
             this.ID = r.ReadInt32();
             this.Name = r.ReadString();
             this.Hide = r.ReadBoolean();
-            this.Positions.Read(r);
+            this.Cells.Read(r);
             this.ReadExtra(r);
             return this;
         }
@@ -241,5 +246,9 @@ namespace Start_a_Town_
             yield break;
         }
 
+        
     }
+
+    internal record struct EntityEnteredZoneEvent(Entity Entity, Zone Zone) : IEventPayload { }
+    internal record struct EntityExitedZoneEvent(Entity Entity, Zone Zone) : IEventPayload { }
 }

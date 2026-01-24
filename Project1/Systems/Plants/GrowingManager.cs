@@ -13,25 +13,45 @@ namespace Start_a_Town_
         //public HashSet<Entity> PlantsHarvestable = [];
         public GrowingManager(Town town) : base(town)
         {
-            town.Map.Events.ListenTo<ZoneCreatedEvent>(OnZoneCreated);
-            town.Map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
-            town.Map.Events.ListenTo<PlantHarvestableEvent>(OnPlantHarvestable);
-            town.Map.Events.ListenTo<PlantHarvestedEvent>(OnPlantHarvested);
-            town.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
-            town.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+            var map = town.Map;
+            map.Events.ListenTo<ZoneCreatedEvent>(OnZoneCreated);
+            map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
+            map.Events.ListenTo<PlantHarvestableEvent>(OnPlantHarvestable);
+            map.Events.ListenTo<PlantHarvestedEvent>(OnPlantHarvested);
+            //town.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+            //town.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+            map.Events.ListenTo<EntityEnteredZoneEvent>(OnEntityEnteredZone);
+            map.Events.ListenTo<EntityExitedZoneEvent>(OnEntityExitedZone);
         }
 
-       
-
-        private void OnEntitySpawned(EntitySpawnedEvent e)
-        {
-            this.RegisterHarvestable(e.Entity);
-        }
-
-        private void OnEntityDespawned(EntityDespawnedEvent e)
+        private void OnEntityExitedZone(EntityExitedZoneEvent e)
         {
             this.UnregisterHarvestable(e.Entity);
         }
+
+        private void OnEntityEnteredZone(EntityEnteredZoneEvent e)
+        {
+            var entity = e.Entity;
+            var entitycell = entity.Cell.Below;
+            if (!entity.TryGetComponent<PlantComponent>(out var comp))
+                return;
+            if (!comp.IsHarvestable)
+                return;
+            this.RegisterHarvestable(entity);
+            //if (this.Map.Town.GetZoneAt(entitycell) is not GrowingZone gz)
+            //    return;
+            //gz.PlantsHarvestable.Add(entity);
+        }
+
+        //private void OnEntitySpawned(EntitySpawnedEvent e)
+        //{
+        //    this.RegisterHarvestable(e.Entity);
+        //}
+
+        //private void OnEntityDespawned(EntityDespawnedEvent e)
+        //{
+        //    this.UnregisterHarvestable(e.Entity);
+        //}
         private void OnPlantHarvested(PlantHarvestedEvent e)
         {
             this.UnregisterHarvestable(e.Entity);
@@ -43,21 +63,18 @@ namespace Start_a_Town_
         void RegisterHarvestable(Entity entity)
         {
             var entitycell = entity.Cell.Below;
-            if (!entity.TryGetComponent<PlantComponent>(out var comp))
-                return;
-            if (!comp.IsHarvestable)
-                return;
+            
             if (this.Map.Town.GetZoneAt(entitycell) is not GrowingZone zone)
                 return;
             //this.AllGrowingZones.Any(z => z.Contains(entitycell)))
-            zone.AddHarvestable(entity);
+            zone.PlantsHarvestable.Add(entity);
         }
         void UnregisterHarvestable(Entity entity)
         {
             var entitycell = entity.Cell.Below;
             if (this.Map.Town.GetZoneAt(entitycell) is not GrowingZone zone)
                 return;
-            zone.RemoveHarvestable(entity);
+            zone.PlantsHarvestable.Remove(entity);
         }
 
         internal override void ResolveReferences()
@@ -79,7 +96,13 @@ namespace Start_a_Town_
         }
         public IEnumerable<Entity> GetHarvestablePlants()
         {
-            return this.PlantsHarvestable;
+            foreach(var gz in this.AllGrowingZones)
+            {
+                if (!gz.Harvesting)
+                    continue;
+                foreach (var plant in gz.PlantsHarvestable)
+                    yield return plant;
+            }
 
             //return this.AllGrowingZones.SelectMany(z => z.GetHarvestablePlantsLazy());
         }

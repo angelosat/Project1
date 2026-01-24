@@ -24,6 +24,7 @@ namespace Start_a_Town_
 
         public override void Update()
         {
+            return;
             if (this.UpdateTimer-- <= 0)
             {
                 this.UpdateTimer = TicksPerUpdate;

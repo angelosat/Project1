@@ -157,14 +157,16 @@ namespace Start_a_Town_
             if (item == previousItem) // we are implicitly told to unequip the item, assuming it is currently equipped
             {
                 this.Unequip(slotType);
-                Packets.SendUnequip(actor, slotType);
+                // slots implicitly get synced
+                //Packets.SendUnequip(actor, slotType);
                 return true;
             }
 
             //item.OnDespawn(); // in case the item is equipped from the world instead of from the inventory
             // DESPAWN BEFORE EQUIPPING because then the item's global become's the actor's global and the item is removed from the wrong chunk!
             Equip(item);
-            Packets.SendEquip(actor, item);
+            // slots implicitly get synced
+            //Packets.SendEquip(actor, item);
             return true;
         }
 

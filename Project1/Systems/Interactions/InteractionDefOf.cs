@@ -44,9 +44,17 @@ namespace Start_a_Town_
             Animation = AnimationDefOf.TouchItem,
             ProgressHandler = new InteractionProgressFirstContact()
         };
-        public static readonly InteractionDef Equip = new("Equipping", typeof(InteractionEquip), null);
-        public static readonly InteractionDef Unequip = new("Unequipping", typeof(InteractionUnequip), null);
-        public static readonly InteractionDef Construct = new("Building", typeof(InteractionBuildLogic))
+        public static readonly InteractionDef Equip = new("Equipping", typeof(InteractionEquipLogic))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = new InteractionProgressFirstContact()
+        };
+        public static readonly InteractionDef Unequip = new("Unequipping", typeof(InteractionUnequipLogic))
+          {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = new InteractionProgressFirstContact()
+        };
+    public static readonly InteractionDef Construct = new("Building", typeof(InteractionBuildLogic))
         {
             Animation = AnimationDefOf.Tool,
             ProgressHandler = new InteractionProgressToolExternal(),

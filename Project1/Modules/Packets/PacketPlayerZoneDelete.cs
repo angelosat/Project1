@@ -26,7 +26,7 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             Type zoneType = Type.GetType(r.ReadString());
             int zoneID = r.ReadInt32();
-            net.Map.Town.ZoneManager.Delete(zoneID);
+            net.Map.Town.ZoneManager.DeleteZone(zoneID);
             if (net is Server)
                 Send(net, zoneType, zoneID);
         }

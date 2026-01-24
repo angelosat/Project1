@@ -88,7 +88,7 @@ namespace Start_a_Town_
         public ItemDef SeedType = PlantDefOf.Bush;
         readonly HashSet<IntVec3> CachedTilling = [];
         readonly HashSet<IntVec3> CachedSowing = [];
-        readonly HashSet<Entity> PlantsHarvestable = [];
+        public HashSet<Entity> PlantsHarvestable = [];
         public GrowingZone(IDataReader r)
             : base()
         {
@@ -138,7 +138,7 @@ namespace Start_a_Town_
         {
             var below = global.Below;
             var map = this.Map;
-            if (this.Positions.Contains(global))
+            if (this.Cells.Contains(global))
             {
                 //if (!Block.IsBlockSolid(map, global) || map.GetMaterial(global) != MaterialDefOf.Soil)
                 if(map.GetCell(global).Material != MaterialDefOf.Soil)
@@ -147,7 +147,7 @@ namespace Start_a_Town_
                     return;
                 }
             }
-            else if (this.Positions.Contains(below))
+            else if (this.Cells.Contains(below))
             {
                 if (!map.IsAir(global))
                 {
@@ -171,7 +171,7 @@ namespace Start_a_Town_
         public IEnumerable<IntVec3> GetSowingPositions(int spacing)
         {
             this.Validate();
-            var first = this.Positions.First();
+            var first = this.Cells.First();
             foreach(var pos in this.CachedSowing)
             { 
                 var d = pos - first;
@@ -188,12 +188,12 @@ namespace Start_a_Town_
 
         protected override void Validate()
         {
-            if (this._dirty)
+            if (!this._dirty)
                 return;
-            this._dirty = true;
+            this._dirty = false;
             this.CachedTilling.Clear();
             this.CachedSowing.Clear();
-            foreach (var pos in this.Positions)
+            foreach (var pos in this.Cells)
             {
                 var cell = this.Town.Map.GetCell(pos);
                 var block = cell.Block;
@@ -224,7 +224,7 @@ namespace Start_a_Town_
 
         internal IEnumerable<Entity> GetHarvestablePlantsLazy()
         {
-            foreach (var pos in this.Positions)
+            foreach (var pos in this.Cells)
             {
                 var above = pos.Above;
                 //var grownPlants = this.Town.Map.GetObjects(above).Where(p => p.PlantComponent.IsHarvestable);
@@ -239,18 +239,18 @@ namespace Start_a_Town_
         }
         internal IEnumerable<GameObject> GetHarvestablePlants()
         {
-            return this.Town.Map.GetObjects(this.Positions.Select(pos => (Vector3)pos.Above)).OfType<Plant>().Where(p => p.IsHarvestable);
+            return this.Town.Map.GetObjects(this.Cells.Select(pos => (Vector3)pos.Above)).OfType<Plant>().Where(p => p.IsHarvestable);
         }
         internal IEnumerable<GameObject> GetChoppableTrees()
         {
-            return this.Town.Map.GetObjects(this.Positions.Select(pos => (Vector3)pos.Above)).Where(TreeComponent.IsGrown);
+            return this.Town.Map.GetObjects(this.Cells.Select(pos => (Vector3)pos.Above)).Where(TreeComponent.IsGrown);
         }
         public bool IsValidSeed(GameObject item)
         {
             return this.Plant is not null && item.Profile == this.Plant;
         }
-        public void AddHarvestable(Entity entity) => this.PlantsHarvestable.Add(entity);
-        public void RemoveHarvestable(Entity entity) => this.PlantsHarvestable.Remove(entity);
+        //public void AddHarvestable(Entity entity) => this._plantsHarvestable.Add(entity);
+        //public void RemoveHarvestable(Entity entity) => this._plantsHarvestable.Remove(entity);
         public override IEnumerable<(string name, Action action)> GetInfoTabs()
         {
             yield return ("Plant", this.ToggleGui);

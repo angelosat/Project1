@@ -85,8 +85,13 @@ namespace Start_a_Town_
             this.Def.Logic.OnStart(this);
             if (this.AnimationDef is not null)
             {
-                this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 25);
-
+                this._cachedAnimation = 
+                    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 25);
+                //if (this.AnimationDef == AnimationDefOf.Tool) // HACK
+                //{
+                //    this.Calculate(out _, out var speed);
+                //    this.SetNextSwingSpeed(speed);
+                //}
                 //if (this.CrossFadeAnimationLength == 0)
                 //    this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
                 //else
@@ -306,10 +311,11 @@ namespace Start_a_Town_
 
             this.AddProgress(amount);
             this.TotalWorkApplied += amount;
+            this._cachedAnimation.Frame.ToConsole();
 
             //var speed = InteractionResolverDefOf.WorkSpeed.Worker.Resolve(actor);
             //this.CachedAnimation.Speed = actor[StatDefOf.WorkSpeed];
-            this.CachedAnimation.Speed = speed;
+            //this.SetNextSwingSpeed(speed);
             if (skill is not null)
             {
                 if (this.SkillAwardType == SkillAwardTypes.OnSwing)
@@ -334,6 +340,13 @@ namespace Start_a_Town_
             //this.Done();
             //this.Finish();
         }
+
+        internal void SetNextSwingSpeed(float speed)
+        {
+            this.CachedAnimation.Speed = speed;
+            this.Actor.Map.Events.Post(new InteractionNextSwingSpeedEvent(this.Actor, speed));
+        }
+
         bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
         protected virtual float WorkDifficulty { get; } = 1;
 
@@ -371,20 +384,21 @@ namespace Start_a_Town_
         }
         protected void Calculate(out int workamount, out float speed)
         {
-            if (this.Actor.Gear.GetGear(GearType.Mainhand) is not Entity tool)
+            if (this.Actor.Gear.GetGear(GearType.Mainhand) is not Entity tool || 
+                this.Def.ToolUse is not ToolUseDef toolUse)
             {
                 workamount = 1;
                 speed = 1;
                 return;
             }
-            var toolUse = this.Def.ToolUse;
+            //var toolUse = this.Def.ToolUse;
 
             var comp = tool.GetComponent<ToolComp>();
             var total = comp.GetWorkValue(toolUse) ?? 1;
 
             var skill = this.Actor.Skills[toolUse.Skill];
             var skillMult = skill.Level / 100f;
-            total *= skillMult;
+            total *= 1 + skillMult;
 
             total = Math.Max(1, total / this.WorkDifficulty);
 

@@ -1,5 +1,16 @@
 ﻿namespace Start_a_Town_
 {
+    internal class InteractionEquipLogic : InteractionLogic
+    {
+        internal override void OnFinish(Interaction i)
+        {
+            var a = i.Context.Actor;
+            if (a.Net.IsClient)
+                return;
+            var t = i.Context.Target;
+            a.Gear.EquipToggle(t.Object as Entity);
+        }
+    }
     class InteractionEquip : InteractionPerpetual
     {
         static public int ID = "Equip".GetHashCode();

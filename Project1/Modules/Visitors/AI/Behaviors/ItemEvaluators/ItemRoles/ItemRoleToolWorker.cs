@@ -7,6 +7,19 @@
             var task = actor.AI.State.Behavior?.Plan;
             if (task is null)
                 return -100;
+            var interaction = task.Def.Interaction;
+            if (interaction is null)
+                return 0;
+            var tooluse = interaction.ToolUse;
+            if (tooluse == role.Def)
+                return 100;
+            return 0;
+        }
+        public  int GetSituationalScoreOld(Actor actor, Entity item, ItemRoleDef role)
+        {
+            var task = actor.AI.State.Behavior?.Plan;
+            if (task is null)
+                return -100;
             var target = task.EquipContextTarget;
             if (target is null)
                 return 0;

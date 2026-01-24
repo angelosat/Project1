@@ -27,7 +27,7 @@ namespace Start_a_Town_
         {
             //return Activator.CreateInstance(this.ZoneClass, manager, positions) as Zone;
             var zone = Activator.CreateInstance(this.ZoneClass, manager) as Zone;
-            zone.Positions.Add(positions);
+            zone.Cells.Add(positions);
             return zone;
         }
     }

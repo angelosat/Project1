@@ -15,11 +15,9 @@ namespace Start_a_Town_.AI.Behaviors
         //}
         
         protected override IEnumerable<Behavior> GetSteps()
-        {
-            //yield return new BehaviorMoveTo(this.Task.TargetA, 1);
-            //yield return new BehaviorInteractionNew(this.Task.TargetA, new InteractionEquip());
-            yield return new BehaviorResolvePath(TargetIndex.A);
-            //yield return new BehaviorInteractionNew(TargetIndex.A, new InteractionEquip());
+        { 
+            // this behavior assumes the item is equipped from the inventory
+            //yield return new BehaviorResolvePath(TargetIndex.A);
             yield return new BehaviorResolveInteraction(InteractionDefOf.Equip);
         }
         protected override bool ReserveExtra()

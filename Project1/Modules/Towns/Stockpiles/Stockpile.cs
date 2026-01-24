@@ -14,13 +14,11 @@ namespace Start_a_Town_
         public int Priority => (int)this.Settings.Priority;
         static StorageFilterCategoryNewNew FiltersView = InitFilters();
         readonly StockpileSettings SettingsNew;
-
+        
         public override string UniqueName => $"Zone_Stockpile_{this.ID}";
         readonly List<GameObject> Cache = [];
-        readonly HashSet<Entity> CacheNew = [];
-        public IReadOnlyList<Entity> Items => [.. this.CacheNew];
         public readonly ObservableCollection<GameObject> CacheObservable = [];
-
+        public HashSet<Entity> AcceptedItems = [];
         public Stockpile(ZoneManager manager) : base(manager)
         {
             this.SettingsNew = new(this);
@@ -37,13 +35,13 @@ namespace Start_a_Town_
         public void CacheContentsNew()
         {
             this.Cache.Clear();
-            foreach (var pos in this.Positions)
+            foreach (var pos in this.Cells)
                 this.Cache.AddRange(this.Map.GetObjects(pos.Above).Where(i => i.IsStockpilable()));
 
             foreach(var item in this.CacheObservable.ToArray())
-                if (!item.IsSpawned || this.Positions.Contains(item.Cell.Below))
+                if (!item.IsSpawned || this.Cells.Contains(item.Cell.Below))
                     this.CacheObservable.Remove(item);
-            foreach (var pos in this.Positions)
+            foreach (var pos in this.Cells)
                 foreach (var item in this.Map.GetObjects(pos.Above).Where(i => i.IsStockpilable()))
                     this.CacheObservable.Add(item);
         }
@@ -57,7 +55,7 @@ namespace Start_a_Town_
         public List<GameObject> GetContents()
         {
             var contents = new List<GameObject>();
-            foreach (var pos in this.Positions)
+            foreach (var pos in this.Cells)
                 contents.AddRange(this.Town.Map.GetObjects(pos + IntVec3.UnitZ));
             return contents;
         }
@@ -65,7 +63,7 @@ namespace Start_a_Town_
 
         public override bool Accepts(Entity obj, IntVec3 pos)
         {
-            if (!this.Positions.Contains(pos))
+            if (!this.Cells.Contains(pos))
                 return false;
             return this.Accepts(obj);
         }
@@ -82,7 +80,7 @@ namespace Start_a_Town_
         public IEnumerable<IntVec3> GetAvailableCells()
         {
             var emptyCells =
-                this.Positions
+                this.Cells
                 .Where(p => this.Town.ReservationManager.CanReserve(p.Above))
                 .Where(p => !this.Town.Map.GetObjects(p.Above).Any())
                 .Select(p => p.Above);
@@ -92,7 +90,7 @@ namespace Start_a_Town_
         public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazy(GameObject obj)
         {
             var emptyCells = new List<Vector3>();
-            foreach (var pos in this.Positions)
+            foreach (var pos in this.Cells)
             {
                 var above = pos.Above;
                 var itemsInCell = this.Map.GetObjects(above);
@@ -124,7 +122,7 @@ namespace Start_a_Town_
         public IEnumerable<IntVec3> DistributeToStorageSpotsCellsOnly(Entity item)
         {
             var emptyCells = new List<Vector3>();
-            foreach (var pos in this.Positions)
+            foreach (var pos in this.Cells)
             {
                 var above = pos.Above;
                 var itemsInCell = this.Map.GetEntitiesAt(above);
@@ -164,7 +162,7 @@ namespace Start_a_Town_
             if (!this.Accepts(item))
                 return 0;
             var availableCapacity = 0;
-            foreach(var cell in this.Positions)
+            foreach(var cell in this.Cells)
             {
                 var cellEntities = this.Map.GetEntitiesAt(cell);
                 if (!cellEntities.Any())
@@ -184,7 +182,7 @@ namespace Start_a_Town_
         {
             var below = global.Below;
 
-            if (this.Positions.Contains(global))
+            if (this.Cells.Contains(global))
             {
                 if (!Block.IsBlockSolid(this.Town.Map, global))
                 {
@@ -192,7 +190,7 @@ namespace Start_a_Town_
                     return;
                 }
             }
-            else if (this.Positions.Contains(below))
+            else if (this.Cells.Contains(below))
             {
                 if (!this.Map.IsAir(global))
                 {
@@ -234,7 +232,7 @@ namespace Start_a_Town_
 
         public IEnumerable<Vector3> GetPositionsLazy()
         {
-            foreach (var pos in this.Positions)
+            foreach (var pos in this.Cells)
                 yield return pos;
         }
         public override IEnumerable<(string name, Action action)> GetInfoTabs()
@@ -379,8 +377,5 @@ namespace Start_a_Town_
         public bool IsAllowed(ItemDef itemDef) => this.SettingsNew.IsAllowed(itemDef);
         public bool IsAllowed(Def def) => this.SettingsNew.IsAllowed(def);
         public bool IsAllowed(Def profile, MaterialDef material) => this.SettingsNew.IsAllowed(profile, material);
-
-        internal void AddItem(Entity entity) => this.CacheNew.Add(entity);
-        internal void RemoveItem(Entity entity) => this.CacheNew.Remove(entity);
     }
 }

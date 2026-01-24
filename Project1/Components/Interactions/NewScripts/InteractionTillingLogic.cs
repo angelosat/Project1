@@ -15,8 +15,6 @@
             var target = ctx.Target;
             var manager = actor.Map.Town.GrowingManager;
             var result = manager.IsValidTillingTarget(target.Global);
-            //if (!result)
-            //    "GIATI".ToConsole();
             return result;
         }
 
@@ -33,7 +31,8 @@
         {
             var map = i.Actor.Map;
             var global = i.Target.Global;
-            map.SetBlock(global, BlockDefOf.Farmland.Worker, map.GetCell(global).Material, 0);
+            //map.SetBlock(global, BlockDefOf.Farmland.Worker, map.GetCell(global).Material, 0);
+            MapEdit.Paint(MapEditContext.Simulation, map, [global], BlockDefOf.Farmland.Worker, map.GetCell(global).Material, 0, 0, 0);
         }
         internal override int CalculateMax(InteractionContext ctx) => 50;
         //internal override void Done()

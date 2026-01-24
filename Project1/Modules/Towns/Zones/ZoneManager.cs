@@ -13,6 +13,9 @@ namespace Start_a_Town_
         public int GetNextID() => _zoneIDSequence++;
         readonly public ObservableDictionary<int, Zone> Zones = [];
         public IEnumerable<Zone> AllZones => this.Zones.Values;
+        readonly Dictionary<IntVec3, Zone> _cellsToZones = [];
+        public IReadOnlyDictionary<IntVec3, Zone> CellsToZones => this._cellsToZones;
+
         static ZoneManager()
         {
             Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Zones", ToggleGui, System.Windows.Forms.Keys.Y);
@@ -20,8 +23,46 @@ namespace Start_a_Town_
         public ZoneManager(Town town)
         {
             this.Town = town;
+            var map = town.Map;
+
+            map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+            map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+            map.Events.ListenTo<EntityAtRestEvent>(OnEntityAtRest);
+
+            map.Events.ListenTo<CellsInvalidatedEvent>(OnCellsInvalidated);
         }
 
+       
+
+        private void OnEntitySpawned(EntitySpawnedEvent e)
+        {
+            var entity = e.Entity;
+            var supportCell = entity.Cell.Below;
+            if (!this._cellsToZones.TryGetValue(supportCell, out var zone))
+                return;
+            //if (!stockpile.Accepts(e.Entity))
+            //    return;
+            this.AddItem(zone, entity);
+
+        }
+        private void OnEntityDespawned(EntityDespawnedEvent e)
+        {
+            var supportCell = e.Entity.Cell.Below;
+            if (!this._cellsToZones.TryGetValue(supportCell, out var zone))
+                return;
+            this.RemoveItem(zone, e.Entity);
+        }
+        private void OnEntityAtRest(EntityAtRestEvent e)
+        {
+            var cell = e.Entity.Cell;
+            if (this._cellsToZones.TryGetValue(cell, out var zone))
+            {
+                if (e.AtRest)
+                    this.AddItem(zone, e.Entity);
+                else
+                    this.RemoveItem(zone, e.Entity);
+            }
+        }
         internal Zone RegisterNewZone(ZoneDef zoneType, IEnumerable<IntVec3> allpositions)
         {
             var finalPositions = allpositions.Where(
@@ -32,32 +73,59 @@ namespace Start_a_Town_
             if (!finalPositions.IsConnectedNew())
                 return null;
             var zone = zoneType.Create(this, finalPositions);
-            this.RegisterZone(zone);
+            this.AddZone(zone);
             return zone;
         }
         internal void Delete(Zone zone)
         {
-            this.Delete(zone.ID);
+            this.DeleteZone(zone.ID);
         }
-        internal void Delete(int zoneID)
+        internal void DeleteZone(int zoneID)
         {
             if (!this.Zones.TryGetValue(zoneID, out var zone))
                 throw new Exception();
+            foreach (var position in zone.Cells)
+                this._cellsToZones.Remove(position);
             this.Zones.Remove(zoneID);
             FloatingText.Create(this.Map, zone.Average(), $"{zone.GetType()} deleted", ft => ft.Font = UIManager.FontBold);
             this.Map.Events.Post(new ZoneDeletedEvent(zone));
         }
-        void RegisterZone(Zone zone)
+        void AddZone(Zone zone)
         {
             if (zone.ID == 0)
                 zone.ID = this.GetNextID();
             this.Zones.Add(zone.ID, zone);
+            foreach (var position in zone.Cells)
+                this._cellsToZones[position] = zone;
             zone.Manager = this;
             zone.Name = zone.UniqueName;
             FloatingText.Create(this.Town.Map, zone.Average(), $"{zone.GetType()} created", ft => ft.Font = UIManager.FontBold);
             this.Map.Events.Post(new ZoneCreatedEvent(zone));
         }
+        internal override void ResolveReferences()
+        {
+            foreach (var z in this.AllZones)
+                foreach (var cell in z.Cells)
+                    this._cellsToZones[cell] = z;
 
+            foreach (var entity in this.Map.Entities)
+            {
+                if (!this.CellsToZones.TryGetValue(entity.Cell.Below, out var zone))
+                    continue;
+                //this.AddItem(zone, entity);
+                zone.CacheNew.Add(entity);
+            }
+        }
+        internal void AddItem(Zone zone, Entity entity)
+        {
+            zone.CacheNew.Add(entity);
+            this.Map.Events.Post(new EntityEnteredZoneEvent(entity, zone));
+        }
+        internal void RemoveItem(Zone zone, Entity entity)
+        {
+            zone.CacheNew.Remove(entity);
+            this.Map.Events.Post(new EntityExitedZoneEvent(entity, zone));
+        }
         internal T GetZone<T>(ZoneId zoneID) where T : Zone
         {
             if (zoneID == ZoneId.Null)
@@ -67,11 +135,15 @@ namespace Start_a_Town_
 
         public Zone GetZoneAt(IntVec3 global)
         {
-            return this.Zones.Values.FirstOrDefault(z => z.Contains(global));
+            //return this.Zones.Values.FirstOrDefault(z => z.Contains(global));
+            if (this.CellsToZones.TryGetValue(global, out var zone))
+                return zone;
+            return null;
         }
         public T GetZoneAt<T>(IntVec3 global) where T : Zone
         {
-            return this.Zones.Values.FirstOrDefault(z => z.Contains(global)) as T;
+            //return this.Zones.Values.FirstOrDefault(z => z.Contains(global)) as T;
+            return this.GetZoneAt(global) as T;
         }
         public IEnumerable<T> GetZones<T>() where T : Zone
         {
@@ -94,7 +166,17 @@ namespace Start_a_Town_
                 }
             }
         }
-
+        private void OnCellsInvalidated(CellsInvalidatedEvent e)
+        {
+            foreach(var cell in e.Positions)
+            {
+                if (this.GetZoneAt(cell) is Zone zone)
+                    zone.OnBlockChangedNew(cell);
+                // for handling the case of an empty zone cell being now obstructed by a solid cell
+                else if (this.GetZoneAt(cell.Below) is Zone zoneBelow)
+                    zoneBelow.OnBlockChangedNew(cell.Below);
+            }
+        }
         internal Zone PlayerEdit(int zoneID, ZoneDef zoneType, IntVec3 a, int w, int h, bool remove)
         {
             if (remove)

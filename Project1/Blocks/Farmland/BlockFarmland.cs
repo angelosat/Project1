@@ -52,7 +52,7 @@ namespace Start_a_Town_
             //map.World.RegisterAndSync(plant);
             //map.SpawnAndSync(plant, global.Above(), Vector3.Zero);
             //Block.Place(BlockDefOf.Soil.Worker, map, global, map.GetCell(global).Material, 0, 0, 0);
-            map.Town.ZoneManager.GetZoneAt(global)?.MarkDirty();
+            map.Town.ZoneManager.GetZoneAt(global.Below)?.MarkDirty();
             obj.Consume(1);
         }
     }

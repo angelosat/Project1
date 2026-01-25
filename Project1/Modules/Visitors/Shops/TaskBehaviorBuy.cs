@@ -27,7 +27,7 @@ namespace Start_a_Town_
                     this.Plan.SetAmount(TargetIndex.A, totalvalue);
                 }
             };
-            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionHaul(this.Plan.AmountA));
+            yield return new BehaviorResolveInteraction(TargetIndex.A, () => null);// new InteractionHaul(this.Plan.AmountA));
             yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionGiveItem(true));
             yield return new BehaviorCustom()
             {

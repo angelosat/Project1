@@ -10,7 +10,7 @@ namespace Start_a_Town_
         {
             this.FailOnNoDesignation(DeconstructInd, DesignationDefOf.Deconstruct);
             this.FailOnCellStandedOn(DeconstructInd);
-            yield return new BehaviorGrabTool();
+            //yield return new BehaviorGrabTool();
             yield return new BehaviorResolvePath(DeconstructInd);
             yield return new BehaviorResolveInteraction(DeconstructInd, () => new InteractionDeconstruct()); //()=>new InteractionDeconstruct());
         }

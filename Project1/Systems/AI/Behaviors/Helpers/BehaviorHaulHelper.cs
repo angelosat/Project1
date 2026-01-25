@@ -7,7 +7,7 @@ namespace Start_a_Town_
 {
     class BehaviorHaulHelper
     {
-        
+        [Obsolete]
         static public Behavior StartCarrying(BehaviorExecutePlan source, TargetIndex storageIndex)
         {
             var bhav = new BehaviorCustom() { Mode = BehaviorCustom.Modes.Continuous };
@@ -37,7 +37,8 @@ namespace Start_a_Town_
                     //// do i need to throw this? i do amountToPickUp = reservedAmount immediately below
 
                     amountToPickUp = reservedAmount;
-                    interaction = new InteractionHaul(amountToPickUp);
+                    throw new Exception();
+                    interaction = null;//  new InteractionHaul(amountToPickUp);
                     if (amountToPickUp > item.StackSize)
                         throw new Exception();
                     actor.Interact(interaction, target);
@@ -66,40 +67,6 @@ namespace Start_a_Town_
                 }
                 return false;
             };
-            return bhav;
-        }
-        static public Behavior DropInStorage(TargetIndex storageIndex)
-        {
-            var bhav = new BehaviorCustom() { Mode = BehaviorCustom.Modes.Continuous };
-            GameObject hauledObj = null;
-            bhav.PreInitAction = () =>
-            {
-                var actor = bhav.Actor;
-                var interaction = new InteractionPlaceItem();
-                hauledObj = actor.Hauled;
-                var task = actor.CurrentTask;
-                var target = task.GetTarget(storageIndex);
-                actor.Interact(interaction, target);
-            };
-            bhav.AddEndCondition(() =>
-            {
-                var actor = bhav.Actor;
-                var interaction = actor.CurrentInteraction;
-                if (interaction.State == Interaction.States.Failed)
-                    return BehaviorState.Fail;
-                else if (interaction.State == Interaction.States.Finished)
-                {
-                    actor.Net.ConsoleBox.Write("successfully dropped item");
-                    if (actor.Hauled is not Entity hauled)
-                        return BehaviorState.Success;
-                    if (!hauledObj.IsDisposed)
-                        actor.Unreserve(hauledObj);
-                    var task = actor.CurrentTask;
-                    var target = task.GetTarget(storageIndex);
-                    actor.Unreserve(target);
-                }
-                return BehaviorState.Running;
-            });
             return bhav;
         }
         

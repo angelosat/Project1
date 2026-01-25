@@ -49,13 +49,13 @@ namespace Start_a_Town_
                     this.Plan.SetAmount(TargetIndex.C, totalvalue);
                 }
             };
-            yield return new BehaviorResolveInteraction(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
+            yield return new BehaviorResolveInteraction(TargetIndex.C, () => null);// new InteractionHaul(this.Plan.AmountC));
             //yield return new BehaviorCustom() { InitAction = () => actor.Reserve(this.Task, actor.Hauled) };
             yield return new BehaviorCustom() { InitAction = () => this.Reserve(actor.Hauled) };
             yield return new BehaviorResolveInteraction(() => (actor.Map, counter.Above()), () => new UseHauledOnTarget());
             // TODO wait for the item to be placed ontop of the counter, and then pick it up
             yield return new BehaviorWait(() => item.Owner == null && item.Global.ToCell() == counter.Above());
-            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionHaul());
+            yield return new BehaviorResolveInteraction(TargetIndex.A, () => null);// new InteractionHaul());
             yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
            
             // TODO behavior negotiate price

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 namespace Start_a_Town_.Animations
 {
     public enum WarpMode { Once, Loop, PingPong, Clamp }
-    public enum AnimationStates { Running, Finished, Removed }
+    public enum AnimationStates { Running, Finished, Removed, Finishing }
     public class AnimationClip
     {
         public List<Keyframe> Keyframes = new List<Keyframe>();

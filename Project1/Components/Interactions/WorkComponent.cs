@@ -101,7 +101,8 @@ namespace Start_a_Town_.Components
                 return;
             }
 
-            this.Task.FinishAction();
+            //this.Task.FinishAction();
+            if(this.Task.State == Interaction.States.Finished)
             Stop();
         }
 
@@ -109,7 +110,7 @@ namespace Start_a_Town_.Components
         {
             if (this.Task is null)
                 return;
-            this.Task.Stop();
+            this.Task.StopAnimation();
             this.Task = null;
             this.Target = null;
             this.Owner.LastMap.Events.Post<InteractionStoppedEvent>(new(this.Owner as Actor));

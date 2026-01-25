@@ -8,7 +8,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return new BehaviorResolvePath(TargetIndex.B);
-            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionHaul(this.Plan.AmountA));
+            yield return new BehaviorResolveInteraction(TargetIndex.A, () => null);// new InteractionHaul(this.Plan.AmountA));
             var tradePartner = this.Plan.TargetB.Object as Actor;
             var item = this.Plan.TargetA.Object as Entity;
             var itemvalue = item.GetValueTotal();

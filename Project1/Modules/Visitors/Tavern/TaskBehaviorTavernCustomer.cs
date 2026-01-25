@@ -44,7 +44,7 @@ namespace Start_a_Town_
             });
             yield return BehaviorHelper.SetTarget(TargetIndex.A, ()=> customerProps.Dish);
             yield return new BehaviorResolveInteraction(TargetIndex.A, new ConsumableComponent.InteractionConsume());
-            yield return new BehaviorResolveInteraction(TargetIndex.C, () => new InteractionHaul(this.Plan.AmountC));
+            yield return new BehaviorResolveInteraction(TargetIndex.C, () => null);// new InteractionHaul(this.Plan.AmountC));
             yield return BehaviorHelper.SetTarget(TargetIndex.B, table.Global.Above());
             yield return BehaviorHelper.PlaceCarried(TargetIndex.B);
             yield return new BehaviorCustom(() => actor.GetVisitorProperties().AddRecentlyVisitedShop(tavern));

@@ -2,6 +2,18 @@
 
 namespace Start_a_Town_
 {
+    internal class InteractionThrowLogid : InteractionLogic
+    {
+        internal override void OnFinish(Interaction i)
+        {
+            var actor = i.Context.Actor;
+            if (actor.Net.IsClient) return;
+            var target = i.Context.Target;
+            var velocity = new Vector3(target.Direction, 0) * 0.1f + actor.Velocity;
+            // TODO use this.All to throw the whole item stack vs only one
+            actor.Inventory.Throw(velocity, amount: -1);
+        }
+    }
     class InteractionThrow : Interaction
     {
         bool All;
@@ -16,9 +28,9 @@ namespace Start_a_Town_
         {
             this.All = all;
         }
-        //public override void Update()
+      
+        //protected override void Done()
         //{
-        //    base.Update();
         //    var actor = this.Actor;
         //    if (actor.Net.IsClient) return;
         //    var target = this.Target;
@@ -26,15 +38,6 @@ namespace Start_a_Town_
         //    // TODO use this.All to throw the whole item stack vs only one
         //    actor.Inventory.Throw(velocity, amount: -1);
         //}
-        protected override void Done()
-        {
-            var actor = this.Actor;
-            if (actor.Net.IsClient) return;
-            var target = this.Target;
-            var velocity = new Vector3(target.Direction, 0) * 0.1f + actor.Velocity;
-            // TODO use this.All to throw the whole item stack vs only one
-            actor.Inventory.Throw(velocity, amount: -1);
-        }
         // TODO: make it so i have access to the carried item's stacksize, and include it in the name ( Throw 1 vs Throw 16 for example)
         public override string ToString()
         {

@@ -9,29 +9,55 @@ namespace Start_a_Town_
     {
 
         static public readonly AnimationDef Null = new AnimationDef("AnimationNull", 0);
-
         static public readonly AnimationDef Tool = new AnimationDef("AnimationTool", 2)
             .AddClip(BoneDefOf.RightHand, WarpMode.Loop,
-                            new Keyframe(0, Vector2.Zero, -4 * (float)Math.PI / 3f),
-                            new Keyframe(10, Vector2.Zero, -(float)Math.PI / 2f, Interpolation.Exp),
-                            new Keyframe(20, Vector2.Zero, -(float)Math.PI / 2f),
-                            new Keyframe(60, Vector2.Zero, -4 * (float)Math.PI / 3f, Interpolation.Sine)
+                            new Keyframe(0, Vector2.Zero, -(float)Math.PI / 2f),
+                            new Keyframe(40, Vector2.Zero, -4 * (float)Math.PI / 3f, Interpolation.Sine),
+                            new Keyframe(50, Vector2.Zero, -4 * (float)Math.PI / 3f),
+                            new Keyframe(60, Vector2.Zero, -(float)Math.PI / 2f, Interpolation.Exp),
+                            new Keyframe(70, Vector2.Zero, -(float)Math.PI / 2f, Interpolation.Exp)
                             )
                 .AddClip(BoneDefOf.Torso,
                     new AnimationClip(WarpMode.Loop,
-                        new Keyframe(0, Vector2.Zero, -(float)Math.PI / 8f, Interpolation.Exp),
-                        new Keyframe(10, Vector2.Zero, (float)Math.PI / 8f, Interpolation.Exp),
-                        new Keyframe(20, Vector2.Zero, (float)Math.PI / 8f),
-                        new Keyframe(60, Vector2.Zero, -(float)Math.PI / 8f, Interpolation.Exp)
+                        new Keyframe(00, Vector2.Zero, (float)Math.PI / 8f),
+                        new Keyframe(40, Vector2.Zero, -(float)Math.PI / 8f, Interpolation.Exp),
+                        new Keyframe(50, Vector2.Zero, -(float)Math.PI / 8f, Interpolation.Exp),
+                        new Keyframe(60, Vector2.Zero, (float)Math.PI / 8f, Interpolation.Exp),
+                        new Keyframe(70, Vector2.Zero, (float)Math.PI / 8f, Interpolation.Exp)
+
                         ))
                 .AddClip(BoneDefOf.Mainhand,
                     new AnimationClip(WarpMode.Loop,
-                        new Keyframe(0, Vector2.Zero, 0, Interpolation.Exp),
-                        new Keyframe(10, Vector2.Zero, (float)Math.PI / 2f, Interpolation.Exp),
-                        new Keyframe(20, Vector2.Zero, (float)Math.PI / 2f),
-                        new Keyframe(60, Vector2.Zero, 0, Interpolation.Exp)
+                        new Keyframe(00, Vector2.Zero, (float)Math.PI / 2f),
+                        new Keyframe(40, Vector2.Zero, 0, Interpolation.Exp),
+                        new Keyframe(50, Vector2.Zero, 0, Interpolation.Exp),
+                        new Keyframe(60, Vector2.Zero, (float)Math.PI / 2f, Interpolation.Exp),
+                        new Keyframe(70, Vector2.Zero, (float)Math.PI / 2f, Interpolation.Exp)
+
                 ))
-            .AddEvent(10, e => (e as Actor).Work.OnToolContact());
+            .AddEvent(60, e => (e as Actor).Work.OnToolContact());
+        //static public readonly AnimationDef Tool = new AnimationDef("AnimationTool", 2)
+        //    .AddClip(BoneDefOf.RightHand, WarpMode.Loop,
+        //                    new Keyframe(0, Vector2.Zero, -4 * (float)Math.PI / 3f),
+        //                    new Keyframe(10, Vector2.Zero, -(float)Math.PI / 2f, Interpolation.Exp),
+        //                    new Keyframe(20, Vector2.Zero, -(float)Math.PI / 2f),
+        //                    new Keyframe(60, Vector2.Zero, -4 * (float)Math.PI / 3f, Interpolation.Sine)
+        //                    )
+        //        .AddClip(BoneDefOf.Torso,
+        //            new AnimationClip(WarpMode.Loop,
+        //                new Keyframe(0, Vector2.Zero, -(float)Math.PI / 8f, Interpolation.Exp),
+        //                new Keyframe(10, Vector2.Zero, (float)Math.PI / 8f, Interpolation.Exp),
+        //                new Keyframe(20, Vector2.Zero, (float)Math.PI / 8f),
+        //                new Keyframe(60, Vector2.Zero, -(float)Math.PI / 8f, Interpolation.Exp)
+        //                ))
+        //        .AddClip(BoneDefOf.Mainhand,
+        //            new AnimationClip(WarpMode.Loop,
+        //                new Keyframe(0, Vector2.Zero, 0, Interpolation.Exp),
+        //                new Keyframe(10, Vector2.Zero, (float)Math.PI / 2f, Interpolation.Exp),
+        //                new Keyframe(20, Vector2.Zero, (float)Math.PI / 2f),
+        //                new Keyframe(60, Vector2.Zero, 0, Interpolation.Exp)
+        //        ))
+        //    .AddEvent(10, e => (e as Actor).Work.OnToolContact());
 
         static public readonly AnimationDef Work = new AnimationDef("AnimationWork", 2)
             .AddClip(BoneDefOf.RightHand, WarpMode.Loop,

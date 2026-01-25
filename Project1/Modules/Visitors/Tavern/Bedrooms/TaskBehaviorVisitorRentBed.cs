@@ -24,7 +24,7 @@ namespace Start_a_Town_
 
             // wait until innkeeper arrives behind counter, then take out money and drop it on counter
             yield return new BehaviorWait(tavern.IsInnkeeperServicing);
-            yield return new BehaviorResolveInteraction(() => actor.GetMoney(), () => new InteractionHaul(room.Value));
+            yield return new BehaviorResolveInteraction(() => actor.GetMoney(), () => null);//  new InteractionHaul(room.Value));
             yield return new BehaviorResolveInteraction(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());
 
             yield return new BehaviorWait(() => room.OwnerRef == actor.RefId); // isserved was made for dining. create a new field for bed renting?

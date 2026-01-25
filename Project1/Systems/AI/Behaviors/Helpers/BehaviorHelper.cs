@@ -33,14 +33,15 @@ namespace Start_a_Town_
         }
         internal static Behavior CarryFromInventory(TargetIndex item)
         {
-            return new BehaviorResolveInteraction(item, () => new InteractionHaul());
+            return new BehaviorResolveInteraction(item, () => null);// new InteractionHaul());
         }
         internal static Behavior CarryFromInventoryAndReplaceTarget(TargetIndex item)
         {
             var bhav = new BehaviorCustom();
             bhav.InitAction = () => bhav.Actor.CurrentTask.SetTarget(item, bhav.Actor.Hauled);
             return new BehaviorSequence(
-                new BehaviorResolveInteraction(item, () => new InteractionHaul()),
+                new BehaviorResolveInteraction(item, () => null//new InteractionHaul()
+                ),
                 bhav);
         }
 
@@ -143,13 +144,13 @@ namespace Start_a_Town_
         [Obsolete]
         static public Behavior StartCarrying(TargetIndex index)
         {
-            return new BehaviorResolveInteraction(index, () => new InteractionHaul()).FailOnUnavailableTarget(index);
+            return new BehaviorResolveInteraction(index, () => null);// new InteractionHaul()).FailOnUnavailableTarget(index);
         }
         [Obsolete]
         static public Behavior StartCarrying(TargetIndex index, TargetIndex amountIndex)
         {
             var bhav = new BehaviorResolveInteraction(index);
-            bhav.InteractionFactory = () => new InteractionHaul(bhav.Actor.CurrentTask.GetAmount(amountIndex));
+            bhav.InteractionFactory = () => null;//  new InteractionHaul(bhav.Actor.CurrentTask.GetAmount(amountIndex));
             return bhav;
         }
         static public Behavior PlaceCarried(TargetIndex index)

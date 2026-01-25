@@ -69,12 +69,14 @@ namespace Start_a_Town_
         internal void FadeOutAndRemove()
         {
             this.WeightChange = -0.1f;
-            this.State = AnimationStates.Removed;
+            //this.State = AnimationStates.Removed;
+            this.State = AnimationStates.Finishing;
         }
         internal void FadeOutAndRemove(float rate)
         {
             this.WeightChange = rate;
-            this.State = AnimationStates.Removed;
+            //this.State = AnimationStates.Removed;
+            this.State = AnimationStates.Finishing;
         }
         internal void FadeOut(float perTick)
         {
@@ -135,6 +137,7 @@ namespace Start_a_Town_
                     // Handle looping first, so frame delta is correct for events
                     this.Loop();
 
+                    if(this.State != AnimationStates.Finishing)
                     // Fire keyframe events
                     this.PerformActionsNew(prevFrame, this.Frame, entity);
                 }
@@ -154,6 +157,8 @@ namespace Start_a_Town_
             var step = elapsedServerTicks - prevFrame;
             this.Weight += step * (this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange);
             this.Weight = MathHelper.Clamp(this.Weight, 0f, 1f);
+            if (this.Weight == 0 && this.State == AnimationStates.Finishing)
+                this.State = AnimationStates.Removed;
         }
         public void Tickold(GameObject entity)
         {
@@ -181,12 +186,18 @@ namespace Start_a_Town_
             }
             this.Weight += step * (this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange);
             this.Weight = MathHelper.Clamp(this.Weight, 0, 1);
+        
         }
 
         private void Loop()
         {
             if (this.Frame >= this.Def.FrameCount)
             {
+                if (this.State == AnimationStates.Finishing)
+                {
+                    this.Frame = this.Def.FrameCount;
+                    return;
+                }
                 switch (this.Def.WarpMode)
                 {
                     case WarpMode.Loop:

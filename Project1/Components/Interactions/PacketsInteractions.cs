@@ -1,5 +1,4 @@
 ﻿using Start_a_Town_.Net;
-using System;
 
 namespace Start_a_Town_
 {

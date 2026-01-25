@@ -13,7 +13,7 @@ namespace Start_a_Town_.AI.Behaviors
         {
             var actor = this.Actor;
             var task = this.Plan;
-            yield return BehaviorHelper.InteractInInventoryOrWorld(FoodInd, () => new InteractionHaul(task.GetAmount(FoodInd))); //));// 
+            yield return BehaviorHelper.InteractInInventoryOrWorld(FoodInd, () => null);//  new InteractionHaul(task.GetAmount(FoodInd))); //));// 
             yield return BehaviorHelper.SetTarget(FoodInd, () =>
             {
                 var carried = actor.Hauled;

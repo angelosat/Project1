@@ -11,7 +11,7 @@ namespace Start_a_Town_.AI
         {
             var item = this.Plan.TargetA;
             yield return new BehaviorResolvePath(item);
-            yield return new BehaviorResolveInteraction(item, new InteractionHaul());
+            yield return new BehaviorResolveInteraction(item, null);// new InteractionHaul());
             yield return new BehaviorResolveInteraction(item, new InteractionStoreHauled());
         }
 

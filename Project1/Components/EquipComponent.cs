@@ -47,7 +47,7 @@ namespace Start_a_Town_.Components
 
         public override void GetInteractions(GameObject parent, List<Interaction> actions)
         {
-            actions.Add(new InteractionEquip());
+            //actions.Add(new InteractionEquip());
             actions.Add(new EquipFromInventory());
         }
       

@@ -25,7 +25,7 @@ namespace Start_a_Town_
             };
             yield return new BehaviorResolvePath(TargetIndex.A);
             yield return new BehaviorWait(() => task.TargetB.Object.Owner == null && task.TargetB.Object.Global.ToCell() == task.TargetA.Global.Above());
-            yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionHaul());
+            yield return new BehaviorResolveInteraction(TargetIndex.B, () => null);// new InteractionHaul());
             // TODO wait until money on counter
             yield return new BehaviorWait(() =>
             {

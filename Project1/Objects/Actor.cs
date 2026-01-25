@@ -247,10 +247,11 @@ namespace Start_a_Town_
         {
             AIManager.EndInteraction(this);
         }
-        
+        [Obsolete]
         internal void Equip(GameObject item)
         {
-            this.Interact(new InteractionEquip(), item);
+            throw new Exception();
+            //this.Interact(new InteractionEquip(), item);
         }
         internal bool IsEquipping(Entity item)
         {

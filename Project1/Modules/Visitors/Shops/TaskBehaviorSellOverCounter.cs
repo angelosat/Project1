@@ -36,7 +36,7 @@ namespace Start_a_Town_
             // WTF if i place item on counter first, then i'll have to retrieve it in case of failure
             yield return new BehaviorResolveInteraction(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());
             yield return BehaviorHelper.WaitForItem(Money, counterSurface, o => o.Def == ItemDefOf.Coins && o.StackSize >= cost);
-            yield return new BehaviorResolveInteraction(Money, () => new InteractionHaul());
+            yield return new BehaviorResolveInteraction(Money, () => null);// new InteractionHaul());
             // TODO retrieve item if behavior fails while waiting (if going with placing the item on the counter before the money)
             yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
         }

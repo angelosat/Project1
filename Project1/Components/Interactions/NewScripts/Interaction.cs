@@ -24,7 +24,7 @@ namespace Start_a_Town_
         {
             return $"Interaction: {this.Name}";
         }
-        public enum States { Unstarted, Running, Finished, Failed }
+        public enum States { Unstarted, Running, Finished, Failed, Finishing }
         public enum RunningTypes { Once, Continuous }
         public States State { get; protected set; } = States.Unstarted;
 
@@ -70,7 +70,7 @@ namespace Start_a_Town_
         {
             if (!success)
                 this.Actor.Net.EventOccured((int)Message.Types.InteractionInterrupted, this.Actor, this);
-            this.State = States.Finished;
+            this.State = States.Finishing;
             if (this.AnimationDef is not null)
                 this.CachedAnimation?.FadeOutAndRemove();
         }
@@ -85,8 +85,8 @@ namespace Start_a_Town_
             this.Def.Logic.OnStart(this);
             if (this.AnimationDef is not null)
             {
-                this._cachedAnimation = 
-                    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 25);
+                this._cachedAnimation =
+                    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 1);// 25);
                 //if (this.AnimationDef == AnimationDefOf.Tool) // HACK
                 //{
                 //    this.Calculate(out _, out var speed);
@@ -104,6 +104,14 @@ namespace Start_a_Town_
         {
             var actor = this.Actor;
             var target = this.Target;
+            if (this.State == States.Finished)
+                return;
+            if (this.State == States.Finishing) // TODO: maybe check for failed state too?
+            {
+                if (this._cachedAnimation.State == AnimationStates.Removed)
+                    this.State = States.Finished;
+                return;
+            }
             if (this.State == States.Unstarted)
             {
                 this.Start();
@@ -113,7 +121,7 @@ namespace Start_a_Town_
             if (this.Def.ProgressHandler?.IsFinished(this) ?? this.State == States.Finished) // TODO: maybe check for failed state too?
             {
                 this.Finish();
-                this.Stop();
+                //this.StopAnimation();
                 return;
             }
             if (this.Def.ProgressHandler is not null)
@@ -124,9 +132,13 @@ namespace Start_a_Town_
         {
             var actor = this.Actor;
             var target = this.Target;
-            if (this.State == States.Finished) // TODO: maybe check for failed state too?
+            if (this.State == States.Finished)
+                return;
+            if (this.State == States.Finishing) // TODO: maybe check for failed state too?
             {
-                this.Stop();
+                //this.StopAnimation();
+                if (this._cachedAnimation.State == AnimationStates.Finished)
+                    this.State = States.Finished;
                 return;
             }
 
@@ -137,7 +149,7 @@ namespace Start_a_Town_
             }
             else if (this.State == States.Finished)
             {
-                this.Stop();
+                this.StopAnimation();
                 actor.AI.State.Log.Write("Success: " + this.GetCompletedText(actor, target));
                 return;
             }
@@ -146,7 +158,7 @@ namespace Start_a_Town_
                 this.Perform();
                 if (this.State == States.Finished)
                 {
-                    this.Stop();
+                    this.StopAnimation();
                     actor.AI.State.Log.Write("Success: " + this.GetCompletedText(actor, target));
                 }
                 return;
@@ -155,21 +167,23 @@ namespace Start_a_Town_
             if (this.CurrentTick <= 0)
             {
                 this.Finish();
-                this.Stop();
+                //this.StopAnimation();
                 this.Perform();
             }
         }
         public void Finish()
         {
-            this.State = States.Finished;
-            this.Def.Logic.OnFinish(this); 
+            this.State = this.AnimationDef is not null ? States.Finishing : States.Finished;
+
+                this.Def.Logic.OnFinish(this);
+            this.StopAnimation();
         }
-        internal void Stop()
+        internal void StopAnimation()
         {
             //this.Def.Logic.OnFinish(this); // or done()?
             //this.State = States.Finished;
             if (this.AnimationDef is not null)
-                this.CachedAnimation.FadeOutAndRemove();
+                this.CachedAnimation.FadeOutAndRemove(-.01f);
         }
         protected virtual void Fail()
         {
@@ -350,7 +364,7 @@ namespace Start_a_Town_
         bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
         protected virtual float WorkDifficulty { get; } = 1;
 
-        protected virtual void Done() => this.Def.Logic?.OnFinish(this);
+        //protected virtual void Done() => this.Def.Logic?.OnFinish(this);
         protected virtual int CalculateWorkAmount()
         {
             var toolUse = this.Def.ToolUse;
@@ -387,7 +401,7 @@ namespace Start_a_Town_
             if (this.Actor.Gear.GetGear(GearType.Mainhand) is not Entity tool || 
                 this.Def.ToolUse is not ToolUseDef toolUse)
             {
-                workamount = 1;
+                workamount = 100;
                 speed = 1;
                 return;
             }

@@ -1,9 +1,16 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace Start_a_Town_
 {
+    internal class InteractionDeconstructLogic : InteractionLogic
+    {
+        internal override void OnFinish(Interaction i)
+        {
+            var block = i.Actor.Map.GetBlock(i.Target.Global);
+            block.Deconstruct(i.Actor, i.Target.Global);
+        }
+    }
     class InteractionDeconstruct : InteractionToolUse
     {
         Progress _progress;
@@ -30,10 +37,10 @@ namespace Start_a_Town_
             this._progress.Value += workAmount;
         }
 
-        protected override void Done()
-        {
-            this.Block.Deconstruct(this.Actor, this.Target.Global);
-        }
+        //protected override void Done()
+        //{
+        //    this.Block.Deconstruct(this.Actor, this.Target.Global);
+        //}
 
         protected override Color GetParticleColor()
         {

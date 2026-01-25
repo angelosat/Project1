@@ -12,7 +12,7 @@ namespace Start_a_Town_
             )
         {
         }
-        protected override void OnStart()
+        protected void OnStart()
         {
             var a = this.Actor;
             //this.cachedAnimation = new Animation(AnimationDef.TouchItem);

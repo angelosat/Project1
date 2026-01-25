@@ -16,7 +16,7 @@ namespace Start_a_Town_
             this.Type = type;
         }
 
-        protected override void OnStart()
+        protected void OnStart()
         {
             var a = this.Actor;
             var slot = a.Gear.GetSlot(this.Type);

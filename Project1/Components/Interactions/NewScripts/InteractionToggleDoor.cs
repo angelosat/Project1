@@ -14,7 +14,7 @@
     {
         public InteractionToggleDoor() : base("Open/close") { }
 
-        protected override void OnStart()
+        protected void OnStart()
         {
             var actor = this.Actor;
             var target = this.Target;

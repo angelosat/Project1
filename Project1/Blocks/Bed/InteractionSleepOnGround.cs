@@ -40,7 +40,7 @@ namespace Start_a_Town_
             this.RunningType = RunningTypes.Continuous;
             //this.AnimationDef = null;
         }
-        protected override void OnStart()
+        protected void OnStart()
         {
             var a = this.Actor;
             var t = this.Target;

@@ -201,7 +201,10 @@ namespace Start_a_Town_
                 switch (this.Def.WarpMode)
                 {
                     case WarpMode.Loop:
-                        this.Frame %= this.Def.FrameCount;
+                        // math.max because there animations (like couch) with only 1 keyframe,
+                        // and currently keyframe dont store duration,
+                        // so framecount would be 0
+                        this.Frame %= Math.Max(1, this.Def.FrameCount);
                         break;
 
                     case WarpMode.Once:

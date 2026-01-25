@@ -86,7 +86,9 @@ namespace Start_a_Town_
             if (this.AnimationDef is not null)
             {
                 this._cachedAnimation =
-                    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 1);// 25);
+                    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 40); // TODO maybe instead of a magic crossfade number, crossfade until the second keyframe
+                //this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
+                //this._cachedAnimation.Weight = 1;
                 //if (this.AnimationDef == AnimationDefOf.Tool) // HACK
                 //{
                 //    this.Calculate(out _, out var speed);
@@ -97,9 +99,9 @@ namespace Start_a_Town_
                 //else
                 //    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, this.CrossFadeAnimationLength);
             }
-            this.OnStart();
+            //this.OnStart();
         }
-        protected virtual void OnStart() { }
+        //protected virtual void OnStart() { }
         public void Update()
         {
             var actor = this.Actor;

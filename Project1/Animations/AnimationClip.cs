@@ -57,14 +57,15 @@ namespace Start_a_Town_.Animations
         {
             // if fading in, return a percentage of the first frame
             //var fade = ani.Fade;
-            if (fade < 1)
-            {
-                Keyframe first = this[0];
-                var t = this.FadeInterpolation(0, 1, fade);//this.Fade);
-                angle = first.Angle * t;
-                offset = first.Offset * t;
-                return;
-            }
+
+            //if (fade < 1)
+            //{
+            //    Keyframe first = this[0];
+            //    var t = this.FadeInterpolation(0, 1, fade);//this.Fade);
+            //    angle = first.Angle * t;
+            //    offset = first.Offset * t;
+            //    return;
+            //}
 
             float f;
             if (this.FrameCount == 0)

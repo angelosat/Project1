@@ -20,7 +20,7 @@ namespace Start_a_Town_.Components.Interactions
         //    this.TargetEquipment = targetArgs;
         //}
 
-        protected override void OnStart()
+        protected void OnStart()
         {
             var a = this.Actor;
             var slot = a.GetComponent<GearComponent>().Equipment.Slots.First(s => s.Object == this.Target.Object);

@@ -53,7 +53,7 @@ namespace Start_a_Town_.Animations
             get { return this.Keyframes[id]; }
         }
 
-        public void GetValue(float frame, float fade, out Vector2 offset, out float angle)
+        public void GetValue(Animation parent, out Vector2 offset, out float angle)
         {
             // if fading in, return a percentage of the first frame
             //var fade = ani.Fade;
@@ -66,12 +66,15 @@ namespace Start_a_Town_.Animations
             //    offset = first.Offset * t;
             //    return;
             //}
-
+            var frame = parent.Frame;
+            var fade = parent.Fade;
             float f;
             if (this.FrameCount == 0)
                 f = 0;
             else
                 f = this.WarpMode == WarpMode.Loop ? frame % this.FrameCount : frame;
+            if (parent.Frame >= parent.Def.FrameCount && parent.State == AnimationStates.Finishing)
+                f = parent.Def.FrameCount;
 
             var count = this.Keyframes.Count;
             for (int i = 0; i < count - 1; i++)

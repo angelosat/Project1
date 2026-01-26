@@ -6,14 +6,14 @@
         {
             var task = actor.AI.State.Behavior?.Plan;
             if (task is null)
-                return -100;
+                return 0;
             var interaction = task.Def.Interaction;
             if (interaction is null)
                 return 0;
             var tooluse = interaction.ToolUse;
             if (tooluse == role.Def)
                 return 100;
-            return 0;
+            return -100;
         }
         public  int GetSituationalScoreOld(Actor actor, Entity item, ItemRoleDef role)
         {

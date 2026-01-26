@@ -238,15 +238,18 @@ namespace Start_a_Town_.Components
             if (this.JumpCooldown > 0)
                 this.JumpCooldown--;
 
-            this.AnimationJump.Weight = midair ? 1 : 0;
+            //this.AnimationJump.Weight = midair ? 1 : 0;
+            //this.AnimationJump.Weight = 0; // midair ? 1 : 0;
 
             if (!this.Moving)
                 return;
 
             //don't change direction midair, or change it by a smaller factor?
             if (midair)
+            {
+                //this.AnimationJump.Weight = 1;
                 return;
-
+            }
             Vector2 direction = parent.Transform.Direction;
             this.Acceleration = Math.Min(1, this.Acceleration + AccelerationStep);
 

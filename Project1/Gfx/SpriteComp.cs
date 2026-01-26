@@ -40,8 +40,10 @@ namespace Start_a_Town_.Components
         {
             if (!this.Animations.TryGetValue(def, out var ani))
             {
-                ani = new Animation(def);
-                ani.Entity = this.Owner;
+                ani = new Animation(def)
+                {
+                    Entity = this.Owner
+                };
                 this.Animations.Add(def, ani);
             }
             // legacy check
@@ -606,6 +608,8 @@ namespace Start_a_Town_.Components
                 Log.WriteToFile($"{parent.DebugName}'s body material was null, defaulting to {parent.Def.DefaultMaterial?.DebugName}");
             }
             this.Animations.LoadValuesWithInferredKeys(compTag["Animations"], v => v.Def);
+            foreach (var a in this.Animations.Values)
+                a.Entity = this.Owner;
         }
         public override void Write(IDataWriter w)
         {
@@ -620,6 +624,8 @@ namespace Start_a_Town_.Components
             //this.Sprite = this.Owner.Def.DefaultSprite ?? this.Body.Sprite;
             this.Body.Read(r);
             r.ReadValuesWithInferredKeys(this.Animations, a => a.Def);
+            foreach (var a in this.Animations.Values)
+                a.Entity = this.Owner;
         }
 
         public static Bone GetRootBone(GameObject parent)

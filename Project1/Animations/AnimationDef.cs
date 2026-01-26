@@ -13,6 +13,7 @@ namespace Start_a_Town_.Animations
         public int FrameCount;
         public WarpMode WarpMode;
         public Func<GameObject, float> WeightChangeFunc;
+        public Func<Entity, float> WeightGetter;
 
         public AnimationDef(string name, int layer):base(name)
         {

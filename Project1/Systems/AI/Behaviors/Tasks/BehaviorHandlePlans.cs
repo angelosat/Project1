@@ -20,6 +20,16 @@ namespace Start_a_Town_
         private void CleanUp(Actor parent, AIState state)
         {
             // dont drop carried item here, let the last cleanup behavior (idle) handle it?
+            //Unequip(parent);
+
+            parent.Unreserve();
+
+            state.Reset();
+            this.CurrentPlanner = null;
+        }
+
+        private static void Unequip(Actor parent)
+        {
             //if (parent.Hauled is not null)
             //    parent.Interact(new InteractionThrow(true));
 
@@ -33,12 +43,8 @@ namespace Start_a_Town_
                 else
                     parent.Interact(new InteractionDropEquipped(GearType.Mainhand));
             }
-
-            parent.Unreserve();
-
-            state.Reset();
-            this.CurrentPlanner = null;
         }
+
         static IEnumerable<PlannerDef> GetPlanners(Actor actor)
         {
             var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);//.OfType<Planner>();

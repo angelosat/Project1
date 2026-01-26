@@ -115,7 +115,7 @@ namespace Start_a_Town_
                 new Keyframe(15, new Vector2(0, -2), 0, Interpolation.Sine),
                 new Keyframe(20, new Vector2(0, 0), 0, Interpolation.Sine));
 
-        static public readonly AnimationDef Jump = new AnimationDef("AnimationJump", 2) { Speed = 0 }
+        static public readonly AnimationDef Jump = new AnimationDef("AnimationJump", 2) { Speed = 0, WeightGetter = e => e.Physics.MidAir ? 1 : 0 }
             .AddClip(BoneDefOf.RightHand, new Keyframe(0, Vector2.Zero, (float)Math.PI / 2f, Interpolation.Sine))
             .AddClip(BoneDefOf.LeftHand, new Keyframe(0, Vector2.Zero, -(float)Math.PI / 2f, Interpolation.Sine))
             .AddClip(BoneDefOf.RightFoot, new Keyframe(0, Vector2.Zero, -(float)Math.PI / 2f, Interpolation.Sine))

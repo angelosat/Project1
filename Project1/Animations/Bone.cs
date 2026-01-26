@@ -273,7 +273,7 @@ namespace Start_a_Town_
         public Vector2 OriginGroundOffset = Vector2.Zero;
         public bool DrawMaterialColor;
 
-        private void Evaluate(IEnumerable<Animation> animations, ref float availableWeight, ref float finalAngle, ref Vector2 finalOffset)
+        private void Evaluate(Entity entity, IEnumerable<Animation> animations, ref float availableWeight, ref float finalAngle, ref Vector2 finalOffset)
         {
             var byLayer = animations.OrderBy(a => a.Layer);
             foreach (var ani in byLayer.Reverse())
@@ -398,8 +398,8 @@ namespace Start_a_Town_
             Sprite sprite = SpriteSlot == null ? this.GetSprite(orientation) : (SpriteSlot.HasValue ? SpriteSlot.Object.Body.Sprite : null);
             float aniAngle = 0;
             Vector2 aniOffset = Vector2.Zero;
-            float weight = 1;
-            this.Evaluate(animations, ref weight, ref aniAngle, ref aniOffset);
+            float availableWeight = 1;
+            this.Evaluate(parent, animations, ref availableWeight, ref aniAngle, ref aniOffset);
             var nextangle = this.Angle + aniAngle;
             nextangle = (sprFx == SpriteEffects.FlipHorizontally ? (float)(2 * Math.PI - nextangle) : nextangle);
             var finalAngle = angle + this.RestingFrame.Angle + nextangle;

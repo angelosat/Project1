@@ -3,7 +3,6 @@ using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Net;
 using Start_a_Town_.Animations;
-//using System.Drawing.Drawing2D;
 
 namespace Start_a_Town_
 {
@@ -11,9 +10,15 @@ namespace Start_a_Town_
     {
         public override string Label => this.Def.Label;
         public AnimationDef Def { get; private set; }
-        public GameObject Entity;
+        public Entity Entity;
         public bool Enabled;
-        public float Weight = 1;
+        float _weight = 1;
+        //public float Weight = 1;
+        public float Weight
+        {
+            get => this.Def.WeightGetter?.Invoke(Entity) ?? this._weight;
+            set => this._weight = value;
+        }
         public float WeightChange;
         public float Speed = 1;
         public float Frame = -1;
@@ -34,7 +39,7 @@ namespace Start_a_Town_
             this.Load(tag);
         }
         [Obsolete]
-        public Animation(GameObject entity, string name, bool loop = false)
+        public Animation(Entity entity, string name, bool loop = false)
             : base()
         {
             this.Entity = entity;
@@ -135,10 +140,13 @@ namespace Start_a_Town_
                     this.Frame = elapsedTicks;
 
                     // Handle looping first, so frame delta is correct for events
-                    this.Loop();
+                    //this.Loop();
+                    var maxFrames = this.Def.FrameCount;
 
-                    if(this.State != AnimationStates.Finishing)
-                    // Fire keyframe events
+                    if (this.State != AnimationStates.Finishing)
+                        // Fire keyframe events
+                        //this.PerformActionsNew(prevFrame, this.Frame, entity);
+                    this.PerformActionsNew(prevFrame, this.Frame, entity);
                     this.PerformActionsNew(prevFrame, this.Frame, entity);
                 }
                 // Fade logic: now deterministic per server tick
@@ -154,6 +162,9 @@ namespace Start_a_Town_
                 }
             }
             // Weight accumulation independent of frames
+
+            // BUG:
+            //throw new NotImplementedException();
             var step = elapsedServerTicks - prevFrame;
             this.Weight += step * (this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange);
             this.Weight = MathHelper.Clamp(this.Weight, 0f, 1f);
@@ -204,7 +215,11 @@ namespace Start_a_Town_
                         // math.max because there animations (like couch) with only 1 keyframe,
                         // and currently keyframe dont store duration,
                         // so framecount would be 0
-                        this.Frame %= Math.Max(1, this.Def.FrameCount);
+                        //this.Frame %= Math.Max(1, this.Def.FrameCount);
+                        if (this.Def.FrameCount > 0)
+                            this.Frame %= this.Def.FrameCount;
+                        else
+                            this.Frame = 1;
                         break;
 
                     case WarpMode.Once:
@@ -220,6 +235,11 @@ namespace Start_a_Town_
 
         private void PerformActionsNew(float prevFrame, float nextFrame, GameObject entity)
         {
+            if(this.Def.WarpMode != WarpMode.Once)
+            {
+                prevFrame %= this.Def.FrameCount;
+                nextFrame %= this.Def.FrameCount;
+            }
             if (this.State == AnimationStates.Removed)
                 return;
             foreach (var action in Def.Events)
@@ -248,13 +268,13 @@ namespace Start_a_Town_
         internal void GetValue(BoneDef boneType, ref Vector2 doff, ref float dang)
         {
             if (this.Def.KeyFrames.TryGetValue(boneType, out var clip))
-                clip.GetValue(this.Frame, this.Fade, out doff, out dang);
+                clip.GetValue(this, out doff, out dang);
         }
         internal bool TryGetValue(BoneDef boneType, ref Vector2 doff, ref float dang)
         {
             if (this.Def.KeyFrames.TryGetValue(boneType, out var clip))
             {
-                clip.GetValue(this.Frame, this.Fade, out doff, out dang);
+                clip.GetValue(this, out doff, out dang);
                 return true;
             }
             return false;
@@ -310,7 +330,7 @@ namespace Start_a_Town_
             tag.TryGetTagValueOrDefault("Frame", out this.Frame);
             tag.TryGetTagValueOrDefault("FadeValue", out this.FadeValue);
             tag.TryGetTagValueOrDefault("FadeLength", out this.FadeLength);
-            tag.TryGetTagValueOrDefault("Weight", out this.Weight);
+            tag.TryGetTagValueOrDefault("Weight", out this._weight);
             tag.TryGetTagValueOrDefault("WeightChange", out this.WeightChange);
             tag.TryGetTagValueOrDefault("Speed", out this.Speed);
             tag.TryGetTagValue<int>("State", t => this.State = (AnimationStates)t);

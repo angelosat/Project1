@@ -185,7 +185,7 @@ namespace Start_a_Town_
             //this.Def.Logic.OnFinish(this); // or done()?
             //this.State = States.Finished;
             if (this.AnimationDef is not null)
-                this.CachedAnimation.FadeOutAndRemove(-.01f);
+                this.CachedAnimation.FadeOutAndRemove();// -.01f);
         }
         protected virtual void Fail()
         {
@@ -403,7 +403,7 @@ namespace Start_a_Town_
             if (this.Actor.Gear.GetGear(GearType.Mainhand) is not Entity tool || 
                 this.Def.ToolUse is not ToolUseDef toolUse)
             {
-                workamount = 100;
+                workamount = 100; //60;// 
                 speed = 1;
                 return;
             }

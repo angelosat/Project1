@@ -21,7 +21,9 @@ namespace Start_a_Town_
         const float FrictionFactor = .5f;
         public static float Jump = 0.2f;//-0.04f;// -0.05f; //35f;
         public static float Friction = 0.02f;// 0.005f; // TODO move this to blocks? 
-        public bool MidAir { get; private set; } // => this.Parent.Velocity.Z != 0;// HACK because checking velocity.z == 0 returns true at the peak of the jump 
+        //public bool MidAir { get; private set; } // => this.Parent.Velocity.Z != 0;// HACK because checking velocity.z == 0 returns true at the peak of the jump 
+        bool _midair;
+        public bool MidAir { get => this.Owner.Velocity.Z != 0; private set => this._midair = value; } // => this.Parent.Velocity.Z != 0;// HACK because checking velocity.z == 0 returns true at the peak of the jump 
         public const int KnockbackMagnitude = 3;
         public Vector3 Force;
         public BoundingBox CurrentAABB { get; private set; }

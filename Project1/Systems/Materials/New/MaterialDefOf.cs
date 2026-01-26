@@ -14,9 +14,11 @@ namespace Start_a_Town_
             .SetColor(Color.LightSteelBlue)
             .SetValue(40);
         static public readonly MaterialDef Cobalt = new MaterialDef("Cobalt", MaterialTemplates.Metal)
-            .SetPrefix("Cobalt")
-            .SetColor(Color.DodgerBlue)
-            .SetValue(60);
+        {
+            ValueBase = 60,
+            Color = Color.DodgerBlue,
+            Density = 50
+        };
         static public readonly MaterialDef Silver = new MaterialDef("Silver", MaterialTemplates.Metal) { Shine = 1 }
             .SetPrefix("Silver")
             .SetColor(Color.White)

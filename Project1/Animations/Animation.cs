@@ -145,9 +145,7 @@ namespace Start_a_Town_
 
                     if (this.State != AnimationStates.Finishing)
                         // Fire keyframe events
-                        //this.PerformActionsNew(prevFrame, this.Frame, entity);
-                    this.PerformActionsNew(prevFrame, this.Frame, entity);
-                    this.PerformActionsNew(prevFrame, this.Frame, entity);
+                        this.PerformActionsNew(prevFrame, this.Frame, entity);
                 }
                 // Fade logic: now deterministic per server tick
                 if (this.FadeValue < this.FadeLength)

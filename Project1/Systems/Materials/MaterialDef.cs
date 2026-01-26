@@ -18,12 +18,12 @@ namespace Start_a_Town_
         public MaterialTypeDef Type;
         public Color Color;
         public Vector4 ColorVector;
-        public string Prefix;
+        public string Prefix = "<undefined>";
         public float Shine;
         public int Density;
         public bool EdibleRaw, EdibleCooked;
         public MaterialState State;
-        public MaterialCategory Category;
+        //public MaterialCategory Category;
         public Fuel Fuel;
         public int BreakResistance = 1;
         public int ValueBase = 1;
@@ -40,12 +40,13 @@ namespace Start_a_Town_
         {
             this.IsTemplate = true;
         }
+        public MaterialDef(string name, MaterialTypeDef type, int density, Color color) : this(type, name, name, color, density) { }
         public MaterialDef(MaterialTypeDef type, string name, string prefix, int density)
             : this(type, name, prefix, Color.White, density) { }
         public MaterialDef(string name, MaterialDef template) : base(name)
         {
             this.State = template.State;
-            this.Category = template.Category;
+            //this.Category = template.Category;
             this.Density = template.Density;
             this.SetColor(template.Color);
             this.Type = template.Type;

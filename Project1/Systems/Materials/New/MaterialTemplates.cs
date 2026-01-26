@@ -16,26 +16,26 @@ namespace Start_a_Town_
         static public readonly MaterialDef Wood = new MaterialDef()
             { Fuel = new Fuel(FuelDef.Organic, 20f) }
             .SetState(MaterialState.Solid)
-            .SetDensity(50)
+            .SetDensity(10)
             .SetType(MaterialTypeDefOf.Wood)
             ;
 
         static public readonly MaterialDef Metal = new MaterialDef()
             .SetState(MaterialState.Solid)
-            .SetDensity(100)
+            .SetDensity(20)
             .SetReflectiveness(1)
             .SetType(MaterialTypeDefOf.Metal)
             ;
 
         static public readonly MaterialDef Stone = new MaterialDef()
             .SetState(MaterialState.Solid)
-            .SetDensity(75)
+            .SetDensity(15)
             .SetType(MaterialTypeDefOf.Stone)
             ;
 
         static public readonly MaterialDef Soil = new MaterialDef()
           .SetState(MaterialState.Solid)
-          .SetDensity(10)
+          .SetDensity(5)
           .SetType(MaterialTypeDefOf.Soil)
           ;
 
@@ -45,18 +45,18 @@ namespace Start_a_Town_
               EdibleCooked = true
           }
           .SetState(MaterialState.Solid)
-          .SetDensity(20)
+          .SetDensity(4)
           .SetColor(Color.LightPink)
           .SetType(MaterialTypeDefOf.Flesh)
           ;
 
         static public readonly MaterialDef PlantStem = new MaterialDef()
-            .SetDensity(30)
+            .SetDensity(5)
             .SetState(MaterialState.Solid)
             .SetType(MaterialTypeDefOf.Fiber);
 
         static public readonly MaterialDef Seed = new MaterialDef()
-            .SetDensity(40)
+            .SetDensity(4)
             .SetState(MaterialState.Solid)
             .SetType(MaterialTypeDefOf.Seed);
 

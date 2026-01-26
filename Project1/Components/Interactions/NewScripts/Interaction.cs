@@ -89,11 +89,11 @@ namespace Start_a_Town_
                     this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 40); // TODO maybe instead of a magic crossfade number, crossfade until the second keyframe
                 //this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
                 //this._cachedAnimation.Weight = 1;
-                //if (this.AnimationDef == AnimationDefOf.Tool) // HACK
-                //{
-                //    this.Calculate(out _, out var speed);
-                //    this.SetNextSwingSpeed(speed);
-                //}
+                if (this.AnimationDef == AnimationDefOf.Tool) // HACK
+                {
+                    this.Calculate(out _, out var speed);
+                    this.SetNextSwingSpeed(speed);
+                }
                 //if (this.CrossFadeAnimationLength == 0)
                 //    this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
                 //else
@@ -300,6 +300,7 @@ namespace Start_a_Town_
                 this.Def.ProgressHandler.AddProgress(this, v);
             else
                 this.OnAddProgress(v);
+            this.Def.Logic.OnProgressAdded(this, v);
         }
         protected virtual void OnAddProgress(int v)
         {
@@ -327,11 +328,11 @@ namespace Start_a_Town_
 
             this.AddProgress(amount);
             this.TotalWorkApplied += amount;
-            this._cachedAnimation.Frame.ToConsole();
+            //this._cachedAnimation.Frame.ToConsole();
 
             //var speed = InteractionResolverDefOf.WorkSpeed.Worker.Resolve(actor);
             //this.CachedAnimation.Speed = actor[StatDefOf.WorkSpeed];
-            //this.SetNextSwingSpeed(speed);
+            this.SetNextSwingSpeed(speed);
             if (skill is not null)
             {
                 if (this.SkillAwardType == SkillAwardTypes.OnSwing)

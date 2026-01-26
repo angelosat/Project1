@@ -35,6 +35,13 @@
             MapEdit.Paint(MapEditContext.Simulation, map, [global], BlockDefOf.Farmland.Worker, map.GetCell(global).Material, 0, 0, 0);
         }
         internal override int CalculateMax(InteractionContext ctx) => 50;
+        internal override void OnProgressAdded(Interaction i, int delta)
+        {
+            var target = i.Context.Target;
+            var map = target.Map;
+            var block = target.Block;
+            i.Context.Target.Map.Events.Post(new BlockHitEvent(block, map, target.Global, delta));
+        }
         //internal override void Done()
         //{
         //    var a = this.Actor;

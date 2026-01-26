@@ -131,9 +131,10 @@ namespace Start_a_Town_
                 this.StartTick = entity.Net.CurrentTick;
             var prevFrame = this.Frame;
             var elapsedServerTicks = (float)(entity.Net.CurrentTick - this.StartTick);// / Server.ClockIntervalMS;
+            var elapsedTicks = elapsedServerTicks / this.Speed;
+
             if (this.Speed > 0)
             {
-                var elapsedTicks = elapsedServerTicks / this.Speed;
 
                 if (this.Weight > 0)
                 {
@@ -159,11 +160,11 @@ namespace Start_a_Town_
                         return; // optionally skip main update while fading in
                 }
             }
-            // Weight accumulation independent of frames
 
-            // BUG:
-            //throw new NotImplementedException();
-            var step = elapsedServerTicks - prevFrame;
+            // Weight accumulation independent of frames
+            //var step = elapsedServerTicks - prevFrame;
+            var step = elapsedTicks - prevFrame;
+                //this.Weight += step * (this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange);
             this.Weight += step * (this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange);
             this.Weight = MathHelper.Clamp(this.Weight, 0f, 1f);
             if (this.Weight == 0 && this.State == AnimationStates.Finishing)
@@ -202,11 +203,11 @@ namespace Start_a_Town_
         {
             if (this.Frame >= this.Def.FrameCount)
             {
-                if (this.State == AnimationStates.Finishing)
-                {
-                    this.Frame = this.Def.FrameCount;
-                    return;
-                }
+                //if (this.State == AnimationStates.Finishing)
+                //{
+                //    this.Frame = this.Def.FrameCount;
+                //    return;
+                //}
                 switch (this.Def.WarpMode)
                 {
                     case WarpMode.Loop:

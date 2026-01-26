@@ -14,7 +14,7 @@ namespace Start_a_Town_
             _pSpeed = Registry.PacketHandlers.Register(OnInteractionSpeed);
             Registry.MapEventHooksServer.Register<InteractionStoppedEvent>(SendInteractionStopped);
             Registry.MapEventHooksServer.Register<InteractionProgressEvent>(SendInteractionProgress);
-            //Registry.MapEventHooksServer.Register<InteractionNextSwingSpeedEvent>(SendInteractionNextSwingSpeed);
+            Registry.MapEventHooksServer.Register<InteractionNextSwingSpeedEvent>(SendInteractionNextSwingSpeed);
             Registry.MapEventHooksServer.Register<InteractionStartedEvent>(SendInteractionStarted);
         }
 
@@ -38,7 +38,7 @@ namespace Start_a_Town_
         }
         private static void SendInteractionNextSwingSpeed(InteractionNextSwingSpeedEvent e)
         {
-            Server.Instance.BeginPacket(_pProgress)
+            Server.Instance.BeginPacket(_pSpeed)
                .Write(e.Actor.RefId)
                .Write(e.Speed);
         }

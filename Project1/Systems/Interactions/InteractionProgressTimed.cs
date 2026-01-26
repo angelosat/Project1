@@ -25,7 +25,7 @@
     {
         public float GetProgressPercentage(Interaction interaction) => interaction.Progress.Percentage;
         public void Tick(Interaction interaction) { }
-        public void AddProgress(Interaction interaction, int progress) => interaction.Progress.ApplyDelta(progress);
+        public void AddProgress(Interaction interaction, int progress) => interaction.Progress.ApplyDelta(progress); //AddProgress(progress);// 
         public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;
     }
     internal class InteractionProgressToolExternal : IInteractionProgressHandler

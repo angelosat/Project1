@@ -198,21 +198,25 @@ namespace Start_a_Town_
                 var cell = this.Town.Map.GetCell(pos);
                 var block = cell.Block;
                 var cellData = cell.BlockData;
+                var entitiesOnBlock = this.Town.Map.GetEntitiesAt(pos.Above);
+                var hasPlantAbove = entitiesOnBlock.Any(o => o.IsPlant());
+                if (hasPlantAbove)
+                    continue;
                 if (block == BlockDefOf.Farmland.Worker)
                 {
-                    if (!this.Town.Map.GetObjects(pos.Above).Any(o => o.IsPlant()))
-                        if (!BlockFarmland.IsSeeded(cellData))
-                            this.CachedSowing.Add(pos);
+                    if (BlockFarmland.IsSeeded(cellData))
+                        continue;
+
+                    this.CachedSowing.Add(pos);
                 }
                 //else if (block.GetMaterial(cellData) == MaterialDefOf.Soil)
                 else if (cell.Material == MaterialDefOf.Soil)
                 {
-                    if (!this.Town.Map.GetObjects(pos.Above).Any(o => o.IsPlant()))
-                        this.CachedTilling.Add(pos);
+                    this.CachedTilling.Add(pos);
                 }
             }
         }
-
+        
         public void GetContextActions(GameObject playerEntity, ContextArgs a) { }
 
         public static bool IsValidFarmPosition(MapBase map, Vector3 arg)

@@ -217,13 +217,8 @@ namespace Start_a_Town_.Components
         const int WiggleIntensityDefault = 1;
         int WiggleDirection;
         private Sprite _spriteFruit;
-        public bool Harvest(Actor actor)
+        public bool HarvestBy(Actor actor)
         {
-            return this.Harvest(this.Owner, actor);
-        }
-        public bool Harvest(GameObject parent, GameObject actor)
-        {
-            var plant = parent as Plant;
             //var props = plant.PlantComponent.PlantProperties;
             var props = this.Species;
             if (props.Growth is null)
@@ -231,18 +226,18 @@ namespace Start_a_Town_.Components
             var yield = (int)(this.GrowthFruit.Percentage * props.Growth.MaxYieldHarvest);
             if (yield == 0)
                 return false;
-
-            if (parent.Net is Server server)
-            {
-              
+            //parent.World.Random
+            //if (parent.Net is Server server)
+            //{
                 var product = props.Growth.CreateEntity();
-                var rng = server.GetRandom();
-                var velocity = LootSystem.RandomPopVelocity(rng);
-                parent.Map.World.Register(product);
-                parent.Map.Spawn(product, parent.Global, velocity);
-            }
+            //var rng = server.GetRandom();
+            //var velocity = LootSystem.RandomPopVelocity(rng);
+            //parent.Map.World.Register(product);
+            //parent.Map.Spawn(product, parent.Global, velocity);
+            //}
+            this.Owner.Map.Events.Post(new LootPopEvent([product], this.Owner));
 
-            this.ResetFruitGrowth(parent);
+            this.ResetFruitGrowth();
             this.Owner.Map.Events.Post(new PlantHarvestedEvent(this.Owner));
             return true;
         }
@@ -254,13 +249,13 @@ namespace Start_a_Town_.Components
             if (plantdef.ProductCutDown != null && yield > 0)
             {
                 var product = plantdef.ProductCutDown.CreateFrom(owner.Body.Material ?? MaterialDefOf.LightWood).SetStackSize(yield) as Entity;
-                owner.Map.Events.Post(new LootPopEvent([product], this.Owner as Entity));
+                owner.Map.Events.Post(new LootPopEvent([product], this.Owner));
 
                 /// if the plant doesnt produce fruit, then the only seed source is by cutting the plant itself
                 if (!this.ProducesFruit)
                 {
                     var seeds = this.Species.Create(PlantStageDefOf.Seed);
-                    owner.Map.Events.Post(new LootPopEvent([seeds], this.Owner as Entity));
+                    owner.Map.Events.Post(new LootPopEvent([seeds], this.Owner));
                 }
             }
         }
@@ -292,11 +287,11 @@ namespace Start_a_Town_.Components
         //    actor.Map.World.DisposeEntity(plant as Entity);  // disposing also despawns implicitly
         //}
 
-        private void ResetFruitGrowth(GameObject parent)
+        private void ResetFruitGrowth()
         {
             this.GrowthFruit.Value = 0;
             this.FruitGrowthTick = 0;
-            parent.Body.Sprite = Sprite.Load(this.Species.TextureGrowing);
+            this.Owner.Body.Sprite = Sprite.Load(this.Species.TextureGrowing);
             this.Owner.Body.FindBone(BoneDefOf.PlantFruit).Sprite = null;
         }
         public override void OnSpawn(MapBase newMap)

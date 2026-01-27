@@ -8,6 +8,11 @@ namespace Start_a_Town_
         public const TargetIndex PlantIndex = TargetIndex.A;
         protected override IEnumerable<Behavior> GetSteps()
         {
+            yield return new BehaviorResolvePath(PathEndMode.Touching);
+            yield return new BehaviorResolveInteraction();
+        }
+        protected IEnumerable<Behavior> GetStepsOld()
+        {
             this.FailOn(() =>
             {
                 var target = this.Plan.GetTarget(PlantIndex);

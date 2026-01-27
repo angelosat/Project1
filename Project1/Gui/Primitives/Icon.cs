@@ -89,17 +89,20 @@ namespace Start_a_Town_.UI
                 sb.Draw(this.AtlasToken.Atlas.Texture, loc.ToFloored(), sourceRect, Color.White, 0, new Vector2(sourceRect.Width * originPercentage.X, sourceRect.Height * originPercentage.Y), 1, SpriteEffects.None, 0);
             }
         }
-
+        public void Draw(SpriteBatch sb, Vector2 loc, Vector2 scale, float alpha = 1)
+        {
+            this.Draw(sb, loc, Color.White * alpha, Vector2.Zero, scale);
+        }
         public void Draw(SpriteBatch sb, Vector2 loc, float scale = 1, float alpha = 1)
         {
-            this.Draw(sb, loc, Color.White * alpha, scale);
+            this.Draw(sb, loc, Color.White * alpha, Vector2.Zero, Vector2.One * scale);
         }
-        public void Draw(SpriteBatch sb, Vector2 loc, Color color, float scale = 1)
+        public void Draw(SpriteBatch sb, Vector2 loc, Color color, Vector2 origin, Vector2 scale)
         {
             if (this.AtlasToken is null)
-                sb.Draw(this.SpriteSheet, loc, this.SourceRect, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                sb.Draw(this.SpriteSheet, loc, this.SourceRect, color, 0, origin, scale, SpriteEffects.None, 0);
             else
-                sb.Draw(this.AtlasToken.Atlas.Texture, loc, this.AtlasToken.Rectangle, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                sb.Draw(this.AtlasToken.Atlas.Texture, loc, this.AtlasToken.Rectangle, color, 0, origin, scale, SpriteEffects.None, 0);
         }
         /// <summary>
         /// Draws near mouse
@@ -113,21 +116,24 @@ namespace Start_a_Town_.UI
         public void DrawFloating(SpriteBatch sb, Camera camera, GameObject entity, float scale = .5f)
         {
             var bounds = entity.GetSprite().GetBounds();
-            var offset = -1 + 2 * UIManager.FlashingValue;
+            var offset = -1 + 2 * UIManager.CosOffest1;
+            var offset2 = -1 + 2 * UIManager.CosOffest2;
             scale *= camera.Zoom;
             var rect = this.AtlasToken?.Rectangle ?? this.SourceRect;
-            var pos = camera.GetScreenPosition(entity.Global) - new Vector2(rect.Width, rect.Height) * scale / 2; ;
+            var pos = camera.GetScreenPosition(entity.Global);// - new Vector2(rect.Width, rect.Height) * scale / 2; ;
             pos.Y -= bounds.Height * camera.Zoom;
             pos.Y += offset * rect.Height / 4 * scale;
-            this.Draw(sb, pos, scale, alpha: .5f);
+            var scaleVec2 = new Vector2(offset2, 1) * scale;
+            //this.Draw(sb, pos, scaleVec2, alpha: .5f);
+            this.Draw(sb, pos, Color.White * .5f, new Vector2(rect.Width, rect.Height) * .5f, scaleVec2);
         }
         public void DrawFloating(SpriteBatch sb, Camera camera, Vector3 global, float scale = .5f)
         {
             var bounds = Block.Bounds;
-            var offset = -1 + 2*UIManager.FlashingValue;
+            var offset = -1 + 2 * UIManager.CosOffest1;
             scale *= camera.Zoom;
             var pos = camera.GetScreenPosition(global) - new Vector2(this.SourceRect.Width, this.SourceRect.Height) * scale / 2; ;
-            pos.Y -= (bounds.Height / 2) * camera.Zoom ;
+            pos.Y -= (bounds.Height / 2) * camera.Zoom;
             pos.Y += offset * this.SourceRect.Height / 4 * scale;
             this.Draw(sb, pos, scale, alpha: .5f);
         }

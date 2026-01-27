@@ -99,6 +99,7 @@ namespace Start_a_Town_
                 this._cellsToZones[position] = zone;
             zone.Manager = this;
             zone.Name = zone.UniqueName;
+            
             FloatingText.Create(this.Town.Map, zone.Average(), $"{zone.GetType()} created", ft => ft.Font = UIManager.FontBold);
             this.Map.Events.Post(new ZoneCreatedEvent(zone));
         }

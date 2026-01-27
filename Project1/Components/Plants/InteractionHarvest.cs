@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Start_a_Town_.Components;
+
+namespace Start_a_Town_
 {
     internal class InteractionHarvestLogic : InteractionLogic
     {
@@ -7,10 +9,15 @@
             var actor = i.Context.Actor;
             if (actor.Net.IsClient)
                 return;
-            var target = i.Context.Target;
-            if (target.Object is not Plant plant)
+            var plant = i.Context.Target.Object;
+            //if (target.Object is not Plant plant)
+            //    throw new System.Exception();
+            //plant.PlantComponent.Harvest(actor);
+            if (!plant.TryGetComponent<PlantComponent>(out var comp))
                 throw new System.Exception();
-            plant.PlantComponent.Harvest(actor);
+            if(!comp.IsHarvestable)
+                throw new System.Exception();
+            comp.HarvestBy(actor);
         }
     }
     public class InteractionHarvest : Interaction
@@ -27,7 +34,7 @@
             var t = this.Target;
             if (t.Object is not Plant plant)
                 throw new System.Exception();
-            plant.PlantComponent.Harvest(t.Object, a);
+            plant.PlantComponent.HarvestBy(a);
         }
     }
 }

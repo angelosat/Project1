@@ -9,7 +9,7 @@ namespace Start_a_Town_
             if (!actor.HasJob(JobDefOf.Farmer))
                 return null;
             foreach(var pos in actor.Map.Town.GrowingManager.GetNextTillingPos().Where(actor.CanReachAndReserve))
-                return new Plan(PlanDefOf.GoTill, new TargetArgs(actor.Map, pos));
+                return new Plan(PlanDefOf.Till, new TargetArgs(actor.Map, pos));
         
             return null;
         }
@@ -20,7 +20,7 @@ namespace Start_a_Town_
             var loc = GetBestTillingLocation(actor);
             if (!loc.HasValue)
                 return null;
-            var task = new Plan(PlanDefOf.GoTill);// typeof(TaskBehaviorTilling));
+            var task = new Plan(PlanDefOf.Till);// typeof(TaskBehaviorTilling));
             task.SetTarget(TaskBehaviorTilling.TargetInd, new TargetArgs(actor.Map, loc.Value));
             FindTool(actor, task, JobDefOf.Farmer);
             return task;

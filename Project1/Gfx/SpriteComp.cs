@@ -537,7 +537,11 @@ namespace Start_a_Town_.Components
             Variation = 0;
             Orientation = 0;
             foreach (var anim in source.Animations.Values)
-                this.Animations.Add(anim.Def, anim.Clone());
+            {
+                var newani = anim.Clone();
+                newani.Entity = this.Owner;
+                this.Animations.Add(anim.Def, newani);
+            }
         }
         public override object Clone()
         {

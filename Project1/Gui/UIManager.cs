@@ -37,7 +37,8 @@ namespace Start_a_Town_.UI
 
 
         public static int FlashingTimer { get; private set; }
-
+        public static float CosOffest1 { get; private set; }
+        public static float CosOffest2 { get; private set; }
         public static float FlashingValue
         {
             get
@@ -47,6 +48,13 @@ namespace Start_a_Town_.UI
                 lerp /= 2;
                 return lerp;
             }
+        }
+        public static float GetFlashingValue(float speed = 120f)
+        {
+                var lerp = (float)Math.Cos(Math.PI * 2 * FlashingTimer / speed);
+                lerp += 1;
+                lerp /= 2;
+                return lerp;
         }
         public readonly DialogBlock DialogBlock = new();
 
@@ -280,6 +288,8 @@ namespace Start_a_Town_.UI
         public void Update(Game1 game, GameTime gt)
         {
             FlashingTimer++;
+            CosOffest1 = GetFlashingValue(120f);
+            CosOffest2 = GetFlashingValue(90f);
             Control lastactive = Controller.Instance.Mouseover.Object as Control;// ActiveControl;
             foreach (var layer in this.Layers)
             {

@@ -346,7 +346,8 @@ namespace Start_a_Town_
             w.Write(this.Frame);
             w.Write(this.FadeLength);
             w.Write(this.FadeValue);
-            w.Write(this.Weight);
+            if(this.Def.WeightGetter is null)
+                w.Write(this.Weight);
             w.Write(this.WeightChange);
             w.Write(this.Speed);
             w.Write((int)this.State);
@@ -357,7 +358,8 @@ namespace Start_a_Town_
             this.Frame = r.ReadSingle();
             this.FadeLength = r.ReadInt32();
             this.FadeValue = r.ReadInt32();
-            this.Weight = r.ReadSingle();
+            if(this.Def.WeightGetter is null)
+                this.Weight = r.ReadSingle();
             this.WeightChange = r.ReadSingle();
             this.Speed = r.ReadSingle();
             this.State = (AnimationStates)r.ReadInt32();

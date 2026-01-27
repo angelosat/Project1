@@ -18,8 +18,6 @@ namespace Start_a_Town_
             Registry.MapEventHooksServer.Register<InteractionStartedEvent>(SendInteractionStarted);
         }
 
-        
-
         private static void SendInteractionStarted(InteractionStartedEvent e)
         {
             Server.Instance.BeginPacket(_pStarted)

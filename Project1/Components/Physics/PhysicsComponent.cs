@@ -69,7 +69,8 @@ namespace Start_a_Town_
             var parent = this.Owner;
             var map = parent.Map;
             var net = map.Net;
-            var lastGlobal = parent.Transform.Global;
+            var lastGlobal = parent.Global;
+            var lastVel = parent.Velocity;
             if (!map.TryGetCell(lastGlobal, out var thisCell))
                 return;
 
@@ -117,13 +118,17 @@ namespace Start_a_Town_
             var next = new Vector3(nx, ny, nz);
 
             if (lastGlobal != next)
+            {
                 parent.SetPosition(next);
+            }
             else if (velocity == Vector3.Zero)
             {
                 if (this.Enabled)
                     this.Owner.Map.Events.Post(new EntityAtRestEvent(this.Owner as Entity, true));
                 this.Enabled = false;
             }
+            net.LogStateChange(parent.RefId);
+
             this.DetectEntityCollisions(parent, lastGlobal, next);
 
             // reset speed according to new position to prevent it from accumulating
@@ -132,10 +137,10 @@ namespace Start_a_Town_
             // log state change 
             if (parent.Exists) // must check because entity might have despawned itself during it's update 
             {
-                if (lastGlobal != parent.Global)
+                if (lastGlobal != parent.Global)// || lastVel != parent.Velocity)
                 {
                     // send a "step on" message on next block
-                    net.LogStateChange(parent.RefId);
+                    //net.LogStateChange(parent.RefId);
                     Vector3 nextRounded = next.RoundXY();
                     if (nextRounded != lastGlobal.RoundXY())
                     {

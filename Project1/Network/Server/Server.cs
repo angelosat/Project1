@@ -643,7 +643,7 @@ namespace Start_a_Town_.Net
         private static void SendSnapshots()
         {
             /// always send snapshots every frame, even empty ones. so that the client can interpolate correctly
-            
+
             // i had to stop sending empty snapshots because after resuming from pause, entities "jumpbed" to their real position in the clients
             if (Instance.ObjectsChangedSinceLastSnapshot.Count == 0)
                 return;

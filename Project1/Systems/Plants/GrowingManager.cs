@@ -32,15 +32,21 @@ namespace Start_a_Town_
         private void OnEntityEnteredZone(EntityEnteredZoneEvent e)
         {
             var entity = e.Entity;
-            var entitycell = entity.Cell.Below;
-            if (!entity.TryGetComponent<PlantComponent>(out var comp))
-                return;
-            if (!comp.IsHarvestable)
-                return;
-            this.RegisterHarvestable(entity);
+            this.TryRegisterHarvestable(entity);
             //if (this.Map.Town.GetZoneAt(entitycell) is not GrowingZone gz)
             //    return;
             //gz.PlantsHarvestable.Add(entity);
+        }
+
+        private bool TryRegisterHarvestable(Entity entity)
+        {
+            var entitycell = entity.Cell.Below;
+            if (!entity.TryGetComponent<PlantComponent>(out var comp))
+                return false;
+            if (!comp.IsHarvestable)
+                return false;
+            this.RegisterHarvestable(entity);
+            return true;
         }
 
         //private void OnEntitySpawned(EntitySpawnedEvent e)
@@ -81,13 +87,23 @@ namespace Start_a_Town_
         {
             var growzones = this.Town.ZoneManager.GetZones<GrowingZone>();
             this.GrowZones.AddRange(growzones);
+            foreach (var gz in growzones)
+                ValidateHarvestables(gz);
         }
         private void OnZoneCreated(ZoneCreatedEvent e)
         {
             if (e.Zone is not GrowingZone growzone)
                 return;
             this.GrowZones.Add(growzone);
+            ValidateHarvestables(growzone);
         }
+        
+        private void ValidateHarvestables(GrowingZone growzone)
+        {
+            foreach(var item in growzone.Items)
+                TryRegisterHarvestable(item);
+        }
+
         private void OnZoneDeleted(ZoneDeletedEvent e)
         {
             if (e.Zone is not GrowingZone growzone)

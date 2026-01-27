@@ -5,6 +5,11 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     internal static class InteractionDefOf
     {
+        public static readonly InteractionDef Harvest = new("Harvesting", typeof(InteractionHarvestLogic))
+        {
+            Animation = AnimationDefOf.Tool,
+            ProgressHandler = new InteractionProgressFirstContact()
+        };
         //public static readonly InteractionDef Pick = new("Picking", typeof(InteractionHaul), null) { Animation = AnimationDefOf.TouchItem, ProgressHandler = new InteractionProgressFirstContact() };
         public static readonly InteractionDef Pick = new("Picking", typeof(InteractionHaulLogic))
         {

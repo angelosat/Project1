@@ -41,11 +41,6 @@ namespace Start_a_Town_
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-        static public readonly PlanDef Harvesting = new("Harvesting", typeof(TaskBehaviorHarvestingNew))
-        {
-            Format = "Harvest {0}",
-            GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
-        };
 
         static public readonly PlanDef Digging = new("Digging", typeof(TaskBehaviorDigging), InteractionDefOf.Dig)
         {
@@ -81,7 +76,8 @@ namespace Start_a_Town_
         static public readonly PlanDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace), InteractionDefOf.Place);
         static public readonly PlanDef StoreInInventory = new("Storing", typeof(TaskBehaviorStoreInInventory), InteractionDefOf.Store);
         static public readonly PlanDef Construct = new("Constructing", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct);
-        static public readonly PlanDef GoTill = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
+        static public readonly PlanDef Till = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
+        static public readonly PlanDef Harvesting = new("Harvesting", typeof(TaskBehaviorHarvestingNew), InteractionDefOf.Harvest);
         static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);
         static public readonly PlanDef HaulToStockpile = new("StockpileHauling", typeof(TaskBehaviorHaulToStockpile), InteractionDefOf.Place);
         static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround), InteractionDefOf.SleepOnGround);

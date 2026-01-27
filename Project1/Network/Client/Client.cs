@@ -857,10 +857,11 @@ namespace Start_a_Town_.Net
                     prev = list[i],
                     next = list[i + 1];
 
-                if (this.CurrentTick >= prev.Time && this.CurrentTick < next.Time)
+                //if (this.CurrentTick >= prev.Time && this.CurrentTick < next.Time)
+                if (this.CurrentTick < next.Time && prev.Time <= this.CurrentTick)
                 {
                     this.SnapObjectPositions(prev, next);
-                    return;
+                    //return;
                 }
             }
         }
@@ -880,9 +881,10 @@ namespace Start_a_Town_.Net
                 if (nextSnap is null)
                 {
                     // extrapolation
-                    double dt = CurrentTick - prev.Time;
-                    var predictedPos = entity.Global + entity.Velocity * (float)dt;
-                    entity.SetPosition(predictedPos);
+                    // temporarily disabling extrapolation because of a bug
+                    //double dt = CurrentTick - prev.Time;
+                    //var predictedPos = entity.Global + entity.Velocity * (float)dt;
+                    //entity.SetPosition(predictedPos);
                     continue;
                 }
                 entity.SetPosition(prevSnap.Position + (nextSnap.Position - prevSnap.Position) * t);

@@ -118,7 +118,7 @@ namespace Start_a_Town_
                 if (pl.Target.Type != TargetType.Null && pl.Target.Exists)
                 {
                     Vector2 pos = GetSmoothedMousePosition(camera, pl);
-                    Icon.CursorGrayscale.Draw(sb, new Vector2((int)pos.X, (int)pos.Y), pl.Color);
+                    Icon.CursorGrayscale.Draw(sb, new Vector2((int)pos.X, (int)pos.Y), pl.Color, Vector2.Zero, Vector2.One);
                     pl.CurrentTool.DrawIcon(sb, pos + new Vector2(Icon.Cursor.AtlasToken.Rectangle.Width, 0));
                     UIManager.DrawStringOutlined(sb, pl.CurrentTool.GetType().Name, pos, new Vector2(.5f, 1));
                     UIManager.DrawStringOutlined(sb, pl.Name, pos, new Vector2(.5f, 2));

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -91,7 +90,7 @@ namespace Start_a_Town_.Components
             hitpoints.Max = plant.StemMaterial.Density;
             hitpoints.TicksPerRecoverOne = plant.StemHealRate;
 
-            this._spriteFruit = this.Species.TextureFruit is string fruitTexturePath ? Sprite.Load(fruitTexturePath) : null;
+            //this._spriteFruit = this.Species.TextureFruit is string fruitTexturePath ? Sprite.Load(fruitTexturePath) : null;
 
             var body = parent.Body;
             body.ScaleFunc = () => .25f + .75f * this.GrowthBody.Percentage;
@@ -100,15 +99,27 @@ namespace Start_a_Town_.Components
                 this._fruitBone.Material = this.Species.FruitMaterial;
             this.UpdateFruitTexture();
         }
+        internal override void ResolveReferencesNew()
+        {
+            this.UpdateFruitTexture();
+        }
         internal override void Resolve()
         {
             var body = this.Owner.Body;
             body.ScaleFunc = () => .25f + .75f * this.GrowthBody.Percentage;
         }
-        void UpdateFruitTexture()
+        public void UpdateFruitTexture()
         {
-            if (_spriteFruit is not null && this.Owner.Body.TryFindBone(BoneDefOf.PlantFruit, out var fruitBone) && this.IsHarvestable)
-                fruitBone.Sprite = this._spriteFruit;
+            if (!this.Owner.Body.TryFindBone(BoneDefOf.PlantFruit, out var fruitBone))
+                return;
+            if (this.IsHarvestable)
+            {
+                this._spriteFruit = this.Species.TextureFruit is string fruitTexturePath ? Sprite.Load(fruitTexturePath) : null;
+                if (_spriteFruit is not null)
+                    fruitBone.SetSprite(this._spriteFruit);
+            }
+            else
+                fruitBone.SetSprite(null);
         }
         float Length => this.Species.GrowTicks;
         Progress Progress;
@@ -287,13 +298,7 @@ namespace Start_a_Town_.Components
         //    actor.Map.World.DisposeEntity(plant as Entity);  // disposing also despawns implicitly
         //}
 
-        private void ResetFruitGrowth()
-        {
-            this.GrowthFruit.Value = 0;
-            this.FruitGrowthTick = 0;
-            this.Owner.Body.Sprite = Sprite.Load(this.Species.TextureGrowing);
-            this.Owner.Body.FindBone(BoneDefOf.PlantFruit).Sprite = null;
-        }
+        
         public override void OnSpawn(MapBase newMap)
         {
             newMap.Events.ListenTo<EntityCollisionEvent>(HandleCollisionEvent);
@@ -357,19 +362,31 @@ namespace Start_a_Town_.Components
                 return ts.ToString(fmt);
             }
         }
-
-        public override void Write(IDataWriter writer)
+        public void ResetFruitGrowth()
+        {
+            this.GrowthFruit.Value = 0;
+            this.FruitGrowthTick = 0;
+            this.Owner.Body.Sprite = Sprite.Load(this.Species.TextureGrowing);
+            this.UpdateFruitTexture();
+            this.Owner.World.Events.Post(new EntityCompUpdatedEvent(this));
+            //this.Owner.Body.FindBone(BoneDefOf.PlantFruit).Sprite = null;
+        }
+        public override void Write(IDataWriter w)
         {
             //this.Species.Write(writer);
-            this.GrowthFruit.Write(writer);
-            this.GrowthBody.Write(writer);
+            this.GrowthFruit.Write(w);
+            this.GrowthBody.Write(w);
+            w.Write(this.FruitGrowthTick);
+            w.Write(this.GrowthTick);
         }
-        public override void Read(IDataReader reader)
+        public override void Read(IDataReader r)
         {
             //this.Species = Def.GetDef<PlantSpeciesDef>(reader.ReadString());
-            this.GrowthFruit = new Progress(reader);
-            this.GrowthBody = new Progress(reader);
-
+            this.GrowthFruit = new Progress(r);
+            this.GrowthBody = new Progress(r);
+            this.FruitGrowthTick = r.ReadInt32();
+            this.GrowthTick = r.ReadInt32();
+            this.UpdateFruitTexture();
         }
         internal override void SyncWrite(IDataWriter w)
         {

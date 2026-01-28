@@ -3,7 +3,7 @@
     public class InteractionLogic
     {
         public virtual bool CanPerform(InteractionContext ctx) { return true; }
-        public virtual bool CanFinish(InteractionContext ctx) { return true; }
+        public virtual bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
         public virtual bool WillFinish(InteractionContext ctx, int workAmount) { return true; }
         public virtual void ApplyWork(InteractionContext ctx, int workAmount) { }
         //protected virtual InteractionContext CreateContextInternal(Actor actor, TargetArgs target) => new(actor, target);

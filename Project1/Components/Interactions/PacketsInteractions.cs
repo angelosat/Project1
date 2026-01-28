@@ -5,19 +5,25 @@ namespace Start_a_Town_
     [EnsureStaticCtorCall]
     internal static class PacketsInteractions
     {
-        static readonly PacketId _pStop, _pProgress, _pStarted, _pSpeed;
+        static readonly PacketId _pStop, _pProgress, _pStarted, _pSpeed, _pFinished;
         static PacketsInteractions()
         {
             _pStop = Registry.PacketHandlers.Register(OnInteractionStopped);
             _pProgress = Registry.PacketHandlers.Register(OnInteractionProgress);
             _pStarted = Registry.PacketHandlers.Register(OnInteractionStarted);
+            _pFinished = Registry.PacketHandlers.Register(OnInteractionFinished);
             _pSpeed = Registry.PacketHandlers.Register(OnInteractionSpeed);
             Registry.MapEventHooksServer.Register<InteractionStoppedEvent>(SendInteractionStopped);
             Registry.MapEventHooksServer.Register<InteractionProgressEvent>(SendInteractionProgress);
             Registry.MapEventHooksServer.Register<InteractionNextSwingSpeedEvent>(SendInteractionNextSwingSpeed);
             Registry.MapEventHooksServer.Register<InteractionStartedEvent>(SendInteractionStarted);
+            Registry.MapEventHooksServer.Register<InteractionFinishedEvent>(SendInteractionFinished);
         }
-
+        private static void SendInteractionFinished(InteractionFinishedEvent e)
+        {
+            Server.Instance.BeginPacket(_pFinished)
+                .Write(e.Actor.RefId);
+        }
         private static void SendInteractionStarted(InteractionStartedEvent e)
         {
             Server.Instance.BeginPacket(_pStarted)
@@ -33,6 +39,13 @@ namespace Start_a_Town_
             var interaction = r.ReadDef<InteractionDef>();
             var target = r.ReadTarget(client.Map);
             actor.Work.Perform(interaction, target);
+        }
+        private static void OnInteractionFinished(NetEndpoint endpoint, Packet packet)
+        {
+            var client = endpoint as Client;
+            var r = packet.PacketReader;
+            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            actor.Work.Task.Finish();
         }
         private static void SendInteractionNextSwingSpeed(InteractionNextSwingSpeedEvent e)
         {
@@ -81,5 +94,6 @@ namespace Start_a_Town_
     internal record struct InteractionNextSwingSpeedEvent(Actor Actor, float Speed) : IEventPayload { }
     internal record struct InteractionStartedEvent(Actor Actor, InteractionDef InteractionDef, TargetArgs Target) : IEventPayload { }
     internal record struct InteractionStoppedEvent(Actor Actor) : IEventPayload { }
+    internal record struct InteractionFinishedEvent(Actor Actor) : IEventPayload { }
 
 }

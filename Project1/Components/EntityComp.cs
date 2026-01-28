@@ -15,6 +15,7 @@ namespace Start_a_Town_
 
     public abstract class EntityComp : Inspectable
     {
+        public int RuntimeIndex;
         public override string Label => this.Name;
         public abstract string Name { get; }
         public override string ToString()

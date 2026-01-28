@@ -11,7 +11,7 @@ namespace Start_a_Town_
         {
             this.FailOnNoConstructionDesignation();
             yield return new BehaviorResolvePath(PathEndMode.Touching)
-                .FailOnPreInteractionCheck(this.Actor, this.Plan);
+                .FailOnInvalidInteraction(this.Actor, this.Plan);
             yield return new BehaviorResolveInteraction();
         }
         protected override bool ReserveExtra()

@@ -6,6 +6,7 @@ namespace Start_a_Town_.Components
     public class ComponentCollection : Inspectable
     {
         readonly Dictionary<Type, EntityComp> _inner = [];
+        readonly List<EntityComp> _innerList = [];
         Entity _owner;
         public IEnumerable<EntityComp> Values => this._inner.Values;
 
@@ -39,6 +40,7 @@ namespace Start_a_Town_.Components
 
             // replace existing comps? or throw exception?
             this._inner[comp.GetType()] = comp;
+            this._innerList.Add(comp);
             comp.Owner = this._owner;
         }
         internal void Write(IDataWriter w)
@@ -87,6 +89,7 @@ namespace Start_a_Town_.Components
             foreach (var compType in def.CompTypes)
             {
                 var comp = (EntityComp)Activator.CreateInstance(compType);
+                comp.RuntimeIndex = this._inner.Count;
                 this.Add(comp);
             }
             this.ApplySpecs(def.Specs);
@@ -134,8 +137,13 @@ namespace Start_a_Town_.Components
             foreach (var c in this._inner.Values)
                 c.ResolveReferencesNew();
         }
-    }
 
+        internal EntityComp GetComp(int compindex)
+        {
+            return this._innerList[compindex];
+        }
+    }
+    public record struct EntityCompUpdatedEvent(EntityComp Comp) : IEventPayload { }
     //public class ComponentCollection : IDictionary<string, EntityComp>, IEnumerable<EntityComp>
     //{
     //    readonly Dictionary<string, EntityComp> Inner = new();

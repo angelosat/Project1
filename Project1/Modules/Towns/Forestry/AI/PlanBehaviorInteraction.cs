@@ -10,7 +10,7 @@ namespace Start_a_Town_
             if(this.Plan.Designation is not null)
                 this.FailOnNoDesignation(this.Plan.Designation);
             yield return new BehaviorResolvePath(PathEndMode.Any)
-                .FailOnPreInteractionCheck(this.Actor, this.Plan);
+                .FailOnInvalidInteraction(this.Actor, this.Plan);
             yield return new BehaviorResolveInteraction();
         }
 

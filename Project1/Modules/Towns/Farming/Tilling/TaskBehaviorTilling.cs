@@ -10,7 +10,7 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return new BehaviorResolvePath(PathEndMode.Touching)
-                .FailOnPreInteractionCheck(this.Actor, this.Plan);
+                .FailOnInvalidInteraction(this.Actor, this.Plan);
             yield return new BehaviorResolveInteraction();
         }
         //protected IEnumerable<Behavior> GetStepsOld()

@@ -19,7 +19,8 @@ namespace Start_a_Town_
         protected Behavior FailOnNoDesignation(DesignationDef def) => this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.TargetA, def));
         protected Behavior FailOnNoDesignation() => this.FailOn(() => !this.Actor.Map.Town.DesignationManager.IsDesignation(this.Plan.TargetA, this.Plan.Designation));
         protected Behavior FailOnNoConstructionDesignation() => this.FailOn(() => !this.Actor.Map.Town.ConstructionsManager.IsDesignatedConstruction(this.Plan.TargetA.Global));
-        
+
+       
         protected abstract IEnumerable<Behavior> GetSteps();
         int CurrentStepIndex;
         public bool Finished;

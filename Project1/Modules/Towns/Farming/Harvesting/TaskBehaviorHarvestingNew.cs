@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
 using Start_a_Town_.AI.Behaviors;
+using Start_a_Town_.Components;
 
 namespace Start_a_Town_
 {
     class TaskBehaviorHarvestingNew : BehaviorExecutePlan
     {
         public const TargetIndex PlantIndex = TargetIndex.A;
+        //PlantComponent _comp;
+        //PlantComponent Comp => _comp ??= this.Plan.TargetA.Object.GetComponent<PlantComponent>();
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorResolvePath(PathEndMode.Touching);
+            yield return new BehaviorResolvePath(PathEndMode.Touching).FailOnInvalidInteraction(this.Actor, this.Plan);
             yield return new BehaviorResolveInteraction();
         }
+
         protected IEnumerable<Behavior> GetStepsOld()
         {
             this.FailOn(() =>

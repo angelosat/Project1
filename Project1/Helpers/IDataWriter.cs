@@ -46,6 +46,7 @@ namespace Start_a_Town_
         internal IDataWriter Write(TargetArgs target) { target.Write(ww); return this; }
         internal IDataWriter WriteASCII(string v);
         internal IDataWriter Write(IntVec3[] v);
+        internal IDataWriter Write(EntityComp comp) { comp.Write(this); return this; }
 
     }
 }

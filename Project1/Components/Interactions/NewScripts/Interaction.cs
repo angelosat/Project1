@@ -122,7 +122,11 @@ namespace Start_a_Town_
             }
             if (this.Def.ProgressHandler?.IsFinished(this) ?? this.State == States.Finished) // TODO: maybe check for failed state too?
             {
-                this.Finish();
+                if (this.Actor.Net.IsServer)
+                {
+                    this.Finish();
+                    this.Actor.Map.Events.Post(new InteractionFinishedEvent(this.Actor));
+                }
                 //this.StopAnimation();
                 return;
             }
@@ -176,10 +180,10 @@ namespace Start_a_Town_
         public void Finish()
         {
             this.State = this.AnimationDef is not null ? States.Finishing : States.Finished;
-
-                this.Def.Logic.OnFinish(this);
+            this.Def.Logic.OnFinish(this);
             this.StopAnimation();
         }
+        //internal void OnFinish()=> this.Def.Logic.OnFinish(this);
         internal void StopAnimation()
         {
             //this.Def.Logic.OnFinish(this); // or done()?

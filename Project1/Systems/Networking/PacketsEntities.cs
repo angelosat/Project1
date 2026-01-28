@@ -1,11 +1,13 @@
-﻿using Start_a_Town_.Net;
+﻿using Start_a_Town_.Components;
+using Start_a_Town_.Net;
+using System;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     internal class PacketsEntities
     {
-        static readonly int _pRegister, _pDispose, _pStackIncrease, _pStackDecrease, _pSpawn, _pDespawn;
+        static readonly PacketId _pRegister, _pDispose, _pStackIncrease, _pStackDecrease, _pSpawn, _pDespawn, _pCompUpdated;
         static PacketsEntities()
         {
             _pRegister = Registry.PacketHandlers.Register(OnRegister);
@@ -14,19 +16,41 @@ namespace Start_a_Town_
             _pStackDecrease = Registry.PacketHandlers.Register(OnStackDecrease);
             _pSpawn = Registry.PacketHandlers.Register(OnSpawn);
             _pDespawn = Registry.PacketHandlers.Register(OnDespawn);
+            _pCompUpdated = Registry.PacketHandlers.Register(OnCompUpdated);
 
             Registry.WorldEventHooksServer.Register<EntityRegisteredEvent>(SendEntityRegistered);
             Registry.WorldEventHooksServer.Register<EntityStackIncreased>(SendEntityStackIncreased);
             Registry.WorldEventHooksServer.Register<EntityStackDecreased>(SendEntityStackDecreased);
             Registry.WorldEventHooksServer.Register<EntityDisposedEvent>(SendEntityDisposed);
+            Registry.WorldEventHooksServer.Register<EntityCompUpdatedEvent>(SendEntityCompUpdated);
+
             Registry.MapEventHooksServer.Register<EntitySpawnedEvent>(SendEntitySpawned);
             Registry.MapEventHooksServer.Register<EntityDespawnedEvent>(SendEntityDespawned);
         }
 
-        private static void SendEntityDespawned(EntityDespawnedEvent @event)
+        private static void OnCompUpdated(NetEndpoint endpoint, Packet packet)
+        {
+            var client = endpoint as Client;
+            var r = packet.PacketReader;
+            var entityid = r.ReadInt32();
+            var compindex = r.ReadInt32();
+            var entity = client.World.GetEntity(entityid);
+            var comp = entity.Components.GetComp(compindex);
+            comp.Read(r);
+        }
+
+        private static void SendEntityCompUpdated(EntityCompUpdatedEvent e)
+        {
+            Server.Instance.BeginPacket(_pCompUpdated)
+                .Write(e.Comp.Owner.RefId)
+                .Write(e.Comp.RuntimeIndex)
+                .Write(e.Comp);
+        }
+
+        private static void SendEntityDespawned(EntityDespawnedEvent e)
         {
             Server.Instance.BeginPacket(_pDespawn)
-                .Write(@event.Entity.RefId);
+                .Write(e.Entity.RefId);
         }
 
         private static void OnDespawn(NetEndpoint endpoint, Packet packet)

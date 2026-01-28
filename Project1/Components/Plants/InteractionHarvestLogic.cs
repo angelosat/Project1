@@ -4,17 +4,28 @@ namespace Start_a_Town_
 {
     internal class InteractionHarvestLogic : InteractionLogic
     {
+        public override bool CanPerform(InteractionContext ctx)
+        {
+            var plant = ctx.Target.Object;
+            if (plant.Map != ctx.Actor.Map)
+                return false;
+            if (!plant.TryGetComponent<PlantComponent>(out var comp))
+                throw new System.Exception();
+            if (!comp.IsHarvestable)
+                return false;
+            return true;
+        }
         internal override void OnFinish(Interaction i)
         {
             var actor = i.Context.Actor;
             if (actor.Net.IsClient)
                 return;
             var plant = i.Context.Target.Object;
+            if (!plant.TryGetComponent<PlantComponent>(out var comp))
+                throw new System.Exception();
             //if (target.Object is not Plant plant)
             //    throw new System.Exception();
             //plant.PlantComponent.Harvest(actor);
-            if (!plant.TryGetComponent<PlantComponent>(out var comp))
-                throw new System.Exception();
             if(!comp.IsHarvestable)
                 throw new System.Exception();
             comp.HarvestBy(actor);

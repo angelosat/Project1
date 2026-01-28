@@ -2,11 +2,6 @@
 {
     class InteractionTillingLogic : InteractionLogic
     {
-        public override void ApplyWork(InteractionContext ctx, int workAmount)
-        {
-            base.ApplyWork(ctx, workAmount);
-        }
-
         public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
 
         public override bool CanPerform(InteractionContext ctx)
@@ -18,15 +13,6 @@
             return result;
         }
 
-        public override bool WillFinish(InteractionContext ctx, int workAmount)
-        {
-            return base.WillFinish(ctx, workAmount);
-        }
-
-        protected override InteractionContext CreateContextInternal()
-        {
-            return base.CreateContextInternal();
-        }
         internal override void OnFinish(Interaction i)
         {
             var map = i.Actor.Map;

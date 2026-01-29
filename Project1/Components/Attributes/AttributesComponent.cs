@@ -108,7 +108,7 @@ namespace Start_a_Town_.Components
             r.ReadDefWrappers(this.Attributes);
         }
 
-        internal void Adjust(AttributeDef def, float energyConsumption)
+        internal void ApplyDelta(AttributeDef def, float energyConsumption)
         {
             this.GetAttribute(def).Award(this.Owner, energyConsumption);
         }

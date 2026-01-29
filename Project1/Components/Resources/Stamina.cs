@@ -59,10 +59,10 @@ namespace Start_a_Town_.Components.Resources
         {
             return Color.Yellow;
         }
-        public override Control GetControl(Resource res)
+        public override Control GetControlBar(Resource res)
         {
             var box = new GroupBox();
-            var bar = base.GetControl(res);
+            var bar = base.GetControlBar(res);
             var bar_StaminaRec = new Bar() { Object = res.RechargingDelay, Location = bar.BottomLeft, Height = 2 };
             box.AddControls(bar, bar_StaminaRec);
             return box;

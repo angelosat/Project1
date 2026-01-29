@@ -8,7 +8,7 @@ namespace Start_a_Town_
         readonly static PacketId _pResourceAdjusted;
         static PacketsResources()
         {
-            Registry.MapEventHooksServer.Register<ResourceAdjustedEvent>(SendResourceAdjusted);
+            Registry.WorldEventHooksServer.Register<ResourceAdjustedEvent>(SendResourceAdjusted);
             _pResourceAdjusted = Registry.PacketHandlers.Register(OnResourceAdjusted);
         }
         private static void SendResourceAdjusted(ResourceAdjustedEvent @event)

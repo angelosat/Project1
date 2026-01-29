@@ -138,7 +138,7 @@ namespace Start_a_Town_
                 {
                     this._cachedGui = new GroupBox();
                     foreach(var r in this.Resources.Values)
-                        this._cachedGui.AddControlsBottomLeft(r.GetControl());
+                        this._cachedGui.AddControlsBottomLeft(r.GetControlBar());
                 }
                 return this._cachedGui;
             }
@@ -168,12 +168,16 @@ namespace Start_a_Town_
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
             foreach (var r in this.Resources.Values)
-                tooltip.AddControlsBottomLeft(r.GetControl());
+                //tooltip.AddControlsBottomLeft(r.GetControlBar());
+                tooltip.AddControlsBottomLeft(r.GetControlLabel());
         }
         internal override void Resolve()
         {
             foreach (var r in this.Resources.Values)
-                r.Owner = this.Owner as Entity;
+            {
+                r.Owner = this.Owner;
+                //r.Revalidate();
+            }
         }
         
         //public override void OnObjectSynced(GameObject parent)
@@ -198,12 +202,16 @@ namespace Start_a_Town_
         //    this.Adjust(def, v);
         //    Resource.Packets.SendAdjust(this.Owner as Actor, def, v);
         //}
-        
+        //void Revalidate()
+        //{
+        //    foreach (var r in this.Resources.Values)
+        //        r.Revalidate();
+        //}
 
-        internal void Adjust(ResourceDef def, float v)
+        internal void ApplyDelta(ResourceDef def, float v)
         {
             var res = this[def];
-            res.Adjust(v);
+            res.ApplyDelta(v);
         }
         public void SetValue(ResourceDef def, float value)
         {

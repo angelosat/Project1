@@ -91,7 +91,7 @@ namespace Start_a_Town_
                 //this._cachedAnimation.Weight = 1;
                 if (this.AnimationDef == AnimationDefOf.Tool) // HACK
                 {
-                    this.Calculate(out _, out var speed);
+                    this.Calculate(out _, out _, out var speed);
                     this.SetNextSwingSpeed(speed);
                 }
                 //if (this.CrossFadeAnimationLength == 0)
@@ -295,7 +295,7 @@ namespace Start_a_Town_
             this.BarProgress = progress;
             this.BarLabel = label;
         }
-
+        
         internal void AddProgress(int v)
         {
             this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
@@ -322,7 +322,7 @@ namespace Start_a_Town_
 
             var actor = this.Actor;
             //var amount = this.CalculateWorkAmount();
-            this.Calculate(out var amount, out var speed);
+            this.Calculate(out var tool, out var amount, out var speed);
             if (this.WillFinish(amount) && !this.CanFinish())
             {
                 this.Fail();
@@ -331,6 +331,7 @@ namespace Start_a_Town_
             var skill = this.Def.Skill;
 
             this.AddProgress(amount);
+            DegradeTool(tool);
             this.TotalWorkApplied += amount;
             //this._cachedAnimation.Frame.ToConsole();
 
@@ -345,8 +346,8 @@ namespace Start_a_Town_
                 var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level);
 
                 // "transfer" energy from stamina to strength
-                actor.Attributes.Adjust(AttributeDefOf.Strength, energyConsumption);
-                actor.Resources.Adjust(ResourceDefOf.Stamina, -energyConsumption);
+                actor.Attributes.ApplyDelta(AttributeDefOf.Strength, energyConsumption);
+                actor.Resources.ApplyDelta(ResourceDefOf.Stamina, -energyConsumption);
             }
             // i moved the multiplication with the stamina threshold to inside the workspeed stat formula
 
@@ -360,6 +361,13 @@ namespace Start_a_Town_
             }
             //this.Done();
             //this.Finish();
+        }
+
+        private static void DegradeTool(Entity tool)
+        {
+            if (tool is null)
+                return;
+            tool.Resources[ResourceDefOf.Durability].ApplyDelta(-1);
         }
 
         internal void SetNextSwingSpeed(float speed)
@@ -403,17 +411,18 @@ namespace Start_a_Town_
 
             return toolspeed;
         }
-        protected void Calculate(out int workamount, out float speed)
+        protected void Calculate(out Entity equippedTool, out int workamount, out float speed)
         {
             if (this.Actor.Gear.GetGear(GearType.Mainhand) is not Entity tool || 
                 this.Def.ToolUse is not ToolUseDef toolUse)
             {
                 workamount = 100; //60;// 
                 speed = 1;
+                equippedTool = null;
                 return;
             }
             //var toolUse = this.Def.ToolUse;
-
+            equippedTool = tool;
             var comp = tool.GetComponent<ToolComp>();
             var total = comp.GetWorkValue(toolUse) ?? 1;
 

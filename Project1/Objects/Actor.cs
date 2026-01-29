@@ -527,14 +527,14 @@ namespace Start_a_Town_
         {
             return ButtonNew.CreateBig(onLeftClick, width, this.RenderIcon(), () => this.Name, bottomText);
         }
-        internal float GetToolWorkAmount(ToolUseDef toolUse)
-        {
-            if (this.Gear.GetSlot(GearType.Mainhand).Object is not Tool tool)
-                return 1;
+        //internal float GetToolWorkAmount(ToolUseDef toolUse)
+        //{
+        //    if (this.Gear.GetSlot(GearType.Mainhand).Object is not Tool tool)
+        //        return 1;
 
-            var ability = tool.ToolComponent.ToolUse;
-            return ability == toolUse ? tool.GetStat(StatDefOf.ToolEffectiveness) : 1;
-        }
+        //    var ability = tool.ToolComponent.ToolUse;
+        //    return ability == toolUse ? tool.GetStat(StatDefOf.ToolEffectiveness) : 1;
+        //}
         public int EvaluateItem(Entity item)
         {
             var score = ItemUsefulnessEvaluator.Evaluate(this, item);

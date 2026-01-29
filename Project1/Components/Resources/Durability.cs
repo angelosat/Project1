@@ -33,5 +33,12 @@ namespace Start_a_Town_.Components.Resources
         {
             return this.GetLabel(resource);
         }
+        //internal override void Revalidate(Resource resource)
+        //{
+        //    var parent = resource.Owner;
+        //    var bones = parent.Body.GetAllBones();
+        //    int total = bones.Sum(b => b.Material.Density);
+        //    resource.Max = total;
+        //}
     }
 }

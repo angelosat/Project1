@@ -1,4 +1,5 @@
 ﻿using Start_a_Town_.Components;
+using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -99,7 +100,6 @@ namespace Start_a_Town_
             box.AddControlsBottomLeft(new Label($"Speed: {this.BaseSpeed:0.00}"));
             box.AddControlsBottomLeft(new Label($"{this.Profile.ToolUse.Label} Effectiveness: {this.BaseWork:0}"));
             box.AddControlsBottomLeft(new Label(StatSystem.ToolToInteraction[this.Profile.ToolUse]));
-            //box.AddControlsBottomLeft(ToolUseDef.GetUI(ability.Value.Def.ID, ability.Value.Effectiveness));
             return box;
         }
 
@@ -109,15 +109,22 @@ namespace Start_a_Town_
                 return null;
             return this.BaseWork;
         }
-        //public override void Write(IDataWriter w)
-        //{
-        //    w.Write(this.baseSpeed);
-        //    w.Write(this.baseWork);
-        //}
-        //public override void Read(IDataReader r)
-        //{
-        //    this.baseSpeed = r.ReadSingle();
-        //    this.baseWork = r.ReadSingle();
-        //}
+        public override void Randomize(GameObject parent, RandomThreaded random)
+        {
+            var r = new Random();
+            int durabilityMax = 0;
+            var rules = CraftingSystem.GetCraftingRules(this.Profile);
+            foreach(var (bone, validRefinements, quantity) in rules)
+            {
+                var entityBone = this.Owner.Body.FindBone(bone);
+                var matTypes = validRefinements.Select(r => r.MaterialType);
+                var mats = matTypes.SelectMany(t => RawMaterialSystem.MaterialsByType[t]).ToArray();
+                var mat = mats.SelectRandom(r);
+                entityBone.Material = mat;
+                durabilityMax += mat.Density;
+            }
+            var durability = this.Owner.Resources[ResourceDefOf.Durability];
+            durability.Value = durability.Max = durabilityMax;
+        }
     }
 }

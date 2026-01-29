@@ -39,7 +39,7 @@ namespace Start_a_Town_
 
             //if (ctx.Actor.Net.IsClient)
             //    return;
-            ctx.HitPoints.Adjust(-workAmount);
+            ctx.HitPoints.ApplyDelta(-workAmount);
         }
     }
 }

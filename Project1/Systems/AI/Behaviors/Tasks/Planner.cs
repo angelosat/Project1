@@ -82,17 +82,17 @@ namespace Start_a_Town_
         {
             //task.Tool = FindTool(actor, job);
         }
-        public static TargetArgs FindTool(Actor actor, JobDef job)
-        {
-            var preference = actor.ItemPreferences.GetPreference(job);
-            var equipped = actor.GetEquipmentSlot(GearType.Mainhand);//.Object;
-            if (preference is not null && (equipped == preference || actor.Inventory.Contains(preference)))
-                return preference;
-            if (equipped != null && equipped.ProvidesSkill(job.ToolUse))
-                return new TargetArgs(equipped);
-            else
-                return TaskHelper.FindItemAnywhere(actor, o => o is Tool tool && tool.ProvidesSkill(job.ToolUse));
-        }
+        //public static TargetArgs FindTool(Actor actor, JobDef job)
+        //{
+        //    var preference = actor.ItemPreferences.GetPreference(job);
+        //    var equipped = actor.GetEquipmentSlot(GearType.Mainhand);//.Object;
+        //    if (preference is not null && (equipped == preference || actor.Inventory.Contains(preference)))
+        //        return preference;
+        //    if (equipped != null && equipped.ProvidesSkill(job.ToolUse))
+        //        return new TargetArgs(equipped);
+        //    else
+        //        return TaskHelper.FindItemAnywhere(actor, o => o is Tool tool && tool.ProvidesSkill(job.ToolUse));
+        //}
         
         public virtual Plan TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false) { return null; }
         public virtual PlanDef CanGiveTask(Actor actor, TargetArgs target) { return null; }

@@ -18,7 +18,8 @@ namespace Start_a_Town_.Components
         internal readonly BoneDef Source = source;
         internal GameObject Owner = owner;
         internal string Label => $"{this.Def.Label}: {this.Value.ToString(this.Def.StringFormat)}";
-        internal Control CreateGui() => new Label($"{this.Label} ({this.Source.Label}: {this.Owner.Body.FindBone(this.Source).Material.Label} x{this.Owner.Quality.Multiplier:0.00} from {this.Owner.Quality.Label} Quality)") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };
+        internal Control CreateGui() =>
+            new Label($"{this.Label} ({this.Source.Label})") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };//: {this.Owner.Body.FindBone(this.Source).Material.Label} x{this.Owner.Quality.Multiplier:0.00} from {this.Owner.Quality.Label} Quality)") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };
     }
     class StatsComponent : EntityComp
     {
@@ -112,11 +113,11 @@ namespace Start_a_Town_.Components
         }
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
-            tooltip.AddControlsBottomLeft(new Label("by source"));
-            foreach (var (source, list) in this.ContributionsBySource)
-                foreach (var stat in list)
-                    tooltip.AddControlsBottomLeft(stat.CreateGui());
-            tooltip.AddControlsBottomLeft(new Label("by stat"));
+            //tooltip.AddControlsBottomLeft(new Label("by source"));
+            //foreach (var (source, list) in this.ContributionsBySource)
+            //    foreach (var stat in list)
+            //        tooltip.AddControlsBottomLeft(stat.CreateGui());
+            //tooltip.AddControlsBottomLeft(new Label("by stat"));
             foreach (var (source, list) in this.ContributionsByStat)
                 foreach (var stat in list)
                     tooltip.AddControlsBottomLeft(stat.CreateGui());

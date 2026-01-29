@@ -155,7 +155,7 @@ namespace Start_a_Town_
                 var actor = client.World.GetEntity<Actor>(r.ReadInt32());
                 var def = r.ReadDef<AttributeDef>();
                 var delta = r.ReadSingle();
-                actor.Attributes.Adjust(def, delta);
+                actor.Attributes.ApplyDelta(def, delta);
             }
         }
     }

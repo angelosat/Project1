@@ -259,7 +259,7 @@ namespace Start_a_Town_.Components
             var walkSpeed = newwalk * Acceleration * NormalWalkSpeed * (this.CurrentState.Speed + this.CurrentState.SprintSpeed * stamina.Percentage);
 
             if (this.CurrentState.Type == State.Types.Sprinting)
-                stamina.Adjust(-0.01f);
+                stamina.ApplyDelta(-0.01f);
 
             //apply stamina
             // TODO: make stamina resource change walkspeed instead of fetching stamina from here

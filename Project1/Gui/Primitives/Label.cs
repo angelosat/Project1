@@ -631,15 +631,15 @@ namespace Start_a_Town_.UI
             }
         }
      
-        public Label(object obj, Action action) : this(Vector2.Zero, obj.ToString())
+        public Label(object obj, Action lbAction) : this(Vector2.Zero, obj.ToString())
         {
             this.Active = true;
-            this.LeftClickAction = action;
+            this.LeftClickAction = lbAction;
         }
-        public Label(Func<string> textGetter, Action action) : this(textGetter)
+        public Label(Func<string> textGetter, Action lbAction) : this(textGetter)
         {
             this.Active = true;
-            this.LeftClickAction = action;
+            this.LeftClickAction = lbAction;
         }
         public Label(Vector2 location, string text = "", Color? fill = null, Color? outline = null, SpriteFont font = null)// System.Drawing.FontStyle style = System.Drawing.FontStyle.Regular)
             : base(location)

@@ -39,7 +39,7 @@ namespace Start_a_Town_.UI
 
             foreach (var r in obj.GetComponent<ResourcesComponent>().Resources.Values)
             {
-                var ui = r.GetControl();
+                var ui = r.GetControlBar();
                 if (ui == null)
                     continue;
                 ui.Location = this.Panel_Bars.Controls.BottomLeft;

@@ -38,7 +38,7 @@ namespace Start_a_Town_
             var rand = visitor.World.Random;
             var dmg = min + rand.Next(max - min);
             //actor.Resources.AdjustAndSync(ResourceDefOf.Health, -dmg);
-            actor.Resources.Adjust(ResourceDefOf.Health, -dmg);
+            actor.Resources.ApplyDelta(ResourceDefOf.Health, -dmg);
             actor.AI.State.Log.Write($"[Lost {dmg} health,{Color.Red}] while exploring {this.Name}");
         }
 

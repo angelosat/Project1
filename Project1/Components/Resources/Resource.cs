@@ -23,7 +23,9 @@ namespace Start_a_Town_
             {
                 var oldmax = this._max;
                 this._max = value;
-                this.Value += (value - oldmax);
+                this.Value = Math.Min(this.Value, this._max);
+                //this.Value += (value - oldmax);
+                //this.Value = this._max;
             }
         }
         float _value;
@@ -80,12 +82,12 @@ namespace Start_a_Town_
             }
         }
 
-        public void Adjust(float delta)
+        public void ApplyDelta(float delta)
         {
             this.ResourceDef.Worker.Modify(this, delta);
             if (delta < 0)
                 this.RechargingDelay.Value = 0;
-            this.Owner.Map.Events.Post(new ResourceAdjustedEvent(this.Owner, this.Def, this.Value));
+            this.Owner.World.Events.Post(new ResourceAdjustedEvent(this.Owner, this.Def, this.Value));
         }
         public Resource Initialize(float max, float initPercentage)
         {
@@ -120,10 +122,9 @@ namespace Start_a_Town_
             this.ResourceDef.Worker.OnHealthBarCreated(parent, plate, this);
         }
 
-        internal Control GetControl()
-        {
-            return this.ResourceDef.Worker.GetControl(this);
-        }
+        internal Control GetControlBar() => this.ResourceDef.Worker.GetControlBar(this);
+        internal Control GetControlLabel() => this.ResourceDef.Worker.GetControlLabel(this);
+
 
         public override string ToString()
         {
@@ -158,14 +159,14 @@ namespace Start_a_Town_
         {
             w.Write(this.ResourceDef);
             w.Write(this._value);
-            w.Write(this.Max);
+            w.Write(this._max);
         }
 
         public Resource Read(IDataReader r)
         {
             this.ResourceDef = r.ReadDef<ResourceDef>();
             this._value = r.ReadSingle();
-            this.Max = r.ReadSingle();
+            this._max = r.ReadSingle();
             return this;
         }
 
@@ -184,6 +185,7 @@ namespace Start_a_Town_
         {
             this.ResourceDef.Worker.InitMaterials(obj, materials);
         }
+        //internal void Revalidate() => this.Def.Worker.Revalidate(this); 
         Action _unsub = () => { };
 
         internal void OnDespawn(Entity parent)
@@ -226,7 +228,7 @@ namespace Start_a_Town_
                 var resDef = r.ReadDef<ResourceDef>();
                 var delta = r.ReadSingle();
                 //actor.Resources[resDef].Adjust(delta);
-                actor.Resources.Adjust(resDef, delta);
+                actor.Resources.ApplyDelta(resDef, delta);
             }
             //internal static void SendSyncAdjust(Entity actor, ResourceDef def, float value)
             //{

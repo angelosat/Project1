@@ -58,7 +58,7 @@ namespace Start_a_Town_
             return $"{resource.Value.ToString(this.Format)} / {resource.Max.ToString(this.Format)}";
         }
 
-        public virtual Control GetControl(Resource resource)
+        public virtual Control GetControlBar(Resource resource)
         {
             var bar = new Bar()
             {
@@ -69,7 +69,10 @@ namespace Start_a_Town_
             };
             return bar;
         }
-
+        public virtual Control GetControlLabel(Resource resource)
+        {
+            return new LabelNew(() => $"{resource.Def.Label}: {resource.Value} / {resource.Max}");
+        }
         public abstract string Description { get; }
 
         public virtual void Modify(Resource resource, float addValue)
@@ -106,5 +109,6 @@ namespace Start_a_Town_
 
         internal virtual void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials) { }
 
+        //internal virtual void Revalidate(Resource resource) { }
     }
 }

@@ -29,15 +29,15 @@ namespace Start_a_Town_.UI
             this.Height = UIManager.DefaultProgressBarStrip.Bounds.Height;
             this.Width = 100;
             this.BackgroundColor = Color.Black * 0.5f;
-            subscription = progress.Subscribe(() => this.Invalidate(true));
+            this.subscription = progress.Subscribe(() => this.Invalidate(true));
             this.TextFunc = textGetter;
             this.HoverFunc = () => $"{this.TextFunc()} {progress}";
         }
       
         internal override void OnRemoved()
         {
-            subscription.Dispose();
-            subscription = null;
+            this.subscription.Dispose();
+            this.subscription = null;
             base.OnRemoved();
         }
         

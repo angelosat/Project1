@@ -5,6 +5,9 @@ using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.WebSockets;
+using System.Threading;
 
 namespace Start_a_Town_
 {
@@ -109,15 +112,24 @@ namespace Start_a_Town_
         {
             if (this.Def.CraftingProperties is not null) // HACK
             {
-                var mats = ItemFactory.GetRandomMaterialsFor(this.Def);
-                this.SetMaterials(mats);
+                //var mats = ItemFactory.GetRandomMaterialsFor(this.Def);
+                //this.SetMaterials(mats);
+                //this.RandomizeMaterials();
                 this.SetQuality(Quality.GetRandom());
             }
             foreach (var comp in this.Components.Values)
                 comp.Randomize(this, random);
+            //foreach (var comp in this.Components.Values)
+            //    comp.Resolve();
             return this;
         }
-
+        void RandomizeMaterials()
+        {
+            var random = new Random();
+            var materials = Start_a_Town_.Def.GetDefs<MaterialDef>().ToArray();
+            foreach(var bone in this.Body.GetAllBones())
+                bone.Material = materials.SelectRandom(random);
+        }
         internal void Select()
         {
             SelectionManager.Select(this);

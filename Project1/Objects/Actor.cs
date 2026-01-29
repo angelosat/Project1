@@ -333,7 +333,7 @@ namespace Start_a_Town_
             yield return ("Log", typeof(NpcLogUINewNew));
             yield return ("Skills", typeof(SkillsUINew));
             yield return ("Needs", typeof(NeedsMoodsUINew));
-            yield return ("Gear", typeof(InventoryUINew));
+            yield return ("Gear", typeof(InventoryUI));
             yield return ("Stats", typeof(StatsGuiNew));
         }
         //public override IEnumerable<Control> GetSelectionDetails()

@@ -2,7 +2,6 @@
 using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -28,7 +27,6 @@ namespace Start_a_Town_
                 this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
             this.Owner.RegisterContainer(this.Equipment);
         }
-      
         public Container Equipment = new() { Name = "Equipment" };
         public float ArmorTotal;
         public GearComponent()

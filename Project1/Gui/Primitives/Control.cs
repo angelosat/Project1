@@ -365,6 +365,8 @@ namespace Start_a_Town_.UI
         }
         public virtual void Validate(bool cascade = false)
         {
+            this.Valid = true;
+
             this.PreparingPaint();
 
             if (this.Width <= 0 ||
@@ -387,7 +389,6 @@ namespace Start_a_Town_.UI
             this.OnAfterPaint(sb);
             sb.End();
 
-            this.Valid = true;
 
             if (cascade)
                 foreach (var c in this.Controls)

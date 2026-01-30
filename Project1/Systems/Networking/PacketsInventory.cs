@@ -16,8 +16,8 @@ namespace Start_a_Town_
             _pInventoryAdded = Registry.PacketHandlers.Register(OnInventoryItemAdded);
             _pInventoryRemoved = Registry.PacketHandlers.Register(OnInventoryItemRemoved);
 
-            Registry.MapEventHooksServer.Register<InventoryUpdatedEvent>(SendInventoryUpdated);
-            Registry.MapEventHooksServer.Register<SlotUpdatedEvent>(SendSlotUpdated);
+            Registry.WorldEventHooksServer.Register<InventoryUpdatedEvent>(SendInventoryUpdated);
+            Registry.WorldEventHooksServer.Register<SlotUpdatedEvent>(SendSlotUpdated);
 
             Registry.PlayerInputEventHooks.Register<PlayerForcedDropInventoryItemEvent>(HandlePlayerForcedDropInventoryItem);
 
@@ -99,7 +99,9 @@ namespace Start_a_Town_
             var client = endpoint as Client;
             var r = packet.PacketReader;
             var e = SlotUpdatedEvent.Create(r);
-            client.World.GetEntity(e.Owner).GetSlot(e.SlotIndex).Assign(e.Content);
+            var entity = client.World.GetEntity(e.Owner);
+            var slot = entity.GetSlot(e.SlotIndex);
+            slot.Assign(e.Content);
         }
 
         

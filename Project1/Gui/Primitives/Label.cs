@@ -8,6 +8,8 @@ namespace Start_a_Town_.UI
 {
     public class LabelNew : ButtonBaseNew
     {
+        IDisposable subscription;
+
         public static int DefaultHeight = UIManager.Font.LineSpacing + 2;
         //public static int DefaultHeight = 15;
 
@@ -49,6 +51,9 @@ namespace Start_a_Town_.UI
         {
             var pos = new Vector2((int)this.Halign * .5f, .5f);
             var outlineOffset = this.Halign == Alignment.Horizontal.Left ? 1 : (this.Halign == Alignment.Horizontal.Right ? -1 : 0);
+            //var text = this.TextFunc?.Invoke() ?? this.Text;
+            if (this.TextFunc is not null)
+                this.Text = this.TextFunc();
             UIManager.DrawStringOutlined(
                 sb,
                 this.Text,
@@ -110,6 +115,7 @@ namespace Start_a_Town_.UI
         }
 
         public LabelNew(string text) : this(Vector2.Zero, text) { }
+        
         public LabelNew(object obj)
         {
             if (obj is not null)
@@ -212,7 +218,18 @@ namespace Start_a_Town_.UI
             this.Text = text;
             this.TextFormat = format ?? text;
         }
-
+        protected override void OnHidden()
+        {
+            this.subscription?.Dispose();
+            this.subscription = null;
+            base.OnHidden();
+        }
+        internal LabelNew Bind(IUpdatable updatable)
+        {
+            this.subscription?.Dispose();
+            this.subscription = updatable.Subscribe(() => this.Invalidate(true));
+            return this;
+        }
         public override void Draw(SpriteBatch sb)
         {
             base.Draw(sb);

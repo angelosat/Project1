@@ -140,6 +140,7 @@ namespace Start_a_Town_
         internal void ResetName()
         {
             this.DefComponent.ParentName = this.Def.NameGetter?.Invoke(this) ?? this.DefComponent.ParentName; // reset name
+            this.Name = this.Profile?.Label ?? this.Def.Label;
         }
         internal void Resolve()
         {

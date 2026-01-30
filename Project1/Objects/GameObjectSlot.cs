@@ -5,8 +5,14 @@ using System.Collections.Generic;
 
 namespace Start_a_Town_
 {
-    public class GameObjectSlot : ITooltippable
+    interface IUpdatable
     {
+        IDisposable Subscribe(Action handler);
+    }
+    public class GameObjectSlot : ITooltippable, IUpdatable
+    {
+        readonly Signal _updated = new();
+        public IDisposable Subscribe(Action h) => this._updated.Subscribe(h);
         Func<GameObject, bool> _Filter = o => true;
         public Func<GameObject, bool> Filter
         {
@@ -67,7 +73,11 @@ namespace Start_a_Town_
         public virtual GameObject Object
         {
             get => this.Link ?? _object;
-            private set => this._object = value;
+            private set
+            {
+                this._object = value;
+                this._updated.Raise();
+            }
             //[Obsolete]
             //set
             //{
@@ -160,7 +170,7 @@ namespace Start_a_Town_
                 item.Owner = this.Owner;
             }
             this.Object = item;
-            if(item != prevItem) this.Owner.Map.Events.Post(new SlotUpdatedEvent(this));
+            if(item != prevItem) this.Owner.World.Events.Post(new SlotUpdatedEvent(this));
         }
         /// <summary>
         /// 
@@ -172,15 +182,16 @@ namespace Start_a_Town_
             prevItem = this._object;
             if (newItem is not null && !this.Filter(newItem))
                 return false;
-            if (prevItem != null)
+            if (prevItem is not null)
             {
                 prevItem.Slot = null;
                 prevItem.Owner = null;
             }
-            this._object = newItem;
+            //this._object = newItem;
+            this.Object = newItem;
             this.ObjectChangedAction(newItem);
             this.OnObjectChanged();
-            if (newItem != null)
+            if (newItem is not null)
             {
                 newItem.Container?.Remove(newItem as Entity);
                 //newItem.Map?.DespawnAndSync(newItem as Entity);
@@ -191,7 +202,7 @@ namespace Start_a_Town_
                 newItem.Slot = this;
                 newItem.Owner = this.Owner;
             }
-            this.Owner.Map.Events.Post(new SlotUpdatedEvent(this));
+            this.Owner.World.Events.Post(new SlotUpdatedEvent(this));
             return true;
         }
         public bool AssignAndSync(GameObject newItem, out GameObject prevItem)

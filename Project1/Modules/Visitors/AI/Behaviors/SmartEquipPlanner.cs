@@ -54,7 +54,7 @@ namespace Start_a_Town_.AI.Behaviors
                 }
             }
 
-            if (mostImpactful.item != null)
+            if (mostImpactful.item is not null)
             {
                 if (mostImpactful.score > 0)
                     return new Plan(PlanDefOf.Equip, new TargetArgs(mostImpactful.item));

@@ -10,32 +10,35 @@
             var interaction = task.Def.Interaction;
             if (interaction is null)
                 return 0;
+            var durability = item.Resources[ResourceDefOf.Durability];
+            if (durability.Value == 0)
+                return -100;
             var tooluse = interaction.ToolUse;
             if (tooluse == role.Def)
                 return 100;
             return -100;
         }
-        public  int GetSituationalScoreOld(Actor actor, Entity item, ItemRoleDef role)
-        {
-            var task = actor.AI.State.Behavior?.Plan;
-            if (task is null)
-                return -100;
-            var target = task.EquipContextTarget;
-            if (target is null)
-                return 0;
-            MaterialTypeDef targetMaterialType;
-            if (target.Type == TargetType.Position)
-                targetMaterialType = Block.GetBlockMaterial(target.Map, target.Global).Type;
-            else if (target.Type == TargetType.Entity)
-                targetMaterialType = target.Object.Body.Material.Type;
-            else
-                return 0;
-            if (targetMaterialType == MaterialTypeDefOf.Wood && role.Def == ToolUseDefOf.Chopping ||
-                   targetMaterialType == MaterialTypeDefOf.Soil && role.Def == ToolUseDefOf.Digging ||
-                   targetMaterialType == MaterialTypeDefOf.Stone && role.Def == ToolUseDefOf.Mining)
-                return 100;
-            return 0;
-        }
+        //public  int GetSituationalScoreOld(Actor actor, Entity item, ItemRoleDef role)
+        //{
+        //    var task = actor.AI.State.Behavior?.Plan;
+        //    if (task is null)
+        //        return -100;
+        //    var target = task.EquipContextTarget;
+        //    if (target is null)
+        //        return 0;
+        //    MaterialTypeDef targetMaterialType;
+        //    if (target.Type == TargetType.Position)
+        //        targetMaterialType = Block.GetBlockMaterial(target.Map, target.Global).Type;
+        //    else if (target.Type == TargetType.Entity)
+        //        targetMaterialType = target.Object.Body.Material.Type;
+        //    else
+        //        return 0;
+        //    if (targetMaterialType == MaterialTypeDefOf.Wood && role.Def == ToolUseDefOf.Chopping ||
+        //           targetMaterialType == MaterialTypeDefOf.Soil && role.Def == ToolUseDefOf.Digging ||
+        //           targetMaterialType == MaterialTypeDefOf.Stone && role.Def == ToolUseDefOf.Mining)
+        //        return 100;
+        //    return 0;
+        //}
         public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
         {
             if (item.Profile is not ToolProfileDef toolProfile)

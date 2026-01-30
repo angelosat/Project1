@@ -393,8 +393,8 @@ namespace Start_a_Town_
             scoredList.Sort((a, b) => b.score.CompareTo(a.score));
 
             // Yield only the ItemPreference part
-            foreach (var entry in scoredList)
-                yield return entry.pref;
+            foreach (var (pref, score) in scoredList)
+                yield return pref;
         }
         public int GetTotalSituationalScoreFor(Entity item)
         {

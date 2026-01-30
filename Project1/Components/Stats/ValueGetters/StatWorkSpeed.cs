@@ -5,7 +5,8 @@
         public override float CalculateStat(GameObject obj)
         {
             var actor = obj as Actor;
-            var toolspeed = actor.GetEquipmentSlot(GearType.Mainhand)?.GetStat(StatDefOf.ToolSpeed) ?? 0;
+            //var toolspeed = actor.GetEquipmentSlot(GearTypeDefOf.Mainhand)?.GetStat(StatDefOf.ToolSpeed) ?? 0;
+            var toolspeed = actor.Gear.GetGear(GearTypeDefOf.Mainhand)?.GetStat(StatDefOf.ToolSpeed) ?? 0;
             var speed = 1 + toolspeed;
 
             var stamina = obj[ResourceDefOf.Stamina];

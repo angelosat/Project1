@@ -8,11 +8,11 @@ namespace Start_a_Town_.AI.Behaviors
         protected override Plan TryPlan(Actor actor)
         {
             var manager = actor.ItemPreferences;
-            Dictionary<GearType, (GearType slot, Entity currentItem, Entity newItem, int score)> bestPerSlot = [];
-            Dictionary<GearType, (GearType slot, Entity item, int score)> currentPerSlot = [];
+            Dictionary<GearTypeDef, (GearTypeDef slot, Entity currentItem, Entity newItem, int score)> bestPerSlot = [];
+            Dictionary<GearTypeDef, (GearTypeDef slot, Entity item, int score)> currentPerSlot = [];
             foreach (var gt in actor.GetGearTypes())
             {
-                (GearType slot, Entity item, int score) bestInSlot = (null, null, 0);
+                (GearTypeDef slot, Entity item, int score) bestInSlot = (null, null, 0);
 
                 var current = actor.GetEquipmentSlot(gt);
                 var currentItemScore = current is not null ? manager.GetTotalSituationalScoreFor(current) : 0;

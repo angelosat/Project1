@@ -4,14 +4,14 @@ namespace Start_a_Town_
 {
     class InteractionDropEquipped : Interaction
     {
-        GearType Type;
+        GearTypeDef Type;
         static readonly public string InteractionName = "DropEquipped";
         public InteractionDropEquipped()
             : base("DropEquipped")
         {
 
         }
-        public InteractionDropEquipped(GearType type):base("DropEquipped")
+        public InteractionDropEquipped(GearTypeDef type):base("DropEquipped")
         {
             this.Type = type;
         }
@@ -28,11 +28,11 @@ namespace Start_a_Town_
         }
         protected override void WriteExtra(IDataWriter w)
         {
-            w.Write((int)this.Type.ID);
+            //w.Write((int)this.Type.ID);
         }
         protected override void ReadExtra(IDataReader r)
         {
-            this.Type = GearType.Dictionary[(GearType.Types)r.ReadInt32()];
+            //this.Type = GearTypeDef.Dictionary[(GearTypeDef.Types)r.ReadInt32()];
         }
     }
 }

@@ -383,7 +383,7 @@ namespace Start_a_Town_
         protected virtual int CalculateWorkAmount()
         {
             var toolUse = this.Def.ToolUse;
-            if (this.Actor.Gear.GetGear(GearType.Mainhand) is not Entity tool)
+            if (this.Actor.Gear.GetGear(GearTypeDefOf.Mainhand) is not Entity tool)
                 return 1;
             var comp = tool.GetComponent<ToolComp>();
             var total = comp.GetWorkValue(toolUse) ?? 1;
@@ -400,7 +400,7 @@ namespace Start_a_Town_
         {
             var toolUse = this.Def.ToolUse;
             var actor = this.Actor;
-            if (actor.Gear.GetGear(GearType.Mainhand) is not Entity tool)
+            if (actor.Gear.GetGear(GearTypeDefOf.Mainhand) is not Entity tool)
                 return 1;
             var comp = tool.GetComponent<ToolComp>();
             var toolspeed = InteractionResolverDefOf.WorkSpeed.Worker.Resolve(actor);
@@ -413,7 +413,7 @@ namespace Start_a_Town_
         }
         protected void Calculate(out Entity equippedTool, out int workamount, out float speed)
         {
-            if (this.Actor.Gear.GetGear(GearType.Mainhand) is not Entity tool || 
+            if (this.Actor.Gear.GetGear(GearTypeDefOf.Mainhand) is not Entity tool || 
                 this.Def.ToolUse is not ToolUseDef toolUse)
             {
                 workamount = 100; //60;// 
@@ -441,14 +441,14 @@ namespace Start_a_Town_
         protected virtual float GetToolEffectiveness()
         {
             //if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolProperties.ToolUse == this.GetToolUse())
-            if (this.Actor.Gear.GetGear(GearType.Mainhand) is Entity tool && tool.ToolComponent.ToolUse == this.Def.ToolUse)
+            if (this.Actor.Gear.GetGear(GearTypeDefOf.Mainhand) is Entity tool && tool.ToolComponent.ToolUse == this.Def.ToolUse)
                 return tool[StatDefOf.ToolEffectiveness];
             else
                 return this.Actor.GetMaterial(BoneDefOf.RightHand).Density;
         }
         protected virtual float GetEnergyConsumption(float workAmount, int skillLevel)
         {
-            var toolWeight = this.Actor[GearType.Mainhand]?.TotalWeight ?? 1;
+            var toolWeight = this.Actor[GearTypeDefOf.Mainhand]?.TotalWeight ?? 1;
             var strength = this.Actor[AttributeDefOf.Strength].Level;
             var fromToolWeight = //10 * 
                 toolWeight / strength;

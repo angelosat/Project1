@@ -82,7 +82,7 @@ namespace Start_a_Town_.Components
 
         readonly Container HaulContainer;
         public readonly GameObjectSlot HaulSlot;
-        public ContainerList Contents = new();
+        public ContainerList Contents = [];
 
 
 
@@ -153,19 +153,19 @@ namespace Start_a_Town_.Components
             this.Capacity = capacity;
         }
 
-        public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
-        {
-            switch (e.Type)
-            {
-                // TODO: maybe create a new message called InventoryInteraction that individual components can respond too?
-                case Message.Types.SlotInteraction:
-                    this.SlotInteraction(parent, e.Parameters[0] as GameObject, e.Parameters[1] as GameObjectSlot);
-                    return true;
+        //public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
+        //{
+        //    switch (e.Type)
+        //    {
+        //        // TODO: maybe create a new message called InventoryInteraction that individual components can respond too?
+        //        case Message.Types.SlotInteraction:
+        //            this.SlotInteraction(parent, e.Parameters[0] as GameObject, e.Parameters[1] as GameObjectSlot);
+        //            return true;
 
-                default:
-                    return false;
-            }
-        }
+        //        default:
+        //            return false;
+        //    }
+        //}
         public GameObject Drop(GameObject item, int amount)
         {
             var parent = this.Owner;
@@ -277,25 +277,25 @@ namespace Start_a_Town_.Components
 
         }
 
-        void SlotInteraction(GameObject parent, GameObject actor, GameObjectSlot slot)
-        {
-            if (!slot.HasValue)
-            {
-                // if right clicking an empty slot, put player's hauled item in it
-                var hauled = this.HaulSlot;// PersonalInventoryComponent.GetHauling(actor);
-                if (hauled.HasValue)
-                    hauled.Swap(slot);
-                return;
-            }
-            var obj = slot.Object;
+        //void SlotInteraction(GameObject parent, GameObject actor, GameObjectSlot slot)
+        //{
+        //    if (!slot.HasValue)
+        //    {
+        //        // if right clicking an empty slot, put player's hauled item in it
+        //        var hauled = this.HaulSlot;// PersonalInventoryComponent.GetHauling(actor);
+        //        if (hauled.HasValue)
+        //            hauled.Swap(slot);
+        //        return;
+        //    }
+        //    var obj = slot.Object;
 
-            if (obj.HasComponent<EquipComponent>())
-                (parent as Actor).Work.Perform(new Interactions.EquipFromInventory(), new TargetArgs(parent.World, slot));
-            else
-            {
-                this.HaulSlot.Swap(slot);
-            }
-        }
+        //    if (obj.HasComponent<EquipComponent>())
+        //        (parent as Actor).Work.Perform(new Interactions.EquipFromInventory(), new TargetArgs(parent.World, slot));
+        //    else
+        //    {
+        //        this.HaulSlot.Swap(slot);
+        //    }
+        //}
 
         public bool StoreHauled()
         {
@@ -392,13 +392,13 @@ namespace Start_a_Town_.Components
                     where filter(slot)
                     select slot).FirstOrDefault() != null;
         }
-        public bool Equip(GameObject item)
-        {
-            foreach (var slot in this.Contents)
-                if (slot == item)
-                    return GearComponent.Equip(this.Owner, slot);
-            return false;
-        }
+        //public bool Equip(GameObject item)
+        //{
+        //    foreach (var slot in this.Contents)
+        //        if (slot == item)
+        //            return GearComponent.Equip(this.Owner, slot);
+        //    return false;
+        //}
         public bool CheckWeight(GameObject obj)
         {
             return true;

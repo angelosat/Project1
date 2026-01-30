@@ -211,7 +211,7 @@ namespace Start_a_Town_
         }
         public override string ToString()
         {
-            return $"{this.ID}: {(!string.IsNullOrWhiteSpace(this.Name) ? this.Name + ":" : "")} + {(Object is not null ? Object.Name + $" ({StackSize})" : "<empty>")}";
+            return $"{this.ID}: {(!string.IsNullOrWhiteSpace(this.Name) ? this.Name + ":" : "")} {(Object is not null ? Object.Name + $" ({StackSize})" : "<empty>")}";
         }
 
         public void Write(IDataWriter writer)

@@ -34,7 +34,7 @@ namespace Start_a_Town_
         public Trait this[TraitDef trait] => this.GetTrait(trait);
 
         [InspectorHidden]
-        public Entity this[GearType slot] => this.GetEquipmentSlot(slot);
+        public Entity this[GearTypeDef slot] => this.GetEquipmentSlot(slot);
 
 
         public MoodComp Mood => this.GetComponent<MoodComp>();
@@ -511,15 +511,17 @@ namespace Start_a_Town_
             return this.GetPossesions().Contains(item);
         }
 
-        internal GearType[] GetGearTypes()
+        internal GearTypeDef[] GetGearTypes()
         {
-            return this.GetComponent<GearComponent>().Equipment.Slots.Select(s => GearType.Dictionary[(GearType.Types)s.ID]).ToArray();
+            var profile = this.Profile as ActorDnaDef;
+            return profile.Gear;
+            //return this.GetComponent<GearComponent>().Equipment.Slots.Select(s => GearTypeDef.Dictionary[(GearTypeDef.Types)s.ID]).ToArray();
         }
         internal Entity[] GetGear()
         {
             return this.GetComponent<GearComponent>().Equipment.Slots.Where(sl => sl.Object != null).Select(sl => sl.Object as Entity).ToArray();
         }
-        internal Entity GetEquipmentSlot(GearType type)
+        internal Entity GetEquipmentSlot(GearTypeDef type)
         {
             return this.Gear.GetSlot(type).Object as Entity;
         }

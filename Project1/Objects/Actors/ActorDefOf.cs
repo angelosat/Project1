@@ -20,13 +20,13 @@ namespace Start_a_Town_
                 ResourceDefOf.Health,
                 ResourceDefOf.Stamina ]))
         .AddSpec(new GearComponent.Spec([
-                GearType.Mainhand,
-                GearType.Offhand,
-                GearType.Head,
-                GearType.Chest,
-                GearType.Feet,
-                GearType.Hands,
-                GearType.Legs ]))
+                GearTypeDefOf.Mainhand,
+                GearTypeDefOf.Offhand,
+                GearTypeDefOf.Head,
+                GearTypeDefOf.Chest,
+                GearTypeDefOf.Feet,
+                GearTypeDefOf.Hands,
+                GearTypeDefOf.Legs ]))
         .AddSpec(new NpcSkillsComponent.Spec([
                 SkillDefOf.Digging,
                 SkillDefOf.Mining,

@@ -10,7 +10,7 @@ namespace Start_a_Town_
         public SkillDef[] Skills;
         public TraitDef[] Traits;
         public ResourceDef[] Resources;
-        public GearType[] Gear;
+        public GearTypeDef[] Gear;
         public Behavior Behavior;
         public ActorDnaDef(string name) : base(name) { }
 

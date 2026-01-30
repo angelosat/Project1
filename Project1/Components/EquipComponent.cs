@@ -10,7 +10,7 @@ namespace Start_a_Town_.Components
     {
         public override string Name { get; } = "Equippable";
           
-        public GearType Type;
+        public GearTypeDef Type;
         public Resource Durability;
         public EquipComponent()
         {
@@ -18,7 +18,7 @@ namespace Start_a_Town_.Components
             this.Durability = new Resource(ResourceDefOf.Durability);
         }
 
-        public EquipComponent Initialize(GearType slot)
+        public EquipComponent Initialize(GearTypeDef slot)
         {
             this.Type = slot;
             return this;
@@ -48,7 +48,7 @@ namespace Start_a_Town_.Components
         public override void GetInteractions(GameObject parent, List<Interaction> actions)
         {
             //actions.Add(new InteractionEquip());
-            actions.Add(new EquipFromInventory());
+            //actions.Add(new EquipFromInventory());
         }
       
         internal override void SaveExtra(SaveTag tag)

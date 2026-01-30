@@ -14,7 +14,7 @@ namespace Start_a_Town_
     {
         internal override float Resolve(Actor actor)
         {
-            var tool = actor.GetEquipmentSlot(GearType.Mainhand);
+            var tool = actor.GetEquipmentSlot(GearTypeDefOf.Mainhand);
             var toolspeed = tool?.Stats[StatDefOf.ToolSpeed] ?? 0;
 
             var speed = 1 + toolspeed;

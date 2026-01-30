@@ -28,22 +28,22 @@ namespace Start_a_Town_
             this.CurrentPlanner = null;
         }
 
-        private static void Unequip(Actor parent)
-        {
-            //if (parent.Hauled is not null)
-            //    parent.Interact(new InteractionThrow(true));
+        //private static void Unequip(Actor parent)
+        //{
+        //    //if (parent.Hauled is not null)
+        //    //    parent.Interact(new InteractionThrow(true));
 
-            if (parent.GetEquipmentSlot(GearType.Mainhand) is Entity item)
-            {
-                if (parent.ItemPreferences.IsPreference(item))
-                {
-                    throw new NotImplementedException();
-                    //parent.Interact(new InteractionEquip(), new TargetArgs(item)); // equip() currently toggles gear. if target is currently equipped, it unequips it
-                }
-                else
-                    parent.Interact(new InteractionDropEquipped(GearType.Mainhand));
-            }
-        }
+        //    if (parent.GetEquipmentSlot(GearTypeDefOf.Mainhand) is Entity item)
+        //    {
+        //        if (parent.ItemPreferences.IsPreference(item))
+        //        {
+        //            throw new NotImplementedException();
+        //            //parent.Interact(new InteractionEquip(), new TargetArgs(item)); // equip() currently toggles gear. if target is currently equipped, it unequips it
+        //        }
+        //        else
+        //            parent.Interact(new InteractionDropEquipped(GearTypeDefOf.Mainhand));
+        //    }
+        //}
 
         static IEnumerable<PlannerDef> GetPlanners(Actor actor)
         {

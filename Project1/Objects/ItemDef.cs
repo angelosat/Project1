@@ -24,7 +24,7 @@ namespace Start_a_Town_
         public ApparelDef ApparelProperties;
         public CraftingProperties CraftingProperties;
         public RecipeProperties RecipeProperties;
-        public GearType GearType;
+        public GearTypeDef GearType;
         public Func<ItemDef, GameObject> Randomizer;
         public List<MaterialToken> MadeFrom = new();
         public bool QualityLevels;

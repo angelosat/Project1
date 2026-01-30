@@ -1,18 +1,23 @@
-﻿using Start_a_Town_.Components;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Start_a_Town_.UI;
+using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     public class GearComponent : EntityComp
     {
-        static GearComponent()
-        {
-            Registry.GameEvents.Register<ActorGearUpdatedEvent>(); 
-        }
+        //readonly Dictionary<GearTypeDef, GameObjectSlot> Slots = [];
+        GearContainer Gear;
+        public Container Equipment = new() { Name = "Equipment" };
+        public float ArmorTotal;
+        //static GearComponent()
+        //{
+        //    Registry.GameEvents.Register<ActorGearUpdatedEvent>(); 
+        //}
         public override string Name { get; } = "Gear";
 
         public override void OnObjectLoaded(GameObject parent)
@@ -23,21 +28,24 @@ namespace Start_a_Town_
         internal override void Resolve()
         {
             var profile = this.Owner.Profile as ActorDnaDef;
+            this.Gear = new(this.Owner as Actor);
             foreach (var slot in profile.Gear)
-                this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
+            {
+                //this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
+                this.Gear.Register(slot);
+            }
             this.Owner.RegisterContainer(this.Equipment);
         }
-        public Container Equipment = new() { Name = "Equipment" };
-        public float ArmorTotal;
+  
         public GearComponent()
         {
         }
 
-        public GearComponent(params GearType[] types)
-        {
-            foreach (var slot in types)
-                this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
-        }
+        //public GearComponent(params GearTypeDef[] types)
+        //{
+        //    foreach (var slot in types)
+        //        this.Equipment.Slots.Add(new GameObjectSlot((byte)slot.ID) { ContainerNew = this.Equipment, Name = slot.Name });
+        //}
 
         public override IEnumerable<GameObject> GetChildren()
         {
@@ -76,15 +84,15 @@ namespace Start_a_Town_
         {
             compTag.TryGetTag("Equipment", tag => this.Equipment.Load(tag));
         }
-        public GameObject GetGear(GearType type)
-        {
-            return this.Equipment.GetSlot((int)type.ID).Object;
-        }
-        public GameObjectSlot GetSlot(GearType type)
-        {
-            var slot = this.Equipment.GetSlot((int)type.ID);
-            return slot;
-        }
+        public GameObject GetGear(GearTypeDef type) => this.Gear.GetSlotContent(type);
+        //{
+        //    return this.Equipment.GetSlot((int)type.ID).Object;
+        //}
+        public GameObjectSlot GetSlot(GearTypeDef type) => this.Gear.GetSlot(type);
+        //{
+        //    var slot = this.Equipment.GetSlot((int)type.ID);
+        //    return slot;
+        //}
         public GameObjectSlot GetSlot(GameObject item)
         {
             var slot = this.Equipment.Slots.FirstOrDefault(s => s.Object == item);
@@ -92,29 +100,23 @@ namespace Start_a_Town_
         }
         internal override IEnumerable<GameObjectSlot> GetSlots()
         {
-            foreach (var slot in this.Equipment.Slots)
+            //foreach (var slot in this.Equipment.Slots)
+            //    yield return slot; 
+            foreach (var slot in this.Gear.AllSlots)
                 yield return slot;
         }
-        public static bool Equip(GameObject a, GameObject t)
-        {
-            if (t is null)
-                return false;
+        //public static bool Equip(GameObject a, GameObject t)
+        //{
+        //    if (t is null)
+        //        return false;
             
-            var geartype = (int)t.GetComponent<EquipComponent>().Type.ID;
+        //    var geartype = (int)t.GetComponent<EquipComponent>().Type.ID;
 
-            GameObjectSlot gearSlot = a.GetComponent<GearComponent>().Equipment.Slots[geartype];
+        //    GameObjectSlot gearSlot = a.GetComponent<GearComponent>().Equipment.Slots[geartype];
 
-            // despawn item's entity from world (if it's spawned in the world)
-            //if (t.IsSpawned)
-            //    t.OnDespawn();
-
-            // attempt to store current equipped item in inventory, otherwise drop it if inventory is full
-            
-            // equip new item
-            //gearSlot.Object = t;
-            gearSlot.Assign(t);
-            return true;
-        }
+        //    gearSlot.Assign(t);
+        //    return true;
+        //}
         protected void Equip(Entity item)
         {
             if (!this.Owner.Inventory.Contains(item))
@@ -130,9 +132,9 @@ namespace Start_a_Town_
                 this.Owner.Inventory.Insert(previousItem);
 
             this.RefreshStats();
-            this.Owner.Net.Events.Post(new ActorGearUpdatedEvent(this.Owner as Actor, item, previousItem as Entity));
+            this.Owner.World.Events.Post(new ActorGearUpdatedEvent(this.Owner as Actor, item, previousItem as Entity));
         }
-        protected void Unequip(GearType slotType)
+        protected void Unequip(GearTypeDef slotType)
         {
             var actor = this.Owner as Actor;
             var slot = this.GetSlot(slotType);
@@ -141,7 +143,7 @@ namespace Start_a_Town_
             // the inventory implicitly removes the item from its previous owner, so no need to clear the slot explicitly
             actor.Inventory.Insert(item);
             this.RefreshStats();
-            actor.Net.Events.Post(new ActorGearUpdatedEvent(actor, null, item as Entity));
+            actor.World.Events.Post(new ActorGearUpdatedEvent(actor, null, item as Entity));
         }
         public bool EquipToggle(Entity item)
         {
@@ -168,6 +170,7 @@ namespace Start_a_Town_
             return true;
         }
 
+        public override GroupBox GetGUI() => this.Gear.GetGui();
         
 
         public void RefreshStats()
@@ -180,8 +183,8 @@ namespace Start_a_Town_
         }
         public new class Spec : Spec<GearComponent>
         {
-            public GearType[] Slots;
-            public Spec(params GearType[] defs)
+            public GearTypeDef[] Slots;
+            public Spec(params GearTypeDef[] defs)
             {
                 this.Slots = defs;
             }
@@ -208,7 +211,7 @@ namespace Start_a_Town_
                     .Write(actor.RefId)
                     .Write(item.RefId);
             }
-            static internal void SendUnequip(Actor actor, GearType slot)
+            static internal void SendUnequip(Actor actor, GearTypeDef slot)
             {
                 var server = actor.Net as Server;
                 server.BeginPacket(_packetTypeIdUnequip)
@@ -228,14 +231,40 @@ namespace Start_a_Town_
                 var client = net as Client;
                 var r = packet.PacketReader;
                 var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
-                var slot = r.ReadDef<GearType>();
+                var slot = r.ReadDef<GearTypeDef>();
                 actor.Gear.Unequip(slot);
             }
         }
     }
-    class ActorGearUpdatedEvent(Actor actor, Entity newItem, Entity oldItem) : IEventPayload
+    record struct ActorGearUpdatedEvent(Actor Actor, Entity NewItem, Entity OldItem) : IEventPayload { }
+
+    class GearContainer(Actor owner) : Inspectable
     {
-        public readonly Actor Actor = actor;
-        public readonly Entity NewItem = newItem, OldItem = oldItem;
+        readonly Actor Owner = owner;
+        readonly Dictionary<GearTypeDef, GameObjectSlot> Slots = [];
+        public IEnumerable<GameObjectSlot> AllSlots => this.Slots.Values;
+        public void Register(GearTypeDef def)
+        {
+            this.Slots.Add(def, new GameObjectSlot() { Owner = this.Owner });
+        }
+        public GameObjectSlot GetSlot(GearTypeDef def) => this.Slots[def];
+        public Entity GetSlotContent(GearTypeDef def) => this.Slots[def].Object as Entity;
+
+        public GroupBox GetGui()
+        {
+            var box = new GroupBox();
+            var table = new Table<(GearTypeDef def, GameObjectSlot slot)>()
+                .AddColumn("geardef", 64, v => new LabelNew(v.def), 1)
+                .AddColumn("slot", 128, v => new LabelNew(v.slot.Object?.Name ?? ""), 0);
+            table.AddItems(this.Slots.Select(vk => (vk.Key, vk.Value)));
+            box.Controls.Add(table);
+            this.Owner.World.Events.ListenTo<ActorGearUpdatedEvent>(onGearUpdated);
+            void onGearUpdated(ActorGearUpdatedEvent e)
+            {
+                if(e.Actor == this.Owner)
+                    table.Invalidate(true);
+            }
+            return box;
+        }
     }
 }

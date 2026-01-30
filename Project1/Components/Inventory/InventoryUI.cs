@@ -16,6 +16,9 @@ namespace Start_a_Town_
         }
         private void Build(Actor actor)
         {
+            var gearGui = actor.Gear.GetGUI();
+            var gearPanel = gearGui.ToPanelLabeled("Gear");
+
             var panelSlots = new Panel(PanelWithVerticalTabs.DefaultSize);
             this.BoxSlots = new(panelSlots.ClientSize.Width, panelSlots.ClientSize.Height);
             var invgui = new InventoryContentsGui();
@@ -37,6 +40,7 @@ namespace Start_a_Town_
             var btnprefs = new Button("Item Preferences", () => actor.ItemPreferences.Gui.Toggle(), 128);
             boxbtns.AddControlsVertically(btncolors, btnprefs);
             this.AddControlsVertically(
+                gearPanel,
                 panelSlots,
                 boxbtns);
             colorsui.SetTag(actor);

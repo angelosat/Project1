@@ -43,10 +43,10 @@ namespace Start_a_Town_
             this.AddComponent(new PhysicsComponent());
             this.AddComponent(new SpriteComp()); // add this only through comp props
         }
-        internal GameObjectSlot GetEquipmentSlot(GearType.Types type)
-        {
-            return this.Gear.GetSlot(GearType.Dictionary[type]);
-        }
+        //internal GameObjectSlot GetEquipmentSlot(GearTypeDef type) => this.Gear.GetSlot(type);
+        //{
+        //    return this.Gear.GetSlot(GearTypeDef.Dictionary[type]);
+        //}
         public Entity Initialize()
         {
             if (this._initialized)

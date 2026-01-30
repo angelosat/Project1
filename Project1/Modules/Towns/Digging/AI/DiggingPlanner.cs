@@ -12,7 +12,7 @@ namespace Start_a_Town_
             
             var jobs = actor.Map.Town.DesignationManager.GetDesignations(DesignationDefOf.Mine);
 
-            var mainhand = actor.GetEquipmentSlot(GearType.Mainhand);
+            var mainhand = actor.GetEquipmentSlot(GearTypeDefOf.Mainhand);
 
             /// why have i put this here?
             /// did i put it so that actor doesn't unequip tool between same consecutive tasks?

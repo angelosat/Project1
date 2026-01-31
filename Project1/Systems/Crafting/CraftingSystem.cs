@@ -6,12 +6,12 @@ namespace Start_a_Town_
 {
     internal class CraftingSystem
     {
-        static public IEnumerable<Def> GetCraftables(CraftableDef craftableDef)
+        static public IEnumerable<Def> GetCraftables(WorkstationCapabilityDef craftableDef)
         {
             var specific = craftableDef.ProfileCategory;
             var defs = Def.GetDefs(specific);
-            if (craftableDef.Specific.Any())
-                defs = defs.Intersect(craftableDef.Specific);
+            if (craftableDef.SpecificRecipes.Any())
+                defs = defs.Intersect(craftableDef.SpecificRecipes);
             return defs;
         }
         static public SkillDef GetCraftingSkill(Def recipe)

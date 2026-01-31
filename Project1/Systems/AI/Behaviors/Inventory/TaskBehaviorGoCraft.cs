@@ -21,5 +21,20 @@ namespace Start_a_Town_
             return this.ReserveAll();
             return this.Reserve(TargetIndex.A);
         }
+        
+    }
+    class TaskBehaviorRepairing : BehaviorExecutePlan
+    {
+        public override string Name { get; } = "Repairing";
+
+        protected override IEnumerable<Behavior> GetSteps()
+        {
+            yield return new BehaviorResolvePath(PathEndMode.InteractionSpot);
+            yield return new BehaviorResolveInteraction();
+        }
+        protected override bool ReserveExtra()
+        {
+            return this.ReserveAll();
+        }
     }
 }

@@ -28,6 +28,10 @@ namespace Start_a_Town_
 
             foreach (var order in allOrders)
             {
+                if(TryRepairPlan(actor, order) is Plan repairPlan)
+                {
+                    return repairPlan;
+                }
                 // Check fuel requirement
                 if (!order.CheckFuelReq())
                     continue;
@@ -154,6 +158,29 @@ namespace Start_a_Town_
             return null;
         }
 
+        private Plan TryRepairPlan(Actor actor, OrderSettings order)
+        {
+            var map = actor.Map;
+            var workstation = order.Workstation;
+            var benchCell = workstation.Parent.OriginGlobal;
+
+            var itemsOnBench = map.GetEntitiesAt(benchCell.Above);
+            if (itemsOnBench.FirstOrDefault(isRepairable) is Entity repairableItem)
+                return new Plan(PlanDefOf.Repairing, repairableItem) { TargetB = new TargetArgs(workstation.Parent) };
+
+            if (actor.Hauled is Entity hauled && isRepairable(hauled))
+                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, benchCell.Above)) { TargetB = new TargetArgs(workstation.Parent) };
+
+            if (actor.Inventory.Contents.FirstOrDefault(isRepairable) is Entity repairableInvItem)
+                return new Plan(PlanDefOf.RetrieveFromInventory, repairableInvItem);
+
+            if (map.Stockpiles.GetItems(order.Workstation.Input).FirstOrDefault(isRepairable) is Entity repairableStockpileItem)
+                return new Plan(PlanDefOf.GoHaul, repairableStockpileItem);
+
+            return null;
+
+            static bool isRepairable(Entity e) => e.Resources?[ResourceDefOf.Durability] is Resource durability && durability.Percentage < 1;
+        }
 
         protected Plan TryPlanPrevious(Actor actor)
         {

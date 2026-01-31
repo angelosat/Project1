@@ -57,10 +57,10 @@ namespace Start_a_Town_
             foreach (var order in this._ordersById.Values)
                 yield return order;
         }
-        public IEnumerable<MaterialRefinementDef> GetRefinementsBy(WorkstationDef workstation)
-        {
-            return workstation.Refinements;
-        }
+        //public IEnumerable<MaterialRefinementDef> GetRefinementsBy(WorkstationDef workstation)
+        //{
+        //    return workstation.Refinements;
+        //}
         private void OnBlocksUpdated(CellsInvalidatedEvent changed)
         {
             //var map = this.Town.Map;

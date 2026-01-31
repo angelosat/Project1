@@ -36,6 +36,7 @@ namespace Start_a_Town_
         public SkillDef Skill { get; init; }
         public MaterialRefinementDef Refinement { get; init; }
         public Def ProductDef { get; internal set; }
+        public WorkstationCapabilityDef WorkstationCapability { get; internal set;}
         public BlockWorkstationComp Workstation { get; internal set; }
         public string Label => this.ProductDef.Label;
         public Dictionary<BoneDef, HashSet<MaterialDef>> Filters = [];

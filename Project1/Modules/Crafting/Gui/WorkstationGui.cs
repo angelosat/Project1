@@ -44,10 +44,13 @@ namespace Start_a_Town_
             this.PanelReactions = new Panel() { AutoSize = true };
             this.PanelReactions.HideOnAnyClick();
             var manager = workstation.Parent.Map.Town.CraftingManagerNew;
-            var availableRecipes = CraftingSystem.GetCraftables(workstation.WorkstationType.Craftables.First()); // HACK
+            //var availableRecipes = CraftingSystem.GetCraftables(workstation.WorkstationType.Capabilities.First()); // HACK
+            var availableRecipesNew = workstation.WorkstationType.Capabilities.SelectMany(cap => cap.Worker.GetAddOrderRequests(workstation));
 
-            var availableRefinementsControl = new ListBoxNoScroll<Def>(r => new Label(r.Label, () => this.PlaceOrderNew(r)));
-            availableRefinementsControl.AddItems(availableRecipes);
+            //var availableRefinementsControl = new ListBoxNoScroll<Def>(r => new Label(r.Label, () => this.PlaceOrderNew(r)));
+            //availableRefinementsControl.AddItems(availableRecipes);
+            var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.ProductDef?.Label ?? r.WorkstationCapability.Label, () => this.PlaceOrderNew(r)));
+            availableRefinementsControl.AddItems(availableRecipesNew);
             var reactionsListContainer = availableRefinementsControl.ToScrollableBox(200, 400);
             this.PanelReactions.AddControls(reactionsListContainer);
 
@@ -181,6 +184,11 @@ namespace Start_a_Town_
             this.PanelReactions.Hide();
             Ingame.Instance.Events.Post(new PlayerIssuedCraftOrderEvent(this.Workstation, craftableProfile));
             //PacketsCrafting.PlayerCreatedOrder(this.Workstation.Parent, r);
+        }
+        private void PlaceOrderNew(AddOrderRequest orderRequest)
+        {
+            this.PanelReactions.Hide();
+            Ingame.Instance.Events.Post(new PlayerIssuedCraftOrderEventNew(this.Workstation, orderRequest));
         }
         void OnBlocksUpdated(CellsInvalidatedEvent e)
         {

@@ -74,6 +74,12 @@ namespace Start_a_Town_
             Skill = SkillDefOf.Crafting,
             ToolUse = ToolUseDefOf.Carpentry
         };
+        public static readonly InteractionDef Repair = new("Repairing", typeof(InteractionRepairLogic))
+        {
+            Animation = AnimationDefOf.Tool,
+            ProgressHandler = new InteractionProgressToolExternal(),
+            Skill = SkillDefOf.Tinkering
+        };
         public static readonly InteractionDef Drop = new("Dropping", typeof(InteractionThrow), null);
         public static readonly InteractionDef Depart = new("Departing", typeof(InteractionDepartLogic))
         {

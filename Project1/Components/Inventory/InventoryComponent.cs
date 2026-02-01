@@ -340,6 +340,10 @@ namespace Start_a_Town_.Components
             var slot = (this.Owner as Entity).Gear.GetSlot(item);
             return this.Receive(slot);
         }
+        public bool Unequip(GearTypeDef gearDef)
+        {
+            return this.Receive(this.Owner.Gear.GetSlot(gearDef));
+        }
         public bool Receive(GameObjectSlot objSlot, bool report = true)
         {
             // TODO: if can't receive, haul item instead or drop on ground?

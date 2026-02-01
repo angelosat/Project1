@@ -29,7 +29,8 @@ namespace Start_a_Town_
 
         protected override IEnumerable<Behavior> GetSteps()
         {
-            yield return new BehaviorResolvePath(PathEndMode.InteractionSpot);
+            //yield return new BehaviorResolvePath(PathEndMode.InteractionSpot);
+            yield return new BehaviorResolvePath(TargetIndex.B, PathEndMode.InteractionSpot);
             yield return new BehaviorResolveInteraction();
         }
         protected override bool ReserveExtra()

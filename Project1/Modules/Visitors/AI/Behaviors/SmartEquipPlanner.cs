@@ -8,18 +8,18 @@ namespace Start_a_Town_.AI.Behaviors
         protected override Plan TryPlan(Actor actor)
         {
             var manager = actor.ItemPreferences;
-            Dictionary<GearTypeDef, (GearTypeDef slot, Entity currentItem, Entity newItem, int score)> bestPerSlot = [];
+            Dictionary<GearTypeDef, (GearTypeDef slot, Entity currentItem, Entity newItem, int score)> mostImpactfulPerSlot = [];
             Dictionary<GearTypeDef, (GearTypeDef slot, Entity item, int score)> currentPerSlot = [];
             foreach (var gt in actor.GetGearTypes())
             {
-                (GearTypeDef slot, Entity item, int score) bestInSlot = (null, null, 0);
+                (GearTypeDef slot, Entity item, int score) mostImpactfulInSlot = (null, null, 0);
 
                 var current = actor.GetEquipmentSlot(gt);
                 var currentItemScore = current is not null ? manager.GetTotalSituationalScoreFor(current) : 0;
                 var candidates = manager.GetItemsBySituationalScore(actor, i => i.Def.GearType == gt);
                 currentPerSlot[gt] = (gt, current, currentItemScore);
                 if (currentItemScore > 0)
-                    bestInSlot = (slot: gt, item: current, score: currentItemScore);
+                    mostImpactfulInSlot = (slot: gt, item: current, score: currentItemScore);
 
                 foreach (var (item, score) in candidates)
                 {
@@ -28,16 +28,24 @@ namespace Start_a_Town_.AI.Behaviors
                         if (!actor.Inventory.Contains(item))
                             continue;
                         //do more checks here if necessary
-                        if (score > bestInSlot.score)
-                            bestInSlot = (gt, item, score);
+                        if (score > mostImpactfulInSlot.score)
+                            mostImpactfulInSlot = (gt, item, score);
+                    }
+                    if(score < 0)
+                    {
+                        if (!actor.Inventory.Contains(item))
+                            continue;
+                        //do more checks here if necessary
+                        if (score < mostImpactfulInSlot.score)
+                            mostImpactfulInSlot = (gt, item, score);
                     }
                 }
-                bestPerSlot[gt] = new(gt, current, bestInSlot.item, bestInSlot.score);
+                mostImpactfulPerSlot[gt] = new(gt, current, mostImpactfulInSlot.item, mostImpactfulInSlot.score);
             }
 
             (Entity item, int score) mostImpactful = (null, 0);
 
-            foreach (var (slot, currentItem, newItem, newScore) in bestPerSlot.Values)
+            foreach (var (slot, currentItem, newItem, newScore) in mostImpactfulPerSlot.Values)
             {
                 var current = currentPerSlot[slot];
                 if (newScore > 0)

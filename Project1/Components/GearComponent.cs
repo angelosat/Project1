@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Start_a_Town_.UI;
-using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_
 {
@@ -19,7 +18,7 @@ namespace Start_a_Town_
         //    Registry.GameEvents.Register<ActorGearUpdatedEvent>(); 
         //}
         public override string Name { get; } = "Gear";
-
+        public Entity this[GearTypeDef gearDef] => this.Gear.GetSlot(gearDef).Object as Entity;
         public override void OnObjectLoaded(GameObject parent)
         {
             base.OnObjectLoaded(parent);
@@ -95,7 +94,8 @@ namespace Start_a_Town_
         //}
         public GameObjectSlot GetSlot(GameObject item)
         {
-            var slot = this.Equipment.Slots.FirstOrDefault(s => s.Object == item);
+            //var slot = this.Equipment.Slots.FirstOrDefault(s => s.Object == item);
+            var slot = this.Gear.GetSlot(item);
             return slot;
         }
         internal override IEnumerable<GameObjectSlot> GetSlots()
@@ -247,6 +247,7 @@ namespace Start_a_Town_
         {
             this.Slots.Add(def, new GameObjectSlot() { Owner = this.Owner });
         }
+        public GameObjectSlot GetSlot(GameObject item) => this.Slots.Values.FirstOrDefault(s => s.Object == item);
         public GameObjectSlot GetSlot(GearTypeDef def) => this.Slots[def];
         public Entity GetSlotContent(GearTypeDef def) => this.Slots[def].Object as Entity;
 

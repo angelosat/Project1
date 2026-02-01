@@ -13,6 +13,8 @@
             var durability = item.Resources[ResourceDefOf.Durability];
             if (durability.Value == 0)
                 return -100;
+            //if (durability.Percentage < 1)
+            //        return (int)(100 * (durability.Percentage - 1));
             var tooluse = interaction.ToolUse;
             if (tooluse == role.Def)
                 return 100;

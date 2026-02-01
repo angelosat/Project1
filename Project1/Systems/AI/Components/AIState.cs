@@ -23,6 +23,8 @@ namespace Start_a_Town_.AI
         public Dictionary<Actor, ConversationTopic> CommunicationPending = new();
         public Actor ConversationPartner, TradingPartner;
         public AIConversationManager.Conversation CurrentConversation;
+        public PlannerDef CurrentPlanner;
+
         public Plan CurrentTask => this.Behavior?.Plan;
         public Plan ForcedTask;
         public AILog Log;
@@ -283,7 +285,7 @@ namespace Start_a_Town_.AI
 
             tag.TryLoad("Path", out this.Path);
             this.Jobs.TrySync(tag, "Jobs", keyTag => Def.TryGetDef<JobDef>((string)keyTag.Value));
-
+            tag.TryLoadDefOut("Planner", out this.CurrentPlanner);
             tag.TryGetTag("ItemPreferences", t => this.ItemPreferences.Load(t));
         }
         public void Read(IDataReader r)
@@ -342,6 +344,7 @@ namespace Start_a_Town_.AI
             this.Path.TrySave(tag, "Path");
             this.Jobs.Save(tag, "Jobs", SaveTag.Types.String, key => key.Name);
             this.ItemPreferences.Save(tag, "ItemPreferences");
+            tag.Save("Planner", this.CurrentPlanner);
             return tag;
         }
         public void ToggleJob(JobDef job)

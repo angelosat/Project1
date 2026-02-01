@@ -23,8 +23,10 @@ namespace Start_a_Town_
                 .Where(o => o.Pending && actor.CanReachAndReserve(o.Workstation.Parent));
 
             // Guard: don't interfere if carrying irrelevant item
-            if (carried != null && !allOrders.Any(o => o.Matches(carried)))
-                return null;
+            // BUT when implementing repair orders, the actor will be carrying a repairable object
+            // so let's try removing this guard and hope ;)
+            //if (carried != null && !allOrders.Any(o => o.Matches(carried)))
+            //    return null;
 
             foreach (var order in allOrders)
             {
@@ -158,7 +160,7 @@ namespace Start_a_Town_
             return null;
         }
 
-        private Plan TryRepairPlan(Actor actor, OrderSettings order)
+        private static Plan TryRepairPlan(Actor actor, OrderSettings order)
         {
             var map = actor.Map;
             var workstation = order.Workstation;
@@ -166,10 +168,13 @@ namespace Start_a_Town_
 
             var itemsOnBench = map.GetEntitiesAt(benchCell.Above);
             if (itemsOnBench.FirstOrDefault(isRepairable) is Entity repairableItem)
-                return new Plan(PlanDefOf.Repairing, repairableItem) { TargetB = new TargetArgs(workstation.Parent) };
+                return new Plan(PlanDefOf.Repairing, repairableItem) { TargetB = new TargetArgs(map, workstation.Parent.OriginGlobal), TargetC = new TargetArgs(workstation.Parent) };
 
             if (actor.Hauled is Entity hauled && isRepairable(hauled))
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, benchCell.Above)) { TargetB = new TargetArgs(workstation.Parent) };
+                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, benchCell.Above)) {  TargetB = new TargetArgs(workstation.Parent) };
+
+            if (actor.Gear[GearTypeDefOf.Mainhand] is Entity repairableGear && isRepairable(repairableGear))
+                actor.Inventory.Unequip(GearTypeDefOf.Mainhand);
 
             if (actor.Inventory.Contents.FirstOrDefault(isRepairable) is Entity repairableInvItem)
                 return new Plan(PlanDefOf.RetrieveFromInventory, repairableInvItem);

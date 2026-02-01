@@ -1,6 +1,5 @@
 ﻿using Start_a_Town_.AI;
 using Start_a_Town_.Components;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,7 +8,6 @@ namespace Start_a_Town_
     sealed class BehaviorHandlePlans : Behavior
     {
         static readonly int TimerMax = Ticks.PerSecond / 20;
-        PlannerDef CurrentPlanner;
         int Timer = TimerMax;
         readonly Timer IdleTimer = new(TimerMax);
 
@@ -25,7 +23,8 @@ namespace Start_a_Town_
             parent.Unreserve();
 
             state.Reset();
-            this.CurrentPlanner = null;
+            //this.CurrentPlanner = null;
+            parent.AI.State.CurrentPlanner = null;
         }
 
         //private static void Unequip(Actor parent)
@@ -80,7 +79,8 @@ namespace Start_a_Town_
                 }
 
                 state.Assign(bhav);
-                this.CurrentPlanner = task.Continuation == PlannerContinuation.Continue ? planner : null;
+                //this.CurrentPlanner = task.Continuation == PlannerContinuation.Continue ? planner : null;
+                parent.AI.State.CurrentPlanner = task.Continuation == PlannerContinuation.Continue ? planner : null;
                 return task;
             }
 
@@ -104,9 +104,8 @@ namespace Start_a_Town_
             base.AddSaveData(tag);
             tag.Add(this.Timer.Save("Timer"));
 
-            if (this.CurrentPlanner is not null)
-                //tag.Add(this.CurrentPlanner.GetType().FullName.Save("CurrentTaskGiver")); ;
-                tag.Save("CurrentPlanner", this.CurrentPlanner);
+            //if (this.CurrentPlanner is not null)
+            //    tag.Save("CurrentPlanner", this.CurrentPlanner);
         }
 
         internal void EndCurrentPlan(Actor actor)
@@ -117,8 +116,7 @@ namespace Start_a_Town_
         {
             base.Load(tag);
             tag.TryGetTagValueOrDefault("Timer", out this.Timer);
-            //tag.TryGetTagValue<string>("CurrentPlanner", t => this.CurrentPlanner = Activator.CreateInstance(Type.GetType(t)) as Planner);
-            tag.TryLoadDefOut("CurrentPlanner", out this.CurrentPlanner);
+            //tag.TryLoadDefOut("CurrentPlanner", out this.CurrentPlanner);
         }
         internal override void MapLoaded(Actor parent)
         {
@@ -221,21 +219,22 @@ namespace Start_a_Town_
 
                 //if (this.CurrentPlanner != null && (!state.Behavior?.Plan.Def.Idle ?? false))
                 //if (this.HasIntent && !this.IsIdle)
-                if(this.CurrentPlanner is not null && this.CurrentPlanner != PlannerDefOf.Idle)
+                var currentPlanner = parent.AI.State.CurrentPlanner;
+                if(currentPlanner is not null && currentPlanner != PlannerDefOf.Idle)
                 {
                     if (tired)
                     {
                         this.CleanUp(parent, state);
                         return BehaviorState.Fail;
                     }
-                    var next = this.CurrentPlanner.Worker.FindPlan(parent);
+                    var next = currentPlanner.Worker.FindPlan(parent);
 
                     if (next.Plan is not null)
                     {
                         var bhav = next.Plan.CreateBehavior(parent);
                         if (bhav.ReserveBase())
                         {
-                            $"found followup task from same planner {this.CurrentPlanner}".ToConsole();
+                            $"found followup task from same planner {currentPlanner}".ToConsole();
                             state.Assign(bhav);
                             return BehaviorState.Success;
                         }
@@ -282,7 +281,7 @@ namespace Start_a_Town_
         //    this.Timer++;
         //}
         //bool IdleTimerFired => this.Timer >= TimerMax;
-        bool HasIntent => this.CurrentPlanner is not null;
+        //bool HasIntent => this.CurrentPlanner is not null;
         bool IsIdle => this.Actor.AI.State.Behavior?.Plan.Def.Idle ?? true;
         public override void Write(IDataWriter w)
         {

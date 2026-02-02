@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Blocks;
+using Project1.Framework.Input;
+using Project1.Framework.Net;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_
@@ -90,7 +93,7 @@ namespace Start_a_Town_
         {
             if (this.SettingHeight)
             {
-                this.TopCorner = new IntVec3(this.End.X, this.End.Y, Math.Min(this.End.Z + this.Height, Net.Client.Instance.Map.GetMaxHeight() - 1));
+                this.TopCorner = new IntVec3(this.End.X, this.End.Y, Math.Min(this.End.Z + this.Height, Client.Instance.Map.GetMaxHeight() - 1));
                 return;
             }
             else

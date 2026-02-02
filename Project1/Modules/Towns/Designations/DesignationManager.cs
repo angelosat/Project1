@@ -1,6 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Input;
+using Project1.Framework.Input.Hotkeys;
+using Project1.Framework.Input.Tools;
+using Project1.Framework.Input.Tools.CellRendering;
+using Project1.Framework.Net;
 using Start_a_Town_;
-using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;

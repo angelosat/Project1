@@ -1,5 +1,4 @@
-﻿using System;
-using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -25,7 +24,6 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
             var typeName = r.ReadString();
-            //var taskGiver = Activator.CreateInstance(Type.GetType(typeName)) as Planner;
             var planner = r.ReadDef<PlannerDef>();
             var target = TargetArgs.Read(actor.World.Net, r);
             actor.ForceTask(planner, target);

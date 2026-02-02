@@ -1,4 +1,7 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Needs;
+using Project1.Framework.Skills;
+
+namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     internal class ItemRoleContextDefOf

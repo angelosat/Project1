@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Blocks;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -19,10 +20,6 @@ namespace Start_a_Town_
 
         public static void Send(NetEndpoint net, PlayerData player, IntVec3 global, Block block, MaterialDef material, byte data = 0, int variation = 0, int orientation = 0)
         {
-            //if (net is Server)
-            //    Perform(net.Map, global, block, material, data, variation, orientation);
-
-            //var w = net.BeginPacketOld(p);
             net.BeginPacketImmediate(p)
                .Write(player.ID)
                .Write(global)
@@ -37,22 +34,13 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
             var global = r.ReadIntVec3();
-            //var block = Block.GetBlock(r);
             var block = r.ReadDef<BlockDef>().Worker;//.GetBlock(r);
             var material = Def.GetDef<MaterialDef>(r);
             var data = r.ReadByte();
             var variation = r.ReadInt32();
             var orientation = r.ReadInt32();
-
-            //if (net is Server)
-            //    Send(net, player, global, block, material, data, variation, orientation);
             
             Perform(net.Map, global, block, material, data, variation, orientation);
-
-            // send packet to servers in immediate mode:
-            // clients will also receive a syncing of removeblock() and setblock() internally but they will perform a no-op
-            //if (net is Server server)
-            //    Send(server, player, global, block, material, data, variation, orientation);
         }
 
         private static void Perform(MapBase map, IntVec3 global, Block block, MaterialDef material, byte data, int variation, int orientation)

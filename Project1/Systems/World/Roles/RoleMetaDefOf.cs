@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Core.Needs;
+
+namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     internal class RoleMetaDefOf

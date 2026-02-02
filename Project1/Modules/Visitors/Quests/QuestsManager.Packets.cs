@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Start_a_Town_.Net;
-using System.IO;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {

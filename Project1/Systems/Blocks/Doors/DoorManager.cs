@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Framework.StaticMaps.Components;
+using System.Collections.Generic;
 
 namespace Start_a_Town_
 {

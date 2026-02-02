@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.Animations;
+using Project1.Framework.Animations;
+using Project1.Framework.Blocks;
+using Project1.Framework.Input;
+using Project1.Framework.Entities;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;

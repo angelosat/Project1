@@ -1,4 +1,6 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Attributes;
+using Project1.Framework.Net;
+using Project1.Framework.Skills;
 
 namespace Start_a_Town_
 {
@@ -28,10 +30,8 @@ namespace Start_a_Town_
             var r = packet.PacketReader;
             var actor = client.World.GetEntity<Actor>(r.ReadInt32());
             var skill = r.ReadDef<SkillDef>();
-            //var delta = r.ReadInt32();
             var level = r.ReadInt32();
             var xp = r.ReadInt32();
-            //actor.Skills.Increase(skill, delta);
             actor.Skills.SetValue(skill, level, xp);
         }
     }

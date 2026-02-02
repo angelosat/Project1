@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Framework.Interactions;
+using Start_a_Town_.Framework.AI.NodeTypes;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Start_a_Town_

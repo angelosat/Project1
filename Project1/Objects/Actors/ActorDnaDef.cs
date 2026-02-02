@@ -1,5 +1,11 @@
-﻿using Start_a_Town_.Components;
+﻿using Start_a_Town_.Framework.AI.NodeTypes;
 using System.Collections.Generic;
+using Project1.Framework.Skills;
+using Project1.Framework.Attributes;
+using Project1.Framework.Needs;
+using Project1.Framework.Resources;
+using Project1.Framework.Gear;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_
 {

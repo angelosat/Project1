@@ -1,4 +1,7 @@
-﻿namespace Start_a_Town_.Components.Crafting
+﻿using Project1.Framework.Blocks;
+using Project1.Framework.Skills;
+
+namespace Start_a_Town_.Components.Crafting
 {
     public class ProductMaterialPair : Inspectable
     {

@@ -1,6 +1,5 @@
 ﻿using System;
-using System.IO;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -18,7 +17,6 @@ namespace Start_a_Town_
                 PacketPlayerAddShoppingArea = Registry.PacketHandlers.Register(ReceivePlayerAddShoppingArea);
                 PacketPlayerAssignWorkerToShop = Registry.PacketHandlers.Register(HandlePlayerAssignWorkerToShop);
                 PacketPlayerShopAssignCounter = Registry.PacketHandlers.Register(ReceivePlayerShopAssignCounter);
-                //PacketPlayerRenameShop = Network.RegisterPacketHandler(ReceivePlayerRenameShop);
             }
             
             public static void SendPlayerDeleteShop(NetEndpoint net, PlayerData player, int shopid)

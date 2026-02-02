@@ -4,7 +4,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
+using Project1.Framework.Input.Hotkeys;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {

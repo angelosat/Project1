@@ -1,5 +1,7 @@
 ﻿using Start_a_Town_.Particles;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Blocks;
+using Project1.Core.Interactions;
 
 namespace Start_a_Town_
 {

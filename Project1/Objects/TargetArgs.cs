@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Components.Interactions;
-using Start_a_Town_.Net;
+using Project1.Core.Interactions;
+using Project1.Framework.Blocks;
+using Project1.Framework.Interactions;
+using Project1.Framework.Net;
+using Project1.Framework.StaticMaps.Regions;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;

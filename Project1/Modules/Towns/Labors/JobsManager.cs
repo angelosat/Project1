@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using Start_a_Town_.AI;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -29,7 +29,6 @@ namespace Start_a_Town_
                 var jobDef = Def.GetDef<JobDef>(r.ReadString());
                 var job = actor.GetJob(jobDef);
                 job.Read(r);
-                //net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
                 net.Events.Post(new JobUpdatedEvent(actor, job.Def));
                 SyncJob(player, actor, job);
             }
@@ -77,9 +76,7 @@ namespace Start_a_Town_
             public static void SyncJob(PlayerData player, Actor actor, Job job)
             {
                 var net = actor.Net as Server;
-                //var w = net.GetOutgoingStreamOrderedReliable();
                 var w = net.BeginPacket(pSync);
-                //w.Write(pSync, player.ID, actor.RefId);
                 w.Write(player.ID);
                 w.Write(actor.RefId);
                 w.Write(job.Def.Name);
@@ -193,12 +190,6 @@ namespace Start_a_Town_
             box.AddControlsVertically(
                 btnTogglePriorities,
                 tableBox);
-
-            //box.ListenTo<JobUpdatedEvent>(args =>
-            //{
-            //    tableAuto.GetItem(args.Actor, args.Job).Validate();
-            //    tableManual.GetItem(args.Actor, args.Job).Validate();
-            //});
 
             return box;
 

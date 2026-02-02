@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Blocks;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -12,18 +13,11 @@ namespace Start_a_Town_
         }
         internal static void SendRemove(NetEndpoint net, ToolBlockBuild.Args a)
         {
-            //Send(net, null, a);
             Send(net, a, default);
         }
         
         static public void Send(NetEndpoint net, ToolBlockBuild.Args a, ConstructionDesignationArgs args)
         {
-            //IDataWriter w;
-            //if (net is Server server)
-            //    w = server.BeginUntimestamped(p);
-            //else
-            //var w = net.BeginPacket(p);
-            //var w = net is Server server ? server.BeginPacketPlayerCommand(p) : net.BeginPacket(p);
             var w = net.BeginPacketImmediate(p);
             a.Write(w);
             if (!a.Removing)

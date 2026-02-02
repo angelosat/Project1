@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project1.Framework.Net;
+using System;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -34,7 +35,7 @@ namespace Start_a_Town_
                 if (i.amount < i.item.StackSize)
                 {
                     var split = i.item.Split(i.amount);
-                    if (qgiver.Net is Net.Server server)
+                    if (qgiver.Net is Server server)
                     {
                         split.SyncInstantiate(server);
                         actor.Inventory.SyncInsert(split);

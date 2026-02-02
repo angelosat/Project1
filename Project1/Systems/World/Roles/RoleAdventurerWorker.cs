@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
+
 namespace Start_a_Town_
 {
     internal class RoleAdventurerWorker : RoleMetaWorker
@@ -18,13 +19,11 @@ namespace Start_a_Town_
                 meta.LocationDecision.RegisterSuccess();
                 actor.AI.Meta.ReturnToTown();
                 actor.AI.State.Log.Write("I'm returning to town.");
-                //actor.Log.Write("I'm returning to town.");
             }
             else
             {
                 meta.LocationDecision.RegisterFailure();
                 actor.AI.State.Log.Write("I'll stay out adventuring some more.");
-                //actor.Log.Write("I'll stay out adventuring some more.");
             }
             meta.LocationDecision.ScheduleNext(world);
         }

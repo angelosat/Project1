@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.AI.Behaviors;
+﻿using Project1.Core.Interactions;
+using Start_a_Town_.AI.Behaviors;
 using Start_a_Town_.AI.Behaviors.ItemOwnership;
 
 namespace Start_a_Town_
@@ -67,7 +68,6 @@ namespace Start_a_Town_
         static public readonly PlanDef Idle = new("Idleing", typeof(TaskBehaviorIdle)) { Idle = true };
         static public readonly PlanDef Wander = new("Wandering", typeof(TaskBehaviorWander)) { Idle = true };
         static public readonly PlanDef Depart = new("Departing", typeof(TaskBehaviorDepart), InteractionDefOf.Depart);
-        static public readonly PlanDef DropInventory = new("Dropping item from Inventory", typeof(TaskBehaviorDropInventoryItem));
         static public readonly PlanDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem), InteractionDefOf.Drop);
         static public readonly PlanDef Equip = new("Equipping", typeof(BehaviorEquipItemNew), InteractionDefOf.Equip);
         static public readonly PlanDef Unequip = new("Unquipping", typeof(BehaviorUnequip), InteractionDefOf.Unequip);

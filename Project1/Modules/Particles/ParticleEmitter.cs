@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.Components.Physics;
-using Start_a_Town_.Net;
-using Start_a_Town_.Components;
+using Project1.Framework.Physics;
+using Project1.Framework.Blocks;
 
 namespace Start_a_Town_.Particles
 {
     public abstract class ParticleEmitter : ICloneable
     {
         public List<Particle> Particles = new List<Particle>();
-        public Random Random = new Random();
+        public Random Random = new();
         public float Radius;
         public Vector3 Offset = Vector3.Zero;
         public float ParticleWeight;
@@ -69,7 +68,7 @@ namespace Start_a_Town_.Particles
         /// <param name="global"></param>
         public void Update(MapBase map, Vector3 global)
         {
-            if (map.Net is Server)
+            if (map.Net.IsServer)
                 throw new Exception();
             if (!HasPhysics)
             {

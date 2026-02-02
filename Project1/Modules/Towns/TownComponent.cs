@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {

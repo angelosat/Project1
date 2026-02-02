@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Start_a_Town_.Framework.AI.NodeTypes;
 using Start_a_Town_.AI;
+using Project1.Core.Needs;
 
 namespace Start_a_Town_
 {

@@ -1,8 +1,6 @@
-﻿using Start_a_Town_.Net;
-using System;
-using System.DirectoryServices.ActiveDirectory;
+﻿using Project1.Framework.Net;
+using Project1.Framework.Net.Packets;
 using System.Linq;
-using System.Net;
 
 namespace Start_a_Town_
 {
@@ -16,10 +14,7 @@ namespace Start_a_Town_
             _pBlocksUpdated = Registry.PacketHandlers.Register(OnBlocksUpdated);
             _pBlockSet = Registry.PacketHandlers.Register(OnBlockSet);
             _pBlockEntityAdded = Registry.PacketHandlers.Register(OnBlockEntityAdded);
-            //Registry.MapEventHooksServer.Register<BlockEntityRemovedEvent>(SendBlockEntityRemoved);
-            //Registry.MapEventHooksServer.Register<BlockEntityAddedEvent>(SendBlockEntityAdded);
-            //Registry.MapEventHooksServer.Register<BlockSetEvent>(SendBlockSet);
-            //Registry.MapEventHooksServer.Register<BlocksChangedEvent>(SendBlocksChanged);
+
 
             Registry.PlayerInputEventHooks.Register<PlayerChangedBlockOwnerEvent>(HandlePlayerChangedBlockOwnerEvent);
             Registry.MapEventHooksServer.Register<BlockOwnerChangedEvent>(SendBlockOwnerChanged);
@@ -72,13 +67,6 @@ namespace Start_a_Town_
                 .Write(owner?.RefId ?? EntityRefId.Null);
         }
 
-        //private static void SendBlockOwnerChanged(NetEndpoint endpoint, BlockEntity entity, Actor owner)
-        //{
-        //    endpoint.BeginPacketImmediate(_pOwnerChanged)
-        //        .Write(entity.Map.ID)
-        //        .Write(entity.OriginGlobal)
-        //        .Write(owner.RefId);
-        //}
         private static void OnBlockOwnerChanged(NetEndpoint endpoint, Packet packet)
         {
             var client = endpoint as Client;
@@ -90,8 +78,6 @@ namespace Start_a_Town_
             var owner = ownerid != EntityRefId.Null ? map.World.GetEntity<Actor>(ownerid) : null;
             var comp = entity.GetComp<BlockOwnershipComp>();
             comp.SetOwner(owner);
-            //if (endpoint is Server server)
-            //    SendBlockOwnerChanged(server, entity, owner);
         }
         private static void OnBlockOwnerChangedByPlayer(NetEndpoint endpoint, Packet packet)
         {
@@ -110,7 +96,6 @@ namespace Start_a_Town_
         private static void SendBlockEntityAdded(BlockEntityAddedEvent e)
         {
             var w = Server.Instance.BeginPacket(_pBlockEntityAdded);
-                //.Write(e.Entity.OriginGlobal);
             e.Entity.Write(w);
         }
 
@@ -145,11 +130,6 @@ namespace Start_a_Town_
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            //var args = SetBlockArgs.ReadFrom(r);
-            //var dic = new Dictionary<IntVec3, SetBlockArgs>
-            //{
-            //    { args.Global, args }
-            //};
             _ = r.ReadInt32();
             var list = r.ReadList<SetBlockArgs>();
             client.Map.SetBlockInternal(list.ToDictionary(a => a.Global, a => a));
@@ -163,7 +143,6 @@ namespace Start_a_Town_
         }
         private static void OnBlockEntityRemoved(NetEndpoint endpoint, Packet packet)
         {
-            //endpoint.Map.RemoveBlockEntity(packet.PacketReader.ReadIntVec3());
             endpoint.Map.RemoveBlockEntityInternal(packet.PacketReader.ReadIntVec3());
         }
     }

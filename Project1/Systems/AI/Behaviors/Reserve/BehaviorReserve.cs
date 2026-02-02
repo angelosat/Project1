@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.Framework.AI.NodeTypes;
+using System;
 
 namespace Start_a_Town_.AI.Behaviors
 {

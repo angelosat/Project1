@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Start_a_Town_.Framework.AI.NodeTypes;
 using Start_a_Town_.AI;
-using Start_a_Town_.AI.Behaviors;
-using Start_a_Town_.Components;
-using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
+using Project1.Framework.Entities;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {

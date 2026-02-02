@@ -12,6 +12,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #region Using Statements
+using Project1.Framework.Input;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms; // This class exposes WinForms-style key events.

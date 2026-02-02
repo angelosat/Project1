@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.StaticMaps;
+
+namespace Start_a_Town_
 {
     class DeparturePlanner : Planner
     {

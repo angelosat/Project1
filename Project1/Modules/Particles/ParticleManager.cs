@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Net;
 using Start_a_Town_.Components;
-using Start_a_Town_.Net;
 
 namespace Start_a_Town_.Particles
 {
@@ -19,7 +19,7 @@ namespace Start_a_Town_.Particles
         }
         public void AddEmitter(ParticleEmitter emitter)
         {
-            if (this.Map.Net is Net.Server)
+            if (this.Map.Net is Server)
                 return;
             this.Emitters.Add(emitter);
         }

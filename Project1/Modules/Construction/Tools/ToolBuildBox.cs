@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Blocks;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -27,7 +29,7 @@ namespace Start_a_Town_
             cam.DrawCellHighlights(sb, Block.BlockBlueprint, box, color);
         }
       
-        internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, Net.PlayerData player)
+        internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, PlayerData player)
         {
             this.DrawGrid(sb, map, camera, Color.Red);
         }

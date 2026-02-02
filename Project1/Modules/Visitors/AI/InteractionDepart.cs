@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Project1.Framework.Interactions;
+using Project1.Framework.StaticMaps;
+using System;
 namespace Start_a_Town_
 {
     class InteractionDepartLogic : InteractionLogic

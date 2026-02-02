@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Needs;
+
+namespace Start_a_Town_
 {
     class NeedTrading : NeedWorker { }
     //class NeedTrading : Need

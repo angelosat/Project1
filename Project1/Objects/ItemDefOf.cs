@@ -1,6 +1,10 @@
 ﻿using System.Linq;
-using Start_a_Town_.Components;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Skills;
+using Project1.Framework.Resources;
+using Project1.Framework.Stats;
+using Project1.Core.Gear;
+using Project1.Framework.Animations;
 
 namespace Start_a_Town_
 {

@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Project1.Framework.Blocks;
+using Project1.Framework.Input;
+using Project1.Framework.Net;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -21,31 +22,6 @@ namespace Start_a_Town_
         {
             return this.AllPositions;
         }
-
-        //internal override void OnGameEvent(GameEvent e)
-        //{
-        //    switch (e.Type)
-        //    {
-        //        case Components.Message.Types.BlocksChanged:
-        //            this.HandleBlocksChanged(e.Parameters[1] as IEnumerable<IntVec3>);
-        //            break;
-
-        //        case Components.Message.Types.MiningDesignation:
-        //            var positions = e.Parameters[0] as List<IntVec3>;
-        //            var remove = (bool)e.Parameters[1];
-        //            if (remove)
-        //                foreach (var p in positions)
-        //                    this.RemovePosition(p);
-        //            else
-        //                foreach (var p in positions)
-        //                    this.HandlePosition(p);
-        //            break;
-
-        //        default:
-        //            break;
-        //    }
-        //}
-
         void HandleBlocksChanged(CellsInvalidatedEvent e)
         {
             foreach (var global in e.Positions)
@@ -102,7 +78,7 @@ namespace Start_a_Town_
         }
         public override void Read(IDataReader r)
         {
-            this.AllPositions = new HashSet<IntVec3>(r.ReadListIntVec3());
+            this.AllPositions = [.. r.ReadListIntVec3()];
         }
         public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
         {

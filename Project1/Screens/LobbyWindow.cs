@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
+using Project1.Framework.Net.Packets;
 
 namespace Start_a_Town_.UI
 {
@@ -39,7 +40,7 @@ namespace Start_a_Town_.UI
                 },
                 EnterFunc = (e) =>
                 {
-                    PacketChat.Send(Net.Client.Instance, Net.Client.Instance.PlayerData.ID, this.Txt_Input.Text);
+                    PacketChat.Send(Project1.Framework.Net.Client.Instance, Project1.Framework.Net.Client.Instance.PlayerData.ID, this.Txt_Input.Text);
                     Txt_Input.Text = "";
                 }
             };

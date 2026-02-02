@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Start_a_Town_.Animations;
 using Start_a_Town_.Particles;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Resources;
+using Project1.Framework.Physics;
+using Project1.Framework.Stats;
+using Project1.Framework.Entities;
+using Project1.Framework.Animations;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_.Components
 {
@@ -144,7 +149,7 @@ namespace Start_a_Town_.Components
 
         public void Jump(GameObject parent)
         {
-            if (parent.Net is Net.Server)
+            if (parent.Net is Server)
             {
                 var force = Vector3.Zero;
                 var feetposition = parent.Global + Vector3.UnitZ * 0.1f;

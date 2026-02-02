@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -18,9 +18,6 @@ namespace Start_a_Town_
         }
         internal static void Send(NetEndpoint net, List<int> instanceID)
         {
-           
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
             var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
 
             w.Write(instanceID);

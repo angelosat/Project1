@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Start_a_Town_.Framework.AI.NodeTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 

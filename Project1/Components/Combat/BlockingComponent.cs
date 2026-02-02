@@ -1,5 +1,6 @@
 ﻿using System;
-using Start_a_Town_.Animations;
+using Project1.Framework.Animations;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_.Components
 {

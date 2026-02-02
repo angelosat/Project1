@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Blocks;
 using Start_a_Town_.Graphics;
 using Start_a_Town_.UI;
 using System;
@@ -146,7 +147,7 @@ namespace Start_a_Town_
             return Def.GetDefs<MaterialDef>().Where(m => m.Type == MaterialTypeDefOf.Stone || m.Type == MaterialTypeDefOf.Metal || m.Type == MaterialTypeDefOf.Wood);
         }
         
-        public override void GetTooltip(UI.Control tooltip, MapBase map, IntVec3 global, IntVec3 face)
+        public override void GetTooltip(Control tooltip, MapBase map, IntVec3 global, IntVec3 face)
         {
             base.GetTooltip(tooltip, map, global, face);
             var cell = map.GetCell(global);

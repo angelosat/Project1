@@ -1,4 +1,4 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -13,9 +13,6 @@ namespace Start_a_Town_
         internal static void Send(CraftOrder order, bool value)
         {
             var net = order.Map.Net;
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            
-            //w.Write(p);
             var bench = order.Workstation;
             var w = net.BeginPacket(p);
 

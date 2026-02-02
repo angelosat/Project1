@@ -1,4 +1,7 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Resources;
+using Project1.Framework.Stats;
+
+namespace Start_a_Town_
 {
     class ItemRoleToolWorker : ItemRoleWorker
     {

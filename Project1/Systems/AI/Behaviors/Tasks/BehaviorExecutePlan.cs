@@ -1,5 +1,5 @@
-﻿using Start_a_Town_.AI;
-using Start_a_Town_.Net;
+﻿using Start_a_Town_.Framework.AI.NodeTypes;
+using Start_a_Town_.AI;
 using System;
 using System.Collections.Generic;
 

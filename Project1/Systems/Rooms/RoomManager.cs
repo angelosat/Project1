@@ -1,10 +1,10 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
+using Project1.Framework.StaticMaps;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace Start_a_Town_
 {

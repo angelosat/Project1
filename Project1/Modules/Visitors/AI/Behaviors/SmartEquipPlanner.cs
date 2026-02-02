@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project1.Framework.Gear;
+using System;
 using System.Collections.Generic;
 
 namespace Start_a_Town_.AI.Behaviors

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Inventory;
 
 namespace Start_a_Town_.Components
 {

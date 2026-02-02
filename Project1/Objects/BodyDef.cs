@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.Animations;
+using Project1.Core.Gear;
+using Project1.Framework.Animations;
 
 namespace Start_a_Town_
 {

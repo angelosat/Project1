@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.UI;
 using Start_a_Town_.Components;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_
 {
@@ -39,7 +40,7 @@ namespace Start_a_Town_
             return phys;
         }
 
-        public override void OnTooltipCreated(GameObject parent, UI.Control tooltip)
+        public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
             tooltip.Color = GetQualityColor();
             var namelabel = new Label(Vector2.Zero, parent.Name, tooltip.Color, Color.Black, UIManager.FontBold) { TextColorFunc = () => tooltip.Color, TextFunc = () => parent.Name };

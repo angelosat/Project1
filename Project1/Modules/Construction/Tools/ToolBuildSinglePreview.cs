@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Blocks;
+using Project1.Framework.Input;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -74,7 +77,7 @@ namespace Start_a_Town_
 
             this.Block.DrawInteractionCells(sb, cam, map, global, this.Orientation);
         }
-        internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, Net.PlayerData player)
+        internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, PlayerData player)
         {
             this.DrawAfterWorld(sb, map);
         }

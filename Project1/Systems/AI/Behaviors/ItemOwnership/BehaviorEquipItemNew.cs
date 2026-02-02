@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Core.Interactions;
+using Start_a_Town_.Framework.AI.NodeTypes;
+using System.Collections.Generic;
 
 namespace Start_a_Town_.AI.Behaviors
 {

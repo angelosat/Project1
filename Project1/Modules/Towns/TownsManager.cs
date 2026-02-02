@@ -1,8 +1,9 @@
-﻿using Start_a_Town_.UI;
+﻿using Project1.Framework.Net;
+using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Towns
 {
-    class TownsManager : GameComponent
+    class TownsManager : GameSystem
     {
         public override void Initialize()
         {

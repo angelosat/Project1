@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Project1.Framework.Resources;
+using Project1.Framework.Skills;
+using System;
 
 namespace Start_a_Town_
 {

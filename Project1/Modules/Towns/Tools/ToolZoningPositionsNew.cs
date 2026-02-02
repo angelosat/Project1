@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Blocks;
+using Project1.Framework.Input;
+using Project1.Framework.Input.Tools;
+using Project1.Framework.Input.Tools.CellRendering;
+using Project1.Framework.Net;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_
@@ -167,7 +172,7 @@ namespace Start_a_Town_
             this.Enabled = r.ReadBoolean();
             this.Begin = r.ReadVector3();
         }
-        internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, Net.PlayerData player)
+        internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, PlayerData player)
         {
             DrawGrid(sb, map, camera, Color.Red);
         }

@@ -2,7 +2,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
+using Project1.Framework;
+using Project1.Framework.Input;
+using Project1.Framework.Input.Hotkeys;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -23,7 +26,7 @@ namespace Start_a_Town_
         public override GameScreen Initialize(NetEndpoint net)
         {
             var camera = net.Map.Camera;
-            if (net is Net.Server)
+            if (net is Server)
                 DrawServer = true;
             WindowManager = new UIManager();
             NotificationArea = new NotificationArea();
@@ -43,7 +46,6 @@ namespace Start_a_Town_
             SelectionManager.Instance.Bind(net);
             SelectionManager.Instance.Init(this);
             TooltipManager.Bind(net);
-            //this.Events.ListenTo<IEventPayload>(e => { if (e is INetworkSendable ns) ns.SendTo(Client.Instance); });
             Registry.PlayerInputEventHooks.HookTo(this.Events);
             return this;
         }
@@ -57,7 +59,6 @@ namespace Start_a_Town_
             ToolManager.Update(map, this.Scene);
             map.Camera.Update(map);
             WindowManager.Update(game, gt);
-            //this.NameplateManager.Update(this.Scene);
             NotificationArea.Update();
         }
 

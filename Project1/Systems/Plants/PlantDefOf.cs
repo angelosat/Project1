@@ -1,4 +1,8 @@
-﻿using Start_a_Town_.Components;
+﻿using Project1.Framework.Animations;
+using Project1.Framework.Physics;
+using Project1.Framework.Resources;
+using Project1.Framework.Skills;
+using Start_a_Town_.Components;
 using System.Linq;
 
 namespace Start_a_Town_

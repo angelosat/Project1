@@ -1,5 +1,5 @@
 ﻿using System;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -13,10 +13,6 @@ namespace Start_a_Town_
         }
         public static void Send(NetEndpoint net, Type zoneType, int zoneID)
         {
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write();
-            //var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketPlayerZoneDelete);
-
             net.BeginPacketImmediate(_pPlayerZoneDelete)
                 .Write(zoneType.FullName)
                 .Write(zoneID);

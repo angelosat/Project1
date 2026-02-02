@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Start_a_Town_.UI;
 using Start_a_Town_.Components;
-using Start_a_Town_.Net;
+using Project1.Framework.Entities;
+using Project1.Framework.Input;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -187,13 +189,13 @@ namespace Start_a_Town_
         {
             var actor = actors.First().Object as Actor;
             if (actor.IsTownMember)
-                PacketControlNpc.Send(Net.Client.Instance, Net.Client.Instance.GetPlayer().ID, actor.RefId);
+                PacketControlNpc.Send(Client.Instance, Client.Instance.GetPlayer().ID, actor.RefId);
         }
         private void ToggleCitizenship(List<TargetArgs> actors)
         {
             var actor = actors.First();
             Client.Instance.BeginPacket(p)
-                .Write(Net.Client.Instance.GetPlayer().ID)
+                .Write(Client.Instance.GetPlayer().ID)
                 .Write(actor.Object.RefId);
         }
         private static void ReceiveCitizenshipToggle(NetEndpoint net, Packet pck)
@@ -208,7 +210,7 @@ namespace Start_a_Town_
                 //var w = net.GetOutgoingStreamOrderedReliable();
                 //w.Write(p);
                 net.BeginPacket(p)
-                    .Write(Net.Client.Instance.GetPlayer().ID)
+                    .Write(Client.Instance.GetPlayer().ID)
                     .Write(actor.RefId);
             }
         }
@@ -217,7 +219,7 @@ namespace Start_a_Town_
             switch((Message.Types)e.Type)
             {
                 case Message.Types.PlayerControlNpc:
-                    if (parent.Net is Net.Client)
+                    if ((parent.Net is Client))
                     {
                         if (SelectionManager.GetSelectedEntities().Contains(parent))
                         {

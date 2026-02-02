@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
+using Project1.Framework.Input;
+using Project1.Framework.Input.Tools.CellRendering;
+using Project1.Framework.Blocks;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {

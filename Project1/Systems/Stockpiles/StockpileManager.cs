@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Framework.StaticMaps.Components;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Start_a_Town_
 {
     public class StockpileManager : MapComponent
     {
-        //readonly Dictionary<IntVec3, Stockpile> CellsToStockpiles = [];
         readonly List<Stockpile> _allStockpiles = [];
         readonly Dictionary<ZoneId, Stockpile> _allStockpilesById = [];
         public IReadOnlyList<Stockpile> Stockpiles => this._allStockpiles;
@@ -15,10 +15,6 @@ namespace Start_a_Town_
         {
             map.Events.ListenTo<ZoneCreatedEvent>(OnZoneCreated);
             map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
-
-            //map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-            //map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
-            //map.Events.ListenTo<EntityAtRestEvent>(OnEntityAtRest);
 
             map.Events.ListenTo<EntityEnteredZoneEvent>(OnEntityEnteredZone);
             map.Events.ListenTo<EntityExitedZoneEvent>(OnEntityExitedZone);
@@ -36,35 +32,6 @@ namespace Start_a_Town_
                 if (stockpile.Accepts(e.Entity))
                     stockpile.AcceptedItems.Add(e.Entity);
         }
-
-        //private void OnEntitySpawned(EntitySpawnedEvent e)
-        //{
-        //    var supportCell = e.Entity.Cell.Below;
-        //    if (!this.CellsToStockpiles.TryGetValue(supportCell, out var stockpile))
-        //        return;
-        //    if (!stockpile.Accepts(e.Entity))
-        //        return;
-        //    stockpile.AddItem(e.Entity);
-        //}
-        //private void OnEntityDespawned(EntityDespawnedEvent e)
-        //{
-        //    var supportCell = e.Entity.Cell.Below;
-        //    if (!this.CellsToStockpiles.TryGetValue(supportCell, out var stockpile))
-        //        return;
-        //    stockpile.RemoveItem(e.Entity);
-        //}
-        //private void OnEntityAtRest(EntityAtRestEvent e)
-        //{
-        //    var cell = e.Entity.Cell;
-        //    if (this.CellsToStockpiles.TryGetValue(cell, out var stockpile))
-        //    {
-        //        if (e.AtRest)
-        //            stockpile.AddItem(e.Entity);
-        //        else
-        //            stockpile.RemoveItem(e.Entity);
-        //    }
-        //}
-
         protected internal override void ResolveReferences()
         {
             var zonemanager = this.Map.Town.ZoneManager;
@@ -73,8 +40,6 @@ namespace Start_a_Town_
             {
                 this._allStockpiles.Add(s);
                 this._allStockpilesById[s.ID] = s;
-                //foreach (var cell in s.Cells)
-                //    this.CellsToStockpiles[cell] = s;
             }
 
             foreach (var entity in this.Map.Entities)
@@ -84,9 +49,6 @@ namespace Start_a_Town_
                 if (zone is Stockpile sp && sp.Accepts(entity))
                     sp.AcceptedItems.Add(entity);
             }
-                //if (this.CellsToStockpiles.TryGetValue(entity.Cell.Below, out var stockpile))
-                //    if (stockpile.Accepts(entity))
-                //        stockpile.AddItem(entity);
         }
 
         private void OnZoneDeleted(ZoneDeletedEvent e)
@@ -95,8 +57,6 @@ namespace Start_a_Town_
                 return;
             this._allStockpiles.Remove(stockpile);
             this._allStockpilesById.Remove(stockpile.ID);
-            //foreach (var cell in stockpile.Positions)
-            //    this.CellsToStockpiles.Remove(cell);
         }
         private void OnZoneCreated(ZoneCreatedEvent e)
         {
@@ -104,9 +64,6 @@ namespace Start_a_Town_
                 return;
             this._allStockpiles.Add(stockpile);
             this._allStockpilesById[stockpile.ID] = stockpile;
-
-            //foreach (var cell in stockpile.Positions)
-            //    this.CellsToStockpiles[cell] = stockpile;
         }
         public override void Tick() { }
     }

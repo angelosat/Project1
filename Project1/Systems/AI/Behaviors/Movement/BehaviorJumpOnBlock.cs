@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Project1.Framework.Blocks;
+using Start_a_Town_.Framework.AI.NodeTypes;
+using System;
 using System.Linq;
 
 namespace Start_a_Town_.AI.Behaviors

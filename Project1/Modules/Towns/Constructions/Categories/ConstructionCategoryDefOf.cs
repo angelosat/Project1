@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Input.Tools.Building;
+
+namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     static class ConstructionCategoryDefOf

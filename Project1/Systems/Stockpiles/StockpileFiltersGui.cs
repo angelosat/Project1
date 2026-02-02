@@ -1,6 +1,5 @@
-﻿using Start_a_Town_.UI;
-using System;
-using System.Collections.Generic;
+﻿using Project1.Framework.Net;
+using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
@@ -14,13 +13,9 @@ namespace Start_a_Town_
             var entries = CraftingGuiBuilder.Build(stockpile);
             this.ListCollapsible = new ListCollapsibleNewNew();
             this.ListCollapsible.BuildNew(entries);
-            Net.Client.Instance.Map.Events.ListenTo<StockpileUpdatedEvent>(OnStockpileUpdatedEvent);
+            Client.Instance.Map.Events.ListenTo<StockpileUpdatedEvent>(OnStockpileUpdatedEvent);
 
-            //var panel = new Panel() { AutoSize = false }.SetClientDimensions(200, 200);
-            //var box = this.ListCollapsible.ToScrollableBox(200, 400);
             var box = new ScrollableBoxNewNewNew(this.ListCollapsible, 200, 400, ScrollModes.Vertical);
-            //panel.AddControls(box);
-            //this.AddControls(panel);
             this.AddControls(box);
         }
 

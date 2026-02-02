@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using Start_a_Town_.Core;
-using Start_a_Town_.Net;
+using Start_a_Town_.Framework.AI.NodeTypes;
+using Project1.Framework.Interactions;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {

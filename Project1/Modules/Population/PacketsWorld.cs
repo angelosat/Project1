@@ -1,8 +1,4 @@
-﻿using Start_a_Town_.Net;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {

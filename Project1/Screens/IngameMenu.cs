@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Project1.Framework.Net;
+using Start_a_Town_.UI;
+using System;
 
-namespace Start_a_Town_.UI
+namespace Start_a_Town_.Core.UI
 {
     class IngameMenu : Window
     {
@@ -22,7 +24,7 @@ namespace Start_a_Town_.UI
             Button exit = new("Exit to desktop", Exit_Click, w);
 
             this.PanelButtons.AddControlsVertically(settings, debug, help, quit);
-            Client.Controls.Add(this.PanelButtons);
+            this.Client.Controls.Add(this.PanelButtons);
             SizeToControl(this.PanelButtons);
             this.AnchorToScreenCenter();
             Title = "Options";
@@ -30,7 +32,7 @@ namespace Start_a_Town_.UI
 
         void Saveexit_Click()
         {
-            Net.Client.Instance.Disconnect();
+            Project1.Framework.Net.Client.Instance.Disconnect();
             ScreenManager.Remove();
         }
 
@@ -40,8 +42,8 @@ namespace Start_a_Town_.UI
                 new ContextAction(() => "Yes",
                     () =>
                     {
-                        Net.Client.Instance.Disconnect();
-                        Net.Server.Stop();
+                        Project1.Framework.Net.Client.Instance.Disconnect();
+                        Server.Stop();
                         ScreenManager.Remove();
                     }),
             new ContextAction(() => "No", () => { })).ShowDialog();

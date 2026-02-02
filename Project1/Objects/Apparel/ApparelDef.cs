@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Gear;
+
+namespace Start_a_Town_
 {
     public class ApparelDef
     {

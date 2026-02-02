@@ -1,7 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Blocks;
+using Project1.Framework.Net;
+using Project1.Framework.Net.Packets;
+using Project1.Framework.StaticMaps;
+using Project1.Framework.StaticMaps.Regions;
 using Start_a_Town_.Components;
-using Start_a_Town_.Net;
 using Start_a_Town_.Particles;
 using Start_a_Town_.UI;
 using System;

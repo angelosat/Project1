@@ -1,8 +1,11 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Towns;
-using Start_a_Town_.Net;
 using Start_a_Town_.UI;
+using Project1.Framework.Input;
+using Project1.Framework.Input.Tools.Building;
+using Project1.Framework.Blocks;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -29,7 +32,6 @@ namespace Start_a_Town_
         }
         private static void RemoveZone(Vector3 min, Vector3 max, bool remove)
         {
-            //var a = new ToolBlockBuildOld.Args(ToolBlockBuildOld.Modes.Box, min, max, true, InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu), false, 0);
             var a = new ToolBlockBuild.Args(BuildToolDefOf.Box, min, max, true, InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu), false, 0);
             PacketDesignateConstruction.SendRemove(Client.Instance, a);
         }

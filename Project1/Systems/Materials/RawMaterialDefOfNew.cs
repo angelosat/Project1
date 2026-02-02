@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Animations;
+
+namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     internal static class RawMaterialDefOfNew

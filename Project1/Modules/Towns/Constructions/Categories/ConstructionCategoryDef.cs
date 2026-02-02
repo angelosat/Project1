@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Start_a_Town_.Components.Crafting;
+﻿using System.Collections.Generic;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
+using Project1.Framework.Input.Tools.Building;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {

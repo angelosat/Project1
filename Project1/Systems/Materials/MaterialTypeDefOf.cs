@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Skills;
+
+namespace Start_a_Town_
 {
     [EnsureStaticCtorCall]
     static class MaterialTypeDefOf

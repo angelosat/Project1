@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
 using Microsoft.Xna.Framework;
 using Start_a_Town_;
+using Project1.Framework.Blocks;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -19,7 +19,7 @@ namespace Start_a_Town_
 
         bool Active;
 
-        readonly public HashSet<int> Rooms = new();
+        readonly public HashSet<int> Rooms = [];
 
         public Town Town;
 

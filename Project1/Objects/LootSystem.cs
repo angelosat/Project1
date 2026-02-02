@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
 using System;
 
 namespace Start_a_Town_

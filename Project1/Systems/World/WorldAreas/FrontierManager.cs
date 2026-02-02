@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Project1.Core.Effects;
+using Project1.Framework.Net;
+using Project1.Framework.StaticMaps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +27,6 @@ namespace Start_a_Town_
         void Enter(Actor actor);
         void Exit(Actor actor);
         FrontierDef PlaceAtRandom(Entity entity);
-        //FrontierDef PlaceAtRandomAndSync(Actor actor);
         FrontierDef PlaceAt(Entity entity, WorldSpacePosition pos);
         FrontierWrapper GetFrontier(Entity entity);
         void Tick();
@@ -78,8 +79,6 @@ namespace Start_a_Town_
 
         public void Tick()
         {
-            //if (world.Net is not Server server)
-            //    return;
             var world = this.World;
             float step = 1f / Ticks.PerGameHour;
             var snapshot = ActorPositions.ToList();
@@ -103,7 +102,6 @@ namespace Start_a_Town_
                     {
                         world.Map.Spawn(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
                         server.SyncReport($"{actor.Name} has arrived!");
-                        //AILog.SyncWrite(actor, "I arrived in town!");
                         actor.AI.State.Log.Write("I arrived in town.");
                     }
                     this.Exit(actor);
@@ -145,7 +143,6 @@ namespace Start_a_Town_
         }
         public void Enter(Actor actor)
         {
-            //var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
             actor.Effects.Apply(EffectDefOf.Adventuring);
             this.ActorPositions.Add(actor, 0);
             actor.Map.Despawn(actor);
@@ -154,12 +151,7 @@ namespace Start_a_Town_
                 return;
             server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.Label}!");
         }
-        //public FrontierDef PlaceAtRandomAndSync(Actor actor)
-        //{
-        //    var fr = this.PlaceAtRandom(actor);
-        //    Packets.SendPlaceAt(actor, this.ActorPositions[actor]);
-        //    return fr;
-        //}
+     
         public FrontierDef PlaceAtRandom(Entity entity)
         {
             var tier = 1 + entity.World.Random.Next(this.Frontiers.Count);

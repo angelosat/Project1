@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -15,10 +14,7 @@ namespace Start_a_Town_
         internal static void Send(CraftOrder order, Stockpile input, Stockpile output)
         {
             var net = order.Map.Net;
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
             var w = net.BeginPacket(p);
-            //w.Write(order.Workstation);
             w.Write(order.ID);
             w.Write(input?.ID ?? -1);
             w.Write(output?.ID ?? -1);
@@ -28,8 +24,6 @@ namespace Start_a_Town_
             var r = pck.PacketReader;
             var station = r.ReadIntVec3();
             var index = r.ReadInt32();
-            //var bench = net.Map.Town.CraftingManager.GetWorkstation(station);
-            //var order = bench.GetOrder(index);
             var order = net.Map.Town.CraftingManager.GetOrder(index);
             var manager = net.Map.Town.ZoneManager;
             var input = r.ReadInt32() is int inputID && inputID == -1 ? null : manager.GetZone<Stockpile>(inputID);

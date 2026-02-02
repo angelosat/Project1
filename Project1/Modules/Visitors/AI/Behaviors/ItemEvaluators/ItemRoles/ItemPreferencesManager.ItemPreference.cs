@@ -1,14 +1,11 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Start_a_Town_
 {
     public partial class ItemPreferencesManager
     {
-        //public sealed class ItemPreference : Inspectable, ISaveable, IDictionarySyncable<ItemRoleDef, ItemPreference>// ISerializableNew<ItemPreference>, ICopyable<ItemPreference>, IKeyable<ItemRoleDef>
-        public struct ItemPreference : ISaveable, ISaveableNewNew<ItemPreference>, IDictionarySyncable<ItemRoleDef, ItemPreference>// ISerializableNew<ItemPreference>, ICopyable<ItemPreference>, IKeyable<ItemRoleDef>
+        public struct ItemPreference : ISaveable, ISaveableNewNew<ItemPreference>, IDictionarySyncable<ItemRoleDef, ItemPreference>
         {
             internal ItemRoleDef Role;
             int _itemRefId;
@@ -116,15 +113,5 @@ namespace Start_a_Town_
             public ItemRoleDef GetKey() => this.Role;
             public bool ShouldCopy() => this.Item is not null;
         }
-
-        //internal void ApplyDelta(ItemRoleDef role, Entity olditem, Entity newitem, int score)
-        //{
-        //    this.UpdatePref(role, newitem, score);
-
-        //    //if (newitem is null)
-        //    //    this.PreferencesNew[role].Set(null, 0);
-        //    //else
-        //    //    this.PreferencesNew[role].Set(newitem, score);
-        //}
     }
 }

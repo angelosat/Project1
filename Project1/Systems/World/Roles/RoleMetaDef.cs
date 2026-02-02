@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project1.Framework.Needs;
+using System;
 namespace Start_a_Town_
 {
     public class RoleMetaDef(string name, Type wrapperType, Type workerType, NeedDef[] needs) : Def(name)

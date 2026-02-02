@@ -1,6 +1,5 @@
 ﻿using System.Linq;
-using Start_a_Town_.Net;
-using System.IO;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -68,7 +67,6 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     order.Enabled = enabled;
-                //net.GetOutgoingStreamOrderedReliable().Write(PacketOrderSync, player.ID, tavern.ID, order.ID, enabled);
                 net.BeginPacket(PacketOrderSync)
                     .Write(player.ID)
                     .Write(tavern.ID)
@@ -85,7 +83,6 @@ namespace Start_a_Town_
                 if (net is Client)
                     order.Enabled = enabled;
                 else
-                    //net.GetOutgoingStreamOrderedReliable().Write(PacketOrderSync, pl.ID, tavern.ID, order.ID, enabled);
                     net.BeginPacket(PacketOrderSync)
                         .Write(pl.ID)
                         .Write(tavern.ID)
@@ -97,8 +94,6 @@ namespace Start_a_Town_
             {
                 if (net is Server)
                     order.ToggleReagentRestrictions(reagent, defs, mats, matTypes);
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketOrderUpdateIngredients);
                 var w = net.BeginPacket(PacketOrderUpdateIngredients);
 
                 w.Write(player.ID);

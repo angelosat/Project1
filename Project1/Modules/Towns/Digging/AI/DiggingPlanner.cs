@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project1.Core.Gear;
+using System;
 
 namespace Start_a_Town_
 {

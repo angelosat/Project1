@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
+using Project1.Framework.Net.Packets;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Modules.Base
 {
-    class GameManager : GameComponent
+    class GameManager : GameSystem
     {
         public override void Initialize()
         {

@@ -1,4 +1,4 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -29,19 +29,15 @@ namespace Start_a_Town_
         {
             this.Actor = actor;
         }
-
         private void EnqueueNewSpawnedItem(EntitySpawnedEvent e)
         {
             if (!this.TempIgnore.ContainsKey(e.Entity.RefId))
                 this.notScannedYet.Enqueue(e.Entity);
         }
-        
-
         Control GetGui()
         {
             var table = new Table<ItemPreference>()
                 .AddColumn("role", 128, p => new Label(p.Role.Label))
-                //.AddColumn("item", 128, p => new Label(() => p.Item?.DebugName ?? "none", () => p.Item?.Select()))
                 .AddColumn("item", 64, p => new Label(() => p.Item?.Label ?? "none", () => p.Item?.Select()))
                 .AddColumn("score", 32, p => new Label(() => p.InventoryScore.ToString()));
             table.AddItems(this.PrefsInternal.Values);
@@ -55,7 +51,6 @@ namespace Start_a_Town_
                 else table.AddItem(pref);
             }
             
-            //var box = new ScrollableBoxNewNewNew(table, table.RowWidth, table.RowHeight * 16, ScrollModes.Vertical)
             var box = new ScrollableBoxNewNewNew(table, table.RowWidth, 200, ScrollModes.Vertical)
                 .ToWindow($"{this.Actor.Name}'s Item Preferences");
             box.HideAction = () =>
@@ -64,11 +59,6 @@ namespace Start_a_Town_
                 this.PrefRemoved -= table.RemoveItem;
             };
             return box;
-        }
-
-        static void Init()
-        {
-            GenerateItemRolesAll();
         }
 
         private void EvaluateOne()

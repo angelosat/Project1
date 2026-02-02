@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework.Input;
+using Project1.Framework.Input;
 
 namespace Start_a_Town_
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Start_a_Town_.Framework.AI.NodeTypes;
 
 namespace Start_a_Town_.AI.Behaviors
 {
@@ -48,7 +48,7 @@ namespace Start_a_Town_.AI.Behaviors
             if (this.Timer == 0)
             {
                 Refresh(parent, state);
-                if (net is Client)
+                if (net.IsClient)
                     state.InSync = false;
 
                 parent.Direction = this.Direction;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Framework.Stats;
+using System.Collections.Generic;
 
 namespace Start_a_Town_
 {

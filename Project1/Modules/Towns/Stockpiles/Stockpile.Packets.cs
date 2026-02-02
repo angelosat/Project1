@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -19,8 +18,6 @@ namespace Start_a_Town_
                 var net = stockpile.Map.Net;
                 if (net is Server)
                     stockpile.Settings.Priority = p;
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(PacketStockpileSync);
                 var w = stockpile.Map.Net.BeginPacket(PacketStockpileSync);
 
                 w.Write(stockpile.ID);

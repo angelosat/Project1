@@ -1,9 +1,8 @@
-﻿using Start_a_Town_.Components;
-using Start_a_Town_.Net;
+﻿using Project1.Framework.Entities;
+using Project1.Framework.Inventory;
+using Project1.Framework.Net;
 using Start_a_Town_.UI;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -105,7 +104,6 @@ namespace Start_a_Town_
                 item.SyncSpawnNew(this.Owner.Map);
             }
             this.Owner.SyncDispose();
-            //this.Order.UnfinishedItem = null;
         }
         internal override void SaveExtra(SaveTag tag)
         {

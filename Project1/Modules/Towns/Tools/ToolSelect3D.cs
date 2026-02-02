@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Blocks;
+using Project1.Framework.Input;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Towns

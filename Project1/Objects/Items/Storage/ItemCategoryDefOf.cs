@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Stats;
+
+namespace Start_a_Town_
 {
     static class ItemCategoryDefOf
     {

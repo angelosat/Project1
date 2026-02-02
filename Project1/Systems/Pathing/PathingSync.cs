@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Blocks;
+using Start_a_Town_.Helpers;
 using Start_a_Town_.PathFinding;
 
 namespace Start_a_Town_
@@ -14,7 +16,7 @@ namespace Start_a_Town_
         const float CostStraight = 10, CostDiag = 14;
         public int Ticks = 0;
 
-        readonly PriorityQueue<float, Node> Open = new();
+        readonly MyPriorityQueue<float, Node> Open = new();
         readonly List<Node> Closed = new();
         readonly HashSet<Vector3> Handled = new();
 

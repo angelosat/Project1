@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Start_a_Town_.UI;
 using Start_a_Town_.Components;
+using Project1.Framework.Inventory;
+using Project1.Framework.Entities;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -50,7 +53,7 @@ namespace Start_a_Town_
             tag.TryGetTagValue<int>("Owner", v => this.OwnerRef = v);
         }
 
-        public override void OnTooltipCreated(GameObject parent, UI.Control tooltip)
+        public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
             if (parent.Net == null)
                 return;
@@ -73,7 +76,7 @@ namespace Start_a_Town_
                 LeftClickAction = () =>
                 {
                     //150, 400
-                    var listNpc = new ListBoxNoScroll<GameObject, Label>(o => new Label(o?.Name ?? "None", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, gameObject.RefId, -1)));
+                    var listNpc = new ListBoxNoScroll<GameObject, Label>(o => new Label(o?.Name ?? "None", () => PacketPlayerSetItemOwner.Send(Client.Instance, gameObject.RefId, -1)));
                     listNpc.AddItems(gameObject.Map.Town.GetMembers().Prepend(null));
                     listNpc.Toggle();
                 }
@@ -84,7 +87,7 @@ namespace Start_a_Town_
             var comp = gameObject.GetComponent<OwnershipComponent>();
             var setownercombo = new ComboBoxNewNew<GameObject>(150, "Owner",
                 A => A?.Name ?? "None",
-                o => PacketPlayerSetItemOwner.Send(Net.Client.Instance, gameObject.RefId, o != null ? o.RefId : -1),
+                o => PacketPlayerSetItemOwner.Send(Client.Instance, gameObject.RefId, o != null ? o.RefId : -1),
                 () => comp.OwnerRef == -1 ? null : gameObject.World.GetEntity(comp.OwnerRef),
                 () => alllist.Prepend(null));
 
@@ -120,7 +123,7 @@ namespace Start_a_Town_
             //var parent = this.ItemOwner;
             //dimensions 200, 200, 
             if (ActorList is null)
-                ActorList = new ListBoxNoScroll<Actor, Button>(a => new Button(a?.Name ?? "none", () => PacketPlayerSetItemOwner.Send(Net.Client.Instance, this.Owner.RefId, a?.RefId ?? -1)))
+                ActorList = new ListBoxNoScroll<Actor, Button>(a => new Button(a?.Name ?? "none", () => PacketPlayerSetItemOwner.Send(Client.Instance, this.Owner.RefId, a?.RefId ?? -1)))
                                                                    .AddItems(this.Owner.Map.Town.GetMembers().Prepend(null))
                                                                    .ToPanelLabeled("Select owner")
                                                                    .HideOnRightClick()

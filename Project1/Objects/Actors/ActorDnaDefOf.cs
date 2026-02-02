@@ -1,4 +1,10 @@
-﻿using Start_a_Town_.AI.Behaviors;
+﻿using Start_a_Town_.Framework.AI.NodeTypes;
+using Start_a_Town_.AI.Behaviors;
+using Project1.Framework.Skills;
+using Project1.Framework.Attributes;
+using Project1.Framework.Resources;
+using Project1.Core.Needs;
+using Project1.Core.Gear;
 
 namespace Start_a_Town_
 {

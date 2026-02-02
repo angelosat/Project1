@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using Start_a_Town_.Components;
+using Project1.Core.Needs;
+using Project1.Framework.Needs;
 
 namespace Start_a_Town_.AI
 {

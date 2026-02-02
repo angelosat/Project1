@@ -1,5 +1,5 @@
-﻿using SharpDX.Direct3D9;
-using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

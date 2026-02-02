@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.AI.Behaviors;
+﻿using Start_a_Town_.Framework.AI.NodeTypes;
+using Start_a_Town_.AI.Behaviors;
 using System.Collections.Generic;
 
 namespace Start_a_Town_

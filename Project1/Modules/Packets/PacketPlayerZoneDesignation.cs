@@ -1,5 +1,5 @@
-﻿using Start_a_Town_.Net;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -13,7 +13,6 @@ namespace Start_a_Town_
         }
         static public void Send(NetEndpoint net, ZoneDef zoneDef, int zoneID, Vector3 begin, int w, int h, bool remove)
         {
-            //var stream = net.BeginPacketNew(ReliabilityType.OrderedReliable, PacketPlayerZoneDesignation);
             var stream = net.BeginPacketImmediate(_pPlayerZoneDesignation);
 
             stream.Write(zoneDef.Name);
@@ -26,7 +25,6 @@ namespace Start_a_Town_
         static public void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            //var zoneType = Type.GetType(r.ReadString());
             var zoneType = Def.GetDef<ZoneDef>(r.ReadString());
             var zoneID = r.ReadInt32();
             var begin = r.ReadVector3();

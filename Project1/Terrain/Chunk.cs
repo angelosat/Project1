@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Blocks;
+using Project1.Framework.Input;
+using Project1.Framework.Net;
 using Start_a_Town_.Components;
-using Start_a_Town_.Net;
 using Start_a_Town_.Terraforming;
 using System;
 using System.Collections.Generic;
@@ -21,14 +23,10 @@ namespace Start_a_Town_
         {
             Chunk chunk;
             var w = new DataWriter();
-            //using (BinaryWriter w = new(new MemoryStream()))
-            //{
-                this.Write(w);
-                w.BaseStream.Position = 0;
-                //using BinaryReader r = new(w.BaseStream);
-                using DataReader r = new(w.BaseStream);
-                chunk = Chunk.Create(r);
-            //}
+            this.Write(w);
+            w.BaseStream.Position = 0;
+            using DataReader r = new(w.BaseStream);
+            chunk = Chunk.Create(r);
             chunk.Map = this.Map;
             return chunk;
         }
@@ -823,13 +821,13 @@ namespace Start_a_Town_
                 }
                 catch (IOException)
                 {
-                    Net.Server.Instance.ConsoleBox.Write(Color.Red, "SERVER", "Error saving Chunk " + copy.MapCoords.ToString());
+                    Server.Instance.ConsoleBox.Write(Color.Red, "SERVER", "Error saving Chunk " + copy.MapCoords.ToString());
                     // recover back up here?
                 }
             else
                 File.Move(fullpath + newFile, fullpath + filename);
 
-            Net.Server.Instance.ConsoleBox.Write(Color.Lime, "SERVER", "Chunk " + copy.MapCoords.ToString() + " saved succesfully \"" + directory + filename + "\"");
+            Server.Instance.ConsoleBox.Write(Color.Lime, "SERVER", "Chunk " + copy.MapCoords.ToString() + " saved succesfully \"" + directory + filename + "\"");
         }
         internal string SaveToFile(string filename)
         {

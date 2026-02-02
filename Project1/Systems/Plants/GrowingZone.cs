@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Blocks;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -140,7 +141,6 @@ namespace Start_a_Town_
             var map = this.Map;
             if (this.Cells.Contains(global))
             {
-                //if (!Block.IsBlockSolid(map, global) || map.GetMaterial(global) != MaterialDefOf.Soil)
                 if(map.GetCell(global).Material != MaterialDefOf.Soil)
                 {
                     this.RemovePosition(global);
@@ -209,7 +209,6 @@ namespace Start_a_Town_
 
                     this.CachedSowing.Add(pos);
                 }
-                //else if (block.GetMaterial(cellData) == MaterialDefOf.Soil)
                 else if (cell.Material == MaterialDefOf.Soil)
                 {
                     this.CachedTilling.Add(pos);
@@ -231,9 +230,6 @@ namespace Start_a_Town_
             foreach (var pos in this.Cells)
             {
                 var above = pos.Above;
-                //var grownPlants = this.Town.Map.GetObjects(above).Where(p => p.PlantComponent.IsHarvestable);
-                //foreach (var obj in grownPlants)
-                //    yield return obj;
                 var plants = this.Town.Map.GetEntitiesAt(above);
                 foreach (var p in plants)
                     if (p.TryGetComponent<PlantComponent>(out var comp) && comp.IsHarvestable)
@@ -275,11 +271,6 @@ namespace Start_a_Town_
                     new CheckBoxNew("Tilling", () => Packets.ToggleTilling(growzone), () => growzone.Tilling),
                     new CheckBoxNew("Planting", () => Packets.TogglePlanting(growzone), () => growzone.Planting),
                     new CheckBoxNew("Harvesting", () => Packets.ToggleHarvesting(growzone), () => growzone.Harvesting)
-
-                    //new ComboBoxNewNew<PlantProperties>(Def.GetDefs<PlantProperties>(), 128, $"Plant: ", d => $"{d?.Label ?? ""}", () => growzone?.Plant, selectPlant),
-                    //new CheckBoxNew("Tilling", () => growzone.Tilling = !growzone.Tilling, () => growzone.Tilling),
-                    //new CheckBoxNew("Planting", () => growzone.Planting = !growzone.Planting, () => growzone.Planting),
-                    //new CheckBoxNew("Harvesting", () => growzone.Harvesting = !growzone.Harvesting, () => growzone.Harvesting)
                     );
                 var win = box.ToWindow();
                 win.SetGetDataAction(o =>

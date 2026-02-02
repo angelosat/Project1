@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Animations;
+
+namespace Start_a_Town_
 {
     internal record struct CraftOrderCompletedEvent(OrderSettings Order, Actor Actor) : IEventPayload { }
     internal record struct StockpileUpdatedEvent(Stockpile Stockpile) : IEventPayload { }

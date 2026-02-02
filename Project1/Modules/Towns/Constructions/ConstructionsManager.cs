@@ -1,5 +1,8 @@
-﻿using Start_a_Town_.Components.Crafting;
-using Start_a_Town_.Net;
+﻿using Project1.Framework.Input.Hotkeys;
+using Project1.Framework.Input.Tools;
+using Project1.Framework.Input.UI;
+using Project1.Framework.Net;
+using Start_a_Town_.Components.Crafting;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;

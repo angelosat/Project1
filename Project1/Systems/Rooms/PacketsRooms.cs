@@ -1,4 +1,4 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -17,7 +17,7 @@ namespace Start_a_Town_
         {
             if (net is Server)
                 room.RoomRole = roomType;
-            var w = net.BeginPacket(PacketSetRoomType);//.Write(player.ID, room.ID, roomType?.Name ?? "");
+            var w = net.BeginPacket(PacketSetRoomType);
             w.Write(player.ID);
             w.Write(room.ID);
             w.Write(roomType?.Name ?? "");
@@ -38,8 +38,7 @@ namespace Start_a_Town_
         {
             if (net is Server)
                 room.ForceAddOwner(owner);
-            //net.GetOutgoingStreamOrderedReliable().Write(PacketSetOwner, player.ID, room.ID, owner?.RefId ?? -1);
-            var w = net.BeginPacketImmediate(PacketSetOwner);//.Write(player.ID, room.ID, owner?.RefId ?? -1);
+            var w = net.BeginPacketImmediate(PacketSetOwner);
             w.Write(player.ID);
             w.Write(room.ID);
             w.Write(owner?.RefId ?? -1);
@@ -61,8 +60,6 @@ namespace Start_a_Town_
         {
             if (net is Server)
                 room.SetWorkplace(wplace);
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(PacketSetWorkplace);
             var w = net.BeginPacket(PacketSetWorkplace);
             w.Write(player.ID);
             w.Write(room.ID);
@@ -86,7 +83,7 @@ namespace Start_a_Town_
         {
             if (net is Server)
                 room.Refresh(center);
-            var w = net.BeginPacket(PacketRefresh);//.Write(playerData.ID, room.ID, center);
+            var w = net.BeginPacket(PacketRefresh);
             w.Write(playerData.ID);
             w.Write(room.ID);
             w.Write(center);

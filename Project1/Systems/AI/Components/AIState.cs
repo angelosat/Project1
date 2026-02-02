@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Net;
 using Start_a_Town_.AI.Behaviors;
-using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,48 +10,37 @@ namespace Start_a_Town_.AI
     public sealed class AIState : Inspectable
     {
         public static AIConversationManager ConversationManager = new();
-
         private BehaviorExecutePlan _currentTaskBehavior;
-
         readonly Dictionary<JobDef, Job> Jobs = JobDefOf.All.ToDictionary(i => i, i => new Job(i));
         public Progress Attention = new();
         public float AttentionDecay = 1;
         public float AttentionDecayDefault = 1;
         public bool Autonomy = true;
-
         public Dictionary<string, object> Blackboard = new();
         public Dictionary<Actor, ConversationTopic> CommunicationPending = new();
         public Actor ConversationPartner, TradingPartner;
         public AIConversationManager.Conversation CurrentConversation;
         public PlannerDef CurrentPlanner;
-
-        public Plan CurrentTask => this.Behavior?.Plan;
         public Plan ForcedTask;
         public AILog Log;
         public bool InSync;
         public ItemPreferencesManager ItemPreferences;
         public int JobFindTimer;
         public Knowledge Knowledge;
-
         public BehaviorExecutePlan LastBehavior;
         public Vector3 Leash;
-
         public Queue<TargetArgs> MoveOrders = new();
         public Actor Owner; //use this?
         public PathFinding.Path Path;
         public PathingSync PathFinder = new();
-        public Dictionary<string, object> Properties = new();
+        public Dictionary<string, object> Properties = [];
         public GameObject Talker;
         public GameObject Target;
-        //public Queue<(AITask task, BehaviorPerformTask behavior)> TaskQueue = [];
-        //public Stack<(AITask task, BehaviorPerformTask behavior)> TaskStack = [];
         public Queue<BehaviorExecutePlan> TaskQueue = [];
         public Stack<BehaviorExecutePlan> TaskStack = [];
-
-        //public string Status => this.Behavior?.Status ?? "Idle";
         public string TaskString = "none";
-        public SortedSet<Threat> Threats = new();
-
+        public SortedSet<Threat> Threats = [];
+        public Plan CurrentTask => this.Behavior?.Plan;
 
         public AIState(Actor actor)
         {
@@ -60,37 +49,14 @@ namespace Start_a_Town_.AI
             this.ItemPreferences = new ItemPreferencesManager(actor);
             this.Log = new(actor);
         }
-
         private void Enqueue(BehaviorExecutePlan bhav)
         {
             this.TaskQueue.Enqueue(bhav);
-        }
-
-        //public BehaviorPerformTask CurrentTaskBehavior
-        //{
-        //    get => this._currentTaskBehavior;
-        //    set
-        //    {
-        //        if (this.Parent.Net is Server)
-        //            PacketTaskUpdate.Send(this.Parent.Net as Net.Server, this.Parent.RefId, value?.GetType().Name ?? "Idle");
-        //        this._currentTaskBehavior = value;
-        //    }
-        //}
-
-        private void NotifyTaskUpdate()
-        {
-            if (Owner.Net is Server)
-                PacketTaskUpdate.Send(
-                    Owner.Net as Server,
-                    Owner.RefId,
-                    Behavior?.GetType().Name ?? "Idle"
-                );
         }
         private void Push(BehaviorExecutePlan bhav)
         {
             this.TaskStack.Push(bhav);
         }
-
         internal void AddMoveOrder(TargetArgs target, bool enqueue)
         {
             this.Owner.EndCurrentTask();
@@ -128,12 +94,8 @@ namespace Start_a_Town_.AI
                           where v is TargetArgs
                           select v as TargetArgs;
             /// i dont need this anymore after phasing to targetargs lazily resolving entity id and passing the provider (client or server) at targetargs initialization
-            //foreach (var t in targets)
-            //    t.Map = parent.Map;
             this.CurrentTask?.MapLoaded(parent);
             this.Behavior?.Actor = parent;
-            //if (this.CurrentTaskBehavior is not null)
-            //    this.CurrentTaskBehavior.Actor = parent;
         }
 
         internal bool NextTask()
@@ -159,18 +121,13 @@ namespace Start_a_Town_.AI
 
         internal void ObjectLoaded(GameObject parent)
         {
-            //this.CurrentTask?.ObjectLoaded(parent);
-            //this.CurrentTaskBehavior?.ObjectLoaded(parent);
             this.Behavior?.Plan.ObjectLoaded(parent);
             this.Behavior?.ObjectLoaded(parent);
         }
 
         internal void Reset()
         {
-            //this.CurrentTask = null;
-            //this.LastBehavior = null;
             this.Path = null;
-            //this.CurrentTaskBehavior = null;
             this.TaskQueue.Clear();
             this.TaskStack.Clear();
             PacketReportPlan.SendReportBehavior(this.Owner, null);
@@ -179,7 +136,6 @@ namespace Start_a_Town_.AI
 
         internal void ResolveReferences()
         {
-            //this.ItemPreferences.ResolveReferences();
         }
         internal void OnAttachedToMap()
         {
@@ -231,31 +187,6 @@ namespace Start_a_Town_.AI
         public void Load(SaveTag tag)
         {
             this.Leash = tag.GetValue<Vector3>("Leash");
-            //tag.TryGetTagValueOrDefault<bool>("HasTask", out var hastask);
-            //if (hastask)
-            //{
-            //    var task = AITask.Load(tag["Task"]);
-            //    this.CurrentTask = task;
-            //}
-            //tag.TryGetTag("Behavior", t =>
-            //{
-            //    var bhavtype = (string)t["TypeName"].Value;
-            //    this.CurrentTaskBehavior = Activator.CreateInstance(Type.GetType(bhavtype)) as BehaviorPerformTask;
-            //    this.CurrentTaskBehavior.Load(t);
-            //});
-
-            //if (hastask)
-            //{
-            //    var task = AITask.Load(tag["Task"]);
-            //    //this.CurrentTask = task;
-            //    tag.TryGetTag("Behavior", t =>
-            //    {
-            //        var bhavtype = (string)t["TypeName"].Value;
-            //        var bhav = Activator.CreateInstance(Type.GetType(bhavtype)) as BehaviorPerformTask;
-            //        bhav.Load(t);
-            //    });
-            //}
-
             var tagStack = tag["TaskStack"];
             var listStack = tagStack.Value as List<SaveTag>;
             foreach(var t in listStack)
@@ -291,38 +222,17 @@ namespace Start_a_Town_.AI
         public void Read(IDataReader r)
         {
             r.ReadValuesWithInferredKeys(this.Jobs, v => v.Def);
-            //this.Jobs.Write(r);
             this.ItemPreferences.Read(r); // sync to clients?
         }
         public SaveTag Save(string name)
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             tag.Add(new SaveTag(SaveTag.Types.Vector3, "Leash", this.Leash));
-
-            //tag.Add((this.CurrentTask != null).Save("HasTask"));
-            //if (this.CurrentTask != null)
-            //    tag.Add(this.CurrentTask.Save("Task"));
-            //if (this.CurrentTaskBehavior != null)
-            //{
-            //    var bhavtag = this.CurrentTaskBehavior.Save("Behavior");
-            //    bhavtag.Add(this.CurrentTaskBehavior.GetType().FullName.Save("TypeName"));
-            //    tag.Add(bhavtag);
-            //}
-            //tag.Add((this.Current is not null).Save("HasTask"));
-            //if (this.Current is not null)
-            //{
-            //    tag.Add(this.Current.Value.task.Save("Task"));
-            //    var bhavtag = this.Current.Value.behavior.Save("Behavior");
-            //    bhavtag.Add(this.Current.Value.behavior.GetType().FullName.Save("TypeName"));
-            //    tag.Add(bhavtag);
-            //}
-
             var tagStack = new SaveTag(SaveTag.Types.List, "TaskStack", SaveTag.Types.Compound);
             foreach (var bhav in this.TaskStack)
             {
                 var tupleTag = new SaveTag(SaveTag.Types.Compound);
                 tupleTag.Add(bhav.Plan.Save("Task"));
-                //tupleTag.Add(task.behavior.Save("Behavior"));
                 var bhavtag = bhav.Save("Behavior");
                 bhavtag.Add(bhav.GetType().FullName.Save("TypeName"));
                 tupleTag.Add(bhavtag);
@@ -374,10 +284,7 @@ namespace Start_a_Town_.AI
             this.ItemPreferences.Tick();
         }
 
-        
-
         public IEnumerable<BehaviorExecutePlan> AllPlannedTasks => TaskStack.Concat(TaskQueue);
-        //public BehaviorPerformTask Current => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
         public BehaviorExecutePlan Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
 
         public TargetArgs MoveOrder => this.MoveOrders.Any() ? this.MoveOrders.Peek() : TargetArgs.Null;

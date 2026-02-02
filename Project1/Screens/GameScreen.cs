@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Project1.Framework.Input;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -16,7 +17,7 @@ namespace Start_a_Town_
         public ToolManager ToolManager;
         public Stack<IKeyEventHandler> KeyHandlers;
 
-        public virtual Camera Camera => Net.Client.Instance.Map.Camera;
+        public virtual Camera Camera => Client.Instance.Map.Camera;
 
         public GameScreen()
         {

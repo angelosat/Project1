@@ -1,17 +1,29 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Attributes;
+using Project1.Framework.Blocks;
+using Project1.Framework.Input.Tools;
+using Project1.Framework.Entities;
+using Project1.Framework.Inventory;
+using Project1.Framework.Needs;
+using Project1.Framework.Physics;
+using Project1.Framework.Resources;
+using Project1.Framework.Skills;
+using Project1.Framework.Stats;
 using Start_a_Town_.AI;
 using Start_a_Town_.Components;
-using Start_a_Town_.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Project1.Framework.Net;
+using Project1.Framework.Net.Packets;
+using Project1.Framework.Interactions;
 
 namespace Start_a_Town_
 {
-    public abstract class GameObject : Inspectable, IEntity, ITooltippable, IContextable, INameplateable, ISlottable, ISelectable//, ILabeled, IInspectable
+    public abstract class GameObject : Inspectable, ITooltippable, IContextable, INameplateable, ISlottable, ISelectable//, ILabeled, IInspectable
     {
         public static readonly Dictionary<int, GameObject> Templates = [];
         public override string Label => this.Name;

@@ -1,4 +1,7 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Input;
+using Project1.Framework.Net;
+using Project1.Framework.Net.Packets;
+using Project1.Framework.StaticMaps;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -138,7 +141,6 @@ namespace Start_a_Town_
         public Control Gui => this._gui ??= this.CreateGui();
         Control CreateGui()
         {
-            //var box = new ScrollableBoxNewNew(200, UIManager.LargeButton.Height * 8);
             var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 8);
             var list = new ListBoxObservable<WorldInhabitantView, ButtonNew>(props =>
             {
@@ -147,9 +149,7 @@ namespace Start_a_Town_
                     () => SelectionManager.Select(npc),
                     box.Viewport.Width,
                     npc.RenderIcon(),
-                    //() => npc.Npc.FullName,
                     new Label(() => npc.Npc.FullName) { TextColorFunc = ()=> npc.GetNameplateColor()},
-                    //() => npc.Exists ? "Visiting" : (props.Discovered ? "" : "Unknown"));
                     new Label(() => $"{props.CurrentWorldLocation?.Label ?? "In town"}"));
 
                 // debugging stuff
@@ -202,12 +202,9 @@ namespace Start_a_Town_
                 if (this.World.Map.Net is Server)
                     if (!actor.GetNeeds(AdventurerNeedsDefOf.NeedCategoryVisitor).Any())
                         MakeVisitor(actor);
-                //if (!actor.IsSpawned) // hacky. in process of finding best way to save unspawned actors
-                //    this.World.Map.Net.Instantiate(actor);
                 if (actor.IsSpawned)
                     props.Discovered = true; // HACK
                 props.OffsiteArea = FrontierDefOf.Forest; // HACK
-                //actor.Resolve();
             }
         }
         public SaveTag Save(string name = "")
@@ -215,7 +212,6 @@ namespace Start_a_Town_
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             this.Populated.Save(tag, "Populated");
             this.TickCount.Save(tag, "Tick");
-            //this.ActorsAdventuring.SaveNewBEST(tag, "Population");
             this.Undiscovered.Save(tag, "Undiscovered");
             return tag;
         }
@@ -224,19 +220,16 @@ namespace Start_a_Town_
         {
             this.Populated.TryLoad(tag, "Populated");
             this.TickCount.TryLoad(tag, "Tick");
-            //this.ActorsAdventuring.TryLoad(tag, "Population", this);
             this.Undiscovered.TryLoad(tag, "Undiscovered");
             return this;
         }
         public void Write(IDataWriter w)
         {
-            //this.ActorsAdventuring.Write(w);
-            w.Write(this.Undiscovered);//.ToList());
+            w.Write(this.Undiscovered);
         }
 
         public ISerializable Read(IDataReader r)
         {
-            //this.ActorsAdventuring.InitializeNew(r);//, this);
             this.Undiscovered.Read(r);
             return this;
         }

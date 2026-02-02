@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Net;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
-using System.IO;
 
 namespace Start_a_Town_
 {
@@ -55,8 +54,7 @@ namespace Start_a_Town_
         }
         void ReportQuestsUpdated(QuestDef[] added, QuestDef[] removed)
         {
-            //this.Town.Net.EventOccured((int)Components.Message.Types.QuestDefsUpdated, added, removed);
-            this.Town.Net.Events.Post(new QuestDefsUpdatedEvent(added, removed));// { Added = added, Removed = removed });
+            this.Town.Net.Events.Post(new QuestDefsUpdatedEvent(added, removed));
         }
         public QuestDef GetQuest(int id)
         {
@@ -129,7 +127,6 @@ namespace Start_a_Town_
                 yield break;
             if (actor.IsTownMember)
             {
-                //yield return("Quests", () => ShowUI(this.UIAssignQuests, $"Assign quests to {actor.Name}"));
                 yield return BtnQuests.SetLeftClickAction(() => ShowUI(this.UIAssignQuests, $"Assign quests to {actor.Name}")) as Button;
             }
             else
@@ -185,13 +182,6 @@ namespace Start_a_Town_
             var btnCreate = new Button("Create", () => Packets.SendAddQuestGiver(net, net.GetPlayer().ID));
         
             qlist.AddItems(this.Quests);
-            //qlist.ListenToOld((int)Components.Message.Types.QuestDefsUpdated, args =>
-            //{
-            //    var added = args[0] as QuestDef[];
-            //    var removed = args[1] as QuestDef[];
-            //    qlist.AddItems(added);
-            //    qlist.RemoveItems(removed);
-            //});
             qlist.ListenTo<QuestDefsUpdatedEvent>(args =>
             {
                 qlist.AddItems(args.Added);
@@ -234,20 +224,7 @@ namespace Start_a_Town_
                 ,
                 questsAssigned.ToPanelLabeled("Assigned")
                 );
-            //box.ListenToOld((int)Components.Message.Types.QuestDefAssigned, args =>
-            //{
-            //    var q = args[0] as QuestDef;
-            //    if (q.Giver == actor)
-            //    {
-            //        questsAvailable.RemoveItems(q);
-            //        questsAssigned.AddItems(q);
-            //    }
-            //    else
-            //    {
-            //        questsAssigned.RemoveItems(q);
-            //        questsAvailable.AddItems(q);
-            //    }
-            //});
+           
             box.ListenTo<QuestDefAssignedEvent>(args =>
             {
                 var q = args.Quest;
@@ -326,7 +303,6 @@ namespace Start_a_Town_
         public override void Read(IDataReader r)
         {
             this.QuestGiverIDSequence = r.ReadInt32();
-            //this.Quests.Initialize(r, this);
             this.Quests.ReadMutableNew(r);
             this.PendingQuestRequests.Read(r);
         }

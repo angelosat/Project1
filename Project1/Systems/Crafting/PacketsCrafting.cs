@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
-using System;
+using Project1.Framework.Animations;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -41,7 +41,6 @@ namespace Start_a_Town_
             var comp = entity.GetComp<BlockWorkstationComp>();
             var iotype = (WorkstationIOType)r.ReadInt32();
             var zoneid = (ZoneId)r.ReadInt32();
-            //var stockpile = zoneid == ZoneId.Null ? null : endpoint.Map.Town.ZoneManager.GetZone<Stockpile>(zoneid);
             var stockpile = endpoint.Map.Town.ZoneManager.GetZone<Stockpile>(zoneid);
             comp.SetStockpile(iotype, stockpile);
             if (endpoint is Server server)

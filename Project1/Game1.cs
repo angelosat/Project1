@@ -8,11 +8,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
-using Start_a_Town_.Animations;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using Project1.Framework.Animations;
+using Project1.Framework.Input;
+using Project1.Framework.Blocks;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -35,8 +37,8 @@ namespace Start_a_Town_
 
         static public Rectangle Bounds => new(0, 0, Instance.graphics.PreferredBackBufferWidth, Instance.graphics.PreferredBackBufferHeight);
 
-        public List<GameComponent> GameComponents = new();
-        public Network Network;
+        public List<GameSystem> GameComponents = new();
+        public Project1.Framework.Net.Network Network;
 
         protected override void OnExiting(object sender, ExitingEventArgs args)
         {

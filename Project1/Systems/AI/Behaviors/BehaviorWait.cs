@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.AI;
+﻿using Start_a_Town_.Framework.AI.NodeTypes;
+using Start_a_Town_.AI;
 using System;
 
 namespace Start_a_Town_

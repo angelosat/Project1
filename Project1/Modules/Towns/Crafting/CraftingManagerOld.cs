@@ -1,5 +1,5 @@
-﻿using Start_a_Town_.Components;
-using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
+using Start_a_Town_.Components;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,9 +16,6 @@ namespace Start_a_Town_
             pPriority = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderModifyPriority);
             pQuantity = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderModifyQuantity);
             pRestrictions = Start_a_Town_.Registry.PacketHandlers.Register(SetOrderRestrictions);
-
-            //PacketOrderRemove.Init();
-            //PacketCraftingOrderSync.Init();
             PacketCraftOrderToggleHaul.Init();
             PacketCraftOrderChangeMode.Init();
         }
@@ -38,7 +35,6 @@ namespace Start_a_Town_
         int OrderSequence = 1;
 
         // TODO: add order priorities
-
         public CraftingManagerOld(Town town)
         {
             this.Town = town;

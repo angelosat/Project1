@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Components;
+﻿using Project1.Framework.Inventory;
+using Project1.Framework.Net.Packets;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;

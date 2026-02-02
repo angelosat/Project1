@@ -5,7 +5,9 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
+using Project1.Framework.StaticMaps;
+using Project1.Framework.Blocks;
+using Project1.Framework.Net;
 
 #nullable enable
 

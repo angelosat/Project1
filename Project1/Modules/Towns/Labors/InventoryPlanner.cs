@@ -4,14 +4,6 @@ namespace Start_a_Town_
 {
     class InventoryPlanner : Planner
     {
-        static Plan TryDropUnnecessaryItems(Actor actor)
-        {
-            if (actor.Inventory.All.FirstOrDefault(i => !actor.ItemPreferences.IsPreference(i)) is Entity item)
-                //return new AITask(typeof(TaskBehaviorDropInventoryItem), item);
-                return new Plan(PlanDefOf.DropInventory, item);// { TargetA = item };
-            return null;
-        }
-
         protected override Plan TryPlan(Actor actor)
         {
             // TODO associate labors with tool, if labor is enabled, look for and store tools in inventory. if labor is disabled, remove unnecessary tools from inventory

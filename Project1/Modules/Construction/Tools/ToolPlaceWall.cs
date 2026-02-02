@@ -1,7 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.PlayerControl;
+using Project1.Framework.Blocks;
+using Project1.Framework.Input;
+using Project1.Framework.Input.Tools;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Modules.Construction

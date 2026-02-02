@@ -10,7 +10,6 @@ namespace Start_a_Town_
         readonly List<GrowingZone> GrowZones = [];
         public ILookup<PlantSpeciesDef, GrowingZone> BySpecies => this.GrowZones.ToLookup(z => z.Plant);
         public IReadOnlyList<GrowingZone> AllGrowingZones => this.GrowZones;
-        //public HashSet<Entity> PlantsHarvestable = [];
         public GrowingManager(Town town) : base(town)
         {
             var map = town.Map;
@@ -18,8 +17,6 @@ namespace Start_a_Town_
             map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
             map.Events.ListenTo<PlantHarvestableEvent>(OnPlantHarvestable);
             map.Events.ListenTo<PlantHarvestedEvent>(OnPlantHarvested);
-            //town.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
-            //town.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
             map.Events.ListenTo<EntityEnteredZoneEvent>(OnEntityEnteredZone);
             map.Events.ListenTo<EntityExitedZoneEvent>(OnEntityExitedZone);
         }
@@ -33,9 +30,6 @@ namespace Start_a_Town_
         {
             var entity = e.Entity;
             this.TryRegisterHarvestable(entity);
-            //if (this.Map.Town.GetZoneAt(entitycell) is not GrowingZone gz)
-            //    return;
-            //gz.PlantsHarvestable.Add(entity);
         }
 
         private bool TryRegisterHarvestable(Entity entity)
@@ -48,16 +42,6 @@ namespace Start_a_Town_
             this.RegisterHarvestable(entity);
             return true;
         }
-
-        //private void OnEntitySpawned(EntitySpawnedEvent e)
-        //{
-        //    this.RegisterHarvestable(e.Entity);
-        //}
-
-        //private void OnEntityDespawned(EntityDespawnedEvent e)
-        //{
-        //    this.UnregisterHarvestable(e.Entity);
-        //}
         private void OnPlantHarvested(PlantHarvestedEvent e)
         {
             this.UnregisterHarvestable(e.Entity);
@@ -72,7 +56,6 @@ namespace Start_a_Town_
             
             if (this.Map.Town.GetZoneAt(entitycell) is not GrowingZone zone)
                 return;
-            //this.AllGrowingZones.Any(z => z.Contains(entitycell)))
             zone.PlantsHarvestable.Add(entity);
         }
         void UnregisterHarvestable(Entity entity)
@@ -119,8 +102,6 @@ namespace Start_a_Town_
                 foreach (var plant in gz.PlantsHarvestable)
                     yield return plant;
             }
-
-            //return this.AllGrowingZones.SelectMany(z => z.GetHarvestablePlantsLazy());
         }
         public IEnumerable<IntVec3> GetNextTillingPos()
         {
@@ -133,13 +114,6 @@ namespace Start_a_Town_
                 throw new ArgumentException($"{nameof(preferredSeed)} not a seed");
             return this.GetSowingTargets(seed);
         }
-        //public IEnumerable<(GrowingZone zone, IEnumerable<IntVec3> targets)> GetSowingTargetsAll(Entity preferredEntity)// = null)
-        //{
-        //    if (preferredEntity.Profile is not PlantSpeciesDef seed)
-        //        throw new ArgumentException($"{nameof(preferredEntity)} not a seed");
-        //    return this.GetSowingTargetsAll(seed);
-        //}
-
         public IEnumerable<SowingBatch> GetSowingTargetsAll(Entity preferredSeed)
         {
             if (preferredSeed.Profile is not PlantSpeciesDef seed)
@@ -171,7 +145,6 @@ namespace Start_a_Town_
                 if (nextPos.HasValue)
                     yield return nextPos.Value;
             }
-            //yield break;
         }
 
         internal bool IsValidTillingTarget(IntVec3 global)

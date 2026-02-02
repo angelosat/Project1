@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
+using Project1.Framework.StaticMaps;
 using System;
 using System.Linq;
 
@@ -23,7 +24,7 @@ namespace Start_a_Town_
        
         public override void Tick()
         {
-            if (this.Map.Net is Net.Client)
+            if ((this.Map.Net is Client))
                 return;
             this.GeneratePlant();
         }

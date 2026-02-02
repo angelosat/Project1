@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Particles;
-using Start_a_Town_.Net;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_.Components
 {
@@ -49,7 +49,7 @@ namespace Start_a_Town_.Components
             switch(e.Type)
             {
                 case Message.Types.Attacked:
-                    if (parent.Net is Server)
+                    if (parent.Net.IsServer)
                         break;
                     GameObject attacker = e.Parameters[0] as GameObject;
                     var direction = parent.Global - attacker.Global;

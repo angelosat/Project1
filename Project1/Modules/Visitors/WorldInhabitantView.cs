@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
 using Microsoft.Xna.Framework;
+using Project1.Framework.StaticMaps;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {

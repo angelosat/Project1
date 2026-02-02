@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -163,7 +163,7 @@ namespace Start_a_Town_
                     {
                         var split = i.Object.Split(i.Amount);
 
-                        if (actor.Net is Net.Server server)
+                        if (actor.Net is Server server)
                         {
                             split.SyncInstantiate(server);
                             qgiverInv.SyncInsert(split);

@@ -1,4 +1,18 @@
-﻿using Start_a_Town_.AI.Behaviors;
+﻿using Project1.Core.Gear;
+using Project1.Core.Needs;
+using Project1.Framework.Attributes;
+using Project1.Framework.Effects;
+using Project1.Framework.Gear;
+using Project1.Framework.Interactions;
+using Project1.Framework.Inventory;
+using Project1.Framework.Mood;
+using Project1.Framework.Needs;
+using Project1.Framework.Ownership;
+using Project1.Framework.Physics;
+using Project1.Framework.Resources;
+using Project1.Framework.Skills;
+using Project1.Framework.Stats;
+using Start_a_Town_.AI.Behaviors;
 using Start_a_Town_.Components;
 
 namespace Start_a_Town_

@@ -1,6 +1,4 @@
-﻿using System.IO;
-using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+﻿using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -14,8 +12,6 @@ namespace Start_a_Town_
         }
         internal static void Send(INetEndpoint net, CraftOrder order)
         {
-            //var w = net.GetOutgoingStreamOrderedReliable();
-            //w.Write(p);
             var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
 
             w.Write(order.Workstation);
@@ -25,7 +21,7 @@ namespace Start_a_Town_
         {
             var r = pck.PacketReader;
             var station = r.ReadIntVec3();
-            var orderID = r.ReadInt32();// r.ReadString();
+            var orderID = r.ReadInt32();
             if (net.Map.Town.CraftingManager.RemoveOrder(station, orderID) is CraftOrder order)
                 if (net is Server)
                     Send(net, order);

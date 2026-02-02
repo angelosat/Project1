@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Core.Needs;
 using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_.AI

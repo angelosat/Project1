@@ -1,4 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Animations;
+using Project1.Framework.Entities;
+using Project1.Framework.Physics;
+using Project1.Framework.Resources;
+using Project1.Framework.Skills;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -322,7 +327,7 @@ namespace Start_a_Town_.Components
             this.GrowthFruit.Value = plantcomp.GrowthFruit.Value;
         }
 
-        public override void OnTooltipCreated(GameObject parent, UI.Control tooltip)
+        public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
             tooltip.Controls.Add(new Bar()
             {

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Project1.Framework.Entities;
+using Project1.Framework.Gear;
+using Project1.Framework.Physics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 

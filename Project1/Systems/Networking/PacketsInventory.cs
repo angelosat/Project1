@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Inventory;
+using Project1.Framework.Net;
 using System;
 
 namespace Start_a_Town_
@@ -66,8 +67,6 @@ namespace Start_a_Town_
             var item = map.World.GetEntity(itemid);
             var count = r.ReadInt32();
             owner.AI.State.ItemPreferences.ForceDrop(item); 
-            //if (endpoint is Server server)
-            //    SendPlayerForceDropInventoryItem(server, owner, item, count);
         }
 
         private static void HandlePlayerForcedDropInventoryItem(PlayerForcedDropInventoryItemEvent e)

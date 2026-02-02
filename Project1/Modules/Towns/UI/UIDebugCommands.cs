@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Net;
 using Start_a_Town_.UI;
-using Start_a_Town_.Net;
 
 namespace Start_a_Town_
 {

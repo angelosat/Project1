@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Framework.Animations;
+using System.Collections.Generic;
 namespace Start_a_Town_
 {
     public class EntityCreationRequest(Def context, Def stage, MaterialDef defaultMaterial = null, int stackSize = -1)

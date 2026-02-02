@@ -1,4 +1,6 @@
-﻿using Start_a_Town_;
+﻿using Project1.Core.Gear;
+using Project1.Framework.Resources;
+using Start_a_Town_;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

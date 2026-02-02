@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -17,7 +17,6 @@ namespace Start_a_Town_
         static public void Send(NetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
         {
             remove |= designation == null;
-            //var w = net.BeginPacketOld(p);
             var w = net.BeginPacketImmediate(p);
 
             w.Write(remove);

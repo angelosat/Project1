@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Net;
+using Project1.Framework.Net;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -233,12 +233,9 @@ namespace Start_a_Town_
         public CraftOrder Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
-            //this.Reaction = Reaction.Dictionary[r.ReadInt32()];
             this.Reaction = r.ReadDef<Reaction>();
             this.Mode = (CraftMode)r.ReadInt32();
             this.FinishMode = CraftOrderFinishMode.GetMode(r.ReadInt32());
-            //this.Input = r.ReadInt32() is int input && input == -1 ? null : this.Map.Town.ZoneManager.GetZone<Stockpile>(input);
-            //this.Output = r.ReadInt32() is int output && output == -1 ? null : this.Map.Town.ZoneManager.GetZone<Stockpile>(output);
             this._inputID = r.ReadInt32();
             this._outputID = r.ReadInt32();
             this._unfinishedItemRefID = r.ReadInt32();
@@ -304,7 +301,6 @@ namespace Start_a_Town_
         public SaveTag Save(string name)
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            //tag.Add(new SaveTag(SaveTag.Types.Int, "ReactionID", this.Reaction.ID));
             this.Reaction.Save(tag, "Reaction");
             tag.Add(new SaveTag(SaveTag.Types.Int, "Mode", (int)this.Mode));
             tag.Add(new SaveTag(SaveTag.Types.Int, "FinishMode", (int)this.FinishMode.Mode));
@@ -348,7 +344,6 @@ namespace Start_a_Town_
 
         ISaveable ISaveable.Load(SaveTag tag)
         {
-            //tag.TryGetTagValue<int>("ReactionID", p => this.Reaction = Reaction.Dictionary[p]);
             this.Reaction = tag.LoadDef<Reaction>("Reaction");
             tag.TryGetTagValue<int>("Mode", p => this.Mode = (CraftMode)p);
             tag.TryGetTagValue<int>("FinishMode", p => this.FinishMode = CraftOrderFinishMode.GetMode(p));
@@ -364,8 +359,6 @@ namespace Start_a_Town_
                     this.Restrictions = keys.ToDictionary(values);
                 });
 
-            //tag.TryGetTagValue<int>("Input", i => this.Input = i == -1 ? null : this.Map.Town.ZoneManager.GetZone<Stockpile>(i));
-            //tag.TryGetTagValue<int>("Output", i => this.Output = i == -1 ? null : this.Map.Town.ZoneManager.GetZone<Stockpile>(i));
             tag.TryGetTagValueOrDefault("Input", out this._inputID);
             tag.TryGetTagValueOrDefault("Output", out this._outputID);
             tag.TryGetTagValueOrDefault("UnfinishedItem", out this._unfinishedItemRefID);

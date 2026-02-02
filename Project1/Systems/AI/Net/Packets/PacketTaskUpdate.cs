@@ -1,5 +1,5 @@
-﻿using Start_a_Town_.Net;
-using Start_a_Town_.AI;
+﻿using Start_a_Town_.AI;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -27,7 +27,6 @@ namespace Start_a_Town_
                 return;
             var taskString = r.ReadString();
             AIState.GetState(entity).TaskString = taskString;
-            // optional: Console.Debug($"Entity {entity.RefId} task: {taskString}");
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Interactions;
+
+namespace Start_a_Town_
 {
     class InteractionEatingLogic : InteractionLogic 
     {

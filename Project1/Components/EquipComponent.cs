@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.Components.Interactions;
+using Project1.Framework.Entities;
+using Project1.Framework.Gear;
+using Project1.Framework.Interactions;
+using Project1.Framework.Resources;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_.Components

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Core.Interactions;
+using Start_a_Town_.Framework.AI.NodeTypes;
 
 namespace Start_a_Town_.AI.Behaviors
 {

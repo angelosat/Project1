@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Start_a_Town_.UI;
 using Start_a_Town_.Components;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_
 {

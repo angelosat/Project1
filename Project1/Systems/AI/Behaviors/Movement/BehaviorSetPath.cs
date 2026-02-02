@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.PathFinding;
+﻿using Start_a_Town_.Framework.AI.NodeTypes;
+using Start_a_Town_.PathFinding;
 
 namespace Start_a_Town_.AI.Behaviors
 {

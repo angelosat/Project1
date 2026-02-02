@@ -1,4 +1,6 @@
-﻿using Start_a_Town_.Net;
+﻿using Project1.Framework.Attributes;
+using Project1.Framework.Net;
+using Project1.Framework.Resources;
 
 namespace Start_a_Town_
 {

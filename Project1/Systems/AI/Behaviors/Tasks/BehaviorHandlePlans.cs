@@ -1,7 +1,9 @@
-﻿using Start_a_Town_.AI;
-using Start_a_Town_.Components;
+﻿using Start_a_Town_.Framework.AI.NodeTypes;
+using Start_a_Town_.AI;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Needs;
+using Project1.Framework.Resources;
 
 namespace Start_a_Town_
 {

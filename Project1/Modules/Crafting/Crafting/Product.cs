@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project1.Framework.Resources;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,7 +41,7 @@ namespace Start_a_Town_
             }
             public ProductMaterialPair Make(Actor actor, Reaction reaction, Dictionary<string, ObjectAmount> ingrs)
             {
-                if (actor.Net is Net.Client)
+                if ((actor.Net.IsClient))
                     return new ProductMaterialPair(reaction, null, ingrs);
                 var dic = ingrs.ToDictionary(o => o.Key, o => o.Value.Object as Entity);
                 var product = this.Factory(dic);

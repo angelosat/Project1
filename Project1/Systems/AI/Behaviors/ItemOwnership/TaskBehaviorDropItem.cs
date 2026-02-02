@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Start_a_Town_.Components.Interactions;
+using Start_a_Town_.Framework.AI.NodeTypes;
 
 namespace Start_a_Town_
 {

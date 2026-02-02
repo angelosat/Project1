@@ -11,13 +11,16 @@ namespace Start_a_Town_
         readonly Dictionary<IntVec3, BlockWorkstationComp> _byPosition = [];
         readonly Dictionary<WorkstationDef, HashSet<BlockWorkstationComp>> _byType = [];
         readonly Dictionary<int, OrderSettings> _ordersById = [];
+        readonly Dictionary<BlockEntity, OrderSettings> _ordersByWorkstation = [];
+        public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byType.SelectMany(d => d.Value);
+        public IEnumerable<IGrouping<BlockEntity, List<OrderSettings>>> OrdersByWorkstation => AllWorkstations.GroupBy(i => i.Parent, i => i.Orders);
         public CraftingManager(Town town) : base(town)
         {
             var workstationDefs = Def.GetDefs<WorkstationDef>();
             foreach (var def in workstationDefs)
                 this._byType.Add(def, []);
         }
-        public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byPosition.Values;
+        public IEnumerable<BlockWorkstationComp> AllWorkstationModules => this._byPosition.Values;
 
         internal override void ResolveReferences()
         {
@@ -51,7 +54,11 @@ namespace Start_a_Town_
                     this.NextOrderId = Math.Max(this.NextOrderId, order.Id + 1);
                 }
         }
-
+        void RegisterOrder(OrderSettings order)
+        {
+            this._ordersById.Add(order.Id, order);
+            this._ordersByWorkstation.Add(order.Workstation.Parent, order);
+        }
         public IEnumerable<OrderSettings> GetAllOrdersUnsorted()
         {
             foreach (var order in this._ordersById.Values)

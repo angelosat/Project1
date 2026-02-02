@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- plans: maybe rename targeta and targetb to interactiontarget and pathingtarget, and accept a list of extra targets to reserve optionally
 - sending empty snapshots: if i send empty snapshots, then entities "jump" to their next position on the client. if i dont send empty snapshots, entities "jump" to the position they last rested at when they start moving again on clients
 - durability-repair
 - harvesting-cooking

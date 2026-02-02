@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using static Start_a_Town_.OrderSettings;
 
 namespace Start_a_Town_
@@ -19,15 +20,22 @@ namespace Start_a_Town_
             var manager = map.Town.CraftingManagerNew;
 
             // Gather all pending, reachable orders
-            var allOrders = manager.GetAllOrdersUnsorted()
-                .Where(o => o.Pending && actor.CanReachAndReserve(o.Workstation.Parent));
+            //var allOrders = manager.GetAllOrdersUnsorted()
+            //    .Where(o => o.Pending && actor.CanReachAndReserve(o.Workstation.Parent));
+
+            // Gather all pending, reachable orders
+            // Exclude unreachable/unreservable workstations early instead of performing the check for each workstation order
+            var allOrders = manager.AllWorkstations
+                .Where(comp => actor.CanReachAndReserve(comp.Parent))
+                .SelectMany(comp => comp.Orders)
+                .Where(o => o.Pending);
 
             // Guard: don't interfere if carrying irrelevant item
             // BUT when implementing repair orders, the actor will be carrying a repairable object
             // so let's try removing this guard and hope ;)
             //if (carried != null && !allOrders.Any(o => o.Matches(carried)))
             //    return null;
-
+            
             foreach (var order in allOrders)
             {
                 if(TryRepairPlan(actor, order) is Plan repairPlan)
@@ -162,6 +170,9 @@ namespace Start_a_Town_
 
         private static Plan TryRepairPlan(Actor actor, OrderSettings order)
         {
+            if (order.WorkstationCapability != WorkstationCapabilityDefOf.Repairing)
+                return null;
+
             var map = actor.Map;
             var workstation = order.Workstation;
             var benchCell = workstation.Parent.OriginGlobal;
@@ -171,10 +182,10 @@ namespace Start_a_Town_
                 return new Plan(PlanDefOf.Repairing, repairableItem) { TargetB = new TargetArgs(map, workstation.Parent.OriginGlobal), TargetC = new TargetArgs(workstation.Parent) };
 
             if (actor.Hauled is Entity hauled && isRepairable(hauled))
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, benchCell.Above)) {  TargetB = new TargetArgs(workstation.Parent) };
+                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, benchCell.Above)) { TargetB = new TargetArgs(workstation.Parent) };
 
             if (actor.Gear[GearTypeDefOf.Mainhand] is Entity repairableGear && isRepairable(repairableGear))
-                actor.Inventory.Unequip(GearTypeDefOf.Mainhand);
+                return new Plan(PlanDefOf.Unequip, repairableGear);
 
             if (actor.Inventory.Contents.FirstOrDefault(isRepairable) is Entity repairableInvItem)
                 return new Plan(PlanDefOf.RetrieveFromInventory, repairableInvItem);
@@ -261,7 +272,7 @@ namespace Start_a_Town_
         }
         static Entity TryClearWorkstations(Actor actor, CraftingManager manager)
         {
-            foreach (var workstation in manager.AllWorkstations)
+            foreach (var workstation in manager.AllWorkstationModules)
                 foreach (var junk in workstation.GetJunk().Where(j => j is not Actor))
                     if (actor.CanReachAndReserve(junk))
                         return junk;

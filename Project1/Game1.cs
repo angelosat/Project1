@@ -15,6 +15,8 @@ using Project1.Framework.Animations;
 using Project1.Framework.Input;
 using Project1.Framework.Blocks;
 using Project1.Framework.Net;
+using Project1.Framework.Base;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {
@@ -178,7 +180,7 @@ namespace Start_a_Town_
           
             Cell.Initialize();
 
-            this.GameComponents.Add(new Modules.Base.GameManager());
+            this.GameComponents.Add(new GameManager());
             this.GameComponents.Add(new Towns.TownsManager());
             this.GameComponents.Add(new AI.AIManager());
 

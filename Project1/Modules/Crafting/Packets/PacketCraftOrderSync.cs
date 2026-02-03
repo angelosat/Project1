@@ -1,4 +1,5 @@
-﻿using Project1.Framework.Net;
+﻿using Project1.Framework.Components;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -30,7 +31,7 @@ namespace Start_a_Town_
             var output = r.ReadInt32() is int outputID && outputID == -1 ? null : manager.GetZone<Stockpile>(outputID);
             order.Input = input;
             order.Output = output;
-            net.Map.EventOccured(Components.Message.Types.OrderParametersChanged, order);
+            net.Map.EventOccured(Message.Types.OrderParametersChanged, order);
             if (net is Server)
                 Send(order, input, output);
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Framework.Blocks;
+using Project1.Framework.Base;
 using Project1.Framework.Input.Tools;
 using Project1.Framework.Net;
 using Start_a_Town_;
@@ -7,6 +8,9 @@ using Start_a_Town_.UI;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using Project1.Framework.WorldGen;
+using Project1.Framework.Rendering;
+using Project1.Framework.Materials;
 
 namespace Project1.Framework.Input
 {
@@ -62,7 +66,7 @@ namespace Project1.Framework.Input
         }
         public override ControlTool.Messages MouseRightUp(HandledMouseEventArgs e)
         {
-            this.LastPainted = new Vector3(float.MinValue); // lol wut?
+            this.LastPainted = new Vector3(float.MinValue); // HACK
             return base.MouseRightUp(e);
         }
 
@@ -71,7 +75,6 @@ namespace Project1.Framework.Input
             bool isDelete = InputState.IsKeyDown(this.KeyRemove);
             bool isReplace = InputState.IsKeyDown(this.KeyReplace);
             var global = this.Target.Global + ((isDelete || isReplace) ? Vector3.Zero : this.Target.Face);
-            //var block = isDelete ? BlockDefOf.Air : this.Block;
             var block = isDelete ? BlockDefOf.Air.Worker : this.Block;
             byte state = isDelete ? (byte)0 : this.State;
 
@@ -143,6 +146,4 @@ namespace Project1.Framework.Input
             this.State = r.ReadByte();
         }
     }
-
-    
 }

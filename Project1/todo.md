@@ -1,5 +1,8 @@
 # todo 2025
 ## immediate
+- repair: create a blockrepaircomp for workstations with repair capability that holds repair charges similar to how 
+blockfuelcomp holds fuel, and make it rechargable by scraps, which are byproducts from raw material refinement
+(logs => planks + wood scraps, ore => ingots + metal scraps, etc)
 - plans: maybe rename targeta and targetb to interactiontarget and pathingtarget, and accept a list of extra targets to reserve optionally
 - sending empty snapshots: if i send empty snapshots, then entities "jump" to their next position on the client. if i dont send empty snapshots, entities "jump" to the position they last rested at when they start moving again on clients
 - durability-repair

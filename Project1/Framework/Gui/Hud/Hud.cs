@@ -1,13 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Framework;
+using Project1.Framework.Components;
+using Project1.Framework.Base;
 using Project1.Framework.Input;
 using Project1.Framework.Net;
-using Start_a_Town_.Components;
 using Start_a_Town_.Core.UI;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Rendering;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {
@@ -167,7 +170,7 @@ namespace Start_a_Town_
                     break;
 
                 default:
-                    if (this.UIEvents.TryGetValue((Components.Message.Types)e.Type, out var val))
+                    if (this.UIEvents.TryGetValue((Message.Types)e.Type, out var val))
                         val(e);
                     base.OnGameEvent(e);
                     break;

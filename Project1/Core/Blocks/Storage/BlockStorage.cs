@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Materials;
+using Project1.Framework.Base;
 using Project1.Framework.Blocks;
+using Project1.Framework.Materials;
+using Project1.Framework.WorldGen;
 using Start_a_Town_.Blocks;
 
 namespace Start_a_Town_

@@ -1,4 +1,6 @@
-﻿using Project1.Framework.Blocks;
+﻿using Project1.Core.Materials;
+using Project1.Framework.Blocks;
+using Project1.Framework.Gfx.Particles;
 
 namespace Start_a_Town_
 {
@@ -16,7 +18,7 @@ namespace Start_a_Town_
                 .SetAllow(MaterialDefOf.Stone, true);
             this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
         }
-        public override Particles.ParticleEmitterSphere GetEmitter()
+        public override ParticleEmitterSphere GetEmitter()
         {
             return base.GetDustEmitter();
         }

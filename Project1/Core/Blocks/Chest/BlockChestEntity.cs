@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Base;
 using Project1.Framework.Blocks;
 using Project1.Framework.Inventory;
+using Project1.Framework.WorldGen;
 using Start_a_Town_.Components;
 
 namespace Start_a_Town_

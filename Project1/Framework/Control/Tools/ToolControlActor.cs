@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Components;
 using Project1.Framework.Input.Hotkeys;
 using Project1.Framework.Net;
 using Start_a_Town_;
-using Start_a_Town_.Components;
 
 namespace Project1.Framework.Input.Tools
 {

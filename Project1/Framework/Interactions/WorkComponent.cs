@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Entities;
+using Project1.Framework.Rendering;
 using Start_a_Town_;
 using System;
 
@@ -67,14 +68,11 @@ namespace Project1.Framework.Interactions
         {
             var parent = this.Owner as Actor;
             task.Count = quantity;
-            if (task == null)
-                throw new ArgumentException();
+            ArgumentNullException.ThrowIfNull(task);
             this.Interrupt();
             this.Task = task;
             this.Target = target;
             parent.FaceTowards(this.Target);
-            //if (this.Task.HasFinished)
-            //    this.Stop();
         }
 
         public void End(bool success = false)
@@ -92,20 +90,20 @@ namespace Project1.Framework.Interactions
 
             if (this.Task.State == Interaction.States.Running)
             {
-                /// dont update direction here because it breaks orienting towards the bed's feet when sleeping (the bed's origin is the head part)
+                /// dont update direction here because it breaks orienting towards the bed's feet when sleeping 
+                /// (the bed's origin is the head part)
                 //if (this.Target.Global != parent.Global)
                 //{
                 //    var dir = this.Target.Type == TargetType.Direction ? new Vector3(this.Target.Direction, 0) : (this.Target.Global - parent.Global);
                 //    dir.Normalize();
                 //    parent.Direction = dir;
                 //}
-                // WARNING: i had to move this here because if the interaction target was this entity itself, then the direction vector became zero and its normal became NaN
+                // WARNING: i had to move this here because if the interaction target was this entity itself,
+                // then the direction vector became zero and its normal became NaN
                 return;
             }
-
-            //this.Task.FinishAction();
             if(this.Task.State == Interaction.States.Finished)
-            Stop();
+                Stop();
         }
 
         public void Stop()

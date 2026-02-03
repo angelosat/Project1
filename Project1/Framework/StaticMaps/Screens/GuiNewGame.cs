@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.WorldGen;
 using Project1.Framework.Net;
 using Project1.Framework.Net.Gui;
 using Project1.Framework.StaticMaps.Gui;

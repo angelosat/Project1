@@ -4,6 +4,10 @@ using System.Linq;
 using Start_a_Town_.UI;
 using System.IO;
 using Project1.Framework.Blocks;
+using Project1.Framework.Components;
+using Project1.Framework.Base;
+using Project1.Core.Rooms;
+using Project1.Framework.Rooms;
 
 namespace Start_a_Town_
 {
@@ -109,20 +113,20 @@ namespace Start_a_Town_
         public void AddOrder(CraftOrder order)
         {
             this.Orders.Add(order);
-            this.Town.Net.EventOccured((int)Components.Message.Types.TavernMenuChanged, this, new CraftOrder[] { order }, new CraftOrder[] { });
+            this.Town.Net.EventOccured((int)Message.Types.TavernMenuChanged, this, new CraftOrder[] { order }, new CraftOrder[] { });
         }
         public void RemoveOrder(CraftOrder order)
         {
             this.Orders.Remove(order);
-            this.Town.Net.EventOccured((int)Components.Message.Types.TavernMenuChanged, this, new CraftOrder[] {  }, new CraftOrder[] { order });
-            this.Town.Net.EventOccured((int)Components.Message.Types.OrderDeleted, order);
+            this.Town.Net.EventOccured((int)Message.Types.TavernMenuChanged, this, new CraftOrder[] {  }, new CraftOrder[] { order });
+            this.Town.Net.EventOccured((int)Message.Types.OrderDeleted, order);
         }
         public void RemoveOrder(int orderid)
         {
             var order = this.GetOrder(orderid);
             this.Orders.Remove(order);
-            this.Town.Net.EventOccured((int)Components.Message.Types.TavernMenuChanged, this, new CraftOrder[] { }, new CraftOrder[] { order });
-            this.Town.Net.EventOccured((int)Components.Message.Types.OrderDeleted, order);
+            this.Town.Net.EventOccured((int)Message.Types.TavernMenuChanged, this, new CraftOrder[] { }, new CraftOrder[] { order });
+            this.Town.Net.EventOccured((int)Message.Types.OrderDeleted, order);
         }
         public void AddTable(IntVec3 global)
         {
@@ -230,9 +234,9 @@ namespace Start_a_Town_
             });
             ordersTable.OnGameEventAction = e =>
             {
-                switch ((Components.Message.Types)e.Type)
+                switch ((Message.Types)e.Type)
                 {
-                    case Components.Message.Types.TavernMenuChanged:
+                    case Message.Types.TavernMenuChanged:
                         var t = e.Parameters[0] as Tavern;
                         if (tav != t)
                             break;

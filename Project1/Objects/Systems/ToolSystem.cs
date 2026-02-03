@@ -1,4 +1,6 @@
-﻿using Project1.Framework.Animations;
+﻿using Project1.Core.Materials;
+using Project1.Framework.Animations;
+using Project1.Framework.Materials;
 using Project1.Framework.Stats;
 using System.Collections.Generic;
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Blocks;
+using Project1.Framework.Base;
 using Project1.Framework.Net;
 using Start_a_Town_;
 using Start_a_Town_.UI;
@@ -10,6 +11,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Project1.Framework.WorldGen;
+using Project1.Core.WorldGen;
+using Project1.Framework.Rendering;
 
 namespace Project1.Framework.StaticMaps
 {

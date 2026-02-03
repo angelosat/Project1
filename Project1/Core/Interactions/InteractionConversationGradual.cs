@@ -37,7 +37,7 @@ namespace Project1.Core.Interactions
         }
         protected override void ReadExtra(IDataReader r)
         {
-            this.Topic = Start_a_Town_.Def.GetDef<ConversationTopic>(r.ReadString());
+            this.Topic = Framework.Base.Def.GetDef<ConversationTopic>(r.ReadString());
         }
     }
 }

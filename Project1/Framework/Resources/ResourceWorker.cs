@@ -4,6 +4,10 @@ using Start_a_Town_.UI;
 using Microsoft.Xna.Framework;
 using System;
 using Start_a_Town_;
+using Project1.Framework.Base;
+using Project1.Framework.Helpers;
+using Project1.Framework.Rendering;
+using Project1.Framework.Materials;
 
 namespace Project1.Framework.Resources
 {
@@ -36,9 +40,7 @@ namespace Project1.Framework.Resources
        
         public float GetThresholdValue(Resource res, int index)
         {
-            return 
-                //this.Root?.GetThresholdValue(index) ?? 
-                0;
+            return 0;
         }
         protected virtual void OnDepleted(Resource res) { }
         public string GetLabel(Resource res)
@@ -94,15 +96,7 @@ namespace Project1.Framework.Resources
         }
         protected virtual void updateRec(Resource resource) { }
         protected virtual void TickExtra(Resource resource) { }
-        /*public virtual */
-        //void Tick(Resource resource)
-        //{
-        //    foreach (var ratemod in resource.Modifiers)
-        //        this.Modify(resource, ratemod.Def.GetRateMod(resource.Parent));
-        //}
         protected virtual float GetRegenRate(Resource resource) => 0;
-        public virtual bool HandleMessage(Resource resource, GameObject parent, ObjectEventArgs e = null) { return false; }
-
         public virtual string Format => "";
 
         public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate, Resource values) { }
@@ -110,6 +104,5 @@ namespace Project1.Framework.Resources
 
         internal virtual void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials) { }
 
-        //internal virtual void Revalidate(Resource resource) { }
     }
 }

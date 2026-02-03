@@ -1,5 +1,5 @@
-﻿using Start_a_Town_;
-using Start_a_Town_.Components;
+﻿using Project1.Framework.Components;
+using Start_a_Town_;
 using System;
 
 namespace Project1.Framework.Net

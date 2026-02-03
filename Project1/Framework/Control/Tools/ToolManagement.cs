@@ -1,8 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Base;
 using Project1.Framework.Input.Hotkeys;
 using Project1.Framework.Net;
+using Project1.Framework.Rendering;
 using Project1.Framework.StaticMaps.Packets;
+using Project1.Framework.WorldGen;
 using Start_a_Town_;
 using Start_a_Town_.UI;
 using System;
@@ -351,7 +354,6 @@ namespace Project1.Framework.Input.Tools
             var cam = map.Camera;
             if(this.Target is TargetArgs tar && tar.Type == TargetType.Position)
                 cam.DrawBlockMouseover(sb, map, tar, Color.White);
-                //cam.DrawBlockMouseover(sb, map, tar.Global, Color.White);
             if (this.Target is null || this.Target.Type == TargetType.Null)
                 return;
             if (Engine.DrawRegions && this.Target.Type != TargetType.Null)
@@ -368,7 +370,6 @@ namespace Project1.Framework.Input.Tools
         {
             if (ToolManager.Instance.ActiveTool is not ToolManagement)
                 return;
-            //ScreenManager.CurrentScreen.Camera.SliceOn((int)SelectionManager.Instance.SelectedSource.Global.Z);
             ScreenManager.CurrentScreen.Camera.SliceOn((int)SelectionManager.Instance.SelectedSource.Global.Z);
         }
     }

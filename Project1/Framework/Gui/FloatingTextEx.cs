@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Base;
+using Project1.Framework.Rendering;
 
 namespace Start_a_Town_.UI
 {

@@ -1,4 +1,6 @@
-﻿using Start_a_Town_.UI;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Rendering;
+using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {

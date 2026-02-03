@@ -2,6 +2,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Project1.Framework.Net;
+using Project1.Framework.Components;
 
 namespace Start_a_Town_
 {
@@ -30,7 +31,7 @@ namespace Start_a_Town_
             var end = r.ReadVector3();
             var remove = r.ReadBoolean();
             var positions = new BoundingBox(begin, end).GetBox();
-            net.EventOccured((int)Components.Message.Types.MiningDesignation, positions, remove);
+            net.EventOccured((int)Message.Types.MiningDesignation, positions, remove);
             if (net.IsServer)
                 Send(net, begin, end, remove);
         }

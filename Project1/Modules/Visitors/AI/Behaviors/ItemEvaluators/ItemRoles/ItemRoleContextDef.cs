@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project1.Framework.Base;
+using System;
 namespace Start_a_Town_
 {
     public class ItemRoleContextDef(string name, Type contextType, Type workerType) : Def(name)

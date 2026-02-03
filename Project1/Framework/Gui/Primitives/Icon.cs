@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Blocks;
 using Start_a_Town_.Graphics;
 using System;
+using Project1.Framework.Rendering;
 
 namespace Start_a_Town_.UI
 {

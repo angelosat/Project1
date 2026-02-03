@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 using Start_a_Town_.UI;
 using Start_a_Town_;
 using Project1.Framework.Net;
+using Project1.Framework.Base;
+using Project1.Framework.WorldGen;
+using Project1.Framework.Rendering;
 
 namespace Project1.Framework.Input.Tools
 {

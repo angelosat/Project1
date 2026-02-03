@@ -33,7 +33,7 @@ namespace Start_a_Town_
         }
         public ISaveable Load(SaveTag tag)
         {
-            this.Def = Start_a_Town_.Def.GetDef<ItemDef>(tag.GetValue<string>("Def"));
+            this.Def = Project1.Framework.Base.Def.GetDef<ItemDef>(tag.GetValue<string>("Def"));
             this.Amount = tag.GetValue<int>("Amount");
             return this;
         }
@@ -44,7 +44,7 @@ namespace Start_a_Town_
         }
         public ItemDefAmount Read(IDataReader r)
         {
-            this.Def = Start_a_Town_.Def.GetDef<ItemDef>(r.ReadString());
+            this.Def = Project1.Framework.Base.Def.GetDef<ItemDef>(r.ReadString());
             this.Amount = r.ReadInt32();
             return this;
         }

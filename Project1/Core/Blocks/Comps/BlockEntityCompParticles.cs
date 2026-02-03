@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
-using Start_a_Town_.Particles;
+using Project1.Framework.Base;
+using Project1.Framework.Rendering;
+using Project1.Framework.Gfx.Particles;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {

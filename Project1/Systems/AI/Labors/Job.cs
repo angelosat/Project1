@@ -37,7 +37,7 @@ namespace Start_a_Town_
 
         public Job Read(IDataReader r)
         {
-            this.Def = Start_a_Town_.Def.GetDef<JobDef>(r.ReadString());
+            this.Def = Project1.Framework.Base.Def.GetDef<JobDef>(r.ReadString());
             this.Priority = r.ReadByte();
             return this;
         }
@@ -54,7 +54,7 @@ namespace Start_a_Town_
         public ISaveable Load(SaveTag tag)
         {
             this.Priority = tag.GetValue<byte>("Priority");
-            tag.TryGetTagValue<string>("Def", v => this.Def = Start_a_Town_.Def.GetDef<JobDef>(v));
+            tag.TryGetTagValue<string>("Def", v => this.Def = Project1.Framework.Base.Def.GetDef<JobDef>(v));
             return this;
         }
 

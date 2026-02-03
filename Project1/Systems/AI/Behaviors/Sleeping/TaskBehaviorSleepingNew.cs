@@ -3,6 +3,7 @@ using Start_a_Town_.AI.Behaviors;
 using Start_a_Town_.AI;
 using Start_a_Town_.Framework.AI.NodeTypes;
 using Project1.Core.Needs;
+using Project1.Framework.Pathing;
 
 namespace Start_a_Town_
 {

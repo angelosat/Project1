@@ -6,6 +6,10 @@ using Microsoft.Xna.Framework;
 using Start_a_Town_;
 using Project1.Framework.Blocks;
 using Project1.Framework.Net;
+using Project1.Framework.Components;
+using Project1.Framework.Base;
+using Project1.Framework.WorldGen;
+using Project1.Framework.Rooms;
 
 namespace Start_a_Town_
 {
@@ -172,9 +176,9 @@ namespace Start_a_Town_
             liststockpiles.OnGameEventAction = e =>
             {
                 var shop = box.Tag as Shop;
-                switch ((Components.Message.Types)e.Type)
+                switch ((Message.Types)e.Type)
                 {
-                    case Components.Message.Types.ShopUpdated:
+                    case Message.Types.ShopUpdated:
                         if (e.Parameters[0] != shop)
                             break;
                         if (e.Parameters[1] is Stockpile[] p)
@@ -339,7 +343,7 @@ namespace Start_a_Town_
             this.Town.ShopManager.GetShop<Shop>(actor)?.RemoveWorker(actor);
             this.Workers.Add(actor.RefId);
             this.WorkerProps.Add(actor.RefId, new WorkerProps(actor, this.GetRoleDefs().ToArray()));
-            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { actor });
+            this.Town.Net.EventOccured((int)Message.Types.ShopUpdated, this, new[] { actor });
         }
 
         internal IEnumerable<Actor> GetWorkers()
@@ -359,7 +363,7 @@ namespace Start_a_Town_
         {
             this.Workers.Remove(actor.RefId);
             this.WorkerProps.Remove(actor.RefId);
-            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { actor });
+            this.Town.Net.EventOccured((int)Message.Types.ShopUpdated, this, new[] { actor });
         }
 
         internal void ResolveReferences()
@@ -429,9 +433,9 @@ namespace Start_a_Town_
             var tablePanel = boxContainer.ToPanelLabeled("Workers");
             table.OnGameEventAction = e =>
             {
-                switch ((Components.Message.Types)e.Type)
+                switch ((Message.Types)e.Type)
                 {
-                    case Components.Message.Types.ShopUpdated:
+                    case Message.Types.ShopUpdated:
                         if (e.Parameters[0] != tav)
                             break;
                         if (e.Parameters[1] is Actor[] actors)

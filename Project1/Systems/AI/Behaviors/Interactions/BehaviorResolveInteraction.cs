@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Start_a_Town_.Framework.AI.NodeTypes;
 using Start_a_Town_.AI;
-using Start_a_Town_.Components;
 using System;
 using Project1.Framework.Interactions;
+using Project1.Framework.Components;
 
 namespace Start_a_Town_
 {

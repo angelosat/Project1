@@ -20,6 +20,13 @@ using System.Linq;
 using Project1.Framework.Net;
 using Project1.Framework.Net.Packets;
 using Project1.Framework.Interactions;
+using Project1.Framework.Base;
+using Project1.Framework.Components;
+using Project1.Framework.Components.Plants;
+using Project1.Framework.Rendering;
+using Project1.Framework.WorldGen;
+using Project1.Framework.Materials;
+using Project1.Core.Materials;
 
 namespace Start_a_Town_
 {
@@ -93,7 +100,7 @@ namespace Start_a_Town_
             foreach (var t in RawMaterialSystem.GenerateTemplates().Where(t => t is not null))
                 AddTemplate(t);
 
-            foreach (var toolProp in Start_a_Town_.Def.GetDefs<ToolProfileDef>())
+            foreach (var toolProp in Project1.Framework.Base.Def.GetDefs<ToolProfileDef>())
             {
                 //var obj = ItemFamilyDefOf.Tool.System.Create(toolProp, new ToolSystem.Args(MaterialDefOf.LightWood, MaterialDefOf.LightWood));
                 var obj = ToolSystem.Create(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
@@ -904,7 +911,7 @@ namespace Start_a_Town_
         {
             w.Write(this.Def);
             w.Write(this.Profile?.Name ?? "");
-            if (Start_a_Town_.Def.GetDef(this.Def.Name) is null)
+            if (Project1.Framework.Base.Def.GetDef(this.Def.Name) is null)
                 throw new Exception();
             w.Write(this.RefId);
             w.Write(this.StackSize);
@@ -919,8 +926,8 @@ namespace Start_a_Town_
         public static GameObject Create(IDataReader r)
         {
             string defName = r.ReadString();
-            var def = Start_a_Town_.Def.GetDef<ItemDef>(defName);
-            var profile = Start_a_Town_.Def.GetDef(r.ReadString());
+            var def = Project1.Framework.Base.Def.GetDef<ItemDef>(defName);
+            var profile = Project1.Framework.Base.Def.GetDef(r.ReadString());
             var obj = def.Create(profile);
             obj.RefId = r.ReadInt32();
             var amount = r.ReadInt32();
@@ -985,9 +992,9 @@ namespace Start_a_Town_
         internal static GameObject Load(SaveTag tag)
         {
             tag.TryGetTagValueOrDefault("Def", out string defName);
-            var def = Start_a_Town_.Def.GetDef<ItemDef>(defName);
+            var def = Project1.Framework.Base.Def.GetDef<ItemDef>(defName);
             Def profile = null;
-            if (tag.TryGetTagValueOrDefault("ProfileID", out string profileName)) profile = Start_a_Town_.Def.GetDef(profileName);
+            if (tag.TryGetTagValueOrDefault("ProfileID", out string profileName)) profile = Project1.Framework.Base.Def.GetDef(profileName);
 
             if (def is null)
                 return null;

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Base;
+using Project1.Framework.Rendering;
+using Project1.Framework.WorldGen;
 using Start_a_Town_.GameEvents;
 using Start_a_Town_.UI;
 

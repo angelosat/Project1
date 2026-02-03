@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Start_a_Town_;
 using Project1.Framework.Net;
+using Project1.Framework.Base;
 
 namespace Project1.Framework.Animations
 {
@@ -325,7 +326,7 @@ namespace Project1.Framework.Animations
         }
         public void Load(SaveTag tag)
         {
-            tag.TryGetTagValue<string>("Def", t => this.Def = Start_a_Town_.Def.GetDef<AnimationDef>(t));
+            tag.TryGetTagValue<string>("Def", t => this.Def = Base.Def.GetDef<AnimationDef>(t));
             tag.TryGetTagValueOrDefault("Frame", out this.Frame);
             tag.TryGetTagValueOrDefault("FadeValue", out this.FadeValue);
             tag.TryGetTagValueOrDefault("FadeLength", out this.FadeLength);
@@ -354,7 +355,7 @@ namespace Project1.Framework.Animations
         }
         public Animation Read(IDataReader r)
         {
-            this.Def = Start_a_Town_.Def.GetDef<AnimationDef>(r.ReadString());
+            this.Def = Base.Def.GetDef<AnimationDef>(r.ReadString());
             this.Frame = r.ReadSingle();
             this.FadeLength = r.ReadInt32();
             this.FadeValue = r.ReadInt32();

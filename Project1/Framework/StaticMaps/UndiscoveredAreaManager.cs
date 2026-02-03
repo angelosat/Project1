@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Start_a_Town_;
+using Project1.Framework.Base;
+using Project1.Framework.WorldGen;
 
 namespace Project1.Framework.StaticMaps
 {

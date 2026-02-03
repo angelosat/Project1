@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Components;
 using Project1.Framework.Entities;
 using Project1.Framework.Gear;
+using Project1.Framework.Materials;
 using Project1.Framework.Net;
 using Start_a_Town_;
-using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;

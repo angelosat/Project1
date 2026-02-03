@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework;
 using Start_a_Town_.Graphics;
 using Start_a_Town_;
 using Project1.Framework.Blocks;
+using Project1.Framework.Base;
+using Project1.Framework.WorldGen;
+using Project1.Framework.Rendering;
 
 namespace Project1.Framework.Input.Tools.CellRendering
 {

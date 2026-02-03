@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Materials;
+
+namespace Start_a_Town_
 {
     public class ReagentFilterMaterial
     {

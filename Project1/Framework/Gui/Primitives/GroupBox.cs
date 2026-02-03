@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Base;
 
 namespace Start_a_Town_.UI
 {
@@ -104,8 +105,6 @@ namespace Start_a_Town_.UI
                 currentX += l.Width + space;
                 this.AddControls(l);
             }
-            //if (width != int.MaxValue)
-            //    this.Width = width;
             return this;
         }
         internal void CenterControlsAlignmentVertically()

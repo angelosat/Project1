@@ -1,4 +1,5 @@
-﻿using Project1.Framework.Net;
+﻿using Project1.Framework.Components;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -26,7 +27,7 @@ namespace Start_a_Town_
             var bench = net.Map.Town.CraftingManager.GetWorkstation(station);
             var order = bench.GetOrder(index);
             order.FinishMode = CraftOrderFinishMode.GetMode(r.ReadInt32());
-            net.Map.EventOccured(Components.Message.Types.OrderParametersChanged, order);
+            net.Map.EventOccured(Message.Types.OrderParametersChanged, order);
             if (net is Server)
                 Send(order, (int)order.FinishMode.Mode);
         }

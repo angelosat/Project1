@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Components.Plants;
 using Project1.Framework.Net;
 using Start_a_Town_.UI;
 
@@ -26,8 +27,8 @@ namespace Start_a_Town_
             foreach (var id in enumerable)
             {
                 var plant = Server.Instance.World.GetEntity(id);
-                plant.TryGetComponent<Components.PlantComponent>(c => c.FinishGrowing(plant));
-                plant.TryGetComponent<Components.TreeComponent>(c => c.FinishGrowing(plant));
+                plant.TryGetComponent<PlantComponent>(c => c.FinishGrowing(plant));
+                plant.TryGetComponent<TreeComponent>(c => c.FinishGrowing(plant));
                 plant.Sync(Server.Instance);
             }
         }

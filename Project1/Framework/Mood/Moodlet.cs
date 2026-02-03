@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Base;
 using Start_a_Town_;
 using Start_a_Town_.UI;
 
@@ -57,7 +58,7 @@ namespace Project1.Framework.Mood
 
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValue<string>("Def", t => this.Def = Start_a_Town_.Def.GetDef<MoodletDef>(t));
+            tag.TryGetTagValue<string>("Def", t => this.Def = Base.Def.GetDef<MoodletDef>(t));
             tag.TryGetTagValueOrDefault<int>("TicksRemaining", out this.TicksRemaining);
             return this;
         }
@@ -70,7 +71,7 @@ namespace Project1.Framework.Mood
 
         public Moodlet Read(IDataReader r)
         {
-            this.Def = Start_a_Town_.Def.GetDef<MoodletDef>(r.ReadString());
+            this.Def = Base.Def.GetDef<MoodletDef>(r.ReadString());
             this.TicksRemaining = r.ReadInt32();
             return this;
         }

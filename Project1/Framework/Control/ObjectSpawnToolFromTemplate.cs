@@ -5,6 +5,8 @@ using Project1.Framework.Net;
 using Project1.Framework.Net.Packets;
 using Start_a_Town_;
 using Start_a_Town_.UI;
+using Project1.Framework.WorldGen;
+using Project1.Framework.Rendering;
 
 namespace Project1.Framework.Input
 {

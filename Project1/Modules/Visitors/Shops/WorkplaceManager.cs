@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
+using Project1.Framework.Components;
+using Project1.Framework.Base;
 
 namespace Start_a_Town_
 {
@@ -34,7 +36,7 @@ namespace Start_a_Town_
         {
             this.Shopss.Add(shop);
             this.Shops.Add(shop.ID, shop);
-            this.Town.Net.EventOccured((int)Components.Message.Types.ShopsUpdated, shop);
+            this.Town.Net.EventOccured((int)Message.Types.ShopsUpdated, shop);
         }
 
         public Workplace FindShop(Stockpile stockpile)
@@ -124,7 +126,7 @@ namespace Start_a_Town_
             var shop = this.Shops[shopid];
             this.Shopss.Remove(shop);
             this.Shops.Remove(shopid);
-            this.Town.Net.EventOccured((int)Components.Message.Types.ShopsUpdated, shop);
+            this.Town.Net.EventOccured((int)Message.Types.ShopsUpdated, shop);
         }
 
         public bool ShopExists(Workplace shop)
@@ -228,9 +230,9 @@ namespace Start_a_Town_
             var shoplist = new ListBoxNoScroll<T, Button>(s => new Button(s.Name, () => selectAction?.Invoke(s)));
             shoplist.OnGameEventAction = e =>
             {
-                switch ((Components.Message.Types)e.Type)
+                switch ((Message.Types)e.Type)
                 {
-                    case Components.Message.Types.ShopsUpdated:
+                    case Message.Types.ShopsUpdated:
                         var shop = e.Parameters[0] as T;
                         if (this.Shopss.Contains(shop))
                             shoplist.AddItems(shop);
@@ -275,9 +277,9 @@ namespace Start_a_Town_
 
             shoplist.OnGameEventAction = e =>
             {
-                switch ((Components.Message.Types)e.Type)
+                switch ((Message.Types)e.Type)
                 {
-                    case Components.Message.Types.ShopsUpdated:
+                    case Message.Types.ShopsUpdated:
                         var shop = e.Parameters[0] as Workplace;
                         if (this.Shopss.Contains(shop))
                             shoplist.AddItems(shop);

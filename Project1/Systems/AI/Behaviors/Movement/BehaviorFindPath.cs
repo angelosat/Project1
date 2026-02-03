@@ -1,4 +1,5 @@
 ﻿using Project1.Framework.Net;
+using Project1.Framework.Pathing;
 using Start_a_Town_.Framework.AI.NodeTypes;
 using System;
 

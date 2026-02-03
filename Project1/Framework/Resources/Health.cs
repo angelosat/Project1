@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Components;
+using Project1.Framework.Base;
 using Project1.Framework.Physics;
 using Start_a_Town_;
 using Start_a_Town_.Components;
@@ -6,6 +8,7 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Rendering;
 
 namespace Project1.Framework.Resources
 {

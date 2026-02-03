@@ -2,6 +2,8 @@
 using Start_a_Town_.UI;
 using Start_a_Town_.Graphics;
 using Project1.Framework.Blocks;
+using Project1.Framework.Base;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Core.Materials;
 using Project1.Framework.Blocks;
 using Project1.Framework.Interactions;
+using Project1.Framework.Materials;
+using Project1.Framework.WorldGen;
 using Start_a_Town_;
 
 namespace Project1.Core.Interactions

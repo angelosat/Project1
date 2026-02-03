@@ -1,4 +1,6 @@
-﻿using Project1.Framework.Blocks;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Blocks;
+using Project1.Framework.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -142,12 +144,12 @@ namespace Start_a_Town_
             }
             this.Town.ShopManager.FindShop<Shop>(stockpile)?.RemoveStockpile(stockpile);
             this.StockpilesInput.Add(stockpile.ID);
-            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { stockpile });
+            this.Town.Net.EventOccured((int)Message.Types.ShopUpdated, this, new[] { stockpile });
         }
         public void RemoveStockpile(Stockpile stockpile)
         {
             this.StockpilesInput.Remove(stockpile.ID);
-            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { stockpile });
+            this.Town.Net.EventOccured((int)Message.Types.ShopUpdated, this, new[] { stockpile });
         }
 
         public void ToggleShoppingArea(Stockpile stockpile)
@@ -159,13 +161,13 @@ namespace Start_a_Town_
             }
             this.Town.ShopManager.FindShop<Shop>(stockpile)?.RemoveShoppingArea(stockpile);
             this.StockpilesOutput.Add(stockpile.ID);
-            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { stockpile });
+            this.Town.Net.EventOccured((int)Message.Types.ShopUpdated, this, new[] { stockpile });
         }
 
         private void RemoveShoppingArea(Stockpile stockpile)
         {
             this.StockpilesOutput.Remove(stockpile.ID);
-            this.Town.Net.EventOccured((int)Components.Message.Types.ShopUpdated, this, new[] { stockpile });
+            this.Town.Net.EventOccured((int)Message.Types.ShopUpdated, this, new[] { stockpile });
         }
 
         public IEnumerable<Entity> GetItemsForSale()

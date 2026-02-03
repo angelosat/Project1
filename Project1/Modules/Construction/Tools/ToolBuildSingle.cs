@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Rendering;
 using Project1.Framework.Input;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {

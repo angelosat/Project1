@@ -1,4 +1,5 @@
-﻿using Project1.Framework.Net;
+﻿using Project1.Framework.Components;
+using Project1.Framework.Net;
 
 namespace Start_a_Town_
 {
@@ -26,7 +27,7 @@ namespace Start_a_Town_
                 return;
             var lastEntity = player.ControllingEntity;
             player.ControllingEntity = nextEntity;
-            net.EventOccured((int)Components.Message.Types.PlayerControlNpc, player, nextEntity, lastEntity);
+            net.EventOccured((int)Message.Types.PlayerControlNpc, player, nextEntity, lastEntity);
 
             if (nextEntity is not null)
                 net.Report($"{player.Name} is assuming direct control over {nextEntity.Name}");

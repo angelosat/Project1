@@ -1,5 +1,6 @@
-﻿using Project1.Framework.Blocks;
-using Start_a_Town_.Particles;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Blocks;
+using Project1.Framework.Gfx.Particles;
 
 namespace Start_a_Town_
 {

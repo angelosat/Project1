@@ -1,5 +1,7 @@
-﻿using Project1.Framework.Skills;
-using Start_a_Town_.Components;
+﻿using Project1.Framework.Components.Plants;
+using Project1.Framework.Base;
+using Project1.Framework.Skills;
+using Project1.Core.Materials;
 
 namespace Start_a_Town_
 {

@@ -1,4 +1,5 @@
-﻿using Project1.Framework.Input;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Input;
 using Project1.Framework.Net;
 using Project1.Framework.Net.Packets;
 using Project1.Framework.StaticMaps;

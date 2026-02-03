@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Animations;
+using Project1.Framework.Components;
 using Project1.Framework.Entities;
 using Project1.Framework.Gear;
+using Project1.Framework.Materials;
 using Project1.Framework.Net;
 using Project1.Framework.Physics;
 using Project1.Framework.Skills;
@@ -129,7 +131,7 @@ namespace Start_a_Town_
         void RandomizeMaterials()
         {
             var random = new Random();
-            var materials = Start_a_Town_.Def.GetDefs<MaterialDef>().ToArray();
+            var materials = Project1.Framework.Base.Def.GetDefs<MaterialDef>().ToArray();
             foreach(var bone in this.Body.GetAllBones())
                 bone.Material = materials.SelectRandom(random);
         }

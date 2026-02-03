@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Project1.Framework.Rendering;
+using Project1.Framework.WorldGen;
 using Start_a_Town_;
 using System;
 

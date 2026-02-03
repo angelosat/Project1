@@ -5,6 +5,9 @@ using Project1.Framework.Resources;
 using Project1.Framework.Stats;
 using Project1.Core.Gear;
 using Project1.Framework.Animations;
+using Project1.Framework.Components;
+using Project1.Framework.Base;
+using Project1.Core.Materials;
 
 namespace Start_a_Town_
 {

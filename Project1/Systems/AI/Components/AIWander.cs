@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Base;
 using Start_a_Town_.Framework.AI.NodeTypes;
 
 namespace Start_a_Town_.AI.Behaviors

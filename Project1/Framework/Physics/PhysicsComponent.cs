@@ -3,11 +3,12 @@ using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Start_a_Town_.Components;
 using Start_a_Town_;
 using Project1.Framework.Entities;
 using Project1.Framework.Blocks;
 using Project1.Framework.Net;
+using Project1.Framework.Components;
+using Project1.Framework.WorldGen;
 
 namespace Project1.Framework.Physics
 {

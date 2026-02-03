@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Rendering;
 using Project1.Framework.Input;
 using Project1.Framework.Net;
 using System;
@@ -152,7 +153,7 @@ namespace Start_a_Town_.UI
         public string NameFormat;
         public virtual Func<string> NameFunc { get; set; }
         public virtual string Name { get => this.NameFunc?.Invoke() ?? this._name; set => this._name = value; }
-        public Dictionary<Components.Message.Types, Action<Control, GameEvent>> GameEventHandlers = new();
+        public Dictionary<Project1.Framework.Components.Message.Types, Action<Control, GameEvent>> GameEventHandlers = new();
         public int ID;
         public float t = 0, dt = -0.05f;
         public Color Alpha, Blend;

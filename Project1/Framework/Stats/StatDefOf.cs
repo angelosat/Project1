@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Stats.ValueGetters;
-using Start_a_Town_;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Stats.ValueGetters;
 
 namespace Project1.Framework.Stats
 {

@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Interactions;
 using Project1.Framework.Inventory;
+using Project1.Framework.Materials;
 using Project1.Framework.Net;
+using Project1.Framework.Rendering;
+using Project1.Framework.WorldGen;
 using Start_a_Town_;
 using Start_a_Town_.UI;
 using System;

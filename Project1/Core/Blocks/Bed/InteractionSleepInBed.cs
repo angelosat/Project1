@@ -8,6 +8,8 @@ using Project1.Core.Effects;
 using Project1.Framework.Animations;
 using Project1.Framework.Blocks;
 using Project1.Framework.Interactions;
+using Project1.Framework.Base;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {

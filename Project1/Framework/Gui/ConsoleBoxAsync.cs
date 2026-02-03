@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.Components;
+using Project1.Framework.Components;
+using Project1.Framework.Base;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

@@ -7,6 +7,9 @@ using Project1.Framework.Input;
 using Project1.Framework.Input.Tools.CellRendering;
 using Project1.Framework.Blocks;
 using Project1.Framework.Net;
+using Project1.Framework.Base;
+using Project1.Framework.Rendering;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {

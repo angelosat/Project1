@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Base;
 using Start_a_Town_;
 
 namespace Project1.Framework.Animations

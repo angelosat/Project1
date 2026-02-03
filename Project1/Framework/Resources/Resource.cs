@@ -5,6 +5,9 @@ using System.Linq;
 using Start_a_Town_;
 using Project1.Framework.Attributes;
 using Project1.Framework.Net;
+using Project1.Framework.Base;
+using Project1.Framework.Helpers;
+using Project1.Framework.Materials;
 
 namespace Project1.Framework.Resources
 {
@@ -105,11 +108,6 @@ namespace Project1.Framework.Resources
             foreach (var r in this.Modifiers)
                 res.AddModifier(new ResourceRateModifier(r.Def));
             return res;
-        }
-
-        internal void HandleMessage(GameObject parent, ObjectEventArgs e)
-        {
-            this.ResourceDef.Worker.HandleMessage(this, parent, e);
         }
 
         internal void OnNameplateCreated(GameObject parent, Nameplate plate)

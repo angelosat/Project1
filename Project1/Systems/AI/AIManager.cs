@@ -1,7 +1,7 @@
-﻿using Project1.Framework.Interactions;
+﻿using Project1.Framework.Components;
+using Project1.Framework.Interactions;
 using Project1.Framework.Net;
 using Project1.Framework.Net.Packets;
-using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using System.Linq;
 

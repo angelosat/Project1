@@ -4,6 +4,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Animations;
+using Project1.Framework.Materials;
+using Project1.Framework.Rendering;
 
 namespace Start_a_Town_
 {
@@ -779,7 +781,7 @@ namespace Start_a_Town_
         {
             //this.Material = MaterialDef.GetMaterial(r.ReadInt32());
             if (r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace())
-                this.Material = Start_a_Town_.Def.GetDef<MaterialDef>(matName);
+                this.Material = Project1.Framework.Base.Def.GetDef<MaterialDef>(matName);
 
             //this.Sprite = Sprite.Load(r); // i decided to sync sprites as well instead of relying on initializing sprites after gameobject loading/syncing
             this.Sprite = r.ReadString() is string spritename && !spritename.IsNullEmptyOrWhiteSpace() ? Sprite.LoadNew(spritename) : null;

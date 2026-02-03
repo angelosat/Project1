@@ -4,6 +4,8 @@ using System.Linq;
 using Start_a_Town_.UI;
 using Start_a_Town_.Components;
 using Project1.Framework.Entities;
+using Project1.Framework.Base;
+using Project1.Framework.Materials;
 
 namespace Start_a_Town_
 {

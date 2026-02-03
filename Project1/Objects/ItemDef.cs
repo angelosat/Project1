@@ -1,6 +1,9 @@
-﻿using Project1.Framework.Entities;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Entities;
 using Project1.Framework.Gear;
+using Project1.Framework.Materials;
 using Project1.Framework.Physics;
+using Project1.Framework.WorldGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;

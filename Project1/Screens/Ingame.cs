@@ -6,6 +6,8 @@ using Project1.Framework;
 using Project1.Framework.Input;
 using Project1.Framework.Input.Hotkeys;
 using Project1.Framework.Net;
+using Project1.Framework.Rendering;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {

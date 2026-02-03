@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Materials;
 using Start_a_Town_;
 
 namespace Project1.Framework.Resources

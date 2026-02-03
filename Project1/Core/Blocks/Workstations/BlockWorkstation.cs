@@ -1,4 +1,6 @@
-﻿using Project1.Framework.Blocks;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Blocks;
+using Project1.Framework.WorldGen;
 using Start_a_Town_.Graphics;
 using System;
 using System.Collections.Generic;

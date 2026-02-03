@@ -6,6 +6,7 @@ using Start_a_Town_.UI;
 using Microsoft.Xna.Framework;
 using Project1.Framework.StaticMaps;
 using Project1.Framework.Net;
+using Project1.Framework.Base;
 
 namespace Start_a_Town_
 {

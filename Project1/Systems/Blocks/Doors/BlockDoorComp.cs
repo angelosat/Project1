@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.WorldGen;
 using System;
 using System.Collections.Generic;
 

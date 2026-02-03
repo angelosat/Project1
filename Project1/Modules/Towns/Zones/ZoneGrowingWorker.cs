@@ -1,4 +1,8 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Core.Materials;
+using Project1.Framework.Base;
+using Project1.Framework.WorldGen;
+
+namespace Start_a_Town_
 {
     class ZoneGrowingWorker : ZoneWorker
     {

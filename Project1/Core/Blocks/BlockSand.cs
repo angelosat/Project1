@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.Xna.Framework;
+using Project1.Core.Materials;
 using Project1.Framework.Blocks;
-using Start_a_Town_.Particles;
+using Project1.Framework.Gfx.Particles;
+using Project1.Framework.Materials;
 
 namespace Start_a_Town_
 {

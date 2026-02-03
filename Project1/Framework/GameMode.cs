@@ -6,6 +6,7 @@ using Start_a_Town_;
 using Project1.Framework.StaticMaps;
 using Project1.Framework.Net;
 using Start_a_Town_.Core.UI;
+using Project1.Framework.WorldGen;
 
 namespace Project1.Framework
 {

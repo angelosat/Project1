@@ -11,7 +11,6 @@ namespace Start_a_Town_.UI
         IDisposable subscription;
 
         public static int DefaultHeight = UIManager.Font.LineSpacing + 2;
-        //public static int DefaultHeight = 15;
 
         Alignment.Horizontal _Halign;
         public Alignment.Horizontal Halign

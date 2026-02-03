@@ -5,6 +5,7 @@ using Project1.Framework.Attributes;
 using Project1.Framework.Resources;
 using Project1.Core.Needs;
 using Project1.Core.Gear;
+using Project1.Framework.Base;
 
 namespace Start_a_Town_
 {

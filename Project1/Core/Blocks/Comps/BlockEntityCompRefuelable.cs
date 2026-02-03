@@ -5,6 +5,10 @@ using Microsoft.Xna.Framework;
 using Start_a_Town_.UI;
 using System.Collections.ObjectModel;
 using Project1.Framework.Net;
+using Project1.Framework.Base;
+using Project1.Framework.WorldGen;
+using Project1.Core.Materials;
+using Project1.Framework.Materials;
 
 namespace Start_a_Town_
 {

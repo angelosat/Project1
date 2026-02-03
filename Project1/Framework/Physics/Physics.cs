@@ -1,11 +1,12 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Project1.Framework.Blocks;
+using Project1.Framework.WorldGen;
 using Start_a_Town_;
 
 namespace Project1.Framework.Physics
 {
-    class Physics
+    class PhysicsHelper
     {
         static public float Friction { get { return PhysicsComponent.Friction; } }
 

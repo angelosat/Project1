@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Blocks;
+using Project1.Framework.Base;
 using Project1.Framework.Input;
 using Project1.Framework.Net;
-using Project1.Framework.StaticMaps.Regions;
 using Start_a_Town_;
 using Start_a_Town_.UI;
 using System;
@@ -12,15 +12,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Project1.Framework.WorldGen;
+using Project1.Core.WorldGen;
+using Project1.Framework.Rendering;
+using Project1.Framework.Pathing;
 
 namespace Project1.Framework.StaticMaps
 {
     public class StaticMap : MapBase, ITooltippable
     {
         public override float LoadProgress => this.ActiveChunks.Count / (float)(this.Size.Chunks * this.Size.Chunks);
-
-
-        //Cell[] Cells;
 
         public MapSize Size;
         public class MapSize : INamed
@@ -105,14 +106,14 @@ namespace Project1.Framework.StaticMaps
             this.Regions = new RegionManager(this);
             this.Stockpiles = new(this);
             this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
-            this.ParticleManager = new Start_a_Town_.Particles.ParticleManager(this);
+            this.ParticleManager = new Gfx.Particles.ParticleManager(this);
             this.EntityLifecycleManager = new EntityLifecycleManager(this);
         }
         public StaticMap(StaticWorld world, Vector2 coords, string name = "")
             : this(world, name)
         {
             this.Coordinates = coords;
-            this.Size = MapSize.Default;// MapSize.Normal;
+            this.Size = MapSize.Default;
             this.Global = this.Coordinates * this.Size.Blocks;
             this.Thumb = new MapThumb(this);
         }
@@ -135,12 +136,6 @@ namespace Project1.Framework.StaticMaps
             this.DayTimeNormal = Math.Max(0, Math.Min(1, (1 + nn) / 2f));
             this.SkyDarkness = 0;
         }
-      
-        //internal void Despawn(Actor actor)
-        //{
-        //    actor.Despawn();
-        //    PacketEntityDespawn.Send(this.Net, actor);
-        //}
 
         #region Updating
         public override void Validate()
@@ -150,7 +145,6 @@ namespace Project1.Framework.StaticMaps
             this.TryPerformQueuedRandomBlockUpdates();
             this.CachedAmbientColor = this.UpdateAmbientColor();
 
-            //this.CacheObjects();
             this.CacheBlockEntities();
 
             foreach (var chunk in this.ActiveChunks.Values.ToList())
@@ -299,44 +293,7 @@ namespace Project1.Framework.StaticMaps
             this.InitChunks();
             foreach (var entity in this.Entities)
                 entity.ResolveReferences();
-
-            //this.HACKpopulateCellArrayFromChunks();
         }
-
-        //public void HACKpopulateCellArrayFromChunks()
-        //{
-        //    var chunkSize = Chunk.Size;
-        //    var mapWidth = Size.Blocks;
-        //    var mapHeight = Size.Blocks;
-        //    this.Cells = new Cell[mapWidth * mapHeight * MapBase.MaxHeight];
-
-        //    foreach (var chunk in this.ActiveChunks.Values)
-        //    {
-        //        for (int z = 0; z < MapBase.MaxHeight; z++)
-        //            for (int y = 0; y < chunkSize; y++)
-        //                for (int x = 0; x < chunkSize; x++)
-        //                {
-        //                    var local = new IntVec3(x, y, z);
-        //                    var cell = chunk.Cells[Chunk.GetCellIndex(local)];
-
-        //                    int gx = chunk.Start.X + x;
-        //                    int gy = chunk.Start.Y + y;
-        //                    int gz = z;
-
-        //                    cell.X = (byte)gx;
-        //                    cell.Y = (byte)gy;
-        //                    cell.Z = (byte)gz;
-
-        //                    int mapIndex =
-        //                        gx +
-        //                        gy * mapWidth +
-        //                        gz * mapWidth * mapHeight;
-
-        //                    this.Cells[mapIndex] = cell;
-        //                }
-        //    }
-        //}
-
         public override void GenerateThumbnails()
         {
             this.GenerateThumbnails(this.GetFullPath());
@@ -417,9 +374,6 @@ namespace Project1.Framework.StaticMaps
 
             this.Regions.Init();
             callback?.Invoke("Cacheing objects", 0);
-
-            //this.FinishLoading();
-
             return true;
         }
         public IEnumerable<(string, Action)> InitChunksNew()
@@ -431,19 +385,12 @@ namespace Project1.Framework.StaticMaps
                 $"chunk edges reset in {sw.ElapsedMilliseconds} ms".ToConsole();
             });
             yield return ("Initializing Regions", this.Regions.Init);
-            //yield return ("Caching objects", this.FinishLoading);
         }
         void ResetChunkEdges()
         {
             foreach (var ch in this.ActiveChunks.Values)
             {
                 /// i'm calculating light at the end of map generation
-                //if (!ch.LightValid)
-                //{
-                //    this.ResetLight(ch);
-                //    ch.LightValid = true;
-                //    this.UpdateChunkNeighborsLight(ch);
-                //}
                 foreach (var vector in ch.MapCoords.GetNeighbors())
                 {
                     if (this.ActiveChunks.TryGetValue(vector, out var neighbor))
@@ -507,18 +454,6 @@ namespace Project1.Framework.StaticMaps
 
             this.CachedBlockEntities = list;
         }
-        //public void CacheObjects()
-        //{
-        //    var list = new List<GameObject>();
-        //    foreach (var chunk in this.ActiveChunks)
-        //        list.AddRange(chunk.Value.GetObjects());
-
-        //    this.CachedObjects = list;
-        //}
-        //public override IEnumerable<GameObject> GetObjects()
-        //{
-        //    return this.CachedObjects.Where(o => o.Exists); // because an object might have despawned during an earlier operation on the current frame
-        //}
         public override IEnumerable<GameObject> GetObjects(Vector3 min, Vector3 max)
         {
             return this.GetObjects(new BoundingBox(min, max));
@@ -545,15 +480,9 @@ namespace Project1.Framework.StaticMaps
 
         public static StaticMap ReadData(NetEndpoint net, IDataReader r)
         {
-            //var map = new StaticMap
-            //{
-            //    Name = r.ReadString(),
-            //    Coordinates = new Vector2(r.ReadSingle(), r.ReadSingle()),
-            //};
             var name = r.ReadString();
             var map = new StaticMap(net.World as StaticWorld, name)
             {
-                //Name = r.ReadString(),
                 Coordinates = new Vector2(r.ReadSingle(), r.ReadSingle()),
             };
             var size = r.ReadString();
@@ -567,8 +496,6 @@ namespace Project1.Framework.StaticMaps
         {
             base.OnGameEvent(e);
             this.Town.HandleGameEvent(e);
-            //this.Regions.OnGameEvent(e);
-            //this.UndiscoveredAreaManager.OnGameEvent(e);
         }
 
         public override bool SetBlockLuminance(IntVec3 global, byte luminance)
@@ -699,7 +626,6 @@ namespace Project1.Framework.StaticMaps
                     $"chunks initialized in {watch.ElapsedMilliseconds} ms".ToConsole();
                 }
                 ));
-                //var gradients = new Dictionary<IntVec3, double>();
                 var gradients = gradCache.SelectMany(c => c.Value.Select(cc => (cc.Key.ToGlobal(c.Key), cc.Value))).ToDictionary(c => c.Item1, c => c.Value);
 
                 foreach (var m in mutatorlist)
@@ -1002,10 +928,7 @@ namespace Project1.Framework.StaticMaps
             this.UpdateLight(queued);
         }
 
-        //internal void FinishLoading()
-        //{
-        //    this.CacheObjects();
-        //}
+      
         readonly UndiscoveredAreaManager UndiscoveredAreaManager;
         internal void InitUndiscoveredAreas(Action<string, float> callback = null)
         {
@@ -1056,30 +979,15 @@ namespace Project1.Framework.StaticMaps
                     current = radial.Current;
                 } while (!this.IsStandableIn(current));
                 actor.Global = current;
-                //this.Spawn(actor);//
                 this.World.Register(actor);
                 this.Spawn(actor, actor.Global, Vector3.Zero);
             }
         }
-        //public override Cell GetCell(Vector3 g)
-        //{
-        //    //int index = this.Index(g);
-        //    var index = this.Index(g);// (g.Z * this.Size.Blocks + y) * this.Size.Blocks + x;
-        //    return this.GetCell(index);
-        //}
-        //Cell GetCell(int index)
-        //{
-        //    if (index < 0 || index >= Cells.Length)
-        //        return null;
-        //    return this.Cells[index];
-        //}
         int Index(int x, int y, int z)
         {
             var index = (z * this.Size.Blocks + y) * this.Size.Blocks + x;
-            //if (index < 0 || index >= Cells.Length)
-            //    throw new IndexOutOfRangeException($"Invalid map index {index} for cell at global ({x},{y},{z})");
             return index;
         }
-        int Index(IntVec3 v) => this.Index(v.X, v.Y, v.Z);// v.Z * this.Size.Blocks * this.Size.Blocks + v.Y * this.Size.Blocks + v.X;
+        int Index(IntVec3 v) => this.Index(v.X, v.Y, v.Z);
     }
 }

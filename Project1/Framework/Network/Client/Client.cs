@@ -1,10 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework;
+using Project1.Framework.Base;
+using Project1.Framework.Components;
 using Project1.Framework.Input;
 using Project1.Framework.Net;
 using Project1.Framework.Net.Packets;
 using Project1.Framework.StaticMaps;
+using Project1.Framework.WorldGen;
 using Start_a_Town_;
-using Start_a_Town_.Components;
 using Start_a_Town_.Helpers;
 using Start_a_Town_.UI;
 using System;

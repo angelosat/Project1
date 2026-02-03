@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Materials;
+using Project1.Framework.Base;
 using Project1.Framework.Blocks;
+using Project1.Framework.Gfx.Particles;
 using Project1.Framework.Net;
-using Start_a_Town_.Particles;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {

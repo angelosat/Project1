@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Project1.Framework.Needs;
 using Project1.Framework.Resources;
+using Project1.Framework.Base;
 
 namespace Start_a_Town_
 {

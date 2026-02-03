@@ -1,5 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Base;
+using Project1.Framework.Components;
+using Project1.Framework.Materials;
 using Project1.Framework.Net;
+using Project1.Framework.WorldGen;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -509,7 +513,7 @@ namespace Start_a_Town_
                 .SnapToMouse()
                 .SetGameEventAction(e =>
                 {
-                    if ((Components.Message.Types)e.Type == Components.Message.Types.OrderDeleted && e.Parameters[0] == DetailsUIContainer.Tag)
+                    if ((Message.Types)e.Type == Message.Types.OrderDeleted && e.Parameters[0] == DetailsUIContainer.Tag)
                     {
                         DetailsUIContainer.Hide();
                     }

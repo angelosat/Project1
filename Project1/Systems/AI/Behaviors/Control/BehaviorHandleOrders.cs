@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Framework.AI.NodeTypes;
+﻿using Project1.Framework.Pathing;
+using Start_a_Town_.Framework.AI.NodeTypes;
 
 namespace Start_a_Town_.AI.Behaviors
 {

@@ -1,7 +1,7 @@
-﻿using Project1.Framework.Interactions;
+﻿using Project1.Framework.Components.Plants;
+using Project1.Framework.Interactions;
 using Project1.Framework.Resources;
 using Start_a_Town_;
-using Start_a_Town_.Components;
 using System;
 
 namespace Project1.Core.Interactions

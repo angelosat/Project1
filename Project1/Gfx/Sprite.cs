@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Blocks;
 using Start_a_Town_.Graphics;
+using Project1.Framework.Rendering;
+using Project1.Framework.Materials;
 
 namespace Start_a_Town_
 {

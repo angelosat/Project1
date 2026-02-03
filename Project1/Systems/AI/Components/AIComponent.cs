@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using Project1.Framework.Entities;
 using Project1.Framework.Net;
+using Project1.Framework.Rendering;
+using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_
 {
@@ -73,7 +75,6 @@ namespace Start_a_Town_
             this.Root = profile.Behavior.Clone() as Behavior;
             this.Root.AttachTo(this.Owner as Actor);
             this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
-            //this.Meta.Actor = this.Owner as Actor;
         }
         internal override void ResolveReferences()
         {
@@ -85,7 +86,6 @@ namespace Start_a_Town_
         }
         public AIComponent Initialize(Behavior root)
         {
-            //this.Root = root;
             return this;
         }
 
@@ -98,7 +98,7 @@ namespace Start_a_Town_
         {
             var parent = this.Owner;
             var net = parent.Net;
-            if (net is Client) // do i want to run some deterministic behaviors locally too? UPDATE: NO
+            if (net is Client) // do i want to run some deterministic behaviors locally too? answer: NO
                 return;
 
             this.State.Tick();
@@ -110,7 +110,6 @@ namespace Start_a_Town_
         public override void OnSpawn(MapBase newMap)
         {
             this.State.Leash = this.Owner.Global;
-            //this._unListen = this.Parent.Map.World.Events.ListenTo<BlocksChangedEvent>(this.HandleBlocksChange);
             this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
             this.State.ItemPreferences.OnSpawn(newMap);
         }
@@ -154,7 +153,6 @@ namespace Start_a_Town_
             save.TryGetTagValue<byte[]>("Guid", v => this.Guid = new Guid(v));
             this.State.Load(save["State"]);
             this.Root.Load(save["Root"]);
-            //this.Meta = save.Load<RoleMetaWrapper>("Meta");
             if (save.TryLoadNew<RoleMetaWrapper>("Meta", out var meta)) this.Meta = meta;
             this.Meta.Actor = this.Owner as Actor;
             this.State.ResolveReferences();
@@ -163,14 +161,14 @@ namespace Start_a_Town_
         public override void Write(IDataWriter w)
         {
             w.Write(this.Guid.ToByteArray());
-            this.State.Write(w); // i dont want to sync the state for the time being
+            this.State.Write(w);
             this.Root.Write(w);
             w.Write(this.Meta.Def);
         }
         public override void Read(IDataReader r)
         {
             this.Guid = new Guid(r.ReadBytes(16));
-            this.State.Read(r);// i dont want to sync the state for the time being
+            this.State.Read(r);
             this.Root.Read(r);
             this.Meta = r.ReadDef<RoleMetaDef>().CreateWrapper();
             this.Meta.Actor = this.Owner as Actor;
@@ -242,17 +240,10 @@ namespace Start_a_Town_
             }
         }
         readonly Label CachedGuiLabelCurrentTask = new();
-        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
-        //{
-        //    info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(()=> $"Current Task: {this.State.TaskString}"));
-        //}
         internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
-            //info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => $"Current Task: {this.State.Behavior?.Name} {this.State.Behavior?.Task.TargetA}"));
             info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentTask?.Status ?? "Idle"));
         }
-        
-
         public new class Spec : Spec<AIComponent>
         {
             public readonly Behavior Root;
@@ -261,10 +252,6 @@ namespace Start_a_Town_
             {
                 this.Root = root;
             }
-            //protected override void ApplyTo(AIComponent comp)
-            //{
-            //    comp.Root = this.Root;
-            //}
         }
     }
 }

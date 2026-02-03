@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Base;
+
+namespace Start_a_Town_
 {
     public class ReactionClass : Def
     {

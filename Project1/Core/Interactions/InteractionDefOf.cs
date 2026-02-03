@@ -1,5 +1,7 @@
 ﻿using Project1.Core.Interactions;
 using Project1.Framework.Animations;
+using Project1.Framework.Base;
+using Project1.Framework.Components.Plants;
 using Project1.Framework.Interactions;
 using Project1.Framework.Skills;
 using Start_a_Town_;

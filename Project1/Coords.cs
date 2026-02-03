@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Framework.Blocks;
 using System;
+using Project1.Framework.Rendering;
+using Project1.Framework.Base;
 
 namespace Start_a_Town_
 {

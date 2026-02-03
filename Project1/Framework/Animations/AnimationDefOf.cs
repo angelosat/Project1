@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Base;
+using Project1.Framework.Components;
 using Start_a_Town_;
-using Start_a_Town_.Components;
 
 namespace Project1.Framework.Animations
 {

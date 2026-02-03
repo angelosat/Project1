@@ -3,15 +3,18 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Gear;
 using Project1.Framework.Animations;
 using Project1.Framework.Attributes;
+using Project1.Framework.Components;
+using Project1.Framework.Base;
 using Project1.Framework.Needs;
 using Project1.Framework.Resources;
 using Project1.Framework.Skills;
 using Project1.Framework.Stats;
 using Start_a_Town_;
-using Start_a_Town_.Components;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
+using Project1.Framework.WorldGen;
+using Project1.Framework.Rendering;
 
 namespace Project1.Framework.Interactions
 {
@@ -53,10 +56,8 @@ namespace Project1.Framework.Interactions
         private bool _drawProgressBar;
         public Func<Vector3> BarPosition;
         public Func<float> BarProgress;
-        private Func<string> BarLabel;
 
         public readonly ProgressInt Progress = new(100);
-        //public virtual float PercentageComplete => (float)(1 - this.CurrentTick / this.Length);
         public float ProgressPercentage => this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage;
 
         // TODO: i need a method that returns satisfaction score based on ai entity's state
@@ -88,27 +89,19 @@ namespace Project1.Framework.Interactions
         protected int CrossFadeAnimationLength;
         public void Start()
         {
-            //this.Progress.SetMax(this.Def.Logic.CalculateMax(this.Context));
             this.Def.Logic.OnStart(this);
             if (this.AnimationDef is not null)
             {
                 this._cachedAnimation =
-                    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 40); // TODO maybe instead of a magic crossfade number, crossfade until the second keyframe
-                //this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
-                //this._cachedAnimation.Weight = 1;
+                    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, 40); 
+                // TODO maybe instead of a magic crossfade number, crossfade until the second keyframe
                 if (this.AnimationDef == AnimationDefOf.Tool) // HACK
                 {
                     this.Calculate(out _, out _, out var speed);
                     this.SetNextSwingSpeed(speed);
                 }
-                //if (this.CrossFadeAnimationLength == 0)
-                //    this.Actor.SpriteComp.AddAnimation(this.AnimationDef);
-                //else
-                //    this.Actor.SpriteComp.CrossFade(this.AnimationDef, false, this.CrossFadeAnimationLength);
             }
-            //this.OnStart();
         }
-        //protected virtual void OnStart() { }
         public void Update()
         {
             var actor = this.Actor;
@@ -134,7 +127,6 @@ namespace Project1.Framework.Interactions
                     this.Finish();
                     this.Actor.Map.Events.Post(new InteractionFinishedEvent(this.Actor));
                 }
-                //this.StopAnimation();
                 return;
             }
             if (this.Def.ProgressHandler is not null)
@@ -149,7 +141,6 @@ namespace Project1.Framework.Interactions
                 return;
             if (this.State == States.Finishing) // TODO: maybe check for failed state too?
             {
-                //this.StopAnimation();
                 if (this._cachedAnimation.State == AnimationStates.Finished)
                     this.State = States.Finished;
                 return;
@@ -180,7 +171,6 @@ namespace Project1.Framework.Interactions
             if (this.CurrentTick <= 0)
             {
                 this.Finish();
-                //this.StopAnimation();
                 this.Perform();
             }
         }
@@ -190,11 +180,8 @@ namespace Project1.Framework.Interactions
             this.Def.Logic.OnFinish(this);
             this.StopAnimation();
         }
-        //internal void OnFinish()=> this.Def.Logic.OnFinish(this);
         internal void StopAnimation()
         {
-            //this.Def.Logic.OnFinish(this); // or done()?
-            //this.State = States.Finished;
             if (this.AnimationDef is not null)
                 this.CachedAnimation.FadeOutAndRemove();// -.01f);
         }
@@ -213,32 +200,12 @@ namespace Project1.Framework.Interactions
         public virtual void DrawUI(SpriteBatch sb, Camera camera)
         {
             var actor = this.Actor;
-            //if (this._drawProgressBar)
-            //{
-            //Bar.Draw(sb, camera, this.BarPosition(), this.BarLabel(), this.BarProgress(), camera.Zoom * .2f);
             Bar.Draw(sb, camera, this.Actor.Global, this.Def.Label, this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
-            return;
-            //}
-            if (this.RunningType == RunningTypes.Continuous)
-                return;
-            if (this.Length <= Ticks.PerSecond)
-                return;
-            var global = actor.Global;
-
-            var bounds = camera.GetScreenBounds(global, actor.GetSprite().GetBounds());
-            var scrLoc = new Vector2(bounds.X + bounds.Width / 2f, bounds.Y);//
-            var barLoc = scrLoc - new Vector2(InteractionBar.DefaultWidth / 2, InteractionBar.DefaultHeight / 2);
-            var textLoc = new Vector2(barLoc.X, scrLoc.Y);
-
-            InteractionBar.Draw(sb, barLoc, InteractionBar.DefaultWidth, this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage);
-            UIManager.DrawStringOutlined(sb, this.Verb, textLoc, Alignment.Horizontal.Left, Alignment.Vertical.Center, 0.5f);
         }
 
         internal virtual void ResolveReferences()
         {
         }
-
-        //public abstract object Clone();
 
         public virtual string GetCompletedText(Actor actor, TargetArgs target)
         {
@@ -300,7 +267,6 @@ namespace Project1.Framework.Interactions
             this._drawProgressBar = true;
             this.BarPosition = position;
             this.BarProgress = progress;
-            this.BarLabel = label;
         }
         
         internal void AddProgress(int v)

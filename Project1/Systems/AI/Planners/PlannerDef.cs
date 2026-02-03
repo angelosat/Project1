@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.AI;
+﻿using Project1.Framework.Base;
+using Start_a_Town_.AI;
 using Start_a_Town_.AI.Behaviors;
 using System;
 

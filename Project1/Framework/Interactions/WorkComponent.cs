@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Base;
 using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.Rendering;
 using Start_a_Town_;
 using System;

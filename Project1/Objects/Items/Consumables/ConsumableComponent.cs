@@ -7,7 +7,9 @@ using Project1.Framework.Base;
 using Project1.Framework.Effects;
 using Project1.Framework.Entities;
 using Project1.Framework.Interactions;
+using Project1.Framework.Legacy;
 using Project1.Framework.Needs;
+using Project1.Framework.UI;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_
@@ -47,7 +49,7 @@ namespace Start_a_Town_
         //    this.Effects = toCopy.Effects;
         //}
         
-        public override void OnTooltipCreated(GameObject parent, UI.Control tooltip)
+        public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
             //foreach (var effect in this.Effects)
             //    tooltip.Controls.Add(

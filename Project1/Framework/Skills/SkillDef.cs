@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Project1.Framework.Base;
 using Project1.Framework.Interactions;
 using Project1.Framework.Stats;
-using Start_a_Town_;
+using Project1.Framework.Tools;
 using Start_a_Town_.UI;
 
 namespace Project1.Framework.Skills

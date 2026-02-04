@@ -1,5 +1,7 @@
 ﻿using Project1.Core.Gear;
+using Project1.Core.Towns;
 using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
 using System;
 
 namespace Start_a_Town_

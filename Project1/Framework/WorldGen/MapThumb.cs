@@ -6,6 +6,10 @@ using Project1.Framework.Input;
 using Project1.Framework.Blocks;
 using Project1.Framework.Rendering;
 using Start_a_Town_;
+using Project1.Framework.Screens;
+using Project1.Framework.Base;
+using Project1.Framework.UI;
+using Project1.Framework.Entities;
 
 namespace Project1.Framework.WorldGen
 {

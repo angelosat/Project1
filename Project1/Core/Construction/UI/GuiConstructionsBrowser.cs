@@ -1,0 +1,23 @@
+﻿using Start_a_Town_.UI;
+
+namespace Project1.Core.Construction.UI
+{
+    public class GuiConstructionsBrowser : Window
+    {
+        readonly BlockBrowserConstruction Browser;
+
+        public GuiConstructionsBrowser()
+        {
+            this.Title = "Constructions Browser";
+            this.AutoSize = true;
+            this.Movable = true;
+            this.Browser = new BlockBrowserConstruction();
+            this.Client.Controls.Add(this.Browser);
+        }
+        public override bool Hide()
+        {
+            this.Browser.Hide();
+            return base.Hide();
+        }
+    }
+}

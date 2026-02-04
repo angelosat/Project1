@@ -1,4 +1,7 @@
-﻿using Project1.Framework.Pathing;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Pathing;
 using System;
 using System.Linq;
 
@@ -43,8 +46,6 @@ namespace Start_a_Town_
                     foreach (var stockpile in stockpiles)
                     {
                         int availableCapacity = stockpile.AvailableCapacityFor(carried);
-                        // var diff = stockpile.howmanycanacceptof(item) - actor.hauled.stacksize;
-                        // diff > 0
                         var diff = availableCapacity - carried.StackSize;
                         if(diff > 0)
                         {
@@ -58,8 +59,6 @@ namespace Start_a_Town_
                                 if (carried.CanAbsorb(item))
                                     return new Plan(PlanDefOf.GoHaul, item) { AmountA = Math.Min(diff, item.StackSize) };
                             }
-                            //var place = stockpile.FindPlaceFor(carried);
-                            //return new Plan(PlanDefOf.HaulToStockpile, place);
                             var places = stockpile.FindPlacesFor(carried).Where(actor.CanReachAndReserve);
                             foreach (var cell in places)
                                 // emit godeliver task at place
@@ -70,9 +69,7 @@ namespace Start_a_Town_
                 // carried item is useless so place it in current cell (or throw/let it drop)
                 // TODO: return null and let a final cleanup planner drop it at feet or at nearest empty cell
                 // this is the final cleanup planner??
-                //IntVec3 empty = actor.FindNearestEmptyCellOrCurrent();
                 return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
-                //return new Plan(PlanDefOf.DropCarried, new TargetArgs(actor.Map, actor.Cell));
             }
             // if actor has empty hands
             // iterate map items
@@ -104,31 +101,5 @@ namespace Start_a_Town_
             
             return null;
         }
-        //var shouldTransfer = !currentStockpile?.Accepts(item) ?? true;
-
-        //if (shouldTransfer && availableCapacity > 0)
-
-        // if the candidate stockiples accepts the item - stockpile.howmanycanacceptof(item) > 0
-        // and the item is currently not at a stockpile,
-        // if item is already at a stockpile with a lower priority than the candidate stockpile,
-        // or the current stockpile no longer accepts the item, 
-
-        // then emit simple gohaul task to pick up stockpile.howmanycanacceptof(item) quantity of the target item
-
-        //static bool IsItemAtBestStockpile(Entity item)
-        //{
-        //    var stockpiles = item.Map.Town.ZoneManager.GetZones<Stockpile>();
-        //    var currentStockpile = stockpiles.FirstOrDefault(s => s.Contains(item));
-        //    if (currentStockpile == null)
-        //        return false;
-        //    var betterStockpile = stockpiles
-        //        .Where(s =>
-        //            s != currentStockpile && 
-        //            s.Priority > currentStockpile.Priority &&
-        //            s.CanAccept(item))
-        //        .OrderByDescending(s => s.Priority)
-        //        .FirstOrDefault();
-        //    return betterStockpile == null && currentStockpile.Accepts(item);
-        //}
     }
 }

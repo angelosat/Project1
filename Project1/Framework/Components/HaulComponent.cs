@@ -1,5 +1,6 @@
 ﻿using System;
 using Project1.Framework.Animations;
+using Project1.Framework.Base;
 using Project1.Framework.Entities;
 using Project1.Framework.Inventory;
 using Project1.Framework.Resources;

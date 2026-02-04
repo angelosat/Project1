@@ -7,6 +7,8 @@ using Start_a_Town_;
 using Start_a_Town_.UI;
 using Project1.Framework.WorldGen;
 using Project1.Framework.Rendering;
+using Project1.Framework.Entities;
+using Project1.Framework.Base;
 
 namespace Project1.Framework.Input
 {

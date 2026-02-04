@@ -524,8 +524,8 @@ namespace Project1.Framework.Rendering
                 Effect fx = Game1.Instance.Content.Load<Effect>("blur");
                 fx.CurrentTechnique = fx.Techniques["Normal"];
 
-                fx.Parameters["BlockWidth"].SetValue(Block.Width + 2 * Borders.Thickness);
-                fx.Parameters["BlockHeight"].SetValue(Block.Height + 2 * Borders.Thickness);
+                fx.Parameters["BlockWidth"].SetValue(Block.Width + 2 * BordersEffect.Thickness);
+                fx.Parameters["BlockHeight"].SetValue(Block.Height + 2 * BordersEffect.Thickness);
                 fx.Parameters["AtlasWidth"].SetValue(Block.Atlas.Texture.Width);
                 fx.Parameters["AtlasHeight"].SetValue(Block.Atlas.Texture.Height);
                 fx.Parameters["Viewport"].SetValue(new Vector2(Device.Viewport.Width, Device.Viewport.Height));

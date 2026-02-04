@@ -9,6 +9,10 @@ using Project1.Framework.Net;
 using Project1.Framework.Net.Packets;
 using Project1.Framework.WorldGen;
 using Project1.Framework.Rendering;
+using Project1.Framework.Screens;
+using Project1.Framework.Base;
+using Project1.Framework.UI;
+using Project1.Framework.Entities;
 
 namespace Project1.Framework.Input
 {

@@ -1,5 +1,5 @@
 ﻿using Project1.Framework.Base;
-using Start_a_Town_;
+using Project1.Framework.Entities;
 using System;
 
 namespace Project1.Framework.Stats

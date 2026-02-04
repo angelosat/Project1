@@ -6,6 +6,10 @@ using Project1.Framework.Inventory;
 using Project1.Framework.Entities;
 using Project1.Framework.Net;
 using Start_a_Town_;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Base;
+using Project1.Framework.UI;
+using Project1.Framework.Entities.Actors;
 
 namespace Project1.Framework.Components
 {
@@ -58,7 +62,7 @@ namespace Project1.Framework.Components
             if (parent.Net == null)
                 return;
             var owner = parent.World.GetEntity(this.OwnerRef);
-            tooltip.AddControlsBottomLeft(Start_a_Town_.UI.Label.ParseWrap("Owner: ", this.ItemOwner));
+            tooltip.AddControlsBottomLeft(UI.Label.ParseWrap("Owner: ", this.ItemOwner));
         }
 
         static public bool Owns(GameObject owner, GameObject obj)

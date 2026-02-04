@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Framework.Entities;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Start_a_Town_.AI

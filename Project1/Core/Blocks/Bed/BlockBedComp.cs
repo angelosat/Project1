@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Entities.Actors;
 using System;
 
 namespace Start_a_Town_

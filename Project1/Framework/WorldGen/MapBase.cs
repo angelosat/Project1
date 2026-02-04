@@ -18,6 +18,13 @@ using Project1.Framework.Rooms;
 using Project1.Framework.Materials;
 using Project1.Core.Materials;
 using Project1.Framework.Pathing;
+using Project1.Framework.Screens;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Entities;
+using Project1.Core.Towns;
+using Project1.Core.Towns.Stockpiles;
+using Project1.Framework.UI;
+using Project1.Framework.Entities.Actors;
 
 namespace Project1.Framework.WorldGen
 {
@@ -627,25 +634,17 @@ namespace Project1.Framework.WorldGen
         public bool Despawn(GameObject obj)
         {
             if (obj.Map != this)
-                //throw new Exception();
                 return false;
-            //$"{this.Net} despawning {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
             obj.OnDespawn(this);
-            if (!this.Remove(obj)) /// TODO: move this to map.despawn
+            if (!this.Remove(obj)) // TODO: move this to map.despawn
                 throw new Exception();
             obj.Map = null;
-            //this.CachedObjects.Remove(obj);
             this.Events.Post(new EntityDespawnedEvent(obj as Entity));
             return true;
         }
         public void DespawnAndSync(Entity entity)
         {
             this.Despawn(entity);
-            //return;
-            //if (entity.Net.IsClient)
-            //    return;
-            //if (this.Despawn(entity))
-            //    PacketEntityDespawn.Send(this.Net as Server, entity);
         }
         internal bool Remove(GameObject obj)
         {

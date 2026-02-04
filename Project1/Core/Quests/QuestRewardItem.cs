@@ -1,0 +1,29 @@
+﻿using Project1.Framework.Entities.Actors;
+using Project1.Framework.Legacy;
+using System;
+
+namespace Project1.Core.Quests
+{
+    class QuestRewardItem : QuestReward
+    {
+        public ObjectAmount Reward;
+
+        public QuestRewardItem(QuestDef parent) : base(parent)
+        {
+        }
+        public override string Text => $"{this.Reward.Object.Label} x{this.Reward.Amount}";
+        public override int Budget => this.Reward.Object.GetValueScore() * this.Reward.Amount;
+        public override string Label => this.Reward.Object.Label;
+        public override int Count { get => this.Reward.Amount; set => this.Reward.Amount = value; }
+
+        internal override void Award(Actor actor)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal override bool CanAward()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

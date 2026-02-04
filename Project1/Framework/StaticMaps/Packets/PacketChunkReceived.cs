@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_;
 using Project1.Framework.Net;
+using Project1.Framework.Base;
 
 namespace Project1.Framework.StaticMaps.Packets
 {

@@ -1,7 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Towns.Stockpiles;
 using Project1.Framework.Base;
 using Project1.Framework.Blocks;
+using Project1.Framework.Entities;
+using Project1.Framework.Interfaces;
 using Project1.Framework.Materials;
+using Project1.Framework.UI;
 using Start_a_Town_.UI;
 using System;
 using System.Collections.Generic;
@@ -313,7 +317,7 @@ namespace Start_a_Town_
         {
             var cats = Def.Database.Values.OfType<ItemDef>().GroupBy(d => d.Category);
 
-            var all = new StorageFilterCategoryNewNew("All");// { Owner = this };
+            var all = new StorageFilterCategoryNewNew("All");
             foreach (var cat in cats)
             {
                 if (cat.Key == null)
@@ -323,11 +327,8 @@ namespace Start_a_Town_
                 foreach (var def in cat)
                 {
                     var record = new ItemFilter(def);
-                    //this.Allowed.Add(def, record);
                     if (def.DefaultMaterialType != null)
                         c.AddChildren(new StorageFilterCategoryNewNew(def.Label) { Item = def }.AddLeafs(def.DefaultMaterialType.SubTypes.Select(m => new StorageFilterNewNew(def, m))));
-                    //else if(def.GetSpecialFilters() is IEnumerable<StorageFilterNewNew> filters)
-                    //    c.AddLeafs(filters);
                     else if(def.GetSpecialFilter() is StorageFilterCategoryNewNew filter)
                         c.AddChildren(filter);
                     else

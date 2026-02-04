@@ -9,6 +9,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Project1.Framework.Rendering;
 using Project1.Framework.WorldGen;
+using Project1.Core.Entities.Actors;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.Legacy;
 
 namespace Start_a_Town_
 {
@@ -115,7 +120,7 @@ namespace Start_a_Town_
 
         internal Control GetErrorsGui()
         {
-            return new ListBoxObservable<string, Label>(this.Errors, e => new UI.Label(e) { TextColor = Color.OrangeRed, Font = UIManager.FontBold });
+            return new ListBoxObservable<string, Label>(this.Errors, e => new Label(e) { TextColor = Color.OrangeRed, Font = UIManager.FontBold });
         }
 
         internal virtual void Deconstruct(GameObject actor, IntVec3 global)

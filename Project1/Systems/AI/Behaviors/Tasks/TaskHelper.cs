@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.Pathing;
 using Start_a_Town_.Framework.AI.NodeTypes;
 

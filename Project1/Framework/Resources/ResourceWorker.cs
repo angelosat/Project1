@@ -8,6 +8,9 @@ using Project1.Framework.Base;
 using Project1.Framework.Helpers;
 using Project1.Framework.Rendering;
 using Project1.Framework.Materials;
+using Project1.Framework.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.Legacy;
 
 namespace Project1.Framework.Resources
 {

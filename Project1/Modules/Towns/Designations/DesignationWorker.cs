@@ -1,4 +1,6 @@
-﻿using Project1.Framework.Components.Plants;
+﻿using Project1.Core.Plants;
+using Project1.Framework.Base;
+using Project1.Framework.Components.Plants;
 
 namespace Start_a_Town_
 {

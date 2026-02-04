@@ -1,4 +1,4 @@
-﻿using Project1.Core.Interactions;
+﻿using Project1.Core.Towns.AI;
 using Project1.Framework.Animations;
 using Project1.Framework.Base;
 using Project1.Framework.Components.Plants;

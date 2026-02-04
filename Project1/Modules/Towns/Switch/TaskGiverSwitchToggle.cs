@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_
+﻿using Project1.Framework.Entities.Actors;
+
+namespace Start_a_Town_
 {
     class TaskGiverSwitchToggle : Planner
     {

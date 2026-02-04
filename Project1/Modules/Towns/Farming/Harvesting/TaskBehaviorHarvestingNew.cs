@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using Start_a_Town_.Framework.AI.NodeTypes;
-using Start_a_Town_.AI.Behaviors;
 using Project1.Framework.Pathing;
 using Project1.Framework.Components.Plants;
+using Project1.Core.Plants;
+using Project1.Core.AI.Behaviors.Pathing;
 
 namespace Start_a_Town_
 {

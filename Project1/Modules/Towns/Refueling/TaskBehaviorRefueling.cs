@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
-using Start_a_Town_.AI.Behaviors;
 using Microsoft.Xna.Framework;
 using Start_a_Town_.Framework.AI.NodeTypes;
 using Project1.Core.Interactions;
 using Project1.Framework.Pathing;
+using Project1.Framework.Entities;
+using Project1.Core.AI.Behaviors.Pathing;
 
 namespace Start_a_Town_
 {

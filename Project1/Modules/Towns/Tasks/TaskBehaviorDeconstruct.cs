@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Start_a_Town_.Framework.AI.NodeTypes;
-using Start_a_Town_.AI.Behaviors;
+using Project1.Core.AI.Behaviors.Pathing;
 
 namespace Start_a_Town_
 {
@@ -11,7 +11,6 @@ namespace Start_a_Town_
         {
             this.FailOnNoDesignation(DeconstructInd, DesignationDefOf.Deconstruct);
             this.FailOnCellStandedOn(DeconstructInd);
-            //yield return new BehaviorGrabTool();
             yield return new BehaviorResolvePath(DeconstructInd);
             yield return new BehaviorResolveInteraction(DeconstructInd, () => new InteractionDeconstruct()); //()=>new InteractionDeconstruct());
         }

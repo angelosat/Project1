@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Base;
 using Project1.Framework.Blocks;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Interfaces;
 using Project1.Framework.WorldGen;
 using Start_a_Town_;
 

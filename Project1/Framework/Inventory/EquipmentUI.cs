@@ -1,4 +1,7 @@
-﻿using Project1.Framework.Gear;
+﻿using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Gear;
+using Project1.Framework.UI;
 using Start_a_Town_;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;

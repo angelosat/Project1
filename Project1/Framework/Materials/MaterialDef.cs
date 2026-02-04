@@ -2,7 +2,8 @@
 using Project1.Core.Materials;
 using Project1.Framework.Base;
 using Project1.Framework.Components.Fuel;
-using Start_a_Town_;
+using Project1.Framework.Entities;
+using Project1.Framework.Interfaces;
 using System;
 
 namespace Project1.Framework.Materials

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,7 +33,7 @@ namespace Start_a_Town_
             string line = "";
             foreach (var word in words)
             {
-                if ((int)(UI.UIManager.Font.MeasureString(line + word)).X > maxWidthInPixels)
+                if ((int)(UIManager.Font.MeasureString(line + word)).X > maxWidthInPixels)
                 {
                     newtext.AppendLine(line);
                     line = "";
@@ -47,7 +48,7 @@ namespace Start_a_Town_
         {
             int max = 0;
             foreach (var item in strings)
-                max = (int)Math.Max(max, Math.Ceiling(UI.UIManager.Font.MeasureString(item).X));
+                max = (int)Math.Max(max, Math.Ceiling(UIManager.Font.MeasureString(item).X));
             return max;
         }
     }

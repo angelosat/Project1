@@ -1,5 +1,6 @@
-﻿using Project1.Framework.Effects;
-using Start_a_Town_;
+﻿using Project1.Core.Towns.AI.Needs;
+using Project1.Framework.Effects;
+using Project1.Framework.Entities.Actors;
 
 namespace Project1.Core.Effects
 {

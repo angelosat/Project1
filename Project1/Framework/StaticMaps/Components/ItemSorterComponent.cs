@@ -1,6 +1,7 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
+using Project1.Framework.Base;
+using Project1.Framework.Entities;
 using Project1.Framework.WorldGen;
-using Start_a_Town_;
 using System.Collections.Generic;
 
 namespace Project1.Framework.StaticMaps.Components

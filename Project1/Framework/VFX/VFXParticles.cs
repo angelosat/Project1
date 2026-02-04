@@ -5,6 +5,7 @@ using Project1.Framework.Base;
 using Project1.Framework.Gfx.Particles;
 using Project1.Framework.WorldGen;
 using Start_a_Town_;
+using Project1.Core.Assets;
 
 namespace Project1.Framework.VFX
 {

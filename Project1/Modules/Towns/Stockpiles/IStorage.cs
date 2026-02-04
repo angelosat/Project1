@@ -1,4 +1,6 @@
 ﻿using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.Materials;
 using Project1.Framework.WorldGen;
 using System;

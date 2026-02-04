@@ -1,4 +1,6 @@
-﻿using Project1.Framework.Skills;
+﻿using Project1.Core.Towns;
+using Project1.Framework.Entities;
+using Project1.Framework.Skills;
 using Start_a_Town_.Components.Crafting;
 using System;
 using System.Collections.Generic;

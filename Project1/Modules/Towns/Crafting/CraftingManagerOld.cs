@@ -1,5 +1,7 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Towns;
+using Project1.Framework.Base;
 using Project1.Framework.Components;
+using Project1.Framework.Entities;
 using Project1.Framework.Materials;
 using Project1.Framework.Net;
 using System;
@@ -14,10 +16,10 @@ namespace Start_a_Town_
         static readonly int pReaget, pPriority, pQuantity, pRestrictions;
         static CraftingManagerOld()
         {
-            pReaget = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderToggleReagent);
-            pPriority = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderModifyPriority);
-            pQuantity = Start_a_Town_.Registry.PacketHandlers.Register(CraftingOrderModifyQuantity);
-            pRestrictions = Start_a_Town_.Registry.PacketHandlers.Register(SetOrderRestrictions);
+            pReaget = Project1.Framework.Base.Registry.PacketHandlers.Register(CraftingOrderToggleReagent);
+            pPriority = Project1.Framework.Base.Registry.PacketHandlers.Register(CraftingOrderModifyPriority);
+            pQuantity = Project1.Framework.Base.Registry.PacketHandlers.Register(CraftingOrderModifyQuantity);
+            pRestrictions = Project1.Framework.Base.Registry.PacketHandlers.Register(SetOrderRestrictions);
             PacketCraftOrderToggleHaul.Init();
             PacketCraftOrderChangeMode.Init();
         }

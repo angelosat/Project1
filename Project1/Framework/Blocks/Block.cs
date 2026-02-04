@@ -1,13 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Materials;
 using Project1.Framework.Base;
+using Project1.Framework.Entities;
 using Project1.Framework.Gfx.Particles;
 using Project1.Framework.Interactions;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Legacy;
+using Project1.Framework.Loot;
 using Project1.Framework.Materials;
 using Project1.Framework.Net;
 using Project1.Framework.Rendering;
 using Project1.Framework.Rooms;
+using Project1.Framework.UI;
 using Project1.Framework.WorldGen;
 using Start_a_Town_;
 using Start_a_Town_.Graphics;
@@ -430,7 +437,7 @@ namespace Project1.Framework.Blocks
             var material = cell.Material;
             var scraps = RawMaterialDefOf.Scraps;
             var materialQuantity = this.Ingredient.Amount;
-            actor.Net.PopLoot(new LootTable(new Loot(a => scraps.CreateFrom(material), 1, materialQuantity, scraps.StackCapacity / 2, scraps.StackCapacity)), global, Vector3.Zero);
+            actor.Net.PopLoot(new LootTable(new LootWrapper(a => scraps.CreateFrom(material), 1, materialQuantity, scraps.StackCapacity / 2, scraps.StackCapacity)), global, Vector3.Zero);
         }
 
         public virtual bool IsValidPosition(MapBase map, IntVec3 global, int orientation) { return true; }

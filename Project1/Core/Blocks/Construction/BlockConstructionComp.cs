@@ -1,5 +1,10 @@
-﻿using Project1.Framework.Blocks;
+﻿using Project1.Core.Entities;
+using Project1.Framework.Base;
+using Project1.Framework.Blocks;
+using Project1.Framework.Entities;
+using Project1.Framework.Interfaces;
 using Project1.Framework.Materials;
+using Project1.Framework.UI;
 using Start_a_Town_.UI;
 using System;
 namespace Start_a_Town_

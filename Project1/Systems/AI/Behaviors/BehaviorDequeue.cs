@@ -1,4 +1,5 @@
-﻿using Start_a_Town_.Framework.AI.NodeTypes;
+﻿using Project1.Framework.Entities.Actors;
+using Start_a_Town_.Framework.AI.NodeTypes;
 using System.Collections.Generic;
 
 namespace Start_a_Town_.AI.Behaviors

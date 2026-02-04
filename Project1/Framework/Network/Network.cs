@@ -2,6 +2,8 @@
 using Start_a_Town_.UI;
 using Microsoft.Xna.Framework;
 using Start_a_Town_;
+using Project1.Framework.Screens;
+using Project1.Framework.Base;
 
 namespace Project1.Framework.Net
 {

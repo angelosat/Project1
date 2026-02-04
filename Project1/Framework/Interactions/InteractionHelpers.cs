@@ -1,5 +1,6 @@
 ﻿using Project1.Framework.Base;
-using Start_a_Town_;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
 using System;
 
 namespace Project1.Framework.Interactions

@@ -1,4 +1,6 @@
-﻿namespace Start_a_Town_.Components.Crafting
+﻿using Project1.Framework.Entities;
+
+namespace Start_a_Town_.Components.Crafting
 {
     partial class BlockRecipe
     {

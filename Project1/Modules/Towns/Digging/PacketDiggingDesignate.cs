@@ -3,6 +3,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Project1.Framework.Net;
 using Project1.Framework.Components;
+using Project1.Framework.Base;
 
 namespace Start_a_Town_
 {

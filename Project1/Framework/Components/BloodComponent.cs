@@ -3,9 +3,9 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Framework.Entities;
 using Project1.Framework.Base;
-using Start_a_Town_;
 using Project1.Framework.Gfx.Particles;
 using Project1.Framework.Rendering;
+using Project1.Framework.Legacy;
 
 namespace Project1.Framework.Components
 {

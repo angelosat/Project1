@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using Project1.Framework.WorldGen;
 using Project1.Framework.Rendering;
+using Project1.Framework.Base;
 
 namespace Project1.Framework.Input.Tools.CellRendering
 {

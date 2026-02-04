@@ -1,6 +1,9 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Plants;
+using Project1.Core.Quests.AI;
+using Project1.Core.Tavern;
+using Project1.Core.Towns.AI.Behaviors;
+using Project1.Framework.Base;
 using Start_a_Town_.AI;
-using Start_a_Town_.AI.Behaviors;
 using System;
 
 namespace Start_a_Town_

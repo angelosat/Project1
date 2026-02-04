@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Start_a_Town_.UI;
-using Start_a_Town_.AI;
+using Project1.Core.World.MetaRoles;
+using Project1.Framework.UI;
+using Project1.Framework.Entities.Actors;
 
 namespace Start_a_Town_
 {

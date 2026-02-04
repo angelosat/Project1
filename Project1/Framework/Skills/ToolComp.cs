@@ -3,6 +3,8 @@ using Project1.Framework.Entities;
 using Project1.Framework.Net;
 using Project1.Framework.Resources;
 using Project1.Framework.Stats;
+using Project1.Framework.Tools;
+using Project1.Framework.UI;
 using Start_a_Town_;
 using Start_a_Town_.Components;
 using Start_a_Town_.UI;

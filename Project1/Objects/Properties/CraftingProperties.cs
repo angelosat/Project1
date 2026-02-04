@@ -1,4 +1,5 @@
 ﻿using Project1.Framework.Animations;
+using Project1.Framework.Entities;
 using Start_a_Town_.Components.Crafting;
 using System.Collections.Generic;
 

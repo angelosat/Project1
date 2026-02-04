@@ -5,6 +5,7 @@ using System.Linq;
 using Project1.Framework.Needs;
 using Project1.Framework.Resources;
 using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
 
 namespace Start_a_Town_
 {

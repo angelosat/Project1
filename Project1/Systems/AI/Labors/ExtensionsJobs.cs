@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Core.Towns;
+using Project1.Framework.Entities.Actors;
+using System.Collections.Generic;
 
 namespace Start_a_Town_
 {

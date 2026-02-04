@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Entities;
 using Project1.Framework.Interactions;
 using Start_a_Town_;
 using System.Linq;

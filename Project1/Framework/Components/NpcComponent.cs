@@ -7,6 +7,8 @@ using Project1.Framework.Input;
 using Project1.Framework.Net;
 using Start_a_Town_;
 using Project1.Framework.WorldGen;
+using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
 
 namespace Project1.Framework.Components
 {

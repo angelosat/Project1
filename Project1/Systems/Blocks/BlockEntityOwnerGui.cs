@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Linq;
+using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Screens;
+using Project1.Framework.UI;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_

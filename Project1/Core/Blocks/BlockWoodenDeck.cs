@@ -10,6 +10,8 @@ using Project1.Framework.WorldGen;
 using Project1.Framework.Rendering;
 using Project1.Core.Materials;
 using Project1.Framework.Materials;
+using Project1.Framework.Loot;
+using Project1.Framework.Legacy;
 
 namespace Start_a_Town_
 {
@@ -52,7 +54,7 @@ namespace Start_a_Town_
         {
             var table =
                 new LootTable(
-                    new Loot(a => ItemFactory.CreateFrom(RawMaterialDefOf.Planks, MaterialDefOf.Human))// this.GetMaterial(data)))
+                    new LootWrapper(a => ItemFactory.CreateFrom(RawMaterialDefOf.Planks, MaterialDefOf.Human))// this.GetMaterial(data)))
                     );
             return table;
         }

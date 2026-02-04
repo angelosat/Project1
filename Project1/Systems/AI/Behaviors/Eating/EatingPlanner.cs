@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework;
 using Project1.Core.Needs;
 using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
 using Start_a_Town_.AI.Behaviors;
 
 namespace Start_a_Town_.AI

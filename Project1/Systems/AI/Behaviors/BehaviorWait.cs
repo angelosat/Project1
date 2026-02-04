@@ -1,6 +1,7 @@
 ﻿using Start_a_Town_.Framework.AI.NodeTypes;
 using Start_a_Town_.AI;
 using System;
+using Project1.Framework.Entities.Actors;
 
 namespace Start_a_Town_
 {

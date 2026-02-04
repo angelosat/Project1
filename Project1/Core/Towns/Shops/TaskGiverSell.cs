@@ -1,0 +1,29 @@
+﻿using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
+using Start_a_Town_;
+using System.Linq;
+
+namespace Project1.Core.Towns.Shops
+{
+    class TaskGiverSell : Planner
+    {
+        protected override Plan TryPlan(Actor actor)
+        {
+            var prefs = actor.ItemPreferences;
+            var junk = prefs.GetJunk();
+            foreach (var item in junk)
+            {
+                // TODO find a shop worker to sell to
+                // TODO only return a task if there's an available buyer with enough money?
+                // TODO try to sell anyway and drop town rating if unsuccessful?
+                var itemcost = item.GetValueTotal();
+                var worker = actor.Map.Town.GetMembers().FirstOrDefault(a => a.HasMoney(itemcost));
+                if (worker == null)
+                    continue;
+                worker.InitiateTrade(actor, item, itemcost);
+                return new Plan(typeof(TaskBehaviorSell), new TargetArgs(item), new TargetArgs(worker)) { AmountA = item.StackSize };
+            }
+            return null;
+        }
+    }
+}

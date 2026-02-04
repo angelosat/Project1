@@ -4,6 +4,10 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Animations;
+using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.ColorCustomization;
+using Project1.Framework.Interfaces;
 using Project1.Framework.Materials;
 using Project1.Framework.Rendering;
 

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Loot;
 using Project1.Framework.Net.Packets;
 using Project1.Framework.StaticMaps.Packets;
 using Project1.Framework.WorldGen;

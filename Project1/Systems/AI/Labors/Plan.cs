@@ -1,4 +1,9 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Towns;
+using Project1.Core.Towns.Shops;
+using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Legacy;
 using Project1.Framework.Net;
 using Project1.Framework.WorldGen;
 using System;

@@ -4,6 +4,7 @@ using Project1.Framework.Base;
 using Project1.Framework.Rendering;
 using Project1.Framework.WorldGen;
 using Project1.Framework.Materials;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_
 {

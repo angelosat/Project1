@@ -1,6 +1,6 @@
 ﻿using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.WorldGen;
-using Start_a_Town_;
 using System;
 using System.Linq;
 

@@ -1,4 +1,7 @@
-﻿using Start_a_Town_;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.UI;
+using Start_a_Town_;
 using Start_a_Town_.UI;
 
 namespace Project1.Framework.Inventory

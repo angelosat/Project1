@@ -1,5 +1,9 @@
-﻿using Project1.Core.Gear;
+﻿using Project1.Core.Entities;
+using Project1.Core.Gear;
+using Project1.Core.Towns;
 using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.Pathing;
 using Project1.Framework.Resources;
 using Start_a_Town_;

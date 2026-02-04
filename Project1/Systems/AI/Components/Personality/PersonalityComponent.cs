@@ -6,6 +6,8 @@ using Start_a_Town_.Components;
 using Project1.Framework.Entities;
 using Project1.Framework.Base;
 using Project1.Framework.Materials;
+using Project1.Framework.UI;
+using Project1.Framework.Entities.Actors;
 
 namespace Start_a_Town_
 {

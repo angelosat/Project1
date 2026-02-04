@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Needs;
 using Project1.Core.Rooms;
 using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.Rooms;
 using System;
 using System.Collections.Generic;

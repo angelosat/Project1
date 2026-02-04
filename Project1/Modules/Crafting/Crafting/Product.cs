@@ -1,4 +1,7 @@
-﻿using Project1.Framework.Resources;
+﻿using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Legacy;
+using Project1.Framework.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,12 +64,12 @@ namespace Start_a_Town_
                 return prodpair;
             }
 
-            private static Quality DetermineQuality(Actor actor, Reaction reaction)
+            private static QualityDef DetermineQuality(Actor actor, Reaction reaction)
             {
                 var craftingLvl = actor.GetSkill(reaction.CraftSkill).Level;
                 int complexity = reaction.Complexity;
                 var masteryRatio = craftingLvl / (float)complexity;
-                var quality = Quality.GetRandom(actor.Map.World.Random, masteryRatio);
+                var quality = QualityDef.GetRandom(actor.Map.World.Random, masteryRatio);
                 return quality;
             }
 

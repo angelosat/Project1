@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Framework.Base;
+using Project1.Framework.Interfaces;
 using Project1.Framework.Net;
+using Project1.Framework.UI;
 using Project1.Framework.WorldGen;
 using Start_a_Town_;
 using Start_a_Town_.UI;

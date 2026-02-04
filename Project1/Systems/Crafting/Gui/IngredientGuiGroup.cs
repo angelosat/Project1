@@ -1,5 +1,10 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Entities;
+using Project1.Core.Plants;
+using Project1.Framework.Base;
+using Project1.Framework.Entities;
 using Project1.Framework.Materials;
+using Project1.Framework.Screens;
+using Project1.Framework.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;

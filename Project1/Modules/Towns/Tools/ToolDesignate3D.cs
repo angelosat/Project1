@@ -9,6 +9,7 @@ using Project1.Framework.Input.Tools;
 using Start_a_Town_.UI;
 using Project1.Framework.Rendering;
 using Project1.Framework.WorldGen;
+using Project1.Framework.UI;
 
 namespace Start_a_Town_
 {
@@ -136,17 +137,17 @@ namespace Start_a_Town_
                     list.Add(new IntVec3(i, j, this.Begin.Z));
             return list;
         }
-        Icon _icon = new Icon(UI.UIManager.Icons32, 12, 32);
+        Icon _icon = new Icon(UIManager.Icons32, 12, 32);
         public override Icon Icon => this._icon;
         internal override void DrawUI(SpriteBatch sb, Camera camera)
         {
             base.DrawUI(sb, camera); 
             
-            Icon.Draw(sb, UI.UIManager.Mouse);
+            Icon.Draw(sb, UIManager.Mouse);
             if (this.IsRemoving())
             {
                 var icondelete = Icon.Cross;
-                icondelete.Draw(sb, UI.UIManager.Mouse + new Vector2(Icon.SourceRect.Width / 2, 0));
+                icondelete.Draw(sb, UIManager.Mouse + new Vector2(Icon.SourceRect.Width / 2, 0));
             }
             if (!this.Enabled)
                 return;

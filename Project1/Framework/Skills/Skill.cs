@@ -3,6 +3,11 @@ using System;
 using Microsoft.Xna.Framework;
 using Start_a_Town_;
 using Project1.Framework.Attributes;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Base;
+using Project1.Framework.UI;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Stats;
 
 namespace Project1.Framework.Skills
 {

@@ -12,6 +12,9 @@ using System;
 using System.Collections.Generic;
 using Project1.Framework.WorldGen;
 using Project1.Framework.Rendering;
+using Project1.Framework.Screens;
+using Project1.Framework.UI;
+using Project1.Framework.Entities;
 
 namespace Project1.Framework.Input
 {

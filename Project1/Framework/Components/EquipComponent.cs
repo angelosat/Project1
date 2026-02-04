@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Base;
 using Project1.Framework.Entities;
 using Project1.Framework.Gear;
 using Project1.Framework.Interactions;
 using Project1.Framework.Resources;
+using Project1.Framework.UI;
 using Start_a_Town_;
-using Start_a_Town_.UI;
 
 namespace Project1.Framework.Components
 {

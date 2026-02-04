@@ -2,7 +2,11 @@
 using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Legacy;
 using Project1.Framework.Rendering;
+using Project1.Framework.UI;
 using Project1.Framework.WorldGen;
 using Start_a_Town_.UI;
 

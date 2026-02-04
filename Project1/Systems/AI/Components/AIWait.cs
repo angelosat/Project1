@@ -1,4 +1,5 @@
 ﻿using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
 using Start_a_Town_.Framework.AI.NodeTypes;
 using System;
 

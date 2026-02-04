@@ -5,6 +5,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Base;
+using Project1.Framework.Interfaces;
+using Project1.Framework.UI;
 using Start_a_Town_.UI;
 
 namespace Start_a_Town_
@@ -17,11 +19,11 @@ namespace Start_a_Town_
         }
         public static void DrawHighlight(this Rectangle bounds, SpriteBatch sb, Color color, Vector2 origin, float rotation)
         {
-            sb.Draw(UI.UIManager.Highlight, bounds, null, color, rotation, origin, SpriteEffects.None, 0);
+            sb.Draw(UIManager.Highlight, bounds, null, color, rotation, origin, SpriteEffects.None, 0);
         }
         public static void DrawHighlight(this Vector4 bounds, SpriteBatch sb, Color color, Vector2 origin, float rotation)
         {
-            sb.Draw(UI.UIManager.Highlight, new Vector2(bounds.X, bounds.Y), null, color, rotation, origin, new Vector2(bounds.Z, bounds.W), SpriteEffects.None, 0);
+            sb.Draw(UIManager.Highlight, new Vector2(bounds.X, bounds.Y), null, color, rotation, origin, new Vector2(bounds.Z, bounds.W), SpriteEffects.None, 0);
         }
         public static void DrawHighlight(this Rectangle bounds, SpriteBatch sb, float alpha = 0.5f)
         {
@@ -29,7 +31,7 @@ namespace Start_a_Town_
         }
         public static void DrawHighlight(this Rectangle bounds, SpriteBatch sb, Color color)
         {
-            sb.Draw(UI.UIManager.Highlight, bounds, null, color, 0, Vector2.Zero, SpriteEffects.None, 0);
+            sb.Draw(UIManager.Highlight, bounds, null, color, 0, Vector2.Zero, SpriteEffects.None, 0);
         }
         public static void DrawHighlightBorder(this Rectangle bounds, SpriteBatch sb, float alpha = .5f, float thickness = 1, int padding = 0)
         {
@@ -74,9 +76,9 @@ namespace Start_a_Town_
             bounds.DrawHighlightBorder(sb, Color.Lerp(Color.Transparent, Color.White, lerp), Vector2.Zero);
         }
 
-        public static Label ToLabel(this string text) { return new UI.Label(Vector2.Zero, text); }
-        public static Label ToLabel(this string text, Vector2 location) { return new UI.Label(location, text); }
-        public static Label ToLabel(this string text, Vector2 location, int width) { return new UI.Label(location, text) { Width = width }; }
+        public static Label ToLabel(this string text) { return new Label(Vector2.Zero, text); }
+        public static Label ToLabel(this string text, Vector2 location) { return new Label(location, text); }
+        public static Label ToLabel(this string text, Vector2 location, int width) { return new Label(location, text) { Width = width }; }
 
         static public Panel ToPanel(this Control ctrl)
         {

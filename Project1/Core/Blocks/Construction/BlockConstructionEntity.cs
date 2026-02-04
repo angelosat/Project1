@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Project1.Framework.Base;
 using Project1.Framework.Blocks;
+using Project1.Framework.Entities;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Legacy;
 using Project1.Framework.Materials;
+using Project1.Framework.UI;
 using Project1.Framework.WorldGen;
 using Start_a_Town_.Components.Crafting;
-using Start_a_Town_.UI;
 
 namespace Start_a_Town_
 {
@@ -35,7 +38,7 @@ namespace Start_a_Town_
             int getWorkAmount() => this.Container.Sum(m => m.Material.Density * m.Amount) * this.Product.Block.BuildComplexity;
         }
         
-        public override void GetTooltip(UI.Control tooltip)
+        public override void GetTooltip(Control tooltip)
         {
             var product = this.Product;
             var req = product.Requirement;
@@ -53,7 +56,7 @@ namespace Start_a_Town_
                 //UI.Label.ParseWrap($"{product.Requirement.Material} {product.Requirement.Item} ", new Func<string>(() => this.Container.First().Amount.ToString()), $" / {product.Requirement.Amount}")
                 //UI.Label.ParseWrap(product.Requirement.Material, " ", product.Requirement.Item, " ", new Func<string>(() => this.Container.First().Amount.ToString()), $" / {product.Requirement.Amount}")
                 //UI.Label.ParseWrap(new Func<string>(this.Container.First().Amount.ToString), " / ", product)
-                UI.Label.ParseWrap(product, " ", new Func<string>(this.Container.First().Amount.ToString), " / ", product.Requirement.Amount)
+                Project1.Framework.UI.Label.ParseWrap(product, " ", new Func<string>(this.Container.First().Amount.ToString), " / ", product.Requirement.Amount)
             //new Label(this.Product) { TextFunc = this.GetIngredientText }
             //new Label() { TextFunc = GetIngredientText }
             );

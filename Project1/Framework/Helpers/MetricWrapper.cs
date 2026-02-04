@@ -1,4 +1,5 @@
-﻿using Start_a_Town_;
+﻿using Project1.Framework.Entities;
+using Start_a_Town_;
 
 namespace Project1.Framework.Helpers
 {

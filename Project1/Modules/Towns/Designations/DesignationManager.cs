@@ -13,6 +13,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Project1.Framework.Screens;
+using Project1.Framework.Interfaces;
+using Project1.Core.Towns;
+using Project1.Framework.UI;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_
 {
@@ -262,7 +267,7 @@ namespace Start_a_Town_
         GroupBox UpdatePendingDesignationLabel(DesignationDef des)
         {
             this.PendingDesignationLabel.ClearControls();
-            this.PendingDesignationLabel.AddControlsLineWrap(UI.Label.ParseNewNew("Designation: ", des));// ( new Label(des));
+            this.PendingDesignationLabel.AddControlsLineWrap(Project1.Framework.UI.Label.ParseNewNew("Designation: ", des));// ( new Label(des));
             return this.PendingDesignationLabel;
         }
         internal override void OnTargetSelected(IUISelection info, TargetArgs targetArgs)

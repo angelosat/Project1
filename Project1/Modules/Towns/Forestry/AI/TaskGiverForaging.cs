@@ -1,4 +1,7 @@
-﻿using Project1.Framework.Pathing;
+﻿using Project1.Core.Towns;
+using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Pathing;
 using System.Linq;
 
 namespace Start_a_Town_
@@ -9,8 +12,6 @@ namespace Start_a_Town_
         {
             if (!actor.HasJob(JobDefOf.Forager))
                 return null;
-            //var manager = actor.Map.Town.ChoppingManager;
-            //var plants = manager.GetPlants()
             var plants = actor.Map.Town.DesignationManager
                 .GetDesignations(DesignationDefOf.Harvest)
                 .Where(o => actor.CanReserve(o))

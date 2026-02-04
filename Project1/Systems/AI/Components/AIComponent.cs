@@ -8,6 +8,10 @@ using Project1.Framework.Entities;
 using Project1.Framework.Net;
 using Project1.Framework.Rendering;
 using Project1.Framework.WorldGen;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Base;
+using Project1.Core.World.MetaRoles;
+using Project1.Framework.UI;
 
 namespace Start_a_Town_
 {

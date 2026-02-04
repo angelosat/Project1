@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Framework.Base;
+using Project1.Framework.Interfaces;
 using Project1.Framework.Net;
 using Project1.Framework.WorldGen;
 using System;

@@ -11,6 +11,7 @@ using Project1.Framework.Base;
 using Start_a_Town_;
 using Project1.Framework.Gfx.Particles;
 using Project1.Framework.WorldGen;
+using Project1.Framework.Entities.Actors;
 
 namespace Project1.Framework.Components
 {

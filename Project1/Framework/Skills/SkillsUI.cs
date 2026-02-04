@@ -1,4 +1,8 @@
-﻿using SharpDX.Direct3D9;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.UI;
+using SharpDX.Direct3D9;
 using Start_a_Town_;
 using Start_a_Town_.UI;
 

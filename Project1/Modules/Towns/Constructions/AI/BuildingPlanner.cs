@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
+using Project1.Core.Towns;
 using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.Materials;
 
 namespace Start_a_Town_

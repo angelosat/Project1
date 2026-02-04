@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using Start_a_Town_.AI.Behaviors.ItemOwnership;
 using Start_a_Town_.AI.Behaviors;
+using Project1.Core.Towns;
+using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
 
 namespace Start_a_Town_
 {

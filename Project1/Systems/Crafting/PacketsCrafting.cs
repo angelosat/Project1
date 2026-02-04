@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Framework.Animations;
 using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.Materials;
 using Project1.Framework.Net;
 using Project1.Framework.WorldGen;

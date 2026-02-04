@@ -1,4 +1,7 @@
-﻿using Project1.Framework.Pathing;
+﻿using Project1.Core.Towns;
+using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Pathing;
 using System.Linq;
 
 namespace Start_a_Town_

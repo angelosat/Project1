@@ -1,12 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Materials;
+using Project1.Core.Plants;
 using Project1.Framework.Animations;
 using Project1.Framework.Base;
 using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Loot;
 using Project1.Framework.Materials;
 using Project1.Framework.Physics;
 using Project1.Framework.Resources;
 using Project1.Framework.Skills;
+using Project1.Framework.UI;
 using Project1.Framework.WorldGen;
 using Start_a_Town_;
 using Start_a_Town_.UI;
@@ -64,33 +69,10 @@ namespace Project1.Framework.Components.Plants
         int GrowthTick, FruitGrowthTick;
         public enum GrowthStates { Growing, Ready }
         public Growth Growth = new(.05f);
-        public PlantSpeciesDef Species => this.Owner.Profile as PlantSpeciesDef;// { get; private set; }
-        //public void SetSpecies(PlantSpeciesDef species)
-        //{
-        //    this.Species = species;
-        //    //this.Resolve();
-        //}
-        internal override void InitializeOnce()// Resolve()
+        public PlantSpeciesDef Species => this.Owner.Profile as PlantSpeciesDef;
+
+        internal override void InitializeOnce()
         {
-            //if (this.Species is null)
-            //    return;
-            //var parent = this.Owner;
-            //var hitpoints = parent.GetResource(ResourceDefOf.HitPoints);
-            //hitpoints.Max = this.Species.StemMaterial.Density;
-            //hitpoints.TicksPerRecoverOne = this.Species.StemHealRate;
-            ////this._spriteFruit = this.Species.TextureFruit;// is string fruitTexturePath ? Sprite.Load(fruitTexturePath) : null;
-            //this._spriteFruit = this.Species.TextureFruit is string fruitTexturePath ? Sprite.Load(fruitTexturePath) : null;
-            //var body = parent.Body;
-            //body.ScaleFunc = () => .25f + .75f * this.GrowthBody.Percentage;
-            ////body.Sprite = spec.TextureGrowing;// Sprite.Load(_plantProps.TextureGrowing);
-            //parent.Body.Sprite = this.IsHarvestable ? this.Species.TextureGrown : this.Species.TextureGrowing;
-            //parent.Body.Sprite = this.IsHarvestable ? this.Species.TextureGrown : this.Species.TextureGrowing;
-
-            //if (body.TryFindBone(BoneDefOf.PlantFruit, out this._fruitBone))
-            //    this._fruitBone.Material = this.Species.FruitMaterial;
-            //this.UpdateFruitTexture();
-
-
             if (this.Species is null)
                 return;
 
@@ -99,8 +81,6 @@ namespace Project1.Framework.Components.Plants
             var hitpoints = parent.GetResource(ResourceDefOf.HitPoints);
             hitpoints.Max = plant.StemMaterial.Density;
             hitpoints.TicksPerRecoverOne = plant.StemHealRate;
-
-            //this._spriteFruit = this.Species.TextureFruit is string fruitTexturePath ? Sprite.Load(fruitTexturePath) : null;
 
             var body = parent.Body;
             body.ScaleFunc = () => .25f + .75f * this.GrowthBody.Percentage;
@@ -179,11 +159,8 @@ namespace Project1.Framework.Components.Plants
                             if (this.IsHarvestable)
                             {
                                 if (prevPercentage < HarvestThreshold)
-                                    //parent.Net.EventOccured((int)Message.Types.PlantReady, parent);
                                     parent.Map.Events.Post(new PlantHarvestableEvent(this.Owner));
-                                //parent.Body.Sprite = this.PlantProperties.TextureGrown;
                                 parent.Body.Sprite = Sprite.Load(this.Species.TextureGrown);
-                                //parent.Body.Sprite = this.Species.TextureGrown;
                                 this.Owner.Body.FindBone(BoneDefOf.PlantFruit).Sprite = this._spriteFruit;
                             }
                         }
@@ -240,22 +217,14 @@ namespace Project1.Framework.Components.Plants
         private Sprite _spriteFruit;
         public bool HarvestBy(Actor actor)
         {
-            //var props = plant.PlantComponent.PlantProperties;
             var props = this.Species;
             if (props.Growth is null)
                 return false;
             var yield = (int)(this.GrowthFruit.Percentage * props.Growth.MaxYieldHarvest);
             if (yield == 0)
                 return false;
-            //parent.World.Random
-            //if (parent.Net is Server server)
-            //{
-                var product = props.Growth.CreateEntity();
-            //var rng = server.GetRandom();
-            //var velocity = LootSystem.RandomPopVelocity(rng);
-            //parent.Map.World.Register(product);
-            //parent.Map.Spawn(product, parent.Global, velocity);
-            //}
+            var product = props.Growth.CreateEntity();
+           
             this.Owner.Map.Events.Post(new LootPopEvent([product], this.Owner));
 
             this.ResetFruitGrowth();
@@ -280,34 +249,6 @@ namespace Project1.Framework.Components.Plants
                 }
             }
         }
-        //public void ChopDown(GameObject plant, Actor actor)
-        //{
-        //    if (actor.Net is not Server server)
-        //        return;
-        //    //var plantdef = this.PlantProperties;
-        //    var plantdef = this.Species;
-        //    var yield = (int)(this.GrowthBody.Percentage * plantdef.MaxYieldCutDown);
-        //    if (plantdef.ProductCutDown != null && yield > 0)
-        //    {
-        //        var rng = server.GetRandom();
-        //        var product = plantdef.ProductCutDown.CreateFrom(plant.Body.Material ?? MaterialDefOf.LightWood).SetStackSize(yield) as Entity;
-
-        //        actor.Map.World.Register(product);
-        //        actor.Map.Spawn(product, plant.Global, LootSystem.RandomPopVelocity(rng));
-
-        //        /// if the plant doesnt produce fruit, then the only seed source is by cutting the plant itself
-        //        if (!this.ProducesFruit)
-        //        {
-        //            //var seeds = plantdef.CreateSeeds().SetStackSize(yield) as Entity;
-        //            //var seeds = ItemFamilyDefOf.Plant.System.Create(this.Species, new PlantSystem.Args(PlantFormDefOf.Seed));
-        //            var seeds = this.Species.Create(PlantStageDefOf.Seed);
-        //            actor.Map.World.Register(seeds);
-        //            actor.Map.Spawn(seeds, plant.Global, LootSystem.RandomPopVelocity(rng));
-        //        }
-        //    }
-        //    actor.Map.World.DisposeEntity(plant as Entity);  // disposing also despawns implicitly
-        //}
-
         
         public override void OnSpawn(MapBase newMap)
         {
@@ -346,8 +287,8 @@ namespace Project1.Framework.Components.Plants
     
         internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
-            var guisunlight = Start_a_Town_.UI.Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"));
-            var guigrowth = Start_a_Town_.UI.Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));
+            var guisunlight = UI.Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"));
+            var guigrowth = UI.Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));
             var bargrowth = new Bar(this.GrowthBody) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthBody.Percentage.ToString("##0%") };
             var boxBars = new GroupBox().AddControls(bargrowth);
 
@@ -379,11 +320,9 @@ namespace Project1.Framework.Components.Plants
             this.Owner.Body.Sprite = Sprite.Load(this.Species.TextureGrowing);
             this.UpdateFruitTexture();
             this.Owner.World.Events.Post(new EntityCompUpdatedEvent(this));
-            //this.Owner.Body.FindBone(BoneDefOf.PlantFruit).Sprite = null;
         }
         public override void Write(IDataWriter w)
         {
-            //this.Species.Write(writer);
             this.GrowthFruit.Write(w);
             this.GrowthBody.Write(w);
             w.Write(this.FruitGrowthTick);
@@ -391,7 +330,6 @@ namespace Project1.Framework.Components.Plants
         }
         public override void Read(IDataReader r)
         {
-            //this.Species = Def.GetDef<PlantSpeciesDef>(reader.ReadString());
             this.GrowthFruit = new Progress(r);
             this.GrowthBody = new Progress(r);
             this.FruitGrowthTick = r.ReadInt32();
@@ -410,13 +348,11 @@ namespace Project1.Framework.Components.Plants
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            //this.Species.Save(tag, "Species");
             tag.Add(this.GrowthBody.Save("GrowthNew"));
             tag.Add(this.GrowthFruit.Save("FruitGrowth"));
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            //this.Species = tag.LoadDef<PlantSpeciesDef>("Plant");
             tag.TryGetTag("GrowthNew", t => this.GrowthBody = new Progress(t));
             tag.TryGetTag("FruitGrowth", t => this.GrowthFruit = new Progress(t));
         }
@@ -425,8 +361,6 @@ namespace Project1.Framework.Components.Plants
             base.GetClientActions(parent, actions);
             actions.Add(new ContextAction("Debug: Grow", () => { return false; }));
         }
-
-
         public bool ProducesFruit => this.Species.Growth?.GrowthItemDef == ItemDefOf.Fruit;
 
         internal bool IsHarvestable
@@ -438,8 +372,4 @@ namespace Project1.Framework.Components.Plants
             }
         }
     }
-
-    internal record struct PlantHarvestableEvent(Entity Entity) : IEventPayload { }
-    internal record struct PlantHarvestedEvent(Entity Entity) : IEventPayload { }
-  
 }

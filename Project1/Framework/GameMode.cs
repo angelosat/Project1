@@ -5,8 +5,10 @@ using System;
 using Start_a_Town_;
 using Project1.Framework.StaticMaps;
 using Project1.Framework.Net;
-using Start_a_Town_.Core.UI;
 using Project1.Framework.WorldGen;
+using Project1.Framework.Screens;
+using Project1.Framework.Interfaces;
+using Project1.Framework.UI;
 
 namespace Project1.Framework
 {

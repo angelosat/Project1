@@ -10,6 +10,7 @@ using Project1.Framework.Gfx.Particles;
 using Project1.Framework.WorldGen;
 using Project1.Framework.Materials;
 using Project1.Core.Materials;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_
 {
@@ -110,8 +111,8 @@ namespace Start_a_Town_
             static readonly int PacketGrowRandomFlower, PacketTrample;
             static Packets()
             {
-                PacketGrowRandomFlower = Start_a_Town_.Registry.PacketHandlers.Register(GrowRandomFlower);
-                PacketTrample = Start_a_Town_.Registry.PacketHandlers.Register(SyncTrample);
+                PacketGrowRandomFlower = Registry.PacketHandlers.Register(GrowRandomFlower);
+                PacketTrample = Registry.PacketHandlers.Register(SyncTrample);
             }
             public static void GrowRandomFlower(MapBase map, IntVec3 global)
             {

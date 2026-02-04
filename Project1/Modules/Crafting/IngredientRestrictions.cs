@@ -3,6 +3,8 @@ using System.Linq;
 using System.IO;
 using Project1.Framework.Base;
 using Project1.Framework.Materials;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_
 {

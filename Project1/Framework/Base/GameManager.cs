@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Needs;
 using Project1.Framework.Net;
 using Project1.Framework.Net.Packets;
+using Project1.Framework.UI;
 using Start_a_Town_;
 using Start_a_Town_.UI;
 

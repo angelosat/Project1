@@ -1,4 +1,6 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Framework.Base;
+using Project1.Framework.Interfaces;
 using Project1.Framework.Rendering;
 using Project1.Framework.WorldGen;
 using Start_a_Town_.UI;

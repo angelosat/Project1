@@ -1,10 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Base;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.Input.Hotkeys;
 using Project1.Framework.Net;
 using Project1.Framework.Rendering;
+using Project1.Framework.Screens;
 using Project1.Framework.StaticMaps.Packets;
+using Project1.Framework.UI;
 using Project1.Framework.WorldGen;
 using Start_a_Town_;
 using Start_a_Town_.UI;
@@ -12,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using Button = Project1.Framework.UI.Button;
 
 namespace Project1.Framework.Input.Tools
 {
@@ -328,7 +332,7 @@ namespace Project1.Framework.Input.Tools
                 UIForceTask.AddControlsBottomLeft(taskGivers
                     .Select(result =>
                     {
-                        return new Start_a_Town_.UI.Button(result.task.GetForceText(target))
+                        return new Button(result.task.GetForceText(target))
                         {
                             LeftClickAction = () =>
                             {
@@ -347,7 +351,7 @@ namespace Project1.Framework.Input.Tools
             return false;
         }
 
-        static readonly Start_a_Town_.UI.Control UIForceTask = new Start_a_Town_.UI.Panel() { AutoSize = true }.HideOnAnyClick();
+        static readonly Framework.UI.Control UIForceTask = new Start_a_Town_.UI.Panel() { AutoSize = true }.HideOnAnyClick();
 
         internal override void DrawAfterWorld(MySpriteBatch sb, MapBase map)
         {

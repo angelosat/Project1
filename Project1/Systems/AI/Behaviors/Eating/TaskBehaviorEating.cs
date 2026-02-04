@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.Interactions;
+using Project1.Framework.Base;
 using Project1.Framework.WorldGen;
 using Start_a_Town_.Framework.AI.NodeTypes;
 
@@ -19,6 +22,7 @@ namespace Start_a_Town_.AI.Behaviors
         {
             var actor = this.Actor;
             var task = this.Plan;
+            throw new NotImplementedException();
             yield return BehaviorHelper.InteractInInventoryOrWorld(FoodInd, () => null);// new InteractionHaul(task.GetAmount(FoodInd)));
             yield return BehaviorHelper.SetTarget(FoodInd, () =>
             {

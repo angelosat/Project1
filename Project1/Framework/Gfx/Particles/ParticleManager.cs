@@ -7,6 +7,8 @@ using Project1.Framework.Net;
 using Project1.Framework.Rendering;
 using Start_a_Town_;
 using Project1.Framework.WorldGen;
+using Project1.Framework.Entities;
+using Project1.Framework.Base;
 
 namespace Project1.Framework.Gfx.Particles
 {

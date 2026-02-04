@@ -1,0 +1,25 @@
+﻿using System.Collections.Generic;
+using Start_a_Town_.Framework.AI.NodeTypes;
+using Project1.Framework.Pathing;
+using Project1.Core.AI.Behaviors.Pathing;
+
+namespace Start_a_Town_
+{
+    class TaskBehaviorGoConstruct : BehaviorExecutePlan
+    {
+        public override string Name { get; } = "Finishing Construction";
+
+        protected override IEnumerable<Behavior> GetSteps()
+        {
+            this.FailOnNoConstructionDesignation();
+            yield return new BehaviorResolvePath(PathEndMode.Touching)
+                .FailOnInvalidInteraction(this.Actor, this.Plan);
+            yield return new BehaviorResolveInteraction();
+        }
+        protected override bool ReserveExtra()
+        {
+            return this.ReserveAll();
+            return this.Reserve(TargetIndex.A);
+        }
+    }
+}

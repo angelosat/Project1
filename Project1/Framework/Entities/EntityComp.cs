@@ -1,9 +1,13 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Base;
 using Project1.Framework.Interactions;
+using Project1.Framework.Interfaces;
 using Project1.Framework.Inventory;
+using Project1.Framework.Legacy;
 using Project1.Framework.Materials;
 using Project1.Framework.Net;
 using Project1.Framework.Rendering;
+using Project1.Framework.UI;
 using Project1.Framework.WorldGen;
 using Start_a_Town_;
 using Start_a_Town_.UI;
@@ -82,7 +86,7 @@ namespace Project1.Framework.Entities
         public virtual void SetMaterial(MaterialDef mat) { }
 
         internal virtual void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials) { }
-        internal virtual void ApplyQuality(Entity parent, Quality quality) { }
+        internal virtual void ApplyQuality(Entity parent, QualityDef quality) { }
 
 
         public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e) { }

@@ -6,6 +6,8 @@ using Project1.Framework.Blocks;
 using Project1.Framework.Net;
 using Project1.Framework.Base;
 using Project1.Framework.WorldGen;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Entities.Actors;
 
 namespace Start_a_Town_
 {

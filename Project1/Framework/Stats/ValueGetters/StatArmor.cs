@@ -1,4 +1,5 @@
-﻿using Start_a_Town_;
+﻿using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
 using System.Linq;
 
 namespace Project1.Framework.Stats.ValueGetters

@@ -1,4 +1,5 @@
 ﻿using Project1.Framework.Base;
+using Project1.Framework.Entities;
 using Project1.Framework.Needs;
 
 namespace Start_a_Town_.Components

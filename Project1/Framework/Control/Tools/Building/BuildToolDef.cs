@@ -1,6 +1,8 @@
 ﻿using System;
+using Project1.Core.Construction.Tools;
 using Project1.Framework.Base;
-using Start_a_Town_;
+using Project1.Framework.Interfaces;
+using Project1.Framework.UI;
 using Start_a_Town_.UI;
 
 namespace Project1.Framework.Input.Tools.Building

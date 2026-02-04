@@ -2,6 +2,7 @@
 using System.IO;
 using Microsoft.Xna.Framework;
 using Project1.Framework.Base;
+using Project1.Framework.Interfaces;
 using Project1.Framework.WorldGen;
 
 namespace Start_a_Town_

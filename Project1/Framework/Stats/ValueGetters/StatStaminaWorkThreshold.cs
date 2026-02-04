@@ -1,4 +1,6 @@
-﻿using Project1.Framework.Resources;
+﻿using Project1.Framework.Entities;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Resources;
 using Start_a_Town_;
 
 namespace Project1.Framework.Stats.ValueGetters

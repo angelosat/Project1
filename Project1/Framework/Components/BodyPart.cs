@@ -1,4 +1,5 @@
-﻿using Start_a_Town_;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Entities;
 using System.Collections.Generic;
 
 namespace Project1.Framework.Components

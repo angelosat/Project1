@@ -1,4 +1,4 @@
-﻿using Start_a_Town_;
+﻿using Project1.Framework.Entities;
 
 namespace Start_a_Town_.Framework.AI.NodeTypes
 {

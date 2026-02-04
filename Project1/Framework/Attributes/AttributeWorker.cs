@@ -1,4 +1,4 @@
-﻿using Start_a_Town_;
+﻿using Project1.Framework.Entities;
 
 namespace Project1.Framework.Attributes
 {

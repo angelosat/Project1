@@ -11,6 +11,10 @@ using Project1.Framework.Net;
 using Project1.Framework.Rendering;
 using Start_a_Town_;
 using Project1.Core.WorldGen;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Entities;
+using Project1.Framework.Base;
+using Project1.Core.World.WorldAreas;
 
 #nullable enable
 
@@ -38,7 +42,6 @@ namespace Project1.Framework.WorldGen
         public virtual PopulationManager Population { get; }
 
         public virtual List<Terraformer> Terraformers { get; set; }
-        public ItemSystem Items = new();
 
         public T GetTerraformer<T>() where T : Terraformer => this.Terraformers.First(t => t is T) as T;
 

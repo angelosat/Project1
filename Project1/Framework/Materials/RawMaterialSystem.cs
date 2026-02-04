@@ -1,5 +1,7 @@
-﻿using Project1.Framework.Animations;
+﻿using Project1.Core.Entities;
+using Project1.Framework.Animations;
 using Project1.Framework.Base;
+using Project1.Framework.Entities;
 using Project1.Framework.Materials;
 using System.Collections.Generic;
 using System.Linq;

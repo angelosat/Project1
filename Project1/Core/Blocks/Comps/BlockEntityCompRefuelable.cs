@@ -9,6 +9,11 @@ using Project1.Framework.Base;
 using Project1.Framework.WorldGen;
 using Project1.Core.Materials;
 using Project1.Framework.Materials;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.Entities.Actors;
+using Project1.Framework.Legacy;
 
 namespace Start_a_Town_
 {
@@ -171,7 +176,7 @@ namespace Start_a_Town_
             };
             bar.TextFunc = () => bar.Percentage.ToString("##0%");
             info.AddInfo(bar);
-            var box = new ScrollableBoxNewNew(150, UI.Label.DefaultHeight * 2, ScrollModes.Vertical);
+            var box = new ScrollableBoxNewNew(150, Project1.Framework.UI.Label.DefaultHeight * 2, ScrollModes.Vertical);
             var boxcontents = new ListBoxObservable<ItemMaterialAmount>(this.StoredFuelItems);
             box.AddControls(boxcontents);
             info.AddInfo(box);

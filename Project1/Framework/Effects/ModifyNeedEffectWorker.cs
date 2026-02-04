@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Effects;
+using Project1.Framework.Entities.Actors;
 using Project1.Framework.Needs;
-using Start_a_Town_;
 
 namespace Project1.Framework.Effects
 {

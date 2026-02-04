@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Start_a_Town_.Framework.AI.NodeTypes;
-using Start_a_Town_.AI.Behaviors;
 using Project1.Core.Interactions;
 using Project1.Framework.Interactions;
 using Project1.Framework.Base;
 using Project1.Framework.WorldGen;
 using Project1.Framework.Pathing;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Framework.Entities;
 
 namespace Start_a_Town_
 {
@@ -87,7 +88,6 @@ namespace Start_a_Town_
             {
                 var actor = bhav.Actor;
                 if(predicate())
-                    //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
                 actor.AI.State.Behavior.JumpTo(jumpBhav);
 
             };
@@ -117,7 +117,6 @@ namespace Start_a_Town_
                         return;
                     var nextTarget = targets[0].Object;
                 if (nextTarget.CanAbsorb(carried))
-                        //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
                     actor.AI.State.Behavior.JumpTo(jumpBhav);
 
                 }

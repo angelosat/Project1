@@ -1,4 +1,5 @@
-﻿using Start_a_Town_;
+﻿using Project1.Framework.Entities;
+using Project1.Framework.Legacy;
 using System;
 
 namespace Project1.Framework.Components

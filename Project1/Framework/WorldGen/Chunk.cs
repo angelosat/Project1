@@ -19,6 +19,8 @@ using Project1.Framework.Materials;
 using Project1.Core.Materials;
 using Start_a_Town_.Graphics;
 using Start_a_Town_.UI;
+using Project1.Framework.UI;
+using Project1.Framework.Entities;
 
 namespace Project1.Framework.WorldGen
 {
@@ -752,8 +754,8 @@ namespace Project1.Framework.WorldGen
                 Sprite sprite = spriteComp.Sprite;
                 Rectangle spriteBounds = sprite.GetBounds();
                 Rectangle screenBounds = camera.GetScreenBounds(global, spriteBounds);
-                screenBounds.X -= Borders.Thickness;
-                screenBounds.Y -= Borders.Thickness;
+                screenBounds.X -= BordersEffect.Thickness;
+                screenBounds.Y -= BordersEffect.Thickness;
                 if (!camera.ViewPort.Intersects(screenBounds))
                     continue;
                 float cd = global.GetDrawDepth(map, camera);

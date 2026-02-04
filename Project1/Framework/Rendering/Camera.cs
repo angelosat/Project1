@@ -13,6 +13,9 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Project1.Framework.WorldGen;
+using Project1.Framework.Screens;
+using Project1.Framework.UI;
+using Project1.Framework.Entities;
 
 namespace Project1.Framework.Rendering
 {
@@ -1179,8 +1182,8 @@ namespace Project1.Framework.Rendering
 
             var fx = Game1.Instance.Content.Load<Effect>("blur");
 
-            fx.Parameters["BlockWidth"].SetValue(Block.Width + 2 * Borders.Thickness);
-            fx.Parameters["BlockHeight"].SetValue(Block.Height + 2 * Borders.Thickness);
+            fx.Parameters["BlockWidth"].SetValue(Block.Width + 2 * BordersEffect.Thickness);
+            fx.Parameters["BlockHeight"].SetValue(Block.Height + 2 * BordersEffect.Thickness);
             fx.Parameters["AtlasWidth"].SetValue(Block.Atlas.Texture.Width);
             fx.Parameters["AtlasHeight"].SetValue(Block.Atlas.Texture.Height);
             fx.Parameters["Viewport"].SetValue(new Vector2(target.Width, target.Height));

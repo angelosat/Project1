@@ -9,6 +9,10 @@ using Project1.Framework.WorldGen;
 using Project1.Framework.Gui;
 using Start_a_Town_;
 using Project1.Framework.Rendering;
+using Project1.Framework.Interfaces;
+using Project1.Core.Towns;
+using Project1.Framework.UI;
+using Project1.Framework.Entities.Actors;
 
 namespace Project1.Framework.Rooms
 {

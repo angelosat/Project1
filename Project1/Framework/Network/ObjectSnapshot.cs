@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Entities;
 using Start_a_Town_;
 
 namespace Project1.Framework.Net

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Plants;
+using Project1.Core.Towns;
 using Project1.Framework.Base;
 using Project1.Framework.Components.Plants;
 using Project1.Framework.Net;

@@ -1,6 +1,6 @@
-﻿using Project1.Framework.Interactions;
+﻿using Project1.Framework.Entities;
+using Project1.Framework.Interactions;
 using Project1.Framework.Net.Packets;
-using Start_a_Town_;
 
 namespace Project1.Core.Interactions
 {

@@ -1,5 +1,7 @@
-﻿using Project1.Framework.Materials;
-using Start_a_Town_.UI;
+﻿using Project1.Framework.Entities;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Materials;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,7 +107,7 @@ namespace Start_a_Town_
             internal Control GetGui()
             {
                 //return new GroupBox().AddControlsHorizontally(new Label($"{this.Name}: "), this.Ingredient.GetGui());
-                return new GroupBox().AddControlsHorizontally(UI.Label.ParseNewNew($"{this.Name}: ", this.Ingredient));
+                return new GroupBox().AddControlsHorizontally(Project1.Framework.UI.Label.ParseNewNew($"{this.Name}: ", this.Ingredient));
             }
         }
     }

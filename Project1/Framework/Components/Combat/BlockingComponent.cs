@@ -2,7 +2,6 @@
 using Project1.Framework.Animations;
 using Project1.Framework.Components;
 using Project1.Framework.Entities;
-using Start_a_Town_;
 
 namespace Project1.Framework.Components.Combat
 {

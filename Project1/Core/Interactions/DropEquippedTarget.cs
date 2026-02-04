@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Entities;
 using Project1.Framework.Gear;
 using Project1.Framework.Interactions;
-using Start_a_Town_;
 
 namespace Project1.Core.Interactions
 {

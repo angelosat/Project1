@@ -6,6 +6,8 @@ using Start_a_Town_.Components;
 using Project1.Framework.Entities;
 using Start_a_Town_;
 using Project1.Framework.Base;
+using Project1.Framework.UI;
+using Project1.Core.Entities;
 
 namespace Project1.Framework.Components
 {
@@ -14,7 +16,7 @@ namespace Project1.Framework.Components
         public override string Name { get; } = "Info";
        
         public bool InCatalogue = true;
-        public Quality Quality = QualityDefOf.Common;
+        public QualityDef Quality = QualityDefOf.Common;
 
         public string CustomName = "";
         public string ParentName
@@ -23,7 +25,7 @@ namespace Project1.Framework.Components
             set => this.CustomName = value;
         }
 
-        internal override void ApplyQuality(Entity parent, Quality quality)
+        internal override void ApplyQuality(Entity parent, QualityDef quality)
         {
             this.Quality = quality;
         }
@@ -65,7 +67,7 @@ namespace Project1.Framework.Components
         public override void Read(IDataReader r)
         {
             this.CustomName = r.ReadString();
-            this.Quality = Def.GetDef<Quality>(r.ReadString());
+            this.Quality = Def.GetDef<QualityDef>(r.ReadString());
         }
 
         internal override List<SaveTag> Save()
@@ -81,7 +83,7 @@ namespace Project1.Framework.Components
         internal override void LoadExtra(SaveTag tag)
         {
             tag.TryGetTagValue<string>("CustomName", v => this.CustomName = v);
-            tag.TryGetTagValue<string>("Quality", s => this.Quality = Def.GetDef<Quality>(s));
+            tag.TryGetTagValue<string>("Quality", s => this.Quality = Def.GetDef<QualityDef>(s));
         }
        
         public override void OnNameplateCreated(GameObject parent, Nameplate plate)

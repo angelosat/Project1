@@ -1,4 +1,6 @@
-﻿using Project1.Core.Interactions;
+﻿using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.Interactions;
+using Project1.Core.Towns.AI.Behaviors;
 using Project1.Framework.Base;
 using Start_a_Town_.AI.Behaviors;
 using Start_a_Town_.AI.Behaviors.ItemOwnership;

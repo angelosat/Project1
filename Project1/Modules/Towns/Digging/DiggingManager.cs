@@ -8,6 +8,7 @@ using System.Linq;
 using Project1.Framework.Rendering;
 using Project1.Framework.WorldGen;
 using Project1.Core.Materials;
+using Project1.Core.Towns;
 
 namespace Start_a_Town_
 {

@@ -2,6 +2,7 @@
 using Start_a_Town_.Framework.AI.NodeTypes;
 using Project1.Framework.Interactions;
 using Project1.Framework.Net;
+using Project1.Framework.Base;
 
 namespace Start_a_Town_
 {

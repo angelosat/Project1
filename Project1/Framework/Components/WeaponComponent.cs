@@ -1,6 +1,5 @@
 ﻿using Project1.Framework.Entities;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+using Project1.Framework.UI;
 using System;
 
 namespace Project1.Framework.Components

@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Project1.Framework.Base;
+using Project1.Framework.Entities;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Legacy;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

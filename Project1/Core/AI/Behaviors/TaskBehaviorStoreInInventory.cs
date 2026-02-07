@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Start_a_Town_.Framework.AI.NodeTypes;
-using Start_a_Town_.AI.Behaviors;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class TaskBehaviorStoreInInventory : BehaviorExecutePlan
     {
@@ -11,16 +11,6 @@ namespace Start_a_Town_
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return new BehaviorResolveInteraction();
-
-            //yield return new BehaviorResolvePath(TargetIndex.A, PathEndMode.Any);
-            ////yield return new BehaviorInteractionNew(index, () => new InteractionHaul(this.Actor.CurrentTask.GetAmount(index)));
-            ////yield return new BehaviorInteractionNew(index, () => new InteractionStoreHauled());
-            //yield return new BehaviorResolveInteraction(InteractionDefOf.Pick, countInd: TargetIndex.A);
-            //yield return new BehaviorResolveInteraction(InteractionDefOf.Store);
         }
-        //protected override bool ReserveExtra()
-        //{
-        //    return this.Reserve(TargetIndex.A);
-        //}
     }
 }

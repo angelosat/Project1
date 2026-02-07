@@ -1,6 +1,6 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Materials;
+﻿using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Materials;
 using System.Xml.Serialization;
 
 namespace Project1.Core.Plants

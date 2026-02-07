@@ -1,12 +1,14 @@
 ﻿using Project1.Core.Assets;
 using Project1.Core.Towns;
-using Project1.Framework.Base;
-using Project1.Framework.Skills;
-using Project1.Framework.Stats;
-using Project1.Framework.Tools;
-using Start_a_Town_;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Legacy.Properties;
+using Project1.Core.Tools;
+using Project1.Core;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Core.Skills;
+using Project1.Core.Entities.Stats;
 
 namespace Project1.Core.Tools
 {

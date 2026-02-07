@@ -1,20 +1,22 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Framework.Skills;
-using Project1.Framework.Resources;
-using Project1.Framework.Stats;
 using Project1.Core.Gear;
-using Project1.Framework.Animations;
-using Project1.Framework.Components;
-using Project1.Framework.Base;
+using Project1.Core.Components;
+using Project1.Core.Base;
 using Project1.Core.Materials;
-using Start_a_Town_;
-using Project1.Framework.Entities;
-using Project1.Framework.Gear;
+using Project1.Core;
 using Project1.Core.Towns;
-using Project1.Framework.Tools;
+using Project1.Core.Tools;
 using Project1.Core.Plants;
 using Project1.Core.Assets;
+using Project1.Core.Legacy.Properties;
+using Project1.Core.Legacy.Storage;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Graphics;
+using Project1.Core.Resources;
+using Project1.Core.Skills;
+using Project1.Core.Entities.Stats;
+using Project1.Core.Animations;
 
 namespace Project1.Core.Entities
 {
@@ -37,10 +39,7 @@ namespace Project1.Core.Entities
             DefaultMaterial = MaterialDefOf.Seed,
             CompTypes = [typeof(SeedComponent)],
             Body = new Bone(BoneDefOf.Item, ItemContent.SeedsFull)
-        }
-              //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, ItemContent.SeedsFull)))
-              //.AddSpec(new SeedComponent.Props());
-              ;
+        };
         static public readonly ItemDef Fruit = new ItemDef("Fruit", typeof(Entity))
         {
             StackCapacity = 32,
@@ -48,14 +47,7 @@ namespace Project1.Core.Entities
             ReplaceName = true,
             CompTypes = [typeof(ConsumableComponent)],
             Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull)
-        }
-            //.SetMadeFrom(MaterialTypeDefOf.Fruit)
-            //.AddSpec(new ConsumableComponent.Spec()
-            //{
-            //    FoodClasses = [FoodClass.Fruit],
-            //    Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]
-            //})
-            ;
+        };
 
         static public readonly ItemDef Meat = new ItemDef("Meat", typeof(Entity))
         {
@@ -64,13 +56,7 @@ namespace Project1.Core.Entities
             DefaultMaterialType = MaterialTypeDefOf.Flesh,
             CompTypes = [typeof(ConsumableComponent)],
             Body = new Bone(BoneDefOf.Item, Sprite.Default)
-        }
-        //.SetMadeFrom(MaterialTypeDefOf.Flesh)
-            //.AddSpec(new ConsumableComponent.Spec()
-            //{
-            //    Effects = [new NeedEffect(NeedDefOf.Hunger, 50)]
-            //})
-            ;
+        };
 
 
         static public readonly ItemDef Pie = new ItemDef("Pie", typeof(Entity))
@@ -89,7 +75,6 @@ namespace Project1.Core.Entities
                     .AddProductMaker(def => new Reaction.Product(def).GetMaterialFromIngredient("Filling")),
             CompTypes = [typeof(ConsumableComponent)]
         }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Flesh)
-            //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)))
             .AddSpec(new ConsumableComponent.Spec() { FoodClasses = [FoodClass.Dish] });
 
 
@@ -99,8 +84,6 @@ namespace Project1.Core.Entities
             CompTypes = [typeof(UnfinishedItemComp)],
             Body = new Bone(BoneDefOf.Item, Sprite.Default)
         };
-        //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.Item, Sprite.Default)));
-        //.AddSpec(new UnfinishedItemComp.Props());
 
 
         static public readonly ItemDef Coins = new("Coins", typeof(Entity))

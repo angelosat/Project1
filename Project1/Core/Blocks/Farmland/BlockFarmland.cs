@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Plants;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Components.Plants;
-using Project1.Framework.Entities;
-using Project1.Framework.WorldGen;
-using Start_a_Town_.Graphics;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Components.Plants;
+using Project1.Core.Graphics;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     partial class BlockFarmland : Block
     {

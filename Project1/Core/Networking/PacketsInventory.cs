@@ -1,9 +1,11 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Inventory;
-using Project1.Framework.Net;
-using Start_a_Town_;
+﻿using Project1.Core.Entities;
+using Project1.Core.Inventory;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Helpers.Structs;
+using Project1.Core.Net;
+using Project1.Core.Net;
 using System;
 
 namespace Project1.Core.Networking

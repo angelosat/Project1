@@ -1,7 +1,7 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Needs;
-using Start_a_Town_;
+﻿using Project1.Core.Needs;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using System;
 namespace Project1.Core.World.MetaRoles
 {

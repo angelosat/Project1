@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public class DragEventArgs : EventArgs
     {

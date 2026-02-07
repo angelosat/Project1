@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.UI;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class NameplatesContainer : Control
     {

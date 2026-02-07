@@ -1,22 +1,23 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.AI.Labors;
+using Project1.Core.Entities;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
-using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Net;
-using Project1.Framework.UI;
-using Project1.Framework.WorldGen;
-using Start_a_Town_.UI;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
+using Project1.Core.Net;
+using Project1.Core.UI;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
+using Project1.Core.Net;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     [EnsureStaticCtorCall]
-    public partial class ItemPreferencesManager : Inspectable, ISaveable, ISerializableNew<ItemPreferencesManager> //IItemPreferencesManager
+    public partial class ItemPreferencesManager : Inspectable, ISaveable, ISerializableNew<ItemPreferencesManager>
     {
         static List<ItemRoleDef> _flatItemRolesList;
         static readonly Dictionary<ItemRoleContextDef, List<ItemRoleDef>> ContextToItemRolesMap = [];

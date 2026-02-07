@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework;
+using Project1.Core.Helpers;
 
-namespace Start_a_Town_.Modules.Construction
+namespace Project1.Core.Modules.Construction
 {
     public partial class ToolPlaceWall
     {

@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using Start_a_Town_.UI;
+using Project1.Core.UI;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_;
-using Project1.Framework.Gfx.Particles;
-using Project1.Framework.WorldGen;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public class EngineArgs
     {

@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Entities;
-using Project1.Framework.Helpers;
+﻿using Project1.Core.Entities;
+using Project1.Core.Helpers;
 using System;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles

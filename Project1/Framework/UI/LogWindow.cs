@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Base;
-using Project1.Framework.Net.Packets;
-using Project1.Framework.UI;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Net.Packets;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     class LogWindow : Window
     {
@@ -27,7 +28,7 @@ namespace Start_a_Town_.UI
             this.Closable = false;
             this.MouseThrough = true;
 
-            this.Box_Text = Project1.Framework.Net.Client.Instance.ConsoleBox;
+            this.Box_Text = Net.Client.Instance.ConsoleBox;
             this.Box_Text.FadeText = true;
             this.Panel_Text = new Panel() { AutoSize = true, Name = "Panel_Text", Color = Color.Black };
             this.Panel_Text.Controls.Add(this.Box_Text);
@@ -51,7 +52,7 @@ namespace Start_a_Town_.UI
                         return;
 
                     if (gotText.Length > 0)
-                        PacketChat.Send(Project1.Framework.Net.Client.Instance, Project1.Framework.Net.Client.Instance.PlayerData.ID, gotText);
+                        PacketChat.Send(Net.Client.Instance, Net.Client.Instance.PlayerData.ID, gotText);
                 },
                 EscapeFunc = (a) =>
                 {

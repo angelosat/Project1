@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Project1.Framework.Base;
-using Project1.Framework.Rendering;
-using Project1.Framework.Screens;
+using Project1.Core.Base;
+using Project1.Core.Rendering;
+using Project1.Core.Screens;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     class UICameraSettings : Panel
     {

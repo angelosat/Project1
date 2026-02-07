@@ -1,7 +1,7 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Skills;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+﻿using Project1.Core.AI.Planners;
+using Project1.Core.Base;
+using Project1.Core.Tools;
+using Project1.Core.UI;
 using System.Collections.Generic;
 
 namespace Project1.Core.Towns

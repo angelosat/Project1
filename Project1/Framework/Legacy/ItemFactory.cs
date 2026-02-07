@@ -1,11 +1,11 @@
-﻿using Project1.Framework.Entities;
-using Project1.Framework.Materials;
-using Start_a_Town_;
+﻿using Project1.Core.Entities;
+using Project1.Core.Helpers;
+using Project1.Core.Materials;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Framework.Legacy
+namespace Project1.Core.Legacy
 {
     static class ItemFactory
     {

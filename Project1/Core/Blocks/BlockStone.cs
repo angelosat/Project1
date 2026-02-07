@@ -1,8 +1,10 @@
 ﻿using Project1.Core.Materials;
-using Project1.Framework.Blocks;
-using Project1.Framework.Gfx.Particles;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Blocks;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Legacy.Crafting;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockStone : Block
     {
@@ -13,7 +15,7 @@ namespace Start_a_Town_
         {
             this.BreakProduct = RawMaterialDefOf.Boulders;
             this.LoadVariations("stone5height19");
-            this.Ingredient = new Ingredient()//RawMaterialDef.Boulders, MaterialDefOf.Stone, null, 1);
+            this.Ingredient = new Ingredient()
                 .SetAllow(RawMaterialDefOf.Boulders, true)
                 .SetAllow(MaterialDefOf.Stone, true);
             this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
@@ -22,9 +24,5 @@ namespace Start_a_Town_
         {
             return base.GetDustEmitter();
         }
-        //public override MaterialDef GetMaterial(byte data)
-        //{
-        //    return MaterialDefOf.Stone;
-        //}
     }
 }

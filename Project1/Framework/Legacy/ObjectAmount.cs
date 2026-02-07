@@ -1,11 +1,11 @@
 ﻿using System;
-using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Net;
-using Start_a_Town_;
+using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
+using Project1.Core.Net;
 
-namespace Project1.Framework.Legacy
+namespace Project1.Core.Legacy
 {
     public class ObjectAmount : ISaveable, ISerializableNew<ObjectAmount>
     {
@@ -70,7 +70,6 @@ namespace Project1.Framework.Legacy
 
         internal void ResolveReferences(INetEndpoint net)
         {
-            //this.ObjectTarget.Map = net.Map;
             this.ObjectTarget.InitializeProvider(net);
         }
 

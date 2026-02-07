@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework.Input;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public class GlobalVars
     {

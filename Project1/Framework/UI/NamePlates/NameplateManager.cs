@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using Start_a_Town_.UI;
+using Project1.Core.UI;
 using Microsoft.Xna.Framework;
-using Project1.Framework.Net;
-using Project1.Framework.Screens;
-using Project1.Framework.Entities;
-using Project1.Framework.UI;
-using Project1.Framework.Entities.Actors;
+using Project1.Core.Net;
+using Project1.Core.Screens;
+using Project1.Core.UI;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Entities;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class NameplateManager : Control
     {

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace Project1.Framework.UI
+namespace Project1.Core.UI
 {
     public abstract class ButtonBaseNew : Control
     {

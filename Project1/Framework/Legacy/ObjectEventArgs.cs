@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
-using Project1.Framework.Components;
-using Project1.Framework.Entities;
-using Project1.Framework.Net;
+using Project1.Core.Entities;
+using Project1.Core.Components;
+using Project1.Core.Net;
 
-namespace Project1.Framework.Legacy
+namespace Project1.Core.Legacy
 {
     [Obsolete]
     public class ObjectEventArgs : EventArgs

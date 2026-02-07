@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Interactions;
-using Project1.Framework.Resources;
+﻿using Project1.Core.Resources;
+using Project1.Core.Interactions;
 
 namespace Project1.Core.Interactions
 {

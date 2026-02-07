@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Input;
-using Start_a_Town_;
+using Project1.Core.Input;
+using Project1.Core;
 using System;
 using System.Windows.Forms;
 
-namespace Project1.Framework.UI
+namespace Project1.Core.UI
 {
     class ScrollbarV : Control
     {

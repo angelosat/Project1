@@ -1,7 +1,7 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Needs;
-using Project1.Framework.Skills;
-using Start_a_Town_;
+﻿using Project1.Core.Needs;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Tools;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
 {

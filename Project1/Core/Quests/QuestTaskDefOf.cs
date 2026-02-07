@@ -1,5 +1,5 @@
-﻿using Project1.Core.Quests.AI;
-using Start_a_Town_;
+﻿using Project1.Core.AI;
+using Project1.Core.Quests.AI;
 
 namespace Project1.Core.Quests
 {

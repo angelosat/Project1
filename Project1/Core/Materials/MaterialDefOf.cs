@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Base;
-using Project1.Framework.Components.Fuel;
-using Project1.Framework.Materials;
-using Start_a_Town_;
+using Project1.Core.Base;
+using Project1.Core.Components.Fuel;
+using Project1.Core.Helpers;
+using Project1.Core.Materials;
 
 namespace Project1.Core.Materials
 {

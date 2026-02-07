@@ -1,12 +1,14 @@
 ﻿using Project1.Core.Construction.Tools;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Input;
-using Project1.Framework.Input.Tools.Building;
-using Project1.Framework.Materials;
-using Project1.Framework.UI;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Helpers;
+using Project1.Core.Input;
+using Project1.Core.Input.Tools.Building;
+using Project1.Core.Materials;
+using Project1.Core.UI;
+using Project1.Core;
+using Project1.Core.UI;
 using System.Collections.Generic;
 using System.Linq;
 

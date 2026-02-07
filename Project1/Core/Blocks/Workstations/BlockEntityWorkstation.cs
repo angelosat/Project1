@@ -1,10 +1,10 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Blocks;
+﻿using Project1.Core.Base;
+using Project1.Core.Blocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public abstract class BlockEntityWorkstation : BlockEntity
     {

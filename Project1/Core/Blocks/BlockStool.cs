@@ -1,11 +1,16 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Blocks;
-using Project1.Framework.Base;
-using Project1.Framework.Rendering;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Materials;
+using Project1.Core.Blocks;
+using Project1.Core.Base;
+using Project1.Core.Rendering;
+using Project1.Core.Materials;
+using Project1.Core.Towns;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Helpers;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Rooms;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockStool : Block
     {

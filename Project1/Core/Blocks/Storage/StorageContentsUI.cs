@@ -1,8 +1,8 @@
-﻿using Project1.Framework.Entities;
-using Project1.Framework.UI;
-using Start_a_Town_.UI;
+﻿using Project1.Core.Entities;
+using Project1.Core.UI;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class StorageContentsUI : GroupBox
     {

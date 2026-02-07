@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.UI;
+using Project1.Core.UI;
 
-namespace Project1.Framework.Interfaces
+namespace Project1.Core.Interfaces
 {
     
     public interface ISlottable : ITooltippable

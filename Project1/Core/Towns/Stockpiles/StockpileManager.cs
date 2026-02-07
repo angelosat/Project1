@@ -1,9 +1,10 @@
-﻿using Project1.Framework.Entities;
-using Project1.Framework.StaticMaps.Components;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
+﻿using Project1.Core.Towns.Zones;
+using Project1.Core.Helpers.Structs;
+using Project1.Core;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
 
 namespace Project1.Core.Towns.Stockpiles
 {

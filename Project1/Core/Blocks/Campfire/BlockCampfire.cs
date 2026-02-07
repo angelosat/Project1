@@ -1,15 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Materials;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Entities;
-using Project1.Framework.Legacy;
-using Project1.Framework.Loot;
-using Project1.Framework.Materials;
-using Project1.Framework.WorldGen;
-using System.Collections.Generic;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Legacy;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Loot;
+using Project1.Core.Materials;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     partial class BlockCampfire : BlockWithEntity
     {

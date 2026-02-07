@@ -1,13 +1,14 @@
-﻿using Start_a_Town_.Framework.AI.NodeTypes;
-using Start_a_Town_.AI.Behaviors;
-using Project1.Framework.Skills;
-using Project1.Framework.Attributes;
-using Project1.Framework.Resources;
-using Project1.Core.Needs;
+﻿using Project1.Core.Needs;
 using Project1.Core.Gear;
-using Project1.Framework.Base;
-using Start_a_Town_;
-using Project1.Framework.Entities.Actors;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.AI;
+using Project1.Core.Helpers;
+using Project1.Core.Resources;
+using Project1.Core.Skills;
+using Project1.Core.Attributes;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.Entities.Actors
 {

@@ -1,14 +1,12 @@
-﻿using Project1.Framework.Components.Plants;
-using Project1.Framework.Base;
-using Project1.Framework.Skills;
+﻿using Project1.Core.Components.Plants;
+using Project1.Core.Base;
 using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
-using Project1.Framework.Materials;
+using Project1.Core.Materials;
 using Project1.Core.Entities;
-using Project1.Framework.Entities;
-using Start_a_Town_;
+using Project1.Core.Tools;
 
 namespace Project1.Core.Plants
 {
@@ -18,7 +16,6 @@ namespace Project1.Core.Plants
         [XmlIgnore]
         public MaterialDef FruitMaterial;
         public GrowthProperties Growth;
-        public ItemFamilyDef Family;
         public int GrowthRate = Ticks.PerGameHour; //ticks per 1 growth
         public int GrowTicks;
         public int MaxYieldCutDown;

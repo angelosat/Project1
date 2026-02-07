@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Blocks;
-using Project1.Framework.Base;
-using Project1.Framework.Gfx.Particles;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Rendering;
+using Project1.Core.Blocks;
+using Project1.Core.Base;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Rendering;
 using Project1.Core.Materials;
-using Project1.Framework.Materials;
+using Project1.Core.Materials;
+using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockMineral : Block
     {

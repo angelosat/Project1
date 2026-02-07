@@ -1,23 +1,25 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Blocks;
-using Project1.Framework.Base;
-using Project1.Framework.Input;
-using Start_a_Town_;
-using Start_a_Town_.Components;
-using Start_a_Town_.Graphics;
-using Start_a_Town_.UI;
+using Project1.Core.Blocks;
+using Project1.Core.Base;
+using Project1.Core.Input;
+using Project1.Core.Components;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Screens;
-using Project1.Framework.UI;
-using Project1.Framework.Entities;
+using Project1.Core.Screens;
+using Project1.Core.UI;
+using Project1.Core.Helpers;
+using Project1.Core.Graphics;
+using Project1.Core.UI.Settings;
+using Project1.Core.Simulation;
+using Project1.Core.Simulation.Lighting;
+using Project1.Core.Entities;
 
-namespace Project1.Framework.Rendering
+namespace Project1.Core.Rendering
 {
     public class Camera : IKeyEventHandler
     {
@@ -38,7 +40,6 @@ namespace Project1.Framework.Rendering
             {
                 this._hideUnknownBlocks = value;
                 Ingame.CurrentMap.InvalidateChunks();
-                //this.TopSliceChanged = true;
             }
         }
         bool _drawTopSlice = true;

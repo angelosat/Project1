@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Towns.AI.Needs;
-using Project1.Framework.Net;
-using Start_a_Town_;
+using Project1.Core.Helpers;
+using Project1.Core.Net;
 
 namespace Project1.Core.World.MetaRoles
 {

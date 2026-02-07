@@ -1,7 +1,6 @@
-﻿using Project1.Core.Quests;
-using Project1.Framework.Entities.Actors;
-using Start_a_Town_;
-using Start_a_Town_.Core;
+﻿using Project1.Core.AI;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Quests.AI
 {

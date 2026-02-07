@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Legacy;
-using Project1.Framework.Net;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Legacy;
+using Project1.Core.Net;
 using System;
 using System.Linq;
 

@@ -1,8 +1,8 @@
 ﻿using System;
-using Project1.Framework.Interactions;
-using Project1.Framework.UI;
+using Project1.Core.Interactions;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public class ContextAction
     {

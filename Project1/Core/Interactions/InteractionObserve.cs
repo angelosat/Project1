@@ -1,4 +1,4 @@
-﻿using Project1.Framework.Interactions;
+﻿using Project1.Core.Interactions;
 using System;
 
 namespace Project1.Core.Interactions

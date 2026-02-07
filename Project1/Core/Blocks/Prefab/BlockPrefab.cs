@@ -1,7 +1,7 @@
-﻿using Project1.Framework.Blocks;
-using Start_a_Town_.Graphics;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Graphics;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     partial class BlockPrefab : Block
     {

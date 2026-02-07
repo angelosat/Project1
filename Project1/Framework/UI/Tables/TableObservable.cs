@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Framework.UI;
+using Project1.Core.UI;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     public class TableObservable<TObject> : GroupBox, IListSearchable<TObject>
         where TObject : class

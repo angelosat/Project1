@@ -1,11 +1,10 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Net;
-using Project1.Framework.Pathing;
-using Start_a_Town_;
-using Start_a_Town_.AI;
-using Start_a_Town_.Framework.AI.NodeTypes;
+﻿using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Pathing;
 using System;
+using Project1.Core.Net;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.AI.Behaviors.Pathing
 {

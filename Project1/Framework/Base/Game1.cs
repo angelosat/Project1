@@ -7,23 +7,22 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using System.Diagnostics;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using Project1.Framework.Animations;
-using Project1.Framework.Input;
-using Project1.Framework.Blocks;
-using Project1.Framework.Net;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Screens;
-using Project1.Framework.Interfaces;
+using Project1.Core.Input;
+using Project1.Core.Blocks;
+using Project1.Core.Screens;
+using Project1.Core.Interfaces;
 using Project1.Core.Towns;
-using Start_a_Town_.AI;
-using Start_a_Town_;
-using Project1.Framework.UI;
-using Project1.Framework.Entities;
+using Project1.Core.UI;
+using Project1.Core.AI;
+using Project1.Core.Helpers;
+using Project1.Core.Graphics;
+using Project1.Core.UI.Settings;
+using Project1.Core.Net;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
+using Project1.Core.Animations;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     /// <summary>
     /// This is the main type for your game
@@ -52,14 +51,9 @@ namespace Project1.Framework.Base
             Server.Stop();
             base.OnExiting(sender, args);
         }
-        //private void Window_TextInput(object sender, TextInputEventArgs e)
-        //{
-        //    Debug.WriteLine(e.Character);
-        //}
 
         public Game1()
         {
-            //this.Window.TextInput += Window_TextInput;
 
             Instance = this;
             graphics = new GraphicsDeviceManager(this)

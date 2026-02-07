@@ -1,8 +1,8 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Gfx.Particles;
+﻿using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Graphics.Particles;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     partial class BlockCampfire
     {

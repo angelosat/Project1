@@ -1,10 +1,10 @@
-﻿using Project1.Framework.Net;
+﻿using Project1.Core.Net;
 using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public sealed class EventHooks
     {

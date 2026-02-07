@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Entities.Actors;
-using Project1.Framework.Legacy;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Legacy;
 using System;
 
 namespace Project1.Core.Quests

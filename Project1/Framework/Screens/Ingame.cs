@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.UI;
-using Project1.Framework;
-using Project1.Framework.Input;
-using Project1.Framework.Input.Hotkeys;
-using Project1.Framework.Net;
-using Project1.Framework.Rendering;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
-using Project1.Framework.Base;
-using Project1.Framework.UI;
-using Project1.Framework.Entities;
+using Project1.Core.UI;
+using Project1.Core.Input;
+using Project1.Core.Input.Hotkeys;
+using Project1.Core.Net;
+using Project1.Core.Rendering;
+using Project1.Core.Base;
+using Project1.Core.UI;
+using Project1.Core.Net;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
 
-namespace Project1.Framework.Screens
+namespace Project1.Core.Screens
 {
     internal class Ingame : GameScreen
     {

@@ -1,25 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Interactions;
-using Project1.Framework.Blocks;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Interactions;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Legacy;
-using Project1.Framework.Net;
-using Project1.Framework.Pathing;
-using Project1.Framework.UI;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+using Project1.Core.Blocks;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Interactions;
+using Project1.Core.Interfaces;
+using Project1.Core.Legacy;
+using Project1.Core.Net;
+using Project1.Core.UI;
+using Project1.Core;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
+using Project1.Core.AI.Behaviors.Pathing;
 
 #nullable enable
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public enum TargetType { Null, Entity, Slot, BlockEntitySlot, Position, Direction, BlockEntity }
 

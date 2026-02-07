@@ -1,6 +1,4 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Gear;
-using Start_a_Town_;
+﻿using Project1.Core.Base;
 
 namespace Project1.Core.Gear
 {

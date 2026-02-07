@@ -1,6 +1,6 @@
-﻿using Project1.Framework.Blocks;
+﻿using Project1.Core.Blocks;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockBedrock : Block
     {

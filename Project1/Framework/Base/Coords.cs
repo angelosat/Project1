@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Blocks;
+using Project1.Core.Blocks;
 using System;
-using Project1.Framework.Rendering;
+using Project1.Core.Rendering;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     class Coords
     {

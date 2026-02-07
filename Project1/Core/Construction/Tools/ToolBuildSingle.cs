@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Project1.Framework.Rendering;
-using Project1.Framework.Input;
-using Project1.Framework.WorldGen;
+using Project1.Core.Rendering;
+using Project1.Core.Input;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Construction.Tools
 {

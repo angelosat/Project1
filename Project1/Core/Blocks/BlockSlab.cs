@@ -1,9 +1,12 @@
 ﻿using Project1.Core.Materials;
-using Project1.Framework.Blocks;
-using Project1.Framework.Materials;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Blocks;
+using Project1.Core.Graphics;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Materials;
 using System.Collections.Generic;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockSlab : Block
     {

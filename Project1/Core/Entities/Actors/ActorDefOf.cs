@@ -1,23 +1,14 @@
-﻿using Project1.Core.Gear;
+﻿using Project1.Core.AI;
+using Project1.Core.Attributes;
+using Project1.Core.Entities.Mood;
+using Project1.Core.Entities.Ownership;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Materials;
-using Project1.Core.Needs;
-using Project1.Framework.Attributes;
-using Project1.Framework.Base;
-using Project1.Framework.Components;
-using Project1.Framework.Effects;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Gear;
-using Project1.Framework.Interactions;
-using Project1.Framework.Inventory;
-using Project1.Framework.Mood;
-using Project1.Framework.Needs;
-using Project1.Framework.Ownership;
-using Project1.Framework.Physics;
-using Project1.Framework.Resources;
-using Project1.Framework.Skills;
-using Project1.Framework.Stats;
-using Start_a_Town_;
+using Project1.Core.Resources;
+using Project1.Core.Base;
+using Project1.Core.Components;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Simulation.Physics;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -45,7 +36,7 @@ namespace Project1.Core.Entities.Actors
                 typeof(ResourcesComponent),
                 typeof(NeedsComponent),
                 typeof(AttributesComponent),
-                typeof(NpcSkillsComponent),
+                typeof(SkillsComponent),
                 typeof(GearComponent),
                 typeof(PersonalityComponent),
                 typeof(AIComponent),

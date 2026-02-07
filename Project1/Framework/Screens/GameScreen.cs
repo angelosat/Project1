@@ -3,14 +3,15 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Project1.Framework.Input;
-using Project1.Framework.Net;
-using Project1.Framework.Rendering;
-using Start_a_Town_;
-using Project1.Framework.Base;
-using Project1.Framework.UI;
+using Project1.Core.Input;
+using Project1.Core.Net;
+using Project1.Core.Rendering;
+using Project1.Core;
+using Project1.Core.Base;
+using Project1.Core.UI;
+using Project1.Core.Net;
 
-namespace Project1.Framework.Screens
+namespace Project1.Core.Screens
 {
     public abstract class GameScreen : IDisposable, IKeyEventHandler
     {

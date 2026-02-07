@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Net;
-using Project1.Framework.Screens;
-using Project1.Framework.StaticMaps.Packets;
-using Project1.Framework.UI;
+using Project1.Core.Helpers;
+using Project1.Core.Net;
+using Project1.Core.Net.Simulation;
+using Project1.Core.Screens;
 using System.Linq;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     class UIGameSpeed : Panel
     {

@@ -1,11 +1,11 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.UI;
+﻿using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     public abstract class GuiBuilder : GroupBox
     {

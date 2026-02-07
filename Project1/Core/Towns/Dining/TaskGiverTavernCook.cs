@@ -1,8 +1,10 @@
-﻿using Project1.Core.Tavern;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Legacy;
-using Start_a_Town_;
+﻿using Project1.Core.AI;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Behaviors.Reserve;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Legacy;
 using System.Collections.Generic;
 using System.Linq;
 

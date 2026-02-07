@@ -1,9 +1,10 @@
-﻿using Project1.Core.Materials;
-using Project1.Core.Towns.Shops.Blocks;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Blocks.Doors;
+using Project1.Core.Materials;
+using Project1.Core.Base;
+using Project1.Core.Towns.Crafting;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     [EnsureStaticCtorCall]
     class BlockDefOf

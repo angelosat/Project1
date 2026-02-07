@@ -1,20 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.Components;
-using Project1.Framework.Base;
-using Project1.Framework.Input;
-using Project1.Framework.Net;
-using Start_a_Town_.UI;
+using Project1.Core.Components;
+using Project1.Core.Base;
+using Project1.Core.Input;
+using Project1.Core.Net;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.Rendering;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Screens;
-using Project1.Framework.UI;
-using Project1.Framework.Entities;
+using Project1.Core.Rendering;
+using Project1.Core.Screens;
+using Project1.Core.UI;
+using Project1.Core.Towns.UI;
+using Project1.Core.UI;
+using Project1.Core.Net;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     [EnsureStaticCtorCall]
     public class Hud : GroupBox
@@ -24,7 +26,7 @@ namespace Start_a_Town_
             HotkeyManager.RegisterHotkey(Ingame.HotkeyContext, "Open chat", delegate { Ingame.Instance.Hud.Chat.StartOrFinishTyping(); }, System.Windows.Forms.Keys.Enter);
             HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Open console", delegate { ServerConsole.Instance.Toggle(); }, System.Windows.Forms.Keys.Oemtilde);
             HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Open debug console", delegate { DebugConsole.Toggle(); }, System.Windows.Forms.Keys.Oem5);
-            HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Spawn objects", delegate { UI.Editor.ObjectTemplatesWindow.Instance.ToggleSmart(); }, System.Windows.Forms.Keys.O);
+            HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Spawn objects", delegate { ObjectTemplatesWindow.Instance.ToggleSmart(); }, System.Windows.Forms.Keys.O);
         }
         public void Initialize(NetEndpoint net)
         {

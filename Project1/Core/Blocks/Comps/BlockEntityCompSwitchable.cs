@@ -1,9 +1,11 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Interfaces;
+﻿using Project1.Core.Entities;
+using Project1.Core.Towns.Designations;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
 using System.IO;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockEntityCompSwitchable : BlockEntityComp
     {

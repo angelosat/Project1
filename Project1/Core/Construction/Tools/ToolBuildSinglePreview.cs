@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Framework.Blocks;
-using Project1.Framework.Base;
-using Project1.Framework.Input;
-using Project1.Framework.Net;
-using Project1.Framework.Rendering;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
+using Project1.Core.Blocks;
+using Project1.Core.Base;
+using Project1.Core.Input;
+using Project1.Core.Net;
+using Project1.Core.Rendering;
+using Project1.Core;
+using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Construction.Tools
 {

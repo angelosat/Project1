@@ -1,4 +1,4 @@
-﻿using Project1.Framework.Legacy;
+﻿using Project1.Core.Legacy;
 
 namespace Project1.Core.Quests
 {

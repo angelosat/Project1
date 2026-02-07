@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using Start_a_Town_;
+using Project1.Core;
+using Project1.Core.Helpers;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public abstract class Def : Inspectable
     {

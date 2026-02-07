@@ -1,8 +1,8 @@
-﻿using Project1.Framework.UI;
-using Start_a_Town_.UI;
+﻿using Project1.Core.UI;
+using Project1.Core.UI;
 using System;
 
-namespace Project1.Framework.Interfaces
+namespace Project1.Core.Interfaces
 {
     public interface IUISelection
     {

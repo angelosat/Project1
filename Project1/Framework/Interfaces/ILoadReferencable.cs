@@ -1,4 +1,4 @@
-﻿namespace Project1.Framework.Interfaces
+﻿namespace Project1.Core.Interfaces
 {
     public interface ILoadReferencable<T> : ISaveable where T : new()
     {

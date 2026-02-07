@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Rendering;
-using Project1.Framework.UI;
-using Start_a_Town_.UI;
+using Project1.Core.Rendering;
+using Project1.Core.UI;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class CameraWidget : GroupBox
     {

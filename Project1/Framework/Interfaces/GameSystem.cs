@@ -1,10 +1,10 @@
-﻿using Start_a_Town_.UI;
-using Project1.Framework.Net;
-using Start_a_Town_;
-using Project1.Framework.UI;
-using Project1.Framework.Base;
+﻿using Project1.Core.UI;
+using Project1.Core.Net;
+using Project1.Core;
+using Project1.Core.UI;
+using Project1.Core.Base;
 
-namespace Project1.Framework.Interfaces
+namespace Project1.Core.Interfaces
 {
     public class GameSystem
     {

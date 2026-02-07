@@ -1,7 +1,5 @@
-﻿using Project1.Framework.Entities.Actors;
-using Project1.Framework.Pathing;
-using Start_a_Town_.AI;
-using Start_a_Town_.Framework.AI.NodeTypes;
+﻿using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.AI.Behaviors.Pathing
 {

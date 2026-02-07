@@ -1,6 +1,6 @@
-﻿using Project1.Framework.WorldGen;
+﻿using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public interface IPowerSource
     {

@@ -1,8 +1,8 @@
-﻿using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Resources;
-using Project1.Framework.Stats;
-using Project1.Framework.Tools;
+﻿using Project1.Core.Entities;
+using Project1.Core.Resources;
+using Project1.Core.Stats;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Tools;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
 {

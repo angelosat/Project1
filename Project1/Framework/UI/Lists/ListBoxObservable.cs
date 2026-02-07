@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Interfaces;
-using Project1.Framework.UI;
+﻿using Project1.Core.Interfaces;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +7,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Security.Policy;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     public class ListBoxObservable<TObject> : GroupBox, IListSearchable<TObject>
       where TObject : IListable

@@ -1,6 +1,6 @@
-﻿using Project1.Framework.Needs;
+﻿using Project1.Core.Needs;
 
-namespace Project1.Framework.Needs.Types
+namespace Project1.Core.Needs.Types
 {
     class NeedCuriosity : NeedWorker
     {

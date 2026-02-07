@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public struct IntVec2 : IEquatable<IntVec2>
     {

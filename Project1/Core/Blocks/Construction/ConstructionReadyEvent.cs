@@ -1,6 +1,6 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Base;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public record struct ConstructionReadyEvent(BlockConstructionComp Source) : IEventPayload { }
     public record struct ConstructionFinishedEvent(BlockConstructionComp Source) : IEventPayload { }

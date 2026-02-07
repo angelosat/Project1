@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
 using Project1.Core.Quests;
-using Project1.Framework.Base;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Net;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Net;
+using Project1.Core.Net;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public partial class QuestsManager
     {

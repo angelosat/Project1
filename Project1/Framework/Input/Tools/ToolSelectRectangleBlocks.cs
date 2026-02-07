@@ -1,0 +1,30 @@
+﻿using Project1.Core.Towns.Digging;
+using Project1.Core.Base;
+using System;
+using System.Windows.Forms;
+
+namespace Project1.Core.Input.Tools
+{
+    class ToolSelectRectangleBlocks : ToolDigging
+    {
+        public ToolSelectRectangleBlocks()
+        {
+        }
+        public ToolSelectRectangleBlocks(IntVec3 origin, Action<IntVec3, IntVec3, bool> callback) : base(callback)
+        {
+            this.Begin = origin;
+            this.End = this.Begin;
+            this.Width = this.Height = 1;
+            this.Enabled = true;
+        }
+        public override Messages MouseLeftUp(HandledMouseEventArgs e)
+        {
+            base.MouseLeftUp(e);
+            return Messages.Remove;
+        }
+        public override Messages MouseRightUp(HandledMouseEventArgs e)
+        {
+            return Messages.Remove;
+        }
+    }
+}

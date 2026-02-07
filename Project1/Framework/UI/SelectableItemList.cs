@@ -1,8 +1,8 @@
-﻿using Project1.Framework.Interfaces;
-using Project1.Framework.UI;
+﻿using Project1.Core.Interfaces;
+using Project1.Core.UI;
 using System;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     class SelectableItemList<T> : GroupBox where T : INamed
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public interface IBlockEntityCompContainer
     {

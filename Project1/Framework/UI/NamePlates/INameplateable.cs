@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Rendering;
-using Project1.Framework.WorldGen;
+using Project1.Core.Rendering;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     /// <summary>
     /// string Name { get; set; }

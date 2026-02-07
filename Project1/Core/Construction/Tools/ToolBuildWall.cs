@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Base;
-using Start_a_Town_;
+﻿using Project1.Core.Base;
+using Project1.Core.Helpers;
 using System;
 using System.Collections.Generic;
 

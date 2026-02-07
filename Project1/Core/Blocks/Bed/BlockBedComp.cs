@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Entities.Actors;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers.Structs;
 using System;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     internal class BlockBedComp : BlockEntityComp
     {

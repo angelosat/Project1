@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     interface IDropTarget
     {

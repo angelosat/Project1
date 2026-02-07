@@ -1,7 +1,8 @@
-﻿using Project1.Framework.Net;
-using Project1.Framework.UI;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+﻿using Project1.Core.UI;
+using Project1.Core;
+using Project1.Core.UI;
+using Project1.Core.Net;
+using Project1.Core.Towns.Crafting.Gui;
 
 namespace Project1.Core.Towns.Stockpiles
 {

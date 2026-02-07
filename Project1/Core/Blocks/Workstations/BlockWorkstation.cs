@@ -1,12 +1,14 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.WorldGen;
-using Start_a_Town_.Graphics;
+﻿using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Graphics;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Simulation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     sealed class BlockWorkstation : BlockWithEntity, IBlockWorkstation
     {
@@ -21,11 +23,10 @@ namespace Start_a_Town_
             this.BuildProperties.Dimension = 4;
             this.Ingredient = new Ingredient(amount: 4).IsBuildingMaterial();
         }
-        public BlockWorkstation(string name)//, Type blockEntityType)
+        public BlockWorkstation(string name)
             : base(name, opaque: false, solid: true)
         {
             this.HidingAdjacent = false;
-            //this.BlockEntityType = blockEntityType;
             this.Variations.Add(this.Orientations.First());
             this.BuildProperties.Category = ConstructionCategoryDefOf.Production;
             this.BuildProperties.Dimension = 4;
@@ -38,7 +39,6 @@ namespace Start_a_Town_
         internal override BlockEntity TryLinkToAdjacentBlockEntity(MapBase map, IntVec3 global)
         {
             var neighbors = new List<BlockEntity>();
-            //var typedArgs = (BlockWorkstationComp.Spec)args ?? new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery); // HACK
             var workstationType = this.BlockDef.BlockEntityCompSpecs.OfType<BlockWorkstationComp.Spec>().SingleOrDefault()?.WorkstationType;
             
             foreach (var dir in IntVec3.AdjacentIntVec3)

@@ -1,7 +1,8 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Base;
+using Project1.Core.Towns.Crafting;
 using System.Collections.Generic;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public class WorkstationDef(string name, WorkstationCapabilityDef[] capabilities, int maxModules = 1) : Def(name)
     {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Interfaces;
-using Project1.Framework.UI;
+using Project1.Core.Interfaces;
+using Project1.Core.UI;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     public class BarSigned : ButtonBase
     {

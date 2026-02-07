@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.WorldGen;
+using Project1.Core.Simulation;
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public struct IntVec3 : IEquatable<IntVec3>
     {

@@ -1,6 +1,7 @@
-﻿using Project1.Framework.Entities.Actors;
-using Project1.Framework.Interactions;
-using Start_a_Town_;
+﻿using Project1.Core.AI.Behaviors.Conversation;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Interactions;
 using System.IO;
 
 namespace Project1.Core.Interactions
@@ -38,7 +39,7 @@ namespace Project1.Core.Interactions
         }
         protected override void ReadExtra(IDataReader r)
         {
-            this.Topic = Framework.Base.Def.GetDef<ConversationTopic>(r.ReadString());
+            this.Topic = Core.Base.Def.GetDef<ConversationTopic>(r.ReadString());
         }
     }
 }

@@ -1,0 +1,73 @@
+﻿using Project1.Core.AI;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Project1.Core.AI.Behaviors.NodeTypes
+{
+    class BehaviorSequence : BehaviorComposite
+    {
+        Behavior Current;
+        public override string ToString()
+        {
+            return "Sequence: " + this.Current != null ? this.Current.ToString() : "<none>";
+        }
+      
+        public int Position;
+        public BehaviorSequence(params Behavior[] behavs)
+        {
+            this.Children = new List<Behavior>(behavs);
+            this.Position = 0;
+        }
+        public override BehaviorState Tick(Actor parent, AIState state)
+        {
+            for (int i = this.Position; i < this.Children.Count; i++)
+            {
+                var child = this.Children[i];
+                this.Position = i;
+                var result = child.Tick(parent, state);
+                switch (result)
+                {
+                    case BehaviorState.Fail:
+                        this.Position = 0;
+                        return result;
+
+                    case BehaviorState.Running:
+                        this.Current = child;
+                        return result;
+
+                    case BehaviorState.Success:
+                        break;
+                }
+            }
+            this.Position = 0;
+            return BehaviorState.Success;
+        }
+        public override void Write(IDataWriter w)
+        {
+            w.Write(this.Position);
+            base.Write(w);
+        }
+        public override void Read(IDataReader r)
+        {
+            this.Position = r.ReadInt32();
+            base.Read(r);
+        }
+        public override object Clone()
+        {
+            return new BehaviorSequence((from child in this.Children select child.Clone() as Behavior).ToArray());
+        }
+        protected override void AddSaveData(SaveTag tag)
+        {
+            base.AddSaveData(tag);
+            tag.Add(this.Position.Save("Position"));
+        }
+        internal override void Load(SaveTag tag)
+        {
+            base.Load(tag);
+            tag.TryGetTagValueOrDefault<int>("Position", out this.Position);
+        }
+    }
+}

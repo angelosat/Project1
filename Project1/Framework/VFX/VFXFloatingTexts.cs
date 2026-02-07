@@ -1,10 +1,10 @@
-﻿using Project1.Framework.Attributes;
-using Project1.Framework.Base;
-using Project1.Framework.UI;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+﻿using Project1.Core.Base;
+using Project1.Core.UI;
+using Project1.Core;
+using Project1.Core.UI;
+using Project1.Core.Skills;
 
-namespace Project1.Framework.VFX
+namespace Project1.Core.VFX
 {
     [EnsureStaticCtorCall]
     internal static class VFXFloatingTexts

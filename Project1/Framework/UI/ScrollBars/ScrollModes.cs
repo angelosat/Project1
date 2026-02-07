@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     [Flags]
     public enum ScrollModes { None, Vertical, Horizontal, Both }

@@ -1,12 +1,13 @@
-﻿using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
-using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Net;
+﻿using Project1.Core.Entities;
+using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
+using Project1.Core.Net;
 using System;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public partial class ItemPreferencesManager
     {

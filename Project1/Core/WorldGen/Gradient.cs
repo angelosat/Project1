@@ -1,4 +1,5 @@
-﻿using Project1.Framework.WorldGen;
+﻿using Project1.Core.Simulation;
+using Project1.Core.WorldGen;
 using System;
 
 namespace Project1.Core.WorldGen

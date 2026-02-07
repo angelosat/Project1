@@ -1,22 +1,20 @@
 ﻿using Project1.Core.Effects;
 using Project1.Core.Entities;
 using Project1.Core.Needs;
-using Project1.Framework.Components.Plants;
-using Project1.Framework.Effects;
-using Project1.Framework.Entities;
-using Start_a_Town_;
+using Project1.Core.Components.Plants;
+using Project1.Core.Graphics;
+using Project1.Core;
 using System;
 
 namespace Project1.Core.Plants
 {
-    public class PlantSystem// : IItemCreationSystem
+    public class PlantSystem
     {
         static Entity CreateSeeds(PlantSpeciesDef species)
         {
             var seeds = ItemDefOf.Seeds.Create();
             seeds.Initialize();
 
-            //seeds.GetComponent<SeedComponent>().SetPlant(species);
             seeds.Profile = species;
             seeds.Name = $"{species.Label} {species.SeedsName}";
             seeds.Body.Sprite = Sprite.Load(species.TextureSeeds);

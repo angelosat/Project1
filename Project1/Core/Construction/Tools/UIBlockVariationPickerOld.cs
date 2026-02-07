@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Blocks;
-using Project1.Framework.UI;
-using Start_a_Town_.Components.Crafting;
-using Start_a_Town_.UI;
+using Project1.Core.Blocks;
+using Project1.Core.Legacy.Crafting.Blocks;
+using Project1.Core.UI;
+using Project1.Core.UI;
 using System;
 using System.Linq;
 

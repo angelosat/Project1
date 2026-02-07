@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Base;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Net;
-using Project1.Framework.UI;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
+using Project1.Core.Net;
+using Project1.Core.UI;
+using Project1.Core.WorldGen;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.WorldGen
 {

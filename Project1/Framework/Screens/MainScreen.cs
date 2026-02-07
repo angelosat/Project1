@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.UI;
-using Project1.Framework.Net;
-using Project1.Framework.Base;
-using Project1.Framework.UI;
+using Project1.Core.UI;
+using Project1.Core.Net;
+using Project1.Core.Base;
+using Project1.Core.UI;
 
-namespace Project1.Framework.Screens
+namespace Project1.Core.Screens
 {
     class MainScreen : GameScreen
     {

@@ -1,8 +1,8 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.WorldGen;
+﻿using Project1.Core.Base;
+using Project1.Core.Simulation;
 using System;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     internal class BlockHealthToken
     {

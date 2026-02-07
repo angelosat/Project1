@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
-using Start_a_Town_.Framework.AI.NodeTypes;
-using Start_a_Town_.AI.Behaviors;
 using Project1.Core.Interactions;
 using Project1.Core.Entities;
-using Start_a_Town_;
+using Project1.Core.AI.Behaviors.Helpers;
+using Project1.Core.AI.Behaviors.Reserve;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.AI;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.Towns.Shops
 {

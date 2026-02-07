@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Base;
-using Project1.Framework.Input;
-using Project1.Framework.Net;
+using Project1.Core.UI.Settings;
+using Project1.Core.Base;
+using Project1.Core.Input;
+using Project1.Core.Net;
+using Project1.Core.WorldGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     public class TooltipManager
     {

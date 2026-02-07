@@ -1,6 +1,6 @@
-﻿using Project1.Framework.Net;
+﻿using Project1.Core.Net;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public class Registry
     {

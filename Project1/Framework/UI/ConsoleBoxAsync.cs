@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Components;
-using Project1.Framework.Base;
+using Project1.Core.Components;
+using Project1.Core.Base;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.UI;
+using Project1.Core.UI;
+using Project1.Core.Helpers;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     public enum ConsoleMessageTypes { Acks }
 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Rendering;
+using Project1.Core.Rendering;
 using System.Collections.Generic;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public class Canvas
     {

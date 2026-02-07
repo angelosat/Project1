@@ -1,8 +1,8 @@
 ﻿using System;
 using Project1.Core.Materials;
-using Project1.Framework.Net;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
+using Project1.Core.Net;
+using Project1.Core;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.WorldGen
 {

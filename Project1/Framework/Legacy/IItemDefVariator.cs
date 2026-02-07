@@ -1,6 +1,6 @@
-﻿using Start_a_Town_;
+﻿using Project1.Core.Legacy.Storage.New;
 
-namespace Project1.Framework.Legacy
+namespace Project1.Core.Legacy
 {
     public interface IItemDefVariator
     {

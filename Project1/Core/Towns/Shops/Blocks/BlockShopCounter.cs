@@ -1,10 +1,12 @@
 ﻿using System.Linq;
-using Start_a_Town_.UI;
-using Start_a_Town_.Graphics;
-using Project1.Framework.Blocks;
-using Project1.Framework.Base;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
+using Project1.Core.UI;
+using Project1.Core.Blocks;
+using Project1.Core.Base;
+using Project1.Core;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Graphics;
+using Project1.Core.Rooms;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Towns.Shops.Blocks
 {
@@ -23,10 +25,7 @@ namespace Project1.Core.Towns.Shops.Blocks
        
         protected override void GetQuickButtonsEx(SelectionManager info, MapBase map, IntVec3 vector3)
         {
-            //info.AddTabAction("Shop", () => { });
-
-            //var shop = map.Town.ShopManager.GetShops().FirstOrDefault(s => s.Counter.HasValue && s.Counter.Value == vector3);
-            //info.AddInfo(new Label($"Shop: {shop?.Name ?? "none"}"));
+           
         }
     }
 }

@@ -1,19 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.UI;
-using Start_a_Town_.Components.Crafting;
-using Project1.Framework.Input;
-using Project1.Framework.Blocks;
-using Project1.Framework.Rendering;
-using Project1.Framework.Base;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Materials;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Entities;
-using Project1.Framework.UI;
+using Project1.Core.Input;
+using Project1.Core.Blocks;
+using Project1.Core.Rendering;
+using Project1.Core.Base;
+using Project1.Core.Materials;
+using Project1.Core.Interfaces;
+using Project1.Core.UI;
+using Project1.Core.Towns.Constructions;
+using Project1.Core.Legacy.Crafting.Blocks;
+using Project1.Core.Helpers;
+using Project1.Core.UI.Primitives;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     partial class BlockDesignation
     {

@@ -1,13 +1,14 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Screens;
-using Project1.Framework.UI;
-using Project1.Framework.WorldGen;
+using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Screens;
+using Project1.Core.Simulation;
+using Project1.Core.UI;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     class FloatingText : Label
     {

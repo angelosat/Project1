@@ -1,7 +1,7 @@
-﻿using Project1.Framework.Entities;
-using Project1.Framework.Legacy;
-using Project1.Framework.Materials;
-using Start_a_Town_;
+﻿using Project1.Core.Entities;
+using Project1.Core.Legacy;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Materials;
 using System.Collections.Generic;
 
 namespace Project1.Core.Towns

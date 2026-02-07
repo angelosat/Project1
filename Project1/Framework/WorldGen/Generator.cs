@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace Project1.Framework.WorldGen
+namespace Project1.Core.WorldGen
 {
     public static class Generator
     {

@@ -1,9 +1,9 @@
-﻿using Start_a_Town_.Framework.AI.NodeTypes;
-using System.Collections.Generic;
-using Project1.Framework.Pathing;
+﻿using System.Collections.Generic;
 using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class TaskBehaviorGoHaul : BehaviorExecutePlan
     {

@@ -1,13 +1,13 @@
-﻿using Project1.Core.Interactions;
-using Project1.Framework.Base;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
-using Start_a_Town_.AI;
-using Start_a_Town_.Framework.AI.NodeTypes;
+﻿using Project1.Core.Blocks.Doors;
+using Project1.Core.Interactions;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Core.Simulation;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.AI.Behaviors.Pathing
 {

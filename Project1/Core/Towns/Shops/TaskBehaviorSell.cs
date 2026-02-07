@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
-using Start_a_Town_.Framework.AI.NodeTypes;
 using Project1.Core.Interactions;
 using Project1.Core.Entities;
-using Project1.Framework.Entities;
-using Start_a_Town_;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Framework.Entities.Actors;
+using Project1.Core.Entities.Actors;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.Towns.Trading;
+using System;
+using Project1.Core.AI;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.Towns.Shops
 {
@@ -14,7 +16,8 @@ namespace Project1.Core.Towns.Shops
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return new BehaviorResolvePath(TargetIndex.B);
-            yield return new BehaviorResolveInteraction(TargetIndex.A, () => null);// new InteractionHaul(this.Plan.AmountA));
+            throw new NotImplementedException();
+            yield return new BehaviorResolveInteraction(TargetIndex.A, () => null);
             var tradePartner = this.Plan.TargetB.Object as Actor;
             var item = this.Plan.TargetA.Object as Entity;
             var itemvalue = item.GetValueTotal();

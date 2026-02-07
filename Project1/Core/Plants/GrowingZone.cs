@@ -1,18 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_.UI;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.Blocks;
-using Project1.Framework.Net;
-using Project1.Framework.Components.Plants;
-using Project1.Framework.Base;
-using Project1.Framework.WorldGen;
+using Project1.Core.Blocks;
+using Project1.Core.Net;
+using Project1.Core.Components.Plants;
+using Project1.Core.Base;
 using Project1.Core.Materials;
 using Project1.Core.Entities;
-using Project1.Framework.Entities;
-using Start_a_Town_;
-using Project1.Framework.UI;
+using Project1.Core;
+using Project1.Core.UI;
+using Project1.Core.Towns.Zones;
+using Project1.Core.Helpers;
+using Project1.Core.Net;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Plants
 {

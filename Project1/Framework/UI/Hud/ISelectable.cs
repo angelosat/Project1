@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Project1.Framework.Interfaces;
-using Project1.Framework.UI;
-using Start_a_Town_.UI;
+using Project1.Core.Interfaces;
+using Project1.Core.UI;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public interface ISelectable
     {

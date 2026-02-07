@@ -1,8 +1,8 @@
-﻿using Start_a_Town_;
+﻿using Project1.Core.Helpers;
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public class GameEventRegistry
     {

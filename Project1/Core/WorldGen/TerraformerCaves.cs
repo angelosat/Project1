@@ -1,7 +1,8 @@
-﻿using Project1.Framework.WorldGen;
-using Start_a_Town_;
+﻿using Project1.Core.WorldGen;
+using Project1.Core;
 using System;
 using System.Diagnostics;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.WorldGen
 {

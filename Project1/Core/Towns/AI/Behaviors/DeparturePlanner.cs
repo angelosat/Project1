@@ -1,8 +1,10 @@
-﻿using Project1.Core.Towns.AI.Needs;
+﻿using Project1.Core.AI;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.Towns.AI.Needs;
 using Project1.Core.World.WorldAreas;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.StaticMaps;
-using Start_a_Town_;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Towns.AI.Behaviors
 {

@@ -1,8 +1,11 @@
-﻿using Start_a_Town_;
-using Start_a_Town_.Framework.AI.NodeTypes;
+﻿using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Behaviors.Helpers;
+using Project1.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Core.AI;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.Towns
 {

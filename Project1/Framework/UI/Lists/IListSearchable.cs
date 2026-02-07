@@ -1,7 +1,7 @@
-﻿using Project1.Framework.Interfaces;
+﻿using Project1.Core.Interfaces;
 using System;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     interface IListSearchable<TObject> 
     {

@@ -1,4 +1,4 @@
-﻿namespace Start_a_Town_
+﻿namespace Project1.Core
 {
     public struct Alignment
     {

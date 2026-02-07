@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Interactions;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Interactions;
 
 namespace Project1.Core.Interactions
 {

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Input;
-using Project1.Framework.UI;
-using Start_a_Town_.UI;
+using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Input;
+using Project1.Core.UI;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public class ContextArgs : EventArgs
     {

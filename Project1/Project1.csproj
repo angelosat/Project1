@@ -14,9 +14,8 @@
   <ItemGroup>
     <Compile Remove="Framework\UI\Hud\QuickButtonBar.cs" />
     <Compile Remove="Framework\UI\Hud\SelectionManager.cs" />
-    <Compile Remove="Modules\Crafting\Crafting\ReagentFilters\IsOfSubType.cs" />
-    <Compile Remove="Modules\Packets\PacketEntityDesignation.cs" />
-    <Compile Remove="Modules\Towns\Forestry\ChoppingManager.cs" />
+    <Compile Remove="Framework\Legacy\Crafting\ReagentFilters\IsOfSubType.cs" />
+    <Compile Remove="Core\Towns\Forestry\ChoppingManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Content\blur - Copy.fx" />
@@ -28,11 +27,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Core\Blocks\Helpers\" />
-    <Folder Include="Modules\Towns\Crafting\AI\" />
-    <Folder Include="Modules\Towns\Farming\Sowing\" />
-    <Folder Include="Modules\Towns\Stockpiles\AI\" />
-    <Folder Include="Modules\Visitors\" />
+    <Folder Include="Core\Towns\Farming\Sowing\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

@@ -1,11 +1,15 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Interfaces;
-using Project1.Framework.WorldGen;
+﻿using Project1.Core.Entities;
+using Project1.Core.UI;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Helpers.Structs;
+using Project1.Core.Interfaces;
+using Project1.Core.Simulation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace Start_a_Town_
+using Project1.Core.Towns.Crafting;
+namespace Project1.Core
 {
     public enum WorkstationIOType
     {

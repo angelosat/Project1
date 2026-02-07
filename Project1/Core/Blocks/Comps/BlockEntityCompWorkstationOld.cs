@@ -1,22 +1,23 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Framework.Base;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Rendering;
-using Project1.Framework.WorldGen;
-using Start_a_Town_.UI;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Legacy.Crafting.Gui;
+using Project1.Core.Rendering;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public class BlockEntityCompWorkstationOld : BlockEntityComp
     {
         public override string Name { get; } = "Workstation";
         static readonly string OperatingPositionUnreachableString = $"Interaction spot blocked";
-        //static string OperatingPositionUnreachableString = $"[Operating position unreachable!,{Color.Orange}]";
-        //static string OperatingPositionUnreachableString = $"[text='Operating position unreachable!' color='{Color.Orange}']";
         public bool OperatingPositionUnreachable;
 
         readonly ObservableCollection<CraftOrder> _orders = new();
@@ -62,11 +63,6 @@ namespace Start_a_Town_
             return true;
         }
 
-        //internal override void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3)
-        //{
-        //    uISelectedInfo.AddTabAction("Orders", () => this.ShowUI(map, vector3));
-        //}
-
         public void ShowUI(MapBase map, IntVec3 global)
         {
             if (CraftingWindow != null)
@@ -78,8 +74,6 @@ namespace Start_a_Town_
 
         internal override void DrawSelected(MySpriteBatch sb, Camera cam, MapBase map, IntVec3 global)
         {
-            // draw workstation operating position
-            //cam.DrawGridCells(sb, Color.White * .5f, new IntVec3[] { global + map.GetCell(global).Front });
         }
         protected override void SaveExtra(SaveTag tag)
         {
@@ -91,13 +85,10 @@ namespace Start_a_Town_
         }
         public override void Write(IDataWriter w)
         {
-            //this._orders.WriteImmutableNew(w);
-            //this._orders.Write(w);
             w.Write(this._orders);
         }
         public override ISerializable Read(IDataReader r)
         {
-            //this._orders.ReadMutableNew(r);
             r.ReadNewInto(this._orders);
             return this;
         }

@@ -1,17 +1,16 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.Components;
+using Project1.Core.Components;
 using System.Linq;
-using Project1.Framework.Needs;
 using Project1.Core.Needs;
 using Project1.Core.Effects;
-using Project1.Framework.Animations;
-using Project1.Framework.Blocks;
-using Project1.Framework.Interactions;
-using Project1.Framework.Base;
-using Project1.Framework.WorldGen;
+using Project1.Core.Blocks;
+using Project1.Core.Interactions;
+using Project1.Core.Base;
+using Project1.Core.Simulation;
+using Project1.Core.Animations;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class InteractionSleepInBedLogic : InteractionLogic
     {
@@ -35,7 +34,6 @@ namespace Start_a_Town_
             var topcell = map.GetCell(bedPos);
             var testcell = map.GetCell((IntVec3)bedPos + IntVec3.UnitY);
             var bedparts = topcell.GetParts(bedPos).ToArray();
-            //var bedFeet = bedparts.Skip(1).First();
             var bedFeet = bedparts[1];
             a.FaceTowards(bedFeet);
 

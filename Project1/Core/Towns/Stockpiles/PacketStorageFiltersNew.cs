@@ -1,0 +1,108 @@
+﻿using System.IO;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Legacy.Storage;
+using Project1.Core.Materials;
+using Project1.Core.Net;
+using Project1.Core;
+using Project1.Core.Net;
+using Project1.Core.Entities;
+
+namespace Project1.Core.Towns.Stockpiles
+{
+    [EnsureStaticCtorCall]
+    class PacketStorageFiltersNew : Packet
+    {
+        static readonly int p, pNew, pCategory, pVariation;
+        static PacketStorageFiltersNew()
+        {
+            p = Registry.PacketHandlers.Register(Receive);
+            pNew = Registry.PacketHandlers.Register(ReceiveNew);
+            pCategory = Registry.PacketHandlers.Register(ReceiveCategory);
+            pVariation = Registry.PacketHandlers.Register(ReceiveVariation);
+        }
+        public static void Send(Stockpile stockpile, ItemDef item, Def v)
+        {
+            var s = stockpile.Map.Net.BeginPacket(pVariation);
+            s.Write(stockpile.ID);
+            s.Write(item.Name);
+            s.Write(v.Name);
+        }
+        private static void ReceiveVariation(NetEndpoint net, Packet pck)
+        {
+            var r = pck.PacketReader;
+            var stockpileID = r.ReadInt32();
+            var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
+            var item = Def.GetDef<ItemDef>(r);
+            var v = Def.GetDef(r.ReadString());
+            stockpile.Settings.Toggle(item, v);
+            if (net is Server)
+                Send(stockpile, item, v);
+        }
+
+        public static void Send(Stockpile stockpile, ItemCategory category)
+        {
+            var s = stockpile.Map.Net.BeginPacket(pCategory);
+
+            s.Write(stockpile.ID);
+            s.Write(category?.Name ?? "");
+        }
+        private static void ReceiveCategory(NetEndpoint net, Packet pck)
+        {
+            var r = pck.PacketReader;
+            var stockpileID = r.ReadInt32();
+            var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
+            var cat = r.ReadString() is string catName && !catName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<ItemCategory>(catName) : null;
+            stockpile.Settings.Toggle(cat);
+            if (net is Server)
+                Send(stockpile, cat);
+        }
+
+        public static void Send(Stockpile stockpile, ItemDef item, MaterialDef mat)
+        {
+            var s = stockpile.Map.Net.BeginPacket(pNew);
+
+            s.Write(stockpile.ID);
+            s.Write(item.Name);
+            s.Write(mat?.Name ?? "");
+        }
+        private static void ReceiveNew(NetEndpoint net, Packet pck)
+        {
+            var r = pck.PacketReader;
+            var stockpileID = r.ReadInt32();
+            var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
+            var item = Def.GetDef<ItemDef>(r);
+            MaterialDef mat = null;
+            if (r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace())
+            {
+                mat = Def.GetDef<MaterialDef>(matName);
+                stockpile.Settings.Toggle(item, mat);
+            }
+            else
+                stockpile.Settings.Toggle(item);
+            if (net is Server)
+                Send(stockpile, item, mat);
+        }
+
+        public static void Send(Stockpile stockpile, int[] nodeIndices = null, int[] leafIndices = null)
+        {
+            var s = stockpile.Map.Net.BeginPacket(p);
+            s.Write(stockpile.ID);
+            s.Write(nodeIndices ?? new int[] { });
+            s.Write(leafIndices ?? new int[] { });
+        }
+        static void Receive(NetEndpoint net, Packet pck)
+        {
+            var r = pck.PacketReader;
+            var stockpileID = r.ReadInt32();
+            var nodes = r.ReadIntArray();
+            var items = r.ReadIntArray();
+            var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
+
+            stockpile.ToggleItemFiltersCategories(nodes);
+            stockpile.ToggleItemFilters(items);
+            if (net is Server)
+                Send(stockpile, nodes, items);
+        }
+    }
+}

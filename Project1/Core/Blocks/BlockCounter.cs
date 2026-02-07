@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Materials;
-using Project1.Framework.Blocks;
-using Project1.Framework.Materials;
-using Start_a_Town_.Graphics;
+using Project1.Core.Blocks;
+using Project1.Core.Graphics;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Materials;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockCounter : Block
     {

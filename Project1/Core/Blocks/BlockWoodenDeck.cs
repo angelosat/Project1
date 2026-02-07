@@ -1,19 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Blocks;
-using Project1.Framework.Base;
-using Start_a_Town_.Graphics;
+using Project1.Core.Blocks;
+using Project1.Core.Base;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.Gfx.Particles;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Rendering;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Rendering;
 using Project1.Core.Materials;
-using Project1.Framework.Materials;
-using Project1.Framework.Loot;
-using Project1.Framework.Legacy;
+using Project1.Core.Materials;
+using Project1.Core.Loot;
+using Project1.Core.Legacy;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Helpers;
+using Project1.Core.Graphics;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockWoodenDeck : Block
     {
@@ -54,7 +57,7 @@ namespace Start_a_Town_
         {
             var table =
                 new LootTable(
-                    new LootWrapper(a => ItemFactory.CreateFrom(RawMaterialDefOf.Planks, MaterialDefOf.Human))// this.GetMaterial(data)))
+                    new LootWrapper(a => ItemFactory.CreateFrom(RawMaterialDefOf.Planks, MaterialDefOf.Human))
                     );
             return table;
         }

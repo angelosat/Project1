@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Needs;
-using Project1.Framework.Net;
-using Project1.Framework.Net.Packets;
-using Project1.Framework.UI;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+using Project1.Core.Interfaces;
+using Project1.Core.Net;
+using Project1.Core.Net.Packets;
+using Project1.Core.UI;
+using Project1.Core;
+using Project1.Core.UI;
+using Project1.Core.Needs;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     class GameManager : GameSystem
     {

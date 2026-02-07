@@ -1,6 +1,8 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Needs;
-using Start_a_Town_;
+﻿using Project1.Core.AI.Planners;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Needs;
+
 
 namespace Project1.Core.Towns.AI.Needs
 {

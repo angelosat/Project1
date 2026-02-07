@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Entities;
-using Project1.Framework.Inventory;
-using Project1.Framework.WorldGen;
-using Start_a_Town_.Components;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Helpers;
+using Project1.Core.Components;
+using Project1.Core.Simulation;
+using Project1.Core.Inventory;
+using Project1.Core.Entities;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     partial class BlockChest
     {

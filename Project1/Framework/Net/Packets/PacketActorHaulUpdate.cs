@@ -1,0 +1,37 @@
+﻿using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core;
+using Project1.Core.Net;
+using Project1.Core.Entities;
+
+namespace Project1.Core.Net.Packets
+{
+    [EnsureStaticCtorCall]
+    public static class PacketActorHaulUpdate
+    {
+        static readonly int pType;
+        static PacketActorHaulUpdate()
+        {
+            pType = Registry.PacketHandlers.Register(Receive);
+        }
+
+        public static void Send(Actor actor, Entity newItem, int amount = -1)
+        {
+            var server = actor.Net as Server;
+            server.BeginPacket(pType)
+                .Write(actor.RefId)
+                .Write(newItem?.RefId ?? -1)
+                .Write(amount);
+        }
+        private static void Receive(NetEndpoint endpoint, Packet packet)
+        {
+            var client = endpoint as Client;
+            var r = packet.PacketReader;
+            var actor = client.World.GetEntity(r.ReadInt32());
+            var itemId = r.ReadInt32();
+            var item = itemId > 0 ? client.World.GetEntity(itemId) : null;
+            var amount = r.ReadInt32();
+            actor.Inventory.HaulSlot.Assign(item);
+        }
+    }
+}

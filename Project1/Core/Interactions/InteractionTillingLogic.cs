@@ -1,6 +1,7 @@
-﻿using Project1.Framework.Blocks;
-using Project1.Framework.Interactions;
-using Start_a_Town_;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Interactions;
+using Project1.Core;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Interactions
 {

@@ -1,22 +1,26 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Blocks;
-using Project1.Framework.Components;
-using Project1.Framework.Base;
-using Project1.Framework.Input.Tools;
-using Project1.Framework.Input.Tools.CellRendering;
-using Project1.Framework.Net;
+using Project1.Core.Blocks;
+using Project1.Core.Components;
+using Project1.Core.Base;
+using Project1.Core.Input.Tools;
+using Project1.Core.Input.Tools.CellRendering;
+using Project1.Core.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.Rendering;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Screens;
-using Project1.Framework.Entities;
-using Project1.Framework.UI;
+using Project1.Core.Rendering;
+using Project1.Core.WorldGen;
+using Project1.Core.Screens;
 using Project1.Core.UI;
+using Project1.Core.UI;
+using Project1.Core.Towns.Zones;
+using Project1.Core.Helpers;
+using Project1.Core.Net;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     [EnsureStaticCtorCall]
     public sealed class SelectionManager

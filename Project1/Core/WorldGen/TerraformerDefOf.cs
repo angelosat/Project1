@@ -1,4 +1,4 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Base;
 
 namespace Project1.Core.WorldGen
 {

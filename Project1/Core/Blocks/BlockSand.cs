@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.Xna.Framework;
 using Project1.Core.Materials;
-using Project1.Framework.Blocks;
-using Project1.Framework.Gfx.Particles;
-using Project1.Framework.Materials;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Blocks;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Materials;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockSand : Block
     {
@@ -15,7 +16,7 @@ namespace Start_a_Town_
             : base("Sand")
         {
             this.LoadVariations("sand1");
-            this.Ingredient = new Ingredient()//RawMaterialDef.Bags, MaterialDefOf.Sand, null, 1);
+            this.Ingredient = new Ingredient()
                 .SetAllow(MaterialDefOf.Sand, true);
             this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
         }
@@ -25,8 +26,7 @@ namespace Start_a_Town_
         }
         public override ParticleEmitterSphere GetEmitter()
         {
-            //return base.GetEmitter();
-            var e = base.GetDirtEmitter();// base.GetDustEmitter();
+            var e = base.GetDirtEmitter();
 
             e.ColorBegin = e.ColorEnd = Color.Gold;
             return e;

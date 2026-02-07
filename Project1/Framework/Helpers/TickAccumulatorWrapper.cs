@@ -1,7 +1,7 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Base;
 using System.Linq;
 
-namespace Project1.Framework.Helpers
+namespace Project1.Core.Helpers
 {
     //public abstract class TickAccumulatorWrapper : MetricWrapper
     //{

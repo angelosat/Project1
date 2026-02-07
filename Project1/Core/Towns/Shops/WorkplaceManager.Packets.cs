@@ -1,11 +1,13 @@
 ﻿using System;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Shops;
-using Project1.Framework.Base;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Net;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Net;
+using Project1.Core.Helpers;
+using Project1.Core.Net;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public partial class WorkplaceManager
     {

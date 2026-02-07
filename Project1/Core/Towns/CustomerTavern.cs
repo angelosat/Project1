@@ -1,8 +1,8 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Rooms;
-using Start_a_Town_;
+﻿using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Rooms;
 
 namespace Project1.Core.Towns
 {

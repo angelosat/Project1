@@ -1,7 +1,6 @@
-﻿using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Needs;
-using Start_a_Town_;
+﻿using Project1.Core.Entities;
+using Project1.Core.Needs;
+using Project1.Core.Entities.Actors;
 using System.Linq;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles

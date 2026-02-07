@@ -1,9 +1,9 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Interfaces;
-using Start_a_Town_;
+﻿using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
 
-namespace Project1.Framework.Legacy
+namespace Project1.Core.Legacy
 {
     public class ObjectRefIDsAmount : ISaveable, ISerializableNew<ObjectRefIDsAmount>
     {

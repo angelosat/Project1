@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Start_a_Town_.UI;
-using Project1.Framework.Blocks;
-using Project1.Framework.Components;
-using Project1.Framework.Base;
+using Project1.Core.UI;
+using Project1.Core.Blocks;
+using Project1.Core.Components;
+using Project1.Core.Base;
 using Project1.Core.Rooms;
-using Project1.Framework.Rooms;
 using Project1.Core.Towns.Shops.Blocks;
-using Start_a_Town_;
-using Project1.Framework.UI;
-using Project1.Framework.Entities.Actors;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.Towns
 {
@@ -43,7 +42,6 @@ namespace Project1.Core.Towns
                 var actor = map.World.GetEntity<Actor>(p.ActorID);
                 return
                     p.GetJob(JobInnKeeper).Enabled &&
-                    //actor.GetState().CurrentTaskBehavior is TaskBehaviorInnKeeper &&
                     actor.AI.State.Behavior is TaskBehaviorInnKeeper &&
                     actor.CellIfSpawned.Value == map.GetBehindOfBlock(this.Counter.Value);
             });

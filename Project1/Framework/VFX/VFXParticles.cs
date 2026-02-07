@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Blocks;
+using Project1.Core.Blocks;
 using Project1.Core.Interactions;
-using Project1.Framework.Base;
-using Project1.Framework.Gfx.Particles;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
+using Project1.Core.Base;
+using Project1.Core.Graphics.Particles;
 using Project1.Core.Assets;
+using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 
-namespace Project1.Framework.VFX
+namespace Project1.Core.VFX
 {
     [EnsureStaticCtorCall]
     internal static class VFXParticles

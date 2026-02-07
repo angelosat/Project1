@@ -1,9 +1,9 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Interfaces;
-using Start_a_Town_;
+﻿using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
 
-namespace Project1.Framework.Legacy
+namespace Project1.Core.Legacy
 {
     public class ItemDefAmount : ISaveable, ISerializableNew<ItemDefAmount>
     {
@@ -36,7 +36,7 @@ namespace Project1.Framework.Legacy
         }
         public ISaveable Load(SaveTag tag)
         {
-            this.Def = Project1.Framework.Base.Def.GetDef<ItemDef>(tag.GetValue<string>("Def"));
+            this.Def = Project1.Core.Base.Def.GetDef<ItemDef>(tag.GetValue<string>("Def"));
             this.Amount = tag.GetValue<int>("Amount");
             return this;
         }
@@ -47,7 +47,7 @@ namespace Project1.Framework.Legacy
         }
         public ItemDefAmount Read(IDataReader r)
         {
-            this.Def = Project1.Framework.Base.Def.GetDef<ItemDef>(r.ReadString());
+            this.Def = Project1.Core.Base.Def.GetDef<ItemDef>(r.ReadString());
             this.Amount = r.ReadInt32();
             return this;
         }

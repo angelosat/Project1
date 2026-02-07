@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
  * in Winforms Form.Handle property
  */
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public abstract class WindowsHook : IDisposable
     {

@@ -1,9 +1,9 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.WorldGen;
-using Start_a_Town_.Blocks;
+﻿using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Blocks;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockFluidEntity : BlockEntity
     {

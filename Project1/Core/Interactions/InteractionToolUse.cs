@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Base;
-using Project1.Framework.Gfx.Particles;
-using Project1.Framework.Interactions;
-using Project1.Framework.Stats;
-using Start_a_Town_;
+using Project1.Core.Stats;
+using Project1.Core.Base;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Helpers;
+using Project1.Core.Interactions;
 using System;
 using System.Collections.Generic;
 

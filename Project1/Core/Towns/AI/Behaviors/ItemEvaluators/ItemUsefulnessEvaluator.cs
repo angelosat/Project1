@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
+﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using System;
 using System.Linq;
 

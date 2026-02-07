@@ -1,12 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Materials;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Gfx.Particles;
-using Project1.Framework.Net;
-using Project1.Framework.WorldGen;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Helpers;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Net;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockSoil : Block
     {
@@ -21,9 +24,6 @@ namespace Start_a_Town_
         public BlockSoil()
             : base("Soil")
         {
-            //this.LootTable = new LootTable(
-            //            new Loot(() => ItemFactory.CreateFrom(RawMaterialDef.Bags, MaterialDefOf.Soil), 1f, 1, RawMaterialDef.Bags.StackCapacity)
-            //            );
             this.BreakProduct = RawMaterialDefOf.Bags;
             this.RequiresConstruction = false;
             this.LoadVariations("soil/soil1", "soil/soil2", "soil/soil3", "soil/soil4");

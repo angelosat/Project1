@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Project1.Core.Materials;
-using Project1.Framework.Blocks;
-using Project1.Framework.Materials;
+using Project1.Core.Blocks;
+using Project1.Core.Graphics;
+using Project1.Core.Materials;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockConveyor : Block
     {

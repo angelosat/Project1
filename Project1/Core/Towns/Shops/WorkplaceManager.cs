@@ -1,21 +1,18 @@
-﻿using Start_a_Town_.Gui;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+﻿using Project1.Core.Gui;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
 using System.Linq;
-using Project1.Framework.Components;
-using Project1.Framework.Base;
-using Project1.Framework.Interfaces;
+using Project1.Core.Components;
+using Project1.Core.Base;
+using Project1.Core.Interfaces;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns;
-using Project1.Core.Tavern;
-using Project1.Framework.UI;
-using Project1.Framework.Entities.Actors;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Helpers.Collections;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public partial class WorkplaceManager : TownComponent
     {

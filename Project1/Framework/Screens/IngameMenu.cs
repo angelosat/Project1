@@ -1,11 +1,11 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Net;
-using Project1.Framework.UI;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+﻿using Project1.Core.Base;
+using Project1.Core.UI;
+using Project1.Core.UI;
 using System;
+using Project1.Core.UI.Settings;
+using Project1.Core.Net;
 
-namespace Project1.Framework.Screens
+namespace Project1.Core.Screens
 {
     class IngameMenu : Window
     {
@@ -35,7 +35,7 @@ namespace Project1.Framework.Screens
 
         void Saveexit_Click()
         {
-            Project1.Framework.Net.Client.Instance.Disconnect();
+            Net.Client.Instance.Disconnect();
             ScreenManager.Remove();
         }
 
@@ -45,7 +45,7 @@ namespace Project1.Framework.Screens
                 new ContextAction(() => "Yes",
                     () =>
                     {
-                        Project1.Framework.Net.Client.Instance.Disconnect();
+                        Net.Client.Instance.Disconnect();
                         Server.Stop();
                         ScreenManager.Remove();
                     }),

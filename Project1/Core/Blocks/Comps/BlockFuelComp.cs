@@ -1,11 +1,13 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Interfaces;
-using Project1.Framework.UI;
-using Start_a_Town_.UI;
+﻿using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
+using Project1.Core.UI;
+using Project1.Core.UI.Primitives;
 using System;
+using Project1.Core.Towns.Crafting;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     internal class BlockFuelComp : BlockEntityComp
     {
@@ -22,7 +24,6 @@ namespace Start_a_Town_
         public int FuelAvailable => this.Fuel.Value;
         internal bool TryConsumeFuel(int fuel)
         {
-            //ArgumentOutOfRangeException.ThrowIfGreaterThan(fuel, this.FuelAvailable);
             if (fuel > this.FuelAvailable)
                 return false;
             this.Fuel.ApplyDelta(-fuel);

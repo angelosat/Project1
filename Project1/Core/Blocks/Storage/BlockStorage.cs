@@ -2,14 +2,16 @@
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Materials;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Entities;
-using Project1.Framework.Materials;
-using Project1.Framework.WorldGen;
-using Start_a_Town_.Blocks;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Helpers;
+using Project1.Core.Materials;
+using Project1.Core.Blocks;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     partial class BlockStorage : Block
     {

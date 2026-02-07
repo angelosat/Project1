@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Entities;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Legacy;
-using Project1.Framework.Materials;
-using Project1.Framework.UI;
-using Project1.Framework.WorldGen;
-using Start_a_Town_.Components.Crafting;
+using Project1.Core.Entities;
+using Project1.Core.Towns.Constructions;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
+using Project1.Core.Legacy;
+using Project1.Core.Legacy.Crafting.Blocks;
+using Project1.Core.Materials;
+using Project1.Core.Simulation;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockConstructionEntity : BlockEntity, IConstructible
     {
@@ -53,12 +55,7 @@ namespace Start_a_Town_
         {
             var product = this.Product;
             info.AddInfo(
-                //UI.Label.ParseWrap($"{product.Requirement.Material} {product.Requirement.Item} ", new Func<string>(() => this.Container.First().Amount.ToString()), $" / {product.Requirement.Amount}")
-                //UI.Label.ParseWrap(product.Requirement.Material, " ", product.Requirement.Item, " ", new Func<string>(() => this.Container.First().Amount.ToString()), $" / {product.Requirement.Amount}")
-                //UI.Label.ParseWrap(new Func<string>(this.Container.First().Amount.ToString), " / ", product)
-                Project1.Framework.UI.Label.ParseWrap(product, " ", new Func<string>(this.Container.First().Amount.ToString), " / ", product.Requirement.Amount)
-            //new Label(this.Product) { TextFunc = this.GetIngredientText }
-            //new Label() { TextFunc = GetIngredientText }
+                Project1.Core.UI.Label.ParseWrap(product, " ", new Func<string>(this.Container.First().Amount.ToString), " / ", product.Requirement.Amount)
             );
             info.AddInfo(this.BuildProgress.GetGui("Construction"));
         }

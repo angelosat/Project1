@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities.Actors;
+﻿using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Interactions
 {

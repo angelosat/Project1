@@ -2,11 +2,10 @@
 using Microsoft.Xna.Framework;
 using Project1.Core.Effects;
 using Project1.Core.Needs;
-using Project1.Framework.Animations;
-using Project1.Framework.Interactions;
-using Project1.Framework.Needs;
+using Project1.Core.Animations;
+using Project1.Core.Interactions;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class InteractionSleepOnGroundLogic : InteractionLogic 
     {
@@ -42,7 +41,6 @@ namespace Start_a_Town_
             : base("Sleeping on ground")
         {
             this.RunningType = RunningTypes.Continuous;
-            //this.AnimationDef = null;
         }
         protected void OnStart()
         {
@@ -51,7 +49,7 @@ namespace Start_a_Town_
             a.Effects.Apply(EffectDefOf.Sleeping);
             var body = a.Body;
             body.RestingFrame = new Keyframe(0, Vector2.Zero, (float)(Math.PI / 2f));
-            body.OriginGroundOffset = new Vector2(0, -4);/// Vector2.Zero;
+            body.OriginGroundOffset = new Vector2(0, -4);
         }
         internal override void FinishAction()
         {

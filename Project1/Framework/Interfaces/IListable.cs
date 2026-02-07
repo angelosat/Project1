@@ -1,7 +1,7 @@
-﻿using Project1.Framework.UI;
-using System;
+﻿
+using Project1.Core.UI;
 
-namespace Project1.Framework.Interfaces
+namespace Project1.Core.Interfaces
 {
     public interface IListable
     {

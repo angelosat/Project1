@@ -1,6 +1,6 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Mood;
-using Start_a_Town_;
+﻿using Project1.Core.Entities.Mood;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.Mood
 {

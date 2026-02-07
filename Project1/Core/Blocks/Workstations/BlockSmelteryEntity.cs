@@ -1,8 +1,8 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Start_a_Town_.Blocks;
+﻿using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Blocks;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockSmelteryEntity : BlockEntity
     {

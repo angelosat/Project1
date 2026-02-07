@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Plants;
-using Project1.Framework.Components.Plants;
-using Project1.Framework.WorldGen;
-using Start_a_Town_;
+using Project1.Core.Components.Plants;
+using Project1.Core.Helpers;
+using Project1.Core;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.WorldGen
 {
@@ -48,7 +49,7 @@ namespace Project1.Core.WorldGen
        
         PlantSpeciesDef[] GetValidPlants()
         {
-            return Framework.Base.Def.GetDefs<PlantSpeciesDef>().ToArray();
+            return Core.Base.Def.GetDefs<PlantSpeciesDef>().ToArray();
         }
     }
 }

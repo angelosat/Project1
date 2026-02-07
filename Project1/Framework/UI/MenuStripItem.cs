@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.UI;
+using Project1.Core.UI;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     class MenuStripItem : Button
     {

@@ -1,4 +1,4 @@
-﻿namespace Project1.Framework.Base
+﻿namespace Project1.Core.Base
 {
     static class Ticks
     {

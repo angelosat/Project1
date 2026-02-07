@@ -1,11 +1,13 @@
 ﻿using Project1.Core.Materials;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Materials;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Materials;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockBricks : Block
     {
@@ -15,7 +17,7 @@ namespace Start_a_Town_
             this.LoadVariations("bricks/bricks");
             this.BuildProperties.Complexity = 20;
             this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
-            this.Ingredient =// new Ingredient(RawMaterialDef.Boulders, null, null, 1);
+            this.Ingredient =
                 new Ingredient()
                     .SetAllow(MaterialTypeDefOf.Metal, true)
                     .SetAllow(MaterialTypeDefOf.Stone, true);

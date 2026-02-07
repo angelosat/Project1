@@ -1,7 +1,8 @@
-﻿using Start_a_Town_.Framework.AI.NodeTypes;
+﻿using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Behaviors.NodeTypes;
 using System.Collections.Generic;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class TaskBehaviorHaulFromInventory : BehaviorExecutePlan
     {

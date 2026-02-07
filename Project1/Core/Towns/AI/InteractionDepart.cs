@@ -1,6 +1,6 @@
 ﻿using Project1.Core.World.WorldAreas;
-using Project1.Framework.Interactions;
-using Project1.Framework.StaticMaps;
+using Project1.Core.Interactions;
+using Project1.Core.Simulation;
 using System;
 namespace Project1.Core.Towns.AI
 {

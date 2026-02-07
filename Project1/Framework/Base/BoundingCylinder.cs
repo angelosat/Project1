@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Project1.Framework.Entities;
-using Start_a_Town_;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     struct BoundingCylinder
     {

@@ -1,8 +1,8 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Entities;
+﻿using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     abstract class BlockWithEntity : Block
     {

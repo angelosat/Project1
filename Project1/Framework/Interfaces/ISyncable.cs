@@ -1,7 +1,7 @@
-﻿using Start_a_Town_;
+﻿using Project1.Core.Helpers;
 using System.IO;
 
-namespace Project1.Framework.Interfaces
+namespace Project1.Core.Interfaces
 {
     public interface ISyncable
     {

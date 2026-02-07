@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public interface IBounded
     {

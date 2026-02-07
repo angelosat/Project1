@@ -1,13 +1,12 @@
-﻿using Start_a_Town_;
-using System.IO;
+﻿using Project1.Core.Helpers;
 
-namespace Project1.Framework.Interfaces
+namespace Project1.Core.Interfaces
 {
     public interface IDictionarySyncable<TKey, TValue> :
         IKeyable<TKey>,
         ICopyable<TValue>,
         ISerializableNew<TValue>
-        where TValue : /*class, */ICopyable<TValue>, ISerializableNew<TValue>
+        where TValue : ICopyable<TValue>, ISerializableNew<TValue>
     { }
     public interface IKeyable<T>
     {

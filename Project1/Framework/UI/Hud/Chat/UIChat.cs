@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Net.Packets;
-using Project1.Framework.UI;
+using Project1.Core.Net.Packets;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     public class UIChat : Window
     {
@@ -32,7 +32,7 @@ namespace Start_a_Town_.UI
             this.MouseThrough = true;
             this.Movable = true;
 
-            this.Console = Project1.Framework.Net.Client.Instance.ConsoleBox;
+            this.Console = Net.Client.Instance.ConsoleBox;
             this.Console.FadeText = true;
             this.Panel_Text = new Panel() { AutoSize = true, Name = "Panel_Text", Color = Color.Black };
             this.Panel_Text.Controls.Add(this.Console);
@@ -66,11 +66,11 @@ namespace Start_a_Town_.UI
                     if (gotText[0] == '/')
                     {
                         //server command
-                        Project1.Framework.Net.Client.PlayerCommand(gotText.TrimStart('/'));
+                        Net.Client.PlayerCommand(gotText.TrimStart('/'));
                     }
                     else
                     {
-                        PacketChat.Send(Project1.Framework.Net.Client.Instance, Project1.Framework.Net.Client.Instance.PlayerData.ID, gotText);
+                        PacketChat.Send(Net.Client.Instance, Net.Client.Instance.PlayerData.ID, gotText);
                     }
                 },
                 EscapeFunc = a =>

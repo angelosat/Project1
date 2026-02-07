@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public abstract class Element
     {

@@ -1,9 +1,9 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public class BlockEntityCompCollection : Inspectable
     {

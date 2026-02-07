@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Base;
-using Project1.Framework.UI;
+using Project1.Core.Base;
+using Project1.Core.UI;
 using System;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     [Obsolete]
     public class ScrollableBoxNew : Control

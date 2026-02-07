@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Interfaces;
-using Project1.Framework.UI;
+using Project1.Core.Interfaces;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     public class ListBoxCollapsibleNode
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Input;
-using Project1.Framework.UI;
+using Project1.Core.Input;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public enum DragDropEffects { None = 0, Copy = 1, Move = 2, Link = 4 }
 

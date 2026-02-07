@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Start_a_Town_;
-using Start_a_Town_.UI;
+using Project1.Core;
+using Project1.Core.UI;
 using System;
 using System.Windows.Forms;
 
-namespace Project1.Framework.UI
+namespace Project1.Core.UI
 {
     class ScrollbarVNew : GroupBox
     {

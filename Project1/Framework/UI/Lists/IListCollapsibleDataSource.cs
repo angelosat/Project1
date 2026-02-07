@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Project1.Framework.Interfaces;
-using Project1.Framework.UI;
+using Project1.Core.Interfaces;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public interface IListCollapsibleDataSource : IListable
     {

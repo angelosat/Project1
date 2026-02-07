@@ -1,0 +1,18 @@
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Entities;
+
+namespace Project1.Core.Resources
+{
+    static class ExtensionsResources
+    {
+        static public bool HasResource(this GameObject entity, ResourceDef type)
+        {
+            return entity.GetResource(type) is not null;
+        }
+        static public Resource GetResource(this GameObject entity, ResourceDef def) => entity.GetComponent<ResourcesComponent>()?.GetResource(def);
+
+        static public Resource GetHealth(this Actor actor) => actor.GetResource(ResourceDefOf.Health);
+        static public void AdjustHealth(this Actor actor, int value) => actor.GetResource(ResourceDefOf.Health).ApplyDelta(value);
+        static public Resource GetStamina(this Actor actor) => actor.GetResource(ResourceDefOf.Stamina);
+    }
+}

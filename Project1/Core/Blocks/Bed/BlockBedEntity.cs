@@ -1,15 +1,17 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.UI;
+using Project1.Core.UI;
 using System.Linq;
-using Project1.Framework.Blocks;
-using Project1.Framework.Net;
-using Project1.Framework.Base;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Entities.Actors;
+using Project1.Core.Blocks;
+using Project1.Core.Net;
+using Project1.Core.Base;
+using Project1.Core.Interfaces;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Net;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public class BlockBedEntity : BlockEntity
     {

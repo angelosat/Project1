@@ -1,7 +1,5 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Effects;
-using Project1.Framework.Needs;
-using Start_a_Town_;
+﻿using Project1.Core.Needs;
+using Project1.Core.Base;
 
 namespace Project1.Core.Effects
 {

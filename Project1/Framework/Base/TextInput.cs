@@ -12,13 +12,13 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #region Using Statements
-using Project1.Framework.Input;
+using Project1.Core.Input;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms; // This class exposes WinForms-style key events.
 #endregion
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
 
     /// <summary>

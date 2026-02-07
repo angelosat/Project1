@@ -1,8 +1,8 @@
-﻿using Project1.Framework.Components;
-using Project1.Framework.Base;
-using Project1.Framework.Net;
-using Start_a_Town_.UI;
-using Project1.Framework.Interfaces;
+﻿using Project1.Core.Components;
+using Project1.Core.Base;
+using Project1.Core.Net;
+using Project1.Core.UI;
+using Project1.Core.Interfaces;
 
 namespace Project1.Core.Towns
 {

@@ -1,15 +1,16 @@
 ﻿using Project1.Core.Assets;
 using Project1.Core.Entities;
 using Project1.Core.Materials;
-using Project1.Framework.Animations;
-using Project1.Framework.Base;
-using Project1.Framework.Components.Plants;
-using Project1.Framework.Entities;
-using Project1.Framework.Physics;
-using Project1.Framework.Resources;
-using Project1.Framework.Skills;
-using Start_a_Town_;
+using Project1.Core.Base;
+using Project1.Core.Components.Plants;
+using Project1.Core.Helpers;
+using Project1.Core;
 using System.Linq;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Resources;
+using Project1.Core.Skills;
+using Project1.Core.Simulation.Physics;
+using Project1.Core.Animations;
 
 namespace Project1.Core.Plants
 {
@@ -23,15 +24,11 @@ namespace Project1.Core.Plants
             Weight = 100,
             IsHaulable = false,
             DefaultMaterial = MaterialDefOf.LightWood,
-            //Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull),
             Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
             Size = ObjectSize.Haulable,
             CompTypes = [typeof(PlantComponent), typeof(ResourcesComponent)]
         }
-        //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull)))
         .AddSpec(new ResourcesComponent.Spec([ResourceDefOf.HitPoints]))
-        //.AddSpec(new PlantComponent.Spec())
-
         ;
 
         static public ItemDef Bush = new ItemDef("Bush", typeof(Entity))

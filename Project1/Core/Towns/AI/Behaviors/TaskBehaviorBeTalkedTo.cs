@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Start_a_Town_.Framework.AI.NodeTypes;
-using Start_a_Town_;
 using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.Towns.AI.Behaviors
 {

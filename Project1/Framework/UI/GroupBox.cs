@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Framework.Base;
-using Start_a_Town_.UI;
+using Project1.Core.Base;
+using Project1.Core.UI;
 
-namespace Project1.Framework.UI
+namespace Project1.Core.UI
 {
     public class GroupBox : Control
     {

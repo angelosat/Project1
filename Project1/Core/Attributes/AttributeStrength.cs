@@ -1,7 +1,6 @@
-﻿using Project1.Framework.Attributes;
-using Project1.Framework.Entities;
-using Project1.Framework.Resources;
-using Project1.Framework.Stats;
+﻿using Project1.Core.Entities;
+using Project1.Core.Resources;
+using Project1.Core.Stats;
 
 namespace Project1.Core.Attributes
 {

@@ -1,10 +1,10 @@
-﻿using Project1.Framework.Blocks;
-using Project1.Framework.Input;
-using Project1.Framework.Input.Tools.Building;
-using Project1.Framework.UI;
-using Start_a_Town_;
-using Start_a_Town_.Components.Crafting;
-using Start_a_Town_.UI;
+﻿using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Blocks;
+using Project1.Core.Input;
+using Project1.Core.Input.Tools.Building;
+using Project1.Core.UI;
+using Project1.Core.Components.Crafting;
+using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;

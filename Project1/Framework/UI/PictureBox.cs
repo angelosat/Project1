@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Start_a_Town_;
-using Start_a_Town_.Graphics;
+using Project1.Core.Base;
+using Project1.Core.Graphics;
+using Project1.Core;
 using System;
+using Project1.Core.Entities;
 
-namespace Project1.Framework.UI
+namespace Project1.Core.UI
 {
     public class PictureBox : ButtonBase
     {

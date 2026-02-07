@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Entities.Actors;
-using Start_a_Town_;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.AI.Behaviors.Pathing
 {

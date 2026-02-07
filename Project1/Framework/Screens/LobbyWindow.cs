@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Project1.Framework.Net;
-using Project1.Framework.Net.Packets;
-using Project1.Framework.UI;
-using Start_a_Town_.UI;
+using Project1.Core.Net;
+using Project1.Core.Net.Packets;
+using Project1.Core.UI;
+using Project1.Core.UI;
 
-namespace Project1.Framework.Screens
+namespace Project1.Core.Screens
 {
     class LobbyWindow : Window
     {
@@ -42,7 +42,7 @@ namespace Project1.Framework.Screens
                 },
                 EnterFunc = (e) =>
                 {
-                    PacketChat.Send(Project1.Framework.Net.Client.Instance, Project1.Framework.Net.Client.Instance.PlayerData.ID, this.Txt_Input.Text);
+                    PacketChat.Send(Net.Client.Instance, Net.Client.Instance.PlayerData.ID, this.Txt_Input.Text);
                     Txt_Input.Text = "";
                 }
             };

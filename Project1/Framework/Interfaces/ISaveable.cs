@@ -1,6 +1,6 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Base;
 
-namespace Project1.Framework.Interfaces
+namespace Project1.Core.Interfaces
 {
     public interface ISaveableNew<T> where T : ISaveableNew<T>
     {

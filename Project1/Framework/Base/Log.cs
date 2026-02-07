@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.UI;
-using Project1.Framework.Net;
-using Project1.Framework.Base;
+using Project1.Core.UI;
+using Project1.Core.Net;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public class LogEventArgs : EventArgs
     {

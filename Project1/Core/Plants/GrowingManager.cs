@@ -1,8 +1,8 @@
-﻿using Project1.Core.Towns;
-using Project1.Framework.Base;
-using Project1.Framework.Components.Plants;
-using Project1.Framework.Entities;
-using Start_a_Town_;
+﻿using Project1.Core.Entities;
+using Project1.Core.Towns;
+using Project1.Core.Towns.Zones;
+using Project1.Core.Base;
+using Project1.Core.Components.Plants;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,13 +1,16 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.WorldGen;
+﻿using Project1.Core.Rooms;
+using Project1.Core.Towns;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Simulation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockSleepingSpot : Block
     {

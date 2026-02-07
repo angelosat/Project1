@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Project1.Framework.UI
+namespace Project1.Core.UI
 {
     public enum DrawMode
     {

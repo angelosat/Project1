@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Linq;
-using Start_a_Town_.UI;
-using Project1.Framework.UI;
+using Project1.Core.UI;
+using Project1.Core.UI;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     public partial class Log
     {

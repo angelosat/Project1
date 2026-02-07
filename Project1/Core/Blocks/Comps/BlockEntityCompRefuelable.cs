@@ -2,20 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.UI;
+using Project1.Core.UI;
 using System.Collections.ObjectModel;
-using Project1.Framework.Net;
-using Project1.Framework.Base;
-using Project1.Framework.WorldGen;
+using Project1.Core.Net;
+using Project1.Core.Base;
 using Project1.Core.Materials;
-using Project1.Framework.Materials;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Entities;
-using Project1.Framework.UI;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Legacy;
+using Project1.Core.Materials;
+using Project1.Core.Interfaces;
+using Project1.Core.UI;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Legacy;
+using Project1.Core.Legacy.Storage;
+using Project1.Core.Legacy.Storage.New;
+using Project1.Core.Towns.Stockpiles;
+using Project1.Core.Helpers;
+using Project1.Core.UI.Primitives;
+using Project1.Core.Net;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
 
-namespace Start_a_Town_
+namespace Project1.Core
 {
     class BlockEntityCompRefuelable : BlockEntityComp, IPowerSource, IStorageNew
     {
@@ -176,7 +182,7 @@ namespace Start_a_Town_
             };
             bar.TextFunc = () => bar.Percentage.ToString("##0%");
             info.AddInfo(bar);
-            var box = new ScrollableBoxNewNew(150, Project1.Framework.UI.Label.DefaultHeight * 2, ScrollModes.Vertical);
+            var box = new ScrollableBoxNewNew(150, Project1.Core.UI.Label.DefaultHeight * 2, ScrollModes.Vertical);
             var boxcontents = new ListBoxObservable<ItemMaterialAmount>(this.StoredFuelItems);
             box.AddControls(boxcontents);
             info.AddInfo(box);

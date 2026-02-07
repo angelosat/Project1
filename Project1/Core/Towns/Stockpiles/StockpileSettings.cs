@@ -1,9 +1,9 @@
-﻿using Project1.Framework.Base;
-using Project1.Framework.Entities;
-using Project1.Framework.Materials;
-using Start_a_Town_;
+﻿using Project1.Core.Base;
+using Project1.Core.Materials;
 using System;
 using System.Collections.Generic;
+using Project1.Core.Entities;
+using Project1.Core.Towns.Crafting;
 
 namespace Project1.Core.Towns.Stockpiles
 {

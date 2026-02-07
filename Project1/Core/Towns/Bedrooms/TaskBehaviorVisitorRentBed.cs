@@ -1,8 +1,10 @@
-﻿using Project1.Core.Interactions;
-using Project1.Framework.Pathing;
-using Start_a_Town_;
-using Start_a_Town_.Framework.AI.NodeTypes;
+﻿using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Behaviors.Helpers;
+using Project1.Core.Interactions;
 using System.Collections.Generic;
+using Project1.Core.AI;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.Towns
 {

@@ -1,0 +1,18 @@
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Materials;
+
+namespace Project1.Core.Towns.Constructions
+{
+    interface IConstructible
+    {
+        bool IsReadyToBuild(out ItemDef def, out MaterialDef material, out int amount);
+        bool IsValidHaulDestination(ItemDef objid);
+        int GetMissingAmount(ItemDef objid);
+        Progress BuildProgress { get; }
+        List<IntVec3> Children { get; }
+    }
+}

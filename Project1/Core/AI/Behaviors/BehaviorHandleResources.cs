@@ -1,6 +1,5 @@
-﻿using Start_a_Town_.Framework.AI.NodeTypes;
-using Start_a_Town_.AI;
-using Project1.Framework.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.AI.Behaviors
 {

@@ -2,21 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Start_a_Town_.UI;
-using Project1.Framework.Input.Hotkeys;
-using Project1.Framework.Net;
-using Project1.Framework.Base;
-using Project1.Framework.Components;
-using Project1.Framework.Rendering;
-using Project1.Framework.WorldGen;
-using Project1.Framework.Rooms;
-using Project1.Framework.Interfaces;
-using Start_a_Town_;
+using Project1.Core.UI;
+using Project1.Core.Input.Hotkeys;
+using Project1.Core.Net;
+using Project1.Core.Base;
+using Project1.Core.Components;
+using Project1.Core.Rendering;
+using Project1.Core.Rooms;
+using Project1.Core.Interfaces;
+using Project1.Core;
 using Project1.Core.Plants;
 using Project1.Core.World.MetaRoles;
-using Project1.Framework.UI;
-using Project1.Framework.Entities;
-using Project1.Framework.Entities.Actors;
+using Project1.Core.UI;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Crafting;
+using Project1.Core.Towns.Constructions;
+using Project1.Core.Towns.Designations;
+using Project1.Core.Towns.Labors;
+using Project1.Core.Towns.Zones;
+using Project1.Core.Towns.Digging;
+using Project1.Core.Towns.UI;
+using Project1.Core.Towns.Storage;
+using Project1.Core.Towns.Terrain;
+using Project1.Core.Helpers;
+using Project1.Core.Helpers.Collections;
+using Project1.Core.AI;
+using Project1.Core.UI;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
 
 namespace Project1.Core.Towns
 {
@@ -415,8 +428,8 @@ namespace Project1.Core.Towns
             foreach (var comp in this.TownComponents)
                 actions.AddRange(comp.OnQuickMenuCreated());
             actions.Add(new Tuple<Func<string>, Action>(() => "Debug commands", UIDebugCommands.RefreshNew));
-            actions.Add(new Tuple<Func<string>, Action>(() => "Spawn objects", () => Start_a_Town_.UI.Editor.ObjectTemplatesWindow.Instance.Show()));
-            actions.Add(new Tuple<Func<string>, Action>(() => "Edit blocks", () => Start_a_Town_.UI.Editor.TerrainWindow.Instance.Show()));
+            actions.Add(new Tuple<Func<string>, Action>(() => "Spawn objects", () => ObjectTemplatesWindow.Instance.Show()));
+            actions.Add(new Tuple<Func<string>, Action>(() => "Edit blocks", () => TerrainWindow.Instance.Show()));
 
             this.QuickMenu = new UIQuickMenu();
             this.QuickMenu.AddItems(actions);

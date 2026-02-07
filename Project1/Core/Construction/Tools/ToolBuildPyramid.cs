@@ -1,4 +1,4 @@
-﻿using Project1.Framework.Base;
+﻿using Project1.Core.Base;
 using System;
 using System.Collections.Generic;
 

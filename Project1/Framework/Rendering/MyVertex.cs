@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
 
-namespace Project1.Framework.Rendering
+namespace Project1.Core.Rendering
 {
     public struct MyVertex : IVertexType
     {

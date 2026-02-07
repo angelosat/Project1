@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Interfaces;
-using Start_a_Town_;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
-namespace Project1.Framework.Base
+namespace Project1.Core.Base
 {
     public class SaveTag
     {

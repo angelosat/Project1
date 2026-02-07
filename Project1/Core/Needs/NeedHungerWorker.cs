@@ -1,9 +1,9 @@
-﻿using Project1.Framework.Needs;
+﻿using Project1.Core.Needs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Project1.Framework.Needs.Types
+namespace Project1.Core.Needs.Types
 {
     internal sealed class NeedHungerWorker : NeedWorker
     {

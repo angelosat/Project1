@@ -1,10 +1,12 @@
 ﻿using Project1.Core.Towns.AI;
-using Project1.Framework.Animations;
-using Project1.Framework.Base;
-using Project1.Framework.Components.Plants;
-using Project1.Framework.Interactions;
-using Project1.Framework.Skills;
-using Start_a_Town_;
+using Project1.Core.Base;
+using Project1.Core.Components.Plants;
+using Project1.Core.Helpers;
+using Project1.Core.Interactions;
+using Project1.Core;
+using Project1.Core.Skills;
+using Project1.Core.Tools;
+using Project1.Core.Animations;
 
 namespace Project1.Core.Interactions
 {
@@ -16,13 +18,11 @@ namespace Project1.Core.Interactions
             Animation = AnimationDefOf.Tool,
             ProgressHandler = new InteractionProgressFirstContact()
         };
-        //public static readonly InteractionDef Pick = new("Picking", typeof(InteractionHaul), null) { Animation = AnimationDefOf.TouchItem, ProgressHandler = new InteractionProgressFirstContact() };
         public static readonly InteractionDef Pick = new("Picking", typeof(InteractionHaulLogic))
         {
             Animation = AnimationDefOf.TouchItem,
             ProgressHandler = new InteractionProgressFirstContact()
         };
-        //public static readonly InteractionDef Place = new("Placing", typeof(InteractionPlaceItem), null) { Animation = AnimationDefOf.TouchItem, ProgressHandler = new InteractionProgressFirstContact() };
         public static readonly InteractionDef Place = new("Placing", typeof(InteractionPlaceItemLogic))
         { 
             Animation = AnimationDefOf.TouchItem, 

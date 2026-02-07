@@ -1,9 +1,9 @@
 ﻿using Project1.Core.World.WorldAreas;
-using Project1.Framework.Base;
-using Project1.Framework.Entities.Actors;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Legacy;
-using Start_a_Town_;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
+using Project1.Core.Legacy;
 using System;
 using System.Collections.Generic;
 using System.IO;

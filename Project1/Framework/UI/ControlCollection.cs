@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Xna.Framework;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     //public class ControlCollection(Control owner) : Collection<Control>
     //{

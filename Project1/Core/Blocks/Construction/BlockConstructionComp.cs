@@ -1,13 +1,14 @@
 ﻿using Project1.Core.Entities;
-using Project1.Framework.Base;
-using Project1.Framework.Blocks;
-using Project1.Framework.Entities;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Materials;
-using Project1.Framework.UI;
-using Start_a_Town_.UI;
+using Project1.Core.Base;
+using Project1.Core.Blocks;
+using Project1.Core.Helpers;
+using Project1.Core.Interfaces;
+using Project1.Core.Materials;
+using Project1.Core.UI;
+using Project1.Core.UI;
 using System;
-namespace Start_a_Town_
+using Project1.Core.Simulation;
+namespace Project1.Core
 {
     [EnsureStaticCtorCall]
     public class BlockConstructionComp : BlockEntityComp

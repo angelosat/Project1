@@ -1,5 +1,5 @@
-﻿using Project1.Framework.Interactions;
-using Start_a_Town_;
+﻿using Project1.Core.Entities;
+using Project1.Core.Interactions;
 
 namespace Project1.Core.Interactions
 {

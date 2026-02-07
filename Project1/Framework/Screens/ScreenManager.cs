@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Start_a_Town_.UI;
+using Project1.Core.UI;
 using System.Windows.Forms;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework.Input;
-using Project1.Framework.Input;
-using Start_a_Town_;
-using Project1.Framework.Base;
+using Project1.Core.Input;
+using Project1.Core;
+using Project1.Core.Base;
 
-namespace Project1.Framework.Screens
+namespace Project1.Core.Screens
 {
     public class ScreenManager
     {

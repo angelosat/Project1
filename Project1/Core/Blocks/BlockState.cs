@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Blocks;
-using Project1.Framework.Entities;
-using Project1.Framework.WorldGen;
+using Project1.Core.Entities;
+using Project1.Core.Blocks;
+using Project1.Core.Simulation;
 
-namespace Start_a_Town_.Blocks
+namespace Project1.Core.Blocks
 {
     class BlockState : IBlockState
     {

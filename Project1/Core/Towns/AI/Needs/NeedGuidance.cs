@@ -1,4 +1,4 @@
-﻿using Project1.Framework.Needs;
+﻿using Project1.Core.Needs;
 
 namespace Project1.Core.Towns.AI.Needs
 {

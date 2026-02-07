@@ -1,5 +1,4 @@
-﻿using Project1.Framework.Attributes;
-using Project1.Framework.Entities;
+﻿using Project1.Core.Entities;
 
 namespace Project1.Core.Attributes
 {

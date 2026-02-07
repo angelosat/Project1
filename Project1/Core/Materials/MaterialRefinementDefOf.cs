@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Assets;
-using Project1.Framework.Base;
-using Start_a_Town_;
+using Project1.Core.Base;
 
 namespace Project1.Core.Materials
 {

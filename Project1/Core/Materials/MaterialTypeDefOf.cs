@@ -1,8 +1,9 @@
-﻿using Project1.Core.Towns;
-using Project1.Framework.Base;
-using Project1.Framework.Materials;
-using Project1.Framework.Skills;
-using Start_a_Town_;
+﻿using Project1.Core.Skills;
+using Project1.Core.Towns;
+using Project1.Core.Base;
+using Project1.Core.Helpers;
+using Project1.Core.Legacy.Crafting.Defs;
+using Project1.Core.Materials;
 
 namespace Project1.Core.Materials
 {

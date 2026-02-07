@@ -1,6 +1,6 @@
-﻿using Project1.Framework.UI;
+﻿using Project1.Core.UI;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     /// <summary>
     /// void GetTooltipInfo(Tooltip tooltip);

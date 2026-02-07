@@ -1,8 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Project1.Core.Gear;
-using Project1.Framework.Animations;
-using Start_a_Town_;
+using Project1.Core.Graphics;
+using Project1.Core;
+using Project1.Core.Animations;
 
 namespace Project1.Core.Entities
 {

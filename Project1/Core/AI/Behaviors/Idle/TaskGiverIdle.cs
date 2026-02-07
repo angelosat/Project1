@@ -1,0 +1,43 @@
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
+using Project1.Core.Base;
+using Project1.Core.Entities.Actors;
+using System;
+
+namespace Project1.Core.AI.Behaviors.Idle
+{
+    class TaskGiverIdle : Planner
+    {
+        const float MaxRange = 2;
+
+        protected override Plan TryPlan(Actor actor)
+        {
+            // make this the last fall-back/clean-up planner?
+            // drop any carried item at this point
+            if(actor.Hauled is Entity carried)
+                return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
+
+            int BaseWaitTime = 5;
+            var composure = actor[TraitDefOf.Composure].Normalized;
+            var waitTicks = (int)((BaseWaitTime + (.5f * BaseWaitTime * composure)) * Ticks.PerSecond);
+            var dir = ChooseDirection(actor);
+            return new Plan(PlanDefOf.Idle, new TargetArgs(dir)) { TicksTimeout = waitTicks };
+        }
+
+        static Vector2 ChooseDirection(Actor actor)
+        {
+            var rand = actor.Map.Random;
+            var state = actor.AI.State;
+            double radians = rand.NextDouble() * 2 * Math.PI;
+            var choice = new Vector3((float)Math.Cos(radians), (float)Math.Sin(radians), 0);
+            var dist = Math.Min(Vector3.Distance(actor.Global, state.Leash) / (float)MaxRange, 1);
+            var towardsLeash = state.Leash - actor.Global;
+            towardsLeash.Z = 0;
+            if (towardsLeash != Vector3.Zero)
+                towardsLeash.Normalize();
+            var dir = choice + dist * (towardsLeash - choice);
+            dir.Normalize();
+            return new(dir.X, dir.Y);
+        }
+    }
+}

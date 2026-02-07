@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace Start_a_Town_.UI
+namespace Project1.Core.UI
 {
     class DialogLoading : Window
     {

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public abstract class ButtonBaseNew : Control
     {
@@ -98,26 +98,7 @@ namespace Project1.Core.UI
             }
         }
         string LastText = "";
-        //public override void Update()
-        //{
-        //    var newToggled = this.IsToggledFunc();
-        //    if (this.IsToggled != newToggled)
-        //    {
-        //        this.IsToggled = newToggled;
-        //        this.Invalidate();
-        //    }
-
-        //    var nextText = this.TextFunc?.Invoke() ?? this.Text;
-        //    if (nextText != this.LastText)
-        //    {
-        //        this.Text = nextText;
-        //        this.Invalidate();
-        //    }
-
-        //    base.Update();
-
-        //    this.LastText = this.Text;
-        //}
+        
         public Color Fill = Color.White, TextOutline = Color.Black;
 
         protected virtual void OnTextChanged()
@@ -137,7 +118,7 @@ namespace Project1.Core.UI
             if (this.AutoSize)
                 this.Width = maxw;
             else
-                this.Width = Math.Max(maxw, this.Width);
+                this.Width = System.Math.Max(maxw, this.Width);
 
             var lineCount = string.IsNullOrEmpty(this.Text) ? 1 : this.Text.Split('\n').Length;
             var oldh = this.Height;
@@ -447,7 +428,7 @@ namespace Project1.Core.UI
             if (this.AutoSize)
                 this.Width = maxw;
             else
-                this.Width = Math.Max(maxw, this.Width);
+                this.Width = System.Math.Max(maxw, this.Width);
 
             var lineCount = string.IsNullOrEmpty(this.Text) ? 1 : this.Text.Split('\n').Length;
             var oldh = this.Height;

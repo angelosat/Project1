@@ -33,12 +33,12 @@ namespace Project1.Core.Towns.Crafting.Gui
             var rules = CraftingSystem.GetCraftingRules(order.ProductDef);
             foreach (var (bone, validRefinements, quantity) in rules)
             {
-                var group = new IngredientGuiGroup() { Label = bone.Label };
+                var group = new IngredientGuiGroup() { Label = bone.LabelReadable };
                 foreach (var refinement in validRefinements)
                 {
                     var entry = new IngredientGuiEntry()
                     {
-                        Label = $"{refinement.MaterialType.Label} {refinement.Label}",
+                        Label = $"{refinement.MaterialType.LabelReadable} {refinement.LabelReadable}",
                         Toggle = () => events.Post(new PlayerModifiedOrderFiltersEvent(order, bone, refinement, null)),
                         IsAllowed = () => order.IsAllowed(bone, refinement)
                     };
@@ -46,7 +46,7 @@ namespace Project1.Core.Towns.Crafting.Gui
                     foreach (var mat in mats)
                         entry.Children.Add(new IngredientGuiEntry()
                         {
-                            Label = mat.Label,
+                            Label = mat.LabelReadable,
                             Toggle = () => events.Post(new PlayerModifiedOrderFiltersEvent(order, bone, refinement, mat)),
                             IsAllowed = () => order.IsAllowed(bone, mat)
                         });
@@ -72,7 +72,7 @@ namespace Project1.Core.Towns.Crafting.Gui
             {
                 var entry = new IngredientGuiEntry()
                 {
-                    Label = $"{item.Label}",
+                    Label = $"{item.LabelReadable}",
                     Toggle = () => events.Post(new PlayerModifiedStockpileFiltersEvent(stockpile, item, null, null)),
                     IsAllowed = () => stockpile.IsAllowed(item)
                 };
@@ -81,7 +81,7 @@ namespace Project1.Core.Towns.Crafting.Gui
                 {
                     var profileEntry = new IngredientGuiEntry()
                     {
-                        Label = profile.Label,
+                        Label = profile.LabelReadable,
                         Toggle = () => events.Post(new PlayerModifiedStockpileFiltersEvent(stockpile, item, profile, null)),
                         IsAllowed = () => stockpile.IsAllowed(item) && stockpile.IsAllowed(profile)
                     };
@@ -90,7 +90,7 @@ namespace Project1.Core.Towns.Crafting.Gui
                     {
                         var materialEntry = new IngredientGuiEntry()
                         {
-                            Label = material.Label,
+                            Label = material.LabelReadable,
                             Toggle = () => events.Post(new PlayerModifiedStockpileFiltersEvent(stockpile, item, profile, material)),
                             IsAllowed = () => stockpile.IsAllowed(item) && stockpile.IsAllowed(profile, material)//!stockpile.FiltersNew.Contains((profile, material))
                         };
@@ -115,7 +115,7 @@ namespace Project1.Core.Towns.Crafting.Gui
             {
                 var entry = new IngredientGuiEntry()
                 {
-                    Label = $"{item.Label}",
+                    Label = $"{item.LabelReadable}",
                     Toggle = () => events.Post(new PlayerModifiedStockpileFiltersEvent(stockpile, item, null, null)),
                     IsAllowed = () => true
                 };
@@ -124,7 +124,7 @@ namespace Project1.Core.Towns.Crafting.Gui
                 {
                     var profileEntry = new IngredientGuiEntry()
                     {
-                        Label = profile.Label,
+                        Label = profile.LabelReadable,
                         Toggle = () => events.Post(new PlayerModifiedStockpileFiltersEvent(stockpile, item, profile, null)),
                         IsAllowed = () => true
                     };
@@ -133,7 +133,7 @@ namespace Project1.Core.Towns.Crafting.Gui
                     {
                         var materialEntry = new IngredientGuiEntry()
                         {
-                            Label = material.Label,
+                            Label = material.LabelReadable,
                             Toggle = () => events.Post(new PlayerModifiedStockpileFiltersEvent(stockpile, item, profile, material)),
                             IsAllowed = () => true
                         };

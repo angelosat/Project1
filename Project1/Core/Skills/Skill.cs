@@ -1,14 +1,14 @@
-﻿using Project1.Core.UI;
-using System;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Project1.Core.Interfaces;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.UI.Primitives;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Stats;
-using Project1.Core.Skills;
+using Project1.Framework.Interfaces;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Skills
 {
@@ -38,8 +38,8 @@ namespace Project1.Core.Skills
 
         public int XpToLevel => (int)this.LvlProgress.Max;
         public float CurrentXP => this.LvlProgress.Value;
-        public string Name => this.SkillDef.Label;
-        public override string Label => this.Name;
+        public string Name => this.SkillDef.LabelReadable;
+        public override string LabelReadable => this.Name;
 
         static int GetNextLvlXp(int currentLvl) => (int)Math.Pow(2, currentLvl - 1) * XpToLevelBase;
         static int GetLevel(int xp) => (int)(Math.Log2(xp / XpToLevelBase) + 1);
@@ -86,7 +86,7 @@ namespace Project1.Core.Skills
             var label = new Bar(this.LvlProgress)
             {
                 Width = 200,
-                TextFunc = () => $"{this.SkillDef.Label}: {this.Level}",
+                TextFunc = () => $"{this.SkillDef.LabelReadable}: {this.Level}",
                 TooltipFunc = (t) =>
                 {
                     t.AddControlsBottomLeft(
@@ -94,7 +94,7 @@ namespace Project1.Core.Skills
                         new Label() { TextFunc = () => $"Current Level: {this.Level}" },
                         new Label() { TextFunc = () => $"Experience: {this.CurrentXP} / {this.XpToLevel}" });
                     foreach(var interaction in StatSystem.GetAffectedInteractionsFor(this.Def))
-                        t.AddControlsBottomLeft(new Label($"Improves {interaction.Label} efficiency by {this.Level}%") { TextColorFunc = () => Color.Lime });
+                        t.AddControlsBottomLeft(new Label($"Improves {interaction.LabelReadable} efficiency by {this.Level}%") { TextColorFunc = () => Color.Lime });
                 }
             };
             return label;
@@ -117,7 +117,7 @@ namespace Project1.Core.Skills
        
         public override string ToString()
         {
-            return $"{this.SkillDef.Label}: {this.Level} ({this.CurrentXP} / {this.XpToLevel})";
+            return $"{this.SkillDef.LabelReadable}: {this.Level} ({this.CurrentXP} / {this.XpToLevel})";
         }
 
         public static Skill Create(IDataReader r) => new Skill().Read(r);

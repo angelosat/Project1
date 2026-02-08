@@ -1,8 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.UI;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     /// <summary>
     /// load these externally

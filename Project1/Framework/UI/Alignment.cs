@@ -1,4 +1,4 @@
-﻿namespace Project1.Core
+﻿namespace Project1.Framework.UI
 {
     public struct Alignment
     {

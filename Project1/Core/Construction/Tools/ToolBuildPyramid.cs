@@ -1,6 +1,5 @@
-﻿using Project1.Core.Base;
+﻿using Project1.Framework.Math;
 using System;
-using System.Collections.Generic;
 
 namespace Project1.Core.Construction.Tools
 {

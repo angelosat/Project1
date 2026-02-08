@@ -1,10 +1,10 @@
 ﻿using Project1.Core.Helpers;
-using Project1.Core.UI;
+using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class ComboBoxFinal<T> : GroupBox
     {
@@ -104,18 +104,6 @@ namespace Project1.Core.UI
             panel.BringToFront();
 
         }
-        //public override void OnUIScaleChanged(float oldScale, float newScale)
-        //{
-        //    base.OnUIScaleChanged(oldScale, newScale);
-        //    this.OnResolutionChanged();
-        //}
-        //internal override void OnResolutionChanged()
-        //{
-        //    base.OnResolutionChanged();
-        //    var panel = this.ListControl.TopLevelControl as PanelScrollable;
-        //    //panel.Height = Math.Min(UIManager.Height, this.ListControl.Height + 2 * panel.Padding);
-        //    panel.Refresh();
-        //}
         public ComboBoxFinal<T> Initialize(IEnumerable<T> items)
         {
             this.ListControl.Clear();
@@ -136,7 +124,7 @@ namespace Project1.Core.UI
             var maxVisibleItems = list.Count();
             this.ListControl = new ListBoxNoScroll<T, Button>(i => CreateButton(i, nameGetter, callBack, width))
                 .AddItems(list);
-            this.ListControl.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
+            this.ListControl.ToPanelScrollable(ScrollModes.Vertical)
                 .HideOnAnyClick();
 
             this.Controls.Add(this.Button);
@@ -147,7 +135,7 @@ namespace Project1.Core.UI
             this.Button = new Button(() => this.CurrentlySelectedGetter != null ? labelGetter(this.CurrentlySelectedGetter()) : "undefined", BtnPress, width);
             this.ListControl = new ListBoxNoScroll<T, Button>(i => CreateButton(i, nameGetter, callBack, width))
                 .AddItems(list);
-            this.ListControl.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
+            this.ListControl.ToPanelScrollable(ScrollModes.Vertical)
                 .HideOnAnyClick();
 
             this.Controls.Add(this.Button);
@@ -162,7 +150,7 @@ namespace Project1.Core.UI
 
             var itemwidth = width - (int)this.Button.Font.MeasureString(label).X;
             this.ListControl = new ListBoxNoScroll<T, Button>(i => CreateButton(i, nameGetter, callBack, itemwidth));
-            this.ListControl.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
+            this.ListControl.ToPanelScrollable(ScrollModes.Vertical)
                 .HideOnAnyClick();
 
             this.Controls.Add(this.Button);

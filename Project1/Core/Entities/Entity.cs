@@ -4,13 +4,13 @@ using Project1.Core.Components;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.Net;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Tools;
 using Project1.Core.Animations;
 using Project1.Core.Simulation.Physics;
+using Project1.Core.UI.Hud;
 
 namespace Project1.Core.Entities
 {
@@ -81,7 +81,7 @@ namespace Project1.Core.Entities
                 c.SetMaterial(mat);
             this.Name = $"{mat.Prefix}";
             if (!this.Def.ReplaceName)
-                this.Name += $" {this.Def.Label}";
+                this.Name += $" {this.Def.LabelReadable}";
             //this.Name = $"{mat.Prefix} {this.Def.Label}";
             mat.Apply(this);
             return this;
@@ -127,7 +127,7 @@ namespace Project1.Core.Entities
         internal void ResetName()
         {
             this.DefComponent.ParentName = this.Def.NameGetter?.Invoke(this) ?? this.DefComponent.ParentName; // reset name
-            this.Name = this.Profile?.Label ?? this.Def.Label;
+            this.Name = this.Profile?.LabelReadable ?? this.Def.LabelReadable;
         }
         internal void Resolve()
         {

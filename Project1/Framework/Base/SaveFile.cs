@@ -3,9 +3,8 @@ using System.Globalization;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
 using Project1.Core.Simulation;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Base
 {
@@ -20,7 +19,7 @@ namespace Project1.Core.Base
         StaticWorld _world;
         public StaticWorld World => _world ??= this.ReadTag();
 
-        public string Label => this.File.Name;
+        public string LabelReadable => this.File.Name;
 
         long tagReaderPosition;
 
@@ -62,7 +61,6 @@ namespace Project1.Core.Base
             using var writer = new BinaryWriter(stream);
             HeaderInfo.Write(writer);
             tag.WriteWithRefs(writer);
-            //var fullPath = Directory.GetCurrentDirectory() + $"/Saves/Worlds/{name}.sat";
             var fullPath = SaveFolderFullPath + $"{name}.sat";
 
             Chunk.Compress(stream, fullPath);

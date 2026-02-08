@@ -2,6 +2,7 @@
 using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Legacy
 {
@@ -25,7 +26,7 @@ namespace Project1.Core.Legacy
         }
         static public string GetText(ItemDef def, int amount)
         {
-            return string.Format("{0}x {1}", amount, def.Label); // TODO add a method to itemdefs that return the final name of the item depending on materials etc
+            return string.Format("{0}x {1}", amount, def.LabelReadable); // TODO add a method to itemdefs that return the final name of the item depending on materials etc
         }
         public SaveTag Save(string name = "")
         {

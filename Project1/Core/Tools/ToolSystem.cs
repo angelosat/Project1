@@ -44,7 +44,7 @@ namespace Project1.Core.Tools
             head.Sprite = profile.SpriteHead;
             head.Material = handleMaterial;
 
-            item.Name = profile.Label;
+            item.Name = profile.LabelReadable;
 
             BakeStats(item);
             item.Initialize();

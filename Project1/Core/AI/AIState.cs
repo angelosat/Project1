@@ -10,13 +10,14 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Pathing;
-using Project1.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.Reserve;
+using Project1.Framework.IO;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.AI
 {

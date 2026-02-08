@@ -1,8 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.UI;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class Panel : Control
     {
@@ -34,7 +33,6 @@ namespace Project1.Core.UI
         {
             this.ClientLocation = new Vector2(UIManager.BorderPx);
             this.BackgroundStyle = DefaultStyle;
-            //this.Color = DefaultColor;
         }
         public Panel(Vector2 location, Vector2 size)
             : base(location, size)

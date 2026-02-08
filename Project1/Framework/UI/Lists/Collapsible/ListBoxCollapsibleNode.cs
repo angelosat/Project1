@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Interfaces;
 using Project1.Core.UI;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 
@@ -28,7 +29,7 @@ namespace Project1.Core.UI
         }
         public ListBoxCollapsibleNode(IListCollapsibleDataSource node)
         {
-            this.Name = node.Label;
+            this.Name = node.LabelReadable;
             this.ControlGetter = () => node.GetListControlGui();
 
             foreach (var child in node.ListBranches)
@@ -66,10 +67,8 @@ namespace Project1.Core.UI
         }
         public ListBoxCollapsibleNode AddLeaf(Control leaf)
         {
-            //leaf.BackgroundColor = UIManager.DefaultListItemBackgroundColor;
             this.LeafControls.Add(leaf);
             this.ChildrenGroupBox.AddControlsBottomLeft(leaf);
-            //leaf.Location.X = IndentWidth;
             leaf.Validate(true);
             return this;
         }
@@ -85,7 +84,7 @@ namespace Project1.Core.UI
             {
                 var checkbox = new C();
                 checkbox.Tag = item;
-                var label = new Label(item.Label);
+                var label = new Label(item.LabelReadable);
                 var box = new GroupBox();
                 box.AddControlsHorizontally(checkbox, label);
                 onControlInit(item, checkbox);

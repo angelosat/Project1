@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Entities;
-using Project1.Core;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Screens;
 using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Inventory
 {
@@ -43,7 +44,7 @@ namespace Project1.Core.Inventory
 
         public bool IsReadOnly => ((ICollection<Entity>)this.Contents).IsReadOnly;
 
-        public override string Label => this.ToString();
+        public override string LabelReadable => this.ToString();
 
         public Entity this[int index] { get => ((IList<Entity>)this.Contents)[index]; set => ((IList<Entity>)this.Contents)[index] = value; }
 
@@ -186,7 +187,6 @@ namespace Project1.Core.Inventory
             var itemList = tag["Contents"].Value as List<SaveTag>;
             foreach (var itemTag in itemList)
                 if(GameObject.Load(itemTag) is Entity obj)
-                //this.Add(obj);
                 {
                     this.Contents.Add(obj);
                     obj.Container = this;

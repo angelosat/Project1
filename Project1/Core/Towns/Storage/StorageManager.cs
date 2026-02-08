@@ -4,13 +4,14 @@ using Project1.Core.Interfaces;
 using Project1.Core.Legacy;
 using Project1.Core.Materials;
 using Project1.Core.UI;
-using Project1.Core;
 using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Towns.Storage
 {
@@ -139,7 +140,7 @@ namespace Project1.Core.Towns.Storage
             readonly ObservableCollection<IListCollapsibleDataSourceObservable> Branches = new();
             readonly ObservableCollection<IListable> Leafs = new();
 
-            public string Label => this.ItemDef.Label;
+            public string LabelReadable => this.ItemDef.LabelReadable;
 
             public ObservableCollection<IListCollapsibleDataSourceObservable> ListBranches => this.Branches;// new(this.Branches.Cast<IListCollapsibleDataSourceObservable>());
             public ObservableCollection<IListable> ListLeafs => this.Leafs;// new(this.Leafs.Cast<IListable>());
@@ -182,12 +183,12 @@ namespace Project1.Core.Towns.Storage
             {
                 // TODO instead of calculating sum every frame, store it in a field update it only when refreshing storemanager cache
                 //return new Label(() => $"{this.InnerItems.Sum(l => l.Item.Amount)}x {this.Label}");
-                return new Label(() => $"{this.Sum}x {this.Label}");
+                return new Label(() => $"{this.Sum}x {this.LabelReadable}");
 
             }
             public override string ToString()
             {
-                return this.ItemDef is ItemDef def ? $"{def.Label}: {this.Leafs.Count}" : $"Root: {this.Branches.Count}";
+                return this.ItemDef is ItemDef def ? $"{def.LabelReadable}: {this.Leafs.Count}" : $"Root: {this.Branches.Count}";
             }
         }
 
@@ -196,7 +197,7 @@ namespace Project1.Core.Towns.Storage
             public MaterialDef Key;
             public ItemMaterialAmount Item;
 
-            public string Label => this.Item.Label;
+            public string LabelReadable => this.Item.LabelReadable;
 
             public Control GetListControlGui()
             {

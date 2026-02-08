@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.Base;
-using Project1.Core.UI;
+using Project1.Framework.Math;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class GroupBox : Control
     {
@@ -41,7 +40,6 @@ namespace Project1.Core.UI
         }
         internal override void OnControlResized(Control control)
         {
-            //this.ClientSize = PreferredClientSize;
             this.ApplyAutoSize();
             this.Parent?.OnControlResized(this);
         }

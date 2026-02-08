@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.UI;
 using Project1.Core.Input;
 using Project1.Core.Net;
 using Project1.Core.Base;
@@ -11,6 +10,9 @@ using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Components
 {
@@ -180,9 +182,9 @@ namespace Project1.Core.Components
             info.AddButton(IconControl, Control, parent, true);
             info.AddButton(IconToggleCitizen, ToggleCitizenship, parent, true);
         }
-        static IconButton IconOrder = new IconButton('☞') { HoverText = "Order Move" };
-        static IconButton IconControl = new IconButton(Icon.ArrowUp) { HoverText = "Take Control" };
-        static IconButton IconToggleCitizen = new IconButton() { HoverText = "Toggle citizenship" };
+        static IconButton IconOrder = new('☞') { HoverText = "Order Move" };
+        static IconButton IconControl = new(Icon.ArrowUp) { HoverText = "Take Control" };
+        static IconButton IconToggleCitizen = new() { HoverText = "Toggle citizenship" };
 
         public override string Name { get; } = "Npc";
 

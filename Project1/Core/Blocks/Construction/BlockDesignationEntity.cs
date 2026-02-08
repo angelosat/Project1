@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Input;
 using Project1.Core.Blocks;
 using Project1.Core.Rendering;
 using Project1.Core.Base;
 using Project1.Core.Materials;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
 using Project1.Core.Towns.Constructions;
 using Project1.Core.Legacy.Crafting.Blocks;
 using Project1.Core.Helpers;
-using Project1.Core.UI.Primitives;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework.IO;
+using Project1.Framework.Helpers;
+using Project1.Framework.Math;
+using Project1.Framework.UI;
 
 namespace Project1.Core
 {
@@ -42,7 +42,6 @@ namespace Project1.Core
             public BlockDesignationEntity(ProductMaterialPair product, BlockDef def, IntVec3 originGlobal)
                 : base(def, originGlobal)
             {
-                //this.OriginGlobal = origin;
                 this.Product = product;
             }
 
@@ -71,15 +70,12 @@ namespace Project1.Core
                 var req = product.Requirement;
                 tooltip.AddControlsBottomLeft(new Label()
                 {
-                    TextFunc = () => $"{product.Requirement.Material.Name} {product.Requirement.Item.Label} {0} / {product.Requirement.Amount}"
+                    TextFunc = () => $"{product.Requirement.Material.Name} {product.Requirement.Item.LabelReadable} {0} / {product.Requirement.Amount}"
                 });
             }
             internal override void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
             {
-                info.AddInfo(new Label(this.Product));// this.Product.GetGui());
-                //var product = this.Product;
-                //var req = product.Requirement;
-                //info.AddInfo(new Label() { TextFunc = () => $"{req.Material.Label} {req.Item.Label} {0} / {req.Amount}" });
+                info.AddInfo(new Label(this.Product));
             }
             protected override void OnDrawUI(SpriteBatch sb, Camera cam, IntVec3 global)
             {
@@ -117,7 +113,7 @@ namespace Project1.Core
             }
             public int GetMissingAmount(ItemDef def)
             {
-                return this.Product.Requirement.Amount;// .GetMaterialRequirement(def);
+                return this.Product.Requirement.Amount;
             }
         }
     }

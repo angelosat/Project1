@@ -5,8 +5,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
+using Project1.Core.UI.Hud.Chat;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
@@ -126,4 +127,8 @@ namespace Project1.Core.UI
             });
         }
     }
+
+    //public class ScrollableBoxNewNew
+    //{
+    //}
 }

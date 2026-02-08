@@ -7,6 +7,8 @@ using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Entities
 {
@@ -51,12 +53,10 @@ namespace Project1.Core.Entities
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            //tag.Add("ActiveEffects", this.ActiveEffects);
             tag.Save("ActiveEffects", this.ActiveEffects);
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            //tag.TryLoadList("ActiveEffects", ref this.ActiveEffects);
             this.ActiveEffects = tag.LoadList<EntityEffectWrapper>("ActiveEffects");
         }
         internal override GroupBox GetDetailedGui()

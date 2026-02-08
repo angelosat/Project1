@@ -2,14 +2,15 @@
 using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Legacy;
 using Project1.Core.Rendering;
-using Project1.Core.UI;
-using Project1.Core.UI;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core
 {
@@ -28,7 +29,7 @@ namespace Project1.Core
         public BlockEntity Parent;
         public MapBase Map => this.Parent.Map;
         public IntVec3 Global => this.Parent.OriginGlobal;
-        public override string Label => this.Name;
+        public override string LabelReadable => this.Name;
         public ObservableCollection<string> Errors => this.Parent.Errors;
         public abstract string Name { get; }
         public virtual void OnSpawned(BlockEntity entity, MapBase map) { }
@@ -48,7 +49,6 @@ namespace Project1.Core
         }
 
         public virtual void Tick() { }
-        //public virtual void Tick(MapBase map, IBlockEntityCompContainer entity) { }
 
         internal virtual void DrawSelected(MySpriteBatch sb, Camera cam, MapBase map, IntVec3 global)
         {
@@ -58,14 +58,9 @@ namespace Project1.Core
         internal virtual void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity) { }
         internal virtual void OnRemoved(MapBase map, IntVec3 global, BlockEntity parent) { }
         internal virtual void OnNeighborChanged(MapBase map, IntVec3 source) { }
-        //internal virtual void GetQuickButtons(SelectionManager uISelectedInfo, MapBase map, IntVec3 vector3) { }
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
-            //var list = new ListBoxObservable<string, GroupBox>(this.Errors, e => new GroupBox().AddControlsLineWrap(UI.Label.ParseNewNew(e)));// new UI.Label(e));
-            //var list = new ListBoxObservable<string, GroupBox>(this.Errors, e => new GroupBox().AddControlsLineWrap(UI.Label.ParseBest(e)));// new UI.Label(e));
-            //var list = new ListBoxObservable<string, Label>(this.Errors, e => new UI.Label(e) { TextColor = Color.OrangeRed, Font = UIManager.FontBold });
-
-            //info.AddInfo(list);
+           
         }
         internal virtual void GetSelectionInfo(SelectionManager info, MapBase map, IntVec3 vector3) { }
 

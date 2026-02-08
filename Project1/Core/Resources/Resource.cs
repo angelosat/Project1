@@ -8,8 +8,11 @@ using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.Interfaces;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Attributes;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.Interfaces;
+using Project1.Framework.IO;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Resources
 {
@@ -106,7 +109,7 @@ namespace Project1.Core.Resources
                 Max = this.Max, 
                 Value = this.Value, 
                 RechargingDelay = new Progress(0, this.RechargingDelay.Max, this.RechargingDelay.Value) 
-            };// this.Rec.Clone() };
+            };
             foreach (var r in this.Modifiers)
                 res.AddModifier(new ResourceRateModifier(r.Def));
             return res;

@@ -4,11 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Rendering;
-using Project1.Core;
 using Project1.Core.UI;
 using Project1.Core.Entities;
 
-namespace Project1.Core.UI.Primitives
+namespace Project1.Framework.UI
 {
     public class Subscription(Action unsubscribe) : IDisposable
     {
@@ -50,7 +49,7 @@ namespace Project1.Core.UI.Primitives
         public override void OnPaint(SpriteBatch sb)
         {
             var percentage = Invert ? (1 - this.Progress.Percentage) : this.Progress.Percentage;
-            var fill = (int)Math.Round(this.Width * percentage);
+            var fill = (int)System.Math.Round(this.Width * percentage);
             sb.Draw(this.BackgroundTexture, Vector2.Zero, new Rectangle(0, 0, fill, this.Height), Color);//Color.White);
             var txt = (this.TextFunc != null ? this.TextFunc() : "");
             UIManager.DrawStringOutlined(sb, Name + txt, Dimensions * 0.5f, new Vector2(0.5f));
@@ -75,7 +74,7 @@ namespace Project1.Core.UI.Primitives
         public override void OnPaint(SpriteBatch sb)
         {
             var percentage = Invert ? (1 - this.Percentage) : this.Percentage;
-            var fill = (int)Math.Round(this.Width * percentage);
+            var fill = (int)System.Math.Round(this.Width * percentage);
             sb.Draw(this.BackgroundTexture, Vector2.Zero, new Rectangle(0, 0, fill, this.Height), Color);//Color.White);
             var txt = (this.TextFunc != null ? this.TextFunc() : "");
             UIManager.DrawStringOutlined(sb, Name + txt, Dimensions * 0.5f, new Vector2(0.5f));
@@ -100,7 +99,7 @@ namespace Project1.Core.UI.Primitives
         }
         public override void Update()
         {
-            if (Math.Round(this.LastPercentage * this.Width) != Math.Round(Percentage * this.Width))
+            if (System.Math.Round(this.LastPercentage * this.Width) != System.Math.Round(Percentage * this.Width))
                 this.Invalidate();
             
             var nextText = this.TextFunc?.Invoke() ?? this.Text;
@@ -154,7 +153,7 @@ namespace Project1.Core.UI.Primitives
         public override void OnPaint(SpriteBatch sb)
         {
             var percentage = Invert ? (1 - this.Percentage) : this.Percentage;
-            var fill = (int)Math.Round(this.Width * percentage);
+            var fill = (int)System.Math.Round(this.Width * percentage);
             sb.Draw(this.BackgroundTexture, Vector2.Zero, new Rectangle(0, 0, fill, this.Height), Color);//Color.White);
             var txt = this.TextFunc?.Invoke() ?? "";
             //txt = string.Format(txt, this.Value, this.Max);
@@ -181,7 +180,7 @@ namespace Project1.Core.UI.Primitives
         }
         public override void Update()
         {
-            if (Math.Round(this.LastPercentage * this.Width) != Math.Round(Percentage * this.Width))
+            if (System.Math.Round(this.LastPercentage * this.Width) != System.Math.Round(Percentage * this.Width))
                 this.Invalidate();
 
             var nextText = this.TextFunc?.Invoke() ?? this.Text;

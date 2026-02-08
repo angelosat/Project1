@@ -9,6 +9,7 @@ using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Legacy.Crafting
 {
@@ -194,7 +195,7 @@ namespace Project1.Core.Legacy.Crafting
 
         internal string GetLabel()
         {
-            return $"{this.Amount}x {this.Material?.Name ?? ""} {this.ItemDef?.Label ?? ""} {this.Modifiers.FirstOrDefault()?.Label ?? ""}";
+            return $"{this.Amount}x {this.Material?.Name ?? ""} {this.ItemDef?.LabelReadable ?? ""} {this.Modifiers.FirstOrDefault()?.Label ?? ""}";
         }
 
         public Ingredient AddResourceFilter(ResourceDef resDef)
@@ -207,7 +208,7 @@ namespace Project1.Core.Legacy.Crafting
             this.IsPreserved = true;
             return this;
         }
-        public override string Label => $"{this.Amount}x material";//$"{typeof(Ingredient).Name}:{this.Name}";
+        public override string LabelReadable => $"{this.Amount}x material";
        
         public Control GetGui()
         {

@@ -1,6 +1,4 @@
-﻿using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using Project1.Core.UI;
+﻿using Project1.Framework.UI;
 
 namespace Project1.Core.Tools
 {
@@ -13,10 +11,10 @@ namespace Project1.Core.Tools
         {
             this.Def = def;
             this.Effectiveness = 1;// efficiency;
-            this._label = $"{this.Def.Label}: {this.Effectiveness}";
+            this._label = $"{this.Def.LabelReadable}: {this.Effectiveness}";
         }
 
-        public string Label => this._label;
+        public string LabelReadable => this._label;
 
         public Control GetListControlGui()
         {

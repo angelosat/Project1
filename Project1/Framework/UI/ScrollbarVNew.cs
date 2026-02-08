@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core;
-using Project1.Core.UI;
 using System;
 using System.Windows.Forms;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class ScrollbarVNew : GroupBox
     {
@@ -29,7 +27,7 @@ namespace Project1.Core.UI
             this.BackgroundColor = Color.Black * 0.5f;
             this.SmallStep = step;
             this.LargeStep = largeStep;
-            areaheight = Math.Max(areaheight, maxValue + UIManager.Icon16Background.Height);
+            areaheight = System.Math.Max(areaheight, maxValue + UIManager.Icon16Background.Height);
             var height = areaheight + 2 * UIManager.Icon16Background.Height;
             this.AutoSize = true;
             this.Width = DefaultWidth;
@@ -88,7 +86,7 @@ namespace Project1.Core.UI
             float pos = (this.Area.Height - thumbH) * currentval / (float)this.MaxValue;
             if (this.ThumbMoving)
             {
-                this.Thumb.Location.Y = Math.Max(0, Math.Min(this.Size.Height - 32 - thumbH, UIManager.MouseScaled.Y - this.Area.ScreenLocation.Y - this.ThumbClickOrigin));
+                this.Thumb.Location.Y = System.Math.Max(0, System.Math.Min(this.Size.Height - 32 - thumbH, UIManager.MouseScaled.Y - this.Area.ScreenLocation.Y - this.ThumbClickOrigin));
                 var val = this.MaxValue * (this.Thumb.Location.Y / (this.Area.Height - thumbH));
                 this.ThumbValueChangeFunc((int)val);
             }
@@ -123,7 +121,7 @@ namespace Project1.Core.UI
             if (this.Tag is not Control scr)
                 return;
             scr.ClientLocation.Y -= this.SmallStep;
-            scr.ClientLocation.Y = Math.Max(scr.Size.Height - scr.ClientSize.Height, scr.ClientLocation.Y);
+            scr.ClientLocation.Y = System.Math.Max(scr.Size.Height - scr.ClientSize.Height, scr.ClientLocation.Y);
             e.Handled = true;
         }
 
@@ -133,7 +131,7 @@ namespace Project1.Core.UI
                 return;
 
             scr.ClientLocation.Y += this.SmallStep;
-            scr.ClientLocation.Y = Math.Min(0, scr.ClientLocation.Y);
+            scr.ClientLocation.Y = System.Math.Min(0, scr.ClientLocation.Y);
             e.Handled = true;
         }
     }

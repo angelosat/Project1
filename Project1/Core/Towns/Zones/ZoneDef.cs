@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Base;
+using Project1.Framework.Math;
 using System;
 using System.Collections.Generic;
 
@@ -26,7 +27,6 @@ namespace Project1.Core.Towns.Zones
         }
         public Zone Create(ZoneManager manager, IEnumerable<IntVec3> positions)
         {
-            //return Activator.CreateInstance(this.ZoneClass, manager, positions) as Zone;
             var zone = Activator.CreateInstance(this.ZoneClass, manager) as Zone;
             zone.Cells.Add(positions);
             return zone;

@@ -8,7 +8,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Graphics;
 using Project1.Core.Entities;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class Icon
     {

@@ -2,12 +2,12 @@
 using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Interactions;
-using Project1.Core.Interfaces;
 using Project1.Core.Net;
-using Project1.Core.Net.Packets;
 using Project1.Core.UI;
 using System.Linq;
 using Project1.Core.Entities;
+using Project1.Core.Networking.Entities;
+using Project1.Framework.UI;
 
 namespace Project1.Core.AI
 {

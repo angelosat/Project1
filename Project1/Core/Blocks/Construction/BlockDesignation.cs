@@ -5,6 +5,7 @@ using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -31,47 +32,6 @@ namespace Project1.Core
         {
             return new BlockDesignationEntity(this.BlockDef, originGlobal);
         }
-        
-        //public override bool TryConsume(GameObject actor, GameObject dropped, TargetArgs target, int amount = -1)
-        //{
-        //    throw new Exception();
-        //    var des = actor.Map.GetBlockEntity(target.Global) as BlockDesignationEntity;
-        //    var product = des.Product;
-        //    var global = target.Global;
-        //    amount = amount == -1 ? dropped.StackSize : amount;
-        //    BlockConstructionEntity constr = new(product, global, dropped, amount);
-        //    constr.Children = des.Children;
-        //    var map = actor.Map;
-        //    var positions = des.CellsOccupied;
-        //    bool requiresConstruction = product.Block.RequiresConstruction;
-        //    var isReady = constr.IsReadyToBuild(out _, out _, out _);
-
-        //    // TODO instead of doing this here, use a function in BlockConstructionEntity
-        //    if (requiresConstruction)
-        //    {
-        //        foreach (var p in positions)
-        //        {
-        //            map.AddBlockEntity(p, constr);
-        //            var pcell = map.GetCell(p);
-        //            map.SetBlock(p, BlockDefOfNew.Construction.Worker, product.Material, pcell.BlockData, pcell.Variation, pcell.Orientation, false);
-        //        }
-        //        map.NotifyBlocksChanged(positions);
-        //    }
-        //    else if(isReady)
-        //    {
-        //        foreach (var p in positions)
-        //            map.RemoveBlock(p, false);
-        //        var block = product.Block;
-        //        var cell = map.GetCell(global);
-        //        Block.Place(block, map, global, product.Material, product.Data, 0, cell.Orientation, true);
-        //        map.GetBlockEntity(global)?.IsMadeFrom(new ItemMaterialAmount[] { product.Requirement });
-        //    }
-           
-        //    if (amount == -1)
-        //        throw new Exception();
-        //    dropped.Consume(amount);
-        //}
-        
         internal override bool IsValidHaulDestination(MapBase map, IntVec3 global, GameObject obj)
         {
             var entity = map.GetBlockEntity(global) as BlockDesignationEntity;

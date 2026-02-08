@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
@@ -44,12 +44,8 @@ namespace Project1.Core.UI
             this.Movable = false;
             this.AutoSize = true;
             this.Closable = false;
-
             this.Widget = new LoadingWidget(200) { Callback = callback };
             this.Client.Controls.Add(this.Widget);
-
-            //this.AnchorToScreenCenter();
-            //this.Anchor = Vector2.One * .5f;
         }
         public DialogLoading(string title, string message, float percentage)
         {

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Base;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,11 +9,14 @@ using System.Linq;
 using Project1.Core.Rendering;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Interfaces;
-using Project1.Core.UI;
 using Project1.Core.Legacy;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core
 {
@@ -26,13 +28,11 @@ namespace Project1.Core
         public BlockDef Def { get; private set; }
         public bool Exists => this.Map is not null;
 
-        //public virtual IEnumerable<IntVec3> InteractionSpots { get { yield break; } }
         public IEnumerable<IntVec3> InteractionSpots => this.Map.GetCell(this.OriginGlobal).GetInteractionSpots(this.Map, this.OriginGlobal);
         public IEnumerable<IntVec3> ReservedInteractionCells => this.InteractionSpots.SelectMany(ActorDefOf.Npc.OccupyingCellsStanding);
 
         public IntVec3 OriginGlobal;
-        //public readonly BlockEntityCompCollectionNew Comps = new();
-        public readonly BlockEntityCompCollection Comps;// = new();
+        public readonly BlockEntityCompCollection Comps;
         public ObservableCollection<string> Errors = new();
     
         public BlockEntity(BlockDef def, IntVec3 originGlobal)

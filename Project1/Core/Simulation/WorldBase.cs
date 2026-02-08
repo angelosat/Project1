@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.UI;
 using Project1.Core.Blocks;
 using Project1.Core.Net;
 using Project1.Core.Rendering;
@@ -13,10 +12,13 @@ using Project1.Core.Interfaces;
 using Project1.Core.Base;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.Population;
-using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.WorldGen;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 #nullable enable
 
@@ -27,7 +29,7 @@ namespace Project1.Core.Simulation
         internal float GroundAirThreshold;
 
         public string Name { get; set; }
-        public override string Label => this.Name;
+        public override string LabelReadable => this.Name;
         public abstract MapBase GetMap(Vector2 mapCoords);
         public Random Random { get; set; }
         public virtual float Gravity { get; }
@@ -52,7 +54,7 @@ namespace Project1.Core.Simulation
         public abstract MapCollection GetMaps();
 
         public abstract void Draw(SpriteBatch sb, Camera cam);
-        public abstract void Tick(INetEndpoint net);
+        public abstract void Tick();
         public abstract void OnHudCreated(Hud hud);
         public abstract void OnTargetSelected(IUISelection info, ISelectable selection);
         public abstract void OnTargetSelected(SelectionManager info, ISelectable selection);

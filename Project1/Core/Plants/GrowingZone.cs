@@ -9,12 +9,12 @@ using Project1.Core.Components.Plants;
 using Project1.Core.Base;
 using Project1.Core.Materials;
 using Project1.Core.Entities;
-using Project1.Core;
-using Project1.Core.UI;
 using Project1.Core.Towns.Zones;
 using Project1.Core.Helpers;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Plants
 {
@@ -276,7 +276,7 @@ namespace Project1.Core.Plants
                 GrowingZone growzone = null;
                 var box = new GroupBox();// 300, 200);
                 box.AddControlsVertically(
-                    new ComboBoxNewNew<PlantSpeciesDef>(Def.GetDefs<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.Label ?? ""}", () => growzone?.Plant, p => Packets.SendPlant(growzone, p)),
+                    new ComboBoxNewNew<PlantSpeciesDef>(Def.GetDefs<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.LabelReadable ?? ""}", () => growzone?.Plant, p => Packets.SendPlant(growzone, p)),
                     new CheckBoxNew("Tilling", () => Packets.ToggleTilling(growzone), () => growzone.Tilling),
                     new CheckBoxNew("Planting", () => Packets.TogglePlanting(growzone), () => growzone.Planting),
                     new CheckBoxNew("Harvesting", () => Packets.ToggleHarvesting(growzone), () => growzone.Harvesting)

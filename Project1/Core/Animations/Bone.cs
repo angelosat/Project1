@@ -12,13 +12,14 @@ using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Materials;
 using Project1.Core.Rendering;
+using Project1.Framework.IO;
 
 namespace Project1.Core
 {
     public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
     {
         public enum States { Unstarted, Stopped, Running, Finished, Manual }
-        public override string Label => this.Def.Label;
+        public override string LabelReadable => this.Def.LabelReadable;
         public States State;
 
         public Joint Joint;
@@ -631,7 +632,7 @@ namespace Project1.Core
             fx.CurrentTechnique.Passes["Pass1"].Apply();
 
             var body = this;
-            var customization = parent.GetComponent<Components.SpriteComp>().Customization;
+            var customization = parent.GetComponent<SpriteComp>().Customization;
             var grounddistancefromcenter = renderTarget.Height / 2 + OriginGroundOffset.Y * scale;
             var loc = new Vector2(renderTarget.Width / 2, renderTarget.Height / 2 + grounddistancefromcenter);
             body.DrawTreeAnimationDeltas(parent, customization, new List<Animation>() { new Animation(AnimationDefOf.Null) }, mysb, loc, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
@@ -665,7 +666,7 @@ namespace Project1.Core
 
             var body = this;
             var scale = texture.Bounds.Width / minrect.Width;// 1;
-            var customization = overlayColors ?? parent.GetComponent<Components.SpriteComp>().Customization;
+            var customization = overlayColors ?? parent.GetComponent<SpriteComp>().Customization;
 
             var grounddistancefromcenter = rect.Height / 2 + OriginGroundOffset.Y * scale;
             var loc = new Vector2(rect.Width / 2, rect.Height / 2 + grounddistancefromcenter);
@@ -832,7 +833,7 @@ namespace Project1.Core
         
         public IEnumerable<Bone> Descendants => this.GetAllBones();
         public IEnumerable<Joint> Children => this.Joints.Values;
-        public override string ToString() => this.Label;
+        public override string ToString() => this.LabelReadable;
 
         public static Bone Create(IDataReader r) => new Bone().Read(r);
     }

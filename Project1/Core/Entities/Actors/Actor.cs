@@ -15,7 +15,6 @@ using Project1.Core.Components;
 using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using Project1.Core.Net;
-using Project1.Core.Net.Packets;
 using Project1.Core.Rooms;
 using Project1.Core.Skills;
 using Project1.Core.UI;
@@ -33,6 +32,9 @@ using Project1.Core.Entities.Mood;
 using Project1.Core.Entities.Ownership;
 using Project1.Core.Attributes;
 using Project1.Core.AI.Behaviors.Reserve;
+using Project1.Core.Networking.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -363,35 +365,6 @@ namespace Project1.Core.Entities.Actors
             yield return ("Gear", typeof(InventoryUI));
             yield return ("Stats", typeof(StatsGuiNew));
         }
-        //public override IEnumerable<Control> GetSelectionDetails()
-        //{
-        //    yield return GuiBuilder.BuildFloating<SkillsUI>(this);
-        //    yield return GuiBuilder.BuildFloating<PersonalityUI>(this);
-        //    yield return GuiBuilder.BuildFloating<NpcLogUINew>(this);
-        //    yield return GuiBuilder.BuildFloating<InventoryUI>(this);
-        //    yield return GuiBuilder.BuildFloating<NeedsMoodsUI>(this);
-        //    yield return GuiBuilder.BuildFloating<StatsGui>(this);
-        //}
-        //protected override IEnumerable<Button> GetInfoTabsExtraNew()
-        //{
-        //    yield return new Button("Skills").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<SkillsUI>(this).SetTitle(this.Name).Toggle()) as Button;
-        //    yield return new Button("Personality").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<PersonalityUI>(this).SetTitle(this.Name).Toggle()) as Button;
-        //    yield return new Button("Log").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<NpcLogUINew>(this).SetTitle(this.Name).Toggle()) as Button;
-        //    yield return new Button("Gear").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<InventoryUI>(this).SetTitle(this.Name).Toggle()) as Button;
-        //    yield return new Button("Needs").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<NeedsMoodsUI>(this).SetTitle(this.Name).Toggle()) as Button;
-        //    yield return new Button("Stats").SetLeftClickAction(b => GuiBuilder.RefreshSingleton<StatsGui>(this).SetTitle(this.Name).Toggle()) as Button;
-
-        //    if (!this.IsTownMember)
-        //        yield return this.btnVisitor.SetLeftClickAction(b => this.GetVisitorProperties().ShowGui()) as Button;
-        //}
-        //static readonly (string, Type)[] AvailableInfoTypesTest =
-        //[
-        //    ("Skills", typeof(SkillsUI)),
-        //    ("Personality", typeof(PersonalityUI)),
-        //    ("Log", typeof(NpcLogUINew)),
-        //    ("Gear", typeof(InventoryUI)),
-        //    ("Needs", typeof(NeedsMoodsUI)),
-        //    ("Stats", typeof(StatsGui))];
         public bool CanOperate(TargetArgs target)
         {
             if (target.Type != TargetType.Position)

@@ -4,7 +4,6 @@ using Project1.Core.Base;
 using Project1.Core.Input;
 using Project1.Core.Input.Tools;
 using Project1.Core.Input.Tools.Building;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,17 +11,19 @@ using System.Linq;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Screens;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
+using Project1.Framework.Interfaces;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Construction.Tools
 {
     public abstract class ToolBlockBuild : ToolManagement, INamed
     {
         public BuildToolDef ToolDef;
-        public string Name => this.ToolDef.Label;
+        public string Name => this.ToolDef.LabelReadable;
         new readonly Icon Icon = new(UIManager.Icons32, 12, 32);
         public Action<ToolBlockBuild.Args> Callback;
         protected bool Valid, Enabled;

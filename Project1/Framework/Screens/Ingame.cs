@@ -3,14 +3,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.UI;
 using Project1.Core.Input;
-using Project1.Core.Input.Hotkeys;
 using Project1.Core.Net;
 using Project1.Core.Rendering;
 using Project1.Core.Base;
-using Project1.Core.UI;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Screens
 {

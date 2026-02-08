@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Interfaces;
-using Project1.Core.Legacy.Storage;
-using Project1.Core.UI;
-using Project1.Core;
 using Project1.Core.UI;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Legacy.Storage.New
 {
     public class StorageFilterCategoryNewNew : IListCollapsibleDataSource, IListable, ILabeled
     {
-        public string Label { get; set; }
+        public string LabelReadable { get; set; }
         IStorageNew _owner;
         public IStorageNew Owner
         {
@@ -36,11 +34,11 @@ namespace Project1.Core.Legacy.Storage.New
         public StorageFilterCategoryNewNew(ItemDef def)
         {
             this.Item = def;
-            this.Label = def.Label;
+            this.LabelReadable = def.LabelReadable;
         }
         public StorageFilterCategoryNewNew(string label)
         {
-            this.Label = label;
+            this.LabelReadable = label;
         }
         public StorageFilterCategoryNewNew AddChildren(IEnumerable<StorageFilterCategoryNewNew> cats)
         {
@@ -214,7 +212,7 @@ namespace Project1.Core.Legacy.Storage.New
     [Obsolete]
     class StorageFilterCategoryNew : IListCollapsibleDataSource, IListable, ILabeled
     {
-        public string Label { get; set; }
+        public string LabelReadable { get; set; }
         Stockpile _owner;
         public Stockpile Owner
         {
@@ -235,7 +233,7 @@ namespace Project1.Core.Legacy.Storage.New
 
         public StorageFilterCategoryNew(string label)
         {
-            this.Label = label;
+            this.LabelReadable = label;
         }
         public StorageFilterCategoryNew AddChildren(IEnumerable<StorageFilterCategoryNew> cats)
         {
@@ -346,7 +344,7 @@ namespace Project1.Core.Legacy.Storage.New
 
             ListBoxCollapsibleNode createNode(StorageFilterCategoryNew cat)
             {
-                var node = new ListBoxCollapsibleNode(cat.Label, n => new CheckBoxNew()
+                var node = new ListBoxCollapsibleNode(cat.LabelReadable, n => new CheckBoxNew()
                 {
                     TickedFunc = () => isEnabled(cat),
                     LeftClickAction = () =>
@@ -358,7 +356,7 @@ namespace Project1.Core.Legacy.Storage.New
                 foreach (var child in cat.Branches)
                     node.AddNode(createNode(child));
                 foreach (var leaf in cat.Leaves)
-                    node.AddLeaf(new CheckBoxNew(leaf.Label)
+                    node.AddLeaf(new CheckBoxNew(leaf.LabelReadable)
                     {
                         TickedFunc = () => leaf.Enabled,
                         LeftClickAction = () => {

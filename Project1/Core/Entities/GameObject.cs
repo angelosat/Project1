@@ -10,10 +10,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Project1.Core.Net;
-using Project1.Core.Net.Packets;
 using Project1.Core.Interactions;
 using Project1.Core.Base;
-using Project1.Core.Components;
 using Project1.Core.Components.Plants;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
@@ -23,7 +21,6 @@ using Project1.Core.Interfaces;
 using Project1.Core.Towns;
 using Project1.Core.Tools;
 using Project1.Core.World.MetaRoles;
-using Project1.Core.UI;
 using Project1.Core.Legacy;
 using Project1.Core.Helpers;
 using Project1.Core.AI;
@@ -36,13 +33,18 @@ using Project1.Core.Inventory;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Attributes;
 using Project1.Core.Resources;
+using Project1.Core.Networking.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Entities
 {
     public abstract class GameObject : Inspectable, ITooltippable, IContextable, INameplateable, ISlottable, ISelectable//, ILabeled, IInspectable
     {
         public static readonly Dictionary<int, GameObject> Templates = [];
-        public override string Label => this.Name;
+        public override string LabelReadable => this.Name;
         static int GetNextTemplateID()
         {
             return Templates.Count + 1;
@@ -100,10 +102,6 @@ namespace Project1.Core.Entities
 
         public static void LoadTemplates()
         {
-            //AddTemplate(ItemDefOf.Helmet.CreateBase());
-
-            //AddTemplate(Actor.Create(ActorDefOf.Npc).SetName("Npc"));
-            //AddTemplate(ActorSystem.Create(ActorDnaDefOf.Npc));
             AddTemplate(EntityFactory.Request(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer).Create());
 
             foreach (var t in RawMaterialSystem.GenerateTemplates().Where(t => t is not null))
@@ -111,7 +109,6 @@ namespace Project1.Core.Entities
 
             foreach (var toolProp in Project1.Core.Base.Def.GetDefs<ToolProfileDef>())
             {
-                //var obj = ItemFamilyDefOf.Tool.System.Create(toolProp, new ToolSystem.Args(MaterialDefOf.LightWood, MaterialDefOf.LightWood));
                 var obj = ToolSystem.Create(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
                 AddTemplate(obj);
             }
@@ -127,8 +124,6 @@ namespace Project1.Core.Entities
                 info.ParentName = value;
             }
         }
-
-        //public string Description => this.Def.Description; 
         public virtual float Height => this.Def.Height;// this.Physics.Height;
 
         public int RefId;

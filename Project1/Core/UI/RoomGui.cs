@@ -3,9 +3,9 @@ using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Rooms;
-using Project1.Core.UI;
-using Project1.Core;
 using System.Linq;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
 
 namespace Project1.Core.UI
 {
@@ -35,7 +35,7 @@ namespace Project1.Core.UI
             var owners = map.Town.GetMembers().Prepend(null);
             var cboxowners = new ComboBoxFinal<Actor>(owners, 128, "Owner", a => a?.Name ?? "none", () => room?.GetOwner(), setOwner);
             this.AddControlsVertically(
-                new ComboBoxFinal<RoomRoleDef>(128, "Role", r => r?.Label ?? "none", setRoomDef, () => room?.RoomRole, () => room.Furnitures.SelectMany(f => RoomSystem.ByFurniture(f)).Distinct().Prepend(null)),
+                new ComboBoxFinal<RoomRoleDef>(128, "Role", r => r?.LabelReadable ?? "none", setRoomDef, () => room?.RoomRole, () => room.Furnitures.SelectMany(f => RoomSystem.ByFurniture(f)).Distinct().Prepend(null)),
                 new ComboBoxFinal<Actor>(128, "Owner", a => a?.Name ?? "none",  setOwner, () => room?.GetOwner(), ()=> map.Town.GetMembers().Prepend(null)),
                 new ComboBoxFinal<Workplace>(128, "Workplace", w => w?.Name ?? "none", setWorkplace, () => room?.Workplace, () => room.Map.Town.ShopManager.GetShops().Where(sh => sh.IsValidRoom(room)).Prepend(null)),
                 new Label(() => $"Interior: {room?.Interior.Count} cells"),

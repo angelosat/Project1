@@ -7,7 +7,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
 {
     public class RegionRoom : Inspectable
     {
-        public override string Label => nameof(RegionRoom);
+        public override string LabelReadable => nameof(RegionRoom);
         public int ID;
         public Color Color;
         static readonly Random ColorRand = new();

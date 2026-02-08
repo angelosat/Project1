@@ -5,6 +5,7 @@ using Project1.Core.Legacy.Crafting.Defs;
 using Project1.Core.Legacy.Crafting.ReagentFilters;
 using Project1.Core.Materials;
 using Project1.Core.UI;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace Project1.Core
 
             public string Name { get; set; }
 
-            public string Label => Name;
+            public string LabelReadable => Name;
             public Ingredient Ingredient;
 
             public int Quantity => this.Ingredient.Amount;
@@ -109,8 +110,7 @@ namespace Project1.Core
 
             internal Control GetGui()
             {
-                //return new GroupBox().AddControlsHorizontally(new Label($"{this.Name}: "), this.Ingredient.GetGui());
-                return new GroupBox().AddControlsHorizontally(Project1.Core.UI.Label.ParseNewNew($"{this.Name}: ", this.Ingredient));
+                return new GroupBox().AddControlsHorizontally(Label.ParseNewNew($"{this.Name}: ", this.Ingredient));
             }
         }
     }

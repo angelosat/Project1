@@ -6,6 +6,7 @@ using Project1.Core.Materials;
 using Project1.Core.Interfaces;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Legacy.Crafting
 {

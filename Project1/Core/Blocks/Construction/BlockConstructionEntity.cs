@@ -6,12 +6,14 @@ using Project1.Core.Towns.Constructions;
 using Project1.Core.Base;
 using Project1.Core.Blocks;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting.Blocks;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
-using Project1.Core.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Helpers;
+using Project1.Framework.Math;
+using Project1.Framework.UI;
 
 namespace Project1.Core
 {
@@ -28,7 +30,7 @@ namespace Project1.Core
         {
 
         }
-        public BlockConstructionEntity(ProductMaterialPair product, BlockDef def,  IntVec3 origin, GameObject initialMaterial, int amount)
+        public BlockConstructionEntity(ProductMaterialPair product, BlockDef def, IntVec3 origin, GameObject initialMaterial, int amount)
             : this(def, origin)
         {
             this.Product = product;
@@ -55,14 +57,14 @@ namespace Project1.Core
         {
             var product = this.Product;
             info.AddInfo(
-                Project1.Core.UI.Label.ParseWrap(product, " ", new Func<string>(this.Container.First().Amount.ToString), " / ", product.Requirement.Amount)
+                Label.ParseWrap(product, " ", new Func<string>(this.Container.First().Amount.ToString), " / ", product.Requirement.Amount)
             );
             info.AddInfo(this.BuildProgress.GetGui("Construction"));
         }
         string GetIngredientText()
         {
             var product = this.Product;
-            return $"{product.Requirement.Material.Label} {product.Requirement.Item.Label} {this.Container.First().Amount} / {product.Requirement.Amount}";
+            return $"{product.Requirement.Material.LabelReadable} {product.Requirement.Item.LabelReadable} {this.Container.First().Amount} / {product.Requirement.Amount}";
         }
 
         internal void HandleDepositedItem(GameObject dropped, int amount)

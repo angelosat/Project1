@@ -8,6 +8,7 @@ using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Construction.Tools
 {
@@ -52,7 +53,7 @@ namespace Project1.Core.Construction.Tools
             {
                 var btn = ButtonNew.CreateMedium(t.Icon, () => selectTool(t));
                 btn.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolBlockBuild buildTool && buildTool.ToolDef == t;
-                btn.HoverText = t.Label;
+                btn.HoverText = t.LabelReadable;
                 return btn;
             }));
 

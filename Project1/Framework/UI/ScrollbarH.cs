@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core;
 using System;
 using System.Windows.Forms;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class ScrollbarH : Control
     {
@@ -58,12 +57,12 @@ namespace Project1.Core.UI
             if (UIManager.Mouse.X < this.Thumb.ScreenLocation.X)
             {
                 scr.ClientLocation.X += scr.Size.Width;
-                scr.ClientLocation.X = Math.Min(0, scr.ClientLocation.X);
+                scr.ClientLocation.X = System.Math.Min(0, scr.ClientLocation.X);
             }
             else if (UIManager.Mouse.X > this.Thumb.ScreenLocation.X + this.Thumb.Width)
             {
                 scr.ClientLocation.X -= scr.Size.Width;
-                scr.ClientLocation.X = Math.Max(scr.Size.Width - scr.ClientSize.Width, scr.ClientLocation.X);
+                scr.ClientLocation.X = System.Math.Max(scr.Size.Width - scr.ClientSize.Width, scr.ClientLocation.X);
             }
         }
 
@@ -78,13 +77,12 @@ namespace Project1.Core.UI
             if (scr is not null)
             {
                 float percentage = scr.Size.Width / (float)scr.ClientSize.Width;
-                //this.Thumb.Size = new Rectangle(0, 0, (int)((this.Size.Width - 32) * percentage), 16);
                 float pos = -scr.ClientLocation.X / scr.ClientSize.Width;
 
                 this.Thumb.Width = (int)((this.Size.Width - 32) * percentage);
                 if (this.ThumbMoving)
                 {
-                    this.Thumb.Location.X = 16 + Math.Max(0, Math.Min(this.Size.Width - 32 - this.Thumb.Width, (UIManager.Mouse.X - this.ThumbOffset)));
+                    this.Thumb.Location.X = 16 + System.Math.Max(0, System.Math.Min(this.Size.Width - 32 - this.Thumb.Width, (UIManager.Mouse.X - this.ThumbOffset)));
                     scr.ClientLocation.X = -(scr.ClientSize.Width * (this.Thumb.Location.X - 16) / (this.Size.Width - 32));
                 }
                 else
@@ -111,7 +109,7 @@ namespace Project1.Core.UI
                 return;
 
             scr.ClientLocation.X -= this.Step;
-            scr.ClientLocation.X = Math.Max(scr.Size.Width - scr.ClientSize.Width, scr.ClientLocation.X);
+            scr.ClientLocation.X = System.Math.Max(scr.Size.Width - scr.ClientSize.Width, scr.ClientLocation.X);
         }
 
         void Left_Click()
@@ -121,7 +119,7 @@ namespace Project1.Core.UI
                 return;
 
             scr.ClientLocation.X += this.Step;
-            scr.ClientLocation.X = Math.Min(0, scr.ClientLocation.X);
+            scr.ClientLocation.X = System.Math.Min(0, scr.ClientLocation.X);
         }
     }
 }

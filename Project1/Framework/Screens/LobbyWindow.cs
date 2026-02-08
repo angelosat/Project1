@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Project1.Core.Net;
 using Project1.Core.Net.Packets;
 using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Screens
 {

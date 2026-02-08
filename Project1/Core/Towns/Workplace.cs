@@ -21,6 +21,10 @@ using Project1.Core.Helpers;
 using Project1.Core.Helpers.Collections;
 using Project1.Core.Simulation;
 using Project1.Core.AI;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Towns
 {
@@ -83,28 +87,12 @@ namespace Project1.Core.Towns
         {
             var guy = _Gui as Gui;
             guy.OpenGui(this);
-
-            //guy.Refresh(this);
-            //if (guy.Window == null)
-            //{
-            //    guy.ToWindow(this.Name);
-            //}
-            //guy.Window.Show();
         }
 
         static public (Control control, Action<Workplace> refresh) CreateUI()
         {
             return (_Gui,
                 a => a.OpenGui()
-                //{
-                //    var guy = _Gui as Gui;
-                //    guy.Refresh(a);
-                //    if (guy.Window == null)
-                //    {
-                //        guy.ToWindow(a.Name);
-                //    }
-                //    guy.Window.Show();
-                //}
             );
             int listw = 200, listh = 300;
             var box = new ScrollableBoxNewNewNew(listw, listh, ScrollModes.Vertical);
@@ -219,7 +207,7 @@ namespace Project1.Core.Towns
             return wprops.Jobs[def].Enabled;
         }
 
-        public readonly ObservableHashSet<IntVec3> Facilities = new();
+        public readonly ObservableHashSet<IntVec3> Facilities = [];
         public readonly ObservableDictionary<IntVec3, TargetArgs> FacilitiesTargetsCached = new();
         public virtual IEnumerable<IntVec3> GetFacilities() { yield break; }
 
@@ -473,7 +461,7 @@ namespace Project1.Core.Towns
                 table.AddColumn(new(), "", 128, a => new Label(a.Name), 0);
                 foreach (var role in tav.GetRoleDefs())
                 {
-                    table.AddColumn(role, role.Label, 32, a =>
+                    table.AddColumn(role, role.LabelReadable, 32, a =>
                     {
                         var j = tav.GetWorkerJob(a, role);
 
@@ -564,7 +552,6 @@ namespace Project1.Core.Towns
                     this.TableJobRoles);
                 this.WorkersGui = GetWorkersUI();
 
-                //var tabs = new PanelWithTabs(200, 300, new Control[] { this.TableStockpiles, this.TableShoppingDisplays, this.TableFacilities, this.WorkersGui });
                 var tabs = new PanelWithVerticalTabs(200, 300).InitTabs(new Control[] { 
                     new GroupBox(){Name="General" }.AddControlsVertically(this.LabelName, this.ChkBoxEnabled),
                     this.TableStockpiles, 
@@ -589,7 +576,7 @@ namespace Project1.Core.Towns
                     this.TableJobRoles.ClearColumns();
                     this.TableJobRoles.AddColumn(null, "Worker", 90, a => new Label(a.Name));
                     foreach (var role in shop.GetRoleDefs())
-                        this.TableJobRoles.AddColumn(null, role.Label, 32, a => new CheckBoxNew());
+                        this.TableJobRoles.AddColumn(null, role.LabelReadable, 32, a => new CheckBoxNew());
                     //this.TableJobRoles.Bind(shop.Town.Townies);
                     this.TableJobRoles.Bind(shop.Workers);
                     this.ListAvailableWorkers.Bind(shop.Town.Members, shop.Map.World.GetEntity<Actor>);

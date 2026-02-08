@@ -1,9 +1,9 @@
 ﻿using Project1.Core.Materials;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
-using Project1.Core;
 using System.Collections.Generic;
 using Project1.Core.Simulation;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core.WorldGen
 {
@@ -50,7 +50,7 @@ namespace Project1.Core.WorldGen
                     continue;
                 if (c.Material != MaterialDefOf.Soil)
                     continue;
-                var cellCoords = c.LocalCoords;// GetLocalCoords(chunk);
+                var cellCoords = c.LocalCoords;
                 var soilGradient = zNormal + gradients[cellCoords];
                 if (sandThreshold <= soilGradient && soilGradient < landThreshold)
                 {

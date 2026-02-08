@@ -27,7 +27,7 @@ namespace Project1.Core.Materials
             item.Body.Sprite = stage.Sprite;
             foreach(var (bone, mat) in materials)
                 item.Body.FindBone(bone).Material = mat;
-            item.Name = $"{item.Body.Material.Label} {stage.Label}";
+            item.Name = $"{item.Body.Material.LabelReadable} {stage.LabelReadable}";
             return item;
         }
         static public IEnumerable<Entity> GenerateTemplates()

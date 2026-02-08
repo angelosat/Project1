@@ -3,21 +3,22 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Base;
 using Project1.Core.Input;
-using Project1.Core.Components;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Project1.Core.Screens;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Graphics;
 using Project1.Core.UI.Settings;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Lighting;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.Input;
 
 namespace Project1.Core.Rendering
 {
@@ -702,12 +703,6 @@ namespace Project1.Core.Rendering
             var gd = Game1.Instance.GraphicsDevice;
             if (map is null)
                 return;
-
-            //if (this.RenderTargetsInvalid)
-            //{
-            //    this.OnDeviceLost();
-            //    this.RenderTargetsInvalid = false;
-            //}
 
             this.RenderTargets[0] = this.MapRender;
             this.RenderTargets[1] = this.MapDepth;
@@ -1668,7 +1663,6 @@ namespace Project1.Core.Rendering
             var bounds = this.GetScreenBounds(global, Block.Bounds);
             var pos = new Vector2(bounds.X, bounds.Y);
             var depth = global.GetDrawDepth(Engine.Map, this);
-            //sb.Draw(Sprite.Atlas.Texture, pos, sprite.Rectangle, 0, Vector2.Zero, this.Zoom, col, SpriteEffects.None, depth);
             sb.Draw(sprite.Atlas.Texture, pos, sprite.Rectangle, 0, Vector2.Zero, this.Zoom, col, SpriteEffects.None, depth);
         }
         public void DrawGridBlocks(MySpriteBatch sb, IEnumerable<IntVec3> positions, Color col)

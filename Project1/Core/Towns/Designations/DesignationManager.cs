@@ -2,27 +2,24 @@
 using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Input;
-using Project1.Core.Input.Hotkeys;
 using Project1.Core.Input.Tools;
 using Project1.Core.Input.Tools.CellRendering;
 using Project1.Core.Net;
 using Project1.Core.WorldGen;
-using Project1.Core;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Project1.Core.Screens;
-using Project1.Core.Interfaces;
-using Project1.Core.Towns;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Collections;
 using Project1.Core.Towns.Digging;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Towns.Designations
 {
@@ -41,7 +38,7 @@ namespace Project1.Core.Towns.Designations
             Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Designations", ToggleGui, System.Windows.Forms.Keys.U);
 
             foreach (var d in Def.GetDefs<DesignationDef>())
-                HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, $"Designate: {d.Label}", delegate { SetTool(d); });
+                HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, $"Designate: {d.LabelReadable}", delegate { SetTool(d); });
         }
 
         internal ObservableHashSet<TargetArgs> GetDesignations(DesignationDef des)
@@ -210,7 +207,7 @@ namespace Project1.Core.Towns.Designations
         {
             yield return ("Remove", () => SetTool(null));
             foreach (var def in Ingame.CurrentMap.Town.DesignationManager.Designations.Keys)
-                yield return (def.Label, () => SetTool(def));
+                yield return (def.LabelReadable, () => SetTool(def));
         }
 
         private static void SetTool(DesignationDef d)
@@ -263,7 +260,7 @@ namespace Project1.Core.Towns.Designations
             }
         }
         List<DesignationDef> designationDefs;
-        List<DesignationDef> AllDesignationDefs => this.designationDefs ??= Def.GetDefs<DesignationDef>().ToList();//.Except(new DesignationDef[] { DesignationDefOf.Remove }).ToList();
+        List<DesignationDef> AllDesignationDefs => this.designationDefs ??= Def.GetDefs<DesignationDef>().ToList();
 
         private static readonly IHotkey Hotkey;
 
@@ -272,7 +269,7 @@ namespace Project1.Core.Towns.Designations
         GroupBox UpdatePendingDesignationLabel(DesignationDef des)
         {
             this.PendingDesignationLabel.ClearControls();
-            this.PendingDesignationLabel.AddControlsLineWrap(Project1.Core.UI.Label.ParseNewNew("Designation: ", des));// ( new Label(des));
+            this.PendingDesignationLabel.AddControlsLineWrap(Label.ParseNewNew("Designation: ", des));
             return this.PendingDesignationLabel;
         }
         internal override void OnTargetSelected(IUISelection info, TargetArgs targetArgs)

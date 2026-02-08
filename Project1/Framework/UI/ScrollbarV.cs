@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Input;
-using Project1.Core;
 using System;
 using System.Windows.Forms;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class ScrollbarV : Control
     {
@@ -48,22 +47,6 @@ namespace Project1.Core.UI
             this.Controls.Add(this.Up, this.Down, this.Area, this.Thumb);
         }
 
-        //private void Thumb_MouseLeftPress(object sender, HandledMouseEventArgs e)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //private void Area_MouseLeftPress1(object sender, HandledMouseEventArgs e)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //void Area_MouseLeftPress(object sender, HandledMouseEventArgs e)
-        //{
-        //    this.AreaAction();
-        //    e.Handled = true;
-
-        //}
         void AreaAction()
         {
             Control scr = this.Tag as Control;
@@ -73,12 +56,12 @@ namespace Project1.Core.UI
             if (UIManager.Mouse.Y < this.Thumb.ScreenLocation.Y)
             {
                 scr.ClientLocation.Y += scr.Size.Height;
-                scr.ClientLocation.Y = Math.Min(0, scr.ClientLocation.Y);
+                scr.ClientLocation.Y = System.Math.Min(0, scr.ClientLocation.Y);
             }
             else if (UIManager.Mouse.Y > this.Thumb.ScreenLocation.Y + this.Thumb.Height)
             {
                 scr.ClientLocation.Y -= scr.Size.Height;
-                scr.ClientLocation.Y = Math.Max(scr.Size.Height - scr.ClientSize.Height, scr.ClientLocation.Y);
+                scr.ClientLocation.Y = System.Math.Max(scr.Size.Height - scr.ClientSize.Height, scr.ClientLocation.Y);
             }
         }
         public override void HandleLButtonUp(HandledMouseEventArgs e)
@@ -95,13 +78,12 @@ namespace Project1.Core.UI
 
                 float percentage = scr.Size.Height / (float)scr.ClientSize.Height;
 
-                //this.Thumb.Size = new Rectangle(0, 0, w, (int)((this.Size.Height - ww) * percentage));
                 float pos = -scr.ClientLocation.Y / scr.ClientSize.Height;
 
                 this.Thumb.Height = (int)((this.Size.Height - ww) * percentage);
                 if (this.ThumbMoving)
                 {
-                    this.Thumb.Location.Y = w + Math.Max(0, Math.Min(this.Size.Height - ww - this.Thumb.Height, (Controller.Instance.msCurrent.Y - this.ThumbOffset) / UIManager.Scale));
+                    this.Thumb.Location.Y = w + System.Math.Max(0, System.Math.Min(this.Size.Height - ww - this.Thumb.Height, (Controller.Instance.msCurrent.Y - this.ThumbOffset) / UIManager.Scale));
                     scr.ClientLocation.Y = -(scr.ClientSize.Height * (this.Thumb.Location.Y - w) / (this.Size.Height - ww));
                 }
                 else
@@ -116,12 +98,6 @@ namespace Project1.Core.UI
         {
             this.Thumb.Location = Vector2.Zero;
         }
-
-        //void Thumb_Click(object sender, HandledMouseEventArgs e)
-        //{
-        //    this.ThumbAction();
-        //    e.Handled = true;
-        //}
         void ThumbAction()
         {
             if (this.Tag is null)
@@ -129,18 +105,13 @@ namespace Project1.Core.UI
             this.ThumbMoving = true;
             this.ThumbOffset = (int)(16 + UIManager.Mouse.Y - this.Thumb.Location.Y);
         }
-        //void Down_Click(object sender, HandledMouseEventArgs e)
-        //{
-        //    DownAction();
-        //    e.Handled = true;
-        //}
-
+        
         private void DownAction()
         {
             if (this.Tag is not Control scr)
                 return;
             scr.ClientLocation.Y -= this.Step;
-            scr.ClientLocation.Y = Math.Max(scr.Size.Height - scr.ClientSize.Height, scr.ClientLocation.Y);
+            scr.ClientLocation.Y = System.Math.Max(scr.Size.Height - scr.ClientSize.Height, scr.ClientLocation.Y);
         }
 
         void Up_Click(object sender, HandledMouseEventArgs e)
@@ -155,7 +126,7 @@ namespace Project1.Core.UI
             if (this.Tag is not Control scr)
                 return;
             scr.ClientLocation.Y += this.Step;
-            scr.ClientLocation.Y = Math.Min(0, scr.ClientLocation.Y);
+            scr.ClientLocation.Y = System.Math.Min(0, scr.ClientLocation.Y);
         }
     }
 }

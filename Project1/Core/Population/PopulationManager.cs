@@ -10,16 +10,18 @@ using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Interfaces;
 using Project1.Core.Net;
-using Project1.Core.Net.Packets;
 using Project1.Core.UI;
 using Project1.Core;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Project1.Core.Net;
 using Project1.Core.Simulation;
+using Project1.Core.Networking.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Population
 {
@@ -66,13 +68,13 @@ namespace Project1.Core.Population
             }
  
         }
-        public void Update(INetEndpoint net)
+        public void Tick()
         {
             this.TickCount--;
             if (this.TickCount > 0)
                 return;
             this.TickCount = (int)(Ticks.PerSecond / TickRate);
-            this.PopulateRuntime(net);
+            this.PopulateRuntime(this.World.Net);
         }
 
 
@@ -98,7 +100,7 @@ namespace Project1.Core.Population
             {
                 Actor actor = GenerateInhabitant();
                 var chosenPlace = this.World.PlaceAtRandom(actor);//
-                net.Report($"{actor.Name} created and placed at {chosenPlace.Label}");
+                net.Report($"{actor.Name} created and placed at {chosenPlace.LabelReadable}");
                 return actor;
             }
             return null;
@@ -163,7 +165,7 @@ namespace Project1.Core.Population
                     box.Viewport.Width,
                     npc.RenderIcon(),
                     new Label(() => npc.Npc.FullName) { TextColorFunc = ()=> npc.GetNameplateColor()},
-                    new Label(() => $"{props.CurrentWorldLocation?.Label ?? "In town"}"));
+                    new Label(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}"));
 
                 // debugging stuff
                 btn.RightClickActionNew = b =>

@@ -5,13 +5,14 @@ using Project1.Core.Blocks;
 using Project1.Core.Base;
 using Project1.Core.Input.Tools.CellRendering;
 using Project1.Core.Net;
-using Project1.Core.UI;
 using Project1.Core.Rendering;
 using Project1.Core.Towns.Tools;
 using Project1.Core.Towns.Designations;
 using Project1.Core;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
+using Project1.Framework.Math;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Towns.Digging
 {

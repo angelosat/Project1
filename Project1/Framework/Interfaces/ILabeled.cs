@@ -2,6 +2,6 @@
 {
     public interface ILabeled
     {
-        string Label { get; }
+        string LabelReadable { get; }
     }
 }

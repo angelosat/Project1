@@ -1,8 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Input.Hotkeys;
-using Project1.Core.UI;
+using Project1.Core.Input;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class QuickButton : IconButton
     {

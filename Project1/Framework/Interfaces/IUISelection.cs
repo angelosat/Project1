@@ -1,8 +1,6 @@
-﻿using Project1.Core.UI;
-using Project1.Core.UI;
-using System;
+﻿using System;
 
-namespace Project1.Core.Interfaces
+namespace Project1.Framework.UI
 {
     public interface IUISelection
     {

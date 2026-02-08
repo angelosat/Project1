@@ -1,6 +1,6 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
+using Project1.Framework.Math;
 using System;
 using System.Linq;
 

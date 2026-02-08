@@ -7,10 +7,9 @@ using Project1.Core.Input;
 using Project1.Core.Input.Tools.Building;
 using Project1.Core.Materials;
 using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.UI;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Construction.UI
 {
@@ -41,7 +40,7 @@ namespace Project1.Core.Construction.UI
                     slot.LeftClickAction = () => StartPainting(block);
                     //slot.RightClickAction = () => UIBlockVariationPickerOld.Refresh(block, this.OnVariationSelected);
                     slot.RightClickAction = () => this.Picker.Refresh(block, this.OnVariationSelectedNew);
-                    slot.HoverText = block.Label;
+                    slot.HoverText = block.LabelReadable;
                     //slot.HoverFunc = () => $"{block.Name}\nTool necessity: {block.BuildProperties.ToolSensitivity:##0%}\nRight click to select variation";
                 })
                 { Location = this.Panel_Blocks.Controls.BottomLeft };
@@ -62,7 +61,7 @@ namespace Project1.Core.Construction.UI
                                     this.SelectedCategory = c;
                                 };
                             }),
-                        this.SelectedCategory.Label,
+                        this.SelectedCategory.LabelReadable,
                         this.Categories[this.SelectedCategory].Width);
 
             this.AddControlsVertically(
@@ -124,7 +123,6 @@ namespace Project1.Core.Construction.UI
             this.CurrentSelected = block;
             if (this.ToolBox.LastSelectedTool != null)
             {
-                //var args = new ConstructionDesignationArgs(block, variant.refinement, variant.material, 0);
                 var tool = this.SelectedCategory.GetTool(this.ToolBox.LastSelectedTool, args);
                 this.ToolBox.LastSelectedTool = tool.ToolDef;
                 ToolManager.SetTool(tool);

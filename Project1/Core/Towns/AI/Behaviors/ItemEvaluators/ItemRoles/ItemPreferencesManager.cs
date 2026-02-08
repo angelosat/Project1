@@ -6,13 +6,12 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Net;
-using Project1.Core.UI;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core
 {
@@ -46,8 +45,8 @@ namespace Project1.Core
         Control GetGui()
         {
             var table = new Table<ItemPreference>()
-                .AddColumn("role", 128, p => new Label(p.Role.Label))
-                .AddColumn("item", 64, p => new Label(() => p.Item?.Label ?? "none", () => p.Item?.Select()))
+                .AddColumn("role", 128, p => new Label(p.Role.LabelReadable))
+                .AddColumn("item", 64, p => new Label(() => p.Item?.LabelReadable ?? "none", () => p.Item?.Select()))
                 .AddColumn("score", 32, p => new Label(() => p.InventoryScore.ToString()));
             table.AddItems(this.PrefsInternal.Values);
 
@@ -219,7 +218,6 @@ namespace Project1.Core
             }
             foreach (var r in toRemove)
                 this.PreCommitScanCache.Remove(r);
-
         }
 
         internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotentialAll()
@@ -280,8 +278,8 @@ namespace Project1.Core
         }
         public Def GetPreference(Entity item)
         {
-            //return this.PreferencesNew.Values.FirstOrDefault(p => p.Item == item)?.Role.Context;
-            return this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item).Role?.Def; // if itempreferences are struct, then the default returned will have role == null
+            return this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item).Role?.Def; 
+            // if itempreferences are struct, then the default returned will have role == null
         }
         public Entity GetPreference(Def context)
         {
@@ -319,8 +317,6 @@ namespace Project1.Core
         {
             if (item.Def == ItemDefOf.Coins) // HACK
                 return true;
-            //if (this.PrefsInternal.Values.Any(p => p.Item == item && p.InventoryScore > 0))
-            //    return true;
             if (this.ItemsToPrefs.ContainsKey(item))
                 return true;
             return false;
@@ -365,7 +361,6 @@ namespace Project1.Core
         }
         public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
         {
-            //var potential = this.PrefsInternal.Values.Where(p => p.Item != null && filter(p.Item));
             var potential = this.ItemsToPrefs
                     .Where(e => filter(e.Key))
                     .SelectMany(e => e.Value);

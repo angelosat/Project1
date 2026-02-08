@@ -13,13 +13,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Project1.Core.WorldGen;
 using Project1.Core.Rendering;
-using Project1.Core.Interfaces;
 using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Graphics;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
+using Project1.Framework.Interfaces;
 
 namespace Project1.Core.Simulation
 {
@@ -546,12 +550,11 @@ namespace Project1.Core.Simulation
                 $"chunks initialized in {watch.ElapsedMilliseconds} ms".ToConsole();
             }
             );
-            //var gradients = new Dictionary<IntVec3, double>();
             var gradients = gradCache.SelectMany(c => c.Value.Select(cc => (cc.Key.ToGlobal(c.Key), cc.Value))).ToDictionary(c => c.Item1, c => c.Value);
 
             foreach (var m in mutatorlist)
             {
-                yield return ("Applying " + m.Def.Label, () =>
+                yield return ("Applying " + m.Def.LabelReadable, () =>
                 {
                     watch.Restart();
                     foreach (var chunk in this.ActiveChunks.Values)
@@ -634,7 +637,7 @@ namespace Project1.Core.Simulation
 
                 foreach (var m in mutatorlist)
                 {
-                    tasks.Add(("Applying " + m.Def.Label, () =>
+                    tasks.Add(("Applying " + m.Def.LabelReadable, () =>
                     {
                         watch.Restart();
                         foreach (var chunk in this.ActiveChunks.Values)

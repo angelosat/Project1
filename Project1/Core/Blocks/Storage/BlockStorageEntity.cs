@@ -10,7 +10,8 @@ using Project1.Core.Simulation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {

@@ -14,15 +14,16 @@ using Project1.Core.Interfaces;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
-using Project1.Core.Materials;
 using Project1.Core.Net;
 using Project1.Core.Rendering;
 using Project1.Core.Rooms;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Simulation;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Blocks
 {
@@ -143,7 +144,7 @@ namespace Project1.Core.Blocks
         #region Interfaces
         public string GetName()
         {
-            return this.Label;
+            return this.LabelReadable;
         }
         public virtual Icon GetIcon()
         {
@@ -212,11 +213,11 @@ namespace Project1.Core.Blocks
 
         public override string ToString()
         {
-            return "Block:" + this.Label;
+            return "Block:" + this.LabelReadable;
         }
 
-        public virtual string Name => this.Label;
-        public override string Label { get; }
+        public virtual string Name => this.LabelReadable;
+        public override string LabelReadable { get; }
         //static int BaseIDSequence = 1;
         //public readonly int BaseID;
         public static readonly int Width = 32, Depth = 16, Height = 40, BlockHeight = 20;
@@ -313,7 +314,7 @@ namespace Project1.Core.Blocks
 
         protected Block(string name, float transparency = 0f, float density = 1f, bool opaque = true, bool solid = true)
         {
-            this.Label = name;
+            this.LabelReadable = name;
             this.Transparency = transparency;
             this.Density = density;
             this.Opaque = opaque;

@@ -60,7 +60,7 @@ namespace Project1.Core.Legacy.Properties
         }
         public Reaction CreateRecipe(ItemDef def)
         {
-            return new Reaction($"{this.Verb} {def.Label}", this.Job, this.Workstations.ToArray()) { CraftSkill = this.Skill }
+            return new Reaction($"{this.Verb} {def.LabelReadable}", this.Job, this.Workstations.ToArray()) { CraftSkill = this.Skill }
                 .AddIngredients(this.MakeIngredients(def))
                 .AddProduct(this.MakeProducts(def));
         }

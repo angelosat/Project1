@@ -4,11 +4,11 @@ using System.Linq;
 using Project1.Core.UI.Settings;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core.Input.Hotkeys;
 using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.Helpers;
 
-namespace Project1.Core
+namespace Project1.Core.Input
 {
     partial class HotkeyManager : GameSettings
     {

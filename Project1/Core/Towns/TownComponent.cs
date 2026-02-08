@@ -7,10 +7,11 @@ using Project1.Core.Net;
 using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Interfaces;
-using Project1.Core;
-using Project1.Core.UI;
-using Project1.Core.Helpers;
 using Project1.Core.Simulation;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Towns
 {
@@ -19,7 +20,7 @@ namespace Project1.Core.Towns
         public Town Town;
         public MapBase Map => this.Town.Map;
         public NetEndpoint Net => this.Map.Net;
-        public override string Label => this.Name;
+        public override string LabelReadable => this.Name;
         const float UpdateFrequency = 1; // per second
         float UpdateTimerMax = Ticks.PerSecond / UpdateFrequency;
         float UpdateTimer;

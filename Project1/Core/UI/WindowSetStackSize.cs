@@ -1,6 +1,5 @@
 ﻿using System;
-using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {

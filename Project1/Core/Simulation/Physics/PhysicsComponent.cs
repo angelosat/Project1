@@ -1,16 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Blocks;
 using Project1.Core.Net;
 using Project1.Core.Components;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
-using Project1.Core.Net;
-using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Simulation.Physics
 {
@@ -447,8 +445,6 @@ namespace Project1.Core.Simulation.Physics
                     if (lastDistance >= 1 && nextDistance < 1) // changed the inequality so the item doesn't combine if freefalling on an adjacent block
                     {
                         // collision
-                        //obj.PostMessage(ObjectEventArgs.Create(Message.Types.EntityCollision, [parent]));
-                        //obj.Net.EventOccured(Message.Types.EntityCollision, parent, obj); //removing this because object gets disposed as a result of the above line
                         obj.Map.Events.Post(new EntityCollisionEvent(parent as Entity, obj as Entity));
                     }
                     // TODO: combine items only when an item enters another stationary item's cell?
@@ -478,16 +474,6 @@ namespace Project1.Core.Simulation.Physics
                 otherItem.SyncAbsorb(parent);
             }
         }
-     
-        //public override object Clone()
-        //{
-        //    var phys = new PhysicsComponent(this)
-        //    {
-        //        //Height = this.Height,
-        //        Solid = this.Solid
-        //    };
-        //    return phys;
-        //}
 
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
@@ -506,11 +492,6 @@ namespace Project1.Core.Simulation.Physics
         public override string ToString() => $"Enabled: {this.Enabled}";
         
 
-        //public static void Enable(GameObject parent)
-        //{
-        //    parent.TryGetComponent<PhysicsComponent>(f => f.Enabled = true);
-        //}
-
         /// <summary>
         /// TODO: pass cell or block in here since i fetch it (by checking if the position is solid) in the check before calling this method
         /// </summary>
@@ -519,7 +500,6 @@ namespace Project1.Core.Simulation.Physics
         {
             this.MidAir = false;
             parent.Map.EventOccured(Message.Types.EntityHitGround, parent, vector3);
-            //parent.Net.PostLocalEvent(parent, Message.Types.HitGround, Math.Abs(vector3.Z));
             parent.Net.Map.Events.Post(new EntityHitGroundEvent(parent as Entity, force));
         }
         

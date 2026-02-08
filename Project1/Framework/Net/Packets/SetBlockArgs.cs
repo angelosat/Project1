@@ -1,8 +1,8 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Blocks;
-using Project1.Core.Helpers;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Interfaces;
 using Project1.Core.Materials;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Net.Packets
 {
@@ -12,18 +12,6 @@ namespace Project1.Core.Net.Packets
         {
             return new SetBlockArgs().Read(r);
         }
-
-        //static public SetBlockArgs ReadFrom(IDataReader r)
-        //{
-        //    var global = r.ReadIntVec3();
-        //    var block = r.ReadDef<BlockDef>().Worker;
-        //    var material = r.ReadDef<MaterialDef>();
-        //    var data = r.ReadByte();
-        //    var orientation = r.ReadInt32();
-        //    var source = r.ReadIntVec3();
-        //    return new(global, block, material, data, orientation, source);
-        //}
-
         public SetBlockArgs Read(IDataReader r)
         {
             this.Global = r.ReadIntVec3();

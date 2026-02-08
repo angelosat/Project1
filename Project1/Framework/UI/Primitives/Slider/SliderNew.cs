@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Helpers;
 using Project1.Core.Input;
-using Project1.Core.UI;
 using System;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class SliderNew : Control
     {
@@ -136,7 +134,7 @@ namespace Project1.Core.UI
             float mouseX = Controller.Instance.msCurrent.X / UIManager.Scale - (this.ScreenLocation.X + this.Border);
             float mousePerc = MathHelper.Clamp(mouseX / (float)(this.Width - 2 * this.Border), 0, 1);
             var newValue = (this.Min + mousePerc * (this.Max - this.Min)) / this.Step;
-            this.NextValue = (float)Math.Round(newValue) * this.Step;
+            this.NextValue = (float)System.Math.Round(newValue) * this.Step;
         }
 
         protected override void OnGotFocus()

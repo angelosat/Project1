@@ -1,12 +1,9 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
-using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.Components;
 using Project1.Core.UI;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Towns.Labors
 {
@@ -19,36 +16,22 @@ namespace Project1.Core.Towns.Labors
 
         public NpcLogUINewNew()
         {
-            //this.AutoSize = false;
             var scrollbox = new ScrollableBoxNewNewNew(this.Table.TotalWidth, 300, ScrollModes.Vertical);
             scrollbox.AddControls(this.Table);
             this.AddControls(scrollbox.ToPanel());
-            //this.Width = this.Table.TotalWidth;
-            //this.Height = 300;
         }
 
-        //public override void OnLayout(int availableWidth, int availableHeight)
-        //{
-        //    base.OnLayout(availableWidth, availableHeight);
-        //    this.Height = 500;
-        //    this.Width = this.Table.Width;
-        //}
         public void OnBind(ISelectable selectable)
         {
             if (selectable is TargetArgs target &&
                 target.Object is Actor actor)
             {
                 this.Table.Bind(actor.AI.State.Log.Inner);
-                //this.RemoveControls(this.Table);
-                //this.AddControls(this.Table);
-                //this.Layout(this.Table.Width, 500);
-               
             }
         }
     }
     class NpcLogUINew : GuiBuilder
     {
-        //Actor Agent;
         public NpcLogUINew() : base()
         {
             this.Name = "History";

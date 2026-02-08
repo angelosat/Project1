@@ -20,6 +20,6 @@ namespace Project1.Core.Legacy.Crafting
             this.ToolSensitivity = toolContribution;
         }
 
-        public override string Label { get; } = typeof(BuildProperties).Name;
+        public override string LabelReadable { get; } = typeof(BuildProperties).Name;
     }
 }

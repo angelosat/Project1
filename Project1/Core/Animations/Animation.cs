@@ -8,12 +8,13 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Entities;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Animations
 {
     public sealed class Animation : Inspectable, ISerializableNew<Animation>, ISaveableNewNew<Animation>
     {
-        public override string Label => this.Def.Label;
+        public override string LabelReadable => this.Def.LabelReadable;
         public AnimationDef Def { get; private set; }
         public Entity Entity;
         public bool Enabled;

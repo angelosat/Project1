@@ -5,7 +5,6 @@ using Project1.Core.Components;
 using Project1.Core.Base;
 using Project1.Core.Net;
 using Project1.Core.Net.Packets;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,6 @@ using Project1.Core.Screens;
 using Project1.Core.Interfaces;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Stockpiles;
-using Project1.Core.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
@@ -27,6 +25,11 @@ using Project1.Core.Net;
 using Project1.Core.WorldGen;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.UI.Hud;
+using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Simulation
 {
@@ -82,7 +85,7 @@ namespace Project1.Core.Simulation
                     SyncSetCellData(net.Map, global, data);
             }
         }
-        public override string Label => this.ToString();
+        public override string LabelReadable => this.ToString();
         public Camera Camera;
         public static float IconOffset = 0;
         public Biome Biome = new();

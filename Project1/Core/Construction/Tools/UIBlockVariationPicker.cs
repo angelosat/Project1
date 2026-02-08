@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 using System;
 using System.Linq;
 
@@ -18,15 +16,10 @@ namespace Project1.Core.Construction.Tools
         public void Refresh(BlockDef block, Action<ConstructionDesignationArgs> callback)
         {
             var variants = block.Worker.GetConstructionOptions().ToList();
-            //var variants = block.GetAllValidConstructionMaterialsNew().Select(m => new ProductMaterialPair(block, m)).GroupBy(p => p.Requirement.Material).ToList();
-            //if (!variants.Any())
-            //    return;
             var count = variants.Count;//.Sum(v => v.Count);
             this.Panel.Controls.Clear();
             this.Panel.AutoSize = true;
             this.ClearControls();
-
-            //var container = count <= 8 ? new GroupBox() : ScrollableBoxNewNew.FromClientSize(160, UIManager.LargeButton.Height * 8 + UIManager.LargeButton.Height / 2, ScrollModes.Vertical);
 
             var list = new ListBoxNoScroll<ConstructionDesignationArgs, ButtonNew>(variant => CreateButton(block.Worker, callback, variant))
             {
@@ -36,7 +29,6 @@ namespace Project1.Core.Construction.Tools
                 list.AddItems(group);
             list.Layout(50, 60);
 
-            //var container = list.ToScrollableBox(160, UIManager.LargeButton.Height * 8 + UIManager.LargeButton.Height / 2);
             var container = ScrollableBoxNewNewNew.FromContentsSize(160, UIManager.LargeButton.Height * 8, ScrollModes.Vertical);
             container.AddControls(list);
             this.Panel.AddControls(container);
@@ -51,7 +43,7 @@ namespace Project1.Core.Construction.Tools
             var btn = new ButtonNew(160) { BackgroundStyle = BackgroundStyle.LargeButton };
             var padding = btn.BackgroundStyle.Left.Width;
             var picbox = new PictureBox(block.PaintIcon(0, variant.Material)) { MouseThrough = true, Location = new Vector2(padding, btn.Height / 2), Anchor = new Vector2(0, .5f) };
-            var label = new Label($"{variant.Material.Label} {variant.Block.Label}") { Location = picbox.TopRight + Vector2.UnitX * padding, MouseThrough = true };
+            var label = new Label($"{variant.Material.LabelReadable} {variant.Block.LabelReadable}") { Location = picbox.TopRight + Vector2.UnitX * padding, MouseThrough = true };
             btn.AddControls(picbox, label);
             btn.LeftClickAction = () =>
             {

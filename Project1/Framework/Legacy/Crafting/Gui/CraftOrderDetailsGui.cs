@@ -1,14 +1,12 @@
 ﻿using Project1.Core.Towns.Crafting;
 using Project1.Core.Components;
-using Project1.Core.Legacy.Crafting;
 using Project1.Core.Legacy.Crafting.Packets;
 using Project1.Core.Materials;
 using Project1.Core.Net;
 using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.UI;
 using System;
 using System.Linq;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Legacy.Crafting.Gui
 {
@@ -32,15 +30,13 @@ namespace Project1.Core.Legacy.Crafting.Gui
 
             this.PanelCollapsible = new Panel() { AutoSize = false }.SetClientDimensions(200, 200);
 
-            //this.ReagentsContainer = new ScrollableBoxNewNew(200, 200, ScrollModes.Vertical);
             this.ReagentsContainer = new GroupBox();
-            //this.ReagentsContainer.AddControls(scrollableBox);
             var scrollableBox = new ScrollableBoxNewNewNew(this.ReagentsContainer, 200, 200, ScrollModes.Vertical);
 
-            this.PanelCollapsible.AddControls(scrollableBox);// this.ReagentsContainer);
+            this.PanelCollapsible.AddControls(scrollableBox);
 
             var boxinfo = new GroupBox();
-            this.PanelInfo = new(128, 128);// this.PanelCollapsible.Size);
+            this.PanelInfo = new(128, 128);
 
             this.AddControlsHorizontally(this.PanelInfo, this.PanelCollapsible);
 
@@ -48,7 +44,6 @@ namespace Project1.Core.Legacy.Crafting.Gui
             {
                 Location = this.PanelCollapsible.BottomLeft
             };
-            //this.AddControls(this.ChkHaulOnFinish);
 
             var input = new ComboBoxNewNew<Stockpile>(200, "Input", s => s?.Name ?? "Anywhere", s => PacketCraftOrderSync.Send(this.Order, s, this.Order.Output), () => this.Order?.Input, () => this.Order.Map.Town.ZoneManager.GetZones<Stockpile>().Prepend(null));
             var output = new ComboBoxNewNew<Stockpile>(200, "Output", s => s?.Name ?? "Anywhere", s => PacketCraftOrderSync.Send(this.Order, this.Order.Input, s), () => this.Order?.Output, () => this.Order.Map.Town.ZoneManager.GetZones<Stockpile>().Prepend(null));
@@ -80,7 +75,7 @@ namespace Project1.Core.Legacy.Crafting.Gui
 
                     if (mats.Count() <= 1) // UNDONE
                     {
-                        itemTypesNode.AddLeaf(new CheckBoxNew(i.Label)
+                        itemTypesNode.AddLeaf(new CheckBoxNew(i.LabelReadable)
                         {
                             TickedFunc = () => !order.IsRestricted(r.Name, i),
                             LeftClickAction = () => CraftingManagerOld.SetOrderRestrictions(order, r.Name, new[] { i }, null, null)
@@ -88,7 +83,7 @@ namespace Project1.Core.Legacy.Crafting.Gui
                     }
                     else
                     {
-                        var itemNode = new ListBoxCollapsibleNode(i.Label, () => new CheckBoxNew()
+                        var itemNode = new ListBoxCollapsibleNode(i.LabelReadable, () => new CheckBoxNew()
                         {
                             TickedFunc = () => !mats.Any(v => order.IsRestricted(r.Name, v)),
                             LeftClickAction = () => CraftingManagerOld.SetOrderRestrictions(
@@ -101,7 +96,7 @@ namespace Project1.Core.Legacy.Crafting.Gui
                         itemTypesNode.AddNode(itemNode);
                         foreach (var mat in mats)
                         {
-                            itemNode.AddLeaf(new CheckBoxNew(mat.Label)
+                            itemNode.AddLeaf(new CheckBoxNew(mat.LabelReadable)
                             {
                                 TickedFunc = () => !order.IsRestricted(r.Name, mat),
                                 LeftClickAction = () => CraftingManagerOld.SetOrderRestrictions(order, r.Name, null, new MaterialDef[] { mat }, null)

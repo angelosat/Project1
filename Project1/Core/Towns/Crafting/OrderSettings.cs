@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using static Project1.Core.Towns.Crafting.OrderSettings.OrderFeasibilityResult;
 using Project1.Core.Animations;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Towns.Crafting
 {
@@ -46,7 +49,7 @@ namespace Project1.Core.Towns.Crafting
         public Def ProductDef { get; internal set; }
         public WorkstationCapabilityDef WorkstationCapability { get; internal set;}
         public BlockWorkstationComp Workstation { get; internal set; }
-        public string Label => this.ProductDef.Label;
+        public string LabelReadable => this.ProductDef.LabelReadable;
         public Dictionary<BoneDef, HashSet<MaterialDef>> Filters = [];
         public Dictionary<BoneDef, IngredientRequirementNew> FiltersNew = [];
         public Dictionary<BoneDef, CraftingRule> Rules = [];
@@ -661,13 +664,5 @@ namespace Project1.Core.Towns.Crafting
             missing = -1;
             return false;
         }
-        //public IngredientRequirement ToggleMaterial(MaterialDef mat)
-        //{
-        //    if (this.Materials.Contains(mat))
-        //        this.Materials.Remove(mat);
-        //    else
-        //        this.Materials.Add(mat);
-        //    return this;
-        //}
     }
 }

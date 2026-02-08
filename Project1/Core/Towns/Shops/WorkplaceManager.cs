@@ -1,16 +1,17 @@
-﻿using Project1.Core.Gui;
-using Project1.Core.UI;
+﻿using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Components;
 using Project1.Core.Base;
-using Project1.Core.Interfaces;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Collections;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -275,9 +276,6 @@ namespace Project1.Core
 
             var shoplistcontainer = shoplist.MakeScrollable(-1, 200);
 
-            //ScrollableBoxTest.FromContentsSize(shoplist.Width, shoplist.Width, ScrollModes.Vertical)
-            //.AddControls(shoplist);
-
             shoplist.OnGameEventAction = e =>
             {
                 switch ((Message.Types)e.Type)
@@ -304,12 +302,11 @@ namespace Project1.Core
             var selectTypeMenu = selectShopType(t => Packets.SendPlayerCreateShop(net, net.GetPlayer().ID, t));
             var btnNew = new Button("New", () => selectTypeMenu.Toggle(UIManager.MouseScaled));
             boxList.AddControlsVertically(shoplistcontainer, btnNew);
-            box.AddControlsHorizontally(boxList);//, shopUI.Value.control);
+            box.AddControlsHorizontally(boxList);
             return box;
 
             Control selectShopType(Action<Type> callback)
             {
-                //var list = new ListBoxNew<Type, Button>(150, Button.DefaultHeight * 2, t=>new Button(t.Name, ()=>callback(t)));
                 var list = new ListBoxNoScroll<Type, Button>(t => new Button(t.Name, () => callback(t)));
                 list.AddItems(typeof(Shop), typeof(Tavern));
                 return list.ToContextMenu("Select shop type");

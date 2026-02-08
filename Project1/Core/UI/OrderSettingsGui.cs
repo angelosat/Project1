@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Towns.Crafting;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
@@ -23,7 +24,7 @@ namespace Project1.Core.UI
             this.BackgroundColor = UIManager.DefaultListItemBackgroundColor;
             this.MouseThrough = false;
 
-            var orderName = new Label(settings.Label);// { Location = btnUp.TopRight };
+            var orderName = new Label(settings.LabelReadable);// { Location = btnUp.TopRight };
             this.ModeCBox = new ComboBoxNewNew<OrderSettings.CraftMode>(OrderSettings.AllModes, 100, c => c.ToString(), ChangeFinishMode, () => this._modePredicted)
             {
                 AnchorNew = Anchors.Bottom | Anchors.Left

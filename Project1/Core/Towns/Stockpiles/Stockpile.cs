@@ -4,17 +4,16 @@ using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Towns.Zones;
 using Project1.Core.Base;
 using Project1.Core.Blocks;
-using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Materials;
-using Project1.Core.UI;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -326,13 +325,13 @@ namespace Project1.Core
             {
                 if (cat.Key == null)
                     continue;
-                var c = new StorageFilterCategoryNewNew(cat.Key.Label) { Category = cat.Key };
+                var c = new StorageFilterCategoryNewNew(cat.Key.LabelReadable) { Category = cat.Key };
                 all.AddChildren(c);
                 foreach (var def in cat)
                 {
                     var record = new ItemFilter(def);
                     if (def.DefaultMaterialType != null)
-                        c.AddChildren(new StorageFilterCategoryNewNew(def.Label) { Item = def }.AddLeafs(def.DefaultMaterialType.SubTypes.Select(m => new StorageFilterNewNew(def, m))));
+                        c.AddChildren(new StorageFilterCategoryNewNew(def.LabelReadable) { Item = def }.AddLeafs(def.DefaultMaterialType.SubTypes.Select(m => new StorageFilterNewNew(def, m))));
                     else if(def.GetSpecialFilter() is StorageFilterCategoryNewNew filter)
                         c.AddChildren(filter);
                     else

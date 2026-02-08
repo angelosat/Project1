@@ -4,15 +4,14 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.UI;
-using Project1.Core.UI.Primitives;
-using Project1.Core.Components;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Project1.Core.Stats;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Entities.Mood
 {

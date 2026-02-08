@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.UI;
-using Project1.Core.Interfaces;
 using Project1.Core.Base;
-using Project1.Core.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Inventory;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Components
 {
@@ -62,7 +61,7 @@ namespace Project1.Core.Components
             if (parent.Net == null)
                 return;
             var owner = parent.World.GetEntity(this.OwnerRef);
-            tooltip.AddControlsBottomLeft(UI.Label.ParseWrap("Owner: ", this.ItemOwner));
+            tooltip.AddControlsBottomLeft(Label.ParseWrap("Owner: ", this.ItemOwner));
         }
 
         static public bool Owns(GameObject owner, GameObject obj)

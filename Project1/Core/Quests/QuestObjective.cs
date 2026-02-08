@@ -7,6 +7,7 @@ using Project1.Core.Legacy;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Quests
 {

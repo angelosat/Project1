@@ -104,7 +104,7 @@ namespace Project1.Core.Tools
                     reagents.Add(reagent.Value);
 
                 var reaction = new Reaction(
-                    $"Craft {toolDef.Label}",
+                    $"Craft {toolDef.LabelReadable}",
                     Reaction.CanBeMadeAt(IsWorkstation.Types.None, IsWorkstation.Types.Workbench),
                     reagents,
                     new List<Reaction.Product>() {

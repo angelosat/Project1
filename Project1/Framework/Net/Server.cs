@@ -13,10 +13,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
-using Project1.Core.Net.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.Networking.Simulation;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Net
 {
@@ -80,14 +81,12 @@ namespace Project1.Core.Net
         {
             this.Players = new PlayerList(this);
         }
-        //static int _refIdSequence = 1;
 
         static int _playerID = 1;
         public static int PlayerID => _playerID++;
         private void AdvanceClock()
         {
             this._tick++;
-            //ServerClock = ServerClock.Add(TimeSpan.FromMilliseconds(ClockIntervalMS));
         }
 
         public override MapBase Map { get; set; }
@@ -188,8 +187,6 @@ namespace Project1.Core.Net
         }
         private void FlushStreams(bool isSimulation)
         {
-            //if (!isSimulation)
-            //    return;
             foreach (var stream in this.StreamsArray.Append(this.PlayerCommandsStream).Where(s => s.IsSimulation == isSimulation))
                 {
                 // append per-player specific data
@@ -227,7 +224,7 @@ namespace Project1.Core.Net
         {
             for (int i = 0; i < this.Speed; i++)
             {
-                this.Map.World.Tick(Instance);
+                this.Map.World.Tick();
                 this.Map.Tick();
                 this.BlockUpdateTimer--;
                 if (this.BlockUpdateTimer <= 0)

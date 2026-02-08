@@ -1,6 +1,5 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Blocks;
-using Project1.Core.Blocks;
+﻿using Project1.Core.Blocks;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -10,7 +9,6 @@ namespace Project1.Core
                 : base(def, originGlobal)
         {
             this.AddComp(new BlockEntityCompWorkstationOld(IsWorkstation.Types.PlantProcessing));
-            //this.AddComp(new BlockEntityCompDeconstructible());
         }
     }
 }

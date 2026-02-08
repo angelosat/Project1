@@ -6,13 +6,13 @@ using Project1.Core.Legacy.Properties;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Materials;
-using Project1.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Gear;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Entities
 {

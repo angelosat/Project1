@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Quests.AI
 {

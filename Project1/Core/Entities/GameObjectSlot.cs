@@ -7,6 +7,8 @@ using Project1.Core.UI;
 using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Entities
 {

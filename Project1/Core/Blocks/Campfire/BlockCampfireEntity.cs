@@ -1,6 +1,6 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Blocks;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Graphics.Particles;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -19,7 +19,6 @@ namespace Project1.Core
                 var lightComp = new BlockEntityLuminance(15, refuel, 1, switchable.IsSwitchedOn);
                 this.AddComp(lightComp);
                 this.AddComp(new BlockEntityCompParticles(ParticleEmitter.Fire.SetRateFunc(() => (lightComp.Powered && switchable.SwitchedOn) ? 1 : 0)));
-                //this.AddComp(new BlockEntityCompDeconstructible());
             }
         }
     }

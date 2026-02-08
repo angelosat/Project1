@@ -11,9 +11,9 @@ namespace Project1.Core.Quests
         public QuestRewardItem(QuestDef parent) : base(parent)
         {
         }
-        public override string Text => $"{this.Reward.Object.Label} x{this.Reward.Amount}";
+        public override string Text => $"{this.Reward.Object.LabelReadable} x{this.Reward.Amount}";
         public override int Budget => this.Reward.Object.GetValueScore() * this.Reward.Amount;
-        public override string Label => this.Reward.Object.Label;
+        public override string Label => this.Reward.Object.LabelReadable;
         public override int Count { get => this.Reward.Amount; set => this.Reward.Amount = value; }
 
         internal override void Award(Actor actor)

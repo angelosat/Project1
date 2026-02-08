@@ -1,10 +1,8 @@
 ﻿using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
-using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.UI;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Mood;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
@@ -20,10 +18,6 @@ namespace Project1.Core.UI
             this.BoxMood = new();
             this.AddControls(this.BoxNeeds, this.BoxMood);
         }
-        //public override void OnLayout(int availableWidth, int availableHeight)
-        //{
-        //    this.BoxMood.Location = this.BoxNeeds.TopRight;
-        //}
 
         public void OnBind(ISelectable selectable)
         {

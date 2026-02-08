@@ -2,24 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.UI;
 using System.Collections.ObjectModel;
 using Project1.Core.Net;
 using Project1.Core.Base;
 using Project1.Core.Materials;
-using Project1.Core.Materials;
 using Project1.Core.Interfaces;
-using Project1.Core.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Helpers;
-using Project1.Core.UI.Primitives;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Helpers;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -71,8 +70,6 @@ namespace Project1.Core
             internal static void Send(BlockEntityCompRefuelable owner, ItemDef item, Def def)
             {
                 var parent = owner.Parent;
-                //var w = parent.Map.Net.GetOutgoingStreamOrderedReliable();
-                //w.Write(def is MaterialDef ? pMaterial : pVariation);
                 var w = parent.Map.Net.BeginPacketOld(def is MaterialDef ? pMaterial : pVariation);
                 w.Write(parent.OriginGlobal);
                 item.Write(w);
@@ -81,8 +78,6 @@ namespace Project1.Core
             internal static void Send(BlockEntityCompRefuelable owner, ItemCategory category)
             {
                 var parent = owner.Parent;
-                //var w = parent.Map.Net.GetOutgoingStreamOrderedReliable();
-                //w.Write(pCategory);
                 var w = parent.Map.Net.BeginPacket(pCategory);
                 w.Write(parent.OriginGlobal);
                 w.Write(category?.Name ?? "");
@@ -182,7 +177,7 @@ namespace Project1.Core
             };
             bar.TextFunc = () => bar.Percentage.ToString("##0%");
             info.AddInfo(bar);
-            var box = new ScrollableBoxNewNew(150, Project1.Core.UI.Label.DefaultHeight * 2, ScrollModes.Vertical);
+            var box = new ScrollableBoxNewNew(150, Label.DefaultHeight * 2, ScrollModes.Vertical);
             var boxcontents = new ListBoxObservable<ItemMaterialAmount>(this.StoredFuelItems);
             box.AddControls(boxcontents);
             info.AddInfo(box);
@@ -273,6 +268,6 @@ namespace Project1.Core
             new StorageFilterCategoryNewNew("Wood")
                 .AddChildren(Def.Database.Values.OfType<ItemDef>()
                     .Where(d => d.DefaultMaterialType == MaterialTypeDefOf.Wood)
-                    .Select(d => new StorageFilterCategoryNewNew(d.Label).AddLeafs(d.DefaultMaterialType.SubTypes.Select(m => new StorageFilterNewNew(d, m)))));
+                    .Select(d => new StorageFilterCategoryNewNew(d.LabelReadable).AddLeafs(d.DefaultMaterialType.SubTypes.Select(m => new StorageFilterNewNew(d, m)))));
     }
 }

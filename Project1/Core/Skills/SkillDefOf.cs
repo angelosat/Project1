@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Base;
-using Project1.Core.UI;
-using Project1.Core.Skills;
 using Project1.Core.Stats;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Skills
 {
@@ -64,19 +63,9 @@ namespace Project1.Core.Skills
             Description = "Plantcutting description",
             Icon = new Icon(UIManager.Icons32, 12, 32)
         };
-        //static public readonly SkillDef[] All = { Digging, Mining, Construction, Cooking, Tinkering, Argiculture, Carpentry, Crafting, Plantcutting };
         static SkillDefOf()
         {
             Def.Register(typeof(SkillDefOf));
-            //Def.Register(Digging);
-            //Def.Register(Mining);
-            //Def.Register(Construction);
-            //Def.Register(Cooking);
-            //Def.Register(Tinkering);
-            //Def.Register(Argiculture);
-            //Def.Register(Carpentry);
-            //Def.Register(Crafting);
-            //Def.Register(Plantcutting);
         }
     }
 }

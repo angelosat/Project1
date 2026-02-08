@@ -4,9 +4,9 @@ using Project1.Core.Blocks;
 using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
-using Project1.Core.Materials;
 using Project1.Core.Graphics;
 using Project1.Core.Simulation;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -40,7 +40,6 @@ namespace Project1.Core
         public override void OnNeighborChanged(MapBase map, IntVec3 global, IntVec3 source)
         {
             return;
-            //map.AddBlockEntity(global, new BlockFluidEntity(this.BlockDef, global));
         }
 
         public override bool IsTargetable(Vector3 global)

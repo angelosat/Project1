@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 
 namespace Project1.Core
 {

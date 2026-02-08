@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core;
 using Project1.Core.Helpers;
-using Project1.Core.UI;
 using System;
 
-namespace Project1.Core.UI
+
+namespace Project1.Framework.UI
 {
     class MessageBox : Window
     {
@@ -36,7 +37,7 @@ namespace Project1.Core.UI
 
             var label = new Label(new Vector2(0), StringHelper.Wrap(text, width));
             this.Panel_Text.Controls.Add(label);
-            this.Panel_Text.ClientSize = new Rectangle(0, 0, width, Math.Max(label.Height, UIManager.SlotSprite.Height));
+            this.Panel_Text.ClientSize = new Rectangle(0, 0, width, System.Math.Max(label.Height, UIManager.SlotSprite.Height));
 
             this.Panel_Buttons = new Panel(new Vector2(0, this.Panel_Text.Bottom));
             this.Panel_Buttons.ClientSize = new Rectangle(0, 0, this.Panel_Text.ClientSize.Width, Button.DefaultHeight);
@@ -61,7 +62,7 @@ namespace Project1.Core.UI
 
             var label = new Label(new Vector2(0), StringHelper.Wrap(text, width));
             this.Panel_Text.Controls.Add(label);
-            this.Panel_Text.ClientSize = new Rectangle(0, 0, width, Math.Max(label.Height, UIManager.SlotSprite.Height));
+            this.Panel_Text.ClientSize = new Rectangle(0, 0, width, System.Math.Max(label.Height, UIManager.SlotSprite.Height));
 
             this.Panel_Buttons = new Panel(new Vector2(0, this.Panel_Text.Bottom)) { AutoSize = true };
             this.Panel_Buttons.ClientSize = new Rectangle(0, 0, this.Panel_Text.ClientSize.Width, Button.DefaultHeight);

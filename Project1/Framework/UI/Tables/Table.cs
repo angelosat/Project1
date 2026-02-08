@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.UI;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class Table<TObject> : GroupBox, IListSearchable<TObject>
     {

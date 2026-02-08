@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class ColoredRectangle : ButtonBase
     {

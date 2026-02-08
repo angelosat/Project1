@@ -2,10 +2,9 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.World.MetaRoles;
 using Project1.Core.Components;
-using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.UI;
 using System.Collections.Generic;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {

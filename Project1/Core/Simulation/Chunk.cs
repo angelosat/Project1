@@ -4,7 +4,6 @@ using Project1.Core.Blocks;
 using Project1.Core.Base;
 using Project1.Core.Input;
 using Project1.Core.Net;
-using Project1.Core.Components;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -15,14 +14,13 @@ using System.Linq;
 using Project1.Core.Rendering;
 using Project1.Core.WorldGen;
 using Project1.Core.Materials;
-using Project1.Core.Materials;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
-using Project1.Core.UI.Primitives;
 using Project1.Core.Graphics;
-using Project1.Core.Net;
 using Project1.Core.Simulation.Lighting;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Simulation
 {
@@ -118,7 +116,7 @@ namespace Project1.Core.Simulation
                     var allPositions = new BoundingBox(IntVec3.Zero, new IntVec3(Chunk.Size - 1, Chunk.Size - 1, MapBase.MaxHeight - 1)).GetBoxIntVec3Lazy();
                     var array = allPositions.ToArray();
                     array.Shuffle(this.Map.Random);
-                    this._RandomOrderedCells = array;// allPositions.Randomize(this.Map.Random);
+                    this._RandomOrderedCells = array;
                 }
                 return this._RandomOrderedCells;
             }
@@ -133,14 +131,6 @@ namespace Project1.Core.Simulation
         [InspectorHidden]
         public Cell[] Cells;
 
-        //public void CopyFrom(Chunk chunk)
-        //{
-        //    this.Objects = chunk.Objects;
-        //    this.Cells = chunk.Cells;
-        //    this.HeightMap = chunk.HeightMap;
-        //    //this.Sunlight = chunk.Sunlight;
-        //    //this.BlockLight = chunk.BlockLight;
-        //}
 
         public List<GameObject> Objects;
         readonly Dictionary<IntVec3, BlockEntity> BlockEntitiesByPosition = new();
@@ -288,7 +278,6 @@ namespace Project1.Core.Simulation
         public void Add(GameObject obj)
         {
             obj.Map = this.Map;
-            //obj.AttachToMap(this.Map);
             if (this.Objects.Contains(obj))
                 throw new Exception();
             this.Objects.Add(obj);
@@ -515,7 +504,6 @@ namespace Project1.Core.Simulation
                 while (this.CellsToValidate.Count > 0)
                 {
                     Cell cell = this.CellsToValidate.Dequeue();
-                    //this.Map.LightingEngine.HandleImmediate(new IntVec3[] { cell.LocalCoords.ToGlobal(this) });
                     this.Map.LightingEngine.HandleImmediate(new IntVec3[] { cell.GetGlobalCoords(this) });
                     cell.Valid = true;
                     this.InvalidateSlice(cell.Z);
@@ -576,7 +564,6 @@ namespace Project1.Core.Simulation
         public void SetSunlight(int x, int y, int z, byte value)
         {
             this.Sunlight[GetCellIndex(x, y, z)] = value;
-            //this.GetLocalCell(x, y, z).Sunlight = value;
             var global = new IntVec3(this.Start.X + x, this.Start.Y + y, z);
             this.InvalidateLight(global);
         }
@@ -584,7 +571,6 @@ namespace Project1.Core.Simulation
         public void SetBlockLight(IntVec3 local, byte value)
         {
             this.BlockLight[GetCellIndex(local)] = value;
-            //this.Cells[index].Blocklight = value;
             var global = local + new IntVec3(this.Start.X, this.Start.Y, 0);
             this.InvalidateLight(global);
         }

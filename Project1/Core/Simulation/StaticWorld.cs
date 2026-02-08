@@ -11,16 +11,16 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Project1.Core.WorldGen;
-using Project1.Core.WorldGen;
 using Project1.Core.Rendering;
 using Project1.Core.Interfaces;
 using Project1.Core.World.WorldAreas;
-using Project1.Core.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Population;
 using Project1.Core.Helpers;
-using Project1.Core.Net;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Simulation
 {
@@ -60,9 +60,9 @@ namespace Project1.Core.Simulation
         public override ulong CurrentTick { get => this.currentTick; set => this.currentTick = value; }
 
         readonly PopulationManager PopulationManager;
-        public override void Tick(INetEndpoint net)
+        public override void Tick()
         {
-            this.PopulationManager.Update(net);
+            this.PopulationManager.Tick();
             this.Space.Tick();
             this.CurrentTick++;
         }

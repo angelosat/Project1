@@ -20,7 +20,7 @@ namespace Project1.Core.Quests
 
         public override int Budget => this.Count;
 
-        public override string Label => ItemDefOf.Coins.Label;
+        public override string Label => ItemDefOf.Coins.LabelReadable;
 
         internal override void Award(Actor actor)
         {

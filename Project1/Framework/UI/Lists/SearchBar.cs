@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Interfaces;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 using System;
 
 namespace Project1.Core.UI
@@ -60,7 +60,7 @@ namespace Project1.Core.UI
                 this.AddControls(this.IconClear);
             else if (this.Text?.Length == 0 && this.Controls.Contains(this.IconClear))
                 this.RemoveControls(this.IconClear);
-            this.List?.Filter(o => o.Label.ToLower().Contains(this.Text.ToLower()));
+            this.List?.Filter(o => o.LabelReadable.ToLower().Contains(this.Text.ToLower()));
         }
     }
 }

@@ -4,6 +4,8 @@ using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.UI;
 using Project1.Core.UI;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,9 +23,9 @@ namespace Project1.Core.Entities.Stats
         internal void SetValue(float value) => this._value = value;
         internal readonly BoneDef Source = source;
         internal GameObject Owner = owner;
-        internal string Label => $"{this.Def.Label}: {this.Value.ToString(this.Def.StringFormat)}";
+        internal string Label => $"{this.Def.LabelReadable}: {this.Value.ToString(this.Def.StringFormat)}";
         internal Control CreateGui() =>
-            new Label($"{this.Label} ({this.Source.Label})") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };//: {this.Owner.Body.FindBone(this.Source).Material.Label} x{this.Owner.Quality.Multiplier:0.00} from {this.Owner.Quality.Label} Quality)") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };
+            new Label($"{this.Label} ({this.Source.LabelReadable})") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };//: {this.Owner.Body.FindBone(this.Source).Material.Label} x{this.Owner.Quality.Multiplier:0.00} from {this.Owner.Quality.Label} Quality)") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };
     }
     class StatsComponent : EntityComp
     {
@@ -99,7 +101,7 @@ namespace Project1.Core.Entities.Stats
         internal override void GetInterface(GameObject gameObject, Control box)
         {
             var gui = GUITable ??= new TableScrollableCompact<StatDef>()
-                .AddColumn("name", "", 128, a => new Label(a.Label) { HoverText = a.Description })
+                .AddColumn("name", "", 128, a => new Label(a.LabelReadable) { HoverText = a.Description })
                 .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.CalculateFor(this.Owner).ToString()));
             gui.ClearItems();
             gui.AddItems(StatDef.NpcStatPackage);
@@ -109,7 +111,7 @@ namespace Project1.Core.Entities.Stats
         public override GroupBox GetGUI()
         {
             var gui = GUITable ??= new TableScrollableCompact<StatDef>()
-                .AddColumn("name", "", 64, a => new Label(a.Label))
+                .AddColumn("name", "", 64, a => new Label(a.LabelReadable))
                 .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.CalculateFor(this.Owner).ToString()));
             gui.ClearItems();
             gui.AddItems(StatDef.NpcStatPackage);
@@ -117,11 +119,6 @@ namespace Project1.Core.Entities.Stats
         }
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
-            //tooltip.AddControlsBottomLeft(new Label("by source"));
-            //foreach (var (source, list) in this.ContributionsBySource)
-            //    foreach (var stat in list)
-            //        tooltip.AddControlsBottomLeft(stat.CreateGui());
-            //tooltip.AddControlsBottomLeft(new Label("by stat"));
             foreach (var (source, list) in this.ContributionsByStat)
                 foreach (var stat in list)
                     tooltip.AddControlsBottomLeft(stat.CreateGui());
@@ -168,17 +165,12 @@ namespace Project1.Core.Entities.Stats
             var bonecount = r.ReadInt32();
             for (int i = 0; i < bonecount; i++)
             {
-                //var list = new List<StatContribution>();
                 var bone = r.ReadDef<BoneDef>();
-                //this.ContributionsBySource[bone] = list;
                 var count = r.ReadInt32();
                 for (int j = 0; j < count; j++)
                 {
                     var def = r.ReadDef<StatDef>();
-                    //var stat = new StatContribution(this.Owner, def, bone);
                     var value = r.ReadSingle();
-                    //stat.SetValue();
-                    //list.Add(stat);
                     this.Register(def, bone, value);
                 }
             }

@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Interfaces;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
@@ -29,7 +29,7 @@ namespace Project1.Core.UI
             
             public Node(IListCollapsibleDataSourceObservable node)
             {
-                this.Name = node.Label;
+                this.Name = node.LabelReadable;
                 this.ControlGetter = () => node.GetListControlGui();
                 this.Source = node;
                 this.Bind(node);
@@ -135,7 +135,7 @@ namespace Project1.Core.UI
                 {
                     var checkbox = new C();
                     checkbox.Tag = item;
-                    var label = new Label(item.Label);
+                    var label = new Label(item.LabelReadable);
                     var box = new GroupBox();
                     box.AddControlsHorizontally(checkbox, label);
                     onControlInit(item, checkbox);

@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.UI;
 
-namespace Project1.Core.Interfaces
+namespace Project1.Framework.UI
 {
     
     public interface ISlottable : ITooltippable
     {
-        //string GetName();
         string Name { get; }
         Icon GetIcon();
         Color GetSlotColor();

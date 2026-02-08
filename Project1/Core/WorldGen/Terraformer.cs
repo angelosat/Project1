@@ -3,12 +3,12 @@ using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Net;
-using Project1.Core.UI;
-using Project1.Core.WorldGen;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using Project1.Core.Simulation;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.WorldGen
 {
@@ -28,7 +28,7 @@ namespace Project1.Core.WorldGen
 
         public override string ToString()
         {
-            return this.Def.Label;
+            return this.Def.LabelReadable;
         }
         public virtual void Generate(MapBase map) { }//, Dictionary<IntVec3, double> gradients) { }
 

@@ -6,10 +6,9 @@ using System.Windows.Forms;
 using Project1.Core.Input;
 using Project1.Core.Net;
 using Project1.Core.Rendering;
-using Project1.Core;
 using Project1.Core.Base;
-using Project1.Core.UI;
-using Project1.Core.Net;
+using Project1.Framework.Input;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Screens
 {

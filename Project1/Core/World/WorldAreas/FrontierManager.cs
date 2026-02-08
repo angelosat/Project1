@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using static Project1.Core.World.WorldAreas.FrontierManager;
+using Project1.Framework.IO;
 
 namespace Project1.Core.World.WorldAreas
 {
@@ -155,7 +156,7 @@ namespace Project1.Core.World.WorldAreas
 
             if (actor.Net is not Server server)
                 return;
-            server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.Label}!");
+            server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.LabelReadable}!");
         }
      
         public FrontierDef PlaceAtRandom(Entity entity)

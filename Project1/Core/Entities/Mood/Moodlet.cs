@@ -1,11 +1,11 @@
-﻿using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.Interfaces;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Entities.Mood
 {

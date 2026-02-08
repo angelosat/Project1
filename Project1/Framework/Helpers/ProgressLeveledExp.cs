@@ -1,8 +1,8 @@
 ﻿using System;
-using System.IO;
 using Project1.Core.Base;
-using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.Helpers;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Helpers
 {
@@ -16,7 +16,6 @@ namespace Project1.Core.Helpers
             this.Level = level;
         }
 
-        //public int Level { get; private set; } = 1;
         int _level = 1;
         public int Level 
         {
@@ -31,20 +30,6 @@ namespace Project1.Core.Helpers
             }
         }
       
-        //public override float Max { get => GetAmountRequired(this.Level + 1); }
-
-        //public override float Value
-        //{
-        //    set
-        //    {
-        //        if (value >= this.Max)
-        //        {
-        //            value -= this.Max;
-        //            this.Level++;
-        //        }
-        //        base.Value = value;
-        //    }
-        //}
 
         int GetNextLvlProgress(int currentLvl) => (int)Math.Pow(2, currentLvl - 1) * this.BaseAmountToLevel;
 

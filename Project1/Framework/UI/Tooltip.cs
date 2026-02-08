@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Input;
-using Project1.Core.UI;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class Tooltip : Control
     {
@@ -33,7 +31,7 @@ namespace Project1.Core.UI
             get
             {
                 if (TooltipManager.MouseTooltips)
-                    return new Vector2(Math.Max(Math.Min(Controller.Instance.msCurrent.X / UIManager.Scale + Offset.X, UIManager.Width - Width), 0), Math.Max(Math.Min(Controller.Instance.msCurrent.Y / UIManager.Scale + Offset.Y, UIManager.Height - Height), 0));
+                    return new Vector2(System.Math.Max(System.Math.Min(Controller.Instance.msCurrent.X / UIManager.Scale + Offset.X, UIManager.Width - Width), 0), System.Math.Max(System.Math.Min(Controller.Instance.msCurrent.Y / UIManager.Scale + Offset.Y, UIManager.Height - Height), 0));
                 else
                     return new Vector2(UIManager.Width - Width - UIManager.BorderPx, UIManager.Height - Height - UIManager.BorderPx);
             }

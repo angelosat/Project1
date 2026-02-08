@@ -5,9 +5,10 @@ using Project1.Core.Entities;
 using Project1.Core.Gear;
 using Project1.Core.Resources;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Components
 {

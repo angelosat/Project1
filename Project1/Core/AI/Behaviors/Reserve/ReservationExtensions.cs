@@ -2,27 +2,13 @@
 using Project1.Core.Towns.Zones;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
-using Project1.Core;
 using Project1.Core.Entities;
+using Project1.Framework.Math;
 
 namespace Project1.Core.AI.Behaviors.Reserve
 {
     static public class ReservationExtensions
     {
-        //static public bool Reserve(this Actor obj, AITask task, TargetArgs target, int stackcount = -1)
-        //{
-        //    return obj.Map.Town.ReservationManager.Reserve(obj, task, target, stackcount);
-        //}
-        //static public bool Reserve(this Actor obj, TargetArgs target, int stackcount = -1)
-        //{
-        //    return obj.Map.Town.ReservationManager.Reserve(obj, target, stackcount);
-        //}
-
-        //static public bool Reserve(this Actor obj, AITask task, Vector3 target)
-        //{
-        //    var map = obj.Map;
-        //    return map.Town.ReservationManager.Reserve(obj, task, new TargetArgs(map, target), 1);
-        //}
         static public bool CanReach(this Actor actor, Zone zone) => actor.CanReach(zone[0]);
         static public bool CanReserve(this Actor obj, BlockEntity target)
         {

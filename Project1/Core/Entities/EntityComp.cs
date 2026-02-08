@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using Project1.Core.Interfaces;
 using Project1.Core.Legacy;
@@ -9,12 +8,14 @@ using Project1.Core.Net;
 using Project1.Core.Rendering;
 using Project1.Core.UI;
 using Project1.Core;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Simulation;
 using Project1.Core.Inventory;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Entities
 {
@@ -27,11 +28,11 @@ namespace Project1.Core.Entities
     public abstract class EntityComp : Inspectable
     {
         public int RuntimeIndex;
-        public override string Label => this.Name;
+        public override string LabelReadable => this.Name;
         public abstract string Name { get; }
         public override string ToString()
         {
-            return this.Label;
+            return this.LabelReadable;
         }
         internal Spec Defaults { get; private set; }
         public virtual void OnNameplateCreated(GameObject parent, Nameplate plate) { }

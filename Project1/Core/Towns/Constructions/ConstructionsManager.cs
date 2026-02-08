@@ -1,26 +1,25 @@
 ﻿using Project1.Core.Construction.Tools;
 using Project1.Core.Construction.UI;
-using Project1.Core.Towns;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Base;
 using Project1.Core.Blocks;
 using Project1.Core.Helpers;
-using Project1.Core.Input.Hotkeys;
 using Project1.Core.Input.Tools;
 using Project1.Core.Input.UI;
 using Project1.Core.Interfaces;
 using Project1.Core.Legacy.Crafting.Blocks;
 using Project1.Core.Net;
 using Project1.Core.Screens;
-using Project1.Core.UI;
 using Project1.Core.WorldGen;
-using Project1.Core;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
+using Project1.Core.Input;
 
 namespace Project1.Core.Towns.Constructions
 {
@@ -315,7 +314,7 @@ namespace Project1.Core.Towns.Constructions
         GroupBox UpdatePendingDesignationLabel(ConstructionParams pending)
         {
             this.PendingDesignationLabel.ClearControls();
-            this.PendingDesignationLabel.AddControlsLineWrap(Project1.Core.UI.Label.ParseNewNew("Pending Construction: ", pending));
+            this.PendingDesignationLabel.AddControlsLineWrap(Label.ParseNewNew("Pending Construction: ", pending));
             return this.PendingDesignationLabel;
         }
 
@@ -335,7 +334,7 @@ namespace Project1.Core.Towns.Constructions
             public IntVec3 Global;
             public int Orientation;
             public ProductMaterialPair Product;
-            public override string Label => this.Product.Block.Label;
+            public override string LabelReadable => this.Product.Block.LabelReadable;
 
             public ConstructionParams()
             {

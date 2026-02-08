@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.AI.Behaviors.Reserve;
+using Project1.Framework.Math;
 
 namespace Project1.Core.AI.Behaviors.Sleeping
 {

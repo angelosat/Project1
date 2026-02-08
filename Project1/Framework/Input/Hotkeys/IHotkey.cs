@@ -1,4 +1,4 @@
-﻿namespace Project1.Core.Input.Hotkeys
+﻿namespace Project1.Core.Input
 {
     public interface IHotkey
     {

@@ -1,7 +1,4 @@
-﻿using Project1.Core.UI;
-using Project1.Core.UI;
-
-namespace Project1.Core.Gui
+﻿namespace Project1.Framework.UI
 {
     static class GuiHelper
     {

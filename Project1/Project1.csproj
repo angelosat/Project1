@@ -12,8 +12,8 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Framework\UI\Hud\QuickButtonBar.cs" />
-    <Compile Remove="Framework\UI\Hud\SelectionManager.cs" />
+    <Compile Remove="Core\UI\Hud\QuickButtonBar.cs" />
+    <Compile Remove="Core\UI\Hud\SelectionManager.cs" />
     <Compile Remove="Framework\Legacy\Crafting\ReagentFilters\IsOfSubType.cs" />
     <Compile Remove="Core\Towns\Forestry\ChoppingManager.cs" />
   </ItemGroup>

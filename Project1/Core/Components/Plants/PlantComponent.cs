@@ -5,13 +5,7 @@ using Project1.Core.Plants;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
-using Project1.Core.Helpers;
 using Project1.Core.Loot;
-using Project1.Core.Materials;
-using Project1.Core.UI;
-using Project1.Core.UI.Primitives;
-using Project1.Core;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using Project1.Core.Resources;
@@ -19,6 +13,10 @@ using Project1.Core.Tools;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Animations;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Components.Plants
 {
@@ -289,8 +287,8 @@ namespace Project1.Core.Components.Plants
     
         internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
-            var guisunlight = UI.Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"));
-            var guigrowth = UI.Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));
+            var guisunlight = Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"));
+            var guigrowth = Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));
             var bargrowth = new Bar(this.GrowthBody) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthBody.Percentage.ToString("##0%") };
             var boxBars = new GroupBox().AddControls(bargrowth);
 

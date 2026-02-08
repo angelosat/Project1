@@ -10,14 +10,14 @@ using Project1.Core.Legacy.Crafting.Packets;
 using Project1.Core.Materials;
 using Project1.Core.Net;
 using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Legacy.Crafting
 {
@@ -48,7 +48,7 @@ namespace Project1.Core.Legacy.Crafting
         CraftMode Mode = CraftMode.XTimes;
 
         public string Name => this.Reaction.Name;
-        public override string Label => this.Reaction.Label;
+        public override string LabelReadable => this.Reaction.LabelReadable;
         public static CraftOrder GetOrder(int id)
         {
             return References[id];
@@ -417,7 +417,7 @@ namespace Project1.Core.Legacy.Crafting
             var btnDown = new ButtonIcon(Icon.ArrowDown, MoveDown) { Location = btnUp.BottomLeft };
             box.AddControls(btnUp, btnDown);
 
-            var orderName = new Label(this.Reaction.Label) { Location = btnUp.TopRight };
+            var orderName = new Label(this.Reaction.LabelReadable) { Location = btnUp.TopRight };
             var comboFinishMode = new ComboBoxNewNew<CraftOrderFinishMode>(CraftOrderFinishMode.AllModes, 100, c => c.GetString(this), ChangeFinishMode, () => this.FinishMode) { Location = orderName.BottomLeft };
 
             box.AddControls(orderName,
@@ -539,7 +539,7 @@ namespace Project1.Core.Legacy.Crafting
             }
 
             container.Tag = this;
-            container.GetWindow().SetTitle($"\"{this.Label}\" details");
+            container.GetWindow().SetTitle($"\"{this.LabelReadable}\" details");
         }
 
         public static CraftOrder Create(IDataReader r) => new CraftOrder().Read(r);

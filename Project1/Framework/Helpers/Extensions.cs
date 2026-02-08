@@ -15,6 +15,8 @@ using Project1.Core.UI;
 using Project1.Core.Graphics;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework.Math;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Helpers
 {
@@ -409,14 +411,7 @@ namespace Project1.Core.Helpers
             var names = path.Split('/');
             document.Root.GetOrCreateElements(names).SetValue(value.ToString());
         }
-        public static Texture2D ToTexture(this RenderTarget2D render)
-        {
-            var data = new Color[render.Width * render.Height];
-            render.GetData(data);
-            var texture = new Texture2D(render.GraphicsDevice, render.Width, render.Height);
-            texture.SetData(data);
-            return texture;
-        }
+        
         public static Texture2D ToGrayscale(this Texture2D tex)
         {
             Color[] array = new Color[tex.Width * tex.Height];

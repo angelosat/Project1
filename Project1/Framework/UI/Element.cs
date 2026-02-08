@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace Project1.Core
+namespace Project1.Framework.UI
 {
     public abstract class Element
     {

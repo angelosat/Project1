@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Security.Policy;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class ListBoxObservable<TObject> : GroupBox, IListSearchable<TObject>
       where TObject : IListable

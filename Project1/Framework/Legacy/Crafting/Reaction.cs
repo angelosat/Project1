@@ -9,6 +9,7 @@ using Project1.Core.UI;
 using Project1.Core.UI;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.UI;
 
 namespace Project1.Core
 {
@@ -94,7 +95,7 @@ namespace Project1.Core
 
         public Control GetListControlGui()
         {
-            return new Label(this.Label);
+            return new Label(this.LabelReadable);
         }
         int BaseWork = 10;// 100;
         readonly List<(string name, WorkAmountGetter getter)> WorkGetters = new();
@@ -124,7 +125,6 @@ namespace Project1.Core
         {
             var work = this.BaseWork;
             foreach (var (material, getter) in this.WorkGetters)
-                //work = getter(work, ingredients[material].Object);
                 work += getter(this.BaseWork, ingredients[material].Object);
             return work;
         }

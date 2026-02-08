@@ -5,6 +5,8 @@ using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.UI;
 using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 namespace Project1.Core.Effects
 {
     public record EntityEffectWrapper(EffectDef Def, Def Target, int Budget, int Rate) : ISaveableNewNew<EntityEffectWrapper>, ISerializableNew<EntityEffectWrapper>
@@ -45,9 +47,6 @@ namespace Project1.Core.Effects
             var value = r.ReadInt32();
             var rate = r.ReadInt32();
             return new(def, target, value, rate);
-            //var e = new EntityEffectWrapper();
-            //e.Def = r.ReadDef<EffectDef>();
-            //return e;
         }
 
         public SaveTag Save(string name = "")

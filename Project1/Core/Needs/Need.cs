@@ -5,40 +5,32 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using Project1.Core.UI.Primitives;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Entities;
 using Project1.Core.AI;
+using Project1.Framework.UI;
+using Project1.Framework.Interfaces;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Needs
 {
-    public sealed class Need : MetricWrapper, IProgressBar, /*ISaveable,*/ IDefWrapper<NeedDef>, INamed, ISerializableNew<Need>, ISaveableNewNew<Need>//, ISaveableNew,
+    public sealed class Need : MetricWrapper, IProgressBar, IDefWrapper<NeedDef>, INamed, ISerializableNew<Need>, ISaveableNewNew<Need>
     {
-        //Dictionary<EffectDef, List<NeedMod>> ModsNew = [];
         internal void AddMod(EffectDef needLetDef, float ticksUntilChange)
         {
             if (this.Mods.Any(n => n.Def == needLetDef))
                 throw new Exception();
-            var needLet = new NeedMod(needLetDef, 1f / ticksUntilChange);//, value, rate);
+            var needLet = new NeedMod(needLetDef, 1f / ticksUntilChange);
             this.Mods.Add(needLet);
         }
-        //internal void AddMod(EntityEffectWrapper source, float rate)
-        //{
-        //    if (this.Mods.Any(n => n.Def == source.Def))
-        //        throw new Exception();
-        //    var needLet = new NeedMod(source.Def, rate);//, value, rate);
-        //    this.Mods.Add(needLet);
-        //}
         internal void RemoveMod(EffectDef def) => this.Mods.RemoveAll(n => n.Def == def);
         
         public NeedDef NeedDef;
         public enum Types { Hunger, Water, Sleep, Achievement, Work, Brains, Curiosity, Social, Energy }
         const string Format = "P0";
-        public string Name => this.NeedDef.Label;
+        public string Name => this.NeedDef.LabelReadable;
         public float DecayDelay, DecayDelayMax = 3;
         public float _Value;
         public double LastTick;
@@ -152,7 +144,6 @@ namespace Project1.Core.Needs
             w.Write(this.Mod);
             w.Write(this.DecayDelay);
             this.Mods.Write(w);
-            //this.ModsNew.WriteNew(w, k => k.Write(w), v => v.Write(w));
         }
         public Need Read(IDataReader r)
         {
@@ -161,7 +152,6 @@ namespace Project1.Core.Needs
             this.Mod = r.ReadSingle();
             this.DecayDelay = r.ReadSingle();
             this.Mods.Read(r);
-            //this.ModsNew.ReadFromFlat(r, r => r.ReadDef<EffectDef>(), r => r.ReadListNew<NeedMod>());// new List<NeedMod>().LoadNew(r)); //
             return this;
         }
         static public Need Create(IDataReader r) => new Need().Read(r);
@@ -174,17 +164,13 @@ namespace Project1.Core.Needs
             tag.Add(this.Mod.Save("Mod"));
             tag.Add(this.DecayDelay.Save("DecayTimer"));
             tag.Add(this.Mods.SaveNewBEST("Mods"));
-            //tag.Add(this.ModsNew.Save("ModsDic", k => k.Save(), v => v.Save()));
             return tag;
         }
       
         static public Need Create(SaveTag tag)
         {
             var need = new Need();
-            //tag.TryGetTagValue<string>("Def", v => need.NeedDef = Def.GetDef<NeedDef>(v));
             need.NeedDef = tag.LoadDef<NeedDef>("Def");
-            //tag.TryGetTagValueOrDefault<float>("Value", out need._Value);
-            //need.Value = tag.LoadInt("Value");
             need.Value = tag.LoadInt("Value");
             tag.TryGetTagValueOrDefault<float>("Mod", out need.Mod);
             tag.TryGetTagValueOrDefault<float>("DecayTimer", out need.DecayDelay);

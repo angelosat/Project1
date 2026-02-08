@@ -2,6 +2,8 @@
 using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 using System.Collections.Generic;
 using System.IO;
 
@@ -15,8 +17,6 @@ namespace Project1.Core.Net
 
         private PacketBuilder(BinaryWriter writer, int pType)
         {
-            //if (pType == 40050)
-            //    "test".ToConsole();
             this._writer = writer;
             writer.Write(pType);
         }

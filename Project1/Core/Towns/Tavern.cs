@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.UI;
 using Project1.Core.Blocks;
 using Project1.Core.Components;
 using Project1.Core.Base;
@@ -10,6 +9,9 @@ using Project1.Core.Towns.Shops.Blocks;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Helpers;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Towns
 {

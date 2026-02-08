@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Interfaces;
-using Project1.Core.UI;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class BarSigned : ButtonBase
     {
@@ -34,7 +29,7 @@ namespace Project1.Core.UI
             var middle = this.Width * .5f;
             var x = this.Object.Percentage > 0 ? middle : middle * (1 + percentage);
             var color = this.Object.Percentage > 0 ? Color.Lime : Color.Red;
-            var w = (int)(this.Width * Math.Abs(percentage) / 2f);
+            var w = (int)(this.Width * System.Math.Abs(percentage) / 2f);
             sb.Draw(this.BackgroundTexture, new Vector2(x, 0), new Rectangle(0, 0, w, this.Height), color);
             var txt = (this.TextFunc != null ? this.TextFunc() : "");
             UIManager.DrawStringOutlined(sb, Name + txt, Dimensions * 0.5f, new Vector2(0.5f));

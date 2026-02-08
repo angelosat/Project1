@@ -5,6 +5,8 @@ using Project1.Core.UI;
 using Project1.Core.UI;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Attributes
 {
@@ -41,7 +43,7 @@ namespace Project1.Core.Attributes
         }
 
         TableScrollableCompact<AttributeRuntime> GUITableAttributes = new TableScrollableCompact<AttributeRuntime>()
-                .AddColumn("name", "", 64, a => new Label(a.AttributeDef.Label)
+                .AddColumn("name", "", 64, a => new Label(a.AttributeDef.LabelReadable)
                 {
                     TooltipFunc = (t) =>
                     {
@@ -67,7 +69,7 @@ namespace Project1.Core.Attributes
         internal Control GetCreationGui()
         {
             var table = new TableScrollableCompact<AttributeRuntime>()
-               .AddColumn(null, "name", 80, s => new Label(s.AttributeDef.Label), 0)
+               .AddColumn(null, "name", 80, s => new Label(s.AttributeDef.LabelReadable), 0)
                .AddColumn(null, "value", 16, s => new Label() { TextFunc = () => s.Level.ToString() }, 0);
 
             table.AddItems(this.Attributes.Values);

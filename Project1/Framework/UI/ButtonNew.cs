@@ -1,11 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core;
-using Project1.Core.UI;
 using System;
-using System.Windows.Forms;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class ButtonNew : ButtonBase
     {
@@ -30,13 +27,11 @@ namespace Project1.Core.UI
             set
             {
                 if (this.AutoSize)
-                    base.Width = Math.Max((int)this.Font.MeasureString(Text).X + this.BackgroundStyle.Left.Width + this.BackgroundStyle.Right.Width + 2, value);
+                    base.Width = System.Math.Max((int)this.Font.MeasureString(Text).X + this.BackgroundStyle.Left.Width + this.BackgroundStyle.Right.Width + 2, value);
                 else
-                    base.Width = Math.Max(base.Width, value);
+                    base.Width = System.Math.Max(base.Width, value);
             }
         }
-        //public override Vector2 ScreenLocation => base.ScreenLocation + Vector2.UnitY * (this.IsPushed ? 1 : 0);
-        //public override Vector2 ClientLocation { get => base.ClientLocation + Vector2.UnitY * (this.IsPushed ? 1 : 0); set => base.ClientLocation = value; }
 
         public Color IdleColor = Color.White * 0.1f;
         Color _TexBackgroundColor;
@@ -103,7 +98,7 @@ namespace Project1.Core.UI
             : this()
         {
             Text = text;
-            this.Width = Math.Max(this.Width, width);
+            this.Width = System.Math.Max(this.Width, width);
         }
         public ButtonNew(Vector2 location) : this() { this.Location = location; Text = ""; Height = UIManager.DefaultButtonHeight; }
         public override void Initialize()

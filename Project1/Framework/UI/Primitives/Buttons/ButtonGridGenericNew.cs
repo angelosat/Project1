@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
+using Project1.Framework.Interfaces;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {

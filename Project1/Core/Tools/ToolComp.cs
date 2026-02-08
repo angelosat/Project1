@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.UI;
-using Project1.Core.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,7 @@ using Project1.Core.Entities.Stats;
 using Project1.Core.Animations;
 using Project1.Core.Towns.Crafting;
 using Project1.Core.Materials;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Tools
 {
@@ -106,7 +106,7 @@ namespace Project1.Core.Tools
             var box = new GroupBox();
             box.AddControlsBottomLeft(new Label(this.ToolUse));
             box.AddControlsBottomLeft(new Label($"Speed: {this.BaseSpeed:0.00}"));
-            box.AddControlsBottomLeft(new Label($"{this.Profile.ToolUse.Label} Effectiveness: {this.BaseWork:0}"));
+            box.AddControlsBottomLeft(new Label($"{this.Profile.ToolUse.LabelReadable} Effectiveness: {this.BaseWork:0}"));
             box.AddControlsBottomLeft(new Label(StatSystem.ToolToInteraction[this.Profile.ToolUse]));
             return box;
         }

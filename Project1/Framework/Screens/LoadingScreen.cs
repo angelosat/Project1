@@ -1,8 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
-using Project1.Core.UI;
-using Project1.Core;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Screens
 {

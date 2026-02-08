@@ -8,6 +8,7 @@ using Project1.Core.UI;
 using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Entities.Stats
 {

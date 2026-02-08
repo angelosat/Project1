@@ -4,11 +4,8 @@ using Project1.Core.AI.Packets;
 using Project1.Core.Base;
 using Project1.Core.Components;
 using Project1.Core.Helpers;
-using Project1.Core.Input.Hotkeys;
 using Project1.Core.Net;
 using Project1.Core.Screens;
-using Project1.Core;
-using Project1.Core.Net;
 using Project1.Core.Entities;
 
 namespace Project1.Core.Input.Tools

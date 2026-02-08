@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Simulation;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Framework.Math;
 
 namespace Project1.Core.AI.Behaviors.Pathing
 {

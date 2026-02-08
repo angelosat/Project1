@@ -1,5 +1,4 @@
-﻿using Project1.Core.Base;
-using System;
+﻿using Project1.Framework.Math;
 using System.Collections.Generic;
 namespace Project1.Core.Input.Tools.Building
 {

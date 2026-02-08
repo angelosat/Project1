@@ -4,6 +4,8 @@ using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Materials;
 using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Legacy
 {
@@ -13,7 +15,7 @@ namespace Project1.Core.Legacy
         public MaterialDef Material;
         public int Amount;
 
-        public override string Label => $"{this.Amount}x {this.Material.Label} {this.Item.Label}";
+        public override string LabelReadable => $"{this.Amount}x {this.Material.LabelReadable} {this.Item.LabelReadable}";
 
         public ItemMaterialAmount()
         {
@@ -46,11 +48,11 @@ namespace Project1.Core.Legacy
         }
         static public string GetText(ItemDef def, MaterialDef material, int amount)
         {
-            return $"{amount}x {material.Label} {def.Label}"; // TODO add a method to itemdefs that return the final name of the item depending on materials etc
+            return $"{amount}x {material.LabelReadable} {def.LabelReadable}"; // TODO add a method to itemdefs that return the final name of the item depending on materials etc
         }
         public string GetText()
         {
-            return $"{this.Amount}x {this.Material.Label} {this.Item.Label}"; // TODO add a method to itemdefs that return the final name of the item depending on materials etc
+            return $"{this.Amount}x {this.Material.LabelReadable} {this.Item.LabelReadable}"; // TODO add a method to itemdefs that return the final name of the item depending on materials etc
         }
         public void Save(SaveTag save, string name)
         {

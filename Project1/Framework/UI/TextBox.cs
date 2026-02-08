@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
-using Project1.Core.UI;
 using System;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class TextEventArgs : EventArgs
     {
@@ -33,7 +32,7 @@ namespace Project1.Core.UI
         int CursorPosition
         {
             get => this._cursorPosition;
-            set => this._cursorPosition = Math.Max(0, Math.Min(this.Text.Length, value));
+            set => this._cursorPosition = System.Math.Max(0, System.Math.Min(this.Text.Length, value));
         }
         public override string Text
         {
@@ -100,7 +99,6 @@ namespace Project1.Core.UI
         void CursorTimer_Tick()
         {
             this.CursorVisible = !this.CursorVisible;
-            //this.Invalidate();
         }
 
         public override int Height
@@ -142,7 +140,7 @@ namespace Project1.Core.UI
                     {
                         this.CursorTimer = CursorTimerMax;
                         this.CursorVisible = true;
-                        this.CursorPosition = Math.Min(this.CursorPosition, this.Text.Length);
+                        this.CursorPosition = System.Math.Min(this.CursorPosition, this.Text.Length);
                     }
                 }
                 else

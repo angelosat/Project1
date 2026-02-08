@@ -1,17 +1,18 @@
 ﻿using Project1.Core.Base;
 using Project1.Core.Interfaces;
-using Project1.Core.UI.Primitives;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
 using System;
 using System.Globalization;
 
-namespace Project1.Core.Helpers
+namespace Project1.Framework.Helpers
 {
     public class Progress : IProgressBar
     {
         public virtual float Min { get; set; }
         public virtual float Max { get; set; }
         float _Value;
-        public virtual float Value { get => this._Value; set => this._Value = Math.Max(this.Min, Math.Min(this.Max, value)); }
+        public virtual float Value { get => this._Value; set => this._Value = System.Math.Max(this.Min, System.Math.Min(this.Max, value)); }
         public virtual float Percentage
         {
             get => this.Value / this.Max;

@@ -6,7 +6,6 @@ using Project1.Core.Graphics.Particles;
 using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using Project1.Core;
-using Project1.Core.Components;
 using Project1.Core.Entities;
 
 namespace Project1.Core.Components

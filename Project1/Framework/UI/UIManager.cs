@@ -11,8 +11,12 @@ using Project1.Core.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Graphics;
 using Project1.Core.UI.Settings;
+using Project1.Core.UI.Hud;
+using Project1.Framework.Input;
+using Project1.Framework.Math;
+using Project1.Core;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class UIManager : IDisposable, IKeyEventHandler
     {
@@ -49,7 +53,7 @@ namespace Project1.Core.UI
         {
             get
             {
-                var lerp = (float)Math.Cos(Math.PI * 2 * FlashingTimer / 120f);
+                var lerp = (float)System.Math.Cos(System.Math.PI * 2 * FlashingTimer / 120f);
                 lerp += 1;
                 lerp /= 2;
                 return lerp;
@@ -57,7 +61,7 @@ namespace Project1.Core.UI
         }
         public static float GetFlashingValue(float speed = 120f)
         {
-                var lerp = (float)Math.Cos(Math.PI * 2 * FlashingTimer / speed);
+                var lerp = (float)System.Math.Cos(System.Math.PI * 2 * FlashingTimer / speed);
                 lerp += 1;
                 lerp /= 2;
                 return lerp;

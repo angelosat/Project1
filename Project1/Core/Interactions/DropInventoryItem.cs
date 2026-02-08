@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Interactions;
-using Project1.Core.Net.Packets;
+using Project1.Core.Networking.Entities;
 
 namespace Project1.Core.Interactions
 {

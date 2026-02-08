@@ -10,7 +10,8 @@ using System;
 using System.IO;
 using System.Linq;
 using Project1.Core.Simulation;
-using Project1.Core.Net.Simulation;
+using Project1.Core.Networking.Simulation;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Base
 {

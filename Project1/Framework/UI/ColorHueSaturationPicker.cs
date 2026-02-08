@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using System;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class ColorHueSaturationPicker : PictureBox
     {
@@ -52,11 +51,9 @@ namespace Project1.Core.UI
             base.Update();
             if (!this.PressedNew)
                 return;
-            //if (!this.MouseHover)
-            //    return;
             var pos = UIManager.Mouse - this.ScreenLocation;
-            var x = (int)Math.Max(0, Math.Min(ColorWheel.Width - 1, pos.X));
-            var y = (int)Math.Max(0, Math.Min(ColorWheel.Height - 1, pos.Y));
+            var x = (int)System.Math.Max(0, System.Math.Min(ColorWheel.Width - 1, pos.X));
+            var y = (int)System.Math.Max(0, System.Math.Min(ColorWheel.Height - 1, pos.Y));
 
             this.Selected = Colors[y * ColorWheel.Width + x];
             this.SelectedCoords = new Vector2(x, y);
@@ -107,8 +104,8 @@ namespace Project1.Core.UI
             float delta, min;
             //double h = 0, s, v;
             h = 0;
-            min = Math.Min(Math.Min(r, g), b);
-            v = Math.Max(Math.Max(r, g), b);
+            min = System.Math.Min(System.Math.Min(r, g), b);
+            v = System.Math.Max(System.Math.Max(r, g), b);
             delta = v - min;
 
             if (v == 0.0)
@@ -145,7 +142,7 @@ namespace Project1.Core.UI
                 return;
             }
             h /= 60;            // sector 0 to 5
-            i = (int)Math.Floor(h);
+            i = (int)System.Math.Floor(h);
             f = h - i;          // factorial part of h
             p = v * (1 - s);
             q = v * (1 - s * f);

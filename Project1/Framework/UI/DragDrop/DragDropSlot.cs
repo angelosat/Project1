@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Entities;
 using Project1.Core.Base;
 using Project1.Core.Input;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 
 namespace Project1.Core
 {
@@ -38,7 +38,7 @@ namespace Project1.Core
             var screenLocation = Controller.Instance.MouseLocation / UIManager.Scale;
             if (this.Texture is not null)
                 sb.Draw(this.Texture, screenLocation, Color.White);
-            UIManager.DrawStringOutlined(sb, this.DraggedTarget.Slot.Object.StackSize.ToString(), screenLocation + new Vector2(UI.Slot.DefaultHeight), Vector2.One, UIManager.FontBold);
+            UIManager.DrawStringOutlined(sb, this.DraggedTarget.Slot.Object.StackSize.ToString(), screenLocation + new Vector2(UI.Slots.Slot.DefaultHeight), Vector2.One, UIManager.FontBold);
         }
     }
 }

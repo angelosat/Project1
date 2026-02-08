@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Media;
 using Project1.Core.Input;
 using Project1.Core.Blocks;
 using Project1.Core.Screens;
-using Project1.Core.Interfaces;
 using Project1.Core.Towns;
 using Project1.Core.UI;
 using Project1.Core.AI;
@@ -21,6 +20,7 @@ using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.Animations;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Base
 {
@@ -190,7 +190,7 @@ namespace Project1.Core.Base
             // TODO put these in each respective initialize/loadcontent call above
             Sprite.Atlas.Bake();
             Block.Atlas.Bake();
-            UIManager.Atlas.Initialize();//.Bake();
+            UIManager.Atlas.Initialize(this.GraphicsDevice);//.Bake();
         }
 
         /// <summary>

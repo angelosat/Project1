@@ -1,14 +1,14 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Project1.Core.Components;
 using System.Linq;
 using Project1.Core.Needs;
 using Project1.Core.Effects;
 using Project1.Core.Blocks;
 using Project1.Core.Interactions;
-using Project1.Core.Base;
 using Project1.Core.Simulation;
 using Project1.Core.Animations;
+using Project1.Core.Entities;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {

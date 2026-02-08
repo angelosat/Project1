@@ -6,6 +6,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Towns.Stockpiles
 {
@@ -15,19 +16,6 @@ namespace Project1.Core.Towns.Stockpiles
         {
             return StockpileAIHelper.IsValidStorage(item, storage);
         }
-
-        //public static bool IsValidHaulDestination(this TargetArgs destination, MapBase map, GameObject item)
-        //{
-        //    if (StockpileAIHelper.IsValidStorage(item, destination))
-        //        return true;
-        //    if (destination.Type == TargetType.Position &&
-        //        (map.Town.ZoneManager.GetZoneAt<GrowingZone>(destination.Global)?.IsValidSeed(item) ?? false))
-        //        return true;
-        //    var block = map.GetBlock(destination.Global);
-        //    if (block.IsValidHaulDestination(map, destination.Global, item))
-        //        return true;
-        //    return false;
-        //}
         public static bool IsValidHaulDestinationNew(this TargetArgs destination, MapBase map, GameObject item)
         {
             var pos = (IntVec3)destination.Global;

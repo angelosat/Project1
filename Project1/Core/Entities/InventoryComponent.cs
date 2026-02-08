@@ -14,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Entities
 {
@@ -541,7 +543,6 @@ namespace Project1.Core.Entities
         public override string ToString()
         {
             var text = base.ToString() +
-                //'\n' + this.Slots.ToStringFull() +
                 '\n' + this.HaulContainer.ToStringFull();
             ;
             return text;

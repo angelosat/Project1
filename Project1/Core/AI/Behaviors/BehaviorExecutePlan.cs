@@ -6,6 +6,8 @@ using Project1.Core.Towns.Designations;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.AI.Behaviors
 {
@@ -258,16 +260,5 @@ namespace Project1.Core.AI.Behaviors
         {
             return this.Actor.Map.Town.ReservationManager.ReserveAsManyAsPossible(this.Actor, this.Plan, this.Plan.GetTarget(index), desiredAmount);
         }
-
-        //internal void SyncToClients(IDataWriter w)
-        //{
-        //    this.Task.SyncToClients(w);
-        //}
-        //internal void SyncFromServer(NetEndpoint provider, IDataReader r)
-        //{
-        //    var plan = new Plan();
-        //    plan.SyncFromServer(provider, r);
-        //    this.Task = plan;
-        //}
     }
 }

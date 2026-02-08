@@ -4,10 +4,12 @@ using Project1.Core.Interfaces;
 using Project1.Core.Materials;
 using Project1.Core.UI;
 using Project1.Core.Components;
-using Project1.Core.UI;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Resources
 {
@@ -118,12 +120,10 @@ namespace Project1.Core.Resources
         }
         public override void Write(IDataWriter writer)
         {
-            //this.Resources.Values.Write(writer);
             writer.WriteValues(this.Resources);
         }
         public override void Read(IDataReader reader)
         {
-            //this.Resources.Read(reader);
             reader.ReadDefWrappers(this.Resources);
             this.Resolve();
         }
@@ -131,7 +131,6 @@ namespace Project1.Core.Resources
         internal Resource GetResource(ResourceDef def)
         {
             return this.Resources[def];
-            //return this.Resources.FirstOrDefault(r => r.ResourceDef == def);
         }
         [InspectorHidden]
         public Resource this[ResourceDef def] => this.GetResource(def);

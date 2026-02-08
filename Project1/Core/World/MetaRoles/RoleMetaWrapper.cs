@@ -6,6 +6,7 @@ using Project1.Core.Interfaces;
 using Project1.Core.Simulation;
 using System;
 using System.Runtime.CompilerServices;
+using Project1.Framework.IO;
 
 namespace Project1.Core.World.MetaRoles
 {

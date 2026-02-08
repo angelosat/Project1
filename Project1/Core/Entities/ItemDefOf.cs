@@ -119,7 +119,7 @@ namespace Project1.Core.Entities
             GearType = GearTypeDefOf.Mainhand,
             DefaultMaterial = MaterialDefOf.Iron,
             CraftingProperties = CraftingProperties.ToolCraftingProperties,
-            NameGetter = e => e.Def.Label,
+            NameGetter = e => e.Def.LabelReadable,
             VariantType = typeof(ToolProfileDef),
             StorageFilterVariations = Def.GetDefs<ToolProfileDef>(),
             VariationGetter = e => e.Def,

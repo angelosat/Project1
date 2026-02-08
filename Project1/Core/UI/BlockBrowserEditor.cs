@@ -6,7 +6,8 @@ using Project1.Core.Input;
 using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
-using Project1.Core.UI;
+using Project1.Core.UI.Slots;
+using Project1.Framework.UI;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -69,7 +70,7 @@ namespace Project1.Core.UI
                     mysb.Flush();
                 };
                 slot.CustomTooltip = true;
-                slot.HoverText = $"{cell.Block.BlockDef.Label}:{cell.Material}";
+                slot.HoverText = $"{cell.Block.BlockDef.LabelReadable}:{cell.Material}";
             })
             { Location = this.Panel_Variants.Controls.BottomLeft };
             this.Panel_Variants.Controls.Add(this.GridVariations2);

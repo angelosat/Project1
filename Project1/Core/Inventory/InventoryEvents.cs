@@ -3,6 +3,7 @@ using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using System;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Inventory
 {

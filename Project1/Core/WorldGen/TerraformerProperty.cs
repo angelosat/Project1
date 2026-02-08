@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 using System;
 
 namespace Project1.Core.WorldGen
@@ -11,7 +10,7 @@ namespace Project1.Core.WorldGen
         public readonly float DefaultValue;
         public float Min;
         public float Max;
-        public float Step;// { get; set; }
+        public float Step;
 
         float _value;
         public float Value
@@ -19,8 +18,6 @@ namespace Project1.Core.WorldGen
             get => this._value;
             set
             {
-                //_Value = Math.Max(0, Math.Min(MapBase.MaxHeight, value));
-                //_Value = Math.Max(this.Min, Math.Min(this.Max, value));
                 var v = Math.Round(value / this.Step) * this.Step;
                 this._value = (float)Math.Max(this.Min, Math.Min(this.Max, v));
             }

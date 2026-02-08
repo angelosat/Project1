@@ -2,13 +2,12 @@
 using Project1.Core.Entities;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Constructions.Categories;
-using Project1.Core.Base;
 using Project1.Core.Blocks;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
-using Project1.Core.Materials;
 using Project1.Core.Simulation;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -48,14 +47,6 @@ namespace Project1.Core
         protected override void OnDeconstruct(GameObject actor, Vector3 global)
         {
         }
-        //internal override IEnumerable<IntVec3> GetOperatingPositions(Cell cell)
-        //{
-        //    yield return new IntVec3(-1, 0, 0);
-        //    yield return new IntVec3(1, 0, 0);
-        //    yield return new IntVec3(0, -1, 0);
-        //    yield return new IntVec3(0, 1, 0);
-        //}
-
         protected override void OnBlockBelowChanged(MapBase map, IntVec3 global)
         {
             map.GetBlock(global.Below, out var cell);

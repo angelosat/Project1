@@ -3,18 +3,16 @@ using System.Windows.Forms;
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using Project1.Core.UI;
-using Project1.Core;
 using Project1.Core.Net;
 using Project1.Core.Net.Packets;
 using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Core.Base;
-using Project1.Core.UI;
-using Project1.Core.Helpers;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework.Input;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Input
 {

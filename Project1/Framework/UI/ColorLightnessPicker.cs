@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using System;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class ColorLightnessPicker : PictureBox
     {
@@ -53,8 +52,8 @@ namespace Project1.Core.UI
             //if (!this.MouseHover)
             //    return;
             Vector2 pos = UIManager.Mouse - this.ScreenLocation;
-            var x = (int)Math.Max(0, Math.Min(GradientTexture.Width - 1, pos.X));
-            var y = (int)Math.Max(0, Math.Min(GradientTexture.Height - 1, pos.Y));
+            var x = (int)System.Math.Max(0, System.Math.Min(GradientTexture.Width - 1, pos.X));
+            var y = (int)System.Math.Max(0, System.Math.Min(GradientTexture.Height - 1, pos.Y));
 
             this.Selected = Gradient[y * GradientTexture.Width + x];
             this.SelectedCoords = new Vector2(x, y);

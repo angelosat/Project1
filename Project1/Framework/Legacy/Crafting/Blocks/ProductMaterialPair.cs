@@ -5,6 +5,8 @@ using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
 using Project1.Core.Tools;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Legacy.Crafting.Blocks
 {
@@ -38,17 +40,14 @@ namespace Project1.Core.Legacy.Crafting.Blocks
         {
             this.Block = tag.LoadDef<BlockDef>("Product").Worker;
             this.Data = tag.TagValueOrDefault<byte>("Data", 0);
-            //this.Requirement = new ItemMaterialAmount(tag["Requirement"]);
             tag.TryGetTag("Requirement", t => this.Requirement = new ItemMaterialAmount(t));
         }
 
         internal MaterialDef Material => this.Requirement?.Material;
 
-        public override string ToString() => $"Type: {this.Block.Label}\nData: {this.Data}";
+        public override string ToString() => $"Type: {this.Block.LabelReadable}\nData: {this.Data}";
 
-        //public override string Label => $"{this.Requirement.Material.Label} {this.Requirement.Item.Label} {0} / {this.Requirement.Amount}";
-        public override string Label => this.Requirement.Label;// $"{this.Requirement.Amount}x {this.Requirement.Material.Label} {this.Requirement.Item.Label}";
-
+        public override string LabelReadable => this.Requirement.LabelReadable;
         public string GetName() => this.Requirement.ToString();
 
         public ToolUseDef GetSkill()

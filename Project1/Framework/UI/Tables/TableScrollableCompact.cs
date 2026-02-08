@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class TableScrollableCompact<TObject> : GroupBox where TObject : class
     {

@@ -1,8 +1,7 @@
-﻿using Project1.Core.Input.Hotkeys;
-using System;
+﻿using System;
 using System.Xml.Linq;
 
-namespace Project1.Core
+namespace Project1.Core.Input
 {
     partial class HotkeyManager
     {

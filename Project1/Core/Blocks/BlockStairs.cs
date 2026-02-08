@@ -10,6 +10,7 @@ using Project1.Core.Towns.Constructions.Categories;
 using Project1.Core.Graphics;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -85,7 +86,7 @@ namespace Project1.Core
         {
             if (this == BlockDefOf.Air.Worker)
                 return null;
-            var material = mat.ColorVector;// this.GetColorVector(data);
+            var material = mat.ColorVector;
             var token = this.GetToken(variation, orientation, (int)camera.Rotation, data);// maybe change the method to accept double so i don't have to cast the camera rotation to int?
             return canvas.Opaque.DrawBlock(Block.Atlas.Texture, screenBounds,
                 token,

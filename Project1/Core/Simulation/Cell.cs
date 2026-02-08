@@ -5,15 +5,15 @@ using Project1.Core.Base;
 using Project1.Core.Blocks;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
-using Project1.Core.Materials;
-using Project1.Core.UI;
-using Project1.Core.UI.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Simulation
 {
@@ -21,7 +21,7 @@ namespace Project1.Core.Simulation
     {
         public const int HitPointsMax = 4;
 
-        public string Name => this.Block.Label;
+        public string Name => this.Block.LabelReadable;
         public Icon GetIcon()
         {
             return new Icon(this.Block.Variations.First());
@@ -181,7 +181,7 @@ namespace Project1.Core.Simulation
         public static IntVec3 FrontDefault = new(0, 1, 0);
         public IntVec3 Front => Coords.Rotate(FrontDefault, this.Orientation);// GetFront(this.Orientation);
         public IntVec3 Back => -this.Front;
-        public override string Label => this.Block.Label;
+        public override string LabelReadable => this.Block.LabelReadable;
         public bool Valid
         {
             get => this.Data[_valid] == 1;

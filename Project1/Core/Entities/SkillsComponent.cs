@@ -2,7 +2,8 @@
 using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Skills;
-using Project1.Core.UI;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,7 +44,7 @@ namespace Project1.Core.Entities
         public Control GetCreationGui()
         {
             var table = new TableScrollableCompact<Skill>()
-                .AddColumn(null, "name", 80, s => new Label(s.SkillDef.Label), 0)
+                .AddColumn(null, "name", 80, s => new Label(s.SkillDef.LabelReadable), 0)
                 .AddColumn(null, "value", 16, s => new Label() { TextFunc = () => s.Level.ToString() }, 0);
 
             table.AddItems(this.SkillsNew.Values);
@@ -57,7 +58,6 @@ namespace Project1.Core.Entities
         }
         internal Skill GetSkill(SkillDef skill)
         {
-            //return this.SkillsNew.First(s => s.Def == skill);
             return this.SkillsNew[skill];
         }
         

@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Base;
 using Project1.Core.Rendering;
-using Project1.Core.Input.Hotkeys;
 using Project1.Core.Input.Tools;
 using Project1.Core.WorldGen;
 using Project1.Core.UI;
 using Project1.Core.Screens;
-using Project1.Core.Towns;
-using Project1.Core.UI;
-using Project1.Core;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Collections;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
+using Project1.Core.Input;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Towns.Zones
 {
@@ -222,7 +222,7 @@ namespace Project1.Core.Towns.Zones
         static IEnumerable<(string, Action)> GetContextSubmenuItems()
         {
             foreach (var def in ZoneDefs)
-                yield return (def.Label, () => Zone.Edit(Ingame.CurrentMap.Town, def));
+                yield return (def.LabelReadable, () => Zone.Edit(Ingame.CurrentMap.Town, def));
         }
         public override ISelectable QuerySelectable(TargetArgs target)
         {

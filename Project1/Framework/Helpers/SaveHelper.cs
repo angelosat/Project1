@@ -9,6 +9,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.Arm;
 using System.Xml.Linq;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Helpers
 {

@@ -20,6 +20,8 @@ using System.Net;
 using System.Net.Sockets;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Net
 {
@@ -243,7 +245,6 @@ namespace Project1.Core.Net
             this.ProcessIncomingPackets();
             this.HandleOrderedPackets();
             this.HandleOrderedReliablePackets();
-            //this.HandleBufferedPackets();
             GameMode.Current?.Update(Instance);
 
             if (Instance.Map is not null)
@@ -262,7 +263,6 @@ namespace Project1.Core.Net
                         this._tick++;
                         this.TickMap();
                     }
-                    //this.ApplyEntitySnapshots();
                 }
             }
 
@@ -274,13 +274,6 @@ namespace Project1.Core.Net
                                                     //var packetLost = _random.Chance(.8);
                                                     //if (!packetLost)
             this.SendOutgoingStreamsArray();
-            //if (_random.Chance(.05))
-            //    simLossStreak = _random.Next(5, 20);
-            //if (simLossStreak > 0)
-            //    simLossStreak--;
-            //else
-            //                this.SendOutgoingStreamsArray();
-
             this.TryResendPacketsFirst();
             this.ResetStreams();
         }
@@ -339,7 +332,7 @@ namespace Project1.Core.Net
         {
             this.HandleBufferedTimestampedNew();
             this.Map.UpdateParticles();
-            this.Map.World.Tick(Instance);
+            this.Map.World.Tick();
             this.Map.Tick();
         }
 
@@ -415,11 +408,8 @@ namespace Project1.Core.Net
                     double target = packet.Tick - ClientTickDelay;
                     double curr = this.CurrentTick;
                     double smoothed = curr + (target - curr) * 0.15;
-                    //this.CurrentTick = Math.Max(smoothed, 0);
                     this.TickTarget = smoothed;
                 }
-                //this._tick = Math.Max(packet.Tick - ClientTickDelay, 0);
-                //this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(smoothed, 0));
                 // for ordered packets, only handle last one (store most recent and discard and older ones)
                 if (packet.Reliability == ReliabilityType.Ordered)
                 {

@@ -2,7 +2,7 @@
 using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
-using Project1.Core.Net.Simulation;
+using Project1.Core.Networking.Simulation;
 using Project1.Core.Simulation;
 
 namespace Project1.Core.Net.Packets

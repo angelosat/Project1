@@ -1,5 +1,4 @@
-﻿using Project1.Core.Towns;
-using Project1.Core.Base;
+﻿using Project1.Core.Base;
 using Project1.Core.Blocks;
 using Project1.Core.Entities.Actors;
 using Project1.Core.WorldGen;
@@ -7,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Materials;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Towns.Crafting
 {
@@ -131,7 +131,7 @@ namespace Project1.Core.Towns.Crafting
             var reqs = CraftingSystem.GetValidIngredientsPerSlot(recipe);
             if (reqs.Count() > workstation.CellsOccupied.Count)
             {
-                Log.Error($"Not enough workstation modules to craft {recipe.Label}");
+                Log.Error($"Not enough workstation modules to craft {recipe.LabelReadable}");
                 return null;
             }
             var order = new OrderSettings(this.NextOrderId++, comp, recipe);

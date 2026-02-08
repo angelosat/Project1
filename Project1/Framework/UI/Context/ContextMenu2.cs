@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Core.UI;
+﻿using Microsoft.Xna.Framework;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
@@ -30,11 +27,10 @@ namespace Project1.Core.UI
                 btn.Color = Color.White * 0.5f;
                 btn.IdleColor = Color.Transparent;
                 act.ControlInit(act, btn);
-                //btn.LeftClickAction += ()=>act.Action();
                 btn.LeftClickAction = () => act.Action();
                 btn.LeftClickAction += () => this.Hide();
                 return btn;
-            });// new Rectangle(0, 0, 100, 5));
+            });
         }
 
         public void Initialize(ContextArgs a)

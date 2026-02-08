@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.UI;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class IconButton : ButtonBase
     {
@@ -40,7 +39,7 @@ namespace Project1.Core.UI
                     return Icon.SourceRect.Width;
                 if (Icon == null)
                     return this.BackgroundTexture.Width;
-                return Math.Max(this.BackgroundTexture.Width, Icon.SourceRect.Width);
+                return System.Math.Max(this.BackgroundTexture.Width, Icon.SourceRect.Width);
             }
             set
             {
@@ -55,7 +54,7 @@ namespace Project1.Core.UI
                     return Icon.SourceRect.Height;
                 if (Icon == null)
                     return this.BackgroundTexture.Height;
-                return Math.Max(this.BackgroundTexture.Height, Icon.SourceRect.Height);
+                return System.Math.Max(this.BackgroundTexture.Height, Icon.SourceRect.Height);
             }
             set
             {

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Project1.Core.UI;
-using Project1.Core.Components;
 using Project1.Core.Base;
-using Project1.Core.UI;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Components
 {
@@ -20,7 +19,7 @@ namespace Project1.Core.Components
         public string CustomName = "";
         public string ParentName
         {
-            get => string.IsNullOrEmpty(this.CustomName) ? this.Owner.Def.Label : this.CustomName; 
+            get => string.IsNullOrEmpty(this.CustomName) ? this.Owner.Def.LabelReadable : this.CustomName; 
             set => this.CustomName = value;
         }
 
@@ -48,7 +47,7 @@ namespace Project1.Core.Components
             tooltip.Color = GetQualityColor();
             var namelabel = new Label(Vector2.Zero, parent.Name, tooltip.Color, Color.Black, UIManager.FontBold) { TextColorFunc = () => tooltip.Color, TextFunc = () => parent.Name };
             tooltip.Controls.Add(namelabel);
-            tooltip.Controls.Add(new Label(this.Quality.Label) { Fill = Color.Gold, Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.Gold });
+            tooltip.Controls.Add(new Label(this.Quality.LabelReadable) { Fill = Color.Gold, Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.Gold });
             tooltip.Controls.Add(new Label(parent.Def.Description) { Location = tooltip.Controls.BottomLeft });
         }
       

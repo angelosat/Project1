@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.UI;
 using System;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     class ButtonIcon : Button
     {

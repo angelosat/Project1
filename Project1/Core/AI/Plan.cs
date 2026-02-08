@@ -8,13 +8,14 @@ using Project1.Core.Helpers;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Net;
-using Project1.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.Towns.Crafting;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 #nullable enable
 namespace Project1.Core.AI
@@ -23,12 +24,11 @@ namespace Project1.Core.AI
     public enum TargetIndex { None, A, B, C, Tool = 15 }
     public sealed class Plan
     {
-        public string Status => $"{this.Def.Interaction?.Label} : {this.TargetA}";
+        public string Status => $"{this.Def.Interaction?.LabelReadable} : {this.TargetA}";
         public TargetArgs GetTarget(TargetIndex targetInd)
         {
             return targetInd switch
             {
-                //TargetIndex.Tool => this.Tool,
                 TargetIndex.A => this.TargetA,
                 TargetIndex.B => this.TargetB,
                 TargetIndex.C => this.TargetC,
@@ -114,11 +114,6 @@ namespace Project1.Core.AI
             this.SetAmount(targetInd, amount);
             return this.SetTarget(targetInd, new TargetArgs(target));
         }
-
-        //internal AITask SetTarget(TargetIndex targetInd, MapBase map, Vector3 target)
-        //{
-        //    return this.SetTarget(targetInd, target.At(map));
-        //}
 
         internal Plan SetTarget(TargetIndex targetInd, TargetArgs targetArgs)
         {

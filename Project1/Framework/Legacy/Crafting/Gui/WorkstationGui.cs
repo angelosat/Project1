@@ -1,13 +1,11 @@
 ﻿using Project1.Core.Base;
-using Project1.Core.Helpers;
-using Project1.Core.UI;
 using Project1.Core.WorldGen;
-using Project1.Core;
-using Project1.Core.UI;
 using System;
 using System.Linq;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Crafting;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Legacy.Crafting.Gui
 {
@@ -35,7 +33,7 @@ namespace Project1.Core.Legacy.Crafting.Gui
             var allreactions = Def.GetDefs<Reaction>();
             var validreactions = allreactions.Where(r => r.ValidWorkshops.Any(t => entity.IsWorkstationType(t))).ToList();
 
-            var reactionsList = new ListBoxNoScroll<Reaction>(r => new Label(r.Label, () => this.PlaceOrder(r)));
+            var reactionsList = new ListBoxNoScroll<Reaction>(r => new Label(r.LabelReadable, () => this.PlaceOrder(r)));
             reactionsList.AddItems(validreactions);
             var reactionsListContainer = reactionsList.ToScrollableBox(200, 400);
             this.PanelReactions.AddControls(reactionsListContainer);

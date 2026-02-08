@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Loot;
-using Project1.Core.Components;
 using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Net
 {
@@ -41,10 +40,6 @@ namespace Project1.Core.Net
         public IDataWriter BeginPacket(int pType)
         {
             return PacketBuilder.Create(this.GetStream(ReliabilityType.OrderedReliable).Writer, pType);
-            //var s = this.GetStream(ReliabilityType.OrderedReliable);
-            //var w = PacketBuilder.Create(s.Writer, pType);
-            //w.Write(s.IsSimulation ? this.CurrentTick : SimulationTick.Immediate);
-            //return w;
         }
         public void HandlePacket(int pType, Packet pck)
         {

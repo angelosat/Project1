@@ -16,7 +16,7 @@ namespace Project1.Core.Plants
             seeds.Initialize();
 
             seeds.Profile = species;
-            seeds.Name = $"{species.Label} {species.SeedsName}";
+            seeds.Name = $"{species.LabelReadable} {species.SeedsName}";
             seeds.Body.Sprite = Sprite.Load(species.TextureSeeds);
             return seeds;
         }
@@ -31,7 +31,7 @@ namespace Project1.Core.Plants
             if (species.PlantEntity == PlantDefOf.Tree)
                 entity.SetMaterial(species.StemMaterial);
             else if (species.ProducesFruit)
-                entity.Name = entity.Name.Insert(0, $"{species.FruitMaterial.Label} ");
+                entity.Name = entity.Name.Insert(0, $"{species.FruitMaterial.LabelReadable} ");
             return entity;
         }
         static Entity CreateFruit(PlantSpeciesDef species)
@@ -40,7 +40,7 @@ namespace Project1.Core.Plants
             entity.Profile = species;
             var comp = entity.GetComponent<ConsumableComponent>();
             comp.EffectsNew.Add(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, Budget: 5, Rate: 0));
-            entity.Name = $"{species.Label}";
+            entity.Name = $"{species.LabelReadable}";
             entity.SetMaterial(species.FruitMaterial);
             return entity;
         }

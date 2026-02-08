@@ -2,10 +2,10 @@
 using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using Project1.Core.UI.Primitives;
 using System;
 using Project1.Core.Towns.Crafting;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
 
 namespace Project1.Core
 {
@@ -65,7 +65,5 @@ namespace Project1.Core
         {
             this.FuelCurrent = tag.LoadInt("FuelCurrent");
         }
-
-        
     }
 }

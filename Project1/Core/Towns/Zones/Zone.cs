@@ -11,13 +11,16 @@ using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Interfaces;
 using Project1.Core.Towns;
-using Project1.Core.UI;
 using Project1.Core;
 using Project1.Core.Helpers;
 using Project1.Core.Towns.Tools;
 using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Towns.Zones
 {
@@ -26,7 +29,7 @@ namespace Project1.Core.Towns.Zones
         public Town Town => this.Manager.Town;
         public MapBase Map => this.Town.Map;
         public NetEndpoint Net => this.Map.Net;
-        public override string Label => this.Name;
+        public override string LabelReadable => this.Name;
         public readonly DrawableCellCollection Cells = new(Block.FaceHighlights[IntVec3.UnitZ]);
         public string Name { get; set; }
         public ZoneManager Manager;

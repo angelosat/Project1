@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.UI;
-using Project1.Core.Input.Hotkeys;
 using Project1.Core.Net;
 using Project1.Core.Base;
 using Project1.Core.Components;
 using Project1.Core.Rendering;
 using Project1.Core.Rooms;
-using Project1.Core.Interfaces;
-using Project1.Core;
 using Project1.Core.Plants;
 using Project1.Core.World.MetaRoles;
-using Project1.Core.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Crafting;
 using Project1.Core.Towns.Constructions;
@@ -27,9 +23,13 @@ using Project1.Core.Towns.Terrain;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Collections;
 using Project1.Core.AI;
-using Project1.Core.UI;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Core.Input;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Towns
 {

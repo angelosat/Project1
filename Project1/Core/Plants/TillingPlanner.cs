@@ -7,6 +7,7 @@ using Project1.Core.Towns.Farming.Tilling;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using System.Linq;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Plants
 {
@@ -28,7 +29,7 @@ namespace Project1.Core.Plants
             var loc = GetBestTillingLocation(actor);
             if (!loc.HasValue)
                 return null;
-            var task = new Plan(PlanDefOf.Till);// typeof(TaskBehaviorTilling));
+            var task = new Plan(PlanDefOf.Till);
             task.SetTarget(TaskBehaviorTilling.TargetInd, new TargetArgs(actor.Map, loc.Value));
             FindTool(actor, task, JobDefOf.Farmer);
             return task;

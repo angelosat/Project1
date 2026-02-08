@@ -4,8 +4,7 @@ using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Screens;
 using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Blocks
 {
@@ -15,13 +14,8 @@ namespace Project1.Core.Blocks
 
         public void OnBind(ISelectable selectable)
         {
-            //var entity = selectable as BlockEntity;
-            //if (!entity.Comps.TryGetComp<BlockOwnershipComp>(out var comp))
-            //    throw new Exception();
-
             if (selectable is not TargetArgs target ||
                target.BlockEntityOld is not BlockEntity entity ||
-               //entity.GetComp<BlockOwnershipComp>() is BlockOwnershipComp comp))
                !entity.Comps.TryGetComp<BlockOwnershipComp>(out var comp))
                 throw new Exception();
 
@@ -36,7 +30,6 @@ namespace Project1.Core.Blocks
         private static void PlayerSetOwner(BlockOwnershipComp comp, Actor a)
         {
             Ingame.Instance.Events.Post(new PlayerChangedBlockOwnerEvent(comp.Parent, a));
-
             // client prediction
             //comp.SetOwner(a);
         }

@@ -7,12 +7,13 @@ using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Rendering;
 using Project1.Core.Simulation;
+using Project1.Framework.Math;
 
 namespace Project1.Core.AI.Behaviors.Pathing
 {
     public class Region : Inspectable
     {
-        public override string Label => nameof(Region);
+        public override string LabelReadable => nameof(Region);
         internal Chunk Chunk;
         MapBase Map => this.Chunk.Map;
         internal int RoomID

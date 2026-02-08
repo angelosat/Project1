@@ -3,9 +3,7 @@ using Project1.Core.UI.Settings;
 using Project1.Core.Base;
 using Project1.Core.UI;
 using System.Linq;
-using Button = Project1.Core.UI.Button;
-using GroupBox = Project1.Core.UI.GroupBox;
-using MessageBox = Project1.Core.UI.MessageBox;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {

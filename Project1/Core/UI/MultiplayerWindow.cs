@@ -4,6 +4,7 @@ using Project1.Core.Net;
 using Project1.Core.Net;
 using Project1.Core.Screens;
 using Project1.Core.UI;
+using Project1.Framework.UI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;

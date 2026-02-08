@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Helpers;
 using Project1.Core.UI;
+using Project1.Framework.UI;
 using System;
 
 namespace Project1.Core.UI
@@ -38,7 +39,6 @@ namespace Project1.Core.UI
             this.Panel_Buttons.Anchor = Vector2.UnitX / 2;
 
             this.Client.Controls.Add(this.Panel_Input, this.Panel_Buttons);
-            //this.SnapToScreenCenter();
             this.AnchorToScreenCenter();
         }
         public DialogInput(string title, Action<DialogInput> callback, int maxlength = int.MaxValue, string initialText = "")

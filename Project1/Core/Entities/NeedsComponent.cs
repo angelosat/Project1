@@ -5,7 +5,8 @@ using Project1.Core.Needs;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Entities
 {
@@ -65,7 +66,7 @@ namespace Project1.Core.Entities
             var byCategory = this.NeedsNew.Values.GroupBy(n => n.NeedDef.CategoryDef);
             foreach (var cat in byCategory)
             {
-                var panel = new PanelLabeled(cat.Key.Label) { Location = box.BottomLeft };
+                var panel = new PanelLabeled(cat.Key.LabelReadable) { Location = box.BottomLeft };
                 foreach (var n in cat)
                 {
                     var ui = n.GetUI(parent);
@@ -83,7 +84,7 @@ namespace Project1.Core.Entities
             var byCategory = this.NeedsNew.Values.GroupBy(n => n.NeedDef.CategoryDef);
             foreach (var cat in byCategory)
             {
-                var panel = new PanelLabeled(cat.Key.Label) { Location = box.BottomLeft };
+                var panel = new PanelLabeled(cat.Key.LabelReadable) { Location = box.BottomLeft };
                 foreach (var n in cat)
                 {
                     var ui = n.GetUI(this.Owner);
@@ -128,7 +129,7 @@ namespace Project1.Core.Entities
             var byCategory = this.NeedsNew.Values.GroupBy(n => n.NeedDef.CategoryDef);
             foreach (var cat in byCategory)
             {
-                var panel = new PanelLabeled(cat.Key.Label) { Location = box.BottomLeft };
+                var panel = new PanelLabeled(cat.Key.LabelReadable) { Location = box.BottomLeft };
                 foreach (var n in cat)
                 {
                     var ui = n.GetUI(this.Owner);

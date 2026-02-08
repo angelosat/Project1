@@ -1,8 +1,7 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Screens;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {

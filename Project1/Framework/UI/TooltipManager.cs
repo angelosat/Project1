@@ -5,10 +5,10 @@ using Project1.Core.Input;
 using Project1.Core.Net;
 using Project1.Core.WorldGen;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.Math;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class TooltipManager
     {
@@ -85,7 +85,6 @@ namespace Project1.Core.UI
         {
             this.Reset();
             this.Object = e.ObjectNext as ITooltippable;
-            //this.Object = Controller.Instance.MouseoverNext.Object as ITooltippable;
         }
 
         private void Reset()
@@ -94,14 +93,6 @@ namespace Project1.Core.UI
             this.DelayValue = DelayInterval;
         }
 
-        //public Vector2 ScreenLocation
-        //{
-        //    get
-        //    {
-        //        return new(Math.Max(Math.Min(Controller.Instance.msCurrent.X + 16, Game1.Bounds.Width - this.Tooltip.Width), 0), Math.Max(Math.Min(Controller.Instance.msCurrent.Y, Game1.Bounds.Height - this.Tooltip.Height), 0));
-        //        //return new(Math.Max(Math.Min(UIManager.MouseTrue.X + 16, Game1.Bounds.Width - this.Tooltip.Width), 0), Math.Max(Math.Min(UIManager.MouseTrue.Y, Game1.Bounds.Height - this.Tooltip.Height), 0));
-        //    }
-        //}
         public void Draw(SpriteBatch sb)
         {
             this.Tooltip?.Draw(sb);
@@ -111,13 +102,6 @@ namespace Project1.Core.UI
         {
             switch(e.Type)
             {
-                //case Components.Message.Types.BlocksChanged:
-                //    var map = e.Parameters[0] as MapBase;
-                //    var cells = e.Parameters[1] as IEnumerable<IntVec3>;
-                //    if (Instance.Object is TargetArgs target && target.Type == TargetType.Position && cells.Contains((IntVec3)target.Global))
-                //        Instance.Reset();
-                //    break;
-
                 default:
                     Instance.Tooltip?.OnGameEvent(e);
                     break;

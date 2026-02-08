@@ -5,9 +5,10 @@ using Project1.Core.Input;
 using System;
 using System.Collections.Generic;
 using Project1.Core.Screens;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
@@ -26,10 +27,7 @@ namespace Project1.Core.UI
         public static Nameplate Create(INameplateable obj)
         {
             var plate = new Nameplate(obj);
-            //if (obj is GameObject)
-            //    obj.OnNameplateCreated(plate);
-            //else
-                obj.OnNameplateCreated(plate);
+            obj.OnNameplateCreated(plate);
             plate.AlignVertically(Alignment.Horizontal.Center);
             plate.Tag = obj;
             plate.MouseThrough = false; //hmmm

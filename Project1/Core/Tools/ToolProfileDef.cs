@@ -30,7 +30,7 @@ namespace Project1.Core.Tools
         }
         public StorageFilterNewNew GetFilter()
         {
-            return new(this.Label, ItemDefOf.Tool, this);
+            return new(this.LabelReadable, ItemDefOf.Tool, this);
         }
     }
 }

@@ -5,19 +5,21 @@ using Project1.Core.Towns;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Input.Hotkeys;
 using Project1.Core.Net;
 using Project1.Core.Rendering;
 using Project1.Core.Screens;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Button = Project1.Core.UI.Button;
-using Control = Project1.Core.UI.Control;
 using Project1.Core.Simulation;
-using Project1.Core.Net.Simulation;
+using Project1.Core.Networking.Simulation;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Button = Project1.Framework.UI.Button;
+using Panel = Project1.Framework.UI.Panel;
+using Control = Project1.Framework.UI.Control;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Input.Tools
 {
@@ -353,7 +355,7 @@ namespace Project1.Core.Input.Tools
             return false;
         }
 
-        static readonly Control UIForceTask = new Project1.Core.UI.Panel() { AutoSize = true }.HideOnAnyClick();
+        static readonly Control UIForceTask = new Panel() { AutoSize = true }.HideOnAnyClick();
 
         internal override void DrawAfterWorld(MySpriteBatch sb, MapBase map)
         {

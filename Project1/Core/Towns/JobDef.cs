@@ -1,7 +1,7 @@
 ﻿using Project1.Core.AI.Planners;
 using Project1.Core.Base;
 using Project1.Core.Tools;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 using System.Collections.Generic;
 
 namespace Project1.Core.Towns

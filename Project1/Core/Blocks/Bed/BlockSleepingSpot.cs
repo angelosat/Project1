@@ -1,14 +1,10 @@
 ﻿using Project1.Core.Rooms;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Constructions.Categories;
-using Project1.Core.Base;
 using Project1.Core.Blocks;
 using Project1.Core.Simulation;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {

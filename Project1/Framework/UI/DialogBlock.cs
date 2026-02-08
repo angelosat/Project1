@@ -1,14 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Base;
-using Project1.Core.UI;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class DialogBlock : Control
     {
-        //static DialogBlock _Instance;
-        //static public DialogBlock Instance => _Instance ??= new DialogBlock();
-
         public DialogBlock() { }
         protected override void OnMouseLeftPress(System.Windows.Forms.HandledMouseEventArgs e)
         {

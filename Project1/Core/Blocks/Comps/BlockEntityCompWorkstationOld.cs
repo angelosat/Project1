@@ -1,16 +1,17 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Legacy.Crafting.Gui;
 using Project1.Core.Rendering;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Project1.Core.Simulation;
+using Project1.Framework.IO;
+using Project1.Framework.Math;
+using Project1.Framework.UI;
 
 namespace Project1.Core
 {

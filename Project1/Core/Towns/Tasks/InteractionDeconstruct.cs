@@ -2,10 +2,9 @@
 using Microsoft.Xna.Framework;
 using Project1.Core.Interactions;
 using Project1.Core.Blocks;
-using Project1.Core.Helpers;
-using Project1.Core.Interactions;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Towns.Tasks
 {
@@ -23,11 +22,7 @@ namespace Project1.Core.Towns.Tasks
         Cell Cell => this.Actor.Map.GetCell(this.Target.Global);
         Block Block => this.Cell.Block;
         MaterialDef Material => this.Cell.Material;
-
         protected override float WorkDifficulty => this.Block.BuildComplexity;
-        //protected override float Progress => this._progress.Percentage;
-        //protected override SkillAwardTypes SkillAwardType { get; } = SkillAwardTypes.OnFinish;
-
         public InteractionDeconstruct() : base("Deconstructing")
         {
 

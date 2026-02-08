@@ -1,8 +1,9 @@
 ﻿using Project1.Core.Base;
 using Project1.Core.Interfaces;
 using Project1.Core.Helpers;
-using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
+using Project1.Framework.Interfaces;
 
 namespace Project1.Core.AI
 {
@@ -17,7 +18,7 @@ namespace Project1.Core.AI
         public TraitDef TraitDef;
         public TraitDef Def => this.TraitDef;
         public string Name => this.TraitDef.Name;
-        public override string Label => this.Value >= 0 ? this.TraitDef.NamePositive : this.TraitDef.NameNegative;
+        public override string LabelReadable => this.Value >= 0 ? this.TraitDef.NamePositive : this.TraitDef.NameNegative;
         public const float MinDefault = -100;
         public const float MaxDefault = 100;
         public const float ValueRange = 100;
@@ -41,7 +42,7 @@ namespace Project1.Core.AI
         public Control GetListControlGui()
         {
             var box = new Panel() { AutoSize = true, BackgroundStyle = BackgroundStyle.TickBox };
-            var bar = new BarSigned() { Object = this, TextFunc = () => this.Label, HoverFunc = () => $"{this.TraitDef.Name}: {this.Value} ({this.Label})\n{this.TraitDef.Description.Wrap(TooltipManager.Width)}" };
+            var bar = new BarSigned() { Object = this, TextFunc = () => this.LabelReadable, HoverFunc = () => $"{this.TraitDef.Name}: {this.Value} ({this.LabelReadable})\n{this.TraitDef.Description.Wrap(TooltipManager.Width)}" };
             box.AddControls(bar);
             return box;
         }
@@ -78,7 +79,5 @@ namespace Project1.Core.AI
         {
             return new Trait().Read(r);
         }
-
-        
     }
 }

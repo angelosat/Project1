@@ -1,4 +1,4 @@
-﻿namespace Project1.Core.Interfaces
+﻿namespace Project1.Framework.Interfaces
 {
     interface INamed
     {

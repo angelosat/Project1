@@ -1,8 +1,7 @@
 ﻿using Project1.Core.Base;
 using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.UI;
 using Project1.Core.Skills;
+using Project1.Framework.UI;
 
 namespace Project1.Core.VFX
 {
@@ -18,8 +17,7 @@ namespace Project1.Core.VFX
         {
             var actor = e.Actor;
             var skill = e.Actor.Skills[e.Skill.Def];
-            //FloatingText.Create(actor, $"{skill.SkillDef.Label} increased!", ft => ft.Font = UIManager.FontBold);
-            FloatingText.Create(actor.Map, actor.Global, $"{skill.SkillDef.Label} increased!", ft => ft.Font = UIManager.FontBold);
+            FloatingText.Create(actor.Map, actor.Global, $"{skill.SkillDef.LabelReadable} increased!", ft => ft.Font = UIManager.FontBold);
         }
     }
 }

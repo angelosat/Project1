@@ -13,6 +13,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.AI.Behaviors.Reserve;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Towns.Constructions.AI
 {
@@ -127,7 +128,6 @@ namespace Project1.Core.Towns.Constructions.AI
                 var constructionDistance = Vector3.DistanceSquared(actor.Global, target.Global);
 
                 if (itemDistance > constructionDistance) continue;
-                //if (!target.Accepts(item as Entity)) continue;
                 if (!carried.CanAbsorb(item)) continue;
                 var amountToTake = Math.Min(item.StackSize, Math.Min(remaining, carried.StackAvailableSpace));
                 return (item, amountToTake);

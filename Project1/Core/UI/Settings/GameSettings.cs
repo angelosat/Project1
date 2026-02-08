@@ -1,7 +1,7 @@
-﻿using Project1.Core;
-using Project1.Core.Base;
+﻿using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core.UI;
+using Project1.Core.Input;
+using Project1.Framework.UI;
 using System.Xml.Linq;
 
 namespace Project1.Core.UI.Settings

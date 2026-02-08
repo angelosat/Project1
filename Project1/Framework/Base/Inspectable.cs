@@ -8,7 +8,7 @@ namespace Project1.Core.Base
 {
     public abstract class Inspectable : ILabeled
     {
-        public virtual string Label => this.ToString();
+        public virtual string LabelReadable => this.ToString();
         public virtual IEnumerable<(string item, object value)> Inspect()
         {
             var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;

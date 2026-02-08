@@ -1,8 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.UI;
 using System;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     [Obsolete]
     class PanelTabs : GroupBox

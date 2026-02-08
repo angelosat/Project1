@@ -1,6 +1,5 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Blocks;
-using Project1.Core.Simulation;
+﻿using Project1.Core.Simulation;
+using Project1.Framework.Math;
 using System.Collections.Generic;
 
 namespace Project1.Core.Blocks.Doors

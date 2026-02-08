@@ -4,10 +4,10 @@ using Project1.Core.Blocks;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Materials;
-using Project1.Core.UI;
-using Project1.Core.UI;
 using System;
 using Project1.Core.Simulation;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
 namespace Project1.Core
 {
     [EnsureStaticCtorCall]
@@ -22,16 +22,11 @@ namespace Project1.Core
                 return new BlockConstructionComp();
             }
         }
-        //internal override void Initialize()
-        //{
-        //    this.Parent.Name = $"Construction: {this.Args.Block.Label}";
-        //}
         public override string Name => $"{this}";
 
         public Block Block => this.Args.Block.Worker;
         internal override void GetSelectionInfo(Control container)
         {
-            //container.AddControls(new Label($"Construction: {this.Block}"));
             container.AddControls(new Label($"Materials: {this.Fulfillment} {this.Args}"));
         }
         internal ConstructionDesignationArgs Args { get; private set; }
@@ -45,7 +40,7 @@ namespace Project1.Core
             //this.Block = args.Block.Worker;
             //var ingredientCount = this.Block.Size.Volume * ItemDefOf.Ingredient.StackCapacity / this.Block.ConstructionProfile.Dimension;
             this.Args = args;
-            this.Parent.Name = $"Construction: {this.Args.Block.Label}";
+            this.Parent.Name = $"Construction: {this.Args.Block.LabelReadable}";
 
             var ingredientCount = this.Block.Size.Volume / this.Block.BlockDef.ConstructionProfile.Dimension;
             this.Fulfillment = new(ingredientCount);
@@ -170,7 +165,7 @@ namespace Project1.Core
         //public MaterialDef Material = material;
         //public int Amount = amount;
         //public byte Orientation = orientation;
-        public override readonly string ToString() => $"{this.Material.Label} {this.Refinement.Label} x{this.Amount}";
+        public override readonly string ToString() => $"{this.Material.LabelReadable} {this.Refinement.LabelReadable} x{this.Amount}";
         public static ConstructionDesignationArgs Create(IDataReader r) => new ConstructionDesignationArgs().Read(r);
 
         public static ConstructionDesignationArgs Create(SaveTag tag)

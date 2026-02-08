@@ -1,9 +1,8 @@
 ﻿using System;
 using Project1.Core.Construction.Tools;
 using Project1.Core.Base;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.Interfaces;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Input.Tools.Building
 {
@@ -11,14 +10,12 @@ namespace Project1.Core.Input.Tools.Building
     {
         readonly Type ToolClass;
         readonly Type ToolWorkerClass;
-        //string IconTexturePath;
         public Icon Icon;
 
         public BuildToolDef(string name, string iconTexturePath, Type toolClass, Type toolWorkerClass) : base(name)
         {
             this.ToolClass = toolClass;
             this.ToolWorkerClass = toolWorkerClass;
-            //this.IconTexturePath = iconTexturePath;
             this.Icon = new(UIManager.Atlas.Load(iconTexturePath));
         }
 
@@ -38,6 +35,6 @@ namespace Project1.Core.Input.Tools.Building
         BuildToolWorker _cachedWorker;
         public BuildToolWorker Worker => _cachedWorker ??= (BuildToolWorker)Activator.CreateInstance(this.ToolWorkerClass);
 
-        string INamed.Name => this.Label;
+        string INamed.Name => this.LabelReadable;
     }
 }

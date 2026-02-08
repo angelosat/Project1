@@ -8,11 +8,13 @@ using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Interfaces;
 using Project1.Core.Towns;
-using Project1.Core.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.UI;
 using Project1.Core.Simulation;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Rooms
 {
@@ -423,7 +425,7 @@ namespace Project1.Core.Rooms
             Room currentRoom = null;
             IntVec3 center = default;
             box.AddControlsVertically(
-                new ComboBoxNewNew<RoomRoleDef>(128, "Role", r => r?.Label ?? "none", setRoomDef, () => currentRoom?.RoomRole, () => currentRoom.Furnitures.SelectMany(f => RoomSystem.ByFurniture(f)).Distinct().Prepend(null)),
+                new ComboBoxNewNew<RoomRoleDef>(128, "Role", r => r?.LabelReadable ?? "none", setRoomDef, () => currentRoom?.RoomRole, () => currentRoom.Furnitures.SelectMany(f => RoomSystem.ByFurniture(f)).Distinct().Prepend(null)),
                 new ComboBoxNewNew<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => currentRoom?.GetOwner(), () => currentRoom?.Map.Town.GetMembers().Prepend(null)),
                 new ComboBoxNewNew<Workplace>(128, "Workplace", w => w?.Name ?? "none", setWorkplace, () => currentRoom?.Workplace, () => currentRoom.Map.Town.ShopManager.GetShops().Where(sh => sh.IsValidRoom(currentRoom)).Prepend(null)),
                 new Label(() => $"Interior: {currentRoom?.Interior.Count} cells"),

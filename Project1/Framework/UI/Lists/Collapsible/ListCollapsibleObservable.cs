@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
@@ -19,7 +18,6 @@ namespace Project1.Core.UI
 
         public ListCollapsibleObservable(IListCollapsibleDataSourceObservable root, bool expandedInitially = false)
         {
-            //this.BackgroundColor = Color.Red;
             this.AutoExpand = expandedInitially;
             this.Bind(root);
         }
@@ -121,7 +119,6 @@ namespace Project1.Core.UI
                     node.Expanded = true;
                     node.Arrow.SetTexture(UIManager.ArrowDown);
                     node.ChildGroupBox.Location = nodeItem.BottomLeft + new Vector2(Node.IndentWidth, Spacing);
-                    //node.ChildGroupBox.Location = nodeItem.BottomLeft;// + new Vector2(0, Spacing);
                     nodeContainer.AddControls(node.ChildGroupBox);
                 }
                 else

@@ -6,12 +6,13 @@ using Project1.Core.Net;
 using Project1.Core.Base;
 using Project1.Core.Interfaces;
 using Project1.Core.Helpers;
-using Project1.Core.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.AI.Labors;
 using Project1.Core;
 using Project1.Core.AI;
 using Project1.Core.Net;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Towns.Labors
 {
@@ -162,7 +163,7 @@ namespace Project1.Core.Towns.Labors
                     var ch =  new CheckBoxNew
                     {
                         Value = actor.HasJob(job.Def),
-                        HoverText = job.Def.Label
+                        HoverText = job.Def.LabelReadable
                     };
                     ch.LeftClickAction = () => { ch.ToggleValue(); Packets.SendLaborToggle(player, actor, labor); };
                     ch.ListenTo<JobUpdatedEvent>(args =>
@@ -181,7 +182,7 @@ namespace Project1.Core.Towns.Labors
                         TextFunc = () => { var val = job.Priority; return job.Enabled ? val.ToString() : ""; },
                         LeftClickAction = () => Packets.SendPriorityModify(player, actor, job, job.Priority + 1), 
                         RightClickAction = () => Packets.SendPriorityModify(player, actor, job, job.Priority - 1),
-                        HoverText = job.Def.Label
+                        HoverText = job.Def.LabelReadable
                     };
                     return btn;
                 }, 0);

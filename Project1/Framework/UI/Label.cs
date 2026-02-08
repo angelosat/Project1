@@ -2,13 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Entities;
+using Project1.Core.UI;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class LabelNew : ButtonBaseNew
     {
@@ -54,7 +54,6 @@ namespace Project1.Core.UI
         {
             var pos = new Vector2((int)this.Halign * .5f, .5f);
             var outlineOffset = this.Halign == Alignment.Horizontal.Left ? 1 : (this.Halign == Alignment.Horizontal.Right ? -1 : 0);
-            //var text = this.TextFunc?.Invoke() ?? this.Text;
             if (this.TextFunc is not null)
                 this.Text = this.TextFunc();
             UIManager.DrawStringOutlined(
@@ -62,7 +61,6 @@ namespace Project1.Core.UI
                 this.Text,
                 pos * this.Dimensions + new Vector2(outlineOffset, 0) + ((this.Active && this.Pressed) ? Vector2.UnitY : Vector2.Zero),
                 pos,
-                //(this.MouseHover && this.Active) ? this.ActiveColor : this.TextColor,
                 ((this.IsPushed || this.MouseHover) && this.Active) ? this.ActiveColor : this.TextColor,
                 this.TextOutline,
                 this.Font);
@@ -72,7 +70,7 @@ namespace Project1.Core.UI
         protected override void OnTextChanged()
         {
             base.OnTextChanged();
-            this.Height = Math.Max(this.Height, Label.DefaultHeight);
+            this.Height = System.Math.Max(this.Height, Label.DefaultHeight);
 
             switch (this.Halign)
             {
@@ -128,7 +126,7 @@ namespace Project1.Core.UI
                     this.Active = true;
                     this.LeftClickAction = () => Inspector.Refresh(objdetails);
                     this.Font = UIManager.FontBold;
-                    this.Text = $"[{objdetails.Label}]";
+                    this.Text = $"[{objdetails.LabelReadable}]";
                     this.TextColor = Color.LightBlue;
                 }
                 else
@@ -250,7 +248,7 @@ namespace Project1.Core.UI
                     origin = Vector2.Zero;
                     break;
                 case Alignment.Horizontal.Center:
-                    offset = new Vector2((float)Math.Floor(width * 0.5), 1);
+                    offset = new Vector2((float)System.Math.Floor(width * 0.5), 1);
                     origin = new Vector2(textSprite.Width / 2, 0);
                     break;
                 case Alignment.Horizontal.Right:
@@ -279,7 +277,7 @@ namespace Project1.Core.UI
                     origin = Vector2.Zero;
                     break;
                 case Alignment.Horizontal.Center:
-                    offset = new Vector2((float)Math.Floor(width * 0.5), 1);
+                    offset = new Vector2((float)System.Math.Floor(width * 0.5), 1);
                     origin = new Vector2(textSprite.Width / 2, 0);
                     break;
                 case Alignment.Horizontal.Right:
@@ -574,7 +572,6 @@ namespace Project1.Core.UI
                 this.Text,
                 pos * this.Dimensions + new Vector2(outlineOffset, 0) + ((this.Active && this.Pressed) ? Vector2.UnitY : Vector2.Zero),
                 pos,
-                //(this.MouseHover && this.Active) ? this.ActiveColor : this.TextColor,
                 ((this.IsPushed || this.MouseHover) && this.Active) ? this.ActiveColor : this.TextColor,
                 this.TextOutline,
                 this.Font);
@@ -584,7 +581,7 @@ namespace Project1.Core.UI
         protected override void OnTextChanged()
         {
             base.OnTextChanged();
-            this.Height = Math.Max(this.Height, Label.DefaultHeight);
+            this.Height = System.Math.Max(this.Height, Label.DefaultHeight);
 
             switch (this.Halign)
             {
@@ -639,7 +636,7 @@ namespace Project1.Core.UI
                     this.Active = true;
                     this.LeftClickAction = () => Inspector.Refresh(objdetails);
                     this.Font = UIManager.FontBold;
-                    this.Text = $"[{objdetails.Label}]";
+                    this.Text = $"[{objdetails.LabelReadable}]";
                     this.TextColor = Color.LightBlue;
                 }
                 else
@@ -750,7 +747,7 @@ namespace Project1.Core.UI
                     origin = Vector2.Zero;
                     break;
                 case Alignment.Horizontal.Center:
-                    offset = new Vector2((float)Math.Floor(width * 0.5), 1);
+                    offset = new Vector2((float)System.Math.Floor(width * 0.5), 1);
                     origin = new Vector2(textSprite.Width / 2, 0);
                     break;
                 case Alignment.Horizontal.Right:
@@ -779,7 +776,7 @@ namespace Project1.Core.UI
                     origin = Vector2.Zero;
                     break;
                 case Alignment.Horizontal.Center:
-                    offset = new Vector2((float)Math.Floor(width * 0.5), 1);
+                    offset = new Vector2((float)System.Math.Floor(width * 0.5), 1);
                     origin = new Vector2(textSprite.Width / 2, 0);
                     break;
                 case Alignment.Horizontal.Right:

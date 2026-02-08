@@ -6,6 +6,7 @@ using Project1.Core.Graphics.Particles;
 using Project1.Core.Assets;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
+using Project1.Framework.Math;
 
 namespace Project1.Core.VFX
 {

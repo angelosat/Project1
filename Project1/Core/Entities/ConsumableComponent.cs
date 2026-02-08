@@ -10,7 +10,8 @@ using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Properties;
-using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Entities
 {

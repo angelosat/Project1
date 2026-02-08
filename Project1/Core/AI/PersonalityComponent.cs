@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.UI;
 using Project1.Core.Base;
 using Project1.Core.Materials;
-using Project1.Core.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
 
 namespace Project1.Core.AI
 {
@@ -16,15 +16,9 @@ namespace Project1.Core.AI
     {
         static readonly Random Randomizer = new();
 
-        //public override object Clone()
-        //{
-        //    return new PersonalityComponent(this.Traits.Select(d => d.TraitDef).ToArray());
-        //}
-
         public ReactionType Reaction;
         public List<string> Hatelist;
         HashSet<MaterialDef> Favorites = new();
-        //public Trait[] Traits;
         public Dictionary<TraitDef, Trait> Traits = [];
 
         public override string Name { get; } = "Personality";
@@ -33,29 +27,9 @@ namespace Project1.Core.AI
         {
 
         }
-        //public PersonalityComponent(ReactionType reaction = ReactionType.Friendly, params string[] hatedTypes)
-        //{
-        //    this.Hatelist = new List<string>(hatedTypes);
-        //    this.Reaction = reaction;
-
-        //}
-        //public PersonalityComponent(params TraitDef[] traits)
-        //{
-        //    var count = traits.Length;
-        //    this.Traits = new Trait[count];
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        this.Traits[i] = new Trait(traits[i]);
-        //    }
-        //    this.Randomize();
-        //}
         internal override void CopyFrom(EntityComp source)
         {
             var traits = ((PersonalityComponent)source).Traits;
-            //var count = traits.Length;
-            //this.Traits = new Trait[count];
-            //for (int i = 0; i < count; i++)
-            //    this.Traits[i] = new Trait(traits[i].TraitDef);
             foreach (var trait in traits.Keys)
                 this.AddTrait(trait);
             this.Randomize();
@@ -73,7 +47,6 @@ namespace Project1.Core.AI
         }
         public Trait GetTrait(TraitDef def)
         {
-            //return this.Traits.First(t => t.TraitDef == def);
             return this.Traits[def];
         }
         public IEnumerable<MaterialDef> GetFavorites()
@@ -166,7 +139,7 @@ namespace Project1.Core.AI
         }
         static Control getFavoritesUI(PersonalityComponent p, int width)
         {
-            var box = UIHelper.Wrap(p.Favorites.Select(m => new Button(m.Label) { TextColorFunc = () => m.Color }), width);
+            var box = UIHelper.Wrap(p.Favorites.Select(m => new Button(m.LabelReadable) { TextColorFunc = () => m.Color }), width);
             return box.ToPanelLabeled("Favorite Materials");
         }
         
@@ -202,10 +175,6 @@ namespace Project1.Core.AI
             }
             protected override void ApplyDefaultsTo(PersonalityComponent comp)
             {
-                //var count = this.Items.Length;
-                //comp.Traits = new Trait[count];
-                //for (int i = 0; i < count; i++)
-                //    comp.Traits[i] = new Trait(this.Items[i]);
                 foreach (var trait in this.Items)
                     comp.AddTrait(trait);
                 comp.Randomize();

@@ -1,8 +1,9 @@
 ﻿using Project1.Core.Base;
 using Project1.Core.Graphics;
-using Project1.Core.UI;
 using System;
 using Project1.Core.Simulation;
+using Project1.Framework.UI;
+using Project1.Framework.Math;
 
 namespace Project1.Core.Towns.Designations
 {

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Legacy.Storage
 {

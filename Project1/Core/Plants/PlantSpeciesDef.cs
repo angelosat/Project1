@@ -73,7 +73,7 @@ namespace Project1.Core.Plants
         static public void Init()
         {
             var ser = new XmlSerializer(typeof(List<PlantSpeciesDef>));
-            var path = $"{GlobalVars.SaveDir}/{PlantSpeciesDefOf.Berry.Label}.xml";
+            var path = $"{GlobalVars.SaveDir}/{PlantSpeciesDefOf.Berry.LabelReadable}.xml";
             //var path = $"{GlobalVars.SaveDir}/Berry.xml";
 
             //Register(Berry);
@@ -176,7 +176,7 @@ namespace Project1.Core.Plants
         {
             return;
             var ser = new XmlSerializer(typeof(List<PlantSpeciesDef>));
-            var path = $"{GlobalVars.SaveDir}/{PlantSpeciesDefOf.Berry.Label}.xml";
+            var path = $"{GlobalVars.SaveDir}/{PlantSpeciesDefOf.Berry.LabelReadable}.xml";
             //var path = $"{GlobalVars.SaveDir}/Berry.xml";
 
             //Register(Berry);

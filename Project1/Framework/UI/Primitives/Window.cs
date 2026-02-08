@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.UI;
 using System;
-using System.Linq;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class Window : Control
     {
@@ -154,8 +152,8 @@ namespace Project1.Core.UI
         {
             if (this.IsDragged)
             {
-                this.Location.X = Math.Max(0, Math.Min(UIManager.Width - this.Width, UIManager.MouseScaled.X - (int)this.MouseOffset.X));
-                this.Location.Y = Math.Max(0, Math.Min(UIManager.Height - this.Height, UIManager.MouseScaled.Y - (int)this.MouseOffset.Y));
+                this.Location.X = System.Math.Max(0, System.Math.Min(UIManager.Width - this.Width, UIManager.MouseScaled.X - (int)this.MouseOffset.X));
+                this.Location.Y = System.Math.Max(0, System.Math.Min(UIManager.Height - this.Height, UIManager.MouseScaled.Y - (int)this.MouseOffset.Y));
             }
         }
         public override bool MouseThrough
@@ -289,23 +287,15 @@ namespace Project1.Core.UI
 
         public override Rectangle GetPreferredClientSize()
         {
-            //get
-            //{
-                int width = 0;
-                int height = 0;
-                foreach (var control in this.Client.Controls)
-                {
-                    //width = Math.Max(width, (int)control.Location.X + control.Width - (int)control.Origin.X);
-                    //height = Math.Max(height, (int)control.Location.Y + control.Height - (int)control.Origin.Y);
-                    width = Math.Max(width, (int)control.TopLeft.X + control.Width - (int)control.Origin.X);
-                    height = Math.Max(height, (int)control.TopLeft.Y + control.Height - (int)control.Origin.Y);
-                }
-                return new Rectangle(0, 0, width, height + 2); //monogame hack
-            //}
+            int width = 0;
+            int height = 0;
+            foreach (var control in this.Client.Controls)
+            {
+                width = System.Math.Max(width, (int)control.TopLeft.X + control.Width - (int)control.Origin.X);
+                height = System.Math.Max(height, (int)control.TopLeft.Y + control.Height - (int)control.Origin.Y);
+            }
+            return new Rectangle(0, 0, width, height + 2); //monogame hack
         }
-
-        //public Control Content => this.Client.Controls.Single();
-
         public void AlignToMouse(Vector2 loc)
         {
             this.Location = UIManager.Mouse - this.ClientLocation - loc;
@@ -314,7 +304,6 @@ namespace Project1.Core.UI
         internal Window Transparent()
         {
             this.SetOpacity(0);
-            //this.SetMousethrough(true);
             this.Label_Title.ShowOnParentFocus(true);
             this.Label_Title.MouseThrough = false;
             this.Label_Title.BackgroundColor = Color.Black * .5f;

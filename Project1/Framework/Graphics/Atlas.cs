@@ -4,8 +4,7 @@ using System.Linq;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Base;
-using Project1.Core.Helpers;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Graphics
 {
@@ -67,23 +66,23 @@ namespace Project1.Core.Graphics
             return sorted;
         }
 
-        public void OnDeviceLost()
+        public void OnDeviceLost(GraphicsDevice gfxDevice)
         {
-            this.Bake();
+            this.Bake(gfxDevice);
         }
 
-        internal void Initialize()
+        internal void Initialize(GraphicsDevice gfxDevice)
         {
             this.RootNode = new Node(0, 0, Size, Size);
             var sorted = this.Sort();
             foreach (var tokens in sorted)
                 this.Add(tokens);
-            this.Bake();
+            this.Bake(gfxDevice);
         }
 
-        internal void Bake()
+        internal void Bake(GraphicsDevice gfxDevice, string exportPath = null)
         {
-            var gfx = Game1.Instance.GraphicsDevice;
+            var gfx = gfxDevice;// Game1.Instance.GraphicsDevice;
             var texture = new RenderTarget2D(gfx, Size, Size);
             gfx.SetRenderTarget(texture);
             gfx.Clear(Color.Transparent);
@@ -100,7 +99,9 @@ namespace Project1.Core.Graphics
             }
             sb.End();
             gfx.SetRenderTarget(null);
-            using (FileStream stream = new(GlobalVars.SaveDir + this.Name + "Atlas.png", FileMode.OpenOrCreate))
+            if(exportPath is not null)
+            //using (FileStream stream = new(GlobalVars.SaveDir + this.Name + "Atlas.png", FileMode.OpenOrCreate))
+            using (FileStream stream = new(exportPath + this.Name + "Atlas.png", FileMode.OpenOrCreate))
             {
                 texture.SaveAsPng(stream, texture.Width, texture.Height);
                 stream.Close();

@@ -2,7 +2,6 @@
 using Project1.Core.Base;
 using Project1.Core.Net;
 using Project1.Core.UI;
-using Project1.Core.Interfaces;
 
 namespace Project1.Core.Towns
 {

@@ -3,6 +3,7 @@ using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using System.IO;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Towns.Shops
 {

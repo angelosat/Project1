@@ -20,11 +20,11 @@ namespace Project1.Core.AI
         }
         public string GetForceText(Plan task)
         {
-            return string.Format(this.Format, this.GetPrimaryTarget(task).Label);
+            return string.Format(this.Format, this.GetPrimaryTarget(task).LabelReadable);
         }
         public string GetForceText(TargetArgs target)
         {
-            return string.Format(this.Format, target.Label);
+            return string.Format(this.Format, target.LabelReadable);
         }
     }
 }

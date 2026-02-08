@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Base;
 using Project1.Core.Simulation;
+using Project1.Framework.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
 {
     public class RegionNode : Inspectable
     {
-        public override string Label => nameof(RegionNode);
+        public override string LabelReadable => nameof(RegionNode);
         public IntVec3 Local, Global;
         public RegionNode North, West, East, South;
 

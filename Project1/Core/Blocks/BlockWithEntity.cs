@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Base;
 using Project1.Core.Blocks;
+using Project1.Framework.Math;
 
 namespace Project1.Core
 {
@@ -12,7 +12,6 @@ namespace Project1.Core
         public override bool TryConsume(GameObject actor, GameObject dropped, IntVec3 global, int amount = -1)
         {
             return false;
-            //actor.Map.GetBlockEntity(global).OnDrop(actor, dropped, target, amount);
         }
     }
 }

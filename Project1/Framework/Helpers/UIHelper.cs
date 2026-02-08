@@ -5,11 +5,10 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Core.Helpers;
+using Project1.Framework.Math;
 
-namespace Project1.Core.Helpers
+namespace Project1.Framework.UI
 {
     public static class UIHelper
     {
@@ -47,7 +46,7 @@ namespace Project1.Core.Helpers
         }
         public static void DrawHighlightBorder(this Rectangle bounds, SpriteBatch sb, Color color, Vector2 origin, float thickness = 1, int padding = 0)
         {
-            var intthickness = (int)Math.Max(1, thickness);
+            var intthickness = (int)System.Math.Max(1, thickness);
             var padpad = 2 * padding;
             // Draw top line
             sb.Draw(UIManager.Highlight, new Rectangle(bounds.X - padding + intthickness, bounds.Y - padding, bounds.Width + padpad - intthickness, intthickness), color);

@@ -1,12 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class ListBoxNoScroll : GroupBox, IListSearchable
     {
@@ -128,7 +124,7 @@ namespace Project1.Core.UI
         public void Move(TObject item, int targetIndex)
         {
             var index = this.AllItems.FindIndex(c => c.Tag.Equals(item));
-            targetIndex = Math.Clamp(targetIndex, 0, this.AllItems.Count - 1);
+            targetIndex = System.Math.Clamp(targetIndex, 0, this.AllItems.Count - 1);
             if (index == targetIndex) return;
             var control = this.AllItems[index];
             this.AllItems.RemoveAt(index);
@@ -318,7 +314,7 @@ namespace Project1.Core.UI
         public TControl Move(TObject item, int targetIndex)
         {
             var index = this.AllItems.FindIndex(c => c.Tag.Equals(item));
-            targetIndex = Math.Clamp(targetIndex, 0, this.AllItems.Count - 1);
+            targetIndex = System.Math.Clamp(targetIndex, 0, this.AllItems.Count - 1);
             //if (index == targetIndex) return null;
             var control = this.AllItems[index];
             if (index == targetIndex) return null;// (TControl)control;

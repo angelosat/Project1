@@ -3,13 +3,12 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Net;
-using Project1.Core.UI;
-using Project1.Core.UI.Primitives;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
-using Project1.Core.Net;
 using Project1.Core.Entities;
+using Project1.Framework.IO;
+using Project1.Framework.UI;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Attributes
 {
@@ -117,7 +116,7 @@ namespace Project1.Core.Attributes
 
         public Control GetListControlGui()
         {
-            return new Bar(this.Progress, 200, () => $"{this.AttributeDef.Label}: {this.Level}")
+            return new Bar(this.Progress, 200, () => $"{this.AttributeDef.LabelReadable}: {this.Level}")
             {
                 TooltipFunc = t => t.AddControls(this.Progress.GetControl())
             };

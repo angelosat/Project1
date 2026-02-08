@@ -2,11 +2,9 @@
 using Project1.Core.Base;
 using Project1.Core.Interfaces;
 using Project1.Core.Materials;
-using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.UI;
 using System;
 using Project1.Core.Entities;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Legacy.Storage.New
 {
@@ -15,7 +13,7 @@ namespace Project1.Core.Legacy.Storage.New
         public StorageFilterCategoryNewNew Parent;
         public StorageFilterCategoryNewNew Root => this.Parent.Root;
         internal IStorageNew Owner => this.Root.Owner;
-        public string Label { get; set; }
+        public string LabelReadable { get; set; }
         public bool Enabled => this.Owner.Settings.Accepts(this.Item, this.Material, this.Variation);
         public readonly ItemDef Item;
         public readonly MaterialDef Material;
@@ -25,22 +23,22 @@ namespace Project1.Core.Legacy.Storage.New
         {
             this.Item = item;
             this.Material = mat;
-            this.Label = mat.Label + " " + item.Label;
+            this.LabelReadable = mat.LabelReadable + " " + item.LabelReadable;
         }
         public StorageFilterNewNew(string label, ItemDef item, Def variation)
         {
             this.Item = item;
             this.Variation = variation;
-            this.Label = label;
+            this.LabelReadable = label;
         }
         public StorageFilterNewNew(ItemDef item)
         {
             this.Item = item;
-            this.Label = item.Label;
+            this.LabelReadable = item.LabelReadable;
         }
         public Control GetListControlGui()
         {
-            return new CheckBoxNew(this.Label)
+            return new CheckBoxNew(this.LabelReadable)
             {
                 TickedFunc = () => this.Enabled,
                 LeftClickAction = () =>
@@ -64,27 +62,27 @@ namespace Project1.Core.Legacy.Storage.New
         public StorageFilterCategoryNew Parent;
         public StorageFilterCategoryNew Root => this.Parent.Root;
 
-        public string Label { get; set; }
+        public string LabelReadable { get; set; }
         public Predicate<Entity> Condition;
         public bool Enabled = true;
         internal Stockpile Owner => this.Root.Owner;
 
         public StorageFilterNew(ItemDef item, MaterialDef mat, bool enabled = true)
         {
-            this.Label = mat.Label + " " + item.Label;
+            this.LabelReadable = mat.LabelReadable + " " + item.LabelReadable;
             this.Condition = o => o.Def == item && o.PrimaryMaterial == mat;
             this.Enabled = enabled;
         }
         public StorageFilterNew(ItemDef item, bool enabled = true)
         {
-            this.Label = item.Label;
+            this.LabelReadable = item.LabelReadable;
             this.Condition = o => o.Def == item;
             this.Enabled = enabled;
         }
         
         public Control GetListControlGui()
         {
-            return new CheckBoxNew(this.Label)
+            return new CheckBoxNew(this.LabelReadable)
             {
                 TickedFunc = () => this.Enabled,
                 LeftClickAction = () => {

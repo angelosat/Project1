@@ -8,12 +8,14 @@ using Project1.Core.WorldGen;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Base;
 using Project1.Core.World.MetaRoles;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.AI
 {
@@ -190,7 +192,6 @@ namespace Project1.Core.AI
         {
             this.State.MapLoaded(parent as Actor);
             this.Root.MapLoaded(parent as Actor);
-            //this.State.ItemPreferences.OnMapLoaded();
         }
         public override void OnObjectLoaded(GameObject parent)
         {

@@ -2,16 +2,15 @@
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.Net;
-using Project1.Core.UI;
-using Project1.Core;
-using Project1.Core.UI;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Net;
 using Project1.Core.Inventory;
 using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Legacy.Crafting
 {
@@ -72,7 +71,7 @@ namespace Project1.Core.Legacy.Crafting
             this.Product = product;
             this.Progress.Max = product.WorkAmount;
             this.Owner.Physics.SetWeight(product.Product.Physics.Weight);
-            this.Owner.Name = $"Unfinished {product.Product.Def.Label}";
+            this.Owner.Name = $"Unfinished {product.Product.Def.LabelReadable}";
             this.Owner.SetMaterial(product.Product.PrimaryMaterial);
             foreach (var item in product.RequirementsNew.Values.Select(t => t.Object as Entity).Distinct())
                 this.Contents.Add(item);
@@ -84,7 +83,7 @@ namespace Project1.Core.Legacy.Crafting
             box.AddControlsVertically(
                 this.Progress.GetGui(),
                 new Label($"Creator: {this.Creator.Name}"),
-                Project1.Core.UI.Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
+                Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
                 );
             info.AddInfo(box);
         }
@@ -94,7 +93,7 @@ namespace Project1.Core.Legacy.Crafting
             box.AddControlsVertically(
                 this.Progress.GetGui(),
                 new Label($"Creator: {this.Creator.Name}"),
-                Project1.Core.UI.Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
+                Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
                 );
             info.AddInfo(box);
         }

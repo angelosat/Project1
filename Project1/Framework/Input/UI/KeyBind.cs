@@ -1,5 +1,4 @@
-﻿using Project1.Core.Input.Hotkeys;
-using System;
+﻿using System;
 using System.Windows.Forms;
 
 namespace Project1.Core.Input.UI

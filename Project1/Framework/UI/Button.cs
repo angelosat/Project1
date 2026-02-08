@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class ButtonNewNew : ButtonBaseNew
     {
@@ -34,7 +34,7 @@ namespace Project1.Core.UI
             set
             {
                 if (this.AutoSize)
-                    base.Width = Math.Max((int)this.Font.MeasureString(Text).X + SpriteLeft.Width + SpriteRight.Width + 2, value);
+                    base.Width = System.Math.Max((int)this.Font.MeasureString(Text).X + SpriteLeft.Width + SpriteRight.Width + 2, value);
                 else
                     base.Width = value;
             }
@@ -112,7 +112,7 @@ namespace Project1.Core.UI
         {
             this.Font = font;
             Text = text;
-            this.Width = Math.Max(this.Width, width);
+            this.Width = System.Math.Max(this.Width, width);
         }
         public ButtonNewNew(string text, Action action, int width = 0) : this(text, width)
         {
@@ -129,14 +129,14 @@ namespace Project1.Core.UI
             Text = text;
             if (width > 0)
                 this.AutoSize = false;
-            this.Width = Math.Max(this.Width, width);
+            this.Width = System.Math.Max(this.Width, width);
         }
         public ButtonNewNew(Vector2 location) : this() { this.Location = location; Text = ""; Height = UIManager.DefaultButtonHeight; }
         public ButtonNewNew(Vector2 Location, int width, String label = "")
             : this(Location)
         {
             Text = label;
-            this.Width = Math.Max(this.Width + SpriteLeft.Width + SpriteRight.Width + 2, width);
+            this.Width = System.Math.Max(this.Width + SpriteLeft.Width + SpriteRight.Width + 2, width);
             this.Height = UIManager.DefaultButtonHeight;
         }
 
@@ -227,7 +227,7 @@ namespace Project1.Core.UI
             set
             {
                 if (this.AutoSize)
-                    base.Width = Math.Max((int)this.Font.MeasureString(Text).X + SpriteLeft.Width + SpriteRight.Width + 2, value);
+                    base.Width = System.Math.Max((int)this.Font.MeasureString(Text).X + SpriteLeft.Width + SpriteRight.Width + 2, value);
                 else
                     base.Width = value;
             }
@@ -304,7 +304,7 @@ namespace Project1.Core.UI
         {
             this.Font = font;
             Text = text;
-            this.Width = Math.Max(this.Width, width);
+            this.Width = System.Math.Max(this.Width, width);
         }
         public Button(string text, Action action, int width = 0) :this(text, width)
         {
@@ -321,14 +321,14 @@ namespace Project1.Core.UI
             Text = text;
             if (width > 0)
                 this.AutoSize = false;
-            this.Width = Math.Max(this.Width, width);
+            this.Width = System.Math.Max(this.Width, width);
         }
         public Button(Vector2 location) : this() { this.Location = location; Text = ""; Height = UIManager.DefaultButtonHeight; }
         public Button(Vector2 Location, int width, String label = "")
             : this(Location)
         {
             Text = label;
-            this.Width = Math.Max(this.Width + SpriteLeft.Width + SpriteRight.Width + 2, width);
+            this.Width = System.Math.Max(this.Width + SpriteLeft.Width + SpriteRight.Width + 2, width);
             this.Height = UIManager.DefaultButtonHeight;
         }
       

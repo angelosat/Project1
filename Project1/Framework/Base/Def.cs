@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using Project1.Core;
 using Project1.Core.Helpers;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Base
 {
@@ -11,7 +12,7 @@ namespace Project1.Core.Base
     {
         public string Name;
         string _label;
-        public override string Label => this._label;
+        public override string LabelReadable => this._label;
         static public Dictionary<string, Def> Database = new();
         public Def()
         {

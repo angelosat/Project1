@@ -6,10 +6,10 @@ using Project1.Core.Towns;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.Net;
 using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core
 {

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Net.Packets
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Helpers.Collections;
-using Project1.Core.UI;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,19 +32,6 @@ namespace Project1.Core.UI
             this.ShowColumnLabels = showColumnLabels;
             this.ColumnLabels = new GroupBox() { AutoSize = true, BackgroundColor = Color.SlateGray * .5f };
         }
-        //public TableCompact<TObject> Bind<T, TSource>(T collection, Func<TSource, TObject> converter) where T : INotifyCollectionChanged, ICollection<TSource>
-        //{
-        //    if (this.BoundCollection != null)
-        //    {
-        //        this.BoundCollection.CollectionChanged -= Collection_CollectionChanged;
-        //    }
-
-        //    collection.CollectionChanged += Collection_CollectionChanged;
-        //    this.BoundCollection = collection;
-        //    this.ClearItems();
-        //    this.AddItems(collection.Select(converter));
-        //    return this;
-        //}
         public TableCompact<TObject> Bind<T>(T collection) where T : INotifyCollectionChanged, ICollection<TObject>
         {
             if (this.BoundCollection != null)

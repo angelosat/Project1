@@ -14,8 +14,9 @@ using Project1.Core;
 using Project1.Core.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Collections;
+using Project1.Framework.Input;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public abstract class Control : Element, IDisposable, ITooltippable, IKeyEventHandler, IBounded, IBoundedCollection
     {
@@ -109,16 +110,16 @@ namespace Project1.Core.UI
 
         public virtual void ConformToScreen()
         {
-            this.Location.X = Math.Max(0, Math.Min(UIManager.Width - this.Width, this.Location.X));
-            this.Location.Y = Math.Max(0, Math.Min(UIManager.Height - this.Height, this.Location.Y));
+            this.Location.X = System.Math.Max(0, System.Math.Min(UIManager.Width - this.Width, this.Location.X));
+            this.Location.Y = System.Math.Max(0, System.Math.Min(UIManager.Height - this.Height, this.Location.Y));
         }
         public void Rotate(Vector2 origin, float radians)
         {
             this.Rotation = radians;
             var w = this.Width;
             var h = this.Height;
-            this.Width = (int)Math.Abs(h * Math.Sin(radians) + w * Math.Cos(radians));
-            this.Height = (int)Math.Abs(h * Math.Cos(radians) + w * Math.Sin(radians));
+            this.Width = (int)System.Math.Abs(h * System.Math.Sin(radians) + w * System.Math.Cos(radians));
+            this.Height = (int)System.Math.Abs(h * System.Math.Cos(radians) + w * System.Math.Sin(radians));
             this.Anchor = origin;
         }
         protected float Rotation = 0;
@@ -150,7 +151,7 @@ namespace Project1.Core.UI
         public string NameFormat;
         public virtual Func<string> NameFunc { get; set; }
         public virtual string Name { get => this.NameFunc?.Invoke() ?? this._name; set => this._name = value; }
-        public Dictionary<Components.Message.Types, Action<Control, GameEvent>> GameEventHandlers = new();
+        //public Dictionary<Message.Types, Action<Control, GameEvent>> GameEventHandlers = new();
         public int ID;
         public float t = 0, dt = -0.05f;
         public Color Alpha, Blend;
@@ -261,8 +262,8 @@ namespace Project1.Core.UI
                     int maxw = 0, maxx = 0;
                     foreach (var current in this.Controls)
                     {
-                        maxw = Math.Max(maxw, current.Width);
-                        maxx = Math.Max(maxx, (int)current.Location.X);
+                        maxw = System.Math.Max(maxw, current.Width);
+                        maxx = System.Math.Max(maxx, (int)current.Location.X);
                     }
                     last = new Vector2(maxw / 2, 0);
                     foreach (var current in this.Controls)
@@ -277,8 +278,8 @@ namespace Project1.Core.UI
                     maxx = 0;
                     foreach (var current in this.Controls)
                     {
-                        maxw = Math.Max(maxw, current.Width);
-                        maxx = Math.Max(maxx, (int)current.Location.X);
+                        maxw = System.Math.Max(maxw, current.Width);
+                        maxx = System.Math.Max(maxx, (int)current.Location.X);
                     }
                     last = new Vector2(maxw, 0);
                     foreach (var current in this.Controls)
@@ -868,16 +869,13 @@ namespace Project1.Core.UI
         }
         public virtual Rectangle GetPreferredClientSize()
         {
-            //get
-            //{
-                int width = 0, height = 0;
-                foreach (var control in this.Controls)
-                {
-                    width = Math.Max(width, (int)control.TopLeft.X + control.Width - (int)control.Origin.X);
-                    height = Math.Max(height, (int)control.TopLeft.Y + control.Height - (int)control.Origin.Y);
-                }
-                return new Rectangle(this._clientSize.X, this._clientSize.Y, width, height);
-            //}
+            int width = 0, height = 0;
+            foreach (var control in this.Controls)
+            {
+                width = System.Math.Max(width, (int)control.TopLeft.X + control.Width - (int)control.Origin.X);
+                height = System.Math.Max(height, (int)control.TopLeft.Y + control.Height - (int)control.Origin.Y);
+            }
+            return new Rectangle(this._clientSize.X, this._clientSize.Y, width, height);
         }
 
         public virtual void OnBeforeDraw(SpriteBatch sb, Rectangle viewport) { }
@@ -888,10 +886,6 @@ namespace Project1.Core.UI
         }
         public virtual void Draw(SpriteBatch sb, Rectangle viewport)
         {
-            //this.InvalidatePosition();
-            //if (this.DrawOnParentFocus)
-            //    if(!this.Parent?.HasMouseHover ?? false)
-            //this.BoundsScreen.DrawHighlight(sb);
             if (this.ShowConditions.Any(c => !c(this)))
                 return;
             this.OnBeforeDraw(sb, viewport);
@@ -1048,12 +1042,6 @@ namespace Project1.Core.UI
         }
         public virtual Control AddControlsSmart(params Control[] controls)
         {
-            //foreach (var ctrl in controls)
-            //{
-            //    var rect = this.FindBestUncoveredRectangle(ctrl.Size.Width, ctrl.Size.Height);
-            //    ctrl.Location = new Vector2(rect.Left, rect.Top);
-            //}
-
             var existing = this.Controls.Select(c => c.ContainerSize).ToList();
             foreach (var ctrl in controls)
             {
@@ -1679,16 +1667,6 @@ namespace Project1.Core.UI
             this.OnLayout(availableWidth, availableHeight);
         }
 
-        //public override int Padding 
-        //{ 
-        //    get => base.Padding;
-        //    set
-        //    {
-        //        base.Padding = value;
-        //        this.ConformToClientSize();
-        //        //this.ClientSize = new Rectangle(0, 0, this.Width - 2 * value, this.Height - 2 * value);
-        //    }
-        //}
         public virtual void ClearControls()
         {
             //foreach (var ch in this.Controls)
@@ -1712,8 +1690,8 @@ namespace Project1.Core.UI
                     float xMax = 0, yMax = 0;
                     foreach (var c in this)
                     {
-                        xMax = Math.Max(xMax, c.Location.X + c.Width);
-                        yMax = Math.Max(yMax, c.Location.Y + c.Height);
+                        xMax = System.Math.Max(xMax, c.Location.X + c.Width);
+                        yMax = System.Math.Max(yMax, c.Location.Y + c.Height);
                     }
                     return new Vector2(xMax, yMax);
                 }
@@ -1725,8 +1703,8 @@ namespace Project1.Core.UI
                     float xMax = 0, y = 0;
                     foreach (var c in this)
                     {
-                        xMax = Math.Max(xMax, c.Location.X + c.Width);
-                        y = Math.Min(y, c.Location.Y);
+                        xMax = System.Math.Max(xMax, c.Location.X + c.Width);
+                        y = System.Math.Min(y, c.Location.Y);
                     }
                     return new Vector2(xMax, y);
                 }
@@ -1741,8 +1719,8 @@ namespace Project1.Core.UI
                     int x = 0, y = 0;
                     foreach (var c in this)
                     {
-                        x = Math.Min(x, c.Left);
-                        y = Math.Max(y, c.Bottom);
+                        x = System.Math.Min(x, c.Left);
+                        y = System.Math.Max(y, c.Bottom);
                     }
                     return new Vector2(x, y);
                 }
@@ -1757,7 +1735,7 @@ namespace Project1.Core.UI
                     int y = 0;
                     foreach (var c in this)
                     {
-                        y = Math.Max(y, c.Bottom);
+                        y = System.Math.Max(y, c.Bottom);
                     }
                     return y;
                 }

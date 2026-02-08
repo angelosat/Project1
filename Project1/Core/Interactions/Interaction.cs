@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using Project1.Core.Rendering;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.UI.Primitives;
 using Project1.Core.Resources;
 using Project1.Core.Tools;
 using Project1.Core.Stats;
@@ -18,6 +17,8 @@ using Project1.Core.Needs;
 using Project1.Core.Entities;
 using Project1.Core.Animations;
 using Project1.Core.Attributes;
+using Project1.Framework.UI;
+using Project1.Framework.IO;
 
 namespace Project1.Core.Interactions
 {
@@ -25,7 +26,7 @@ namespace Project1.Core.Interactions
     {
         public InteractionDef Def;
         public InteractionContext Context;
-        public override string Label => this.Name;
+        public override string LabelReadable => this.Name;
         public static readonly float DefaultRange = (float)Math.Sqrt(2);
         public bool IsFinished => this.State == States.Finished || this.State == States.Failed;
         protected bool CanPerform() => this.Def.Logic.CanPerform(this.Context);
@@ -203,7 +204,7 @@ namespace Project1.Core.Interactions
         public virtual void DrawUI(SpriteBatch sb, Camera camera)
         {
             var actor = this.Actor;
-            Bar.Draw(sb, camera, this.Actor.Global, this.Def.Label, this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
+            Bar.Draw(sb, camera, this.Actor.Global, this.Def.LabelReadable, this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
         }
 
         internal virtual void ResolveReferences()
@@ -432,11 +433,8 @@ namespace Project1.Core.Interactions
         }
         protected float TotalWorkApplied;
 
-        //protected virtual ToolUseDef GetToolUse() => null;
-        //protected virtual SkillDef GetSkill() => null;
         protected enum SkillAwardTypes { OnSwing, OnFinish }
 
-        protected SkillAwardTypes SkillAwardType;//{ get; }
-
+        protected SkillAwardTypes SkillAwardType;
     }
 }

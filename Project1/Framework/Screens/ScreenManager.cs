@@ -2,23 +2,16 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.UI;
 using System.Windows.Forms;
-using System.Linq;
 using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
-using System.Xml.Linq;
-using Microsoft.Xna.Framework.Input;
 using Project1.Core.Input;
-using Project1.Core;
 using Project1.Core.Base;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Screens
 {
     public class ScreenManager
     {
-        //public UIManager WindowManager;
-
         public static Stack<GameScreen> GameScreens = new Stack<GameScreen>();
         static ScreenManager _Instance;
         public static ScreenManager Instance => _Instance ??= new ScreenManager();
@@ -30,7 +23,6 @@ namespace Project1.Core.Screens
 
         static public void Initialize()
         {
-            //Game1.Instance.Window.TextInput += Window_TextInput;
             Game1.Input.KeyPress += new KeyPressEventHandler(Instance.TextInput_KeyPress);
             Game1.Input.KeyDown += new KeyEventHandler(Instance.TextInput_KeyDown);
             Game1.Input.KeyUp += new KeyEventHandler(Instance.TextInput_KeyUp);
@@ -163,8 +155,6 @@ namespace Project1.Core.Screens
 
             while(MouseInputQueue.TryDequeue(out var e))
                 e.Invoke();
-
-            //this.WindowManager.Update(game, gt);
         }
 
         public static bool Add(GameScreen screen)

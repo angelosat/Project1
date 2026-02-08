@@ -1,7 +1,6 @@
-﻿using Project1.Core.Interfaces;
-using System;
+﻿using System;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     interface IListSearchable<TObject> 
     {

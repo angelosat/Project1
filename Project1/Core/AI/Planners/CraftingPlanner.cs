@@ -11,12 +11,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using static Project1.Core.Towns.Crafting.OrderSettings;
 using Project1.Core.Resources;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.Towns.Crafting;
+using Project1.Framework.Math;
 
 namespace Project1.Core.AI.Planners
 {

@@ -1,11 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Base;
-using Project1.Core;
-using Project1.Core.UI;
-using System;
+using Project1.Framework.Math;
 using System.Windows.Forms;
 
-namespace Project1.Core.UI
+namespace Project1.Framework.UI
 {
     public class ScrollableBoxNewNewNew : GroupBox
     {
@@ -51,14 +48,13 @@ namespace Project1.Core.UI
         public ScrollableBoxNewNewNew(GroupBox container, int width, int height, ScrollModes mode = ScrollModes.Both)
             : base(width, height)
         {
-            //this.BackgroundColor = Color.Black * .5f;
             this.Client = container;
             this.Mode = mode;
             var modeFactor = new IntVec2((mode & ScrollModes.Vertical) == ScrollModes.Vertical ? 1 : 0, (mode & ScrollModes.Horizontal) == ScrollModes.Horizontal ? 1 : 0);
             this.Viewport = new GroupBox(width - buttonSize * modeFactor.X, height - buttonSize * modeFactor.Y) { AutoSize = false };
             this.Viewport.AddControls(this.Client);
-            this.VScroll = new ScrollbarV(this.Viewport, this.Client) { Location = new Vector2(this.Viewport.Width, 0) };//, this.Client.Height, this.Client);
-            this.HScroll = new ScrollbarH(this.Viewport, this.Client) { Location = new Vector2(0, this.Viewport.Height) };//, this.Client.Height, this.Client);
+            this.VScroll = new ScrollbarV(this.Viewport, this.Client) { Location = new Vector2(this.Viewport.Width, 0) };
+            this.HScroll = new ScrollbarH(this.Viewport, this.Client) { Location = new Vector2(0, this.Viewport.Height) };
             this.Controls.Add(this.Viewport);
             this.UpdateScrollbars();
         }
@@ -137,12 +133,12 @@ namespace Project1.Core.UI
                 /// even when their height was smaller than the chat window
                 return;
             int step = this.VScroll.SmallStep;
-            this.Client.Location.Y = Math.Min(0, Math.Max(this.Viewport.Height - this.Client.Height, this.Client.Location.Y + step * e.Delta));
+            this.Client.Location.Y = System.Math.Min(0, System.Math.Max(this.Viewport.Height - this.Client.Height, this.Client.Location.Y + step * e.Delta));
         }
 
         protected void EnsureClientWithinBounds()
         {
-            this.Client.Location.Y = Math.Max(this.Client.Location.Y, Math.Min(0, this.Viewport.Size.Height - this.Client.Height));
+            this.Client.Location.Y = System.Math.Max(this.Client.Location.Y, System.Math.Min(0, this.Viewport.Size.Height - this.Client.Height));
         }
         
         class ScrollbarV : GroupBox
@@ -182,17 +178,15 @@ namespace Project1.Core.UI
             
             void StepUp()
             {
-                //this.Container.Location.Y = Math.Min(0, this.Container.Location.Y + this.SmallStep);
                 this.MoveContainer(this.Container.Location.Y + this.SmallStep);
             }
             void StepDown()
             {
-                //this.Container.Location.Y = Math.Max(this.Client.Height - this.Container.Height, this.Container.Location.Y - this.SmallStep);
                 this.MoveContainer(this.Container.Location.Y - this.SmallStep);
             }
             void MoveContainer(float newPos)
             {
-                this.Container.Location.Y = Math.Min(0, Math.Max(this.Client.Height - this.Container.Height, newPos));
+                this.Container.Location.Y = System.Math.Min(0, System.Math.Max(this.Client.Height - this.Container.Height, newPos));
             }
             public override void HandleLButtonUp(HandledMouseEventArgs e)
             {
@@ -231,13 +225,13 @@ namespace Project1.Core.UI
                 var thumbH = this.Thumb.Height;
                 if (this.ThumbMoving)
                 {
-                    this.Thumb.Location.Y = Math.Max(0, Math.Min(this.Size.Height - 32 - thumbH, UIManager.MouseScaled.Y - this.Area.ScreenLocation.Y  - this.ThumbClickOrigin));
+                    this.Thumb.Location.Y = System.Math.Max(0, System.Math.Min(this.Size.Height - 32 - thumbH, UIManager.MouseScaled.Y - this.Area.ScreenLocation.Y  - this.ThumbClickOrigin));
                     var val = max * (this.Thumb.Location.Y / (this.Area.Height - thumbH));
                     this.Container.Location.Y = -(int)val;
                 }
                 else
                 {
-                    var currentval = Math.Min(0, Math.Max(this.Client.Height - this.Container.Height, this.Container.Location.Y));
+                    var currentval = System.Math.Min(0, System.Math.Max(this.Client.Height - this.Container.Height, this.Container.Location.Y));
                     float pos = (this.Area.Height - thumbH) * currentval / max;
                     this.Thumb.Location.Y = -pos;
                 }
@@ -298,7 +292,7 @@ namespace Project1.Core.UI
             }
             void MoveContainer(float newPos)
             {
-                this.Container.Location.X = Math.Min(0, Math.Max(this.Client.Width - this.Container.Width, newPos));
+                this.Container.Location.X = System.Math.Min(0, System.Math.Max(this.Client.Width - this.Container.Width, newPos));
             }
             public override void HandleLButtonUp(HandledMouseEventArgs e)
             {
@@ -337,13 +331,13 @@ namespace Project1.Core.UI
                 var thumbH = this.Thumb.Width;
                 if (this.ThumbMoving)
                 {
-                    this.Thumb.Location.X = Math.Max(0, Math.Min(this.Size.Width - 32 - thumbH, UIManager.MouseScaled.X - this.Area.ScreenLocation.X - this.ThumbClickOrigin));
+                    this.Thumb.Location.X = System.Math.Max(0, System.Math.Min(this.Size.Width - 32 - thumbH, UIManager.MouseScaled.X - this.Area.ScreenLocation.X - this.ThumbClickOrigin));
                     var val = max * (this.Thumb.Location.X / (this.Area.Width - thumbH));
                     this.Container.Location.X = -val;
                 }
                 else
                 {
-                    var currentval = Math.Min(0, Math.Max(this.Client.Width - this.Container.Width, this.Container.Location.X));
+                    var currentval = System.Math.Min(0, System.Math.Max(this.Client.Width - this.Container.Width, this.Container.Location.X));
                     float pos = (this.Area.Width - thumbH) * currentval / max;
                     this.Thumb.Location.X = -pos;
                 }

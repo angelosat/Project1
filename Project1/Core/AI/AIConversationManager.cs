@@ -2,7 +2,7 @@
 using Project1.Core.Entities;
 using Project1.Core.Needs;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.AI
 {
@@ -20,7 +20,7 @@ namespace Project1.Core.AI
             public enum States { Requested, Accepted, Declined, Started, Finished}
             public States State;
             public GameObject Initiator, Target;
-            public Progress Progress = new Progress(0, Ticks.PerSecond, 0);
+            public Progress Progress = new(0, Ticks.PerSecond, 0);
             public Conversation(GameObject initiator, GameObject target)
             {
                 this.Initiator = initiator;

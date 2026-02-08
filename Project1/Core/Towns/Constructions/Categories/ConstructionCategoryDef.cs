@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using Project1.Core.UI;
 using Project1.Core.Input.Tools.Building;
 using Project1.Core.Base;
 using Project1.Core.Construction.Packets;
 using Project1.Core.Construction.Tools;
-using Project1.Core.Interfaces;
-using Project1.Core;
 using Project1.Core.Net;
+using Project1.Framework.Interfaces;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Towns.Constructions.Categories
 {
@@ -21,7 +20,7 @@ namespace Project1.Core.Towns.Constructions.Categories
 
         public IEnumerable<BuildToolDef> Tools => this._toolDefs;
      
-        string INamed.Name => this.Label;
+        string INamed.Name => this.LabelReadable;
 
 
         static public Window WindowToolsBox;

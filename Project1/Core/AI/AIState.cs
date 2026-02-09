@@ -209,10 +209,14 @@ namespace Project1.Core.AI
                 var task = Plan.Load(tasktag);
                 var bhavtag = t["Behavior"];
                 var bhavname = (string)bhavtag["TypeName"].Value;
-                var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorExecutePlan;
-                bhav.Plan = task;
-                bhav.Load(bhavtag);
-                this.TaskStack.Push(bhav);
+                // HACK
+                if (Type.GetType(bhavname) is Type bhavType)
+                {
+                    var bhav = Activator.CreateInstance(bhavType) as BehaviorExecutePlan;
+                    bhav.Plan = task;
+                    bhav.Load(bhavtag);
+                    this.TaskStack.Push(bhav);
+                }
             }
             var tagQueue = tag["TaskQueue"];
             var listQueue = tagQueue.Value as List<SaveTag>;
@@ -268,7 +272,8 @@ namespace Project1.Core.AI
             this.Path.TrySave(tag, "Path");
             this.Jobs.Save(tag, "Jobs", SaveTag.Types.String, key => key.Name);
             this.ItemPreferences.Save(tag, "ItemPreferences");
-            tag.Save("Planner", this.CurrentPlanner);
+            if(this.CurrentPlanner is not null)
+                tag.Save("Planner", this.CurrentPlanner);
             return tag;
         }
         public void ToggleJob(JobDef job)

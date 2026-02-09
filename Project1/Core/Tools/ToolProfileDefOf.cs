@@ -1,11 +1,9 @@
-﻿using Project1.Core.Assets;
-using Project1.Core.Towns;
-using Project1.Core.Base;
-using Project1.Core.Helpers;
-using Project1.Core.Legacy.Properties;
-using Project1.Core.Tools;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework;
+using Project1.Core.Assets;
+using Project1.Core.Towns;
+using Project1.Core.Legacy.Properties;
 using Project1.Core.Skills;
 using Project1.Core.Entities.Stats;
 

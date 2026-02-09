@@ -1,8 +1,6 @@
-﻿using Project1.Core.AI.Planners;
-using Project1.Core.Base;
-using Project1.Core.Helpers;
+﻿using Project1.Framework;
+using Project1.Core.AI.Planners;
 using Project1.Core.Needs;
-
 
 namespace Project1.Core.Towns.AI.Needs
 {
@@ -18,9 +16,6 @@ namespace Project1.Core.Towns.AI.Needs
         static public readonly NeedDef Blessing = new("Blessing", typeof(NeedBlessing), NeedCategoryVisitor);
         static public readonly NeedDef InventorySpace = new("Inventory Space", typeof(NeedInventorySpace), NeedCategoryVisitor);
         static public readonly NeedDef Adventuring = new("Adventuring", typeof(NeedAdventure), NeedCategoryVisitor) { Planner = PlannerDefOf.Departure, BaseRate = 10 };
-
-        //static public readonly List<NeedDef> All = [Guidance, Trading, Blessing, InventorySpace];
-
         static AdventurerNeedsDefOf()
         {
             Def.Register(typeof(AdventurerNeedsDefOf));

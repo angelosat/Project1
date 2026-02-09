@@ -1,5 +1,5 @@
 ﻿using Project1.Core.Needs;
-using Project1.Core.Base;
+using Project1.Framework;
 
 namespace Project1.Core.Effects
 {

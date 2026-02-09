@@ -44,19 +44,6 @@ namespace Project1.Core.Entities
         {
         }
 
-        public virtual object Clone()
-        {
-            var t = this.GetType(); // concrete component type
-            var props = Owner.Def.Specs.First(p =>
-            {
-                var typeArg = p.GetType().BaseType.GetGenericArguments()[0];
-                return t.IsAssignableFrom(typeArg);
-            });
-
-            var newComp = props.CreateComp();
-            props.ApplyDefaults(newComp);
-            return newComp;
-        }
 
         public virtual bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
         {

@@ -1,7 +1,7 @@
-﻿using Project1.Core.Blocks;
+﻿using Project1.Framework;
+using Project1.Core.Blocks;
 using Project1.Core.Blocks.Doors;
 using Project1.Core.Materials;
-using Project1.Core.Base;
 using Project1.Core.Crafting;
 
 namespace Project1.Core
@@ -66,10 +66,6 @@ namespace Project1.Core
             BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen)],
             ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };
-        //static public readonly BlockDef Kitchen = new BlockDef("Kitchen", typeof(BlockWorkstation("Kitchen", typeof(BlockKitchenEntity));
-        //static public readonly BlockDef PlantProcessingBench = new BlockDef("PlantProcessingBench", typeof(BlockWorkstation("PlantProcessing", typeof(BlockPlantProcessingEntity));
-        //static public readonly BlockDef CarpentryBench = new BlockDef("CarpentryBench", typeof(BlockWorkstation("CarpenterBench", typeof(BlockCarpentryEntity));
-        //static public readonly BlockDef Smeltery = new BlockDef("Smeltery", typeof(BlockWorkstation("Smeltery", typeof(BlockSmelteryEntity));
         static BlockDefOf()
         {
             Def.Register(typeof(BlockDefOf));

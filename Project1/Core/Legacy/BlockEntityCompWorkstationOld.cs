@@ -1,18 +1,18 @@
-﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Interfaces;
-using Project1.Core.Legacy.Crafting;
-using Project1.Core.Legacy.Crafting.Gui;
-using Project1.Core.Rendering;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Project1.Core.Simulation;
+using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using Project1.Framework;
+using Project1.Core.Simulation;
+using Project1.Core.Blocks;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Legacy.Crafting.Gui;
+using Project1.Core.Rendering;
 
-namespace Project1.Core
+namespace Project1.Core.Legacy
 {
     public class BlockEntityCompWorkstationOld : BlockEntityComp
     {

@@ -14,7 +14,7 @@ namespace Project1.Core.Components
 {
     public class OwnershipComponent : EntityComp
     {
-        public new class Props : Spec<OwnershipComponent> { }
+        public new class Spec : Spec<OwnershipComponent> { }
         public override string Name { get; } = "Ownership";
         public int OwnerRef { get; private set; } = -1;
         public Actor ItemOwner;
@@ -28,17 +28,10 @@ namespace Project1.Core.Components
         {
 
         }
-        
         OwnershipComponent(int owner)
         {
             this.OwnerRef = owner;
         }
-
-        public override object Clone()
-        {
-            return new OwnershipComponent(this.OwnerRef);
-        }
-
         public override void Write(IDataWriter w)
         {
             w.Write(this.OwnerRef);

@@ -1,7 +1,7 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Helpers.Structs;
-using Project1.Core.Net;
+﻿using Project1.Framework;
 using Project1.Framework.Serialization;
+using Project1.Core.Base;
+using Project1.Core.Helpers.Structs;
 
 namespace Project1.Core.Net.Packets
 {

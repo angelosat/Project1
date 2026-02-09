@@ -258,8 +258,6 @@ namespace Project1.Core.Plants
         {
             return this.Plant is not null && item.Profile == this.Plant;
         }
-        //public void AddHarvestable(Entity entity) => this._plantsHarvestable.Add(entity);
-        //public void RemoveHarvestable(Entity entity) => this._plantsHarvestable.Remove(entity);
         public override IEnumerable<(string name, Action action)> GetInfoTabs()
         {
             yield return ("Plant", this.ToggleGui);
@@ -298,7 +296,6 @@ namespace Project1.Core.Plants
                 return box.Window;
             }
         }
-
         public override bool Accepts(Entity obj, IntVec3 pos)
         {
             if (this.Plant is null)

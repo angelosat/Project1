@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Project1.Core.WorldGen;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
@@ -21,6 +20,7 @@ using Project1.Framework.Serialization;
 using Project1.Core.Map;
 using Project1.Core.World;
 using Project1.Framework;
+using Project1.Core.WorldGen;
 
 namespace Project1.Core.Simulation
 {
@@ -136,7 +136,10 @@ namespace Project1.Core.Simulation
             else
                 this.DefaultBlock = BlockDefOf.Soil.Worker;
             this.Name = (string)save["Name"].Value;
-            this.Terraformers.LoadAbstract(save, "Mutators");
+
+            //this.Terraformers.LoadAbstract(save, "Mutators");
+            this.Terraformers = Terraformer.Defaults.Select(d => d.Create()).ToList(); // HACK
+
             this.Population.TryLoad(save, "Population");
             var mapsList = save["Maps"].Value as List<SaveTag>;
             foreach (var tag in mapsList)
@@ -158,10 +161,6 @@ namespace Project1.Core.Simulation
             this.Terraformers.ReadListAbstract(r);
             this.Population.Read(r);
         }
-        //public MapBase CreateMap(Vector2 mapCoords)
-        //{
-        //    return new StaticMap(this, mapCoords);
-        //}
         public override void WriteData(IDataWriter w)
         {
             base.Write(w);

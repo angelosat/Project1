@@ -1,11 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Blocks;
-using Project1.Core.Input;
-using Project1.Core.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
@@ -16,9 +16,10 @@ using Project1.Core.Entities.ColorCustomization;
 using Project1.Core.Animations;
 using Project1.Core.Components;
 using Project1.Core.Graphics;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
+using Project1.Core.Blocks;
+using Project1.Core.Input;
+using Project1.Core.UI;
+
 
 namespace Project1.Core.Entities
 {
@@ -489,11 +490,6 @@ namespace Project1.Core.Entities
                 this.Animations.Add(anim.Def, newani);
             }
         }
-        public override object Clone()
-        {
-            return new SpriteComp(this);
-        }
-
         static public bool HasOrientation(GameObject obj)
         {
             SpriteComp spriteComp = obj.GetComponent<SpriteComp>("Sprite");

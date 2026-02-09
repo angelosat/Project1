@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Net;
-using Project1.Core.WorldGen;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Entities;
@@ -17,6 +16,7 @@ using Project1.Framework.Serialization;
 using Project1.Core.Map;
 using Project1.Core.World;
 using Project1.Framework;
+using Project1.Core.WorldGen;
 
 #nullable enable
 

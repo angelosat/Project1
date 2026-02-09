@@ -1,8 +1,6 @@
-﻿using Project1.Core.Towns.AI;
-using Project1.Core.Base;
+﻿using Project1.Framework;
+using Project1.Core.Towns.AI;
 using Project1.Core.Components.Plants;
-using Project1.Core.Helpers;
-using Project1.Core.Interactions;
 using Project1.Core.Skills;
 using Project1.Core.Tools;
 using Project1.Core.Animations;
@@ -71,7 +69,6 @@ namespace Project1.Core.Interactions
             Skill = SkillDefOf.Construction,
             ToolUse = ToolUseDefOf.Building
         };
-        //public static readonly InteractionDef Craft = new("Craft", typeof(InteractionCraftingNew), typeof(InteractionCraftingLogic)) { Animation = AnimationDefOf.Tool, ProgressHandler = new InteractionProgressTool() };
         public static readonly InteractionDef Craft = new("Crafting", typeof(InteractionCraftingLogic))
         {
             Animation = AnimationDefOf.Tool,

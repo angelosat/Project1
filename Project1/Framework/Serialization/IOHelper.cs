@@ -688,10 +688,31 @@ namespace Project1.Framework.Serialization
         {
             writer.Write((int)packetType);
         }
-        //public static void Write(this BinaryWriter writer, ISerializableNew item)
-        //{
-        //    item.Write(writer);
-        //}
+        public static void Write(this Color c, IDataWriter w)
+        {
+            w.Write(c.R);
+            w.Write(c.G);
+            w.Write(c.B);
+            w.Write(c.A);
+        }
+        public static void Write(this BinaryWriter w, Color c)
+        {
+            w.Write(c.R);
+            w.Write(c.G);
+            w.Write(c.B);
+            w.Write(c.A);
+        }
+        public static Color ReadColor(this BinaryReader r)
+        {
+            var c = new Color
+            {
+                R = r.ReadByte(),
+                G = r.ReadByte(),
+                B = r.ReadByte(),
+                A = r.ReadByte()
+            };
+            return c;
+        }
         public static void Write(this BinaryWriter w, params object[] args)
         {
             for (int i = 0; i < args.Length; i++)

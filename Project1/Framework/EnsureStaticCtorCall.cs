@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Project1.Core.Base
+namespace Project1.Framework
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class EnsureStaticCtorCall : Attribute

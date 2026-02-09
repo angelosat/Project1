@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Base;
-using Project1.Core.Entities;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
 using Project1.Framework;
+using Project1.Core.Base;
+using Project1.Core.Entities;
 
-namespace Project1.Core.Components.Plants
+namespace Project1.Core.Plants
 {
     class TreeComponent : EntityComp
     {
@@ -30,11 +30,6 @@ namespace Project1.Core.Components.Plants
             this.Growth.Set(parent, this.Growth.Max);
         }
         public override string Name { get; } = "Tree";
-        public override object Clone()
-        {
-            return new TreeComponent();
-        }
-
         public TreeComponent()
         {
 

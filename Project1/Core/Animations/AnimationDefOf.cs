@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Project1.Core.Base;
+using Project1.Framework;
 using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
 

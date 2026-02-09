@@ -1,4 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Core.Blocks;
+using Project1.Core.Resources;
+using Project1.Core.Stats;
+using Project1.Core.Simulation;
+using Project1.Core.Needs;
+using Project1.Core.Gear;
+using Project1.Core.Inventory;
+using Project1.Core.Entities.Stats;
+using Project1.Core.Entities.Mood;
+using Project1.Core.Entities.Ownership;
+using Project1.Core.Attributes;
+using Project1.Core.AI.Behaviors.Reserve;
+using Project1.Core.Networking.Entities;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Conversation;
@@ -16,24 +34,6 @@ using Project1.Core.Interactions;
 using Project1.Core.Net;
 using Project1.Core.Rooms;
 using Project1.Core.Skills;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Core.Resources;
-using Project1.Core.Stats;
-using Project1.Core.Simulation;
-using Project1.Core.Needs;
-using Project1.Core.Gear;
-using Project1.Core.Inventory;
-using Project1.Core.Entities.Stats;
-using Project1.Core.Entities.Mood;
-using Project1.Core.Entities.Ownership;
-using Project1.Core.Attributes;
-using Project1.Core.AI.Behaviors.Reserve;
-using Project1.Core.Networking.Entities;
-using Project1.Framework.UI;
-using Project1.Framework.Base;
-using Project1.Framework;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -398,14 +398,10 @@ namespace Project1.Core.Entities.Actors
         public bool CanReach(GameObject obj)
         {
             return this.Map.Regions.CanReach(this.GetCellStandingOn(), obj.Global.ToCell(), this as Actor);
-            //old
-            //return this.Map.GetRegionDistance(this.GetCellStandingOn(), obj.Global.ToCell(), this as Actor) != -1;
         }
         internal bool CanReach(Vector3 global)
         {
             return this.Map.Regions.CanReach(this.GetCellStandingOn(), global.ToCell(), this as Actor);
-            //old
-            //return this.Map.GetRegionDistance(this.GetCellStandingOn(), global.ToCell(), this as Actor) != -1;
         }
         public bool CanReachAndReserve(Entity e)
         {

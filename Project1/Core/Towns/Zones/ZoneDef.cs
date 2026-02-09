@@ -19,7 +19,7 @@ namespace Project1.Core.Towns.Zones
             this.ZoneClass = zoneClass;
             this.WorkerClass = workerClass;
         }
-        public Zone Create()
+        public Zone CreateRuntimeWrapper()
         {
             var zone = Activator.CreateInstance(this.ZoneClass) as Zone;
             return zone;

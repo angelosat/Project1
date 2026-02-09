@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 using Project1.Core.Input;
 using Project1.Core.Net;
 using Project1.Core.Base;
@@ -10,9 +13,6 @@ using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 
 namespace Project1.Core.Components
 {
@@ -130,13 +130,6 @@ namespace Project1.Core.Components
 
             return char.ToUpper(name[0]) + name.Substring(1);
         }
-        public override object Clone()
-        {
-            NpcComponent phys = new NpcComponent();
-            
-            return phys;
-        }
-
         public override void Write(IDataWriter w)
         {
             base.Write(w);

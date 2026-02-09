@@ -1,13 +1,10 @@
-﻿using Project1.Core.World.WorldAreas;
+﻿using Project1.Framework.Serialization;
+using Project1.Framework;
+using Project1.Core.World.WorldAreas;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.Simulation;
-using System;
-using System.Runtime.CompilerServices;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 
 namespace Project1.Core.AI.MetaRoles
 {
@@ -94,11 +91,8 @@ namespace Project1.Core.AI.MetaRoles
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            //tag.Add(this.LocationDecision.Save("LocationDecision"));
             tag.Save("LocationDecision", this.LocationDecision);
             tag.SaveDef("Def", this.Def);
-            //var hasFront = this.TargetFrontier is not null;
-            //tag.Save("HasTargetFrontier", hasFront);
             if (this.TargetFrontier is not null)
                 tag.SaveDef("TargetFrontier", this.TargetFrontier);
             return tag;
@@ -109,8 +103,7 @@ namespace Project1.Core.AI.MetaRoles
             var def = tag.LoadDef<RoleMetaDef>("Def");
             var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.WrapperType);
             wrapper.Def = def;
-            wrapper.LocationDecision = tag.Load<MetaDecision>("LocationDecision");// MetaDecision.Create(tag["LocationDecision"]);
-            //wrapper.TargetFrontier = tag.LoadDef<FrontierDef>("TargetFrontier");
+            wrapper.LocationDecision = tag.Load<MetaDecision>("LocationDecision");
             if (tag.TryLoadDefOut<FrontierDef>("TargetFrontier", out var frontDef)) wrapper.TargetFrontier = frontDef;
             return wrapper;
         }
@@ -141,7 +134,6 @@ namespace Project1.Core.AI.MetaRoles
         {
             this.TargetFrontier = frontier;
             this.Actor.World.Events.Post(new AILocationDecisionEvent(this.Actor, frontier));
-            
         }
     }
 }

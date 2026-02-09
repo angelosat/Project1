@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.Net;
 using System;
 using System.Collections.Generic;
@@ -29,10 +28,10 @@ namespace Project1.Core.WorldGen
         {
             return this.Def.LabelReadable;
         }
-        public virtual void Generate(MapBase map) { }//, Dictionary<IntVec3, double> gradients) { }
+        public virtual void Generate(MapBase map) { }
 
         static Terraformer() { }
-        public static List<TerraformerDef> Defaults = new() { 
+        public static List<TerraformerDef> Defaults = [ 
             TerraformerDefOf.Normal,
             TerraformerDefOf.Sea,
             TerraformerDefOf.PerlinWorms, // caves after sea because we dont want underwater caves filled with water
@@ -40,7 +39,7 @@ namespace Project1.Core.WorldGen
             TerraformerDefOf.Grass, 
             TerraformerDefOf.Flowers, 
             TerraformerDefOf.Trees 
-        };
+        ];
 
         protected static int GetRandom(byte[] seedArray, int x, int y, int z, int min, int max)
         {

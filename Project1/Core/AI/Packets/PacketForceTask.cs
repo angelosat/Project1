@@ -1,10 +1,10 @@
-﻿using Project1.Core.AI.Planners;
+﻿using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Core.AI.Planners;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
-using Project1.Core.Net;
-using Project1.Framework.Serialization;
 
 namespace Project1.Core.AI.Packets
 {

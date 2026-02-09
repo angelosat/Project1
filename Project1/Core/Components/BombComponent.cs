@@ -13,10 +13,6 @@ namespace Project1.Core.Components
     class BombComponent : EntityComp
     {
         public override string Name { get; } = "Bomb";
-        public override object Clone()
-        {
-            return new BombComponent(this.Radius, this.Fuse);
-        }
 
         public int Radius, Fuse, FuseMax;
         public bool Exploded;

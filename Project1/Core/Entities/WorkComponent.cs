@@ -1,24 +1,18 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interactions;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using System;
 
 namespace Project1.Core.Entities
 {
     public class WorkComponent : EntityComp
     {
         public new class Spec : Spec<WorkComponent> { }
-
         public override string Name { get; } = "Work";
-        public override object Clone()
-        {
-            return new WorkComponent();
-        }
-
         public Interaction Task { get; set; }
         public TargetArgs Target { get; set; }
 

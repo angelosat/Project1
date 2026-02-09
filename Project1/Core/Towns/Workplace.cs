@@ -569,8 +569,8 @@ namespace Project1.Core.Towns
                 this.SelectedShop = shop;
                 if (prevShop == null || prevShop.Town != shop.Town)
                 {
-                    this.TableStockpiles.Bind(shop.Town.ZoneManager.Zones);
-                    this.TableShoppingDisplays.Bind(shop.Town.ZoneManager.Zones);
+                    this.TableStockpiles.Bind(shop.Town.ZoneManager.ZonesById);
+                    this.TableShoppingDisplays.Bind(shop.Town.ZoneManager.ZonesById);
                     this.TableFacilities.Bind(shop.FacilitiesTargetsCached);
                     this.TableJobRoles.ClearColumns();
                     this.TableJobRoles.AddColumn(null, "Worker", 90, a => new Label(a.Name));

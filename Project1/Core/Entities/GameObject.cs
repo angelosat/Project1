@@ -503,7 +503,7 @@ namespace Project1.Core.Entities
         [InspectorHidden]
         public AttributeRuntime this[AttributeDef att] => this.GetAttribute(att);
 
-        public ComponentCollection Components;
+        public EntityCompCollection Components;
 
         public T GetComponent<T>(string name) where T : EntityComp
         {
@@ -819,12 +819,6 @@ namespace Project1.Core.Entities
                 throw new Exception();
             w.Write(this.RefId);
             w.Write(this.StackSize);
-            //w.Write(this.Components.Count);
-            //foreach (var comp in this.Components)
-            //{
-            //    w.Write(comp.Key);
-            //    comp.Value.Write(w);
-            //}
             this.Components.Write(w);
         }
         public static GameObject Create(IDataReader r)

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Rooms;
-using Project1.Framework;
+using Project1.Core.Blocks;
 
 namespace Project1.Core.Entities.Ownership
 {
@@ -15,10 +16,6 @@ namespace Project1.Core.Entities.Ownership
         readonly HashSet<Room> Rooms = new();
         readonly HashSet<BlockEntity> Furniture = new();
         readonly HashSet<IntVec3> FurnitureNew = [];
-        public override object Clone()
-        {
-            return new PossessionsComponent();
-        }
         public bool Owns(Room room)
         {
             return this.Rooms.Contains(room);

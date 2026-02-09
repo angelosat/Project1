@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Project1.Core.Entities;
-using Project1.Core.Gear;
-using Project1.Core.Resources;
-using Project1.Core.Interactions;
-using Project1.Core.UI;
+﻿using Microsoft.Xna.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework;
+using Project1.Core.Entities;
+using Project1.Core.Gear;
+using Project1.Core.Resources;
 
 namespace Project1.Core.Components
 {
@@ -29,12 +25,6 @@ namespace Project1.Core.Components
             this.Type = slot;
             return this;
         }
-
-        public override object Clone()
-        {
-            throw new Exception();
-        }
-
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
             tooltip.Controls.Add(new Label(this.Durability.ToString())
@@ -49,12 +39,6 @@ namespace Project1.Core.Components
                         return Color.Lerp(Color.Red, Color.Yellow, this.Durability.Percentage * 2);
                 }
             });
-        }
-
-        public override void GetInteractions(GameObject parent, List<Interaction> actions)
-        {
-            //actions.Add(new InteractionEquip());
-            //actions.Add(new EquipFromInventory());
         }
       
         internal override void SaveExtra(SaveTag tag)

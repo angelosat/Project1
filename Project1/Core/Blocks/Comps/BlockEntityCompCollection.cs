@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     public class BlockEntityCompCollection : Inspectable
     {
@@ -56,8 +56,7 @@ namespace Project1.Core
         public virtual void Load(SaveTag tag)
         {
             foreach (var c in this._inner.Values)
-                tag.TryGetTag(c.GetType().FullName, ct => c.Load(ct));
+                tag.TryGetTag(c.GetType().FullName, c.Load);
         }
-
     }
 }

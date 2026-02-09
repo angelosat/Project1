@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 using Project1.Core.Base;
-using Project1.Core;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
@@ -13,8 +14,6 @@ using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Entities;
 using Project1.Core.Animations;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 
 namespace Project1.Core.Components
 {
@@ -70,10 +69,6 @@ namespace Project1.Core.Components
         public const float NormalWalkSpeed = .1f;// 0.08f; when i used friction wrongly
 
         public override string Name { get; } = "Mobile";
-        public override object Clone()
-        {
-            return new MobileComponent();
-        }
 
         public float Acceleration;
 

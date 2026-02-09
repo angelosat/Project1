@@ -4,7 +4,6 @@ using System.Linq;
 using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Input.Tools;
-using Project1.Core.WorldGen;
 using Project1.Core.UI;
 using Project1.Core.Screens;
 using Project1.Core.Helpers;
@@ -26,8 +25,8 @@ namespace Project1.Core.Towns.Zones
         public override string Name => "ZoneManager";
         int _zoneIDSequence = 1;
         public int GetNextID() => _zoneIDSequence++;
-        readonly public ObservableDictionary<int, Zone> Zones = [];
-        public IEnumerable<Zone> AllZones => this.Zones.Values;
+        readonly public ObservableDictionary<int, Zone> ZonesById = [];
+        public IEnumerable<Zone> AllZones => this.ZonesById.Values;
         readonly Dictionary<IntVec3, Zone> _cellsToZones = [];
         public IReadOnlyDictionary<IntVec3, Zone> CellsToZones => this._cellsToZones;
 
@@ -97,11 +96,11 @@ namespace Project1.Core.Towns.Zones
         }
         internal void DeleteZone(int zoneID)
         {
-            if (!this.Zones.TryGetValue(zoneID, out var zone))
+            if (!this.ZonesById.TryGetValue(zoneID, out var zone))
                 throw new Exception();
             foreach (var position in zone.Cells)
                 this._cellsToZones.Remove(position);
-            this.Zones.Remove(zoneID);
+            this.ZonesById.Remove(zoneID);
             FloatingText.Create(this.Map, zone.Average(), $"{zone.GetType()} deleted", ft => ft.Font = UIManager.FontBold);
             this.Map.Events.Post(new ZoneDeletedEvent(zone));
         }
@@ -109,7 +108,7 @@ namespace Project1.Core.Towns.Zones
         {
             if (zone.ID == 0)
                 zone.ID = this.GetNextID();
-            this.Zones.Add(zone.ID, zone);
+            this.ZonesById.Add(zone.ID, zone);
             foreach (var position in zone.Cells)
                 this._cellsToZones[position] = zone;
             zone.Manager = this;
@@ -146,7 +145,7 @@ namespace Project1.Core.Towns.Zones
         {
             if (zoneID == ZoneId.Null)
                 return null;
-            return this.Zones[zoneID] as T;
+            return this.ZonesById[zoneID] as T;
         }
 
         public Zone GetZoneAt(IntVec3 global)
@@ -163,18 +162,18 @@ namespace Project1.Core.Towns.Zones
         }
         public IEnumerable<T> GetZones<T>() where T : Zone
         {
-            return this.Zones.Values.OfType<T>();
+            return this.ZonesById.Values.OfType<T>();
         }
         public IEnumerable<Zone> GetZones()
         {
-            foreach (var z in this.Zones.Values)
+            foreach (var z in this.ZonesById.Values)
                 yield return z;
         }
         internal override void OnBlocksChanged(IEnumerable<IntVec3> positions)
         {
-            for (int i = this.Zones.Count - 1; i >= 0; i--)
+            for (int i = this.ZonesById.Count - 1; i >= 0; i--)
             {
-                var item = this.Zones.ElementAt(i);
+                var item = this.ZonesById.ElementAt(i);
                 foreach (var pos in positions)
                 {
                     item.Value.OnBlockChangedNew(pos);
@@ -196,13 +195,13 @@ namespace Project1.Core.Towns.Zones
         internal Zone PlayerEdit(int zoneID, ZoneDef zoneType, IntVec3 a, int w, int h, bool remove)
         {
             if (remove)
-                foreach (var zone in this.Zones.Values.ToList())
+                foreach (var zone in this.ZonesById.Values.ToList())
                     zone.Edit(a, a + new IntVec3(w - 1, h - 1, 0), remove);
             else
                 if (zoneID == 0)
                     return RegisterNewZone(zoneType, a.GetBoxLazy(a + new IntVec3(w - 1, h - 1, 0)));
             else
-                this.Zones[zoneID].Edit(a, a + new IntVec3(w - 1, h - 1, 0), remove);
+                this.ZonesById[zoneID].Edit(a, a + new IntVec3(w - 1, h - 1, 0), remove);
             return null;
         }
         static readonly ZoneDef[] ZoneDefs = { ZoneDefOf.Stockpile, ZoneDefOf.Growing };
@@ -233,33 +232,35 @@ namespace Project1.Core.Towns.Zones
         {
             if (!cam.DrawZones)
                 return;
-            foreach (var s in this.Zones.Values)
+            foreach (var s in this.ZonesById.Values)
                 s.DrawBeforeWorld(sb, map, cam);
         }
         internal override void OnCameraRotated(Camera camera)
         {
-            foreach (var z in this.Zones.Values)
+            foreach (var z in this.ZonesById.Values)
                 z.OnCameraRotated(camera);
         }
         protected override void AddSaveData(SaveTag tag)
         {
             this._zoneIDSequence.Save(tag, "IDSequence");
-            this.Zones.Values.SaveAbstract(tag, "Zones");
+            this.ZonesById.Values.SaveNewBEST(tag, "Zones");
         }
         public override void Load(SaveTag tag)
         {
             tag.TryGetTagValue("IDSequence", ref this._zoneIDSequence);
-            this.Zones.TryLoadByValueAbstractTypes(tag, "Zones", zone => zone.ID, this);
+            var savedZones = tag.LoadList<Zone>("Zones").ToDictionary(z => z.ID, z => z);
+            foreach (var (id, z) in savedZones)
+                this.ZonesById.Add(id, z);
         }
         public override void Write(IDataWriter w)
         {
             w.Write(this._zoneIDSequence);
-            this.Zones.Values.WriteAbstract(w);
+            this.ZonesById.Values.WriteAbstract(w);
         }
         public override void Read(IDataReader r)
         {
             this._zoneIDSequence = r.ReadInt32();
-            this.Zones.ReadByValueAbstractTypes(r, zone => zone.ID, this);
+            this.ZonesById.ReadByValueAbstractTypes(r, zone => zone.ID, this);
         }
     }
 }

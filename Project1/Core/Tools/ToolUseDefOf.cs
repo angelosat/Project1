@@ -1,7 +1,5 @@
-﻿using Project1.Core.Base;
-using System.Linq;
+﻿using Project1.Framework;
 using Project1.Core.Skills;
-using Project1.Core.Tools;
 
 namespace Project1.Core.Tools
 {

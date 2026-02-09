@@ -1,9 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Linq;
+using Microsoft.Xna.Framework;
 using Project1.Core.Helpers;
-using Project1.Core.Interactions;
-using Project1.Core;
-using System.Linq;
 using Project1.Core.Entities;
+using Project1.Core.Blocks;
 
 namespace Project1.Core.Interactions
 {
@@ -37,7 +36,7 @@ namespace Project1.Core.Interactions
                 return;
 
             var inSlots = plan.TargetsA.Select(t => t.Entity as Entity);
-            var creationReq = order.GetCreationRequest(); /*new EntityCreationRequest(order.Refinement, null, stackSize: 1);*/
+            var creationReq = order.GetCreationRequest();
             var targetBones = order.GetSlotMapping();
             var mapping = targetBones.Zip(inSlots);
             foreach (var pair in mapping)

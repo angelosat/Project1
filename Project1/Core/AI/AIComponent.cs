@@ -137,15 +137,6 @@ namespace Project1.Core.AI
                 this.State.Path = null;
             }
         }
-
-        public override object Clone()
-        {
-            AIComponent ai = new AIComponent().Initialize(
-                this.Root.Clone() as Behavior);
-            return ai;
-        }
-
-
         internal override List<SaveTag> Save()
         {
             var save = new List<SaveTag>

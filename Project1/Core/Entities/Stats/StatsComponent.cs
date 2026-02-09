@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Animations;
-using Project1.Core.Entities;
+﻿using Project1.Core.Animations;
 using Project1.Core.Helpers;
-using Project1.Core.UI;
-using Project1.Core.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System.Collections.Generic;
@@ -11,22 +7,6 @@ using System.Linq;
 
 namespace Project1.Core.Entities.Stats
 {
-
-    class StatContribution(GameObject owner, StatDef def, BoneDef source)//, StatContribution.ContributionType cType)
-    {
-        internal enum ContributionType { Additive, Multiplicative }
-
-        internal ContributionType CType;// = cType;
-        internal readonly StatDef Def = def;
-        float? _value;
-        internal float Value => this._value ??= this.Def.CalculateFor(this.Owner);
-        internal void SetValue(float value) => this._value = value;
-        internal readonly BoneDef Source = source;
-        internal GameObject Owner = owner;
-        internal string Label => $"{this.Def.LabelReadable}: {this.Value.ToString(this.Def.StringFormat)}";
-        internal Control CreateGui() =>
-            new Label($"{this.Label} ({this.Source.LabelReadable})") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };//: {this.Owner.Body.FindBone(this.Source).Material.Label} x{this.Owner.Quality.Multiplier:0.00} from {this.Owner.Quality.Label} Quality)") { TextColorFunc = () => this.Value > 0 ? Color.Lime : Color.Red };
-    }
     class StatsComponent : EntityComp
     {
         readonly Dictionary<BoneDef, List<StatContribution>> ContributionsBySource = [];
@@ -34,20 +14,7 @@ namespace Project1.Core.Entities.Stats
         internal void Bake(StatDef def, BoneDef source)
         {
             this.Register(def, source);
-            //if (!this.ContributionsBySource.TryGetValue(source, out var list))
-            //    this.ContributionsBySource[source] = list = [];
-            //list.Add(new StatContribution(this.Owner, def, source));
         }
-        //void RefreshAll()
-        //{
-        //    foreach (var (source, stats) in this.Contributions)
-        //        foreach (var stat in stats)
-        //            stat.Refresh(this.Owner);
-        //}
-        //internal override void ResolveReferencesNew()
-        //{
-        //    this.RefreshAll();
-        //}
         public float this[StatDef def]
         {
             get
@@ -57,19 +24,7 @@ namespace Project1.Core.Entities.Stats
                 return list.Sum(c => c.Value);
             }
         }
-        //public float GetStat(StatDef stat)
-        //{
-        //    //float total = 0;
-        //    //foreach (var (bone, list) in this.ContributionsBySource)
-        //    //    foreach (var c in list)
-        //    //        if (c.Def == stat)
-        //    //            total += c.Value;
-        //    //return total;
 
-        //    if (!this.ContributionsByStat.TryGetValue(stat, out var list))
-        //        return 0;
-        //    return list.Sum(c => c.Value);
-        //}
         public new class Spec : Spec<StatsComponent> { }
         public override string Name { get; } = "StatsNew";
         readonly Dictionary<StatDef, List<StatNewModifier>> Modifiers = new();
@@ -174,10 +129,6 @@ namespace Project1.Core.Entities.Stats
                     this.Register(def, bone, value);
                 }
             }
-        }
-        public override object Clone()
-        {
-            return new StatsComponent();
         }
     }
 }

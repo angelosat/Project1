@@ -1,6 +1,5 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Helpers;
-using System.Linq;
+﻿using System.Linq;
+using Project1.Framework;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
 {

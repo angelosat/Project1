@@ -24,17 +24,9 @@ namespace Project1.Core.Components
         {
             tooltip.Controls.Add(new Label(tooltip.Controls.BottomLeft, "Speed: " + this.Speed) { Font = UIManager.FontBold });
         }
-
-        public override object Clone()
-        {
-            return new WeaponComponent(this.Speed);
-        }
-
         public float GetTotalDamage()
         {
             float dmg = 0;
-            //foreach(var stat in this.Damage)
-            //    dmg += stat.Value;
             return dmg;
         }
         static public float GetTotalDamage(GameObject obj)

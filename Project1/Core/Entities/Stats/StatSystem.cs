@@ -1,8 +1,8 @@
-﻿using Project1.Core.Base;
+﻿using System.Collections.Generic;
+using Project1.Framework;
 using Project1.Core.Interactions;
 using Project1.Core.Skills;
 using Project1.Core.Tools;
-using System.Collections.Generic;
 
 namespace Project1.Core.Entities.Stats
 {

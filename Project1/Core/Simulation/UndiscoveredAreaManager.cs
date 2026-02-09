@@ -20,8 +20,8 @@ namespace Project1.Core.Simulation
         bool Valid;// = true;
         public void Init()
         {
-            if (this.Map.Net.IsClient)
-                return; // if i'm saving the discovered property of cells, it means that i load and send the data to clients. no need for clients to initialize undiscovered areas themselves
+            //if (this.Map.Net.IsClient)
+            //    return; // if i'm saving the discovered property of cells, it means that i load and send the data to clients. no need for clients to initialize undiscovered areas themselves
             if (!this.Valid)
             {
                 var watch = Stopwatch.StartNew();

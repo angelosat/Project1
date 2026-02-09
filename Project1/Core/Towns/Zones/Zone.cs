@@ -2,26 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
 using Project1.Core.UI;
 using Project1.Core.Input;
 using Project1.Core.Input.Tools.CellRendering;
 using Project1.Core.Blocks;
 using Project1.Core.Net;
-using Project1.Core.Base;
 using Project1.Core.Rendering;
-using Project1.Core.Interfaces;
 using Project1.Core.Helpers;
 using Project1.Core.Towns.Tools;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 
 namespace Project1.Core.Towns.Zones
 {
-    abstract public class Zone : Inspectable, ISelectable, ISaveable, ISerializable
+    abstract public class Zone : Inspectable, ISelectable, ISaveable, ISerializable, ISaveableNewNew<Zone>
     {
         public Town Town => this.Manager.Town;
         public MapBase Map => this.Town.Map;
@@ -41,7 +39,7 @@ namespace Project1.Core.Towns.Zones
         protected bool _dirty = true;
         public IntVec3 this[int index] => this.Cells[index];
 
-        public bool Exists => this.Manager.Zones.ContainsKey(this.ID);
+        public bool Exists => this.Manager.ZonesById.ContainsKey(this.ID);
 
 
         protected Zone()
@@ -207,6 +205,7 @@ namespace Project1.Core.Towns.Zones
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
+            this.ZoneDef.Save(tag, "Def");
             this.ID.Save(tag, "ID");
             this.Name.Save(tag, "Name");
             this.Cells.Save(tag, "Positions");
@@ -220,16 +219,23 @@ namespace Project1.Core.Towns.Zones
         {
             this.ID = tag.GetValue<int>("ID");
             if (tag.TryGetTagValueOut("Name", out string name)) this.Name = name;
-            //tag.TryGetTag("Positions", v => this.Positions.LoadIntVecs(v));
             if (tag.TryGetTag("Positions", out SaveTag t)) this.Cells.LoadIntVecs(t);
             this.Hide.TryLoad(tag, "Hide");
             this.LoadExtra(tag);
             return this;
         }
+        public static Zone Create(SaveTag tag)
+        {
+            var zoneDef = tag.LoadDef<ZoneDef>("Def");
+            var zone = zoneDef.CreateRuntimeWrapper();
+            zone.Load(tag);
+            return zone;
+        }
         protected virtual void LoadExtra(SaveTag tag) { }
 
         public void Write(IDataWriter w)
         {
+            w.Write(this.ZoneDef);
             w.Write(this.ID);
             w.Write(this.Name);
             w.Write(this.Hide);

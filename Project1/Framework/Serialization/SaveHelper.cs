@@ -524,6 +524,8 @@ namespace Project1.Framework.Serialization
                 list.Add((Vector3)pos.Value);
             return list;
         }
+        public static string LoadString(this SaveTag tag, string name) => tag[name].Value as string;
+        
         public static List<string> LoadStringList(this SaveTag tag, string name)
         {
             var collection = new List<string>();

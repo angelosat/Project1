@@ -1,8 +1,7 @@
-﻿using Project1.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Project1.Framework;
+using Project1.Core.Entities;
 
 namespace Project1.Core.Components
 {
@@ -10,7 +9,6 @@ namespace Project1.Core.Components
     class BodyComponent : EntityComp
     {
         public override string Name { get; } = "Body";
-        
 
         public Dictionary<string, BodyPart> BodyParts;
        
@@ -24,13 +22,6 @@ namespace Project1.Core.Components
             this.BodyParts = template.BodyParts;
             return this;
         }
-
-        public override object Clone()
-        {
-            BodyComponent comp = new BodyComponent();
-            return comp;
-        }
-
         internal override List<SaveTag> Save()
         {
             List<SaveTag> data = new List<SaveTag>();
@@ -40,7 +31,6 @@ namespace Project1.Core.Components
             }
             return data;
         }
-
         internal override void LoadExtra(SaveTag compTag)
         {
             foreach (SaveTag tag in (compTag.Value as Dictionary<string, SaveTag>).Values)

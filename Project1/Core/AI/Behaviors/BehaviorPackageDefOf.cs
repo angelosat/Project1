@@ -1,5 +1,5 @@
-﻿using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Core.Base;
+﻿using Project1.Framework;
+using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.AI.Behaviors
 {

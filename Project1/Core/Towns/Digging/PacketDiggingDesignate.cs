@@ -1,6 +1,5 @@
-﻿using System.IO;
-using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Project1.Framework;
 using Project1.Core.Net;
 using Project1.Core.Components;
 using Project1.Core.Base;
@@ -18,8 +17,6 @@ namespace Project1.Core.Towns.Digging
         }
         static public void Send(NetEndpoint net, Vector3 begin, Vector3 end, bool remove)
         {
-            //var stream = net.GetOutgoingStreamOrderedReliable();
-            //stream.Write(p);
             var stream = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
 
             stream.Write(begin);

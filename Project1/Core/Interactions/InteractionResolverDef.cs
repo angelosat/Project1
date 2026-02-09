@@ -1,8 +1,7 @@
-﻿using Project1.Core.Gear;
-using Project1.Core.Base;
+﻿using System;
+using Project1.Core.Gear;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using System;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 
@@ -29,15 +28,6 @@ namespace Project1.Core.Interactions
             speed *= stamina.CurrentThreshold.Value;
 
             return speed;
-        }
-    }
-    [EnsureStaticCtorCall]
-    static class InteractionResolverDefOf
-    {
-        public static readonly InteractionResolverDef WorkSpeed = new("WorkSpeed", typeof(WorkSpeedResolver));
-        static InteractionResolverDefOf()
-        {
-            Def.Register(typeof(InteractionResolverDefOf));
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Needs;
 using Project1.Core.Towns.AI.Needs;
-using Project1.Core.Base;
-using Project1.Core.Helpers;
+using Project1.Framework;
 
 namespace Project1.Core.AI.MetaRoles
 {

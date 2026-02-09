@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Project1.Core.Interactions;
 using Project1.Core.AI.Behaviors.Pathing;
@@ -7,9 +8,11 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.Blocks;
 
 namespace Project1.Core.Towns
 {
+    [Obsolete]
     class BehaviorRefueling : BehaviorExecutePlan
     {
         Vector3 RefualableGlobal => this.Plan.GetTarget(DestinationIndex).Global;

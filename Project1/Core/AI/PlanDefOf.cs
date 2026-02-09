@@ -1,4 +1,5 @@
-﻿using Project1.Core.AI.Behaviors.Eating;
+﻿using Project1.Framework;
+using Project1.Core.AI.Behaviors.Eating;
 using Project1.Core.AI.Behaviors.Idle;
 using Project1.Core.AI.Behaviors.ItemOwnership;
 using Project1.Core.AI.Behaviors.Pathing;
@@ -10,8 +11,6 @@ using Project1.Core.Towns.Digging.AI;
 using Project1.Core.Towns.Farming.Harvesting;
 using Project1.Core.Towns.Farming.Tilling;
 using Project1.Core.Towns.Forestry.AI;
-using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.Towns;
 
 namespace Project1.Core.AI

@@ -1,24 +1,22 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Blocks;
-using Project1.Core.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
 using Project1.Core.Rendering;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Interfaces;
 using Project1.Core.Legacy;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
+using Project1.Core.Base;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     public class BlockEntity : Inspectable, IDisposable, ISerializableNew<BlockEntity>, ISaveableNewNew<BlockEntity>
     {

@@ -1,20 +1,18 @@
-﻿using Project1.Core.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Project1.Framework;
 using Project1.Framework.Serialization;
-using System;
-using System.Collections.Generic;
 
 namespace Project1.Core.Entities
 {
-    public class ComponentCollection : Inspectable
+    public class EntityCompCollection : Inspectable
     {
         readonly Dictionary<Type, EntityComp> _inner = [];
         readonly List<EntityComp> _innerList = [];
-        Entity _owner;
+        readonly Entity _owner;
         public IEnumerable<EntityComp> Values => this._inner.Values;
-
-
-        public ComponentCollection(Entity owner)
+        public EntityCompCollection(Entity owner)
         {
             this._owner = owner;
         }
@@ -74,6 +72,20 @@ namespace Project1.Core.Entities
         internal void Load(SaveTag tag)
         {
             var compData = tag.Value as Dictionary<string, SaveTag>;
+            // HACK FOR MIGRATING AWAY FROM TYPE NAME LOOKUP
+            // build short-name dictionary
+            var compDataShort = compData.ToDictionary(
+                kv => kv.Key.Split('.').Last(),
+                kv => kv.Value
+            );
+
+            foreach (var (type, comp) in this._inner)
+            {
+                var shortName = type.Name; // runtime type
+                if (compDataShort.TryGetValue(shortName, out var data))
+                    comp.Load(this._owner, data);
+            }
+            return;
             foreach (var (k, v) in this._inner)
             {
                 var data = compData[k.FullName];

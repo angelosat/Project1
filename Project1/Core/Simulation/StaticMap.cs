@@ -11,7 +11,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Project1.Core.WorldGen;
 using Project1.Core.Rendering;
 using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;
@@ -25,6 +24,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.Interfaces;
 using Project1.Core.Map;
 using Project1.Framework;
+using Project1.Core.WorldGen;
 
 namespace Project1.Core.Simulation
 {

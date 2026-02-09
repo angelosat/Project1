@@ -1,7 +1,7 @@
-﻿using Project1.Core.Blocks;
-using Project1.Framework;
+﻿using Project1.Framework;
+using Project1.Core.Legacy;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     public class BlockKitchenEntity : BlockEntity
     {

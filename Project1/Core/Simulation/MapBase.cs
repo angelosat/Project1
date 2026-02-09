@@ -13,15 +13,12 @@ using Project1.Core.Rendering;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Rooms;
 using Project1.Core.Materials;
-using Project1.Core.Materials;
 using Project1.Core.Screens;
-using Project1.Core.Interfaces;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
-using Project1.Core.WorldGen;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.UI.Hud;
@@ -30,6 +27,7 @@ using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Core.Map;
 using Project1.Framework;
+using Project1.Core.WorldGen;
 
 namespace Project1.Core.Simulation
 {

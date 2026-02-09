@@ -1,13 +1,13 @@
 ﻿using System;
-using Project1.Core.UI;
 using Microsoft.Xna.Framework;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Core.UI;
 using Project1.Core.Screens;
 using Project1.Core.Base;
-using Project1.Framework.Serialization;
 
 namespace Project1.Core.Net
 {
-  
     public class Network
     {
         [EnsureStaticCtorCall]

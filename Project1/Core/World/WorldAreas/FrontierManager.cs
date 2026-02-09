@@ -1,4 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Project1.Framework;
 using Project1.Core.Effects;
 using Project1.Core.Entities;
 using Project1.Core.Base;
@@ -6,34 +10,9 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Simulation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.WorldAreas
 {
-    public record struct WorldSpacePosition(float Value)
-    {
-        public static implicit operator float(WorldSpacePosition pos) => (float)pos.Value;
-        public static implicit operator WorldSpacePosition(float pos) => new(pos);
-
-        public static WorldSpacePosition ReadFrom(IDataReader r) => new(r.ReadSingle());
-    }
-    internal record struct FrontierTier(int Value)
-    {
-        public static implicit operator int(FrontierTier pos) => (int)pos.Value;
-        public static implicit operator FrontierTier(int pos) => new(pos);
-    }
-    public interface IWorldSpaceManager
-    {
-        void Enter(Actor actor);
-        void Exit(Actor actor);
-        FrontierDef PlaceAtRandom(Entity entity);
-        FrontierDef PlaceAt(Entity entity, WorldSpacePosition pos);
-        FrontierWrapper GetFrontier(Entity entity);
-        void Tick();
-    }
     public class FrontierManager : IWorldSpaceManager
     {
         [EnsureStaticCtorCall]
@@ -93,12 +72,9 @@ namespace Project1.Core.World.WorldAreas
                 if (distance != target)
                 {
                     // actors should settle in the middle of the zone (or maybe jitter around the middle to influence the chances of encounters)
-                    //nextDistance = Math.Max(Math.Max(0, target + .5f), Math.Min(distance + ((target < distance) ? -step : step), target - .5f));
-                    //nextDistance = Math.Max(0, Math.Min(distance + ((target - .5f < distance) ? -step : step), target - .5f));
                     nextDistance = distance + ((target - .5f < distance) ? -step : step);
                     nextDistance = Math.Clamp(nextDistance, 0, this.Frontiers.Count);
                 }
-                // if current distance == 0 it means the actor has arrived in town and should spawn 
                 if (nextDistance == 0)
                 {
                     if (world.Net is Server server)
@@ -141,8 +117,6 @@ namespace Project1.Core.World.WorldAreas
                 return;
             this.ActorPositions.Remove(actor);
             actor.Effects.Remove(EffectDefOf.Adventuring);
-            //if (!this.Actors.Remove(actor))
-            //    throw new InvalidOperationException($"Tried to remove {actor} but wasn't found");
         }
         public void Enter(Actor actor)
         {
@@ -174,20 +148,5 @@ namespace Project1.Core.World.WorldAreas
             return this.GetFrontier(actor).Def;
         }
         
-    }
-    public class FrontierWrapper
-    {
-        public readonly FrontierDef Def;
-        List<Entity> LootPool = [];
-        public FrontierWrapper(FrontierDef def)
-        {
-            this.Def = def;
-        }
-        internal void Tick(Actor actor)
-        {
-            // roll encounter
-            // roll random loot
-            // etc
-        }
     }
 }

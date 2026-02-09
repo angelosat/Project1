@@ -12,11 +12,6 @@ namespace Project1.Core.Components
     class BloodComponent : EntityComp
     {
         public override string Name { get; } = "Blood"; 
-        public override object Clone()
-        {
-            return new BloodComponent();
-        }
-
         static readonly ParticleEmitterSphere BloodEmitter = new ParticleEmitterSphere()
         {
             Lifetime = Ticks.PerSecond * 5,

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Project1.Core.Rendering;
 using Project1.Core.Entities;
 
@@ -29,10 +28,6 @@ namespace Project1.Core.Graphics.Particles
         {
             foreach (var emitter in this.Emitters)
                 emitter.Draw(camera, parent.Map, parent.Global);
-        }
-        public override object Clone()
-        {
-            return new ParticlesComponent([.. this.Emitters.Select(f => f.Clone() as ParticleEmitter)]);
         }
     }
 }

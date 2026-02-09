@@ -1,11 +1,12 @@
-﻿using Project1.Core.AI;
-using Project1.Core.Materials;
-using Project1.Core.Base;
-using Project1.Core.Helpers;
-using Project1.Core.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework;
+using Project1.Core.AI;
+using Project1.Core.Materials;
+using Project1.Core.Helpers;
+using Project1.Core.Tools;
+using Project1.Core.Blocks;
 
 namespace Project1.Core.Crafting
 {
@@ -16,10 +17,6 @@ namespace Project1.Core.Crafting
         public PlanDef Plan;
         public WorkstationCapabilityWorker Worker = ActivatorSafe<WorkstationCapabilityWorker>.CreateInstance(workerType);
 
-        //public CraftableDef(string name, Type type) : base(name)
-        //{
-        //    this.ProfileCategory = type;
-        //}
     }
     [EnsureStaticCtorCall]
     internal static class WorkstationCapabilityDefOf

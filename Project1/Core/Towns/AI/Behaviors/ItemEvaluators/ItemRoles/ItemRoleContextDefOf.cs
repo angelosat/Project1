@@ -1,6 +1,5 @@
-﻿using Project1.Core.Needs;
-using Project1.Core.Base;
-using Project1.Core.Helpers;
+﻿using Project1.Framework;
+using Project1.Core.Needs;
 using Project1.Core.Tools;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles

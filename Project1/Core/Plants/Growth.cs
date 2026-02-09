@@ -4,7 +4,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
 using Project1.Framework;
 
-namespace Project1.Core.Components.Plants
+namespace Project1.Core.Plants
 {
     public class Growth : Progress
     {

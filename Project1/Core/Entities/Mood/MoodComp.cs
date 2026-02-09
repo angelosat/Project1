@@ -1,18 +1,16 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using Project1.Core.Stats;
-using Project1.Core.Entities;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 
 namespace Project1.Core.Entities.Mood
 {
@@ -80,11 +78,6 @@ namespace Project1.Core.Entities.Mood
         {
             return this.Moodlets.Any(m => m.Def == mdef);
         }
-        public override object Clone()
-        {
-            return new MoodComp();
-        }
-
         internal override void GetInterface(GameObject actor, Control box)
         {
             var panelMoodValue = new PanelLabeled("Mood");

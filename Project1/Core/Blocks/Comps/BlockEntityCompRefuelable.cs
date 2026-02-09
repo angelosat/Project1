@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using Project1.Core.Net;
 using Project1.Core.Base;
 using Project1.Core.Materials;
-using Project1.Core.Interfaces;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Storage;
@@ -20,7 +19,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
 using Project1.Framework;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     class BlockEntityCompRefuelable : BlockEntityComp, IPowerSource, IStorageNew
     {

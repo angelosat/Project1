@@ -1,11 +1,9 @@
-﻿using Project1.Core.Assets;
-using Project1.Core.Base;
+﻿using System.Collections.Generic;
+using Project1.Framework;
+using Project1.Core.Assets;
 using Project1.Core.Graphics;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Legacy.Storage;
-using Project1.Core.Materials;
-using Project1.Core;
-using System.Collections.Generic;
 using Project1.Core.Entities;
 using Project1.Core.Animations;
 

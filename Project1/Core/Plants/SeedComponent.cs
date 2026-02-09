@@ -1,5 +1,5 @@
-﻿using Project1.Core.Entities;
-using Project1.Framework.UI;
+﻿using Project1.Framework.UI;
+using Project1.Core.Entities;
 
 namespace Project1.Core.Plants
 {
@@ -16,18 +16,12 @@ namespace Project1.Core.Plants
         {
             this.Level = toCopy.Level;
         }
-
-        public override object Clone()
-        {
-            return new SeedComponent(this);
-        }
-
         internal override void GetSelectionInfo(IUISelection info, GameObject parent)
         {
             info.AddInfo(new Label() { TextFunc = () => string.Format("Grows into: {0}", this.Owner.Profile.LabelReadable) });
         }
 
-        public new class Props : Spec<SeedComponent> { }
+        public new class Spec : Spec<SeedComponent> { }
         
     }
 }

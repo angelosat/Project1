@@ -54,31 +54,7 @@ namespace Project1.Core.Helpers
             rand.NextBytes(array);
             return new Color(array[0], array[1], array[2]);
         }
-        public static void Write(this Color c, IDataWriter w)
-        {
-            w.Write(c.R);
-            w.Write(c.G);
-            w.Write(c.B);
-            w.Write(c.A);
-        }
-        public static void Write(this BinaryWriter w, Color c)
-        {
-            w.Write(c.R);
-            w.Write(c.G);
-            w.Write(c.B);
-            w.Write(c.A);
-        }
-        public static Color ReadColor(this BinaryReader r)
-        {
-            var c = new Color
-            {
-                R = r.ReadByte(),
-                G = r.ReadByte(),
-                B = r.ReadByte(),
-                A = r.ReadByte()
-            };
-            return c;
-        }
+        
         static public bool TryParseColor(this string text, out Color color)
         {
             var posFrom = text.IndexOf('{');

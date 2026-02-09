@@ -1,22 +1,18 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
 using Project1.Core.Gear;
 using Project1.Core.Inventory;
 using Project1.Core.Base;
 using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.Legacy;
 using Project1.Core.Materials;
 using Project1.Core.Net;
-using Project1.Core.UI;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 
 namespace Project1.Core.Entities
 {
@@ -491,18 +487,6 @@ namespace Project1.Core.Entities
                 yield return new ObjectAmount(i, amountToReturn);
             }
         }
-        public override object Clone()
-        {
-            var comp = new InventoryComponent((byte)this.Capacity);
-            var mem = new MemoryStream();
-            var w = new DataWriter(mem);
-            var r = new DataReader(mem);
-            this.Write(w);
-            w.Position = 0;
-            comp.Read(r);
-            return comp;
-        }
-
         public override void Write(IDataWriter w)
         {
             this.Contents.Write(w);

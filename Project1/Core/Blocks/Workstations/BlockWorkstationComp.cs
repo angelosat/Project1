@@ -1,17 +1,17 @@
-﻿using Project1.Core.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Core.Entities;
 using Project1.Core.UI;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
-using Project1.Core.Interfaces;
 using Project1.Core.Simulation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 using Project1.Core.Crafting;
-namespace Project1.Core
+
+namespace Project1.Core.Blocks
 {
     public enum WorkstationIOType
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Project1.Core.Simulation;
 using Project1.Framework.Serialization;
 using Project1.Framework;
+using Project1.Core;
 
 namespace Project1.Core.WorldGen
 {

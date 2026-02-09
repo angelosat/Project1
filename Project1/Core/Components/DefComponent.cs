@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Project1.Core.UI;
-using Project1.Core.Entities;
-using Project1.Core.Helpers;
+﻿using Microsoft.Xna.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework;
+using Project1.Core.UI;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.Components
 {
@@ -33,14 +32,6 @@ namespace Project1.Core.Components
         {
             Quality = QualityDefOf.Common;
         }
-       
-        public override object Clone()
-        {
-            DefComponent phys = new DefComponent();
-            phys.CustomName = this.CustomName;
-            phys.Quality = this.Quality;
-            return phys;
-        }
 
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
@@ -65,23 +56,17 @@ namespace Project1.Core.Components
         public override void Read(IDataReader r)
         {
             this.CustomName = r.ReadString();
-            this.Quality = Def.GetDef<QualityDef>(r.ReadString());
+            this.Quality = r.ReadDef<QualityDef>();
         }
-
-        internal override List<SaveTag> Save()
+        internal override void SaveExtra(SaveTag tag)
         {
-            var tag = new List<SaveTag>
-            {
-                this.CustomName.Save("CustomName"),
-                this.Quality.Save("Quality")
-            };
-            return tag;
+            tag.Save("CustomName", this.CustomName);
+            tag.Save("Quality", this.Quality);
         }
-
         internal override void LoadExtra(SaveTag tag)
         {
-            tag.TryGetTagValue<string>("CustomName", v => this.CustomName = v);
-            tag.TryGetTagValue<string>("Quality", s => this.Quality = Def.GetDef<QualityDef>(s));
+            this.CustomName = tag.LoadString("CustomName");
+            this.Quality = tag.LoadDef<QualityDef>("Quality");
         }
        
         public override void OnNameplateCreated(GameObject parent, Nameplate plate)

@@ -1,7 +1,6 @@
 ﻿using System;
 using Project1.Core.Animations;
 using Project1.Core.Entities;
-using Project1.Core.Components;
 
 namespace Project1.Core.Components.Combat
 {
@@ -9,10 +8,6 @@ namespace Project1.Core.Components.Combat
     class BlockingComponent : EntityComp
     {
         public override string Name { get; } = "Blocking"; 
-        public override object Clone()
-        {
-            return new BlockingComponent();
-        }
         Animation Animation;
         public bool Active;
         public void Start(GameObject parent)

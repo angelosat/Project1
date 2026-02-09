@@ -1,13 +1,11 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Core.Entities;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
-using System.IO;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     class BlockEntityCompSwitchable : BlockEntityComp
     {

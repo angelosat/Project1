@@ -1,6 +1,4 @@
-﻿using Project1.Core.Base;
-
-namespace Project1.Core.Materials
+﻿namespace Project1.Core.Materials
 {
     public class MaterialChemistryDef(string name) : Def(name)
     {

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Project1.Core;
 using Project1.Core.Base;
-using Project1.Core.Rendering;
 using Project1.Core.Screens;
 
 namespace Project1.Framework.UI

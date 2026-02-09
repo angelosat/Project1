@@ -1,7 +1,7 @@
 ﻿using Project1.Core.UI;
 using Project1.Core.Net;
-using Project1.Core.Towns.Crafting.Gui;
 using Project1.Framework.UI;
+using Project1.Core.Crafting.Gui;
 
 namespace Project1.Core.Towns.Stockpiles
 {

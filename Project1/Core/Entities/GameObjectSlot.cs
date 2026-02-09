@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Inventory;
-using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Net.Packets;
@@ -8,7 +7,8 @@ using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.Entities
 {

@@ -17,9 +17,9 @@ using System.Linq;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
-using Project1.Framework.Math;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 using Project1.Core.Input;
+using Project1.Framework;
 
 namespace Project1.Core.Towns.Constructions
 {
@@ -64,7 +64,6 @@ namespace Project1.Core.Towns.Constructions
             this.Town.Map.Events.ListenTo<CellsInvalidatedEvent>(this.OnBlocksChanged);
             this.Town.Map.Events.ListenTo<ConstructionReadyEvent>(this.OnConstructionReady);
             this.Town.Map.Events.ListenTo<ConstructionFinishedEvent>(this.OnConstructionFinished);
-            //this.Town.Map.Events.ListenTo<BlockEntityRemovedEvent>(this.OnBlockEntityRemoved);
         }
 
         private void OnConstructionFinished(ConstructionFinishedEvent e)
@@ -84,7 +83,6 @@ namespace Project1.Core.Towns.Constructions
         {
             foreach (var pos in e.Positions)
             {
-                //this.TryHandlePendingDesignation(pos);
 
                 if (!this._dirty)
                     foreach (var n in pos.GetAdjacentLazy())
@@ -99,16 +97,7 @@ namespace Project1.Core.Towns.Constructions
                     }
             }
         }
-        void OnBlockEntityRemoved(BlockEntityRemovedEvent e)
-        {
-            if(e.Entity.Comps.TryGetComp<BlockConstructionComp>(out var comp))
-                if (this.DesignationEntities.Contains(comp))
-                {
-
-                }
-
-        }
-
+      
         internal HashSet<BlockConstructionComp> GetConstructionsReady()
         {
             if (this._snapshotByReadiness is null || this._dirty)

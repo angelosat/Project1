@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Base;
 using Project1.Core.Interfaces;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Legacy.Crafting.Gui;
@@ -9,9 +8,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Project1.Core.Simulation;
-using Project1.Framework.IO;
-using Project1.Framework.Math;
+using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using Project1.Framework;
 
 namespace Project1.Core
 {
@@ -78,11 +77,11 @@ namespace Project1.Core
         }
         protected override void SaveExtra(SaveTag tag)
         {
-            tag.TrySaveRefs(this.Orders, "Orders");
+            //tag.TrySaveRefs(this.Orders, "Orders");
         }
         public override void Load(SaveTag tag)
         {
-            tag.TryLoadRefs(this.Orders, "Orders");
+            //tag.TryLoadRefs(this.Orders, "Orders");
         }
         public override void Write(IDataWriter w)
         {

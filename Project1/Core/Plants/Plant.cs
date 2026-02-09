@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Base;
 using Project1.Core.Components.Plants;
+using Project1.Framework;
 
 namespace Project1.Core.Plants
 {

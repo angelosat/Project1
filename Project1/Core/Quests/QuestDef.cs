@@ -4,26 +4,24 @@ using Project1.Core.World.WorldAreas;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Net;
-using Project1.Core.UI;
-using Project1.Core;
 using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Project1.Core.Net;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Quests
 {
     [EnsureStaticCtorCall]
-    public class QuestDef : ISerializableNew<QuestDef>, ISaveable, ILoadReferencable
+    public class QuestDef : ISerializableNew<QuestDef>, ISaveable
     {
         static QuestDef()
         {
@@ -55,11 +53,8 @@ namespace Project1.Core.Quests
                 this.Manager.Town.Map.Net.Events.Post(new QuestDefAssignedEvent(this));
             }
         }
-        public bool IsValid { get { return this.Objectives.Any(); } }
-        public class QuestDefAssignedEvent(QuestDef quest) : IEventPayload
-        {
-            public QuestDef Quest = quest;
-        }
+        public bool IsValid => this.Objectives.Any();
+        public record struct QuestDefAssignedEvent(QuestDef Quest) : IEventPayload { }
         public QuestDef()
         {
             

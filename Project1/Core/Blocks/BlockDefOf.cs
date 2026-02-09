@@ -2,7 +2,7 @@
 using Project1.Core.Blocks.Doors;
 using Project1.Core.Materials;
 using Project1.Core.Base;
-using Project1.Core.Towns.Crafting;
+using Project1.Core.Crafting;
 
 namespace Project1.Core
 {

@@ -1,7 +1,7 @@
 ﻿using Project1.Core.AI.Behaviors.Conversation;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Interactions;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 using System.IO;
 
 namespace Project1.Core.Interactions
@@ -39,7 +39,7 @@ namespace Project1.Core.Interactions
         }
         protected override void ReadExtra(IDataReader r)
         {
-            this.Topic = Core.Base.Def.GetDef<ConversationTopic>(r.ReadString());
+            this.Topic = Core.Def.GetDef<ConversationTopic>(r.ReadString());
         }
     }
 }

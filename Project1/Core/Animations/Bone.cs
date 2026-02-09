@@ -9,10 +9,10 @@ using Project1.Core.Entities.ColorCustomization;
 using Project1.Core.Base;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.Materials;
 using Project1.Core.Rendering;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core
 {
@@ -775,10 +775,7 @@ namespace Project1.Core
 
         public void Write(IDataWriter w)
         {
-            //w.Write(this.Material != null ? this.Material.ID : -1);
             w.Write(this.Material?.Name ?? "");
-
-            //this.Sprite.Write(w); // i decided to sync sprites as well instead of relying on initializing sprites after gameobject loading/syncing
             w.Write(this.Sprite?.Name ?? "");
             foreach (var j in this.Joints.Values)
                 j.Bone?.Write(w);
@@ -786,11 +783,9 @@ namespace Project1.Core
 
         public Bone Read(IDataReader r)
         {
-            //this.Material = MaterialDef.GetMaterial(r.ReadInt32());
             if (r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace())
-                this.Material = Project1.Core.Base.Def.GetDef<MaterialDef>(matName);
+                this.Material = Core.Def.GetDef<MaterialDef>(matName);
 
-            //this.Sprite = Sprite.Load(r); // i decided to sync sprites as well instead of relying on initializing sprites after gameobject loading/syncing
             this.Sprite = r.ReadString() is string spritename && !spritename.IsNullEmptyOrWhiteSpace() ? Sprite.LoadNew(spritename) : null;
 
             foreach (var j in this.Joints.Values)

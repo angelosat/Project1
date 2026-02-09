@@ -9,7 +9,7 @@ using Project1.Core.WorldGen;
 using Project1.Core;
 using System.Linq;
 using Project1.Core.Net;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Blocks
 {
@@ -117,7 +117,7 @@ namespace Project1.Core.Blocks
         private static void SendBlockSet(BlockSetEvent e)
         {
             var w = Server.Instance.BeginPacket(_pBlockSet);
-            e.args.Write(w);
+            e.Args.Write(w);
         }
 
         private static void OnBlockSet(NetEndpoint endpoint, Packet packet)

@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Helpers;
-using Project1.Framework.IO;
-using Project1.Framework.Math;
+using Project1.Framework;
+using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 

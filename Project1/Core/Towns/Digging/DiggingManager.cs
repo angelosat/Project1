@@ -1,18 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.Base;
 using Project1.Core.Input;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Rendering;
-using Project1.Core.WorldGen;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Simulation;
-using Project1.Framework.IO;
-using Project1.Framework.Math;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.Towns.Digging
 {

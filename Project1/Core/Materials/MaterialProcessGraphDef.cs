@@ -1,5 +1,4 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Legacy;
+﻿using Project1.Core.Legacy;
 
 namespace Project1.Core.Materials
 {

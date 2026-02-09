@@ -1,8 +1,8 @@
 ﻿using Project1.Core.Resources;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Components.Plants;
-using Project1.Core.Interactions;
 using System;
+using Project1.Core.Plants;
 
 namespace Project1.Core.Interactions
 {
@@ -36,12 +36,8 @@ namespace Project1.Core.Interactions
         
         static void ApplyWork(Context ctx, int workAmount)
         {
-            //ctx.HitPoints.Value -= workAmount;
             ctx.PlantComp.Wiggle((float)Math.PI / 32f, 20, ctx.PlantComp.Species.StemMaterial.Density);
             ctx.Target.Map.Events.Post(new PlantChoppedEvent(ctx.Actor, ctx.Target, workAmount));
-
-            //if (ctx.Actor.Net.IsClient)
-            //    return;
             ctx.HitPoints.ApplyDelta(-workAmount);
         }
     }

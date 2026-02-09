@@ -4,9 +4,9 @@ using Project1.Core.Blocks;
 using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
-using Project1.Core.Graphics;
 using Project1.Core.Simulation;
-using Project1.Framework.Math;
+using Project1.Framework.Graphics;
+using Project1.Framework;
 
 namespace Project1.Core
 {
@@ -63,11 +63,6 @@ namespace Project1.Core
         {
             return (byte)depth;
         }
-
-        //public override MyVertex[] Draw(MySpriteBatch sb, Vector3 blockcoords, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
-        //{
-        //    return camera.WaterSpriteBatch.DrawBlock(Block.Atlas.Texture, screenBounds, this.Assets[data][0], camera.Zoom, fog, tint, Color.White, sunlight, blocklight, Color.Red.ToVector4(), depth, this, blockcoords);
-        //}
         public override MyVertex[] Draw(Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
             return chunk.Canvas.Transparent.DrawBlock(Block.Atlas.Texture, screenBounds, this.Assets[data][0], camera.Zoom, fog, tint, Color.White, sunlight, blocklight, Color.Red.ToVector4(), depth, this, global);

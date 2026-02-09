@@ -11,16 +11,16 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Project1.Core.WorldGen;
-using Project1.Core.Rendering;
-using Project1.Core.Interfaces;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Population;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Core.Map;
+using Project1.Core.World;
+using Project1.Framework;
 
 namespace Project1.Core.Simulation
 {
@@ -109,16 +109,10 @@ namespace Project1.Core.Simulation
             if (name.IsNullEmptyOrWhiteSpace())
                 throw new ArgumentNullException();
             this.Name = name;
-            //this.Seed = name.GetHashCode();
-            //this.SeedArray = new byte[]{
-            //    (byte)(this.Seed >> 24),
-            //    (byte)(this.Seed >> 16),
-            //    (byte)(this.Seed >> 8),
-            //    (byte)this.Seed};
             this.SeedArray = GetHash(name);
             this.Seed = BitConverter.ToInt32(this.SeedArray, 0);
             this.Random = new Random(this.Seed);
-            this.Terraformers = mutators;//.Select(mdef => mdef.Create()).ToList();// new List<Terraformer>(mutators);
+            this.Terraformers = mutators;
             this.DefaultBlock = BlockDefOf.Soil.Worker;
         }
 
@@ -137,8 +131,6 @@ namespace Project1.Core.Simulation
                 this.Flat = (bool)flatTag.Value;
             save.TryGetTagValue<double>("CurrentTick", v => this.CurrentTick = (ulong)v);
 
-            //if (!save.TryGetTagValue<int>("DefaultBlock", v => { this.DefaultBlock = Block.GetBlock(v); }))
-            //    this.DefaultBlock = BlockDefOf.Soil.Worker;
             if (save.TryLoadDefOut<BlockDef>("DefaultBlock", out var bd))
                 this.DefaultBlock = bd.Worker;
             else
@@ -153,7 +145,6 @@ namespace Project1.Core.Simulation
                 this.Maps.Add(map.Coordinates, map);
             }
 
-            //this.PopulationManager.ResolveReferences();
         }
         public StaticWorld(IDataReader r)
            : this()

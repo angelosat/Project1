@@ -6,10 +6,10 @@ using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Constructions.Categories;
-using Project1.Core.Graphics;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
-using Project1.Framework.Math;
+using Project1.Framework.Graphics;
+using Project1.Framework;
 
 namespace Project1.Core
 {
@@ -22,22 +22,22 @@ namespace Project1.Core
         {
             this.HidingAdjacent = false;
             this.PartsSeparate = 
-                new AtlasDepthNormals.Node.Token[][][] { 
-                    new AtlasDepthNormals.Node.Token[][]{
-                        new AtlasDepthNormals.Node.Token[]{
+                [ 
+                    [
+                        [
                             Atlas.Load("blocks/windows/windowframebottom", BlockDepthMap, NormalMap),
-                            Atlas.Load("blocks/windows/glassbottom", BlockDepthMap, NormalMap)},
-                        new AtlasDepthNormals.Node.Token[]{
+                            Atlas.Load("blocks/windows/glassbottom", BlockDepthMap, NormalMap)],
+                        [
                             Atlas.Load("blocks/windows/windowframebottom2", BlockDepthMap, NormalMap),
-                            Atlas.Load("blocks/windows/glassbottom2", BlockDepthMap, NormalMap)}},
-                    new AtlasDepthNormals.Node.Token[][]{
-                        new AtlasDepthNormals.Node.Token[]{
+                            Atlas.Load("blocks/windows/glassbottom2", BlockDepthMap, NormalMap)]],
+                    [
+                        [
                             Atlas.Load("blocks/windows/windowframetop", BlockDepthMap, NormalMap),
-                            Atlas.Load("blocks/windows/glasstop", BlockDepthMap, NormalMap)},
-                        new AtlasDepthNormals.Node.Token[]{
+                            Atlas.Load("blocks/windows/glasstop", BlockDepthMap, NormalMap)],
+                        [
                             Atlas.Load("blocks/windows/windowframetop2", BlockDepthMap, NormalMap),
-                            Atlas.Load("blocks/windows/glasstop2", BlockDepthMap, NormalMap)}}
-            };
+                            Atlas.Load("blocks/windows/glasstop2", BlockDepthMap, NormalMap)]]
+            ];
 
             this.Variations.Add(this.PartsSeparate.First().First().First());
             this.BuildProperties.Category = ConstructionCategoryDefOf.Doors;

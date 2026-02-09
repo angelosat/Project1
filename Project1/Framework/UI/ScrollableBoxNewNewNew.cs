@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Math;
 using System.Windows.Forms;
 
 namespace Project1.Framework.UI

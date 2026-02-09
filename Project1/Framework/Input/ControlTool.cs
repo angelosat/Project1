@@ -12,7 +12,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Input
 {

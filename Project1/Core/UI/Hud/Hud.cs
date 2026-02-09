@@ -6,7 +6,6 @@ using Project1.Core.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Core.Towns.UI;
 using Project1.Core.Simulation;

@@ -4,10 +4,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Components;
 using Project1.Core.Net;
-using Project1.Core.Rendering;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 
@@ -54,14 +52,7 @@ namespace Project1.Core.Graphics.Particles
                     this.EntityHitCeiling(e);
                     break;
 
-                case Message.Types.EntityHitGround:
-                    this.EntityHitGround(e);
-                    break;
-
-                //case Message.Types.EntityFootStep:
-                //    this.EntityFootStep(e);
-                //    break;
-
+         
                 default:
                     break;
             }
@@ -91,16 +82,6 @@ namespace Project1.Core.Graphics.Particles
             this.Emitters.Add(emitter);
         }
 
-        //void EntityFootStep(GameEvent e)
-        //{
-        //    var entity = e.Parameters[0] as GameObject;
-        //    var vec = new Vector3(entity.Global.X, entity.Global.Y, (int)Math.Ceiling(entity.Global.Z) - 1);
-        //    var block = entity.Map.GetBlock(vec);
-        //    var emitter = block.GetEmitter();
-        //    emitter.Source = entity.Global;
-        //    emitter.Emit(10, -entity.Velocity * .1f);
-        //    this.Emitters.Add(emitter);
-        //}
         void EntityFootStep(EntityFootStepEvent e)
         {
             var entity = e.Entity;// e.Parameters[0] as GameObject;
@@ -114,8 +95,5 @@ namespace Project1.Core.Graphics.Particles
             this.Emitters.Add(emitter);
         }
     }
-    class EntityFootStepEvent(Entity entity) : IEventPayload
-    {
-        public readonly Entity Entity = entity;
-    }
+    
 }

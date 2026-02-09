@@ -5,11 +5,11 @@ using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Rendering;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Resources
 {

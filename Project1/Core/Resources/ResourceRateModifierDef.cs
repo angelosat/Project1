@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Stats;
-using Project1.Core.Base;
 using System;
 
 namespace Project1.Core.Resources

@@ -1,6 +1,4 @@
-﻿using Project1.Core.Base;
-
-namespace Project1.Core.Rooms
+﻿namespace Project1.Core.Rooms
 {
     public class FurnitureDef : Def
     {

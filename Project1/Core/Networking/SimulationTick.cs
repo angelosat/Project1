@@ -1,0 +1,9 @@
+﻿namespace Project1.Core.Net
+{
+    public record struct SimulationTick(double Value)
+    {
+        public static readonly SimulationTick Immediate = new() { Value = -1 };
+        public static implicit operator double(SimulationTick t) => t.Value;
+        public static implicit operator SimulationTick(double i) => new() { Value = i };
+    }
+}

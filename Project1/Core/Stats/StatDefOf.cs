@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Entities.Stats;
 using Project1.Core.Entities.Stats.ValueGetters;
-using Project1.Core.Base;
 
 namespace Project1.Core.Stats
 {

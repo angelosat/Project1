@@ -4,7 +4,6 @@ using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Tools;
-using Project1.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Skills;

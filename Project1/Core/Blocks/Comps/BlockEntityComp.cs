@@ -9,8 +9,8 @@ using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
-using Project1.Framework.Math;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core
 {
@@ -89,7 +89,6 @@ namespace Project1.Core
         {
         }
 
-        //internal virtual void GetQuickButtons(Action<string, Action> register, MapBase map, IntVec3 vector3) { }
         internal virtual void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3) { }
 
         internal virtual void Initialize() { }

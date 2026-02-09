@@ -113,7 +113,7 @@ namespace Project1.Core.Entities
         void RandomizeMaterials()
         {
             var random = new Random();
-            var materials = Project1.Core.Base.Def.GetDefs<MaterialDef>().ToArray();
+            var materials = Core.Def.GetDefs<MaterialDef>().ToArray();
             foreach(var bone in this.Body.GetAllBones())
                 bone.Material = materials.SelectRandom(random);
         }

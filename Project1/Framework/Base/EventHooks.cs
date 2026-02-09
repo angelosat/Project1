@@ -1,4 +1,4 @@
-﻿using Project1.Core.Net;
+﻿using Project1.Framework.Events;
 using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;

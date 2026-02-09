@@ -17,7 +17,8 @@ using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
-using Project1.Framework.Math;
+using Project1.Framework;
+using Project1.Core.Input;
 
 namespace Project1.Core.UI.Hud
 {
@@ -216,7 +217,7 @@ namespace Project1.Core.UI.Hud
         {
             if (this.SelectedSource != null)
                 if (this.SelectedSource.Type != TargetType.Null)
-                    ScreenManager.CurrentScreen.Camera.CenterOn(this.SelectedSource.Global);// .CenterOn(this.SelectedSource.Global);
+                    ScreenManager.CurrentScreen.Camera.CenterOn(this.SelectedSource.Global);
         }
         public void SetName(string text)
         {

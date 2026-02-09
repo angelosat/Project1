@@ -9,9 +9,7 @@ using Project1.Core.Components;
 using Project1.Core.Rendering;
 using Project1.Core.Rooms;
 using Project1.Core.Plants;
-using Project1.Core.World.MetaRoles;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Towns.Crafting;
 using Project1.Core.Towns.Constructions;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Labors;
@@ -28,8 +26,10 @@ using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
 using Project1.Core.Input;
-using Project1.Framework.Math;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
+using Project1.Core.Crafting;
+using Project1.Core.AI.MetaRoles;
 
 namespace Project1.Core.Towns
 {
@@ -204,10 +204,8 @@ namespace Project1.Core.Towns
             this.AddMember(actor.RefId);
             RoleMetaDefOf.TownMember.AssignTo(actor);
             actor.Town = this;
-            //actor.Net.ConsoleBox.Write($"{actor.Name} has joined the town!");
             actor.Net.Report($"{actor.Name} has joined the town!");
             actor.AI.State.Log.Write("I joined the town!");
-            this.Map.EventOccured(Message.Types.NpcsUpdated);
         }
 
         private void RemoveMember(Actor actor)
@@ -217,7 +215,6 @@ namespace Project1.Core.Towns
                 this.RemoveMember(actor.RefId);
                 actor.Town = null;
                 this.Net.ConsoleBox.Write($"{actor.Name} was dismissed from the town!");
-                this.Map.EventOccured(Message.Types.NpcsUpdated);
             }
         }
         public void RemoveMember(int id)

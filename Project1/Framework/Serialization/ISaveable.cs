@@ -1,0 +1,24 @@
+﻿namespace Project1.Framework.Serialization
+{
+    public interface ISaveableNew<T> where T : ISaveableNew<T>
+    {
+        SaveTag Save(string name = "");
+        static abstract T Create(SaveTag tag);
+        T Load(SaveTag tag);
+    }
+    public interface ISaveableNew
+    {
+        SaveTag Save(string name = "");
+        static abstract ISaveableNew Create(SaveTag tag);
+    }
+    public interface ISaveable 
+    {
+        SaveTag Save(string name = "");
+        ISaveable Load(SaveTag tag);
+    }
+    public interface ISaveableNewNew<T> where T: ISaveableNewNew<T>
+    {
+        SaveTag Save(string name = "");
+        static abstract public T Create(SaveTag tag);
+    }
+}

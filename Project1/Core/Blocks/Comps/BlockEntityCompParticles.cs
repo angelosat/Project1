@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Project1.Core.Rendering;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Simulation;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core
 {

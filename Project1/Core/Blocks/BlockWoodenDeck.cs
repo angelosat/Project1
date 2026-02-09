@@ -1,20 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
-using Project1.Core.Base;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
-using Project1.Core.Materials;
 using Project1.Core.Loot;
 using Project1.Core.Legacy;
 using Project1.Core.Towns.Constructions.Categories;
 using Project1.Core.Helpers;
-using Project1.Core.Graphics;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
+using Project1.Framework.Graphics;
 
 namespace Project1.Core
 {

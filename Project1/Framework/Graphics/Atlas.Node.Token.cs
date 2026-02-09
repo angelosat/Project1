@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
 
-namespace Project1.Core.Graphics
+namespace Project1.Framework.Graphics
 {
     public partial class Atlas
     {

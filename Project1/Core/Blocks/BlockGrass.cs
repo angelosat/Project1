@@ -7,13 +7,11 @@ using System.Collections.Generic;
 using Project1.Core.Rendering;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Materials;
-using Project1.Core.Materials;
 using Project1.Core.Helpers;
-using Project1.Core.Graphics;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
-using Project1.Framework.Math;
+using Project1.Framework.Graphics;
+using Project1.Framework;
 
 namespace Project1.Core
 {
@@ -73,7 +71,6 @@ namespace Project1.Core
         public override IEnumerable<MaterialDef> GetEditorVariations()
         {
             yield return MaterialDefOf.Human;
-            //return Enumerable.Range(0, 5).Select(i => (byte)i);
         }
         static void Trample(MapBase map, IntVec3 global)
         {
@@ -122,7 +119,6 @@ namespace Project1.Core
                 var net = map.Net;
                 if (net is Server)
                     BlockGrass.GrowRandomFlower(map, global);
-                //net.GetOutgoingStreamOrderedReliable().Write(PacketGrowRandomFlower, global);
                 net.BeginPacket(PacketGrowRandomFlower).Write(global);
             }
             private static void GrowRandomFlower(NetEndpoint net, Packet pck)

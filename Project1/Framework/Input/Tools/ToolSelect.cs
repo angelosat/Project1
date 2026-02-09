@@ -7,7 +7,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core.Input.Tools
 {

@@ -8,9 +8,9 @@ using Project1.Core.Simulation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Towns.Crafting;
-using Project1.Framework.IO;
-using Project1.Framework.Math;
+using Project1.Framework.Serialization;
+using Project1.Framework;
+using Project1.Core.Crafting;
 namespace Project1.Core
 {
     public enum WorkstationIOType

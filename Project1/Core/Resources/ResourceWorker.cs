@@ -5,12 +5,12 @@ using Microsoft.Xna.Framework;
 using System;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Legacy;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
 using Project1.Framework.Helpers;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Resources
 {

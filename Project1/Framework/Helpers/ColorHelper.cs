@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.Base;
-using Project1.Framework.IO;
+using Project1.Framework;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Helpers
 {

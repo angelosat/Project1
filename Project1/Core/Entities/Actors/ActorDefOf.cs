@@ -5,7 +5,6 @@ using Project1.Core.Entities.Ownership;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Materials;
 using Project1.Core.Resources;
-using Project1.Core.Base;
 using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation.Physics;

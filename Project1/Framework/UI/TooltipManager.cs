@@ -3,10 +3,10 @@ using Project1.Core.UI.Settings;
 using Project1.Core.Base;
 using Project1.Core.Input;
 using Project1.Core.Net;
-using Project1.Core.WorldGen;
 using System;
 using System.Linq;
-using Project1.Framework.Math;
+using Project1.Core;
+using Project1.Core.Simulation;
 
 namespace Project1.Framework.UI
 {

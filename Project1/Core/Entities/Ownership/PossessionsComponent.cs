@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Rooms;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core.Entities.Ownership
 {

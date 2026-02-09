@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Net;
 using Project1.Core.Net.Packets;
 using Project1.Core.UI;
-using Project1.Core.Needs;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
 

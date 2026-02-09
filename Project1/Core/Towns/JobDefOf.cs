@@ -1,6 +1,5 @@
 ﻿using Project1.Core.AI.Planners;
 using Project1.Core.Tools;
-using Project1.Core.Base;
 using System.Collections.Generic;
 
 namespace Project1.Core.Towns

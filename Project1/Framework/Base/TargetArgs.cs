@@ -16,7 +16,8 @@ using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 #nullable enable
 
@@ -747,25 +748,6 @@ namespace Project1.Core.Base
             }
         }
 
-        public void HandleRemoteCall(INetEndpoint net, ObjectEventArgs e)
-        {
-            switch (this.Type)
-            {
-                case TargetType.Entity:
-                    this.Object.HandleRemoteCall(e);
-                    break;
-
-                case TargetType.Position:
-                    var blockEntity = net.Map.GetBlockEntity(this.Global);
-                    if (blockEntity == null)
-                        throw new Exception();
-                    blockEntity.HandleRemoteCall(net.Map, this.Global, e);
-                    break;
-
-                default:
-                    break;
-            }
-        }
 
 
         public bool IsEqual(TargetArgs target)

@@ -3,11 +3,10 @@ using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Blocks.Doors;
-using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Rendering;
 using Project1.Core.Simulation;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core.AI.Behaviors.Pathing
 {

@@ -1,12 +1,12 @@
 ﻿using Project1.Core.Towns.Constructions.Categories;
 using Project1.Core.Blocks;
-using Project1.Core.Graphics;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.Math;
+using Project1.Framework.Graphics;
+using Project1.Framework;
 
 namespace Project1.Core
 {
@@ -78,13 +78,11 @@ namespace Project1.Core
         public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
         {
             // Find all adjacent existing workstation block entities
-            //var neighbors = new List<BlockWorkbenchEntity>();
             var neighbors = new List<BlockEntity>();
             var typedArgs = (BlockWorkstationComp.Spec)args ?? new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery); // HACK
             foreach (var dir in IntVec3.AdjacentIntVec3)
             {
                 var neighborPos = originGlobal + dir;
-                //if (map.TryGetBlockEntity<BlockWorkbenchEntity>(neighborPos, out var neighbor))
                 if (map.TryGetBlockEntity(neighborPos, out var neighbor))
                 {
                     if(neighbor.GetComp<BlockWorkstationComp>()?.WorkstationType == typedArgs.WorkstationType)
@@ -95,7 +93,6 @@ namespace Project1.Core
             if (neighbors.Count == 0)
             {
                 // No neighbors: create a new block entity for this block
-                //var entity = BlockEntityFactory.Create(this, originGlobal);
                 var entity = this.BlockDef.CreateEntity(originGlobal);
                 return entity;
             }

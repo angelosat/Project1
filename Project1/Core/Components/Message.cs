@@ -8,15 +8,10 @@ namespace Project1.Core.Components
     {
         public enum Types
         {
-            Default,
-            Death,
-            InteractionInterrupted,
-            OutOfRange,
             Attacked,
             HealthLost,
             SlotInteraction,
             HitGround,
-            //Jumped,
             ChatPlayer,
             EntityCollision,
             BlockEntityAdded,
@@ -28,12 +23,10 @@ namespace Project1.Core.Components
             NpcsUpdated,
             AILogUpdated,
             EntityHitCeiling,
-            EntityHitGround,
             EntityFootStep,
             MiningDesignation,
             ObjectDisposed,
             OrderParametersChanged,
-            //PlantHarvested,
             PlantReady,
             EntityAttacked,
             ItemOwnerChanged,

@@ -3,10 +3,9 @@ using Project1.Core.Helpers.Structs;
 using Project1.Core.Materials;
 using Project1.Core.Net;
 using Project1.Core.Helpers;
-using Project1.Core;
 using Project1.Core.Net;
 using Project1.Core.Entities;
-using Project1.Core.Towns.Crafting;
+using Project1.Core.Crafting;
 
 namespace Project1.Core.Towns.Stockpiles
 {

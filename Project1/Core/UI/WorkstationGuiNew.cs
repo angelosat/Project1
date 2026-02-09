@@ -1,13 +1,12 @@
 ﻿using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Screens;
-using Project1.Core.WorldGen;
 using System;
 using System.Linq;
-using Project1.Core.Towns.Crafting;
 using Project1.Core.Materials;
 using Project1.Framework.UI;
+using Project1.Core.Crafting;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.UI
 {
@@ -186,7 +185,6 @@ namespace Project1.Core.UI
         {
             this.PanelReactions.Hide();
             Ingame.Instance.Events.Post(new PlayerIssuedCraftOrderEvent(this.Workstation, craftableProfile));
-            //PacketsCrafting.PlayerCreatedOrder(this.Workstation.Parent, r);
         }
         private void PlaceOrderNew(AddOrderRequest orderRequest)
         {

@@ -9,8 +9,9 @@ using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core;
 using Project1.Core.Entities.ColorCustomization;
+using Project1.Framework.Graphics;
+using Project1.Framework;
 
 namespace Project1.Core.Graphics
 {
@@ -279,8 +280,8 @@ namespace Project1.Core.Graphics
             return new Rectangle(
                 -(int)OriginGround.X, 
                 -(int)OriginGround.Y, 
-                this.AtlasToken.Rectangle.Width + 2 * Graphics.BordersEffect.Thickness, 
-                this.AtlasToken.Rectangle.Height + 2 * Graphics.BordersEffect.Thickness
+                this.AtlasToken.Rectangle.Width + 2 * BordersEffect.Thickness, 
+                this.AtlasToken.Rectangle.Height + 2 * BordersEffect.Thickness
                 ); 
         }
         public Sprite SetGroundContact(Vector2 factor)

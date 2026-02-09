@@ -1,8 +1,8 @@
 ﻿using Project1.Core.Towns;
-using Project1.Core.Base;
 using Project1.Core.Legacy.Crafting.Defs;
 using Project1.Core.Skills;
 using System.Collections.Generic;
+using Project1.Framework;
 
 namespace Project1.Core.Materials
 {

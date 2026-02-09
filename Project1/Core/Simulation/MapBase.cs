@@ -21,15 +21,15 @@ using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
-using Project1.Core.Net;
 using Project1.Core.WorldGen;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.UI.Hud;
 using Project1.Core.UI;
 using Project1.Framework.UI;
-using Project1.Framework.Math;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Core.Map;
+using Project1.Framework;
 
 namespace Project1.Core.Simulation
 {
@@ -49,8 +49,7 @@ namespace Project1.Core.Simulation
             {
                 if (net is not Server server)
                     return;
-                var w = server.BeginPacket(PacketSpawn);//.OutgoingStreamTimestamped;
-                //w.Write(PacketSpawn);
+                var w = server.BeginPacket(PacketSpawn);
                 w.Write(entity.RefId);
                 w.Write(global);
                 w.Write(velocity);

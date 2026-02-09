@@ -1,4 +1,4 @@
-﻿using Project1.Core.Base;
+﻿using Project1.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,6 @@ namespace Project1.Core
         readonly Dictionary<Type, BlockEntityComp> _inner = [];
         readonly List<BlockEntityComp> compList = [];
         public IEnumerable<BlockEntityComp> Values => this._inner.Values;
-        //public int IndexOf(BlockEntityComp comp) => this.compList.IndexOf(comp);
         internal T GetComp<T>() where T : BlockEntityComp => (T)this._inner[typeof(T)];
         internal BlockEntityComp GetComp(Type compType) => this._inner[compType];
         internal BlockEntityComp GetComp(int compIndex) => this.compList[compIndex];

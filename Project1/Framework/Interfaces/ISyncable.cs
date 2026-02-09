@@ -1,4 +1,4 @@
-﻿using Project1.Framework.IO;
+﻿using Project1.Framework.Serialization;
 using System.IO;
 
 namespace Project1.Core.Interfaces

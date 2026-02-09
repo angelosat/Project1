@@ -1,5 +1,4 @@
-﻿using Project1.Core.World.MetaRoles;
-using Project1.Core.World.WorldAreas;
+﻿using Project1.Core.World.WorldAreas;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers.Structs;
@@ -18,9 +17,9 @@ namespace Project1.Core.AI
             _pLocationDecision = Registry.PacketHandlers.Register(OnLocationDecision);
             _pLogEntry = Registry.PacketHandlers.Register(OnLogEntry);
             Registry.WorldEventHooksServer.Register<AILocationDecisionEvent>(SendLocationDecision);
-            Registry.WorldEventHooksServer.Register<AILogEntry>(SendLogEntry);
+            Registry.WorldEventHooksServer.Register<AILogEntryEvent>(SendLogEntry);
         }
-        private static void SendLogEntry(AILogEntry e)
+        private static void SendLogEntry(AILogEntryEvent e)
         {
             Server.Instance.BeginPacket(_pLogEntry)
                 .Write(e.Actor.RefId)

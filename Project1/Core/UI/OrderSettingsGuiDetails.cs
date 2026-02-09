@@ -1,6 +1,6 @@
-﻿using Project1.Core.Net;
-using Project1.Core.Towns.Crafting;
-using Project1.Core.Towns.Crafting.Gui;
+﻿using Project1.Core.Crafting;
+using Project1.Core.Crafting.Gui;
+using Project1.Core.Net;
 using Project1.Framework.UI;
 
 namespace Project1.Core.UI

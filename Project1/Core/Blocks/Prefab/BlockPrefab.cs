@@ -1,5 +1,5 @@
 ﻿using Project1.Core.Blocks;
-using Project1.Core.Graphics;
+using Project1.Framework.Graphics;
 
 namespace Project1.Core
 {

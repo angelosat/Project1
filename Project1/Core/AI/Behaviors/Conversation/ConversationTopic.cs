@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Towns.AI.Needs;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using System;
 using System.Linq;

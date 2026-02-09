@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Project1.Core.UI;
-using Project1.Core.World.MetaRoles;
-using Project1.Core.UI;
+using Project1.Core.AI.MetaRoles;
 using Project1.Core.Entities.Actors;
 using Project1.Framework.UI;
 
@@ -27,7 +25,7 @@ namespace Project1.Core.AI
             this.Inner.Add(entry);
             if (this.Inner.Count > Capacity)
                 this.Inner.RemoveAt(0);
-            this.Owner.World.Events.Post(new AILogEntry(this.Owner, text));
+            this.Owner.World.Events.Post(new AILogEntryEvent(this.Owner, text));
             return entry;
         }
         

@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Project1.Core.Plants;
 using Project1.Core.Components.Plants;
 using Project1.Core.Helpers;
-using Project1.Core;
 using Project1.Core.Simulation;
 
 namespace Project1.Core.WorldGen
@@ -49,7 +48,7 @@ namespace Project1.Core.WorldGen
        
         PlantSpeciesDef[] GetValidPlants()
         {
-            return Core.Base.Def.GetDefs<PlantSpeciesDef>().ToArray();
+            return Core.Def.GetDefs<PlantSpeciesDef>().ToArray();
         }
     }
 }

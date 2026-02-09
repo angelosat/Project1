@@ -4,7 +4,6 @@ using Project1.Core.Materials;
 using Project1.Core.Base;
 using Project1.Core.Components.Plants;
 using Project1.Core.Helpers;
-using Project1.Core;
 using System.Linq;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Resources;

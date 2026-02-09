@@ -8,11 +8,10 @@ using Project1.Core.Net;
 using Project1.Core.Rendering;
 using Project1.Core.Towns.Tools;
 using Project1.Core.Towns.Designations;
-using Project1.Core;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
-using Project1.Framework.Math;
 using Project1.Framework.UI;
+using Project1.Framework;
 
 namespace Project1.Core.Towns.Digging
 {

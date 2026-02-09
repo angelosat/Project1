@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Base;
+using Project1.Core.Input;
 using Project1.Core.Net;
 
 namespace Project1.Core.Networking.Simulation

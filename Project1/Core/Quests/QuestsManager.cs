@@ -9,7 +9,8 @@ using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.UI;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core
 {
@@ -165,15 +166,7 @@ namespace Project1.Core
             var window = gui.GetWindow() ?? gui.ToPanelLabeled().ToWindow(title);
             window.Toggle();
         }
-        class QuestDefsUpdatedEvent(QuestDef[] added, QuestDef[] removed) : IEventPayload
-        {
-            public QuestDef[] Added = added;
-            public QuestDef[] Removed = removed;
-        }
-        class QuestDefAssignedEvent(QuestDef quest) : IEventPayload
-        {
-            public QuestDef Quest = quest;
-        }
+        
         Window CreateUI()
         {
             var box = new GroupBox();

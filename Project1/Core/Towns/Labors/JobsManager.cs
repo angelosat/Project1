@@ -4,13 +4,10 @@ using System.Linq;
 using Project1.Core.UI;
 using Project1.Core.Net;
 using Project1.Core.Base;
-using Project1.Core.Interfaces;
 using Project1.Core.Helpers;
 using Project1.Core.Entities.Actors;
 using Project1.Core.AI.Labors;
-using Project1.Core;
 using Project1.Core.AI;
-using Project1.Core.Net;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
 
@@ -135,11 +132,7 @@ namespace Project1.Core.Towns.Labors
         {
             base.OnTargetSelected(info, target);
         }
-        public class JobUpdatedEvent(Actor actor, JobDef job) : IEventPayload
-        {
-            public readonly Actor Actor = actor;
-            public readonly JobDef Job = job;
-        }
+        
         Control CreateJobsTable()
         {
             var box = new GroupBox();

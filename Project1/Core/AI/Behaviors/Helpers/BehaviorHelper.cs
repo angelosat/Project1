@@ -9,7 +9,7 @@ using Project1.Core.Towns.Tasks;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core.AI.Behaviors.Helpers
 {

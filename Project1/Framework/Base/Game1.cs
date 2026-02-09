@@ -21,6 +21,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.Animations;
 using Project1.Framework.UI;
+using Project1.Framework;
 
 namespace Project1.Core.Base
 {

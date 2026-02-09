@@ -1,7 +1,7 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.Conditionals;
 using Project1.Core.Entities.Actors;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.AI.Behaviors.NodeTypes
 {

@@ -6,9 +6,9 @@ using Project1.Core.Base;
 using Project1.Core.Interfaces;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Net;
 using Project1.Core.Entities;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.Animations
 {
@@ -331,7 +331,7 @@ namespace Project1.Core.Animations
         }
         public void Load(SaveTag tag)
         {
-            tag.TryGetTagValue<string>("Def", t => this.Def = Base.Def.GetDef<AnimationDef>(t));
+            tag.TryGetTagValue<string>("Def", t => this.Def = Core.Def.GetDef<AnimationDef>(t));
             tag.TryGetTagValueOrDefault("Frame", out this.Frame);
             tag.TryGetTagValueOrDefault("FadeValue", out this.FadeValue);
             tag.TryGetTagValueOrDefault("FadeLength", out this.FadeLength);
@@ -360,7 +360,7 @@ namespace Project1.Core.Animations
         }
         public Animation Read(IDataReader r)
         {
-            this.Def = Base.Def.GetDef<AnimationDef>(r.ReadString());
+            this.Def = Core.Def.GetDef<AnimationDef>(r.ReadString());
             this.Frame = r.ReadSingle();
             this.FadeLength = r.ReadInt32();
             this.FadeValue = r.ReadInt32();

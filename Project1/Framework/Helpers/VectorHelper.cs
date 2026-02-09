@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Project1.Core.Rendering;
 using Project1.Core.Simulation;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core.Helpers
 {

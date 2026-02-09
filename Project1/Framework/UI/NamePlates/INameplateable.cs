@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Rendering;
 using Project1.Core.Simulation;
 
 namespace Project1.Core.UI

@@ -3,8 +3,9 @@ using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
+using Project1.Framework;
 using Project1.Framework.Interfaces;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 
 namespace Project1.Core.Entities.Mood
@@ -61,7 +62,7 @@ namespace Project1.Core.Entities.Mood
 
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValue<string>("Def", t => this.Def = Base.Def.GetDef<MoodletDef>(t));
+            tag.TryGetTagValue<string>("Def", t => this.Def = Core.Def.GetDef<MoodletDef>(t));
             tag.TryGetTagValueOrDefault<int>("TicksRemaining", out this.TicksRemaining);
             return this;
         }
@@ -74,7 +75,7 @@ namespace Project1.Core.Entities.Mood
 
         public Moodlet Read(IDataReader r)
         {
-            this.Def = Base.Def.GetDef<MoodletDef>(r.ReadString());
+            this.Def = Core.Def.GetDef<MoodletDef>(r.ReadString());
             this.TicksRemaining = r.ReadInt32();
             return this;
         }

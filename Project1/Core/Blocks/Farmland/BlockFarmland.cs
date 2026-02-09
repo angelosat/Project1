@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Plants;
-using Project1.Core.Base;
 using Project1.Core.Blocks;
 using Project1.Core.Components.Plants;
-using Project1.Core.Graphics;
 using Project1.Core.Simulation;
-using Project1.Framework.Math;
+using Project1.Framework.Graphics;
+using Project1.Framework;
 
 namespace Project1.Core
 {
@@ -41,8 +40,6 @@ namespace Project1.Core
                 return true;
             }
             return false;
-            //else
-            //    base.TryConsume(actor, dropped, target, amount);
         }
         static public void Plant(MapBase map, IntVec3 global, GameObject obj)
         {
@@ -51,11 +48,6 @@ namespace Project1.Core
             var plantcomp = plant.GetComponent<PlantComponent>();
             map.World.Register(plant);
             map.Spawn(plant, global.Above, Vector3.Zero);
-            //plant.SyncInstantiate(map.Net);
-            //plant.SyncSpawn(map, global.Above());
-            //map.World.RegisterAndSync(plant);
-            //map.SpawnAndSync(plant, global.Above(), Vector3.Zero);
-            //Block.Place(BlockDefOf.Soil.Worker, map, global, map.GetCell(global).Material, 0, 0, 0);
             map.Town.ZoneManager.GetZoneAt(global.Below)?.MarkDirty();
             obj.Consume(1);
         }

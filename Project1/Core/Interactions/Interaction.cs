@@ -3,10 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Gear;
 using Project1.Core.Components;
 using Project1.Core.Base;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
-using Project1.Core.Rendering;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Resources;
@@ -18,7 +16,8 @@ using Project1.Core.Entities;
 using Project1.Core.Animations;
 using Project1.Core.Attributes;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.Interactions
 {
@@ -80,8 +79,6 @@ namespace Project1.Core.Interactions
 
         public virtual void Interrupt(bool success)
         {
-            if (!success)
-                this.Actor.Net.EventOccured((int)Message.Types.InteractionInterrupted, this.Actor, this);
             this.State = States.Finishing;
             if (this.AnimationDef is not null)
                 this.CachedAnimation?.FadeOutAndRemove();

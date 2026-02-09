@@ -1,12 +1,11 @@
 ﻿using System.Linq;
 using Project1.Core.Blocks;
-using Project1.Core.Base;
 using Project1.Core.Legacy.Crafting;
-using Project1.Core.Graphics;
 using Project1.Core.Rooms;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
-using Project1.Framework.Math;
+using Project1.Framework;
+using Project1.Framework.Graphics;
 
 namespace Project1.Core.Towns.Shops.Blocks
 {

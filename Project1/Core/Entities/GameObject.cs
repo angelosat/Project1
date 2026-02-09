@@ -17,15 +17,12 @@ using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Screens;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Interfaces;
 using Project1.Core.Towns;
 using Project1.Core.Tools;
-using Project1.Core.World.MetaRoles;
 using Project1.Core.Legacy;
 using Project1.Core.Helpers;
 using Project1.Core.AI;
 using Project1.Core.Graphics;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Needs;
@@ -36,8 +33,9 @@ using Project1.Core.Resources;
 using Project1.Core.Networking.Entities;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
-using Project1.Framework.Math;
+using Project1.Framework.Serialization;
+using Project1.Framework;
+using Project1.Core.AI.MetaRoles;
 
 namespace Project1.Core.Entities
 {
@@ -107,7 +105,7 @@ namespace Project1.Core.Entities
             foreach (var t in RawMaterialSystem.GenerateTemplates().Where(t => t is not null))
                 AddTemplate(t);
 
-            foreach (var toolProp in Project1.Core.Base.Def.GetDefs<ToolProfileDef>())
+            foreach (var toolProp in Core.Def.GetDefs<ToolProfileDef>())
             {
                 var obj = ToolSystem.Create(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
                 AddTemplate(obj);
@@ -449,22 +447,9 @@ namespace Project1.Core.Entities
                 throw new ArgumentOutOfRangeException(nameof(amount));
             var newObject = this.Clone();
             newObject._stackSize = amount;
-            //this.World.RegisterAndSync(newObject);
             this.World.Register(newObject);
             this.Consume(amount);
             return newObject;
-        }
-        //public abstract GameObject Create();
-        public GameObject TrySplitOne()
-        {
-            throw new NotImplementedException(); // TODO sync instantiate new object
-        }
-        public GameObject SplitOld(int amount)
-        {
-            if (amount >= this.StackSize)
-                throw new Exception();
-
-            return this.SetStackSize(this.StackSize - amount).Clone().SetStackSize(amount);
         }
         public GameObject SetStackSize(int value)
         {
@@ -472,54 +457,11 @@ namespace Project1.Core.Entities
             return this;
         }
 
-        #region Messaging
-        [Obsolete]
-        public void PostMessage(ObjectEventArgs a)
-        {
-            GameObject.PostMessage(this, a);
-        }
-        public static void PostMessage(Message msg)
-        {
-            msg.Receiver.HandleMessage(msg.Args);
-            if (msg.Callback != null)
-            {
-                msg.Callback(msg.Receiver);
-            }
-        }
-        public static void PostMessage(GameObject receiver, ObjectEventArgs e)
-        {
-            var msg = new Message(receiver, e);
-            PostMessage(msg);
-        }
-
-        public void HandleRemoteCall(ObjectEventArgs e)
-        {
-            foreach (var comp in this.Components.Values)
-            {
-                comp.HandleRemoteCall(this, e);
-            }
-        }
-
-        bool HandleMessage(ObjectEventArgs e)
-        {
-            bool ok = false;
-            foreach (var comp in this.Components.Values)
-            {
-                ok |= comp.HandleMessage(this, e);
-            }
-
-            return ok;
-        }
-        #endregion
+        
         public IEnumerable<GameObject> GetNearbyObjects(Func<float, bool> range, Func<GameObject, bool> filter = null)
         {
             return this.Map.GetNearbyObjectsNew(this.Global, range, filter).Except(new GameObject[] { this });
         }
-
-        //public GameObject()
-        //{
-        //    this.AddComponent<PositionComponent>();
-        //}
 
         DefComponent _info;
         public DefComponent GetInfo()
@@ -574,15 +516,11 @@ namespace Project1.Core.Entities
         public T GetComponent<T>() where T : EntityComp
         {
             return this.Components.GetComponent<T>();
-            //return (from comp in Components.Values
-            //        where comp is T
-            //        select comp).SingleOrDefault() as T;
         }
 
         public bool HasComponent<T>() where T : EntityComp
         {
             return this.Components.TryGetComponent<T>(out var _);
-            //return this.GetComponent<T>() != null;
         }
         public bool HasComponent(Type compType)
         {
@@ -599,8 +537,6 @@ namespace Project1.Core.Entities
         }
         public bool TryGetComponent<T>(out T component) where T : EntityComp
         {
-            //component = this.GetComponent<T>();
-            //return component != null;
             var result = this.Components.TryGetComponent<T>(out var c);
             component = (T)c;
             return result;
@@ -620,18 +556,8 @@ namespace Project1.Core.Entities
         public EntityComp AddComponent(EntityComp component)
         {
             this.Components.Add(component);
-            //component.Owner = this;
-            //component.MakeChildOf(this);
             return component;
         }
-
-        //public T AddComponent<T>() where T : EntityComp, new()
-        //{
-        //    T component = new();
-        //    this.Components[component.Name] = component;
-        //    component.MakeChildOf(this);
-        //    return component;
-        //}
 
         public virtual void Tick()
         {
@@ -641,21 +567,6 @@ namespace Project1.Core.Entities
         public override string ToString()
         {
             return $"{this.Net?.ToString()} [{this.RefId}] {this.Def} {this.Profile} {this.Name}";
-            if (!GlobalVars.DebugMode)
-                return $"[{this.RefId}] {Name}";
-                //return $"{Name} / RefId: {this.RefId}";
-
-            string info = "";
-            foreach (var comp in this.Components.Values)
-            {
-                if (info.Length > 0)
-                    info += "\n";
-                info += "*" + comp.GetType() + "\n" + comp.ToString();
-            }
-            if (info.Length > 0)
-                info = info.Remove(info.Length - 1);
-
-            return info;
         }
 
         #region Children
@@ -756,18 +667,11 @@ namespace Project1.Core.Entities
             if (value > 0)
                 tooltip.AddControlsBottomLeft(new Label($"Value: {value * this.StackSize} ({value})"));
 
-            //var stats = this.Def.Category?.Stats;
-            //if (stats is not null)
-            //    foreach (var stat in stats)
-            //        tooltip.AddControlsBottomLeft(new Label($"{stat.Label}: {stat.CalculateFor(this).ToString(stat.StringFormat)}"));
-
             tooltip.AddControlsBottomLeft(new Label($"{nameof(this.RefId)}: {this.RefId}"));
         }
         public void GetInventoryTooltip(Control tooltip)
         {
             GetInfo().OnTooltipCreated(this, tooltip);
-            // TODO: LOL fix, i need the object name to be on top
-            //foreach (KeyValuePair<string, EntityComp> comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
             foreach(var comp in this.Components.Values)
             {
                 if (!comp.GetType().IsAssignableFrom(typeof(DefComponent)))
@@ -911,7 +815,7 @@ namespace Project1.Core.Entities
         {
             w.Write(this.Def);
             w.Write(this.Profile?.Name ?? "");
-            if (Project1.Core.Base.Def.GetDef(this.Def.Name) is null)
+            if (Core.Def.GetDef(this.Def.Name) is null)
                 throw new Exception();
             w.Write(this.RefId);
             w.Write(this.StackSize);
@@ -926,8 +830,8 @@ namespace Project1.Core.Entities
         public static GameObject Create(IDataReader r)
         {
             string defName = r.ReadString();
-            var def = Project1.Core.Base.Def.GetDef<ItemDef>(defName);
-            var profile = Project1.Core.Base.Def.GetDef(r.ReadString());
+            var def = Core.Def.GetDef<ItemDef>(defName);
+            var profile = Core.Def.GetDef(r.ReadString());
             var obj = def.Create(profile);
             obj.RefId = r.ReadInt32();
             var amount = r.ReadInt32();
@@ -992,30 +896,17 @@ namespace Project1.Core.Entities
         internal static GameObject Load(SaveTag tag)
         {
             tag.TryGetTagValueOrDefault("Def", out string defName);
-            var def = Project1.Core.Base.Def.GetDef<ItemDef>(defName);
+            var def = Core.Def.GetDef<ItemDef>(defName);
             Def profile = null;
-            if (tag.TryGetTagValueOrDefault("ProfileID", out string profileName)) profile = Project1.Core.Base.Def.GetDef(profileName);
+            if (tag.TryGetTagValueOrDefault("ProfileID", out string profileName)) profile = Core.Def.GetDef(profileName);
 
             if (def is null)
                 return null;
             var obj = def.Create(profile);
             tag.TryGetTagValueOrDefault("InstanceID", out obj.RefId);
             tag.TryGetTagValue<int>("Stack", v=> obj._stackSize = v);
-            //var compData = tag["Components"].Value as Dictionary<string, SaveTag>;
-            //foreach (var compTag in compData.Values)
-            //{
-            //    if (compTag.Value == null)
-            //        continue;
-
-            //    if (obj.Components.ContainsKey(compTag.Name))
-            //        obj.Components[compTag.Name].Load(obj, compTag);
-            //}
             obj.Components.Load(tag["Components"]);
-
-            //obj.Name = obj.Def.NameGetter?.Invoke(obj) ?? obj.Name; // reset name
-            //obj.DefComponent.ParentName = obj.Def.NameGetter?.Invoke(obj) ?? obj.DefComponent.ParentName; // reset name
             obj.ResetName();
-            //obj.Resolve();
             return obj;
         }
         
@@ -1120,8 +1011,6 @@ namespace Project1.Core.Entities
         {
             throw new Exception();
         }
-        sealed record EntityDisposedEvent(Entity entity) : IEventPayload 
-        { public readonly Entity Entity = entity; }
         internal void OnDispose()
         {
             foreach (var c in this.Components.Values)
@@ -1491,7 +1380,6 @@ namespace Project1.Core.Entities
         {
             this.TryGetComponent<StatsComponent>(out var stats);
             return stats?.GetModifiers(statNewDef);
-            //return this.GetComponent<StatsComponent>()?.GetModifiers(statNewDef);
         }
 
         internal void AddResourceModifier(ResourceRateModifier resourceModifier)

@@ -8,7 +8,7 @@ using Project1.Core.Components;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Simulation.Physics
 {
@@ -499,7 +499,6 @@ namespace Project1.Core.Simulation.Physics
         private void HitGround(GameObject parent, Vector3 vector3, float force)
         {
             this.MidAir = false;
-            parent.Map.EventOccured(Message.Types.EntityHitGround, parent, vector3);
             parent.Net.Map.Events.Post(new EntityHitGroundEvent(parent as Entity, force));
         }
         

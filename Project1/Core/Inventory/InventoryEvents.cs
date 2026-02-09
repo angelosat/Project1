@@ -1,9 +1,9 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Base;
-using Project1.Core.Helpers;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers.Structs;
+using Project1.Framework.Events;
+using Project1.Framework.Serialization;
 using System;
-using Project1.Framework.IO;
 
 namespace Project1.Core.Inventory
 {
@@ -53,4 +53,6 @@ namespace Project1.Core.Inventory
     {
 
     }
+    public record struct InventoryItemAddedEvent(Actor Actor, Entity Item) : IEventPayload { }
+    public record struct InventoryItemRemovedEvent(Actor Actor, Entity Item) : IEventPayload { }
 }

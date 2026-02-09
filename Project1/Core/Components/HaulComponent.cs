@@ -3,8 +3,8 @@ using Project1.Core.Animations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Resources;
-using Project1.Core.Base;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.Components
 {

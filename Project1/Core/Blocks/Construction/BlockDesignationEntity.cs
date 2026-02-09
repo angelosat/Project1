@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Input;
-using Project1.Core.Blocks;
-using Project1.Core.Rendering;
 using Project1.Core.Base;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Constructions;
@@ -10,12 +8,12 @@ using Project1.Core.Legacy.Crafting.Blocks;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
-using Project1.Framework.Math;
 using Project1.Framework.UI;
+using Project1.Framework;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     partial class BlockDesignation
     {

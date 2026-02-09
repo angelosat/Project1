@@ -9,9 +9,9 @@ using Project1.Core.Stats;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Animations;
-using Project1.Core.Towns.Crafting;
 using Project1.Core.Materials;
 using Project1.Framework.UI;
+using Project1.Core.Crafting;
 
 namespace Project1.Core.Tools
 {

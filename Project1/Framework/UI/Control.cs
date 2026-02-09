@@ -15,6 +15,7 @@ using Project1.Core.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Collections;
 using Project1.Framework.Input;
+using Project1.Framework.Events;
 
 namespace Project1.Framework.UI
 {
@@ -1442,17 +1443,12 @@ namespace Project1.Framework.UI
         {
             return this.TopLevelControl as Window ?? this.ToWindow(title);
         }
-        //readonly Dictionary<Components.Message.Types, Action<GameEvent>> Listeners = new();
-        //public void ListenTo(Components.Message.Types msgType, Action<object[]> action)
-        //{
-        //    this.Listeners.Add(msgType, e => action(e.Parameters));
-        //}
+        
         [Obsolete]
         readonly Dictionary<int, Action<GameEvent>> ListenersOld = new();
         [Obsolete]
         public void ListenToOld(int msgType, Action<GameEvent> action)
         {
-            //this.ListenersOld.Add(msgType, e => action(e));
         }
         readonly Dictionary<int, Action<GameEvent>> Listeners = new();
         public void ListenTo<T>(Action<T> action) where T : IEventPayload

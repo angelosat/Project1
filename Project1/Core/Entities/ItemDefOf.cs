@@ -4,7 +4,6 @@ using Project1.Core.Gear;
 using Project1.Core.Components;
 using Project1.Core.Base;
 using Project1.Core.Materials;
-using Project1.Core;
 using Project1.Core.Towns;
 using Project1.Core.Tools;
 using Project1.Core.Plants;

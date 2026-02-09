@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Project1.Core.Entities.Stats;
-using Project1.Core.Base;
 using Project1.Core.Interactions;
 using Project1.Core.Tools;
 using Project1.Framework.UI;

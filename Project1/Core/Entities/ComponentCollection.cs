@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Base;
-using Project1.Core.Helpers;
-using Project1.Framework.IO;
+using Project1.Framework;
+using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 
@@ -120,5 +120,4 @@ namespace Project1.Core.Entities
             return this._innerList[compindex];
         }
     }
-    public record struct EntityCompUpdatedEvent(EntityComp Comp) : IEventPayload { }
 }

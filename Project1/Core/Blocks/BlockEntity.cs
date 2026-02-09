@@ -15,12 +15,12 @@ using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
-using Project1.Framework.Math;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core
 {
-    public class BlockEntity : Inspectable, IDisposable, ISerializableNew<BlockEntity>, ISaveableNewNew<BlockEntity>//, IEntityCompContainer<BlockEntityComp>//, IHasChildren
+    public class BlockEntity : Inspectable, IDisposable, ISerializableNew<BlockEntity>, ISaveableNewNew<BlockEntity>
     {
         public string Name = nameof(BlockEntity);
         public HashSet<IntVec3> CellsOccupied = [];
@@ -94,7 +94,6 @@ namespace Project1.Core
 
         public bool HasComp<T>() where T : BlockEntityComp// class, IBlockEntityComp
         {
-            //return this.Comps.GetComp<T>() != null;
             return this.Comps.TryGetComp<T>(out _);
         }
         public BlockEntity AddComp(BlockEntityComp comp)
@@ -105,7 +104,7 @@ namespace Project1.Core
         }
         public T GetComp<T>() where T : BlockEntityComp// class, IBlockEntityComp
         {
-            return this.Comps.GetComp<T>();//.FirstOrDefault(c => c is T) as T;
+            return this.Comps.GetComp<T>();
         }
         internal void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity)
         {
@@ -146,7 +145,6 @@ namespace Project1.Core
         public void Load(SaveTag tag)
         {
             tag.TryGetTag("Components", this.Comps.Load);
-            //tag.TryGetTagValue<IntVec3>("OriginGlobal", v => this.OriginGlobal = v);
             this.CellsOccupied.Load(tag, "CellsOccupied");
             this.LoadExtra(tag);
         }
@@ -172,8 +170,6 @@ namespace Project1.Core
         }
         public BlockEntity Read(IDataReader r)
         {
-            //this.Def = r.ReadDef<BlockDef>();
-            //this.OriginGlobal = r.ReadIntVec3();
             this.CellsOccupied.Read(r);
             foreach (var c in this.Comps.Values)
                 c.Read(r);
@@ -276,9 +272,7 @@ namespace Project1.Core
 
         internal void Attach(IntVec3 global)
         {
-            //this.CellsOccupied.Add(global);
             this.Map.AttachCellToEntity(global, this);
         }
-        
     }
 }

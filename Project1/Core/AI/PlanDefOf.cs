@@ -10,10 +10,9 @@ using Project1.Core.Towns.Digging.AI;
 using Project1.Core.Towns.Farming.Harvesting;
 using Project1.Core.Towns.Farming.Tilling;
 using Project1.Core.Towns.Forestry.AI;
-using Project1.Core.Towns.Refueling;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core;
+using Project1.Core.Towns;
 
 namespace Project1.Core.AI
 {
@@ -21,7 +20,7 @@ namespace Project1.Core.AI
     public static class PlanDefOf
     {
 
-        static public readonly PlanDef Refueling = new("Refueling", typeof(TaskBehaviorRefueling))
+        static public readonly PlanDef Refueling = new("Refueling", typeof(BehaviorRefueling))
         {
             Format = "Refuel {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)

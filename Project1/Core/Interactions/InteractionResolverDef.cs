@@ -2,7 +2,6 @@
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core;
 using System;
 using Project1.Core.Resources;
 using Project1.Core.Stats;

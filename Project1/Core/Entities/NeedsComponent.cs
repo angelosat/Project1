@@ -2,11 +2,11 @@
 using System.Linq;
 using Project1.Core.AI;
 using Project1.Core.Needs;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.Entities
 {

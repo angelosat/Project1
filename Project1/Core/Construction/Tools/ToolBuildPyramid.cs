@@ -1,4 +1,4 @@
-﻿using Project1.Framework.Math;
+﻿using Project1.Framework;
 using System;
 
 namespace Project1.Core.Construction.Tools

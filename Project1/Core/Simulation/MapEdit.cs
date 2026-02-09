@@ -5,7 +5,7 @@ using Project1.Core.Net.Packets;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.WorldGen;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core.Simulation
 {
@@ -135,12 +135,6 @@ namespace Project1.Core.Simulation
 
     }
 
-    internal record struct MapEditEvent(MapEditContext Context, MapEditType Type, MapBase Map, HashSet<IntVec3> Targets, Block Block, MaterialDef Material, byte Data, int Variation, int Orientation) : IEventPayload { }
     internal enum MapEditContext { Simulation, Player }
     internal enum MapEditType { Create, Replace }
-    //internal class MapEditContext //{ Simulation, Dev }
-    //{
-    //    internal static readonly MapEditContext Simulation = new();
-    //    internal static readonly MapEditContext PlayerInput = new();
-    //}
 }

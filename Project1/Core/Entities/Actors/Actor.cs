@@ -3,7 +3,6 @@ using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Conversation;
 using Project1.Core.AI.Planners;
-using Project1.Core.Entities;
 using Project1.Core.Quests;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators;
@@ -17,7 +16,6 @@ using Project1.Core.Interactions;
 using Project1.Core.Net;
 using Project1.Core.Rooms;
 using Project1.Core.Skills;
-using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +32,8 @@ using Project1.Core.Attributes;
 using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.Networking.Entities;
 using Project1.Framework.UI;
-using Project1.Framework.Math;
+using Project1.Framework.Base;
+using Project1.Framework;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -515,7 +514,6 @@ namespace Project1.Core.Entities.Actors
         {
             var profile = this.Profile as ActorDnaDef;
             return profile.Gear;
-            //return this.GetComponent<GearComponent>().Equipment.Slots.Select(s => GearTypeDef.Dictionary[(GearTypeDef.Types)s.ID]).ToArray();
         }
         internal Entity[] GetGear()
         {

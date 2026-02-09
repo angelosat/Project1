@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Project1.Core.Skills;
-using Project1.Core.Base;
 using Project1.Core.AI;
 using Project1.Core.Needs;
 using Project1.Core.Entities;

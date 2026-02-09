@@ -1,5 +1,4 @@
-﻿using Project1.Core.Base;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Project1.Core.Rooms
 {

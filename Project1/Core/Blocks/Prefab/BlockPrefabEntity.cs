@@ -1,5 +1,5 @@
 ﻿using Project1.Core.Blocks;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core
 {

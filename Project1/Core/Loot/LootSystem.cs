@@ -44,5 +44,4 @@ namespace Project1.Core.Loot
         }
     }
 
-    internal record struct LootPopEvent(Entity[] Entities, Entity Source) : IEventPayload { }
 }

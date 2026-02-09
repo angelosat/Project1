@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Base;
 using Project1.Core.Interfaces;
-using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Framework.UI;
 using Project1.Framework.Helpers;

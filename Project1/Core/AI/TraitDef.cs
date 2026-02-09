@@ -1,6 +1,4 @@
-﻿using Project1.Core.Base;
-
-namespace Project1.Core.AI
+﻿namespace Project1.Core.AI
 {
     public class TraitDef : Def
     {

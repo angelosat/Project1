@@ -3,6 +3,7 @@ using Project1.Core.Inventory;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Screens;
 using Project1.Framework.UI;
+using Project1.Core.Input;
 
 namespace Project1.Core.UI
 {

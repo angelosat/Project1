@@ -16,15 +16,15 @@ using System.Linq;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.Reserve;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
+using Project1.Framework;
 
 namespace Project1.Core.AI
 {
     public sealed class AIState : Inspectable
     {
         public static AIConversationManager ConversationManager = new();
-        private BehaviorExecutePlan _currentTaskBehavior;
         readonly Dictionary<JobDef, Job> Jobs = JobDefOf.All.ToDictionary(i => i, i => new Job(i));
         public Progress Attention = new();
         public float AttentionDecay = 1;

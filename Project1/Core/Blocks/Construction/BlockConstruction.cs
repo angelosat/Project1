@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Blocks;
 using Project1.Core.Base;
-using System;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
-using Project1.Core.Graphics;
 using Project1.Core.Simulation;
-using Project1.Framework.Math;
+using Project1.Framework.Graphics;
+using Project1.Framework;
+using System;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     class BlockConstruction : BlockWithEntity
     {

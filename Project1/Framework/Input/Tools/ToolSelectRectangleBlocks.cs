@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Towns.Digging;
 using System;
 using System.Windows.Forms;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core.Input.Tools
 {

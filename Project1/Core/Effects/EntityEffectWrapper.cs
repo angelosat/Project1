@@ -1,44 +1,19 @@
 ﻿using Project1.Core.Needs;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using Project1.Core.UI;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
+
 namespace Project1.Core.Effects
 {
     public record EntityEffectWrapper(EffectDef Def, Def Target, int Budget, int Rate) : ISaveableNewNew<EntityEffectWrapper>, ISerializableNew<EntityEffectWrapper>
     {
         public bool IsInstant => this.Rate == 0;
 
-        //internal EffectDef Def;
-        //internal Def Target;
-        //internal float Value;
-        //EntityEffectWrapper()
-        //{
-
-        //}
-        //public EntityEffectWrapper(EffectDef def)
-        //{
-        //    this.Def = def;
-        //}
         internal void Start(Actor actor) => this.Def.Worker.OnStart(actor, this);
         internal void Finish(Actor actor) => this.Def.Worker.OnFinish(actor, this);
         
-        //public static ISaveableNew Create(SaveTag tag)
-        //{
-        //    var def = tag.LoadDef<EffectDef>("Def");
-        //    var target = tag.LoadDef<Def>("Target");
-        //    var value = (int)tag.LoadSingle("Value");
-        //    var rate = tag.LoadInt("Value");
-        //    return new EntityEffectWrapper(def, target, value, rate);
-        //    //var e = new EntityEffectWrapper();
-        //    ////tag.TryGetTagValue<string>("Def", t => e.Def = Start_a_Town_.Def.GetDef<EffectDef>(t));
-        //    //tag.TryLoadDef("Def", ref e.Def);
-        //    //return e;
-        //}
 
         public static EntityEffectWrapper Create(IDataReader r)
         {

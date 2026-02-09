@@ -2,14 +2,14 @@
 using Project1.Core.AI.Behaviors.Helpers;
 using Project1.Core.Quests;
 using Project1.Core.Towns;
-using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using System.Collections.Generic;
 using System.IO;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.Quests.AI
 {

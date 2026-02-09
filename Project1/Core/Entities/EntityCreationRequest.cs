@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Animations;
-using Project1.Core.Base;
 using Project1.Core.Materials;
 using System.Collections.Generic;
 namespace Project1.Core.Entities

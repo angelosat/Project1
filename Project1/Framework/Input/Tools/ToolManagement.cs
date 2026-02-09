@@ -19,11 +19,9 @@ using Project1.Framework.UI;
 using Button = Project1.Framework.UI.Button;
 using Panel = Project1.Framework.UI.Panel;
 using Control = Project1.Framework.UI.Control;
-using Project1.Framework.Helpers;
 
 namespace Project1.Core.Input.Tools
 {
-    record struct PlayerSelectionEvent(TargetArgs Single = null, TargetArgs Add = null, List<TargetArgs> Multiple = null) : IEventPayload { }
     [EnsureStaticCtorCall]
     public class ToolManagement : DefaultTool
     {

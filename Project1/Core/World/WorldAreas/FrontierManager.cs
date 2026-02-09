@@ -5,15 +5,11 @@ using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
-using Project1.Core.Net;
-using Project1.Core.Population;
 using Project1.Core.Simulation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using static Project1.Core.World.WorldAreas.FrontierManager;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.WorldAreas
 {
@@ -177,20 +173,21 @@ namespace Project1.Core.World.WorldAreas
             this.World.Events.Post(new InhabitantPlacedInWorldEvent(actor, pos));
             return this.GetFrontier(actor).Def;
         }
-        public class FrontierWrapper
+        
+    }
+    public class FrontierWrapper
+    {
+        public readonly FrontierDef Def;
+        List<Entity> LootPool = [];
+        public FrontierWrapper(FrontierDef def)
         {
-            public readonly FrontierDef Def;
-            List<Entity> LootPool = [];
-            public FrontierWrapper(FrontierDef def)
-            {
-                this.Def = def;
-            }
-            internal void Tick(Actor actor)
-            {
-                // roll encounter
-                // roll random loot
-                // etc
-            }
+            this.Def = def;
+        }
+        internal void Tick(Actor actor)
+        {
+            // roll encounter
+            // roll random loot
+            // etc
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
+using Project1.Framework;
 
 namespace Project1.Core.Loot
 {
@@ -76,14 +77,11 @@ namespace Project1.Core.Loot
                 var minPerItem = (amount - cap) / (count - 1);
                 for (int i = 0; i < count; i++)
                 {
-                    //var obj = this.Factory();
                     int allocated = 0;
                     if (i < count - 1)
                     {
                         allocated = rand.Next(minPerItem, cap);
                         amountRemaining -= allocated;
-                        //obj.StackSize = rand.Next(minPerItem, cap);
-                        //amountRemaining -= obj.StackSize;
                     }
                     else
                     {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core;
-using Project1.Core.Helpers;
 using System;
 
 

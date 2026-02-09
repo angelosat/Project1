@@ -1,6 +1,4 @@
-﻿using Project1.Core.Base;
-
-namespace Project1.Core.WorldGen
+﻿namespace Project1.Core.WorldGen
 {
     public static class TerraformerDefOf
     {

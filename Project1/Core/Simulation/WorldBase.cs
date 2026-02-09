@@ -6,19 +6,17 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Net;
-using Project1.Core.Rendering;
 using Project1.Core.WorldGen;
-using Project1.Core.Interfaces;
-using Project1.Core.Base;
 using Project1.Core.World.WorldAreas;
-using Project1.Core.Population;
 using Project1.Core.Helpers.Structs;
-using Project1.Core.WorldGen;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
 using Project1.Core.UI;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Core.Map;
+using Project1.Core.World;
+using Project1.Framework;
 
 #nullable enable
 
@@ -33,7 +31,6 @@ namespace Project1.Core.Simulation
         public abstract MapBase GetMap(Vector2 mapCoords);
         public Random Random { get; set; }
         public virtual float Gravity { get; }
-        //public WorldSeed Seed { get; set; }
         public int Seed { get; set; }
         public int MaxHeight { get; set;  }
         public virtual ulong CurrentTick { get; set; }

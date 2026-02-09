@@ -5,7 +5,8 @@ using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using Project1.Core.Simulation;
-using Project1.Framework.IO;
+using Project1.Framework;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core
 {

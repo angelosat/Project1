@@ -1,9 +1,9 @@
 ﻿using Project1.Core.Towns;
-using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Interfaces;
 using System.IO;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.AI.Labors
 {
@@ -42,7 +42,7 @@ namespace Project1.Core.AI.Labors
 
         public Job Read(IDataReader r)
         {
-            this.Def = Project1.Core.Base.Def.GetDef<JobDef>(r.ReadString());
+            this.Def = Core.Def.GetDef<JobDef>(r.ReadString());
             this.Priority = r.ReadByte();
             return this;
         }
@@ -59,7 +59,7 @@ namespace Project1.Core.AI.Labors
         public ISaveable Load(SaveTag tag)
         {
             this.Priority = tag.GetValue<byte>("Priority");
-            tag.TryGetTagValue<string>("Def", v => this.Def = Project1.Core.Base.Def.GetDef<JobDef>(v));
+            tag.TryGetTagValue<string>("Def", v => this.Def = Core.Def.GetDef<JobDef>(v));
             return this;
         }
 

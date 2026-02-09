@@ -1,21 +1,18 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
+﻿using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.UI;
-using Project1.Core.Components;
 using System.Collections.Generic;
-using System.Linq;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework.Base;
+using Project1.Framework;
 
 namespace Project1.Core.Resources
 {
     public class ResourcesComponent : EntityComp
     {
-        //public Resource[] Resources = [];
         public Dictionary<ResourceDef, Resource> Resources = [];
         public override string Name { get; } = "Resources";
 
@@ -36,48 +33,16 @@ namespace Project1.Core.Resources
         public ResourcesComponent()
         {
         }
-        //public ResourcesComponent(params Resource[] resources)
-        //{
-        //    var count = resources.Length;
-        //    this.Resources = new Resource[count];
-        //    for (int i = 0; i < count; i++)
-        //        this.Resources[i] = resources[i].Clone();
-        //}
         public ResourcesComponent(params ResourceDef[] defs)
         {
             throw new System.Exception();
-            //var count = defs.Length;
-            //this.Resources = new Resource[count];
-            //for (int i = 0; i < count; i++)
-            //    this.Resources[i] = new Resource(defs[i]);
         }
         
         public override void Tick()
         {
             foreach (var item in this.Resources.Values)
-                item.Tick();// this.Parent);
+                item.Tick();
         }
-
-        //public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
-        //{
-
-        //    foreach (var item in this.Resources)
-        //        item.HandleMessage(parent, e);
-
-        //    switch (e.Type)
-        //    {
-        //        default:
-        //            break;
-        //    }
-        //    return false;
-        //}
-
-        //internal override void HandleRemoteCall(GameObject parent, ObjectEventArgs e)
-        //{
-        //    foreach (var item in this.Resources)
-        //        item.HandleRemoteCall(parent, e);
-        //}
-
         public override void OnNameplateCreated(GameObject parent, Nameplate plate)
         {
             foreach (var res in this.Resources.Values)
@@ -88,16 +53,6 @@ namespace Project1.Core.Resources
             foreach (var res in this.Resources.Values)
                 res.OnHealthBarCreated(parent, plate);
         }
-        //public override object Clone()
-        //{
-        //    return new ResourcesComponent(this.Resources);
-        //}
-        //internal override void Resolve()
-        //{
-        //    foreach (var r in this.Resources)
-        //        r.Owner = this.Owner as Actor;
-        //}
-
         public override string ToString()
         {
             string text = "";
@@ -108,15 +63,12 @@ namespace Project1.Core.Resources
 
         internal override void SaveExtra(SaveTag tag)
         {
-            //this.Resources.SaveImmutable(tag, "Resources");
             tag.SaveDefWrappers("Resources", this.Resources);
         }
         internal override void Load(GameObject parent, SaveTag tag)
         {
-            //this.Resources.TryLoadImmutable(tag, "Resources");
             tag.LoadDefWrappers("Resources", this.Resources);
             this.Resolve();
-
         }
         public override void Write(IDataWriter writer)
         {
@@ -127,7 +79,6 @@ namespace Project1.Core.Resources
             reader.ReadDefWrappers(this.Resources);
             this.Resolve();
         }
-
         internal Resource GetResource(ResourceDef def)
         {
             return this.Resources[def];
@@ -163,17 +114,12 @@ namespace Project1.Core.Resources
         }
         internal override void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials)
         {
-            //for (int i = 0; i < this.Resources.Length; i++)
-            //{
-            //    this.Resources[i].InitMaterials(parent, materials);
-            //}
             foreach(var r in this.Resources.Values)
                 r.InitMaterials(parent, materials);
         }
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
             foreach (var r in this.Resources.Values)
-                //tooltip.AddControlsBottomLeft(r.GetControlBar());
                 tooltip.AddControlsBottomLeft(r.GetControlLabel());
         }
         internal override void Resolve()
@@ -181,38 +127,8 @@ namespace Project1.Core.Resources
             foreach (var r in this.Resources.Values)
             {
                 r.Owner = this.Owner;
-                //r.Revalidate();
             }
         }
-        
-        //public override void OnObjectSynced(GameObject parent)
-        //{
-        //    base.OnObjectSynced(parent);
-        //    //foreach (var r in this.Resources.Values)
-        //    //    r.Resolve(this.Owner as Entity);
-        //}
-        //public override void OnSpawn(MapBase newMap)
-        //{
-        //    foreach (var r in this.Resources)
-        //        r.Resolve(this.Owner as Entity);
-        //}
-        //public override void OnDespawnExtra(MapBase oldMap)
-        //{
-        //    foreach (var r in this.Resources)
-        //        r.OnDespawn(this.Owner as Entity);
-        //}
-
-        //internal void AdjustAndSync(ResourceDef def, float v)
-        //{
-        //    this.Adjust(def, v);
-        //    Resource.Packets.SendAdjust(this.Owner as Actor, def, v);
-        //}
-        //void Revalidate()
-        //{
-        //    foreach (var r in this.Resources.Values)
-        //        r.Revalidate();
-        //}
-
         internal void ApplyDelta(ResourceDef def, float v)
         {
             var res = this[def];

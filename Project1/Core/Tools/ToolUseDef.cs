@@ -1,5 +1,4 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Skills;
+﻿using Project1.Core.Skills;
 
 namespace Project1.Core.Tools
 {

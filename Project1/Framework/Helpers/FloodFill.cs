@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Base;
 using Project1.Core.Simulation;
-using Project1.Framework.Math;
+using Project1.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;

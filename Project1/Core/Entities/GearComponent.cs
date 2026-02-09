@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.UI;
 using Project1.Core.Net;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.Gear;
 using Project1.Core.Inventory;
 using Project1.Framework.UI;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.Entities
 {
@@ -149,16 +149,12 @@ namespace Project1.Core.Entities
             if (item == previousItem) // we are implicitly told to unequip the item, assuming it is currently equipped
             {
                 this.Unequip(slotType);
-                // slots implicitly get synced
-                //Packets.SendUnequip(actor, slotType);
                 return true;
             }
 
             //item.OnDespawn(); // in case the item is equipped from the world instead of from the inventory
             // DESPAWN BEFORE EQUIPPING because then the item's global become's the actor's global and the item is removed from the wrong chunk!
             Equip(item);
-            // slots implicitly get synced
-            //Packets.SendEquip(actor, item);
             return true;
         }
 
@@ -228,7 +224,6 @@ namespace Project1.Core.Entities
             }
         }
     }
-    record struct ActorGearUpdatedEvent(Actor Actor, Entity NewItem, Entity OldItem) : IEventPayload { }
 
     class GearContainer(Actor owner) : Inspectable
     {

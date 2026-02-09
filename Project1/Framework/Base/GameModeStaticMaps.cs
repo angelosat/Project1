@@ -2,7 +2,6 @@
 using Project1.Core.Towns;
 using Project1.Core.UI;
 using Project1.Core.AI;
-using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Net.Packets;
 using Project1.Core.Screens;
@@ -12,6 +11,7 @@ using System.Linq;
 using Project1.Core.Simulation;
 using Project1.Core.Networking.Simulation;
 using Project1.Framework.UI;
+using Project1.Framework;
 
 namespace Project1.Core.Base
 {
@@ -163,8 +163,7 @@ namespace Project1.Core.Base
                 ("sending chunk " + first.Key.ToString()).ToConsole();
             }
         }
-        class ChunksLoadedEvent : IEventPayload
-        { }
+        
         internal override void AllChunksReceived(NetEndpoint net)
         {
             // all chunks received, enter world

@@ -5,8 +5,8 @@ using Microsoft.Xna.Framework;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
-using Project1.Framework.IO;
-using Project1.Framework.Math;
+using Project1.Framework;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Towns.Designations
 {

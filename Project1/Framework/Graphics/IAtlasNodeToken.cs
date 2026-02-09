@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Base;
 
-namespace Project1.Core.Graphics
+namespace Project1.Framework.Graphics
 {
     public abstract class IAtlasNodeToken : Inspectable
     {

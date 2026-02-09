@@ -9,11 +9,11 @@ using System;
 using System.Collections.Generic;
 using Project1.Core.Rendering;
 using Project1.Core.Screens;
-using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
+using Project1.Framework;
 
 namespace Project1.Core.Input
 {
@@ -39,7 +39,7 @@ namespace Project1.Core.Input
         readonly Type DefaultToolType = typeof(ToolManagement);
         internal ControlTool GetDefaultTool()
         {
-            return Activator.CreateInstance(DefaultToolType) as ControlTool;// new ToolManagement();
+            return Activator.CreateInstance(DefaultToolType) as ControlTool;
         }
         public static ControlTool CurrentTool => Instance.ActiveTool;
         ControlTool _activeTool;

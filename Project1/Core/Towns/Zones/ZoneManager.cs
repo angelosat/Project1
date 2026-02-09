@@ -15,8 +15,8 @@ using Project1.Core.Simulation.Physics;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
 using Project1.Core.Input;
-using Project1.Framework.IO;
-using Project1.Framework.Math;
+using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.Towns.Zones
 {

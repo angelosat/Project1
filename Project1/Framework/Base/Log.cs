@@ -6,8 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.UI;
 using Project1.Core.Net;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.UI.Hud.Chat;
+using Project1.Framework;
 
 namespace Project1.Core
 {

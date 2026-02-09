@@ -1,8 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
 using System;
-using Project1.Core.Rendering;
-using Project1.Framework.Math;
+using Project1.Framework;
 
 namespace Project1.Core.Base
 {

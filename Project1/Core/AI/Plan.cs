@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
-using Project1.Core.Towns.Crafting;
-using Project1.Framework.Math;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework;
+using Project1.Core.Crafting;
 
 #nullable enable
 namespace Project1.Core.AI
@@ -342,7 +342,6 @@ namespace Project1.Core.AI
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             this.Def.Save(tag, "Def");
             tag.Add(this.ID.Save("ID"));
-            //tag.Add(this.Tool.Save("Tool"));
             tag.Add(this.TargetA.Save("TargetA"));
             tag.Add(this.TargetB.Save("TargetB"));
             tag.Add(this.TargetC.Save("TargetC"));
@@ -359,9 +358,7 @@ namespace Project1.Core.AI
             tag.Add(this.AmountsB.Save("AmountsB"));
             tag.Add(this.AmountsC.Save("AmountsC"));
 
-            tag.Add(this.PlacedObjects.SaveOld("PlacedItems"));
             tag.Add(this.Count.Save("Count"));
-            tag.TrySaveRef(this.OrderOld, "Order");
             tag.Add(this.Product.Save("Product"));
             tag.Add(this.Forced.Save("Forced"));
 
@@ -427,9 +424,7 @@ namespace Project1.Core.AI
             tag.TryGetTagValueOrDefault("TicksWaited", out this.TicksWaited);
             tag.TryGetTagValueOrDefault("TicksTimeout", out this.TicksTimeout);
 
-            tag.TryGetTag("PlacedItems", t => this.PlacedObjects.Load(t));
 
-            tag.TryLoadRef("Order", out this.OrderOld);
             tag.TryGetTagValueOrDefault("Count", out this.Count);
             tag.TryGetTag("Product", t => this.Product = new TargetArgs(t));
             tag.TryGetTagValueOrDefault("Forced", out this.Forced);
@@ -468,58 +463,6 @@ namespace Project1.Core.AI
             this.Def = r.ReadDef<PlanDef>();
             this.TargetA = TargetArgs.Read(provider, r);
         }
-        //internal void Write(BinaryWriter w)
-        //{
-        //    w.Write(this.GetType().FullName);
-        //    w.Write(this.ID);
-        //    this.Tool.Write(w);
-        //    this.TargetA.Write(w);
-        //    w.Write(this.AmountA);
-        //    w.Write(this.TargetsA);
-        //    w.Write(this.AmountsA);
-        //    w.Write(this.TargetQueues.Count);
-        //    foreach (var i in this.TargetQueues)
-        //        w.Write(i);
-        //    w.Write(this.AmountQueues.Count);
-        //    foreach (var i in this.AmountQueues)
-        //        w.Write(i);
-        //    w.Write(this.Count);
-        //    w.Write(this.Quest);
-        //    w.Write(this.ShopID);
-
-        //    w.Write(this.TicksWaited);
-        //    w.Write(this.TicksCounter);
-        //    w.Write(this.TicksTimeout);
-
-        //    this.Transaction.Write(w);
-        //}
-        //internal void Read(IDataReader r)
-        //{
-        //    this.ID = r.ReadInt32();
-        //    this.Tool = TargetArgs.Read(null, r);
-        //    this.TargetA = TargetArgs.Read(null, r);
-        //    this.AmountA = r.ReadInt32();
-        //    this.TargetsA = r.ReadListTargets();
-        //    this.AmountsA = r.ReadListInt32();
-        //    var targetqueuecount = r.ReadInt32();
-        //    for (int i = 0; i < targetqueuecount; i++)
-        //        this.TargetQueues.Add(r.ReadListTargets());
-        //    var amountqueuecount = r.ReadInt32();
-        //    for (int i = 0; i < amountqueuecount; i++)
-        //        this.AmountQueues.Add(r.ReadListInt32());
-        //    this.Count = r.ReadInt32();
-        //    this.Quest = r.ReadInt32();
-        //    this.ShopID = r.ReadInt32();
-
-        //    this.TicksWaited = r.ReadInt32();
-        //    this.TicksCounter = r.ReadInt32();
-        //    this.TicksTimeout = r.ReadInt32();
-
-        //    this.Transaction = new Transaction(r);
-        //}
-
-        
-
         public void ObjectLoaded(GameObject parent)
         {
 

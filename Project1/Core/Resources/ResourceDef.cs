@@ -1,5 +1,4 @@
-﻿using Project1.Core.Base;
-using System;
+﻿using System;
 
 namespace Project1.Core.Resources
 {

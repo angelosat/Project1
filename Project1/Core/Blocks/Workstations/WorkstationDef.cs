@@ -1,5 +1,4 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Towns.Crafting;
+﻿using Project1.Core.Crafting;
 using System.Collections.Generic;
 
 namespace Project1.Core

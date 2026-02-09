@@ -4,6 +4,7 @@ using Project1.Core.Interactions;
 using System;
 using Project1.Core.Entities;
 using Project1.Core.Net;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.Networking.Entities
 {

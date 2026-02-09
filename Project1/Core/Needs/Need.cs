@@ -12,7 +12,9 @@ using Project1.Core.Entities;
 using Project1.Core.AI;
 using Project1.Framework.UI;
 using Project1.Framework.Interfaces;
-using Project1.Framework.IO;
+using Project1.Framework.Serialization;
+using Project1.Framework.Base;
+using Project1.Framework;
 
 namespace Project1.Core.Needs
 {
@@ -103,8 +105,6 @@ namespace Project1.Core.Needs
         public void ApplyDelta(int delta)
         {
             this.SetValue(this.Value + delta);
-            //this.Value += delta;
-            //this.Owner.World.Events.Post(new event)
         }
         public Bar ToBar(GameObject parent)
         {
@@ -122,7 +122,6 @@ namespace Project1.Core.Needs
                 {
                     "todo: request need change from server".ToConsole();
                     var val = 100 - (bar.ScreenLocation.X + bar.Width - UIManager.MouseScaled.X);
-                    //this.Value = val;
                     PacketNeedModify.SendSet(parent.Net, parent.RefId, this.Def, val);
                     return;
                 }

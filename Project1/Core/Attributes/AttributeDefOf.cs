@@ -1,6 +1,4 @@
-﻿using Project1.Core.Base;
-
-namespace Project1.Core.Attributes
+﻿namespace Project1.Core.Attributes
 {
     static class AttributeDefOf
     {

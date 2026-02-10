@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Entities;
-using Project1.Core.Helpers;
 
 namespace Project1.Framework
 {
@@ -55,10 +53,10 @@ namespace Project1.Framework
             var d = Vector2.Distance(this.Position.XY(), c2.Position.XY());
             return d <= this.Radius + c2.Radius;
         }
-        public static BoundingCylinder Create(GameObject obj)
+        public static BoundingCylinder Create(Vector3 worldPos, float height)
         {
             // TODO: half the radius maybe
-            return new BoundingCylinder(obj.Global, 0.5f, obj.Physics.Height);
+            return new BoundingCylinder(worldPos, 0.5f, height);
         }
     }
 }

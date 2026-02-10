@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Input.Tools.CellRendering;
-using Project1.Core.Base;
 using Project1.Core.Interfaces;
 using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;

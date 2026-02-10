@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Input;
-using Project1.Core.Base;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Constructions;
 using Project1.Core.Legacy.Crafting.Blocks;

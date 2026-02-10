@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Materials;
-using Project1.Core.Base;
 using Project1.Core.Blocks;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;

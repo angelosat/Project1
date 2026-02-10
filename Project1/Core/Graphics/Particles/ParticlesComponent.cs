@@ -6,6 +6,7 @@ namespace Project1.Core.Graphics.Particles
 {
     class ParticlesComponent : EntityComp
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Particles;
         public override string Name { get; } = "ParticleSystem"; 
 
         List<ParticleEmitter> Emitters = new List<ParticleEmitter>();

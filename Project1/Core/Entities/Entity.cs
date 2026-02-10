@@ -1,15 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Components;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.Net;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Project1.Core.Tools;
 using Project1.Core.Animations;
-using Project1.Core.Simulation.Physics;
 using Project1.Core.UI.Hud;
 
 namespace Project1.Core.Entities
@@ -29,24 +28,23 @@ namespace Project1.Core.Entities
 
         public Entity()
         {
-            this.AddComponent(new PositionComponent());
-            this.AddComponent(new DefComponent());
-            this.AddComponent(new PhysicsComponent());
-            this.AddComponent(new SpriteComp()); // add this only through comp props
+            this.Components.Add(EntityCompDefOf.Transform);
+            this.Components.Add(EntityCompDefOf.DefComp);
+            this.Components.Add(EntityCompDefOf.Physics);
+            this.Components.Add(EntityCompDefOf.Sprite);
         }
         public Entity(ItemDef def, int amount) : base(def, amount)
         {
-            //this.Def = def;
-            //this.AddComponent(new SpriteComp(def));
-            this.AddComponent(new PositionComponent());
-            this.AddComponent(new DefComponent());
-            this.AddComponent(new PhysicsComponent());
-            this.AddComponent(new SpriteComp()); // add this only through comp props
+            this.Components.Add(EntityCompDefOf.Transform);
+            this.Components.Add(EntityCompDefOf.DefComp);
+            this.Components.Add(EntityCompDefOf.Physics);
+            this.Components.Add(EntityCompDefOf.Sprite);
         }
         public Entity Initialize()
         {
             if (this._initialized)
                 throw new InvalidOperationException($"{this} initialized twice");
+            this._initialized = true;
             this.Components.Initialize();
             return this;
         }

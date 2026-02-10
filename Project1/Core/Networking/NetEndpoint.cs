@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Base;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Loot;
 using Project1.Core.UI;
@@ -9,6 +8,7 @@ using System.IO;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Framework.Serialization;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Net
 {
@@ -59,7 +59,6 @@ namespace Project1.Core.Net
         [Obsolete]
         public void EventOccured(int eventTypeId, params object[] p)
         {
-            //throw new Exception("obsolete EventOccured method called in NetEndpoint");
             var e = new GameEvent(this.CurrentTick, eventTypeId, p);
             this.Post(e);
         }

@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.Base;
 using Project1.Core.Input.Tools.CellRendering;
 using Project1.Core.Net;
 using Project1.Core.Rendering;

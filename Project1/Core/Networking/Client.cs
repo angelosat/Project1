@@ -20,8 +20,8 @@ using System.Net.Sockets;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Framework.Serialization;
-using Project1.Framework.UI;
 using Project1.Framework;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Net
 {

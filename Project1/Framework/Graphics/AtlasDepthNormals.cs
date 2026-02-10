@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Framework.Helpers;
+using Project1.Core;
 
 namespace Project1.Framework.Graphics
 {

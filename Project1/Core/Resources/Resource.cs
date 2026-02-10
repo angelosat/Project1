@@ -13,8 +13,8 @@ using Project1.Framework.UI;
 using Project1.Framework.Interfaces;
 using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
-using Project1.Framework.Base;
 using Project1.Framework;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Resources
 {

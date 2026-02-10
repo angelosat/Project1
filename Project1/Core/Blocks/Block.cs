@@ -1,4 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
@@ -16,14 +22,8 @@ using Project1.Core.Loot;
 using Project1.Core.Net;
 using Project1.Core.Rendering;
 using Project1.Core.Rooms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
-using Project1.Framework.UI;
-using Project1.Framework.Graphics;
-using Project1.Framework;
 
 namespace Project1.Core.Blocks
 {
@@ -169,9 +169,8 @@ namespace Project1.Core.Blocks
                 return;
             }
             tooltip.Controls.Add(new Label(this.Name) { Location = tooltip.Controls.BottomLeft, Font = UIManager.FontBold, TextColor = Color.Goldenrod });
-            //if (this.GetMaterial(map.GetBlockData(global)) is MaterialDef mat)
             if(cell.Material is MaterialDef mat)
-                tooltip.Controls.Add(new Label(mat.ToString()) { TextColorFunc = () => mat.Color, Location = tooltip.Controls.BottomLeft });
+                tooltip.Controls.Add(new Label(mat/*.ToString()*/) { TextColorFunc = () => mat.Color, Location = tooltip.Controls.BottomLeft });
 
             var data = cell.BlockData;
             var binary = Convert.ToString(data, 2);

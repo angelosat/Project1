@@ -1,8 +1,8 @@
 ﻿using System;
 using Project1.Framework;
-using Project1.Core.Base;
 using Project1.Core.Entities;
 using Project1.Core.Net;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Networking.Entities
 {

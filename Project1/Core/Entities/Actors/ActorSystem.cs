@@ -1,6 +1,4 @@
 ﻿using Project1.Core.AI.MetaRoles;
-using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Entities.Actors
 {

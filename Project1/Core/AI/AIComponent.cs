@@ -1,27 +1,25 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
 using Project1.Core.Net;
 using Project1.Core.Rendering;
-using Project1.Core.WorldGen;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.UI.Hud;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 using Project1.Core.AI.MetaRoles;
 
 namespace Project1.Core.AI
 {
     public class AIComponent : EntityComp<AIComponent.Spec>
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.AI;
+
         public override string Name { get; } = "AI";
         public Guid Guid = Guid.NewGuid();
         public static Dictionary<Guid, GameObject> Registry = new();

@@ -5,7 +5,6 @@ using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Core.Entities;
 using Project1.Core.UI;
-using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Simulation;
@@ -40,7 +39,7 @@ namespace Project1.Core.Blocks
         }
         public override string Name => "WorkstationComp";
         public WorkstationDef WorkstationType = WorkstationDefOf.Smeltery; // default
-        public List<OrderSettings> Orders = [];
+        public List<CraftingOrder> Orders = [];
         public ZoneId Input = ZoneId.Null, Output = ZoneId.Null;
         internal override void Initialize()
         {
@@ -60,7 +59,7 @@ namespace Project1.Core.Blocks
             register("Orders", typeof(WorkstationGuiNew));
         }
 
-        internal void MoveUp(OrderSettings orderSettings)
+        internal void MoveUp(CraftingOrder orderSettings)
         {
             var currentIndex = this.Orders.IndexOf(orderSettings);
             if (currentIndex == 0)
@@ -70,7 +69,7 @@ namespace Project1.Core.Blocks
             this.Map.Events.Post(new CraftOrderReorderedEvent(orderSettings));
         }
 
-        internal void MoveDown(OrderSettings orderSettings)
+        internal void MoveDown(CraftingOrder orderSettings)
         {
             var currentIndex = this.Orders.IndexOf(orderSettings);
             if (currentIndex == this.Orders.Count - 1)
@@ -90,7 +89,7 @@ namespace Project1.Core.Blocks
         public override void Load(SaveTag tag)
         {
             this.WorkstationType = tag.LoadDef<WorkstationDef>("Type");
-            this.Orders = tag.LoadListOrDefault<OrderSettings>("Orders");
+            this.Orders = tag.LoadListOrDefault<CraftingOrder>("Orders");
             if (tag.TryLoadInt("Input", out var inputid)) this.Input = inputid;
             if (tag.TryLoadInt("Output", out var outputid)) this.Output = outputid;
             this.Resolve();
@@ -117,7 +116,7 @@ namespace Project1.Core.Blocks
         public override ISerializable Read(IDataReader r)
         {
             this.WorkstationType = r.ReadDef<WorkstationDef>();
-            this.Orders = r.ReadList<OrderSettings>();
+            this.Orders = r.ReadList<CraftingOrder>();
             this.Input = r.ReadInt32();
             this.Output = r.ReadInt32();
 

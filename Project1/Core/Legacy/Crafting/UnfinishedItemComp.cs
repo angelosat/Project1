@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
-using Project1.Framework;
 using Project1.Core.Assets;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Inventory;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Legacy.Crafting
 {
@@ -49,6 +49,7 @@ namespace Project1.Core.Legacy.Crafting
         static readonly IconButton IconCancel = new IconButton(new Icon(ItemContent.HammerFull), Icon.Cross) 
             { HoverText = "Cancel crafting" }
             .AddLabel("Cancel");
+        public override EntityCompDef CompDef => EntityCompDefOf.UnfinishedItem;
 
         public override string Name => "UnfinishedItem";
 
@@ -57,10 +58,10 @@ namespace Project1.Core.Legacy.Crafting
         int _creator, _orderid;
         Actor _creatorCached;
         public Actor Creator => this._creatorCached ??= this.Owner.World.GetEntity<Actor>(this._creator);
-        CraftOrder _orderCached;
-        public CraftOrder Order => this._orderCached ??= this.Owner.Map.Town.CraftingManager.GetOrder(this._orderid);
+        CraftOrderOld _orderCached;
+        public CraftOrderOld Order => this._orderCached ??= this.Owner.Map.Town.CraftingManager.GetOrder(this._orderid);
         public ContainerList Contents = new();
-        internal void SetProduct(Reaction.Product.ProductMaterialPair product, Actor creator, CraftOrder order)
+        internal void SetProduct(Reaction.Product.ProductMaterialPair product, Actor creator, CraftOrderOld order)
         {
             this._orderCached = order;
             this._creatorCached = creator;

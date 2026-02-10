@@ -18,7 +18,7 @@ namespace Project1.Core.Towns.Shops
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
-            var state = this.Actor.GetState();
+            var state = this.Actor.AI.State;
             var task = this.Plan;
             var shop = actor.Town.ShopManager.GetShop<Shop>(task.ShopID);
             var transaction = task.Transaction;

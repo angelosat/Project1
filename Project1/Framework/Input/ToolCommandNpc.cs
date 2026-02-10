@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Input.Tools;
-using Project1.Core.Base;
 using Project1.Core.AI.Packets;
 using Project1.Core.Net;
 using Project1.Core.Entities;

@@ -3,15 +3,13 @@ using Project1.Core.AI.Labors;
 using Project1.Core.Entities;
 using Project1.Core.Gear;
 using Project1.Core.Towns;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy.Crafting;
-using Project1.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using static Project1.Core.Crafting.OrderSettings;
+using static Project1.Core.Crafting.CraftingOrder;
 using Project1.Core.Resources;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.Reserve;
@@ -180,7 +178,7 @@ namespace Project1.Core.AI.Planners
             return null;
         }
 
-        private static Plan TryRepairPlan(Actor actor, OrderSettings order)
+        private static Plan TryRepairPlan(Actor actor, CraftingOrder order)
         {
             if (order.WorkstationCapability != WorkstationCapabilityDefOf.Repairing)
                 return null;
@@ -290,7 +288,7 @@ namespace Project1.Core.AI.Planners
                         return junk;
             return null;
         }
-        static (Entity stack, int quantity)? FindNextWorldItemForOrder(Actor actor, OrderSettings order, IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> collectResult)
+        static (Entity stack, int quantity)? FindNextWorldItemForOrder(Actor actor, CraftingOrder order, IEnumerable<(IEnumerable<(Entity stack, int quantity)> pair, IntVec3 slot)> collectResult)
         {
             foreach (var (pair, slot) in collectResult)
             {
@@ -302,7 +300,7 @@ namespace Project1.Core.AI.Planners
             }
             return null;
         }
-        private static bool CanDeliverCarriedItemToOrder(Actor actor, OrderSettings order, out IntVec3 targetSlot)
+        private static bool CanDeliverCarriedItemToOrder(Actor actor, CraftingOrder order, out IntVec3 targetSlot)
         {
             targetSlot = default;
 
@@ -327,7 +325,7 @@ namespace Project1.Core.AI.Planners
 
             return false;
         }
-        bool IsCarriedItemUsefulForOrder(Actor actor, OrderSettings order)
+        bool IsCarriedItemUsefulForOrder(Actor actor, CraftingOrder order)
         {
             if (actor.Hauled is not Entity carried)
                 return false;
@@ -351,7 +349,7 @@ namespace Project1.Core.AI.Planners
         }
        
 
-        bool IsCarriedItemRelevantForAnyOrder(Actor actor, IEnumerable<OrderSettings> orders)
+        bool IsCarriedItemRelevantForAnyOrder(Actor actor, IEnumerable<CraftingOrder> orders)
         {
             var carried = actor.Hauled as Entity;
             if (carried == null)
@@ -363,7 +361,7 @@ namespace Project1.Core.AI.Planners
 
             return false;
         }
-        private static bool AllReagentsAvailable(GameObject actor, List<GameObject> allObjects, ref List<Dictionary<TargetArgs, int>> itemAmounts, Dictionary<string, int> materialsUsed, CraftOrder order)
+        private static bool AllReagentsAvailable(GameObject actor, List<GameObject> allObjects, ref List<Dictionary<TargetArgs, int>> itemAmounts, Dictionary<string, int> materialsUsed, CraftOrderOld order)
         {
             return AllReagentsAvailable(actor, allObjects, ref itemAmounts, materialsUsed, order);
         }
@@ -387,7 +385,7 @@ namespace Project1.Core.AI.Planners
                 InSlots = inSlots;
             }
         }
-        private static CraftingCollectionResult TryCollectIngredientsNewRules(Actor actor, OrderSettings order)
+        private static CraftingCollectionResult TryCollectIngredientsNewRules(Actor actor, CraftingOrder order)
         {
             var mapItems = actor.Map.GetEntities<Entity>().Where(actor.CanReachAndReserve);
             Dictionary<Entity, int> allocatedSoFar = [];
@@ -435,7 +433,7 @@ namespace Project1.Core.AI.Planners
 
             return new(CraftingOrderStateOld.NeedsTransfer, allFound, null);
         }
-        bool IsFeasible(Actor actor, OrderSettings order)
+        bool IsFeasible(Actor actor, CraftingOrder order)
         {
             if (order.IsReadyToCraft(out _))
                 return true;
@@ -450,7 +448,7 @@ namespace Project1.Core.AI.Planners
             return false;
         }
         
-        private static CraftingCollectionResult TryCollectIngredientsNew(Actor actor, OrderSettings order)
+        private static CraftingCollectionResult TryCollectIngredientsNew(Actor actor, CraftingOrder order)
         {
             var mapItems = actor.Map.GetEntities<Entity>().Where(actor.CanReachAndReserve);
             Dictionary<Entity, int> allocatedSoFar = [];
@@ -494,7 +492,7 @@ namespace Project1.Core.AI.Planners
             
             return new(CraftingOrderStateOld.NeedsTransfer, allFound, null);
         }
-        private static CraftingCollectionResult TryCollectIngredients(Actor actor, OrderSettings order)
+        private static CraftingCollectionResult TryCollectIngredients(Actor actor, CraftingOrder order)
         {
             var mapEntities = actor.Map.GetEntities<Entity>().Where(actor.CanReachAndReserve);
             Dictionary<Entity, int> allocatedSoFar = [];
@@ -603,7 +601,7 @@ namespace Project1.Core.AI.Planners
             // If we still need more than we could allocate, return null to indicate failure
             return requiredQuantity > 0 ? null : allocation;
         }
-        private static bool TryFindAllIngredients(Actor actor, ref List<Dictionary<TargetArgs, int>> itemAmounts, Dictionary<string, Entity> materialsUsed, CraftOrder order)
+        private static bool TryFindAllIngredients(Actor actor, ref List<Dictionary<TargetArgs, int>> itemAmounts, Dictionary<string, Entity> materialsUsed, CraftOrderOld order)
         {
             var map = actor.Map;
             

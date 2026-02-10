@@ -10,6 +10,7 @@ using Project1.Core.Simulation.Physics;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
 using Project1.Framework.Events;
+using Project1.Core.Animations;
 
 namespace Project1.Core.Resources
 {
@@ -73,10 +74,7 @@ namespace Project1.Core.Resources
             var force = e.Force;
             var health = actor.GetResource(ResourceDefOf.Health);
             if (force > 1)
-            {
                 this.Modify(health, force);
-                actor.Net.EventOccured((int)Message.Types.HealthLost, actor, (int)force);
-            }
         }
         public override IEnumerable<(Type eventType, Action<IEventPayload> handler)> GetInterests()
         {

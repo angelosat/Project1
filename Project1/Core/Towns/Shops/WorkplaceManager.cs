@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Components;
-using Project1.Core.Base;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;

@@ -5,9 +5,10 @@ using Microsoft.Xna.Framework;
 using Project1.Core.Components;
 using Project1.Core.Net;
 using Project1.Core.Base;
-using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Framework;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Graphics.Particles
 {

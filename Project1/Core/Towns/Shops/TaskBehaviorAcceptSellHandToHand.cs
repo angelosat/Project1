@@ -15,7 +15,7 @@ namespace Project1.Core.Towns.Shops
             // TODO wait for price negotiation
             // TODO send reply / complete transaction
             var actor = this.Actor;
-            var state = this.Actor.GetState();
+            var state = this.Actor.AI.State;
             yield return new BehaviorStopMoving();
             yield return new BehaviorWait(() => state.TradingPartner == null);
             // if carrying coins, store in inventory. otherwise drop or haul to stockpile

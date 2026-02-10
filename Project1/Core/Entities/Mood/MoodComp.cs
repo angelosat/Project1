@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
-using Project1.Framework;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
@@ -16,6 +16,7 @@ namespace Project1.Core.Entities.Mood
 {
     public class MoodComp : EntityComp, IProgressBar, IGui
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Mood;
         public new class Spec : Spec<MoodComp> { }
 
         readonly ObservableCollection<Moodlet> Moodlets = new();

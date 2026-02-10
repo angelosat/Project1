@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Base;
+using Project1.Core;
 
 namespace Project1.Framework.UI
 {

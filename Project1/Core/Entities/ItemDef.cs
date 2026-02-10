@@ -44,7 +44,8 @@ namespace Project1.Core.Entities
         public string Prefix, Suffix;
         public bool ReplaceName;
         internal Type VariantType;
-        internal Type[] CompTypes = [];
+        internal Type[] Comps = [];
+        internal EntityCompDef[] CompDefs = [];
         public readonly List<EntityComp.Spec> Specs = [];// [new SpriteComp.Props()];
         public Bone Body;
         public readonly Type ItemClass;

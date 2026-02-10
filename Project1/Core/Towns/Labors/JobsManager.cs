@@ -5,12 +5,12 @@ using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Core.UI;
 using Project1.Core.Net;
-using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Entities.Actors;
 using Project1.Core.AI.Labors;
 using Project1.Core.AI;
 using Project1.Core.UI.Hud;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Towns.Labors
 {

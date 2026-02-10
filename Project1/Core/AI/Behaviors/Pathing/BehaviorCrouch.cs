@@ -1,9 +1,9 @@
-﻿using Project1.Core.Blocks;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
-using System;
+﻿using System;
 using System.Linq;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.Blocks;
+using Project1.Core.Entities.Actors;
+using Project1.Framework;
 
 namespace Project1.Core.AI.Behaviors.Pathing
 {

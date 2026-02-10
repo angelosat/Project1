@@ -8,7 +8,7 @@ namespace Project1.Core.Effects
     {
         public override void OnStart(Actor actor, EntityEffectWrapper wrapper)
         {
-            actor.GetNeed(NeedDefOf.Energy).AddMod(EffectDefOf.Sleeping, Ticks.FromMinutes(10));// 3));
+            actor.GetNeed(NeedDefOf.Energy).AddMod(EffectDefOf.Sleeping, Ticks.FromMinutes(10));
         }
         public override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
         {

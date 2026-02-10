@@ -5,15 +5,15 @@ namespace Project1.Core.UI
 {
     internal class OrderSettingsGui : GroupBox
     {
-        readonly OrderSettings Settings;
+        readonly CraftingOrder Settings;
         readonly Label LabelAmount;
-        readonly ComboBoxNewNew<OrderSettings.CraftMode> ModeCBox;
-        OrderSettings.CraftMode _modePredicted;
+        readonly ComboBoxNewNew<CraftingOrder.CraftMode> ModeCBox;
+        CraftingOrder.CraftMode _modePredicted;
         int _amountPredicted;
         readonly Button btnDetails;
         readonly IconButton btnClose;
 
-        public OrderSettingsGui(OrderSettings settings)
+        public OrderSettingsGui(CraftingOrder settings)
         {
             settings.Workstation.Map.Events.ListenTo<CraftOrderUpdatedEvent>(onCraftOrderModified);
 
@@ -25,7 +25,7 @@ namespace Project1.Core.UI
             this.MouseThrough = false;
 
             var orderName = new Label(settings.LabelReadable);// { Location = btnUp.TopRight };
-            this.ModeCBox = new ComboBoxNewNew<OrderSettings.CraftMode>(OrderSettings.AllModes, 100, c => c.ToString(), ChangeFinishMode, () => this._modePredicted)
+            this.ModeCBox = new ComboBoxNewNew<CraftingOrder.CraftMode>(CraftingOrder.AllModes, 100, c => c.ToString(), ChangeFinishMode, () => this._modePredicted)
             {
                 AnchorNew = Anchors.Bottom | Anchors.Left
             };
@@ -101,7 +101,7 @@ namespace Project1.Core.UI
             this._amountPredicted++;
             PacketsCrafting.SendPlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 1, this.Settings.Mode);
         }
-        void ChangeFinishMode(OrderSettings.CraftMode mode)
+        void ChangeFinishMode(CraftingOrder.CraftMode mode)
         {
             this._modePredicted = mode;
             PacketsCrafting.SendPlayerModifiedOrder(this.Settings.Workstation.Parent.Map, this.Settings, 0, 0, mode);

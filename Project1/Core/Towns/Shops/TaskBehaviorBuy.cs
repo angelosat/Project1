@@ -42,7 +42,7 @@ namespace Project1.Core.Towns.Shops
                 InitAction = () =>
                 {
                     var target = this.Plan.TargetB.Object as Actor;
-                    target.GetState().TradingPartner = null;
+                    target.AI.State.TradingPartner = null;
                 }
             };
             yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());

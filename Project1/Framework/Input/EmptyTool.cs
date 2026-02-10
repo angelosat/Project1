@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Base;
 using Project1.Core.Rendering;
 using Project1.Core.Simulation;
 

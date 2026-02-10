@@ -20,8 +20,8 @@ namespace Project1.Core.Legacy
         static readonly string OperatingPositionUnreachableString = $"Interaction spot blocked";
         public bool OperatingPositionUnreachable;
 
-        readonly ObservableCollection<CraftOrder> _orders = new();
-        public ObservableCollection<CraftOrder> Orders => this._orders;
+        readonly ObservableCollection<CraftOrderOld> _orders = new();
+        public ObservableCollection<CraftOrderOld> Orders => this._orders;
         readonly HashSet<IsWorkstation.Types> WorkstationTypes;
         static Window CraftingWindow;
 
@@ -34,11 +34,11 @@ namespace Project1.Core.Legacy
             return this.WorkstationTypes.Contains(type);
         }
 
-        internal CraftOrder GetOrder(string uniqueID)
+        internal CraftOrderOld GetOrder(string uniqueID)
         {
             return this.Orders.First(o => o.GetUniqueLoadID() == uniqueID);
         }
-        internal CraftOrder GetOrder(int uniqueID)
+        internal CraftOrderOld GetOrder(int uniqueID)
         {
             return this.Orders.First(o => o.ID == uniqueID);
         }
@@ -46,7 +46,7 @@ namespace Project1.Core.Legacy
         {
             return this.Orders.Remove(this.GetOrder(orderID));
         }
-        internal CraftOrder RemoveOrder(int orderID)
+        internal CraftOrderOld RemoveOrder(int orderID)
         {
             var order = this.GetOrder(orderID);
             this.Orders.Remove(order);

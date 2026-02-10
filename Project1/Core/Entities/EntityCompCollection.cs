@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using Project1.Core.Helpers;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 
@@ -9,6 +9,7 @@ namespace Project1.Core.Entities
     public class EntityCompCollection : Inspectable
     {
         readonly Dictionary<Type, EntityComp> _inner = [];
+        //readonly Dictionary<EntityCompDef, EntityComp> _innerByDef = [];
         readonly List<EntityComp> _innerList = [];
         readonly Entity _owner;
         public IEnumerable<EntityComp> Values => this._inner.Values;
@@ -18,12 +19,12 @@ namespace Project1.Core.Entities
         }
         internal void Tick()
         {
-            foreach (var component in this._inner.Values)
+            foreach (var component in this._innerList)
                 component.Tick();
         }
         internal void Resolve()
         {
-            foreach (var comp in this._inner.Values) comp.Resolve();
+            foreach (var comp in this._innerList) comp.Resolve();
         }
         public T GetComponent<T>() where T : EntityComp
         {
@@ -40,30 +41,23 @@ namespace Project1.Core.Entities
             this._innerList.Add(comp);
             comp.Owner = this._owner;
         }
+        public void Add(EntityCompDef compDef) => this.Add(compDef.CreateInstance());
         internal void Write(IDataWriter w)
         {
-            w.Write(this._inner.Count);
-            foreach(var (key, value) in this._inner)
-            {
-                w.Write(key.FullName);
-                value.Write(w);
-            }
+            foreach (var i in this._innerList)
+                i.Write(w);
         }
         internal void Read(IDataReader r)
         {
-            int compCount = r.ReadInt32();
-            for (int i = 0; i < compCount; i++)
-            {
-                var compType = Type.GetType(r.ReadString());
-                this._inner[compType].Read(r);
-            }
+            for (int i = 0; i < this._innerList.Count; i++)
+                this._innerList[i].Read(r);
         }
         internal SaveTag Save(string tagName)
         {
             var compTag = new SaveTag(SaveTag.Types.Compound, tagName);
             foreach (var comp in this._inner.Values)
             {
-                var compSave = comp.SaveAs(comp.GetType().FullName);
+                var compSave = comp.SaveAs(comp.CompDef.Name);
                 if (compSave is not null)
                     compTag.Add(compSave);
             }
@@ -72,29 +66,27 @@ namespace Project1.Core.Entities
         internal void Load(SaveTag tag)
         {
             var compData = tag.Value as Dictionary<string, SaveTag>;
-            // HACK FOR MIGRATING AWAY FROM TYPE NAME LOOKUP
-            // build short-name dictionary
-            var compDataShort = compData.ToDictionary(
-                kv => kv.Key.Split('.').Last(),
-                kv => kv.Value
-            );
-
-            foreach (var (type, comp) in this._inner)
+            foreach (var comp in this._inner.Values)
             {
-                var shortName = type.Name; // runtime type
-                if (compDataShort.TryGetValue(shortName, out var data))
-                    comp.Load(this._owner, data);
-            }
-            return;
-            foreach (var (k, v) in this._inner)
-            {
-                var data = compData[k.FullName];
-                v.Load(this._owner, data);
+                var data = compData[comp.CompDef.Name];
+                comp.Load(this._owner, data);
             }
         }
         public void CreateAndResolve(ItemDef def)
         {
-            foreach (var compType in def.CompTypes)
+            foreach (var compDef in def.CompDefs)
+            {
+                var comp = compDef.CreateInstance();
+                comp.RuntimeIndex = this._inner.Count;
+                this.Add(comp);
+            }
+            this.ApplySpecs(def.Specs);
+            this.Resolve();
+        }
+        [Obsolete]
+        public void CreateAndResolveOld(ItemDef def)
+        {
+            foreach (var compType in def.Comps)
             {
                 var comp = (EntityComp)Activator.CreateInstance(compType);
                 comp.RuntimeIndex = this._inner.Count;

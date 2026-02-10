@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Framework;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
@@ -9,6 +8,7 @@ using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Animations;
 using Project1.Core.Blocks;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Crafting
 {
@@ -58,7 +58,7 @@ namespace Project1.Core.Crafting
         {
             SendPlayerModifiedOrderFilters(Client.Instance, e.Order, e.Bone, e.Refinement, e.Material);
         }
-        static void SendPlayerModifiedOrderFilters(NetEndpoint net, OrderSettings order, BoneDef bone, MaterialRefinementDef form, MaterialDef material)
+        static void SendPlayerModifiedOrderFilters(NetEndpoint net, CraftingOrder order, BoneDef bone, MaterialRefinementDef form, MaterialDef material)
         {
             net.BeginPacket(_pPlayerModifiedOrderFilters)
                 .Write(order.Id)
@@ -123,7 +123,7 @@ namespace Project1.Core.Crafting
             var mapid = r.ReadInt32();
             var workstationPosition = r.ReadIntVec3();
             var refinement = r.ReadDef();
-            if(net.Map.Town.CraftingManagerNew.CreateOrderNew(workstationPosition, refinement) is OrderSettings order &&
+            if(net.Map.Town.CraftingManagerNew.CreateOrderNew(workstationPosition, refinement) is CraftingOrder order &&
                 net is Server server)
                 SendPlayerCreatedOrderNew(net.Map.GetBlockEntity(workstationPosition), refinement);
 
@@ -134,7 +134,7 @@ namespace Project1.Core.Crafting
             if (net is Server)
                 Send(net, station, reaction);
         }
-        internal static void SendPlayerDeletedOrder(MapBase map, OrderSettings order)
+        internal static void SendPlayerDeletedOrder(MapBase map, CraftingOrder order)
         {
             var net = map.Net;
             var w = net.BeginPacketImmediate(_pPlayerDeletedOrder);
@@ -150,7 +150,7 @@ namespace Project1.Core.Crafting
             if (net is Server server)
                 SendPlayerDeletedOrder(map, order);
         }
-        internal static void SendPlayerModifiedOrder(MapBase map, OrderSettings order, int priorityDelta, int amountDelta, OrderSettings.CraftMode mode)
+        internal static void SendPlayerModifiedOrder(MapBase map, CraftingOrder order, int priorityDelta, int amountDelta, CraftingOrder.CraftMode mode)
         {
             var net = map.Net;
             var w = net.BeginPacketImmediate(_pPlayerModifiedOrder);
@@ -168,7 +168,7 @@ namespace Project1.Core.Crafting
             var order = endpoint.Map.Town.CraftingManagerNew.GetOrder(r.ReadInt32());
             var priorityDelta = r.ReadInt32();
             var amountDelta = r.ReadInt32();
-            var mode = (OrderSettings.CraftMode)r.ReadInt32();
+            var mode = (CraftingOrder.CraftMode)r.ReadInt32();
             order.Amount += amountDelta;
 
             // todo reorder based on priority delta

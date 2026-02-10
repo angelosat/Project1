@@ -7,6 +7,7 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.Helpers;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Framework;
 
 namespace Project1.Core.Towns.Shops
 {
@@ -17,7 +18,7 @@ namespace Project1.Core.Towns.Shops
             // TODO wait for price negotiation
             // TODO send reply / complete transaction
             var actor = this.Actor;
-            var state = this.Actor.GetState();
+            var state = this.Actor.AI.State;
             var task = this.Plan;
             var shop = actor.Town.GetShop(task.ShopID) as Shop;
 

@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.UI;
 using Project1.Core.Net;
-using Project1.Core.Base;
 using Project1.Core.Components;
 using Project1.Core.Rendering;
 using Project1.Core.Rooms;
@@ -31,6 +30,8 @@ using Project1.Framework;
 using Project1.Core.Crafting;
 using Project1.Core.AI.MetaRoles;
 using Project1.Core.Blocks;
+using Project1.Core.Legacy.Crafting;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Towns
 {

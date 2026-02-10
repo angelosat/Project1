@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.Crafting.Gui;
+using Project1.Core.Crafting;
 using Project1.Core.UI;
 using Project1.Framework.UI;
 
@@ -15,7 +15,7 @@ namespace Project1.Core.UI
         {
 
         }
-        public void Build(List<IngredientGuiGroup> groups)
+        public void Build(List<IngredientGroup> groups)
         {
             this.ClearControls();
             foreach (var group in groups)
@@ -41,7 +41,7 @@ namespace Project1.Core.UI
                 this.AddControlsBottomLeft(groupNode.Control);
             }
         }
-        public void BuildNew(List<IngredientGuiGroup> groups)
+        public void BuildNew(List<IngredientGroup> groups)
         {
             foreach (var group in groups)
                 foreach (var entry in group.Entries)
@@ -68,7 +68,7 @@ namespace Project1.Core.UI
             //    this.AddControlsBottomLeft(groupNode.Control);
             //}
         }
-        ListBoxCollapsibleNode BuildRecursive(IngredientGuiEntry entry)
+        ListBoxCollapsibleNode BuildRecursive(IngredientGroupEntry entry)
         {
             var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxFinal(entry.Toggle, entry.IsAllowed));
             //entryNode.Control = 

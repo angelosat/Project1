@@ -1,11 +1,11 @@
-﻿using Project1.Core.AI;
+﻿using System.Linq;
+using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Conversation;
 using Project1.Core.AI.Labors;
 using Project1.Core.Towns.AI.Needs;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
-using System.Linq;
 
 namespace Project1.Core.Towns.AI.Behaviors
 {
@@ -26,10 +26,10 @@ namespace Project1.Core.Towns.AI.Behaviors
                 return null;
             if (visitor.Actor.CurrentTask != null)
                 return null;
-            if (visitor.Actor.GetState().ConversationPartner != null)
+            if (visitor.Actor.AI.State.ConversationPartner != null)
                 return null;
-            visitor.Actor.GetState().ConversationPartner = actor;
-            actor.GetState().ConversationPartner = visitor.Actor;
+            visitor.Actor.AI.State.ConversationPartner = actor;
+            actor.AI.State.ConversationPartner = visitor.Actor;
             actor.EnqueueCommunication(visitor.Actor, ConversationTopic.Guidance);
             return new Plan(PlanDefOf.Chatting, new TargetArgs(visitor.Actor));
         }

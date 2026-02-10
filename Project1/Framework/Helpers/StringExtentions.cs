@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Project1.Core.Helpers
+﻿namespace Project1.Framework.Helpers
 {
     public static class StringExtentions
     {

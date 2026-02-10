@@ -12,7 +12,7 @@ namespace Project1.Core.Towns.Shops
         protected override IEnumerable<Behavior> GetSteps()
         {
             var actor = this.Actor;
-            var state = this.Actor.GetState();
+            var state = this.Actor.AI.State;
             var tradingpartner = state.TradingPartner;
           
             yield return new BehaviorStopMoving();

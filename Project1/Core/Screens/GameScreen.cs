@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Project1.Core.Input;
 using Project1.Core.Net;
-using Project1.Core.Base;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Screens
 {

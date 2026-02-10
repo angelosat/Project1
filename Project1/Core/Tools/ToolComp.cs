@@ -1,22 +1,22 @@
-﻿using Project1.Core.Helpers;
-using Project1.Core.Net;
-using Project1.Core.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework.UI;
+using Project1.Core.Helpers;
+using Project1.Core.Net;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Animations;
 using Project1.Core.Materials;
-using Project1.Framework.UI;
 using Project1.Core.Crafting;
 
 namespace Project1.Core.Tools
 {
     public class ToolComp : EntityComp<ToolComp.Spec>
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Tool;
         public new class Spec : Spec<SpriteComp>
         {
             public readonly ToolUseDef ToolUse;

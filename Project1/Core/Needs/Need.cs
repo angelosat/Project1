@@ -13,7 +13,6 @@ using Project1.Core.AI;
 using Project1.Framework.UI;
 using Project1.Framework.Interfaces;
 using Project1.Framework.Serialization;
-using Project1.Framework.Base;
 using Project1.Framework;
 
 namespace Project1.Core.Needs

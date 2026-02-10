@@ -5,8 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Windows.Forms;
 using System.Collections.Concurrent;
 using Project1.Core.Input;
-using Project1.Core.Base;
-using Project1.Framework.UI;
+using Project1.Core.UI;
 
 namespace Project1.Core.Screens
 {

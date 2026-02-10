@@ -11,7 +11,7 @@ namespace Project1.Core.Towns.AI.Behaviors
         {
             yield return new BehaviorStopMoving();
             var actor = this.Actor;
-            var state = actor.GetState();
+            var state = actor.AI.State;
             var task = this.Plan;
             yield return new BehaviorWait(() =>
             {

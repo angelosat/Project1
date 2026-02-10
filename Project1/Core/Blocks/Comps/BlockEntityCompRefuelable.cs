@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using Project1.Core.Net;
-using Project1.Core.Base;
 using Project1.Core.Materials;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy;
@@ -18,6 +17,7 @@ using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
 using Project1.Framework;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Blocks
 {

@@ -3,6 +3,7 @@ using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Framework;
 
 namespace Project1.Core.Towns.AI.Behaviors
 {

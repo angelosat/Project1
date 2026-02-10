@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using Project1.Core.UI;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
+using Project1.Core.UI;
 
 namespace Project1.Core.Base
 {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Interactions;
-using Project1.Core.Base;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.Helpers;
 using Project1.Core.Towns.Tasks;

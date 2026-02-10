@@ -2,11 +2,11 @@
 using Project1.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Inventory;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Net;
 using Project1.Core.Input;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Networking
 {

@@ -5,6 +5,7 @@ namespace Project1.Core.Plants
 {
     class SeedComponent : EntityComp
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Seed;
         public override string Name { get; } = "Seed";
 
         public int Level = 1;

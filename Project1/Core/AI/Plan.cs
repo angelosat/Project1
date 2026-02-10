@@ -2,7 +2,6 @@
 using Project1.Core.Towns;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Shops;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Legacy;
@@ -215,8 +214,8 @@ namespace Project1.Core.AI
         public DesignationDef Designation;
 
         public List<Func<bool>> FailConditions = new();
-        public CraftOrder OrderOld;
-        public OrderSettings Order;
+        public CraftOrderOld OrderOld;
+        public CraftingOrder Order;
 
         public Dictionary<string, ObjectRefIDsAmount> IngredientsUsed = new();
 

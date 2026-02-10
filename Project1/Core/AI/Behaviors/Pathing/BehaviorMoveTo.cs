@@ -1,6 +1,5 @@
 ﻿using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Behaviors.Conditionals;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using System.Collections.Generic;
 

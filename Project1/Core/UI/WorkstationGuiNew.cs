@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Project1.Framework.UI;
-using Project1.Core.Base;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Screens;
 using Project1.Core.Materials;
@@ -14,7 +13,7 @@ namespace Project1.Core.UI
     class WorkstationGuiNew : GroupBox, ISelectionBound
     {
         Panel PanelReactions;
-        readonly ListBoxNoScroll<OrderSettings, OrderGuiContainer> ListOrdersNew;
+        readonly ListBoxNoScroll<CraftingOrder, OrderGuiContainer> ListOrdersNew;
         Table<(string label, Func<ZoneId> zoneIdGetter, WorkstationIOType iotype)> IOTable;
         BlockWorkstationComp Workstation;
 
@@ -29,7 +28,7 @@ namespace Project1.Core.UI
         {
             public readonly ButtonIcon Up, Down;
             readonly Control ItemControl;
-            public OrderGuiContainer(OrderSettings s, Action<OrderSettings> moveUp, Action<OrderSettings> modeDown)
+            public OrderGuiContainer(CraftingOrder s, Action<CraftingOrder> moveUp, Action<CraftingOrder> modeDown)
             {
                 this.Up = new ButtonIcon(Icon.ArrowUp, () => moveUp(s));
                 this.Down = new ButtonIcon(Icon.ArrowDown, () => modeDown(s));
@@ -116,7 +115,7 @@ namespace Project1.Core.UI
             UpdateArrows();
 
         }
-        private void MoveDown(OrderSettings s)
+        private void MoveDown(CraftingOrder s)
         {
             // local ui prediction
             var newindex = s.Workstation.Orders.IndexOf(s) + 1;
@@ -125,7 +124,7 @@ namespace Project1.Core.UI
             PacketsCrafting.SendPlayerModifiedOrder(s.Workstation.Parent.Map, s, 1, 0, s.Mode);
         }
 
-        private void MoveUp(OrderSettings s)
+        private void MoveUp(CraftingOrder s)
         {
             // local ui prediction
             var newindex = s.Workstation.Orders.IndexOf(s) - 1;

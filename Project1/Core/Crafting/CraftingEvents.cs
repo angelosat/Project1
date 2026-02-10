@@ -7,14 +7,14 @@ using Project1.Core.Materials;
 
 namespace Project1.Core.Crafting
 {
-    internal record struct CraftOrderAddedEvent(BlockWorkstationComp Comp, OrderSettings Order) : IEventPayload { }
-    internal record struct CraftOrderRemovedEvent(BlockWorkstationComp Comp, OrderSettings Order) : IEventPayload { }
-    internal record struct CraftOrderUpdatedEvent(OrderSettings Order) : IEventPayload { }
-    internal record struct CraftOrderReorderedEvent(OrderSettings Order) : IEventPayload { }
+    internal record struct CraftOrderAddedEvent(BlockWorkstationComp Comp, CraftingOrder Order) : IEventPayload { }
+    internal record struct CraftOrderRemovedEvent(BlockWorkstationComp Comp, CraftingOrder Order) : IEventPayload { }
+    internal record struct CraftOrderUpdatedEvent(CraftingOrder Order) : IEventPayload { }
+    internal record struct CraftOrderReorderedEvent(CraftingOrder Order) : IEventPayload { }
     internal record struct WorkstationUpdatedEvent(BlockWorkstationComp Comp) : IEventPayload { }
-    internal record struct CraftOrderCompletedEvent(OrderSettings Order, Actor Actor) : IEventPayload { }
+    internal record struct CraftOrderCompletedEvent(CraftingOrder Order, Actor Actor) : IEventPayload { }
     internal record struct PlayerSetWorkstationZoneEvent(BlockWorkstationComp Workstation, WorkstationIOType IOType, Stockpile Stockpile) : IEventPayload { }
-    internal record struct PlayerModifiedOrderFiltersEvent(OrderSettings Order, BoneDef Bone, MaterialRefinementDef Refinement, MaterialDef Material) : IEventPayload { }
+    internal record struct PlayerModifiedOrderFiltersEvent(CraftingOrder Order, BoneDef Bone, MaterialRefinementDef Refinement, MaterialDef Material) : IEventPayload { }
     internal record struct PlayerModifiedStockpileFiltersEvent(Stockpile Stockpile, ItemDef Item, Def Profile, MaterialDef Material) : IEventPayload { }
     internal record struct PlayerIssuedCraftOrderEvent(BlockWorkstationComp Workstation, Def Craftable) : IEventPayload { }
     internal record struct PlayerIssuedCraftOrderEventNew(BlockWorkstationComp Workstation, AddOrderRequest request) : IEventPayload { }

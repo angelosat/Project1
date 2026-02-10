@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
 using Project1.Core.Materials;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
-using Project1.Framework.Serialization;
-using Project1.Framework.UI;
-using Project1.Framework;
 
 namespace Project1.Core.AI
 {
     public enum ReactionType { Friendly, Hostile }
     public class PersonalityComponent : EntityComp, IGui
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Personality;
         static readonly Random Randomizer = new();
 
         public ReactionType Reaction;

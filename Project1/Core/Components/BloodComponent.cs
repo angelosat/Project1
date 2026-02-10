@@ -11,6 +11,7 @@ namespace Project1.Core.Components
 {
     class BloodComponent : EntityComp
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Blood;
         public override string Name { get; } = "Blood"; 
         static readonly ParticleEmitterSphere BloodEmitter = new ParticleEmitterSphere()
         {

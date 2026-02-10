@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
-using Project1.Framework;
 using Project1.Core.Effects;
 using Project1.Core.Needs;
 using Project1.Core.Entities.Actors;
@@ -13,6 +13,7 @@ namespace Project1.Core.Entities
 {
     public class EffectsComponent : EntityComp
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Effects;
         public new class Spec : Spec<EffectsComponent> { }
 
         public override string Name => "Effects";

@@ -21,6 +21,7 @@ using Project1.Core.Map;
 using Project1.Core.World;
 using Project1.Framework;
 using Project1.Core.WorldGen;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Simulation
 {

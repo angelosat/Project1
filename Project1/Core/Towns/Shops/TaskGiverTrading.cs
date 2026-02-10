@@ -1,7 +1,7 @@
-﻿using Project1.Core.AI;
+﻿using System;
+using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities.Actors;
-using System;
 
 namespace Project1.Core.Towns.Shops
 {
@@ -9,7 +9,7 @@ namespace Project1.Core.Towns.Shops
     {
         protected override Plan TryPlan(Actor actor)
         {
-            var state = actor.GetState();
+            var state = actor.AI.State;
             var tradepartner = state.TradingPartner;
             if (tradepartner == null)
                 return null;

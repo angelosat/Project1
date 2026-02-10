@@ -10,6 +10,7 @@ namespace Project1.Core.Components
 {
     public class DefComponent : EntityComp
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.DefComp;
         public override string Name { get; } = "Info";
        
         public bool InCatalogue = true;

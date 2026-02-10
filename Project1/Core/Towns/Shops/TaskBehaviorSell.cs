@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Project1.Core.Interactions;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.Entities.Actors;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Towns.Trading;
-using System;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
 
@@ -34,7 +34,7 @@ namespace Project1.Core.Towns.Shops
             {
                 InitAction = () =>
                 {
-                    tradePartner.GetState().TradingPartner = null;
+                    tradePartner.AI.State.TradingPartner = null;
                 }
             };
             yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());

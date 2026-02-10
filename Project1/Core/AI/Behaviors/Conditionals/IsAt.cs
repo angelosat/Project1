@@ -1,6 +1,5 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.Entities;
-using Project1.Core.Base;
 
 namespace Project1.Core.AI.Behaviors.Conditionals
 {

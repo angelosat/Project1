@@ -1,11 +1,11 @@
 ﻿using System.Linq;
-using Project1.Core.Base;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
 using Project1.Core.Net;
 using Project1.Core.Net;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Towns
 {
@@ -33,7 +33,7 @@ namespace Project1.Core.Towns
                 else
                     SendRemoveOrder(net, pl, tavern, order);
             }
-            public static void SendRemoveOrder(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrder order)
+            public static void SendRemoveOrder(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrderOld order)
             {
                 if (net is Server)
                     tavern.RemoveOrder(order);
@@ -50,7 +50,7 @@ namespace Project1.Core.Towns
                 var reaction = r.ReadDef<Reaction>();
                 var id = r.ReadInt32();
                 if (net is Client)
-                    tavern.AddOrder(new CraftOrder(reaction) { ID = id });
+                    tavern.AddOrder(new CraftOrderOld(reaction) { ID = id });
                 else
                     SendAddMenuItem(net, pl, tavern, reaction, id);
             }
@@ -60,7 +60,7 @@ namespace Project1.Core.Towns
                 if (net is Server)
                 {
                     id = tavern.MenuItemIDSequence++;
-                    tavern.AddOrder(new CraftOrder(reaction) { ID = id });
+                    tavern.AddOrder(new CraftOrderOld(reaction) { ID = id });
                 }
                 net.BeginPacket(PacketOrderAdd)
                     .Write(player.ID)
@@ -69,7 +69,7 @@ namespace Project1.Core.Towns
                     .Write(id);
             }
 
-            static public void SendOrderSync(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrder order, bool enabled)
+            static public void SendOrderSync(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrderOld order, bool enabled)
             {
                 if (net is Server)
                     order.Enabled = enabled;
@@ -96,7 +96,7 @@ namespace Project1.Core.Towns
                         .Write(enabled);
             }
 
-            public static void UpdateOrderIngredients(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrder order, string reagent, ItemDef[] defs, MaterialDef[] mats, MaterialTypeDef[] matTypes)
+            public static void UpdateOrderIngredients(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrderOld order, string reagent, ItemDef[] defs, MaterialDef[] mats, MaterialTypeDef[] matTypes)
             {
                 if (net is Server)
                     order.ToggleReagentRestrictions(reagent, defs, mats, matTypes);

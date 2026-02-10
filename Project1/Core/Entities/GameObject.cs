@@ -1,14 +1,18 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
 using Project1.Core.Blocks;
 using Project1.Core.Input.Tools;
 using Project1.Core.Skills;
 using Project1.Core.Components;
 using Project1.Core.UI;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using Project1.Core.UI.Hud;
 using Project1.Core.Net;
 using Project1.Core.Interactions;
 using Project1.Core.Base;
@@ -19,7 +23,6 @@ using Project1.Core.Screens;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns;
 using Project1.Core.Tools;
-using Project1.Core.Legacy;
 using Project1.Core.Helpers;
 using Project1.Core.AI;
 using Project1.Core.Graphics;
@@ -31,11 +34,10 @@ using Project1.Core.Entities.Stats;
 using Project1.Core.Attributes;
 using Project1.Core.Resources;
 using Project1.Core.Networking.Entities;
-using Project1.Core.UI.Hud;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
+
 using Project1.Core.AI.MetaRoles;
+using Project1.Core.Animations;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Entities
 {
@@ -63,9 +65,6 @@ namespace Project1.Core.Entities
         {
             return Templates[templateID].Clone();
         }
-
-        //public string GetName()
-        //{ return this.Name; }
         public Color GetSlotColor()
         { return this.GetInfo().GetQualityColor(); }
         public string GetCornerText()
@@ -82,13 +81,8 @@ namespace Project1.Core.Entities
             return this.GetResource(type) != null;
         }
         internal AttributeRuntime GetAttribute(AttributeDef att) => this.GetComponent<AttributesComponent>().GetAttribute(att);
-
-        
         public ItemDef Def;
-
         public QualityDef Quality { get { return this.DefComponent.Quality; } set { this.DefComponent.Quality = value; } }
-
-
         public GameObjectSlot ToSlotLink(int amount = 1)
         {
             return new GameObjectSlot() { Link = this };
@@ -97,7 +91,6 @@ namespace Project1.Core.Entities
         {
             return new Memory(this, 100, 100, 1, actor);
         }
-
         public static void LoadTemplates()
         {
             AddTemplate(EntityFactory.Request(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer).Create());
@@ -122,7 +115,7 @@ namespace Project1.Core.Entities
                 info.ParentName = value;
             }
         }
-        public virtual float Height => this.Def.Height;// this.Physics.Height;
+        public virtual float Height => this.Def.Height;
 
         public int RefId;
 
@@ -134,7 +127,7 @@ namespace Project1.Core.Entities
         public MapBase LastMap { get; private set; }
         public MapBase Map
         {
-            get => this._map;//this.Owner?.Map ?? this._map; 
+            get => this._map;
             set
             {
                 this._map = value;
@@ -144,13 +137,7 @@ namespace Project1.Core.Entities
         }
 
         public bool IsSpawnedNew => this.Map != null && this.Owner == null;
-        public Town Town;// => this.Map.Town;
-
-        internal object GetPath()
-        {
-            return this.GetState().Path;
-        }
-       
+        public Town Town;
         public IEnumerable<Button> GetTabs()
         {
             foreach (var comp in this.Components.Values)
@@ -193,20 +180,16 @@ namespace Project1.Core.Entities
         {
             throw new NotImplementedException();
         }
-
         static readonly IconButton IconForbidden = new QuickButton(Icon.Cross, ToolManagement.HotkeyToggleForbidden, "Forbid") { HoverText = "Toggle forbidden" };
         static readonly IconButton IconCameraFollow = new(Icon.Replace) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = FollowCam, HoverText = "Camera follow" };
-
         static void RequestToggleForbidden(List<TargetArgs> obj)
         {
             PacketToggleForbidden.Send(obj.First().World.Net, obj.Select(o => (int)o.Object.RefId).ToList());
         }
         static void FollowCam()
         {
-            //ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManager.Instance.SelectedSource.Object);
             ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManager.Instance.SelectedSource.Object);
         }
-
         public void ToggleForbidden()
         {
             this.IsForbidden = !this.IsForbidden;
@@ -222,7 +205,6 @@ namespace Project1.Core.Entities
                 comp.OnNameplateCreated(this, plate);
             }
         }
-
         public Rectangle GetScreenBounds(Camera camera)
         {
             var g = this.Global;
@@ -268,11 +250,8 @@ namespace Project1.Core.Entities
                 this.Transform.Velocity = value;
                 if (value != Vector3.Zero)
                     this.Physics.Enable();
-                    //PhysicsComponent.Enable(this);
             }
         }
-
-
         public Vector3 Direction
         {
             get => new(this.Transform.Direction, 0);
@@ -295,24 +274,14 @@ namespace Project1.Core.Entities
             if (amount <= 0)
                 return;
             this.StackSize -= amount;
-            //if (this.Net.IsClient)
-            //    return;
-            //if (this.IsEmpty)
-            //    this.World.DisposeEntityAndSync(this as Entity);
-            //else
-            //    PacketSyncStackSize.Send(this);
             if (this.IsEmpty)
                 this.World.DisposeEntity(this.RefId);
             else
                 this.World.Events.Post(new EntityStackDecreased(this as Entity, amount));
-
-            //this.Destroy();
         }
         public void Destroy()
         {
-            //this.World.DisposeEntityAndSync(this as Entity);
             this.World.DisposeEntity(this.RefId);
-            //this.World.DisposeEntity(this.RefId);
         }
         public void Add(int amount)
         {
@@ -341,15 +310,7 @@ namespace Project1.Core.Entities
                 this._stackSize = value;
                 if (value == 0)
                 {
-                    //if (this.IsSpawned)
-                    //    this.OnDespawn();
-
-                    //if (this.Slot != null)
-                    //    this.Slot.Clear();
-
-                    //this.Dispose();
-                    //if (this.Net.IsServer)
-                    //    this.World.DisposeEntityAndSync(this as Entity);
+                    
                 }
                 else if (value < 0)
                     throw new Exception();
@@ -1242,12 +1203,12 @@ namespace Project1.Core.Entities
             this.GetScreenBounds(camera).DrawHighlightBorder(sb, .5f, camera.Zoom);
         }
        
-        static readonly Vector3[] HitboxCorners = new Vector3[] {
+        static readonly Vector3[] HitboxCorners = [
                     new Vector3(.25f, .25f, 0),
                     new Vector3(-.25f, .25f, 0),
                     new Vector3(.25f, -.25f, 0),
                     new Vector3(-.25f, -.25f, 0)
-                };
+                ];
 
         internal Vector3 GetCellStandingOn()
         {
@@ -1348,11 +1309,6 @@ namespace Project1.Core.Entities
                 return this.Fuel * this.StackSize;
             }
         }
-
-        internal AIState GetState()
-        {
-            return AIState.GetState(this);
-        }
         internal float TotalWeight
         {
             get
@@ -1365,41 +1321,30 @@ namespace Project1.Core.Entities
         {
 
         }
-
         public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
-
         public bool IsRegistered => this.RefId > 0;
-
         internal List<StatNewModifier> GetStatModifiers(StatDef statNewDef)
         {
             this.TryGetComponent<StatsComponent>(out var stats);
             return stats?.GetModifiers(statNewDef);
         }
-
         internal void AddResourceModifier(ResourceRateModifier resourceModifier)
         {
             this.GetComponent<ResourcesComponent>().AddModifier(resourceModifier);
         }
-
         internal void AddStatModifier(StatNewModifier statNewModifier)
         {
             this.GetComponent<StatsComponent>().AddModifier(statNewModifier);
         }
-
         public int GetValueScore()
         {
             if (this.Def.BaseValue == 0)
-            {
                 return 0;
-            }
-
             var quality = this.DefComponent.Quality;
             var bones = this.Body.GetAllBones();
             var value = 0;
             foreach (var b in bones)
-            {
                 value += b.Material.ValueBase;
-            }
             return (int)(value * this.Def.BaseValue * quality.Multiplier);
         }
         public int GetValueTotal()
@@ -1426,7 +1371,6 @@ namespace Project1.Core.Entities
         {
             this.Def = def;
             this._stackSize = amount < 0 ? this.Def.StackCapacity : amount;
-            //ArgumentOutOfRangeException.ThrowIfNegative(amount);
         }
         public void SyncInstantiate(NetEndpoint net)
         {
@@ -1437,8 +1381,7 @@ namespace Project1.Core.Entities
                 throw new Exception();
 
             net.Instantiate(this);
-            var w = server.BeginPacket(PacketSyncInstantiate);// server.OutgoingStreamTimestamped;
-            //w.Write(PacketSyncInstantiate);
+            var w = server.BeginPacket(PacketSyncInstantiate);
             this.Write(w);
         }
         private static void SyncInstantiate(NetEndpoint net, Packet packet)
@@ -1503,7 +1446,7 @@ namespace Project1.Core.Entities
             var slave = net.World.GetEntity(r.ReadInt32());
             master.Absorb(slave);
         }
-
+        #endregion
         IEnumerable<(string name, Action action)> ISelectable.GetInfoTabs()
         {
             throw new NotImplementedException();
@@ -1527,6 +1470,6 @@ namespace Project1.Core.Entities
         {
             this.Components.ResolveReferences();
         }
-        #endregion
+        
     }
 }

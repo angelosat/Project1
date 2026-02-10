@@ -1,6 +1,5 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.Entities;
-using Project1.Core.Base;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Simulation;

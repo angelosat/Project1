@@ -8,10 +8,10 @@ namespace Project1.Core.Towns
 {
     public class VisitorCraftRequest
     {
-        public readonly CraftOrder Order;
+        public readonly CraftOrderOld Order;
         readonly Dictionary<string, ItemMaterialAmount> Preferences = new();
 
-        public VisitorCraftRequest(CraftOrder order, IEnumerable<(string reagentName, ItemDef item, MaterialDef material)> preferences)
+        public VisitorCraftRequest(CraftOrderOld order, IEnumerable<(string reagentName, ItemDef item, MaterialDef material)> preferences)
         {
             this.Order = order;
             foreach (var (reagentName, item, material) in preferences)

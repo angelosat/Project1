@@ -5,7 +5,6 @@ using Project1.Core.AI.Labors;
 using Project1.Core.AI.Net.Packets;
 using Project1.Core.AI.Planners;
 using Project1.Core.Towns;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;

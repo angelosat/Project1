@@ -1,18 +1,18 @@
-﻿using Project1.Core.Helpers;
-using Project1.Core.Materials;
-using Project1.Core.UI;
-using System.Collections.Generic;
-using Project1.Core.Entities;
-using Project1.Core.UI.Hud;
+﻿using System.Collections.Generic;
+using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
-using Project1.Framework.Base;
-using Project1.Framework;
+using Project1.Core.Entities;
+using Project1.Core.UI.Hud;
+using Project1.Core.Helpers;
+using Project1.Core.Materials;
+using Project1.Core.UI;
 
 namespace Project1.Core.Resources
 {
     public class ResourcesComponent : EntityComp
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Resources;
         public Dictionary<ResourceDef, Resource> Resources = [];
         public override string Name { get; } = "Resources";
 

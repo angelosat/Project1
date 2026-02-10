@@ -7,9 +7,9 @@ namespace Project1.Core.Legacy.Crafting
     {
         public enum Modes { XTimes, UntilX, Forever }
         public Modes Mode;
-        public Func<CraftOrder, string> GetString;
-        public Func<CraftOrder, bool> IsActive;
-        public Action<CraftOrder> OnComplete = o => { };
+        public Func<CraftOrderOld, string> GetString;
+        public Func<CraftOrderOld, bool> IsActive;
+        public Action<CraftOrderOld> OnComplete = o => { };
         public override string ToString()
         {
             return base.ToString();

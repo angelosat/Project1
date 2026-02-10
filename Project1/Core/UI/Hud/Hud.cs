@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Core.Screens;
@@ -13,6 +10,7 @@ using Project1.Core.Components;
 using Project1.Core.Base;
 using Project1.Core.Input;
 using Project1.Core.Net;
+using Project1.Framework.Events;
 
 namespace Project1.Core.UI.Hud
 {
@@ -30,11 +28,6 @@ namespace Project1.Core.UI.Hud
         {
             foreach (var item in Game1.Instance.GameComponents)
                 item.InitHUD(net, this);
-        }
-        readonly Dictionary<Message.Types, Action<GameEvent>> UIEvents = new();
-        internal void RegisterEventHandler(Message.Types type, Action<GameEvent> action)
-        {
-            this.UIEvents.Add(type, action);
         }
         public static int DefaultHeight = UIManager.DefaultIconButtonSprite.Height;
         Control WindowPlayers;
@@ -103,7 +96,6 @@ namespace Project1.Core.UI.Hud
                 LocationFunc = () => uiSpeed.TopRight,
                 Anchor = Vector2.One,
                 BackgroundColorFunc = () => Color.Black * .5f,
-                //TextFunc = () => string.Format("Day {0}, {1:%h}h", (int)net.Map.World.Clock.TotalDays, net.Map.World.Clock)
                 TextFunc = () => $"Day {(int)net.Map.World.Clock.TotalDays}, {net.Map.World.Clock:%h}h {net.Map.World.Clock:%m}m"
             };
 
@@ -118,7 +110,6 @@ namespace Project1.Core.UI.Hud
                  () => Ingame.GetMap().Camera.DrawLevel / MapBase.MaxHeight,
                  v => Ingame.GetMap().Camera.DrawLevel = MapBase.MaxHeight - v);
 
-            //this.ZLevelDrawBar.Location = this.ZLevelDrawBar.RightCenterScreen;
             this.ZLevelDrawBar.AnchorToCenterRight();
             
             this.Controls.Add(
@@ -135,7 +126,6 @@ namespace Project1.Core.UI.Hud
             if (this.WindowPlayers is null)
             {
                 this.WindowPlayers = new UIPlayerList(net)
-                    //.ToWindow("Players");
                     .ToWidget("Players");
                 this.WindowPlayers.Layer = UIManager.LayerHud;
             }
@@ -146,25 +136,6 @@ namespace Project1.Core.UI.Hud
         {
             switch ((Message.Types)e.Type)
             {
-                case Message.Types.NotEnoughSpace:
-                    this.NotEnoughSpace(e.Parameters[0] as GameObject);
-                    break;
-
-                case Message.Types.ItemGot:
-                    this.OnItemGot(e.Parameters[0] as GameObject, e.Parameters[1] as GameObject);
-                    break;
-
-                case Message.Types.ItemLost:
-                    this.OnItemLost(e.Parameters[0] as GameObject, e.Parameters[1] as GameObject, (int)e.Parameters[2]);
-                    break;
-
-                case Message.Types.HealthLost:
-                    int dmg = (int)e.Parameters[1];
-                    GameObject recipient = (GameObject)e.Parameters[0];
-                    FloatingText floating = new FloatingText(recipient, dmg.ToString()) { Font = UIManager.FontBold, TextColorFunc = () => Color.Red };
-                    floating.Show();
-                    break;
-
                 case Message.Types.ChatPlayer:
                     var player = e.Parameters[0] as PlayerData;
                     var txt = (string)e.Parameters[1];
@@ -172,9 +143,6 @@ namespace Project1.Core.UI.Hud
                     break;
 
                 default:
-                    if (this.UIEvents.TryGetValue((Message.Types)e.Type, out var val))
-                        val(e);
-                    base.OnGameEvent(e);
                     break;
             }
         }
@@ -187,47 +155,6 @@ namespace Project1.Core.UI.Hud
                 );
             Client.Instance.ConsoleBox.Write(txt);
             floating.Show();
-        }
-
-        private void OnItemGot(GameObject parent, GameObject item)
-        {
-            FloatingTextEx floating = new FloatingTextEx(parent,
-                new FloatingTextEx.Segment("Received ", Color.Lime),
-                new FloatingTextEx.Segment(item.Name, item.GetInfo().GetQualityColor())
-                );
-            Client.Instance.ConsoleBox.Write("Received: " + item.Name);
-            floating.Show();
-        }
-        private void OnItemLost(GameObject parent, GameObject item, int amount)
-        {
-            FloatingTextEx floating = new FloatingTextEx(parent,
-                new FloatingTextEx.Segment("Lost " + amount.ToString() + "x ", Color.Red),
-                new FloatingTextEx.Segment(item.Name, item.GetInfo().GetQualityColor())
-                );
-            Client.Instance.ConsoleBox.Write("Lost " + amount.ToString() + "x " + item.Name);
-            floating.Show();
-        }
-
-        public void Initialize(GameObject obj)
-        {
-            this.Controls.Remove(this.PartyFrame);
-            this.PartyFrame.Controls.Clear();
-            this.PartyFrame.AutoSize = true;
-
-            this.PlayerUnitFrame = new UnitFrame().Track(obj);
-            this.PartyFrame.Controls.Add(this.PlayerUnitFrame);
-
-            this.Controls.Add(this.PartyFrame);
-            this.PartyFrame.Invalidate(true);
-        }
-        
-        public void AddUnitFrame(GameObject obj)
-        {
-            this.PartyFrame.Controls.Add(new UnitFrame() { Location = this.PartyFrame.Controls.Last().BottomLeft }.Track(obj));
-        }
-        public void RemoveUnitFrame(GameObject obj)
-        {
-            this.PartyFrame.Controls.Remove(this.PartyFrame.Controls.Find(frame => frame.Tag == obj));
         }
 
         void BTN_Options_Click()
@@ -248,7 +175,6 @@ namespace Project1.Core.UI.Hud
             if (e.KeyCode == System.Windows.Forms.Keys.Escape)
             {
                 e.Handled = true;
-                //if (!ToolManager.Clear() && !SelectionManager.ClearTargets() && !this.WindowManager.CloseAll())
                     this.IngameMenu.ToggleDialog();
             }
             HotkeyManager.PerformHotkey(e, Ingame.HotkeyContext);

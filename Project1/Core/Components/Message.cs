@@ -1,6 +1,6 @@
-﻿using Project1.Core.Entities;
+﻿using System;
+using Project1.Core.Entities;
 using Project1.Core.Legacy;
-using System;
 
 namespace Project1.Core.Components
 {
@@ -9,7 +9,6 @@ namespace Project1.Core.Components
         public enum Types
         {
             Attacked,
-            HealthLost,
             SlotInteraction,
             HitGround,
             ChatPlayer,
@@ -17,7 +16,6 @@ namespace Project1.Core.Components
             BlockEntityAdded,
             BlockEntityRemoved,
             ItemGot,
-            NotEnoughSpace,
             EntityDespawned,
             EntitySpawned,
             NpcsUpdated,
@@ -42,18 +40,6 @@ namespace Project1.Core.Components
             ShopUpdated,
             TavernMenuChanged,
             OrderDeleted,
-            ItemLost,
-            AttackTargetChanged
-        }
-
-        public GameObject Receiver;
-        public ObjectEventArgs Args;
-        public Action<GameObject> Callback;
-        public Message(GameObject receiver, ObjectEventArgs e, Action<GameObject> callback = null)
-        {
-            this.Receiver = receiver;
-            this.Args = e;
-            this.Callback = callback;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Project1.Core.Towns.Shops
         {
             var actor = this.Actor;
             var net = actor.Net;
-            var state = this.Actor.GetState();
+            var state = this.Actor.AI.State;
             var task = this.Plan;
             var shopID = task.ShopID;
             var transaction = task.Transaction;

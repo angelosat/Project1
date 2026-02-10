@@ -2,7 +2,6 @@
 using Project1.Core.Skills;
 using Project1.Core.AI;
 using Project1.Core.Needs;
-using Project1.Core.Entities;
 using Project1.Core.Gear;
 using Project1.Core.Attributes;
 using Project1.Core.AI.Behaviors.NodeTypes;

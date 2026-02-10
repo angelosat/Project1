@@ -1,17 +1,16 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Helpers;
-using Project1.Core.UI;
-using Project1.Core.UI;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
+using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
-using Project1.Framework;
 
 namespace Project1.Core.Attributes
 {
     class AttributesComponent : EntityComp<AttributesComponent.Spec>
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Attributes;
         public override string Name { get; } = "Attributes";
         public Dictionary<AttributeDef, AttributeRuntime> Attributes = [];
         public AttributeRuntime this[AttributeDef def] => this.GetAttribute(def);

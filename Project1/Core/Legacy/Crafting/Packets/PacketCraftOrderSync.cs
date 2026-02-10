@@ -1,7 +1,7 @@
 ﻿using Project1.Framework;
-using Project1.Core.Base;
 using Project1.Core.Components;
 using Project1.Core.Net;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Legacy.Crafting.Packets
 {
@@ -14,7 +14,7 @@ namespace Project1.Core.Legacy.Crafting.Packets
             p = Registry.PacketHandlers.Register(Receive);
         }
 
-        internal static void Send(CraftOrder order, Stockpile input, Stockpile output)
+        internal static void Send(CraftOrderOld order, Stockpile input, Stockpile output)
         {
             var net = order.Map.Net;
             var w = net.BeginPacket(p);

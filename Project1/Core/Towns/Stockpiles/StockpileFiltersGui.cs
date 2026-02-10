@@ -1,7 +1,7 @@
 ﻿using Project1.Core.UI;
 using Project1.Core.Net;
 using Project1.Framework.UI;
-using Project1.Core.Crafting.Gui;
+using Project1.Core.Crafting;
 
 namespace Project1.Core.Towns.Stockpiles
 {
@@ -12,7 +12,7 @@ namespace Project1.Core.Towns.Stockpiles
         public StockpileFiltersGui(Stockpile stockpile)
         {
             this.Stockpile = stockpile;
-            var entries = CraftingGuiBuilder.Build(stockpile);
+            var entries = IngredientGroupBuilder.Build(stockpile);
             this.ListCollapsible = new ListCollapsibleNewNew();
             this.ListCollapsible.BuildNew(entries);
             Client.Instance.Map.Events.ListenTo<StockpileUpdatedEvent>(OnStockpileUpdatedEvent);

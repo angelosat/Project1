@@ -7,6 +7,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Core.Plants;
+using Project1.Framework.Events;
 
 namespace Project1.Core.VFX
 {

@@ -1,5 +1,4 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Components;
+﻿using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Interactions;
 using Project1.Core.Net;
@@ -8,6 +7,7 @@ using System.Linq;
 using Project1.Core.Entities;
 using Project1.Core.Networking.Entities;
 using Project1.Framework.UI;
+using Project1.Framework.Events;
 
 namespace Project1.Core.AI
 {

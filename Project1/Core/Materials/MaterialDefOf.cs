@@ -32,7 +32,7 @@ namespace Project1.Core.Materials
 
 
         static public readonly MaterialDef Coal = new(MaterialTypeDefOf.Stone, "Coal", "Coal", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
-        static public readonly MaterialDef Stone = new(MaterialTypeDefOf.Stone, "Stone", "Stone", Color.SlateGray, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Stone = new(MaterialTypeDefOf.Stone, "Stone", "Stone", Color.Ivory, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
 
         static public readonly MaterialDef ShrubStem = new MaterialDef("Twig", MaterialTemplates.PlantStem)
             .SetColor(new Color(139, 136, 95, 255));// Color.DarkOliveGreen

@@ -37,19 +37,19 @@ namespace Project1.Core.Towns
             }
             return null;
         }
-        bool TrySelectOrder(List<MaterialDef> favs, Tavern tavern, out CraftOrder order)
+        bool TrySelectOrder(List<MaterialDef> favs, Tavern tavern, out CraftOrderOld order)
         {
             order = SelectOrder(favs, tavern);
             return order != null;
         }
-        CraftOrder SelectOrder(List<MaterialDef> favs, Tavern tavern)
+        CraftOrderOld SelectOrder(List<MaterialDef> favs, Tavern tavern)
         {
             var orders = tavern.GetAvailableOrders().ToList();
             if (!orders.Any())
                 return null;
             return orders.SelectRandomWeighted(tavern.Town.Map.Random, o => favs.Count(o.IsAllowed));
         }
-        IEnumerable<(string reagent, ItemDef itemDef, MaterialDef material)> SelectIngredients(Random rand, List<MaterialDef> favs, CraftOrder order)
+        IEnumerable<(string reagent, ItemDef itemDef, MaterialDef material)> SelectIngredients(Random rand, List<MaterialDef> favs, CraftOrderOld order)
         {
             foreach (var r in order.Reaction.Reagents)
             {
@@ -65,7 +65,7 @@ namespace Project1.Core.Towns
             }
             yield break;
         }
-        (CraftOrder order, IEnumerable<(string reagent, ItemDef itemDef, MaterialDef material)>) SelectOrderIngredients(ICollection<CraftOrder> orders, Random rand, int budget, List<MaterialDef> favs)
+        (CraftOrderOld order, IEnumerable<(string reagent, ItemDef itemDef, MaterialDef material)>) SelectOrderIngredients(ICollection<CraftOrderOld> orders, Random rand, int budget, List<MaterialDef> favs)
         {
             var ingredients = new List<(string reagent, ItemDef itemDef, MaterialDef material)>();
             foreach(var order in orders.Shuffle(rand))

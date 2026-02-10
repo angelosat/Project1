@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System.Xml.Linq;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Net;
 using Project1.Core.Base;
@@ -13,9 +16,6 @@ using Project1.Core.Rendering;
 using Project1.Core.Helpers.Collections;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
-using Project1.Framework.UI;
-using Project1.Framework.Graphics;
-using Project1.Framework;
 
 namespace Project1.Core.Helpers
 {
@@ -53,18 +53,7 @@ namespace Project1.Core.Helpers
             return rotated.X + rotated.Y;
         }
 
-        public static Vector2 XY(this Vector3 vector)
-        {
-            return new Vector2(vector.X, vector.Y);
-        }
-        public static Vector2 YZ(this Vector3 vector)
-        {
-            return new Vector2(vector.Y, vector.Z);
-        }
-        public static Vector2 XZ(this Vector3 vector)
-        {
-            return new Vector2(vector.X, vector.Z);
-        }
+        
         public static Vector3 ToLocal(this Vector3 global)
         {
             float rx, ry;
@@ -215,128 +204,13 @@ namespace Project1.Core.Helpers
             }
             return list;
         }
-        static public List<Vector3> GetBox(this BoundingBox box)
-        {
-            return box.Min.GetBox(box.Max);
-        }
-        static public List<IntVec3> GetBoxIntVec3(this BoundingBox box)
-        {
-            return ((IntVec3)box.Min).GetBox(box.Max);
-        }
-        static public IEnumerable<IntVec3> GetBoxIntVec3Lazy(this BoundingBox box)
-        {
-            return ((IntVec3)box.Min).GetBoxLazy(box.Max);
-        }
+        
         static public BoundingBox GetBoundingBox(this Vector3 blockCoords)
         {
             blockCoords = blockCoords.ToCell(); //necessary? do i need this?
             return new BoundingBox(blockCoords - new Vector3(.5f, .5f, 0), blockCoords + new Vector3(.5f, .5f, 1));
         }
-        static public List<Vector3> GetBox(this Vector3 begin, Vector3 end)
-        {
-            var xmin = Math.Min(begin.X, end.X);
-            var ymin = Math.Min(begin.Y, end.Y);
-            var zmin = Math.Min(begin.Z, end.Z);
-            var xmax = begin.X + end.X - xmin;
-            var ymax = begin.Y + end.Y - ymin;
-            var zmax = begin.Z + end.Z - zmin;
-            var dx = xmax - xmin + 1;
-            var dy = ymax - ymin + 1;
-            var dz = zmax - zmin + 1;
-
-            var origin = new Vector3(xmin, ymin, zmin);
-
-            var list = new List<Vector3>((int)(dx * dy * dz));
-
-            for (int i = 0; i < dx; i++)
-            {
-                for (int j = 0; j < dy; j++)
-                {
-                    for (int k = 0; k < dz; k++)
-                    {
-                        list.Add(origin + new Vector3(i, j, k));
-                    }
-                }
-            }
-            return list;
-        }
-        static public IEnumerable<IntVec3> GetBoxHollow(this IntVec3 begin, IntVec3 end)
-        {
-            var xmin = Math.Min(begin.X, end.X);
-            var ymin = Math.Min(begin.Y, end.Y);
-            var zmin = Math.Min(begin.Z, end.Z);
-            var xmax = begin.X + end.X - xmin;
-            var ymax = begin.Y + end.Y - ymin;
-            var zmax = begin.Z + end.Z - zmin;
-            var dx = xmax - xmin + 1;
-            var dy = ymax - ymin + 1;
-            var dz = zmax - zmin + 1;
-
-            var origin = new IntVec3(xmin, ymin, zmin);
-            var target = new IntVec3(xmax, ymax, zmax);
-
-            var boxfull = origin.GetBoxLazy(target);
-
-            if (dx <= 2 || dy <= 2 || dz <= 2)
-                return boxfull;
-
-            var boxHollow = boxfull.Except((origin + IntVec3.One).GetBox(target - IntVec3.One));
-            return boxHollow;
-        }
-        static public List<IntVec3> GetBox(this IntVec3 begin, IntVec3 end)
-        {
-            var xmin = Math.Min(begin.X, end.X);
-            var ymin = Math.Min(begin.Y, end.Y);
-            var zmin = Math.Min(begin.Z, end.Z);
-            var xmax = begin.X + end.X - xmin;
-            var ymax = begin.Y + end.Y - ymin;
-            var zmax = begin.Z + end.Z - zmin;
-            var dx = xmax - xmin + 1;
-            var dy = ymax - ymin + 1;
-            var dz = zmax - zmin + 1;
-
-            var origin = new IntVec3(xmin, ymin, zmin);
-
-            var list = new List<IntVec3>((int)(dx * dy * dz));
-
-            for (int i = 0; i < dx; i++)
-            {
-                for (int j = 0; j < dy; j++)
-                {
-                    for (int k = 0; k < dz; k++)
-                    {
-                        list.Add(origin + new IntVec3(i, j, k));
-                    }
-                }
-            }
-            return list;
-        }
-        static public IEnumerable<IntVec3> GetBoxLazy(this IntVec3 begin, IntVec3 end)
-        {
-            var xmin = Math.Min(begin.X, end.X);
-            var ymin = Math.Min(begin.Y, end.Y);
-            var zmin = Math.Min(begin.Z, end.Z);
-            var xmax = begin.X + end.X - xmin;
-            var ymax = begin.Y + end.Y - ymin;
-            var zmax = begin.Z + end.Z - zmin;
-            var dx = xmax - xmin + 1;
-            var dy = ymax - ymin + 1;
-            var dz = zmax - zmin + 1;
-
-            var origin = new Vector3(xmin, ymin, zmin);
-
-            for (int i = 0; i < dx; i++)
-            {
-                for (int j = 0; j < dy; j++)
-                {
-                    for (int k = 0; k < dz; k++)
-                    {
-                        yield return origin + new Vector3(i, j, k);
-                    }
-                }
-            }
-        }
-
+        
         static public Vector3 Average(this ICollection<IntVec3> positions)
         {
             Vector3 average = default;

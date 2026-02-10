@@ -1,19 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Core.Blocks;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Simulation;
-using Project1.Core.Needs;
 using Project1.Core.Gear;
 using Project1.Core.Inventory;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Entities.Mood;
-using Project1.Core.Entities.Ownership;
 using Project1.Core.Attributes;
 using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.Networking.Entities;
@@ -27,9 +25,6 @@ using Project1.Core.Towns.AI.Behaviors.ItemEvaluators;
 using Project1.Core.Towns.Labors;
 using Project1.Core.UI;
 using Project1.Core.World.WorldAreas;
-using Project1.Core.Base;
-using Project1.Core.Components;
-using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using Project1.Core.Net;
 using Project1.Core.Rooms;
@@ -87,21 +82,14 @@ namespace Project1.Core.Entities.Actors
         }
 
         public Interaction CurrentInteraction => this.Work.Task;
-        //AIState _state;
-
-        //public AIState State => this._state ??= this.GetComponent<AIComponent>().State;
         internal Plan CurrentTask
         {
             get => this.AI.State.CurrentTask;
-            set => throw new Exception();// this.State.CurrentTask = value;
+            set => throw new Exception();
         }
-        //internal BehaviorPerformTask CurrentTaskBehavior
-        //{
-        //    get => this.State.CurrentTaskBehavior;
-        //    set => this.State.CurrentTaskBehavior = value;
-        //}
+        
         public AILog Log => AIState.GetState(this).Log;
-        public ItemPreferencesManager ItemPreferences => this.GetState().ItemPreferences;
+        public ItemPreferencesManager ItemPreferences => this.AI.State.ItemPreferences;
 
         public Room AssignedRoom => this.Town?.RoomManager.FindRoom(this.RefId); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
         internal Workplace Workplace => this.Town?.ShopManager.GetShop(this); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
@@ -126,14 +114,12 @@ namespace Project1.Core.Entities.Actors
                 loot.SyncInstantiate(server);
                 PacketInventoryInsertItem.Send(server, this, loot, area);
             }
-            //this.Log.Write($"Looted [{loot.Name},{loot.PrimaryMaterial.Color}] while exploring [{area.Name}]"); // call this before inserting because the item might be absorbed/disposed
-            //this.Log.Write($"Looted [{loot.Name},{loot.Body.Material.Color}] while exploring [{area.Name}]"); // call this before inserting because the item might be absorbed/disposed
             this.Inventory.Insert(loot);
         }
         internal bool InitiateTrade(Actor actor, Entity item, int itemcost)
         {
             // TODO do stuff with item and itemcost
-            var state = this.GetState();
+            var state = this.AI.State;
             if (state.TradingPartner != null)
                 return false;
             state.TradingPartner = actor;
@@ -153,18 +139,6 @@ namespace Project1.Core.Entities.Actors
         {
             return this.Inventory.Count(o => o.Def == ItemDefOf.Coins);
         }
-
-        //internal void ModifyNeed(NeedDef def, Func<int, int> modOldValue)
-        //{
-        //    var need = this.GetNeed(def);
-        //    var old = need.Value;
-        //    //need.Value = modOldValue(need.Value);
-        //    need.SetValue(modOldValue(need.Value), this);
-        //    //this.Net?.EventOccured((int)Message.Types.NeedUpdated, this, need, need.Value - old);
-        //    this.World.Events.Post(new ActorNeedUpdatedEvent(this, need.NeedDef, need.Value - old));
-
-        //}
-
         internal void Carry(Entity item)
         {
             this.Inventory.Haul(item);
@@ -200,7 +174,7 @@ namespace Project1.Core.Entities.Actors
         {
             var task = planner.Worker.TryTaskOn(this, target, true);
             if (task is not null)
-                this.GetState().ForceTask(task);
+                this.AI.State.ForceTask(task);
         }
         internal bool CanStandInNew(Vector3 global)
         {
@@ -233,8 +207,8 @@ namespace Project1.Core.Entities.Actors
         {
             if (this.Net is Client)
                 return;
-            var state = this.GetState();
-            state.ConversationPartner.GetState().ConversationPartner = null;
+            var state = this.AI.State;
+            state.ConversationPartner.AI.State.ConversationPartner = null;
             state.ConversationPartner = null;
         }
 
@@ -245,12 +219,12 @@ namespace Project1.Core.Entities.Actors
 
         internal void EnqueueCommunication(Actor target, ConversationTopic topic)
         {
-            this.GetState().CommunicationPending.Add(target, topic);
+            this.AI.State.CommunicationPending.Add(target, topic);
         }
 
         internal ConversationTopic GetNextConversationTopicFor(Actor target)
         {
-            var state = this.GetState();
+            var state = this.AI.State;
             var topic = state.CommunicationPending[target];
             state.CommunicationPending.Remove(target);
             return topic;
@@ -279,7 +253,6 @@ namespace Project1.Core.Entities.Actors
         internal void Equip(GameObject item)
         {
             throw new Exception();
-            //this.Interact(new InteractionEquip(), item);
         }
         internal bool IsEquipping(Entity item)
         {
@@ -289,36 +262,10 @@ namespace Project1.Core.Entities.Actors
         {
             return this.Town.ReservationManager.GetReservedAmount(this, item);
         }
-
         internal void StopPathing()
         {
-            this.GetState().Path = null;
+            this.AI.State.Path = null;
         }
-
-        //public override GameObject Create()
-        //{
-        //    return new Actor();
-        //}
-
-        
-
-        internal void AddNeed(params NeedDef[] defs)
-        {
-            this.GetComponent<NeedsComponent>().Add(defs);
-        }
-        //[Obsolete]
-        //public static Actor Create(ItemDef def)
-        //{
-        //    //var obj = def.CreateBase() as Actor;
-        //    var obj = ActorDefOf.Npc.Create() as Actor;
-        //    //obj.Physics.Height = def.Height;
-
-        //    foreach (var b in obj.Body.GetAllBones())
-        //        b.Material = def.DefaultMaterial;
-
-        //    obj.Sprite.Customization = new CharacterColors(obj.Body).Randomize();
-        //    return obj;
-        //}
         public EffectsComponent Effects => this.GetComponent<EffectsComponent>();
         public override Color GetNameplateColor()
         {
@@ -328,7 +275,6 @@ namespace Project1.Core.Entities.Actors
                 return Color.White;
             return Color.Cyan;
         }
-
         internal void EndCurrentTask()
         {
             this.Work.Interrupt();
@@ -394,7 +340,6 @@ namespace Project1.Core.Entities.Actors
             }
             return null;
         }
-
         public bool CanReach(GameObject obj)
         {
             return this.Map.Regions.CanReach(this.GetCellStandingOn(), obj.Global.ToCell(), this as Actor);
@@ -449,13 +394,11 @@ namespace Project1.Core.Entities.Actors
             }
         }
 
-        public GameObject AttackTarget => null;//.GetComponent<AttackComponent>().Target;
-
-        
+        public GameObject AttackTarget => null;
 
         internal Trait GetTrait(TraitDef trait)
         {
-            return this.GetComponent<PersonalityComponent>().Traits[trait];//.First(t => t.TraitDef == trait);
+            return this.GetComponent<PersonalityComponent>().Traits[trait];
         }
 
         internal void WalkToggle(bool toggle)
@@ -548,7 +491,5 @@ namespace Project1.Core.Entities.Actors
             if (this.GetVisitorProperties() is WorldInhabitantView props)
                 props.OffsiteArea = null;
         }
-
-        
     }
 }

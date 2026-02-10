@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.Helpers;
 using Project1.Core.Entities;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Framework;
 
 namespace Project1.Core
 {

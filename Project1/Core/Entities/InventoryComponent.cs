@@ -7,12 +7,12 @@ using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Core.Gear;
 using Project1.Core.Inventory;
-using Project1.Core.Base;
 using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy;
 using Project1.Core.Materials;
 using Project1.Core.Net;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Entities
 {
@@ -82,6 +82,7 @@ namespace Project1.Core.Entities
         {
             Packets.Init();
         }
+        public override EntityCompDef CompDef => EntityCompDefOf.Inventory;
 
         public int Capacity = 16;//this.Slots.Slots.Count;
         public float PercentageEmpty => this.Contents.Count / (float)this.Capacity;

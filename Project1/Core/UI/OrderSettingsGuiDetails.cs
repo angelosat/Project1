@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Crafting;
-using Project1.Core.Crafting.Gui;
 using Project1.Core.Net;
 using Project1.Framework.UI;
 
@@ -8,11 +7,11 @@ namespace Project1.Core.UI
     internal class OrderSettingsGuiDetails : GroupBox
     {
         readonly ListCollapsibleNewNew ListCollapsible;
-        readonly OrderSettings Order;
-        public OrderSettingsGuiDetails(OrderSettings order)
+        readonly CraftingOrder Order;
+        public OrderSettingsGuiDetails(CraftingOrder order)
         {
             this.Order = order;
-            var entries = CraftingGuiBuilder.Build(order);
+            var entries = IngredientGroupBuilder.Build(order);
             this.ListCollapsible = new ListCollapsibleNewNew();
             this.ListCollapsible.Build(entries);
             Client.Instance.Map.Events.ListenTo<CraftOrderUpdatedEvent>(OnOrderUpdated);

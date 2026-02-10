@@ -1,12 +1,14 @@
 ﻿using System;
 using Project1.Core.Animations;
 using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Components.Combat
 {
     [Obsolete]
     class BlockingComponent : EntityComp
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Block;
         public override string Name { get; } = "Blocking"; 
         Animation Animation;
         public bool Active;

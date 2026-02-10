@@ -1,5 +1,4 @@
-﻿using Project1.Core.Base;
-using Project1.Framework.UI;
+﻿using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 

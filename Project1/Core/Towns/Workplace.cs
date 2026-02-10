@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
 using Project1.Core.Net;
 using Project1.Core.Components;
-using Project1.Core.Base;
 using Project1.Core.Rooms;
 using Project1.Core.Screens;
 using Project1.Core.Interfaces;
@@ -24,6 +23,7 @@ using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Towns
 {
@@ -210,7 +210,7 @@ namespace Project1.Core.Towns
         public readonly ObservableDictionary<IntVec3, TargetArgs> FacilitiesTargetsCached = new();
         public virtual IEnumerable<IntVec3> GetFacilities() { yield break; }
 
-        public virtual CraftOrder GetOrder(int orderID)
+        public virtual CraftOrderOld GetOrder(int orderID)
         {
             return null;
         }

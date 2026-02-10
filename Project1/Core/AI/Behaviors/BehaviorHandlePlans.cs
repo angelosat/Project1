@@ -21,37 +21,15 @@ namespace Project1.Core.AI.Behaviors
 
         private void CleanUp(Actor parent)
         {
-            this.CleanUp(parent, parent.GetState());
+            this.CleanUp(parent, parent.AI.State);
         }
         private void CleanUp(Actor parent, AIState state)
         {
             // dont drop carried item here, let the last cleanup behavior (idle) handle it?
-            //Unequip(parent);
-
             parent.Unreserve();
-
             state.Reset();
-            //this.CurrentPlanner = null;
             parent.AI.State.CurrentPlanner = null;
         }
-
-        //private static void Unequip(Actor parent)
-        //{
-        //    //if (parent.Hauled is not null)
-        //    //    parent.Interact(new InteractionThrow(true));
-
-        //    if (parent.GetEquipmentSlot(GearTypeDefOf.Mainhand) is Entity item)
-        //    {
-        //        if (parent.ItemPreferences.IsPreference(item))
-        //        {
-        //            throw new NotImplementedException();
-        //            //parent.Interact(new InteractionEquip(), new TargetArgs(item)); // equip() currently toggles gear. if target is currently equipped, it unequips it
-        //        }
-        //        else
-        //            parent.Interact(new InteractionDropEquipped(GearTypeDefOf.Mainhand));
-        //    }
-        //}
-
         static IEnumerable<PlannerDef> GetPlanners(Actor actor)
         {
             var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);//.OfType<Planner>();
@@ -87,7 +65,6 @@ namespace Project1.Core.AI.Behaviors
                 }
 
                 state.Assign(bhav);
-                //this.CurrentPlanner = task.Continuation == PlannerContinuation.Continue ? planner : null;
                 parent.AI.State.CurrentPlanner = task.Continuation == PlannerContinuation.Continue ? planner : null;
                 return task;
             }
@@ -100,8 +77,6 @@ namespace Project1.Core.AI.Behaviors
             var bhav = task.CreateBehavior(parent);
             if (!bhav.ReserveBase())
                 return false;
-            //state.CurrentTaskBehavior = bhav;
-            //state.CurrentTask = task;
             task.IsImmediate = true;
             state.Assign(bhav);
             return true;
@@ -111,11 +86,7 @@ namespace Project1.Core.AI.Behaviors
         {
             base.AddSaveData(tag);
             tag.Add(this.Timer.Save("Timer"));
-
-            //if (this.CurrentPlanner is not null)
-            //    tag.Save("CurrentPlanner", this.CurrentPlanner);
         }
-
         internal void EndCurrentPlan(Actor actor)
         {
             this.CleanUp(actor);
@@ -124,13 +95,11 @@ namespace Project1.Core.AI.Behaviors
         {
             base.Load(tag);
             tag.TryGetTagValueOrDefault("Timer", out this.Timer);
-            //tag.TryLoadDefOut("CurrentPlanner", out this.CurrentPlanner);
         }
         internal override void MapLoaded(Actor parent)
         {
             this.Actor = parent;
         }
-
         public override object Clone()
         {
             return new BehaviorHandlePlans();

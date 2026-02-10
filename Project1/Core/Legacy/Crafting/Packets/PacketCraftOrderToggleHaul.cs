@@ -1,8 +1,8 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Components;
+﻿using Project1.Core.Components;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Net;
 using Project1.Core.Net;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Legacy.Crafting.Packets
 {
@@ -14,7 +14,7 @@ namespace Project1.Core.Legacy.Crafting.Packets
             p = Registry.PacketHandlers.Register(Receive);
         }
 
-        internal static void Send(CraftOrder order, bool value)
+        internal static void Send(CraftOrderOld order, bool value)
         {
             var net = order.Map.Net;
             var bench = order.Workstation;

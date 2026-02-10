@@ -24,7 +24,8 @@ namespace Project1.Core.Plants
             DefaultMaterial = MaterialDefOf.LightWood,
             Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
             Size = ObjectSize.Haulable,
-            CompTypes = [typeof(PlantComponent), typeof(ResourcesComponent)]
+            Comps = [typeof(PlantComponent), typeof(ResourcesComponent)],
+            CompDefs = [EntityCompDefOf.Plant, EntityCompDefOf.Resources]
         }
         .AddSpec(new ResourcesComponent.Spec([ResourceDefOf.HitPoints]))
         ;
@@ -38,12 +39,11 @@ namespace Project1.Core.Plants
             DefaultMaterial = MaterialDefOf.ShrubStem,
             Body = new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
             Size = ObjectSize.Haulable,
-            CompTypes = [typeof(PlantComponent), typeof(ResourcesComponent)]
+            Comps = [typeof(PlantComponent), typeof(ResourcesComponent)],
+            CompDefs = [EntityCompDefOf.Plant, EntityCompDefOf.Resources]
+
         }
-        .AddSpec(new ResourcesComponent.Spec([ResourceDefOf.HitPoints]))
-        //.AddSpec(new PlantComponent.Spec())
-        //.AddSpec(new SpriteComp.Spec(new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true })))
-            ;
+        .AddSpec(new ResourcesComponent.Spec([ResourceDefOf.HitPoints]));
 
         static PlantDefOf()
         {

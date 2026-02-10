@@ -6,7 +6,7 @@ using Project1.Core.UI;
 using System;
 using System.Linq;
 using Project1.Framework.UI;
-using Project1.Core.Crafting;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Legacy.Crafting.Gui
 {
@@ -17,8 +17,8 @@ namespace Project1.Core.Legacy.Crafting.Gui
         readonly GroupBox PanelInfo;
         readonly CheckBoxNew ChkHaulOnFinish;
         readonly GroupBox ReagentsContainer;
-        CraftOrder Order => this.Tag as CraftOrder;
-        public CraftOrderDetailsGui(CraftOrder order)
+        CraftOrderOld Order => this.Tag as CraftOrderOld;
+        public CraftOrderDetailsGui(CraftOrderOld order)
             :this()
         {
             this.Tag = order;
@@ -59,7 +59,7 @@ namespace Project1.Core.Legacy.Crafting.Gui
             this.PanelInfo.ClearControls();
             this.PanelInfo.AddControls(this.Order.Reaction.GetInfoGui());
         }
-        ListCollapsibleNew CreateList(CraftOrder order)
+        ListCollapsibleNew CreateList(CraftOrderOld order)
         {
             var list = new ListCollapsibleNew();// 200, 200);
             foreach (var r in order.Reaction.Reagents)
@@ -113,7 +113,7 @@ namespace Project1.Core.Legacy.Crafting.Gui
             switch ((Message.Types)e.Type)
             {
                 case Message.Types.OrderParametersChanged:
-                    var order = e.Parameters[0] as CraftOrder;
+                    var order = e.Parameters[0] as CraftOrderOld;
                     if (order == this.Order)
                         this.RefreshReagents();
                     break;

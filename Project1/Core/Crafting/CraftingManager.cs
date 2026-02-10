@@ -16,10 +16,10 @@ namespace Project1.Core.Crafting
         public override string Name => "CraftingManager";
         readonly Dictionary<IntVec3, BlockWorkstationComp> _byPosition = [];
         readonly Dictionary<WorkstationDef, HashSet<BlockWorkstationComp>> _byType = [];
-        readonly Dictionary<int, OrderSettings> _ordersById = [];
-        readonly Dictionary<BlockEntity, OrderSettings> _ordersByWorkstation = [];
+        readonly Dictionary<int, CraftingOrder> _ordersById = [];
+        readonly Dictionary<BlockEntity, CraftingOrder> _ordersByWorkstation = [];
         public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byType.SelectMany(d => d.Value);
-        public IEnumerable<IGrouping<BlockEntity, List<OrderSettings>>> OrdersByWorkstation => AllWorkstations.GroupBy(i => i.Parent, i => i.Orders);
+        public IEnumerable<IGrouping<BlockEntity, List<CraftingOrder>>> OrdersByWorkstation => AllWorkstations.GroupBy(i => i.Parent, i => i.Orders);
         public CraftingManager(Town town) : base(town)
         {
             var workstationDefs = Def.GetDefs<WorkstationDef>();
@@ -60,12 +60,12 @@ namespace Project1.Core.Crafting
                     this.NextOrderId = Math.Max(this.NextOrderId, order.Id + 1);
                 }
         }
-        void RegisterOrder(OrderSettings order)
+        void RegisterOrder(CraftingOrder order)
         {
             this._ordersById.Add(order.Id, order);
             this._ordersByWorkstation.Add(order.Workstation.Parent, order);
         }
-        public IEnumerable<OrderSettings> GetAllOrdersUnsorted()
+        public IEnumerable<CraftingOrder> GetAllOrdersUnsorted()
         {
             foreach (var order in this._ordersById.Values)
                 yield return order;
@@ -113,7 +113,7 @@ namespace Project1.Core.Crafting
 
             this._byType[workstation.WorkstationType].Add(workstation);
         }
-        public OrderSettings CreateOrderNew(IntVec3 workstationPosition, Def recipe)
+        public CraftingOrder CreateOrderNew(IntVec3 workstationPosition, Def recipe)
         {
             var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
             var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
@@ -124,7 +124,7 @@ namespace Project1.Core.Crafting
                 Log.Error($"Not enough workstation modules to craft {recipe.LabelReadable}");
                 return null;
             }
-            var order = new OrderSettings(this.NextOrderId++, comp, recipe);
+            var order = new CraftingOrder(this.NextOrderId++, comp, recipe);
 
             comp.Orders.Add(order);
             this._ordersById.Add(order.Id, order);
@@ -133,12 +133,12 @@ namespace Project1.Core.Crafting
             return order;
         }
 
-        public OrderSettings CreateOrder(IntVec3 workstationPosition, MaterialRefinementDef refinement)
+        public CraftingOrder CreateOrder(IntVec3 workstationPosition, MaterialRefinementDef refinement)
         {
             var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
             var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
 
-            var order = new OrderSettings(this.NextOrderId++, comp, refinement);
+            var order = new CraftingOrder(this.NextOrderId++, comp, refinement);
 
             comp.Orders.Add(order);
             this._ordersById.Add(order.Id, order);
@@ -147,7 +147,7 @@ namespace Project1.Core.Crafting
             return order;
         }
 
-        internal OrderSettings DeleteOrder(int id)
+        internal CraftingOrder DeleteOrder(int id)
         {
             if (!this._ordersById.TryGetValue(id, out var order)) throw new ArgumentException($"Order with id: {id} didn't exist");
             this._ordersById.Remove(id);
@@ -157,7 +157,7 @@ namespace Project1.Core.Crafting
             return order;
         }
 
-        internal OrderSettings GetOrder(int id)
+        internal CraftingOrder GetOrder(int id)
         {
             return this._ordersById[id];
         }

@@ -1,9 +1,9 @@
-﻿using Project1.Core.Needs;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
+﻿using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
-using Project1.Framework;
+using Project1.Core.Needs;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.Effects
 {
@@ -13,8 +13,6 @@ namespace Project1.Core.Effects
 
         internal void Start(Actor actor) => this.Def.Worker.OnStart(actor, this);
         internal void Finish(Actor actor) => this.Def.Worker.OnFinish(actor, this);
-        
-
         public static EntityEffectWrapper Create(IDataReader r)
         {
             var def = r.ReadDef<EffectDef>();
@@ -33,12 +31,10 @@ namespace Project1.Core.Effects
             this.Rate.Save(tag, "Rate");
             return tag;
         }
-
         public Control GetGui()
         {
             return new Label($"Effect: {this.Def.Name}");
         }
-
         public void Write(IDataWriter w)
         {
             w.Write(this.Def);
@@ -46,9 +42,7 @@ namespace Project1.Core.Effects
             w.Write(this.Budget);
             w.Write(this.Rate);
         }
-
-        public EntityEffectWrapper Read(IDataReader r) => throw new System.Exception();// new EntityEffectWrapper().Read(r);
-
+        public EntityEffectWrapper Read(IDataReader r) => throw new System.Exception();
         public static EntityEffectWrapper Create(SaveTag tag)
         {
             var def = tag.LoadDef<EffectDef>("Def");

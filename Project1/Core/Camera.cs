@@ -1,13 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Blocks;
-using Project1.Core.Base;
-using Project1.Core.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Input;
+using Project1.Framework.Graphics;
+using Project1.Core.Blocks;
+using Project1.Core.Base;
+using Project1.Core.Input;
 using Project1.Core.Screens;
 using Project1.Core.Helpers;
 using Project1.Core.Graphics;
@@ -16,15 +20,12 @@ using Project1.Core.Simulation;
 using Project1.Core.Simulation.Lighting;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
-using Project1.Framework.UI;
-using Project1.Framework.Input;
-using Project1.Framework.Graphics;
-using Project1.Framework;
 using Project1.Core.Rendering;
+using Project1.Core.Animations;
 
 namespace Project1.Core
 {
-    public class Camera : IKeyEventHandler
+    public class Camera : ICamera, IKeyEventHandler
     {
         static XElement XCameraSettings = GameSettings.XmlNodeSettings.GetOrCreateElement("Camera");
         static Camera()
@@ -104,7 +105,9 @@ namespace Project1.Core
           FinalScene;
         public Rectangle ViewPort;
         double _rotation;
-        public double RotCos, RotSin;
+        public double RotCos{ get; private set; }
+        public double RotSin { get; private set; }
+
         public float LastZTarget;
         float DepthFar, DepthNear;
         public MySpriteBatch SpriteBatch;

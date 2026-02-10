@@ -36,7 +36,8 @@ namespace Project1.Core.Entities
             StackCapacity = 32,//64,
             Category = ItemCategoryDefOf.RawMaterials,
             DefaultMaterial = MaterialDefOf.Seed,
-            CompTypes = [typeof(SeedComponent)],
+            Comps = [typeof(SeedComponent)],
+            CompDefs = [EntityCompDefOf.Seed],
             Body = new Bone(BoneDefOf.Item, ItemContent.SeedsFull)
         };
         static public readonly ItemDef Fruit = new ItemDef("Fruit", typeof(Entity))
@@ -44,7 +45,8 @@ namespace Project1.Core.Entities
             StackCapacity = 32,
             Category = ItemCategoryDefOf.FoodRaw,
             ReplaceName = true,
-            CompTypes = [typeof(ConsumableComponent)],
+            Comps = [typeof(ConsumableComponent)],
+            CompDefs = [EntityCompDefOf.Consumable],
             Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull)
         };
 
@@ -53,7 +55,8 @@ namespace Project1.Core.Entities
             StackCapacity = 8,
             Category = ItemCategoryDefOf.FoodRaw,
             DefaultMaterialType = MaterialTypeDefOf.Flesh,
-            CompTypes = [typeof(ConsumableComponent)],
+            Comps = [typeof(ConsumableComponent)],
+            CompDefs = [EntityCompDefOf.Consumable],
             Body = new Bone(BoneDefOf.Item, Sprite.Default)
         };
 
@@ -72,7 +75,9 @@ namespace Project1.Core.Entities
                             .SetAllow(def.ValidMaterialTypes, true)
                             .SetAllowed(ItemCategoryDefOf.FoodRaw, true))
                     .AddProductMaker(def => new Reaction.Product(def).GetMaterialFromIngredient("Filling")),
-            CompTypes = [typeof(ConsumableComponent)]
+            Comps = [typeof(ConsumableComponent)],
+            CompDefs = [EntityCompDefOf.Consumable],
+
         }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Flesh)
             .AddSpec(new ConsumableComponent.Spec() { FoodClasses = [FoodClass.Dish] });
 
@@ -80,7 +85,8 @@ namespace Project1.Core.Entities
         static public readonly ItemDef UnfinishedCraft = new ItemDef("UnfinishedCraft", typeof(Entity))
         {
             Category = ItemCategoryDefOf.Unfinished,
-            CompTypes = [typeof(UnfinishedItemComp)],
+            Comps = [typeof(UnfinishedItemComp)],
+            CompDefs = [EntityCompDefOf.UnfinishedItem],
             Body = new Bone(BoneDefOf.Item, Sprite.Default)
         };
 
@@ -106,7 +112,8 @@ namespace Project1.Core.Entities
             GearType = GearTypeDefOf.Head,
             ApparelProperties = new ApparelDef(GearTypeDefOf.Head, 10),
             DefaultMaterial = MaterialDefOf.Iron,
-            CompTypes = [typeof(OwnershipComponent)],
+            Comps = [typeof(OwnershipComponent)],
+            CompDefs = [EntityCompDefOf.Ownership],
             Body = new Bone(BoneDefOf.Item, ItemContent.HelmetFull)
         };
 
@@ -122,7 +129,8 @@ namespace Project1.Core.Entities
             VariantType = typeof(ToolProfileDef),
             StorageFilterVariations = Def.GetDefs<ToolProfileDef>(),
             VariationGetter = e => e.Def,
-            CompTypes = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComponent), typeof(StatsComponent)],
+            Comps = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComponent), typeof(StatsComponent)],
+            CompDefs = [EntityCompDefOf.Tool, EntityCompDefOf.Ownership, EntityCompDefOf.Resources, EntityCompDefOf.Stats],
             Body = new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
                             .AddJoint(Vector2.Zero, new Bone(BoneDefOf.ToolHead, ItemContent.LogsGrayscale) { DrawMaterialColor = true })
         }
@@ -130,11 +138,8 @@ namespace Project1.Core.Entities
         static ItemDefOf()
         {
             Def.Register(typeof(ItemDefOf));
-
             GenerateCookingRecipes();
-
         }
-
         private static void GenerateCookingRecipes()
         {
             var cookables = Def.GetDefs<ItemDef>().Where(d => d.RecipeProperties != null).ToList();

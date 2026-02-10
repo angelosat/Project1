@@ -3,7 +3,6 @@ using Project1.Core.Materials;
 using Project1.Core.Towns.Constructions.Categories;
 using Project1.Core.Blocks;
 using Project1.Core.Graphics.Particles;
-using Project1.Core.Helpers;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Net;
 using Project1.Core.Simulation;

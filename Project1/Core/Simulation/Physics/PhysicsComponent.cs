@@ -1,20 +1,22 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
 using Project1.Core.Blocks;
 using Project1.Core.Net;
 using Project1.Core.Components;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
+using Project1.Framework;
 
 namespace Project1.Core.Simulation.Physics
 {
     public enum ObjectSize { Inventoryable, Haulable, Immovable }
     public class PhysicsComponent : EntityComp
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Physics;
         public override string Name { get; } = "Physics";
         public ObjectSize Size => this.Owner.Def.Size;
         public bool Solid;
@@ -463,7 +465,6 @@ namespace Project1.Core.Simulation.Physics
             var parent = this.Owner;
             if (!parent.Net.IsServer)
                 return;
-            //throw new Exception("physics shouldn't run in clients");
             if (e.Source != this.Owner)
                 return;
             var otherItem = e.Target;

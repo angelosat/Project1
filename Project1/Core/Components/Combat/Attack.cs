@@ -55,7 +55,7 @@ namespace Project1.Core.Components.Combat
                 return (origin, direction, target) =>
                 {
                     Ray ray = new Ray(origin, direction);
-                    var cylinder = BoundingCylinder.Create(target);
+                    var cylinder = BoundingCylinder.Create(target.Global, target.Height);
                     var success = cylinder.Intersects(ray);
                     return success;
                 };

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
 using Project1.Core.Inventory;
 using Project1.Core.Entities;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 
 namespace Project1.Core.Components
 {
     public class OwnershipComponent : EntityComp
     {
+        public override EntityCompDef CompDef => EntityCompDefOf.Ownership;
         public new class Spec : Spec<OwnershipComponent> { }
         public override string Name { get; } = "Ownership";
         public int OwnerRef { get; private set; } = -1;

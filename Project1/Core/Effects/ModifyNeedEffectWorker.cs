@@ -11,7 +11,7 @@ namespace Project1.Core.Effects
             if (wrapper.IsInstant)
                 need.ApplyDelta(wrapper.Budget);
             else
-                need.AddMod(EffectDefOf.ModifyNeed, wrapper.Rate);// Ticks.FromMinutes(1));
+                need.AddMod(EffectDefOf.ModifyNeed, wrapper.Rate);
         }
         public override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
         {

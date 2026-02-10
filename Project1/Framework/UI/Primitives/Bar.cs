@@ -9,19 +9,6 @@ using Project1.Core;
 
 namespace Project1.Framework.UI
 {
-    public class Subscription(Action unsubscribe) : IDisposable
-    {
-        Action unsub = unsubscribe;
-        bool disposed;
-
-        public void Dispose()
-        {
-            if (disposed) return;
-            unsub?.Invoke();
-            disposed = true;
-            unsub = null;
-        }
-    }
     public class BarFinal : ButtonBaseNew
     {
         IDisposable subscription;

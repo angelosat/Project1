@@ -8,8 +8,8 @@ namespace Project1.Core.Towns.AI.Behaviors
     {
         protected override Plan TryPlan(Actor actor)
         {
-            var state = actor.GetState();
-            if(state.ConversationPartner == null)
+            var state = actor.AI.State;
+            if(state.ConversationPartner is null)
                 return null;
             return new Plan(typeof(TaskBehaviorBeTalkedTo));
         }

@@ -1,21 +1,24 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Helpers;
-using System;
+﻿using System;
+using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using Project1.Framework;
+using Project1.Core.Blocks.Comps;
 using Project1.Core.Crafting;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.Blocks
 {
-    internal class BlockFuelComp : BlockEntityComp
+    internal class BlockFuelComp : BlockComp
     {
-        internal new class Spec : BlockEntityComp.Spec
+        internal new class Spec : BlockComp.Spec
         {
             public override Type CompType => typeof(BlockFuelComp);
 
-            public override BlockEntityComp CreateComp() => new BlockFuelComp();
+            public override BlockComp CreateComp() => new BlockFuelComp();
         }
+        public override BlockCompDef CompDef => BlockCompDefOf.Fuel;
+
         public override string Name => "Fuel";
 
         int FuelCurrent;

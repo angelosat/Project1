@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Rendering;
+using Project1.Core.Graphics;
 using System.Collections.Generic;
 
 namespace Project1.Core.Base

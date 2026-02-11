@@ -1,19 +1,19 @@
 ﻿using System.Linq;
 using Project1.Framework;
 using Project1.Framework.Serialization;
+using Project1.Framework.Events;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Net;
 using Project1.Core.Net.Packets;
-using Project1.Framework.Events;
 
 namespace Project1.Core.Blocks
 {
     [EnsureStaticCtorCall]
     internal static class PacketsBlocks
     {
-            readonly static PacketId _pBlockEntityRemoved, _pBlockEntityAdded, _pBlockEntityCompUpdated, _pBlockSet, _pBlocksUpdated, _pOwnerChanged, _pOwnerChangedByPlayer;
+        readonly static PacketId _pBlockEntityRemoved, _pBlockEntityAdded, _pBlockEntityCompUpdated, _pBlockSet, _pBlocksUpdated, _pOwnerChanged, _pOwnerChangedByPlayer;
         static PacketsBlocks()
         {
             _pBlockEntityRemoved = Registry.PacketHandlers.Register(OnBlockEntityRemoved);

@@ -1,9 +1,9 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers.Structs;
+﻿using System;
 using Project1.Framework.Events;
 using Project1.Framework.Serialization;
-using System;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers.Structs;
 
 namespace Project1.Core.Inventory
 {

@@ -7,7 +7,6 @@ using Project1.Core.Net;
 using Project1.Core.Net.Packets;
 using System;
 using System.Collections.Generic;
-using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
@@ -15,6 +14,7 @@ using Project1.Framework.Input;
 using Project1.Framework.UI;
 using Project1.Framework;
 using Project1.Framework.Events;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Input
 {

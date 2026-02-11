@@ -8,6 +8,7 @@ using Project1.Core.Screens;
 using Project1.Core.Entities;
 using Project1.Core.Simulation;
 using Project1.Framework.Events;
+using Project1.Framework.Input;
 
 namespace Project1.Core.Input.Tools
 {

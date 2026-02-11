@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Project1.Framework;
-using Project1.Core.Net;
 using Project1.Framework.Events;
+using Project1.Core.Net;
 
 namespace Project1.Core.Loot
 {

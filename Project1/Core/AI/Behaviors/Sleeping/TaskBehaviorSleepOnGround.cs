@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Project1.Core.Needs;
-using Project1.Core;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.Interactions;
 
 namespace Project1.Core.AI.Behaviors.Sleeping
 {

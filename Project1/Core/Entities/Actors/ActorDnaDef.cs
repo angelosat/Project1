@@ -9,7 +9,7 @@ using Project1.Core.Resources;
 
 namespace Project1.Core.Entities.Actors
 {
-    public class ActorDnaDef : Def
+    public class ActorDnaDef(string name) : Def(name)
     {
         public NeedDef[] Needs;
         public AttributeDef[] Attributes;
@@ -18,7 +18,6 @@ namespace Project1.Core.Entities.Actors
         public ResourceDef[] Resources;
         public GearTypeDef[] Gear;
         public Behavior Behavior;
-        public ActorDnaDef(string name) : base(name) { }
 
         public IEnumerable<EntityComp.Spec> GenerateSpecs()
         {

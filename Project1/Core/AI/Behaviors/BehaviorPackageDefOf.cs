@@ -7,7 +7,7 @@ namespace Project1.Core.AI.Behaviors
     internal static class BehaviorPackageDefOf
     {
         static public readonly BehaviorPackageDef Npc = new("Npc", new BehaviorQueue(
-                                                                       new AIMemory(),
+                                                                       new BehaviorMemory(),
                                                                        new BehaviorHandleResources(),
                                                                        new BehaviorHandleOrders(),
                                                                        new BehaviorHandlePlans()));

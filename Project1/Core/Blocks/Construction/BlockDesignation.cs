@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Base;
-using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Framework;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Blocks
 {
@@ -27,7 +27,7 @@ namespace Project1.Core.Blocks
             return canvas.Designations.DrawBlock(Block.Atlas.Texture, screenBounds, token, camera.Zoom, fog, color, sunlight, blocklight, depth, this, global);
         }
        
-        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
+        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
         {
             return new BlockDesignationEntity(this.BlockDef, originGlobal);
         }

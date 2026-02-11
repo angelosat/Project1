@@ -1,8 +1,8 @@
-﻿using Project1.Core.Base;
+﻿using System;
+using Project1.Core.Base;
 using Project1.Core.Simulation;
-using System;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     internal class BlockHealthToken
     {

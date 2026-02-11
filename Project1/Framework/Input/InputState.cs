@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Input;
 using System.Runtime.InteropServices;
+using Microsoft.Xna.Framework.Input;
 
-namespace Project1.Core.Input
+namespace Project1.Framework.Input
 {
     public class InputState : EventArgs
     {
+        InputState()
+        {
+            
+        }
+        public readonly static InputState Instance = new();
         bool _Handled;
         public bool Handled
         {
@@ -26,8 +31,6 @@ namespace Project1.Core.Input
         }
 
         public byte[] KeyState = new byte[256], LastKeyState;
-        //public Vector2 LastMouse;
-        //public Vector2 CurrentMouse;
         public KeyboardState CurrentKeyboardState, LastKeyboardState;
         public MouseState CurrentMouseState, LastMouseState;
 
@@ -113,8 +116,6 @@ namespace Project1.Core.Input
             LastMouseState = CurrentMouseState;
             CurrentKeyboardState = Keyboard.GetState();
             CurrentMouseState = Mouse.GetState();
-            //this.LastMouse = this.CurrentMouse;
-            //this.CurrentMouse = new Vector2(System.Windows.Forms.Control.MousePosition.X - Game1.Instance.Window.ClientBounds.X, System.Windows.Forms.Control.MousePosition.Y - Game1.Instance.Window.ClientBounds.Y);
         }
     }
 }

@@ -20,7 +20,6 @@ using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
 using Project1.Core.Net;
-using Project1.Core.Rendering;
 using Project1.Core.Rooms;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
@@ -31,7 +30,7 @@ namespace Project1.Core.Blocks
     public abstract partial class Block : Inspectable, ISlottable, ITooltippable
     {
         public BlockDef BlockDef;
-        public BlockEntityComp.Spec[] BlockEntityCompSpecs;
+        public BlockComp.Spec[] BlockEntityCompSpecs;
         static Block()
         {
             Initialize();
@@ -227,7 +226,7 @@ namespace Project1.Core.Blocks
         public virtual MouseMap MouseMap => BlockMouseMap;
         // TODO find a way to make this method required for blocks tha have entity
         
-        public virtual BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
+        public virtual BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
         { return null; }
         internal virtual BlockEntity TryLinkToAdjacentBlockEntity(MapBase map, IntVec3 global) => null;
         internal virtual BlockEntity TryCreateNewBlockEntity(MapBase map, IntVec3 global, int orientation)

@@ -1,6 +1,7 @@
-﻿using Project1.Core.Animations;
+﻿using System.Collections.Generic;
+using Project1.Core.Animations;
 using Project1.Core.Materials;
-using System.Collections.Generic;
+
 namespace Project1.Core.Entities
 {
     public class EntityCreationRequest(Def context, Def stage, MaterialDef defaultMaterial = null, int stackSize = -1)

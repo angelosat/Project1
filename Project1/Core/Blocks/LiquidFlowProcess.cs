@@ -6,7 +6,7 @@ using Project1.Core.Materials;
 using Project1.Core.Base;
 using Project1.Core.Simulation;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     class LiquidFlowProcess
     {
@@ -19,7 +19,6 @@ namespace Project1.Core
         readonly HashSet<Vector3> Handled = new();
         readonly Queue<Vector3> ToHandle = new();
         MapBase Map;
-
 
         static public void Add(LiquidFlowProcess proc)
         {

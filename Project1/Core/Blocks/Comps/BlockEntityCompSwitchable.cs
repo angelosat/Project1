@@ -1,13 +1,16 @@
-﻿using Project1.Framework;
-using Project1.Framework.Serialization;
+﻿using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
-using Project1.Core.Towns.Designations;
 using Project1.Core.Helpers;
+using Project1.Core.Towns.Designations;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using System;
 
 namespace Project1.Core.Blocks
 {
-    class BlockEntityCompSwitchable : BlockEntityComp
+    class BlockEntityCompSwitchable : BlockComp
     {
+        public override BlockCompDef CompDef => throw new NotImplementedException();
         public override string Name { get; } = "Switchable";
         public bool SwitchedOn { get; private set; } = true;
         public bool IsSwitchedOn()

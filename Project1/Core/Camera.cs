@@ -20,7 +20,6 @@ using Project1.Core.Simulation;
 using Project1.Core.Simulation.Lighting;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
-using Project1.Core.Rendering;
 using Project1.Core.Animations;
 
 namespace Project1.Core

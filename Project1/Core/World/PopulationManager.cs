@@ -5,7 +5,6 @@ using Project1.Core.Towns.AI.Needs;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.Base;
 using Project1.Core.Helpers;
-using Project1.Core.Input;
 using Project1.Core.Interfaces;
 using Project1.Core.Net;
 using Project1.Core.UI;
@@ -20,6 +19,7 @@ using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework;
 using Project1.Core.AI.MetaRoles;
+using Project1.Framework.Input;
 
 namespace Project1.Core.World
 {

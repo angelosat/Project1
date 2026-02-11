@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Project1.Core.Rendering;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Rooms;
 using Project1.Core.Materials;
@@ -30,6 +29,7 @@ using Project1.Framework;
 using Project1.Core.WorldGen;
 using Project1.Framework.Helpers;
 using Project1.Framework.Events;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Simulation
 {
@@ -421,11 +421,11 @@ namespace Project1.Core.Simulation
             chunk.TryGetBlockEntity(global.ToLocal(), out var entity);
             return entity;
         }
-        public T GetBlockEntityComp<T>(IntVec3 global) where T: BlockEntityComp
+        public T GetBlockEntityComp<T>(IntVec3 global) where T: BlockComp
         {
             return this.GetBlockEntity(global).GetComp<T>();
         }
-        public bool TryGetBlockEntityComp<T>(IntVec3 global, out T comp) where T : BlockEntityComp
+        public bool TryGetBlockEntityComp<T>(IntVec3 global, out T comp) where T : BlockComp
         {
             if (!this.TryGetBlockEntity(global, out var entity))
             {
@@ -1208,7 +1208,7 @@ namespace Project1.Core.Simulation
             return false;
         }
 
-        internal IEnumerable<KeyValuePair<IntVec3, BlockEntity>> GetBlockEntitiesWithComp<T>() where T : BlockEntityComp
+        internal IEnumerable<KeyValuePair<IntVec3, BlockEntity>> GetBlockEntitiesWithComp<T>() where T : BlockComp
         {
             var entities = this.GetBlockEntitiesCache();
             var count = entities.Count;

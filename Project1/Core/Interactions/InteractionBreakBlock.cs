@@ -6,7 +6,6 @@ using Project1.Core.Materials;
 using Project1.Core.Blocks;
 using Project1.Core.Interactions;
 using Project1.Core.Materials;
-using Project1.Core;
 using Project1.Core.Simulation;
 using Project1.Framework;
 

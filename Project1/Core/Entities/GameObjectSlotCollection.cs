@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Project1.Core.UI.Slots;
 using Project1.Framework.UI;
+using Project1.Core.UI.Slots;
 
 namespace Project1.Core.Entities
 {

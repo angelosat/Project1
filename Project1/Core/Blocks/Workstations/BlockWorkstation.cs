@@ -75,7 +75,7 @@ namespace Project1.Core
             //}
             return null;
         }
-        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
+        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
         {
             // Find all adjacent existing workstation block entities
             var neighbors = new List<BlockEntity>();

@@ -1,6 +1,5 @@
 ﻿using Project1.Framework;
 using Project1.Core.AI.Planners;
-using Project1.Core.Needs.Types;
 
 namespace Project1.Core.Needs
 {

@@ -36,7 +36,7 @@ namespace Project1.Core
         {
             return 0;
         }
-        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
+        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
         {
             return new BlockBedEntity(this.BlockDef, originGlobal);
         }

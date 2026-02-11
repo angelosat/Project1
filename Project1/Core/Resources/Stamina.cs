@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Project1.Core.Base;
 using Project1.Framework.UI;
+using Project1.Core.Base;
 
 namespace Project1.Core.Resources
 {
@@ -27,21 +27,6 @@ namespace Project1.Core.Resources
         public float TickRate = Ticks.PerGameMinute / 2f; // 2 ticks per second
         public float Timer = 0;
         public float RegenerationRate = 1;
-
-        //public override bool HandleMessage(Resource resource, GameObject parent, ObjectEventArgs e = null)
-        //{
-        //    switch (e.Type)
-        //    {
-        //        case Message.Types.Jumped:
-        //            resource.RechargingDelay.Value = 0;// resource.Rec.Max;
-        //            return true;
-
-        //        default:
-        //            return base.HandleMessage(resource, parent, e);
-        //    }
-        //}
-
-        
         protected override void updateRec(Resource resource)
         {
             if (resource.RechargingDelay.Value < resource.RechargingDelay.Max)

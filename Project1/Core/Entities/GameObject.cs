@@ -38,6 +38,7 @@ using Project1.Core.Networking.Entities;
 using Project1.Core.AI.MetaRoles;
 using Project1.Core.Animations;
 using Project1.Framework.Events;
+using Project1.Core.Networking.Inventory;
 
 namespace Project1.Core.Entities
 {

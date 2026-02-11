@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Project1.Core.Materials;
-using Project1.Core.Blocks;
 using Project1.Core.Graphics;
-using Project1.Core.Materials;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     class BlockConveyor : Block
     {

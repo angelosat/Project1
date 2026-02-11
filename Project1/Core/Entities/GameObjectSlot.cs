@@ -1,15 +1,12 @@
-﻿using Project1.Core.Inventory;
-using Project1.Core.Helpers;
-using Project1.Core.Helpers.Structs;
-using Project1.Core.Net.Packets;
-using Project1.Core.UI;
-using Project1.Core.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework;
 using Project1.Framework.Events;
+using Project1.Core.Inventory;
+using Project1.Core.Helpers.Structs;
+using Project1.Core.Net.Packets;
 
 namespace Project1.Core.Entities
 {
@@ -86,32 +83,6 @@ namespace Project1.Core.Entities
                 this._object = value;
                 this._updated.Raise();
             }
-            //[Obsolete]
-            //set
-            //{
-            //    throw new Exception();
-            //    if (value is not null)
-            //        if (!this.Filter(value))
-            //            return;
-            //    if (this._object != null)
-            //    {
-            //        this._object.Slot = null;
-            //        this._object.Parent = null;
-            //    }
-            //    _object = value;
-            //    ObjectChangedAction(value);
-            //    OnObjectChanged();
-            //    if (value != null)
-            //    {
-
-            //        value.Container?.Remove(value);
-            //            value.Map?.Despawn(value);
-            //        if (value.Slot is not null && value.Slot != this)
-            //            value.Slot.Clear();
-            //        value.Slot = this;
-            //        value.Parent = this.Parent;
-            //    }
-            //}
         }
         public bool HasValue => this.Object != null;
         public Func<Icon> GetIcon;

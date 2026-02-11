@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Entities;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Input;
 using System.Linq;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
+using Project1.Framework.Input;
 
 namespace Project1.Core.Towns.UI
 {

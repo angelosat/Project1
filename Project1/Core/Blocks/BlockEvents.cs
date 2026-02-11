@@ -1,14 +1,14 @@
-﻿using Project1.Core.Entities.Actors;
+﻿using System.Collections.Generic;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Materials;
 using Project1.Core.Net.Packets;
 using Project1.Core.Simulation;
-using Project1.Framework;
-using Project1.Framework.Events;
-using System.Collections.Generic;
 
 namespace Project1.Core.Blocks
 {
-    public record struct BlockEntityCompUpdatedEvent(BlockEntityComp Comp) : IEventPayload { }
+    public record struct BlockEntityCompUpdatedEvent(BlockComp Comp) : IEventPayload { }
     public record struct BlockEntityUpdatedEvent(BlockEntity Entity) : IEventPayload { }
     public record struct BlockOwnerChangedEvent(BlockEntity Entity, Actor Actor) : IEventPayload { }
     public record struct PlayerChangedBlockOwnerEvent(BlockEntity Entity, Actor Actor) : IEventPayload { }

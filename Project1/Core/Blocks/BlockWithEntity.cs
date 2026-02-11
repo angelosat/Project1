@@ -1,9 +1,10 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Blocks;
+﻿using System;
 using Project1.Framework;
+using Project1.Core.Entities;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
+    [Obsolete]
     abstract class BlockWithEntity : Block
     {
         protected BlockWithEntity(string name, float transparency = 0, float density = 1, bool opaque = true, bool solid = true) : base(name, transparency, density, opaque, solid)

@@ -5,6 +5,7 @@ using Project1.Core.AI.Packets;
 using Project1.Core.Net;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
+using Project1.Framework.Input;
 
 namespace Project1.Core.Input
 {

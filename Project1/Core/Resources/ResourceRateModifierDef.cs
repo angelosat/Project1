@@ -1,6 +1,6 @@
-﻿using Project1.Core.Entities;
+﻿using System;
+using Project1.Core.Entities;
 using Project1.Core.Stats;
-using System;
 
 namespace Project1.Core.Resources
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Project1.Core.Helpers;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 
@@ -9,7 +8,6 @@ namespace Project1.Core.Entities
     public class EntityCompCollection : Inspectable
     {
         readonly Dictionary<Type, EntityComp> _inner = [];
-        //readonly Dictionary<EntityCompDef, EntityComp> _innerByDef = [];
         readonly List<EntityComp> _innerList = [];
         readonly Entity _owner;
         public IEnumerable<EntityComp> Values => this._inner.Values;

@@ -4,8 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Windows.Forms;
 using System.Collections.Concurrent;
-using Project1.Core.Input;
 using Project1.Core.UI;
+using Project1.Framework.Input;
 
 namespace Project1.Core.Screens
 {
@@ -133,7 +133,6 @@ namespace Project1.Core.Screens
             }
         }
 
-        static public InputState Input = new InputState();
         public void Update(Game1 game, GameTime gt)
         {
             if (GameScreens.Count == 0)
@@ -150,7 +149,7 @@ namespace Project1.Core.Screens
             if (!Game1.Instance.IsActive)
                 return;
 
-            Controller.Input.Update();
+            InputState.Instance.Update();
 
             while(MouseInputQueue.TryDequeue(out var e))
                 e.Invoke();

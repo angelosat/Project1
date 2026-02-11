@@ -12,7 +12,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #region Using Statements
-using Project1.Core.Input;
+using Project1.Framework.Input;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms; // This class exposes WinForms-style key events.
@@ -279,14 +279,14 @@ namespace Project1.Framework
         public event KeyEventHandler KeyUp;
         protected virtual void OnKeyUp(KeyEventArgs e)
         {
-            Controller.Input.UpdateKeyStates();
+            InputState.Instance.UpdateKeyStates();
             if (this.KeyUp != null) this.KeyUp(this, e);
         }
 
         public event KeyEventHandler KeyDown;
         protected virtual void OnKeyDown(KeyEventArgs e)
         {
-            Controller.Input.UpdateKeyStates();
+            InputState.Instance.UpdateKeyStates();
             if (this.KeyDown != null) this.KeyDown(this, e);
         }
 

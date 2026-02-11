@@ -10,6 +10,7 @@ using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
 using Project1.Framework.Events;
+using Project1.Framework.Input;
 
 namespace Project1.Core.Screens
 {
@@ -69,7 +70,7 @@ namespace Project1.Core.Screens
         public override void Draw(SpriteBatch sb)
         {
             this.Scene.ObjectBounds.Clear();
-            this.Scene.ObjectsDrawn = new HashSet<GameObject>();
+            this.Scene.ObjectsDrawn.Clear();
 
             var map = GetMap();
             map.Camera.DrawMap(map, ToolManager, WindowManager, Scene);
@@ -107,7 +108,7 @@ namespace Project1.Core.Screens
             if (e.Handled)
                 return;
 
-            List<System.Windows.Forms.Keys> pressed = Controller.Input.GetPressedKeys();
+            List<System.Windows.Forms.Keys> pressed = InputState.Instance.GetPressedKeys();
             if (pressed.Contains(GlobalVars.KeyBindings.HideInterface))
                 HideInterface = !HideInterface;
             if (pressed.Contains(System.Windows.Forms.Keys.F6))

@@ -3,10 +3,10 @@ using Project1.Core.Blocks;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using Project1.Core.Rendering;
 using Project1.Core.Helpers.Collections;
 using Project1.Core.Simulation;
 using Project1.Framework.Graphics;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Input.Tools.CellRendering
 {

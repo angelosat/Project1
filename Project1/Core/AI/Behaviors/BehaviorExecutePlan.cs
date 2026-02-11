@@ -1,31 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using Project1.Framework;
+using Project1.Framework.Serialization;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 
 namespace Project1.Core.AI.Behaviors
 {
     abstract public class BehaviorExecutePlan : Behavior
     {
-
-
-        
         /// <summary>
         /// Attaches a fail condition to the behavior that checks interaction feasibility while the actor is moving toward the target.
         /// Once the interaction is instantiated, the interaction itself performs the authoritative validity checks.
         /// This ensures mid-transit failures are caught early without duplicating the interaction logic.
         /// </summary>
-        
         protected Behavior FailOnNoDesignation(DesignationDef def) => this.FailOn(() => !this.Actor.Town.DesignationManager.IsDesignation(this.Plan.TargetA, def));
         protected Behavior FailOnNoDesignation() => this.FailOn(() => !this.Actor.Map.Town.DesignationManager.IsDesignation(this.Plan.TargetA, this.Plan.Designation));
         protected Behavior FailOnNoConstructionDesignation() => this.FailOn(() => !this.Actor.Map.Town.ConstructionsManager.IsDesignatedConstruction(this.Plan.TargetA.Global));
-
-       
         protected abstract IEnumerable<Behavior> GetSteps();
         int CurrentStepIndex;
         public bool Finished;
@@ -49,8 +43,6 @@ namespace Project1.Core.AI.Behaviors
                 return this._CachedBehaviors;
             }
         }
-        //public override string Status => $"{this.CurrentBehavior.Status}";
-
         Behavior CurrentBehavior => this.CachedBehaviors[this.CurrentStepIndex];
         public BehaviorExecutePlan()
         {
@@ -69,41 +61,21 @@ namespace Project1.Core.AI.Behaviors
             if (this.HasFailedOrEnded())
                 return BehaviorState.Fail;
             var current = this.CachedBehaviors[this.CurrentStepIndex];
-            if (current != null)
+            if (current is not null)
             {
-                // MOVING THIS TO BEHAVIOR'S EXECUTE FUNCTION
-                // MOVING THIS AFTER BEHAVIOR'S EXECUTE FUNCTION because the behavior might update values that will make it not fail, and this should happen before the fail check for this tick
-                // why did i actually do this again???
-                //var failedorended = current.HasFailedOrEnded();
-                //if (failedorended)
-                //    parent.Net.Log.Write(current.ToString() + " failed or ended");
-
                 current.PreTick();
                 if (current != this.CachedBehaviors[this.CurrentStepIndex]) // if the pretick action caused a jump, return
                     return BehaviorState.Running;
-                FromJump = false;
-
-                // IF I CALL THIS HERE
-                // when an actor adds an item to his existing carried item stack, the target item gets absorbed to the carried stack and stops existing
-                // since the target item no longer exists, calling this here for some reason fails the 'target existing' check
-                // WORKCOMPONENT is ticked after AICOMPONENT, so the interaction finishes and changes the game state before the behavior that handles the interaction is called
-                // the behavior that handles the interaction doesn't get the chance to return success and advance the parent behavior
-                //if (current.HasFailedOrEnded())
-                //    return BehaviorState.Fail;
-                //var result = failedorended ? BehaviorState.Fail : current.Execute(parent, state);
+                this.FromJump = false;
 
                 var result = current.Tick(parent, state);
                 this.Plan.TicksCounter++;
-                /// added the success check because interactioncrafting in behaviorcrafting fails even after the interaction successfuly completes because the ingredients are disposed, and it fails on disposed ingredients
-                /// move the whole if block inside the switch block below?
-                //if (result != BehaviorState.Success && current.HasFailedOrEnded())
-                //    return BehaviorState.Fail;
 
                 switch (result)
                 {
                     case BehaviorState.Running:
                         FromJump = false;
-                        if (current.HasFailedOrEnded())   /// have this here or before the switch block?
+                        if (current.HasFailedOrEnded())   // have this here or before the switch block?
                             return BehaviorState.Fail;
                         return BehaviorState.Running;
 
@@ -135,13 +107,6 @@ namespace Project1.Core.AI.Behaviors
             this.CurrentStepIndex++;
         }
 
-        
-        public override void Write(IDataWriter w)
-        {
-        }
-        public override void Read(IDataReader r)
-        {
-        }
         protected override void AddSaveData(SaveTag tag)
         {
             base.AddSaveData(tag);
@@ -160,13 +125,8 @@ namespace Project1.Core.AI.Behaviors
         }
         public bool ReserveBase()
         {
-            //if (this.Task.Tool.HasObject)
-            //    if (!this.Actor.Reserve(this.Task.Tool, 1))
-            //        return false;
-
             return this.ReserveExtra();
         }
-
         protected virtual bool ReserveExtra()
         {
             return true;
@@ -175,7 +135,6 @@ namespace Project1.Core.AI.Behaviors
         {
             for (int i = 0; i < this.FinishActions.Count; i++)
                 this.FinishActions[i]();
-            //this.Actor.Net.Report($"{this} cleaned up");
         }
         internal override void MapLoaded(Actor parent)
         {
@@ -206,9 +165,9 @@ namespace Project1.Core.AI.Behaviors
         }
         internal bool ReserveAll(TargetIndex sourceIndex)
         {
-            // TODO: interperet amount by target type:
-            // for entities do if -1 then amount = entity.stacksize
-            // for intvec3 and blockentities, do amount  = 1
+            /// TODO: interperet amount by target type:
+            /// for entities do if -1 then amount = entity.stacksize
+            /// for intvec3 and blockentities, do amount  = 1
             if (this.Plan.GetTarget(sourceIndex) is TargetArgs singleTarget && singleTarget != TargetArgs.Null)
             {
                 var amountSpecified = this.Plan.GetAmount(sourceIndex);

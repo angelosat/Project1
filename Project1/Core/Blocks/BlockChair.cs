@@ -1,18 +1,17 @@
-﻿using Project1.Core.Blocks;
+﻿using Project1.Framework;
+using Project1.Framework.Graphics;
 using Project1.Core.Base;
-using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Constructions.Categories;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
-using Project1.Framework.Graphics;
-using Project1.Framework;
+using Project1.Core.Graphics;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     class BlockChair : Block
     {
-        static AtlasDepthNormals.Node.Token[] Orientations = new AtlasDepthNormals.Node.Token[4];
+        static readonly AtlasDepthNormals.Node.Token[] Orientations = new AtlasDepthNormals.Node.Token[4];
 
         public BlockChair():base("Chair", opaque: false)
         {

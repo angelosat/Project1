@@ -1,13 +1,7 @@
-﻿using Project1.Core.Blocks;
-
-namespace Project1.Core
+﻿namespace Project1.Core.Blocks
 {
     class BlockWoodPaneling : Block
     {
-        //public override MaterialDef GetMaterial(byte blockdata)
-        //{
-        //    return MaterialDefOf.LightWood;
-        //}
         public BlockWoodPaneling()
             : base("WoodPaneling", 0, 1, true, true)
         {

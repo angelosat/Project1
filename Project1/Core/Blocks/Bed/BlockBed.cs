@@ -4,7 +4,6 @@ using Project1.Core.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Loot;
 using Project1.Core.Legacy;
@@ -17,6 +16,7 @@ using Project1.Core.Simulation;
 using Project1.Framework.UI;
 using Project1.Framework.Graphics;
 using Project1.Framework;
+using Project1.Core.Graphics;
 
 namespace Project1.Core
 {
@@ -217,7 +217,7 @@ namespace Project1.Core
                 sb.DrawBlock(Atlas.Texture, map, top, topSrc, cam, Color.Transparent, tint, Color.White, Vector4.One);
             }
         }
-        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
+        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
         {
             return new BlockBedEntity(this.BlockDef, originGlobal);
         }

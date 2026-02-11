@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
-using Project1.Core.Blocks;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Blocks.Comps;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Simulation;
 using Project1.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core
 {
-    class BlockEntityCompParticles : BlockEntityComp
+    class BlockEntityCompParticles : BlockComp
     {
+        public override BlockCompDef CompDef => throw new NotImplementedException();
+
         public override string Name { get; } = "Particles";
         readonly HashSet<ParticleEmitter> Emitters = new();
         public BlockEntityCompParticles(params ParticleEmitter[] emitters)

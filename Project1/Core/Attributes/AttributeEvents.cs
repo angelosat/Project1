@@ -1,5 +1,5 @@
-﻿using Project1.Core.Entities.Actors;
-using Project1.Framework.Events;
+﻿using Project1.Framework.Events;
+using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Attributes
 {

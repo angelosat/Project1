@@ -1,29 +1,32 @@
-﻿using Project1.Core.Entities.Actors;
+﻿using System;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Core.Blocks.Comps;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
-using Project1.Core.Interfaces;
-using System;
 using Project1.Core.Simulation;
-using Project1.Framework.Serialization;
-using Project1.Framework;
+using Project1.Core.UI.Blocks;
 
 namespace Project1.Core.Blocks
 {
-    internal class BlockOwnershipComp : BlockEntityComp
+    internal class BlockOwnershipComp : BlockComp
     {
-        internal new class Spec : BlockEntityComp.Spec
+        internal new class Spec : BlockComp.Spec
         {
             public override Type CompType => typeof(BlockOwnershipComp);
 
-            public override BlockEntityComp CreateComp() => new BlockOwnershipComp();
+            public override BlockComp CreateComp() => new BlockOwnershipComp();
         }
+        public override BlockCompDef CompDef => BlockCompDefOf.Ownership;
+
         public override string Name => "Ownership";
 
         public EntityRefId Owner { get; private set; }
 
         internal override void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3)
         {
-            register("Owner", typeof(BlockEntityOwnerGui));
+            register("Owner", typeof(BlockOwnerGui));
         }
 
         internal void SetOwner(Actor a)

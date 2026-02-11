@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Project1.Core.Rendering;
 using Project1.Core.Entities;
 
 namespace Project1.Core.Graphics.Particles

@@ -1,10 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Blocks;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.Graphics;
 using Project1.Core.Graphics.Particles;
-using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Loot;
 using Project1.Core.Legacy;
@@ -12,9 +11,9 @@ using Project1.Core.Towns.Constructions.Categories;
 using Project1.Core.Helpers;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
-using Project1.Framework.Graphics;
+using Project1.Core.Graphics;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     class BlockWoodenDeck : Block
     {

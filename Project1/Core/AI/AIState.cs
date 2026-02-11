@@ -207,15 +207,10 @@ namespace Project1.Core.AI
                 var tasktag = t["Task"];
                 var task = Plan.Load(tasktag);
                 var bhavtag = t["Behavior"];
-                var bhavname = (string)bhavtag["TypeName"].Value;
-                // HACK
-                if (Type.GetType(bhavname) is Type bhavType)
-                {
-                    var bhav = Activator.CreateInstance(bhavType) as BehaviorExecutePlan;
-                    bhav.Plan = task;
-                    bhav.Load(bhavtag);
-                    this.TaskStack.Push(bhav);
-                }
+                var bhav = task.CreateBehavior(this.Owner);
+                bhav.Plan = task;
+                bhav.Load(bhavtag);
+                this.TaskStack.Push(bhav);
             }
             var tagQueue = tag["TaskQueue"];
             var listQueue = tagQueue.Value as List<SaveTag>;
@@ -224,8 +219,7 @@ namespace Project1.Core.AI
                 var tasktag = t["Task"];
                 var task = Plan.Load(tasktag);
                 var bhavtag = t["Behavior"];
-                var bhavname = (string)bhavtag["TypeName"].Value;
-                var bhav = Activator.CreateInstance(Type.GetType(bhavname)) as BehaviorExecutePlan;
+                var bhav = task.CreateBehavior(this.Owner);
                 bhav.Plan = task;
                 bhav.Load(bhavtag);
                 this.TaskQueue.Enqueue(bhav);
@@ -251,7 +245,7 @@ namespace Project1.Core.AI
                 var tupleTag = new SaveTag(SaveTag.Types.Compound);
                 tupleTag.Add(bhav.Plan.Save("Task"));
                 var bhavtag = bhav.Save("Behavior");
-                bhavtag.Add(bhav.GetType().FullName.Save("TypeName"));
+                //bhavtag.Add(bhav.GetType().FullName.Save("TypeName"));
                 tupleTag.Add(bhavtag);
                 tagStack.Add(tupleTag);
             }
@@ -262,7 +256,7 @@ namespace Project1.Core.AI
                 var tupleTag = new SaveTag(SaveTag.Types.Compound);
                 tupleTag.Add(bhav.Plan.Save("Task"));
                 var bhavtag = bhav.Save("Behavior");
-                bhavtag.Add(bhav.GetType().FullName.Save("TypeName"));
+                //bhavtag.Add(bhav.GetType().FullName.Save("TypeName"));
                 tupleTag.Add(bhavtag);
                 tagQueue.Add(tupleTag);
             }

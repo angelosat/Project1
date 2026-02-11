@@ -1,8 +1,8 @@
 ﻿using System;
 using Project1.Core.Materials;
 using Project1.Core.Net;
-using Project1.Core;
 using Project1.Core.Simulation;
+using Project1.Core.Blocks;
 
 namespace Project1.Core.WorldGen
 {

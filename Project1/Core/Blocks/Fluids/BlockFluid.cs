@@ -2,11 +2,11 @@
 using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
 using Project1.Core.Base;
-using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
 using Project1.Framework.Graphics;
 using Project1.Framework;
+using Project1.Core.Graphics;
 
 namespace Project1.Core
 {
@@ -33,7 +33,7 @@ namespace Project1.Core
             yield return MaterialDefOf.Water;
         }
         
-        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
+        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
         {
             return new BlockFluidEntity(this.BlockDef, originGlobal);
         }

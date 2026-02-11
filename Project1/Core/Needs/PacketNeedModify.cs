@@ -1,9 +1,8 @@
 ﻿using Project1.Framework;
-using Project1.Core.Entities;
+using Project1.Framework.Events;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Net;
 using Project1.Core.Helpers;
-using Project1.Framework.Events;
 
 namespace Project1.Core.Needs
 {
@@ -15,8 +14,6 @@ namespace Project1.Core.Needs
         {
             pSet = Registry.PacketHandlers.Register(ReceiveSet);
         }
-
-        
         static public void SendSet(NetEndpoint net, int agentID, NeedDef needDef, float value)
         {
             net.BeginPacketImmediate(pSet)

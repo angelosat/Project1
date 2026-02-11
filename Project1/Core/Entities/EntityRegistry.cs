@@ -1,13 +1,12 @@
-﻿using Project1.Core.Helpers;
-using Project1.Core.Simulation;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Entities
 {

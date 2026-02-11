@@ -1,6 +1,6 @@
-﻿using Project1.Core.Simulation;
+﻿using System.Collections.Generic;
+using Project1.Core.Simulation;
 using Project1.Framework;
-using System.Collections.Generic;
 
 namespace Project1.Core.Blocks.Doors
 {
@@ -8,7 +8,6 @@ namespace Project1.Core.Blocks.Doors
     {
         readonly HashSet<BlockDoorComp> Comps = [];
         readonly Dictionary<IntVec3, BlockDoorComp> CellsToDoors = [];
-
         public DoorManager(MapBase map) : base(map)
         {
             map.Events.ListenTo<BlockEntityAddedEvent>(OnBlockEntityAdded);

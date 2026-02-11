@@ -1,21 +1,23 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Helpers.Structs;
-using Project1.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Project1.Core.Simulation;
+using Microsoft.Xna.Framework;
+using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
+using Project1.Core.Helpers.Structs;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Blocks.Doors
 {
-    internal class BlockDoorComp : BlockEntityComp
+    internal class BlockDoorComp : BlockComp
     {
-        internal new class Spec : BlockEntityComp.Spec
+        internal new class Spec : BlockComp.Spec
         {
             public override Type CompType => typeof(BlockDoorComp);
 
-            public override BlockEntityComp CreateComp() => new BlockDoorComp();
+            public override BlockComp CreateComp() => new BlockDoorComp();
         }
+        public override BlockCompDef CompDef => BlockCompDefOf.Door;
+
         public override string Name => "Door";
         BoundingBox? _cachedAABB;
         HashSet<EntityRefId> CurrentlyOccupying = [];

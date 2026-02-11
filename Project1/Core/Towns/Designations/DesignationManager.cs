@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using Project1.Core.Rendering;
 using Project1.Core.Input;
 using Project1.Core.Input.Tools;
 using Project1.Core.Input.Tools.CellRendering;
@@ -20,6 +19,7 @@ using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
 
 using Project1.Core.Blocks;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Towns.Designations
 {

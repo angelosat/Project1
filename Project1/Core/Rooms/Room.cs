@@ -13,6 +13,7 @@ using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework;
+using Project1.Core.Blocks;
 
 namespace Project1.Core.Rooms
 {

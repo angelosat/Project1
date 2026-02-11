@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Components.Fuel;
-using Project1.Core.Materials;
 
 namespace Project1.Core.Materials
 {

@@ -1,26 +1,29 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Base;
+﻿using System;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using Project1.Core.Blocks.Comps;
+using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
-using Project1.Framework.Serialization;
-using Project1.Framework.UI;
-using Project1.Framework;
-using System;
+
 namespace Project1.Core.Blocks
 {
     [EnsureStaticCtorCall]
-    public class BlockConstructionComp : BlockEntityComp
+    public class BlockConstructionComp : BlockComp
     {
-        internal new class Spec : BlockEntityComp.Spec
+        internal new class Spec : BlockComp.Spec
         {
             public override Type CompType => typeof(BlockConstructionComp);
 
-            public override BlockEntityComp CreateComp()
+            public override BlockComp CreateComp()
             {
                 return new BlockConstructionComp();
             }
         }
+        public override BlockCompDef CompDef => BlockCompDefOf.Construction;
+
         public override string Name => $"{this}";
 
         public Block Block => this.Args.Block.Worker;

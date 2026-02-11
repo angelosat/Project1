@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Project1.Framework;
+using Project1.Framework.Serialization;
 using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.AI.Planners;
 using Project1.Core.Helpers;
 using Project1.Core.Resources;
-using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Framework.Serialization;
-using Project1.Framework;
+using Project1.Core.Needs;
 
 namespace Project1.Core.AI.Behaviors
 {
@@ -25,14 +25,13 @@ namespace Project1.Core.AI.Behaviors
         }
         private void CleanUp(Actor parent, AIState state)
         {
-            // dont drop carried item here, let the last cleanup behavior (idle) handle it?
             parent.Unreserve();
             state.Reset();
             parent.AI.State.CurrentPlanner = null;
         }
         static IEnumerable<PlannerDef> GetPlanners(Actor actor)
         {
-            var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);//.OfType<Planner>();
+            var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);
             planners = planners.Concat(Planner.EssentialPlanners);
             var jobs = actor.AI.State.GetJobs().Where(j => j.Enabled);
             jobs = jobs.OrderBy(j => j.Priority);
@@ -132,15 +131,6 @@ namespace Project1.Core.AI.Behaviors
                     state.TryAssign(task);
                     break;
                 }
-                //var plannerEnum = Planner.UrgentPlanners.GetEnumerator();
-                //while 
-                //    (
-                //    plannerEnum.MoveNext() && 
-                //    plannerEnum.Current.FindPlanNew(parent) is var task && 
-                //    task is not null
-                //    )
-                //    if (state.TryAssign(task))
-                //        break;
             }
 
             if (state.Behavior is not null)
@@ -159,26 +149,12 @@ namespace Project1.Core.AI.Behaviors
                     case BehaviorState.Fail:
                     case BehaviorState.Success:
                         parent.MoveToggle(false);
-
                         parent.EndInteraction();
-
-                        // TODO: unreserve here?
                         parent.Unreserve();
-              
-                        //state.LastBehavior = currentBhav;
-
                         state.NextTask();
-
-                        // ADDED THIS HERE because when immediately getting a new task from the same taskgiver,
-                        // the pathfinding behavior saw that the path wasn't null and didn't calculate a new path for the new behavior/targets
                         state.Path = null;
-
-                        if (parent.CurrentInteraction is not null) // added this here because when cleaning up, an unequip interaction might be in progress. and we dont want to interrupt it by starting another task
-                            return BehaviorState.Running; // returning running until clean up interaction finishes, otherwise it might get interrupted by the next behaviors, like BehaviorIdle
-                        /// OTHER SOLUTION: make a new behavior that cleans up before behaviorhandletask is ticked?
-
-                        // I MOVED THIS FROM HERE SO THAT THE FALLBACK BEHAVIOR, IF ANY, STARTS IN THE NEXT FRAME
-                        //this.CleanUp(parent, state);
+                        if (parent.CurrentInteraction is not null) 
+                            return BehaviorState.Running; 
                         return BehaviorState.Fail;
 
                     default:
@@ -187,15 +163,13 @@ namespace Project1.Core.AI.Behaviors
             }
             else
             {
-                if (parent.CurrentInteraction is not null) // added this here because when cleaning up, an unequip interaction might be in progress. and we dont want to interrupt it by starting another task
-                    return BehaviorState.Running; // returning running until clean up interaction finishes, otherwise it might get interrupted by the next behaviors, like BehaviorIdle
-                /// OTHER SOLUTION: make a new behavior that cleans up before behaviorhandletask is ticked?
+                if (parent.CurrentInteraction is not null) 
+                    return BehaviorState.Running; 
+
                 var stamina = parent.GetResource(ResourceDefOf.Stamina);
                 var staminaTaskThreshold = 20;
                 var tired = stamina.Value <= staminaTaskThreshold;
 
-                //if (this.CurrentPlanner != null && (!state.Behavior?.Plan.Def.Idle ?? false))
-                //if (this.HasIntent && !this.IsIdle)
                 var currentPlanner = parent.AI.State.CurrentPlanner;
                 if(currentPlanner is not null && currentPlanner != PlannerDefOf.Idle)
                 {
@@ -221,8 +195,7 @@ namespace Project1.Core.AI.Behaviors
                     else
                     {
                         this.CleanUp(parent, state);
-                        //return BehaviorState.Fail;
-                        return BehaviorState.Running; // RETURN RUNNING INSTEAD because cleaning up starts an interaction
+                        return BehaviorState.Running;
                     }
                 }
 
@@ -231,35 +204,20 @@ namespace Project1.Core.AI.Behaviors
                     this.IdleTimer.Tick();
                     if (this.IdleTimer.Fired)
                     {
-                        var task = this.FindNewPlan(parent, state); // TODO: needs optimization
+                        var task = this.FindNewPlan(parent, state);
                         if (task is not null)
                         {
                             this.IdleTimer.Reset();
                             return BehaviorState.Success;
                         }
                     }
-                    //if (this.Timer < TimerMax)
-                    //    this.Timer++;
-                    //else
-                    //{
-                    //    this.Timer = 0;
-                    //    var task = this.FindNewPlan(parent, state); // TODO: needs optimization
-                    //    if (task is not null)
-                    //        return BehaviorState.Success;
-                    //}
                 }
             }
-            if (parent.CurrentInteraction is not null) // added this here because when cleaning up, an unequip interaction might be in progress. and we dont want to interrupt it by starting another task
-                return BehaviorState.Running; // returning running until clean up interaction finishes, otherwise it might get interrupted by the next behaviors, like BehaviorIdle
+            if (parent.CurrentInteraction is not null)
+                return BehaviorState.Running;
             return BehaviorState.Fail;
         }
-        //void TickIdleTimer()
-        //{
-        //    this.Timer++;
-        //}
-        //bool IdleTimerFired => this.Timer >= TimerMax;
-        //bool HasIntent => this.CurrentPlanner is not null;
-        bool IsIdle => this.Actor.AI.State.Behavior?.Plan.Def.Idle ?? true;
+
         public override void Write(IDataWriter w)
         {
             w.Write(this.Timer);

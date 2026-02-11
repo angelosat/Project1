@@ -1,5 +1,5 @@
-﻿using Project1.Core.Simulation;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Entities
 {

@@ -31,7 +31,7 @@ namespace Project1.Core
                     );
             return table;
         }
-        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockEntityComp.Spec args)
+        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
         {
             return new BlockCampfireEntity(this.BlockDef, originGlobal);
         }

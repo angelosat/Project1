@@ -7,13 +7,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
-using Project1.Core.Rendering;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Blocks
 {
@@ -29,7 +29,7 @@ namespace Project1.Core.Blocks
         public IEnumerable<IntVec3> ReservedInteractionCells => this.InteractionSpots.SelectMany(ActorDefOf.Npc.OccupyingCellsStanding);
 
         public IntVec3 OriginGlobal;
-        public readonly BlockEntityCompCollection Comps;
+        public readonly BlockCompCollection Comps;
         public ObservableCollection<string> Errors = new();
     
         public BlockEntity(BlockDef def, IntVec3 originGlobal)
@@ -89,17 +89,17 @@ namespace Project1.Core.Blocks
         /// <returns></returns>
         public virtual IEnumerable<GameObject> GetChildren() { yield break; }
 
-        public bool HasComp<T>() where T : BlockEntityComp// class, IBlockEntityComp
+        public bool HasComp<T>() where T : BlockComp// class, IBlockEntityComp
         {
             return this.Comps.TryGetComp<T>(out _);
         }
-        public BlockEntity AddComp(BlockEntityComp comp)
+        public BlockEntity AddComp(BlockComp comp)
         {
             comp.Parent = this;
             this.Comps.AddComp(comp);
             return this;
         }
-        public T GetComp<T>() where T : BlockEntityComp// class, IBlockEntityComp
+        public T GetComp<T>() where T : BlockComp// class, IBlockEntityComp
         {
             return this.Comps.GetComp<T>();
         }

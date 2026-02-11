@@ -10,6 +10,7 @@ using Project1.Core.Net;
 using Project1.Core.Tools;
 using Project1.Core.Animations;
 using Project1.Core.UI.Hud;
+using Project1.Core.Gear;
 
 namespace Project1.Core.Entities
 {
@@ -80,7 +81,6 @@ namespace Project1.Core.Entities
             this.Name = $"{mat.Prefix}";
             if (!this.Def.ReplaceName)
                 this.Name += $" {this.Def.LabelReadable}";
-            //this.Name = $"{mat.Prefix} {this.Def.Label}";
             mat.Apply(this);
             return this;
         }

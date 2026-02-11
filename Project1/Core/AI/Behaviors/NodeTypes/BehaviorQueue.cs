@@ -1,7 +1,5 @@
-﻿using Project1.Core.AI;
+﻿using System.Linq;
 using Project1.Core.Entities.Actors;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Project1.Core.AI.Behaviors.NodeTypes
 {
@@ -9,12 +7,12 @@ namespace Project1.Core.AI.Behaviors.NodeTypes
     {
         public BehaviorQueue(params Behavior[] behavs)
         {
-            this.Children = new List<Behavior>(behavs);
+            this.Children = [.. behavs];
         }
         public Behavior Current;
         public override string ToString()
         {
-            return this.Current != null ? this.Current.ToString() : "<none>";
+            return this.Current is not null ? this.Current.ToString() : "<none>";
         }
         public override BehaviorState Tick(Actor parent, AIState state)
         {
@@ -34,7 +32,7 @@ namespace Project1.Core.AI.Behaviors.NodeTypes
         
         public override object Clone()
         {
-            return new BehaviorQueue((from child in this.Children select child.Clone() as Behavior).ToArray());
+            return new BehaviorQueue([.. from child in this.Children select child.Clone() as Behavior]);
         }
         
         internal override void MapLoaded(Actor parent)

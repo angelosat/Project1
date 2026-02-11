@@ -1,10 +1,10 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.Serialization;
 using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.AI.Behaviors.NodeTypes
 {
@@ -40,9 +40,7 @@ namespace Project1.Core.AI.Behaviors.NodeTypes
             base.AddSaveData(tag);
             var childrenTag = new SaveTag(SaveTag.Types.List, "Children", SaveTag.Types.Compound);
             foreach (var b in this.Children)
-            {
                 childrenTag.Add(b.Save());
-            }
             tag.Add(childrenTag);
         }
         
@@ -51,13 +49,18 @@ namespace Project1.Core.AI.Behaviors.NodeTypes
             base.Load(tag);
 
             var childrenTags = tag["Children"].Value as List<SaveTag>;
-            for (int i = 0; i < childrenTags.Count; i++)
+            //for (int i = 0; i < childrenTags.Count; i++)
+            //{
+            //    var behavtag = childrenTags[i];
+            //    var typename = behavtag["Type"].Value as string;
+            //    var behav = this.Children.FirstOrDefault(c => c.GetType().FullName == typename);
+            //    behav?.Load(behavtag);
+            //}
+            for (int i = 0; i < this.Children.Count; i++)
             {
+                var bhav = this.Children[i];
                 var behavtag = childrenTags[i];
-                var typename = behavtag["Type"].Value as string;
-                var behav = this.Children.FirstOrDefault(c => c.GetType().FullName == typename);
-                if (behav != null)
-                    behav.Load(behavtag);
+                bhav?.Load(behavtag);
             }
         }
         internal override void ObjectLoaded(GameObject parent)

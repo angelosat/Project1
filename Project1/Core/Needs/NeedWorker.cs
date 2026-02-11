@@ -1,6 +1,6 @@
-﻿using Project1.Core.Resources;
+﻿using System.Linq;
+using Project1.Core.Resources;
 using Project1.Core.Helpers;
-using System.Linq;
 
 namespace Project1.Core.Needs
 {

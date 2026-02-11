@@ -13,6 +13,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Entities;
 using Project1.Core.Animations;
+using Project1.Core.Blocks;
 
 namespace Project1.Core.Entities.Actors
 {

@@ -11,13 +11,14 @@ using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Net;
-using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
 using Button = Project1.Framework.UI.Button;
 using Panel = Project1.Framework.UI.Panel;
 using Control = Project1.Framework.UI.Control;
+using Project1.Framework.Input;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Input.Tools
 {

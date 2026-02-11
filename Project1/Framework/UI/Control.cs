@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Rendering;
 using Project1.Core.Input;
 using Project1.Core.Net;
 using System;
@@ -15,6 +14,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Helpers.Collections;
 using Project1.Framework.Input;
 using Project1.Framework.Events;
+using Project1.Core.Graphics;
 
 namespace Project1.Framework.UI
 {

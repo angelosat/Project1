@@ -8,7 +8,6 @@ using Project1.Core.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Rendering;
 using Project1.Core.WorldGen;
 using Project1.Core.Screens;
 using Project1.Core.Towns.Zones;
@@ -19,6 +18,7 @@ using Project1.Framework.UI;
 using Project1.Framework;
 using Project1.Core.Input;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.UI.Hud
 {

@@ -1,14 +1,6 @@
-﻿using Project1.Core.Needs;
-
-namespace Project1.Core.Needs.Types
+﻿namespace Project1.Core.Needs
 {
     class NeedSocial : NeedWorker
     {
     }
-    //class NeedSocial : Need
-    //{
-    //    public NeedSocial(Actor parent) : base(parent)
-    //    {
-    //    }
-    //}
 }

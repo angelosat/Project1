@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Rendering;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
 using Project1.Core.Input.Tools;
 using Project1.Core.UI;
 using Project1.Core.Screens;
@@ -11,10 +13,8 @@ using Project1.Core.Helpers.Structs;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Entities;
-using Project1.Framework.UI;
 using Project1.Core.Input;
-using Project1.Framework.Serialization;
-using Project1.Framework;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Towns.Zones
 {
@@ -149,14 +149,12 @@ namespace Project1.Core.Towns.Zones
 
         public Zone GetZoneAt(IntVec3 global)
         {
-            //return this.Zones.Values.FirstOrDefault(z => z.Contains(global));
             if (this.CellsToZones.TryGetValue(global, out var zone))
                 return zone;
             return null;
         }
         public T GetZoneAt<T>(IntVec3 global) where T : Zone
         {
-            //return this.Zones.Values.FirstOrDefault(z => z.Contains(global)) as T;
             return this.GetZoneAt(global) as T;
         }
         public IEnumerable<T> GetZones<T>() where T : Zone
@@ -209,10 +207,8 @@ namespace Project1.Core.Towns.Zones
         {
             yield return new Tuple<Func<string>, Action>(() => $"Zones [{Hotkey.GetLabel()}]", ToggleGui);
         }
-        static Window _gui;
         static Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Zones", GetContextSubmenuItems()));
         private static readonly IHotkey Hotkey;
-
         public static void ToggleGui()
         {
             _guiNew.Value.Toggle();
@@ -254,12 +250,14 @@ namespace Project1.Core.Towns.Zones
         public override void Write(IDataWriter w)
         {
             w.Write(this._zoneIDSequence);
-            this.ZonesById.Values.WriteAbstract(w);
+            w.Write(this.ZonesById.Values);
         }
         public override void Read(IDataReader r)
         {
             this._zoneIDSequence = r.ReadInt32();
-            this.ZonesById.ReadByValueAbstractTypes(r, zone => zone.ID, this);
+            var zoneList = r.ReadList<Zone>();
+            foreach (var zone in zoneList)
+                this.ZonesById.Add(zone.ID, zone);
         }
     }
 }

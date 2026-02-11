@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
+using Project1.Core.Gear;
 using Project1.Core.Interactions;
 
 namespace Project1.Core.Interactions

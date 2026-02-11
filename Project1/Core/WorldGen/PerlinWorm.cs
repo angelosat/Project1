@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Project1.Core.Blocks;
 using Project1.Core.Simulation;
 using Project1.Framework;
 

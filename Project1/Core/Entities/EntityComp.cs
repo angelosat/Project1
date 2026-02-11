@@ -15,6 +15,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Inventory;
 using Project1.Core.UI.Hud;
 using Project1.Framework.Events;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Entities
 {

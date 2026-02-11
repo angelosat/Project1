@@ -4,7 +4,7 @@ using Project1.Core.Plants;
 using Project1.Core.Components.Plants;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
-using Project1.Core;
+using Project1.Core.Blocks;
 
 namespace Project1.Core.WorldGen
 {

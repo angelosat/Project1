@@ -1,14 +1,9 @@
 ﻿using Project1.Core.Materials;
-using Project1.Core.Blocks;
 
 namespace Project1.Core.Blocks
 {
     class BlockFlowers : Block
     {
-        //public override MaterialDef GetMaterial(byte blockdata)
-        //{
-        //    return MaterialDefOf.Soil;
-        //}
         public BlockFlowers()
             : base("Flowers", solid: false, opaque: false)
         {

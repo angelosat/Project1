@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Project1.Framework;
 using Project1.Framework.Serialization;
+using Project1.Core.Blocks.Comps;
+using Project1.Core.Crafting;
 using Project1.Core.Entities;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Simulation;
-using Project1.Core.Crafting;
+using Project1.Core.UI;
 
 namespace Project1.Core.Blocks
 {
@@ -17,17 +18,18 @@ namespace Project1.Core.Blocks
         Input,
         Output
     }
-    public sealed class BlockWorkstationComp : BlockEntityComp
+    public sealed class BlockWorkstationComp : BlockComp
     {
-        public new class Spec(WorkstationDef type) : BlockEntityComp.Spec
+        public new class Spec(WorkstationDef type) : BlockComp.Spec
         {
             public override Type CompType => typeof(BlockWorkstationComp);
             public WorkstationDef WorkstationType = type;
-            public override BlockEntityComp CreateComp()
+            public override BlockComp CreateComp()
             {
                 return new BlockWorkstationComp(this);
             }
         }
+        public override BlockCompDef CompDef => BlockCompDefOf.Workstation;
 
         public BlockWorkstationComp()
         {

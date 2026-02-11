@@ -1,19 +1,21 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
+using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers.Structs;
 
 namespace Project1.Core
 {
-    internal class BlockBedComp : BlockEntityComp
+    internal class BlockBedComp : BlockComp
     {
-        internal new class Spec : BlockEntityComp.Spec
+        internal new class Spec : BlockComp.Spec
         {
             public override Type CompType => typeof(BlockBedComp);
 
-            public override BlockEntityComp CreateComp() => new BlockBedComp();
+            public override BlockComp CreateComp() => new BlockBedComp();
         }
+        public override BlockCompDef CompDef => BlockCompDefOf.Bed;
         public enum Types { Citizen, Visitor };
         public Types Type = Types.Citizen;
         

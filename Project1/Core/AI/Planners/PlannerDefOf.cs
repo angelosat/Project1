@@ -5,13 +5,13 @@ using Project1.Core.Plants;
 using Project1.Core.Quests.AI;
 using Project1.Core.Towns.AI.Behaviors;
 using Project1.Core.Towns.Constructions.AI;
-using Project1.Core.Towns.Digging.AI;
-using Project1.Core.Towns.Farming.Harvesting;
-using Project1.Core.Towns.Forestry.AI;
 using Project1.Core.Towns.Labors;
 using Project1.Core.Towns.Switch;
 using Project1.Core.Towns.Tasks;
 using Project1.Core.Towns;
+using Project1.Core.Towns.Digging;
+using Project1.Core.Towns.Farming;
+using Project1.Core.Towns.Forestry;
 
 namespace Project1.Core.AI.Planners
 {

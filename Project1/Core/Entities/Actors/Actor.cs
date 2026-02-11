@@ -9,9 +9,7 @@ using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Simulation;
 using Project1.Core.Gear;
-using Project1.Core.Inventory;
 using Project1.Core.Entities.Stats;
-using Project1.Core.Entities.Mood;
 using Project1.Core.Attributes;
 using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.Networking.Entities;
@@ -29,6 +27,8 @@ using Project1.Core.Interactions;
 using Project1.Core.Net;
 using Project1.Core.Rooms;
 using Project1.Core.Skills;
+using Project1.Core.Mood;
+using Project1.Core.Networking.Inventory;
 
 namespace Project1.Core.Entities.Actors
 {

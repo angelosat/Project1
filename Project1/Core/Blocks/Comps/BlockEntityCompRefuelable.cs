@@ -1,28 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using System.Collections.ObjectModel;
-using Project1.Core.Net;
-using Project1.Core.Materials;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Blocks.Comps;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Legacy.Storage.New;
-using Project1.Core.Towns.Stockpiles;
-using Project1.Core.Helpers;
+using Project1.Core.Materials;
+using Project1.Core.Net;
 using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework.Helpers;
+using Project1.Core.Towns.Stockpiles;
 using Project1.Framework;
 using Project1.Framework.Events;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Project1.Core.Blocks
 {
-    class BlockEntityCompRefuelable : BlockEntityComp, IPowerSource, IStorageNew
+    class BlockEntityCompRefuelable : BlockComp, IPowerSource, IStorageNew
     {
+        public override BlockCompDef CompDef => throw new NotImplementedException();
+
         [EnsureStaticCtorCall]
         static class Packets
         {

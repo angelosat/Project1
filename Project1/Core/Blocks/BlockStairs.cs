@@ -2,28 +2,27 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Blocks;
+using Project1.Framework;
+using Project1.Framework.Graphics;
 using Project1.Core.Base;
-using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Constructions.Categories;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
-using Project1.Framework.Graphics;
-using Project1.Framework;
+using Project1.Core.Graphics;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     class BlockStairs : Block
     {
-        static Texture2D Depth1 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs1depth");
-        static Texture2D Depth2 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs2depth");
-        static Texture2D Depth3 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs3depth");
-        static Texture2D Depth4 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs4depth");
-        static Texture2D Normal1 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs1normal");
-        static Texture2D Normal2 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs2normal");
-        static Texture2D Normal3 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs3normal");
-        static Texture2D Normal4 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs4normal");
+        static readonly Texture2D Depth1 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs1depth");
+        static readonly Texture2D Depth2 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs2depth");
+        static readonly Texture2D Depth3 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs3depth");
+        static readonly Texture2D Depth4 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs4depth");
+        static readonly Texture2D Normal1 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs1normal");
+        static readonly Texture2D Normal2 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs2normal");
+        static readonly Texture2D Normal3 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs3normal");
+        static readonly Texture2D Normal4 = Game1.Instance.Content.Load<Texture2D>("graphics/items/blocks/stairs/stairs4normal");
 
         AtlasDepthNormals.Node.Token[] Parts = new AtlasDepthNormals.Node.Token[4];
         public BlockStairs()

@@ -1,7 +1,8 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Entities;
-using Project1.Core.Entities.Mood;
 using Project1.Framework.UI;
+using Project1.Core.Mood;
+using Project1.Core.Needs;
 
 namespace Project1.Core.UI
 {

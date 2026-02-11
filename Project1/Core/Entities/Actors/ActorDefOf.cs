@@ -1,6 +1,5 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.Attributes;
-using Project1.Core.Entities.Mood;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Materials;
 using Project1.Core.Resources;
@@ -8,6 +7,10 @@ using Project1.Core.Components;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Skills;
 using Project1.Core.Interactions;
+using Project1.Core.Mood;
+using Project1.Core.Gear;
+using Project1.Core.Inventory;
+using Project1.Core.Needs;
 
 namespace Project1.Core.Entities.Actors
 {

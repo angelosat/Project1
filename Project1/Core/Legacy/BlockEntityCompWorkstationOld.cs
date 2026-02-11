@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Blocks.Comps;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Graphics;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using Project1.Core.Simulation;
-using Project1.Core.Blocks;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Legacy.Crafting;
-using Project1.Core.Legacy.Crafting.Gui;
-using Project1.Core.Rendering;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Project1.Core.Legacy
 {
-    public class BlockEntityCompWorkstationOld : BlockEntityComp
+    public class BlockEntityCompWorkstationOld : BlockComp
     {
+        public override BlockCompDef CompDef => throw new NotImplementedException();
+
         public override string Name { get; } = "Workstation";
         static readonly string OperatingPositionUnreachableString = $"Interaction spot blocked";
         public bool OperatingPositionUnreachable;
@@ -63,25 +65,15 @@ namespace Project1.Core.Legacy
             return true;
         }
 
-        public void ShowUI(MapBase map, IntVec3 global)
-        {
-            if (CraftingWindow != null)
-                CraftingWindow.Hide();
-
-            CraftingWindow = new WorkstationGui(map, global, this).ToWindow("Crafting");
-            CraftingWindow.ToggleSmart();
-        }
 
         internal override void DrawSelected(MySpriteBatch sb, Camera cam, MapBase map, IntVec3 global)
         {
         }
         protected override void SaveExtra(SaveTag tag)
         {
-            //tag.TrySaveRefs(this.Orders, "Orders");
         }
         public override void Load(SaveTag tag)
         {
-            //tag.TryLoadRefs(this.Orders, "Orders");
         }
         public override void Write(IDataWriter w)
         {

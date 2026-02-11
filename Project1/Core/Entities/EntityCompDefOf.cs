@@ -2,9 +2,7 @@
 using Project1.Core.AI;
 using Project1.Core.Attributes;
 using Project1.Core.Components;
-using Project1.Core.Components.Combat;
 using Project1.Core.Components.Plants;
-using Project1.Core.Entities.Mood;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Legacy.Crafting;
@@ -17,6 +15,9 @@ using Project1.Core.Skills;
 using Project1.Core.Interactions;
 using Project1.Core.Animations;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Mood;
+using Project1.Core.Inventory;
+using Project1.Core.Needs;
 
 namespace Project1.Core.Entities
 {

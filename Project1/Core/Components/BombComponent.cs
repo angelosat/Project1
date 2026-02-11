@@ -7,6 +7,7 @@ using Project1.Core.Interactions;
 using Project1.Core.Entities;
 using Project1.Core.Animations;
 using Project1.Framework;
+using Project1.Core.Blocks;
 
 namespace Project1.Core.Components
 {

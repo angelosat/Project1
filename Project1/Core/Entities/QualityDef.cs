@@ -1,7 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Helpers.Collections;
-using System;
+﻿using System;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Project1.Core.Helpers.Collections;
 
 namespace Project1.Core.Entities
 {

@@ -10,16 +10,16 @@ using Project1.Core.Input;
 using Project1.Core.Input.Tools.CellRendering;
 using Project1.Core.Blocks;
 using Project1.Core.Net;
-using Project1.Core.Rendering;
 using Project1.Core.Helpers;
 using Project1.Core.Towns.Tools;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
+using Project1.Core.Graphics;
 
 namespace Project1.Core.Towns.Zones
 {
-    abstract public class Zone : Inspectable, ISelectable, ISaveable, ISerializable, ISaveableNewNew<Zone>
+    abstract public class Zone : Inspectable, ISelectable, ISaveable, ISaveableNewNew<Zone>, ISerializableNew<Zone>
     {
         public Town Town => this.Manager.Town;
         public MapBase Map => this.Town.Map;
@@ -243,8 +243,18 @@ namespace Project1.Core.Towns.Zones
             this.WriteExtra(w);
         }
         protected virtual void WriteExtra(IDataWriter w) { }
+        protected virtual void ReadExtra(IDataReader r) { }
 
-        public ISerializable Read(IDataReader r)
+        public virtual IEnumerable<(string name, Action action)> GetInfoTabs()
+        {
+            yield break;
+        }
+        public abstract bool Accepts(Entity obj, IntVec3 pos);
+        public IEnumerable<Control> GetSelectionDetails()
+        {
+            yield break;
+        }
+        public Zone Read(IDataReader r)
         {
             this.ID = r.ReadInt32();
             this.Name = r.ReadString();
@@ -253,20 +263,12 @@ namespace Project1.Core.Towns.Zones
             this.ReadExtra(r);
             return this;
         }
-        protected virtual void ReadExtra(IDataReader r) { }
-
-        public virtual IEnumerable<(string name, Action action)> GetInfoTabs()
+        public static Zone Create(IDataReader r)
         {
-            yield break;
+            var zoneDef = r.ReadDef<ZoneDef>();
+            var zone = zoneDef.CreateRuntimeWrapper();
+            zone.Read(r);
+            return zone;
         }
-        public abstract bool Accepts(Entity obj, IntVec3 pos);
-
-        public IEnumerable<Control> GetSelectionDetails()
-        {
-            yield break;
-        }
-
-        
     }
-
 }

@@ -1,6 +1,4 @@
-﻿using Project1.Core.Blocks;
-
-namespace Project1.Core
+﻿namespace Project1.Core.Blocks
 {
     class BlockBedrock : Block
     {

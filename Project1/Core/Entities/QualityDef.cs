@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.Helpers.Collections;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Entities
 {
@@ -11,7 +10,7 @@ namespace Project1.Core.Entities
 
         public readonly Color Color;
         public readonly float Multiplier;
-        public QualityDef(string name, Color color, float multiplier, int probabilityWeight, int masterySensitivity = 0) : base(name)//$"ItemQuality{label}")
+        public QualityDef(string name, Color color, float multiplier, int probabilityWeight, int masterySensitivity = 0) : base(name)
         {
             this.Color = color;
             this.Multiplier = multiplier;
@@ -29,7 +28,7 @@ namespace Project1.Core.Entities
         }
 
         static QualityDef[] _allCached;
-        static QualityDef[] All => _allCached ??= Def.GetDefs<QualityDef>().ToArray();
+        static QualityDef[] All => _allCached ??= [.. GetDefs<QualityDef>()];
 
         public static QualityDef GetRandom(Random rand, float mastery)
         {

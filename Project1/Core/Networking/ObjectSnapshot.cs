@@ -4,7 +4,7 @@ using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Framework.Serialization;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public class ObjectSnapshot(int refID)
     {

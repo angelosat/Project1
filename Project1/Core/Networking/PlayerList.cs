@@ -1,8 +1,8 @@
-﻿using Project1.Core.Helpers;
+﻿using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using System.Collections.Generic;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public class PlayerList
     {

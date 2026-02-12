@@ -4,8 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Framework.UI;
 
-namespace Project1.Framework.UI
+namespace Project1.Framework.Helpers
 {
     public static class UIHelper
     {

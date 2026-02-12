@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Core.Base;
-using Project1.Core.Graphics.Particles;
-using Project1.Core.Legacy;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
+using Project1.Core.Graphics.Particles;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Components
 {
@@ -42,29 +40,26 @@ namespace Project1.Core.Components
                     this.Emitters.Remove(e);
             }
         }
-
-        public override bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
+        /// <summary>
+        /// dont delete
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        private bool OnHit(Entity attacker)
         {
-            switch(e.Type)
-            {
-                case Message.Types.Attacked:
-                    if (parent.Net.IsServer)
-                        break;
-                    GameObject attacker = e.Parameters[0] as GameObject;
-                    var direction = parent.Global - attacker.Global;
-                    direction.Normalize();
-                    direction *= .05f;
-                    direction += attacker.Velocity;
+            var parent = this.Owner;
+            if (parent.Net.IsServer)
+                return false;
+            var direction = parent.Global - attacker.Global;
+            direction.Normalize();
+            direction *= .05f;
+            direction += attacker.Velocity;
 
-                    var emitter = BloodEmitter.Clone() as ParticleEmitterSphere;
-                    emitter.Source = parent.Global;
-                    emitter.Emit(10, direction);
-                    this.Emitters.Add(emitter);
-                    break;
-
-                default:
-                    break;
-            }
+            var emitter = BloodEmitter.Clone() as ParticleEmitterSphere;
+            emitter.Source = parent.Global;
+            emitter.Emit(10, direction);
+            this.Emitters.Add(emitter);
             return true;
         }
 

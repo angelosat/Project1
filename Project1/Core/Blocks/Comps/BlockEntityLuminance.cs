@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Base;
 using Project1.Core.Blocks.Comps;
-using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Serialization;
@@ -12,8 +10,6 @@ namespace Project1.Core.Blocks
     class BlockEntityLuminance : BlockComp
     {
         public override BlockCompDef CompDef => throw new NotImplementedException();
-
-        public override string Name { get; } = "Lightsource";
         readonly IPowerSource PowerSource;
         readonly byte Intensity;
         readonly int Consumption;

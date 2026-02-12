@@ -8,14 +8,12 @@ using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Core.Blocks;
-using Project1.Core.Input.Tools;
 using Project1.Core.Skills;
 using Project1.Core.Components;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Interactions;
-using Project1.Core.Base;
 using Project1.Core.Components.Plants;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
@@ -39,6 +37,9 @@ using Project1.Core.AI.MetaRoles;
 using Project1.Core.Animations;
 using Project1.Framework.Events;
 using Project1.Core.Networking.Inventory;
+using Project1.Core.Networking;
+using Project1.Core.Input;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Entities
 {

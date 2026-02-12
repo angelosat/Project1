@@ -1,7 +1,6 @@
-﻿using Project1.Core.AI;
-using System;
+﻿using System;
 
-namespace Project1.Core.Helpers
+namespace Project1.Framework.Helpers
 {
     class RandomHelper
     {
@@ -77,28 +76,6 @@ namespace Project1.Core.Helpers
                 g = RandomHelper.NextGaussian(0, 1 / 3d);
             } while (g < min || g > max);
             return g;
-        }
-        static public double[] NextNormalsBalanced(int count)//, double min, double max, double sum)
-        {
-            var values = new double[count];
-            double min = -1, max = 1;
-            double sum = 0;
-            for (int i = 0; i < count - 1; i++)
-            {
-                var rest = count - (i + 1);
-                double restmin = min * rest;
-                double restmax = max * rest;
-                min = Math.Max(min, sum - restmax);
-                max = Math.Min(max, sum - restmin);
-
-                var v = NextNormal(min, max);
-                if (Math.Abs(v) > Trait.ValueRange)
-                    throw new Exception();
-                sum -= v;
-                values[i] = v;
-            }
-            values[count - 1] = sum;
-            return values;
         }
     }
 }

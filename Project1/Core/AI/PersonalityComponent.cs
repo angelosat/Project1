@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Framework.UI;
-using Project1.Core.Materials;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Entities;
+using Project1.Core.Materials;
+using Project1.Core.Serialization;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.AI
 {
@@ -132,7 +134,6 @@ namespace Project1.Core.AI
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            //this.Traits.TryLoadImmutable(tag, "Traits");
             tag.LoadDefWrappers("Traits", this.Traits);
             this.Favorites.Clear();
             if (!this.Favorites.TryLoadDefs(tag, "Favorites"))

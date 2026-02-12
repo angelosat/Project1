@@ -4,9 +4,9 @@ using System.Linq;
 using Project1.Framework;
 using Project1.Core.AI;
 using Project1.Core.Materials;
-using Project1.Core.Helpers;
 using Project1.Core.Tools;
 using Project1.Core.Blocks;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Crafting
 {

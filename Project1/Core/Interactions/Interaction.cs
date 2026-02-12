@@ -2,11 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Gear;
 using Project1.Core.Components;
-using Project1.Core.Base;
 using System;
 using System.Collections.Generic;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
 using Project1.Core.Resources;
 using Project1.Core.Tools;
 using Project1.Core.Stats;
@@ -18,6 +16,7 @@ using Project1.Core.Attributes;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Interactions
 {

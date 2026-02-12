@@ -1,89 +1,39 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.Blocks;
 using Project1.Core.Components;
-using Project1.Core.Base;
-using Project1.Core.Net;
-using Project1.Core.Net.Packets;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Graphics;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Helpers;
+using Project1.Core.Helpers.Structs;
+using Project1.Core.Map;
+using Project1.Core.Materials;
+using Project1.Core.Networking;
+using Project1.Core.Networking.Simulation;
+using Project1.Core.Rooms;
+using Project1.Core.Screens;
+using Project1.Core.Towns;
+using Project1.Core.Towns.Stockpiles;
+using Project1.Core.UI;
+using Project1.Core.UI.Hud;
+using Project1.Core.WorldGen;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Project1.Core.Graphics.Particles;
-using Project1.Core.Rooms;
-using Project1.Core.Materials;
-using Project1.Core.Screens;
-using Project1.Core.Towns;
-using Project1.Core.Towns.Stockpiles;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
-using Project1.Core.Helpers.Structs;
-using Project1.Core.Entities;
-using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.UI.Hud;
-using Project1.Core.UI;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Map;
-using Project1.Framework;
-using Project1.Core.WorldGen;
-using Project1.Framework.Helpers;
-using Project1.Framework.Events;
-using Project1.Core.Graphics;
 
 namespace Project1.Core.Simulation
 {
     public abstract class MapBase : Inspectable
     {
-        class Packets
-        {
-            static readonly int
-                PacketSyncSetCellData,
-                PacketSpawn;
-            static Packets()
-            {
-                PacketSyncSetCellData = Registry.PacketHandlers.Register(SyncSetCellData);
-                PacketSpawn = Registry.PacketHandlers.Register(ReceiveSpawnEntity);
-            }
-            public static void SendSpawnEntity(INetEndpoint net, GameObject entity, MapBase map, Vector3 global, Vector3 velocity)
-            {
-                if (net is not Server server)
-                    return;
-                var w = server.BeginPacket(PacketSpawn);
-                w.Write(entity.RefId);
-                w.Write(global);
-                w.Write(velocity);
-            }
-           
-            static void ReceiveSpawnEntity(NetEndpoint net, Packet pck)
-            {
-                var r = pck.PacketReader;
-                var client = net as Client;
-                var actor = client.World.GetEntity(r.ReadInt32());
-                var global = r.ReadVector3();
-                var velocity = r.ReadVector3();
-                var map = client.Map;
-                map.SyncSpawn(actor, global, velocity);
-            }
-
-            public static void SyncSetCellData(MapBase map, IntVec3 global, byte data)
-            {
-                var net = map.Net;
-                if (net is Server)
-                    map.SetCellData(global, data);
-                net.WriteToStream(PacketSyncSetCellData, global, data);
-            }
-            private static void SyncSetCellData(NetEndpoint net, Packet pck)
-            {
-                var r = pck.PacketReader;
-                var global = r.ReadIntVec3();
-                var data = r.ReadByte();
-                if (net is Client)
-                    net.Map.SetCellData(global, data);
-                else
-                    SyncSetCellData(net.Map, global, data);
-            }
-        }
         public override string LabelReadable => this.ToString();
         public Camera Camera;
         public static float IconOffset = 0;
@@ -91,7 +41,7 @@ namespace Project1.Core.Simulation
         protected Queue<IntVec3> RandomBlockUpdateQueue = new();
         public LightingEngine LightingEngine;
         public WorldBase World;
-        public Dictionary<IntVec2, Chunk> ActiveChunks;
+        public Dictionary<IntVec2, Chunk> ActiveChunks = [];
         NetEndpoint _net;
         public readonly int ID;
         public NetEndpoint Net => this._net ??= this.World.Net;
@@ -100,7 +50,7 @@ namespace Project1.Core.Simulation
         public RegionManager Regions;
         public StockpileManager Stockpiles;
         internal EntityLifecycleManager EntityLifecycleManager;
-
+        internal List<SimulationSystem> SimulationSystems = [];
 
         protected Dictionary<IntVec3, BlockEntity> CachedBlockEntities = new();
         public float Sunlight;
@@ -257,7 +207,6 @@ namespace Project1.Core.Simulation
             // reenable physics of entities resting on block
             foreach (var entity in this.GetObjects(global.Above()))
                 entity.Physics.Enable();
-                //PhysicsComponent.Enable(entity);
 
             this.SetBlock(global, block, material, data, variation, orientation, raiseEvent);
         }
@@ -265,7 +214,7 @@ namespace Project1.Core.Simulation
 
         internal void SyncSetCellData(IntVec3 global, byte data)
         {
-            Packets.SyncSetCellData(this, global, data);
+            PacketsMap.SyncSetCellData(this, global, data);
         }
         internal void SetCellData(Vector3 global, byte v)
         {
@@ -1230,7 +1179,7 @@ namespace Project1.Core.Simulation
         {
             //obj.Spawn(this);
             this.Spawn(obj as Entity);
-            Packets.SendSpawnEntity(this.Net, obj, this, obj.Global, obj.Velocity);
+            PacketsMap.SendSpawnEntity(this.Net, obj, this, obj.Global, obj.Velocity);
         }
         
         internal virtual void OnHudCreated(Hud hud)

@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Needs;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
 using System;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.AI.MetaRoles
 {

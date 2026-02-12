@@ -1,15 +1,15 @@
-﻿using System.Linq;
-using Project1.Core.Blocks;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Rooms;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Graphics;
+using System.Linq;
 
 namespace Project1.Core.Towns.Shops.Blocks
 {
-    class BlockShopCounter : Block, IBlockWorkstation
+    class BlockShopCounter : Block//, IBlockWorkstation
     {
         AtlasDepthNormals.Node.Token[] Orientations = TexturesCounter;
 

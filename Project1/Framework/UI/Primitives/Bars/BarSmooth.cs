@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Interfaces;
 using Project1.Core.UI;
+using Project1.Framework.Helpers;
+using Project1.Framework.Interfaces;
 
 namespace Project1.Framework.UI
 {

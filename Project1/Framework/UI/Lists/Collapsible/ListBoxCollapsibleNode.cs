@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Interfaces;
 using Project1.Core.UI;
+using Project1.Framework.Interfaces;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;

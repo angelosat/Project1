@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Project1.Framework;
 using Project1.Core.Entities;
-using Project1.Core.Net;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Loot
 {

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Project1.Core.Entities;
+using Project1.Framework.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.Serialization;
-using Project1.Core.Entities;
 
 namespace Project1.Core.Inventory
 {
@@ -23,7 +23,6 @@ namespace Project1.Core.Inventory
         public List<ItemContainer> Children { get; set; }
         public byte ID;
         new public byte Capacity { get; set; }
-        public ItemContainer(GameObject parent, byte size = 0) : this(parent, size, o => true) { }
         public ItemContainer(GameObject parent, byte size, Func<GameObject, bool> filter)
         {
             this.Parent = parent;

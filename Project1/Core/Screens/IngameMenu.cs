@@ -1,9 +1,8 @@
-﻿using Project1.Core.Base;
-using Project1.Core.UI;
+﻿using Project1.Core.UI;
 using System;
 using Project1.Core.UI.Settings;
-using Project1.Core.Net;
 using Project1.Framework.UI;
+using Project1.Core.Networking;
 
 namespace Project1.Core.Screens
 {
@@ -35,7 +34,7 @@ namespace Project1.Core.Screens
 
         void Saveexit_Click()
         {
-            Net.Client.Instance.Disconnect();
+            Networking.Client.Instance.Disconnect();
             ScreenManager.Remove();
         }
 
@@ -45,7 +44,7 @@ namespace Project1.Core.Screens
                 new ContextAction(() => "Yes",
                     () =>
                     {
-                        Net.Client.Instance.Disconnect();
+                        Networking.Client.Instance.Disconnect();
                         Server.Stop();
                         ScreenManager.Remove();
                     }),

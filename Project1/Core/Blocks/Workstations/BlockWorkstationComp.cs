@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Core.Blocks.Comps;
+﻿using Project1.Core.Blocks.Comps;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Blocks
 {
@@ -39,7 +39,6 @@ namespace Project1.Core.Blocks
         {
             this.WorkstationType = args.WorkstationType;
         }
-        public override string Name => "WorkstationComp";
         public WorkstationDef WorkstationType = WorkstationDefOf.Smeltery; // default
         public List<CraftingOrder> Orders = [];
         public ZoneId Input = ZoneId.Null, Output = ZoneId.Null;

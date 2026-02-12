@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Framework;
 using Project1.Core.Entities;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
-using Project1.Core.WorldGen;
-using Project1.Framework;
 using Project1.Core.Graphics;
 
 namespace Project1.Core.AI.Behaviors.Pathing

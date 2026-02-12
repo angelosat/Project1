@@ -9,7 +9,7 @@ using Project1.Framework.Helpers;
 
 #nullable enable
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public class DataReader : IDataReader, IDisposable
     {

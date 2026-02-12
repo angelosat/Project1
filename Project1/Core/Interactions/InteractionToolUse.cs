@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Stats;
-using Project1.Core.Base;
 using Project1.Core.Graphics.Particles;
 using System;
 using System.Collections.Generic;

@@ -29,9 +29,8 @@ namespace Project1.Core.Blocks
         public BlockEntity Parent;
         public MapBase Map => this.Parent.Map;
         public IntVec3 Global => this.Parent.OriginGlobal;
-        public override string LabelReadable => this.Name;
+        public override string LabelReadable => this.CompDef.LabelReadable;
         public ObservableCollection<string> Errors => this.Parent.Errors;
-        public abstract string Name { get; }
         public virtual void OnSpawned(BlockEntity entity, MapBase map) { }
         public virtual void Draw(Camera camera, MapBase map, IntVec3 global) { }
         public virtual void DrawUI(SpriteBatch sb, Camera camera) { }

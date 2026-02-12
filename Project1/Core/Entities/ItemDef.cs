@@ -35,7 +35,6 @@ namespace Project1.Core.Entities
         public RecipeProperties RecipeProperties;
         public GearTypeDef GearType;
         public Func<ItemDef, GameObject> Randomizer;
-        public List<MaterialToken> MadeFrom = new();
         public bool QualityLevels;
         internal IEnumerable<IItemDefVariator> StorageFilterVariations;
         public Func<Entity, string> NameGetter;
@@ -99,12 +98,6 @@ namespace Project1.Core.Entities
             {
                 return this.DefaultMaterial?.Type ?? this.DefaultMaterialType;
             }
-        }
-        
-        public ItemDef SetMadeFrom(params MaterialToken[] tokens)
-        {
-            this.MadeFrom.AddRange(tokens);
-            return this;
         }
         public ItemDef SetMadeFrom(params MaterialTypeDef[] types)
         {

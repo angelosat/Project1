@@ -1,10 +1,10 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Stats;
-using Project1.Core.Towns;
 using Project1.Core.Graphics;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Skills;
+using Project1.Core.Towns;
 using System.Collections.Generic;
 
 namespace Project1.Core.Tools

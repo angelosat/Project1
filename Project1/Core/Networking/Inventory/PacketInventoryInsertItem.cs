@@ -4,7 +4,7 @@ using Project1.Framework.Events;
 using Project1.Core.Entities;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 
 namespace Project1.Core.Networking.Inventory
 {

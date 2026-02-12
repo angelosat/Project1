@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Project1.Core.Helpers
+namespace Project1.Framework.Helpers
 {
     public static class CollectionsHelper
     {
@@ -12,7 +12,5 @@ namespace Project1.Core.Helpers
                 dic.Add(keySelector(i), i);
         
         }
-        
-        
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
@@ -13,6 +13,7 @@ using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.UI.Hud;
 using Project1.Core.AI.MetaRoles;
 using Project1.Core.Graphics;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.AI
 {

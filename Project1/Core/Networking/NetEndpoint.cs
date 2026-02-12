@@ -10,7 +10,7 @@ using Project1.Core.Entities;
 using Project1.Framework.Serialization;
 using Project1.Framework.Events;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public abstract partial class NetEndpoint : INetEndpoint
     {
@@ -75,25 +75,10 @@ namespace Project1.Core.Net
         public abstract bool LogStateChange(int netID);
         public abstract void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);
         public abstract void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);
-        //public abstract void PostLocalEvent(GameObject recipient, ObjectEventArgs args);
-        //public abstract void PostLocalEvent(GameObject recipient, Message.Types type, params object[] args);
         public abstract void SetSpeed(int playerID, int speed);
-        //public abstract void SyncReport(string text);
         public abstract bool TryGetNetworkObject(int netID, out Entity obj);
-        //public abstract void Write(string text);
         public abstract void Report(string text);
-
-        //public void Write(string text)
-        //{
-        //    Log.Write(text);
-        //}
-        //public void Report(string text)
-        //{
-        //    Log.Write($"[{this}] {text}");
-        //}
-        public abstract void WriteToStream(params object[] args);
-
+        //public abstract void WriteToStream(params object[] args);
         public EventBus Events { get; } = new();
-
     }
 }

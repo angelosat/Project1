@@ -1,10 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Base;
-using Project1.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 
-namespace Project1.Core.Helpers
+namespace Project1.Framework.Helpers
 {
     public static class GraphHelper
     {

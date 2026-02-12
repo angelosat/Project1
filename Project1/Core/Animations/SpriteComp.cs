@@ -1,23 +1,21 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Entities.ColorCustomization;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Input;
+using Project1.Core.Materials;
+using Project1.Core.Simulation;
+using Project1.Core.UI;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Materials;
-using Project1.Core.Legacy;
-using Project1.Core.Helpers;
-using Project1.Core.Simulation;
-using Project1.Core.Entities.ColorCustomization;
-using Project1.Core.Components;
-using Project1.Core.Graphics;
-using Project1.Core.Blocks;
-using Project1.Core.Input;
-using Project1.Core.UI;
-using Project1.Core.Entities;
-
 
 namespace Project1.Core.Animations
 {
@@ -396,20 +394,19 @@ namespace Project1.Core.Animations
             }
         }
 
-        public override bool HandleMessage(GameObject parent, ObjectEventArgs e)
-        {
-            switch (e.Type)
-            {
-                case Message.Types.Attacked:
-                    GameObject attacker = e.Parameters[0] as GameObject;
-                    Offset = parent.Global - attacker.Global;
-                    Offset.Normalize();
-                    Offset /= 4;
-                    OffsetTimer = 0.25f;
-                    Flash = true;
-                    return true;
-            }
-            return false;
+        /// <summary>
+        /// don't delete
+        /// </summary>
+        /// <param name="attacker"></param>
+        /// <returns></returns>
+        private bool OnHit(Entity attacker)
+        {;
+            Offset = this.Owner.Global - attacker.Global;
+            Offset.Normalize();
+            Offset /= 4;
+            OffsetTimer = 0.25f;
+            Flash = true;
+            return true;
         }
 
         public override string ToString()

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Project1.Core.UI;
 using Microsoft.Xna.Framework;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Quests;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.Entities.Actors;
@@ -12,6 +12,8 @@ using Project1.Core.Simulation;
 using Project1.Framework.UI;
 using Project1.Framework;
 using Project1.Framework.Events;
+using Project1.Core.Networking;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Towns
 {

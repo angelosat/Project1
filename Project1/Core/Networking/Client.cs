@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Base;
 using Project1.Core.Components;
 using Project1.Core.Helpers;
-using Project1.Core.Helpers.Collections;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Input;
 using Project1.Core.Loot;
-using Project1.Core.Net.Packets;
+using Project1.Core.Networking.Packets;
 using Project1.Core.Screens;
 using Project1.Core.UI;
 using System;
@@ -22,8 +20,11 @@ using Project1.Core.Entities;
 using Project1.Framework.Serialization;
 using Project1.Framework;
 using Project1.Framework.Events;
+using Project1.Core.Serialization;
+using Project1.Core.Networking;
+using Project1.Framework.Helpers;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     internal enum PlayerSavingState
     { Saved, Changed, Saving }
@@ -1054,26 +1055,12 @@ namespace Project1.Core.Net
                 Log.Network(this, $"Speed set to to {newspeed}"); // TODO prevent spam
             else
                 Log.Network(this, $"{player.Name} wants to set speed to {playerSpeed}"); // TODO prevent spam
-            //this.Speed = newspeed;
             $"client speed set to {newspeed}".ToConsole();
         }
-
-        //public override void Write(string text)
-        //{
-        //    Log.Write(text);
-        //}
-
         public override void Report(string text)
         {
             Log.Write($"{this}: {text}");
         }
-
-
-        public override void WriteToStream(params object[] args)
-        {
-            this.GetOutgoingStreamOrderedReliable().Write(args);
-        }
-      
         private void SendOutgoingStreamsArray()
         {
             foreach (var i in this.StreamsArray)

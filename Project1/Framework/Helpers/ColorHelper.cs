@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.Serialization;
 
-namespace Project1.Core.Helpers
+namespace Project1.Framework.Helpers
 {
     static class ColorHelper
     {

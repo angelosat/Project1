@@ -4,7 +4,7 @@
     {
         readonly protected MapBase Map = map;
 
-        public abstract void Tick();
+        public virtual void Tick() { }
         protected virtual internal void ResolveReferences() { }
     }
 }

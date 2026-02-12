@@ -6,8 +6,6 @@ using Project1.Core.AI.Net.Packets;
 using Project1.Core.AI.Planners;
 using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
-using Project1.Core.Net;
 using Project1.Core.Pathing;
 using System;
 using System.Collections.Generic;

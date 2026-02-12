@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Project1.Framework;
 using Project1.Framework.Serialization;
-using Project1.Core.Base;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Helpers;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
-using Project1.Core.Net;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Entities;
 using Project1.Core.Animations;
 using Project1.Core.Blocks;
+using Project1.Core.Networking;
 
 namespace Project1.Core.Entities.Actors
 {

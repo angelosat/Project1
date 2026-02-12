@@ -8,15 +8,14 @@ using Project1.Core.Construction.Tools;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Blocks;
 using Project1.Core.Helpers;
-using Project1.Core.Input.Tools;
-using Project1.Core.Input.UI;
 using Project1.Core.Legacy.Crafting.Blocks;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
 using Project1.Core.Input;
 using Project1.Core.UI.Blocks;
+using Project1.Framework.Input;
 
 namespace Project1.Core.Towns.Constructions
 {

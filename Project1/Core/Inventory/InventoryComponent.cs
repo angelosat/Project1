@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Gear;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Components;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Gear;
 using Project1.Core.Legacy;
 using Project1.Core.Materials;
-using Project1.Core.Net;
-using Project1.Core.Entities;
+using Project1.Core.Networking;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Inventory
 {
@@ -161,7 +161,6 @@ namespace Project1.Core.Inventory
                 throw new Exception();
             this.Contents.Remove(item);
             item.Container = null;
-            //item.Spawn(parent.Map, parent.Global + new Vector3(0, 0, parent.Physics.Height));
             parent.Map.Spawn(item as Entity, parent.Global + new Vector3(0, 0, parent.Physics.Height), Vector3.Zero);
 
         }

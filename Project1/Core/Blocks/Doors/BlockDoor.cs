@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;

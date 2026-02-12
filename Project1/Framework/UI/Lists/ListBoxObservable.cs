@@ -1,6 +1,4 @@
-﻿using Project1.Core.Interfaces;
-using Project1.Core.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;

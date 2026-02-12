@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Project1.Core.Net;
-using Project1.Core.Net.Packets;
+using Project1.Core.Networking;
+using Project1.Core.Networking.Packets;
 using Project1.Core.UI;
 using Project1.Framework.UI;
 
@@ -42,7 +42,7 @@ namespace Project1.Core.Screens
                 },
                 EnterFunc = (e) =>
                 {
-                    PacketChat.Send(Net.Client.Instance, Net.Client.Instance.PlayerData.ID, this.Txt_Input.Text);
+                    PacketChat.Send(Networking.Client.Instance, Networking.Client.Instance.PlayerData.ID, this.Txt_Input.Text);
                     Txt_Input.Text = "";
                 }
             };

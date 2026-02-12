@@ -5,7 +5,7 @@ using System.IO;
 using System.Diagnostics;
 using Project1.Framework.Serialization;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public enum PacketType
     {

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
 using Project1.Core.Graphics;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.UI
 {

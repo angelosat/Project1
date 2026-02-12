@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     internal class DebugConsole
     {

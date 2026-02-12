@@ -1,10 +1,9 @@
-﻿using Project1.Core.Towns.Zones;
+﻿using Project1.Core.Entities;
 using Project1.Core.Helpers.Structs;
-using Project1.Core;
+using Project1.Core.Simulation;
+using Project1.Core.Towns.Zones;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
 
 namespace Project1.Core.Towns.Stockpiles
 {
@@ -23,13 +22,11 @@ namespace Project1.Core.Towns.Stockpiles
             map.Events.ListenTo<EntityEnteredZoneEvent>(OnEntityEnteredZone);
             map.Events.ListenTo<EntityExitedZoneEvent>(OnEntityExitedZone);
         }
-
         private void OnEntityExitedZone(EntityExitedZoneEvent e)
         {
             if (e.Zone is Stockpile stockpile)
                 stockpile.AcceptedItems.Remove(e.Entity);
         }
-
         private void OnEntityEnteredZone(EntityEnteredZoneEvent e)
         {
             if (e.Zone is Stockpile stockpile)

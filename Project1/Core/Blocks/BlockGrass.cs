@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.Graphics;
-using Project1.Framework.Events;
-using Project1.Core.Base;
-using Project1.Core.Net;
-using Project1.Core.Graphics.Particles;
-using Project1.Core.Materials;
-using Project1.Core.Helpers;
-using Project1.Core.Simulation;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Materials;
+using Project1.Core.Networking;
+using Project1.Core.Simulation;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Graphics;
+using Project1.Framework.Helpers;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Blocks
 {
@@ -134,10 +133,12 @@ namespace Project1.Core.Blocks
             public static void SyncTrample(MapBase map, IntVec3 global)
             {
                 var net = map.Net;
-                if (net is Client)
+                if (net is not Server server)
                     throw new Exception();
                 Trample(map, global);
-                net.WriteToStream(PacketTrample, global);
+                //net.WriteToStream(PacketTrample, global);
+                server.BeginPacket(PacketTrample)
+                    .Write(global);
             }
             private static void SyncTrample(NetEndpoint net, Packet pck)
             {

@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Input;
-using Project1.Core.Input.Tools.Building;
 using Project1.Core.Blocks;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Construction.Packets;
 using Project1.Core.Towns.Tools;
 using Project1.Core.Helpers;
@@ -12,6 +11,7 @@ using Project1.Framework.UI;
 using Project1.Framework;
 using Project1.Framework.Input;
 using Project1.Core.Graphics;
+using Project1.Core.Input.Building;
 
 namespace Project1.Core.Construction.Tools
 {

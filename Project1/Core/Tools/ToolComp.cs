@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Framework.UI;
-using Project1.Core.Helpers;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Entities;
@@ -11,6 +10,7 @@ using Project1.Core.Entities.Stats;
 using Project1.Core.Animations;
 using Project1.Core.Materials;
 using Project1.Core.Crafting;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Tools
 {

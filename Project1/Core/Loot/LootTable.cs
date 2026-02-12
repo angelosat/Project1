@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
-using Project1.Core.Net;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Loot
 {

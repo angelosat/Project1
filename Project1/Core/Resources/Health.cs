@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Events;
-using Project1.Core.Base;
-using Project1.Core.UI;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Simulation.Physics;
-using Project1.Core.Entities;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Animations;
+using Project1.Core.Entities;
+using Project1.Core.UI;
+using Project1.Framework.UI;
+using System;
+using System.Linq;
 
 namespace Project1.Core.Resources
 {
@@ -57,29 +52,12 @@ namespace Project1.Core.Resources
                 }
             }
         }
-       
         protected override float GetRegenRate(Resource values)
         {
             float rate = ((float)Math.Pow(values.Percentage, 2)) / TickRate;
 
             return rate;
         }
-
-        private void HandleEntityHitGround(EntityHitGroundEvent e)
-        {
-            var actor = e.Entity as Actor;
-            if (actor is null)
-                return;
-            var force = e.Force;
-            var health = actor.GetResource(ResourceDefOf.Health);
-            if (force > 1)
-                this.Modify(health, force);
-        }
-        public override IEnumerable<(Type eventType, Action<IEventPayload> handler)> GetInterests()
-        {
-            yield return (typeof(EntityHitGroundEvent),e => this.HandleEntityHitGround((EntityHitGroundEvent)e));
-        }
-
         public override void OnHealthBarCreated(GameObject parent, Nameplate plate, Resource values)
         {
             plate.AlwaysShow = true;
@@ -96,13 +74,10 @@ namespace Project1.Core.Resources
             plate.AddControls(bar);
             plate.SetMousethrough(true, true);
         }
-
-
         public override void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, GameObject parent)
         {
             base.DrawUI(sb, camera, parent);
         }
-
         public override Color GetBarColor(Resource resource)
         {
             return Color.Orange;

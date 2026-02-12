@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Helpers;
-using Project1.Framework.Events;
-using Project1.Core.UI;
-using Project1.Core.Base;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
-using Project1.Core.Legacy;
-using Project1.Core.Entities;
+using Project1.Core.UI;
+using Project1.Framework.Events;
+using Project1.Framework.Helpers;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Resources
 {
@@ -21,18 +19,12 @@ namespace Project1.Core.Resources
         public ResourceWorker(ResourceDef resourceDef)
         {
             this.ResourceDef = resourceDef;
-
         }
-        public virtual IEnumerable<(Type eventType, Action<IEventPayload> handler)> GetInterests()
+        public virtual IEnumerable<(Type eventType, Action<IEventPayload> handler)> GetEventHandlers()
         {
             yield break;   
         }
-        internal virtual void HandleRemoteCall(GameObject parent, ObjectEventArgs e, Resource resource)
-        {
-        }
-        public virtual void SetMaterial(MaterialDef mat) { }
-
-        public readonly List<ResourceThreshold> Thresholds = new();
+        public readonly List<ResourceThreshold> Thresholds = [];
         public ResourceWorker AddThreshold(string label, float value = 1)
         {
             var t = new ResourceThreshold(label, value);
@@ -40,7 +32,6 @@ namespace Project1.Core.Resources
             this.Thresholds.Sort((a, b) => a.Value.CompareTo(b.Value));
             return this;
         }
-       
         public float GetThresholdValue(Resource res, int index)
         {
             return 0;
@@ -101,11 +92,8 @@ namespace Project1.Core.Resources
         protected virtual void TickExtra(Resource resource) { }
         protected virtual float GetRegenRate(Resource resource) => 0;
         public virtual string Format => "";
-
         public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate, Resource values) { }
         public virtual void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, GameObject parent) { }
-
         internal virtual void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials) { }
-
     }
 }

@@ -1,9 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Animations;
 using Project1.Core.Blocks;
-using Project1.Core.Base;
+using Project1.Core.Entities;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
 using Project1.Core.Input;
-using Project1.Core.Net;
+using Project1.Core.Materials;
+using Project1.Core.Networking;
+using Project1.Core.Rendering;
+using Project1.Core.Simulation.Lighting;
+using Project1.Core.WorldGen;
+using Project1.Framework;
+using Project1.Framework.Graphics;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -11,18 +23,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Project1.Core.Rendering;
-using Project1.Core.Materials;
-using Project1.Core.Helpers;
-using Project1.Core.Graphics;
-using Project1.Core.Simulation.Lighting;
-using Project1.Core.Entities;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework.Graphics;
-using Project1.Framework;
-using Project1.Core.WorldGen;
-using Project1.Core.Animations;
 
 namespace Project1.Core.Simulation
 {
@@ -132,6 +132,7 @@ namespace Project1.Core.Simulation
 
         [InspectorHidden]
         public Cell[] Cells;
+        public int[][] HeightMap;
 
 
         public List<GameObject> Objects;
@@ -320,7 +321,6 @@ namespace Project1.Core.Simulation
                 this.Sunlight[i] = 15;
         }
 
-        public int[][] HeightMap;
 
         public int GetHeightMapValue(Vector3 local)
         {
@@ -486,8 +486,6 @@ namespace Project1.Core.Simulation
 
                 this.SetSunlight(localx, localy, z, light);
                 if (z <= firstContact)
-                    //lightsourcesToHandle.Enqueue(cell.Local.ToGlobal(this));
-                    //lightsourcesToHandle.Enqueue(cell.Local);
                     lightsourcesToHandle.Enqueue(cell.GetGlobalCoords(this));
 
                     z--;
@@ -501,12 +499,12 @@ namespace Project1.Core.Simulation
 
         public void ValidateCells()
         {
-            if (this.CellsToValidate.Any())
+            if (this.CellsToValidate.Count != 0)
             {
                 while (this.CellsToValidate.Count > 0)
                 {
                     Cell cell = this.CellsToValidate.Dequeue();
-                    this.Map.LightingEngine.HandleImmediate(new IntVec3[] { cell.GetGlobalCoords(this) });
+                    this.Map.LightingEngine.HandleImmediate([cell.GetGlobalCoords(this)]);
                     cell.Valid = true;
                     this.InvalidateSlice(cell.Z);
                     this.InvalidateMesh();

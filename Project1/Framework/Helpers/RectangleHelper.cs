@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core;
 
-namespace Project1.Core.Helpers
+namespace Project1.Framework.Helpers
 {
     static public class RectangleHelper
     {

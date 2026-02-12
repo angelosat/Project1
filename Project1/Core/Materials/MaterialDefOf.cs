@@ -31,7 +31,19 @@ namespace Project1.Core.Materials
 
 
         static public readonly MaterialDef Coal = new(MaterialTypeDefOf.Stone, "Coal", "Coal", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
-        static public readonly MaterialDef Stone = new(MaterialTypeDefOf.Stone, "Stone", "Stone", Color.Ivory, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+  
+        static public readonly MaterialDef Stone = new(MaterialTypeDefOf.Stone, "Stone", "Stone", /*Color.DimGray*/Color.Beige, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Limestone = new(MaterialTypeDefOf.Stone, "Limestone", "Limestone", Color.Beige, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Granite = new(MaterialTypeDefOf.Stone, "Granite", "Granite", Color.LightSlateGray, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+
+        static public readonly MaterialDef Diamond = new(MaterialTypeDefOf.Crystal, "Diamond", "Diamond", Color.AliceBlue, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Ruby = new(MaterialTypeDefOf.Crystal, "Ruby", "Ruby", Color.Red, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Topaz = new(MaterialTypeDefOf.Crystal, "Topaz", "Topaz", Color.Goldenrod, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+
+        static public readonly MaterialDef CoalNew = new(MaterialTypeDefOf.FossilFuel, "CoalNew", "CoalNew", Color.Black, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
+        static public readonly MaterialDef Peat = new(MaterialTypeDefOf.FossilFuel, "Peat", "Peat", Color.SaddleBrown, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
+        static public readonly MaterialDef Lignite = new(MaterialTypeDefOf.FossilFuel, "Lignite", "Lignite", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
+
 
         static public readonly MaterialDef ShrubStem = new MaterialDef("Twig", MaterialTemplates.PlantStem)
             .SetColor(new Color(139, 136, 95, 255));// Color.DarkOliveGreen
@@ -57,8 +69,10 @@ namespace Project1.Core.Materials
             .SetColor(Color.DarkSlateGray)
             .SetValue(40);
 
-        static public readonly MaterialDef Soil = new(MaterialTypeDefOf.Soil, "Soil", "Dirt", Color.SandyBrown, 20) { ValueBase = 2, BreakResistance = 2 };
-        static public readonly MaterialDef Sand = new(MaterialTypeDefOf.Soil, "Sand", "Sand", Color.BlanchedAlmond, 10) { ValueBase = 2 };
+        static public readonly MaterialDef Soil = new(MaterialTypeDefOf.Sediment, "Soil", "Dirt", Color.SandyBrown, 20) { ValueBase = 2, BreakResistance = 2 };
+        static public readonly MaterialDef Sand = new(MaterialTypeDefOf.Sediment, "Sand", "Sand", Color.Khaki, 10) { ValueBase = 2 };
+        static public readonly MaterialDef SandNew = new(MaterialTypeDefOf.Sediment, "SandNew", "SandNew", Color.BlanchedAlmond, 10) { ValueBase = 2 };
+        static public readonly MaterialDef Dirt = new(MaterialTypeDefOf.Sediment, "Dirt", "Dirt", Color.SaddleBrown, 10) { ValueBase = 2 };
 
 
         static public readonly MaterialDef Air = new(MaterialTypeDefOf.Gas, "Air", "Air", 0);

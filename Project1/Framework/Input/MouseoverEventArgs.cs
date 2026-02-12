@@ -1,14 +1,9 @@
 ﻿using System;
 
-namespace Project1.Core.Input
+namespace Project1.Framework.Input
 {
-    public class MouseoverEventArgs : EventArgs
+    public class MouseoverEventArgs(object objNext, object objLast) : EventArgs
     {
-        public Object ObjectNext, ObjectLast;
-        public MouseoverEventArgs(Object objNext, Object objLast)
-        {
-            ObjectNext = objNext;
-            ObjectLast = objLast;
-        }
+        public object ObjectNext = objNext, ObjectLast = objLast;
     }
 }

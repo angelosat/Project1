@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Input;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Networking.Simulation;
 using Project1.Core.Screens;
+using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System.Linq;
 

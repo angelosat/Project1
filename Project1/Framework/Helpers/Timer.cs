@@ -1,4 +1,4 @@
-﻿namespace Project1.Core.Helpers
+﻿namespace Project1.Framework.Helpers
 {
     public class Timer
     {

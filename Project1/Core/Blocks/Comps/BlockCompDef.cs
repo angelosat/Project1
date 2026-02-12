@@ -1,7 +1,7 @@
 ﻿using System;
 using Project1.Framework;
 using Project1.Core.Blocks.Doors;
-using Project1.Core.Helpers;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Blocks.Comps
 {
@@ -23,6 +23,7 @@ namespace Project1.Core.Blocks.Comps
         internal static readonly BlockCompDef Construction = new("Construction", typeof(BlockConstructionComp));
         internal static readonly BlockCompDef Door = new("Door", typeof(BlockDoorComp));
         internal static readonly BlockCompDef Workstation = new("Workstation", typeof(BlockWorkstationComp));
+        internal static readonly BlockCompDef Resources = new("Resources", typeof(BlockResourcesComp));
 
         static BlockCompDefOf()
         {

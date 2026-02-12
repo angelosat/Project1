@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
-using Project1.Core.Interfaces;
+using Project1.Framework.Interfaces;
 
 namespace Project1.Core.Materials
 {

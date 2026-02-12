@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Project1.Core.Helpers
+namespace Project1.Framework.Helpers
 {
     static public class XmlHelper
     {

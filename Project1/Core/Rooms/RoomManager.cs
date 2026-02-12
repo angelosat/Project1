@@ -1,20 +1,17 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Net;
-using Project1.Core.WorldGen;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Project1.Core.Interfaces;
+using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.Serialization;
+using Project1.Framework.Helpers;
 using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 using Project1.Core.Graphics;
 
 namespace Project1.Core.Rooms

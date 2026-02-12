@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using Microsoft.Xna.Framework;
 
 namespace Project1.Framework.Serialization
 {

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Project1.Core.Input
+namespace Project1.Framework.Input
 {
     public class InputHandler
     {

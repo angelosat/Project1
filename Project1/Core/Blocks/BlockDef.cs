@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
-using Project1.Framework;
+﻿using Project1.Core.Blocks.Comps;
 using Project1.Core.Crafting;
-using Project1.Core.Helpers;
 using Project1.Core.Materials;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using System;
+using System.Linq;
 
 namespace Project1.Core.Blocks
 {
@@ -15,6 +16,7 @@ namespace Project1.Core.Blocks
         public Def Profile;
         public ConstructionProfile ConstructionProfile;
         public BlockComp.Spec[] BlockEntityCompSpecs;
+        public BlockCompDef[] Comps;
         internal MaterialDef DefaultMaterial;
 
         public T GetSpec<T>() where T: BlockComp.Spec

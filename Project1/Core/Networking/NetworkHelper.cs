@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public static class NetworkHelper
     {

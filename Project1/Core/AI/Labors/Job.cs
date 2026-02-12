@@ -1,9 +1,6 @@
-﻿using Project1.Core.Towns;
-using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
-using System.IO;
+﻿using Project1.Framework;
 using Project1.Framework.Serialization;
-using Project1.Framework;
+using Project1.Core.Towns;
 
 namespace Project1.Core.AI.Labors
 {

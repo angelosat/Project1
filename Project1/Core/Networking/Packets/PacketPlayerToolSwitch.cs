@@ -1,8 +1,9 @@
 ﻿using Project1.Framework;
 using Project1.Core.Input;
 using Project1.Framework.Events;
+using Project1.Core.Networking;
 
-namespace Project1.Core.Net.Packets
+namespace Project1.Core.Networking.Packets
 {
     [EnsureStaticCtorCall]
     static class PacketPlayerToolSwitch

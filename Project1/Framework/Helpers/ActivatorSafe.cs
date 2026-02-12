@@ -1,5 +1,6 @@
 ﻿using System;
-namespace Project1.Core.Helpers
+
+namespace Project1.Framework.Helpers
 {
     public static class ActivatorSafe<T> where T : class
     {

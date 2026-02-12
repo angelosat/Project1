@@ -10,12 +10,10 @@ namespace Project1.Core.Entities
         {
             map.Events.ListenTo<EntityKilledEvent>(OnEntityKilled);
         }
-
         private void OnEntityKilled(EntityKilledEvent @event)
         {
             this.KilledEntities.Enqueue(@event.Entity);
         }
-
         public override void Tick()
         {
             while (this.KilledEntities.Count > 0)

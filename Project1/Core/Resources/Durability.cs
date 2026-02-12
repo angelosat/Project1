@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Materials;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Resources
 {

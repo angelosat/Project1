@@ -10,13 +10,13 @@ using Project1.Core.Interactions;
 using Project1.Core.Blocks;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.UI;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.UI.Hud;
+using Project1.Framework.Interfaces;
 
 #nullable enable
 

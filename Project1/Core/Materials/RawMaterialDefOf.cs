@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Project1.Framework;
+﻿using Project1.Core.Animations;
 using Project1.Core.Assets;
+using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Legacy.Storage;
-using Project1.Core.Entities;
-using Project1.Core.Animations;
+using Project1.Framework;
+using System.Collections.Generic;
 
 namespace Project1.Core.Materials
 {
@@ -80,9 +80,7 @@ namespace Project1.Core.Materials
             Body = new Bone(BoneDefOf.Item, ItemContent.OreGrayscale) { DrawMaterialColor = true },
             CanProcessInto = new List<Reaction.Product.Types>() { Reaction.Product.Types.Tools, Reaction.Product.Types.Blocks },
             DefaultMaterialType = MaterialTypeDefOf.Metal,
-        }.SetMadeFrom(MaterialToken.Metal)
-            ;
-
+        };
 
         static public readonly ItemDef Boulders = new ItemDef("Boulders", typeof(Entity))
         {

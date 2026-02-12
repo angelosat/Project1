@@ -1,10 +1,8 @@
-﻿using Project1.Core.Legacy.Crafting;
-using Project1.Core.Legacy.Storage;
-using Project1.Core;
-using Project1.Core.Components.Crafting;
-using System.Collections.Generic;
+﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
-using Project1.Core.Animations;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Legacy.Storage;
+using System.Collections.Generic;
 
 namespace Project1.Core.Legacy.Properties
 {

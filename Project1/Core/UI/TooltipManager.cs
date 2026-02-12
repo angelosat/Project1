@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.UI.Settings;
-using Project1.Core.Base;
 using Project1.Core.Input;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using System;
 using System.Linq;
-using Project1.Core;
 using Project1.Core.Simulation;
 using Project1.Framework.Events;
 using Project1.Framework;
 using Project1.Framework.UI;
+using Project1.Framework.Input;
 
 namespace Project1.Core.UI
 {

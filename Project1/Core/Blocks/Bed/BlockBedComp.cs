@@ -19,7 +19,6 @@ namespace Project1.Core
         public enum Types { Citizen, Visitor };
         public Types Type = Types.Citizen;
         
-        public override string Name => "Bed";
         public bool Occupied => this.CurrentOccupant != EntityRefId.Null;
         public EntityRefId CurrentOccupant = EntityRefId.Null;
         public Actor Owner;

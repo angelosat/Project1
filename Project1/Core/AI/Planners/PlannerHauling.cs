@@ -1,11 +1,9 @@
-﻿using Project1.Core.AI.Behaviors;
-using Project1.Core.Base;
-using Project1.Core.Entities.Actors;
-using Project1.Core;
-using System;
+﻿using System;
 using System.Linq;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.AI.Behaviors;
+using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.AI.Planners
 {

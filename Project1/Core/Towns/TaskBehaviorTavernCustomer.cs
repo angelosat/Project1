@@ -1,7 +1,6 @@
 ﻿using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Helpers;
 using Project1.Core.Entities;
-using Project1.Core.Base;
 using System;
 using System.Collections.Generic;
 using Project1.Core.AI;

@@ -12,8 +12,7 @@ namespace Project1.Core
     {
         public override BlockCompDef CompDef => throw new NotImplementedException();
 
-        public override string Name { get; } = "Particles";
-        readonly HashSet<ParticleEmitter> Emitters = new();
+        readonly HashSet<ParticleEmitter> Emitters = [];
         public BlockEntityCompParticles(params ParticleEmitter[] emitters)
         {
             for (int i = 0; i < emitters.Length; i++)

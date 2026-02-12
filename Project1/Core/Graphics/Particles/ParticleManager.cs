@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.Components;
-using Project1.Core.Net;
-using Project1.Core.Base;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
 using Project1.Framework;
 using Project1.Framework.Events;
+using Project1.Core.Components;
+using Project1.Core.Simulation;
+using Project1.Core.Entities;
+using Project1.Core.Networking;
 
 namespace Project1.Core.Graphics.Particles
 {

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Simulation;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Blocks.Doors
 {
@@ -18,7 +18,6 @@ namespace Project1.Core.Blocks.Doors
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Door;
 
-        public override string Name => "Door";
         BoundingBox? _cachedAABB;
         HashSet<EntityRefId> CurrentlyOccupying = [];
         public BoundingBox AABB => _cachedAABB ??= BlockDefOf.Door.Worker.GetBoundingBox(this.Parent.Map, this.Parent.OriginGlobal);

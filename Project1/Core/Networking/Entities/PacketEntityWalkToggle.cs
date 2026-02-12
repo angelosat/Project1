@@ -1,6 +1,6 @@
 ﻿using Project1.Framework;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Framework.Events;
 
 namespace Project1.Core.Networking.Entities

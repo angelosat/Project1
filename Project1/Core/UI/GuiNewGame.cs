@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using System;
@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Project1.Framework.UI;
 using Project1.Core.WorldGen;
+using Project1.Core.Networking;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.UI
 {

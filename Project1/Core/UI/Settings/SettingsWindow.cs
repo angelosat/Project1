@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using Project1.Core.Base;
 using Project1.Core.Helpers;
+using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 
 namespace Project1.Core.UI.Settings

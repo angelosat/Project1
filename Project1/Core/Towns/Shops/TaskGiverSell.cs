@@ -1,8 +1,7 @@
-﻿using Project1.Core.AI;
+﻿using System.Linq;
+using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
-using System.Linq;
 
 namespace Project1.Core.Towns.Shops
 {

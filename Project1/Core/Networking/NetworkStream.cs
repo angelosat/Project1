@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
 
     //public partial class Client

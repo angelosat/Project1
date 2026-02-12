@@ -1,8 +1,8 @@
 ﻿using System;
 using Project1.Core.Interactions;
-using Project1.Core.Net;
 using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.Networking;
 
 namespace Project1.Core.AI.Behaviors.Helpers
 {

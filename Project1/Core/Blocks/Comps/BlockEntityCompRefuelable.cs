@@ -7,7 +7,7 @@ using Project1.Core.Legacy;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Materials;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework;
@@ -90,7 +90,6 @@ namespace Project1.Core.Blocks
                 return net.Map.GetBlockEntity(global).GetComp<BlockEntityCompRefuelable>();
             }
         }
-        public override string Name { get; } = "Refuelable";
         public Progress Fuel = new();
         readonly ObservableCollection<ItemMaterialAmount> StoredFuelItems = new();
         public StorageSettings Settings { get; } = new();

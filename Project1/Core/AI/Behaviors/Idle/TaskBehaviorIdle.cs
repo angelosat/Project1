@@ -1,5 +1,4 @@
 ﻿using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Core.Base;
 using System.Collections.Generic;
 
 namespace Project1.Core.AI.Behaviors.Idle

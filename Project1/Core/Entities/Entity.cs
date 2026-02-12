@@ -4,13 +4,13 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Components;
-using Project1.Core.Helpers;
 using Project1.Core.Materials;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Tools;
 using Project1.Core.Animations;
 using Project1.Core.UI.Hud;
 using Project1.Core.Gear;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Entities
 {

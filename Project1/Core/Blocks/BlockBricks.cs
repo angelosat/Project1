@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Constructions.Categories;
-using Project1.Core.Legacy.Crafting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Blocks
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Net.Packets;
+using Project1.Core.Networking.Packets;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace Project1.Core.UI.Hud.Chat
             this.MouseThrough = true;
             this.Movable = true;
 
-            this.Console = Net.Client.Instance.ConsoleBox;
+            this.Console = Networking.Client.Instance.ConsoleBox;
             this.Console.FadeText = true;
             this.Panel_Text = new Panel() { AutoSize = true, Name = "Panel_Text", Color = Color.Black };
             this.Panel_Text.Controls.Add(this.Console);
@@ -66,11 +66,11 @@ namespace Project1.Core.UI.Hud.Chat
                     if (gotText[0] == '/')
                     {
                         //server command
-                        Net.Client.PlayerCommand(gotText.TrimStart('/'));
+                        Networking.Client.PlayerCommand(gotText.TrimStart('/'));
                     }
                     else
                     {
-                        PacketChat.Send(Net.Client.Instance, Net.Client.Instance.PlayerData.ID, gotText);
+                        PacketChat.Send(Networking.Client.Instance, Networking.Client.Instance.PlayerData.ID, gotText);
                     }
                 },
                 EscapeFunc = a =>

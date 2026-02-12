@@ -18,7 +18,6 @@ namespace Project1.Core.Legacy
     {
         public override BlockCompDef CompDef => throw new NotImplementedException();
 
-        public override string Name { get; } = "Workstation";
         static readonly string OperatingPositionUnreachableString = $"Interaction spot blocked";
         public bool OperatingPositionUnreachable;
 

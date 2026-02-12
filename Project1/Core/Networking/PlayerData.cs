@@ -6,13 +6,12 @@ using System.Net;
 using Microsoft.Xna.Framework;
 using Project1.Core.Input;
 using System.Collections.Generic;
-using Project1.Core.Base;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Helpers.Collections;
 using Project1.Framework.Serialization;
+using Project1.Framework.Helpers;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public class PlayerData
     {

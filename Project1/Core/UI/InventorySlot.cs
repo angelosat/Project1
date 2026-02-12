@@ -1,9 +1,8 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Base;
 using Project1.Core.Input;
 using Project1.Core.UI.Slots;
-using Project1.Framework.UI;
 using Project1.Framework.Input;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {

@@ -1,6 +1,7 @@
-﻿using Project1.Core.Screens;
+﻿using Project1.Core.Networking;
+using Project1.Core.Screens;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     interface ICommandParser
     {

@@ -1,9 +1,8 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Helpers;
-using Project1.Core.Net;
-using Project1.Core.Net;
+﻿using Project1.Core.Networking;
+using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.UI;
+using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
 using System.Collections.ObjectModel;
@@ -115,7 +114,7 @@ namespace Project1.Core.UI
         {
             Server.Start();
             string localHost = "127.0.0.1";
-            Core.Net.Client.Instance.Connect(localHost, new PlayerData(this.Txt_Name.Text), a => { LobbyWindow.Instance.Console.Write("Connected to " + localHost); });
+            Core.Networking.Client.Instance.Connect(localHost, new PlayerData(this.Txt_Name.Text), a => { LobbyWindow.Instance.Console.Write("Connected to " + localHost); });
             LobbyWindow.Instance.Show();
         }
 
@@ -131,7 +130,7 @@ namespace Project1.Core.UI
             UIConnecting.Create(address);
             Engine.PlayGame();
             Task.Factory.StartNew(() =>
-                Core.Net.Client.Instance.Connect(address, new PlayerData(this.Txt_Name.Text), ar =>
+                Core.Networking.Client.Instance.Connect(address, new PlayerData(this.Txt_Name.Text), ar =>
                 {
                     LobbyWindow.Instance.Console.Write("Connected to " + address);
                 }));

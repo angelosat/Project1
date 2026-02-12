@@ -3,8 +3,9 @@ using Project1.Core.Construction.Tools;
 using Project1.Core.Blocks;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Framework.Events;
+using Project1.Core.Networking;
 
 namespace Project1.Core.Construction.Packets
 {

@@ -5,6 +5,7 @@ using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Attributes
 {
@@ -88,7 +89,7 @@ namespace Project1.Core.Attributes
             var range = 20;
             var average = range / 2;
             var snapshot = this.Attributes.Values.ToList();
-            var values = RandomHelper.NextNormalsBalanced(snapshot.Count);
+            var values = RandomHelperAI.NextNormalsBalanced(snapshot.Count);
             for (int i = 0; i < snapshot.Count; i++)
             {
                 var item = snapshot[i];

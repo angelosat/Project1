@@ -7,9 +7,8 @@ using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud.Chat;
 using Project1.Core.Components;
-using Project1.Core.Base;
 using Project1.Core.Input;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Framework.Events;
 
 namespace Project1.Core.UI.Hud

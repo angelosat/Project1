@@ -1,30 +1,32 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Input;
+using Project1.Core.Loot;
+using Project1.Core.Map;
+using Project1.Core.Networking;
+using Project1.Core.Simulation.FallDamage;
+using Project1.Core.Towns;
+using Project1.Core.UI;
+using Project1.Core.UI.Hud;
+using Project1.Core.WorldGen;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Helpers;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework.Interfaces;
-using Project1.Core.Blocks;
-using Project1.Core.Base;
-using Project1.Core.Input;
-using Project1.Core.Net;
-using Project1.Core.UI;
-using Project1.Core.Towns;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
-using Project1.Core.Graphics;
-using Project1.Core.Entities;
-using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.UI.Hud;
-using Project1.Core.Map;
-using Project1.Core.WorldGen;
-using Project1.Framework.Events;
 
 namespace Project1.Core.Simulation
 {
@@ -109,7 +111,6 @@ namespace Project1.Core.Simulation
             this.LightingEngine = new LightingEngine(this);
             this.Camera = new Camera(Game1.Bounds.Width, Game1.Bounds.Height);
             this.Name = name;
-            this.ActiveChunks = new Dictionary<IntVec2, Chunk>();
             this.Thumbnails = new Texture2D[3];
             this.Town = new Town(this);
             this.Regions = new RegionManager(this);
@@ -117,6 +118,8 @@ namespace Project1.Core.Simulation
             this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
             this.ParticleManager = new Graphics.Particles.ParticleManager(this);
             this.EntityLifecycleManager = new EntityLifecycleManager(this);
+            this.SimulationSystems.Add(new FallDamageSystem(this));
+            this.SimulationSystems.Add(new LootSystem(this));
         }
         public StaticMap(StaticWorld world, Vector2 coords, string name = "")
             : this(world, name)
@@ -407,29 +410,6 @@ namespace Project1.Core.Simulation
                 }
             }
         }
-        void UpdateChunkNeighborsLight(Chunk chunk)
-        {
-            var actives = this.GetActiveChunks();
-
-            if (actives.TryGetValue(chunk.MapCoords + new IntVec2(1, 0), out var neighbor))
-                this.LightingEngine.HandleImmediate(neighbor.GetEdges(Edges.West));
-
-            if (actives.TryGetValue(chunk.MapCoords + new IntVec2(-1, 0), out neighbor))
-                this.LightingEngine.HandleImmediate(neighbor.GetEdges(Edges.East));
-
-            if (actives.TryGetValue(chunk.MapCoords + new IntVec2(0, 1), out neighbor))
-                this.LightingEngine.HandleImmediate(neighbor.GetEdges(Edges.North));
-
-            if (actives.TryGetValue(chunk.MapCoords + new IntVec2(0, -1), out neighbor))
-                this.LightingEngine.HandleImmediate(neighbor.GetEdges(Edges.South));
-        }
-
-        void ResetLight(Chunk chunk)
-        {
-            var cellList = chunk.ResetHeightMap();
-            this.UpdateLight(cellList);
-        }
-
         public override Texture2D GetThumbnail()
         {
             GraphicsDevice gd = Game1.Instance.GraphicsDevice;
@@ -442,7 +422,6 @@ namespace Project1.Core.Simulation
             gd.SetRenderTarget(null);
             return final;
         }
-
         public static StaticMap Create(StaticWorld world, Vector2 coords)
         {
             var map = new StaticMap(world, coords);//a);
@@ -713,9 +692,6 @@ namespace Project1.Core.Simulation
                 global.Y >= 0 && global.Y < maxside &&
                 global.Z >= 0 && global.Z < maxz;
         }
-
-        
-
         public override void UpdateLight(IEnumerable<IntVec3> positions)
         {
             this.LightingEngine.HandleImmediate(positions);
@@ -911,9 +887,6 @@ namespace Project1.Core.Simulation
             return Math.Max(0, Math.Min(1, (1 + nn) / 2f));
         }
         #endregion
-
-     
-
         /// <summary>
         /// Called after terrain has been generated. Detects cells at the edges of 'caves' and enqueues them to receive light from their adjacent cells that are open to sunlight 
         /// </summary>

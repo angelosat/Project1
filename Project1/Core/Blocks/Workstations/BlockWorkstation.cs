@@ -1,16 +1,15 @@
-﻿using Project1.Core.Towns.Constructions.Categories;
-using Project1.Core.Blocks;
-using Project1.Core.Legacy.Crafting;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Simulation;
+using Project1.Core.Towns.Constructions.Categories;
+using Project1.Framework;
+using Project1.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.Graphics;
-using Project1.Framework;
 
 namespace Project1.Core
 {
-    sealed class BlockWorkstation : BlockWithEntity, IBlockWorkstation
+    sealed class BlockWorkstation : Block//WithEntity
     {
         readonly AtlasDepthNormals.Node.Token[] Orientations = Block.TexturesCounter;
         readonly Type BlockEntityType;
@@ -21,7 +20,6 @@ namespace Project1.Core
             this.Variations.Add(this.Orientations.First());
             this.BuildProperties.Category = ConstructionCategoryDefOf.Production;
             this.BuildProperties.Dimension = 4;
-            this.Ingredient = new Ingredient(amount: 4).IsBuildingMaterial();
         }
         public BlockWorkstation(string name)
             : base(name, opaque: false, solid: true)
@@ -30,7 +28,6 @@ namespace Project1.Core
             this.Variations.Add(this.Orientations.First());
             this.BuildProperties.Category = ConstructionCategoryDefOf.Production;
             this.BuildProperties.Dimension = 4;
-            this.Ingredient = new Ingredient(amount: 4).IsBuildingMaterial();
         }
         public override AtlasDepthNormals.Node.Token GetToken(int variation, int orientation, int cameraRotation, byte data)
         {

@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Materials;
-using Project1.Core.Net.Packets;
+using Project1.Core.Networking.Simulation;
 using Project1.Framework;
 using Project1.Framework.Events;
 using System.Collections.Generic;

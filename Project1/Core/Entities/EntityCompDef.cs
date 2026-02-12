@@ -1,5 +1,5 @@
 ﻿using System;
-using Project1.Core.Helpers;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Entities
 {

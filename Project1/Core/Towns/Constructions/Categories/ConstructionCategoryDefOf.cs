@@ -1,5 +1,5 @@
 ﻿using Project1.Framework;
-using Project1.Core.Input.Tools.Building;
+using Project1.Core.Input.Building;
 
 namespace Project1.Core.Towns.Constructions.Categories
 {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     /// <summary>
     /// 

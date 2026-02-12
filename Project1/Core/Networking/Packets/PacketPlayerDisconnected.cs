@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using Project1.Core.Helpers;
-using Project1.Core.Net;
+using Project1.Core.Serialization;
 using Project1.Framework.Serialization;
 
-namespace Project1.Core.Net.Packets
+namespace Project1.Core.Networking.Packets
 {
     class PacketPlayerDisconnected
     {

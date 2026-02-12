@@ -1,21 +1,19 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Graphics;
 using Project1.Core.Interactions;
-using Project1.Core.Interfaces;
-using Project1.Core.Legacy;
+using Project1.Core.Inventory;
+using Project1.Core.Materials;
+using Project1.Core.Rendering;
+using Project1.Core.Simulation;
+using Project1.Core.UI;
+using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Materials;
-using Project1.Core.Net;
-using Project1.Core.Rendering;
-using Project1.Core.UI;
-using Project1.Core.Simulation;
-using Project1.Core.Inventory;
-using Project1.Core.UI.Hud;
-using Project1.Framework.Events;
-using Project1.Core.Graphics;
 
 namespace Project1.Core.Entities
 {
@@ -44,14 +42,6 @@ namespace Project1.Core.Entities
         public EntityComp()
         {
         }
-
-
-        public virtual bool HandleMessage(GameObject parent, ObjectEventArgs e = null)
-        {
-            return false;
-        }
-        internal virtual void HandleRemoteCall(GameObject gameObject, ObjectEventArgs e) { }
-
         public virtual void Tick() { }
 
         public virtual void Initialize(GameObject parent) { }

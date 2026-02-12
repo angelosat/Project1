@@ -1,9 +1,9 @@
 ﻿using System;
-using Project1.Core.Net;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Pathing;
 using Project1.Framework;
+using Project1.Core.Networking;
 
 namespace Project1.Core.AI.Behaviors.Pathing
 {

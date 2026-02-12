@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Legacy;
+using Project1.Core.Simulation;
+using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Legacy;
-using Project1.Core.Helpers;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.UI.Hud;
-using Project1.Core.Graphics;
 
 namespace Project1.Core.Blocks
 {
@@ -184,7 +184,6 @@ namespace Project1.Core.Blocks
         }
         protected virtual void WriteExtra(IDataWriter w) { }
         protected virtual void ReadExtra(IDataReader r) { }
-        internal virtual void HandleRemoteCall(MapBase map, Vector3 vector3, ObjectEventArgs e) { }
 
         public void Draw(Camera camera, MapBase map, IntVec3 global)
         {

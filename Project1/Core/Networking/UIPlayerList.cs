@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Project1.Framework.UI;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     class UIPlayerList : GroupBox
     {

@@ -1,12 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
+﻿using System.Collections.Generic;
+using System.IO;
+using Microsoft.Xna.Framework;
 using Project1.Framework;
 using Project1.Framework.Serialization;
-using System.Collections.Generic;
-using System.IO;
+using Project1.Core.Helpers;
+using Project1.Core.Serialization;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public class PacketBuilder : IDataWriter
     {
@@ -33,10 +33,7 @@ namespace Project1.Core.Net
         public IDataWriter Write(Vector2 v) { this._writer.Write(v); return this; }
         public IDataWriter Write(List<int> v) { this._writer.Write(v); return this; }
         public IDataWriter Write(IntVec3[] v) { this._writer.Write(v); return this; }
-
         public IDataWriter WriteASCII(string v) { this._writer.WriteASCII(v); return this; }
-
-        public IDataWriter Write(params object[] v) { this._writer.Write(v); return this; }
         internal static PacketBuilder Create(BinaryWriter w, int pType)
         {
             

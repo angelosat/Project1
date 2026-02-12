@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Components;
 using Project1.Core.Legacy.Crafting.Packets;
 using Project1.Core.Materials;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.UI;
 using System;
 using System.Linq;

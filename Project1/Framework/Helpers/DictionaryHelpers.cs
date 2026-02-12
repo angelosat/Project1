@@ -1,11 +1,9 @@
-﻿using Project1.Core.Interfaces;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
 
-namespace Project1.Core.Helpers
+namespace Project1.Framework.Helpers
 {
     public static class DictionaryHelpers
     {
@@ -16,23 +14,6 @@ namespace Project1.Core.Helpers
             r.ReadNewInto(values);
             foreach (var val in values)
                 dic.Add(keySelector(val), val);
-        }
-        public static void ReadDefWrappers<TKey, TValue>(this IDataReader r, Dictionary<TKey, TValue> dic) where TValue : IDefWrapper<TKey>, ISerializableNew<TValue> where TKey : Def
-        {
-            dic.Clear();
-            var values = new List<TValue>();
-            r.ReadNewInto(values);
-            foreach (var val in values)
-                dic.Add(val.Def, val);
-        }
-        public static Dictionary<TKey, TValue> ReadDefWrappers<TKey, TValue>(this IDataReader r) where TValue : IDefWrapper<TKey>, ISerializableNew<TValue> where TKey : Def
-        {
-            Dictionary<TKey, TValue> dic = [];
-            var values = new List<TValue>();
-            r.ReadNewInto(values);
-            foreach (var val in values)
-                dic.Add(val.Def, val);
-            return dic;
         }
         public static void WriteValues<TKey, TValue>(this IDataWriter w, Dictionary<TKey, TValue> dic) where TValue : ISerializableNew<TValue>
         {
@@ -49,12 +30,10 @@ namespace Project1.Core.Helpers
         public static void LoadValuesWithInferredKeys<TKey, TValue>(this Dictionary<TKey, TValue> dic, SaveTag tag, Func<TValue, TKey> keySelector) where TValue : ISaveableNewNew<TValue>, new()
         {
             dic.Clear();
-            //var values = new List<TValue>();
             var values = tag.LoadArrayNewNew<TValue>();
             foreach(var value in values)
                 dic.Add(keySelector(value), value);
         }
-
         public static void SaveValues<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic, string name) where TValue : ISaveableNewNew<TValue>
         {
             tag.Save(name, dic.Values);
@@ -66,55 +45,5 @@ namespace Project1.Core.Helpers
             foreach (var n in values)
                 dic.Add(keySelector(n), n);
         }
-        public static void SaveDefWrappers<TKey, TValue>(this SaveTag tag, string name, Dictionary<TKey, TValue> dic) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
-        {
-            tag.Save(name, dic.Values);
-        }
-        public static void LoadDefWrappers<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
-        {
-            dic.Clear();
-            var values = tag.LoadArrayNewNew<TValue>();
-            foreach (var n in values)
-                if(!dic.TryAdd(n.Def, n))
-                    throw new InvalidDataException($"Duplicate def '{n.Def}' while loading {typeof(TValue).Name}");
-        }
-        public static void LoadDefWrappersCopyFrom<TKey, TValue>(this SaveTag tag, Dictionary<TKey, TValue> dic) where TValue : ICopyable, ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
-        {
-            dic.Clear();
-            var values = tag.LoadArrayNewNew<TValue>();
-            foreach (var n in values)
-                    if (dic.TryGetValue(n.Def, out var nvalue)) nvalue.CopyFrom(n);
-                else
-                    throw new InvalidDataException($"Missing def '{n.Def}' while loading {typeof(TValue).Name}");
-        }
-        public static void LoadDefWrappers<TKey, TValue>(this SaveTag tag, string name, Dictionary<TKey, TValue> dic) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
-        {
-            tag[name].LoadDefWrappers(dic);
-            //dic.Clear();
-            //var values = tag[name].LoadListNewNew<TValue>();
-            //foreach (var n in values)
-            //    if (!dic.TryAdd(n.Def, n))
-            //        throw new InvalidDataException($"Duplicate def '{n.Def}' while loading {typeof(TValue).Name}");
-        }
-        //public static Dictionary<TKey, TValue> LoadDefWrappers<TKey, TValue>(this SaveTag tag, string name) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
-        //{
-        //    return tag[name].LoadDefWrappers<TKey, TValue>();
-        //    //Dictionary<TKey, TValue> dic = [];
-        //    //var values = tag[name].LoadListNewNew<TValue>();
-        //    //foreach (var n in values)
-        //    //    if (!dic.TryAdd(n.Def, n))
-        //    //        throw new InvalidDataException($"Duplicate def '{n.Def}' while loading {typeof(TValue).Name}");
-        //    //return dic;
-        //}
-        //public static Dictionary<TKey, TValue> LoadDefWrappers<TKey, TValue>(this SaveTag tag) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
-        //{
-        //    Dictionary<TKey, TValue> dic = [];
-        //    //var values = tag.LoadListNewNew<TValue>();
-        //    //foreach (var n in values)
-        //    //    if (!dic.TryAdd(n.Def, n))
-        //    //        throw new InvalidDataException($"Duplicate def '{n.Def}' while loading {typeof(TValue).Name}");
-        //    tag.LoadDefWrappers(dic);
-        //    return dic;
-        //}
     }
 }

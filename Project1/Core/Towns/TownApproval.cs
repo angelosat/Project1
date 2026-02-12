@@ -1,4 +1,4 @@
-﻿using Project1.Core.Interfaces;
+﻿using Project1.Framework.Interfaces;
 using System;
 
 namespace Project1.Core.Towns

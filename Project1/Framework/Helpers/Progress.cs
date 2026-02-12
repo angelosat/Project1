@@ -1,8 +1,8 @@
-﻿using Project1.Core.Interfaces;
+﻿using System;
+using System.Globalization;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using System;
-using System.Globalization;
+using Project1.Framework.Interfaces;
 
 namespace Project1.Framework.Helpers
 {

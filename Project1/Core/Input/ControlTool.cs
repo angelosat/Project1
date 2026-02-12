@@ -7,12 +7,13 @@ using Project1.Framework.Input;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Framework.Events;
-using Project1.Core.Net;
-using Project1.Core.Net.Packets;
+using Project1.Core.Networking;
+using Project1.Core.Networking.Packets;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
+using Project1.Core.Networking;
 
 namespace Project1.Core.Input
 {

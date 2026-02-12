@@ -1,7 +1,9 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Blocks.Comps;
 using Project1.Core.Blocks.Doors;
-using Project1.Core.Materials;
 using Project1.Core.Crafting;
+using Project1.Core.Materials;
+using Project1.Core.Resources;
+using Project1.Framework;
 
 namespace Project1.Core.Blocks
 {
@@ -50,14 +52,19 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation))
         {
             Profile = WorkstationDefOf.Workbench,
-            BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Workbench)],
+            BlockEntityCompSpecs = [
+                new BlockWorkstationComp.Spec(WorkstationDefOf.Workbench),
+                new BlockResourcesComp.Spec([ResourceDefOf.RepairCharges])
+                ],
             ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };
         static public readonly BlockDef Smeltery = new("Smeltery", typeof(BlockWorkstation))
         {
             BlockEntityCompSpecs = [
                 new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery),
-                new BlockFuelComp.Spec()],
+                //new BlockFuelComp.Spec(),
+                new BlockResourcesComp.Spec([ResourceDefOf.Fuel])
+                ],
             ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Chunk])
         };
         static public readonly BlockDef Kitchen = new("Kitchen", typeof(BlockWorkstation))

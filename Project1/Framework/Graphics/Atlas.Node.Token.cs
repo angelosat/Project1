@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core;
-using Project1.Core.Helpers;
+using Project1.Framework.Helpers;
 
 namespace Project1.Framework.Graphics
 {

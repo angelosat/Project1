@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public class UdpConnection 
     {

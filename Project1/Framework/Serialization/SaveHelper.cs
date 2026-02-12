@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Project1.Framework.Interfaces;
 using Project1.Core;
+using Project1.Core.Entities;
 
 namespace Project1.Framework.Serialization
 {

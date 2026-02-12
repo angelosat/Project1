@@ -1,4 +1,5 @@
-﻿using Project1.Framework.UI;
+﻿using Project1.Core.UI.Blocks;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {

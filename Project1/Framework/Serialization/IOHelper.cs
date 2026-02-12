@@ -1,16 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core;
-using Project1.Core.Helpers;
-using Project1.Core.Helpers.Collections;
-using Project1.Core.Interfaces;
-using Project1.Core.Net;
-using Project1.Core.Simulation;
-using Project1.Framework.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Project1.Framework.Helpers;
 
 namespace Project1.Framework.Serialization
 {
@@ -129,14 +123,6 @@ namespace Project1.Framework.Serialization
             return list;
         }
        
-        public static ICollection<Def> Read(this ICollection<Def> list, BinaryReader r)
-        {
-            var count = r.ReadInt32();
-            for (int i = 0; i < count; i++)
-                list.Add(Def.GetDef(r));//.ReadString()));
-            return list;
-        }
-
         public static ICollection<U> Read<U>(this ICollection<U> collection, IDataReader r, params object[] args)
             where U : class, ISerializableNew<U>
         {
@@ -203,17 +189,7 @@ namespace Project1.Framework.Serialization
                 dic.Add(keySelector(i), i);
             return dic;
         }
-        public static T ReadDef<T>(this BinaryReader r) where T : Def
-        {
-            return Def.GetDef<T>(r.ReadString());
-        }
-        public static ICollection<T> ReadDefs<T>(this ICollection<T> list, IDataReader r) where T : Def
-        {
-            var count = r.ReadInt32();
-            for (int i = 0; i < count; i++)
-                list.Add(Def.GetDef<T>(r));//.ReadString()));
-            return list;
-        }
+        
         public static Dictionary<T, U> ReadFromFlat<T, U>(this Dictionary<T, U> dic, IDataReader r, Func<IDataReader, T> keyReader, Func<IDataReader, U> valueReader)
         {
             var count = r.ReadInt32();
@@ -327,22 +303,7 @@ namespace Project1.Framework.Serialization
             }
             return list;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="r"></param>
-        /// <param name="net">pass the net peer to resolve targets initially</param>
-        /// <returns></returns>
-        public static List<TargetArgs> ReadListTargets(this IDataReader r, NetEndpoint net = null)
-        {
-            var count = r.ReadInt32();
-            var list = new List<TargetArgs>(count);
-            for (int i = 0; i < count; i++)
-            {
-                list.Add(TargetArgs.Read(net, r));
-            }
-            return list;
-        }
+        
         public static List<Vector2> ReadListVector2(this BinaryReader r)
         {
             var count = r.ReadInt32();
@@ -385,14 +346,7 @@ namespace Project1.Framework.Serialization
             }
             return array;
         }
-        public static T ReadTargets<T>(this T collection, MapBase map, IDataReader r)
-           where T : ICollection<TargetArgs>, new()
-        {
-            var count = r.ReadInt32();
-            for (int i = 0; i < count; i++)
-                collection.Add(TargetArgs.Read(map, r));
-            return collection;
-        }
+        
         public static Vector2 ReadVector2(this BinaryReader reader)
         {
             return new Vector2(reader.ReadSingle(), reader.ReadSingle());
@@ -445,60 +399,10 @@ namespace Project1.Framework.Serialization
             }
             return dic;
         }
-        public static Dictionary<T, U> Sync<T, U>(this Dictionary<T, U> dic, IDataWriter w) where U : ISerializable where T : Def
-        {
-            foreach (var vk in dic)
-            {
-                vk.Key.Write(w);
-                vk.Value.Write(w);
-            }
-            return dic;
-        }
         
-        //public static Dictionary<int, U> Sync<U>(this Dictionary<int, U> dic, IDataReader r) where U : ISerializable
-        //{
-        //    for (int i = 0; i < dic.Count; i++)
-        //    {
-        //        dic[r.ReadInt32()].Read(r);
-        //    }
-        //    return dic;
-        //}
-        //public static Dictionary<T, U> Sync<T, U>(this Dictionary<T, U> dic, IDataReader r) where U : ISerializable where T : Def
-        //{
-        //    for (int i = 0; i < dic.Count; i++)
-        //    {
-        //        var def = Def.GetDef(r.ReadString()) as T;
-        //        dic[def].Read(r);
-        //    }
-        //    return dic;
-        //}
-        public static Dictionary<T, U> Sync<T, U>(this Dictionary<T, U> dic, IDataReader r) where U : ISerializable where T : Def
-        {
-            for (int i = 0; i < dic.Count; i++)
-            {
-                var def = Def.GetDef(r.ReadString()) as T;
-                dic[def].Read(r);
-            }
-            return dic;
-        }
-        public static Dictionary<T, U> SyncNew<T, U>(this Dictionary<T, U> dic, IDataWriter w) where U : ISerializableNew<U> where T : Def
-        {
-            foreach (var vk in dic)
-            {
-                vk.Key.Write(w);
-                vk.Value.Write(w);
-            }
-            return dic;
-        }
-        public static Dictionary<T, U> SyncNew<T, U>(this Dictionary<T, U> dic, IDataReader r) where U : ISerializableNew<U> where T : Def
-        {
-            for (int i = 0; i < dic.Count; i++)
-            {
-                var def = Def.GetDef(r.ReadString()) as T;
-                dic[def].Read(r);
-            }
-            return dic;
-        }
+        
+        
+        
         public static ICollection<T> SyncOld<T>(this ICollection<T> collection, IDataReader r)
             where T : ISerializable
         {
@@ -535,13 +439,7 @@ namespace Project1.Framework.Serialization
             foreach (var i in list)
                 w.Write(i);
         }
-        public static void Write(this BinaryWriter w, ICollection<TargetArgs> list)
-        {
-            var count = list.Count;
-            w.Write(count);
-            foreach (var i in list)
-                w.Write(i);
-        }
+        
         public static Dictionary<int, int> Write(this Dictionary<int, int> dic, BinaryWriter w)
         {
             w.Write(dic.Count);
@@ -581,13 +479,7 @@ namespace Project1.Framework.Serialization
                 w.Write(list[i]);
             }
         }
-        public static void Write(this ICollection<Def> list, IDataWriter w)
-        {
-            var count = list.Count;
-            w.Write(count);
-            foreach (var i in list)
-                i.Write(w);
-        }
+        
         public static void Write<T>(this BinaryWriter w, T items) where T : ICollection<int>, new()
         {
             var count = items.Count;
@@ -607,22 +499,7 @@ namespace Project1.Framework.Serialization
             foreach (var i in items)
                 w.Write(i);
         }
-        public static void Write(this BinaryWriter w, List<TargetArgs> list)
-        {
-            var count = list.Count;
-            w.Write(count);
-            foreach (var i in list)
-                i.Write(w);
-        }
-        public static void Write(this BinaryWriter w, IEnumerable<TargetArgs> list)
-        {
-            w.Write(list.ToList());
-        }
-
-        public static void Write(this BinaryWriter w, Def def)
-        {
-            w.Write(def.Name);
-        }
+        
         public static void Write(this BinaryWriter w, List<Vector2> list)
         {
             w.Write(list.Count);
@@ -679,14 +556,7 @@ namespace Project1.Framework.Serialization
             writer.Write(val.Y);
             writer.Write(val.Z);
         }
-        public static void Write(this BinaryWriter w, TargetArgs target)
-        {
-            target.Write(w);
-        }
-        public static void Write(this BinaryWriter writer, PacketType packetType)
-        {
-            writer.Write((int)packetType);
-        }
+        
         public static void Write(this Color c, IDataWriter w)
         {
             w.Write(c.R);
@@ -712,44 +582,7 @@ namespace Project1.Framework.Serialization
             };
             return c;
         }
-        public static void Write(this BinaryWriter w, params object[] args)
-        {
-            for (int i = 0; i < args.Length; i++)
-            {
-                var arg = args[i];
-                var argType = arg.GetType();
-                if (argType == typeof(int))
-                    w.Write((int)arg);
-                else if (argType == typeof(float))
-                    w.Write((float)arg);
-                else if (argType == typeof(string))
-                    w.Write((string)arg);
-                else if (argType == typeof(byte))
-                    w.Write((byte)arg);
-                else if (argType == typeof(short))
-                    w.Write((short)arg);
-                else if (argType == typeof(bool))
-                    w.Write((bool)arg);
-                else if (argType == typeof(long))
-                    w.Write((long)arg);
-                else if (argType == typeof(uint))
-                    w.Write((uint)arg);
-                else if (argType == typeof(ushort))
-                    w.Write((ushort)arg);
-                else if (argType == typeof(ulong))
-                    w.Write((ulong)arg);
-                else if (argType == typeof(decimal))
-                    w.Write((decimal)arg);
-                else if (argType == typeof(IntVec3))
-                    w.Write((IntVec3)arg);
-                else if (arg is Def def)
-                    def.Write(w);
-                else if (arg is TargetArgs target)
-                    target.Write(w);
-                else
-                    throw new ArgumentException();
-            }
-        }
+        
 
         public static void WriteAbstract<T>(this ICollection<T> list, IDataWriter w) where T : ISerializable
         {
@@ -778,13 +611,7 @@ namespace Project1.Framework.Serialization
             writer.Write(encoded);
         }
 
-        public static void WriteDefs<T>(this ICollection<T> list, IDataWriter w) where T : Def
-        {
-            var count = list.Count;
-            w.Write(count);
-            foreach (var i in list)
-                i.Write(w);
-        }
+        
         public static void WriteFlat<T, U>(this Dictionary<T, U> dic, IDataWriter w) where T : ISerializableNew<T> where U : ISerializableNew<U>
         {
             w.Write(dic.Count);

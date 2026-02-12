@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.Base;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Assets;
-using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Core.Plants;
 using Project1.Framework.Events;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.VFX
 {

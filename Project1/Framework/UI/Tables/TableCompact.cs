@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Helpers.Collections;
+using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;

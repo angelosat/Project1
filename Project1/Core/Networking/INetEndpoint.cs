@@ -1,13 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Loot;
-using Project1.Core.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Project1.Framework.Serialization;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
-using Project1.Framework.Serialization;
+using Project1.Core.Loot;
+using Project1.Core.UI;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     public interface INetEndpoint
     {
@@ -32,7 +32,6 @@ namespace Project1.Core.Net
         void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);
         void EventOccured(int eventTypeId, params object[] p);
         IDataWriter BeginPacketNew(ReliabilityType rType, int pType);
-        void WriteToStream(params object[] args);
         void SetSpeed(int playerID, int speed);
         void Report(string text);
     }

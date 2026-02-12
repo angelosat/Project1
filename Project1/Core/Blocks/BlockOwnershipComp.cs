@@ -1,12 +1,11 @@
-﻿using System;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Core.Blocks.Comps;
+﻿using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Blocks;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using System;
 
 namespace Project1.Core.Blocks
 {
@@ -19,9 +18,6 @@ namespace Project1.Core.Blocks
             public override BlockComp CreateComp() => new BlockOwnershipComp();
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Ownership;
-
-        public override string Name => "Ownership";
-
         public EntityRefId Owner { get; private set; }
 
         internal override void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3)

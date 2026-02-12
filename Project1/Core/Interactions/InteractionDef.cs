@@ -1,8 +1,8 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
 using Project1.Core.Skills;
 using Project1.Core.Tools;
+using Project1.Framework.Helpers;
 using System;
 
 namespace Project1.Core.Interactions

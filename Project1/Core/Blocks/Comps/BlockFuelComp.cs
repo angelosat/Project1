@@ -1,11 +1,11 @@
-﻿using System;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Framework.UI;
-using Project1.Core.Blocks.Comps;
+﻿using Project1.Core.Blocks.Comps;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
-using Project1.Core.Helpers;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 
 namespace Project1.Core.Blocks
 {
@@ -14,12 +14,9 @@ namespace Project1.Core.Blocks
         internal new class Spec : BlockComp.Spec
         {
             public override Type CompType => typeof(BlockFuelComp);
-
             public override BlockComp CreateComp() => new BlockFuelComp();
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Fuel;
-
-        public override string Name => "Fuel";
 
         int FuelCurrent;
         public readonly ProgressInt Fuel = new(max: 100);

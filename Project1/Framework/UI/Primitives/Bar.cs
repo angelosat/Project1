@@ -1,11 +1,11 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Helpers;
-using Project1.Core.Interfaces;
 using Project1.Core.UI;
 using Project1.Core.Entities;
 using Project1.Core;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Helpers;
 
 namespace Project1.Framework.UI
 {

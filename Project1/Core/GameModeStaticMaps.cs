@@ -7,13 +7,13 @@ using Project1.Framework.UI;
 using Project1.Core.Towns;
 using Project1.Core.UI;
 using Project1.Core.AI;
-using Project1.Core.Net;
-using Project1.Core.Net.Packets;
+using Project1.Core.Networking;
+using Project1.Core.Networking.Packets;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Networking.Simulation;
-using Project1.Core.Base;
 using Project1.Core.Serialization;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core
 {

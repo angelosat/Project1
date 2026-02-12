@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Materials;
-using Project1.Core.Base;
 using Project1.Core.Simulation;
 
 namespace Project1.Core.Blocks

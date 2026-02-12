@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.Net;
-using Project1.Core.Base;
-using Project1.Core.Interfaces;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Serialization;
+using Project1.Core.Networking;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
-using Project1.Framework.Serialization;
-using Project1.Framework;
-using Project1.Framework.Events;
 
 namespace Project1.Core.Animations
 {
@@ -20,7 +18,6 @@ namespace Project1.Core.Animations
         public Entity Entity;
         public bool Enabled;
         float _weight = 1;
-        //public float Weight = 1;
         public float Weight
         {
             get => this.Def.WeightGetter?.Invoke(Entity) ?? this._weight;

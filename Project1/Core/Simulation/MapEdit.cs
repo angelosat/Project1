@@ -1,11 +1,9 @@
-﻿using Project1.Core.Materials;
-using Project1.Core.Base;
-using Project1.Core.Blocks;
-using Project1.Core.Net.Packets;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.WorldGen;
 using Project1.Framework;
+using Project1.Core.Materials;
+using Project1.Core.Blocks;
+using Project1.Core.Networking.Simulation;
 
 namespace Project1.Core.Simulation
 {

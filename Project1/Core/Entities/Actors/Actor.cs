@@ -24,11 +24,12 @@ using Project1.Core.Towns.Labors;
 using Project1.Core.UI;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.Interactions;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Rooms;
 using Project1.Core.Skills;
 using Project1.Core.Mood;
 using Project1.Core.Networking.Inventory;
+using Project1.Core.Networking;
 
 namespace Project1.Core.Entities.Actors
 {

@@ -1,12 +1,13 @@
-﻿using System;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Framework.UI;
-using Project1.Core.Blocks.Comps;
+﻿using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 
 namespace Project1.Core.Blocks
 {
@@ -23,9 +24,6 @@ namespace Project1.Core.Blocks
             }
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Construction;
-
-        public override string Name => $"{this}";
-
         public Block Block => this.Args.Block.Worker;
         internal override void GetSelectionInfo(Control container)
         {

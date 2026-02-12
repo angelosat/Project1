@@ -1,8 +1,6 @@
-﻿using System;
-using Project1.Core.Helpers;
-using Project1.Core.Interactions;
-using Project1.Framework;
+﻿using Project1.Framework;
 using Project1.Framework.Serialization;
+using System;
 
 namespace Project1.Core.Interactions
 {
@@ -22,8 +20,6 @@ namespace Project1.Core.Interactions
             if (amount == 0)
                 throw new Exception();
             this.Amount = amount;
-            //this.cachedAnimation = new Animation(AnimationDef.TouchItem);
-            //this.AnimationDef = AnimationDef.TouchItem;
             this.CrossFadeAnimationLength = 25;
         }
 

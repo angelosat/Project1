@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Input;
+using Project1.Core.Screens;
+using Project1.Core.UI;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Screens;
-using Project1.Core.UI;
-using Project1.Core.Input;
 
 namespace Project1.Core.Inventory
 {
@@ -69,7 +69,6 @@ namespace Project1.Core.Inventory
             item.Container = null;
             ((IList<Entity>)this.Contents).RemoveAt(index);
         }
-
         public void Add(Entity item)
         {
             if (item.Container == this)
@@ -108,17 +107,14 @@ namespace Project1.Core.Inventory
                 i.Container = null;
             ((ICollection<GameObject>)this.Contents).Clear();
         }
-
         public bool Contains(Entity item)
         {
             return ((ICollection<Entity>)this.Contents).Contains(item);
         }
-
         public void CopyTo(Entity[] array, int arrayIndex)
         {
             ((ICollection<Entity>)this.Contents).CopyTo(array, arrayIndex);
         }
-
         public bool Remove(Entity item)
         {
             if (item.Container != this)
@@ -140,33 +136,28 @@ namespace Project1.Core.Inventory
         {
             return ((IEnumerable)this.Contents).GetEnumerator();
         }
-
         public void Write(IDataWriter w)
         {
             w.Write(this.Contents.Count);
             foreach (var o in this.Contents)
                 o.Write(w);
         }
-
         public ContainerList Read(IDataReader r)
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                //this.Add(GameObject.Create(r));
                 var obj = GameObject.Create(r) as Entity;
                 this.Contents.Add(obj);
                 obj.Container = this;
             }
             return this;
         }
-
         internal void Instantiate(Action<GameObject> instantiator)
         {
             foreach (var o in this.Contents)
                 instantiator(o);
         }
-
         public SaveTag Save(string name = "")
         {
             var save = new SaveTag(SaveTag.Types.Compound, name);
@@ -176,7 +167,6 @@ namespace Project1.Core.Inventory
             save.Add(listtag);
             return save;
         }
-
         public ISaveable Load(SaveTag tag)
         {
             //return this; // added this to reset inventory contents of every entity to do some work that will break existing items
@@ -194,7 +184,6 @@ namespace Project1.Core.Inventory
             yield return (nameof(this.Parent), this.Parent);
             yield return (nameof(this.Contents), this.Contents);
         }
-
         public static ContainerList Create(IDataReader r) => new ContainerList().Read(r);
     }
 }

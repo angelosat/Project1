@@ -1,6 +1,7 @@
-﻿using Project1.Framework.UI;
+﻿using Project1.Core.Networking;
+using Project1.Framework.UI;
 
-namespace Project1.Core.Net
+namespace Project1.Core.Networking
 {
     class ServerConsole : GroupBox
     {

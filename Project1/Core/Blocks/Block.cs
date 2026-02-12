@@ -11,7 +11,6 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Materials;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Constructions.Categories;
-using Project1.Core.Base;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
@@ -19,10 +18,11 @@ using Project1.Core.Interactions;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
-using Project1.Core.Net;
+using Project1.Core.Networking;
 using Project1.Core.Rooms;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.Blocks
 {
@@ -552,13 +552,7 @@ namespace Project1.Core.Blocks
             return this.Solid && withinBlock.Z < h;
         }
         public virtual bool IsOpaque(Cell cell) => this.Opaque;
-        //public abstract MaterialDef GetMaterial(byte blockdata);
-
         public virtual void RandomBlockUpdate(INetEndpoint net, IntVec3 global, Cell cell) { }
-        protected virtual void HandleMessage(Vector3 global, ObjectEventArgs e) { }
-
-        
-
         protected void LoadVariations(params string[] assetNames)
         {
             foreach (string name in assetNames)
@@ -567,7 +561,6 @@ namespace Project1.Core.Blocks
                 this.Variations.Add(token);
             }
         }
-        
         public virtual void Draw(MySpriteBatch sb, Rectangle screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
             if (this == BlockDefOf.Air.Worker)
@@ -733,7 +726,14 @@ namespace Project1.Core.Blocks
 
         public virtual IEnumerable<MaterialDef> GetEditorVariations()
         {
-            return this.Ingredient?.GetAllValidMaterials() ?? Enumerable.Empty<MaterialDef>();//.Select(m => (byte)m.ID);
+            if(this.Ingredient is not null)
+                foreach (var i in this.Ingredient.GetAllValidMaterials())
+                    yield return i;
+            if(this.BlockDef.ConstructionProfile is not null)
+                foreach (var i in this.BlockDef.ConstructionProfile.Refinements)
+                    foreach (var m in RawMaterialSystem.MaterialsByType[i.MaterialType])
+                        yield return m;
+            //return this.Ingredient?.GetAllValidMaterials() ?? Enumerable.Empty<MaterialDef>();//.Select(m => (byte)m.ID);
         }
         internal IEnumerable<ItemMaterialAmount> GetAllValidConstructionMaterialsNew()
         {

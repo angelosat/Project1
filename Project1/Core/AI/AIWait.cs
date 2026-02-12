@@ -1,5 +1,4 @@
-﻿using Project1.Core.Base;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using System;
 using Project1.Core.AI.Behaviors.NodeTypes;

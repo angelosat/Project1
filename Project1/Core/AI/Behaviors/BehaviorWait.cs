@@ -24,7 +24,7 @@ namespace Project1.Core.AI.Behaviors
 
         public override BehaviorState Tick(Actor parent, AIState state)
         {
-            state.CurrentTask.TicksWaited++;
+            state.CurrentPlan.TicksWaited++;
             this.TickAction();
             if (this.EndCondition())
                 return BehaviorState.Success;

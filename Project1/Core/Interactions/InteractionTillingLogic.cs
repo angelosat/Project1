@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Blocks;
-using Project1.Core.Interactions;
 using Project1.Core.Simulation;
 
 namespace Project1.Core.Interactions

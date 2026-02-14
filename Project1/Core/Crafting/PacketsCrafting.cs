@@ -10,6 +10,7 @@ using Project1.Core.Animations;
 using Project1.Core.Blocks;
 using Project1.Framework.Events;
 using Project1.Core.Networking;
+using Project1.Core.Towns.Stockpiles;
 
 namespace Project1.Core.Crafting
 {

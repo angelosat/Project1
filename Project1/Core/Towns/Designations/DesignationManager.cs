@@ -1,25 +1,25 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Input;
+using Project1.Core.Input.CellRendering;
+using Project1.Core.Networking;
+using Project1.Core.Screens;
+using Project1.Core.Serialization;
+using Project1.Core.Simulation;
+using Project1.Core.Towns.Digging;
+using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Input;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Framework.UI;
-using Project1.Core.Input;
-using Project1.Core.Networking;
-using Project1.Core.Screens;
-using Project1.Core.Helpers;
-using Project1.Core.Towns.Digging;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.UI.Hud;
-using Project1.Core.Blocks;
-using Project1.Core.Graphics;
-using Project1.Core.Serialization;
-using Project1.Core.Input.CellRendering;
-using Project1.Framework.Input;
-using Project1.Framework.Helpers;
 
 namespace Project1.Core.Towns.Designations
 {
@@ -27,10 +27,13 @@ namespace Project1.Core.Towns.Designations
     public class DesignationManager : TownComponent
     {
         public override string Name => "Designation Manager";
-
         readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>> Designations;
         public readonly Dictionary<DesignationDef, BlockRendererObservable> Renderers = [];
-
+        List<DesignationDef> designationDefs;
+        List<DesignationDef> AllDesignationDefs => this.designationDefs ??= [.. Def.GetDefs<DesignationDef>()];
+        private static readonly IHotkey Hotkey;
+        GroupBox _pendingDesignationLabel;
+        GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();
         static DesignationManager()
         {
             PacketDesignation.Init();
@@ -40,12 +43,10 @@ namespace Project1.Core.Towns.Designations
             foreach (var d in Def.GetDefs<DesignationDef>())
                 HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, $"Designate: {d.LabelReadable}", delegate { SetTool(d); });
         }
-
         internal ObservableHashSet<TargetArgs> GetDesignations(DesignationDef des)
         {
             return this.Designations[des];
         }
-
         internal bool RemoveDesignation(DesignationDef des, TargetArgs target)
         {
             var removed = this.Designations[des].Remove(target);
@@ -73,7 +74,6 @@ namespace Project1.Core.Towns.Designations
             this.Town.Map.Events.ListenTo<CellsInvalidatedEvent>(this.OnBlocksChanged);
             this.Town.Map.Events.ListenTo<EntityDespawnedEvent>(this.OnEntityDespawn);
         }
-
         private void R_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (Network.CurrentNetwork != Ingame.Net)
@@ -99,7 +99,6 @@ namespace Project1.Core.Towns.Designations
                         SelectionManager.AddInfoNew(this.UpdatePendingDesignationLabel(this.Designations.First(d => d.Value.Contains(target)).Key));
                 }
         }
-
         internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool remove)
         {
             if (designation is null)
@@ -115,7 +114,6 @@ namespace Project1.Core.Towns.Designations
                 {
                     if (remove)
                         list.Remove(pos);
-                    //else if (designation.IsValid(this.Town.Map, pos) || this.Map.IsUndiscovered(pos))
                     else if (designation.IsValid(pos) || (pos.Type == TargetType.Position && this.Map.IsUndiscovered(pos.Global)))
                         list.Add(pos);
                 }
@@ -149,7 +147,6 @@ namespace Project1.Core.Towns.Designations
             var contains = this.Designations[desType].Contains(global);
             return contains;
         }
-
         void OnBlocksChanged(CellsInvalidatedEvent e)
         {
             foreach (var des in this.Designations)
@@ -189,14 +186,11 @@ namespace Project1.Core.Towns.Designations
             foreach (var des in this.Designations.Keys.ToList())
                 this.Designations[des].ReadTargets(this.Map, r);
         }
-
         internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
         {
             yield return new Tuple<Func<string>, Action>(() => $"Designations [{Hotkey.GetLabel()}]", ToggleGui);
         }
-
         private static readonly Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Designations", GetContextSubmenuItems()).HideOnAnyClick());
-
         static void ToggleGui()
         {
             _guiNew.Value.Toggle();
@@ -207,12 +201,10 @@ namespace Project1.Core.Towns.Designations
             foreach (var def in Ingame.CurrentMap.Town.DesignationManager.Designations.Keys)
                 yield return (def.LabelReadable, () => SetTool(def));
         }
-
         private static void SetTool(DesignationDef d)
         {
             ToolManager.SetTool(new ToolDigging((a, b, r) => PacketDesignation.Send(Client.Instance, r, a, b, d)) { DesignationDef = d });
         }
-
         static void Cancel()
         {
             ToolManager.SetTool(new ToolDigging((a, b, r) => PacketDesignation.Send(Client.Instance, r, a, b, null)));
@@ -257,13 +249,6 @@ namespace Project1.Core.Towns.Designations
                 PacketDesignation.Send(Client.Instance, false, targets, des);
             }
         }
-        List<DesignationDef> designationDefs;
-        List<DesignationDef> AllDesignationDefs => this.designationDefs ??= Def.GetDefs<DesignationDef>().ToList();
-
-        private static readonly IHotkey Hotkey;
-
-        GroupBox _pendingDesignationLabel;
-        GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();
         GroupBox UpdatePendingDesignationLabel(DesignationDef des)
         {
             this.PendingDesignationLabel.ClearControls();
@@ -275,7 +260,6 @@ namespace Project1.Core.Towns.Designations
             if (this.Designations.FirstOrDefault(d => d.Value.Contains(targetArgs)).Key is DesignationDef des)
                 info.AddInfo(this.UpdatePendingDesignationLabel(des));
         }
-
         public override void DrawUI(SpriteBatch sb, MapBase map, Camera cam)
         {
             foreach(var entityDes in this.Designations)

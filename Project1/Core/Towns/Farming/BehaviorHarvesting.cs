@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using Project1.Core.Components.Plants;
-using Project1.Core.Plants;
-using Project1.Core.AI.Behaviors.Pathing;
+﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.Plants;
+using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Farming
 {
-    class TaskBehaviorHarvestingNew : BehaviorExecutePlan
+    class BehaviorHarvesting : BehaviorExecutePlan
     {
         public const TargetIndex PlantIndex = TargetIndex.A;
         protected override IEnumerable<Behavior> GetSteps()

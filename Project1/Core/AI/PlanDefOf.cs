@@ -1,16 +1,17 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Eating;
 using Project1.Core.AI.Behaviors.Idle;
 using Project1.Core.AI.Behaviors.ItemOwnership;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.Sleeping;
 using Project1.Core.Interactions;
+using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors;
 using Project1.Core.Towns.Constructions.AI;
-using Project1.Core.Towns;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Farming;
 using Project1.Core.Towns.Forestry;
+using Project1.Framework;
 
 namespace Project1.Core.AI
 {
@@ -27,12 +28,6 @@ namespace Project1.Core.AI
         static public readonly PlanDef DeliverMaterials = new("DeliverMaterials", typeof(TaskBehaviorDeliverMaterials))
         {
             Format = "Deliver materials to {0}",
-            GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
-        };
-
-        static public readonly PlanDef Sowing = new("Sowing", typeof(TaskBehaviorDeliverMaterials))
-        {
-            Format = "Sow {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
         static public readonly PlanDef Moving = new("Moving", typeof(TaskBehaviorLeaveUnstandableCell))
@@ -76,10 +71,11 @@ namespace Project1.Core.AI
         static public readonly PlanDef StoreInInventory = new("Storing", typeof(TaskBehaviorStoreInInventory), InteractionDefOf.Store);
         static public readonly PlanDef Construct = new("Constructing", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct);
         static public readonly PlanDef Till = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
-        static public readonly PlanDef Harvesting = new("Harvesting", typeof(TaskBehaviorHarvestingNew), InteractionDefOf.Harvest);
+        static public readonly PlanDef Harvesting = new("Harvesting", typeof(BehaviorHarvesting), InteractionDefOf.Harvest);
         static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);
         static public readonly PlanDef Repairing = new("Repairing", typeof(TaskBehaviorRepairing), InteractionDefOf.Repair);
         static public readonly PlanDef HaulToStockpile = new("StockpileHauling", typeof(TaskBehaviorHaulToStockpile), InteractionDefOf.Place);
+        static public readonly PlanDef Plant = new("Plant", typeof(TaskBehaviorGoPlace), InteractionDefOf.Plant);
         static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround), InteractionDefOf.SleepOnGround);
         static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(TaskBehaviorSleepingNew), InteractionDefOf.SleepInBed);
         static public readonly PlanDef Eating = new("Eating", typeof(TaskBehaviorEatingNew), InteractionDefOf.Eat);

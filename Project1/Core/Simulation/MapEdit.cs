@@ -4,6 +4,7 @@ using Project1.Framework;
 using Project1.Core.Materials;
 using Project1.Core.Blocks;
 using Project1.Core.Networking.Simulation;
+using System.Runtime.Serialization.DataContracts;
 
 namespace Project1.Core.Simulation
 {
@@ -114,7 +115,10 @@ namespace Project1.Core.Simulation
                 this.CellsToAttach[entity] = list = [];
             list.Add(global);
         }
-
+        internal static void Paint(MapEditContext context, MapBase map, IEnumerable<IntVec3> targets, BlockDef blockDef, MaterialDef material, byte data, int variation, int orientation)
+        {
+            Paint(context, map, targets, blockDef.Worker, material, data, variation, orientation);
+        }
         internal static void Paint(MapEditContext context, MapBase map, IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
         {
             var op = new MapEdit(map);

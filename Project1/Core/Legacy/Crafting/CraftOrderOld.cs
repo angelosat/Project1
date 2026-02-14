@@ -16,6 +16,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework;
 using Project1.Core.Blocks;
 using Project1.Framework.Helpers;
+using Project1.Core.Towns.Stockpiles;
 
 namespace Project1.Core.Legacy.Crafting
 {

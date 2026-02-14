@@ -136,17 +136,19 @@ namespace Project1.Core.AI.Behaviors
                 return objects.Any() && (objects.SingleOrDefault(o => o == actor) != actor);
             });
         }
+        [Obsolete]
         static public BehaviorCustom NextTargetAmount(Behavior bhavRoot, TargetIndex index)
         {
-            var bhav = new BehaviorCustom();
-            bhav.InitAction = () =>
-            {
-                if (bhav.Actor.CurrentTask.NextTarget(index) && bhav.Actor.CurrentTask.NextAmount(index))
-                    if (bhavRoot != null)
-                bhav.Actor.AI.State.Behavior.JumpTo(bhavRoot);
+            throw new NotImplementedException();
+            //var bhav = new BehaviorCustom();
+            //bhav.InitAction = () =>
+            //{
+            //    if (bhav.Actor.CurrentTask.NextTarget(index) && bhav.Actor.CurrentTask.NextAmount(index))
+            //        if (bhavRoot != null)
+            //    bhav.Actor.AI.State.Behavior.JumpTo(bhavRoot);
 
-            };
-            return bhav;
+            //};
+            //return bhav;
         }
     }
 }

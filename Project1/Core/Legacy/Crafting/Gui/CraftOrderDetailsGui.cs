@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using Project1.Framework.UI;
 using Project1.Framework.Events;
+using Project1.Core.Towns.Stockpiles;
 
 namespace Project1.Core.Legacy.Crafting.Gui
 {

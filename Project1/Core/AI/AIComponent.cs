@@ -240,7 +240,7 @@ namespace Project1.Core.AI
         readonly Label CachedGuiLabelCurrentTask = new();
         internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
-            info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentTask?.Status ?? "Idle"));
+            info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle"));
         }
         public new class Spec : Spec<AIComponent>
         {

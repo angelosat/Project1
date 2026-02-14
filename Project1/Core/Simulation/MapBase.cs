@@ -1232,14 +1232,23 @@ namespace Project1.Core.Simulation
                 var block = this.GetBlock(global);
                 if (block.BlockDef == BlockDefOf.Air)
                     throw new Exception();
-                chunk.ApplyBlockWork(global.ToLocal(), workAmount);
+                var local = global.ToLocal();
+                chunk.ApplyBlockWork(local, workAmount);
                 this.Events.Post(new BlockHitEvent(block, this, global, workAmount));
                 if (this.GetCell(global).HitPoints == 0)
                     this.RemoveBlock(global);
             }
         }
 
-        
+        public IBlockToken GetBlockToken(IntVec3 global)
+        {
+            if (this.TryGetChunk(global, out var chunk))
+            {
+                var local = global.ToLocal();
+                return chunk.GetBlockToken(local);
+            }
+            return null;
+        }
 
         internal IEnumerable<IntVec3> FindNearestEmptyCellsOrCurrent(IntVec3 current, int reach)
         {

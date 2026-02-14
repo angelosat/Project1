@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Construction.Tools;
-using Project1.Core.Towns.Designations;
-using Project1.Core.Blocks;
-using Project1.Core.Helpers;
+using Project1.Core.Input;
 using Project1.Core.Legacy.Crafting.Blocks;
 using Project1.Core.Networking;
-using Project1.Core.Screens;
 using Project1.Core.Simulation;
-using Project1.Core.UI.Hud;
-using Project1.Core.Input;
+using Project1.Core.Towns.Designations;
 using Project1.Core.UI.Blocks;
+using Project1.Core.UI.Hud;
+using Project1.Framework;
 using Project1.Framework.Input;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns.Constructions
 {
@@ -23,14 +21,12 @@ namespace Project1.Core.Towns.Constructions
     {
         public static readonly QuickButton IconCancel = new QuickButton(Icon.X, KeyBind.Cancel) { HoverText = "Cancel designation" };
         public override string Name => "Constructions";
-
         static readonly Lazy<GuiConstructionsBrowser> WindowBuild = new();
         static readonly IHotkey HotkeyBuild;
-
         readonly Dictionary<IntVec3, ConstructionParams> PendingDesignations = [];
         readonly HashSet<IntVec3> DesignationLocations = [];
         readonly HashSet<BlockConstructionComp> DesignationEntities = [];
-
+        Dictionary<bool, HashSet<BlockConstructionComp>> _snapshotByReadiness = new() { { false, new() }, { true, new() } };
         internal override void ResolveReferences()
         {
             foreach (var blockentity in this.Map.BlockEntities)
@@ -43,17 +39,14 @@ namespace Project1.Core.Towns.Constructions
                 }
             }
         }
-
         static ConstructionsManager()
         {
             HotkeyBuild = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Build", ToggleConstructionWindow, System.Windows.Forms.Keys.B);
         }
-
         private static void ToggleConstructionWindow()
         {
             WindowBuild.Value.ToggleSmart();
         }
-
         public ConstructionsManager(Town town)
         {
             this.Town = town;
@@ -61,13 +54,11 @@ namespace Project1.Core.Towns.Constructions
             this.Town.Map.Events.ListenTo<ConstructionReadyEvent>(this.OnConstructionReady);
             this.Town.Map.Events.ListenTo<ConstructionFinishedEvent>(this.OnConstructionFinished);
         }
-
         private void OnConstructionFinished(ConstructionFinishedEvent e)
         {
             this.RemoveDesignatedEntity(e.Source);
             this._dirty = true;
         }
-
         private void OnConstructionReady(ConstructionReadyEvent e)
         {
             if (!this.DesignationEntities.Contains(e.Source))
@@ -118,7 +109,6 @@ namespace Project1.Core.Towns.Constructions
         {
             return this.DesignationEntities.Where(e => e.IsReady && e.Parent.CellsOccupied.All(this.IsSupported));
         }
-        Dictionary<bool, HashSet<BlockConstructionComp>> _snapshotByReadiness = new() { { false, new() }, { true, new() } };
         void CacheReadiness()
         {
             // TODO incremental tracking
@@ -137,38 +127,6 @@ namespace Project1.Core.Towns.Constructions
         {
             yield return new Tuple<Func<string>, Action>(() => $"Build [{HotkeyBuild.GetLabel()}]", () => WindowBuild.Value.Toggle());
         }
-
-        private void Add(DesignationDef designation, List<IntVec3> positions, bool remove)
-        {
-            if (designation is null)// == DesignationDefOf.Remove)
-            {
-                foreach (var pos in positions)
-                {
-                    if (this.Map.GetBlockEntity<BlockDesignation.BlockDesignationEntity>(pos) is BlockDesignation.BlockDesignationEntity blockEntity)
-                    {
-                        var origin = blockEntity.OriginGlobal;
-                        this.Map.RemoveBlock(origin);
-                    }
-                    else if (this.PendingDesignations.ContainsKey(pos))
-                        this.RemovePendingDesignation(pos);
-                }
-            }
-        }
-        void AddPendingDesignation(IntVec3 pos, int orientation, ProductMaterialPair product)
-        {
-            var pending = new ConstructionParams(pos, orientation, product);
-            this.PendingDesignations[pos] = pending;
-            if(Network.CurrentNetwork == Ingame.Net)
-                if (SelectionManager.SingleSelectedCell == pos)
-                    SelectionManager.AddInfoNew(UpdatePendingDesignationLabel(pending));
-        }
-        void RemovePendingDesignation(IntVec3 pos)
-        {
-            this.PendingDesignations.Remove(pos);
-            if(Network.CurrentNetwork == Ingame.Net)
-                if (SelectionManager.SingleSelectedCell == pos)
-                    SelectionManager.RemoveInfo(this.PendingDesignationLabel);
-        }
         internal bool IsDesignatedConstruction(IntVec3 vector3)
         {
             return this.DesignationLocations.Contains(vector3);
@@ -182,16 +140,6 @@ namespace Project1.Core.Towns.Constructions
             if (!this.IsDesignatedConstruction(global))
                 return false;
             return this.Map.IsAdjacentToSolid(global);
-        }
-
-        public string GetName()
-        {
-            return "Build";
-        }
-
-        public void GetSelectionInfo(IUISelection panel)
-        {
-            panel.AddInfo(new Label() { Text = "Buildings" });
         }
         internal override void UpdateQuickButtons()
         {
@@ -221,13 +169,6 @@ namespace Project1.Core.Towns.Constructions
                 this.PlaceDesignation(pos, args);
             }
         }
- 
-        public void TabGetter(Action<string, Action> getter)
-        {
-            throw new NotImplementedException();
-        }
-
-
         public void PlaceDesignation(IntVec3 global, ConstructionDesignationArgs args)
         {
             var map = this.Map;
@@ -244,27 +185,7 @@ namespace Project1.Core.Towns.Constructions
                 map.GetChunk(pos).InvalidateSlice(pos.Z);
                 this.DesignationLocations.Add(pos);
             }
-            //map.AddBlockEntity(global, entity);
-            //map.AddBlockEntity(entity);
             map.AddBlockEntityInternal(entity);
-
-            this._dirty = true;
-        }
-        public void PlaceDesignationOld(IntVec3 global, ConstructionDesignationArgs args)
-        {
-            var map = this.Map;
-
-            var entity = BlockDefOf.Designation.CreateEntity(global);
-            map.AddBlockEntity(entity);
-            var comp = entity.GetComp<BlockConstructionComp>();
-            this.DesignationEntities.Add(comp);
-
-            comp.SetArgs(args);
-            foreach (var pos in entity.CellsOccupied)
-            {
-                map.GetChunk(pos).InvalidateSlice(pos.Z);
-                this.DesignationLocations.Add(global);
-            }
             this._dirty = true;
         }
         private void RemoveNew(IEnumerable<IntVec3> positions)
@@ -277,7 +198,6 @@ namespace Project1.Core.Towns.Constructions
                 this.RemoveDesignatedEntity(comp);
             }
         }
-
         private void RemoveDesignatedEntity(BlockConstructionComp comp)
         {
             var entity = comp.Parent;
@@ -285,14 +205,8 @@ namespace Project1.Core.Towns.Constructions
             foreach (var child in entity.CellsOccupied)
             {
                 this.DesignationLocations.Remove(child);
-                //this.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Construct, new TargetArgs(this.Map, child));
                 this.Map.GetChunk(child).InvalidateSlice(child.Z);
             }
-        }
-
-        public IEnumerable<(string name, Action action)> GetInfoTabs()
-        {
-            throw new NotImplementedException();
         }
         GroupBox _pendingDesignationLabel;
         GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();
@@ -311,9 +225,6 @@ namespace Project1.Core.Towns.Constructions
                 info.AddInfo(this.UpdatePendingDesignationLabel(pending));
             }
         }
-      
-
-
         class ConstructionParams : Inspectable, ISaveable, ISerializableNew<ConstructionParams>
         {
             public IntVec3 Global;

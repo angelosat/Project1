@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using Project1.Core.Interactions;
+﻿using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Behaviors;
-using Project1.Core.AI;
-using Project1.Core.AI.Behaviors.NodeTypes;
+using System.Collections.Generic;
 
-namespace Project1.Core
+namespace Project1.Core.AI.Behaviors
 {
     class TaskBehaviorGoPlace : BehaviorExecutePlan
     {
@@ -14,8 +11,8 @@ namespace Project1.Core
         protected override IEnumerable<Behavior> GetSteps()
         {
             var index = TargetIndex.A;
-            yield return new BehaviorResolvePath(index, PathEndMode.Any);
-            yield return new BehaviorResolveInteraction(InteractionDefOf.Place, countInd: index);// index, () => new InteractionPlaceItem(this.Actor.CurrentTask.GetAmount(index)));
+            yield return new BehaviorResolvePath(index, PathEndMode.Any).FailOnInvalidInteraction(this.Actor, this.Plan);
+            yield return new BehaviorResolveInteraction();// InteractionDefOf.Place, countInd: index);
         }
         protected override bool ReserveExtra()
         {

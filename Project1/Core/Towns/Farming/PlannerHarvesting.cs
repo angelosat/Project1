@@ -11,6 +11,8 @@ namespace Project1.Core.Towns.Farming
         {
             if (!actor.HasJob(JobDefOf.Harvester))
                 return null;
+            if (actor.IsHauling)
+                return null;
             var map = actor.Map;
             var manager = map.Town.GrowingManager;
             foreach(var plant in manager.GetHarvestablePlants())

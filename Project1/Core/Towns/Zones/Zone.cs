@@ -1,48 +1,46 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Input;
+using Project1.Core.Input.CellRendering;
+using Project1.Core.Networking;
+using Project1.Core.Simulation;
+using Project1.Core.Towns.Tools;
+using Project1.Core.UI;
+using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.UI;
-using Project1.Core.Input;
-using Project1.Core.Blocks;
-using Project1.Core.Networking;
-using Project1.Core.Helpers;
-using Project1.Core.Towns.Tools;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.UI.Hud;
-using Project1.Core.Graphics;
-using Project1.Framework.Helpers;
-using Project1.Core.Input.CellRendering;
 
 namespace Project1.Core.Towns.Zones
 {
     abstract public class Zone : Inspectable, ISelectable, ISaveable, ISaveableNewNew<Zone>, ISerializableNew<Zone>
     {
+        public ZoneManager Manager;
+        public bool Exists => this.Manager.ZonesById.ContainsKey(this.ID);
         public Town Town => this.Manager.Town;
         public MapBase Map => this.Town.Map;
         public NetEndpoint Net => this.Map.Net;
         public override string LabelReadable => this.Name;
         public readonly DrawableCellCollection Cells = new(Block.FaceHighlights[IntVec3.UnitZ]);
+        public HashSet<IntVec3> EmptyCells = [];
         public string Name { get; set; }
-        public ZoneManager Manager;
         public int ID { get; set; }
         public bool Hide;
         static readonly Random Random = new();
         internal readonly HashSet<Entity> CacheNew = [];
         public IReadOnlyList<Entity> Items => [.. this.CacheNew];
-
         public abstract ZoneDef ZoneDef { get; }
         public abstract string UniqueName { get; }
         protected bool _dirty = true;
         public IntVec3 this[int index] => this.Cells[index];
-
-        public bool Exists => this.Manager.ZonesById.ContainsKey(this.ID);
-
-
+        public bool IsEmpty => this.Cells.Count == 0;
         protected Zone()
         {
             this.Cells.Color = GetRandomColor();
@@ -51,21 +49,19 @@ namespace Project1.Core.Towns.Zones
         {
             this.Manager = manager;
         }
-        public Zone(ZoneManager manager, IEnumerable<IntVec3> cells) : this()
-        {
-            this.Manager = manager;
-            this.Cells.Add(cells);
-        }
-
+        //public Zone(ZoneManager manager, IEnumerable<IntVec3> cells) : this()
+        //{
+        //    this.Manager = manager;
+        //    this.Cells.Add(cells);
+        //}
         public IntVec3 Average()
         {
             return this.Cells.Average();
         }
-        public void Delete()
-        {
-            this.Manager.Delete(this);
-        }
-
+        //public void Delete()
+        //{
+        //    this.Manager.DeleteZone(this.ID);
+        //}
         private static Color GetRandomColor()
         {
             var array = new byte[3];
@@ -73,34 +69,32 @@ namespace Project1.Core.Towns.Zones
             var col = new Color(array[0], array[1], array[2]);
             return col;
         }
-      
-        internal virtual void OnBlockChanged(IntVec3 global)
-        {
-            var map = this.Map;
-            var below = global.Below;
-            if (this.Cells.Contains(global) && !Block.IsBlockSolid(map, global))
-            {
-                this.RemovePosition(global);
-                return;
-            }
-            else if (this.Cells.Contains(below) && !map.IsAir(global))
-            {
-                this.RemovePosition(below);
-                return;
-            }
-        }
-
+        //internal virtual void OnBlockChanged(IntVec3 global)
+        //{
+        //    var map = this.Map;
+        //    var below = global.Below;
+        //    if (this.Cells.Contains(global) && !Block.IsBlockSolid(map, global))
+        //    {
+        //        this.RemovePosition(global);
+        //        return;
+        //    }
+        //    else if (this.Cells.Contains(below) && !map.IsAir(global))
+        //    {
+        //        this.RemovePosition(below);
+        //        return;
+        //    }
+        //}
         public void RemovePosition(IntVec3 pos)
         {
-            this.RemovePositions(new[] { pos });
+            this.RemovePositions([pos]);
         }
         public void RemovePositions(IEnumerable<IntVec3> positions)
         {
             foreach (var pos in positions)
                 this.Cells.Remove(pos);
-            if (!this.Cells.Any())
+            if (this.Cells.Count == 0)
             {
-                this.Delete();
+                //this.Delete();
                 return;
             }
             var splitgraphs = this.Cells.GetAllConnectedSubGraphs();
@@ -110,7 +104,6 @@ namespace Project1.Core.Towns.Zones
             foreach (var pos in this.Cells.Except(largest).ToList())
                 this.Cells.Remove(pos);
         }
-
         internal void Edit(IntVec3 begin, IntVec3 end, bool remove)
         {
             var inputpositions = begin.GetBoxLazy(end);
@@ -135,7 +128,6 @@ namespace Project1.Core.Towns.Zones
             this._dirty = true;
         }
         protected virtual void Validate() { }
-
         internal void OnBlockChangedNew(IntVec3 pos)
         {
             if (!this.Cells.Contains(pos))
@@ -143,7 +135,6 @@ namespace Project1.Core.Towns.Zones
             if (!this.ZoneDef.Worker.IsValidLocation(this.Map, pos))
                 this.RemovePosition(pos);
             this.MarkDirty();
-            //this.Validate();
         }
         internal bool Contains(GameObject obj)
         {
@@ -153,7 +144,6 @@ namespace Project1.Core.Towns.Zones
         {
             return this.Cells.Contains(pos);// TODO use a hashset
         }
-
         internal static bool IsPositionValid(MapBase map, Vector3 pos)
         {
             if (!map.IsSolid(pos))
@@ -174,7 +164,6 @@ namespace Project1.Core.Towns.Zones
         {
             ToolManager.SetTool(new ToolDesignateZone(town, def));
         }
-
         public virtual void GetSelectionInfo(IUISelection info)
         {
             info.AddInfo(new CheckBoxNew("Hide", () => this.Hide = !this.Hide, () => this.Hide));
@@ -202,7 +191,6 @@ namespace Project1.Core.Towns.Zones
                 return;
             this.Cells.DrawBlocks(map, cam);
         }
-
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
@@ -215,7 +203,6 @@ namespace Project1.Core.Towns.Zones
             return tag;
         }
         protected virtual void SaveExtra(SaveTag tag) { }
-
         public ISaveable Load(SaveTag tag)
         {
             this.ID = tag.GetValue<int>("ID");
@@ -233,7 +220,6 @@ namespace Project1.Core.Towns.Zones
             return zone;
         }
         protected virtual void LoadExtra(SaveTag tag) { }
-
         public void Write(IDataWriter w)
         {
             w.Write(this.ZoneDef);
@@ -245,7 +231,6 @@ namespace Project1.Core.Towns.Zones
         }
         protected virtual void WriteExtra(IDataWriter w) { }
         protected virtual void ReadExtra(IDataReader r) { }
-
         public virtual IEnumerable<(string name, Action action)> GetInfoTabs()
         {
             yield break;

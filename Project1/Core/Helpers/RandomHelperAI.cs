@@ -1,6 +1,6 @@
-﻿using System;
-using Project1.Core.AI;
+﻿using Project1.Core.AI;
 using Project1.Framework.Helpers;
+using System;
 
 namespace Project1.Core.Helpers
 {

@@ -1,14 +1,19 @@
-﻿using System;
-using Project1.Core.Simulation;
+﻿using Project1.Core.Simulation;
+using System;
 
 namespace Project1.Core.Blocks
 {
-    internal class BlockHealthToken
+    public interface IBlockToken
+    {
+        float HealthPercentage { get; }
+    }
+
+    internal class BlockHealthToken : IBlockToken
     {
         readonly static int TimerMax = Ticks.FromHours(1);
         int Timer = TimerMax;
         internal int Lifetime => TimerMax - this.Timer;
-        internal float HealthPercentage => (float)this.CurrentHp / this.TotalHp;
+        public float HealthPercentage => (float)this.CurrentHp / this.TotalHp;
         void Refresh() => this.Timer = TimerMax;
         internal void Tick() => this.Timer--;
         internal bool HasExpired => this.Timer <= 0;

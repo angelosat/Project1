@@ -1,10 +1,9 @@
-﻿using Project1.Core.AI.Behaviors;
+﻿using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Networking;
 using Project1.Core.Networking;
 using Project1.Framework;
 using Project1.Framework.Events;
-using System;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.AI.Net.Packets
 {
@@ -27,7 +26,8 @@ namespace Project1.Core.AI.Net.Packets
             {
                 var plan = new Plan();
                 plan.SyncFromServer(endpoint, r);
-                var bhav = Activator.CreateInstance(plan.Def.BehaviorClass) as BehaviorExecutePlan;
+                //var bhav = Activator.CreateInstance(plan.Def.BehaviorClass) as Behavior;
+                var bhav = ActivatorSafe<Behavior>.CreateInstance(plan.Def.BehaviorClass);
                 bhav.Plan = plan;
                 actor.AI.State.TaskStack.Push(bhav);
             }
@@ -36,7 +36,7 @@ namespace Project1.Core.AI.Net.Packets
                 actor.AI.State.TaskStack.Clear();
             }
         }
-        public static void SendReportBehavior(Actor actor, BehaviorExecutePlan bhav)
+        public static void SendReportBehavior(Actor actor, Behavior bhav)
         {
             var server = actor.Net as Server;
             var w = server.BeginPacket(pReportPlan);

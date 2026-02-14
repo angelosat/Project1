@@ -5,6 +5,7 @@ using Project1.Core.Entities;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Framework;
+using Project1.Core.Towns.Stockpiles;
 
 namespace Project1.Core
 {

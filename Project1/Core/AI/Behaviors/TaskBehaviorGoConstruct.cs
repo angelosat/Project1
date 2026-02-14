@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Behaviors;
-using Project1.Core.AI;
+﻿using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Behaviors.Pathing;
+using System.Collections.Generic;
 
 namespace Project1.Core
 {
@@ -20,7 +19,6 @@ namespace Project1.Core
         protected override bool ReserveExtra()
         {
             return this.ReserveAll();
-            return this.Reserve(TargetIndex.A);
         }
     }
 }

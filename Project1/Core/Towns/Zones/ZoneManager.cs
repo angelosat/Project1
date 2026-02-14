@@ -1,25 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.UI;
-using Project1.Core.Screens;
+﻿using Project1.Core.Entities;
+using Project1.Core.Graphics;
 using Project1.Core.Helpers.Structs;
+using Project1.Core.Input;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
-using Project1.Core.Entities;
-using Project1.Core.Input;
-using Project1.Core.Graphics;
+using Project1.Core.UI;
+using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Input;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns.Zones
 {
     [EnsureStaticCtorCall]
     public class ZoneManager : TownComponent
     {
+        static readonly ZoneDef[] ZoneDefs;// = [ZoneDefOf.Stockpile, ZoneDefOf.Growing];
         public override string Name => "ZoneManager";
         int _zoneIDSequence = 1;
         public int GetNextID() => _zoneIDSequence++;
@@ -27,10 +28,10 @@ namespace Project1.Core.Towns.Zones
         public IEnumerable<Zone> AllZones => this.ZonesById.Values;
         readonly Dictionary<IntVec3, Zone> _cellsToZones = [];
         public IReadOnlyDictionary<IntVec3, Zone> CellsToZones => this._cellsToZones;
-
         static ZoneManager()
         {
             Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Zones", ToggleGui, System.Windows.Forms.Keys.Y);
+            ZoneDefs = [.. Def.GetDefs<ZoneDef>()];
         }
         public ZoneManager(Town town)
         {
@@ -43,19 +44,14 @@ namespace Project1.Core.Towns.Zones
 
             map.Events.ListenTo<CellsInvalidatedEvent>(OnCellsInvalidated);
         }
-
-       
-
         private void OnEntitySpawned(EntitySpawnedEvent e)
         {
             var entity = e.Entity;
             var supportCell = entity.Cell.Below;
             if (!this._cellsToZones.TryGetValue(supportCell, out var zone))
                 return;
-            //if (!stockpile.Accepts(e.Entity))
-            //    return;
             this.AddItem(zone, entity);
-
+            zone.MarkDirty();
         }
         private void OnEntityDespawned(EntityDespawnedEvent e)
         {
@@ -88,10 +84,6 @@ namespace Project1.Core.Towns.Zones
             this.AddZone(zone);
             return zone;
         }
-        internal void Delete(Zone zone)
-        {
-            this.DeleteZone(zone.ID);
-        }
         internal void DeleteZone(int zoneID)
         {
             if (!this.ZonesById.TryGetValue(zoneID, out var zone))
@@ -99,7 +91,6 @@ namespace Project1.Core.Towns.Zones
             foreach (var position in zone.Cells)
                 this._cellsToZones.Remove(position);
             this.ZonesById.Remove(zoneID);
-            FloatingText.Create(this.Map, zone.Average(), $"{zone.GetType()} deleted", ft => ft.Font = UIManager.FontBold);
             this.Map.Events.Post(new ZoneDeletedEvent(zone));
         }
         void AddZone(Zone zone)
@@ -111,8 +102,6 @@ namespace Project1.Core.Towns.Zones
                 this._cellsToZones[position] = zone;
             zone.Manager = this;
             zone.Name = zone.UniqueName;
-            
-            FloatingText.Create(this.Town.Map, zone.Average(), $"{zone.GetType()} created", ft => ft.Font = UIManager.FontBold);
             this.Map.Events.Post(new ZoneCreatedEvent(zone));
         }
         internal override void ResolveReferences()
@@ -125,7 +114,6 @@ namespace Project1.Core.Towns.Zones
             {
                 if (!this.CellsToZones.TryGetValue(entity.Cell.Below, out var zone))
                     continue;
-                //this.AddItem(zone, entity);
                 zone.CacheNew.Add(entity);
             }
         }
@@ -145,7 +133,6 @@ namespace Project1.Core.Towns.Zones
                 return null;
             return this.ZonesById[zoneID] as T;
         }
-
         public Zone GetZoneAt(IntVec3 global)
         {
             if (this.CellsToZones.TryGetValue(global, out var zone))
@@ -159,11 +146,6 @@ namespace Project1.Core.Towns.Zones
         public IEnumerable<T> GetZones<T>() where T : Zone
         {
             return this.ZonesById.Values.OfType<T>();
-        }
-        public IEnumerable<Zone> GetZones()
-        {
-            foreach (var z in this.ZonesById.Values)
-                yield return z;
         }
         internal override void OnBlocksChanged(IEnumerable<IntVec3> positions)
         {
@@ -192,16 +174,23 @@ namespace Project1.Core.Towns.Zones
         {
             if (remove)
                 foreach (var zone in this.ZonesById.Values.ToList())
-                    zone.Edit(a, a + new IntVec3(w - 1, h - 1, 0), remove);
-            else
-                if (zoneID == 0)
+                    this.EditZone(a, w, h, remove, zone);
+            else if (zoneID == 0)
                     return RegisterNewZone(zoneType, a.GetBoxLazy(a + new IntVec3(w - 1, h - 1, 0)));
             else
-                this.ZonesById[zoneID].Edit(a, a + new IntVec3(w - 1, h - 1, 0), remove);
+                this.EditZone(a, a + new IntVec3(w - 1, h - 1, 0), remove, this.ZonesById[zoneID]);
             return null;
         }
-        static readonly ZoneDef[] ZoneDefs = { ZoneDefOf.Stockpile, ZoneDefOf.Growing };
-
+        private void EditZone(IntVec3 a, int w, int h, bool remove, Zone zone)
+        {
+            EditZone(a, a + new IntVec3(w - 1, h - 1, 0), remove, zone);
+        }
+        private void EditZone(IntVec3 a, IntVec3 b, bool remove, Zone zone)
+        {
+            zone.Edit(a, b, remove);
+            if (zone.IsEmpty)
+                this.DeleteZone(zone.ID);
+        }
         internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
         {
             yield return new Tuple<Func<string>, Action>(() => $"Zones [{Hotkey.GetLabel()}]", ToggleGui);
@@ -244,7 +233,10 @@ namespace Project1.Core.Towns.Zones
             tag.TryGetTagValue("IDSequence", ref this._zoneIDSequence);
             var savedZones = tag.LoadList<Zone>("Zones").ToDictionary(z => z.ID, z => z);
             foreach (var (id, z) in savedZones)
+            {
+                z.Manager = this;
                 this.ZonesById.Add(id, z);
+            }
         }
         public override void Write(IDataWriter w)
         {
@@ -256,7 +248,10 @@ namespace Project1.Core.Towns.Zones
             this._zoneIDSequence = r.ReadInt32();
             var zoneList = r.ReadList<Zone>();
             foreach (var zone in zoneList)
+            {
+                zone.Manager = this;
                 this.ZonesById.Add(zone.ID, zone);
+            }
         }
     }
 }

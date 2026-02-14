@@ -85,7 +85,7 @@ namespace Project1.Core.AI.Behaviors
             int count = this.CountInd == TargetIndex.None ? -1 : actor.CurrentTask.GetAmount(this.CountInd);
 
             this._interaction ??= actor.Work.Perform(actor.CurrentTask.Def.Interaction, target, count);
-
+            
             if(this._interaction.IsFinished)
                 return BehaviorState.Success;
             return BehaviorState.Running;

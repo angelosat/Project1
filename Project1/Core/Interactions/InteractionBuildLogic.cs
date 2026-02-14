@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Project1.Core.Blocks;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Simulation;
+using System.Linq;
 
 namespace Project1.Core.Interactions
 {
@@ -29,7 +29,6 @@ namespace Project1.Core.Interactions
                 return false;
             return true;
         }
-
         static bool CanFinish(Context ctx)
         {
             var target = ctx.Target;
@@ -44,7 +43,6 @@ namespace Project1.Core.Interactions
             if(ctx.CachedComp.IsFinished && ctx.Actor.Net.IsServer)
                 Complete(ctx.CachedComp);
         }
-
         static void Complete(BlockConstructionComp comp)
         {
             var map = comp.Map;
@@ -57,12 +55,6 @@ namespace Project1.Core.Interactions
             var args = comp.Args;
 
             MapEdit.Paint(MapEditContext.Simulation, map, [origin], args.Block.Worker, args.Material, 0, 0, args.Orientation);
-            //MapEdit.PaintWithOrigin(MapEditContext.Simulation, map, [origin], args.Block.Worker, args.Material, 0, 0, args.Orientation);
-            return;
-
-
-            foreach (var cell in cells)
-                map.SetBlock(cell, args.Block.Worker, args.Material, 0, 0, args.Orientation);
         }
     }
 }

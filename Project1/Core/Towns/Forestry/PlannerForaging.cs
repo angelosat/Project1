@@ -23,7 +23,7 @@ namespace Project1.Core.Towns.Forestry
             var plant = plants.FirstOrDefault();
             if (plant == null)
                 return null;
-            var task = new Plan(typeof(TaskBehaviorHarvestingNew)) { TargetA = new TargetArgs(plant) };
+            var task = new Plan(typeof(BehaviorHarvesting)) { TargetA = new TargetArgs(plant) };
             return task;
         }
     }

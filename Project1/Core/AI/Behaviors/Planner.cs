@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using Project1.Core.Towns;
+﻿using Project1.Core.AI.Planners;
 using Project1.Core.Entities.Actors;
-using Project1.Core.AI.Planners;
+using System.Collections.Generic;
 
 namespace Project1.Core.AI.Behaviors
 {
@@ -48,10 +47,8 @@ namespace Project1.Core.AI.Behaviors
             var task = TryPlan(actor);
             return task != null ? new PlannerResult(task, this) : PlannerResult.Empty;
         }
-        public static void FindTool(Actor actor, Plan task, JobDef job)
-        {
-        }
-        public virtual Plan TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false) { return null; }
-        public virtual PlanDef CanGiveTask(Actor actor, TargetArgs target) { return null; }
+        public virtual bool ShouldContinue(Actor actor, Plan plan) => true;
+        public virtual Plan TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false) => null;
+        public virtual PlanDef CanGiveTask(Actor actor, TargetArgs target) => null; 
     }
 }

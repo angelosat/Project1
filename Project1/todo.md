@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- separate pathing behavior from interaction behavior. probably dont need behaviorexecuteplan anymore, just assume that all behaviors are a path to an interaction
 - change map.lightningengine to a simulationsystem and make it respond to cells invalidated events instead of directly calling it
 - repair: create a blockrepaircomp for workstations with repair capability that holds repair charges similar to how 
 blockfuelcomp holds fuel, and make it rechargable by scraps, which are byproducts from raw material refinement

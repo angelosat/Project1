@@ -62,7 +62,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
                     if (path is not null)
                     {
                         parent.MoveToggle(true);
-                        parent.WalkToggle(!state.CurrentTask.Urgent);
+                        parent.WalkToggle(!state.CurrentPlan.Urgent);
                         return BehaviorState.Success;
                     }
                     else

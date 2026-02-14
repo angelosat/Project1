@@ -29,7 +29,7 @@ namespace Project1.Core.Towns.Tasks
                     BehaviorType = typeof(TaskBehaviorDeconstruct),
                 };
                 task.SetTarget(TaskBehaviorDeconstruct.DeconstructInd, target);// new TargetArgs(actor.Map, target));
-                FindTool(actor, task, JobDefOf.Builder);
+                //FindTool(actor, task, JobDefOf.Builder);
                 return task;
             }
             return null;   

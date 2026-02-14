@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Materials;
-using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Towns.Zones;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -15,29 +13,32 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Project1.Core
+namespace Project1.Core.Towns.Stockpiles
 {
-    public partial class Stockpile : Zone, IStorageNew, IContextable
+    public class Stockpile : Zone, IStorageNew, IContextable
     {
         public override ZoneDef ZoneDef => ZoneDefOf.Stockpile;
         public StorageSettings Settings { get; } = new();
         public int Priority => (int)this.Settings.Priority;
         static StorageFilterCategoryNewNew FiltersView = InitFilters();
-        readonly StockpileSettings SettingsNew;
-        
+        readonly StockpileSettings SettingsNew = new();
         public override string UniqueName => $"Zone_Stockpile_{this.ID}";
         readonly List<GameObject> Cache = [];
         public readonly ObservableCollection<GameObject> CacheObservable = [];
         public HashSet<Entity> AcceptedItems = [];
+        public Stockpile()
+        {
+            init();
+        }
         public Stockpile(ZoneManager manager) : base(manager)
         {
-            this.SettingsNew = new(this);
+            init();
+        }
+        private void init()
+        {
             this.Settings.Initialize(FiltersView);
         }
-        public Stockpile(ZoneManager manager, Action<Stockpile> preset) : this(manager)
-        {
-            preset(this);
-        }
+
         public void CacheContents()
         {
             this.CacheContentsNew();
@@ -77,15 +78,8 @@ namespace Project1.Core
                 return false;
             return this.Accepts(obj);
         }
-       
+   
         internal bool Accepts(Entity item) => this.SettingsNew.Accepts(item);
-        //{
-        //    return obj is Entity item && this.Settings.Accepts(item);
-        //}
-        //public bool CanAccept(GameObject item)
-        //{
-        //    return this.Accepts(item) && this.GetAvailableCells().Any();
-        //}
 
         public IEnumerable<IntVec3> GetAvailableCells()
         {
@@ -96,7 +90,23 @@ namespace Project1.Core
                 .Select(p => p.Above);
             return emptyCells;
         }
-
+        public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazyFromCache(Entity obj)
+        {
+            var occupiedCells = new List<IntVec3>();
+            foreach(var existing in this.CacheNew)
+            {
+                occupiedCells.Add(existing.Cell);
+                if (!this.SettingsNew.Accepts(existing as Entity))
+                    continue;
+                if (!existing.CanAbsorb(obj))
+                    continue;
+                if (existing.GetUnreservedAmount() == 0)
+                    continue;
+                yield return new TargetArgs(existing);
+            }
+            foreach (var cell in this.Cells.Except(occupiedCells))
+                yield return new TargetArgs(this.Map, cell);
+        }
         public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazy(GameObject obj)
         {
             var emptyCells = new List<Vector3>();
@@ -135,7 +145,7 @@ namespace Project1.Core
             foreach (var pos in this.Cells)
             {
                 var above = pos.Above;
-                var itemsInCell = this.Map.GetEntitiesAt(above);
+                var itemsInCell = this.Map.GetEntitiesAt(above); // TODO use cached contents instead of querying map
                 if (!itemsInCell.Any())
                 {
                     emptyCells.Add(above);
@@ -149,7 +159,7 @@ namespace Project1.Core
                         continue;
                     if (!existing.CanAbsorb(item))
                         continue;
-                    yield return pos;
+                    yield return above;// pos;
                 }
             }
             foreach (var cell in emptyCells)
@@ -159,7 +169,8 @@ namespace Project1.Core
         {
             if (!this.Accepts(item))
                 return null;
-            return this.DistributeToStorageSpotsNewLazy(item).FirstOrDefault();
+            //return this.DistributeToStorageSpotsNewLazy(item).FirstOrDefault();
+            return this.DistributeToStorageSpotsNewLazyFromCache(item).FirstOrDefault();
         }
         public IEnumerable<IntVec3> FindPlacesFor(Entity item)
         {
@@ -187,29 +198,6 @@ namespace Project1.Core
             }
             return availableCapacity;
         }
-
-        internal override void OnBlockChanged(IntVec3 global)
-        {
-            var below = global.Below;
-
-            if (this.Cells.Contains(global))
-            {
-                if (!Block.IsBlockSolid(this.Town.Map, global))
-                {
-                    this.RemovePosition(global);
-                    return;
-                }
-            }
-            else if (this.Cells.Contains(below))
-            {
-                if (!this.Map.IsAir(global))
-                {
-                    this.RemovePosition(below);
-                    return;
-                }
-            }
-        }
-      
         public void GetContextActions(GameObject playerEntity, ContextArgs a)
         {
         }
@@ -306,16 +294,16 @@ namespace Project1.Core
                 FiltersView
                     .GetGui()
                     .ToPanelLabeled("Fitlers"));
-            
+        
             FiltersGui = box;
             return box;
 
             void syncPriority(StoragePriority p)
             {
-                Packets.SyncPriority(FiltersView.Owner, p);
+                PacketsStockpiles.SyncPriority(FiltersView.Owner, p);
             }
         }
-        
+    
         static StorageFilterCategoryNewNew InitFilters()
         {
             var cats = Def.Database.Values.OfType<ItemDef>().GroupBy(d => d.Category);
@@ -380,7 +368,11 @@ namespace Project1.Core
         {
             PacketStorageFiltersNew.Send(this, category);
         }
-        public void Toggle(ItemDef item, Def profile, MaterialDef material) => this.SettingsNew.Toggle(item, profile, material);
+        public void Toggle(ItemDef item, Def profile, MaterialDef material)
+        {
+            this.SettingsNew.Toggle(item, profile, material);
+            this.Map.Events.Post(new StockpileUpdatedEvent(this));
+        }
         public bool IsAllowed(ItemDef itemDef) => this.SettingsNew.IsAllowed(itemDef);
         public bool IsAllowed(Def def) => this.SettingsNew.IsAllowed(def);
         public bool IsAllowed(Def profile, MaterialDef material) => this.SettingsNew.IsAllowed(profile, material);

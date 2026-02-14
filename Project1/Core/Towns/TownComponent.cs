@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using Project1.Core.UI;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Graphics;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.UI;
 using Project1.Core.UI.Hud;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
 using Project1.Framework;
 using Project1.Framework.Events;
-using Project1.Core.Graphics;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Towns
 {
@@ -87,21 +87,13 @@ namespace Project1.Core.Towns
         internal virtual void OnTooltipCreated(Control tooltip, TargetArgs targetArgs)
         {
         }
-
         internal virtual void OnCitizenAdded(int actorID) { }
         internal virtual void OnCitizenRemoved(int actorID) { }
-
-        protected PlayerData GetPlayer() { return this.Town.Map.Net.GetPlayer(); }
         protected PlayerData Player { get { return this.Town.Map.Net.GetPlayer(); } }
-
         internal virtual void ResolveReferences() { }
-
         internal virtual void OnBlocksChanged(IEnumerable<IntVec3> positions) { }
-
         internal virtual void OnHudCreated(Hud hud) { }
-
         internal virtual void OnCameraRotated(Camera camera) { }
-
         internal virtual void GetQuickButtons(Action<string, Type> register, IntVec3 global) { }
     }
 }

@@ -1,12 +1,10 @@
-﻿using System;
-using Project1.Framework;
-using Project1.Core.AI;
+﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Labors;
-using Project1.Core.Gear;
-using Project1.Core.Towns.Designations;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Designations;
+using Project1.Framework;
 
 namespace Project1.Core.Towns.Digging
 {
@@ -16,12 +14,13 @@ namespace Project1.Core.Towns.Digging
         {
             if (!actor.HasJob(JobDefOf.Digger))
                 return null;
-            var map = actor.Map;
+            //var map = actor.Map;
             
             var jobs = actor.Map.Town.DesignationManager.GetDesignations(DesignationDefOf.Mine);
 
-            var mainhand = actor.GetEquipmentSlot(GearTypeDefOf.Mainhand);
-
+            //var mainhand = actor.GetEquipmentSlot(GearTypeDefOf.Mainhand);
+            if (actor.IsHauling)
+                return null;
             foreach (var target in jobs) // TODO: check if another npc is standing on the target block to be digged
             {
                 var pos = (IntVec3)target.Global;
@@ -30,12 +29,12 @@ namespace Project1.Core.Towns.Digging
                 if (!actor.CanReach(pos))
                     continue;
 
-                var block = map.GetBlock(pos);
-                var material = map.GetMaterial(pos);
-                var skill = material.Type.JobToExtract;
+                //var block = map.GetBlock(pos);
+                //var material = map.GetMaterial(pos);
+                //var skill = material.Type.JobToExtract;
 
-                if (skill == null)
-                    throw new Exception();
+                //if (skill == null)
+                //    throw new Exception();
 
                 var task = new Plan(PlanDefOf.Digging, target) { Designation = DesignationDefOf.Mine };// new TargetArgs(actor.Map, target));
 

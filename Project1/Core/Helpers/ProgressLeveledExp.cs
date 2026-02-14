@@ -1,21 +1,19 @@
-﻿using System;
-using Project1.Framework;
+﻿using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using System;
 
 namespace Project1.Core.Helpers
 {
     public class ProgressLeveledExp : Progress
     {
         readonly int BaseAmountToLevel;
-      
         public ProgressLeveledExp(int amountToLevelBase, int level)
         {
             this.BaseAmountToLevel = amountToLevelBase;
             this.Level = level;
         }
-
         int _level = 1;
         public int Level 
         {
@@ -29,10 +27,7 @@ namespace Project1.Core.Helpers
                 this.Max = this.GetNextLvlProgress(value);
             }
         }
-      
-
         int GetNextLvlProgress(int currentLvl) => (int)Math.Pow(2, currentLvl - 1) * this.BaseAmountToLevel;
-
         public void AddValue(float v)
         {
             const int debugMultiplier = 10;
@@ -54,7 +49,6 @@ namespace Project1.Core.Helpers
             this.Max = GetNextLvlProgress(this.Level);
             this.Value = remaining;
         }
-
         public Control GetControl()
         {
             var box = new GroupBox();
@@ -62,82 +56,7 @@ namespace Project1.Core.Helpers
                 new Label() { TextFunc = () => $"Current Level: {this.Level}" },
                 new Label() { TextFunc = () => $"Next Level: {this.Value:0} / {this.Max:0}" });
             return box;
-
-            //var box = new GroupBox();
-            //box.AddControlsBottomLeft(
-            //    new Label() { TextFunc = () => $"Current Level: {this.Level}" },
-            //    new Label() { TextFunc = () => $"Next Level: {(int)this.Value} / {(int)this.Max}" });
-            //return box;
         }
-
-        protected override void SaveExtra(SaveTag tag)
-        {
-            this.Level.Save(tag, "Level");
-        }
-        protected override void LoadExtra(SaveTag tag)
-        {
-            tag.TryGetTagValue<int>("Level", v => this.Level = v);
-        }
-        protected override void WriteExtra(IDataWriter w)
-        {
-            w.Write(this.Level);
-        }
-        protected override void ReadExtra(IDataReader r)
-        {
-            this.Level = r.ReadInt32();
-        }
-    }
-
-    public class ProgressLeveledExpOld : Progress
-    {
-        public int Level { get; private set; } = 1;
-        
-        public void SetLevel(int level)
-        {
-            if (level == this.Level)
-                return;
-            this.Value = 0;
-            this.Level = level;
-        }
-        readonly int BaseAmountToLevel;
-
-        public ProgressLeveledExpOld(int amountToLevelBase, int level)
-        {
-            this.BaseAmountToLevel = amountToLevelBase;
-            this.Level = level;
-        }
-
-        public override float Max { get => GetAmountRequired(this.Level + 1) ; }
-
-        float GetAmountRequired(int level)
-        {
-            if (level == 0)
-                return BaseAmountToLevel;
-            return level * BaseAmountToLevel + GetAmountRequired(level - 1);
-        }
-
-        public override float Value
-        {
-            set
-            {
-                if (value >= this.Max)
-                {
-                    value -= this.Max;
-                    this.Level++;
-                }
-                base.Value = value;
-            }
-        }
-
-        public Control GetControl()
-        {
-            var box = new GroupBox();
-            box.AddControlsBottomLeft(
-                new Label() { TextFunc = () => $"Current Level: {this.Level}" },
-                new Label() { TextFunc = () => $"Next Level: {(int)this.Value} / {(int)this.Max}"});
-            return box;
-        }
-
         protected override void SaveExtra(SaveTag tag)
         {
             this.Level.Save(tag, "Level");

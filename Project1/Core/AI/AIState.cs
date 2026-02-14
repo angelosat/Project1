@@ -1,21 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Conversation;
+using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Labors;
 using Project1.Core.AI.Net.Packets;
 using Project1.Core.AI.Planners;
-using Project1.Core.Towns;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Pathing;
-using System;
+using Project1.Core.Towns;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Entities;
-using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Behaviors.Reserve;
-using Project1.Framework.Serialization;
-using Project1.Framework.Helpers;
-using Project1.Framework;
 
 namespace Project1.Core.AI
 {
@@ -47,11 +47,13 @@ namespace Project1.Core.AI
         public Dictionary<string, object> Properties = [];
         public GameObject Talker;
         public GameObject Target;
-        public Queue<BehaviorExecutePlan> TaskQueue = [];
-        public Stack<BehaviorExecutePlan> TaskStack = [];
+        //public Queue<BehaviorExecutePlan> TaskQueue = [];
+        //public Stack<BehaviorExecutePlan> TaskStack = [];
+        public Queue<Behavior> TaskQueue = [];
+        public Stack<Behavior> TaskStack = [];
         public string TaskString = "none";
         public SortedSet<Threat> Threats = [];
-        public Plan CurrentTask => this.Behavior?.Plan;
+        public Plan CurrentPlan => this.Behavior?.Plan;
 
         public AIState(Actor actor)
         {
@@ -105,7 +107,7 @@ namespace Project1.Core.AI
                           where v is TargetArgs
                           select v as TargetArgs;
             /// i dont need this anymore after phasing to targetargs lazily resolving entity id and passing the provider (client or server) at targetargs initialization
-            this.CurrentTask?.MapLoaded(parent);
+            this.CurrentPlan?.MapLoaded(parent);
             this.Behavior?.Actor = parent;
         }
 
@@ -156,7 +158,7 @@ namespace Project1.Core.AI
         public void Assign(BehaviorExecutePlan bhav)
         {
             PacketReportPlan.SendReportBehavior(this.Owner, bhav);
-
+            bhav.Plan.Actor = this.Owner;
             if (bhav.Plan.IsImmediate)
                 this.Push(bhav);
             else
@@ -273,7 +275,7 @@ namespace Project1.Core.AI
         }
         public override string ToString()
         {
-            return this.CurrentTask != null ? "Task: " + this.CurrentTask.ToString() : this.TaskString;
+            return this.CurrentPlan != null ? "Task: " + this.CurrentPlan.ToString() : this.TaskString;
         }
         public static bool TryGetState(GameObject entity, out AIState state)
         {
@@ -294,8 +296,11 @@ namespace Project1.Core.AI
             this.ItemPreferences.Tick();
         }
 
-        public IEnumerable<BehaviorExecutePlan> AllPlannedTasks => TaskStack.Concat(TaskQueue);
-        public BehaviorExecutePlan Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
+        //public IEnumerable<BehaviorExecutePlan> AllPlannedTasks => TaskStack.Concat(TaskQueue);
+        //public BehaviorExecutePlan Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
+
+        public IEnumerable<Behavior> AllPlannedTasks => TaskStack.Concat(TaskQueue);
+        public Behavior Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
 
         public TargetArgs MoveOrder => this.MoveOrders.Any() ? this.MoveOrders.Peek() : TargetArgs.Null;
         public List<GameObject> NearbyEntities { get; set; }

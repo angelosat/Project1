@@ -372,6 +372,7 @@ namespace Project1.Core.Entities
         public virtual bool IsHaulable => this.Def.IsHaulable;
         public bool IsFuel => this.Material?.Fuel?.Value > 0;
         public GameObject Hauled => this.Inventory?.HaulSlot.Object;
+        public bool IsHauling => this.Hauled is not null;
 
         public GameObjectSlot Slot;
         #endregion

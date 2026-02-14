@@ -1,7 +1,7 @@
-﻿using Project1.Core.Plants;
+﻿using Project1.Core.Components.Plants;
 using Project1.Core.Interactions;
 
-namespace Project1.Core.Components.Plants
+namespace Project1.Core.Plants
 {
     internal class InteractionHarvestLogic : InteractionLogic
     {

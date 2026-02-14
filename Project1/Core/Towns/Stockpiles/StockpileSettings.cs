@@ -1,17 +1,14 @@
-﻿using Project1.Core.Materials;
+﻿using Project1.Core.Entities;
+using Project1.Core.Materials;
 using System;
 using System.Collections.Generic;
-using Project1.Core.Entities;
 
 namespace Project1.Core.Towns.Stockpiles
 {
-    internal class StockpileSettings(Stockpile stockpile)
+    internal class StockpileSettings()
     {
-        readonly Stockpile Stockpile = stockpile;
-        
         public readonly HashSet<(Def Profile, MaterialDef Material)> FiltersNew = [];
         public readonly HashSet<ItemDef> FiltersBase = [];
-
         public void Toggle(ItemDef item, Def profile, MaterialDef material)
         {
             if (profile is null && material is null)
@@ -30,7 +27,6 @@ namespace Project1.Core.Towns.Stockpiles
                 if (!this.FiltersNew.Remove(tuple))
                     this.FiltersNew.Add(tuple);
             }
-            this.Stockpile.Map.Events.Post(new StockpileUpdatedEvent(this.Stockpile));
         }
         public bool IsAllowed(ItemDef itemDef) => !this.FiltersBase.Contains(itemDef);
 

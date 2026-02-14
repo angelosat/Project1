@@ -37,8 +37,6 @@ namespace Project1.Core.Blocks
         public int Missing => this.Fulfillment.Missing;
         public void SetArgs(ConstructionDesignationArgs args)
         {
-            //this.Block = args.Block.Worker;
-            //var ingredientCount = this.Block.Size.Volume * ItemDefOf.Ingredient.StackCapacity / this.Block.ConstructionProfile.Dimension;
             this.Args = args;
             this.Parent.Name = $"Construction: {this.Args.Block.LabelReadable}";
 
@@ -58,10 +56,9 @@ namespace Project1.Core.Blocks
             quantity = Math.Min(quantity, this.Missing);
             this.Fulfillment.ApplyDelta(quantity);
             entity.Consume(quantity);
-            var args = this.Args;
+
             // solidify the designation into a construction block 
-            //foreach (var cell in this.Parent.CellsOccupied)
-            //    this.Map.SetBlock(cell, BlockDefOf.Construction.Worker, this.Args.Material, 0, this.Parent.OriginGlobal - cell, 0, this.Args.Orientation);
+            var args = this.Args;
             MapEdit.PaintWithOrigin(MapEditContext.Simulation, this.Map, this.Parent.CellsOccupied, BlockDefOf.Construction.Worker, args.Material, 0, 0, args.Orientation);
 
             this.ValidateReadiness();

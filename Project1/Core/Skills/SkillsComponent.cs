@@ -7,6 +7,7 @@ using Project1.Framework.UI;
 using Project1.Core.Helpers;
 using Project1.Core.Entities;
 using Project1.Framework.Helpers;
+using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Skills
 {
@@ -84,7 +85,16 @@ namespace Project1.Core.Skills
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            tag.LoadDefWrappers("Skills", this.SkillsNew);
+            //tag.LoadDefWrappers("Skills", this.SkillsNew);
+            // re initialize from profile in case of new/removed skills
+            foreach (var skilldef in (this.Owner.Profile as ActorDnaDef).Skills)
+                this.Add(skilldef);
+
+            // actually load in previous saved values
+            var saved = tag.LoadDefWrappers<SkillDef, Skill>("Skills");
+            foreach (var s in saved)
+                if(this.SkillsNew.ContainsKey(s.Key))
+                    this.SkillsNew[s.Key] = s.Value;
             this.Resolve();
         }
         public override void Write(IDataWriter w)

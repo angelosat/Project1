@@ -6,6 +6,7 @@ using Project1.Core.Entities;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Zones;
 using Project1.Core.Components.Plants;
+using Microsoft.Xna.Framework;
 
 namespace Project1.Core.Plants
 {
@@ -24,21 +25,17 @@ namespace Project1.Core.Plants
             map.Events.ListenTo<EntityEnteredZoneEvent>(OnEntityEnteredZone);
             map.Events.ListenTo<EntityExitedZoneEvent>(OnEntityExitedZone);
         }
-
         private void OnEntityExitedZone(EntityExitedZoneEvent e)
         {
             this.UnregisterHarvestable(e.Entity);
         }
-
         private void OnEntityEnteredZone(EntityEnteredZoneEvent e)
         {
             var entity = e.Entity;
             this.TryRegisterHarvestable(entity);
         }
-
         private bool TryRegisterHarvestable(Entity entity)
         {
-            var entitycell = entity.Cell.Below;
             if (!entity.TryGetComponent<PlantComponent>(out var comp))
                 return false;
             if (!comp.IsHarvestable)
@@ -151,13 +148,11 @@ namespace Project1.Core.Plants
             }
         }
 
-        internal bool IsValidTillingTarget(IntVec3 global)
-        {
-            var growzone = this.Town.ZoneManager.GetZoneAt<GrowingZone>(global);
-            if (growzone is null)
-                return false;
-            return growzone.IsValidTilling(global);
-        }
+        internal bool IsValidTillingTarget(IntVec3 global) => 
+            this.Town.ZoneManager.GetZoneAt<GrowingZone>(global)?.IsValidTilling(global) ?? false;
+
+        internal bool IsValidPlantingTarget(Vector3 global) => 
+            this.Town.ZoneManager.GetZoneAt<GrowingZone>(global)?.IsValidPlanting(global) ?? false;
 
         public override string Name => "GrowingManager";
     }

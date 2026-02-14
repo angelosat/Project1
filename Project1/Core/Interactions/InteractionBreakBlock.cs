@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Core.Materials;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.Interactions;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
 using Project1.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Interactions
 {
@@ -15,9 +12,14 @@ namespace Project1.Core.Interactions
     {
         class Context : InteractionContext
         {
+            IBlockToken _cachedToken;
             Cell _cellCached;
+            BlockDef _initialBlock;
             internal Cell Cell => _cellCached ??= this.Actor.Map.GetCell(this.Target.Global);
-            public override float ProgressPercentage => 1 - (float)this.Cell.HitPoints / Cell.HitPointsMax;
+            internal IBlockToken CachedToken => _cachedToken ??= this.Actor.Map.GetBlockToken(this.Target.Global);
+            internal BlockDef InitialBlock => _initialBlock ??= this.Cell.Block.BlockDef;
+            //public override float ProgressPercentage => 1 - (float)this.Cell.HitPoints / Cell.HitPointsMax;
+            public override float ProgressPercentage => (1 - this.CachedToken?.HealthPercentage) ?? 0;
         }
         public override void ApplyWork(InteractionContext ctx, int workAmount) => ApplyWork((Context)ctx, workAmount);
         public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
@@ -25,10 +27,15 @@ namespace Project1.Core.Interactions
         protected override InteractionContext CreateContextInternal() => new Context();
         static bool CanPerform(Context ctx)
         {
-            return ctx.Cell.Block is not BlockAir;
+            if (ctx.Cell.Block is BlockAir)
+                return false;
+            if (ctx.Cell.Block.BlockDef != ctx.InitialBlock)
+                return false;
+            return true;
         }
         static bool CanFinish(Context ctx)
         {
+            return true;
             var global = ctx.Target.Global;
             var actor = ctx.Actor;
             var objects = actor.Map.GetObjects(global.Above());

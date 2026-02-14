@@ -1,9 +1,9 @@
 ﻿using Project1.Framework;
 using Project1.Core.Towns.AI;
-using Project1.Core.Components.Plants;
 using Project1.Core.Skills;
 using Project1.Core.Tools;
 using Project1.Core.Animations;
+using Project1.Core.Plants;
 
 namespace Project1.Core.Interactions
 {
@@ -24,6 +24,11 @@ namespace Project1.Core.Interactions
         { 
             Animation = AnimationDefOf.TouchItem, 
             ProgressHandler = new InteractionProgressFirstContact() 
+        };
+        public static readonly InteractionDef Plant = new("Planting", typeof(InteractionPlantLogic))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = new InteractionProgressFirstContact()
         };
         public static readonly InteractionDef Chop = new("Chopping", typeof(InteractionChopLogic)) 
         { 

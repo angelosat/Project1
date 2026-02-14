@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Entities;
-using Project1.Core.Plants;
 using Project1.Core.Blocks;
 using Project1.Core.Components.Plants;
+using Project1.Core.Entities;
+using Project1.Core.Plants;
 using Project1.Core.Simulation;
-using Project1.Framework.Graphics;
 using Project1.Framework;
+using Project1.Framework.Graphics;
 
 namespace Project1.Core
 {
@@ -45,10 +45,10 @@ namespace Project1.Core
         {
             var plantdef = obj.Profile as PlantSpeciesDef;
             var plant = plantdef.Create(PlantStageDefOf.Plant);
-            var plantcomp = plant.GetComponent<PlantComponent>();
             map.World.Register(plant);
             map.Spawn(plant, global.Above, Vector3.Zero);
-            map.Town.ZoneManager.GetZoneAt(global.Below)?.MarkDirty();
+            MapEdit.Paint(MapEditContext.Simulation, map, [global], BlockDefOf.Soil, map.GetCell(global).Material, 0, 0, 0);
+            //map.Town.ZoneManager.GetZoneAt(global).MarkDirty();
             obj.Consume(1);
         }
     }

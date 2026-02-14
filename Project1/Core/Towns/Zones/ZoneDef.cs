@@ -4,29 +4,23 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Zones
 {
-    public class ZoneDef : Def
+    public class ZoneDef(string name, Type zoneClass, Type workerClass) : Def(name)
     {
-        public Type ZoneClass;
+        public Type RuntimeClass = zoneClass;
 
-        public Type WorkerClass;
+        public Type WorkerClass = workerClass;
 
         ZoneWorker _workerCached;
         public ZoneWorker Worker => _workerCached ??= (ZoneWorker)Activator.CreateInstance(this.WorkerClass);
 
-        public ZoneDef(string name, Type zoneClass, Type workerClass)
-            : base(name)
-        {
-            this.ZoneClass = zoneClass;
-            this.WorkerClass = workerClass;
-        }
         public Zone CreateRuntimeWrapper()
         {
-            var zone = Activator.CreateInstance(this.ZoneClass) as Zone;
+            var zone = Activator.CreateInstance(this.RuntimeClass) as Zone;
             return zone;
         }
         public Zone Create(ZoneManager manager, IEnumerable<IntVec3> positions)
         {
-            var zone = Activator.CreateInstance(this.ZoneClass, manager) as Zone;
+            var zone = Activator.CreateInstance(this.RuntimeClass, manager) as Zone;
             zone.Cells.Add(positions);
             return zone;
         }

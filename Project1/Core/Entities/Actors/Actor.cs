@@ -85,7 +85,7 @@ namespace Project1.Core.Entities.Actors
         public Interaction CurrentInteraction => this.Work.Task;
         internal Plan CurrentTask
         {
-            get => this.AI.State.CurrentTask;
+            get => this.AI.State.CurrentPlan;
             set => throw new Exception();
         }
         

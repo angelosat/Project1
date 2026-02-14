@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
+using Project1.Core.Interactions;
+using Project1.Core.Simulation;
+using Project1.Core.Towns.Tasks;
+using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Interactions;
-using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.Helpers;
-using Project1.Core.Towns.Tasks;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Framework;
 
 namespace Project1.Core.AI.Behaviors.Helpers
 {
@@ -65,33 +65,36 @@ namespace Project1.Core.AI.Behaviors.Helpers
             };
             return bhav;
         }
-       
+        [Obsolete]
         static public BehaviorCustom JumpIfMoreTargets(Behavior jumpBhav, TargetIndex index)
         {
-            var bhav = new BehaviorCustom();
-            bhav.InitAction = () =>
-            {
-                var actor = bhav.Actor;
-                var task = actor.CurrentTask;
-                if (task.GetTargetQueue(index)?.Any() ?? false)
-                    actor.AI.State.Behavior.JumpTo(jumpBhav);
+            throw new NotImplementedException();
+            //var bhav = new BehaviorCustom();
+            //bhav.InitAction = () =>
+            //{
+            //    var actor = bhav.Actor;
+            //    var task = actor.CurrentTask;
+            //    if (task.GetTargetQueue(index)?.Any() ?? false)
+            //        actor.AI.State.Behavior.JumpTo(jumpBhav);
 
-                //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+            //    //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
 
-            };
-            return bhav;
+            //};
+            //return bhav;
         }
+        [Obsolete]
         static public BehaviorCustom JumpIfTrue(Behavior jumpBhav, Func<bool> predicate)
         {
-            var bhav = new BehaviorCustom();
-            bhav.InitAction = () =>
-            {
-                var actor = bhav.Actor;
-                if(predicate())
-                actor.AI.State.Behavior.JumpTo(jumpBhav);
+            throw new NotImplementedException();
+            //var bhav = new BehaviorCustom();
+            //bhav.InitAction = () =>
+            //{
+            //    var actor = bhav.Actor;
+            //    if(predicate())
+            //    actor.AI.State.Behavior.JumpTo(jumpBhav);
 
-            };
-            return bhav;
+            //};
+            //return bhav;
         }
         static public BehaviorCustom ToolNotRequired()
         {
@@ -102,49 +105,53 @@ namespace Project1.Core.AI.Behaviors.Helpers
             };
             return bhav;
         }
-       
+        [Obsolete]
         static public Behavior JumpIfNextCarryStackable(Behavior jumpBhav, TargetIndex ind)
         {
-            var bhav = new BehaviorCustom
-            {
-                InitAction = () =>
-                {
-                    var actor = jumpBhav.Actor;
-                    var carried = actor.Hauled;
-                    var task = actor.CurrentTask;
-                    var targets = task.GetTargetQueue(ind);
-                    if (!targets?.Any() ?? false)
-                        return;
-                    var nextTarget = targets[0].Object;
-                if (nextTarget.CanAbsorb(carried))
-                    actor.AI.State.Behavior.JumpTo(jumpBhav);
+            throw new NotImplementedException();
+            //var bhav = new BehaviorCustom
+            //{
+            //    InitAction = () =>
+            //    {
+            //        var actor = jumpBhav.Actor;
+            //        var carried = actor.Hauled;
+            //        var task = actor.CurrentTask;
+            //        var targets = task.GetTargetQueue(ind);
+            //        if (!targets?.Any() ?? false)
+            //            return;
+            //        var nextTarget = targets[0].Object;
+            //    if (nextTarget.CanAbsorb(carried))
+            //        actor.AI.State.Behavior.JumpTo(jumpBhav);
 
-                }
-            };
-            return bhav;
+            //    }
+            //};
+            //return bhav;
         }
+
+        [Obsolete]
         static public Behavior JumpIfNextCarryStackable(Behavior jumpBhav, TargetIndex ind, TargetIndex amountInd)
         {
-            var bhav = new BehaviorCustom
-            {
-                InitAction = () =>
-                {
-                    var actor = jumpBhav.Actor;
-                    var carried = actor.Hauled;
-                    var task = actor.CurrentTask;
-                    var targets = task.GetTargetQueue(ind);
-                    if (!targets?.Any() ?? false)
-                        return;
-                    var nextTarget = targets[0].Object;
-                    var amounts = task.GetAmountQueue(amountInd);
-                    var nextAmount = amounts[0];
-                    if (carried.CanAbsorb(nextTarget, nextAmount))
-                        //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
-                    actor.AI.State.Behavior.JumpTo(jumpBhav);
+            throw new NotImplementedException();
+            //var bhav = new BehaviorCustom
+            //{
+            //    InitAction = () =>
+            //    {
+            //        var actor = jumpBhav.Actor;
+            //        var carried = actor.Hauled;
+            //        var task = actor.CurrentTask;
+            //        var targets = task.GetTargetQueue(ind);
+            //        if (!targets?.Any() ?? false)
+            //            return;
+            //        var nextTarget = targets[0].Object;
+            //        var amounts = task.GetAmountQueue(amountInd);
+            //        var nextAmount = amounts[0];
+            //        if (carried.CanAbsorb(nextTarget, nextAmount))
+            //            //actor.CurrentTaskBehavior.JumpTo(jumpBhav);
+            //        actor.AI.State.Behavior.JumpTo(jumpBhav);
 
-                }
-            };
-            return bhav;
+            //    }
+            //};
+            //return bhav;
         }
         [Obsolete]
         static public Behavior StartCarrying(TargetIndex index)

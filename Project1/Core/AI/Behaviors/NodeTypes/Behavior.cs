@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
+﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Framework;
 using Project1.Framework.Serialization;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Entities;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Project1.Core.AI.Behaviors.NodeTypes
 {
@@ -17,7 +16,9 @@ namespace Project1.Core.AI.Behaviors.NodeTypes
             var ctx = plan.Def.Interaction.CreateContext(actor, plan.TargetA, plan.AmountA);
             return this.FailOn(() => !plan.Def.Interaction.Logic.CanPerform(ctx));
         }
-      
+        public Plan Plan; //putting this to the base behavior class temporarily to migrate to a new plan executor behavior
+        public virtual void CleanUp() { }
+
         //public virtual string Status => $"{this}";
         public virtual string Name { get; } = string.Empty;
         public string Label;
@@ -26,8 +27,8 @@ namespace Project1.Core.AI.Behaviors.NodeTypes
         /// </summary>
         public Action PreInitAction = () => { };
 
-        readonly List<Func<BehaviorState>> EndConditions = new();
-        readonly List<Action> PreTickActions = new();
+        readonly List<Func<BehaviorState>> EndConditions = [];
+        readonly List<Action> PreTickActions = [];
 
         public void PreTick()
         {
@@ -45,10 +46,11 @@ namespace Project1.Core.AI.Behaviors.NodeTypes
         {
             this.PreTickActions.Add(act);
         }
-        
+        protected virtual bool ShouldAbort() => false;
+        protected virtual bool ShouldFinish() => true;
         public virtual bool HasFailedOrEnded()
         {
-            if (!this.EndConditions.Any())
+            if (this.EndConditions.Count == 0)
                 return false;
             foreach (var cond in this.EndConditions)
             {
@@ -62,25 +64,17 @@ namespace Project1.Core.AI.Behaviors.NodeTypes
         {
             this.AddEndCondition(() =>
             {
-                if (cond())
-                    return BehaviorState.Fail;
-                return BehaviorState.Running;
-            });
-            return this;
-        }
-        
-        public Behavior JumpIf(Func<bool> cond, Behavior gotoBhav)
-        {
-            this.AddPreTickAction(() =>
-            {
-                if (cond())
-                    this.Actor.AI.State.Behavior.JumpTo(gotoBhav);
+                //if (cond())
+                //    return BehaviorState.Fail;
+                //return BehaviorState.Running;
+                return cond() ? BehaviorState.Fail : BehaviorState.Running;
             });
             return this;
         }
         public Actor Actor;
 
         public abstract BehaviorState Tick(Actor parent, AIState state);
+        public virtual (BehaviorState result, Behavior source) TickNew(Actor parent, AIState state) => throw new NotImplementedException();
 
         public virtual void Write(IDataWriter w)
         {

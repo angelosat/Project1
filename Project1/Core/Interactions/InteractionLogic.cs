@@ -8,7 +8,6 @@ namespace Project1.Core.Interactions
         public virtual bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
         public virtual bool WillFinish(InteractionContext ctx, int workAmount) { return true; }
         public virtual void ApplyWork(InteractionContext ctx, int workAmount) { }
-        //protected virtual InteractionContext CreateContextInternal(Actor actor, TargetArgs target) => new(actor, target);
         protected virtual InteractionContext CreateContextInternal() => new();
         internal InteractionContext CreateContext(Actor actor, TargetArgs target, int count)
         {

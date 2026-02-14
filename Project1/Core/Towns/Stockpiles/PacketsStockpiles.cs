@@ -1,10 +1,11 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Crafting;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
+using Project1.Core.Legacy.Storage;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
-using Project1.Core.Helpers;
-using Project1.Core.Entities;
-using Project1.Core.Crafting;
+using Project1.Framework;
 using Project1.Framework.Events;
 
 namespace Project1.Core.Towns.Stockpiles
@@ -12,10 +13,12 @@ namespace Project1.Core.Towns.Stockpiles
     [EnsureStaticCtorCall]
     internal static class PacketsStockpiles
     {
-        static readonly PacketId _pFiltersChanged;
+        static readonly PacketId _pFiltersChanged, _packetStockpileSync;
+
         static PacketsStockpiles()
         {
             _pFiltersChanged = Registry.PacketHandlers.Register(OnFiltersChanged);
+            _packetStockpileSync = Registry.PacketHandlers.Register(ReceivePriority);
 
             Registry.PlayerInputEventHooks.Register<PlayerModifiedStockpileFiltersEvent>(HandlePlayerModifiedStockpileFilters);
         }
@@ -49,6 +52,30 @@ namespace Project1.Core.Towns.Stockpiles
             stockpile.Toggle(item, profile, mat);
             if (endpoint.IsServer)
                 SendStockpileFiltersChanged(endpoint, stockpile, item, profile, mat);
+        }
+
+        internal static void SyncPriority(IStorageNew storage, StoragePriority p)
+        {
+            var stockpile = storage as Stockpile;
+            var net = stockpile.Map.Net;
+            if (net is Server)
+                stockpile.Settings.Priority = p;
+            var w = stockpile.Map.Net.BeginPacket(_packetStockpileSync);
+
+            w.Write(stockpile.ID);
+            w.Write((byte)p);
+        }
+        private static void ReceivePriority(NetEndpoint net, Packet pck)
+        {
+            var r = pck.PacketReader;
+            var stockpileID = r.ReadInt32();
+            var p = r.ReadByte();
+            var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
+            var newPriority = (StoragePriority)p;
+            if (net is Server)
+                SyncPriority(stockpile, newPriority);
+            else
+                stockpile.Settings.Priority = newPriority;
         }
     }
 }

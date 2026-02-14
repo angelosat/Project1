@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Project1.Core.UI.Hud;
+﻿using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.UI
 {

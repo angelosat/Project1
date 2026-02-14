@@ -7,6 +7,13 @@ using System;
 
 namespace Project1.Core.Interactions
 {
+    public enum InteractionRange
+    {
+        Touching,        // actor just needs to be adjacent
+        Exact,           // actor must occupy the exact tile
+        Any,             // actor can be anywhere “reasonable”
+        InteractionSpot  // actor must reach a special spot (counter, workstation)
+    }
     public class InteractionDef : Def
     {
         public readonly Type InteractionClass;
@@ -15,6 +22,7 @@ namespace Project1.Core.Interactions
         public IInteractionProgressHandler ProgressHandler;
         public SkillDef Skill;
         public ToolUseDef ToolUse;
+        public InteractionRange Range = InteractionRange.Touching;
         public InteractionDef(string name, Type workerType) : base(name)
         {
             this.InteractionClass = typeof(Interaction);
@@ -39,15 +47,5 @@ namespace Project1.Core.Interactions
         {
             return this.Logic.CreateContext(actor, target, count);
         }
-    }
-    public class InteractionContext//(Actor actor, TargetArgs target)
-    {
-        //public Actor Actor = actor;
-        //public TargetArgs Target = target;
-        public Actor Actor;
-        public TargetArgs Target;
-        public int Count;
-        public virtual float ProgressPercentage { get; }
-
     }
 }

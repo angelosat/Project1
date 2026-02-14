@@ -2128,7 +2128,8 @@ namespace Project1.Core.Simulation
             foreach (var be in this.BlockEntitiesByPosition)
                 yield return (be.Key, be.Value);
         }
-
+        internal IBlockToken GetBlockToken(IntVec3 local) => this.BlockTokens.TryGetValue(local, out var token) ? token : null;
+        
         internal void ApplyBlockWork(IntVec3 local, int work)
         {
             if (!this.BlockTokens.TryGetValue(local, out var token))

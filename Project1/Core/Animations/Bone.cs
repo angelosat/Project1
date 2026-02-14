@@ -182,7 +182,8 @@ namespace Project1.Core
 
             newnode.Orientations.Clear();
             foreach (var i in this.Orientations)
-                newnode.Orientations.Add(new Sprite(i));
+                if(i is not null)
+                    newnode.Orientations.Add(new Sprite(i));
             return newnode;
         }
         [InspectorHidden]

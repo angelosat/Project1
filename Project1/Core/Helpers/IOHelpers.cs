@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Helpers.Structs;
 using Project1.Core.Simulation;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Project1.Core.Helpers
 {
@@ -15,7 +15,6 @@ namespace Project1.Core.Helpers
         public static Def ReadDef(this IDataReader r) => Def.GetDef(r.ReadString());
         public static T TryReadDef<T>(this IDataReader r) where T : Def => r.ReadString() is string defName && !defName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<T>(defName) : null!;
         public static TargetArgs ReadTarget(this IDataReader r, MapBase map) => TargetArgs.Read(map, r);
-
         public static IDataWriter Write(this IDataWriter w, List<EntityRefId> v)
         {
             w.Write(v.Count);
@@ -37,12 +36,10 @@ namespace Project1.Core.Helpers
         }
         public static IDataWriter Write(this IDataWriter w, EntityComp comp) { comp.Write(w); return w; }
         public static IDataWriter Write(this IDataWriter w, TargetArgs target) { target.Write(w); return w; }
-
         public static void SaveDef<T>(this SaveTag tag, string name, T def) where T : Def
         {
             tag.Add(def.Save(name));
         }
-
         public static void ReadDefWrappers<TKey, TValue>(this IDataReader r, Dictionary<TKey, TValue> dic) where TValue : IDefWrapper<TKey>, ISerializableNew<TValue> where TKey : Def
         {
             dic.Clear();
@@ -84,6 +81,12 @@ namespace Project1.Core.Helpers
         public static void LoadDefWrappers<TKey, TValue>(this SaveTag tag, string name, Dictionary<TKey, TValue> dic) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
         {
             tag[name].LoadDefWrappers(dic);
+        }
+        public static Dictionary<TKey, TValue> LoadDefWrappers<TKey, TValue>(this SaveTag tag, string name) where TValue : ISaveableNewNew<TValue>, IDefWrapper<TKey>, new() where TKey : Def
+        {
+            var dic = new Dictionary<TKey, TValue>();
+            tag[name].LoadDefWrappers(dic);
+            return dic;
         }
     }
 }

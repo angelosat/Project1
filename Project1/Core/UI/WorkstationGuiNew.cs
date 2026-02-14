@@ -8,6 +8,7 @@ using Project1.Core.Crafting;
 using Project1.Core.Simulation;
 using Project1.Core.Blocks;
 using Project1.Framework.Helpers;
+using Project1.Core.Towns.Stockpiles;
 
 namespace Project1.Core.UI
 {

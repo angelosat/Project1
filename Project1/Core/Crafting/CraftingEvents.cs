@@ -4,6 +4,7 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Materials;
+using Project1.Core.Towns.Stockpiles;
 
 namespace Project1.Core.Crafting
 {

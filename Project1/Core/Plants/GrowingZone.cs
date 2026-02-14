@@ -1,95 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Blocks;
+using Project1.Core.Components.Plants;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
+using Project1.Core.Materials;
+using Project1.Core.Simulation;
+using Project1.Core.Towns.Zones;
 using Project1.Core.UI;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Blocks;
-using Project1.Core.Networking;
-using Project1.Core.Components.Plants;
-using Project1.Core.Materials;
-using Project1.Core.Entities;
-using Project1.Core.Towns.Zones;
-using Project1.Core.Helpers;
-using Project1.Core.Simulation;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework;
-using Project1.Framework.Events;
-using Project1.Core.Networking;
 
 namespace Project1.Core.Plants
 {
     public class GrowingZone : Zone, IContextable, ISelectable
     {
-        [EnsureStaticCtorCall]
-        static class Packets
-        {
-            static readonly int pSync;
-            static Packets()
-            {
-                pSync = Registry.PacketHandlers.Register(Sync);
-            }
-            public static void Send(GrowingZone zone, PlantSpeciesDef plant, bool tilling, bool planting, bool harvesting)
-            {
-                var client = zone.Net as Client;
-                var w = client.GetOutgoingStreamOrderedReliable();
-                w.Write(pSync);
-                w.Write(zone.ID);
-                plant.Write(w);
-                w.Write(tilling);
-                w.Write(planting);
-                w.Write(harvesting);
-            }
-            public static void SendPlant(GrowingZone zone, PlantSpeciesDef plant)
-            {
-                Send(zone, plant, zone.Tilling, zone.Planting, zone.Harvesting);
-            }
-            public static void ToggleTilling(GrowingZone zone)
-            {
-                Send(zone, zone.Plant, !zone.Tilling, zone.Planting, zone.Harvesting);
-            }
-            public static void TogglePlanting(GrowingZone zone)
-            {
-                Send(zone, zone.Plant, zone.Tilling, !zone.Planting, zone.Harvesting);
-            }
-            public static void ToggleHarvesting(GrowingZone zone)
-            {
-                Send(zone, zone.Plant, zone.Tilling, zone.Planting, !zone.Harvesting);
-
-            }
-            static void Sync(GrowingZone zone)
-            {
-                //if (zone.Net is Client)
-                //    return;
-
-                //var w = zone.Map.Net.GetOutgoingStreamOrderedReliable();
-                //w.Write(pSync);
-                var w = zone.Map.Net.BeginPacketOld(pSync);
-
-                w.Write(zone.ID);
-                zone.Plant.Write(w);
-                w.Write(zone.Tilling);
-                w.Write(zone.Planting);
-                w.Write(zone.Harvesting);
-            }
-            static void Sync(NetEndpoint net, Packet packet)
-            {
-                var r = packet.PacketReader;
-                var zone = net.Map.Town.ZoneManager.GetZone<GrowingZone>(r.ReadInt32());
-                zone.Plant = Def.GetDef<PlantSpeciesDef>(r);
-                zone.Tilling = r.ReadBoolean();
-                zone.Planting = r.ReadBoolean();
-                zone.Harvesting = r.ReadBoolean();
-                if (net is Server server)
-                    Sync(zone);
-            }
-        }
-
-        internal bool IsValidTilling(IntVec3 global)
-        {
-            return this.CachedTilling.Contains(global);
-        }
-
+        
         public bool Harvesting = true;
         public bool Planting = true;
         public bool Tilling = true;
@@ -105,14 +34,8 @@ namespace Project1.Core.Plants
         {
             this.Read(r);
         }
-
-        public GrowingZone(ZoneManager manager) : base(manager)
-        {
-        }
-        public GrowingZone(ZoneManager manager, IEnumerable<IntVec3> positions)
-            : base(manager, positions)
-        {
-        }
+        public GrowingZone() { }
+        public GrowingZone(ZoneManager manager) : base(manager) { }
         public override ZoneDef ZoneDef => ZoneDefOf.Growing;
 
         protected override void WriteExtra(IDataWriter w)
@@ -129,7 +52,6 @@ namespace Project1.Core.Plants
             this.Harvesting = r.ReadBoolean();
             this.Plant = r.ReadDef<PlantSpeciesDef>();
         }
-
         protected override void LoadExtra(SaveTag tag)
         {
             tag.TryGetTagValue("Tilling", ref this.Tilling);
@@ -144,29 +66,6 @@ namespace Project1.Core.Plants
             tag.Add(this.Harvesting.Save("Harvesting"));
             tag.Add(this.Plant.Save("Plant"));
         }
-
-        internal override void OnBlockChanged(IntVec3 global)
-        {
-            var below = global.Below;
-            var map = this.Map;
-            if (this.Cells.Contains(global))
-            {
-                if(map.GetCell(global).Material != MaterialDefOf.Soil)
-                {
-                    this.RemovePosition(global);
-                    return;
-                }
-            }
-            else if (this.Cells.Contains(below))
-            {
-                if (!map.IsAir(global))
-                {
-                    this.RemovePosition(below);
-                    return;
-                }
-            }
-        }
-
         public IEnumerable<IntVec3> GetSowingPositions()
         {
             this.Validate();
@@ -189,13 +88,16 @@ namespace Project1.Core.Plants
                     yield return pos;
             }
         }
+        internal bool IsValidTilling(IntVec3 global) => this.CachedTilling.Contains(global);
+        
+        internal bool IsValidPlanting(IntVec3 global) => this.CachedSowing.Contains(global);
+        
         public IEnumerable<IntVec3> GetTillingPositions()
         {
             this.Validate();
             foreach (var pos in this.CachedTilling)
                 yield return pos;
         }
-
         protected override void Validate()
         {
             if (!this._dirty)
@@ -225,7 +127,6 @@ namespace Project1.Core.Plants
                 }
             }
         }
-        
         public void GetContextActions(GameObject playerEntity, ContextArgs a) { }
 
         public static bool IsValidFarmPosition(MapBase map, Vector3 arg)
@@ -234,7 +135,6 @@ namespace Project1.Core.Plants
                 Block.GetBlockMaterial(map, arg) == MaterialDefOf.Soil
                 && map.GetBlock(arg + Vector3.UnitZ) == BlockDefOf.Air.Worker;
         }
-
         internal IEnumerable<Entity> GetHarvestablePlantsLazy()
         {
             foreach (var pos in this.Cells)
@@ -275,10 +175,10 @@ namespace Project1.Core.Plants
                 GrowingZone growzone = null;
                 var box = new GroupBox();// 300, 200);
                 box.AddControlsVertically(
-                    new ComboBoxNewNew<PlantSpeciesDef>(Def.GetDefs<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.LabelReadable ?? ""}", () => growzone?.Plant, p => Packets.SendPlant(growzone, p)),
-                    new CheckBoxNew("Tilling", () => Packets.ToggleTilling(growzone), () => growzone.Tilling),
-                    new CheckBoxNew("Planting", () => Packets.TogglePlanting(growzone), () => growzone.Planting),
-                    new CheckBoxNew("Harvesting", () => Packets.ToggleHarvesting(growzone), () => growzone.Harvesting)
+                    new ComboBoxNewNew<PlantSpeciesDef>(Def.GetDefs<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.LabelReadable ?? ""}", () => growzone?.Plant, p => PacketsGrowingZones.SendPlant(growzone, p)),
+                    new CheckBoxNew("Tilling", () => PacketsGrowingZones.ToggleTilling(growzone), () => growzone.Tilling),
+                    new CheckBoxNew("Planting", () => PacketsGrowingZones.TogglePlanting(growzone), () => growzone.Planting),
+                    new CheckBoxNew("Harvesting", () => PacketsGrowingZones.ToggleHarvesting(growzone), () => growzone.Harvesting)
                     );
                 var win = box.ToWindow();
                 win.SetGetDataAction(o =>

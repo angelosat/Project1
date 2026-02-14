@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Labors;
+using Project1.Core.Blocks;
 using Project1.Core.Entities;
-using Project1.Core.Towns.Designations;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Materials;
-using Project1.Core.AI.Behaviors.Reserve;
-using Project1.Core.Blocks;
+using Project1.Core.Towns.Designations;
+using Project1.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns.Constructions.AI
 {
@@ -70,9 +70,9 @@ namespace Project1.Core.Towns.Constructions.AI
                 var r = b.Requirement.refinement;
                 var m = b.Requirement.material;
                 if (!byRefinementAndMaterial.TryGetValue(r, out var byMaterial))
-                    byRefinementAndMaterial[r] = byMaterial = new Dictionary<MaterialDef, List<BlockConstructionComp>>();
+                    byRefinementAndMaterial[r] = byMaterial = [];
                 if (!byMaterial.TryGetValue(m, out var list))
-                    byMaterial[m] = list = new List<BlockConstructionComp>();
+                    byMaterial[m] = list = [];
                 list.Add(b);
             }
             foreach (var item in actor.Map.Haulables)
@@ -85,7 +85,7 @@ namespace Project1.Core.Towns.Constructions.AI
                         if (actor.CanReachAndReserve(item))
                             foreach (var comp in candidates.Where(c => actor.CanReserve(c.Parent)))
                                 if (comp.Parent.CellsOccupied.Any(c => actor.CanReach(c)))
-                                    return new Plan(PlanDefOf.GoHaul, new TargetArgs(item)) { TargetB = new TargetArgs(comp.Parent) };
+                                    return new Plan(PlanDefOf.GoHaul, new TargetArgs(item)) { AmountA = comp.Missing, TargetB = new TargetArgs(comp.Parent) };
             }
             return null;
         }

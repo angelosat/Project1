@@ -28,8 +28,6 @@ namespace Project1.Core.Resources
         public void Add(ResourceDef def)
         {
             this.Resources[def] = new(def) { Owner = this.Owner as Entity };
-            return;
-            this.Resources.Add(def, new(def) { Owner = this.Owner as Entity });
         }
         public ResourcesComponent()
         {

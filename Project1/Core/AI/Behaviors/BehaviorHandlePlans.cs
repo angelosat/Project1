@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Core.Entities.Actors;
-using Project1.Core.AI.Planners;
-using Project1.Core.Resources;
+﻿using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Behaviors.Reserve;
-using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Planners;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Needs;
+using Project1.Core.Resources;
+using Project1.Framework;
 using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.AI.Behaviors
 {
@@ -44,7 +44,6 @@ namespace Project1.Core.AI.Behaviors
         }
         Plan FindNewPlan(Actor parent, AIState state)
         {
-
             var planners = GetPlanners(parent);
 
             foreach (var planner in planners)

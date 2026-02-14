@@ -1,20 +1,21 @@
 ﻿using Project1.Core.AI.Behaviors;
-using Project1.Core.Towns;
-using Project1.Core.Towns.Designations;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Crafting;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Interactions;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Networking;
+using Project1.Core.Simulation;
+using Project1.Core.Towns;
+using Project1.Core.Towns.Designations;
+using Project1.Core.Towns.Shops;
+using Project1.Framework;
+using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Framework.Serialization;
-using Project1.Framework;
-using Project1.Core.Crafting;
 
 #nullable enable
 namespace Project1.Core.AI
@@ -23,6 +24,51 @@ namespace Project1.Core.AI
     public enum TargetIndex { None, A, B, C, Tool = 15 }
     public sealed class Plan
     {
+        public PlannerContinuation Continuation;
+        public TargetArgs TargetA = TargetArgs.Null;
+        public TargetArgs TargetB = TargetArgs.Null;
+        public TargetArgs TargetC = TargetArgs.Null;
+        public List<TargetArgs> TargetsA = [];
+        public List<TargetArgs> TargetsB = [];
+        public List<TargetArgs> TargetsC = [];
+        public List<int> AmountsA = [];
+        public List<int> AmountsB = [];
+        public List<int> AmountsC = [];
+        public int AmountA = -1, AmountB = -1, AmountC = -1;
+        public int Count;
+        public List<List<TargetArgs>> TargetQueues = [];
+        public List<List<int>> AmountQueues = [];
+        public List<ObjectAmount> PlacedObjects = [];
+        public List<Entity> CraftedItems = [];
+        public DesignationDef Designation;
+        public CraftOrderOld OrderOld;
+        public CraftingOrder Order;
+        public Dictionary<string, ObjectRefIDsAmount> IngredientsUsed = [];
+        public TargetArgs Product = TargetArgs.Null;
+        public bool Forced;
+        public bool Urgent = true; // TODO default should be false
+        int ReservedBy = -1;
+        public int TicksWaited = 0;
+        public int TicksTimeout;
+        public int TicksCounter;
+        public int Quest;
+        public int ShopID; // TODO store shopid instead of shop object
+        public Transaction Transaction;
+        public CustomerProperties CustomerProps;
+        public int CustomerID;
+        bool Cancelled = false;
+        public bool IsCancelled => this.Cancelled;
+        public bool IsReserved => this.ReservedBy > -1;
+        InteractionDef EndGoal;
+        Func<bool> _evaluator;
+        Func<bool> Evaluator => _evaluator ??= () =>
+                {
+                    var ctx = this.EndGoal.CreateContext(this.Actor, this.TargetA, this.AmountA);
+                    return this.EndGoal.Logic.CanPerform(ctx);
+                };
+        internal bool IsEndGoalFeasible() => this.Evaluator();
+        public PlanDef Def;
+        public int ID { get; internal set; }
         public string Status => $"{this.Def.Interaction?.LabelReadable} : {this.TargetA}";
         public TargetArgs GetTarget(TargetIndex targetInd)
         {
@@ -35,44 +81,10 @@ namespace Project1.Core.AI
             };
         }
         public bool IsImmediate = true;
-
         internal TargetArgs GetTarget(int targetInd)
         {
             return this.GetTarget((TargetIndex)targetInd);
         }
-
-        //internal bool ReserveAll(Actor actor, TargetIndex sourceIndex)
-        //{
-        //    var targets = this.GetTargetQueue(sourceIndex);
-        //    var amounts = this.GetAmountQueue(sourceIndex);
-        //    var count = targets.Count;
-        //    if (count != amounts.Count)
-        //        throw new Exception();
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        var target = targets[i];
-        //        var amount = amounts[i];
-        //        if (!actor.Town.ReservationManager.Reserve(actor, this, target, amount))
-        //            return false;
-        //    }
-        //    return true;
-        //}
-        //internal bool Reserve(Actor actor, TargetIndex index)
-        //{
-        //    return actor.Town.ReservationManager.Reserve(actor, this, this.GetTarget(index), this.GetAmount(index));
-        //}
-        //internal bool Reserve(Actor actor, TargetIndex index, int amount)
-        //{
-        //    return actor.Town.ReservationManager.Reserve(actor, this, this.GetTarget(index), amount);
-        //}
-        //internal bool Reserve(Actor actor, TargetArgs target, int amount)
-        //{
-        //    return actor.Town.ReservationManager.Reserve(actor, this, target, amount);
-        //}
-        //internal bool Reserve(Actor actor, IntVec3 global)
-        //{
-        //    return actor.Town.ReservationManager.Reserve(actor, this, new TargetArgs(actor.Map, global), 1);
-        //}
         internal int GetAmount(TargetIndex amountInd)
         {
             return amountInd switch
@@ -83,9 +95,6 @@ namespace Project1.Core.AI
                 _ => throw new Exception(),
             };
         }
-
-
-
         internal List<TargetArgs> GetTargetQueue(TargetIndex targetInd)
         {
             return targetInd switch
@@ -96,7 +105,6 @@ namespace Project1.Core.AI
                 _ => throw new Exception(),
             };
         }
-
         internal List<int> GetAmountQueue(TargetIndex amountInd)
         {
             return amountInd switch
@@ -107,13 +115,11 @@ namespace Project1.Core.AI
                 _ => throw new Exception(),
             };
         }
-
         internal Plan SetTarget(TargetIndex targetInd, GameObject target, int amount)
         {
             this.SetAmount(targetInd, amount);
             return this.SetTarget(targetInd, new TargetArgs(target));
         }
-
         internal Plan SetTarget(TargetIndex targetInd, TargetArgs targetArgs)
         {
             switch (targetInd)
@@ -141,7 +147,6 @@ namespace Project1.Core.AI
         {
             this.CraftedItems.Add(item);
         }
-
         internal void SetAmount(TargetIndex ind, int amount)
         {
             switch (ind)
@@ -159,7 +164,6 @@ namespace Project1.Core.AI
                     throw new Exception();
             }
         }
-
         internal bool NextTarget(TargetIndex ind)
         {
             var targets = this.GetTargetQueue(ind);
@@ -169,7 +173,6 @@ namespace Project1.Core.AI
             targets.RemoveAt(0);
             return true;
         }
-
         internal bool NextAmount(TargetIndex ind)
         {
             var targets = this.GetAmountQueue(ind);
@@ -179,14 +182,12 @@ namespace Project1.Core.AI
             targets.RemoveAt(0);
             return true;
         }
-
         public static Plan Load(SaveTag tag)
         {
             var task = new Plan();
             task.LoadData(tag);
             return task;
         }
-
         internal static void Initialize()
         {
         }
@@ -194,51 +195,7 @@ namespace Project1.Core.AI
         {
             this.ID = ReservationManager.GetNextTaskID();
         }
-        public string Name => "unnamed task";
-        public PlannerContinuation Continuation;
-        public TargetArgs TargetA = TargetArgs.Null;
-        public TargetArgs TargetB = TargetArgs.Null;
-        public TargetArgs TargetC = TargetArgs.Null;
-        public List<TargetArgs> TargetsA = new();
-        public List<TargetArgs> TargetsB = new();
-        public List<TargetArgs> TargetsC = new();
-        public int Count;
-        public List<List<TargetArgs>> TargetQueues = new();
-        public List<List<int>> AmountQueues = new();
-        public int AmountA = -1, AmountB = -1, AmountC = -1;
-        public List<int> AmountsA = new();
-        public List<int> AmountsB = new();
-        public List<int> AmountsC = new();
-        public List<ObjectAmount> PlacedObjects = new();
-        public List<Entity> CraftedItems = new();
-        public DesignationDef Designation;
-
-        public List<Func<bool>> FailConditions = new();
-        public CraftOrderOld OrderOld;
-        public CraftingOrder Order;
-
-        public Dictionary<string, ObjectRefIDsAmount> IngredientsUsed = new();
-
-        public TargetArgs Product = TargetArgs.Null;
-        public bool Forced;
-        public bool Urgent = true; // TODO default should be false
-        int ReservedBy = -1;
-        public int TicksWaited = 0;
-        public int TicksTimeout;
-        public int TicksCounter;
-        public int Quest;
-        public int ShopID; // TODO store shopid instead of shop object
-        public Transaction Transaction;
-        public CustomerProperties CustomerProps;
-        public int CustomerID;
-
-        bool Cancelled = false;
-        public bool IsCancelled => this.Cancelled;
-
-        public bool IsReserved => this.ReservedBy > -1;
-
-        public PlanDef Def;
-        public int ID { get; internal set; }
+       
 
         public Plan(PlanDef taskDef)
         {
@@ -320,6 +277,7 @@ namespace Project1.Core.AI
         Type _BehaviorType;
         private TargetIndex _equipContextTargetIndex;
         internal bool IsUrgent;
+        internal Actor Actor;
 
         internal TargetArgs? EquipContextTarget => _equipContextTargetIndex != TargetIndex.None ? this.GetTarget(this._equipContextTargetIndex) : null;
         public Type BehaviorType
@@ -542,6 +500,17 @@ namespace Project1.Core.AI
         {
             this._equipContextTargetIndex = targetIndex;
             return this;
+        }
+
+        public bool RequiresDesignation => this.Designation != null;
+
+        public bool IsDesignationStillValid(MapBase map)
+        {
+            if (!RequiresDesignation)
+                return true;
+
+            return map.Town.DesignationManager
+                .IsDesignation(this.TargetA, Designation);
         }
     }
 }

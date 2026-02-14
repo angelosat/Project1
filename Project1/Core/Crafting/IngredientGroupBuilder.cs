@@ -5,6 +5,7 @@ using Project1.Core.Plants;
 using Project1.Core.Materials;
 using Project1.Core.Screens;
 using Project1.Core.Tools;
+using Project1.Core.Towns.Stockpiles;
 
 namespace Project1.Core.Crafting
 {

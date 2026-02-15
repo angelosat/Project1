@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Helpers;
-using Project1.Core.Helpers.Structs;
 using Project1.Core.Resources;
 using Project1.Framework;
 using Project1.Framework.Events;

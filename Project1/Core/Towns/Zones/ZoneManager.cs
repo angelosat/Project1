@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Graphics;
-using Project1.Core.Helpers.Structs;
+using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;

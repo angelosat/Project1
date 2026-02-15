@@ -1,45 +1,44 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.AI;
+using Project1.Core.AI.MetaRoles;
+using Project1.Core.Animations;
+using Project1.Core.Attributes;
+using Project1.Core.Blocks;
+using Project1.Core.Components;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Input;
+using Project1.Core.Interactions;
+using Project1.Core.Inventory;
+using Project1.Core.Materials;
+using Project1.Core.Needs;
+using Project1.Core.Networking;
+using Project1.Core.Networking.Entities;
+using Project1.Core.Networking.Inventory;
+using Project1.Core.Plants;
+using Project1.Core.Rendering;
+using Project1.Core.Resources;
+using Project1.Core.Screens;
+using Project1.Core.Simulation;
+using Project1.Core.Simulation.Physics;
+using Project1.Core.Skills;
+using Project1.Core.Tools;
+using Project1.Core.Towns;
+using Project1.Core.UI;
+using Project1.Core.UI.Hud;
+using Project1.Core.UI.NamePlates;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Blocks;
-using Project1.Core.Skills;
-using Project1.Core.Components;
-using Project1.Core.UI;
-using Project1.Core.UI.Hud;
-using Project1.Core.Networking;
-using Project1.Core.Interactions;
-using Project1.Core.Rendering;
-using Project1.Core.Materials;
-using Project1.Core.Screens;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Towns;
-using Project1.Core.Tools;
-using Project1.Core.Helpers;
-using Project1.Core.AI;
-using Project1.Core.Graphics;
-using Project1.Core.Simulation;
-using Project1.Core.Simulation.Physics;
-using Project1.Core.Needs;
-using Project1.Core.Inventory;
-using Project1.Core.Entities.Stats;
-using Project1.Core.Attributes;
-using Project1.Core.Resources;
-using Project1.Core.Networking.Entities;
-
-using Project1.Core.AI.MetaRoles;
-using Project1.Core.Animations;
-using Project1.Framework.Events;
-using Project1.Core.Networking.Inventory;
-using Project1.Core.Networking;
-using Project1.Core.Input;
-using Project1.Framework.Helpers;
-using Project1.Core.Plants;
 
 namespace Project1.Core.Entities
 {
@@ -184,9 +183,9 @@ namespace Project1.Core.Entities
         }
         static readonly IconButton IconForbidden = new QuickButton(Icon.Cross, ToolManagement.HotkeyToggleForbidden, "Forbid") { HoverText = "Toggle forbidden" };
         static readonly IconButton IconCameraFollow = new(Icon.Replace) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = FollowCam, HoverText = "Camera follow" };
-        static void RequestToggleForbidden(List<TargetArgs> obj)
+        static void RequestToggleForbidden(List<TargetArgs> targets)
         {
-            PacketToggleForbidden.Send(obj.First().World.Net, obj.Select(o => (int)o.Object.RefId).ToList());
+            Ingame.Instance.Events.Post(new PlayerForbidItemsEvent([.. targets.Select(o => o.Object as Entity)]));
         }
         static void FollowCam()
         {
@@ -196,10 +195,10 @@ namespace Project1.Core.Entities
         {
             this.IsForbidden = !this.IsForbidden;
         }
-        public void DrawNameplate(SpriteBatch sb, Rectangle viewport, Nameplate plate)
-        {
-            plate.Draw(sb, viewport);
-        }
+        //public void DrawNameplate(SpriteBatch sb, Rectangle viewport, Nameplate plate)
+        //{
+        //    plate.Draw(sb, viewport);
+        //}
         public void OnNameplateCreated(Nameplate plate)
         {
             foreach (var comp in Components.Values)

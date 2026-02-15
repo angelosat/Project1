@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers.Structs;
+using Project1.Core.Helpers;
 using Project1.Framework.Events;
 using Project1.Framework.Serialization;
 using System;

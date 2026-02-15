@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
-using Project1.Core.Helpers.Structs;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Materials;
 using Project1.Core.Networking;

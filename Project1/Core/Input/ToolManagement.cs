@@ -18,6 +18,7 @@ using Project1.Core.Graphics;
 using Button = Project1.Framework.UI.Button;
 using Panel = Project1.Framework.UI.Panel;
 using Control = Project1.Framework.UI.Control;
+using Project1.Core.Entities;
 
 namespace Project1.Core.Input
 {
@@ -191,7 +192,9 @@ namespace Project1.Core.Input
         }
         private static void ToggleForbidden()
         {
-            PacketToggleForbidden.Send(Client.Instance, SelectionManager.GetSelectedEntities().Where(o => o.IsForbiddable()));
+            var targets = SelectionManager.GetSelectedEntities().Where(o => o.IsForbiddable());
+            //PacketToggleForbidden.Send(Client.Instance, SelectionManager.GetSelectedEntities().Where(o => o.IsForbiddable()));
+            Ingame.Instance.Events.Post(new PlayerForbidItemsEvent([.. targets.Cast<Entity>()]));
         }
 
         private static void SetSpeed(int value)

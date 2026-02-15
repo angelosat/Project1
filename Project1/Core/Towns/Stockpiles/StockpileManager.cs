@@ -1,5 +1,5 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Helpers.Structs;
+using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Zones;
 using System.Collections.Generic;

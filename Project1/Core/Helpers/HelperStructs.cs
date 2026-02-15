@@ -1,4 +1,4 @@
-﻿namespace Project1.Core.Helpers.Structs
+﻿namespace Project1.Core.Helpers
 {
     public readonly record struct EntityRefId(int Value)
     {
@@ -29,15 +29,5 @@
         public static implicit operator int(WorldSeed v) => v.Value;
         public static WorldSeed Mix(WorldSeed first, WorldSeed second) => first.MixWith(second);
         
-    }
-    public static class SeedExtensions
-    {
-        static public WorldSeed MixWith(this WorldSeed seed, WorldSeed other)
-        {
-            unchecked
-            {
-                return seed * 397 ^ other;
-            }
-        }
     }
 }

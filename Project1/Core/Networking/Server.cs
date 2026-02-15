@@ -14,7 +14,6 @@ using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.Networking.Simulation;
 using Project1.Core.Helpers;
-using Project1.Core.Helpers.Structs;
 using Project1.Core.Loot;
 using Project1.Core.Networking.Packets;
 using Project1.Core.UI;

@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Networking;
 using Project1.Core.World.WorldAreas;
-using Project1.Core.Helpers.Structs;
 using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
 using Project1.Core.UI;
@@ -18,6 +17,7 @@ using Project1.Core.World;
 using Project1.Framework;
 using Project1.Core.WorldGen;
 using Project1.Framework.Events;
+using Project1.Core.Helpers;
 
 #nullable enable
 

@@ -1,7 +1,7 @@
-﻿using System.IO;
-using Project1.Core.Helpers;
+﻿using Project1.Core.Helpers;
 using Project1.Core.Serialization;
 using Project1.Framework.Serialization;
+using System.IO;
 
 namespace Project1.Core.Networking.Packets
 {

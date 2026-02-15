@@ -861,9 +861,7 @@ namespace Project1.Core
             switch (this.Type)
             {
                 case TargetType.Entity:
-                    throw new Exception();
                     this.Object.GetQuickButtons(info);
-                    
                     break;
 
                 case TargetType.Position:

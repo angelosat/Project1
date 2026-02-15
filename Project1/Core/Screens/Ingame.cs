@@ -11,6 +11,7 @@ using Project1.Framework.UI;
 using Project1.Framework.Events;
 using Project1.Framework.Input;
 using Project1.Core.Networking;
+using Project1.Core.UI.NamePlates;
 
 namespace Project1.Core.Screens
 {

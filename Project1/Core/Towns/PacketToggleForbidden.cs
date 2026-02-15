@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Project1.Core.Entities;
+using Project1.Core.Helpers;
+using Project1.Core.Networking;
 using Project1.Framework;
-using Project1.Core.Networking;
-using Project1.Core.Entities;
 using Project1.Framework.Events;
-using Project1.Core.Networking;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns
 {
@@ -20,11 +20,10 @@ namespace Project1.Core.Towns
         {
             Send(net, enumerable.Select(o => o.RefId).ToList());
         }
-        internal static void Send(NetEndpoint net, List<int> instanceID)
+        internal static void Send(NetEndpoint net, List<int> IDs)
         {
             var w = net.BeginPacketNew(ReliabilityType.OrderedReliable, p);
-
-            w.Write(instanceID);
+            w.Write(IDs);
         }
         static void Receive(NetEndpoint net, Packet pck)
         {

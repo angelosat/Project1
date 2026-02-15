@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.Helpers;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Simulation;
-using Project1.Core.UI;
+using Project1.Core.UI.NamePlates;
 
 namespace Project1.Core
 {

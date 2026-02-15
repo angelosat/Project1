@@ -1,4 +1,4 @@
-﻿using Project1.Core.Helpers.Structs;
+﻿using Project1.Core.Helpers;
 using System;
 using System.Collections.Generic;
 

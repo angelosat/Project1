@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Components;
 using Project1.Core.Helpers;
-using Project1.Core.Helpers.Structs;
 using Project1.Core.Input;
 using Project1.Core.Loot;
 using Project1.Core.Networking.Packets;

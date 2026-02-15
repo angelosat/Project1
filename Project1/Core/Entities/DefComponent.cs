@@ -2,8 +2,8 @@
 using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
-using Project1.Core.UI;
 using Project1.Core.Helpers;
+using Project1.Core.UI.NamePlates;
 
 namespace Project1.Core.Entities
 {

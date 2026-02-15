@@ -10,6 +10,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Graphics;
 using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.UI.NamePlates;
 
 namespace Project1.Core.Map
 {
@@ -57,10 +58,10 @@ namespace Project1.Core.Map
                 }
             });
         }
-        public void DrawNameplate(SpriteBatch sb, Rectangle viewport, Nameplate plate)
-        {
-            plate.Draw(sb, viewport);
-        }
+        //public void DrawNameplate(SpriteBatch sb, Rectangle viewport, Nameplate plate)
+        //{
+        //    plate.Draw(sb, viewport);
+        //}
         #endregion
 
         public void Invalidate()

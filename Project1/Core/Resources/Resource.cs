@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
-using Project1.Core.UI;
+using Project1.Core.UI.NamePlates;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Interfaces;

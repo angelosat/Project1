@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Framework.UI;
 
-namespace Project1.Core
+namespace Project1.Core.UI.NamePlates
 {
     class NameplatesContainer : Control
     {

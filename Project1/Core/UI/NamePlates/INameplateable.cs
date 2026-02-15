@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Simulation;
 
-namespace Project1.Core.UI
+namespace Project1.Core.UI.NamePlates
 {
     /// <summary>
     /// string Name { get; set; }
@@ -20,6 +20,6 @@ namespace Project1.Core.UI
         Rectangle GetScreenBounds(Camera camera);
         Color GetNameplateColor();
         void OnNameplateCreated(Nameplate plate);
-        void DrawNameplate(SpriteBatch sb, Rectangle viewport, Nameplate plate);
+        //void DrawNameplate(SpriteBatch sb, Rectangle viewport, Nameplate plate);
     }
 }

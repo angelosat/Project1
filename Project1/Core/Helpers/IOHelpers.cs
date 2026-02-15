@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Helpers.Structs;
 using Project1.Core.Simulation;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +11,14 @@ namespace Project1.Core.Helpers
     internal static class IOHelpers
     {
         public static int ReadEntityRefId(this IDataReader r) => new EntityRefId(r.ReadInt32());
+        public static List<EntityRefId> ReadListEntityRefId(this IDataReader r)
+        {
+            var count = r.ReadInt32();
+            var list = new List<EntityRefId>(count);
+            for (int i = 0; i < count; i++)
+                list.Add(r.ReadEntityRefId());
+            return list;
+        }
         public static T ReadDef<T>(this IDataReader r) where T : Def => Def.GetDef<T>(r.ReadString());
         public static Def ReadDef(this IDataReader r) => Def.GetDef(r.ReadString());
         public static T TryReadDef<T>(this IDataReader r) where T : Def => r.ReadString() is string defName && !defName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<T>(defName) : null!;

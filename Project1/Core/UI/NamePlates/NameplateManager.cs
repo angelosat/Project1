@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using Project1.Core.UI;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Entities;
 using Project1.Framework.UI;
-using Project1.Core.Input;
+using System.Collections.Generic;
 
-namespace Project1.Core
+namespace Project1.Core.UI.NamePlates
 {
     class NameplateManager : Control
     {
@@ -18,7 +17,7 @@ namespace Project1.Core
         }
         static NameplateManager Instance;
         public bool NameplatesEnabled { get { return this.Controls.Contains(this.Container); } }
-        readonly Dictionary<INameplateable, Nameplate> Cache = new();
+        readonly Dictionary<INameplateable, Nameplate> Cache = [];
         readonly NameplatesContainer Container = new();
         readonly NameplatesContainer ContainerActors = new();
         public override Rectangle BoundsScreen => UIManager.Bounds;
@@ -30,17 +29,17 @@ namespace Project1.Core
             Instance = this;
             this.AddControls(this.ContainerActors);
             this.MouseThrough = true;
-            net.Map.Events.ListenTo<EntityDespawnedEvent>(onEntityDespawned);
-            net.Map.Events.ListenTo<EntitySpawnedEvent>(onEntitySpawned);
+            net.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+            net.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
             foreach (var entity in net.Map.GetEntities())
                 this.CreateNameplateFor(entity as Entity);
         }
 
-        private void onEntityDespawned(EntityDespawnedEvent despawned)
+        private void OnEntityDespawned(EntityDespawnedEvent despawned)
         {
             this.DisposeNameplate(despawned.Entity);
         }
-        private void onEntitySpawned(EntitySpawnedEvent spawned)
+        private void OnEntitySpawned(EntitySpawnedEvent spawned)
         {
             var entity = spawned.Entity;
             CreateNameplateFor(entity);

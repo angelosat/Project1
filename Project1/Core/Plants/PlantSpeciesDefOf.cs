@@ -1,8 +1,8 @@
-﻿using Project1.Framework;
-using Project1.Core.Materials;
+﻿using Project1.Core.Assets;
 using Project1.Core.Entities;
-using Project1.Core.Assets;
+using Project1.Core.Materials;
 using Project1.Core.Tools;
+using Project1.Framework;
 
 namespace Project1.Core.Plants
 {
@@ -29,7 +29,8 @@ namespace Project1.Core.Plants
             TextureSeeds = ItemContent.Sapling.AssetPath,
             SeedsName = "Saplings",
             StemMaterial = MaterialDefOf.LightWood,
-            ProductCutDown = RawMaterialDefOf.Logs,
+            //ChoppingProduct = RawMaterialDefOf.Logs,
+            ChoppingProduct = MaterialRefinementDefOf.Logs,
             MaxYieldCutDown = 5,
             GrowTicks = 6 * Ticks.PerSecond,
             PlantEntity = PlantDefOf.Tree,

@@ -19,15 +19,29 @@ namespace Project1.Core.Materials
                 list.Add(matdef);
             }
         }
+        static public Entity Create(MaterialRefinementDef profile, MaterialDef material, int stackSize = -1)
+        {
+            return Create(profile, new Dictionary<BoneDef, MaterialDef>() { { BoneDefOf.Item, material } }, stackSize);
+            //var item = ItemDefOf.Ingredient.Create(amount: stackSize);
+            //item.Initialize();
+            //item.Profile = profile;
+            //item.Body.Sprite = profile.Sprite;
+            ////foreach (var (bone, mat) in materials)
+            ////    item.Body.FindBone(bone).Material = mat;
+            //item.Body.Material = material;
+            //item.Name = $"{item.Body.Material.LabelReadable} {profile.LabelReadable}";
+            //return item;
+        }
         static public Entity Create(MaterialRefinementDef stage, Dictionary<BoneDef, MaterialDef> materials, int stackSize = -1)
         {
             var item = ItemDefOf.Ingredient.Create(amount: stackSize);
-            item.Initialize();
+            //item.Initialize();
             item.Profile = stage;
             item.Body.Sprite = stage.Sprite;
             foreach(var (bone, mat) in materials)
                 item.Body.FindBone(bone).Material = mat;
             item.Name = $"{item.Body.Material.LabelReadable} {stage.LabelReadable}";
+            item.Initialize();
             return item;
         }
         static public IEnumerable<Entity> GenerateTemplates()

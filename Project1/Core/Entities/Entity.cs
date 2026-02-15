@@ -152,7 +152,7 @@ namespace Project1.Core.Entities
             this.IsDead = true;
             foreach (var comp in this.Components.Values)
                 comp.OnKill();
-            this.Map.Events.Post(new EntityKilledEvent(this));
+            //this.Map.Events.Post(new EntityKilledEvent(this));
         }
 
         public BoundingBox GetBoundingBoxNext()

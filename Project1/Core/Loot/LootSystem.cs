@@ -14,6 +14,8 @@ namespace Project1.Core.Loot
         }
         private static void OnLootDrop(LootPopEvent e)
         {
+            if (e.Source.Net.IsClient)
+                throw new Exception();
             var rng = Server.Instance.GetRandom();
             var global = e.Source.Global;
             var sourceVelocity = e.Source.Velocity;

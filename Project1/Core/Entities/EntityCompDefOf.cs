@@ -2,7 +2,6 @@
 using Project1.Core.AI;
 using Project1.Core.Attributes;
 using Project1.Core.Components;
-using Project1.Core.Components.Plants;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Legacy.Crafting;

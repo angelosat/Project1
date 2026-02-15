@@ -1,29 +1,28 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Animations;
+using Project1.Core.Components.Plants;
 using Project1.Core.Entities;
-using System;
-using System.Collections.Generic;
-using Project1.Core.Materials;
-using Project1.Core.Plants;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
 using Project1.Core.Loot;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework.Helpers;
+using Project1.Core.Materials;
 using Project1.Core.Resources;
-using Project1.Core.Tools;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
-using Project1.Core.Animations;
+using Project1.Core.Tools;
 using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
 
-namespace Project1.Core.Components.Plants
+namespace Project1.Core.Plants
 {
     public class PlantComponent : EntityComp<PlantComponent.Spec>
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Plant;
-
         public new class Spec : Spec<PlantComponent>
         {
             public int GrowthRate = Ticks.PerGameHour; //ticks per 1 growth
@@ -45,15 +44,10 @@ namespace Project1.Core.Components.Plants
                 comp.Progress = new Progress(0, comp.Length, 0);
             }
         }
-
-
         const float HarvestThreshold = .5f;
-
         public override string Name { get; } = "Plant";
-
         public Progress GrowthBody = new(0, 100, 5);
         public Progress GrowthFruit = new(0, 100, 0);
-
         public void SetBodyGrowth(float percentage)
         {
             this.GrowthBody.Percentage = percentage;
@@ -72,7 +66,6 @@ namespace Project1.Core.Components.Plants
         public enum GrowthStates { Growing, Ready }
         public Growth Growth = new(.05f);
         public PlantSpeciesDef Species => this.Owner.Profile as PlantSpeciesDef;
-
         internal override void InitializeOnce()
         {
             if (this.Species is null)
@@ -120,19 +113,16 @@ namespace Project1.Core.Components.Plants
         {
             this.Progress = new Progress();
         }
-
         internal void SetGrowth(float growth, float fruitGrowth)
         {
             this.GrowthBody.Percentage = growth;
             this.GrowthFruit.Percentage = fruitGrowth;
         }
-
         public PlantComponent(PlantComponent toCopy)
         {
             this.GrowthBody = new Progress(toCopy.GrowthBody);
             this.GrowthFruit = new Progress(toCopy.GrowthFruit);
         }
-
         public override void OnObjectLoaded(GameObject parent)
         {
             this.Resolve();
@@ -173,14 +163,10 @@ namespace Project1.Core.Components.Plants
             if (this.GrowthTick++ >= growthRate)
             {
                 this.GrowthTick -= growthRate;
-                //this.GrowthBody.Value++;
                 this.GrowthBody.Value += growthStep;
             }
             return;
         }
-
-        
-
         public void FinishGrowing(GameObject parent)
         {
             this.Growth.Set(parent, this.Growth.Max);
@@ -238,15 +224,17 @@ namespace Project1.Core.Components.Plants
             var owner = this.Owner;
             var plantdef = this.Species;
             var yield = (int)(this.GrowthBody.Percentage * plantdef.MaxYieldCutDown);
-            if (plantdef.ProductCutDown != null && yield > 0)
+            if (plantdef.ChoppingProduct != null && yield > 0)
             {
-                var product = plantdef.ProductCutDown.CreateFrom(owner.Body.Material ?? MaterialDefOf.LightWood).SetStackSize(yield) as Entity;
+                var product = RawMaterialSystem.Create(MaterialRefinementDefOf.Logs, owner.Body.Material);
+                product.SetStackSize(yield);
                 owner.Map.Events.Post(new LootPopEvent([product], this.Owner));
 
                 /// if the plant doesnt produce fruit, then the only seed source is by cutting the plant itself
                 if (!this.ProducesFruit)
                 {
-                    var seeds = this.Species.Create(PlantStageDefOf.Seed);
+                    var seeds = PlantSystem.Create(this.Species, PlantStageDefOf.Seed);
+                    seeds.SetStackSize(1);
                     owner.Map.Events.Post(new LootPopEvent([seeds], this.Owner));
                 }
             }

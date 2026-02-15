@@ -16,11 +16,11 @@ namespace Project1.Core.Resources
         public override string Format { get; } = "##0.00";
         public override string Description { get; } = "Required for sprinting and hauling heavy objects";
 
-        public override void Modify(Resource resource, float delta)
+        public override void ApplyDelta(Resource resource, float delta)
         {
             if (delta < 0)
                 resource.RechargingDelay.Value = 0;
-            base.Modify(resource, delta);
+            base.ApplyDelta(resource, delta);
         }
        
         public float TickRate = Ticks.PerGameMinute / 2f; // 2 ticks per second

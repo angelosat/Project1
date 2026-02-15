@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Plants;
-using Project1.Core.Components.Plants;
 using Project1.Core.Blocks;
 
 namespace Project1.Core.Towns.Designations
@@ -42,7 +41,7 @@ namespace Project1.Core.Towns.Designations
     {
         public override bool IsValid(TargetArgs target)
         {
-            return target.Object?.GetComponent<PlantComponent>()?.Species.ProductCutDown != null;
+            return target.Object?.GetComponent<PlantComponent>()?.Species.ChoppingProduct != null;
         }
     }
     class DesignationWorkerHarvest : DesignationWorker

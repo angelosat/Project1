@@ -1,25 +1,25 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Entities;
 using Project1.Core.Screens;
-using Project1.Framework.UI;
 using Project1.Framework.Helpers;
+using Project1.Framework.UI;
+using System;
 
 namespace Project1.Core.UI
 {
     class FloatingTextEx : GroupBox
     {
-        public class Segment
-        {
-            public string Text;
-            public Color Color;
-            public Segment(string text, Color color)
-            {
-                this.Text = text;
-                this.Color = color;
-            }
-        }
+        //class Segment
+        //{
+        //    public string Text;
+        //    public Color Color;
+        //    public Segment(string text, Color color)
+        //    {
+        //        this.Text = text;
+        //        this.Color = color;
+        //    }
+        //}
 
         static Random Random = new Random();
         const float Gravity = 0.05f;
@@ -38,14 +38,9 @@ namespace Project1.Core.UI
         Func<Vector3> GetGlobal;
         Vector2 Velocity;
         Vector2 Position;
-        public FloatingTextEx(GameObject parent, params Segment[] segments)
+        public FloatingTextEx(GameObject parent)
         {
             this.Layer = UIManager.LayerSpeechbubbles;
-            foreach (var s in segments)
-            {
-                var label = new Label(s.Text) { Location = this.Controls.TopRight, Font = UIManager.FontBold, TextColorFunc = () => s.Color };
-                this.Controls.Add(label); 
-            }
             CurrentLife = Life;
             ScaleTime = ScaleLength = 20;
             this.GetGlobal = () => parent.Global;
@@ -54,14 +49,9 @@ namespace Project1.Core.UI
             this.Velocity *= 3;
             this.Position = Vector2.Zero;
         }
-        public FloatingTextEx(Func<Vector3> global, params Segment[] segments)
+        public FloatingTextEx(Func<Vector3> global)
         {
             this.Layer = UIManager.LayerSpeechbubbles;
-            foreach (var s in segments)
-            {
-                var label = new Label(s.Text) { Location = this.Controls.TopRight, Font = UIManager.FontBold, TextColorFunc = () => s.Color };
-                this.Controls.Add(label);
-            }
             CurrentLife = Life;
             ScaleTime = ScaleLength = 20;
             this.GetGlobal = global;
@@ -70,7 +60,12 @@ namespace Project1.Core.UI
             this.Velocity *= 3;
             this.Position = Vector2.Zero;
         }
-        
+        public FloatingTextEx AddSegment(string text, Color color)
+        {
+            var label = new Label(text) { Location = this.Controls.TopRight, Font = UIManager.FontBold, TextColorFunc = () => color };
+            this.Controls.Add(label);
+            return this;
+        }
         public override void Update()
         {
             Camera cam = ScreenManager.CurrentScreen.Camera;

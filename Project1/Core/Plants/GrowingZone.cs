@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.Components.Plants;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;

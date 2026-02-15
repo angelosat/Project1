@@ -62,10 +62,11 @@ namespace Project1.Core.Resources
         }
         public void ApplyDelta(float delta)
         {
-            this.ResourceDef.Worker.Modify(this, delta);
+            this.ResourceDef.Worker.ApplyDelta(this, delta);
             if (delta < 0)
                 this.RechargingDelay.Value = 0;
-            this.Owner.World.Events.Post(new ResourceAdjustedEvent(this.Owner, this.Def, this.Value));
+            //this.Owner.World.Events.Post(new ResourceModifiedEvent(this.Owner, this.Def, this.Value));
+            this.Owner.World.Events.Post(new ResourceModifiedEvent(this.Owner, this.Def, delta));
         }
         public Resource Initialize(float max, float initPercentage)
         {

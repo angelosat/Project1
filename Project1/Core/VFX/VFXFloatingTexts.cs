@@ -18,7 +18,7 @@ namespace Project1.Core.VFX
             Registry.MapEventHooksClient.Register<SkillLevelUpEvent>(OnSkillIncreased);
             Registry.MapEventHooksClient.Register<InventoryItemAddedEvent>(OnItemGot);
             Registry.MapEventHooksClient.Register<InventoryItemRemovedEvent>(OnItemLost);
-            Registry.MapEventHooksClient.Register<ResourceAdjustedEvent>(OnHealthLost);
+            Registry.MapEventHooksClient.Register<ResourceModifiedEvent>(OnHealthLost);
 
             Registry.MapEventHooksClient.Register<ZoneCreatedEvent>(OnZoneCreated);
             Registry.MapEventHooksClient.Register<ZoneDeletedEvent>(OnZoneDeleted);
@@ -43,28 +43,25 @@ namespace Project1.Core.VFX
         {
             var parent = e.Actor;
             var item = e.Item;
-            var floating = new FloatingTextEx(parent,
-                new FloatingTextEx.Segment("Received ", Color.Lime),
-                new FloatingTextEx.Segment(item.Name, item.GetInfo().GetQualityColor())
-                );
+            var floating = new FloatingTextEx(parent)
+               .AddSegment("Received ", Color.Lime)
+               .AddSegment(item.Name, item.GetInfo().GetQualityColor());
             floating.Show();
         }
         private static void OnItemLost(InventoryItemRemovedEvent e)
         {
             var parent = e.Actor;
-            var item = e.Item; 
-            FloatingTextEx floating = new FloatingTextEx(parent,
-                //new FloatingTextEx.Segment("Lost " + amount.ToString() + "x ", Color.Red),
-                new FloatingTextEx.Segment(item.Name, item.GetInfo().GetQualityColor())
-                );
+            var item = e.Item;
+            var floating = new FloatingTextEx(parent)
+                .AddSegment(item.Name, item.GetInfo().GetQualityColor());
             floating.Show();
         }
-        private static void OnHealthLost(ResourceAdjustedEvent e)
+        private static void OnHealthLost(ResourceModifiedEvent e)
         {
             if (e.Def != ResourceDefOf.Health)
                 return;
-            var dmg = e.Value;
-            var recipient = e.Owner;
+            var dmg = e.Delta;
+            var recipient = e.Entity;
             var floating = new FloatingText(recipient, dmg.ToString()) { Font = UIManager.FontBold, TextColorFunc = () => Color.Red };
             floating.Show();
         }

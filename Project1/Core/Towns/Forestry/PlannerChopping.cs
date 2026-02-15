@@ -3,8 +3,8 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Labors;
-using Project1.Core.Towns.Designations;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Designations;
 using System.Linq;
 
 namespace Project1.Core.Towns.Forestry
@@ -15,7 +15,8 @@ namespace Project1.Core.Towns.Forestry
         {
             if (!actor.HasJob(JobDefOf.Lumberjack))
                 return null;
-
+            if (actor.IsHauling)
+                return null;
             var manager = actor.Map.Town.DesignationManager;
             var trees = manager.GetDesignations(DesignationDefOf.Chop)
                 .Where(o => actor.CanReserve(o))

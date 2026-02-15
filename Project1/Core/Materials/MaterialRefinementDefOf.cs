@@ -4,7 +4,7 @@ using Project1.Core.Assets;
 namespace Project1.Core.Materials
 {
     [EnsureStaticCtorCall]
-    static internal class MaterialRefinementDefOf
+    static public class MaterialRefinementDefOf
     {
         static public readonly MaterialRefinementDef Ore = new("Ore", null, MaterialTypeDefOf.Metal, ItemContent.OreGrayscale);
         static public readonly MaterialRefinementDef Ingots = new("Ingots", source: Ore, materialType: MaterialTypeDefOf.Metal, sprite: ItemContent.BarsGrayscale) { FuelConsumption = 10 };

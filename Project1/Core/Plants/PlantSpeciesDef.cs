@@ -1,11 +1,11 @@
 ﻿using Project1.Core.Components.Plants;
+using Project1.Core.Entities;
+using Project1.Core.Materials;
+using Project1.Core.Tools;
 using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
-using Project1.Core.Materials;
-using Project1.Core.Entities;
-using Project1.Core.Tools;
 
 namespace Project1.Core.Plants
 {
@@ -23,7 +23,7 @@ namespace Project1.Core.Plants
 
         public int PlantingSpacing;
         [XmlIgnore]
-        public ItemDef ProductCutDown;
+        public MaterialRefinementDef ChoppingProduct;
 
         /// <summary>
         /// Ticks per 1 hitpoint recovery.
@@ -45,29 +45,6 @@ namespace Project1.Core.Plants
 
             return obj;
         }
-
-        //internal GameObject CreateSeeds()
-        //{
-        //    //var seeds = ItemDefOf.Seeds.Create();
-        //    var seeds = ItemDefOf.Seeds.CreateBase(this);
-        //    seeds.GetComponent<SeedComponent>().SetPlant(this);
-        //    seeds.Name = $"{this.Label} {this.SeedsName}";
-        //    seeds.Body.Sprite = Sprite.Load(this.TextureSeeds);
-        //    return seeds;
-        //}
-
-        //public Plant CreatePlant()
-        //{
-        //    var entity = this.PlantEntity.Create() as Plant;
-        //    entity.PlantComponent.Species = this;
-        //    if (this.PlantEntity == PlantDefOf.Tree)
-        //        entity.SetMaterial(this.StemMaterial);
-        //    else if (this.ProducesFruit)
-        //        entity.Name = entity.Name.Insert(0, $"{this.FruitMaterial.Label} ");
-        //    return entity;
-        //}
-        [Obsolete]
-        public int GetCutDownHitPonts(GameObject plant) => (int)(this.StemMaterial.Density * plant.TotalWeight / 5f);
 
         static public void Init()
         {

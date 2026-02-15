@@ -1,8 +1,7 @@
-﻿using Project1.Framework;
-using Project1.Core.Resources;
-using Project1.Core.Helpers;
+﻿using Project1.Core.Helpers;
 using Project1.Core.Helpers.Structs;
-using Project1.Core.Networking;
+using Project1.Core.Resources;
+using Project1.Framework;
 using Project1.Framework.Events;
 
 namespace Project1.Core.Networking
@@ -13,21 +12,22 @@ namespace Project1.Core.Networking
         readonly static PacketId _pResourceAdjusted;
         static PacketsResources()
         {
-            Registry.WorldEventHooksServer.Register<ResourceAdjustedEvent>(SendResourceAdjusted);
+            Registry.WorldEventHooksServer.Register<ResourceModifiedEvent>(SendResourceAdjusted);
             _pResourceAdjusted = Registry.PacketHandlers.Register(OnResourceAdjusted);
         }
-        private static void SendResourceAdjusted(ResourceAdjustedEvent @event)
+        private static void SendResourceAdjusted(ResourceModifiedEvent @event)
         {
             Server.Instance.BeginPacket(_pResourceAdjusted)
-                .Write(@event.Owner.RefId)
+                .Write(@event.Entity.RefId)
                 .Write(@event.Def)
-                .Write(@event.Value);
+                .Write(@event.Delta);
         }
         static void OnResourceAdjusted(NetEndpoint endpoint, Packet packet)
         {
             endpoint.World
                 .GetEntity(packet.PacketReader.ReadEntityRefId())
-                .Resources.SetValue(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
+                //.Resources.SetValue(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
+                .Resources.ApplyDelta(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
         }
     }
 }

@@ -14,7 +14,6 @@ using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.Networking;
 using Project1.Core.Interactions;
-using Project1.Core.Components.Plants;
 using Project1.Core.Rendering;
 using Project1.Core.Materials;
 using Project1.Core.Screens;
@@ -40,6 +39,7 @@ using Project1.Core.Networking.Inventory;
 using Project1.Core.Networking;
 using Project1.Core.Input;
 using Project1.Framework.Helpers;
+using Project1.Core.Plants;
 
 namespace Project1.Core.Entities
 {
@@ -790,6 +790,8 @@ namespace Project1.Core.Entities
             string defName = r.ReadString();
             var def = Core.Def.GetDef<ItemDef>(defName);
             var profile = Core.Def.GetDef(r.ReadString());
+            //var def = r.ReadDef<ItemDef>();
+            //var profile = r.ReadDef<Def>();
             var obj = def.Create(profile);
             obj.RefId = r.ReadInt32();
             var amount = r.ReadInt32();

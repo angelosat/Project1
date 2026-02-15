@@ -70,7 +70,10 @@ namespace Project1.Core.AI.Planners
                 // carried item is useless so place it in current cell (or throw/let it drop)
                 // TODO: return null and let a final cleanup planner drop it at feet or at nearest empty cell
                 // this is the final cleanup planner??
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
+                var freeCells = actor.Map.FindNearestEmptyCellsOrCurrent(actor.Cell.Below, 3);
+                var finalCell = freeCells.FirstOrDefault();
+                //return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
+                return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, finalCell));
             }
             // if actor has empty hands
             // iterate map items

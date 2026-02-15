@@ -149,9 +149,8 @@ namespace Project1.Core.UI.Hud
         private void NotEnoughSpace(GameObject parent)
         {
             var txt = "Not enough space";
-            FloatingTextEx floating = new FloatingTextEx(parent,
-                new FloatingTextEx.Segment(txt, Color.White)
-                );
+            FloatingTextEx floating = new FloatingTextEx(parent)
+                .AddSegment(txt, Color.White);
             Client.Instance.ConsoleBox.Write(txt);
             floating.Show();
         }

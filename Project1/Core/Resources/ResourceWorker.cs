@@ -72,9 +72,9 @@ namespace Project1.Core.Resources
         }
         public abstract string Description { get; }
 
-        public virtual void Modify(Resource resource, float addValue)
+        public virtual void ApplyDelta(Resource resource, float delta)
         {
-            resource.Value += addValue;
+            resource.Value += delta;
             if (resource.Value <= 0)
                 this.OnDepleted(resource);
         }
@@ -84,9 +84,9 @@ namespace Project1.Core.Resources
         {
             var resource = (Resource)wrapper;
             foreach (var ratemod in resource.Modifiers)
-                this.Modify(resource, ratemod.Def.GetRateMod(resource.Owner));
+                this.ApplyDelta(resource, ratemod.Def.GetRateMod(resource.Owner));
             this.TickExtra(resource);
-            this.Modify(resource, this.GetRegenRate(resource));
+            this.ApplyDelta(resource, this.GetRegenRate(resource));
         }
         protected virtual void updateRec(Resource resource) { }
         protected virtual void TickExtra(Resource resource) { }

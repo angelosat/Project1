@@ -12,7 +12,7 @@ namespace Project1.Core.AI.Behaviors
     {
         readonly int TargetInd;
         readonly TargetIndex CountInd;
-        TargetArgs Target { get => this.TargetGetter?.Invoke() ?? (this.TargetInd != (int)TargetIndex.None ? this.Actor.CurrentTask.GetTarget(this.TargetInd) : null); set { } }
+        TargetArgs Target { get => this.TargetGetter?.Invoke() ?? (this.TargetInd != (int)TargetIndex.None ? this.Actor.CurrentPlan.GetTarget(this.TargetInd) : null); set { } }
         Interaction _interaction;
         public InteractionDef InteractionDef;
         public Func<Interaction> InteractionFactory;
@@ -82,9 +82,9 @@ namespace Project1.Core.AI.Behaviors
             }
 
             var target = this.Target;
-            int count = this.CountInd == TargetIndex.None ? -1 : actor.CurrentTask.GetAmount(this.CountInd);
+            int count = this.CountInd == TargetIndex.None ? -1 : actor.CurrentPlan.GetAmount(this.CountInd);
 
-            this._interaction ??= actor.Work.Perform(actor.CurrentTask.Def.Interaction, target, count);
+            this._interaction ??= actor.Work.Perform(actor.CurrentPlan.Def.Interaction, target, count);
             
             if(this._interaction.IsFinished)
                 return BehaviorState.Success;

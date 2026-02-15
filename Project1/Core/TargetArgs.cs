@@ -1,22 +1,22 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Interactions;
+using Project1.Core.Networking;
+using Project1.Core.Simulation;
+using Project1.Core.UI;
+using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Interactions;
-using Project1.Core.Blocks;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
-using Project1.Core.Networking;
-using Project1.Core.UI;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.UI.Hud;
-using Project1.Framework.Interfaces;
 
 #nullable enable
 
@@ -79,7 +79,12 @@ namespace Project1.Core
         {
             this.InitializeProvider(net.World);
         }
-        public WorldBase World;
+        public void ResolveReferences(MapBase map)
+        {
+            this._resolvedMap = map;
+            this.World = map.World;
+        }
+        public WorldBase World;// { get => this.Map.World; set { } }
         int _entityID = -1, _mapID = -1;
         public int EntityID
         {
@@ -187,7 +192,7 @@ namespace Project1.Core
             this.EntityID = obj.RefId;
             this._resolvedEntity = obj;
             this._resolvedMap = obj.Map;
-
+            this.World = obj.World;
             // struct assignments
             this._global = Vector3.Zero;
             this.Face = Vector3.Zero;

@@ -1,12 +1,11 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.Entities;
-using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using System;
-using System.IO;
 using Project1.Framework;
 using Project1.Framework.Serialization;
+using System;
+using System.IO;
 
 namespace Project1.Core
 {

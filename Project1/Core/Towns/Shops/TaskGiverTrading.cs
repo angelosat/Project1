@@ -13,7 +13,7 @@ namespace Project1.Core.Towns.Shops
             var tradepartner = state.TradingPartner;
             if (tradepartner == null)
                 return null;
-            var partnerbhav = tradepartner.CurrentTask.BehaviorType;
+            var partnerbhav = tradepartner.CurrentPlan.BehaviorType;
             if (partnerbhav == typeof(TaskBehaviorBuy))
                 return new Plan(typeof(TaskBehaviorAcceptSellHandToHand));
             else if (partnerbhav == typeof(TaskBehaviorSell))

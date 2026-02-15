@@ -10,7 +10,7 @@ namespace Project1.Core.AI.Behaviors.Reserve
             var bhav = new BehaviorCustom();
             bhav.InitAction = () =>
             {
-                if (!source.Reserve(bhav.Actor.CurrentTask.GetTarget(targetInd), -1))
+                if (!source.Reserve(bhav.Actor.CurrentPlan.GetTarget(targetInd), -1))
                     throw new Exception();
             };
             return bhav;

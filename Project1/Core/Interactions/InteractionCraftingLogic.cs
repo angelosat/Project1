@@ -18,7 +18,7 @@ namespace Project1.Core.Interactions
         public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
         static bool CanFinish(Context ctx) => CanPerform(ctx);
         public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
-        static bool CanPerform(Context ctx) => ctx.Comp.IngredientsInPlace(ctx.Actor.CurrentTask.TargetsA);
+        static bool CanPerform(Context ctx) => ctx.Comp.IngredientsInPlace(ctx.Actor.CurrentPlan.TargetsA);
         
         internal override void OnFinish(Interaction i)
         {
@@ -27,7 +27,7 @@ namespace Project1.Core.Interactions
             if (actor.Net.IsClient)
                 return;
             var map = actor.Map;
-            var plan = actor.CurrentTask;
+            var plan = actor.CurrentPlan;
             var order = plan.Order;
             var workstation = target;
 

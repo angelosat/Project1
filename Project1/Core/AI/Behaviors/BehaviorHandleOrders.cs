@@ -32,7 +32,7 @@ namespace Project1.Core.AI.Behaviors
                 {
                     parent.StopPathing();
                     var target = new TargetArgs(parent.Map, destination);
-                    parent.CurrentTask = new Plan() { TargetA = target };
+                    parent.CurrentPlan = new Plan() { TargetA = target };
                     this.CurrentBehav = new BehaviorResolvePath(TargetIndex.A, PathEndMode.Exact);
                     this.CurrentMoveOrder = state.MoveOrder;
                     return BehaviorState.Running;

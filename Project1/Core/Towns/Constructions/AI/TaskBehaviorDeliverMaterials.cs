@@ -32,7 +32,7 @@ namespace Project1.Core.Towns.Constructions.AI
             yield return extractDestination;
             var gotoStorage = new BehaviorResolvePath(DestinationID).FailOn(deliverFail);
             yield return gotoStorage;
-            yield return new BehaviorResolveInteraction(DestinationID, () => new UseHauledOnTarget(this.Actor.CurrentTask.GetAmount(DestinationID))
+            yield return new BehaviorResolveInteraction(DestinationID, () => new UseHauledOnTarget(this.Actor.CurrentPlan.GetAmount(DestinationID))
             ).FailOn(deliverFail);
             yield return BehaviorHelper.JumpIfMoreTargets(extractDestination, DestinationID);
 

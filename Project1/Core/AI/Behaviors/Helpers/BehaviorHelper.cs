@@ -17,25 +17,25 @@ namespace Project1.Core.AI.Behaviors.Helpers
         internal static Behavior SetTarget(TargetIndex a, GameObject value)
         {
             var bhav = new BehaviorCustom();
-            bhav.InitAction = () => bhav.Actor.CurrentTask.SetTarget(a, value);
+            bhav.InitAction = () => bhav.Actor.CurrentPlan.SetTarget(a, value);
             return bhav;
         }
         internal static Behavior SetTarget(TargetIndex a, IntVec3 value)
         {
             var bhav = new BehaviorCustom();
-            bhav.InitAction = () => bhav.Actor.CurrentTask.SetTarget(a, value.At(bhav.Actor.Map));
+            bhav.InitAction = () => bhav.Actor.CurrentPlan.SetTarget(a, value.At(bhav.Actor.Map));
             return bhav;
         }
         internal static Behavior SetTarget(TargetIndex a, (MapBase map, IntVec3 value) position)
         {
             var bhav = new BehaviorCustom();
-            bhav.InitAction = () => bhav.Actor.CurrentTask.SetTarget(a, new TargetArgs(position.map, position.value));
+            bhav.InitAction = () => bhav.Actor.CurrentPlan.SetTarget(a, new TargetArgs(position.map, position.value));
             return bhav;
         }
         internal static Behavior SetTarget(TargetIndex a, Func<TargetArgs> targetGetter)
         {
             var bhav = new BehaviorCustom();
-            bhav.InitAction = () => bhav.Actor.CurrentTask.SetTarget(a, targetGetter());
+            bhav.InitAction = () => bhav.Actor.CurrentPlan.SetTarget(a, targetGetter());
             return bhav;
         }
         internal static Behavior CarryFromInventory(TargetIndex item)
@@ -45,7 +45,7 @@ namespace Project1.Core.AI.Behaviors.Helpers
         internal static Behavior CarryFromInventoryAndReplaceTarget(TargetIndex item)
         {
             var bhav = new BehaviorCustom();
-            bhav.InitAction = () => bhav.Actor.CurrentTask.SetTarget(item, bhav.Actor.Hauled);
+            bhav.InitAction = () => bhav.Actor.CurrentPlan.SetTarget(item, bhav.Actor.Hauled);
             return new BehaviorSequence(
                 new BehaviorResolveInteraction(item, () => null//new InteractionHaul()
                 ),
@@ -58,9 +58,9 @@ namespace Project1.Core.AI.Behaviors.Helpers
             bhav.InitAction = () =>
             {
                 var actor = bhav.Actor;
-                if (!actor.CurrentTask.NextTarget(index))
+                if (!actor.CurrentPlan.NextTarget(index))
                     throw new Exception();
-                if (!actor.CurrentTask.NextAmount(index))
+                if (!actor.CurrentPlan.NextAmount(index))
                     throw new Exception();
             };
             return bhav;
@@ -195,7 +195,7 @@ namespace Project1.Core.AI.Behaviors.Helpers
                 var item = actor.Map.GetObjects(global).FirstOrDefault(condition);
                 if (item == null)
                     return false;
-                actor.CurrentTask.SetTarget(targetIndex, item);
+                actor.CurrentPlan.SetTarget(targetIndex, item);
                 return true;
             };
             return bhav;

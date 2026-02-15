@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using Project1.Core.AI.Behaviors.Pathing;
+﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Behaviors.Pathing;
+using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Forestry
 {
-    class PlanBehaviorInteraction : BehaviorExecutePlan
+    class BehaviorChop : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {
@@ -16,7 +16,6 @@ namespace Project1.Core.Towns.Forestry
                 .FailOnInvalidInteraction(this.Actor, this.Plan);
             yield return new BehaviorResolveInteraction();
         }
-
         public override bool HasFailedOrEnded()
         {
             var tree = this.Plan.TargetA.Object;
@@ -26,11 +25,9 @@ namespace Project1.Core.Towns.Forestry
             /// removed the designation check because the behavior might have been created without a specific designation, such as from a growing zone or to clear area for construction
             return !isvalid;
         }
-
         protected override bool ReserveExtra()
         {
             return this.Reserve(TargetIndex.A);
         }
     }
-    
 }

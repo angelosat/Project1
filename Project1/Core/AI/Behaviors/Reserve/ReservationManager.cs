@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI;
 using Project1.Core.Entities;
-using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Towns;
 using Project1.Framework;
 using Project1.Framework.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core
 {
@@ -19,19 +19,36 @@ namespace Project1.Core
         public ReservationManager(Town town)
         {
             this.Town = town;
+            this.Town.Map.Events.ListenTo<EntityForbiddenEvent>(OnEntityForbidden);
         }
-        readonly List<Reservation> Reservations = new();
+
+        private void OnEntityForbidden(EntityForbiddenEvent e)
+        {
+            var entity = e.Entity;
+            this.Unreserve(entity);
+        }
+
+        readonly List<Reservation> Reservations = [];
+        readonly Dictionary<TargetArgs, List<Reservation>> ByTarget = [];
+        readonly Dictionary<EntityRefId, List<Reservation>> ByActor = [];
+        void AddReservation(Reservation vation)
+        {
+            this.Reservations.Add(vation);
+
+            if (!this.ByTarget.TryGetValue(vation.Target, out var bytargetlist))
+                this.ByTarget[vation.Target] = bytargetlist = [];
+            bytargetlist.Add(vation);
+
+            if (!this.ByActor.TryGetValue(vation.Actor, out var byactorlist))
+                this.ByActor[vation.Actor] = byactorlist = [];
+            byactorlist.Add(vation);
+        }
         static int TaskIDSequence = 0;
         static public int GetNextTaskID()
         {
             return TaskIDSequence++;
         }
 
-
-        //public bool Reserve(Actor actor, TargetArgs target, int stackCount = -1)
-        //{
-        //    return this.Reserve(actor, actor.CurrentTask, target, stackCount);
-        //}
         internal bool Reserve(Actor actor, Plan task, TargetArgs target, int stackCount = -1)
         {
             if (target.Type == TargetType.Null)
@@ -79,7 +96,8 @@ namespace Project1.Core
 
             // signal holders of possible existing reservations
             TryCancelExistingReservations(target, stackCount);
-            Reservations.Add(vation);
+            this.AddReservation(vation);
+
             return true;
         }
         internal bool ReserveAsManyAsPossible(Actor actor, Plan task, TargetArgs target, int desiredAmount = -1)
@@ -96,12 +114,12 @@ namespace Project1.Core
             var vation = new Reservation(actor, target, count) { Task = task };
             if (target.HasObject && count > target.Object.StackSize)
                 throw new Exception();
-            Reservations.Add(vation);
+            this.AddReservation(vation);
             return true;
         }
         private void TryCancelExistingReservations(TargetArgs target, int stackCount)
         {
-            List<Reservation> foundStacks = new();
+            List<Reservation> foundStacks = [];
             int foundAmount = 0;
             for (int i = 0; i < this.Reservations.Count; i++)
             {
@@ -135,22 +153,52 @@ namespace Project1.Core
         private void CancelReservation(Reservation r)
         {
             var actor = this.Map.World.GetEntity<Actor>(r.Actor);
-            var task = actor.CurrentTask;
+            var task = actor.CurrentPlan;
             if (task.ID != r.TaskID)
                 throw new Exception();
             actor.Net.ConsoleBox.Write("cancelling " + actor.Name + "'s task's reservations ");
             task.Cancel();
         }
 
-        internal void Unreserve(GameObject actor)
+        internal void Unreserve(Actor actor)
         {
-            Reservations.RemoveAll(r => r.Actor == actor.RefId);
+            if (!this.ByActor.TryGetValue(actor.RefId, out var reservationsByActor))
+                return;
+            foreach (var res in reservationsByActor)
+            {
+                this.Reservations.Remove(res);
+                var listbytarget = this.ByTarget[res.Target];
+                listbytarget.Remove(res);
+                if (listbytarget.Count == 0)
+                    this.ByTarget.Remove(res.Target);
+            }
+            reservationsByActor.Clear();
+            this.ByActor.Remove(actor.RefId);
+            actor.CurrentPlan.Cancel();
         }
-        
-        internal void Unreserve(GameObject actor, TargetArgs target)
+        void Unreserve(TargetArgs target)
         {
-            Reservations.RemoveAll(r => r.Actor == actor.RefId && r.Target.IsEqual(target));
+            if (!this.ByTarget.TryGetValue(target, out var reservationsByTarget))
+                return;
+            HashSet<Actor> actorsToInterrupt = [];
+            foreach (var res in reservationsByTarget)
+            {
+                this.Reservations.Remove(res);
+                var listbyactor = this.ByActor[res.Actor];
+                listbyactor.Remove(res);
+                if (listbyactor.Count == 0)
+                    this.ByActor.Remove(res.Actor);
+                actorsToInterrupt.Add(target.World.GetEntity<Actor>(res.Actor));
+            }
+            foreach(var actor in actorsToInterrupt)
+                actor.CurrentPlan.Cancel();
+            reservationsByTarget.Clear();
+            this.ByTarget.Remove(target);
         }
+        //internal void Unreserve(GameObject actor, TargetArgs target)
+        //{
+        //    Reservations.RemoveAll(r => r.Actor == actor.RefId && r.Target.IsEqual(target));
+        //}
         internal bool CanReserve(GameObject actor, TargetArgs target, int stackcount = -1, bool ignoreOtherReservations = false)
         {
             if (target.Type == TargetType.Entity && target.Object.Owner == actor)
@@ -247,7 +295,7 @@ namespace Project1.Core
             {
                 var list = v.Value as List<SaveTag>;
                 foreach (var t in list)
-                    this.Reservations.Add(new Reservation(this.Town.Map, t));
+                    this.AddReservation(new Reservation(this.Town.Map, t));
             });
             tag.TryGetTagValueOrDefault<int>("TaskIDSequence", out TaskIDSequence);
         }

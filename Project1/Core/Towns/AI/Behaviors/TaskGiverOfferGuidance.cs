@@ -23,7 +23,7 @@ namespace Project1.Core.Towns.AI.Behaviors
             var elapsed = visitor.GetTimeElapsed();
             if (elapsed.TotalSeconds < 2)
                 return null;
-            if (visitor.Actor.CurrentTask != null)
+            if (visitor.Actor.CurrentPlan != null)
                 return null;
             if (visitor.Actor.AI.State.ConversationPartner != null)
                 return null;

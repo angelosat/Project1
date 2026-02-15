@@ -16,7 +16,7 @@ namespace Project1.Core.UI.NamePlates
             HotkeyManager.RegisterHotkey(Ingame.HotkeyContext, "Toggle nameplates", ToggleNameplates, System.Windows.Forms.Keys.N);
         }
         static NameplateManager Instance;
-        public bool NameplatesEnabled { get { return this.Controls.Contains(this.Container); } }
+        public bool NameplatesEnabled => this.Controls.Contains(this.Container);
         readonly Dictionary<INameplateable, Nameplate> Cache = [];
         readonly NameplatesContainer Container = new();
         readonly NameplatesContainer ContainerActors = new();

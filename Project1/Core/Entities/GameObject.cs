@@ -194,6 +194,7 @@ namespace Project1.Core.Entities
         public void ToggleForbidden()
         {
             this.IsForbidden = !this.IsForbidden;
+            this.Map.Events.Post(new EntityForbiddenEvent(this as Entity));
         }
         //public void DrawNameplate(SpriteBatch sb, Rectangle viewport, Nameplate plate)
         //{

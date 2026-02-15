@@ -429,22 +429,30 @@ namespace Project1.Core.AI
         {
             var net = parent.Net;
             //this.Tool.InitializeProvider(net);
-            this.TargetA.InitializeProvider(net);
-            this.TargetB.InitializeProvider(net);
-            this.TargetC.InitializeProvider(net);
 
+            //this.TargetA.InitializeProvider(net);
+            //this.TargetB.InitializeProvider(net);
+            //this.TargetC.InitializeProvider(net);
+            //foreach (var q in this.TargetQueues)
+            //    foreach (var t in q)
+            //        t.InitializeProvider(net);
+            //foreach (var t in this.GetCustomTargets())
+            //    t.InitializeProvider(net);
+
+            this.TargetA.ResolveReferences(parent.Map);
+            this.TargetB.ResolveReferences(parent.Map);
+            this.TargetC.ResolveReferences(parent.Map);
             foreach (var tar in this.TargetsA)
-                tar.InitializeProvider(net);
+                tar.ResolveReferences(parent.Map);
             foreach (var tar in this.TargetsB)
-                tar.InitializeProvider(net);
+                tar.ResolveReferences(parent.Map);
             foreach (var tar in this.TargetsC)
-                tar.InitializeProvider(net);
-
+                tar.ResolveReferences(parent.Map);
             foreach (var q in this.TargetQueues)
                 foreach (var t in q)
-                    t.InitializeProvider(net);
+                    t.ResolveReferences(parent.Map);
             foreach (var t in this.GetCustomTargets())
-                t.InitializeProvider(net);
+                t.ResolveReferences(parent.Map);
             foreach (var t in this.PlacedObjects)
                 t.ResolveReferences(parent.Net);
         }

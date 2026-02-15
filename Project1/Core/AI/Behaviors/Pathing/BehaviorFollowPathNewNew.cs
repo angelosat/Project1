@@ -69,7 +69,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
                     }
                 }
                 parent.MoveToggle(true);
-                parent.WalkToggle(!parent.CurrentTask.Urgent);
+                parent.WalkToggle(!parent.CurrentPlan.Urgent);
             }
             Vector3 distanceVector = next - parent.Global;
             Vector2 directionNormal = distanceVector.XY();

@@ -27,7 +27,7 @@ namespace Project1.Core.Towns.Tasks
         }
         public override BehaviorState Tick(Actor parent, AIState state)
         {
-            var item = parent.CurrentTask.GetTarget(this.TargetInd);
+            var item = parent.CurrentPlan.GetTarget(this.TargetInd);
             return parent.Inventory.Contains(item.Object) ? BehaviorState.Success : BehaviorState.Fail;
         }
     }

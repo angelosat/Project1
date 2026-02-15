@@ -48,7 +48,7 @@ namespace Project1.Core.AI.Behaviors
         {
             bhav.FailOn(() =>
             {
-                var task = bhav.Actor.CurrentTask;
+                var task = bhav.Actor.CurrentPlan;
                 if (task.GetTarget(targetInd).IsForbidden)
                     return true;
 
@@ -60,7 +60,7 @@ namespace Project1.Core.AI.Behaviors
         {
             bhav.FailOn(() =>
             {
-                var task = bhav.Actor.CurrentTask;
+                var task = bhav.Actor.CurrentPlan;
                 var t = task.GetTarget(targetInd);
                 if (t.Object.IsDisposed)
                     return true;
@@ -74,7 +74,7 @@ namespace Project1.Core.AI.Behaviors
         {
             bhav.FailOn(() =>
             {
-                var t = bhav.Actor.CurrentTask.GetTarget(targetInd);
+                var t = bhav.Actor.CurrentPlan.GetTarget(targetInd);
                 return (t.Object.Map != bhav.Actor.Map);
             });
             return bhav;
@@ -87,7 +87,7 @@ namespace Project1.Core.AI.Behaviors
         {
             bhav.FailOn(() =>
             {
-                var task = bhav.Actor.CurrentTask;
+                var task = bhav.Actor.CurrentPlan;
                 foreach (var t in task.PlacedObjects)
                 {
                     if (t.Object.IsDisposed)

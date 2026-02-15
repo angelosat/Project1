@@ -35,20 +35,20 @@ namespace Project1.Core.AI.Behaviors.Reserve
         }
         static public bool CanReserve(this Actor obj, Entity target, int stackcount = -1, bool force = false)
         {
-            return obj.Map.Town.ReservationManager.CanReserve(obj, new TargetArgs(target), stackcount, force);
+            return !target.IsForbidden && obj.Map.Town.ReservationManager.CanReserve(obj, new TargetArgs(target), stackcount, force);
         }
         static public void Unreserve(this Actor obj)
         {
             obj.LastMap.Town.ReservationManager.Unreserve(obj);
         }
-        static public void Unreserve(this Actor obj, GameObject tar)
-        {
-            obj.Map.Town.ReservationManager.Unreserve(obj, new TargetArgs(tar));
-        }
-        static public void Unreserve(this Actor obj, TargetArgs target)
-        {
-            obj.Map.Town.ReservationManager.Unreserve(obj, target);
-        }
+        //static public void Unreserve(this Actor obj, GameObject tar)
+        //{
+        //    obj.Map.Town.ReservationManager.Unreserve(obj, new TargetArgs(tar));
+        //}
+        //static public void Unreserve(this Actor obj, TargetArgs target)
+        //{
+        //    obj.Map.Town.ReservationManager.Unreserve(obj, target);
+        //}
 
         static public int GetUnreservedAmount(this Actor obj, TargetArgs i)
         {

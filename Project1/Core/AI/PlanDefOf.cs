@@ -53,7 +53,7 @@ namespace Project1.Core.AI
             Format = "Force equip {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        static public readonly PlanDef Chop = new("Chopping Designated", typeof(PlanBehaviorInteraction), InteractionDefOf.Chop)
+        static public readonly PlanDef Chop = new("Chopping Designated", typeof(BehaviorChop), InteractionDefOf.Chop)
         {
             Format = "Chop down {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
@@ -78,7 +78,7 @@ namespace Project1.Core.AI
         static public readonly PlanDef Plant = new("Plant", typeof(TaskBehaviorGoPlace), InteractionDefOf.Plant);
         static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround), InteractionDefOf.SleepOnGround);
         static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(TaskBehaviorSleepingNew), InteractionDefOf.SleepInBed);
-        static public readonly PlanDef Eating = new("Eating", typeof(TaskBehaviorEatingNew), InteractionDefOf.Eat);
+        static public readonly PlanDef Eating = new("Eating", typeof(BehaviorEating), InteractionDefOf.Eat);
         static PlanDefOf()
         {
             Def.Register(typeof(PlanDefOf));

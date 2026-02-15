@@ -36,7 +36,7 @@ namespace Project1.Core.Interactions
             {
                 case TargetType.Position:
                     actor.Map.GetBlock(target.Global).TryConsume(actor, hauledObj, target.Global, this.Amount == -1 ? hauledObj.StackSize : this.Amount);
-                    actor.CurrentTask?.AddPlacedObject(hauledObj);
+                    actor.CurrentPlan?.AddPlacedObject(hauledObj);
                     break;
 
                 case TargetType.Entity:

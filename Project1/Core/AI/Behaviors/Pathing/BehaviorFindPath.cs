@@ -11,7 +11,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
     {
         readonly string TargetName, PathName = "path";
         readonly int TargetInd;
-        TargetArgs Target { get => this.Actor.CurrentTask.GetTarget(this.TargetInd); set { } }
+        TargetArgs Target { get => this.Actor.CurrentPlan.GetTarget(this.TargetInd); set { } }
 
         readonly float Range;
         readonly PathEndMode FinishMode = PathEndMode.Touching;

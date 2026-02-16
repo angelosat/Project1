@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.Events;
-using Project1.Framework.Serialization;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Serialization;
-using Project1.Core.Networking;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns.Designations
 {
@@ -34,7 +33,7 @@ namespace Project1.Core.Towns.Designations
         static public void Send(NetEndpoint net, bool remove, IntVec3 begin, IntVec3 end, DesignationDef designation)
         {
             remove |= designation == null;
-            var w = net.BeginPacket(p);
+            var w = net.BeginPacketImmediate(p);
             w.Write(remove);
             w.Write((int)SelectionType.Box);
             w.Write(begin);

@@ -22,11 +22,11 @@ using System.Linq;
 #nullable enable
 namespace Project1.Core.AI
 {
-    public enum PlannerContinuation { Continue, Yield }
-    public enum TargetIndex { None, A, B, C, Tool = 15 }
+    public enum PlanContinuationPolicy { Continue, Yield }
+    public enum TargetIndex { None, A, B, C }
     public sealed class Plan
     {
-        public PlannerContinuation Continuation;
+        public PlanContinuationPolicy Continuation;
         public TargetArgs TargetA = TargetArgs.Null;
         public TargetArgs TargetB = TargetArgs.Null;
         public TargetArgs TargetC = TargetArgs.Null;
@@ -431,7 +431,7 @@ namespace Project1.Core.AI
             tag.TryGetTagValueOrDefault("QuestToAccept", out this.Quest);
             tag.TryGetTag("Transaction", v => this.Transaction = new Transaction(v));
 
-            tag.TryGetTagValue<int>("Continuation", v => this.Continuation = (PlannerContinuation)v);
+            tag.TryGetTagValue<int>("Continuation", v => this.Continuation = (PlanContinuationPolicy)v);
 
             if (tag.TryLoadDefOut<DesignationDef>("Designation", out var designation))
                 this.Designation = designation;

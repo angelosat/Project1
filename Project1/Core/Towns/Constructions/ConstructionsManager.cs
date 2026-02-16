@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Blocks;
-using Project1.Core.Construction.Tools;
 using Project1.Core.Input;
 using Project1.Core.Legacy.Crafting.Blocks;
 using Project1.Core.Networking;
@@ -53,7 +52,25 @@ namespace Project1.Core.Towns.Constructions
             this.Town.Map.Events.ListenTo<CellsInvalidatedEvent>(this.OnBlocksChanged);
             this.Town.Map.Events.ListenTo<ConstructionReadyEvent>(this.OnConstructionReady);
             this.Town.Map.Events.ListenTo<ConstructionFinishedEvent>(this.OnConstructionFinished);
+            this.Town.Map.Events.ListenTo<BlockEntityAddedEvent>(this.OnBlockEntityAdded);
+            this.Town.Map.Events.ListenTo<BlockEntityRemovedEvent>(this.OnBlockEntityRemoved);
         }
+
+        private void OnBlockEntityRemoved(BlockEntityRemovedEvent e)
+        {
+            if (!e.Entity.HasComp<BlockConstructionComp>())
+                return;
+            foreach (var cell in e.Entity.CellsOccupied)
+                this.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Construct, cell);
+        }
+
+        private void OnBlockEntityAdded(BlockEntityAddedEvent e)
+        {
+            if (!e.Entity.HasComp<BlockConstructionComp>())
+                return;
+            this.Town.DesignationManager.Add(DesignationDefOf.Construct, [.. e.Entity.CellsOccupied], false);
+        }
+
         private void OnConstructionFinished(ConstructionFinishedEvent e)
         {
             this.RemoveDesignatedEntity(e.Source);
@@ -152,12 +169,11 @@ namespace Project1.Core.Towns.Constructions
 
             static void cancel(List<TargetArgs> positions) => PacketDesignation.Send(Client.Instance, false, positions, null);
         }
-        internal void Designate(ToolBlockBuild.Args tool, ConstructionDesignationArgs args)
+        internal void Designate(IEnumerable<IntVec3> positions, ConstructionDesignationArgs args, bool removing)
         {
             var map = this.Town.Map;
-            var positions = tool.ToolDef.Worker.GetPositions(tool.Begin, tool.End);
 
-            if (tool.Removing)
+            if (removing)
             {
                 RemoveNew(positions);
                 return;
@@ -185,7 +201,10 @@ namespace Project1.Core.Towns.Constructions
                 map.GetChunk(pos).InvalidateSlice(pos.Z);
                 this.DesignationLocations.Add(pos);
             }
-            map.AddBlockEntityInternal(entity);
+            //map.AddBlockEntityInternal(entity);
+            var mapedit = new MapEdit(this.Map);
+            mapedit.AddEntity(entity);
+            mapedit.Flush();
             this._dirty = true;
         }
         private void RemoveNew(IEnumerable<IntVec3> positions)
@@ -207,6 +226,9 @@ namespace Project1.Core.Towns.Constructions
                 this.DesignationLocations.Remove(child);
                 this.Map.GetChunk(child).InvalidateSlice(child.Z);
             }
+            var mapedit = new MapEdit(this.Map);
+            mapedit.RemoveEntity(entity);
+            mapedit.Flush();
         }
         GroupBox _pendingDesignationLabel;
         GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();

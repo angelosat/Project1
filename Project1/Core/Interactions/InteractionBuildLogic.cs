@@ -23,8 +23,8 @@ namespace Project1.Core.Interactions
             if (comp.Map is null)
                 return false;
             var manager = comp.Parent.Map.Town.ConstructionsManager;
-            if (!manager.IsDesignatedConstruction(comp))
-                return false;
+            //if (!manager.IsDesignatedConstruction(comp))
+            //    return false;
             if (comp.Parent.CellsOccupied.Any(c => !manager.IsSupported(c)))
                 return false;
             return true;

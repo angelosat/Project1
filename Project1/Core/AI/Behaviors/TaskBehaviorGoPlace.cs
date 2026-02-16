@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.AI.Behaviors
 {
+    class BehaviorPlace : BehaviorExecutePlanNew { }
     class TaskBehaviorGoPlace : BehaviorExecutePlan
     {
         public override string Name { get; } = "Delivering item";

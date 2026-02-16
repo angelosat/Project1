@@ -50,7 +50,7 @@ namespace Project1.Core.Towns.Labors
             if (actor.Hauled is Entity carried)
             {
                 if (manager.IsUseful(carried))
-                    return new Plan(PlanDefOf.StoreInInventory) { Continuation = PlannerContinuation.Yield };
+                    return new Plan(PlanDefOf.StoreInInventory) { Continuation = PlanContinuationPolicy.Yield };
                 else // else fallback to next planner
                     return null;
             }

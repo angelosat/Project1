@@ -62,7 +62,7 @@ namespace Project1.Core.AI.Behaviors
                 }
                 var bhav = plan.CreateBehavior(parent);
                 state.Assign(bhav);
-                parent.AI.State.CurrentPlanner = plan.Continuation == PlannerContinuation.Continue ? planner : null;
+                parent.AI.State.CurrentPlanner = plan.Continuation == PlanContinuationPolicy.Continue ? planner : null;
                 return plan;
             }
 

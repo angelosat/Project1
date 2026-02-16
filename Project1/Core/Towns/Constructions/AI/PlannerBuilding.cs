@@ -42,7 +42,7 @@ namespace Project1.Core.Towns.Constructions.AI
                             return new Plan(PlanDefOf.GoHaul, new TargetArgs(item)) { AmountA = amount };
                     }
                     var amountToDeposit = target.Missing;
-                    return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, cell)) { AmountA = amountToDeposit, TargetB = new TargetArgs(target.Parent) };
+                    return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, cell)) { Designation = DesignationDefOf.Construct, AmountA = amountToDeposit, TargetB = new TargetArgs(target.Parent) };
                 }
                 return null;
             }
@@ -75,6 +75,7 @@ namespace Project1.Core.Towns.Constructions.AI
                     byMaterial[m] = list = [];
                 list.Add(b);
             }
+            // TODO only consider stockpile items
             foreach (var item in actor.Map.Haulables)
             {
                 if (item.Def != ItemDefOf.Ingredient)

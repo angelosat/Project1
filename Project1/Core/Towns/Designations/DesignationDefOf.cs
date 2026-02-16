@@ -13,7 +13,7 @@ namespace Project1.Core.Towns.Designations
         public static readonly DesignationDef Chop = new("Chop", typeof(DesignationWorkerChop), ItemContent.AxeFull, "Chop", "Designate chopping", false);
         public static readonly DesignationDef Harvest = new("Harvest", typeof(DesignationWorkerHarvest), ItemContent.BerriesFull, "Harvest", "Designate harvesting", false);
 
-        public static readonly DesignationDef Construct = new("Construct", typeof(DesignationWorkerConstruct), ItemContent.HammerFull, "Construct", "Designate Construction", true);
+        public static readonly DesignationDef Construct = new("Construct", typeof(DesignationWorkerConstruct), ItemContent.HammerFull, "Construct", "Designate Construction", true) { IsManual = false };
 
         static DesignationDefOf()
         {

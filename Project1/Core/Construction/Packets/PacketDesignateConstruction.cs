@@ -1,11 +1,10 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Construction.Tools;
-using Project1.Core.Blocks;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
+using Project1.Framework;
 using Project1.Framework.Events;
-using Project1.Core.Networking;
 
 namespace Project1.Core.Construction.Packets
 {
@@ -50,7 +49,8 @@ namespace Project1.Core.Construction.Packets
             }
 
             var constructionArgs = new ConstructionDesignationArgs(block, refinement, material, (byte)args.Orientation);
-            net.Map.Town.ConstructionsManager.Designate(args, constructionArgs);
+            var cells = args.ToolDef.Worker.GetPositions(args.Begin, args.End);
+            net.Map.Town.ConstructionsManager.Designate(cells, constructionArgs, args.Removing);
 
             if (net is Server)
                 Send(net, args, constructionArgs);

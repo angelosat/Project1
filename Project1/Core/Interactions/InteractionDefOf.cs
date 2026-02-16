@@ -23,7 +23,8 @@ namespace Project1.Core.Interactions
         public static readonly InteractionDef Place = new("Placing", typeof(InteractionPlaceItemLogic))
         { 
             Animation = AnimationDefOf.TouchItem, 
-            ProgressHandler = new InteractionProgressFirstContact() 
+            ProgressHandler = new InteractionProgressFirstContact(),
+            Range = InteractionRange.Any
         };
         public static readonly InteractionDef Plant = new("Planting", typeof(InteractionPlantLogic))
         {

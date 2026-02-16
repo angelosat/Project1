@@ -29,8 +29,8 @@ namespace Project1.Core.Towns.Designations
         public override string Name => "Designation Manager";
         readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>> Designations;
         public readonly Dictionary<DesignationDef, BlockRendererObservable> Renderers = [];
-        List<DesignationDef> designationDefs;
-        List<DesignationDef> AllDesignationDefs => this.designationDefs ??= [.. Def.GetDefs<DesignationDef>()];
+        static List<DesignationDef> designationDefs;
+        static List<DesignationDef> AllDesignationDefs => designationDefs ??= [.. Def.GetDefs<DesignationDef>()];
         private static readonly IHotkey Hotkey;
         GroupBox _pendingDesignationLabel;
         GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();
@@ -99,11 +99,17 @@ namespace Project1.Core.Towns.Designations
                         SelectionManager.AddInfoNew(this.UpdatePendingDesignationLabel(this.Designations.First(d => d.Value.Contains(target)).Key));
                 }
         }
+        internal void Add(DesignationDef designation, IEnumerable<IntVec3> cells, bool remove)
+        {
+            if (!designation.AffectsBlocks)
+                throw new InvalidOperationException($"Cells designation invalid for {designation}");
+            this.Add(designation, cells.Select(c => new TargetArgs(this.Map, c)), remove);
+        }
         internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool remove)
         {
             if (designation is null)
             {
-                foreach (var l in this.Designations)
+                foreach (var l in this.Designations.Where(d => d.Key.IsManual))
                     foreach (var p in positions)
                         l.Value.Remove(p);
             }
@@ -112,7 +118,7 @@ namespace Project1.Core.Towns.Designations
                 var list = this.Designations[designation];
                 foreach (var pos in positions)
                 {
-                    if (remove)
+                    if (remove && designation.IsManual)
                         list.Remove(pos);
                     else if (designation.IsValid(pos) || (pos.Type == TargetType.Position && this.Map.IsUndiscovered(pos.Global)))
                         list.Add(pos);
@@ -123,7 +129,11 @@ namespace Project1.Core.Towns.Designations
         public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
         {
             foreach (var r in this.Renderers)
+            {
+                if (!r.Key.IsManual)
+                    continue;
                 r.Value.DrawBlocks(map, cam);
+            }
         }
         public DesignationDef GetDesignation(TargetArgs global)
         {
@@ -198,7 +208,8 @@ namespace Project1.Core.Towns.Designations
         static IEnumerable<(string, Action)> GetContextSubmenuItems()
         {
             yield return ("Remove", () => SetTool(null));
-            foreach (var def in Ingame.CurrentMap.Town.DesignationManager.Designations.Keys)
+            //foreach (var def in Ingame.CurrentMap.Town.DesignationManager.Designations.Keys
+            foreach (var def in AllDesignationDefs.Where(d => d.IsManual))
                 yield return (def.LabelReadable, () => SetTool(def));
         }
         private static void SetTool(DesignationDef d)
@@ -229,10 +240,10 @@ namespace Project1.Core.Towns.Designations
 
             var areNotTask = selectedTargets
                 .Except(areTask)
-                .Where(t => this.AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
+                .Where(t => AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
 
-            var splits = this.AllDesignationDefs.ToDictionary(d => d, d => areNotTask.FindAll(t => d.IsValid(t)));
-            foreach (var s in this.AllDesignationDefs)
+            var splits = AllDesignationDefs.ToDictionary(d => d, d => areNotTask.FindAll(t => d.IsValid(t)));
+            foreach (var s in AllDesignationDefs)
             {
                 if (!splits.TryGetValue(s, out var list) || !list.Any())
                     SelectionManager.RemoveButton(s.IconAdd);

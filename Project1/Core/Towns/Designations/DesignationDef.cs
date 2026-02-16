@@ -1,8 +1,8 @@
 ﻿using Project1.Core.Graphics;
-using System;
 using Project1.Core.Simulation;
-using Project1.Framework.UI;
 using Project1.Framework;
+using Project1.Framework.UI;
+using System;
 
 namespace Project1.Core.Towns.Designations
 {
@@ -18,6 +18,8 @@ namespace Project1.Core.Towns.Designations
         readonly public bool AffectsBlocks;
 
         readonly Type WorkerClass;
+
+        public bool IsManual = true;
        
         public DesignationDef(string name, Type workerClass, Sprite sprite, string verb, string hoverText, bool affectsBlocks) : base(name)
         {

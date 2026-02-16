@@ -2,11 +2,11 @@
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Labors;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Farming;
+using Project1.Core.AI.Reservations;
 
 namespace Project1.Core.Towns.Forestry
 {

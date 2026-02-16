@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Project1.Framework.Helpers;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.Entities;
 using Project1.Core.Needs;
 using Project1.Core.Entities.Actors;
+using Project1.Core.AI.Reservations;
 
 namespace Project1.Core.AI.Behaviors.Observe
 {

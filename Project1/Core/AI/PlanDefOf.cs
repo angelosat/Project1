@@ -5,6 +5,7 @@ using Project1.Core.AI.Behaviors.ItemOwnership;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.Sleeping;
 using Project1.Core.Interactions;
+using Project1.Core.Plants;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors;
 using Project1.Core.Towns.Constructions.AI;
@@ -75,7 +76,8 @@ namespace Project1.Core.AI
         static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);
         static public readonly PlanDef Repairing = new("Repairing", typeof(TaskBehaviorRepairing), InteractionDefOf.Repair);
         static public readonly PlanDef HaulToStockpile = new("StockpileHauling", typeof(TaskBehaviorHaulToStockpile), InteractionDefOf.Place);
-        static public readonly PlanDef Plant = new("Plant", typeof(TaskBehaviorGoPlace), InteractionDefOf.Plant);
+        //static public readonly PlanDef Plant = new("Plant", typeof(TaskBehaviorGoPlace), InteractionDefOf.Plant);
+        static public readonly PlanDef Plant = new("Plant", typeof(BehaviorPlanting), InteractionDefOf.Plant);
         static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround), InteractionDefOf.SleepOnGround);
         static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(TaskBehaviorSleepingNew), InteractionDefOf.SleepInBed);
         static public readonly PlanDef Eating = new("Eating", typeof(BehaviorEating), InteractionDefOf.Eat);

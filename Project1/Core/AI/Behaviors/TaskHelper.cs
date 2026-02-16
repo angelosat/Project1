@@ -4,9 +4,9 @@ using Project1.Core.Towns.Designations;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Framework;
+using Project1.Core.AI.Reservations;
 
 namespace Project1.Core.AI.Behaviors
 {

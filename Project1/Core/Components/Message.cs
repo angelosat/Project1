@@ -17,7 +17,6 @@ namespace Project1.Core.Components
             BlockEntityRemoved,
             ItemGot,
             EntityDespawned,
-            EntitySpawned,
             NpcsUpdated,
             AILogUpdated,
             EntityHitCeiling,

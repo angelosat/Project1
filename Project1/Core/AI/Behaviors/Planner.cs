@@ -45,6 +45,7 @@ namespace Project1.Core.AI.Behaviors
         public PlannerResult FindPlan(Actor actor)
         {
             var task = TryPlan(actor);
+            task?.Actor = actor;
             return task != null ? new PlannerResult(task, this) : PlannerResult.Empty;
         }
         public virtual bool ShouldContinue(Actor actor, Plan plan) => true;

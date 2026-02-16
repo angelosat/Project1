@@ -2,10 +2,10 @@
 using Project1.Core.Interactions;
 using Project1.Core.Entities;
 using Project1.Core.AI.Behaviors.Helpers;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Reservations;
 
 namespace Project1.Core.Towns.Shops
 {

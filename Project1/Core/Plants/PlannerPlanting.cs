@@ -1,17 +1,18 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Labors;
+using Project1.Core.AI.Reservations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns;
+using Project1.Core.Towns.Designations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Plants
 {
-    class PlannerSowing : Planner
+    class PlannerPlanting : Planner
     {
         protected override Plan TryPlan(Actor actor)
         {
@@ -47,7 +48,7 @@ namespace Project1.Core.Plants
                     }
                     var pos = reservableTargets[0];
                     //return new Plan(PlanDefOf.GoPlace, map, pos, 1);
-                    return new Plan(PlanDefOf.Plant, map, pos, 1);
+                    return new Plan(PlanDefOf.Plant, map, pos, 1) { Zone = zone};
                 }
             }
             var allValidEntities = mapItems.Where(c => 

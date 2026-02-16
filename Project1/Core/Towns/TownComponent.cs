@@ -6,7 +6,6 @@ using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
@@ -49,10 +48,6 @@ namespace Project1.Core.Towns
         internal virtual IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated() { yield break; }
         internal virtual void OnContextMenuCreated(IContextable obj, ContextArgs a) { }
         internal virtual void OnContextActionBarCreated(ContextActionBar.ContextActionBarArgs a) { }
-        internal virtual void OnGameEvent(GameEvent e)
-        {
-        }
-
         public SaveTag Save()
         {
             var tag = new SaveTag(SaveTag.Types.Compound, this.Name);

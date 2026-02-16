@@ -10,7 +10,11 @@ using System.Collections.Generic;
 
 namespace Project1.Core.AI.Behaviors
 {
-    abstract public class BehaviorExecutePlanNew : Behavior
+    public abstract class PlanExecutor : Behavior
+    {
+        public abstract bool CommitReservations();
+    }
+    public class BehaviorExecutePlanNew : PlanExecutor
     {
         IEnumerable<Behavior> GetSteps()
         {
@@ -94,7 +98,13 @@ namespace Project1.Core.AI.Behaviors
             }
             return BehaviorState.Success;
         }
-
+        protected sealed override bool ShouldAbort()
+        {
+            if (!this.Plan.IsStillValid())
+                return true;
+            return this.ShouldAbortCore();
+        }
+        protected virtual bool ShouldAbortCore() => false;
         private void NextBehavior()
         {
             this.CurrentStepIndex++;
@@ -116,14 +126,15 @@ namespace Project1.Core.AI.Behaviors
         {
             throw new NotImplementedException();
         }
-        public bool ReserveBase()
+        public override bool CommitReservations()
         {
-            return this.ReserveExtra();
+            return this.ReserveAll();
+            //return this.ReserveExtra();
         }
-        protected virtual bool ReserveExtra()
-        {
-            return true;
-        }
+        //protected virtual bool ReserveExtra()
+        //{
+        //    return true;
+        //}
         //public override void CleanUp()
         //{
         //    for (int i = 0; i < this.FinishActions.Count; i++)

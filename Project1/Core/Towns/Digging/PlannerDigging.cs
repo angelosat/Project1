@@ -1,6 +1,5 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Labors;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Designations;
@@ -14,27 +13,18 @@ namespace Project1.Core.Towns.Digging
         {
             if (!actor.HasJob(JobDefOf.Digger))
                 return null;
-            //var map = actor.Map;
-            
             var jobs = actor.Map.Town.DesignationManager.GetDesignations(DesignationDefOf.Mine);
 
-            //var mainhand = actor.GetEquipmentSlot(GearTypeDefOf.Mainhand);
             if (actor.IsHauling)
                 return null;
             foreach (var target in jobs) // TODO: check if another npc is standing on the target block to be digged
             {
                 var pos = (IntVec3)target.Global;
-                if (!actor.CanReserve(target))
-                    continue;
-                if (!actor.CanReach(pos))
+   
+                if (!actor.CanReachAndReserve(pos))
                     continue;
 
-                //var block = map.GetBlock(pos);
-                //var material = map.GetMaterial(pos);
-                //var skill = material.Type.JobToExtract;
-
-                //if (skill == null)
-                //    throw new Exception();
+                // TODO branch here, decide which plan to use based on block material (mine/dig/chop)
 
                 var task = new Plan(PlanDefOf.Digging, target) { Designation = DesignationDefOf.Mine };// new TargetArgs(actor.Map, target));
 

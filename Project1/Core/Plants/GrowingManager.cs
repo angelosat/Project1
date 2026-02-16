@@ -146,13 +146,10 @@ namespace Project1.Core.Plants
                     yield return nextPos.Value;
             }
         }
-
         internal bool IsValidTillingTarget(IntVec3 global) => 
             this.Town.ZoneManager.GetZoneAt<GrowingZone>(global)?.IsValidTilling(global) ?? false;
-
-        internal bool IsValidPlantingTarget(Vector3 global) => 
+        internal bool IsValidPlantingTarget(IntVec3 global) => 
             this.Town.ZoneManager.GetZoneAt<GrowingZone>(global)?.IsValidPlanting(global) ?? false;
-
         public override string Name => "GrowingManager";
     }
 

@@ -3,10 +3,9 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Conversation;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Labors;
-using Project1.Core.AI.Net.Packets;
 using Project1.Core.AI.Planners;
+using Project1.Core.AI.Reservations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Pathing;
@@ -62,11 +61,11 @@ namespace Project1.Core.AI
             this.ItemPreferences = new ItemPreferencesManager(actor);
             this.Log = new(actor);
         }
-        private void Enqueue(BehaviorExecutePlan bhav)
+        private void Enqueue(PlanExecutor bhav)
         {
             this.TaskQueue.Enqueue(bhav);
         }
-        private void Push(BehaviorExecutePlan bhav)
+        private void Push(PlanExecutor bhav)
         {
             this.TaskStack.Push(bhav);
         }
@@ -118,17 +117,22 @@ namespace Project1.Core.AI
             {
                 TaskStack.Pop();
                 if(TaskStack.Count > 0)
-                    PacketReportPlan.SendReportBehavior(this.Owner, TaskStack.Peek());
+                    //PacketReportPlan.SyncBehavior(this.Owner, TaskStack.Peek());
+                    this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, TaskStack.Peek()));
+
                 return true;
             }
             else if (TaskQueue.Count > 0)
             {
                 TaskQueue.Dequeue();
                 if (TaskQueue.Count > 0)
-                    PacketReportPlan.SendReportBehavior(this.Owner, TaskQueue.Peek());
+                    //PacketReportPlan.SyncBehavior(this.Owner, TaskQueue.Peek());
+                    this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, TaskQueue.Peek()));
+
                 return true;
             }
-            PacketReportPlan.SendReportBehavior(this.Owner, null);
+            //PacketReportPlan.SyncBehavior(this.Owner, null);
+            this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, null));
             return false;
         }
 
@@ -143,7 +147,8 @@ namespace Project1.Core.AI
             this.Path = null;
             this.TaskQueue.Clear();
             this.TaskStack.Clear();
-            PacketReportPlan.SendReportBehavior(this.Owner, null);
+            //PacketReportPlan.SyncBehavior(this.Owner, null);
+            this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, null));
 
         }
 
@@ -155,9 +160,10 @@ namespace Project1.Core.AI
             this.ItemPreferences.ResolveReferences();
 
         }
-        public void Assign(BehaviorExecutePlan bhav)
+        public void Assign(PlanExecutor bhav)
         {
-            PacketReportPlan.SendReportBehavior(this.Owner, bhav);
+            //PacketReportPlan.SyncBehavior(this.Owner, bhav);
+            this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, bhav));
             bhav.Plan.Actor = this.Owner;
             if (bhav.Plan.IsImmediate)
                 this.Push(bhav);
@@ -167,7 +173,7 @@ namespace Project1.Core.AI
         public bool TryAssign(Plan task)
         {
             var bhav = task.CreateBehavior(this.Owner);
-            if (!bhav.ReserveBase())
+            if (!bhav.CommitReservations())
             {
                 this.Owner.Unreserve();
                 return false;

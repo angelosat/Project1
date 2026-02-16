@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.AI.Behaviors
 {
-    abstract public class BehaviorExecutePlan : Behavior
+    abstract public class BehaviorExecutePlan : PlanExecutor
     {
         /// <summary>
         /// Attaches a fail condition to the behavior that checks interaction feasibility while the actor is moving toward the target.
@@ -122,7 +122,7 @@ namespace Project1.Core.AI.Behaviors
         {
             throw new NotImplementedException();
         }
-        public bool ReserveBase()
+        public override bool CommitReservations()
         {
             return this.ReserveExtra();
         }

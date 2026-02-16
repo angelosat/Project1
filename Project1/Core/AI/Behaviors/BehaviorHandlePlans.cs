@@ -1,6 +1,6 @@
 ﻿using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Planners;
+using Project1.Core.AI.Reservations;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Needs;
 using Project1.Core.Resources;
@@ -51,30 +51,31 @@ namespace Project1.Core.AI.Behaviors
                 if (planner is null)
                     continue;
                 var giverResult = planner.Worker.FindPlan(parent);
-                var task = giverResult.Plan;
-                if (task is null)
+                var plan = giverResult.Plan;
+                if (plan is null)
                     continue;
-                var bhav = task.CreateBehavior(parent);
-                if (!bhav.ReserveBase())
+                //if (!bhav.CommitReservations())
+                if (!plan.ReserveAll())
                 {
                     parent.Unreserve();
                     continue;
                 }
-
+                var bhav = plan.CreateBehavior(parent);
                 state.Assign(bhav);
-                parent.AI.State.CurrentPlanner = task.Continuation == PlannerContinuation.Continue ? planner : null;
-                return task;
+                parent.AI.State.CurrentPlanner = plan.Continuation == PlannerContinuation.Continue ? planner : null;
+                return plan;
             }
 
             return null;
         }
 
-        bool TryForcePlan(Actor parent, Plan task, AIState state)
+        bool TryForcePlan(Actor parent, Plan plan, AIState state)
         {
-            var bhav = task.CreateBehavior(parent);
-            if (!bhav.ReserveBase())
+            //if (!bhav.CommitReservations())
+            if (!plan.ReserveAll())
                 return false;
-            task.IsImmediate = true;
+            var bhav = plan.CreateBehavior(parent);
+            plan.IsImmediate = true;
             state.Assign(bhav);
             return true;
         }
@@ -181,7 +182,7 @@ namespace Project1.Core.AI.Behaviors
                     if (next.Plan is not null)
                     {
                         var bhav = next.Plan.CreateBehavior(parent);
-                        if (bhav.ReserveBase())
+                        if (bhav.CommitReservations())
                         {
                             $"found followup task from same planner {currentPlanner}".ToConsole();
                             state.Assign(bhav);

@@ -236,6 +236,7 @@ namespace Project1.Core
         public TargetArgs(MapBase map, Vector3 global)
         {
             this._resolvedMap = map;
+            this.World = map.World;
             this.Type = TargetType.Position;
             this.Global = global;
         }

@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 namespace Project1.Core
 {
+    class BehaviorBuild : BehaviorExecutePlanNew
+    {
+
+    }
     class TaskBehaviorGoConstruct : BehaviorExecutePlan
     {
         public override string Name { get; } = "Finishing Construction";

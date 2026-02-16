@@ -11,7 +11,6 @@ using Project1.Core.Simulation;
 using Project1.Core.Gear;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Attributes;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.Networking.Entities;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
@@ -30,6 +29,7 @@ using Project1.Core.Skills;
 using Project1.Core.Mood;
 using Project1.Core.Networking.Inventory;
 using Project1.Core.Networking;
+using Project1.Core.AI.Reservations;
 
 namespace Project1.Core.Entities.Actors
 {

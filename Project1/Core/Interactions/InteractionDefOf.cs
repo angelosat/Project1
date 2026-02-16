@@ -1,9 +1,9 @@
-﻿using Project1.Framework;
-using Project1.Core.Towns.AI;
+﻿using Project1.Core.Animations;
+using Project1.Core.Plants;
 using Project1.Core.Skills;
 using Project1.Core.Tools;
-using Project1.Core.Animations;
-using Project1.Core.Plants;
+using Project1.Core.Towns.AI;
+using Project1.Framework;
 
 namespace Project1.Core.Interactions
 {
@@ -44,7 +44,7 @@ namespace Project1.Core.Interactions
             Skill = SkillDefOf.Mining,
             ToolUse = ToolUseDefOf.Mining
         };
-        public static readonly InteractionDef Dig = new("Digging", typeof(InteractionBreakBlock), typeof(InteractionBreakBlockLogic))
+        public static readonly InteractionDef Dig = new("Digging", /*typeof(InteractionBreakBlock), */typeof(InteractionBreakBlockLogic))
         {
             Animation = AnimationDefOf.Tool,
             ProgressHandler = new InteractionProgressToolExternal(),

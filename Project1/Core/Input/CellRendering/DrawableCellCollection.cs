@@ -1,22 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Blocks;
+using Project1.Core.Graphics;
+using Project1.Core.Simulation;
+using Project1.Framework;
+using Project1.Framework.Graphics;
+using Project1.Framework.Helpers;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using Microsoft.Xna.Framework;
-using Project1.Core.Blocks;
-using Project1.Core.Simulation;
-using Project1.Framework.Graphics;
-using Project1.Framework;
-using Project1.Core.Graphics;
-using Project1.Framework.Helpers;
+using System.Linq;
 
 namespace Project1.Core.Input.CellRendering
 {
     public class DrawableCellCollection : ICollection<IntVec3>
     {
-        readonly ObservableCollection<IntVec3> Cells = new();
-        readonly Dictionary<int, MySpriteBatch> Slices = new();
-        readonly HashSet<int> InvalidatedSlices = new();
+        readonly ObservableCollection<IntVec3> Cells = [];
+        readonly Dictionary<int, MySpriteBatch> Slices = [];
+        readonly HashSet<int> InvalidatedSlices = [];
         readonly AtlasDepthNormals.Node.Token BlockToken;
         Color _color = Color.White;
         public Color Color

@@ -1,37 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Core.UI;
-using Project1.Core.Networking;
-using Project1.Core.Components;
-using Project1.Core.Rooms;
-using Project1.Core.Plants;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.AI;
+using Project1.Core.AI.MetaRoles;
+using Project1.Core.AI.Reservations;
+using Project1.Core.Blocks;
+using Project1.Core.Crafting;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Graphics;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Networking;
+using Project1.Core.Plants;
+using Project1.Core.Rooms;
+using Project1.Core.Simulation;
 using Project1.Core.Towns.Constructions;
 using Project1.Core.Towns.Designations;
-using Project1.Core.Towns.Labors;
-using Project1.Core.Towns.Zones;
 using Project1.Core.Towns.Digging;
-using Project1.Core.Towns.UI;
+using Project1.Core.Towns.Labors;
 using Project1.Core.Towns.Storage;
 using Project1.Core.Towns.Terrain;
-using Project1.Core.Helpers;
-using Project1.Core.AI;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
+using Project1.Core.Towns.UI;
+using Project1.Core.Towns.Zones;
+using Project1.Core.UI;
 using Project1.Core.UI.Hud;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
 using Project1.Framework;
-using Project1.Core.Crafting;
-using Project1.Core.AI.MetaRoles;
-using Project1.Core.Blocks;
-using Project1.Core.Legacy.Crafting;
-using Project1.Framework.Events;
-using Project1.Core.Graphics;
-using Project1.Framework.Input;
 using Project1.Framework.Helpers;
+using Project1.Framework.Input;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns
 {
@@ -96,7 +94,7 @@ namespace Project1.Core.Towns
         [InspectorHidden]
         public StorageManager Storage;
 
-        public List<TownComponent> TownComponents = new();
+        public List<TownComponent> TownComponents = [];
 
         public MapBase Map;
         public NetEndpoint Net => this.Map.Net;
@@ -154,28 +152,6 @@ namespace Project1.Core.Towns
             foreach (var comp in this.TownComponents)
                 comp.Update();
         }
-
-        public void HandleGameEvent(GameEvent e)
-        {
-            switch ((Message.Types)e.Type)
-            {
-                case Message.Types.EntitySpawned:
-                    var entity = e.Parameters[0] as GameObject;
-                    break;
-
-                //case Message.Types.EntityDespawned:
-                //    entity = e.Parameters[0] as GameObject;
-                //    if(this.Members.Contains(entity.RefId)) //TODO: dont dismiss despawned entities (they might be active outside the map)
-                //        RemoveMember(entity);
-                //    break;
-
-                default:
-                    break;
-            }
-            foreach (var comp in this.TownComponents)
-                comp.OnGameEvent(e);
-        }
-
         public void AddUtility(Utility.Types type, Vector3 global)
         {
             this.TownUtilitiesNew[type].Add(global);

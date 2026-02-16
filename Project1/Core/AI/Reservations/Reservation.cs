@@ -7,11 +7,11 @@ using Project1.Framework.Serialization;
 using System;
 using System.IO;
 
-namespace Project1.Core
+namespace Project1.Core.AI.Reservations
 {
-    public partial class ReservationManager
-    {
-        class Reservation
+    //public partial class ReservationManager
+    //{
+        public class Reservation
         {
             public int Actor;
             public TargetArgs Target;
@@ -73,5 +73,5 @@ namespace Project1.Core
                 this.Amount = tag.GetValue<int>("Amount");
             }
         }
-    }
+    //}
 }

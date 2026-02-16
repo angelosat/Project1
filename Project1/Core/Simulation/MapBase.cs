@@ -48,9 +48,7 @@ namespace Project1.Core.Simulation
         public ParticleManager ParticleManager;
         public RegionManager Regions;
         public StockpileManager Stockpiles;
-        internal EntityLifecycleManager EntityLifecycleManager;
         internal List<SimulationSystem> SimulationSystems = [];
-
         protected Dictionary<IntVec3, BlockEntity> CachedBlockEntities = new();
         public float Sunlight;
         public abstract Color GetAmbientColor();
@@ -61,14 +59,12 @@ namespace Project1.Core.Simulation
         public ulong CurrentTick => this.World.CurrentTick;
         public TimeSpan Clock => this.World.Clock;
         public abstract Vector2 GetOffset();
-
         public static Texture2D Shadow;
         internal static void Initialize()
         {
             Generator.InitGradient3();
             Shadow = Game1.Instance.Content.Load<Texture2D>("Graphics/shadow");
         }
-
 
         public Vector2 Coordinates;
         public abstract string GetName();

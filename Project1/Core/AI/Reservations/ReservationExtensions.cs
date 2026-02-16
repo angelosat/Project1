@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Towns.Zones;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Entities;
-using Project1.Framework;
 using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Zones;
+using Project1.Framework;
 
-namespace Project1.Core.AI.Behaviors.Reserve
+namespace Project1.Core.AI.Reservations
 {
     static public class ReservationExtensions
     {

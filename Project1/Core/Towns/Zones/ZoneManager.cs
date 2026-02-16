@@ -14,6 +14,7 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 
 namespace Project1.Core.Towns.Zones
 {
@@ -90,6 +91,7 @@ namespace Project1.Core.Towns.Zones
                 throw new Exception();
             foreach (var position in zone.Cells)
                 this._cellsToZones.Remove(position);
+            zone.Cells.Clear();
             this.ZonesById.Remove(zoneID);
             this.Map.Events.Post(new ZoneDeletedEvent(zone));
         }
@@ -126,6 +128,14 @@ namespace Project1.Core.Towns.Zones
         {
             zone.CacheNew.Remove(entity);
             this.Map.Events.Post(new EntityExitedZoneEvent(entity, zone));
+        }
+        public Zone GetZone(ZoneId zoneId)
+        {
+            if (zoneId == ZoneId.Null)
+                return null;
+            if (!this.ZonesById.TryGetValue(zoneId, out var zone))
+                return null;
+            return zone;
         }
         internal T GetZone<T>(ZoneId zoneID) where T : Zone
         {

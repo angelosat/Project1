@@ -4,19 +4,28 @@ using Project1.Core.Networking;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using System;
 
 namespace Project1.Core.AI.Net.Packets
 {
     [EnsureStaticCtorCall]
     public static class PacketReportPlan
     {
-        static readonly int pReportPlan;
+        static readonly int _pSyncPlan;
         static PacketReportPlan()
         {
-            pReportPlan = Registry.PacketHandlers.Register(ReceiveReportBehavior);
+            Registry.MapEventHooksServer.Register<PlanAssignedEvent>(OnPlanAssigned);
+            _pSyncPlan = Registry.PacketHandlers.Register(ReceiveSyncBehavior);
         }
-        
-        private static void ReceiveReportBehavior(NetEndpoint endpoint, Packet packet)
+
+        private static void OnPlanAssigned(PlanAssignedEvent e)
+        {
+            if (e.Actor.Net.IsClient)
+                return;
+            SyncBehavior(e.Actor, e.Behavior);
+        }
+
+        private static void ReceiveSyncBehavior(NetEndpoint endpoint, Packet packet)
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
@@ -36,10 +45,10 @@ namespace Project1.Core.AI.Net.Packets
                 actor.AI.State.TaskStack.Clear();
             }
         }
-        public static void SendReportBehavior(Actor actor, Behavior bhav)
+        static void SyncBehavior(Actor actor, Behavior bhav)
         {
             var server = actor.Net as Server;
-            var w = server.BeginPacket(pReportPlan);
+            var w = server.BeginPacket(_pSyncPlan);
             w.Write(actor.RefId);
             var hasBhav = bhav is not null;
             w.Write(hasBhav);

@@ -1,17 +1,19 @@
 ﻿using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Reservations;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using Project1.Core.Legacy;
-using Project1.Core.Legacy.Crafting;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Zones;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
@@ -41,7 +43,7 @@ namespace Project1.Core.AI
         public List<ObjectAmount> PlacedObjects = [];
         public List<Entity> CraftedItems = [];
         public DesignationDef Designation;
-        public CraftOrderOld OrderOld;
+        //public CraftOrderOld OrderOld;
         public CraftingOrder Order;
         public Dictionary<string, ObjectRefIDsAmount> IngredientsUsed = [];
         public TargetArgs Product = TargetArgs.Null;
@@ -57,8 +59,27 @@ namespace Project1.Core.AI
         public CustomerProperties CustomerProps;
         public int CustomerID;
         bool Cancelled = false;
+        ZoneId _zoneID = ZoneId.Null;
+        Zone _zone;
+        public Zone? Zone
+        {
+            get => this._zoneID == ZoneId.Null ? null : this._zone ??= this.Actor.Map.Town.ZoneManager.GetZone(this._zoneID);
+            set
+            {
+                if (value is not null)
+                {
+                    this._zoneID = value.ID;
+                    this._zone = value;
+                }
+            }
+        }
+        public bool ZoneRequired => this._zoneID != ZoneId.Null;
+        public bool DesignationRequired => this.Designation is not null;
         public bool IsCancelled => this.Cancelled;
-        public bool IsReserved => this.ReservedBy > -1;
+        Type _BehaviorType;
+        internal bool IsUrgent;
+        internal Actor Actor;
+        //public bool IsReserved => this.ReservedBy > -1;
         InteractionDef EndGoal;
         Func<bool> _evaluator;
         Func<bool> Evaluator => _evaluator ??= () =>
@@ -274,21 +295,18 @@ namespace Project1.Core.AI
             return this.Def?.GetForceText(this) ?? this.BehaviorType.Name;
         }
 
-        Type _BehaviorType;
-        private TargetIndex _equipContextTargetIndex;
-        internal bool IsUrgent;
-        internal Actor Actor;
 
-        internal TargetArgs? EquipContextTarget => _equipContextTargetIndex != TargetIndex.None ? this.GetTarget(this._equipContextTargetIndex) : null;
+
         public Type BehaviorType
         {
             get => this.Def?.BehaviorClass ?? this._BehaviorType;
             set => this._BehaviorType = value;
         }
 
-        public BehaviorExecutePlan CreateBehavior(Actor actor)
+        public PlanExecutor CreateBehavior(Actor actor)
         {
-            var behav = Activator.CreateInstance(this.BehaviorType) as BehaviorExecutePlan;
+            //var behav = Activator.CreateInstance(this.BehaviorType) as BehaviorExecutePlan;
+            var behav = ActivatorSafe<PlanExecutor>.CreateInstance(this.BehaviorType);
             behav.Actor = actor;
             behav.Plan = this;
             return behav;
@@ -347,6 +365,11 @@ namespace Project1.Core.AI
             this.Transaction.Save(tag, "Transaction");
 
             tag.Save("Continuation", (int)this.Continuation);
+
+            if(this.Designation is not null)
+                tag.Save("Designation", this.Designation);
+            if(this._zoneID != ZoneId.Null)
+                tag.Save("ZoneID", this._zoneID);
 
             this.AddSaveData(tag);
             return tag;
@@ -409,6 +432,11 @@ namespace Project1.Core.AI
             tag.TryGetTag("Transaction", v => this.Transaction = new Transaction(v));
 
             tag.TryGetTagValue<int>("Continuation", v => this.Continuation = (PlannerContinuation)v);
+
+            if (tag.TryLoadDefOut<DesignationDef>("Designation", out var designation))
+                this.Designation = designation;
+            if (tag.TryLoadInt("ZoneID", out var zoneID))
+                this._zoneID = zoneID;
         }
         internal void SyncToClients(IDataWriter w)
         {
@@ -427,18 +455,6 @@ namespace Project1.Core.AI
 
         internal void MapLoaded(GameObject parent)
         {
-            var net = parent.Net;
-            //this.Tool.InitializeProvider(net);
-
-            //this.TargetA.InitializeProvider(net);
-            //this.TargetB.InitializeProvider(net);
-            //this.TargetC.InitializeProvider(net);
-            //foreach (var q in this.TargetQueues)
-            //    foreach (var t in q)
-            //        t.InitializeProvider(net);
-            //foreach (var t in this.GetCustomTargets())
-            //    t.InitializeProvider(net);
-
             this.TargetA.ResolveReferences(parent.Map);
             this.TargetB.ResolveReferences(parent.Map);
             this.TargetC.ResolveReferences(parent.Map);
@@ -504,21 +520,51 @@ namespace Project1.Core.AI
         }
 
         IEnumerable<TargetArgs> GetCustomTargets() { yield break; }
-        public Plan SetEquipContextTargetIndex(TargetIndex targetIndex)
+       
+        public bool IsStillValid()
         {
-            this._equipContextTargetIndex = targetIndex;
-            return this;
+            var map = this.Actor.Map;
+            if (this.DesignationRequired && !map.Town.DesignationManager.IsDesignation(this.TargetA, this.Designation))
+                return false;
+            if (this.ZoneRequired && !this.Zone!.Contains(TargetA.Global))
+                return false;
+            return true;
         }
-
-        public bool RequiresDesignation => this.Designation != null;
-
-        public bool IsDesignationStillValid(MapBase map)
+        internal bool ReserveAll()
         {
-            if (!RequiresDesignation)
-                return true;
-
-            return map.Town.DesignationManager
-                .IsDesignation(this.TargetA, Designation);
+            return
+                this.ReserveAll(TargetIndex.A) &&
+                this.ReserveAll(TargetIndex.B) &&
+                this.ReserveAll(TargetIndex.C);
+        }
+        internal bool ReserveAll(TargetIndex sourceIndex)
+        {
+            /// TODO: interperet amount by target type:
+            /// for entities do if -1 then amount = entity.stacksize
+            /// for intvec3 and blockentities, do amount  = 1
+            if (this.GetTarget(sourceIndex) is TargetArgs singleTarget && singleTarget != TargetArgs.Null)
+            {
+                var amountSpecified = this.GetAmount(sourceIndex);
+                var amountToReserve = singleTarget.Type switch
+                {
+                    TargetType.Entity => amountSpecified > 0 ? amountSpecified : singleTarget.Object.StackSize,
+                    _ => 1
+                };
+                this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this, singleTarget, amountToReserve);
+            }
+            var targets = this.GetTargetQueue(sourceIndex);
+            var amounts = this.GetAmountQueue(sourceIndex);
+            var count = targets.Count;
+            if (count != amounts.Count)
+                throw new Exception();
+            for (int i = 0; i < count; i++)
+            {
+                var target = targets[i];
+                var amount = amounts[i];
+                if (!this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this, target, amount))
+                    return false;
+            }
+            return true;
         }
     }
 }

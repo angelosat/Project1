@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.AI;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 using Project1.Core.Towns;
 using Project1.Framework;
 using Project1.Framework.Serialization;
@@ -10,9 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core
+namespace Project1.Core.AI.Reservations
 {
-    public partial class ReservationManager : TownComponent
+    public class ReservationManager : TownComponent
     {
         string _name = "Reservations";
         public override string Name => _name; 
@@ -20,14 +20,22 @@ namespace Project1.Core
         {
             this.Town = town;
             this.Town.Map.Events.ListenTo<EntityForbiddenEvent>(OnEntityForbidden);
+            this.Town.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+            this.Town.Map.Events.ListenTo<CellsInvalidatedEvent>(OnCellInvalidated);
         }
-
+        private void OnEntityDespawned(EntityDespawnedEvent e)
+        {
+            this.Unreserve(e.Entity);
+        }
         private void OnEntityForbidden(EntityForbiddenEvent e)
         {
-            var entity = e.Entity;
-            this.Unreserve(entity);
+            this.Unreserve(e.Entity);
         }
-
+        private void OnCellInvalidated(CellsInvalidatedEvent e)
+        {
+            foreach (var cell in e.Positions)
+                this.Unreserve(new TargetArgs(e.Map, cell));
+        }
         readonly List<Reservation> Reservations = [];
         readonly Dictionary<TargetArgs, List<Reservation>> ByTarget = [];
         readonly Dictionary<EntityRefId, List<Reservation>> ByActor = [];
@@ -149,7 +157,6 @@ namespace Project1.Core
                 }
             }
         }
-
         private void CancelReservation(Reservation r)
         {
             var actor = this.Map.World.GetEntity<Actor>(r.Actor);
@@ -159,7 +166,6 @@ namespace Project1.Core
             actor.Net.ConsoleBox.Write("cancelling " + actor.Name + "'s task's reservations ");
             task.Cancel();
         }
-
         internal void Unreserve(Actor actor)
         {
             if (!this.ByActor.TryGetValue(actor.RefId, out var reservationsByActor))
@@ -167,6 +173,7 @@ namespace Project1.Core
             foreach (var res in reservationsByActor)
             {
                 this.Reservations.Remove(res);
+                this.Map.Events.Post(new ReservationInvalidatedEvent(res));
                 var listbytarget = this.ByTarget[res.Target];
                 listbytarget.Remove(res);
                 if (listbytarget.Count == 0)
@@ -174,7 +181,7 @@ namespace Project1.Core
             }
             reservationsByActor.Clear();
             this.ByActor.Remove(actor.RefId);
-            actor.CurrentPlan.Cancel();
+            //actor.CurrentPlan.Cancel();
         }
         void Unreserve(TargetArgs target)
         {
@@ -184,14 +191,15 @@ namespace Project1.Core
             foreach (var res in reservationsByTarget)
             {
                 this.Reservations.Remove(res);
+                this.Map.Events.Post(new ReservationInvalidatedEvent(res));
                 var listbyactor = this.ByActor[res.Actor];
                 listbyactor.Remove(res);
                 if (listbyactor.Count == 0)
                     this.ByActor.Remove(res.Actor);
                 actorsToInterrupt.Add(target.World.GetEntity<Actor>(res.Actor));
             }
-            foreach(var actor in actorsToInterrupt)
-                actor.CurrentPlan.Cancel();
+            //foreach(var actor in actorsToInterrupt)
+            //    actor.CurrentPlan.Cancel();
             reservationsByTarget.Clear();
             this.ByTarget.Remove(target);
         }

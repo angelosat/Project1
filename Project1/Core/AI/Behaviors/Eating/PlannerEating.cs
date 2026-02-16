@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.Entities;
 using Project1.Core.Needs;
 using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;
 using Project1.Framework;
+using Project1.Core.AI.Reservations;
 
 namespace Project1.Core.AI.Behaviors.Eating
 {

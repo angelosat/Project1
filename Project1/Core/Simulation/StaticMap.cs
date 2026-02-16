@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
@@ -94,9 +95,6 @@ namespace Project1.Core.Simulation
             var vec2 = this.Random.Roll(.5f) ? new IntVec2(i, j) : new IntVec2(j, i);
             return new IntVec3(vec2.X, vec2.Y, this.GetHeightmapValue(vec2.X, vec2.Y));
         }
-
-        public List<GameObject> SavedPlayers = new();
-
         public override bool AddChunk(Chunk chunk)
         {
             this.ActiveChunks.Add(chunk.MapCoords, chunk);
@@ -104,7 +102,6 @@ namespace Project1.Core.Simulation
             this.ActiveChunks = this.ActiveChunks.OrderBy(c => c.Key.X + c.Key.Y).ToDictionary(i => i.Key, i => i.Value);
             return true;
         }
-
         public StaticMap(StaticWorld world, string name = "")
         {
             this.World = world;
@@ -117,7 +114,8 @@ namespace Project1.Core.Simulation
             this.Stockpiles = new(this);
             this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
             this.ParticleManager = new Graphics.Particles.ParticleManager(this);
-            this.EntityLifecycleManager = new EntityLifecycleManager(this);
+            this.SimulationSystems.Add(new EntityLifecycleSystem(this));
+            this.SimulationSystems.Add(new BehaviorSystem(this));
             this.SimulationSystems.Add(new FallDamageSystem(this));
             this.SimulationSystems.Add(new LootSystem(this));
         }
@@ -185,7 +183,9 @@ namespace Project1.Core.Simulation
         {
             this.AddTime();
             this.Regions.Update();
-            this.EntityLifecycleManager.Tick();
+            //this.EntityLifecycleManager.Tick();
+            foreach (var sys in this.SimulationSystems)
+                sys.Tick();
             foreach (var chunk in this.ActiveChunks.Values.ToList())
                 chunk.Tick();
 
@@ -465,7 +465,6 @@ namespace Project1.Core.Simulation
             this.Town.Write(w);
             this.UndiscoveredAreaManager.Write(w);
         }
-
         public static StaticMap ReadData(NetEndpoint net, IDataReader r)
         {
             var name = r.ReadString();
@@ -479,13 +478,10 @@ namespace Project1.Core.Simulation
             map.UndiscoveredAreaManager.Read(r);
             return map;
         }
-
         public override void OnGameEvent(GameEvent e)
         {
             base.OnGameEvent(e);
-            this.Town.HandleGameEvent(e);
         }
-
         public override bool SetBlockLuminance(IntVec3 global, byte luminance)
         {
             if (!this.TryGetAll(global, out var chunk, out var cell))
@@ -498,7 +494,6 @@ namespace Project1.Core.Simulation
             this.InvalidateCell(global);
             return true;
         }
-      
         public override bool InvalidateCell(IntVec3 global)
         {
             if (!this.TryGetAll(global, out Chunk chunk, out Cell cell))

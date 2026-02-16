@@ -1,7 +1,8 @@
-﻿using Project1.Core.AI.Behaviors.NodeTypes;
+﻿using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Behaviors.NodeTypes;
 using System;
 
-namespace Project1.Core.AI.Behaviors.Reserve
+namespace Project1.Core.AI.Reservations
 {
     static class BehaviorReserve
     { 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Behaviors.Reserve;
 using Project1.Core.AI.Labors;
+using Project1.Core.AI.Reservations;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;

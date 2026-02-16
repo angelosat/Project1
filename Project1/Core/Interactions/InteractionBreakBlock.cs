@@ -2,9 +2,7 @@
 using Project1.Core.Blocks;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
-using Project1.Framework;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Project1.Core.Interactions
 {
@@ -22,27 +20,26 @@ namespace Project1.Core.Interactions
             public override float ProgressPercentage => (1 - this.CachedToken?.HealthPercentage) ?? 0;
         }
         public override void ApplyWork(InteractionContext ctx, int workAmount) => ApplyWork((Context)ctx, workAmount);
-        public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
-        public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
+        //public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
+        //public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
         protected override InteractionContext CreateContextInternal() => new Context();
-        static bool CanPerform(Context ctx)
-        {
-            if (ctx.Cell.Block is BlockAir)
-                return false;
-            if (ctx.Cell.Block.BlockDef != ctx.InitialBlock)
-                return false;
-            return true;
-        }
-        static bool CanFinish(Context ctx)
-        {
-            return true;
-            var global = ctx.Target.Global;
-            var actor = ctx.Actor;
-            var objects = actor.Map.GetObjects(global.Above());
-            return !objects.Any();
-        }
+        //static bool CanPerform(Context ctx)
+        //{
+        //    if (ctx.Cell.Block is BlockAir)
+        //        return false;
+        //    if (ctx.Cell.Block.BlockDef != ctx.InitialBlock)
+        //        return false;
+        //    return true;
+        //}
+        //static bool CanFinish(Context ctx)
+        //{
+        //    return true;
+        //    var global = ctx.Target.Global;
+        //    var actor = ctx.Actor;
+        //    var objects = actor.Map.GetObjects(global.Above());
+        //    return !objects.Any();
+        //}
         static void ApplyWork(Context ctx, int workAmount) => ctx.Actor.Map.ApplyBlockWork(ctx.Target.Global, -workAmount);
-        
     }
     class InteractionBreakBlock : InteractionToolUse
     {

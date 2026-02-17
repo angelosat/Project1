@@ -226,7 +226,7 @@ namespace Project1.Core.Entities.Actors
                         if (SelectionManager.GetSelectedEntities().Contains(parent))
                         {
                             if (e.Parameters[1] as GameObject == parent)
-                                SelectionManager.RemoveButton(IconControl);
+                                SelectionManager.RemoveOrderButton(IconControl);
                             else if (e.Parameters[2] as GameObject == parent)
                                 SelectionManager.AddButton(IconControl);
                         }

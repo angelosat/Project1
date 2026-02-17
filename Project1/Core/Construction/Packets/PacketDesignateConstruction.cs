@@ -1,20 +1,84 @@
-﻿using Project1.Core.Blocks;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Blocks;
 using Project1.Core.Construction.Tools;
 using Project1.Core.Helpers;
+using Project1.Core.Input;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
+using Project1.Core.Serialization;
+using Project1.Core.Towns.Constructions;
 using Project1.Framework;
 using Project1.Framework.Events;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Construction.Packets
 {
     [EnsureStaticCtorCall]
     static class PacketDesignateConstruction
     {
-        static readonly int p;
+        static readonly PacketId _pDesignate, _pRemoveExplicitly;
         static PacketDesignateConstruction()
         {
-            p = Registry.PacketHandlers.Register(Receive);
+            _pDesignate = Registry.PacketHandlers.Register(Receive);
+            _pRemoveExplicitly = Registry.PacketHandlers.Register(ReceiveRemoveExplicitly);
+            Registry.PlayerInputEventHooks.Register<PlayerCancelledConstructionEvent>(OnPlayerCancelledConstruction);
+
+        }
+
+        private static void ReceiveRemoveExplicitly(NetEndpoint endpoint, Packet packet)
+        {
+            var r = packet.PacketReader;
+            var map = endpoint.Map;
+            var selectionType = (SelectionType)r.ReadInt32();
+            //List<IntVec3> targets;
+            List<IntVec3> cells;
+            switch (selectionType)
+            {
+                case SelectionType.List:
+                    cells = r.ReadListIntVec3();
+                    //cells = targets.Select(t => (IntVec3)t.Global);
+                    break;
+
+                case SelectionType.Box:
+                    var a = r.ReadIntVec3();
+                    var b = r.ReadIntVec3();
+                    //targets = [.. new BoundingBox(a, b).ToListIntVec3().Select(v => new TargetArgs(map, v))];
+                    cells = new BoundingBox(a, b).ToListIntVec3();
+                    //targets = cells.Select(c => new TargetArgs(map, c)).ToList();
+                    break;
+
+                default:
+                    throw new InvalidOperationException();
+            }
+            if (map.Town.ConstructionsManager.RemoveNew(cells) && endpoint is Server server)
+                SendRemoveExplicitly(server, cells);
+            //List<TargetArgs> targets = selectionType switch
+            //{
+            //    SelectionType.List => r.ReadListTargets(),
+            //    SelectionType.Box =>
+            //    {
+            //    var a = r.ReadIntVec3()
+            //};
+            //    _ => throw new InvalidOperationException()
+            //};
+        }
+
+        private static void OnPlayerCancelledConstruction(PlayerCancelledConstructionEvent e)
+        {
+            var list = e.Targets;
+            SendRemoveExplicitly(Client.Instance, e.Targets);
+        }
+        static void SendRemoveExplicitly(NetEndpoint net, List<IntVec3> targets)
+        {
+            net.BeginPacketImmediate(_pRemoveExplicitly)
+                .Write((int)SelectionType.List)
+                .Write(targets);
+        }
+        static void SendRemoveExplicitly(NetEndpoint net, IntVec3 begin, IntVec3 end)
+        {
+
         }
         internal static void SendRemove(NetEndpoint net, ToolBlockBuild.Args a)
         {
@@ -22,7 +86,7 @@ namespace Project1.Core.Construction.Packets
         }
         static public void Send(NetEndpoint net, ToolBlockBuild.Args a, ConstructionDesignationArgs args)
         {
-            var w = net.BeginPacketImmediate(p);
+            var w = net.BeginPacketImmediate(_pDesignate);
             a.Write(w);
             if (!a.Removing)
             {

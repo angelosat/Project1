@@ -68,7 +68,7 @@ namespace Project1.Core.Towns
         public virtual void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam) { }
         public virtual void DrawUI(SpriteBatch sb, MapBase map, Camera cam) { }
 
-        internal virtual void UpdateQuickButtons() { }
+        internal virtual void UpdateOrderButtons() { }
 
         public virtual void Tick()
         {

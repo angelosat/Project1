@@ -11,7 +11,7 @@ namespace Project1.Framework
         static public IEnumerable<IntVec3> GetRadial(this IntVec3 center, int radius)
         {
             var r = Vector3.One * radius;
-            var box = new BoundingBox((Vector3)center - r, (Vector3)center + r).GetBoxIntVec3();
+            var box = new BoundingBox((Vector3)center - r, (Vector3)center + r).ToListIntVec3();
             box.Sort((a, b) =>
             {
                 float aa = a.LengthSquared();
@@ -353,7 +353,7 @@ namespace Project1.Framework
         {
             return box.Min.GetBox(box.Max);
         }
-        static public List<IntVec3> GetBoxIntVec3(this BoundingBox box)
+        static public List<IntVec3> ToListIntVec3(this BoundingBox box)
         {
             return ((IntVec3)box.Min).GetBox(box.Max);
         }
@@ -412,6 +412,7 @@ namespace Project1.Framework
             var boxHollow = boxfull.Except((origin + IntVec3.One).GetBox(target - IntVec3.One));
             return boxHollow;
         }
+        [Obsolete($"use {nameof(IntVec3Helper.GetBox)}")]
         static public List<IntVec3> GetBox(this IntVec3 begin, IntVec3 end)
         {
             var xmin = Math.Min(begin.X, end.X);
@@ -440,6 +441,7 @@ namespace Project1.Framework
             }
             return list;
         }
+        [Obsolete($"use {nameof(IntVec3Helper.GetBox)}")]
         static public IEnumerable<IntVec3> GetBoxLazy(this IntVec3 begin, IntVec3 end)
         {
             var xmin = Math.Min(begin.X, end.X);
@@ -465,6 +467,35 @@ namespace Project1.Framework
                 }
             }
         }
+        
+    }
 
+    static class IntVec3Helper
+    {
+        static public IEnumerable<IntVec3> GetBox(IntVec3 begin, IntVec3 end)
+        {
+            var xmin = Math.Min(begin.X, end.X);
+            var ymin = Math.Min(begin.Y, end.Y);
+            var zmin = Math.Min(begin.Z, end.Z);
+            var xmax = begin.X + end.X - xmin; // prefer? var xmax = Math.Max(begin.X, end.X);
+            var ymax = begin.Y + end.Y - ymin;
+            var zmax = begin.Z + end.Z - zmin;
+            var dx = xmax - xmin + 1;
+            var dy = ymax - ymin + 1;
+            var dz = zmax - zmin + 1;
+
+            var origin = new IntVec3(xmin, ymin, zmin);
+
+            for (int i = 0; i < dx; i++)
+            {
+                for (int j = 0; j < dy; j++)
+                {
+                    for (int k = 0; k < dz; k++)
+                    {
+                        yield return origin + new IntVec3(i, j, k);
+                    }
+                }
+            }
+        }
     }
 }

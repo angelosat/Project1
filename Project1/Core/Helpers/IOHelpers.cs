@@ -23,7 +23,7 @@ namespace Project1.Core.Helpers
         public static Def ReadDef(this IDataReader r) => Def.GetDef(r.ReadString());
         public static T TryReadDef<T>(this IDataReader r) where T : Def => r.ReadString() is string defName && !defName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<T>(defName) : null!;
         public static TargetArgs ReadTarget(this IDataReader r, MapBase map) => TargetArgs.Read(map, r);
-        public static IDataWriter Write(this IDataWriter w, List<EntityRefId> v)
+        public static IDataWriter Write(this IDataWriter w, ICollection<EntityRefId> v)
         {
             w.Write(v.Count);
             foreach (var i in v)

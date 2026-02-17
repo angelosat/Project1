@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Towns.Designations
 {
@@ -36,8 +37,6 @@ namespace Project1.Core.Towns.Designations
         GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();
         static DesignationManager()
         {
-            PacketDesignation.Init();
-
             Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Designations", ToggleGui, System.Windows.Forms.Keys.U);
 
             foreach (var d in Def.GetDefs<DesignationDef>())
@@ -51,7 +50,7 @@ namespace Project1.Core.Towns.Designations
         {
             var removed = this.Designations[des].Remove(target);
             if (removed)
-                this.UpdateQuickButtons();
+                this.UpdateOrderButtons();
             return removed;
         }
         internal bool RemoveDesignation(DesignationDef des, IntVec3 target)
@@ -105,7 +104,7 @@ namespace Project1.Core.Towns.Designations
                 throw new InvalidOperationException($"Cells designation invalid for {designation}");
             this.Add(designation, cells.Select(c => new TargetArgs(this.Map, c)), remove);
         }
-        internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool remove)
+        internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool isRemoval)
         {
             if (designation is null)
             {
@@ -118,13 +117,13 @@ namespace Project1.Core.Towns.Designations
                 var list = this.Designations[designation];
                 foreach (var pos in positions)
                 {
-                    if (remove && designation.IsManual)
+                    if (isRemoval && designation.IsManual)
                         list.Remove(pos);
                     else if (designation.IsValid(pos) || (pos.Type == TargetType.Position && this.Map.IsUndiscovered(pos.Global)))
                         list.Add(pos);
                 }
             }
-            this.UpdateQuickButtons();
+            this.UpdateOrderButtons();
         }
         public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
         {
@@ -214,13 +213,13 @@ namespace Project1.Core.Towns.Designations
         }
         private static void SetTool(DesignationDef d)
         {
-            ToolManager.SetTool(new ToolDigging((a, b, r) => PacketDesignation.Send(Client.Instance, r, a, b, d)) { DesignationDef = d });
+            ToolManager.SetTool(new ToolDigging((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, d)) { DesignationDef = d });
         }
         static void Cancel()
         {
-            ToolManager.SetTool(new ToolDigging((a, b, r) => PacketDesignation.Send(Client.Instance, r, a, b, null)));
+            ToolManager.SetTool(new ToolDigging((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, null)));
         }
-        internal override void UpdateQuickButtons()
+        internal override void UpdateOrderButtons()
         {
             if (this.Town.Net is Server)
                 return;
@@ -231,11 +230,13 @@ namespace Project1.Core.Towns.Designations
             var areTask = selectedTargets.Where(e => this.Designations.Values.Any(t => t.Contains(e)));// new TargetArgs(e))));
             foreach (var d in this.Designations) // need to handle construction designations differently because of multi-celled designations 
             {
+                if (!d.Key.IsManual)
+                    continue;
                 var selectedDesignations = d.Value.Intersect(selectedTargets);
                 if (selectedDesignations.Any())
-                    SelectionManager.AddButton(d.Key.IconRemove, remove, selectedDesignations);
+                    SelectionManager.AddOrderButton(d.Key.IconRemove, remove, selectedDesignations);
                 else
-                    SelectionManager.RemoveButton(d.Key.IconRemove);
+                    SelectionManager.RemoveOrderButton(d.Key.IconRemove);
             }
 
             var areNotTask = selectedTargets
@@ -245,19 +246,21 @@ namespace Project1.Core.Towns.Designations
             var splits = AllDesignationDefs.ToDictionary(d => d, d => areNotTask.FindAll(t => d.IsValid(t)));
             foreach (var s in AllDesignationDefs)
             {
-                if (!splits.TryGetValue(s, out var list) || !list.Any())
-                    SelectionManager.RemoveButton(s.IconAdd);
+                if (!s.IsManual)
+                    continue;
+                if (!splits.TryGetValue(s, out var list) || list.Count == 0)
+                    SelectionManager.RemoveOrderButton(s.IconAdd);
                 else
-                    SelectionManager.AddButton(s.IconAdd, targets => add(targets, s), list);
+                    SelectionManager.AddOrderButton(s.IconAdd, targets => add(targets, s), list);
             }
 
-            static void remove(IEnumerable<TargetArgs> targets)
+            void remove(IEnumerable<TargetArgs> targets)
             {
-                PacketDesignation.Send(Client.Instance, false, targets, null);
+                this.Town.Map.Events.Post(new PlayerDesignationEvent(null, targets, false));
             }
-            static void add(IEnumerable<TargetArgs> targets, DesignationDef des)
+            void add(IEnumerable<TargetArgs> targets, DesignationDef des)
             {
-                PacketDesignation.Send(Client.Instance, false, targets, des);
+                this.Town.Map.Events.Post(new PlayerDesignationEvent(des, targets, false));
             }
         }
         GroupBox UpdatePendingDesignationLabel(DesignationDef des)

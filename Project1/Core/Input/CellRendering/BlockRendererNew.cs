@@ -63,6 +63,10 @@ namespace Project1.Core.Input.CellRendering
             this.Validated = false;
             this.Slices.Clear();
         }
+        //internal void MarkDirty(IntVec3 position)
+        //{
+        //    this._dirtyZ.Add(position.Z);
+        //}
+        //HashSet<int> _dirtyZ = [];
     }
-
 }

@@ -427,7 +427,7 @@ namespace Project1.Core.Towns
         {
             foreach (var comp in this.TownComponents)
             {
-                comp.UpdateQuickButtons();
+                comp.UpdateOrderButtons();
                 comp.OnTargetSelected(info, target);
             }
         }

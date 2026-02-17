@@ -7,6 +7,7 @@ using System.Linq;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Core.Simulation;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.Entities
 {
@@ -47,7 +48,10 @@ namespace Project1.Core.Entities
         {
             return (from o in this._inner where netIds.Contains(o.Key) select o.Value);
         }
-
+        public IEnumerable<Entity> GetEntities(IEnumerable<EntityRefId> netIds)
+        {
+            return (from o in this._inner where netIds.Contains(o.Key) select o.Value);
+        }
         internal SaveTag Save(string tagName)
         {
             var entitiesList = new SaveTag(SaveTag.Types.List, "Registry", SaveTag.Types.Compound);

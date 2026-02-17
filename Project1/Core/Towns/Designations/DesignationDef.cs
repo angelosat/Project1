@@ -42,7 +42,7 @@ namespace Project1.Core.Towns.Designations
             this.IconRemove = this.IconAdd != null ? new QuickButton(this.IconAdd.Icon, null, "Cancel") { HoverText = $"Cancel {name}" }.AddOverlay(Icon.X) as QuickButton : null;
         }
         DesignationWorker _cachedWorker;
-        DesignationWorker Worker => _cachedWorker ??= (DesignationWorker)Activator.CreateInstance(this.WorkerClass);
+        public DesignationWorker Worker => _cachedWorker ??= (DesignationWorker)Activator.CreateInstance(this.WorkerClass);
 
         public bool IsValid(MapBase map, IntVec3 global) => this.IsValid(new TargetArgs(map, global));// this.Worker.IsValid(new TargetArgs(map, global));
         public bool IsValid(TargetArgs target) => this.Worker.IsValid(target);

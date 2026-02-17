@@ -98,12 +98,12 @@ namespace Project1.Core
             switch (t)
             {
                 case BlockBedEntity.Types.Citizen:
-                    SelectionManager.RemoveButton(ButtonUnsetVisitor);
+                    SelectionManager.RemoveOrderButton(ButtonUnsetVisitor);
                     SelectionManager.AddButton(ButtonSetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Visitor), (map, vector3));
                     return;
 
                 case BlockBedEntity.Types.Visitor:
-                    SelectionManager.RemoveButton(ButtonSetVisitor);
+                    SelectionManager.RemoveOrderButton(ButtonSetVisitor);
                     SelectionManager.AddButton(ButtonUnsetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Citizen), (map, vector3));
                     return;
 

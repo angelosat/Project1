@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Helpers;
+using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Serialization;
 using Project1.Framework;
@@ -11,14 +12,23 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Designations
 {
-    class PacketDesignation
+    [EnsureStaticCtorCall]
+    class PacketsDesignations
     {
-        enum SelectionType { List, Box }
         static int p;
-        static public void Init()
+        static PacketsDesignations()
         {
+
             p = Registry.PacketHandlers.Register(Receive);
+
+            Registry.PlayerInputEventHooks.Register<PlayerDesignationEvent>(OnPlayerDesignation);
         }
+
+        private static void OnPlayerDesignation(PlayerDesignationEvent e)
+        {
+            Send(Client.Instance, e.Removal, e.Targets, e.Designation);
+        }
+
         static public void Send(NetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
         {
             remove |= designation == null;
@@ -52,7 +62,7 @@ namespace Project1.Core.Towns.Designations
             {
                 var begin = r.ReadIntVec3();
                 var end = r.ReadIntVec3();
-                var positions = new BoundingBox(begin, end).GetBoxIntVec3();
+                var positions = new BoundingBox(begin, end).ToListIntVec3();
                 designation = remove ? null : r.ReadDef<DesignationDef>();
                 if (net is Server)
                     Send(net, remove, begin, end, designation);

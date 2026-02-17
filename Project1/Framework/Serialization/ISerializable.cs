@@ -21,6 +21,11 @@
         void Write(IDataWriter w);
         static abstract T Create(IDataReader r);
     }
+    public interface ISerializableNewNew<T> where T : ISerializableNewNew<T>
+    {
+        void Write(IDataWriter w);
+        static abstract T Create(IDataReader r);
+    }
     public interface ISerializable
     {
         void Write(IDataWriter w);

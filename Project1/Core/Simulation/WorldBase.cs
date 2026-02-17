@@ -114,6 +114,10 @@ namespace Project1.Core.Simulation
         {
             return this.EntityRegistry.GetEntities(netIds);
         }
+        public IEnumerable<Entity> GetEntities(IEnumerable<EntityRefId> netIds)
+        {
+            return this.EntityRegistry.GetEntities(netIds);
+        }
         public bool TryGetEntity(int netID, out Entity obj)
         {
             if(  this.EntityRegistry.TryGetValue(netID, out var entity))

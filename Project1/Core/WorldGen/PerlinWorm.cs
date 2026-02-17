@@ -36,7 +36,7 @@ namespace Project1.Core.WorldGen
       
         void Carve(MapBase map, BoundingBox bbox)
         {
-            foreach (var current in bbox.GetBoxIntVec3())
+            foreach (var current in bbox.ToListIntVec3())
             {
                 if (current.Z == 0)
                     continue;

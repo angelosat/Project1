@@ -4,6 +4,7 @@ using System.Linq;
 using Project1.Framework.Serialization;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using System;
 
 namespace Project1.Core.Serialization
 {
@@ -34,6 +35,7 @@ namespace Project1.Core.Serialization
         /// <param name="r"></param>
         /// <param name="net">pass the net peer to resolve targets initially</param>
         /// <returns></returns>
+        [Obsolete]
         public static List<TargetArgs> ReadListTargets(this IDataReader r, NetEndpoint net = null)
         {
             var count = r.ReadInt32();
@@ -41,6 +43,16 @@ namespace Project1.Core.Serialization
             for (int i = 0; i < count; i++)
             {
                 list.Add(TargetArgs.Read(net, r));
+            }
+            return list;
+        }
+        public static List<TargetArgs> ReadListTargets(this IDataReader r, MapBase map)
+        {
+            var count = r.ReadInt32();
+            var list = new List<TargetArgs>(count);
+            for (int i = 0; i < count; i++)
+            {
+                list.Add(TargetArgs.Read(map, r));
             }
             return list;
         }

@@ -3,7 +3,7 @@ using Project1.Core.Blocks;
 
 namespace Project1.Core.Towns.Designations
 {
-    abstract class DesignationWorker
+    public abstract class DesignationWorker
     {
         public abstract bool IsValid(TargetArgs target);
     }

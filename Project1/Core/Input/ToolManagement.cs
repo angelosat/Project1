@@ -1,24 +1,23 @@
-﻿using System;
-using System.Linq;
-using System.Windows.Forms;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Input;
-using Project1.Framework.Helpers;
 using Project1.Core.AI.Packets;
-using Project1.Core.Towns;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Graphics;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
-using Project1.Core.Graphics;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Input;
+using Project1.Framework.UI;
+using System;
+using System.Linq;
+using System.Windows.Forms;
 using Button = Project1.Framework.UI.Button;
-using Panel = Project1.Framework.UI.Panel;
 using Control = Project1.Framework.UI.Control;
-using Project1.Core.Entities;
+using Panel = Project1.Framework.UI.Panel;
 
 namespace Project1.Core.Input
 {
@@ -315,7 +314,8 @@ namespace Project1.Core.Input
                             if (a == b)
                                 SelectionManager.Select(this.Target);
                             else
-                                SelectionManager.Select(new BoundingBox(a, b).GetBox().Select(t => new TargetArgs(Ingame.GetMap(), t)));
+                                //SelectionManager.Select(new BoundingBox(a, b).GetBox().Select(t => new TargetArgs(Ingame.GetMap(), t)));
+                                SelectionManager.Select(Ingame.GetMap(), a, b);
                         }));
             }
             this.DblClicked = true;

@@ -23,7 +23,7 @@
     }
     public interface ISerializableNewNew<T> where T : ISerializableNewNew<T>
     {
-        void Write(IDataWriter w);
+        IDataWriter Write(IDataWriter w);
         static abstract T Create(IDataReader r);
     }
     public interface ISerializable

@@ -48,7 +48,7 @@ namespace Project1.Core.Networking
         public PlayerData Player;
         public System.Threading.Timer ResendTimer;
         public BinaryReader Reader; //create a reader the moment the packet is received. instead of creating reader in the client and server instances
-        public DataReader PacketReader;
+        public IDataReader PacketReader;
         protected Packet() { }
         public Packet(long id, PacketType type, int length, byte[] payload)
         {
@@ -86,7 +86,7 @@ namespace Project1.Core.Networking
                 Tick = tick,
                 Synced = synced,
                 Reader = r,
-                PacketReader = new(r)
+                PacketReader = new DataReader(r)
             };
         }
         static public Packet Create(PlayerData reciepient, PacketType type, byte[] data, ReliabilityType sendType = ReliabilityType.Unreliable)

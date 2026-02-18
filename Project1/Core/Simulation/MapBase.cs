@@ -1259,6 +1259,22 @@ namespace Project1.Core.Simulation
             this.Town.GetQuickButtons(register, global);
         }
 
+        internal List<TargetArgs> Select(IntVec3 begin, IntVec3 end)
+        {
+            var cube = IntVec3Helper.GetBox(begin, end);
+            List<TargetArgs> allTargets = [];
+            HashSet<IntVec3> excluded = [];
+            foreach (var cell in cube)
+                if (this.TryGetBlockEntity(cell, out var entity))
+                {
+                    allTargets.Add(new TargetArgs(entity));
+                    foreach (var c in entity.CellsOccupied)
+                        excluded.Add(c);
+                }
+            var cellTargets = cube.Except(excluded).Select(c => new TargetArgs(this, c));
+            return [.. allTargets.Union(cellTargets)];
+        }
+
         static MapBase()
         {
 

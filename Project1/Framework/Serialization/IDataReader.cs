@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace Project1.Framework.Serialization
 {
@@ -26,5 +26,6 @@ namespace Project1.Framework.Serialization
         internal string ReadASCII();
         internal Color ReadColor();
         internal List<Vector3> ReadListVector3();
+        internal T Read<T>() where T : ISerializableNewNew<T> => T.Create(this);
     }
 }

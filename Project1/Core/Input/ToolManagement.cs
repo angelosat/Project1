@@ -305,7 +305,6 @@ namespace Project1.Core.Input
                 if (this.Target.Type == TargetType.Entity)
                     SelectionManager.SelectAllVisible(this.Target.Object.Def);
 
-                // TODO: drawing multiple block selection textures is slow, need to optimize
                 else if (this.Target.Type == TargetType.Position)
                     ToolManager.SetTool(
                         new ToolSelectRectangleBlocks(this.Target.Global,
@@ -314,8 +313,7 @@ namespace Project1.Core.Input
                             if (a == b)
                                 SelectionManager.Select(this.Target);
                             else
-                                //SelectionManager.Select(new BoundingBox(a, b).GetBox().Select(t => new TargetArgs(Ingame.GetMap(), t)));
-                                SelectionManager.Select(Ingame.GetMap(), a, b);
+                                SelectionManager.Instance.Select(new SelectionIntent(a, b));
                         }));
             }
             this.DblClicked = true;

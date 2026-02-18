@@ -19,6 +19,7 @@ namespace Project1.Framework.Serialization
         internal IDataWriter Write(Vector3 v);
         internal IDataWriter Write(Vector2 v);
         internal IDataWriter Write(ISerializable s) { s.Write(this); return this; }
+        internal IDataWriter Write<T>(ISerializableNewNew<T> s) where T : ISerializableNewNew<T> => s.Write(this);
         internal IDataWriter Write(IntVec3 v);
         internal IDataWriter Write(IntVec3? v) { this.ww.Write(v); return this; }
         internal IDataWriter Write(IntVec2 v);

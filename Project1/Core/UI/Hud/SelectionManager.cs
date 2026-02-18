@@ -128,7 +128,7 @@ namespace Project1.Core.UI.Hud
         }
         void Unselect()
         {
-            this.SelectInternal(TargetArgs.Null);
+            this.SelectSingle(TargetArgs.Null);
         }
         public TargetArgs SelectedSource = TargetArgs.Null;
         ISelectable Selectable;
@@ -196,7 +196,6 @@ namespace Project1.Core.UI.Hud
             this.BoxOrderButtons.Anchor = new Vector2(0, 1);
             this.BoxOrderButtons.ControlsChangedAction = () => this.BoxOrderButtons.AlignLeftToRight();
 
-
             this.BoxInfo = new GroupBox() { Location = this.LabelName.BottomLeft };
             this.PanelInfo.AddControls(
                 this.LabelName,
@@ -256,7 +255,7 @@ namespace Project1.Core.UI.Hud
 
         public static void Select(TargetArgs target)
         {
-            Instance.SelectInternal(target);
+            Instance.SelectSingle(target);
         }
         public static void Select(MapBase map, BoundingBox box)
         {
@@ -322,13 +321,13 @@ namespace Project1.Core.UI.Hud
 
         private void SelectInternal(IEnumerable<TargetArgs> targets)
         {
-            this.SelectInternal(TargetArgs.Null);
+            this.SelectSingle(TargetArgs.Null);
             this.MultipleSelected = [.. FilterActors(targets).Where(t => t.Exists)];
             if (this.MultipleSelected.Count == 0)
                 return;
             if (this.MultipleSelected.Count == 1)
             {
-                this.SelectInternal(targets.First());
+                this.SelectSingle(targets.First());
                 return;
             }
 
@@ -338,7 +337,7 @@ namespace Project1.Core.UI.Hud
             this.PanelInfo.RemoveControls(this.BoxIcons);
             this.Show();
         }
-        private void SelectInternal(TargetArgs target)
+        private void SelectSingle(TargetArgs target)
         {
             Renderer.Invalidate();
 
@@ -360,7 +359,6 @@ namespace Project1.Core.UI.Hud
                     this.MultipleSelected.Add(target);
                     entity.GetSelectionInfo(this);
                     entity.GetQuickButtons(this);
-                    //this.InitInfoTabs(entity.GetTabs());
                     this.InitInfoTabs(entity.GetQuickButtons(), target);
                     entity.Map?.Town?.Select(target, this);
                     this.InitInfoTabs(entity.Map?.Town?.GetTabs(target));
@@ -370,30 +368,21 @@ namespace Project1.Core.UI.Hud
                     this.MultipleSelected.Clear();
                     this.MultipleSelected.Add(target);
                     var selectables = target.Map.Town.QuerySelectables(target);
-                    //if (selectables.Any()) // no need to call .any() because QuerySelectables internally returns the target itself as well, also any() call moves the enumerator??
-                    //{
-                        this.SelectedStack = selectables.GetEnumerator();
-                        this.CycleTargets();
-                        if (target.Map.IsUndiscovered(target.Global))
-                            this.LabelName.TextFunc = () => "Unknown block";
-                    //}
+                    this.SelectedStack = selectables.GetEnumerator();
+                    this.CycleTargets();
+                    if (target.Map.IsUndiscovered(target.Global))
+                        this.LabelName.TextFunc = () => "Unknown block";
                     break;
 
                 case TargetType.BlockEntity:
                     this.MultipleSelected.Clear();
                     this.MultipleSelected.Add(target);
-                    //this.SetName(target.BlockEntity.GetType().Name);
-
                     this.SetName(target.Name);
-                    this.Clear();
 
                     target.GetSelectionInfo(this);
                     target.GetQuickButtons(this);
                     this.InitInfoTabs(target.GetInfoTabs());
                     target.Map.Town.Select(target, this);
-
-                    //this.SelectedStack = new List<TargetArgs>() { target }.GetEnumerator();
-                    //this.CycleTargets();
                     break;
 
                 case TargetType.Null:
@@ -529,7 +518,7 @@ namespace Project1.Core.UI.Hud
         {
             /// move this to ongameevent?
             if (this.SelectedSource is not null && this.SelectedSource.Type == TargetType.Entity && this.SelectedSource.Object.IsDisposed)
-                this.SelectInternal(TargetArgs.Null);
+                this.SelectSingle(TargetArgs.Null);
 
             if (this.Selectable is null)
             {
@@ -541,7 +530,7 @@ namespace Project1.Core.UI.Hud
 
             /// do i really need this? i handle the blockschanged message anyway, and this causes problems for selecting undiscovered air blocks 
             if (!this.Selectable.Exists)
-                this.SelectInternal(TargetArgs.Null);
+                this.SelectSingle(TargetArgs.Null);
         }
         public void DrawWorld(MySpriteBatch sb, Camera camera)
         {
@@ -605,7 +594,7 @@ namespace Project1.Core.UI.Hud
         {
             if (!Instance.MultipleSelected.Any() && Instance.SelectedSource.Type == TargetType.Null)
                 return false;
-            Instance.SelectInternal(TargetArgs.Null);
+            Instance.SelectSingle(TargetArgs.Null);
             return true;
         }
 
@@ -682,23 +671,45 @@ namespace Project1.Core.UI.Hud
                 Instance.BoxOrderButtons.AddControls(button);
             button.LeftClickAction = () => Instance.MultipleSelectedAction(action);
         }
+        SelectionIntent CurrentSelection;
+        internal void Select(SelectionIntent selection)
+        {
+            this.CurrentSelection = selection;
+            Select(selection.ResolveTargets(Ingame.GetMap()));
+        }
         void UpdateOrderButtons()
         {
-            var selected = this.MultipleSelected;
+            var map = Ingame.GetMap(); // temp
+            var targets = this.CurrentSelection.ResolveTargets(map);
             foreach (var orderdef in AllOrderCommands.Value)
             {
-                var filteredTargets = selected.Where(s => orderdef.Worker.CanIssue(s)).ToList();
-                if (filteredTargets.Count > 0)
+                if (targets.Any(orderdef.Worker.CanIssue))
                 {
-                    var runtime = new OrderCommandRuntime(orderdef, filteredTargets);
+                    var runtime = new OrderCommandRuntime(orderdef);
                     var button = new QuickButton(new Icon(orderdef.Sprite), null, orderdef.LabelReadable)
                     {
-                        LeftClickAction = runtime.Issue
+                        LeftClickAction = () => runtime.Issue(this.CurrentSelection)
                     };
                     this.BoxOrderButtons.AddControls(button);
                 }
             }
         }
+        //void UpdateOrderButtons()
+        //{
+        //    var selected = this.MultipleSelected;
+        //    foreach (var orderdef in AllOrderCommands.Value)
+        //    {
+        //        if (selected.Any(orderdef.Worker.CanIssue))
+        //        {
+        //            var runtime = new OrderCommandRuntime(orderdef);
+        //            var button = new QuickButton(new Icon(orderdef.Sprite), null, orderdef.LabelReadable)
+        //            {
+        //                LeftClickAction = () => runtime.Issue(selected)
+        //            };
+        //            this.BoxOrderButtons.AddControls(button);
+        //        }
+        //    }
+        //}
         internal static void AddButton(IconButton button, Action<List<TargetArgs>> action, TargetArgs target)
         {
             if (Instance.ActionsAdded.TryGetValue(action, out List<TargetArgs> existing))

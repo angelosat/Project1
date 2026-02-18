@@ -1,15 +1,12 @@
 ﻿using Project1.Core.Screens;
-using System.Collections.Generic;
 
 namespace Project1.Core.Input.Orders
 {
-    internal record OrderCommandRuntime(OrderCommandDef Def, List<TargetArgs> Targets)
+    internal record OrderCommandRuntime(OrderCommandDef Def)
     {
-        //internal OrderCommandDef Def;
-        //internal List<TargetArgs> Targets = [];
-        internal void Issue()
+        internal void Issue(SelectionIntent selection)
         {
-            Ingame.Instance.Events.Post(new PlayerIssuedOrderCommandEvent(this.Def, this.Targets));
+            Ingame.Instance.Events.Post(new PlayerIssuedOrderCommandEvent(this.Def, selection));
         }
     }
 }

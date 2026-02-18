@@ -1,10 +1,10 @@
 ﻿using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Serialization;
 using Project1.Framework;
 using Project1.Framework.Events;
-using System.Collections.Generic;
-using System.Linq;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Input.Orders
 {
@@ -17,31 +17,31 @@ namespace Project1.Core.Input.Orders
             _pPlayerIssuedOrderCommand = Registry.PacketHandlers.Register(ReceivePlayerIssuedOrderCommand);
             Registry.PlayerInputEventHooks.Register<PlayerIssuedOrderCommandEvent>(OnPlayerIssuedOrderCommand);
         }
-
         private static void ReceivePlayerIssuedOrderCommand(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
             var def = r.ReadDef<OrderCommandDef>();
-            var targets = r.ReadListTargets(endpoint.Map);
-            def.Worker.Execute(targets);
+            var selection = r.Read<SelectionIntent>();
+            var map = endpoint.Map; // temp
+            def.Worker.Execute(map, selection);
             if(endpoint is Server server)
-                SendPlayerIssuedOrderCommand(server, def, targets);
+                SendPlayerIssuedOrderCommand(server, def, selection);
         }
-        private static void SendPlayerIssuedOrderCommand(NetEndpoint endpoint, OrderCommandDef def, List<TargetArgs> targets)
+        private static void SendPlayerIssuedOrderCommand(NetEndpoint endpoint, OrderCommandDef def, SelectionIntent selection)
         {
             endpoint.BeginPacketImmediate(_pPlayerIssuedOrderCommand)
                 .Write(def)
-                .Write(targets);
+                .Write(selection);
         }
 
         private static void OnPlayerIssuedOrderCommand(PlayerIssuedOrderCommandEvent e)
         {
-            //var net = Client.Instance;
-            var net = e.Targets.First().Map.Net;
+            var map = Ingame.GetMap(); // temp
+            var net = map.Net;
             if (net.IsClient)
-                SendPlayerIssuedOrderCommand(net, e.Def, e.Targets);
+                SendPlayerIssuedOrderCommand(net, e.Def, e.Selection);
             else
-                e.Def.Worker.Execute(e.Targets);
+                e.Def.Worker.Execute(map, e.Selection);
         }
     }
 }

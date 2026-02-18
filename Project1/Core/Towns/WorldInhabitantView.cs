@@ -174,15 +174,15 @@ namespace Project1.Core.Towns
         static Control GUI;
         internal void ShowGui()
         {
-            Control[] tabs = new[] 
-            {
+            Control[] tabs =
+            [
                 QuestsManager.ActorActiveQuestsGUI,
-            };
+            ];
             var gui = GUI ??= UIHelper.ToTabbedContainer(tabs).ToWindow().SetOnSelectedTargetChangedAction((c, t) =>
             {
-                if (t.Object is Actor actor && actor.IsTownMember)
+                if (t is Actor actor && actor.IsTownMember)
                     c.Hide();
-                else if (!(t.Object is Actor))
+                else if (t is not Entities.Actors.Actor)
                     c.Hide();
             });
             foreach (var t in tabs)

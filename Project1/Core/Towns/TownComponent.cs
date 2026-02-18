@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Graphics;
+using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
@@ -63,7 +64,7 @@ namespace Project1.Core.Towns
 
 
         public virtual IContextable QueryPosition(Vector3 global) { return null; }
-        public virtual ISelectable QuerySelectable(TargetArgs selected) { return null; }
+        public virtual ISelectable QuerySelectable(CellSelection selected) { return null; }
 
         public virtual void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam) { }
         public virtual void DrawUI(SpriteBatch sb, MapBase map, Camera cam) { }

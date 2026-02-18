@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Helpers;
 using Project1.Core.Simulation;
+using Project1.Core.UI;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using System.Collections.Generic;
@@ -15,6 +16,18 @@ namespace Project1.Core.Input
         readonly IntVec3 Begin, End;
         readonly ImmutableHashSet<EntityRefId> EntityIDs = [];
         readonly ImmutableHashSet<IntVec3> Cells = [];
+        public IEnumerable<ISelectable> Resolve(MapBase map)
+        {
+            if (this.Type == SelectionType.Null)
+                return [];
+            if (this.Type == SelectionType.List)
+                return this.Cells.Select(c => new CellSelection(map, c)).Cast<ISelectable>();
+            else if (this.Type == SelectionType.Box)
+                return IntVec3Helper.GetBox(this.Begin, this.End).Select(c => new CellSelection(map, c)).Cast<ISelectable>();
+            else if (this.Type == SelectionType.Entities)
+                return map.World.GetEntities(this.EntityIDs);
+            throw new UnreachableException();
+        }
         public IEnumerable<TargetArgs> ResolveTargets(MapBase map)
         {
             if (this.Type == SelectionType.Null)

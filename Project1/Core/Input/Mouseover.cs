@@ -31,7 +31,7 @@ namespace Project1.Core.Input
                 else if (value is TargetArgs)
                 {
                     var target = value as TargetArgs;
-                    if (target.Type == TargetType.Position)
+                    if (target.Type == TargetType.Cell)
                         this.TargetCell = target;
                     else if (target.Type == TargetType.Entity)
                         this.Target = target;

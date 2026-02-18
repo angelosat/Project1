@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
@@ -10,6 +9,7 @@ using Project1.Core.Screens;
 using Project1.Core.Serialization;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Digging;
+using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -19,8 +19,8 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Towns.Designations
 {
@@ -29,6 +29,8 @@ namespace Project1.Core.Towns.Designations
     {
         public override string Name => "Designation Manager";
         readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>> Designations;
+        readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<IntVec3>> CellDesignations;
+        readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<Entity>> EntityDesignations;
         public readonly Dictionary<DesignationDef, BlockRendererObservable> Renderers = [];
         static List<DesignationDef> designationDefs;
         static List<DesignationDef> AllDesignationDefs => designationDefs ??= [.. Def.GetDefs<DesignationDef>()];
@@ -61,11 +63,19 @@ namespace Project1.Core.Towns.Designations
         {
             var desDefs = Def.GetDefs<DesignationDef>();
 
+            var cellDesignationDefs = desDefs.Where(d => d.TargetType == TargetType.Cell);
+            var entityDesignationDefs = desDefs.Except(cellDesignationDefs);
+            this.CellDesignations = new(cellDesignationDefs.ToDictionary(d => d, d => new ObservableHashSet<IntVec3>()));
+            this.EntityDesignations = new(entityDesignationDefs.ToDictionary(d => d, d => new ObservableHashSet<Entity>()));
+
             this.Designations = new ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>>(desDefs.ToDictionary(d => d, d => new ObservableHashSet<TargetArgs>()));
 
             foreach (var d in desDefs)
-                if (d.AffectsBlocks)
-                    this.Renderers.Add(d, new(this.Designations[d]));
+            {
+                if (d.TargetType == TargetType.Cell)
+                    //this.Renderers.Add(d, new(this.Designations[d]));
+                    this.Renderers.Add(d, new(this.CellDesignations[d]));
+            }
 
             foreach (var r in this.Designations.Values)
                 r.CollectionChanged += this.R_CollectionChanged;
@@ -81,7 +91,7 @@ namespace Project1.Core.Towns.Designations
             var removed = e.OldItems?.Cast<TargetArgs>() ?? [];
             foreach (var target in removed)
             {
-                if (target.Type == TargetType.Position)
+                if (target.Type == TargetType.Cell)
                 {
                     var pos = target.Global;
                     if (SelectionManager.SingleSelectedCell == pos)
@@ -91,18 +101,67 @@ namespace Project1.Core.Towns.Designations
 
             var added = e.NewItems?.Cast<TargetArgs>() ?? Enumerable.Empty<TargetArgs>();
             foreach (var target in added)
-                if(target.Type == TargetType.Position)
+                if(target.Type == TargetType.Cell)
                 {
                     var pos = target.Global;
                     if (SelectionManager.SingleSelectedCell == pos)
                         SelectionManager.AddInfoNew(this.UpdatePendingDesignationLabel(this.Designations.First(d => d.Value.Contains(target)).Key));
                 }
         }
-        internal void Add(DesignationDef designation, IEnumerable<IntVec3> cells, bool remove)
+        internal void Remove(IEnumerable<ISelectable> targets)
         {
-            if (!designation.AffectsBlocks)
+            foreach (var item in targets)
+            {
+                if (item is CellSelection cell)
+                    foreach (var l in this.CellDesignations.Where(d => d.Key.IsManual))
+                        l.Value.Remove(item.Global);
+                else if (item is Entity entity)
+                    foreach (var l in this.EntityDesignations.Where(d => d.Key.IsManual))
+                        l.Value.Remove(entity);
+            }
+        }
+        internal void Add(DesignationDef designation, IEnumerable<ISelectable> cells, bool isRemoval)
+        {
+            ArgumentNullException.ThrowIfNull(designation, $"Use {this.Remove} for generic designation removal instead of passing a null desigation def");
+            switch (designation.TargetType)
+            {
+                case TargetType.Cell:
+                    foreach (var cell in cells.OfType<CellSelection>())
+                    {
+                        if (isRemoval && designation.IsManual)
+                            this.CellDesignations[designation].Remove(cell.Global);
+                        else if (designation.Worker.IsValid(cell) || this.Map.IsUndiscovered(cell.Global))
+                            this.CellDesignations[designation].Add(cell.Global);
+                    }
+                    break;
+
+                case TargetType.Entity:
+                    foreach (var entity in cells.OfType<Entity>())
+                    {
+                        if (isRemoval && designation.IsManual)
+                            this.EntityDesignations[designation].Remove(entity);
+                        else if (designation.Worker.IsValid(entity))
+                            this.EntityDesignations[designation].Add(entity);
+                    }
+                    break;
+                default:
+                    throw new UnreachableException();
+            }
+        }
+        internal void Add(DesignationDef designation, IEnumerable<CellSelection> cells, bool isRemoval)
+        {
+
+        }
+        internal void Add(DesignationDef designation, IEnumerable<Entity> cells, bool isRemoval)
+        {
+
+        }
+
+        internal void Add(DesignationDef designation, IEnumerable<IntVec3> cells, bool isRemoval)
+        {
+            if (designation.TargetType != TargetType.Cell)
                 throw new InvalidOperationException($"Cells designation invalid for {designation}");
-            this.Add(designation, cells.Select(c => new TargetArgs(this.Map, c)), remove);
+            this.Add(designation, cells.Select(c => new TargetArgs(this.Map, c)), isRemoval);
         }
         internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool isRemoval)
         {
@@ -119,24 +178,26 @@ namespace Project1.Core.Towns.Designations
                 {
                     if (isRemoval && designation.IsManual)
                         list.Remove(pos);
-                    else if (designation.IsValid(pos) || (pos.Type == TargetType.Position && this.Map.IsUndiscovered(pos.Global)))
+                    else if (designation.IsValid(pos) || (pos.Type == TargetType.Cell && this.Map.IsUndiscovered(pos.Global)))
                         list.Add(pos);
                 }
             }
             this.UpdateOrderButtons();
         }
-        public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
-        {
-            foreach (var r in this.Renderers)
-            {
-                if (!r.Key.IsManual)
-                    continue;
-                r.Value.DrawBlocks(map, cam);
-            }
-        }
+        
         public DesignationDef GetDesignation(TargetArgs global)
         {
             return this.Designations.FirstOrDefault(d => d.Value.Contains(global)).Key; // will this return null if no designation?
+        }
+        internal bool IsDesignation(ISelectable target)
+        {
+            return target switch
+            {
+                CellSelection => this.CellDesignations.Values.Any(v => v.Contains(target.Global)),
+                Entity => this.EntityDesignations.Values.Any(v => v.Contains(target)),
+                _ => throw new UnreachableException()
+            };
+            //return this.Designations.Values.Any(v => v.Contains(target));
         }
         internal bool IsDesignation(TargetArgs target)
         {
@@ -221,48 +282,100 @@ namespace Project1.Core.Towns.Designations
         }
         internal override void UpdateOrderButtons()
         {
-            if (this.Town.Net is Server)
-                return;
-            var selectedTargets = SelectionManager.Selected;
-            var fromblockentities = selectedTargets.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => b.OriginGlobal.At(this.Town.Map));// new TargetArgs(b.OriginGlobal));
-            selectedTargets = selectedTargets.Concat(fromblockentities).Distinct();
+            return;
+            //if (this.Town.Net is Server)
+            //    return;
+            //var selectedCells = SelectionManager.Instance.CurrentSelections.OfType<CellSelection>();
+            //var selectedEntities = SelectionManager.Instance.CurrentSelections.OfType<Entity>();
+            //var selectedBlockEntities = SelectionManager.Instance.CurrentSelections.OfType<BlockEntity>();
+            ////if (!selectedCells.Any())
+            ////    return;
+            ////var fromblockentities = selected.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => b.OriginGlobal.At(this.Town.Map));// new TargetArgs(b.OriginGlobal));
+            ////var selectedBlockEntities = selected.OfType<BlockEntity>();
+            //var fromblockentities = selectedCells.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => this.Town.Map.Select(b.OriginGlobal));
+            //var selectedCells = selectedCells.Union(fromblockentities);
+            //var vecs = selectedCells.Select(c => c.Global);
+            //var areExisting = selectedCells.Where(e => this.Designations.Values.Any(t => t.Contains(e)));// new TargetArgs(e))));
 
-            var areTask = selectedTargets.Where(e => this.Designations.Values.Any(t => t.Contains(e)));// new TargetArgs(e))));
-            foreach (var d in this.Designations) // need to handle construction designations differently because of multi-celled designations 
-            {
-                if (!d.Key.IsManual)
-                    continue;
-                var selectedDesignations = d.Value.Intersect(selectedTargets);
-                if (selectedDesignations.Any())
-                    SelectionManager.AddOrderButton(d.Key.IconRemove, remove, selectedDesignations);
-                else
-                    SelectionManager.RemoveOrderButton(d.Key.IconRemove);
-            }
+            //foreach (var (def, list) in this.Designations) // need to handle construction designations differently because of multi-celled designations 
+            //{
+            //    if (!def.IsManual)
+            //        continue;
+            //    var existingDesignations = list.Intersect(selectedCells);
+            //    if (existingDesignations.Any())
+            //        SelectionManager.AddOrderButton(def.IconRemove, remove, existingDesignations);
+            //    else
+            //        SelectionManager.RemoveOrderButton(def.IconRemove);
+            //}
 
-            var areNotTask = selectedTargets
-                .Except(areTask)
-                .Where(t => AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
+            //var availableDesignations = selectedCells
+            //    .Except(areExisting)
+            //    .Where(t => AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
 
-            var splits = AllDesignationDefs.ToDictionary(d => d, d => areNotTask.FindAll(t => d.IsValid(t)));
-            foreach (var s in AllDesignationDefs)
-            {
-                if (!s.IsManual)
-                    continue;
-                if (!splits.TryGetValue(s, out var list) || list.Count == 0)
-                    SelectionManager.RemoveOrderButton(s.IconAdd);
-                else
-                    SelectionManager.AddOrderButton(s.IconAdd, targets => add(targets, s), list);
-            }
+            //var splits = AllDesignationDefs.ToDictionary(d => d, d => availableDesignations.FindAll(t => d.IsValid(t)));
+            //foreach (var s in AllDesignationDefs)
+            //{
+            //    if (!s.IsManual)
+            //        continue;
+            //    if (!splits.TryGetValue(s, out var list) || list.Count == 0)
+            //        SelectionManager.RemoveOrderButton(s.IconAdd);
+            //    else
+            //        SelectionManager.AddOrderButton(s.IconAdd, targets => add(targets, s), list);
+            //}
 
-            void remove(IEnumerable<TargetArgs> targets)
-            {
-                this.Town.Map.Events.Post(new PlayerDesignationEvent(null, targets, false));
-            }
-            void add(IEnumerable<TargetArgs> targets, DesignationDef des)
-            {
-                this.Town.Map.Events.Post(new PlayerDesignationEvent(des, targets, false));
-            }
+            //void remove(IEnumerable<ISelectable> targets)
+            //{
+            //    this.Town.Map.Events.Post(new PlayerDesignationEvent(null, targets, false));
+            //}
+            //void add(IEnumerable<ISelectable> targets, DesignationDef des)
+            //{
+            //    this.Town.Map.Events.Post(new PlayerDesignationEvent(des, targets, false));
+            //}
         }
+        //internal override void UpdateOrderButtons()
+        //{
+        //    if (this.Town.Net is Server)
+        //        return;
+        //    var selectedTargets = SelectionManager.Selected;
+        //    var fromblockentities = selectedTargets.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => b.OriginGlobal.At(this.Town.Map));// new TargetArgs(b.OriginGlobal));
+        //    selectedTargets = selectedTargets.Concat(fromblockentities).Distinct();
+
+        //    var areTask = selectedTargets.Where(e => this.Designations.Values.Any(t => t.Contains(e)));// new TargetArgs(e))));
+        //    foreach (var d in this.Designations) // need to handle construction designations differently because of multi-celled designations 
+        //    {
+        //        if (!d.Key.IsManual)
+        //            continue;
+        //        var selectedDesignations = d.Value.Intersect(selectedTargets);
+        //        if (selectedDesignations.Any())
+        //            SelectionManager.AddOrderButton(d.Key.IconRemove, remove, selectedDesignations);
+        //        else
+        //            SelectionManager.RemoveOrderButton(d.Key.IconRemove);
+        //    }
+
+        //    var areNotTask = selectedTargets
+        //        .Except(areTask)
+        //        .Where(t => AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
+
+        //    var splits = AllDesignationDefs.ToDictionary(d => d, d => areNotTask.FindAll(t => d.IsValid(t)));
+        //    foreach (var s in AllDesignationDefs)
+        //    {
+        //        if (!s.IsManual)
+        //            continue;
+        //        if (!splits.TryGetValue(s, out var list) || list.Count == 0)
+        //            SelectionManager.RemoveOrderButton(s.IconAdd);
+        //        else
+        //            SelectionManager.AddOrderButton(s.IconAdd, targets => add(targets, s), list);
+        //    }
+
+        //    void remove(IEnumerable<TargetArgs> targets)
+        //    {
+        //        this.Town.Map.Events.Post(new PlayerDesignationEvent(null, targets, false));
+        //    }
+        //    void add(IEnumerable<TargetArgs> targets, DesignationDef des)
+        //    {
+        //        this.Town.Map.Events.Post(new PlayerDesignationEvent(des, targets, false));
+        //    }
+        //}
         GroupBox UpdatePendingDesignationLabel(DesignationDef des)
         {
             this.PendingDesignationLabel.ClearControls();
@@ -276,15 +389,24 @@ namespace Project1.Core.Towns.Designations
         }
         public override void DrawUI(SpriteBatch sb, MapBase map, Camera cam)
         {
-            foreach(var entityDes in this.Designations)
+            foreach(var entityDes in this.EntityDesignations)
             {
-                if (entityDes.Key.AffectsBlocks)
+                if (!entityDes.Key.IsManual)
                     continue;
-                foreach(var entity in entityDes.Value)
+                foreach (var entity in entityDes.Value)
                 {
                     var icon = entityDes.Key.IconAdd.Icon;
                     icon.DrawFloating(sb, cam, entity);
                 }
+            }
+        }
+        public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
+        {
+            foreach (var r in this.Renderers)
+            {
+                if (!r.Key.IsManual)
+                    continue;
+                r.Value.DrawBlocks(map, cam);
             }
         }
     }

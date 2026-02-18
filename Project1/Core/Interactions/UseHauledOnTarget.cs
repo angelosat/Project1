@@ -34,7 +34,7 @@ namespace Project1.Core.Interactions
             this.CachedAnimation.FadeOutAndRemove();
             switch (target.Type)
             {
-                case TargetType.Position:
+                case TargetType.Cell:
                     actor.Map.GetBlock(target.Global).TryConsume(actor, hauledObj, target.Global, this.Amount == -1 ? hauledObj.StackSize : this.Amount);
                     actor.CurrentPlan?.AddPlacedObject(hauledObj);
                     break;

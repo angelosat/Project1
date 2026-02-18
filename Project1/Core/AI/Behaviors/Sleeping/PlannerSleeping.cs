@@ -1,13 +1,13 @@
-﻿using Project1.Core.Needs;
+﻿using Project1.Core.AI.Reservations;
+using Project1.Core.Blocks;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Needs;
 using Project1.Core.Rooms;
 using Project1.Core.Towns;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Rooms;
+using Project1.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework;
-using Project1.Core.AI.Reservations;
 
 namespace Project1.Core.AI.Behaviors.Sleeping
 {

@@ -2,6 +2,7 @@
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
+using Project1.Core.Input;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Zones;
@@ -187,9 +188,11 @@ namespace Project1.Core.Plants
                 });
                 win.SetOnSelectedTargetChangedAction(t =>
                 {
-                    if (t.Type != TargetType.Position)
+                    //if (t.Type != TargetType.Cell)
+                    //    return;
+                    if (t is not CellSelection cell)
                         return;
-                    if (t.Map.Town.ZoneManager.GetZoneAt<GrowingZone>(t.Global) is not GrowingZone gz)
+                    if (cell.Map.Town.ZoneManager.GetZoneAt<GrowingZone>(cell.Global) is not GrowingZone gz)
                         return;
                     win.GetData(gz);
                 });

@@ -20,7 +20,7 @@ namespace Project1.Core.UI
             this.Validate(true);
             return this;
         }
-        internal override void OnSelectedTargetChanged(TargetArgs target)
+        internal override void OnSelectedTargetChanged(ISelectable target)
         {
             this.Refresh(target);
             base.OnSelectedTargetChanged(target);   

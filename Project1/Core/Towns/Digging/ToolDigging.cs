@@ -44,7 +44,7 @@ namespace Project1.Core.Towns.Digging
         }
         public override void UpdateRemote(TargetArgs target)
         {
-            if(target.Type == TargetType.Position)
+            if(target.Type == TargetType.Cell)
             this.End = target.Global;
         }
         internal override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera camera)

@@ -124,7 +124,7 @@ namespace Project1.Core.Input
             /// VERY HACKY
             /// it's to not create a new mouseover while hovering withing the same cell (the cell global remains the same but the precise and face vectors change while moving cursor around block)
             /// TODO tidy up
-            if (global != _LastMouseoverBlockGlobal || (Instance.Mouseover.Object is TargetArgs t && t.Type != TargetType.Position)) // very hacky
+            if (global != _LastMouseoverBlockGlobal || (Instance.Mouseover.Object is TargetArgs t && t.Type != TargetType.Cell)) // very hacky
                 Instance.MouseoverNext.Object = target;
             else
                 Instance.MouseoverNext.Object = Instance.Mouseover.Object;

@@ -26,7 +26,8 @@ namespace Project1.Core.Towns.Designations
 
         private static void OnPlayerDesignation(PlayerDesignationEvent e)
         {
-            Send(Client.Instance, e.Removal, e.Targets, e.Designation);
+            throw new NotImplementedException();
+            //Send(Client.Instance, e.Removal, e.Targets, e.Designation);
         }
 
         static public void Send(NetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)

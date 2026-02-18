@@ -1,4 +1,6 @@
-﻿using Project1.Core.UI.Hud;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Simulation;
+using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,8 @@ namespace Project1.Core.UI
         IEnumerable<Control> GetSelectionDetails();
         void GetQuickButtons(SelectionManager panel);
         bool Exists { get; }
+        Vector3 Global { get; }
+        MapBase Map { get; }
         void TabGetter(Action<string, Action> getter);
         IEnumerable<(string Label, Type GuiType)> GetTabs() { yield break; }
     }

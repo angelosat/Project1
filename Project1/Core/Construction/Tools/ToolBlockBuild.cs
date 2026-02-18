@@ -55,7 +55,7 @@ namespace Project1.Core.Construction.Tools
                 return Messages.Default;
             if (this.Target == null)
                 return Messages.Default;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return Messages.Default;
             this.Replacing = IsReplacing();
             var pos = this.Replacing ? this.Target.Global : this.Target.FaceGlobal;

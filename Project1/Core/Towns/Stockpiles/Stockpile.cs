@@ -210,7 +210,7 @@ namespace Project1.Core.Towns.Stockpiles
 
             switch (target.Type)
             {
-                case TargetType.Position:
+                case TargetType.Cell:
 
                     break;
 

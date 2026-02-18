@@ -119,7 +119,7 @@ namespace Project1.Core.UI
             var map = e.Map;
             var cells = e.Positions;
             if(Engine.Map == map)
-            if (Instance.Object is TargetArgs target && target.Type == TargetType.Position && cells.Contains((IntVec3)target.Global))
+            if (Instance.Object is TargetArgs target && target.Type == TargetType.Cell && cells.Contains((IntVec3)target.Global))
                 Instance.Reset();
         }
     }

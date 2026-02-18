@@ -15,7 +15,7 @@ namespace Project1.Core.Towns.UI
         readonly GroupBox FrameContainer, Frame;
         readonly PictureBox Sprite;
         readonly Label Label;
-        readonly GameObject Npc;
+        readonly Actor Npc;
 
         public UINpcFrame(Actor actor)
         {
@@ -46,9 +46,11 @@ namespace Project1.Core.Towns.UI
             this.LeftClickAction = () =>
             {
                 if (InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
-                    SelectionManager.AddToSelection(new TargetArgs(actor));
+                    //SelectionManager.AddToSelection(new TargetArgs(actor));
+                    SelectionManager.AddToSelection(actor);
                 else
-                    SelectionManager.Select(new TargetArgs(actor));
+                    //SelectionManager.Select(new TargetArgs(actor));
+                    SelectionManager.Select(actor);
             };
             this.Label = new Label()
             {

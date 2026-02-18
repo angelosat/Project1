@@ -129,7 +129,7 @@ namespace Project1.Core.Input
         internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, PlayerData player)
         {
             var targetArgs = player.Target;
-            if (targetArgs.Type != TargetType.Position)
+            if (targetArgs.Type != TargetType.Cell)
                 return;
             var atlastoken = this.Block.GetDefault();
             var global = targetArgs.FaceGlobal;

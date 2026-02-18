@@ -41,6 +41,9 @@ namespace Project1.Core.Towns.Zones
         protected bool _dirty = true;
         public IntVec3 this[int index] => this.Cells[index];
         public bool IsEmpty => this.Cells.Count == 0;
+
+        public Vector3 Global => this.Cells.First();
+
         protected Zone()
         {
             this.Cells.Color = GetRandomColor();

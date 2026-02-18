@@ -1,54 +1,66 @@
-﻿using Project1.Core.Plants;
-using Project1.Core.Blocks;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Input;
+using Project1.Core.Plants;
+using Project1.Core.UI;
 
 namespace Project1.Core.Towns.Designations
 {
     public abstract class DesignationWorker
     {
-        public abstract bool IsValid(TargetArgs target);
+        internal abstract bool IsValid(ISelectable target);
     }
-    
-    class DesignationWorkerDeconstruct : DesignationWorker
+    public abstract class CellDesignationWorker : DesignationWorker
     {
-        public override bool IsValid(TargetArgs target)
+        internal override bool IsValid(ISelectable target) => target is CellSelection cell && this.IsValid(cell);
+        public abstract bool IsValid(CellSelection cell);
+    }
+    public abstract class EntityDesignationWorker : DesignationWorker
+    {
+        internal override bool IsValid(ISelectable target) => target is Entity entity && this.IsValid(entity);
+        public abstract bool IsValid(Entity entity);
+    }
+    class DesignationWorkerDeconstruct : CellDesignationWorker
+    {
+        public override bool IsValid(CellSelection cell)
         {
-            return target.Block?.IsDeconstructible ?? false;
+            return cell.Block.IsDeconstructible;
         }
     }
-    class DesignationWorkerConstruct : DesignationWorker
+    class DesignationWorkerConstruct : CellDesignationWorker
     {
-        public override bool IsValid(TargetArgs target)
+        public override bool IsValid(CellSelection cell)
         {
-            return target.Block is BlockAir;
+            return cell.Block is BlockAir;
         }
     }
-    class DesignationWorkerMine : DesignationWorker
+    class DesignationWorkerMine : CellDesignationWorker
     {
-        public override bool IsValid(TargetArgs target)
+        public override bool IsValid(CellSelection cell)
         {
-            return target.Block?.IsMinable ?? false;
+            return cell.Block.IsMinable;
         }
     }
-    class DesignationWorkerSwitch : DesignationWorker
+    class DesignationWorkerSwitch : CellDesignationWorker
     {
-        public override bool IsValid(TargetArgs target)
+        public override bool IsValid(CellSelection cell)
         {
-            return target.BlockEntityOld?.HasComp<BlockEntityCompSwitchable>() ?? false;
+            return cell.BlockEntity.HasComp<BlockEntityCompSwitchable>();
         }
     }
 
-    class DesignationWorkerChop : DesignationWorker
+    class DesignationWorkerChop : EntityDesignationWorker
     {
-        public override bool IsValid(TargetArgs target)
+        public override bool IsValid(Entity entity)
         {
-            return target.Object?.GetComponent<PlantComponent>()?.Species.ChoppingProduct != null;
+            return entity.GetComponent<PlantComponent>()?.Species.ChoppingProduct != null;
         }
     }
-    class DesignationWorkerHarvest : DesignationWorker
+    class DesignationWorkerHarvest : EntityDesignationWorker
     {
-        public override bool IsValid(TargetArgs target)
+        public override bool IsValid(Entity entity)
         {
-            return target.GetEntity<Plant>()?.IsHarvestable ?? false;
+            return entity.GetComponent<PlantComponent>()?.IsHarvestable ?? false;
         }
     }
 }

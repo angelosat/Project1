@@ -448,7 +448,7 @@ namespace Project1.Core.Networking
        
         private void UnmergePackets(Packet packet, long maxBytes = -1)
         {
-            var r = packet.PacketReader;
+            var r = packet.PacketReader as DataReader;
             var lastPos = r.Position;
             var endPos = maxBytes == -1 ? r.Length : lastPos + maxBytes;
             var packetsHandled = 0;

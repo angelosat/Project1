@@ -534,7 +534,7 @@ namespace Project1.Core.Networking
                     Instance.SyncChild(entity, target.Slot.Owner, target.Slot.ID);
                     break;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     this.Map.World.Register(entity, immediate: true);
                     this.Map.Spawn(entity, target.Global, Vector3.Zero, immediate: true);
                     break;
@@ -717,7 +717,7 @@ namespace Project1.Core.Networking
         private static void UnmergePackets(Packet packet)
         {
             var player = packet.Player;
-            var r = packet.PacketReader;
+            var r = packet.PacketReader as DataReader;
             while (r.Position < r.Length)
             {
                 var typeID = r.ReadInt32();

@@ -121,8 +121,8 @@ namespace Project1.Core.Rooms
 
         public int ID;
         public int OwnerRef = -1;
-        public HashSet<FurnitureDef> Furnitures = new();
-        public MapBase Map;
+        public HashSet<FurnitureDef> Furnitures = [];
+        public MapBase Map { get; set; }
         private int workplaceID =-1;
         private Workplace workplace;
         public Workplace Workplace
@@ -338,6 +338,9 @@ namespace Project1.Core.Rooms
             get => GetOwner();
             set => this.OwnerRef = value?.RefId ?? -1;
         }
+
+        public Vector3 Global => this.Cells.First();
+
 
         public Actor GetOwner()
         {

@@ -106,13 +106,13 @@ namespace Project1.Core.Input
             Ingame.Instance.Events.Post(new PlayerChangedSpeedEvent(nextSpeed));
         }
 
-        private void SelectEntity(TargetArgs target)
+        private void ClickTarget(TargetArgs target)
         {
             if (InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
                 SelectionManager.AddToSelection(target);
             else
             {
-                if(target.Type == TargetType.Position)
+                if(target.Type == TargetType.Cell)
                 {
                     if (target.Map.TryGetBlockEntity(target.Global, out var blockEntity))
                     {
@@ -250,7 +250,7 @@ namespace Project1.Core.Input
             }
             if (!e.Handled && this.LeftPressed)
                 if (this.Target.Type != TargetType.Null)
-                    this.SelectEntity(this.Target);
+                    this.ClickTarget(this.Target);
             this.Origin = null;
             this.SelectionRectangleOrigin = null;
             this.LeftPressed = false;
@@ -305,15 +305,18 @@ namespace Project1.Core.Input
                 if (this.Target.Type == TargetType.Entity)
                     SelectionManager.SelectAllVisible(this.Target.Object.Def);
 
-                else if (this.Target.Type == TargetType.Position)
+                else if (this.Target.Type == TargetType.Cell)
                     ToolManager.SetTool(
                         new ToolSelectRectangleBlocks(this.Target.Global,
                         (a, b, r) =>
                         {
-                            if (a == b)
-                                SelectionManager.Select(this.Target);
-                            else
-                                SelectionManager.Instance.Select(new SelectionIntent(a, b));
+                            //if (a == b)
+                            //    SelectionManager.Select(this.Target);
+                            //else
+                            //{
+                                Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(a, b));
+                                //SelectionManager.Instance.Select(new SelectionIntent(a, b));
+                            //}
                         }));
             }
             this.DblClicked = true;
@@ -358,7 +361,7 @@ namespace Project1.Core.Input
         internal override void DrawAfterWorld(MySpriteBatch sb, MapBase map)
         {
             var cam = map.Camera;
-            if(this.Target is TargetArgs tar && tar.Type == TargetType.Position)
+            if(this.Target is TargetArgs tar && tar.Type == TargetType.Cell)
                 cam.DrawBlockMouseover(sb, map, tar, Color.White);
             if (this.Target is null || this.Target.Type == TargetType.Null)
                 return;

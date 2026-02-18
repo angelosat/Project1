@@ -404,8 +404,8 @@ namespace Project1.Framework.UI
         }
         Texture2D _BackgroundTexture;
 
-        public Action<TargetArgs> OnSelectedTargetChangedAction;
-        internal virtual void OnSelectedTargetChanged(TargetArgs target)
+        public Action<ISelectable> OnSelectedTargetChangedAction;
+        internal virtual void OnSelectedTargetChanged(ISelectable target)
         {
             this.OnSelectedTargetChangedAction?.Invoke(target);
             foreach (var c in this.Controls.ToArray())
@@ -413,12 +413,12 @@ namespace Project1.Framework.UI
                 c.OnSelectedTargetChanged(target);
             }
         }
-        public Control SetOnSelectedTargetChangedAction(Action<Control, TargetArgs> action)
+        public Control SetOnSelectedTargetChangedAction(Action<Control, ISelectable> action)
         {
             this.OnSelectedTargetChangedAction = (t) => action(this, t);
             return this;
         }
-        public Control SetOnSelectedTargetChangedAction(Action<TargetArgs> action)
+        public Control SetOnSelectedTargetChangedAction(Action<ISelectable> action)
         {
             this.OnSelectedTargetChangedAction = action;
             return this;

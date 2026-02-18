@@ -14,6 +14,7 @@ using Project1.Core.UI.Hud;
 using Project1.Core.Components;
 using Project1.Framework.Events;
 using Project1.Core.Networking;
+using Project1.Core.UI;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -183,22 +184,23 @@ namespace Project1.Core.Entities.Actors
 
         public override string Name { get; } = "Npc";
 
-        static void Command(List<TargetArgs> actors)
+        static void Command(List<ISelectable> actors)
         {
-            ToolManager.SetTool(new ToolCommandNpc(actors.Select(t=>t.Object).ToList()));
+            //ToolManager.SetTool(new ToolCommandNpc(actors.Select(t=>t.Object).ToList()));
+            ToolManager.SetTool(new ToolCommandNpc([.. actors.Cast<Actor>()]));
         }
-        static void Control(List<TargetArgs> actors)
+        static void Control(List<ISelectable> actors)
         {
-            var actor = actors.First().Object as Actor;
+            var actor = actors.OfType<Actor>().First();
             if (actor.IsTownMember)
                 PacketControlNpc.Send(Client.Instance, Client.Instance.GetPlayer().ID, actor.RefId);
         }
-        private void ToggleCitizenship(List<TargetArgs> actors)
+        private void ToggleCitizenship(List<ISelectable> actors)
         {
-            var actor = actors.First();
+            var actor = actors.OfType<Actor>().First();
             Client.Instance.BeginPacket(p)
                 .Write(Client.Instance.GetPlayer().ID)
-                .Write(actor.Object.RefId);
+                .Write(actor.RefId);
         }
         private static void ReceiveCitizenshipToggle(NetEndpoint net, Packet pck)
         {

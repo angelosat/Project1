@@ -42,7 +42,7 @@ namespace Project1.Core.Towns.Tools
                 return;
             if (this.Target is null)
                 return;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return;
 
             this.End = this.Target.Global;
@@ -77,7 +77,7 @@ namespace Project1.Core.Towns.Tools
                 return Messages.Default;
             if(this.Target == null)
                 return Messages.Default;
-            if(this.Target.Type != TargetType.Position)
+            if(this.Target.Type != TargetType.Cell)
                 return Messages.Default;
             var pos = this.Target.Global;
             this.Begin = pos;
@@ -95,7 +95,7 @@ namespace Project1.Core.Towns.Tools
                 return Messages.Default;
             if (this.Target == null)
                 return Messages.Default;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return Messages.Default;
             int x = Math.Min(this.Begin.X, this.End.X);
             int y = Math.Min(this.Begin.Y, this.End.Y);

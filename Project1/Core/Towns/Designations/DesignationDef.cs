@@ -15,7 +15,9 @@ namespace Project1.Core.Towns.Designations
         readonly public char Symbol;
         readonly public string Verb;
 
-        readonly public bool AffectsBlocks;
+        //readonly public bool AffectsBlocks;
+
+        readonly public TargetType TargetType;
 
         readonly Type WorkerClass;
 
@@ -23,7 +25,8 @@ namespace Project1.Core.Towns.Designations
        
         public DesignationDef(string name, Type workerClass, Sprite sprite, string verb, string hoverText, bool affectsBlocks) : base(name)
         {
-            this.AffectsBlocks = affectsBlocks;
+            //this.AffectsBlocks = affectsBlocks;
+            this.TargetType = affectsBlocks ? TargetType.Cell : TargetType.Entity;
             this.WorkerClass = workerClass;
             this.IconAdd = new QuickButton(new Icon(sprite), null, verb)
             {
@@ -33,7 +36,8 @@ namespace Project1.Core.Towns.Designations
         }
         public DesignationDef(string name, Type workerClass, char symbol, string verb, string hoverText, bool affectsBlocks) : base(name)
         {
-            this.AffectsBlocks = affectsBlocks;
+            //this.AffectsBlocks = affectsBlocks;
+            this.TargetType = affectsBlocks ? TargetType.Cell : TargetType.Entity;
             this.WorkerClass = workerClass;
             this.IconAdd = new QuickButton(symbol, null, verb)
             {

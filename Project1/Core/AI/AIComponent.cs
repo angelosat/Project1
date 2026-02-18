@@ -203,8 +203,9 @@ namespace Project1.Core.AI
         {
             this.State.AddMoveOrder(target, enqueue);
         }
-        public override void DrawAfter(MySpriteBatch sb, Camera cam, GameObject parent)
+        public override void DrawAfter(MySpriteBatch sb, Camera cam)
         {
+            var parent = this.Owner;
             var serverentity = parent;
             var state = AIState.GetState(serverentity);
             if (state is null)

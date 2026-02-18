@@ -21,7 +21,7 @@ namespace Project1.Core.Input
         }
         public ToolSelect(TargetArgs target)
         {
-            this.Begin = target.Type == TargetType.Position ? this.GetBeginFromTarget(target.Global) : target.Object.Global.ToCell();
+            this.Begin = target.Type == TargetType.Cell ? this.GetBeginFromTarget(target.Global) : target.Object.Global.ToCell();
             this.End = this.Begin;
         }
         protected virtual IntVec3 GetBeginFromTarget(IntVec3 a)

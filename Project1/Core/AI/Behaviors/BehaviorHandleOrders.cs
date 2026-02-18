@@ -23,7 +23,7 @@ namespace Project1.Core.AI.Behaviors
                     return BehaviorState.Running;
             }
 
-            if (state.MoveOrder?.Type == TargetType.Position)
+            if (state.MoveOrder?.Type == TargetType.Cell)
             {
                 var destination = state.MoveOrder.Global.Above();
                 if (parent.IsAt(destination))

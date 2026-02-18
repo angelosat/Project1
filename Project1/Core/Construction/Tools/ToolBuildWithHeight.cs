@@ -92,7 +92,7 @@ namespace Project1.Core.Construction.Tools
                 return;
             if (this.Target == null)
                 return;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return;
             this.OnUpdate();
         }

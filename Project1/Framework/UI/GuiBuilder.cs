@@ -37,10 +37,9 @@ namespace Project1.Core.UI
             this.Build();
             return this;
         }
-        internal override void OnSelectedTargetChanged(TargetArgs target)
+        internal override void OnSelectedTargetChanged(ISelectable target)
         {
-            var actor = target.Object as Actor;
-            if (actor is null)
+            if (target is not Actor actor)
                 return;
             var newgui = this.BuildFor(actor);
             var win = newgui.RefreshSingleton();

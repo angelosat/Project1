@@ -8,6 +8,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Helpers;
+using Project1.Core.Input;
 using Project1.Core.Map;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
@@ -1258,7 +1259,7 @@ namespace Project1.Core.Simulation
         {
             this.Town.GetQuickButtons(register, global);
         }
-
+        internal CellSelection Select(IntVec3 global) => new(this, global);
         internal List<TargetArgs> Select(IntVec3 begin, IntVec3 end)
         {
             var cube = IntVec3Helper.GetBox(begin, end);

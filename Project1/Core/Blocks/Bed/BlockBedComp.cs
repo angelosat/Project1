@@ -1,11 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Project1.Core.Blocks;
 using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks
 {
     internal class BlockBedComp : BlockComp
     {

@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Graphics;
-using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
@@ -216,7 +215,7 @@ namespace Project1.Core.Towns.Zones
             foreach (var def in ZoneDefs)
                 yield return (def.LabelReadable, () => Zone.Edit(Ingame.CurrentMap.Town, def));
         }
-        public override ISelectable QuerySelectable(TargetArgs target)
+        public override ISelectable QuerySelectable(CellSelection target)
         {
             var global = target.Global;
             return this.GetZoneAt(global);

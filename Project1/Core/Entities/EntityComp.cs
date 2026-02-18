@@ -57,7 +57,7 @@ namespace Project1.Core.Entities
         public virtual void Draw(MySpriteBatch sb, GameObject parent, Camera camera) { }
         public virtual void DrawMouseover(MySpriteBatch sb, Camera camera, GameObject parent) { }
         public virtual void DrawUI(SpriteBatch sb, Camera camera, GameObject parent) { }
-        public virtual void DrawAfter(MySpriteBatch sb, Camera cam, GameObject parent) { }
+        public virtual void DrawAfter(MySpriteBatch sb, Camera cam) { }
         public virtual IEnumerable<GameObject> GetChildren() { yield break; }
         public virtual void GetChildren(List<GameObjectSlot> list) { }
         public virtual void GetContainers(List<Container> list) { }

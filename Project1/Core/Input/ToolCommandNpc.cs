@@ -1,26 +1,26 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Project1.Core.AI.Packets;
+﻿using Project1.Core.AI.Packets;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
-using Project1.Core.Entities;
-using Project1.Framework.UI;
 using Project1.Framework.Input;
+using Project1.Framework.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Input
 {
     class ToolCommandNpc : ToolManagement
     {
-        private readonly List<GameObject> Actors;
+        private readonly List<Actor> Actors;
         public ToolCommandNpc()
         {
 
         }
-        public ToolCommandNpc(GameObject npc)
-            : this(new List<GameObject>() { npc })
+        public ToolCommandNpc(Actor npc)
+            : this(new List<Actor>() { npc })
         {
         }
 
-        public ToolCommandNpc(List<GameObject> actors)
+        public ToolCommandNpc(List<Actor> actors)
         {
             this.Actors = actors.ToList();
         }
@@ -31,7 +31,7 @@ namespace Project1.Core.Input
         public override ControlTool.Messages MouseLeftPressed(System.Windows.Forms.HandledMouseEventArgs e)
         {
             if (this.Target != null)
-                if (this.Target.Type == TargetType.Position)
+                if (this.Target.Type == TargetType.Cell)
                     PacketCommandNpc.Send(Client.Instance, this.Actors.Select(i => i.RefId).ToList(), this.Target, IsEnqueing);
             return base.MouseLeftPressed(e);
         }

@@ -7,6 +7,7 @@ using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
+using Project1.Core.Input;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Networking;
 using Project1.Core.Plants;
@@ -362,7 +363,7 @@ namespace Project1.Core.Towns
                 list.Add(comp.QueryPosition(pos));
             return list.Where(t => t != null).ToList();
         }
-        public IEnumerable<ISelectable> QuerySelectables(TargetArgs target)
+        public IEnumerable<ISelectable> QuerySelectables(CellSelection target)
         {
             while (true)
             {
@@ -375,7 +376,18 @@ namespace Project1.Core.Towns
                 yield return target;
             }
         }
-        
+        public IReadOnlyList<ISelectable> QuerySelectablesNew(CellSelection target)
+        {
+            List<ISelectable> list = [];
+            foreach (var comp in this.TownComponents)
+            {
+                var item = comp.QuerySelectable(target);
+                if (item is not null)
+                    list.Add(item);
+            }
+            list.Add(target);
+            return list;
+        }
         internal Zone GetZoneAt(Vector3 pos)
         {
             return this.ZoneManager.GetZoneAt(pos);

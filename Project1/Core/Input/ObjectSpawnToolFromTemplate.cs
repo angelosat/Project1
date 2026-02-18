@@ -43,7 +43,7 @@ namespace Project1.Core.Input
             var position = this.Target.Global + this.Target.Face + GetPrecise();
             switch (this.Target.Type)
             {
-                case TargetType.Position:
+                case TargetType.Cell:
                     SpawnEntity();
                     break;
 

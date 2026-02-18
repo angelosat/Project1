@@ -171,7 +171,7 @@ namespace Project1.Core.UI.NamePlates
         public override void DrawOnCamera(SpriteBatch sb, Camera camera)
         {
             base.Draw(sb, camera.ViewPort);
-            if (SelectionManager.IsSelected(this.Object as GameObject))
+            if (SelectionManager.IsSelected(this.Object as Entity))
                 this.BoundsScreen.DrawHighlightBorder(sb, thickness: 2, padding: 2);
         }
     }

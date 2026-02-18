@@ -101,7 +101,7 @@ namespace Project1.Core.Input
             var camera = map.Camera;
             foreach (var pl in GetOtherPlayers(map))
                 if (pl.CurrentTool is not null)
-                    if (pl.Target.Type == TargetType.Position)
+                    if (pl.Target.Type == TargetType.Cell)
                         camera.DrawBlockMouseover(sb, map, pl.Target.Global, pl.Color);
         }
 

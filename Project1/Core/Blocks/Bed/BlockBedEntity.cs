@@ -12,6 +12,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Core.Networking;
+using Project1.Core.Input;
 
 namespace Project1.Core
 {
@@ -99,12 +100,12 @@ namespace Project1.Core
             {
                 case BlockBedEntity.Types.Citizen:
                     SelectionManager.RemoveOrderButton(ButtonUnsetVisitor);
-                    SelectionManager.AddButton(ButtonSetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Visitor), (map, vector3));
+                    SelectionManager.AddButton(ButtonSetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Visitor), new CellSelection(map, vector3));
                     return;
 
                 case BlockBedEntity.Types.Visitor:
                     SelectionManager.RemoveOrderButton(ButtonSetVisitor);
-                    SelectionManager.AddButton(ButtonUnsetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Citizen), (map, vector3));
+                    SelectionManager.AddButton(ButtonUnsetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Citizen), new CellSelection(map, vector3));
                     return;
 
                 default:

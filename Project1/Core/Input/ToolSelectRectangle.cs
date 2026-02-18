@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
@@ -8,6 +6,8 @@ using Project1.Core.UI.Hud;
 using Project1.Framework.Helpers;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Input
 {
@@ -33,7 +33,9 @@ namespace Project1.Core.Input
                 if (InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
                     SelectionManager.AddToSelection(this.CurrentSelected);
                 else
-                    SelectionManager.Select(this.CurrentSelected);
+                    //SelectionManager.Select(this.CurrentSelected);
+                    Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent(this.CurrentSelected.Cast<Entity>()));
+
             }
         }
         public override void Update()

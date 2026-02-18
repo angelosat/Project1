@@ -41,7 +41,7 @@ namespace Project1.Core.Towns.Tools
                 return;
             if (this.Target == null)
                 return;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return;
 
             this.End = new(this.Target.Global.XY(), this.Begin.Z);
@@ -65,7 +65,7 @@ namespace Project1.Core.Towns.Tools
                 return Messages.Default;
             if(this.Target == null)
                 return Messages.Default;
-            if(this.Target.Type != TargetType.Position)
+            if(this.Target.Type != TargetType.Cell)
                 return Messages.Default;
             if (this.Target.Face != Vector3.UnitZ)
                 return Messages.Default;
@@ -85,7 +85,7 @@ namespace Project1.Core.Towns.Tools
                 return Messages.Default;
             if (this.Target == null)
                 return Messages.Default;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return Messages.Default;
             if (this.Target.Face != Vector3.UnitZ)
                 return Messages.Default;
@@ -119,7 +119,7 @@ namespace Project1.Core.Towns.Tools
         
         public override void UpdateRemote(TargetArgs target)
         {
-            if (target.Type == TargetType.Position)
+            if (target.Type == TargetType.Cell)
                 this.End = new(target.Global.XY(), this.Begin.Z);
         }
        

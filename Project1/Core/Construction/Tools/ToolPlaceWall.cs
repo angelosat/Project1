@@ -44,7 +44,7 @@ namespace Project1.Core.Modules.Construction
                 return Messages.Default;
             if (this.Target == null)
                 return Messages.Default;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return Messages.Default;
             var pos = this.Target.FaceGlobal;
             this.Begin = pos;
@@ -89,7 +89,7 @@ namespace Project1.Core.Modules.Construction
                 return;
             if (this.Target == null)
                 return;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return;
             if(this.SettingHeight)
             {

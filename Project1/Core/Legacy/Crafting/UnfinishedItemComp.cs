@@ -3,6 +3,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Inventory;
 using Project1.Core.Networking;
+using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -25,12 +26,12 @@ namespace Project1.Core.Legacy.Crafting
                 pCancel = Registry.PacketHandlers.Register(ReceiveCancel);
             }
 
-            public static void SendCancel(NetEndpoint net, PlayerData player, List<TargetArgs> obj)
+            public static void SendCancel(NetEndpoint net, PlayerData player, List<Entity> selection)
             {
                 var w = net.BeginPacket(pCancel);
-
+                //var items = selection.OfType<Entity>();
                 w.Write(player.ID);
-                w.Write(obj.Select(t => t.Object.RefId).ToList());
+                w.Write(selection.Select(t => t.RefId).ToList());
             }
             private static void ReceiveCancel(NetEndpoint net, Packet pck)
             {
@@ -41,7 +42,8 @@ namespace Project1.Core.Legacy.Crafting
                 foreach (var i in items.ToList()) // tolist because cancelling changes the networkobjects collection
                     i.GetComponent<UnfinishedItemComp>().Cancel();
                 if (net is Server)
-                    SendCancel(net, player, items.Select(o => new TargetArgs(o)).ToList());
+                    //SendCancel(net, player, items.Select(o => new TargetArgs(o)).ToList());
+                    SendCancel(net, player, [.. items]);
             }
         }
 
@@ -95,7 +97,7 @@ namespace Project1.Core.Legacy.Crafting
         }
         internal override void GetQuickButtons(SelectionManager info, GameObject parent)
         {
-            info.AddButton(IconCancel, items => Packets.SendCancel(parent.Net, parent.Net.GetPlayer(), items), parent);
+            info.AddButton(IconCancel, items => Packets.SendCancel(parent.Net, parent.Net.GetPlayer(), [items as Entity]), parent);
         }
         private void Cancel()
         {

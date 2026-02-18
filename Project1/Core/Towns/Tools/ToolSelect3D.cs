@@ -46,7 +46,7 @@ namespace Project1.Core.Towns.Tools
                 return;
             if (this.Target == null)
                 return;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return;
 
             this.End = (IntVec3)this.Target.Global;
@@ -63,7 +63,7 @@ namespace Project1.Core.Towns.Tools
                 return;
             if (this.Target == null)
                 return;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return;
 
             this.End = this.Target.Global;
@@ -80,7 +80,7 @@ namespace Project1.Core.Towns.Tools
                 return Messages.Default;
             if(this.Target == null)
                 return Messages.Default;
-            if(this.Target.Type != TargetType.Position)
+            if(this.Target.Type != TargetType.Cell)
                 return Messages.Default;
             var pos = this.Target.Global;
             if (this.GetZones().Contains(pos))
@@ -99,7 +99,7 @@ namespace Project1.Core.Towns.Tools
                 return Messages.Default;
             if (this.Target == null)
                 return Messages.Default;
-            if (this.Target.Type != TargetType.Position)
+            if (this.Target.Type != TargetType.Cell)
                 return Messages.Default;
             int x = (int)Math.Min(this.Begin.X, this.End.X);
             int y = (int)Math.Min(this.Begin.Y, this.End.Y);

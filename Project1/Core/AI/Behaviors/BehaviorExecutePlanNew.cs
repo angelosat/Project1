@@ -102,9 +102,9 @@ namespace Project1.Core.AI.Behaviors
         {
             if (!this.Plan.IsStillValid())
                 return true;
-            return this.ShouldAbortCore();
+            return this.ShouldAbortInternal();
         }
-        protected virtual bool ShouldAbortCore() => false;
+        protected virtual bool ShouldAbortInternal() => false;
         private void NextBehavior()
         {
             this.CurrentStepIndex++;

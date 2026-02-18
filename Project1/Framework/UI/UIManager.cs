@@ -889,7 +889,7 @@ namespace Project1.Framework.UI
             Singleton,
             UniquePerTarget
         }
-        internal void OnSelectedTargetChanged(TargetArgs target)
+        internal void OnSelectedTargetChanged(ISelectable target)
         {
             foreach (var c in this.ControlsInMemory)
                 c.OnSelectedTargetChanged(target);

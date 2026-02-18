@@ -185,7 +185,7 @@ namespace Project1.Core
         protected void OnRotationChanged()
         {
             Ingame.CurrentMap.OnCameraRotated(this);
-            SelectionManager.OnCameraRotated(this);
+            SelectionManager.Instance.OnCameraRotated(this);
         }
 
         void gfx_DeviceReset(object sender, EventArgs e)

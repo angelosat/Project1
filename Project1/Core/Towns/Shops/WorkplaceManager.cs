@@ -179,7 +179,7 @@ namespace Project1.Core
             }
             else if (selected is TargetArgs target)
             {
-                if (target.Type == TargetType.Position)
+                if (target.Type == TargetType.Cell)
                 {
                     var block = target.Block;
                     if (this.Shopss.Any(s => s.IsAllowed(block)))

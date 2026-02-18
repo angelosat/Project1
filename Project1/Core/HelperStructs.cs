@@ -1,4 +1,6 @@
-﻿namespace Project1.Core.Helpers
+﻿using Project1.Core.Helpers;
+
+namespace Project1.Core
 {
     public readonly record struct EntityRefId(int Value)
     {

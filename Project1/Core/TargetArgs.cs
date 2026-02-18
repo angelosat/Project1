@@ -15,6 +15,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -22,9 +23,9 @@ using System.Linq;
 
 namespace Project1.Core
 {
-    public enum TargetType { Null, Entity, Slot, BlockEntitySlot, Position, Direction, BlockEntity }
+    public enum TargetType { Null, Entity, Slot, BlockEntitySlot, Cell, Direction, BlockEntity }
 
-    public class TargetArgs : Inspectable, ITooltippable, IContextable, ISelectable, ILabeled
+    public class TargetArgs : Inspectable, ITooltippable, IContextable, ISelectable, ILabeled, ISerializableNewNew<TargetArgs>
     {
         public void GetTooltipInfo(Control tooltip)
         {
@@ -35,7 +36,7 @@ namespace Project1.Core
                         this.Object.GetTooltipInfo(tooltip);
                     break;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     this.Map.GetBlock(this.Global).GetTooltip(tooltip, this.Map, this.Global, this.Face);
 
                     break;
@@ -51,7 +52,8 @@ namespace Project1.Core
         {
             get { return this.Map.Net; }
         }
-
+        public bool IsResolved => this.World is not null;
+        
         public Vector2 Direction;
         public TargetType Type { get; private set; }
         Vector3 _global;
@@ -113,7 +115,7 @@ namespace Project1.Core
                 return Type switch
                 {
                     TargetType.Entity => this._resolvedEntity?.Map,
-                    TargetType.Position => _resolvedMap,// ??= this.World.Map,
+                    TargetType.Cell => _resolvedMap,// ??= this.World.Map,
                     TargetType.BlockEntity => _resolvedMap,
                     _ => null
                 };
@@ -204,8 +206,12 @@ namespace Project1.Core
             this.SlotID = -1;
             this.ContainerName = "";
         }
-       
-        public TargetArgs(WorldBase world, int entityID)
+        public TargetArgs(EntityRefId entityID)
+        {
+            this.Type = TargetType.Entity;
+            this.EntityID = entityID;
+        }
+        public TargetArgs(WorldBase world, EntityRefId entityID)
         {
             this.World = world;
             this.Type = TargetType.Entity;
@@ -230,33 +236,40 @@ namespace Project1.Core
         public TargetArgs(WorldBase provider, Vector3 global)
         {
             this.World = provider;
-            this.Type = TargetType.Position;
+            this.Type = TargetType.Cell;
             this.Global = global;
         }
         public TargetArgs(MapBase map, Vector3 global)
         {
             this._resolvedMap = map;
             this.World = map.World;
-            this.Type = TargetType.Position;
+            this.Type = TargetType.Cell;
             this.Global = global;
         }
         public TargetArgs(Vector3 global, Vector3 face)
         {
-            this.Type = TargetType.Position;
+            this.Type = TargetType.Cell;
             this.Global = global;
             this.Face = face;
+        }
+        public TargetArgs(Vector3 global, Vector3 face, Vector3 precise)
+        {
+            this.Type = TargetType.Cell;
+            this.Global = global;
+            this.Face = face;
+            this.Precise = precise;
         }
         public TargetArgs(WorldBase world, Vector3 global, Vector3 face, Vector3 precise)
         {
             this.World = world;
-            this.Type = TargetType.Position;
+            this.Type = TargetType.Cell;
             this.Global = global;
             this.Face = face;
             this.Precise = precise;
         }
         public TargetArgs(MapBase map, Vector3 global, Vector3 face, Vector3 precise)
         {
-            this.Type = TargetType.Position;
+            this.Type = TargetType.Cell;
             this._resolvedMap = map;
             this.Global = global;
             this.Face = face;
@@ -318,11 +331,6 @@ namespace Project1.Core
 
         public Cell Cell => this.Map.GetCell(this.Global);
 
-       
-        static public TargetArgs Write(BinaryWriter writer, GameObject obj, Vector3? face = null)
-        {
-            return new TargetArgs(obj, face).Write(writer);
-        }
         public TargetArgs Write(BinaryWriter w)
         {
             w.Write((int)this.Type);
@@ -335,7 +343,7 @@ namespace Project1.Core
                     w.Write(this.Slot.ContainerNew.ID);
                     return this;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     w.Write(this.Global);
                     w.Write(this.Face);
                     w.Write(this.Precise);
@@ -372,7 +380,7 @@ namespace Project1.Core
                     w.Write(this.Slot.ContainerNew.ID);
                     return this;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     w.Write(this.Global);
                     w.Write(this.Face);
                     w.Write(this.Precise);
@@ -418,7 +426,7 @@ namespace Project1.Core
                     tag.Add(new SaveTag(SaveTag.Types.Int, "ContainerID", this.Slot.ContainerNew.ID));
                     break;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     tag.Add(new SaveTag(SaveTag.Types.Vector3, "Global", this.Global));
                     tag.Add(new SaveTag(SaveTag.Types.Vector3, "Face", this.Face));
                     tag.Add(new SaveTag(SaveTag.Types.Vector3, "Precise", this.Precise));
@@ -461,7 +469,7 @@ namespace Project1.Core
                     int netID = reader.ReadInt32();
                     return new TargetArgs(map.World, netID);
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     return new TargetArgs(map.World, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3()) { Map = map };
 
                 case TargetType.Slot:
@@ -542,7 +550,7 @@ namespace Project1.Core
                     this.EntityID = tag.GetValue<int>("InstanceID");
                     break;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     this.Global = tag.GetValue<Vector3>("Global");
                     this.Face = tag.GetValue<Vector3>("Face");
                     this.Precise = tag.GetValue<Vector3>("Precise");
@@ -616,7 +624,7 @@ namespace Project1.Core
                 return this.Type switch
                 {
                     TargetType.Entity => this.Object.DebugName,
-                    TargetType.Position => this.Map.GetBlock(this.Global).Name,
+                    TargetType.Cell => this.Map.GetBlock(this.Global).Name,
                     TargetType.Slot => this.Slot.ToString(),
                     _ => this.Type.ToString(),
                 };
@@ -627,7 +635,7 @@ namespace Project1.Core
             return this.Type switch
             {
                 TargetType.Entity => this.Object.DebugName,
-                TargetType.Position => this.FinalGlobal.ToString(),
+                TargetType.Cell => this.FinalGlobal.ToString(),
                 TargetType.Slot => this.Slot.ToString(),
                 _ => this.Type.ToString(),
             };
@@ -639,7 +647,7 @@ namespace Project1.Core
                 case TargetType.Entity:
                     return this.Object.GetInteractions();
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     Block block = net.Map.GetBlock(this.Global);
                     var inters = block.GetAvailableTasks(net.Map, this.Global).ToDictionary(foo => foo.Name);
                     var dropInter = new UseHauledOnTarget();
@@ -666,7 +674,7 @@ namespace Project1.Core
                     this.Object.GetInteractions().TryGetValue(name, out interaction);
                     return interaction;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     var rounded = this.Global.RoundXY();
                     Block block = this.Map.GetBlock(rounded);
                     var tasks = block.GetAvailableTasks(this.Map, rounded);
@@ -684,7 +692,7 @@ namespace Project1.Core
                 case TargetType.Entity:
                     return this.Object.GetAvailableTasks();
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     Block block = net.Map.GetBlock(this.Global);
                     return block.GetAvailableTasks(net.Map, this.Global);
 
@@ -708,7 +716,7 @@ namespace Project1.Core
                 case TargetType.Entity:
                     return this.Object.GetContextRB(playerEntity);
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     var block = this.Network.Map.GetBlock(this.Global);
                     return block.GetContextRB(playerEntity, this.Global);
 
@@ -724,7 +732,7 @@ namespace Project1.Core
                 case TargetType.Entity:
                     return this.Object.GetContextActivate(playerEntity);
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     var block = this.Network.Map.GetBlock(this.Global);
                     return block.GetContextActivate(playerEntity, this.Global);
 
@@ -741,7 +749,7 @@ namespace Project1.Core
                     this.Object.GetContextActions(playerEntity, a);
                     break;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     var block = this.Network.Map.GetBlock(this.Global);
                     block.GetContextActions(playerEntity, this.Global, a);
                     // check if block is part of any town designations such as stockpiles or fields, and add corresponding actions
@@ -763,7 +771,7 @@ namespace Project1.Core
                 return true;
             if (this.Type == TargetType.BlockEntity && this.BlockEntity != null && this.BlockEntity == target.BlockEntity)
                 return true;
-            else if (this.Type == TargetType.Position && this.Global == target.Global
+            else if (this.Type == TargetType.Cell && this.Global == target.Global
                 && this.Face == target.Face) // newly added
                 return true;
             return false;
@@ -774,13 +782,13 @@ namespace Project1.Core
                 return false;
             if (this.Type == TargetType.Entity && this.Object != null && this.Object == target.Object)
                 return true;
-            else if (this.Type == TargetType.Position && this.Global == target.Global && this.Face == target.Face)
+            else if (this.Type == TargetType.Cell && this.Global == target.Global && this.Face == target.Face)
                 return true;
             return false;
         }
         Block BlockCached;
-        public Block Block => BlockCached ??= this.Type == TargetType.Position ? this.Map.GetBlock(this.Global) : null;
-        public BlockEntity BlockEntityOld => this.Type == TargetType.Position ? this.Map.GetBlockEntity(this.Global) : null;
+        public Block Block => BlockCached ??= this.Type == TargetType.Cell ? this.Map.GetBlock(this.Global) : null;
+        public BlockEntity BlockEntityOld => this.Type == TargetType.Cell ? this.Map.GetBlockEntity(this.Global) : null;
         public RegionNode Node => this.Map.Regions.GetNodeAt(this.Global);
         public Region Region => this.Node?.Region;
         public RegionRoom RegionRoom => this.Region?.Room;
@@ -795,7 +803,7 @@ namespace Project1.Core
                 return this.Type switch
                 {
                     TargetType.Entity => this.Object.Name,
-                    TargetType.Position => this.Block.GetName(this.Map, this.Global),
+                    TargetType.Cell => this.Block.GetName(this.Map, this.Global),
                     TargetType.BlockEntity => this.BlockEntity.Name,
                     _ => "",
                 };
@@ -809,7 +817,7 @@ namespace Project1.Core
                 case TargetType.Entity:
                     throw new Exception();
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     foreach (var i in this.Block.GetInfoTabs())
                         yield return i;
                     break;
@@ -828,7 +836,7 @@ namespace Project1.Core
                     this.Object.GetSelectionInfo(info);
                     break;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     //this.Block.GetSelectionInfo(info, this.Map, this.Global);
                     this.Cell.GetSelectionInfo(info, this.Map, this.Global);
                     break;
@@ -847,7 +855,7 @@ namespace Project1.Core
                     this.Object.GetSelectionInfo(info);
                     break;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     this.Cell.GetSelectionInfo(box);
                     break;
                   
@@ -870,7 +878,7 @@ namespace Project1.Core
                     this.Object.GetQuickButtons(info);
                     break;
 
-                case TargetType.Position:
+                case TargetType.Cell:
                     this.Block.GetQuickButtons(info, this.Map, this.Global);
                     this.Map.GetQuickButtons((name, guiType) =>
                             //info.AddTabAction(name, () => UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
@@ -939,7 +947,7 @@ namespace Project1.Core
                     foreach (var i in this.Object.GetSelectionDetails())
                         yield return i;
                     break;
-                case TargetType.Position:
+                case TargetType.Cell:
                     yield break;
                 default:
                     yield break;
@@ -954,7 +962,7 @@ namespace Project1.Core
             {
                 TargetType.Entity => this.EntityID == o.EntityID,
                 TargetType.BlockEntity => this.BlockEntity.OriginGlobal == o.BlockEntity.OriginGlobal,
-                TargetType.Position => this.Global == o.Global,
+                TargetType.Cell => this.Global == o.Global,
                 TargetType.Direction => this.Direction == o.Direction,
                 _ => false
             };
@@ -964,9 +972,75 @@ namespace Project1.Core
         {
             TargetType.Entity => HashCode.Combine((int)Type, this.EntityID),
             TargetType.BlockEntity => HashCode.Combine((int)Type, this.BlockEntity.OriginGlobal.X, this.BlockEntity.OriginGlobal.Y, this.BlockEntity.OriginGlobal.Z),
-            TargetType.Position => HashCode.Combine((int)Type, this.Global.X, this.Global.Y, this.Global.Z),
+            TargetType.Cell => HashCode.Combine((int)Type, this.Global.X, this.Global.Y, this.Global.Z),
             TargetType.Direction => HashCode.Combine((int)Type, this.Direction.X, this.Direction.Y),
             _ => (int)Type
         };
+
+        IDataWriter ISerializableNewNew<TargetArgs>.Write(IDataWriter w)
+        {
+            w.Write((int)this.Type);
+            switch (this.Type)
+            {
+                case TargetType.Slot:
+
+                    w.Write(this.Slot.Owner.RefId);
+                    w.Write(this.Slot.ID);
+                    w.Write(this.Slot.ContainerNew.ID);
+                    return w;
+
+                case TargetType.Cell:
+                    w.Write(this.Global);
+                    w.Write(this.Face);
+                    w.Write(this.Precise);
+                    return w;
+
+                case TargetType.Entity:
+
+                    w.Write(this.EntityID);
+                    return w;
+
+                case TargetType.Direction:
+                    w.Write(this.Direction);
+                    return w;
+
+                case TargetType.BlockEntitySlot:
+                    w.Write(this.Global);
+                    w.Write(this.Slot.ContainerNew.Name);
+                    w.Write(this.Slot.ID);
+                    return w;
+
+                default:
+                    return w;
+            }
+        }
+
+        public static TargetArgs Create(IDataReader r)
+        {
+            var type = (TargetType)r.ReadInt32();
+            return type switch
+            {
+                TargetType.Null => TargetArgs.Null,
+                TargetType.Entity => new TargetArgs(r.ReadEntityRefId()),
+                TargetType.Cell => new TargetArgs(r.ReadVector3(), r.ReadVector3(), r.ReadVector3()),
+                TargetType.Slot => throw new NotImplementedException(),
+                //int parentID = r.ReadInt32();
+                //GameObject parent = map.World.GetEntity(parentID);
+                //byte slotID = r.ReadByte();
+                //int containerID = r.ReadInt32();
+                //var slot = parent.GetChild(containerID, slotID);
+                //return new TargetArgs(map.World, slot);
+                TargetType.BlockEntitySlot => throw new NotImplementedException(),
+                //var vector3 = r.ReadVector3();
+                //var blockentity = map!.GetBlockEntity(vector3);
+                //var containerName = r.ReadString();
+                //var slotid = r.ReadByte();
+                //var s = blockentity.GetChild(containerName, slotid);
+                //return new TargetArgs(map.Net, vector3, s);
+                TargetType.Direction => new TargetArgs(r.ReadVector2()),
+                TargetType.BlockEntity => throw new NotImplementedException(),
+                _ => throw new UnreachableException("Invalid target type " + type.ToString()),
+            };
+        }
     }
 }

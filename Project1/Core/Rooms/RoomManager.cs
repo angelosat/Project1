@@ -13,6 +13,7 @@ using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Core.Graphics;
+using Project1.Core.Input;
 
 namespace Project1.Core.Rooms
 {
@@ -224,9 +225,11 @@ namespace Project1.Core.Rooms
                 info.AddTabAction("Roomm", () => r.ShowGUI(selected.FaceGlobal));
         }
        
-        public override ISelectable QuerySelectable(TargetArgs selected)
+        public override ISelectable QuerySelectable(CellSelection cell)
         {
-            if (this.GetRoomAt(selected.FaceGlobal) is Room r)
+            //if (selected is not CellSelection cell)
+            //    return null;
+            if (this.GetRoomAt(cell.Global + cell.Face) is Room r)
                 return r;
             return null; // instead of selecting the room itself, add a tab when selecting a block that is contained in the room
         }
@@ -260,7 +263,7 @@ namespace Project1.Core.Rooms
         }
         internal override void OnTooltipCreated(Control tooltip, TargetArgs targetArgs)
         {
-            if (targetArgs.Type != TargetType.Position)
+            if (targetArgs.Type != TargetType.Cell)
                 return;
             var global = targetArgs.FaceGlobal;
             if (!this.TryGetRoomAt(global, out var room))

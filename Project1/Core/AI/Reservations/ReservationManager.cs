@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Core.Towns;
 using Project1.Framework;
@@ -63,7 +62,7 @@ namespace Project1.Core.AI.Reservations
                 throw new Exception();
 
             /// MOVED THIS HERE FROM BELOW (check comment below)
-            if (target.Type == TargetType.Position)
+            if (target.Type == TargetType.Cell)
                 stackCount = 1;
             else if (target.Type == TargetType.Entity)
                 stackCount = (stackCount != -1) ? stackCount : target.Object.StackSize;
@@ -110,7 +109,7 @@ namespace Project1.Core.AI.Reservations
         }
         internal bool ReserveAsManyAsPossible(Actor actor, Plan task, TargetArgs target, int desiredAmount = -1)
         {
-            if (target.Type == TargetType.Null || target.Type == TargetType.Position)
+            if (target.Type == TargetType.Null || target.Type == TargetType.Cell)
                 throw new Exception();
             var unreservedAmount = this.GetUnreservedAmount(target);
             if (unreservedAmount == 0)
@@ -135,7 +134,7 @@ namespace Project1.Core.AI.Reservations
 
                 if (r.Target.Type != target.Type)
                     continue;
-                else if (r.Target.Type == TargetType.Position && r.Target.Global == target.Global)
+                else if (r.Target.Type == TargetType.Cell && r.Target.Global == target.Global)
                 {
                     CancelReservation(r);
                 }
@@ -211,7 +210,7 @@ namespace Project1.Core.AI.Reservations
         {
             if (target.Type == TargetType.Entity && target.Object.Owner == actor)
                 return true;
-            if (target.Type == TargetType.Position && stackcount > 1)
+            if (target.Type == TargetType.Cell && stackcount > 1)
                 throw new Exception();
             if (target.IsForbidden)
                 return false;
@@ -234,7 +233,7 @@ namespace Project1.Core.AI.Reservations
                     return false;
                 if (r.Target.Type == TargetType.Entity && r.Target.Object != null && r.Target.Object == target.Object)
                     return true;
-                else if (r.Target.Type == TargetType.Position && r.Target.Global == target.Global)
+                else if (r.Target.Type == TargetType.Cell && r.Target.Global == target.Global)
                     return true;
                 return false;
             }) == null;
@@ -242,7 +241,7 @@ namespace Project1.Core.AI.Reservations
         internal bool CanReserve(Vector3 global)
         {
             return Reservations.FirstOrDefault(r =>
-               r.Target.Type == TargetType.Position && r.Target.Global == global
+               r.Target.Type == TargetType.Cell && r.Target.Global == global
             ) == null;
         }
         internal int GetUnreservedAmount(GameObject obj)
@@ -264,7 +263,7 @@ namespace Project1.Core.AI.Reservations
 
             if (target.Type == TargetType.Entity)
                 amount = target.Object.StackSize - sum;
-            else if (target.Type == TargetType.Position)
+            else if (target.Type == TargetType.Cell)
                 amount = 1 - sum;
             else if (target.Type == TargetType.BlockEntity)
                 amount = 1 - sum;

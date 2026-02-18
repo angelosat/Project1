@@ -313,7 +313,7 @@ namespace Project1.Core.Entities.Actors
         }
         public bool CanOperate(TargetArgs target)
         {
-            if (target.Type != TargetType.Position)
+            if (target.Type != TargetType.Cell)
                 throw new Exception();
             var global = target.Global;
             return this.CanOperate(global);

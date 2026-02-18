@@ -6,6 +6,7 @@ using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Legacy;
 using Project1.Core.Simulation;
+using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Serialization;
@@ -17,20 +18,23 @@ using System.Linq;
 
 namespace Project1.Core.Blocks
 {
-    public class BlockEntity : Inspectable, IDisposable, ISerializableNew<BlockEntity>, ISaveableNewNew<BlockEntity>
+    public class BlockEntity : Inspectable, IDisposable, ISerializableNew<BlockEntity>, ISaveableNewNew<BlockEntity>, ISelectable
     {
-        public string Name = nameof(BlockEntity);
+        public string Name { get; set; }
         public HashSet<IntVec3> CellsOccupied = [];
-        public MapBase Map;
+        public MapBase Map { get; set; }
         public BlockDef Def { get; private set; }
         public bool Exists => this.Map is not null;
 
         public IEnumerable<IntVec3> InteractionSpots => this.Map.GetCell(this.OriginGlobal).GetInteractionSpots(this.Map, this.OriginGlobal);
         public IEnumerable<IntVec3> ReservedInteractionCells => this.InteractionSpots.SelectMany(ActorDefOf.Npc.OccupyingCellsStanding);
 
+        public Vector3 Global => this.OriginGlobal;
+
+
         public IntVec3 OriginGlobal;
         public readonly BlockCompCollection Comps;
-        public ObservableCollection<string> Errors = new();
+        public ObservableCollection<string> Errors = [];
     
         public BlockEntity(BlockDef def, IntVec3 originGlobal)
         {
@@ -269,6 +273,36 @@ namespace Project1.Core.Blocks
         internal void Attach(IntVec3 global)
         {
             this.Map.AttachCellToEntity(global, this);
+        }
+
+        public void GetSelectionInfo(IUISelection panel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetSelectionInfo(SelectionManager info)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<(string name, Action action)> GetInfoTabs()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Control> GetSelectionDetails()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetQuickButtons(SelectionManager panel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void TabGetter(Action<string, Action> getter)
+        {
+            throw new NotImplementedException();
         }
     }
 }

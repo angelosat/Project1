@@ -171,8 +171,8 @@ namespace Project1.Core.Entities
         internal virtual IEnumerable<(string label, Type guiType)> GetQuickButtons() { yield break; }
         public virtual void GetQuickButtons(SelectionManager info)
         {
-            if (this.IsForbiddable())
-                info.AddButton(IconForbidden, RequestToggleForbidden, this);
+            //if (this.IsForbiddable())
+            //    info.AddButton(IconForbidden, RequestToggleForbidden, this);
 
             foreach (var comp in this.Components.Values)
                 comp.GetQuickButtons(info, this);
@@ -183,13 +183,13 @@ namespace Project1.Core.Entities
         }
         static readonly IconButton IconForbidden = new QuickButton(Icon.Cross, ToolManagement.HotkeyToggleForbidden, "Forbid") { HoverText = "Toggle forbidden" };
         static readonly IconButton IconCameraFollow = new(Icon.Replace) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = FollowCam, HoverText = "Camera follow" };
-        static void RequestToggleForbidden(List<TargetArgs> targets)
+        static void RequestToggleForbidden(List<ISelectable> targets)
         {
-            Ingame.Instance.Events.Post(new PlayerForbidItemsEvent([.. targets.Select(o => o.Object as Entity)]));
+            Ingame.Instance.Events.Post(new PlayerForbidItemsEvent([.. targets.Select(o => o as Entity)]));
         }
         static void FollowCam()
         {
-            ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManager.Instance.SelectedSource.Object);
+            ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManager.Instance.SelectedSource as GameObject);
         }
         public void ToggleForbidden()
         {
@@ -724,7 +724,7 @@ namespace Project1.Core.Entities
 
         public void DrawPreview(MySpriteBatch sb, Camera cam, TargetArgs target, bool precise)
         {
-            if (target.Type != TargetType.Position)
+            if (target.Type != TargetType.Cell)
                 return;
 
             var blockHeight = Block.GetBlockHeight(target.Map, target.Global);
@@ -983,7 +983,7 @@ namespace Project1.Core.Entities
 
         public bool IsInInteractionRange(TargetArgs target)
         {
-            if (target.Type == TargetType.Position)
+            if (target.Type == TargetType.Cell)
             {
                 var actorCoords = this.Global;
                 var actorBox = new BoundingBox(actorCoords - new Vector3(1, 1, 1), actorCoords + new Vector3(1, 1, this.Physics.Height + 2));
@@ -1181,9 +1181,7 @@ namespace Project1.Core.Entities
         internal void DrawAfter(MySpriteBatch sb, Camera cam)
         {
             foreach (var comp in this.Components.Values)
-            {
-                comp.DrawAfter(sb, cam, this);
-            }
+                comp.DrawAfter(sb, cam);
         }
        
         internal bool IsIndoors()

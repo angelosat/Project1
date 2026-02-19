@@ -26,5 +26,10 @@ namespace Project1.Core.Blocks.Comps
             foreach (var r in this.Resources)
                 container.AddControls(r.Value.GetControlBar());
         }
+        internal override IEnumerable<Control> GetInspectorControls()
+        {
+            foreach (var r in this.Resources)
+                yield return r.Value.GetControlBar();
+        }
     }
 }

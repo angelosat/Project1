@@ -10,9 +10,12 @@ namespace Project1.Core.Input
     internal class SelectionFinal
     {
         internal HashSet<ISelectable> Targets = [];
-        internal HashSet<IntVec3> Cells = [];
+        //internal HashSet<IntVec3> Cells = [];
         internal IntVec3? Begin, End;
-
+        //internal IEnumerable<IntVec3> Cells
+        //    => this.Begin.HasValue ? IntVec3Helper.GetBox(this.Begin.Value, this.End.Value) : [];
+        internal IEnumerable<IntVec3> Cells
+            => this.Targets.OfType<CellSelection>().Select(c => c.Global);
         internal SelectionIntent ToSelectionIntent()
         {
             if(this.Begin.HasValue)
@@ -37,9 +40,11 @@ namespace Project1.Core.Input
         {
             this.Begin = begin;
             this.End = end;
-            this.Cells = [.. IntVec3Helper.GetBox(begin, end)];
+            //this.Cells = [.. IntVec3Helper.GetBox(begin, end)];
             this.Targets.Clear();
-            this.Targets = [.. this.Cells.Select(c => new CellSelection(map, c))];
+            this.Targets = [.. IntVec3Helper.GetBox(begin, end)
+                .Where(c => !map.IsAir(c))
+                .Select(c => new CellSelection(map, c))];
         }
     }
 }

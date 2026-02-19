@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
@@ -31,6 +32,7 @@ namespace Project1.Core.Towns.Designations
         readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>> Designations;
         readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<IntVec3>> CellDesignations;
         readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<Entity>> EntityDesignations;
+        readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<BlockEntity>> BlockEntityDesignations;
         public readonly Dictionary<DesignationDef, BlockRendererObservable> Renderers = [];
         static List<DesignationDef> designationDefs;
         static List<DesignationDef> AllDesignationDefs => designationDefs ??= [.. Def.GetDefs<DesignationDef>()];
@@ -64,16 +66,17 @@ namespace Project1.Core.Towns.Designations
             var desDefs = Def.GetDefs<DesignationDef>();
 
             var cellDesignationDefs = desDefs.Where(d => d.TargetType == TargetType.Cell);
-            var entityDesignationDefs = desDefs.Except(cellDesignationDefs);
+            var entityDesignationDefs = desDefs.Where(d => d.TargetType == TargetType.Entity);
+            var blockEntityDesignationDefs = desDefs.Where(d => d.TargetType == TargetType.BlockEntity);
             this.CellDesignations = new(cellDesignationDefs.ToDictionary(d => d, d => new ObservableHashSet<IntVec3>()));
             this.EntityDesignations = new(entityDesignationDefs.ToDictionary(d => d, d => new ObservableHashSet<Entity>()));
+            this.BlockEntityDesignations = new(blockEntityDesignationDefs.ToDictionary(d => d, d => new ObservableHashSet<BlockEntity>()));
 
             this.Designations = new ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>>(desDefs.ToDictionary(d => d, d => new ObservableHashSet<TargetArgs>()));
 
             foreach (var d in desDefs)
             {
                 if (d.TargetType == TargetType.Cell)
-                    //this.Renderers.Add(d, new(this.Designations[d]));
                     this.Renderers.Add(d, new(this.CellDesignations[d]));
             }
 
@@ -119,8 +122,6 @@ namespace Project1.Core.Towns.Designations
                     foreach (var l in this.EntityDesignations.Where(d => d.Key.IsManual))
                         l.Value.Remove(entity);
             }
-            //if (this.Map.Net.IsClient)
-            //    SelectionManager.Instance.RefreshOrderButtons();
         }
         internal void Add(DesignationDef designation, IEnumerable<ISelectable> cells, bool isRemoval)
         {
@@ -149,8 +150,6 @@ namespace Project1.Core.Towns.Designations
                 default:
                     throw new UnreachableException();
             }
-            //if (this.Map.Net.IsClient)
-            //    SelectionManager.Instance.RefreshOrderButtons();
         }
         internal void Add(DesignationDef designation, IEnumerable<CellSelection> cells, bool isRemoval)
         {
@@ -206,10 +205,21 @@ namespace Project1.Core.Towns.Designations
             {
                 CellSelection => this.CellDesignations.Values.Any(v => v.Contains(target.Global)),
                 Entity => this.EntityDesignations.Values.Any(v => v.Contains(target)),
+                BlockEntity => this.BlockEntityDesignations.Values.Any(v => v.Contains(target)),
                 _ => throw new UnreachableException()
             };
-            //return this.Designations.Values.Any(v => v.Contains(target));
         }
+        //internal bool IsDesignation(ISelectable target)
+        //{
+        //    return target switch
+        //    {
+        //        CellSelection => this.CellDesignations.Values.Any(v => v.Contains(target.Global)),
+        //        Entity => this.EntityDesignations.Values.Any(v => v.Contains(target)),
+        //        BlockEntity => this.BlockEntityDesignations.Values.Any(v => v.Contains(target))
+        //        _ => throw new UnreachableException()
+        //    };
+        //    //return this.Designations.Values.Any(v => v.Contains(target));
+        //}
         internal bool IsDesignation(TargetArgs target)
         {
             return this.Designations.Values.Any(v => v.Contains(target));

@@ -8,6 +8,7 @@ using Project1.Framework.Input;
 using Project1.Framework.UI;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Project1.Core.Input
 {
@@ -28,15 +29,8 @@ namespace Project1.Core.Input
 
         protected virtual void Select()
         {
-            if (this.CurrentSelected != null)
-            {
-                if (InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
-                    SelectionManager.AddToSelection(this.CurrentSelected);
-                else
-                    //SelectionManager.Select(this.CurrentSelected);
-                    Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent(this.CurrentSelected.Cast<Entity>()));
-
-            }
+            if (this.CurrentSelected is not null)
+                Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent(this.CurrentSelected.Cast<Entity>(), SelectionHelper.GetSelectionOp()));
         }
         public override void Update()
         {
@@ -45,7 +39,7 @@ namespace Project1.Core.Input
             this.CurrentSelected = Ingame.Instance.Scene.ObjectsDrawn.Where(o => o.GetScreenBounds(cam).Intersects(this.Selection)).ToList();
         }
 
-        public override ControlTool.Messages MouseLeftUp(System.Windows.Forms.HandledMouseEventArgs e)
+        public override ControlTool.Messages MouseLeftUp(HandledMouseEventArgs e)
         {
             this.Select();
             return Messages.Remove;

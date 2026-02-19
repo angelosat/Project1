@@ -11,6 +11,8 @@ using Project1.Core.Animations;
 using Project1.Core.UI.Hud;
 using Project1.Core.Gear;
 using Project1.Framework.Helpers;
+using Project1.Core.Screens;
+using Project1.Core.Input;
 
 namespace Project1.Core.Entities
 {
@@ -117,7 +119,8 @@ namespace Project1.Core.Entities
         }
         internal void Select()
         {
-            SelectionManager.Select(this);
+            //SelectionManager.Select(this);
+            Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new TargetArgs(this)));
         }
         /// <summary>
         /// reset name in case of errors or def changes

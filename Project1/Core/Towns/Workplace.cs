@@ -6,6 +6,7 @@ using Project1.Core.Blocks;
 using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Input;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Networking;
 using Project1.Core.Rooms;
@@ -96,19 +97,15 @@ namespace Project1.Core.Towns
             int listw = 200, listh = 300;
             var box = new ScrollableBoxNewNewNew(listw, listh, ScrollModes.Vertical);
 
-            //Workplace selectedShop = null;
-            //var tablestockpiles = new TableCompact<Stockpile>()
-            //    .AddColumn(null, "sp", 200, st => new CheckBoxNew($"{st.Name}", () => { }, () => selectedShop.Stockpiles.Contains(st.ID)));
-
             var liststockpiles = new ListBoxNoScroll<Stockpile, Button>(i => new Button(i.Name));
-            var listfacilities = new ListBoxNoScroll<TargetArgs, Button>(
+            var listfacilities = new ListBoxNoScroll<CellSelection, Button>(
                 t => new Button(t.Block.Name,
                     () =>
                     {
-                        SelectionManager.Select(t);
+                        Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(t.Global, t.Global));
+                        //SelectionManager.Select(t);
                         Ingame.Instance.Camera.CenterOn(t.Global);
                     }));
-
 
             string nameGetter() => box.Tag is Workplace wp ? $" {wp.Name}" : "";
             var boxstockpiles = liststockpiles.ToPanelLabeled(() => $"Stockpiles{nameGetter()}");
@@ -149,7 +146,8 @@ namespace Project1.Core.Towns
                     boxLists.ClearControls();
 
                 liststockpiles.Clear().AddItems(shop.StockpilesInput.Select(i => shop.Town.ZoneManager.GetZone<Stockpile>(i)));
-                listfacilities.Clear().AddItems(shop.GetFacilities().Select(f => new TargetArgs(shop.Town.Map, f)));
+                //listfacilities.Clear().AddItems(shop.GetFacilities().Select(f => new TargetArgs(shop.Town.Map, f)));
+                listfacilities.Clear().AddItems(shop.GetFacilities().Select(f => new CellSelection(shop.Town.Map, f)));
 
                 boxtabs.ClearControls();
                 boxtabs.AddControlsLineWrap(new[] {

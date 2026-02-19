@@ -1,8 +1,10 @@
 ﻿using Project1.Core.AI.MetaRoles;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Entities;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Needs;
@@ -156,7 +158,8 @@ namespace Project1.Core.World
             {
                 var npc = props.Actor;
                 var btn = ButtonNew.CreateBig(
-                    () => SelectionManager.Select(npc),
+                    //() => SelectionManager.Select(npc),
+                    () => Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([npc])),
                     box.Viewport.Width,
                     npc.RenderIcon(),
                     new Label(() => npc.Npc.FullName) { TextColorFunc = ()=> npc.GetNameplateColor()},

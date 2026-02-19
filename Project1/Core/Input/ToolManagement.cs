@@ -67,7 +67,7 @@ namespace Project1.Core.Input
             cam.MousePicking(map, this.TargetOnlyBlocks);
             this.UpdateTargetNew();
 
-            if (this.Origin != null && this.Target != null && this.Origin.Global != this.Target.Global)
+            if (this.Origin is not null && this.Target is not null && this.Origin.Global != this.Target.Global)
             {
                 ToolManager.SetTool(new ToolSelect(this.Origin));
                 this.Origin = null;
@@ -80,7 +80,7 @@ namespace Project1.Core.Input
                 this.SelectionRectangleOrigin = null;
                 return;
             }
-            if (this.ScrollingMode != null)
+            if (this.ScrollingMode is not null)
             {
                 this.ScrollingMode();
             }
@@ -108,19 +108,31 @@ namespace Project1.Core.Input
 
         private void ClickTarget(TargetArgs target)
         {
+            if (target.Type == TargetType.Cell || target.Type == TargetType.BlockEntity)
+            {
+                IntVec3 global = target.Global;
+                Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(global, global));
+            }
+            else if(target.Type == TargetType.Entity)
+            {
+                Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([target.Entity as Entity], SelectionHelper.GetSelectionOp()));
+            }
+            return;
             if (InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
-                SelectionManager.AddToSelection(target);
+                //SelectionManager.AddToSelection(target);
+                //Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([target], SelectionOp.Add));
+                Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Add: target));
             else
             {
-                if(target.Type == TargetType.Cell)
+                if (target.Type == TargetType.Cell)
                 {
                     if (target.Map.TryGetBlockEntity(target.Global, out var blockEntity))
                     {
-                        Ingame.Instance.Events.Post(new PlayerSelectionEvent(Single: new TargetArgs(blockEntity)));
+                        Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new TargetArgs(blockEntity)));
                         return;
                     }
                 }
-                Ingame.Instance.Events.Post(new PlayerSelectionEvent(Single: target));
+                Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: target));
             }
         }
         

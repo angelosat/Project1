@@ -211,9 +211,18 @@ namespace Project1.Core.Blocks
         }
         internal virtual void GetSelectionInfo(Control container)
         {
+
             foreach (var c in this.Comps.Values)
-                c.GetSelectionInfo(container);
+                container.AddControls(c.GetInspectorControls());
+                //c.GetSelectionInfo(container);
         }
+        protected virtual IEnumerable<Control> GetInspectorControls()
+        {
+            foreach (var comp in this.Comps.Values)
+                foreach(var control in comp.GetInspectorControls())
+                    yield return control;
+        }
+        [Obsolete]
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
             foreach (var c in this.Comps.Values)
@@ -282,24 +291,29 @@ namespace Project1.Core.Blocks
 
         public void GetSelectionInfo(SelectionManager info)
         {
-            throw new NotImplementedException();
+            var box = new GroupBox();
+            this.GetSelectionInfo(box);
+            box.AlignTopToBottom();
+            info.AddInfo(box);
         }
 
         public IEnumerable<(string name, Action action)> GetInfoTabs()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            yield break;
         }
-
         public IEnumerable<Control> GetSelectionDetails()
         {
             throw new NotImplementedException();
         }
-
         public void GetQuickButtons(SelectionManager panel)
         {
-            throw new NotImplementedException();
+            this.GetQuickButtons(
+                (name, guiType) => panel.AddTabAction(name,
+                    () => UIManager.ToggleUnique(guiType, new TargetArgs(this.Map, this.OriginGlobal)))
+                ,this.Map,
+                this.Global);
         }
-
         public void TabGetter(Action<string, Action> getter)
         {
             throw new NotImplementedException();

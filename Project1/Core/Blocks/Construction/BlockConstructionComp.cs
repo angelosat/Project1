@@ -8,6 +8,7 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Blocks
 {
@@ -28,6 +29,10 @@ namespace Project1.Core.Blocks
         internal override void GetSelectionInfo(Control container)
         {
             container.AddControls(new Label($"Materials: {this.Fulfillment} {this.Args}"));
+        }
+        internal override IEnumerable<Control> GetInspectorControls()
+        {
+            yield return new Label($"Materials: {this.Fulfillment} {this.Args}");
         }
         internal ConstructionDesignationArgs Args { get; private set; }
         internal ProgressInt Progress, Fulfillment;

@@ -10,7 +10,11 @@ namespace Project1.Core.Input.Orders
     internal abstract class OrderCommandWorker
     {
         internal abstract bool CanIssue(ISelectable target);
-        internal void Execute(MapBase map, SelectionIntent selection) => this.Execute(map, selection.Resolve(map));
+        internal void Execute(MapBase map, SelectionIntent selection)
+        {
+            this.Execute(map, selection.Resolve(map));
+            map.Events.Post(new PlayerExecutedOrderCommentEvent());
+        }
         protected abstract void Execute(MapBase map, IEnumerable<ISelectable> targets);
     }
     internal sealed class OrderCommandMine : OrderCommandWorker

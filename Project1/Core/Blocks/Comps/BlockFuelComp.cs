@@ -6,6 +6,7 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Blocks
 {
@@ -46,6 +47,10 @@ namespace Project1.Core.Blocks
         internal override void GetSelectionInfo(Control container)
         {
             container.AddControls(new BarFinal(this.Fuel, () => "Fuel"));
+        }
+        internal override IEnumerable<Control> GetInspectorControls()
+        {
+            yield return new BarFinal(this.Fuel, () => "Fuel");
         }
         public override void Write(IDataWriter w)
         {

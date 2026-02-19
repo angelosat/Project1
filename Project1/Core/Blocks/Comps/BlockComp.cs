@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Blocks.Comps;
+using Project1.Core.Entities;
+using Project1.Core.Graphics;
 using Project1.Core.Legacy;
 using Project1.Core.Simulation;
-using Project1.Core.Entities;
 using Project1.Core.UI.Hud;
-using Project1.Core.Blocks.Comps;
-using Project1.Core.Graphics;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Project1.Core.Blocks
 {
@@ -57,6 +58,7 @@ namespace Project1.Core.Blocks
         internal virtual void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity) { }
         internal virtual void OnRemoved(MapBase map, IntVec3 global, BlockEntity parent) { }
         internal virtual void OnNeighborChanged(MapBase map, IntVec3 source) { }
+        [Obsolete]
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
            
@@ -93,6 +95,7 @@ namespace Project1.Core.Blocks
         internal virtual void Initialize() { }
 
         internal virtual void GetSelectionInfo(Control container) { }
+        internal virtual IEnumerable<Control> GetInspectorControls() { yield break; }
 
         internal virtual bool TryConsume(Entity item) => false;
     }

@@ -168,22 +168,22 @@ namespace Project1.Core.Blocks
             var fuelMissing = this.Fuel.Max - this.Fuel.Value;
             return (int)(fuelMissing / fuel);
         }
-        internal override void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
-        {
-            var bar = new Bar()
-            {
-                ColorFunc = () => Color.Lerp(Color.Red, Color.Lime, this.Fuel.Percentage),
-                Object = this.Fuel,
-                Name = "Fuel: ",
-            };
-            bar.TextFunc = () => bar.Percentage.ToString("##0%");
-            info.AddInfo(bar);
-            var box = new ScrollableBoxNewNew(150, Label.DefaultHeight * 2, ScrollModes.Vertical);
-            var boxcontents = new ListBoxObservable<ItemMaterialAmount>(this.StoredFuelItems);
-            box.AddControls(boxcontents);
-            info.AddInfo(box);
-            info.AddTabAction("Fuel", this.ToggleFiltersGui);
-        }
+        //internal override void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
+        //{
+        //    var bar = new Bar()
+        //    {
+        //        ColorFunc = () => Color.Lerp(Color.Red, Color.Lime, this.Fuel.Percentage),
+        //        Object = this.Fuel,
+        //        Name = "Fuel: ",
+        //    };
+        //    bar.TextFunc = () => bar.Percentage.ToString("##0%");
+        //    info.AddInfo(bar);
+        //    var box = new ScrollableBoxNewNew(150, Label.DefaultHeight * 2, ScrollModes.Vertical);
+        //    var boxcontents = new ListBoxObservable<ItemMaterialAmount>(this.StoredFuelItems);
+        //    box.AddControls(boxcontents);
+        //    info.AddInfo(box);
+        //    info.AddTabAction("Fuel", this.ToggleFiltersGui);
+        //}
         
         static Control FiltersGui;
         void ToggleFiltersGui()

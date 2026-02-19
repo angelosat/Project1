@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -29,14 +30,16 @@ namespace Project1.Core.Input
         internal void Add(ISelectable selectable)
         {
             if (selectable is CellSelection cell)
-                this.SetBox(cell.Global, cell.Global);
+                this.SetBox(cell.Map, cell.Global, cell.Global);
             this.Targets.Add(selectable);
         }
-        internal void SetBox(IntVec3 begin, IntVec3 end)
+        internal void SetBox(MapBase map, IntVec3 begin, IntVec3 end)
         {
             this.Begin = begin;
             this.End = end;
             this.Cells = [.. IntVec3Helper.GetBox(begin, end)];
+            this.Targets.Clear();
+            this.Targets = [.. this.Cells.Select(c => new CellSelection(map, c))];
         }
     }
 }

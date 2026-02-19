@@ -90,9 +90,9 @@ namespace Project1.Core.Towns.Zones
                 throw new Exception();
             foreach (var position in zone.Cells)
                 this._cellsToZones.Remove(position);
-            zone.Cells.Clear();
             this.ZonesById.Remove(zoneID);
             this.Map.Events.Post(new ZoneDeletedEvent(zone));
+            zone.Cells.Clear();
         }
         void AddZone(Zone zone)
         {

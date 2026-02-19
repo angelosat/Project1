@@ -119,6 +119,8 @@ namespace Project1.Core.Towns.Designations
                     foreach (var l in this.EntityDesignations.Where(d => d.Key.IsManual))
                         l.Value.Remove(entity);
             }
+            //if (this.Map.Net.IsClient)
+            //    SelectionManager.Instance.RefreshOrderButtons();
         }
         internal void Add(DesignationDef designation, IEnumerable<ISelectable> cells, bool isRemoval)
         {
@@ -147,6 +149,8 @@ namespace Project1.Core.Towns.Designations
                 default:
                     throw new UnreachableException();
             }
+            //if (this.Map.Net.IsClient)
+            //    SelectionManager.Instance.RefreshOrderButtons();
         }
         internal void Add(DesignationDef designation, IEnumerable<CellSelection> cells, bool isRemoval)
         {
@@ -182,9 +186,16 @@ namespace Project1.Core.Towns.Designations
                         list.Add(pos);
                 }
             }
+         
             this.UpdateOrderButtons();
         }
-        
+        public DesignationDef GetDesignation(CellSelection cell)
+        {
+            foreach (var d in this.CellDesignations)
+                if (d.Value.Contains(cell.Global))
+                    return d.Key;
+            return null;
+        }
         public DesignationDef GetDesignation(TargetArgs global)
         {
             return this.Designations.FirstOrDefault(d => d.Value.Contains(global)).Key; // will this return null if no designation?
@@ -282,9 +293,9 @@ namespace Project1.Core.Towns.Designations
         }
         internal override void UpdateOrderButtons()
         {
-            return;
             //if (this.Town.Net is Server)
             //    return;
+            return;
             //var selectedCells = SelectionManager.Instance.CurrentSelections.OfType<CellSelection>();
             //var selectedEntities = SelectionManager.Instance.CurrentSelections.OfType<Entity>();
             //var selectedBlockEntities = SelectionManager.Instance.CurrentSelections.OfType<BlockEntity>();

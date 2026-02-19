@@ -15,7 +15,8 @@ namespace Project1.Core.Input.Orders
     }
     internal sealed class OrderCommandMine : OrderCommandWorker
     {
-        internal override bool CanIssue(ISelectable target) => DesignationDefOf.Mine.Worker.IsValid(target);
+        internal override bool CanIssue(ISelectable target) 
+            => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Mine.Worker.IsValid(target);
         protected override void Execute(MapBase map, IEnumerable<ISelectable> targets) 
             => map.Town.DesignationManager.Add(DesignationDefOf.Mine, targets, false);
     }

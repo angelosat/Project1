@@ -84,7 +84,8 @@ namespace Project1.Core.UI.Hud
 
         private void OnBlocksUpdated(CellsInvalidatedEvent e)
         {
-            if (this.Selectable is TargetArgs target && target.Type == TargetType.Cell && e.Positions.Contains(target.Global))
+            //if (this.Selectable is TargetArgs target && target.Type == TargetType.Cell && e.Positions.Contains(target.Global))
+            if (this.Selectable is CellSelection cell && e.Positions.Contains(cell.Global))
                 this.Unselect();
         }
 
@@ -156,7 +157,8 @@ namespace Project1.Core.UI.Hud
         }
         void Unselect()
         {
-            this.SelectSingle(TargetArgs.Null);
+            //this.SelectSingle(TargetArgs.Null);
+            this.SelectSingle(null);
         }
         public ISelectable SelectedSource;// = TargetArgs.Null;
         ISelectable Selectable;
@@ -312,9 +314,10 @@ namespace Project1.Core.UI.Hud
 
         private void Select(IntVec3 begin, IntVec3 end)
         {
-            this.Selection.SetBox(begin, end);
+            this.Selection.SetBox(Ingame.CurrentMap, begin, end);
             this.Renderer.Invalidate();
             this.LabelName.TextFunc = () => $"Multiple cells x{this.Selection.Cells.Count}";
+            this.RefreshOrderButtons();
         }
         public static void Select(IEnumerable<GameObject> entities)
         {
@@ -459,6 +462,7 @@ namespace Project1.Core.UI.Hud
                     //var selectables = cell.Map.Town.QuerySelectables(cell);
                     //this.SelectedStack = selectables.GetEnumerator();
                     this.SelectedStackNew = cell.Map.Town.QuerySelectablesNew(cell);
+                    this._selectedStackIndex = 0;
                     //this.CycleTargets();
                     this.CycleTargetsNew();
                     if (cell.Map.IsUndiscovered(cell.Global))
@@ -499,7 +503,7 @@ namespace Project1.Core.UI.Hud
             this.PanelInfo.WindowManager.OnSelectedTargetChanged(target);
             this.PanelInfo.Validate(true);
 
-            this.UpdateOrderButtons();
+            this.RefreshOrderButtons();
         }
         void Show()
         {
@@ -589,7 +593,7 @@ namespace Project1.Core.UI.Hud
             foreach (var tar in targets)
                 tar.GetQuickButtons(this);
             Client.Instance.Map.Town.Select(null, this);
-            this.UpdateOrderButtons();
+            this.RefreshOrderButtons();
         }
 
         void AddTabAction(Button button)
@@ -819,8 +823,9 @@ namespace Project1.Core.UI.Hud
             //Select(selection.ResolveTargets(Ingame.GetMap()));
             Select(selection.Resolve(Ingame.GetMap()));
         }
-        void UpdateOrderButtons()
+        internal void RefreshOrderButtons()
         {
+            this.BoxOrderButtons.ClearControls();
             var map = Ingame.GetMap(); // temp
             //var targets = this.CurrentSelection.ResolveTargets(map);
             var targets = this.CurrentSelections;

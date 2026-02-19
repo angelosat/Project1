@@ -2,6 +2,7 @@
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Serialization;
+using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Serialization;
@@ -24,8 +25,10 @@ namespace Project1.Core.Input.Orders
             var selection = r.Read<SelectionIntent>();
             var map = endpoint.Map; // temp
             def.Worker.Execute(map, selection);
-            if(endpoint is Server server)
+            if (endpoint is Server server)
                 SendPlayerIssuedOrderCommand(server, def, selection);
+            else 
+                SelectionManager.Instance.RefreshOrderButtons();
         }
         private static void SendPlayerIssuedOrderCommand(NetEndpoint endpoint, OrderCommandDef def, SelectionIntent selection)
         {

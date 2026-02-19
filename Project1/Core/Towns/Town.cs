@@ -62,6 +62,8 @@ namespace Project1.Core.Towns
         {
             return this.Members.Select(id => this.Map.World.GetEntity(id) as Actor);
         }
+        public bool IsMember(Actor actor) => this.Members.Contains(actor.RefId);
+        
         public GameObject GetNpc(Guid guid)
         {
             throw new NotImplementedException();

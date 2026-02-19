@@ -98,11 +98,11 @@ namespace Project1.Core.Towns.Digging
 
         public void Edit()
         {
-            ToolManager.SetTool(new ToolDigging((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, DesignationDefOf.Mine)));
+            ToolManager.SetTool(new ToolDesignation((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, DesignationDefOf.Mine)));
         }
         public void EditDeconstruct()
         {
-            ToolManager.SetTool(new ToolDigging((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, DesignationDefOf.Deconstruct)));
+            ToolManager.SetTool(new ToolDesignation((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, DesignationDefOf.Deconstruct)));
         }
     }
 }

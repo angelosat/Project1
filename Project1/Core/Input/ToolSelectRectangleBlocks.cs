@@ -5,7 +5,7 @@ using Project1.Framework;
 
 namespace Project1.Core.Input
 {
-    class ToolSelectRectangleBlocks : ToolDigging
+    class ToolSelectRectangleBlocks : ToolDesignation
     {
         public ToolSelectRectangleBlocks()
         {

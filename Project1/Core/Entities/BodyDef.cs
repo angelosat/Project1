@@ -9,24 +9,24 @@ namespace Project1.Core.Entities
 {
     class BodyDef
     {
-        static readonly Sprite hips = new Sprite("bodyparts/hips") { OverlayName = "Pants", OriginGround = new Vector2(4, 0) };
-        static readonly Sprite torso = new Sprite("bodyparts/chestbw", new Vector2(6, 11), new Vector2(6, 11)) { OverlayName = "Shirt" };
-        static readonly Sprite rhand = new Sprite("bodyparts/rightHand/hand", new Vector2(5, 2), new Vector2(5, 2)) { OverlayName = "Skin" }
+        static public readonly Sprite hips = new Sprite("bodyparts/hips") { OverlayName = "Pants", OriginGround = new Vector2(4, 0) };
+        static public readonly Sprite torso = new Sprite("bodyparts/chestbw", new Vector2(6, 11), new Vector2(6, 11)) { OverlayName = "Shirt" };
+        static public readonly Sprite rhand = new Sprite("bodyparts/rightHand/hand", new Vector2(5, 2), new Vector2(5, 2)) { OverlayName = "Skin" }
                         .AddOverlay("Shirt", new Sprite("bodyparts/rightHand/sleeve") { OverlayName = "Shirt" });
-        static readonly Sprite lhand = new Sprite("bodyparts/leftHand/hand", new Vector2(0, 0), new Vector2(0, 0)) { OverlayName = "Skin" }
+        static public readonly Sprite lhand = new Sprite("bodyparts/leftHand/hand", new Vector2(0, 0), new Vector2(0, 0)) { OverlayName = "Skin" }
                  .AddOverlay("Shirt", new Sprite("bodyparts/leftHand/sleeve") { OverlayName = "Shirt" });
-        static readonly Sprite rleg = new Sprite("bodyparts/rightleg/rightleg", new Vector2(4, 0), new Vector2(4, 0)) { OverlayName = "Pants" }
+        static public readonly Sprite rleg = new Sprite("bodyparts/rightleg/rightleg", new Vector2(4, 0), new Vector2(4, 0)) { OverlayName = "Pants" }
                    .AddOverlay("Shoe", new Sprite("bodyparts/rightleg/rightshoe") { OverlayName = "Shoes" });
-        static readonly Sprite lleg = new Sprite("bodyparts/leftleg/leftleg", new Vector2(3, 0), new Vector2(3, 0)) { OverlayName = "Pants" }
+        static public readonly Sprite lleg = new Sprite("bodyparts/leftleg/leftleg", new Vector2(3, 0), new Vector2(3, 0)) { OverlayName = "Pants" }
                         .AddOverlay("Shoe", new Sprite("bodyparts/leftleg/leftshoe") { OverlayName = "Shoes" });
-        static readonly Sprite head = new Sprite("bodyparts/head/head", new Vector2(6, 12), new Vector2(6, 12)) { OverlayName = "Skin" }
+        static public readonly Sprite head = new Sprite("bodyparts/head/head", new Vector2(6, 12), new Vector2(6, 12)) { OverlayName = "Skin" }
                         .AddOverlay("Hair", new Sprite("bodyparts/hair1") { OverlayName = "Hair" })
                         .AddOverlay("Eyes", new Sprite("bodyparts/head/eyes") { OverlayName = "Eyes" });
 
-        static readonly Sprite spriteRibCage = new Sprite("mobs/skeleton/ribcage") { OverlayName = "Bone", OriginGround = new Vector2(8, 13) };                
-        static readonly Sprite spriteSkull = new Sprite("mobs/skeleton/skull") { OverlayName = "Bone", OriginGround = new Vector2(4, 8) };
-        static readonly Sprite spriteArm = new Sprite("mobs/skeleton/hand") { OverlayName = "Bone", OriginGround = new Vector2(2, 1) };
-        static readonly Sprite spriteLeg = new Sprite("mobs/skeleton/leg") { OverlayName = "Bone", OriginGround = new Vector2(3, 1) };
+        static public readonly Sprite spriteRibCage = new Sprite("mobs/skeleton/ribcage") { OverlayName = "Bone", OriginGround = new Vector2(8, 13) };                
+        static public readonly Sprite spriteSkull = new Sprite("mobs/skeleton/skull") { OverlayName = "Bone", OriginGround = new Vector2(4, 8) };
+        static public readonly Sprite spriteArm = new Sprite("mobs/skeleton/hand") { OverlayName = "Bone", OriginGround = new Vector2(2, 1) };
+        static public readonly Sprite spriteLeg = new Sprite("mobs/skeleton/leg") { OverlayName = "Bone", OriginGround = new Vector2(3, 1) };
 
         static public readonly Bone Skeleton =
             new Bone(BoneDefOf.Hips, spriteRibCage) { OriginGroundOffset = new Vector2(0, -11)}

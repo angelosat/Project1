@@ -14,12 +14,12 @@ using Project1.Core.Input.CellRendering;
 
 namespace Project1.Core.Towns.Digging
 {
-    class ToolDigging : ToolDesignate3D
+    class ToolDesignation : ToolDesignate3D
     {
         internal DesignationDef DesignationDef;
         readonly BlockRenderer Renderer = new();
         IntVec3 PrevEnd;
-        public ToolDigging()
+        public ToolDesignation()
         {
 
         }
@@ -27,7 +27,7 @@ namespace Project1.Core.Towns.Digging
         {
             return Icon.Construction;
         }
-        public ToolDigging(Action<IntVec3, IntVec3, bool> callback)
+        public ToolDesignation(Action<IntVec3, IntVec3, bool> callback)
         {
             this.Callback = callback;
         }

@@ -46,21 +46,7 @@ namespace Project1.Core.Towns.Designations
             foreach (var d in Def.GetDefs<DesignationDef>())
                 HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, $"Designate: {d.LabelReadable}", delegate { SetTool(d); });
         }
-        internal ObservableHashSet<TargetArgs> GetDesignations(DesignationDef des)
-        {
-            return this.Designations[des];
-        }
-        internal bool RemoveDesignation(DesignationDef des, TargetArgs target)
-        {
-            var removed = this.Designations[des].Remove(target);
-            if (removed)
-                this.UpdateOrderButtons();
-            return removed;
-        }
-        internal bool RemoveDesignation(DesignationDef des, IntVec3 target)
-        {
-            return this.RemoveDesignation(des, target.At(this.Map));
-        }
+        
         public DesignationManager(Town town) : base(town)
         {
             var desDefs = Def.GetDefs<DesignationDef>();
@@ -111,6 +97,21 @@ namespace Project1.Core.Towns.Designations
                         SelectionManager.AddInfoNew(this.UpdatePendingDesignationLabel(this.Designations.First(d => d.Value.Contains(target)).Key));
                 }
         }
+        internal ObservableHashSet<TargetArgs> GetDesignations(DesignationDef des)
+        {
+            return this.Designations[des];
+        }
+        internal bool RemoveDesignation(DesignationDef des, TargetArgs target)
+        {
+            var removed = this.Designations[des].Remove(target);
+            if (removed)
+                this.UpdateOrderButtons();
+            return removed;
+        }
+        internal bool RemoveDesignation(DesignationDef des, IntVec3 target)
+        {
+            return this.RemoveDesignation(des, target.At(this.Map));
+        }
         internal void Remove(IEnumerable<ISelectable> targets)
         {
             foreach (var item in targets)
@@ -121,15 +122,19 @@ namespace Project1.Core.Towns.Designations
                 else if (item is Entity entity)
                     foreach (var l in this.EntityDesignations.Where(d => d.Key.IsManual))
                         l.Value.Remove(entity);
+                else if(item is BlockEntity bEntity)
+                    foreach (var l in this.BlockEntityDesignations.Where(d => d.Key.IsManual))
+                        l.Value.Remove(bEntity);
             }
+            this.Map.Events.Post(new DesignationsChangedEvent(targets));
         }
-        internal void Add(DesignationDef designation, IEnumerable<ISelectable> cells, bool isRemoval)
+        internal void Add(DesignationDef designation, IEnumerable<ISelectable> targets, bool isRemoval)
         {
             ArgumentNullException.ThrowIfNull(designation, $"Use {this.Remove} for generic designation removal instead of passing a null desigation def");
             switch (designation.TargetType)
             {
                 case TargetType.Cell:
-                    foreach (var cell in cells.OfType<CellSelection>())
+                    foreach (var cell in targets.OfType<CellSelection>())
                     {
                         if (isRemoval && designation.IsManual)
                             this.CellDesignations[designation].Remove(cell.Global);
@@ -139,7 +144,7 @@ namespace Project1.Core.Towns.Designations
                     break;
 
                 case TargetType.Entity:
-                    foreach (var entity in cells.OfType<Entity>())
+                    foreach (var entity in targets.OfType<Entity>())
                     {
                         if (isRemoval && designation.IsManual)
                             this.EntityDesignations[designation].Remove(entity);
@@ -147,9 +152,21 @@ namespace Project1.Core.Towns.Designations
                             this.EntityDesignations[designation].Add(entity);
                     }
                     break;
+
+                case TargetType.BlockEntity:
+                    foreach (var bEntity in targets.OfType<BlockEntity>())
+                    {
+                        if (isRemoval && designation.IsManual)
+                            this.BlockEntityDesignations[designation].Remove(bEntity);
+                        else if (designation.Worker.IsValid(bEntity))
+                            this.BlockEntityDesignations[designation].Add(bEntity);
+                    }
+                    break;
+
                 default:
                     throw new UnreachableException();
             }
+            this.Map.Events.Post(new DesignationsChangedEvent(targets));
         }
         internal void Add(DesignationDef designation, IEnumerable<CellSelection> cells, bool isRemoval)
         {
@@ -159,7 +176,6 @@ namespace Project1.Core.Towns.Designations
         {
 
         }
-
         internal void Add(DesignationDef designation, IEnumerable<IntVec3> cells, bool isRemoval)
         {
             if (designation.TargetType != TargetType.Cell)
@@ -206,7 +222,7 @@ namespace Project1.Core.Towns.Designations
                 CellSelection => this.CellDesignations.Values.Any(v => v.Contains(target.Global)),
                 Entity => this.EntityDesignations.Values.Any(v => v.Contains(target)),
                 BlockEntity => this.BlockEntityDesignations.Values.Any(v => v.Contains(target)),
-                _ => throw new UnreachableException()
+                _ => false
             };
         }
         //internal bool IsDesignation(ISelectable target)
@@ -295,11 +311,11 @@ namespace Project1.Core.Towns.Designations
         }
         private static void SetTool(DesignationDef d)
         {
-            ToolManager.SetTool(new ToolDigging((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, d)) { DesignationDef = d });
+            ToolManager.SetTool(new ToolDesignation((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, d)) { DesignationDef = d });
         }
         static void Cancel()
         {
-            ToolManager.SetTool(new ToolDigging((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, null)));
+            ToolManager.SetTool(new ToolDesignation((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, null)));
         }
         internal override void UpdateOrderButtons()
         {

@@ -55,7 +55,7 @@ namespace Project1.Core.Towns.Designations
         static public void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var remove = r.ReadBoolean();
+            var isRemoval = r.ReadBoolean();
             var selectionType = (SelectionType)r.ReadInt32();
             IEnumerable<TargetArgs> targetList;
             DesignationDef designation;
@@ -64,9 +64,9 @@ namespace Project1.Core.Towns.Designations
                 var begin = r.ReadIntVec3();
                 var end = r.ReadIntVec3();
                 var positions = new BoundingBox(begin, end).ToListIntVec3();
-                designation = remove ? null : r.ReadDef<DesignationDef>();
+                designation = isRemoval ? null : r.ReadDef<DesignationDef>();
                 if (net is Server)
-                    Send(net, remove, begin, end, designation);
+                    Send(net, isRemoval, begin, end, designation);
                 targetList = positions.Select(p => new TargetArgs(net.Map, p));
             }
             else if (selectionType == SelectionType.List)
@@ -74,13 +74,13 @@ namespace Project1.Core.Towns.Designations
                 targetList = r.ReadListTargets(net);
                 foreach (var t in targetList)
                     t.Map = net.Map;
-                designation = remove ? null : r.ReadDef<DesignationDef>();
+                designation = isRemoval ? null : r.ReadDef<DesignationDef>();
                 if (net is Server)
-                    Send(net, remove, targetList, designation);
+                    Send(net, isRemoval, targetList, designation);
             }
             else
                 throw new Exception();
-            net.Map.Town.DesignationManager.Add(designation, targetList, remove);
+            net.Map.Town.DesignationManager.Add(designation, targetList, isRemoval);
         }
     }
 }

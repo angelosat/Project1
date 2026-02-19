@@ -10,6 +10,7 @@ using Project1.Core.Input.Orders;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Zones;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -44,14 +45,14 @@ namespace Project1.Core.UI.Hud
         public IReadOnlyCollection<ISelectable> CurrentSelections => this.Selection.Targets;
         static SelectionManager()
         {
-            Registry.MapEventHooksClient.Register<PlayerExecutedOrderCommentEvent>(OnPlayerExecutedOrderCommand);
+            //Registry.MapEventHooksClient.Register<PlayerExecutedOrderCommentEvent>(OnPlayerExecutedOrderCommand);
         }
-        private static void OnPlayerExecutedOrderCommand(PlayerExecutedOrderCommentEvent e)
-        {
-            if (e.Map != Ingame.CurrentMap)
-                return;
-            Instance.RefreshOrderButtons();
-        }
+        //private static void OnPlayerExecutedOrderCommand(PlayerExecutedOrderCommentEvent e)
+        //{
+        //    if (e.Map != Ingame.CurrentMap)
+        //        return;
+        //    Instance.RefreshOrderButtons();
+        //}
 
         static readonly IconButton IconSlice = new(Icon.ArrowDown)
         {
@@ -69,7 +70,15 @@ namespace Project1.Core.UI.Hud
 
             map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
             map.Events.ListenTo<CellsInvalidatedEvent>(OnBlocksUpdated);
+
+            map.Events.ListenTo<DesignationsChangedEvent>(OnDesignationsChanged);
         }
+
+        private void OnDesignationsChanged(DesignationsChangedEvent e)
+        {
+            this.RefreshOrderButtons();
+        }
+
         internal void Init(Ingame ingame)
         {
             ingame.Events.ListenTo<PlayerSelectionSingleEvent>(OnPlayerSelectionSingle);
@@ -368,7 +377,7 @@ namespace Project1.Core.UI.Hud
                 case CellSelection cell:
                     this.Selection.Add(target);
                     this.SelectedStackNew = cell.Map.Town.QuerySelectablesNew(cell);
-                    this._selectedStackIndex = 0;
+                    //this._selectedStackIndex = 0;
                     this.CycleTargetsNew();
                     if (cell.Map.IsUndiscovered(cell.Global))
                         this.LabelName.TextFunc = () => "Unknown block";
@@ -591,11 +600,11 @@ namespace Project1.Core.UI.Hud
         internal void RefreshOrderButtons()
         {
             this.BoxOrderButtons.ClearControls();
-            var map = Ingame.GetMap(); // temp
-            var targets = this.CurrentSelections;
+            var map = Ingame.CurrentMap;
+            var targets = this.SelectedStackCurrent is not null ? [this.SelectedStackCurrent] : this.CurrentSelections;
             foreach (var orderdef in AllOrderCommands.Value)
             {
-                if (targets.Any(orderdef.Worker.CanIssue))
+                if (orderdef.Worker.CanIssue(targets))// targets.Any(orderdef.Worker.CanIssue))
                 {
                     var runtime = new OrderCommandRuntime(orderdef);
                     var button = new QuickButton(new Icon(orderdef.Sprite), null, orderdef.LabelReadable)
@@ -605,6 +614,8 @@ namespace Project1.Core.UI.Hud
                     this.BoxOrderButtons.AddControls(button);
                 }
             }
+            if (this.BoxOrderButtons.Controls.Count == 0)
+                this.BoxOrderButtons.Hide();
         }
         internal static void AddButton(IconButton button, Action<List<ISelectable>> action, ISelectable target)
         {

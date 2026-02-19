@@ -12,6 +12,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Policy;
 
@@ -93,6 +94,12 @@ namespace Project1.Core.Towns.Zones
             this.ZonesById.Remove(zoneID);
             this.Map.Events.Post(new ZoneDeletedEvent(zone));
             zone.Cells.Clear();
+        }
+        internal void DeleteZone(IntVec3 cell)
+        {
+            var zone = this.GetZoneAt(cell);
+            if (zone is not null)
+                this.DeleteZone(zone.ID);
         }
         void AddZone(Zone zone)
         {

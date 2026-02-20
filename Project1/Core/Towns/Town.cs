@@ -204,6 +204,11 @@ namespace Project1.Core.Towns
             foreach (var c in this.TownComponents)
                 c.OnCitizenRemoved(id);
         }
+        public void ToggleMembers(IEnumerable<Actor> actors)
+        {
+            foreach (var actor in actors) 
+                this.ToggleMember(actor);
+        }
         public void ToggleMember(Actor entity)
         {
             if (!this.Members.Contains(entity.RefId))

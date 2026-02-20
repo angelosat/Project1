@@ -23,10 +23,10 @@ namespace Project1.Core
             {
                 if (_Registry == null)
                 {
-                    _Registry = new List<GameMode>()
-                    {
+                    _Registry =
+                    [
                         StaticMaps
-                    };
+                    ];
                 }
                 return _Registry;
             }

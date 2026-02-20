@@ -75,26 +75,32 @@ namespace Project1.Core.Input.Orders
     }
     internal sealed class OrderToggleTownMember : UICommandWorker
     {
-        internal override bool CanIssue(ISelectable target) => target is Actor actor;
-        protected override void Execute(MapBase map, IEnumerable<ISelectable> targets)
-        {
-            foreach (var actor in targets.OfType<Actor>())
-                map.Town.ToggleMember(actor);
-        }
-
+        internal override bool CanIssue(ISelectable target) => target is Actor;
         internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
         {
-            Ingame.Instance.Events.Post(new playerto)
+            Ingame.Instance.Events.Post(new PlayerTogglingTownMembersEvent([.. selection.Targets.OfType<Actor>()]));
         }
     }
-    internal sealed class OrderControlTownMember : OrderCommandWorker
+    internal sealed class OrderOrderTownMember : UICommandWorker
     {
-        protected override void Execute(MapBase map, IEnumerable<ISelectable> targets)
-        {
-            ToolManager.SetTool(new ToolCommandNpc([.. targets.OfType<Actor>()]));
-        }
+        //protected override void Execute(MapBase map, IEnumerable<ISelectable> targets)
+        //{
+        //    ToolManager.SetTool(new ToolCommandNpc([.. targets.OfType<Actor>()]));
+        //}
         internal override bool CanIssue(IReadOnlyCollection<ISelectable> targets)
             => targets.Count == 1 && this.CanIssue(targets.First());
         internal override bool CanIssue(ISelectable target) => target is Actor actor && actor.Map.Town.IsMember(actor);
+
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+            => ToolManager.SetTool(new ToolCommandNpc([.. selection.Targets.OfType<Actor>()]));
+    }
+    internal sealed class OrderControlActor : UICommandWorker
+    {
+        internal override bool CanIssue(IReadOnlyCollection<ISelectable> targets)
+            => targets.Count == 1 && this.CanIssue(targets.First());
+        internal override bool CanIssue(ISelectable target) => target is Actor;
+
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+            => Ingame.Instance.Events.Post(new PlayerControlActorRequestEvent(selection.Targets.FirstOrDefault() as Actor));
     }
 }

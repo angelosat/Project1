@@ -255,7 +255,7 @@ namespace Project1.Core.Input
             StopMoving();
             StartWalk(false);
             StartSprint(false);
-            PacketControlNpc.Send(Client.Instance, Client.Instance.GetPlayer().ID, -1);
+            PacketControlActor.Send(Client.Instance, Client.Instance.GetPlayer().ID, -1);
         }
     }
 }

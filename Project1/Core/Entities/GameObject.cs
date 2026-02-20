@@ -1065,7 +1065,7 @@ namespace Project1.Core.Entities
       
         internal List<GameObject> GetPossesions()
         {
-            return NpcComponent.GetPossesions(this).Select(id => this.World.GetEntity(id) as GameObject).ToList();
+            return NpcComponent.GetPossessions(this).Select(id => this.World.GetEntity(id) as GameObject).ToList();
         }
 
         internal Need GetNeed(NeedDef def)

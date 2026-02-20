@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.Input;
-using Project1.Framework.UI;
-using Project1.Framework.Events;
 using Project1.Core.Components;
+using Project1.Core.Entities;
+using Project1.Core.Graphics;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Packets;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.Graphics;
+using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using Project1.Framework.Input;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Input
 {
@@ -35,8 +35,21 @@ namespace Project1.Core.Input
             HotkeyManager.RegisterHotkey(HotkeyContext, "Rotate construction clockwise", () => CurrentTool.RotateClockwise(), System.Windows.Forms.Keys.E);
             HotkeyManager.RegisterHotkey(HotkeyContext, "Rotate construction anticlockwise", () => CurrentTool.RotateAntiClockwise(), System.Windows.Forms.Keys.Q);
         }
+        internal void Bind(MapBase map)
+        {
+            map.Events.ListenTo<PlayerControlActorEvent>(OnPlayerControlActor);
+        }
 
-        readonly Type DefaultToolType = typeof(ToolManagement);
+        private void OnPlayerControlActor(PlayerControlActorEvent e)
+        {
+            var actor = e.Actor;
+            if (Engine.Map != actor.Map)
+                throw new Exception();
+            actor.Map.Camera.ToggleFollowing(actor);
+            SetTool(actor is not null ? ToolControlActor : null);
+        }
+
+            readonly Type DefaultToolType = typeof(ToolManagement);
         internal ControlTool GetDefaultTool()
         {
             return Activator.CreateInstance(DefaultToolType) as ControlTool;

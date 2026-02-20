@@ -15,46 +15,15 @@ using System.Linq;
 
 namespace Project1.Core.Entities.Actors
 {
-    [EnsureStaticCtorCall]
-    internal static class PacketsTowns
-    {
-        static readonly PacketId pToggleTownMemeber;
-        static PacketsTowns()
-        {
-            pToggleTownMemeber = Registry.PacketHandlers.Register(OnToggleTownMember);
-            Registry.PlayerInputEventHooks.Register<PlayerTogglingTownMemberEvent>(OnPlayerTogglingTownMember);
-        }
-
-        private static void OnPlayerTogglingTownMember(PlayerTogglingTownMemberEvent @event)
-        {
-            throw new NotImplementedException();
-        }
-
-    }
     class NpcComponent : EntityComp
     {
         public new class Spec : Spec<NpcComponent> { }
         public override EntityCompDef CompDef => EntityCompDefOf.Npc;
-
-        static int p;
-        internal static void Init()
-        {
-            p = Registry.PacketHandlers.Register(ReceiveCitizenshipToggle);
-        }
-
+        HashSet<int> Possesions = [];
         public string FullName => this.FirstName + (this.LastName.IsNullEmptyOrWhiteSpace() ? "" : string.Format(" {0}", this.LastName));
 
         static public List<GameObject> NpcDirectory = new List<GameObject>();
-        internal override void Resolve()
-        {
-            this.GenerateFullName();
-        }
-
-        private void GenerateFullName()
-        {
-            this.FirstName = GetRandomName();
-            this.LastName = GetRandomName();
-        }
+        
         const int NameCharLimit = 16;
         string _FirstName = "", _LastName = "";
         public string FirstName
@@ -91,37 +60,44 @@ namespace Project1.Core.Entities.Actors
         {
 
         }
-        #region possesions
-        HashSet<int> Possesions = new();
+        internal override void Resolve()
+        {
+            this.GenerateFullName();
+        }
+        private void GenerateFullName()
+        {
+            this.FirstName = GetRandomName();
+            this.LastName = GetRandomName();
+        }
 
-        static public HashSet<int> GetPossesions(GameObject actor)
+        static public HashSet<int> GetPossessions(GameObject actor)
         {
             return actor.GetComponent<NpcComponent>().Possesions;
         }
-        static public void AddPossesion(GameObject actor, GameObject item)
+        static public void AddPossession(GameObject actor, GameObject item)
         {
-            var poss = GetPossesions(actor);
+            var poss = GetPossessions(actor);
             if (poss.Contains(item.RefId))
                 throw new Exception();
             poss.Add(item.RefId);
             item.SetOwner(actor);
         }
-        static public void RemovePossesion(GameObject actor, GameObject item)
+        static public void RemovePossession(GameObject actor, GameObject item)
         {
-            var poss = GetPossesions(actor);
+            var poss = GetPossessions(actor);
             poss.Remove(item.RefId);
             item.SetOwner(null);
         }
-        static public bool HasPossesion(GameObject actor, GameObject item)
+        static public bool HasPossession(GameObject actor, GameObject item)
         {
-            var poss = GetPossesions(actor);
+            var poss = GetPossessions(actor);
             return poss.Contains(item.RefId);
         }
-        #endregion
 
-        static List<string> NameParts = new List<string>() { "an", "ro", "sta", "da", "be", "an", "stath", "jo", "cam", "gro", "ma", "ob", "the", "pa", "er", "ble", "arn", "old", "ohn", "ni", "ick", "ber", "tie", "dim", "ste", "ve" };
 
-        static Random Random = new Random();
+        static readonly List<string> NameParts = ["an", "ro", "sta", "da", "be", "an", "stath", "jo", "cam", "gro", "ma", "ob", "the", "pa", "er", "ble", "arn", "old", "ohn", "ni", "ick", "ber", "tie", "dim", "ste", "ve"];
+
+        static Random Random = new();
         static public string GetRandomFullName()
         {
             var r = Random;   
@@ -186,45 +162,19 @@ namespace Project1.Core.Entities.Actors
             info.AddButton(IconOrder, Command, parent);
             var actor = parent as Actor;
             info.AddButton(IconControl, Control, parent, true);
-            info.AddButton(IconToggleCitizen, ToggleCitizenship, parent, true);
         }
         static IconButton IconOrder = new('☞') { HoverText = "Order Move" };
         static IconButton IconControl = new(Icon.ArrowUp) { HoverText = "Take Control" };
-        static IconButton IconToggleCitizen = new() { HoverText = "Toggle citizenship" };
         public override string Name { get; } = "Npc";
         static void Command(List<ISelectable> actors)
         {
-            //ToolManager.SetTool(new ToolCommandNpc(actors.Select(t=>t.Object).ToList()));
             ToolManager.SetTool(new ToolCommandNpc([.. actors.Cast<Actor>()]));
         }
         static void Control(List<ISelectable> actors)
         {
             var actor = actors.OfType<Actor>().First();
             if (actor.IsTownMember)
-                PacketControlNpc.Send(Client.Instance, Client.Instance.GetPlayer().ID, actor.RefId);
-        }
-        private void ToggleCitizenship(List<ISelectable> actors)
-        {
-            var actor = actors.OfType<Actor>().First();
-            Client.Instance.BeginPacket(p)
-                .Write(Client.Instance.GetPlayer().ID)
-                .Write(actor.RefId);
-        }
-        private static void ReceiveCitizenshipToggle(NetEndpoint net, Packet pck)
-        {
-            var r = pck.PacketReader;
-            var plID = r.ReadInt32();
-            var actorID = r.ReadInt32();
-            var actor = net.World.GetEntity<Actor>(actorID);
-            actor.Map.Town.ToggleMember(actor);
-            if(net is Server)
-            {
-                //var w = net.GetOutgoingStreamOrderedReliable();
-                //w.Write(p);
-                net.BeginPacket(p)
-                    .Write(Client.Instance.GetPlayer().ID)
-                    .Write(actor.RefId);
-            }
+                PacketControlActor.Send(Client.Instance, Client.Instance.GetPlayer().ID, actor.RefId);
         }
         internal override void OnGameEvent(GameObject parent, GameEvent e)
         {
@@ -245,7 +195,7 @@ namespace Project1.Core.Entities.Actors
 
                 case Message.Types.ObjectDisposed:
                     var item = e.Parameters[0] as GameObject;
-                    RemovePossesion(parent, item);
+                    RemovePossession(parent, item);
                     break;
 
                 case Message.Types.ItemOwnerChanged:

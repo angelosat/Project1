@@ -31,7 +31,7 @@ namespace Project1.Core.Networking.Inventory
             var actor = net.World.GetEntity<Actor>(actorID);
             actor.Inventory.Drop(item, amount); // TODO: this happens immediately when the game is paused. maybe create an interaction with a 1 frame duration? NO it's good that it happens while the game is paused
             if (amount == item.StackSize)
-                NpcComponent.RemovePossesion(actor, item);
+                NpcComponent.RemovePossession(actor, item);
             if (net is Server)
             {
                 actor.AI.State.ItemPreferences.ForceDrop(item); /// TODO better make the ItemPreferencesmanager subscribe to a entitydropitem event, or even a entityspawnevent (slower to check)

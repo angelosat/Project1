@@ -13,6 +13,8 @@ namespace Project1.Core.Input.Orders
         public static readonly OrderCommandDef Chop = new("Chop", ItemContent.AxeHandle, typeof(OrderCommandChop));
         public static readonly OrderCommandDef DeleteZone = new("Delete", ItemContent.BerryBushFruit, typeof(OrderCommandDeleteZone));
         public static readonly OrderCommandDef ToggleTownMember = new("MakeTownMember", BodyDef.head, typeof(OrderToggleTownMember));
+        public static readonly OrderCommandDef OrderTownMember = new("OrderTownMember", BodyDef.torso, typeof(OrderOrderTownMember));
+        public static readonly OrderCommandDef ControlActor = new("ControlActor", BodyDef.hips, typeof(OrderControlActor));
 
         static OrderCommandDefOf()
         {

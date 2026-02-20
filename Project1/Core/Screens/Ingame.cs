@@ -11,7 +11,6 @@ using Project1.Framework.Events;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Screens
 {
@@ -43,7 +42,8 @@ namespace Project1.Core.Screens
             this.Hud.Show(WindowManager);
             this.NameplateManager = new NameplateManager(net);
             this.NameplateManager.Show(WindowManager);
-            ToolManager = ToolManager.Instance;
+            this.ToolManager = ToolManager.Instance;
+            this.ToolManager.Bind(net.Map);
             KeyHandlers.Clear();
             KeyHandlers.Push(ToolManager);
             KeyHandlers.Push(WindowManager);
@@ -55,7 +55,6 @@ namespace Project1.Core.Screens
             Registry.PlayerInputEventHooks.HookTo(this.Events);
             return this;
         }
-
         static public NetEndpoint Net => DrawServer ? Server.Instance : Client.Instance;
         public Hud Hud;
         public override void Update(Game1 game, GameTime gt)
@@ -67,7 +66,6 @@ namespace Project1.Core.Screens
             WindowManager.Update(game, gt);
             NotificationArea.Update();
         }
-
         public override void Draw(SpriteBatch sb)
         {
             this.Scene.ObjectBounds.Clear();

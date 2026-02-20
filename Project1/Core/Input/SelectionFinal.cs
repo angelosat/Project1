@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Simulation;
+using Project1.Core.Towns.Zones;
 using Project1.Core.UI;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -10,18 +11,16 @@ namespace Project1.Core.Input
     internal class SelectionFinal
     {
         internal HashSet<ISelectable> Targets = [];
-        //internal HashSet<IntVec3> Cells = [];
         internal IntVec3? Begin, End;
-        //internal IEnumerable<IntVec3> Cells
-        //    => this.Begin.HasValue ? IntVec3Helper.GetBox(this.Begin.Value, this.End.Value) : [];
         internal IEnumerable<IntVec3> Cells
             => this.Targets.OfType<CellSelection>().Select(c => c.Global);
+        internal IReadOnlyCollection<Entity> Entities
+            => [.. this.Targets.OfType<Entity>()];
+        internal Zone Zone => this.Targets.Count == 1 && this.Targets.Single() is CellSelection cell ? cell.Map.Town.GetZoneAt(cell.Global) : null;
         internal SelectionIntent ToSelectionIntent()
         {
             if(this.Begin.HasValue)
-            {
                 return new(this.Begin.Value, this.End.Value);
-            }
             return new(this.Targets.Select(t => (EntityRefId)(t as Entity).RefId));
         }
         internal void Clear()

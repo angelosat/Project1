@@ -34,7 +34,7 @@ namespace Project1.Core.Helpers
             }
             return w;
         }
-        public static IDataWriter Write(this IDataWriter w, Def def) { w.Write(def.Name); return w; }
+        public static IDataWriter Write(this IDataWriter w, Def def) { w.Write(def?.Name ?? string.Empty); return w; }
         public static IDataWriter Write(this IDataWriter w, ICollection<TargetArgs> list)
         {
             w.Write(list.Count);

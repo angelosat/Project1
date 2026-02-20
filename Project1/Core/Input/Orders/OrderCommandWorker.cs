@@ -5,6 +5,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Zones;
 using Project1.Core.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,65 +13,78 @@ namespace Project1.Core.Input.Orders
 {
     internal abstract class CommandWorker
     {
-        internal abstract void Issue(OrderCommandRuntime runtime, SelectionIntent selection);
+        internal abstract void Issue(OrderCommandRuntime runtime, SelectionFinal selection);
         internal abstract bool CanIssue(ISelectable target);
         internal virtual bool CanIssue(IReadOnlyCollection<ISelectable> targets) => targets.Any(this.CanIssue);
-        protected abstract void Execute(MapBase map, IEnumerable<ISelectable> targets);
+        [Obsolete]
+        protected virtual void Execute(MapBase map, IEnumerable<ISelectable> targets) { }
+        [Obsolete]
         internal void Execute(MapBase map, SelectionIntent selection) => this.Execute(map, selection.Resolve(map));
 
     }
     internal abstract class OrderCommandWorker : CommandWorker
     {
-        internal sealed override void Issue(OrderCommandRuntime runtime, SelectionIntent selection)
-        {
-            Ingame.Instance.Events.Post(new PlayerIssuedOrderCommandEvent(runtime.Def, selection));
-        }
-        //internal void Execute(MapBase map, SelectionIntent selection) => this.Execute(map, selection.Resolve(map));
+        internal sealed override void Issue(OrderCommandRuntime runtime, SelectionFinal selection) { }
     }
     internal abstract class UICommandWorker : CommandWorker
     { 
     }
-    internal sealed class OrderCommandMine : OrderCommandWorker
+    internal sealed class OrderCommandMine : UICommandWorker
+    {
+        internal override bool CanIssue(ISelectable target)
+            => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Mine.Worker.IsValid(target);
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+            => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Mine, selection.Begin.Value, selection.End.Value, false));
+    }
+    internal sealed class OrderCommandChop : UICommandWorker
     {
         internal override bool CanIssue(ISelectable target) 
-            => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Mine.Worker.IsValid(target);
-        protected override void Execute(MapBase map, IEnumerable<ISelectable> targets) 
-            => map.Town.DesignationManager.Add(DesignationDefOf.Mine, targets, false);
+            => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Chop.Worker.IsValid(target);
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+            => Ingame.Instance.Events.Post(new PlayerDesignationEntitiesEvent(DesignationDefOf.Chop, selection.Entities, false));
     }
-    internal sealed class OrderCommandChop : OrderCommandWorker
-    {
-        internal override bool CanIssue(ISelectable target) => DesignationDefOf.Chop.Worker.IsValid(target);
-        protected override void Execute(MapBase map, IEnumerable<ISelectable> targets)
-            => map.Town.DesignationManager.Add(DesignationDefOf.Chop, targets, false);
-    }
-    internal sealed class OrderCommandRemoveDesignation : OrderCommandWorker
+    internal sealed class OrderCommandRemoveDesignation : UICommandWorker
     {
         internal override bool CanIssue(ISelectable target) => target.Map.Town.DesignationManager.IsDesignation(target);
-        protected override void Execute(MapBase map, IEnumerable<ISelectable> targets)
-            => map.Town.DesignationManager.Remove(targets);
+        internal override bool CanIssue(IReadOnlyCollection<ISelectable> targets)
+            => targets.Any(this.CanIssue);
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        {
+            if(selection.Begin.HasValue)
+                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(null, selection.Begin.Value, selection.End.Value, true));
+            else if(selection.Entities.Count != 0)
+                Ingame.Instance.Events.Post(new PlayerDesignationEntitiesEvent(null, selection.Entities, true));
+        }
     }
-    internal sealed class OrderCommandDeleteZone : OrderCommandWorker
+    internal sealed class OrderCommandDeleteZone : UICommandWorker
     {
         internal override bool CanIssue(ISelectable target) => target is Zone;
         protected override void Execute(MapBase map, IEnumerable<ISelectable> targets)
             => map.Town.ZoneManager.DeleteZone(targets.OfType<CellSelection>().Select(c=>c.Global).First());
-    }
-    internal sealed class OrderCommandForbid : OrderCommandWorker
-    {
-        internal override bool CanIssue(ISelectable target) => target is Entity entity && entity.IsForbiddable();
-        protected override void Execute(MapBase map, IEnumerable<ISelectable> targets)
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
         {
-            foreach (var entity in targets.OfType<Entity>())
-                entity.ToggleForbidden();
+            if (selection.Zone is Zone zone)
+                Ingame.Instance.Events.Post(new PlayerDeletingZoneEvent(zone));
         }
     }
-    internal sealed class OrderToggleTownMember : OrderCommandWorker
+    internal sealed class OrderCommandForbid : UICommandWorker
+    {
+        internal override bool CanIssue(ISelectable target) => target is Entity entity && entity.IsForbiddable();
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+            => Ingame.Instance.Events.Post(new PlayerForbiddingItemsEvent(selection.Entities));
+    }
+    internal sealed class OrderToggleTownMember : UICommandWorker
     {
         internal override bool CanIssue(ISelectable target) => target is Actor actor;
         protected override void Execute(MapBase map, IEnumerable<ISelectable> targets)
         {
             foreach (var actor in targets.OfType<Actor>())
                 map.Town.ToggleMember(actor);
+        }
+
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        {
+            Ingame.Instance.Events.Post(new playerto)
         }
     }
     internal sealed class OrderControlTownMember : OrderCommandWorker

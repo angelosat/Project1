@@ -85,7 +85,8 @@ namespace Project1.Core.Towns.Zones
             this.AddZone(zone);
             return zone;
         }
-        internal void DeleteZone(int zoneID)
+        internal void DeleteZone(Zone zone) => this.DeleteZone(zone.ID);
+        internal void DeleteZone(ZoneId zoneID)
         {
             if (!this.ZonesById.TryGetValue(zoneID, out var zone))
                 throw new Exception();
@@ -186,7 +187,13 @@ namespace Project1.Core.Towns.Zones
                     zoneBelow.OnBlockChangedNew(cell.Below);
             }
         }
-        internal Zone PlayerEdit(int zoneID, ZoneDef zoneType, IntVec3 a, int w, int h, bool remove)
+        internal Zone PlayerEdit(ZoneId zoneID, ZoneDef zoneType, IntVec3 begin, IntVec3 end, bool IsRemoval)
+        {
+            var w = end.X - begin.X;
+            var h = end.Y - begin.Y;
+            return this.PlayerEdit(zoneID, zoneType, begin, w, h, IsRemoval);
+        }
+        internal Zone PlayerEdit(ZoneId zoneID, ZoneDef zoneType, IntVec3 a, int w, int h, bool remove)
         {
             if (remove)
                 foreach (var zone in this.ZonesById.Values.ToList())

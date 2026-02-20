@@ -24,7 +24,7 @@ namespace Project1.Core.Towns.Tools
         int Width, Height;
         bool Enabled;
         bool Removing;
-        protected Action<IntVec3, int, int, bool> Add;
+        protected Action<IntVec3, int, int, bool> Callback;
         public override bool TargetOnlyBlocks => true;
         readonly BlockRenderer Renderer = new(Block.FaceHighlights[-IntVec3.UnitZ]); //new();// 
         readonly Icon _icon = new(UIManager.Icons32, 12, 32);
@@ -97,7 +97,7 @@ namespace Project1.Core.Towns.Tools
 
             var begin = new IntVec3(x, y, this.Begin.Z);
             var end = new IntVec3(x + this.Width - 1, y + this.Height - 1, this.Begin.Z);
-            this.Add(begin, this.Width, this.Height, IsRemoving());
+            this.Callback(begin, this.Width, this.Height, IsRemoving());
             
             this.Removing = false;
             this.Enabled = false;

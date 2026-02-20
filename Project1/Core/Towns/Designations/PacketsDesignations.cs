@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Serialization;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -15,21 +17,64 @@ namespace Project1.Core.Towns.Designations
     [EnsureStaticCtorCall]
     class PacketsDesignations
     {
-        static int p;
+        static readonly PacketId p, _pPlayerDesignation, _pPlayerDesignationEntities;
         static PacketsDesignations()
         {
-
-            p = Registry.PacketHandlers.Register(Receive);
-
-            Registry.PlayerInputEventHooks.Register<PlayerDesignationEvent>(OnPlayerDesignation);
+            _pPlayerDesignation = Registry.PacketHandlers.Register(ReceiveCells);
+            _pPlayerDesignationEntities = Registry.PacketHandlers.Register(ReceiveEntities);
+            Registry.PlayerInputEventHooks.Register<PlayerDesignationCellsEvent>(OnPlayerDesignation);
+            Registry.PlayerInputEventHooks.Register<PlayerDesignationEntitiesEvent>(OnPlayerDesignationEntities);
         }
-
-        private static void OnPlayerDesignation(PlayerDesignationEvent e)
+        private static void OnPlayerDesignationEntities(PlayerDesignationEntitiesEvent e)
         {
-            throw new NotImplementedException();
-            //Send(Client.Instance, e.Removal, e.Targets, e.Designation);
+            if (Ingame.Net.IsServer)
+                Ingame.CurrentMap.Town.DesignationManager.AddEntities(e.Designation, e.Entities, e.IsRemoval);
+            Send(Ingame.Net, e.Entities, e.Designation, e.IsRemoval);
         }
-
+        static public void Send(NetEndpoint endpoint, IReadOnlyCollection<Entity> entities, DesignationDef def, bool isRemoval)
+        {
+            endpoint.BeginPacketImmediate(_pPlayerDesignationEntities)
+                .Write(isRemoval)
+                .Write(def)
+                .Write(entities.Select(e => e.RefId).ToList());
+        }
+        private static void ReceiveEntities(NetEndpoint endpoint, Packet packet)
+        {
+            var map = endpoint.Map;
+            var r = packet.PacketReader;
+            var isRemoval = r.ReadBoolean();
+            var def = r.ReadDef<DesignationDef>();
+            var entities = map.World.GetEntities(r.ReadListEntityRefId()).ToArray();
+            map.Town.DesignationManager.Edit(def, entities, isRemoval);
+            if (endpoint.IsServer)
+                Send(endpoint, entities, def, isRemoval);
+        }
+        private static void OnPlayerDesignation(PlayerDesignationCellsEvent e)
+        {
+            if (Ingame.Net.IsServer)
+                Ingame.CurrentMap.Town.DesignationManager.Edit(e.Designation, e.Begin, e.End, e.IsRemoval);
+            Send(Ingame.Net, e.Begin, e.End, e.Designation, e.IsRemoval);
+        }
+        static public void Send(NetEndpoint endpoint, IntVec3 begin, IntVec3 end, DesignationDef def, bool isRemoval)
+        {
+            endpoint.BeginPacketImmediate(_pPlayerDesignation)
+                .Write(isRemoval)
+                .Write(def)
+                .Write(begin)
+                .Write(end);
+        }
+        private static void ReceiveCells(NetEndpoint endpoint, Packet packet)
+        {
+            var map = endpoint.Map;
+            var r = packet.PacketReader;
+            var isRemoval = r.ReadBoolean();
+            var def = r.ReadDef<DesignationDef>();
+            var begin = r.ReadIntVec3();
+            var end = r.ReadIntVec3();
+            map.Town.DesignationManager.Edit(def, begin, end, isRemoval);
+            if (endpoint.IsServer)
+                Send(endpoint, begin, end, def, isRemoval);
+        }
         static public void Send(NetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
         {
             remove |= designation == null;

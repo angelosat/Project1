@@ -4,8 +4,9 @@
     {
         internal void Issue(SelectionIntent selection)
         {
-            this.Def.Worker.Issue(this, selection);
+            //this.Def.Worker.Issue(this, selection);
             //Ingame.Instance.Events.Post(new PlayerIssuedOrderCommandEvent(this.Def, selection));
         }
+        internal void Issue(SelectionFinal selection) => this.Def.Worker.Issue(this, selection);
     }
 }

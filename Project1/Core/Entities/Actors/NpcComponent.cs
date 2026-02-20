@@ -1,23 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
+﻿using Project1.Core.AI.Packets;
+using Project1.Core.Components;
 using Project1.Core.Input;
 using Project1.Core.Networking;
-using Project1.Core.AI.Packets;
-using Project1.Core.Helpers;
 using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.UI.Hud;
-using Project1.Core.Components;
-using Project1.Framework.Events;
-using Project1.Core.Networking;
 using Project1.Core.UI;
+using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Entities.Actors
 {
+    [EnsureStaticCtorCall]
+    internal static class PacketsTowns
+    {
+        static readonly PacketId pToggleTownMemeber;
+        static PacketsTowns()
+        {
+            pToggleTownMemeber = Registry.PacketHandlers.Register(OnToggleTownMember);
+            Registry.PlayerInputEventHooks.Register<PlayerTogglingTownMemberEvent>(OnPlayerTogglingTownMember);
+        }
+
+        private static void OnPlayerTogglingTownMember(PlayerTogglingTownMemberEvent @event)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
     class NpcComponent : EntityComp
     {
         public new class Spec : Spec<NpcComponent> { }
@@ -162,13 +175,10 @@ namespace Project1.Core.Entities.Actors
             tag.TryGetTagValue<string>("FirstName", v => this.FirstName = v);
             tag.TryGetTagValue<string>("LastName", v => this.LastName = v);
         }
-       
         public override void OnDespawnExtra(MapBase oldMap)
         {
             NpcDirectory.Remove(this.Owner);
         }
-
-        
         internal override void GetQuickButtons(SelectionManager info, GameObject parent)
         {
             if (parent.IsPlayerControlled)
@@ -181,9 +191,7 @@ namespace Project1.Core.Entities.Actors
         static IconButton IconOrder = new('☞') { HoverText = "Order Move" };
         static IconButton IconControl = new(Icon.ArrowUp) { HoverText = "Take Control" };
         static IconButton IconToggleCitizen = new() { HoverText = "Toggle citizenship" };
-
         public override string Name { get; } = "Npc";
-
         static void Command(List<ISelectable> actors)
         {
             //ToolManager.SetTool(new ToolCommandNpc(actors.Select(t=>t.Object).ToList()));

@@ -1,4 +1,5 @@
-﻿using Project1.Core.Towns.Zones;
+﻿using Project1.Core.Screens;
+using Project1.Core.Towns.Zones;
 using Project1.Framework;
 
 namespace Project1.Core.Towns.Tools
@@ -20,12 +21,13 @@ namespace Project1.Core.Towns.Tools
         {
             this.Def = def;
             this.CurrentZoneID = 0;
-            this.Add = this.Perform;
+            this.Callback = this.Perform;
             this.Town = town;
         }
-        void Perform(IntVec3 arg1, int arg2, int arg3, bool arg4)
+        void Perform(IntVec3 begin, int width, int height, bool isRemoval)
         {
-            PacketPlayerZoneDesignation.Send(this.Town.Net, this.Def, this.EditingZone, arg1, arg2, arg3, arg4);
+            var end = new IntVec3(begin.X + width, begin.Y + height, begin.Z);
+            Ingame.Instance.Events.Post(new PlayerAddingZoneEvent(this.Def, this.EditingZone, begin, end, isRemoval));
         }
 
         public override Messages MouseLeftPressed(System.Windows.Forms.HandledMouseEventArgs e)

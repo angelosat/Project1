@@ -13,11 +13,11 @@ namespace Project1.Core.Networking
         static readonly public PacketId _pPlayerForbidItem;
         static PacketPlayerForbidItem()
         {
-            Registry.PlayerInputEventHooks.Register<PlayerForbidItemsEvent>(OnPlayerForbidItems);
+            Registry.PlayerInputEventHooks.Register<PlayerForbiddingItemsEvent>(OnPlayerForbidItems);
 
             _pPlayerForbidItem = Registry.PacketHandlers.Register(ReceivePlayerForbidItems);
         }
-        private static void OnPlayerForbidItems(PlayerForbidItemsEvent e)
+        private static void OnPlayerForbidItems(PlayerForbiddingItemsEvent e)
         {
             var entities = e.Entities;
             var refIds = entities.Select(o => (EntityRefId)o.RefId).ToList();

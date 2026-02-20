@@ -8,6 +8,6 @@ namespace Project1.Core.Input.Orders
     {
         public Sprite Sprite = sprite;
         public string Verb;
-        internal readonly CommandWorker Worker = ActivatorSafe<OrderCommandWorker>.CreateInstance(workerType);
+        internal readonly CommandWorker Worker = ActivatorSafe<CommandWorker>.CreateInstance(workerType);
     }
 }

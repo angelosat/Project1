@@ -17,6 +17,7 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Input;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -128,19 +129,30 @@ namespace Project1.Core.Towns.Designations
             }
             this.Map.Events.Post(new DesignationsChangedEvent(targets));
         }
+        internal void Edit(DesignationDef def, IntVec3 begin, IntVec3 end, bool isRemoval)
+        {
+            var cells = IntVec3Helper.GetBox(begin, end).Select(c => new CellSelection(this.Map, c) as ISelectable);
+            if (isRemoval)
+                this.RemoveCells(cells);
+            else
+                this.AddCells(def, cells, isRemoval);
+        }
+        internal void Edit(DesignationDef def, IEnumerable<ISelectable> entities, bool isRemoval)
+        {
+            if (!entities.Any())
+                return;
+            if (isRemoval)
+                this.RemoveEntities(entities);
+            else
+                this.AddEntities(def, entities, isRemoval);
+        }
         internal void Add(DesignationDef designation, IEnumerable<ISelectable> targets, bool isRemoval)
         {
             ArgumentNullException.ThrowIfNull(designation, $"Use {this.Remove} for generic designation removal instead of passing a null desigation def");
             switch (designation.TargetType)
             {
                 case TargetType.Cell:
-                    foreach (var cell in targets.OfType<CellSelection>())
-                    {
-                        if (isRemoval && designation.IsManual)
-                            this.CellDesignations[designation].Remove(cell.Global);
-                        else if (designation.Worker.IsValid(cell) || this.Map.IsUndiscovered(cell.Global))
-                            this.CellDesignations[designation].Add(cell.Global);
-                    }
+                    this.AddCells(designation, targets, isRemoval);
                     break;
 
                 case TargetType.Entity:
@@ -151,6 +163,8 @@ namespace Project1.Core.Towns.Designations
                         else if (designation.Worker.IsValid(entity))
                             this.EntityDesignations[designation].Add(entity);
                     }
+                    this.Map.Events.Post(new DesignationsChangedEvent(targets));
+
                     break;
 
                 case TargetType.BlockEntity:
@@ -161,20 +175,74 @@ namespace Project1.Core.Towns.Designations
                         else if (designation.Worker.IsValid(bEntity))
                             this.BlockEntityDesignations[designation].Add(bEntity);
                     }
+                    this.Map.Events.Post(new DesignationsChangedEvent(targets));
+
                     break;
 
                 default:
                     throw new UnreachableException();
             }
+        }
+        internal void RemoveCells(IEnumerable<ISelectable> targets)
+        {
+            if (!targets.Any())
+                return;
+            foreach (var cell in targets.OfType<CellSelection>())
+                foreach(var des in this.CellDesignations.Where(vk=>vk.Key.IsManual))
+                    des.Value.Remove(cell.Global);
             this.Map.Events.Post(new DesignationsChangedEvent(targets));
         }
-        internal void Add(DesignationDef designation, IEnumerable<CellSelection> cells, bool isRemoval)
+        internal void AddCells(DesignationDef designation, IEnumerable<ISelectable> targets, bool isRemoval)
         {
-
+            var cells = targets.OfType<CellSelection>();
+            if (!cells.Any())
+                return;
+            var removing = isRemoval && designation.IsManual;
+            var list = this.CellDesignations[designation];
+            if (removing)
+                foreach (var cell in cells)
+                    list.Remove(cell.Global);
+            else
+            {
+                foreach (var cell in cells)
+                    if (designation.Worker.IsValid(cell) || this.Map.IsUndiscovered(cell.Global))
+                        list.Add(cell.Global);
+            }
+            this.Map.Events.Post(new DesignationsChangedEvent(targets));
         }
-        internal void Add(DesignationDef designation, IEnumerable<Entity> cells, bool isRemoval)
+        internal void RemoveEntities(IEnumerable<ISelectable> targets)
         {
-
+            if (!targets.Any())
+                return;
+            foreach (var entity in targets.OfType<Entity>())
+                foreach (var des in this.EntityDesignations.Where(vk => vk.Key.IsManual))
+                    des.Value.Remove(entity);
+            this.Map.Events.Post(new DesignationsChangedEvent(targets));
+        }
+        internal void AddEntities(DesignationDef designation, IEnumerable<ISelectable> targets, bool isRemoval)
+        {
+            var entities = targets.OfType<Entity>();
+            if (!entities.Any())
+                return;
+            var removing = isRemoval && designation.IsManual;
+            var list = this.EntityDesignations[designation];
+            if (removing)
+                foreach (var item in entities)
+                    list.Remove(item);
+            else
+            {
+                foreach (var item in entities)
+                    if (designation.Worker.IsValid(item))
+                        list.Add(item);
+            }
+            //foreach (var entity in entities.OfType<Entity>())
+            //{
+            //    if (isRemoval && designation.IsManual)
+            //        .Remove(entity);
+            //    else if (designation.Worker.IsValid(entity))
+            //        this.EntityDesignations[designation].Add(entity);
+            //}
+            this.Map.Events.Post(new DesignationsChangedEvent(targets));
         }
         internal void Add(DesignationDef designation, IEnumerable<IntVec3> cells, bool isRemoval)
         {
@@ -311,7 +379,8 @@ namespace Project1.Core.Towns.Designations
         }
         private static void SetTool(DesignationDef d)
         {
-            ToolManager.SetTool(new ToolDesignation((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, d)) { DesignationDef = d });
+            //ToolManager.SetTool(new ToolDesignation((begin, end, isRemoval) => PacketsDesignations.Send(Client.Instance, isRemoval, begin, end, d)) { DesignationDef = d });
+            ToolManager.SetTool(new ToolDesignation((begin, end, isRemoval) => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(d, begin, end, isRemoval))));
         }
         static void Cancel()
         {
@@ -446,5 +515,7 @@ namespace Project1.Core.Towns.Designations
                 r.Value.DrawBlocks(map, cam);
             }
         }
+
+        
     }
 }

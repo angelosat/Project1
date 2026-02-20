@@ -11,6 +11,7 @@ using Project1.Framework.Events;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Screens
 {
@@ -55,7 +56,7 @@ namespace Project1.Core.Screens
             return this;
         }
 
-        static public INetEndpoint Net => DrawServer ? Server.Instance : Client.Instance;
+        static public NetEndpoint Net => DrawServer ? Server.Instance : Client.Instance;
         public Hud Hud;
         public override void Update(Game1 game, GameTime gt)
         {
@@ -99,7 +100,6 @@ namespace Project1.Core.Screens
         {
             return DrawServer ? Server.Instance.Map : Client.Instance.Map;
         }
-       
         static public MapBase CurrentMap => DrawServer ? Server.Instance.Map : Client.Instance.Map;
         static public bool DrawServer;
         public override void HandleKeyDown(System.Windows.Forms.KeyEventArgs e)

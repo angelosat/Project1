@@ -70,15 +70,15 @@ namespace Project1.Core
             if (TryGetDef<T>(defName) is not T def)
             {
                 //throw new Exception($"def \"{defName}\" does not exist");
-                Log.Warning($"def \"{defName}\" does not exist");
+                //Log.Warning($"def \"{defName}\" does not exist");
                 return null;
             }
             return def;
         }
         static public T TryGetDef<T>(string defName) where T : Def
         {
-            if (defName == null || string.IsNullOrEmpty(defName) || string.IsNullOrWhiteSpace(defName))
-                throw new Exception();
+            //if (defName == null || string.IsNullOrEmpty(defName) || string.IsNullOrWhiteSpace(defName))
+            //    throw new Exception();
             if (Database.TryGetValue(defName, out var result))
                 return result as T;
             return null;

@@ -205,7 +205,7 @@ namespace Project1.Core.Input
         {
             var targets = SelectionManager.GetSelectedEntities().Where(o => o.IsForbiddable());
             //PacketToggleForbidden.Send(Client.Instance, SelectionManager.GetSelectedEntities().Where(o => o.IsForbiddable()));
-            Ingame.Instance.Events.Post(new PlayerForbidItemsEvent([.. targets.Cast<Entity>()]));
+            Ingame.Instance.Events.Post(new PlayerForbiddingItemsEvent([.. targets.Cast<Entity>()]));
         }
 
         private static void SetSpeed(int value)

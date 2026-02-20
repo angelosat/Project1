@@ -185,7 +185,7 @@ namespace Project1.Core.Entities
         static readonly IconButton IconCameraFollow = new(Icon.Replace) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = FollowCam, HoverText = "Camera follow" };
         static void RequestToggleForbidden(List<ISelectable> targets)
         {
-            Ingame.Instance.Events.Post(new PlayerForbidItemsEvent([.. targets.Select(o => o as Entity)]));
+            Ingame.Instance.Events.Post(new PlayerForbiddingItemsEvent([.. targets.Select(o => o as Entity)]));
         }
         static void FollowCam()
         {

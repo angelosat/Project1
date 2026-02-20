@@ -13,9 +13,10 @@ namespace Project1.Core.Input
     public readonly record struct SelectionIntent : ISerializableNewNew<SelectionIntent>
     {
         readonly SelectionType Type;
-        readonly IntVec3 Begin, End;
+        internal readonly IntVec3 Begin, End;
         readonly ImmutableHashSet<EntityRefId> EntityIDs = [];
         readonly ImmutableHashSet<IntVec3> Cells = [];
+        public IEnumerable<T> Resolve<T>(MapBase map) where T : ISelectable => this.Resolve(map).Cast<T>();
         public IEnumerable<ISelectable> Resolve(MapBase map)
         {
             if (this.Type == SelectionType.Null)

@@ -302,6 +302,7 @@ namespace Project1.Core.UI.Hud
         }
         private void Select(IntVec3 begin, IntVec3 end)
         {
+            this.SelectedStackNew = null;
             this.Selection.SetBox(Ingame.CurrentMap, begin, end);
             this.Renderer.Invalidate();
             this.LabelName.TextFunc = () => $"Multiple cells x{this.Selection.Targets.Count}";
@@ -609,7 +610,7 @@ namespace Project1.Core.UI.Hud
                     var runtime = new OrderCommandRuntime(orderdef);
                     var button = new QuickButton(new Icon(orderdef.Sprite), null, orderdef.LabelReadable)
                     {
-                        LeftClickAction = () => runtime.Issue(this.Selection.ToSelectionIntent())
+                        LeftClickAction = () => runtime.Issue(this.Selection)//.ToSelectionIntent())
                     };
                     this.BoxOrderButtons.AddControls(button);
                 }

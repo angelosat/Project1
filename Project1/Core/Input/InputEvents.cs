@@ -15,7 +15,8 @@ namespace Project1.Core.Input
     internal record struct PlayerChangedSpeedEvent(int Speed) : IEventPayload { }
     internal record struct PlayerForbiddingItemsEvent(IReadOnlyCollection<Entity> Entities) : IEventPayload { }
     internal record struct PlayerTogglingTownMembersEvent(IReadOnlyCollection<Actor> Actors) : IEventPayload { }
-    internal record struct PlayerControlActorRequestEvent(Actor Actor) : IEventPayload { }
-    internal record struct PlayerControlActorEvent(PlayerData Player, Actor Actor) : IEventPayload { }
+    internal record struct PlayerControlActorRequestEvent(PlayerData Player, Actor Actor) : IEventPayload { }
+    internal record struct PlayerControlActorEvent(PlayerData Player, Actor Actor, Actor LastActor) : IEventPayload { }
     internal record struct PlayerForcedDropInventoryItemEvent(Entity Owner, Entity Item, int Count) : IEventPayload { }
+    internal record struct PlayerChangedActiveToolEvent(ControlTool Tool) : IEventPayload { }
 }

@@ -1,11 +1,11 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.Serialization;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
+using Project1.Core.Graphics;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Core.Graphics;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using System;
 
 namespace Project1.Core.Construction.Tools
 {
@@ -34,7 +34,7 @@ namespace Project1.Core.Construction.Tools
         {
             this.DrawGrid(sb, map, camera, Color.Red);
         }
-        protected override void WriteData(System.IO.BinaryWriter w)
+        protected override void WriteData(IDataWriter w)
         {
             base.WriteData(w);
             w.Write(this.SettingHeight);

@@ -1,19 +1,16 @@
-﻿using System;
-using System.Windows.Forms;
-using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.Input;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework.Events;
-using Project1.Core.Networking;
-using Project1.Core.Networking.Packets;
-using Project1.Core.Screens;
-using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
+using Project1.Core.Simulation;
+using Project1.Framework.Events;
+using Project1.Framework.Input;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Windows.Forms;
 
 namespace Project1.Core.Input
 {
@@ -24,7 +21,8 @@ namespace Project1.Core.Input
 
         protected void Sync()
         {
-            PacketPlayerToolSwitch.Send(Client.Instance, Client.Instance.PlayerData.ID, this);
+            //PacketPlayerToolSwitch.Send(Client.Instance, Client.Instance.PlayerData.ID, this);
+            Ingame.Instance.Events.Post(new PlayerChangedActiveToolEvent(this));
         }
         public void DrawIcon(SpriteBatch sb, Vector2 pos)
         {
@@ -116,16 +114,16 @@ namespace Project1.Core.Input
             this.Update();
         }
 
-        public virtual Messages MouseRightUp(System.Windows.Forms.HandledMouseEventArgs e) { return Messages.Default; }
-        public virtual Messages MouseRightDown(System.Windows.Forms.HandledMouseEventArgs e) { return Messages.Default; }
-        public virtual Messages MouseLeftUp(System.Windows.Forms.HandledMouseEventArgs e) { return Messages.Default; }
-        public virtual Messages MouseLeftPressed(System.Windows.Forms.HandledMouseEventArgs e) { return Messages.Default; }
+        public virtual Messages MouseRightUp(HandledMouseEventArgs e) { return Messages.Default; }
+        public virtual Messages MouseRightDown(HandledMouseEventArgs e) { return Messages.Default; }
+        public virtual Messages MouseLeftUp(HandledMouseEventArgs e) { return Messages.Default; }
+        public virtual Messages MouseLeftPressed(HandledMouseEventArgs e) { return Messages.Default; }
         public virtual Messages MouseMiddle() { return Messages.Default; }
-        public virtual Messages MouseMiddleUp(System.Windows.Forms.HandledMouseEventArgs e) { return Messages.Default; }
-        public virtual Messages MouseMiddleDown(System.Windows.Forms.HandledMouseEventArgs e) { return Messages.Default; }
+        public virtual Messages MouseMiddleUp(HandledMouseEventArgs e) { return Messages.Default; }
+        public virtual Messages MouseMiddleDown(HandledMouseEventArgs e) { return Messages.Default; }
         public virtual Messages MouseWheel(InputState e, int value) { return Messages.Default; }
 
-        public virtual Messages OnKey(System.Windows.Forms.KeyEventArgs e) { return Messages.Default; }
+        public virtual Messages OnKey(KeyEventArgs e) { return Messages.Default; }
 
         protected virtual void OnTargetChanged()
         {
@@ -136,18 +134,18 @@ namespace Project1.Core.Input
         internal virtual void Drop() { }
         internal virtual void ManageEquipment() { }
 
-        public virtual void HandleKeyPress(System.Windows.Forms.KeyPressEventArgs e) { }
-        public virtual void HandleKeyDown(System.Windows.Forms.KeyEventArgs e) { }
-        public virtual void HandleKeyUp(System.Windows.Forms.KeyEventArgs e) { }
-        public virtual void HandleMouseMove(System.Windows.Forms.HandledMouseEventArgs e) { }
+        public virtual void HandleKeyPress(KeyPressEventArgs e) { }
+        public virtual void HandleKeyDown(KeyEventArgs e) { }
+        public virtual void HandleKeyUp(KeyEventArgs e) { }
+        public virtual void HandleMouseMove(HandledMouseEventArgs e) { }
         public virtual void HandleInput(InputState e) { }
-        public virtual void HandleLButtonDown(System.Windows.Forms.HandledMouseEventArgs e) { }
-        public virtual void HandleLButtonUp(System.Windows.Forms.HandledMouseEventArgs e) { }
-        public virtual void HandleRButtonDown(System.Windows.Forms.HandledMouseEventArgs e) { }
-        public virtual void HandleRButtonUp(System.Windows.Forms.HandledMouseEventArgs e) { }
-        public virtual void HandleMiddleUp(System.Windows.Forms.HandledMouseEventArgs e) { }
-        public virtual void HandleMiddleDown(System.Windows.Forms.HandledMouseEventArgs e) { }
-        public virtual void HandleMouseWheel(System.Windows.Forms.HandledMouseEventArgs e) { }
+        public virtual void HandleLButtonDown(HandledMouseEventArgs e) { }
+        public virtual void HandleLButtonUp(HandledMouseEventArgs e) { }
+        public virtual void HandleRButtonDown(HandledMouseEventArgs e) { }
+        public virtual void HandleRButtonUp(HandledMouseEventArgs e) { }
+        public virtual void HandleMiddleUp(HandledMouseEventArgs e) { }
+        public virtual void HandleMiddleDown(HandledMouseEventArgs e) { }
+        public virtual void HandleMouseWheel(HandledMouseEventArgs e) { }
         public virtual void HandleLButtonDoubleClick(HandledMouseEventArgs e) { }
 
         internal virtual void Jump() { }
@@ -157,23 +155,22 @@ namespace Project1.Core.Input
         internal virtual void DrawUI(SpriteBatch sb, Camera camera)
         {
             var icon = this.GetIcon();
-            if (icon != null)
-                icon.Draw(sb, UIManager.Mouse + new Vector2(icon.SourceRect.Width / 2, 0));
+            icon?.Draw(sb, UIManager.Mouse + new Vector2(icon.SourceRect.Width / 2, 0));
         }
      
         internal virtual void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera camera)
         {
         }
 
-        public bool IsCtrlKeyDown()
+        public static bool IsCtrlKeyDown()
         {
             return InputState.Instance.GetKeyDown(System.Windows.Forms.Keys.ControlKey);
         }
-        public bool IsAltKeyDown()
+        public static bool IsAltKeyDown()
         {
             return InputState.Instance.GetKeyDown(System.Windows.Forms.Keys.LMenu);
         }
-        public bool IsShiftKeyDown()
+        public static bool IsShiftKeyDown()
         {
             return InputState.Instance.GetKeyDown(System.Windows.Forms.Keys.LShiftKey);
         }
@@ -196,7 +193,7 @@ namespace Project1.Core.Input
         internal virtual void SlotLeftClick(GameObjectSlot gameObjectSlot) { }
 
 
-        internal void Write(BinaryWriter w)
+        internal void Write(IDataWriter w)
         {
             w.Write(this.GetType().FullName);
             this.WriteData(w);
@@ -206,7 +203,7 @@ namespace Project1.Core.Input
             this.ReadData(r);
             return this;
         }
-        protected virtual void WriteData(BinaryWriter w) { }
+        protected virtual void WriteData(IDataWriter w) { }
         protected virtual void ReadData(IDataReader r) { }
         
         internal static ControlTool Create(IDataReader r)

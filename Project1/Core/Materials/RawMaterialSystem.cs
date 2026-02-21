@@ -21,7 +21,9 @@ namespace Project1.Core.Materials
         }
         static public Entity Create(MaterialRefinementDef profile, MaterialDef material, int stackSize = -1)
         {
-            return Create(profile, new Dictionary<BoneDef, MaterialDef>() { { BoneDefOf.Item, material } }, stackSize);
+            //return Create(profile, new Dictionary<BoneDef, MaterialDef>() { { BoneDefOf.Item, material } }, stackSize);
+            return Create(profile, material, [], stackSize);
+
             //var item = ItemDefOf.Ingredient.Create(amount: stackSize);
             //item.Initialize();
             //item.Profile = profile;
@@ -32,14 +34,19 @@ namespace Project1.Core.Materials
             //item.Name = $"{item.Body.Material.LabelReadable} {profile.LabelReadable}";
             //return item;
         }
-        static public Entity Create(MaterialRefinementDef stage, Dictionary<BoneDef, MaterialDef> materials, int stackSize = -1)
+        static public Entity Create(MaterialRefinementDef stage, MaterialDef defaultMaterial, Dictionary<BoneDef, MaterialDef> materialOverrides, int stackSize = -1)
         {
             var item = ItemDefOf.Ingredient.Create(amount: stackSize);
             //item.Initialize();
             item.Profile = stage;
             item.Body.Sprite = stage.Sprite;
-            foreach(var (bone, mat) in materials)
-                item.Body.FindBone(bone).Material = mat;
+            foreach (var bone in item.Body.GetAllBones())
+                if (materialOverrides.TryGetValue(bone.Def, out var overridenMaterial))
+                    bone.Material = overridenMaterial;
+                else
+                    bone.Material = defaultMaterial;
+            //foreach(var (bone, mat) in materialOverrides)
+            //    item.Body.FindBone(bone).Material = mat;
             item.Name = $"{item.Body.Material.LabelReadable} {stage.LabelReadable}";
             item.Initialize();
             return item;
@@ -58,7 +65,7 @@ namespace Project1.Core.Materials
         }
         internal static Entity Create(EntityCreationRequest req)
         {
-            return Create(req.Context as MaterialRefinementDef, req.MaterialBindings, req.StackSize);// req.DefaultMaterial);
+            return Create(req.Context as MaterialRefinementDef, req.DefaultMaterial, req.MaterialBindings, req.StackSize);// req.DefaultMaterial);
         }
     }
 }

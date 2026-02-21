@@ -11,14 +11,26 @@ namespace Project1.Core.Blocks
     class BlockDefOf
     {
         static public readonly BlockDef Air = new("Air", typeof(BlockAir)) { DefaultMaterial = MaterialDefOf.Air };
-        static public readonly BlockDef Grass = new("Grass", typeof(BlockGrass));
+        static public readonly BlockDef Grass = new("Grass", typeof(BlockGrass))
+        {
+            BreakProduct = MaterialRefinementDefOf.Bag
+        };
         static public readonly BlockDef Stone = new("Stone", typeof(BlockBedrock));
-        static public readonly BlockDef Farmland = new("Farmland", typeof(BlockFarmland));
+        static public readonly BlockDef Farmland = new("Farmland", typeof(BlockFarmland))
+        {
+            BreakProduct = MaterialRefinementDefOf.Bag
+        };
         static public readonly BlockDef Cobblestone = new("Cobblestone", typeof(BlockStone));
         static public readonly BlockDef Mineral = new("Mineral", typeof(BlockMineral));
-        static public readonly BlockDef Sand = new("Sand", typeof(BlockSand));
+        static public readonly BlockDef Sand = new("Sand", typeof(BlockSand))
+        {
+            BreakProduct = MaterialRefinementDefOf.Bag
+        };
         static public readonly BlockDef WoodenDeck = new("WoodenDeck", typeof(BlockWoodenDeck));
-        static public readonly BlockDef Soil = new("Soil", typeof(BlockSoil));
+        static public readonly BlockDef Soil = new("Soil", typeof(BlockSoil))
+        {
+            BreakProduct = MaterialRefinementDefOf.Bag
+        };
         static public readonly BlockDef Door = new("Door", typeof(BlockDoor))
         {
             BlockEntityCompSpecs = [new BlockDoorComp.Spec()]

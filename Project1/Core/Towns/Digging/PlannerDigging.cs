@@ -13,7 +13,7 @@ namespace Project1.Core.Towns.Digging
         {
             if (!actor.HasJob(JobDefOf.Digger))
                 return null;
-            var jobs = actor.Map.Town.DesignationManager.GetDesignations(DesignationDefOf.Mine);
+            var jobs = actor.Map.Town.DesignationManager.GetDesignationTargets(DesignationDefOf.Mine);
 
             if (actor.IsHauling)
                 return null;

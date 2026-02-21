@@ -10,22 +10,39 @@ namespace Project1.Core.Loot
     {
         public LootSystem(MapBase map) : base(map)
         {
-            map.Events.ListenTo<LootPopEvent>(OnLootDrop);
+            //map.Events.ListenTo<LootPopEvent>(OnLootDrop);
+            map.Events.ListenTo<LootPopNewEvent>(OnLootDropNew);
         }
-        private static void OnLootDrop(LootPopEvent e)
+
+        private void OnLootDropNew(LootPopNewEvent e)
         {
-            if (e.Source.Net.IsClient)
-                throw new Exception();
+            if (e.Map.Net.IsClient)
+                return;
             var rng = Server.Instance.GetRandom();
-            var global = e.Source.Global;
-            var sourceVelocity = e.Source.Velocity;
+            var global = e.Global;
+            var vel = e.Velocity;
             foreach (var entity in e.Entities)
             {
                 Server.Instance.World.Register(entity);
-                var velocity = sourceVelocity + RandomPopVelocity(rng);
+                var velocity = vel + RandomPopVelocity(rng);
                 Server.Instance.Map.Spawn(entity, global, velocity);
             }
         }
+
+        //private static void OnLootDrop(LootPopEvent e)
+        //{
+        //    if (e.Source.Net.IsClient)
+        //        throw new Exception();
+        //    var rng = Server.Instance.GetRandom();
+        //    var global = e.Source.Global;
+        //    var sourceVelocity = e.Source.Velocity;
+        //    foreach (var entity in e.Entities)
+        //    {
+        //        Server.Instance.World.Register(entity);
+        //        var velocity = sourceVelocity + RandomPopVelocity(rng);
+        //        Server.Instance.Map.Spawn(entity, global, velocity);
+        //    }
+        //}
         static public Vector3 RandomPopVelocity(RandomThreaded random)
         {
             double angle = random.NextDouble() * (Math.PI + Math.PI);

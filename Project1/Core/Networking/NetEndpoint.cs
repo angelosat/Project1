@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Loot;
+using Project1.Core.Screens;
+using Project1.Core.Simulation;
 using Project1.Core.UI;
+using Project1.Framework.Events;
+using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Framework.Serialization;
-using Project1.Framework.Events;
 
 namespace Project1.Core.Networking
 {
@@ -15,6 +16,7 @@ namespace Project1.Core.Networking
     {
         public abstract bool IsServer { get; }
         public abstract bool IsClient { get; }
+        internal MapViewport MainViewport;
 
         protected readonly NetworkStream[] StreamsArray = [new(ReliabilityType.Unreliable, false), new(ReliabilityType.Reliable), new(ReliabilityType.OrderedReliable)];
         protected NetworkStream GetStream(ReliabilityType reliability)
@@ -51,7 +53,7 @@ namespace Project1.Core.Networking
         public abstract double CurrentTick { get; }
         public abstract MapBase Map { get; set; }
         public abstract WorldBase World { get; set; }
-        public abstract int Speed { get; set; }
+        public abstract int Speed { get; protected set; }
         public abstract bool DisposeObject(GameObject obj);
         public abstract bool DisposeObject(int netID);
         public abstract void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType); 

@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework.Serialization;
-using Project1.Framework.Input;
 using Project1.Core.Blocks;
-using Project1.Core.Networking;
-using Project1.Core.Helpers;
-using Project1.Core.Simulation;
 using Project1.Core.Entities;
-using Project1.Core.Networking.Entities;
 using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Networking;
+using Project1.Core.Networking.Entities;
+using Project1.Core.Simulation;
+using Project1.Framework.Input;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Input
 {
@@ -101,7 +101,7 @@ namespace Project1.Core.Input
         {
             return InputState.IsKeyDown(System.Windows.Forms.Keys.ShiftKey) ? this.Target.Precise : Vector3.Zero;
         }
-        protected override void WriteData(System.IO.BinaryWriter w)
+        protected override void WriteData(IDataWriter w)
         {
             w.Write(this.TemplateID);
         }

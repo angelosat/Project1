@@ -21,6 +21,7 @@ namespace Project1.Core.Simulation
         readonly Dictionary<BlockEntity, List<IntVec3>> CellsToAttach = [];
         readonly MapBase Map = map;
         MapEditContext Context;
+        public static MapEdit Begin(MapBase map) => new(map);
         public void Record(IntVec3 global, SetBlockArgs args)
         {
             this.Changes[global] = args;
@@ -47,8 +48,12 @@ namespace Project1.Core.Simulation
             foreach (var entity in this.EntitiesAdded)
                 this.Map.Events.Post(new BlockEntityAddedEvent(entity));
         }
+        internal MapEdit Erase(IEnumerable<IntVec3> targets)
+        {
+            this.Paint(targets, BlockDefOf.Air.Worker, null, 0, 0, 0);
+            return this;
+        }
 
-        
         internal void Paint(IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
         {
             foreach (var cell in targets)

@@ -44,5 +44,10 @@ namespace Project1.Core.Entities
             var req = new EntityCreationRequest(profile, state, defaultMaterial);
             return req;
         }
+        static public Entity Create(Def profile, Def state = null, MaterialDef defaultMaterial = null)
+        {
+            return Create(new EntityCreationRequest(profile, state, defaultMaterial));
+        }
+
     }
 }

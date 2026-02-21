@@ -6,6 +6,7 @@ using Project1.Core.AI.Behaviors.NodeTypes;
 
 namespace Project1.Core.Towns.Digging
 {
+    class BehaviorDigging : BehaviorExecutePlanNew { }
     class TaskBehaviorDigging : BehaviorExecutePlan
     {
         public const TargetIndex MineInd = TargetIndex.A;

@@ -35,49 +35,51 @@ namespace Project1.Core.Input
             HotkeyManager.RegisterHotkey(HotkeyContext, "Rotate construction clockwise", () => CurrentTool.RotateClockwise(), System.Windows.Forms.Keys.E);
             HotkeyManager.RegisterHotkey(HotkeyContext, "Rotate construction anticlockwise", () => CurrentTool.RotateAntiClockwise(), System.Windows.Forms.Keys.Q);
         }
+        Action unsub;
         internal void Bind(MapBase map)
         {
-            map.Events.ListenTo<PlayerControlActorEvent>(OnPlayerControlActor);
+            unsub?.Invoke();
+            unsub = null;
+            unsub += map.Events.ListenTo<PlayerControlActorEvent>(OnPlayerControlActor);
         }
-
         private void OnPlayerControlActor(PlayerControlActorEvent e)
         {
             var actor = e.Actor;
-            if (Engine.Map != actor.Map)
-                throw new Exception();
-            actor.Map.Camera.ToggleFollowing(actor);
+            var net = e.Actor?.Net ?? e.LastActor.Net;
+            net.MainViewport.ToggleFollow(actor);
             SetTool(actor is not null ? ToolControlActor : null);
         }
 
-            readonly Type DefaultToolType = typeof(ToolManagement);
+        readonly Type DefaultToolType = typeof(ToolManagement);
         internal ControlTool GetDefaultTool()
         {
             return Activator.CreateInstance(DefaultToolType) as ControlTool;
         }
         public static ControlTool CurrentTool => Instance.ActiveTool;
-        ControlTool _activeTool;
+
         public ControlTool ActiveTool
         {
-            get => this._activeTool ??= this.GetDefaultTool();
+            get => field ??= this.GetDefaultTool();
             set
             {
-                this._activeTool?.CleanUp();
-                this._activeTool = value ?? this.GetDefaultTool();
-                if (this._activeTool is not null)
+                field?.CleanUp();
+                field = value ?? this.GetDefaultTool();
+                if (field is not null)
                 {
-                    this._activeTool.Manager = this;
-                    var net = Ingame.CurrentMap.Net;
-                    PacketPlayerToolSwitch.Send(net, net.GetPlayer().ID, this._activeTool);
+                    field.Manager = this;
+                    //var net = Ingame.CurrentMap.Net;
+                    //PacketPlayerToolSwitch.Send(net, net.GetPlayer().ID, this._activeTool);
+
+                    //var net = Client.Instance;
+                    //PacketPlayerToolSwitch.Send(net, net.CurrentPlayer.ID, field);
+                    Ingame.Instance.Events.Post(new PlayerChangedActiveToolEvent(field));
                 }
-                if (ToolHelpTextGui is null)
-                {
-                    ToolHelpTextGui = new GroupBox(256, 32);
-                }
-                if (!this._activeTool.HelpText.IsNullEmptyOrWhiteSpace())
+                ToolHelpTextGui ??= new GroupBox(256, 32);
+                if (!field.HelpText.IsNullEmptyOrWhiteSpace())
                 {
                     // show movable window with tool help text
                     ToolHelpTextGui.ClearControls();
-                    ToolHelpTextGui.AddControls(new Label(this._activeTool.HelpText) { MouseThrough = true, BackgroundColor = Color.Black * .5f });
+                    ToolHelpTextGui.AddControls(new Label(field.HelpText) { MouseThrough = true, BackgroundColor = Color.Black * .5f });
                     ToolHelpTextGui.Show();
                 }
                 else

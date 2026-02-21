@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
+using Project1.Core.Graphics;
 using Project1.Core.Input;
-using Project1.Core.Screens;
-using Project1.Core.UI;
-using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using Project1.Framework;
-using Project1.Core.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Construction.Tools
 {
@@ -136,7 +134,7 @@ namespace Project1.Core.Construction.Tools
             cam.DrawCellHighlights(sb, Block.BlockBlueprint, positions, color);
         }
         protected virtual IEnumerable<IntVec3> GetPositionsNew(IntVec3 a, IntVec3 b) { yield break; }
-        protected override void WriteData(System.IO.BinaryWriter w)
+        protected override void WriteData(IDataWriter w)
         {
             base.WriteData(w);
             w.Write(this.End);

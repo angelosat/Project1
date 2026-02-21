@@ -37,12 +37,16 @@ namespace Project1.Core.AI
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
 
-
-        static public readonly PlanDef Digging = new("Digging", typeof(TaskBehaviorDigging), InteractionDefOf.Dig)
+        static public readonly PlanDef Digging = new("Digging", typeof(BehaviorDigging), InteractionDefOf.Dig)
         {
             Format = "Dig {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
+        //static public readonly PlanDef Digging = new("Digging", typeof(TaskBehaviorDigging), InteractionDefOf.Dig)
+        //{
+        //    Format = "Dig {0}",
+        //    GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
+        //};
         static public readonly PlanDef Chatting = new("Chatting", typeof(TaskBehaviorTalkToAboutTopic))
         {
             Format = "Chat",

@@ -16,7 +16,7 @@ namespace Project1.Core.Networking
         double CurrentTick { get; }
         MapBase Map { get; }
         WorldBase World { get; }
-        int Speed { get; set; }
+        int Speed { get; }
         bool TryGetNetworkObject(int netID, out Entity obj);
         void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType);
         IEnumerable<PlayerData> GetPlayers();

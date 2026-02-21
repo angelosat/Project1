@@ -1,5 +1,4 @@
-﻿using Project1.Core.Helpers;
-using Project1.Framework;
+﻿using Project1.Framework;
 using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
@@ -59,7 +58,7 @@ namespace Project1.Core.Construction.Tools
             return box;
         }
 
-        protected override void WriteData(System.IO.BinaryWriter w)
+        protected override void WriteData(IDataWriter w)
         {
             base.WriteData(w);
             w.Write(this.Axis);

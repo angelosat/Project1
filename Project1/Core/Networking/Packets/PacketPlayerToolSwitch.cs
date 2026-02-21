@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Input;
+using Project1.Core.Screens;
 using Project1.Framework;
 using Project1.Framework.Events;
 
@@ -11,10 +12,22 @@ namespace Project1.Core.Networking.Packets
         static PacketPlayerToolSwitch()
         {
             p = Registry.PacketHandlers.Register(Receive);
+            Registry.PlayerInputEventHooks.Register<PlayerChangedActiveToolEvent>(OnPlayerChangedActiveTool);
         }
+
+        private static void OnPlayerChangedActiveTool(PlayerChangedActiveToolEvent e)
+        {
+            if (Ingame.Net.IsServer)
+            {
+
+            }
+            else
+                Send(Ingame.Net, Ingame.Net.CurrentPlayer.ID, e.Tool);
+        }
+
         internal static void Send(NetEndpoint net, int playerid, ControlTool tool)
         {
-            var w = net.BeginPacketOld(p);
+            var w = net.BeginPacketImmediate(p);
             w.Write(playerid);
             tool.Write(w);
         }

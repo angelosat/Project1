@@ -427,18 +427,12 @@ namespace Project1.Framework
 
             var origin = new IntVec3(xmin, ymin, zmin);
 
-            var list = new List<IntVec3>((int)(dx * dy * dz));
+            var list = new List<IntVec3>(dx * dy * dz);
 
             for (int i = 0; i < dx; i++)
-            {
                 for (int j = 0; j < dy; j++)
-                {
                     for (int k = 0; k < dz; k++)
-                    {
                         list.Add(origin + new IntVec3(i, j, k));
-                    }
-                }
-            }
             return list;
         }
         [Obsolete($"use {nameof(IntVec3Helper.GetBox)}")]

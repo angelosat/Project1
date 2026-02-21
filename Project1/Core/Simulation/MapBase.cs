@@ -9,6 +9,7 @@ using Project1.Core.Graphics;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
+using Project1.Core.Loot;
 using Project1.Core.Map;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
@@ -432,10 +433,10 @@ namespace Project1.Core.Simulation
         }
         public virtual Cell GetCell(Vector3 global)
         {
-            //throw new Exception();
-            var globalRound = new Vector3((int)Math.Round(global.X), (int)Math.Round(global.Y), (int)Math.Floor(global.Z));
-            if (this.TryGetChunk(globalRound, out var chunk))
-                return chunk[globalRound.X - chunk.Start.X, globalRound.Y - chunk.Start.Y, globalRound.Z];
+            //var globalRound = new Vector3((int)Math.Round(global.X), (int)Math.Round(global.Y), (int)Math.Floor(global.Z));
+            var cell = global.ToCell();
+            if (this.TryGetChunk(cell, out var chunk))
+                return chunk[cell.X - chunk.Start.X, cell.Y - chunk.Start.Y, cell.Z];
             return null;
         }
 
@@ -468,34 +469,41 @@ namespace Project1.Core.Simulation
         }
         public bool TryGetChunk(Vector3 global, out Chunk chunk)
         {
-            if (global.Z < 0 || global.Z >= MaxHeight)
+            var cell = global.ToCell();
+            if (cell.Z < 0 || cell.Z >= MaxHeight)
             {
                 chunk = null;
                 return false;
             }
-            var x = Math.Round(global.X);
-            var y = Math.Round(global.Y);
-            int chunkX = (int)Math.Floor(x / Chunk.Size);
-            int chunkY = (int)Math.Floor(y / Chunk.Size);
+            //var x = Math.Round(global.X);
+            //var y = Math.Round(global.Y);
+            int chunkX = (int)Math.Floor((float)cell.X / Chunk.Size);
+            int chunkY = (int)Math.Floor((float)cell.Y / Chunk.Size);
+            //int chunkX = cell.X / Chunk.Size;
+            //int chunkY = cell.Y / Chunk.Size;
             return this.ActiveChunks.TryGetValue(new Vector2(chunkX, chunkY), out chunk);
         }
         public bool TryGetChunk(int globalx, int globaly, out Chunk chunk)
         {
             float chunkX = (float)Math.Floor((float)globalx / Chunk.Size);
             float chunkY = (float)Math.Floor((float)globaly / Chunk.Size);
-
+            //int chunkX = globalx / Chunk.Size;
+            //int chunkY = globaly / Chunk.Size;
             return this.ActiveChunks.TryGetValue(new Vector2(chunkX, chunkY), out chunk);
         }
         public bool TryGetAll(Vector3 global, out Chunk chunk, out Cell cell)
         {
             cell = null;
             chunk = null;
-            Vector3 rounded = global.RoundXY();
+            //IntVec3 rounded = global.RoundXY();
+            var rounded = global.ToCell();
             if (rounded.Z < 0 || rounded.Z > this.World.MaxHeight - 1)
                 return false;
-            int chunkX = (int)Math.Floor(rounded.X / Chunk.Size);
-            int chunkY = (int)Math.Floor(rounded.Y / Chunk.Size);
-            if (this.ActiveChunks.TryGetValue(new Vector2(chunkX, chunkY), out chunk))
+            int chunkX = (int)Math.Floor((float)rounded.X / Chunk.Size);
+            int chunkY = (int)Math.Floor((float)rounded.Y / Chunk.Size);
+            //int chunkX = rounded.X / Chunk.Size;
+            //int chunkY = rounded.Y / Chunk.Size;
+            if (this.ActiveChunks.TryGetValue(new IntVec2(chunkX, chunkY), out chunk))
             {
                 cell = chunk[(int)(rounded.X - chunk.Start.X), (int)(rounded.Y - chunk.Start.Y), (int)rounded.Z];
                 return true;
@@ -1208,11 +1216,9 @@ namespace Project1.Core.Simulation
             if(entity.IsSpawned) entity.Map.Despawn(entity);
             if(entity is Actor actor) (this.World as StaticWorld).Space.Exit(actor);
 
-            //entity.Slot?.Object = null;
             entity.Slot?.Assign(null);
             entity.Net = this.Net;
             entity.Map = this;
-            //entity.SetGlobal(position);
             entity.Global = position;
             entity.Velocity = velocity;
             this.Add(entity);
@@ -1225,14 +1231,30 @@ namespace Project1.Core.Simulation
         {
             if (this.TryGetChunk(global, out var chunk))
             {
-                var block = this.GetBlock(global);
+                var cell = this.GetCell(global);
+           
+                var block = cell.Block;// this.GetBlock(global, out var cell);
                 if (block.BlockDef == BlockDefOf.Air)
                     throw new Exception();
                 var local = global.ToLocal();
                 chunk.ApplyBlockWork(local, workAmount);
                 this.Events.Post(new BlockHitEvent(block, this, global, workAmount));
-                if (this.GetCell(global).HitPoints == 0)
-                    this.RemoveBlock(global);
+                if (cell.HitPoints == 0)
+                {
+                    //this.RemoveBlock(global);
+
+                    if (block.BlockDef.BreakProduct is Def breakProductProfile)
+                    {
+                        var entity = EntityFactory.Create(breakProductProfile, null, cell.Material);
+                        this.Events.Post(new LootPopNewEvent([entity], this, global));
+                    }
+                    MapEdit
+                        .Begin(this)
+                        .Erase([global])
+                        .Flush();
+                }
+                //if (this.GetCell(global).HitPoints == 0)
+                //    this.RemoveBlock(global);
             }
         }
 

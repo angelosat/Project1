@@ -14,6 +14,8 @@ namespace Project1.Core.Materials
 
         static public readonly MaterialRefinementDef Chunk = new("Chunk", null, MaterialTypeDefOf.Stone, ItemContent.OreGrayscale);
 
+        static public readonly MaterialRefinementDef Bag = new("Bag", null, MaterialTypeDefOf.Sediment, ItemContent.BagsGrayscale);
+
         static MaterialRefinementDefOf()
         {
             Def.Register(typeof(MaterialRefinementDefOf));

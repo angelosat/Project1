@@ -1,11 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Components;
+using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Loot;
+using Project1.Core.Networking;
 using Project1.Core.Networking.Packets;
 using Project1.Core.Screens;
+using Project1.Core.Simulation;
 using Project1.Core.UI;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,14 +21,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Framework.Serialization;
-using Project1.Framework;
-using Project1.Framework.Events;
-using Project1.Core.Serialization;
-using Project1.Core.Networking;
-using Project1.Framework.Helpers;
 
 namespace Project1.Core.Networking
 {
@@ -101,7 +100,7 @@ namespace Project1.Core.Networking
         public const int ClientClockDelayMS = Server.SnapshotIntervalMS * 4;
         public const int ClientTickDelay = 4;
         private int _Speed = 0;// 1;
-        public override int Speed { get => this._Speed; set => this._Speed = value; }
+        public override int Speed { get => this._Speed; protected set => this._Speed = value; }
 
         public void Disconnect()
         {
@@ -1076,6 +1075,7 @@ namespace Project1.Core.Networking
             this.Map = map;
             this.World = map.World;
             Registry.MapEventHooksClient.HookTo(map.Events);
+            this.MainViewport = new(this.Map, this.Map.Camera);
         }
 
         internal void SetWorld(StaticWorld world)

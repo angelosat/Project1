@@ -149,7 +149,7 @@ namespace Project1.Core.Networking
             Instance.ConsoleBox.Write(Color.Yellow, "SERVER", $"Listening to port {Port} ...");
         }
         int _Speed = 0;// 1;
-        public override int Speed { get => this._Speed; set => this._Speed = value; }
+        public override int Speed { get => this._Speed; protected set => this._Speed = value; }
         readonly float BlockUpdateTimerMax = 1;
         float BlockUpdateTimer = 0;
 
@@ -619,8 +619,9 @@ namespace Project1.Core.Networking
                 obj.Value.OnMapLoaded(Instance.Map);
             map.ResolveReferences();
             Random = new RandomThreaded(Instance.Map.Random);
+            this.MainViewport = new(this.Map, this.Map.Camera);
         }
-    
+
         public override bool TryGetNetworkObject(int netID, out Entity obj)
         {
             return this.World.TryGetEntity(netID, out obj);

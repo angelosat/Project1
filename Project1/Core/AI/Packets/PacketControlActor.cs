@@ -21,9 +21,8 @@ namespace Project1.Core.AI.Packets
         private static void OnPlayerControlActor(PlayerControlActorRequestEvent e)
         {
             if (Ingame.Net.IsServer)
-                Perform(Ingame.Net, Ingame.Net.CurrentPlayer, e.Actor);
-            else
-                Send(Ingame.Net, Ingame.Net.CurrentPlayer.ID, e.Actor.RefId);
+                Perform(Ingame.Net, Ingame.Net.GetPlayer(e.Player.ID), e.Actor);
+            Send(Ingame.Net, e.Player.ID, e.Actor.RefId);
         }
 
         internal static void Send(NetEndpoint net, PlayerId playerid, EntityRefId entityid)
@@ -59,7 +58,7 @@ namespace Project1.Core.AI.Packets
             //var net = Ingame.Net;
 
             //net.EventOccured((int)Message.Types.PlayerControlNpc, player, nextEntity, lastEntity);
-            net.Map.Events.Post(new PlayerControlActorEvent(player, nextEntity));
+            net.Map.Events.Post(new PlayerControlActorEvent(player, nextEntity, lastEntity));
 
             if (nextEntity is not null)
                 net.Report($"{player.Name} is assuming direct control over {nextEntity.Name}");

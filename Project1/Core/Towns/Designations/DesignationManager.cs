@@ -98,6 +98,12 @@ namespace Project1.Core.Towns.Designations
                         SelectionManager.AddInfoNew(this.UpdatePendingDesignationLabel(this.Designations.First(d => d.Value.Contains(target)).Key));
                 }
         }
+        internal IEnumerable<TargetArgs> GetDesignationTargets(DesignationDef desDef)
+        {
+            if (desDef.TargetType == TargetType.Cell)
+                return this.CellDesignations[desDef].Select(d => new TargetArgs(this.Map, d));
+            return [];
+        }
         internal ObservableHashSet<TargetArgs> GetDesignations(DesignationDef des)
         {
             return this.Designations[des];
@@ -319,21 +325,39 @@ namespace Project1.Core.Towns.Designations
         }
         internal bool IsDesignation(TargetArgs global, DesignationDef desType)
         {
-            var contains = this.Designations[desType].Contains(global);
-            return contains;
+            return global.Type switch
+            {
+                TargetType.Cell => this.CellDesignations[desType].Contains(global.Global),
+                TargetType.Entity => this.EntityDesignations[desType].Contains(global.Entity),
+                TargetType.BlockEntity => this.BlockEntityDesignations[desType].Contains(global.BlockEntity),
+                _ => throw new UnreachableException()
+            };
+
+            //var contains = this.Designations[desType].Contains(global);
+            //return contains;
         }
         void OnBlocksChanged(CellsInvalidatedEvent e)
         {
-            foreach (var des in this.Designations)
+            foreach (var des in this.CellDesignations)
             {
-                foreach (var target in e.Positions)
+                foreach (var cell in e.Positions)
                 {
-                    if (!des.Value.Contains(new TargetArgs(this.Map, target)))
+                    if (!des.Value.Contains(cell))
                         continue;
-                    if (!des.Key.IsValid(this.Map, target))
-                        des.Value.Remove(target.At(this.Map));
+                    if (!des.Key.IsValid(this.Map, cell))
+                        des.Value.Remove(cell);
                 }
             }
+            //foreach (var des in this.Designations)
+            //{
+            //    foreach (var target in e.Positions)
+            //    {
+            //        if (!des.Value.Contains(new TargetArgs(this.Map, target)))
+            //            continue;
+            //        if (!des.Key.IsValid(this.Map, target))
+            //            des.Value.Remove(target.At(this.Map));
+            //    }
+            //}
         }
         void OnEntityDespawn(EntityDespawnedEvent obj)
         {

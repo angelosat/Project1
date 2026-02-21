@@ -14,6 +14,7 @@ namespace Project1.Core.Blocks
         public readonly Type[] BlockEntityComps;
         public readonly Block Worker;
         public Def Profile;
+        public Def BreakProduct;
         public ConstructionProfile ConstructionProfile;
         public BlockComp.Spec[] BlockEntityCompSpecs;
         public BlockCompDef[] Comps;

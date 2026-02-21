@@ -12,9 +12,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Security.Policy;
 
 namespace Project1.Core.Towns.Zones
 {
@@ -218,7 +216,7 @@ namespace Project1.Core.Towns.Zones
         {
             yield return new Tuple<Func<string>, Action>(() => $"Zones [{Hotkey.GetLabel()}]", ToggleGui);
         }
-        static Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Zones", GetContextSubmenuItems()));
+        static readonly Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Zones", GetContextSubmenuItems()));
         private static readonly IHotkey Hotkey;
         public static void ToggleGui()
         {

@@ -73,7 +73,6 @@ namespace Project1.Core.Screens
 
             var map = GetMap();
             map.Camera.DrawMap(map, ToolManager, WindowManager, Scene);
-
             ToolManager.DrawUI(sb, map);
             DrawInterface(sb, Scene);
             NotificationArea.Draw(sb);

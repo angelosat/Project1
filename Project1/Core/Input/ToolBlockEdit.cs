@@ -1,18 +1,18 @@
-﻿using System;
-using System.Windows.Forms;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.Networking;
-using Project1.Core.Materials;
-using Project1.Core.Screens;
-using Project1.Core.Helpers;
-using Project1.Core.Simulation;
 using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Materials;
+using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Serialization;
+using Project1.Core.Simulation;
+using Project1.Framework;
+using Project1.Framework.Input;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Windows.Forms;
 
 namespace Project1.Core.Input
 {
@@ -137,7 +137,7 @@ namespace Project1.Core.Input
             this.Block.DrawPreview(sb, map, global, camera, this.State, this.Material, this.Variation, this.Orientation);
             sb.Flush();
         }
-        protected override void WriteData(System.IO.BinaryWriter w)
+        protected override void WriteData(IDataWriter w)
         {
             w.Write(this.Block.BlockDef);
             w.Write(this.State);

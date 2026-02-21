@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Designations;
@@ -101,6 +102,6 @@ namespace Project1.Core.Input.Orders
         internal override bool CanIssue(ISelectable target) => target is Actor;
 
         internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
-            => Ingame.Instance.Events.Post(new PlayerControlActorRequestEvent(selection.Targets.FirstOrDefault() as Actor));
+            => Ingame.Instance.Events.Post(new PlayerControlActorRequestEvent(Client.Instance.CurrentPlayer, selection.Targets.FirstOrDefault() as Actor));
     }
 }

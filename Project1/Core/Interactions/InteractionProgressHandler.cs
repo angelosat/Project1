@@ -1,5 +1,6 @@
 ﻿namespace Project1.Core.Interactions
 {
+   
     public interface IInteractionProgressHandler
     {
         bool IsFinished(Interaction interaction);

@@ -152,14 +152,14 @@ namespace Project1.Core.Entities
 
         public virtual void GetSelectionInfo(IUISelection info)
         {
-            info.AddIcon(IconCameraFollow);
+            info.AddIcon(IconCameraFollow.Value);
             this.Map?.World.OnTargetSelected(info, this);
             foreach (var comp in this.Components.Values)
                 comp.GetSelectionInfo(info, this);
         }
         public virtual void GetSelectionInfo(SelectionManager info)
         {
-            info.AddIcon(IconCameraFollow);
+            info.AddIcon(IconCameraFollow.Value);
             this.Map?.World.OnTargetSelected(info, this);
             foreach (var comp in this.Components.Values)
                 comp.GetSelectionInfo(info, this);
@@ -181,12 +181,12 @@ namespace Project1.Core.Entities
         {
             throw new NotImplementedException();
         }
-        static readonly IconButton IconForbidden = new QuickButton(Icon.Cross, ToolManagement.HotkeyToggleForbidden, "Forbid") { HoverText = "Toggle forbidden" };
-        static readonly IconButton IconCameraFollow = new(Icon.Replace) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = FollowCam, HoverText = "Camera follow" };
-        static void RequestToggleForbidden(List<ISelectable> targets)
-        {
-            Ingame.Instance.Events.Post(new PlayerForbiddingItemsEvent([.. targets.Select(o => o as Entity)]));
-        }
+        //static readonly IconButton IconForbidden = new QuickButton(Icon.Cross, ToolManagement.HotkeyToggleForbidden, "Forbid") { HoverText = "Toggle forbidden" };
+        static readonly Lazy<IconButton> IconCameraFollow = new(()=> new(Icon.Replace) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = FollowCam, HoverText = "Camera follow" });
+        //static void RequestToggleForbidden(List<ISelectable> targets)
+        //{
+        //    Ingame.Instance.Events.Post(new PlayerForbiddingItemsEvent([.. targets.Select(o => o as Entity)]));
+        //}
         static void FollowCam()
         {
             ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManager.Instance.SelectedSource as GameObject);

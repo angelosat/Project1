@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Construction;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Core.Towns.Constructions.Categories;
 using Project1.Framework;
 
 namespace Project1.Core.Blocks

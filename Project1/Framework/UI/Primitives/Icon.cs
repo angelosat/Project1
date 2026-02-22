@@ -36,12 +36,12 @@ namespace Project1.Framework.UI
             this.SpriteSheet = spritesheet;
             this.SourceRect = new Rectangle((int)index % (this.SpriteSheet.Width / size) * size, ((int)index / (this.SpriteSheet.Width / size)) * size, size, size);
         }
-        [Obsolete]
-        public Icon(string assetName)
-        {
-            /// TODO why load it in the sprite atlas???
-            this.AtlasToken = Sprite.Atlas.Load(assetName);
-        }
+        //[Obsolete]
+        //public Icon(string assetName)
+        //{
+        //    /// TODO why load it in the sprite atlas???
+        //    this.AtlasToken = Sprite.Atlas.Load(assetName);
+        //}
         public Icon(Texture2D spritesheet, Rectangle source)
         {
             this.SpriteSheet = spritesheet;

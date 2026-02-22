@@ -98,11 +98,6 @@ namespace Project1.Core.Simulation
         
         public static int MaxHeight = 128;
 
-        internal bool IsDesignation(IntVec3 global)
-        {
-            return this.Town.DesignationManager.IsDesignation(new TargetArgs(this, global));
-        }
-
         public abstract int GetMaxHeight();
         public abstract int GetSizeInChunks();
 

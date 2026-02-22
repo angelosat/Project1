@@ -71,7 +71,7 @@ namespace Project1.Core.Materials
 
         static public readonly MaterialDef Soil = new(MaterialTypeDefOf.Sediment, "Soil", "Dirt", Color.SandyBrown, 20) { ValueBase = 2, BreakResistance = 4 };
         static public readonly MaterialDef Sand = new(MaterialTypeDefOf.Sediment, "Sand", "Sand", Color.Khaki, 10) { ValueBase = 2 };
-        static public readonly MaterialDef SandNew = new(MaterialTypeDefOf.Sediment, "SandNew", "SandNew", Color.BlanchedAlmond, 10) { ValueBase = 2 };
+        //static public readonly MaterialDef SandNew = new(MaterialTypeDefOf.Sediment, "SandNew", "SandNew", Color.BlanchedAlmond, 10) { ValueBase = 2 };
         static public readonly MaterialDef Dirt = new(MaterialTypeDefOf.Sediment, "Dirt", "Dirt", Color.SaddleBrown, 10) { ValueBase = 2 };
 
 

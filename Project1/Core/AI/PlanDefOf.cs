@@ -42,6 +42,11 @@ namespace Project1.Core.AI
             Format = "Dig {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
+        static public readonly PlanDef Deconstruct = new("Deconstructing", typeof(BehaviorExecutePlanNew), InteractionDefOf.Deconstruct)
+        {
+            Format = "Dig {0}",
+            GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
+        };
         //static public readonly PlanDef Digging = new("Digging", typeof(TaskBehaviorDigging), InteractionDefOf.Dig)
         //{
         //    Format = "Dig {0}",

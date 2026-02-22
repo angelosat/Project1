@@ -8,7 +8,7 @@ using Project1.Framework.UI;
 namespace Project1.Core.UI
 {
     class ButtonGridGenericNew<TagType> : SelectableItemList<TagType>
-        where TagType : INamed
+        where TagType : ILabeled// INamed
     {
         public ButtonGridGenericNew()
         {
@@ -21,7 +21,7 @@ namespace Project1.Core.UI
 
         internal ButtonGridGenericNew<TagType> AddItems(IEnumerable<TagType> items, Action<TagType, Button> btnInit)
         {
-            var w = Button.GetMaxWidth(items.Select(i => i.Name));
+            var w = Button.GetMaxWidth(items.Select(i => i.LabelReadable));
             var row = 0;
             var x = 0;
             var y = 0;
@@ -29,7 +29,7 @@ namespace Project1.Core.UI
             var maxrows = Math.Ceiling(items.Count() / 2f);
             foreach (var item in items)
             {
-                var button = new Button(item.Name, w) { Location = new Vector2(x, y)};
+                var button = new Button(item.LabelReadable, w) { Location = new Vector2(x, y)};
                 btnInit(item, button);
                 var prevAction = button.LeftClickAction;
                 button.LeftClickAction = () =>

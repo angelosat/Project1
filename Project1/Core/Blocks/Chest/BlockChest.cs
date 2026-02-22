@@ -2,11 +2,11 @@
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Materials;
-using Project1.Core.Towns.Constructions.Categories;
 using Project1.Core.Blocks;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Helpers;
+using Project1.Core.Construction;
 
 namespace Project1.Core
 {

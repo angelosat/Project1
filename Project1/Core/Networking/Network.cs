@@ -39,7 +39,7 @@ namespace Project1.Core.Networking
             }
         }
 
-        public static NetEndpoint CurrentNetwork;
+        public static NetEndpoint CurrentEndpoint;
 
         static public ConsoleBoxAsync Console { get { return LobbyWindow.Instance.Console; } }
 
@@ -67,11 +67,11 @@ namespace Project1.Core.Networking
         }
         public void Update(GameTime gt)
         {
-            CurrentNetwork = this._server;
+            CurrentEndpoint = this._server;
             this._server.Tick(gt);
-            CurrentNetwork = this._client;
+            CurrentEndpoint = this._client;
             this._client.Tick();
-            CurrentNetwork = null;
+            CurrentEndpoint = null;
         }
         public static void SyncReport(Server server, string text)
         {

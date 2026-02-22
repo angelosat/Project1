@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
@@ -9,6 +10,7 @@ using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Project1.Core.Input.Orders
 {
@@ -34,8 +36,18 @@ namespace Project1.Core.Input.Orders
     {
         internal override bool CanIssue(ISelectable target)
             => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Deconstruct.Worker.IsValid(target);
+        //internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        //    => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, selection.Begin.Value, selection.End.Value, false));
         internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
-            => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, selection.Begin.Value, selection.End.Value, false));
+        {
+            if(selection.Begin.HasValue)
+                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, selection.Begin.Value, selection.End.Value, false));
+            else
+            {
+                if(selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity be)
+                    Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, be.OriginGlobal, be.OriginGlobal, false));
+            }
+        }
     }
     internal sealed class OrderCommandMine : UICommandWorker
     {

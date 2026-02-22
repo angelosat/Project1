@@ -21,7 +21,7 @@ using System.Linq;
 
 namespace Project1.Core.UI.Hud
 {
-    [EnsureStaticCtorCall]
+    //[EnsureStaticCtorCall]
     public sealed class SelectionManager
     {
         readonly GroupBox BoxTabs, BoxOrderButtons, BoxIcons, BoxInfo;
@@ -604,18 +604,20 @@ namespace Project1.Core.UI.Hud
             var targets = this.SelectedStackCurrent is not null ? [this.SelectedStackCurrent] : this.CurrentSelections;
             foreach (var orderdef in AllOrderCommands.Value)
             {
-                if (orderdef.Worker.CanIssue(targets))// targets.Any(orderdef.Worker.CanIssue))
+                if (orderdef.Worker.CanIssue(targets))
                 {
                     var runtime = new OrderCommandRuntime(orderdef);
                     var button = new QuickButton(new Icon(orderdef.Sprite), null, orderdef.LabelReadable)
                     {
-                        LeftClickAction = () => runtime.Issue(this.Selection)//.ToSelectionIntent())
+                        LeftClickAction = () => runtime.Issue(this.Selection)
                     };
                     this.BoxOrderButtons.AddControls(button);
                 }
             }
             if (this.BoxOrderButtons.Controls.Count == 0)
                 this.BoxOrderButtons.Hide();
+            //else
+            //    this.BoxOrderButtons.Validate(true);
         }
         internal static void AddButton(IconButton button, Action<List<ISelectable>> action, ISelectable target)
         {

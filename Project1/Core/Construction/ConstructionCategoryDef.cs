@@ -1,27 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Construction.Packets;
 using Project1.Core.Construction.Tools;
-using Project1.Core.Networking;
-using Project1.Framework.Interfaces;
-using Project1.Framework.UI;
-using Project1.Core.Blocks;
 using Project1.Core.Input.Building;
+using Project1.Core.Networking;
+using Project1.Framework.UI;
 
-namespace Project1.Core.Towns.Constructions.Categories
+namespace Project1.Core.Construction
 {
-    public sealed class ConstructionCategoryDef : Def, INamed
+    public sealed class ConstructionCategoryDef : Def//, INamed
     {
-        BuildToolDef[] _toolDefs;
+        public readonly BuildToolDef[] Tools;
 
-        public ConstructionCategoryDef(string name, params BuildToolDef[] tools) : base(name)
+        public ConstructionCategoryDef(string name, BuildToolDef[] tools) : base(name)
         {
-            this._toolDefs = tools;
+            this.Tools = tools;
         }
-
-        public IEnumerable<BuildToolDef> Tools => this._toolDefs;
-     
-        string INamed.Name => this.LabelReadable;
-
 
         static public Window WindowToolsBox;
         static public UIToolsBox ToolsBox;

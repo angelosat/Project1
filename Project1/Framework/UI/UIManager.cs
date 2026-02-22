@@ -307,6 +307,10 @@ namespace Project1.Framework.UI
                 }
             }
 
+            foreach (var layer in this.Layers)
+                foreach (var c in layer.Value)
+                    c.Validate(true);
+
             Control nextactive = Controller.Instance.MouseoverNext.Object as Control;
 
             if (nextactive != lastactive)

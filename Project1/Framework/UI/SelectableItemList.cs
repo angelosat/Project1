@@ -3,7 +3,7 @@ using System;
 
 namespace Project1.Framework.UI
 {
-    class SelectableItemList<T> : GroupBox where T : INamed
+    class SelectableItemList<T> : GroupBox// where T : INamed
     {
         Action<T> _SelectAction = (i) => { };
         public Action<T> SelectAction

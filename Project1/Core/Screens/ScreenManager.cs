@@ -133,6 +133,27 @@ namespace Project1.Core.Screens
             }
         }
 
+        //public void Update(Game1 game, GameTime gt)
+        //{
+        //    if (GameScreens.Count == 0)
+        //    {
+        //        GameScreens.Push(MainScreen.Instance);
+        //        GameScreens.Peek().Initialize(null);
+        //    }
+        //    GameScreen screen = GameScreens.Peek();
+        //    TooltipManager.Instance.Update();
+        //    DragDropManager.Instance.Update();
+
+        //    screen.Update(game, gt);
+
+        //    if (!Game1.Instance.IsActive)
+        //        return;
+
+        //    InputState.Instance.Update();
+
+        //    while(MouseInputQueue.TryDequeue(out var e))
+        //        e.Invoke();
+        //}
         public void Update(Game1 game, GameTime gt)
         {
             if (GameScreens.Count == 0)
@@ -140,21 +161,19 @@ namespace Project1.Core.Screens
                 GameScreens.Push(MainScreen.Instance);
                 GameScreens.Peek().Initialize(null);
             }
-            GameScreen screen = GameScreens.Peek();
-            TooltipManager.Instance.Update();
-            DragDropManager.Instance.Update();
 
-            screen.Update(game, gt);
-           
             if (!Game1.Instance.IsActive)
                 return;
 
             InputState.Instance.Update();
-
-            while(MouseInputQueue.TryDequeue(out var e))
+            while (MouseInputQueue.TryDequeue(out var e))
                 e.Invoke();
-        }
 
+            TooltipManager.Instance.Update();
+            DragDropManager.Instance.Update();
+
+            GameScreens.Peek()?.Update(game, gt);
+        }
         public static bool Add(GameScreen screen)
         {
             GameScreens.Push(screen);

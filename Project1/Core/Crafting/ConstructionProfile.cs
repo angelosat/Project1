@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Materials;
 using Project1.Framework;
-using System.Collections.Generic;
 
 namespace Project1.Core.Crafting
 {
@@ -8,6 +7,7 @@ namespace Project1.Core.Crafting
     {
         public readonly MaterialRefinementDef[] Refinements = refinements;
         public MaterialDef[] Materials { get; init; }
+        public bool IsDeconstructible { get; init; } = true;
         public int Dimension = 1;
     }
 }

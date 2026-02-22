@@ -1,4 +1,4 @@
-﻿using Project1.Core.Towns.Constructions.Categories;
+﻿using Project1.Core.Construction;
 using Project1.Framework;
 
 namespace Project1.Core.Legacy.Crafting

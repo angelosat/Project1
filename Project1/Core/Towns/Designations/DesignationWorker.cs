@@ -29,6 +29,7 @@ namespace Project1.Core.Towns.Designations
             {
                 CellSelection cell => cell.Block.IsDeconstructible,
                 BlockEntity blockEntity => blockEntity.Def.Block.IsDeconstructible,
+                Entity => false,
                 _ => throw new UnreachableException()
             };
         }

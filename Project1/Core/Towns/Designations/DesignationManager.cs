@@ -5,13 +5,11 @@ using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Input.CellRendering;
-using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Serialization;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Digging;
 using Project1.Core.UI;
-using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Input;
@@ -66,37 +64,37 @@ namespace Project1.Core.Towns.Designations
                     this.Renderers.Add(d, new(this.CellDesignations[d]));
             }
 
-            foreach (var r in this.Designations.Values)
-                r.CollectionChanged += this.R_CollectionChanged;
+            //foreach (var r in this.Designations.Values)
+            //    r.CollectionChanged += this.R_CollectionChanged;
 
             this.Town.Map.Events.ListenTo<CellsInvalidatedEvent>(this.OnBlocksChanged);
             this.Town.Map.Events.ListenTo<EntityDespawnedEvent>(this.OnEntityDespawn);
         }
-        private void R_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (Network.CurrentNetwork != Ingame.Net)
-                return;
+        //private void R_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (Network.CurrentEndpoint != Ingame.Net)
+        //        return;
 
-            var removed = e.OldItems?.Cast<TargetArgs>() ?? [];
-            foreach (var target in removed)
-            {
-                if (target.Type == TargetType.Cell)
-                {
-                    var pos = target.Global;
-                    if (SelectionManager.SingleSelectedCell == pos)
-                        SelectionManager.RemoveInfo(this.PendingDesignationLabel);
-                }
-            }
+        //    var removed = e.OldItems?.Cast<TargetArgs>() ?? [];
+        //    foreach (var target in removed)
+        //    {
+        //        if (target.Type == TargetType.Cell)
+        //        {
+        //            var pos = target.Global;
+        //            if (SelectionManager.SingleSelectedCell == pos)
+        //                SelectionManager.RemoveInfo(this.PendingDesignationLabel);
+        //        }
+        //    }
 
-            var added = e.NewItems?.Cast<TargetArgs>() ?? [];
-            foreach (var target in added)
-                if(target.Type == TargetType.Cell)
-                {
-                    var pos = target.Global;
-                    if (SelectionManager.SingleSelectedCell == pos)
-                        SelectionManager.AddInfoNew(this.UpdatePendingDesignationLabel(this.Designations.First(d => d.Value.Contains(target)).Key));
-                }
-        }
+        //    var added = e.NewItems?.Cast<TargetArgs>() ?? [];
+        //    foreach (var target in added)
+        //        if(target.Type == TargetType.Cell)
+        //        {
+        //            var pos = target.Global;
+        //            if (SelectionManager.SingleSelectedCell == pos)
+        //                SelectionManager.AddInfoNew(this.UpdatePendingDesignationLabel(this.Designations.First(d => d.Value.Contains(target)).Key));
+        //        }
+        //}
         internal IEnumerable<TargetArgs> GetDesignationTargets(DesignationDef desDef)
         {
             return desDef.TargetType switch
@@ -106,9 +104,6 @@ namespace Project1.Core.Towns.Designations
                 TargetType.BlockEntity => this.BlockEntityDesignations[desDef].Select(d => new TargetArgs(d)),
                 _ => throw new UnreachableException()
             };
-            //if (desDef.TargetType == TargetType.Cell)
-            //    return this.CellDesignations[desDef].Select(d => new TargetArgs(this.Map, d));
-            //return [];
         }
         internal ObservableHashSet<TargetArgs> GetDesignations(DesignationDef des)
         {
@@ -255,20 +250,7 @@ namespace Project1.Core.Towns.Designations
                     if (designation.Worker.IsValid(item))
                         list.Add(item);
             }
-            //foreach (var entity in entities.OfType<Entity>())
-            //{
-            //    if (isRemoval && designation.IsManual)
-            //        .Remove(entity);
-            //    else if (designation.Worker.IsValid(entity))
-            //        this.EntityDesignations[designation].Add(entity);
-            //}
             this.Map.Events.Post(new DesignationsChangedEvent(targets));
-        }
-        internal void Add(DesignationDef designation, IEnumerable<IntVec3> cells, bool isRemoval)
-        {
-            if (designation.TargetType != TargetType.Cell)
-                throw new InvalidOperationException($"Cells designation invalid for {designation}");
-            this.Add(designation, cells.Select(c => new TargetArgs(this.Map, c)), isRemoval);
         }
         internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool isRemoval)
         {
@@ -292,17 +274,6 @@ namespace Project1.Core.Towns.Designations
          
             this.UpdateOrderButtons();
         }
-        public DesignationDef GetDesignation(CellSelection cell)
-        {
-            foreach (var d in this.CellDesignations)
-                if (d.Value.Contains(cell.Global))
-                    return d.Key;
-            return null;
-        }
-        public DesignationDef GetDesignation(TargetArgs global)
-        {
-            return this.Designations.FirstOrDefault(d => d.Value.Contains(global)).Key; // will this return null if no designation?
-        }
         internal bool IsDesignation(ISelectable target)
         {
             return target switch
@@ -313,25 +284,7 @@ namespace Project1.Core.Towns.Designations
                 _ => false
             };
         }
-        //internal bool IsDesignation(ISelectable target)
-        //{
-        //    return target switch
-        //    {
-        //        CellSelection => this.CellDesignations.Values.Any(v => v.Contains(target.Global)),
-        //        Entity => this.EntityDesignations.Values.Any(v => v.Contains(target)),
-        //        BlockEntity => this.BlockEntityDesignations.Values.Any(v => v.Contains(target))
-        //        _ => throw new UnreachableException()
-        //    };
-        //    //return this.Designations.Values.Any(v => v.Contains(target));
-        //}
-        internal bool IsDesignation(TargetArgs target)
-        {
-            return this.Designations.Values.Any(v => v.Contains(target));
-        }
-        internal bool IsDesignation(IntVec3 global)
-        {
-            return this.Designations.Values.Any(v => v.Contains(global.At(this.Map)));
-        }
+        
         internal bool IsDesignation(IntVec3 global, DesignationDef desType)
         {
             var contains = this.Designations[desType].Contains(global.At(this.Map));
@@ -346,9 +299,6 @@ namespace Project1.Core.Towns.Designations
                 TargetType.BlockEntity => this.BlockEntityDesignations[desType].Contains(global.BlockEntity),
                 _ => throw new UnreachableException()
             };
-
-            //var contains = this.Designations[desType].Contains(global);
-            //return contains;
         }
         void OnBlocksChanged(CellsInvalidatedEvent e)
         {
@@ -358,20 +308,10 @@ namespace Project1.Core.Towns.Designations
                 {
                     if (!des.Value.Contains(cell))
                         continue;
-                    if (!des.Key.IsValid(this.Map, cell))
+                    if (!des.Key.Worker.IsValid(new CellSelection(this.Map, cell)))
                         des.Value.Remove(cell);
                 }
             }
-            //foreach (var des in this.Designations)
-            //{
-            //    foreach (var target in e.Positions)
-            //    {
-            //        if (!des.Value.Contains(new TargetArgs(this.Map, target)))
-            //            continue;
-            //        if (!des.Key.IsValid(this.Map, target))
-            //            des.Value.Remove(target.At(this.Map));
-            //    }
-            //}
         }
         void OnEntityDespawn(EntityDespawnedEvent obj)
         {
@@ -411,115 +351,13 @@ namespace Project1.Core.Towns.Designations
         static IEnumerable<(string, Action)> GetContextSubmenuItems()
         {
             yield return ("Remove", () => SetTool(null));
-            //foreach (var def in Ingame.CurrentMap.Town.DesignationManager.Designations.Keys
             foreach (var def in AllDesignationDefs.Where(d => d.IsManual))
                 yield return (def.LabelReadable, () => SetTool(def));
         }
         private static void SetTool(DesignationDef d)
         {
-            //ToolManager.SetTool(new ToolDesignation((begin, end, isRemoval) => PacketsDesignations.Send(Client.Instance, isRemoval, begin, end, d)) { DesignationDef = d });
             ToolManager.SetTool(new ToolDesignation((begin, end, isRemoval) => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(d, begin, end, isRemoval))));
         }
-        static void Cancel()
-        {
-            ToolManager.SetTool(new ToolDesignation((a, b, r) => PacketsDesignations.Send(Client.Instance, r, a, b, null)));
-        }
-        internal override void UpdateOrderButtons()
-        {
-            //if (this.Town.Net is Server)
-            //    return;
-            return;
-            //var selectedCells = SelectionManager.Instance.CurrentSelections.OfType<CellSelection>();
-            //var selectedEntities = SelectionManager.Instance.CurrentSelections.OfType<Entity>();
-            //var selectedBlockEntities = SelectionManager.Instance.CurrentSelections.OfType<BlockEntity>();
-            ////if (!selectedCells.Any())
-            ////    return;
-            ////var fromblockentities = selected.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => b.OriginGlobal.At(this.Town.Map));// new TargetArgs(b.OriginGlobal));
-            ////var selectedBlockEntities = selected.OfType<BlockEntity>();
-            //var fromblockentities = selectedCells.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => this.Town.Map.Select(b.OriginGlobal));
-            //var selectedCells = selectedCells.Union(fromblockentities);
-            //var vecs = selectedCells.Select(c => c.Global);
-            //var areExisting = selectedCells.Where(e => this.Designations.Values.Any(t => t.Contains(e)));// new TargetArgs(e))));
-
-            //foreach (var (def, list) in this.Designations) // need to handle construction designations differently because of multi-celled designations 
-            //{
-            //    if (!def.IsManual)
-            //        continue;
-            //    var existingDesignations = list.Intersect(selectedCells);
-            //    if (existingDesignations.Any())
-            //        SelectionManager.AddOrderButton(def.IconRemove, remove, existingDesignations);
-            //    else
-            //        SelectionManager.RemoveOrderButton(def.IconRemove);
-            //}
-
-            //var availableDesignations = selectedCells
-            //    .Except(areExisting)
-            //    .Where(t => AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
-
-            //var splits = AllDesignationDefs.ToDictionary(d => d, d => availableDesignations.FindAll(t => d.IsValid(t)));
-            //foreach (var s in AllDesignationDefs)
-            //{
-            //    if (!s.IsManual)
-            //        continue;
-            //    if (!splits.TryGetValue(s, out var list) || list.Count == 0)
-            //        SelectionManager.RemoveOrderButton(s.IconAdd);
-            //    else
-            //        SelectionManager.AddOrderButton(s.IconAdd, targets => add(targets, s), list);
-            //}
-
-            //void remove(IEnumerable<ISelectable> targets)
-            //{
-            //    this.Town.Map.Events.Post(new PlayerDesignationEvent(null, targets, false));
-            //}
-            //void add(IEnumerable<ISelectable> targets, DesignationDef des)
-            //{
-            //    this.Town.Map.Events.Post(new PlayerDesignationEvent(des, targets, false));
-            //}
-        }
-        //internal override void UpdateOrderButtons()
-        //{
-        //    if (this.Town.Net is Server)
-        //        return;
-        //    var selectedTargets = SelectionManager.Selected;
-        //    var fromblockentities = selectedTargets.Select(i => this.Map.GetBlockEntity(i.Global)).OfType<BlockEntity>().Select(b => b.OriginGlobal.At(this.Town.Map));// new TargetArgs(b.OriginGlobal));
-        //    selectedTargets = selectedTargets.Concat(fromblockentities).Distinct();
-
-        //    var areTask = selectedTargets.Where(e => this.Designations.Values.Any(t => t.Contains(e)));// new TargetArgs(e))));
-        //    foreach (var d in this.Designations) // need to handle construction designations differently because of multi-celled designations 
-        //    {
-        //        if (!d.Key.IsManual)
-        //            continue;
-        //        var selectedDesignations = d.Value.Intersect(selectedTargets);
-        //        if (selectedDesignations.Any())
-        //            SelectionManager.AddOrderButton(d.Key.IconRemove, remove, selectedDesignations);
-        //        else
-        //            SelectionManager.RemoveOrderButton(d.Key.IconRemove);
-        //    }
-
-        //    var areNotTask = selectedTargets
-        //        .Except(areTask)
-        //        .Where(t => AllDesignationDefs.Any(d => d.IsValid(t))).ToList();
-
-        //    var splits = AllDesignationDefs.ToDictionary(d => d, d => areNotTask.FindAll(t => d.IsValid(t)));
-        //    foreach (var s in AllDesignationDefs)
-        //    {
-        //        if (!s.IsManual)
-        //            continue;
-        //        if (!splits.TryGetValue(s, out var list) || list.Count == 0)
-        //            SelectionManager.RemoveOrderButton(s.IconAdd);
-        //        else
-        //            SelectionManager.AddOrderButton(s.IconAdd, targets => add(targets, s), list);
-        //    }
-
-        //    void remove(IEnumerable<TargetArgs> targets)
-        //    {
-        //        this.Town.Map.Events.Post(new PlayerDesignationEvent(null, targets, false));
-        //    }
-        //    void add(IEnumerable<TargetArgs> targets, DesignationDef des)
-        //    {
-        //        this.Town.Map.Events.Post(new PlayerDesignationEvent(des, targets, false));
-        //    }
-        //}
         GroupBox UpdatePendingDesignationLabel(DesignationDef des)
         {
             this.PendingDesignationLabel.ClearControls();
@@ -539,8 +377,8 @@ namespace Project1.Core.Towns.Designations
                     continue;
                 foreach (var entity in entityDes.Value)
                 {
-                    var icon = entityDes.Key.IconAdd.Icon;
-                    icon.DrawFloating(sb, cam, entity);
+                    //var icon = entityDes.Key.IconAdd.Icon;
+                    entityDes.Key.Icon?.DrawFloating(sb, cam, entity);
                 }
             }
         }
@@ -553,7 +391,5 @@ namespace Project1.Core.Towns.Designations
                 r.Value.DrawBlocks(map, cam);
             }
         }
-
-        
     }
 }

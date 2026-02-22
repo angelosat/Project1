@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Project1.Framework.UI
 {
@@ -128,10 +128,10 @@ namespace Project1.Framework.UI
                 this.IconStack.Add(i);
         }
         public override Vector2 ScreenLocation { get => base.ScreenLocation + new Vector2(0, (Pressed ? 1 : 0)); }
-        public override void Validate(bool cascade = false)
-        {
-            base.Validate(cascade);
-        }
+        //public override void Validate(bool cascade = false)
+        //{
+        //    base.Validate(cascade);
+        //}
         public IconButton AddLabel(string text)
         {
             this.AddControls(new Label(text) { Location = this.BottomCenter, Anchor = new Vector2(.5f, 1), MouseThrough = true });

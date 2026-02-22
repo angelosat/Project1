@@ -74,7 +74,8 @@ namespace Project1.Framework.UI
 
         protected override void OnTextChanged()
         {
-            this.Validate();
+            this.Invalidate();
+            //this.Validate();
         }
         public override void Validate(bool cascade = false)
         {
@@ -266,7 +267,8 @@ namespace Project1.Framework.UI
 
         protected override void OnTextChanged()
         {
-            this.Validate();
+            this.Invalidate();
+            //this.Validate();
         }
         public override void Validate(bool cascade = false)
         {

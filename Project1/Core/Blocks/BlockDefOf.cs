@@ -13,7 +13,12 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Air = new("Air", typeof(BlockAir)) { DefaultMaterial = MaterialDefOf.Air };
         static public readonly BlockDef Grass = new("Grass", typeof(BlockGrass))
         {
-            BreakProduct = MaterialRefinementDefOf.Bag
+            BreakProduct = MaterialRefinementDefOf.Bag,
+            ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Bag])
+            {
+                Materials = [MaterialDefOf.Soil],
+                IsDeconstructible = false
+            },
         };
         static public readonly BlockDef Stone = new("Stone", typeof(BlockBedrock));
         static public readonly BlockDef Farmland = new("Farmland", typeof(BlockFarmland))
@@ -24,12 +29,21 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Mineral = new("Mineral", typeof(BlockMineral));
         static public readonly BlockDef Sand = new("Sand", typeof(BlockSand))
         {
-            BreakProduct = MaterialRefinementDefOf.Bag
+            BreakProduct = MaterialRefinementDefOf.Bag,
+            ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Bag])
+            {
+                Materials = [MaterialDefOf.Sand],
+                IsDeconstructible = false
+            },
         };
         static public readonly BlockDef WoodenDeck = new("WoodenDeck", typeof(BlockWoodenDeck));
         static public readonly BlockDef Soil = new("Soil", typeof(BlockSoil))
         {
-            ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Bag]) { Materials = [MaterialDefOf.Soil] },
+            ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Bag])
+            {
+                Materials = [MaterialDefOf.Soil],
+                IsDeconstructible = false
+            },
             BreakProduct = MaterialRefinementDefOf.Bag
         };
         static public readonly BlockDef Door = new("Door", typeof(BlockDoor))

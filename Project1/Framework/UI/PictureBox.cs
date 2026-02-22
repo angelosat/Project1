@@ -187,7 +187,8 @@ namespace Project1.Framework.UI
         {
             this.SourceRect = token.Rectangle;
             this.Sprite = token.Atlas.Texture;
-            this.Validate();
+            this.Invalidate();
+            //this.Validate();
         }
     }
 }

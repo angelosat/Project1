@@ -8,7 +8,7 @@ using System;
 namespace Project1.Core.UI
 {
     [Obsolete]
-    class ComboBoxNew<T> : Button where T : INamed
+    class ComboBoxNew<T> : Button where T : ILabeled// INamed
     {
         public enum OpenOrientation { Below, Above }
         public OpenOrientation Orientation = OpenOrientation.Below;
@@ -18,7 +18,7 @@ namespace Project1.Core.UI
         {
             this.AutoSize = false;
             this.Panel = items.ToPanel();
-            items.SelectAction = (i) => { this.Text = i.Name; this.ToggleOpen(); };
+            items.SelectAction = (i) => { this.Text = i.LabelReadable; this.ToggleOpen(); };
             this.Text = defaultText;
             this.Width = width;
             this.Height = UIManager.DefaultButtonHeight;

@@ -1,28 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Construction;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Materials;
-using Project1.Core.Towns;
-using Project1.Core.Towns.Constructions.Categories;
-using Project1.Core.Graphics.Particles;
 using Project1.Core.Graphics;
+using Project1.Core.Graphics.Particles;
 using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
+using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Rooms;
 using Project1.Core.Simulation;
+using Project1.Core.Towns;
 using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Graphics;
 using Project1.Framework.Helpers;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Blocks
 {
@@ -324,7 +324,7 @@ namespace Project1.Core.Blocks
         public virtual bool IsStandableOn => this.Solid;
         public virtual byte Luminance { get; }
         public virtual bool IsMinable => false;
-        public bool IsDeconstructible => this.BlockDef.ConstructionProfile is not null;
+        public bool IsDeconstructible => this.BlockDef.ConstructionProfile?.IsDeconstructible ?? false;
         public virtual bool IsRoomBorder => this.Opaque;
         public virtual bool Multi => false;
         public virtual Color DirtColor => Color.White;

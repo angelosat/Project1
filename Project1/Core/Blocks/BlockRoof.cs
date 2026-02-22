@@ -28,7 +28,7 @@ namespace Project1.Core.Blocks
             this.Parts[2] = Atlas.Load("blocks/roof/roof3height19", BlockDepthMap, NormalMap);
             this.Parts[1] = Atlas.Load("blocks/roof/roof4height19", BlockDepthMap, NormalMap);
             this.Variations.Add(this.Parts.First());
-            this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
+            this.BuildProperties.Category = ConstructionCategoryDefOf.Structural;
         }
         public override float GetHeight(byte data, float x, float y)
         {

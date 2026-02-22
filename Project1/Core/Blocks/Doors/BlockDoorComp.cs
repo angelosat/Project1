@@ -24,6 +24,10 @@ namespace Project1.Core.Blocks.Doors
         {
             entity.Name = "Door";
         }
+        internal override void Initialize()
+        {
+            this.Parent.Name = this.Parent.Def.LabelReadable;
+        }
         internal void OnActorEntered(Entity entity) 
         {
             this.CurrentlyOccupying.Add(entity.RefId);

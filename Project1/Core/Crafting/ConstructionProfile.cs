@@ -1,11 +1,13 @@
-﻿using Project1.Core.Materials;
+﻿using Project1.Core.Construction;
+using Project1.Core.Materials;
 using Project1.Framework;
 
 namespace Project1.Core.Crafting
 {
-    public class ConstructionProfile(MaterialRefinementDef[] refinements) : Inspectable
+    public class ConstructionProfile(ConstructionCategoryDef category, MaterialRefinementDef[] refinements) : Inspectable
     {
         public readonly MaterialRefinementDef[] Refinements = refinements;
+        public readonly ConstructionCategoryDef Category = category;
         public MaterialDef[] Materials { get; init; }
         public bool IsDeconstructible { get; init; } = true;
         public int Dimension = 1;

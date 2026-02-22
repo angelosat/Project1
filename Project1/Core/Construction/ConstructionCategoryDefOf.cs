@@ -6,7 +6,7 @@ namespace Project1.Core.Construction
     [EnsureStaticCtorCall]
     static class ConstructionCategoryDefOf
     {
-        public static readonly ConstructionCategoryDef Walls = new("Walls", [
+        public static readonly ConstructionCategoryDef Structural = new("Structural", [
             BuildToolDefOf.Single,
             BuildToolDefOf.Line,
             BuildToolDefOf.Floor,

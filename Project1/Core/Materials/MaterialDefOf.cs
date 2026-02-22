@@ -29,7 +29,6 @@ namespace Project1.Core.Materials
             .SetColor(Color.Gold)
             .SetValue(100);
 
-
         static public readonly MaterialDef Coal = new(MaterialTypeDefOf.Stone, "Coal", "Coal", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
   
         static public readonly MaterialDef Stone = new(MaterialTypeDefOf.Stone, "Stone", "Stone", /*Color.DimGray*/Color.Beige, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
@@ -43,7 +42,6 @@ namespace Project1.Core.Materials
         static public readonly MaterialDef CoalNew = new(MaterialTypeDefOf.FossilFuel, "CoalNew", "CoalNew", Color.Black, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
         static public readonly MaterialDef Peat = new(MaterialTypeDefOf.FossilFuel, "Peat", "Peat", Color.SaddleBrown, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
         static public readonly MaterialDef Lignite = new(MaterialTypeDefOf.FossilFuel, "Lignite", "Lignite", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
-
 
         static public readonly MaterialDef ShrubStem = new MaterialDef("Twig", MaterialTemplates.PlantStem)
             .SetColor(new Color(139, 136, 95, 255));// Color.DarkOliveGreen

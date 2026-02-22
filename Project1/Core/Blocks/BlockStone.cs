@@ -17,7 +17,7 @@ namespace Project1.Core.Blocks
             this.Ingredient = new Ingredient()
                 .SetAllow(RawMaterialDefOf.Boulders, true)
                 .SetAllow(MaterialDefOf.Stone, true);
-            this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
+            this.BuildProperties.Category = ConstructionCategoryDefOf.Structural;
         }
         public override ParticleEmitterSphere GetEmitter()
         {

@@ -16,7 +16,7 @@ namespace Project1.Core.Blocks
             this.LoadVariations("sand1");
             this.Ingredient = new Ingredient()
                 .SetAllow(MaterialDefOf.Sand, true);
-            this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
+            this.BuildProperties.Category = ConstructionCategoryDefOf.Structural;
         }
         public override IEnumerable<MaterialDef> GetEditorVariations()
         {

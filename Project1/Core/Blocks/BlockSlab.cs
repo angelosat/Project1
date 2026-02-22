@@ -15,7 +15,7 @@ namespace Project1.Core.Blocks
             var txt = Block.Atlas.Load("blocks/slab", Block.QuarterBlockMapDepth, Block.QuarterBlockMapNormal);
             this.Variations.Add(txt);
             this.Ingredient = new Ingredient(RawMaterialDefOf.Ingots, null, null, 1);
-            this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
+            this.BuildProperties.Category = ConstructionCategoryDefOf.Structural;
         }
         public override float GetPathingCost(byte data)
         {

@@ -27,7 +27,7 @@ namespace Project1.Core.Blocks
             this.Ingredient = new Ingredient(RawMaterialDefOf.Planks, null, null, 1);// 4);
             this.BuildProperties.Complexity = 2;
             this.BuildProperties.Dimension = 4;
-            this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
+            this.BuildProperties.Category = ConstructionCategoryDefOf.Structural;
         }
 
         public override ParticleEmitterSphere GetEmitter()

@@ -33,7 +33,7 @@ namespace Project1.Core.Blocks
             this.Parts[2] = Block.Atlas.Load("blocks/stairs/stairs3", Depth3, Normal3);
             this.Parts[3] = Block.Atlas.Load("blocks/stairs/stairs4", Depth4, Normal4);
             this.Variations.Add(this.Parts.First());
-            this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
+            this.BuildProperties.Category = ConstructionCategoryDefOf.Structural;
             this.Ingredient = new Ingredient().IsBuildingMaterial();
         }
         public override float GetHeight(byte data, float x, float y)

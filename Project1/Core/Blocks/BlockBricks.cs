@@ -13,7 +13,7 @@ namespace Project1.Core.Blocks
         {
             this.LoadVariations("bricks/bricks");
             this.BuildProperties.Complexity = 20;
-            this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
+            this.BuildProperties.Category = ConstructionCategoryDefOf.Structural;
             this.Ingredient =
                 new Ingredient()
                     .SetAllow(MaterialTypeDefOf.Metal, true)

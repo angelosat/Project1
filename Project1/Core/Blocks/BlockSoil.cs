@@ -29,7 +29,7 @@ namespace Project1.Core.Blocks
                 new Ingredient()
                 .SetAllow(RawMaterialDefOf.Bags, true)
                 .SetAllow(MaterialDefOf.Soil, true);
-            this.BuildProperties.Category = ConstructionCategoryDefOf.Walls;
+            this.BuildProperties.Category = ConstructionCategoryDefOf.Structural;
             this.DefaultMaterial = MaterialDefOf.Soil;
             this.DrawMaterialColor = false;
         }

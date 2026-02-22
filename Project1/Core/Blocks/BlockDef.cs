@@ -12,7 +12,7 @@ namespace Project1.Core.Blocks
     {
         public readonly Type BlockType;
         public readonly Type[] BlockEntityComps;
-        public readonly Block Worker;
+        public readonly Block Block;
         public Def Profile;
         public Def BreakProduct;
         public ConstructionProfile ConstructionProfile;
@@ -30,8 +30,8 @@ namespace Project1.Core.Blocks
       
         public BlockDef(string name, Type blockType, Type[] entityComps = null) : base(name)
         {
-            this.Worker = ActivatorSafe<Block>.CreateInstance(blockType);
-            this.Worker.BlockDef = this;
+            this.Block = ActivatorSafe<Block>.CreateInstance(blockType);
+            this.Block.BlockDef = this;
         }
 
         public BlockEntity CreateEntity(IntVec3 origin)

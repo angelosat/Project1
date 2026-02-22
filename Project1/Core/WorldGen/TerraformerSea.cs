@@ -29,18 +29,18 @@ namespace Project1.Core.WorldGen
                     continue;
                 else if (z == this.SeaLevel)
                 {
-                    if (c.Block == BlockDefOf.Air.Worker)
+                    if (c.Block == BlockDefOf.Air.Block)
                     {
-                        c.Block = BlockDefOf.Fluid.Worker;
+                        c.Block = BlockDefOf.Fluid.Block;
                         c.Material = MaterialDefOf.Water;
                         continue;
                     }
                 }
                 else
                 {
-                    if (c.Block == BlockDefOf.Air.Worker)
+                    if (c.Block == BlockDefOf.Air.Block)
                     {
-                        c.Block = BlockDefOf.Fluid.Worker;
+                        c.Block = BlockDefOf.Fluid.Block;
                         c.Material = MaterialDefOf.Water;
                         c.BlockData = BlockFluid.GetData(1);
                         continue;
@@ -54,7 +54,7 @@ namespace Project1.Core.WorldGen
                 var soilGradient = zNormal + gradients[cellCoords];
                 if (sandThreshold <= soilGradient && soilGradient < landThreshold)
                 {
-                    c.Block = BlockDefOf.Sand.Worker;
+                    c.Block = BlockDefOf.Sand.Block;
                     c.Material = MaterialDefOf.Sand;
                 }
             }

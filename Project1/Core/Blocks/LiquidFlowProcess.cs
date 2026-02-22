@@ -50,9 +50,9 @@ namespace Project1.Core.Blocks
 
             var below = current - Vector3.UnitZ;
             var belowBlock = this.Map.GetBlock(below);
-            if (belowBlock == BlockDefOf.Air.Worker)
+            if (belowBlock == BlockDefOf.Air.Block)
             {
-                this.Map.SetBlock(below, BlockDefOf.Fluid.Worker, MaterialDefOf.Water, 1, Rand.Next(4));
+                this.Map.SetBlock(below, BlockDefOf.Fluid.Block, MaterialDefOf.Water, 1, Rand.Next(4));
                 if (!this.Handled.Contains(below))
                     if (!this.ToHandle.Contains(below))
                         this.ToHandle.Enqueue(below);
@@ -66,9 +66,9 @@ namespace Project1.Core.Blocks
             foreach (var n in new List<Vector3>() { east, south, west, north })
             {
                 var nblock = this.Map.GetBlock(n);
-                if (nblock != BlockDefOf.Air.Worker)
+                if (nblock != BlockDefOf.Air.Block)
                     continue;
-                this.Map.SetBlock(n, BlockDefOf.Fluid.Worker, MaterialDefOf.Water, 0, Rand.Next(4));
+                this.Map.SetBlock(n, BlockDefOf.Fluid.Block, MaterialDefOf.Water, 0, Rand.Next(4));
                 FlowProcesses.Add(new LiquidFlowProcess(this.Map, this.Source, n));
             }
             return false;

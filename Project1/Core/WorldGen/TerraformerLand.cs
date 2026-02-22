@@ -25,7 +25,7 @@ namespace Project1.Core.WorldGen
         {
             if (z > this.LandLevel)
             {
-                c.Block = BlockDefOf.Air.Worker;
+                c.Block = BlockDefOf.Air.Block;
                 return;
             }
             c.Block = w.DefaultBlock;

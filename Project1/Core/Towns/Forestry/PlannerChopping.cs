@@ -18,7 +18,8 @@ namespace Project1.Core.Towns.Forestry
             if (actor.IsHauling)
                 return null;
             var manager = actor.Map.Town.DesignationManager;
-            var trees = manager.GetDesignations(DesignationDefOf.Chop)
+            //var trees = manager.GetDesignations(DesignationDefOf.Chop)
+            var trees = manager.GetDesignationTargets(DesignationDefOf.Chop)
                 .Where(o => actor.CanReserve(o))
                 .OrderByReachableRegionDistance(actor);
 

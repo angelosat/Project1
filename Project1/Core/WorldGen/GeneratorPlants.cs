@@ -30,7 +30,7 @@ namespace Project1.Core.WorldGen
                     var cell = chunk.GetLocalCell(x, y, z);
 
                     if (
-                        cell.Block == BlockDefOf.Grass.Worker)
+                        cell.Block == BlockDefOf.Grass.Block)
                     {
                         var allPlants = this.ValidPlants ??= this.GetValidPlants();
                         var randomPlant = allPlants.SelectRandom(map.Random);

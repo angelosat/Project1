@@ -36,21 +36,21 @@ namespace Project1.Core.Blocks
 
         public override void RandomBlockUpdate(INetEndpoint net, IntVec3 global, Cell celll)
         {
-            if (net.Map.GetBlock(global + IntVec3.UnitZ) != BlockDefOf.Air.Worker)
+            if (net.Map.GetBlock(global + IntVec3.UnitZ) != BlockDefOf.Air.Block)
                 return;
             if (net.Map.GetSunLight(global + IntVec3.UnitZ) < 8)
                 return;
 
             // make grass grow anywhere, not just spread from existing grass
-            Block.Place(BlockDefOf.Grass.Worker, net.Map, global, celll.Material, 0, celll.Variation, 0);
+            Block.Place(BlockDefOf.Grass.Block, net.Map, global, celll.Material, 0, celll.Variation, 0);
 
             foreach (var n in global.GetNeighborsDiag())
             {
                 if (!net.Map.TryGetCell(n, out Cell cell))
                     continue;
-                if (cell.Block != BlockDefOf.Grass.Worker)
+                if (cell.Block != BlockDefOf.Grass.Block)
                     continue;
-                Block.Place(BlockDefOf.Grass.Worker, net.Map, global, cell.Material, 0, celll.Variation, 0);
+                Block.Place(BlockDefOf.Grass.Block, net.Map, global, cell.Material, 0, celll.Variation, 0);
                 return;
             }
         }

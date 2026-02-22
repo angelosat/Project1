@@ -206,7 +206,7 @@ namespace Project1.Core.Simulation.Physics
             var underfeetBlockCoords = underfeet.ToBlock();
             var underfeetCell = map.GetCell(underfeet);
             var underfeetBlock = underfeetCell.Block;
-            if (underfeetBlock != BlockDefOf.Air.Worker)
+            if (underfeetBlock != BlockDefOf.Air.Block)
             {
                 blocktransform = underfeetCell.Block.GetVelocityTransform(underfeetCell.BlockData, underfeetBlockCoords);
             }
@@ -275,7 +275,7 @@ namespace Project1.Core.Simulation.Physics
                 {
                     var cellglobal = (underfeet + check).ToRounded();
                     contactCell = map.GetCell(cellglobal);
-                    if (contactCell == null || contactCell.Block == BlockDefOf.Air.Worker)
+                    if (contactCell == null || contactCell.Block == BlockDefOf.Air.Block)
                     {
                         continue;
                     }

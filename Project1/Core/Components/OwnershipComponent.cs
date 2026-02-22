@@ -88,26 +88,26 @@ namespace Project1.Core.Components
                 () => comp.OwnerRef == -1 ? null : gameObject.World.GetEntity(comp.OwnerRef),
                 () => alllist.Prepend(null));
 
-            setownercombo.OnGameEventAction = a =>
-            {
-                switch ((Message.Types)a.Type)
-                {
-                    case Message.Types.NpcsUpdated:
-                        alllist.Clear();
-                        alllist.Add(null);
-                        alllist.AddRange(gameObject.Map.Town.GetMembers());
-                        break;
-                    default:
-                        break;
-                }
-            };
+            //setownercombo.OnGameEventAction = a =>
+            //{
+            //    switch ((Message.Types)a.Type)
+            //    {
+            //        case Message.Types.NpcsUpdated:
+            //            alllist.Clear();
+            //            alllist.Add(null);
+            //            alllist.AddRange(gameObject.Map.Town.GetMembers());
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //};
             box.AddControls(setownercombo);
         }
 
         public void SetOwner(GameObject parent, int actorID)
         {
             this.OwnerRef = actorID;
-            parent.Net.EventOccured((int)Message.Types.ItemOwnerChanged, parent.RefId);
+            //parent.Net.EventOccured((int)Message.Types.ItemOwnerChanged, parent.RefId);
         }
         static Control ActorList;
         internal override void GetSelectionInfo(IUISelection info, GameObject parent)

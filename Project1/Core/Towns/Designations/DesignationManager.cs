@@ -17,7 +17,6 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Input;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -89,7 +88,7 @@ namespace Project1.Core.Towns.Designations
                 }
             }
 
-            var added = e.NewItems?.Cast<TargetArgs>() ?? Enumerable.Empty<TargetArgs>();
+            var added = e.NewItems?.Cast<TargetArgs>() ?? [];
             foreach (var target in added)
                 if(target.Type == TargetType.Cell)
                 {
@@ -100,9 +99,16 @@ namespace Project1.Core.Towns.Designations
         }
         internal IEnumerable<TargetArgs> GetDesignationTargets(DesignationDef desDef)
         {
-            if (desDef.TargetType == TargetType.Cell)
-                return this.CellDesignations[desDef].Select(d => new TargetArgs(this.Map, d));
-            return [];
+            return desDef.TargetType switch
+            {
+                TargetType.Cell => this.CellDesignations[desDef].Select(d => new TargetArgs(this.Map, d)),
+                TargetType.Entity => this.EntityDesignations[desDef].Select(d => new TargetArgs(d)),
+                TargetType.BlockEntity => this.BlockEntityDesignations[desDef].Select(d => new TargetArgs(d)),
+                _ => throw new UnreachableException()
+            };
+            //if (desDef.TargetType == TargetType.Cell)
+            //    return this.CellDesignations[desDef].Select(d => new TargetArgs(this.Map, d));
+            //return [];
         }
         internal ObservableHashSet<TargetArgs> GetDesignations(DesignationDef des)
         {
@@ -189,6 +195,10 @@ namespace Project1.Core.Towns.Designations
                     throw new UnreachableException();
             }
         }
+        internal void RemoveCells(IEnumerable<IntVec3> cells)
+        {
+            this.RemoveCells(cells.Select(c => new CellSelection(this.Map, c) as ISelectable));
+        }
         internal void RemoveCells(IEnumerable<ISelectable> targets)
         {
             if (!targets.Any())
@@ -197,6 +207,10 @@ namespace Project1.Core.Towns.Designations
                 foreach(var des in this.CellDesignations.Where(vk=>vk.Key.IsManual))
                     des.Value.Remove(cell.Global);
             this.Map.Events.Post(new DesignationsChangedEvent(targets));
+        }
+        internal void AddCells(DesignationDef designation, IEnumerable<IntVec3> cells, bool isRemoval)
+        {
+            this.AddCells(designation, cells.Select(c => new CellSelection(this.Map, c) as ISelectable), isRemoval);
         }
         internal void AddCells(DesignationDef designation, IEnumerable<ISelectable> targets, bool isRemoval)
         {

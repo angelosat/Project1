@@ -50,7 +50,7 @@ namespace Project1.Core.Simulation
         }
         internal MapEdit Erase(IEnumerable<IntVec3> targets)
         {
-            this.Paint(targets, BlockDefOf.Air.Worker, null, 0, 0, 0);
+            this.Paint(targets, BlockDefOf.Air.Block, null, 0, 0, 0);
             return this;
         }
 
@@ -84,7 +84,7 @@ namespace Project1.Core.Simulation
             {
                 this.EntitiesRemoved.Add(entity);
                 foreach(var c in entity.CellsOccupied)
-                    this.Changes[c] = new SetBlockArgs(c, BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, 0, IntVec3.Zero);
+                    this.Changes[c] = new SetBlockArgs(c, BlockDefOf.Air.Block, MaterialDefOf.Air, 0, 0, IntVec3.Zero);
 
                 // blockentity gets precedent for which cells it occupies, so we dont have to further check for simple multicelled blocks
                 return;
@@ -92,12 +92,12 @@ namespace Project1.Core.Simulation
             var cell = this.Map.GetCell(global);
             var parts = cell.GetParts(global);
             foreach (var p in parts)
-                this.Changes[p] = new SetBlockArgs(p, BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, 0, IntVec3.Zero);
+                this.Changes[p] = new SetBlockArgs(p, BlockDefOf.Air.Block, MaterialDefOf.Air, 0, 0, IntVec3.Zero);
         }
         
         void Place(IntVec3 global, BlockDef block, MaterialDef material, byte data, int variation, int orientation)
         {
-            var worker = block.Worker;
+            var worker = block.Block;
             var map = this.Map;
             if (worker.TryLinkToAdjacentBlockEntity(map, global) is BlockEntity entity)
             {
@@ -121,7 +121,7 @@ namespace Project1.Core.Simulation
         }
         internal static void Paint(MapEditContext context, MapBase map, IEnumerable<IntVec3> targets, BlockDef blockDef, MaterialDef material, byte data, int variation, int orientation)
         {
-            Paint(context, map, targets, blockDef.Worker, material, data, variation, orientation);
+            Paint(context, map, targets, blockDef.Block, material, data, variation, orientation);
         }
         internal static void Paint(MapEditContext context, MapBase map, IEnumerable<IntVec3> targets, Block block, MaterialDef material, byte data, int variation, int orientation)
         {

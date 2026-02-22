@@ -5,6 +5,5 @@ using Project1.Framework.Events;
 
 namespace Project1.Core.Loot
 {
-    internal record struct LootPopEvent(Entity[] Entities, Entity Source) : IEventPayload { }
-    internal record struct LootPopNewEvent(Entity[] Entities, MapBase Map, Vector3 Global, Vector3 Velocity  = default) : IEventPayload { }
+    internal record struct LootDropEvent(Entity[] Entities, MapBase Map, Vector3 Global, Vector3 Velocity  = default) : IEventPayload { }
 }

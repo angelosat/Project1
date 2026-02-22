@@ -13,41 +13,41 @@ namespace Project1.Core.AI
 {
     sealed class AIManager : GameSystem
     {
-        public override void Initialize()
-        {
-            Plan.Initialize();
-        }
+        //public override void Initialize()
+        //{
+        //    Plan.Initialize();
+        //}
 
-        public override void OnGameEvent(GameEvent e)
-        {
-            switch ((Message.Types)e.Type)
-            {
-                case Message.Types.EntityAttacked:
-                    var attacker = e.Parameters[0] as GameObject;
-                    if (attacker.Net is Client)
-                        break;
-                    var target = e.Parameters[1] as GameObject;
-                    var dmg = (int)e.Parameters[2];
-                    if (!target.HasComponent<AIComponent>())
-                        break;
-                    var st = AIState.GetState(target);
-                    if (st != null)
-                    {
-                        Threat thr = st.Threats.FirstOrDefault(t => t.Entity == attacker);
-                        if (thr == null)
-                        {
-                            thr = new Threat(target, dmg, attacker);
-                            st.Threats.Add(thr);
-                        }
-                        else
-                            thr.Value += dmg;
-                    }
-                    break;
+        //public override void OnGameEvent(GameEvent e)
+        //{
+        //    switch ((Message.Types)e.Type)
+        //    {
+        //        case Message.Types.EntityAttacked:
+        //            var attacker = e.Parameters[0] as GameObject;
+        //            if (attacker.Net is Client)
+        //                break;
+        //            var target = e.Parameters[1] as GameObject;
+        //            var dmg = (int)e.Parameters[2];
+        //            if (!target.HasComponent<AIComponent>())
+        //                break;
+        //            var st = AIState.GetState(target);
+        //            if (st != null)
+        //            {
+        //                Threat thr = st.Threats.FirstOrDefault(t => t.Entity == attacker);
+        //                if (thr == null)
+        //                {
+        //                    thr = new Threat(target, dmg, attacker);
+        //                    st.Threats.Add(thr);
+        //                }
+        //                else
+        //                    thr.Value += dmg;
+        //            }
+        //            break;
 
-                default:
-                    break;
-            }
-        }
+        //        default:
+        //            break;
+        //    }
+        //}
 
         public override void OnTooltipCreated(ITooltippable item, Tooltip t)
         {

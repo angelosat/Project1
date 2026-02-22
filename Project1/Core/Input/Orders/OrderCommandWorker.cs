@@ -30,6 +30,13 @@ namespace Project1.Core.Input.Orders
     internal abstract class UICommandWorker : CommandWorker
     { 
     }
+    internal sealed class OrderCommandDeconstruct : UICommandWorker
+    {
+        internal override bool CanIssue(ISelectable target)
+            => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Deconstruct.Worker.IsValid(target);
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+            => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, selection.Begin.Value, selection.End.Value, false));
+    }
     internal sealed class OrderCommandMine : UICommandWorker
     {
         internal override bool CanIssue(ISelectable target)

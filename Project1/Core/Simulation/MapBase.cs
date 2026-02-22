@@ -198,7 +198,7 @@ namespace Project1.Core.Simulation
             {
                 blockentity.OnRemoved(this, global);
                 blockentity.Dispose();
-                this.Net.EventOccured((int)Message.Types.BlockEntityRemoved, blockentity, global);
+                //this.Net.EventOccured((int)Message.Types.BlockEntityRemoved, blockentity, global);
             }
 
             // reenable physics of entities resting on block
@@ -241,13 +241,11 @@ namespace Project1.Core.Simulation
                 this.RemoveBlockEntity(global);
                 blockentity.OnRemoved(this, global);
                 blockentity.Dispose();
-                if (notify)
-                    this.Net.EventOccured((int)Message.Types.BlockEntityRemoved, blockentity, global);
             }
             else
                 foreach (var p in parts)
                 {
-                    this.SetBlock(p, BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, 0, 0, notify);
+                    this.SetBlock(p, BlockDefOf.Air.Block, MaterialDefOf.Air, 0, 0, 0, notify);
                     this.SetBlockLuminance(p, 0);
                     // reenable physics of entities resting on block
                     foreach (var entity in this.GetObjects(p - new IntVec3(1, 1, 0), p + new IntVec3(1, 1, 2)))
@@ -266,7 +264,7 @@ namespace Project1.Core.Simulation
 
         internal void RemoveBlocks(IEnumerable<IntVec3> positions, bool notify = true)
         {
-            var nonAirPositions = positions.Where(vec => this.GetBlock(vec) != BlockDefOf.Air.Worker).ToList();
+            var nonAirPositions = positions.Where(vec => this.GetBlock(vec) != BlockDefOf.Air.Block).ToList();
             foreach (var global in nonAirPositions)
                 this.RemoveBlock(global, false);
             if (notify)
@@ -556,7 +554,7 @@ namespace Project1.Core.Simulation
         public virtual bool IsEmpty(Vector3 global)
         {
             global = global.ToRounded();
-            if (this.GetBlock(global) != BlockDefOf.Air.Worker)
+            if (this.GetBlock(global) != BlockDefOf.Air.Block)
                 return false;
             var blockbox = new BoundingBox(global - (Vector3.UnitX + Vector3.UnitY) * .5f, global + Vector3.UnitZ + (Vector3.UnitX + Vector3.UnitY) * .5f);
             var entities = this.GetObjectsAtChunk(global);
@@ -794,7 +792,7 @@ namespace Project1.Core.Simulation
         }
         public PlaceBlockResult SetBlock(IntVec3 global, BlockDef block)
         {
-            return this.SetBlock(global, block.Worker, block.DefaultMaterial, 0);
+            return this.SetBlock(global, block.Block, block.DefaultMaterial, 0);
         }
         public virtual PlaceBlockResult SetBlock(IntVec3 global, Block block, MaterialDef material, byte data, int variation = 0, int orientation = 0, bool raiseEvent = true)
         {
@@ -812,7 +810,7 @@ namespace Project1.Core.Simulation
             var chunk = this.GetChunk(global);
 
             //if (cell.Block == BlockDefOf.Air && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
-            if (cell.Block == BlockDefOf.Air.Worker && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
+            if (cell.Block == BlockDefOf.Air.Block && cell.Block == block) // if the cell is already air, dont do anything, ESPECIALLY DONT call notifyblockchanged
                 return new PlaceBlockResult(null, cell, false);
 
             cell.Block = block;
@@ -850,7 +848,7 @@ namespace Project1.Core.Simulation
             foreach (var n in neighbors)
             {
                 var nblock = this.GetBlock(n);
-                if (nblock != BlockDefOf.Air.Worker)
+                if (nblock != BlockDefOf.Air.Block)
                     this.InvalidateCell(n);
 
                 nblock?.OnNeighborChanged(this, global, n);
@@ -933,7 +931,7 @@ namespace Project1.Core.Simulation
         public float GetSolidObjectHeight(Vector3 global)
         {
             var cell = this.GetCell(global);
-            if (cell.Block != BlockDefOf.Air.Worker)
+            if (cell.Block != BlockDefOf.Air.Block)
                 return cell.Block.GetHeight(cell.BlockData, global.ToBlock());
 
             var entities = this.GetObjects(global - new Vector3(5), global + new Vector3(5));
@@ -1045,7 +1043,7 @@ namespace Project1.Core.Simulation
 
         internal bool IsAir(Vector3 global)
         {
-            return this.GetBlock(global) == BlockDefOf.Air.Worker;
+            return this.GetBlock(global) == BlockDefOf.Air.Block;
         }
 
         internal void RandomBlockUpdate(IntVec3 global)
@@ -1242,16 +1240,17 @@ namespace Project1.Core.Simulation
                 if (cell.HitPoints == 0)
                 {
                     //this.RemoveBlock(global);
+                    WorldMutations.BreakBlock(new CellSelection(this, global));
 
-                    if (block.BlockDef.BreakProduct is Def breakProductProfile)
-                    {
-                        var entity = EntityFactory.Create(breakProductProfile, null, cell.Material);
-                        this.Events.Post(new LootPopNewEvent([entity], this, global));
-                    }
-                    MapEdit
-                        .Begin(this)
-                        .Erase([global])
-                        .Flush();
+                    //if (block.BlockDef.BreakProduct is Def breakProductProfile)
+                    //{
+                    //    var entity = EntityFactory.Create(breakProductProfile, null, cell.Material);
+                    //    this.Events.Post(new LootDropEvent([entity], this, global));
+                    //}
+                    //MapEdit
+                    //    .Begin(this)
+                    //    .Erase([global])
+                    //    .Flush();
                 }
                 //if (this.GetCell(global).HitPoints == 0)
                 //    this.RemoveBlock(global);

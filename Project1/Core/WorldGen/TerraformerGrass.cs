@@ -26,7 +26,7 @@ namespace Project1.Core.WorldGen
 
         protected override void Finally(Chunk chunk)
         {
-            int varCount = BlockDefOf.Grass.Worker.Variations.Count;
+            int varCount = BlockDefOf.Grass.Block.Variations.Count;
             var count = Chunk.Size;
             for (int lx = 0; lx < count; lx++)
             {
@@ -34,10 +34,10 @@ namespace Project1.Core.WorldGen
                 {
                     int z = chunk.HeightMap[lx][ly];
                     var c = chunk.GetLocalCell(lx, ly, z);
-                    if (c.Block != BlockDefOf.Soil.Worker)
+                    if (c.Block != BlockDefOf.Soil.Block)
                         continue;
                     var variation = (byte)this.Randomizer.Next(varCount);
-                    c.Block = BlockDefOf.Grass.Worker;
+                    c.Block = BlockDefOf.Grass.Block;
                     c.Material = MaterialDefOf.Soil;
                     c.Variation = variation;
                 }

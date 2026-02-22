@@ -25,19 +25,19 @@ namespace Project1.Core
             /// flow downwards
             var below = current.Below;
             var belowBlock = this.Map.GetBlock(below);
-            if (belowBlock == BlockDefOf.Air.Worker)
+            if (belowBlock == BlockDefOf.Air.Block)
             {
-                Block.Place(BlockDefOf.Fluid.Worker, map, below, mat, 1, 0, 0);
-                this.Map.SetBlock(below, BlockDefOf.Fluid.Worker, mat, 1);
+                Block.Place(BlockDefOf.Fluid.Block, map, below, mat, 1, 0, 0);
+                this.Map.SetBlock(below, BlockDefOf.Fluid.Block, mat, 1);
             }
             else
             {
                 foreach (var n in global.GetAdjacentHorLazy())
                 {
                     var nblock = this.Map.GetBlock(n);
-                    if (nblock != BlockDefOf.Air.Worker)
+                    if (nblock != BlockDefOf.Air.Block)
                         continue;
-                    Block.Place(BlockDefOf.Fluid.Worker, map, n, mat, 0, 0, 0);
+                    Block.Place(BlockDefOf.Fluid.Block, map, n, mat, 0, 0, 0);
                 }
             }
             /// remove entity after updating once, all flowing must complete in first update

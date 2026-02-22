@@ -324,7 +324,7 @@ namespace Project1.Core.Blocks
         public virtual bool IsStandableOn => this.Solid;
         public virtual byte Luminance { get; }
         public virtual bool IsMinable => false;
-        public virtual bool IsDeconstructible => false;
+        public bool IsDeconstructible => this.BlockDef.ConstructionProfile is not null;
         public virtual bool IsRoomBorder => this.Opaque;
         public virtual bool Multi => false;
         public virtual Color DirtColor => Color.White;
@@ -563,21 +563,21 @@ namespace Project1.Core.Blocks
         }
         public virtual void Draw(MySpriteBatch sb, Rectangle screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
-            if (this == BlockDefOf.Air.Worker)
+            if (this == BlockDefOf.Air.Block)
                 return;
 
             sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[Math.Min(cell.Variation, this.Variations.Count - 1)], zoom, fog, tint, sunlight, blocklight, depth);
         }
         public virtual void Draw(MySpriteBatch sb, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
-            if (this == BlockDefOf.Air.Worker)
+            if (this == BlockDefOf.Air.Block)
                 return;
 
             sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[Math.Min(cell.Variation, this.Variations.Count - 1)], zoom, fog, tint, sunlight, blocklight, depth, this);
         }
         public virtual MyVertex[] Draw(MySpriteBatch sb, Vector3 blockCoordinates, float zoom, int rotation, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            if (this == BlockDefOf.Air.Worker)
+            if (this == BlockDefOf.Air.Block)
                 return null;
 
             var material = this.DrawMaterialColor ? mat.ColorVector : DefaultColorVector;// this.GetColorVector(data);
@@ -590,7 +590,7 @@ namespace Project1.Core.Blocks
         }
         public virtual MyVertex[] Draw(MySpriteBatch sb, Vector3 blockCoordinates, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            if (this == BlockDefOf.Air.Worker)
+            if (this == BlockDefOf.Air.Block)
                 return null;
 
             var material = this.DrawMaterialColor ? mat.ColorVector : DefaultColorVector;// this.GetColorVector(data);
@@ -603,7 +603,7 @@ namespace Project1.Core.Blocks
         }
         public virtual MyVertex[] Draw(Chunk chunk, IntVec3 blockCoordinates, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            if (this == BlockDefOf.Air.Worker)
+            if (this == BlockDefOf.Air.Block)
                 return null;
 
             //var material = this.GetColorVector(data);
@@ -623,7 +623,7 @@ namespace Project1.Core.Blocks
 
         public virtual MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            if (this == BlockDefOf.Air.Worker)
+            if (this == BlockDefOf.Air.Block)
                 return null;
 
             //var material = this.GetColorVector(data);
@@ -643,7 +643,7 @@ namespace Project1.Core.Blocks
         }
         public virtual void Draw(MySpriteBatch sb, Vector2 screenPos, Color sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)
         {
-            if (this == BlockDefOf.Air.Worker)
+            if (this == BlockDefOf.Air.Block)
                 return;
 
             sb.DrawBlock(Atlas.Texture, screenPos, this.Variations[cell.Variation], zoom, tint, sunlight, blocklight, depth);
@@ -931,31 +931,11 @@ namespace Project1.Core.Blocks
             var profile = this.BlockDef.ConstructionProfile;
             foreach (var refinement in profile.Refinements)
             {
-                var validMats = Def.GetDefs<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
+                var validMats = profile.Materials ?? Def.GetDefs<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
                 foreach (var mat in validMats)
                     yield return new ConstructionDesignationArgs(this.BlockDef, refinement, mat, ItemDefOf.Ingredient.StackCapacity); // HACK
             }
         }
-
-        internal virtual void Place(MapBase map, IntVec3 global, ICellChangeRecorder recorder) 
-        {
-            var block = map.GetBlock(global);
-            if (block != this)
-                throw new InvalidOperationException();
-            if (this.TryLinkToAdjacentBlockEntity(map, global) is not BlockEntity entity)
-            {
-                entity = this.BlockDef.CreateEntity(global);
-                if (entity is not null)
-                    recorder.AddEntity(entity);
-            }
-        }
-        internal virtual void Remove(MapBase map, IntVec3 global, ICellChangeRecorder recorder) 
-        {
-            var blockentity = map.GetBlockEntity(global);
-
-        }
-        
-
         public class DefaultState : IBlockState
         {
             public void Apply(MapBase map, Vector3 global)

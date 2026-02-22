@@ -19,7 +19,7 @@ namespace Project1.Core.Blocks.Doors
 
         BoundingBox? _cachedAABB;
         HashSet<EntityRefId> CurrentlyOccupying = [];
-        public BoundingBox AABB => _cachedAABB ??= BlockDefOf.Door.Worker.GetBoundingBox(this.Parent.Map, this.Parent.OriginGlobal);
+        public BoundingBox AABB => _cachedAABB ??= BlockDefOf.Door.Block.GetBoundingBox(this.Parent.Map, this.Parent.OriginGlobal);
         public override void OnSpawned(BlockEntity entity, MapBase map)
         {
             entity.Name = "Door";

@@ -20,7 +20,7 @@ namespace Project1.Core.Interactions
         {
             var map = i.Actor.Map;
             var global = i.Target.Global;
-            MapEdit.Paint(MapEditContext.Simulation, map, [global], BlockDefOf.Farmland.Worker, map.GetCell(global).Material, 0, 0, 0);
+            MapEdit.Paint(MapEditContext.Simulation, map, [global], BlockDefOf.Farmland.Block, map.GetCell(global).Material, 0, 0, 0);
         }
         internal override int CalculateMax(InteractionContext ctx) => 50;
         internal override void OnProgressAdded(Interaction i, int delta)

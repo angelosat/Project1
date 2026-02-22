@@ -15,7 +15,7 @@ namespace Project1.Core.Networking.Simulation
         public SetBlockArgs Read(IDataReader r)
         {
             this.Global = r.ReadIntVec3();
-            this.Block = r.ReadDef<BlockDef>().Worker;
+            this.Block = r.ReadDef<BlockDef>().Block;
             this.Material = r.ReadDef<MaterialDef>();
             this.Data = r.ReadByte();
             this.Orientation = r.ReadInt32();

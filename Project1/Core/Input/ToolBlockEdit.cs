@@ -77,7 +77,7 @@ namespace Project1.Core.Input
             bool isDelete = InputState.IsKeyDown(this.KeyRemove);
             bool isReplace = InputState.IsKeyDown(this.KeyReplace);
             var global = this.Target.Global + ((isDelete || isReplace) ? Vector3.Zero : this.Target.Face);
-            var block = isDelete ? BlockDefOf.Air.Worker : this.Block;
+            var block = isDelete ? BlockDefOf.Air.Block : this.Block;
             byte state = isDelete ? (byte)0 : this.State;
 
             if (global != this.LastPainted)
@@ -144,7 +144,7 @@ namespace Project1.Core.Input
         }
         protected override void ReadData(IDataReader r)
         {
-            this.Block = r.ReadDef<BlockDef>().Worker;
+            this.Block = r.ReadDef<BlockDef>().Block;
             this.State = r.ReadByte();
         }
     }

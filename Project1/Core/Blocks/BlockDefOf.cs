@@ -29,6 +29,7 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef WoodenDeck = new("WoodenDeck", typeof(BlockWoodenDeck));
         static public readonly BlockDef Soil = new("Soil", typeof(BlockSoil))
         {
+            ConstructionProfile = new ConstructionProfile([MaterialRefinementDefOf.Bag]) { Materials = [MaterialDefOf.Soil] },
             BreakProduct = MaterialRefinementDefOf.Bag
         };
         static public readonly BlockDef Door = new("Door", typeof(BlockDoor))

@@ -25,9 +25,9 @@ namespace Project1.Core.WorldGen
             Watch.Start();
             if (z == 0)
                 return;
-            if (c.Block == BlockDefOf.Air.Worker ||
-                c.Block == BlockDefOf.Fluid.Worker ||
-                c.Block == BlockDefOf.Sand.Worker)
+            if (c.Block == BlockDefOf.Air.Block ||
+                c.Block == BlockDefOf.Fluid.Block ||
+                c.Block == BlockDefOf.Sand.Block)
                 return;
 
             double ridged = Generator.Perlin3D(x, y, z, this.CaveFrequency, this.RidgedSeed);
@@ -36,7 +36,7 @@ namespace Project1.Core.WorldGen
 
             if (ridged > -this.Threshold && ridged < this.Threshold && ridged2 > -this.Threshold && ridged2 < this.Threshold)
                 if (z > 0)
-                    c.Block = BlockDefOf.Air.Worker;
+                    c.Block = BlockDefOf.Air.Block;
             Watch.Stop();
         }
 
@@ -45,7 +45,7 @@ namespace Project1.Core.WorldGen
             float sealevel = MapBase.MaxHeight / 2f;
             float distanceFromSeaLevel = (sealevel - z) / sealevel;
             if (ridged * distanceFromSeaLevel < -.2f)
-                c.Block = BlockDefOf.Air.Worker;
+                c.Block = BlockDefOf.Air.Block;
         }
         public override Terraformer SetWorld(WorldBase w)
         {

@@ -38,7 +38,7 @@ namespace Project1.Core.Networking.Simulation
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
             var global = r.ReadIntVec3();
-            var block = r.ReadDef<BlockDef>().Worker;
+            var block = r.ReadDef<BlockDef>().Block;
             var material = Def.GetDef<MaterialDef>(r);
             var data = r.ReadByte();
             var variation = r.ReadInt32();

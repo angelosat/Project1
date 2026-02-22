@@ -180,7 +180,8 @@ namespace Project1.Core
             }
             set { this._Slot = value; }
         }
-
+        public bool TryGetBlockEntity(out BlockEntity blockEntity) => this.Map.TryGetBlockEntity(this.Global, out blockEntity);
+        
         TargetArgs() { }
         public TargetArgs(BlockEntity blockEntity)
         {

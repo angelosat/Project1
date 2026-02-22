@@ -6,7 +6,6 @@ namespace Project1.Core.Towns.Designations
     [EnsureStaticCtorCall]
     static class DesignationDefOf
     {
-        public static readonly DesignationDef Deconstruct = new("Deconstruct", typeof(DesignationWorkerDeconstruct), ItemContent.HammerFull, "Deconstruct", "Designate Deconstruction", true);
         public static readonly DesignationDef Mine = new("Mine", typeof(DesignationWorkerMine), ItemContent.PickaxeFull, "Mine", "Designate Mining", true);
         public static readonly DesignationDef Switch = new("Switch", typeof(DesignationWorkerSwitch), '☞', "Switch","Switch on/off", true);
 
@@ -14,6 +13,7 @@ namespace Project1.Core.Towns.Designations
         public static readonly DesignationDef Harvest = new("Harvest", typeof(DesignationWorkerHarvest), ItemContent.BerriesFull, "Harvest", "Designate harvesting", false);
 
         public static readonly DesignationDef Construct = new("Construct", typeof(DesignationWorkerConstruct), ItemContent.HammerFull, "Construct", "Designate Construction", true) { IsManual = false };
+        public static readonly DesignationDef Deconstruct = new("Deconstruct", typeof(DesignationWorkerDeconstruct), ItemContent.HammerHead, "Deconstruct", "Designate Deconstruction", true);
 
         static DesignationDefOf()
         {

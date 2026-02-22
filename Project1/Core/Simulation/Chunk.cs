@@ -388,7 +388,7 @@ namespace Project1.Core.Simulation
             {
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
-                    if (cell.Block != BlockDefOf.Air.Worker)
+                    if (cell.Block != BlockDefOf.Air.Block)
                     {
                         hit = true;
                     }
@@ -434,7 +434,7 @@ namespace Project1.Core.Simulation
             {
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
-                    if (cell.Block != BlockDefOf.Air.Worker)
+                    if (cell.Block != BlockDefOf.Air.Block)
                     {
                         hit = true;
                     }
@@ -470,7 +470,7 @@ namespace Project1.Core.Simulation
             {
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
-                    if (cell.Block != BlockDefOf.Air.Worker)
+                    if (cell.Block != BlockDefOf.Air.Block)
                     {
                         hit = true;
                         firstContact = z;
@@ -855,7 +855,7 @@ namespace Project1.Core.Simulation
                 var cell = Cells[i];
 
                 // --- Air run handling ---
-                if (cell.Block == BlockDefOf.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Block)
                 {
                     if (airRunStart == -1)
                     {
@@ -1017,7 +1017,7 @@ namespace Project1.Core.Simulation
                 for (int i = startIndex; i < startIndex + count; i++)
                 {
                     var cell = Cells[i];
-                    cell.Block = BlockDefOf.Air.Worker;
+                    cell.Block = BlockDefOf.Air.Block;
                     cell.Discovered = discovered;
                     // BitVector32 or material not needed for air
                 }
@@ -1048,7 +1048,7 @@ namespace Project1.Core.Simulation
                     int start = runTag.GetInt("StartIndex");
                     int count = runTag.GetInt("Count");
                     for (int i = start; i < start + count; i++)
-                        Cells[i].Block = blockDef.Worker;
+                        Cells[i].Block = blockDef.Block;
                 }
             }
 
@@ -1083,7 +1083,7 @@ namespace Project1.Core.Simulation
             for (int i = 0; i < this.Cells.Length; i++)
             {
                 var cell = this.Cells[i];
-                if (cell.Block == BlockDefOf.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Block)
                 {
                     if (!airRun)
                     {
@@ -1173,7 +1173,7 @@ namespace Project1.Core.Simulation
             for (int i = 0; i < this.Cells.Length; i++)
             {
                 var cell = this.Cells[i];
-                if (cell.Block == BlockDefOf.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Block)
                 {
                     // start air run
                     if (!airRun)
@@ -1247,7 +1247,7 @@ namespace Project1.Core.Simulation
             bool foundAir = false;
             foreach (var cell in this.Cells)
             {
-                if (cell.Block == BlockDefOf.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Block)
                 {
                     airLength++;
                     if (!foundAir)
@@ -1309,7 +1309,7 @@ namespace Project1.Core.Simulation
                 var count = airtag.GetValue<int>("Count");
                 var discovered = airtag.GetValue<bool>("Discovered");
                 for(int i = index; i < count; i++)
-                    this.Cells[i].Set(BlockDefOf.Air.Worker, MaterialDefOf.Air, 0, discovered);
+                    this.Cells[i].Set(BlockDefOf.Air.Block, MaterialDefOf.Air, 0, discovered);
             }
             foreach(var blockindices in byblock)
             {
@@ -1327,7 +1327,7 @@ namespace Project1.Core.Simulation
             while (listPosition < celllist.Count)
             {
                 var celltag = celllist[listPosition++];
-                var block = celltag.LoadDef<BlockDef>("Block").Worker;
+                var block = celltag.LoadDef<BlockDef>("Block").Block;
                 if (block.BlockDef == BlockDefOf.Air)
                 {
                     airCount = (int)celltag["Data"].Value;
@@ -1335,7 +1335,7 @@ namespace Project1.Core.Simulation
                     for (int i = n; i < n + airCount; i++)
                     {
                         var c = this.Cells[i];
-                        c.Block = BlockDefOf.Air.Worker;
+                        c.Block = BlockDefOf.Air.Block;
                         c.Discovered = airDiscovered;
                     }
 
@@ -1351,7 +1351,7 @@ namespace Project1.Core.Simulation
             foreach(var tag in indicesByBlock)
             {
                 var blockDef = Def.GetDef<BlockDef>(tag.Name);
-                var worker = blockDef.Worker;
+                var worker = blockDef.Block;
                 foreach(var index in tag.Value as List<int>)
                     this.Cells[index].Block = worker;
             }
@@ -1368,7 +1368,7 @@ namespace Project1.Core.Simulation
             while (listPosition < celllist.Count)
             {
                 var celltag = celllist[listPosition++];
-                var block = celltag.LoadDef<BlockDef>("Block").Worker;
+                var block = celltag.LoadDef<BlockDef>("Block").Block;
 
                 //if (block == BlockDefOf.Air)
                 if (block.BlockDef == BlockDefOf.Air)
@@ -1938,7 +1938,7 @@ namespace Project1.Core.Simulation
                     // DO I NEED THIS?
                     if (!camera.MysteriousBlocks)
                     {
-                        if (cell.Block != BlockDefOf.Air.Worker)
+                        if (cell.Block != BlockDefOf.Air.Block)
                         {
                             if (!map.IsVisible(global))
                                 unknown.Add(cell);
@@ -1954,7 +1954,7 @@ namespace Project1.Core.Simulation
                         }
                         else
                         {
-                            if (cell.Block != BlockDefOf.Air.Worker)
+                            if (cell.Block != BlockDefOf.Air.Block)
                                 visible.Add(cell);
                         }
                     }
@@ -2000,11 +2000,11 @@ namespace Project1.Core.Simulation
                     var local = new IntVec3(i, j, z);
                     var cell = this.Cells[GetCellIndex(local)];
                     var global = local.ToGlobal(this);
-                    var isair = cell.Block == BlockDefOf.Air.Worker;// BlockDefOf.Air;
+                    var isair = cell.Block == BlockDefOf.Air.Block;// BlockDefOf.Air;
                     // HACK
                     if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global)) 
                      //if (isair && this.Map.Town.DesignationManager.IsDesignation(global, DesignationDefOf.Construct)) // HACK
-                        camera.DrawBlock(canvas, BlockDefOf.Designation.Worker, map, this, local);
+                        camera.DrawBlock(canvas, BlockDefOf.Designation.Block, map, this, local);
 
                     var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);
                     var isundiscovered = map.IsUndiscovered(global);
@@ -2061,7 +2061,7 @@ namespace Project1.Core.Simulation
             var chunkY = this.MapCoords.Y;
             var mapSizeInChunks = this.Map.GetSizeInChunks();
             int edgeX = 0, edgeY = 0;
-            IntVec3 offset;
+            IntVec3 offset = default;
             switch ((int)camera.Rotation)
             {
                 case 0:

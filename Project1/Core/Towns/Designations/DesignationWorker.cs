@@ -3,6 +3,7 @@ using Project1.Core.Entities;
 using Project1.Core.Input;
 using Project1.Core.Plants;
 using Project1.Core.UI;
+using System.Diagnostics;
 
 namespace Project1.Core.Towns.Designations
 {
@@ -20,11 +21,16 @@ namespace Project1.Core.Towns.Designations
         internal override bool IsValid(ISelectable target) => target is Entity entity && this.IsValid(entity);
         public abstract bool IsValid(Entity entity);
     }
-    class DesignationWorkerDeconstruct : CellDesignationWorker
+    class DesignationWorkerDeconstruct : DesignationWorker
     {
-        public override bool IsValid(CellSelection cell)
+        internal override bool IsValid(ISelectable target)
         {
-            return cell.Block.IsDeconstructible;
+            return target switch
+            {
+                CellSelection cell => cell.Block.IsDeconstructible,
+                BlockEntity blockEntity => blockEntity.Def.Block.IsDeconstructible,
+                _ => throw new UnreachableException()
+            };
         }
     }
     class DesignationWorkerConstruct : CellDesignationWorker

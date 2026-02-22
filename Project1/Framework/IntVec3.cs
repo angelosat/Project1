@@ -4,17 +4,10 @@ using System.Collections.Generic;
 
 namespace Project1.Framework
 {
-    public struct IntVec3 : IEquatable<IntVec3>
+    public struct IntVec3(int x, int y, int z) : IEquatable<IntVec3>
     {
-        public int X, Y, Z;
+        public int X = x, Y = y, Z = z;
 
-        public IntVec3(int x, int y, int z)
-        {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
-        }
-       
         public IntVec3(IntVec2 xy, int z) : this(xy.X, xy.Y, z)
         {
 
@@ -99,14 +92,14 @@ namespace Project1.Framework
             return $"{{X:{this.X} Y:{this.Y} Z:{this.Z}}}";
         }
 
-        public IntVec3 Above => this + UnitZ;
-        public IntVec3 Below => this - UnitZ;
-        public IntVec3 North => this + UnitY;
-        public IntVec3 South => this - UnitY;
-        public IntVec3 East => this + UnitX;
-        public IntVec3 West => this - UnitX;
+        public readonly IntVec3 Above => this + UnitZ;
+        public readonly IntVec3 Below => this - UnitZ;
+        public readonly IntVec3 North => this + UnitY;
+        public readonly IntVec3 South => this - UnitY;
+        public readonly IntVec3 East => this + UnitX;
+        public readonly IntVec3 West => this - UnitX;
 
-        public int Volume => this.X * this.Y * this.Z;
+        public readonly int Volume => this.X * this.Y * this.Z;
 
         public static bool operator ==(IntVec3 a, Vector3 b)
         {
@@ -116,9 +109,6 @@ namespace Project1.Framework
         {
             return a.X != b.X || a.Y != b.Y || a.Z != b.Z;
         }
-
-        
-
         public IEnumerable<IntVec3> GetNeighbors()
         {
             yield return this + UnitX;

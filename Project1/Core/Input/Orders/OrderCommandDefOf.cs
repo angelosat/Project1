@@ -15,6 +15,7 @@ namespace Project1.Core.Input.Orders
         public static readonly OrderCommandDef ToggleTownMember = new("MakeTownMember", BodyDef.head, typeof(OrderToggleTownMember));
         public static readonly OrderCommandDef OrderTownMember = new("OrderTownMember", BodyDef.torso, typeof(OrderOrderTownMember));
         public static readonly OrderCommandDef ControlActor = new("ControlActor", BodyDef.hips, typeof(OrderControlActor));
+        public static readonly OrderCommandDef Deconstruct = new("Deconstruct", ItemContent.HammerHead, typeof(OrderCommandDeconstruct));
 
         static OrderCommandDefOf()
         {

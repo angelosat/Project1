@@ -71,9 +71,9 @@ namespace Project1.Core.WorldGen
                     var next = new Vector3(x, y, z);
 
                     var c = map.GetCell(next);
-                    if (c.Block != BlockDefOf.Cobblestone.Worker)
+                    if (c.Block != BlockDefOf.Cobblestone.Block)
                         continue;
-                    c.Block = BlockDefOf.Mineral.Worker;
+                    c.Block = BlockDefOf.Mineral.Block;
                     c.Material = ore.Material;
 
                     for (int j = 0; j < ore.MaxVeinSize; j++)
@@ -84,10 +84,10 @@ namespace Project1.Core.WorldGen
                         if (!map.IsInBounds(next))
                             continue;
                         c = map.GetCell(next);
-                        if (c.Block != BlockDefOf.Cobblestone.Worker)
+                        if (c.Block != BlockDefOf.Cobblestone.Block)
                             continue;
 
-                        c.Block = BlockDefOf.Mineral.Worker;
+                        c.Block = BlockDefOf.Mineral.Block;
                         c.Material = ore.Material;
                     }
                 }

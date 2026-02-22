@@ -22,7 +22,7 @@ namespace Project1.Core.WorldGen
                 for (int ly = 0; ly < size; ly++)
                 {
                     var cell = chunk.GetLocalCell(lx, ly, chunk.HeightMap[lx][ly]);
-                    if (cell.Block != BlockDefOf.Grass.Worker)
+                    if (cell.Block != BlockDefOf.Grass.Block)
                         continue;
 
                     int gx = lx + chunk.Start.X, gy = ly + chunk.Start.Y;

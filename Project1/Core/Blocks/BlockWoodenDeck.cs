@@ -17,6 +17,8 @@ namespace Project1.Core.Blocks
 {
     class BlockWoodenDeck : Block
     {
+        readonly AtlasDepthNormals.Node.Token GrayScale;
+
         public BlockWoodenDeck()
          : base("WoodenDeck", 0, 1, true, true)
         {
@@ -43,12 +45,6 @@ namespace Project1.Core.Blocks
             var token = this.GrayScale;
             sb.Draw(token.Atlas.Texture, pos - new Vector2(token.Rectangle.Width, token.Rectangle.Height) * 0.5f, token.Rectangle, this.BlockState.GetTint(state));
         }
-
-        public override bool IsDeconstructible => true;
-
-        readonly AtlasDepthNormals.Node.Token GrayScale;
-
-     
 
         public override LootTable GetLootTable(byte data)
         {

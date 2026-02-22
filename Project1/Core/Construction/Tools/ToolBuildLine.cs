@@ -61,7 +61,7 @@ namespace Project1.Core.Construction.Tools
             if (!this.Enabled)
                 return;
             var box = this.Begin.GetBox(this.End)
-                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air.Worker : map.GetBlock(vec) == BlockDefOf.Air.Worker);
+                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air.Block : map.GetBlock(vec) == BlockDefOf.Air.Block);
             cam.DrawCellHighlights(sb, Block.BlockBlueprint, box, color);
         }
         internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, PlayerData player)
@@ -71,7 +71,7 @@ namespace Project1.Core.Construction.Tools
             var targetArgs = player.Target;
             this.End = targetArgs.Type != TargetType.Null ? GetEnd(this.Begin, targetArgs.Global) : this.End;
             var box = this.Begin.GetBox(this.End)
-                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air.Worker : map.GetBlock(vec) == BlockDefOf.Air.Worker);
+                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air.Block : map.GetBlock(vec) == BlockDefOf.Air.Block);
 
             camera.DrawCellHighlights(sb, Block.BlockBlueprint, box, Color.Red);
         }

@@ -213,7 +213,7 @@ namespace Project1.Core.Plants
                 return false;
             var product = props.Growth.CreateEntity();
            
-            this.Owner.Map.Events.Post(new LootPopEvent([product], this.Owner));
+            this.Owner.Map.Events.Post(new LootDropEvent([product], this.Owner.Map, this.Owner.Global, this.Owner.Velocity));
 
             this.ResetFruitGrowth();
             this.Owner.Map.Events.Post(new PlantHarvestedEvent(this.Owner));
@@ -228,14 +228,14 @@ namespace Project1.Core.Plants
             {
                 var product = RawMaterialSystem.Create(MaterialRefinementDefOf.Logs, owner.Body.Material);
                 product.SetStackSize(yield);
-                owner.Map.Events.Post(new LootPopEvent([product], this.Owner));
+                owner.Map.Events.Post(new LootDropEvent([product], this.Owner.Map, this.Owner.Global, this.Owner.Velocity));
 
                 /// if the plant doesnt produce fruit, then the only seed source is by cutting the plant itself
                 if (!this.ProducesFruit)
                 {
                     var seeds = PlantSystem.Create(this.Species, PlantStageDefOf.Seed);
                     seeds.SetStackSize(1);
-                    owner.Map.Events.Post(new LootPopEvent([seeds], this.Owner));
+                    owner.Map.Events.Post(new LootDropEvent([seeds], this.Owner.Map, this.Owner.Global, this.Owner.Velocity));
                 }
             }
         }

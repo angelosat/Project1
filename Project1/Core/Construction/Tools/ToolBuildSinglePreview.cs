@@ -94,7 +94,7 @@ namespace Project1.Core.Construction.Tools
         }
         protected override void ReadData(IDataReader r)
         {
-            this.Block = r.ReadDef<BlockDef>().Worker;
+            this.Block = r.ReadDef<BlockDef>().Block;
         }
         internal override void RotateAntiClockwise()
         {

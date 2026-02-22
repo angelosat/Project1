@@ -150,7 +150,7 @@ namespace Project1.Core
                 3 => global - IntVec3.UnitY,
                 _ => throw new Exception()
             });
-            if (positions.Any(pos => map.GetBlock(pos) != BlockDefOf.Air.Worker))
+            if (positions.Any(pos => map.GetBlock(pos) != BlockDefOf.Air.Block))
                 return false;
             return true;
         }

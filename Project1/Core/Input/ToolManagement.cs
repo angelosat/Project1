@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.AI.Packets;
+using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
@@ -108,15 +109,22 @@ namespace Project1.Core.Input
 
         private void ClickTarget(TargetArgs target)
         {
-            if (target.Type == TargetType.Cell || target.Type == TargetType.BlockEntity)
+            if (target.Type == TargetType.Cell)// || target.Type == TargetType.BlockEntity)
             {
                 IntVec3 global = target.Global;
-                Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(global, global));
+                if (target.Map.TryGetBlockEntity(target.Global, out var blockEntity))
+                    Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new TargetArgs(blockEntity)));
+                else
+                    Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(global, global));
             }
             else if(target.Type == TargetType.Entity)
             {
                 Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([target.Entity as Entity], SelectionHelper.GetSelectionOp()));
             }
+            //else if (target.Type == TargetType.BlockEntity)
+            //{
+            //    Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new TargetArgs(target.BlockEntity)));
+            //}
             return;
             if (InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
                 //SelectionManager.AddToSelection(target);
@@ -317,7 +325,7 @@ namespace Project1.Core.Input
                 if (this.Target.Type == TargetType.Entity)
                     SelectionManager.SelectAllVisible(this.Target.Object.Def);
 
-                else if (this.Target.Type == TargetType.Cell)
+                else if (this.Target.Type == TargetType.Cell && !this.Target.TryGetBlockEntity(out _))
                     ToolManager.SetTool(
                         new ToolSelectRectangleBlocks(this.Target.Global,
                         (a, b, r) =>

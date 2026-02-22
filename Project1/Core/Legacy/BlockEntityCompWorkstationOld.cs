@@ -103,7 +103,7 @@ namespace Project1.Core.Legacy
             /// we dont need to query the cell for the interaction spots, we already know that the block is a blockworkstation, we also know the originglobal of the blockentity
             /// BUT we dont know the orientation, so we still need the cell
             var orientation = this.Map.GetCell(this.Global).Orientation;
-            var interactionSpots = BlockDefOf.Workbench.Worker.GetInteractionSpotsLocal(this.Parent.Map, this.Parent.OriginGlobal, orientation);// this.Map.GetCell(this.Global).GetOperatingPositions();
+            var interactionSpots = BlockDefOf.Workbench.Block.GetInteractionSpotsLocal(this.Parent.Map, this.Parent.OriginGlobal, orientation);// this.Map.GetCell(this.Global).GetOperatingPositions();
             this.OperatingPositionUnreachable = interactionSpots.All(p => !ActorDefOf.Npc.CanFitIn(this.Map, this.Global + p));
             if (!prev && this.OperatingPositionUnreachable)
                 this.Errors.Add(OperatingPositionUnreachableString);

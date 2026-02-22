@@ -114,7 +114,7 @@ namespace Project1.Core.Plants
                 var hasPlantAbove = entitiesOnBlock.Any(o => o.IsPlant());
                 if (hasPlantAbove)
                     continue;
-                if (block == BlockDefOf.Farmland.Worker)
+                if (block == BlockDefOf.Farmland.Block)
                 {
                     if (BlockFarmland.IsSeeded(cellData))
                         continue;
@@ -133,7 +133,7 @@ namespace Project1.Core.Plants
         {
             return
                 Block.GetBlockMaterial(map, arg) == MaterialDefOf.Soil
-                && map.GetBlock(arg + Vector3.UnitZ) == BlockDefOf.Air.Worker;
+                && map.GetBlock(arg + Vector3.UnitZ) == BlockDefOf.Air.Block;
         }
         internal IEnumerable<Entity> GetHarvestablePlantsLazy()
         {

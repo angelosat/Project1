@@ -15,13 +15,13 @@ namespace Project1.Core.Construction.Tools
         }
         public void Refresh(BlockDef block, Action<ConstructionDesignationArgs> callback)
         {
-            var variants = block.Worker.GetConstructionOptions().ToList();
+            var variants = block.Block.GetConstructionOptions().ToList();
             var count = variants.Count;//.Sum(v => v.Count);
             this.Panel.Controls.Clear();
             this.Panel.AutoSize = true;
             this.ClearControls();
 
-            var list = new ListBoxNoScroll<ConstructionDesignationArgs, ButtonNew>(variant => CreateButton(block.Worker, callback, variant))
+            var list = new ListBoxNoScroll<ConstructionDesignationArgs, ButtonNew>(variant => CreateButton(block.Block, callback, variant))
             {
                 Spacing = 0
             };

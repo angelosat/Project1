@@ -47,7 +47,7 @@ namespace Project1.Core.Construction.Tools
             if (!this.Enabled)
                 return;
             var positions = this.Begin.GetBox(this.End)
-                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Worker);
+                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Block);
             positions = this.Begin.GetBoxHollow(this.End);
             camera.DrawCellHighlights(sb, Block.BlockBlueprint, positions, Color.Red);
         }
@@ -56,7 +56,7 @@ namespace Project1.Core.Construction.Tools
             if (!this.Enabled)
                 return;
             var positions = this.Begin.GetBox(this.End)
-                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Worker);
+                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Block);
             camera.DrawCellHighlights(sb, Block.BlockBlueprint, positions, Color.Red);
         }
     }

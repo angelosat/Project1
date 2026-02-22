@@ -45,7 +45,7 @@ namespace Project1.Core.Simulation
                 throw new Exception(); // was a test
             cell.Discovered = value;
             map.GetChunk(begin).InvalidateSlice(begin.Z);
-            if (cell.Block != BlockDefOf.Air.Worker)
+            if (cell.Block != BlockDefOf.Air.Block)
                 return;
             var tohandle = new Queue<IntVec3>();
             tohandle.Enqueue(current);

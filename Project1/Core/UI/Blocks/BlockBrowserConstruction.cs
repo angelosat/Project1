@@ -13,27 +13,27 @@ namespace Project1.Core.UI.Blocks
 {
     class BlockBrowserConstruction : GroupBox
     {
-        readonly Dictionary<BlockDef, ConstructionDesignationArgs> LastSelectedVariant = new();
+        readonly Dictionary<BlockDef, ConstructionDesignationArgs> LastSelectedVariant = [];
         ConstructionCategoryDef SelectedCategory;
         readonly Panel Panel_Blocks;
         readonly UIToolsBox ToolBox;
         BlockDef CurrentSelected;
-        readonly Dictionary<ConstructionCategoryDef, ButtonGridIcons<BlockDef>> Categories = new();
-        UIBlockVariationPicker Picker;
+        readonly Dictionary<ConstructionCategoryDef, ButtonGridIcons<BlockDef>> Categories = [];
+        readonly UIBlockVariationPicker Picker;
         public BlockBrowserConstruction()
         {
             this.Picker = new();
             this.Panel_Blocks = new Panel() { AutoSize = true };
             this.ToolBox = new UIToolsBox(this.OnToolSelectedNew);
-            var categories = Def.GetDefs<BlockDef>().Where(b => b.Worker.BuildProperties.Category is not null).GroupBy(b => b.Worker.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
+            var categories = Def.GetDefs<BlockDef>().Where(b => b.Block.BuildProperties.Category is not null).GroupBy(b => b.Block.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
             foreach (var cat in categories)
             {
                 var list = cat.Where(b => b.ConstructionProfile is not null);
                 var grid = new ButtonGridIcons<BlockDef>(4, 6, list, (slot, block) =>
                 {
                     slot.Tag = block;
-                    slot.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolBlockBuild drawing && drawing.Block == block.Worker;
-                    slot.PaintAction = () => block.Worker.PaintIcon(slot.Width, slot.Height, 0, this.GetLastSelectedVariantOrDefaultNew(block).Material);
+                    slot.IsToggledFunc = () => ToolManager.Instance.ActiveTool is ToolBlockBuild drawing && drawing.Block == block.Block;
+                    slot.PaintAction = () => block.Block.PaintIcon(slot.Width, slot.Height, 0, this.GetLastSelectedVariantOrDefaultNew(block).Material);
                     slot.LeftClickAction = () => StartPainting(block);
                     slot.RightClickAction = () => this.Picker.Refresh(block, this.OnVariationSelectedNew);
                     slot.HoverText = block.LabelReadable;
@@ -67,7 +67,7 @@ namespace Project1.Core.UI.Blocks
         private void StartPainting(BlockDef block)
         {
             this.CurrentSelected = block;
-            this.ToolBox.SetProduct(block.Worker);
+            this.ToolBox.SetProduct(block.Block);
             this.OnToolSelectedNew(this.ToolBox.LastSelectedTool);
             var win = this.ToolBox.GetWindow();
             if (win is null)

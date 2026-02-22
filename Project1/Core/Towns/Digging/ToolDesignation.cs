@@ -39,7 +39,7 @@ namespace Project1.Core.Towns.Digging
         protected void Validate(MapBase map, Camera camera)
         {
             var positions = this.Begin.GetBox(this.End)
-                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Worker || map.IsUndiscovered(v));
+                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Block || map.IsUndiscovered(v));
             this.Renderer.CreateMesh(camera, positions);
         }
         public override void UpdateRemote(TargetArgs target)
@@ -64,7 +64,7 @@ namespace Project1.Core.Towns.Digging
             if (!this.Enabled)
                 return;
             var positions = this.Begin.GetBox(this.End)
-                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Worker);
+                .Where(v => map.GetBlock(v) != BlockDefOf.Air.Block);
             camera.DrawCellHighlights(sb, Block.BlockBlueprint, positions, Color.Red);
         }
     }

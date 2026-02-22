@@ -25,7 +25,7 @@ namespace Project1.Core.Blocks
             }
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Construction;
-        public Block Block => this.Args.Block.Worker;
+        public Block Block => this.Args.Block.Block;
         internal override void GetSelectionInfo(Control container)
         {
             container.AddControls(new Label($"Materials: {this.Fulfillment} {this.Args}"));
@@ -64,7 +64,7 @@ namespace Project1.Core.Blocks
 
             // solidify the designation into a construction block 
             var args = this.Args;
-            MapEdit.PaintWithOrigin(MapEditContext.Simulation, this.Map, this.Parent.CellsOccupied, BlockDefOf.Construction.Worker, args.Material, 0, 0, args.Orientation);
+            MapEdit.PaintWithOrigin(MapEditContext.Simulation, this.Map, this.Parent.CellsOccupied, BlockDefOf.Construction.Block, args.Material, 0, 0, args.Orientation);
 
             this.ValidateReadiness();
             this.Map.Events.Post(new ConstructionUpdatedEvent(this));

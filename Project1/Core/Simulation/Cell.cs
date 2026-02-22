@@ -164,7 +164,7 @@ namespace Project1.Core.Simulation
         public byte Y; // 1 byte
         public byte Z; // 1 byte
         //public byte Sunlight = 15, Blocklight = 0;
-        public Block Block = BlockDefOf.Air.Worker; // 4 bytes
+        public Block Block = BlockDefOf.Air.Block; // 4 bytes
         public MaterialDef Material = MaterialDefOf.Air;
         public BitVector32 Data; // 4 bytes
 
@@ -264,7 +264,7 @@ namespace Project1.Core.Simulation
         }
         public Cell Load(SaveTag data)
         {
-            this.Block = data.LoadDef<BlockDef>("Block").Worker;
+            this.Block = data.LoadDef<BlockDef>("Block").Block;
             this.Data = new BitVector32((int)data["Data"].Value);
             this.Material = data.LoadDef<MaterialDef>("Material");
             return this;
@@ -279,7 +279,7 @@ namespace Project1.Core.Simulation
         }
         public Cell Read(IDataReader r)
         {
-            this.Block = r.ReadDef<BlockDef>().Worker;
+            this.Block = r.ReadDef<BlockDef>().Block;
             this.Material = Def.GetDef<MaterialDef>(r);
             this.Data = new BitVector32(r.ReadInt32());
             return this;

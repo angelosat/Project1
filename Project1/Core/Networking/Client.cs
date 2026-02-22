@@ -363,7 +363,7 @@ namespace Project1.Core.Networking
                 item.OnGameEvent(e);
             TooltipManager.OnGameEvent(e);
             ScreenManager.CurrentScreen.OnGameEvent(e);
-            ToolManager.OnGameEvent(this.World, e);
+            //ToolManager.OnGameEvent(this.World, e);
         }
         private void HandleBufferedPackets()
         {

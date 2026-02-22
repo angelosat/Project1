@@ -49,9 +49,9 @@ namespace Project1.Core.Networking.Simulation
             var variation = r.ReadInt32();
             var orientation = r.ReadInt32();
             if (type == MapEditType.Create)
-                MapEdit.Paint(context, client.Map, targets, blockdef.Worker, materialdef, data, variation, orientation);
+                MapEdit.Paint(context, client.Map, targets, blockdef.Block, materialdef, data, variation, orientation);
             else if (type == MapEditType.Replace)
-                MapEdit.PaintWithOrigin(context, client.Map, targets, blockdef.Worker, materialdef, data, variation, orientation);
+                MapEdit.PaintWithOrigin(context, client.Map, targets, blockdef.Block, materialdef, data, variation, orientation);
         }
     }
 }

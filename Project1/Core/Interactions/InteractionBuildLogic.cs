@@ -54,7 +54,7 @@ namespace Project1.Core.Interactions
             map.RemoveBlockEntity(comp.Parent);
             var args = comp.Args;
 
-            MapEdit.Paint(MapEditContext.Simulation, map, [origin], args.Block.Worker, args.Material, 0, 0, args.Orientation);
+            MapEdit.Paint(MapEditContext.Simulation, map, [origin], args.Block.Block, args.Material, 0, 0, args.Orientation);
         }
     }
 }

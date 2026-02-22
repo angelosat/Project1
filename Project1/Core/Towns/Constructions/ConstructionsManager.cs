@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Input;
 using Project1.Core.Legacy.Crafting.Blocks;
-using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Designations;
@@ -27,7 +26,7 @@ namespace Project1.Core.Towns.Constructions
         readonly Dictionary<IntVec3, ConstructionParams> PendingDesignations = [];
         readonly HashSet<IntVec3> DesignationLocations = [];
         readonly HashSet<BlockConstructionComp> DesignationEntities = [];
-        Dictionary<bool, HashSet<BlockConstructionComp>> _snapshotByReadiness = new() { { false, new() }, { true, new() } };
+        readonly Dictionary<bool, HashSet<BlockConstructionComp>> _snapshotByReadiness = new() { { false, new() }, { true, new() } };
         internal override void ResolveReferences()
         {
             foreach (var blockentity in this.Map.BlockEntities)
@@ -62,15 +61,17 @@ namespace Project1.Core.Towns.Constructions
         {
             if (!e.Entity.HasComp<BlockConstructionComp>())
                 return;
-            foreach (var cell in e.Entity.CellsOccupied)
-                this.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Construct, cell);
+            //foreach (var cell in e.Entity.CellsOccupied)
+            //this.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Construct, cell);
+            this.Town.DesignationManager.RemoveCells(e.Entity.CellsOccupied);
         }
 
         private void OnBlockEntityAdded(BlockEntityAddedEvent e)
         {
             if (!e.Entity.HasComp<BlockConstructionComp>())
                 return;
-            this.Town.DesignationManager.Add(DesignationDefOf.Construct, [.. e.Entity.CellsOccupied], false);
+            //this.Town.DesignationManager.Add(DesignationDefOf.Construct, [.. e.Entity.CellsOccupied], false);
+            this.Town.DesignationManager.AddCells(DesignationDefOf.Construct, e.Entity.CellsOccupied, false);
         }
 
         private void OnConstructionFinished(ConstructionFinishedEvent e)
@@ -245,7 +246,7 @@ namespace Project1.Core.Towns.Constructions
             var entity = BlockDefOf.Designation.CreateEntity(global);
             var comp = entity.GetComp<BlockConstructionComp>();
             this.DesignationEntities.Add(comp);
-            var footprint = args.Block.Worker.GetFootprint(map, global, args.Orientation);
+            var footprint = args.Block.Block.GetFootprint(map, global, args.Orientation);
             foreach (var cell in footprint)
                 entity.CellsOccupied.Add(cell.global);
             comp.SetArgs(args);

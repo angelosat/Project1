@@ -30,9 +30,9 @@ namespace Project1.Core.Networking
                         break;
 
                     case "replace":
-                        var old = Def.GetDef<BlockDef>(p[1]).Worker;
-                        var replace = Def.GetDef<BlockDef>(p[2]).Worker;
-                        if (replace == BlockDefOf.Air.Worker || old == BlockDefOf.Air.Worker)
+                        var old = Def.GetDef<BlockDef>(p[1]).Block;
+                        var replace = Def.GetDef<BlockDef>(p[2]).Block;
+                        if (replace == BlockDefOf.Air.Block || old == BlockDefOf.Air.Block)
                             break;
                         foreach (var ch in net.Map.GetActiveChunks())
                             foreach (var cell in ch.Value.Cells)
@@ -54,8 +54,8 @@ namespace Project1.Core.Networking
                         break;
 
                     case "remove":
-                        var toremove = Def.GetDef<BlockDef>(p[1]).Worker;
-                        if (toremove == BlockDefOf.Air.Worker)
+                        var toremove = Def.GetDef<BlockDef>(p[1]).Block;
+                        if (toremove == BlockDefOf.Air.Block)
                             break;
                         foreach (var ch in net.Map.GetActiveChunks())
                             foreach (var cell in ch.Value.Cells)

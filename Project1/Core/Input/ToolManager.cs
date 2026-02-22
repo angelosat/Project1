@@ -277,28 +277,28 @@ namespace Project1.Core.Input
         }
 
         static readonly ToolControlActor ToolControlActor = new();
-        internal static void OnGameEvent(WorldBase world, GameEvent e)
-        {
-            Instance.ActiveTool?.OnGameEvent(e);
-            switch ((Message.Types)e.Type)
-            {
-                case Message.Types.PlayerControlNpc:
-                    if (e.Parameters[0] == Client.Instance.GetPlayer())
-                    {
-                        var actor = e.Parameters[1] as GameObject;
-                        if (Engine.Map != actor.Map)
-                            throw new Exception();
-                        Engine.Map.Camera.ToggleFollowing(actor);
-                        if (actor is not null)
-                            SetTool(ToolControlActor);
-                    }
-                    break;
+        //internal static void OnGameEvent(WorldBase world, GameEvent e)
+        //{
+        //    Instance.ActiveTool?.OnGameEvent(e);
+        //    switch ((Message.Types)e.Type)
+        //    {
+        //        case Message.Types.PlayerControlNpc:
+        //            if (e.Parameters[0] == Client.Instance.GetPlayer())
+        //            {
+        //                var actor = e.Parameters[1] as GameObject;
+        //                if (Engine.Map != actor.Map)
+        //                    throw new Exception();
+        //                Engine.Map.Camera.ToggleFollowing(actor);
+        //                if (actor is not null)
+        //                    SetTool(ToolControlActor);
+        //            }
+        //            break;
 
-                default:
-                    break;
-            }
+        //        default:
+        //            break;
+        //    }
 
-        }
+        //}
         static Control ToolHelpTextGui;
         public static void SetTool(ControlTool tool)
         {

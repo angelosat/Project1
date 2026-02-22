@@ -76,13 +76,13 @@ namespace Project1.Core.Crafting
         }
         private void OnBlockEntityAdded(BlockEntityAddedEvent e)
         {
-            if (e.Entity.Def.Worker is not BlockWorkstation)
+            if (e.Entity.Def.Block is not BlockWorkstation)
                 return;
             this.RegisterWorkstation(e.Entity.GetComp<BlockWorkstationComp>());
         }
         private void OnBlockEntityRemoved(BlockEntityRemovedEvent e)
         {
-            if (e.Entity.Def.Worker is not BlockWorkstation)
+            if (e.Entity.Def.Block is not BlockWorkstation)
                 return;
             this.UnregisterWorkstation(e.Entity.GetComp<BlockWorkstationComp>());
         }

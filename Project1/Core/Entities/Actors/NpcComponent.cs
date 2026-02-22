@@ -176,40 +176,40 @@ namespace Project1.Core.Entities.Actors
             if (actor.IsTownMember)
                 PacketControlActor.Send(Client.Instance, Client.Instance.GetPlayer().ID, actor.RefId);
         }
-        internal override void OnGameEvent(GameObject parent, GameEvent e)
-        {
-            switch((Message.Types)e.Type)
-            {
-                case Message.Types.PlayerControlNpc:
-                    if ((parent.Net is Client))
-                    {
-                        if (SelectionManager.GetSelectedEntities().Contains(parent))
-                        {
-                            if (e.Parameters[1] as GameObject == parent)
-                                SelectionManager.RemoveOrderButton(IconControl);
-                            else if (e.Parameters[2] as GameObject == parent)
-                                SelectionManager.AddButton(IconControl);
-                        }
-                    }
-                    break;
+        //internal override void OnGameEvent(GameObject parent, GameEvent e)
+        //{
+        //    switch((Message.Types)e.Type)
+        //    {
+        //        //case Message.Types.PlayerControlNpc:
+        //        //    if ((parent.Net is Client))
+        //        //    {
+        //        //        if (SelectionManager.GetSelectedEntities().Contains(parent))
+        //        //        {
+        //        //            if (e.Parameters[1] as GameObject == parent)
+        //        //                SelectionManager.RemoveOrderButton(IconControl);
+        //        //            else if (e.Parameters[2] as GameObject == parent)
+        //        //                SelectionManager.AddButton(IconControl);
+        //        //        }
+        //        //    }
+        //        //    break;
 
-                case Message.Types.ObjectDisposed:
-                    var item = e.Parameters[0] as GameObject;
-                    RemovePossession(parent, item);
-                    break;
+        //        //case Message.Types.ObjectDisposed:
+        //        //    var item = e.Parameters[0] as GameObject;
+        //        //    RemovePossession(parent, item);
+        //        //    break;
 
-                case Message.Types.ItemOwnerChanged:
-                    item = parent.World.GetEntity((int)e.Parameters[0]) as GameObject;
-                    var currentOwner = item.GetOwner();
-                    if (currentOwner == parent.RefId)
-                        Possesions.Add(item.RefId);
-                    else
-                        Possesions.Remove(item.RefId);
-                    break;
+        //        case Message.Types.ItemOwnerChanged:
+        //            item = parent.World.GetEntity((int)e.Parameters[0]) as GameObject;
+        //            var currentOwner = item.GetOwner();
+        //            if (currentOwner == parent.RefId)
+        //                Possesions.Add(item.RefId);
+        //            else
+        //                Possesions.Remove(item.RefId);
+        //            break;
 
-                default:
-                    break;
-            }
-        }
+        //        default:
+        //            break;
+        //    }
+        //}
     }
 }

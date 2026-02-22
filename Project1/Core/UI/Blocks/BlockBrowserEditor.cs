@@ -21,7 +21,7 @@ namespace Project1.Core.UI.Blocks
         public BlockBrowserEditor()
         {
             this.Panel_Blocks = new PanelLabeled("Blocks") { AutoSize = true };
-            var blockWorkers = Def.GetDefs<BlockDef>().Select(b => b.Worker);
+            var blockWorkers = Def.GetDefs<BlockDef>().Select(b => b.Block);
             var blocks = blockWorkers.Where(b => b.GetEditorVariations().Any()).ToList();
             this.GridBlocks = new SlotGrid<Slot<Block>, Block>(blocks, 8, (slot, bl) =>
             {

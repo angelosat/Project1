@@ -44,13 +44,13 @@ namespace Project1.Core.WorldGen
                 var c = map.GetCell(current);
                 if (c is null)
                     continue;
-                if (c.Block == BlockDefOf.Air.Worker ||
-                    c.Block == BlockDefOf.Fluid.Worker
+                if (c.Block == BlockDefOf.Air.Block ||
+                    c.Block == BlockDefOf.Fluid.Block
                     //||
                     //c.Block == BlockDefOf.Sand
                     )
                     continue;
-                c.Block = BlockDefOf.Air.Worker;
+                c.Block = BlockDefOf.Air.Block;
             }
         }
       

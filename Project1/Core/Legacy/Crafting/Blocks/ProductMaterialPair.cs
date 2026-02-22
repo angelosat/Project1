@@ -28,7 +28,7 @@ namespace Project1.Core.Legacy.Crafting.Blocks
 
         public ProductMaterialPair(IDataReader r)
         {
-            this.Block = r.ReadDef<BlockDef>().Worker;
+            this.Block = r.ReadDef<BlockDef>().Block;
             this.Data = r.ReadByte();
             if(r.ReadBoolean()) // has requirement
                 this.Requirement = new ItemMaterialAmount(r);
@@ -36,7 +36,7 @@ namespace Project1.Core.Legacy.Crafting.Blocks
 
         public ProductMaterialPair(SaveTag tag)
         {
-            this.Block = tag.LoadDef<BlockDef>("Product").Worker;
+            this.Block = tag.LoadDef<BlockDef>("Product").Block;
             this.Data = tag.TagValueOrDefault<byte>("Data", 0);
             tag.TryGetTag("Requirement", t => this.Requirement = new ItemMaterialAmount(t));
         }

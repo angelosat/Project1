@@ -82,7 +82,7 @@ namespace Project1.Core.Blocks
         }
         public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            if (this == BlockDefOf.Air.Worker)
+            if (this == BlockDefOf.Air.Block)
                 return null;
             var material = mat.ColorVector;
             var token = this.GetToken(variation, orientation, (int)camera.Rotation, data);// maybe change the method to accept double so i don't have to cast the camera rotation to int?

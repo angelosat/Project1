@@ -74,7 +74,7 @@ namespace Project1.Core.Simulation
                 var cell = cells[i];
 
                 // --- Air run ---
-                if (cell.Block == BlockDefOf.Air.Worker)
+                if (cell.Block == BlockDefOf.Air.Block)
                 {
                     if (airRunStart == -1)
                     {
@@ -474,7 +474,7 @@ namespace Project1.Core.Simulation
                 for (int i = 0; i < run.Count; i++)
                 {
                     var cell = cells[run.StartIndex + i];
-                    cell.Block = BlockDefOf.Air.Worker;
+                    cell.Block = BlockDefOf.Air.Block;
                     cell.Discovered = run.Discovered;
                     // BitVector32 / material not needed for air
                 }
@@ -500,7 +500,7 @@ namespace Project1.Core.Simulation
                     for (int i = 0; i < run.Count; i++)
                     {
                         var cell = cells[run.StartIndex + i];
-                        cell.Block = blockDef.Worker;
+                        cell.Block = blockDef.Block;
                     }
                 }
             }

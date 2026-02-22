@@ -209,9 +209,9 @@ namespace Project1.Core.AI
             task.LoadData(tag);
             return task;
         }
-        internal static void Initialize()
-        {
-        }
+        //internal static void Initialize()
+        //{
+        //}
         public Plan()
         {
             this.ID = ReservationManager.GetNextTaskID();

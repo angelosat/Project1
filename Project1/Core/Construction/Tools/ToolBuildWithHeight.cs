@@ -130,7 +130,7 @@ namespace Project1.Core.Construction.Tools
             if (!this.Enabled)
                 return;
             var positions = this.GetPositionsNew(this.Begin, this.End)
-                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air.Worker : map.GetBlock(vec) == BlockDefOf.Air.Worker);
+                .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air.Block : map.GetBlock(vec) == BlockDefOf.Air.Block);
             cam.DrawCellHighlights(sb, Block.BlockBlueprint, positions, color);
         }
         protected virtual IEnumerable<IntVec3> GetPositionsNew(IntVec3 a, IntVec3 b) { yield break; }

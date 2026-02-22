@@ -98,7 +98,7 @@ namespace Project1.Core.Simulation
         StaticWorld() : base()
         {
             this.MaxHeight = 128;
-            this.DefaultBlock = BlockDefOf.Soil.Worker;
+            this.DefaultBlock = BlockDefOf.Soil.Block;
             this.Terraformers = new List<Terraformer>();
             this.Trees = true;
             this.Maps = new MapCollection();
@@ -115,7 +115,7 @@ namespace Project1.Core.Simulation
             this.Seed = BitConverter.ToInt32(this.SeedArray, 0);
             this.Random = new Random(this.Seed);
             this.Terraformers = mutators;
-            this.DefaultBlock = BlockDefOf.Soil.Worker;
+            this.DefaultBlock = BlockDefOf.Soil.Block;
         }
 
         public StaticWorld(SaveTag save)
@@ -134,9 +134,9 @@ namespace Project1.Core.Simulation
             save.TryGetTagValue<double>("CurrentTick", v => this.CurrentTick = (ulong)v);
 
             if (save.TryLoadDefOut<BlockDef>("DefaultBlock", out var bd))
-                this.DefaultBlock = bd.Worker;
+                this.DefaultBlock = bd.Block;
             else
-                this.DefaultBlock = BlockDefOf.Soil.Worker;
+                this.DefaultBlock = BlockDefOf.Soil.Block;
             this.Name = (string)save["Name"].Value;
 
             //this.Terraformers.LoadAbstract(save, "Mutators");
@@ -159,7 +159,7 @@ namespace Project1.Core.Simulation
             this.Seed = r.ReadInt32();
             this.CurrentTick = r.ReadUInt64();
             this.Trees = r.ReadBoolean();
-            this.DefaultBlock = r.ReadDef<BlockDef>().Worker;
+            this.DefaultBlock = r.ReadDef<BlockDef>().Block;
             this.Terraformers.ReadListAbstract(r);
             this.Population.Read(r);
         }

@@ -441,7 +441,7 @@ namespace Project1.Core.Animations
             bool drawn = false;
             while (z >= 0 && !drawn)
             {
-                if (map.TryGetCell(new Vector3(global.X, global.Y, z), out var cellShadow) && cellShadow.Block != BlockDefOf.Air.Worker)
+                if (map.TryGetCell(new Vector3(global.X, global.Y, z), out var cellShadow) && cellShadow.Block != BlockDefOf.Air.Block)
                 {
                     if (camera.CullingCheck(global.X, global.Y, z + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out _))
                         ShadowList.Add(new Shadow(parent, new Vector3(global.X, global.Y, z + 1)));

@@ -39,7 +39,7 @@ namespace Project1.Core.WorldGen
             w.GroundAirThreshold = this.GroundAirThreshold;
             if (z == 0)
             {
-                c.Block = BlockDefOf.Stone.Worker;
+                c.Block = BlockDefOf.Stone.Block;
                 return;
             }
             var maxZ = (float)MapBase.MaxHeight;
@@ -50,15 +50,15 @@ namespace Project1.Core.WorldGen
 
             if (gradientRock < this.GroundAirThreshold)
             {
-                c.Block = BlockDefOf.Cobblestone.Worker;
+                c.Block = BlockDefOf.Cobblestone.Block;
                 c.Material = MaterialDefOf.Stone;
                 return;
             }
 
             if (gradientSoil <= this.GroundAirThreshold)
             {
-                c.Variation = (byte)this.SoilRandomizer.Next(BlockDefOf.Soil.Worker.Variations.Count);
-                c.Block = BlockDefOf.Soil.Worker;
+                c.Variation = (byte)this.SoilRandomizer.Next(BlockDefOf.Soil.Block.Variations.Count);
+                c.Block = BlockDefOf.Soil.Block;
                 c.Material = MaterialDefOf.Soil;
                 return;
             }

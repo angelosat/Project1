@@ -39,7 +39,6 @@ namespace Project1.Core.Blocks.Doors
             this.Size = new(1, 1, 2);
         }
 
-        public override bool IsDeconstructible => true;
         public override bool IsRoomBorder => true;
         public override bool Multi => true;
         public override BoundingBox GetBoundingBox(MapBase map, IntVec3 global) => 
@@ -181,7 +180,7 @@ namespace Project1.Core.Blocks.Doors
         }
         public static void Toggle(MapBase map, IntVec3 global)
         {
-            var children = BlockDefOf.Door.Worker.GetChildren(map, global);
+            var children = BlockDefOf.Door.Block.GetChildren(map, global);
             var chunk = map.GetChunk(global);
             foreach (var g in children)
             {

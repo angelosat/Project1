@@ -12,8 +12,6 @@ namespace Project1.Core
     sealed class BlockWorkstation : Block//WithEntity
     {
         readonly AtlasDepthNormals.Node.Token[] Orientations = Block.TexturesCounter;
-        readonly Type BlockEntityType;
-        public override bool IsDeconstructible => true;
         public BlockWorkstation() : base("Workstation", opaque: false, solid: true)
         {
             this.HidingAdjacent = false;

@@ -61,10 +61,17 @@ namespace Project1.Core.Interactions
             Animation = AnimationDefOf.TouchItem,
             ProgressHandler = new InteractionProgressFirstContact()
         };
-    public static readonly InteractionDef Construct = new("Building", typeof(InteractionBuildLogic))
+        public static readonly InteractionDef Construct = new("Building", typeof(InteractionBuildLogic))
         {
             Animation = AnimationDefOf.Tool,
             ProgressHandler = new InteractionProgressToolExternal(),
+            Skill = SkillDefOf.Construction,
+            ToolUse = ToolUseDefOf.Building
+        };
+        public static readonly InteractionDef Deconstruct = new("Deconstructing", typeof(InteractionDeconstructLogic))
+        {
+            Animation = AnimationDefOf.Tool,
+            ProgressHandler = new InteractionProgressTool(),
             Skill = SkillDefOf.Construction,
             ToolUse = ToolUseDefOf.Building
         };

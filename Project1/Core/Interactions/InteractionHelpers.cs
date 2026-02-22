@@ -43,5 +43,7 @@ namespace Project1.Core.Interactions
             var finalItem = carried.Take(amount == -1 ? null : amount);
             actor.Map.Spawn(finalItem, global, actor.Velocity);
         }
+
+        
     }
 }

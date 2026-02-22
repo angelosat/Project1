@@ -43,14 +43,13 @@ namespace Project1.Core
             base.OnPlaced(map, global, material, data, variation, orientation, notify);
         }
         public override bool IsRoomBorder => false;
-        public override bool IsDeconstructible => true;
         protected override void OnDeconstruct(GameObject actor, Vector3 global)
         {
         }
         protected override void OnBlockBelowChanged(MapBase map, IntVec3 global)
         {
             map.GetBlock(global.Below, out var cell);
-            if (cell.Block == BlockDefOf.Air.Worker)
+            if (cell.Block == BlockDefOf.Air.Block)
                 map.RemoveBlock(global);
         }
     }

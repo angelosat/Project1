@@ -352,7 +352,6 @@ namespace Project1.Core.Networking
         }
 
         [Obsolete]
-
         protected override void Post(GameEvent e)
         {
             this.Events.Post(e.Payload);
@@ -491,10 +490,8 @@ namespace Project1.Core.Networking
                     this.Speed = r.ReadInt32();
                     Log.Network(this, $"Connected to {this.RemoteIP}");
                     GameMode.Current.PlayerIDAssigned(this);
-                    //this.ClientClock = TimeSpan.FromMilliseconds(Math.Max(msg.Tick - ClientClockDelayMS, 0));
                     this._tick = Math.Max(msg.Tick - ClientTickDelay, 0);
                     this.PlayerData.RemoteOrderedReliableSequence = msg.OrderedReliableID;
-                    //Instance.EventOccured((int)Message.Types.ServerResponseReceived);
                     Instance.Events.Post(new ServerConnectionAcceptedEvent());
                     break;
 
@@ -502,23 +499,6 @@ namespace Project1.Core.Networking
                     int plid = msg.Reader.ReadInt32();
                     Instance.PlayerDisconnected(plid);
                     break;
-
-                case PacketType.SpawnChildObject:
-                    GameObject obj = GameObject.Create(msg.PacketReader);
-                    if (obj.RefId == 0)
-                        throw new Exception("Uninstantiated entity");
-                    if (!Instance.World.Entities.ContainsKey(obj.RefId))
-                        Instance.Instantiate(obj);
-
-                    int parentID = r.ReadInt32();
-                    if (!Instance.World.TryGetEntity(parentID, out var parent))
-                        throw (new Exception("Parent doesn't exist"));
-
-                    obj.Owner = parent;
-                    int childIndex = r.ReadInt32();
-                    var slot = parent.GetChildren()[childIndex];
-                    slot.Assign(obj);
-                    return;
 
                 case PacketType.ServerBroadcast:
                     string chatText = r.ReadASCII();
@@ -818,16 +798,6 @@ namespace Project1.Core.Networking
         public override bool TryGetNetworkObject(int netID, out Entity obj)
         {
             return this.World.TryGetEntity(netID, out obj);
-        }
-
-        /// <summary>
-        /// find way to write specific changes, maybe by passing a state Object
-        /// </summary>
-        /// <param name="netID"></param>
-        /// <returns></returns>
-        public override bool LogStateChange(int netID)
-        {
-            return false;
         }
 
         internal void ReadSnapshot(IDataReader reader)

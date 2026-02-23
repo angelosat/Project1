@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Project1.Framework.Serialization;
-using Project1.Core.Simulation;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Loot;
+using Project1.Core.Simulation;
 using Project1.Core.UI;
+using Project1.Framework.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Networking
 {
@@ -27,7 +27,7 @@ namespace Project1.Core.Networking
         bool DisposeObject(GameObject obj);
         bool DisposeObject(int netID);
         void Instantiator(GameObject o);
-        bool LogStateChange(int netID);
+        //bool LogStateChange(int netID);
         void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);
         void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);
         void EventOccured(int eventTypeId, params object[] p);

@@ -44,7 +44,7 @@ namespace Project1.Core.AI
         public DesignationDef Designation;
         //public CraftOrderOld OrderOld;
         public CraftingOrder Order;
-        public Dictionary<string, ObjectRefIDsAmount> IngredientsUsed = [];
+        //public Dictionary<string, ObjectRefIDsAmount> IngredientsUsed = [];
         public TargetArgs Product = TargetArgs.Null;
         public bool Forced;
         public bool Urgent = true; // TODO default should be false

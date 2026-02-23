@@ -1,13 +1,10 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Input;
-using Project1.Core.UI;
-using Project1.Core.Components.Crafting;
-using Project1.Core.UI;
+using Project1.Core.Input.Building;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.UI;
-using Project1.Core.Input.Building;
 
 namespace Project1.Core.Construction.Tools
 {

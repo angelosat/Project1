@@ -1,4 +1,6 @@
-﻿using Project1.Core.Simulation;
+﻿using Project1.Core.Entities;
+using Project1.Core.Networking.Packets;
+using Project1.Core.Simulation;
 using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ namespace Project1.Core.Networking.Entities
     {
         private readonly Queue<WorldSnapshot> WorldStateBuffer = new();
         private readonly int WorldStateBufferSize = 20;
+        //public HashSet<Entity> EntitiesChangedSinceLastSnapshot = [];
 
         internal void ApplyEntitySnapshots(IEntityProvider world, Tick tick)
         {
@@ -75,7 +78,7 @@ namespace Project1.Core.Networking.Entities
                 entity.Direction = nextObj.Orientation;
             }
         }
-     
+
         internal void ReadSnapshot(IDataReader reader)
         {
             var time = reader.ReadDouble();
@@ -85,5 +88,10 @@ namespace Project1.Core.Networking.Entities
             while (this.WorldStateBuffer.Count > this.WorldStateBufferSize)
                 this.WorldStateBuffer.Dequeue();
         }
+
+        //public void Log(Entity entity)
+        //{
+        //    this.EntitiesChangedSinceLastSnapshot.Add(entity);
+        //}
     }
 }

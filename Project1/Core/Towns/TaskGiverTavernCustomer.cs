@@ -1,5 +1,6 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
+using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy.Crafting;
@@ -35,35 +36,37 @@ namespace Project1.Core.Towns
             }
             return null;
         }
-        bool TrySelectOrder(List<MaterialDef> favs, Tavern tavern, out CraftOrderOld order)
+        bool TrySelectOrder(List<MaterialDef> favs, Tavern tavern, out CraftingOrder order)
         {
             order = SelectOrder(favs, tavern);
             return order != null;
         }
-        CraftOrderOld SelectOrder(List<MaterialDef> favs, Tavern tavern)
+        CraftingOrder SelectOrder(List<MaterialDef> favs, Tavern tavern)
         {
             var orders = tavern.GetAvailableOrders().ToList();
             if (!orders.Any())
                 return null;
-            return orders.SelectRandomWeighted(tavern.Town.Map.Random, o => favs.Count(o.IsAllowed));
+            throw new NotImplementedException();
+            //return orders.SelectRandomWeighted(tavern.Town.Map.Random, o => favs.Count(o.IsAllowed));
         }
-        IEnumerable<(string reagent, ItemDef itemDef, MaterialDef material)> SelectIngredients(Random rand, List<MaterialDef> favs, CraftOrderOld order)
+        IEnumerable<(string reagent, ItemDef itemDef, MaterialDef material)> SelectIngredients(Random rand, List<MaterialDef> favs, CraftingOrder order)
         {
-            foreach (var r in order.Reaction.Reagents)
-            {
-                var restr = order.Restrictions[r.Name];
-                var combos =
-                    r.Ingredient.GetAllValidItemDefs()
-                                .Where(i => !restr.IsRestricted(i))
-                                .SelectMany(itemDef => itemDef.GetValidMaterials()
-                                                              .Where(m => !restr.IsRestricted(m))
-                                                              .Select(material => (itemDef, material)));
-                var selectedCombo = combos.SelectRandomWeighted(rand, k => favs.Contains(k.material) ? 1 : 0);
-                yield return (r.Name, selectedCombo.itemDef, selectedCombo.material);
-            }
+            throw new NotImplementedException();
+            //foreach (var r in order.Reaction.Reagents)
+            //{
+            //    var restr = order.Restrictions[r.Name];
+            //    var combos =
+            //        r.Ingredient.GetAllValidItemDefs()
+            //                    .Where(i => !restr.IsRestricted(i))
+            //                    .SelectMany(itemDef => itemDef.GetValidMaterials()
+            //                                                  .Where(m => !restr.IsRestricted(m))
+            //                                                  .Select(material => (itemDef, material)));
+            //    var selectedCombo = combos.SelectRandomWeighted(rand, k => favs.Contains(k.material) ? 1 : 0);
+            //    yield return (r.Name, selectedCombo.itemDef, selectedCombo.material);
+            //}
             yield break;
         }
-        (CraftOrderOld order, IEnumerable<(string reagent, ItemDef itemDef, MaterialDef material)>) SelectOrderIngredients(ICollection<CraftOrderOld> orders, Random rand, int budget, List<MaterialDef> favs)
+        (CraftingOrder order, IEnumerable<(string reagent, ItemDef itemDef, MaterialDef material)>) SelectOrderIngredients(ICollection<CraftingOrder> orders, Random rand, int budget, List<MaterialDef> favs)
         {
             var ingredients = new List<(string reagent, ItemDef itemDef, MaterialDef material)>();
             foreach(var order in orders.Shuffle(rand))

@@ -34,7 +34,7 @@ namespace Project1.Core.Crafting
         public bool Enabled;
         public bool Pending => this.Mode == CraftMode.Infinite || this.Mode == CraftMode.FixedAmount && this.Amount > 0;
         public EntityCreationRequest Target { get; init; }
-
+        public Entity UnfinishedItem;
         // Explicit actor restriction
         public HashSet<int> AllowedActors = [];
 

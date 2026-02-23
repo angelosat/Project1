@@ -127,13 +127,6 @@ namespace Project1.Core.Crafting
             if(net.Map.Town.CraftingManagerNew.CreateOrderNew(workstationPosition, refinement) is CraftingOrder order &&
                 net is Server server)
                 SendPlayerCreatedOrderNew(net.Map.GetBlockEntity(workstationPosition), refinement);
-
-            return;
-            var station = r.ReadVector3();
-            var reaction = r.ReadDef<Reaction>();
-            net.Map.Town.CraftingManager.AddOrder(station, reaction);
-            if (net is Server)
-                Send(net, station, reaction);
         }
         internal static void SendPlayerDeletedOrder(MapBase map, CraftingOrder order)
         {

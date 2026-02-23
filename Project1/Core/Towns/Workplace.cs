@@ -4,6 +4,7 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Labors;
 using Project1.Core.Blocks;
 using Project1.Core.Components;
+using Project1.Core.Crafting;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
@@ -16,7 +17,6 @@ using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Shops.Blocks;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.UI;
-using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
@@ -208,7 +208,7 @@ namespace Project1.Core.Towns
         public readonly ObservableDictionary<IntVec3, TargetArgs> FacilitiesTargetsCached = new();
         public virtual IEnumerable<IntVec3> GetFacilities() { yield break; }
 
-        public virtual CraftOrderOld GetOrder(int orderID)
+        public virtual CraftingOrder GetOrder(int orderID)
         {
             return null;
         }

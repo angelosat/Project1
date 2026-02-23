@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.Networking;
 using Project1.Core.Components;
 using Project1.Core.Entities;
+using Project1.Core.Networking;
 using Project1.Framework;
 using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Simulation.Physics
 {
@@ -132,7 +132,7 @@ namespace Project1.Core.Simulation.Physics
                     this.Owner.Map.Events.Post(new EntityAtRestEvent(this.Owner as Entity, true));
                 this.Enabled = false;
             }
-            net.LogStateChange(parent.RefId);
+            net.LogStateChange(parent);
 
             this.DetectEntityCollisions(parent, lastGlobal, next);
 

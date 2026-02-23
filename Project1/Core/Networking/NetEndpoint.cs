@@ -73,7 +73,7 @@ namespace Project1.Core.Networking
         public abstract GameObject Instantiate(GameObject obj);
         [Obsolete("use world.register instead")]
         public abstract void Instantiator(GameObject o);
-        public abstract bool LogStateChange(int netID);
+        public virtual bool LogStateChange(Entity entity) => false;
         public abstract void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);
         public abstract void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);
         public abstract void SetSpeed(int playerID, int speed);

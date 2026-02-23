@@ -1,12 +1,10 @@
-﻿using Project1.Core.Towns;
+﻿using Project1.Core.Entities;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Skills;
-using Project1.Core;
-using Project1.Core.Components.Crafting;
+using Project1.Core.Towns;
 using System;
 using System.Collections.Generic;
-using Project1.Core.Entities;
 
 namespace Project1.Core.Legacy.Properties
 {

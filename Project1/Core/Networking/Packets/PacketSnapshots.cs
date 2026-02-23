@@ -13,7 +13,7 @@ namespace Project1.Core.Networking.Packets
         {
             _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(NetEndpoint net, ICollection<Entity> entities)
+        static public void Send(NetEndpoint net, IReadOnlyCollection<Entity> entities)
         {
             var server = net as Server;
             var w = server.BeginPacketNew(ReliabilityType.Unreliable, _packetTypeId);

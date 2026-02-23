@@ -169,7 +169,7 @@ namespace Project1.Core.Entities.Actors
         {
             this.Direction = global - this.Global;
             this.Direction.Normalize();
-            this.Net.LogStateChange(this.RefId);
+            this.Net.LogStateChange(this);
         }
         internal void ForceTask(PlannerDef planner, TargetArgs target)
         {

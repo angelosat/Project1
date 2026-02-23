@@ -1,4 +1,17 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
+using Project1.Core.Loot;
+using Project1.Core.Networking.Entities;
+using Project1.Core.Networking.Packets;
+using Project1.Core.Networking.Simulation;
+using Project1.Core.Simulation;
+using Project1.Core.UI;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -6,20 +19,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Framework.Events;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.Networking.Simulation;
-using Project1.Core.Helpers;
-using Project1.Core.Loot;
-using Project1.Core.Networking.Packets;
-using Project1.Core.UI;
-using Project1.Framework.Helpers;
-using Project1.Core.Networking.Entities;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Networking
 {
@@ -51,7 +50,7 @@ namespace Project1.Core.Networking
                 return this._Console;
             }
         }
-
+        SnapshotManager Snapshots = new();
         public const int SnapshotIntervalMS = 10;// send 60 snapshots per second to clients
         public const int LightIntervalMS = 10;// send 60 light updates per second to clients
         readonly NetworkStream PlayerCommandsStream = new(ReliabilityType.OrderedReliable, false);
@@ -153,7 +152,6 @@ namespace Project1.Core.Networking
         public override int Speed { get => this._Speed; protected set => this._Speed = value; }
         readonly float BlockUpdateTimerMax = 1;
         float BlockUpdateTimer = 0;
-        SnapshotManager Snapshots = new();
         public void Tick(GameTime gt)
         {
             if (!IsRunning)
@@ -167,6 +165,7 @@ namespace Project1.Core.Networking
             {
                 this.TickMap();
                 this.Map.Validate();
+                //this.Snapshots.Flush(this, this.EntitiesChangedSinceLastSnapshot);
                 this.FlushSnapshots();
             }
             this.WritePlayerSpecificNew();
@@ -306,7 +305,7 @@ namespace Project1.Core.Networking
         void SendOrderedReliable()
         {
             foreach (var player in this.Players.GetList())
-                while (player.OutReliable.Any())
+                while (!player.OutReliable.IsEmpty)
                 {
                     if (!player.OutReliable.TryDequeue(out Packet packet))
                         return;
@@ -527,34 +526,21 @@ namespace Project1.Core.Networking
             entity.SetStackSize(entity.StackMax);
             entity.Randomize(Random);
             target.Map = Instance.Map;
+            this.Map.World.Register(entity, immediate: true);
+
             switch (target.Type)
             {
                 case TargetType.Slot:
-                    Instance.Instantiate(entity);
                     target.Slot.Assign(entity);
-                    Instance.SyncChild(entity, target.Slot.Owner, target.Slot.ID);
                     break;
 
                 case TargetType.Cell:
-                    this.Map.World.Register(entity, immediate: true);
                     this.Map.Spawn(entity, target.Global, Vector3.Zero, immediate: true);
                     break;
 
                 default:
                     break;
             }
-        }
-
-        void SyncChild(GameObject obj, GameObject parent, int childIndex)
-        {
-            byte[] data = Network.Serialize(w =>
-            {
-                obj.Write(w);
-                w.Write(parent.RefId);
-                w.Write(childIndex);
-            });
-            foreach (var player in this.Players.GetList())
-                this.Enqueue(player, Packet.Create(player, PacketType.SpawnChildObject, data, ReliabilityType.Ordered | ReliabilityType.Reliable));
         }
 
         internal void KickPlayer(int plid)
@@ -630,7 +616,6 @@ namespace Project1.Core.Networking
         private void FlushSnapshots()
         {
             /// always send snapshots every frame, even empty ones. so that the client can interpolate correctly
-
             // i had to stop sending empty snapshots because after resuming from pause, entities "jumped" to their real position in the clients
             //if (this.EntitiesChangedSinceLastSnapshot.Count == 0)
             //    return;
@@ -639,14 +624,13 @@ namespace Project1.Core.Networking
             PacketSnapshots.Send(this, this.EntitiesChangedSinceLastSnapshot);
             this.EntitiesChangedSinceLastSnapshot.Clear();
         }
-        public override bool LogStateChange(int netID)
+        public override bool LogStateChange(Entity entity)
         {
-            return this.EntitiesChangedSinceLastSnapshot.Add(this.World.Entities[netID]);
+            return this.EntitiesChangedSinceLastSnapshot.Add(entity);// this.World.Entities[netID]);
         }
 
         public override void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity)
         {
-            //foreach (var obj in this.GenerateLoot(table))
             foreach (var obj in table.GenerateLoot(Random))
                 this.PopLoot(obj, startPosition, startVelocity);
         }

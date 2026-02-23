@@ -9,8 +9,7 @@ namespace Project1.Framework.Helpers
         private readonly SortedDictionary<P, Queue<V>> list = new();
         public void Enqueue(P priority, V value)
         {
-            Queue<V> q;
-            if (!list.TryGetValue(priority, out q))
+            if (!list.TryGetValue(priority, out var q))
             {
                 q = new Queue<V>();
                 list.Add(priority, q);
@@ -66,7 +65,7 @@ namespace Project1.Framework.Helpers
 
         public bool IsEmpty
         {
-            get { return !list.Any(); }
+            get { return list.Count == 0; }
         }
 
         public bool Contains(V item)
@@ -90,7 +89,7 @@ namespace Project1.Framework.Helpers
             foreach (var p in list)
                 if(p.Value.Contains(item))
                 {
-                    newQueue = new Queue<V>(p.Value.Except(new V[] { item }));
+                    newQueue = new Queue<V>(p.Value.Except([item]));
                     list[p.Key] = newQueue;
                     foundkey = p.Key;
                     break;

@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Assets;
+using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Inventory;
@@ -59,10 +60,10 @@ namespace Project1.Core.Legacy.Crafting
         int _creator, _orderid;
         Actor _creatorCached;
         public Actor Creator => this._creatorCached ??= this.Owner.World.GetEntity<Actor>(this._creator);
-        CraftOrderOld _orderCached;
-        public CraftOrderOld Order => this._orderCached ??= this.Owner.Map.Town.CraftingManager.GetOrder(this._orderid);
+        CraftingOrder _orderCached;
+        public CraftingOrder Order => this._orderCached ??= this.Owner.Map.Town.CraftingManagerNew.GetOrder(this._orderid);
         public ContainerList Contents = new();
-        internal void SetProduct(Reaction.Product.ProductMaterialPair product, Actor creator, CraftOrderOld order)
+        internal void SetProduct(Reaction.Product.ProductMaterialPair product, Actor creator, CraftingOrder order)
         {
             this._orderCached = order;
             this._creatorCached = creator;
@@ -114,7 +115,7 @@ namespace Project1.Core.Legacy.Crafting
         {
             this.Product.Save(tag, "Product");
             this.Creator.RefId.Save(tag, "Creator");
-            this.Order.ID.Save(tag, "Order");
+            this.Order.Id.Save(tag, "Order");
             this.Progress.Save(tag, "Progress");
             this.Contents.Save(tag, "Contents");
         }
@@ -131,7 +132,7 @@ namespace Project1.Core.Legacy.Crafting
             this.Product.Write(w);
             this.Progress.Write(w);
             w.Write(this.Creator.RefId);
-            w.Write(this.Order.ID);
+            w.Write(this.Order.Id);
             this.Contents.Write(w);
         }
 

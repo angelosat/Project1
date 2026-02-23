@@ -1,6 +1,6 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.Crafting;
+using Project1.Core.Entities;
 using Project1.Core.Legacy;
-using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
 using System.Collections.Generic;
 
@@ -8,10 +8,10 @@ namespace Project1.Core.Towns
 {
     public class VisitorCraftRequest
     {
-        public readonly CraftOrderOld Order;
+        public readonly CraftingOrder Order;
         readonly Dictionary<string, ItemMaterialAmount> Preferences = new();
 
-        public VisitorCraftRequest(CraftOrderOld order, IEnumerable<(string reagentName, ItemDef item, MaterialDef material)> preferences)
+        public VisitorCraftRequest(CraftingOrder order, IEnumerable<(string reagentName, ItemDef item, MaterialDef material)> preferences)
         {
             this.Order = order;
             foreach (var (reagentName, item, material) in preferences)

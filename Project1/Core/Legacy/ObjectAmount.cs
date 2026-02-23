@@ -1,9 +1,9 @@
-﻿using System;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using System;
 
 namespace Project1.Core.Legacy
 {

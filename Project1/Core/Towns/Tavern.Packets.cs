@@ -1,11 +1,13 @@
-﻿using System.Linq;
+﻿using Project1.Core.Crafting;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
-using Project1.Core.Entities;
-using Project1.Core.Helpers;
-using Project1.Framework.Events;
 using Project1.Core.Networking;
+using Project1.Framework.Events;
+using System;
+using System.Linq;
 
 namespace Project1.Core.Towns
 {
@@ -33,14 +35,14 @@ namespace Project1.Core.Towns
                 else
                     SendRemoveOrder(net, pl, tavern, order);
             }
-            public static void SendRemoveOrder(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrderOld order)
+            public static void SendRemoveOrder(NetEndpoint net, PlayerData player, Tavern tavern, CraftingOrder order)
             {
                 if (net is Server)
                     tavern.RemoveOrder(order);
                 net.BeginPacket(PacketOrderRemove)
                     .Write(player.ID)
                     .Write(tavern.ID)
-                    .Write(order.ID);
+                    .Write(order.Id);
             }
             private static void HandleAddOrder(NetEndpoint net, Packet pck)
             {
@@ -50,7 +52,8 @@ namespace Project1.Core.Towns
                 var reaction = r.ReadDef<Reaction>();
                 var id = r.ReadInt32();
                 if (net is Client)
-                    tavern.AddOrder(new CraftOrderOld(reaction) { ID = id });
+                    throw new NotImplementedException();
+                //tavern.AddOrder(new CraftingOrder(reaction) { ID = id });
                 else
                     SendAddMenuItem(net, pl, tavern, reaction, id);
             }
@@ -60,7 +63,8 @@ namespace Project1.Core.Towns
                 if (net is Server)
                 {
                     id = tavern.MenuItemIDSequence++;
-                    tavern.AddOrder(new CraftOrderOld(reaction) { ID = id });
+                    throw new NotImplementedException();
+                    //tavern.AddOrder(new CraftOrderOld(reaction) { ID = id });
                 }
                 net.BeginPacket(PacketOrderAdd)
                     .Write(player.ID)
@@ -69,14 +73,14 @@ namespace Project1.Core.Towns
                     .Write(id);
             }
 
-            static public void SendOrderSync(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrderOld order, bool enabled)
+            static public void SendOrderSync(NetEndpoint net, PlayerData player, Tavern tavern, CraftingOrder order, bool enabled)
             {
                 if (net is Server)
                     order.Enabled = enabled;
                 net.BeginPacket(PacketOrderSync)
                     .Write(player.ID)
                     .Write(tavern.ID)
-                    .Write(order.ID)
+                    .Write(order.Id)
                     .Write(enabled);
             }
             private static void HandleSyncOrder(NetEndpoint net, Packet pck)
@@ -92,19 +96,20 @@ namespace Project1.Core.Towns
                     net.BeginPacket(PacketOrderSync)
                         .Write(pl.ID)
                         .Write(tavern.ID)
-                        .Write(order.ID)
+                        .Write(order.Id)
                         .Write(enabled);
             }
 
-            public static void UpdateOrderIngredients(NetEndpoint net, PlayerData player, Tavern tavern, CraftOrderOld order, string reagent, ItemDef[] defs, MaterialDef[] mats, MaterialTypeDef[] matTypes)
+            public static void UpdateOrderIngredients(NetEndpoint net, PlayerData player, Tavern tavern, CraftingOrder order, string reagent, ItemDef[] defs, MaterialDef[] mats, MaterialTypeDef[] matTypes)
             {
                 if (net is Server)
-                    order.ToggleReagentRestrictions(reagent, defs, mats, matTypes);
+                    throw new NotImplementedException();
+                    //order.ToggleReagentRestrictions(reagent, defs, mats, matTypes);
                 var w = net.BeginPacket(PacketOrderUpdateIngredients);
 
                 w.Write(player.ID);
                 w.Write(tavern.ID);
-                w.Write(order.ID);
+                w.Write(order.Id);
                 w.Write(reagent);
                 w.Write(defs?.Select(d => d.Name).ToArray());
                 w.Write(mats?.Select(d => d.Name).ToArray());
@@ -121,7 +126,8 @@ namespace Project1.Core.Towns
                 var mats = r.ReadStringArray().Select(Def.GetDef<MaterialDef>).ToArray();
                 var matTypes = r.ReadStringArray().Select(Def.GetDef<MaterialTypeDef>).ToArray();
                 if (net is Client)
-                    order.ToggleReagentRestrictions(reagent, defs, mats, matTypes);
+                    throw new NotImplementedException();
+                    //order.ToggleReagentRestrictions(reagent, defs, mats, matTypes);
                 else
                     UpdateOrderIngredients(net, player, tavern, order, reagent, defs, mats, matTypes);
             }

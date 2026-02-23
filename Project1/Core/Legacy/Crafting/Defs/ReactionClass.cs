@@ -6,7 +6,5 @@
         {
 
         }
-        static public readonly ReactionClass Tools = new("Tools");
-        static public readonly ReactionClass Protein = new("Protein");
     }
 }

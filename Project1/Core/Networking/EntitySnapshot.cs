@@ -7,7 +7,6 @@ namespace Project1.Core.Networking
     public record struct EntitySnapshot(EntityRefId RefID)
     {
         static public readonly EntitySnapshot Empty = new(EntityRefId.Null);
-        //public int RefID = RefID;
         public Vector3 Position, Velocity, Orientation;
 
         static public void Write(GameObject obj, IDataWriter w)
@@ -23,10 +22,5 @@ namespace Project1.Core.Networking
             this.Orientation = r.ReadVector3();
             return this;
         }
-      
-        //public override string ToString()
-        //{
-        //    return $"RefID: {this.RefID} Position: {this.Position} Velocity: {this.Velocity} Orientation: {this.Orientation}";
-        //}
     }
 }

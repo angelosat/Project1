@@ -8,11 +8,11 @@ namespace Project1.Core.Legacy.Properties
 {
     public class CraftingProperties
     {
-        public Dictionary<BoneDef, Reaction.Reagent> Reagents = new();
-        public List<Ingredient> Ingredients = new();
+        public Dictionary<BoneDef, Reaction.Reagent> Reagents = [];
+        public List<Ingredient> Ingredients = [];
         public bool IsBuildingMaterial;
         public bool IsCraftingMaterial;
-        readonly List<ItemCategory> MadeFrom = new();
+        readonly List<ItemCategory> MadeFrom = [];
 
         public CraftingProperties MakeableFrom(params ItemCategory[] cat)
         {

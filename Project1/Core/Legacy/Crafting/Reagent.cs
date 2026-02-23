@@ -3,7 +3,6 @@ using Project1.Core.Legacy.Crafting;
 using Project1.Core.Legacy.Crafting.Defs;
 using Project1.Core.Legacy.Crafting.ReagentFilters;
 using Project1.Core.Materials;
-using Project1.Core.UI;
 using Project1.Framework.Interfaces;
 using Project1.Framework.UI;
 using System;

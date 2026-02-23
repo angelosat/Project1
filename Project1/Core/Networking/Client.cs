@@ -5,6 +5,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Loot;
 using Project1.Core.Networking;
+using Project1.Core.Networking.Entities;
 using Project1.Core.Networking.Packets;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
@@ -67,7 +68,7 @@ namespace Project1.Core.Networking
         private Client()
         {
         }
-
+        SnapshotManager Snapshots = new();
         public PlayerData PlayerData;
         public Socket Host;
         public EndPoint RemoteIP;
@@ -95,8 +96,8 @@ namespace Project1.Core.Networking
 
         public BinaryWriter OutgoingStreamTimestamped = new(new MemoryStream());
 
-        private readonly Queue<WorldSnapshot> WorldStateBuffer = new();
-        private readonly int WorldStateBufferSize = 20;
+        //private readonly Queue<WorldSnapshot> WorldStateBuffer = new();
+        //private readonly int WorldStateBufferSize = 20;
         public const int ClientClockDelayMS = Server.SnapshotIntervalMS * 4;
         public const int ClientTickDelay = 4;
         private int _Speed = 0;// 1;
@@ -253,8 +254,8 @@ namespace Project1.Core.Networking
                 if (Instance.Map.ActiveChunks.Count == maxChunks && !IsSaving)
                 {
                     this.Map.Validate();
-                    this.ApplyEntitySnapshots();
-
+                    //this.ApplyEntitySnapshots();
+                    this.Snapshots.ApplyEntitySnapshots(Instance.Map.World, this.CurrentTick);
                     while (this.CurrentTick < this.TickTarget)
                     {
                         // moved this here because on speed > 0 the map wasn't ticked and logic wasn't executed between handling consecutive tick packets
@@ -829,85 +830,82 @@ namespace Project1.Core.Networking
             return false;
         }
 
-        //internal void ReadSnapshot(BinaryReader reader)
         internal void ReadSnapshot(IDataReader reader)
         {
-            //double totalMs = reader.ReadDouble();
-
-            var time = reader.ReadDouble(); // TimeSpan.FromMilliseconds(totalMs);
-            var worldState = new WorldSnapshot(time, reader);
-
-            // insert world snapshot to world snapshot history
-            this.WorldStateBuffer.Enqueue(worldState);
-            while (this.WorldStateBuffer.Count > this.WorldStateBufferSize)
-                this.WorldStateBuffer.Dequeue();
+            this.Snapshots.ReadSnapshot(reader);
+            //var time = reader.ReadDouble();
+            //var worldState = new WorldSnapshot(time, reader);
+            //// insert world snapshot to world snapshot history
+            //this.WorldStateBuffer.Enqueue(worldState);
+            //while (this.WorldStateBuffer.Count > this.WorldStateBufferSize)
+            //    this.WorldStateBuffer.Dequeue();
         }
 
-        private void ApplyEntitySnapshots()
-        {
-            // iterate through the state buffer and find position
-            List<WorldSnapshot> list = this.WorldStateBuffer.ToList();
-            for (int i = 0; i < this.WorldStateBuffer.Count - 1; i++)
-            {
-                WorldSnapshot
-                    prev = list[i],
-                    next = list[i + 1];
+        //private void ApplyEntitySnapshots()
+        //{
+        //    // iterate through the state buffer and find position
+        //    List<WorldSnapshot> list = this.WorldStateBuffer.ToList();
+        //    for (int i = 0; i < this.WorldStateBuffer.Count - 1; i++)
+        //    {
+        //        WorldSnapshot
+        //            prev = list[i],
+        //            next = list[i + 1];
 
-                //if (this.CurrentTick >= prev.Time && this.CurrentTick < next.Time)
-                if (this.CurrentTick < next.Time && prev.Time <= this.CurrentTick)
-                {
-                    this.SnapObjectPositions(prev, next);
-                    //return;
-                }
-            }
-        }
-        private void SnapObjectPositions(WorldSnapshot prev, WorldSnapshot next)
-        {
-            float t = (float)((this.CurrentTick - prev.Time) /
-                  (next.Time - prev.Time));
-            t = Math.Clamp(t, 0f, 1f);
+        //        //if (this.CurrentTick >= prev.Time && this.CurrentTick < next.Time)
+        //        if (this.CurrentTick < next.Time && prev.Time <= this.CurrentTick)
+        //        {
+        //            this.SnapObjectPositions(prev, next);
+        //            //return;
+        //        }
+        //    }
+        //}
+        //private void SnapObjectPositions(WorldSnapshot prev, WorldSnapshot next)
+        //{
+        //    float t = (float)((this.CurrentTick - prev.Time) /
+        //          (next.Time - prev.Time));
+        //    t = Math.Clamp(t, 0f, 1f);
 
-            foreach (var kv in prev.Dictionary)
-            {
-                var prevSnap = kv.Value;
-                next.Dictionary.TryGetValue(prevSnap.RefID, out var nextSnap);
-                var entity = this.World.GetEntity(prevSnap.RefID);
-                if (entity is null) /// snapshot for entity that hasn't been spawned but the client yet? silently drop?
-                    continue;
-                if (nextSnap is null)
-                {
-                    // extrapolation
-                    // temporarily disabling extrapolation because of a bug
-                    //double dt = CurrentTick - prev.Time;
-                    //var predictedPos = entity.Global + entity.Velocity * (float)dt;
-                    //entity.SetPosition(predictedPos);
-                    continue;
-                }
-                entity.SetPosition(prevSnap.Position + (nextSnap.Position - prevSnap.Position) * t);
-                entity.Velocity = prevSnap.Velocity + (nextSnap.Velocity - prevSnap.Velocity) * t;
-                entity.Direction = prevSnap.Orientation + (nextSnap.Orientation - prevSnap.Orientation) * t;
+        //    foreach (var kv in prev.Dictionary)
+        //    {
+        //        var prevSnap = kv.Value;
+        //        next.Dictionary.TryGetValue(prevSnap.RefID, out var nextSnap);
+        //        var entity = this.World.GetEntity(prevSnap.RefID);
+        //        if (entity is null) /// snapshot for entity that hasn't been spawned but the client yet? silently drop?
+        //            continue;
+        //        if (nextSnap is null)
+        //        {
+        //            // extrapolation
+        //            // temporarily disabling extrapolation because of a bug
+        //            //double dt = CurrentTick - prev.Time;
+        //            //var predictedPos = entity.Global + entity.Velocity * (float)dt;
+        //            //entity.SetPosition(predictedPos);
+        //            continue;
+        //        }
+        //        entity.SetPosition(prevSnap.Position + (nextSnap.Position - prevSnap.Position) * t);
+        //        entity.Velocity = prevSnap.Velocity + (nextSnap.Velocity - prevSnap.Velocity) * t;
+        //        entity.Direction = prevSnap.Orientation + (nextSnap.Orientation - prevSnap.Orientation) * t;
 
-                if (float.IsNaN(entity.Direction.X) || float.IsNaN(entity.Direction.Y))
-                    throw new Exception();
-            }
+        //        if (float.IsNaN(entity.Direction.X) || float.IsNaN(entity.Direction.Y))
+        //            throw new Exception();
+        //    }
 
-            foreach(var kv in next.Dictionary)
-            {
-                if (prev.Dictionary.ContainsKey(kv.Key))
-                    continue;
+        //    foreach(var kv in next.Dictionary)
+        //    {
+        //        if (prev.Dictionary.ContainsKey(kv.Key))
+        //            continue;
 
-                var nextObj = kv.Value;
-                var entity = this.World.GetEntity(nextObj.RefID);
-                if (entity == null) continue;
-                if (entity.Map == null) continue; // a snapshot could have been received earlier than the packet to actually spawn an entity that actually is registered in the world but is unspawned
+        //        var nextObj = kv.Value;
+        //        var entity = this.World.GetEntity(nextObj.RefID);
+        //        if (entity == null) continue;
+        //        if (entity.Map == null) continue; // a snapshot could have been received earlier than the packet to actually spawn an entity that actually is registered in the world but is unspawned
 
-                // Policy for spawns: snap to the authoritative snapshot immediately.
-                // Alternative: treat prev as same as next and interpolate from same => same.
-                entity.SetPosition(nextObj.Position);
-                entity.Velocity = nextObj.Velocity;
-                entity.Direction = nextObj.Orientation;
-            }
-        }
+        //        // Policy for spawns: snap to the authoritative snapshot immediately.
+        //        // Alternative: treat prev as same as next and interpolate from same => same.
+        //        entity.SetPosition(nextObj.Position);
+        //        entity.Velocity = nextObj.Velocity;
+        //        entity.Direction = nextObj.Orientation;
+        //    }
+        //}
 
         internal static void PlayerCommand(string command)
         {

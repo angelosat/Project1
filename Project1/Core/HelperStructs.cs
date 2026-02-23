@@ -19,6 +19,11 @@ namespace Project1.Core
         public static implicit operator PacketId(int v) => new(v);
         public static implicit operator int(PacketId v) => v.Value;
     }
+    public readonly record struct Tick(double Value)
+    {
+        public static implicit operator Tick(double v) => new(v);
+        public static implicit operator double(Tick v) => v.Value;
+    }
     public record struct PlayerId(int Value)
     {
         public static implicit operator PlayerId(int v) => new(v);

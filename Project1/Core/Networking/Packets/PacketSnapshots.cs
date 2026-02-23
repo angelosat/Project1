@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Core.Entities;
 using Project1.Framework;
-using Project1.Core.Entities;
 using Project1.Framework.Events;
-using Project1.Core.Networking;
+using System.Collections.Generic;
 
 namespace Project1.Core.Networking.Packets
 {
@@ -14,16 +13,16 @@ namespace Project1.Core.Networking.Packets
         {
             _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(NetEndpoint net, ICollection<GameObject> entities)
+        static public void Send(NetEndpoint net, ICollection<Entity> entities)
         {
             var server = net as Server;
-            var strem = server.BeginPacketNew(ReliabilityType.Unreliable, _packetTypeId);
-            strem.Write(server.CurrentTick);
-            strem.Write(entities.Count);
+            var w = server.BeginPacketNew(ReliabilityType.Unreliable, _packetTypeId);
+            w.Write(server.CurrentTick);
+            w.Write(entities.Count);
             foreach (var obj in entities)
             {
-                strem.Write(obj.RefId);
-                ObjectSnapshot.Write(obj, strem);
+                w.Write(obj.RefId);
+                EntitySnapshot.Write(obj, w);
             }
         }
         static public void Receive(NetEndpoint net, Packet pck)

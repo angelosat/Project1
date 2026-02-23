@@ -17,8 +17,9 @@ using Project1.Core.Helpers;
 using Project1.Core.Loot;
 using Project1.Core.Networking.Packets;
 using Project1.Core.UI;
-using Project1.Core.Serialization;
 using Project1.Framework.Helpers;
+using Project1.Core.Networking.Entities;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Networking
 {
@@ -57,7 +58,7 @@ namespace Project1.Core.Networking
         /// <summary>
         /// Contains objects that have changed since the last world delta state update
         /// </summary>
-        public HashSet<GameObject> ObjectsChangedSinceLastSnapshot = [];
+        public HashSet<Entity> EntitiesChangedSinceLastSnapshot = [];
         [Obsolete]
         protected override void Post(GameEvent e)
         {
@@ -152,7 +153,7 @@ namespace Project1.Core.Networking
         public override int Speed { get => this._Speed; protected set => this._Speed = value; }
         readonly float BlockUpdateTimerMax = 1;
         float BlockUpdateTimer = 0;
-
+        SnapshotManager Snapshots = new();
         public void Tick(GameTime gt)
         {
             if (!IsRunning)
@@ -166,7 +167,7 @@ namespace Project1.Core.Networking
             {
                 this.TickMap();
                 this.Map.Validate();
-                SendSnapshots();
+                this.FlushSnapshots();
             }
             this.WritePlayerSpecificNew();
             this.FlushStreams(false);
@@ -626,34 +627,23 @@ namespace Project1.Core.Networking
         {
             return this.World.TryGetEntity(netID, out obj);
         }
-        //public override void PostLocalEvent(GameObject recipient, ObjectEventArgs args)
-        //{
-        //    args.Network = Instance;
-        //    recipient.PostMessage(args);
-        //}
-        //public override void PostLocalEvent(GameObject recipient, Components.Message.Types type, params object[] args)
-        //{
-        //    ObjectEventArgs a = ObjectEventArgs.Create(type, args);
-        //    a.Network = Instance;
-        //    recipient.PostMessage(a);
-        //}
-        private static void SendSnapshots()
+        private void FlushSnapshots()
         {
             /// always send snapshots every frame, even empty ones. so that the client can interpolate correctly
 
-            // i had to stop sending empty snapshots because after resuming from pause, entities "jumpbed" to their real position in the clients
-            if (Instance.ObjectsChangedSinceLastSnapshot.Count == 0)
+            // i had to stop sending empty snapshots because after resuming from pause, entities "jumped" to their real position in the clients
+            //if (this.EntitiesChangedSinceLastSnapshot.Count == 0)
+            //    return;
+            if (this.Speed == 0) // this seems to fix both entities glitching after resuming from pause and entities micro-snapping before moving in fast speeds
                 return;
-            PacketSnapshots.Send(Instance, Instance.ObjectsChangedSinceLastSnapshot);
-            Instance.ObjectsChangedSinceLastSnapshot.Clear();
+            PacketSnapshots.Send(this, this.EntitiesChangedSinceLastSnapshot);
+            this.EntitiesChangedSinceLastSnapshot.Clear();
         }
-
         public override bool LogStateChange(int netID)
         {
-            return this.ObjectsChangedSinceLastSnapshot.Add(this.World.Entities[netID]);
+            return this.EntitiesChangedSinceLastSnapshot.Add(this.World.Entities[netID]);
         }
 
-        #region Loot
         public override void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity)
         {
             //foreach (var obj in this.GenerateLoot(table))
@@ -663,46 +653,19 @@ namespace Project1.Core.Networking
         public RandomThreaded GetRandom() => Random;
         public override void PopLoot(GameObject obj, Vector3 startPosition, Vector3 startVelocity)
         {
-            //double angle = Random.NextDouble() * (Math.PI + Math.PI);
-            //double w = Math.PI / 4f;
-
-            //float verticalForce = .3f;// 0.3f;
-            //float horizontalForce = .1f;
-            //float x = horizontalForce * (float)(Math.Sin(w) * Math.Cos(angle));
-            //float y = horizontalForce * (float)(Math.Sin(w) * Math.Sin(angle));
-            //float z = verticalForce * (float)Math.Cos(w);
-
-            //var direction = new Vector3(x, y, z);
-            //var final = startVelocity + direction;
-
-            //obj.Global = startPosition;
-            //obj.Velocity = final;
             obj.Global = startPosition;
             obj.Velocity = LootSystem.RandomPopVelocity(Random);
-
-
-            //if (obj.RefId == 0)
-            //    obj.SyncInstantiate(this);
-            //this.Map.SyncSpawn(obj, startPosition, final);
         }
-        //public IEnumerable<GameObject> GenerateLoot(LootTable lootTable)
-        //{
-        //    foreach (var i in lootTable.Generate(Random))
-        //        yield return i;
-        //}
-        #endregion
 
         internal bool UnloadWorld()
         {
-            if (Connections.Count > 0)
+            if (!Connections.IsEmpty)
             {
                 this.ConsoleBox.Write(Color.Red, "SERVER", "Can't unload world while active connections exist");
                 return false;
             }
-            if (this.World != null)
-            {
+            if (this.World is not null)
                 this.ConsoleBox.Write(Color.Lime, "SERVER", "World " + this.World.Name + " unloaded");
-            }
             this.World = null;
             return true;
         }

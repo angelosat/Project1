@@ -44,7 +44,7 @@ namespace Project1.Core.Towns
 
         readonly protected HashSet<int> StockpilesInput = new();
         readonly protected HashSet<int> StockpilesOutput = new();
-        readonly protected ObservableHashSet<int> Workers = new();
+        protected ObservableHashSet<int> Workers = new();
 
         protected Dictionary<int, WorkerProps> WorkerProps = new();
 
@@ -280,6 +280,10 @@ namespace Project1.Core.Towns
             this.StockpilesInput.Read(r);
             this.Facilities.Read(r);
             this.Workers.Read(r);
+            //var entityIds = r.ReadListInt32();
+            //this.Workers.Clear();
+            //foreach (var id in entityIds)
+            //    this.Workers.Add(id);
             this.Rooms.Read(r);
             this.Counter = r.ReadVector3Nullable();
             this.WorkerProps = r.ReadArrayNew<WorkerProps>().ToDictionary(w => w.ActorID, w => w);
@@ -294,7 +298,8 @@ namespace Project1.Core.Towns
             this.Name.Save(tag, "Name");
             tag.Add(this.StockpilesInput.Save("Stockpiles"));
             tag.Add(this.Facilities.Save("Facilities"));
-            tag.Add(this.Workers.Save("Workers"));
+            //tag.Add(this.Workers.Save("Workers"));
+            this.Workers.Save(tag, "Workers");
             tag.Add(this.Rooms.Save("Rooms"));
             this.WorkerProps.Values.SaveNewBEST(tag, "WorkerProps");
 
@@ -469,7 +474,7 @@ namespace Project1.Core.Towns
                         };
                     });
                 }
-                table.AddItems(tav.Workers.Select(tav.Map.World.GetEntity).Cast<Actor>());
+                table.AddItems(tav.Workers.Select(i => tav.Map.World.GetEntity(i)).Cast<Actor>());
             });
 
             box.AddControlsVertically(

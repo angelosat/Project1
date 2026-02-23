@@ -1,14 +1,13 @@
-﻿using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
-using Project1.Core.Helpers;
 using Project1.Framework.Serialization;
 
 namespace Project1.Core.Networking
 {
-    public class ObjectSnapshot(int refID)
+    public record struct EntitySnapshot(EntityRefId RefID)
     {
-        public int RefID = refID;
+        static public readonly EntitySnapshot Empty = new(EntityRefId.Null);
+        //public int RefID = RefID;
         public Vector3 Position, Velocity, Orientation;
 
         static public void Write(GameObject obj, IDataWriter w)
@@ -17,8 +16,7 @@ namespace Project1.Core.Networking
             w.Write(obj.Velocity);
             w.Write(obj.Direction);
         }
-        //public ObjectSnapshot Read(BinaryReader r)
-        public ObjectSnapshot Read(IDataReader r)
+        public EntitySnapshot Read(IDataReader r)
         {
             this.Position = r.ReadVector3();
             this.Velocity = r.ReadVector3();
@@ -26,9 +24,9 @@ namespace Project1.Core.Networking
             return this;
         }
       
-        public override string ToString()
-        {
-            return $"RefID: {this.RefID} Position: {this.Position} Velocity: {this.Velocity} Orientation: {this.Orientation}";
-        }
+        //public override string ToString()
+        //{
+        //    return $"RefID: {this.RefID} Position: {this.Position} Velocity: {this.Velocity} Orientation: {this.Orientation}";
+        //}
     }
 }

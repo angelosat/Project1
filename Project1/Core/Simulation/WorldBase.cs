@@ -22,7 +22,12 @@ using Project1.Framework.Events;
 
 namespace Project1.Core.Simulation
 {
-    public abstract class WorldBase : Inspectable
+    public interface IEntityProvider
+    {
+        Entity GetEntity(EntityRefId refId);
+
+    }
+    public abstract class WorldBase : Inspectable, IEntityProvider
     {
         internal float GroundAirThreshold;
 
@@ -87,7 +92,7 @@ namespace Project1.Core.Simulation
             this.Register(entity);
             //PacketsEntities.Send(entity);
         }
-        public Entity GetEntity(int refId)
+        public Entity GetEntity(EntityRefId refId)
         {
             if (refId == EntityRefId.Null)
                 return null!;

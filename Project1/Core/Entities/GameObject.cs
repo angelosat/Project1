@@ -231,13 +231,10 @@ namespace Project1.Core.Entities
             set
             {
                 if (float.IsNaN(value.X) || float.IsNaN(value.Y))
-                {
                     throw new Exception();
-                }
 
-                var transform = this.Transform;
                 var newdir = new Vector2(value.X, value.Y);
-                transform.Direction = newdir;
+                this.Transform.Direction = newdir;
             }
         }
         public int StackMax => this.Def.StackCapacity;

@@ -4,7 +4,6 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Core.Towns;
 using Project1.Framework;
-using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,9 @@ namespace Project1.Core.AI.Reservations
 {
     public class ReservationManager : TownComponent
     {
+        readonly List<Reservation> Reservations = [];
+        readonly Dictionary<TargetArgs, List<Reservation>> ByTarget = [];
+        readonly Dictionary<EntityRefId, List<Reservation>> ByActor = [];
         string _name = "Reservations";
         public override string Name => _name; 
         public ReservationManager(Town town)
@@ -35,9 +37,6 @@ namespace Project1.Core.AI.Reservations
             foreach (var cell in e.Positions)
                 this.Unreserve(new TargetArgs(e.Map, cell));
         }
-        readonly List<Reservation> Reservations = [];
-        readonly Dictionary<TargetArgs, List<Reservation>> ByTarget = [];
-        readonly Dictionary<EntityRefId, List<Reservation>> ByActor = [];
         void AddReservation(Reservation vation)
         {
             this.Reservations.Add(vation);
@@ -50,24 +49,16 @@ namespace Project1.Core.AI.Reservations
                 this.ByActor[vation.Actor] = byactorlist = [];
             byactorlist.Add(vation);
         }
-        static int TaskIDSequence = 0;
-        static public int GetNextTaskID()
-        {
-            return TaskIDSequence++;
-        }
-
-        internal bool Reserve(Actor actor, Plan task, TargetArgs target, int stackCount = -1)
+        internal bool Reserve(Actor actor, Plan plan, TargetArgs target, int stackCount = -1)
         {
             if (target.Type == TargetType.Null)
                 throw new Exception();
 
-            /// MOVED THIS HERE FROM BELOW (check comment below)
             if (target.Type == TargetType.Cell)
                 stackCount = 1;
             else if (target.Type == TargetType.Entity)
                 stackCount = (stackCount != -1) ? stackCount : target.Object.StackSize;
 
-            // update existing reservation if it exists
             var existing = this.Reservations.FirstOrDefault(r => r.Target.IsEqual(target) && r.Actor == actor.RefId);
             if (existing != null)
             {
@@ -80,28 +71,11 @@ namespace Project1.Core.AI.Reservations
                 return true;
             }
 
-
-            /// do i need to check this here? if the behavior has reached the point where it's reserving items, then it should do so, and cancel existing reservations by other actors
-            /// because the behavior might have been a result of player forcing a task
-            //if (!actor.CanReserve(target, stackCount))
-            //    throw new Exception(); // this will probably throw if the canreserve check has been omitted in a taskgiver, or a reservation has been omitted in the initreservations of another behavior
-
-
-
-
-            /// I MOVED THIS TO THE BEGINNING OF THE FUNCTION because I check the stackCount against any existing reservations which are NEVER -1
-            ///if (target.Type == TargetType.Position)
-            ///    stackCount = 1;
-            ///else if (target.Type == TargetType.Entity)
-            ///    stackCount = (stackCount != -1) ? stackCount : target.Object.StackSize;//.StackMax; // UNDONE was there a reason i put stackmax?
-            var vation = new Reservation(actor, target, stackCount)
-            {
-                Task = task
-            };
+            var vation = new Reservation(actor, target, stackCount);
+          
             if (target.HasObject && stackCount > target.Object.StackSize)
                 throw new Exception();
 
-            // signal holders of possible existing reservations
             TryCancelExistingReservations(target, stackCount);
             this.AddReservation(vation);
 
@@ -118,7 +92,7 @@ namespace Project1.Core.AI.Reservations
             var count = Math.Min(desiredAmount, unreservedAmount);
             if (count > target.Object.StackMax)
                 throw new Exception();
-            var vation = new Reservation(actor, target, count) { Task = task };
+            var vation = new Reservation(actor, target, count);// { Task = task };
             if (target.HasObject && count > target.Object.StackSize)
                 throw new Exception();
             this.AddReservation(vation);
@@ -160,8 +134,6 @@ namespace Project1.Core.AI.Reservations
         {
             var actor = this.Map.World.GetEntity<Actor>(r.Actor);
             var task = actor.CurrentPlan;
-            if (task.ID != r.TaskID)
-                throw new Exception();
             actor.Net.ConsoleBox.Write("cancelling " + actor.Name + "'s task's reservations ");
             task.Cancel();
         }
@@ -180,7 +152,6 @@ namespace Project1.Core.AI.Reservations
             }
             reservationsByActor.Clear();
             this.ByActor.Remove(actor.RefId);
-            //actor.CurrentPlan.Cancel();
         }
         void Unreserve(TargetArgs target)
         {
@@ -197,15 +168,9 @@ namespace Project1.Core.AI.Reservations
                     this.ByActor.Remove(res.Actor);
                 actorsToInterrupt.Add(target.World.GetEntity<Actor>(res.Actor));
             }
-            //foreach(var actor in actorsToInterrupt)
-            //    actor.CurrentPlan.Cancel();
             reservationsByTarget.Clear();
             this.ByTarget.Remove(target);
         }
-        //internal void Unreserve(GameObject actor, TargetArgs target)
-        //{
-        //    Reservations.RemoveAll(r => r.Actor == actor.RefId && r.Target.IsEqual(target));
-        //}
         internal bool CanReserve(GameObject actor, TargetArgs target, int stackcount = -1, bool ignoreOtherReservations = false)
         {
             if (target.Type == TargetType.Entity && target.Object.Owner == actor)
@@ -223,32 +188,10 @@ namespace Project1.Core.AI.Reservations
             return stackcount <= unreservedAmount;
 
         }
-        internal bool CanReserve(TargetArgs target)
-        {
-            if (target.IsForbidden)
-                return false;
-            return Reservations.FirstOrDefault(r =>
-            {
-                if (r.Target.Type != target.Type)
-                    return false;
-                if (r.Target.Type == TargetType.Entity && r.Target.Object != null && r.Target.Object == target.Object)
-                    return true;
-                else if (r.Target.Type == TargetType.Cell && r.Target.Global == target.Global)
-                    return true;
-                return false;
-            }) == null;
-        }
-        internal bool CanReserve(Vector3 global)
-        {
-            return Reservations.FirstOrDefault(r =>
-               r.Target.Type == TargetType.Cell && r.Target.Global == global
-            ) == null;
-        }
         internal int GetUnreservedAmount(GameObject obj)
         {
             return GetUnreservedAmount(new TargetArgs(obj));
         }
-       
         internal int GetUnreservedAmount(TargetArgs target)
         {
             var sum = 0;
@@ -286,14 +229,12 @@ namespace Project1.Core.AI.Reservations
         {
             return this.Reservations.Any(t => t.Target.Global == (Vector3)global);
         }
-        
         protected override void AddSaveData(SaveTag tag)
         {
             var reservationsTag = new SaveTag(SaveTag.Types.List, "Reservations", SaveTag.Types.Compound);
             foreach (var r in this.Reservations)
                 reservationsTag.Add(r.Save());
             tag.Add(reservationsTag);
-            tag.Add(TaskIDSequence.Save("TaskIDSequence"));
         }
         public override void Load(SaveTag tag)
         {
@@ -304,7 +245,6 @@ namespace Project1.Core.AI.Reservations
                 foreach (var t in list)
                     this.AddReservation(new Reservation(this.Town.Map, t));
             });
-            tag.TryGetTagValueOrDefault<int>("TaskIDSequence", out TaskIDSequence);
         }
     }
 }

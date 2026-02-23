@@ -1,5 +1,4 @@
 ﻿using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Reservations;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
@@ -89,7 +88,7 @@ namespace Project1.Core.AI
                 };
         internal bool IsEndGoalFeasible() => this.Evaluator();
         public PlanDef Def;
-        public int ID { get; internal set; }
+        //public int ID { get; internal set; }
         public string Status => $"{this.Def.Interaction?.LabelReadable} : {this.TargetA}";
         public TargetArgs GetTarget(TargetIndex targetInd)
         {
@@ -209,21 +208,14 @@ namespace Project1.Core.AI
             task.LoadData(tag);
             return task;
         }
-        //internal static void Initialize()
-        //{
-        //}
         public Plan()
         {
-            this.ID = ReservationManager.GetNextTaskID();
         }
-       
-
         public Plan(PlanDef taskDef)
         {
             if (taskDef is null) throw new Exception();
             this.Def = taskDef;
         }
-
         public Plan(Type behaviorType) : this()
         {
             throw new Exception();
@@ -305,7 +297,6 @@ namespace Project1.Core.AI
 
         public PlanExecutor CreateBehavior(Actor actor)
         {
-            //var behav = Activator.CreateInstance(this.BehaviorType) as BehaviorExecutePlan;
             var behav = ActivatorSafe<PlanExecutor>.CreateInstance(this.BehaviorType);
             behav.Actor = actor;
             behav.Plan = this;
@@ -316,7 +307,6 @@ namespace Project1.Core.AI
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             this.Def.Save(tag, "Def");
-            tag.Add(this.ID.Save("ID"));
             tag.Add(this.TargetA.Save("TargetA"));
             tag.Add(this.TargetB.Save("TargetB"));
             tag.Add(this.TargetC.Save("TargetC"));
@@ -381,12 +371,10 @@ namespace Project1.Core.AI
         public void LoadData(SaveTag tag)
         {
             this.Def = tag.LoadDef<PlanDef>("Def");
-            tag.TryGetTagValue<int>("ID", t => this.ID = t);
             tag.TryGetTag("TargetA", t => this.TargetA = new TargetArgs(t));
             tag.TryGetTag("TargetB", t => this.TargetB = new TargetArgs(t));
             tag.TryGetTag("TargetC", t => this.TargetC = new TargetArgs(t));
 
-            //tag.TryGetTag("Tool", t => this.Tool = new TargetArgs(t));
 
             tag.TryGetTagValueOrDefault("AmountA", out this.AmountA);
             tag.TryGetTagValueOrDefault("AmountB", out this.AmountB);
@@ -470,16 +458,7 @@ namespace Project1.Core.AI
             foreach (var t in this.GetCustomTargets())
                 t.ResolveReferences(parent.Map);
             foreach (var t in this.PlacedObjects)
-                t.ResolveReferences(parent.Net);
-        }
-        internal void AddTargets(TargetIndex index, IEnumerable<(TargetArgs target, int amount)> targetsAmounts)
-        {
-            foreach (var (target, amount) in targetsAmounts)
-                this.AddTarget(index, target, amount);
-        }
-        internal void AddTarget(TargetIndex index, GameObject target, int count = -1)
-        {
-            this.AddTarget(index, new TargetArgs(target), count);
+                t.ResolveReferences(parent.Map.World);
         }
         internal void AddTarget(TargetIndex index, Entity target, int count = -1)
         {
@@ -512,15 +491,8 @@ namespace Project1.Core.AI
             t.Add(target);
             a.Add(count);
         }
-
-        internal void AddTarget(TargetArgs target, int count = -1)
-        {
-            this.TargetsA.Add(target);
-            this.AmountsA.Add(count);
-        }
-
+        
         IEnumerable<TargetArgs> GetCustomTargets() { yield break; }
-       
         public bool IsStillValid()
         {
             var map = this.Actor.Map;

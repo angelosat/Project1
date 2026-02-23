@@ -10,7 +10,6 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
-using Project1.Core.Input;
 using Project1.Core.Interactions;
 using Project1.Core.Inventory;
 using Project1.Core.Materials;
@@ -136,20 +135,7 @@ namespace Project1.Core.Entities
                     this.LastMap = value;
             }
         }
-
-        public bool IsSpawnedNew => this.Map != null && this.Owner == null;
         public Town Town;
-        public IEnumerable<Button> GetTabs()
-        {
-            foreach (var comp in this.Components.Values)
-                foreach (var i in comp.GetTabs())
-                    yield return i;
-            foreach (var i in this.GetInfoTabsExtraNew())
-                yield return i;
-        }
-        protected virtual IEnumerable<(string name, Action action)> GetInfoTabsExtra() { yield break; }
-        protected virtual IEnumerable<Button> GetInfoTabsExtraNew() { yield break; }
-
         public virtual void GetSelectionInfo(IUISelection info)
         {
             info.AddIcon(IconCameraFollow.Value);
@@ -171,9 +157,6 @@ namespace Project1.Core.Entities
         internal virtual IEnumerable<(string label, Type guiType)> GetQuickButtons() { yield break; }
         public virtual void GetQuickButtons(SelectionManager info)
         {
-            //if (this.IsForbiddable())
-            //    info.AddButton(IconForbidden, RequestToggleForbidden, this);
-
             foreach (var comp in this.Components.Values)
                 comp.GetQuickButtons(info, this);
         }
@@ -181,12 +164,7 @@ namespace Project1.Core.Entities
         {
             throw new NotImplementedException();
         }
-        //static readonly IconButton IconForbidden = new QuickButton(Icon.Cross, ToolManagement.HotkeyToggleForbidden, "Forbid") { HoverText = "Toggle forbidden" };
         static readonly Lazy<IconButton> IconCameraFollow = new(()=> new(Icon.Replace) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = FollowCam, HoverText = "Camera follow" });
-        //static void RequestToggleForbidden(List<ISelectable> targets)
-        //{
-        //    Ingame.Instance.Events.Post(new PlayerForbiddingItemsEvent([.. targets.Select(o => o as Entity)]));
-        //}
         static void FollowCam()
         {
             ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManager.Instance.SelectedSource as GameObject);
@@ -209,12 +187,10 @@ namespace Project1.Core.Entities
             var bounds = camera.GetScreenBounds(g.X, g.Y, g.Z, this.SpriteComp.GetSpriteBounds(), 0, 0, this.Body.Scale);
             return bounds;
         }
-       
         public virtual Color GetNameplateColor()
         {
             return this.DefComponent.Quality.Color;
         }
-
         public GameObject Owner
         {
             get => this.Transform.ParentEntity;
@@ -236,7 +212,6 @@ namespace Project1.Core.Entities
             get => this.Global - (Vector3)this.Cell;
             set => this.SetPosition((Vector3)this.Cell + value);
         }
-       
         public Vector3 Velocity
         {
             get => this.Transform.Velocity;
@@ -277,10 +252,7 @@ namespace Project1.Core.Entities
             else
                 this.World.Events.Post(new EntityStackDecreased(this as Entity, amount));
         }
-        public void Destroy()
-        {
-            this.World.DisposeEntity(this.RefId);
-        }
+        
         public void Add(int amount)
         {
             if (amount <= 0)
@@ -289,7 +261,6 @@ namespace Project1.Core.Entities
             this.World.Events.Post(new EntityStackIncreased(this as Entity, amount));
         }
         protected int _stackSize = 1;
-
         public int StackSize
         {
             get { return this._stackSize; }
@@ -314,17 +285,9 @@ namespace Project1.Core.Entities
                     throw new Exception();
             }
         }
-
         public bool IsStackFull => this.StackSize == this.StackMax; 
         public Bone Body => this.SpriteComp.Body;
         internal MaterialDef PrimaryMaterial => this.Body.Material;
-
-        public GameObject SetGlobal(Vector3 global)
-        {
-            this.SetPosition(global);
-            return this;
-        }
-
         /// <summary>
         /// Changes the objects global position, removing the object from the previous chunk's object list and adding it to the new one's accordingly.
         /// </summary>
@@ -356,8 +319,6 @@ namespace Project1.Core.Entities
 
                 nextChunk.Add(this);
             }
-
-            //this.Physics.Enabled = true;
             this.Physics.Enable();
             return this;
         }
@@ -366,14 +327,11 @@ namespace Project1.Core.Entities
         public bool IsReserved => this.Map.Town.ReservationManager.IsReserved(this);
         public bool IsPlayerControlled => this.Net.GetPlayers().Any(p => p.ControllingEntity == this); 
         public virtual bool IsHaulable => this.Def.IsHaulable;
-        public bool IsFuel => this.Material?.Fuel?.Value > 0;
         public GameObject Hauled => this.Inventory?.HaulSlot.Object;
         public bool IsHauling => this.Hauled is not null;
-
         public GameObjectSlot Slot;
         #endregion
         public Def Profile;
-
         public GameObject Clone(int amount = -1)
         {
             var obj = this.Def.Create(this.Profile);
@@ -383,24 +341,6 @@ namespace Project1.Core.Entities
             obj.Name = this.Name;
             return obj;
         }
-        public bool TrySplit(int amount, out Entity result)
-        {
-            if(amount <=0 || amount > this.StackSize)
-            {
-                result = null;
-                return false;
-            }
-
-            if (amount == StackSize)
-            {
-                result = this as Entity;
-                return true;
-            }
-
-            result = this.Split(amount) as Entity;
-            return true;
-        }
-        
         public GameObject Split(int amount)
         {
             if (amount <= 0 || amount >= _stackSize)
@@ -416,19 +356,15 @@ namespace Project1.Core.Entities
             this.StackSize = value;
             return this;
         }
-
-        
         public IEnumerable<GameObject> GetNearbyObjects(Func<float, bool> range, Func<GameObject, bool> filter = null)
         {
             return this.Map.GetNearbyObjectsNew(this.Global, range, filter).Except(new GameObject[] { this });
         }
-
         DefComponent _info;
         public DefComponent GetInfo()
         {
             return this._info ??= GetComponent<DefComponent>("Info");
         }
-
         DefComponent _defComponent;
         [InspectorHidden]
         public DefComponent DefComponent => this._defComponent ??= this.GetComponent<DefComponent>();
@@ -477,19 +413,9 @@ namespace Project1.Core.Entities
         {
             return this.Components.GetComponent<T>();
         }
-
         public bool HasComponent<T>() where T : EntityComp
         {
             return this.Components.TryGetComponent<T>(out var _);
-        }
-        public bool HasComponent(Type compType)
-        {
-            return this.Components.Values.Any(c => c.GetType() == compType);
-        }
-        public bool TryGetComponent(Type compType, out EntityComp comp)
-        {
-            comp = this.Components.Values.FirstOrDefault(c => c.GetType() == compType);
-            return comp != null;
         }
         public bool TryGetComponent<T>(string name, out T component) where T : EntityComp
         {
@@ -512,13 +438,6 @@ namespace Project1.Core.Entities
             action(component);
             return true;
         }
-
-        public EntityComp AddComponent(EntityComp component)
-        {
-            this.Components.Add(component);
-            return component;
-        }
-
         public virtual void Tick()
         {
             this.Components.Tick();
@@ -606,11 +525,6 @@ namespace Project1.Core.Entities
         {
             return this._cachedSlots[slotId];
         }
-        public Window GetUi()
-        {
-            throw new Exception();
-        }
-
         public void GetTooltip(Control tooltip)//Message msg)
         {
             GetInfo().OnTooltipCreated(this, tooltip);
@@ -823,24 +737,18 @@ namespace Project1.Core.Entities
         public SaveTag Save(string name = "")
         {
             return new SaveTag(SaveTag.Types.Compound, name, this.SaveInternal());
-            var save = new SaveTag(SaveTag.Types.Compound, name);
-            save.Add(this.Def.Name.Save("Def"));
-            // todo : items without profile (coins for now)
-            this.Profile?.Save(save, "ProfileID");
-            save.Add(((int)this.RefId).Save("InstanceID"));
-            save.Add(this._stackSize.Save("Stack"));
-            save.Add(this.Components.Save("Components"));
-            return save;
         }
         internal List<SaveTag> SaveInternal()
         {
-            var data = new List<SaveTag>();
-            data.Add(this.Def.Name.Save("Def"));
-            // todo : items without profile (coins for now)
-            data.Add(this.Profile?.Save("ProfileID"));
-            data.Add(((int)this.RefId).Save("InstanceID"));
-            data.Add(this._stackSize.Save("Stack"));
-            data.Add(this.Components.Save("Components"));
+            var data = new List<SaveTag>
+            {
+                this.Def.Name.Save("Def"),
+                // todo : items without profile (coins for now)
+                this.Profile?.Save("ProfileID"),
+                ((int)this.RefId).Save("InstanceID"),
+                this._stackSize.Save("Stack"),
+                this.Components.Save("Components")
+            };
             return data;
         }
 
@@ -865,30 +773,6 @@ namespace Project1.Core.Entities
             obj.ResetName();
             return obj;
         }
-        
-        public IEnumerable<ContextAction> GetInventoryContextActions(GameObject actor)
-        {
-            if (this.Def.GearType is not null)
-                yield return new ContextAction(() => "Equip", () => PacketInventoryEquip.Send(this.Net, actor.RefId, this.RefId));
-            yield return new ContextAction(() => "Drop", () => PacketDropInventoryItem.Send(this.Net, actor, this, this.StackSize));
-        }
-
-        public List<ContextAction> GetRightClickActions()
-        {
-            var list = new List<ContextAction>();
-            foreach (var item in this.Components.Values)
-                item.GetRightClickActions(this, list);
-            return list;
-        }
-
-        public List<Interaction> GetHauledActions(TargetArgs a)
-        {
-            var list = new List<Interaction>();
-            foreach (var item in this.Components.Values)
-                item.GetHauledActions(this, a, list);
-            return list;
-        }
-
         internal ContextAction GetContextRB(GameObject player)
         {
             var list = new List<ContextAction>();
@@ -924,35 +808,6 @@ namespace Project1.Core.Entities
             {
                 c.GetClientActions(this, a.Actions);
             }
-        }
-
-        public List<Interaction> GetInteractionsList()
-        {
-            var list = new List<Interaction>();
-            foreach (var item in this.Components.Values)
-            {
-                item.GetInteractions(this, list);
-            }
-
-            return list;
-        }
-        public Dictionary<string, Interaction> GetInteractions()
-        {
-            var list = new Dictionary<string, Interaction>();
-            foreach (var item in this.GetInteractionsList())
-            {
-                list.Add(item.Name, item);
-            }
-
-            return list;
-        }
-
-        public List<Interaction> GetAvailableTasks()
-        {
-            var list = new List<Interaction>();
-            foreach (var c in this.Components.Values)
-                c.GetAvailableTasks(this, list);
-            return list;
         }
 
         public bool IsDisposed => this.RefId > 0 && this.Net is null;
@@ -1075,13 +930,6 @@ namespace Project1.Core.Entities
         internal IEnumerable<Need> GetNeeds(NeedCategoryDef cat)
         {
             return this.GetComponent<NeedsComponent>().NeedsNew.Values.Where(n => n.NeedDef.CategoryDef == cat);
-        }
-        public IEnumerable<Need> GetNeeds()
-        {
-            foreach (var n in this.GetComponent<NeedsComponent>().NeedsNew.Values)
-            {
-                yield return n;
-            }
         }
         internal BoundingBox GetBoundingBox(Vector3 global)
         {
@@ -1293,7 +1141,6 @@ namespace Project1.Core.Entities
         {
             return this.GetComponent<SkillsComponent>().GetSkill(skill);
         }
-
         public float Fuel
         {
             get
@@ -1301,24 +1148,13 @@ namespace Project1.Core.Entities
                 return this.Material?.Fuel?.Value ?? 0;
             }
         }
-        public float TotalFuel
-        {
-            get
-            {
-                return this.Fuel * this.StackSize;
-            }
-        }
+        
         internal float TotalWeight
         {
             get
             {
                 return this.Physics.Weight * this.StackSize;
             }
-        }
-        
-        public virtual void TabGetter(Action<string, Action> getter)
-        {
-
         }
         public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
         public bool IsRegistered => this.RefId > 0;

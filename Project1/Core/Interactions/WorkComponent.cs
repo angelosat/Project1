@@ -145,21 +145,16 @@ namespace Project1.Core.Interactions
             this.Target = new TargetArgs(save["Target"]);
             var interactionTag = save["Interaction"];
             var inter = Interaction.Load(interactionTag);
-            //inter.Actor = this.Owner as Actor;
-            //inter.Target = this.Target;
             this.Task = inter;
         }
-
         public override void OnObjectSynced(GameObject parent)
         {
             this.OnObjectLoaded(parent);
         }
         internal override void OnMapLoaded(GameObject parent)
         {
-            if (this.Target != null)
-                this.Target.InitializeProvider(parent.Net);
+            this.Target?.InitializeProvider(parent.Map.World);
         }
-
         internal override void ResolveReferences()
         {
             this.Task?.ResolveReferences();

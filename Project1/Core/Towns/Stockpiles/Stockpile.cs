@@ -38,31 +38,6 @@ namespace Project1.Core.Towns.Stockpiles
         {
             this.Settings.Initialize(FiltersView);
         }
-
-        public void CacheContents()
-        {
-            this.CacheContentsNew();
-        }
-        public void CacheContentsNew()
-        {
-            this.Cache.Clear();
-            foreach (var pos in this.Cells)
-                this.Cache.AddRange(this.Map.GetObjects(pos.Above).Where(i => i.IsStockpilable()));
-
-            foreach(var item in this.CacheObservable.ToArray())
-                if (!item.IsSpawned || this.Cells.Contains(item.Cell.Below))
-                    this.CacheObservable.Remove(item);
-            foreach (var pos in this.Cells)
-                foreach (var item in this.Map.GetObjects(pos.Above).Where(i => i.IsStockpilable()))
-                    this.CacheObservable.Add(item);
-        }
-        public IEnumerable<GameObject> Contents => this.Cache;
-
-        public IEnumerable<GameObject> GetContentsNew()
-        {
-            foreach (var i in this.Cache)
-                yield return i;
-        }
         public List<GameObject> GetContents()
         {
             var contents = new List<GameObject>();
@@ -70,26 +45,13 @@ namespace Project1.Core.Towns.Stockpiles
                 contents.AddRange(this.Town.Map.GetObjects(pos + IntVec3.UnitZ));
             return contents;
         }
-
-
         public override bool Accepts(Entity obj, IntVec3 pos)
         {
             if (!this.Cells.Contains(pos))
                 return false;
             return this.Accepts(obj);
         }
-   
         internal bool Accepts(Entity item) => this.SettingsNew.Accepts(item);
-
-        public IEnumerable<IntVec3> GetAvailableCells()
-        {
-            var emptyCells =
-                this.Cells
-                .Where(p => this.Town.ReservationManager.CanReserve(p.Above))
-                .Where(p => !this.Town.Map.GetObjects(p.Above).Any())
-                .Select(p => p.Above);
-            return emptyCells;
-        }
         public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazyFromCache(Entity obj)
         {
             var occupiedCells = new List<IntVec3>();
@@ -106,38 +68,6 @@ namespace Project1.Core.Towns.Stockpiles
             }
             foreach (var cell in this.Cells.Except(occupiedCells))
                 yield return new TargetArgs(this.Map, cell);
-        }
-        public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazy(GameObject obj)
-        {
-            var emptyCells = new List<Vector3>();
-            foreach (var pos in this.Cells)
-            {
-                var above = pos.Above;
-                var itemsInCell = this.Map.GetObjects(above);
-                if (!itemsInCell.Any())
-                {
-                    emptyCells.Add(above);
-                    continue;
-                }
-                foreach (var existing in itemsInCell)
-                {
-                    if (!existing.IsHaulable) // not really necessary?
-                        continue;
-                    if (!this.SettingsNew.Accepts(existing as Entity))
-                        continue;
-                    if (!existing.CanAbsorb(obj))
-                        continue;
-                    /// dont haul to this existing item, because it might be reserved by another actor to be completely picked up
-                    /// maybe if unreservedamount > 1? so that we ensure that the stack will continue existing even after being partially picked up by another actor?
-                    if (existing.GetUnreservedAmount() == 0)
-                        continue; 
-                    yield return new TargetArgs(existing);
-                }
-            }
-            foreach (var cell in emptyCells)
-            {
-                yield return new TargetArgs(this.Map, cell);
-            }
         }
         public IEnumerable<IntVec3> DistributeToStorageSpotsCellsOnly(Entity item)
         {
@@ -164,13 +94,6 @@ namespace Project1.Core.Towns.Stockpiles
             }
             foreach (var cell in emptyCells)
                 yield return cell;
-        }
-        public TargetArgs FindPlaceFor(Entity item)
-        {
-            if (!this.Accepts(item))
-                return null;
-            //return this.DistributeToStorageSpotsNewLazy(item).FirstOrDefault();
-            return this.DistributeToStorageSpotsNewLazyFromCache(item).FirstOrDefault();
         }
         public IEnumerable<IntVec3> FindPlacesFor(Entity item)
         {
@@ -201,7 +124,6 @@ namespace Project1.Core.Towns.Stockpiles
         public void GetContextActions(GameObject playerEntity, ContextArgs a)
         {
         }
-
         public bool IsValidStorage(Entity item, TargetArgs target, int amount)
         {
             if (!this.Accepts(item))
@@ -226,12 +148,6 @@ namespace Project1.Core.Towns.Stockpiles
             }
 
             return true;
-        }
-
-        public IEnumerable<Vector3> GetPositionsLazy()
-        {
-            foreach (var pos in this.Cells)
-                yield return pos;
         }
         public override IEnumerable<(string name, Action action)> GetInfoTabs()
         {
@@ -303,7 +219,6 @@ namespace Project1.Core.Towns.Stockpiles
                 PacketsStockpiles.SyncPriority(FiltersView.Owner, p);
             }
         }
-    
         static StorageFilterCategoryNewNew InitFilters()
         {
             var cats = Def.Database.Values.OfType<ItemDef>().GroupBy(d => d.Category);
@@ -355,7 +270,6 @@ namespace Project1.Core.Towns.Stockpiles
         {
             this.Settings.Read(r);
         }
-
         public void FiltersGuiCallback(ItemDef item, MaterialDef material)
         {
             PacketStorageFiltersNew.Send(this, item, material);

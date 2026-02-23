@@ -1,26 +1,26 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Animations;
+using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Input;
+using Project1.Core.Screens;
+using Project1.Core.Simulation;
+using Project1.Core.Simulation.Lighting;
+using Project1.Core.UI.Hud;
+using Project1.Core.UI.Settings;
+using Project1.Framework;
+using Project1.Framework.Graphics;
+using Project1.Framework.Helpers;
+using Project1.Framework.Input;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Input;
-using Project1.Framework.Graphics;
-using Project1.Core.Blocks;
-using Project1.Core.Input;
-using Project1.Core.Screens;
-using Project1.Core.Helpers;
-using Project1.Core.Graphics;
-using Project1.Core.UI.Settings;
-using Project1.Core.Simulation;
-using Project1.Core.Simulation.Lighting;
-using Project1.Core.Entities;
-using Project1.Core.UI.Hud;
-using Project1.Core.Animations;
-using Project1.Framework.Helpers;
 
 namespace Project1.Core
 {
@@ -73,20 +73,13 @@ namespace Project1.Core
             {
                 var oldvalue = this._DrawLevel;
                 this._DrawLevel = value;
-                //if (oldvalue != value)
-                //{
-                //    this.TopSliceChanged = true;
-                //}
-
-                if (InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu))
-                {
+                if (InputState.IsKeyDown(Keys.LMenu))
                     this.Move(this.Coordinates - new Vector2(0, Block.BlockHeight * (value - oldvalue)));
-                }
             }
         }
         public float ZoomNext;
         public float Zoom = 2;//1;
-        public static Rectangle CellIntersectBox = new Rectangle();
+        public static Rectangle CellIntersectBox = new();
         public static bool BlockTargeting = true;
         const float InitialZoom = 2;
         public static bool Fog = true;
@@ -152,11 +145,8 @@ namespace Project1.Core
                 this.Location = this.Coordinates - new Vector2((int)((this.Width / 2) / this.Zoom), (int)((this.Height / 2) / this.Zoom));
             }
         }
-        //public bool TopSliceChanged = true;
-
         public Camera()
             : this(Game1.Bounds.Width, Game1.Bounds.Height)
-            //: this(Game1.Instance.graphics.PreferredBackBufferWidth, Game1.Instance.graphics.PreferredBackBufferHeight)
         {
             this.WaterSpriteBatch = new MySpriteBatch(Game1.Instance.GraphicsDevice);
             this.SpriteBatch = new MySpriteBatch(Game1.Instance.GraphicsDevice);
@@ -173,7 +163,6 @@ namespace Project1.Core
             Game1.Instance.graphics.DeviceReset += this.gfx_DeviceReset;
             this.OnDeviceLost();
         }
-
         public override string ToString()
         {
             string text = this.Location.ToString();
@@ -181,13 +170,11 @@ namespace Project1.Core
                 "\nRotation: " + this.Rotation;
             return text;
         }
-
         protected void OnRotationChanged()
         {
             Ingame.CurrentMap.OnCameraRotated(this);
             SelectionManager.Instance.OnCameraRotated(this);
         }
-
         void gfx_DeviceReset(object sender, EventArgs e)
         {
             this.Width = Game1.Bounds.Width;
@@ -195,14 +182,12 @@ namespace Project1.Core
             this.ViewPort = new Rectangle(0, 0, this.Width, this.Height);
             this.OnDeviceLost();
         }
-
         public void Update(MapBase map)
         {
             this.Follow();
             this.SmoothZoom(this.ZoomNext);
             this.UpdateFog(map);
         }
-
         void UpdateFog(MapBase map)
         {
             this.FogT = (this.FogT + 0.05f * map.Net.Speed) % 100;
@@ -213,7 +198,6 @@ namespace Project1.Core
             this.Following = null;
             this.Coordinates = coords;
         }
-
         void SetZoom(float value)
         {
             this.Zoom = value;
@@ -231,10 +215,8 @@ namespace Project1.Core
             else
                 this.SetZoom(this.Zoom + n);
         }
-
         static int PreviousDrawLevel = -1;
         internal bool HideWalls;
-
         public void SliceOn(int next)
         {
             var current = this.DrawLevel;
@@ -294,7 +276,6 @@ namespace Project1.Core
 
             this.Coordinates = nextCoords;
         }
-
         public void GetEverything(MapBase map, Vector3 global, Rectangle spriteRect, out float depth, out Rectangle screenBounds, out Vector2 screenLoc)
         {
             depth = global.GetDrawDepth(map, this);
@@ -366,12 +347,10 @@ namespace Project1.Core
             var screenpos = new Vector2(this.Zoom * (xx - loc.X), this.Zoom * (yy - loc.Y));
             return screenpos;
         }
-
         public Rectangle GetScreenBounds(Vector3 global, Rectangle spriteRectangle)
         {
             return this.GetScreenBounds(global.X, global.Y, global.Z, spriteRectangle);
         }
-
         internal float GetDrawDepth(GameObject o)
         {
             return o.Global.GetDrawDepth(o.Map, this);
@@ -390,7 +369,6 @@ namespace Project1.Core
             screenBounds = this.GetScreenBounds(x, y, z, sourceBounds);
             return this.ViewPort.Intersects(screenBounds);
         }
-
         /// <summary>
         /// TODO: make rotation a field for speed and calculate the shits in some other way
         /// </summary>

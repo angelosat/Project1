@@ -34,7 +34,7 @@ namespace Project1.Core.UI
                 LeftClickAction = () => txtboxname.Text = StaticWorld.GetRandomName()
             };
             guiname.AddControlsTopRight(btn_randomName);
-            var defaultSizes = StaticMap.MapSize.GetList();
+            var defaultSizes = StaticMap.MapSize.AllSizes;
             var selectedSize = defaultSizes.First();
             var comboSize = new ComboBoxNewNew<StaticMap.MapSize>(defaultSizes, guiname.Width, "Size", s => s.Name, () => selectedSize, s => selectedSize = s);
 

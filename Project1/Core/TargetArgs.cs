@@ -4,7 +4,6 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Interactions;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
@@ -46,12 +45,6 @@ namespace Project1.Core
             this.Map.Town.OnTooltipCreated(tooltip, this);
             return;
         }
-        
-
-        public INetEndpoint Network
-        {
-            get { return this.Map.Net; }
-        }
         public bool IsResolved => this.World is not null;
         
         public Vector2 Direction;
@@ -76,19 +69,17 @@ namespace Project1.Core
                 throw new Exception();
             this.World = world;
         }
-        [Obsolete]
-        public void InitializeProvider(INetEndpoint net)
-        {
-            this.InitializeProvider(net.World);
-        }
+       
         public void ResolveReferences(MapBase map)
         {
             this._resolvedMap = map;
             this.World = map.World;
         }
-        public WorldBase World;// { get => this.Map.World; set { } }
-        int _entityID = -1, _mapID = -1;
-        public int EntityID
+        public WorldBase World;
+        //int _entityID = -1, _mapID = -1;
+        EntityRefId _entityID = EntityRefId.Null;
+        MapId _mapID = MapId.Null;
+        public EntityRefId EntityID
         {
             get => _entityID;
             set
@@ -97,7 +88,7 @@ namespace Project1.Core
                 this._resolvedEntity = null;
             }
         }
-        public int MapID
+        public MapId MapID
         {
             get => _mapID;
             set
@@ -107,7 +98,6 @@ namespace Project1.Core
             }
         }
         MapBase? _resolvedMap;
-        //public MapBase? Map => this._resolvedMap ??= this.Provider.Map;
        public MapBase? Map
         {
             get
@@ -167,7 +157,7 @@ namespace Project1.Core
                 switch (this.Type)
                 {
                     case TargetType.Slot:
-                        GameObject parent = this.Network.World.GetEntity(this.ParentID);
+                        GameObject parent = this.World.GetEntity(this.ParentID);
                         return parent.GetChild(this.ContainerID, this.SlotID);
 
                     case TargetType.BlockEntitySlot:
@@ -501,47 +491,6 @@ namespace Project1.Core
                     throw new Exception("Invalid target type " + type.ToString());
             }
         }
-
-        //static public TargetArgs Read(WorldBase provider, IDataReader reader)
-        //{
-
-        //    TargetType type = (TargetType)reader.ReadInt32();
-        //    switch (type)
-        //    {
-        //        case TargetType.Null:
-        //            return TargetArgs.Null;
-
-        //        case TargetType.Entity:
-        //            int netID = reader.ReadInt32();
-        //            return new TargetArgs(provider, netID);
-
-        //        case TargetType.Position:
-        //            return new TargetArgs(provider, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());// { Map = net.Map };
-
-        //        case TargetType.Slot:
-        //            int parentID = reader.ReadInt32();
-        //            GameObject parent = provider.GetEntity(parentID);
-        //            byte slotID = reader.ReadByte();
-        //            int containerID = reader.ReadInt32();
-        //            var slot = parent.GetChild(containerID, slotID);
-        //            return new TargetArgs(provider, slot);
-
-        //        case TargetType.BlockEntitySlot:
-        //            var vector3 = reader.ReadVector3();
-        //            var blockentity = provider.Map.GetBlockEntity(vector3);
-        //            var containerName = reader.ReadString();
-        //            var slotid = reader.ReadByte();
-        //            var s = blockentity.GetChild(containerName, slotid);
-        //            return new TargetArgs(provider, vector3, s);
-
-        //        case TargetType.Direction:
-        //            return new TargetArgs(reader.ReadVector2());
-
-        //        default:
-        //            throw new Exception("Invalid target type " + type.ToString());
-        //    }
-        //}
-
         public void Load(SaveTag tag)
         {
             this.Type = (TargetType)tag.GetValue<int>("Type");
@@ -641,66 +590,7 @@ namespace Project1.Core
                 _ => this.Type.ToString(),
             };
         }
-        public Dictionary<string, Interaction> GetInteractions(INetEndpoint net)
-        {
-            switch (this.Type)
-            {
-                case TargetType.Entity:
-                    return this.Object.GetInteractions();
-
-                case TargetType.Cell:
-                    Block block = net.Map.GetBlock(this.Global);
-                    var inters = block.GetAvailableTasks(net.Map, this.Global).ToDictionary(foo => foo.Name);
-                    var dropInter = new UseHauledOnTarget();
-                    inters.Add(dropInter.Name, dropInter); // TODO: WORKAROUND until i decide wether to use an interaction registry or add some basic interactions in the base block object
-                    return inters;
-
-                default:
-                    var list = new Dictionary<string, Interaction>();
-                    var dropinvitem = new DropInventoryItem();
-                    var dropeq = new InteractionDropEquipped();
-                    var throwInter = new InteractionThrow();
-                    list.Add(dropinvitem.Name, dropinvitem);
-                    list.Add(dropeq.Name, dropeq);
-                    list.Add(throwInter.Name, throwInter);
-                    return list;
-            }
-        }
-        public Interaction GetInteraction(string name)
-        {
-            switch (this.Type)
-            {
-                case TargetType.Entity:
-                    Interaction interaction;
-                    this.Object.GetInteractions().TryGetValue(name, out interaction);
-                    return interaction;
-
-                case TargetType.Cell:
-                    var rounded = this.Global.RoundXY();
-                    Block block = this.Map.GetBlock(rounded);
-                    var tasks = block.GetAvailableTasks(this.Map, rounded);
-                    tasks.Add(new UseHauledOnTarget()); // TODO: WORKAROUND until i decide wether to use an interaction registry or add some basic interactions in the base block object
-                    return tasks.FirstOrDefault(i => i.Name == name);
-
-                default:
-                    return null;
-            }
-        }
-        internal List<Interaction> GetAvailableTasks(INetEndpoint net)
-        {
-            switch (this.Type)
-            {
-                case TargetType.Entity:
-                    return this.Object.GetAvailableTasks();
-
-                case TargetType.Cell:
-                    Block block = net.Map.GetBlock(this.Global);
-                    return block.GetAvailableTasks(net.Map, this.Global);
-
-                default:
-                    return new List<Interaction>();
-            }
-        }
+        
         internal void GetContextAll(GameObject playerEntity, ContextArgs args)
         {
             var list = new ContextAction[]{
@@ -718,7 +608,7 @@ namespace Project1.Core
                     return this.Object.GetContextRB(playerEntity);
 
                 case TargetType.Cell:
-                    var block = this.Network.Map.GetBlock(this.Global);
+                    var block = this.Map.GetBlock(this.Global);
                     return block.GetContextRB(playerEntity, this.Global);
 
                 default:
@@ -734,7 +624,7 @@ namespace Project1.Core
                     return this.Object.GetContextActivate(playerEntity);
 
                 case TargetType.Cell:
-                    var block = this.Network.Map.GetBlock(this.Global);
+                    var block = this.Map.GetBlock(this.Global);
                     return block.GetContextActivate(playerEntity, this.Global);
 
                 default:
@@ -751,7 +641,7 @@ namespace Project1.Core
                     break;
 
                 case TargetType.Cell:
-                    var block = this.Network.Map.GetBlock(this.Global);
+                    var block = this.Map.GetBlock(this.Global);
                     block.GetContextActions(playerEntity, this.Global, a);
                     // check if block is part of any town designations such as stockpiles or fields, and add corresponding actions
                     this.Map.Town.GetContextActions(playerEntity, this.Global, a);
@@ -761,8 +651,6 @@ namespace Project1.Core
                     break;
             }
         }
-
-
 
         public bool IsEqual(TargetArgs target)
         {
@@ -793,10 +681,8 @@ namespace Project1.Core
         public RegionNode Node => this.Map.Regions.GetNodeAt(this.Global);
         public Region Region => this.Node?.Region;
         public RegionRoom RegionRoom => this.Region?.Room;
-
         internal T GetBlockEntity<T>() where T : BlockEntity => this.Map.GetBlockEntity(this.Global) as T;
         internal BlockEntity GetBlockEntity() => this.Map.GetBlockEntity(this.Global);
-
         public string Name
         {
             get
@@ -810,7 +696,6 @@ namespace Project1.Core
                 };
             }
         }
-
         public IEnumerable<(string name, Action action)> GetInfoTabs()
         {
             switch (this.Type)
@@ -882,16 +767,12 @@ namespace Project1.Core
                 case TargetType.Cell:
                     this.Block.GetQuickButtons(info, this.Map, this.Global);
                     this.Map.GetQuickButtons((name, guiType) =>
-                            //info.AddTabAction(name, () => UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
                             info.AddTabAction(name, () => UIManager.ToggleUnique(guiType, this)), this.Global);
                     break;
 
                 case TargetType.BlockEntity:
-                    //this.BlockEntity.GetQuickButtons(info, this.Map, this.Global);
-                    //this.BlockEntity.GetQuickButtons(info.AddTabAction, this.Map, this.Global);
                     this.BlockEntity.GetQuickButtons(
                         (name, guiType) => 
-                            //info.AddTabAction(name, () => UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
                             info.AddTabAction(name, () => UIManager.ToggleUnique(guiType, new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
                         this.Map, 
                         this.Global);
@@ -901,11 +782,6 @@ namespace Project1.Core
                     return;
             }
         }
-        public void TabGetter(Action<string, Action> getter)
-        {
-            throw new Exception();
-        }
-
         public bool Exists
         {
             get
@@ -1025,19 +901,7 @@ namespace Project1.Core
                 TargetType.Entity => new TargetArgs(r.ReadEntityRefId()),
                 TargetType.Cell => new TargetArgs(r.ReadVector3(), r.ReadVector3(), r.ReadVector3()),
                 TargetType.Slot => throw new NotImplementedException(),
-                //int parentID = r.ReadInt32();
-                //GameObject parent = map.World.GetEntity(parentID);
-                //byte slotID = r.ReadByte();
-                //int containerID = r.ReadInt32();
-                //var slot = parent.GetChild(containerID, slotID);
-                //return new TargetArgs(map.World, slot);
                 TargetType.BlockEntitySlot => throw new NotImplementedException(),
-                //var vector3 = r.ReadVector3();
-                //var blockentity = map!.GetBlockEntity(vector3);
-                //var containerName = r.ReadString();
-                //var slotid = r.ReadByte();
-                //var s = blockentity.GetChild(containerName, slotid);
-                //return new TargetArgs(map.Net, vector3, s);
                 TargetType.Direction => new TargetArgs(r.ReadVector2()),
                 TargetType.BlockEntity => throw new NotImplementedException(),
                 _ => throw new UnreachableException("Invalid target type " + type.ToString()),

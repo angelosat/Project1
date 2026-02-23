@@ -55,10 +55,5 @@ namespace Project1.Core.Input
         {
             return;
         }
-
-        public void TabGetter(Action<string, Action> getter)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

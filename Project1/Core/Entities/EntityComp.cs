@@ -67,9 +67,7 @@ namespace Project1.Core.Entities
         internal virtual ContextAction GetContextActivate(GameObject parent, GameObject player) => null;
         public virtual void GetClientActions(GameObject parent, List<ContextAction> actions) { }
         public virtual void GetInteractions(GameObject parent, List<Interaction> actions) { }
-        public virtual void GetRightClickActions(GameObject parent, List<ContextAction> actions) { }
         internal virtual void GetEquippedActionsWithTarget(GameObject parent, GameObject actor, TargetArgs t, List<Interaction> list) { }
-        public virtual void GetHauledActions(GameObject parent, TargetArgs target, List<Interaction> actions) { }
         internal SaveTag SaveAs(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
@@ -89,7 +87,6 @@ namespace Project1.Core.Entities
         public virtual Control GetParametrizer() => null;
         public virtual void Write(IDataWriter w) { }
         public virtual void Read(IDataReader r) { }
-        internal virtual void GetAvailableTasks(GameObject parent, List<Interaction> list) { }
         public virtual GroupBox GetGUI() { return null; }
         internal virtual void GetInterface(GameObject parent, Control box) { }
         [Obsolete]

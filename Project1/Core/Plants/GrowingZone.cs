@@ -1,10 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Blocks;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Materials;
-using Project1.Core.Simulation;
 using Project1.Core.Towns.Zones;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -128,37 +126,6 @@ namespace Project1.Core.Plants
             }
         }
         public void GetContextActions(GameObject playerEntity, ContextArgs a) { }
-
-        public static bool IsValidFarmPosition(MapBase map, Vector3 arg)
-        {
-            return
-                Block.GetBlockMaterial(map, arg) == MaterialDefOf.Soil
-                && map.GetBlock(arg + Vector3.UnitZ) == BlockDefOf.Air.Block;
-        }
-        internal IEnumerable<Entity> GetHarvestablePlantsLazy()
-        {
-            foreach (var pos in this.Cells)
-            {
-                var above = pos.Above;
-                var plants = this.Town.Map.GetEntitiesAt(above);
-                foreach (var p in plants)
-                    if (p.TryGetComponent<PlantComponent>(out var comp) && comp.IsHarvestable)
-                        yield return p;
-                
-            }
-        }
-        internal IEnumerable<GameObject> GetHarvestablePlants()
-        {
-            return this.Town.Map.GetObjects(this.Cells.Select(pos => (Vector3)pos.Above)).OfType<Plant>().Where(p => p.IsHarvestable);
-        }
-        internal IEnumerable<GameObject> GetChoppableTrees()
-        {
-            return this.Town.Map.GetObjects(this.Cells.Select(pos => (Vector3)pos.Above)).Where(TreeComponent.IsGrown);
-        }
-        public bool IsValidSeed(GameObject item)
-        {
-            return this.Plant is not null && item.Profile == this.Plant;
-        }
         public override IEnumerable<(string name, Action action)> GetInfoTabs()
         {
             yield return ("Plant", this.ToggleGui);

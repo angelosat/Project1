@@ -36,58 +36,44 @@ namespace Project1.Core.Simulation
         public override float LoadProgress => this.ActiveChunks.Count / (float)(this.Size.Chunks * this.Size.Chunks);
 
         public MapSize Size;
-        public class MapSize : INamed
+        public class MapSize(
+            string name, int blocks) : INamed
         {
-            public string Name { get; private set; }
-            public int Blocks { get; private set; }
-            public int Chunks { get; private set; }
-            public MapSize(
-                string name, int blocks)
-            {
-                this.Name = name;
-                this.Blocks = blocks;
-                this.Chunks = blocks / Chunk.Size;
-            }
+            public string Name { get; private set; } = name;
+            public int Blocks { get; private set; } = blocks;
+            public int Chunks { get; private set; } = blocks / Chunk.Size;
+
             public static readonly MapSize Micro = new("Micro", 32);
             public static readonly MapSize Tiny = new("Tiny", 64);
             public static readonly MapSize Small = new("Small", 128);
             public static readonly MapSize Normal = new("Normal", 256);
             public static readonly MapSize Huge = new("Huge", 512);
 
-            public static MapSize Default = Micro;
+            public static readonly MapSize Default = Micro;
 
-            public static List<MapSize> GetList()
-            {
-                return new List<MapSize>() { Micro, Tiny, Small, Normal, Huge };
-            }
+            public static readonly List<MapSize> AllSizes = [Micro, Tiny, Small, Normal, Huge];
         }
 
         public byte SkyDarkness = 0, SkyDarknessMax = 13;
         public Color AmbientColor = Color.Blue;//Color.MidnightBlue; //Color.RoyalBlue;//Color.MidnightBlue; //Color.MediumPurple; //Color.Lerp(Color.White, Color.Cornsilk, 0.5f);
-
         public bool Lighting = true;
         public int TickLengthSeconds = (int)(60 * 1.44f); // one tick is 1.44 ingame minutes
         public const int Zenith = 14;
         public double DayTimeNormal = 0;
-        public Vector2 Global;
-
+        public IntVec2 Global;
         public static int VisibleCellCount = 0;
         public Game1 game;
         public bool hasClicked = false;
         public static float MaxDepth = 0, MinDepth = 0;
-        public List<Texture2D> VisibleTileTypes;
-        public Vector2 tileLocation = new(16, 8);
         public const double GroundDensity = 0.1;
-        public static List<Rectangle> Icons;
-
         public string Name;
         public Texture2D[] Thumbnails;
         public MapThumb Thumb;
+        readonly UndiscoveredAreaManager UndiscoveredAreaManager;
         internal void Init()
         {
             this.Town.Init();
         }
-
         internal IntVec3 GetRandomEdgeCell()
         {
             var i = (int)(this.Size.Blocks * this.Random.NextDouble());
@@ -136,7 +122,6 @@ namespace Project1.Core.Simulation
             this.Global = this.Coordinates * this.Size.Blocks;
             this.Thumb = new MapThumb(this);
         }
-
         public void AddTime()
         {
             var clock = this.Clock;
@@ -146,7 +131,6 @@ namespace Project1.Core.Simulation
             this.DayTimeNormal = Math.Max(0, Math.Min(1, (1 + nn) / 2f));
             this.SkyDarkness = 0;
         }
-
         #region Updating
         public override void Validate()
         {
@@ -166,7 +150,7 @@ namespace Project1.Core.Simulation
 
         private void TryPerformQueuedRandomBlockUpdates()
         {
-            while (this.RandomBlockUpdateQueue.Any())
+            while (this.RandomBlockUpdateQueue.Count != 0)
             {
                 var global = this.RandomBlockUpdateQueue.Peek();
                 var cell = this.GetCell(global);
@@ -183,7 +167,6 @@ namespace Project1.Core.Simulation
         {
             this.AddTime();
             this.Regions.Update();
-            //this.EntityLifecycleManager.Tick();
             foreach (var sys in this.SimulationSystems)
                 sys.Tick();
             foreach (var chunk in this.ActiveChunks.Values.ToList())
@@ -347,7 +330,7 @@ namespace Project1.Core.Simulation
                 Coordinates = new Vector2((int)mapTag["X"].Value, (int)mapTag["Y"].Value)
             };
 
-            mapTag.TryGetTagValue<string>("Size", txt => map.Size = MapSize.GetList().First(f => f.Name == txt));
+            mapTag.TryGetTagValue<string>("Size", txt => map.Size = MapSize.AllSizes.First(f => f.Name == txt));
 
             mapTag.TryGetTag("Chunks", map.LoadChunks);
             mapTag.TryGetTag("Town", tag => map.Town.Load(tag)); // LOAD TOWN AFTER CHUNKS because references are resolved pertaining to the map
@@ -424,7 +407,7 @@ namespace Project1.Core.Simulation
         }
         public static StaticMap Create(StaticWorld world, Vector2 coords)
         {
-            var map = new StaticMap(world, coords);//a);
+            var map = new StaticMap(world, coords);
             world.Maps[coords] = map;
             return map;
         }
@@ -455,7 +438,6 @@ namespace Project1.Core.Simulation
                     yield return o;
             }
         }
-
         public override void WriteData(IDataWriter w)
         {
             w.Write(this.Name);
@@ -473,7 +455,7 @@ namespace Project1.Core.Simulation
                 Coordinates = new Vector2(r.ReadSingle(), r.ReadSingle()),
             };
             var size = r.ReadString();
-            map.Size = MapSize.GetList().First(foo => foo.Name == size);
+            map.Size = MapSize.AllSizes.First(foo => foo.Name == size);
             map.Town.Read(r);
             map.UndiscoveredAreaManager.Read(r);
             return map;
@@ -874,8 +856,10 @@ namespace Project1.Core.Simulation
         }
         public override double GetDayTimeNormal()
         {
-            //double normal = (this.Clock.TotalMinutes - Ticks.PerSecond * (Zenith - 12)) / 1440f;
-            double normal = (this.Clock.TotalMinutes - Ticks.PerGameMinute * (Zenith - 12)) / Ticks.IngameMillisecondsPerTick;// 1440f;
+            //double normal = (this.Clock.TotalMinutes - Ticks.PerGameMinute * (Zenith - 12)) / Ticks.IngameMillisecondsPerTick;// 1440f;
+
+
+            double normal = (this.Clock.TotalMinutes - Ticks.PerSecond * (Zenith - 12)) / 1440f;
             //double normal = (this.Clock.TotalMinutes / Ticks.IngameMillisecondsPerTick - (Zenith - 12));// 1440f;
             double nn = normal * 2 * Math.PI;
             nn = 3 * Math.Cos(nn);
@@ -903,9 +887,6 @@ namespace Project1.Core.Simulation
             }
             this.UpdateLight(queued);
         }
-
-      
-        readonly UndiscoveredAreaManager UndiscoveredAreaManager;
         internal void InitUndiscoveredAreas(Action<string, float> callback = null)
         {
             callback?.Invoke("Detecing undiscovered areas", 0);
@@ -937,7 +918,6 @@ namespace Project1.Core.Simulation
             var z = this.GetHeightmapValue(x, y);
             this.Camera.CenterOn(new Vector3(x, y, z), true);
         }
-
         internal void AddStartingActors(Actor[] actors)
         {
             var x = this.Size.Blocks / 2;

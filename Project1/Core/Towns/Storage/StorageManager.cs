@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Legacy;
 using Project1.Core.Materials;
-using Project1.Core.Towns.Stockpiles;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Framework.UI;
@@ -20,99 +19,14 @@ namespace Project1.Core.Towns.Storage
         readonly ObservableCollection<ItemMaterialAmount> CacheObservable = new();
         readonly Dictionary<ItemDef, Dictionary<MaterialDef, ItemMaterialAmount>> Cache = new();
         readonly StorageItemBranch RootNode = new();
-        static readonly int TicksPerUpdate = Ticks.PerSecond;
-        int UpdateTimer;
 
         public StorageManager(Town town) : base(town)
         {
         }
 
-        public override void Update()
-        {
-            return;
-            if (this.UpdateTimer-- <= 0)
-            {
-                this.UpdateTimer = TicksPerUpdate;
-                foreach (var s in this.Town.ZoneManager.GetZones<Stockpile>())
-                    s.CacheContentsNew();
-                this.Refresh();
-            }
-        }
-
         internal IEnumerable<(Entity item, int amount)> FindItems(Func<Entity, bool> filter, int amount)
         {
             throw new System.NotImplementedException();
-        }
-
-        private void Refresh()
-        {
-            var stockpiles = this.Town.ZoneManager.GetZones<Stockpile>();
-            var sum = stockpiles
-                .SelectMany(s => s.CacheObservable)
-                .GroupBy(i => i.Def)
-                .Select(o => new
-                {
-                    def = o.Key,
-                    matSums = o
-                    .GroupBy(oo => oo.PrimaryMaterial)
-                    .ToDictionary(m => m.Key, m => m.Sum(o => o.StackSize))
-                })
-                .ToDictionary(o => o.def, o => o.matSums);
-
-
-            foreach (var def in this.Cache.ToList())
-            {
-                if (!sum.ContainsKey(def.Key))
-                {
-                    foreach (var i in this.Cache[def.Key])
-                    {
-                        this.CacheObservable.Remove(i.Value);
-                        this.RootNode.Remove(def.Key);
-                    }
-                    this.Cache.Remove(def.Key);
-                }
-                else
-                {
-                    var mats = sum[def.Key];
-                    foreach (var mat in def.Value.ToList())
-                    {
-                        var itemAmounts = this.Cache[def.Key];
-                        if (!mats.TryGetValue(mat.Key, out var amount))
-                        {
-                            var cached = itemAmounts[mat.Key];
-                            this.CacheObservable.Remove(cached);
-                            this.RootNode[def.Key].Remove(mat.Key);
-                            itemAmounts.Remove(mat.Key);
-                        }
-                    }
-                }
-            }
-
-            foreach (var iDef in sum)
-            {
-                if (!this.Cache.TryGetValue(iDef.Key, out var mats))
-                {
-                    mats = new();
-                    this.Cache.Add(iDef.Key, mats);
-                    this.RootNode.Add(iDef.Key);
-                }
-                foreach (var mat in iDef.Value)
-                {
-                    if (!mats.TryGetValue(mat.Key, out var itemAmount))
-                    {
-                        itemAmount = new(iDef.Key, mat.Key, mat.Value);
-                        mats.Add(mat.Key, itemAmount);
-                        this.CacheObservable.Add(itemAmount);
-                        this.RootNode[iDef.Key].Add(itemAmount);
-                    }
-                    else
-                    {
-                        itemAmount.Amount = mat.Value;
-                        this.RootNode[iDef.Key][mat.Key].Item.Amount = mat.Value;
-                    }
-                }
-            }
-            this.RootNode.UpdateSum();
         }
         internal override void OnHudCreated(Hud hud)
         {

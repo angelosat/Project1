@@ -180,10 +180,6 @@ namespace Project1.Core.Towns.Zones
             info.AddButtons(new IconButton(Icon.Cross) { LeftClickAction = this.RequestDelete, HoverText = "Delete" });
             info.AddButtons(new IconButton(Icon.Construction) { LeftClickAction = this.Edit, HoverText = "Edit" });
         }
-        public void TabGetter(Action<string, Action> getter)
-        {
-            throw new NotImplementedException();
-        }
         internal void OnCameraRotated(Camera cam)
         {
             this.Cells.Invalidate();

@@ -25,7 +25,6 @@ namespace Project1.Core.UI.Blocks
             this.Picker = new();
             this.Panel_Blocks = new Panel() { AutoSize = true };
             this.ToolBox = new UIToolsBox(this.OnToolSelectedNew);
-            //var categories = Def.GetDefs<BlockDef>().Where(b => b.Block.BuildProperties.Category is not null).GroupBy(b => b.Block.BuildProperties.Category); // blocks without ingredients are built immediately (sleeping spots)
             var categories = Def.GetDefs<BlockDef>().Where(b => b.Block.BlockDef.ConstructionProfile is not null).GroupBy(b => b.Block.BlockDef.ConstructionProfile.Category); // blocks without ingredients are built immediately (sleeping spots)
             foreach (var cat in categories)
             {

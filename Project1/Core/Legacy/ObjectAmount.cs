@@ -3,6 +3,7 @@ using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Core.Entities;
 using Project1.Core.Networking;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Legacy
 {
@@ -67,9 +68,9 @@ namespace Project1.Core.Legacy
             return this.Object.Name + ": " + this.Amount.ToString();
         }
 
-        internal void ResolveReferences(INetEndpoint net)
+        internal void ResolveReferences(WorldBase world)
         {
-            this.ObjectTarget.InitializeProvider(net);
+            this.ObjectTarget.InitializeProvider(world);
         }
 
         public void Write(IDataWriter w)

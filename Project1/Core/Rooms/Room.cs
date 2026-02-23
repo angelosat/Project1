@@ -329,19 +329,12 @@ namespace Project1.Core.Rooms
                 if (this.Map.GetCell(n).IsRoomBorder)
                     this.Border.Add(n);
         }
-        public void TabGetter(Action<string, Action> getter)
-        {
-            throw new NotImplementedException();
-        }
         public Actor Owner
         {
             get => GetOwner();
             set => this.OwnerRef = value?.RefId ?? -1;
         }
-
         public Vector3 Global => this.Cells.First();
-
-
         public Actor GetOwner()
         {
             return this.Map.World.GetEntity(this.OwnerRef) as Actor;

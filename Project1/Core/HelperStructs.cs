@@ -8,6 +8,12 @@ namespace Project1.Core
         public static implicit operator EntityRefId(int v) => new(v);
         public static implicit operator int(EntityRefId v) => v.Value;
     }
+    public readonly record struct MapId(int Value)
+    {
+        internal static readonly MapId Null = new(0);
+        public static implicit operator MapId(int v) => new(v);
+        public static implicit operator int(MapId v) => v.Value;
+    }
     public readonly record struct PacketId(int Value)
     {
         public static implicit operator PacketId(int v) => new(v);

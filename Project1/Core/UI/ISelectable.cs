@@ -18,7 +18,6 @@ namespace Project1.Core.UI
         bool Exists { get; }
         Vector3 Global { get; }
         MapBase Map { get; }
-        void TabGetter(Action<string, Action> getter);
         IEnumerable<(string Label, Type GuiType)> GetTabs() { yield break; }
     }
 }

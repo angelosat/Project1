@@ -31,7 +31,7 @@ namespace Project1.Core
 
         internal override void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
-            var room = map.GetRoomAt(vector3);
+            var room = map.Town.RoomManager.GetRoomAt(vector3);
             if (room is not null)
                 room.GetSelectionInfo(info);
             var roomOwner = room?.Owner;

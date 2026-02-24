@@ -13,11 +13,11 @@ namespace Project1.Core.AI.Net.Packets
         static readonly int _pSyncPlan;
         static PacketReportPlan()
         {
-            Registry.MapEventHooksServer.Register<PlanAssignedEvent>(OnPlanAssigned);
+            Registry.MapEventHooksServer.Register<ActorPlanAssignedEvent>(OnPlanAssigned);
             _pSyncPlan = Registry.PacketHandlers.Register(ReceiveSyncBehavior);
         }
 
-        private static void OnPlanAssigned(PlanAssignedEvent e)
+        private static void OnPlanAssigned(ActorPlanAssignedEvent e)
         {
             if (e.Actor.Net.IsClient)
                 return;

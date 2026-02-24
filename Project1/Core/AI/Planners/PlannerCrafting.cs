@@ -1,12 +1,13 @@
-﻿using System.Linq;
-using Project1.Core.AI.Behaviors;
+﻿using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Labors;
-using Project1.Core.Entities;
-using Project1.Core.Gear;
-using Project1.Core.Towns;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Resources;
 using Project1.Core.Crafting;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Gear;
+using Project1.Core.Resources;
+using Project1.Core.Towns;
+using SharpDX.Direct2D1.Effects;
+using System.Linq;
 using static Project1.Core.Crafting.CraftingOrder;
 
 namespace Project1.Core.AI.Planners
@@ -29,9 +30,15 @@ namespace Project1.Core.AI.Planners
             // TODO scan for unfinished items
             // query workstation for unfinished items 
             // var unfinishedItemsOnWorkstations = manager.AllWorkstations(...)
-            var unfinishedItemsInStockpiles = map.Stockpiles.AllItems.Where(e => e.Def == ItemDefOf.UnfinishedItem);
-            foreach(var unfItem in unfinishedItemsInStockpiles)
+            //var unfinishedItemsInStockpiles = map.Stockpiles.AllItems.Where(e => e.Def == ItemDefOf.UnfinishedItem);
+            var unfinishedItems = manager.GetUnfinishedItemsOnWorkstations(actor);
+            foreach(var (item, workstation) in unfinishedItems)
             {
+                var plan = new Plan(PlanDefOf.CraftingUnfinished, new TargetArgs(map, workstation.Parent.OriginGlobal))
+                {
+                    TargetB = new TargetArgs(workstation.Parent)
+                };
+                return plan;
                 // if unfitem is on workstation go craft
                 // if actor carries unfitem go deposit
                 // else go carry unfitem
@@ -97,7 +104,7 @@ namespace Project1.Core.AI.Planners
                     //feasibility.ArmedSlots.All(i => actor.CanReachAndReserve(i.Entity)))
                 {
                     var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order.ProductDef);
-                    var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinished : PlanDefOf.Crafting;
+                    var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinishedBegin : PlanDefOf.Crafting;
                     var plan = new Plan(plandef, new TargetArgs(map, order.Workstation.Parent.OriginGlobal)) 
                     {
                         Order = order,
@@ -106,6 +113,7 @@ namespace Project1.Core.AI.Planners
 
                     foreach (var allocation in feasibility.ArmedSlots)
                         plan.AddTarget(TargetIndex.A, allocation.Entity);
+                    manager.Commit(actor, order.Workstation, order, feasibility.ArmedSlots.Select(i => i.Entity));
                     return plan;
                 }
 

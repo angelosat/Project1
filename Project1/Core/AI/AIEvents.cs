@@ -9,5 +9,5 @@ namespace Project1.Core.AI
     public record struct AILocationDecisionEvent(Actor Actor, FrontierDef Frontier) : IEventPayload { }
     public record struct AILogEntryEvent(Actor Actor, string Text) : IEventPayload { }
     public record struct ReservationInvalidatedEvent(Reservation Reservation) : IEventPayload { }
-    public record struct PlanAssignedEvent(Actor Actor, Behavior Behavior) : IEventPayload { }
+    public record struct ActorPlanAssignedEvent(Actor Actor, Behavior Behavior) : IEventPayload { }
 }

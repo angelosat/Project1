@@ -6,17 +6,36 @@ using Project1.Core.AI;
 
 namespace Project1.Core
 {
-    class TaskBehaviorGoCraftUnfinished : BehaviorExecutePlanNew
+    class BehaviorGoCraftUnfinishedBegin : BehaviorExecutePlanNew
     {
-        readonly static TargetIndex CellTarget = TargetIndex.A;
-        readonly static TargetIndex WorkstationTarget = TargetIndex.B;
-        public override string Name { get; } = "CraftingUnfinished";
+        //readonly static TargetIndex CellTarget = TargetIndex.A;
+        //readonly static TargetIndex WorkstationTarget = TargetIndex.B;
+        public override string Name { get; } = "CraftingUnfinishedBegin";
 
         public override bool CommitReservations()
         {
-            return this.Reserve(CellTarget) && this.Reserve(WorkstationTarget);
+            var map = this.Actor.Map;
+            var contract = map.Town.CraftingManagerNew.GetContract(this.Actor);
+            var ingredients = contract.Ingredients;
+            bool ingredientSuccess = true;
+            foreach (var i in ingredients)
+                ingredientSuccess &= map.Town.ReservationManager.Reserve(this.Actor, this.Plan, new TargetArgs(i));
+            if (ingredientSuccess)
+                return base.CommitReservations();
+            return ingredientSuccess;
         }
     }
+    //class TaskBehaviorGoCraftUnfinishedAdvance : BehaviorExecutePlanNew
+    //{
+    //    readonly static TargetIndex CellTarget = TargetIndex.A;
+    //    readonly static TargetIndex WorkstationTarget = TargetIndex.B;
+    //    public override string Name { get; } = "CraftingUnfinishedAdvance";
+
+    //    //public override bool CommitReservations()
+    //    //{
+    //    //    return this.Reserve(CellTarget) && this.Reserve(WorkstationTarget);
+    //    //}
+    //}
     class TaskBehaviorGoCraft : BehaviorExecutePlan
     {
         public override string Name { get; } = "Crafting";

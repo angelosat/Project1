@@ -1,5 +1,8 @@
-﻿using Project1.Core.Blocks;
+﻿using Project1.Core.AI;
+using Project1.Core.Blocks;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
 using Project1.Core.Simulation;
 using Project1.Core.Towns;
@@ -14,13 +17,19 @@ namespace Project1.Core.Crafting
     {
         private int NextOrderId = 1;
         public override string Name => "CraftingManager";
-        readonly Dictionary<IntVec3, BlockWorkstationComp> _byPosition = [];
+        readonly Dictionary<IntVec3, BlockWorkstationComp> _workstationsByPosition = [];
         readonly Dictionary<WorkstationDef, HashSet<BlockWorkstationComp>> _byType = [];
         readonly Dictionary<int, CraftingOrder> _ordersById = [];
         readonly Dictionary<BlockEntity, CraftingOrder> _ordersByWorkstation = [];
+
+        readonly Dictionary<BlockWorkstationComp, Contract> _contractsByWorkstation = [];
+        readonly Dictionary<Actor, Contract> _contractsByActor = [];
+        readonly HashSet<Entity> _unfinishedItems = [];
+        readonly Dictionary<Actor, List<Entity>> _unfinishedByActor = [];
+
         public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byType.SelectMany(d => d.Value);
         public IEnumerable<IGrouping<BlockEntity, List<CraftingOrder>>> OrdersByWorkstation => AllWorkstations.GroupBy(i => i.Parent, i => i.Orders);
-        public IEnumerable<BlockWorkstationComp> AllWorkstationModules => this._byPosition.Values;
+        public IEnumerable<BlockWorkstationComp> AllWorkstationModules => this._workstationsByPosition.Values;
 
         public CraftingManager(Town town) : base(town)
         {
@@ -36,6 +45,43 @@ namespace Project1.Core.Crafting
             this.Town.Map.Events.ListenTo<BlockEntityAddedEvent>(OnBlockEntityAdded);
             this.ScanWorkstations();
             this.ScanOrders();
+            this.Town.Map.Events.ListenTo<ActorPlanAssignedEvent>(OnActorPlanAssigned);
+            this.Town.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+            this.Town.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+        }
+
+        private void OnEntityDespawned(EntityDespawnedEvent e)
+        {
+            var entity = e.Entity;
+            if (entity.Def != ItemDefOf.UnfinishedItem)
+                return;
+            this._unfinishedItems.Remove(entity);
+            var actor = entity.GetComponent<UnfinishedItemComp>().Author;
+            if (!this._unfinishedByActor.TryGetValue(actor, out var list))
+                return;
+            list.Remove(entity);
+            if (list.Count == 0)
+                this._unfinishedByActor.Remove(actor);
+        }
+
+        private void OnEntitySpawned(EntitySpawnedEvent e)
+        {
+            var entity = e.Entity;
+            if (entity.Def != ItemDefOf.UnfinishedItem)
+                return;
+            this._unfinishedItems.Add(entity);
+            var actor = entity.GetComponent<UnfinishedItemComp>().Author;
+            if (!this._unfinishedByActor.TryGetValue(actor, out var list))
+                this._unfinishedByActor[actor] = list = [];
+            list.Add(entity);
+        }
+
+        private void OnActorPlanAssigned(ActorPlanAssignedEvent e)
+        {
+            if (!this._contractsByActor.TryGetValue(e.Actor, out var contract))
+                return;
+            if (e.Behavior is null)
+                this.ClearContract(contract);
         }
 
         private void ScanWorkstations()
@@ -60,6 +106,35 @@ namespace Project1.Core.Crafting
                     this._ordersById.Add(order.Id, order);
                     this.NextOrderId = Math.Max(this.NextOrderId, order.Id + 1);
                 }
+        }
+
+        internal Contract Commit(Actor actor, BlockWorkstationComp workstation, CraftingOrder order, IEnumerable<Entity> ingredients)
+        {
+            var contract = new Contract(actor, workstation, order, ingredients);
+            this._contractsByActor.Add(actor, contract);
+            this._contractsByWorkstation.Add(workstation, contract);
+            return contract;
+        }
+        internal void ClearContract(Contract contract)
+        {
+            this._contractsByActor.Remove(contract.Author);
+            this._contractsByWorkstation.Remove(contract.Workstation);
+        }
+        internal Contract GetContract(Actor actor) => this._contractsByActor[actor];
+        internal IReadOnlyCollection<Entity> GetUnfinishedItems(Actor actor)
+        {
+            if (!this._unfinishedByActor.TryGetValue(actor, out var list))
+                return null;
+            return list;
+        }
+        internal IEnumerable<(Entity item, BlockWorkstationComp workstation)> GetUnfinishedItemsOnWorkstations(Actor actor)
+        {
+            var items = this.GetUnfinishedItems(actor);
+            if (items is null)
+                yield break;
+            foreach(var i in items)
+                if(this._workstationsByPosition.TryGetValue(i.Cell.Below, out var workstation))
+                    yield return (i, workstation);
         }
         void RegisterOrder(CraftingOrder order)
         {
@@ -92,7 +167,7 @@ namespace Project1.Core.Crafting
         {
             this._byType[comp.WorkstationType].Remove(comp);
             foreach (var pos in comp.Parent.CellsOccupied)
-                this._byPosition.Remove(pos);
+                this._workstationsByPosition.Remove(pos);
             foreach (var order in comp.Orders)
                 this._ordersById.Remove(order.Id);
             return true;
@@ -100,9 +175,9 @@ namespace Project1.Core.Crafting
 
         private void RegisterWorkstation(IntVec3 pos, BlockWorkstationComp workstation)
         {
-            if (this._byPosition.TryGetValue(pos, out var existing))
+            if (this._workstationsByPosition.TryGetValue(pos, out var existing))
                 this._byType[existing.WorkstationType].Remove(existing);
-            this._byPosition[pos] = workstation;
+            this._workstationsByPosition[pos] = workstation;
             this._byType[workstation.WorkstationType].Add(workstation);
         }
         private void RegisterWorkstation(BlockWorkstationComp workstation)
@@ -110,7 +185,7 @@ namespace Project1.Core.Crafting
             var entity = workstation.Parent;
             foreach(var cell in entity.CellsOccupied)
                 //this._byPosition.Add(cell, workstation);
-                this._byPosition[cell] = workstation;
+                this._workstationsByPosition[cell] = workstation;
 
             this._byType[workstation.WorkstationType].Add(workstation);
         }

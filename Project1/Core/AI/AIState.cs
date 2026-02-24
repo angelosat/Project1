@@ -118,7 +118,7 @@ namespace Project1.Core.AI
                 TaskStack.Pop();
                 if(TaskStack.Count > 0)
                     //PacketReportPlan.SyncBehavior(this.Owner, TaskStack.Peek());
-                    this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, TaskStack.Peek()));
+                    this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, TaskStack.Peek()));
 
                 return true;
             }
@@ -127,12 +127,12 @@ namespace Project1.Core.AI
                 TaskQueue.Dequeue();
                 if (TaskQueue.Count > 0)
                     //PacketReportPlan.SyncBehavior(this.Owner, TaskQueue.Peek());
-                    this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, TaskQueue.Peek()));
+                    this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, TaskQueue.Peek()));
 
                 return true;
             }
             //PacketReportPlan.SyncBehavior(this.Owner, null);
-            this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, null));
+            this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, null));
             return false;
         }
 
@@ -148,7 +148,7 @@ namespace Project1.Core.AI
             this.TaskQueue.Clear();
             this.TaskStack.Clear();
             //PacketReportPlan.SyncBehavior(this.Owner, null);
-            this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, null));
+            this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, null));
 
         }
 
@@ -163,7 +163,7 @@ namespace Project1.Core.AI
         public void Assign(PlanExecutor bhav)
         {
             //PacketReportPlan.SyncBehavior(this.Owner, bhav);
-            this.Owner.Map.Events.Post(new PlanAssignedEvent(this.Owner, bhav));
+            this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, bhav));
             bhav.Plan.Actor = this.Owner;
             if (bhav.Plan.IsImmediate)
                 this.Push(bhav);

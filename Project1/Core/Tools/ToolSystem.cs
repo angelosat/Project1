@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using Project1.Framework;
-using Project1.Core.Stats;
-using Project1.Core.Entities.Stats;
-using Project1.Core.Animations;
+﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
+using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
+using Project1.Core.Stats;
+using Project1.Framework;
+using System.Collections.Generic;
 
 namespace Project1.Core.Tools
 {
@@ -61,6 +63,20 @@ namespace Project1.Core.Tools
         {
             return Create(req.Context as ToolProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
         }
+
+        internal static Entity CreateUnfinishedItem(Actor author, ToolProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
+        {
+            var item = ItemDefOf.UnfinishedItem.Create();
+            item.Profile = profile;
+            var comp = item.GetComponent<UnfinishedItemComp>();
+            comp.Initialize(author, [
+                (BoneDefOf.ToolHandle, handleMaterial),
+                (BoneDefOf.ToolHead, headMaterial)
+                ]);
+            item.Initialize();
+            return item;
+        }
+
     }
     record CraftingRules(BoneDef Bone)
     {

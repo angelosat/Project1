@@ -5,8 +5,8 @@
         public static readonly IInteractionProgressHandler Instant = new InteractionProgressInstant();
         public static readonly IInteractionProgressHandler FirstContact = new InteractionProgressFirstContact();
         public static readonly IInteractionProgressHandler Timed = new InteractionProgressTimed();
-        public static readonly IInteractionProgressHandler Tool = new InteractionProgressTool();
-        public static readonly IInteractionProgressHandler ToolExternal = new InteractionProgressToolExternal();
+        public static readonly IInteractionProgressHandler Internal = new InteractionProgressInternal();
+        public static readonly IInteractionProgressHandler External = new InteractionProgressContextual();
         public static readonly IInteractionProgressHandler Passive = new InteractionProgressPassive();
 
         sealed class InteractionProgressInstant : IInteractionProgressHandler
@@ -30,14 +30,14 @@
             public void AddProgress(Interaction interaction, int progress) { }
             public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;
         }
-        sealed class InteractionProgressTool : IInteractionProgressHandler
+        sealed class InteractionProgressInternal : IInteractionProgressHandler
         {
             public float GetProgressPercentage(Interaction interaction) => interaction.Progress.Percentage;
             public void Tick(Interaction interaction) { }
             public void AddProgress(Interaction interaction, int progress) => interaction.Progress.ApplyDelta(progress); //AddProgress(progress);// 
             public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;
         }
-        sealed class InteractionProgressToolExternal : IInteractionProgressHandler
+        sealed class InteractionProgressContextual : IInteractionProgressHandler
         {
             public float GetProgressPercentage(Interaction interaction) => interaction.Context.ProgressPercentage;
             public void Tick(Interaction interaction) { }

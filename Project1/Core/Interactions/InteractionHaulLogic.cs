@@ -18,7 +18,7 @@
                 return;
             var target = i.Context.Target;
             var count = i.Context.Count;
-            actor.Inventory.HaulNew(target.Object, count);
+            actor.Inventory.HaulNew(target.Entity, count);
         }
     }
 }

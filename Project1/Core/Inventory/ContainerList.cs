@@ -79,8 +79,6 @@ namespace Project1.Core.Inventory
                 //existing.StackSize += item.StackSize;
                 existing.Add(item.StackSize);
                 throw new NotImplementedException();
-                item.Dispose();
-                return;
             }
 
             ((ICollection<Entity>)this.Contents).Add(item);

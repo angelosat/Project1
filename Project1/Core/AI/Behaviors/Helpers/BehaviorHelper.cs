@@ -14,7 +14,7 @@ namespace Project1.Core.AI.Behaviors.Helpers
 {
     class BehaviorHelper
     {
-        internal static Behavior SetTarget(TargetIndex a, GameObject value)
+        internal static Behavior SetTarget(TargetIndex a, Entity value)
         {
             var bhav = new BehaviorCustom();
             bhav.InitAction = () => bhav.Actor.CurrentPlan.SetTarget(a, value);
@@ -186,13 +186,13 @@ namespace Project1.Core.AI.Behaviors.Helpers
         /// <param name="global"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        static public Behavior WaitForItem(TargetIndex targetIndex, IntVec3 global, Func<GameObject, bool> condition)
+        static public Behavior WaitForItem(TargetIndex targetIndex, IntVec3 global, Func<Entity, bool> condition)
         {
             var bhav = new BehaviorWait();
             bhav.EndCondition = () =>
             {
                 var actor = bhav.Actor;
-                var item = actor.Map.GetObjects(global).FirstOrDefault(condition);
+                var item = actor.Map.GetEntitiesAt(global).FirstOrDefault(condition);
                 if (item == null)
                     return false;
                 actor.CurrentPlan.SetTarget(targetIndex, item);

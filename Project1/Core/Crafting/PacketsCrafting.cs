@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework;
+using Project1.Core.Animations;
+using Project1.Core.Blocks;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Core.Animations;
-using Project1.Core.Blocks;
-using Project1.Framework.Events;
-using Project1.Core.Networking;
 using Project1.Core.Towns.Stockpiles;
+using Project1.Framework;
+using Project1.Framework.Events;
+using System;
 
 namespace Project1.Core.Crafting
 {
@@ -27,9 +27,29 @@ namespace Project1.Core.Crafting
             _pPlayerModifiedOrderFilters = Registry.PacketHandlers.Register(OnPlayerModifiedOrderFilters);
             _pOrderUpdated = Registry.PacketHandlers.Register(OnCraftOrderUpdated);
             Registry.PlayerInputEventHooks.Register<PlayerIssuedCraftOrderEvent>(HandlePlayerIssuedCraftOrderEvent);
+            Registry.PlayerInputEventHooks.Register<PlayerIssuedCraftOrderEventNew>(HandlePlayerIssuedCraftOrderNew);
             Registry.PlayerInputEventHooks.Register<PlayerModifiedOrderFiltersEvent>(HandlePlayerModifiedOrderFilters);
             Registry.PlayerInputEventHooks.Register<PlayerSetWorkstationZoneEvent>(HandlePlayerSetWorkstationZoneEvent);
             Registry.MapEventHooksServer.Register<CraftOrderCompletedEvent>(HandleCraftOrderCompletedEvent);
+        }
+
+        private static void HandlePlayerIssuedCraftOrderNew(PlayerIssuedCraftOrderEventNew e)
+        {
+            var workstation = e.Workstation;
+            var net = workstation.Map.World.Net;
+            if(net is Server)
+            { }
+            SendPlayerCreatedOrderNew(e.Workstation.Parent, e.Request.ProductDef, e.Request.WorkstationCapability);
+        }
+
+        private static void SendPlayerCreatedOrderNew(BlockEntity workstation, Def product, WorkstationCapabilityDef capability)
+        {
+            var net = workstation.Map.Net;
+            var w = net.BeginPacketImmediate(_pPlayerCreatedOrder)
+                .Write(workstation.Map.ID)
+                .Write(workstation.OriginGlobal)
+                .Write(product)
+                .Write(capability);
         }
 
         private static void HandlePlayerSetWorkstationZoneEvent(PlayerSetWorkstationZoneEvent e)
@@ -123,10 +143,11 @@ namespace Project1.Core.Crafting
             var r = pck.PacketReader;
             var mapid = r.ReadInt32();
             var workstationPosition = r.ReadIntVec3();
-            var refinement = r.ReadDef();
-            if(net.Map.Town.CraftingManagerNew.CreateOrderNew(workstationPosition, refinement) is CraftingOrder order &&
+            var product = r.ReadDef();
+            var capability = r.ReadDef<WorkstationCapabilityDef>();
+            if(net.Map.Town.CraftingManagerNew.CreateOrderNew(workstationPosition, product) is CraftingOrder order &&
                 net is Server server)
-                SendPlayerCreatedOrderNew(net.Map.GetBlockEntity(workstationPosition), refinement);
+                SendPlayerCreatedOrderNew(net.Map.GetBlockEntity(workstationPosition), product, capability);
         }
         internal static void SendPlayerDeletedOrder(MapBase map, CraftingOrder order)
         {

@@ -75,22 +75,13 @@ namespace Project1.Core.Simulation
             entity.World = this;
             this.EntityRegistry.Add(entity);
         }
-        public void Register(GameObject entity, bool immediate = false)
+        public void Register(Entity entity, bool immediate = false)
         {
             entity.World = this;
             entity.Net = this.Net;
             foreach (var e in entity.GetSelfAndChildren())
-                this.EntityRegistry.Add(e as Entity);
+                this.EntityRegistry.Add(e);
             this.Events.Post(new EntityRegisteredEvent(entity as Entity, immediate));
-        }
-        public void RegisterAndSync(GameObject entity)
-        {
-            this.Register(entity);
-            return;
-            if (this.Net.IsClient)
-                throw new Exception();
-            this.Register(entity);
-            //PacketsEntities.Send(entity);
         }
         public Entity GetEntity(EntityRefId refId)
         {
@@ -175,7 +166,7 @@ namespace Project1.Core.Simulation
 
                 // remove from potential slot or container so that it gets detached from the parent entity and map.despawn() can remove if from the correct chunk by its true position,
                 // otherwise its parent position will be read
-                obj.Container?.Remove(obj as Entity);
+                obj.Container?.Remove(obj);
                 obj.Slot?.Assign(null, out var _);
                 obj.Map?.Despawn(obj);
 

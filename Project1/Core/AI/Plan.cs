@@ -135,7 +135,7 @@ namespace Project1.Core.AI
                 _ => throw new Exception(),
             };
         }
-        internal Plan SetTarget(TargetIndex targetInd, GameObject target, int amount)
+        internal Plan SetTarget(TargetIndex targetInd, Entity target, int amount)
         {
             this.SetAmount(targetInd, amount);
             return this.SetTarget(targetInd, new TargetArgs(target));
@@ -159,7 +159,7 @@ namespace Project1.Core.AI
             return this;
         }
 
-        internal void AddPlacedObject(GameObject hauledObj)
+        internal void AddPlacedObject(Entity hauledObj)
         {
             this.PlacedObjects.Add(new ObjectAmount(hauledObj));
         }

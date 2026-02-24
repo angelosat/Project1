@@ -52,19 +52,10 @@ namespace Project1.Core.Towns.Zones
         {
             this.Manager = manager;
         }
-        //public Zone(ZoneManager manager, IEnumerable<IntVec3> cells) : this()
-        //{
-        //    this.Manager = manager;
-        //    this.Cells.Add(cells);
-        //}
         public IntVec3 Average()
         {
             return this.Cells.Average();
         }
-        //public void Delete()
-        //{
-        //    this.Manager.DeleteZone(this.ID);
-        //}
         private static Color GetRandomColor()
         {
             var array = new byte[3];
@@ -72,21 +63,6 @@ namespace Project1.Core.Towns.Zones
             var col = new Color(array[0], array[1], array[2]);
             return col;
         }
-        //internal virtual void OnBlockChanged(IntVec3 global)
-        //{
-        //    var map = this.Map;
-        //    var below = global.Below;
-        //    if (this.Cells.Contains(global) && !Block.IsBlockSolid(map, global))
-        //    {
-        //        this.RemovePosition(global);
-        //        return;
-        //    }
-        //    else if (this.Cells.Contains(below) && !map.IsAir(global))
-        //    {
-        //        this.RemovePosition(below);
-        //        return;
-        //    }
-        //}
         public void RemovePosition(IntVec3 pos)
         {
             this.RemovePositions([pos]);
@@ -116,7 +92,7 @@ namespace Project1.Core.Towns.Zones
                 var finalPositions = inputpositions.Where(pos => this.Town.GetZoneAt(pos) == null).Union(this.Cells);
                 if (!finalPositions.IsConnectedNew())
                 {
-                    this.Manager.RegisterNewZone(this.ZoneDef, inputpositions);
+                    this.Manager.CreateZone(this.ZoneDef, inputpositions);
                     return;
                 }
                 foreach (var pos in inputpositions.Except(this.Cells))
@@ -139,7 +115,7 @@ namespace Project1.Core.Towns.Zones
                 this.RemovePosition(pos);
             this.MarkDirty();
         }
-        internal bool Contains(GameObject obj)
+        internal bool Contains(Entity obj)
         {
             return this.Contains(obj.Cell - IntVec3.UnitZ);
         }

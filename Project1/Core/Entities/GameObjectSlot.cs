@@ -296,7 +296,7 @@ namespace Project1.Core.Entities
                 this.Object.Consume(amount);
             else
             {
-                this.Object.Net.DisposeObject(this.Object);
+                this.Object.Net.DisposeObject(this.Object as Entity);
                 this.Clear();
             }
         }

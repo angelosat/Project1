@@ -40,8 +40,9 @@ namespace Project1.Core.Quests
                     var split = i.item.Split(i.amount);
                     if (qgiver.Net is Server server)
                     {
-                        split.SyncInstantiate(server);
-                        actor.Inventory.SyncInsert(split);
+                        throw new NotImplementedException();
+                        //split.SyncInstantiate(server);
+                        //actor.Inventory.SyncInsert(split);
                     }
                 }
                 else

@@ -23,10 +23,10 @@ namespace Project1.Core.Networking
         PlayerData GetPlayer(int id);
         PlayerData GetPlayer();
         [Obsolete("use world.register instead")]
-        GameObject Instantiate(GameObject obj);
-        bool DisposeObject(GameObject obj);
+        Entity Instantiate(Entity obj);
+        bool DisposeObject(Entity obj);
         bool DisposeObject(int netID);
-        void Instantiator(GameObject o);
+        void Instantiator(Entity o);
         //bool LogStateChange(int netID);
         void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);
         void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);

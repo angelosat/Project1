@@ -150,10 +150,7 @@ namespace Project1.Core.Entities
             foreach (var comp in this.Components.Values)
                 comp.GetSelectionInfo(info, this);
         }
-        internal int GetUnreservedAmount()
-        {
-            return this.Map.Town.ReservationManager.GetUnreservedAmount(this);
-        }
+       
         internal virtual IEnumerable<(string label, Type guiType)> GetQuickButtons() { yield break; }
         public virtual void GetQuickButtons(SelectionManager info)
         {
@@ -201,17 +198,7 @@ namespace Project1.Core.Entities
             get => this.Transform.Global;
             set => this.Transform.Global = value;
         }
-        public IntVec3? CellIfSpawned => this.IsSpawned ? this.Cell : null;
-        public IntVec3 Cell
-        {
-            get => this.Global.ToCell(); 
-            set => this.SetPosition(value); 
-        }
-        public Vector3 GridCellOffset
-        {
-            get => this.Global - (Vector3)this.Cell;
-            set => this.SetPosition((Vector3)this.Cell + value);
-        }
+        
         public Vector3 Velocity
         {
             get => this.Transform.Velocity;
@@ -285,46 +272,13 @@ namespace Project1.Core.Entities
         public bool IsStackFull => this.StackSize == this.StackMax; 
         public Bone Body => this.SpriteComp.Body;
         internal MaterialDef PrimaryMaterial => this.Body.Material;
-        /// <summary>
-        /// Changes the objects global position, removing the object from the previous chunk's object list and adding it to the new one's accordingly.
-        /// </summary>
-        /// <param name="nextGlobal"></param>
-        /// <returns></returns>
-        public GameObject SetPosition(Vector3 nextGlobal) // TODO: merge this with SetGlobal
-        {
-            // entity despawned and immediately respawned on the serve and sent a new snapshot while on client the entity's map was null
-            if (this.Map is null) // entity has despawned on client before snapshot received?
-                return this;
-                //throw new Exception("set the object's map before setting its position");
-
-            if (this.Map.IsSolid(nextGlobal))// + Vector3.UnitZ * 0.01f))// TODO: FIX THIS
-                return this; // TODO: FIX: problem when desynced from server, block might be empty on server but solid on client
-
-            this.Map.TryGetChunk(nextGlobal.RoundXY(), out var nextChunk);
-
-            if (nextChunk is null)
-                return this;
-
-            this.Map.TryGetChunk(this.Global.ToRounded(), out var lastChunk);
-            this.Global = nextGlobal;
-
-            if (nextChunk != lastChunk)
-            {
-                bool removed = lastChunk.Remove(this);
-                if (!removed)
-                    throw new Exception("Source chunk is't loaded"); //Could not remove object from previous chunk");
-
-                nextChunk.Add(this);
-            }
-            this.Physics.Enable();
-            return this;
-        }
+        
         public bool IsForbidden;
         public bool IsSpawned => this._map is not null;
         public bool IsReserved => this.Map.Town.ReservationManager.IsReserved(this);
         public bool IsPlayerControlled => this.Net.GetPlayers().Any(p => p.ControllingEntity == this); 
         public virtual bool IsHaulable => this.Def.IsHaulable;
-        public GameObject Hauled => this.Inventory?.HaulSlot.Object;
+        public Entity Hauled => this.Inventory?.HaulSlot.Object as Entity;
         public bool IsHauling => this.Hauled is not null;
         public GameObjectSlot Slot;
         #endregion
@@ -338,16 +292,7 @@ namespace Project1.Core.Entities
             obj.Name = this.Name;
             return obj;
         }
-        public GameObject Split(int amount)
-        {
-            if (amount <= 0 || amount >= _stackSize)
-                throw new ArgumentOutOfRangeException(nameof(amount));
-            var newObject = this.Clone();
-            newObject._stackSize = amount;
-            this.World.Register(newObject);
-            this.Consume(amount);
-            return newObject;
-        }
+        
         public GameObject SetStackSize(int value)
         {
             this.StackSize = value;
@@ -592,24 +537,24 @@ namespace Project1.Core.Entities
         }
       
         
-        public void SyncSpawnNew(MapBase map)
-        {
-            if (this.RefId != 0)
-                //this.Spawn(map);
-                map.Spawn(this as Entity);
-            if (map.Net is not Server)
-                return;
-            SyncInstantiate(map.Net as NetEndpoint);
-            map.SyncSpawn(this, this.Global, this.Velocity);
-        }
+        //public void SyncSpawnNew(MapBase map)
+        //{
+        //    if (this.RefId != 0)
+        //        //this.Spawn(map);
+        //        map.Spawn(this as Entity);
+        //    if (map.Net is not Server)
+        //        return;
+        //    SyncInstantiate(map.Net as NetEndpoint);
+        //    map.SyncSpawn(this, this.Global, this.Velocity);
+        //}
 
-        public void SyncSpawn(MapBase map, Vector3 global)
-        {
-            if (map.Net is not Server)
-                return;
+        //public void SyncSpawn(MapBase map, Vector3 global)
+        //{
+        //    if (map.Net is not Server)
+        //        return;
 
-            map.SyncSpawn(this, global, Vector3.Zero);
-        }
+        //    map.SyncSpawn(this, global, Vector3.Zero);
+        //}
 
         public virtual void Draw(MySpriteBatch sb, Camera camera)
         {
@@ -692,7 +637,7 @@ namespace Project1.Core.Entities
             w.Write(this.StackSize);
             this.Components.Write(w);
         }
-        public static GameObject Create(IDataReader r)
+        public static Entity Create(IDataReader r)
         {
             string defName = r.ReadString();
             var def = Core.Def.GetDef<ItemDef>(defName);
@@ -809,11 +754,6 @@ namespace Project1.Core.Entities
 
         public bool IsDisposed => this.RefId > 0 && this.Net is null;
 
-        public bool Dispose()
-        {
-            
-            return this.Net.DisposeObject(this);
-        }
         [Obsolete("use world.disposeandsync")]
         internal void SyncDispose()
         {
@@ -824,14 +764,7 @@ namespace Project1.Core.Entities
             foreach (var c in this.Components.Values)
                 c.OnDispose();
         }
-        public IEnumerable<GameObject> GetSelfAndChildren()
-        {
-            yield return this;
-            foreach (var c in this.Components.Values)
-                foreach (var ch in c.GetChildren())
-                    foreach (var chch in ch.GetSelfAndChildren())
-                        yield return chch;
-        }
+        
 
         public bool IsInInteractionRange(TargetArgs target)
         {
@@ -868,10 +801,7 @@ namespace Project1.Core.Entities
                 comp.OnMapLoaded(this);
         }
 
-        internal void HitTest(Camera camera)
-        {
-            this.SpriteComp.HitTest(this, camera);
-        }
+        
 
         public bool HasMatchingBody(GameObject otherItem)
         {
@@ -1204,18 +1134,18 @@ namespace Project1.Core.Entities
             this.Def = def;
             this._stackSize = amount < 0 ? this.Def.StackCapacity : amount;
         }
-        public void SyncInstantiate(NetEndpoint net)
-        {
-            if (net is not Server server)
-                return;
+        //public void SyncInstantiate(NetEndpoint net)
+        //{
+        //    if (net is not Server server)
+        //        return;
 
-            if (this.RefId != 0)
-                throw new Exception();
+        //    if (this.RefId != 0)
+        //        throw new Exception();
 
-            net.Instantiate(this);
-            var w = server.BeginPacket(PacketSyncInstantiate);
-            this.Write(w);
-        }
+        //    net.Instantiate(this);
+        //    var w = server.BeginPacket(PacketSyncInstantiate);
+        //    this.Write(w);
+        //}
         private static void SyncInstantiate(NetEndpoint net, Packet packet)
         {
             var r = packet.PacketReader;
@@ -1288,16 +1218,7 @@ namespace Project1.Core.Entities
             return this.Def.OccupyingCellsStanding(this.Global.ToCell());
         }
 
-        internal void Detach()
-        {
-            this.Container?.Remove(this as Entity);
-            this.Container = null;
-            this.Slot?.Assign(null, out var _);
-            this.Slot = null;
-            this.Map?.Despawn(this);
-            this.Map = null;
-            this.Owner = null;
-        }
+        
         public void ResolveReferences()
         {
             this.Components.ResolveReferences();

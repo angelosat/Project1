@@ -791,12 +791,13 @@ namespace Project1.Core.Simulation
             return sunlight;
         }
 
-        public override List<GameObject> GetObjectsAtChunk(Vector3 global)
+        public override List<Entity> GetObjectsAtChunk(Vector3 global)
         {
             var chunks = this.GetChunks(global.GetChunkCoords(), 1);
-            var entities = new List<GameObject>();
+            var entities = new List<Entity>();
             foreach (var ch in chunks)
-                entities.AddRange(ch.GetObjects());
+                //entities.AddRange(ch.GetObjects());
+                entities.AddRange(ch.Objects);
             return entities;
         }
         public override int GetSizeInChunks()

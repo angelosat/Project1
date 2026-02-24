@@ -1,16 +1,18 @@
-﻿using Project1.Core.Assets;
+﻿using Project1.Core.Animations;
+using Project1.Core.Assets;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Inventory;
+using Project1.Core.Materials;
 using Project1.Core.Networking;
-using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,7 +32,6 @@ namespace Project1.Core.Legacy.Crafting
             public static void SendCancel(NetEndpoint net, PlayerData player, List<Entity> selection)
             {
                 var w = net.BeginPacket(pCancel);
-                //var items = selection.OfType<Entity>();
                 w.Write(player.ID);
                 w.Write(selection.Select(t => t.RefId).ToList());
             }
@@ -47,26 +48,50 @@ namespace Project1.Core.Legacy.Crafting
                     SendCancel(net, player, [.. items]);
             }
         }
-
         static readonly IconButton IconCancel = new IconButton(new Icon(ItemContent.HammerFull), Icon.Cross) 
             { HoverText = "Cancel crafting" }
             .AddLabel("Cancel");
         public override EntityCompDef CompDef => EntityCompDefOf.UnfinishedItem;
-
         public override string Name => "UnfinishedItem";
-
         public Reaction.Product.ProductMaterialPair Product;
         public Progress Progress = new();
-        int _creator, _orderid;
-        Actor _creatorCached;
-        public Actor Creator => this._creatorCached ??= this.Owner.World.GetEntity<Actor>(this._creator);
+        ProgressInt ProgressInt = new(100);
+        public float ProgressPercentage => this.ProgressInt.Percentage;
+        int _orderid;
+        EntityRefId _authorId;
+        public Actor Author
+        {
+            get => field ??= this.Owner.World.GetEntity<Actor>(this._authorId);
+            private set
+            {
+                field = value;
+                this._authorId = value.RefId;
+            }
+        }
         CraftingOrder _orderCached;
         public CraftingOrder Order => this._orderCached ??= this.Owner.Map.Town.CraftingManagerNew.GetOrder(this._orderid);
-        public ContainerList Contents = new();
+        public ContainerList Contents = [];
+        readonly Dictionary<BoneDef, MaterialDef> _materialBindings = [];
+        public IReadOnlyDictionary<BoneDef, MaterialDef> MaterialBindings => this._materialBindings;
+        private bool _initialized;
+        internal void ApplyWork(int workAmount)
+        {
+            this.ProgressInt.ApplyDelta(workAmount);
+        }
+        internal void Initialize(Actor author, IEnumerable<(BoneDef bone, MaterialDef material)> bindings)
+        {
+            if (this._initialized)
+                throw new InvalidOperationException();
+            this._initialized = true;
+            this._materialBindings.Clear();
+            foreach (var p in bindings)
+                this._materialBindings.Add(p.bone, p.material);
+            this.Author = author;
+        }
         internal void SetProduct(Reaction.Product.ProductMaterialPair product, Actor creator, CraftingOrder order)
         {
             this._orderCached = order;
-            this._creatorCached = creator;
+            this.Author = creator;
             this.Product = product;
             this.Progress.Max = product.WorkAmount;
             this.Owner.Physics.SetWeight(product.Product.Physics.Weight);
@@ -81,7 +106,7 @@ namespace Project1.Core.Legacy.Crafting
             var box = new GroupBox();
             box.AddControlsVertically(
                 this.Progress.GetGui(),
-                new Label($"Creator: {this.Creator.Name}"),
+                new Label($"Creator: {this.Author.Name}"),
                 Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
                 );
             info.AddInfo(box);
@@ -91,7 +116,7 @@ namespace Project1.Core.Legacy.Crafting
             var box = new GroupBox();
             box.AddControlsVertically(
                 this.Progress.GetGui(),
-                new Label($"Creator: {this.Creator.Name}"),
+                new Label($"Creator: {this.Author.Name}"),
                 Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
                 );
             info.AddInfo(box);
@@ -107,14 +132,15 @@ namespace Project1.Core.Legacy.Crafting
             foreach(var item in this.Contents.ToList()) //tolist because spawning them automatically removes them from their container
             {
                 item.Global = this.Owner.Global;
-                item.SyncSpawnNew(this.Owner.Map);
+                throw new NotImplementedException();
+                //item.SyncSpawnNew(this.Owner.Map);
             }
             this.Owner.SyncDispose();
         }
         internal override void SaveExtra(SaveTag tag)
         {
             this.Product.Save(tag, "Product");
-            this.Creator.RefId.Save(tag, "Creator");
+            this.Author.RefId.Save(tag, "Creator");
             this.Order.Id.Save(tag, "Order");
             this.Progress.Save(tag, "Progress");
             this.Contents.Save(tag, "Contents");
@@ -122,7 +148,7 @@ namespace Project1.Core.Legacy.Crafting
         internal override void LoadExtra(SaveTag tag)
         {
             this.Product = new(tag["Product"]);
-            this._creator = (int)tag["Creator"].Value;
+            this._authorId = (int)tag["Creator"].Value;
             this._orderid = (int)tag["Order"].Value;
             this.Progress.Load(tag["Progress"]);
             this.Contents.Load(tag["Contents"]);
@@ -131,7 +157,7 @@ namespace Project1.Core.Legacy.Crafting
         {
             this.Product.Write(w);
             this.Progress.Write(w);
-            w.Write(this.Creator.RefId);
+            w.Write(this.Author.RefId);
             w.Write(this.Order.Id);
             this.Contents.Write(w);
         }
@@ -140,7 +166,7 @@ namespace Project1.Core.Legacy.Crafting
         {
             this.Product = new(r);
             this.Progress.Read(r);
-            this._creator = r.ReadInt32();
+            this._authorId = r.ReadInt32();
             this._orderid = r.ReadInt32();
             this.Contents.Read(r);
         }
@@ -148,6 +174,9 @@ namespace Project1.Core.Legacy.Crafting
         {
             this.Order.UnfinishedItem = null;
         }
-        public new class Props : Spec<UnfinishedItemComp> { }
+
+        
+
+        public new class Spec : Spec<UnfinishedItemComp> { }
     }
 }

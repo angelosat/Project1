@@ -80,12 +80,18 @@ namespace Project1.Core.AI.Planners
                     continue;
 
                 // All slots already satisfied
-                if (feasibility.State == CraftingOrderState.ReadyToCraft && 
-                    carried == null && 
+                if (feasibility.State == CraftingOrderState.ReadyToCraft &&
+                    carried == null &&
                     actor.CanReachAndReserve(order.Workstation.Parent))
                     //feasibility.ArmedSlots.All(i => actor.CanReachAndReserve(i.Entity)))
                 {
-                    var plan = new Plan(PlanDefOf.Crafting, new TargetArgs(map, order.Workstation.Parent.OriginGlobal)) { Order = order, TargetB = new TargetArgs(order.Workstation.Parent) };
+                    var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order.ProductDef);
+                    var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinished : PlanDefOf.Crafting;
+                    var plan = new Plan(plandef, new TargetArgs(map, order.Workstation.Parent.OriginGlobal)) 
+                    {
+                        Order = order,
+                        TargetB = new TargetArgs(order.Workstation.Parent)
+                    };
 
                     foreach (var allocation in feasibility.ArmedSlots)
                         plan.AddTarget(TargetIndex.A, allocation.Entity);

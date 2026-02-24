@@ -565,14 +565,14 @@ namespace Project1.Core.Networking
         }
 
         [Obsolete("use world.register instead")]
-        public override GameObject Instantiate(GameObject obj)
+        public override Entity Instantiate(Entity obj)
         {
             foreach (var o in obj.GetSelfAndChildren())
                 this.Instantiator(o);
             return obj;
         }
         [Obsolete("use world.register instead")]
-        public override void Instantiator(GameObject obj)
+        public override void Instantiator(Entity obj)
         {
             this.World.RegisterOld(obj as Entity);
             obj.Net = this;
@@ -582,7 +582,7 @@ namespace Project1.Core.Networking
         /// Releases the object's networkID.
         /// </summary>
         /// <param name="objNetID"></param>
-        public override bool DisposeObject(GameObject obj)
+        public override bool DisposeObject(Entity obj)
         {
             return this.DisposeObject(obj.RefId);
         }

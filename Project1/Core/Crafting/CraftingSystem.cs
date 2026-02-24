@@ -1,12 +1,12 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.Animations;
+using Project1.Core.Entities;
+using Project1.Core.Materials;
 using Project1.Core.Skills;
 using Project1.Core.Tools;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using Project1.Core.Skills;
-using Project1.Core.Animations;
-using Project1.Core.Materials;
 
 namespace Project1.Core.Crafting
 {
@@ -73,18 +73,22 @@ namespace Project1.Core.Crafting
         }
         static public IEnumerable<BoneDef> GetSlotMapping(Def recipe)
         {
-            if (recipe is MaterialRefinementDef matRefinement)
+            if (recipe is MaterialRefinementDef)
             {
                 yield return BoneDefOf.Item;
             }
-            else if (recipe is ToolProfileDef tool)
+            else if (recipe is ToolProfileDef)
             {
                 foreach (var rule in ToolSystem.GetRules())
-                    yield return (rule.Bone);
+                    yield return rule.Bone;
             }
             else
                 throw new ArgumentException("Def was not of a craftable item", nameof(recipe));
-
+        }
+        static public Dictionary<BoneDef, Entity> GetIngredientMapping(Def recipe, IEnumerable<Entity> ingredients)
+        {
+            var targetBones = GetSlotMapping(recipe);
+            return targetBones.Zip(ingredients).ToDictionary();
         }
         public static bool IsFuel(Entity i)
         {
@@ -94,7 +98,15 @@ namespace Project1.Core.Crafting
             //                matRefDef.FuelProduction > 0;
         }
         public static int GetFuelValue(Entity i) => i.Def == ItemDefOf.Ingredient && i.Profile is MaterialRefinementDef matRefDef ? matRefDef.FuelProduction : 0;
-
+        public static bool CreatesUnfinished(Def productDef)
+        {
+            return productDef switch
+            {
+                MaterialRefinementDef => false,
+                ToolProfileDef => true,
+                _ => throw new UnreachableException()
+            };
+        }
     }
     public record struct CraftingRule(BoneDef Bone, HashSet<MaterialRefinementDef> Forms, int Quantity)
     {

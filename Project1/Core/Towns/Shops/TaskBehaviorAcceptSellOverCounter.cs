@@ -36,7 +36,7 @@ namespace Project1.Core.Towns.Shops
             // TODO wait until money on counter
             yield return new BehaviorWait(() =>
             {
-                var itemOnCounter = actor.Map.GetObjects(task.TargetA.Global.Above());
+                var itemOnCounter = actor.Map.GetEntitiesAt(task.TargetA.Global.Above());
                 var money = itemOnCounter.FirstOrDefault(i => i.Def == ItemDefOf.Coins);
                 if (money == null)
                     return false;

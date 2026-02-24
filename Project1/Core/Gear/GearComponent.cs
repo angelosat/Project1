@@ -36,9 +36,9 @@ namespace Project1.Core.Gear
         public GearComponent()
         {
         }
-        public override IEnumerable<GameObject> GetChildren()
+        public override IEnumerable<Entity> GetChildren()
         {
-            foreach (var o in this.Equipment.Slots.Where(s => s.HasValue).Select(s => s.Object))
+            foreach (var o in this.Equipment.Slots.Where(s => s.HasValue).Select(s => s.Object as Entity))
                 yield return o;
         }
         public override void GetContainers(List<Container> list)

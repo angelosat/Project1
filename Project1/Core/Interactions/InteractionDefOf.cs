@@ -34,14 +34,14 @@ namespace Project1.Core.Interactions
         public static readonly InteractionDef Chop = new("Chopping", typeof(InteractionChopLogic)) 
         { 
             Animation = AnimationDefOf.Tool, 
-            ProgressHandler = InteractionProgressHandlers.ToolExternal,// new InteractionProgressToolExternal(),
+            ProgressHandler = InteractionProgressHandlers.External,// new InteractionProgressToolExternal(),
             Skill = SkillDefOf.Plantcutting,
             ToolUse = ToolUseDefOf.Chopping
         };
         public static readonly InteractionDef Dig = new("Digging", /*typeof(InteractionBreakBlock), */typeof(InteractionBreakBlockLogic))
         {
             Animation = AnimationDefOf.Tool,
-            ProgressHandler = InteractionProgressHandlers.ToolExternal,// new InteractionProgressToolExternal(),
+            ProgressHandler = InteractionProgressHandlers.External,// new InteractionProgressToolExternal(),
             Skill = SkillDefOf.Digging,
             ToolUse = ToolUseDefOf.Digging
         };
@@ -64,28 +64,35 @@ namespace Project1.Core.Interactions
         public static readonly InteractionDef Construct = new("Building", typeof(InteractionBuildLogic))
         {
             Animation = AnimationDefOf.Tool,
-            ProgressHandler = InteractionProgressHandlers.ToolExternal,// new InteractionProgressToolExternal(),
+            ProgressHandler = InteractionProgressHandlers.External,// new InteractionProgressToolExternal(),
             Skill = SkillDefOf.Construction,
             ToolUse = ToolUseDefOf.Building
         };
         public static readonly InteractionDef Deconstruct = new("Deconstructing", typeof(InteractionDeconstructLogic))
         {
             Animation = AnimationDefOf.Tool,
-            ProgressHandler = InteractionProgressHandlers.Tool,// new InteractionProgressTool(),
+            ProgressHandler = InteractionProgressHandlers.Internal,// new InteractionProgressTool(),
             Skill = SkillDefOf.Construction,
             ToolUse = ToolUseDefOf.Building
         };
         public static readonly InteractionDef Craft = new("Crafting", typeof(InteractionCraftingLogic))
         {
             Animation = AnimationDefOf.Tool,
-            ProgressHandler = InteractionProgressHandlers.Tool,// new InteractionProgressTool(),
+            ProgressHandler = InteractionProgressHandlers.Internal,// new InteractionProgressTool(),
+            Skill = SkillDefOf.Crafting,
+            ToolUse = ToolUseDefOf.Carpentry
+        };
+        public static readonly InteractionDef CraftUnfinished = new("CraftingUnfinished", typeof(InteractionCraftingUnfinishedLogic))
+        {
+            Animation = AnimationDefOf.Tool,
+            ProgressHandler = InteractionProgressHandlers.External,// new InteractionProgressTool(),
             Skill = SkillDefOf.Crafting,
             ToolUse = ToolUseDefOf.Carpentry
         };
         public static readonly InteractionDef Repair = new("Repairing", typeof(InteractionRepairLogic))
         {
             Animation = AnimationDefOf.Tool,
-            ProgressHandler = InteractionProgressHandlers.ToolExternal,// new InteractionProgressToolExternal(),
+            ProgressHandler = InteractionProgressHandlers.External,// new InteractionProgressToolExternal(),
             Skill = SkillDefOf.Tinkering
         };
         public static readonly InteractionDef Drop = new("Dropping", typeof(InteractionThrow), null);
@@ -96,7 +103,7 @@ namespace Project1.Core.Interactions
         public static readonly InteractionDef Till = new("Tilling", typeof(InteractionTillingLogic))
         {
             Animation = AnimationDefOf.Tool,
-            ProgressHandler = InteractionProgressHandlers.Tool,// new InteractionProgressTool(),
+            ProgressHandler = InteractionProgressHandlers.Internal,// new InteractionProgressTool(),
             Skill = SkillDefOf.Argiculture,
             ToolUse = ToolUseDefOf.Argiculture
         };

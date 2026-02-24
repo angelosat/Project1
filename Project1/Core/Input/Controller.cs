@@ -90,7 +90,7 @@ namespace Project1.Core.Input
             return this.ksCurrent.GetPressedKeys();
         }
 
-        public static void TrySetMouseoverEntity(Camera camera, GameObject entity, Vector3 face, float drawdepth)
+        public static void TrySetMouseoverEntity(Camera camera, Entity entity, Vector3 face, float drawdepth)
         {
             var global = entity.Global;
             if (!camera.IsDrawable(entity.Map, global))

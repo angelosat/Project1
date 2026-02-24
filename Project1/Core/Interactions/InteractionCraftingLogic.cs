@@ -1,11 +1,86 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Core.Entities;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Animations;
 using Project1.Core.Blocks;
+using Project1.Core.Crafting;
+using Project1.Core.Entities;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Tools;
 using Project1.Framework;
+using System;
+using System.Linq;
 
 namespace Project1.Core.Interactions
 {
+    class InteractionCraftingUnfinishedLogic : InteractionLogic
+    {
+        class Context : InteractionContext
+        {
+            internal Entity UnfinishedItem => field ??= this.Actor.CurrentPlan.Order.UnfinishedItem;
+            internal UnfinishedItemComp UnfinishedComp => field ??= this.UnfinishedItem?.GetComponent<UnfinishedItemComp>();
+            internal BlockWorkstationComp Workstation => field ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
+            public override float ProgressPercentage => this.UnfinishedComp.ProgressPercentage;
+        }
+        static bool CanPerform(Context ctx) => ctx.UnfinishedItem is not null || ctx.Workstation.IngredientsInPlace(ctx.Actor.CurrentPlan.TargetsA);
+        public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
+        internal override void OnStart(Interaction i)
+        {
+            var actor = i.Actor;
+            if (actor.Net.IsClient)
+                return;
+            var plan = actor.CurrentPlan;
+            var order = plan.Order;
+
+            if (order.UnfinishedItem is not null)
+                return;
+
+            var workstation = i.Target;
+            var map = actor.Map;
+
+            var ingredients = CraftingSystem.GetIngredientMapping(order.ProductDef, plan.TargetsA.Select(t => t.Entity));
+            var item = ToolSystem.CreateUnfinishedItem(
+                actor, 
+                order.ProductDef as ToolProfileDef, 
+                ingredients[BoneDefOf.ToolHandle].Body.Material, 
+                ingredients[BoneDefOf.ToolHead].Body.Material);
+
+            foreach(var ingredient in ingredients.Values)
+                map.World.DisposeEntity(ingredient);
+
+            map.Spawn(item, workstation.Global.Above(), Vector3.Zero);
+
+            order.UnfinishedItem = item;
+        }
+        public override void ApplyWork(InteractionContext ctx, int workAmount)
+        {
+            var actor = ctx.Actor;
+            if (actor.Net.IsClient)
+                return;
+            var plan = actor.CurrentPlan;
+            var order = plan.Order;
+            if (order.UnfinishedItem is null)
+                throw new InvalidOperationException();
+            var comp = order.UnfinishedItem.GetComponent<UnfinishedItemComp>();
+            comp.ApplyWork(workAmount);
+        }
+        internal override void OnFinish(Interaction i)
+        {
+            var actor = i.Actor;
+            if (actor.Net.IsClient)
+                return;
+            var plan = actor.CurrentPlan;
+            var order = plan.Order;
+            var unfinishedItem = order.UnfinishedItem;
+            var map = actor.Map;
+            var creationReq = order.GetCreationRequest();
+            var ctx = i.Context as Context;
+            foreach (var pair in ctx.UnfinishedComp.MaterialBindings)
+                creationReq.OverrideMaterial(pair.Key, pair.Value);
+            var product = creationReq.Create();
+            map.Spawn(product, unfinishedItem.Global, unfinishedItem.Velocity);
+            map.World.DisposeEntity(unfinishedItem);
+            order.CompletedBy(actor);
+        }
+    }
     class InteractionCraftingLogic : InteractionLogic
     {
         public sealed class Context : InteractionContext
@@ -23,29 +98,25 @@ namespace Project1.Core.Interactions
         internal override void OnFinish(Interaction i)
         {
             var actor = i.Actor;
-            var target = i.Target;
             if (actor.Net.IsClient)
                 return;
             var map = actor.Map;
             var plan = actor.CurrentPlan;
             var order = plan.Order;
-            var workstation = target;
+            var workstation = i.Target;
 
             // consume fuel
             if (!order.TryConsumeFuel())
                 return;
 
-            var inSlots = plan.TargetsA.Select(t => t.Entity as Entity);
             var creationReq = order.GetCreationRequest();
-            var targetBones = order.GetSlotMapping();
-            var mapping = targetBones.Zip(inSlots);
-            foreach (var pair in mapping)
+            var mapping = CraftingSystem.GetIngredientMapping(order.ProductDef, plan.TargetsA.Select(t => t.Entity as Entity));
+            foreach (var (bone, item) in mapping)
             {
-                creationReq.OverrideMaterial(pair.First, pair.Second.Body.Material);
-                map.World.DisposeEntity(pair.Second);
+                creationReq.OverrideMaterial(bone, item.Body.Material);
+                map.World.DisposeEntity(item);
             }
-            var product = EntityFactory.Create(creationReq);
-            map.World.Register(product);
+            var product = creationReq.Create();
             map.Spawn(product, workstation.Global.Above(), Vector3.Zero);
             order.CompletedBy(actor);
         }

@@ -1,21 +1,21 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Core.Gear;
-using Project1.Core.Components;
-using Project1.Core.Materials;
-using Project1.Core.Towns;
-using Project1.Core.Tools;
-using Project1.Core.Plants;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Animations;
 using Project1.Core.Assets;
+using Project1.Core.Components;
+using Project1.Core.Entities.Stats;
+using Project1.Core.Gear;
+using Project1.Core.Graphics;
+using Project1.Core.Legacy.Crafting;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Legacy.Storage;
-using Project1.Core.Legacy.Crafting;
-using Project1.Core.Graphics;
+using Project1.Core.Materials;
+using Project1.Core.Plants;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
-using Project1.Core.Entities.Stats;
-using Project1.Core.Animations;
+using Project1.Core.Tools;
+using Project1.Core.Towns;
+using Project1.Framework;
+using System.Linq;
 
 namespace Project1.Core.Entities
 {
@@ -30,7 +30,14 @@ namespace Project1.Core.Entities
             Category = ItemCategoryDefOf.RawMaterials,
             Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         };
-
+        static public readonly ItemDef UnfinishedItem = new("UnfinishedItem", typeof(Entity))
+        {
+            BaseValue = 5,
+            Description = "An unfinished crafting item",
+            Category = ItemCategoryDefOf.Manufactured,
+            CompDefs = [EntityCompDefOf.UnfinishedItem],
+            Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
+        };
         static public readonly ItemDef Seeds = new ItemDef("Seeds", typeof(Entity))
         {
             StackCapacity = 32,//64,

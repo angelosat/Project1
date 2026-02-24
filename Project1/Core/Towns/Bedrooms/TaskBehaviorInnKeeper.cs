@@ -36,7 +36,7 @@ namespace Project1.Core.Towns
             yield return new BehaviorWait(() => customer.CellIfSpawned.Value == counter + counterCell.Front);
             yield return new BehaviorWait(() =>
             {
-                var money = map.GetObjects(counterSurface).FirstOrDefault(o => o.Def == ItemDefOf.Coins);
+                var money = map.GetEntitiesAt(counterSurface).FirstOrDefault(o => o.Def == ItemDefOf.Coins);
                 if (money == null)
                     return false;
                 if (money.StackSize < room.Value)

@@ -188,7 +188,7 @@ namespace Project1.Core.AI.Reservations
             return stackcount <= unreservedAmount;
 
         }
-        internal int GetUnreservedAmount(GameObject obj)
+        internal int GetUnreservedAmount(Entity obj)
         {
             return GetUnreservedAmount(new TargetArgs(obj));
         }

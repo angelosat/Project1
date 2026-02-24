@@ -135,7 +135,7 @@ namespace Project1.Core.Simulation
         public int[][] HeightMap;
 
 
-        public List<GameObject> Objects;
+        public List<Entity> Objects;
         readonly Dictionary<IntVec3, BlockEntity> BlockEntitiesByPosition = new();
         public IEnumerable<BlockEntity> BlockEntities => this.BlockEntitiesByPosition.Values.Distinct();
 
@@ -253,7 +253,7 @@ namespace Project1.Core.Simulation
         Chunk()
         {
             this.Cells = new Cell[Chunk.Size * Chunk.Size * MapBase.MaxHeight];
-            this.Objects = new List<GameObject>();
+            this.Objects = [];
             this.HeightMap = new int[Size][];
             for (int i = 0; i < Size; i++)
                 this.HeightMap[i] = new int[Size];
@@ -278,14 +278,14 @@ namespace Project1.Core.Simulation
             return new Chunk(map, key).LoadFromTag(tag);
         }
 
-        public void Add(GameObject obj)
+        public void Add(Entity obj)
         {
             obj.Map = this.Map;
             if (this.Objects.Contains(obj))
                 throw new Exception();
             this.Objects.Add(obj);
         }
-        public bool Remove(GameObject obj)
+        public bool Remove(Entity obj)
         {
             if (!this.Objects.Remove(obj))
                 throw new Exception();
@@ -710,7 +710,7 @@ namespace Project1.Core.Simulation
         #region Drawing
         public void DrawObjects(MySpriteBatch sb, Camera camera, Controller controller, MapBase map, SceneState scene)
         {
-            foreach (GameObject obj in this.Objects) //make a copy of the list first because currently the player character might be added while drawing
+            foreach (var obj in this.Objects) //make a copy of the list first because currently the player character might be added while drawing
             {
                 Vector3 global = obj.Global;
                 if (global.Z > camera.DrawLevel + 1)// - 1)

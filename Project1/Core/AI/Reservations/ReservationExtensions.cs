@@ -29,10 +29,10 @@ namespace Project1.Core.AI.Reservations
         {
             return obj.Map.Town.ReservationManager.CanReserve(obj, target, stackcount, force);
         }
-        static public bool CanReserve(this Actor obj, GameObject target, int stackcount = -1, bool force = false)
-        {
-            return obj.Map.Town.ReservationManager.CanReserve(obj, new TargetArgs(target), stackcount, force);
-        }
+        //static public bool CanReserve(this Actor obj, Entity target, int stackcount = -1, bool force = false)
+        //{
+        //    return obj.Map.Town.ReservationManager.CanReserve(obj, new TargetArgs(target), stackcount, force);
+        //}
         static public bool CanReserve(this Actor obj, Entity target, int stackcount = -1, bool force = false)
         {
             return !target.IsForbidden && obj.Map.Town.ReservationManager.CanReserve(obj, new TargetArgs(target), stackcount, force);
@@ -55,7 +55,7 @@ namespace Project1.Core.AI.Reservations
             return obj.Map.Town.ReservationManager.GetUnreservedAmount(i);
         }
        
-        static public bool TryGetUnreservedAmount(this Actor obj, GameObject i, out int amount)
+        static public bool TryGetUnreservedAmount(this Actor obj, Entity i, out int amount)
         {
             amount = obj.Map.Town.ReservationManager.GetUnreservedAmount(new TargetArgs(i));
             return amount > 0;

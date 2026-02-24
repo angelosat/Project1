@@ -78,9 +78,9 @@ namespace Project1.Core.Inventory
             parent.Map.Spawn(thrownItem, parent.Global + (1 + parent.Height) * Vector3.UnitZ, this.Owner.Velocity + velocity);
         }
   
-        public override IEnumerable<GameObject> GetChildren()
+        public override IEnumerable<Entity> GetChildren()
         {
-            if (this.HaulContainer.Slots[0].Object is GameObject obj)
+            if (this.HaulContainer.Slots[0].Object is Entity obj)
                 yield return obj;
             foreach (var o in this.Contents)
                 yield return o;
@@ -116,9 +116,9 @@ namespace Project1.Core.Inventory
         {
             yield return this.HaulSlot;
         }
-        public void HaulNew(GameObject target, int amount)
+        public void HaulNew(Entity target, int amount)
         {
-            GameObject finalItem;
+            Entity finalItem;
             var actor = this.Owner as Actor;
             if (target == actor.Hauled)
                 throw new Exception();
@@ -134,7 +134,7 @@ namespace Project1.Core.Inventory
             if (amount < target.StackSize)
             {
                 //target.Consume(amount);
-                finalItem = target.Split(amount) as Entity; // this creates a new entity
+                finalItem = target.Split(amount); // this creates a new entity
             }
             else
                 finalItem = target;
@@ -218,13 +218,13 @@ namespace Project1.Core.Inventory
         }
         public IEnumerable<Entity> All => this.GetItems();
 
-        public GameObject First(Func<GameObject, bool> filter)
+        public Entity First(Func<Entity, bool> filter)
         {
             foreach (var slot in this.Contents)
                 if (filter(slot))
                     return slot;
-            if (this.HaulSlot.Object != null && filter(this.HaulSlot.Object))
-                return this.HaulSlot.Object;
+            if (this.HaulSlot.Object != null && filter(this.HaulSlot.Object as Entity))
+                return this.HaulSlot.Object as Entity;
             return null;
         }
         public int Count(ItemDef def)
@@ -255,7 +255,7 @@ namespace Project1.Core.Inventory
             return true;
         }
 
-        public bool Haul(GameObject obj)
+        public bool Haul(Entity obj)
         {
             if (obj is null)
                 return true;
@@ -291,19 +291,19 @@ namespace Project1.Core.Inventory
             var slot = this.HaulSlot;
             if (slot.Object == null)
                 return false;
-            GameObject newobj;
+            Entity newobj;
             if (!all && slot.Object.StackSize > 1)
             {
-                newobj = slot.Object.Split(1);
+                newobj = (slot.Object as Entity).Split(1);
             }
             else
-                newobj = slot.Object;
+                newobj = slot.Object as Entity;
             // TODO instantiate new obj as necessary
             newobj.Global = parent.Global + new Vector3(0, 0, parent.Physics.Height);
             newobj.Velocity = velocity;
             newobj.Physics.Enable();
-
-            newobj.SyncSpawnNew(parent.Map);
+            parent.Map.Spawn(newobj, newobj.Global, newobj.Velocity);
+            //newobj.SyncSpawnNew(parent.Map);
 
             if (all)
                 slot.Clear();

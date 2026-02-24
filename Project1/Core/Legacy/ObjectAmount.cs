@@ -10,9 +10,9 @@ namespace Project1.Core.Legacy
     public class ObjectAmount : ISaveable, ISerializableNew<ObjectAmount>
     {
         TargetArgs ObjectTarget;
-        public GameObject Object
+        public Entity Object
         {
-            get { return this.ObjectTarget.Object; }
+            get { return this.ObjectTarget.Entity; }
             set { this.ObjectTarget = new TargetArgs(value); }
         }
         int _amount;
@@ -35,12 +35,12 @@ namespace Project1.Core.Legacy
         {
 
         }
-        public ObjectAmount(GameObject obj)
+        public ObjectAmount(Entity obj)
         {
             this.Object = obj;
             this.Amount = obj.StackSize;
         }
-        public ObjectAmount(GameObject obj, int amount)
+        public ObjectAmount(Entity obj, int amount)
         {
             this.Object = obj;
             this.Amount = amount;

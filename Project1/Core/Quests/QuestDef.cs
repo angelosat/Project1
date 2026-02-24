@@ -175,8 +175,9 @@ namespace Project1.Core.Quests
 
                         if (actor.Net is Server server)
                         {
-                            split.SyncInstantiate(server);
-                            qgiverInv.SyncInsert(split);
+                            throw new NotImplementedException();
+                            //split.SyncInstantiate(server);
+                            //qgiverInv.SyncInsert(split);
                         }
                     }
                     else

@@ -117,8 +117,8 @@ namespace Project1.Core
             }
         }
         public BlockEntity BlockEntity;
-        GameObject? _resolvedEntity;
-        public GameObject? Entity => this._resolvedEntity ??= this.World?.GetEntity(this.EntityID);
+        Entity? _resolvedEntity;
+        public Entity? Entity => this._resolvedEntity ??= this.World?.GetEntity(this.EntityID);
         public GameObject Object
         {
             get
@@ -134,7 +134,7 @@ namespace Project1.Core
                 else if (this.Type == TargetType.Slot || this.Type == TargetType.BlockEntitySlot)
                 {
                     if (this._resolvedEntity == null)
-                        this._resolvedEntity = this.Slot.Object;
+                        this._resolvedEntity = this.Slot.Object as Entity;
                 }
                 return this._resolvedEntity;
             }
@@ -179,7 +179,7 @@ namespace Project1.Core
             this.Type = TargetType.BlockEntity;
             this._resolvedMap = blockEntity.Map;
         }
-        public TargetArgs(GameObject obj)
+        public TargetArgs(Entity obj)
         {
             this.Type = TargetType.Entity;
             this.EntityID = obj.RefId;
@@ -208,7 +208,7 @@ namespace Project1.Core
             this.Type = TargetType.Entity;
             this.EntityID = entityID;
         }
-        public TargetArgs(GameObject obj, Vector3 face)
+        public TargetArgs(Entity obj, Vector3 face)
         {
             this.Type = TargetType.Entity;
             this.EntityID = obj.RefId;
@@ -216,7 +216,7 @@ namespace Project1.Core
             this._resolvedEntity = obj;
             this.World = obj.World;
         }
-        public TargetArgs(GameObject obj, Vector3? face)
+        public TargetArgs(Entity obj, Vector3? face)
         {
             this.Type = TargetType.Entity;
             this.EntityID = obj.RefId;
@@ -807,7 +807,7 @@ namespace Project1.Core
         public static implicit operator Entity(TargetArgs b) => b.Object as Entity;
         public static implicit operator Actor(TargetArgs b) => b.Object as Actor;
 
-        public static implicit operator TargetArgs(GameObject obj)
+        public static implicit operator TargetArgs(Entity obj)
         {
             return new TargetArgs(obj);
         }

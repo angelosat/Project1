@@ -1,4 +1,5 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Entities;
+using Project1.Framework;
 using Project1.Framework.Serialization;
 using System;
 
@@ -28,7 +29,7 @@ namespace Project1.Core.Interactions
             var actor = this.Actor;
             var target = this.Target;
             var hauled = actor.Inventory.HaulSlot;// PersonalInventoryComponent.GetHauling(actor);
-            var hauledObj = hauled.Object;
+            var hauledObj = hauled.Object as Entity;
             if (this.Amount > hauledObj.StackSize) //thrown
                 throw new Exception();
             this.CachedAnimation.FadeOutAndRemove();

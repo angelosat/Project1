@@ -31,7 +31,7 @@ namespace Project1.Core.Towns.Stockpiles
             {
                 var global = pl;
                 var above = global.Above();
-                var existingItems = map.GetObjects(above);
+                var existingItems = map.GetEntitiesAt(above);
                 var toCombine = existingItems.FirstOrDefault(i => i != item && i.CanAbsorb(item));
                 if (toCombine != null)
                 {

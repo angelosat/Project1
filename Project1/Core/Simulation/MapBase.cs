@@ -490,8 +490,8 @@ namespace Project1.Core.Simulation
             }
             return true;
         }
-        public abstract List<GameObject> GetObjectsAtChunk(Vector3 global);
-        public bool Despawn(GameObject obj)
+        public abstract List<Entity> GetObjectsAtChunk(Vector3 global);
+        public bool Despawn(Entity obj)
         {
             if (obj.Map != this)
                 return false;
@@ -499,14 +499,14 @@ namespace Project1.Core.Simulation
             if (!this.Remove(obj)) // TODO: move this to map.despawn
                 throw new Exception();
             obj.Map = null;
-            this.Events.Post(new EntityDespawnedEvent(obj as Entity));
+            this.Events.Post(new EntityDespawnedEvent(obj));
             return true;
         }
-        internal bool Remove(GameObject obj)
+        internal bool Remove(Entity obj)
         {
             return this.GetChunk(obj.Global).Remove(obj);
         }
-        internal void Add(GameObject obj)
+        internal void Add(Entity obj)
         {
             this.GetChunk(obj.Global).Add(obj);
         }
@@ -1024,6 +1024,8 @@ namespace Project1.Core.Simulation
 
         public void Spawn(Entity entity, Vector3 position, Vector3 velocity, bool immediate = false)
         {
+            if (!entity.IsRegistered)
+                this.World.Register(entity, immediate);
             var entitiesAtCell = this.GetEntitiesAt(position);
             if(entitiesAtCell.FirstOrDefault(e => e.CanAbsorb(entity)) is Entity absorbingEntity)
             {

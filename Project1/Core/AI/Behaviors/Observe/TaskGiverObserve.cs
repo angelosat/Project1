@@ -15,9 +15,9 @@ namespace Project1.Core.AI.Behaviors.Observe
             var need = actor.GetNeed(NeedDefOf.Curiosity);
             if (need.Value > 50)
                 return null;
-            var potentialTargets = actor.Map.GetEntities()
-                .Where(o=>actor.CanReserve(o));
-            var randomized = new Queue<GameObject>(potentialTargets.Shuffle(actor.Map.Random));
+            var potentialTargets = actor.Map.Entities
+                .Where(o => actor.CanReserve(o));
+            var randomized = new Queue<Entity>(potentialTargets.Shuffle(actor.Map.Random));
 
             while (randomized.Count > 0)
             {

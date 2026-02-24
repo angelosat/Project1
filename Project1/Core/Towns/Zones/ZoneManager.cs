@@ -70,7 +70,7 @@ namespace Project1.Core.Towns.Zones
                     this.RemoveItem(zone, e.Entity);
             }
         }
-        internal Zone RegisterNewZone(ZoneDef zoneType, IEnumerable<IntVec3> allpositions)
+        internal Zone CreateZone(ZoneDef zoneType, IEnumerable<IntVec3> allpositions)
         {
             var finalPositions = allpositions.Where(
                 po => this.Town.GetZoneAt(po) == null &&
@@ -110,6 +110,16 @@ namespace Project1.Core.Towns.Zones
             zone.Manager = this;
             zone.Name = zone.UniqueName;
             this.Map.Events.Post(new ZoneCreatedEvent(zone));
+            this.RefreshContents(zone);
+        }
+        void RefreshContents(Zone zone)
+        {
+            foreach(var cell in zone.Cells)
+            {
+                var entities = this.Map.GetEntitiesAt(cell.Above);
+                foreach (var entity in entities)
+                    this.AddItem(zone, entity);
+            }
         }
         internal override void ResolveReferences()
         {
@@ -197,7 +207,7 @@ namespace Project1.Core.Towns.Zones
                 foreach (var zone in this.ZonesById.Values.ToList())
                     this.EditZone(a, w, h, remove, zone);
             else if (zoneID == 0)
-                    return RegisterNewZone(zoneType, a.GetBoxLazy(a + new IntVec3(w - 1, h - 1, 0)));
+                    return CreateZone(zoneType, a.GetBoxLazy(a + new IntVec3(w - 1, h - 1, 0)));
             else
                 this.EditZone(a, a + new IntVec3(w - 1, h - 1, 0), remove, this.ZonesById[zoneID]);
             return null;

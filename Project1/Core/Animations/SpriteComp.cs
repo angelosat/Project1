@@ -381,7 +381,7 @@ namespace Project1.Core.Animations
             }
             return false;
         }
-        public void HitTest(GameObject parent, Camera camera)
+        public void HitTest(Entity parent, Camera camera)
         {
             var source = this.GetSpriteBounds();// this.SpriteBounds;
             var global = parent.Global;

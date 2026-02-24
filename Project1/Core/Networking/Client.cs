@@ -599,7 +599,7 @@ namespace Project1.Core.Networking
         /// Both removes an object form the game world and releases its networkID
         /// </summary>
         /// <param name="objNetID"></param>
-        public override bool DisposeObject(GameObject obj)
+        public override bool DisposeObject(Entity obj)
         {
             return this.DisposeObject(obj.RefId);
         }
@@ -608,31 +608,6 @@ namespace Project1.Core.Networking
         {
             return this.World.DisposeEntity(netId);
         }
-
-        /// <summary>
-        /// Is passed recursively to an object and its children objects (inventory items) to register their network ID.
-        /// </summary>
-        /// <param name="ob"></param>
-        /// <returns></returns>
-        [Obsolete("use world.register instead")]
-        public override GameObject Instantiate(GameObject ob)
-        {
-            foreach (var obj in ob.GetSelfAndChildren())
-                this.Instantiator(obj);
-            return ob;
-        }
-
-        public GameObject InstantiateLocal(GameObject ob)
-        {
-            throw new Exception();
-        }
-        [Obsolete("use world.register instead")]
-        public override void Instantiator(GameObject ob)
-        {
-            ob.Net = this;
-            Instance.World.RegisterOld(ob as Entity);
-        }
-
         internal void AddPlayer(PlayerData player)
         {
             this.Players.Add(player);
@@ -766,32 +741,11 @@ namespace Project1.Core.Networking
             return;
         }
 
-        private void ResolveChunkReferences(Chunk chunk)
-        {
-            chunk.GetObjects().ForEach(obj =>
-            {
-                this.Instantiate(obj);
-                obj.OnMapLoaded(Instance.Map);
-                /// why here too? BECAUSE some things dont get initialized properly on client. like initializing sprites from defs
-                //obj.ObjectLoaded();
-                /// FIXED by saving and serializing sprites along bones (by using the assetpath and the static sprite registry)
-            });
-
-            foreach (var (local, entity) in chunk.GetBlockEntitiesByPosition())
-            {
-                var global = local.ToGlobal(chunk);
-                entity.ResolveReferences(this.Map, global);
-                //entity.Instantiate(global, Instance.Instantiator);
-                foreach (var o in entity.GetChildren())
-                    Instance.Instantiate(o);
-            }
-        }
-
         /// <summary>
         /// The client can't create objects, must await for a server message
         /// </summary>
         /// <param name="obj"></param>
-        public GameObject InstantiateObject(GameObject obj)
+        public Entity InstantiateObject(Entity obj)
         {
             return obj;
         }
@@ -1055,6 +1009,16 @@ namespace Project1.Core.Networking
         public override IDataWriter BeginPacketImmediate(PacketId pType)
         {
             return this.BeginPacket(pType);
+        }
+
+        public override Entity Instantiate(Entity obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Instantiator(Entity o)
+        {
+            throw new NotImplementedException();
         }
     }
 }

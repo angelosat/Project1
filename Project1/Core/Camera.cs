@@ -867,7 +867,8 @@ namespace Project1.Core
             fx.CurrentTechnique.Passes["Pass1"].Apply();
             this.SpriteBatch.Flush();
 
-            var objs = map.GetEntities().ToList();
+            //var objs = map.GetEntities().ToList();
+            var objs = map.Entities.ToList();
 
             fx.CurrentTechnique = fx.Techniques["BlockHighlight"];
             //gd.DepthStencilState = new DepthStencilState() { DepthBufferWriteEnable = true }; // this broke depth on block highlights
@@ -1121,7 +1122,7 @@ namespace Project1.Core
             fx.Parameters["s3"].SetValue(Block.Atlas.DepthTexture);
         }
 
-        private void DrawEntities(SceneState scene, List<GameObject> objs)
+        private void DrawEntities(SceneState scene, List<Entity> objs)
         {
             foreach (var obj in objs)
             {
@@ -1138,7 +1139,7 @@ namespace Project1.Core
             }
         }
 
-        private void SortEntities(MapBase map, List<GameObject> objs)
+        private void SortEntities(MapBase map, List<Entity> objs)
         {
             objs.Sort((o1, o2) =>
             {
@@ -1528,7 +1529,7 @@ namespace Project1.Core
             /// i also call this at the start of the mouspicking method, no need to call it here too
             //if (Controller.Instance.MouseoverNext.Object != null)
             //    return;
-            if (Controller.Instance.MouseoverNext.Object is TargetArgs target && target.Object is GameObject obj)
+            if (Controller.Instance.MouseoverNext.Object is TargetArgs target && target.Object is Entity obj)
                 if (this.GetDrawDepthSimple(obj.CellIfSpawned.Value) > this.GetDrawDepthSimple(global)) // HACK
                     return;
 

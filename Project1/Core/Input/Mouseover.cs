@@ -25,7 +25,7 @@ namespace Project1.Core.Input
                 }
                 else if (value is GameObject && !Controller.BlockTargeting)
                 { 
-                    this.Target = new TargetArgs(value as GameObject);
+                    this.Target = new TargetArgs(value as Entity);
                     this.TargetEntity = this.Target;
                 }
                 else if (value is TargetArgs)

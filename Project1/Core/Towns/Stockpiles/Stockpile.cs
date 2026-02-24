@@ -23,7 +23,7 @@ namespace Project1.Core.Towns.Stockpiles
         static StorageFilterCategoryNewNew FiltersView = InitFilters();
         readonly StockpileSettings SettingsNew = new();
         public override string UniqueName => $"Zone_Stockpile_{this.ID}";
-        readonly List<GameObject> Cache = [];
+        //readonly List<GameObject> Cache = [];
         public readonly ObservableCollection<GameObject> CacheObservable = [];
         public HashSet<Entity> AcceptedItems = [];
         public Stockpile()
@@ -52,23 +52,23 @@ namespace Project1.Core.Towns.Stockpiles
             return this.Accepts(obj);
         }
         internal bool Accepts(Entity item) => this.SettingsNew.Accepts(item);
-        public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazyFromCache(Entity obj)
-        {
-            var occupiedCells = new List<IntVec3>();
-            foreach(var existing in this.CacheNew)
-            {
-                occupiedCells.Add(existing.Cell);
-                if (!this.SettingsNew.Accepts(existing as Entity))
-                    continue;
-                if (!existing.CanAbsorb(obj))
-                    continue;
-                if (existing.GetUnreservedAmount() == 0)
-                    continue;
-                yield return new TargetArgs(existing);
-            }
-            foreach (var cell in this.Cells.Except(occupiedCells))
-                yield return new TargetArgs(this.Map, cell);
-        }
+        //public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazyFromCache(Entity obj)
+        //{
+        //    var occupiedCells = new List<IntVec3>();
+        //    foreach(var existing in this.CacheNew)
+        //    {
+        //        occupiedCells.Add(existing.Cell);
+        //        if (!this.SettingsNew.Accepts(existing as Entity))
+        //            continue;
+        //        if (!existing.CanAbsorb(obj))
+        //            continue;
+        //        if (existing.GetUnreservedAmount() == 0)
+        //            continue;
+        //        yield return new TargetArgs(existing);
+        //    }
+        //    foreach (var cell in this.Cells.Except(occupiedCells))
+        //        yield return new TargetArgs(this.Map, cell);
+        //}
         public IEnumerable<IntVec3> DistributeToStorageSpotsCellsOnly(Entity item)
         {
             var emptyCells = new List<Vector3>();

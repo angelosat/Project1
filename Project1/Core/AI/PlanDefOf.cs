@@ -84,6 +84,7 @@ namespace Project1.Core.AI
         static public readonly PlanDef Till = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
         static public readonly PlanDef Harvesting = new("Harvesting", typeof(BehaviorHarvesting), InteractionDefOf.Harvest);
         static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);
+        static public readonly PlanDef CraftingUnfinished = new("CraftingUnfinished", typeof(TaskBehaviorGoCraft), InteractionDefOf.CraftUnfinished);
         static public readonly PlanDef Repairing = new("Repairing", typeof(TaskBehaviorRepairing), InteractionDefOf.Repair);
         static public readonly PlanDef HaulToStockpile = new("StockpileHauling", typeof(TaskBehaviorHaulToStockpile), InteractionDefOf.Place);
         //static public readonly PlanDef Plant = new("Plant", typeof(TaskBehaviorGoPlace), InteractionDefOf.Plant);

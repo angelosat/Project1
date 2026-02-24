@@ -4,7 +4,6 @@ using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.UI.Hud;
 using Project1.Framework.Helpers;
-using Project1.Framework.Input;
 using Project1.Framework.UI;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace Project1.Core.Input
     {
         protected Vector2 Begin;
         protected Rectangle Selection;
-        List<GameObject> CurrentSelected;
+        List<Entity> CurrentSelected;
         public ToolSelectRectangle()
         {
 

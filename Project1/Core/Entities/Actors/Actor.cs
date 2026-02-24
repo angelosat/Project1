@@ -112,7 +112,8 @@ namespace Project1.Core.Entities.Actors
             var net = this.Net;
             if (net is Server server)
             {
-                loot.SyncInstantiate(server);
+                throw new NotImplementedException();
+                //loot.SyncInstantiate(server);
                 PacketInventoryInsertItem.Send(server, this, loot, area);
             }
             this.Inventory.Insert(loot);
@@ -242,7 +243,7 @@ namespace Project1.Core.Entities.Actors
         {
             AIManager.Interact(this, interaction, new TargetArgs(this.Map, target));
         }
-        internal void Interact(Interaction interaction, GameObject target)
+        internal void Interact(Interaction interaction, Entity target)
         {
             AIManager.Interact(this, interaction, new TargetArgs(target));
         }

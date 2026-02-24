@@ -297,7 +297,7 @@ namespace Project1.Core.UI.Hud
         }
         public static void Select(MapBase map, BoundingBox box)
         {
-            Select(map.GetObjects(box).Select(s => new TargetArgs(s)));
+            Select(map.GetObjects(box).Select(s => new TargetArgs(s as Entity)));
         }
         private void Select(IntVec3 begin, IntVec3 end)
         {

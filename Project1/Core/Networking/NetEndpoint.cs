@@ -54,7 +54,7 @@ namespace Project1.Core.Networking
         public abstract MapBase Map { get; set; }
         public abstract WorldBase World { get; set; }
         public abstract int Speed { get; protected set; }
-        public abstract bool DisposeObject(GameObject obj);
+        public abstract bool DisposeObject(Entity obj);
         public abstract bool DisposeObject(int netID);
         public abstract void Enqueue(PacketType packetType, byte[] payload, ReliabilityType sendType); 
         [Obsolete]
@@ -70,9 +70,9 @@ namespace Project1.Core.Networking
         public abstract PlayerData GetPlayer();
         public abstract IEnumerable<PlayerData> GetPlayers();
         [Obsolete("use world.register instead")]
-        public abstract GameObject Instantiate(GameObject obj);
+        public abstract Entity Instantiate(Entity obj);
         [Obsolete("use world.register instead")]
-        public abstract void Instantiator(GameObject o);
+        public abstract void Instantiator(Entity o);
         public virtual bool LogStateChange(Entity entity) => false;
         public abstract void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);
         public abstract void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);

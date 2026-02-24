@@ -26,7 +26,7 @@ namespace Project1.Core.Entities
     {
         public abstract EntityCompDef CompDef { get; }
         public int RuntimeIndex;
-        public override string LabelReadable => this.Name;
+        public override string LabelReadable => CompDef.LabelReadable;
         public abstract string Name { get; }
         public override string ToString() => this.LabelReadable;
         internal Spec Defaults { get; private set; }
@@ -58,7 +58,7 @@ namespace Project1.Core.Entities
         public virtual void DrawMouseover(MySpriteBatch sb, Camera camera, GameObject parent) { }
         public virtual void DrawUI(SpriteBatch sb, Camera camera, GameObject parent) { }
         public virtual void DrawAfter(MySpriteBatch sb, Camera cam) { }
-        public virtual IEnumerable<GameObject> GetChildren() { yield break; }
+        public virtual IEnumerable<Entity> GetChildren() { yield break; }
         public virtual void GetChildren(List<GameObjectSlot> list) { }
         public virtual void GetContainers(List<Container> list) { }
         public virtual void OnTooltipCreated(GameObject parent, Control tooltip) { }

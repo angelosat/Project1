@@ -13,6 +13,7 @@ namespace Project1.Core.Tools
         public static readonly ToolUseDef Argiculture = new("Argiculture", "Helps determine type and growth time of plants.", SkillDefOf.Argiculture);
         public static readonly ToolUseDef Planting = new("Planting", "Planting plants.", SkillDefOf.Argiculture);
         public static readonly ToolUseDef Carpentry = new("Carpentry", "The craft of converting wood to useful equipment.", SkillDefOf.Carpentry);
+        public static readonly ToolUseDef ToolMaking = new("ToolMaking", "Crafting Tools.", SkillDefOf.Tinkering);
 
         static ToolUseDefOf()
         {

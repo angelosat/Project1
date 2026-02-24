@@ -5,8 +5,8 @@ namespace Project1.Core.Entities
 {
     public class SceneState
     {
-        public readonly HashSet<GameObject> ObjectsDrawn = [];
-        public readonly Dictionary<GameObject, Rectangle> ObjectBounds = [];
+        public readonly HashSet<Entity> ObjectsDrawn = [];
+        public readonly Dictionary<Entity, Rectangle> ObjectBounds = [];
         
     }
 }

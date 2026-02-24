@@ -15,6 +15,7 @@ namespace Project1.Core.AI.Reservations
         readonly List<Reservation> Reservations = [];
         readonly Dictionary<TargetArgs, List<Reservation>> ByTarget = [];
         readonly Dictionary<EntityRefId, List<Reservation>> ByActor = [];
+        readonly HashSet<Entity> MarkedConsumedByPlan = [];
         string _name = "Reservations";
         public override string Name => _name; 
         public ReservationManager(Town town)
@@ -26,7 +27,10 @@ namespace Project1.Core.AI.Reservations
         }
         private void OnEntityDespawned(EntityDespawnedEvent e)
         {
-            this.Unreserve(e.Entity);
+            var entity = e.Entity;
+            if (this.MarkedConsumedByPlan.Remove(entity))
+                return;
+            this.Unreserve(entity);
         }
         private void OnEntityForbidden(EntityForbiddenEvent e)
         {
@@ -144,6 +148,7 @@ namespace Project1.Core.AI.Reservations
             foreach (var res in reservationsByActor)
             {
                 this.Reservations.Remove(res);
+                this.MarkedConsumedByPlan.Remove(res.Target.Entity);
                 this.Map.Events.Post(new ReservationInvalidatedEvent(res));
                 var listbytarget = this.ByTarget[res.Target];
                 listbytarget.Remove(res);
@@ -161,6 +166,7 @@ namespace Project1.Core.AI.Reservations
             foreach (var res in reservationsByTarget)
             {
                 this.Reservations.Remove(res);
+                this.MarkedConsumedByPlan.Remove(res.Target.Entity);
                 this.Map.Events.Post(new ReservationInvalidatedEvent(res));
                 var listbyactor = this.ByActor[res.Actor];
                 listbyactor.Remove(res);
@@ -245,6 +251,11 @@ namespace Project1.Core.AI.Reservations
                 foreach (var t in list)
                     this.AddReservation(new Reservation(this.Town.Map, t));
             });
+        }
+
+        internal void MarkConsumedByPlan(Entity ingredient)
+        {
+            this.MarkedConsumedByPlan.Add(ingredient);
         }
     }
 }

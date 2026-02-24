@@ -536,7 +536,9 @@ namespace Project1.Core.UI.Hud
         {
             if (Instance.MultipleSelected.Count == 0 && Instance.SelectedSource is null)
                 return false;
-            Instance.SelectSingle(TargetArgs.Null);
+            if (Instance.Selection.Targets.Count == 0)
+                return false;
+            Instance.SelectSingle(null);// TargetArgs.Null);
             return true;
         }
         public void AddIcon(IconButton icon)

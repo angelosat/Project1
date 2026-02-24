@@ -26,6 +26,17 @@ namespace Project1.Core.AI.Planners
             //var allOrders = manager.GetAllOrdersUnsorted()
             //    .Where(o => o.Pending && actor.CanReachAndReserve(o.Workstation.Parent));
 
+            // TODO scan for unfinished items
+            // query workstation for unfinished items 
+            // var unfinishedItemsOnWorkstations = manager.AllWorkstations(...)
+            var unfinishedItemsInStockpiles = map.Stockpiles.AllItems.Where(e => e.Def == ItemDefOf.UnfinishedItem);
+            foreach(var unfItem in unfinishedItemsInStockpiles)
+            {
+                // if unfitem is on workstation go craft
+                // if actor carries unfitem go deposit
+                // else go carry unfitem
+            }
+
             // Gather all pending, reachable orders
             // Exclude unreachable/unreservable workstations early instead of performing the check for each workstation order
             var allOrders = manager.AllWorkstations
@@ -99,12 +110,12 @@ namespace Project1.Core.AI.Planners
                 }
 
                 // Carried item can be deposited
-                if (carried != null)
+                if (carried is not null)
                 {
                     var carriedAlloc = feasibility.Allocations
                         .FirstOrDefault(a => a.Entity == carried);
 
-                    if (carriedAlloc.Entity != null)
+                    if (carriedAlloc.Entity is not null)
                     {
                         if (carried.StackSize >= carriedAlloc.Quantity)
                         {
@@ -141,6 +152,7 @@ namespace Project1.Core.AI.Planners
                             AmountA = correctAlloc.Quantity
                         };
                     }
+                    else return null; // the carried item it irrelevant to crafting, to return null so fallback planners can handle it
                 }
                 //foreach (var alloc in feasibility.Allocations)
                 //{

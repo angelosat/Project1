@@ -15,13 +15,14 @@ namespace Project1.Core.Interactions
     {
         class Context : InteractionContext
         {
-            internal Entity UnfinishedItem => field ??= this.Actor.CurrentPlan.Order.UnfinishedItem;
+            internal Entity UnfinishedItem => field ??= this.Workstation.GetUnfinishedItem();
             internal UnfinishedItemComp UnfinishedComp => field ??= this.UnfinishedItem?.GetComponent<UnfinishedItemComp>();
             internal BlockWorkstationComp Workstation => field ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
-            public override float ProgressPercentage => this.UnfinishedComp.ProgressPercentage;
+            public override float ProgressPercentage => this.UnfinishedComp?.ProgressPercentage ?? 0;
         }
         static bool CanPerform(Context ctx) => ctx.UnfinishedItem is not null || ctx.Workstation.IngredientsInPlace(ctx.Actor.CurrentPlan.TargetsA);
         public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
+        protected override InteractionContext CreateContextInternal() => new Context();
         internal override void OnStart(Interaction i)
         {
             var actor = i.Actor;
@@ -29,8 +30,9 @@ namespace Project1.Core.Interactions
                 return;
             var plan = actor.CurrentPlan;
             var order = plan.Order;
-
-            if (order.UnfinishedItem is not null)
+            var ctx = (Context)i.Context;
+            var unfinishedItem = ctx.UnfinishedItem;
+            if (unfinishedItem is not null)
                 return;
 
             var workstation = i.Target;
@@ -43,24 +45,21 @@ namespace Project1.Core.Interactions
                 ingredients[BoneDefOf.ToolHandle].Body.Material, 
                 ingredients[BoneDefOf.ToolHead].Body.Material);
 
-            foreach(var ingredient in ingredients.Values)
+            foreach (var ingredient in ingredients.Values)
                 map.World.DisposeEntity(ingredient);
 
             map.Spawn(item, workstation.Global.Above(), Vector3.Zero);
-
-            order.UnfinishedItem = item;
         }
         public override void ApplyWork(InteractionContext ctx, int workAmount)
         {
             var actor = ctx.Actor;
             if (actor.Net.IsClient)
                 return;
-            var plan = actor.CurrentPlan;
-            var order = plan.Order;
-            if (order.UnfinishedItem is null)
+            var ctxTyped = (Context)ctx;
+            var unfinishedItem = ctxTyped.UnfinishedItem;
+            if (unfinishedItem is null)
                 throw new InvalidOperationException();
-            var comp = order.UnfinishedItem.GetComponent<UnfinishedItemComp>();
-            comp.ApplyWork(workAmount);
+            ctxTyped.UnfinishedComp.ApplyWork(workAmount);
         }
         internal override void OnFinish(Interaction i)
         {
@@ -69,9 +68,10 @@ namespace Project1.Core.Interactions
                 return;
             var plan = actor.CurrentPlan;
             var order = plan.Order;
-            var unfinishedItem = order.UnfinishedItem;
+            var ctxTyped = (Context)i.Context;
+            var unfinishedItem = ctxTyped.UnfinishedItem;
             var map = actor.Map;
-            var creationReq = order.GetCreationRequest();
+            var creationReq = ctxTyped.UnfinishedComp.GetCreationRequest();
             var ctx = i.Context as Context;
             foreach (var pair in ctx.UnfinishedComp.MaterialBindings)
                 creationReq.OverrideMaterial(pair.Key, pair.Value);

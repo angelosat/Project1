@@ -424,7 +424,7 @@ namespace Project1.Core
                     break;
 
                 case TargetType.Entity:
-                    tag.Add(new SaveTag(SaveTag.Types.Int, "InstanceID", this.EntityID));
+                    tag.Add(new SaveTag(SaveTag.Types.Int, "InstanceID", (int)this.EntityID));
                     break;
 
                 case TargetType.Direction:

@@ -5,7 +5,7 @@ using Project1.Framework.Interfaces;
 
 namespace Project1.Framework.Helpers
 {
-    public sealed class ProgressInt : IProgressBar, ISerializableNew<ProgressInt>, ISaveableNewNew<ProgressInt>
+    public sealed class ProgressInt : IProgressBar, ISerializableNewNew<ProgressInt>, ISaveableNewNew<ProgressInt>
     {
         public event Action Updated;
         public IDisposable Subscribe(Action handler)
@@ -55,10 +55,11 @@ namespace Project1.Framework.Helpers
             return this;
         }
 
-        public void Write(IDataWriter w)
+        public IDataWriter Write(IDataWriter w)
         {
             w.Write(this.Max);
             w.Write(this.Value);
+            return w;
         }
         public override string ToString() => $"{this.Value} / {this.Max}";
 

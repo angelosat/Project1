@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
+using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
 using Project1.Core.Skills;
 using Project1.Core.Tools;
@@ -89,6 +90,11 @@ namespace Project1.Core.Crafting
         {
             var targetBones = GetSlotMapping(recipe);
             return targetBones.Zip(ingredients).ToDictionary();
+        }
+        static public Dictionary<BoneDef, MaterialDef> MapBonesToMaterials(Def recipe, IEnumerable<MaterialDef> materials)
+        {
+            var targetBones = GetSlotMapping(recipe);
+            return targetBones.Zip(materials).ToDictionary();
         }
         public static bool IsFuel(Entity i)
         {

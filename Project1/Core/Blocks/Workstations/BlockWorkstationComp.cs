@@ -108,6 +108,19 @@ namespace Project1.Core.Blocks
             var slots = this.Parent.CellsOccupied.Zip(targetsA);
             return slots.All(s => this.Parent.Map.GetEntitiesAt(s.First.Above).Any(c => c == s.Second.Object));
         }
+        public bool TryGetUnfinishedItem(out Entity item)
+        {
+            //var entities = this.Parent.CellsOccupied.SelectMany(cell => this.Map.GetEntitiesAt(cell.Above));
+            //item = entities.FirstOrDefault(e => e.Def == ItemDefOf.UnfinishedItem);
+            //return item is not null;
+            item = this.GetUnfinishedItem();
+            return item is not null;
+        }
+        public Entity GetUnfinishedItem()
+        {
+            var entities = this.Parent.CellsOccupied.SelectMany(cell => this.Map.GetEntitiesAt(cell.Above));
+            return entities.FirstOrDefault(e => e.Def == ItemDefOf.UnfinishedItem);
+        }
         public override void Write(IDataWriter w)
         {
             this.WorkstationType.Write(w);

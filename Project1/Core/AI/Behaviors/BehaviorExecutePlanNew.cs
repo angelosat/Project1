@@ -196,7 +196,14 @@ namespace Project1.Core.AI.Behaviors
         }
         internal bool Reserve(TargetIndex index)
         {
-            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, this.Plan.GetTarget(index), this.Plan.GetAmount(index));
+            var singleTarget = this.Plan.GetTarget(index);
+            var amountSpecified = this.Plan.GetAmount(index);
+            var amountToReserve = singleTarget.Type switch
+            {
+                TargetType.Entity => amountSpecified > 0 ? amountSpecified : singleTarget.Object.StackSize,
+                _ => 1
+            };
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, this.Plan.GetTarget(index), amountToReserve);
         }
 
         internal bool Reserve(TargetIndex index, int amount)

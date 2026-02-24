@@ -430,11 +430,20 @@ namespace Project1.Core.AI
         {
             w.Write(this.Def);
             this.TargetA.Write(w);
+            var hasOrder = this.Order is not null;
+            w.Write(hasOrder);
+            if (hasOrder)
+                w.Write(this.Order.Id);
         }
         internal void SyncFromServer(NetEndpoint provider, IDataReader r)
         {
             this.Def = r.ReadDef<PlanDef>();
             this.TargetA = TargetArgs.Read(provider, r);
+            if (r.ReadBoolean())
+            {
+                var orderid = r.ReadInt32();
+                this.Order = this.TargetA.Map.Town.CraftingManagerNew.GetOrder(orderid);
+            }
         }
         public void ObjectLoaded(GameObject parent)
         {

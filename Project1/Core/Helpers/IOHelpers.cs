@@ -5,6 +5,7 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Helpers
 {
@@ -34,7 +35,34 @@ namespace Project1.Core.Helpers
             }
             return w;
         }
-        public static IDataWriter Write(this IDataWriter w, Def def) { w.Write(def?.Name ?? string.Empty); return w; }
+        public static IDataWriter Write(this IDataWriter w, Def def) 
+        {
+            w.Write(def?.Name ?? string.Empty); 
+            return w; 
+        }
+        public static IDataWriter Write(this IDataWriter w, ICollection<Def> defs)
+        {
+            w.Write(defs.Count);
+            foreach (var def in defs)
+                w.Write(def);
+            return w;
+        }
+        public static List<Def> ReadListDef(this IDataReader r)
+        {
+            List<Def> list = [];
+            var count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+                list.Add(r.ReadDef());
+            return list;
+        }
+        public static List<T> ReadListDef<T>(this IDataReader r) where T : Def
+        {
+            List<T> list = [];
+            var count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+                list.Add(r.ReadDef<T>());
+            return list;
+        }
         public static IDataWriter Write(this IDataWriter w, ICollection<TargetArgs> list)
         {
             w.Write(list.Count);

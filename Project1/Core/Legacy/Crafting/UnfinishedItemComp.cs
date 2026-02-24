@@ -3,6 +3,7 @@ using Project1.Core.Assets;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Inventory;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
@@ -71,21 +72,36 @@ namespace Project1.Core.Legacy.Crafting
         CraftingOrder _orderCached;
         public CraftingOrder Order => this._orderCached ??= this.Owner.Map.Town.CraftingManagerNew.GetOrder(this._orderid);
         public ContainerList Contents = [];
-        readonly Dictionary<BoneDef, MaterialDef> _materialBindings = [];
+        Dictionary<BoneDef, MaterialDef> _materialBindings;
         public IReadOnlyDictionary<BoneDef, MaterialDef> MaterialBindings => this._materialBindings;
         private bool _initialized;
         internal void ApplyWork(int workAmount)
         {
             this.ProgressInt.ApplyDelta(workAmount);
         }
-        internal void Initialize(Actor author, IEnumerable<(BoneDef bone, MaterialDef material)> bindings)
+        //internal void Initialize(Actor author, IEnumerable<(BoneDef bone, MaterialDef material)> bindings)
+        //{
+        //    if (this._initialized)
+        //        throw new InvalidOperationException();
+        //    this._initialized = true;
+        //    this._materialBindings = [];
+        //    foreach (var p in bindings)
+        //        this._materialBindings.Add(p.bone, p.material);
+        //    this.Author = author;
+        //}
+        internal EntityCreationRequest GetCreationRequest()
+        {
+            return new EntityCreationRequest(this.Owner.Profile, null);
+        }
+        internal void Initialize(Actor author, IEnumerable<MaterialDef> bindings)
         {
             if (this._initialized)
                 throw new InvalidOperationException();
             this._initialized = true;
-            this._materialBindings.Clear();
-            foreach (var p in bindings)
-                this._materialBindings.Add(p.bone, p.material);
+            //this._materialBindings = [];
+            //foreach (var p in bindings)
+            //    this._materialBindings.Add(p.bone, p.material);
+            this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, bindings);
             this.Author = author;
         }
         internal void SetProduct(Reaction.Product.ProductMaterialPair product, Actor creator, CraftingOrder order)
@@ -155,27 +171,29 @@ namespace Project1.Core.Legacy.Crafting
         }
         public override void Write(IDataWriter w)
         {
-            this.Product.Write(w);
-            this.Progress.Write(w);
-            w.Write(this.Author.RefId);
-            w.Write(this.Order.Id);
-            this.Contents.Write(w);
+            //this.Product.Write(w);
+            //this.Progress.Write(w);
+            w.Write(this.ProgressInt);
+            w.Write(this._authorId);
+            w.Write(this._orderid);
+            //this.Contents.Write(w);
+            w.Write([..this.MaterialBindings.Values]);
         }
 
         public override void Read(IDataReader r)
         {
-            this.Product = new(r);
-            this.Progress.Read(r);
+            //this.Product = new(r);
+            //this.Progress.Read(r);
+            this.ProgressInt = r.Read<ProgressInt>();
             this._authorId = r.ReadInt32();
             this._orderid = r.ReadInt32();
-            this.Contents.Read(r);
+            //this.Contents.Read(r);
+            this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
         }
-        public override void OnDispose()
-        {
-            this.Order.UnfinishedItem = null;
-        }
-
-        
+        //public override void OnDispose()
+        //{
+        //    this.Order.UnfinishedItem = null;
+        //}
 
         public new class Spec : Spec<UnfinishedItemComp> { }
     }

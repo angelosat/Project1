@@ -1,12 +1,12 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Materials;
+using Project1.Core.Simulation;
+using Project1.Core.Towns;
+using Project1.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Materials;
-using Project1.Framework;
-using Project1.Core.Towns;
-using Project1.Core.Simulation;
 
 namespace Project1.Core.Crafting
 {
@@ -20,13 +20,14 @@ namespace Project1.Core.Crafting
         readonly Dictionary<BlockEntity, CraftingOrder> _ordersByWorkstation = [];
         public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byType.SelectMany(d => d.Value);
         public IEnumerable<IGrouping<BlockEntity, List<CraftingOrder>>> OrdersByWorkstation => AllWorkstations.GroupBy(i => i.Parent, i => i.Orders);
+        public IEnumerable<BlockWorkstationComp> AllWorkstationModules => this._byPosition.Values;
+
         public CraftingManager(Town town) : base(town)
         {
             var workstationDefs = Def.GetDefs<WorkstationDef>();
             foreach (var def in workstationDefs)
                 this._byType.Add(def, []);
         }
-        public IEnumerable<BlockWorkstationComp> AllWorkstationModules => this._byPosition.Values;
 
         internal override void ResolveReferences()
         {

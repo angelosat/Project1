@@ -69,14 +69,10 @@ namespace Project1.Core.Tools
             var item = ItemDefOf.UnfinishedItem.Create();
             item.Profile = profile;
             var comp = item.GetComponent<UnfinishedItemComp>();
-            comp.Initialize(author, [
-                (BoneDefOf.ToolHandle, handleMaterial),
-                (BoneDefOf.ToolHead, headMaterial)
-                ]);
+            comp.Initialize(author, [handleMaterial ,headMaterial]);
             item.Initialize();
             return item;
         }
-
     }
     record CraftingRules(BoneDef Bone)
     {

@@ -540,9 +540,9 @@ namespace Project1.Core.Simulation.Physics
             var box = new BoundingBox(global - new Vector3(.25f, .25f, 0), global + new Vector3(.25f, .25f, 1));
             var corners = new Vector3[] {
                     box.Min,
-                    new Vector3(box.Min.X, box.Max.Y, global.Z),
-                    new Vector3(box.Max.X, box.Min.Y, global.Z),
-                    new Vector3(box.Max.X, box.Max.Y, global.Z)
+                    new(box.Min.X, box.Max.Y, global.Z),
+                    new(box.Max.X, box.Min.Y, global.Z),
+                    new(box.Max.X, box.Max.Y, global.Z)
                 };
             return corners.Any(c => map.GetBlock(c + new Vector3(0, 0, gravity)).Density > 0);
         }
@@ -560,7 +560,7 @@ namespace Project1.Core.Simulation.Physics
         {
             var parent = this.Owner;
             var bones = parent.Body.GetAllBones().ToList();
-            float w = parent.Def.Weight * bones.Sum(b => b.Material.Density) / bones.Count;
+            float w = parent.Def.Weight * bones.Sum(b => b.Material?.Density ?? 1) / bones.Count;
             w = this.Size switch
             {
                 ObjectSize.Immovable => w,

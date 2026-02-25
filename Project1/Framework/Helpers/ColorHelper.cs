@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 
@@ -60,9 +61,10 @@ namespace Project1.Framework.Helpers
                 var posTo = text.IndexOf('}', posFrom + 1);
                 if (posFrom != -1)
                 {
-                    var sub = text.Substring(posFrom + 1, posTo - posFrom - 1);
-                    var elements = sub.Split(' ');
-                    var values = elements.Select(e => int.Parse(e.Split(':')[1])).ToArray();
+                    var inner = text.Substring(posFrom + 1, posTo - posFrom - 1);
+                    //var elements = inner.Split(' ');
+                    //var values = elements.Select(e => int.Parse(e.Split(':')[1])).ToArray();
+                    var values = inner.Split(':').Select(int.Parse).ToArray();
                     color = new Color(values[0], values[1], values[2], values[3]);
                     return true;
                 }

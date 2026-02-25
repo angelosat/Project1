@@ -61,10 +61,11 @@ namespace Project1.Framework.UI
         public override void OnPaint(SpriteBatch sb)
         {
             var percentage = Invert ? (1 - this.Percentage) : this.Percentage;
-            var fill = (int)System.Math.Round(this.Width * percentage);
+            var fill = (int)Math.Round(this.Width * percentage);
             sb.Draw(this.BackgroundTexture, Vector2.Zero, new Rectangle(0, 0, fill, this.Height), Color);//Color.White);
             var txt = (this.TextFunc != null ? this.TextFunc() : "");
             UIManager.DrawStringOutlined(sb, Name + txt, Dimensions * 0.5f, new Vector2(0.5f));
+            //UIManager.DrawStringOutlined(sb, Name + txt, this.Dimensions * 0.5f - Vector2.UnitY, new Vector2(0.5f));
         }
 
         public Bar()

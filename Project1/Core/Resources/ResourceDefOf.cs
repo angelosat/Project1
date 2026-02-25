@@ -11,6 +11,7 @@ namespace Project1.Core.Resources
         static public readonly ResourceDef HitPoints = new("Hit Points", typeof(HitPoints));
         static public readonly ResourceDef Fuel = new("Fuel", typeof(ResourceWorkerPassive));
         static public readonly ResourceDef RepairCharges = new("Repair Charges", typeof(ResourceWorkerPassive));
+        static public readonly ResourceDef Assembly = new("Assembly", typeof(ResourceWorkerPassive));
 
         static ResourceDefOf()
         {

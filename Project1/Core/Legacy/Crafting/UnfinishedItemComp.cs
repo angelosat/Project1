@@ -16,6 +16,7 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Legacy.Crafting
 {
@@ -69,8 +70,8 @@ namespace Project1.Core.Legacy.Crafting
                 this._authorId = value.RefId;
             }
         }
-        CraftingOrder _orderCached;
-        public CraftingOrder Order => this._orderCached ??= this.Owner.Map.Town.CraftingManagerNew.GetOrder(this._orderid);
+        //CraftingOrder _orderCached;
+        //public CraftingOrder Order => this._orderCached ??= this.Owner.Map.Town.CraftingManagerNew.GetOrder(this._orderid);
         public ContainerList Contents = [];
         Dictionary<BoneDef, MaterialDef> _materialBindings;
         public IReadOnlyDictionary<BoneDef, MaterialDef> MaterialBindings => this._materialBindings;
@@ -106,7 +107,7 @@ namespace Project1.Core.Legacy.Crafting
         }
         internal void SetProduct(Reaction.Product.ProductMaterialPair product, Actor creator, CraftingOrder order)
         {
-            this._orderCached = order;
+            //this._orderCached = order;
             this.Author = creator;
             this.Product = product;
             this.Progress.Max = product.WorkAmount;
@@ -117,24 +118,29 @@ namespace Project1.Core.Legacy.Crafting
                 this.Contents.Add(item);
         }
 
-        internal override void GetSelectionInfo(IUISelection info, GameObject parent)
-        {
-            var box = new GroupBox();
-            box.AddControlsVertically(
-                this.Progress.GetGui(),
-                new Label($"Creator: {this.Author.Name}"),
-                Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
-                );
-            info.AddInfo(box);
-        }
+        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        //{
+        //    var box = new GroupBox();
+        //    box.AddControlsVertically(
+        //        //this.Progress.GetGui(),
+        //        new LabelNew($"Author: {this.Author.Name}")//,
+        //        //Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
+        //        );
+        //    info.AddInfo(box);
+        //}
         internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
             var box = new GroupBox();
             box.AddControlsVertically(
-                this.Progress.GetGui(),
-                new Label($"Creator: {this.Author.Name}"),
-                Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
+                //this.Progress.GetGui(),
+                new LabelNew($"Author: {this.Author.Name}")//,
+                //Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
                 );
+            foreach (var b in this._materialBindings)
+                //box.AddControlsBottomLeft(LabelNew.ParseWrap($"{b.Key.LabelReadable}", $"[{b.Value.LabelReadable}]"));
+                box.AddControlsBottomLeft(new GroupBox().AddControlsLineWrap(
+                    new LabelNew($"{b.Key.LabelReadable}"), 
+                    new LabelNew($"[{b.Value.LabelReadable}]") { TextColor = b.Value.Color }));
             info.AddInfo(box);
         }
         internal override void GetQuickButtons(SelectionManager info, GameObject parent)
@@ -157,7 +163,7 @@ namespace Project1.Core.Legacy.Crafting
         {
             this.Product.Save(tag, "Product");
             this.Author.RefId.Save(tag, "Creator");
-            this.Order.Id.Save(tag, "Order");
+            //this.Order.Id.Save(tag, "Order");
             this.Progress.Save(tag, "Progress");
             this.Contents.Save(tag, "Contents");
         }
@@ -165,7 +171,7 @@ namespace Project1.Core.Legacy.Crafting
         {
             this.Product = new(tag["Product"]);
             this._authorId = (int)tag["Creator"].Value;
-            this._orderid = (int)tag["Order"].Value;
+            //this._orderid = (int)tag["Order"].Value;
             this.Progress.Load(tag["Progress"]);
             this.Contents.Load(tag["Contents"]);
         }

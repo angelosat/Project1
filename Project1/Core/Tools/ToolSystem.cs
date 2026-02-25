@@ -4,6 +4,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
+using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -70,7 +71,11 @@ namespace Project1.Core.Tools
             item.Profile = profile;
             var comp = item.GetComponent<UnfinishedItemComp>();
             comp.Initialize(author, [handleMaterial ,headMaterial]);
+            var assembly = item.Resources.GetResource(ResourceDefOf.Assembly);
+            assembly.SetValue(0);
+            assembly.Max = 110;
             item.Initialize();
+            item.SetName($"{profile.LabelReadable} (unfinished)");
             return item;
         }
     }

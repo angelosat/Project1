@@ -34,6 +34,8 @@ namespace Project1.Core.AI.Planners
             var unfinishedItems = manager.GetUnfinishedItemsOnWorkstations(actor);
             foreach(var (item, workstation) in unfinishedItems)
             {
+                if (!(actor.CanReachAndReserve(item) && actor.CanReachAndReserve(workstation.Parent)))
+                    continue;
                 var plan = new Plan(PlanDefOf.CraftingUnfinished, new TargetArgs(map, workstation.Parent.OriginGlobal))
                 {
                     TargetB = new TargetArgs(workstation.Parent)

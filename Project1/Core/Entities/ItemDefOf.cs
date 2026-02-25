@@ -30,14 +30,15 @@ namespace Project1.Core.Entities
             Category = ItemCategoryDefOf.RawMaterials,
             Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         };
-        static public readonly ItemDef UnfinishedItem = new("UnfinishedItem", typeof(Entity))
+        static public readonly ItemDef UnfinishedItem = new ItemDef("UnfinishedItem", typeof(Entity))
         {
             BaseValue = 5,
             Description = "An unfinished crafting item",
             Category = ItemCategoryDefOf.Manufactured,
-            CompDefs = [EntityCompDefOf.UnfinishedItem],
+            CompDefs = [EntityCompDefOf.UnfinishedItem, EntityCompDefOf.Resources],
             Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
-        };
+        }.AddSpec(new ResourcesComponent.Spec([ResourceDefOf.Assembly]));
+
         static public readonly ItemDef Seeds = new ItemDef("Seeds", typeof(Entity))
         {
             StackCapacity = 32,//64,

@@ -4,6 +4,7 @@ using Project1.Core.Blocks;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Legacy.Crafting;
+using Project1.Core.Resources;
 using Project1.Core.Tools;
 using Project1.Framework;
 using System;
@@ -17,7 +18,9 @@ namespace Project1.Core.Interactions
         {
             internal Entity UnfinishedItem => field ??= this.Workstation.GetUnfinishedItem();
             internal UnfinishedItemComp UnfinishedComp => field ??= this.UnfinishedItem?.GetComponent<UnfinishedItemComp>();
+            internal Resource Assembly => field ??= this.UnfinishedItem.Resources[ResourceDefOf.Assembly];
             internal BlockWorkstationComp Workstation => field ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
+            public override float ProgressPercentage => this.Assembly?.Percentage ?? 0;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
 
@@ -31,6 +34,8 @@ namespace Project1.Core.Interactions
             if (unfinishedItem is null)
                 throw new InvalidOperationException();
             ctxTyped.UnfinishedComp.ApplyWork(workAmount);
+            //unfinishedItem.Resources[ResourceDefOf.Assembly].ApplyDelta(1);
+            ctxTyped.Assembly.ApplyDelta(1);
         }
         internal override void OnFinish(Interaction i)
         {

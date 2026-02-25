@@ -54,7 +54,6 @@ namespace Project1.Core.Resources
         {
             return $"{resource.Value.ToString(this.Format)} / {resource.Max.ToString(this.Format)}";
         }
-
         public virtual Control GetControlBar(Resource resource)
         {
             var bar = new Bar()

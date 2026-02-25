@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Project1.Core.Entities;
 using Project1.Core.UI;
 using Project1.Framework.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Framework.UI
 {
@@ -406,6 +405,7 @@ namespace Project1.Framework.UI
             else
                 yield return new LabelNew(value);
         }
+        
         internal static GroupBox ParseWrap(int wrapWidth, params object[] values)
         {
             return new GroupBox().AddControlsLineWrap(ParseNewNew(values), wrapWidth);

@@ -1106,7 +1106,7 @@ namespace Project1.Core.Entities
             var bones = this.Body.GetAllBones();
             var value = 0;
             foreach (var b in bones)
-                value += b.Material.ValueBase;
+                value += b.Material?.ValueBase ?? 0;
             return (int)(value * this.Def.BaseValue * quality.Multiplier);
         }
         public int GetValueTotal()

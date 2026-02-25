@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.UI.Hud;
 using Project1.Core.UI.NamePlates;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Entities
 {
@@ -14,6 +16,12 @@ namespace Project1.Core.Entities
        
         public bool InCatalogue = true;
         public QualityDef Quality = QualityDefOf.Common;
+        public EntityRefId AuthorId = EntityRefId.Null;
+        public Actor Author
+        {
+            get => this.Owner.World.GetEntity<Actor>(this.AuthorId);
+            set => this.AuthorId = value.RefId;
+        }
 
         public string CustomName = "";
         public string ParentName
@@ -40,8 +48,18 @@ namespace Project1.Core.Entities
             tooltip.Controls.Add(namelabel);
             tooltip.Controls.Add(new Label(this.Quality.LabelReadable) { Fill = Color.Gold, Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.Gold });
             tooltip.Controls.Add(new Label(parent.Def.Description) { Location = tooltip.Controls.BottomLeft });
+            if(this.AuthorId != EntityRefId.Null)
+                tooltip.AddControlsBottomLeft(new LabelNew($"Author: {this.Author?.Name ?? "unknown"}"));
         }
-      
+        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
+        {
+            var box = new GroupBox();
+            if(this.Author is not null)
+                box.AddControlsVertically(
+                    new LabelNew($"Author: {this.Author.Name}")
+                    );
+            info.AddInfo(box);
+        }
         public Color GetQualityColor()
         {
             return Quality.Color;
@@ -51,22 +69,26 @@ namespace Project1.Core.Entities
         {
             w.Write(this.CustomName);
             w.Write(this.Quality.Name);
+            w.Write(this.AuthorId);
         }
 
         public override void Read(IDataReader r)
         {
             this.CustomName = r.ReadString();
             this.Quality = r.ReadDef<QualityDef>();
+            this.AuthorId = r.ReadEntityRefId();
         }
         internal override void SaveExtra(SaveTag tag)
         {
             tag.Save("CustomName", this.CustomName);
             tag.Save("Quality", this.Quality);
+            ((int)this.AuthorId).Save(tag, "Author");
         }
         internal override void LoadExtra(SaveTag tag)
         {
             this.CustomName = tag.LoadString("CustomName");
             this.Quality = tag.LoadDef<QualityDef>("Quality");
+            if (tag.TryLoadInt("Author", out var authorId)) this.AuthorId = authorId;
         }
        
         public override void OnNameplateCreated(GameObject parent, Nameplate plate)

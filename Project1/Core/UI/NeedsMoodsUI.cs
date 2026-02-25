@@ -21,22 +21,21 @@ namespace Project1.Core.UI
 
         public void OnBind(ISelectable selectable)
         {
-            if (selectable is TargetArgs target && target.Object is Actor actor)
-            {
-                var needs = actor.GetComponent<NeedsComponent>();
-                var mood = actor.GetComponent<MoodComp>();
+            //if (selectable is TargetArgs target && target.Object is Actor actor)
+            var actor = selectable as Actor;
+            var needs = actor.GetComponent<NeedsComponent>();
+            var mood = actor.GetComponent<MoodComp>();
 
-                this.BoxNeeds.ClearControls();
-                this.BoxMood.ClearControls();
+            this.BoxNeeds.ClearControls();
+            this.BoxMood.ClearControls();
 
-                needs.GetUI(actor, this.BoxNeeds);
-                mood.GetInterface(actor, this.BoxMood);
+            needs.GetUI(actor, this.BoxNeeds);
+            mood.GetInterface(actor, this.BoxMood);
 
-                this.BoxMood.Location = this.BoxNeeds.TopRight;
-                this.ClearControls();
-                this.AddControls(this.BoxNeeds, this.BoxMood);
+            this.BoxMood.Location = this.BoxNeeds.TopRight;
+            this.ClearControls();
+            this.AddControls(this.BoxNeeds, this.BoxMood);
 
-            }
         }
 
         //protected override void Build()

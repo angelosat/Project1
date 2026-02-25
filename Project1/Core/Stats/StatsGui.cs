@@ -13,8 +13,7 @@ namespace Project1.Core.Entities.Stats
 
         public void OnBind(ISelectable selectable)
         {
-            if (selectable is TargetArgs target && target.Object is Actor actor)
-                this.Build(actor);
+            this.Build(selectable as Actor);
         }
 
         protected void Build(Actor actor)

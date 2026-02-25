@@ -15,11 +15,7 @@ namespace Project1.Core.UI
 
         public void OnBind(ISelectable selectable)
         {
-            if (selectable is TargetArgs target &&
-                target.Object is Actor actor)
-            {
-                Build(actor);
-            }
+            Build(selectable as Actor);
         }
 
         private void Build(Actor actor)

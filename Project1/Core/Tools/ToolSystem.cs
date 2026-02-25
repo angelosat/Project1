@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Animations;
+using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
@@ -65,17 +66,19 @@ namespace Project1.Core.Tools
             return Create(req.Context as ToolProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
         }
 
-        internal static Entity CreateUnfinishedItem(Actor author, ToolProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
+        internal static Entity CreateUnfinishedItem(Actor author, CraftingOrder order, MaterialDef handleMaterial, MaterialDef headMaterial)
         {
             var item = ItemDefOf.UnfinishedItem.Create();
+            var profile = order.ProductDef;
             item.Profile = profile;
             var comp = item.GetComponent<UnfinishedItemComp>();
-            comp.Initialize(author, [handleMaterial ,headMaterial]);
+            comp.Initialize(author, order, [handleMaterial ,headMaterial]);
             var assembly = item.Resources.GetResource(ResourceDefOf.Assembly);
             assembly.SetValue(0);
             assembly.Max = 110;
             item.Initialize();
             item.SetName($"{profile.LabelReadable} (unfinished)");
+            order.UnfinishedItem = item;
             return item;
         }
     }

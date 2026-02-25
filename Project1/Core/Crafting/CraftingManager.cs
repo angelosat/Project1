@@ -24,9 +24,11 @@ namespace Project1.Core.Crafting
 
         readonly Dictionary<BlockWorkstationComp, Contract> _contractsByWorkstation = [];
         readonly Dictionary<Actor, Contract> _contractsByActor = [];
-        readonly HashSet<Entity> _unfinishedItems = [];
-        readonly Dictionary<Actor, List<Entity>> _unfinishedByActor = [];
 
+        readonly HashSet<Entity> _unfinishedItems = [];
+        readonly Dictionary<Actor, HashSet<Entity>> _unfinishedByActor = [];
+
+        public IReadOnlySet<Entity> UnfinishedItems => this._unfinishedItems;
         public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byType.SelectMany(d => d.Value);
         public IEnumerable<IGrouping<BlockEntity, List<CraftingOrder>>> OrdersByWorkstation => AllWorkstations.GroupBy(i => i.Parent, i => i.Orders);
         public IEnumerable<BlockWorkstationComp> AllWorkstationModules => this._workstationsByPosition.Values;
@@ -56,7 +58,11 @@ namespace Project1.Core.Crafting
             if (entity.Def != ItemDefOf.UnfinishedItem)
                 return;
             this._unfinishedItems.Remove(entity);
-            var actor = entity.GetComponent<UnfinishedItemComp>().Author;
+            var comp = entity.GetComponent<UnfinishedItemComp>();
+            var order = this._ordersById[comp.OrderId];
+            order.UnfinishedItem = null;
+            //var actor = comp.Author;
+            var actor = entity.Author;
             if (!this._unfinishedByActor.TryGetValue(actor, out var list))
                 return;
             list.Remove(entity);
@@ -70,7 +76,8 @@ namespace Project1.Core.Crafting
             if (entity.Def != ItemDefOf.UnfinishedItem)
                 return;
             this._unfinishedItems.Add(entity);
-            var actor = entity.GetComponent<UnfinishedItemComp>().Author;
+            //var actor = entity.GetComponent<UnfinishedItemComp>().Author;
+            var actor = entity.Author;
             if (!this._unfinishedByActor.TryGetValue(actor, out var list))
                 this._unfinishedByActor[actor] = list = [];
             list.Add(entity);
@@ -121,12 +128,13 @@ namespace Project1.Core.Crafting
             this._contractsByWorkstation.Remove(contract.Workstation);
         }
         internal Contract GetContract(Actor actor) => this._contractsByActor[actor];
-        internal IReadOnlyCollection<Entity> GetUnfinishedItems(Actor actor)
+        internal IReadOnlySet<Entity> GetUnfinishedItems(Actor actor)
         {
             if (!this._unfinishedByActor.TryGetValue(actor, out var list))
                 return null;
             return list;
         }
+        internal bool IsUnfinished(Entity entity) => this._unfinishedItems.Contains(entity);
         internal IEnumerable<(Entity item, BlockWorkstationComp workstation)> GetUnfinishedItemsOnWorkstations(Actor actor)
         {
             var items = this.GetUnfinishedItems(actor);

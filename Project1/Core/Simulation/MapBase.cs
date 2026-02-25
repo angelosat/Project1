@@ -523,15 +523,18 @@ namespace Project1.Core.Simulation
                     yield return e;
             }
         }
+        [Obsolete]
         public bool IsCellEmptyNew(IntVec3 global)
         {
             return !this.GetObjects(global).Any();
         }
         internal virtual IEnumerable<Entity> GetEntitiesAt(IntVec3 pos)
         {
-            foreach (var entity in this.GetObjectsAtChunk(pos).Where(e => (IntVec3)e.Global == pos))
-                yield return (Entity)entity;
+            //foreach (var entity in this.GetObjectsAtChunk(pos).Where(e => (IntVec3)e.Global == pos))
+            foreach (var entity in this.GetObjectsAtChunk(pos).Where(e => e.Cell == pos))
+                yield return entity;
         }
+        public bool IsCellEmpty(IntVec3 cell) => !this.GetEntitiesAt(cell).Any();
         public abstract bool IsInBounds(Vector3 global);
         public abstract void SetSkyLight(IntVec3 global, byte value);
         public abstract void SetBlockLight(IntVec3 global, byte value);

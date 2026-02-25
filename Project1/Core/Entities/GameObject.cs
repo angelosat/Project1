@@ -275,7 +275,7 @@ namespace Project1.Core.Entities
         
         public bool IsForbidden;
         public bool IsSpawned => this._map is not null;
-        public bool IsReserved => this.Map.Town.ReservationManager.IsReserved(this);
+        public bool IsReserved => this.Map?.Town.ReservationManager.IsReserved(this) ?? false;
         public bool IsPlayerControlled => this.Net.GetPlayers().Any(p => p.ControllingEntity == this); 
         public virtual bool IsHaulable => this.Def.IsHaulable;
         public Entity Hauled => this.Inventory?.HaulSlot.Object as Entity;

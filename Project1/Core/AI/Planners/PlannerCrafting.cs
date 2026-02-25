@@ -4,9 +4,9 @@ using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
+using Project1.Core.Legacy.Crafting;
 using Project1.Core.Resources;
 using Project1.Core.Towns;
-using SharpDX.Direct2D1.Effects;
 using System.Linq;
 using static Project1.Core.Crafting.CraftingOrder;
 
@@ -20,31 +20,53 @@ namespace Project1.Core.AI.Planners
                 return null;
 
             var map = actor.Map;
-            var carried = actor.Hauled as Entity;
+            var carried = actor.Hauled;
             var manager = map.Town.CraftingManagerNew;
 
             // Gather all pending, reachable orders
             //var allOrders = manager.GetAllOrdersUnsorted()
             //    .Where(o => o.Pending && actor.CanReachAndReserve(o.Workstation.Parent));
 
-            // TODO scan for unfinished items
-            // query workstation for unfinished items 
-            // var unfinishedItemsOnWorkstations = manager.AllWorkstations(...)
-            //var unfinishedItemsInStockpiles = map.Stockpiles.AllItems.Where(e => e.Def == ItemDefOf.UnfinishedItem);
-            var unfinishedItems = manager.GetUnfinishedItemsOnWorkstations(actor);
-            foreach(var (item, workstation) in unfinishedItems)
-            {
-                if (!(actor.CanReachAndReserve(item) && actor.CanReachAndReserve(workstation.Parent)))
-                    continue;
-                var plan = new Plan(PlanDefOf.CraftingUnfinished, new TargetArgs(map, workstation.Parent.OriginGlobal))
-                {
-                    TargetB = new TargetArgs(workstation.Parent)
-                };
-                return plan;
-                // if unfitem is on workstation go craft
-                // if actor carries unfitem go deposit
-                // else go carry unfitem
-            }
+            //if(carried?.TryGetComponent<UnfinishedItemComp>(out var comp) ?? false)
+            //{
+            //    // check if order is enabled?
+            //    var workstation = comp.Order.Workstation.Parent;
+            //    if(actor.CanReachAndReserve(workstation) && map.IsCellEmpty(workstation.OriginGlobal.Above))
+            //    {
+            //        return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, workstation.OriginGlobal.Above))
+            //        {
+            //            TargetB = new TargetArgs(workstation)
+            //        };
+            //    }
+            //}
+
+
+            //var unfinishedItems = manager.GetUnfinishedItems(actor);
+            //if(unfinishedItems.Contains(carried)) // implies carried is not null
+            //{
+            //    // TODO haul carried unfinished item to valid workstation
+            //    // QUESTION what does a valid workstation mean for an unfinished item?
+            //    return null; // if no available workstation exists
+            //}
+            //var unfinishedItemsOnWorkstations = manager.GetUnfinishedItemsOnWorkstations(actor);
+            //foreach(var (item, workstation) in unfinishedItemsOnWorkstations)
+            //{
+            //    if (!(actor.CanReachAndReserve(item) && actor.CanReachAndReserve(workstation.Parent)))
+            //        continue;
+            //    var plan = new Plan(PlanDefOf.CraftingUnfinishedAdvance, new TargetArgs(map, workstation.Parent.OriginGlobal))
+            //    {
+            //        TargetB = new TargetArgs(workstation.Parent)
+            //    };
+            //    return plan;
+            //}
+            //var haulableUnfinishedItems = unfinishedItems.Except(unfinishedItemsOnWorkstations.Select(e => e.item));
+            //foreach(var item in haulableUnfinishedItems)
+            //{
+            //    if (!actor.CanReachAndReserve(item))
+            //        continue;
+            //    return new Plan(PlanDefOf.GoHaul, item);
+            //}
+
 
             // Gather all pending, reachable orders
             // Exclude unreachable/unreservable workstations early instead of performing the check for each workstation order
@@ -61,7 +83,12 @@ namespace Project1.Core.AI.Planners
             
             foreach (var order in allOrders)
             {
-                if(TryRepairPlan(actor, order) is Plan repairPlan)
+                if (TryUnfinishedItem(actor, order) is Plan unfinishedPlan)
+                {
+                    return unfinishedPlan;
+                }
+
+                if (TryRepairPlan(actor, order) is Plan repairPlan)
                 {
                     return repairPlan;
                 }
@@ -105,7 +132,7 @@ namespace Project1.Core.AI.Planners
                     actor.CanReachAndReserve(order.Workstation.Parent))
                     //feasibility.ArmedSlots.All(i => actor.CanReachAndReserve(i.Entity)))
                 {
-                    var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order.ProductDef);
+                    var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order);
                     var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinishedBegin : PlanDefOf.Crafting;
                     var plan = new Plan(plandef, new TargetArgs(map, order.Workstation.Parent.OriginGlobal)) 
                     {
@@ -198,7 +225,44 @@ namespace Project1.Core.AI.Planners
 
             return null;
         }
-
+        private static Plan TryUnfinishedItem(Actor actor, CraftingOrder order)
+        {
+            if (order.UnfinishedItem is not Entity unfinishedItem)
+                return null;
+            //var comp = unfinishedItem.GetComponent<UnfinishedItemComp>();
+            //if (comp.Author != actor)
+            if(unfinishedItem.Author != actor)
+                return null;
+            if (!actor.CanReachAndReserve(unfinishedItem))
+                return null;
+            var map = actor.Map;
+            var cell = unfinishedItem.Cell;
+            var workstation = order.Workstation.Parent;
+            if (cell.Below == workstation.OriginGlobal)
+            {
+                return new Plan(PlanDefOf.CraftingUnfinishedAdvance, new TargetArgs(map, workstation.OriginGlobal))
+                {
+                    TargetB = new TargetArgs(workstation)
+                };
+            }
+            if(actor.Hauled is Entity carried && carried == order.UnfinishedItem)
+            {
+                if (actor.CanReachAndReserve(workstation) && map.IsCellEmpty(workstation.OriginGlobal.Above))
+                {
+                    return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, workstation.OriginGlobal.Above))
+                    {
+                        TargetB = new TargetArgs(workstation)
+                    };
+                }
+                else
+                    return null;
+            }
+            if(actor.CanReachAndReserve(unfinishedItem))
+            {
+                return new Plan(PlanDefOf.GoHaul, unfinishedItem);
+            }
+            return null;
+        }
         private static Plan TryRepairPlan(Actor actor, CraftingOrder order)
         {
             if (order.WorkstationCapability != WorkstationCapabilityDefOf.Repairing)

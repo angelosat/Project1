@@ -104,8 +104,9 @@ namespace Project1.Core.Crafting
             //                matRefDef.FuelProduction > 0;
         }
         public static int GetFuelValue(Entity i) => i.Def == ItemDefOf.Ingredient && i.Profile is MaterialRefinementDef matRefDef ? matRefDef.FuelProduction : 0;
-        public static bool CreatesUnfinished(Def productDef)
+        public static bool CreatesUnfinished(CraftingOrder order)
         {
+            var productDef = order.ProductDef;
             return productDef switch
             {
                 MaterialRefinementDef => false,

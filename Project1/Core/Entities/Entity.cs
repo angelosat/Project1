@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Animations;
 using Project1.Core.Components;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Core.Input;
 using Project1.Core.Materials;
@@ -28,7 +29,11 @@ namespace Project1.Core.Entities
         public GearComponent Gear => this.GetComponent<GearComponent>();
 
         public OwnershipComponent Ownership => this.GetComponent<OwnershipComponent>();
-
+        public Actor Author
+        {
+            get => this.DefComponent.Author;
+            set => this.DefComponent.Author = value;
+        }
         public Entity()
         {
             this.Components.Add(EntityCompDefOf.Transform);

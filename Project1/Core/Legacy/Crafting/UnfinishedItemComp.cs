@@ -16,7 +16,6 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Legacy.Crafting
 {
@@ -59,19 +58,19 @@ namespace Project1.Core.Legacy.Crafting
         public Progress Progress = new();
         ProgressInt ProgressInt = new(100);
         public float ProgressPercentage => this.ProgressInt.Percentage;
-        int _orderid;
-        EntityRefId _authorId;
-        public Actor Author
-        {
-            get => field ??= this.Owner.World.GetEntity<Actor>(this._authorId);
-            private set
-            {
-                field = value;
-                this._authorId = value.RefId;
-            }
-        }
+        public int OrderId { get; private set; }
+        //EntityRefId _authorId;
+        //public Actor Author
+        //{
+        //    get => field ??= this.Owner.World.GetEntity<Actor>(this._authorId);
+        //    private set
+        //    {
+        //        field = value;
+        //        this._authorId = value.RefId;
+        //    }
+        //}
         //CraftingOrder _orderCached;
-        //public CraftingOrder Order => this._orderCached ??= this.Owner.Map.Town.CraftingManagerNew.GetOrder(this._orderid);
+        //public CraftingOrder Order => this._orderCached ??= this.Owner.LastMap.Town.CraftingManagerNew.GetOrder(this.OrderId);
         public ContainerList Contents = [];
         Dictionary<BoneDef, MaterialDef> _materialBindings;
         public IReadOnlyDictionary<BoneDef, MaterialDef> MaterialBindings => this._materialBindings;
@@ -94,7 +93,7 @@ namespace Project1.Core.Legacy.Crafting
         {
             return new EntityCreationRequest(this.Owner.Profile, null);
         }
-        internal void Initialize(Actor author, IEnumerable<MaterialDef> bindings)
+        internal void Initialize(Actor author, CraftingOrder order, IEnumerable<MaterialDef> bindings)
         {
             if (this._initialized)
                 throw new InvalidOperationException();
@@ -103,12 +102,14 @@ namespace Project1.Core.Legacy.Crafting
             //foreach (var p in bindings)
             //    this._materialBindings.Add(p.bone, p.material);
             this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, bindings);
-            this.Author = author;
+            //this.Author = author;
+            //this._orderCached = order;
+            this.OrderId = order.Id;
         }
         internal void SetProduct(Reaction.Product.ProductMaterialPair product, Actor creator, CraftingOrder order)
         {
             //this._orderCached = order;
-            this.Author = creator;
+            //this.Author = creator;
             this.Product = product;
             this.Progress.Max = product.WorkAmount;
             this.Owner.Physics.SetWeight(product.Product.Physics.Weight);
@@ -131,11 +132,11 @@ namespace Project1.Core.Legacy.Crafting
         internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
         {
             var box = new GroupBox();
-            box.AddControlsVertically(
-                //this.Progress.GetGui(),
-                new LabelNew($"Author: {this.Author.Name}")//,
-                //Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
-                );
+            //box.AddControlsVertically(
+            //    //this.Progress.GetGui(),
+            //    new LabelNew($"Author: {this.Author.Name}")//,
+            //    //Label.ParseNewNew("Order: ", this.Order).ToGroupBoxHorizontally()
+            //    );
             foreach (var b in this._materialBindings)
                 //box.AddControlsBottomLeft(LabelNew.ParseWrap($"{b.Key.LabelReadable}", $"[{b.Value.LabelReadable}]"));
                 box.AddControlsBottomLeft(new GroupBox().AddControlsLineWrap(
@@ -162,16 +163,16 @@ namespace Project1.Core.Legacy.Crafting
         internal override void SaveExtra(SaveTag tag)
         {
             this.Product.Save(tag, "Product");
-            this.Author.RefId.Save(tag, "Creator");
-            //this.Order.Id.Save(tag, "Order");
+            //this.Author.RefId.Save(tag, "Creator");
+            this.OrderId.Save(tag, "Order");
             this.Progress.Save(tag, "Progress");
             this.Contents.Save(tag, "Contents");
         }
         internal override void LoadExtra(SaveTag tag)
         {
             this.Product = new(tag["Product"]);
-            this._authorId = (int)tag["Creator"].Value;
-            //this._orderid = (int)tag["Order"].Value;
+            //this._authorId = (int)tag["Creator"].Value;
+            this.OrderId = (int)tag["Order"].Value;
             this.Progress.Load(tag["Progress"]);
             this.Contents.Load(tag["Contents"]);
         }
@@ -180,8 +181,8 @@ namespace Project1.Core.Legacy.Crafting
             //this.Product.Write(w);
             //this.Progress.Write(w);
             w.Write(this.ProgressInt);
-            w.Write(this._authorId);
-            w.Write(this._orderid);
+            //w.Write(this._authorId);
+            w.Write(this.OrderId);
             //this.Contents.Write(w);
             w.Write([..this.MaterialBindings.Values]);
         }
@@ -191,8 +192,8 @@ namespace Project1.Core.Legacy.Crafting
             //this.Product = new(r);
             //this.Progress.Read(r);
             this.ProgressInt = r.Read<ProgressInt>();
-            this._authorId = r.ReadInt32();
-            this._orderid = r.ReadInt32();
+            //this._authorId = r.ReadInt32();
+            this.OrderId = r.ReadInt32();
             //this.Contents.Read(r);
             this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
         }

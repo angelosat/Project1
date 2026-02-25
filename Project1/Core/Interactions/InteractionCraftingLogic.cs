@@ -35,25 +35,29 @@ namespace Project1.Core.Interactions
                 throw new InvalidOperationException();
             ctxTyped.UnfinishedComp.ApplyWork(workAmount);
             //unfinishedItem.Resources[ResourceDefOf.Assembly].ApplyDelta(1);
-            ctxTyped.Assembly.ApplyDelta(1);
+            ctxTyped.Assembly.ApplyDelta(workAmount);
         }
         internal override void OnFinish(Interaction i)
         {
             var actor = i.Actor;
             if (actor.Net.IsClient)
                 return;
-            var plan = actor.CurrentPlan;
-            var order = plan.Order;
+            //var plan = actor.CurrentPlan;
             var ctxTyped = (Context)i.Context;
             var unfinishedItem = ctxTyped.UnfinishedItem;
+            //var order = unfinishedItem.GetComponent<UnfinishedItemComp>().Order;
+            var orderId = unfinishedItem.GetComponent<UnfinishedItemComp>().OrderId;
             var map = actor.Map;
             var creationReq = ctxTyped.UnfinishedComp.GetCreationRequest();
             var ctx = i.Context as Context;
             foreach (var pair in ctx.UnfinishedComp.MaterialBindings)
                 creationReq.OverrideMaterial(pair.Key, pair.Value);
             var product = creationReq.Create();
+            product.Author = actor;
+
             map.Spawn(product, unfinishedItem.Global, unfinishedItem.Velocity);
             map.World.DisposeEntity(unfinishedItem);
+            var order = map.Town.CraftingManagerNew.GetOrder(orderId);
             order.CompletedBy(actor);
         }
     }
@@ -82,13 +86,14 @@ namespace Project1.Core.Interactions
             var ingredients = CraftingSystem.GetIngredientMapping(order.ProductDef, plan.TargetsA.Select(t => t.Entity));
             var item = ToolSystem.CreateUnfinishedItem(
                 actor,
-                order.ProductDef as ToolProfileDef,
+                order,
                 ingredients[BoneDefOf.ToolHandle].Body.Material,
                 ingredients[BoneDefOf.ToolHead].Body.Material);
 
             foreach (var ingredient in ingredients.Values)
                 map.World.DisposeEntity(ingredient);
 
+            item.Author = actor;
             map.Spawn(item, workstationCell.Global.Above(), Vector3.Zero);
         }
         
@@ -124,7 +129,7 @@ namespace Project1.Core.Interactions
             var ingredients = CraftingSystem.GetIngredientMapping(order.ProductDef, plan.TargetsA.Select(t => t.Entity));
             var item = ToolSystem.CreateUnfinishedItem(
                 actor, 
-                order.ProductDef as ToolProfileDef, 
+                order, 
                 ingredients[BoneDefOf.ToolHandle].Body.Material, 
                 ingredients[BoneDefOf.ToolHead].Body.Material);
 

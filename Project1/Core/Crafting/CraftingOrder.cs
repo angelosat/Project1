@@ -52,6 +52,8 @@ namespace Project1.Core.Crafting
         public Dictionary<BoneDef, IngredientRequirement> FiltersNew = [];
         public Dictionary<BoneDef, CraftingRule> Rules = [];
         Dictionary<BoneDef, MaterialDef[]> AcceptableMaterials = [];
+        internal Entity UnfinishedItem;
+
         public bool IsAllowed(BoneDef bone, MaterialDef mat) => !this.Filters[bone].Contains(mat);
         public bool IsAllowed(BoneDef bone, MaterialRefinementDef form) => RawMaterialSystem.MaterialsByType[form.MaterialType].All(mat => !this.Filters[bone].Contains(mat));
         internal void Toggle(BoneDef bone, MaterialRefinementDef form, MaterialDef material)

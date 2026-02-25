@@ -87,7 +87,7 @@ namespace Project1.Core.Crafting
         {
             if (!this._contractsByActor.TryGetValue(e.Actor, out var contract))
                 return;
-            if (e.Behavior is null)
+            //if (e.Behavior is null)
                 this.ClearContract(contract);
         }
 
@@ -251,5 +251,4 @@ namespace Project1.Core.Crafting
             throw new NotImplementedException();
         }
     }
-
 }

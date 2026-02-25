@@ -1,14 +1,17 @@
-﻿using Project1.Core.Animations;
+﻿using Microsoft.Xna.Framework.Content;
+using Project1.Core.Animations;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Legacy.Crafting;
+using Project1.Core.Loot;
 using Project1.Core.Materials;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Framework;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Project1.Core.Tools
 {
@@ -61,6 +64,7 @@ namespace Project1.Core.Tools
             comp.Bake(StatDefOf.ToolSpeed, BoneDefOf.ToolHandle);
             comp.Bake(StatDefOf.ToolEffectiveness, BoneDefOf.ToolHead);
         }
+
         internal static Entity Create(EntityCreationRequest req)
         {
             return Create(req.Context as ToolProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
@@ -81,7 +85,33 @@ namespace Project1.Core.Tools
             order.UnfinishedItem = item;
             return item;
         }
+        internal static void CancelUnfinished(Entity entity)
+        {
+            if (entity is null) // cancellation has been requested after crafting completion
+                return;
+            var comp = entity.GetComponent<UnfinishedItemComp>();
+            var profile = entity.Profile;
+            var ingredients = new List<Entity>();
+            foreach (var (bone, mat) in comp.MaterialBindings)
+            {
+                var refinement = GetCorrectRefinementForBoneMaterial(bone, mat);
+                var ingredient = RawMaterialSystem.Create(refinement, mat, 1);
+                ingredients.Add(ingredient);
+            }
+            entity.Map.Events.Post(new LootDropEvent([.. ingredients], entity.Map, entity.Global, entity.Velocity));
+            entity.World.DisposeEntity(entity);
+        }
+        static MaterialRefinementDef GetCorrectRefinementForBoneMaterial(BoneDef bone, MaterialDef material)
+        {
+            var rule = GetRuleFor(bone);
+            var refTypes = rule.Types;
+            foreach (var t in refTypes)
+                if (t.MaterialType == material.Type)
+                    return t;
+            throw new UnreachableException();
+        }
     }
+    
     record CraftingRules(BoneDef Bone)
     {
         public MaterialRefinementDef Refinement;

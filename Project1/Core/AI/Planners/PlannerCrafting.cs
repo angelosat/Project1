@@ -242,7 +242,8 @@ namespace Project1.Core.AI.Planners
             {
                 return new Plan(PlanDefOf.CraftingUnfinishedAdvance, new TargetArgs(map, workstation.OriginGlobal))
                 {
-                    TargetB = new TargetArgs(workstation)
+                    TargetB = new TargetArgs(workstation),
+                    Order = order
                 };
             }
             if(actor.Hauled is Entity carried && carried == order.UnfinishedItem)

@@ -1,11 +1,24 @@
-﻿using System.Collections.Generic;
-using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Behaviors;
+﻿using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Core.AI;
+using Project1.Core.AI.Behaviors.Pathing;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core
 {
+    class BehaviorCraftUnfinishedAdvance : BehaviorExecutePlanNew
+    {
+        public override bool CommitReservations()
+        {
+            var map = this.Actor.Map;
+            var plan = this.Plan;
+            var item = plan.Order.UnfinishedItem;
+            ArgumentNullException.ThrowIfNull(item);
+            if (!map.Town.ReservationManager.Reserve(this.Actor, plan, new TargetArgs(item)))
+                return false;
+            return base.CommitReservations();
+        }
+    }
     class BehaviorGoCraftUnfinishedBegin : BehaviorExecutePlanNew
     {
         //readonly static TargetIndex CellTarget = TargetIndex.A;

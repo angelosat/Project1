@@ -82,7 +82,7 @@ namespace Project1.Core.Interactions
             Skill = SkillDefOf.Crafting,
             ToolUse = ToolUseDefOf.Carpentry
         };
-        public static readonly InteractionDef CraftUnfinishedBegin = new("CraftingUnfinished", typeof(InteractionSpawnUnfinishedLogic))
+        public static readonly InteractionDef CraftUnfinishedBegin = new("CraftingUnfinished", typeof(InteractionCommitUnfinishedLogic))
         {
             Animation = AnimationDefOf.Tool,
             ProgressHandler = InteractionProgressHandlers.FirstContact,// new InteractionProgressTool(),

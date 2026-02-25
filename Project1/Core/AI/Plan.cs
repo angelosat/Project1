@@ -42,9 +42,7 @@ namespace Project1.Core.AI
         public List<ObjectAmount> PlacedObjects = [];
         public List<Entity> CraftedItems = [];
         public DesignationDef Designation;
-        //public CraftOrderOld OrderOld;
         public CraftingOrder Order;
-        //public Dictionary<string, ObjectRefIDsAmount> IngredientsUsed = [];
         public TargetArgs Product = TargetArgs.Null;
         public bool Forced;
         public bool Urgent = true; // TODO default should be false
@@ -222,23 +220,23 @@ namespace Project1.Core.AI
 
             this.BehaviorType = behaviorType;
         }
-        [Obsolete("use a ctor which accepts a taskdef")]
+        [Obsolete("use a ctor which accepts a plandef")]
         public Plan(Type behaviorType, TargetArgs targetA) : this()
         {
             throw new Exception();
             this.BehaviorType = behaviorType;
             this.SetTarget(TargetIndex.A, targetA);
         }
-        public Plan(PlanDef def, TargetArgs targetA) : this()
+        public Plan(PlanDef def, TargetArgs interactionTarget) : this()
         {
-            if (def is null) throw new Exception();
+            ArgumentNullException.ThrowIfNull(def);
 
             this.Def = def;
-            this.SetTarget(TargetIndex.A, targetA);
+            this.SetTarget(TargetIndex.A, interactionTarget);
         }
         public Plan(PlanDef def, MapBase map, IntVec3 pos, int amount) : this()
         {
-            if (def is null) throw new Exception();
+            ArgumentNullException.ThrowIfNull(def);
 
             this.Def = def;
             this.SetTarget(TargetIndex.A, new TargetArgs(map, pos));
@@ -246,7 +244,7 @@ namespace Project1.Core.AI
         }
         public Plan(PlanDef def, Entity item, int amount = -1) : this()
         {
-            if (def is null) throw new Exception();
+            ArgumentNullException.ThrowIfNull(def);
 
             this.Def = def;
             this.SetTarget(TargetIndex.A, new TargetArgs(item));
@@ -286,8 +284,6 @@ namespace Project1.Core.AI
         {
             return this.Def?.GetForceText(this) ?? this.BehaviorType.Name;
         }
-
-
 
         public Type BehaviorType
         {
@@ -449,7 +445,6 @@ namespace Project1.Core.AI
         {
 
         }
-
         internal void MapLoaded(GameObject parent)
         {
             this.TargetA.ResolveReferences(parent.Map);

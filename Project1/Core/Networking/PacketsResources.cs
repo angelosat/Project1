@@ -25,7 +25,6 @@ namespace Project1.Core.Networking
         {
             endpoint.World
                 .GetEntity(packet.PacketReader.ReadEntityRefId())
-                //.Resources.SetValue(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
                 .Resources.ApplyDelta(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
         }
     }

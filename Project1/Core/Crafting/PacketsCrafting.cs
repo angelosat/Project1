@@ -1,11 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Animations;
 using Project1.Core.Blocks;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.Tools;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -16,7 +19,14 @@ namespace Project1.Core.Crafting
     [EnsureStaticCtorCall]
     static class PacketsCrafting
     {
-        readonly static PacketId _pPlayerCreatedOrder, _pPlayerDeletedOrder, _pPlayerModifiedOrder, _pOrderUpdated, _pPlayerModifiedOrderFilters, _pPlayerSetWorkstationIO;
+        readonly static PacketId 
+            _pPlayerCancellingUnfinished,
+            _pPlayerCreatedOrder, 
+            _pPlayerDeletedOrder, 
+            _pPlayerModifiedOrder, 
+            _pOrderUpdated, 
+            _pPlayerModifiedOrderFilters, 
+            _pPlayerSetWorkstationIO;
         static PacketsCrafting()
         {
             _pPlayerSetWorkstationIO = Registry.PacketHandlers.Register(OnPlayerSetWorkstationIO);
@@ -26,11 +36,38 @@ namespace Project1.Core.Crafting
             _pPlayerModifiedOrder = Registry.PacketHandlers.Register(OnPlayerModifiedOrder);
             _pPlayerModifiedOrderFilters = Registry.PacketHandlers.Register(OnPlayerModifiedOrderFilters);
             _pOrderUpdated = Registry.PacketHandlers.Register(OnCraftOrderUpdated);
+            _pPlayerCancellingUnfinished = Registry.PacketHandlers.Register(OnPlayerCancellingUnfinished);
             Registry.PlayerInputEventHooks.Register<PlayerIssuedCraftOrderEvent>(HandlePlayerIssuedCraftOrderEvent);
             Registry.PlayerInputEventHooks.Register<PlayerIssuedCraftOrderEventNew>(HandlePlayerIssuedCraftOrderNew);
             Registry.PlayerInputEventHooks.Register<PlayerModifiedOrderFiltersEvent>(HandlePlayerModifiedOrderFilters);
             Registry.PlayerInputEventHooks.Register<PlayerSetWorkstationZoneEvent>(HandlePlayerSetWorkstationZoneEvent);
             Registry.MapEventHooksServer.Register<CraftOrderCompletedEvent>(HandleCraftOrderCompletedEvent);
+            Registry.PlayerInputEventHooks.Register<PlayerCancellingUnfinishedItemEvent>(HandlePlayerCancellingUnfinishedItem);
+        }
+
+        private static void HandlePlayerCancellingUnfinishedItem(PlayerCancellingUnfinishedItemEvent e)
+        {
+            var item = e.Item;
+            if(Ingame.Net is Server)
+                ToolSystem.CancelUnfinished(item);
+            else
+                SendPlayerCancellingUnfinishedItem(Ingame.Net, item);
+        }
+
+        private static void SendPlayerCancellingUnfinishedItem(NetEndpoint net, Entity item)
+        {
+            net.BeginPacketImmediate(_pPlayerCancellingUnfinished)
+                .Write(item.RefId);
+        }
+
+        private static void OnPlayerCancellingUnfinished(NetEndpoint endpoint, Packet packet)
+        {
+            if (endpoint.IsClient)
+                throw new InvalidOperationException("Operation should never occur on a client");
+            var r = packet.PacketReader;
+            var item = endpoint.World.GetEntity(r.ReadEntityRefId());
+            ToolSystem.CancelUnfinished(item);
+            //SendPlayerCancellingUnfinishedItem(endpoint, item);
         }
 
         private static void HandlePlayerIssuedCraftOrderNew(PlayerIssuedCraftOrderEventNew e)

@@ -142,6 +142,7 @@ namespace Project1.Core.UI.Hud
                 {
                     this.PanelInfo.Hide();
                     this.BoxTabs.Hide();
+                    this.BoxOrderButtons.Hide();
                 }
             }
         }

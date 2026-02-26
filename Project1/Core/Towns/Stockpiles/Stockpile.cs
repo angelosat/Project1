@@ -4,6 +4,7 @@ using Project1.Core.Legacy.Storage;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Zones;
+using Project1.Core.UI;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
@@ -15,7 +16,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Stockpiles
 {
-    public class Stockpile : Zone, IStorageNew, IContextable
+    public class Stockpile : Zone, IStorageNew, IContextable, ISelectable
     {
         public override ZoneDef ZoneDef => ZoneDefOf.Stockpile;
         public StorageSettings Settings { get; } = new();
@@ -149,14 +150,15 @@ namespace Project1.Core.Towns.Stockpiles
 
             return true;
         }
-        public override IEnumerable<(string name, Action action)> GetInfoTabs()
+        public override IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
-            yield return ("Filters", () =>
-            {
-                var win = new StockpileFiltersGui(this).ToWindow("Filters");
-                win.ToggleSmart();
-            }
-            );
+            yield return ("Filters", typeof(StockpileFiltersGui));
+            //yield return ("Filters", () =>
+            //{
+            //    var win = new StockpileFiltersGui(this).ToWindow("Filters");
+            //    win.ToggleSmart();
+            //}
+            //);
         }
         public override void GetSelectionInfo(IUISelection panel)
         {

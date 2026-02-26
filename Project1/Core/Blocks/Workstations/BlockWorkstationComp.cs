@@ -56,9 +56,13 @@ namespace Project1.Core.Blocks
         }
 
 
-        internal override void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3)
+        //internal override void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3)
+        //{
+        //    register("Orders", typeof(WorkstationGuiNew));
+        //}
+        internal override IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
-            register("Orders", typeof(WorkstationGuiNew));
+            yield return ("Orders", typeof(WorkstationGuiNew));
         }
 
         internal void MoveUp(CraftingOrder orderSettings)

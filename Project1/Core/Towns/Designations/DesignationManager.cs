@@ -203,6 +203,21 @@ namespace Project1.Core.Towns.Designations
                     des.Value.Remove(cell.Global);
             this.Map.Events.Post(new DesignationsChangedEvent(targets));
         }
+        internal void AddBlockEntities(DesignationDef designation, IEnumerable<BlockEntity> targets, bool isRemoval)
+        {
+            var removing = isRemoval && designation.IsManual;
+            var list = this.BlockEntityDesignations[designation];
+            if (removing)
+                foreach (var be in targets)
+                    list.Remove(be);
+            else
+            {
+                foreach (var be in targets)
+                    if (designation.Worker.IsValid(be))
+                        list.Add(be);
+            }
+            this.Map.Events.Post(new DesignationsChangedEvent(targets));
+        }
         internal void AddCells(DesignationDef designation, IEnumerable<IntVec3> cells, bool isRemoval)
         {
             this.AddCells(designation, cells.Select(c => new CellSelection(this.Map, c) as ISelectable), isRemoval);
@@ -284,7 +299,16 @@ namespace Project1.Core.Towns.Designations
                 _ => false
             };
         }
-        
+        internal DesignationDef GetDesignation(ISelectable target)
+        {
+            return target switch
+            {
+                CellSelection => this.CellDesignations.FirstOrDefault(v => v.Value.Contains(target.Global)).Key,
+                Entity => this.EntityDesignations.FirstOrDefault(v => v.Value.Contains(target)).Key,
+                BlockEntity => this.BlockEntityDesignations.FirstOrDefault(v => v.Value.Contains(target)).Key,
+                _ => null
+            };
+        }
         internal bool IsDesignation(IntVec3 global, DesignationDef desType)
         {
             var contains = this.Designations[desType].Contains(global.At(this.Map));

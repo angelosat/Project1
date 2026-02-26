@@ -2,6 +2,7 @@
 using Project1.Core.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Project1.Core.Input.Orders
@@ -10,7 +11,13 @@ namespace Project1.Core.Input.Orders
     {
         internal abstract void Issue(OrderCommandRuntime runtime, SelectionFinal selection);
         internal abstract bool CanIssue(ISelectable target);
-        internal virtual bool CanIssue(IReadOnlyCollection<ISelectable> targets) => targets.Any(this.CanIssue);
+        internal bool CanIssue(ValidSelectedCount validCount, IReadOnlyCollection<ISelectable> targets)
+            => validCount switch
+            {
+                ValidSelectedCount.Any => targets.Any(this.CanIssue),
+                ValidSelectedCount.Single => targets.Count == 1 && this.CanIssue(targets.First()),
+                _ => throw new UnreachableException()
+            };
         [Obsolete]
         protected virtual void Execute(MapBase map, IEnumerable<ISelectable> targets) { }
         [Obsolete]

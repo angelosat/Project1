@@ -85,33 +85,33 @@ namespace Project1.Core
             var bentity = map.GetBlockEntity<BlockBedEntity>(global);
             bentity.Type = type;
             map.InvalidateCell(global);
-            if (map.IsActive && SelectionManager.SingleSelectedCell == global)
-                bentity.UpdateQuickButtons();
+            //if (map.IsActive && SelectionManager.SingleSelectedCell == global)
+            //    bentity.UpdateQuickButtons();
         }
 
-        static readonly IconButton ButtonSetVisitor = new(Icon.Construction) { HoverText = "Set to visitor bed" };
-        static readonly IconButton ButtonUnsetVisitor = new(Icon.Construction, Icon.Cross) { HoverText = "Set to citizen bed" };
-        void UpdateQuickButtons()
-        {
-            var t = this.Type;
-            var map = this.Map;
-            var vector3 = this.OriginGlobal;
-            switch (t)
-            {
-                case BlockBedEntity.Types.Citizen:
-                    SelectionManager.RemoveOrderButton(ButtonUnsetVisitor);
-                    SelectionManager.AddButton(ButtonSetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Visitor), new CellSelection(map, vector3));
-                    return;
+        //static readonly IconButton ButtonSetVisitor = new(Icon.Construction) { HoverText = "Set to visitor bed" };
+        //static readonly IconButton ButtonUnsetVisitor = new(Icon.Construction, Icon.Cross) { HoverText = "Set to citizen bed" };
+        //void UpdateQuickButtons()
+        //{
+        //    var t = this.Type;
+        //    var map = this.Map;
+        //    var vector3 = this.OriginGlobal;
+        //    switch (t)
+        //    {
+        //        case BlockBedEntity.Types.Citizen:
+        //            SelectionManager.RemoveOrderButton(ButtonUnsetVisitor);
+        //            SelectionManager.AddButton(ButtonSetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Visitor), new CellSelection(map, vector3));
+        //            return;
 
-                case BlockBedEntity.Types.Visitor:
-                    SelectionManager.RemoveOrderButton(ButtonSetVisitor);
-                    SelectionManager.AddButton(ButtonUnsetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Citizen), new CellSelection(map, vector3));
-                    return;
+        //        case BlockBedEntity.Types.Visitor:
+        //            SelectionManager.RemoveOrderButton(ButtonSetVisitor);
+        //            SelectionManager.AddButton(ButtonUnsetVisitor, t => Packets.SetType(map.Net, map.Net.GetPlayer(), vector3, BlockBedEntity.Types.Citizen), new CellSelection(map, vector3));
+        //            return;
 
-                default:
-                    throw new Exception();
-            }
-        }
+        //        default:
+        //            throw new Exception();
+        //    }
+        //}
         [EnsureStaticCtorCall]
         static class Packets
         {

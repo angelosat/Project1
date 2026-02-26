@@ -24,10 +24,10 @@ namespace Project1.Core.Towns.Designations
 
         public bool IsManual = true;
        
-        public DesignationDef(string name, Type workerClass, Sprite sprite, string verb, string hoverText, bool affectsBlocks) : base(name)
+        public DesignationDef(string name, Type workerClass, Sprite sprite, string verb, string hoverText, TargetType targetType) : base(name)
         {
             //this.AffectsBlocks = affectsBlocks;
-            this.TargetType = affectsBlocks ? TargetType.Cell : TargetType.Entity;
+            this.TargetType = targetType;// affectsBlocks ? TargetType.Cell : TargetType.Entity;
             this.WorkerClass = workerClass;
             this.Icon = new Icon(sprite);
             //this.IconAdd = new QuickButton(this.Icon, null, verb)
@@ -36,10 +36,10 @@ namespace Project1.Core.Towns.Designations
             //};
             //this.IconRemove = this.IconAdd != null ? new QuickButton(this.IconAdd.Icon, null, "Cancel") { HoverText = $"Cancel {name}" }.AddOverlay(Icon.X) as QuickButton : null;
         }
-        public DesignationDef(string name, Type workerClass, char symbol, string verb, string hoverText, bool affectsBlocks) : base(name)
+        public DesignationDef(string name, Type workerClass, char symbol, string verb, string hoverText, TargetType targetType) : base(name)
         {
             //this.AffectsBlocks = affectsBlocks;
-            this.TargetType = affectsBlocks ? TargetType.Cell : TargetType.Entity;
+            this.TargetType = targetType;// affectsBlocks ? TargetType.Cell : TargetType.Entity;
             this.WorkerClass = workerClass;
             //this.IconAdd = new QuickButton(symbol, null, verb)
             //{

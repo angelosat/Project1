@@ -1,16 +1,15 @@
 ﻿using Project1.Core.Screens;
 using Project1.Core.Towns.Designations;
 using Project1.Core.UI;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Project1.Core.Input.Orders
 {
     internal sealed class OrderCommandRemoveDesignation : CommandWorker
     {
-        internal override bool CanIssue(ISelectable target) => target.Map.Town.DesignationManager.IsDesignation(target);
-        internal override bool CanIssue(IReadOnlyCollection<ISelectable> targets)
-            => targets.Any(this.CanIssue);
+        internal override bool CanIssue(ISelectable target) //=> target.Map.Town.DesignationManager.IsDesignation(target);
+            => target.Map.Town.DesignationManager.GetDesignation(target)?.IsManual ?? false;
+        //internal override bool CanIssue(IReadOnlyCollection<ISelectable> targets)
+        //    => targets.Any(this.CanIssue);
         internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
         {
             if(selection.Begin.HasValue)

@@ -298,10 +298,13 @@ namespace Project1.Core.Blocks
             //info.AddInfo(box);
         //}
 
-        public IEnumerable<(string name, Action action)> GetInfoTabs()
+        public IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
             //throw new NotImplementedException();
-            yield break;
+            //yield break;
+            foreach (var comp in this.Comps.Values)
+                foreach (var tab in comp.GetSelectionTabs())
+                    yield return tab;
         }
         public IEnumerable<Control> GetSelectionDetails()
         {

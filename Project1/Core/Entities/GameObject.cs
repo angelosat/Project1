@@ -156,12 +156,12 @@ namespace Project1.Core.Entities
         {
             yield return IconCameraFollow.Value;
         }
-        internal virtual IEnumerable<(string label, Type guiType)> GetQuickButtons() { yield break; }
-        public virtual void GetQuickButtons(SelectionManager info)
-        {
-            foreach (var comp in this.Components.Values)
-                comp.GetQuickButtons(info, this);
-        }
+        public virtual IEnumerable<(string label, Type type)> GetSelectionTabs() { yield break; }
+        //public virtual void GetQuickButtons(SelectionManager info)
+        //{
+        //    foreach (var comp in this.Components.Values)
+        //        comp.GetQuickButtons(info, this);
+        //}
         internal void AttackTelegraph(GameObject parent)
         {
             throw new NotImplementedException();
@@ -1214,10 +1214,10 @@ namespace Project1.Core.Entities
             master.Absorb(slave);
         }
         #endregion
-        IEnumerable<(string name, Action action)> ISelectable.GetInfoTabs()
-        {
-            throw new NotImplementedException();
-        }
+        //IEnumerable<(string name, Action action)> ISelectable.GetInfoTabs()
+        //{
+        //    throw new NotImplementedException();
+        //}
         public IEnumerable<IntVec3> GetOccupyingCells()
         {
             return this.Def.OccupyingCellsStanding(this.Global.ToCell());

@@ -871,7 +871,7 @@ namespace Project1.Core.Blocks
         internal IEnumerable<IntVec3> GetReservedInteractionCells(IntVec3 global, int orientation) => this.GetInteractionSpots(global, orientation).SelectMany(ActorDefOf.Npc.OccupyingCellsStanding);
         internal IEnumerable<IntVec3> GetReservedInteractionCells(MapBase map, IntVec3 global) => this.GetInteractionSpots(map, global).SelectMany(ActorDefOf.Npc.OccupyingCellsStanding);
 
-        public virtual IEnumerable<(string name, Action action)> GetInfoTabs() { yield break; }
+        public virtual IEnumerable<(string label, Type type)> GetSelectionTabs() { yield break; }
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
             map.GetBlockEntity(vector3)?.GetSelectionInfo(info, map, vector3);

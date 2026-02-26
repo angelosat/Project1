@@ -796,7 +796,7 @@ namespace Project1.Core.Simulation
                 foreach (var (local, entity) in ch.GetBlockEntitiesByPosition())
                     entity.Draw(camera, this, local.ToGlobal(ch));
         }
-        internal IEnumerable<(string name, Action action)> GetInfoTabs()
+        internal IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
             yield break;
         }

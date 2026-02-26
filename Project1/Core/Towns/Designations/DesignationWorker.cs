@@ -3,7 +3,6 @@ using Project1.Core.Entities;
 using Project1.Core.Input;
 using Project1.Core.Plants;
 using Project1.Core.UI;
-using System.Diagnostics;
 
 namespace Project1.Core.Towns.Designations
 {
@@ -21,6 +20,11 @@ namespace Project1.Core.Towns.Designations
         internal override bool IsValid(ISelectable target) => target is Entity entity && this.IsValid(entity);
         public abstract bool IsValid(Entity entity);
     }
+    public abstract class BlockEntityDesignationWorker : DesignationWorker
+    {
+        internal override bool IsValid(ISelectable target) => target is BlockEntity bEntity && this.IsValid(bEntity);
+        public abstract bool IsValid(BlockEntity entity);
+    }
     class DesignationWorkerDeconstruct : DesignationWorker
     {
         internal override bool IsValid(ISelectable target)
@@ -34,11 +38,18 @@ namespace Project1.Core.Towns.Designations
             };
         }
     }
-    class DesignationWorkerConstruct : CellDesignationWorker
+    //class DesignationWorkerConstruct : CellDesignationWorker
+    //{
+    //    public override bool IsValid(CellSelection cell)
+    //    {
+    //        return cell.Block is BlockAir;
+    //    }
+    //}
+    class DesignationWorkerConstruct : BlockEntityDesignationWorker
     {
-        public override bool IsValid(CellSelection cell)
+        public override bool IsValid(BlockEntity be)
         {
-            return cell.Block is BlockAir;
+            return be.HasComp<BlockConstructionComp>();
         }
     }
     class DesignationWorkerMine : CellDesignationWorker

@@ -26,9 +26,9 @@ namespace Project1.Core.Input
 
         readonly Vector3 ISelectable.Global => this.Global;
 
-        public IEnumerable<(string name, Action action)> GetInfoTabs()
+        public IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
-            foreach (var i in this.Block.GetInfoTabs())
+            foreach (var i in this.Block.GetSelectionTabs())
                 yield return i;
         }
 

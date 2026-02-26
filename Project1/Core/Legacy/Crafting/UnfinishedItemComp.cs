@@ -82,7 +82,6 @@ namespace Project1.Core.Legacy.Crafting
                     new LabelNew($"{b.Key.LabelReadable}"), 
                     new LabelNew($"[{b.Value.LabelReadable}]") { TextColor = b.Value.Color });
             //info.AddInfo(box);
-
         }
         internal override void GetQuickButtons(SelectionManager info, GameObject parent)
         {

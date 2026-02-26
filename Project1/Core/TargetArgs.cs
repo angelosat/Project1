@@ -696,7 +696,7 @@ namespace Project1.Core
                 };
             }
         }
-        public IEnumerable<(string name, Action action)> GetInfoTabs()
+        public IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
             switch (this.Type)
             {
@@ -704,14 +704,14 @@ namespace Project1.Core
                     throw new Exception();
 
                 case TargetType.Cell:
-                    foreach (var i in this.Block.GetInfoTabs())
+                    foreach (var i in this.Block.GetSelectionTabs())
                         yield return i;
                     break;
 
                 default:
                     yield break;
             }
-            foreach (var i in this.Map.GetInfoTabs())
+            foreach (var i in this.Map.GetSelectionTabs())
                 yield return i;
         }
         public void GetSelectionInfo(IUISelection info)
@@ -762,32 +762,32 @@ namespace Project1.Core
             //info.AddInfo(box);
             //this.Map!.OnTargetSelected(info, this);
         }
-        public void GetQuickButtons(SelectionManager info)
-        {
-            switch (this.Type)
-            {
-                case TargetType.Entity:
-                    this.Object.GetQuickButtons(info);
-                    break;
+        //public void GetQuickButtons(SelectionManager info)
+        //{
+        //    switch (this.Type)
+        //    {
+        //        case TargetType.Entity:
+        //            this.Object.GetQuickButtons(info);
+        //            break;
 
-                case TargetType.Cell:
-                    this.Block.GetQuickButtons(info, this.Map, this.Global);
-                    this.Map.GetQuickButtons((name, guiType) =>
-                            info.AddTabAction(name, () => UIManager.ToggleUnique(guiType, this)), this.Global);
-                    break;
+        //        case TargetType.Cell:
+        //            this.Block.GetQuickButtons(info, this.Map, this.Global);
+        //            this.Map.GetQuickButtons((name, guiType) =>
+        //                    info.AddTabAction(name, () => UIManager.ToggleUnique(guiType, this)), this.Global);
+        //            break;
 
-                case TargetType.BlockEntity:
-                    this.BlockEntity.GetQuickButtons(
-                        (name, guiType) => 
-                            info.AddTabAction(name, () => UIManager.ToggleUnique(guiType, new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
-                        this.Map, 
-                        this.Global);
-                    break;
+        //        case TargetType.BlockEntity:
+        //            this.BlockEntity.GetQuickButtons(
+        //                (name, guiType) => 
+        //                    info.AddTabAction(name, () => UIManager.ToggleUnique(guiType, new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
+        //                this.Map, 
+        //                this.Global);
+        //            break;
 
-                default:
-                    return;
-            }
-        }
+        //        default:
+        //            return;
+        //    }
+        //}
         public bool Exists
         {
             get

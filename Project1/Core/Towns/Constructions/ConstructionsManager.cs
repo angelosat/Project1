@@ -61,8 +61,6 @@ namespace Project1.Core.Towns.Constructions
         {
             if (!e.Entity.HasComp<BlockConstructionComp>())
                 return;
-            //foreach (var cell in e.Entity.CellsOccupied)
-            //this.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Construct, cell);
             this.Town.DesignationManager.RemoveCells(e.Entity.CellsOccupied);
         }
 
@@ -70,8 +68,8 @@ namespace Project1.Core.Towns.Constructions
         {
             if (!e.Entity.HasComp<BlockConstructionComp>())
                 return;
-            //this.Town.DesignationManager.Add(DesignationDefOf.Construct, [.. e.Entity.CellsOccupied], false);
-            this.Town.DesignationManager.AddCells(DesignationDefOf.Construct, e.Entity.CellsOccupied, false);
+            //this.Town.DesignationManager.AddCells(DesignationDefOf.Construct, e.Entity.CellsOccupied, false);
+            this.Town.DesignationManager.AddBlockEntities(DesignationDefOf.Construct, [e.Entity], false);
         }
 
         private void OnConstructionFinished(ConstructionFinishedEvent e)
@@ -188,41 +186,6 @@ namespace Project1.Core.Towns.Constructions
                     Ingame.Instance.Events.Post(new PlayerCancelledConstructionEvent([.. targets.Select(t => (IntVec3)t.Global)]));
             }
         }
-        //internal override void UpdateOrderButtons()
-        //{
-        //    var selected = SelectionManager.Instance.CurrentSelections;
-        //    var selectedType = selected.First().Type;
-        //    if (selectedType == TargetType.BlockEntity)
-        //    {
-        //        var constructionTargets =
-        //            selected.Where(s => s.BlockEntity is BlockEntity be && be.HasComp<BlockConstructionComp>());
-        //        if (!constructionTargets.Any())
-        //            return;
-        //        SelectionManager.AddOrderButton(IconCancel, cancelNew, constructionTargets);
-        //        static void cancelNew(List<TargetArgs> targets) =>
-        //            Ingame.Instance.Events.Post(new PlayerCancelledConstructionEvent([.. targets.Select(t => t.BlockEntity.OriginGlobal)]));
-        //    }
-        //    else if (selectedType == TargetType.Cell)
-        //    {
-        //        var filteredTargets = selected.Where(t => this.Map.GetBlockEntity(t.Global) is BlockEntity b && b.HasComp<BlockConstructionComp>());
-        //        //var constructionCells = selected.Select(t => this.Map.GetBlockEntity(t.Global)).Where(b => b.HasComp<BlockConstructionComp>());
-        //        if (!filteredTargets.Any())
-        //            return;
-        //        SelectionManager.AddOrderButton(IconCancel, cancelNew, filteredTargets);
-        //        static void cancelNew(List<TargetArgs> targets) =>
-        //            Ingame.Instance.Events.Post(new PlayerCancelledConstructionEvent([.. targets.Select(t => (IntVec3)t.Global)]));
-        //    }
-        //    return;
-
-        //    var cells = SelectionManager.SelectedCells;
-        //    var distinctCellOrigins = cells.Select(c => Cell.GetOrigin(this.Map, c)).Distinct();
-        //    var selectedDesignations = distinctCellOrigins.Intersect(this.DesignationLocations);
-        //    if (!selectedDesignations.Any())
-        //        return;
-        //    SelectionManager.AddButton(IconCancel, cancel, selectedDesignations);
-
-        //    static void cancel(List<TargetArgs> positions) => PacketsDesignations.Send(Client.Instance, false, positions, null);
-        //}
         internal void Designate(IEnumerable<IntVec3> positions, ConstructionDesignationArgs args, bool removing)
         {
             var map = this.Town.Map;

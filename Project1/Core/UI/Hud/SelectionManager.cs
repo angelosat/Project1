@@ -21,35 +21,35 @@ using System.Linq;
 
 namespace Project1.Core.UI.Hud
 {
-    //[EnsureStaticCtorCall]
     public sealed class SelectionManager
     {
         readonly GroupBox BoxTabs, BoxOrderButtons, BoxIcons, BoxInfo;
         public Panel PanelInfo;
         public Label LabelName;
-        //readonly IconButton IconInfo, IconCenter, IconDetails;
-        //readonly IconButton IconCycle;
         readonly IconButton IconIssues;
         readonly BlockRendererNew Renderer = new(Block.BlockHighlight);
         readonly Dictionary<Action<List<ISelectable>>, List<ISelectable>> ActionsAdded = [];
-        static readonly Lazy<List<OrderCommandDef>> AllOrderCommands = new(() => [.. Def.GetDefs<OrderCommandDef>()]);
         public ISelectable SelectedSource;
         ISelectable Selectable;
         Window WindowInfo;
         IReadOnlyList<ISelectable> SelectedStackNew;
-        ISelectable SelectedStackCurrent => this.SelectedStackNew?[this._selectedStackIndex];
         int _selectedStackIndex;
-        HashSet<ISelectable> MultipleSelected => this.Selection.Targets;
         readonly SelectionFinal Selection = new();
-        public IReadOnlyCollection<ISelectable> CurrentSelections => this.Selection.Targets;
-        static SelectionManager() { }
-        static readonly IconButton IconSlice = new(Icon.ArrowDown)
-        {
-            BackgroundTexture = UIManager.Icon16Background,
-            LeftClickAction = ToolManagement.Slice,
-            HoverText = "Slice z-level"
-        };
         public static readonly SelectionManager Instance = new();
+        static readonly Lazy<List<OrderCommandDef>> AllOrderCommands = new(() => [.. Def.GetDefs<OrderCommandDef>()]);
+
+        public IReadOnlyCollection<ISelectable> CurrentSelections => this.Selection.Targets;
+        HashSet<ISelectable> MultipleSelected => this.Selection.Targets;
+        ISelectable SelectedStackCurrent => this.SelectedStackNew?[this._selectedStackIndex];
+        internal static IEnumerable<CellSelection> SelectedCells => Instance.GetSelectedCells();
+        internal static IEnumerable<GameObject> SelectedEntities => GetSelectedEntities();
+        internal static ISelectable SingleSelected => Instance.MultipleSelected.Count == 1 ? Instance.MultipleSelected.Single() : null;
+        internal static Entity SingleSelectedEntity => SingleSelected as Entity;
+        internal static IntVec3? SingleSelectedCell => (SingleSelected is TargetArgs target && target.Type == TargetType.Cell) ? target.Global : null;
+        internal static BlockEntity SelectedBlockEntity => (SingleSelected is TargetArgs target && target.Type == TargetType.Cell) ? target.BlockEntityOld : null;
+
+        static SelectionManager() { }
+
         public void Bind(NetEndpoint net)
         {
             var map = net.Map;
@@ -95,7 +95,7 @@ namespace Project1.Core.UI.Hud
         {
             var begin = e.Begin;
             var end = e.End;
-            if(begin == end)
+            if (begin == end)
                 this.SelectSingle(new CellSelection(Ingame.GetMap(), begin));
             else
                 this.Select(begin, end);
@@ -127,7 +127,7 @@ namespace Project1.Core.UI.Hud
             else
             {
                 if (this.MultipleSelected.FirstOrDefault(t => t == e.Entity) is ISelectable t)
-                        this.MultipleSelected.Remove(t);
+                    this.MultipleSelected.Remove(t);
                 if (this.MultipleSelected.Count == 0)
                 {
                     this.PanelInfo.Hide();
@@ -193,33 +193,6 @@ namespace Project1.Core.UI.Hud
             this.PanelInfo.AnchorToBottomCenter();
             this.LabelName = new Label() { TextFunc = () => "<none>" };
             Lazy<SelectionDetailsGui> detailsGui = new Lazy<SelectionDetailsGui>(() => new SelectionDetailsGui());
-            //this.IconDetails = new IconButton("^")
-            //{
-            //    BackgroundTexture = UIManager.Icon16Background,
-            //    LeftClickAction = () =>
-            //    {
-            //        detailsGui.Value.Refresh(Instance.SelectedSource ?? Instance.SelectedStackCurrent).GetOrCreateWindow("Details").Toggle();
-            //    },
-            //    HoverText = "Details"
-            //};
-            //this.IconInfo = new IconButton("?")
-            //{
-            //    BackgroundTexture = UIManager.Icon16Background,
-            //    LeftClickAction = ToggleInfo,
-            //    HoverText = "Inspect"
-            //};
-            //this.IconCenter = new IconButton(Icon.ArrowUp)
-            //{
-            //    BackgroundTexture = UIManager.Icon16Background,
-            //    LeftClickAction = CenterCamera,
-            //    HoverText = "Center camera"
-            //};
-            //this.IconCycle = new IconButton(Icon.Replace)
-            //{
-            //    BackgroundTexture = UIManager.Icon16Background,
-            //    LeftClickAction = this.CycleTargetsNew,
-            //    HoverText = "Cycle targets"
-            //};
 
             this.IconIssues = new IconButton("!") { BackgroundTexture = UIManager.Icon16Background, TooltipFunc = showIssuesTooltip }
                 .Flash(true)
@@ -232,7 +205,6 @@ namespace Project1.Core.UI.Hud
             }
 
             this.BoxIcons = new GroupBox();
-            //this.PopulateBoxIcons();
 
             this.BoxOrderButtons = new GroupBox();
             this.BoxOrderButtons.BackgroundColorFunc = () => Color.Black * .5f;
@@ -253,38 +225,9 @@ namespace Project1.Core.UI.Hud
             this.BoxIcons.Location = new Vector2(this.PanelInfo.ClientSize.Right, this.PanelInfo.ClientSize.Top);
             this.BoxIcons.Anchor = new Vector2(1, 0);
         }
-        //private void PopulateBoxIcons()
-        //{
-        //    this.BoxIcons.ClearControls();
-        //    this.BoxIcons.AddControls(
-        //        IconIssues
-        //        //IconSlice,
-        //        //this.IconCenter,
-        //        //this.IconInfo,
-        //        //this.IconDetails
-        //        );
-
-        //    //if (this.SelectedStackNew is not null)
-        //    //    this.BoxIcons.AddControls(this.IconCycle);
-
-        //    this.RepositionsBoxIcons();
-        //}
-        private void CenterCamera()
-        {
-            if (this.SelectedSource is not null)
-                ScreenManager.CurrentScreen.Camera.CenterOn(this.SelectedSource.Global);
-        }
         public void SetName(string text)
         {
             this.LabelName.TextFunc = () => text;
-        }
-        internal static void ToggleInfo()
-        {
-            if (Instance.SelectedSource is Inspectable obj)
-                Inspector.Refresh(obj);
-            else if (Instance.SelectedStackCurrent is Inspectable insp)
-                    Inspector.Refresh(insp);
-            Inspector.Show();
         }
         public static void Select(MapBase map, BoundingBox box)
         {
@@ -358,21 +301,13 @@ namespace Project1.Core.UI.Hud
                 case Entity entity:
                     this.LabelName.TextFunc = () => entity.Name;
                     this.Selection.Add(target);
-                    //entity.GetSelectionInfo(this);
-                    //foreach (var ctrl in entity.GetSelectionInfo())
-                    //    this.AddInfo(ctrl);
                     this.RefreshInfo(entity);
-                    entity.GetQuickButtons(this);
-                    //this.RefreshMiniButtons(entity);
-                    this.InitInfoTabs(entity.GetQuickButtons(), target);
                     entity.Map?.Town?.Select(target, this);
-                    this.InitInfoTabs(entity.Map?.Town?.GetTabs(target));
                     break;
 
                 case CellSelection cell:
                     this.Selection.Add(target);
                     this.SelectedStackNew = cell.Map.Town.QuerySelectablesNew(cell);
-                    //this._selectedStackIndex = 0;
                     this.CycleTargetsNew();
                     if (cell.Map.IsUndiscovered(cell.Global))
                         this.LabelName.TextFunc = () => "Unknown block";
@@ -380,15 +315,8 @@ namespace Project1.Core.UI.Hud
 
                 case BlockEntity blockEntity:
                     this.Selection.Add(target);
-
                     this.SetName(target.Name);
-
-                    //target.GetSelectionInfo(this);
-                    //foreach (var c in target.GetSelectionInfo())
-                    //    this.AddInfo(c);
                     this.RefreshInfo(blockEntity);
-                    target.GetQuickButtons(this);
-                    this.InitInfoTabs(target.GetInfoTabs());
                     blockEntity.Map.Town.Select(target, this);
                     break;
 
@@ -414,18 +342,20 @@ namespace Project1.Core.UI.Hud
 
             this.RefreshOrderButtons();
             this.RefreshMiniButtons(target);
+            this.InitTabs(target);
+
         }
         static IEnumerable<SelectionMiniButtonDef> AllMiniButtons => field ??= Def.GetDefs<SelectionMiniButtonDef>();
         private void RefreshMiniButtons(ISelectable selected)
         {
             this.BoxIcons.ClearControls();
-            //foreach (var btn in entity.GetMiniButtons())
-            //    this.AddIcon(btn);
             foreach (var btn in AllMiniButtons)
                 if (btn.Worker.IsVisible(selected))
-                    this.AddIcon(new IconButton(btn.Icon, () => btn.Worker.OnClick(selected)) {
+                    this.AddIcon(new IconButton(btn.Icon, () => btn.Worker.OnClick(selected))
+                    {
                         BackgroundTexture = UIManager.Icon16Background,
-                        HoverText = btn.HoverText });
+                        HoverText = btn.HoverText
+                    });
         }
 
         void Show()
@@ -443,7 +373,6 @@ namespace Project1.Core.UI.Hud
             this.BoxOrderButtons.ClearControls();
             this.BoxInfo.ClearControls();
             this.PanelInfo.ClearControls();
-            //this.PopulateBoxIcons();
             this.BoxIcons.ClearControls();
             this.PanelInfo.AddControls(
                 this.LabelName,
@@ -458,11 +387,8 @@ namespace Project1.Core.UI.Hud
             var current = this.SelectedStackNew[this._selectedStackIndex];
             this.SetName(current.Name);
             this.Clear();
-
-            //current.GetSelectionInfo(this);
             this.RefreshInfo(current);
-            current.GetQuickButtons(this);
-            this.InitInfoTabs(current.GetInfoTabs());
+            this.InitTabs(current);
             Client.Instance.Map.Town.Select(current, this);
             this.Selectable = current;
         }
@@ -471,36 +397,18 @@ namespace Project1.Core.UI.Hud
             foreach (var ctrl in selected.GetSelectionInfo())
                 this.AddInfo(ctrl);
         }
-        void InitInfoTabs(IEnumerable<(string, Type)> tabs, ISelectable selectable)
+        void InitTabs(ISelectable selectable)
         {
-            foreach (var (label, guiType) in tabs)
-                this.AddTabAction(label, () => UIManager.ToggleSingleton(guiType, selectable), Color.Orange);
-        }
-        void InitInfoTabs(IEnumerable<(string name, Action action)> tabs)
-        {
-            foreach (var (name, action) in tabs)
-                this.AddTabAction(name, action, Color.Orange);
-        }
-        void InitInfoTabs(IEnumerable<Button> tabs)
-        {
-            if (tabs is null)
-                return;
-            foreach (var button in tabs)
-                this.AddTabAction(button);
+            var tabs = selectable.GetSelectionTabs();
+            foreach (var (label, type) in tabs)
+                this.AddTabAction(label, () => UIManager.ToggleSingleton(type, selectable), Color.Orange);
         }
         private void CreateButtons(IEnumerable<ISelectable> targets)
         {
             this.BoxOrderButtons.ClearControls();
             this.ActionsAdded.Clear();
-            foreach (var tar in targets)
-                tar.GetQuickButtons(this);
             Client.Instance.Map.Town.Select(null, this);
             this.RefreshOrderButtons();
-        }
-        void AddTabAction(Button button)
-        {
-            button.BackgroundColor = UIManager.TintPrimary * .5f;
-            this.BoxTabs.AddControlsLineWrap([button], this.PanelInfo.Width);
         }
         void AddTabAction(string label, Action action, Color col)
         {
@@ -509,10 +417,6 @@ namespace Project1.Core.UI.Hud
         public void AddTabAction(string label, Action action)
         {
             this.AddTabAction(label, action, Color.PaleVioletRed);
-        }
-        internal static void AddButton(IconButton button)
-        {
-            Instance.AddButtons([button]);
         }
         private void MultipleSelectedAction(Action<List<ISelectable>> action)
         {
@@ -574,18 +478,7 @@ namespace Project1.Core.UI.Hud
             this.BoxInfo.AddControls(ctrl);
             this.BoxInfo.Controls.AlignVertically();
         }
-        public static void RemoveInfo(Control ctrl)
-        {
-            Instance.BoxInfo.RemoveControls(ctrl);
-        }
-        public static void AddInfoNew(Control ctrl)
-        {
-            Instance.BoxInfo.AddControls(ctrl);
-        }
-        public static void RemoveOrderButton(IconButton button)
-        {
-            Instance.BoxOrderButtons.RemoveControls(button);
-        }
+
         internal void AddButtons(params IconButton[] buttons)
         {
             this.BoxOrderButtons.AddControls(buttons);
@@ -625,7 +518,7 @@ namespace Project1.Core.UI.Hud
             var targets = this.SelectedStackCurrent is not null ? [this.SelectedStackCurrent] : this.CurrentSelections;
             foreach (var orderdef in AllOrderCommands.Value)
             {
-                if (orderdef.Worker.CanIssue(targets))
+                if (orderdef.Worker.CanIssue(orderdef.ValidCount, targets))
                 {
                     var runtime = new OrderCommandRuntime(orderdef);
                     var button = new QuickButton(new Icon(orderdef.Sprite), null, orderdef.LabelReadable)
@@ -637,22 +530,8 @@ namespace Project1.Core.UI.Hud
             }
             if (this.BoxOrderButtons.Controls.Count == 0)
                 this.BoxOrderButtons.Hide();
-            //else
-            //    this.BoxOrderButtons.Validate(true);
         }
-        internal static void AddButton(IconButton button, Action<List<ISelectable>> action, ISelectable target)
-        {
-            if (Instance.ActionsAdded.TryGetValue(action, out List<ISelectable> existing))
-            {
-                existing.Add(target);
-            }
-            else
-            {
-                Instance.ActionsAdded.Add(action, [target]);
-                Instance.BoxOrderButtons.AddControls(button);
-                button.LeftClickAction = () => Instance.MultipleSelectedAction(action);
-            }
-        }
+
         internal static IEnumerable<Entity> GetSelectedEntities()
         {
             return Instance.CurrentSelections
@@ -662,11 +541,6 @@ namespace Project1.Core.UI.Hud
         {
             return this.CurrentSelections.OfType<CellSelection>();
         }
-        internal static IEnumerable<CellSelection> SelectedCells => Instance.GetSelectedCells();
-        internal static IEnumerable<GameObject> SelectedEntities => GetSelectedEntities();
-        internal static ISelectable SingleSelected => Instance.MultipleSelected.Count == 1 ? Instance.MultipleSelected.Single() : null;
-        internal static Entity SingleSelectedEntity => SingleSelected as Entity;
-        internal static IntVec3? SingleSelectedCell => (SingleSelected is TargetArgs target && target.Type == TargetType.Cell) ? target.Global : null;
-        internal static BlockEntity SelectedBlockEntity => (SingleSelected is TargetArgs target && target.Type == TargetType.Cell) ? target.BlockEntityOld : null;
+
     }
 }

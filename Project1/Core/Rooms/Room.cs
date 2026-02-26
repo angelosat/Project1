@@ -156,7 +156,10 @@ namespace Project1.Core.Rooms
             yield return new Label(() => $"Owner: {this.Owner?.Name ?? "none"}");
             yield return new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}");
         }
-
+        public IEnumerable<(string label, Type type)> GetSelectionTabs()
+        {
+            yield break;
+        }
         internal void AddEdge(IntVec3 global)
         {
         }
@@ -446,10 +449,10 @@ namespace Project1.Core.Rooms
             void setWorkplace(Workplace wplace) => PacketsRooms.SetWorkplace(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, wplace);
             void refresh() => PacketsRooms.Refresh(currentRoom.Map.Net, currentRoom.Map.Net.GetPlayer(), currentRoom, center);
         }
-        public IEnumerable<(string name, Action action)> GetInfoTabs()
-        {
-            yield break;
-        }
+        //public IEnumerable<(string name, Action action)> GetInfoTabs()
+        //{
+        //    yield break;
+        //}
         public IEnumerable<(string Label, Type GuiType)> GetTabs()
         {
             yield return ("Room Settings", typeof(RoomGui));
@@ -465,6 +468,8 @@ namespace Project1.Core.Rooms
         {
             yield break;
         }
+
+        
     }
 
 }

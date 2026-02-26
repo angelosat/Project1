@@ -64,6 +64,7 @@ namespace Project1.Core.Blocks
            
         }
         internal virtual void GetSelectionInfo(SelectionManager info, MapBase map, IntVec3 vector3) { }
+        internal virtual IEnumerable<(string label, Type type)> GetSelectionTabs() { yield break; }
 
         public virtual void Write(IDataWriter w)
         {

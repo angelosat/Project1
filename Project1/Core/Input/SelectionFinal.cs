@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Entities;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Zones;
 using Project1.Core.UI;
@@ -16,6 +17,8 @@ namespace Project1.Core.Input
             => this.Targets.OfType<CellSelection>().Select(c => c.Global);
         internal IReadOnlyCollection<Entity> Entities
             => [.. this.Targets.OfType<Entity>()];
+        internal IReadOnlyCollection<BlockEntity> BlockEntities
+            => [.. this.Targets.OfType<BlockEntity>()];
         internal Zone Zone => this.Targets.Count == 1 && this.Targets.Single() is CellSelection cell ? cell.Map.Town.GetZoneAt(cell.Global) : null;
         internal SelectionIntent ToSelectionIntent()
         {

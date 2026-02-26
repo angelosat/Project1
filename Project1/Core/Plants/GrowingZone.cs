@@ -126,9 +126,9 @@ namespace Project1.Core.Plants
             }
         }
         public void GetContextActions(GameObject playerEntity, ContextArgs a) { }
-        public override IEnumerable<(string name, Action action)> GetInfoTabs()
+        public override IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
-            yield return ("Plant", this.ToggleGui);
+            yield return ("Plant", typeof(GrowZoneGui));
         }
         static Control gui;
         void ToggleGui()
@@ -164,6 +164,26 @@ namespace Project1.Core.Plants
                     win.GetData(gz);
                 });
                 return box.Window;
+            }
+        }
+        class GrowZoneGui : GroupBox, ISelectionBound
+        {
+            GrowingZone CurrentGrowZone;
+            public ISelectable CurrentSelection { get => this.CurrentGrowZone; set => this.CurrentGrowZone = value as GrowingZone; }
+            public GrowZoneGui()
+            {
+                var box = new GroupBox();// 300, 200);
+                box.AddControlsVertically(
+                    new ComboBoxNewNew<PlantSpeciesDef>(Def.GetDefs<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.LabelReadable ?? ""}", () => this.CurrentGrowZone?.Plant, p => PacketsGrowingZones.SendPlant(this.CurrentGrowZone, p)),
+                    new CheckBoxNew("Tilling", () => PacketsGrowingZones.ToggleTilling(this.CurrentGrowZone), () => this.CurrentGrowZone.Tilling),
+                    new CheckBoxNew("Planting", () => PacketsGrowingZones.TogglePlanting(this.CurrentGrowZone), () => this.CurrentGrowZone.Planting),
+                    new CheckBoxNew("Harvesting", () => PacketsGrowingZones.ToggleHarvesting(this.CurrentGrowZone), () => this.CurrentGrowZone.Harvesting)
+                    );
+
+            }
+            public void OnBind(ISelectable selectable)
+            {
+                throw new NotImplementedException();
             }
         }
         public override bool Accepts(Entity obj, IntVec3 pos)

@@ -303,7 +303,7 @@ namespace Project1.Core.Entities.Actors
 
         readonly Button btnVisitor = new("Visitor");
 
-        internal override IEnumerable<(string label, Type guiType)> GetQuickButtons()
+        public override IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
             yield return ("Log", typeof(NpcLogUINewNew));
             yield return ("Skills", typeof(SkillsUINew));

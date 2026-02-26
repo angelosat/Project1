@@ -239,9 +239,10 @@ namespace Project1.Core.AI
             }
         }
         readonly Label CachedGuiLabelCurrentTask = new();
-        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
+        internal override IEnumerable<Control> GetSelectionInfo()
         {
-            info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle"));
+            //info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle"));
+            yield return this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle");
         }
         public new class Spec : Spec<AIComponent>
         {

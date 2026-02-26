@@ -275,9 +275,9 @@ namespace Project1.Core.Plants
             });
         }
     
-        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
+        internal override IEnumerable<Control> GetSelectionInfo()
         {
-            var guisunlight = Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{parent.Map.Sunlight:##0%}"));
+            var guisunlight = Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{this.Owner.Map.Sunlight:##0%}"));
             var guigrowth = Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));
             var bargrowth = new Bar(this.GrowthBody) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthBody.Percentage.ToString("##0%") };
             var boxBars = new GroupBox().AddControls(bargrowth);
@@ -285,7 +285,10 @@ namespace Project1.Core.Plants
             if (this.Species.ProducesFruit)
                 boxBars.AddControlsTopRight(1, new Bar(this.GrowthFruit) { Color = Color.MediumAquamarine, Name = "Fruit: ", TextFunc = () => this.GrowthFruit.Percentage.ToString("##0%") });
 
-            info.AddInfo(new GroupBox().AddControlsVertically(1, boxBars, guisunlight, guigrowth));
+            //info.AddInfo(new GroupBox().AddControlsVertically(1, boxBars, guisunlight, guigrowth));
+            yield return boxBars;
+            yield return guisunlight;
+            yield return guigrowth;
         }
      
         string GrowthTimeSpan

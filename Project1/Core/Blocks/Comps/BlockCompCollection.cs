@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Project1.Framework;
+using System;
 using System.Collections.Generic;
-using Project1.Framework;
 
 namespace Project1.Core.Blocks
 {
     public class BlockCompCollection : Inspectable
     {
         readonly BlockEntity Owner;
+        [InspectorHidden]
         readonly Dictionary<Type, BlockComp> _inner = [];
+        [InspectorHidden]
         readonly List<BlockComp> compList = [];
         public IEnumerable<BlockComp> Values => this._inner.Values;
         internal T GetComp<T>() where T : BlockComp => (T)this._inner[typeof(T)];
@@ -27,21 +29,10 @@ namespace Project1.Core.Blocks
             comp.RuntimeIndex = this.compList.Count;
             this.compList.Add(comp);
         }
-        public override IEnumerable<(string item, object value)> Inspect()
-        {
-            foreach (var c in this._inner.Values)
-                foreach (var i in c.Inspect())
-                    yield return i;
-        }
-
         public BlockCompCollection(BlockEntity owner)
         {
             this.Owner = owner;
         }
-
-        public int Count => ((ICollection<BlockComp>)this._inner).Count;
-
-        public bool IsReadOnly => ((ICollection<BlockComp>)this._inner).IsReadOnly;
 
         public virtual SaveTag Save(string name)
         {

@@ -102,9 +102,10 @@ namespace Project1.Core.Resources
         {
             info.AddInfo(this.CachedGui);
         }
-        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
+        internal override IEnumerable<Control> GetSelectionInfo()
         {
-            info.AddInfo(this.CachedGui);
+            //info.AddInfo(this.CachedGui);
+            yield return this.CachedGui;
         }
         internal void AddModifier(ResourceRateModifier resourceRateModifier)
         {

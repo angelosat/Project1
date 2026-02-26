@@ -14,6 +14,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Entities
 {
@@ -97,7 +98,7 @@ namespace Project1.Core.Entities
         internal virtual IEnumerable<Button> GetTabs() { yield break; }
         [Obsolete]
         internal virtual void GetSelectionInfo(IUISelection info, GameObject parent) { }
-        internal virtual void GetSelectionInfo(SelectionManager info, GameObject parent) { }
+        internal virtual IEnumerable<Control> GetSelectionInfo() { yield break; }
         internal virtual void OnGameEvent(GameObject gameObject, GameEvent e) { }
         internal virtual void SyncWrite(IDataWriter w) { }
         internal virtual void SyncRead(GameObject parent, IDataReader r) { }

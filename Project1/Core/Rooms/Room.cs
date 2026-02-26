@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework.Helpers;
-using Project1.Core.Towns;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Blocks;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Simulation;
-using Project1.Core.UI.Hud;
-using Project1.Core.Blocks;
 using Project1.Core.Input.CellRendering;
+using Project1.Core.Simulation;
+using Project1.Core.Towns;
 using Project1.Core.UI;
+using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Rooms
 {
@@ -146,15 +146,15 @@ namespace Project1.Core.Rooms
         public void GetQuickButtons(SelectionManager panel)
         {
         }
-        public void GetSelectionInfo(IUISelection panel)
+        //public void GetSelectionInfo(IUISelection panel)
+        //{
+        //    panel.AddInfo(new Label(() => $"Owner: {this.Owner?.Name ?? "none"}"));
+        //    panel.AddInfo(new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}"));
+        //}
+        public IEnumerable<Control> GetSelectionInfo()
         {
-            panel.AddInfo(new Label(() => $"Owner: {this.Owner?.Name ?? "none"}"));
-            panel.AddInfo(new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}"));
-        }
-        public void GetSelectionInfo(SelectionManager info)
-        {
-            info.AddInfo(new Label(() => $"Owner: {this.Owner?.Name ?? "none"}"));
-            info.AddInfo(new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}"));
+            yield return new Label(() => $"Owner: {this.Owner?.Name ?? "none"}");
+            yield return new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}");
         }
 
         internal void AddEdge(IntVec3 global)
@@ -460,6 +460,11 @@ namespace Project1.Core.Rooms
         }
 
         public static Room Create(IDataReader r) => new Room().Read(r);
+
+        public IEnumerable<IconButton> GetMiniButtons()
+        {
+            yield break;
+        }
     }
 
 }

@@ -147,9 +147,9 @@ namespace Project1.Core.Towns.Zones
         {
             info.AddInfo(new CheckBoxNew("Hide", () => this.Hide = !this.Hide, () => this.Hide));
         }
-        public void GetSelectionInfo(SelectionManager info)
+        public IEnumerable<Control> GetSelectionInfo()
         {
-            info.AddInfo(new CheckBoxNew("Hide", () => this.Hide = !this.Hide, () => this.Hide));
+            yield return new CheckBoxNew("Hide", () => this.Hide = !this.Hide, () => this.Hide);
         }
         public void GetQuickButtons(SelectionManager info)
         {
@@ -230,6 +230,10 @@ namespace Project1.Core.Towns.Zones
             var zone = zoneDef.CreateRuntimeWrapper();
             zone.Read(r);
             return zone;
+        }
+        public IEnumerable<IconButton> GetMiniButtons()
+        {
+            yield break;
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Networking;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework.UI;
-using Project1.Framework;
-using Project1.Framework.Helpers;
 
 namespace Project1.Core.UI
 {
@@ -21,6 +21,7 @@ namespace Project1.Core.UI
         static int HistoryIndex = -1;
         static IconButton BtnBack, BtnForward, BtnRefresh;
         static Control Container;
+        static Inspectable CurrentView;
 
         public static void Refresh(Inspectable obj)
         {
@@ -49,10 +50,19 @@ namespace Project1.Core.UI
                 InitDefDirectory();
                 InitRefDirectory();
             }
+            if (obj is not null && CurrentView == obj)
+            {
+                CurrentView = null;
+                Hide();
+                return;
+            }
+            CurrentView = obj;
+
             Container.ClearControls();
             var table = new Table<(string item, object value)>()
                 .AddColumn("name", Width / 3, i => new Label(i.item + ": "), 1)
                 .AddColumn("value", 2 * Width / 3, i => new GroupBox().AddControlsLineWrap(256, Label.ParseNewNew(i.value).ToArray()));
+
 
             PopulateTable(obj, table);
 
@@ -128,6 +138,11 @@ namespace Project1.Core.UI
         {
             if (!WindowHelp.IsOpen)
                 WindowHelp.Show();
+        }
+        internal static void Hide()
+        {
+            if (WindowHelp.IsOpen)
+                WindowHelp.Hide();
         }
         static void InitDefDirectory()
         {

@@ -732,29 +732,35 @@ namespace Project1.Core
             }
             this.Map.OnTargetSelected(info, this);
         }
-        public void GetSelectionInfo(SelectionManager info)
+        public IEnumerable<Control> GetSelectionInfo()
         {
             var box = new GroupBox();
             switch (this.Type)
             {
                 case TargetType.Entity:
-                    this.Object.GetSelectionInfo(info);
+                    //this.Object.GetSelectionInfo(info);
+                    foreach (var ctrl in this.Object.GetSelectionInfo())
+                        yield return ctrl;
                     break;
 
                 case TargetType.Cell:
-                    this.Cell.GetSelectionInfo(box);
+                    //this.Cell.GetSelectionInfo(box);
+                    foreach (var ctrl in this.Cell.GetSelectionInfo())
+                        yield return ctrl;
                     break;
                   
                 case TargetType.BlockEntity:
-                    this.BlockEntity.GetSelectionInfo(box);
+                    //this.BlockEntity.GetSelectionInfo(box);
+                    foreach (var ctrl in this.BlockEntity.GetSelectionInfo())
+                        yield return ctrl;
                     break;
 
                 default:
-                    return;
+                    yield break;
             }
-            box.AlignTopToBottom();
-            info.AddInfo(box);
-            this.Map!.OnTargetSelected(info, this);
+            //box.AlignTopToBottom();
+            //info.AddInfo(box);
+            //this.Map!.OnTargetSelected(info, this);
         }
         public void GetQuickButtons(SelectionManager info)
         {
@@ -906,6 +912,11 @@ namespace Project1.Core
                 TargetType.BlockEntity => throw new NotImplementedException(),
                 _ => throw new UnreachableException("Invalid target type " + type.ToString()),
             };
+        }
+
+        public IEnumerable<IconButton> GetMiniButtons()
+        {
+            yield break;
         }
     }
 }

@@ -10,8 +10,9 @@ namespace Project1.Core.UI
     public interface ISelectable
     {
         string Name { get; }
-        void GetSelectionInfo(IUISelection panel);
-        void GetSelectionInfo(SelectionManager info);
+        //void GetSelectionInfo(IUISelection panel);
+        IEnumerable<Control> GetSelectionInfo();
+        //IEnumerable<IconButton> GetMiniButtons();
         IEnumerable<(string name, Action action)> GetInfoTabs();
         IEnumerable<Control> GetSelectionDetails();
         void GetQuickButtons(SelectionManager panel);

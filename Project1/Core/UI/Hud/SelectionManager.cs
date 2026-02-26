@@ -27,8 +27,8 @@ namespace Project1.Core.UI.Hud
         readonly GroupBox BoxTabs, BoxOrderButtons, BoxIcons, BoxInfo;
         public Panel PanelInfo;
         public Label LabelName;
-        readonly IconButton IconInfo, IconCenter, IconDetails;
-        readonly IconButton IconCycle;
+        //readonly IconButton IconInfo, IconCenter, IconDetails;
+        //readonly IconButton IconCycle;
         readonly IconButton IconIssues;
         readonly BlockRendererNew Renderer = new(Block.BlockHighlight);
         readonly Dictionary<Action<List<ISelectable>>, List<ISelectable>> ActionsAdded = [];
@@ -42,17 +42,7 @@ namespace Project1.Core.UI.Hud
         HashSet<ISelectable> MultipleSelected => this.Selection.Targets;
         readonly SelectionFinal Selection = new();
         public IReadOnlyCollection<ISelectable> CurrentSelections => this.Selection.Targets;
-        static SelectionManager()
-        {
-            //Registry.MapEventHooksClient.Register<PlayerExecutedOrderCommentEvent>(OnPlayerExecutedOrderCommand);
-        }
-        //private static void OnPlayerExecutedOrderCommand(PlayerExecutedOrderCommentEvent e)
-        //{
-        //    if (e.Map != Ingame.CurrentMap)
-        //        return;
-        //    Instance.RefreshOrderButtons();
-        //}
-
+        static SelectionManager() { }
         static readonly IconButton IconSlice = new(Icon.ArrowDown)
         {
             BackgroundTexture = UIManager.Icon16Background,
@@ -203,33 +193,33 @@ namespace Project1.Core.UI.Hud
             this.PanelInfo.AnchorToBottomCenter();
             this.LabelName = new Label() { TextFunc = () => "<none>" };
             Lazy<SelectionDetailsGui> detailsGui = new Lazy<SelectionDetailsGui>(() => new SelectionDetailsGui());
-            this.IconDetails = new IconButton("^")
-            {
-                BackgroundTexture = UIManager.Icon16Background,
-                LeftClickAction = () =>
-                {
-                    detailsGui.Value.Refresh(Instance.SelectedSource ?? Instance.SelectedStackCurrent).GetOrCreateWindow("Details").Toggle();
-                },
-                HoverText = "Details"
-            };
-            this.IconInfo = new IconButton("?")
-            {
-                BackgroundTexture = UIManager.Icon16Background,
-                LeftClickAction = ToggleInfo,
-                HoverText = "Inspect"
-            };
-            this.IconCenter = new IconButton(Icon.ArrowUp)
-            {
-                BackgroundTexture = UIManager.Icon16Background,
-                LeftClickAction = CenterCamera,
-                HoverText = "Center camera"
-            };
-            this.IconCycle = new IconButton(Icon.Replace)
-            {
-                BackgroundTexture = UIManager.Icon16Background,
-                LeftClickAction = this.CycleTargetsNew,
-                HoverText = "Cycle targets"
-            };
+            //this.IconDetails = new IconButton("^")
+            //{
+            //    BackgroundTexture = UIManager.Icon16Background,
+            //    LeftClickAction = () =>
+            //    {
+            //        detailsGui.Value.Refresh(Instance.SelectedSource ?? Instance.SelectedStackCurrent).GetOrCreateWindow("Details").Toggle();
+            //    },
+            //    HoverText = "Details"
+            //};
+            //this.IconInfo = new IconButton("?")
+            //{
+            //    BackgroundTexture = UIManager.Icon16Background,
+            //    LeftClickAction = ToggleInfo,
+            //    HoverText = "Inspect"
+            //};
+            //this.IconCenter = new IconButton(Icon.ArrowUp)
+            //{
+            //    BackgroundTexture = UIManager.Icon16Background,
+            //    LeftClickAction = CenterCamera,
+            //    HoverText = "Center camera"
+            //};
+            //this.IconCycle = new IconButton(Icon.Replace)
+            //{
+            //    BackgroundTexture = UIManager.Icon16Background,
+            //    LeftClickAction = this.CycleTargetsNew,
+            //    HoverText = "Cycle targets"
+            //};
 
             this.IconIssues = new IconButton("!") { BackgroundTexture = UIManager.Icon16Background, TooltipFunc = showIssuesTooltip }
                 .Flash(true)
@@ -242,7 +232,7 @@ namespace Project1.Core.UI.Hud
             }
 
             this.BoxIcons = new GroupBox();
-            this.PopulateBoxIcons();
+            //this.PopulateBoxIcons();
 
             this.BoxOrderButtons = new GroupBox();
             this.BoxOrderButtons.BackgroundColorFunc = () => Color.Black * .5f;
@@ -263,22 +253,22 @@ namespace Project1.Core.UI.Hud
             this.BoxIcons.Location = new Vector2(this.PanelInfo.ClientSize.Right, this.PanelInfo.ClientSize.Top);
             this.BoxIcons.Anchor = new Vector2(1, 0);
         }
-        private void PopulateBoxIcons()
-        {
-            this.BoxIcons.ClearControls();
-            this.BoxIcons.AddControls(
-                IconIssues,
-                IconSlice,
-                this.IconCenter,
-                this.IconInfo,
-                this.IconDetails
-                );
+        //private void PopulateBoxIcons()
+        //{
+        //    this.BoxIcons.ClearControls();
+        //    this.BoxIcons.AddControls(
+        //        IconIssues
+        //        //IconSlice,
+        //        //this.IconCenter,
+        //        //this.IconInfo,
+        //        //this.IconDetails
+        //        );
 
-            if (this.SelectedStackNew is not null)
-                this.BoxIcons.AddControls(this.IconCycle);
+        //    //if (this.SelectedStackNew is not null)
+        //    //    this.BoxIcons.AddControls(this.IconCycle);
 
-            this.RepositionsBoxIcons();
-        }
+        //    this.RepositionsBoxIcons();
+        //}
         private void CenterCamera()
         {
             if (this.SelectedSource is not null)
@@ -288,7 +278,7 @@ namespace Project1.Core.UI.Hud
         {
             this.LabelName.TextFunc = () => text;
         }
-        private static void ToggleInfo()
+        internal static void ToggleInfo()
         {
             if (Instance.SelectedSource is Inspectable obj)
                 Inspector.Refresh(obj);
@@ -368,8 +358,12 @@ namespace Project1.Core.UI.Hud
                 case Entity entity:
                     this.LabelName.TextFunc = () => entity.Name;
                     this.Selection.Add(target);
-                    entity.GetSelectionInfo(this);
+                    //entity.GetSelectionInfo(this);
+                    //foreach (var ctrl in entity.GetSelectionInfo())
+                    //    this.AddInfo(ctrl);
+                    this.RefreshInfo(entity);
                     entity.GetQuickButtons(this);
+                    //this.RefreshMiniButtons(entity);
                     this.InitInfoTabs(entity.GetQuickButtons(), target);
                     entity.Map?.Town?.Select(target, this);
                     this.InitInfoTabs(entity.Map?.Town?.GetTabs(target));
@@ -389,7 +383,10 @@ namespace Project1.Core.UI.Hud
 
                     this.SetName(target.Name);
 
-                    target.GetSelectionInfo(this);
+                    //target.GetSelectionInfo(this);
+                    //foreach (var c in target.GetSelectionInfo())
+                    //    this.AddInfo(c);
+                    this.RefreshInfo(blockEntity);
                     target.GetQuickButtons(this);
                     this.InitInfoTabs(target.GetInfoTabs());
                     blockEntity.Map.Town.Select(target, this);
@@ -416,7 +413,21 @@ namespace Project1.Core.UI.Hud
             this.PanelInfo.Validate(true);
 
             this.RefreshOrderButtons();
+            this.RefreshMiniButtons(target);
         }
+        static IEnumerable<SelectionMiniButtonDef> AllMiniButtons => field ??= Def.GetDefs<SelectionMiniButtonDef>();
+        private void RefreshMiniButtons(ISelectable selected)
+        {
+            this.BoxIcons.ClearControls();
+            //foreach (var btn in entity.GetMiniButtons())
+            //    this.AddIcon(btn);
+            foreach (var btn in AllMiniButtons)
+                if (btn.Worker.IsVisible(selected))
+                    this.AddIcon(new IconButton(btn.Icon, () => btn.Worker.OnClick(selected)) {
+                        BackgroundTexture = UIManager.Icon16Background,
+                        HoverText = btn.HoverText });
+        }
+
         void Show()
         {
             this.BoxTabs.Show();
@@ -432,13 +443,14 @@ namespace Project1.Core.UI.Hud
             this.BoxOrderButtons.ClearControls();
             this.BoxInfo.ClearControls();
             this.PanelInfo.ClearControls();
-            this.PopulateBoxIcons();
+            //this.PopulateBoxIcons();
+            this.BoxIcons.ClearControls();
             this.PanelInfo.AddControls(
                 this.LabelName,
                 this.BoxInfo,
                 this.BoxIcons);
         }
-        private void CycleTargetsNew()
+        internal void CycleTargetsNew()
         {
             if (this.SelectedStackNew is null)
                 return;
@@ -447,11 +459,17 @@ namespace Project1.Core.UI.Hud
             this.SetName(current.Name);
             this.Clear();
 
-            current.GetSelectionInfo(this);
+            //current.GetSelectionInfo(this);
+            this.RefreshInfo(current);
             current.GetQuickButtons(this);
             this.InitInfoTabs(current.GetInfoTabs());
             Client.Instance.Map.Town.Select(current, this);
             this.Selectable = current;
+        }
+        void RefreshInfo(ISelectable selected)
+        {
+            foreach (var ctrl in selected.GetSelectionInfo())
+                this.AddInfo(ctrl);
         }
         void InitInfoTabs(IEnumerable<(string, Type)> tabs, ISelectable selectable)
         {

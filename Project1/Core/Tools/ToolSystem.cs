@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Content;
-using Project1.Core.Animations;
+﻿using Project1.Core.Animations;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
@@ -90,7 +89,6 @@ namespace Project1.Core.Tools
             if (entity is null) // cancellation has been requested after crafting completion
                 return;
             var comp = entity.GetComponent<UnfinishedItemComp>();
-            var profile = entity.Profile;
             var ingredients = new List<Entity>();
             foreach (var (bone, mat) in comp.MaterialBindings)
             {
@@ -109,24 +107,6 @@ namespace Project1.Core.Tools
                 if (t.MaterialType == material.Type)
                     return t;
             throw new UnreachableException();
-        }
-    }
-    
-    record CraftingRules(BoneDef Bone)
-    {
-        public MaterialRefinementDef Refinement;
-        public readonly HashSet<MaterialRefinementDef> Types = [];
-        public CraftingRules Allow(params MaterialRefinementDef[] types)
-        {
-            foreach (var type in types)
-                this.Types.Add(type);
-            return this;
-        }
-
-        public CraftingRules From(MaterialRefinementDef state)
-        {
-            this.Refinement = state;
-            return this;
         }
     }
 }

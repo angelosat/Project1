@@ -16,7 +16,6 @@ using Project1.Core.Materials;
 using Project1.Core.Needs;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Entities;
-using Project1.Core.Networking.Inventory;
 using Project1.Core.Plants;
 using Project1.Core.Rendering;
 using Project1.Core.Resources;
@@ -143,14 +142,20 @@ namespace Project1.Core.Entities
             foreach (var comp in this.Components.Values)
                 comp.GetSelectionInfo(info, this);
         }
-        public virtual void GetSelectionInfo(SelectionManager info)
+        public virtual IEnumerable<Control> GetSelectionInfo()
         {
-            info.AddIcon(IconCameraFollow.Value);
-            this.Map?.World.OnTargetSelected(info, this);
             foreach (var comp in this.Components.Values)
-                comp.GetSelectionInfo(info, this);
+            {
+                var groupbox = new GroupBox();
+                foreach (var ctrl in comp.GetSelectionInfo())
+                    groupbox.AddControlsBottomLeft(ctrl);
+                yield return groupbox;
+            }
         }
-       
+        public virtual IEnumerable<IconButton> GetMiniButtons()
+        {
+            yield return IconCameraFollow.Value;
+        }
         internal virtual IEnumerable<(string label, Type guiType)> GetQuickButtons() { yield break; }
         public virtual void GetQuickButtons(SelectionManager info)
         {

@@ -73,14 +73,16 @@ namespace Project1.Core.Legacy.Crafting
             this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, bindings);
             this.OrderId = order.Id;
         }
-        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
+        internal override IEnumerable<Control> GetSelectionInfo()
         {
-            var box = new GroupBox();
+            //var box = new GroupBox();
             foreach (var b in this._materialBindings)
-                box.AddControlsBottomLeft(new GroupBox().AddControlsLineWrap(
+                //box.AddControlsBottomLeft(new GroupBox().AddControlsLineWrap(
+                yield return new GroupBox().AddControlsLineWrap(
                     new LabelNew($"{b.Key.LabelReadable}"), 
-                    new LabelNew($"[{b.Value.LabelReadable}]") { TextColor = b.Value.Color }));
-            info.AddInfo(box);
+                    new LabelNew($"[{b.Value.LabelReadable}]") { TextColor = b.Value.Color });
+            //info.AddInfo(box);
+
         }
         internal override void GetQuickButtons(SelectionManager info, GameObject parent)
         {

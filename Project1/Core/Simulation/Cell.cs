@@ -309,9 +309,10 @@ namespace Project1.Core.Simulation
             info.AddInfo(new BarNew(() => HitPointsMax, () => this.HitPoints) { Color = Color.CornflowerBlue, Format = "Hit Points: {0} / {1}" });
             map.GetBlockEntity(vector3)?.GetSelectionInfo(info, map, vector3);
         }
-        internal virtual void GetSelectionInfo(Control container)
+        internal virtual IEnumerable<Control> GetSelectionInfo()
         {
-            container.AddControls(new BarNew(() => HitPointsMax, () => this.HitPoints) { Color = Color.CornflowerBlue, Format = "Hit Points: {0} / {1}" });
+            //container.AddControls(new BarNew(() => HitPointsMax, () => this.HitPoints) { Color = Color.CornflowerBlue, Format = "Hit Points: {0} / {1}" });
+            yield return new BarNew(() => HitPointsMax, () => this.HitPoints) { Color = Color.CornflowerBlue, Format = "Hit Points: {0} / {1}" };
         }
         internal float GetBlockHeight(Vector3 vec3)
         {

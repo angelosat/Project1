@@ -31,17 +31,17 @@ namespace Project1.Core
 
         internal override void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {
-            var room = map.Town.RoomManager.GetRoomAt(vector3);
-            if (room is not null)
-                room.GetSelectionInfo(info);
-            var roomOwner = room?.Owner;
-            info.AddInfo(new ComboBoxNewNew<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => this.Owner, () => map.Town.GetMembers().Prepend(null)));
-            info.AddInfo(new ComboBoxNewNew<Types>(128, "Type", t => t.ToString(), setType, () => this.Type, () => Enum.GetValues(typeof(Types)).Cast<Types>()));
+            //var room = map.Town.RoomManager.GetRoomAt(vector3);
+            //if (room is not null)
+            //    room.GetSelectionInfo(info);
+            //var roomOwner = room?.Owner;
+            //info.AddInfo(new ComboBoxNewNew<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => this.Owner, () => map.Town.GetMembers().Prepend(null)));
+            //info.AddInfo(new ComboBoxNewNew<Types>(128, "Type", t => t.ToString(), setType, () => this.Type, () => Enum.GetValues(typeof(Types)).Cast<Types>()));
 
-            void setOwner(Actor newOwner) => Packets.SetOwner(Client.Instance, map.Net.GetPlayer(), vector3, newOwner);
-            void setType(Types newType) => Packets.SetType(Client.Instance, map.Net.GetPlayer(), vector3, newType);
+            //void setOwner(Actor newOwner) => Packets.SetOwner(Client.Instance, map.Net.GetPlayer(), vector3, newOwner);
+            //void setType(Types newType) => Packets.SetType(Client.Instance, map.Net.GetPlayer(), vector3, newType);
 
-            UpdateQuickButtons();
+            //UpdateQuickButtons();
         }
 
         protected override void WriteExtra(IDataWriter w)

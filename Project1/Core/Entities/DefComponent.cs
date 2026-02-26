@@ -6,6 +6,8 @@ using Project1.Core.UI.NamePlates;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Project1.Core.Entities
 {
@@ -51,14 +53,18 @@ namespace Project1.Core.Entities
             if(this.AuthorId != EntityRefId.Null)
                 tooltip.AddControlsBottomLeft(new LabelNew($"Author: {this.Author?.Name ?? "unknown"}"));
         }
-        internal override void GetSelectionInfo(SelectionManager info, GameObject parent)
+        internal override IEnumerable<Control> GetSelectionInfo()
         {
-            var box = new GroupBox();
-            if(this.Author is not null)
-                box.AddControlsVertically(
-                    new LabelNew($"Author: {this.Author.Name}")
-                    );
-            info.AddInfo(box);
+            if (this.Author is null)
+                yield break;
+
+            yield return new LabelNew($"Author: {this.Author.Name}");
+            //var box = new GroupBox();
+            //if(this.Author is not null)
+            //    box.AddControlsVertically(
+            //        new LabelNew($"Author: {this.Author.Name}")
+            //        );
+            //info.AddInfo(box);
         }
         public Color GetQualityColor()
         {

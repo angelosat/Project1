@@ -209,12 +209,13 @@ namespace Project1.Core.Blocks
             foreach (var c in this.Comps.Values)
                 c.GetQuickButtons(register, map, vector3);
         }
-        internal virtual void GetSelectionInfo(Control container)
+        public virtual IEnumerable<Control> GetSelectionInfo()
         {
 
             foreach (var c in this.Comps.Values)
-                container.AddControls(c.GetInspectorControls());
-                //c.GetSelectionInfo(container);
+                //container.AddControls(c.GetInspectorControls());
+                foreach (var ctrl in c.GetInspectorControls())
+                    yield return ctrl;
         }
         protected virtual IEnumerable<Control> GetInspectorControls()
         {
@@ -289,13 +290,13 @@ namespace Project1.Core.Blocks
             throw new NotImplementedException();
         }
 
-        public void GetSelectionInfo(SelectionManager info)
-        {
-            var box = new GroupBox();
-            this.GetSelectionInfo(box);
-            box.AlignTopToBottom();
-            info.AddInfo(box);
-        }
+        //public IEnumerable<Control> GetSelectionInfo()
+        //{
+            //var box = new GroupBox();
+            //this.GetSelectionInfo(box);
+            //box.AlignTopToBottom();
+            //info.AddInfo(box);
+        //}
 
         public IEnumerable<(string name, Action action)> GetInfoTabs()
         {
@@ -317,6 +318,11 @@ namespace Project1.Core.Blocks
         public void TabGetter(Action<string, Action> getter)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<IconButton> GetMiniButtons()
+        {
+            yield break;
         }
     }
 }

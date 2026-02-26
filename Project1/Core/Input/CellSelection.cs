@@ -51,9 +51,14 @@ namespace Project1.Core.Input
             throw new NotImplementedException();
         }
 
-        public void GetSelectionInfo(SelectionManager info)
+        public IEnumerable<Control> GetSelectionInfo()
         {
-            return;
+            foreach (var ctrl in this.Cell.GetSelectionInfo())
+                yield return ctrl;
+        }
+        public IEnumerable<IconButton> GetMiniButtons()
+        {
+            yield break;
         }
     }
 }

@@ -38,20 +38,20 @@ namespace Project1.Core.Towns.Designations
             };
         }
     }
-    //class DesignationWorkerConstruct : CellDesignationWorker
-    //{
-    //    public override bool IsValid(CellSelection cell)
-    //    {
-    //        return cell.Block is BlockAir;
-    //    }
-    //}
-    class DesignationWorkerConstruct : BlockEntityDesignationWorker
+    class DesignationWorkerConstruct : CellDesignationWorker
     {
-        public override bool IsValid(BlockEntity be)
+        public override bool IsValid(CellSelection cell)
         {
-            return be.HasComp<BlockConstructionComp>();
+            return cell.Block is BlockAir;
         }
     }
+    //class DesignationWorkerConstruct : BlockEntityDesignationWorker
+    //{
+    //    public override bool IsValid(BlockEntity be)
+    //    {
+    //        return be.HasComp<BlockConstructionComp>();
+    //    }
+    //}
     class DesignationWorkerMine : CellDesignationWorker
     {
         public override bool IsValid(CellSelection cell)

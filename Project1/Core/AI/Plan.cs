@@ -438,7 +438,7 @@ namespace Project1.Core.AI
             if (r.ReadBoolean())
             {
                 var orderid = r.ReadInt32();
-                this.Order = this.TargetA.Map.Town.CraftingManagerNew.GetOrder(orderid);
+                this.Order = this.TargetA.Map.Town.CraftingManager.GetOrder(orderid);
             }
         }
         public void ObjectLoaded(GameObject parent)

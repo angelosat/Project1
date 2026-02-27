@@ -13,7 +13,6 @@ using Project1.Core.Map;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Simulation;
-using Project1.Core.Rooms;
 using Project1.Core.Screens;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Stockpiles;
@@ -1104,5 +1103,12 @@ namespace Project1.Core.Simulation
             var cellTargets = cube.Except(excluded).Select(c => new TargetArgs(this, c));
             return [.. allTargets.Union(cellTargets)];
         }
+
+        public MapQuerySnapshot Query(IntVec3 global)
+        {
+            var query = new MapQuery(this, global);
+            return query.Query();
+        }
+    
     }
 }

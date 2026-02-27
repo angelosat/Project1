@@ -280,14 +280,18 @@ namespace Project1.Framework.Serialization
         {
             save.Add(value.Save(name));
         }
+        public static void Save(this SaveTag save, string name, byte value)
+        {
+            save.Add(value.Save(name));
+        }
         public static void Save(this SaveTag save, string name, string value)
         {
             save.Add(value.Save(name));
         }
-        public static void Save(this byte value, SaveTag save, string name)
-        {
-            save.Add(value.Save(name));
-        }
+        //public static void Save(this byte value, SaveTag save, string name)
+        //{
+        //    save.Add(value.Save(name));
+        //}
         public static void Save(this float value, SaveTag save, string name)
         {
             save.Add(value.Save(name));

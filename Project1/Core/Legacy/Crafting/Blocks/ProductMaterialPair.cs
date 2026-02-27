@@ -64,8 +64,9 @@ namespace Project1.Core.Legacy.Crafting.Blocks
         {
             var save = new SaveTag(SaveTag.Types.Compound, name);
             save.SaveDef("Product", this.Block.BlockDef);
-            this.Data.Save(save, "Data");
-            if(this.HasReq)
+            //this.Data.Save(save, "Data");
+            save.Save("Data", this.Data);
+            if (this.HasReq)
                 this.Requirement.Save(save, "Requirement");
             tag.Add(save);
         }

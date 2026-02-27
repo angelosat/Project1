@@ -40,6 +40,14 @@ namespace Project1.Core.Blocks
         public (MaterialRefinementDef refinement, MaterialDef material) Requirement => (this.Args.Refinement, this.Args.Material);
         public bool IsReady => this.Fulfillment.IsFinished;
         public int Missing => this.Fulfillment.Missing;
+        public IEnumerable<(MaterialRefinementDef refinement, MaterialDef material, int amount)> DepositedMaterials
+        {
+            get
+            {
+                if(this.Fulfillment.Value > 0)
+                    yield return (this.Requirement.refinement, this.Requirement.material, this.Fulfillment.Value);
+            }
+        }
         public void SetArgs(ConstructionDesignationArgs args)
         {
             this.Args = args;

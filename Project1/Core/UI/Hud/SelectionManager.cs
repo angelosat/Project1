@@ -65,6 +65,8 @@ namespace Project1.Core.UI.Hud
 
         private void OnDesignationsChanged(DesignationsChangedEvent e)
         {
+            // prune any selections that stopped existing as a result of a designation removal (ie: constructions)
+            this.Selection.Targets.RemoveWhere(c => c.Map is null);
             this.RefreshOrderButtons();
         }
 
@@ -132,6 +134,7 @@ namespace Project1.Core.UI.Hud
                 {
                     this.PanelInfo.Hide();
                     this.BoxTabs.Hide();
+                    this.BoxIcons.Hide();
                     this.BoxOrderButtons.Hide();
                 }
             }

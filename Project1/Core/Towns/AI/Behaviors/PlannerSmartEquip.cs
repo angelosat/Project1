@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Project1.Core.AI;
+﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities;
-using Project1.Core.Gear;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Gear;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Towns.AI.Behaviors
 {

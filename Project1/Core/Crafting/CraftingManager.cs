@@ -49,18 +49,19 @@ namespace Project1.Core.Crafting
             this.ScanOrders();
             this.Town.Map.Events.ListenTo<ActorPlanAssignedEvent>(OnActorPlanAssigned);
             this.Town.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-            this.Town.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+            this.Town.Map.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
         }
 
-        private void OnEntityDespawned(EntityDespawnedEvent e)
+        private void OnEntityDisposed(EntityDisposedEvent e)
         {
             var entity = e.Entity;
             if (entity.Def != ItemDefOf.UnfinishedItem)
                 return;
             this._unfinishedItems.Remove(entity);
             var comp = entity.GetComponent<UnfinishedItemComp>();
-            var order = this._ordersById[comp.OrderId];
-            order.UnfinishedItem = null;
+            //var order = this._ordersById[comp.OrderId];
+            if(this.TryGetOrder(comp.OrderId, out var order))
+                order.UnfinishedItem = null;
             //var actor = comp.Author;
             var actor = entity.Author;
             if (!this._unfinishedByActor.TryGetValue(actor, out var list))
@@ -177,7 +178,10 @@ namespace Project1.Core.Crafting
             foreach (var pos in comp.Parent.CellsOccupied)
                 this._workstationsByPosition.Remove(pos);
             foreach (var order in comp.Orders)
+            {
                 this._ordersById.Remove(order.Id);
+                order.Dispose();
+            }
             return true;
         }
 
@@ -238,6 +242,7 @@ namespace Project1.Core.Crafting
             var comp = this.Map.GetBlockEntity(order.Workstation.Global).GetComp<BlockWorkstationComp>();
             comp.Orders.Remove(order);
             this.Map.Events.Post(new CraftOrderRemovedEvent(comp, order));
+            order.Dispose();
             return order;
         }
 
@@ -245,10 +250,14 @@ namespace Project1.Core.Crafting
         {
             return this._ordersById[id];
         }
-
+        internal bool TryGetOrder(int orderId, out CraftingOrder order)
+            => this._ordersById.TryGetValue(orderId, out order);
         internal float GetProgressFor(Actor actor)
         {
             throw new NotImplementedException();
         }
+
+        internal bool CanContinueItem(Actor actor, UnfinishedItemComp comp)
+            => this.TryGetOrder(comp.OrderId, out var order) && order.Pending;
     }
 }

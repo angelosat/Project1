@@ -190,6 +190,15 @@ namespace Project1.Core.Towns.Designations
                     throw new UnreachableException();
             }
         }
+        internal void RemoveInternal(IEnumerable<IntVec3> cells)
+        {
+            if (!cells.Any())
+                return;
+            foreach (var cell in cells)
+                foreach (var des in this.CellDesignations)
+                    des.Value.Remove(cell);
+            this.Map.Events.Post(new DesignationsChangedEvent(cells.Select(c => new CellSelection(this.Map, c) as ISelectable)));
+        }
         internal void RemoveCells(IEnumerable<IntVec3> cells)
         {
             this.RemoveCells(cells.Select(c => new CellSelection(this.Map, c) as ISelectable));
@@ -199,25 +208,25 @@ namespace Project1.Core.Towns.Designations
             if (!targets.Any())
                 return;
             foreach (var cell in targets.OfType<CellSelection>())
-                foreach(var des in this.CellDesignations.Where(vk=>vk.Key.IsManual))
+                foreach (var des in this.CellDesignations.Where(vk => vk.Key.IsManual))
                     des.Value.Remove(cell.Global);
             this.Map.Events.Post(new DesignationsChangedEvent(targets));
         }
-        internal void AddBlockEntities(DesignationDef designation, IEnumerable<BlockEntity> targets, bool isRemoval)
-        {
-            var removing = isRemoval && designation.IsManual;
-            var list = this.BlockEntityDesignations[designation];
-            if (removing)
-                foreach (var be in targets)
-                    list.Remove(be);
-            else
-            {
-                foreach (var be in targets)
-                    if (designation.Worker.IsValid(be))
-                        list.Add(be);
-            }
-            this.Map.Events.Post(new DesignationsChangedEvent(targets));
-        }
+        //internal void AddBlockEntities(DesignationDef designation, IEnumerable<BlockEntity> targets, bool isRemoval)
+        //{
+        //    var removing = isRemoval && designation.IsManual;
+        //    var list = this.BlockEntityDesignations[designation];
+        //    if (removing)
+        //        foreach (var be in targets)
+        //            list.Remove(be);
+        //    else
+        //    {
+        //        foreach (var be in targets)
+        //            if (designation.Worker.IsValid(be))
+        //                list.Add(be);
+        //    }
+        //    this.Map.Events.Post(new DesignationsChangedEvent(targets));
+        //}
         internal void AddCells(DesignationDef designation, IEnumerable<IntVec3> cells, bool isRemoval)
         {
             this.AddCells(designation, cells.Select(c => new CellSelection(this.Map, c) as ISelectable), isRemoval);
@@ -295,7 +304,7 @@ namespace Project1.Core.Towns.Designations
             {
                 CellSelection => this.CellDesignations.Values.Any(v => v.Contains(target.Global)),
                 Entity => this.EntityDesignations.Values.Any(v => v.Contains(target)),
-                BlockEntity => this.BlockEntityDesignations.Values.Any(v => v.Contains(target)),
+                //BlockEntity => this.BlockEntityDesignations.Values.Any(v => v.Contains(target)),
                 _ => false
             };
         }
@@ -305,7 +314,8 @@ namespace Project1.Core.Towns.Designations
             {
                 CellSelection => this.CellDesignations.FirstOrDefault(v => v.Value.Contains(target.Global)).Key,
                 Entity => this.EntityDesignations.FirstOrDefault(v => v.Value.Contains(target)).Key,
-                BlockEntity => this.BlockEntityDesignations.FirstOrDefault(v => v.Value.Contains(target)).Key,
+                //BlockEntity => this.BlockEntityDesignations.FirstOrDefault(v => v.Value.Contains(target)).Key,
+                BlockEntity bEntity => this.CellDesignations.FirstOrDefault(v => v.Value.Contains(bEntity.OriginGlobal)).Key,
                 _ => null
             };
         }
@@ -320,7 +330,7 @@ namespace Project1.Core.Towns.Designations
             {
                 TargetType.Cell => this.CellDesignations[desType].Contains(global.Global),
                 TargetType.Entity => this.EntityDesignations[desType].Contains(global.Entity),
-                TargetType.BlockEntity => this.BlockEntityDesignations[desType].Contains(global.BlockEntity),
+                //TargetType.BlockEntity => this.BlockEntityDesignations[desType].Contains(global.BlockEntity),
                 _ => throw new UnreachableException()
             };
         }

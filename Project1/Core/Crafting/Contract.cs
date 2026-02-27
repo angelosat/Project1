@@ -5,5 +5,8 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Crafting
 {
-    internal record struct Contract(Actor Author, BlockWorkstationComp Workstation, CraftingOrder Order, IEnumerable<Entity> Ingredients) { }
+    internal record Contract(Actor Author, BlockWorkstationComp Workstation, CraftingOrder Order, IEnumerable<Entity> Ingredients)
+    {
+        public bool IsValid => !this.Order.IsDisposed;
+    }
 }

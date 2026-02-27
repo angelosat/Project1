@@ -80,21 +80,24 @@ namespace Project1.Core.Interactions
             Animation = AnimationDefOf.Tool,
             ProgressHandler = InteractionProgressHandlers.Internal,// new InteractionProgressTool(),
             Skill = SkillDefOf.Crafting,
-            ToolUse = ToolUseDefOf.Carpentry
+            ToolUse = ToolUseDefOf.Carpentry,
+            Range = InteractionRange.InteractionSpot
         };
         public static readonly InteractionDef CraftUnfinishedBegin = new("CraftingUnfinished", typeof(InteractionCommitUnfinishedLogic))
         {
             Animation = AnimationDefOf.Tool,
             ProgressHandler = InteractionProgressHandlers.FirstContact,// new InteractionProgressTool(),
             Skill = SkillDefOf.Crafting,
-            ToolUse = ToolUseDefOf.Carpentry
+            ToolUse = ToolUseDefOf.Carpentry,
+            Range = InteractionRange.InteractionSpot
         };
         public static readonly InteractionDef CraftUnfinished = new("CraftingUnfinishedAdvance", typeof(InteractionAdvanceUnfinishedLogic))
         {
             Animation = AnimationDefOf.Tool,
             ProgressHandler = InteractionProgressHandlers.External,// new InteractionProgressTool(),
             Skill = SkillDefOf.Crafting,
-            ToolUse = ToolUseDefOf.Carpentry
+            ToolUse = ToolUseDefOf.Carpentry,
+            Range = InteractionRange.InteractionSpot
         };
         public static readonly InteractionDef Repair = new("Repairing", typeof(InteractionRepairLogic))
         {

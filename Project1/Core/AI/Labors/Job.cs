@@ -48,7 +48,8 @@ namespace Project1.Core.AI.Labors
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            this.Priority.Save(tag, "Priority");
+            //this.Priority.Save(tag, "Priority");
+            tag.Save("Priority", this.Priority);
             this.Def.Name.Save(tag, "Def");
             return tag;
         }

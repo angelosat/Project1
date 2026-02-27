@@ -28,7 +28,7 @@ namespace Project1.Core
         public override bool CommitReservations()
         {
             var map = this.Actor.Map;
-            var contract = map.Town.CraftingManagerNew.GetContract(this.Actor);
+            var contract = map.Town.CraftingManager.GetContract(this.Actor);
             var ingredients = contract.Ingredients;
             bool ingredientSuccess = true;
             foreach (var i in ingredients)

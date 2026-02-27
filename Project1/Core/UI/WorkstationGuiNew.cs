@@ -50,7 +50,7 @@ namespace Project1.Core.UI
 
             this.PanelReactions = new Panel() { AutoSize = true };
             this.PanelReactions.HideOnAnyClick();
-            var manager = workstation.Parent.Map.Town.CraftingManagerNew;
+            var manager = workstation.Parent.Map.Town.CraftingManager;
             var availableRecipesNew = workstation.WorkstationType.Capabilities.SelectMany(cap => cap.Worker.GetAddOrderRequests(workstation));
             var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.ProductDef?.LabelReadable ?? r.WorkstationCapability.LabelReadable, () => this.PlaceOrderNew(r)));
             availableRefinementsControl.AddItems(availableRecipesNew);
@@ -199,10 +199,10 @@ namespace Project1.Core.UI
         }
         public void OnBind(ISelectable selectable)
         {
-            if (!(selectable is TargetArgs target &&
-                target.BlockEntityOld is BlockEntity block &&
-                block.GetComp<BlockWorkstationComp>() is BlockWorkstationComp comp))
-                throw new Exception();
+            if (!(selectable is BlockEntity bEntity &&
+                //target.BlockEntityOld is BlockEntity block &&
+                bEntity.GetComp<BlockWorkstationComp>() is BlockWorkstationComp comp))
+                return;
             this.Build(comp);
         }
     }

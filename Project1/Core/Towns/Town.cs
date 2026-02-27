@@ -83,7 +83,7 @@ namespace Project1.Core.Towns
         //[InspectorHidden]
         //public CraftingManagerOld CraftingManager;
         [InspectorHidden]
-        public CraftingManager CraftingManagerNew;
+        public CraftingManager CraftingManager;
         [InspectorHidden]
         public JobsManager JobsManager;
         [InspectorHidden]
@@ -114,7 +114,7 @@ namespace Project1.Core.Towns
             this.DesignationManager = new(this);
             this.RoomManager = new(this);
             //this.CraftingManager = new(this);
-            this.CraftingManagerNew = new(this);
+            this.CraftingManager = new(this);
             this.JobsManager = new(this);
             this.ReservationManager = new(this);
             this.TerrainManager = new(this);
@@ -130,7 +130,7 @@ namespace Project1.Core.Towns
                 this.DesignationManager,
                 this.RoomManager,
                 //this.CraftingManager,
-                this.CraftingManagerNew,
+                this.CraftingManager,
                 this.JobsManager,
                 this.ReservationManager,
                 this.TerrainManager,

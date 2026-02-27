@@ -127,7 +127,7 @@ namespace Project1.Core.Crafting
         private static void OnPlayerModifiedOrderFilters(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var order = endpoint.Map.Town.CraftingManagerNew.GetOrder(r.ReadInt32());
+            var order = endpoint.Map.Town.CraftingManager.GetOrder(r.ReadInt32());
             var bone = r.ReadDef<BoneDef>();
             var refinement = r.ReadDef<MaterialRefinementDef>();
             var material = r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<MaterialDef>(matName) : null;
@@ -147,7 +147,7 @@ namespace Project1.Core.Crafting
         private static void OnCraftOrderUpdated(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var order = endpoint.Map.Town.CraftingManagerNew.GetOrder(r.ReadInt32());
+            var order = endpoint.Map.Town.CraftingManager.GetOrder(r.ReadInt32());
             var actor = endpoint.World.GetEntity<Actor>(r.ReadInt32());
             order.CompletedBy(actor);
         }
@@ -182,7 +182,7 @@ namespace Project1.Core.Crafting
             var workstationPosition = r.ReadIntVec3();
             var product = r.ReadDef();
             var capability = r.ReadDef<WorkstationCapabilityDef>();
-            if(net.Map.Town.CraftingManagerNew.CreateOrderNew(workstationPosition, product) is CraftingOrder order &&
+            if(net.Map.Town.CraftingManager.CreateOrderNew(workstationPosition, product) is CraftingOrder order &&
                 net is Server server)
                 SendPlayerCreatedOrderNew(net.Map.GetBlockEntity(workstationPosition), product, capability);
         }
@@ -198,7 +198,7 @@ namespace Project1.Core.Crafting
             var r = pck.PacketReader;
             var mapid = r.ReadInt32();
             var map = net.World.GetMap(mapid);
-            var order = net.Map.Town.CraftingManagerNew.DeleteOrder(r.ReadInt32());
+            var order = net.Map.Town.CraftingManager.DeleteOrder(r.ReadInt32());
             if (net is Server server)
                 SendPlayerDeletedOrder(map, order);
         }
@@ -217,7 +217,7 @@ namespace Project1.Core.Crafting
             var r = packet.PacketReader;
             var mapid = r.ReadInt32();
             var map = endpoint.World.GetMap(mapid);
-            var order = endpoint.Map.Town.CraftingManagerNew.GetOrder(r.ReadInt32());
+            var order = endpoint.Map.Town.CraftingManager.GetOrder(r.ReadInt32());
             var priorityDelta = r.ReadInt32();
             var amountDelta = r.ReadInt32();
             var mode = (CraftingOrder.CraftMode)r.ReadInt32();

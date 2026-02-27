@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Input;
 using Project1.Core.Legacy.Crafting.Blocks;
+using Project1.Core.Loot;
+using Project1.Core.Materials;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Designations;
@@ -14,6 +16,7 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace Project1.Core.Towns.Constructions
 {
@@ -61,15 +64,15 @@ namespace Project1.Core.Towns.Constructions
         {
             if (!e.Entity.HasComp<BlockConstructionComp>())
                 return;
-            this.Town.DesignationManager.RemoveCells(e.Entity.CellsOccupied);
+            this.Town.DesignationManager.RemoveInternal(e.Entity.CellsOccupied);
         }
 
         private void OnBlockEntityAdded(BlockEntityAddedEvent e)
         {
             if (!e.Entity.HasComp<BlockConstructionComp>())
                 return;
-            //this.Town.DesignationManager.AddCells(DesignationDefOf.Construct, e.Entity.CellsOccupied, false);
-            this.Town.DesignationManager.AddBlockEntities(DesignationDefOf.Construct, [e.Entity], false);
+            this.Town.DesignationManager.AddCells(DesignationDefOf.Construct, e.Entity.CellsOccupied, false);
+            //this.Town.DesignationManager.AddBlockEntities(DesignationDefOf.Construct, [e.Entity], false);
         }
 
         private void OnConstructionFinished(ConstructionFinishedEvent e)
@@ -243,9 +246,19 @@ namespace Project1.Core.Towns.Constructions
                 this.DesignationLocations.Remove(child);
                 this.Map.GetChunk(child).InvalidateSlice(child.Z);
             }
+
             var mapedit = new MapEdit(this.Map);
             mapedit.RemoveEntity(entity);
             mapedit.Flush();
+
+            foreach(var (refinement, material, amount) in comp.DepositedMaterials)
+            {
+                this.Map.Events.Post(new LootDropEvent(
+                    [RawMaterialSystem.Create(refinement, material, amount)],
+                    this.Map,
+                    entity.OriginGlobal,
+                    Vector3.Zero));
+            }
         }
         GroupBox _pendingDesignationLabel;
         GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();

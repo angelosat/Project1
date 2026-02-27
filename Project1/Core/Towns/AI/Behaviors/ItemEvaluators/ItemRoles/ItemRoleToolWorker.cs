@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
-using Project1.Core.Entities.Actors;
 using Project1.Core.Tools;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
@@ -29,6 +29,8 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
         
         public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
         {
+            if (item.Def != ItemDefOf.Tool)
+                return -1;
             if (item.Profile is not ToolProfileDef toolProfile)
                 return -1;
             if (toolProfile.ToolUse != role.Def)

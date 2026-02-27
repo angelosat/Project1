@@ -21,7 +21,7 @@ namespace Project1.Core.AI.Planners
 
             var map = actor.Map;
             var carried = actor.Hauled;
-            var manager = map.Town.CraftingManagerNew;
+            var manager = map.Town.CraftingManager;
 
             // Gather all pending, reachable orders
             //var allOrders = manager.GetAllOrdersUnsorted()

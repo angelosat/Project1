@@ -32,7 +32,8 @@ namespace Project1.Core.Crafting
             set => this._amount = Math.Max(value, 0);
         }
         public bool Enabled;
-        public bool Pending => this.Mode == CraftMode.Infinite || this.Mode == CraftMode.FixedAmount && this.Amount > 0;
+        public bool IsDisposed { get; private set; }
+        public bool Pending => !this.IsDisposed && (this.Mode == CraftMode.Infinite || this.Mode == CraftMode.FixedAmount && this.Amount > 0);
         public EntityCreationRequest Target { get; init; }
         //public Entity UnfinishedItem;
         // Explicit actor restriction
@@ -554,5 +555,7 @@ namespace Project1.Core.Crafting
             var product = r.ReadDef();
             return new CraftingOrder(product).Read(r);
         }
+
+        internal void Dispose() => this.IsDisposed = true;
     }
 }

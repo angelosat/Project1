@@ -27,10 +27,10 @@ namespace Project1.Core.Towns.Designations
     public class DesignationManager : TownComponent
     {
         public override string Name => "Designation Manager";
-        readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>> Designations;
-        readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<IntVec3>> CellDesignations;
-        readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<Entity>> EntityDesignations;
-        readonly ReadOnlyDictionary<DesignationDef, ObservableHashSet<BlockEntity>> BlockEntityDesignations;
+        ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>> Designations;
+        ReadOnlyDictionary<DesignationDef, ObservableHashSet<IntVec3>> CellDesignations;
+        ReadOnlyDictionary<DesignationDef, ObservableHashSet<Entity>> EntityDesignations;
+        ReadOnlyDictionary<DesignationDef, ObservableHashSet<BlockEntity>> BlockEntityDesignations;
         public readonly Dictionary<DesignationDef, BlockRendererObservable> Renderers = [];
         static List<DesignationDef> designationDefs;
         static List<DesignationDef> AllDesignationDefs => designationDefs ??= [.. Def.GetDefs<DesignationDef>()];
@@ -357,21 +357,75 @@ namespace Project1.Core.Towns.Designations
         {
             foreach (var des in this.Designations)
                 tag.Add(des.Value.ToList().Save(des.Key.Name));
+
+            var cellsTag = new SaveTag(SaveTag.Types.Compound, "Cells");
+            foreach(var des in this.CellDesignations)
+                cellsTag.Add(des.Value.ToList().Save(des.Key.Name));
+            var entitiesTag = new SaveTag(SaveTag.Types.Compound, "Entities");
+            foreach (var des in this.EntityDesignations)
+                entitiesTag.Add(des.Value.Select(e => e.RefId).ToList().Save(des.Key.Name));
+            tag.Add(cellsTag);
+            tag.Add(entitiesTag);
         }
         public override void Load(SaveTag tag)
         {
             foreach (var des in this.Designations.Keys.ToList())
                 tag.TryGetTag(des.Name, v => this.Designations[des].LoadTargets(v));
+
+            if (tag.TryGetTag("Cells", out var cellsTag))
+            {
+                foreach (var des in this.CellDesignations)
+                {
+                    var array = cellsTag.LoadArrayIntVec3(des.Key.Name);
+                    foreach (var i in array)
+                        tag.TryGetTag(des.Key.Name, v => this.CellDesignations[des.Key].Add(i));
+                }
+            }
+            if (tag.TryGetTag("Entities", out var entitiesTag))
+            {
+                foreach (var des in this.EntityDesignations)
+                {
+                    var entities = this.Map.World.GetEntities(entitiesTag.LoadListInt(des.Key.Name));
+                    foreach(var i in entities)
+                        tag.TryGetTag(des.Key.Name, v => this.EntityDesignations[des.Key].Add(i));
+                } 
+            }
         }
         public override void Write(IDataWriter w)
         {
             foreach (var des in this.Designations)
                 w.Write(des.Value);
+
+            foreach (var d in this.CellDesignations)
+            {
+                w.Write(d.Value.Count);
+                foreach (var cell in d.Value)
+                    w.Write(cell);
+            }
+            foreach (var d in this.EntityDesignations)
+            {
+                w.Write(d.Value.Count);
+                foreach (var entity in d.Value)
+                    w.Write(entity.RefId);
+            }
         }
         public override void Read(IDataReader r)
         {
             foreach (var des in this.Designations.Keys.ToList())
                 this.Designations[des].ReadTargets(this.Map, r);
+
+            foreach (var d in this.CellDesignations)
+            {
+                var count = r.ReadInt32();
+                for (int i = 0; i < count; i++)
+                    d.Value.Add(r.ReadIntVec3());
+            }
+            foreach (var d in this.EntityDesignations)
+            {
+                var count = r.ReadInt32();
+                for (int i = 0; i < count; i++)
+                    d.Value.Add(this.Map.World.GetEntity(r.ReadEntityRefId()));
+            }
         }
         internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
         {

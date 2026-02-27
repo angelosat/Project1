@@ -1,4 +1,8 @@
-﻿using Project1.Core.Helpers;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Helpers;
+using Project1.Core.Simulation;
+using Project1.Framework;
+using System;
 
 namespace Project1.Core
 {
@@ -46,7 +50,18 @@ namespace Project1.Core
         public static implicit operator WorldSeed(int v) => new(v);
         public static implicit operator int(WorldSeed v) => v.Value;
         public static WorldSeed Mix(WorldSeed first, WorldSeed second) => first.MixWith(second);
-        
     }
-
+    public readonly record struct IntVec3Local//IntVec3 Value) //int X, int Y, int Z)// 
+    {
+        public readonly int X, Y, Z;
+        public IntVec3Local(IntVec3 value)
+        {
+            var local = value.ToLocal();
+            this.X = local.X;
+            this.Y = local.Y;
+            this.Z = local.Z;
+        }
+        public IntVec3 ToGlobal(Chunk chunk) => new IntVec3(this.X, this.Y, this.Z).ToGlobal(chunk);
+        public static implicit operator IntVec3Local(IntVec3 v) => new(v);
+    }
 }

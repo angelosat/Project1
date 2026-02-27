@@ -106,7 +106,12 @@ namespace Project1.Core.Blocks
         public T GetComp<T>() where T : BlockComp// class, IBlockEntityComp
         {
             return this.Comps.GetComp<T>();
+            //if (this.Comps.TryGetComp<T>(out var comp))
+            //    return comp;
+            //return null;
         }
+        public bool TryGetComp<T>(out T comp) where T : BlockComp
+            => this.Comps.TryGetComp(out comp);
         internal void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity)
         {
             foreach (var comp in this.Comps.Values)
@@ -155,6 +160,7 @@ namespace Project1.Core.Blocks
             var global = tag.LoadIntVec3("OriginGlobal");
             var entity = def.CreateEntity(global);
             entity.Load(tag);
+            entity.ResolveReferences();
             return entity;
         }
         protected virtual void LoadExtra(SaveTag tag) { }
@@ -184,6 +190,7 @@ namespace Project1.Core.Blocks
             var global = r.ReadIntVec3();
             var entity = def.CreateEntity(global);
             entity.Read(r);
+            entity.ResolveReferences();
             return entity;
         }
         protected virtual void WriteExtra(IDataWriter w) { }
@@ -238,6 +245,11 @@ namespace Project1.Core.Blocks
         {
             foreach (var c in this.Comps.Values)
                 c.OnBlockBelowChanged(map, global);
+        }
+        internal void ResolveReferences()
+        {
+            foreach (var c in this.Comps.Values)
+                c.ResolveReferences();
         }
 
         internal void ResolveReferences(MapBase map, IntVec3 global)

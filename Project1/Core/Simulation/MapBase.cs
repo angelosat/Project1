@@ -1051,23 +1051,25 @@ namespace Project1.Core.Simulation
             entity.OnSpawn(this);
             this.Events.Post(new EntitySpawnedEvent(entity, immediate));
         }
-        internal void ApplyBlockWork(IntVec3 global, int workAmount)
+        internal void ApplyBlockDamage(IntVec3 global, int workAmount)
         {
             if (this.TryGetChunk(global, out var chunk))
             {
-                var cell = this.GetCell(global);
+                chunk.ApplyBlockWork(global.ToLocal(), workAmount);
+                //return;
+                //var cell = this.GetCell(global);
            
-                var block = cell.Block;// this.GetBlock(global, out var cell);
-                if (block.BlockDef == BlockDefOf.Air)
-                    throw new Exception();
-                var local = global.ToLocal();
-                chunk.ApplyBlockWork(local, workAmount);
-                this.Events.Post(new BlockHitEvent(block, this, global, workAmount));
-                if (cell.HitPoints == 0)
-                    WorldMutations.BreakBlock(new CellSelection(this, global));
+                //var block = cell.Block;
+                //if (block.BlockDef == BlockDefOf.Air)
+                //    throw new Exception();
+                //var local = global.ToLocal();
+                //chunk.ApplyBlockWork(local, workAmount);
+                //this.Events.Post(new BlockHitEvent(block, this, global, workAmount));
+                //if (cell.HitPoints == 0)
+                //    this.Events.Post(new BlockHitPointsDepletedEvent(global));
             }
         }
-        public IBlockToken GetBlockToken(IntVec3 global)
+        public IBlockHealth GetBlockHealth(IntVec3 global)
         {
             if (this.TryGetChunk(global, out var chunk))
             {
@@ -1107,7 +1109,7 @@ namespace Project1.Core.Simulation
         public MapQuerySnapshot Query(IntVec3 global)
         {
             var query = new MapQuery(this, global);
-            return query.Query();
+            return query.ToSnapshot();
         }
     
     }

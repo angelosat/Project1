@@ -199,11 +199,12 @@ namespace Project1.Core.UI
         }
         public void OnBind(ISelectable selectable)
         {
-            if (!(selectable is BlockEntity bEntity &&
+            if (selectable is BlockEntity bEntity &&
                 //target.BlockEntityOld is BlockEntity block &&
-                bEntity.GetComp<BlockWorkstationComp>() is BlockWorkstationComp comp))
-                return;
-            this.Build(comp);
+                bEntity.TryGetComp<BlockWorkstationComp>(out var comp))// is BlockWorkstationComp comp)
+                this.Build(comp);
+            else
+                this.Window.Hide();
         }
     }
 }

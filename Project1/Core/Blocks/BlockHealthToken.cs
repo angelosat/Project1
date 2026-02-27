@@ -3,12 +3,12 @@ using System;
 
 namespace Project1.Core.Blocks
 {
-    public interface IBlockToken
+    public interface IBlockHealth
     {
         float HealthPercentage { get; }
     }
 
-    internal class BlockHealthToken : IBlockToken
+    internal class BlockHealthToken : IBlockHealth
     {
         readonly static int TimerMax = Ticks.FromHours(1);
         int Timer = TimerMax;
@@ -27,26 +27,26 @@ namespace Project1.Core.Blocks
             this.CurrentHp = cell.HitPoints * cell.Material.BreakResistance;
             this.Cell = cell;
         }
-        /// <summary>
-        /// Returns true if chunk z-slice needs invalidation
-        /// </summary>
-        internal bool ApplyWork(int work)
+    
+        internal BlockDamageResult ApplyWork(int work)
         {
             this.Refresh();
             this.CurrentHp = Math.Min(this.TotalHp, Math.Max(0, this.CurrentHp + work));
             if (this.CurrentHp == 0)
             {
                 this.Cell.HitPoints = 0;
-                return true;
+                return BlockDamageResult.HitPointsDepleted;
             }
             var nextDamageStage = (this.TotalHp - this.CurrentHp) / this.Cell.Material.BreakResistance;
             var currentDamageStage = this.Cell.Damage;
             if (nextDamageStage != currentDamageStage)
             {
                 this.Cell.Damage = nextDamageStage;
-                return true;
+                return BlockDamageResult.DamageLevelChanged;
             }
-            return false;
+            return BlockDamageResult.NoChange;
         }
+
+        internal enum BlockDamageResult { NoChange, DamageLevelChanged, HitPointsDepleted }
     }
 }

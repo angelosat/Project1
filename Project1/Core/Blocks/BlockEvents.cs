@@ -18,5 +18,6 @@ namespace Project1.Core.Blocks
     public record struct BlockEntityRemovedEvent(BlockEntity Entity) : IEventPayload { }
     public record struct BlockEntityAddedEvent(BlockEntity Entity) : IEventPayload { }
     public record struct BlockSetEvent(SetBlockArgs Args) : IEventPayload { }
-    internal record struct PlayerPaintedBlockEvent(IntVec3 Global, Block Block, MaterialDef Material, byte State, int Variation, int Orientation) : IEventPayload { }
+    public record struct PlayerPaintedBlockEvent(IntVec3 Global, Block Block, MaterialDef Material, byte State, int Variation, int Orientation) : IEventPayload { }
+    public record struct BlockHitPointsDepletedEvent(IntVec3 Cell) : IEventPayload { }
 }

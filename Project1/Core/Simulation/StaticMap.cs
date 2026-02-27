@@ -167,12 +167,21 @@ namespace Project1.Core.Simulation
         {
             this.AddTime();
             this.Regions.Update();
+            TickChunks();
+            TickSystems();
+            this.Town.Tick();
+        }
+
+        private void TickSystems()
+        {
             foreach (var sys in this.SimulationSystems)
                 sys.Tick();
+        }
+
+        private void TickChunks()
+        {
             foreach (var chunk in this.ActiveChunks.Values.ToList())
                 chunk.Tick();
-
-            this.Town.Tick();
         }
 
         #endregion

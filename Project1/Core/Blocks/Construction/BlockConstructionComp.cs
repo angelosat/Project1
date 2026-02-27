@@ -51,13 +51,19 @@ namespace Project1.Core.Blocks
         public void SetArgs(ConstructionDesignationArgs args)
         {
             this.Args = args;
-            this.Parent.Name = $"Construction: {this.Args.Block.LabelReadable}";
+            //this.Parent.Name = $"Construction: {this.Args.Block.LabelReadable}";
+            this.Parent.Name = $"{this.Args.Block.LabelReadable} (Construction)";
+
 
             var ingredientCount = this.Block.Size.Volume / this.Block.BlockDef.ConstructionProfile.Dimension;
             this.Fulfillment = new(ingredientCount);
             this.Progress = new(100);
         }
-       
+        internal override void ResolveReferences()
+        {
+            //this.Parent.Name = $"Construction: {this.Args.Block.LabelReadable}";
+            this.Parent.Name = $"{this.Args.Block.LabelReadable} (Construction)";
+        }
         internal void Deposit(Entity entity, int quantity)
         {
             if (entity.Def != ItemDefOf.Ingredient)

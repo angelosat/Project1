@@ -13,7 +13,7 @@ using Project1.Core.Plants;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Tools;
-using Project1.Core.Towns;
+using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using System.Linq;
 
@@ -76,7 +76,7 @@ namespace Project1.Core.Entities
             CraftingProperties = new CraftingProperties().MakeableFrom(ItemCategoryDefOf.FoodRaw),
             Body = new Bone(BoneDefOf.Item, Sprite.Default),
             RecipeProperties =
-                new RecipeProperties("Bake") { Job = JobDefOf.Cook, Skill = SkillDefOf.Cooking }
+                new RecipeProperties("Bake") { Job = DutyDefOf.Cook, Skill = SkillDefOf.Cooking }
                     .AddWorkstation(IsWorkstation.Types.Baking)
                     .AddIngredientMaker(def =>
                         new Ingredient("Filling") { DefaultRestrictions = new IngredientRestrictions().Restrict(MaterialTypeDefOf.Flesh) }

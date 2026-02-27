@@ -1,11 +1,10 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Labors;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Towns;
 using Project1.Core.Towns.Designations;
+using Project1.Core.Towns.Duties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace Project1.Core.Plants
         protected override Plan TryPlan(Actor actor)
         {
             var map = actor.Map;
-            if (!actor.HasJob(JobDefOf.Farmer))
+            if (!actor.HasJob(DutyDefOf.Farmer))
                 return null;
             var manager = map.Town.GrowingManager;
             var zones = manager.AllGrowingZones;

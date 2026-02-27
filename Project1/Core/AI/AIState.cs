@@ -3,13 +3,12 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Conversation;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Labors;
 using Project1.Core.AI.Planners;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Pathing;
-using Project1.Core.Towns;
+using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
@@ -21,7 +20,7 @@ namespace Project1.Core.AI
     public sealed class AIState : Inspectable
     {
         public static AIConversationManager ConversationManager = new();
-        readonly Dictionary<JobDef, Job> Jobs = JobDefOf.All.ToDictionary(i => i, i => new Job(i));
+        readonly Dictionary<DutyDef, Duty> Jobs = DutyDefOf.All.ToDictionary(i => i, i => new Duty(i));
         public Progress Attention = new();
         public float AttentionDecay = 1;
         public float AttentionDecayDefault = 1;
@@ -181,11 +180,11 @@ namespace Project1.Core.AI
             this.Assign(bhav);
             return true;
         }
-        public Job GetJob(JobDef def)
+        public Duty GetJob(DutyDef def)
         {
             return this.Jobs[def];
         }
-        public IEnumerable<Job> GetJobs()
+        public IEnumerable<Duty> GetJobs()
         {
             foreach (var j in this.Jobs.Values)
                 yield return j;
@@ -195,11 +194,11 @@ namespace Project1.Core.AI
             return entity.GetComponent<AIComponent>().State;
         }
 
-        public bool HasJob(JobDef job)
+        public bool HasJob(DutyDef job)
         {
             return this.Jobs.TryGetValue(job, out var j) && j.Enabled;
         }
-        public bool IsJobEnabled(JobDef job)
+        public bool IsJobEnabled(DutyDef job)
         {
             return this.Jobs[job].Enabled;
         }
@@ -232,13 +231,18 @@ namespace Project1.Core.AI
             }
 
             tag.TryLoad("Path", out this.Path);
-            this.Jobs.TrySync(tag, "Jobs", keyTag => Def.TryGetDef<JobDef>((string)keyTag.Value));
+            //this.Jobs.TrySync(tag, "Jobs", keyTag => Def.TryGetDef<JobDef>((string)keyTag.Value));
+            //if (tag.TryLoadListOut<Duty>("Jobs", out var jobslist))
+            //    foreach (var j in jobslist)
+            //        this.Jobs[j.Def] = j;
             tag.TryLoadDefOut("Planner", out this.CurrentPlanner);
             tag.TryGetTag("ItemPreferences", t => this.ItemPreferences.Load(t));
         }
         public void Read(IDataReader r)
         {
-            r.ReadValuesWithInferredKeys(this.Jobs, v => v.Def);
+            //r.ReadValuesWithInferredKeys(this.Jobs, v => v.Def);
+            foreach (var j in r.ReadListNewNew<Duty>())
+                this.Jobs[j.Def] = j;
             this.ItemPreferences.Read(r); // sync to clients?
         }
         public SaveTag Save(string name)
@@ -269,13 +273,14 @@ namespace Project1.Core.AI
             tag.Add(tagQueue);
 
             this.Path.TrySave(tag, "Path");
-            this.Jobs.Save(tag, "Jobs", SaveTag.Types.String, key => key.Name);
+            //this.Jobs.Save(tag, "Jobs", SaveTag.Types.String, key => key.Name);
+            tag.Save("Jobs", this.Jobs.Values);
             this.ItemPreferences.Save(tag, "ItemPreferences");
             if(this.CurrentPlanner is not null)
                 tag.Save("Planner", this.CurrentPlanner);
             return tag;
         }
-        public void ToggleJob(JobDef job)
+        public void ToggleJob(DutyDef job)
         {
             this.Jobs[job].Toggle();
         }
@@ -294,7 +299,8 @@ namespace Project1.Core.AI
 
         public void Write(IDataWriter w)
         {
-            w.WriteValues(this.Jobs);
+            //w.WriteValues(this.Jobs);
+            w.WriteNew(this.Jobs.Values);
             this.ItemPreferences.Write(w); // sync to clients?
         }
         public void Tick()

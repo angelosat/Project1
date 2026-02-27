@@ -269,7 +269,7 @@ namespace Project1.Core.Towns.Constructions
             return this.PendingDesignationLabel;
         }
 
-        internal override void OnTargetSelected(IUISelection info, TargetArgs targetArgs)
+        internal /*override*/ void OnTargetSelected(IUISelection info, TargetArgs targetArgs)
         {
             var global = (IntVec3)targetArgs.Global;
             if (this.PendingDesignations.TryGetValue(global, out var pending))

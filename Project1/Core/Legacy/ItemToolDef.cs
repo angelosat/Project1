@@ -1,19 +1,19 @@
-﻿using Project1.Core.Towns;
-using Project1.Core.Tools;
+﻿using Project1.Core.Tools;
 using System.Collections.Generic;
+using Project1.Core.Towns.Duties;
 
 namespace Project1.Core.Legacy
 {
     public class ItemToolDef
     {
         public ToolUse Ability;
-        public readonly HashSet<JobDef> AssociatedJobs = new();
+        public readonly HashSet<DutyDef> AssociatedJobs = new();
         
         public ItemToolDef(ToolUse ability)
         {
             this.Ability = ability;
         }
-        public ItemToolDef AssociateJob(params JobDef[] jobs)
+        public ItemToolDef AssociateJob(params DutyDef[] jobs)
         {
             foreach (var j in jobs)
                 this.AssociatedJobs.Add(j);

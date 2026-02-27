@@ -219,7 +219,7 @@ namespace Project1.Core.Rooms
             }
         }
 
-        internal override void OnTargetSelected(IUISelection info, TargetArgs selected)
+        internal /*override*/ void OnTargetSelected(IUISelection info, TargetArgs selected)
         {
             if (this.GetRoomAt(selected.FaceGlobal) is Room r)
                 info.AddTabAction("Roomm", () => r.ShowGUI(selected.FaceGlobal));

@@ -1,7 +1,7 @@
-﻿using System;
-using Project1.Framework.Events;
-using Project1.Framework.Serialization;
+﻿using Project1.Framework.Events;
 using Project1.Framework.Interfaces;
+using Project1.Framework.Serialization;
+using System;
 
 namespace Project1.Framework.Helpers
 {

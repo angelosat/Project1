@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Labors;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Materials;
 using Project1.Core.Towns.Designations;
+using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace Project1.Core.Towns.Constructions.AI
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(JobDefOf.Builder))
+            if (!actor.HasJob(DutyDefOf.Builder))
                 return null;
             var manager = actor.Map.Town.ConstructionsManager;
 

@@ -4,7 +4,7 @@ using Project1.Core.Graphics;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Skills;
-using Project1.Core.Towns;
+using Project1.Core.Towns.Duties;
 using System.Collections.Generic;
 
 namespace Project1.Core.Tools
@@ -13,7 +13,7 @@ namespace Project1.Core.Tools
     {
         public ToolUseDef ToolUse;
         public DamageDef Damage;
-        public HashSet<JobDef> AssociatedJobs = new();
+        public HashSet<DutyDef> AssociatedJobs = new();
         public Sprite SpriteHandle, SpriteHead;
         public SkillDef Skill;
         public string Description;
@@ -21,7 +21,7 @@ namespace Project1.Core.Tools
         public ToolProfileDef(string name) : base(name)
         {
         }
-        public ToolProfileDef AssociateJob(params JobDef[] jobs)
+        public ToolProfileDef AssociateJob(params DutyDef[] jobs)
         {
             foreach (var j in jobs)
                 this.AssociatedJobs.Add(j);

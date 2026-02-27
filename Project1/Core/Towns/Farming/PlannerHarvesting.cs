@@ -1,7 +1,7 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Labors;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Duties;
 
 namespace Project1.Core.Towns.Farming
 {
@@ -9,7 +9,7 @@ namespace Project1.Core.Towns.Farming
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(JobDefOf.Harvester))
+            if (!actor.HasJob(DutyDefOf.Harvester))
                 return null;
             if (actor.IsHauling)
                 return null;

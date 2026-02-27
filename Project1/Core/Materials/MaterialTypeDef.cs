@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Legacy.Crafting.Defs;
 using Project1.Core.Skills;
-using Project1.Core.Towns;
+using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using System.Collections.Generic;
 
@@ -12,7 +12,7 @@ namespace Project1.Core.Materials
         public readonly MaterialChemistryDef Chemistry;
         public HashSet<MaterialDef> SubTypes = [];
         public float Shininess;
-        public JobDef JobToExtract;
+        public DutyDef JobToExtract;
         public SkillDef SkillToRefine;
         public MaterialProcessGraphDef ProductionGraph = MaterialProcessGraphDefOf.Default;
 

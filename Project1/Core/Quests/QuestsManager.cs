@@ -142,7 +142,7 @@ namespace Project1.Core
             {
             }
         }
-        internal override void OnTargetSelected(IUISelection info, ISelectable selected)
+        internal /*override*/ void OnTargetSelected(IUISelection info, ISelectable selected)
         {
             if (selected is not TargetArgs target)
                 return;

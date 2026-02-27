@@ -8,7 +8,6 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
 using Project1.Core.Input;
-using Project1.Core.Legacy.Crafting;
 using Project1.Core.Networking;
 using Project1.Core.Plants;
 using Project1.Core.Rooms;
@@ -16,7 +15,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Towns.Constructions;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Digging;
-using Project1.Core.Towns.Labors;
+using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Storage;
 using Project1.Core.Towns.Terrain;
 using Project1.Core.Towns.UI;
@@ -34,7 +33,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns
 {
-    public class Town : Inspectable
+    public class Town : Inspectable, IDutyProvider
     {
         UIQuickMenu QuickMenu;
         public static HotkeyContext HotkeyContext = new("Town");
@@ -43,7 +42,26 @@ namespace Project1.Core.Towns
             foreach (var c in this.TownComponents)
                 c.OnTooltipCreated(tooltip, targetArgs);
         }
-
+        public IReadOnlyCollection<DutyDef> AvailableDuties => field ??= 
+                [
+                    DutyDefOf.Workplace,
+                    DutyDefOf.Digger,
+                    DutyDefOf.Miner,
+                    DutyDefOf.Lumberjack,
+                    DutyDefOf.Forester,
+                    DutyDefOf.Craftsman,
+                    DutyDefOf.Smelter,
+                    DutyDefOf.Farmer,
+                    DutyDefOf.Harvester,
+                    DutyDefOf.Forager,
+                    DutyDefOf.Builder,
+                    DutyDefOf.Carpenter,
+                    DutyDefOf.Cook,
+                    DutyDefOf.Guide,
+                    DutyDefOf.QuestGiver,
+                    DutyDefOf.Hauler,
+                    DutyDefOf.MiscDuties,
+                ];
         internal void Init()
         {
             this.RoomManager.Init();
@@ -53,16 +71,16 @@ namespace Project1.Core.Towns
         
         private void OnEntityDisposed(EntityDisposedEvent e)
         {
-            if(e.Entity is Actor actor && this.Members.Contains(actor.RefId)) 
+            if(e.Entity is Actor actor && this.Members.Contains(actor)) 
                 this.RemoveMember(actor);
         }
 
-        public ObservableHashSet<int> Members = new();
-        public IEnumerable<Actor> GetMembers()
+        public ObservableHashSet<Actor> Members = [];
+        public IReadOnlySet<Actor> GetMembers()
         {
-            return this.Members.Select(id => this.Map.World.GetEntity(id) as Actor);
+            return this.Members;//.Select(id => this.Map.World.GetEntity(id) as Actor);
         }
-        public bool IsMember(Actor actor) => this.Members.Contains(actor.RefId);
+        public bool IsMember(Actor actor) => this.Members.Contains(actor);
         
         public GameObject GetNpc(Guid guid)
         {
@@ -85,7 +103,7 @@ namespace Project1.Core.Towns
         [InspectorHidden]
         public CraftingManager CraftingManager;
         [InspectorHidden]
-        public JobsManager JobsManager;
+        public DutyRoster DutiesManager;
         [InspectorHidden]
         public ReservationManager ReservationManager;
         [InspectorHidden]
@@ -99,8 +117,10 @@ namespace Project1.Core.Towns
 
         public List<TownComponent> TownComponents = [];
 
-        public MapBase Map;
+        public MapBase Map { get; private set; }
         public NetEndpoint Net => this.Map.Net;
+
+        public IEntityProvider Entities => this.Map.World;
 
         public Dictionary<Utility.Types, HashSet<IntVec3>> TownUtilitiesNew = new();
 
@@ -115,7 +135,7 @@ namespace Project1.Core.Towns
             this.RoomManager = new(this);
             //this.CraftingManager = new(this);
             this.CraftingManager = new(this);
-            this.JobsManager = new(this);
+            this.DutiesManager = new(this);
             this.ReservationManager = new(this);
             this.TerrainManager = new(this);
             this.ShopManager = new(this);
@@ -131,7 +151,7 @@ namespace Project1.Core.Towns
                 this.RoomManager,
                 //this.CraftingManager,
                 this.CraftingManager,
-                this.JobsManager,
+                //this.DutiesManager,
                 this.ReservationManager,
                 this.TerrainManager,
                 this.ShopManager,
@@ -146,12 +166,12 @@ namespace Project1.Core.Towns
 
         public void Update()
         {
-            foreach (var agent in this.Members.ToArray())
-                if (this.Map.World.GetEntity(agent) == null)
-                {
-                    this.Members.Remove(agent);
-                    $"Removed disposed townie entity with id: {agent}".ToConsole();
-                }
+            //foreach (var agent in this.Members.ToArray())
+            //    if (this.Map.World.GetEntity(agent) == null)
+            //    {
+            //        this.Members.Remove(agent);
+            //        $"Removed disposed townie entity with id: {agent}".ToConsole();
+            //    }
             foreach (var comp in this.TownComponents)
                 comp.Update();
         }
@@ -178,32 +198,34 @@ namespace Project1.Core.Towns
             return false;
         }
 
-        private void AddMember(Actor actor)
+        internal void AddMember(Actor actor)
         {
             if (!actor.HasComponent<AIComponent>())
                 throw new Exception();
-            this.AddMember(actor.RefId);
+            this.Members.Add(actor);
+            this.Map.Events.Post(new MemberAddedEvent(actor));
             RoleMetaDefOf.TownMember.AssignTo(actor);
             actor.Town = this;
             actor.Net.Report($"{actor.Name} has joined the town!");
             actor.AI.State.Log.Write("I joined the town!");
         }
 
-        private void RemoveMember(Actor actor)
+        internal void RemoveMember(Actor actor)
         {
             if (actor.HasComponent<AIComponent>())
             {
-                this.RemoveMember(actor.RefId);
+                this.Members.Remove(actor);
+                this.Map.Events.Post(new MemberRemovedEvent(actor));
                 actor.Town = null;
                 this.Net.ConsoleBox.Write($"{actor.Name} was dismissed from the town!");
             }
         }
-        public void RemoveMember(int id)
-        {
-            this.Members.Remove(id);
-            foreach (var c in this.TownComponents)
-                c.OnCitizenRemoved(id);
-        }
+        //public void RemoveMember(Actor actor)
+        //{
+        //    this.Members.Remove(actor);
+        //    foreach (var c in this.TownComponents)
+        //        c.OnCitizenRemoved(id);
+        //}
         public void ToggleMembers(IEnumerable<Actor> actors)
         {
             foreach (var actor in actors) 
@@ -211,22 +233,23 @@ namespace Project1.Core.Towns
         }
         public void ToggleMember(Actor entity)
         {
-            if (!this.Members.Contains(entity.RefId))
+            if (!this.Members.Contains(entity))
                 this.AddMember(entity);
             else
                 this.RemoveMember(entity);
         }
-        public void AddCitizen(Actor actor)
-        {
-            this.AddMember(actor.RefId);
-        }
-        public void AddMember(int id)
-        {
-            this.Members.Add(id);
-            foreach (var c in this.TownComponents)
-                c.OnCitizenAdded(id);
-        }
-       
+        //public void AddMember(Actor actor)
+        //{
+        //    this.Members.Add(actor);
+
+        //    //this.AddMember(actor.RefId);
+        //}
+        //public void AddMember(int id)
+        //{
+        //    this.Members.Add(id);
+        //    foreach (var c in this.TownComponents)
+        //        c.OnCitizenAdded(id);
+        //}
 
         internal void OnCameraRotated(Camera camera)
         {
@@ -248,8 +271,9 @@ namespace Project1.Core.Towns
 
         internal void ResolveReferences()
         {
-            foreach (var memberId in this.Members)
-                this.Map.World.GetEntity(memberId).Town = this;
+            foreach (var member in this.Members)
+                member.Town = this;
+                //this.Map.World.GetEntity(memberId).Town = this;
 
             foreach (var comp in this.TownComponents)
                 comp.ResolveReferences();
@@ -319,13 +343,16 @@ namespace Project1.Core.Towns
 
         private void LoadAgents(SaveTag save)
         {
-            List<SaveTag> agentsTag;
-            if (save.TryGetTagValueOrDefault("Agents", out agentsTag))
+            if (save.TryGetTagValueOrDefault("Agents", out List<SaveTag> agentsTag))
                 foreach (var bytes in agentsTag)
                 {
                     var id = (int)bytes.Value;
-                    this.AddMember(id);
+                    //this.AddMember(id);
+                    this.Members.Add(this.Map.World.GetEntity<Actor>(id));
                 }
+
+            foreach (var member in this.Members)//.Select(this.Map.World.GetEntity<Actor>))
+                this.DutiesManager.Add(member);
         }
 
         public void Write(IDataWriter w)
@@ -335,10 +362,12 @@ namespace Project1.Core.Towns
 
             w.Write(this.Members.Count);
             foreach (var a in this.Members)
-                w.Write(a);
+                w.Write(a.RefId);
 
             foreach (var ut in Utility.All())
                 w.Write(this.TownUtilitiesNew[ut].ToList());
+
+            this.DutiesManager.Write(w);
         }
         public void Read(IDataReader r)
         {
@@ -348,11 +377,13 @@ namespace Project1.Core.Towns
             var acount = r.ReadInt32();
             for (int i = 0; i < acount; i++)
             {
-                this.AddMember(r.ReadInt32());
+                this.Members.Add(this.Map.World.GetEntity<Actor>(r.ReadInt32()));
             }
 
             foreach (var ut in Utility.All())
                 this.TownUtilitiesNew[ut] = [.. r.ReadListVector3()];
+
+            this.DutiesManager.Read(r);
         }
 
         public void GetContextActions(GameObject playerEntity, Vector3 pos, ContextArgs a)
@@ -425,6 +456,9 @@ namespace Project1.Core.Towns
             actions.Add(new Tuple<Func<string>, Action>(() => "Spawn objects", () => ObjectTemplatesWindow.Instance.Show()));
             actions.Add(new Tuple<Func<string>, Action>(() => "Edit blocks", () => TerrainWindow.Instance.Show()));
 
+            actions.Add(new Tuple<Func<string>, Action>(() => "LaborsNew", this.DutiesManager.ToggleLaborsWindow));
+
+
             this.QuickMenu = new UIQuickMenu();
             this.QuickMenu.AddItems(actions);
             this.QuickMenu.SnapToMouse();
@@ -444,11 +478,11 @@ namespace Project1.Core.Towns
         }
         internal void Select(ISelectable target, SelectionManager info)
         {
-            foreach (var comp in this.TownComponents)
-            {
-                comp.UpdateOrderButtons();
-                comp.OnTargetSelected(info, target);
-            }
+            //foreach (var comp in this.TownComponents)
+            //{
+            //    comp.UpdateOrderButtons();
+            //    comp.OnTargetSelected(info, target);
+            //}
         }
         internal IEnumerable<KeyValuePair<IntVec3, BlockEntity>> GetRefuelablesNew()
         {
@@ -462,19 +496,19 @@ namespace Project1.Core.Towns
             }
         }
 
-        internal virtual void OnTargetSelected(IUISelection info, ISelectable selection)
-        {
-            if(selection is TargetArgs targetArgs)
-                foreach (var c in this.TownComponents)
-                    c.OnTargetSelected(info, targetArgs);
-        }
+        //internal virtual void OnTargetSelected(IUISelection info, ISelectable selection)
+        //{
+        //    if(selection is TargetArgs targetArgs)
+        //        foreach (var c in this.TownComponents)
+        //            c.OnTargetSelected(info, targetArgs);
+        //}
 
-        internal virtual void OnTargetSelected(SelectionManager info, ISelectable selection)
-        {
-            if (selection is TargetArgs targetArgs)
-                foreach (var c in this.TownComponents)
-                    c.OnTargetSelected(info, targetArgs);
-        }
+        //internal virtual void OnTargetSelected(SelectionManager info, ISelectable selection)
+        //{
+        //    if (selection is TargetArgs targetArgs)
+        //        foreach (var c in this.TownComponents)
+        //            c.OnTargetSelected(info, targetArgs);
+        //}
         internal IEnumerable<T> GetBusinesses<T>() where T : Workplace
         {
             return this.ShopManager.GetShops().OfType<T>();

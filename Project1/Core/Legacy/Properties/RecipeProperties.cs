@@ -2,7 +2,7 @@
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Skills;
-using Project1.Core.Towns;
+using Project1.Core.Towns.Duties;
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +17,7 @@ namespace Project1.Core.Legacy.Properties
         public ItemCategory IngredientCategory;
         public string Verb;
         public string IngredientName;
-        public JobDef Job;
+        public DutyDef Job;
         public SkillDef Skill;
 
         public RecipeProperties(string verb, ItemCategory ingCat)

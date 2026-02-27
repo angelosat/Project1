@@ -75,11 +75,11 @@ namespace Project1.Core.Towns
         {
         }
         internal virtual IEnumerable<Button> GetTabs(ISelectable selected) { yield break; }
-        internal virtual void OnTargetSelected(IUISelection info, ISelectable target) { }
-        internal virtual void OnTargetSelected(SelectionManager info, ISelectable target) { }
-        internal virtual void OnTargetSelected(IUISelection info, TargetArgs targetArgs)
-        {
-        }
+        //internal virtual void OnTargetSelected(IUISelection info, ISelectable target) { }
+        //internal virtual void OnTargetSelected(SelectionManager info, ISelectable target) { }
+        //internal virtual void OnTargetSelected(IUISelection info, TargetArgs targetArgs)
+        //{
+        //}
         internal virtual void OnTooltipCreated(Control tooltip, TargetArgs targetArgs)
         {
         }

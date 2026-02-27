@@ -8,6 +8,7 @@ using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities;
 using Project1.Core.Towns.Stockpiles;
+using Project1.Core.Towns.Duties;
 
 namespace Project1.Core.Towns.Shops
 {
@@ -15,11 +16,11 @@ namespace Project1.Core.Towns.Shops
     {
         public int OwnerID;
 
-        static public readonly JobDef JobRegistry = new("Registry");//, new TaskGiverTradingOverCounter());
-        static public readonly JobDef JobeRestock = new("Restock");
-        static public readonly JobDef[] RolesAll = { JobRegistry, JobeRestock };
+        static public readonly DutyDef JobRegistry = new("Registry");//, new TaskGiverTradingOverCounter());
+        static public readonly DutyDef JobeRestock = new("Restock");
+        static public readonly DutyDef[] RolesAll = { JobRegistry, JobeRestock };
 
-        public override IEnumerable<JobDef> GetRoleDefs()
+        public override IEnumerable<DutyDef> GetRoleDefs()
         {
             foreach (var r in RolesAll)
                 yield return r;

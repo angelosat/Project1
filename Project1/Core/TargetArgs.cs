@@ -714,24 +714,24 @@ namespace Project1.Core
             foreach (var i in this.Map.GetSelectionTabs())
                 yield return i;
         }
-        public void GetSelectionInfo(IUISelection info)
-        {
-            switch (this.Type)
-            {
-                case TargetType.Entity:
-                    this.Object.GetSelectionInfo(info);
-                    break;
+        //public void GetSelectionInfo(IUISelection info)
+        //{
+        //    switch (this.Type)
+        //    {
+        //        case TargetType.Entity:
+        //            this.Object.GetSelectionInfo(info);
+        //            break;
 
-                case TargetType.Cell:
-                    //this.Block.GetSelectionInfo(info, this.Map, this.Global);
-                    this.Cell.GetSelectionInfo(info, this.Map, this.Global);
-                    break;
+        //        case TargetType.Cell:
+        //            //this.Block.GetSelectionInfo(info, this.Map, this.Global);
+        //            this.Cell.GetSelectionInfo(info, this.Map, this.Global);
+        //            break;
 
-                default:
-                    return;
-            }
-            this.Map.OnTargetSelected(info, this);
-        }
+        //        default:
+        //            return;
+        //    }
+        //    this.Map.OnTargetSelected(info, this);
+        //}
         public IEnumerable<Control> GetSelectionInfo()
         {
             var box = new GroupBox();

@@ -28,6 +28,13 @@ namespace Project1.Framework.Serialization
         public IDataWriter Write(int[] v) { this.ww.Write(v); return this; }
         internal IDataWriter Write(ICollection<IntVec3> list);
         internal IDataWriter Write<T>(ICollection<T> list) where T : ISerializableNew<T>;
+        internal IDataWriter WriteNew<T>(ICollection<T> list) where T : ISerializableNewNew<T>
+        {
+            this.Write(list.Count);
+            foreach (var i in list)
+                i.Write(this);
+            return this;
+        }
         internal IDataWriter Write(string[] strings) { this.ww.Write(strings); return this; }
         internal IDataWriter Write(Color color) { this.ww.Write(color); return this; }
         internal IDataWriter WriteASCII(string v);

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Labors;
 using Project1.Core.Blocks;
 using Project1.Core.Components;
 using Project1.Core.Crafting;
@@ -13,6 +12,7 @@ using Project1.Core.Networking;
 using Project1.Core.Rooms;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Shops.Blocks;
 using Project1.Core.Towns.Stockpiles;
@@ -197,7 +197,7 @@ namespace Project1.Core.Towns
             return (box, refresh);
         }
 
-        public bool ActorHasJob(Actor a, JobDef def)
+        public bool ActorHasJob(Actor a, DutyDef def)
         {
             if (!this.WorkerProps.TryGetValue(a.RefId, out var wprops))
                 return false;
@@ -213,7 +213,7 @@ namespace Project1.Core.Towns
             return null;
         }
 
-        public virtual IEnumerable<JobDef> GetRoleDefs() { yield break; }
+        public virtual IEnumerable<DutyDef> GetRoleDefs() { yield break; }
 
         public IEnumerable<Room> GetRooms()
         {
@@ -230,7 +230,7 @@ namespace Project1.Core.Towns
             return null;
         }
 
-        public Job GetWorkerJob(Actor a, JobDef j)
+        public Duty GetWorkerJob(Actor a, DutyDef j)
         {
             return this.GetWorkerProps(a).GetJob(j);
         }
@@ -496,7 +496,7 @@ namespace Project1.Core.Towns
                 this.WorkerProps.Add(worker, new WorkerProps(worker, this.GetRoleDefs().ToArray()));
         }
 
-        private void ToggleJob(Actor actor, JobDef role)
+        private void ToggleJob(Actor actor, DutyDef role)
         {
             this.GetWorkerProps(actor).GetJob(role).Toggle();
         }
@@ -508,7 +508,8 @@ namespace Project1.Core.Towns
             TableCompact<Stockpile> TableShoppingDisplays;
             TableCompact<TargetArgs> TableFacilities;
             TableCompact<int, Actor> TableJobRoles;
-            ListBoxObservable<int, Actor, ButtonNew> ListAvailableWorkers;
+            //ListBoxObservable<int, Actor, ButtonNew> ListAvailableWorkers;
+            ListBoxObservable<Actor, ButtonNew> ListAvailableWorkers;
             CheckBoxTest ChkBoxEnabled;
             Label LabelName;
             Control WorkersGui;
@@ -542,7 +543,8 @@ namespace Project1.Core.Towns
                 var workersTab = new GroupBox() { Name = "Workers" };
                 this.TableJobRoles = new TableCompact<int, Actor>(i => this.SelectedShop.Map.World.GetEntity<Actor>(i), true) { Name = "Workers" }
                 .AddColumn(null, "Worker".ToLabel(), 90, a => new Label(a.Name));
-                this.ListAvailableWorkers = new ListBoxObservable<int, Actor, ButtonNew>(
+                //this.ListAvailableWorkers = new ListBoxObservable<int, Actor, ButtonNew>(
+                this.ListAvailableWorkers = new ListBoxObservable<Actor, ButtonNew>(
                          a =>
                          a.GetButton(200,//boxlistworkers.Client.Width,
                          () => a.Workplace != null ? $"Assigned to {a.Workplace.Name}" : "",
@@ -581,7 +583,8 @@ namespace Project1.Core.Towns
                         this.TableJobRoles.AddColumn(null, role.LabelReadable, 32, a => new CheckBoxNew());
                     //this.TableJobRoles.Bind(shop.Town.Townies);
                     this.TableJobRoles.Bind(shop.Workers);
-                    this.ListAvailableWorkers.Bind(shop.Town.Members, shop.Map.World.GetEntity<Actor>);
+                    //this.ListAvailableWorkers.Bind(shop.Town.Members, shop.Map.World.GetEntity<Actor>);
+                    this.ListAvailableWorkers.Bind(shop.Town.Members);
                 }
                 this.Window?.SetTitle(shop.Name);
             }
@@ -608,7 +611,7 @@ namespace Project1.Core.Towns
                 PacketPlayerToggleShop = Registry.PacketHandlers.Register(ReceivePlayerToggleShop);
             }
            
-            public static void UpdateWorkerRoles(NetEndpoint net, PlayerData player, Workplace tavern, JobDef role, Actor actor)
+            public static void UpdateWorkerRoles(NetEndpoint net, PlayerData player, Workplace tavern, DutyDef role, Actor actor)
             {
                 if (net is Server)
                     tavern.ToggleJob(actor, role);
@@ -624,7 +627,7 @@ namespace Project1.Core.Towns
                 var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var tavern = net.Map.Town.GetShop(r.ReadInt32());
-                var role = Def.GetDef<JobDef>(r.ReadString());
+                var role = Def.GetDef<DutyDef>(r.ReadString());
                 var actor = net.World.GetEntity<Actor>(r.ReadInt32());
                 if (net is Client)
                     tavern.ToggleJob(actor, role);

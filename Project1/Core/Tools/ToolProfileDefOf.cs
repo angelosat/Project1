@@ -2,10 +2,10 @@
 using System.Linq;
 using Project1.Framework;
 using Project1.Core.Assets;
-using Project1.Core.Towns;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Skills;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Towns.Duties;
 
 namespace Project1.Core.Tools
 {
@@ -20,7 +20,7 @@ namespace Project1.Core.Tools
             ToolUse = ToolUseDefOf.Digging,
             Damage = DamageDefOf.Digging,
             Skill = SkillDefOf.Digging,
-            AssociatedJobs = new() { JobDefOf.Digger }
+            AssociatedJobs = new() { DutyDefOf.Digger }
         };
 
         public static readonly ToolProfileDef Hammer = new("Hammer")
@@ -31,7 +31,7 @@ namespace Project1.Core.Tools
             ToolUse = ToolUseDefOf.Building,
             Damage = DamageDefOf.Blunt,
             Skill = SkillDefOf.Construction,
-            AssociatedJobs = new() { JobDefOf.Builder }
+            AssociatedJobs = new() { DutyDefOf.Builder }
         };
         public static readonly ToolProfileDef Pickaxe = new("Pickaxe")
         {
@@ -41,7 +41,7 @@ namespace Project1.Core.Tools
             ToolUse = ToolUseDefOf.Mining,
             Damage = DamageDefOf.Mining,
             Skill = SkillDefOf.Mining,
-            AssociatedJobs = new() { JobDefOf.Miner }
+            AssociatedJobs = new() { DutyDefOf.Miner }
         };
         public static readonly ToolProfileDef Handsaw = new("Handsaw")
         {
@@ -51,7 +51,7 @@ namespace Project1.Core.Tools
             ToolUse = ToolUseDefOf.Carpentry,
             Damage = DamageDefOf.Sawing,
             Skill = SkillDefOf.Carpentry,
-            AssociatedJobs = new() { JobDefOf.Carpenter }
+            AssociatedJobs = new() { DutyDefOf.Carpenter }
         };
         public static readonly ToolProfileDef Hoe = new("Hoe")
         {
@@ -61,7 +61,7 @@ namespace Project1.Core.Tools
             ToolUse = ToolUseDefOf.Argiculture,
             Damage = DamageDefOf.Tilling,
             Skill = SkillDefOf.Argiculture,
-            AssociatedJobs = new() { JobDefOf.Farmer }
+            AssociatedJobs = new() { DutyDefOf.Farmer }
         };
 
         public static readonly ToolProfileDef Axe = new("Axe")
@@ -72,7 +72,7 @@ namespace Project1.Core.Tools
             ToolUse = ToolUseDefOf.Chopping,
             Damage = DamageDefOf.Chopping,
             Skill = SkillDefOf.Plantcutting,
-            AssociatedJobs = new() { JobDefOf.Lumberjack }
+            AssociatedJobs = new() { DutyDefOf.Lumberjack }
         };
 
         //public static readonly ItemVariantDef AxeNew = new ItemVariantDef(ItemDefOf.Tool, "AxeNew")
@@ -108,7 +108,7 @@ namespace Project1.Core.Tools
                         new Reaction.Product(dic=>ToolSystem.Create(toolDef, dic["Handle"].Body.Material, dic["Head"].Body.Material)) },
                         //new Reaction.Product(dic=>ItemFamilyDefOf.Tool.System.Create(toolDef, new ToolSystem.Args(dic["Handle"].Body.Material, dic["Head"].Body.Material))) },
                     SkillDefOf.Crafting,
-                    JobDefOf.Craftsman)
+                    DutyDefOf.Craftsman)
                 { CreatesUnfinishedItem = true }
                     .ModWorkRequiredFromMaterials();
 

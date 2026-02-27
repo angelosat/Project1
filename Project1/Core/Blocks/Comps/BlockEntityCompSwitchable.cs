@@ -18,7 +18,8 @@ namespace Project1.Core.Blocks
         public void Toggle(GameObject actor, TargetArgs target)
         {
             this.SwitchedOn = !this.SwitchedOn;
-            actor.Map.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Switch, target.Global);
+            throw new NotImplementedException();
+            //actor.Map.Town.DesignationManager.RemoveDesignation(DesignationDefOf.Switch, target.Global);
         }
         protected override void SaveExtra(SaveTag tag)
         {

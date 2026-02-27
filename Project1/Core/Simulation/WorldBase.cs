@@ -25,6 +25,7 @@ namespace Project1.Core.Simulation
     public interface IEntityProvider
     {
         Entity GetEntity(EntityRefId refId);
+        T GetEntity<T>(EntityRefId refId) where T : Entity;
 
     }
     public abstract class WorldBase : Inspectable, IEntityProvider
@@ -91,7 +92,7 @@ namespace Project1.Core.Simulation
                 return null!; // dont throw because return might be null for early snapshots
             return obj;
         }
-        public T? GetEntity<T>(int refId) where T : Entity
+        public T? GetEntity<T>(EntityRefId refId) where T : Entity
         {
             this.EntityRegistry.TryGetValue(refId, out var obj);
             return obj as T;
@@ -208,5 +209,7 @@ namespace Project1.Core.Simulation
 
         public abstract FrontierDef PlaceAt(Entity entity, WorldSpacePosition pos);
         public abstract FrontierDef GetFrontierOf(Entity entity);
+
+        
     }
 }

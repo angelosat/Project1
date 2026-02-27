@@ -1,6 +1,5 @@
-﻿using Project1.Core.AI.Labors;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using System.Collections.Generic;
@@ -11,21 +10,21 @@ namespace Project1.Core.Towns
     public class WorkerProps : ISaveable, ISerializableNew<WorkerProps>
     {
         public int ActorID;
-        public Dictionary<JobDef, Job> Jobs = new();
+        public Dictionary<DutyDef, Duty> Jobs = [];
         public WorkerProps()
         {
 
         }
-        public WorkerProps(Actor actor, params JobDef[] jobDefs) : this(actor.RefId, jobDefs)
+        public WorkerProps(Actor actor, params DutyDef[] jobDefs) : this(actor.RefId, jobDefs)
         {
         }
-        public WorkerProps(int actorID, params JobDef[] jobDefs)
+        public WorkerProps(int actorID, params DutyDef[] jobDefs)
         {
             this.ActorID = actorID;
             foreach (var j in jobDefs)
-                this.Jobs.Add(j, new Job(j));
+                this.Jobs.Add(j, new Duty(j));
         }
-        public Job GetJob(JobDef def)
+        public Duty GetJob(DutyDef def)
         {
             return this.Jobs[def];
         }
@@ -33,24 +32,26 @@ namespace Project1.Core.Towns
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             this.ActorID.Save(tag, "ActorID");
-            this.Jobs.Values.SaveNewBEST(tag, "Jobs");
+            tag.Save("Jobs", this.Jobs.Values);
             return tag;
         }
         public ISaveable Load(SaveTag tag)
         {
             this.ActorID = tag.GetValue<int>("ActorID");
-            tag.TryGetTag("Jobs", v => this.Jobs = v.LoadArray<Job>().ToDictionary(j => j.Def, j => j));
+            if(tag.TryLoadListOut<Duty>("Jobs", out var jobsList))
+                foreach(var job in jobsList)
+                    this.Jobs[job.Def] = job;
             return this;
         }
         public void Write(IDataWriter w)
         {
             w.Write(this.ActorID);
-            this.Jobs.Values.Write(w);
+            w.WriteNew(this.Jobs.Values);
         }
         public WorkerProps Read(IDataReader r)
         {
             this.ActorID = r.ReadInt32();
-            this.Jobs = r.ReadArrayNew<Job>().ToDictionary(j => j.Def, j => j);
+            this.Jobs = r.ReadListNewNew<Duty>().ToDictionary(i => i.Def, i => i);
             return this;
         }
 

@@ -2,9 +2,9 @@
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Conversation;
-using Project1.Core.AI.Labors;
 using Project1.Core.Towns.AI.Needs;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Duties;
 
 namespace Project1.Core.Towns.AI.Behaviors
 {
@@ -12,7 +12,7 @@ namespace Project1.Core.Towns.AI.Behaviors
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(JobDefOf.Guide))
+            if (!actor.HasJob(DutyDefOf.Guide))
                 return null;
             var visitors = actor.Map.World.Population.Find(v => v.Actor.Map == actor.Map && v.Actor.GetNeed(AdventurerNeedsDefOf.Guidance).Value < 50);
 

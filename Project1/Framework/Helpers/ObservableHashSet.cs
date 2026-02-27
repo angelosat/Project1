@@ -1,54 +1,85 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace Project1.Framework.Helpers
 {
-    public class ObservableHashSet<T> : ICollection<T>, INotifyCollectionChanged
+    public class ObservableHashSet<T> : ObservableCollection<T>, ICollection<T>, INotifyCollectionChanged, IReadOnlySet<T>
     {
-        readonly HashSet<T> Inner = new();
+        readonly HashSet<T> Inner = [];
 
-        public int Count => ((ICollection<T>)this.Inner).Count;
+        //public int Count => ((ICollection<T>)this.Inner).Count;
 
         public bool IsReadOnly => ((ICollection<T>)this.Inner).IsReadOnly;
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
+        //public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public void Add(T item)
+        //public void Add(T item)
+        //{
+        //    if (this.Inner.Contains(item))
+        //        return;
+        //    ((ICollection<T>)this.Inner).Add(item);
+        //    this.CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Add, item));
+        //}
+
+        //public void Clear()
+        //{
+        //    ((ICollection<T>)this.Inner).Clear();
+        //    this.CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Reset));
+        //}
+
+        //public bool Contains(T item)
+        //{
+        //    return ((ICollection<T>)this.Inner).Contains(item);
+        //}
+
+        //public void CopyTo(T[] array, int arrayIndex)
+        //{
+        //    ((ICollection<T>)this.Inner).CopyTo(array, arrayIndex);
+        //}
+
+        //public IEnumerator<T> GetEnumerator()
+        //{
+        //    return ((IEnumerable<T>)this.Inner).GetEnumerator();
+        //}
+
+        public bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            if (this.Inner.Contains(item))
-                return;
-            ((ICollection<T>)this.Inner).Add(item);
-            this.CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Add, item));
+            return this.Inner.IsProperSubsetOf(other);
         }
 
-        public void Clear()
+        public bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            ((ICollection<T>)this.Inner).Clear();
-            this.CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Reset));
+            return this.Inner.IsProperSupersetOf(other);
         }
 
-        public bool Contains(T item)
+        public bool IsSubsetOf(IEnumerable<T> other)
         {
-            return ((ICollection<T>)this.Inner).Contains(item);
+            return this.Inner.IsSubsetOf(other);
         }
 
-        public void CopyTo(T[] array, int arrayIndex)
+        public bool IsSupersetOf(IEnumerable<T> other)
         {
-            ((ICollection<T>)this.Inner).CopyTo(array, arrayIndex);
+            return this.Inner.IsSupersetOf(other);
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public bool Overlaps(IEnumerable<T> other)
         {
-            return ((IEnumerable<T>)this.Inner).GetEnumerator();
+            return this.Inner.Overlaps(other);
         }
 
-        public bool Remove(T item)
+        //public bool Remove(T item)
+        //{
+        //    var removed = ((ICollection<T>)this.Inner).Remove(item);
+        //    if(removed)
+        //        this.CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Remove, item));
+        //    return removed;
+        //}
+
+        public bool SetEquals(IEnumerable<T> other)
         {
-            var removed = ((ICollection<T>)this.Inner).Remove(item);
-            if(removed)
-                this.CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Remove, item));
-            return removed;
+            return this.Inner.SetEquals(other);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -799,16 +799,16 @@ namespace Project1.Core.Simulation
         {
             yield break;
         }
-        internal void OnTargetSelected(IUISelection info, ISelectable selected)
-        {
-            this.World.OnTargetSelected(info, selected);
-            this.Town.OnTargetSelected(info, selected);
-        }
-        internal void OnTargetSelected(SelectionManager info, ISelectable selected)
-        {
-            this.World.OnTargetSelected(info, selected);
-            this.Town.OnTargetSelected(info, selected);
-        }
+        //internal void OnTargetSelected(IUISelection info, ISelectable selected)
+        //{
+        //    this.World.OnTargetSelected(info, selected);
+        //    this.Town.OnTargetSelected(info, selected);
+        //}
+        //internal void OnTargetSelected(SelectionManager info, ISelectable selected)
+        //{
+        //    this.World.OnTargetSelected(info, selected);
+        //    this.Town.OnTargetSelected(info, selected);
+        //}
         public IEnumerable<GameObject> GetNearbyObjectsNew(Vector3 global, Func<float, bool> range, Func<GameObject, bool> filter = null, Action<GameObject> action = null)
         {
             var a = action ?? ((obj) => { });

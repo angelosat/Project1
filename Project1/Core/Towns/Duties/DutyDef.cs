@@ -3,15 +3,15 @@ using Project1.Core.Tools;
 using Project1.Framework.UI;
 using System.Collections.Generic;
 
-namespace Project1.Core.Towns
+namespace Project1.Core.Towns.Duties
 {
-    public sealed class JobDef : Def
+    public sealed class DutyDef : Def
     {
         readonly PlannerDef[] Planners;
         public ToolUseDef ToolUse;
         public Icon Icon => Icon.Replace;
 
-        public JobDef(string name, params PlannerDef[] planners) : base(name)
+        public DutyDef(string name, params PlannerDef[] planners) : base(name)
         {
             this.Planners = planners;
         }
@@ -24,7 +24,7 @@ namespace Project1.Core.Towns
             return this.Name;
         }
 
-        public JobDef SetTool(ToolUseDef toolUse)
+        public DutyDef SetTool(ToolUseDef toolUse)
         {
             this.ToolUse = toolUse;
             return this;

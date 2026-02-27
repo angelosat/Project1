@@ -293,6 +293,14 @@ namespace Project1.Framework.Serialization
             }
             return list;
         }
+        public static List<T> ReadListNewNew<T>(this IDataReader r) where T : ISerializableNewNew<T>
+        {
+            var count = r.ReadInt32();
+            var list = new List<T>(count);
+            for (int i = 0; i < count; i++)
+                list.Add(T.Create(r));
+            return list;
+        }
         public static List<string> ReadListString(this BinaryReader r)
         {
             var count = r.ReadInt32();

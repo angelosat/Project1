@@ -5,6 +5,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Rooms;
+using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Shops.Blocks;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -64,10 +65,10 @@ namespace Project1.Core.Towns
             return this.Customers.Any(c => c.Bedroom == r);
         }
 
-        static public readonly JobDef JobWaiter = new("JobTavernWaiter");//, new TaskGiverTavernWaiter());
-        static public readonly JobDef JobCook = new("JobTavernCook");//, new TaskGiverTavernCook());
-        static public readonly JobDef JobInnKeeper = new("JobTavernInnKeeper");//, new TaskGiverInnKeeper());
-        static public readonly JobDef[] RolesAll = { JobWaiter, JobCook, JobInnKeeper };
+        static public readonly DutyDef JobWaiter = new("JobTavernWaiter");//, new TaskGiverTavernWaiter());
+        static public readonly DutyDef JobCook = new("JobTavernCook");//, new TaskGiverTavernCook());
+        static public readonly DutyDef JobInnKeeper = new("JobTavernInnKeeper");//, new TaskGiverInnKeeper());
+        static public readonly DutyDef[] RolesAll = { JobWaiter, JobCook, JobInnKeeper };
 
         static public readonly HashSet<RoomRoleDef> ValidRooms = new() { RoomRoleDefOf.Bedroom };
         static Tavern()
@@ -90,7 +91,7 @@ namespace Project1.Core.Towns
             return ValidRooms.Contains(room.RoomRole);
         }
         
-        public override IEnumerable<JobDef> GetRoleDefs()
+        public override IEnumerable<DutyDef> GetRoleDefs()
         {
             foreach (var r in RolesAll)
                 yield return r;

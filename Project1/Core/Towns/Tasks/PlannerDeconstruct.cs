@@ -1,9 +1,9 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Labors;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Designations;
+using Project1.Core.Towns.Duties;
 using Project1.Framework;
 
 namespace Project1.Core.Towns.Tasks
@@ -14,7 +14,7 @@ namespace Project1.Core.Towns.Tasks
         {
             if (actor.IsHauling)
                 return null;
-            if (!actor.HasJob(JobDefOf.Builder))
+            if (!actor.HasJob(DutyDefOf.Builder))
                 return null;
             //var allPositions = actor.Map.Town.DesignationManager.GetDesignations(DesignationDefOf.Deconstruct);
             var targets = actor.Map.Town.DesignationManager.GetDesignationTargets(DesignationDefOf.Deconstruct);

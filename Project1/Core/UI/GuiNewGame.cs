@@ -154,7 +154,7 @@ namespace Project1.Core.UI
             map.AddStartingActors(actors);
 
             foreach (var a in actors)
-                map.Town.AddCitizen(a);
+                map.Town.AddMember(a);
             Client.Instance.Connect(localHost, "host", a => LobbyWindow.Instance.Console.Write($"Connected to {localHost}")); // TODO dont manipulate the gui in concurrent threads!!!!!
         }
     }

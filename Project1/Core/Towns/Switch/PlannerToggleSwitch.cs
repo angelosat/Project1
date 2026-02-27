@@ -10,7 +10,7 @@ namespace Project1.Core.Towns.Switch
     {
         protected override Plan TryPlan(Actor actor)
         {
-            var sites = actor.Map.Town.DesignationManager.GetDesignations(DesignationDefOf.Switch);
+            var sites = actor.Map.Town.DesignationManager.GetDesignationTargets(DesignationDefOf.Switch);
 
             foreach (var site in sites)
             {

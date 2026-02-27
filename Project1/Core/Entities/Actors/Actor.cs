@@ -93,7 +93,7 @@ namespace Project1.Core.Entities.Actors
 
         public Room AssignedRoom => this.Town?.RoomManager.FindRoom(this.RefId); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
         internal Workplace Workplace => this.Town?.ShopManager.GetShop(this); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
-        public bool IsTownMember => this.Town?.Members.Contains(this.RefId) ?? false; // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
+        public bool IsTownMember => this.Town?.Members.Contains(this) ?? false; // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
 
 
         public override string Name => this.Npc.FullName;

@@ -159,7 +159,7 @@ namespace Project1.Core
             var win = new Lazy<Window>(() => this.GetUIManager().ToWindow("Shops"));
             yield return new Tuple<Func<string>, Action>(() => "Businesses", () => win.Value.Toggle());
         }
-        internal override void OnTargetSelected(IUISelection info, ISelectable selected)
+        internal /*override*/ void OnTargetSelected(IUISelection info, ISelectable selected)
         {
             if (selected is Stockpile stockpile)
             {

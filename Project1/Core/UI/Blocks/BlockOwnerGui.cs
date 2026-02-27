@@ -19,7 +19,8 @@ namespace Project1.Core.UI.Blocks
                 throw new Exception();
 
             var currentOwner = comp.Owner;
-            var actors = entity.Map.World.GetEntities(entity.Map.Town.Members).Cast<Actor>().Prepend(null);
+            //var actors = entity.Map.World.GetEntities(entity.Map.Town.Members).Cast<Actor>().Prepend(null);
+            var actors = entity.Map.Town.Members.Prepend(null);
 
             var combo = new ComboBoxNewNew<Actor>(actors, 100, a => a?.Name ?? "-None-", a=> PlayerSetOwner(comp, a), () => entity.Map.World.GetEntity<Actor>(comp.Owner));
 

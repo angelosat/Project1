@@ -1,12 +1,10 @@
 ﻿using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Labors;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
-using Project1.Core.Legacy.Crafting;
 using Project1.Core.Resources;
-using Project1.Core.Towns;
+using Project1.Core.Towns.Duties;
 using System.Linq;
 using static Project1.Core.Crafting.CraftingOrder;
 
@@ -16,7 +14,7 @@ namespace Project1.Core.AI.Planners
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(JobDefOf.Craftsman))
+            if (!actor.HasJob(DutyDefOf.Craftsman))
                 return null;
 
             var map = actor.Map;

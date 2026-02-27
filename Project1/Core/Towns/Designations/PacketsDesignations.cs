@@ -97,35 +97,35 @@ namespace Project1.Core.Towns.Designations
             if(!remove)
                 designation.Write(w);
         }
-        static public void Receive(NetEndpoint net, Packet pck)
-        {
-            var r = pck.PacketReader;
-            var isRemoval = r.ReadBoolean();
-            var selectionType = (SelectionType)r.ReadInt32();
-            IEnumerable<TargetArgs> targetList;
-            DesignationDef designation;
-            if (selectionType == SelectionType.Box)
-            {
-                var begin = r.ReadIntVec3();
-                var end = r.ReadIntVec3();
-                var positions = new BoundingBox(begin, end).ToListIntVec3();
-                designation = isRemoval ? null : r.ReadDef<DesignationDef>();
-                if (net is Server)
-                    Send(net, isRemoval, begin, end, designation);
-                targetList = positions.Select(p => new TargetArgs(net.Map, p));
-            }
-            else if (selectionType == SelectionType.List)
-            {
-                targetList = r.ReadListTargets(net);
-                foreach (var t in targetList)
-                    t.Map = net.Map;
-                designation = isRemoval ? null : r.ReadDef<DesignationDef>();
-                if (net is Server)
-                    Send(net, isRemoval, targetList, designation);
-            }
-            else
-                throw new Exception();
-            net.Map.Town.DesignationManager.Add(designation, targetList, isRemoval);
-        }
+        //static public void Receive(NetEndpoint net, Packet pck)
+        //{
+        //    var r = pck.PacketReader;
+        //    var isRemoval = r.ReadBoolean();
+        //    var selectionType = (SelectionType)r.ReadInt32();
+        //    IEnumerable<TargetArgs> targetList;
+        //    DesignationDef designation;
+        //    if (selectionType == SelectionType.Box)
+        //    {
+        //        var begin = r.ReadIntVec3();
+        //        var end = r.ReadIntVec3();
+        //        var positions = new BoundingBox(begin, end).ToListIntVec3();
+        //        designation = isRemoval ? null : r.ReadDef<DesignationDef>();
+        //        if (net is Server)
+        //            Send(net, isRemoval, begin, end, designation);
+        //        targetList = positions.Select(p => new TargetArgs(net.Map, p));
+        //    }
+        //    else if (selectionType == SelectionType.List)
+        //    {
+        //        targetList = r.ReadListTargets(net);
+        //        foreach (var t in targetList)
+        //            t.Map = net.Map;
+        //        designation = isRemoval ? null : r.ReadDef<DesignationDef>();
+        //        if (net is Server)
+        //            Send(net, isRemoval, targetList, designation);
+        //    }
+        //    else
+        //        throw new Exception();
+        //    net.Map.Town.DesignationManager.Add(designation, targetList, isRemoval);
+        //}
     }
 }

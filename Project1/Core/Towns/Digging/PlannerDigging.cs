@@ -1,8 +1,8 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Labors;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Designations;
+using Project1.Core.Towns.Duties;
 using Project1.Framework;
 
 namespace Project1.Core.Towns.Digging
@@ -11,7 +11,7 @@ namespace Project1.Core.Towns.Digging
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(JobDefOf.Digger))
+            if (!actor.HasJob(DutyDefOf.Digger))
                 return null;
             var jobs = actor.Map.Town.DesignationManager.GetDesignationTargets(DesignationDefOf.Mine);
 

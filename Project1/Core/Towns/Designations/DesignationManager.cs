@@ -6,7 +6,6 @@ using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Input.CellRendering;
 using Project1.Core.Screens;
-using Project1.Core.Serialization;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Digging;
 using Project1.Core.UI;
@@ -56,7 +55,7 @@ namespace Project1.Core.Towns.Designations
             this.EntityDesignations = new(entityDesignationDefs.ToDictionary(d => d, d => new ObservableHashSet<Entity>()));
             this.BlockEntityDesignations = new(blockEntityDesignationDefs.ToDictionary(d => d, d => new ObservableHashSet<BlockEntity>()));
 
-            this.Designations = new ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>>(desDefs.ToDictionary(d => d, d => new ObservableHashSet<TargetArgs>()));
+            //this.Designations = new ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>>(desDefs.ToDictionary(d => d, d => new ObservableHashSet<TargetArgs>()));
 
             foreach (var d in desDefs)
             {
@@ -105,21 +104,21 @@ namespace Project1.Core.Towns.Designations
                 _ => throw new UnreachableException()
             };
         }
-        internal ObservableHashSet<TargetArgs> GetDesignations(DesignationDef des)
-        {
-            return this.Designations[des];
-        }
-        internal bool RemoveDesignation(DesignationDef des, TargetArgs target)
-        {
-            var removed = this.Designations[des].Remove(target);
-            if (removed)
-                this.UpdateOrderButtons();
-            return removed;
-        }
-        internal bool RemoveDesignation(DesignationDef des, IntVec3 target)
-        {
-            return this.RemoveDesignation(des, target.At(this.Map));
-        }
+        //internal ObservableHashSet<TargetArgs> GetDesignations(DesignationDef des)
+        //{
+        //    return this.Designations[des];
+        //}
+        //internal bool RemoveDesignation(DesignationDef des, TargetArgs target)
+        //{
+        //    var removed = this.Designations[des].Remove(target);
+        //    if (removed)
+        //        this.UpdateOrderButtons();
+        //    return removed;
+        //}
+        //internal bool RemoveDesignation(DesignationDef des, IntVec3 target)
+        //{
+        //    return this.RemoveDesignation(des, target.At(this.Map));
+        //}
         internal void Remove(IEnumerable<ISelectable> targets)
         {
             foreach (var item in targets)
@@ -276,28 +275,28 @@ namespace Project1.Core.Towns.Designations
             }
             this.Map.Events.Post(new DesignationsChangedEvent(targets));
         }
-        internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool isRemoval)
-        {
-            if (designation is null)
-            {
-                foreach (var l in this.Designations.Where(d => d.Key.IsManual))
-                    foreach (var p in positions)
-                        l.Value.Remove(p);
-            }
-            else
-            {
-                var list = this.Designations[designation];
-                foreach (var pos in positions)
-                {
-                    if (isRemoval && designation.IsManual)
-                        list.Remove(pos);
-                    else if (designation.IsValid(pos) || (pos.Type == TargetType.Cell && this.Map.IsUndiscovered(pos.Global)))
-                        list.Add(pos);
-                }
-            }
+        //internal void Add(DesignationDef designation, IEnumerable<TargetArgs> positions, bool isRemoval)
+        //{
+        //    if (designation is null)
+        //    {
+        //        foreach (var l in this.Designations.Where(d => d.Key.IsManual))
+        //            foreach (var p in positions)
+        //                l.Value.Remove(p);
+        //    }
+        //    else
+        //    {
+        //        var list = this.Designations[designation];
+        //        foreach (var pos in positions)
+        //        {
+        //            if (isRemoval && designation.IsManual)
+        //                list.Remove(pos);
+        //            else if (designation.IsValid(pos) || (pos.Type == TargetType.Cell && this.Map.IsUndiscovered(pos.Global)))
+        //                list.Add(pos);
+        //        }
+        //    }
          
-            this.UpdateOrderButtons();
-        }
+        //    this.UpdateOrderButtons();
+        //}
         internal bool IsDesignation(ISelectable target)
         {
             return target switch
@@ -321,7 +320,8 @@ namespace Project1.Core.Towns.Designations
         }
         internal bool IsDesignation(IntVec3 global, DesignationDef desType)
         {
-            var contains = this.Designations[desType].Contains(global.At(this.Map));
+            //var contains = this.Designations[desType].Contains(global.At(this.Map));
+            var contains = this.CellDesignations[desType].Contains(global);
             return contains;
         }
         internal bool IsDesignation(TargetArgs global, DesignationDef desType)
@@ -349,14 +349,18 @@ namespace Project1.Core.Towns.Designations
         }
         void OnEntityDespawn(EntityDespawnedEvent obj)
         {
-            foreach (var designations in this.Designations.Values)
-                if (designations.Contains(obj.Entity))
+            //foreach (var designations in this.Designations.Values)
+            //    if (designations.Contains(obj.Entity))
+            //        designations.Remove(obj.Entity);
+
+            foreach (var designations in this.EntityDesignations.Values)
+                //if (designations.Contains(obj.Entity))
                     designations.Remove(obj.Entity);
         }
         protected override void AddSaveData(SaveTag tag)
         {
-            foreach (var des in this.Designations)
-                tag.Add(des.Value.ToList().Save(des.Key.Name));
+            //foreach (var des in this.Designations)
+            //    tag.Add(des.Value.ToList().Save(des.Key.Name));
 
             var cellsTag = new SaveTag(SaveTag.Types.Compound, "Cells");
             foreach(var des in this.CellDesignations)
@@ -369,8 +373,8 @@ namespace Project1.Core.Towns.Designations
         }
         public override void Load(SaveTag tag)
         {
-            foreach (var des in this.Designations.Keys.ToList())
-                tag.TryGetTag(des.Name, v => this.Designations[des].LoadTargets(v));
+            //foreach (var des in this.Designations.Keys.ToList())
+            //    tag.TryGetTag(des.Name, v => this.Designations[des].LoadTargets(v));
 
             if (tag.TryGetTag("Cells", out var cellsTag))
             {
@@ -393,8 +397,8 @@ namespace Project1.Core.Towns.Designations
         }
         public override void Write(IDataWriter w)
         {
-            foreach (var des in this.Designations)
-                w.Write(des.Value);
+            //foreach (var des in this.Designations)
+            //    w.Write(des.Value);
 
             foreach (var d in this.CellDesignations)
             {
@@ -411,8 +415,8 @@ namespace Project1.Core.Towns.Designations
         }
         public override void Read(IDataReader r)
         {
-            foreach (var des in this.Designations.Keys.ToList())
-                this.Designations[des].ReadTargets(this.Map, r);
+            //foreach (var des in this.Designations.Keys.ToList())
+            //    this.Designations[des].ReadTargets(this.Map, r);
 
             foreach (var d in this.CellDesignations)
             {
@@ -452,11 +456,11 @@ namespace Project1.Core.Towns.Designations
             this.PendingDesignationLabel.AddControlsLineWrap(Label.ParseNewNew("Designation: ", des));
             return this.PendingDesignationLabel;
         }
-        internal override void OnTargetSelected(IUISelection info, TargetArgs targetArgs)
-        {
-            if (this.Designations.FirstOrDefault(d => d.Value.Contains(targetArgs)).Key is DesignationDef des)
-                info.AddInfo(this.UpdatePendingDesignationLabel(des));
-        }
+        //internal override void OnTargetSelected(IUISelection info, TargetArgs targetArgs)
+        //{
+        //    if (this.Designations.FirstOrDefault(d => d.Value.Contains(targetArgs)).Key is DesignationDef des)
+        //        info.AddInfo(this.UpdatePendingDesignationLabel(des));
+        //}
         public override void DrawUI(SpriteBatch sb, MapBase map, Camera cam)
         {
             foreach(var entityDes in this.EntityDesignations)

@@ -2,10 +2,10 @@
 using System.Linq;
 using Project1.Framework.UI;
 using Project1.Core.Entities;
-using Project1.Core.Towns;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Skills;
+using Project1.Core.Towns.Duties;
 
 namespace Project1.Core
 {
@@ -16,10 +16,10 @@ namespace Project1.Core
         public List<Product> Products = new();
         public SkillDef CraftSkill;
         public List<IsWorkstation.Types> ValidWorkshops = new();
-        public JobDef Labor;
+        public DutyDef Labor;
         public bool CreatesUnfinishedItem;
 
-        public Reaction(string name, List<IsWorkstation.Types> sites, List<Reagent> reagents, List<Product> products, SkillDef skill, JobDef labor = null) : base(name)
+        public Reaction(string name, List<IsWorkstation.Types> sites, List<Reagent> reagents, List<Product> products, SkillDef skill, DutyDef labor = null) : base(name)
         {
             this.ValidWorkshops = sites;
             this.Reagents = reagents;
@@ -27,12 +27,12 @@ namespace Project1.Core
             this.Labor = labor;
             this.CraftSkill = skill;
         }
-        public Reaction(string name, SkillDef skill, JobDef labor = null) : base(name)
+        public Reaction(string name, SkillDef skill, DutyDef labor = null) : base(name)
         {
             this.Labor = labor;
             this.CraftSkill = skill;
         }
-        public Reaction(string name, JobDef labor, IsWorkstation.Types[] sites) : base(name)
+        public Reaction(string name, DutyDef labor, IsWorkstation.Types[] sites) : base(name)
         {
             this.ValidWorkshops = sites.ToList();
             this.Labor = labor;

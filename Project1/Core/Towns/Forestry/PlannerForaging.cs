@@ -2,11 +2,11 @@
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Labors;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Farming;
 using Project1.Core.AI.Reservations;
+using Project1.Core.Towns.Duties;
 
 namespace Project1.Core.Towns.Forestry
 {
@@ -14,10 +14,10 @@ namespace Project1.Core.Towns.Forestry
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(JobDefOf.Forager))
+            if (!actor.HasJob(DutyDefOf.Forager))
                 return null;
             var plants = actor.Map.Town.DesignationManager
-                .GetDesignations(DesignationDefOf.Harvest)
+                .GetDesignationTargets(DesignationDefOf.Harvest)
                 .Where(o => actor.CanReserve(o))
                 .OrderByReachableRegionDistance(actor);
             var plant = plants.FirstOrDefault();

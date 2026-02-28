@@ -9,8 +9,8 @@ namespace Project1.Core.Towns.Farming
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasDuty(DutyDefOf.Harvester))
-                return null;
+            //if (!actor.HasDuty(DutyDefOf.Harvester))
+            //    return null;
             if (actor.IsHauling)
                 return null;
             var map = actor.Map;

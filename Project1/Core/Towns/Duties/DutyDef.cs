@@ -1,13 +1,12 @@
 ﻿using Project1.Core.AI.Planners;
 using Project1.Core.Tools;
 using Project1.Framework.UI;
-using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Duties
 {
     public sealed class DutyDef : Def
     {
-        readonly PlannerDef[] Planners;
+        public readonly PlannerDef[] Planners;
         public ToolUseDef ToolUse;
         public Icon Icon => Icon.Replace;
 
@@ -15,14 +14,14 @@ namespace Project1.Core.Towns.Duties
         {
             this.Planners = planners;
         }
-        public IEnumerable<PlannerDef> GetPlanners()
-        {
-            foreach (var p in this.Planners) yield return p;
-        }
-        public override string ToString()
-        {
-            return this.Name;
-        }
+        //public IEnumerable<PlannerDef> GetPlanners()
+        //{
+        //    foreach (var p in this.Planners) yield return p;
+        //}
+        //public override string ToString()
+        //{
+        //    return this.Name;
+        //}
 
         public DutyDef SetTool(ToolUseDef toolUse)
         {

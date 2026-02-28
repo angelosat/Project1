@@ -9,6 +9,7 @@ namespace Project1.Core.Towns.Duties
         internal static DutiesGui Instance;
         internal DutiesGui(DutyRoster roster)
         {
+            PanelLabeledNew panelMembers = new("Town Members");
             var tableBox = new GroupBox();
             var tableAuto = new TableScrollableCompact<Actor>(true)
                             .AddColumn(null, "Name", 100, o => new Label(o.Name));
@@ -49,11 +50,11 @@ namespace Project1.Core.Towns.Duties
             var currentTable = tableAuto;
 
             tableBox.AddControls(currentTable);
+            panelMembers.Client.AddControls(tableBox);
             var btnTogglePriorities = new CheckBoxFinalNew("Manual priorities", switchTables, () => currentTable == tableManual);
             this.AddControlsVertically(
                 btnTogglePriorities,
-                tableBox);
-
+                panelMembers);
 
             void switchTables()
             {

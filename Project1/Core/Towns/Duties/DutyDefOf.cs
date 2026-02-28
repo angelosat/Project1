@@ -1,6 +1,5 @@
 ﻿using Project1.Core.AI.Planners;
 using Project1.Core.Tools;
-using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Duties
 {
@@ -8,7 +7,6 @@ namespace Project1.Core.Towns.Duties
     {
         static public readonly DutyDef Digger = new DutyDef("Digger", PlannerDefOf.Digging).SetTool(ToolUseDefOf.Digging);
         static public readonly DutyDef Miner = new DutyDef("Miner").SetTool(ToolUseDefOf.Mining);
-        //static public readonly JobDef Hauler = new("Hauler", new TaskGiverRefueling(), new TaskGiverHaulToStockpile());
         static public readonly DutyDef Hauler = new("Hauler", PlannerDefOf.Refueling, PlannerDefOf.Hauling);
         static public readonly DutyDef Lumberjack = new DutyDef("Lumberjack", PlannerDefOf.Chopping).SetTool(ToolUseDefOf.Chopping);
         static public readonly DutyDef Forester = new("Forester");
@@ -26,28 +24,7 @@ namespace Project1.Core.Towns.Duties
         static public readonly DutyDef Workplace = new("TavernWorker", PlannerDefOf.Workplace);
         static DutyDefOf()
         {
-            foreach (var d in All)
-                Def.Register(d);
+            Def.Register(typeof(DutyDefOf));
         }
-        static public readonly HashSet<DutyDef> All = new()
-                {
-                    Workplace,
-                    Digger,
-                    Miner,
-                    Lumberjack,
-                    Forester,
-                    Craftsman,
-                    Smelter,
-                    Farmer,
-                    Harvester,
-                    Forager,
-                    Builder,
-                    Carpenter,
-                    Cook,
-                    Guide,
-                    QuestGiver,
-                    Hauler,
-                    MiscDuties,
-                };
     }
 }

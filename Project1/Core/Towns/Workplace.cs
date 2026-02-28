@@ -224,7 +224,7 @@ namespace Project1.Core.Towns
         public virtual Plan GetTask(Actor actor)
         {
             foreach (var role in this.GetWorkerProps(actor).Jobs.Values.Where(j => j.Enabled))
-                foreach (var planner in role.Def.GetPlanners())
+                foreach (var planner in role.Def.Planners)
                     if (planner.Worker.FindPlan(actor) is PlannerResult result)
                         return result.Plan;
             return null;

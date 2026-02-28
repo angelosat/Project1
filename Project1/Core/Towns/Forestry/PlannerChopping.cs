@@ -13,8 +13,8 @@ namespace Project1.Core.Towns.Forestry
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasDuty(DutyDefOf.Lumberjack))
-                return null;
+            //if (!actor.HasDuty(DutyDefOf.Lumberjack))
+            //    return null;
             if (actor.IsHauling)
                 return null;
             var manager = actor.Map.Town.DesignationManager;

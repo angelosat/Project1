@@ -21,6 +21,7 @@ using Project1.Core.Skills;
 using Project1.Core.Stats;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators;
+using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Labors;
 using Project1.Core.UI;
 using Project1.Core.World.WorldAreas;
@@ -397,6 +398,7 @@ namespace Project1.Core.Entities.Actors
 
         public GameObject AttackTarget => null;
 
+        
         internal Trait GetTrait(TraitDef trait)
         {
             return this.GetComponent<PersonalityComponent>().Traits[trait];

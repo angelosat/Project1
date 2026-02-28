@@ -10,8 +10,8 @@ namespace Project1.Core.Plants
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasDuty(DutyDefOf.Farmer))
-                return null;
+            //if (!actor.HasDuty(DutyDefOf.Farmer))
+            //    return null;
             foreach(var pos in actor.Map.Town.GrowingManager.GetNextTillingPos().Where(actor.CanReachAndReserve))
                 return new Plan(PlanDefOf.Till, new TargetArgs(actor.Map, pos));
         

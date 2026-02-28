@@ -101,7 +101,7 @@ namespace Project1.Core.AI.MetaRoles
         public static RoleMetaWrapper Create(SaveTag tag)
         {
             var def = tag.LoadDef<RoleMetaDef>("Def");
-            var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.WrapperType);
+            var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.RuntimeType);
             wrapper.Def = def;
             wrapper.LocationDecision = tag.Load<MetaDecision>("LocationDecision");
             if (tag.TryLoadDefOut<FrontierDef>("TargetFrontier", out var frontDef)) wrapper.TargetFrontier = frontDef;
@@ -125,7 +125,7 @@ namespace Project1.Core.AI.MetaRoles
         public static RoleMetaWrapper Create(IDataReader r)
         {
             var def = r.ReadDef<RoleMetaDef>();
-            var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.WrapperType);
+            var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.RuntimeType);
             wrapper.Read(r);
             return wrapper;
         }

@@ -4,6 +4,7 @@ using Project1.Core.AI.Reservations;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Needs;
 using Project1.Core.Resources;
+using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
@@ -32,10 +33,10 @@ namespace Project1.Core.AI.Behaviors
         {
             var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);
             planners = planners.Concat(Planner.EssentialPlanners);
-            //var jobs = actor.AI.State.GetJobs().Where(j => j.Enabled);
-            var jobs = actor.Town.DutiesManager.GetDuties(actor);
+            //var jobs = actor.Town.DutiesManager.GetDuties(actor);
+            var jobs = actor.ActiveDuties;
             jobs = jobs.OrderBy(j => j.Priority);
-            var jobPlanners = jobs.SelectMany(j => j.Def.GetPlanners());
+            var jobPlanners = jobs.SelectMany(j => j.Def.Planners);
 
             // replace this when meta-roles are fully implemented
             //givers = actor.IsTownMember ? givers.Concat(jobPlanners) : givers.Concat(Planner.VisitorPlanners);
@@ -55,13 +56,15 @@ namespace Project1.Core.AI.Behaviors
                 var plan = giverResult.Plan;
                 if (plan is null)
                     continue;
-                //if (!bhav.CommitReservations())
-                if (!plan.ReserveAll())
+                var bhav = plan.CreateBehavior(parent);
+
+                if (!bhav.CommitReservations())
+                //if (!plan.ReserveAll())
                 {
                     parent.Unreserve();
                     continue;
                 }
-                var bhav = plan.CreateBehavior(parent);
+                //var bhav = plan.CreateBehavior(parent);
                 state.Assign(bhav);
                 parent.AI.State.CurrentPlanner = plan.Continuation == PlanContinuationPolicy.Continue ? planner : null;
                 return plan;

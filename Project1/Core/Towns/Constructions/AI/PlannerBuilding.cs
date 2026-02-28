@@ -19,8 +19,8 @@ namespace Project1.Core.Towns.Constructions.AI
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasDuty(DutyDefOf.Builder))
-                return null;
+            //if (!actor.HasDuty(DutyDefOf.Builder))
+            //    return null;
             var manager = actor.Map.Town.ConstructionsManager;
 
             var buildablesReady = manager.GetConstructionsReady().Where(comp => actor.CanReserve(comp.Parent));

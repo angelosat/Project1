@@ -16,8 +16,8 @@ namespace Project1.Core.Plants
         protected override Plan TryPlan(Actor actor)
         {
             var map = actor.Map;
-            if (!actor.HasDuty(DutyDefOf.Farmer))
-                return null;
+            //if (!actor.HasDuty(DutyDefOf.Farmer))
+            //    return null;
             var manager = map.Town.GrowingManager;
             var zones = manager.AllGrowingZones;
             var mapItems = actor.Map.Entities;

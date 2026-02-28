@@ -74,7 +74,7 @@ namespace Project1.Core
         {
             if (notScannedYet.Count == 0)
                 return;
-            var jobs = this.Actor.GetDuties();
+            var jobs = this.Actor.ActiveDuties;
             var item = notScannedYet.Dequeue();
             if (this.Actor.Map != item.Map)
                 return;
@@ -225,7 +225,7 @@ namespace Project1.Core
         {
             if (notScannedYet.Count == 0)
                 yield break;
-            var jobs = this.Actor.GetDuties();
+            var jobs = this.Actor.ActiveDuties;
             var dic = new Dictionary<ItemRoleDef, (Entity item, int score)>();
             while (notScannedYet.Count > 0)
             {

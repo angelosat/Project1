@@ -12,7 +12,7 @@ namespace Project1.Core.AI.Planners
     {
         protected override Plan TryPlan(Actor actor)
         {
-            var carried = actor.Hauled as Entity;
+            var carried = actor.Hauled;
             var map = actor.Map;
             var stockpiles = map.Town.ZoneManager.GetZones<Stockpile>().OrderByDescending(i => i.Priority);
             var mapItems = map.Haulables.Where(actor.CanReachAndReserve).SortByReachableRegionDistance(actor).ToList();

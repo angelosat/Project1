@@ -248,7 +248,7 @@ namespace Project1.Core
                         break;
                 }
             };
-            shoplist.OnShowAction = () =>
+            shoplist.ShowAction = () =>
             {
                 shoplist.Clear();
                 shoplist.AddItems(this.Shops.Values.OfType<T>().Where(v => filter?.Invoke(v) ?? true).ToArray());
@@ -292,7 +292,7 @@ namespace Project1.Core
                         break;
                 }
             };
-            shoplist.OnShowAction = () =>
+            shoplist.ShowAction = () =>
             {
                 shoplist.ClearItems();
                 shoplist.AddItems(this.Shops.Values.ToArray());

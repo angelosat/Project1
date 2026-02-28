@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Entities;
 using Project1.Core.UI;
 using Project1.Framework.Helpers;
 using System;
@@ -8,10 +9,11 @@ using System.Linq;
 
 namespace Project1.Framework.UI
 {
-    public class Label : ButtonBase
+    public class LabelNew : ButtonBaseNew
     {
+        IDisposable subscription;
+
         public static int DefaultHeight = UIManager.Font.LineSpacing + 2;
-        //public static int DefaultHeight = 15;
 
         Alignment.Horizontal _Halign;
         public Alignment.Horizontal Halign
@@ -51,6 +53,8 @@ namespace Project1.Framework.UI
         {
             var pos = new Vector2((int)this.Halign * .5f, .5f);
             var outlineOffset = this.Halign == Alignment.Horizontal.Left ? 1 : (this.Halign == Alignment.Horizontal.Right ? -1 : 0);
+            if (this.TextFunc is not null)
+                this.Text = this.TextFunc();
             UIManager.DrawStringOutlined(
                 sb,
                 this.Text,
@@ -96,22 +100,23 @@ namespace Project1.Framework.UI
                     break;
             }
         }
-        public Label(int width) : base()
+        public LabelNew(int width) : base()
         {
             this.Text = "";
             this.Width = width;
             this.Height = Label.DefaultHeight;
             this.Active = false;
         }
-        public Label() : this(Vector2.Zero, "") { }
-        public Label(Func<string> textFunc) : this(Vector2.Zero)
+        public LabelNew() : this(Vector2.Zero, "") { }
+        public LabelNew(Func<string> textFunc) : this(Vector2.Zero)
         {
             this.AutoSize = true; // TESTING PUTTING THIS HERE. if there are any problems, this here could be the case
             this.TextFunc = textFunc;
         }
+
+        public LabelNew(string text) : this(Vector2.Zero, text) { }
         
-        public Label(string text) : this(Vector2.Zero, text) { }
-        public Label(object obj)
+        public LabelNew(object obj)
         {
             if (obj is not null)
             {
@@ -131,18 +136,18 @@ namespace Project1.Framework.UI
                 this.HoverText = this.Text;
             }
         }
-     
-        public Label(object obj, Action lbAction) : this(Vector2.Zero, obj.ToString())
+
+        public LabelNew(object obj, Action action) : this(Vector2.Zero, obj.ToString())
         {
             this.Active = true;
-            this.LeftClickAction = lbAction;
+            this.LeftClickAction = action;
         }
-        public Label(Func<string> textGetter, Action lbAction) : this(textGetter)
+        public LabelNew(Func<string> textGetter, Action action) : this(textGetter)
         {
             this.Active = true;
-            this.LeftClickAction = lbAction;
+            this.LeftClickAction = action;
         }
-        public Label(Vector2 location, string text = "", Color? fill = null, Color? outline = null, SpriteFont font = null)// System.Drawing.FontStyle style = System.Drawing.FontStyle.Regular)
+        public LabelNew(Vector2 location, string text = "", Color? fill = null, Color? outline = null, SpriteFont font = null)// System.Drawing.FontStyle style = System.Drawing.FontStyle.Regular)
             : base(location)
         {
             if (fill.HasValue)
@@ -153,7 +158,7 @@ namespace Project1.Framework.UI
             this.Font = font ?? UIManager.Font;
             this.Active = false;
         }
-        public Label(string text = "", Color? fill = null, Color? outline = null, SpriteFont font = null)// System.Drawing.FontStyle style = System.Drawing.FontStyle.Regular)
+        public LabelNew(string text = "", Color? fill = null, Color? outline = null, SpriteFont font = null)// System.Drawing.FontStyle style = System.Drawing.FontStyle.Regular)
             : base()
         {
             if (fill.HasValue)
@@ -164,13 +169,13 @@ namespace Project1.Framework.UI
             this.Font = font ?? UIManager.Font;
             this.Active = false;
         }
-        public Label(Vector2 location, string text, Alignment.Horizontal halign)
+        public LabelNew(Vector2 location, string text, Alignment.Horizontal halign)
             : base(location)
         {
             this.Halign = halign;
             this.Text = text;
         }
-        public Label(Vector2 location, string text, Alignment.Horizontal halign, Alignment.Vertical valign)
+        public LabelNew(Vector2 location, string text, Alignment.Horizontal halign, Alignment.Vertical valign)
             : base(location)
         {
             this.Halign = halign;
@@ -207,13 +212,24 @@ namespace Project1.Framework.UI
             this.Location -= this.Origin;
         }
 
-        public Label(string text, string format)
+        public LabelNew(string text, string format)
             : this(text)
         {
             this.Text = text;
             this.TextFormat = format ?? text;
         }
-
+        protected override void OnHidden()
+        {
+            this.subscription?.Dispose();
+            this.subscription = null;
+            base.OnHidden();
+        }
+        internal LabelNew Bind(IUpdatable updatable)
+        {
+            this.subscription?.Dispose();
+            this.subscription = updatable.Subscribe(() => this.Invalidate(true));
+            return this;
+        }
         public override void Draw(SpriteBatch sb)
         {
             base.Draw(sb);
@@ -276,24 +292,24 @@ namespace Project1.Framework.UI
         public override void OnMouseEnter()
         {
             base.OnMouseEnter();
-            if (this.Active) 
+            if (this.Active)
                 this.Invalidate();
         }
         public override void OnMouseLeave()
         {
             base.OnMouseLeave();
-            if (this.Active) 
+            if (this.Active)
                 this.Invalidate();
         }
 
         public Alignment.Horizontal TextHAlign { get; set; }
 
-        public override Control SetLeftClickAction(Action<ButtonBase> action)
+        public override Control SetLeftClickAction(Action<ButtonBaseNew> action)
         {
             this.Active = true;
             return base.SetLeftClickAction(action);
         }
-        public static IEnumerable<Label> Parse(string text)
+        public static IEnumerable<LabelNew> Parse(string text)
         {
             var array = text.Split(' ');
             for (int i = 0; i < array.Length; i++)
@@ -303,21 +319,21 @@ namespace Project1.Framework.UI
                 {
                     var token = txt.Substring(1, txt.Length - 2).Split(',');
                     var inner = token[0];
-                    var lbl = new Label($"{inner}");
+                    var lbl = new LabelNew($"{inner}");
                     if (inner.Length > 1)
                         if (token[1].TryParseColor(out var col))
                             lbl.TextColor = col;
                     yield return lbl;
                 }
                 else
-                    yield return new Label(txt);
+                    yield return new LabelNew(txt);
             }
         }
-        static Label ParseToken(string txt)
+        static LabelNew ParseToken(string txt)
         {
             var token = txt.Split(',');
             var inner = token[0];
-            var lbl = new Label($"{inner}") { TextColor = Color.Gold, Font = UIManager.FontBold };
+            var lbl = new LabelNew($"{inner}") { TextColor = Color.Gold, Font = UIManager.FontBold };
             if (token.Length > 1)
             {
                 if (token[1].TryParseColor(out var col))
@@ -325,7 +341,7 @@ namespace Project1.Framework.UI
             }
             return lbl;
         }
-        public static IEnumerable<Label> ParseNew(string text)
+        public static IEnumerable<LabelNew> ParseNew(string text)
         {
             var posCurrent = 0;
             int posFrom = 0;
@@ -335,11 +351,11 @@ namespace Project1.Framework.UI
                 if (posFrom != -1)
                 {
                     var plainText = text.Substring(posCurrent, posFrom - posCurrent);
-                    
+
                     var f = plainText.Split(' ');
                     foreach (var i in f)
                         if (!i.IsNullEmptyOrWhiteSpace())
-                            yield return new Label(i);
+                            yield return new LabelNew(i);
                     var posTo = text.IndexOf(']', posFrom + 1);
                     if (posTo != -1)
                     {
@@ -353,15 +369,15 @@ namespace Project1.Framework.UI
                     var plainText = text.Substring(posCurrent, text.Length - posCurrent);
                     foreach (var i in plainText.Split(' '))
                         if (!i.IsNullEmptyOrWhiteSpace())
-                            yield return new Label(i);
+                            yield return new LabelNew(i);
                 }
             } while (posFrom != -1);
         }
-        internal static IEnumerable<Label> ParseNewNew(params object[] values)
+        internal static IEnumerable<LabelNew> ParseNewNew(params object[] values)
         {
             return values.SelectMany(ParseNewNew);
         }
-        internal static IEnumerable<Label> ParseNewNew(object value)
+        internal static IEnumerable<LabelNew> ParseNewNew(object value)
         {
             //if (value is string str)
             //    return ParseNew(str);
@@ -379,16 +395,17 @@ namespace Project1.Framework.UI
             if (value is string str)
                 foreach (var i in ParseNew(str)) yield return i;
             else if (value is Inspectable objInspectable)
-                yield return new Label(value);
+                yield return new LabelNew(value);
             else if (value is IEnumerable<string> strEnum)
                 foreach (var i in strEnum.SelectMany(s => ParseNew(s))) yield return i;
             else if (value is IEnumerable<object> objEnum)
-                foreach (var i in objEnum.Select(o => new Label(o))) yield return i;
+                foreach (var i in objEnum.Select(o => new LabelNew(o))) yield return i;
             else if (value is Func<string> textFunc)
-                yield return new Label(textFunc);
+                yield return new LabelNew(textFunc);
             else
-                yield return new Label(value);
+                yield return new LabelNew(value);
         }
+        
         internal static GroupBox ParseWrap(int wrapWidth, params object[] values)
         {
             return new GroupBox().AddControlsLineWrap(ParseNewNew(values), wrapWidth);
@@ -397,7 +414,7 @@ namespace Project1.Framework.UI
         {
             return new GroupBox().AddControlsLineWrap(ParseNewNew(values));
         }
-        public static IEnumerable<T> ParseBest<T>(string text) where T : Label, new()
+        public static IEnumerable<T> ParseBest<T>(string text) where T : LabelNew, new()
         {
             var posCurrent = 0;
             int posFrom = 0;

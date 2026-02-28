@@ -12,7 +12,7 @@ namespace Project1.Core.Towns.AI.Behaviors
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(DutyDefOf.Guide))
+            if (!actor.HasDuty(DutyDefOf.Guide))
                 return null;
             var visitors = actor.Map.World.Population.Find(v => v.Actor.Map == actor.Map && v.Actor.GetNeed(AdventurerNeedsDefOf.Guidance).Value < 50);
 

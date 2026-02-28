@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Project1.Framework.UI
 {
@@ -93,6 +94,7 @@ namespace Project1.Framework.UI
             base.InsertItem(index, item);
             item.Parent = Parent;
             Parent.OnControlAdded(item);
+            item.OnAttached();
         }
         public void AlignVertically(int spacing = 0)
         {
@@ -137,11 +139,15 @@ namespace Project1.Framework.UI
             ctrl.OnRemoved();
             base.RemoveItem(index);
             this.Parent.OnControlRemoved(ctrl);
+            ctrl.OnDetached();
         }
         protected override void ClearItems()
         {
             foreach (var c in this)
+            {
                 c.OnRemoved();
+                c.OnDetached();
+            }
             base.ClearItems();
         }
         public int FindIndex(Func<Control, bool> p)

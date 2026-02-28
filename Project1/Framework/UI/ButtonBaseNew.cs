@@ -4,7 +4,7 @@ using System;
 
 namespace Project1.Framework.UI
 {
-    public abstract class ButtonBase : Control
+    public abstract class ButtonBaseNew : Control
     {
         protected bool IsToggled;
         public Func<bool> IsToggledFunc = () => false;
@@ -27,7 +27,7 @@ namespace Project1.Framework.UI
         ,
             LeftDownAction,
             RightClickAction = () => { };
-        public Action<ButtonBase>
+        public Action<ButtonBaseNew>
             LeftClickActionNew = bb => { }
         ,
             RightClickActionNew = bb => { };
@@ -74,12 +74,12 @@ namespace Project1.Framework.UI
                     this.Text = value();
             }
         }
-        internal ButtonBase SetTextFunc(Func<string> textFunc)
+        internal ButtonBaseNew SetTextFunc(Func<string> textFunc)
         {
             this.TextFunc = textFunc;
             return this;
         }
-        public virtual ButtonBase SetText(string text)
+        public virtual ButtonBaseNew SetText(string text)
         {
             this.Text = text;
             return this;
@@ -87,7 +87,7 @@ namespace Project1.Framework.UI
         protected string _text = "";
         public virtual string Text
         {
-            get => this._text;
+            get => this.TextFunc?.Invoke() ?? this._text;
             set
             {
                 if (value != this._text)
@@ -98,26 +98,7 @@ namespace Project1.Framework.UI
             }
         }
         string LastText = "";
-        public override void Update()
-        {
-            var newToggled = this.IsToggledFunc();
-            if (this.IsToggled != newToggled)
-            {
-                this.IsToggled = newToggled;
-                this.Invalidate();
-            }
-
-            var nextText = this.TextFunc?.Invoke() ?? this.Text;
-            if (nextText != this.LastText)
-            {
-                this.Text = nextText;
-                this.Invalidate();
-            }
-
-            base.Update();
-
-            this.LastText = this.Text;
-        }
+        
         public Color Fill = Color.White, TextOutline = Color.Black;
 
         protected virtual void OnTextChanged()
@@ -146,6 +127,31 @@ namespace Project1.Framework.UI
                 if (this.Parent is not null)
                     this.Parent.OnControlResized(this);
         }
+        //public override void OnPaint(SpriteBatch sb)
+        //{
+        //    string txt = this.TextFunc?.Invoke() ?? this.Text;
+        //    if (txt == null)
+        //        txt = "";
+        //    if (this.TextFormat != null)
+        //        return;
+
+        //    var textsize = this.Font.MeasureString(txt);
+        //    textsize -= Vector2.One; //monogame hack
+        //    var maxw = (int)textsize.X + 2;
+        //    var oldw = this.Width;
+
+        //    if (this.AutoSize)
+        //        this.Width = maxw;
+        //    else
+        //        this.Width = System.Math.Max(maxw, this.Width);
+
+        //    var lineCount = string.IsNullOrEmpty(this.Text) ? 1 : this.Text.Split('\n').Length;
+        //    var oldh = this.Height;
+        //    this.Height = (int)textsize.Y;// + 2 * lineCount; WARNING commented this out because measurestring returns height = 17 while font linespacing = 15
+        //    if (this.Height != oldh || this.Width != oldw)
+        //        if (this.Parent is not null)
+        //            this.Parent.OnControlResized(this);
+        //}
 
         protected bool LeftPressed, RightPressed;
         public virtual bool IsPressed => this.LeftPressed || this.RightPressed || this.IsToggled;
@@ -184,14 +190,14 @@ namespace Project1.Framework.UI
             }
         }
 
-        public ButtonBase(Vector2 location) : base(location) { }
-        public ButtonBase() : base() { }
+        public ButtonBaseNew(Vector2 location) : base(location) { }
+        public ButtonBaseNew() : base() { }
         public virtual Control SetLeftClickAction(Action action)
         {
             this.LeftClickAction = action;
             return this;
         }
-        public virtual Control SetLeftClickAction(Action<ButtonBase> action)
+        public virtual Control SetLeftClickAction(Action<ButtonBaseNew> action)
         {
             this.LeftClickAction = () => action(this);
             return this;
@@ -307,9 +313,13 @@ namespace Project1.Framework.UI
 
         public override string ToString()
         {
-            return "ButtonBase: " + this.Text;
+            return $"{nameof(ButtonBaseNew)}: {this.Text}";
         }
-
+        public override Control Invalidate(bool invalidateChildren = false)
+        {
+            $"{this} {DateTime.Now.Millisecond}".ToConsole();
+            return base.Invalidate(invalidateChildren);
+        }
         public virtual void DrawSprite(SpriteBatch sb, Rectangle destRect, Rectangle? sourceRect, Color color, float opacity) { }
 
         public virtual void DrawText(SpriteBatch sb, Vector2 position, Rectangle? sourceRect, Color color, float opacity) { }

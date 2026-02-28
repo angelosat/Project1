@@ -19,7 +19,7 @@ namespace Project1.Core.Towns.Constructions.AI
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(DutyDefOf.Builder))
+            if (!actor.HasDuty(DutyDefOf.Builder))
                 return null;
             var manager = actor.Map.Town.ConstructionsManager;
 

@@ -14,7 +14,7 @@ namespace Project1.Core.AI.Planners
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(DutyDefOf.Craftsman))
+            if (!actor.HasDuty(DutyDefOf.Craftsman))
                 return null;
 
             var map = actor.Map;

@@ -11,7 +11,7 @@ namespace Project1.Core.Towns.Digging
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(DutyDefOf.Digger))
+            if (!actor.HasDuty(DutyDefOf.Digger))
                 return null;
             var jobs = actor.Map.Town.DesignationManager.GetDesignationTargets(DesignationDefOf.Mine);
 

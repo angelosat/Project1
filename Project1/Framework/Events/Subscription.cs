@@ -5,11 +5,15 @@ namespace Project1.Framework.Events
     public class Observable
     {
         public event Action Updated;
-        protected void NotifyUpdated() => this.Updated?.Invoke();
+        public void NotifyUpdated() => this.Updated?.Invoke();
         public IDisposable Subscribe(Action handler)
         {
             this.Updated += handler;
-            return new Subscription(() => this.Updated -= handler);
+            return new Subscription(() => remove(handler));
+            void remove(Action handler)
+            {
+                this.Updated -= handler;
+            }
         }
     }
     public class Subscription(Action unsubscribe) : IDisposable

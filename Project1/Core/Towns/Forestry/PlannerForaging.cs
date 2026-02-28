@@ -14,7 +14,7 @@ namespace Project1.Core.Towns.Forestry
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(DutyDefOf.Forager))
+            if (!actor.HasDuty(DutyDefOf.Forager))
                 return null;
             var plants = actor.Map.Town.DesignationManager
                 .GetDesignationTargets(DesignationDefOf.Harvest)

@@ -32,7 +32,8 @@ namespace Project1.Core.AI.Behaviors
         {
             var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);
             planners = planners.Concat(Planner.EssentialPlanners);
-            var jobs = actor.AI.State.GetJobs().Where(j => j.Enabled);
+            //var jobs = actor.AI.State.GetJobs().Where(j => j.Enabled);
+            var jobs = actor.Town.DutiesManager.GetDuties(actor);
             jobs = jobs.OrderBy(j => j.Priority);
             var jobPlanners = jobs.SelectMany(j => j.Def.GetPlanners());
 

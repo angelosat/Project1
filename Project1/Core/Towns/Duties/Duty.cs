@@ -9,13 +9,13 @@ namespace Project1.Core.Towns.Duties
     {
         public DutyDef Def;
         const byte InitialPriority = 5, MaxPriority = 10;
-        byte _Priority = InitialPriority;
+        byte _priority = InitialPriority;
         public byte Priority
         {
-            get => this._Priority;
-            set => this._Priority = (byte)(value >= 0 ? value % MaxPriority : MaxPriority + (value % MaxPriority));
+            get => this._priority;
+            private set => this._priority = (byte)(value >= 0 ? value % MaxPriority : MaxPriority + (value % MaxPriority));
         }
-        public bool Enabled => this._Priority != 0;
+        public bool Enabled => this._priority != 0;
         Duty()
         {
 
@@ -29,6 +29,12 @@ namespace Project1.Core.Towns.Duties
             this.Priority = (byte)(this.Priority == 0 ? InitialPriority : 0);
             this.NotifyUpdated();
         }
+        public void ApplyPriorityDelta(int delta)
+        {
+            this.Priority = (byte)(this._priority + delta);
+            this.NotifyUpdated();
+        }
+        public Observable asObservable => this as Observable;
         public override string ToString()
         {
             return $"{this.Def.Name}: {this.Priority}";
@@ -36,7 +42,7 @@ namespace Project1.Core.Towns.Duties
         public IDataWriter Write(IDataWriter w)
         {
             w.Write(this.Def);
-            w.Write(this._Priority);
+            w.Write(this._priority);
             return w;
         }
 

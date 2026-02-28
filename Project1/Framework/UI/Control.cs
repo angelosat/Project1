@@ -136,7 +136,7 @@ namespace Project1.Framework.UI
         object _tag;
         public virtual object Tag { get => this._tag; set { this._tag = value; this.OnTagChanged(); } }
         UIManager _windowManager;
-        public UIManager WindowManager { get => this._windowManager ?? ScreenManager.CurrentScreen.WindowManager; set => this._windowManager = value; }
+        public UIManager WindowManager { get => this._windowManager ?? ScreenManager.CurrentScreen?.WindowManager; set => this._windowManager = value; }
         //IWindowManager _windowManager;
         //public IWindowManager WindowManager { get => this._windowManager; set => this._windowManager = value; }
 
@@ -213,7 +213,43 @@ namespace Project1.Framework.UI
                     ctrl.Invalidate(invalidateChildren);
             return this;
         }
+        Action AttachedAction, DetachedAction;
+        internal virtual void OnAttached()
+        {
+            if (!this.TopLevelControl.IsOpen)
+                return;
+            this.AttachedAction?.Invoke();
+            foreach (var c in this.Controls)
+                c.OnAttached();
+        }
+        internal virtual void OnDetached()
+        {
+            if (!this.TopLevelControl.IsOpen)
+                return;
+            this.DetachedAction?.Invoke();
+            foreach (var c in this.Controls)
+                c.OnDetached();
+        }
+        public void Bind(Observable obs)
+        {
+            if (this.AttachedAction != null || this.DetachedAction != null)
+                throw new InvalidOperationException(
+                    $"{nameof(Bind)} cannot be called when {nameof(AttachedAction)} or {nameof(DetachedAction)} is already assigned.");
 
+            IDisposable unsub = null;
+            this.AttachedAction = () =>
+            {
+                unsub?.Dispose();
+                unsub = obs.Subscribe(this.InvalidateAll);
+            };
+
+            this.DetachedAction = () =>
+            {
+                unsub?.Dispose();
+                unsub = null;
+            };
+        }
+        void InvalidateAll() => this.Invalidate(true);
         public virtual void OnUIScaleChanged(float oldScale, float newScale)
         {
             if (this.LocationFunc is null)
@@ -833,6 +869,7 @@ namespace Project1.Framework.UI
             }
             this.Parent?.OnControlAdded(control);
             this.ControlsChangedAction();
+            //control.OnAttached();
         }
 
         public void ApplyPadding()
@@ -859,6 +896,7 @@ namespace Project1.Framework.UI
             }
             this.Parent?.OnControlRemoved(control);
             this.ControlsChangedAction();
+            //control.OnDetached();
         }
 
         public Vector2 Origin = new Vector2(0);
@@ -1270,6 +1308,9 @@ namespace Project1.Framework.UI
         }
         public virtual void BringToFront()
         {
+            this.WindowManager?.BringToFront(this.TopLevelControl);
+            return;
+
             if (this.Parent == null)
             {
                 if (this.WindowManager.Remove(this))
@@ -1303,7 +1344,6 @@ namespace Project1.Framework.UI
             this.GetDataAction = action;
             return this;
         }
-        public Action ShowAction = () => { };
 
         public virtual bool Show()
         {
@@ -1316,7 +1356,7 @@ namespace Project1.Framework.UI
             this.Layer = layer;
             this.OnShow();
 
-            this.ShowAction();
+            //this.ShowAction?.Invoke();
             if (!this.WindowManager.Contains(this))
             {
                 this.WindowManager.Add(this);
@@ -1326,14 +1366,14 @@ namespace Project1.Framework.UI
             this.BringToFront();
             return false;
         }
-        public Action OnShowAction = () => { };
+        //public Action OnShowAction;// = () => { };
         protected virtual void OnShow()
         {
-            this.OnShowAction();
+            this.ShowAction?.Invoke();
             foreach (var c in this.Controls)
                 c.OnShow();
         }
-        public bool IsOpen => this.WindowManager.Contains(this);
+        public bool IsOpen => this.WindowManager?.Contains(this) ?? false;
 
         public virtual bool Show(UIManager manager)
         {
@@ -1345,9 +1385,12 @@ namespace Project1.Framework.UI
 
             return false;
         }
-        Action _hideAction = () => { };
-        public virtual Action HideAction
-        { get => this._hideAction; set => this._hideAction = value; }
+        public Action ShowAction;// = () => { };
+        public Action HideAction;// = () => { };
+
+        //Action _hideAction = () => { };
+        //public virtual Action HideAction
+        //{ get => this._hideAction; set => this._hideAction = value; }
 
         public virtual Rectangle Bounds => this.BoundsLocal;
         public virtual Rectangle ContainerSize => this.BoundsLocal;
@@ -1355,7 +1398,7 @@ namespace Project1.Framework.UI
 
         protected virtual void OnHidden()
         {
-            this.HideAction();
+            this.HideAction?.Invoke();
             foreach (var ch in this.Controls)
                 ch.OnHidden();
         }

@@ -20,7 +20,7 @@ namespace Project1.Core.AI
     public sealed class AIState : Inspectable
     {
         public static AIConversationManager ConversationManager = new();
-        readonly Dictionary<DutyDef, Duty> Jobs = DutyDefOf.All.ToDictionary(i => i, i => new Duty(i));
+        //readonly Dictionary<DutyDef, Duty> Jobs = DutyDefOf.All.ToDictionary(i => i, i => new Duty(i));
         public Progress Attention = new();
         public float AttentionDecay = 1;
         public float AttentionDecayDefault = 1;
@@ -180,28 +180,28 @@ namespace Project1.Core.AI
             this.Assign(bhav);
             return true;
         }
-        public Duty GetJob(DutyDef def)
-        {
-            return this.Jobs[def];
-        }
-        public IEnumerable<Duty> GetJobs()
-        {
-            foreach (var j in this.Jobs.Values)
-                yield return j;
-        }
+        //public Duty GetJob(DutyDef def)
+        //{
+        //    return this.Jobs[def];
+        //}
+        //public IEnumerable<Duty> GetJobs()
+        //{
+        //    foreach (var j in this.Jobs.Values)
+        //        yield return j;
+        //}
         public static AIState GetState(GameObject entity)
         {
             return entity.GetComponent<AIComponent>().State;
         }
 
-        public bool HasJob(DutyDef job)
-        {
-            return this.Jobs.TryGetValue(job, out var j) && j.Enabled;
-        }
-        public bool IsJobEnabled(DutyDef job)
-        {
-            return this.Jobs[job].Enabled;
-        }
+        //public bool HasJob(DutyDef job)
+        //{
+        //    return this.Jobs.TryGetValue(job, out var j) && j.Enabled;
+        //}
+        //public bool IsJobEnabled(DutyDef job)
+        //{
+        //    return this.Jobs[job].Enabled;
+        //}
         public void Load(SaveTag tag)
         {
             this.Leash = tag.GetValue<Vector3>("Leash");
@@ -241,8 +241,8 @@ namespace Project1.Core.AI
         public void Read(IDataReader r)
         {
             //r.ReadValuesWithInferredKeys(this.Jobs, v => v.Def);
-            foreach (var j in r.ReadListNewNew<Duty>())
-                this.Jobs[j.Def] = j;
+            //foreach (var j in r.ReadListNewNew<Duty>())
+            //    this.Jobs[j.Def] = j;
             this.ItemPreferences.Read(r); // sync to clients?
         }
         public SaveTag Save(string name)
@@ -274,16 +274,16 @@ namespace Project1.Core.AI
 
             this.Path.TrySave(tag, "Path");
             //this.Jobs.Save(tag, "Jobs", SaveTag.Types.String, key => key.Name);
-            tag.Save("Jobs", this.Jobs.Values);
+            //tag.Save("Jobs", this.Jobs.Values);
             this.ItemPreferences.Save(tag, "ItemPreferences");
             if(this.CurrentPlanner is not null)
                 tag.Save("Planner", this.CurrentPlanner);
             return tag;
         }
-        public void ToggleJob(DutyDef job)
-        {
-            this.Jobs[job].Toggle();
-        }
+        //public void ToggleJob(DutyDef job)
+        //{
+        //    this.Jobs[job].Toggle();
+        //}
         public override string ToString()
         {
             return this.CurrentPlan != null ? "Task: " + this.CurrentPlan.ToString() : this.TaskString;
@@ -300,7 +300,7 @@ namespace Project1.Core.AI
         public void Write(IDataWriter w)
         {
             //w.WriteValues(this.Jobs);
-            w.WriteNew(this.Jobs.Values);
+            //w.WriteNew(this.Jobs.Values);
             this.ItemPreferences.Write(w); // sync to clients?
         }
         public void Tick()

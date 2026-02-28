@@ -8,16 +8,16 @@ namespace Project1.Framework.UI
 {
     class ComboBoxFinal<T> : GroupBox
     {
-        readonly ButtonNewNew Button;
-        readonly ListBoxNoScroll<T, ButtonNewNew> ListControl;
+        readonly ButtonFinal Button;
+        readonly ListBoxNoScroll<T, ButtonFinal> ListControl;
         readonly Func<T> CurrentlySelectedGetter;
         readonly Func<IEnumerable<T>> ItemsGetter;
         public ComboBoxFinal(IEnumerable<T> list, int width, Func<T, string> nameGetter, Action<T> callBack, Func<T> currentlySelectedGetter)
         {
             this.CurrentlySelectedGetter = currentlySelectedGetter;
-            this.Button = new ButtonNewNew(() => this.CurrentlySelectedGetter != null ? nameGetter(this.CurrentlySelectedGetter()) : "undefined", BtnPress, width);
+            this.Button = new ButtonFinal(() => this.CurrentlySelectedGetter != null ? nameGetter(this.CurrentlySelectedGetter()) : "undefined", BtnPress, width);
             var maxVisibleItems = list.Count();
-            this.ListControl = new ListBoxNoScroll<T, ButtonNewNew>(i => CreateButton(i, nameGetter, callBack, width))
+            this.ListControl = new ListBoxNoScroll<T, ButtonFinal>(i => CreateButton(i, nameGetter, callBack, width))
                 .AddItems(list);
             this.ListControl.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
                 .HideOnAnyClick();
@@ -27,8 +27,8 @@ namespace Project1.Framework.UI
         public ComboBoxFinal(IEnumerable<T> list, int width, Func<T, string> labelGetter, Func<T, string> nameGetter, Action<T> callBack, Func<T> currentlySelectedGetter)
         {
             this.CurrentlySelectedGetter = currentlySelectedGetter;
-            this.Button = new ButtonNewNew(() => this.CurrentlySelectedGetter != null ? labelGetter(this.CurrentlySelectedGetter()) : "undefined", BtnPress, width);
-            this.ListControl = new ListBoxNoScroll<T, ButtonNewNew>(i => CreateButton(i, nameGetter, callBack, width))
+            this.Button = new ButtonFinal(() => this.CurrentlySelectedGetter != null ? labelGetter(this.CurrentlySelectedGetter()) : "undefined", BtnPress, width);
+            this.ListControl = new ListBoxNoScroll<T, ButtonFinal>(i => CreateButton(i, nameGetter, callBack, width))
                 .AddItems(list);
             this.ListControl.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
                 .HideOnAnyClick();
@@ -39,12 +39,12 @@ namespace Project1.Framework.UI
         {
             this.CurrentlySelectedGetter = currentlySelectedGetter;
             this.ItemsGetter = itemsGetter;
-            this.Button = new ButtonNewNew(() =>
+            this.Button = new ButtonFinal(() =>
                 //$"{label}: {(this.CurrentlySelectedGetter() is T item ? nameGetter(item) : "none")}", BtnPress, width);
                 $"{label}: {nameGetter(this.CurrentlySelectedGetter())}", BtnPress, width);
 
             var itemwidth = width - (int)this.Button.Font.MeasureString(label).X;
-            this.ListControl = new ListBoxNoScroll<T, ButtonNewNew>(i => CreateButton(i, nameGetter, callBack, itemwidth));
+            this.ListControl = new ListBoxNoScroll<T, ButtonFinal>(i => CreateButton(i, nameGetter, callBack, itemwidth));
             this.ListControl.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
                 .HideOnAnyClick();
 
@@ -53,11 +53,11 @@ namespace Project1.Framework.UI
 
         public ComboBoxFinal(IEnumerable<T> list, int width, string label, Func<T, string> nameGetter, Func<string> currentlySelectedGetter, Action<T> callBack)
         {
-            this.Button = new ButtonNewNew(() =>
+            this.Button = new ButtonFinal(() =>
                 $"{label}: {currentlySelectedGetter?.Invoke() ?? "undefined"}", BtnPress, width);
 
             var itemwidth = width - (int)this.Button.Font.MeasureString(label).X;
-            this.ListControl = new ListBoxNoScroll<T, ButtonNewNew>(i => CreateButton(i, nameGetter, callBack, itemwidth))
+            this.ListControl = new ListBoxNoScroll<T, ButtonFinal>(i => CreateButton(i, nameGetter, callBack, itemwidth))
                 .AddItems(list);
             this.ListControl.ToPanelScrollable(ScrollModes.Vertical)
                 .HideOnAnyClick();
@@ -66,18 +66,18 @@ namespace Project1.Framework.UI
         }
         public ComboBoxFinal(IEnumerable<T> list, int width, string label, Func<T, string> nameGetter, Func<T> currentlySelectedGetter, Action<T> callBack)
         {
-            this.Button = new ButtonNewNew(() =>
+            this.Button = new ButtonFinal(() =>
                 $"{label}: {(currentlySelectedGetter() is T item ? nameGetter(item) : "none")}", BtnPress, width);
 
             var itemwidth = width - (int)this.Button.Font.MeasureString(label).X;
-            this.ListControl = new ListBoxNoScroll<T, ButtonNewNew>(i => CreateButton(i, nameGetter, callBack, itemwidth)).AddItems(list);
+            this.ListControl = new ListBoxNoScroll<T, ButtonFinal>(i => CreateButton(i, nameGetter, callBack, itemwidth)).AddItems(list);
             this.ListControl.ToPanelScrollable(ScrollModes.Vertical)
                 .HideOnAnyClick();
             this.Controls.Add(this.Button);
         }
-        ButtonNewNew CreateButton(T i, Func<T, string> labelGetter, Action<T> callBack, int width)
+        ButtonFinal CreateButton(T i, Func<T, string> labelGetter, Action<T> callBack, int width)
         {
-            return new ButtonNewNew(labelGetter(i), () => onSelect(i), width);
+            return new ButtonFinal(labelGetter(i), () => onSelect(i), width);
             void onSelect(T i)
             {
                 callBack(i);

@@ -13,7 +13,7 @@ namespace Project1.Core.Towns.Forestry
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.HasJob(DutyDefOf.Lumberjack))
+            if (!actor.HasDuty(DutyDefOf.Lumberjack))
                 return null;
             if (actor.IsHauling)
                 return null;

@@ -14,7 +14,7 @@ namespace Project1.Core.Towns.Tasks
         {
             if (actor.IsHauling)
                 return null;
-            if (!actor.HasJob(DutyDefOf.Builder))
+            if (!actor.HasDuty(DutyDefOf.Builder))
                 return null;
             //var allPositions = actor.Map.Town.DesignationManager.GetDesignations(DesignationDefOf.Deconstruct);
             var targets = actor.Map.Town.DesignationManager.GetDesignationTargets(DesignationDefOf.Deconstruct);

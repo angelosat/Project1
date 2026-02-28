@@ -297,7 +297,8 @@ namespace Project1.Framework.UI
             FlashingTimer++;
             CosOffest1 = GetFlashingValue(120f);
             CosOffest2 = GetFlashingValue(90f);
-            Control lastactive = Controller.Instance.Mouseover.Object as Control;// ActiveControl;
+            var lastactive = Controller.Instance.Mouseover.Object as Control;// ActiveControl;
+
             foreach (var layer in this.Layers)
             {
                 foreach (var ctrl in layer.Value.ToList())
@@ -311,7 +312,7 @@ namespace Project1.Framework.UI
                 foreach (var c in layer.Value)
                     c.Validate(true);
 
-            Control nextactive = Controller.Instance.MouseoverNext.Object as Control;
+            var nextactive = Controller.Instance.MouseoverNext.Object as Control;
 
             if (nextactive != lastactive)
             {
@@ -532,24 +533,7 @@ namespace Project1.Framework.UI
             }
             return false;
         }
-        public bool Remove(Control control)
-        {
-            /// if the window was a dialog, move the dialogblock behind the next topmost window, or remove it if there are no other dialogs
-            if (this.Layers[control.Layer].Remove(control))
-            {
-                if (control.Layer == LayerDialog)
-                {
-                    this.Layers[LayerDialog].Remove(this.DialogBlock);
-                    int index = this.Layers[LayerDialog].Count - 1;
-                    if (index < 0)
-                        return true;
-
-                    this.Layers[LayerDialog].Insert(index, this.DialogBlock);
-                }
-                return true;
-            }
-            return false;
-        }
+        
 
         public void Dispose()
         {
@@ -778,6 +762,13 @@ namespace Project1.Framework.UI
             }
             return bestRect;
         }
+        internal void BringToFront(Control control)
+        {
+            var layer = control.Layer;
+            var list = this.Layers[layer];
+            list.Remove(control);
+            list.Add(control);
+        }
         public void Add(Element element)
         {
             var control = element as Control;
@@ -791,16 +782,37 @@ namespace Project1.Framework.UI
             this.Layers[control.Layer].Add(control);
             if (!this.ControlsInMemory.Contains(control))
                 this.ControlsInMemory.Add(control);
+
+            control.OnAttached();
         }
-        public bool Remove(Element element)
+        public bool Remove(Control control)
         {
-            var control = element as Control;
-            if (control.Layer == LayerDialog)
-                this.Layers[LayerDialog].Remove(this.DialogBlock);
-            if (this.ControlsInMemory.Contains(control)) // TODO: why do i remove it immediately? maintain a fixed size buffer?
-                this.ControlsInMemory.Remove(control);
-            return this.Layers[control.Layer].Remove(control);
+            /// if the window was a dialog, move the dialogblock behind the next topmost window, or remove it if there are no other dialogs
+            if (this.Layers[control.Layer].Remove(control))
+            {
+                if (control.Layer == LayerDialog)
+                {
+                    this.Layers[LayerDialog].Remove(this.DialogBlock);
+                    control.OnDetached();
+                    int index = this.Layers[LayerDialog].Count - 1;
+                    if (index < 0)
+                        return true;
+
+                    this.Layers[LayerDialog].Insert(index, this.DialogBlock);
+                }
+                return true;
+            }
+            return false;
         }
+        //public bool Remove(Element element)
+        //{
+        //    var control = element as Control;
+        //    if (control.Layer == LayerDialog)
+        //        this.Layers[LayerDialog].Remove(this.DialogBlock);
+        //    if (this.ControlsInMemory.Contains(control)) // TODO: why do i remove it immediately? maintain a fixed size buffer?
+        //        this.ControlsInMemory.Remove(control);
+        //    return this.Layers[control.Layer].Remove(control);
+        //}
         public bool Contains(Element element)
         {
             var control = element as Control;

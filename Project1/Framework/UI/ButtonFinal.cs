@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Framework.UI
 {
-    public class Button : ButtonBase
+    public class ButtonFinal : ButtonBaseNew
     {
         public float HAlign = .5f;
         public static Rectangle
@@ -52,24 +52,25 @@ namespace Project1.Framework.UI
                 else
                     return TexBackgroundColorFunc();
             }
-            set { 
-                _TexBackgroundColor = value; 
-                this.Invalidate(); 
-            }
-        }
-        public override void Update()
-        {
-            if (this.TexBackgroundColorFunc != null)
+            set
             {
-                var newCol = this.TexBackgroundColorFunc();
-                if (newCol != this._TexBackgroundColor)
-                {
-                    this._TexBackgroundColor = newCol;
-                    this.Invalidate();
-                }
+                _TexBackgroundColor = value;
+                this.Invalidate();
             }
-            base.Update();
         }
+        //public override void Update()
+        //{
+        //    if (this.TexBackgroundColorFunc != null)
+        //    {
+        //        var newCol = this.TexBackgroundColorFunc();
+        //        if (newCol != this._TexBackgroundColor)
+        //        {
+        //            this._TexBackgroundColor = newCol;
+        //            this.Invalidate();
+        //        }
+        //    }
+        //    base.Update();
+        //}
 
         protected override void OnTextChanged()
         {
@@ -93,7 +94,7 @@ namespace Project1.Framework.UI
                 return this.Color;
             return (this.MouseHover && this.Active) ? this.Color : IdleColor;
         }
-        public Button() : base()
+        public ButtonFinal() : base()
         {
             this.Color = Color.White * .5f;
             TexBackgroundColorFunc = DefaultBackgroundColorFunc;
@@ -101,29 +102,29 @@ namespace Project1.Framework.UI
             Text = "";
             this.AutoSize = true;
         }
-        public Button(int width) : this("", width) 
-        { 
+        public ButtonFinal(int width) : this("", width)
+        {
             this.Width = width;
             if (width > 0)
                 this.AutoSize = false;
         }
-        public Button(SpriteFont font, string text, int width = 0)
+        public ButtonFinal(SpriteFont font, string text, int width = 0)
             : this()
         {
             this.Font = font;
             Text = text;
             this.Width = System.Math.Max(this.Width, width);
         }
-        public Button(string text, Action action, int width = 0) :this(text, width)
+        public ButtonFinal(string text, Action action, int width = 0) : this(text, width)
         {
             this.LeftClickAction = action;
         }
-        public Button(Func<string> text, Action action, int width = 0) : this(width)
+        public ButtonFinal(Func<string> text, Action action, int width = 0) : this(width)
         {
             this.TextFunc = text;
             this.LeftClickAction = action;
         }
-        public Button(string text, int width = 0)
+        public ButtonFinal(string text, int width = 0)
             : this()
         {
             Text = text;
@@ -131,15 +132,15 @@ namespace Project1.Framework.UI
                 this.AutoSize = false;
             this.Width = System.Math.Max(this.Width, width);
         }
-        public Button(Vector2 location) : this() { this.Location = location; Text = ""; Height = UIManager.DefaultButtonHeight; }
-        public Button(Vector2 Location, int width, String label = "")
+        public ButtonFinal(Vector2 location) : this() { this.Location = location; Text = ""; Height = UIManager.DefaultButtonHeight; }
+        public ButtonFinal(Vector2 Location, int width, String label = "")
             : this(Location)
         {
             Text = label;
             this.Width = System.Math.Max(this.Width + SpriteLeft.Width + SpriteRight.Width + 2, width);
             this.Height = UIManager.DefaultButtonHeight;
         }
-      
+
         public override void Initialize()
         {
             base.Initialize();
@@ -149,37 +150,37 @@ namespace Project1.Framework.UI
 
         public override void OnPaint(SpriteBatch sb)
         {
-            Button.Draw(sb, this, Vector2.Zero, 1);// (MouseHover || IsPressed) ? 1 : 0.5f);
+            ButtonFinal.Draw(sb, this, Vector2.Zero, 1);// (MouseHover || IsPressed) ? 1 : 0.5f);
         }
 
-        static public void Draw(SpriteBatch sb, Button button, Vector2 location, float opacity = 1)
+        static public void Draw(SpriteBatch sb, ButtonFinal button, Vector2 location, float opacity = 1)
         {
             DrawSprite(sb, button, new Rectangle((int)location.X, (int)location.Y, button.Width, button.Height),
                 button.TexBackgroundColor,
                 opacity,
                 button.SprFx);
             var halign = button.HAlign;
-            var actualwidth = button.Width - Button.SpriteLeft.Width - Button.SpriteRight.Width;
+            var actualwidth = button.Width - ButtonFinal.SpriteLeft.Width - ButtonFinal.SpriteRight.Width;
 
-            var pos = new Vector2(Button.SpriteLeft.Width + actualwidth * halign, Button.SpriteCenter.Height / 2 + (button.IsPushed ? 1 : 0));
-            
+            var pos = new Vector2(ButtonFinal.SpriteLeft.Width + actualwidth * halign, ButtonFinal.SpriteCenter.Height / 2 + (button.IsPushed ? 1 : 0));
+
             var origin = new Vector2(halign, .5f);
             UIManager.DrawStringOutlined(sb, button.Text, pos, origin, button.TextColor, button.TextOutline, button.Font);
         }
 
-        static public void DrawSprite(SpriteBatch sb, Button button, Rectangle destRect, Color color, float opacity, SpriteEffects sprFx)
+        static public void DrawSprite(SpriteBatch sb, ButtonFinal button, Rectangle destRect, Color color, float opacity, SpriteEffects sprFx)
         {
             SpriteEffects fx = button.Active ? sprFx : SpriteEffects.FlipVertically;
             Color c = Color.Lerp(Color.Transparent, color, opacity);
             sb.Draw(UIManager.DefaultButtonSprite, new Vector2(destRect.X, destRect.Y), Button.SpriteLeft, c, 0, Vector2.Zero, 1, fx, 0);
             sb.Draw(UIManager.DefaultButtonSprite,
                 new Rectangle(
-                    destRect.X + Button.SpriteLeft.Width,
+                    destRect.X + ButtonFinal.SpriteLeft.Width,
                     destRect.Y,
-                    destRect.Width - Button.SpriteLeft.Width - Button.SpriteRight.Width,
+                    destRect.Width - ButtonFinal.SpriteLeft.Width - ButtonFinal.SpriteRight.Width,
                     SpriteCenter.Height),
-                Button.SpriteCenter, c, 0, Vector2.Zero, fx, 0);
-            sb.Draw(UIManager.DefaultButtonSprite, new Vector2(destRect.X + destRect.Width - Button.SpriteRight.Width, destRect.Y), Button.SpriteRight, c, 0, Vector2.Zero, 1, fx, 0);
+                ButtonFinal.SpriteCenter, c, 0, Vector2.Zero, fx, 0);
+            sb.Draw(UIManager.DefaultButtonSprite, new Vector2(destRect.X + destRect.Width - ButtonFinal.SpriteRight.Width, destRect.Y), ButtonFinal.SpriteRight, c, 0, Vector2.Zero, 1, fx, 0);
         }
         public override void DrawText(SpriteBatch sb, Vector2 position, Rectangle? sourceRect, Color color, float opacity)
         {

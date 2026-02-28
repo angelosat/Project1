@@ -19,7 +19,7 @@ namespace Project1.Core.Towns.Labors
             //if (TryDropUnnecessaryItems(actor) is AITask task)
             //    return task;
             var map = actor.Map;
-            var jobs = actor.GetJobs();
+            var jobs = actor.GetDuties();
             var manager = actor.ItemPreferences;
 
             //foreach (var job in jobs)

@@ -21,7 +21,7 @@ namespace Project1.Core.Screens
             
         public NotificationArea NotificationArea;
         public NameplateManager NameplateManager;// = new();
-        public static readonly HotkeyContext HotkeyContext = new("Ingame");
+        public static readonly HotkeyCategory HotkeyContextInterface = new("Ingame");
         public EventBus Events = new();
 
         bool HideInterface = false;

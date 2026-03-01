@@ -29,7 +29,7 @@ namespace Project1.Core.Towns.Zones
         public IReadOnlyDictionary<IntVec3, Zone> CellsToZones => this._cellsToZones;
         static ZoneManager()
         {
-            Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Zones", ToggleGui, System.Windows.Forms.Keys.Y);
+            Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyCategoryManagement, "Zones", ToggleGui, System.Windows.Forms.Keys.Y);
             ZoneDefs = [.. Def.GetDefs<ZoneDef>()];
         }
         public ZoneManager(Town town)

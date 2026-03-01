@@ -36,12 +36,14 @@ namespace Project1.Core.Towns
     public class Town : Inspectable, IDutyProvider
     {
         UIQuickMenu QuickMenu;
-        public static HotkeyContext HotkeyContext = new("Town");
+        public static HotkeyCategory HotkeyContext = new("Town");
+
         internal void OnTooltipCreated(Control tooltip, TargetArgs targetArgs)
         {
             foreach (var c in this.TownComponents)
                 c.OnTooltipCreated(tooltip, targetArgs);
         }
+
         public IReadOnlyCollection<DutyDef> AvailableDuties => field ??= 
                 [
                     DutyDefOf.Workplace,
@@ -62,6 +64,7 @@ namespace Project1.Core.Towns
                     DutyDefOf.Hauler,
                     DutyDefOf.MiscDuties,
                 ];
+
         internal void Init()
         {
             this.RoomManager.Init();
@@ -133,7 +136,6 @@ namespace Project1.Core.Towns
             this.DiggingManager = new(this);
             this.DesignationManager = new(this);
             this.RoomManager = new(this);
-            //this.CraftingManager = new(this);
             this.CraftingManager = new(this);
             this.DutiesManager = new(this);
             this.ReservationManager = new(this);
@@ -149,9 +151,7 @@ namespace Project1.Core.Towns
                 this.DiggingManager,
                 this.DesignationManager,
                 this.RoomManager,
-                //this.CraftingManager,
                 this.CraftingManager,
-                //this.DutiesManager,
                 this.ReservationManager,
                 this.TerrainManager,
                 this.ShopManager,
@@ -166,12 +166,6 @@ namespace Project1.Core.Towns
 
         public void Update()
         {
-            //foreach (var agent in this.Members.ToArray())
-            //    if (this.Map.World.GetEntity(agent) == null)
-            //    {
-            //        this.Members.Remove(agent);
-            //        $"Removed disposed townie entity with id: {agent}".ToConsole();
-            //    }
             foreach (var comp in this.TownComponents)
                 comp.Update();
         }
@@ -220,12 +214,7 @@ namespace Project1.Core.Towns
                 this.Net.ConsoleBox.Write($"{actor.Name} was dismissed from the town!");
             }
         }
-        //public void RemoveMember(Actor actor)
-        //{
-        //    this.Members.Remove(actor);
-        //    foreach (var c in this.TownComponents)
-        //        c.OnCitizenRemoved(id);
-        //}
+       
         public void ToggleMembers(IEnumerable<Actor> actors)
         {
             foreach (var actor in actors) 
@@ -238,19 +227,7 @@ namespace Project1.Core.Towns
             else
                 this.RemoveMember(entity);
         }
-        //public void AddMember(Actor actor)
-        //{
-        //    this.Members.Add(actor);
-
-        //    //this.AddMember(actor.RefId);
-        //}
-        //public void AddMember(int id)
-        //{
-        //    this.Members.Add(id);
-        //    foreach (var c in this.TownComponents)
-        //        c.OnCitizenAdded(id);
-        //}
-
+        
         internal void OnCameraRotated(Camera camera)
         {
             foreach (var c in this.TownComponents)
@@ -496,19 +473,6 @@ namespace Project1.Core.Towns
             }
         }
 
-        //internal virtual void OnTargetSelected(IUISelection info, ISelectable selection)
-        //{
-        //    if(selection is TargetArgs targetArgs)
-        //        foreach (var c in this.TownComponents)
-        //            c.OnTargetSelected(info, targetArgs);
-        //}
-
-        //internal virtual void OnTargetSelected(SelectionManager info, ISelectable selection)
-        //{
-        //    if (selection is TargetArgs targetArgs)
-        //        foreach (var c in this.TownComponents)
-        //            c.OnTargetSelected(info, targetArgs);
-        //}
         internal IEnumerable<T> GetBusinesses<T>() where T : Workplace
         {
             return this.ShopManager.GetShops().OfType<T>();

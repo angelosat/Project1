@@ -317,7 +317,7 @@ namespace Project1.Framework.UI
         }
         public override Control Invalidate(bool invalidateChildren = false)
         {
-            $"{this} {DateTime.Now.Millisecond}".ToConsole();
+            //$"{this} {DateTime.Now.Millisecond}".ToConsole();
             return base.Invalidate(invalidateChildren);
         }
         public virtual void DrawSprite(SpriteBatch sb, Rectangle destRect, Rectangle? sourceRect, Color color, float opacity) { }

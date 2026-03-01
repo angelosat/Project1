@@ -1,4 +1,5 @@
-﻿using Project1.Framework.Input;
+﻿using Project1.Framework.Events;
+using Project1.Framework.Input;
 using System;
 using System.Xml.Linq;
 
@@ -6,7 +7,7 @@ namespace Project1.Core.Input
 {
     partial class HotkeyManager
     {
-        public class Hotkey : IHotkey
+        public class Hotkey : Observable, IHotkey
         {
             public bool Pressed;
 
@@ -14,7 +15,7 @@ namespace Project1.Core.Input
 
             public readonly string Label;
 
-            public readonly HotkeyContext Context;
+            public readonly HotkeyCategory Context;
 
             public readonly System.Windows.Forms.Keys[] _keys = new System.Windows.Forms.Keys[2];
             public readonly System.Windows.Forms.Keys[] _keysPrevious = new System.Windows.Forms.Keys[2];
@@ -24,24 +25,32 @@ namespace Project1.Core.Input
             public System.Windows.Forms.Keys Key1
             {
                 get => this._keys[0];
-                set => this._keys[0] = value;
+                set
+                {
+                    this._keys[0] = value;
+                    this.NotifyUpdated();
+                }
             }
 
             public System.Windows.Forms.Keys Key2
             {
                 get => this._keys[1];
-                set => this._keys[1] = value;
+                set
+                {
+                    this._keys[1] = value;
+                    this.NotifyUpdated();
+                }
             }
 
             public Hotkey()
             {
 
             }
-            public Hotkey(HotkeyContext context, string label, Action action, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
+            public Hotkey(HotkeyCategory context, string label, Action action, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
                 : this(context, label, action, delegate { }, key1, key2)
             {
             }
-            public Hotkey(HotkeyContext context, string label, Action actionPress, Action actionRelease, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
+            public Hotkey(HotkeyCategory context, string label, Action actionPress, Action actionRelease, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
             {
                 this.Context = context;
                 this.Label = label;

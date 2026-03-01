@@ -1,9 +1,9 @@
 ﻿namespace Project1.Framework.Input
 {
-    public class HotkeyContext
+    public class HotkeyCategory
     {
         public string Name;
-        public HotkeyContext(string name)
+        public HotkeyCategory(string name)
         {
             this.Name = name;
         }

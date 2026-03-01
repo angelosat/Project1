@@ -1,31 +1,28 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI.Packets;
-using Project1.Core.Components;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
-using Project1.Core.Entities;
 using Project1.Core.Simulation;
-using Project1.Framework.Events;
+using Project1.Framework;
 using Project1.Framework.Input;
+using System;
 
 namespace Project1.Core.Input
 {
     [EnsureStaticCtorCall]
     class ToolControlActor : ControlTool
     {
-        static readonly HotkeyContext HotkeyContext = new("Movement");
+        static readonly HotkeyCategory HotkeyCategoryMovement = new("Movement");
         static ToolControlActor()
         {
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Move: Left", () => Left = true, () => Left = false, System.Windows.Forms.Keys.A, System.Windows.Forms.Keys.Left);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Move: Right", () => Right = true, () => Right = false, System.Windows.Forms.Keys.D, System.Windows.Forms.Keys.Right);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Move: Up", () => Up = true, () => Up = false, System.Windows.Forms.Keys.W, System.Windows.Forms.Keys.Up);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Move: Down", () => Down = true, () => Down = false, System.Windows.Forms.Keys.S, System.Windows.Forms.Keys.Down);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Jump", JumpNew, System.Windows.Forms.Keys.Space);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Toggle Mouse Move", ToggleMouseMove, System.Windows.Forms.Keys.M);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Walk", () => StartWalk(true), () => StartWalk(false), System.Windows.Forms.Keys.ControlKey);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Sprint", () => StartSprint(true), () => StartSprint(false), System.Windows.Forms.Keys.ShiftKey);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryMovement, "Move: Left", () => Left = true, () => Left = false, System.Windows.Forms.Keys.A, System.Windows.Forms.Keys.Left);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryMovement, "Move: Right", () => Right = true, () => Right = false, System.Windows.Forms.Keys.D, System.Windows.Forms.Keys.Right);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryMovement, "Move: Up", () => Up = true, () => Up = false, System.Windows.Forms.Keys.W, System.Windows.Forms.Keys.Up);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryMovement, "Move: Down", () => Down = true, () => Down = false, System.Windows.Forms.Keys.S, System.Windows.Forms.Keys.Down);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryMovement, "Jump", JumpNew, System.Windows.Forms.Keys.Space);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryMovement, "Toggle Mouse Move", ToggleMouseMove, System.Windows.Forms.Keys.M);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryMovement, "Walk", () => StartWalk(true), () => StartWalk(false), System.Windows.Forms.Keys.ControlKey);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryMovement, "Sprint", () => StartSprint(true), () => StartSprint(false), System.Windows.Forms.Keys.ShiftKey);
         }
 
         static bool Up, Down, Left, Right, Moving, WalkKeyDown, SprintKeyDown;
@@ -73,7 +70,7 @@ namespace Project1.Core.Input
         {
             if (e.Handled)
                 return;
-            if (HotkeyManager.Press(e.KeyCode, HotkeyContext))
+            if (HotkeyManager.Press(e.KeyCode, HotkeyCategoryMovement))
                 e.Handled = true;
             base.HandleKeyDown(e);
         }
@@ -81,7 +78,7 @@ namespace Project1.Core.Input
         {
             if (e.Handled)
                 return;
-            if (HotkeyManager.Release(e.KeyCode, HotkeyContext))
+            if (HotkeyManager.Release(e.KeyCode, HotkeyCategoryMovement))
                 e.Handled = true;
             base.HandleKeyUp(e);
         }

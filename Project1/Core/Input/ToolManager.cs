@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Components;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Networking;
-using Project1.Core.Networking.Packets;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.UI;
 using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
@@ -22,18 +20,22 @@ namespace Project1.Core.Input
     {
         static ToolManager _instance;
         public static ToolManager Instance => _instance ??= new ToolManager();
-        static readonly HotkeyContext HotkeyContext = new("Targeting");
-        public static readonly HotkeyContext HotkeyContextDebug = new("Debug");
+        static readonly HotkeyCategory HotkeyContextTargeting = new("Targeting");
+        static readonly HotkeyCategory HotkeyContextDebug = new("Debug");
 
         static ToolManager()
         {
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Ignore entity mouse hover", ToggleEntityTargeting, System.Windows.Forms.Keys.V);
-            HotkeyManager.RegisterHotkey(HotkeyContextDebug, "Toggle draw regions", ToggleDrawRegions, System.Windows.Forms.Keys.F7);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Rotate camera left", delegate { Ingame.CurrentMap.Camera.RotateClockwise(); }, System.Windows.Forms.Keys.Oemcomma);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Rotate camera right", delegate { Ingame.CurrentMap.Camera.RotateCounterClockwise(); }, System.Windows.Forms.Keys.OemPeriod);
+            HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Ignore entity mouse hover", ToggleEntityTargeting, System.Windows.Forms.Keys.V);
+            HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate camera left", () => Ingame.CurrentMap.Camera.RotateClockwise(), System.Windows.Forms.Keys.Oemcomma);
+            HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate camera right", () => Ingame.CurrentMap.Camera.RotateCounterClockwise(), System.Windows.Forms.Keys.OemPeriod);
 
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Rotate construction clockwise", () => CurrentTool.RotateClockwise(), System.Windows.Forms.Keys.E);
-            HotkeyManager.RegisterHotkey(HotkeyContext, "Rotate construction anticlockwise", () => CurrentTool.RotateAntiClockwise(), System.Windows.Forms.Keys.Q);
+            HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate construction clockwise", () => CurrentTool.RotateClockwise(), System.Windows.Forms.Keys.E);
+            HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate construction anticlockwise", () => CurrentTool.RotateAntiClockwise(), System.Windows.Forms.Keys.Q);
+
+            HotkeyManager.RegisterHotkey(HotkeyContextDebug, "Toggle draw regions", ToggleDrawRegions, System.Windows.Forms.Keys.F7);
+            HotkeyManager.RegisterHotkey(HotkeyContextDebug, "Open console", () => ServerConsole.Instance.Toggle(), System.Windows.Forms.Keys.Oemtilde);
+            HotkeyManager.RegisterHotkey(HotkeyContextDebug, "Open debug console", () => DebugConsole.Toggle(), System.Windows.Forms.Keys.Oem5);
+            HotkeyManager.RegisterHotkey(HotkeyContextDebug, "Spawn objects", () => ObjectTemplatesWindow.Instance.ToggleSmart(), System.Windows.Forms.Keys.O);
         }
         Action unsub;
         internal void Bind(MapBase map)
@@ -174,7 +176,7 @@ namespace Project1.Core.Input
         {
             if (e.Handled)
                 return;
-            if (HotkeyManager.Release(e.KeyCode, HotkeyContext) ||
+            if (HotkeyManager.Release(e.KeyCode, HotkeyContextTargeting) ||
                HotkeyManager.Release(e.KeyCode, HotkeyContextDebug))
             {
                 e.Handled = true;
@@ -191,7 +193,7 @@ namespace Project1.Core.Input
             if (this.ActiveTool is null)
                 return;
 
-            if (HotkeyManager.Press(e.KeyCode, HotkeyContext) ||
+            if (HotkeyManager.Press(e.KeyCode, HotkeyContextTargeting) ||
                 HotkeyManager.Press(e.KeyCode, HotkeyContextDebug))
             {
                 e.Handled = true;

@@ -15,10 +15,10 @@ namespace Project1.Core.UI.Hud
     {
         static Hud()
         {
-            HotkeyManager.RegisterHotkey(Ingame.HotkeyContext, "Open chat", delegate { Ingame.Instance.Hud.Chat.StartOrFinishTyping(); }, System.Windows.Forms.Keys.Enter);
-            HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Open console", delegate { ServerConsole.Instance.Toggle(); }, System.Windows.Forms.Keys.Oemtilde);
-            HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Open debug console", delegate { DebugConsole.Toggle(); }, System.Windows.Forms.Keys.Oem5);
-            HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Spawn objects", delegate { ObjectTemplatesWindow.Instance.ToggleSmart(); }, System.Windows.Forms.Keys.O);
+            HotkeyManager.RegisterHotkey(Ingame.HotkeyContextInterface, "Open chat", delegate { Ingame.Instance.Hud.Chat.StartOrFinishTyping(); }, System.Windows.Forms.Keys.Enter);
+            //HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Open console", delegate { ServerConsole.Instance.Toggle(); }, System.Windows.Forms.Keys.Oemtilde);
+            //HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Open debug console", delegate { DebugConsole.Toggle(); }, System.Windows.Forms.Keys.Oem5);
+            //HotkeyManager.RegisterHotkey(ToolManager.HotkeyContextDebug, "Spawn objects", delegate { ObjectTemplatesWindow.Instance.ToggleSmart(); }, System.Windows.Forms.Keys.O);
         }
         public void Initialize(NetEndpoint net)
         {
@@ -150,7 +150,7 @@ namespace Project1.Core.UI.Hud
                 e.Handled = true;
                     this.IngameMenu.ToggleDialog();
             }
-            HotkeyManager.PerformHotkey(e, Ingame.HotkeyContext);
+            HotkeyManager.PerformHotkey(e, Ingame.HotkeyContextInterface);
           
             base.HandleKeyDown(e);
         }

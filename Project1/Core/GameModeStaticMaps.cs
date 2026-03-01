@@ -1,19 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Core.Towns;
-using Project1.Core.UI;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Packets;
-using Project1.Core.Screens;
-using Project1.Core.Simulation;
 using Project1.Core.Networking.Simulation;
+using Project1.Core.Screens;
 using Project1.Core.Serialization;
+using Project1.Core.Simulation;
+using Project1.Core.Towns;
+using Project1.Core.UI;
+using Project1.Framework;
 using Project1.Framework.Helpers;
+using Project1.Framework.UI;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace Project1.Core
 {
@@ -97,15 +97,6 @@ namespace Project1.Core
                     Server.StartSaving();
                     tag.Add(world.SaveToTag());
                     SaveFile.Save(tag, name);
-                    //using (MemoryStream stream = new())
-                    //{
-                    //    BinaryWriter writer = new(stream);
-                    //    tag.WriteWithRefs(writer);
-                    //    if (!Directory.Exists(directory))
-                    //        Directory.CreateDirectory(directory);
-                    //    Chunk.Compress(stream, workingDir + fullPath);
-                    //    stream.Close();
-                    //}
                     Server.FinishSaving();
                     getSaveName.Hide();
                     box.GetWindow().Hide();

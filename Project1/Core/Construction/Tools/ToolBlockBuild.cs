@@ -104,7 +104,8 @@ namespace Project1.Core.Construction.Tools
         }
         public override void HandleKeyDown(System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.KeyValue == 17) //control
+            if(e.KeyCode == System.Windows.Forms.Keys.ControlKey)
+            //if (e.KeyValue == 17) //control
             {
                 ToolManager.SetTool(new ToolBlockErase(this));
             }

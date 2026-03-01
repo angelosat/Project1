@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.AI.Packets;
-using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
@@ -30,23 +29,23 @@ namespace Project1.Core.Input
         Vector2 MouseScrollOrigin;
         Vector2 CameraCoordinatesOrigin;
         Action ScrollingMode;
-        public static readonly HotkeyContext HotkeyContextManagement = new("Management");
-        protected HotkeyContext HotkeyContext => HotkeyContextManagement;
+        public static readonly HotkeyCategory HotkeyCategoryManagement = new("Management");
+        protected HotkeyCategory HotkeyContext => HotkeyCategoryManagement;
         static ToolManagement()
         {
-            HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Pause/Resume", PauseResume, Keys.Space);
-            HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Speed: Normal", delegate { SetSpeed(1); }, Keys.D1);
-            HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Speed: Fast", delegate { SetSpeed(2); }, Keys.D2);
-            HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Speed: Faster", delegate { SetSpeed(3); }, Keys.D3);
-            HotkeyToggleForbidden = HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Toggle Forbidden", ToggleForbidden, Keys.F);
-            HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Set draw elevation to selection", Slice, Keys.Z);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Pause/Resume", PauseResume, Keys.Space);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Speed: Normal", () => SetSpeed(1), Keys.D1);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Speed: Fast", () => SetSpeed(2), Keys.D2);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Speed: Faster", () => SetSpeed(3), Keys.D3);
+            HotkeyToggleForbidden = HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Toggle Forbidden", ToggleForbidden, Keys.F);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Set draw elevation to selection", Slice, Keys.Z);
 
-            HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Camera: Up", () => Up = true, () => Up = false, Keys.W, Keys.Up);
-            HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Camera: Down", () => Down = true, () => Down = false, Keys.S, Keys.Down);
-            HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Camera: Left", () => Left = true, () => Left = false, Keys.A, Keys.Left);
-            HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Camera: Right", () => Right = true, () => Right = false, Keys.D, Keys.Right);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Camera: Up", () => Up = true, () => Up = false, Keys.W, Keys.Up);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Camera: Down", () => Down = true, () => Down = false, Keys.S, Keys.Down);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Camera: Left", () => Left = true, () => Left = false, Keys.A, Keys.Left);
+            HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Camera: Right", () => Right = true, () => Right = false, Keys.D, Keys.Right);
 
-            HotkeyCameraFaster = HotkeyManager.RegisterHotkey(HotkeyContextManagement, "Faster camera speed", delegate { }, Keys.ShiftKey);
+            HotkeyCameraFaster = HotkeyManager.RegisterHotkey(HotkeyCategoryManagement, "Faster camera speed", () => { }, Keys.ShiftKey);
         }
         internal static readonly IHotkey HotkeyToggleForbidden, HotkeyCameraFaster;
 

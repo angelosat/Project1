@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Core.UI.Settings;
-using Project1.Framework.UI;
+﻿using Project1.Core.UI.Settings;
 using Project1.Framework.Helpers;
 using Project1.Framework.Input;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Input
 {
     partial class HotkeyManager : GameSettings
     {
-        static readonly HashSet<Hotkey> Hotkeys = new();
-        GroupBox _gui;
-        internal override GroupBox Gui => this._gui ??= this.CreateGui();
+        static readonly HashSet<Hotkey> Hotkeys = [];
+        internal override GroupBox Gui => field ??= this.CreateGui();
         readonly Lazy<WindowInputKey> EnterKeyGui = new();
         internal override string Name => "Hotkeys";
 
-        public static IHotkey RegisterHotkey(HotkeyContext context, string label, Action action, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
+        public static IHotkey RegisterHotkey(HotkeyCategory context, string label, Action action, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
         {
-            return RegisterHotkey(context, label, action, delegate { }, key1, key2);
+            return RegisterHotkey(context, label, action, action, key1, key2);
         }
-        public static IHotkey RegisterHotkey(HotkeyContext context, string label, Action actionPress, Action actionRelease, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
+        public static IHotkey RegisterHotkey(HotkeyCategory context, string label, Action actionPress, Action actionRelease, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
         {
             var hotkey = new Hotkey(context, label, actionPress, actionRelease, key1, key2);
             HandleConflicts(hotkey, false);
@@ -76,7 +75,7 @@ namespace Project1.Core.Input
             }
         }
 
-        public static bool PerformHotkey(System.Windows.Forms.Keys key, HotkeyContext context)
+        public static bool PerformHotkey(System.Windows.Forms.Keys key, HotkeyCategory context)
         {
             if (Hotkeys.FirstOrDefault(h => h.Context == context && h.ShortcutKeys.Contains(key)) is not Hotkey hotkey)
                 return false;
@@ -88,14 +87,14 @@ namespace Project1.Core.Input
         /// </summary>
         /// <param name="e"></param>
         /// <param name="context"></param>
-        public static void PerformHotkey(System.Windows.Forms.KeyEventArgs e, HotkeyContext context)
+        public static void PerformHotkey(System.Windows.Forms.KeyEventArgs e, HotkeyCategory context)
         {
             if (Hotkeys.FirstOrDefault(h => h.Context == context && h.ShortcutKeys.Contains(e.KeyCode)) is not Hotkey hotkey)
                 return;
             hotkey.ActionPress();
             e.Handled = true;
         }
-        public static bool Press(System.Windows.Forms.Keys key, HotkeyContext context)
+        public static bool Press(System.Windows.Forms.Keys key, HotkeyCategory context)
         {
             if (Hotkeys.FirstOrDefault(h => h.Context == context && h.ShortcutKeys.Contains(key)) is Hotkey hotkey && !hotkey.Pressed)
             {
@@ -105,7 +104,7 @@ namespace Project1.Core.Input
             }
             return false;
         }
-        public static bool Release(System.Windows.Forms.Keys key, HotkeyContext context)
+        public static bool Release(System.Windows.Forms.Keys key, HotkeyCategory context)
         {
             if (Hotkeys.FirstOrDefault(h => h.Context == context && h.ShortcutKeys.Contains(key)) is Hotkey hotkey && hotkey.Pressed)
             {
@@ -131,12 +130,14 @@ namespace Project1.Core.Input
         {
             var box = new GroupBox() { Name = "Hotkeys" };
             var byContext = Hotkeys.GroupBy(h => h.Context);
-            box.AddControlsVertically(1, byContext.Select(cat =>
+            box.AddControlsVertically(1, [.. byContext.Select(cat =>
                 new TableScrollableCompact<Hotkey>(true)
-                    .AddColumn(null, cat.Key.Name, 192, h => h.Label.ToLabel())
-                    .AddColumn(null, "Primary", 64, h => new Label(() => $"{h.Key1}", delegate { editHotkey(h, 0); }))
-                    .AddColumn(null, "Secondary", 64, h => new Label(() => $"{h.Key2}", delegate { editHotkey(h, 1); }))
-                    .AddItems(cat)).ToArray());
+                    .AddColumn(null, cat.Key.Name, 192, h => new LabelNew(h.Label))// h.Label.ToLabel())
+                    //.AddColumn(null, "Primary", 64, h => new Label(() => $"{h.Key1.Label}", () => editHotkey(h, 0)))
+                    //.AddColumn(null, "Secondary", 64, h => new Label(() => $"{h.Key2.Label}", () => editHotkey(h, 1)))
+                    .AddColumn(null, "Primary", 64, h => new LabelNew(() => $"{h.Key1.Label}", () => editHotkey(h, 0)).Bind(h))
+                    .AddColumn(null, "Secondary", 64, h => new LabelNew(() => $"{h.Key2.Label}", () => editHotkey(h, 1)).Bind(h))
+                    .AddItems(cat))]);
             box.Validate(true);
             return box;
             static void setHotkey(Hotkey hotkey, int keyIndex, System.Windows.Forms.Keys key)

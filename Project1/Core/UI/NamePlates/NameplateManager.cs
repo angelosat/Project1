@@ -13,7 +13,7 @@ namespace Project1.Core.UI.NamePlates
     {
         static NameplateManager()
         {
-            HotkeyManager.RegisterHotkey(Ingame.HotkeyContext, "Toggle nameplates", ToggleNameplates, System.Windows.Forms.Keys.N);
+            HotkeyManager.RegisterHotkey(Ingame.HotkeyContextInterface, "Toggle nameplates", ToggleNameplates, System.Windows.Forms.Keys.N);
         }
         static NameplateManager Instance;
         public bool NameplatesEnabled => this.Controls.Contains(this.Container);

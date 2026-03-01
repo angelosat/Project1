@@ -230,7 +230,7 @@ namespace Project1.Framework.UI
             foreach (var c in this.Controls)
                 c.OnDetached();
         }
-        public void Bind(Observable obs)
+        public Control Bind(Observable obs)
         {
             if (this.AttachedAction != null || this.DetachedAction != null)
                 throw new InvalidOperationException(
@@ -248,6 +248,7 @@ namespace Project1.Framework.UI
                 unsub?.Dispose();
                 unsub = null;
             };
+            return this;
         }
         void InvalidateAll() => this.Invalidate(true);
         public virtual void OnUIScaleChanged(float oldScale, float newScale)
@@ -1160,6 +1161,7 @@ namespace Project1.Framework.UI
             foreach (Control control in this.Controls.ToList())
                 control.HandleKeyPress(e);
         }
+
         public virtual void HandleMouseMove(HandledMouseEventArgs e, Rectangle viewport)
         {
             if (this.HasChildren)

@@ -44,7 +44,7 @@ namespace Project1.Core.Towns.Constructions
         }
         static ConstructionManager()
         {
-            HotkeyBuild = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Build", ToggleConstructionWindow, System.Windows.Forms.Keys.B);
+            HotkeyBuild = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyCategoryManagement, "Build", ToggleConstructionWindow, System.Windows.Forms.Keys.B);
         }
         private static void ToggleConstructionWindow()
         {

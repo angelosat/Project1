@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
 using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,6 +11,7 @@ namespace Project1.Core.Materials
     public class RawMaterialSystem
     {
         public static readonly Dictionary<MaterialTypeDef, HashSet<MaterialDef>> MaterialsByType = [];
+        public static readonly Dictionary<MaterialTypeDef, MaterialRefinementDef> RefinementsByType = [];
         static RawMaterialSystem()
         {
             foreach(var matdef in Def.GetDefs<MaterialDef>())
@@ -18,7 +20,15 @@ namespace Project1.Core.Materials
                     MaterialsByType[matdef.Type] = list = [];
                 list.Add(matdef);
             }
+            foreach(var matRef in Def.GetDefs<MaterialRefinementDef>())
+            {
+                if(matRef.Source is not null) // only add processed stages
+                    RefinementsByType.Add(matRef.MaterialType, matRef);
+            }
         }
+        static public Entity Create(MaterialDef material, int stackSize = -1)
+            => Create(RefinementsByType[material.Type], material, stackSize);
+        
         static public Entity Create(MaterialRefinementDef profile, MaterialDef material, int stackSize = -1)
         {
             //return Create(profile, new Dictionary<BoneDef, MaterialDef>() { { BoneDefOf.Item, material } }, stackSize);
@@ -36,6 +46,8 @@ namespace Project1.Core.Materials
         }
         static public Entity Create(MaterialRefinementDef stage, MaterialDef defaultMaterial, Dictionary<BoneDef, MaterialDef> materialOverrides, int stackSize = -1)
         {
+            if (stage.MaterialType != defaultMaterial.Type)
+                throw new InvalidOperationException();
             var item = ItemDefOf.Ingredient.Create(amount: stackSize);
             //item.Initialize();
             item.Profile = stage;
@@ -59,8 +71,9 @@ namespace Project1.Core.Materials
             foreach (var state in states)
                 foreach (var material in Def.GetDefs<MaterialDef>().Where(m => m.Type == state.MaterialType))
                     yield return EntityFactory
-                        .Request(state, null)
-                        .OverrideMaterial(BoneDefOf.Item, material)
+                        //.Request(state, null)
+                        //.OverrideMaterial(BoneDefOf.Item, material)
+                        .Request(state, defaultMaterial: material)
                         .Create();
         }
         internal static Entity Create(EntityCreationRequest req)

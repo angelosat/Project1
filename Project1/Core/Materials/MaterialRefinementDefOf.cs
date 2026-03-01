@@ -10,7 +10,7 @@ namespace Project1.Core.Materials
         static public readonly MaterialRefinementDef Ingots = new("Ingots", source: Ore, materialType: MaterialTypeDefOf.Metal, sprite: ItemContent.BarsGrayscale) { FuelConsumption = 10 };
 
         static public readonly MaterialRefinementDef Logs = new("Logs", null, MaterialTypeDefOf.Wood, ItemContent.LogsGrayscale) { FuelProduction = 20 };
-        static public readonly MaterialRefinementDef Planks = new("Planks", Planks, MaterialTypeDefOf.Wood, ItemContent.PlanksGrayscale);
+        static public readonly MaterialRefinementDef Planks = new("Planks", Logs, MaterialTypeDefOf.Wood, ItemContent.PlanksGrayscale);
 
         static public readonly MaterialRefinementDef Chunk = new("Chunk", null, MaterialTypeDefOf.Stone, ItemContent.OreGrayscale);
 

@@ -38,10 +38,10 @@ namespace Project1.Core.Towns.Designations
         GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();
         static DesignationManager()
         {
-            Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Designations", ToggleGui, System.Windows.Forms.Keys.U);
+            Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyCategoryManagement, "Designations", ToggleGui, System.Windows.Forms.Keys.U);
 
             foreach (var d in Def.GetDefs<DesignationDef>())
-                HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, $"Designate: {d.LabelReadable}", delegate { SetTool(d); });
+                HotkeyManager.RegisterHotkey(ToolManagement.HotkeyCategoryManagement, $"Designate: {d.LabelReadable}", () => SetTool(d));
         }
         
         public DesignationManager(Town town) : base(town)

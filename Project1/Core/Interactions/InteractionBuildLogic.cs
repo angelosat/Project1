@@ -12,7 +12,7 @@ namespace Project1.Core.Interactions
             public BlockConstructionComp CachedComp => this._cachedComp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockConstructionComp>();
             public override float ProgressPercentage => this.CachedComp.Progress.Percentage;
         }
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override Context CreateContextInternal() => new();
         public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
         public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
         public override void ApplyWork(InteractionContext ctx, int workAmount) => ApplyWork((Context)ctx, workAmount);
@@ -23,8 +23,6 @@ namespace Project1.Core.Interactions
             if (comp.Map is null)
                 return false;
             var manager = comp.Parent.Map.Town.ConstructionsManager;
-            //if (!manager.IsDesignatedConstruction(comp))
-            //    return false;
             if (comp.Parent.CellsOccupied.Any(c => !manager.IsSupported(c)))
                 return false;
             return true;

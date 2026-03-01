@@ -22,14 +22,9 @@ namespace Project1.Core
         static readonly Queue<Entry> EntryQueue = new();
         public enum EntryTypes
         {
-            Damage, Death, Equip, Unequip, Default, TooHeavy, Buff, Debuff, Skill, CellChanged,
-            /// <summary>
-            /// <para>arg0: object</para>
-            /// <para>arg1: text</para>
-            /// </summary>
-            Chat,
-            System, Dialogue, DialogueOption, DialogueEnd, Jobs,
-            ChatPlayer,
+            Damage,
+            Default, 
+            System, 
             Warning,
             Error,
             Network,
@@ -227,7 +222,6 @@ List of available commands:
             var text = entry.ToString();
             var timeStamped = $"[{DateTime.Now:HH:MM:ss}] {text}";
             timeStamped.ToConsole();
-            //UIChat.Instance.Write(entry);
             DebugConsole.Write(text);
 
         }
@@ -235,25 +229,24 @@ List of available commands:
         {
             var timeStamped = $"[{DateTime.Now:HH:MM:ss}] {text}";
             timeStamped.ToConsole();
-            //UIChat.Instance.Write(text);
             DebugConsole.Write(text);
         }
+
         public static void Warning(string text)
         {
             _write(Entry.Warning(text));
         }
+
         public static void Error(string text)
         {
             _write(Entry.Error(text));
         }
+
         public static void System(string text)
         {
             _write(Entry.System(text));
         }
-        internal static void Chat(PlayerData player, string txt)
-        {
-            _write(Entry.Chat(player, txt));
-        }
+        
         internal static void Network(INetEndpoint net, string txt)
         {
             _write(Entry.Network(net, txt));

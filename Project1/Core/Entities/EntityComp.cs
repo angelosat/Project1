@@ -99,7 +99,6 @@ namespace Project1.Core.Entities
         [Obsolete]
         internal virtual void GetSelectionInfo(IUISelection info, GameObject parent) { }
         internal virtual IEnumerable<Control> GetSelectionInfo() { yield break; }
-        internal virtual void OnGameEvent(GameObject gameObject, GameEvent e) { }
         internal virtual void SyncWrite(IDataWriter w) { }
         internal virtual void SyncRead(GameObject parent, IDataReader r) { }
         internal virtual void CopyFrom(EntityComp source) { }

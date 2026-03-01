@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.Components;
 using Project1.Core.Entities;
 using Project1.Core.Networking;
 using Project1.Framework;
@@ -62,7 +61,7 @@ namespace Project1.Core.Simulation.Physics
         {
             if (this.Owner.Net is Client)
             {
-                this.DetectEntityCollisions(this.Owner, this.Owner.Global, this.Owner.Global + this.Owner.Velocity);
+                DetectEntityCollisions(this.Owner, this.Owner.Global, this.Owner.Global + this.Owner.Velocity);
                 return;
             }
             var force = this.Force;
@@ -92,7 +91,7 @@ namespace Project1.Core.Simulation.Physics
             velocity *= 1 - density;
 
             float nx, ny, nz;
-            var box = this.GetBoundingBox(parent, lastGlobal);
+            var box = GetBoundingBox(parent, lastGlobal);
             this.CurrentAABB = box;
             this.NextAABB = (parent as Entity).GetBoundingBoxNext();
 
@@ -107,7 +106,7 @@ namespace Project1.Core.Simulation.Physics
             ///moved this after the friction application to fix velocity being larger while jumping
             nz = this.ResolveVertical(parent, map, box, ref velocity, density);
 
-            var blocktransform = this.GetStandingBlockTransform(map, lastGlobal);
+            var blocktransform = GetStandingBlockTransform(map, lastGlobal);
             var origin = parent.Global + blocktransform;
 
             if (velocity.X != 0 || blocktransform.X != 0)
@@ -134,7 +133,7 @@ namespace Project1.Core.Simulation.Physics
             }
             net.LogStateChange(parent);
 
-            this.DetectEntityCollisions(parent, lastGlobal, next);
+            DetectEntityCollisions(parent, lastGlobal, next);
 
             // reset speed according to new position to prevent it from accumulating
             parent.Velocity = velocity;
@@ -156,11 +155,11 @@ namespace Project1.Core.Simulation.Physics
                 }
             }
         }
-        static readonly Vector3[] BoundingBoxCorners = { 
+        static readonly Vector3[] BoundingBoxCorners = [ 
             new(-.25f, -.25f, 0), 
             new(-.25f, .25f, 0), 
             new(.25f, -.25f, 0), 
-            new(.25f, .25f, 0) };
+            new(.25f, .25f, 0) ];
         public static IEnumerable<Vector3> GetFootprintCorners(Vector3 global)
         {
             yield return global + BoundingBoxCorners[0];
@@ -188,15 +187,15 @@ namespace Project1.Core.Simulation.Physics
         {
             return new BoundingBox(global - new Vector3(.25f, .25f, 0), global + new Vector3(.25f, .25f, this.Height));
         }
-        public BoundingBox GetBoundingBox(GameObject parent, Vector3 global)
+        public static BoundingBox GetBoundingBox(GameObject parent, Vector3 global)
         {
             return new BoundingBox(global - new Vector3(.25f, .25f, 0), global + new Vector3(.25f, .25f, parent.Height));
         }
-        public BoundingBox GetBoundingBox(Vector3 global, float height)
+        public static BoundingBox GetBoundingBox(Vector3 global, float height)
         {
             return new BoundingBox(global - new Vector3(.25f, .25f, 0), global + new Vector3(.25f, .25f, height));
         }
-        private Vector3 GetStandingBlockTransform(MapBase map, Vector3 lastGlobal)
+        private static Vector3 GetStandingBlockTransform(MapBase map, Vector3 lastGlobal)
         {
             Vector3 blocktransform = Vector3.Zero;
 
@@ -426,7 +425,7 @@ namespace Project1.Core.Simulation.Physics
             return origin + step;
         }
 
-        void DetectEntityCollisions(GameObject parent, Vector3 last, Vector3 next)
+        static void DetectEntityCollisions(Entity parent, Vector3 last, Vector3 next)
         {
             if (next == last)
             {
@@ -435,19 +434,20 @@ namespace Project1.Core.Simulation.Physics
 
             foreach (Chunk ch in parent.Map.GetChunks(parent.Map.GetChunk(last).MapCoords)) // TODO: optimize, search for entities on nearby chunks only if entity is on current chunk edge
             {
-                foreach (GameObject obj in ch.GetObjects())
+                foreach (var other in ch.GetObjects())
                 {
-                    if (obj == parent)
+                    if (other == parent)
                     {
                         continue;
                     }
 
-                    var lastDistance = Vector3.Distance(obj.Global, last);
-                    var nextDistance = Vector3.Distance(obj.Global, next);
+                    var lastDistance = Vector3.Distance(other.Global, last);
+                    var nextDistance = Vector3.Distance(other.Global, next);
                     if (lastDistance >= 1 && nextDistance < 1) // changed the inequality so the item doesn't combine if freefalling on an adjacent block
                     {
                         // collision
-                        obj.Map.Events.Post(new EntityCollisionEvent(parent as Entity, obj as Entity));
+                        //obj.Map.Events.Post(new EntityCollisionEvent(parent as Entity, obj as Entity));
+                        other.Map.Collisions.Handle(parent, other as Entity);
                     }
                     // TODO: combine items only when an item enters another stationary item's cell?
                 }
@@ -455,26 +455,9 @@ namespace Project1.Core.Simulation.Physics
         }
         public override void OnSpawn(MapBase newMap)
         {
-
             this.Enabled = true;
-            this.Owner.Map.Events.ListenTo<EntityCollisionEvent>(this.HandleCollision);
         }
         
-        void HandleCollision(EntityCollisionEvent e)
-        {
-            var parent = this.Owner;
-            if (!parent.Net.IsServer)
-                return;
-            if (e.Source != this.Owner)
-                return;
-            var otherItem = e.Target;
-            if (otherItem.CanAbsorb(parent) && !parent.IsReserved)
-            {
-                /// revmoved the reserved check from canabsorb and placed it here, because canabsorb is called during legit behaviors that involve the items, 
-                /// which means the items are reserved but still should be absorbable
-                otherItem.SyncAbsorb(parent);
-            }
-        }
 
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
@@ -518,9 +501,9 @@ namespace Project1.Core.Simulation.Physics
             var box = new BoundingBox(global - new Vector3(.25f, .25f, 0), global + new Vector3(.25f, .25f, height));
             var corners = new Vector3[] {
                     box.Min,
-                    new Vector3(box.Min.X, box.Max.Y, global.Z),
-                    new Vector3(box.Max.X, box.Min.Y, global.Z),
-                    new Vector3(box.Max.X, box.Max.Y, global.Z)
+                    new(box.Min.X, box.Max.Y, global.Z),
+                    new(box.Max.X, box.Min.Y, global.Z),
+                    new(box.Max.X, box.Max.Y, global.Z)
                 };
             return corners.Any(c => map.GetBlock(c + new Vector3(0, 0, gravity))?.Density > 0);
         }
@@ -530,11 +513,11 @@ namespace Project1.Core.Simulation.Physics
             return velocity *= FrictionFactor;// .5f;
         }
 
-        public static float GetDensity(MapBase map, Vector3 global)
-        {
-            var cell = map.GetCell(global);
-            return cell.Block.GetDensity(cell.BlockData, global);
-        }
+        //public static float GetDensity(MapBase map, Vector3 global)
+        //{
+        //    var cell = map.GetCell(global);
+        //    return cell.Block.GetDensity(cell.BlockData, global);
+        //}
         public static bool IsStandable(MapBase map, Vector3 global)
         {
             var gravity = map.Gravity;
@@ -548,15 +531,6 @@ namespace Project1.Core.Simulation.Physics
             return corners.Any(c => map.GetBlock(c + new Vector3(0, 0, gravity)).Density > 0);
         }
 
-        //public override void OnObjectLoaded(GameObject parent)
-        //{
-        //    // update def changes
-        //    this._weight = UpdateWeight();
-        //}
-        //public override void OnObjectCreated(GameObject parent)
-        //{
-        //    //this.UpdateWeight();
-        //}
         private float UpdateWeight()
         {
             var parent = this.Owner;
@@ -571,10 +545,10 @@ namespace Project1.Core.Simulation.Physics
             };
             return w;
         }
-        public void SetWeight(float value)
-        {
-            this._weight = value;
-        }
+        //public void SetWeight(float value)
+        //{
+        //    this._weight = value;
+        //}
         public override void Write(IDataWriter w)
         {
             w.Write(this._weight.HasValue);

@@ -1,9 +1,8 @@
-﻿using Project1.Core.Effects;
+﻿using Project1.Core.Components.Plants;
+using Project1.Core.Effects;
 using Project1.Core.Entities;
-using Project1.Core.Needs;
-using Project1.Core.Components.Plants;
 using Project1.Core.Graphics;
-using Project1.Core;
+using Project1.Core.Needs;
 using System;
 
 namespace Project1.Core.Plants

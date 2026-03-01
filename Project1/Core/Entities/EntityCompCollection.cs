@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Project1.Framework;
+﻿using Project1.Framework;
 using Project1.Framework.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Entities
 {
@@ -81,19 +81,7 @@ namespace Project1.Core.Entities
             this.ApplySpecs(def.Specs);
             this.Resolve();
         }
-        [Obsolete]
-        public void CreateAndResolveOld(ItemDef def)
-        {
-            foreach (var compType in def.Comps)
-            {
-                var comp = (EntityComp)Activator.CreateInstance(compType);
-                comp.RuntimeIndex = this._inner.Count;
-                this.Add(comp);
-            }
-            this.ApplySpecs(def.Specs);
-            this.Resolve();
-        }
-        
+       
         public void ApplySpecs(IEnumerable<EntityComp.Spec> overrides)
         {
             foreach(var spec in overrides)
@@ -116,7 +104,6 @@ namespace Project1.Core.Entities
             foreach (var c in this._inner.Values)
                 c.ResolveReferencesNew();
         }
-
         internal EntityComp GetComp(int compindex)
         {
             return this._innerList[compindex];

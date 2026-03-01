@@ -2,21 +2,19 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.Blocks;
-using Project1.Core.Components;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Helpers;
-using Project1.Core.Input;
 using Project1.Core.Map;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Simulation;
 using Project1.Core.Screens;
+using Project1.Core.Simulation.Physics;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Stockpiles;
-using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.WorldGen;
 using Project1.Framework;
@@ -49,6 +47,7 @@ namespace Project1.Core.Simulation
         public RegionManager Regions;
         public StockpileManager Stockpiles;
         internal List<SimulationSystem> SimulationSystems = [];
+        internal CollisionSystem Collisions;
         protected Dictionary<IntVec3, BlockEntity> CachedBlockEntities = new();
         public float Sunlight;
         public abstract Color GetAmbientColor();
@@ -745,16 +744,7 @@ namespace Project1.Core.Simulation
             var above2 = above1.Above();
             return !this.GetBlock(above2).Solid;
         }
-        public void EventOccured(Message.Types type, params object[] p)
-        {
-            this.Net?.EventOccured((int)type, p);
-        }
-        public virtual void OnGameEvent(GameEvent e)
-        {
-            this.ParticleManager.OnGameEvent(e);
-            foreach (var obj in this.GetEntities())
-                obj.OnGameEvent(e);
-        }
+        
         public float GetSolidObjectHeight(Vector3 global)
         {
             var cell = this.GetCell(global);

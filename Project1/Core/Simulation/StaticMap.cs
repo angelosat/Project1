@@ -11,7 +11,9 @@ using Project1.Core.Input;
 using Project1.Core.Loot;
 using Project1.Core.Map;
 using Project1.Core.Networking;
+using Project1.Core.Plants;
 using Project1.Core.Simulation.FallDamage;
+using Project1.Core.Simulation.Physics;
 using Project1.Core.Towns;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
@@ -104,6 +106,10 @@ namespace Project1.Core.Simulation
             this.SimulationSystems.Add(new BehaviorSystem(this));
             this.SimulationSystems.Add(new FallDamageSystem(this));
             this.SimulationSystems.Add(new LootSystem(this));
+            this.SimulationSystems.Add(new PlantLifeCycleSystem(this));
+
+            this.Collisions = new CollisionSystem(this);
+            this.SimulationSystems.Add(this.Collisions);
         }
         public StaticMap(StaticWorld world, Vector2 coords, string name = "")
             : this(world, name)
@@ -469,10 +475,7 @@ namespace Project1.Core.Simulation
             map.UndiscoveredAreaManager.Read(r);
             return map;
         }
-        public override void OnGameEvent(GameEvent e)
-        {
-            base.OnGameEvent(e);
-        }
+        
         public override bool SetBlockLuminance(IntVec3 global, byte luminance)
         {
             if (!this.TryGetAll(global, out var chunk, out var cell))

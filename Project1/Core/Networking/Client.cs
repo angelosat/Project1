@@ -97,8 +97,6 @@ namespace Project1.Core.Networking
 
         public BinaryWriter OutgoingStreamTimestamped = new(new MemoryStream());
 
-        //private readonly Queue<WorldSnapshot> WorldStateBuffer = new();
-        //private readonly int WorldStateBufferSize = 20;
         public const int ClientClockDelayMS = Server.SnapshotIntervalMS * 4;
         public const int ClientTickDelay = 4;
         private int _Speed = 0;// 1;
@@ -112,7 +110,6 @@ namespace Project1.Core.Networking
             this.Timeout = -1;
             Packet.Create(this.NextPacketID, PacketType.PlayerDisconnected).BeginSendTo(this.Host, this.RemoteIP, a => { });
             this.IncomingAll = new ConcurrentQueue<Packet>();
-            //this.ClientClock = new TimeSpan();
             this.PacketsBuffer = new Queue<Packet>();
         }
 

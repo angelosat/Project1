@@ -7,10 +7,7 @@ using Project1.Core.Graphics;
 using Project1.Core.Loot;
 using Project1.Core.Materials;
 using Project1.Core.Resources;
-using Project1.Core.Simulation;
-using Project1.Core.Simulation.Physics;
 using Project1.Core.Tools;
-using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
@@ -240,16 +237,16 @@ namespace Project1.Core.Plants
             }
         }
         
-        public override void OnSpawn(MapBase newMap)
-        {
-            newMap.Events.ListenTo<EntityCollisionEvent>(HandleCollisionEvent);
-        }
+        //public override void OnSpawn(MapBase newMap)
+        //{
+        //    newMap.Events.ListenTo<EntityCollisionEvent>(HandleCollisionEvent);
+        //}
 
-        private void HandleCollisionEvent(EntityCollisionEvent e)
-        {
-            if (e.Target == this.Owner && this.Owner.Net.IsClient)
-                this.Wiggle();
-        }
+        //private void HandleCollisionEvent(EntityCollisionEvent e)
+        //{
+        //    if (e.Target == this.Owner && this.Owner.Net.IsClient)
+        //        this.Wiggle();
+        //}
 
         public void ResetGrowth(GameObject parent)
         {

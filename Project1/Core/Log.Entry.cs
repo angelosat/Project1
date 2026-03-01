@@ -26,17 +26,13 @@ namespace Project1.Core
                 this.Source = source;
                 this.Values = values;
             }
-            public ConsoleEntry GetGui()
-            {
-                return new ConsoleEntry(this.Color, this.ToString());
-            }
+            
             public ConsoleEntryNew GetGuiNew(int maxWidth)
             {
                 var box = new ConsoleEntryNew();
-                //box.AddControlsLineWrap(Label.ParseNewNew(this.ConvertToStringNew()).Prepend(new Label($"[{this.Source}]") { TextColor = this.Color }), maxWidth);
                 var controls = LabelNew.ParseNewNew(this.Values);
                 if (this.ShowSource)
-                    controls.Prepend(new LabelNew($"[{this.Source}]") { TextColor = this.Color, Font = UIManager.FontBold });
+                    controls = controls.Prepend(new LabelNew($"[{this.Source}]") { TextColor = this.Color, Font = UIManager.FontBold });
                 box.AddControlsLineWrap(controls, maxWidth);
                 return box;
             }
@@ -48,14 +44,7 @@ namespace Project1.Core
             {
                 return $"[{this.Source}] {string.Join(" ", this.Values.Select(v => v is string ? v.ToString() : $"[{v}]"))}";
             }
-            string ConvertToStringNew()
-            {
-                return $"{string.Join(" ", this.Values.Select(v => v is string ? v.ToString() : $"[{v}]"))}";
-            }
-            public static Entry Notification(string text)
-            {
-                return new Entry(EntryTypes.Notification, [text]) { Color = Color.Goldenrod, ShowSource = false };
-            }
+          
             public static Entry Notification(params object[] values)
             {
                 return new Entry(EntryTypes.Notification, values) { Color = Color.Goldenrod };
@@ -72,10 +61,7 @@ namespace Project1.Core
             {
                 return new Entry(EntryTypes.System, [text]) { Color = Color.Yellow };
             }
-            public static Entry Chat(object source, string text)
-            {
-                return new Entry(EntryTypes.Chat, source, [text]);
-            }
+            
             public static Entry Network(object source, string text)
             {
                 return new Entry(EntryTypes.Network, source, [text]) { Color = Color.Lime };

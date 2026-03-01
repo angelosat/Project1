@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Core.Screens;
-using Project1.Core.Towns.UI;
-using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.UI.Hud.Chat;
-using Project1.Core.Components;
 using Project1.Core.Input;
 using Project1.Core.Networking;
-using Project1.Framework.Events;
+using Project1.Core.Screens;
+using Project1.Core.Simulation;
+using Project1.Core.Towns.UI;
+using Project1.Core.UI.Hud.Chat;
+using Project1.Framework;
+using Project1.Framework.UI;
 
 namespace Project1.Core.UI.Hud
 {

@@ -29,7 +29,6 @@ using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -44,6 +43,8 @@ namespace Project1.Core.Entities
     {
         public static readonly Dictionary<int, GameObject> Templates = [];
         public override string LabelReadable => this.Name;
+        public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
+        public bool IsRegistered => this.RefId > 0;
         static int GetNextTemplateID()
         {
             return Templates.Count + 1;
@@ -869,7 +870,7 @@ namespace Project1.Core.Entities
         }
         internal BoundingBox GetBoundingBox(Vector3 global, float height)
         {
-            return this.Physics.GetBoundingBox(global, height);
+            return PhysicsComponent.GetBoundingBox(global, height);
         }
         internal bool IntersectsCorners(IntVec3 cell)
         {
@@ -1020,14 +1021,6 @@ namespace Project1.Core.Entities
             return this.GetBoundingBox(this.Global, 0);
         }
         
-        internal void OnGameEvent(GameEvent e)
-        {
-            foreach (var c in this.Components.Values)
-            {
-                c.OnGameEvent(this, e);
-            }
-        }
-
         public MaterialDef Material => this.SpriteComp.GetMaterial(this.Body);
 
         internal bool HasFocus()
@@ -1051,10 +1044,6 @@ namespace Project1.Core.Entities
                 comp.SyncRead(this, r);
         }
 
-        internal int GetOwner()
-        {
-            return this.GetComponent<OwnershipComponent>().OwnerRef;
-        }
         internal void SetOwner(GameObject actor)
         {
             this.SetOwner(actor != null ? actor.RefId : -1);
@@ -1088,8 +1077,7 @@ namespace Project1.Core.Entities
                 return this.Physics.Weight * this.StackSize;
             }
         }
-        public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
-        public bool IsRegistered => this.RefId > 0;
+     
         internal List<StatNewModifier> GetStatModifiers(StatDef statNewDef)
         {
             this.TryGetComponent<StatsComponent>(out var stats);
@@ -1139,18 +1127,7 @@ namespace Project1.Core.Entities
             this.Def = def;
             this._stackSize = amount < 0 ? this.Def.StackCapacity : amount;
         }
-        //public void SyncInstantiate(NetEndpoint net)
-        //{
-        //    if (net is not Server server)
-        //        return;
-
-        //    if (this.RefId != 0)
-        //        throw new Exception();
-
-        //    net.Instantiate(this);
-        //    var w = server.BeginPacket(PacketSyncInstantiate);
-        //    this.Write(w);
-        //}
+        
         private static void SyncInstantiate(NetEndpoint net, Packet packet)
         {
             var r = packet.PacketReader;
@@ -1214,10 +1191,7 @@ namespace Project1.Core.Entities
             master.Absorb(slave);
         }
         #endregion
-        //IEnumerable<(string name, Action action)> ISelectable.GetInfoTabs()
-        //{
-        //    throw new NotImplementedException();
-        //}
+       
         public IEnumerable<IntVec3> GetOccupyingCells()
         {
             return this.Def.OccupyingCellsStanding(this.Global.ToCell());

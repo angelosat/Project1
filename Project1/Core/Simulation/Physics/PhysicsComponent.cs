@@ -505,7 +505,8 @@ namespace Project1.Core.Simulation.Physics
         
         private void HitCeiling(GameObject parent, Vector3 vector3)
         {
-            parent.Map.EventOccured(Message.Types.EntityHitCeiling, parent, vector3);
+            throw new NotImplementedException();
+            //parent.Map.EventOccured(Message.Types.EntityHitCeiling, parent, vector3);
         }
 
         public static bool IsStanding(GameObject parent)

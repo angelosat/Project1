@@ -3,7 +3,6 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Input;
 using Project1.Core.Inventory;
 using Project1.Framework;
-using Project1.Framework.Events;
 using System;
 
 namespace Project1.Core.Networking

@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Input;
 using Project1.Core.Screens;
 using Project1.Framework;
-using Project1.Framework.Events;
 
 namespace Project1.Core.Networking.Packets
 {

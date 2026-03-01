@@ -1,5 +1,4 @@
 ﻿using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Framework.Serialization;
 
 namespace Project1.Core.Networking.Packets

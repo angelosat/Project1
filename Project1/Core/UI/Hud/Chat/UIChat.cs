@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Networking.Packets;
+using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,6 @@ namespace Project1.Core.UI.Hud.Chat
 {
     public class UIChat : Window
     {
-        public static UIChat Instance;
-        static UIChat()
-        {
-            Instance = new UIChat();
-        }
         readonly GroupBox BoxButtons;
         public ConsoleBoxAsync Console;
         readonly Panel Panel_Text, Panel_Input;
@@ -24,8 +20,10 @@ namespace Project1.Core.UI.Hud.Chat
         public TextBox TextBox;
         readonly IconButton BtnSettings;
         readonly UIChatSettings UISettings;
-        UIChat()
+        public UIChat(NetEndpoint net)
         {
+            net.Events.ListenTo<ChatEvent>(HandleChatEvent);
+
             this.Title = "Log";
             this.AutoSize = true;
             this.Closable = false;
@@ -64,14 +62,9 @@ namespace Project1.Core.UI.Hud.Chat
                         return;
 
                     if (gotText[0] == '/')
-                    {
-                        //server command
                         Networking.Client.PlayerCommand(gotText.TrimStart('/'));
-                    }
                     else
-                    {
-                        PacketChat.Send(Networking.Client.Instance, Networking.Client.Instance.PlayerData.ID, gotText);
-                    }
+                        Ingame.Instance.Events.Post(new PlayerChatEvent(gotText));
                 },
                 EscapeFunc = a =>
                 {
@@ -81,7 +74,6 @@ namespace Project1.Core.UI.Hud.Chat
                 },
                 HistoryNextPrev = this.ChatHistory
             };
-
             this.Sldr_Opacity = new SliderNew(() => this.Console.Opacity * 100, v => this.Console.Opacity = v / 100f, width: 100, min: 0, max: 100, step: 1) { Name = "Opacity" };
             this.Sldr_Opacity.Location = this.Label_Title.TopRight;
             this.Panel_Input.Controls.Add(this.TextBox);
@@ -97,6 +89,12 @@ namespace Project1.Core.UI.Hud.Chat
             this.SetOpacity(0, true, this.Client);
             this.TextBox.Enabled = false;
             this.SetMousethrough(true, true);
+        }
+
+        private void HandleChatEvent(ChatEvent e)
+        {
+            var time = e.Entry.TimeStamp;
+            this.Write(e.Entry.Source.TextColor, $"[{time.Hour:00}:{time.Minute:00}:{time.Second:00}] [{e.Entry.Source.DisplayName}] {e.Entry.Text}");
         }
 
         private void ToggleOptions()
@@ -133,31 +131,16 @@ namespace Project1.Core.UI.Hud.Chat
                 return;
         }
 
-        void Timer_Tick(object sender, EventArgs e)
+        void Write(Color color, string text)
         {
-            this.Hide();
-        }
-
-        public void Write(string text)
-        {
-            this.Write(Log.EntryTypes.Default, text);
-        }
-        public void Write(Log.EntryTypes type, string text)
-        {
-            this.Write(new Log.Entry(type, new object[] { text }));
-        }
-        public void Write(Log.Entry e)
-        {
-            string text = e.ToString();
             if (text.Length == 0)
                 return;
 
-            var line = new ConsoleEntry(e.Color, text);
+            var line = new ConsoleEntry(color, text);
             this.Console.Write(line);
 
             this.Console.Client.ClientLocation.Y = this.Console.Client.Bottom - this.Console.Client.ClientSize.Height;
         }
-
         internal void StartTyping()
         {
             this.Client.SetOpacity(1, true, exclude: this.Console);

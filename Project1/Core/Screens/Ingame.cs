@@ -112,7 +112,8 @@ namespace Project1.Core.Screens
             {
                 DrawServer = !DrawServer;
                 //GetMap().Camera.TopSliceChanged = true;
-                this.Hud.Chat.Write(Log.EntryTypes.System, string.Format("draw server: {0}", DrawServer));
+                //this.Hud.Chat.Write(Log.EntryTypes.System, string.Format("draw server: {0}", DrawServer));
+                Client.Instance.ChatService.Post(ChatSource.System, $"draw server: {DrawServer}");
             }
         }
     }

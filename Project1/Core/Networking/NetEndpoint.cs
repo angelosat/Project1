@@ -48,6 +48,7 @@ namespace Project1.Core.Networking
                 hhh(this, pck);
             // silently drop packet if next data is garbage
         }
+        public ChatService ChatService { get; init; }
         public abstract ConsoleBoxAsync ConsoleBox { get; }
         public abstract PlayerData CurrentPlayer { get; }
         public abstract double CurrentTick { get; }

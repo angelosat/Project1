@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Networking;
 using Project1.Framework;
-using Project1.Framework.Events;
 using System;
 
 namespace Project1.Core.Towns.Zones

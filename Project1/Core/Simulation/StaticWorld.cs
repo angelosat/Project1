@@ -20,7 +20,6 @@ using Project1.Core.Map;
 using Project1.Core.World;
 using Project1.Framework;
 using Project1.Core.WorldGen;
-using Project1.Framework.Events;
 using Project1.Core.Networking;
 using Project1.Framework.Helpers;
 

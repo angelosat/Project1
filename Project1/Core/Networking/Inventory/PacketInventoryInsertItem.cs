@@ -1,6 +1,5 @@
 ﻿using System;
 using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Core.Entities;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.Entities.Actors;

@@ -205,8 +205,6 @@ namespace Project1.Core.Inventory
             var parent = this.Owner;
             this.Contents.Add(obj);
             objSlot.Clear();
-            if (report)
-                parent.Net.EventOccured((int)Message.Types.ItemGot, parent, obj);
             return true;
             // TODO: drop object if can't receive? here? or let whoever called this method do something else if it fails?
         }

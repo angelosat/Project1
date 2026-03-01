@@ -3,7 +3,6 @@ using Project1.Core.Legacy.Storage;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Framework;
-using Project1.Framework.Events;
 
 namespace Project1.Core.Towns.Stockpiles
 {

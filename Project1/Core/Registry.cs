@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Networking;
+using Project1.Framework.Events;
 
-namespace Project1.Framework.Events
+namespace Project1.Core
 {
     public class Registry
     {
@@ -9,6 +10,7 @@ namespace Project1.Framework.Events
         public static readonly EventHooks MapEventHooksServer = new();
         public static readonly EventHooks MapEventHooksClient = new();
         public static readonly EventHooks WorldEventHooksServer = new();
+        public static readonly EventHooks EndpointHooks = new();
         public static readonly EventHooks PlayerInputEventHooks = new();
     }
 }

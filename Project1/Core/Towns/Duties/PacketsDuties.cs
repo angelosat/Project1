@@ -3,7 +3,6 @@ using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Framework;
-using Project1.Framework.Events;
 using System.Diagnostics;
 
 namespace Project1.Core.Towns.Duties

@@ -98,7 +98,9 @@ namespace Project1.Core.UI.Hud
                 TextFunc = () => $"Day {(int)net.Map.World.Clock.TotalDays}, {net.Map.World.Clock:%h}h {net.Map.World.Clock:%m}m"
             };
 
-            this.Chat = UIChat.Instance;
+            this.Chat = new(net);// UIChat.Instance;
+            //this.Chat.Write($"Connected to {(net as Client).RemoteIP}");
+            net.ChatService.Post(ChatSource.System, $"Connected to {(net as Client).RemoteIP}");
             this.Chat.AnchorToBottomLeft();
             this.IngameMenu = new IngameMenu();
             GameMode.Current.OnIngameMenuCreated(this.IngameMenu);
@@ -129,30 +131,6 @@ namespace Project1.Core.UI.Hud
                 this.WindowPlayers.Layer = UIManager.LayerHud;
             }
             this.WindowPlayers.Toggle();
-        }
-
-        internal override void OnGameEvent(GameEvent e)
-        {
-            switch ((Message.Types)e.Type)
-            {
-                case Message.Types.ChatPlayer:
-                    var player = e.Parameters[0] as PlayerData;
-                    var txt = (string)e.Parameters[1];
-                    Log.Chat(player, txt);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        private void NotEnoughSpace(GameObject parent)
-        {
-            var txt = "Not enough space";
-            FloatingTextEx floating = new FloatingTextEx(parent)
-                .AddSegment(txt, Color.White);
-            Client.Instance.ConsoleBox.Write(txt);
-            floating.Show();
         }
 
         void BTN_Options_Click()

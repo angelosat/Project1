@@ -1,11 +1,10 @@
 ﻿using Project1.Framework;
-using Project1.Core.Components;
-using Project1.Framework.Events;
-using Project1.Core.Networking;
+using System;
 
 namespace Project1.Core.Networking.Packets
 {
     [EnsureStaticCtorCall]
+    [Obsolete]
     static class PacketChat
     {
         static readonly int p;
@@ -31,7 +30,6 @@ namespace Project1.Core.Networking.Packets
             else 
             {
                 var player = net.GetPlayer(playerid);
-                net.EventOccured((int)Message.Types.ChatPlayer, player, text);
             }
         }
     }

@@ -5,7 +5,6 @@ using Project1.Core.Skills;
 using Project1.Core.Towns.Zones;
 using Project1.Core.UI;
 using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Framework.UI;
 
 namespace Project1.Core.VFX

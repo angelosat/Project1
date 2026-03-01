@@ -68,7 +68,7 @@ namespace Project1.Core.UI.Hud.Chat
             control.OpacityFunc = childOpacityHelper;
         }
     }
-    public class ConsoleEntry : Label
+    public class ConsoleEntry : LabelNew
     {
         static readonly int TimerLength = Ticks.PerSecond * 8;
         int TimerTick = TimerLength;

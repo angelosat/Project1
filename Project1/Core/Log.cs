@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Networking;
+using Project1.Core.UI;
+using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Core.UI;
-using Project1.Core.Networking;
-using Project1.Core.UI.Hud.Chat;
 
 namespace Project1.Core
 {
@@ -228,7 +227,7 @@ List of available commands:
             var text = entry.ToString();
             var timeStamped = $"[{DateTime.Now:HH:MM:ss}] {text}";
             timeStamped.ToConsole();
-            UIChat.Instance.Write(entry);
+            //UIChat.Instance.Write(entry);
             DebugConsole.Write(text);
 
         }
@@ -236,7 +235,7 @@ List of available commands:
         {
             var timeStamped = $"[{DateTime.Now:HH:MM:ss}] {text}";
             timeStamped.ToConsole();
-            UIChat.Instance.Write(text);
+            //UIChat.Instance.Write(text);
             DebugConsole.Write(text);
         }
         public static void Warning(string text)

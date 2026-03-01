@@ -2,7 +2,6 @@
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Framework;
-using Project1.Framework.Events;
 
 namespace Project1.Core.Towns.Zones
 {

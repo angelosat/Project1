@@ -4,7 +4,6 @@ using System.Linq;
 using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
-using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Core.Entities;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;

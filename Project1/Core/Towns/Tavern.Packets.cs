@@ -5,7 +5,6 @@ using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Networking;
-using Project1.Framework.Events;
 using System;
 using System.Linq;
 

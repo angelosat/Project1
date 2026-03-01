@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Entities;
 using Project1.Framework;
-using Project1.Framework.Events;
 using System.Collections.Generic;
 
 namespace Project1.Core.Networking.Packets

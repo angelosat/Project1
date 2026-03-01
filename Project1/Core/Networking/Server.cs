@@ -75,6 +75,8 @@ namespace Project1.Core.Networking
         public Server()
         {
             this.Players = new PlayerList(this);
+            Registry.EndpointHooks.HookTo(this.Events);
+            this.ChatService = new(this);
         }
 
         static int _playerID = 1;
@@ -500,6 +502,8 @@ namespace Project1.Core.Networking
                     // add to players when entering world instead?
                     Instance.Players.Add(pl);
                     GameMode.Current.PlayerConnected(Instance, msg.Player);
+                    Instance.Events.Post(new PlayerConnectedEvent(pl, true));
+
                     return;
 
                 case PacketType.PlayerDisconnected:

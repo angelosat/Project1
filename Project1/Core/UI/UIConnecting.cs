@@ -31,13 +31,13 @@ namespace Project1.Core.UI
         {
             switch ((Message.Types)e.Type)
             {
-                case Message.Types.ServerResponseReceived:
-                    this.SetText("Connected!\nReceiving session...");
-                    break;
+                //case Message.Types.ServerResponseReceived:
+                //    this.SetText("Connected!\nReceiving session...");
+                //    break;
 
-                case Message.Types.ChunksLoaded:
-                    this.Hide();
-                    break;
+                //case Message.Types.ChunksLoaded:
+                //    this.Hide();
+                //    break;
 
                 case Message.Types.ServerNoResponse:
                     this.SetText($"No response from {this.Address}");

@@ -5,7 +5,6 @@ using Project1.Core.Assets;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Core.Plants;
-using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 
 namespace Project1.Core.VFX

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Components;
 using Project1.Core.Entities;
-using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Loot;
 using Project1.Core.Networking;
@@ -67,6 +66,8 @@ namespace Project1.Core.Networking
 
         private Client()
         {
+            Registry.EndpointHooks.HookTo(this.Events);
+            this.ChatService = new(this);
         }
         SnapshotManager Snapshots = new();
         public PlayerData PlayerData;
@@ -492,7 +493,7 @@ namespace Project1.Core.Networking
                     GameMode.Current.PlayerIDAssigned(this);
                     this._tick = Math.Max(msg.Tick - ClientTickDelay, 0);
                     this.PlayerData.RemoteOrderedReliableSequence = msg.OrderedReliableID;
-                    Instance.Events.Post(new ServerConnectionAcceptedEvent());
+                    this.Events.Post(new ServerConnectionAcceptedEvent());
                     break;
 
                 case PacketType.PlayerDisconnected:

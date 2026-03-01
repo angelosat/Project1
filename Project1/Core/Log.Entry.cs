@@ -9,7 +9,7 @@ namespace Project1.Core
     {
         public class Entry
         {
-            bool ShowSource = true;
+            bool ShowSource;// = true;
             public Color Color = Color.White;
             public object Source;
             public EntryTypes Type;
@@ -34,9 +34,9 @@ namespace Project1.Core
             {
                 var box = new ConsoleEntryNew();
                 //box.AddControlsLineWrap(Label.ParseNewNew(this.ConvertToStringNew()).Prepend(new Label($"[{this.Source}]") { TextColor = this.Color }), maxWidth);
-                var controls = Label.ParseNewNew(this.Values);
+                var controls = LabelNew.ParseNewNew(this.Values);
                 if (this.ShowSource)
-                    controls.Prepend(new Label($"[{this.Source}]") { TextColor = this.Color, Font = UIManager.FontBold });
+                    controls.Prepend(new LabelNew($"[{this.Source}]") { TextColor = this.Color, Font = UIManager.FontBold });
                 box.AddControlsLineWrap(controls, maxWidth);
                 return box;
             }
@@ -54,7 +54,7 @@ namespace Project1.Core
             }
             public static Entry Notification(string text)
             {
-                return new Entry(EntryTypes.Notification, new object[] { text }) { Color = Color.Goldenrod, ShowSource = false };
+                return new Entry(EntryTypes.Notification, [text]) { Color = Color.Goldenrod, ShowSource = false };
             }
             public static Entry Notification(params object[] values)
             {
@@ -62,23 +62,23 @@ namespace Project1.Core
             }
             public static Entry Warning(string text)
             {
-                return new Entry(EntryTypes.Warning, new object[] { text }) { Color = Color.Orange };
+                return new Entry(EntryTypes.Warning, [text]) { Color = Color.Orange };
             }
             public static Entry Error(string text)
             {
-                return new Entry(EntryTypes.Error, new object[] { text }) { Color = Color.Red };
+                return new Entry(EntryTypes.Error, [text]) { Color = Color.Red };
             }
             public static Entry System(string text)
             {
-                return new Entry(EntryTypes.System, new object[] { text }) { Color = Color.Yellow };
+                return new Entry(EntryTypes.System, [text]) { Color = Color.Yellow };
             }
             public static Entry Chat(object source, string text)
             {
-                return new Entry(EntryTypes.Chat, source, new object[] { text });
+                return new Entry(EntryTypes.Chat, source, [text]);
             }
             public static Entry Network(object source, string text)
             {
-                return new Entry(EntryTypes.Network, source, new object[] { text }) { Color = Color.Lime };
+                return new Entry(EntryTypes.Network, source, [text]) { Color = Color.Lime };
             }
         }
     }

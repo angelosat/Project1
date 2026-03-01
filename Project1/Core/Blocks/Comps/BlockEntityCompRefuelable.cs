@@ -11,7 +11,6 @@ using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;

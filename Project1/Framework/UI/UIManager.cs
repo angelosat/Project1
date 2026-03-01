@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace Project1.Framework.UI
 {
-    public class UIManager : IDisposable, IKeyEventHandler
+    public class UIManager : IDisposable, IInputEventHandler
     {
 
 

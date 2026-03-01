@@ -1,12 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using Project1.Core.Helpers;
-using Project1.Core.Simulation;
+using System;
+using System.Globalization;
+using System.IO;
 
 namespace Project1.Core.Serialization
 {
@@ -50,10 +49,12 @@ namespace Project1.Core.Serialization
             using var stream = new FileStream(file.FullName, FileMode.Open);
             using var decompressedStream = Chunk.Decompress(stream);
             using var reader = new BinaryReader(decompressedStream);
-            var save = new SaveFile();
-            save.File = file;
-            save.Header = HeaderInfo.Read(reader);
-            save.tagReaderPosition = reader.BaseStream.Position;
+            var save = new SaveFile
+            {
+                File = file,
+                Header = HeaderInfo.Read(reader),
+                tagReaderPosition = reader.BaseStream.Position
+            };
             return save;
         }
 

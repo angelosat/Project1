@@ -36,87 +36,59 @@ namespace Project1.Core.Screens
             Game1.Input.LButtonDblClk += new EventHandler<HandledMouseEventArgs>(TextInput_LButtonDblClk);
         }
 
-
-        //private static void Window_TextInput(object sender, TextInputEventArgs e)
-        //{
-        //    e.Character.ToConsole();
-        //}
-
         private static void TextInput_LButtonDblClk(object sender, HandledMouseEventArgs e)
-        {
-            InputQueue.Enqueue(() => GameScreens.Peek()?.HandleLButtonDoubleClick(e));
-        }
-
-        static void TextInput_RMouseUp(object sender, HandledMouseEventArgs e)
-        {
-            InputQueue.Enqueue(() => GameScreens.Peek()?.HandleRButtonUp(e));
-        }
+            => InputQueue.Enqueue(() => GameScreens.Peek()?.InputRouter.HandleLButtonDoubleClick(e));
 
         static void TextInput_MouseWheel(object sender, HandledMouseEventArgs e)
-        {
-            InputQueue.Enqueue(() => GameScreens.Peek()?.HandleMouseWheel(e));
-        }
+            => InputQueue.Enqueue(() => GameScreens.Peek()?.InputRouter.HandleMouseWheel(e));
+        
         static void TextInput_MiddleDown(object sender, HandledMouseEventArgs e)
-        {
-            InputQueue.Enqueue(() => GameScreens.Peek()?.HandleMiddleDown(e));
-        }
+            => InputQueue.Enqueue(() => GameScreens.Peek()?.InputRouter.HandleMiddleDown(e));
+        
         static void TextInput_MiddleUp(object sender, HandledMouseEventArgs e)
-        {
-            InputQueue.Enqueue(() => GameScreens.Peek()?.HandleMiddleUp(e));
-        }
-        static void TextInput_RMouseDown(object sender, HandledMouseEventArgs e)
-        {
-            InputQueue.Enqueue(() =>
-            {
-                DragDropManager.Instance.HandleRButtonDown(e);
-                GameScreens.Peek()?.HandleRButtonDown(e);
-            });
-        }
-
-        static void TextInput_LMouseUp(object sender, HandledMouseEventArgs e)
-        {
-            InputQueue.Enqueue(() => { 
-                DragDropManager.Instance.HandleLButtonUp(e);
-                GameScreens.Peek()?.HandleLButtonUp(e);
-            });
-        }
-
-        static void TextInput_LMouseDown(object sender, HandledMouseEventArgs e)
-        {
-            InputQueue.Enqueue(() => { 
-                DragDropManager.Instance.HandleLButtonDown(e);
-                GameScreens.Peek()?.HandleLButtonDown(e);
-            });
-        }
+            => InputQueue.Enqueue(() => GameScreens.Peek()?.InputRouter.HandleMiddleUp(e));
+        
         static void TextInput_MouseMove(object sender, HandledMouseEventArgs e)
-        {
-            InputQueue.Enqueue(() => GameScreens.Peek()?.HandleMouseMove(e));
-        }
+            => InputQueue.Enqueue(() => GameScreens.Peek()?.InputRouter.HandleMouseMove(e));
 
         void TextInput_KeyDown(object sender, KeyEventArgs e)
-        {
-            //GameScreens.Peek()?.HandleKeyDown(e);
-            InputQueue.Enqueue(() => GameScreens.Peek()?.HandleKeyDown(e));
-
-        }
+            => InputQueue.Enqueue(() => GameScreens.Peek()?.InputRouter.HandleKeyDown(e));
 
         void TextInput_KeyUp(object sender, KeyEventArgs e)
-        {
-            //GameScreens.Peek()?.HandleKeyUp(e);
-            InputQueue.Enqueue(() => GameScreens.Peek()?.HandleKeyUp(e));
-
-        }
+            => InputQueue.Enqueue(() => GameScreens.Peek()?.InputRouter.HandleKeyUp(e));
 
         void TextInput_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            //GameScreens.Peek()?.HandleKeyPress(e);
-            InputQueue.Enqueue(() => GameScreens.Peek()?.HandleKeyPress(e));
+            => InputQueue.Enqueue(() => GameScreens.Peek()?.InputRouter.HandleKeyPress(e));
 
-        }
+        static void TextInput_LMouseUp(object sender, HandledMouseEventArgs e)
+            => InputQueue.Enqueue(() => {
+                DragDropManager.Instance.HandleLButtonUp(e);
+                GameScreens.Peek()?.InputRouter.HandleLButtonUp(e);
+            });
 
+
+        static void TextInput_LMouseDown(object sender, HandledMouseEventArgs e)
+            => InputQueue.Enqueue(() => {
+                DragDropManager.Instance.HandleLButtonDown(e);
+                GameScreens.Peek()?.InputRouter.HandleLButtonDown(e);
+            });
+
+        static void TextInput_RMouseDown(object sender, HandledMouseEventArgs e)
+            => InputQueue.Enqueue(() =>
+            {
+                DragDropManager.Instance.HandleRButtonDown(e);
+                GameScreens.Peek()?.InputRouter.HandleRButtonDown(e);
+            });
+
+        static void TextInput_RMouseUp(object sender, HandledMouseEventArgs e)
+            => InputQueue.Enqueue(() =>
+            {
+                DragDropManager.Instance.HandleRButtonUp(e);
+                GameScreens.Peek()?.InputRouter.HandleRButtonUp(e);
+            });
+            
         public ScreenManager()
         {
-            //this.WindowManager = new UIManager();
         }
 
         public static T GetCurrent<T>() where T : GameScreen
@@ -139,27 +111,6 @@ namespace Project1.Core.Screens
             }
         }
 
-        //public void Update(Game1 game, GameTime gt)
-        //{
-        //    if (GameScreens.Count == 0)
-        //    {
-        //        GameScreens.Push(MainScreen.Instance);
-        //        GameScreens.Peek().Initialize(null);
-        //    }
-        //    GameScreen screen = GameScreens.Peek();
-        //    TooltipManager.Instance.Update();
-        //    DragDropManager.Instance.Update();
-
-        //    screen.Update(game, gt);
-
-        //    if (!Game1.Instance.IsActive)
-        //        return;
-
-        //    InputState.Instance.Update();
-
-        //    while(MouseInputQueue.TryDequeue(out var e))
-        //        e.Invoke();
-        //}
         public void Update(Game1 game, GameTime gt)
         {
             if (GameScreens.Count == 0)

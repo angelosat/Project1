@@ -2,7 +2,6 @@
 using Project1.Core.Screens;
 using Project1.Core.Towns.Designations;
 using Project1.Core.UI;
-using Project1.Framework;
 using System.Linq;
 
 namespace Project1.Core.Input.Orders

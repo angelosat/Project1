@@ -31,7 +31,7 @@ namespace Project1.Core
         void GetContextActions(GameObject playerEntity, ContextArgs a);
     }
 
-    class ContextMenuManager : InputHandler, IKeyEventHandler
+    class ContextMenuManager : InputHandler, IInputEventHandler
     {
         static ContextMenuManager _Instance;
         public static ContextMenuManager Instance => _Instance ??= new ContextMenuManager();

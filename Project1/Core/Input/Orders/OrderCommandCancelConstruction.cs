@@ -13,7 +13,6 @@ namespace Project1.Core.Input.Orders
             => target is BlockEntity construction && target.Map.Town.DesignationManager.GetDesignation(construction) == DesignationDefOf.Construct;
         internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
         {
-            //if (selection.Targets.Count == 1 && selection.Targets.First() is CellSelection construction)
             if (selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity construction)
                 Ingame.Instance.Events.Post(new PlayerCancelledConstructionEvent([construction.Global]));
         }

@@ -30,7 +30,7 @@ namespace Project1.Core.Screens
         MainScreen()
         {
             WindowManager = new UIManager();
-            KeyHandlers.Push(WindowManager);
+            this.InputRouter.Add(this.WindowManager);
         }
 
         public override void Update(Game1 game, GameTime gt)

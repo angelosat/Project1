@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 namespace Project1.Framework.UI
 {
-    public abstract class Control : Element, IDisposable, ITooltippable, IKeyEventHandler, IBounded, IBoundedCollection
+    public abstract class Control : Element, IDisposable, ITooltippable, IInputEventHandler, IBounded, IBoundedCollection
     {
         /// <summary>
         /// Gets the location of the control relative to the parent window.

@@ -20,7 +20,7 @@ using System.Numerics;
 
 namespace Project1.Core.Towns.Constructions
 {
-    public class ConstructionsManager : TownComponent
+    public class ConstructionManager : TownComponent
     {
         public static readonly QuickButton IconCancel = new QuickButton(Icon.X, KeyBind.Cancel) { HoverText = "Cancel designation" };
         public override string Name => "Constructions";
@@ -42,7 +42,7 @@ namespace Project1.Core.Towns.Constructions
                 }
             }
         }
-        static ConstructionsManager()
+        static ConstructionManager()
         {
             HotkeyBuild = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyContextManagement, "Build", ToggleConstructionWindow, System.Windows.Forms.Keys.B);
         }
@@ -50,7 +50,7 @@ namespace Project1.Core.Towns.Constructions
         {
             WindowBuild.Value.ToggleSmart();
         }
-        public ConstructionsManager(Town town)
+        public ConstructionManager(Town town)
         {
             this.Town = town;
             this.Town.Map.Events.ListenTo<CellsInvalidatedEvent>(this.OnBlocksChanged);

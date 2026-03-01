@@ -8,7 +8,7 @@ namespace Project1.Core
 {
     public enum DragDropEffects { None = 0, Copy = 1, Move = 2, Link = 4 }
 
-    class DragDropManager : InputHandler, IKeyEventHandler
+    class DragDropManager : InputHandler, IInputEventHandler
     {
         public DragEventArgs Action;
             

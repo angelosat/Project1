@@ -18,7 +18,7 @@ using System.Collections.Generic;
 namespace Project1.Core.Input
 {
     [EnsureStaticCtorCall]
-    public class ToolManager : IKeyEventHandler
+    public class ToolManager : IInputEventHandler
     {
         static ToolManager _instance;
         public static ToolManager Instance => _instance ??= new ToolManager();

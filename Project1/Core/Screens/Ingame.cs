@@ -44,11 +44,12 @@ namespace Project1.Core.Screens
             this.NameplateManager.Show(WindowManager);
             this.ToolManager = ToolManager.Instance;
             this.ToolManager.Bind(net.Map);
-            KeyHandlers.Clear();
-            KeyHandlers.Push(ToolManager);
-            KeyHandlers.Push(WindowManager);
-            KeyHandlers.Push(ContextMenuManager.Instance);
-            KeyHandlers.Push(this.Camera);
+
+            this.InputRouter.Add(this.ToolManager);
+            this.InputRouter.Add(this.WindowManager);
+            this.InputRouter.Add(ContextMenuManager.Instance);
+            this.InputRouter.Add(this.Camera);
+
             SelectionManager.Instance.Bind(net);
             SelectionManager.Instance.Init(this);
             TooltipManager.Bind(net);
@@ -101,7 +102,7 @@ namespace Project1.Core.Screens
         static public bool DrawServer;
         public override void HandleKeyDown(System.Windows.Forms.KeyEventArgs e)
         {
-            base.HandleKeyDown(e);
+            //base.HandleKeyDown(e);
             if (e.Handled)
                 return;
 

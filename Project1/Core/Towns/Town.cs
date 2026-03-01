@@ -91,7 +91,7 @@ namespace Project1.Core.Towns
         public ZoneManager ZoneManager;
         public GrowingManager GrowingManager;
         [InspectorHidden]
-        public ConstructionsManager ConstructionsManager;
+        public ConstructionManager ConstructionsManager;
         [InspectorHidden]
         public DiggingManager DiggingManager;
         [InspectorHidden]
@@ -310,7 +310,7 @@ namespace Project1.Core.Towns
         {
             var agentsTag = new SaveTag(SaveTag.Types.List, "Agents", SaveTag.Types.Int);
             foreach (var a in this.Members)
-                agentsTag.Add(new SaveTag(SaveTag.Types.Int, "", a));
+                agentsTag.Add(new SaveTag(SaveTag.Types.Int, "", a.RefId));
             tag.Add(agentsTag);
         }
         public void Load(SaveTag save)

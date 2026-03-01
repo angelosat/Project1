@@ -2,7 +2,7 @@
 
 namespace Project1.Framework.Input
 {
-    public interface IKeyEventHandler
+    public interface IInputEventHandler
     {
         void HandleKeyPress(KeyPressEventArgs e);
         void HandleKeyDown(KeyEventArgs e);

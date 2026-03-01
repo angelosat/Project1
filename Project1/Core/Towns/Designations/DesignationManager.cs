@@ -303,7 +303,8 @@ namespace Project1.Core.Towns.Designations
             {
                 CellSelection => this.CellDesignations.Values.Any(v => v.Contains(target.Global)),
                 Entity => this.EntityDesignations.Values.Any(v => v.Contains(target)),
-                //BlockEntity => this.BlockEntityDesignations.Values.Any(v => v.Contains(target)),
+                ////BlockEntity => this.BlockEntityDesignations.Values.Any(v => v.Contains(target)),
+                BlockEntity be => this.CellDesignations.Values.Any(v => v.Contains(be.OriginGlobal)),
                 _ => false
             };
         }
@@ -314,7 +315,7 @@ namespace Project1.Core.Towns.Designations
                 CellSelection => this.CellDesignations.FirstOrDefault(v => v.Value.Contains(target.Global)).Key,
                 Entity => this.EntityDesignations.FirstOrDefault(v => v.Value.Contains(target)).Key,
                 //BlockEntity => this.BlockEntityDesignations.FirstOrDefault(v => v.Value.Contains(target)).Key,
-                BlockEntity bEntity => this.CellDesignations.FirstOrDefault(v => v.Value.Contains(bEntity.OriginGlobal)).Key,
+                BlockEntity be => this.CellDesignations.FirstOrDefault(v => v.Value.Contains(be.OriginGlobal)).Key,
                 _ => null
             };
         }
@@ -349,19 +350,11 @@ namespace Project1.Core.Towns.Designations
         }
         void OnEntityDespawn(EntityDespawnedEvent obj)
         {
-            //foreach (var designations in this.Designations.Values)
-            //    if (designations.Contains(obj.Entity))
-            //        designations.Remove(obj.Entity);
-
             foreach (var designations in this.EntityDesignations.Values)
-                //if (designations.Contains(obj.Entity))
                     designations.Remove(obj.Entity);
         }
         protected override void AddSaveData(SaveTag tag)
         {
-            //foreach (var des in this.Designations)
-            //    tag.Add(des.Value.ToList().Save(des.Key.Name));
-
             var cellsTag = new SaveTag(SaveTag.Types.Compound, "Cells");
             foreach(var des in this.CellDesignations)
                 cellsTag.Add(des.Value.ToList().Save(des.Key.Name));
@@ -373,16 +366,13 @@ namespace Project1.Core.Towns.Designations
         }
         public override void Load(SaveTag tag)
         {
-            //foreach (var des in this.Designations.Keys.ToList())
-            //    tag.TryGetTag(des.Name, v => this.Designations[des].LoadTargets(v));
-
             if (tag.TryGetTag("Cells", out var cellsTag))
             {
                 foreach (var des in this.CellDesignations)
                 {
                     var array = cellsTag.LoadArrayIntVec3(des.Key.Name);
                     foreach (var i in array)
-                        tag.TryGetTag(des.Key.Name, v => this.CellDesignations[des.Key].Add(i));
+                        this.CellDesignations[des.Key].Add(i);
                 }
             }
             if (tag.TryGetTag("Entities", out var entitiesTag))
@@ -390,16 +380,25 @@ namespace Project1.Core.Towns.Designations
                 foreach (var des in this.EntityDesignations)
                 {
                     var entities = this.Map.World.GetEntities(entitiesTag.LoadListInt(des.Key.Name));
-                    foreach(var i in entities)
-                        tag.TryGetTag(des.Key.Name, v => this.EntityDesignations[des.Key].Add(i));
-                } 
+                    foreach (var i in entities)
+                        this.EntityDesignations[des.Key].Add(i);
+                }
             }
+
+            RefreshConstructionDesignations();
         }
+
+        private void RefreshConstructionDesignations()
+        {
+            return;
+            foreach (var be in this.Map.BlockEntities)
+                if (be.HasComp<BlockConstructionComp>())
+                    foreach (var cell in be.CellsOccupied)
+                        this.CellDesignations[DesignationDefOf.Construct].Add(cell);
+        }
+
         public override void Write(IDataWriter w)
         {
-            //foreach (var des in this.Designations)
-            //    w.Write(des.Value);
-
             foreach (var d in this.CellDesignations)
             {
                 w.Write(d.Value.Count);
@@ -415,9 +414,6 @@ namespace Project1.Core.Towns.Designations
         }
         public override void Read(IDataReader r)
         {
-            //foreach (var des in this.Designations.Keys.ToList())
-            //    this.Designations[des].ReadTargets(this.Map, r);
-
             foreach (var d in this.CellDesignations)
             {
                 var count = r.ReadInt32();

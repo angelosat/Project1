@@ -14,7 +14,7 @@ using System.Windows.Forms;
 
 namespace Project1.Core.Input
 {
-    public class ControlTool : IKeyEventHandler
+    public class ControlTool : IInputEventHandler
     {
         public enum Messages { Default, Remove }
         

@@ -17,9 +17,10 @@ namespace Project1.Core.Blocks.Comps
         readonly Dictionary<ResourceDef, Resource> _resources = [];
         //public IReadOnlyDictionary<ResourceDef, Resource> Resources => this._resources;
 
-        public void ApplyDelta(ResourceDef resource, int delta)
+        public void ApplyDelta(ResourceDef resource, float delta)
         {
             this._resources[resource].ApplyDelta(delta);
+            this.Map.World.Events.Post(new BlockResourceModifiedEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, delta));
         }
 
         public float GetValue(ResourceDef resource)

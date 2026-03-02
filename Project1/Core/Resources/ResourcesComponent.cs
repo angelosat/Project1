@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
-using Project1.Core.UI.Hud;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -14,7 +13,7 @@ namespace Project1.Core.Resources
     public class ResourcesComponent : EntityComp
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Resources;
-        public Dictionary<ResourceDef, Resource> Resources = [];
+        readonly Dictionary<ResourceDef, Resource> Resources = [];
         public override string Name { get; } = "Resources";
 
         internal override void CopyFrom(EntityComp comp)
@@ -129,10 +128,11 @@ namespace Project1.Core.Resources
                 r.Owner = this.Owner;
             }
         }
-        internal void ApplyDelta(ResourceDef def, float v)
+        internal void ApplyDelta(ResourceDef def, float delta)
         {
             var res = this[def];
-            res.ApplyDelta(v);
+            res.ApplyDelta(delta);
+            this.Owner.World.Events.Post(new ResourceModifiedEvent(this.Owner, def, delta));
         }
         public void SetValue(ResourceDef def, float value)
         {

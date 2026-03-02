@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Resources;
-using Project1.Core.Graphics;
 using Project1.Framework.UI;
 
 namespace Project1.Core.UI.Hud
@@ -35,16 +34,15 @@ namespace Project1.Core.UI.Hud
         {
             this.Controls.Clear();
             this.Panel_Picture.Controls.Clear();
-            Sprite npcSprite = obj.GetSprite();
+            var npcSprite = obj.GetSprite();
             this.Picture = new PictureBox(new Vector2(32, 48), (r) => obj.Body.RenderNewer(obj, r));
             this.Panel_Picture.Controls.Add(Picture);
             this.Label_Name = new Label(Panel_Picture.TopRight, obj.Name);
             this.Panel_Bars.Controls.Clear();
 
-            foreach (var r in obj.GetComponent<ResourcesComponent>().Resources.Values)
+            foreach (var ui in obj.GetComponent<ResourcesComponent>().GetSelectionInfo())
             {
-                var ui = r.GetControlBar();
-                if (ui == null)
+                if (ui is null)
                     continue;
                 ui.Location = this.Panel_Bars.Controls.BottomLeft;
                 this.Panel_Bars.Controls.Add(ui);

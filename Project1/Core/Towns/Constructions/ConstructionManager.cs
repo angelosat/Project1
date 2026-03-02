@@ -162,33 +162,7 @@ namespace Project1.Core.Towns.Constructions
                 return false;
             return this.Map.IsAdjacentToSolid(global);
         }
-        internal override void UpdateOrderButtons()
-        {
-            var selected = SelectionManager.Instance.CurrentSelections;
-            var selectedType = selected.First().GetType();
-            var selectedBlockEntities = selected.OfType<BlockEntity>();
-            var selectedCellSelections = selected.OfType<CellSelection>();
-
-            if (selectedType == typeof(BlockEntity))
-            {
-                var constructionTargets =
-                    selectedBlockEntities.Where(s => s.HasComp<BlockConstructionComp>());
-                if (!constructionTargets.Any())
-                    return;
-                SelectionManager.AddOrderButton(IconCancel, cancelNew, constructionTargets);
-                static void cancelNew(List<ISelectable> targets) =>
-                    Ingame.Instance.Events.Post(new PlayerCancelledConstructionEvent([.. targets.Select(t => (IntVec3)t.Global)]));
-            }
-            else if (selectedType == typeof(CellSelection))
-            {
-                var filteredTargets = selected.Where(t => this.Map.GetBlockEntity(t.Global) is BlockEntity b && b.HasComp<BlockConstructionComp>());
-                if (!filteredTargets.Any())
-                    return;
-                SelectionManager.AddOrderButton(IconCancel, cancelNew, filteredTargets);
-                static void cancelNew(List<ISelectable> targets) =>
-                    Ingame.Instance.Events.Post(new PlayerCancelledConstructionEvent([.. targets.Select(t => (IntVec3)t.Global)]));
-            }
-        }
+        
         internal void Designate(IEnumerable<IntVec3> positions, ConstructionDesignationArgs args, bool removing)
         {
             var map = this.Town.Map;

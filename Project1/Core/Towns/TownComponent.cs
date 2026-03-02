@@ -69,17 +69,11 @@ namespace Project1.Core.Towns
         public virtual void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam) { }
         public virtual void DrawUI(SpriteBatch sb, MapBase map, Camera cam) { }
 
-        internal virtual void UpdateOrderButtons() { }
-
         public virtual void Tick()
         {
         }
         internal virtual IEnumerable<Button> GetTabs(ISelectable selected) { yield break; }
-        //internal virtual void OnTargetSelected(IUISelection info, ISelectable target) { }
-        //internal virtual void OnTargetSelected(SelectionManager info, ISelectable target) { }
-        //internal virtual void OnTargetSelected(IUISelection info, TargetArgs targetArgs)
-        //{
-        //}
+        
         internal virtual void OnTooltipCreated(Control tooltip, TargetArgs targetArgs)
         {
         }

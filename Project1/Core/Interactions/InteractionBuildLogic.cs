@@ -52,12 +52,11 @@ namespace Project1.Core.Interactions
             // remove block entity first because this implicitly sets all occupied cells to air
             //map.RemoveBlockEntity(comp.Parent); // the entity is removed by mapedit
             var args = comp.Args;
-            var block = args.BlockDef.Block;
 
             MapEdit.Paint(MapEditContext.Simulation, map, [origin], args.BlockDef.Block, args.Material, 0, 0, args.Orientation);
 
             if(map.Query(origin).BlockEntity is BlockEntity newBuilding)
-                newBuilding.GetComp<BlockBuildingComp>().SetIngredient(args.Refinement);
+                newBuilding.GetComp<BlockBuildingComp>().SetIngredient(args.Refinement, args.Amount);
 
             //var edit = new MapEdit(map, MapEditContext.Simulation);
             //edit.ReplaceWithoutEntity(origin, args.BlockDef.Block, args.Material, 0, 0, args.Orientation);

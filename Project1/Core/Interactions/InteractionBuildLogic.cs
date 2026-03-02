@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Blocks;
+using Project1.Core.Blocks.Construction;
 using Project1.Core.Simulation;
 using System.Linq;
 
@@ -49,10 +50,23 @@ namespace Project1.Core.Interactions
             var cells = comp.Parent.CellsOccupied;
             var origin = comp.Parent.OriginGlobal;
             // remove block entity first because this implicitly sets all occupied cells to air
-            map.RemoveBlockEntity(comp.Parent);
+            //map.RemoveBlockEntity(comp.Parent); // the entity is removed by mapedit
             var args = comp.Args;
+            var block = args.BlockDef.Block;
 
-            MapEdit.Paint(MapEditContext.Simulation, map, [origin], args.Block.Block, args.Material, 0, 0, args.Orientation);
+            MapEdit.Paint(MapEditContext.Simulation, map, [origin], args.BlockDef.Block, args.Material, 0, 0, args.Orientation);
+
+            if(map.Query(origin).BlockEntity is BlockEntity newBuilding)
+                newBuilding.GetComp<BlockBuildingComp>().SetIngredient(args.Refinement);
+
+            //var edit = new MapEdit(map, MapEditContext.Simulation);
+            //edit.ReplaceWithoutEntity(origin, args.BlockDef.Block, args.Material, 0, 0, args.Orientation);
+            //if (block.TryCreateNewBlockEntity(map, origin, args.Orientation) is BlockEntity be)
+            //{
+            //    be.GetComp<BlockBuildingComp>().IngredientUsed = comp.Requirement.refinement;
+            //    edit.AddEntity(be);
+            //}
+            //edit.Flush();
         }
     }
 }

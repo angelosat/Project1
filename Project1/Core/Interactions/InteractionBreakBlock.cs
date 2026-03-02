@@ -11,10 +11,8 @@ namespace Project1.Core.Interactions
             Cell _cellCached;
             BlockDef _initialBlock;
             internal Cell Cell => _cellCached ??= this.Actor.Map.GetCell(this.Target.Global);
-            //internal IBlockToken CachedToken => _cachedToken ??= this.Actor.Map.GetBlockToken(this.Target.Global);
             internal IBlockHealth BlockHealth => _blockHealth ??= this.Actor.Map.GetBlockHealth(this.Target.Global);
             internal BlockDef InitialBlock => _initialBlock ??= this.Cell.Block.BlockDef;
-            //public override float ProgressPercentage => 1 - (float)this.Cell.HitPoints / Cell.HitPointsMax;
             public override float ProgressPercentage => (1 - this.BlockHealth?.HealthPercentage) ?? 0;
         }
         public override void ApplyWork(InteractionContext ctx, int workAmount) => ApplyWork((Context)ctx, workAmount);

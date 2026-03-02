@@ -4,9 +4,11 @@ using Project1.Framework.Serialization;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
-using Project1.Core.Networking;
 using Project1.Core.Networking.Simulation;
 using Project1.Framework.Helpers;
+using System;
+using Project1.Core.Simulation;
+using Project1.Core.Screens;
 
 namespace Project1.Core.Blocks
 {
@@ -14,6 +16,10 @@ namespace Project1.Core.Blocks
     internal static class PacketsBlocks
     {
         readonly static PacketId _pBlockEntityRemoved, _pBlockEntityAdded, _pBlockEntityCompUpdated, _pBlockSet, _pBlocksUpdated, _pOwnerChanged, _pOwnerChangedByPlayer;
+        readonly static PacketId _pBlockDamaged = Registry.PacketHandlers.Register(ReceiveBlockDamaged);
+
+      
+
         static PacketsBlocks()
         {
             _pBlockEntityRemoved = Registry.PacketHandlers.Register(OnBlockEntityRemoved);
@@ -28,8 +34,36 @@ namespace Project1.Core.Blocks
 
             Registry.MapEventHooksServer.Register<BlockEntityCompUpdatedEvent>(SendBlockEntityCompUpdated);
             _pBlockEntityCompUpdated = Registry.PacketHandlers.Register(OnBlockEntityCompUpdated);
+
+            Registry.MapEventHooksServer.Register<BlockDamagedEvent>(HandleBlockDamageApplied);
         }
 
+        private static void HandleBlockDamageApplied(BlockDamagedEvent e)
+        {
+            var net = e.Map.Net;
+            SendBlockDamaged(net, e.Map, e.Cell, e.Delta);
+        }
+        private static void SendBlockDamaged(NetEndpoint endpoint, MapBase map, IntVec3 cell, int delta)
+        {
+            if (!endpoint.IsServer)
+                throw new Exception();
+            endpoint
+                .BeginPacket(_pBlockDamaged)
+                .Write(map.ID)
+                .Write(cell)
+                .Write(delta);
+        }
+        private static void ReceiveBlockDamaged(NetEndpoint endpoint, Packet packet)
+        {
+            if (endpoint is not Client)
+                throw new Exception();
+            var r = packet.PacketReader;
+            var mapid = r.ReadInt32();
+            var cell = r.ReadIntVec3();
+            var delta = r.ReadInt32();
+            var map = Client.Instance.Map;
+            map.ApplyBlockDamage(cell, delta);
+        }
         private static void OnBlockEntityCompUpdated(NetEndpoint endpoint, Packet packet)
         {
             var client = endpoint as Client;

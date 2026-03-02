@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Blocks.Comps;
+using Project1.Core.Blocks.Construction;
 using Project1.Core.Blocks.Doors;
 using Project1.Core.Construction;
 using Project1.Core.Crafting;
@@ -66,6 +67,7 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Chair = new("Chair", typeof(BlockChair));
         static public readonly BlockDef Bricks = new("Bricks", typeof(BlockBricks))
         {
+            //BlockEntityCompSpecs = [new BlockBuildingComp.Spec()],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Structural, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };
         static public readonly BlockDef Campfire = new("Campfire", typeof(BlockCampfire));
@@ -82,6 +84,7 @@ namespace Project1.Core.Blocks
         {
             Profile = WorkstationDefOf.Workbench,
             BlockEntityCompSpecs = [
+                new BlockBuildingComp.Spec(),
                 new BlockWorkstationComp.Spec(WorkstationDefOf.Workbench),
                 new BlockResourcesComp.Spec([ResourceDefOf.RepairCharges])
                 ],
@@ -90,15 +93,26 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Smeltery = new("Smeltery", typeof(BlockWorkstation))
         {
             BlockEntityCompSpecs = [
+                new BlockBuildingComp.Spec(),
                 new BlockWorkstationComp.Spec(WorkstationDefOf.Smeltery),
-                //new BlockFuelComp.Spec(),
                 new BlockResourcesComp.Spec([ResourceDefOf.Fuel])
                 ],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Chunk])
         };
+        static public readonly BlockDef Carpenter = new("Carpenter", typeof(BlockWorkstation))
+        {
+            BlockEntityCompSpecs = [
+                new BlockBuildingComp.Spec(),
+                new BlockWorkstationComp.Spec(WorkstationDefOf.Carpentry)
+                ],
+            ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Logs, MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
+        };
         static public readonly BlockDef Kitchen = new("Kitchen", typeof(BlockWorkstation))
         {
-            BlockEntityCompSpecs = [new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen)],
+            BlockEntityCompSpecs = [
+                new BlockBuildingComp.Spec(),
+                new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen)
+                ],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };
         static BlockDefOf()

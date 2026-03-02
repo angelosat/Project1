@@ -41,7 +41,12 @@
         {
             public float GetProgressPercentage(Interaction interaction) => interaction.Context.ProgressPercentage;
             public void Tick(Interaction interaction) { }
-            public void AddProgress(Interaction interaction, int progress) => interaction.Def.Logic.ApplyWork(interaction.Context, progress);
+            public void AddProgress(Interaction interaction, int progress)// => interaction.Def.Logic.ApplyWork(interaction.Context, progress);
+            {
+                if (interaction.Actor.Net.IsClient)
+                    return;
+                interaction.Def.Logic.ApplyWork(interaction.Context, progress);
+            }
             public bool IsFinished(Interaction interaction) => interaction.Context.ProgressPercentage >= 1;
         }
         sealed class InteractionProgressPassive : IInteractionProgressHandler

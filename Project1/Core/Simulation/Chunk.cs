@@ -6,7 +6,6 @@ using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
-using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Rendering;
 using Project1.Core.Simulation.Lighting;
@@ -18,7 +17,6 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -146,8 +144,7 @@ namespace Project1.Core.Simulation
         public void Invalidate()
         {
             foreach (var slice in this.Slices)
-                if (slice != null)
-                    slice.Valid = false;
+                slice?.Valid = false;
             this.Valid = false;
         }
         public void InvalidateMesh()
@@ -1534,8 +1531,6 @@ namespace Project1.Core.Simulation
                 var originGlobal = r.ReadIntVec3();
                 if (this.Contains(originGlobal))
                 {
-                    //var entity = this.GetLocalCell(originGlobal.ToLocal()).Block.BlockDef.CreateEntity(originGlobal);
-                    //entity.Read(r);
                     var entity = BlockEntity.Create(r);
                     foreach (var global in entity.CellsOccupied)
                     {
@@ -2128,27 +2123,32 @@ namespace Project1.Core.Simulation
             return entity is not null;
         }
 
-        public IEnumerable<(IntVec3 local, BlockEntity entity)> GetBlockEntitiesByPosition()
+        public IEnumerable<(IntVec3Local local, BlockEntity entity)> GetBlockEntitiesByPosition()
         {
             foreach (var be in this.BlockEntitiesByPosition)
                 yield return (be.Key, be.Value);
         }
-        //internal IBlockToken GetBlockToken(IntVec3 local) => this.BlockTokens.TryGetValue(local, out var token) ? token : null;
-        internal IBlockHealth GetBlockToken(IntVec3 local) => this.BlockDamageSystem.GetBlockHealth(local);
+        internal IBlockHealth GetBlockToken(IntVec3Local local) => this.BlockDamageSystem.GetBlockHealth(local);
         
-        internal void ApplyBlockWork(IntVec3 local, int work)
+        internal void ApplyBlockWork(IntVec3Local local, int work)
         {
             var result = this.BlockDamageSystem.ApplyDamage(local, work);
             if(result != BlockHealthToken.BlockDamageResult.NoChange)
                 this.InvalidateSlice(local.Z);
-            //return;
-            //if (!this.BlockTokens.TryGetValue(local, out var token))
-            //{
-            //    token = new(this.GetLocalCell(local));
-            //    this.BlockTokens.Add(local, token);
-            //}
-            //if (token.ApplyWork(work) != BlockHealthToken.BlockDamageResult.NoChange)
-            //    this.InvalidateSlice(token.Cell.Z);
+            switch(result)
+            {
+                case BlockHealthToken.BlockDamageResult.DamageLevelChanged:
+                    this.InvalidateSlice(local.Z);
+                    break;
+
+                case BlockHealthToken.BlockDamageResult.HitPointsDepleted:
+                    this.Map.Events.Post(new BlockHitPointsDepletedEvent(local.ToGlobal(this)));
+                    break;
+
+                default:
+                    break;
+            };
+            this.Map.Events.Post(new BlockDamagedEvent(this.Map, local.ToGlobal(this), work));
         }
     }
 }

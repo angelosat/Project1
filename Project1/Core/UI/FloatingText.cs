@@ -73,6 +73,8 @@ namespace Project1.Core.UI
 
         public override void Update()
         {
+     
+
             var cam = ScreenManager.CurrentScreen.Camera;
 
             var global = this.GetGlobal();
@@ -94,6 +96,8 @@ namespace Project1.Core.UI
        
         public override void Draw(SpriteBatch sb, Rectangle viewport)
         {
+            if (!this.Valid)
+                this.Validate();
             float p = (ScaleTime / ScaleLength);
             float scaleFactor = (float)Math.Sin(p * Math.PI) * 5;
             float scale = 1 + scaleFactor;

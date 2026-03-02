@@ -4,17 +4,19 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Blocks
 {
-    public class BlockCompCollection : Inspectable
+    public class BlockCompCollection(BlockEntity owner) : Inspectable
     {
-        readonly BlockEntity Owner;
+        readonly BlockEntity Owner = owner;
         [InspectorHidden]
         readonly Dictionary<Type, BlockComp> _inner = [];
         [InspectorHidden]
         readonly List<BlockComp> compList = [];
+
         public IEnumerable<BlockComp> Values => this._inner.Values;
         internal T GetComp<T>() where T : BlockComp => (T)this._inner[typeof(T)];
         internal BlockComp GetComp(Type compType) => this._inner[compType];
         internal BlockComp GetComp(int compIndex) => this.compList[compIndex];
+
         internal bool TryGetComp<T>(out T comp) where T : BlockComp
         {
             comp = null;
@@ -23,15 +25,12 @@ namespace Project1.Core.Blocks
             comp = (T)found;
             return true;
         }
+
         internal void AddComp(BlockComp comp)
         {
             this._inner.Add(comp.GetType(), comp);
             comp.RuntimeIndex = this.compList.Count;
             this.compList.Add(comp);
-        }
-        public BlockCompCollection(BlockEntity owner)
-        {
-            this.Owner = owner;
         }
 
         public virtual SaveTag Save(string name)
@@ -43,6 +42,7 @@ namespace Project1.Core.Blocks
                 tag.Add(c.Save(c.CompDef.Name));
             return tag;
         }
+
         public virtual void Load(SaveTag tag)
         {
             foreach (var c in this._inner.Values)

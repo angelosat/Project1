@@ -22,7 +22,7 @@ namespace Project1.Core.Construction
         internal ToolBlockBuild GetTool(BuildToolDef toolDef, ConstructionDesignationArgs args, byte data = 0)
         {
             var tool = toolDef.Create(a => PacketDesignateConstruction.Send(Client.Instance, a, args)); // TODO improve
-            tool.Block = args.Block.Block;
+            tool.Block = args.BlockDef.Block;
             tool.Material = args.Material;
             tool.State = data;
             return tool;

@@ -28,6 +28,13 @@ namespace Project1.Core.Crafting
             yield return new AddOrderRequest(WorkstationCapabilityDefOf.Smelting, MaterialRefinementDefOf.Ingots);
         }
     }
+    public class WorkstationCapabilityCarpentryWorker : WorkstationCapabilityWorker
+    {
+        public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
+        {
+            yield return new AddOrderRequest(WorkstationCapabilityDefOf.Carpentry, MaterialRefinementDefOf.Planks);
+        }
+    }
     public class WorkstationCapabilityToolMakingWorker : WorkstationCapabilityWorker
     {
         public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)

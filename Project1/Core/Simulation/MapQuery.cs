@@ -10,6 +10,11 @@ namespace Project1.Core.Simulation
         public IEnumerable<Entity> GetEntities() => this.Map.GetEntitiesAt(this.Global);
         public Cell GetCell() => this.Map.GetCell(this.Global);
         public BlockEntity GetBlockEntity() => this.Map.GetBlockEntity(this.Global);
+        public IEnumerable<(IntVec3 cell, byte data)> GetBlockFootprint()
+        {
+            var cell = this.GetCell();
+            return cell.Block.GetFootprint(this.Map, this.Global, cell.Orientation);
+        }
         public MapQuerySnapshot ToSnapshot() => new([.. this.GetEntities()], this.GetCell(), this.GetBlockEntity());
     }
     public record struct MapQuerySnapshot(List<Entity> Entities, Cell Cell, BlockEntity BlockEntity) { }

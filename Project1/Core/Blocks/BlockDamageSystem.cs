@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Simulation;
-using Project1.Framework;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -10,10 +9,10 @@ namespace Project1.Core.Blocks
     internal class BlockDamageSystem(Chunk chunk) : ChunkSystem
     {
         static readonly float BlockTokenDrawThreshold = Ticks.FromSeconds(2);
-
         readonly Chunk Chunk = chunk;
-
         readonly Dictionary<IntVec3Local, BlockHealthToken> _blockTokens = [];
+        public IBlockHealth GetBlockHealth(IntVec3Local local) => this._blockTokens.TryGetValue(local, out var token) ? token : null;
+
         internal override void Tick()
         {
             var keysToRemove = new List<IntVec3Local>(this._blockTokens.Count);
@@ -26,8 +25,11 @@ namespace Project1.Core.Blocks
             foreach (var k in keysToRemove)
                 this._blockTokens.Remove(k);
         }
+
         public BlockHealthToken.BlockDamageResult ApplyDamage(IntVec3Local pos, int work)
         {
+            if (work == 0)
+                return BlockHealthToken.BlockDamageResult.NoChange;
             if (!this._blockTokens.TryGetValue(pos, out var token))
             {
                 var cell = this.Chunk.GetLocalCell(pos);
@@ -38,11 +40,12 @@ namespace Project1.Core.Blocks
             }
             return token.ApplyWork(work);
         }
+
         public void Delete(IntVec3Local pos)
         {
             this._blockTokens.Remove(pos);
         }
-        public IBlockHealth GetBlockHealth(IntVec3 local) => this._blockTokens.TryGetValue(local, out var token) ? token : null;
+
         internal void DrawBlockTokens(SpriteBatch sb, Camera camera)
         {
             if (camera.Zoom < 1)

@@ -97,7 +97,7 @@ namespace Project1.Core.Blocks
 
         internal virtual void Initialize() { }
 
-        internal virtual void GetSelectionInfo(Control container) { }
+        //internal virtual void GetSelectionInfo(Control container) { }
         internal virtual IEnumerable<Control> GetInspectorControls() { yield break; }
 
         internal virtual bool TryConsume(Entity item) => false;

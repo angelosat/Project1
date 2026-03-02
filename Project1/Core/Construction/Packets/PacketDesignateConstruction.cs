@@ -77,7 +77,7 @@ namespace Project1.Core.Construction.Packets
             a.Write(w);
             if (!a.Removing)
             {
-                w.Write(args.Block);
+                w.Write(args.BlockDef);
                 w.Write(args.Refinement);
                 w.Write(args.Material);
                 w.Write(args.Orientation);

@@ -27,8 +27,8 @@ namespace Project1.Core.Interactions
         {
             var target = i.Context.Target;
             var map = target.Map;
-            var block = target.Block;
-            i.Context.Target.Map.Events.Post(new BlockHitEvent(block, map, target.Global, delta));
+            //i.Context.Target.Map.Events.Post(new BlockHitEvent(target.Block, map, target.Global, delta));
+            i.Context.Target.Map.Events.Post(new BlockDamagedEvent(map, target.Global, 0));
         }
     }
 }

@@ -25,11 +25,8 @@ namespace Project1.Core.Blocks
             }
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Construction;
-        public Block Block => this.Args.Block.Block;
-        internal override void GetSelectionInfo(Control container)
-        {
-            container.AddControls(new Label($"Materials: {this.Fulfillment} {this.Args}"));
-        }
+        public Block Block => this.Args.BlockDef.Block;
+       
         internal override IEnumerable<Control> GetInspectorControls()
         {
             yield return new Label($"Materials: {this.Fulfillment} {this.Args}");
@@ -52,7 +49,7 @@ namespace Project1.Core.Blocks
         {
             this.Args = args;
             //this.Parent.Name = $"Construction: {this.Args.Block.LabelReadable}";
-            this.Parent.Name = $"{this.Args.Block.LabelReadable} (Construction)";
+            this.Parent.Name = $"{this.Args.BlockDef.LabelReadable} (Construction)";
 
 
             var ingredientCount = this.Block.Size.Volume / this.Block.BlockDef.ConstructionProfile.Dimension;
@@ -62,7 +59,7 @@ namespace Project1.Core.Blocks
         internal override void ResolveReferences()
         {
             //this.Parent.Name = $"Construction: {this.Args.Block.LabelReadable}";
-            this.Parent.Name = $"{this.Args.Block.LabelReadable} (Construction)";
+            this.Parent.Name = $"{this.Args.BlockDef.LabelReadable} (Construction)";
         }
         internal void Deposit(Entity entity, int quantity)
         {
@@ -93,19 +90,19 @@ namespace Project1.Core.Blocks
             }
         }
 
-        internal bool Accepts(Entity entity)
+        internal bool Accepts(Entity ingredient)
         {
             return 
                 this.Fulfillment.Missing > 0 &&
-                entity.Def == ItemDefOf.Ingredient &&
-                entity.Profile == this.Args.Refinement &&
-                entity.PrimaryMaterial == this.Args.Material;
+                ingredient.Def == ItemDefOf.Ingredient &&
+                ingredient.Profile == this.Args.Refinement &&
+                ingredient.PrimaryMaterial == this.Args.Material;
         }
-        public int DemandFor(Entity entity)
+        public int DemandFor(Entity ingredient)
         {
             if (this.Missing == 0)
                 return 0;
-            if (this.Accepts(entity))
+            if (this.Accepts(ingredient))
                 return this.Missing;
             return 0;
         }
@@ -172,7 +169,7 @@ namespace Project1.Core.Blocks
             return this;
         }
     }
-    public record struct ConstructionDesignationArgs(BlockDef Block, MaterialRefinementDef Refinement, MaterialDef Material, int Amount, byte Orientation = 0)
+    public record struct ConstructionDesignationArgs(BlockDef BlockDef, MaterialRefinementDef Refinement, MaterialDef Material, int Amount, byte Orientation = 0)
         : ISerializableNew<ConstructionDesignationArgs>
         , ISaveableNewNew<ConstructionDesignationArgs>
     {
@@ -187,7 +184,7 @@ namespace Project1.Core.Blocks
         public static ConstructionDesignationArgs Create(SaveTag tag)
         {
             var args = new ConstructionDesignationArgs();
-            args.Block = tag.LoadDef<BlockDef>("Block");
+            args.BlockDef = tag.LoadDef<BlockDef>("Block");
             args.Refinement = tag.LoadDef<MaterialRefinementDef>("Refinement");
             args.Material = tag.LoadDef<MaterialDef>("Material");
             args.Amount = tag.LoadInt("Amount");
@@ -197,7 +194,7 @@ namespace Project1.Core.Blocks
 
         public ConstructionDesignationArgs Read(IDataReader r)
         {
-            this.Block = r.ReadDef<BlockDef>();
+            this.BlockDef = r.ReadDef<BlockDef>();
             this.Refinement = r.ReadDef<MaterialRefinementDef>();
             this.Material = r.ReadDef<MaterialDef>();
             this.Amount = r.ReadInt32();
@@ -208,7 +205,7 @@ namespace Project1.Core.Blocks
         public readonly SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            tag.Save("Block", this.Block);
+            tag.Save("Block", this.BlockDef);
             tag.Save("Refinement", this.Refinement);
             tag.Save("Material", this.Material);
             tag.Save("Amount", this.Amount);
@@ -218,7 +215,7 @@ namespace Project1.Core.Blocks
 
         public readonly void Write(IDataWriter w)
         {
-            w.Write(this.Block);
+            w.Write(this.BlockDef);
             w.Write(this.Refinement);
             w.Write(this.Material);
             w.Write(this.Amount);

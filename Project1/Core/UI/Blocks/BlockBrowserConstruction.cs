@@ -99,7 +99,7 @@ namespace Project1.Core.UI.Blocks
         }
         void OnVariationSelectedNew(ConstructionDesignationArgs args)
         {
-            var block = args.Block;
+            var block = args.BlockDef;
             this.LastSelectedVariant[block] = args;
             this.CurrentSelected = block;
             if (this.ToolBox.LastSelectedTool != null)

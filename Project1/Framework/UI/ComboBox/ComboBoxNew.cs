@@ -54,14 +54,9 @@ namespace Project1.Core.UI
                     break;
             }
             if (!this.Open)
-            {
-                this.Panel.Layer = this.Layer;
-                this.Panel.Layer = this.Layer;
-                this.Panel.Show();
-            }
+                this.Panel.Show(this.Layer);
             else
                 this.Panel.Hide();
-            this.Panel.BringToFront();
             this.Open = !this.Open;
             this.Invalidate();
         }

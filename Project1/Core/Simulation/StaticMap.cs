@@ -102,6 +102,7 @@ namespace Project1.Core.Simulation
             this.Stockpiles = new(this);
             this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
             this.ParticleManager = new Graphics.Particles.ParticleManager(this);
+            this.SimulationSystems.Add(new BlockLifecycleSystem(this));
             this.SimulationSystems.Add(new EntityLifecycleSystem(this));
             this.SimulationSystems.Add(new BehaviorSystem(this));
             this.SimulationSystems.Add(new FallDamageSystem(this));

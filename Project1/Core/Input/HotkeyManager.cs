@@ -5,7 +5,7 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+#nullable enable
 namespace Project1.Core.Input
 {
     partial class HotkeyManager : GameSettings
@@ -17,9 +17,9 @@ namespace Project1.Core.Input
 
         public static IHotkey RegisterHotkey(HotkeyCategory context, string label, Action action, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
         {
-            return RegisterHotkey(context, label, action, action, key1, key2);
+            return RegisterHotkey(context, label, action, null, key1, key2);
         }
-        public static IHotkey RegisterHotkey(HotkeyCategory context, string label, Action actionPress, Action actionRelease, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
+        public static IHotkey RegisterHotkey(HotkeyCategory context, string label, Action actionPress, Action? actionRelease, System.Windows.Forms.Keys key1 = System.Windows.Forms.Keys.None, System.Windows.Forms.Keys key2 = System.Windows.Forms.Keys.None)
         {
             var hotkey = new Hotkey(context, label, actionPress, actionRelease, key1, key2);
             HandleConflicts(hotkey, false);
@@ -109,7 +109,7 @@ namespace Project1.Core.Input
             if (Hotkeys.FirstOrDefault(h => h.Context == context && h.ShortcutKeys.Contains(key)) is Hotkey hotkey && hotkey.Pressed)
             {
                 hotkey.Pressed = false;
-                hotkey.ActionRelease();
+                hotkey.ActionRelease?.Invoke();
 
                 return true;
             }
@@ -160,7 +160,7 @@ namespace Project1.Core.Input
             foreach(var context in byContext)
             {
                 var contextNode = rootNode.GetOrCreateElement(context.Key.Name);
-                var childrenByLabel = contextNode.Elements().ToDictionary(x => x.Attribute("Label").Value, x => x);
+                var childrenByLabel = contextNode.Elements().ToDictionary(x => x.Attribute("Label")!.Value, x => x);
                 foreach (var key in context)
                 {
                     if(!childrenByLabel.TryGetValue(key.Label, out var keynode))
@@ -181,7 +181,7 @@ namespace Project1.Core.Input
             var byLabel = Hotkeys.ToDictionary(h => h.Label, h => h);
             foreach(var hkn in hotkeyNodes)
             {
-                var label = hkn.Attribute("Label").Value;
+                var label = hkn.Attribute("Label")!.Value;
                 if (byLabel.TryGetValue(label, out var hotkey))
                     hotkey.XRead(hkn);
             }

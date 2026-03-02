@@ -6,7 +6,8 @@ namespace Project1.Core.Blocks
 {
     internal class BlockLifecycleSystem : SimulationSystem
     {
-        Queue<IntVec3> ToRemove = [];
+        readonly Queue<IntVec3> ToRemove = [];
+
         public BlockLifecycleSystem(MapBase map) : base(map)
         {
             map.Events.ListenTo<BlockHitPointsDepletedEvent>(OnBlockHitpointsDepleted);
@@ -14,8 +15,11 @@ namespace Project1.Core.Blocks
 
         private void OnBlockHitpointsDepleted(BlockHitPointsDepletedEvent e)
         {
+            if (this.Map.Net.IsClient)
+                return;
             this.ToRemove.Enqueue(e.Cell);
         }
+
         public override void Tick()
         {
             while (this.ToRemove.Count > 0)

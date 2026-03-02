@@ -633,6 +633,7 @@ namespace Project1.Core.Simulation
                 cell.Origin = args.Source;
 
                 chunk.InvalidateCell(cell);
+                chunk.InvalidateSlice(cell.Z);
 
                 heightMapChanges.Add((global.X, global.Y));
             }
@@ -1045,7 +1046,7 @@ namespace Project1.Core.Simulation
         {
             if (this.TryGetChunk(global, out var chunk))
             {
-                chunk.ApplyBlockWork(global.ToLocal(), workAmount);
+                chunk.ApplyBlockWork(global, workAmount);
                 //return;
                 //var cell = this.GetCell(global);
            

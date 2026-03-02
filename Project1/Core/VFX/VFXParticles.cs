@@ -6,6 +6,7 @@ using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Core.Plants;
 using Project1.Framework.Helpers;
+using System;
 
 namespace Project1.Core.VFX
 {
@@ -14,10 +15,13 @@ namespace Project1.Core.VFX
     {
         static VFXParticles()
         {
-            Registry.MapEventHooksClient.Register<BlockHitEvent>(OnBlockHit);
-            Registry.MapEventHooksClient.Register<BlockDestroyedEvent>(OnBlockDestroyed);
+            //Registry.MapEventHooksClient.Register<BlockHitEvent>(OnBlockHit);
+            //Registry.MapEventHooksClient.Register<BlockDestroyedEvent>(OnBlockDestroyed);
+            Registry.MapEventHooksClient.Register<BlockDamagedEvent>(OnBlockDamaged);
             Registry.MapEventHooksClient.Register<PlantChoppedEvent>(OnPlantChopped);
         }
+
+     
 
         private static void OnPlantChopped(PlantChoppedEvent e)
         {
@@ -34,16 +38,20 @@ namespace Project1.Core.VFX
             plant.Map.ParticleManager.AddEmitter(emitter);
         }
 
-        private static void OnBlockDestroyed(BlockDestroyedEvent e)
-        {
-            EmitBlockParticles(e.Block, e.Map, e.Global);
+        //private static void OnBlockDestroyed(BlockDestroyedEvent e)
+        //{
+        //    EmitBlockParticles(e.Block, e.Map, e.Global);
 
-        }
-        private static void OnBlockHit(BlockHitEvent e)
+        //}
+        //private static void OnBlockHit(BlockHitEvent e)
+        //{
+        //    EmitBlockParticles(e.Block, e.Map, e.Global);
+        //}
+        private static void OnBlockDamaged(BlockDamagedEvent e)
         {
-            EmitBlockParticles(e.Block, e.Map, e.Global);
+            var query = e.Map.Query(e.Cell);
+            EmitBlockParticles(query.Cell.Block, e.Map, e.Cell);
         }
-
         private static void EmitBlockParticles(Block block, MapBase map, IntVec3 global)
         {
             var emitter = NewEmitter(global);

@@ -77,7 +77,7 @@ namespace Project1.Core.Towns.Constructions
 
         private void OnConstructionFinished(ConstructionFinishedEvent e)
         {
-            this.RemoveDesignatedEntity(e.Source);
+            this.RemoveDesignatedEntity(e.Source, false);
             this._dirty = true;
         }
         private void OnConstructionReady(ConstructionReadyEvent e)
@@ -86,7 +86,7 @@ namespace Project1.Core.Towns.Constructions
                 throw new KeyNotFoundException($"Received {nameof(ConstructionReadyEvent)} for non-registered construction designation");
             this._dirty = true;
         }
-        bool _dirty;
+        bool _dirty = true;
         void OnBlocksChanged(CellsInvalidatedEvent e)
         {
             foreach (var pos in e.Positions)
@@ -212,7 +212,7 @@ namespace Project1.Core.Towns.Constructions
             var entity = BlockDefOf.Designation.CreateEntity(global);
             var comp = entity.GetComp<BlockConstructionComp>();
             this.DesignationEntities.Add(comp);
-            var footprint = args.Block.Block.GetFootprint(map, global, args.Orientation);
+            var footprint = args.BlockDef.Block.GetFootprint(map, global, args.Orientation);
             foreach (var cell in footprint)
                 entity.CellsOccupied.Add(cell.global);
             comp.SetArgs(args);
@@ -222,7 +222,7 @@ namespace Project1.Core.Towns.Constructions
                 this.DesignationLocations.Add(pos);
             }
             //map.AddBlockEntityInternal(entity);
-            var mapedit = new MapEdit(this.Map);
+            var mapedit = new MapEdit(this.Map, MapEditContext.Player);
             mapedit.AddEntity(entity);
             mapedit.Flush();
             this._dirty = true;
@@ -234,10 +234,10 @@ namespace Project1.Core.Towns.Constructions
             var snapshot = positions.ToHashSet();
             var comps = this.DesignationEntities.Where(c => c.Parent.CellsOccupied.Any(snapshot.Contains));
             foreach(var comp in comps)
-                this.RemoveDesignatedEntity(comp);
+                this.RemoveDesignatedEntity(comp, true);
             return true;
         }
-        private void RemoveDesignatedEntity(BlockConstructionComp comp)
+        private void RemoveDesignatedEntity(BlockConstructionComp comp, bool refund)
         {
             var entity = comp.Parent;
             this.DesignationEntities.Remove(comp);
@@ -247,10 +247,11 @@ namespace Project1.Core.Towns.Constructions
                 this.Map.GetChunk(child).InvalidateSlice(child.Z);
             }
 
-            var mapedit = new MapEdit(this.Map);
+            var mapedit = new MapEdit(this.Map, MapEditContext.Player);
             mapedit.RemoveEntity(entity);
             mapedit.Flush();
-
+            if (!refund)
+                return;
             foreach(var (refinement, material, amount) in comp.DepositedMaterials)
             {
                 this.Map.Events.Post(new LootDropEvent(

@@ -14,21 +14,26 @@ namespace Project1.Core.Blocks.Comps
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Resources;
 
-        Dictionary<ResourceDef, Resource> Resources = [];
+        readonly Dictionary<ResourceDef, Resource> _resources = [];
+        //public IReadOnlyDictionary<ResourceDef, Resource> Resources => this._resources;
+
+        public void ApplyDelta(ResourceDef resource, int delta)
+        {
+            this._resources[resource].ApplyDelta(delta);
+        }
+
+        public float GetValue(ResourceDef resource)
+            => this._resources[resource].Value;
 
         public BlockResourcesComp(ResourceDef[] resources)
         {
             foreach (var rDef in resources)
-                this.Resources.Add(rDef, new Resource(rDef));
+                this._resources.Add(rDef, new Resource(rDef));
         }
-        internal override void GetSelectionInfo(Control container)
-        {
-            foreach (var r in this.Resources)
-                container.AddControls(r.Value.GetControlBar());
-        }
+       
         internal override IEnumerable<Control> GetInspectorControls()
         {
-            foreach (var r in this.Resources)
+            foreach (var r in this._resources)
                 yield return r.Value.GetControlBar();
         }
     }

@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
+﻿using Project1.Core.Animations;
+using Project1.Core.Blocks;
+using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
-using Project1.Core.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Materials;
+using Project1.Core.Resources;
 using Project1.Core.Skills;
-using Project1.Core.Animations;
-using Project1.Core.Blocks;
+using Project1.Core.UI;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Crafting
 {
@@ -179,7 +181,7 @@ namespace Project1.Core.Crafting
         }
         public bool IsReadyToCraft(out List<Entity> handled)
         {
-            handled = new();
+            handled = [];
             foreach (var (bone, rule) in this.Rules)
             {
                 var items = this.GetEntitiesAtWorkstationSlot(bone);
@@ -194,9 +196,11 @@ namespace Project1.Core.Crafting
             if (this.ProductDef is not MaterialRefinementDef refinement)
                 return true;
             var fuelReq = refinement.FuelConsumption;
+            if (fuelReq == 0)
+                return true;
             var workstation = this.Workstation.Parent;
-            var fuelcomp = workstation.GetComp<BlockFuelComp>();
-            return fuelReq <= fuelcomp.FuelAvailable;
+            var currentFuel = workstation.GetComp<BlockResourcesComp>().GetValue(ResourceDefOf.Fuel);
+            return fuelReq <= currentFuel;
         }
         public int GetFuelReq()
         {
@@ -206,10 +210,16 @@ namespace Project1.Core.Crafting
         }
         public bool TryConsumeFuel()
         {
-            var fuel = this.GetFuelReq();
+            var fuelReq = this.GetFuelReq();
+            if (fuelReq == 0)
+                return true;
             var workstation = this.Workstation.Parent;
-            var fuelcomp = workstation.GetComp<BlockFuelComp>();
-            return fuelcomp.TryConsumeFuel(fuel);
+            var comp = workstation.GetComp<BlockResourcesComp>();
+            var currentFuel = comp.GetValue(ResourceDefOf.Fuel);
+            if (currentFuel < fuelReq)
+                return false;
+            comp.ApplyDelta(ResourceDefOf.Fuel, -fuelReq);
+            return true;
         }
         public OrderFeasibilityResult IsFeasibleNew(
             IReadOnlyList<Entity> candidates, 

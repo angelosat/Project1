@@ -43,7 +43,7 @@ namespace Project1.Core.Construction.Tools
             var btn = new ButtonNew(160) { BackgroundStyle = BackgroundStyle.LargeButton };
             var padding = btn.BackgroundStyle.Left.Width;
             var picbox = new PictureBox(block.PaintIcon(0, variant.Material)) { MouseThrough = true, Location = new Vector2(padding, btn.Height / 2), Anchor = new Vector2(0, .5f) };
-            var label = new Label($"{variant.Material.LabelReadable} {variant.Block.LabelReadable}") { Location = picbox.TopRight + Vector2.UnitX * padding, MouseThrough = true };
+            var label = new Label($"{variant.Material.LabelReadable} {variant.BlockDef.LabelReadable}") { Location = picbox.TopRight + Vector2.UnitX * padding, MouseThrough = true };
             btn.AddControls(picbox, label);
             btn.LeftClickAction = () =>
             {

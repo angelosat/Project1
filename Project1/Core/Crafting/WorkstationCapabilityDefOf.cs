@@ -14,6 +14,12 @@ namespace Project1.Core.Crafting
             SpecificRecipes = [MaterialRefinementDefOf.Ingots],
             Plan = PlanDefOf.Crafting
         };
+        static public readonly WorkstationCapabilityDef Carpentry = new("Carpentry", typeof(WorkstationCapabilityCarpentryWorker))
+        {
+            ProfileCategory = typeof(MaterialRefinementDef),
+            SpecificRecipes = [MaterialRefinementDefOf.Planks],
+            Plan = PlanDefOf.Crafting
+        };
         static public readonly WorkstationCapabilityDef ToolMaking = new("ToolMaking", typeof(WorkstationCapabilityToolMakingWorker))
         {
             ProfileCategory = typeof(ToolProfileDef),

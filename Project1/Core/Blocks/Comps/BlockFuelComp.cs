@@ -44,10 +44,10 @@ namespace Project1.Core.Blocks
             this.Parent.Map.Events.Post(new BlockEntityCompUpdatedEvent(this));
             return true;
         }
-        internal override void GetSelectionInfo(Control container)
-        {
-            container.AddControls(new BarFinal(this.Fuel, () => "Fuel"));
-        }
+        //internal override void GetSelectionInfo(Control container)
+        //{
+        //    container.AddControls(new BarFinal(this.Fuel, () => "Fuel"));
+        //}
         internal override IEnumerable<Control> GetInspectorControls()
         {
             yield return new BarFinal(this.Fuel, () => "Fuel");

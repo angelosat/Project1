@@ -296,14 +296,13 @@ namespace Project1.Core.Simulation
             entity = null;
             if (this.GetChunk(global) is not Chunk chunk)
                 return false;
-            BlockEntity e;
-            chunk.TryGetBlockEntity(global.ToLocal(), out e);
+            chunk.TryGetBlockEntity(global.ToLocal(), out var e);
             entity = e as T;
             return entity is not null;
         }
         public BlockEntity GetBlockEntity(IntVec3 global)
         {
-            Chunk chunk = this.GetChunk(global);
+            var chunk = this.GetChunk(global);
             chunk.TryGetBlockEntity(global.ToLocal(), out var entity);
             return entity;
         }

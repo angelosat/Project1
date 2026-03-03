@@ -106,8 +106,8 @@ namespace Project1.Core.Towns
         public DutyRoster DutiesManager;
         [InspectorHidden]
         public ReservationManager ReservationManager;
-        [InspectorHidden]
-        public TerrainManager TerrainManager;
+        //[InspectorHidden]
+        //public TerrainManager TerrainManager;
         [InspectorHidden]
         public WorkplaceManager ShopManager;
         [InspectorHidden]
@@ -136,7 +136,7 @@ namespace Project1.Core.Towns
             this.CraftingManager = new(this);
             this.DutiesManager = new(this);
             this.ReservationManager = new(this);
-            this.TerrainManager = new(this);
+            //this.TerrainManager = new(this);
             this.ShopManager = new(this);
             this.QuestManager = new(this);
             this.Storage = new(this);
@@ -150,7 +150,7 @@ namespace Project1.Core.Towns
                 this.RoomManager,
                 this.CraftingManager,
                 this.ReservationManager,
-                this.TerrainManager,
+                //this.TerrainManager,
                 this.ShopManager,
                 this.QuestManager,
                 this.Storage

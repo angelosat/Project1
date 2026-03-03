@@ -15,6 +15,7 @@ using Project1.Core.Plants;
 using Project1.Core.Simulation.FallDamage;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Towns;
+using Project1.Core.Towns.Terrain;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.WorldGen;
@@ -108,6 +109,7 @@ namespace Project1.Core.Simulation
             this.SimulationSystems.Add(new FallDamageSystem(this));
             this.SimulationSystems.Add(new LootSystem(this));
             this.SimulationSystems.Add(new PlantLifeCycleSystem(this));
+            //this.SimulationSystems.Add(new FloraSystem(this));
 
             this.Collisions = new CollisionSystem(this);
             this.SimulationSystems.Add(this.Collisions);

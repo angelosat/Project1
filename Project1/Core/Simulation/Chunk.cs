@@ -6,9 +6,11 @@ using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
+using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Rendering;
 using Project1.Core.Simulation.Lighting;
+using Project1.Core.Towns.Terrain;
 using Project1.Core.WorldGen;
 using Project1.Framework;
 using Project1.Framework.Graphics;
@@ -132,7 +134,9 @@ namespace Project1.Core.Simulation
         public Cell[] Cells;
         public int[][] HeightMap;
 
-        BlockDamageSystem BlockDamageSystem;
+        readonly BlockDamageSystem BlockDamageSystem;
+        readonly FloraController Flora;
+        readonly FlowerController Flowers;
         public List<Entity> Objects;
         readonly Dictionary<IntVec3, BlockEntity> BlockEntitiesByPosition = new();
         public IEnumerable<BlockEntity> BlockEntities => this.BlockEntitiesByPosition.Values.Distinct();
@@ -219,7 +223,8 @@ namespace Project1.Core.Simulation
         }
         internal void ResolveReferences()
         {
-            
+            this.Flora.ResolveReferences();
+            this.Flowers.ResolveReferences();
             //foreach (var obj in this.Objects)
             //    obj.Resolve();
         }
@@ -258,6 +263,8 @@ namespace Project1.Core.Simulation
             for (int i = 0; i < MapBase.MaxHeight; i++)
                 this.Slices[i] = new Slice();
             this.BlockDamageSystem = new(this);
+            this.Flora = new(this);
+            this.Flowers = new(this);
         }
         public static Chunk Create(MapBase map, Vector2 pos)
         {
@@ -295,19 +302,18 @@ namespace Project1.Core.Simulation
         {
             return this.Cells[GetCellIndex(x, y, z)];
         }
+
         public Cell GetLocalCell(IntVec3Local local)
-        {
-            return this.Cells[GetCellIndex(local)];
-        }
-        public static int GetCellIndex(int x, int y, int z) => (z * Size + y) * Size + x;
+            => this.Cells[GetCellIndex(local)];
+        
+        public static int GetCellIndex(int x, int y, int z) 
+            => (z * Size + y) * Size + x;
         public static int GetCellIndex(float x, float y, float z)
-        {
-            return GetCellIndex((int)Math.Round(x), (int)Math.Round(y), (int)Math.Round(z));
-        }
+            => GetCellIndex((int)Math.Round(x), (int)Math.Round(y), (int)Math.Round(z));
+        
         public static int GetCellIndex(IntVec3Local local)
-        {
-            return GetCellIndex(local.X, local.Y, local.Z);
-        }
+            => GetCellIndex(local.X, local.Y, local.Z);
+        
         public static int Volume = Size * Size * MapBase.MaxHeight;
         public byte[] BlockLight = new byte[Volume];
         public byte[] Sunlight = new byte[Volume];
@@ -545,10 +551,12 @@ namespace Project1.Core.Simulation
             return this.BlockLight[GetCellIndex(x, y, z)];
         }
 
-        public byte GetSunlight(IntVec3 local)
+        public byte GetSunlight(IntVec3Local local)
         {
             return this.GetSunlight(local.X, local.Y, local.Z);
         }
+        public float GetSunlightPercentage(IntVec3Local local)
+            => (float)this.GetSunlight(local) / 15;
         public byte GetSunlight(int x, int y, int z)
         {
             if (z >= this.Map.GetMaxHeight())
@@ -679,6 +687,8 @@ namespace Project1.Core.Simulation
         void TickBlockTokens()
         {
             this.BlockDamageSystem.Tick();
+            this.Flora.Tick();
+            this.Flowers.Tick();
             //var keysToRemove = new List<IntVec3>(this.BlockTokens.Count);
             //foreach (var (pos, token) in this.BlockTokens)
             //{
@@ -2150,5 +2160,26 @@ namespace Project1.Core.Simulation
             };
             this.Map.Events.Post(new BlockDamagedEvent(this.Map, local.ToGlobal(this), work));
         }
+
+        internal void SetBlockData(IntVec3 pos, byte blockData)
+        {
+            this.GetLocalCell(pos).BlockData = blockData;
+            this.InvalidateSlice(pos.Z);
+            this.Map.Events.Post(new CellsInvalidatedEvent(this.Map, [pos]));
+        }
+        internal Block GetBlock(int cellIndex) => this.Cells[cellIndex].Block;
+        internal byte GetBlockData(int cellIndex) => this.Cells[cellIndex].BlockData;
+        internal MaterialDef GetMaterial(int cellIndex) => this.Cells[cellIndex].Material;
+
+        static public IEnumerable<IntVec2> Columns
+        {
+            get
+            {
+                for (int i = 0; i < Size; i++)
+                    for (int j = 0; j < Size; j++)
+                        yield return new IntVec2(i, j);
+            }
+        }
+
     }
 }

@@ -22,6 +22,7 @@ using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace Project1.Core.Blocks
@@ -936,6 +937,9 @@ namespace Project1.Core.Blocks
                     yield return new ConstructionDesignationArgs(this.BlockDef, refinement, mat, ItemDefOf.Ingredient.StackCapacity); // HACK
             }
         }
+
+        
+
         public class DefaultState : IBlockState
         {
             public void Apply(MapBase map, Vector3 global)

@@ -92,9 +92,22 @@ namespace Project1.Framework
             yield return this - new IntVec2(0, 1);
         }
 
+        static public readonly IntVec2[] AdjacentWithDiag = [
+            new(-1, -1),
+            new(-1, 0),
+            new(-1, 1),
+            new(0, -1),
+            new(0, 1),
+            new(1, -1),
+            new(1, 0),
+            new(1, 1),
+        ];
+
         public override string ToString()
         {
             return $"{{X:{this.X} Y:{this.Y}}}";
         }
+
+
     }
 }

@@ -133,7 +133,7 @@ namespace Project1.Framework
             for (int i = 0; i < 4; i++)
                 yield return this + AdjacentXYIntVec3[i];
         }
-        static public readonly IntVec3[] AdjacentCubeIntVec3 = new IntVec3[]{
+        static public readonly IntVec3[] AdjacentCubeIntVec3 = [
             new IntVec3(-1, -1, -1),
             new IntVec3( 0, -1, -1),
             new IntVec3( 1, -1, -1),
@@ -163,7 +163,7 @@ namespace Project1.Framework
             new IntVec3(-1,  1, 1),
             new IntVec3( 0,  1, 1),
             new IntVec3( 1,  1, 1)
-        };
+        ];
         static public readonly IntVec3[] AdjacentIntVec3 = new IntVec3[]{
             new IntVec3(1, 0, 0),
             new IntVec3(-1, 0, 0),

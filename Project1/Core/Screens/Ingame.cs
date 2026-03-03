@@ -10,7 +10,6 @@ using Project1.Core.UI.NamePlates;
 using Project1.Framework.Events;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
-using System.Collections.Generic;
 
 namespace Project1.Core.Screens
 {
@@ -49,6 +48,7 @@ namespace Project1.Core.Screens
             this.InputRouter.Add(this.WindowManager);
             this.InputRouter.Add(ContextMenuManager.Instance);
             this.InputRouter.Add(this.Camera);
+            this.InputRouter.Add(this);
 
             SelectionManager.Instance.Bind(net);
             SelectionManager.Instance.Init(this);
@@ -106,7 +106,7 @@ namespace Project1.Core.Screens
             if (e.Handled)
                 return;
 
-            List<System.Windows.Forms.Keys> pressed = InputState.Instance.GetPressedKeys();
+            var pressed = InputState.Instance.GetPressedKeys();
             if (pressed.Contains(GlobalVars.KeyBindings.HideInterface))
                 HideInterface = !HideInterface;
             if (pressed.Contains(System.Windows.Forms.Keys.F6))

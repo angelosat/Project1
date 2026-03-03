@@ -10,6 +10,7 @@ using Project1.Framework.Graphics;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Project1.Core.Blocks
 {
@@ -55,7 +56,7 @@ namespace Project1.Core.Blocks
             byte data = (byte)(map.Random.Next(FlowerOverlays.Count) + 1);
             map.SyncSetCellData(global, data);
         }
-
+        internal static byte GetRandomFlower(MapBase map) => (byte)(map.Random.Next(FlowerOverlays.Count) + 1);
         public override byte ParseData(string data)
         {
             return byte.Parse(data);
@@ -66,6 +67,8 @@ namespace Project1.Core.Blocks
             var flowerIndex = data - 1; //because 0 is no flowers
             return FlowerOverlays[flowerIndex];
         }
+        internal bool HasFlower(byte data)
+            => data > 0;
         public override IEnumerable<MaterialDef> GetEditorVariations()
         {
             yield return MaterialDefOf.Human;

@@ -1,20 +1,20 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Blocks;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Materials;
+using Project1.Core.Serialization;
+using Project1.Core.UI.Hud;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Materials;
-using Project1.Core.Blocks;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
-using Project1.Core.UI.Hud;
-using Project1.Core.Serialization;
-using Project1.Framework.Helpers;
 
 namespace Project1.Core.Simulation
 {
@@ -219,7 +219,7 @@ namespace Project1.Core.Simulation
         //public IntVec3 LocalCoords => new(this.X, this.Y, this.Z);
 
         public IntVec3 SizeRotated => Coords.Rotate(this.Block.Size, this.Orientation);
-        public IntVec3 LocalCoords => new IntVec3(this.X, this.Y, this.Z);
+        public IntVec3 LocalCoords => new(this.X, this.Y, this.Z);
         public IntVec3 GetGlobalCoords(Chunk chunk)
         {
             return new IntVec3(chunk.Start.X + this.X, chunk.Start.Y + this.Y, this.Z);
@@ -313,6 +313,7 @@ namespace Project1.Core.Simulation
         {
             //container.AddControls(new BarNew(() => HitPointsMax, () => this.HitPoints) { Color = Color.CornflowerBlue, Format = "Hit Points: {0} / {1}" });
             yield return new BarNew(() => HitPointsMax, () => this.HitPoints) { Color = Color.CornflowerBlue, Format = "Hit Points: {0} / {1}" };
+            yield return new GroupBox().AddControlsLineWrap(new LabelNew(this.Block.BlockDef), new LabelNew(this.Material));
         }
         internal float GetBlockHeight(Vector3 vec3)
         {

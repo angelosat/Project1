@@ -7,26 +7,42 @@ namespace Project1.Core.Materials
     static class MaterialDefOf
     {
         static public readonly MaterialDef Copper = new MaterialDef("Copper", MaterialTemplates.Metal)
+        {
+            Shine = .9f,
+            BreakResistance = 30,
+            Color = Color.IndianRed
+        }
           .SetPrefix("Copper")
-          .SetColor(Color.IndianRed)
           .SetValue(20);
         static public readonly MaterialDef Iron = new MaterialDef("Iron", MaterialTemplates.Metal)
-            .SetPrefix("Iron")
-            .SetColor(Color.LightSteelBlue)
-            .SetValue(40);
-        static public readonly MaterialDef Cobalt = new MaterialDef("Cobalt", MaterialTemplates.Metal)
         {
+            BreakResistance = 30,
+            Color = Color.LightSteelBlue
+        }
+            .SetPrefix("Iron")
+            .SetValue(40);
+        static public readonly MaterialDef Cobalt = new("Cobalt", MaterialTemplates.Metal)
+        {
+            Shine = .7f,
             ValueBase = 60,
             Color = Color.DodgerBlue,
-            Density = 50
+            Density = 50,
+            BreakResistance = 30,
         };
-        static public readonly MaterialDef Silver = new MaterialDef("Silver", MaterialTemplates.Metal) { Shine = 1 }
+        static public readonly MaterialDef Silver = new MaterialDef("Silver", MaterialTemplates.Metal)
+        {
+            Shine = 1,
+            BreakResistance = 30,
+            Color = Color.White
+        }
             .SetPrefix("Silver")
-            .SetColor(Color.White)
             .SetValue(80);
-        static public readonly MaterialDef Gold = new MaterialDef("Gold", MaterialTemplates.Metal) { Shine = 1 }
+        static public readonly MaterialDef Gold = new MaterialDef("Gold", MaterialTemplates.Metal) 
+        { 
+            Shine = 1,
+            Color = Color.Gold
+        }
             .SetPrefix("Golden")
-            .SetColor(Color.Gold)
             .SetValue(100);
 
         static public readonly MaterialDef Coal = new(MaterialTypeDefOf.Stone, "Coal", "Coal", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };

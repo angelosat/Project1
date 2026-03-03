@@ -22,13 +22,22 @@ namespace Project1.Core.Blocks
                 IsDeconstructible = false
             },
         };
-        static public readonly BlockDef Stone = new("Stone", typeof(BlockBedrock));
+        static public readonly BlockDef Stone = new("Stone", typeof(BlockBedrock))
+        {
+            BreakProduct = MaterialRefinementDefOf.Chunk
+        };
         static public readonly BlockDef Farmland = new("Farmland", typeof(BlockFarmland))
         {
             BreakProduct = MaterialRefinementDefOf.Bag
         };
-        static public readonly BlockDef Cobblestone = new("Cobblestone", typeof(BlockStone));
-        static public readonly BlockDef Mineral = new("Mineral", typeof(BlockMineral));
+        static public readonly BlockDef Cobblestone = new("Cobblestone", typeof(BlockStone))
+        {
+            BreakProduct = MaterialRefinementDefOf.Chunk
+        };
+        static public readonly BlockDef Mineral = new("Mineral", typeof(BlockMineral))
+        {
+            BreakProduct = MaterialRefinementDefOf.Chunk
+        };
         static public readonly BlockDef Sand = new("Sand", typeof(BlockSand))
         {
             BreakProduct = MaterialRefinementDefOf.Bag,

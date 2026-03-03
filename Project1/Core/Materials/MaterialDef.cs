@@ -19,7 +19,7 @@ namespace Project1.Core.Materials
 
         public MaterialTypeDef Type;
         public Color Color;
-        public Vector4 ColorVector;
+        //public Vector4 ColorVector;
         public string Prefix = "<undefined>";
         public float Shine;
         public int Density;
@@ -36,6 +36,7 @@ namespace Project1.Core.Materials
         internal int Viscosity;
 
         public int Value => (int)(this.ValueBase * this.ValueMultiplier);
+        public Vector4 ColorVector => new(this.Color.R / 255.0f, this.Color.G / 255.0f, this.Color.B / 255.0f, this.Shine);
 
         public MaterialDef()
         {
@@ -49,7 +50,8 @@ namespace Project1.Core.Materials
             this.State = template.State;
             //this.Category = template.Category;
             this.Density = template.Density;
-            this.SetColor(template.Color);
+            //this.SetColor(template.Color);
+            this.Color = template.Color;
             this.Type = template.Type;
             this.Type.AddMaterial(this);
             this.Fuel = template.Fuel;
@@ -62,7 +64,8 @@ namespace Project1.Core.Materials
             this.Prefix = prefix;
             this.Density = density;
             this.Color = color;
-            this.ColorVector = new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, type.Shininess);
+            this.Shine = type.Shininess;
+            //this.ColorVector = new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, type.Shininess);
         }
         internal void Apply(Entity entity)
         {
@@ -77,7 +80,7 @@ namespace Project1.Core.Materials
         public MaterialDef SetColor(Color color)
         {
             this.Color = color;
-            this.ColorVector = new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, this.Shine);
+            //this.ColorVector = new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, this.Shine);
             return this;
         }
         public MaterialDef SetDensity(int density)
@@ -88,7 +91,7 @@ namespace Project1.Core.Materials
         public MaterialDef SetReflectiveness(float reflectiveness)
         {
             this.Shine = reflectiveness;
-            this.ColorVector = new Vector4(this.Color.R / 255.0f, this.Color.G / 255.0f, this.Color.B / 255.0f, reflectiveness);
+            //this.ColorVector = new Vector4(this.Color.R / 255.0f, this.Color.G / 255.0f, this.Color.B / 255.0f, reflectiveness);
             return this;
         }
         public MaterialDef SetState(MaterialState state)

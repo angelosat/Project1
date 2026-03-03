@@ -1,11 +1,11 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.UI;
-using Project1.Core.Entities;
 using Project1.Core;
-using Project1.Framework.Interfaces;
+using Project1.Core.Entities;
+using Project1.Core.UI;
 using Project1.Framework.Helpers;
+using Project1.Framework.Interfaces;
+using System;
 
 namespace Project1.Framework.UI
 {
@@ -132,7 +132,9 @@ namespace Project1.Framework.UI
 
         float LastPercentage = 0;
         string LastText = "";
-        Func<float> MaxFunc, ValueFunc;
+        private readonly Func<float> MaxFunc;
+        private Func<float> ValueFunc;
+
         internal string Format { set => this.TextFunc = () => string.Format(value, this.Value, this.Max); }
 
         float Max => MaxFunc();

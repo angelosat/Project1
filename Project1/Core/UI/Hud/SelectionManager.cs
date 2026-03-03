@@ -526,7 +526,8 @@ namespace Project1.Core.UI.Hud
                     var runtime = new OrderCommandRuntime(orderdef);
                     var button = new QuickButton(new Icon(orderdef.Sprite), null, orderdef.LabelReadable)
                     {
-                        LeftClickAction = () => runtime.Issue(this.Selection)
+                        LeftClickAction = () => runtime.Issue(this.Selection),
+                        HoverText = orderdef.LabelReadable
                     };
                     this.BoxOrderButtons.AddControls(button);
                 }

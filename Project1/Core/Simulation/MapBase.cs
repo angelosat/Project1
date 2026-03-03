@@ -631,6 +631,7 @@ namespace Project1.Core.Simulation
                 cell.BlockData = args.Data;
                 cell.Orientation = args.Orientation;
                 cell.Origin = args.Source;
+                cell.Damage = 0; // reset damage when block changes?
 
                 chunk.InvalidateCell(cell);
                 chunk.InvalidateSlice(cell.Z);
@@ -1045,20 +1046,7 @@ namespace Project1.Core.Simulation
         internal void ApplyBlockDamage(IntVec3 global, int workAmount)
         {
             if (this.TryGetChunk(global, out var chunk))
-            {
                 chunk.ApplyBlockWork(global, workAmount);
-                //return;
-                //var cell = this.GetCell(global);
-           
-                //var block = cell.Block;
-                //if (block.BlockDef == BlockDefOf.Air)
-                //    throw new Exception();
-                //var local = global.ToLocal();
-                //chunk.ApplyBlockWork(local, workAmount);
-                //this.Events.Post(new BlockHitEvent(block, this, global, workAmount));
-                //if (cell.HitPoints == 0)
-                //    this.Events.Post(new BlockHitPointsDepletedEvent(global));
-            }
         }
         public IBlockHealth GetBlockHealth(IntVec3 global)
         {

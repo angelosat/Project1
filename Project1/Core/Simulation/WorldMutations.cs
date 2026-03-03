@@ -2,7 +2,6 @@
 using Project1.Core.Blocks.Construction;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
-using Project1.Core.Input;
 using Project1.Core.Loot;
 using Project1.Core.Materials;
 using Project1.Framework;

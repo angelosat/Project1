@@ -17,6 +17,7 @@ namespace Project1.Core.Networking
             DisplayName = name;
             TextColor = color;
         }
+        public static readonly ChatSource Empty = new(null, Color.White);
 
         public static readonly ChatSource System = new("SYSTEM", Color.Yellow);
         public static ChatSource Player(PlayerData player) => new(player.Name, Color.LightGray);

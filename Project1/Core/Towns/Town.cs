@@ -2,7 +2,6 @@
 using Project1.Core.AI;
 using Project1.Core.AI.MetaRoles;
 using Project1.Core.AI.Reservations;
-using Project1.Core.Blocks;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
@@ -101,8 +100,6 @@ namespace Project1.Core.Towns
         public DesignationManager DesignationManager;
         [InspectorHidden]
         public RoomManager RoomManager;
-        //[InspectorHidden]
-        //public CraftingManagerOld CraftingManager;
         [InspectorHidden]
         public CraftingManager CraftingManager;
         [InspectorHidden]
@@ -200,7 +197,7 @@ namespace Project1.Core.Towns
             this.Map.Events.Post(new MemberAddedEvent(actor));
             RoleMetaDefOf.TownMember.AssignTo(actor);
             actor.Town = this;
-            actor.Net.Report($"{actor.Name} has joined the town!");
+            //actor.Net.Report($"{actor.Name} has joined the town!");
             actor.AI.State.Log.Write("I joined the town!");
         }
 
@@ -211,7 +208,7 @@ namespace Project1.Core.Towns
                 this.Members.Remove(actor);
                 this.Map.Events.Post(new MemberRemovedEvent(actor));
                 actor.Town = null;
-                this.Net.ConsoleBox.Write($"{actor.Name} was dismissed from the town!");
+                //this.Net.ConsoleBox.Write($"{actor.Name} was dismissed from the town!");
             }
         }
        
@@ -290,6 +287,7 @@ namespace Project1.Core.Towns
                 agentsTag.Add(new SaveTag(SaveTag.Types.Int, "", a.RefId));
             tag.Add(agentsTag);
         }
+
         public void Load(SaveTag save)
         {
             Dictionary<string, SaveTag> compsTag = new Dictionary<string, SaveTag>();
@@ -447,32 +445,6 @@ namespace Project1.Core.Towns
                 c.OnHudCreated(hud);
         }
 
-        public IEnumerable<Button> GetTabs(ISelectable selected)
-        {
-            foreach (var comp in this.TownComponents)
-                foreach (var i in comp.GetTabs(selected))
-                    yield return i;
-        }
-        internal void Select(ISelectable target, SelectionManager info)
-        {
-            //foreach (var comp in this.TownComponents)
-            //{
-            //    comp.UpdateOrderButtons();
-            //    comp.OnTargetSelected(info, target);
-            //}
-        }
-        internal IEnumerable<KeyValuePair<IntVec3, BlockEntity>> GetRefuelablesNew()
-        {
-            var entities = this.Map.GetBlockEntitiesCache();
-            var count = entities.Count;
-            for (int i = 0; i < count; i++)
-            {
-                var kv = entities.ElementAt(i);
-                if (kv.Value.HasComp<BlockEntityCompRefuelable>())
-                    yield return kv;
-            }
-        }
-
         internal IEnumerable<T> GetBusinesses<T>() where T : Workplace
         {
             return this.ShopManager.GetShops().OfType<T>();
@@ -483,6 +455,7 @@ namespace Project1.Core.Towns
         {
             return this.ShopManager.GetShop(shopID);
         }
+
         internal T GetShop<T>(int shopID) where T  : Workplace
         {
             return this.ShopManager.GetShop(shopID) as T;

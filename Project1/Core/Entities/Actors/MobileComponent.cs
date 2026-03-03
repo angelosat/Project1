@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Core.Graphics.Particles;
-using Project1.Core.Helpers;
-using Project1.Core.Resources;
-using Project1.Core.Stats;
-using Project1.Core.Simulation;
-using Project1.Core.Simulation.Physics;
-using Project1.Core.Entities;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Animations;
 using Project1.Core.Blocks;
+using Project1.Core.Graphics.Particles;
 using Project1.Core.Networking;
+using Project1.Core.Resources;
+using Project1.Core.Simulation;
+using Project1.Core.Simulation.Physics;
+using Project1.Core.Stats;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -87,22 +85,16 @@ namespace Project1.Core.Entities.Actors
         const float AccelerationStep = .1f;
         public MobileComponent()
         {
-            //this.AnimationWalk = new(AnimationDef.Walk);
-            //this.AnimationJump = new(AnimationDef.Jump);
-            //this.AnimationCrouch = new(AnimationDef.Crouch);
-            //this.AnimationJump.Weight = 0;
-            //this.AnimationWalk.Weight = 0;
-            //this.AnimationCrouch.Weight = 0;
-
             this.Acceleration = 0f;
             this.Moving = false;
             this.CurrentState = State.States[State.Types.Running];
-            //this.CurrentState.Apply(this);
         }
         
-        static public void OnFootDown(GameObject parent)
+        static public void OnFootstep(Entity parent)
         {
-            EmitDust(parent);
+            if (parent.Velocity.Z != 0)
+                return;
+            parent.Map.Events.Post(new EntityFootStepEvent(parent));
         }
 
         internal override void InitializeOnce()
@@ -337,17 +329,6 @@ namespace Project1.Core.Entities.Actors
             //    walkY = 0;
             //if (!map.IsSolid(new Vector3(global.X + walkX, global.Y + walkY, global.Z + g)))
             //    walkY = walkX = 0;
-        }
-
-        static public void EmitDust(GameObject parent)
-        {
-            if (parent.Net.IsClient)
-            {
-                if (parent.Velocity.Z != 0)
-                    return;
-                //parent.Map.EventOccured(Message.Types.EntityFootStep, parent);
-                parent.Map.World.Events.Post(new EntityFootStepEvent(parent as Entity));
-            }
         }
 
         private static ParticleEmitterSphere CreateDust(GameObject parent)

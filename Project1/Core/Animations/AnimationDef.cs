@@ -8,12 +8,12 @@ namespace Project1.Core.Animations
     public sealed class AnimationDef : Def
     {
         public Dictionary<BoneDef, AnimationClip> KeyFrames = new Dictionary<BoneDef, AnimationClip>();
-        public Dictionary<float, Action<GameObject>> Events = new Dictionary<float, Action<GameObject>>();
+        public Dictionary<float, Action<Entity>> Events = new Dictionary<float, Action<Entity>>();
         public int Layer;
         public float Speed = 1;
         public int FrameCount;
         public WarpMode WarpMode;
-        public Func<GameObject, float> WeightChangeFunc;
+        public Func<Entity, float> WeightChangeFunc;
         public Func<Entity, float> WeightGetter;
 
         public AnimationDef(string name, int layer):base(name)
@@ -43,7 +43,7 @@ namespace Project1.Core.Animations
             this.FrameCount = Math.Max(this.FrameCount, clip.FrameCount);
             return this;
         }
-        public AnimationDef AddEvent(float frame, Action<GameObject> action)
+        public AnimationDef AddEvent(float frame, Action<Entity> action)
         {
             this.Events[frame] = action;
             return this;

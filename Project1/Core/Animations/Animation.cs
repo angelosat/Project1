@@ -128,7 +128,7 @@ namespace Project1.Core.Animations
         {
             return this.Def.KeyFrames.TryGetValue(type, out ani);
         }
-        public void Tick(GameObject entity)
+        public void Tick(Entity entity)
         {
             if (this.StartTick == -1)
                 this.StartTick = entity.Net.CurrentTick;
@@ -173,34 +173,6 @@ namespace Project1.Core.Animations
             if (this.Weight == 0 && this.State == AnimationStates.Finishing)
                 this.State = AnimationStates.Removed;
         }
-        public void Tickold(GameObject entity)
-        {
-            if (this.StartTick == -1)
-                this.StartTick = entity.Net.CurrentTick;
-            var elapsedServerTicks = (float)(entity.Net.CurrentTick - this.StartTick);// / Server.ClockIntervalMS;
-            elapsedServerTicks /= this.Speed;
-            var step = elapsedServerTicks - this.Frame;
-            if (this.FadeValue < this.FadeLength)
-            {
-                this.FadeValue = elapsedServerTicks;
-                this.Weight = this.FadeInterpolation(0, 1, this.Fade);
-                if (this.Fade >= 1)
-                    this.OnFadeIn();
-
-                if (this.PreFade)
-                    return;
-            }
-            if (this.Weight > 0)
-            {
-                var prevframe = this.Frame;
-                this.Frame = elapsedServerTicks;
-                this.Loop();
-                this.PerformActionsNew(prevframe, this.Frame, entity);
-            }
-            this.Weight += step * (this.Def.WeightChangeFunc?.Invoke(entity) ?? this.WeightChange);
-            this.Weight = MathHelper.Clamp(this.Weight, 0, 1);
-        
-        }
 
         private void Loop()
         {
@@ -235,7 +207,7 @@ namespace Project1.Core.Animations
             }
         }
 
-        private void PerformActionsNew(float prevFrame, float nextFrame, GameObject entity)
+        private void PerformActionsNew(float prevFrame, float nextFrame, Entity entity)
         {
             if(this.Def.WarpMode != WarpMode.Once)
             {
@@ -254,7 +226,7 @@ namespace Project1.Core.Animations
                     action.Value(entity);
             }
         }
-        private void PerformActions(float prevframe, float nextframe, GameObject entity)
+        private void PerformActions(float prevframe, float nextframe, Entity entity)
         {
             if (this.State == AnimationStates.Removed)
                 return;

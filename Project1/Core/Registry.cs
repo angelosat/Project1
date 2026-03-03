@@ -10,6 +10,7 @@ namespace Project1.Core
         public static readonly EventHooks MapEventHooksServer = new();
         public static readonly EventHooks MapEventHooksClient = new();
         public static readonly EventHooks WorldEventHooksServer = new();
+        public static readonly EventHooks WorldEventHooksClient = new();
         public static readonly EventHooks EndpointHooks = new();
         public static readonly EventHooks PlayerInputEventHooks = new();
     }

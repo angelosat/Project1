@@ -145,8 +145,8 @@ namespace Project1.Core.UI.Hud
             this.Renderer.Invalidate();
             this.BoxOrderButtons.ClearControls();
             var map = Ingame.GetMap();
-            foreach (var target in this.MultipleSelected)
-                map.Town.Select(target, this);
+            //foreach (var target in this.MultipleSelected)
+            //    map.Town.Select(target, this);
         }
         private void OnBlockEntityRemoved(BlockEntityRemovedEvent e)
         {
@@ -305,7 +305,7 @@ namespace Project1.Core.UI.Hud
                     this.LabelName.TextFunc = () => entity.Name;
                     this.Selection.Add(target);
                     this.RefreshInfo(entity);
-                    entity.Map?.Town?.Select(target, this);
+                    //entity.Map?.Town?.Select(target, this);
                     break;
 
                 case CellSelection cell:
@@ -320,7 +320,7 @@ namespace Project1.Core.UI.Hud
                     this.Selection.Add(target);
                     this.SetName(target.Name);
                     this.RefreshInfo(blockEntity);
-                    blockEntity.Map.Town.Select(target, this);
+                    //blockEntity.Map.Town.Select(target, this);
                     break;
 
                 case null:
@@ -392,7 +392,7 @@ namespace Project1.Core.UI.Hud
             this.Clear();
             this.RefreshInfo(current);
             this.InitTabs(current);
-            Client.Instance.Map.Town.Select(current, this);
+            //Client.Instance.Map.Town.Select(current, this);
             this.Selectable = current;
         }
         void RefreshInfo(ISelectable selected)
@@ -410,7 +410,7 @@ namespace Project1.Core.UI.Hud
         {
             this.BoxOrderButtons.ClearControls();
             this.ActionsAdded.Clear();
-            Client.Instance.Map.Town.Select(null, this);
+            //Client.Instance.Map.Town.Select(null, this);
             this.RefreshOrderButtons();
         }
         void AddTabAction(string label, Action action, Color col)

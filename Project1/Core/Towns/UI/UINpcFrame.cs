@@ -25,9 +25,7 @@ namespace Project1.Core.Towns.UI
             this.AutoSize = true;
             this.FrameContainer = new GroupBox(64) 
             {
-                //Location = new(padding),
                 MouseThrough = true, 
-                //BackgroundColorFunc = () => Color.Lerp(Color.Red * .5f, Color.Lime * .5f, actor.MoodValue / 100f) 
             };
 
             this.Frame = new GroupBox(this.FrameContainer.Width - padding - padding)
@@ -38,17 +36,17 @@ namespace Project1.Core.Towns.UI
             };
             this.FrameContainer.AddControls(this.Frame);
 
-            this.Sprite = new PictureBox(actor.Body.RenderIcon(actor, 1)) { LocationFunc = () => this.FrameContainer.Center, Anchor = Vector2.One * .5f };
-            this.Sprite.MouseThrough = true;
+            this.Sprite = new PictureBox(actor.Body.RenderIcon(actor, 1))
+            {
+                LocationFunc = () => this.FrameContainer.Center,
+                Anchor = Vector2.One * .5f,
+                MouseThrough = true
+            };
 
             this.Npc = actor;
             this.Tag = actor;
             this.LeftClickAction = () =>
             {
-                //if (InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
-                //    SelectionManager.AddToSelection(actor);
-                //else
-                //    SelectionManager.Select(actor);
                 Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent(
                     [actor], 
                     InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey) ? SelectionOp.Add : SelectionOp.Clear));
@@ -70,7 +68,7 @@ namespace Project1.Core.Towns.UI
         public override void Draw(SpriteBatch sb, Rectangle viewport)
         {
             base.Draw(sb, viewport);
-            if (SelectionManager.IsSelected(this.Npc))
+            if (SelectionManager.Instance.CurrentSelections.Contains(this.Npc))
                 this.Frame.DrawHighlightBorder(sb);
         }
     }

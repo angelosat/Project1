@@ -61,8 +61,8 @@ namespace Project1.Core.Animations
                 new Keyframe(0, Vector2.Zero, 0),
                 new Keyframe(10, new Vector2(0, -8), 0, Interpolation.Sine),
                 new Keyframe(20, new Vector2(0, 0), 0, Interpolation.Sine))
-            .AddEvent(20, MobileComponent.OnFootDown)
-            .AddEvent(40, MobileComponent.OnFootDown)
+            .AddEvent(20, MobileComponent.OnFootstep)
+            .AddEvent(40, MobileComponent.OnFootstep)
             .AddClip(BoneDefOf.RightHand, WarpMode.Loop,
                 new Keyframe(0, Vector2.Zero, 0),
                 new Keyframe(10, Vector2.Zero, -(float)Math.PI / 2f, Interpolation.Sine),

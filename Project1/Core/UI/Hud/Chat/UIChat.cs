@@ -94,7 +94,11 @@ namespace Project1.Core.UI.Hud.Chat
         private void HandleChatEvent(ChatEvent e)
         {
             var time = e.Entry.TimeStamp;
-            this.Write(e.Entry.Source.TextColor, $"[{time.Hour:00}:{time.Minute:00}:{time.Second:00}] [{e.Entry.Source.DisplayName}] {e.Entry.Text}");
+            var timestamp = $"[{time.Hour:00}:{time.Minute:00}:{time.Second:00}]";
+            if (e.Entry.Source.DisplayName is string source)
+                timestamp += $"[{source}]";
+            this.Write(e.Entry.Source.TextColor, $"{timestamp} {e.Entry.Text}");
+            //this.Write(e.Entry.Source.TextColor, $"[{time.Hour:00}:{time.Minute:00}:{time.Second:00}] [{e.Entry.Source.DisplayName}] {e.Entry.Text}");
         }
 
         private void ToggleOptions()

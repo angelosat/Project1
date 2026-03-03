@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Blocks;
-using Project1.Core.Graphics.Particles;
 using Project1.Core.Assets;
+using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Plants;
 using Project1.Core.Simulation;
 using Project1.Framework;
-using Project1.Core.Plants;
 using Project1.Framework.Helpers;
 using System;
 
@@ -19,9 +20,21 @@ namespace Project1.Core.VFX
             //Registry.MapEventHooksClient.Register<BlockDestroyedEvent>(OnBlockDestroyed);
             Registry.MapEventHooksClient.Register<BlockDamagedEvent>(OnBlockDamaged);
             Registry.MapEventHooksClient.Register<PlantChoppedEvent>(OnPlantChopped);
+
+            Registry.MapEventHooksClient.Register<EntityFootStepEvent>(OnEntityFootStep);
+
         }
 
-     
+        private static void OnEntityFootStep(EntityFootStepEvent e)
+        {
+            var entity = e.Entity;
+            var map = entity.Map;
+            var query = map.Query(entity.Cell);
+            var emitter = query.Cell.Block.GetEmitter();
+            emitter.Source = entity.Global;
+            emitter.Emit(10, entity.Velocity);
+            entity.Map.ParticleManager.AddEmitter(emitter);
+        }
 
         private static void OnPlantChopped(PlantChoppedEvent e)
         {

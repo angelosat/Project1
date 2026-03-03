@@ -160,10 +160,6 @@ namespace Project1.Core.Simulation
             return this.Block.GetChildren(this.Orientation).Select(v => v + global);
         }
 
-        public byte X; // 1 byte
-        public byte Y; // 1 byte
-        public byte Z; // 1 byte
-        //public byte Sunlight = 15, Blocklight = 0;
         public Block Block = BlockDefOf.Air.Block; // 4 bytes
         public MaterialDef Material = MaterialDefOf.Air;
         public BitVector32 Data; // 4 bytes
@@ -171,12 +167,6 @@ namespace Project1.Core.Simulation
         public Cell()
         {
             this.Valid = true;
-        }
-        public Cell(int localX, int localY, int localZ) : this()
-        {
-            this.X = (byte)localX;
-            this.Y = (byte)localY;
-            this.Z = (byte)localZ;
         }
 
         public static IntVec3 FrontDefault = new(0, 1, 0);
@@ -219,12 +209,12 @@ namespace Project1.Core.Simulation
         //public IntVec3 LocalCoords => new(this.X, this.Y, this.Z);
 
         public IntVec3 SizeRotated => Coords.Rotate(this.Block.Size, this.Orientation);
-        public IntVec3 LocalCoords => new(this.X, this.Y, this.Z);
-        public IntVec3 GetGlobalCoords(Chunk chunk)
-        {
-            return new IntVec3(chunk.Start.X + this.X, chunk.Start.Y + this.Y, this.Z);
-            //return new IntVec3(this.X, this.Y, this.Z);
-        }
+        //public IntVec3 LocalCoords => new(this.X, this.Y, this.Z);
+        //public IntVec3 GetGlobalCoords(Chunk chunk)
+        //{
+        //    return new IntVec3(chunk.Start.X + this.X, chunk.Start.Y + this.Y, this.Z);
+        //    //return new IntVec3(this.X, this.Y, this.Z);
+        //}
         //public IntVec3 GetLocalCoords(Chunk chunk)
         //{
         //    return new IntVec3(this.X - chunk.Start.X, this.Y - chunk.Start.Y, this.Z);

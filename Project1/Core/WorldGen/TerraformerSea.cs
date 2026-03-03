@@ -21,9 +21,17 @@ namespace Project1.Core.WorldGen
             var landTerraformer = chunk.Map.World.GetTerraformer<TerraformerNormal>();
             var landThreshold = landTerraformer.GroundAirThreshold;
             var sandThreshold = landThreshold - sandThickness;
-            foreach (var c in chunk.Cells)
+            for (int i = 0; i < chunk.Cells.Length; i++)
             {
-                var z = c.Z;
+
+            //}
+            //foreach (var c in chunk.Cells)
+            //{
+
+                var cellCoords = Chunk.GetLocalFromIndex(i);
+                var c = chunk.Cells[i];
+                //var z = c.Z;
+                var z = cellCoords.Z;
                 float zNormal = z / (float)MapBase.MaxHeight - 0.5f;
                 if (z > this.SeaLevel)
                     continue;
@@ -50,8 +58,8 @@ namespace Project1.Core.WorldGen
                     continue;
                 if (c.Material != MaterialDefOf.Soil)
                     continue;
-                var cellCoords = c.LocalCoords;
-                var soilGradient = zNormal + gradients[cellCoords];
+                //var cellCoords = c.LocalCoords;
+                var soilGradient = zNormal + gradients[cellCoords.ToGlobal(chunk)];
                 if (sandThreshold <= soilGradient && soilGradient < landThreshold)
                 {
                     c.Block = BlockDefOf.Sand.Block;

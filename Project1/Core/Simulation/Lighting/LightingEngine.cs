@@ -1,4 +1,5 @@
-﻿using Project1.Core.Simulation;
+﻿using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace Project1.Core
         void HandleSkyGlobalImmediate(IntVec3 global, Queue<IntVec3> queue, HashSet<IntVec3> queued)
         {
             byte oldLight, nextLight;
-            int gx = (int)global.X, gy = (int)global.Y, z = (int)global.Z;
+            int gx = global.X, gy = global.Y, z = global.Z;
 
             if (!this.Map.TryGetAll(gx, gy, z, out var thisChunk, out var thisCell, out int lx, out int ly))
                 return;
@@ -39,7 +40,8 @@ namespace Project1.Core
             nextLight = GetNextSunLightImmediate(thisCell, thisChunk, gx, gy, z, lx, ly, neighbors);
 
             oldLight = thisChunk.GetSunlight(lx, ly, z);
-            var local = thisCell.LocalCoords;// GetLocalCoords(thisChunk);
+            //var local = thisCell.LocalCoords;// GetLocalCoords(thisChunk);
+            var local = global.ToLocal();
             int d = nextLight - oldLight;
             if (d != 0)
                 thisChunk.SetSunlight(local, nextLight);
@@ -76,7 +78,8 @@ namespace Project1.Core
                             continue;
                         if (ncell.Opaque)
                             continue;
-                        var local = ncell.LocalCoords;// GetLocalCoords(nchunk);
+                        //var local = ncell.LocalCoords;// GetLocalCoords(nchunk);
+                        var local = new IntVec3(lx, ly, z) + n;
                         var l = nchunk.GetSunlight(local);
                         maxAdjLight = Math.Max(maxAdjLight, l);
                     }
@@ -93,28 +96,28 @@ namespace Project1.Core
             queueToDarkenQueued.Add(global);
             while (queueToDarken.Count > 0)
             {
-                var current = queueToDarken.Dequeue();
+                var currentGlobal = queueToDarken.Dequeue();
                 byte nlight;
-                if (!this.Map.TryGetAll(current, out var chunk, out var cell))
+                if (!this.Map.TryGetAll(currentGlobal, out var chunk, out var cell))
                     continue;
 
-                var local = cell.LocalCoords;// GetLocalCoords(chunk);
+                var local = currentGlobal.ToLocal();// cell.LocalCoords;// GetLocalCoords(chunk);
                 if (chunk.IsAboveHeightMap(local))
                     continue;
                 chunk.SetSunlight(local, 0);
 
-                var neighbors = current.GetAdjacentLazy();
+                var neighbors = currentGlobal.GetAdjacentLazy();
                 foreach (var n in neighbors)
                 {
                     if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
                         continue;
-                    var nlocal = ncell.LocalCoords;// GetLocalCoords(nchunk);
+                    var nlocal = n.ToLocal();// ncell.LocalCoords;// GetLocalCoords(nchunk);
                     if (nchunk.IsAboveHeightMap(nlocal))
                     {
-                        if (!queued.Contains(current))
+                        if (!queued.Contains(currentGlobal))
                         {
-                            queue.Enqueue(current);
-                            queued.Add(current);
+                            queue.Enqueue(currentGlobal);
+                            queued.Add(currentGlobal);
                         }
                         continue;
                     }
@@ -135,7 +138,7 @@ namespace Project1.Core
             queued.Remove(global);
             if (!this.Map.TryGetAll(global, out var thisChunk, out var thisCell))
                 return;
-            var local = thisCell.LocalCoords;// GetLocalCoords(thisChunk);
+            var local = global.ToLocal();// thisCell.LocalCoords;// GetLocalCoords(thisChunk);
             var thisLight = thisChunk.GetBlockLight(local);
 
             nextLight = GetNextBlockLightImmediate(thisCell, global);
@@ -172,7 +175,7 @@ namespace Project1.Core
                     continue;
                 if (ncell.Opaque)
                     continue;
-                var local = ncell.LocalCoords;// GetLocalCoords(nchunk);
+                var local = n.ToLocal();// ncell.LocalCoords;// GetLocalCoords(nchunk);
                 byte l = nchunk.GetBlockLight(local);
                 maxAdjLight = Math.Max(maxAdjLight, l);
             }
@@ -204,7 +207,7 @@ namespace Project1.Core
                     continue;
                 if (cell.Opaque)
                     continue;
-                var local = cell.LocalCoords;// GetLocalCoords(chunk);
+                var local = current.ToLocal();// cell.LocalCoords;// GetLocalCoords(chunk);
 
                 var prevLight = chunk.GetBlockLight(local);
                 chunk.SetBlockLight(local, cell.Luminance);
@@ -215,7 +218,7 @@ namespace Project1.Core
                     var n = global + adj[i];
                     if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
                         continue;
-                    var nlocal = ncell.LocalCoords;// GetLocalCoords(nchunk);
+                    var nlocal = n.ToLocal();// ncell.LocalCoords;// GetLocalCoords(nchunk);
 
                     var nlight = nchunk.GetBlockLight(nlocal);
 

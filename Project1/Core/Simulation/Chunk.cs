@@ -60,7 +60,7 @@ namespace Project1.Core.Simulation
                 for (int j = 0; j < Size; j++)
                     for (int i = 0; i < Size; i++)
                     {
-                        Cell cell = new(i, j, z);
+                        Cell cell = new();// i, j, z);
                         double gradient = grad.GetGradient(i, j, z);
                         //this.GradientCache[n] = gradient;
                         gradientCache.Add(new IntVec3(i, j, z), gradient);
@@ -89,7 +89,7 @@ namespace Project1.Core.Simulation
                 for (int j = 0; j < Size; j++)
                     for (int i = 0; i < Size; i++)
                     {
-                        Cell cell = new(i, j, z);
+                        Cell cell = new();
                         this.Cells[n++] = cell;
                     }
             return this;
@@ -161,7 +161,7 @@ namespace Project1.Core.Simulation
         public MapBase Map;
         public WorldBase World => this.Map.World;
         public bool Valid;
-        readonly Queue<Cell> CellsToValidate = new Queue<Cell>();
+        readonly Queue<IntVec3Local> CellsToValidate = [];
 
         public bool ChunkBoundariesUpdated = true;
         public bool LightValid = false;
@@ -313,7 +313,10 @@ namespace Project1.Core.Simulation
         
         public static int GetCellIndex(IntVec3Local local)
             => GetCellIndex(local.X, local.Y, local.Z);
-        
+
+        public static IntVec3Local GetLocalFromIndex(int index)
+            => new(new(index % Size, (index / Size) % Size, index / (Size * Size)));
+
         public static int Volume = Size * Size * MapBase.MaxHeight;
         public byte[] BlockLight = new byte[Volume];
         public byte[] Sunlight = new byte[Volume];
@@ -390,6 +393,7 @@ namespace Project1.Core.Simulation
             int minVal = 0, maxVal = this.Map.GetMaxHeight();
             while (z >= 0)
             {
+
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
                     if (cell.Block != BlockDefOf.Air.Block)
@@ -416,8 +420,9 @@ namespace Project1.Core.Simulation
                         else return; // new heightmap value is same as previous one so return
                     }
                 }
+                
                 if (found && (minVal < z && z <= maxVal)) // if a new heightmap value found, invalidate cells inbetween the old and the new one
-                    this.InvalidateCell(cell); // why did i have this commented out? it caused slice meshes not getting updated light
+                    this.InvalidateCell(new IntVec3(localx, localy, z)); // why did i have this commented out? it caused slice meshes not getting updated light
 
                 z--;
             }
@@ -452,7 +457,7 @@ namespace Project1.Core.Simulation
                 }
                 this.SetSunlight(localx, localy, z, light);
                 if (invalidate)
-                    this.InvalidateCell(cell);
+                    this.InvalidateCell(new IntVec3(localx, localy, z));
                 z--;
             }
 
@@ -460,9 +465,9 @@ namespace Project1.Core.Simulation
                 this.HeightMap[localx][localy] = z;
         }
 
-        public Queue<Vector3> ResetHeightMapColumn(int localx, int localy)
+        public Queue<IntVec3> ResetHeightMapColumn(int localx, int localy)
         {
-            Queue<Vector3> lightsourcesToHandle = new Queue<Vector3>();
+            Queue<IntVec3> lightsourcesToHandle = [];
             int z;
             byte light;
             Cell cell;
@@ -472,6 +477,7 @@ namespace Project1.Core.Simulation
             bool hit = false;
             while (z >= 0)
             {
+                var local = new IntVec3(localx, localy, z);
                 cell = this.GetLocalCell(localx, localy, z);
                 if (!hit)
                     if (cell.Block != BlockDefOf.Air.Block)
@@ -490,7 +496,8 @@ namespace Project1.Core.Simulation
 
                 this.SetSunlight(localx, localy, z, light);
                 if (z <= firstContact)
-                    lightsourcesToHandle.Enqueue(cell.GetGlobalCoords(this));
+                    //lightsourcesToHandle.Enqueue(cell.GetGlobalCoords(this));
+                    lightsourcesToHandle.Enqueue(local.ToGlobal(this));
 
                     z--;
             }
@@ -507,9 +514,10 @@ namespace Project1.Core.Simulation
             {
                 while (this.CellsToValidate.Count > 0)
                 {
-                    Cell cell = this.CellsToValidate.Dequeue();
-                    this.Map.LightingEngine.HandleImmediate([cell.GetGlobalCoords(this)]);
-                    cell.Valid = true;
+                    var cell = this.CellsToValidate.Dequeue();
+                    //this.Map.LightingEngine.HandleImmediate([cell.GetGlobalCoords(this)]);
+                    this.Map.LightingEngine.HandleImmediate([cell.ToGlobal(this)]);
+                    this.GetLocalCell(cell).Valid = true;
                     this.InvalidateSlice(cell.Z);
                     this.InvalidateMesh();
                 }
@@ -526,22 +534,34 @@ namespace Project1.Core.Simulation
             this.InvalidateSlice((byte)z);
         }
 
-        public bool InvalidateCell(Cell cell)
+        //public bool InvalidateCell(Cell cell)
+        //{
+        //    //this.BlockTokens.Remove(cell.LocalCoords);
+        //    this.BlockDamageSystem.Delete(cell.LocalCoords);
+        //    if (cell is null)
+        //        throw new Exception();
+        //    this.InvalidateLight(cell);
+
+        //    if (!cell.Valid)
+        //        return false;
+
+        //    this.CellsToValidate.Enqueue(cell);
+        //    cell.Valid = false;
+        //    return true;
+        //}
+        public bool InvalidateCell(IntVec3Local cell)
         {
             //this.BlockTokens.Remove(cell.LocalCoords);
-            this.BlockDamageSystem.Delete(cell.LocalCoords);
-            if (cell is null)
-                throw new Exception();
-            this.InvalidateLight(cell);
+            this.BlockDamageSystem.Delete(cell);
+            this.InvalidateLight(cell.ToGlobal(this));
 
-            if (!cell.Valid)
+            if (!this.GetLocalCell(cell).Valid)
                 return false;
 
             this.CellsToValidate.Enqueue(cell);
-            cell.Valid = false;
+            this.GetLocalCell(cell).Valid = false;
             return true;
         }
-
         public byte GetBlockLight(IntVec3Local local)
         {
             return this.GetBlockLight(local.X, local.Y, local.Z);
@@ -585,7 +605,7 @@ namespace Project1.Core.Simulation
         /// <summary>
         /// TODO: optimize: convert to dictionary for speed
         /// </summary>
-        public Dictionary<IntVec3, LightToken> LightCache = [];
+        public Dictionary<IntVec3Local, LightToken> LightCache = [];
         //internal Dictionary<IntVec3, BlockHealthToken> BlockTokens = [];
         public static bool InvalidateLight(MapBase map, IntVec3 global)
         {
@@ -595,10 +615,10 @@ namespace Project1.Core.Simulation
             }
             return false;
         }
-        public bool InvalidateLight(Cell cell)
-        {
-            return this.InvalidateLight(cell.GetGlobalCoords(this));
-        }
+        //public bool InvalidateLight(Cell cell)
+        //{
+        //    return this.InvalidateLight(cell.GetGlobalCoords(this));
+        //}
         public bool InvalidateLight(IntVec3 global)
         {
             this.LightCache.Clear();
@@ -613,6 +633,8 @@ namespace Project1.Core.Simulation
             }
             return true;
         }
+        public static bool TryGetFinalLight(MapBase map, IntVec3 global, out byte sky, out byte block)
+            => TryGetFinalLight(map, global.X, global.Y, global.Z, out sky, out block);
 
         public static bool TryGetFinalLight(MapBase map, int globalX, int globalY, int globalZ, out byte sky, out byte block)
         {
@@ -732,7 +754,8 @@ namespace Project1.Core.Simulation
 
                 if (!map.TryGetCell(global, out Cell cell))
                     continue;
-                float x = cell.X, y = cell.Y, z = global.Z;
+                var local = obj.Cell.ToLocal();
+                int x = local.X, y = local.Y, z = local.Z;
                 // TODO: figure out a way to get depth from actual precise global coords instead of cell coords
                 Coords.Rotate(camera, x, y, out float rx, out float ry);
                 Vector3 rotated = new(rx, ry, z);
@@ -748,7 +771,7 @@ namespace Project1.Core.Simulation
                 if (!camera.ViewPort.Intersects(screenBounds))
                     continue;
                 float cd = global.GetDrawDepth(map, camera);
-                var local = cell.LocalCoords;
+                //var local = cell.LocalCoords;
                 byte light = Math.Max((byte)(this.GetSunlight(local) - map.GetSkyDarkness()), this.GetBlockLight(local));
                 float l = (light + 1) / 16f;
                 Color color = new Color(l, l, l, 1);
@@ -1931,76 +1954,15 @@ namespace Project1.Core.Simulation
             }
             return (frontCellX, frontCellY);
         }
-
-        public void BuildSlice(Slice slice, Camera camera, MapBase map, int z)
-        {
-            var unknown = new List<Cell>();
-            var visible = new List<Cell>();
-
-            // create the slice's undiscovered blocks mesh
-            for (int i = 0; i < Chunk.Size; i++)
-                for (int j = 0; j < Chunk.Size; j++)
-                {
-                    var local = new IntVec3(i, j, z);
-                    var cell = this.Cells[GetCellIndex(local)];
-                    var global = local.ToGlobal(this);
-
-                    // DO I NEED THIS?
-                    if (!camera.MysteriousBlocks)
-                    {
-                        if (cell.Block != BlockDefOf.Air.Block)
-                        {
-                            if (!map.IsVisible(global))
-                                unknown.Add(cell);
-                            else // did i need visibleoutercells list afterall?
-                                visible.Add(cell);
-                        }
-                    }
-                    else
-                    {
-                        if (map.IsUndiscovered(global) || !map.IsVisible(global)) // did i need visibleoutercells list afterall?
-                        {
-                            unknown.Add(cell);
-                        }
-                        else
-                        {
-                            if (cell.Block != BlockDefOf.Air.Block)
-                                visible.Add(cell);
-                        }
-                    }
-                }
-
-            var unknownCount = unknown.Count;
-            var unknownSlice = new MySpriteBatch(Game1.Instance.GraphicsDevice, unknownCount);
-            var topCover = new Canvas(Game1.Instance.GraphicsDevice, unknownCount);
-
-            foreach (var cell in unknown)
-            {
-                if (camera.MysteriousBlocks)
-                    camera.DrawUnknown(unknownSlice, map, this, cell);
-                else
-                    camera.DrawCell(topCover, map, this, cell);
-            }
-
-            var visibleCount = visible.Count;
-            var canvas = new Canvas(Game1.Instance.GraphicsDevice, visibleCount);
-            for (int i = 0; i < visibleCount; i++)
-            {
-                var cell = visible[i];
-                camera.DrawCell(canvas, map, this, cell);
-            }
-            slice.Canvas = canvas;
-            slice.Cover = topCover;
-            slice.Unknown = unknownSlice;
-        }
+        
         public void BuildSliceNew(Slice slice, Camera camera, MapBase map, int z, (int x, int y) frontCells)
         {
             var maxCapacity = Size * Size;
-            var obstructed = new List<Cell>(maxCapacity);
-            var mysterious = new List<Cell>(maxCapacity);
-            var visible = new List<Cell>(maxCapacity);
-            var frontmost = new List<Cell>(maxCapacity);
-            var frontmostMysterious = new List<Cell>(maxCapacity);
+            var obstructed = new List<IntVec3Local>(maxCapacity);
+            var mysterious = new List<IntVec3Local>(maxCapacity);
+            var visible = new List<IntVec3Local>(maxCapacity);
+            var frontmost = new List<IntVec3Local>(maxCapacity);
+            var frontmostMysterious = new List<IntVec3Local>(maxCapacity);
 
             var canvas = new Canvas(Game1.Instance.GraphicsDevice, visible.Count + frontmost.Count + frontmostMysterious.Count);
 
@@ -2008,12 +1970,13 @@ namespace Project1.Core.Simulation
                 for (int j = 0; j < Chunk.Size; j++)
                 {
                     var local = new IntVec3(i, j, z);
-                    var cell = this.Cells[GetCellIndex(local)];
+                    //var cell = this.Cells[GetCellIndex(local)];
+                    var block = this.GetBlock(local);
                     var global = local.ToGlobal(this);
-                    var isair = cell.Block == BlockDefOf.Air.Block;// BlockDefOf.Air;
+                    var isair = block == BlockDefOf.Air.Block;// BlockDefOf.Air;
                     // HACK
-                    if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global)) 
-                     //if (isair && this.Map.Town.DesignationManager.IsDesignation(global, DesignationDefOf.Construct)) // HACK
+                    if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global))
+                        //if (isair && this.Map.Town.DesignationManager.IsDesignation(global, DesignationDefOf.Construct)) // HACK
                         camera.DrawBlock(canvas, BlockDefOf.Designation.Block, map, this, local);
 
                     var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);
@@ -2023,22 +1986,22 @@ namespace Project1.Core.Simulation
                     if (global.X == frontCells.x || global.Y == frontCells.y)
                     {
                         if (ismysterious)
-                            frontmostMysterious.Add(cell);
+                            frontmostMysterious.Add(local);
                         if (!isair)
-                            frontmost.Add(cell);
+                            frontmost.Add(local);
                     }
                     else
                     {
                         if (ismysterious)
-                            mysterious.Add(cell);
+                            mysterious.Add(local);
                         else
                         {
                             if (!isair)
                             {
                                 if (isobstructed)
-                                    obstructed.Add(cell);
+                                    obstructed.Add(local);
                                 else
-                                    visible.Add(cell);
+                                    visible.Add(local);
                             }
                         }
                     }
@@ -2046,61 +2009,24 @@ namespace Project1.Core.Simulation
 
             var topCover = new Canvas(Game1.Instance.GraphicsDevice, obstructed.Count + mysterious.Count);
 
-            foreach(var cell in obstructed)
-                camera.DrawCell(topCover, map, this, cell);
+            foreach (var cell in obstructed)
+                camera.DrawCell(topCover, map, this, cell);//, cell.LocalCoords.ToGlobal(this));
 
-            foreach(var cell in mysterious)
-                camera.DrawUnknown(topCover, map, this, cell);
+            foreach (var cell in mysterious)
+                camera.DrawUnknown(topCover, map, this, cell);//);
 
 
-            foreach(var cell in visible)
-                camera.DrawCell(canvas, map, this, cell);
+            foreach (var cell in visible)
+                camera.DrawCell(canvas, map, this, cell);//, cell.LocalCoords.ToGlobal(this));
 
-            foreach(var cell in frontmost)
-                camera.DrawCell(canvas, map, this, cell);
+            foreach (var cell in frontmost)
+                camera.DrawCell(canvas, map, this, cell);//, cell.LocalCoords.ToGlobal(this));
 
             foreach (var cell in frontmostMysterious)
                 camera.DrawUnknown(canvas, map, this, cell);
 
             slice.Canvas = canvas;
             slice.Cover = topCover;
-        }
-        public void BuildFrontmostBlocksNewSlicesNew(Camera camera)
-        {
-            var chunkX = this.MapCoords.X;
-            var chunkY = this.MapCoords.Y;
-            var mapSizeInChunks = this.Map.GetSizeInChunks();
-            int edgeX = 0, edgeY = 0;
-            IntVec3 offset = default;
-            switch ((int)camera.Rotation)
-            {
-                case 0:
-                    edgeX = mapSizeInChunks - 1;
-                    edgeY = mapSizeInChunks - 1;
-                    offset.X = Chunk.Size - 1;
-                    offset.Y = Chunk.Size - 1;
-                    break;
-                case 1:
-                    edgeX = mapSizeInChunks - 1;
-                    edgeY = 0;
-                    offset.X = Chunk.Size - 1;
-
-                    break;
-                case 2:
-                    edgeX = 0;
-                    edgeY = 0;
-                    break;
-                case 3:
-                    edgeX = 0;
-                    edgeY = mapSizeInChunks - 1;
-                    offset.Y = Chunk.Size - 1;
-                    break;
-                default:
-                    break;
-            }
-            var maxheight = this.Map.GetMaxHeight();
-            var map = this.Map;
-            
         }
 
         [InspectorHidden]
@@ -2167,6 +2093,7 @@ namespace Project1.Core.Simulation
             this.InvalidateSlice(pos.Z);
             this.Map.Events.Post(new CellsInvalidatedEvent(this.Map, [pos]));
         }
+        internal Block GetBlock(IntVec3Local local) => this.Cells[GetCellIndex(local)].Block;
         internal Block GetBlock(int cellIndex) => this.Cells[cellIndex].Block;
         internal byte GetBlockData(int cellIndex) => this.Cells[cellIndex].BlockData;
         internal MaterialDef GetMaterial(int cellIndex) => this.Cells[cellIndex].Material;

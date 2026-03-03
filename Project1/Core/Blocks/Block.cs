@@ -569,6 +569,7 @@ namespace Project1.Core.Blocks
 
             sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[Math.Min(cell.Variation, this.Variations.Count - 1)], zoom, fog, tint, sunlight, blocklight, depth);
         }
+      
         public virtual void Draw(MySpriteBatch sb, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
             if (this == BlockDefOf.Air.Block)
@@ -621,7 +622,13 @@ namespace Project1.Core.Blocks
             if (cell.Damage > 0)
                 DrawCracks(canvas.Opaque, vector3, camera, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Damage);
         }
-
+        internal void Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBoundsVector4, Color sun, Vector4 block, Color finalFogColor, Color tint, int depth)
+        {
+            var cell = chunk.GetLocalCell(global);
+            this.Draw(canvas, chunk, global, camera, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Variation, cell.Orientation, cell.BlockData, cell.Material);
+            if (cell.Damage > 0)
+                DrawCracks(canvas.Opaque, global, camera, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Damage);
+        }
         public virtual MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
             if (this == BlockDefOf.Air.Block)

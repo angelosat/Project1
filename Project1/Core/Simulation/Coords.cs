@@ -60,6 +60,13 @@ namespace Project1.Core.Simulation
             float x = vector.X, y = vector.Y;
             return new Vector2((float)(x * camera.RotCos - y * camera.RotSin), (float)(x * camera.RotSin + y * camera.RotCos));
         }
+        public static void Rotate(Camera camera, IntVec2 normal, out IntVec2 rotated)
+        {
+            rotated = new IntVec2(
+                (int)(normal.X * camera.RotCos - normal.Y* camera.RotSin),
+                (int)(normal.X * camera.RotSin + normal.Y * camera.RotCos)
+                );
+        }
         public static void Rotate(Camera camera, float x, float y, out int xx, out int yy)
         {
             xx = (int)(x * camera.RotCos - y * camera.RotSin);

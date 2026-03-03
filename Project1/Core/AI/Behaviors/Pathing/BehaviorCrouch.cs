@@ -42,7 +42,9 @@ namespace Project1.Core.AI.Behaviors.Pathing
                     var isNextBlockSolid = cell.IsSolid();
                     var isAboveNextBlockSolid = parent.Map.IsSolid(corner.Above());
                     float nextBlockHeight = Block.GetBlockHeight(map, corner);
-                    var heightDifference = (cell.Z + nextBlockHeight) - parentGlobal.Z;
+                    var cellCoords = (IntVec3)corner;
+                    //var heightDifference = (cell.Z + nextBlockHeight) - parentGlobal.Z;
+                    var heightDifference = (cellCoords.Z + nextBlockHeight) - parentGlobal.Z;
                     if (!isNextBlockSolid && isAboveNextBlockSolid)
                     {
                             parent.CrouchToggle(true);

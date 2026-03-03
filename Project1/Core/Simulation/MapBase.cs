@@ -632,8 +632,8 @@ namespace Project1.Core.Simulation
                 cell.Origin = args.Source;
                 cell.Damage = 0; // reset damage when block changes?
 
-                chunk.InvalidateCell(cell);
-                chunk.InvalidateSlice(cell.Z);
+                chunk.InvalidateCell(global);
+                chunk.InvalidateSlice(global.Z);
 
                 heightMapChanges.Add((global.X, global.Y));
             }
@@ -698,7 +698,9 @@ namespace Project1.Core.Simulation
             if (raiseEvent)
                 this.NotifyBlocksChanged(children.Select(c => c.global));
 
-            chunk.InvalidateHeightmap(cell.X, cell.Y);
+            var local = global.ToLocal();
+            //chunk.InvalidateHeightmap(cell.X, cell.Y);
+            chunk.InvalidateHeightmap(local.X, local.Y);
 
             // maybe i can refresh cell edges here on the spot?
             this.InvalidateCell(global); // do i need to invalidate the cell even after invalidating the heightmap in the line above?

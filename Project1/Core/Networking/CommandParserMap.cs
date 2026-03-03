@@ -54,16 +54,17 @@ namespace Project1.Core.Networking
                         break;
 
                     case "remove":
-                        var toremove = Def.GetDef<BlockDef>(p[1]).Block;
-                        if (toremove == BlockDefOf.Air.Block)
-                            break;
-                        foreach (var ch in net.Map.GetActiveChunks())
-                            foreach (var cell in ch.Value.Cells)
-                                if (cell.Block == toremove)
-                                    net.Map.RemoveBlock(cell.LocalCoords);
-                        if (net is Server)
-                            (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), ReliabilityType.OrderedReliable);
-                        break;
+                        throw new NotImplementedException();
+                        //var toremove = Def.GetDef<BlockDef>(p[1]).Block;
+                        //if (toremove == BlockDefOf.Air.Block)
+                        //    break;
+                        //foreach (var ch in net.Map.GetActiveChunks())
+                        //    foreach (var cell in ch.Value.Cells)
+                        //        if (cell.Block == toremove)
+                        //            net.Map.RemoveBlock(cell.LocalCoords);
+                        //if (net is Server)
+                        //    (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), ReliabilityType.OrderedReliable);
+                        //break;
 
                     default:
                         break;

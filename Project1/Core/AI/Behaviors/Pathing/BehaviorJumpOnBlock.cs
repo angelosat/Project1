@@ -33,7 +33,9 @@ namespace Project1.Core.AI.Behaviors.Pathing
                 var isNextBlockSolid = cell.IsSolid();
                 var isAboveNextBlockSolid = parent.Map.IsSolid(corner.Above());
                 float nextBlockHeight = Block.GetBlockHeight(parent.Map, corner);
-                var heightDifference = (cell.Z + nextBlockHeight) - parentGlobal.Z;
+                var cellZ = ((IntVec3)corner).Z;
+                //var heightDifference = (cell.Z + nextBlockHeight) - parentGlobal.Z;
+                var heightDifference = (cellZ + nextBlockHeight) - parentGlobal.Z;
                 if (isNextBlockSolid && 
                     !isAboveNextBlockSolid &&
                     heightDifference > MaxClimbableHeight)

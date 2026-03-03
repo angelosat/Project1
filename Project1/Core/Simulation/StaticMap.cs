@@ -495,7 +495,7 @@ namespace Project1.Core.Simulation
         {
             if (!this.TryGetAll(global, out Chunk chunk, out Cell cell))
                 return false;
-            return chunk.InvalidateCell(cell);
+            return chunk.InvalidateCell(global);
         }
         public IEnumerable<(string, Action)> GetGenerationTasks()
         {

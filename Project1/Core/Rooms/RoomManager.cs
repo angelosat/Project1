@@ -89,9 +89,15 @@ namespace Project1.Core.Rooms
             var sw = Stopwatch.StartNew();
             foreach (var chunk in map.ActiveChunks.Values)
             {
-                foreach (var cell in chunk.Cells)
-                {
-                    var global = cell.LocalCoords;// GetGlobalCoords(chunk);
+                //foreach (var cell in chunk.Cells)
+                    for (int i = 0; i < chunk.Cells.Length; i++)
+                    {
+                    var cell = chunk.Cells[i];
+                //    }
+                //{
+                    //var global = cell.LocalCoords;// GetGlobalCoords(chunk);
+                    var local = Chunk.GetLocalFromIndex(i);
+                    var global = local.ToGlobal(chunk);
                     if (handled.Contains(global))
                         continue;
                     if (cell.IsRoomBorder)

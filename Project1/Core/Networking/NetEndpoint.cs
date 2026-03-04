@@ -70,10 +70,6 @@ namespace Project1.Core.Networking
         public abstract PlayerData GetPlayer(int id);
         public abstract PlayerData GetPlayer();
         public abstract IEnumerable<PlayerData> GetPlayers();
-        [Obsolete("use world.register instead")]
-        public abstract Entity Instantiate(Entity obj);
-        [Obsolete("use world.register instead")]
-        public abstract void Instantiator(Entity o);
         public virtual bool LogStateChange(Entity entity) => false;
         public abstract void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);
         public abstract void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);

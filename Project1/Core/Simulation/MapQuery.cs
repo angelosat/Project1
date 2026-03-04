@@ -4,6 +4,7 @@ using Project1.Core.Materials;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Project1.Core.Simulation
 {
@@ -23,10 +24,41 @@ namespace Project1.Core.Simulation
             var cell = this.GetCell();
             return cell.Block.GetFootprint(this.Map, this.Global, cell.Orientation);
         }
+        public CellQuery CellQuery => new(this.Chunk, this.Global);
         public MapQuerySnapshot ToSnapshot() 
             => !this.Map.Contains(this.Global) ? 
             default : 
             new([.. this.GetEntities()], this.GetCell(), this.GetBlockEntity());
     }
     public record struct MapQuerySnapshot(List<Entity> Entities, Cell Cell, BlockEntity BlockEntity) { }
+
+    public readonly struct CellQuery
+    {
+        private readonly Chunk _chunk;
+        private readonly int _cellIndex;
+
+        internal CellQuery(Chunk chunk, IntVec3 global)
+        {
+            this._chunk = chunk;
+            this._cellIndex = Chunk.GetCellIndex(global);
+        }
+
+        public byte BlockData
+        {
+            get => this._chunk.GetBlockData(_cellIndex);
+            set => this._chunk.SetBlockData(_cellIndex, value);
+        }
+
+        public Block Block
+        {
+            get => this._chunk.GetBlock(_cellIndex);
+            set => this._chunk.SetBlock(_cellIndex, value);
+        }
+
+        public MaterialDef Material
+        {
+            get => this._chunk.GetMaterial(_cellIndex);
+            set => this._chunk.SetMaterial(_cellIndex, value);
+        }
+    }
 }

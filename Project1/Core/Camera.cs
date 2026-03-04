@@ -406,92 +406,29 @@ namespace Project1.Core
 
             var finalFogColor = Color.Transparent; // i calculate fog inside the shader from now on
             var global = new IntVec3(gx, gy, z);
-            var isDiscovered = !map.IsUndiscovered(global);
+            //var isDiscovered = !map.IsUndiscovered(global);
 
-            //block.Draw(canvas, chunk, new IntVec3(gx, gy, z), this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, variation: 0);//.Variation, cell.Orientation, cell.BlockData, cell.Material);
             block.Draw(canvas, chunk, global, this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, 0, 0, 0, null);
         }
-        //public bool DrawCell(Canvas canvas, MapBase map, Chunk chunk, Cell cell)//, IntVec3 global)
-        //{
-        //    var cellTile = cell.Block;
-        //    if (cellTile is BlockAir)
-        //    {
-        //        throw new Exception(); /// drawcell should never be called for air blocks, there are problems elsewhere
-        //        //chunk.InvalidateCell(cell);
-        //        //("tried to draw air at " + cell.GetGlobalCoords(chunk).ToString()).ToConsole();
-        //        //return false;
-        //    }
-
-        //    var block = cell.Block;
-        //    //var local = global.ToLocal();
-
-        //    int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
-        //    int z = cell.Z;
-        //    var global = new IntVec3(gx, gy, z);
-
-        //    //var light = GetFinalLight(this, map, chunk, cell, gx, gy, z);
-        //    var light = this.GetFinalLight(map, chunk, global);
-
-        //    //var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(local, Block.Bounds, Vector2.Zero);
-        //    var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
-        //    Coords.Rotate(this, lx, ly, out int rlx, out int rly);
-        //    //Coords.Rotate(this, local.XY, out var rotatedLocal);
-        //    var depth = rlx + rly;
-        //    //var depth = rotatedLocal.X + rotatedLocal.Y;
-
-        //    var finalFogColor = Color.Transparent; // i calculate fog inside the shader from now on
-        //    var isDiscovered = !map.IsUndiscovered(global);
-        //    /// DONT ERASE
-        //    ///if (cell.AllEdges == 0 && HideUnknownBlocks)  // do i want cells that have already been discoverd, to remain visible even if they become obstructed again?
-        //    ///
-
-        //    // THE CALLER SHOULD DECIDE WHETHER TO DRAW THEM AS MYSTERIOUS OR NOT
-        //    //if (!isDiscovered && this.MysteriousBlocks)// && isAir) // do i want cells that have already been discoverd, to remain visible even if they become obstructed again?
-        //    //    Block.DrawUnknown(canvas.Opaque, new IntVec3(gx, gy, z), this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth);
-        //    //else
-        //        block.Draw(canvas, chunk, global, this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, cell);//.Variation, cell.Orientation, cell.BlockData, cell.Material);
-
-        //    return true;
-        //}
+        
         public bool DrawCell(Canvas canvas, MapBase map, Chunk chunk, IntVec3Local local)
         {
             var block = chunk.GetBlock(local);
             if (block is BlockAir)
-            {
                 throw new Exception(); /// drawcell should never be called for air blocks, there are problems elsewhere
-                //chunk.InvalidateCell(cell);
-                //("tried to draw air at " + cell.GetGlobalCoords(chunk).ToString()).ToConsole();
-                //return false;
-            }
-
-            //var local = global.ToLocal();
 
             int lx = local.X, ly = local.Y, gx = chunk.Start.X + lx, gy = chunk.Start.Y + ly;
             int z = local.Z;
             var global = local.ToGlobal(chunk);
-            //var light = GetFinalLight(this, map, chunk, cell, gx, gy, z);
             var light = this.GetFinalLight(map, chunk, global);
-            //var light = this.GetFinalLight(map, chunk, global);
 
-            //var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(local, Block.Bounds, Vector2.Zero);
             var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
             Coords.Rotate(this, lx, ly, out int rlx, out int rly);
-            //Coords.Rotate(this, local.XY, out var rotatedLocal);
             var depth = rlx + rly;
-            //var depth = rotatedLocal.X + rotatedLocal.Y;
 
             var finalFogColor = Color.Transparent; // i calculate fog inside the shader from now on
-            //var global = new IntVec3(gx, gy, z);
-            var isDiscovered = !map.IsUndiscovered(global);
-            /// DONT ERASE
-            ///if (cell.AllEdges == 0 && HideUnknownBlocks)  // do i want cells that have already been discoverd, to remain visible even if they become obstructed again?
-            ///
+            //var isDiscovered = !map.IsUndiscovered(global);
 
-            // THE CALLER SHOULD DECIDE WHETHER TO DRAW THEM AS MYSTERIOUS OR NOT
-            //if (!isDiscovered && this.MysteriousBlocks)// && isAir) // do i want cells that have already been discoverd, to remain visible even if they become obstructed again?
-            //    Block.DrawUnknown(canvas.Opaque, new IntVec3(gx, gy, z), this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth);
-            //else
-            //block.Draw(canvas, chunk, global, this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, cell);//.Variation, cell.Orientation, cell.BlockData, cell.Material);
             block.Draw(canvas, chunk, global, this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth);//.Variation, cell.Orientation, cell.BlockData, cell.Material);
 
             return true;
@@ -519,35 +456,12 @@ namespace Project1.Core
                 texToken,
                 this.Zoom, Color.Transparent, tint, Color.White, Color.White, Vector4.One, Vector4.Zero, depth, null, global);
         }
-        //public bool DrawUnknown(Canvas canvas, MapBase map, Chunk chunk, Cell cell)
-        //{
-        //    int z = cell.Z;
-        //    int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
-
-        //    //int gx = cell.X, gy = cell.Y, z = cell.Z;
-        //    //int lx = gx - (int)chunk.Start.X;
-        //    //int ly = gy - (int)chunk.Start.Y;
-
-        //    var mapOffset = map.GetOffset();
-        //    Coords.Rotate(this, gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);
-        //    var light = GetFinalLight(this, map, chunk, cell, gx, gy, z, false);
-
-        //    var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
-        //    Coords.Rotate(this, lx, ly, out int rlx, out int rly);
-        //    var depth = rlx + rly;
-
-        //    Block.DrawUnknown(canvas.Opaque, new Vector3(gx, gy, z), this, screenBoundsVector4, light.Sun, light.Block, Color.Transparent, Color.White, depth);
-
-        //    return true;
-        //}
+        
         public bool DrawUnknown(Canvas canvas, MapBase map, Chunk chunk, IntVec3Local local)
         {
             int z = local.Z;
             int lx = local.X, ly = local.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
 
-            //int gx = cell.X, gy = cell.Y, z = cell.Z;
-            //int lx = gx - (int)chunk.Start.X;
-            //int ly = gy - (int)chunk.Start.Y;
             var global = local.ToGlobal(chunk);
             var mapOffset = map.GetOffset();
             Coords.Rotate(this, gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);
@@ -561,47 +475,7 @@ namespace Project1.Core
 
             return true;
         }
-        //public bool DrawUnknown(MySpriteBatch sb, MapBase map, Chunk chunk, Cell cell)
-        //{
-        //    int z = cell.Z;
-        //    int lx = cell.X, ly = cell.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
-
-        //    //int gx = cell.X, gy = cell.Y, z = cell.Z;
-        //    //int lx = gx - (int)chunk.Start.X;
-        //    //int ly = gy - (int)chunk.Start.Y;
-
-        //    var mapOffset = map.GetOffset();
-        //    Coords.Rotate(this, gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);
-        //    var light = GetFinalLight(this, map, chunk, cell, gx, gy, z, false);
-
-        //    var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
-        //    Coords.Rotate(this, lx, ly, out int rlx, out int rly);
-        //    var depth = rlx + rly;
-
-        //    Block.DrawUnknown(sb, new Vector3(gx, gy, z), this, screenBoundsVector4, light.Sun, light.Block, Color.Transparent, Color.White, depth);
-
-        //    return true;
-        //}
         
-        public bool DrawUnknown(MySpriteBatch sb, MapBase map, Chunk chunk, IntVec3Local local)
-        {
-            int z = local.Z;
-            int lx = local.X, ly = local.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
-
-            var mapOffset = map.GetOffset();
-            Coords.Rotate(this, gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);
-            var global = local.ToGlobal(chunk);
-            //var light = GetFinalLight(this, map, chunk, cell, gx, gy, z, false);
-            var light = GetFinalLight(this, map, chunk, local, false);
-
-            var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
-            Coords.Rotate(this, lx, ly, out int rlx, out int rly);
-            var depth = rlx + rly;
-
-            Block.DrawUnknown(sb, new Vector3(gx, gy, z), this, screenBoundsVector4, light.Sun, light.Block, Color.Transparent, Color.White, depth);
-
-            return true;
-        }
         public Color GetFogColorNew(int z)
         {
             if (!Fog)
@@ -713,41 +587,7 @@ namespace Project1.Core
             chunk.LightCache[global] = light;
             return light;
         }
-        public static LightToken GetFinalLight(Camera camera, MapBase map, Chunk chunk, IntVec3Local local, bool updateblockfaces = true)
-        {
-            var global = local.ToGlobal(chunk);
-            var gx = global.X;
-            var gy = global.Y;
-            var z = local.Z;
-            if (chunk.LightCache.TryGetValue(global, out LightToken cached))
-                return cached;
-
-            Coords.Rotate(camera, 1, 0, out int rightx, out int righty);
-            Coords.Rotate(camera, 0, 1, out int leftx, out int lefty);
-
-            Chunk.TryGetFinalLight(map, gx + rightx, gy - righty, z, out byte suneast, out byte blockeast);
-            Chunk.TryGetFinalLight(map, gx - leftx, gy + lefty, z, out byte sunsouth, out byte blocksouth);
-            Chunk.TryGetFinalLight(map, gx, gy, z, out byte sunCenter, out byte blockCenter);
-
-            byte suntop, blocktop;
-            if (z + 1 < MapBase.MaxHeight)
-            {
-                suntop = Math.Max((byte)0, chunk.GetSunlight(local.X, local.Y, z + 1));
-                blocktop = chunk.GetBlockLight(local.X, local.Y, z + 1);
-            }
-            else
-            {
-                suntop = 15;
-                blocktop = 15;
-            }
-            // add the current cell's light as the 4th coord?
-            Color sun = new((suneast + 1) / 16f, (sunsouth + 1) / 16f, (suntop + 1) / 16f, (sunCenter + 1) / 16f);
-            Vector4 block = new((blockeast + 1) / 16f, (blocksouth + 1) / 16f, (blocktop + 1) / 16f, (blockCenter + 1) / 16f);// 1f);
-
-            var light = new LightToken(global, sun, block);
-            chunk.LightCache[global] = light;
-            return light;
-        }
+        
         public static LightToken GetFinalLight(Camera camera, MapBase map, Chunk chunk, IntVec3 global, bool updateblockfaces = true)
         {
             if (chunk.LightCache.TryGetValue(global, out LightToken cached))

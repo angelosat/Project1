@@ -1,9 +1,5 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Input;
 using Project1.Core.Simulation;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 #nullable enable
 
@@ -19,7 +15,6 @@ namespace Project1.Core.Screens
         {
             this.Map = map;
             this.Camera = camera;
-
         }
 
         internal void Update(int gameSpeed)

@@ -491,11 +491,17 @@ namespace Project1.Core.Simulation
             this.InvalidateCell(global);
             return true;
         }
-        public override bool InvalidateCell(IntVec3 global)
+        //public override bool InvalidateCell(IntVec3 global)
+        //{
+        //    if (!this.TryGetAll(global, out Chunk chunk, out Cell cell))
+        //        return false;
+        //    return chunk.InvalidateCell(global);
+        //}
+        public override void InvalidateCell(IntVec3 global)
         {
             if (!this.TryGetAll(global, out Chunk chunk, out Cell cell))
-                return false;
-            return chunk.InvalidateCell(global);
+                return;
+            chunk.InvalidateCell(global);
         }
         public IEnumerable<(string, Action)> GetGenerationTasks()
         {

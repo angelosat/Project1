@@ -568,20 +568,6 @@ namespace Project1.Core.Networking
             PacketPlayerDisconnected.Send(Instance, existing.Player.ID);
         }
 
-        [Obsolete("use world.register instead")]
-        public override Entity Instantiate(Entity obj)
-        {
-            foreach (var o in obj.GetSelfAndChildren())
-                this.Instantiator(o);
-            return obj;
-        }
-        [Obsolete("use world.register instead")]
-        public override void Instantiator(Entity obj)
-        {
-            this.World.RegisterOld(obj as Entity);
-            obj.Net = this;
-        }
-
         /// <summary>
         /// Releases the object's networkID.
         /// </summary>

@@ -16,6 +16,9 @@ namespace Project1.Core.Towns.Terrain
     internal abstract class ChunkController(Chunk chunk)
     {
         protected Chunk Chunk = chunk;
+
+        internal virtual void ResolveReferences() { }
+
         internal virtual void Tick() { }
     }
     internal sealed class FlowerController(Chunk chunk) : ChunkController(chunk)
@@ -34,8 +37,8 @@ namespace Project1.Core.Towns.Terrain
         bool IsSaturated => this.CurrentDensity >= TargetDensity;
 
         private void Reschedule()
-            => this.NextTick = this.Chunk.Map.World.CurrentTick + (ulong)this.Chunk.Map.Random.Next(Ticks.FromHours(1), Ticks.FromHours(2));
-        //=> this.NextTick = this.Chunk.Map.World.CurrentTick + (ulong) this.Chunk.Map.Random.Next(1, 2);
+            //=> this.NextTick = this.Chunk.Map.World.CurrentTick + (ulong)this.Chunk.Map.Random.Next(Ticks.FromHours(1), Ticks.FromHours(2));
+        => this.NextTick = this.Chunk.Map.World.CurrentTick + (ulong) this.Chunk.Map.Random.Next(1, 2);
 
         internal void ResolveReferences()
         {
@@ -106,11 +109,6 @@ namespace Project1.Core.Towns.Terrain
                 if (global.GetAdjacentCubeLazy().Any(c => map.Contains(c) && map.Query(c).Cell.BlockData > 0))
                     return;
                 this.Chunk.SetBlockData(global, BlockGrass.GetRandomFlower(map));
-
-                //var cell = map.Query(global).Cell;
-                //cell.BlockData = BlockGrass.GetRandomFlower(map);
-                //this.Chunk.InvalidateSlice(global.Z);
-                //map.Events.Post(new CellsInvalidatedEvent(map, [global]));
             }
             else
             {
@@ -121,7 +119,7 @@ namespace Project1.Core.Towns.Terrain
                 var column = this.FlowersPerColumn.Keys.SelectRandom(random);
                 var flowerLocal = new IntVec3(column, this.FlowersPerColumn[column]);
                 var flowerGlobal = flowerLocal.ToGlobal(this.Chunk);
-                var flowerCell = this.Chunk.GetLocalCell(flowerLocal);
+                var flowerData = this.Chunk.GetBlockData(flowerLocal);
 
                 // Find valid adjacent grass cells with sunlight
                 var candidates = flowerGlobal.GetAdjacentCubeLazy()
@@ -137,12 +135,7 @@ namespace Project1.Core.Towns.Terrain
                     return;
 
                 var selectedGlobal = candidates.SelectRandom(map.Random);
-                this.Chunk.SetBlockData(selectedGlobal, flowerCell.BlockData);
-
-                //var grassCell = map.Query(selectedGlobal).Cell;
-                //grassCell.BlockData = flowerCell.BlockData;
-                //this.Chunk.InvalidateSlice(selectedGlobal.Z);
-                //map.Events.Post(new CellsInvalidatedEvent(map, [selectedGlobal]));
+                this.Chunk.SetBlockData(selectedGlobal, flowerData);
             }
         }
 

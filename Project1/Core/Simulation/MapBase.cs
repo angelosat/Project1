@@ -563,7 +563,7 @@ namespace Project1.Core.Simulation
         public abstract void Validate();
         public virtual void Tick() { }
         public abstract SaveTag Save();
-        public abstract bool InvalidateCell(IntVec3 global);
+        public abstract void InvalidateCell(IntVec3 global);
         public abstract void GenerateThumbnails();
         public abstract void GenerateThumbnails(string fullpath);
         public abstract void LoadThumbnails();

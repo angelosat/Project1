@@ -1008,15 +1008,5 @@ namespace Project1.Core.Networking
         {
             return this.BeginPacket(pType);
         }
-
-        public override Entity Instantiate(Entity obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Instantiator(Entity o)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

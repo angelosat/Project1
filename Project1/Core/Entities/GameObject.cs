@@ -1111,10 +1111,9 @@ namespace Project1.Core.Entities
             yield break;
         }
         #region packets
-        static readonly int PacketSyncInstantiate, PacketSyncSetStacksize, PacketSyncAbsorb;
+        static readonly int PacketSyncSetStacksize, PacketSyncAbsorb;
         static GameObject()
         {
-            PacketSyncInstantiate = Registry.PacketHandlers.Register(SyncInstantiate);
             PacketSyncSetStacksize = Registry.PacketHandlers.Register(SyncSetStacksize);
             PacketSyncAbsorb = Registry.PacketHandlers.Register(SyncAbsorb);
         }
@@ -1128,15 +1127,6 @@ namespace Project1.Core.Entities
             this._stackSize = amount < 0 ? this.Def.StackCapacity : amount;
         }
         
-        private static void SyncInstantiate(NetEndpoint net, Packet packet)
-        {
-            var r = packet.PacketReader;
-            if (net is Server)
-                throw new Exception();
-            var client = net as Client;
-            var obj = Create(r);
-            client.Instantiate(obj);
-        }
         public void SyncSetStackSize(int v)
         {
             var net = this.Net;

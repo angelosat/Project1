@@ -62,7 +62,6 @@ namespace Project1.Core.Simulation
             _originy = BitVector32.CreateSection(2, _originx); //2 bits // sum: 18bits
             _originz = BitVector32.CreateSection(2, _originy); //2 bits // sum: 20bits
             _damage = BitVector32.CreateSection(HitPointsMax, _originz); //3 bits // sum: 23bits
-
         }
         public static IntVec3 GetOrigin(int data)
         {

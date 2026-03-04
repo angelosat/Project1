@@ -4,7 +4,6 @@ using Project1.Core.Loot;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Framework.Serialization;
-using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.Networking
@@ -22,12 +21,8 @@ namespace Project1.Core.Networking
         IEnumerable<PlayerData> GetPlayers();
         PlayerData GetPlayer(int id);
         PlayerData GetPlayer();
-        [Obsolete("use world.register instead")]
-        Entity Instantiate(Entity obj);
         bool DisposeObject(Entity obj);
         bool DisposeObject(int netID);
-        void Instantiator(Entity o);
-        //bool LogStateChange(int netID);
         void PopLoot(GameObject loot, Vector3 startPosition, Vector3 startVelocity);
         void PopLoot(LootTable table, Vector3 startPosition, Vector3 startVelocity);
         void EventOccured(int eventTypeId, params object[] p);

@@ -109,7 +109,7 @@ namespace Project1.Core.Towns.Stockpiles
             var availableCapacity = 0;
             foreach(var cell in this.Cells)
             {
-                var cellEntities = this.Map.GetEntitiesAt(cell);
+                var cellEntities = this.Map.GetEntitiesAt(cell.Above);
                 if (!cellEntities.Any())
                     return item.StackMax;
                 foreach (var entity in cellEntities)

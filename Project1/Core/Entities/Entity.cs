@@ -202,8 +202,13 @@ namespace Project1.Core.Entities
                 return this;
 
             this.Map.TryGetChunk(this.Global.ToRounded(), out var lastChunk);
+            var lastCell = this.Global.ToCell();
+            var nextCell = nextGlobal.ToCell();
             this.Global = nextGlobal;
-
+            if(LastCell != nextCell)
+            {
+                this.Map.EntityChangedCell(this, LastCell, nextCell);
+            }
             if (nextChunk != lastChunk)
             {
                 bool removed = lastChunk.Remove(this);

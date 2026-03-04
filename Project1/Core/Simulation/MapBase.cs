@@ -24,6 +24,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,6 +47,7 @@ namespace Project1.Core.Simulation
         public ParticleManager ParticleManager;
         public RegionManager Regions;
         public StockpileManager Stockpiles;
+        protected EntityTrackerPerCell EntityTracker;
         internal List<SimulationSystem> SimulationSystems = [];
         internal CollisionSystem Collisions;
         protected Dictionary<IntVec3, BlockEntity> CachedBlockEntities = new();
@@ -162,6 +164,7 @@ namespace Project1.Core.Simulation
             this.World.ResolveReferences();
             this.Town.ResolveReferences();
             this.Stockpiles.ResolveReferences();
+            this.EntityTracker.ResolveReferences();
             foreach (var chunk in this.ActiveChunks.Values)
                 chunk.ResolveReferences();
         }
@@ -497,6 +500,7 @@ namespace Project1.Core.Simulation
                 throw new Exception();
             obj.Map = null;
             this.Events.Post(new EntityDespawnedEvent(obj));
+            this.EntityTracker.OnEntityDespawned(obj);
             return true;
         }
         internal bool Remove(Entity obj)
@@ -527,9 +531,10 @@ namespace Project1.Core.Simulation
         }
         internal virtual IEnumerable<Entity> GetEntitiesAt(IntVec3 pos)
         {
-            //foreach (var entity in this.GetObjectsAtChunk(pos).Where(e => (IntVec3)e.Global == pos))
-            foreach (var entity in this.GetObjectsAtChunk(pos).Where(e => e.Cell == pos))
-                yield return entity;
+            return this.EntityTracker.GetEntitiesAt(pos);
+
+            //foreach (var entity in this.GetObjectsAtChunk(pos).Where(e => e.Cell == pos))
+            //    yield return entity;
         }
         public bool IsCellEmpty(IntVec3 cell) => !this.GetEntitiesAt(cell).Any();
         public abstract bool IsInBounds(Vector3 global);
@@ -989,34 +994,30 @@ namespace Project1.Core.Simulation
                     yield return kv;
             }
         }
-        [Obsolete("use map.spawnandsync()")]
-        internal void SyncSpawn(GameObject obj, Vector3 global, Vector3 velocity)
-        {
-            obj.Global = global;
-            obj.Velocity = velocity;
-            this.SyncSpawn(obj);
-        }
-        internal void SyncSpawn(GameObject obj)
-        {
-            //obj.Spawn(this);
-            this.Spawn(obj as Entity);
-            PacketsMap.SendSpawnEntity(this.Net, obj, this, obj.Global, obj.Velocity);
-        }
+        //[Obsolete("use map.spawnandsync()")]
+        //internal void SyncSpawn(GameObject obj, Vector3 global, Vector3 velocity)
+        //{
+        //    obj.Global = global;
+        //    obj.Velocity = velocity;
+        //    this.SyncSpawn(obj);
+        //}
+        //internal void SyncSpawn(GameObject obj)
+        //{
+        //    //obj.Spawn(this);
+        //    this.Spawn(obj as Entity);
+        //    PacketsMap.SendSpawnEntity(this.Net, obj, this, obj.Global, obj.Velocity);
+        //}
         
         internal virtual void OnHudCreated(Hud hud)
         {
         }
-        [Obsolete("use spawn(entity, position, velocity) instead")]
-        internal void Spawn(Entity entity)
-        {
-            throw new Exception();
-            this.Spawn(entity, entity.Global, entity.Velocity);
-        }
-        public void Spawn(EntityRefId entityRefId, Vector3 position, Vector3 velocity)
-        {
-            this.Spawn(this.World.GetEntity(entityRefId), position, velocity);
-        }
-
+        //[Obsolete("use spawn(entity, position, velocity) instead")]
+        //internal void Spawn(Entity entity)
+        //{
+        //    throw new Exception();
+        //    this.Spawn(entity, entity.Global, entity.Velocity);
+        //}
+      
         public void Spawn(Entity entity, Vector3 position, Vector3 velocity, bool immediate = false)
         {
             if (!entity.IsRegistered)
@@ -1043,6 +1044,7 @@ namespace Project1.Core.Simulation
             this.Add(entity);
             entity.OnSpawn(this);
             this.Events.Post(new EntitySpawnedEvent(entity, immediate));
+            this.EntityTracker.OnEntitySpawned(entity);
         }
         internal void ApplyBlockDamage(IntVec3 global, int workAmount)
         {
@@ -1091,6 +1093,8 @@ namespace Project1.Core.Simulation
             var query = new MapQuery(this, global);
             return query.ToSnapshot();
         }
-    
+
+        internal void EntityChangedCell(Entity entity, IntVec3 lastCell, IntVec3 nextCell)
+            => this.EntityTracker.OnEntityMoved(entity, lastCell, nextCell);
     }
 }

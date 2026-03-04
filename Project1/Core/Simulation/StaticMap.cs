@@ -101,6 +101,7 @@ namespace Project1.Core.Simulation
             this.Town = new Town(this);
             this.Regions = new RegionManager(this);
             this.Stockpiles = new(this);
+            this.EntityTracker = new(this);
             this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
             this.ParticleManager = new Graphics.Particles.ParticleManager(this);
             this.SimulationSystems.Add(new BlockLifecycleSystem(this));

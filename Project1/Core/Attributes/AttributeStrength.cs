@@ -4,21 +4,17 @@ using Project1.Core.Stats;
 
 namespace Project1.Core.Attributes
 {
-    class AttributeStrength : AttributeWorker
+    sealed class AttributeStrength : AttributeWorker
     {
-        public AttributeStrength(AttributeDef def) : base(def)
-        {
-        }
-
-        public override void Tick(GameObject obj, AttributeRuntime attributeStat)
+        public override void Tick(Entity obj, AttributeRuntime attributeStat)
         {
             var enc = StatDefOf.Encumberance.CalculateFor(obj);
             this.Award(obj, attributeStat, enc);
         }
-        internal override void Award(GameObject obj, AttributeRuntime attributeStat, float p)
+        internal override void Award(Entity obj, AttributeRuntime attributeStat, float p)
         {
-            var stamina = obj.Resources[ResourceDefOf.Stamina];
-            var strAwardMultiplier = 1 + (int)(stamina.ResourceDef.Worker.Thresholds.Count * (1 - stamina.CurrentThreshold.Value));
+            var stamina = obj.Resources.View(ResourceDefOf.Stamina);
+            var strAwardMultiplier = 1 + (int)(stamina.Def.Worker.Thresholds.Count * (1 - stamina.CurrentThreshold.Value));
             attributeStat.AddToProgress(strAwardMultiplier * p);
         }
     }

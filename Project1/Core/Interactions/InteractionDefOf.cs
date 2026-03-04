@@ -105,7 +105,7 @@ namespace Project1.Core.Interactions
             ProgressHandler = InteractionProgressHandlers.External,// new InteractionProgressToolExternal(),
             Skill = SkillDefOf.Tinkering
         };
-        public static readonly InteractionDef Drop = new("Dropping", typeof(InteractionThrow), null);
+        //public static readonly InteractionDef Drop = new("Dropping", typeof(InteractionThrow), null);
         public static readonly InteractionDef Depart = new("Departing", typeof(InteractionDepartLogic))
         {
             ProgressHandler = InteractionProgressHandlers.Instant// new InteractionProgressInstant()

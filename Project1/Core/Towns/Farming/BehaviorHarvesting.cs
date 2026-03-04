@@ -3,6 +3,7 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.Plants;
+using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Farming
@@ -32,7 +33,8 @@ namespace Project1.Core.Towns.Farming
             });
             this.FailOnForbidden(PlantIndex);
             yield return new BehaviorResolvePath(PlantIndex);
-            yield return new BehaviorResolveInteraction(PlantIndex, () => new InteractionHarvest());
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(PlantIndex, () => new InteractionHarvest());
         }
         protected override bool ReserveExtra()
         {

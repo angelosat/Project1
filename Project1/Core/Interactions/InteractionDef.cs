@@ -39,7 +39,7 @@ namespace Project1.Core.Interactions
             var interaction = ActivatorSafe<Interaction>.CreateInstance(this.InteractionClass);
             interaction.Def = this;
             interaction.Context = this.CreateContext(actor, target, count);
-            interaction.Initialize();
+            //interaction.Initialize();
             return interaction;
         }
 

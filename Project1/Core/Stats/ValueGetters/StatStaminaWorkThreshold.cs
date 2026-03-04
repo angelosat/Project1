@@ -5,9 +5,9 @@ using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Entities.Stats.ValueGetters
 {
-    class StatStaminaWorkThreshold : StatWorker
+    sealed class StatStaminaWorkThreshold : StatWorker
     {
-        public override float CalculateStat(GameObject obj)
+        public override float CalculateStat(Entity obj)
         {
             var actor = obj as Actor;
             var staminaBaseThreshold = .25f; //placeholder?

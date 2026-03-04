@@ -20,7 +20,8 @@ namespace Project1.Core.Towns.Shops
             // TODO start checking if the shop has a worker
             // if no worker or all workers busy, wait a bit and then cancel the behavior and drop town approval rating
             yield return new BehaviorResolvePath(TargetIndex.B);
-            yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionGiveItem());
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionGiveItem());
             // WARNING if coins in inventory have somehow been reduced below the item's cost since starting the behavior, cancel everything
             yield return new BehaviorCustom()
             {
@@ -35,7 +36,8 @@ namespace Project1.Core.Towns.Shops
                 }
             };
             yield return new BehaviorResolveInteraction(TargetIndex.A, () => null);// new InteractionHaul(this.Plan.AmountA));
-            yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionGiveItem(true));
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionGiveItem(true));
             yield return new BehaviorCustom()
             {
                 InitAction = () =>
@@ -44,7 +46,8 @@ namespace Project1.Core.Towns.Shops
                     target.AI.State.TradingPartner = null;
                 }
             };
-            yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
             // TODO behavior negotiate price
             // TODO behavior wait for reply
             // TODO complete transaction

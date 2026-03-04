@@ -1,17 +1,14 @@
 ﻿using Project1.Core.Attributes;
-using Project1.Core.Entities;
 using Project1.Core.Entities.Stats.ValueGetters;
 using Project1.Core.Stats;
-using Project1.Core.UI;
-using Project1.Core.UI;
+using Project1.Framework.Helpers;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
-using Project1.Framework.UI;
-using Project1.Framework.Helpers;
 
 namespace Project1.Core.Entities.Stats
 {
-    public class StatDef : Def
+    public sealed class StatDef : Def
     {
         public enum Types { Scalar, Percentile };
         public static StatDef[] ToolStatPackage { get; } = { StatDefOf.ToolEffectiveness, StatDefOf.ToolSpeed };
@@ -33,7 +30,7 @@ namespace Project1.Core.Entities.Stats
         {
             this.ValueGetterType = valueGetter;
         }
-        float ApplyModifiers(GameObject parent, float value)
+        float ApplyModifiers(Entity parent, float value)
         {
             var mods = parent.GetStatModifiers(this);
             if (mods is not null)
@@ -41,7 +38,7 @@ namespace Project1.Core.Entities.Stats
                     value = mod.Def.Mod(parent, value);
             return value;
         }
-        public float CalculateFor(GameObject parent)
+        public float CalculateFor(Entity parent)
         {
             if (this.Type == Types.Scalar)
             {
@@ -55,7 +52,7 @@ namespace Project1.Core.Entities.Stats
             }
             else throw new Exception();
         }
-        public Control GetControl(GameObject parent)
+        public Control GetControl(Entity parent)
         {
             return new Label()
             {
@@ -68,10 +65,10 @@ namespace Project1.Core.Entities.Stats
             public ValueBuilder(string name) : base(name)
             {
             }
-            protected abstract float BaseGet(GameObject parent);
+            protected abstract float BaseGet(Entity parent);
             protected List<Expression> Expressions = new();
 
-            public float Get(GameObject parent)
+            public float Get(Entity parent)
             {
                 var val = this.BaseGet(parent);
                 foreach (var exp in this.Expressions)
@@ -113,7 +110,7 @@ namespace Project1.Core.Entities.Stats
             {
                 this.Def = def;
             }
-            protected override float BaseGet(GameObject parent)
+            protected override float BaseGet(Entity parent)
             {
                 return parent.GetAttribute(this.Def)?.Level ?? 0;
             }

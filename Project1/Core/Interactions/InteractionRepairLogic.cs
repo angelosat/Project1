@@ -1,24 +1,21 @@
 ﻿using Project1.Core.Resources;
-using Project1.Core.Interactions;
 
 namespace Project1.Core.Interactions
 {
-    internal class InteractionRepairLogic : InteractionLogic
+    sealed internal class InteractionRepairLogic : InteractionLogic
     {
-        class Context : InteractionContext
+        sealed class Context : InteractionContext
         {
-            Resource _durabilityCached;
-            Resource DurabilityCached => this._durabilityCached ??= this.Target.Object.Resources[ResourceDefOf.Durability];
-            public override float ProgressPercentage => this.DurabilityCached.Percentage;
+            internal IResourceView Durability => field ??= this.Target.Object.Resources.View(ResourceDefOf.Durability);
+            public override float ProgressPercentage => this.Durability.Percentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         internal override void OnProgressAdded(Interaction i, int delta)
         {
             var actor = i.Actor;
-            var item = i.Target.Object;
             if (actor.Net.IsClient) return;
-            var durability = item.Resources[ResourceDefOf.Durability];
-            durability.ApplyDelta(1);
+            var ctx = (Context)i.Context;
+            ctx.Durability.ApplyDelta(1);
         }
     }
 }

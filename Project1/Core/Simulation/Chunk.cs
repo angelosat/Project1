@@ -253,8 +253,6 @@ namespace Project1.Core.Simulation
             for (int i = 0; i < MapBase.MaxHeight; i++)
                 this.Slices[i] = new Slice();
             this.BlockDamageSystem = new(this);
-            //this.Flora = new(this);
-            //this.Flowers = new(this);
             this.Controllers.Add(new FloraController(this));
             this.Controllers.Add(new FlowerController(this));
         }
@@ -508,7 +506,6 @@ namespace Project1.Core.Simulation
                 while (this.CellsToValidate.Count > 0)
                 {
                     var cell = this.CellsToValidate.Dequeue();
-                    //this.Map.LightingEngine.HandleImmediate([cell.GetGlobalCoords(this)]);
                     this.Map.LightingEngine.HandleImmediate([cell.ToGlobal(this)]);
                     this.GetLocalCell(cell).Valid = true;
                     this.InvalidateSlice(cell.Z);

@@ -6,13 +6,14 @@ using System;
 
 namespace Project1.Core.Interactions
 {
-    class InteractionAdvanceUnfinishedLogic : InteractionLogic
+    sealed class InteractionAdvanceUnfinishedLogic : InteractionLogic
     {
         class Context : InteractionContext
         {
             internal Entity UnfinishedItem => field ??= this.Workstation.GetUnfinishedItem();
             internal UnfinishedItemComp UnfinishedComp => field ??= this.UnfinishedItem?.GetComponent<UnfinishedItemComp>();
-            internal Resource Assembly => field ??= this.UnfinishedItem.Resources[ResourceDefOf.Assembly];
+            internal IResourceView Assembly => field ??= this.UnfinishedItem.Resources.View(ResourceDefOf.Assembly);
+            internal ResourcesComponent Resources => field ??= this.UnfinishedItem?.GetComponent<ResourcesComponent>();
             internal BlockWorkstationComp Workstation => field ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
             public override float ProgressPercentage => this.Assembly?.Percentage ?? 0;
         }
@@ -25,7 +26,7 @@ namespace Project1.Core.Interactions
             if (actor.Net.IsClient)
                 return;
             var ctxTyped = (Context)ctx;
-            var unfinishedItem = ctxTyped.UnfinishedItem ?? throw new InvalidOperationException();
+            ArgumentNullException.ThrowIfNull(ctxTyped.UnfinishedItem);
             ctxTyped.Assembly.ApplyDelta(workAmount);
         }
         internal override void OnFinish(Interaction i)

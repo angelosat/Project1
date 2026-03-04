@@ -96,7 +96,7 @@ namespace Project1.Core.Components
 
         internal override void GetEquippedActionsWithTarget(GameObject parent, GameObject actor, TargetArgs t, List<Interaction> list)
         {
-            list.Add(new InteractionSetFuse(this.CycleFuse));
+            //list.Add(new InteractionSetFuse(this.CycleFuse));
         }
 
         int CycleFuse()
@@ -108,23 +108,18 @@ namespace Project1.Core.Components
             return this.FuseMax;
         }
 
-        class InteractionSetFuse : Interaction
+        class InteractionSetFuse : InteractionLogic
         {
             Func<int> FuseSet;
-            public InteractionSetFuse(Func<int> callback)
-            {
-                this.Name = "Set fuse";
-                this.FuseSet = callback;
-            }
-            public override void Perform()
-            {
-                var fuse = this.FuseSet();
-                //var client = a.Net as Net.Client;
-                //if (client != null)
-                //{
-                //    client.GetConsole().Write(Color.Red, "Fuse set to: " + (fuse == -1 ? "none" : TimeSpan.FromSeconds(fuse).TotalSeconds.ToString("#s")));
-                //}
-            }
+            //public InteractionSetFuse(Func<int> callback)
+            //{
+            //    this.Name = "Set fuse";
+            //    this.FuseSet = callback;
+            //}
+            //public override void Perform()
+            //{
+            //    var fuse = this.FuseSet();
+            //}
         }
     }
 }

@@ -2,6 +2,7 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Helpers;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.Quests.AI
@@ -15,7 +16,8 @@ namespace Project1.Core.Quests.AI
             var qgiver = TargetIndex.A;
             var quest = task.Quest;
             yield return BehaviorHelper.MoveTo(qgiver);
-            yield return new BehaviorResolveInteraction(qgiver, () => new InteractionGetQuest(quest));
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(qgiver, () => new InteractionGetQuest(quest));
         }
         public override void CleanUp()
         {

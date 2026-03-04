@@ -1,20 +1,14 @@
-﻿using System;
+﻿using Project1.Framework.Helpers;
+using System;
 
 namespace Project1.Core.Attributes
 {
-    public class AttributeDef : Def
+    public sealed class AttributeDef(string name, Type workerClass, string description = "") : Def(name)
     {
-        readonly Type WorkerClass;
+        readonly Type WorkerClass = workerClass;
         
-        public string Description;
+        public string Description = description;
 
-        public AttributeDef(string name, Type workerClass, string description = "") : base(name)
-        {
-            this.WorkerClass = workerClass;
-            this.Description = description;
-        }
-
-        AttributeWorker _workerCached;
-        public AttributeWorker Worker => _workerCached ??= (AttributeWorker)Activator.CreateInstance(this.WorkerClass, this);
+        public AttributeWorker Worker => field ??= ActivatorSafe<AttributeWorker>.CreateInstance(this.WorkerClass);
     }
 }

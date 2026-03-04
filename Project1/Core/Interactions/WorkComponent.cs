@@ -155,9 +155,5 @@ namespace Project1.Core.Interactions
         {
             this.Target?.InitializeProvider(parent.Map.World);
         }
-        internal override void ResolveReferences()
-        {
-            this.Task?.ResolveReferences();
-        }
     }
 }

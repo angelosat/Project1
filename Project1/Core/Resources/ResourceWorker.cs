@@ -45,6 +45,10 @@ namespace Project1.Core.Resources
         {
             return this.Thresholds.FirstOrDefault(t => res.Percentage <= t.Value);
         }
+        public ResourceThreshold GetCurrentThreshold(float percentage)
+        {
+            return this.Thresholds.FirstOrDefault(t => percentage <= t.Value);
+        }
         public abstract Color GetBarColor(Resource resource);
         public virtual string GetBarLabel(Resource resource)
         {

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using Project1.Core.Interactions;
-using Project1.Core.AI.Behaviors.Pathing;
+﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.Interactions;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Shops
 {
@@ -28,7 +29,9 @@ namespace Project1.Core.Towns.Shops
             });
             yield return new BehaviorResolveInteraction(TargetIndex.A, () => null);// new InteractionHaul(this.Plan.AmountA));
             yield return new BehaviorWait(() => state.TradingPartner == null);
-            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionStoreHauled());
+            throw new NotImplementedException();
+
+            //yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionStoreHauled());
         }
     }
 }

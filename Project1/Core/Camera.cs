@@ -24,7 +24,7 @@ using System.Xml.Linq;
 
 namespace Project1.Core
 {
-    public class Camera : ICamera, IInputEventHandler
+    public sealed class Camera : ICamera, IInputEventHandler
     {
         static XElement XCameraSettings = GameSettings.XmlNodeSettings.GetOrCreateElement("Camera");
         static Camera()

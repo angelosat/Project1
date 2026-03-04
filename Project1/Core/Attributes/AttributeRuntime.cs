@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Framework.UI;
-using Project1.Framework.Helpers;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
-using Project1.Core.Entities;
-using Project1.Core.Networking;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Attributes
 {
-    public class AttributeRuntime : Inspectable, ISaveableNewNew<AttributeRuntime>, ISerializableNew<AttributeRuntime>, IListable, IDefWrapper<AttributeDef>
+    public sealed class AttributeRuntime : Inspectable, ISaveableNewNew<AttributeRuntime>, ISerializableNew<AttributeRuntime>, IListable, IDefWrapper<AttributeDef>
     {
         public class ValueModifier
         {
@@ -39,7 +38,7 @@ namespace Project1.Core.Attributes
         public Progress Rec = new(0, Ticks.PerSecond, Ticks.PerSecond);
         public float DecayRate = -0.5f;
         public float GainRate = 0;
-        public List<ValueModifier> Modifiers = new();
+        public List<ValueModifier> Modifiers = [];
         public ProgressLeveledExp Progress;
         public AttributeDef AttributeDef;
         public AttributeDef Def => this.AttributeDef;
@@ -56,7 +55,7 @@ namespace Project1.Core.Attributes
         {
             this.Progress = new ProgressLeveledExp(BaseXpToLevel, 10);
         }
-        public void Update(GameObject parent)
+        public void Update(Entity parent)
         {
             this.AttributeDef.Worker.Tick(parent, this);
         }
@@ -65,7 +64,7 @@ namespace Project1.Core.Attributes
         {
             return this.AttributeDef.Name + ": " + this.Level;
         }
-        public void Award(GameObject parent, float p)
+        public void Award(Entity parent, float p)
         {
             this.AttributeDef.Worker.Award(parent, this, p);
             parent.Map.Events.Post(new AttributeAdjustedEvent(parent as Actor, this.Def, this.Progress.Value));

@@ -6,7 +6,7 @@ using Project1.Core.Tools;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
 {
-    class ItemRoleToolWorker : ItemRoleWorker
+    sealed class ItemRoleToolWorker : ItemRoleWorker
     {
         public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
         {
@@ -16,7 +16,7 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
             var interaction = task.Def.Interaction;
             if (interaction is null)
                 return 0;
-            var durability = item.Resources[ResourceDefOf.Durability];
+            var durability = item.Resources.View(ResourceDefOf.Durability);
             if (durability.Value == 0)
                 return -100;
             //if (durability.Percentage < 1)

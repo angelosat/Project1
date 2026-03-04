@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Animations;
 using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Gear;
 using Project1.Core.Input;
 using Project1.Core.Materials;
@@ -21,6 +22,9 @@ namespace Project1.Core.Entities
     {
         bool _initialized;
         public SpriteComp Sprite => this.GetComponent<SpriteComp>();
+
+        [InspectorHidden]
+        public float this[StatDef stat] => stat.CalculateFor(this);
         /// <summary>
         /// here or in tool class?
         /// </summary>

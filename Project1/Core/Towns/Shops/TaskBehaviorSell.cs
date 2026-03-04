@@ -28,7 +28,8 @@ namespace Project1.Core.Towns.Shops
                 return carried.Def == ItemDefOf.Coins && carried.StackSize == itemvalue;
                 // TODO cancel if not enouch coins?
             });
-            yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionGiveItem(true));
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(TargetIndex.B, () => new InteractionGiveItem(true));
             yield return new BehaviorCustom()
             {
                 InitAction = () =>
@@ -36,7 +37,8 @@ namespace Project1.Core.Towns.Shops
                     tradePartner.AI.State.TradingPartner = null;
                 }
             };
-            yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
         }
     }
 }

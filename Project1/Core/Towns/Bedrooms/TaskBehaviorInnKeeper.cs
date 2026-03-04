@@ -8,6 +8,7 @@ using System.Linq;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using System;
 
 namespace Project1.Core.Towns
 {
@@ -49,9 +50,11 @@ namespace Project1.Core.Towns
                 return true;
             });
             // TODO pickup money or leave it to be hauled?
+
+            throw new NotImplementedException();
             yield return BehaviorHaulHelper.StartCarrying(this, TargetIndex.C);
-            yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
-            yield return new BehaviorResolveInteraction(Customer, () => new InteractionAssignVisitorRoom(room.ID));
+            //yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
+            //yield return new BehaviorResolveInteraction(Customer, () => new InteractionAssignVisitorRoom(room.ID));
             yield return new BehaviorCustom(() =>
             {
             });

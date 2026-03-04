@@ -58,7 +58,7 @@ namespace Project1.Core.Entities
 
         public override void GetInteractions(GameObject parent, List<Interaction> actions)
         {
-            actions.Add(new InteractionConsume());
+            //actions.Add(new InteractionConsume());
         }
 
         public override void Write(IDataWriter w)
@@ -77,28 +77,27 @@ namespace Project1.Core.Entities
         {
             this.EffectsNew = tag.LoadList<EntityEffectWrapper>("Effects");
         }
-        public class InteractionConsume : Interaction
+        public class InteractionConsumeLogic : InteractionLogic
         {
-            public InteractionConsume()
-                : base("Consume", 4)
-            {
-                this.Verb = "Eating";
-            }
+            //public InteractionConsume()
+            //    : base("Consume", 4)
+            //{
+            //    this.Verb = "Eating";
+            //}
 
-            static readonly Dictionary<Need.Types, float> needs = new() { { Need.Types.Hunger, 50 } };
-            
-            public override Dictionary<Need.Types, float> NeedSatisfaction
-            {
-                get
-                {
-                    return needs;
-                }
-            }
+            //static readonly Dictionary<Need.Types, float> needs = new() { { Need.Types.Hunger, 50 } };
 
-            public override void Perform()
+            //public override Dictionary<Need.Types, float> NeedSatisfaction
+            //{
+            //    get
+            //    {
+            //        return needs;
+            //    }
+            //}
+            internal override void OnFinish(Interaction i)
             {
-                var actor = this.Actor;
-                var target = this.Target;
+                var actor = i.Actor;
+                var target = i.Target;
                 var consumable = target.Object as Entity;
 
                 var comp = consumable.GetComponent<ConsumableComponent>();

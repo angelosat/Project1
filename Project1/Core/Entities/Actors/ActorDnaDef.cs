@@ -9,7 +9,7 @@ using Project1.Core.Resources;
 
 namespace Project1.Core.Entities.Actors
 {
-    public class ActorDnaDef(string name) : Def(name)
+    public sealed class ActorDnaDef(string name) : Def(name)
     {
         public NeedDef[] Needs;
         public AttributeDef[] Attributes;

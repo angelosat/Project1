@@ -1,19 +1,16 @@
-﻿using Project1.Core.Interactions;
-using System;
-
-namespace Project1.Core.Interactions
+﻿namespace Project1.Core.Interactions
 {
-    class InteractionObserve : Interaction
+    sealed class InteractionObserveLogic : InteractionLogic
     {
-        public InteractionObserve():base("Observe", 4)
-        {
-            //this.cachedAnimation = null;
-            //this.AnimationDef = null;
-        }
+        //public InteractionObserve():base("Observe", 4)
+        //{
+        //    //this.cachedAnimation = null;
+        //    //this.AnimationDef = null;
+        //}
 
-        public override void Perform()
-        {
-            throw new NotImplementedException();
-        }
+        //public override void Perform()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

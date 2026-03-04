@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Interactions
 {
-    public class Interaction : Inspectable
+    public sealed class Interaction : Inspectable
     {
         public InteractionDef Def;
         public InteractionContext Context;
@@ -29,8 +29,8 @@ namespace Project1.Core.Interactions
         protected bool CanPerform() => this.Def.Logic.CanPerform(this.Context);
         protected bool CanFinish() => this.Def.Logic.CanFinish(this.Context);
         
-        public void Initialize() => this.OnInitialize(this.Actor, this.Target); 
-        protected virtual void OnInitialize(Actor actor, TargetArgs target) { }
+        //public void Initialize() => this.OnInitialize(this.Actor, this.Target); 
+        //protected virtual void OnInitialize(Actor actor, TargetArgs target) { }
         public override string ToString()
         {
             return $"Interaction: {this.Name}";
@@ -48,7 +48,7 @@ namespace Project1.Core.Interactions
         public float CurrentTick;
         public float Seconds { get; set; }
         Animation _cachedAnimation;
-        protected Animation CachedAnimation => _cachedAnimation ??= this.Actor.SpriteComp.GetAnimation(this.AnimationDef);// = new(AnimationDef.Work);
+        Animation CachedAnimation => _cachedAnimation ??= this.Actor.SpriteComp.GetAnimation(this.AnimationDef);// = new(AnimationDef.Work);
         public AnimationDef AnimationDef => this.Def.Animation;// = AnimationDefOf.Work;
         internal Actor Actor => this.Context.Actor;
         internal TargetArgs Target => this.Context.Target;
@@ -62,8 +62,8 @@ namespace Project1.Core.Interactions
         public float ProgressPercentage => this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage;
 
         // TODO: i need a method that returns satisfaction score based on ai entity's state
-        static readonly Dictionary<Need.Types, float> _needSatisfaction = new();
-        public virtual Dictionary<Need.Types, float> NeedSatisfaction => _needSatisfaction;
+        //static readonly Dictionary<Need.Types, float> _needSatisfaction = new();
+        //public Dictionary<Need.Types, float> NeedSatisfaction => field ??= new();
         public Interaction()
         {
         }
@@ -75,17 +75,17 @@ namespace Project1.Core.Interactions
             this.CurrentTick = this.Length = seconds * Ticks.PerSecond;
         }
 
-        public virtual void Interrupt(bool success)
+        public void Interrupt(bool success)
         {
             this.State = States.Finishing;
             if (this.AnimationDef is not null)
                 this.CachedAnimation?.FadeOutAndRemove();
         }
 
-        public virtual void Perform()
+        public void Perform()
         {
         }
-        protected int CrossFadeAnimationLength;
+        int CrossFadeAnimationLength;
         public void Start()
         {
             this.Def.Logic.OnStart(this);
@@ -184,7 +184,7 @@ namespace Project1.Core.Interactions
             if (this.AnimationDef is not null)
                 this.CachedAnimation.FadeOutAndRemove();// -.01f);
         }
-        protected virtual void Fail()
+        void Fail()
         {
             this.CachedAnimation.FadeOutAndRemove();
             this.State = States.Failed;
@@ -196,17 +196,17 @@ namespace Project1.Core.Interactions
             tooltip.Controls.Add(panel);
         }
      
-        public virtual void DrawUI(SpriteBatch sb, Camera camera)
+        public void DrawUI(SpriteBatch sb, Camera camera)
         {
             var actor = this.Actor;
             Bar.Draw(sb, camera, this.Actor.Global, this.Def.LabelReadable, this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
         }
 
-        internal virtual void ResolveReferences()
-        {
-        }
+        //internal virtual void ResolveReferences()
+        //{
+        //}
 
-        public virtual string GetCompletedText(Actor actor, TargetArgs target)
+        public string GetCompletedText(Actor actor, TargetArgs target)
         {
             return this.Name + ": " + target.ToString();
         }
@@ -214,16 +214,16 @@ namespace Project1.Core.Interactions
         {
             w.Write(this.CurrentTick);
             w.Write((int)this.State);
-            this.WriteExtra(w);
+            //this.WriteExtra(w);
         }
         public void Read(IDataReader r)
         {
             this.CurrentTick = r.ReadSingle();
             this.State = (States)r.ReadInt32();
-            this.ReadExtra(r);
+            //this.ReadExtra(r);
         }
-        protected virtual void WriteExtra(IDataWriter w) { }
-        protected virtual void ReadExtra(IDataReader r) { }
+        //protected virtual void WriteExtra(IDataWriter w) { }
+        //protected virtual void ReadExtra(IDataReader r) { }
 
         public SaveTag SaveAs(string name = "")
         {
@@ -231,14 +231,14 @@ namespace Project1.Core.Interactions
             tag.Add(this.GetType().FullName.Save("Name"));
             tag.Add(((int)this.State).Save("State"));
             tag.Add(this.CurrentTick.Save("Progress"));
-            this.AddSaveData(tag);
+            //this.AddSaveData(tag);
             return tag;
         }
 
-        protected virtual void AddSaveData(SaveTag tag) { }
-        public virtual void LoadData(SaveTag tag)
-        {
-        }
+        //void AddSaveData(SaveTag tag) { }
+        //public void LoadData(SaveTag tag)
+        //{
+        //}
 
         public static Interaction Load(SaveTag tag)
         {
@@ -246,17 +246,17 @@ namespace Project1.Core.Interactions
             var inter = Activator.CreateInstance(Type.GetType(name)) as Interaction;
             tag.TryGetTagValue<int>("State", t => inter.State = (States)t);
             tag.TryGetTagValueOrDefault("Progress", out inter.CurrentTick);
-            inter.LoadData(tag);
+            //inter.LoadData(tag);
             return inter;
         }
-        internal virtual void Resolve(MapBase map)
+        internal void Resolve(MapBase map)
         {
         }
-        internal virtual void FinishAction()
+        internal void FinishAction()
         {
         }
         
-        internal virtual void AfterLoad()
+        internal void AfterLoad()
         {
             this.CachedAnimation.Entity = this.Actor;
         }
@@ -278,7 +278,7 @@ namespace Project1.Core.Interactions
                 this.OnAddProgress(v);
             this.Def.Logic.OnProgressAdded(this, v);
         }
-        protected virtual void OnAddProgress(int v)
+        void OnAddProgress(int v)
         {
             this.Progress.ApplyDelta(v);
         }
@@ -339,7 +339,7 @@ namespace Project1.Core.Interactions
         {
             if (tool is null)
                 return;
-            tool.Resources[ResourceDefOf.Durability].ApplyDelta(-1);
+            tool.Resources.ApplyDelta(ResourceDefOf.Durability , - 1);
         }
 
         internal void SetNextSwingSpeed(float speed)
@@ -349,10 +349,10 @@ namespace Project1.Core.Interactions
         }
 
         bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
-        protected virtual float WorkDifficulty { get; } = 1;
+        float WorkDifficulty { get; } = 1;
 
         //protected virtual void Done() => this.Def.Logic?.OnFinish(this);
-        protected virtual int CalculateWorkAmount()
+        int CalculateWorkAmount()
         {
             var toolUse = this.Def.ToolUse;
             if (this.Actor.Gear.GetGear(GearTypeDefOf.Mainhand) is not Entity tool)
@@ -368,7 +368,7 @@ namespace Project1.Core.Interactions
 
             return (int)total;
         }
-        protected virtual float CalculateNextSwingSpeed()
+        float CalculateNextSwingSpeed()
         {
             var toolUse = this.Def.ToolUse;
             var actor = this.Actor;
@@ -410,7 +410,7 @@ namespace Project1.Core.Interactions
             workamount = (int)total;
             speed = toolspeed;
         }
-        protected virtual float GetToolEffectiveness()
+        float GetToolEffectiveness()
         {
             //if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolProperties.ToolUse == this.GetToolUse())
             if (this.Actor.Gear.GetGear(GearTypeDefOf.Mainhand) is Entity tool && tool.ToolComponent.ToolUse == this.Def.ToolUse)
@@ -418,7 +418,7 @@ namespace Project1.Core.Interactions
             else
                 return this.Actor.GetMaterial(BoneDefOf.RightHand).Density;
         }
-        protected virtual float GetEnergyConsumption(float workAmount, int skillLevel)
+        float GetEnergyConsumption(float workAmount, int skillLevel)
         {
             var toolWeight = this.Actor[GearTypeDefOf.Mainhand]?.TotalWeight ?? 1;
             var strength = this.Actor[AttributeDefOf.Strength].Level;
@@ -426,10 +426,10 @@ namespace Project1.Core.Interactions
                 toolWeight / strength;
             return fromToolWeight;
         }
-        protected float TotalWorkApplied;
+        float TotalWorkApplied;
 
-        protected enum SkillAwardTypes { OnSwing, OnFinish }
+        enum SkillAwardTypes { OnSwing, OnFinish }
 
-        protected SkillAwardTypes SkillAwardType;
+        SkillAwardTypes SkillAwardType;
     }
 }

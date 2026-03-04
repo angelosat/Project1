@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Project1.Core.Resources
 {
-    class Durability : ResourceWorker
+    sealed class Durability : ResourceWorker
     {
         public Durability(ResourceDef def) : base(def)
         {
@@ -20,7 +20,9 @@ namespace Project1.Core.Resources
             var count = materials.Count;
             var totaldensity = materials.Values.Sum(m => m.Density);
             var dur = obj.GetResource(this.ResourceDef);
-            dur.Initialize(this.BaseMax + totaldensity / count, 1);
+            //dur.Initialize(this.BaseMax + totaldensity / count, 1);
+            dur.Max = this.BaseMax + totaldensity / count;
+            dur.Percentage = 1;
             dur.Value = 1; // HACK
         }
         public override Color GetBarColor(Resource resource)

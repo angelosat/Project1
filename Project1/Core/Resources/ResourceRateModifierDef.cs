@@ -1,14 +1,14 @@
-﻿using System;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Stats;
+using System;
 
 namespace Project1.Core.Resources
 {
-    public class ResourceRateModifierDef : Def
+    public sealed class ResourceRateModifierDef : Def
     {
         public enum Types { Permanent, Finite }
         public Types Type;
-        Func<GameObject, float> Function;
+        Func<Entity, float> Function;
         public ResourceDef Source;
         public int BaseDurationInTicks = 0;
         public ResourceRateModifierDef(string name, ResourceDef source) : base(name)
@@ -16,7 +16,7 @@ namespace Project1.Core.Resources
            
             this.Source = source;
         }
-        public float GetRateMod(GameObject parent)
+        public float GetRateMod(Entity parent)
         {
             return this.Function(parent);
         }

@@ -11,7 +11,7 @@ using Project1.Core.Entities;
 namespace Project1.Core.Gear
 {
     [EnsureStaticCtorCall]
-    public partial class GearComponent : EntityComp
+    public sealed class GearComponent : EntityComp
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Gear;
         GearContainer Gear;
@@ -73,7 +73,7 @@ namespace Project1.Core.Gear
         {
             compTag.TryGetTag("Equipment", tag => this.Equipment.Load(tag));
         }
-        public GameObject GetGear(GearTypeDef type) => this.Gear.GetSlotContent(type);
+        public Entity GetGear(GearTypeDef type) => this.Gear.GetSlotContent(type);
         public GameObjectSlot GetSlot(GearTypeDef type) => this.Gear.GetSlot(type);
         public GameObjectSlot GetSlot(GameObject item)
         {
@@ -85,7 +85,7 @@ namespace Project1.Core.Gear
             foreach (var slot in this.Gear.AllSlots)
                 yield return slot;
         }
-        protected void Equip(Entity item)
+        internal void Equip(Entity item)
         {
             if (!this.Owner.Inventory.Contains(item))
                 throw new Exception();
@@ -102,7 +102,7 @@ namespace Project1.Core.Gear
             this.RefreshStats();
             this.Owner.World.Events.Post(new ActorGearUpdatedEvent(this.Owner as Actor, item, previousItem as Entity));
         }
-        protected void Unequip(GearTypeDef slotType)
+        internal void Unequip(GearTypeDef slotType)
         {
             var actor = this.Owner as Actor;
             var slot = this.GetSlot(slotType);

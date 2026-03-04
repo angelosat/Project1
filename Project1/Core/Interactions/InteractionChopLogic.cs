@@ -1,16 +1,15 @@
-﻿using Project1.Core.Resources;
+﻿using Project1.Core.Plants;
+using Project1.Core.Resources;
 using Project1.Core.Towns.Designations;
 using System;
-using Project1.Core.Plants;
 
 namespace Project1.Core.Interactions
 {
-    class InteractionChopLogic : InteractionLogic
+    sealed class InteractionChopLogic : InteractionLogic
     {
-        public class Context : InteractionContext
+        public sealed class Context : InteractionContext
         {
-            Resource _hp;
-            public Resource HitPoints => this._hp ??= this.Target.Object.GetResource(ResourceDefOf.HitPoints);
+            public IResourceView HitPoints => field ??= this.Target.Object.Resources.View(ResourceDefOf.HitPoints);
             PlantComponent _plantComp;
             public PlantComponent PlantComp => this._plantComp ??= this.Target.Object.GetComponent<PlantComponent>();
             public override float ProgressPercentage => 1 - this.HitPoints.Percentage;

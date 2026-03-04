@@ -31,21 +31,4 @@ namespace Project1.Core.Plants
             comp.HarvestBy(actor);
         }
     }
-    public class InteractionHarvest : Interaction
-    {
-        public InteractionHarvest()
-            : base("Harvest", 2)
-        {
-            this.Verb = "Harvesting";
-        }
-        
-        public override void Perform()
-        {
-            var a = this.Actor;
-            var t = this.Target;
-            if (t.Object is not Plant plant)
-                throw new System.Exception();
-            plant.PlantComponent.HarvestBy(a);
-        }
-    }
 }

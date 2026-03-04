@@ -1,11 +1,10 @@
 ﻿using Project1.Core.Animations;
-using Project1.Core.Entities;
 
 namespace Project1.Core.Entities.Stats.ValueGetters
 {
-    class StatToolEffectiveness : StatWorker
+    sealed class StatToolEffectiveness : StatWorker
     {
-        public override float CalculateStat(GameObject obj)
+        public override float CalculateStat(Entity obj)
         {
             var tool = obj as Entity;
             var material = tool.GetMaterial(BoneDefOf.ToolHead);

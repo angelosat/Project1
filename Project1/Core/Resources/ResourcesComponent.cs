@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Resources
 {
-    public class ResourcesComponent : EntityComp
+    public sealed class ResourcesComponent : EntityComp
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Resources;
         readonly Dictionary<ResourceDef, Resource> Resources = [];
@@ -77,12 +77,11 @@ namespace Project1.Core.Resources
             reader.ReadDefWrappers(this.Resources);
             this.Resolve();
         }
-        internal Resource GetResource(ResourceDef def)
-        {
-            return this.Resources[def];
-        }
-        [InspectorHidden]
-        public Resource this[ResourceDef def] => this.GetResource(def);
+       
+
+        //[InspectorHidden]
+        //public Resource this[ResourceDef def] => this.GetResource(def);
+
         GroupBox _cachedGui;
         GroupBox CachedGui
         {
@@ -130,14 +129,25 @@ namespace Project1.Core.Resources
         }
         internal void ApplyDelta(ResourceDef def, float delta)
         {
-            var res = this[def];
+            var res = this.Resources[def];
             res.ApplyDelta(delta);
-            this.Owner.World.Events.Post(new ResourceModifiedEvent(this.Owner, def, delta));
+            this.Owner.World?.Events.Post(new ResourceModifiedEvent(this.Owner, def, delta));
         }
+        public void SetMax(ResourceDef def, float max)
+            => this.Resources[def].Max = max;
+        public void SetPercentage(ResourceDef def, float percentage)
+           => this.Resources[def].Percentage = percentage;
         public void SetValue(ResourceDef def, float value)
-        {
-            this[def].SetValue(value);
-        }
+            => this.Resources[def].SetValue(value);
+        public void SetTicksPerRecoverOne(ResourceDef def, int value)
+            => this.Resources[def].SetTicksPerRecoverOne(value);
+        internal Resource GetResource(ResourceDef def)
+           => this.Resources[def];
+        internal float GetPercentage(ResourceDef def)
+            => this.Resources[def].Percentage;
+        public EntityResourceView View(ResourceDef def)
+            => this.Resources.TryGetValue(def, out var res) ? new(this, res) : null;
+
         public new class Spec : Spec<ResourcesComponent> 
         {
             public ResourceDef[] Defs;
@@ -151,5 +161,45 @@ namespace Project1.Core.Resources
                     comp.Add(def);
             }
         }
+
+        public record class EntityResourceView(ResourcesComponent Comp, Resource Resource) : IResourceView
+        {
+            public ResourceDef Def => this.Resource.Def;
+            public float Value
+            {
+                get => this.Resource.Value;
+                set => this.Comp.SetValue(this.Def, value);
+            }
+            public float Percentage
+            {
+                get => this.Resource.Value;
+                set => this.Comp.SetPercentage(this.Def, value);
+            }
+            public float Max
+            { 
+                get => this.Resource.Max;
+                set => this.Comp.SetMax(this.Def, value);
+            }
+            public int TicksPerRecoverOne
+            {
+                get => this.Resource.TicksPerRecoverOne;
+                set => this.Comp.SetTicksPerRecoverOne(this.Def, value);
+            }
+            public ResourceThreshold CurrentThreshold => this.Resource.CurrentThreshold;
+
+            public void ApplyDelta(float delta) => this.Comp.ApplyDelta(this.Def, delta);
+            public float GetThresholdValue(int index) => this.Resource.GetThresholdValue(index);
+        }
+    }
+    interface IResourceView
+    {
+        public ResourceDef Def { get; }
+        float Value { get; set; }
+        float Percentage { get; set; }
+        float Max { get; set; }
+        int TicksPerRecoverOne { get; set; }
+        ResourceThreshold CurrentThreshold { get; }
+        void ApplyDelta(float delta);
+        float GetThresholdValue(int index);
     }
 }

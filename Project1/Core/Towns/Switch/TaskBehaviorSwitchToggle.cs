@@ -5,6 +5,7 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.Towns.Designations;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using System;
 
 namespace Project1.Core.Towns.Switch
 {
@@ -14,7 +15,8 @@ namespace Project1.Core.Towns.Switch
         {
             this.FailOnNoDesignation(TargetIndex.A, DesignationDefOf.Switch);
             yield return new BehaviorResolvePath(TargetIndex.A);
-            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionFlipSwitch());
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionFlipSwitch());
         }
     }
 }

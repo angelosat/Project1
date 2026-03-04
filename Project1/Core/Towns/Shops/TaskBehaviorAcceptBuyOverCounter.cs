@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using Project1.Core.Interactions;
-using Project1.Core.AI.Behaviors.Helpers;
+﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI;
+using Project1.Core.AI.Behaviors.Helpers;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Reservations;
+using Project1.Core.Interactions;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Shops
 {
@@ -49,10 +50,11 @@ namespace Project1.Core.Towns.Shops
             };
             yield return BehaviorHelper.CarryFromInventoryAndReplaceTarget(Money); // this assigns the new split object to the same target index
             yield return BehaviorReserve.Reserve(this, Money); // this reserves just the source object and not the new object from splitting the source object (but CarryFromInventoryAndReplaceTarget replaces the target with the new object)
+            throw new NotImplementedException();
 
-            yield return new BehaviorResolveInteraction(Item, () => new InteractionSwapCarried());
+            //yield return new BehaviorResolveInteraction(Item, () => new InteractionSwapCarried());
             yield return new BehaviorCustom() { InitAction = () => shop.RemoveCustomer(customer) };
-            yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionStoreHauled());
+            //yield return new BehaviorResolveInteraction(TargetIndex.A, () => new InteractionStoreHauled());
         }
     }
 }

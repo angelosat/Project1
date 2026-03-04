@@ -15,7 +15,7 @@ using Project1.Framework;
 
 namespace Project1.Core.Entities
 {
-    public class ItemDef : Def
+    public sealed class ItemDef : Def
     {
         public int StackCapacity = 1;
         public int StackDimension = 1;
@@ -62,7 +62,7 @@ namespace Project1.Core.Entities
         {
             return this.Randomizer?.Invoke(this);
         }
-        internal virtual Entity Create(Def profile = null, int amount = -1)
+        internal Entity Create(Def profile = null, int amount = -1)
         {
             var entity = (Entity)Activator.CreateInstance(this.ItemClass, this, amount);
             //entity.Def = this;

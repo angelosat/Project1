@@ -2,6 +2,7 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Helpers;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.Towns
@@ -18,7 +19,8 @@ namespace Project1.Core.Towns
             yield return BehaviorHelper.MoveTo(dishIndex);
             yield return BehaviorHaulHelper.StartCarrying(this, dishIndex);
             yield return BehaviorHelper.MoveTo(tableSurfaceIndex);
-            yield return BehaviorHelper.PlaceCarried(tableSurfaceIndex);
+            throw new NotImplementedException();
+            //yield return BehaviorHelper.PlaceCarried(tableSurfaceIndex);
             yield return new BehaviorCustom(() =>
             {
                 shop.RemoveCustomer(task.CustomerID);

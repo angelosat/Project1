@@ -1,12 +1,11 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using System.Linq;
 
 namespace Project1.Core.Entities.Stats.ValueGetters
 {
-    class StatArmor : StatWorker
+    sealed class StatArmor : StatWorker
     {
-        public override float CalculateStat(GameObject obj)
+        public override float CalculateStat(Entity obj)
         {
             var actor = obj as Actor;
             var gear = actor.GetGear();

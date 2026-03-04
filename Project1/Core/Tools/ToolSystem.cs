@@ -76,9 +76,14 @@ namespace Project1.Core.Tools
             item.Profile = profile;
             var comp = item.GetComponent<UnfinishedItemComp>();
             comp.Initialize(author, order, [handleMaterial ,headMaterial]);
-            var assembly = item.Resources.GetResource(ResourceDefOf.Assembly);
-            assembly.SetValue(0);
+
+            var assembly = item.Resources.View(ResourceDefOf.Assembly);
+            assembly.Value = 0;
             assembly.Max = 110;
+
+            //item.Resources.SetValue(ResourceDefOf.Assembly, 0);
+            //item.Resources.SetMax(ResourceDefOf.Assembly, 110);
+
             item.Initialize();
             item.SetName($"{profile.LabelReadable} (unfinished)");
             order.UnfinishedItem = item;

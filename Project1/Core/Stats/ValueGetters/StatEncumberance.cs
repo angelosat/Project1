@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Entities;
 using Project1.Core.Stats;
 
 namespace Project1.Core.Entities.Stats.ValueGetters
 {
-    class StatEncumberance : StatWorker
+    sealed class StatEncumberance : StatWorker
     {
-        public override float CalculateStat(GameObject obj)
+        public override float CalculateStat(Entity obj)
         {
             var haulWeight = obj.Hauled?.TotalWeight ?? 0;
             if (haulWeight == 0)

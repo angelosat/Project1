@@ -145,5 +145,9 @@ namespace Project1.Core.Resources
         {
             this.Value = value;
         }
+        public void SetTicksPerRecoverOne(int value)
+        {
+            this.TicksPerRecoverOne = value;
+        }
     }
 }

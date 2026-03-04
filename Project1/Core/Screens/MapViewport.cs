@@ -5,7 +5,7 @@ using Project1.Core.Simulation;
 
 namespace Project1.Core.Screens
 {
-    internal class MapViewport
+    internal sealed class MapViewport
     {
         internal MapBase Map;
         internal Camera Camera;

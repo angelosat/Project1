@@ -1,23 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Interactions;
 
 namespace Project1.Core.Interactions
 {
-    class InteractionSwapCarried : Interaction
+    sealed class InteractionSwapCarried : InteractionLogic
     {
-        public InteractionSwapCarried()
-             : base(
-            "SwapCarried",
-            .4f
-            )
+        internal override void OnFinish(Interaction i)
         {
-        }
-        public override void Perform()
-        {
-            var a = this.Actor;
-            var t = this.Target; 
+            var a = i.Actor;
+            var t = i.Target; 
             var item = t.Object as Entity;
             var global = item.Global;
             var actor = a as Actor;

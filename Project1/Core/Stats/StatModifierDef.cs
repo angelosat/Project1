@@ -5,10 +5,10 @@ using System;
 namespace Project1.Core.Entities.Stats
 {
     public enum DurationTypes { Permanent, Finite }
-    class StatModifierDef : Def
+    sealed class StatModifierDef : Def
     {
         public StatDef Source;
-        public Func<GameObject, float, float> Mod;
+        public Func<Entity, float, float> Mod;
         public DurationTypes DurationType;
         public int BaseDurationInTicks = 0;
         public StatModifierDef(string name, StatDef source) : base(name)

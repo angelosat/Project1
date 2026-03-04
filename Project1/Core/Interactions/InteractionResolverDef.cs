@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
-using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Framework.Helpers;
+using System;
 
 namespace Project1.Core.Interactions
 {
-    internal class InteractionResolverDef(string name, Type workerType) : Def(name)
+    internal sealed class InteractionResolverDef(string name, Type workerType) : Def(name)
     {
         internal InteractionResolver Worker = ActivatorSafe<InteractionResolver>.CreateInstance(workerType);
     }
@@ -15,7 +15,7 @@ namespace Project1.Core.Interactions
     {
         internal abstract float Resolve(Actor actor);
     }
-    internal class WorkSpeedResolver : InteractionResolver
+    internal sealed class WorkSpeedResolver : InteractionResolver
     {
         internal override float Resolve(Actor actor)
         {
@@ -24,7 +24,7 @@ namespace Project1.Core.Interactions
 
             var speed = 1 + toolspeed;
 
-            var stamina = actor[ResourceDefOf.Stamina];
+            var stamina = actor.Resources.View(ResourceDefOf.Stamina);
             speed *= stamina.CurrentThreshold.Value;
 
             return speed;

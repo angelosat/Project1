@@ -2,13 +2,9 @@
 
 namespace Project1.Core.Attributes
 {
-    class AttributeDexterity : AttributeWorker
+    sealed class AttributeDexterity : AttributeWorker
     {
-        public AttributeDexterity(AttributeDef def) : base(def)
-        {
-        }
-
-        public override void Tick(GameObject obj, AttributeRuntime attributeStat)
+        public override void Tick(Entity obj, AttributeRuntime attributeStat)
         {
         }
     }

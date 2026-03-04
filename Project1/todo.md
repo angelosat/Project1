@@ -2,7 +2,6 @@
 ## immediate
 - create primary raw material processing workstations
 - separate pathing behavior from interaction behavior. probably dont need behaviorexecuteplan anymore, just assume that all behaviors are a path to an interaction
-- change map.lightningengine to a simulationsystem and make it respond to cells invalidated events instead of directly calling it
 - repair: create a blockrepaircomp for workstations with repair capability that holds repair charges similar to how 
 blockfuelcomp holds fuel, and make it rechargable by scraps, which are byproducts from raw material refinement
 (logs => planks + wood scraps, ore => ingots + metal scraps, etc)
@@ -17,14 +16,9 @@ blockfuelcomp holds fuel, and make it rechargable by scraps, which are byproduct
 - change camera zoom to only be >=1 , and for <1 make it actually reduce the rendertarget bounds (for 1-1 pixel mapping)
 - change regionnodes to be the actual cell the actors stand in, instead of the cell below (WHAT WAS I THINKING)
 - cleanup interactions/blocks
-- intercept disposed/despawned entity events to close inspector window for them
 - construction designations: instead of drawing on the chunk's meshes, let construction manager have its own mesh. this way it will only serve as a layer/interface to select cells, intead of actually placing dummy "designation" blocks
 - lumberjacking: two distinct designations: 1)chop down explicitly: forces actors to clear trees immediately, 2)chop down only when wood stocks lower than min set limit
 - crafting: clear workstation surface from irrelevant items before working
-- interactions: finally untangle interactions. make them def based instead of subclassing everything
-- ui: make an input queue and handle it in the main thread
-- migrate blocks to the def ecosystem and change save/load logic
-- decide wether itempreferencemanager will only be about job related tools or items in general
 - make maps, slots, and containers, implement iowner with an add and remove method, adding to a container, removes it from the last one
   - not 100% necessary if i do entity.map?.despawn(entity), entity.slot?.set(null), entity.container?.remove(entity) at each entry point
 - fix moodlets being checked only in specific context (dont check the noroom moodlet for non town members)

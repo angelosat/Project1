@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using System;
 
 namespace Project1.Core.Towns
 {
@@ -31,7 +32,8 @@ namespace Project1.Core.Towns
             // wait until innkeeper arrives behind counter, then take out money and drop it on counter
             yield return new BehaviorWait(tavern.IsInnkeeperServicing);
             yield return new BehaviorResolveInteraction(() => actor.GetMoney(), () => null);//  new InteractionHaul(room.Value));
-            yield return new BehaviorResolveInteraction(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());
 
             yield return new BehaviorWait(() => room.OwnerRef == actor.RefId); // isserved was made for dining. create a new field for bed renting?
             // TODO wait until visitor has ownership of the bed stored in customerprops 

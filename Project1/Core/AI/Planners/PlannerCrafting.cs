@@ -4,13 +4,12 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Core.Resources;
-using Project1.Core.Towns.Duties;
 using System.Linq;
 using static Project1.Core.Crafting.CraftingOrder;
 
 namespace Project1.Core.AI.Planners
 {
-    class PlannerCrafting : Planner
+    sealed class PlannerCrafting : Planner
     {
         protected override Plan TryPlan(Actor actor)
         {
@@ -289,7 +288,7 @@ namespace Project1.Core.AI.Planners
 
             return null;
 
-            static bool isRepairable(Entity e) => e.Resources?[ResourceDefOf.Durability] is Resource durability && durability.Percentage < 1;
+            static bool isRepairable(Entity e) => e.Resources?.View(ResourceDefOf.Durability) is IResourceView durability && durability.Percentage < 1;
         }
     }
 }

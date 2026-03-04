@@ -1,9 +1,9 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Resources;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Project1.Core
@@ -118,7 +118,8 @@ namespace Project1.Core
 
             public Product RestoreDurability()
             {
-                this.ModifierActions.Add((mats, prod) => prod.GetResource(ResourceDefOf.Durability).Percentage = 1);
+                throw new UnreachableException();
+                //this.ModifierActions.Add((mats, prod) => prod.GetResource(ResourceDefOf.Durability).Percentage = 1);
                 return this;
             }
         }

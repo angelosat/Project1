@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Project1.Core.Interactions;
-using Project1.Core.Entities;
-using Project1.Core.AI.Behaviors.Pathing;
+﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.Helpers;
-using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.Entities;
+using Project1.Core.Helpers;
+using Project1.Core.Interactions;
 using Project1.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns.Shops
 {
@@ -43,16 +44,18 @@ namespace Project1.Core.Towns.Shops
                 task.SetTarget(TargetIndex.C, money);
                 return true;
             });
-            yield return new BehaviorResolveInteraction(() => task.TargetC, () => new InteractionSwapCarried());
+            throw new NotImplementedException();
 
-            // if carrying coins, store in inventory. otherwise drop or haul to stockpile
-            yield return new BehaviorResolveInteraction(TargetIndex.A, () =>
-            {
-                if (this.Actor.Hauled.Def == ItemDefOf.Coins)
-                    return new InteractionStoreHauled();
-                else
-                    return new InteractionThrow();
-            });
+            //yield return new BehaviorResolveInteraction(() => task.TargetC, () => new InteractionSwapCarried());
+
+            //// if carrying coins, store in inventory. otherwise drop or haul to stockpile
+            //yield return new BehaviorResolveInteraction(TargetIndex.A, () =>
+            //{
+            //    if (this.Actor.Hauled.Def == ItemDefOf.Coins)
+            //        return new InteractionStoreHauled();
+            //    else
+            //        return new InteractionThrow();
+            //});
             // UNDONE i remove customer on the buyer's behavior finish action
             //yield return new BehaviorWait(() =>
             //{

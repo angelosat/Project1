@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework.UI;
+﻿using Project1.Core.Animations;
+using Project1.Core.Crafting;
+using Project1.Core.Entities;
+using Project1.Core.Entities.Stats;
+using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
-using Project1.Core.Entities;
-using Project1.Core.Entities.Stats;
-using Project1.Core.Animations;
-using Project1.Core.Materials;
-using Project1.Core.Crafting;
 using Project1.Framework.Helpers;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Tools
 {
-    public class ToolComp : EntityComp<ToolComp.Spec>
+    public sealed class ToolComp : EntityComp<ToolComp.Spec>
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Tool;
         public new class Spec : Spec<SpriteComp>
@@ -131,7 +131,7 @@ namespace Project1.Core.Tools
                 entityBone.Material = mat;
                 durabilityMax += mat.Density;
             }
-            var durability = this.Owner.Resources[ResourceDefOf.Durability];
+            var durability = this.Owner.Resources.View(ResourceDefOf.Durability);
             durability.Value = durability.Max = durabilityMax;
         }
     }

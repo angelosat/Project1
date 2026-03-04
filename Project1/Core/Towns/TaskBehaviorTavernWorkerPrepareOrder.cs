@@ -26,8 +26,11 @@ namespace Project1.Core.Towns
             yield return BehaviorHaulHelper.StartCarrying(this, ingredientIndex);
             yield return BehaviorHelper.MoveTo(workstationIndex);
             yield return BehaviorHelper.SetTarget(workstationAbove, (actor.Map, task.GetTarget(workstationIndex).Global.Above()));
-            yield return BehaviorHelper.PlaceCarried(workstationAbove);
-            yield return BehaviorHelper.JumpIfMoreTargets(beginHaul, ingredientIndex);
+            throw new NotImplementedException();
+
+            //yield return BehaviorHelper.PlaceCarried(workstationAbove);
+            throw new NotImplementedException();
+            //yield return BehaviorHelper.JumpIfMoreTargets(beginHaul, ingredientIndex);
             throw new NotImplementedException();
             yield return new BehaviorCustom(() => customerProps.Dish = task.CraftedItems.First());
         }

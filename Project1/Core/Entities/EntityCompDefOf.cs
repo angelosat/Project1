@@ -58,20 +58,6 @@ namespace Project1.Core.Entities
         static EntityCompDefOf()
         {
             Def.Register(typeof(EntityCompDefOf));
-            //Assembly[] assemblies =
-            //[
-            //    typeof(EntityComp).Assembly,
-            //];
-            //IEnumerable<Type> compTypes =
-            //    assemblies
-            //        .SelectMany(a => a.GetTypes())
-            //        .Where(t =>
-            //            !t.IsAbstract &&
-            //            typeof(EntityComp).IsAssignableFrom(t));
-            //foreach(var comptype in compTypes)
-            //{
-            //    Def.Register(new EntityCompDef(comptype.Name, comptype));
-            //}
         }
     }
 }

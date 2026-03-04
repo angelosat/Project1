@@ -6,6 +6,7 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Reservations;
+using System;
 
 namespace Project1.Core.Towns.Shops
 {
@@ -40,11 +41,13 @@ namespace Project1.Core.Towns.Shops
             yield return BehaviorReserve.Reserve(this, Item);
             // TODO place item on counter first? or wait for money on counter and then swap?
             // WTF if i place item on counter first, then i'll have to retrieve it in case of failure
-            yield return new BehaviorResolveInteraction(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(() => (actor.Map, counterSurface), () => new UseHauledOnTarget());
             yield return BehaviorHelper.WaitForItem(Money, counterSurface, o => o.Def == ItemDefOf.Coins && o.StackSize >= cost);
             yield return new BehaviorResolveInteraction(Money, () => null);// new InteractionHaul());
             // TODO retrieve item if behavior fails while waiting (if going with placing the item on the counter before the money)
-            yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(() => new InteractionStoreHauled());
         }
     }
 }

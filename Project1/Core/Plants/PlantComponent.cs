@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Plants
 {
-    public class PlantComponent : EntityComp<PlantComponent.Spec>
+    public sealed class PlantComponent : EntityComp<PlantComponent.Spec>
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Plant;
         public new class Spec : Spec<PlantComponent>

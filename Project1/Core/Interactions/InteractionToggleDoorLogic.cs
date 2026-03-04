@@ -13,15 +13,4 @@ namespace Project1.Core.Interactions
             BlockDoor.Toggle(actor.Map, target.Global);
         }
     }
-    public class InteractionToggleDoor : Interaction
-    {
-        public InteractionToggleDoor() : base("Open/close") { }
-
-        protected void OnStart()
-        {
-            var actor = this.Actor;
-            var target = this.Target;
-            BlockDoor.Toggle(actor.Map, target.Global);
-        }
-    }
 }

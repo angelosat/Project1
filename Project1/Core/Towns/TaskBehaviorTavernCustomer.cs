@@ -49,10 +49,12 @@ namespace Project1.Core.Towns
                 task.SetTarget(TargetIndex.C, money, Math.Min(money.StackSize, customerProps.Dish.GetValueTotal())); // HACK temporary solution
             });
             yield return BehaviorHelper.SetTarget(TargetIndex.A, ()=> customerProps.Dish);
-            yield return new BehaviorResolveInteraction(TargetIndex.A, new ConsumableComponent.InteractionConsume());
+            throw new NotImplementedException();
+            //yield return new BehaviorResolveInteraction(TargetIndex.A, new ConsumableComponent.InteractionConsume());
             yield return new BehaviorResolveInteraction(TargetIndex.C, () => null);// new InteractionHaul(this.Plan.AmountC));
             yield return BehaviorHelper.SetTarget(TargetIndex.B, table.Global.Above());
-            yield return BehaviorHelper.PlaceCarried(TargetIndex.B);
+            throw new NotImplementedException();
+            //yield return BehaviorHelper.PlaceCarried(TargetIndex.B);
             yield return new BehaviorCustom(() => actor.GetVisitorProperties().AddRecentlyVisitedShop(tavern));
             /// TODO wait until a tavern worker
             /// a) has the corresponding taskbehavior

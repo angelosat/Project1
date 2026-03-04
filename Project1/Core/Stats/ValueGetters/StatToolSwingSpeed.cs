@@ -1,12 +1,11 @@
 ﻿using Project1.Core.Animations;
-using Project1.Core.Entities;
 using Project1.Core.Materials;
 
 namespace Project1.Core.Entities.Stats.ValueGetters
 {
-    class StatToolSwingSpeed : StatWorker
+    sealed class StatToolSwingSpeed : StatWorker
     {
-        public override float CalculateStat(GameObject obj)
+        public override float CalculateStat(Entity obj)
         {
             var tool = obj as Entity;
             var material = tool?.GetMaterial(BoneDefOf.ToolHandle);

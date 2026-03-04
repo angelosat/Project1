@@ -54,7 +54,7 @@ namespace Project1.Core.AI
         static public readonly PlanDef Idle = new("Idleing", typeof(TaskBehaviorIdle)) { Idle = true };
         static public readonly PlanDef Wander = new("Wandering", typeof(TaskBehaviorWander)) { Idle = true };
         static public readonly PlanDef Depart = new("Departing", typeof(TaskBehaviorDepart), InteractionDefOf.Depart);
-        static public readonly PlanDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem), InteractionDefOf.Drop);
+        //static public readonly PlanDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem), InteractionDefOf.Drop);
         static public readonly PlanDef Equip = new("Equipping", typeof(BehaviorEquipItemNew), InteractionDefOf.Equip);
         static public readonly PlanDef Unequip = new("Unquipping", typeof(BehaviorUnequip), InteractionDefOf.Unequip);
         static public readonly PlanDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul), InteractionDefOf.Pick);

@@ -76,10 +76,6 @@ namespace Project1.Core.Entities
             sprite.Draw(sb, pos - new Vector2(source.Width, source.Height) * 0.5f, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
         }
 
-        internal bool HasResource(ResourceDef type)
-        {
-            return this.GetResource(type) != null;
-        }
         internal AttributeRuntime GetAttribute(AttributeDef att) => this.GetComponent<AttributesComponent>().GetAttribute(att);
         public ItemDef Def;
         public QualityDef Quality { get { return this.DefComponent.Quality; } set { this.DefComponent.Quality = value; } }
@@ -158,11 +154,7 @@ namespace Project1.Core.Entities
             yield return IconCameraFollow.Value;
         }
         public virtual IEnumerable<(string label, Type type)> GetSelectionTabs() { yield break; }
-        //public virtual void GetQuickButtons(SelectionManager info)
-        //{
-        //    foreach (var comp in this.Components.Values)
-        //        comp.GetQuickButtons(info, this);
-        //}
+        
         internal void AttackTelegraph(GameObject parent)
         {
             throw new NotImplementedException();
@@ -340,10 +332,6 @@ namespace Project1.Core.Entities
         [InspectorHidden]
         internal StatsComponent Stats => _stats ??= this.GetComponent<StatsComponent>();
 
-        [InspectorHidden]
-        public float this[StatDef stat] => stat.CalculateFor(this);
-        [InspectorHidden]
-        public Resource this[ResourceDef resource] => this.Resources[resource];
         [InspectorHidden]
         public AttributeRuntime this[AttributeDef att] => this.GetAttribute(att);
 

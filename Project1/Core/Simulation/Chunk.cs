@@ -46,12 +46,9 @@ namespace Project1.Core.Simulation
         public double GetGradientAt(int localx, int localy, int localz)
         {
             throw new NotImplementedException();
-            //return this.GradientCache[GetCellIndex(localx, localy, localz)];
         }
-        //double[] GradientCache;
         public Dictionary<IntVec3, double> InitCells2(List<Terraformer> mutators)
         {
-            //this.GradientCache = new double[this.Cells.Length];
             var gradientCache = new Dictionary<IntVec3, double>();
             int n = 0; ;
             var grad = new GradientLowRes(this.World, this);
@@ -60,9 +57,8 @@ namespace Project1.Core.Simulation
                 for (int j = 0; j < Size; j++)
                     for (int i = 0; i < Size; i++)
                     {
-                        Cell cell = new();// i, j, z);
+                        Cell cell = new();
                         double gradient = grad.GetGradient(i, j, z);
-                        //this.GradientCache[n] = gradient;
                         gradientCache.Add(new IntVec3(i, j, z), gradient);
                         this.Cells[n++] = cell;
                     }
@@ -98,10 +94,10 @@ namespace Project1.Core.Simulation
             string text =
                 "Local: " + this.MapCoords.ToString() +
                   "\nGlobal: " + this.Start.ToString() +
-                   "\nObjects: " + this.Objects.Count +
+                   "\nObjects: " + this.Entities.Count +
                 "\nCells to validate: " + this.CellsToValidate.Count;
 
-            text += "Objects: " + this.Objects.Count.ToString() + "\n";
+            text += "Objects: " + this.Entities.Count.ToString() + "\n";
             return text.Remove(text.Length - 1);
         }
 
@@ -132,10 +128,8 @@ namespace Project1.Core.Simulation
         public int[][] HeightMap;
 
         readonly BlockDamageSystem BlockDamageSystem;
-        //readonly FloraController Flora;
-        //readonly FlowerController Flowers;
         readonly List<ChunkController> Controllers = [];
-        public List<Entity> Objects;
+        public List<Entity> Entities;
         readonly Dictionary<IntVec3, BlockEntity> BlockEntitiesByPosition = new();
         public IEnumerable<BlockEntity> BlockEntities => this.BlockEntitiesByPosition.Values.Distinct();
 
@@ -211,7 +205,7 @@ namespace Project1.Core.Simulation
 
         public IntVec2 MapCoords
         {
-            get => new IntVec2(this.X, this.Y);
+            get => new(this.X, this.Y);
             set
             {
                 this.X = value.X;
@@ -221,12 +215,8 @@ namespace Project1.Core.Simulation
         }
         internal void ResolveReferences()
         {
-            //this.Flora.ResolveReferences();
-            //this.Flowers.ResolveReferences();
             foreach (var c in this.Controllers)
                 c.ResolveReferences();
-            //foreach (var obj in this.Objects)
-            //    obj.Resolve();
         }
 
         public static readonly int Width = Block.Width * Size;
@@ -255,7 +245,7 @@ namespace Project1.Core.Simulation
         Chunk()
         {
             this.Cells = new Cell[Chunk.Size * Chunk.Size * MapBase.MaxHeight];
-            this.Objects = [];
+            this.Entities = [];
             this.HeightMap = new int[Size][];
             for (int i = 0; i < Size; i++)
                 this.HeightMap[i] = new int[Size];
@@ -288,13 +278,13 @@ namespace Project1.Core.Simulation
         public void Add(Entity obj)
         {
             obj.Map = this.Map;
-            if (this.Objects.Contains(obj))
+            if (this.Entities.Contains(obj))
                 throw new Exception();
-            this.Objects.Add(obj);
+            this.Entities.Add(obj);
         }
         public bool Remove(Entity obj)
         {
-            if (!this.Objects.Remove(obj))
+            if (!this.Entities.Remove(obj))
                 throw new Exception();
             return true;
         }
@@ -308,21 +298,22 @@ namespace Project1.Core.Simulation
 
         public Cell GetLocalCell(IntVec3Local local)
             => this.Cells[GetCellIndex(local)];
-        
-        public static int GetCellIndex(int x, int y, int z) 
+
+        public static int GetCellIndex(int x, int y, int z)
             => (z * Size + y) * Size + x;
         public static int GetCellIndex(float x, float y, float z)
             => GetCellIndex((int)Math.Round(x), (int)Math.Round(y), (int)Math.Round(z));
-        
+
         public static int GetCellIndex(IntVec3Local local)
             => GetCellIndex(local.X, local.Y, local.Z);
 
         public static IntVec3Local GetLocalFromIndex(int index)
             => new(new(index % Size, (index / Size) % Size, index / (Size * Size)));
 
-        public static int Volume = Size * Size * MapBase.MaxHeight;
+        public static readonly int Volume = Size * Size * MapBase.MaxHeight;
         public byte[] BlockLight = new byte[Volume];
         public byte[] Sunlight = new byte[Volume];
+        Queue<IntVec3> LightChanges = [];
 
         void ResetCellLight()
         {
@@ -349,7 +340,6 @@ namespace Project1.Core.Simulation
             return localz > this.HeightMap[localx][localy];
         }
 
-        Queue<IntVec3> LightChanges = new Queue<IntVec3>();
 
         /// <summary>
         /// Recalculates the skylight of a chunk and returns a list of cells whose skylight that changed.
@@ -423,7 +413,7 @@ namespace Project1.Core.Simulation
                         else return; // new heightmap value is same as previous one so return
                     }
                 }
-                
+
                 if (found && (minVal < z && z <= maxVal)) // if a new heightmap value found, invalidate cells inbetween the old and the new one
                     this.InvalidateCell(new IntVec3(localx, localy, z)); // why did i have this commented out? it caused slice meshes not getting updated light
 
@@ -502,7 +492,7 @@ namespace Project1.Core.Simulation
                     //lightsourcesToHandle.Enqueue(cell.GetGlobalCoords(this));
                     lightsourcesToHandle.Enqueue(local.ToGlobal(this));
 
-                    z--;
+                z--;
             }
 
             if (light > 0)
@@ -537,33 +527,16 @@ namespace Project1.Core.Simulation
             this.InvalidateSlice((byte)z);
         }
 
-        //public bool InvalidateCell(Cell cell)
-        //{
-        //    //this.BlockTokens.Remove(cell.LocalCoords);
-        //    this.BlockDamageSystem.Delete(cell.LocalCoords);
-        //    if (cell is null)
-        //        throw new Exception();
-        //    this.InvalidateLight(cell);
-
-        //    if (!cell.Valid)
-        //        return false;
-
-        //    this.CellsToValidate.Enqueue(cell);
-        //    cell.Valid = false;
-        //    return true;
-        //}
         public void InvalidateCell(IntVec3Local cell)
         {
-            //this.BlockTokens.Remove(cell.LocalCoords);
             this.BlockDamageSystem.Delete(cell);
             this.InvalidateLight(cell.ToGlobal(this));
 
             if (!this.GetLocalCell(cell).Valid)
-                return; //false
+                return;
 
             this.CellsToValidate.Enqueue(cell);
             this.GetLocalCell(cell).Valid = false;
-            //return true;
         }
         public byte GetBlockLight(IntVec3Local local)
         {
@@ -609,7 +582,6 @@ namespace Project1.Core.Simulation
         /// TODO: optimize: convert to dictionary for speed
         /// </summary>
         public Dictionary<IntVec3Local, LightToken> LightCache = [];
-        //internal Dictionary<IntVec3, BlockHealthToken> BlockTokens = [];
         public static bool InvalidateLight(MapBase map, IntVec3 global)
         {
             if (map.TryGetAll(global.X, global.Y, global.Z, out Chunk chunk, out Cell cell, out int lx, out int ly))
@@ -618,10 +590,7 @@ namespace Project1.Core.Simulation
             }
             return false;
         }
-        //public bool InvalidateLight(Cell cell)
-        //{
-        //    return this.InvalidateLight(cell.GetGlobalCoords(this));
-        //}
+     
         public bool InvalidateLight(IntVec3 global)
         {
             this.LightCache.Clear();
@@ -690,13 +659,13 @@ namespace Project1.Core.Simulation
 
         public void HitTestEntities(Camera camera)
         {
-            foreach (var o in this.Objects)
+            foreach (var o in this.Entities)
                 o.HitTest(camera);
         }
 
         private void ValidateHeightmap()
         {
-            if (this.HeightMapUpdates.Any())
+            if (this.HeightMapUpdates.Count != 0)
             {
                 foreach (var pos in this.HeightMapUpdates)
                     this.UpdateHeightMapColumnWithLightSmart(pos.X, pos.Y);
@@ -716,20 +685,8 @@ namespace Project1.Core.Simulation
                 c.Tick();
         }
         void TickBlockTokens()
-        {
-            this.BlockDamageSystem.Tick();
-            //this.Flora.Tick();
-            //this.Flowers.Tick();
-            //var keysToRemove = new List<IntVec3>(this.BlockTokens.Count);
-            //foreach (var (pos, token) in this.BlockTokens)
-            //{
-            //    token.Tick();
-            //    if (token.HasExpired)
-            //        keysToRemove.Add(pos);
-            //}
-            //foreach (var k in keysToRemove)
-            //    this.BlockTokens.Remove(k);
-        }
+            => this.BlockDamageSystem.Tick();
+
         private void TickBlockEntities()
         {
             foreach (var blockentity in this.BlockEntitiesByPosition.ToList())
@@ -737,7 +694,7 @@ namespace Project1.Core.Simulation
         }
         private void TickEntities()
         {
-            var objectList = this.Objects.ToArray();
+            var objectList = this.Entities.ToArray();
             var objCount = objectList.Length;
             for (int i = 0; i < objCount; i++)
             {
@@ -751,7 +708,7 @@ namespace Project1.Core.Simulation
         #region Drawing
         public void DrawObjects(MySpriteBatch sb, Camera camera, Controller controller, MapBase map, SceneState scene)
         {
-            foreach (var obj in this.Objects) //make a copy of the list first because currently the player character might be added while drawing
+            foreach (var obj in this.Entities) //make a copy of the list first because currently the player character might be added while drawing
             {
                 Vector3 global = obj.Global;
                 if (global.Z > camera.DrawLevel + 1)// - 1)
@@ -797,7 +754,7 @@ namespace Project1.Core.Simulation
         }
         public void DrawInterface(SpriteBatch sb, Camera cam)
         {
-            foreach (var obj in this.Objects)
+            foreach (var obj in this.Entities)
                 obj.DrawInterface(sb, cam);
             foreach (var blockentity in this.BlockEntitiesByPosition)
                 blockentity.Value.DrawUI(sb, cam, blockentity.Key.ToGlobal(this));
@@ -873,7 +830,7 @@ namespace Project1.Core.Simulation
             Console.WriteLine(filename + " saved in " + (DateTime.Now - now).ToString());
             return directory + GetFilename(this.MapCoords);
         }
-     
+
         private Dictionary<BlockEntity, List<IntVec3>> GetDistinctBlockEntities()
         {
             var distinct = new Dictionary<BlockEntity, List<IntVec3>>();
@@ -1092,12 +1049,12 @@ namespace Project1.Core.Simulation
         }
         internal IEnumerable<GameObject> GetObjectsLazy()
         {
-            foreach (var obj in this.Objects)
+            foreach (var obj in this.Entities)
                 yield return obj;
         }
         internal List<GameObject> GetObjects()
         {
-            return new List<GameObject>(this.Objects);
+            return new List<GameObject>(this.Entities);
         }
 
         public void OnCameraRotated(Camera camera)
@@ -1129,11 +1086,11 @@ namespace Project1.Core.Simulation
             serializer.Serialize(this, writer);
 
             // save only entity refids, for entities to be claimed from the world entity registry during deserialization
-            var refids = this.Objects.Select(o => o.RefId).ToList();
+            var refids = this.Entities.Select(o => o.RefId).ToList();
             if (refids.Any(c => c == 0))
                 throw new Exception();
             writer.Write(refids);
-            
+
             this.WriteBlockEntitiesDistinct(writer);
             for (int j = 0; j < Size; j++)
                 for (int i = 0; i < Size; i++)
@@ -1211,9 +1168,9 @@ namespace Project1.Core.Simulation
                 if (i == cam.MaxDrawZ && cam.DrawTopSlice)
                     slice.Cover.NonOpaque.Draw();
             }
-         
+
             foreach (var blockentity in this.BlockEntitiesByPosition)
-            blockentity.Value.Draw(cam, this.Map, blockentity.Key.ToGlobal(this));
+                blockentity.Value.Draw(cam, this.Map, blockentity.Key.ToGlobal(this));
         }
         public void DrawTransparentLayers(Camera cam, Effect effect)
         {
@@ -1255,7 +1212,7 @@ namespace Project1.Core.Simulation
             var lightTag = new SaveTag(SaveTag.Types.List, "Light", SaveTag.Types.Byte);
 
             var sw = Stopwatch.StartNew();
-  
+
             var serializer = new ChunkSerializer();
             serializer.Serialize(this, chunktag);
 
@@ -1279,7 +1236,7 @@ namespace Project1.Core.Simulation
             sw.Stop();
             string.Format("heightmap saved in {0} ms", sw.ElapsedMilliseconds).ToConsole();
 
-            var entityRefIds = this.Objects.Select(e => e.RefId).ToList();
+            var entityRefIds = this.Entities.Select(e => e.RefId).ToList();
             var entitiestag = entityRefIds.Save("Entities");
 
             var blockEntitiesTag = this.SaveBlockEntitiesDistinct();
@@ -1388,7 +1345,7 @@ namespace Project1.Core.Simulation
             }
             return (frontCellX, frontCellY);
         }
-        
+
         public void BuildSliceNew(Slice slice, Camera camera, MapBase map, int z, (int x, int y) frontCells)
         {
             var maxCapacity = Size * Size;
@@ -1487,7 +1444,7 @@ namespace Project1.Core.Simulation
         {
             if (this.BlockEntitiesByPosition.TryGetValue(local, out entity))
             {
-                foreach(var cell in entity.CellsOccupied)
+                foreach (var cell in entity.CellsOccupied)
                     this.BlockEntitiesByPosition.Remove(cell.ToLocal());
             }
             return entity is not null;
@@ -1499,13 +1456,13 @@ namespace Project1.Core.Simulation
                 yield return (be.Key, be.Value);
         }
         internal IBlockHealth GetBlockToken(IntVec3Local local) => this.BlockDamageSystem.GetBlockHealth(local);
-        
+
         internal void ApplyBlockWork(IntVec3Local local, int work)
         {
             var result = this.BlockDamageSystem.ApplyDamage(local, work);
-            if(result != BlockHealthToken.BlockDamageResult.NoChange)
+            if (result != BlockHealthToken.BlockDamageResult.NoChange)
                 this.InvalidateSlice(local.Z);
-            switch(result)
+            switch (result)
             {
                 case BlockHealthToken.BlockDamageResult.DamageLevelChanged:
                     this.InvalidateSlice(local.Z);
@@ -1517,7 +1474,8 @@ namespace Project1.Core.Simulation
 
                 default:
                     break;
-            };
+            }
+            ;
             this.Map.Events.Post(new BlockDamagedEvent(this.Map, local.ToGlobal(this), work));
         }
         internal byte GetBlockData(int cellIndex) => this.Cells[cellIndex].BlockData;

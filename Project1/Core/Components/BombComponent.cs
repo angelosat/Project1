@@ -80,7 +80,7 @@ namespace Project1.Core.Components
         {
             var rsquared = this.Radius * this.Radius;
             var global = parent.Transform.Global;
-            var entities = parent.Map.GetObjectsAtChunk(global);
+            var entities = parent.Map.GetEntitiesAroundChunk(global);
             foreach(var entity in entities)
             {
                 var distance = entity.Transform.Global + entity.Physics.Height * Vector3.UnitZ * .5f - global;

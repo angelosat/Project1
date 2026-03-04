@@ -6,9 +6,7 @@ using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.Sleeping;
 using Project1.Core.Interactions;
 using Project1.Core.Plants;
-using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors;
-using Project1.Core.Towns.Constructions.AI;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Farming;
 using Project1.Core.Towns.Forestry;
@@ -19,18 +17,6 @@ namespace Project1.Core.AI
     [EnsureStaticCtorCall]
     public static class PlanDefOf
     {
-
-        static public readonly PlanDef Refueling = new("Refueling", typeof(BehaviorRefueling))
-        {
-            Format = "Refuel {0}",
-            GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
-        };
-
-        static public readonly PlanDef DeliverMaterials = new("DeliverMaterials", typeof(TaskBehaviorDeliverMaterials))
-        {
-            Format = "Deliver materials to {0}",
-            GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
-        };
         static public readonly PlanDef Moving = new("Moving", typeof(TaskBehaviorLeaveUnstandableCell))
         {
             Format = "Move {0}",
@@ -47,11 +33,7 @@ namespace Project1.Core.AI
             Format = "Dig {0}",
             GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
         };
-        //static public readonly PlanDef Digging = new("Digging", typeof(TaskBehaviorDigging), InteractionDefOf.Dig)
-        //{
-        //    Format = "Dig {0}",
-        //    GetPrimaryTarget = t => t.GetTarget(TargetIndex.A)
-        //};
+       
         static public readonly PlanDef Chatting = new("Chatting", typeof(TaskBehaviorTalkToAboutTopic))
         {
             Format = "Chat",

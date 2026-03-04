@@ -110,7 +110,6 @@ namespace Project1.Core.Simulation
             this.SimulationSystems.Add(new FallDamageSystem(this));
             this.SimulationSystems.Add(new LootSystem(this));
             this.SimulationSystems.Add(new PlantLifeCycleSystem(this));
-            //this.SimulationSystems.Add(new FloraSystem(this));
 
             this.Collisions = new CollisionSystem(this);
             this.SimulationSystems.Add(this.Collisions);
@@ -813,13 +812,12 @@ namespace Project1.Core.Simulation
             return sunlight;
         }
 
-        public override List<Entity> GetObjectsAtChunk(Vector3 global)
+        public override List<Entity> GetEntitiesAroundChunk(Vector3 global)
         {
             var chunks = this.GetChunks(global.GetChunkCoords(), 1);
             var entities = new List<Entity>();
             foreach (var ch in chunks)
-                //entities.AddRange(ch.GetObjects());
-                entities.AddRange(ch.Objects);
+                entities.AddRange(ch.Entities);
             return entities;
         }
         public override int GetSizeInChunks()

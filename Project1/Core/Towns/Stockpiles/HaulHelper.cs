@@ -22,38 +22,5 @@ namespace Project1.Core.Towns.Stockpiles
                 map.GetBlock(destination.Global).IsValidHaulDestination(map, pos, item);
 
         }
-        public static bool TryFindNearbyPlace(Actor actor, GameObject item, Vector3 center, out TargetArgs target)
-        {
-            var map = actor.Map;
-            var actorCell = actor.Cell;
-            var places = actorCell.GetRadial();
-            foreach (var pl in places)
-            {
-                var global = pl;
-                var above = global.Above();
-                var existingItems = map.GetEntitiesAt(above);
-                var toCombine = existingItems.FirstOrDefault(i => i != item && i.CanAbsorb(item));
-                if (toCombine != null)
-                {
-                    target = new TargetArgs(toCombine);
-                    return true;
-                }
-
-                var block = map.GetBlock(global);
-                if (block.IsStandableOn &&
-                    map.IsSolid(global) &&
-                    map.IsEmpty(above))
-                {
-                    target = new TargetArgs(map, above);
-                    return true;
-                }
-            }
-            target = null;
-            return false;
-        }
-        public static int MaxCarryable(this Actor actor, ItemDef def)
-        {
-            return actor.GetHaulStackLimitFromEndurance(def);
-        }
     }
 }

@@ -286,7 +286,7 @@ namespace Project1.Core.Towns.Terrain
         }
         void ScanPlants(Chunk chunk)
         {
-            foreach (var plant in chunk.Objects.Where(o => o.HasComponent<PlantComponent>()))
+            foreach (var plant in chunk.Entities.Where(o => o.HasComponent<PlantComponent>()))
                 this.CurrentPlants.Add(plant);
         }
         void ScanDirtyColumns(Chunk chunk)

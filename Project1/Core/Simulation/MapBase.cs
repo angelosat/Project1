@@ -68,17 +68,19 @@ namespace Project1.Core.Simulation
         }
         public Vector2 Coordinates;
         public abstract string GetName();
-        public float Gravity => this.World.Gravity;
         public readonly float PlantDensityTarget = .1f;
-        public int ChunkVolume => Chunk.Size * Chunk.Size * this.GetMaxHeight();
-        public int Volume => this.ActiveChunks.Count * this.ChunkVolume;
-        public Random Random => this.World.Random;
+   
         public abstract Dictionary<IntVec2, Chunk> GetActiveChunks();
         public abstract bool AddChunk(Chunk chunk);
         public abstract IEnumerable<GameObject> GetObjects(Vector3 min, Vector3 max);
         public abstract IEnumerable<GameObject> GetObjects(BoundingBox box);
-        public IEnumerable<BlockEntity> BlockEntities => this.ActiveChunks.Values.SelectMany(ch => ch.BlockEntities).Distinct();
+        public abstract List<Entity> GetEntitiesAroundChunk(Vector3 global);
+        public float Gravity => this.World.Gravity;
 
+        public IEnumerable<BlockEntity> BlockEntities => this.ActiveChunks.Values.SelectMany(ch => ch.BlockEntities).Distinct();
+        public int ChunkVolume => Chunk.Size * Chunk.Size * this.GetMaxHeight();
+        public int Volume => this.ActiveChunks.Count * this.ChunkVolume;
+        public Random Random => this.World.Random;
         public IEnumerable<T> GetBlockEntities<T>() where T : BlockEntity
         {
             return this.BlockEntities.OfType<T>();
@@ -475,22 +477,7 @@ namespace Project1.Core.Simulation
             }
             return false;
         }
-        public virtual bool IsEmpty(Vector3 global)
-        {
-            global = global.ToRounded();
-            if (this.GetBlock(global) != BlockDefOf.Air.Block)
-                return false;
-            var blockbox = new BoundingBox(global - (Vector3.UnitX + Vector3.UnitY) * .5f, global + Vector3.UnitZ + (Vector3.UnitX + Vector3.UnitY) * .5f);
-            var entities = this.GetObjectsAtChunk(global);
-            foreach (var entity in entities)
-            {
-                var entitybox = new BoundingBox(entity.Transform.Global - (Vector3.UnitX + Vector3.UnitY) * .2f, entity.Transform.Global + Vector3.UnitZ * entity.Physics.Height + (Vector3.UnitX + Vector3.UnitY) * .2f);
-                if (blockbox.Intersects(entitybox))
-                    return false;
-            }
-            return true;
-        }
-        public abstract List<Entity> GetObjectsAtChunk(Vector3 global);
+
         public bool Despawn(Entity obj)
         {
             if (obj.Map != this)
@@ -514,7 +501,7 @@ namespace Project1.Core.Simulation
         public IEnumerable<GameObject> GetObjects(Vector3 global)
         {
             var ch = this.GetChunk(global);
-            var objects = ch.Objects;
+            var objects = ch.Entities;
             var count = objects.Count;
             var globalIntVec3 = global.ToCell();
             for (int i = 0; i < count; i++)
@@ -920,15 +907,15 @@ namespace Project1.Core.Simulation
         {
 
         }
-        public IEnumerable<Entity> Haulables => this.ActiveChunks.Values.SelectMany(c => c.Objects.Where(e => e.Def.IsHaulable)).Cast<Entity>();
+        public IEnumerable<Entity> Haulables => this.ActiveChunks.Values.SelectMany(c => c.Entities.Where(e => e.Def.IsHaulable)).Cast<Entity>();
 
-        public IEnumerable<Entity> Entities => this.ActiveChunks.Values.SelectMany(c => c.Objects).Cast<Entity>();
+        public IEnumerable<Entity> Entities => this.ActiveChunks.Values.SelectMany(c => c.Entities).Cast<Entity>();
         public IEnumerable<GameObject> GetEntities()
         {
             var chunks = this.ActiveChunks.Values;
             foreach (var chunk in chunks)
             {
-                var entities = chunk.Objects;
+                var entities = chunk.Entities;
                 foreach (var e in entities)
                     if (e.Exists)
                         yield return e;
@@ -939,7 +926,7 @@ namespace Project1.Core.Simulation
             var chunks = this.ActiveChunks.Values;
             foreach (var chunk in chunks)
             {
-                var entities = chunk.Objects;
+                var entities = chunk.Entities;
                 foreach (var e in entities.OfType<T>())
                     //if (e.Exists) ///why wouldn't it exist if it's in the map/chunk???
                         yield return e;

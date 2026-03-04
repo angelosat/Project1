@@ -21,11 +21,11 @@ namespace Project1.Core.VFX
             Registry.MapEventHooksClient.Register<BlockDamagedEvent>(OnBlockDamaged);
             Registry.MapEventHooksClient.Register<PlantChoppedEvent>(OnPlantChopped);
 
-            Registry.MapEventHooksClient.Register<EntityFootStepEvent>(OnEntityFootStep);
+            Registry.MapEventHooksClient.Register<ActorFootStepEvent>(OnEntityFootStep);
 
         }
 
-        private static void OnEntityFootStep(EntityFootStepEvent e)
+        private static void OnEntityFootStep(ActorFootStepEvent e)
         {
             var entity = e.Entity;
             var map = entity.Map;

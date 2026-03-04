@@ -61,6 +61,13 @@ namespace Project1.Core
             this.Y = local.Y;
             this.Z = local.Z;
         }
+        public IntVec3Local(int x, int y, int z)
+        {
+            var local = new IntVec3(x, y, z).ToLocal();
+            this.X = local.X;
+            this.Y = local.Y;
+            this.Z = local.Z;
+        }
         public IntVec3 ToGlobal(Chunk chunk) => new IntVec3(this.X, this.Y, this.Z).ToGlobal(chunk);
         public static implicit operator IntVec3Local(IntVec3 v) => new(v);
     }

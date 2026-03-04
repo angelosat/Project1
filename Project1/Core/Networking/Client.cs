@@ -100,6 +100,10 @@ namespace Project1.Core.Networking
         public const int ClientClockDelayMS = Server.SnapshotIntervalMS * 4;
         public const int ClientTickDelay = 4;
         private int _Speed = 0;// 1;
+
+        /// <summary>
+        /// used just for gfx like rolling fog and water shader
+        /// </summary>
         public override int Speed { get => this._Speed; protected set => this._Speed = value; }
 
         public void Disconnect()
@@ -966,6 +970,7 @@ namespace Project1.Core.Networking
         public override void SetSpeed(int playerID, int playerSpeed)
         {
             var player = this.GetPlayer(playerID);
+            
             player.SuggestedSpeed = playerSpeed;
             var newspeed = this.Players.GetLowestSpeed();
             if (newspeed != this.Speed)
@@ -974,6 +979,7 @@ namespace Project1.Core.Networking
             else
                 Log.Network(this, $"{player.Name} wants to set speed to {playerSpeed}"); // TODO prevent spam
             $"client speed set to {newspeed}".ToConsole();
+            this.Speed = newspeed; // used just for gfx like rolling fog and water shader
         }
         public override void Report(string text)
         {

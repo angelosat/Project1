@@ -23,6 +23,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Threading;
 
 namespace Project1.Core.Simulation
 {
@@ -126,6 +128,7 @@ namespace Project1.Core.Simulation
         [InspectorHidden]
         public Cell[] Cells;
         public int[][] HeightMap;
+        public int[] HeightMapPerCellIndex = new int[Chunk.Size * Chunk.Size];
 
         readonly BlockDamageSystem BlockDamageSystem;
         readonly List<ChunkController> Controllers = [];
@@ -255,6 +258,7 @@ namespace Project1.Core.Simulation
             this.BlockDamageSystem = new(this);
             this.Controllers.Add(new FloraController(this));
             this.Controllers.Add(new FlowerController(this));
+            this.Controllers.Add(new GrassController(this));
         }
         public static Chunk Create(MapBase map, Vector2 pos)
         {
@@ -307,6 +311,9 @@ namespace Project1.Core.Simulation
 
         public static IntVec3Local GetLocalFromIndex(int index)
             => new(new(index % Size, (index / Size) % Size, index / (Size * Size)));
+
+        public CellQuery Query(IntVec3Local local)
+            => new(this, local);
 
         public static readonly int Volume = Size * Size * MapBase.MaxHeight;
         public byte[] BlockLight = new byte[Volume];
@@ -398,6 +405,7 @@ namespace Project1.Core.Simulation
                         found = true;
                         int newValue = z;
                         this.HeightMap[localx][localy] = newValue;
+                        
                         if (newValue > oldValue)
                         {
                             minVal = oldValue;
@@ -1475,8 +1483,21 @@ namespace Project1.Core.Simulation
             ;
             this.Map.Events.Post(new BlockDamagedEvent(this.Map, local.ToGlobal(this), work));
         }
+
+        internal int GetData(int cellIndex) => this.Cells[cellIndex].Data.Data;
+        internal void SetData(int cellIndex, int data)
+        {
+            this.Cells[cellIndex].Data = new(data);
+            var local = GetLocalFromIndex(cellIndex);
+            this.InvalidateFinal(local);
+        }
+
         internal byte GetBlockData(int cellIndex) => this.Cells[cellIndex].BlockData;
         internal byte GetBlockData(IntVec3Local local) => this.Cells[GetCellIndex(local)].BlockData;
+
+        internal int GetVariation(int cellIndex) => this.Cells[cellIndex].Variation;
+        internal int GetVariation(IntVec3Local local) => this.Cells[GetCellIndex(local)].Variation;
+
 
         internal void SetBlockData(IntVec3Local local, byte blockData)
         {
@@ -1494,6 +1515,7 @@ namespace Project1.Core.Simulation
         internal void SetBlock(IntVec3Local local, Block block)
         {
             this.GetLocalCell(local).Block = block;
+            block.OnPlaced(new CellQuery(this, local));
             this.InvalidateFinal(local);
         }
         internal void SetBlock(int cellIndex, Block block)
@@ -1511,6 +1533,13 @@ namespace Project1.Core.Simulation
         internal void SetMaterial(int cellIndex, MaterialDef material)
         {
             this.GetLocalCell(cellIndex).Material = material;
+            var local = GetLocalFromIndex(cellIndex);
+            this.InvalidateFinal(local);
+        }
+
+        internal void SetVariation(int cellIndex, int variation)
+        {
+            this.GetLocalCell(cellIndex).Variation = variation;
             var local = GetLocalFromIndex(cellIndex);
             this.InvalidateFinal(local);
         }

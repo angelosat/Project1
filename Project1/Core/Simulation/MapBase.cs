@@ -624,6 +624,8 @@ namespace Project1.Core.Simulation
                 cell.Origin = args.Source;
                 cell.Damage = 0; // reset damage when block changes?
 
+                cell.Block.OnPlaced(new CellQuery(this, global));
+
                 chunk.InvalidateCell(global);
                 chunk.InvalidateSlice(global.Z);
 

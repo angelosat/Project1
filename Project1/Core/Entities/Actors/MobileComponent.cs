@@ -94,7 +94,7 @@ namespace Project1.Core.Entities.Actors
         {
             if (parent.Velocity.Z != 0)
                 return;
-            parent.Map.Events.Post(new EntityFootStepEvent(parent));
+            parent.Map.Events.Post(new ActorFootStepEvent(parent));
         }
 
         internal override void InitializeOnce()

@@ -249,6 +249,7 @@ namespace Project1.Core.Networking
         static int RandomBlockUpdateIndex = 0;
         void SendRandomBlockUpdates() // TODO: move this to map class. server object shouldn't contain map logic
         {
+            return;
             var tosend = new IntVec3[Instance.Map.ActiveChunks.Count];
             var k = 0;
             foreach (var chunk in Instance.Map.ActiveChunks.Values)

@@ -945,7 +945,7 @@ namespace Project1.Core.Blocks
             }
         }
 
-        
+        internal virtual void OnPlaced(CellQuery cellQuery) { }
 
         public class DefaultState : IBlockState
         {

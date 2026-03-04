@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -141,18 +143,23 @@ namespace Project1.Core.Simulation.Physics
             // log state change 
             if (parent.Exists) // must check because entity might have despawned itself during it's update 
             {
-                if (lastGlobal != parent.Global)// || lastVel != parent.Velocity)
-                {
-                    // send a "step on" message on next block
-                    //net.LogStateChange(parent.RefId);
-                    Vector3 nextRounded = next.RoundXY();
-                    if (nextRounded != lastGlobal.RoundXY())
-                    {
-                        Vector3 blockGlobal = nextRounded - Vector3.UnitZ;
-                        var bl = parent.Map.GetBlock(blockGlobal);
-                        bl.OnSteppedOn(parent, blockGlobal);
-                    }
-                }
+                var lastCell = lastGlobal.ToCell();
+                var nextCell = parent.Cell;
+                if (lastCell != nextCell)
+                    this.Owner.Map.Events.Post(new ActorEnteringNewCellEvent(this.Owner as Actor));
+
+                //if (lastGlobal != parent.Global)// || lastVel != parent.Velocity)
+                //{
+                //    // send a "step on" message on next block
+                //    //net.LogStateChange(parent.RefId);
+                //    Vector3 nextRounded = next.RoundXY();
+                //    if (nextRounded != lastGlobal.RoundXY())
+                //    {
+                //        Vector3 blockGlobal = nextRounded - Vector3.UnitZ;
+                //        var bl = parent.Map.GetBlock(blockGlobal);
+                //        bl.OnSteppedOn(parent, blockGlobal);
+                //    }
+                //}
             }
         }
         static readonly Vector3[] BoundingBoxCorners = [ 
@@ -561,4 +568,5 @@ namespace Project1.Core.Simulation.Physics
                 this._weight = r.ReadSingle();
         }
     }
+
 }

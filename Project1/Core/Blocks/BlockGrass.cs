@@ -10,7 +10,6 @@ using Project1.Framework.Graphics;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace Project1.Core.Blocks
 {
@@ -48,6 +47,17 @@ namespace Project1.Core.Blocks
             this.DrawMaterialColor = false;
         }
 
+        internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
+        {
+            var query = new MapQuery(map, global);
+            var cellquery = query.CellQuery;
+            cellquery.Variation = map.Random.Next(this.Variations.Count);
+        }
+        Random _rand = new();
+        internal override void OnPlaced(CellQuery cellQuery)
+        {
+            cellQuery.Variation = _rand.Next(this.Variations.Count);
+        }
         internal static void GrowRandomFlower(MapBase map, IntVec3 global)
         {
             var net = map.Net;

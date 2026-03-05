@@ -48,22 +48,18 @@ namespace Project1.Core.Rooms
                     this.AddPosition(p);
             }
         }
-        public Room(RoomManager manager, ICollection<IntVec3> positions) : this(manager.Map, new HashSet<IntVec3>(positions)) { }
+        public Room(RoomManager manager, ICollection<IntVec3> positions) : this(manager.Map, [.. positions]) { }
         private RoomRoleDef roomRole;
-        DrawableCellCollection Cells = new();
-        public HashSet<IntVec3> Interior = new();
-        public HashSet<IntVec3> Border = new();
+        DrawableCellCollection Cells = [];
+        public HashSet<IntVec3> Interior = [];
+        public HashSet<IntVec3> Border = [];
         public Color Color;
         public bool Exists => true;
-        static Control GUI;
         private bool Valid;
 
         internal void Remove()
         {
             this.InvalidateBorderCells(); /// invalidate wall cells to draw them normally again 
-
-            if (GUI?.Tag == this && GUI.GetWindow() is Window win && win.IsOpen)
-                win.Hide();
         }
 
         internal void SetWorkplace(Workplace wplace)
@@ -158,7 +154,9 @@ namespace Project1.Core.Rooms
         }
         public IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
-            yield break;
+            yield return ("Room", typeof(RoomGui));
+            //info.AddTabAction("Roomm", () => r.ShowGUI(selected.FaceGlobal));
+            //yield break;
         }
         internal void AddEdge(IntVec3 global)
         {
@@ -410,66 +408,22 @@ namespace Project1.Core.Rooms
                 scell.Block is BlockAir && !this.Interior.Contains(south) ||
                 ecell.Block is BlockAir && !this.Interior.Contains(east);
         }
-        internal void ShowGUI(IntVec3 global)
-        {
-            var gui = GUI ??= Create();
-            gui.GetData((this.Map, global));
-            gui.GetWindow().Show();
-        }
-        static GroupBox Create()
-        {
-
-            var box = new GroupBox();
-            Room currentRoom = null;
-            IntVec3 center = default;
-            box.AddControlsVertically(
-                new ComboBoxNewNew<RoomRoleDef>(128, "Role", r => r?.LabelReadable ?? "none", setRoomDef, () => currentRoom?.RoomRole, () => currentRoom.Furnitures.SelectMany(f => RoomSystem.ByFurniture(f)).Distinct().Prepend(null)),
-                new ComboBoxNewNew<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => currentRoom?.GetOwner(), () => currentRoom?.Map.Town.GetMembers().Prepend(null)),
-                new ComboBoxNewNew<Workplace>(128, "Workplace", w => w?.Name ?? "none", setWorkplace, () => currentRoom?.Workplace, () => currentRoom.Map.Town.ShopManager.GetShops().Where(sh => sh.IsValidRoom(currentRoom)).Prepend(null)),
-                new Label(() => $"Interior: {currentRoom?.Interior.Count} cells"),
-                new Label(() => $"Edges: {currentRoom?.Border.Count} cells"),
-                new Label(() => $"Value: {currentRoom?.Value}"),
-                new Button("Refresh", refresh)
-                );
-            box.SetGetDataAction(o =>
-            {
-                var oo = ((MapBase map, IntVec3 global))o;
-                var map = oo.map;
-                var global = oo.global;
-                currentRoom = map.Town.RoomManager.GetRoomAt(global);
-                center = global;
-                box.Tag = currentRoom;
-                box.GetWindow().SetTitle(currentRoom.Name);
-            });
-            box.ToWindow("Room settings");
-            return box;
-
-            void setRoomDef(RoomRoleDef rdef) => PacketsRooms.SetRoomType(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, rdef);
-            void setOwner(Actor actor) => PacketsRooms.SetOwner(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, actor);
-            void setWorkplace(Workplace wplace) => PacketsRooms.SetWorkplace(currentRoom.Map.Net, currentRoom.Map.Net.CurrentPlayer, currentRoom, wplace);
-            void refresh() => PacketsRooms.Refresh(currentRoom.Map.Net, currentRoom.Map.Net.GetPlayer(), currentRoom, center);
-        }
-        //public IEnumerable<(string name, Action action)> GetInfoTabs()
-        //{
-        //    yield break;
-        //}
+        
         public IEnumerable<(string Label, Type GuiType)> GetTabs()
         {
             yield return ("Room Settings", typeof(RoomGui));
         }
+
         public IEnumerable<Control> GetSelectionDetails()
         {
             yield break;
         }
-
+    
         public static Room Create(IDataReader r) => new Room().Read(r);
 
         public IEnumerable<IconButton> GetMiniButtons()
         {
             yield break;
         }
-
-        
     }
-
 }

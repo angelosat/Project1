@@ -7,7 +7,7 @@ namespace Project1.Core.Input
 {
     partial class HotkeyManager
     {
-        public class Hotkey : Observable, IHotkey
+        public class Hotkey : ChangeNotifier, IHotkey
         {
             public bool Pressed;
 
@@ -28,7 +28,7 @@ namespace Project1.Core.Input
                 set
                 {
                     this._keys[0] = value;
-                    this.NotifyUpdated();
+                    this.Notify();
                 }
             }
 
@@ -38,7 +38,7 @@ namespace Project1.Core.Input
                 set
                 {
                     this._keys[1] = value;
-                    this.NotifyUpdated();
+                    this.Notify();
                 }
             }
 

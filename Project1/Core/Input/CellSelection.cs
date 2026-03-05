@@ -32,21 +32,7 @@ namespace Project1.Core.Input
                 yield return i;
         }
 
-        public void GetQuickButtons(SelectionManager panel)
-        {
-            this.Block.GetQuickButtons(panel, this.Map, this.Global);
-            var cell = this;
-            this.Map.GetQuickButtons((name, guiType) =>
-                    //info.AddTabAction(name, () => UIManager.ToggleUnique<WorkstationGuiNew>(new TargetArgs(this.Map, this.BlockEntity.OriginGlobal))), 
-                    panel.AddTabAction(name, () => UIManager.ToggleUnique(guiType, cell)), this.Global);
-        }
-
         public IEnumerable<Control> GetSelectionDetails()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GetSelectionInfo(IUISelection panel)
         {
             throw new NotImplementedException();
         }

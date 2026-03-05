@@ -224,28 +224,11 @@ namespace Project1.Core.Rooms
                 largestRoom.Invalidate();
             }
         }
-
-        internal /*override*/ void OnTargetSelected(IUISelection info, TargetArgs selected)
-        {
-            if (this.GetRoomAt(selected.FaceGlobal) is Room r)
-                info.AddTabAction("Roomm", () => r.ShowGUI(selected.FaceGlobal));
-        }
        
         public override ISelectable QuerySelectable(CellSelection cell)
-        {
-            //if (selected is not CellSelection cell)
-            //    return null;
-            if (this.GetRoomAt(cell.Global + cell.Face) is Room r)
-                return r;
-            return null; // instead of selecting the room itself, add a tab when selecting a block that is contained in the room
-        }
-        internal override void GetQuickButtons(Action<string, Type> register, IntVec3 global)
-        {
-            if (this.GetRoomBorderAt(global) is not Room room)
-                return;
-            foreach (var item in room.GetTabs())
-                register(item.Label, item.GuiType);
-        }
+            => this.GetRoomAt(cell.Global + cell.Face) is Room r ? r : null;
+            // instead of selecting the room itself, add a tab when selecting a block that is contained in the room?
+        
         public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
         {
             if (!Engine.DrawRooms)

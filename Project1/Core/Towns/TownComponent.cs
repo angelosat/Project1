@@ -84,6 +84,5 @@ namespace Project1.Core.Towns
         internal virtual void OnBlocksChanged(IEnumerable<IntVec3> positions) { }
         internal virtual void OnHudCreated(Hud hud) { }
         internal virtual void OnCameraRotated(Camera camera) { }
-        internal virtual void GetQuickButtons(Action<string, Type> register, IntVec3 global) { }
     }
 }

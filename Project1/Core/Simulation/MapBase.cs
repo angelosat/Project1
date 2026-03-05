@@ -1057,10 +1057,7 @@ namespace Project1.Core.Simulation
                 yield return current.Above + offset;
             yield return current.Above;
         }
-        internal void GetQuickButtons(Action<string, Type> register, IntVec3 global)
-        {
-            this.Town.GetQuickButtons(register, global);
-        }
+       
         internal List<TargetArgs> Select(IntVec3 begin, IntVec3 end)
         {
             var cube = IntVec3Helper.GetBox(begin, end);

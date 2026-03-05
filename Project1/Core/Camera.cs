@@ -1673,7 +1673,7 @@ namespace Project1.Core
             //              Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, global.Below().GetDrawDepth(map, this));
 
             sb.Draw(Block.Atlas.Texture, screenLoc, Block.FaceHighlights[target.Face].Rectangle, 0, Vector2.Zero, zoom,
-            Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, (global + target.Face).GetDrawDepth(map, this));
+            Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, cd);// (global + target.Face).GetDrawDepth(map, this));
 
             // this draws the front faces highlight
             //sb.Draw(Block.Atlas.Texture, screenLoc, Block.BlockHighlight.Rectangle, 0, Vector2.Zero, zoom,

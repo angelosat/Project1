@@ -75,6 +75,8 @@ namespace Project1.Core.UI.Hud
             ingame.Events.ListenTo<PlayerSelectionSingleEvent>(OnPlayerSelectionSingle);
             ingame.Events.ListenTo<PlayerSelectionCubeEvent>(OnPlayerSelectionCube);
             ingame.Events.ListenTo<PlayerSelectionRectangleEvent>(OnPlayerSelectionRectangle);
+            ingame.Events.ListenTo<PlayerSelectionBlockEvent>(OnPlayerSelectionBlock);
+
         }
         private void OnPlayerSelectionRectangle(PlayerSelectionRectangleEvent e)
         {
@@ -101,6 +103,10 @@ namespace Project1.Core.UI.Hud
                 this.SelectSingle(new CellSelection(Ingame.GetMap(), begin));
             else
                 this.Select(begin, end);
+        }
+        void OnPlayerSelectionBlock(PlayerSelectionBlockEvent e)
+        {
+            this.SelectSingle(e.Cell);
         }
         private void OnPlayerSelectionSingle(PlayerSelectionSingleEvent e)
         {

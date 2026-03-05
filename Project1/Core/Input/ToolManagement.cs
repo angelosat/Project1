@@ -114,7 +114,8 @@ namespace Project1.Core.Input
                 if (target.Map.TryGetBlockEntity(target.Global, out var blockEntity))
                     Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new TargetArgs(blockEntity)));
                 else
-                    Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(global, global));
+                    //Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(global, global));
+                    Ingame.Instance.Events.Post(new PlayerSelectionBlockEvent(new CellSelection(Ingame.CurrentMap, global, target.Face)));
             }
             else if(target.Type == TargetType.Entity)
             {

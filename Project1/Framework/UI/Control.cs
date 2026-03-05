@@ -230,7 +230,7 @@ namespace Project1.Framework.UI
             foreach (var c in this.Controls)
                 c.OnDetached();
         }
-        public Control Bind(Observable obs)
+        public Control Bind(ChangeNotifier obs)
         {
             if (this.AttachedAction != null || this.DetachedAction != null)
                 throw new InvalidOperationException(

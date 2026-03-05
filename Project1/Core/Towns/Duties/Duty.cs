@@ -5,7 +5,7 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.Towns.Duties
 {
-    public class Duty : Observable, ISerializableNewNew<Duty>, ISaveableNewNew<Duty>
+    public class Duty : ChangeNotifier, ISerializableNewNew<Duty>, ISaveableNewNew<Duty>
     {
         public DutyDef Def;
         const byte InitialPriority = 5, MaxPriority = 10;
@@ -27,14 +27,14 @@ namespace Project1.Core.Towns.Duties
         public void Toggle()
         {
             this.Priority = (byte)(this.Priority == 0 ? InitialPriority : 0);
-            this.NotifyUpdated();
+            this.Notify();
         }
         public void ApplyPriorityDelta(int delta)
         {
             this.Priority = (byte)(this._priority + delta);
-            this.NotifyUpdated();
+            this.Notify();
         }
-        public Observable asObservable => this as Observable;
+        public ChangeNotifier asObservable => this as ChangeNotifier;
         public override string ToString()
         {
             return $"{this.Def.Name}: {this.Priority}";

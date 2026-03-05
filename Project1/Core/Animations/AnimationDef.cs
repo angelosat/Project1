@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Project1.Core.Entities;
+using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Project1.Core.Entities;
 
 namespace Project1.Core.Animations
 {
@@ -15,6 +14,7 @@ namespace Project1.Core.Animations
         public WarpMode WarpMode;
         public Func<Entity, float> WeightChangeFunc;
         public Func<Entity, float> WeightGetter;
+        public Func<Entity, float> SpeedGetter;
 
         public AnimationDef(string name, int layer):base(name)
         {

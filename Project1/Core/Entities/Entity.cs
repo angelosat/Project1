@@ -21,18 +21,20 @@ namespace Project1.Core.Entities
     public class Entity : GameObject
     {
         bool _initialized;
-        public SpriteComp Sprite => this.GetComponent<SpriteComp>();
+        public MobileComponent Mobile => field ??= this.GetComponent<MobileComponent>();
+
+        public SpriteComp Sprite => field ??= this.GetComponent<SpriteComp>();
 
         [InspectorHidden]
         public float this[StatDef stat] => stat.CalculateFor(this);
         /// <summary>
         /// here or in tool class?
         /// </summary>
-        public ToolComp ToolComponent => this.GetComponent<ToolComp>();
+        public ToolComp ToolComponent => field ??= this.GetComponent<ToolComp>();
 
-        public GearComponent Gear => this.GetComponent<GearComponent>();
+        public GearComponent Gear => field ??= this.GetComponent<GearComponent>();
 
-        public OwnershipComponent Ownership => this.GetComponent<OwnershipComponent>();
+        public OwnershipComponent Ownership => field ??= this.GetComponent<OwnershipComponent>();
         public Actor Author
         {
             get => this.DefComponent.Author;

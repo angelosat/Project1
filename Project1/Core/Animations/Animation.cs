@@ -19,7 +19,8 @@ namespace Project1.Core.Animations
         float _weight = 1;
         
         public float WeightChange;
-        public float Speed = 1;
+        float _speed = 1;
+        //public float Speed = 1;
         public float Frame = -1;
         public double StartTick = -1;
         public float Layer => this.Def.Layer;
@@ -39,7 +40,11 @@ namespace Project1.Core.Animations
             get => this.Def.WeightGetter?.Invoke(Entity) ?? this._weight;
             set => this._weight = value;
         }
-
+        public float Speed
+        {
+            get => this.Def.SpeedGetter?.Invoke(Entity) ?? this._speed;
+            set => this._speed = value;
+        }
         public Animation(SaveTag tag)
         {
             this.Load(tag);
@@ -310,7 +315,7 @@ namespace Project1.Core.Animations
             tag.TryGetTagValueOrDefault("FadeLength", out this.FadeLength);
             tag.TryGetTagValueOrDefault("Weight", out this._weight);
             tag.TryGetTagValueOrDefault("WeightChange", out this.WeightChange);
-            tag.TryGetTagValueOrDefault("Speed", out this.Speed);
+            tag.TryGetTagValueOrDefault("Speed", out this._speed);
             tag.TryGetTagValue<int>("State", t => this.State = (AnimationStates)t);
         }
         public static Animation Create(SaveTag tag)
@@ -328,7 +333,9 @@ namespace Project1.Core.Animations
             if(this.Def.WeightGetter is null)
                 w.Write(this.Weight);
             w.Write(this.WeightChange);
-            w.Write(this.Speed);
+            //w.Write(this.Speed);
+            if (this.Def.SpeedGetter is null)
+                w.Write(this.Speed);
             w.Write((int)this.State);
         }
         public Animation Read(IDataReader r)
@@ -340,7 +347,9 @@ namespace Project1.Core.Animations
             if(this.Def.WeightGetter is null)
                 this.Weight = r.ReadSingle();
             this.WeightChange = r.ReadSingle();
-            this.Speed = r.ReadSingle();
+            //this.Speed = r.ReadSingle();
+            if (this.Def.SpeedGetter is null)
+                this.Speed = r.ReadSingle();
             this.State = (AnimationStates)r.ReadInt32();
             return this;
         }

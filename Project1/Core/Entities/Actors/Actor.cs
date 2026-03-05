@@ -21,7 +21,6 @@ using Project1.Core.Skills;
 using Project1.Core.Stats;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators;
-using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Labors;
 using Project1.Core.UI;
 using Project1.Core.World.WorldAreas;
@@ -35,21 +34,20 @@ namespace Project1.Core.Entities.Actors
 {
     public sealed class Actor : Entity
     {
-        public MobileComponent Mobile => this.GetComponent<MobileComponent>();
 
-        internal SkillsComponent Skills => this.GetComponent<SkillsComponent>();
+        internal SkillsComponent Skills => field ??= this.GetComponent<SkillsComponent>();
 
-        internal AttributesComponent Attributes => this.GetComponent<AttributesComponent>();
+        internal AttributesComponent Attributes => field ??= this.GetComponent<AttributesComponent>();
 
-        internal NpcComponent Npc => this.GetComponent<NpcComponent>();
+        internal NpcComponent Npc => field ??= this.GetComponent<NpcComponent>();
 
-        public PossessionsComponent Possessions => this.GetComponent<PossessionsComponent>();
+        public PossessionsComponent Possessions => field ??= this.GetComponent<PossessionsComponent>();
 
-        public WorkComponent Work => this.GetComponent<WorkComponent>();
+        public WorkComponent Work => field ??= this.GetComponent<WorkComponent>();
 
-        public AIComponent AI => this.GetComponent<AIComponent>();
+        public AIComponent AI => field ??= this.GetComponent<AIComponent>();
 
-        internal PersonalityComponent Personality => this.GetComponent<PersonalityComponent>();
+        internal PersonalityComponent Personality => field ??= this.GetComponent<PersonalityComponent>();
 
         [InspectorHidden]
         public Skill this[SkillDef skill] => this.Skills.GetSkill(skill);
@@ -61,7 +59,7 @@ namespace Project1.Core.Entities.Actors
         public Entity this[GearTypeDef slot] => this.GetEquipmentSlot(slot);
 
 
-        public MoodComp Mood => this.GetComponent<MoodComp>();
+        public MoodComp Mood => field ??= this.GetComponent<MoodComp>();
 
         public float MoodValue => this.Mood.Mood;
 

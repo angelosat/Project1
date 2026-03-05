@@ -56,7 +56,7 @@ namespace Project1.Core.Animations
                 new Keyframe(15, Vector2.Zero, -(float)Math.PI / 4f, Interpolation.Sine),
                 new Keyframe(25, Vector2.Zero, 0, Interpolation.Sine));
 
-        static public readonly AnimationDef Walk = new AnimationDef("AnimationWalk", 1)
+        static public readonly AnimationDef Walk = new AnimationDef("AnimationWalk", 1)// { WeightGetter = a => a.GetComponent<MobileComponent>().CurrentState.Speed }
             .AddClip(BoneDefOf.Hips, WarpMode.Loop,
                 new Keyframe(0, Vector2.Zero, 0),
                 new Keyframe(10, new Vector2(0, -8), 0, Interpolation.Sine),

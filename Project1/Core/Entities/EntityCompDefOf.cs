@@ -25,7 +25,7 @@ namespace Project1.Core.Entities
     {
         public static readonly EntityCompDef DefComp = new("Def", typeof(DefComponent));
         public static readonly EntityCompDef Transform = new("Transform", typeof(PositionComponent));
-        public static readonly EntityCompDef Physics = new("Physics", typeof(PhysicsComponent));
+        public static readonly EntityCompDef Physics = new("Physics", typeof(PhysicsComp));
         public static readonly EntityCompDef Skills = new("Skills", typeof(SkillsComponent));
         public static readonly EntityCompDef Needs = new("Needs", typeof(NeedsComponent));
         public static readonly EntityCompDef Ownership = new("Ownership", typeof(OwnershipComponent));

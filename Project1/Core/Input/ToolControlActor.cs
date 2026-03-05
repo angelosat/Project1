@@ -207,25 +207,7 @@ namespace Project1.Core.Input
                 return;
             }
         }
-        //internal override void OnGameEvent(GameEvent e)
-        //{
-        //    switch ((Message.Types)e.Type)
-        //    {
-        //        case Message.Types.PlayerControlNpc:
-        //            if (e.Parameters[0] == Client.Instance.GetPlayer())
-        //            {
-        //                var entity = e.Parameters[1] as GameObject;
-        //                Client.Instance.Map.Camera.ToggleFollowing(entity);
-        //                if (entity is null)
-        //                    ToolManager.SetTool(null);
-        //            }
-        //            break;
-
-        //        default:
-        //            break;
-        //    }
-        //    base.OnGameEvent(e);
-        //}
+       
         public override ControlTool.Messages MouseLeftUp(System.Windows.Forms.HandledMouseEventArgs e)
         {
             if (MouseMovementEnabled)

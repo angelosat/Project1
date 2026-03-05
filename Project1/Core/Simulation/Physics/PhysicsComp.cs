@@ -4,7 +4,6 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -15,7 +14,7 @@ using System.Linq;
 namespace Project1.Core.Simulation.Physics
 {
     public enum ObjectSize { Inventoryable, Haulable, Immovable }
-    public class PhysicsComponent : EntityComp
+    public class PhysicsComp : EntityComp
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Physics;
         public override string Name { get; } = "Physics";
@@ -41,7 +40,7 @@ namespace Project1.Core.Simulation.Physics
             this.Enabled = true;
         }
 
-        public PhysicsComponent()
+        public PhysicsComp()
             : base()
         {
             //this.Initialize();

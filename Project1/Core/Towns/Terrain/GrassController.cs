@@ -9,13 +9,13 @@ namespace Project1.Core.Towns.Terrain
     {
         const double TramplingChance = 0.1f;
 
-        //protected override int MinTicks => Ticks.FromHours(1);
+        protected override int MinTicks => Ticks.FromHours(1);
 
-        //protected override int MaxTicks => Ticks.FromHours(2);
+        protected override int MaxTicks => Ticks.FromHours(2);
 
-        protected override int MinTicks => 1;
+        //protected override int MinTicks => 1;
 
-        protected override int MaxTicks => 2;
+        //protected override int MaxTicks => 2;
 
         private void HandleActorEnteringNewCell(ActorEnteringNewCellEvent e)
         {
@@ -24,14 +24,17 @@ namespace Project1.Core.Towns.Terrain
             var cell = e.Actor.Cell.Below;
             if (!this.Chunk.Contains(cell))
                 return;
-            var query = this.Chunk.Query(cell);
 
-            if (query.Block.BlockDef != BlockDefOf.Grass)
+            var edit = this.Chunk.Edit(cell);
+            if (edit.Block != BlockDefOf.Grass)
                 return;
+
             var roll = this.Random.NextSingle();
             if (roll > TramplingChance)
                 return;
-            query.Block = BlockDefOf.Soil.Block;
+
+            edit.Block = BlockDefOf.Soil;
+            edit.Flush();
         }
 
         protected override void ScheduledTick()
@@ -41,20 +44,20 @@ namespace Project1.Core.Towns.Terrain
             var y = this.Random.Next(Chunk.Size);
             var z = heightMap[x][y];
             var local = new IntVec3Local(x, y, z);
-            var query = this.Chunk.Query(local);
-            if (query.Block.BlockDef != BlockDefOf.Soil)
+            var edit = this.Chunk.Edit(local);
+
+            if (edit.Block != BlockDefOf.Soil)
                 return;
-            
-            var global = local.ToGlobal(this.Chunk);
-            //MapEdit.Paint(MapEditContext.Simulation, this.Map, [global], BlockDefOf.Grass.Block, MaterialDefOf.Soil, 0, 0, 0);
-            query.Block = BlockDefOf.Grass.Block;
-            query.Material = MaterialDefOf.Soil;
+
+            edit.Block = BlockDefOf.Grass;
+            edit.Material = MaterialDefOf.Soil;
+            edit.Flush();
         }
 
         internal override void ResolveReferences()
         {
             this.Map.Events.ListenTo<ActorEnteringNewCellEvent>(HandleActorEnteringNewCell);
-            //return;
+            return;
             Reset();
         }
 

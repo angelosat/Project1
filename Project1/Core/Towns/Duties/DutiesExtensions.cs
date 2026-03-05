@@ -7,7 +7,7 @@ namespace Project1.Core.Towns.Duties
     {
         extension(Actor actor)
         {
-            public IEnumerable<Duty> ActiveDuties => actor.Town?.DutiesManager.GetDuties(actor);
+            public IEnumerable<Duty> ActiveDuties => actor.Town?.DutiesManager.GetDuties(actor) ?? [];
             public Duty GetDuty(DutyDef dutyDef) => actor.Town?.DutiesManager.GetDuty(actor, dutyDef);
             public bool HasDuty(DutyDef dutyDef) => actor.Town?.DutiesManager.HasDuty(actor, dutyDef) ?? false;
         }

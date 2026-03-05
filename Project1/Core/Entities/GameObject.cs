@@ -313,9 +313,9 @@ namespace Project1.Core.Entities
         [InspectorHidden]
         public PositionComponent Transform => this._transform ??= this.GetComponent<PositionComponent>();
 
-        PhysicsComponent _physicsCached;
+        PhysicsComp _physicsCached;
         [InspectorHidden]
-        public PhysicsComponent Physics => this._physicsCached ??= this.GetComponent<PhysicsComponent>();
+        public PhysicsComp Physics => this._physicsCached ??= this.GetComponent<PhysicsComp>();
 
         SpriteComp _spriteCompCached;
         [InspectorHidden]
@@ -858,7 +858,7 @@ namespace Project1.Core.Entities
         }
         internal BoundingBox GetBoundingBox(Vector3 global, float height)
         {
-            return PhysicsComponent.GetBoundingBox(global, height);
+            return PhysicsComp.GetBoundingBox(global, height);
         }
         internal bool IntersectsCorners(IntVec3 cell)
         {
@@ -910,7 +910,7 @@ namespace Project1.Core.Entities
 
         internal Vector3 GetNextStep()
         {
-            return this.Global + PhysicsComponent.Decelerate(this.Velocity);
+            return this.Global + PhysicsComp.Decelerate(this.Velocity);
         }
         public bool IsStockpilable()
         {

@@ -9,7 +9,7 @@ namespace Project1.Core.Simulation.Physics
 {
     class PhysicsHelper
     {
-        static public float Friction { get { return PhysicsComponent.Friction; } }
+        static public float Friction { get { return PhysicsComp.Friction; } }
 
         static public void Update(float weight, float friction, MapBase map, Vector3 global, Vector3 velocity, out Vector3 nextglobal, out Vector3 nextvelocity)
         {

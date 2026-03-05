@@ -50,9 +50,11 @@ namespace Project1.Core.Entities.Actors
             {
                 return this.Name;
             }
-            static readonly State Walking = new(Types.Walking, speed: 0.66f, sprintSpeed: 0, animationWeight: 0.5f, animationSpeed: 1, allowJump: false);
-            static readonly State Running = new(Types.Running, speed: 1f, sprintSpeed: 0, animationWeight: 0.75f, animationSpeed: 1f, allowJump: true);
-            static readonly State Sprinting = new(Types.Sprinting, speed: 1f, sprintSpeed: 0.5f, animationWeight: 1f, animationSpeed: 1.5f, allowJump: true);
+            //static readonly State Walking = new(Types.Walking, speed: 0.66f, sprintSpeed: 0, animationWeight: 0.5f, animationSpeed: 1, allowJump: false);
+            static readonly State Walking = new(Types.Walking, speed: .5f, sprintSpeed: 0, animationWeight: .33f, animationSpeed: .8f, allowJump: false);
+            //static readonly State Running = new(Types.Running, speed: 1f, sprintSpeed: 0, animationWeight: 0.75f, animationSpeed: 1f, allowJump: true);
+            static readonly State Running = new(Types.Running, speed: 1f, sprintSpeed: 0, animationWeight: .66f, animationSpeed: 1f, allowJump: true);
+            static readonly State Sprinting = new(Types.Sprinting, speed: 1f, sprintSpeed: 0.5f, animationWeight: 1f, animationSpeed: 1.2f, allowJump: true);
             static readonly State Blocking = new(Types.Blocking, speed: 0.5f, sprintSpeed: 0, animationWeight: 0.5f, animationSpeed: 1, allowJump: false);
 
             static public Dictionary<Types, State> States = new()
@@ -77,7 +79,7 @@ namespace Project1.Core.Entities.Actors
 
         public bool Moving;
 
-        State CurrentState;
+        public State CurrentState { get; private set; }
         int JumpCooldown;
         public bool CanJump => this.JumpCooldown == 0;
 
@@ -149,20 +151,20 @@ namespace Project1.Core.Entities.Actors
                 var feetposition = parent.Global + Vector3.UnitZ * 0.1f;
                 var cell = parent.Net.Map.GetCell(feetposition);
                 var block = cell.Block;// parent.Net.Map.GetBlock(parent.Global + Vector3.UnitZ * 0.1f); // to check if entity is in water
-                var isStanding = PhysicsComponent.IsStanding(parent);
+                var isStanding = PhysicsComp.IsStanding(parent);
                 if (!isStanding)
                     return;
                 if (block == BlockDefOf.Fluid.Block)
                 {
                     if (parent.Velocity.Z <= 0)// only allow jumping in water when sinking
                     {
-                        force = Vector3.UnitZ * PhysicsComponent.Jump;// * (1 + StatsComponent.GetStatOrDefault(parent, Stat.Types.JumpHeight, 0f));
+                        force = Vector3.UnitZ * PhysicsComp.Jump;// * (1 + StatsComponent.GetStatOrDefault(parent, Stat.Types.JumpHeight, 0f));
                         var density = BlockDefOf.Fluid.Block.GetDensity(cell.BlockData, feetposition);
                         force *= (1 + 3 * density);
                     }
                 }
                 else if (parent.Velocity.Z == 0 && isStanding)// parent.Net.Map.IsSolid(parent.Global - Vector3.UnitZ * 0.1f)) // TODO: FIX: doesnt jump if on block edge
-                    force = Vector3.UnitZ * PhysicsComponent.Jump;// * (1 + StatsComponent.GetStatOrDefault(parent, Stat.Types.JumpHeight, 0f));
+                    force = Vector3.UnitZ * PhysicsComp.Jump;// * (1 + StatsComponent.GetStatOrDefault(parent, Stat.Types.JumpHeight, 0f));
 
                 if (force == Vector3.Zero)
                     return;

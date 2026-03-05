@@ -136,6 +136,8 @@ namespace Project1.Core.Simulation
         readonly Dictionary<IntVec3, BlockEntity> BlockEntitiesByPosition = new();
         public IEnumerable<BlockEntity> BlockEntities => this.BlockEntitiesByPosition.Values.Distinct();
 
+
+
         public bool IsQueuedForLight;
         public const int Size = 16;
         public IntVec2 Start;
@@ -1545,6 +1547,23 @@ namespace Project1.Core.Simulation
         }
         private void InvalidateFinal(IntVec3Local local)
         {
+            this.InvalidateCell(local);
+            this.InvalidateSlice(local.Z);
+            this.Map.Events.Post(new CellsInvalidatedEvent(this.Map, [local.ToGlobal(this)]));
+        }
+        internal void WriteCell(int cellIndex, BlockDef block, MaterialDef material, int? variation, byte? blockdata, int? data)
+        {
+            if (block is not null)
+                this.SetBlock(cellIndex, block.Block);
+            if (material is not null)
+                this.SetMaterial(cellIndex, material);
+            if (blockdata.HasValue)
+                this.SetBlockData(cellIndex, blockdata.Value);
+            if (variation.HasValue)
+                this.SetVariation(cellIndex, variation.Value);
+            if (data.HasValue)
+                this.SetData(cellIndex, data.Value);
+            var local = Chunk.GetLocalFromIndex(cellIndex);
             this.InvalidateCell(local);
             this.InvalidateSlice(local.Z);
             this.Map.Events.Post(new CellsInvalidatedEvent(this.Map, [local.ToGlobal(this)]));

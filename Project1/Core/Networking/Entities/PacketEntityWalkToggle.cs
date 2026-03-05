@@ -1,6 +1,5 @@
 ﻿using Project1.Framework;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Networking;
 
 namespace Project1.Core.Networking.Entities
 {
@@ -14,7 +13,6 @@ namespace Project1.Core.Networking.Entities
         }
         internal static void Send(NetEndpoint net, int entityID, bool toggle)
         {
-            return;
             var server = net as Server;
             var w = server.BeginPacket(PType);
             w.Write(entityID);

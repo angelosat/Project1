@@ -14,10 +14,10 @@ namespace Project1.Core.Simulation
 
         static PacketsCells()
         {
-            Registry.MapEventHooksServer.Register<CellMutatedEvent>(HandleCellMutated);
+            Registry.MapEventHooksServer.Register<CellEditEvent>(HandleCellMutated);
         }
 
-        private static void HandleCellMutated(CellMutatedEvent e)
+        private static void HandleCellMutated(CellEditEvent e)
         {
             SendCellEdit(e.Edit);
         }

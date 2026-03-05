@@ -407,14 +407,14 @@ namespace Project1.Core.Entities.Actors
         internal void WalkToggle(bool toggle)
         {
             if (this.Net is Server)
-                PacketEntityWalkToggle.Send(this.Net as NetEndpoint, this.RefId, toggle);
+                PacketEntityWalkToggle.Send(this.Net, this.RefId, toggle);
 
             this.Mobile.ToggleWalk(toggle);
         }
         internal void SprintToggle(bool toggle)
         {
             if (this.Net is Server)
-                PacketEntitySprintToggle.Send(this.Net as NetEndpoint, this.RefId, toggle);
+                PacketEntitySprintToggle.Send(this.Net, this.RefId, toggle);
 
             this.Mobile.ToggleSprint(toggle);
         }

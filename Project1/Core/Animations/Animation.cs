@@ -1,12 +1,12 @@
-﻿using System;
-using System.Xml.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.Serialization;
-using Project1.Core.Networking;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Entities;
+using Project1.Core.Networking;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using System;
+using System.Xml.Linq;
 
 namespace Project1.Core.Animations
 {
@@ -17,17 +17,12 @@ namespace Project1.Core.Animations
         public Entity Entity;
         public bool Enabled;
         float _weight = 1;
-        public float Weight
-        {
-            get => this.Def.WeightGetter?.Invoke(Entity) ?? this._weight;
-            set => this._weight = value;
-        }
+        
         public float WeightChange;
         public float Speed = 1;
         public float Frame = -1;
         public double StartTick = -1;
         public float Layer => this.Def.Layer;
-        public float Fade { get { return this.FadeValue / (float)this.FadeLength; } }
         public string Name;
         private bool PreFade;
         private int FadeLength;
@@ -37,6 +32,14 @@ namespace Project1.Core.Animations
         public Action FinishAction = () => { };
         public Action OnFadeOut = () => { };
         public Action OnFadeIn = () => { };
+        public float Fade => this.FadeValue / (float)this.FadeLength;
+
+        public float Weight
+        {
+            get => this.Def.WeightGetter?.Invoke(Entity) ?? this._weight;
+            set => this._weight = value;
+        }
+
         public Animation(SaveTag tag)
         {
             this.Load(tag);
@@ -134,7 +137,8 @@ namespace Project1.Core.Animations
                 this.StartTick = entity.Net.CurrentTick;
             var prevFrame = this.Frame;
             var elapsedServerTicks = (float)(entity.Net.CurrentTick - this.StartTick);// / Server.ClockIntervalMS;
-            var elapsedTicks = elapsedServerTicks / this.Speed;
+            //var elapsedTicks = elapsedServerTicks / this.Speed;
+            var elapsedTicks = elapsedServerTicks * this.Speed;
 
             if (this.Speed > 0)
             {

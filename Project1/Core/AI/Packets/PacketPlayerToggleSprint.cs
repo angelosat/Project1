@@ -23,7 +23,7 @@ namespace Project1.Core.AI.Packets
         private static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            if (net is Client)
+            if (net.IsClient)
                 throw new Exception();
             var pl = net.GetPlayer(r.ReadInt32());
             pl.ControllingEntity.SprintToggle(r.ReadBoolean());

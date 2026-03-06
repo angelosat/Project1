@@ -79,8 +79,8 @@ namespace Project1.Core
                         if (ncell.Opaque)
                             continue;
                         //var local = ncell.LocalCoords;// GetLocalCoords(nchunk);
-                        var local = new IntVec3(lx, ly, z) + n;
-                        var l = nchunk.GetSunlight(local);
+                        //var local = n;// new IntVec3(lx, ly, z) + n;
+                        var l = nchunk.GetSunlight(n);
                         maxAdjLight = Math.Max(maxAdjLight, l);
                     }
                     next = (byte)Math.Max(0, maxAdjLight - 1);
@@ -175,8 +175,8 @@ namespace Project1.Core
                     continue;
                 if (ncell.Opaque)
                     continue;
-                var local = n.ToLocal();// ncell.LocalCoords;// GetLocalCoords(nchunk);
-                byte l = nchunk.GetBlockLight(local);
+                //var local = n.ToLocal();// ncell.LocalCoords;// GetLocalCoords(nchunk);
+                byte l = nchunk.GetBlockLight(n);
                 maxAdjLight = Math.Max(maxAdjLight, l);
             }
 

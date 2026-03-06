@@ -19,6 +19,55 @@ namespace Project1.Core.Rooms
 {
     public class Room : Inspectable, ISelectable, ISaveable, ISerializableNew<Room>
     {
+        private RoomRoleDef roomRole;
+        DrawableCellCollection Cells = [];
+        public HashSet<IntVec3> Interior = [];
+        public HashSet<IntVec3> Border = [];
+        public Color Color;
+        private bool Valid;
+        public int ID;
+        public int OwnerRef = -1;
+        private int workplaceID = -1;
+        public HashSet<FurnitureDef> Furnitures = [];
+        public Vector3 Global => this.Cells.First();
+        public bool Exists => true;
+        public string Name => $"Room {this.ID}";
+        public int Size => this.Interior.Count;
+
+        public MapBase Map { get; set; }
+      
+        private Workplace workplace;
+        public Workplace Workplace
+        {
+            get => workplaceID != -1 ? (workplace ??= this.Map.Town.ShopManager.GetShop(workplaceID)) : null;
+            set
+            {
+                workplace = value;
+                workplaceID = value?.ID ?? -1;
+            }
+        }
+
+        public RoomRoleDef RoomRole
+        {
+            get => roomRole;
+            set
+            {
+                roomRole = value;
+                this.Workplace?.RoomChanged(this);
+            }
+        }
+
+        private int value;
+        public int Value
+        {
+            get
+            {
+                if (!this.Valid)
+                    this.Validate();
+                return value;
+            }
+        }
+
         static Room()
         {
         }
@@ -27,14 +76,20 @@ namespace Project1.Core.Rooms
         {
             this.Color = ColorHelper.GetRandomColor();
         }
+
         public Room(MapBase map) : this()
         {
             this.Map = map;
         }
+
         Room(MapBase map, HashSet<IntVec3> positions) : this(map)
         {
             this.Interior = positions;
         }
+
+        public Room(RoomManager manager, ICollection<IntVec3> positions) : this(manager.Map, [.. positions]) { }
+
+
         public Room(MapBase map, IEnumerable<IntVec3> positions) : this(map)
         {
             this.Interior = new();
@@ -48,14 +103,6 @@ namespace Project1.Core.Rooms
                     this.AddPosition(p);
             }
         }
-        public Room(RoomManager manager, ICollection<IntVec3> positions) : this(manager.Map, [.. positions]) { }
-        private RoomRoleDef roomRole;
-        DrawableCellCollection Cells = [];
-        public HashSet<IntVec3> Interior = [];
-        public HashSet<IntVec3> Border = [];
-        public Color Color;
-        public bool Exists => true;
-        private bool Valid;
 
         internal void Remove()
         {
@@ -79,6 +126,7 @@ namespace Project1.Core.Rooms
         {
             this.OwnerRef = actor.RefId;
         }
+
         internal void ForceAddOwner(Actor actor)
         {
             this.Owner = actor;
@@ -86,55 +134,18 @@ namespace Project1.Core.Rooms
                 this.Workplace = null;
             this.Map.Events.Post(new RoomUpdatedEvent(this));
         }
+
         internal void RemoveOwner(Actor actor)
         {
             if (this.OwnerRef == actor.RefId)
                 this.OwnerRef = -1;
         }
         
-        public RoomRoleDef RoomRole
-        {
-            get => roomRole;
-            set
-            {
-                roomRole = value;
-                this.Workplace?.RoomChanged(this);
-            }
-        }
-
-        private int value;
-        public int Value
-        {
-            get
-            {
-                if (!this.Valid)
-                    this.Validate();
-                return value;
-            }
-        }
-
-        public int Size => this.Interior.Count;
-
-        public int ID;
-        public int OwnerRef = -1;
-        public HashSet<FurnitureDef> Furnitures = [];
-        public MapBase Map { get; set; }
-        private int workplaceID =-1;
-        private Workplace workplace;
-        public Workplace Workplace
-        {
-            get => workplaceID != -1 ? (workplace ??= this.Map.Town.ShopManager.GetShop(workplaceID)) : null;
-            set
-            {
-                workplace = value;
-                workplaceID = value?.ID ?? -1;
-            }
-        }
+       
         public bool HasRole(RoomRoleDef role)
         {
             return this.RoomRole == role;
         }
-        public string Name => $"Room {this.ID}";
         public IEnumerable<IntVec3> GetFurniturePositions(FurnitureDef furniture)
         {
             return this.Interior.Where(g => this.Map.GetBlock(g).Furniture == furniture);
@@ -142,11 +153,7 @@ namespace Project1.Core.Rooms
         public void GetQuickButtons(SelectionManager panel)
         {
         }
-        //public void GetSelectionInfo(IUISelection panel)
-        //{
-        //    panel.AddInfo(new Label(() => $"Owner: {this.Owner?.Name ?? "none"}"));
-        //    panel.AddInfo(new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}"));
-        //}
+       
         public IEnumerable<Control> GetSelectionInfo()
         {
             yield return new Label(() => $"Owner: {this.Owner?.Name ?? "none"}");
@@ -335,7 +342,7 @@ namespace Project1.Core.Rooms
             get => GetOwner();
             set => this.OwnerRef = value?.RefId ?? -1;
         }
-        public Vector3 Global => this.Cells.First();
+
         public Actor GetOwner()
         {
             return this.Map.World.GetEntity(this.OwnerRef) as Actor;

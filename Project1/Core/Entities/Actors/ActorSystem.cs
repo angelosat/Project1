@@ -9,6 +9,7 @@ namespace Project1.Core.Entities.Actors
             var actor = ActorDefOf.Npc.Create(profile) as Actor;
             actor.Components.ApplySpecs(profile.GenerateSpecs());
             roleMeta.AssignTo(actor);
+            actor.Inventory.Contents.AddInternal(ItemDefOf.Coins.Create(null, 500));
             actor.Initialize();
             return actor;
         }

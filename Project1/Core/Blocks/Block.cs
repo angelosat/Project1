@@ -178,7 +178,10 @@ namespace Project1.Core.Blocks
             tooltip.Controls.Add(new Label("BlockData: " + datastring + " (" + data.ToString() + ")") { Location = tooltip.Controls.BottomLeft });
             tooltip.Controls.Add(new Label("Variation: " + cell.Variation.ToString()) { Location = tooltip.Controls.BottomLeft });
             tooltip.Controls.Add(new Label("Orientation: " + cell.Orientation.ToString()) { Location = tooltip.Controls.BottomLeft });
-            tooltip.Controls.Add(new Label("Face light: " + map.GetSunLight(global + face)) { Location = tooltip.Controls.BottomLeft });
+            //tooltip.Controls.Add(new Label("Face light: " + map.GetSunLight(global + face)) { Location = tooltip.Controls.BottomLeft });
+            var light = map.GetLight(global + face, out var skylight, out var blocklight);
+            tooltip.Controls.Add(new Label($"Face sunlight: {skylight}") { Location = tooltip.Controls.BottomLeft });
+            tooltip.Controls.Add(new Label($"Face blocklight: {blocklight}") { Location = tooltip.Controls.BottomLeft });
 
             map.GetBlockEntity(global)?.GetTooltip(tooltip);
         }

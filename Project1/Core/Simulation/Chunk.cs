@@ -23,8 +23,6 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading;
 
 namespace Project1.Core.Simulation
 {

@@ -21,7 +21,7 @@ namespace Project1.Core.Rooms
         {
             if (net is Server)
                 room.RoomRole = roomType;
-            var w = net.BeginPacket(PacketSetRoomType);
+            var w = net.BeginPacketImmediate(PacketSetRoomType);
             w.Write(player.ID);
             w.Write(room.ID);
             w.Write(roomType?.Name ?? "");
@@ -64,7 +64,7 @@ namespace Project1.Core.Rooms
         {
             if (net is Server)
                 room.SetWorkplace(wplace);
-            var w = net.BeginPacket(PacketSetWorkplace);
+            var w = net.BeginPacketImmediate(PacketSetWorkplace);
             w.Write(player.ID);
             w.Write(room.ID);
             w.Write(wplace?.ID ?? -1);
@@ -87,7 +87,7 @@ namespace Project1.Core.Rooms
         {
             if (net is Server)
                 room.Refresh(center);
-            var w = net.BeginPacket(PacketRefresh);
+            var w = net.BeginPacketImmediate(PacketRefresh);
             w.Write(playerData.ID);
             w.Write(room.ID);
             w.Write(center);

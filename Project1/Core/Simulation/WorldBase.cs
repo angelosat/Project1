@@ -1,22 +1,22 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Map;
+using Project1.Core.Networking;
+using Project1.Core.UI;
+using Project1.Core.UI.Hud;
+using Project1.Core.World;
+using Project1.Core.World.WorldAreas;
+using Project1.Core.WorldGen;
+using Project1.Framework;
+using Project1.Framework.Events;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Blocks;
-using Project1.Core.Networking;
-using Project1.Core.World.WorldAreas;
-using Project1.Core.Entities;
-using Project1.Core.UI.Hud;
-using Project1.Core.UI;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Map;
-using Project1.Core.World;
-using Project1.Framework;
-using Project1.Core.WorldGen;
-using Project1.Framework.Events;
 
 #nullable enable
 
@@ -71,18 +71,14 @@ namespace Project1.Core.Simulation
         {
             this.EntityRegistry = new(this);
         }
-        public void RegisterOld(Entity entity)
-        {
-            entity.World = this;
-            this.EntityRegistry.Add(entity);
-        }
+        
         public void Register(Entity entity, bool immediate = false)
         {
             entity.World = this;
             entity.Net = this.Net;
             foreach (var e in entity.GetSelfAndChildren())
                 this.EntityRegistry.Add(e);
-            this.Events.Post(new EntityRegisteredEvent(entity as Entity, immediate));
+            this.Events.Post(new EntityRegisteredEvent(entity, immediate));
         }
         public Entity GetEntity(EntityRefId refId)
         {

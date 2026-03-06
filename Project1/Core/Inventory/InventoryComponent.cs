@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Components;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
@@ -25,6 +24,12 @@ namespace Project1.Core.Inventory
             {
                 comp.Capacity = this.Capacity;
             }
+        }
+        internal override void CopyFrom(EntityComp source)
+        {
+            var comp = (InventoryComponent)source;
+            foreach (var i in comp.Contents)
+                this.Contents.AddInternal(i.Clone() as Entity);
         }
         public override EntityCompDef CompDef => EntityCompDefOf.Inventory;
 

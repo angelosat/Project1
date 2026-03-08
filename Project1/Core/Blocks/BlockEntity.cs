@@ -82,6 +82,11 @@ namespace Project1.Core.Blocks
             foreach (var comp in this.Comps.Values)
                 comp.OnSpawned(this, map);
         }
+        public virtual void OnDespawned(MapBase map)
+        {
+            foreach (var comp in this.Comps.Values)
+                comp.OnDespawned(this, map);
+        }
         public virtual GameObjectSlot GetChild(string containerName, int slotID)
         {
             throw new NotImplementedException();

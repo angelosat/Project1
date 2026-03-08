@@ -32,7 +32,8 @@ namespace Project1.Core.Blocks
         public IntVec3 Global => this.Parent.OriginGlobal;
         public override string LabelReadable => this.CompDef.LabelReadable;
         public ObservableCollection<string> Errors => this.Parent.Errors;
-        public virtual void OnSpawned(BlockEntity entity, MapBase map) { }
+        internal virtual void OnSpawned(BlockEntity entity, MapBase map) { }
+        internal virtual void OnDespawned(BlockEntity entity, MapBase map) { }
         public virtual void Draw(Camera camera, MapBase map, IntVec3 global) { }
         public virtual void DrawUI(SpriteBatch sb, Camera camera) { }
         public virtual void Load(SaveTag tag)

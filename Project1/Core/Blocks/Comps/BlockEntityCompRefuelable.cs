@@ -139,7 +139,7 @@ namespace Project1.Core.Blocks
         {
             this.AddFuelNew(item, quantity);
         }
-        public override void OnSpawned(BlockEntity entity, MapBase map)
+        internal override void OnSpawned(BlockEntity entity, MapBase map)
         {
             var material = map.GetMaterial(this.Parent.OriginGlobal);
             this.Fuel.Value += material.Fuel.Value;

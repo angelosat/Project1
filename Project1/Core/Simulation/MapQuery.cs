@@ -4,13 +4,12 @@ using Project1.Core.Materials;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Project1.Core.Simulation
 {
     public record MapQuery(MapBase Map, IntVec3 Global)
     {
-        readonly int CellIndex = Chunk.GetCellIndex(Global);
+        readonly CellId CellIndex = Chunk.GetCellIndex(Global);
         readonly Chunk Chunk = Map.GetChunk(Global);
         public Block Block => this.Chunk.GetBlock(this.CellIndex);
         public MaterialDef Material => this.Chunk.GetMaterial(this.CellIndex);

@@ -1,8 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Helpers;
+﻿using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Framework;
-using System;
 
 namespace Project1.Core
 {
@@ -18,6 +16,20 @@ namespace Project1.Core
         public static implicit operator MapId(int v) => new(v);
         public static implicit operator int(MapId v) => v.Value;
     }
+
+    public readonly record struct CellId(int Value)
+    {
+        internal static readonly CellId Null = new(0);
+        public static implicit operator CellId(int v) => new(v);
+        public static implicit operator int(CellId v) => v.Value;
+
+        public int Z => Value / (Chunk.SizeSquared);
+        public int Y => (Value / Chunk.Size) % Chunk.Size;
+        public int X => Value % Chunk.Size;
+
+        public IntVec3Local Local => new(this.X, this.Y, this.Z);
+    }
+
     public readonly record struct PacketId(int Value)
     {
         public static implicit operator PacketId(int v) => new(v);

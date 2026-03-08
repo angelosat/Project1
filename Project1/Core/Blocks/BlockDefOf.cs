@@ -79,7 +79,8 @@ namespace Project1.Core.Blocks
             //BlockEntityCompSpecs = [new BlockBuildingComp.Spec()],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Structural, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };
-        static public readonly BlockDef Campfire = new("Campfire", typeof(BlockCampfire));
+        static public readonly BlockDef Campfire = new("Campfire", typeof(BlockCampfire))
+        { BlockEntityCompSpecs = [new BlockLightComp.Spec()] };
         static public readonly BlockDef Window = new("Window", typeof(BlockWindow));
         static public readonly BlockDef Roof = new("Roof", typeof(BlockRoof));
         static public readonly BlockDef Stairs = new("Stairs", typeof(BlockStairs));

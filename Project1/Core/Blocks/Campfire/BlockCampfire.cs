@@ -11,7 +11,7 @@ using Project1.Framework;
 
 namespace Project1.Core
 {
-    partial class BlockCampfire : Block
+    class BlockCampfire : Block
     {
         public BlockCampfire()
             : base("Campfire", opaque: false, solid: false)
@@ -31,10 +31,10 @@ namespace Project1.Core
                     );
             return table;
         }
-        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
-        {
-            return new BlockCampfireEntity(this.BlockDef, originGlobal);
-        }
+        //public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
+        //{
+        //    return new BlockCampfireEntity(this.BlockDef, originGlobal);
+        //}
 
         internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {

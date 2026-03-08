@@ -1,31 +1,23 @@
 ﻿using Project1.Core.Helpers;
-using Project1.Core.Simulation;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Core
+namespace Project1.Core.Simulation.Lighting
 {
-    public partial class LightingEngine
+    public partial class LightingEngine(MapBase map)
     {
-        readonly MapBase Map;
-
-        public LightingEngine(MapBase map)
-        {
-            this.Map = map;
-        }
+        readonly MapBase Map = map;
 
         public void HandleImmediate(IEnumerable<IntVec3> vectors)
         {
             var queued = new HashSet<IntVec3>(vectors);
-            var batch = new BatchToken(vectors);
-            var queue = batch.Queue;
+            var queue = new Queue<IntVec3>(vectors);
             while (queue.Count > 0)
                 HandleSkyGlobalImmediate(queue.Dequeue(), queue, queued);
 
-            queued = new HashSet<IntVec3>(vectors);
-            var block = new BatchToken(vectors);
-            queue = block.Queue;
+            queued = [.. vectors];
+            queue = new Queue<IntVec3>(vectors);
             while (queue.Count > 0)
                 HandleBlockGlobalImmediate(queue.Dequeue(), queue, queued);
         }
@@ -40,7 +32,6 @@ namespace Project1.Core
             nextLight = GetNextSunLightImmediate(thisCell, thisChunk, gx, gy, z, lx, ly, neighbors);
 
             oldLight = thisChunk.GetSunlight(lx, ly, z);
-            //var local = thisCell.LocalCoords;// GetLocalCoords(thisChunk);
             var local = global.ToLocal();
             int d = nextLight - oldLight;
             if (d != 0)
@@ -78,8 +69,6 @@ namespace Project1.Core
                             continue;
                         if (ncell.Opaque)
                             continue;
-                        //var local = ncell.LocalCoords;// GetLocalCoords(nchunk);
-                        //var local = n;// new IntVec3(lx, ly, z) + n;
                         var l = nchunk.GetSunlight(n);
                         maxAdjLight = Math.Max(maxAdjLight, l);
                     }
@@ -101,7 +90,7 @@ namespace Project1.Core
                 if (!this.Map.TryGetAll(currentGlobal, out var chunk, out var cell))
                     continue;
 
-                var local = currentGlobal.ToLocal();// cell.LocalCoords;// GetLocalCoords(chunk);
+                var local = currentGlobal.ToLocal();
                 if (chunk.IsAboveHeightMap(local))
                     continue;
                 chunk.SetSunlight(local, 0);
@@ -111,7 +100,7 @@ namespace Project1.Core
                 {
                     if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
                         continue;
-                    var nlocal = n.ToLocal();// ncell.LocalCoords;// GetLocalCoords(nchunk);
+                    var nlocal = n.ToLocal();
                     if (nchunk.IsAboveHeightMap(nlocal))
                     {
                         if (!queued.Contains(currentGlobal))
@@ -138,7 +127,7 @@ namespace Project1.Core
             queued.Remove(global);
             if (!this.Map.TryGetAll(global, out var thisChunk, out var thisCell))
                 return;
-            var local = global.ToLocal();// thisCell.LocalCoords;// GetLocalCoords(thisChunk);
+            var local = global.ToLocal();
             var thisLight = thisChunk.GetBlockLight(local);
 
             nextLight = GetNextBlockLightImmediate(thisCell, global);
@@ -175,7 +164,6 @@ namespace Project1.Core
                     continue;
                 if (ncell.Opaque)
                     continue;
-                //var local = n.ToLocal();// ncell.LocalCoords;// GetLocalCoords(nchunk);
                 byte l = nchunk.GetBlockLight(n);
                 maxAdjLight = Math.Max(maxAdjLight, l);
             }
@@ -215,7 +203,7 @@ namespace Project1.Core
                 var adj = IntVec3.AdjacentIntVec3;
                 for (int i = 0; i < adj.Length; i++)
                 {
-                    var n = global + adj[i];
+                    var n = current + adj[i];
                     if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
                         continue;
                     var nlocal = n.ToLocal();// ncell.LocalCoords;// GetLocalCoords(nchunk);
@@ -244,6 +232,7 @@ namespace Project1.Core
                     }
                 }
             }
+
         }
     }
 }

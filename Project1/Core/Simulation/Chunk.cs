@@ -138,6 +138,7 @@ namespace Project1.Core.Simulation
 
         public bool IsQueuedForLight;
         public const int Size = 16;
+        public const int SizeSquared = Size * Size;
         public IntVec2 Start;
         public Vector2 bottomRight;
         public void Invalidate()
@@ -295,7 +296,7 @@ namespace Project1.Core.Simulation
         public Cell GetLocalCell(int x, int y, int z)
             => this.Cells[GetCellIndex(x, y, z)];
 
-        public Cell GetLocalCell(int cellIndex)
+        public Cell GetLocalCell(CellId cellIndex)
           => this.Cells[cellIndex];
 
         public Cell GetLocalCell(IntVec3Local local)
@@ -309,8 +310,8 @@ namespace Project1.Core.Simulation
         public static int GetCellIndex(IntVec3Local local)
             => GetCellIndex(local.X, local.Y, local.Z);
 
-        public static IntVec3Local GetLocalFromIndex(int index)
-            => new(new(index % Size, (index / Size) % Size, index / (Size * Size)));
+        public static IntVec3Local GetLocalFromIndex(CellId index)
+            => new(index % Size, (index / Size) % Size, index / (SizeSquared));
 
         public CellQuery Query(IntVec3Local local)
             => new(this, local);
@@ -328,17 +329,17 @@ namespace Project1.Core.Simulation
         }
 
 
-        public int GetHeightMapValue(Vector3 local)
+        public int GetHeightMapValue(IntVec3Local local)
         {
-            return this.GetHeightMapValue((int)local.X, (int)local.Y);
+            return this.GetHeightMapValue(local.X, local.Y);
         }
         public int GetHeightMapValue(int localx, int localy)
         {
             return this.HeightMap[localx][localy];
         }
-        public bool IsAboveHeightMap(Vector3 local)
+        public bool IsAboveHeightMap(IntVec3Local local)
         {
-            return local.Z > this.HeightMap[(int)local.X][(int)local.Y];
+            return local.Z > this.HeightMap[local.X][local.Y];
         }
         public bool IsAboveHeightMap(int localx, int localy, int localz)
         {
@@ -509,16 +510,13 @@ namespace Project1.Core.Simulation
 
         public void ValidateCells()
         {
-            if (this.CellsToValidate.Count != 0)
+            while (this.CellsToValidate.Count > 0)
             {
-                while (this.CellsToValidate.Count > 0)
-                {
-                    var cell = this.CellsToValidate.Dequeue();
-                    this.Map.LightingEngine.HandleImmediate([cell.ToGlobal(this)]);
-                    this.GetLocalCell(cell).Valid = true;
-                    this.InvalidateSlice(cell.Z);
-                    this.InvalidateMesh();
-                }
+                var cell = this.CellsToValidate.Dequeue();
+                this.Map.LightingEngine.HandleImmediate([cell.ToGlobal(this)]);
+                this.GetLocalCell(cell).Valid = true;
+                this.InvalidateSlice(cell.Z);
+                this.InvalidateMesh();
             }
         }
 
@@ -576,10 +574,10 @@ namespace Project1.Core.Simulation
             this.InvalidateLight(global);
         }
 
-        public void SetBlockLight(IntVec3 local, byte value)
+        public void SetBlockLight(IntVec3Local local, byte value)
         {
             this.BlockLight[GetCellIndex(local)] = value;
-            var global = local + new IntVec3(this.Start.X, this.Start.Y, 0);
+            var global = local.ToGlobal(this);// + new IntVec3(this.Start.X, this.Start.Y, 0);
             this.InvalidateLight(global);
         }
 
@@ -1366,7 +1364,6 @@ namespace Project1.Core.Simulation
                 for (int j = 0; j < Chunk.Size; j++)
                 {
                     var local = new IntVec3(i, j, z);
-                    //var cell = this.Cells[GetCellIndex(local)];
                     var block = this.GetBlock(local);
                     var global = local.ToGlobal(this);
                     var isair = block == BlockDefOf.Air.Block;// BlockDefOf.Air;
@@ -1484,18 +1481,18 @@ namespace Project1.Core.Simulation
             this.Map.Events.Post(new BlockDamagedEvent(this.Map, local.ToGlobal(this), work));
         }
 
-        internal int GetData(int cellIndex) => this.Cells[cellIndex].Data.Data;
-        internal void SetData(int cellIndex, int data)
+        internal int GetData(CellId cellIndex) => this.Cells[cellIndex].Data.Data;
+        internal void SetData(CellId cellIndex, int data)
         {
             this.Cells[cellIndex].Data = new(data);
             var local = GetLocalFromIndex(cellIndex);
             this.InvalidateFinal(local);
         }
 
-        internal byte GetBlockData(int cellIndex) => this.Cells[cellIndex].BlockData;
+        internal byte GetBlockData(CellId cellIndex) => this.Cells[cellIndex].BlockData;
         internal byte GetBlockData(IntVec3Local local) => this.Cells[GetCellIndex(local)].BlockData;
 
-        internal int GetVariation(int cellIndex) => this.Cells[cellIndex].Variation;
+        internal int GetVariation(CellId cellIndex) => this.Cells[cellIndex].Variation;
         internal int GetVariation(IntVec3Local local) => this.Cells[GetCellIndex(local)].Variation;
 
 
@@ -1504,40 +1501,40 @@ namespace Project1.Core.Simulation
             this.GetLocalCell(local).BlockData = blockData;
             this.InvalidateFinal(local);
         }
-        internal void SetBlockData(int cellIndex, byte blockData)
+        internal void SetBlockData(CellId cellIndex, byte blockData)
         {
             this.GetLocalCell(cellIndex).BlockData = blockData;
             var local = GetLocalFromIndex(cellIndex);
             this.InvalidateFinal(local);
         }
         internal Block GetBlock(IntVec3Local local) => this.Cells[GetCellIndex(local)].Block;
-        internal Block GetBlock(int cellIndex) => this.Cells[cellIndex].Block;
+        internal Block GetBlock(CellId cellIndex) => this.Cells[cellIndex].Block;
         internal void SetBlock(IntVec3Local local, Block block)
         {
             this.GetLocalCell(local).Block = block;
             block.OnPlaced(new CellQuery(this, local));
             this.InvalidateFinal(local);
         }
-        internal void SetBlock(int cellIndex, Block block)
+        internal void SetBlock(CellId cellIndex, Block block)
         {
             this.GetLocalCell(cellIndex).Block = block;
             var local = GetLocalFromIndex(cellIndex);
             this.InvalidateFinal(local);
         }
-        internal MaterialDef GetMaterial(int cellIndex) => this.Cells[cellIndex].Material;
+        internal MaterialDef GetMaterial(CellId cellIndex) => this.Cells[cellIndex].Material;
         internal void SetMaterial(IntVec3Local local, MaterialDef material)
         {
             this.GetLocalCell(local).Material = material;
             this.InvalidateFinal(local);
         }
-        internal void SetMaterial(int cellIndex, MaterialDef material)
+        internal void SetMaterial(CellId cellIndex, MaterialDef material)
         {
             this.GetLocalCell(cellIndex).Material = material;
             var local = GetLocalFromIndex(cellIndex);
             this.InvalidateFinal(local);
         }
 
-        internal void SetVariation(int cellIndex, int variation)
+        internal void SetVariation(CellId cellIndex, int variation)
         {
             this.GetLocalCell(cellIndex).Variation = variation;
             var local = GetLocalFromIndex(cellIndex);
@@ -1549,7 +1546,8 @@ namespace Project1.Core.Simulation
             this.InvalidateSlice(local.Z);
             this.Map.Events.Post(new CellsInvalidatedEvent(this.Map, [local.ToGlobal(this)]));
         }
-        internal void WriteCell(int cellIndex, BlockDef block, MaterialDef material, int? variation, byte? blockdata, int? data)
+
+        internal void WriteCell(CellId cellIndex, BlockDef block, MaterialDef material, int? variation, byte? blockdata, int? data)
         {
             if (block is not null)
                 this.SetBlock(cellIndex, block.Block);

@@ -13,6 +13,7 @@ using Project1.Core.Map;
 using Project1.Core.Networking;
 using Project1.Core.Plants;
 using Project1.Core.Simulation.FallDamage;
+using Project1.Core.Simulation.Lighting;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Towns;
 using Project1.Core.UI;

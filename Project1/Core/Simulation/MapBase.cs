@@ -12,6 +12,7 @@ using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Simulation;
 using Project1.Core.Screens;
+using Project1.Core.Simulation.Lighting;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Stockpiles;
@@ -334,11 +335,11 @@ namespace Project1.Core.Simulation
         }
         public virtual int GetHeightmapValue(int x, int y)
         {
-            var global = new Vector3(x, y, 0);
+            var global = new IntVec3(x, y, 0);
             var ch = this.GetChunk(global);
             if (ch == null)
                 return int.MinValue;
-            return ch.GetHeightMapValue(global.ToLocal());
+            return ch.GetHeightMapValue(global);
         }
         public virtual int GetHeightmapValue(IntVec3 global)
         {
@@ -605,6 +606,7 @@ namespace Project1.Core.Simulation
                     entity.Map = null;
                 }
             }
+            entity.OnDespawned(this);
         }
         internal void SetBlockInternal(Dictionary<IntVec3, SetBlockArgs> changes)
         {
@@ -882,14 +884,14 @@ namespace Project1.Core.Simulation
         }
 
         public bool IsActive => Ingame.CurrentMap == this;
-        public bool IsAboveHeightMap(IntVec3 global)
-        {
-            return this.IsAboveHeightMap((Vector3)global);
-        }
-        internal bool IsAboveHeightMap(Vector3 global)
+        //public bool IsAboveHeightMap(IntVec3 global)
+        //{
+        //    return this.IsAboveHeightMap(global);
+        //}
+        internal bool IsAboveHeightMap(IntVec3 global)
         {
             var chunk = this.GetChunk(global);
-            return chunk.IsAboveHeightMap(global.ToLocal());
+            return chunk.IsAboveHeightMap(global);
         }
 
         internal virtual bool IsUndiscovered(Vector3 global)

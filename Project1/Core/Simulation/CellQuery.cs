@@ -8,7 +8,7 @@ namespace Project1.Core.Simulation
     public readonly struct CellQuery
     {
         private readonly Chunk _chunk;
-        private readonly int _cellIndex;
+        private readonly CellId _cellIndex;
 
         public MapBase Map => this._chunk.Map;
         public IntVec3 Global => Chunk.GetLocalFromIndex(this._cellIndex).ToGlobal(this._chunk);
@@ -24,7 +24,7 @@ namespace Project1.Core.Simulation
             this._chunk = map.GetChunk(global);
             this._cellIndex = Chunk.GetCellIndex(global);
         }
-        internal CellQuery(Chunk chunk, int cellIndex)
+        internal CellQuery(Chunk chunk, CellId cellIndex)
         {
             this._cellIndex = cellIndex;
             this._chunk = chunk;

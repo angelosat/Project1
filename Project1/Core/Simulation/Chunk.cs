@@ -179,7 +179,8 @@ public class Chunk : Inspectable
     public MapBase Map;
     public WorldBase World => this.Map.World;
     public bool Valid;
-    readonly Queue<IntVec3Local> CellsToValidate = [];
+    //readonly Queue<IntVec3Local> CellsToValidate = [];
+    readonly HashSet<PositionQuery> CellsToValidate = [];
 
     public bool ChunkBoundariesUpdated = true;
     public bool LightValid = false;
@@ -451,14 +452,22 @@ public class Chunk : Inspectable
 
     public void ValidateCells()
     {
-        while (this.CellsToValidate.Count > 0)
+        foreach(var pos in this.CellsToValidate)
         {
-            var cell = this.CellsToValidate.Dequeue();
-            this.Map.LightingEngine.HandleImmediate([cell.ToGlobal(this)]);
-            this.GetLocalCell(cell).Valid = true;
-            this.InvalidateSlice(cell.Z);
+            this.Map.LightingEngine.HandleImmediate([pos]);
+            //this.GetLocalCell(cell).Valid = true;
+            this.InvalidateSlice(pos.Local.Z);
             this.InvalidateMesh();
         }
+
+        //while (this.CellsToValidate.Count > 0)
+        //{
+        //    var cell = this.CellsToValidate.Dequeue();
+        //    this.Map.LightingEngine.HandleImmediate([cell.ToGlobal(this)]);
+        //    this.GetLocalCell(cell).Valid = true;
+        //    this.InvalidateSlice(cell.Z);
+        //    this.InvalidateMesh();
+        //}
     }
 
     public void InvalidateSlice(byte z)
@@ -473,13 +482,24 @@ public class Chunk : Inspectable
     public void InvalidateCell(IntVec3Local cell)
     {
         this.BlockDamageSystem.Delete(cell);
-        this.InvalidateLight(cell.ToGlobal(this));
+
+        var pos = this.QueryPosition(cell);
+
+        this.InvalidateLight(pos.Global);
 
         if (!this.GetLocalCell(cell).Valid)
             return;
 
-        this.CellsToValidate.Enqueue(cell);
-        this.GetLocalCell(cell).Valid = false;
+        this.CellsToValidate.Add(pos);
+        //this.CellsToValidate.Enqueue(cell);
+        //this.GetLocalCell(cell).Valid = false;
+    }
+
+    PositionQuery QueryPosition(IntVec3Local local)
+    {
+        var global = local.ToGlobal(this);
+        var index = Chunk.GetCellIndex(local);
+        return new() { Local = local, Chunk = this, Cell = this.GetLocalCell(index), CellIndex = index, Global = global, GlobalCellId = global.Id };
     }
 
     public byte GetBlockLight(IntVec3Local local)

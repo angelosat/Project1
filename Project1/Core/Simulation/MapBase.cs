@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace Project1.Core.Simulation;
 
@@ -445,8 +446,16 @@ public abstract class MapBase : Inspectable
         var local = global.ToLocal();
         var index = Chunk.GetCellIndex(local);
         var cell = chunk.GetLocalCell(index);
-        query = new() { Chunk = chunk, CellIndex = index, Global = global, Local = local, Cell = cell };
+        query = new() { Chunk = chunk, CellIndex = index, Global = global, Local = local, Cell = cell, GlobalCellId = global.Id };
         return true;
+    }
+    public PositionQuery QueryPosition(IntVec3 global)
+    {
+        var chunk = this.GetChunk(global);
+        var local = global.ToLocal();
+        var index = Chunk.GetCellIndex(local);
+        var cell = chunk.GetLocalCell(index);
+        return new() { Chunk = chunk, CellIndex = index, Global = global, Local = local, Cell = cell, GlobalCellId = global.Id };
     }
     public bool TryGetAll(IntVec3 global, out Chunk chunk, out Cell cell, out IntVec3Local local)
     {
@@ -1009,4 +1018,5 @@ public record struct PositionQuery
     public CellId CellIndex;
     public IntVec3 Global;
     public IntVec3Local Local;
+    public GlobalCellId GlobalCellId;
 }

@@ -681,7 +681,8 @@ public class StaticMap : MapBase, ITooltippable
     }
     public override void UpdateLight(IEnumerable<IntVec3> positions)
     {
-        this.LightingEngine.HandleImmediate(positions);
+        //this.LightingEngine.HandleImmediate(positions);
+        this.LightingEngine.HandleImmediate(positions.Select(this.QueryPosition));
     }
     #region IMap implementation
 

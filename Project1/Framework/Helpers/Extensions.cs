@@ -1,17 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using System.Threading;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Simulation;
 using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Xml.Linq;
 
 namespace Project1.Framework.Helpers
 {
     public static class Extensions
     {
+        extension(IntVec3 global)
+        {
+            public GlobalCellId Id => new(global);
+        }
+
         public static Vector2 ToVector(this Point point) => new(point.X, point.Y); 
         static public Vector3 ToBlock(this Vector3 global)
         {

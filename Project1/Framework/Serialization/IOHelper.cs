@@ -152,6 +152,12 @@ namespace Project1.Framework.Serialization
             }
             return dic;
         }
+        public static void ReadImmutable<T>(this T[] list, IDataReader r) where T : ISerializable
+        {
+            var count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+                list[i].Read(r);
+        }
         public static T[] ReadArray<T>(this IDataReader r, params object[] constructorParams) where T : class, ISerializable
         {
             var count = r.ReadInt32();
@@ -163,6 +169,7 @@ namespace Project1.Framework.Serialization
             }
             return list;
         }
+
         public static T[] ReadArrayNew<T>(this IDataReader r, params object[] constructorParams) where T : class, ISerializableNew<T>, new()
         {
             var count = r.ReadInt32();
@@ -674,7 +681,7 @@ namespace Project1.Framework.Serialization
             return dic;
         }
         [Obsolete("use write instead")]
-        public static void WriteOld<T>(this ICollection<T> list, IDataWriter w) where T : ISerializable
+        public static void WriteImmutable<T>(this ICollection<T> list, IDataWriter w) where T : ISerializable
         {
             var count = list.Count;
             w.Write(count);

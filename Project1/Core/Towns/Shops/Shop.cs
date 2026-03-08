@@ -184,7 +184,8 @@ namespace Project1.Core.Towns.Shops
             foreach (var stID in this.StockpilesOutput)
             {
                 var st = this.Town.ZoneManager.GetZone<Stockpile>(stID);
-                var items = st.GetContents().Select(i => i as Entity);
+                //var items = st.GetContents().Select(i => i as Entity);
+                var items = st.Items;
                 foreach (var i in items)
                     if (condition(i))
                         yield return i;

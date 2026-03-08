@@ -296,7 +296,7 @@ namespace Project1.Core.Towns
         {
             w.Write(this.Tables);
             w.Write(this.Workstations);
-            this.Customers.WriteOld(w);
+            this.Customers.WriteImmutable(w);
             this.Orders.Write(w);
         }
         protected override void LoadExtra(SaveTag tag)

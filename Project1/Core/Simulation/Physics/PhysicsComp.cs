@@ -438,9 +438,9 @@ namespace Project1.Core.Simulation.Physics
                 return;
             }
 
-            foreach (Chunk ch in parent.Map.GetChunks(parent.Map.GetChunk(last).MapCoords)) // TODO: optimize, search for entities on nearby chunks only if entity is on current chunk edge
+            foreach (var ch in parent.Map.GetChunks(parent.Map.GetChunk(last).MapCoords)) // TODO: optimize, search for entities on nearby chunks only if entity is on current chunk edge
             {
-                foreach (var other in ch.GetObjects())
+                foreach (var other in ch.Entities)
                 {
                     if (other == parent)
                     {

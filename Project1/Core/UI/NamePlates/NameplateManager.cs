@@ -31,7 +31,7 @@ namespace Project1.Core.UI.NamePlates
             this.MouseThrough = true;
             net.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
             net.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-            foreach (var entity in net.Map.GetEntities())
+            foreach (var entity in net.Map.Entities)
                 this.CreateNameplateFor(entity as Entity);
         }
 

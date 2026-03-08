@@ -79,19 +79,18 @@ namespace Project1.Core.UI
             if (camera.Zoom <= 1)
                 return;
            
-            var objects = Client.Instance.Map.GetEntities();
+            var objects = Client.Instance.Map.Entities;
             foreach (var o in objects)
             {
                 if (o.StackSize <= 1)
                     continue;
-                if (!StackSizes.TryGetValue(o, out var texture))
+                if (!StackSizes.TryGetValue(o, out _))
                 {
                     ToValidate.Enqueue(o);
                     continue;
                 }
                 var rt = StackSizes[o];
                 var depth = camera.GetDrawDepth(o);
-                var pos = camera.GetScreenPosition(o.Global);
                 sb.Draw(rt, Vector2.Zero, rt.Bounds, 0, Vector2.Zero, Vector2.One, Color.White, Color.White, Color.White, Color.White, Color.Transparent, SpriteEffects.None, depth); 
             }
         }

@@ -9,6 +9,7 @@ namespace Project1.Core.Simulation
 {
     public record MapQuery(MapBase Map, IntVec3 Global)
     {
+        //readonly IntVec3Local Local = Global.ToLocal();
         readonly CellId CellIndex = Chunk.GetCellIndex(Global);
         readonly Chunk Chunk = Map.GetChunk(Global);
         public Block Block => this.Chunk.GetBlock(this.CellIndex);

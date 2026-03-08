@@ -28,7 +28,7 @@ namespace Project1.Core.AI.Behaviors
             }
             else
             {
-                var nearbyItems = actor.Map.GetEntities().OfType<Entity>();
+                var nearbyItems = actor.Map.Entities.OfType<Entity>();
                 var item = nearbyItems
                     .Where(i => condition(i) && actor.CanReserve(i))
                     .SortByReachableRegionDistance(actor)

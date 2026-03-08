@@ -39,13 +39,13 @@ namespace Project1.Core.Towns.Stockpiles
         {
             this.Settings.Initialize(FiltersView);
         }
-        public List<GameObject> GetContents()
-        {
-            var contents = new List<GameObject>();
-            foreach (var pos in this.Cells)
-                contents.AddRange(this.Town.Map.GetObjects(pos + IntVec3.UnitZ));
-            return contents;
-        }
+        //public List<GameObject> GetContents()
+        //{
+        //    var contents = new List<GameObject>();
+        //    foreach (var pos in this.Cells)
+        //        contents.AddRange(this.Town.Map.GetObjects(pos + IntVec3.UnitZ));
+        //    return contents;
+        //}
         public override bool Accepts(Entity obj, IntVec3 pos)
         {
             if (!this.Cells.Contains(pos))
@@ -53,23 +53,7 @@ namespace Project1.Core.Towns.Stockpiles
             return this.Accepts(obj);
         }
         internal bool Accepts(Entity item) => this.SettingsNew.Accepts(item);
-        //public IEnumerable<TargetArgs> DistributeToStorageSpotsNewLazyFromCache(Entity obj)
-        //{
-        //    var occupiedCells = new List<IntVec3>();
-        //    foreach(var existing in this.CacheNew)
-        //    {
-        //        occupiedCells.Add(existing.Cell);
-        //        if (!this.SettingsNew.Accepts(existing as Entity))
-        //            continue;
-        //        if (!existing.CanAbsorb(obj))
-        //            continue;
-        //        if (existing.GetUnreservedAmount() == 0)
-        //            continue;
-        //        yield return new TargetArgs(existing);
-        //    }
-        //    foreach (var cell in this.Cells.Except(occupiedCells))
-        //        yield return new TargetArgs(this.Map, cell);
-        //}
+        
         public IEnumerable<IntVec3> DistributeToStorageSpotsCellsOnly(Entity item)
         {
             var emptyCells = new List<Vector3>();

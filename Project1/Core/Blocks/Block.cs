@@ -334,17 +334,11 @@ namespace Project1.Core.Blocks
         public virtual Color DirtColor => Color.White;
         public LootTable LootTable { get; set; }
 
-        public virtual FurnitureDef GetFurnitureRole(MapBase map, IntVec3 global) { return null; }
+        public virtual FurnitureDef GetFurnitureRole(MapBase map, IntVec3 global) => null;
 
         public virtual bool IsTargetable(Vector3 global)
-        {
-            return true;
-        }
-        public virtual float GetBreakResistance(MapBase map, Vector3 global)
-        {
-            return map.GetMaterial(global).BreakResistance;
-        }
-
+            =>  true;
+        
         protected virtual ParticleEmitterSphere GetDustEmitter()
         {
             var emitter = new ParticleEmitterSphere()

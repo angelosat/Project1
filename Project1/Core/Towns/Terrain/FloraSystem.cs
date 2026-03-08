@@ -98,7 +98,7 @@ namespace Project1.Core.Towns.Terrain
        
         private float GetCurrentPlantDensity(int totalFertileCells)
         {
-            var plants = this.Map.GetEntities().Where(o => o.IsPlant()).Count();
+            var plants = this.Map.Entities.Where(o => o.IsPlant()).Count();
             return plants / (float)totalFertileCells;
         }
 

@@ -319,7 +319,6 @@ namespace Project1.Core.Simulation
         public static readonly int Volume = Size * Size * MapBase.MaxHeight;
         public byte[] BlockLight = new byte[Volume];
         public byte[] Sunlight = new byte[Volume];
-        Queue<IntVec3> LightChanges = [];
 
         void ResetCellLight()
         {
@@ -346,21 +345,6 @@ namespace Project1.Core.Simulation
             return localz > this.HeightMap[localx][localy];
         }
 
-
-        /// <summary>
-        /// Recalculates the skylight of a chunk and returns a list of cells whose skylight that changed.
-        /// </summary>
-        /// <returns>A list of cells whose skylight has changed</returns>
-        public Queue<IntVec3> ResetHeightMap()
-        {
-            for (int j = 0; j < Size; j++)
-                for (int i = 0; i < Size; i++)
-                    foreach (var pos in this.ResetHeightMapColumn(i, j))
-                        this.LightChanges.Enqueue(pos);
-            var toReturn = new Queue<IntVec3>(this.LightChanges);
-            this.LightChanges = new Queue<IntVec3>();
-            return toReturn;
-        }
 
         public void UpdateHeightMap()
         {
@@ -563,7 +547,7 @@ namespace Project1.Core.Simulation
             return this.Sunlight[GetCellIndex(x, y, z)];
         }
 
-        public void SetSunlight(IntVec3 local, byte value)
+        public void SetSunlight(IntVec3Local local, byte value)
         {
             this.SetSunlight(local.X, local.Y, local.Z, value);
         }

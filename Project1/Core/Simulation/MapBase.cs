@@ -1084,5 +1084,11 @@ namespace Project1.Core.Simulation
 
         internal void EntityChangedCell(Entity entity, IntVec3 lastCell, IntVec3 nextCell)
             => this.EntityTracker.OnEntityMoved(entity, lastCell, nextCell);
+
+        internal byte GetSunlight(IntVec3 pos)
+            => this.GetChunk(pos).GetSunlight(pos);
+
+        internal byte GetBlockLight(IntVec3 pos)
+            => this.GetChunk(pos).GetBlockLight(pos);
     }
 }

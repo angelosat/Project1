@@ -93,7 +93,7 @@ namespace Project1.Core.Simulation
         public StaticMap(StaticWorld world, string name = "")
         {
             this.World = world;
-            this.LightingEngine = new LightingEngine(this);
+            this.LightingEngine = new(this);
             this.Camera = new Camera(Game1.Bounds.Width, Game1.Bounds.Height);
             this.Name = name;
             this.Thumbnails = new Texture2D[3];

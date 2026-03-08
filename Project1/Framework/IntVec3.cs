@@ -24,27 +24,27 @@ namespace Project1.Framework
         {
 
         }
-        public bool Equals(IntVec3 other)
+        public readonly bool Equals(IntVec3 other)
         {
             return
                 this.X == other.X &&
                 this.Y == other.Y &&
                 this.Z == other.Z;
         }
-        public override bool Equals(object obj)
+        public readonly override bool Equals(object obj)
         {
             return obj is IntVec3 vec && this.Equals(vec);
         }
-        public override int GetHashCode()
+        public readonly override int GetHashCode()
         {
             return new Vector3(this.X, this.Y, this.Z).GetHashCode();
         }
-        public static IntVec3 Zero = new(0);
-        public static IntVec3 One = new(1);
-        public static IntVec3 UnitX = new(1, 0, 0);
-        public static IntVec3 UnitY = new(0, 1, 0);
-        public static IntVec3 UnitZ = new(0, 0, 1);
-        public IntVec2 XY => new IntVec2(this.X, this.Y);
+        public readonly static IntVec3 Zero = new(0);
+        public readonly static IntVec3 One = new(1);
+        public readonly static IntVec3 UnitX = new(1, 0, 0);
+        public readonly static IntVec3 UnitY = new(0, 1, 0);
+        public readonly static IntVec3 UnitZ = new(0, 0, 1);
+        public readonly IntVec2 XY => new(this.X, this.Y);
         public static IntVec3 operator +(IntVec3 a, IntVec3 b)
         {
             return new IntVec3(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
@@ -87,7 +87,7 @@ namespace Project1.Framework
             return new IntVec3(a);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return $"{{X:{this.X} Y:{this.Y} Z:{this.Z}}}";
         }
@@ -109,7 +109,7 @@ namespace Project1.Framework
         {
             return a.X != b.X || a.Y != b.Y || a.Z != b.Z;
         }
-        public IEnumerable<IntVec3> GetNeighbors()
+        public readonly IEnumerable<IntVec3> GetNeighbors()
         {
             yield return this + UnitX;
             yield return this - UnitX;
@@ -118,67 +118,67 @@ namespace Project1.Framework
             yield return this + UnitZ;
             yield return this - UnitZ;
         }
-        public IEnumerable<IntVec3> GetAdjacentLazy()
+        public readonly IEnumerable<IntVec3> GetAdjacentLazy()
         {
             for (int i = 0; i < 6; i++)
                 yield return this + AdjacentIntVec3[i];
         }
-        public IEnumerable<IntVec3> GetAdjacentCubeLazy()
+        public readonly IEnumerable<IntVec3> GetAdjacentCubeLazy()
         {
             for (int i = 0; i < AdjacentCubeIntVec3.Length; i++)
                 yield return this + AdjacentCubeIntVec3[i];
         }
-        public IEnumerable<IntVec3> GetAdjacentHorLazy()
+        public readonly IEnumerable<IntVec3> GetAdjacentHorLazy()
         {
             for (int i = 0; i < 4; i++)
                 yield return this + AdjacentXYIntVec3[i];
         }
         static public readonly IntVec3[] AdjacentCubeIntVec3 = [
-            new IntVec3(-1, -1, -1),
-            new IntVec3( 0, -1, -1),
-            new IntVec3( 1, -1, -1),
-            new IntVec3(-1,  0, -1),
-            new IntVec3( 0,  0, -1),
-            new IntVec3( 1,  0, -1),
-            new IntVec3(-1,  1, -1),
-            new IntVec3( 0,  1, -1),
-            new IntVec3( 1,  1, -1),
+            new(-1, -1, -1),
+            new( 0, -1, -1),
+            new( 1, -1, -1),
+            new(-1,  0, -1),
+            new( 0,  0, -1),
+            new( 1,  0, -1),
+            new(-1,  1, -1),
+            new( 0,  1, -1),
+            new( 1,  1, -1),
 
-            new IntVec3(-1, -1, 0),
-            new IntVec3( 0, -1, 0),
-            new IntVec3( 1, -1, 0),
-            new IntVec3(-1,  0, 0),
-            //new IntVec3( 0,  0, 0),
-            new IntVec3( 1,  0, 0),
-            new IntVec3(-1,  1, 0),
-            new IntVec3( 0,  1, 0),
-            new IntVec3( 1,  1, 0),
+            new(-1, -1, 0),
+            new( 0, -1, 0),
+            new( 1, -1, 0),
+            new(-1,  0, 0),
 
-            new IntVec3(-1, -1, 1),
-            new IntVec3( 0, -1, 1),
-            new IntVec3( 1, -1, 1),
-            new IntVec3(-1,  0, 1),
-            new IntVec3( 0,  0, 1),
-            new IntVec3( 1,  0, 1),
-            new IntVec3(-1,  1, 1),
-            new IntVec3( 0,  1, 1),
-            new IntVec3( 1,  1, 1)
+            new( 1,  0, 0),
+            new(-1,  1, 0),
+            new( 0,  1, 0),
+            new( 1,  1, 0),
+
+            new(-1, -1, 1),
+            new( 0, -1, 1),
+            new( 1, -1, 1),
+            new(-1,  0, 1),
+            new( 0,  0, 1),
+            new( 1,  0, 1),
+            new(-1,  1, 1),
+            new( 0,  1, 1),
+            new( 1,  1, 1)
         ];
-        static public readonly IntVec3[] AdjacentIntVec3 = new IntVec3[]{
-            new IntVec3(1, 0, 0),
-            new IntVec3(-1, 0, 0),
-            new IntVec3(0, 1, 0),
-            new IntVec3(0, -1, 0),
-            new IntVec3(0, 0, 1),
-            new IntVec3(0, 0, -1)
-        };
-        static public readonly IntVec3[] AdjacentXYIntVec3 = new IntVec3[]{
-            new IntVec3(1, 0, 0),
-            new IntVec3(-1, 0, 0),
-            new IntVec3(0, 1, 0),
-            new IntVec3(0, -1, 0)
-        };
-        public float LengthSquared()
+        static public readonly IntVec3[] AdjacentIntVec3 = [
+            new(1, 0, 0),
+            new(-1, 0, 0),
+            new(0, 1, 0),
+            new(0, -1, 0),
+            new(0, 0, 1),
+            new(0, 0, -1)
+        ];
+        static public readonly IntVec3[] AdjacentXYIntVec3 = [
+            new(1, 0, 0),
+            new(-1, 0, 0),
+            new(0, 1, 0),
+            new(0, -1, 0)
+        ];
+        public readonly float LengthSquared()
         {
             return this.X * this.X + this.Y * this.Y + this.Z * this.Z;
         }

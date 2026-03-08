@@ -571,7 +571,7 @@ namespace Project1.Core
             byte suntop, blocktop;
             if (global.Z + 1 < MapBase.MaxHeight)
             {
-                suntop = Math.Max((byte)0, chunk.GetSunlight(global.Above));
+                suntop = Math.Max((byte)0, chunk.GetSkylight(global.Above));
                 blocktop = chunk.GetBlockLight(global.Above);
             }
             else
@@ -603,7 +603,7 @@ namespace Project1.Core
             byte suntop, blocktop;
             if (global.Z + 1 < MapBase.MaxHeight)
             {
-                suntop = Math.Max((byte)0, chunk.GetSunlight(local.Above));
+                suntop = Math.Max((byte)0, chunk.GetSkylight(local.Above));
                 blocktop = chunk.GetBlockLight(local.Above);
             }
             else

@@ -356,6 +356,7 @@ public class Chunk : Inspectable
     {
         // invalidate heightmap immediately?
         // TODO: invalidate coordinates and update heightmap at the next tick, so as to prevent updating the same column multiple times in case of multiple block changes
+        //this.UpdateHeightMapColumn(localx, localy);
         this.UpdateHeightMapColumnWithLightSmart(localx, localy);
     }
 
@@ -438,7 +439,7 @@ public class Chunk : Inspectable
                     light = 0;
                 }
             }
-            this.SetSunlight(localx, localy, z, light);
+            this.SetSkylight(localx, localy, z, light);
             if (invalidate)
                 this.InvalidateCell(new IntVec3(localx, localy, z));
             z--;
@@ -487,29 +488,46 @@ public class Chunk : Inspectable
     public byte GetBlockLight(int x, int y, int z)
         => this.Light[GetCellIndex(x, y, z)].Block;
 
-    public byte GetSunlight(IntVec3Local local)
-        => this.GetSunlight(local.X, local.Y, local.Z);
-    
-    public float GetSunlightPercentage(IntVec3Local local)
-        => (float)this.GetSunlight(local) / 15;
+    public byte GetBlockLight(CellId cellIndex)
+        => this.Light[cellIndex].Block;
+    public byte GetBlockLight(PositionQuery pos)
+     => this.Light[pos.CellIndex].Block;
 
-    public byte GetSunlight(int x, int y, int z)
+    public byte GetSkylight(IntVec3Local local)
+        => this.GetSkylight(local.X, local.Y, local.Z);
+
+    public byte GetSkylight(int cellIndex)
+       => this.Light[cellIndex].Sky;
+
+    public float GetSkylightPercentage(IntVec3Local local)
+        => (float)this.GetSkylight(local) / 15;
+
+    public byte GetSkylight(int x, int y, int z)
     {
         if (z >= this.Map.GetMaxHeight())
             return 15;
         return this.Light[GetCellIndex(x, y, z)].Sky;
     }
 
-    public void SetSunlight(IntVec3Local local, byte value)
-        => this.SetSunlight(local.X, local.Y, local.Z, value);
+    public void SetSkylight(IntVec3Local local, byte value)
+        => this.SetSkylight(local.X, local.Y, local.Z, value);
     
-    public void SetSunlight(int x, int y, int z, byte value)
+    public void SetSkylight(int x, int y, int z, byte value)
     {
         this.Light[GetCellIndex(x, y, z)].Sky = value;
         var global = new IntVec3(this.Start.X + x, this.Start.Y + y, z);
         this.InvalidateLight(global);
     }
-
+    public void SetSkylight(PositionQuery pos, byte value)
+    {
+        this.Light[pos.CellIndex].Sky = value;
+        this.InvalidateLight(pos.Global);
+    }
+    public void SetSkylight(CellId index, byte value)
+    {
+        this.Light[index].Sky = value;
+        this.InvalidateLight(Chunk.GetLocalFromIndex(index).ToGlobal(this));
+    }
     public void SetBlockLight(IntVec3Local local, byte value)
     {
         var index = GetCellIndex(local);
@@ -517,16 +535,17 @@ public class Chunk : Inspectable
         var global = local.ToGlobal(this);
         this.InvalidateLight(global);
     }
-
-    public static bool InvalidateLight(MapBase map, IntVec3 global)
+    public void SetBlockLight(CellId index, byte value)
     {
-        if (map.TryGetAll(global.X, global.Y, global.Z, out Chunk chunk, out Cell cell, out int lx, out int ly))
-        {
-            return chunk.LightCache.Remove(global);
-        }
-        return false;
+        this.Light[index].Block = value;
+        var global = Chunk.GetLocalFromIndex(index).ToGlobal(this);
+        this.InvalidateLight(global);
     }
-
+    public void SetBlockLight(PositionQuery pos, byte value)
+    {
+        this.Light[pos.CellIndex].Block = value;
+        this.InvalidateLight(pos.Global);
+    }
     public bool InvalidateLight(IntVec3 global)
     {
         this.LightCache.Clear();
@@ -563,7 +582,7 @@ public class Chunk : Inspectable
         }
         int lx = globalX - chunk.X * Chunk.Size;
         int ly = globalY - chunk.Y * Chunk.Size;
-        byte finalsun = (byte)Math.Max(0, chunk.GetSunlight(lx, ly, globalZ) - map.GetSkyDarkness());
+        byte finalsun = (byte)Math.Max(0, chunk.GetSkylight(lx, ly, globalZ) - map.GetSkyDarkness());
         sky = finalsun;
         block = chunk.GetBlockLight(lx, ly, globalZ);
         return true;
@@ -583,7 +602,7 @@ public class Chunk : Inspectable
 
         int x = global.X - chunk.Start.X;
         int y = global.Y - chunk.Start.Y;
-        sunlight = chunk.GetSunlight(x, y, global.Z);
+        sunlight = chunk.GetSkylight(x, y, global.Z);
         return true;
     }
 
@@ -603,6 +622,7 @@ public class Chunk : Inspectable
     private void ValidateHeightmap()
     {
         foreach (var pos in this.DirtyHeightmapColumns)
+            //this.UpdateHeightMap(pos.X, pos.Y)
             this.UpdateHeightMapColumnWithLightSmart(pos.X, pos.Y);
         this.DirtyHeightmapColumns.Clear();
     }
@@ -672,7 +692,7 @@ public class Chunk : Inspectable
                 continue;
             float cd = global.GetDrawDepth(map, camera);
             //var local = cell.LocalCoords;
-            byte light = Math.Max((byte)(this.GetSunlight(local) - map.GetSkyDarkness()), this.GetBlockLight(local));
+            byte light = Math.Max((byte)(this.GetSkylight(local) - map.GetSkyDarkness()), this.GetBlockLight(local));
             float l = (light + 1) / 16f;
             Color color = new Color(l, l, l, 1);
             Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));

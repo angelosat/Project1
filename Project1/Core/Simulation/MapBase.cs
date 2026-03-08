@@ -394,25 +394,83 @@ public abstract class MapBase : Inspectable
     }
     public bool TryGetCell(Vector3 global, out Cell cell)
     {
-        return this.TryGetAll(global, out Chunk chunk, out cell);
+        return this.TryGetAll(global, out _, out cell);
     }
     public bool TryGetChunk(Vector3 global, out Chunk chunk)
     {
-        var cell = global.ToCell();
-        if (cell.Z < 0 || cell.Z >= MaxHeight)
+        if (global.Z < 0 || global.Z >= MaxHeight)
         {
             chunk = null;
             return false;
         }
+        var cell = global.ToCell();
         int chunkX = (int)Math.Floor((float)cell.X / Chunk.Size);
         int chunkY = (int)Math.Floor((float)cell.Y / Chunk.Size);
-        return this.ActiveChunks.TryGetValue(new Vector2(chunkX, chunkY), out chunk);
+        return this.ActiveChunks.TryGetValue(new IntVec2(chunkX, chunkY), out chunk);
     }
-    public bool TryGetChunk(int globalx, int globaly, out Chunk chunk)
+
+    //public override bool TryGetAll(int gx, int gy, int gz, out Chunk chunk, out Cell cell, out int lx, out int ly)
+    //{
+    //    if (gz > MaxHeight - 1 || gz < 0)
+    //    {
+    //        lx = 0;
+    //        ly = 0;
+    //        chunk = null;
+    //        cell = null;
+    //        return false;
+    //    }
+    //    if (this.TryGetChunk(gx, gy, out chunk))
+    //    {
+    //        lx = gx - (int)chunk.Start.X;
+    //        ly = gy - (int)chunk.Start.Y;
+    //        cell = chunk[Chunk.GetCellIndex(lx, ly, gz)];
+    //        return true;
+    //    }
+    //    lx = 0;
+    //    ly = 0;
+    //    chunk = null;
+    //    cell = null;
+    //    return false;
+    //}
+    //public abstract bool TryGetAll(int gx, int gy, int gz, out Chunk chunk, out Cell cell, out int lx, out int ly);
+   
+    public bool TryQueryPosition(IntVec3 global, out PositionQuery query)
     {
-        float chunkX = (float)Math.Floor((float)globalx / Chunk.Size);
-        float chunkY = (float)Math.Floor((float)globaly / Chunk.Size);
-        return this.ActiveChunks.TryGetValue(new Vector2(chunkX, chunkY), out chunk);
+        var chunk = this.GetChunk(global);
+        if(chunk is null)
+        {
+            query = default;
+            return false;
+        }
+        var local = global.ToLocal();
+        var index = Chunk.GetCellIndex(local);
+        var cell = chunk.GetLocalCell(index);
+        query = new() { Chunk = chunk, CellIndex = index, Global = global, Local = local, Cell = cell };
+        return true;
+    }
+    public bool TryGetAll(IntVec3 global, out Chunk chunk, out Cell cell, out IntVec3Local local)
+    {
+        //var z = global.Z;
+        //if (z > MaxHeight - 1 || z < 0)
+        //{
+        //    local = default;
+        //    chunk = null;
+        //    cell = null;
+        //    return false;
+        //}
+        if (this.TryGetChunk(global, out chunk))
+        {
+            //lx = gx - (int)chunk.Start.X;
+            //ly = gy - (int)chunk.Start.Y;
+            local = global.ToLocal();
+            //cell = chunk[Chunk.GetCellIndex(lx, ly, gz)];
+            cell = chunk.GetLocalCell(global);//
+            return true;
+        }
+        local = default;
+        chunk = null;
+        cell = null;
+        return false;
     }
     public bool TryGetAll(Vector3 global, out Chunk chunk, out Cell cell)
     {
@@ -444,7 +502,7 @@ public abstract class MapBase : Inspectable
             return true;// false;
         return this.GetBlock(global).IsStandableOn && this.GetBlock(above).IsStandableIn;
     }
-    public abstract bool TryGetAll(int gx, int gy, int gz, out Chunk chunk, out Cell cell, out int lx, out int ly);
+    
     public virtual bool IsSolid(Vector3 global)
     {
         if (!this.TryGetCell(global, out Cell cell))
@@ -933,13 +991,22 @@ public abstract class MapBase : Inspectable
         var query = new MapQuery(this, global);
         return query.ToSnapshot();
     }
-
+    
     internal void EntityChangedCell(Entity entity, IntVec3 lastCell, IntVec3 nextCell)
         => this.EntityTracker.OnEntityMoved(entity, lastCell, nextCell);
 
     internal byte GetSunlight(IntVec3 pos)
-        => this.GetChunk(pos).GetSunlight(pos);
+        => this.GetChunk(pos).GetSkylight(pos);
 
     internal byte GetBlockLight(IntVec3 pos)
         => this.GetChunk(pos).GetBlockLight(pos);
+}
+
+public record struct PositionQuery
+{
+    public Chunk Chunk;
+    public Cell Cell;
+    public CellId CellIndex;
+    public IntVec3 Global;
+    public IntVec3Local Local;
 }

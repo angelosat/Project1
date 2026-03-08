@@ -4,30 +4,40 @@ using Project1.Framework;
 
 namespace Project1.Core.Simulation
 {
-
+    
     public readonly struct CellQuery
     {
         private readonly Chunk _chunk;
         private readonly CellId _cellIndex;
+        public readonly IntVec3 GetGlobal() => this.GetLocal().ToGlobal(this._chunk);
+        public readonly IntVec3Local GetLocal() => Chunk.GetLocalFromIndex(this._cellIndex);
+        //public readonly IntVec3Local Local;
+        public readonly bool Exists => this._chunk is not null;
+        //public readonly Cell Cell;// => this._chunk.GetLocalCell(this._cellIndex);
 
         public MapBase Map => this._chunk.Map;
-        public IntVec3 Global => Chunk.GetLocalFromIndex(this._cellIndex).ToGlobal(this._chunk);
-
+     
         internal CellQuery(Chunk chunk, IntVec3Local pos)
         {
             this._chunk = chunk;
             this._cellIndex = Chunk.GetCellIndex(pos);
+            //this.Local = pos;
+            //this.Global = pos.ToGlobal(chunk);
         }
 
         internal CellQuery(MapBase map, IntVec3 global)
         {
             this._chunk = map.GetChunk(global);
             this._cellIndex = Chunk.GetCellIndex(global);
+            //this.Global = global;
+            //this.Local = global.ToLocal();
         }
         internal CellQuery(Chunk chunk, CellId cellIndex)
         {
             this._cellIndex = cellIndex;
             this._chunk = chunk;
+            //this.Local = Chunk.GetLocalFromIndex(cellIndex);
+            //this.Global = this.Local.ToGlobal(chunk);
         }
         public byte BlockData
         {

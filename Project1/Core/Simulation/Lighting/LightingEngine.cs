@@ -8,16 +8,16 @@ public sealed class LightingEngine(MapBase map)
 {
     readonly MapBase Map = map;
 
-    HashSet<IntVec3> Queued;
-    Queue<IntVec3> Queue;
+    HashSet<IntVec3> Queued = [];
+    Queue<IntVec3> Queue = [];
 
     readonly Queue<IntVec3> DarkenQueue = new();
     readonly HashSet<IntVec3> DarkenQueued = new();
 
     void Refresh(IEnumerable<IntVec3> vectors)
     {
-        this.Queued = new();
-        this.Queue = new();
+        this.Queued.Clear();// = new();
+        this.Queue.Clear();// = new();
 
         foreach (var v in vectors)
         {
@@ -36,21 +36,18 @@ public sealed class LightingEngine(MapBase map)
         while (this.Queue.Count > 0)
             HandleBlockGlobalImmediate(this.Queue.Dequeue());
     }
-    
-    void HandleSkyGlobalImmediate(IntVec3 pos)
+    void HandleSkyGlobalImmediate(IntVec3 global)
     {
-        byte oldLight, nextLight;
-        int gx = pos.X, gy = pos.Y, z = pos.Z;
-
-        if (!this.Map.TryGetAll(gx, gy, z, out var thisChunk, out var thisCell, out int lx, out int ly))
+        if (!this.Map.TryQueryPosition(global, out var pos))
             return;
-        var neighbors = pos.GetAdjacentLazy();
-        nextLight = GetNextSunLightImmediate(thisCell, thisChunk, gx, gy, z, lx, ly, neighbors);
 
-        oldLight = thisChunk.GetSunlight(lx, ly, z);
+        var neighbors = global.GetAdjacentLazy();
+        var nextLight = GetNextSunLightImmediate(pos, neighbors);
+
+        var oldLight = pos.Chunk.GetSkylight(pos.CellIndex);
         int d = nextLight - oldLight;
         if (d != 0)
-            thisChunk.SetSunlight(pos, nextLight);
+            pos.Chunk.SetSkylight(pos, nextLight);
 
         if (d > 1)
         {
@@ -63,28 +60,29 @@ public sealed class LightingEngine(MapBase map)
         }
         else if (d < -1)
         {
-            DarkenImmediateWorking(pos);
+            DarkenImmediateWorking(global);
         }
     }
-    byte GetNextSunLightImmediate(Cell cell, Chunk chunk, int gx, int gy, int z, int lx, int ly, IEnumerable<IntVec3> neighbors)
+    byte GetNextSunLightImmediate(PositionQuery pos, IEnumerable<IntVec3> neighbors)
     {
         byte next, maxAdjLight = 0;
 
-        if (cell.Opaque)
+        if (pos.Cell.Opaque)
             next = 0;
         else
         {
-            if (chunk.IsAboveHeightMap(lx, ly, z))
+            if (pos.Chunk.IsAboveHeightMap(pos.Local))
                 next = 15;
             else
             {
                 foreach (var n in neighbors)
                 {
-                    if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
+                    if (!this.Map.TryQueryPosition(n, out var nquery))
                         continue;
-                    if (ncell.Opaque)
+
+                    if (nquery.Cell.Opaque)
                         continue;
-                    var l = nchunk.GetSunlight(n);
+                    var l = nquery.Chunk.GetSkylight(nquery.CellIndex);
                     maxAdjLight = Math.Max(maxAdjLight, l);
                 }
                 next = (byte)Math.Max(0, maxAdjLight - 1);
@@ -102,19 +100,18 @@ public sealed class LightingEngine(MapBase map)
         {
             var currentGlobal = this.DarkenQueue.Dequeue();
             byte nlight;
-            if (!this.Map.TryGetAll(currentGlobal, out var chunk, out var cell))
+            if (!this.Map.TryQueryPosition(currentGlobal, out var pos))
                 continue;
-
-            if (chunk.IsAboveHeightMap(currentGlobal))
+            if (pos.Chunk.IsAboveHeightMap(currentGlobal))
                 continue;
-            chunk.SetSunlight(currentGlobal, 0);
+            pos.Chunk.SetSkylight(pos, 0);
 
             var neighbors = currentGlobal.GetAdjacentLazy();
             foreach (var n in neighbors)
             {
-                if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
+                if (!this.Map.TryQueryPosition(n, out var nquery))
                     continue;
-                if (nchunk.IsAboveHeightMap(n))
+                if (nquery.Chunk.IsAboveHeightMap(n))
                 {
                     if (!this.Queued.Contains(currentGlobal))
                     {
@@ -123,9 +120,9 @@ public sealed class LightingEngine(MapBase map)
                     }
                     continue;
                 }
-                nlight = nchunk.GetSunlight(n);
+                nlight = nquery.Chunk.GetSkylight(nquery.CellIndex);
 
-                if (!ncell.Opaque)
+                if (!nquery.Cell.Opaque)
                     if (!this.DarkenQueued.Contains(n))
                     {
                         this.DarkenQueue.Enqueue(n);
@@ -134,20 +131,19 @@ public sealed class LightingEngine(MapBase map)
             }
         }
     }
-    private void HandleBlockGlobalImmediate(IntVec3 pos)
+    private void HandleBlockGlobalImmediate(IntVec3 global)
     {
-        byte nextLight;
-        this.Queued.Remove(pos);
-        if (!this.Map.TryGetAll(pos, out var thisChunk, out var thisCell))
+        this.Queued.Remove(global);
+        if (!this.Map.TryQueryPosition(global, out var pos))
             return;
-        var thisLight = thisChunk.GetBlockLight(pos);
+        var thisLight = pos.Chunk.GetBlockLight(pos.CellIndex);
 
-        nextLight = GetNextBlockLightImmediate(thisCell, pos);
-        thisChunk.SetBlockLight(pos, nextLight);
+        var nextLight = this.GetNextBlockLightImmediate(pos);
+        pos.Chunk.SetBlockLight(pos, nextLight);
 
         if (nextLight > thisLight) //if the cell became brighter, queue surrounding cells to spread light to them
         {
-            foreach(var n in pos.GetAdjacentLazy())
+            foreach (var n in global.GetAdjacentLazy())
             {
                 if (!this.Queued.Contains(n))
                 {
@@ -159,30 +155,29 @@ public sealed class LightingEngine(MapBase map)
 
         else if (nextLight < thisLight)//if the cell became darker, spread darkness surrounding cells
         {
-            DarkenBlockImmediateWorking(pos);
+            DarkenBlockImmediateWorking(global);
         }
     }
-    private byte GetNextBlockLightImmediate(Cell cell, IntVec3 center)
+    byte GetNextBlockLightImmediate(PositionQuery pos)
     {
         byte maxAdjLight = 0;
-       
-        foreach(var n in center.GetAdjacentLazy())
+
+        foreach (var n in pos.Global.GetAdjacentLazy())
         {
-            if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
+            if (!this.Map.TryQueryPosition(n, out var nquery))
                 continue;
-            if (ncell.Opaque)
+            if (nquery.Cell.Opaque)
                 continue;
-            byte l = nchunk.GetBlockLight(n);
+            byte l = nquery.Chunk.GetBlockLight(nquery.CellIndex);
             maxAdjLight = Math.Max(maxAdjLight, l);
         }
 
-        if (cell.Opaque)
+        if (pos.Cell.Opaque)
             return 0;
-        if (cell.Luminance > 0)
-            return cell.Luminance;
+        if (pos.Cell.Luminance > 0)
+            return pos.Cell.Luminance;
         return (byte)Math.Max(0, maxAdjLight - 1);
     }
-
     void DarkenBlockImmediateWorking(IntVec3 global)
     {
         this.DarkenQueue.Clear();
@@ -193,21 +188,20 @@ public sealed class LightingEngine(MapBase map)
         {
             var current = this.DarkenQueue.Dequeue();
             this.DarkenQueued.Remove(current);
-            if (!this.Map.TryGetAll(current, out var chunk, out var cell))
+            if (!this.Map.TryQueryPosition(current, out var pos))
                 continue;
-            if (cell.Opaque)
+            if (pos.Cell.Opaque)
                 continue;
 
-            chunk.SetBlockLight(current, cell.Luminance);
+            pos.Chunk.SetBlockLight(pos, pos.Cell.Luminance);
 
             foreach(var n in current.GetAdjacentLazy())
             {
-                if (!this.Map.TryGetAll(n, out var nchunk, out var ncell))
+                if (!this.Map.TryQueryPosition(n, out var npos))
                     continue;
+                var nlight = npos.Chunk.GetBlockLight(npos.CellIndex);
 
-                var nlight = nchunk.GetBlockLight(n);
-
-                if (nlight > 0 && !ncell.Opaque)
+                if (nlight > 0 && !npos.Cell.Opaque)
                 {
                     if (!this.DarkenQueued.Contains(n))
                     {

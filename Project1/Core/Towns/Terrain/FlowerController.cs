@@ -97,7 +97,7 @@ namespace Project1.Core.Towns.Terrain
                         map.Query(c).Cell is Cell cell && 
                         cell.Block == this.Grass && 
                         cell.BlockData == 0 &&
-                        this.Chunk.GetSunlightPercentage(c.Above) >= .5f
+                        this.Chunk.GetSkylightPercentage(c.Above) >= .5f
                     ).ToList();
 
                 // Only spread if coarseness threshold met

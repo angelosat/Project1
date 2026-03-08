@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Project1.Core.Simulation;
@@ -54,7 +55,7 @@ public class StaticMap : MapBase, ITooltippable
 
         public static readonly List<MapSize> AllSizes = [Micro, Tiny, Small, Normal, Huge];
     }
-
+    public int CellsPerAxis;
     public byte SkyDarkness = 0, SkyDarknessMax = 13;
     public Color AmbientColor = Color.Blue;//Color.MidnightBlue; //Color.RoyalBlue;//Color.MidnightBlue; //Color.MediumPurple; //Color.Lerp(Color.White, Color.Cornsilk, 0.5f);
     public bool Lighting = true;
@@ -684,29 +685,29 @@ public class StaticMap : MapBase, ITooltippable
     }
     #region IMap implementation
 
-    public override bool TryGetAll(int gx, int gy, int gz, out Chunk chunk, out Cell cell, out int lx, out int ly)
-    {
-        if (gz > MaxHeight - 1 || gz < 0)
-        {
-            lx = 0;
-            ly = 0;
-            chunk = null;
-            cell = null;
-            return false;
-        }
-        if (this.TryGetChunk(gx, gy, out chunk))
-        {
-            lx = gx - (int)chunk.Start.X;
-            ly = gy - (int)chunk.Start.Y;
-            cell = chunk[Chunk.GetCellIndex(lx, ly, gz)];
-            return true;
-        }
-        lx = 0;
-        ly = 0;
-        chunk = null;
-        cell = null;
-        return false;
-    }
+    //public override bool TryGetAll(int gx, int gy, int gz, out Chunk chunk, out Cell cell, out int lx, out int ly)
+    //{
+    //    if (gz > MaxHeight - 1 || gz < 0)
+    //    {
+    //        lx = 0;
+    //        ly = 0;
+    //        chunk = null;
+    //        cell = null;
+    //        return false;
+    //    }
+    //    if (this.TryGetChunk(gx, gy, out chunk))
+    //    {
+    //        lx = gx - (int)chunk.Start.X;
+    //        ly = gy - (int)chunk.Start.Y;
+    //        cell = chunk[Chunk.GetCellIndex(lx, ly, gz)];
+    //        return true;
+    //    }
+    //    lx = 0;
+    //    ly = 0;
+    //    chunk = null;
+    //    cell = null;
+    //    return false;
+    //}
     public override Vector2 GetOffset()
     {
         return this.Global;
@@ -723,7 +724,7 @@ public class StaticMap : MapBase, ITooltippable
     {
         var ch = this.GetChunk(global);
         var loc = global.ToLocal();
-        ch.SetSunlight(loc, value);
+        ch.SetSkylight(loc, value);
         ch.InvalidateLight(global);
         foreach (var n in global.GetNeighbors())
         {

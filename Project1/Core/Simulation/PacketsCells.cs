@@ -26,7 +26,7 @@ namespace Project1.Core.Simulation
             var net = cell.Map.Net;
             net.BeginPacket(_pCellEdit)
                 .Write(cell.Map.ID)
-                .Write(cell.Global)
+                .Write(cell.GetGlobal())
                 .Write(cell.Block.BlockDef)
                 .Write(cell.Material)
                 .Write(cell.Data);

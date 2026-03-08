@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Entities;
+using Project1.Core.Helpers;
 using Project1.Core.Materials;
 using Project1.Framework;
 using System;
@@ -31,4 +32,10 @@ namespace Project1.Core.Simulation
             new([.. this.GetEntities()], this.GetCell(), this.GetBlockEntity());
     }
     public record struct MapQuerySnapshot(List<Entity> Entities, Cell Cell, BlockEntity BlockEntity) { }
+
+    public record struct CellPositionData(IntVec3 Global)
+    {
+        public IntVec3Local Local = Global.ToLocal();
+        public CellId Index = Chunk.GetCellIndex(Global);
+    }
 }

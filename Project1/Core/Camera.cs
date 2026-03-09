@@ -394,18 +394,18 @@ namespace Project1.Core
         {
             this.Rotation = 0;
         }
-        public void DrawBlock(Canvas canvas, Block block, MapBase map, Chunk chunk, IntVec3 local)
+        public void DrawBlock(Canvas canvas, Block block, MapBase map, Chunk chunk, IntVec3Local local)
         {
             int lx = local.X, ly = local.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
             int z = local.Z;
-            var light = GetFinalLight(this, map, chunk, local);
+            var global = new IntVec3(gx, gy, z);
+            var light = GetFinalLight(this, map, chunk, global);
 
             var screenBoundsVector4 = this.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
             Coords.Rotate(this, lx, ly, out int rlx, out int rly);
             var depth = rlx + rly;
 
             var finalFogColor = Color.Transparent; // i calculate fog inside the shader from now on
-            var global = new IntVec3(gx, gy, z);
             //var isDiscovered = !map.IsUndiscovered(global);
 
             block.Draw(canvas, chunk, global, this, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, 0, 0, 0, null);

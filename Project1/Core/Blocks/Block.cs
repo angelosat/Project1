@@ -160,6 +160,7 @@ namespace Project1.Core.Blocks
         public virtual void GetTooltip(Control tooltip, MapBase map, IntVec3 global, IntVec3 face)
         {
             var cell = map.GetCell(global);
+            var chunk = map.GetChunk(global);
             tooltip.Controls.Add(new Label($"Global: {global}") { Location = tooltip.Controls.BottomLeft });
             tooltip.Controls.Add(new Label($"Local: {global.ToLocal()}") { Location = tooltip.Controls.BottomLeft });
             tooltip.Controls.Add(new Label("Chunk: " + map.GetChunk(global).MapCoords.ToString()) { Location = tooltip.Controls.BottomLeft });
@@ -182,6 +183,7 @@ namespace Project1.Core.Blocks
             var light = map.GetLight(global + face, out var skylight, out var blocklight);
             tooltip.Controls.Add(new Label($"Face sunlight: {skylight}") { Location = tooltip.Controls.BottomLeft });
             tooltip.Controls.Add(new Label($"Face blocklight: {blocklight}") { Location = tooltip.Controls.BottomLeft });
+            tooltip.Controls.Add(new Label($"Heightmap: {chunk.GetHeightMapValue(global)}") { Location = tooltip.Controls.BottomLeft });
 
             map.GetBlockEntity(global)?.GetTooltip(tooltip);
         }

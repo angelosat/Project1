@@ -368,6 +368,8 @@ public class Chunk : Inspectable
     /// <param name="localy"></param>
     public void UpdateHeightMapColumnWithLightSmart(int localx, int localy)
     {
+        //this.UpdateHeightMapColumn(localx, localy);
+        //return;
         int z;
         Cell cell;
         z = MapBase.MaxHeight - 1;
@@ -407,7 +409,8 @@ public class Chunk : Inspectable
             }
 
             if (found && (minVal < z && z <= maxVal)) // if a new heightmap value found, invalidate cells inbetween the old and the new one
-                this.InvalidateCell(new IntVec3(localx, localy, z)); // why did i have this commented out? it caused slice meshes not getting updated light
+                //this.InvalidateCell(new IntVec3(localx, localy, z)); // why did i have this commented out? it caused slice meshes not getting updated light
+                this.InvalidateCell(new IntVec3Local(localx, localy, z)); // why did i have this commented out? it caused slice meshes not getting updated light
 
             z--;
         }
@@ -440,7 +443,7 @@ public class Chunk : Inspectable
                     light = 0;
                 }
             }
-            this.SetSkylight(localx, localy, z, light);
+            //this.SetSkylight(localx, localy, z, light);
             if (invalidate)
                 this.InvalidateCell(new IntVec3(localx, localy, z));
             z--;
@@ -452,12 +455,13 @@ public class Chunk : Inspectable
 
     public void ValidateCells()
     {
-        if(this.CellsToValidate.Count > 0)
+        if (this.CellsToValidate.Count > 0)
+            //this.Map.LightingEngine.HandleImmediate(this.CellsToValidate.Select(p=>p.Global));
             this.Map.LightingEngine.HandleImmediate(this.CellsToValidate);
         foreach (var pos in this.CellsToValidate)
         {
             //this.Map.LightingEngine.HandleImmediate([pos]);
-            //this.GetLocalCell(cell).Valid = true;
+            //this.GetLocalCell(pos.CellIndex).Valid = true;
             this.InvalidateSlice(pos.Local.Z);
             this.InvalidateMesh();
         }
@@ -490,8 +494,8 @@ public class Chunk : Inspectable
 
         this.InvalidateLight(pos.Global);
 
-        if (!this.GetLocalCell(cell).Valid)
-            return;
+        //if (!this.GetLocalCell(cell).Valid)
+        //    return;
 
         this.CellsToValidate.Add(pos);
         //this.CellsToValidate.Enqueue(cell);
@@ -519,7 +523,7 @@ public class Chunk : Inspectable
     public byte GetSkylight(IntVec3Local local)
         => this.GetSkylight(local.X, local.Y, local.Z);
 
-    public byte GetSkylight(int cellIndex)
+    public byte GetSkylight(CellId cellIndex)
        => this.Light[cellIndex].Sky;
 
     public float GetSkylightPercentage(IntVec3Local local)
@@ -1306,7 +1310,7 @@ public class Chunk : Inspectable
                 // HACK
                 if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global))
                     //if (isair && this.Map.Town.DesignationManager.IsDesignation(global, DesignationDefOf.Construct)) // HACK
-                    camera.DrawBlock(canvas, BlockDefOf.Designation.Block, map, this, local);
+                    camera.DrawBlock(canvas, BlockDefOf.Designation.Block, map, this, global);
 
                 var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);
                 var isundiscovered = map.IsUndiscovered(global);

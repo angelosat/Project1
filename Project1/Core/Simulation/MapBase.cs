@@ -490,7 +490,8 @@ public abstract class MapBase : Inspectable
             Chunk = chunk,
             CellIndex = index,
             Global = global,
-            Cell = cell
+            Cell = cell,
+            Local = new(localX, localY, localZ)
         };
 
         return true;

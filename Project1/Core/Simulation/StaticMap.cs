@@ -683,6 +683,7 @@ public class StaticMap : MapBase, ITooltippable
     {
         //this.LightingEngine.HandleImmediate(positions);
         this.LightingEngine.HandleImmediate(positions.Select(this.QueryPosition));
+        //this.LightingEngine.HandleImmediate(positions);
     }
     #region IMap implementation
 

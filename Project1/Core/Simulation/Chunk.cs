@@ -322,7 +322,7 @@ public class Chunk : Inspectable
         => this.Cells[GetCellIndex(local)];
 
     public static int GetCellIndex(int x, int y, int z)
-        => (z * Size + y) * Size + x;
+        => (z << 8) | (y << 4) | x;// (z * Size + y) * Size + x;
     public static int GetCellIndex(float x, float y, float z)
         => GetCellIndex((int)Math.Round(x), (int)Math.Round(y), (int)Math.Round(z));
 
@@ -452,13 +452,16 @@ public class Chunk : Inspectable
 
     public void ValidateCells()
     {
-        foreach(var pos in this.CellsToValidate)
+        if(this.CellsToValidate.Count > 0)
+            this.Map.LightingEngine.HandleImmediate(this.CellsToValidate);
+        foreach (var pos in this.CellsToValidate)
         {
-            this.Map.LightingEngine.HandleImmediate([pos]);
+            //this.Map.LightingEngine.HandleImmediate([pos]);
             //this.GetLocalCell(cell).Valid = true;
             this.InvalidateSlice(pos.Local.Z);
             this.InvalidateMesh();
         }
+        this.CellsToValidate.Clear();
 
         //while (this.CellsToValidate.Count > 0)
         //{

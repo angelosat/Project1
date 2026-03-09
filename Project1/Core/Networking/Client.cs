@@ -731,7 +731,7 @@ namespace Project1.Core.Networking
         {
             this.ChunkRequests.Remove(chunk.MapCoords);
 
-            if (this.Map.GetActiveChunks().ContainsKey(chunk.MapCoords))
+            if (this.Map.GetActiveChunks().ContainsKey(MapBase.GetChunkKey(chunk.MapCoords)))
             {
                 (chunk.MapCoords.ToString() + " already loaded").ToConsole();
                 return;

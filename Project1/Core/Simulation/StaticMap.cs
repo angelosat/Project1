@@ -84,9 +84,9 @@ public class StaticMap : MapBase, ITooltippable
     }
     public override bool AddChunk(Chunk chunk)
     {
-        this.ActiveChunks.Add(chunk.MapCoords, chunk);
+        this.ActiveChunks.Add(GetChunkKey(chunk.MapCoords), chunk);
         // sort chunks back to front to prevent glitches with semi-transparent blocks on chunk edges
-        this.ActiveChunks = this.ActiveChunks.OrderBy(c => c.Key.X + c.Key.Y).ToDictionary(i => i.Key, i => i.Value);
+        //this.ActiveChunks = this.ActiveChunks.OrderBy(c => c.Key.X + c.Key.Y).ToDictionary(i => i.Key, i => i.Value);
         return true;
     }
     public StaticMap(StaticWorld world, string name = "")
@@ -194,7 +194,7 @@ public class StaticMap : MapBase, ITooltippable
 
     public override void DrawBlocks(MySpriteBatch sb, Camera camera, EngineArgs a)
     {
-        var copyOfActiveChunks = new Dictionary<IntVec2, Chunk>(this.ActiveChunks);
+        var copyOfActiveChunks = new Dictionary<int, Chunk>(this.ActiveChunks);
         Vector3? playerGlobal = null;
         var hiddenRects = new List<Rectangle>();
 
@@ -221,7 +221,7 @@ public class StaticMap : MapBase, ITooltippable
 
     public override void DrawInterface(SpriteBatch sb, Camera camera)
     {
-        var copyOfActiveChunks = new Dictionary<IntVec2, Chunk>(this.ActiveChunks);
+        var copyOfActiveChunks = new Dictionary<int, Chunk>(this.ActiveChunks);
         foreach (var chunk in copyOfActiveChunks)
         {
             Rectangle chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);  //chunk.Value.GetBounds(camera);
@@ -296,7 +296,7 @@ public class StaticMap : MapBase, ITooltippable
         {
             var key = item["Key"].LoadVector2();
             var chunk = Chunk.Load(this, key, item["Chunk"]);
-            this.ActiveChunks.Add(key, chunk);
+            this.ActiveChunks.Add(GetChunkKey(key), chunk);
         }
         this.InitChunks();
         foreach (var entity in this.Entities)
@@ -401,7 +401,7 @@ public class StaticMap : MapBase, ITooltippable
             /// i'm calculating light at the end of map generation
             foreach (var vector in ch.MapCoords.GetNeighbors())
             {
-                if (this.ActiveChunks.TryGetValue(vector, out var neighbor))
+                if (this.ActiveChunks.TryGetValue(GetChunkKey(vector), out var neighbor))
                     neighbor.InvalidateEdges();
             }
         }
@@ -510,7 +510,7 @@ public class StaticMap : MapBase, ITooltippable
                     var pos = new Vector2(i, j);
                     var chunk = Chunk.Create(this, pos);
                     gradCache[chunk] = chunk.InitCells2(mutatorlist);// WARNING!
-                    this.ActiveChunks.Add(pos, chunk);
+                    this.ActiveChunks.Add(GetChunkKey(pos), chunk);
                 }
             }
             watch.Stop();
@@ -590,10 +590,10 @@ public class StaticMap : MapBase, ITooltippable
                 {
                     for (int j = 0; j < size; j++)
                     {
-                        var pos = new Vector2(i, j);
+                        var pos = new IntVec2(i, j);
                         var chunk = Chunk.Create(this, pos);
                         gradCache[chunk] = chunk.InitCells2(mutatorlist);// WARNING!
-                        this.ActiveChunks.Add(pos, chunk);
+                        this.ActiveChunks.Add(GetChunkKey(pos), chunk);
                     }
                 }
                 watch.Stop();
@@ -717,7 +717,7 @@ public class StaticMap : MapBase, ITooltippable
     {
         return this.Name;
     }
-    public override Dictionary<IntVec2, Chunk> GetActiveChunks()
+    public override Dictionary<int, Chunk> GetActiveChunks()
     {
         return this.ActiveChunks;
     }

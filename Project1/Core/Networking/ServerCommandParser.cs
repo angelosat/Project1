@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
+using Project1.Framework;
 
 namespace Project1.Core.Networking
 {
@@ -64,8 +65,9 @@ namespace Project1.Core.Networking
                         {
                             int x = int.Parse(queue.Dequeue());
                             int y = int.Parse(queue.Dequeue());
-                            var pos = new Vector2(x, y);
-                            if (!this.Server.Map.GetActiveChunks().TryGetValue(pos, out Chunk chunk))
+                            var pos = new IntVec2(x, y);
+                            //if (!this.Server.Map.GetActiveChunks().TryGetValue(pos, out Chunk chunk))
+                            if (this.Server.Map.GetChunk(x, y) is not Chunk chunk)
                             {
                                 this.Server.ConsoleBox.Write("SERVER", "Chunk " + pos.ToString() + " doesn't exist");
                                 break;

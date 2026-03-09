@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
@@ -41,7 +42,8 @@ public abstract class MapBase : Inspectable
     protected Queue<IntVec3> RandomBlockUpdateQueue = new();
     public LightingEngine LightingEngine;
     public WorldBase World;
-    public Dictionary<IntVec2, Chunk> ActiveChunks = [];
+    //public Dictionary<IntVec2, Chunk> ActiveChunks = [];
+    public Dictionary<int, Chunk> ActiveChunks = [];
     public readonly int ID;
     public NetEndpoint Net => field ??= this.World.Net;
     public GameObject PlayerCharacter;
@@ -70,7 +72,7 @@ public abstract class MapBase : Inspectable
     public abstract string GetName();
     public readonly float PlantDensityTarget = .1f;
 
-    public abstract Dictionary<IntVec2, Chunk> GetActiveChunks();
+    public abstract Dictionary<int, Chunk> GetActiveChunks();
     public abstract bool AddChunk(Chunk chunk);
     public abstract IEnumerable<Entity> GetObjects(IntVec3 min, IntVec3 max);
     public abstract IEnumerable<Entity> GetObjects(BoundingBox box);
@@ -377,11 +379,17 @@ public abstract class MapBase : Inspectable
             return chunk;
         return null;
     }
+    public Chunk GetChunk(IntVec3 global)
+    {
+        if (this.TryGetChunk(global.X, global.Y, global.Z, out var chunk))
+            return chunk;
+        return null;
+    }
     public Chunk GetChunk(int x, int y)
     {
         int chunkX = x / Chunk.Size;
         int chunkY = y / Chunk.Size;
-        return this.ActiveChunks[new Vector2(chunkX, chunkY)];
+        return this.ActiveChunks[GetChunkKey(chunkX, chunkY)];
     }
     public List<Chunk> GetChunks(Vector2 pos, int radius = 1)
     {
@@ -389,7 +397,7 @@ public abstract class MapBase : Inspectable
         int x = (int)pos.X, y = (int)pos.Y;
         for (int i = x - radius; i <= x + radius; i++)
             for (int j = y - radius; j <= y + radius; j++)
-                if (this.ActiveChunks.TryGetValue(new Vector2(i, j), out Chunk ch))
+                if (this.ActiveChunks.TryGetValue(GetChunkKey(i, j), out Chunk ch))
                     list.Add(ch);
         return list;
     }
@@ -405,11 +413,29 @@ public abstract class MapBase : Inspectable
             return false;
         }
         var cell = global.ToCell();
-        int chunkX = (int)Math.Floor((float)cell.X / Chunk.Size);
-        int chunkY = (int)Math.Floor((float)cell.Y / Chunk.Size);
-        return this.ActiveChunks.TryGetValue(new IntVec2(chunkX, chunkY), out chunk);
+        //int chunkX = (int)Math.Floor((float)cell.X / Chunk.Size);
+        //int chunkY = (int)Math.Floor((float)cell.Y / Chunk.Size);
+        int chunkX = cell.X >> 4;
+        int chunkY = cell.Y >> 4;
+        return this.ActiveChunks.TryGetValue(GetChunkKey(chunkX, chunkY), out chunk);
     }
-
+    public bool TryGetChunk(int x, int y, int z, out Chunk chunk)
+    {
+        if (z < 0 || z >= MaxHeight)
+        {
+            chunk = null;
+            return false;
+        }
+        //int chunkX = (int)Math.Floor((float)cell.X / Chunk.Size);
+        //int chunkY = (int)Math.Floor((float)cell.Y / Chunk.Size);
+        int chunkX = x >> 4;
+        int chunkY = y >> 4;
+        return this.ActiveChunks.TryGetValue(GetChunkKey(chunkX, chunkY), out chunk);
+    }
+    public static int GetChunkKey(int chunkX, int chunkY)
+        => (chunkX << 16) | (chunkY & 0xFFFF);
+    public static int GetChunkKey(IntVec2 chunkXY)
+        => GetChunkKey(chunkXY.X, chunkXY.Y);
     //public override bool TryGetAll(int gx, int gy, int gz, out Chunk chunk, out Cell cell, out int lx, out int ly)
     //{
     //    if (gz > MaxHeight - 1 || gz < 0)
@@ -434,8 +460,42 @@ public abstract class MapBase : Inspectable
     //    return false;
     //}
     //public abstract bool TryGetAll(int gx, int gy, int gz, out Chunk chunk, out Cell cell, out int lx, out int ly);
-   
     public bool TryQueryPosition(IntVec3 global, out PositionQuery query)
+    {
+        if (global.Z < 0 || global.Z >= MaxHeight)
+        {
+            query = default;
+            return false;
+        }
+
+        int chunkX = global.X >> 4;
+        int chunkY = global.Y >> 4;
+
+        if (!ActiveChunks.TryGetValue(GetChunkKey(chunkX, chunkY), out var chunk))
+        {
+            query = default;
+            return false;
+        }
+
+        int localX = global.X & 15;
+        int localY = global.Y & 15;
+        int localZ = global.Z;
+
+        int index = (localZ << 8) | (localY << 4) | localX;
+
+        var cell = chunk.Cells[index];
+
+        query = new PositionQuery
+        {
+            Chunk = chunk,
+            CellIndex = index,
+            Global = global,
+            Cell = cell
+        };
+
+        return true;
+    }
+    public bool TryQueryPositionOld(IntVec3 global, out PositionQuery query)
     {
         var chunk = this.GetChunk(global);
         if(chunk is null)
@@ -446,7 +506,7 @@ public abstract class MapBase : Inspectable
         var local = global.ToLocal();
         var index = Chunk.GetCellIndex(local);
         var cell = chunk.GetLocalCell(index);
-        query = new() { Chunk = chunk, CellIndex = index, Global = global, Local = local, Cell = cell, GlobalCellId = global.Id };
+        query = new() { Chunk = chunk, CellIndex = index, Global = global, Local = local, Cell = cell };//, GlobalCellId = global.Id };
         return true;
     }
     public PositionQuery QueryPosition(IntVec3 global)
@@ -490,7 +550,7 @@ public abstract class MapBase : Inspectable
             return false;
         int chunkX = (int)Math.Floor((float)rounded.X / Chunk.Size);
         int chunkY = (int)Math.Floor((float)rounded.Y / Chunk.Size);
-        if (this.ActiveChunks.TryGetValue(new IntVec2(chunkX, chunkY), out chunk))
+        if (this.ActiveChunks.TryGetValue(GetChunkKey(chunkX, chunkY), out chunk))
         {
             cell = chunk[(int)(rounded.X - chunk.Start.X), (int)(rounded.Y - chunk.Start.Y), (int)rounded.Z];
             return true;

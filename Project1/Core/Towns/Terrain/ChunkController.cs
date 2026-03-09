@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Simulation;
 using System;
 
+#nullable enable
+
 namespace Project1.Core.Towns.Terrain
 {
     internal abstract class ChunkController(Chunk chunk)
@@ -36,6 +38,5 @@ namespace Project1.Core.Towns.Terrain
         }
         protected virtual void ScheduledTick() { }
         internal virtual void ResolveReferences() { }
-
     }
 }

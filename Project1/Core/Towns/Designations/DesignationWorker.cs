@@ -64,8 +64,8 @@ namespace Project1.Core.Towns.Designations
         {
             return target switch
             {
-                BlockEntity be => !be.GetComp<BlockSwitchableComp>()?.IsOn ?? false,
-                CellSelection cell => !cell.BlockEntity?.GetComp<BlockSwitchableComp>()?.IsOn ?? false,
+                BlockEntity be => be.GetComp<BlockSwitchableComp>()?.IsSwitchable() ?? false,
+                CellSelection cell => cell.BlockEntity?.GetComp<BlockSwitchableComp>()?.IsSwitchable() ?? false,
                 _ => false
             };
             //if (target is not BlockEntity be)

@@ -85,7 +85,8 @@ namespace Project1.Core.Blocks
             BlockEntityCompSpecs = [
                 new BlockLightComp.Spec(),
                 new BlockParticlesComp.Spec(ParticleEmitter.Fire),
-                new BlockSwitchableComp.Spec()
+                new BlockSwitchableComp.Spec(ResourceDefOf.Fuel),
+                new BlockResourcesComp.Spec([ResourceDefOf.Fuel])
             ]
         };
         static public readonly BlockDef Window = new("Window", typeof(BlockWindow));

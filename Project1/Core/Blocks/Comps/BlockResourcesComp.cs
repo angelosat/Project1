@@ -23,8 +23,23 @@ namespace Project1.Core.Blocks.Comps
             this.Map.World.Events.Post(new BlockResourceModifiedEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, delta));
         }
 
+        public bool HasResource(ResourceDef resource)
+            => this._resources.ContainsKey(resource);
+
+        public bool TryApplyDelta(ResourceDef resource, float delta)
+        {
+            if (!this._resources.TryGetValue(resource, out var resourceRuntime))
+                return false;
+            resourceRuntime.ApplyDelta(delta);
+            this.Map.World.Events.Post(new BlockResourceModifiedEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, delta));
+            return true;
+        }
+
         public float GetValue(ResourceDef resource)
             => this._resources[resource].Value;
+
+        public float GetValueOrDefault(ResourceDef resource, float dflt = 0)
+            => this._resources.TryGetValue(resource, out var res) ? res.Value : dflt;
 
         public BlockResourcesComp(ResourceDef[] resources)
         {

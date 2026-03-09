@@ -36,7 +36,7 @@ namespace Project1.Core.Networking
         }
         static void SendBlockResourceDelta(BlockResourceModifiedEvent e)
         {
-            Server.Instance.BeginPacket(_pResourceDelta)
+            Server.Instance.BeginPacket(_pBlockResourceDelta)
              .Write(e.Map.ID)
              .Write(e.Cell)
              .Write(e.Def)

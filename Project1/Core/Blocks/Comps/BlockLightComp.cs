@@ -1,33 +1,38 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks.Comps;
+using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using System;
+
+#nullable enable
 
 namespace Project1.Core.Blocks
 {
     class BlockLightComp : BlockComp
     {
         //public new class Spec(byte intensity, IPowerSource powerSource, int consumption, Func<bool> isSwitchedOn = null) : BlockComp.Spec
-        public new class Spec() : BlockComp.Spec
+        public new class Spec(/*byte intensity, ResourceDef resource*/) : BlockComp.Spec
         {
             //readonly IPowerSource PowerSource = powerSource;
             //readonly byte Intensity = intensity;
             //readonly int Consumption = consumption;
             //readonly Func<bool> IsSwitchedOn = isSwitchedOn;
+            //readonly ResourceDef Resource = resource;
 
             public override Type CompType => typeof(BlockLightComp);
 
             //public override BlockLightComp CreateComp() => new(this.Intensity, this.PowerSource, this.Consumption, this.IsSwitchedOn);
-            public override BlockLightComp CreateComp() => new();
+            public override BlockLightComp CreateComp() => new();// { Resource = this.Resource, Intensity = this.Intensity };
         }
-        public override BlockCompDef CompDef => throw new NotImplementedException();
-        readonly IPowerSource PowerSource;
-        readonly byte Intensity = 15;
+        public override BlockCompDef CompDef => BlockCompDefOf.Light;
+        //readonly IPowerSource PowerSource;
+        ResourceDef? Resource { get; init; }
+        byte Intensity { get; init; } = 15;
         readonly int Consumption;
         readonly static int ConsumptionRate = Ticks.PerSecond;
-        readonly Func<bool> IsSwitchedOn;
+        //readonly Func<bool> IsSwitchedOn;
 
         public bool Powered;
         int ConsumptionTick = 0;
@@ -38,43 +43,45 @@ namespace Project1.Core.Blocks
         public BlockLightComp(byte intensity, IPowerSource powerSource, int consumption, Func<bool> isSwitchedOn = null)
         {
             this.Intensity = intensity;
-            this.PowerSource = powerSource;
+            //this.PowerSource = powerSource;
             this.Consumption = consumption;
-            this.IsSwitchedOn = isSwitchedOn ?? (() => true);
+            //this.IsSwitchedOn = isSwitchedOn ?? (() => true);
         }
-      
 
-        public override void Tick()
-        {
-            return;
-            var map = this.Parent.Map;
-            var global = this.Parent.OriginGlobal;
-            var isOn = this.IsSwitchedOn();
-            if (isOn)
-            {
-                if (this.Powered)
-                {
-                    this.ConsumptionTick++;
-                    if (this.ConsumptionTick >= ConsumptionRate)
-                    {
-                        this.ConsumptionTick = 0;
-                        this.PowerSource.ConsumePower(map, this.Consumption);
-                        if (!this.PowerSource.HasAvailablePower(this.Consumption))
-                            this.TurnOff(map, global);
-                    }
-                }
-                else
-                {
-                    if (this.PowerSource.HasAvailablePower(this.Consumption))
-                        this.TurnOn(map, global);
-                }
-            }
-            else
-            {
-                if(this.Powered)
-                    this.TurnOff(map, global);
-            }
-        }
+        
+        //public override void Tick()
+        //{
+        //    if(this.Resource is null)
+        //        return;
+        //    return;
+        //    var map = this.Parent.Map;
+        //    var global = this.Parent.OriginGlobal;
+        //    var isOn = this.IsSwitchedOn();
+        //    if (isOn)
+        //    {
+        //        if (this.Powered)
+        //        {
+        //            this.ConsumptionTick++;
+        //            if (this.ConsumptionTick >= ConsumptionRate)
+        //            {
+        //                this.ConsumptionTick = 0;
+        //                this.PowerSource.ConsumePower(map, this.Consumption);
+        //                if (!this.PowerSource.HasAvailablePower(this.Consumption))
+        //                    this.TurnOff(map, global);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (this.PowerSource.HasAvailablePower(this.Consumption))
+        //                this.TurnOn(map, global);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if(this.Powered)
+        //            this.TurnOff(map, global);
+        //    }
+        //}
         internal override void OnSpawned(BlockEntity entity, MapBase map)
         {
             this.Map.SetBlockLuminance(this.Parent.OriginGlobal, this.Intensity);

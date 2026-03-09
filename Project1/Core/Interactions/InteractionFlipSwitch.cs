@@ -1,4 +1,6 @@
-﻿namespace Project1.Core.Interactions
+﻿using Project1.Core.Blocks.Comps;
+
+namespace Project1.Core.Interactions
 {
     class InteractionFlipSwitchLogic : InteractionLogic
     {
@@ -10,5 +12,12 @@
         //    e.GetComp<BlockEntityCompSwitchable>().Toggle(a, t);
         //    this.Finish();
         //}
+        internal override void OnFinish(Interaction i)
+        {
+            var target = i.Target;
+            var global = target.Global;
+            var e = target.Map.GetBlockEntity(global);
+            e.GetComp<BlockSwitchableComp>().Toggle();
+        }
     }
 }

@@ -426,6 +426,20 @@ namespace Project1.Framework.Serialization
                 array[i] = (Vector3)positions[i].Value;
             return array;
         }
+        public static bool TryLoadArrayIntVec3(this SaveTag tag, string name, out IntVec3[] array)
+        {
+            if (!tag.TryGetTag(name, out _))
+            {
+                array = [];
+                return false;
+            }
+            var positions = tag[name].Value as List<SaveTag>;
+            var count = positions.Count;
+            array = new IntVec3[count];
+            for (int i = 0; i < count; i++)
+                array[i] = (Vector3)positions[i].Value;
+            return true;
+        }
         public static void Load(this ICollection<IntVec3> list, SaveTag save, string name)
         {
             save.TryGetTag(name, tag =>

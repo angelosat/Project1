@@ -1,16 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Assets;
 using Project1.Core.Blocks;
+using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Plants;
 using Project1.Core.Simulation;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
-using System;
 
 namespace Project1.Core.VFX
 {
+    public record struct BlockParticlesEvent(BlockParticlesComp Comp, ParticleEmitter[] Added, ParticleEmitter[] Removed) : IEventPayload { }
     [EnsureStaticCtorCall]
     internal static class VFXParticles
     {
@@ -23,6 +25,19 @@ namespace Project1.Core.VFX
 
             Registry.MapEventHooksClient.Register<ActorFootStepEvent>(OnEntityFootStep);
 
+            Registry.MapEventHooksClient.Register<BlockParticlesEvent>(OnBlockParticles);
+        }
+
+        private static void OnBlockParticles(BlockParticlesEvent e)
+        {
+            foreach (var em in e.Added)
+            {
+                em.Rate = 1;
+                em.Source = e.Comp.Parent.OriginGlobal;
+                e.Comp.Map.ParticleManager.AddEmitter(em);
+            }
+            foreach(var em in e.Removed)
+                em?.Rate = 0;
         }
 
         private static void OnEntityFootStep(ActorFootStepEvent e)

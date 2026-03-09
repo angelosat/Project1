@@ -10,6 +10,7 @@ using Project1.Core.Towns.AI.Behaviors;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Farming;
 using Project1.Core.Towns.Forestry;
+using Project1.Core.Towns.Switch;
 using Project1.Framework;
 
 namespace Project1.Core.AI
@@ -75,6 +76,7 @@ namespace Project1.Core.AI
         static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround), InteractionDefOf.SleepOnGround);
         static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(TaskBehaviorSleepingNew), InteractionDefOf.SleepInBed);
         static public readonly PlanDef Eating = new("Eating", typeof(BehaviorEating), InteractionDefOf.Eat);
+        static public readonly PlanDef Switching = new("Switching", typeof(BehaviorExecutePlanNew), InteractionDefOf.Switch);
         static PlanDefOf()
         {
             Def.Register(typeof(PlanDefOf));

@@ -102,5 +102,7 @@ namespace Project1.Core.Blocks
         internal virtual IEnumerable<Control> GetInspectorControls() { yield break; }
 
         internal virtual bool TryConsume(Entity item) => false;
+
+        internal virtual void OnSwitched(bool on) { }
     }
 }

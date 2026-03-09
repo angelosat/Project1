@@ -16,6 +16,8 @@ namespace Project1.Core.Blocks.Comps
         internal static readonly BlockCompDef Resources = new("Resources", typeof(BlockResourcesComp));
         internal static readonly BlockCompDef Building = new("Building", typeof(BlockBuildingComp));
         internal static readonly BlockCompDef Quality = new("Quality", typeof(BlockQualityComp));
+        internal static readonly BlockCompDef Particles = new("Particles", typeof(BlockParticlesComp));
+        internal static readonly BlockCompDef Switchable = new("Switchable", typeof(BlockSwitchableComp));
 
         static BlockCompDefOf()
         {

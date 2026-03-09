@@ -3,6 +3,7 @@ using Project1.Core.Blocks.Construction;
 using Project1.Core.Blocks.Doors;
 using Project1.Core.Construction;
 using Project1.Core.Crafting;
+using Project1.Core.Graphics.Particles;
 using Project1.Core.Materials;
 using Project1.Core.Resources;
 using Project1.Framework;
@@ -80,7 +81,13 @@ namespace Project1.Core.Blocks
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Structural, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };
         static public readonly BlockDef Campfire = new("Campfire", typeof(BlockCampfire))
-        { BlockEntityCompSpecs = [new BlockLightComp.Spec()] };
+        { 
+            BlockEntityCompSpecs = [
+                new BlockLightComp.Spec(),
+                new BlockParticlesComp.Spec(ParticleEmitter.Fire),
+                new BlockSwitchableComp.Spec()
+            ]
+        };
         static public readonly BlockDef Window = new("Window", typeof(BlockWindow));
         static public readonly BlockDef Roof = new("Roof", typeof(BlockRoof));
         static public readonly BlockDef Stairs = new("Stairs", typeof(BlockStairs));

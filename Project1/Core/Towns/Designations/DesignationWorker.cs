@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Blocks;
+using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Input;
 using Project1.Core.Plants;
@@ -41,9 +42,7 @@ namespace Project1.Core.Towns.Designations
     class DesignationWorkerConstruct : CellDesignationWorker
     {
         public override bool IsValid(CellSelection cell)
-        {
-            return cell.Block is BlockAir;
-        }
+            => cell.Block is BlockAir;
     }
     //class DesignationWorkerConstruct : BlockEntityDesignationWorker
     //{
@@ -55,30 +54,50 @@ namespace Project1.Core.Towns.Designations
     class DesignationWorkerMine : CellDesignationWorker
     {
         public override bool IsValid(CellSelection cell)
-        {
-            return cell.Block.IsMinable;
-        }
+            => cell.Block.IsMinable;
     }
-    class DesignationWorkerSwitch : CellDesignationWorker
+    class DesignationWorkerSwitch : DesignationWorker
     {
-        public override bool IsValid(CellSelection cell)
+        //public override bool IsValid(CellSelection cell)
+        //    => cell.BlockEntity?.HasComp<BlockSwitchableComp>() ?? false;
+        internal override bool IsValid(ISelectable target)
         {
-            return cell.BlockEntity.HasComp<BlockEntityCompSwitchable>();
+            return target switch
+            {
+                BlockEntity be => !be.GetComp<BlockSwitchableComp>()?.IsOn ?? false,
+                CellSelection cell => !cell.BlockEntity?.GetComp<BlockSwitchableComp>()?.IsOn ?? false,
+                _ => false
+            };
+            //if (target is not BlockEntity be)
+            //    return false;
+            //return be.HasComp<BlockSwitchableComp>();
         }
     }
-
+    class DesignationWorkerSwitchOff : DesignationWorker
+    {
+        //public override bool IsValid(CellSelection cell)
+        //    => cell.BlockEntity?.HasComp<BlockSwitchableComp>() ?? false;
+        internal override bool IsValid(ISelectable target)
+        {
+            return target switch
+            {
+                BlockEntity be => be.GetComp<BlockSwitchableComp>()?.IsOn ?? false,
+                CellSelection cell => cell.BlockEntity?.GetComp<BlockSwitchableComp>()?.IsOn ?? false,
+                _ => false
+            };
+            //if (target is not BlockEntity be)
+            //    return false;
+            //return be.HasComp<BlockSwitchableComp>();
+        }
+    }
     class DesignationWorkerChop : EntityDesignationWorker
     {
         public override bool IsValid(Entity entity)
-        {
-            return entity.GetComponent<PlantComponent>()?.Species.ChoppingProduct != null;
-        }
+            => entity.GetComponent<PlantComponent>()?.Species.ChoppingProduct != null;
     }
     class DesignationWorkerHarvest : EntityDesignationWorker
     {
         public override bool IsValid(Entity entity)
-        {
-            return entity.GetComponent<PlantComponent>()?.IsHarvestable ?? false;
-        }
+            => entity.GetComponent<PlantComponent>()?.IsHarvestable ?? false;
     }
 }

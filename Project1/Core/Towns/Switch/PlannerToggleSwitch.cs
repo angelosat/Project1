@@ -2,7 +2,7 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Entities.Actors;
-using Project1.Core.AI.Reservations;
+using System.Linq;
 
 namespace Project1.Core.Towns.Switch
 {
@@ -10,17 +10,14 @@ namespace Project1.Core.Towns.Switch
     {
         protected override Plan TryPlan(Actor actor)
         {
-            var sites = actor.Map.Town.DesignationManager.GetDesignationTargets(DesignationDefOf.Switch);
+            var targets = actor.Map.Town.DesignationManager.GetDesignationTargets(DesignationDefOf.Switch);
+            targets = targets.Union(actor.Map.Town.DesignationManager.GetDesignationTargets(DesignationDefOf.SwitchOff));
 
-            foreach (var site in sites)
+            foreach (var target in targets)
             {
-                var target = site;
-                if (!actor.CanReserve(target) ||
-                    !actor.CanReach(target))
+                if(!actor.CanReachAndReserve(target.Global))
                     continue;
-
-                var task = new Plan(typeof(TaskBehaviorSwitchToggle), target);// new TargetArgs(actor.Map, target));
-                return task;
+                return new Plan(PlanDefOf.Switching, target);
             }
 
             return null;

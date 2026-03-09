@@ -21,4 +21,35 @@ namespace Project1.Core.Input.Orders
             }
         }
     }
+    internal sealed class OrderCommandSwitch : CommandWorker
+    {
+        internal override bool CanIssue(ISelectable target)
+            => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Switch.Worker.IsValid(target);
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        {
+            if (selection.Begin.HasValue)
+                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Switch, selection.Begin.Value, selection.End.Value, false));
+            else
+            {
+                if (selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity be)
+                    Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Switch, be.OriginGlobal, be.OriginGlobal, false));
+            }
+        }
+        
+    }
+    internal sealed class OrderCommandSwitchOff : CommandWorker
+    {
+        internal override bool CanIssue(ISelectable target)
+            => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.SwitchOff.Worker.IsValid(target);
+        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        {
+            if (selection.Begin.HasValue)
+                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.SwitchOff, selection.Begin.Value, selection.End.Value, false));
+            else
+            {
+                if (selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity be)
+                    Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.SwitchOff, be.OriginGlobal, be.OriginGlobal, false));
+            }
+        }
+    }
 }

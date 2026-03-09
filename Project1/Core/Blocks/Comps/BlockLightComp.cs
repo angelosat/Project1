@@ -84,6 +84,11 @@ namespace Project1.Core.Blocks
             map.SetBlockLuminance(this.Parent.OriginGlobal, 0);
         }
 
+        internal override void OnSwitched(bool on)
+        {
+            this.Map.SetBlockLuminance(this.Parent.OriginGlobal, on ? this.Intensity : (byte)0);
+        }
+
         void TurnOn(MapBase map, Vector3 global)
         {
             this.Powered = true;

@@ -370,9 +370,12 @@ namespace Project1.Core.Towns.Designations
             {
                 foreach (var des in this.CellDesignations)
                 {
-                    var array = cellsTag.LoadArrayIntVec3(des.Key.Name);
-                    foreach (var i in array)
-                        this.CellDesignations[des.Key].Add(i);
+                    //var array = cellsTag.LoadArrayIntVec3(des.Key.Name);
+                    //foreach (var i in array)
+                    //    this.CellDesignations[des.Key].Add(i);
+                    if(cellsTag.TryLoadArrayIntVec3(des.Key.Name, out var array))
+                        foreach (var i in array)
+                            this.CellDesignations[des.Key].Add(i);
                 }
             }
             if (tag.TryGetTag("Entities", out var entitiesTag))

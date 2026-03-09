@@ -18,6 +18,8 @@ namespace Project1.Core.Input.Orders
         public static readonly OrderCommandDef Deconstruct = new("Deconstruct", ItemContent.HammerHead, typeof(OrderCommandDeconstruct));
         public static readonly OrderCommandDef CancelUnfinished = new("CancelUnfinished", ItemContent.HammerHandle, typeof(OrderCommandCancelUnfinished));
         public static readonly OrderCommandDef CancelConstruction = new("CancelConstruction", ItemContent.ShovelHead, typeof(OrderCommandCancelConstruction), ValidSelectedCount.Single);
+        public static readonly OrderCommandDef Switch = new("Switch", ItemContent.HoeHead, typeof(OrderCommandSwitch));
+        public static readonly OrderCommandDef SwitchOff = new("SwitchOff", ItemContent.HoeHandle, typeof(OrderCommandSwitchOff));
 
         static OrderCommandDefOf()
         {

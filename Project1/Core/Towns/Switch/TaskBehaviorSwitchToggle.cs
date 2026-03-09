@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using Project1.Core.Interactions;
-using Project1.Core.AI.Behaviors.Pathing;
+﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.Towns.Designations;
-using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Behaviors.Pathing;
+using Project1.Core.Towns.Designations;
 using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Switch
 {

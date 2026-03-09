@@ -2,7 +2,6 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Designations;
-using Project1.Core.Towns.Duties;
 using Project1.Framework;
 
 namespace Project1.Core.Towns.Digging

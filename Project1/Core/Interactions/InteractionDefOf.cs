@@ -133,6 +133,11 @@ namespace Project1.Core.Interactions
         {
             ProgressHandler = InteractionProgressHandlers.Timed// new InteractionProgressTimed()
         };
+        public static readonly InteractionDef Switch = new("Switch", typeof(InteractionFlipSwitchLogic))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = InteractionProgressHandlers.FirstContact// new InteractionProgressTimed()
+        };
         static InteractionDefOf()
         {
             Def.Register(typeof(InteractionDefOf));

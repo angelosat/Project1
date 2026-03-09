@@ -16,6 +16,7 @@ namespace Project1.Core.Graphics.Particles
                 return;
             this.Emitters.Add(emitter);
         }
+        
         public void Update()
         {
             this._forRemoval.Clear();

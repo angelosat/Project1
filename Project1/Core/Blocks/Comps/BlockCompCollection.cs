@@ -16,6 +16,7 @@ namespace Project1.Core.Blocks
         internal T GetComp<T>() where T : BlockComp => (T)this._inner[typeof(T)];
         internal BlockComp GetComp(Type compType) => this._inner[compType];
         internal BlockComp GetComp(int compIndex) => this.compList[compIndex];
+        public IReadOnlyCollection<BlockComp> Inner => this._inner.Values;
 
         internal bool TryGetComp<T>(out T comp) where T : BlockComp
         {

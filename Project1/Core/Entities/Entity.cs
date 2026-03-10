@@ -153,7 +153,7 @@ namespace Project1.Core.Entities
                 return this;
             ArgumentOutOfRangeException.ThrowIfGreaterThan(amount.Value, this.StackSize);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(amount.Value);
-            return this.Split(amount.Value) as Entity;
+            return this.Split(amount.Value);
         }
 
         internal void ApplySpecs(List<EntityComp.Spec> overrides)

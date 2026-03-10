@@ -35,8 +35,14 @@ namespace Project1.Core.Blocks.Comps
             return true;
         }
 
+        public float GetPercentage(ResourceDef resource)
+            => this._resources[resource].Percentage;
+
         public float GetValue(ResourceDef resource)
             => this._resources[resource].Value;
+
+        public float GetDeficit(ResourceDef resource)
+            => this._resources[resource].Deficit;
 
         public float GetValueOrDefault(ResourceDef resource, float dflt = 0)
             => this._resources.TryGetValue(resource, out var res) ? res.Value : dflt;

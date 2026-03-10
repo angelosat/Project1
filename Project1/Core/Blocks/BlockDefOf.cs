@@ -66,7 +66,10 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Bed = new("Bed", typeof(BlockBed))
         {
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]),
-            BlockEntityCompSpecs = [new BlockBedComp.Spec(), new BlockOwnershipComp.Spec()]
+            BlockEntityCompSpecs = [
+                new BlockBuildingComp.Spec(),
+                new BlockBedComp.Spec(), 
+                new BlockOwnershipComp.Spec()]
         };
         static public readonly BlockDef SleepingSpot = new("SleepingSpot", typeof(BlockSleepingSpot));
         static public readonly BlockDef WoodPaneling = new("WoodPaneling", typeof(BlockWoodPaneling));

@@ -76,7 +76,8 @@ namespace Project1.Core.Towns.Constructions.AI
                 list.Add(b);
             }
             // TODO only consider stockpile items
-            foreach (var item in actor.Map.Haulables)
+            //foreach (var item in actor.Map.Haulables)
+            foreach (var item in actor.Map.Stockpiles.AllItems)
             {
                 if (item.Def != ItemDefOf.Ingredient)
                     continue;

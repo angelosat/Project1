@@ -58,37 +58,23 @@ namespace Project1.Core.Towns.Designations
     }
     class DesignationWorkerSwitch : DesignationWorker
     {
-        //public override bool IsValid(CellSelection cell)
-        //    => cell.BlockEntity?.HasComp<BlockSwitchableComp>() ?? false;
         internal override bool IsValid(ISelectable target)
-        {
-            return target switch
+            => target switch
             {
-                BlockEntity be => be.GetComp<BlockSwitchableComp>()?.IsSwitchable() ?? false,
-                CellSelection cell => cell.BlockEntity?.GetComp<BlockSwitchableComp>()?.IsSwitchable() ?? false,
+                BlockEntity be => be.GetCompOrDefault<BlockSwitchableComp>()?.IsSwitchable() ?? false,
+                CellSelection cell => cell.BlockEntity?.GetCompOrDefault<BlockSwitchableComp>()?.IsSwitchable() ?? false,
                 _ => false
             };
-            //if (target is not BlockEntity be)
-            //    return false;
-            //return be.HasComp<BlockSwitchableComp>();
-        }
     }
     class DesignationWorkerSwitchOff : DesignationWorker
     {
-        //public override bool IsValid(CellSelection cell)
-        //    => cell.BlockEntity?.HasComp<BlockSwitchableComp>() ?? false;
         internal override bool IsValid(ISelectable target)
-        {
-            return target switch
+            => target switch
             {
-                BlockEntity be => be.GetComp<BlockSwitchableComp>()?.IsOn ?? false,
-                CellSelection cell => cell.BlockEntity?.GetComp<BlockSwitchableComp>()?.IsOn ?? false,
+                BlockEntity be => be.GetCompOrDefault<BlockSwitchableComp>()?.IsOn ?? false,
+                CellSelection cell => cell.BlockEntity?.GetCompOrDefault<BlockSwitchableComp>()?.IsOn ?? false,
                 _ => false
             };
-            //if (target is not BlockEntity be)
-            //    return false;
-            //return be.HasComp<BlockSwitchableComp>();
-        }
     }
     class DesignationWorkerChop : EntityDesignationWorker
     {

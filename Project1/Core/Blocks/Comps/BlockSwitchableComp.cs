@@ -22,13 +22,14 @@ namespace Project1.Core.Blocks.Comps
             public override BlockSwitchableComp CreateComp() => new() { Resource = this.Resource };
         }
         ResourceDef? Resource { get; init; }
-        readonly Scheduler Scheduler = new(Ticks.FromMinutes(10));
+        //readonly Scheduler Scheduler = new(Ticks.FromMinutes(10));
+        readonly Scheduler Scheduler = new(1);
         public override BlockCompDef CompDef => BlockCompDefOf.Switchable;
         public bool IsOn { get; private set; } = true;
         public override void Tick()
         {
-            if (this.Map.Net.IsClient)
-                return;
+            //if (this.Map.Net.IsClient)
+            //    return;
             if (this.Scheduler.OnSchedule(this.Map.World.CurrentTick))
                 this.ConsumeFuel();
         }
@@ -43,8 +44,9 @@ namespace Project1.Core.Blocks.Comps
             if (this.Parent.GetComp<BlockResourcesComp>() is not BlockResourcesComp resourcesComp)
                 return;
 
-            if (!resourcesComp.TryApplyDelta(this.Resource, -1))
-                return;
+            if (this.Map.Net.IsServer)
+                if (!resourcesComp.TryApplyDelta(this.Resource, -1))
+                    return;
 
             if (resourcesComp.GetValue(this.Resource) == 0)
                 this.Switch(false);

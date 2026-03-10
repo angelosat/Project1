@@ -108,6 +108,9 @@ namespace Project1.Core.Blocks
             this.Comps.AddComp(comp);
             return this;
         }
+        public T GetCompOrDefault<T>() where T : BlockComp// class, IBlockEntityComp
+            => this.Comps.TryGetComp<T>(out var comp) ? comp : null;
+       
         public T GetComp<T>() where T : BlockComp// class, IBlockEntityComp
         {
             return this.Comps.GetComp<T>();

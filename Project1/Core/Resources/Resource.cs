@@ -38,6 +38,7 @@ namespace Project1.Core.Resources
             get => this._value;
             set => this._value = Math.Max(0, Math.Min(value, this.Max));
         }
+        public float Deficit => this._max - this._value;
         static Progress CreateCooldown() => new(0, Ticks.PerGameMinute, Ticks.PerGameMinute);
         public ResourceThreshold CurrentThreshold => this.ResourceDef.Worker.GetCurrentThreshold(this);
         public Progress RechargingDelay = CreateCooldown();

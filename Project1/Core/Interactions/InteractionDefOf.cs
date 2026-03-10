@@ -26,6 +26,12 @@ namespace Project1.Core.Interactions
             ProgressHandler = InteractionProgressHandlers.FirstContact,// new InteractionProgressFirstContact(),
             Range = InteractionRange.Any
         };
+        public static readonly InteractionDef DepositResource = new("Depositing", typeof(InteractionDepositLogic))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = InteractionProgressHandlers.FirstContact,// new InteractionProgressFirstContact(),
+            Range = InteractionRange.Any
+        };
         public static readonly InteractionDef Plant = new("Planting", typeof(InteractionPlantLogic))
         {
             Animation = AnimationDefOf.TouchItem,

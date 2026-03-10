@@ -2,6 +2,7 @@
 using Project1.Core.Entities;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Materials;
+using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Tools;
 using System;
@@ -103,7 +104,13 @@ namespace Project1.Core.Crafting
             //                i.Profile is MaterialRefinementDef matRefDef &&
             //                matRefDef.FuelProduction > 0;
         }
-        public static int GetFuelValue(Entity i) => i.Def == ItemDefOf.Ingredient && i.Profile is MaterialRefinementDef matRefDef ? matRefDef.FuelProduction : 0;
+        public static int GetFuelValue(Entity i) 
+            => //i.StackSize * 
+            (i.Def == ItemDefOf.Ingredient && i.Profile is MaterialRefinementDef matRefDef ? matRefDef.FuelProduction : 0);
+        public record struct ResourceYield(ResourceDef Resource, int Yield) { }
+        //public static ResourceYield GetResourceYield(Entity i)
+        //    => //i.StackSize * 
+        //    new(i.Def == ItemDefOf.Ingredient && i.Profile is MaterialRefinementDef matRefDef ? matRefDef.FuelProduction : 0);
         public static bool CreatesUnfinished(CraftingOrder order)
         {
             var productDef = order.ProductDef;

@@ -13,10 +13,10 @@ namespace Project1.Core.UI.Blocks
 
         public void OnBind(ISelectable selectable)
         {
-            if (selectable is not TargetArgs target ||
-               target.BlockEntityOld is not BlockEntity entity ||
+            if (selectable is not BlockEntity entity ||
                !entity.Comps.TryGetComp<BlockOwnershipComp>(out var comp))
-                throw new Exception();
+                //throw new Exception();
+                return;
 
             var currentOwner = comp.Owner;
             //var actors = entity.Map.World.GetEntities(entity.Map.Town.Members).Cast<Actor>().Prepend(null);

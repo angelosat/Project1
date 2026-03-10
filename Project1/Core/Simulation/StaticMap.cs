@@ -283,7 +283,8 @@ public class StaticMap : MapBase, ITooltippable
         foreach (var ch in this.ActiveChunks)
         {
             var chtag = new SaveTag(SaveTag.Types.Compound);
-            chtag.Add(ch.Key.Save("Key"));
+            //chtag.Add(ch.Key.Save("Key"));
+            chtag.Add(ch.Value.MapCoords.Save("Key"));
             chtag.Add(ch.Value.SaveToTag());
             chunkstags.Add(chtag);
         }

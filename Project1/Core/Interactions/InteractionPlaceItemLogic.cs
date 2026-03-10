@@ -29,6 +29,30 @@ namespace Project1.Core.Interactions
             InteractionHelpers.TryDepositCarriedItemInsideBlockOrSpawn(actor, global, count);
         }
     }
+    class InteractionDepositLogic : InteractionLogic
+    {
+        class Context : InteractionContext
+        {
+            internal Cell Cell => field ??= this.Target.Map.GetCell(this.Target.Global.Below());
+        }
+        protected override InteractionContext CreateContextInternal() => new Context();
+        public override bool CanPerform(InteractionContext ctx) => ((Context)ctx).Cell.IsSolid();
+        public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
+        internal override void OnFinish(Interaction i)
+        {
+            //var ctx = i.Context;
+            //var actor = ctx.Actor;
+            //if (actor.Net.IsClient)
+            //    return;
+            //var global = ctx.Target.Global;
+            //var count = ctx.Count;
+            //var hauled = actor.Hauled;
+            //ArgumentNullException.ThrowIfNull(hauled);
+            //if (count > hauled.StackSize)
+            //    throw new Exception();
+            InteractionHelpers.DepositResource(i);
+        }
+    }
     //class InteractionPlaceItem : InteractionPerpetual
     //{
     //    int Amount;

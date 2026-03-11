@@ -8,11 +8,11 @@ using Project1.Core.Graphics;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Legacy.Storage;
-using Project1.Core.Materials;
-using Project1.Core.Plants;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
-using Project1.Core.Tools;
+using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using System.Linq;
@@ -57,6 +57,14 @@ namespace Project1.Core.Entities
             CompDefs = [EntityCompDefOf.Consumable],
             Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull)
         };
+        static public readonly ItemDef Consumable = new ItemDef("Consumable", typeof(Entity))
+        {
+            StackCapacity = 32,
+            ReplaceName = true,
+            Comps = [typeof(ConsumableComponent)],
+            CompDefs = [EntityCompDefOf.Consumable],
+            Body = new Bone(BoneDefOf.Item)
+        };
 
         static public readonly ItemDef Meat = new ItemDef("Meat", typeof(Entity))
         {
@@ -88,16 +96,6 @@ namespace Project1.Core.Entities
 
         }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Flesh)
             .AddSpec(new ConsumableComponent.Spec() { FoodClasses = [FoodClass.Dish] });
-
-
-        static public readonly ItemDef UnfinishedCraft = new ItemDef("UnfinishedCraft", typeof(Entity))
-        {
-            Category = ItemCategoryDefOf.Unfinished,
-            Comps = [typeof(UnfinishedItemComp)],
-            CompDefs = [EntityCompDefOf.UnfinishedItem],
-            Body = new Bone(BoneDefOf.Item, Sprite.Default)
-        };
-
 
         static public readonly ItemDef Coins = new("Coins", typeof(Entity))
         {

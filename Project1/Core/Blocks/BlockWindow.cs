@@ -3,11 +3,11 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Framework;
 using Project1.Framework.Graphics;
-using Project1.Core.Materials;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
 using Project1.Core.Graphics;
 using Project1.Core.Construction;
+using Project1.Core.Systems.Materials;
 
 namespace Project1.Core.Blocks
 {

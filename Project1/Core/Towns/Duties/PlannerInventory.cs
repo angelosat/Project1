@@ -46,7 +46,7 @@ namespace Project1.Core.Towns.Labors
 
             // take out from inventory items that are not an item preference
             if (actor.Inventory.All.FirstOrDefault(i => !actor.ItemPreferences.IsUseful(i)) is Entity junk)
-                return new Plan(PlanDefOf.RetrieveFromInventory, junk);
+                return new Plan(PlanDefOf.RetrieveFromInventory, junk) { Continuation = PlanContinuationPolicy.Yield };
 
             return null;
         }

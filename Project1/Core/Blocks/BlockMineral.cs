@@ -2,8 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Graphics;
 using Project1.Core.Graphics.Particles;
-using Project1.Core.Materials;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Materials;
 using Project1.Framework.Helpers;
 using System.Collections.Generic;
 using System.Linq;

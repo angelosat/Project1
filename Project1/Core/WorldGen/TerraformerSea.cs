@@ -1,9 +1,9 @@
-﻿using Project1.Core.Materials;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Project1.Core.Simulation;
 using Project1.Framework.Serialization;
 using Project1.Framework;
 using Project1.Core.Blocks;
+using Project1.Core.Systems.Materials;
 
 namespace Project1.Core.WorldGen
 {

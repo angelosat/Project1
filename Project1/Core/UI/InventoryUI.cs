@@ -13,10 +13,12 @@ namespace Project1.Core.UI
         public ISelectable CurrentSelection { get; set; }
         public void OnBind(ISelectable selectable)
         {
-            Build(selectable as Actor);
+            if(selectable is Actor actor)
+                Build(actor);
         }
         private void Build(Actor actor)
         {
+            
             var gearGui = actor.Gear.GetGUI();
             var gearPanel = gearGui.ToPanelLabeled("Gear");
 

@@ -1,6 +1,6 @@
-﻿using Project1.Core.Tools;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Project1.Core.Towns.Duties;
+using Project1.Core.Systems.Tools;
 
 namespace Project1.Core.Legacy
 {

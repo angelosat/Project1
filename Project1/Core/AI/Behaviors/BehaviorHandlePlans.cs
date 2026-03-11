@@ -116,6 +116,17 @@ namespace Project1.Core.AI.Behaviors
             if (parent.Velocity.Z != 0)
                 return BehaviorState.Running;
 
+            if (parent.CurrentInteraction is not null) 
+                /// added this here because plans returned fromurgent plannets (smart equip in particular)
+                /// didn't correctly abort/remove any current interaction, which caused
+                /// workcomponent to have a null interaction but behaviorresolveinteraction to store a stale reference of an interaction
+                /// specifically, the interaction stayed in a finishing state and was never ticked by the workcomponent in order to switch
+                /// from finishing to finished, so behaviorresolveinteraction was stuck looking that the interaction never finished
+                /// but urgent planners should be able to interrupt/abort running interactions
+                /// maybe only tick urgent planners if current interaction is null or current interaction state is running
+                /// maybe dont tick urgent planners if current interaction is not null and its state is finishing, so that it can finish gracefully
+                return BehaviorState.Running;
+
             if (state.ForcedTask != null)
             {
                 var task = state.ForcedTask;
@@ -135,7 +146,7 @@ namespace Project1.Core.AI.Behaviors
                     break;
                 }
             }
-
+         
             if (state.Behavior is not null)
             {
                 var currentBhav = state.Behavior;
@@ -152,7 +163,7 @@ namespace Project1.Core.AI.Behaviors
                     case BehaviorState.Fail:
                     case BehaviorState.Success:
                         parent.MoveToggle(false);
-                        parent.EndInteraction();
+                        //parent.EndInteraction();
                         parent.Unreserve();
                         state.NextTask();
                         state.Path = null;
@@ -166,6 +177,7 @@ namespace Project1.Core.AI.Behaviors
             }
             else
             {
+               
                 if (parent.CurrentInteraction is not null) 
                     return BehaviorState.Running; 
 
@@ -188,7 +200,8 @@ namespace Project1.Core.AI.Behaviors
                         var bhav = next.Plan.CreateBehavior(parent);
                         if (bhav.CommitReservations())
                         {
-                            $"found followup task from same planner {currentPlanner}".ToConsole();
+                            $"found followup {next.Plan} from same planner {currentPlanner}".ToConsole();
+                         
                             state.Assign(bhav);
                             return BehaviorState.Success;
                         }

@@ -5,17 +5,15 @@ using Project1.Core.Attributes;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
-using Project1.Core.Needs;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Stats;
-using Project1.Core.Tools;
+using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
-using System.Collections.Generic;
 
 namespace Project1.Core.Interactions
 {
@@ -26,15 +24,13 @@ namespace Project1.Core.Interactions
         public override string LabelReadable => this.Name;
         public static readonly float DefaultRange = (float)Math.Sqrt(2);
         public bool IsFinished => this.State == States.Finished || this.State == States.Failed;
-        protected bool CanPerform() => this.Def.Logic.CanPerform(this.Context);
-        protected bool CanFinish() => this.Def.Logic.CanFinish(this.Context);
+        bool CanPerform() => this.Def.Logic.CanPerform(this.Context);
+        bool CanFinish() => this.Def.Logic.CanFinish(this.Context);
         
         //public void Initialize() => this.OnInitialize(this.Actor, this.Target); 
         //protected virtual void OnInitialize(Actor actor, TargetArgs target) { }
         public override string ToString()
-        {
-            return $"Interaction: {this.Name}";
-        }
+            => $"{this.Def.LabelReadable}";
         public enum States { Unstarted, Running, Finished, Failed, Finishing }
         public enum RunningTypes { Once, Continuous }
         public States State { get; protected set; } = States.Unstarted;
@@ -67,14 +63,7 @@ namespace Project1.Core.Interactions
         public Interaction()
         {
         }
-        protected Interaction(string name, float seconds = 0)
-            : this()
-        {
-            this.Name = name;
-            this.Seconds = seconds;
-            this.CurrentTick = this.Length = seconds * Ticks.PerSecond;
-        }
-
+      
         public void Interrupt(bool success)
         {
             this.State = States.Finishing;
@@ -82,9 +71,6 @@ namespace Project1.Core.Interactions
                 this.CachedAnimation?.FadeOutAndRemove();
         }
 
-        public void Perform()
-        {
-        }
         int CrossFadeAnimationLength;
         public void Start()
         {
@@ -103,8 +89,6 @@ namespace Project1.Core.Interactions
         }
         public void Update()
         {
-            var actor = this.Actor;
-            var target = this.Target;
             if (this.State == States.Finished)
                 return;
             if (this.State == States.Finishing) // TODO: maybe check for failed state too?
@@ -128,50 +112,7 @@ namespace Project1.Core.Interactions
                 }
                 return;
             }
-            if (this.Def.ProgressHandler is not null)
-                this.Def.ProgressHandler.Tick(this);
-            else this.Perform();
-        }
-        public void UpdateOld()
-        {
-            var actor = this.Actor;
-            var target = this.Target;
-            if (this.State == States.Finished)
-                return;
-            if (this.State == States.Finishing) // TODO: maybe check for failed state too?
-            {
-                if (this._cachedAnimation.State == AnimationStates.Finished)
-                    this.State = States.Finished;
-                return;
-            }
-
-            if (this.State == States.Unstarted)
-            {
-                this.Start();
-                this.State = States.Running;
-            }
-            else if (this.State == States.Finished)
-            {
-                this.StopAnimation();
-                actor.AI.State.Log.Write("Success: " + this.GetCompletedText(actor, target));
-                return;
-            }
-            if (this.RunningType == RunningTypes.Continuous)
-            {
-                this.Perform();
-                if (this.State == States.Finished)
-                {
-                    this.StopAnimation();
-                    actor.AI.State.Log.Write("Success: " + this.GetCompletedText(actor, target));
-                }
-                return;
-            }
-            this.CurrentTick--;
-            if (this.CurrentTick <= 0)
-            {
-                this.Finish();
-                this.Perform();
-            }
+            this.Def.ProgressHandler?.Tick(this);
         }
         public void Finish()
         {
@@ -252,9 +193,9 @@ namespace Project1.Core.Interactions
         internal void Resolve(MapBase map)
         {
         }
-        internal void FinishAction()
-        {
-        }
+        //internal void FinishAction()
+        //{
+        //}
         
         internal void AfterLoad()
         {

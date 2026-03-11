@@ -1,5 +1,5 @@
-﻿using Project1.Core.Plants;
-using Project1.Core.Resources;
+﻿using Project1.Core.Resources;
+using Project1.Core.Systems.Plants;
 using Project1.Core.Towns.Designations;
 using System;
 

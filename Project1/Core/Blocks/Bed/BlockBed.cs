@@ -3,7 +3,6 @@ using Project1.Core.Blocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Materials;
 using Project1.Core.Loot;
 using Project1.Core.Legacy;
 using Project1.Core.Towns;
@@ -16,6 +15,7 @@ using Project1.Framework.Graphics;
 using Project1.Framework;
 using Project1.Core.Graphics;
 using Project1.Core.Construction;
+using Project1.Core.Systems.Materials;
 
 namespace Project1.Core
 {

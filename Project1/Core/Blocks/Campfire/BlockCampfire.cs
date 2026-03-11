@@ -5,8 +5,8 @@ using Project1.Core.Entities;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
-using Project1.Core.Materials;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Materials;
 using Project1.Framework;
 
 namespace Project1.Core

@@ -1,7 +1,8 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.Blocks;
-using Project1.Core.Materials;
-using Project1.Core.Tools;
+using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Tools;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace Project1.Core.Crafting
 {
     public class WorkstationCapabilityDef(string name, Type workerType) : Def(name)
     {
-        public Type ProfileCategory;
-        public Def[] SpecificRecipes = [];
+        public Type Output;
+        public Def[] OutputSpecific = [];
         public PlanDef Plan;
         public WorkstationCapabilityWorker Worker = ActivatorSafe<WorkstationCapabilityWorker>.CreateInstance(workerType);
 
@@ -52,9 +53,7 @@ namespace Project1.Core.Crafting
     public class WorkstationCapabilityCookingWorker : WorkstationCapabilityWorker
     {
         public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
-        {
-            throw new NotImplementedException();
-        }
+            => Def.GetDefs<ConsumableDef>().Select(def => new AddOrderRequest(WorkstationCapabilityDefOf.Cooking, def));
+        
     }
-    public record AddOrderRequest(WorkstationCapabilityDef WorkstationCapability, Def? ProductDef) { }
 }

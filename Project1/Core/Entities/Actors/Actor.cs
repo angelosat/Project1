@@ -212,39 +212,11 @@ namespace Project1.Core.Entities.Actors
             state.ConversationPartner = null;
         }
 
-        internal void TalkTo(Actor target, ConversationTopic topic)
-        {
-            topic.ApplyNew(this, target);
-        }
-
         internal void EnqueueCommunication(Actor target, ConversationTopic topic)
         {
             this.AI.State.CommunicationPending.Add(target, topic);
         }
 
-        internal ConversationTopic GetNextConversationTopicFor(Actor target)
-        {
-            var state = this.AI.State;
-            var topic = state.CommunicationPending[target];
-            state.CommunicationPending.Remove(target);
-            return topic;
-        }
-        internal void Interact(Interaction interaction)
-        {
-            AIManager.Interact(this, interaction, TargetArgs.Null);
-        }
-        internal void Interact(Interaction interaction, TargetArgs targetArgs)
-        {
-            AIManager.Interact(this, interaction, targetArgs);
-        }
-        internal void Interact(Interaction interaction, Vector3 target)
-        {
-            AIManager.Interact(this, interaction, new TargetArgs(this.Map, target));
-        }
-        internal void Interact(Interaction interaction, Entity target)
-        {
-            AIManager.Interact(this, interaction, new TargetArgs(target));
-        }
         internal void EndInteraction()
         {
             AIManager.EndInteraction(this);
@@ -254,14 +226,7 @@ namespace Project1.Core.Entities.Actors
         {
             throw new Exception();
         }
-        internal bool IsEquipping(Entity item)
-        {
-            return this.GetGear().Any(i => i == item);
-        }
-        internal int GetReservedAmount(GameObject item)
-        {
-            return this.Town.ReservationManager.GetReservedAmount(this, item);
-        }
+        
         internal void StopPathing()
         {
             this.AI.State.Path = null;

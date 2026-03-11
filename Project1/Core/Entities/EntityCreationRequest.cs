@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Project1.Core.Animations;
-using Project1.Core.Materials;
+using Project1.Core.Systems.Materials;
 
 namespace Project1.Core.Entities
 {

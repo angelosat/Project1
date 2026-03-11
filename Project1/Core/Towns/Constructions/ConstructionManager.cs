@@ -2,9 +2,9 @@
 using Project1.Core.Input;
 using Project1.Core.Legacy.Crafting.Blocks;
 using Project1.Core.Loot;
-using Project1.Core.Materials;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Materials;
 using Project1.Core.Towns.Designations;
 using Project1.Core.UI;
 using Project1.Core.UI.Blocks;

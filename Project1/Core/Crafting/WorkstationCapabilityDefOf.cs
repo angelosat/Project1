@@ -1,6 +1,7 @@
 ﻿using Project1.Core.AI;
-using Project1.Core.Materials;
-using Project1.Core.Tools;
+using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Tools;
 using Project1.Framework;
 
 namespace Project1.Core.Crafting
@@ -10,28 +11,29 @@ namespace Project1.Core.Crafting
     {
         static public readonly WorkstationCapabilityDef Smelting = new("Smelting", typeof(WorkstationCapabilitySmeltingWorker)) 
         {
-            ProfileCategory = typeof(MaterialRefinementDef), 
-            SpecificRecipes = [MaterialRefinementDefOf.Ingots],
+            Output = typeof(MaterialRefinementDef), 
+            OutputSpecific = [MaterialRefinementDefOf.Ingots],
             Plan = PlanDefOf.Crafting
         };
         static public readonly WorkstationCapabilityDef Carpentry = new("Carpentry", typeof(WorkstationCapabilityCarpentryWorker))
         {
-            ProfileCategory = typeof(MaterialRefinementDef),
-            SpecificRecipes = [MaterialRefinementDefOf.Planks],
+            Output = typeof(MaterialRefinementDef),
+            OutputSpecific = [MaterialRefinementDefOf.Planks],
             Plan = PlanDefOf.Crafting
         };
         static public readonly WorkstationCapabilityDef ToolMaking = new("ToolMaking", typeof(WorkstationCapabilityToolMakingWorker))
         {
-            ProfileCategory = typeof(ToolProfileDef),
+            Output = typeof(ToolProfileDef),
             Plan = PlanDefOf.Crafting
         };
         static public readonly WorkstationCapabilityDef Repairing = new("Repairing", typeof(WorkstationCapabilityRepairingWorker))
         {
             Plan = PlanDefOf.Repairing
         };
-        static public readonly WorkstationCapabilityDef Cooking = new("Cooking", typeof(WorkstationCapabilityRepairingWorker))
+        static public readonly WorkstationCapabilityDef Cooking = new("Cooking", typeof(WorkstationCapabilityCookingWorker))
         {
-            Plan = null
+            Output = typeof(ConsumableDef),
+            Plan = PlanDefOf.Crafting
         };
         static WorkstationCapabilityDefOf()
         {

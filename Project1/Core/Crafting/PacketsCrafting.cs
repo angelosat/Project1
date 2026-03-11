@@ -4,11 +4,11 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
-using Project1.Core.Tools;
+using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework;
 using System;
@@ -115,7 +115,7 @@ namespace Project1.Core.Crafting
         {
             SendPlayerModifiedOrderFilters(Client.Instance, e.Order, e.Bone, e.Refinement, e.Material);
         }
-        static void SendPlayerModifiedOrderFilters(NetEndpoint net, CraftingOrder order, BoneDef bone, MaterialRefinementDef form, MaterialDef material)
+        static void SendPlayerModifiedOrderFilters(NetEndpoint net, CraftingOrder order, BoneDef bone, MaterialTypeDef form, MaterialDef material)
         {
             net.BeginPacket(_pPlayerModifiedOrderFilters)
                 .Write(order.Id)
@@ -128,7 +128,8 @@ namespace Project1.Core.Crafting
             var r = packet.PacketReader;
             var order = endpoint.Map.Town.CraftingManager.GetOrder(r.ReadInt32());
             var bone = r.ReadDef<BoneDef>();
-            var refinement = r.ReadDef<MaterialRefinementDef>();
+            //var refinement = r.ReadDef<MaterialRefinementDef>();
+            var refinement = r.ReadDef<MaterialTypeDef>();
             var material = r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<MaterialDef>(matName) : null;
             order.Toggle(bone, refinement, material);
             if (endpoint is Server)

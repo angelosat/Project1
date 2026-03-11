@@ -4,8 +4,8 @@ using Project1.Core.Blocks.Doors;
 using Project1.Core.Construction;
 using Project1.Core.Crafting;
 using Project1.Core.Graphics.Particles;
-using Project1.Core.Materials;
 using Project1.Core.Resources;
+using Project1.Core.Systems.Materials;
 using Project1.Framework;
 
 namespace Project1.Core.Blocks
@@ -132,7 +132,8 @@ namespace Project1.Core.Blocks
         {
             BlockEntityCompSpecs = [
                 new BlockBuildingComp.Spec(),
-                new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen)
+                new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen),
+                new BlockResourcesComp.Spec([ResourceDefOf.Fuel])
                 ],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };

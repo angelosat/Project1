@@ -1,10 +1,8 @@
-﻿using Project1.Core.Plants;
-using Project1.Core.Graphics;
+﻿using Project1.Core.Graphics;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Legacy.Storage.New;
-using Project1.Core.Materials;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +10,8 @@ using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Gear;
 using Project1.Framework;
+using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Materials;
 
 namespace Project1.Core.Entities
 {

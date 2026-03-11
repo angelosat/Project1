@@ -1,5 +1,5 @@
 ﻿using Project1.Core.AI.Planners;
-using Project1.Core.Tools;
+using Project1.Core.Systems.Tools;
 
 namespace Project1.Core.Towns.Duties
 {

@@ -2,7 +2,7 @@
 using Project1.Framework;
 using Project1.Core.Interactions;
 using Project1.Core.Skills;
-using Project1.Core.Tools;
+using Project1.Core.Systems.Tools;
 
 namespace Project1.Core.Entities.Stats
 {

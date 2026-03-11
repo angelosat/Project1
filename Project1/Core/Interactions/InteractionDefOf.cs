@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Animations;
-using Project1.Core.Plants;
 using Project1.Core.Skills;
-using Project1.Core.Tools;
+using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.AI;
 using Project1.Framework;
 

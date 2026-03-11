@@ -2,7 +2,6 @@
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Materials;
 using Project1.Core.Resources;
 using Project1.Framework;
 using System;

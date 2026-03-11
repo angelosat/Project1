@@ -2,11 +2,11 @@
 using Project1.Core.Blocks;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
-using Project1.Core.Materials;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Serialization;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Input;
 using Project1.Framework.Serialization;

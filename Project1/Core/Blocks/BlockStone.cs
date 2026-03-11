@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Construction;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Legacy.Crafting;
-using Project1.Core.Materials;
+using Project1.Core.Systems.Materials;
 
 namespace Project1.Core.Blocks
 {

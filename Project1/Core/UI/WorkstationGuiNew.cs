@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using Project1.Framework.UI;
-using Project1.Core.Screens;
-using Project1.Core.Materials;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Crafting;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
-using Project1.Core.Blocks;
-using Project1.Framework.Helpers;
+using Project1.Core.Systems.Materials;
 using Project1.Core.Towns.Stockpiles;
+using Project1.Framework.Helpers;
+using Project1.Framework.UI;
+using System;
+using System.Linq;
 
 namespace Project1.Core.UI
 {
@@ -52,7 +52,8 @@ namespace Project1.Core.UI
             this.PanelReactions.HideOnAnyClick();
             var manager = workstation.Parent.Map.Town.CraftingManager;
             var availableRecipesNew = workstation.WorkstationType.Capabilities.SelectMany(cap => cap.Worker.GetAddOrderRequests(workstation));
-            var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.ProductDef?.LabelReadable ?? r.WorkstationCapability.LabelReadable, () => this.PlaceOrderNew(r)));
+            //var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.ProductDef?.LabelReadable ?? r.WorkstationCapability.LabelReadable, () => this.PlaceOrderNew(r)));
+            var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.GetLabel(), () => this.PlaceOrderNew(r)));
             availableRefinementsControl.AddItems(availableRecipesNew);
             var reactionsListContainer = availableRefinementsControl.ToScrollableBox(200, 400);
             this.PanelReactions.AddControls(reactionsListContainer);

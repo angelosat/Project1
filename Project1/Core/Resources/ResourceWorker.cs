@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
-using Project1.Core.Materials;
+using Project1.Core.Systems.Materials;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;

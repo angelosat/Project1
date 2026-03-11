@@ -2,12 +2,12 @@
 using Project1.Core.Resources;
 using Project1.Core.Blocks;
 using Project1.Core.Legacy.Storage;
-using Project1.Core.Materials;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Framework.UI;
 using Project1.Framework;
+using Project1.Core.Systems.Materials;
 
 namespace Project1.Core.Legacy.Crafting
 {

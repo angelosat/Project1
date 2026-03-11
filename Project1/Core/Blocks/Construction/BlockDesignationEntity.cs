@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Input;
-using Project1.Core.Materials;
 using Project1.Core.Towns.Constructions;
 using Project1.Core.Legacy.Crafting.Blocks;
 using Project1.Core.Helpers;
@@ -11,6 +10,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using Project1.Framework;
+using Project1.Core.Systems.Materials;
 
 namespace Project1.Core.Blocks
 {

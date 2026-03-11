@@ -2,7 +2,7 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.Plants;
+using Project1.Core.Systems.Plants;
 using System;
 using System.Collections.Generic;
 

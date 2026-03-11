@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework;
-using Project1.Framework.Serialization;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Entities;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using System;
 
 namespace Project1.Core.Interactions
 {
@@ -23,8 +23,8 @@ namespace Project1.Core.Interactions
             if(this.Owner.Net.IsClient)
                 $"{this.Owner.Net} interrupt".ToConsole();
             this.Task.Interrupt(success);
-            this.Task.FinishAction();
-            this.Stop();
+            //this.Task.FinishAction();
+            //this.Stop();
         }
 
         internal void OnToolContact()
@@ -42,6 +42,8 @@ namespace Project1.Core.Interactions
         {
             ArgumentNullException.ThrowIfNull(task);
             var parent = this.Owner as Actor;
+            //if (this.Task?.State == Interaction.States.Finishing)
+            //    throw new Exception();
             this.Interrupt();
             this.Task = task;
             this.Target = task.Target;
@@ -49,13 +51,13 @@ namespace Project1.Core.Interactions
         }
         public void Perform(Interaction task, TargetArgs target, int quantity = -1)
         {
-            var parent = this.Owner as Actor;
-            task.Count = quantity;
-            ArgumentNullException.ThrowIfNull(task);
-            this.Interrupt();
-            this.Task = task;
-            this.Target = target;
-            parent.FaceTowards(this.Target);
+            //var parent = this.Owner as Actor;
+            //task.Count = quantity;
+            //ArgumentNullException.ThrowIfNull(task);
+            //this.Interrupt();
+            //this.Task = task;
+            //this.Target = target;
+            //parent.FaceTowards(this.Target);
         }
 
         public void End(bool success = false)

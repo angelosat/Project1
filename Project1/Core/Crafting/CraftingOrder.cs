@@ -4,9 +4,9 @@ using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Materials;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Materials;
 using Project1.Core.UI;
 using Project1.Framework;
 using Project1.Framework.Serialization;
@@ -58,8 +58,9 @@ namespace Project1.Core.Crafting
         internal Entity UnfinishedItem;
 
         public bool IsAllowed(BoneDef bone, MaterialDef mat) => !this.Filters[bone].Contains(mat);
-        public bool IsAllowed(BoneDef bone, MaterialRefinementDef form) => RawMaterialSystem.MaterialsByType[form.MaterialType].All(mat => !this.Filters[bone].Contains(mat));
-        internal void Toggle(BoneDef bone, MaterialRefinementDef form, MaterialDef material)
+        //public bool IsAllowed(BoneDef bone, MaterialRefinementDef form) => RawMaterialSystem.MaterialsByType[form.MaterialType].All(mat => !this.Filters[bone].Contains(mat));
+        public bool IsAllowed(BoneDef bone, MaterialTypeDef form) => RawMaterialSystem.MaterialsByType[form].All(mat => !this.Filters[bone].Contains(mat));
+        internal void Toggle(BoneDef bone, MaterialTypeDef form, MaterialDef material)
         {
             var filters = this.Filters[bone];
             if(material is not null)
@@ -71,7 +72,7 @@ namespace Project1.Core.Crafting
             }
             else
             {
-                var allMats = RawMaterialSystem.MaterialsByType[form.MaterialType];
+                var allMats = RawMaterialSystem.MaterialsByType[form];
                 if (allMats.Any(filters.Contains))
                     foreach (var mat in allMats)
                         filters.Remove(mat);
@@ -114,20 +115,22 @@ namespace Project1.Core.Crafting
         private void CacheAcceptableMaterials(BoneDef bone)
         {
             this.AcceptableMaterials[bone] =
-                                [.. this.Rules[bone].Forms
-                                    .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
-                                    .Where(m => !Filters[bone].Contains(m))];
+                                //[.. this.Rules[bone].Profiles
+                                //    .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
+                                [.. this.Rules[bone].MaterialTypes.SelectMany(mt=>
+                                RawMaterialSystem.MaterialsByType[mt]
+                                    .Where(m => !Filters[bone].Contains(m)))];
         }
-        public IEnumerable<IngredientRequirement> GetIngredientRequirements()
-        {
-            var n = 0;
-            var slots = this.Workstation.Parent.CellsOccupied.ToArray();
-            foreach (var (validRefinements, quantity) in CraftingSystem.GetValidIngredientsPerSlot(this.ProductDef))
-            {
-                var slot = slots[n++].Above;
-                yield return new([.. validRefinements], quantity, slot, [.. this.Workstation.Map.GetEntitiesAt(slot)]);
-            }
-        }
+        //public IEnumerable<IngredientRequirement> GetIngredientRequirements()
+        //{
+        //    var n = 0;
+        //    var slots = this.Workstation.Parent.CellsOccupied.ToArray();
+        //    foreach (var (validRefinements, quantity) in CraftingSystem.GetValidIngredientsPerSlot(this.ProductDef))
+        //    {
+        //        var slot = slots[n++].Above;
+        //        yield return new([.. validRefinements], quantity, slot, [.. this.Workstation.Map.GetEntitiesAt(slot)]);
+        //    }
+        //}
         (IntVec3 cell, IEnumerable<Entity> cellEntities) GetEntitiesAtWorkstationSlot(BoneDef bone)
         {
             var slots = this.Workstation.Parent.CellsOccupied.ToArray();
@@ -405,25 +408,42 @@ namespace Project1.Core.Crafting
             if (!AcceptableMaterials.TryGetValue(bone, out var mats))
             {
                 var rule = this.Rules[bone];
-                mats = rule.Forms
-                    .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
-                    .Where(m => !Filters[bone].Contains(m))
-                    .ToArray();
+                mats =
+                    //rule.Profiles
+                    //.SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
+                    //[.. RawMaterialSystem.MaterialsByType[rule.MaterialType].Where(m => !Filters[bone].Contains(m))];
+                    [.. rule.MaterialTypes.SelectMany(t=>RawMaterialSystem.MaterialsByType[t].Where(m => !Filters[bone].Contains(m)))];
                 AcceptableMaterials[bone] = mats;
             }
             return mats;
         }
+        //// Helper to get cached acceptable materials (dynamic filters)
+        //public (MaterialDef Material, MaterialRefinementDef Form)[] GetAcceptableMaterialForms(BoneDef bone)
+        //{
+        //    return 
+        //        this.Rules[bone].Profiles
+        //        .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType]
+        //            .Where(m => !Filters[bone].Contains(m))
+        //            .Select(m => (m, f))) // pair material + form
+        //        .ToArray();
+        //}
+
         // Helper to get cached acceptable materials (dynamic filters)
-        public (MaterialDef Material, MaterialRefinementDef Form)[] GetAcceptableMaterialForms(BoneDef bone)
+        public (MaterialDef Material, Def Form)[] GetAcceptableMaterialForms(BoneDef bone)
         {
-            return this.Rules[bone].Forms
-                .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType]
-                    .Where(m => !Filters[bone].Contains(m))
-                    .Select(m => (m, f))) // pair material + form
-                .ToArray();
+            var rule = this.Rules[bone];
+            //var mats = RawMaterialSystem.MaterialsByType[rule.MaterialTypes].Where(m => !Filters[bone].Contains(m));
+            //var array = rule.MaterialTypes
+            //    //.Profiles
+            //    .SelectMany(mt => RawMaterialSystem.MaterialsByType[mt]
+            //        .Select(m => 
+            //        (m, rule.Profiles))) // pair material + form
+            //    .ToArray();
+            var array = rule.MaterialTypes
+                .SelectMany(mt => RawMaterialSystem.MaterialsByType[mt])
+                .SelectMany(p => rule.Profiles, (m, p) => (m, p)).ToArray();
+            return array;
         }
-
-
         public enum CraftingOrderState
         {
             NotEnoughItems,      // No ingredients available at all
@@ -458,31 +478,31 @@ namespace Project1.Core.Crafting
         }
 
 
-        public bool IsFeasible(IReadOnlyList<Entity> items)
-        {
-            Dictionary<MaterialDef, int> pool = [];
-            foreach (var i in items)
-                pool[i.PrimaryMaterial] += i.StackSize;
+        //public bool IsFeasible(IReadOnlyList<Entity> items)
+        //{
+        //    Dictionary<MaterialDef, int> pool = [];
+        //    foreach (var i in items)
+        //        pool[i.PrimaryMaterial] += i.StackSize;
 
-            // sort rules by more restrictive first
-            var sortedRules = this.Rules.Values
-                .OrderBy(rule => rule.Forms.SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType]).Count(m => !this.Filters[rule.Bone].Contains(m)));
-            foreach (var rule in sortedRules)
-            {
-                var disallowed = this.Filters[rule.Bone];
+        //    // sort rules by more restrictive first
+        //    var sortedRules = this.Rules.Values
+        //        .OrderBy(rule => rule.Profiles.SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType]).Count(m => !this.Filters[rule.Bone].Contains(m)));
+        //    foreach (var rule in sortedRules)
+        //    {
+        //        var disallowed = this.Filters[rule.Bone];
 
-                var matchedMaterial = rule.Forms
-                    .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
-                    .Where(m => !this.Filters[rule.Bone].Contains(m))
-                    .FirstOrDefault(m => pool.TryGetValue(m, out var c) && c >= rule.Quantity);
+        //        var matchedMaterial = rule.Forms
+        //            .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
+        //            .Where(m => !this.Filters[rule.Bone].Contains(m))
+        //            .FirstOrDefault(m => pool.TryGetValue(m, out var c) && c >= rule.Quantity);
 
-                if (matchedMaterial is null)
-                    return false; // slot cannot be satisfied
+        //        if (matchedMaterial is null)
+        //            return false; // slot cannot be satisfied
 
-                pool[matchedMaterial] -= rule.Quantity; // consume
-            }
-            return true;
-        }
+        //        pool[matchedMaterial] -= rule.Quantity; // consume
+        //    }
+        //    return true;
+        //}
         public bool CanActorPerform(Actor actor)
         {
             if (!this.Enabled) return false;

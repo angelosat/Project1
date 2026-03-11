@@ -2,7 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
-using Project1.Core.Tools;
+using Project1.Core.Systems.Tools;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
 {

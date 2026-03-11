@@ -161,6 +161,8 @@ namespace Project1.Core.AI
         }
         public void Assign(PlanExecutor bhav)
         {
+            //if (this.Owner.Work.Task is not null)
+            //    throw new System.Exception();
             //PacketReportPlan.SyncBehavior(this.Owner, bhav);
             this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, bhav));
             bhav.Plan.Actor = this.Owner;

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Project1.Core.Entities;
+using Project1.Core.Systems.Materials;
+using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework;
-using Project1.Core.Entities;
-using Project1.Core.Materials;
 
 namespace Project1.Core.Crafting
 {

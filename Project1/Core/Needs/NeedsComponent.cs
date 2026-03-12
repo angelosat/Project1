@@ -142,6 +142,9 @@ namespace Project1.Core.Needs
             }
         }
 
+        public float GetPercentage(NeedDef need)
+            => this.NeedsNew[need].Percentage;
+
         internal void OverridePercentage(NeedDef adventuring, float percentage)
         {
             var need = this.NeedsNew[adventuring];

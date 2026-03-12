@@ -2,12 +2,14 @@
 using Project1.Core.AI.Planners;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Interactions;
 using Project1.Core.Needs;
 using Project1.Core.Resources;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -56,6 +58,7 @@ namespace Project1.Core.AI.Behaviors
                 var plan = giverResult.Plan;
                 if (plan is null)
                     continue;
+                giverResult.SourceDef = planner;
                 var bhav = plan.CreateBehavior(parent);
 
                 if (!bhav.CommitReservations())
@@ -65,8 +68,8 @@ namespace Project1.Core.AI.Behaviors
                     continue;
                 }
                 //var bhav = plan.CreateBehavior(parent);
-                state.Assign(bhav);
-                parent.AI.State.CurrentPlanner = plan.Continuation == PlanContinuationPolicy.Continue ? planner : null;
+                state.Assign(bhav, planner);
+                //parent.AI.State.CurrentPlanner = plan.Continuation == PlanContinuationPolicy.Continue ? planner : null;
                 return plan;
             }
 
@@ -80,7 +83,8 @@ namespace Project1.Core.AI.Behaviors
                 return false;
             var bhav = plan.CreateBehavior(parent);
             plan.IsImmediate = true;
-            state.Assign(bhav);
+            throw new NotImplementedException();
+            //state.Assign(bhav);
             return true;
         }
 
@@ -116,7 +120,7 @@ namespace Project1.Core.AI.Behaviors
             if (parent.Velocity.Z != 0)
                 return BehaviorState.Running;
 
-            if (parent.CurrentInteraction is not null) 
+            //if (parent.CurrentInteraction is not null) 
                 /// added this here because plans returned fromurgent plannets (smart equip in particular)
                 /// didn't correctly abort/remove any current interaction, which caused
                 /// workcomponent to have a null interaction but behaviorresolveinteraction to store a stale reference of an interaction
@@ -125,7 +129,9 @@ namespace Project1.Core.AI.Behaviors
                 /// but urgent planners should be able to interrupt/abort running interactions
                 /// maybe only tick urgent planners if current interaction is null or current interaction state is running
                 /// maybe dont tick urgent planners if current interaction is not null and its state is finishing, so that it can finish gracefully
-                return BehaviorState.Running;
+                /// maybe when an urrgent plan is returned, dont assign it immediately, but store it as pending (or enqueue it)
+                /// and first make the current interaction/bhav abort gracefully before assinging it
+                //return BehaviorState.Running;
 
             if (state.ForcedTask != null)
             {
@@ -134,17 +140,18 @@ namespace Project1.Core.AI.Behaviors
                 this.CleanUp(parent);
                 this.TryForcePlan(parent, task, state);
             }
-            else if(!state.Behavior?.Plan.IsUrgent ?? true)
+            else if (!state.Behavior?.Plan.IsUrgent ?? true)
             {
-                foreach(var giver in Planner.UrgentPlanners)
-                {
-                    var task = giver.FindPlanNew(parent);
-                    if (task is null)
-                        continue;
-                    task.IsUrgent = true;
-                    state.TryAssign(task);
-                    break;
-                }
+                if (parent.CurrentInteraction is not Interaction i || i.State == Interaction.States.Running)
+                    foreach (var planner in Planner.UrgentPlanners)
+                    {
+                        var task = planner.Worker.FindPlanNew(parent);
+                        if (task is null)
+                            continue;
+                        task.IsUrgent = true;
+                        state.TryAssign(task, planner);
+                        break;
+                    }
             }
          
             if (state.Behavior is not null)
@@ -202,7 +209,7 @@ namespace Project1.Core.AI.Behaviors
                         {
                             $"found followup {next.Plan} from same planner {currentPlanner}".ToConsole();
                          
-                            state.Assign(bhav);
+                            state.Assign(bhav, currentPlanner);
                             return BehaviorState.Success;
                         }
                         else

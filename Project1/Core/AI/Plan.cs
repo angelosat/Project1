@@ -1,4 +1,5 @@
 ﻿using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Planners;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
@@ -58,6 +59,7 @@ namespace Project1.Core.AI
         bool Cancelled = false;
         ZoneId _zoneID = ZoneId.Null;
         Zone _zone;
+        public PlannerDef Source { get; init; }
         public Zone? Zone
         {
             get => this._zoneID == ZoneId.Null ? null : this._zone ??= this.Actor.Map.Town.ZoneManager.GetZone(this._zoneID);

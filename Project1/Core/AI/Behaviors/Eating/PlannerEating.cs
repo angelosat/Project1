@@ -13,6 +13,9 @@ namespace Project1.Core.AI.Behaviors.Eating
     {
         protected override Plan TryPlan(Actor actor)
         {
+            if (actor.Needs.GetPercentage(NeedDefOf.Hunger) > .9f)
+                return null;
+
             // if food in hands, eat it
             if (actor.Hauled is not Entity carried)
                 return null;

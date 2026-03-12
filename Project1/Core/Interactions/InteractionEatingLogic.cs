@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Interactions;
 
 namespace Project1.Core.Interactions
 {
@@ -13,6 +12,7 @@ namespace Project1.Core.Interactions
             var foodEffects = foodItem.GetComponent<ConsumableComponent>().EffectsNew;
             foreach (var f in foodEffects)
                 actor.Effects.Apply(f);
+            foodItem.Consume(1);
         }
     }
 }

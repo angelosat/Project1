@@ -1,4 +1,6 @@
-﻿namespace Project1.Core.AI.Behaviors
+﻿using Project1.Core.AI.Planners;
+
+namespace Project1.Core.AI.Behaviors
 {
     public struct PlannerResult
     {
@@ -6,6 +8,7 @@
 
         public Plan Plan;
         public Planner Source;
+        public PlannerDef SourceDef;
 
         public PlannerResult(Plan plan, Planner source)
         {

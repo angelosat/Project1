@@ -159,7 +159,7 @@ namespace Project1.Core.AI
             this.ItemPreferences.ResolveReferences();
 
         }
-        public void Assign(PlanExecutor bhav)
+        public void Assign(PlanExecutor bhav, PlannerDef source)
         {
             //if (this.Owner.Work.Task is not null)
             //    throw new System.Exception();
@@ -170,8 +170,10 @@ namespace Project1.Core.AI
                 this.Push(bhav);
             else
                 this.Enqueue(bhav);
+            this.CurrentPlanner = bhav.Plan.Continuation == PlanContinuationPolicy.Continue ? source : null;
+
         }
-        public bool TryAssign(Plan task)
+        public bool TryAssign(Plan task, PlannerDef source)
         {
             var bhav = task.CreateBehavior(this.Owner);
             if (!bhav.CommitReservations())
@@ -179,7 +181,7 @@ namespace Project1.Core.AI
                 this.Owner.Unreserve();
                 return false;
             }
-            this.Assign(bhav);
+            this.Assign(bhav, source);
             return true;
         }
         //public Duty GetJob(DutyDef def)

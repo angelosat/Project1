@@ -8,7 +8,7 @@ namespace Project1.Core.AI.Behaviors
     {
         static readonly public Planner Idle = PlannerDefOf.Idle.Worker;// new TaskGiverIdle();
 
-        static readonly public List<Planner> UrgentPlanners = [PlannerDefOf.SmartEquip.Worker];// [new SmartEquipPlanner()];
+        static readonly public List<PlannerDef> UrgentPlanners = [PlannerDefOf.SmartEquip];// [new SmartEquipPlanner()];
 
         static readonly public List<PlannerDef> EssentialPlanners =
         [
@@ -37,11 +37,12 @@ namespace Project1.Core.AI.Behaviors
             PlannerDefOf.Departure
         ];
 
-        protected virtual Plan TryPlan(Actor actor) { return null; }
+        protected virtual Plan TryPlan(Actor actor) 
+            => null;
+
         public Plan FindPlanNew(Actor actor)
-        {
-            return TryPlan(actor);
-        }
+            => TryPlan(actor);
+        
         public PlannerResult FindPlan(Actor actor)
         {
             var task = TryPlan(actor);

@@ -9,9 +9,11 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
     {
         public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
         {
+            var needDef = (NeedDef)role.Def;
+            if (actor.Needs.GetPercentage(needDef) > .9f)
+                return -100;
             if (!item.TryGetComponent<ConsumableComponent>(out var consumableComp))
                 return -100;
-            var needDef = (NeedDef)role.Def;
             var needRestore = consumableComp.EffectsNew.Where(e => e.Target == needDef).Sum(e => e.Budget);
             if (needRestore <= 0)
                 return -100;

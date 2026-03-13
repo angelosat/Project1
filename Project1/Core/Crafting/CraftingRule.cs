@@ -3,21 +3,23 @@ using Project1.Core.Entities;
 using Project1.Core.Systems.Materials;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Project1.Core.Crafting
 {
-    public record struct CraftingRule(BoneDef Bone, ItemDef Def, HashSet<Def> Profiles, HashSet<MaterialTypeDef> MaterialTypes, int Quantity)
+    public record struct CraftingRule(BoneDef Bone, ItemDef? Def, HashSet<Def> Profiles, HashSet<MaterialTypeDef> MaterialTypes, int Quantity)
     {
         public readonly bool Matches(Entity item, out int missingAmount)
         {
             missingAmount = Quantity - item.StackSize;
 
-            if (item.Def != this.Def)
+            if (this.Def is ItemDef def && def != item.Def)
                 return false;
 
-            if (this.Profiles?.Count > 0 && !this.Profiles.Contains(item.Profile))
+            if (!this.Profiles.Contains(item.Profile))
                 return false;
 
-            if (this.MaterialTypes?.Count > 0 && !this.MaterialTypes.Contains(item.PrimaryMaterial.Type))
+            if (!this.MaterialTypes.Contains(item.PrimaryMaterial.Type))
                 return false;
 
             return true;

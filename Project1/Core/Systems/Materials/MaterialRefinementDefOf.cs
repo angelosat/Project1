@@ -1,5 +1,5 @@
-﻿using Project1.Framework;
-using Project1.Core.Assets;
+﻿using Project1.Core.Assets;
+using Project1.Framework;
 
 namespace Project1.Core.Systems.Materials
 {
@@ -15,6 +15,10 @@ namespace Project1.Core.Systems.Materials
         static public readonly MaterialRefinementDef Chunk = new("Chunk", null, MaterialTypeDefOf.Stone, ItemContent.OreGrayscale);
 
         static public readonly MaterialRefinementDef Bag = new("Bag", null, MaterialTypeDefOf.Sediment, ItemContent.BagsGrayscale);
+
+        static public readonly MaterialRefinementDef MeatRaw = new("MeatRaw", null, MaterialTypeDefOf.Flesh, ItemContent.OreGrayscale);
+        static public readonly MaterialRefinementDef FruitRaw = new("FruitRaw", null, MaterialTypeDefOf.Flesh, ItemContent.OreGrayscale);
+
 
         static MaterialRefinementDefOf()
         {

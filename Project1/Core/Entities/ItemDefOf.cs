@@ -63,7 +63,8 @@ namespace Project1.Core.Entities
             ReplaceName = true,
             Comps = [typeof(ConsumableComponent)],
             CompDefs = [EntityCompDefOf.Consumable],
-            Body = new Bone(BoneDefOf.Item)
+            Body = new Bone(BoneDefOf.Item, Sprite.Default),
+            //DefaultSprite = Sprite.Default
         };
 
         static public readonly ItemDef Meat = new ItemDef("Meat", typeof(Entity))

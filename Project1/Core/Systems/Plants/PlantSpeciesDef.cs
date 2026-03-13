@@ -30,7 +30,7 @@ namespace Project1.Core.Systems.Plants
         public int StemHealRate;
         [XmlIgnore]
         public MaterialDef StemMaterial;
-        public string TextureFruit, TextureSeeds;
+        public string TexturePlantFruitOverlay, TextureSeeds, TextureFruit;
         public string SeedsName;
         public Graphics Textures;
         public int YieldThreshold;

@@ -151,27 +151,27 @@ namespace Project1.Core.Crafting
             }
             return true;
         }
-        public bool MatchesPartial(Entity item, out int demand)
-        {
-            if (item.Def == ItemDefOf.Ingredient)
-            {
-                var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef);
-                foreach (var rule in rules)
-                {
-                    if (!rule.Matches(item, out _) && this.Filters[rule.Bone].Contains(item.PrimaryMaterial))
-                        continue;
-                    demand = rule.Quantity;
-                    var slotEntities = this.GetEntitiesAtWorkstationSlot(rule.Bone);
-                    foreach (var inSlot in slotEntities.cellEntities)
-                        if (rule.Matches(inSlot, out var alreadyCovered))
-                            demand -= alreadyCovered;
-                    if (demand > 0)
-                        return true;
-                }
-            }
-            demand = -1;
-            return false;
-        }
+        //public bool MatchesPartial(Entity item, out int demand)
+        //{
+        //    if (item.Def == ItemDefOf.Ingredient)
+        //    {
+        //        var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef);
+        //        foreach (var rule in rules)
+        //        {
+        //            if (!rule.Matches(item, out _) && this.Filters[rule.Bone].Contains(item.PrimaryMaterial))
+        //                continue;
+        //            demand = rule.Quantity;
+        //            var slotEntities = this.GetEntitiesAtWorkstationSlot(rule.Bone);
+        //            foreach (var inSlot in slotEntities.cellEntities)
+        //                if (rule.Matches(inSlot, out var alreadyCovered))
+        //                    demand -= alreadyCovered;
+        //            if (demand > 0)
+        //                return true;
+        //        }
+        //    }
+        //    demand = -1;
+        //    return false;
+        //}
         public IEnumerable<Entity> AlreadyBoundInSlots()
         {
             foreach (var (bone, rule) in this.Rules)

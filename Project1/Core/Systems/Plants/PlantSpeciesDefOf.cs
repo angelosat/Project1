@@ -13,7 +13,8 @@ namespace Project1.Core.Systems.Plants
         {
             TextureGrowing = ItemContent.BerryBushGrowing.AssetPath,
             TextureGrown = ItemContent.BerryBushGrown.AssetPath,
-            TextureFruit = ItemContent.BerryBushFruit.AssetPath,
+            TexturePlantFruitOverlay = ItemContent.BerryBushFruit.AssetPath,
+            TextureFruit = ItemContent.BerriesFull.AssetPath,
             TextureSeeds = ItemContent.SeedsFull.AssetPath,
             SeedsName = "Seeds",
             StemMaterial = MaterialDefOf.ShrubStem,

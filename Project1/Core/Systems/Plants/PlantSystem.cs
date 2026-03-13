@@ -2,6 +2,7 @@
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Needs;
+using Project1.Core.Systems.Materials;
 using System;
 
 namespace Project1.Core.Systems.Plants
@@ -34,10 +35,13 @@ namespace Project1.Core.Systems.Plants
         }
         static Entity CreateFruit(PlantSpeciesDef species)
         {
-            var entity = ItemDefOf.Fruit.Create();
-            entity.Profile = species;
-            var comp = entity.GetComponent<ConsumableComponent>();
-            comp.EffectsNew.Add(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, Budget: 5, Rate: 0));
+            //var entity = ItemDefOf.Fruit.Create();
+            var entity = ItemDefOf.Ingredient.Create();
+            entity.Profile = MaterialRefinementDefOf.FruitRaw;
+            entity.Body.Sprite = Sprite.Load(species.TextureFruit);
+            //entity.Profile = species;
+            //var comp = entity.GetComponent<ConsumableComponent>();
+            //comp.EffectsNew.Add(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, Budget: 5, Rate: 0));
             entity.Name = $"{species.LabelReadable}";
             entity.SetMaterial(species.FruitMaterial);
             return entity;

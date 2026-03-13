@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;
@@ -21,6 +22,7 @@ namespace Project1.Core.Entities
                 ActorDnaDef => ActorSystem.Create(req),
                 PlantSpeciesDef => PlantSystem.Create(req),
                 ToolProfileDef => ToolSystem.Create(req),
+                ConsumableDef => ConsumableSystem.Create(req),
                 _ => throw new InvalidOperationException($"No system claims {req.Context.GetType().Name}"),
             };
         }

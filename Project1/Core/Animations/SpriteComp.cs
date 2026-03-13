@@ -175,25 +175,25 @@ namespace Project1.Core.Animations
 
         }
 
-        public SpriteComp Initialize(Bone bodySprite, Sprite fullSprite)
-        {
-            this.Sprite = fullSprite;
-            this.Body = bodySprite;
-            this.DefaultBody = this.Body;
-            Variation = 0;
-            Orientation = 0;
-            return this;
-        }
-        public SpriteComp Initialize(Sprite fullSprite)
-        {
-            this.Sprite = fullSprite;
-            this.Body = Bone.Create(BoneDefOf.Item, fullSprite);
-            this.DefaultBody = this.Body;
+        //public SpriteComp Initialize(Bone bodySprite, Sprite fullSprite)
+        //{
+        //    this.Sprite = fullSprite;
+        //    this.Body = bodySprite;
+        //    this.DefaultBody = this.Body;
+        //    Variation = 0;
+        //    Orientation = 0;
+        //    return this;
+        //}
+        //public SpriteComp Initialize(Sprite fullSprite)
+        //{
+        //    this.Sprite = fullSprite;
+        //    this.Body = Bone.Create(BoneDefOf.Item, fullSprite);
+        //    this.DefaultBody = this.Body;
 
-            Variation = 0;
-            Orientation = 0;
-            return this;
-        }
+        //    Variation = 0;
+        //    Orientation = 0;
+        //    return this;
+        //}
    
 
         internal override void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> ingredients)
@@ -216,24 +216,24 @@ namespace Project1.Core.Animations
         /// hit test is done against the default sprite!!!
         /// </summary>
         /// <param name="rootBone"></param>
-        public SpriteComp(Bone rootBone)
-            : this()
-        {
-            this.Body = rootBone.Clone();
-            this.DefaultBody = this.Body;
-            this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
-            this.Customization = new CharacterColors(this.Body).Randomize();
-        }
-        [Obsolete]
-        public SpriteComp(Sprite fullSprite)
-            : this()
-        {
-            this.Sprite = fullSprite;
-            this.Body = Bone.Create(BoneDefOf.Item, fullSprite);
-            this.DefaultBody = this.Body;
-            Variation = 0;
-            Orientation = 0;
-        }
+        //public SpriteComp(Bone rootBone)
+        //    : this()
+        //{
+        //    this.Body = rootBone.Clone();
+        //    this.DefaultBody = this.Body;
+        //    this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
+        //    this.Customization = new CharacterColors(this.Body).Randomize();
+        //}
+        //[Obsolete]
+        //public SpriteComp(Sprite fullSprite)
+        //    : this()
+        //{
+        //    this.Sprite = fullSprite;
+        //    this.Body = Bone.Create(BoneDefOf.Item, fullSprite);
+        //    this.DefaultBody = this.Body;
+        //    Variation = 0;
+        //    Orientation = 0;
+        //}
         public override void Tick()
         {
             var parent = this.Owner;
@@ -457,18 +457,18 @@ namespace Project1.Core.Animations
                     shadow.Draw(sb, map, camera);
             ShadowList.Clear();
         }
-        public SpriteComp(SpriteComp source)
-        {
-            this.Sprite = source.Body.Sprite;
-            this.Body = source.Body.Clone();
-            this.DefaultBody = this.Body;
-            this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
-            this.Customization = new CharacterColors(this.Body).Randomize();
-            Variation = 0;
-            Orientation = 0;
-            foreach (var anim in source.Animations.Values)
-                this.Animations.Add(anim.Def, anim.Clone());
-        }
+        //public SpriteComp(SpriteComp source)
+        //{
+        //    this.Sprite = source.Body.Sprite;
+        //    this.Body = source.Body.Clone();
+        //    this.DefaultBody = this.Body;
+        //    this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
+        //    this.Customization = new CharacterColors(this.Body).Randomize();
+        //    Variation = 0;
+        //    Orientation = 0;
+        //    foreach (var anim in source.Animations.Values)
+        //        this.Animations.Add(anim.Def, anim.Clone());
+        //}
         internal override void CopyFrom(EntityComp comp)
         {
             var source = comp as SpriteComp;
@@ -486,12 +486,12 @@ namespace Project1.Core.Animations
                 this.Animations.Add(anim.Def, newani);
             }
         }
-        static public bool HasOrientation(GameObject obj)
-        {
-            SpriteComp spriteComp = obj.GetComponent<SpriteComp>("Sprite");
-            Sprite sprite = spriteComp.Sprite;
-            return sprite.SourceRects.First().Length > 1;
-        }
+        //static public bool HasOrientation(GameObject obj)
+        //{
+        //    SpriteComp spriteComp = obj.GetComponent<SpriteComp>("Sprite");
+        //    Sprite sprite = spriteComp.Sprite;
+        //    return sprite.SourceRects.First().Length > 1;
+        //}
 
         public override void DrawUI(SpriteBatch sb, Camera camera, GameObject parent)
         {

@@ -95,7 +95,7 @@ namespace Project1.Core.Systems.Plants
                 return;
             if (this.IsHarvestable)
             {
-                this._spriteFruit = this.Species.TextureFruit is string fruitTexturePath ? Sprite.Load(fruitTexturePath) : null;
+                this._spriteFruit = this.Species.TexturePlantFruitOverlay is string fruitTexturePath ? Sprite.Load(fruitTexturePath) : null;
                 if (_spriteFruit is not null)
                     fruitBone.SetSprite(this._spriteFruit);
             }

@@ -104,7 +104,8 @@ namespace Project1.Core.AI.Planners
                 //    map.Town.ZoneManager.GetZone<Stockpile>(order.Workstation.Input).Items :
                 //    map.Stockpiles.Items;
 
-                var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(i => i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
+                //var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(i => i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
+                var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(actor.CanReachAndReserve);
                 //var candidateIngredients = map.GetEntities<Entity>().Where(i=>i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
 
                 if (carried is not null)

@@ -1,5 +1,7 @@
 ﻿using Project1.Core.Animations;
+using Project1.Core.Assets;
 using Project1.Core.Entities;
+using Project1.Core.Graphics;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
@@ -25,8 +27,16 @@ namespace Project1.Core.Systems.Consumables
         {
             var item = ItemDefOf.Consumable.Create();
             item.Profile = profile;
+            //item.Body.Sprite = Sprite.Default;
+            item.Body.Sprite = profile.Sprite;
             item.Name = $"{material.LabelReadable} {profile.LabelReadable}";
+            item.Initialize();
             return item;
+        }
+
+        internal static Entity Create(EntityCreationRequest req)
+        {
+            return Create((ConsumableDef)req.Context, req.MaterialBindings[BoneDefOf.Item]);
         }
 
         //public static IEnumerable<CraftingRules> GetRules(ConsumableDef def) => Rules.Values;

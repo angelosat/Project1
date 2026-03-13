@@ -131,7 +131,8 @@ namespace Project1.Core.Systems.Tools
             //    entityBone.Material = mat;
             //    durabilityMax += mat.Density;
             //}
-            var rules = CraftingSystem.GetCraftingRulesStruct(this.Profile);
+            //var rules = CraftingSystem.GetCraftingRulesStruct(this.Profile);
+            var rules = WorkstationCapabilityDefOf.ToolMaking.Worker.GetCraftingRulesStruct(this.Profile);
             foreach (var rule in rules)
             {
                 var entityBone = this.Owner.Body.FindBone(rule.Bone);

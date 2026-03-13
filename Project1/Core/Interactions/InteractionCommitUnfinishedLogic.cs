@@ -28,7 +28,8 @@ namespace Project1.Core.Interactions
 
             var workstationCell = i.Target;
             var map = actor.Map;
-            var ingredients = CraftingSystem.GetIngredientMapping(order.ProductDef, plan.TargetsA.Select(t => t.Entity));
+            //var ingredients = CraftingSystem.GetIngredientMapping(order.ProductDef, plan.TargetsA.Select(t => t.Entity));
+            var ingredients = order.WorkstationCapability.Worker.GetIngredientMapping(order.ProductDef, plan.TargetsA.Select(t => t.Entity));
             var item = ToolSystem.CreateUnfinishedItem(
                 actor,
                 order,

@@ -201,18 +201,19 @@ namespace Project1.Core.Crafting
 
             this._byType[workstation.WorkstationType].Add(workstation);
         }
-        public CraftingOrder CreateOrderNew(IntVec3 workstationPosition, Def recipe)
+        public CraftingOrder CreateOrderNew(IntVec3 workstationPosition, Def recipe, WorkstationCapabilityDef capability)
         {
             var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
             var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
 
-            var reqs = CraftingSystem.GetValidIngredientsPerSlot(recipe);
+            //var reqs = CraftingSystem.GetValidIngredientsPerSlot(recipe);
+            var reqs = capability.Worker.GetValidIngredientsPerSlot(recipe);
             if (reqs.Count() > workstation.CellsOccupied.Count)
             {
                 Log.Error($"Not enough workstation modules to craft {recipe.LabelReadable}");
                 return null;
             }
-            var order = new CraftingOrder(this.NextOrderId++, comp, recipe);
+            var order = new CraftingOrder(this.NextOrderId++, comp, recipe, capability);
 
             comp.Orders.Add(order);
             this._ordersById.Add(order.Id, order);

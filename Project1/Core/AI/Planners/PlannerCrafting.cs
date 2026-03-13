@@ -130,7 +130,8 @@ namespace Project1.Core.AI.Planners
                     actor.CanReachAndReserve(order.Workstation.Parent))
                     //feasibility.ArmedSlots.All(i => actor.CanReachAndReserve(i.Entity)))
                 {
-                    var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order);
+                    //var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order);
+                    var withUnfinishedItem = order.WorkstationCapability.Worker.CreatesUnfinished;
                     var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinishedBegin : PlanDefOf.Crafting;
                     var plan = new Plan(plandef, new TargetArgs(map, order.Workstation.Parent.OriginGlobal)) 
                     {

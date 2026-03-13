@@ -182,7 +182,7 @@ namespace Project1.Core.Crafting
             var workstationPosition = r.ReadIntVec3();
             var product = r.ReadDef();
             var capability = r.ReadDef<WorkstationCapabilityDef>();
-            if(net.Map.Town.CraftingManager.CreateOrderNew(workstationPosition, product) is CraftingOrder order &&
+            if(net.Map.Town.CraftingManager.CreateOrderNew(workstationPosition, product, capability) is CraftingOrder order &&
                 net is Server server)
                 SendPlayerCreatedOrderNew(net.Map.GetBlockEntity(workstationPosition), product, capability);
         }

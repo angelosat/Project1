@@ -52,7 +52,6 @@ namespace Project1.Core.UI
             this.PanelReactions.HideOnAnyClick();
             var manager = workstation.Parent.Map.Town.CraftingManager;
             var availableRecipesNew = workstation.WorkstationType.Capabilities.SelectMany(cap => cap.Worker.GetAddOrderRequests(workstation));
-            //var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.ProductDef?.LabelReadable ?? r.WorkstationCapability.LabelReadable, () => this.PlaceOrderNew(r)));
             var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.GetLabel(), () => this.PlaceOrderNew(r)));
             availableRefinementsControl.AddItems(availableRecipesNew);
             var reactionsListContainer = availableRefinementsControl.ToScrollableBox(200, 400);
@@ -74,7 +73,6 @@ namespace Project1.Core.UI
 
             this.IOTable = new Table<(string label, Func<ZoneId> zoneIdGetter, WorkstationIOType iotype)>()
                 .AddColumn("iotype", 100, item => new LabelNew(item.label), anchorX: 1)
-                //.AddColumn("control", 200, item => new ComboBoxFinal<Stockpile>(stockpiles, 200, s => s?.Name ?? "-None-", s => select(item.iotype, s), () => (item.zoneIdGetter() is ZoneId id && id != ZoneId.Null ? zonemanager.GetZone<Stockpile>(id) : null)));
                 .AddColumn("control", 200, item => new ComboBoxFinal<Stockpile>(stockpiles, 200, s => s?.Name ?? "-None-", s => select(item.iotype, s), () => zonemanager.GetZone<Stockpile>(item.zoneIdGetter())));
 
             this.IOTable.AddItems([

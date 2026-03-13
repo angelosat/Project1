@@ -17,7 +17,8 @@ namespace Project1.Core.Crafting
 
             var list = new List<IngredientGroup>();
 
-            var rules = CraftingSystem.GetCraftingRulesStruct(order.ProductDef);
+            //var rules = CraftingSystem.GetCraftingRulesStruct(order.ProductDef);
+            var rules = order.WorkstationCapability.Worker.GetCraftingRulesStruct(order.ProductDef);
             foreach (var rule in rules)
             {
                 var bone = rule.Bone;

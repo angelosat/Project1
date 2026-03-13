@@ -69,7 +69,8 @@ namespace Project1.Core.Legacy.Crafting
             if (this._initialized)
                 throw new InvalidOperationException();
             this._initialized = true;
-            this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, bindings);
+            //this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, bindings);
+            this._materialBindings = order.WorkstationCapability.Worker.MapBonesToMaterials(this.Owner.Profile, bindings);
             this.OrderId = order.Id;
         }
         internal override IEnumerable<Control> GetSelectionInfo()
@@ -119,7 +120,9 @@ namespace Project1.Core.Legacy.Crafting
         public override void Read(IDataReader r)
         {
             this.OrderId = r.ReadInt32();
-            this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
+            //this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
+            var order = this.Owner.Map.Town.CraftingManager.GetOrder(this.OrderId);
+            this._materialBindings = order.WorkstationCapability.Worker.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
         }
 
         public new class Spec : Spec<UnfinishedItemComp> { }

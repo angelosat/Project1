@@ -83,16 +83,21 @@ namespace Project1.Core.Crafting
             this.CacheAcceptableMaterials(bone);
             this.Workstation.Map.Events.Post(new CraftOrderUpdatedEvent(this));
         }
-        public IEnumerable<BoneDef> GetSlotMapping() => CraftingSystem.GetSlotMapping(this.ProductDef);
-        CraftingOrder(Def recipe)
+        //public IEnumerable<BoneDef> GetSlotMapping() => CraftingSystem.GetSlotMapping(this.ProductDef);
+        public IEnumerable<BoneDef> GetSlotMapping() => this.WorkstationCapability.Worker.GetBoneLayout();
+        CraftingOrder(Def recipe, WorkstationCapabilityDef capability)
         {
+            this.WorkstationCapability = capability;
             this.ProductDef = recipe;
             this.CreateFilters();
         }
-        public CraftingOrder(int id, BlockWorkstationComp owner, Def recipe) : this(recipe)
+        public CraftingOrder(int id, BlockWorkstationComp owner, Def recipe, WorkstationCapabilityDef capability) : this(recipe, capability)
         {
+            //this.WorkstationCapability = capability;
             this.Id = id;
-            this.Skill = CraftingSystem.GetCraftingSkill(recipe);
+            //this.Skill = CraftingSystem.GetCraftingSkill(recipe);
+            this.Skill = capability.Worker.CraftingSkill;
+
             this.Workstation = owner;
         }
         public CraftingOrder(int id, BlockWorkstationComp owner, MaterialRefinementDef refinement)
@@ -104,7 +109,8 @@ namespace Project1.Core.Crafting
         }
         void CreateFilters()
         {
-            foreach (var rule in CraftingSystem.GetCraftingRulesStruct(this.ProductDef))
+            //foreach (var rule in CraftingSystem.GetCraftingRulesStruct(this.ProductDef))
+            foreach (var rule in this.WorkstationCapability.Worker.GetCraftingRulesStruct(this.ProductDef))
             {
                 this.Rules.Add(rule.Bone, rule);
                 this.Filters.Add(rule.Bone, []);
@@ -134,14 +140,16 @@ namespace Project1.Core.Crafting
         (IntVec3 cell, IEnumerable<Entity> cellEntities) GetEntitiesAtWorkstationSlot(BoneDef bone)
         {
             var slots = this.Workstation.Parent.CellsOccupied.ToArray();
-            var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef).ToList();
+            //var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef).ToList();
+            var rules = this.WorkstationCapability.Worker.GetCraftingRulesStruct(this.ProductDef).ToList();
             var slotId = rules.FindIndex(r => r.Bone == bone);
             var slot = slots[slotId].Above;
             return (slot, this.Workstation.Map.GetEntitiesAt(slot));
         }
         public bool Matches(Entity item)
         {
-            var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef);
+            //var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef);
+            var rules = this.WorkstationCapability.Worker.GetCraftingRulesStruct(this.ProductDef);
             foreach(var rule in rules)
             {
                 if (!rule.Matches(item, out _))
@@ -552,13 +560,16 @@ namespace Project1.Core.Crafting
             ((int)this.Mode).Save(tag, "Mode");
             this.Amount.Save(tag, "Amount");
             this.ProductDef.Save(tag, "Product");
+            this.WorkstationCapability.Save(tag, "Domain");
 
             return tag;
         }
 
         public static CraftingOrder Create(SaveTag tag)
         {
-            var order = new CraftingOrder(tag.LoadDef<Def>("Product"));
+            var product = tag.LoadDef<Def>("Product");
+            var domain = tag.LoadDef<WorkstationCapabilityDef>("Domain");
+            var order = new CraftingOrder(product, domain);
             if (tag.TryLoadInt("Id", out var id)) order.Id = id;
             if (tag.TryLoadInt("Mode", out var mode)) order.Mode = (CraftMode)mode;
             if (tag.TryLoadInt("Amount", out var amount)) order.Amount = amount;
@@ -576,6 +587,7 @@ namespace Project1.Core.Crafting
         public void Write(IDataWriter w)
         {
             w.Write(this.ProductDef);
+            w.Write(this.WorkstationCapability);
             w.Write(this.Id);
             w.Write((int)this.Mode);
             w.Write(this.Amount);
@@ -583,7 +595,8 @@ namespace Project1.Core.Crafting
         public static CraftingOrder Create(IDataReader r)
         {
             var product = r.ReadDef();
-            return new CraftingOrder(product).Read(r);
+            var domain = r.ReadDef<WorkstationCapabilityDef>();
+            return new CraftingOrder(product, domain).Read(r);
         }
 
         internal void Dispose() => this.IsDisposed = true;

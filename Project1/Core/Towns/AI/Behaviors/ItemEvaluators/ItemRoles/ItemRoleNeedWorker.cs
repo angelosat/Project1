@@ -23,7 +23,6 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
         }
         public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
         {
-            return -1; //temp
             if (!item.TryGetComponent<ConsumableComponent>(out var consumableComp))
                 return -1;
             var nutrition = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Budget);

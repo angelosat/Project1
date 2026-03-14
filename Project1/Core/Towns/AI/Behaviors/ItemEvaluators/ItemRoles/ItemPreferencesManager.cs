@@ -130,7 +130,8 @@ namespace Project1.Core
         static List<ItemRoleDef> GenerateItemRolesAll()
         {
             var flat = new List<ItemRoleDef>();
-            foreach (var rDef in Def.GetDefs<ItemRoleDef>())
+            var defs = Def.GetDefs<ItemRoleDef>();
+            foreach (var rDef in defs)
             {
                 if (!ContextToItemRolesMap.TryGetValue(rDef.Context, out var list))
                     ContextToItemRolesMap[rDef.Context] = list = [];

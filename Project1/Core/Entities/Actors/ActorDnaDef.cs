@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using Project1.Core.Skills;
-using Project1.Core.AI;
-using Project1.Core.Needs;
-using Project1.Core.Gear;
-using Project1.Core.Attributes;
+﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.Attributes;
+using Project1.Core.Gear;
+using Project1.Core.Needs;
 using Project1.Core.Resources;
+using Project1.Core.Skills;
+using Project1.Core.Systems.Materials;
+using System.Collections.Generic;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -17,6 +18,7 @@ namespace Project1.Core.Entities.Actors
         public TraitDef[] Traits;
         public ResourceDef[] Resources;
         public GearTypeDef[] Gear;
+        public MaterialTypeDef[] Diet;
         public Behavior Behavior;
 
         public IEnumerable<EntityComp.Spec> GenerateSpecs()

@@ -7,6 +7,7 @@ using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Attributes;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.Systems.Materials;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -52,6 +53,11 @@ namespace Project1.Core.Entities.Actors
                 TraitDefOf.Activity,
                 TraitDefOf.Planning,
                 TraitDefOf.Resilience ],
+            Diet = [
+                MaterialTypeDefOf.Fruit,
+                MaterialTypeDefOf.Flesh,
+                //MaterialTypeDefOf.Fiber,
+                ],
             Behavior = BehaviorPackageDefOf.Npc.Root.Clone() as Behavior
         };
 

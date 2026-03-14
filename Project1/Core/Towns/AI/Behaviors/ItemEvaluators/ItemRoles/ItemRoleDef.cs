@@ -4,7 +4,7 @@ using System;
 
 namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
 {
-    public class ItemRoleDef(ItemRoleContextDef context, Def specific) : Def($"{context.LabelReadable}:{specific.LabelReadable}")// Def($"ItemRole:{context.Name}:{specific.Name}")
+    public class ItemRoleDef(ItemRoleContextDef context, Def specific) : Def($"{context.LabelReadable}:{specific?.LabelReadable}")// Def($"ItemRole:{context.Name}:{specific.Name}")
     {
         internal readonly ItemRoleWorker Worker = Activator.CreateInstance(context.WorkerType) as ItemRoleWorker;
         internal readonly ItemRoleContextDef Context = context;

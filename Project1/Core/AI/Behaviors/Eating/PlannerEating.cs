@@ -20,12 +20,15 @@ namespace Project1.Core.AI.Behaviors.Eating
             if (actor.Hauled is not Entity carried)
                 return null;
 
-            // if carrying non-consumable, exit
-            if (!carried.TryGetComponent<ConsumableComponent>(out var comp))
-                return null;
+            //// if carrying non-consumable, exit
+            //if (!carried.TryGetComponent<ConsumableComponent>(out var comp))
+            //    return null;
 
-            // if carrying non-food, exit
-            if (!comp.HasEffectTarget(NeedDefOf.Hunger))
+            //// if carrying non-food, exit
+            //if (!comp.HasEffectTarget(NeedDefOf.Hunger))
+            //    return null;
+
+            if (HungerUtility.GetNutrition(actor, carried) <= 0)
                 return null;
 
             return new Plan(PlanDefOf.Eating, carried);

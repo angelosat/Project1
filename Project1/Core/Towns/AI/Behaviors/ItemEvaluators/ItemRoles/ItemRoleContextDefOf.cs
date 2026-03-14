@@ -9,6 +9,7 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
     {
         public static readonly ItemRoleContextDef Tool = new("Tool", typeof(ToolUseDef), typeof(ItemRoleToolWorker));
         public static readonly ItemRoleContextDef Need = new("Need", typeof(NeedDef), typeof(ItemRoleNeedWorker));
+        public static readonly ItemRoleContextDef Nutrition = new("Nutrition", null, typeof(ItemRoleNutritionWorker));
 
         static ItemRoleContextDefOf()
         {

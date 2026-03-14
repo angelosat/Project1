@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Framework.Interfaces;
+using System;
 
 namespace Project1.Core.Systems.Materials
 {
@@ -29,6 +29,7 @@ namespace Project1.Core.Systems.Materials
         public int BreakResistance = 1;
         public int ValueBase = 1;
         public float ValueMultiplier = 1;
+        public int Tier;
 
         /// <summary>
         /// How many ticks it takes for the liquid to flow to nearby cells

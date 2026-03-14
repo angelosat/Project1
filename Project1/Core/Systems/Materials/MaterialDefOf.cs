@@ -10,14 +10,16 @@ namespace Project1.Core.Systems.Materials
         {
             Shine = .9f,
             BreakResistance = 30,
-            Color = Color.IndianRed
+            Color = Color.IndianRed,
+            Tier = 1
         }
           .SetPrefix("Copper")
           .SetValue(20);
         static public readonly MaterialDef Iron = new MaterialDef("Iron", MaterialTemplates.Metal)
         {
             BreakResistance = 30,
-            Color = Color.LightSteelBlue
+            Color = Color.LightSteelBlue,
+            Tier = 2
         }
             .SetPrefix("Iron")
             .SetValue(40);
@@ -28,65 +30,68 @@ namespace Project1.Core.Systems.Materials
             Color = Color.DodgerBlue,
             Density = 50,
             BreakResistance = 30,
+            Tier = 3
         };
         static public readonly MaterialDef Silver = new MaterialDef("Silver", MaterialTemplates.Metal)
         {
             Shine = 1,
             BreakResistance = 30,
-            Color = Color.White
+            Color = Color.White,
+            Tier = 4
         }
             .SetPrefix("Silver")
             .SetValue(80);
         static public readonly MaterialDef Gold = new MaterialDef("Gold", MaterialTemplates.Metal) 
         { 
             Shine = 1,
-            Color = Color.Gold
+            Color = Color.Gold,
+            Tier = 5
         }
             .SetPrefix("Golden")
             .SetValue(100);
 
-        static public readonly MaterialDef Coal = new(MaterialTypeDefOf.Stone, "Coal", "Coal", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
+        static public readonly MaterialDef Coal = new(MaterialTypeDefOf.Stone, "Coal", "Coal", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25, Tier = 1 };
   
-        static public readonly MaterialDef Stone = new(MaterialTypeDefOf.Stone, "Stone", "Stone", /*Color.DimGray*/Color.Beige, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
-        static public readonly MaterialDef Limestone = new(MaterialTypeDefOf.Stone, "Limestone", "Limestone", Color.Beige, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
-        static public readonly MaterialDef Granite = new(MaterialTypeDefOf.Stone, "Granite", "Granite", Color.LightSlateGray, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Stone = new(MaterialTypeDefOf.Stone, "Stone", "Stone", /*Color.DimGray*/Color.Beige, 80) { ValueBase = 5, BreakResistance = 20, Tier = 1 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Limestone = new(MaterialTypeDefOf.Stone, "Limestone", "Limestone", Color.Beige, 80) { ValueBase = 5, BreakResistance = 20, Tier = 2 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Granite = new(MaterialTypeDefOf.Stone, "Granite", "Granite", Color.LightSlateGray, 80) { ValueBase = 5, BreakResistance = 20, Tier = 3 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
 
-        static public readonly MaterialDef Diamond = new(MaterialTypeDefOf.Crystal, "Diamond", "Diamond", Color.AliceBlue, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
-        static public readonly MaterialDef Ruby = new(MaterialTypeDefOf.Crystal, "Ruby", "Ruby", Color.Red, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
-        static public readonly MaterialDef Topaz = new(MaterialTypeDefOf.Crystal, "Topaz", "Topaz", Color.Goldenrod, 80) { ValueBase = 5, BreakResistance = 20 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Diamond = new(MaterialTypeDefOf.Crystal, "Diamond", "Diamond", Color.AliceBlue, 80) { ValueBase = 5, BreakResistance = 20, Tier = 3 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Ruby = new(MaterialTypeDefOf.Crystal, "Ruby", "Ruby", Color.Red, 80) { ValueBase = 5, BreakResistance = 20, Tier = 2 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
+        static public readonly MaterialDef Topaz = new(MaterialTypeDefOf.Crystal, "Topaz", "Topaz", Color.Goldenrod, 80) { ValueBase = 5, BreakResistance = 20, Tier = 1 };//LightSlateGray, 0.8f); new Color(213, 209, 201, 255) //Color.AntiqueWhite
 
-        static public readonly MaterialDef CoalNew = new(MaterialTypeDefOf.FossilFuel, "CoalNew", "CoalNew", Color.Black, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
-        static public readonly MaterialDef Peat = new(MaterialTypeDefOf.FossilFuel, "Peat", "Peat", Color.SaddleBrown, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
-        static public readonly MaterialDef Lignite = new(MaterialTypeDefOf.FossilFuel, "Lignite", "Lignite", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25 };
+        static public readonly MaterialDef CoalNew = new(MaterialTypeDefOf.FossilFuel, "CoalNew", "CoalNew", Color.Black, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25, Tier = 1 };
+        static public readonly MaterialDef Peat = new(MaterialTypeDefOf.FossilFuel, "Peat", "Peat", Color.SaddleBrown, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25, Tier = 2 };
+        static public readonly MaterialDef Lignite = new(MaterialTypeDefOf.FossilFuel, "Lignite", "Lignite", Color.DimGray, 100) { ValueBase = 1, Fuel = new Fuel(FuelDef.Organic, 20f), BreakResistance = 25, Tier = 3 };
 
-        static public readonly MaterialDef ShrubStem = new MaterialDef("Twig", MaterialTemplates.PlantStem)
+        static public readonly MaterialDef ShrubStem = new MaterialDef("Twig", MaterialTemplates.PlantStem) { Tier = 1 }
             .SetColor(new Color(139, 136, 95, 255));// Color.DarkOliveGreen
 
-        static public readonly MaterialDef LightWood = new MaterialDef("Light Wood", MaterialTemplates.Wood)
+        static public readonly MaterialDef LightWood = new MaterialDef("Light Wood", MaterialTemplates.Wood) { Tier = 1 }
             .SetPrefix("Light Wood")
             .SetColor(Color.SandyBrown)
             .SetValue(5);
-        static public readonly MaterialDef DarkWood = new MaterialDef("Dark Wood", MaterialTemplates.Wood)
+        static public readonly MaterialDef DarkWood = new MaterialDef("Dark Wood", MaterialTemplates.Wood) { Tier = 2 }
             .SetPrefix("Dark Wood")
             .SetColor(Color.SaddleBrown)
             .SetValue(10);
-        static public readonly MaterialDef RedWood = new MaterialDef("Red Wood", MaterialTemplates.Wood)
+        static public readonly MaterialDef RedWood = new MaterialDef("Red Wood", MaterialTemplates.Wood) { Tier = 3 }
             .SetPrefix("Red Wood")
             .SetColor(Color.Brown)
             .SetValue(20);
-        static public readonly MaterialDef VineWood = new MaterialDef("Vine Wood", MaterialTemplates.Wood) { Shine = .5f }
+        static public readonly MaterialDef VineWood = new MaterialDef("Vine Wood", MaterialTemplates.Wood) { Shine = .5f, Tier = 4 }
             .SetPrefix("Vine Wood")
             .SetColor(Color.GreenYellow)
             .SetValue(30);
-        static public readonly MaterialDef BlackWood = new MaterialDef("Black Wood", MaterialTemplates.Wood) { Shine = .5f }
+        static public readonly MaterialDef BlackWood = new MaterialDef("Black Wood", MaterialTemplates.Wood) { Shine = .5f, Tier = 5 }
             .SetPrefix("Black Wood")
             .SetColor(Color.DarkSlateGray)
             .SetValue(40);
 
-        static public readonly MaterialDef Soil = new(MaterialTypeDefOf.Sediment, "Soil", "Dirt", Color.SandyBrown, 20) { ValueBase = 2, BreakResistance = 4 };
-        static public readonly MaterialDef Sand = new(MaterialTypeDefOf.Sediment, "Sand", "Sand", Color.Khaki, 10) { ValueBase = 2 };
+        static public readonly MaterialDef Soil = new(MaterialTypeDefOf.Sediment, "Soil", "Dirt", Color.SandyBrown, 20) { ValueBase = 2, BreakResistance = 4, Tier = 1 };
+        static public readonly MaterialDef Sand = new(MaterialTypeDefOf.Sediment, "Sand", "Sand", Color.Khaki, 10) { ValueBase = 2, Tier = 1 };
         //static public readonly MaterialDef SandNew = new(MaterialTypeDefOf.Sediment, "SandNew", "SandNew", Color.BlanchedAlmond, 10) { ValueBase = 2 };
-        static public readonly MaterialDef Dirt = new(MaterialTypeDefOf.Sediment, "Dirt", "Dirt", Color.SaddleBrown, 10) { ValueBase = 2 };
+        static public readonly MaterialDef Dirt = new(MaterialTypeDefOf.Sediment, "Dirt", "Dirt", Color.SaddleBrown, 10) { ValueBase = 2, Tier = 1 };
 
 
         static public readonly MaterialDef Air = new(MaterialTypeDefOf.Gas, "Air", "Air", 0);
@@ -95,20 +100,20 @@ namespace Project1.Core.Systems.Materials
         static public readonly MaterialDef Glass = new(MaterialTypeDefOf.Glass, "Glass", "Glass", Color.White, 40);
 
         static public readonly MaterialDef Human = 
-            new MaterialDef("Human", MaterialTemplates.Meat)
+            new MaterialDef("Human", MaterialTemplates.Meat) { Tier = 1 }
             .SetPrefix("Human")
             .SetValue(20);
         static public readonly MaterialDef Animal = 
-            new MaterialDef("Animal", MaterialTemplates.Meat)
+            new MaterialDef("Animal", MaterialTemplates.Meat) { Tier = 1 }
             .SetPrefix("Animal")
             .SetValue(20);
         static public readonly MaterialDef Insect = 
-            new MaterialDef("Insect", MaterialTemplates.Meat)
+            new MaterialDef("Insect", MaterialTemplates.Meat) { Tier = 1 }
             .SetPrefix("Insect")
             .SetValue(20);
 
         static public readonly MaterialDef Berry = 
-            new MaterialDef("Berry", MaterialTemplates.Fruit)
+            new MaterialDef("Berry", MaterialTemplates.Fruit) { Tier = 1 }
             .SetPrefix("Berry")
             //.SetColor(new Color(141, 78, 133));
             .SetColor(Color.MediumVioletRed);

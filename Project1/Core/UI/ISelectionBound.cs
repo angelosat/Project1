@@ -1,4 +1,6 @@
-﻿namespace Project1.Core.UI
+﻿using Project1.Framework.UI;
+
+namespace Project1.Core.UI
 {
     public interface ISelectionBound
     {
@@ -9,5 +11,16 @@
         }
         void OnBind(ISelectable selectable);
         public ISelectable CurrentSelection { get; set; }
+    }
+
+    public abstract class SelectionBoundControl : GroupBox
+    {
+        public ISelectable CurrentSelection { get; set; }
+        internal void Bind(ISelectable selectable)
+        {
+            this.CurrentSelection = selectable;
+            this.OnBind(selectable);
+        }
+        protected abstract void OnBind(ISelectable selectable);
     }
 }

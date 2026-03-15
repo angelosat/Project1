@@ -98,11 +98,13 @@ namespace Project1.Core.Blocks
         private static void SendBlockOwnerChanged(BlockOwnerChangedEvent e)
         {
             var entity = e.Entity;
-            var owner = e.Actor;
+            var owner = e.Owner;
             Server.Instance.BeginPacketImmediate(_pOwnerChanged)
                 .Write(entity.Map.ID)
                 .Write(entity.OriginGlobal)
-                .Write(owner?.RefId ?? EntityRefId.Null);
+                .Write(owner?.RefId ?? EntityRefId.Null)
+                //.Write(e.PreviousOwner);
+            ;
         }
 
         private static void OnBlockOwnerChanged(NetEndpoint endpoint, Packet packet)
@@ -112,7 +114,8 @@ namespace Project1.Core.Blocks
             var mapid = r.ReadInt32();
             var map = client.Map;
             var entity = map.GetBlockEntity(r.ReadIntVec3());
-            var ownerid = (EntityRefId)r.ReadEntityRefId();
+            var ownerid = r.ReadEntityRefId();
+            //var previousOwnerid = r.ReadEntityRefId();
             var owner = ownerid != EntityRefId.Null ? map.World.GetEntity<Actor>(ownerid) : null;
             var comp = entity.GetComp<BlockOwnershipComp>();
             comp.SetOwner(owner);

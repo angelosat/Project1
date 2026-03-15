@@ -153,7 +153,8 @@ namespace Project1.Core.Towns
                 //this.TerrainManager,
                 this.ShopManager,
                 this.QuestManager,
-                this.Storage
+                this.Storage,
+                new OwnershipManager(this)
             ]);
             
             var utilities = (Utility.Types[])Enum.GetValues(typeof(Utility.Types));

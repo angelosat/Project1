@@ -10,7 +10,7 @@ namespace Project1.Core.Blocks
 {
     public record struct BlockEntityCompUpdatedEvent(BlockComp Comp) : IEventPayload { }
     public record struct BlockEntityUpdatedEvent(BlockEntity Entity) : IEventPayload { }
-    public record struct BlockOwnerChangedEvent(BlockEntity Entity, Actor Actor) : IEventPayload { }
+    public record struct BlockOwnerChangedEvent(BlockEntity Entity, Actor Owner, EntityRefId PreviousOwner) : IEventPayload { }
     public record struct PlayerChangedBlockOwnerEvent(BlockEntity Entity, Actor Actor) : IEventPayload { }
     public record struct BlocksChangedEvent(MapBase Map, IEnumerable<SetBlockArgs> Changes) : IEventPayload { }
     public record struct BlockEntityRemovedEvent(BlockEntity Entity) : IEventPayload { }

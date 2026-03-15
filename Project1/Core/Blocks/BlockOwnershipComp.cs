@@ -33,9 +33,10 @@ namespace Project1.Core.Blocks
         }
         internal void SetOwner(Actor a)
         {
+            var prevOwner = this.Owner;
             this.Owner = a?.RefId ?? EntityRefId.Null;
             a?.Possessions.Add(this.Parent);
-            this.Map.Events.Post(new BlockOwnerChangedEvent(this.Parent, a));
+            this.Map.Events.Post(new BlockOwnerChangedEvent(this.Parent, a, prevOwner));
             this.Notifications.Notify();
         }
 

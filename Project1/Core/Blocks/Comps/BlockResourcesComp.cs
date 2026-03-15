@@ -15,7 +15,6 @@ namespace Project1.Core.Blocks.Comps
         public override BlockCompDef CompDef => BlockCompDefOf.Resources;
 
         readonly Dictionary<ResourceDef, Resource> _resources = [];
-        //public IReadOnlyDictionary<ResourceDef, Resource> Resources => this._resources;
 
         public void ApplyDelta(ResourceDef resource, float delta)
         {

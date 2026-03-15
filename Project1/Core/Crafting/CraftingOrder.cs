@@ -4,7 +4,6 @@ using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI;
@@ -25,7 +24,7 @@ namespace Project1.Core.Crafting
             StockpileLimit,    // Craft until stockpile has at least X
             Infinite           // Craft forever
         }
-        static public CraftMode[] AllModes = [CraftMode.FixedAmount, CraftMode.StockpileLimit, CraftMode.Infinite];
+        static public readonly CraftMode[] AllModes = [CraftMode.FixedAmount, CraftMode.StockpileLimit, CraftMode.Infinite];
         public CraftMode Mode;
         int _amount = 1;
         public int Amount//; // X for FixedAmount or StockpileLimit, ignored for Infinite
@@ -36,9 +35,9 @@ namespace Project1.Core.Crafting
         public bool Enabled;
         public bool IsDisposed { get; private set; }
         public bool Pending => !this.IsDisposed && (this.Mode == CraftMode.Infinite || this.Mode == CraftMode.FixedAmount && this.Amount > 0);
+        public IEnumerable<BoneDef> GetSlotMapping() => this.WorkstationCapability.Worker.GetBoneLayout();
+
         public EntityCreationRequest Target { get; init; }
-        //public Entity UnfinishedItem;
-        // Explicit actor restriction
         public HashSet<int> AllowedActors = [];
 
         // Minimum skill requirement
@@ -54,11 +53,11 @@ namespace Project1.Core.Crafting
         public Dictionary<BoneDef, HashSet<MaterialDef>> Filters = [];
         public Dictionary<BoneDef, IngredientRequirement> FiltersNew = [];
         public Dictionary<BoneDef, CraftingRule> Rules = [];
-        Dictionary<BoneDef, MaterialDef[]> AcceptableMaterials = [];
+        readonly Dictionary<BoneDef, MaterialDef[]> AcceptableMaterials = [];
         internal Entity UnfinishedItem;
+        internal void Dispose() => this.IsDisposed = true;
 
         public bool IsAllowed(BoneDef bone, MaterialDef mat) => !this.Filters[bone].Contains(mat);
-        //public bool IsAllowed(BoneDef bone, MaterialRefinementDef form) => RawMaterialSystem.MaterialsByType[form.MaterialType].All(mat => !this.Filters[bone].Contains(mat));
         public bool IsAllowed(BoneDef bone, MaterialTypeDef form) => RawMaterialSystem.MaterialsByType[form].All(mat => !this.Filters[bone].Contains(mat));
         internal void Toggle(BoneDef bone, MaterialTypeDef form, MaterialDef material)
         {
@@ -83,8 +82,6 @@ namespace Project1.Core.Crafting
             this.CacheAcceptableMaterials(bone);
             this.Workstation.Map.Events.Post(new CraftOrderUpdatedEvent(this));
         }
-        //public IEnumerable<BoneDef> GetSlotMapping() => CraftingSystem.GetSlotMapping(this.ProductDef);
-        public IEnumerable<BoneDef> GetSlotMapping() => this.WorkstationCapability.Worker.GetBoneLayout();
         CraftingOrder(Def recipe, WorkstationCapabilityDef capability)
         {
             this.WorkstationCapability = capability;
@@ -93,13 +90,11 @@ namespace Project1.Core.Crafting
         }
         public CraftingOrder(int id, BlockWorkstationComp owner, Def recipe, WorkstationCapabilityDef capability) : this(recipe, capability)
         {
-            //this.WorkstationCapability = capability;
             this.Id = id;
-            //this.Skill = CraftingSystem.GetCraftingSkill(recipe);
             this.Skill = capability.Worker.CraftingSkill;
-
             this.Workstation = owner;
         }
+
         public CraftingOrder(int id, BlockWorkstationComp owner, MaterialRefinementDef refinement)
         {
             this.Id = id;
@@ -107,9 +102,9 @@ namespace Project1.Core.Crafting
             this.Refinement = refinement;
             this.Workstation = owner;
         }
+
         void CreateFilters()
         {
-            //foreach (var rule in CraftingSystem.GetCraftingRulesStruct(this.ProductDef))
             foreach (var rule in this.WorkstationCapability.Worker.GetCraftingRulesStruct(this.ProductDef))
             {
                 this.Rules.Add(rule.Bone, rule);
@@ -121,117 +116,43 @@ namespace Project1.Core.Crafting
         private void CacheAcceptableMaterials(BoneDef bone)
         {
             this.AcceptableMaterials[bone] =
-                                //[.. this.Rules[bone].Profiles
-                                //    .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
                                 [.. this.Rules[bone].MaterialTypes.SelectMany(mt=>
                                 RawMaterialSystem.MaterialsByType[mt]
                                     .Where(m => !Filters[bone].Contains(m)))];
         }
-        //public IEnumerable<IngredientRequirement> GetIngredientRequirements()
-        //{
-        //    var n = 0;
-        //    var slots = this.Workstation.Parent.CellsOccupied.ToArray();
-        //    foreach (var (validRefinements, quantity) in CraftingSystem.GetValidIngredientsPerSlot(this.ProductDef))
-        //    {
-        //        var slot = slots[n++].Above;
-        //        yield return new([.. validRefinements], quantity, slot, [.. this.Workstation.Map.GetEntitiesAt(slot)]);
-        //    }
-        //}
+       
         (IntVec3 cell, IEnumerable<Entity> cellEntities) GetEntitiesAtWorkstationSlot(BoneDef bone)
         {
             var slots = this.Workstation.Parent.CellsOccupied.ToArray();
-            //var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef).ToList();
             var rules = this.WorkstationCapability.Worker.GetCraftingRulesStruct(this.ProductDef).ToList();
             var slotId = rules.FindIndex(r => r.Bone == bone);
             var slot = slots[slotId].Above;
             return (slot, this.Workstation.Map.GetEntitiesAt(slot));
         }
-        public bool Matches(Entity item)
-        {
-            //var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef);
-            var rules = this.WorkstationCapability.Worker.GetCraftingRulesStruct(this.ProductDef);
-            foreach(var rule in rules)
-            {
-                if (!rule.Matches(item, out _))
-                    return false;
-                if (this.Filters[rule.Bone].Contains(item.PrimaryMaterial))
-                    return false;
-            }
-            return true;
-        }
-        //public bool MatchesPartial(Entity item, out int demand)
-        //{
-        //    if (item.Def == ItemDefOf.Ingredient)
-        //    {
-        //        var rules = CraftingSystem.GetCraftingRulesStruct(this.ProductDef);
-        //        foreach (var rule in rules)
-        //        {
-        //            if (!rule.Matches(item, out _) && this.Filters[rule.Bone].Contains(item.PrimaryMaterial))
-        //                continue;
-        //            demand = rule.Quantity;
-        //            var slotEntities = this.GetEntitiesAtWorkstationSlot(rule.Bone);
-        //            foreach (var inSlot in slotEntities.cellEntities)
-        //                if (rule.Matches(inSlot, out var alreadyCovered))
-        //                    demand -= alreadyCovered;
-        //            if (demand > 0)
-        //                return true;
-        //        }
-        //    }
-        //    demand = -1;
-        //    return false;
-        //}
-        public IEnumerable<Entity> AlreadyBoundInSlots()
-        {
-            foreach (var (bone, rule) in this.Rules)
-            {
-                var items = this.GetEntitiesAtWorkstationSlot(bone);
-                foreach (var item in items.cellEntities)
-                    if (rule.Matches(item, out _))
-                        yield return item;
-            }
-        }
-        public bool IsReadyToCraft(out List<Entity> handled)
-        {
-            handled = [];
-            foreach (var (bone, rule) in this.Rules)
-            {
-                var items = this.GetEntitiesAtWorkstationSlot(bone);
-                handled.AddRange(items.cellEntities);
-                if (!items.cellEntities.Any(item => rule.Matches(item, out var missing) && missing == 0))
-                    return false;
-            }
-            return true;
-        }
+
         public bool CheckFuelReq()
         {
-            if (this.ProductDef is not MaterialRefinementDef refinement)
-                return true;
-            var fuelReq = refinement.FuelConsumption;
-            if (fuelReq == 0)
+            var (resource, value) = this.WorkstationCapability.Worker.ResourceConsumption;
+            if (resource == null)
                 return true;
             var workstation = this.Workstation.Parent;
-            var currentFuel = workstation.GetComp<BlockResourcesComp>().GetValue(ResourceDefOf.Fuel);
-            return fuelReq <= currentFuel;
+            var currentResource = workstation.GetComp<BlockResourcesComp>().GetValue(resource);
+            return value <= currentResource;
         }
-        public int GetFuelReq()
-        {
-            if (this.ProductDef is not MaterialRefinementDef refinement)
-                return 0;
-            return refinement.FuelConsumption;
-        }
+
         public bool TryConsumeFuel()
         {
-            var fuelReq = this.GetFuelReq();
-            if (fuelReq == 0)
+            var (resource, value) = this.WorkstationCapability.Worker.ResourceConsumption;
+            if (resource == null)
                 return true;
             var workstation = this.Workstation.Parent;
             var comp = workstation.GetComp<BlockResourcesComp>();
-            var currentFuel = comp.GetValue(ResourceDefOf.Fuel);
-            if (currentFuel < fuelReq)
+            if (comp.GetValue(resource) < value)
                 return false;
-            comp.ApplyDelta(ResourceDefOf.Fuel, -fuelReq);
+            comp.ApplyDelta(resource, -value);
             return true;
         }
+
         public OrderFeasibilityResult IsFeasibleNew(
             IReadOnlyList<Entity> candidates, 
             HashSet<IntVec3> excludedSlots,
@@ -485,32 +406,6 @@ namespace Project1.Core.Crafting
             public List<Allocation> Allocations = new();
         }
 
-
-        //public bool IsFeasible(IReadOnlyList<Entity> items)
-        //{
-        //    Dictionary<MaterialDef, int> pool = [];
-        //    foreach (var i in items)
-        //        pool[i.PrimaryMaterial] += i.StackSize;
-
-        //    // sort rules by more restrictive first
-        //    var sortedRules = this.Rules.Values
-        //        .OrderBy(rule => rule.Profiles.SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType]).Count(m => !this.Filters[rule.Bone].Contains(m)));
-        //    foreach (var rule in sortedRules)
-        //    {
-        //        var disallowed = this.Filters[rule.Bone];
-
-        //        var matchedMaterial = rule.Forms
-        //            .SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
-        //            .Where(m => !this.Filters[rule.Bone].Contains(m))
-        //            .FirstOrDefault(m => pool.TryGetValue(m, out var c) && c >= rule.Quantity);
-
-        //        if (matchedMaterial is null)
-        //            return false; // slot cannot be satisfied
-
-        //        pool[matchedMaterial] -= rule.Quantity; // consume
-        //    }
-        //    return true;
-        //}
         public bool CanActorPerform(Actor actor)
         {
             if (!this.Enabled) return false;
@@ -599,6 +494,5 @@ namespace Project1.Core.Crafting
             return new CraftingOrder(product, domain).Read(r);
         }
 
-        internal void Dispose() => this.IsDisposed = true;
     }
 }

@@ -16,7 +16,6 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
                 return -100;
             var nutrition = HungerUtility.GetNutrition(actor, item.PrimaryMaterial);
         
-            //var needRestore = consumableComp.EffectsNew.Where(e => e.Target == needDef).Sum(e => e.Budget);
             if (nutrition <= 0)
                 return -100;
             var need = actor.GetNeed(needDef);
@@ -24,12 +23,6 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
             return (int)(nutrition * needDeficit);
         }
         public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
-        {
-            return HungerUtility.GetNutrition(actor, item) * item.StackMax;
-            //if (!item.TryGetComponent<ConsumableComponent>(out var consumableComp))
-            //    return -1;
-            //var nutrition = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Budget);
-            //return nutrition * item.StackMax;
-        }
+            => HungerUtility.GetNutrition(actor, item) * item.StackMax;
     }
 }

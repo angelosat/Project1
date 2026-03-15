@@ -2,6 +2,7 @@
 using Project1.Core.Animations;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
+using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
@@ -20,12 +21,12 @@ namespace Project1.Core.Crafting
         public Def[] OutputSpecific = [];
         public PlanDef Plan;
         public WorkstationCapabilityWorker Worker = ActivatorSafe<WorkstationCapabilityWorker>.CreateInstance(workerType);
-
     }
     public abstract class WorkstationCapabilityWorker
     {
         public abstract bool CreatesUnfinished { get; }
         public abstract SkillDef CraftingSkill { get; }
+        public virtual (ResourceDef resource, int value) ResourceConsumption { get; }
 
         public abstract IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp);
         public abstract IEnumerable<(Def[] validRefinements, int quantity)> GetValidIngredientsPerSlot(Def recipe);
@@ -41,6 +42,7 @@ namespace Project1.Core.Crafting
     {
         public override bool CreatesUnfinished => false;
         public override SkillDef CraftingSkill => SkillDefOf.Smithing;
+        public override (ResourceDef resource, int value) ResourceConsumption => (ResourceDefOf.Fuel, 5);
 
         public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
         {
@@ -158,6 +160,7 @@ namespace Project1.Core.Crafting
     {
         public override bool CreatesUnfinished => false;
         public override SkillDef CraftingSkill => SkillDefOf.Cooking;
+        public override (ResourceDef resource, int value) ResourceConsumption => (ResourceDefOf.Fuel, 5);
 
         public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
             => Def.GetDefs<ConsumableDef>().Select(def => new AddOrderRequest(WorkstationCapabilityDefOf.Cooking, def));

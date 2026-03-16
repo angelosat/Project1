@@ -501,7 +501,7 @@ namespace Project1.Framework.UI
 
         public bool RemoveWindow(Window window)
         {
-            if (window.Client.Controls.Count == 1 && window.Client.Controls[0] is ISelectionBound sBound)
+            if (window.Client.Controls.Count == 1 && window.Client.Controls[0] is SelectionBoundControl sBound)
             {
                 var key = new WindowKey(sBound.GetType(), null);
                 if (_windowsSingleton.ContainsKey(key))
@@ -835,8 +835,8 @@ namespace Project1.Framework.UI
             }
             else
             {
-                var control = (ISelectionBound)Activator.CreateInstance(type);// new T();
-                control.OnBind(selectable);
+                var control = (SelectionBoundControl)Activator.CreateInstance(type);// new T();
+                control.Bind(selectable);
                 var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
                 window.Client.AddControls(control as Control);
                 if (_windowLastPositions.TryGetValue(type, out var loc))
@@ -857,8 +857,8 @@ namespace Project1.Framework.UI
             }
             else
             {
-                var control = (ISelectionBound)Activator.CreateInstance(type);// new T();
-                control.OnBind(selectable);
+                var control = (SelectionBoundControl)Activator.CreateInstance(type);// new T();
+                control.Bind(selectable);
                 var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
                 window.Client.AddControls(control as Control);
                 window.SmartPosition();
@@ -867,7 +867,7 @@ namespace Project1.Framework.UI
                 window.HideAction += () => _windowsUnique.Remove(key);
             }
         }
-        public static void ToggleUnique<T>(ISelectable selectable) where T : Control, ISelectionBound, new()
+        public static void ToggleUnique<T>(ISelectable selectable) where T : SelectionBoundControl/*Control, ISelectionBound*/, new()
         {
             var key = new WindowKey(typeof(T), selectable);//, WindowMultiplicity.UniquePerTarget);
 
@@ -879,7 +879,7 @@ namespace Project1.Framework.UI
             else
             {
                 var control = new T();
-                control.OnBind(selectable);
+                control.Bind(selectable);
                 var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
                 window.Client.AddControls(control);
 
@@ -919,8 +919,8 @@ namespace Project1.Framework.UI
         }
         public static void BindAllSelectionBound(Control root, ISelectable selection)
         {
-            if (root is ISelectionBound bound)
-                bound.OnBind(selection);
+            if (root is SelectionBoundControl bound)
+                bound.Bind(selection);
 
             foreach (var child in root.Controls)
                 BindAllSelectionBound(child, selection);

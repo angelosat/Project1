@@ -36,7 +36,6 @@ namespace Project1.Core.Interactions
                 return;
 
             var creationReq = order.GetCreationRequest();
-            //var mapping = CraftingSystem.GetIngredientMapping(order.ProductDef, plan.TargetsA.Select(t => t.Entity));
             var mapping = order.WorkstationCapability.Worker.GetIngredientMapping(order.ProductDef, plan.TargetsA.Select(t => t.Entity));
 
             foreach (var (bone, item) in mapping)

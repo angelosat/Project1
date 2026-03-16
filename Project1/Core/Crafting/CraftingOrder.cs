@@ -37,10 +37,8 @@ namespace Project1.Core.Crafting
         public bool Pending => !this.IsDisposed && (this.Mode == CraftMode.Infinite || this.Mode == CraftMode.FixedAmount && this.Amount > 0);
         public IEnumerable<BoneDef> GetSlotMapping() => this.WorkstationCapability.Worker.GetBoneLayout();
 
-        public EntityCreationRequest Target { get; init; }
         public HashSet<int> AllowedActors = [];
 
-        // Minimum skill requirement
         public int SkillFilter;
 
         public int Id { get; private set; }
@@ -49,7 +47,10 @@ namespace Project1.Core.Crafting
         public Def ProductDef { get; internal set; }
         public WorkstationCapabilityDef WorkstationCapability { get; internal set;}
         public BlockWorkstationComp Workstation { get; internal set; }
-        public string LabelReadable => this.ProductDef.LabelReadable;
+        public string LabelReadable
+            => this.ProductDef is Def def ?
+            $"{this.WorkstationCapability.LabelReadable}: {def.LabelReadable}" :
+            $"{this.WorkstationCapability.LabelReadable}";
         public Dictionary<BoneDef, HashSet<MaterialDef>> Filters = [];
         public Dictionary<BoneDef, IngredientRequirement> FiltersNew = [];
         public Dictionary<BoneDef, CraftingRule> Rules = [];

@@ -10,10 +10,8 @@ namespace Project1.Core.UI
     {
         string Name { get; }
         IEnumerable<Control> GetSelectionInfo();
-        //IEnumerable<(string name, Action action)> GetInfoTabs();
         IEnumerable<(string label, Type type)> GetSelectionTabs();
         IEnumerable<Control> GetSelectionDetails();
-        //void GetQuickButtons(SelectionManager panel);
         bool Exists { get; }
         Vector3 Global { get; }
         MapBase Map { get; }

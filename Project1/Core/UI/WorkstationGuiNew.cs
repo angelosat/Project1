@@ -11,14 +11,14 @@ using System.Linq;
 
 namespace Project1.Core.UI
 {
-    class WorkstationGuiNew : GroupBox, ISelectionBound
+    class WorkstationGuiNew : SelectionBoundControl// GroupBox, ISelectionBound
     {
         Panel PanelReactions;
         readonly ListBoxNoScroll<CraftingOrder, OrderGuiContainer> ListOrdersNew;
         Table<(string label, Func<ZoneId> zoneIdGetter, WorkstationIOType iotype)> IOTable;
         BlockWorkstationComp Workstation;
 
-        public ISelectable CurrentSelection { get; set; }
+        //public ISelectable CurrentSelection { get; set; }
 
         public WorkstationGuiNew()
         {
@@ -52,7 +52,14 @@ namespace Project1.Core.UI
             this.PanelReactions.HideOnAnyClick();
             var manager = workstation.Parent.Map.Town.CraftingManager;
             var availableRecipesNew = workstation.WorkstationType.Capabilities.SelectMany(cap => cap.Worker.GetAddOrderRequests(workstation));
-            var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.GetLabel(), () => this.PlaceOrderNew(r)));
+            //var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.GetLabel(), () => this.PlaceOrderNew(r)));
+            var availableRefinementsControl =
+                new ListBoxNoScroll<AddOrderRequest>(r =>
+                    new LabelNew(r.GetLabel(), () => this.PlaceOrderNew(r))
+                    {
+                        TextColorFunc = () => r.IsAvailable(workstation).Result ? UIManager.DefaultTextColor : Microsoft.Xna.Framework.Color.Red,
+                        HoverFunc = () => r.IsAvailable(workstation).Message,
+                    });
             availableRefinementsControl.AddItems(availableRecipesNew);
             var reactionsListContainer = availableRefinementsControl.ToScrollableBox(200, 400);
             this.PanelReactions.AddControls(reactionsListContainer);
@@ -83,7 +90,7 @@ namespace Project1.Core.UI
 
             void select(WorkstationIOType iotype, Stockpile stockpile) =>
                 Ingame.Instance.Events.Post(new PlayerSetWorkstationZoneEvent(workstation, iotype, stockpile));
-
+            this.Controls.Clear();
             this.AddControls(
                 panell,
                 btnAddOrder, linkedStockpiledPanel
@@ -188,6 +195,8 @@ namespace Project1.Core.UI
         }
         private void PlaceOrderNew(AddOrderRequest orderRequest)
         {
+            if (!orderRequest.IsAvailable(this.Workstation).Result)
+                return;
             this.PanelReactions.Hide();
             Ingame.Instance.Events.Post(new PlayerIssuedCraftOrderEventNew(this.Workstation, orderRequest));
         }
@@ -196,7 +205,17 @@ namespace Project1.Core.UI
             if (e.Positions.Contains(this.Workstation.Global))
                 this.GetWindow().Hide();
         }
-        public void OnBind(ISelectable selectable)
+        //public void OnBind(ISelectable selectable)
+        //{
+        //    if (selectable is BlockEntity bEntity &&
+        //        //target.BlockEntityOld is BlockEntity block &&
+        //        bEntity.TryGetComp<BlockWorkstationComp>(out var comp))// is BlockWorkstationComp comp)
+        //        this.Build(comp);
+        //    else
+        //        this.Window.Hide();
+        //}
+
+        protected override void OnBind(ISelectable selectable)
         {
             if (selectable is BlockEntity bEntity &&
                 //target.BlockEntityOld is BlockEntity block &&
@@ -204,6 +223,13 @@ namespace Project1.Core.UI
                 this.Build(comp);
             else
                 this.Window.Hide();
+        }
+
+        protected override void RegisterInvalidations()
+        {
+            if (this.CurrentSelection is not BlockEntity entity)
+                return;
+            this.InvalidateOn<BlockEntityRemovedEvent>(e => e.Entity == entity);
         }
     }
 }

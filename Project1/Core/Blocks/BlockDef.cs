@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Blocks.Comps;
 using Project1.Core.Crafting;
+using Project1.Core.Rooms;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -19,6 +20,7 @@ namespace Project1.Core.Blocks
         public BlockComp.Spec[] BlockEntityCompSpecs;
         public BlockCompDef[] Comps;
         internal MaterialDef DefaultMaterial;
+        public FurnitureDef? Furniture;
 
         public T GetSpec<T>() where T: BlockComp.Spec
         {

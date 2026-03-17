@@ -76,7 +76,10 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Chest = new("Chest", typeof(BlockChest));
         static public readonly BlockDef Bin = new("Bin", typeof(BlockStorage));
         static public readonly BlockDef Fluid = new("Fluid", typeof(BlockFluid));
-        static public readonly BlockDef Stool = new("Stool", typeof(BlockStool));
+        static public readonly BlockDef Stool = new("Stool", typeof(BlockStool))
+        {
+            ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Logs, MaterialRefinementDefOf.Chunk])
+        };
         static public readonly BlockDef Chair = new("Chair", typeof(BlockChair));
         static public readonly BlockDef Bricks = new("Bricks", typeof(BlockBricks))
         {

@@ -16,7 +16,6 @@ using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Storage;
-using Project1.Core.Towns.Terrain;
 using Project1.Core.Towns.UI;
 using Project1.Core.Towns.Zones;
 using Project1.Core.UI;
@@ -114,6 +113,7 @@ namespace Project1.Core.Towns
         public QuestsManager QuestManager;
         [InspectorHidden]
         public StorageManager Storage;
+        public FurnitureTracker Furniture;
 
         public List<TownComponent> TownComponents = [];
 
@@ -140,6 +140,7 @@ namespace Project1.Core.Towns
             this.ShopManager = new(this);
             this.QuestManager = new(this);
             this.Storage = new(this);
+            this.Furniture = new(this);
 
             this.TownComponents.AddRange([
                 this.ZoneManager,
@@ -154,7 +155,8 @@ namespace Project1.Core.Towns
                 this.ShopManager,
                 this.QuestManager,
                 this.Storage,
-                new OwnershipManager(this)
+                new OwnershipManager(this),
+                this.Furniture
             ]);
             
             var utilities = (Utility.Types[])Enum.GetValues(typeof(Utility.Types));

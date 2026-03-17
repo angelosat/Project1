@@ -163,6 +163,12 @@ public abstract class MapBase : Inspectable
             foreach (var c in ch.Cells)
                 yield return c;
     }
+    public IEnumerable<(Chunk chunk, Cell cell, CellId id)> GetAllCellsWithIndex()
+    {
+        foreach (var ch in this.ActiveChunks.Values)
+            foreach (var c in ch.GetAllCellsWithIndex())
+                yield return (ch, c.cell, c.index);
+    }
     internal void ResolveReferences()
     {
         this.World.ResolveReferences();

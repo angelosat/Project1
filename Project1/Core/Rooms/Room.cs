@@ -209,15 +209,15 @@ namespace Project1.Core.Rooms
                 return null;
             if (map.IsAboveHeightMap(begin))
                 return null;
-            HashSet<IntVec3> interior = new();
-            HashSet<IntVec3> edges = new();
+            HashSet<IntVec3> interior = [];
+            HashSet<IntVec3> edges = [];
 
             interior.Add(begin);
 
             Queue<IntVec3> toHandle = new();
-            HashSet<IntVec3> handled = new() { begin };
+            HashSet<IntVec3> handled = [begin];
             toHandle.Enqueue(begin);
-            while (toHandle.Any())
+            while (toHandle.Count != 0)
             {
                 var current = toHandle.Dequeue();
                 foreach (var n in current.GetAdjacentLazy())
@@ -259,7 +259,7 @@ namespace Project1.Core.Rooms
             var map = this.Map;
             if (!this.Contains(global))
                 throw new Exception();
-            newRooms = new List<Room>();
+            newRooms = [];
             if (!map.GetCell(global).IsRoomBorder)
                 return false;
             this.RemovePosition(global);
@@ -290,7 +290,7 @@ namespace Project1.Core.Rooms
                         }
                     }
             }
-            return newRooms.Any();
+            return newRooms.Count != 0;
         }
 
         internal void Draw(Camera cam)
@@ -323,7 +323,7 @@ namespace Project1.Core.Rooms
                 if (!this.roomRole.Furniture.IsSubsetOf(this.Furnitures))
                     this.RoomRole = null;
 
-            this.Cells = new(this.Interior);
+            this.Cells = [.. this.Interior];
             this.InvalidateBorderCells(); /// added for wall hiding, so that wall hidable blocks are drawn in a separate hidable mesh
         }
         void InvalidateBorderCells()

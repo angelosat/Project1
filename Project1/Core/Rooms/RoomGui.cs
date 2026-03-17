@@ -8,13 +8,13 @@ using System.Linq;
 
 namespace Project1.Core.Rooms
 {
-    class RoomGui : GroupBox, ISelectionBound
+    class RoomGui : SelectionBoundControl// GroupBox, ISelectionBound
     {
         readonly ChangeNotifier Notifications = new();
         Room currentRoom;
         IntVec3 center;
 
-        public ISelectable CurrentSelection { get => this.currentRoom; set => this.currentRoom = value as Room; }
+        //public ISelectable CurrentSelection { get => this.currentRoom; set => this.currentRoom = value as Room; }
 
         public RoomGui()
         {
@@ -29,7 +29,7 @@ namespace Project1.Core.Rooms
                 );
         }
 
-        public void OnBind(ISelectable selectable)
+        protected override void OnBind(ISelectable selectable)
         {
             if (selectable is not Room room)
                 return;

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Project1.Core.Simulation;
+using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework;
-using Project1.Core.Simulation;
 
 namespace Project1.Core.Helpers
 {
@@ -16,9 +16,9 @@ namespace Project1.Core.Helpers
             yield return begin;
 
             Queue<IntVec3> toHandle = new();
-            HashSet<IntVec3> handled = new() { begin };
+            HashSet<IntVec3> handled = [begin];
             toHandle.Enqueue(begin);
-            while (toHandle.Any())
+            while (toHandle.Count != 0)
             {
                 var current = toHandle.Dequeue();
                 foreach (var n in current.GetAdjacentLazy())
@@ -34,7 +34,34 @@ namespace Project1.Core.Helpers
                 }
             }
         }
+        static public List<IntVec3> BeginIncludeEdgesNew(MapBase map, IntVec3 begin, Func<Cell, IntVec3, bool> condition)
+        {
+            var cell = map.GetCell(begin);
+            if (!condition(cell, begin))
+                throw new Exception();
+            List<IntVec3> positions = [begin];
 
+
+            Queue<IntVec3> toHandle = new();
+            HashSet<IntVec3> handled = [begin];
+            toHandle.Enqueue(begin);
+            while (toHandle.Count != 0)
+            {
+                var current = toHandle.Dequeue();
+                foreach (var n in current.GetAdjacentLazy())
+                {
+                    if (handled.Contains(n))
+                        continue;
+                    handled.Add(n);
+                    if (!map.TryGetCell(n, out var ncell))
+                        return null;
+                    positions.Add(n);
+                    if (condition(ncell, n))
+                        toHandle.Enqueue(n);
+                }
+            }
+            return positions;
+        }
         static public HashSet<IntVec3> BeginExclusiveAsList(MapBase map, IntVec3 global)
         {
             var area = new HashSet<IntVec3>

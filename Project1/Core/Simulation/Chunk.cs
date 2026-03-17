@@ -313,6 +313,14 @@ public class Chunk : Inspectable
         return true;
     }
 
+    public IEnumerable<(Cell cell, CellId index)> GetAllCellsWithIndex()
+    {
+        for (int i = 0; i < this.Cells.Length; i++)
+        {
+            yield return (this.Cells[i], i);
+        }
+    }
+
     public Cell GetLocalCell(int x, int y, int z)
         => this.Cells[GetCellIndex(x, y, z)];
     public Cell GetLocalCell(CellId cellIndex)

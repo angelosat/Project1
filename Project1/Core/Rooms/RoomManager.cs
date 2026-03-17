@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Input;
+using Project1.Core.Networking;
+using Project1.Core.Simulation;
+using Project1.Core.Towns;
+using Project1.Core.UI;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework.Helpers;
-using Project1.Core.Towns;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
-using Project1.Core.Networking;
-using Project1.Core.Simulation;
-using Project1.Core.UI;
-using Project1.Core.Graphics;
-using Project1.Core.Input;
 
 namespace Project1.Core.Rooms
 {
@@ -25,7 +25,8 @@ namespace Project1.Core.Rooms
             return this.RoomIDSequence++;
         }
         public override string Name => "InsideManager";
-        readonly Dictionary<int, Room> Rooms = new();
+        readonly Dictionary<int, Room> Rooms = [];
+        readonly Queue<Room> ToValidate = [];
         public RoomManager(Town town)
         {
             this.Town = town;
@@ -36,11 +37,13 @@ namespace Project1.Core.Rooms
         {
             foreach (var cell in e.Changes.Select(c => c.Global))
                 this.Handle(cell);
+            this.Validate();
         }
         internal override void OnBlocksChanged(IEnumerable<IntVec3> positions)
         {
             foreach (var pos in positions)
                 this.Handle(pos);
+            this.Validate();
         }
         internal Room GetRoom(int roomID)
         {
@@ -65,6 +68,7 @@ namespace Project1.Core.Rooms
         bool Valid = true;
         internal void Init()
         {
+            return;
             var sw = Stopwatch.StartNew();
             foreach(var r in this.Rooms.Values)
                 r.Validate();
@@ -76,13 +80,24 @@ namespace Project1.Core.Rooms
                 this.ScanMap();
             }
         }
-
+        //public override void Tick()
+        //{
+        //    this.Validate();  
+        //}
+        void Validate()
+        {
+            while (this.ToValidate.Count > 0)
+            {
+                var room = this.ToValidate.Dequeue();
+                room.Validate();
+            }
+        }
         private void ScanMap()
         {
             var map = this.Map as StaticMap;
-            if (map.Net is Client)
+            if (map.Net.IsClient)
                 return;
-            HashSet<IntVec3> handled = new();
+            HashSet<IntVec3> handled = [];
             var size = map.Size.Blocks;
             var maxh = MapBase.MaxHeight;
             this.Rooms.Clear();
@@ -118,7 +133,8 @@ namespace Project1.Core.Rooms
                     {
                         var newroom = new Room(map, positions);
                         this.AddRoom(newroom);
-                        $"Room found (size: {newroom.Size})".ToConsole();
+                        $"Room found (size: {newroom.Size} outdoors: {isOutdoors})".ToConsole();
+                        this.ToValidate.Enqueue(newroom);
                     }
                 }
             }
@@ -144,10 +160,12 @@ namespace Project1.Core.Rooms
             if (!block.IsRoomBorder)
             {
                 if (this.TryGetRoomAt(global, out var existing))
-                {
-                    existing.Invalidate();
-                }
-                this.TryConnectRoomsAtNew(global);
+                //{
+                    //existing.Invalidate();
+                    this.ToValidate.Enqueue(existing);
+                //}
+                else
+                    this.TryConnectRoomsAtNew(global);
             }
             else
             {
@@ -161,7 +179,7 @@ namespace Project1.Core.Rooms
                     }
                     else
                     {
-                        if (!existing.Interior.Any())
+                        if (existing.Interior.Count == 0)
                             this.RemoveRoom(existing);
                     }
                     return; // temporary
@@ -197,9 +215,9 @@ namespace Project1.Core.Rooms
                 return;
             }
 
-            if (!nrooms.Any()) // if the position was surrounded by room borders, create a new room of size 1
+            if (nrooms.Length == 0) // if the position was surrounded by room borders, create a new room of size 1
             {
-                var newroom = new Room(this, new[] { global });
+                var newroom = new Room(this, [global]);
                 this.AddRoom(newroom);
                 return;
             }
@@ -260,18 +278,23 @@ namespace Project1.Core.Rooms
             var control = room.GetControl().ToPanelLabeled("Room");
             tooltip.AddControlsBottomLeft(control);
         }
+        internal override void ResolveReferences()
+        {
+            this.ScanMap();
+            this.Validate();
 
+        }
         protected override void AddSaveData(SaveTag tag)
         {
-            this.Rooms.Values.TrySaveNewBEST(tag, "Rooms");
-            tag.Add(this.RoomIDSequence.Save("RoomIDSequence"));
-            this.Valid.Save(tag, "Valid");
+            //this.Rooms.Values.TrySaveNewBEST(tag, "Rooms");
+            //tag.Add(this.RoomIDSequence.Save("RoomIDSequence"));
+            //this.Valid.Save(tag, "Valid");
         }
         public override void Load(SaveTag tag)
         {
-            this.Rooms.Load(tag, "Rooms", r => { r.Map = this.Map; return r.ID; });
-            tag.TryGetTagValueOrDefault<int>("RoomIDSequence", out this.RoomIDSequence);
-            tag.TryGetTagValue("Valid", ref this.Valid);
+            //this.Rooms.Load(tag, "Rooms", r => { r.Map = this.Map; return r.ID; });
+            //tag.TryGetTagValueOrDefault<int>("RoomIDSequence", out this.RoomIDSequence);
+            //tag.TryGetTagValue("Valid", ref this.Valid);
         }
         public override void Write(IDataWriter w)
         {
@@ -283,8 +306,13 @@ namespace Project1.Core.Rooms
         {
             this.RoomIDSequence = r.ReadInt32();
             this.Rooms.Read(r, room => room.ID, this.Map);
+            foreach (var room in this.Rooms.Values)
+            {
+                room.Map = this.Map;
+                this.ToValidate.Enqueue(room);
+            }
+            this.Validate();
             this.Valid = r.ReadBoolean();
         }
-       
     }
 }

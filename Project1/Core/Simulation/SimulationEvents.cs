@@ -9,7 +9,7 @@ namespace Project1.Core.Simulation
 {
     internal record struct ChunksLoadedEvent : IEventPayload { }
     internal record struct CellsInvalidatedEvent(MapBase Map, IEnumerable<IntVec3> Positions) : IEventPayload { }
-    internal record struct BlocksChangedEvent(MapBase Map, IEnumerable<SetBlockArgs> Changes) : IEventPayload { }
+    //internal record struct BlocksChangedEvent(MapBase Map, IEnumerable<SetBlockArgs> Changes) : IEventPayload { }
     internal record struct MapEditEvent(MapEditContext Context, MapEditType Type, MapBase Map, HashSet<IntVec3> Targets, Block Block, MaterialDef Material, byte Data, int Variation, int Orientation) : IEventPayload { }
     internal record struct CellEditEvent(CellQuery Edit) : IEventPayload { }
 }

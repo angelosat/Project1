@@ -23,6 +23,9 @@ public readonly struct GlobalCellId : IEquatable<GlobalCellId>
     public int Z => packed & 0xFF;
 
     public static implicit operator int(GlobalCellId id) => id.packed;
+    public static implicit operator GlobalCellId(IntVec3 global) => new(global.X, global.Y, global.Z);
+    public static implicit operator IntVec3(GlobalCellId id) => new(id.X, id.Y, id.Z);
+
 
     public bool Equals(GlobalCellId other) => packed == other.packed;
     public override bool Equals(object? obj) => obj is GlobalCellId other && Equals(other);

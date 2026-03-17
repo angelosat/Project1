@@ -1,10 +1,11 @@
 ﻿using Project1.Core.Blocks;
+using Project1.Core.Entities.Actors;
 using Project1.Framework;
 using System.Collections.Generic;
 
 namespace Project1.Core.Towns
 {
-    internal sealed class OwnershipManager : TownComponent
+    public sealed class OwnershipManager : TownComponent
     {
         public override string Name => "Ownership";
 
@@ -12,6 +13,14 @@ namespace Project1.Core.Towns
 
         public OwnershipManager(Town town) : base(town)
         {
+        }
+
+        public IEnumerable<IntVec3> GetOwnedBlocks(Actor actor)
+        {
+            //    this._actorPossesions[actor.RefId];
+            if (this._actorPossesions.TryGetValue(actor.RefId, out var list))
+                return list;
+            return [];
         }
 
         void Add(EntityRefId actor, IntVec3 be)

@@ -14,7 +14,12 @@ namespace Project1.Core.Towns
         readonly Dictionary<FurnitureDef, HashSet<GlobalCellId>> _cache = [];
 
         public IEnumerable<IntVec3> GetFurniture(FurnitureDef fd) => this._cache[fd].Select(id => new IntVec3(id));
-
+        public bool IsFurniture(IntVec3 global, FurnitureDef fd)
+        {
+            if (this._cache.TryGetValue(fd, out var list))
+                return list.Contains(global);
+            return false;
+        }
         internal override void ResolveReferences()
         {
             this.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);

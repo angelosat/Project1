@@ -114,6 +114,7 @@ namespace Project1.Core.Towns
         [InspectorHidden]
         public StorageManager Storage;
         public FurnitureTracker Furniture;
+        public OwnershipManager Ownership;
 
         public List<TownComponent> TownComponents = [];
 
@@ -141,6 +142,7 @@ namespace Project1.Core.Towns
             this.QuestManager = new(this);
             this.Storage = new(this);
             this.Furniture = new(this);
+            this.Ownership = new(this);
 
             this.TownComponents.AddRange([
                 this.ZoneManager,
@@ -155,8 +157,8 @@ namespace Project1.Core.Towns
                 this.ShopManager,
                 this.QuestManager,
                 this.Storage,
-                new OwnershipManager(this),
-                this.Furniture
+                this.Furniture,
+                this.Ownership
             ]);
             
             var utilities = (Utility.Types[])Enum.GetValues(typeof(Utility.Types));

@@ -22,6 +22,14 @@ namespace Project1.Core.AI.Behaviors.Sleeping
             if (energyValue > 50)// need.Threshold)
                 return null;
 
+            foreach(var cell in map.Town.Ownership.GetOwnedBlocks(actor))
+            {
+                if (!map.Town.Furniture.IsFurniture(cell, FurnitureDefOf.Bed))
+                    continue;
+                var bed = map.GetBlockEntity(cell);
+                return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };
+            }
+
             //var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();
             //if (!possibleBeds.Any())
             //    possibleBeds = map.GetBlockEntities<BlockBedEntity>().Where(b => b.Owner is null);// FindOrClaimBedNew(actor);
@@ -29,7 +37,7 @@ namespace Project1.Core.AI.Behaviors.Sleeping
             foreach (var bed in possibleBeds)
             {
                 var cell = map.GetCell(bed.OriginGlobal);
-                var interactionSpot = bed.OriginGlobal + cell.Block.GetInteractionSpotsLocal(map, bed.OriginGlobal, cell.Orientation).First();
+                //var interactionSpot = bed.OriginGlobal + cell.Block.GetInteractionSpotsLocal(map, bed.OriginGlobal, cell.Orientation).First();
                 return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };//, bed);
             }
             if (energyValue <= 10)//0) 

@@ -103,7 +103,11 @@ namespace Project1.Core.Rooms
                     this.AddPosition(p);
             }
         }
-
+        public Room(MapBase map, HashSet<IntVec3> interior, HashSet<IntVec3> border) : this(map)
+        {
+            this.Interior = interior;
+            this.Border = border;
+        }
         internal void Remove()
         {
             this.InvalidateBorderCells(); /// invalidate wall cells to draw them normally again 

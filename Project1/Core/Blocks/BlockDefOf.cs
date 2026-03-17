@@ -5,6 +5,7 @@ using Project1.Core.Construction;
 using Project1.Core.Crafting;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Resources;
+using Project1.Core.Rooms;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 
@@ -65,6 +66,7 @@ namespace Project1.Core.Blocks
         }; // TODO: different door materials???
         static public readonly BlockDef Bed = new("Bed", typeof(BlockBed))
         {
+            Furniture = FurnitureDefOf.Bed,
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]),
             BlockEntityCompSpecs = [
                 new BlockBuildingComp.Spec(),

@@ -104,38 +104,47 @@ namespace Project1.Core.Rooms
             var sw = Stopwatch.StartNew();
             foreach (var chunk in map.ActiveChunks.Values)
             {
-                //foreach (var cell in chunk.Cells)
-                    for (int i = 0; i < chunk.Cells.Length; i++)
-                    {
+                for (int i = 0; i < chunk.Cells.Length; i++)
+                {
                     var cell = chunk.Cells[i];
-                //    }
-                //{
-                    //var global = cell.LocalCoords;// GetGlobalCoords(chunk);
                     var local = Chunk.GetLocalFromIndex(i);
                     var global = local.ToGlobal(chunk);
                     if (handled.Contains(global))
                         continue;
                     if (cell.IsRoomBorder)
                         continue;
-                    var positions = FloodFill.BeginIncludeEdges(map, global, (cell, global) => !cell.IsRoomBorder);
-                    bool isOutdoors = false;
-                    foreach (var p in positions)
-                    {
-                        if (!isOutdoors)
-                        {
-                            if (map.IsAboveHeightMap(p))
-                                isOutdoors = true;
-                        }
-                        handled.Add(p);
-                    }
+                    //var positions = FloodFill.BeginIncludeEdges(map, global, (cell, global) => !cell.IsRoomBorder);
+                    //bool isOutdoors = false;
+                    //foreach (var p in positions)
+                    //{
+                    //    if (!isOutdoors)
+                    //    {
+                    //        if (map.IsAboveHeightMap(p))
+                    //            isOutdoors = true;
+                    //    }
+                    //    handled.Add(p);
+                    //}
 
-                    if (!isOutdoors)
-                    {
-                        var newroom = new Room(map, positions);
-                        this.AddRoom(newroom);
-                        $"Room found (size: {newroom.Size} outdoors: {isOutdoors})".ToConsole();
-                        this.ToValidate.Enqueue(newroom);
-                    }
+                    //if (!isOutdoors)
+                    //{
+                    //    var newroom = new Room(map, positions);
+                    //    this.AddRoom(newroom);
+                    //    $"Room found (size: {newroom.Size} outdoors: {isOutdoors})".ToConsole();
+                    //    this.ToValidate.Enqueue(newroom);
+                    //}
+                    var result = FloodFill.FloodFillRegion(map, global, (cell, pos) => !cell.IsRoomBorder);
+
+                    // Always mark handled
+                    handled.UnionWith(result.Handled);
+                    //$"Room found (interior: {result.Interior.Count} edges: {result.Edges.Count} enclosed: {result.IsEnclosed})".ToConsole();
+                    if (!result.IsEnclosed)
+                        continue;
+
+                    var newRoom = new Room(map, result.Interior, result.Edges);
+                    this.AddRoom(newRoom);
+                    $"Room found (interior: {result.Interior.Count} edges: {result.Edges.Count} enclosed: {result.IsEnclosed})".ToConsole();
+
+                    this.ToValidate.Enqueue(newRoom);
                 }
             }
             sw.Stop();
@@ -282,7 +291,6 @@ namespace Project1.Core.Rooms
         {
             this.ScanMap();
             this.Validate();
-
         }
         protected override void AddSaveData(SaveTag tag)
         {
@@ -311,7 +319,7 @@ namespace Project1.Core.Rooms
                 room.Map = this.Map;
                 this.ToValidate.Enqueue(room);
             }
-            this.Validate();
+            //this.Validate();
             this.Valid = r.ReadBoolean();
         }
     }

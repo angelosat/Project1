@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Project1.Core.Resources;
+﻿using Project1.Core.Resources;
 using Project1.Core.Helpers;
+using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Needs
 {
@@ -16,9 +16,11 @@ namespace Project1.Core.Needs
                 //need.Accumulator += need.Mods.Sum(m => m.RateMod) * need.Def.BaseRate;
                 foreach (var mod in need.Mods)
                 {
-                    var consumed = mod.RateMod * baserate;
-                    if(mod.TotalBudget.HasValue)
-                        mod.TotalBudget -= consumed;
+                    var sourceEffect = ((Actor)need.Owner).Effects.GetEffect(mod.EffectDef);
+                    var toConsume = mod.RateMod * baserate;
+                    //if(mod.TotalBudget.HasValue)
+                    //    mod.TotalBudget -= consumed;
+                    var consumed = sourceEffect.Consume(toConsume);
                     need.Accumulator += consumed;
                 }
             }

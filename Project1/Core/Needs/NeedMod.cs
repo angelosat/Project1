@@ -1,17 +1,16 @@
-﻿using Project1.Framework;
-using Project1.Framework.Serialization;
+﻿using Project1.Core.Effects;
 using Project1.Core.Helpers;
-using Project1.Core.Effects;
-using System;
+using Project1.Framework;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Needs
 {
     public class NeedMod : ISerializableNew<NeedMod>, ISaveable
     {
-        public EffectDef Def;
+        public EffectDef EffectDef;
         public float RateMod;
         public float ValueMod;
-        public float? TotalBudget;
+        //public float? TotalBudget;
         public NeedMod()
         {
 
@@ -24,19 +23,19 @@ namespace Project1.Core.Needs
         /// <param name="valuePerTick">Signed value to apply per tick.</param>
         public NeedMod(EffectDef needLetDef, float valuePerTick)
         {
-            this.Def = needLetDef;
+            this.EffectDef = needLetDef;
             this.RateMod = valuePerTick;
         }
 
         public override string ToString()
         {
-            return $"{this.Def.Name}: ValueMod: {this.ValueMod:+#;-#;0} RateMod: 1 every {1 / (Ticks.PerSecond * this.RateMod)} seconds";//:+#;-#;0}";
+            return $"{this.EffectDef.Name}: ValueMod: {this.ValueMod:+#;-#;0} RateMod: 1 every {1 / (Ticks.PerSecond * this.RateMod)} seconds";//:+#;-#;0}";
         }
 
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            tag.Add(this.Def.Name.Save("Def"));
+            tag.Add(this.EffectDef.Name.Save("Def"));
             tag.Add(this.RateMod.Save("RateMod"));
             tag.Add(this.ValueMod.Save("ValueMod"));
 
@@ -54,14 +53,14 @@ namespace Project1.Core.Needs
 
         public void Write(IDataWriter w)
         {
-            w.Write(this.Def.Name);
+            w.Write(this.EffectDef.Name);
             w.Write(this.RateMod);
             w.Write(this.ValueMod);
         }
 
         public NeedMod Read(IDataReader r)
         {
-            this.Def = r.ReadDef<EffectDef>();
+            this.EffectDef = r.ReadDef<EffectDef>();
             this.RateMod = r.ReadSingle();
             this.ValueMod = r.ReadSingle();
             return this;

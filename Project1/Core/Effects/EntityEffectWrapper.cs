@@ -3,13 +3,27 @@ using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using System;
 
 namespace Project1.Core.Effects
 {
-    public record EntityEffectWrapper(EffectDef Def, Def Target, int Budget, int Rate) : ISaveableNewNew<EntityEffectWrapper>, ISerializableNew<EntityEffectWrapper>
+    public record EntityEffectWrapper(EffectDef Def, Def Target, int? Budget, int Rate) : ISaveableNewNew<EntityEffectWrapper>, ISerializableNew<EntityEffectWrapper>
     {
+        public bool IsFinished => this.RemainingBudget.HasValue && this.RemainingBudget == 0;
+        public float? RemainingBudget { get; private set; } = Budget;
+        public float Consume(float budget)
+        {
+            if (!this.RemainingBudget.HasValue)
+                return budget;
+            var toConsume = Math.Min(budget, this.RemainingBudget.Value);
+            this.RemainingBudget -= toConsume;
+            return toConsume;
+        }
         public bool IsInstant => this.Rate == 0;
-
+        internal void Tick(Actor actor)
+        {
+            this.Def.Worker.Tick(actor, this);
+        }
         internal void Start(Actor actor) => this.Def.Worker.OnStart(actor, this);
         internal void Finish(Actor actor) => this.Def.Worker.OnFinish(actor, this);
         public static EntityEffectWrapper Create(IDataReader r)
@@ -26,7 +40,7 @@ namespace Project1.Core.Effects
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             this.Def.Save(tag, "Def");
             this.Target.Save(tag, "Target");
-            this.Budget.Save(tag, "Value");
+            //this.Budget.Save(tag, "Value");
             this.Rate.Save(tag, "Rate");
             return tag;
         }
@@ -38,7 +52,7 @@ namespace Project1.Core.Effects
         {
             w.Write(this.Def);
             w.Write(this.Target);
-            w.Write(this.Budget);
+            //w.Write(this.Budget);
             w.Write(this.Rate);
         }
         public EntityEffectWrapper Read(IDataReader r) => throw new System.Exception();
@@ -50,5 +64,7 @@ namespace Project1.Core.Effects
             var rate = tag.LoadInt("Rate");
             return new EntityEffectWrapper(def, target, value, rate);
         }
+
+       
     }
 }

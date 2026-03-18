@@ -20,12 +20,12 @@ namespace Project1.Core.Needs
     {
         internal void AddMod(EffectDef needLetDef, float ticksUntilChange)
         {
-            if (this.Mods.Any(n => n.Def == needLetDef))
+            if (this.Mods.Any(n => n.EffectDef == needLetDef))
                 throw new Exception();
             var needLet = new NeedMod(needLetDef, 1f / ticksUntilChange);
             this.Mods.Add(needLet);
         }
-        internal void RemoveMod(EffectDef def) => this.Mods.RemoveAll(n => n.Def == def);
+        internal void RemoveMod(EffectDef def) => this.Mods.RemoveAll(n => n.EffectDef == def);
         
         public NeedDef NeedDef;
         public enum Types { Hunger, Water, Sleep, Achievement, Work, Brains, Curiosity, Social, Energy }

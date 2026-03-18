@@ -6,7 +6,7 @@ using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Core.Effects;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
+using Project1.Core.Networking.Packets;
 
 namespace Project1.Core.Entities
 {
@@ -14,7 +14,8 @@ namespace Project1.Core.Entities
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Effects;
         public new class Spec : Spec<EffectsComponent> { }
-
+        //public float GetRemainingBudget(EffectDef def) => this.ActiveEffects.Where(e => e.Def == def).Sum(e => e.Budget);
+        public EntityEffectWrapper GetEffect(EffectDef def) => this.ActiveEffects.First(e => e.Def == def);
         public override string Name => "Effects";
 
         List<EntityEffectWrapper> ActiveEffects = [];
@@ -46,7 +47,24 @@ namespace Project1.Core.Entities
                 this.ActiveEffects.Remove(f);
             }
         }
-
+        List<EntityEffectWrapper> toRemove = [];
+        public override void Tick()
+        {
+            var actor = this.Owner as Actor;
+            foreach (var w in this.ActiveEffects)
+            {
+                w.Tick(actor);
+                //if (w.RemainingBudget.HasValue && w.RemainingBudget == 0)
+                //    w.IsFinished = true;
+                if (w.IsFinished)
+                {
+                    w.Finish(actor);
+                    toRemove.Add(w);
+                }
+            }
+            this.ActiveEffects.RemoveAll(w => w.IsFinished);
+            toRemove.Clear();
+        }
         public override void Write(IDataWriter w)
         {
             IOHelper.Write(w, this.ActiveEffects);

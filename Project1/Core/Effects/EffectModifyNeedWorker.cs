@@ -9,13 +9,19 @@ namespace Project1.Core.Effects
         {
             var need = actor.GetNeed((NeedDef)wrapper.Target);
             if (wrapper.IsInstant)
-                need.ApplyDelta(wrapper.Budget);
+                need.ApplyDelta(wrapper.Budget.Value);
             else
                 need.AddMod(EffectDefOf.ModifyNeed, wrapper.Rate);
         }
+        //public override void Tick(Actor actor, EntityEffectWrapper wrapper)
+        //{
+        //    if (wrapper.RemainingBudget == 0)
+        //        wrapper.IsFinished = true;
+        //        //actor.GetNeed((NeedDef)wrapper.Target).RemoveMod(EffectDefOf.ModifyNeed);
+        //}
         public override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
         {
-            if (!wrapper.IsInstant)
+            //if (!wrapper.IsInstant)
                 actor.GetNeed((NeedDef)wrapper.Target).RemoveMod(EffectDefOf.ModifyNeed);
         }
     }

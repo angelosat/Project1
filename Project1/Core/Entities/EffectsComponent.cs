@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Project1.Core.Effects;
+using Project1.Core.Entities.Actors;
+using Project1.Framework;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Effects;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Networking.Packets;
 
 namespace Project1.Core.Entities
 {
@@ -16,6 +15,7 @@ namespace Project1.Core.Entities
         public new class Spec : Spec<EffectsComponent> { }
         //public float GetRemainingBudget(EffectDef def) => this.ActiveEffects.Where(e => e.Def == def).Sum(e => e.Budget);
         public EntityEffectWrapper GetEffect(EffectDef def) => this.ActiveEffects.First(e => e.Def == def);
+        public EntityEffectWrapper GetEffect(EffectDef def, Def target) => this.ActiveEffects.First(e => e.Def == def && e.Target == target);
         public override string Name => "Effects";
 
         List<EntityEffectWrapper> ActiveEffects = [];
@@ -46,6 +46,12 @@ namespace Project1.Core.Entities
                 f.Finish(this.Owner as Actor);
                 this.ActiveEffects.Remove(f);
             }
+        }
+        internal void Abort(EffectDef effect, Def target)
+        {
+            var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect && f.Target == target);
+            foreach (var f in relevantEffects)
+                f.Abort();
         }
         List<EntityEffectWrapper> toRemove = [];
         public override void Tick()

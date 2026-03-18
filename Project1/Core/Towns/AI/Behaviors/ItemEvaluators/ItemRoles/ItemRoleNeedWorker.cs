@@ -25,8 +25,8 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
         {
             if (!item.TryGetComponent<ConsumableComponent>(out var consumableComp))
                 return -1;
-            var nutrition = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Budget);
-            return nutrition * item.StackMax;
+            var benefit = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Budget);
+            return benefit.HasValue ? benefit.Value * item.StackMax : 0;
         }
     }
 }

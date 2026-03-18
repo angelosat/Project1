@@ -7,9 +7,11 @@ using System;
 
 namespace Project1.Core.Effects
 {
-    public record EntityEffectWrapper(EffectDef Def, Def Target, int? Budget, int Rate) : ISaveableNewNew<EntityEffectWrapper>, ISerializableNew<EntityEffectWrapper>
+    public record EntityEffectWrapper(EffectDef Def, Def Target, int? Budget, int TicksPerUnit) : ISaveableNewNew<EntityEffectWrapper>, ISerializableNew<EntityEffectWrapper>
     {
-        public bool IsFinished => this.RemainingBudget.HasValue && this.RemainingBudget == 0;
+        bool _aborted;
+        //public bool IsFinished => this.RemainingBudget.HasValue && this.RemainingBudget == 0;
+        public bool IsFinished => this._aborted || (this.RemainingBudget.HasValue && this.RemainingBudget == 0);
         public float? RemainingBudget { get; private set; } = Budget;
         public float Consume(float budget)
         {
@@ -19,13 +21,14 @@ namespace Project1.Core.Effects
             this.RemainingBudget -= toConsume;
             return toConsume;
         }
-        public bool IsInstant => this.Rate == 0;
+        public bool IsInstant => this.TicksPerUnit == 0;
         internal void Tick(Actor actor)
         {
             this.Def.Worker.Tick(actor, this);
         }
         internal void Start(Actor actor) => this.Def.Worker.OnStart(actor, this);
         internal void Finish(Actor actor) => this.Def.Worker.OnFinish(actor, this);
+        internal void Abort() => this._aborted = true;
         public static EntityEffectWrapper Create(IDataReader r)
         {
             var def = r.ReadDef<EffectDef>();
@@ -41,7 +44,7 @@ namespace Project1.Core.Effects
             this.Def.Save(tag, "Def");
             this.Target.Save(tag, "Target");
             //this.Budget.Save(tag, "Value");
-            this.Rate.Save(tag, "Rate");
+            this.TicksPerUnit.Save(tag, "Rate");
             return tag;
         }
         public Control GetGui()
@@ -53,7 +56,7 @@ namespace Project1.Core.Effects
             w.Write(this.Def);
             w.Write(this.Target);
             //w.Write(this.Budget);
-            w.Write(this.Rate);
+            w.Write(this.TicksPerUnit);
         }
         public EntityEffectWrapper Read(IDataReader r) => throw new System.Exception();
         public static EntityEffectWrapper Create(SaveTag tag)

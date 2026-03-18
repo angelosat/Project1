@@ -16,10 +16,17 @@ namespace Project1.Core.Interactions
         {
             Need _energy;
             Need Energy => _energy ??= this.Actor.GetNeed(NeedDefOf.Energy);
+            internal EntityEffectWrapper Effect => field ??= this.Actor.Effects.GetEffect(EffectDefOf.ModifyNeed, NeedDefOf.Energy);
             public override float ProgressPercentage => this.Energy.Percentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
-
+        public override bool CanPerform(InteractionContext ctx)
+        {
+            var typedCtx = (Context)ctx;
+            if (typedCtx.Effect.IsFinished)
+                return false;
+            return true;
+        }
         internal override void OnStart(Interaction i)
         {
             var a = i.Actor;
@@ -28,7 +35,7 @@ namespace Project1.Core.Interactions
             var bedPos = t.Global; // the bed position passed should be the origin cell
             a.SetPosition(bedPos + new Vector3(0, 0, Block.GetBlockHeight(a.Map, bedPos)));
             //a.Effects.Apply(EffectDefOf.Sleeping);
-            a.Effects.Apply(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, 1));// Ticks.FromMinutes(1)));
+            a.Effects.Apply(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, Ticks.FromMinutes(1))); //1));// 
 
             var topcell = map.GetCell(bedPos);
             var testcell = map.GetCell((IntVec3)bedPos + IntVec3.UnitY);
@@ -62,7 +69,8 @@ namespace Project1.Core.Interactions
         {
             var a = i.Actor;
             var t = i.Target;
-            a.Effects.Remove(EffectDefOf.Sleeping);
+            //a.Effects.Remove(EffectDefOf.Sleeping);
+            a.Effects.Abort(EffectDefOf.Sleeping, NeedDefOf.Energy);
 
             var spriteComp = a.GetComponent<SpriteComp>();
             var body = a.Body;

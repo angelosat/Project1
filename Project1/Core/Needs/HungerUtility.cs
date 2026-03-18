@@ -22,7 +22,7 @@ namespace Project1.Core.Needs
         public static void ActorDigesting(Actor actor, Entity item)
         {
             var nutrition = GetNutrition(actor, item);
-            var effect = new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, Budget: nutrition, Rate: 0);
+            var effect = new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, Budget: nutrition, TicksPerUnit: 0);
             actor.Effects.Apply(effect);
             item.Consume(1);
         }

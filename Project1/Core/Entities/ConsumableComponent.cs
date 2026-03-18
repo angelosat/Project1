@@ -44,7 +44,7 @@ namespace Project1.Core.Entities
         {
             var comp = source as ConsumableComponent;
             foreach (var f in comp.EffectsNew)
-                this.EffectsNew.Add(new EntityEffectWrapper(f.Def,  f.Target, f.Budget, f.Rate));
+                this.EffectsNew.Add(new EntityEffectWrapper(f.Def,  f.Target, f.Budget, f.TicksPerUnit));
         }
 
         internal void Consume(GameObject actor)

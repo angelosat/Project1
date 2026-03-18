@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Interfaces;
-using Project1.Framework.Serialization;
-using Project1.Framework.Input;
-using Project1.Core.Entities;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI;
 using Project1.Core.AI.Planners;
+using Project1.Core.Effects;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Effects;
+using Project1.Framework;
+using Project1.Framework.Input;
+using Project1.Framework.Interfaces;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Needs
 {

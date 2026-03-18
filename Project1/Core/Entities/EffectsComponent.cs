@@ -32,6 +32,11 @@ namespace Project1.Core.Entities
             var wrapper = new EntityEffectWrapper(effectt, null, 1, 0);
             this.Apply(wrapper);
         }
+        //public void Apply(EffectDef effect, int? budget, Tick tickRate)
+        //{
+        //    var wrapper = new EntityEffectWrapper(effect, null, 0, 0);
+        //    this.Apply(wrapper);
+        //}
         internal void Remove(EffectDef effect)
         {
             var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect);

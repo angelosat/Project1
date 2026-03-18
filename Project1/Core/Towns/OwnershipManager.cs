@@ -10,11 +10,12 @@ namespace Project1.Core.Towns
         public override string Name => "Ownership";
 
         readonly Dictionary<EntityRefId, HashSet<IntVec3>> _actorPossesions = [];
-
+        readonly Dictionary<Actor, BlockBedComp> _actorBeds = [];
         public OwnershipManager(Town town) : base(town)
         {
         }
-
+        internal bool TryGetOwnedBed(Actor actor, out BlockBedComp comp)
+            => this._actorBeds.TryGetValue(actor, out comp);
         public IEnumerable<IntVec3> GetOwnedBlocks(Actor actor)
         {
             //    this._actorPossesions[actor.RefId];
@@ -65,16 +66,79 @@ namespace Project1.Core.Towns
 
         private void HandleBlockEntityRemoved(BlockEntityRemovedEvent e)
         {
+            //if (!e.Entity.TryGetComp<BlockOwnershipComp>(out var comp))
+            //    return;
+            //var id = e.Entity.OriginGlobal;
+            //this.Remove(id);
+            //if(comp.Owner != EntityRefId.Null && this.Map.World.GetEntity<Actor>(comp.Owner) is Actor owner)
+            //{
+            //    if (this._actorBeds.TryGetValue(owner, out var bed) && e.Entity == bed.Parent)
+            //        this._actorBeds.Remove(owner);
+            //}
             if (!e.Entity.TryGetComp<BlockOwnershipComp>(out var comp))
                 return;
-            var id = e.Entity.OriginGlobal;
-            this.Remove(id);
+
+            var ownerId = comp.Owner;
+            if (ownerId == EntityRefId.Null)
+                return;
+
+            if (this.Map.World.GetEntity<Actor>(ownerId) is not Actor owner)
+                return;
+
+            if (this._actorBeds.TryGetValue(owner, out var bed) && e.Entity == bed.Parent)
+            {
+                this._actorBeds.Remove(owner);
+
+                // Optional: notify other systems of ownership loss
+                //comp.Map.Events.Post(new BlockOwnerChangedEvent(comp.Parent, null, owner));
+            }
         }
 
         private void HandleBlockOwnerChanged(BlockOwnerChangedEvent e)
         {
-            var owner = e.Owner;
+            var owner = e.NewOwner;
             var be = e.Entity;
+            //var ownercomp = be.GetComp<BlockOwnershipComp>();
+            //if(be.TryGetComp<BlockBedComp>(out var bedcomp))
+            //{
+            //    if(e.PreviousOwner != EntityRefId.Null)
+            //    {
+            //        var prevOwner = this.Map.World.GetEntity<Actor>(e.PreviousOwner);
+            //        this._actorBeds.Remove(prevOwner);
+            //    }
+            //    if (owner is not null)
+            //    {
+            //        if (this._actorBeds.TryGetValue(owner, out var existing))
+            //            existing.Parent.GetComp<BlockOwnershipComp>().Owner = EntityRefId.Null;
+            //        this._actorBeds[owner] = bedcomp;
+            //    }
+            //}
+            var bed = be.GetComp<BlockBedComp>();
+            if (bed == null)
+                return;
+
+            var newOwner = e.NewOwner;
+            var prevOwnerId = e.PreviousOwner;
+
+            // Remove old mapping
+            if (prevOwnerId != EntityRefId.Null && this.Map.World.GetEntity<Actor>(prevOwnerId) is Actor prevOwner &&
+                this._actorBeds.TryGetValue(prevOwner, out var prevBed) &&
+                prevBed == bed)
+            {
+                this._actorBeds.Remove(prevOwner);
+            }
+
+            // Assign new mapping
+            if (newOwner != null)
+            {
+                if (this._actorBeds.TryGetValue(newOwner, out var existing) && existing != bed)
+                {
+                    existing.Parent.GetComp<BlockOwnershipComp>().SetOwner(null);
+                }
+
+                this._actorBeds[newOwner] = bed;
+            }
+            return;
             var previousOwner = e.PreviousOwner;
             if (previousOwner != EntityRefId.Null)
                 this.Remove(previousOwner, be.OriginGlobal);

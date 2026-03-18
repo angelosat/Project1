@@ -98,7 +98,7 @@ namespace Project1.Core.Blocks
         private static void SendBlockOwnerChanged(BlockOwnerChangedEvent e)
         {
             var entity = e.Entity;
-            var owner = e.Owner;
+            var owner = e.NewOwner;
             Server.Instance.BeginPacketImmediate(_pOwnerChanged)
                 .Write(entity.Map.ID)
                 .Write(entity.OriginGlobal)

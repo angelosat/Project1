@@ -7,7 +7,7 @@ namespace Project1.Core.Effects
     {
         static public EffectDef Sleeping = new("Sleeping", new SleepEffectWorker());
         static public EffectDef Adventuring = new("Adventuring", new AdventuringEffectWorker());
-        static public EffectDef ModifyNeed = new("ModifyNeed", new ModifyNeedEffectWorker());
+        static public EffectDef ModifyNeed = new("ModifyNeed", new EffectModifyNeedWorker());
         static EffectDefOf()
         {
             Def.Register(typeof(EffectDefOf));

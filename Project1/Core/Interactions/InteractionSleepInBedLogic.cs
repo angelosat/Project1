@@ -27,7 +27,8 @@ namespace Project1.Core.Interactions
             var map = a.Map;
             var bedPos = t.Global; // the bed position passed should be the origin cell
             a.SetPosition(bedPos + new Vector3(0, 0, Block.GetBlockHeight(a.Map, bedPos)));
-            a.Effects.Apply(EffectDefOf.Sleeping);
+            //a.Effects.Apply(EffectDefOf.Sleeping);
+            a.Effects.Apply(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Energy, 100, Ticks.FromMinutes(1)));
 
             var topcell = map.GetCell(bedPos);
             var testcell = map.GetCell((IntVec3)bedPos + IntVec3.UnitY);

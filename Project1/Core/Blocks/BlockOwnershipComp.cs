@@ -33,9 +33,14 @@ namespace Project1.Core.Blocks
         }
         internal void SetOwner(Actor a)
         {
+            var newId = a?.RefId ?? EntityRefId.Null;
+
+            if (this.Owner == newId)
+                return; // critical guard
+
             var prevOwner = this.Owner;
-            this.Owner = a?.RefId ?? EntityRefId.Null;
-            a?.Possessions.Add(this.Parent);
+            this.Owner = newId;
+
             this.Map.Events.Post(new BlockOwnerChangedEvent(this.Parent, a, prevOwner));
             this.Notifications.Notify();
         }

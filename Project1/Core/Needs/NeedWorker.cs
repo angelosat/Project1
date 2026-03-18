@@ -11,7 +11,17 @@ namespace Project1.Core.Needs
             var need = (Need)wrapper;
 
             if (need.Mods.Count > 0)
-                need.Accumulator += need.Mods.Sum(m => m.RateMod) * need.Def.BaseRate;
+            {
+                var baserate = need.Def.BaseRate;
+                //need.Accumulator += need.Mods.Sum(m => m.RateMod) * need.Def.BaseRate;
+                foreach (var mod in need.Mods)
+                {
+                    var consumed = mod.RateMod * baserate;
+                    if(mod.TotalBudget.HasValue)
+                        mod.TotalBudget -= consumed;
+                    need.Accumulator += consumed;
+                }
+            }
             else
                 need.Accumulator -= need.TicksPerNaturalDecay * need.Def.BaseRate;
 

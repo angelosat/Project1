@@ -2,6 +2,7 @@
 using Project1.Framework.Serialization;
 using Project1.Core.Helpers;
 using Project1.Core.Effects;
+using System;
 
 namespace Project1.Core.Needs
 {
@@ -10,11 +11,12 @@ namespace Project1.Core.Needs
         public EffectDef Def;
         public float RateMod;
         public float ValueMod;
-        public int? TotalBudget;
+        public float? TotalBudget;
         public NeedMod()
         {
 
         }
+        
         /// <summary>
         /// Creates a modifier that adjusts the associated metric each tick.
         /// The Rate is applied per tick; duration is managed by the effect that uses this modifier.

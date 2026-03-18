@@ -1,9 +1,9 @@
-﻿using Project1.Core.Needs;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Needs;
 
 namespace Project1.Core.Effects
 {
-    internal class ModifyNeedEffectWorker : EntityEffectWorker
+    internal class EffectModifyNeedWorker : EntityEffectWorker
     {
         public override void OnStart(Actor actor, EntityEffectWrapper wrapper)
         {

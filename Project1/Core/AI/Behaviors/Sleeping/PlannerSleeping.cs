@@ -22,12 +22,11 @@ namespace Project1.Core.AI.Behaviors.Sleeping
             if (energyValue > 50)// need.Threshold)
                 return null;
 
-            foreach(var cell in map.Town.Ownership.GetOwnedBlocks(actor))
+            if(map.Town.Ownership.TryGetOwnedBed(actor, out var bedComp))
             {
-                if (!map.Town.Furniture.IsFurniture(cell, FurnitureDefOf.Bed))
-                    continue;
-                var bed = map.GetBlockEntity(cell);
-                return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };
+                var bed = bedComp.Parent;
+                if(actor.CanReachAndReserve(bed))
+                    return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };
             }
 
             //var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();

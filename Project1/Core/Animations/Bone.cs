@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Animations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.ColorCustomization;
 using Project1.Core.Graphics;
-using Project1.Framework.Serialization;
-using Project1.Framework;
 using Project1.Core.Simulation;
-using Project1.Framework.Helpers;
 using Project1.Core.Systems.Materials;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core
 {
@@ -133,16 +133,15 @@ namespace Project1.Core
         public float Order;
         bool Enabled = true;
 
-        public void SetEnabled(bool value, bool passToChildren)
+        public void SetEnabled(bool value, bool cascade)
         {
             this.Enabled = value;
-            if (!passToChildren)
+            if (!cascade)
                 return;
             foreach (var c in this.Joints.Values)
-                if (c.Bone != null)
-                    c.Bone.SetEnabled(value, passToChildren);
+                c.Bone?.SetEnabled(value, cascade);
         }
-
+        
         class DescendingComparer<T> : IComparer<T> where T : IComparable<T>
         {
             public int Compare(T x, T y)

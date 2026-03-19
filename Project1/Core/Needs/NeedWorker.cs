@@ -31,7 +31,8 @@ namespace Project1.Core.Needs
             if (whole != 0)
             {
                 need.Accumulator -= whole;
-                need.Value += whole;
+                //need.Value += whole;
+                need.ApplyDelta(whole);
                 this.TickExtra(need);
             }
         }

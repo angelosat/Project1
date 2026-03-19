@@ -165,10 +165,11 @@ namespace Project1.Core.Networking
                 return;
             if (!Instance.IsSaving)
             {
+                var lastTick = this.CurrentTick;
                 this.TickMap();
                 this.Map.Validate();
                 //this.Snapshots.Flush(this, this.EntitiesChangedSinceLastSnapshot);
-                this.FlushSnapshots();
+                this.FlushSnapshots(lastTick);
             }
             this.WritePlayerSpecificNew();
             this.FlushStreams(false);
@@ -230,6 +231,7 @@ namespace Project1.Core.Networking
                     this.SendRandomBlockUpdates();
                 }
                 this.FlushStreams(true);
+                //this.FlushSnapshots();
                 this.AdvanceClock();
             }
         }
@@ -604,7 +606,7 @@ namespace Project1.Core.Networking
         {
             return this.World.TryGetEntity(netID, out obj);
         }
-        private void FlushSnapshots()
+        private void FlushSnapshots(double tick)
         {
             /// always send snapshots every frame, even empty ones. so that the client can interpolate correctly
             // i had to stop sending empty snapshots because after resuming from pause, entities "jumped" to their real position in the clients
@@ -612,7 +614,7 @@ namespace Project1.Core.Networking
             //    return;
             if (this.Speed == 0) // this seems to fix both entities glitching after resuming from pause and entities micro-snapping before moving in fast speeds
                 return;
-            PacketSnapshots.Send(this, this.EntitiesChangedSinceLastSnapshot);
+            PacketSnapshots.Send(this, this.EntitiesChangedSinceLastSnapshot, tick);
             this.EntitiesChangedSinceLastSnapshot.Clear();
         }
         public override bool LogStateChange(Entity entity)

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.ColorCustomization;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
@@ -592,6 +593,17 @@ namespace Project1.Core.Animations
             }
             return base.GetParametrizer();
 
+        }
+
+        internal void ToggleBone(BoneDef def, bool toggle, bool cascade)
+        {
+            this.Body.FindBone(def).SetEnabled(toggle, cascade);
+            this.Owner.Map.Events.Post(new ActorBoneToggledEvent(this.Owner as Actor, def, toggle, cascade));
+        }
+        internal void OverrideRestingFrame(BoneDef def, Keyframe keyFrame)
+        {
+            this.Body.FindBone(def).RestingFrame = keyFrame;
+            this.Owner.Map.Events.Post(new ActorRestingFrameOverridenEvent(this.Owner as Actor, def, keyFrame));
         }
     }
 }

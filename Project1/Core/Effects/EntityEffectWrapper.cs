@@ -26,8 +26,8 @@ namespace Project1.Core.Effects
         {
             this.Def.Worker.Tick(actor, this);
         }
-        internal void Start(Actor actor) => this.Def.Worker.OnStart(actor, this);
-        internal void Finish(Actor actor) => this.Def.Worker.OnFinish(actor, this);
+        internal void Start(Actor actor) => this.Def.Worker.Start(actor, this);
+        internal void Finish(Actor actor) => this.Def.Worker.Finish(actor, this);
         internal void Abort() => this._aborted = true;
         public static EntityEffectWrapper Create(IDataReader r)
         {

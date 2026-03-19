@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Animations
 {
-    public struct Keyframe
+    public struct Keyframe : ISerializableNewNew<Keyframe>
     {
         public int Time;
         public float Angle;
@@ -35,6 +36,22 @@ namespace Project1.Core.Animations
         {
             this.Event = action;
             return this;
+        }
+
+        public IDataWriter Write(IDataWriter w)
+        {
+            w.Write(this.Time);
+            w.Write(this.Angle);
+            w.Write(this.Offset);
+            return w;
+        }
+
+        public static Keyframe Create(IDataReader r)
+        {
+            var time = r.ReadInt32();
+            var angle = r.ReadSingle();
+            var offset = r.ReadVector2();
+            return new(time, offset, angle);
         }
     }
 }

@@ -75,6 +75,8 @@ namespace Project1.Core.Needs
 
         public sealed override void Tick()
         {
+            if (this.Owner.Net.IsClient)
+                return;
             this.NeedDef.Worker.Tick(this);
         }
         public void TickLong(GameObject parent) { }
@@ -102,6 +104,8 @@ namespace Project1.Core.Needs
         }
         public void ApplyDelta(int delta)
         {
+            if (delta < 0 && this.Def == NeedDefOf.Energy)
+                "asdasd".ToConsole();
             this.SetValue(this.Value + delta);
         }
         public Bar ToBar(GameObject parent)

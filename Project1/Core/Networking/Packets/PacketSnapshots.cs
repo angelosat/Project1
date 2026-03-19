@@ -12,11 +12,12 @@ namespace Project1.Core.Networking.Packets
         {
             _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
-        static public void Send(NetEndpoint net, IReadOnlyCollection<Entity> entities)
+        static public void Send(NetEndpoint net, IReadOnlyCollection<Entity> entities, double tick)
         {
             var server = net as Server;
             var w = server.BeginPacketNew(ReliabilityType.Unreliable, _packetTypeId);
-            w.Write(server.CurrentTick);
+            //w.Write(server.CurrentTick);
+            w.Write(tick);
             w.Write(entities.Count);
             foreach (var obj in entities)
             {

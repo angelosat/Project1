@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Networking.Packets;
 using Project1.Core.Simulation;
+using Project1.Framework;
 using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
@@ -26,13 +27,33 @@ namespace Project1.Core.Networking.Entities
                 //if (this.CurrentTick >= prev.Time && this.CurrentTick < next.Time)
                 if (tick < next.Tick && prev.Tick <= tick)
                 {
-                    SnapEntityPositions(world, tick, prev, next);
+                    //SnapEntityPositions(world, tick, prev, next);
+                    SnapEntityPositionsNew(world, tick, prev);
                     //return;
                 }
             }
         }
+        internal static void SnapEntityPositionsNew(IEntityProvider world, Tick tick, WorldSnapshot prev)
+        {
+            foreach (var kv in prev.Dictionary)
+            {
+                var prevSnap = kv.Value;
+                var entity = world.GetEntity(prevSnap.RefID);
+                if (entity is null) /// snapshot for entity that hasn't been spawned but the client yet? silently drop?
+                    continue;
+                
+                entity.SetPosition(prevSnap.Position);
+                entity.Velocity = prevSnap.Velocity;
+                entity.Direction = prevSnap.Orientation;
+
+                if (float.IsNaN(entity.Direction.X) || float.IsNaN(entity.Direction.Y))
+                    throw new Exception();
+            }
+        }
         internal static void SnapEntityPositions(IEntityProvider world, Tick tick, WorldSnapshot prev, WorldSnapshot next)
         {
+            if (tick == 402)
+                "asd".ToConsole();
             float t = (float)((tick - prev.Tick) /
                   (next.Tick - prev.Tick));
             t = Math.Clamp(t, 0f, 1f);

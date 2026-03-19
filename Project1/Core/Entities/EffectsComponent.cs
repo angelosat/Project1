@@ -23,9 +23,13 @@ namespace Project1.Core.Entities
         {
             effect.Start(this.Owner as Actor);
             if (!effect.IsInstant)
+            {
                 this.ActiveEffects.Add(effect);
+                this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
+            }
             else
                 effect.Finish(this.Owner as Actor);
+
         }
         [Obsolete("add EntityEffectWrapper instead")]
         public void Apply(EffectDef effectt)
@@ -51,7 +55,10 @@ namespace Project1.Core.Entities
         {
             var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect && f.Target == target);
             foreach (var f in relevantEffects)
+            {
                 f.Abort();
+                this.Owner.Map.World.Events.Post(new ActorEffectAbortedEvent(this.Owner as Actor, f));
+            }
         }
         List<EntityEffectWrapper> toRemove = [];
         public override void Tick()

@@ -222,9 +222,9 @@ namespace Project1.Core.Towns.Zones
             if (zone.IsEmpty)
                 this.DeleteZone(zone.ID);
         }
-        internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
+        internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
         {
-            yield return new Tuple<Func<string>, Action>(() => $"Zones [{Hotkey.GetLabel()}]", ToggleGui);
+            yield return (() => $"Zones [{Hotkey.GetLabel()}]", ToggleGui);
         }
         static readonly Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Zones", GetContextSubmenuItems()));
         private static readonly IHotkey Hotkey;

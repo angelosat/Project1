@@ -430,9 +430,9 @@ namespace Project1.Core.Towns.Designations
                     d.Value.Add(this.Map.World.GetEntity(r.ReadEntityRefId()));
             }
         }
-        internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
+        internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
         {
-            yield return new Tuple<Func<string>, Action>(() => $"Designations [{Hotkey.GetLabel()}]", ToggleGui);
+            yield return (() => $"Designations [{Hotkey.GetLabel()}]", ToggleGui);
         }
         private static readonly Lazy<Control> _guiNew = new(() => ContextMenuManager.CreateContextSubMenu("Designations", GetContextSubmenuItems()).HideOnAnyClick());
         static void ToggleGui()

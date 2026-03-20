@@ -6,7 +6,6 @@ using Project1.Core.AI.Planners;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Attributes;
 using Project1.Core.Blocks;
-using Project1.Core.Entities.Stats;
 using Project1.Core.Gear;
 using Project1.Core.Interactions;
 using Project1.Core.Mood;
@@ -21,7 +20,7 @@ using Project1.Core.Skills;
 using Project1.Core.Stats;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators;
-using Project1.Core.Towns.Labors;
+using Project1.Core.Towns.Duties;
 using Project1.Core.UI;
 using Project1.Core.World.WorldAreas;
 using Project1.Framework;
@@ -274,6 +273,7 @@ namespace Project1.Core.Entities.Actors
             yield return ("Needs", typeof(NeedsMoodsUINew));
             yield return ("Gear", typeof(InventoryUI));
             yield return ("Stats", typeof(StatsGuiNew));
+            yield return ("Personality", typeof(PersonalityUI));
         }
         public bool CanOperate(TargetArgs target)
         {

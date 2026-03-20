@@ -537,7 +537,7 @@ namespace Project1.Core.Towns
 
                 this.TableFacilities = new TableCompact<TargetArgs>() { Name = "Facilities" }
                     .AddColumn(null, "name", 200 - Icon.Cross.Width, st => new Label(() => st.Block.Name))
-                    .AddColumn(null, "delete", Icon.Cross.Width, st => IconButton.CreateSmall(Icon.Cross, () => WorkplaceManager.Packets.SendPlayerShopAssignCounter(st.Map.Net, st.Map.Net.GetPlayer(), this.SelectedShop, st.Global), "remove"));
+                    .AddColumn(null, "delete", Icon.Cross.Width, st => IconButton.CreateSmall(Icon.Cross, () => PacketsWorkplaces.SendPlayerShopAssignCounter(st.Map.Net, st.Map.Net.GetPlayer(), this.SelectedShop, st.Global), "remove"));
 
                 var workersTab = new GroupBox() { Name = "Workers" };
                 this.TableJobRoles = new TableCompact<int, Actor>(i => this.SelectedShop.Map.World.GetEntity<Actor>(i), true) { Name = "Workers" }
@@ -590,12 +590,12 @@ namespace Project1.Core.Towns
             void TickStockpile(Stockpile st)
             {
                 var net = st.Net;
-                WorkplaceManager.Packets.SendPlayerAddStockpileToShop(net, net.GetPlayer().ID, this.SelectedShop.ID, st.ID);
+                PacketsWorkplaces.SendPlayerAddStockpileToShop(net, net.GetPlayer().ID, this.SelectedShop.ID, st.ID);
             }
             void TickShoppingArea(Stockpile st)
             {
                 var net = st.Net;
-                WorkplaceManager.Packets.SendPlayerAddShoppingArea(net, net.GetPlayer().ID, this.SelectedShop.ID, st.ID);
+                PacketsWorkplaces.SendPlayerAddShoppingArea(net, net.GetPlayer().ID, this.SelectedShop.ID, st.ID);
             }
         }
 

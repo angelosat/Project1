@@ -240,7 +240,7 @@ namespace Project1.Core.Entities
             if (amount <= 0)
                 return;
             this.StackSize += amount;
-            this.World.Events.Post(new EntityStackIncreased(this as Entity, amount));
+            this.World?.Events.Post(new EntityStackIncreased(this as Entity, amount));
         }
         protected int _stackSize = 1;
         public int StackSize

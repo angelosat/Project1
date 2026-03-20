@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Project1.Core.AI.MetaRoles;
-using Project1.Core.Entities.Actors;
-using Project1.Framework.UI;
 
 namespace Project1.Core.AI
 {

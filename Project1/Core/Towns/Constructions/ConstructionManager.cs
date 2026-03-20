@@ -144,9 +144,9 @@ namespace Project1.Core.Towns.Constructions
             }
         }
 
-        internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
+        internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
         {
-            yield return new Tuple<Func<string>, Action>(() => $"Build [{HotkeyBuild.GetLabel()}]", () => WindowBuild.Value.Toggle());
+            yield return (() => $"Build [{HotkeyBuild.GetLabel()}]", () => WindowBuild.Value.Toggle());
         }
         internal bool IsDesignatedConstruction(IntVec3 vector3)
         {

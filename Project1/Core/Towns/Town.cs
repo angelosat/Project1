@@ -15,6 +15,7 @@ using Project1.Core.Towns.Constructions;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Duties;
+using Project1.Core.Towns.Reputation;
 using Project1.Core.Towns.Storage;
 using Project1.Core.Towns.UI;
 using Project1.Core.Towns.Zones;
@@ -31,7 +32,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns
 {
-    public class Town : Inspectable, IDutyProvider
+    public sealed class Town : Inspectable, IDutyProvider
     {
         UIQuickMenu QuickMenu;
         public static HotkeyCategory HotkeyContext = new("Town");
@@ -108,13 +109,14 @@ namespace Project1.Core.Towns
         //[InspectorHidden]
         //public TerrainManager TerrainManager;
         [InspectorHidden]
-        public WorkplaceManager ShopManager;
+        public TownServicesComp ShopManager;
         [InspectorHidden]
         public QuestsManager QuestManager;
         [InspectorHidden]
         public StorageManager Storage;
         public FurnitureTracker Furniture;
         public OwnershipManager Ownership;
+        public TownReputationComp Reputation;
 
         public List<TownComponent> TownComponents = [];
 
@@ -143,6 +145,7 @@ namespace Project1.Core.Towns
             this.Storage = new(this);
             this.Furniture = new(this);
             this.Ownership = new(this);
+            this.Reputation = new(this);
 
             this.TownComponents.AddRange([
                 this.ZoneManager,
@@ -158,7 +161,8 @@ namespace Project1.Core.Towns
                 this.QuestManager,
                 this.Storage,
                 this.Furniture,
-                this.Ownership
+                this.Ownership,
+                this.Reputation
             ]);
             
             var utilities = (Utility.Types[])Enum.GetValues(typeof(Utility.Types));
@@ -429,14 +433,14 @@ namespace Project1.Core.Towns
 
         private void InitQuickMenu()
         {
-            var actions = new List<Tuple<Func<string>, Action>>();
+            var actions = new List<(Func<string>, Action)>();
             foreach (var comp in this.TownComponents)
                 actions.AddRange(comp.OnQuickMenuCreated());
-            actions.Add(new Tuple<Func<string>, Action>(() => "Debug commands", UIDebugCommands.RefreshNew));
-            actions.Add(new Tuple<Func<string>, Action>(() => "Spawn objects", () => ObjectTemplatesWindow.Instance.Show()));
-            actions.Add(new Tuple<Func<string>, Action>(() => "Edit blocks", () => TerrainWindow.Instance.Show()));
+            actions.Add((() => "Debug commands", UIDebugCommands.RefreshNew));
+            actions.Add((() => "Spawn objects", () => ObjectTemplatesWindow.Instance.Show()));
+            actions.Add((() => "Edit blocks", () => TerrainWindow.Instance.Show()));
 
-            actions.Add(new Tuple<Func<string>, Action>(() => "LaborsNew", this.DutiesManager.ToggleLaborsWindow));
+            actions.Add((() => "LaborsNew", this.DutiesManager.ToggleLaborsWindow));
 
 
             this.QuickMenu = new UIQuickMenu();

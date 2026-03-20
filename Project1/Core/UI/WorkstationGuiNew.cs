@@ -215,7 +215,7 @@ namespace Project1.Core.UI
         //        this.Window.Hide();
         //}
 
-        protected override void OnBind(ISelectable selectable)
+        protected internal override void OnBind(ISelectable selectable)
         {
             if (selectable is BlockEntity bEntity &&
                 //target.BlockEntityOld is BlockEntity block &&

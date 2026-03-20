@@ -16,7 +16,7 @@ namespace Project1.Core.Towns.UI
             this.Color = Color.Black;
         }
       
-        internal void AddItems(IEnumerable<Tuple<Func<string>, Action>> actions)
+        internal void AddItems(IEnumerable<(Func<string>, Action)> actions)
         {
             var w = Button.GetMaxWidth(actions.Select(i => i.Item1()));
             var row = 0;

@@ -62,7 +62,8 @@ namespace Project1.Core.World.WorldAreas
         public void Tick()
         {
             var world = this.World;
-            float step = 1f / Ticks.PerGameHour;
+            //float step = 1f / Ticks.PerGameHour;
+            float step = 1f / Ticks.PerGameMinute;
             var snapshot = ActorPositions.ToList();
             foreach (var (actor, distance) in snapshot)
             {

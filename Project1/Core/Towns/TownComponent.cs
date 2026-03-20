@@ -46,7 +46,7 @@ namespace Project1.Core.Towns
 
         public virtual void OnUpdate() { }
 
-        internal virtual IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated() { yield break; }
+        internal virtual IEnumerable<(Func<string>, Action)> OnQuickMenuCreated() { yield break; }
         internal virtual void OnContextMenuCreated(IContextable obj, ContextArgs a) { }
         internal virtual void OnContextActionBarCreated(ContextActionBar.ContextActionBarArgs a) { }
         public SaveTag Save()

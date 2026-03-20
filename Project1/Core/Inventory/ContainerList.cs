@@ -74,11 +74,12 @@ namespace Project1.Core.Inventory
             if (item.Container == this)
                 throw new Exception();
 
-            if(this.Contents.FirstOrDefault(i=>i.CanAbsorb(item)) is Entity existing)
+            if (this.Contents.FirstOrDefault(i => i.CanAbsorb(item)) is Entity existing)
             {
                 //existing.StackSize += item.StackSize;
                 existing.Add(item.StackSize);
-                throw new NotImplementedException();
+                return;
+                //throw new NotImplementedException();
             }
 
             ((ICollection<Entity>)this.Contents).Add(item);

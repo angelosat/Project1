@@ -5,13 +5,12 @@ using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
-    class InventoryUI : GroupBox, ISelectionBound
+    class InventoryUI : SelectionBoundControl// GroupBox, ISelectionBound
     {
         GroupBox BoxSlots;
         GuiCharacterCustomization colorsui;
 
-        public ISelectable CurrentSelection { get; set; }
-        public void OnBind(ISelectable selectable)
+        protected internal override void OnBind(ISelectable selectable)
         {
             if(selectable is Actor actor)
                 Build(actor);

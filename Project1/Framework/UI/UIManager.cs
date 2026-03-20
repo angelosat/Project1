@@ -824,6 +824,28 @@ namespace Project1.Framework.UI
             if (enabled)
                 this.Add(this.DialogBlock);
         }
+        public static void ToggleSingleton<T>(string title) where T : Control
+        {
+            var type = typeof(T);
+            var key = new WindowKey(type, null);//, mode);
+
+            if (_windowsSingleton.TryGetValue(key, out var win))
+            {
+                win.Close();
+                _windowsSingleton.Remove(key);
+            }
+            else
+            {
+                var control = (Control)Activator.CreateInstance(type);// new T();
+                var window = new Window { Movable = true, AutoSize = true, Title = title };
+                window.Client.AddControls(control);
+                if (_windowLastPositions.TryGetValue(type, out var loc))
+                    window.Location = loc;
+                _windowsSingleton[key] = window;
+                window.HideAction += () => _windowsSingleton.Remove(key);
+                window.Show();
+            }
+        }
         public static void ToggleSingleton(Type type, ISelectable selectable)
         {
             var key = new WindowKey(type, null);//, mode);
@@ -909,8 +931,7 @@ namespace Project1.Framework.UI
         {
             foreach (var c in this.ControlsInMemory)
                 c.OnSelectedTargetChanged(target);
-
-            foreach (var (key, window) in _windowsSingleton)
+            foreach (var (_, window) in _windowsSingleton)
             {
                 BindAllSelectionBound(window.Client, target);
 
@@ -924,6 +945,11 @@ namespace Project1.Framework.UI
 
             foreach (var child in root.Controls)
                 BindAllSelectionBound(child, selection);
+        }
+
+        internal void ToggleOrRefreshSingleton<T>(ISelectable selectable) where T : SelectionBoundControl
+        {
+
         }
     }
 }

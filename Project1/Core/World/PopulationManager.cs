@@ -12,6 +12,7 @@ using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.World.WorldAreas;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 using Project1.Framework.Input;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -22,17 +23,18 @@ using System.Linq;
 
 namespace Project1.Core.World
 {
-    public class PopulationManager : Inspectable, ISaveable, ISerializable
+    public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     {
         bool Populated;
         readonly ObservableCollection<WorldInhabitantView> WorldInhabitants = [];
         public IEnumerable<WorldInhabitantView> AllActors => this.WorldInhabitants;
         public readonly StaticWorld World;
-        const int WorldPopulationCap = 1;//6;
+        const int WorldPopulationCap = 10;//6;
         public int WorldPopulationCount { get; private set; }
         const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
         const int InitialApproval = 50;
         readonly HashSet<int> Undiscovered = [];
+        readonly Scheduler Schedule = new(Ticks.FromMinutes(1));
 
         int TickCount = (int)(Ticks.PerSecond / TickRate);
         public PopulationManager(StaticWorld world)
@@ -67,11 +69,15 @@ namespace Project1.Core.World
         }
         public void Tick()
         {
-            this.TickCount--;
-            if (this.TickCount > 0)
-                return;
-            this.TickCount = (int)(Ticks.PerSecond / TickRate);
-            this.PopulateRuntime(this.World.Net);
+            if(this.Schedule.OnSchedule(this.World.CurrentTick))
+            {
+                this.PopulateRuntime();
+            }
+            //this.TickCount--;
+            //if (this.TickCount > 0)
+            //    return;
+            //this.TickCount = (int)(Ticks.PerSecond / TickRate);
+            //this.PopulateRuntime(this.World.Net);
         }
 
 
@@ -90,7 +96,18 @@ namespace Project1.Core.World
             }
         }
 
-
+        private Actor PopulateRuntime()
+        {
+            var net = this.World.Net;
+            if (net.IsServer && this.WorldPopulationCount < WorldPopulationCap)
+            {
+                Actor actor = GenerateInhabitant();
+                var chosenPlace = this.World.PlaceAtRandom(actor);//
+                net.Report($"{actor.Name} created and placed at {chosenPlace.LabelReadable}");
+                return actor;
+            }
+            return null;
+        }
         private Actor PopulateRuntime(INetEndpoint net)
         {
             if (net is Server && this.WorldPopulationCount < WorldPopulationCap)
@@ -111,7 +128,7 @@ namespace Project1.Core.World
             var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
             need.Value = this.World.Random.Next(0, 100);
             actor.Skills.Randomize();
-            actor.AI.Meta.LocationDecision.ScheduleNext(this.World);
+            //actor.AI.Meta.LocationDecision.ScheduleNext(this.World);
             this.World.Register(actor);
             return actor;
         }
@@ -159,7 +176,8 @@ namespace Project1.Core.World
                 var npc = props.Actor;
                 var btn = ButtonNew.CreateBig(
                     //() => SelectionManager.Select(npc),
-                    () => Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([npc])),
+                    //() => Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([npc])),
+                    () => UIManager.ToggleUnique<SelectionDetailsGui>(npc),
                     box.Viewport.Width,
                     npc.RenderIcon(),
                     new Label(() => npc.Npc.FullName) { TextColorFunc = ()=> npc.GetNameplateColor()},
@@ -192,7 +210,7 @@ namespace Project1.Core.World
         void ForceVisitDepart(Actor actor)
         {
             var serverActor = Server.Instance.World.GetEntity<Actor>(actor.RefId);
-            var newPercentage = actor.Map == this.World.Map ? 0 : 1f;
+            var newPercentage = actor.Map == null ? 0 : 1f;
             serverActor.Needs.OverridePercentage(AdventurerNeedsDefOf.Adventuring, newPercentage);
             var debugmsg = $"{actor.Name}'s visit chance modifier set to 1";
             Server.Instance.ConsoleBox.Write(debugmsg);
@@ -200,10 +218,14 @@ namespace Project1.Core.World
         }
         public void ResolveReferences()
         {
+            this.WorldPopulationCount = 0;
             var allActors = this.World.GetEntities<Actor>();
             foreach (var actor in allActors)
+            {
                 this.WorldInhabitants.Add(new WorldInhabitantView(actor));
-            this.WorldPopulationCount = AllActors.Count();
+                this.WorldPopulationCount++;
+            }
+            //this.WorldPopulationCount = AllActors.Count();
         }
         public void ResolveReferencesOld()
         {

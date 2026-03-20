@@ -1,5 +1,7 @@
 ﻿using Project1.Core.Blocks.Construction;
 using Project1.Core.Blocks.Doors;
+using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Shops.Blocks;
 using Project1.Framework;
 
 namespace Project1.Core.Blocks.Comps
@@ -19,6 +21,8 @@ namespace Project1.Core.Blocks.Comps
         internal static readonly BlockCompDef Particles = new("Particles", typeof(BlockParticlesComp));
         internal static readonly BlockCompDef Switchable = new("Switchable", typeof(BlockSwitchableComp));
         internal static readonly BlockCompDef Light = new("Light", typeof(BlockLightComp));
+        internal static readonly BlockCompDef Shop = new("Shop", typeof(BlockShopComp));
+        internal static readonly BlockCompDef Shelf = new("Shop", typeof(BlockShelfComp));
 
         static BlockCompDefOf()
         {

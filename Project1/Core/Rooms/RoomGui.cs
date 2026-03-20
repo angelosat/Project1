@@ -29,7 +29,7 @@ namespace Project1.Core.Rooms
                 );
         }
 
-        protected override void OnBind(ISelectable selectable)
+        protected internal override void OnBind(ISelectable selectable)
         {
             if (selectable is not Room room)
                 return;

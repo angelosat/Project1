@@ -1,10 +1,14 @@
 ﻿using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Towns;
+using Project1.Core.Towns.Services;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.UI;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -14,34 +18,171 @@ using System.Linq;
 
 namespace Project1.Core
 {
-    public partial class WorkplaceManager : TownComponent
+    [EnsureStaticCtorCall]
+    internal static class PacketsShops
     {
+        internal readonly static PacketId 
+            _pShopCreated = Registry.PacketHandlers.Register(ReceiveCreateShop), 
+            _pShopDeleted, 
+            _pPlayerShopCreated = Registry.PacketHandlers.Register(ReceivePlayerCreateShop),
+            _pPlayerShopDeleted;
+
+        static PacketsShops()
+        {
+            Registry.PlayerInputEventHooks.Register<PlayerCreateShopEvent>(HandlePlayerCreateShop);
+        }
+
+        private static void HandlePlayerCreateShop(PlayerCreateShopEvent e)
+        {
+            if (Ingame.Net.IsServer)
+                Ingame.CurrentMap.Town.ShopManager.CreateShop();
+            else
+                SendPlayerCreateShop(Client.Instance);
+        }
+
+        private static void SendPlayerCreateShop(Client client)
+        {
+            client.BeginPacketImmediate(_pPlayerShopCreated)
+                .Write(client.PlayerData.ID);
+        }
+        private static void ReceivePlayerCreateShop(NetEndpoint endpoint, Packet packet)
+        {
+            var server = endpoint as Server;
+            var r = packet.PacketReader;
+            var playerid = r.ReadInt32();
+            var shop = endpoint.Map.Town.ShopManager.CreateShop();
+            SendCreateShop(server, shop);
+        }
+        private static void SendCreateShop(Server server, Shop shop)
+        {
+            server.BeginPacketImmediate(_pShopCreated)
+                .Write(shop.ID);
+        }
+        private static void ReceiveCreateShop(NetEndpoint endpoint, Packet packet)
+        {
+            var client = endpoint as Client;
+            var r = packet.PacketReader;
+            var shopid = r.ReadInt32();
+            client.Map.Town.ShopManager.CreateShop(shopid);
+        }
+    }
+
+    internal record struct PlayerDeleteShopEvent(Workplace Workplace) : IEventPayload { }
+    internal record struct PlayerCreateShopEvent() : IEventPayload { }
+    class WorkplacesGui : GroupBox
+    {
+        public WorkplacesGui()
+        {
+            var boxList = new GroupBox();
+            var town = Ingame.CurrentMap.Town;
+            var shopUI = new Lazy<(Control control, Action<Workplace> refresh)>(Workplace.CreateUI);
+            var win = new Lazy<Window>(() => shopUI.Value.control.ToWindow("Shop"));
+
+            var shoplist = new TableCompact<Workplace>()
+                .AddColumn(new(), "name", 200, sh => new Label(() => sh.Name, () =>
+                {
+                    shopUI.Value.refresh(sh);
+                }), 0)
+                .AddColumn(new(), "delete", Icon.Cross.SourceRect.Width,
+                    w => IconButton.CreateSmall(Icon.Cross,
+                        () => MessageBox.CreateDialogue("Warning!", $"{w.Name} will be deleted. Are you sure?",
+                            //() => Packets.SendPlayerDeleteShop(this.Town.Net, this.Town.Net.GetPlayer(), w.ID)
+                            () => town.Map.Events.Post(new PlayerDeleteShopEvent(w))
+                            )));
+
+            var shoplistcontainer = shoplist.MakeScrollable(-1, 200);
+
+            //shoplist.OnGameEventAction = e =>
+            //{
+            //    switch ((Message.Types)e.Type)
+            //    {
+            //        case Message.Types.ShopsUpdated:
+            //            var shop = e.Parameters[0] as Workplace;
+            //            if (this.Shopss.Contains(shop))
+            //                shoplist.AddItems(shop);
+            //            else
+            //                shoplist.RemoveItems(shop);
+            //            break;
+
+            //        default:
+            //            break;
+            //    }
+            //};
+            //shoplist.ShowAction = () =>
+            //{
+            //    shoplist.ClearItems();
+            //    shoplist.AddItems(this.Shops.Values.ToArray());
+            //};
+            //shoplist.AddItems(this.Shops.Values.ToArray());
+            //var net = this.Town.Net;
+            //var selectTypeMenu = selectShopType(t => Packets.SendPlayerCreateShop(net, net.GetPlayer().ID, t));
+            //var btnNew = new Button("New", () => selectTypeMenu.Toggle(UIManager.MouseScaled));
+            var btnNew = new Button("New", () => town.Map.Events.Post(new PlayerCreateShopEvent()));
+            boxList.AddControlsVertically(shoplistcontainer, btnNew);
+            this.AddControlsHorizontally(boxList);
+            //return box;
+
+            //Control selectShopType(Action<Type> callback)
+            //{
+            //    var list = new ListBoxNoScroll<Type, Button>(t => new Button(t.Name, () => callback(t)));
+            //    list.AddItems(typeof(Shop), typeof(Tavern));
+            //    return list.ToContextMenu("Select shop type");
+            //}
+        }
+    }
+    public partial class TownServicesComp : TownComponent
+    {
+        public ChangeNotifier Notifications = new();
         const int UIListWidth = 250;
 
         readonly ObservableHashSet<Workplace> Shopss = new();
 
-        int CurrentShopID = 1;
+        readonly Dictionary<TownServiceDef, TownServiceRuntime> _servicesByDef = [];
+        readonly Dictionary<Type, TownServiceRuntime> _servicesByType = [];
+
+        internal int CurrentShopID = 1;
 
         Dictionary<int, Workplace> Shops = new();
 
-        static WorkplaceManager()
+        static TownServicesComp()
         {
             Tavern.Init();
         }
 
-        public WorkplaceManager(Town town) : base(town)
+        public TownServicesComp(Town town) : base(town)
         {
+            foreach (var def in Def.GetDefs<TownServiceDef>())
+            {
+                var serviceType = def.RuntimeType;
+                var runtime = def.CreateRuntime();
+                this._servicesByDef.Add(def, runtime);
+                this._servicesByType.Add(serviceType, runtime);
+            }
         }
-
+        public T GetService<T>() where T : TownServiceRuntime => (T)this._servicesByType[typeof(T)];
         public override string Name => "Shops";
-
+        public Shop CreateShop()
+        {
+            var newshop = new Shop(this, this.GetNextShopID());
+            //this.Shops.Add(newshop.ID, newshop);
+            this.AddShop(newshop);
+            return newshop;
+        }
+        public Shop CreateShop(int id)
+        {
+            var newshop = new Shop(this, id);
+            //this.Shops.Add(newshop.ID, newshop);
+            this.AddShop(newshop);
+            return newshop;
+        }
         public void AddShop(Workplace shop)
         {
             this.Shopss.Add(shop);
             this.Shops.Add(shop.ID, shop);
-            this.Town.Net.EventOccured((int)Message.Types.ShopsUpdated, shop);
+            this.Notifications.Notify();
+            //this.Town.Net.EventOccured((int)Message.Types.ShopsUpdated, shop);
         }
-
+        
         public Workplace FindShop(Stockpile stockpile)
         {
             return this.Shopss.FirstOrDefault(sh => sh.HasStockpile(stockpile.ID));
@@ -114,7 +255,7 @@ namespace Project1.Core
         public void PlayerAssignCounter(Workplace shop, IntVec3 global)
         {
             var net = this.Town.Net;
-            Packets.SendPlayerShopAssignCounter(net, net.GetPlayer(), shop, global);
+            PacketsWorkplaces.SendPlayerShopAssignCounter(net, net.GetPlayer(), shop, global);
         }
 
         public override void Read(IDataReader r)
@@ -153,10 +294,11 @@ namespace Project1.Core
                 wp.OnBlocksChanged(positions);
         }
 
-        internal override IEnumerable<Tuple<Func<string>, Action>> OnQuickMenuCreated()
+        internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
         {
-            var win = new Lazy<Window>(() => this.GetUIManager().ToWindow("Shops"));
-            yield return new Tuple<Func<string>, Action>(() => "Businesses", () => win.Value.Toggle());
+            //var win = new Lazy<Window>(() => this.GetUIManager().ToWindow("Shops"));
+            //yield return new Tuple<Func<string>, Action>(() => "Businesses", () => win.Value.Toggle());
+            yield return (() => "Shops", () => UIManager.ToggleSingleton<WorkplacesGui>("Shops"));
         }
         internal /*override*/ void OnTargetSelected(IUISelection info, ISelectable selected)
         {
@@ -167,8 +309,8 @@ namespace Project1.Core
                 var control = new Lazy<Control>(
                     () =>
                     new GroupBox().AddControlsVertically(
-                        new Button("None", () => Packets.SendPlayerAddStockpileToShop(net, net.GetPlayer().ID, stockpile.Town.ShopManager.FindShop(stockpile)?.ID ?? -1, stockpile.ID), UIListWidth),
-                        this.CreateUIShopList(sh => Packets.SendPlayerAddStockpileToShop(net, net.GetPlayer().ID, sh.ID, stockpile.ID)))
+                        new Button("None", () => PacketsWorkplaces.SendPlayerAddStockpileToShop(net, net.GetPlayer().ID, stockpile.Town.ShopManager.FindShop(stockpile)?.ID ?? -1, stockpile.ID), UIListWidth),
+                        this.CreateUIShopList(sh => PacketsWorkplaces.SendPlayerAddStockpileToShop(net, net.GetPlayer().ID, sh.ID, stockpile.ID)))
                     .ToPanelLabeled("Select shop").HideOnAnyClick());
 
                 info.AddTabAction("Shop", () => control.Value.SetLocation(UIManager.Mouse).Toggle());
@@ -207,7 +349,7 @@ namespace Project1.Core
 
         internal void ToggleWorker(Actor a, Workplace shop)
         {
-            Packets.SendPlayerAssignWorkerToShop(a.Net, a.Net.GetPlayer(), a, shop);
+            PacketsWorkplaces.SendPlayerAssignWorkerToShop(a.Net, a.Net.GetPlayer(), a, shop);
         }
         protected override void AddSaveData(SaveTag tag)
         {
@@ -271,7 +413,7 @@ namespace Project1.Core
                 .AddColumn(new(), "delete", Icon.Cross.SourceRect.Width,
                     w => IconButton.CreateSmall(Icon.Cross,
                         () => MessageBox.CreateDialogue("Warning!", $"{w.Name} will be deleted. Are you sure?",
-                            () => Packets.SendPlayerDeleteShop(this.Town.Net, this.Town.Net.GetPlayer(), w.ID))));
+                            () => PacketsWorkplaces.SendPlayerDeleteShop(this.Town.Net, this.Town.Net.GetPlayer(), w.ID))));
 
             var shoplistcontainer = shoplist.MakeScrollable(-1, 200);
 
@@ -298,7 +440,7 @@ namespace Project1.Core
             };
             shoplist.AddItems(this.Shops.Values.ToArray());
             var net = this.Town.Net;
-            var selectTypeMenu = selectShopType(t => Packets.SendPlayerCreateShop(net, net.GetPlayer().ID, t));
+            var selectTypeMenu = selectShopType(t => PacketsWorkplaces.SendPlayerCreateShop(net, net.GetPlayer().ID, t));
             var btnNew = new Button("New", () => selectTypeMenu.Toggle(UIManager.MouseScaled));
             boxList.AddControlsVertically(shoplistcontainer, btnNew);
             box.AddControlsHorizontally(boxList);
@@ -312,4 +454,5 @@ namespace Project1.Core
             }
         }
     }
+ 
 }

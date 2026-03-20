@@ -40,6 +40,6 @@ namespace Project1.Core.UI
             _unsub += unsub;
         }
         protected virtual void RegisterInvalidations() { }
-        protected abstract void OnBind(ISelectable selectable);
+        protected internal abstract void OnBind(ISelectable selectable);
     }
 }

@@ -104,8 +104,6 @@ namespace Project1.Core.Needs
         }
         public void ApplyDelta(int delta)
         {
-            if (delta < 0 && this.Def == NeedDefOf.Energy)
-                "asdasd".ToConsole();
             this.SetValue(this.Value + delta);
         }
         public Bar ToBar(GameObject parent)

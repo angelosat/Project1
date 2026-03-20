@@ -9,13 +9,12 @@ namespace Project1.Core.AI.MetaRoles
         internal override void Tick(RoleMetaWrapper meta)
         {
             var actor = meta.Actor;
-            if (actor.Net is not Server server)
+            if (actor.Net.IsClient)
                 return;
             var world = actor.World;
             if (!meta.LocationDecision.CanEvaluate(world.CurrentTick))
                 return;
-            var adventureNeed = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
-            var roll = world.Random.Roll(adventureNeed.Percentage);
+            var roll = world.Random.Roll(actor.Needs.GetPercentage(AdventurerNeedsDefOf.Adventuring));
             if (roll)
             {
                 meta.LocationDecision.RegisterSuccess();

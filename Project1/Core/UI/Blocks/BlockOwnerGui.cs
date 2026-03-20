@@ -8,7 +8,7 @@ namespace Project1.Core.UI.Blocks
 {
     class BlockOwnerGui : SelectionBoundControl
     {
-        protected override void OnBind(ISelectable selectable)
+        protected internal override void OnBind(ISelectable selectable)
         {
             if (selectable is not BlockEntity entity ||
                !entity.Comps.TryGetComp<BlockOwnershipComp>(out var comp))

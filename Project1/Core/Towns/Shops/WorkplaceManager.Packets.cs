@@ -1,22 +1,20 @@
-﻿using System;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Networking;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Shops;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Networking;
-using Project1.Core.Helpers;
-using Project1.Framework;
-using Project1.Core.Networking;
 using Project1.Core.Towns.Stockpiles;
+using Project1.Framework;
+using System;
 
 namespace Project1.Core
 {
-    public partial class WorkplaceManager
-    {
+    //public partial class TownServicesComp
+    //{
         [EnsureStaticCtorCall]
-        public class Packets
+        public class PacketsWorkplaces
         {
             static readonly int PacketPlayerCreateShop, PacketPlayerDeleteShop, PacketPlayerAddStockpileToShop, PacketPlayerAddShoppingArea, PacketPlayerAssignWorkerToShop, PacketPlayerShopAssignCounter;//, PacketPlayerRenameShop;
-            static Packets()
+            static PacketsWorkplaces()
             {
                 PacketPlayerCreateShop = Registry.PacketHandlers.Register(ReceivePlayerCreateShop);
                 PacketPlayerDeleteShop = Registry.PacketHandlers.Register(ReceivePlayerDeleteShop);
@@ -174,5 +172,5 @@ namespace Project1.Core
             }
         }
          
-    }
+    //}
 }

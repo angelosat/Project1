@@ -1,21 +1,19 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.UI;
 using Project1.Framework.UI;
 
 namespace Project1.Core.AI
 {
-    internal class PersonalityUI : GuiBuilder
+    internal class PersonalityUI : SelectionBoundControl
     {
-        public PersonalityUI() { }
-        public PersonalityUI(Entity entity) : base(entity) { }
-        protected override void Build()
+        protected internal override void OnBind(ISelectable selectable)
         {
-            var actor = this.Entity as Actor;
+            if (selectable is not Actor actor)
+                return;
             var comp = actor.Personality;
             var gui = comp.NewGui();
+            this.Controls.Clear();
             this.AddControls(gui);
         }
-        protected override GuiBuilder BuildFor(Entity entity) => new PersonalityUI(entity);
     }
 }

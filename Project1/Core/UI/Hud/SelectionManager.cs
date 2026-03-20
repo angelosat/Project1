@@ -201,7 +201,7 @@ namespace Project1.Core.UI.Hud
 
             this.PanelInfo.AnchorToBottomCenter();
             this.LabelName = new Label() { TextFunc = () => "<none>" };
-            Lazy<SelectionDetailsGui> detailsGui = new Lazy<SelectionDetailsGui>(() => new SelectionDetailsGui());
+            Lazy<SelectionDetailsGui> detailsGui = new(() => new SelectionDetailsGui());
 
             this.IconIssues = new IconButton("!") { BackgroundTexture = UIManager.Icon16Background, TooltipFunc = showIssuesTooltip }
                 .Flash(true)

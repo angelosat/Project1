@@ -7,6 +7,7 @@ using Project1.Core.Graphics.Particles;
 using Project1.Core.Resources;
 using Project1.Core.Rooms;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Towns.Shops.Blocks;
 using Project1.Framework;
 
 namespace Project1.Core.Blocks
@@ -105,7 +106,8 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Slab = new("Slab", typeof(BlockSlab));
         static public readonly BlockDef Conveyor = new("Conveyor", typeof(BlockConveyor));
         static public readonly BlockDef Construction = new("Construction", typeof(BlockConstruction));
-        static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(Towns.Shops.Blocks.BlockShopCounter));
+        static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(BlockShopCounter));
+        static public readonly BlockDef ShopShelf = new("ShopShelf", typeof(BlockShopShelf));
         static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation))
         {
             Profile = WorkstationDefOf.Workbench,

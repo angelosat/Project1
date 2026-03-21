@@ -11,7 +11,6 @@ namespace Project1.Framework.UI
 {
     public class LabelNew : ButtonBaseNew
     {
-        IDisposable subscription;
 
         public static int DefaultHeight = UIManager.Font.LineSpacing + 2;
 
@@ -218,18 +217,19 @@ namespace Project1.Framework.UI
             this.Text = text;
             this.TextFormat = format ?? text;
         }
-        protected override void OnHidden()
-        {
-            this.subscription?.Dispose();
-            this.subscription = null;
-            base.OnHidden();
-        }
-        internal LabelNew Bind(IUpdatable updatable)
-        {
-            this.subscription?.Dispose();
-            this.subscription = updatable.Subscribe(() => this.Invalidate(true));
-            return this;
-        }
+        //IDisposable subscription;
+        //protected override void OnHidden()
+        //{
+        //    this.subscription?.Dispose();
+        //    this.subscription = null;
+        //    base.OnHidden();
+        //}
+        //internal LabelNew Bind(IUpdatable updatable)
+        //{
+        //    this.subscription?.Dispose();
+        //    this.subscription = updatable.Subscribe(() => this.Invalidate(true));
+        //    return this;
+        //}
         public override void Draw(SpriteBatch sb)
         {
             base.Draw(sb);

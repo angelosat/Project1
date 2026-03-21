@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core;
+using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Input;
 using Project1.Core.Networking;
@@ -1398,9 +1399,25 @@ namespace Project1.Framework.UI
         public virtual Rectangle ContainerSize => this.BoundsLocal;
         public IBounded[] Children => this.Controls.ToArray();
 
+        IDisposable subscription;
+        //protected override void OnHidden()
+        //{
+        //    this.subscription?.Dispose();
+        //    this.subscription = null;
+        //    base.OnHidden();
+        //}
+        internal Control Bind(IUpdatable updatable)
+        {
+            this.subscription?.Dispose();
+            this.subscription = updatable.Subscribe(() => this.Invalidate(true));
+            return this;
+        }
+
         protected virtual void OnHidden()
         {
             this.HideAction?.Invoke();
+            this.subscription?.Dispose();
+            this.subscription = null;
             foreach (var ch in this.Controls)
                 ch.OnHidden();
         }

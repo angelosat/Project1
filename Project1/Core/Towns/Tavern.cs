@@ -124,14 +124,12 @@ namespace Project1.Core.Towns
         {
             this.Orders.Remove(order);
             this.Town.Net.EventOccured((int)Message.Types.TavernMenuChanged, this, new CraftingOrder[] {  }, new CraftingOrder[] { order });
-            this.Town.Net.EventOccured((int)Message.Types.OrderDeleted, order);
         }
         public void RemoveOrder(int orderid)
         {
             var order = this.GetOrder(orderid);
             this.Orders.Remove(order);
             this.Town.Net.EventOccured((int)Message.Types.TavernMenuChanged, this, new CraftingOrder[] { }, new CraftingOrder[] { order });
-            this.Town.Net.EventOccured((int)Message.Types.OrderDeleted, order);
         }
         public void AddTable(IntVec3 global)
         {

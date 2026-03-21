@@ -6,6 +6,7 @@ using Project1.Core.Systems.Materials;
 using Project1.Core.Towns.Zones;
 using Project1.Core.UI;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -16,7 +17,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Stockpiles
 {
-    public class Stockpile : Zone, IStorageNew, IContextable, ISelectable
+    public class Stockpile : Zone, IStorageNew, IContextable, ISelectable, IUpdatable
     {
         public override ZoneDef ZoneDef => ZoneDefOf.Stockpile;
         public StorageSettings Settings { get; } = new();
@@ -27,6 +28,15 @@ namespace Project1.Core.Towns.Stockpiles
         //readonly List<GameObject> Cache = [];
         public readonly ObservableCollection<GameObject> CacheObservable = [];
         public HashSet<Entity> AcceptedItems = [];
+        public bool ForSale
+        {
+            get => field;
+            set
+            {
+                field = value;
+                this._signal.Raise();
+            }
+        }
         public Stockpile()
         {
             init();
@@ -136,7 +146,8 @@ namespace Project1.Core.Towns.Stockpiles
         }
         public override IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
-            yield return ("Filters", typeof(StockpileFiltersGui));
+            //yield return ("Filters", typeof(StockpileFiltersGui));
+            yield return ("Settings", typeof(StockpileSettingsGui));
             //yield return ("Filters", () =>
             //{
             //    var win = new StockpileFiltersGui(this).ToWindow("Filters");
@@ -276,5 +287,10 @@ namespace Project1.Core.Towns.Stockpiles
         public bool IsAllowed(ItemDef itemDef) => this.SettingsNew.IsAllowed(itemDef);
         public bool IsAllowed(Def def) => this.SettingsNew.IsAllowed(def);
         public bool IsAllowed(Def profile, MaterialDef material) => this.SettingsNew.IsAllowed(profile, material);
+
+        readonly Signal _signal = new();
+        public IDisposable Subscribe(Action handler)
+            => this._signal.Subscribe(handler);
+        
     }
 }

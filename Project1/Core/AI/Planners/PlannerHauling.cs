@@ -91,7 +91,6 @@ namespace Project1.Core.AI.Planners
                         continue;
                     // TODO only consider unreserved quantity of the stack
 
-
                     if (currentStockpile is null ||
                         !currentStockpile.Accepts(item) ||
                         stockpile.Priority > currentStockpile.Priority)

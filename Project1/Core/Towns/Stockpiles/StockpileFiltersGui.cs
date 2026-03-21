@@ -3,12 +3,35 @@ using Project1.Core.Networking;
 using Project1.Framework.UI;
 using Project1.Core.Crafting;
 using System;
+using Project1.Core.Screens;
 
 namespace Project1.Core.Towns.Stockpiles
 {
-    internal class StockpileFiltersGui : GroupBox, ISelectionBound
+    internal sealed class StockpileSettingsGui : SelectionBoundControl
     {
-        Stockpile Stockpile;
+        readonly StockpileFiltersGui storage;
+        readonly CheckBoxFinalNew forSale;
+        Stockpile Stockpile => this.CurrentSelection as Stockpile;
+        public StockpileSettingsGui()
+        {
+            this.storage = new();
+            this.forSale = new("For Sale", 
+                () => Ingame.Instance.Events.Post(new PlayerModifiedStockpileSettingsEvent(this.Stockpile, !this.Stockpile.ForSale)), 
+                () => this.Stockpile?.ForSale ?? false);
+            //this.AddControlsVertically(this.storage, this.forSale);
+            this.AddControlsVertically(this.forSale, this.storage);
+        }
+        protected internal override void OnBind(ISelectable selectable)
+        {
+            if (selectable is not Stockpile stockpile)
+                return;
+            this.storage.Bind(stockpile);
+            this.forSale.Bind(stockpile);
+        }
+    }
+    internal sealed class StockpileFiltersGui : SelectionBoundControl// GroupBox, ISelectionBound
+    {
+        //readonly Stockpile Stockpile;
         Action _unsub;
         ListCollapsibleNewNew ListCollapsible;
         //public StockpileFiltersGui(Stockpile stockpile)
@@ -24,11 +47,10 @@ namespace Project1.Core.Towns.Stockpiles
         //}
         //public StockpileFiltersGui()
         //{
-            
-        //}
-        public ISelectable CurrentSelection { get => this.Stockpile; set => this.Stockpile = value as Stockpile; }
 
-        public void OnBind(ISelectable selectable)
+        //}
+
+        protected internal override void OnBind(ISelectable selectable)
         {
             if(this._unsub != null)
             {
@@ -48,7 +70,7 @@ namespace Project1.Core.Towns.Stockpiles
 
         private void OnStockpileUpdatedEvent(StockpileUpdatedEvent e)
         {
-            if (e.Stockpile == this.Stockpile)
+            if (e.Stockpile == this.CurrentSelection)
                 this.ListCollapsible.Invalidate(true);
         }
     }

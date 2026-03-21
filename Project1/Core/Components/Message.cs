@@ -11,7 +11,6 @@ namespace Project1.Core.Components
             ShopsUpdated,
             ShopUpdated,
             TavernMenuChanged,
-            OrderDeleted,
         }
     }
 }

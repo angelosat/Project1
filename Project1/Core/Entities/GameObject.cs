@@ -843,7 +843,6 @@ namespace Project1.Core.Entities
         {
             return NpcComponent.GetPossessions(this).Select(id => this.World.GetEntity(id) as GameObject).ToList();
         }
-
         internal Need GetNeed(NeedDef def)
         {
             return this.GetComponent<NeedsComponent>().NeedsNew[def];//.First(n => n.NeedDef == def);

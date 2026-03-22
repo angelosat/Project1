@@ -59,7 +59,7 @@ namespace Project1.Core.AI
         bool Cancelled = false;
         ZoneId _zoneID = ZoneId.Null;
         Zone _zone;
-        public PlannerDef Source { get; init; }
+        public PlannerDef Source;
         public Zone? Zone
         {
             get => this._zoneID == ZoneId.Null ? null : this._zone ??= this.Actor.Map.Town.ZoneManager.GetZone(this._zoneID);

@@ -16,6 +16,10 @@ namespace Project1.Core.AI.Behaviors.Sleeping
         protected override Plan TryPlan(Actor actor)
         {
             var map = actor.Map;
+
+            if (actor.Hauled is not null)
+                return null;
+
             var need = actor.GetNeed(NeedDefOf.Energy);
             var energyValue = need.Value;
 

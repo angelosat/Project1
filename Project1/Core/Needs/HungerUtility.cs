@@ -9,7 +9,7 @@ namespace Project1.Core.Needs
     public static class HungerUtility
     {
         public static int GetNutrition(Actor actor, Entity item)
-            => GetNutrition(actor, item.PrimaryMaterial);
+            => item.Def == ItemDefOf.Ingredient ? GetNutrition(actor, item.PrimaryMaterial) : 0;
         
         public static int GetNutrition(Actor actor, MaterialDef mat)
         {

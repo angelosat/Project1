@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Framework.Helpers;
-using Project1.Core.Entities;
-using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
 using Project1.Core.Towns.Duties;
+using Project1.Framework;
+using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core
 {
@@ -20,7 +20,7 @@ namespace Project1.Core
     {
         static List<ItemRoleDef> _flatItemRolesList;
         static readonly Dictionary<ItemRoleContextDef, List<ItemRoleDef>> ContextToItemRolesMap = [];
-
+        readonly EntityQueryEnumerator EntityQuery = new();
         Control _gui;
 
         readonly Actor Actor;
@@ -68,12 +68,30 @@ namespace Project1.Core
             };
             return box;
         }
+        private void EvaluateOneNew()
+        {
+            if (!this.EntityQuery.TryGetNext(this.Actor.Map, out var item))
+                return;
 
+            if (item == this.Actor)
+                return;
+
+            var roles = this.Evaluate(item);
+
+            foreach (var (role, score) in roles)
+            {
+                if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score &&
+                    this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+                    continue;
+
+                this.PreCommitScanCache[role] = (item, score);
+            }
+        }
         private void EvaluateOne()
         {
             if (notScannedYet.Count == 0)
                 return;
-            var jobs = this.Actor.ActiveDuties;
+            //var jobs = this.Actor.ActiveDuties;
             var item = notScannedYet.Dequeue();
             if (this.Actor.Map != item.Map)
                 return;
@@ -81,10 +99,13 @@ namespace Project1.Core
             
             foreach (var (role, score) in roles)
             {
-                if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score &&
-                    this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+                //if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score &&
+                //    this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+                //    continue;
+                if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score)
                     continue;
-
+                if(this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+                    continue;
                 this.PreCommitScanCache[role] = (item, score);
             }
         }
@@ -158,19 +179,23 @@ namespace Project1.Core
         }
         internal void Commit(ItemRoleDef role, Entity item, int score)
         {
+            Entity oldItem = null;
             if (this.PrefsInternal.TryGetValue(role, out var oldPref))
             {
-                var oldItem = oldPref.Item;
-                int oldScore = oldPref.InventoryScore;
-                Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
-                return;
+                //var oldItem = oldPref.Item;
+                //int oldScore = oldPref.InventoryScore;
+                //Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
+                //return;
+                oldItem = oldPref.Item;
+                this.ItemsToPrefs.Remove(oldItem);
             }
             var pref = new ItemPreference(role, item, score);
             this.PrefsInternal[role] = pref;
             if (!this.ItemsToPrefs.TryGetValue(item, out var list))
                 this.ItemsToPrefs[item] = list = [];
             list.Add(pref);
-            Packets.SyncDeltas(this.Actor, [(role, null, item, score)]);
+            //Packets.SyncDeltas(this.Actor, [(role, null, item, score)]);
+            Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
             this.PreCommitScanCache.Remove(role);
         }
         internal IEnumerable<(ItemRoleDef role, int score)> Evaluate(Entity item)
@@ -360,6 +385,24 @@ namespace Project1.Core
                 if (i != item)
                     this.notScannedYet.Enqueue(i);
         }
+
+        internal void DiscardPotential(Entity item)
+        {
+            this.ModifyBias(item, -200);
+
+            foreach(var key in this.PreCommitScanCache.Keys.ToArray())
+            {
+                if (this.PreCommitScanCache[key].item == item)
+                    this.PreCommitScanCache.Remove(key);
+            }
+
+            // TODO sync precommit cache?
+
+            foreach (var i in this.Actor.Map.Entities)
+                if (i != item)
+                    this.notScannedYet.Enqueue(i);
+        }
+
         public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
         {
             var potential = this.ItemsToPrefs
@@ -420,6 +463,7 @@ namespace Project1.Core
         public void Tick()
         {
             this.EvaluateOne();
+            //this.EvaluateOneNew();
             this.UpdateBiases();
             this.UpdateTempIgnore();
         }

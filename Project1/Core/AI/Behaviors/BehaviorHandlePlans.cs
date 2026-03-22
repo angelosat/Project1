@@ -41,8 +41,8 @@ namespace Project1.Core.AI.Behaviors
             var jobPlanners = jobs.SelectMany(j => j.Def.Planners);
 
             // replace this when meta-roles are fully implemented
-            //givers = actor.IsTownMember ? givers.Concat(jobPlanners) : givers.Concat(Planner.VisitorPlanners);
-            planners = planners.Concat(jobPlanners);
+            planners = actor.IsTownMember ? planners.Concat(jobPlanners) : planners.Concat(Planner.VisitorPlanners);
+            //planners = planners.Concat(jobPlanners);
             planners = planners.Append(PlannerDefOf.Idle);
             return planners;
         }
@@ -69,6 +69,7 @@ namespace Project1.Core.AI.Behaviors
                 }
                 //var bhav = plan.CreateBehavior(parent);
                 state.Assign(bhav, planner);
+                $"{this.Actor} assigned {plan} from {planner}".ToConsole();
                 //parent.AI.State.CurrentPlanner = plan.Continuation == PlanContinuationPolicy.Continue ? planner : null;
                 return plan;
             }

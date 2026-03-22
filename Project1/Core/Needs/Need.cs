@@ -49,6 +49,7 @@ namespace Project1.Core.Needs
         public readonly List<NeedMod> Mods = new();
         public float Tolerance { get; set; }
         public float Threshold { get { return this.NeedDef.BaseThreshold; } }
+        public int Deficit => (int)this.Max - this.Value;
         public bool IsBelowThreshold { get { return this.Value < this.Threshold; } }
         public override string ToString()
         {

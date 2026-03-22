@@ -43,7 +43,8 @@ namespace Project1.Core.Needs
             foreach (var d in defs)
                 this.NeedsNew.Remove(d);
         }
-
+        public int GetDeficit(NeedDef def)
+            => this.NeedsNew[def].Deficit;
         public override void Tick()
         {
             foreach (var n in this.NeedsNew.Values)

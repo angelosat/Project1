@@ -1,10 +1,10 @@
-﻿using Project1.Core.Components;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Components;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
-using Project1.Core.Towns;
 using Project1.Core.Towns.Services;
-using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core
+namespace Project1.Core.Towns.Shops
 {
     [EnsureStaticCtorCall]
     internal static class PacketsShops
@@ -139,10 +139,12 @@ namespace Project1.Core
 
         readonly Dictionary<TownServiceDef, TownServiceRuntime> _servicesByDef = [];
         readonly Dictionary<Type, TownServiceRuntime> _servicesByType = [];
-
+        readonly HashSet<IntVec3> ServicePoints = [];
+        public IReadOnlySet<IntVec3> GetServicePoints()
+            => this.ServicePoints;
         internal int CurrentShopID = 1;
 
-        Dictionary<int, Workplace> Shops = new();
+        Dictionary<int, Workplace> Shops = [];
 
         static TownServicesComp()
         {
@@ -158,7 +160,21 @@ namespace Project1.Core
                 this._servicesByDef.Add(def, runtime);
                 this._servicesByType.Add(serviceType, runtime);
             }
+
+            town.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         }
+
+        private void HandleBlocksChanged(BlocksChangedEvent e)
+        {
+            foreach(var pos in e.Changes)
+            {
+                if (pos.Block == BlockDefOf.ShopCounter.Block)
+                    this.ServicePoints.Add(pos.Global);
+                else
+                    this.ServicePoints.Remove(pos.Global);
+            }
+        }
+
         public T GetService<T>() where T : TownServiceRuntime => (T)this._servicesByType[typeof(T)];
         public override string Name => "Shops";
         public Shop CreateShop()
@@ -231,6 +247,51 @@ namespace Project1.Core
                 yield return shop;
         }
 
+        readonly Dictionary<EntityRefId, ShopTransaction> _transactionsRequests = [];
+        readonly Dictionary<EntityRefId, ShopTransaction> _transactionsBySeller = [];
+        readonly Dictionary<EntityRefId, ShopTransaction> _transactionsByBuyer = [];
+        readonly Dictionary<EntityRefId, ShopTransaction> _transactionsActive = [];
+        readonly List<ShopTransaction> _transactionsAll = [];
+        internal bool TryBeginTransaction(Actor actor, Entity item, IntVec3 servicePoint)
+        {
+            var transaction = new ShopTransaction(actor, item, servicePoint);
+            this._transactionsAll.Add(transaction);
+            this._transactionsRequests.Add(actor.RefId, transaction);
+            return true;
+            // TODO made it a bool return in case i have some conditions that can make it fail in the future
+        }
+        internal bool TryGetTransaction(Actor buyer, out ShopTransaction transaction)
+            => this._transactionsByBuyer.TryGetValue(buyer.RefId, out transaction);
+        internal ShopTransaction GetTransaction(Actor buyer)
+          => this._transactionsByBuyer[buyer.RefId];
+        internal bool TryGetTransactionBySeller(Actor seller, out ShopTransaction transaction)
+        //=> this._transactionsBySeller[seller.RefId];
+            => this._transactionsBySeller.TryGetValue(seller.RefId, out transaction);
+        internal IEnumerable<ShopTransaction> PendingTransactions => this._transactionsRequests.Values;
+        internal void AssignSeller(ShopTransaction transaction, Actor seller)
+        {
+            if (transaction.Seller != EntityRefId.Null)
+                throw new Exception();
+            transaction.Seller = seller.RefId;
+            transaction.RefreshTimer();
+            this._transactionsBySeller.Add(seller.RefId, transaction);
+            this._transactionsRequests.Remove(transaction.Buyer);
+        }
+        public override void Tick()
+        {
+            foreach(var transaction in this._transactionsAll.ToArray())
+            {
+                if (transaction.IsCancelled)
+                {
+                    this._transactionsAll.Remove(transaction);
+                    this._transactionsActive.Remove(transaction.Buyer);
+                    this._transactionsRequests.Remove(transaction.Buyer);
+                    this._transactionsByBuyer.Remove(transaction.Buyer);
+                    if (transaction.Seller != EntityRefId.Null)
+                        this._transactionsBySeller.Remove(transaction.Seller);
+                }
+            }
+        }
         public Control GetUIShopListWithNoneOption<T>(Action<Workplace> selectAction, Func<T, bool> filter) where T : Workplace // TODO make this a singleton
         {
             var box = new GroupBox();
@@ -345,6 +406,12 @@ namespace Project1.Core
         {
             foreach (var wp in this.Shopss)
                 wp.ResolveReferences();
+
+            foreach(var cell in this.Map.GetAllCellsWithIndex())
+            {
+                if (cell.cell.Block == BlockDefOf.ShopCounter.Block)
+                    this.ServicePoints.Add(cell.id.Local.ToGlobal(cell.chunk));
+            }
         }
 
         internal void ToggleWorker(Actor a, Workplace shop)
@@ -453,6 +520,8 @@ namespace Project1.Core
                 return list.ToContextMenu("Select shop type");
             }
         }
+
+        
     }
  
 }

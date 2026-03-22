@@ -26,12 +26,60 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace Project1.Core.Simulation;
 
+public sealed class EntityQueryEnumerator() : ISaveableNewNew<EntityQueryEnumerator>
+{
+    int chunkIndex = 0, entityIndex = 0;
+    public bool TryGetNext(MapBase map, out Entity entity)
+    {
+        entity = this.GetNext(map);
+        return entity is not null;
+    }
+    public Entity GetNext(MapBase map)
+    {
+        if (map is null)
+            return null;
+        int chunksTried = 0;
+        var chunksSnapshot = map.ActiveChunks.Values.ToArray();
+        while (chunksTried < chunksSnapshot.Length)
+        {
+            var chunk = chunksSnapshot[chunkIndex];
+
+            if (entityIndex < chunk.Entities.Count)
+            {
+                return chunk.Entities[entityIndex++];
+            }
+            else
+            {
+                // move to next chunk
+                entityIndex = 0;
+                chunkIndex = (chunkIndex + 1) % chunksSnapshot.Length;
+                chunksTried++;
+            }
+        }
+
+        // If all chunks are empty
+        return null;
+    }
+
+    public SaveTag Save(string name = "")
+    {
+        var tag = new SaveTag(SaveTag.Types.Compound, name);
+        tag.Save("ChunkIndex", this.chunkIndex);
+        tag.Save("EntityIndex", this.chunkIndex);
+        return tag;
+    }
+
+    public static EntityQueryEnumerator Create(SaveTag tag)
+    {
+        var chunkindex = tag.LoadInt("ChunkIndex");
+        var entityindex = tag.LoadInt("EntityIndex");
+        return new() { chunkIndex = chunkindex, entityIndex = entityindex };
+    }
+}
 public abstract class MapBase : Inspectable
 {
     public readonly EventBus Events = new();
@@ -638,7 +686,8 @@ public abstract class MapBase : Inspectable
     
     internal virtual IEnumerable<Entity> GetEntitiesAt(IntVec3 pos)
         => this.EntityTracker.GetEntitiesAt(pos);
-    
+    internal virtual IReadOnlySet<Entity> GetEntitiesAtNew(IntVec3 pos)
+       => this.EntityTracker.GetEntitiesAt(pos);
     public bool IsCellEmpty(IntVec3 cell) => !this.GetEntitiesAt(cell).Any();
     public abstract bool IsInBounds(Vector3 global);
     public abstract void SetSkyLight(IntVec3 global, byte value);

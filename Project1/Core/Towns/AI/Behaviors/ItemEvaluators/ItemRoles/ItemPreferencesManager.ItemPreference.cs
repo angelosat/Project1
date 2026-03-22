@@ -11,6 +11,8 @@ namespace Project1.Core
 {
     public partial class ItemPreferencesManager
     {
+      
+
         public struct ItemPreference : ISaveable, ISaveableNewNew<ItemPreference>, IDictionarySyncable<ItemRoleDef, ItemPreference>
         {
             internal ItemRoleDef Role;

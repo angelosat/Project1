@@ -9,18 +9,17 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
     {
         public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
         {
-            var needDef = NeedDefOf.Hunger;
+            if (item.Def != ItemDefOf.Ingredient)
+                return -100;
             if (!((ActorDnaDef)actor.Profile).Diet.Contains(item.PrimaryMaterial.Type))
                 return -100;
-            if (actor.Needs.GetPercentage(needDef) > .9f)
+            if (actor.Needs.GetPercentage(NeedDefOf.Hunger) > .9f)
                 return -100;
             var nutrition = HungerUtility.GetNutrition(actor, item.PrimaryMaterial);
-        
             if (nutrition <= 0)
                 return -100;
-            var need = actor.GetNeed(needDef);
-            var needDeficit = need.Max - need.Value;// need.Deficit;
-            return (int)(nutrition * needDeficit);
+            var needDeficit = actor.Needs.GetDeficit(NeedDefOf.Hunger);
+            return nutrition * needDeficit;
         }
         public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
             => HungerUtility.GetNutrition(actor, item) * item.StackMax;

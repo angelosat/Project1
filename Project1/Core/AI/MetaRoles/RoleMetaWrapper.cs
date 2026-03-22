@@ -24,6 +24,7 @@ namespace Project1.Core.AI.MetaRoles
             {
                 this.FailureStreak = 0;
             }
+            internal void Reset() => this.NextTick = 0;
             internal void ScheduleNext(WorldBase world)
             {
                 var basedelay = (ulong)world.Random.Next(Ticks.FromHours(1), Ticks.FromHours(2));

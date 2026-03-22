@@ -162,7 +162,7 @@ namespace Project1.Core.AI
             else
                 this.Enqueue(bhav);
             this.CurrentPlanner = bhav.Plan.Continuation == PlanContinuationPolicy.Continue ? source : null;
-
+            bhav.Plan.Source = source;
         }
 
         public bool TryAssign(Plan task, PlannerDef source)

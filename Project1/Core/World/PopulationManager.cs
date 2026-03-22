@@ -29,7 +29,7 @@ namespace Project1.Core.World
         readonly ObservableCollection<WorldInhabitantView> WorldInhabitants = [];
         public IEnumerable<WorldInhabitantView> AllActors => this.WorldInhabitants;
         public readonly StaticWorld World;
-        const int WorldPopulationCap = 10;//6;
+        const int WorldPopulationCap = 2;//1;//0;//6;
         public int WorldPopulationCount { get; private set; }
         const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
         const int InitialApproval = 50;
@@ -212,6 +212,7 @@ namespace Project1.Core.World
             var serverActor = Server.Instance.World.GetEntity<Actor>(actor.RefId);
             var newPercentage = actor.Map == null ? 0 : 1f;
             serverActor.Needs.OverridePercentage(AdventurerNeedsDefOf.Adventuring, newPercentage);
+            actor.AI.Meta.LocationDecision.Reset();
             var debugmsg = $"{actor.Name}'s visit chance modifier set to 1";
             Server.Instance.ConsoleBox.Write(debugmsg);
             DebugConsole.Write(DebugConsole.Debug, debugmsg);

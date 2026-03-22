@@ -1,12 +1,9 @@
-﻿using Project1.Core.AI;
-using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Reservations;
+﻿using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Towns.Duties;
 using System.Linq;
 
-namespace Project1.Core.Towns.Labors
+namespace Project1.Core.AI.Planners
 {
     class PlannerInventory : Planner
     {
@@ -19,7 +16,7 @@ namespace Project1.Core.Towns.Labors
                 return null; // TODO instead of doing this, check if the tool is claimable
 
             var map = actor.Map;
-            var jobs = actor.ActiveDuties;
+            //var jobs = actor.ActiveDuties;
             var manager = actor.ItemPreferences;
 
             // if carrying an item that's set as an itempreference, then store it in inventory
@@ -35,9 +32,7 @@ namespace Project1.Core.Towns.Labors
             var potentialAll = manager.GetPotential();
             foreach (var (role, item, score) in potentialAll)
             {
-                if (!actor.CanReserve(item as Entity))
-                    continue;
-                if (!actor.CanReach(item))
+                if (!actor.CanReachAndReserve(item))
                     continue;
 
                 manager.Commit(role, item, score);

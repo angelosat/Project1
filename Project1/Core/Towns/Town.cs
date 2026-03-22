@@ -16,6 +16,7 @@ using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Reputation;
+using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Storage;
 using Project1.Core.Towns.UI;
 using Project1.Core.Towns.Zones;

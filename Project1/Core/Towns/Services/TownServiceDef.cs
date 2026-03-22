@@ -1,6 +1,8 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Towns.Shops;
+using Project1.Framework;
 using Project1.Framework.Helpers;
 using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Services
 {
@@ -20,7 +22,12 @@ namespace Project1.Core.Towns.Services
 
     public abstract class TownServiceRuntime { }
 
-    public sealed class TownServiceSelling : TownServiceRuntime { }
+    public sealed class TownServiceSelling : TownServiceRuntime 
+    {
+        //HashSet<IntVec3> ServicePoints = [];
+        //public IReadOnlySet<IntVec3> GetServicePoints()
+        //    => this.ServicePoints;
+    }
     public sealed class TownServiceBuying : TownServiceRuntime { }
     public sealed class TownServiceRepairing : TownServiceRuntime { }
     public sealed class TownServiceLodging : TownServiceRuntime { }

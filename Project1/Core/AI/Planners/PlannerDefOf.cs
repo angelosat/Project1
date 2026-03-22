@@ -9,7 +9,7 @@ using Project1.Core.Towns.Constructions.AI;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Farming;
 using Project1.Core.Towns.Forestry;
-using Project1.Core.Towns.Labors;
+using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Switch;
 using Project1.Core.Towns.Tasks;
 
@@ -28,7 +28,6 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef Harvesting = new("Harvesting", typeof(PlannerHarvesting));
         static public readonly PlannerDef Foraging = new("Foraging", typeof(PlannerForaging));
         static public readonly PlannerDef Digging = new("Digging", typeof(PlannerDigging));
-        static public readonly PlannerDef Departure = new("Departure", typeof(PlannerDeparture));
         static public readonly PlannerDef Sleeping = new("Sleeping", typeof(PlannerSleeping));
         static public readonly PlannerDef Refueling = new("Refueling", typeof(PlannerRefueling));
         static public readonly PlannerDef Inventory = new("Inventory", typeof(PlannerInventory));
@@ -37,6 +36,10 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef Workplace = new("Workplace", typeof(PlannerWorkplace));
         static public readonly PlannerDef SmartEquip = new("SmartEquip", typeof(PlannerSmartEquip));
         static public readonly PlannerDef Idle = new("Idle", typeof(PlannerIdle));
+
+        static public readonly PlannerDef Buy = new("Buy", typeof(PlannerBuy));
+        static public readonly PlannerDef Departure = new("Departure", typeof(PlannerDeparture));
+
         static PlannerDefOf()
         {
             Def.Register(typeof(PlannerDefOf));

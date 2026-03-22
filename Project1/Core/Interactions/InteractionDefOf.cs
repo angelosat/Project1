@@ -3,6 +3,7 @@ using Project1.Core.Skills;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.AI;
+using Project1.Core.Towns.Shops;
 using Project1.Framework;
 
 namespace Project1.Core.Interactions
@@ -143,6 +144,10 @@ namespace Project1.Core.Interactions
         {
             Animation = AnimationDefOf.TouchItem,
             ProgressHandler = InteractionProgressHandlers.FirstContact// new InteractionProgressTimed()
+        };
+        public static readonly InteractionDef WaitingService = new("WaitService", typeof(InteractionWaitingService))
+        {
+            ProgressHandler = InteractionProgressHandlers.Passive
         };
         static InteractionDefOf()
         {

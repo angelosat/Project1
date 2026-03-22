@@ -34,11 +34,12 @@ namespace Project1.Core.AI.Behaviors
 
         static readonly public List<PlannerDef> VisitorPlanners =
         [
-            PlannerDefOf.Departure
+            PlannerDefOf.Buy,
+            //PlannerDefOf.Departure
         ];
 
-        protected virtual Plan TryPlan(Actor actor) 
-            => null;
+        protected abstract Plan TryPlan(Actor actor);
+            //=> null;
 
         public Plan FindPlanNew(Actor actor)
             => TryPlan(actor);

@@ -33,7 +33,7 @@ namespace Project1.Core.Networking
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             var item = client.World.GetEntity(r.ReadInt32());
             actor.Inventory.Contents.AddInternal(item);
         }
@@ -41,7 +41,7 @@ namespace Project1.Core.Networking
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             var item = client.World.GetEntity(r.ReadInt32());
             actor.Inventory.Contents.RemoveInternal(item);
         }
@@ -65,7 +65,7 @@ namespace Project1.Core.Networking
             var map = server.Map;
             var r = packet.PacketReader;
             var ownerid = r.ReadInt32();
-            var owner = map.World.GetEntity<Actor>(ownerid);
+            var owner = map.World.Get<Actor>(ownerid);
             var itemid = r.ReadInt32();
             var item = map.World.GetEntity(itemid);
             var count = r.ReadInt32();

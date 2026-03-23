@@ -257,16 +257,22 @@ namespace Project1.Core.Towns.Shops
             var transaction = new ShopTransaction(actor, item, servicePoint);
             this._transactionsAll.Add(transaction);
             this._transactionsRequests.Add(actor.RefId, transaction);
+            this._transactionsByBuyer.Add(actor.RefId, transaction);
             return true;
             // TODO made it a bool return in case i have some conditions that can make it fail in the future
         }
         internal bool TryGetTransaction(Actor buyer, out ShopTransaction transaction)
             => this._transactionsByBuyer.TryGetValue(buyer.RefId, out transaction);
         internal ShopTransaction GetTransaction(Actor buyer)
-          => this._transactionsByBuyer[buyer.RefId];
+        //=> this._transactionsByBuyer[buyer.RefId];
+            => this._transactionsByBuyer.TryGetValue(buyer.RefId, out var t) ? t : null;
+        
         internal bool TryGetTransactionBySeller(Actor seller, out ShopTransaction transaction)
         //=> this._transactionsBySeller[seller.RefId];
             => this._transactionsBySeller.TryGetValue(seller.RefId, out transaction);
+        internal ShopTransaction GetTransactionBySeller(Actor seller)
+               //=> this._transactionsBySeller[seller.RefId];
+               => this._transactionsBySeller.TryGetValue(seller.RefId, out var t) ? t : null;
         internal IEnumerable<ShopTransaction> PendingTransactions => this._transactionsRequests.Values;
         internal void AssignSeller(ShopTransaction transaction, Actor seller)
         {
@@ -281,7 +287,7 @@ namespace Project1.Core.Towns.Shops
         {
             foreach(var transaction in this._transactionsAll.ToArray())
             {
-                if (transaction.IsCancelled)
+                if (transaction.IsCancelled || transaction.IsDisposed)
                 {
                     this._transactionsAll.Remove(transaction);
                     this._transactionsActive.Remove(transaction.Buyer);
@@ -521,7 +527,28 @@ namespace Project1.Core.Towns.Shops
             }
         }
 
-        
+        internal void MarkPaid(Actor buyer, Entity money)
+        {
+            var t = this._transactionsByBuyer[buyer.RefId];
+            t.Money = money.RefId;
+            t.MarkPaid();
+        }
+        internal void RingUp(Actor seller, Entity item)
+        {
+            var t = this._transactionsBySeller[seller.RefId];
+            if (item.RefId != t.Item)
+                throw new InvalidOperationException();
+            t.RingUp();
+        }
+        internal void RingUpFinish(Actor seller)
+        {
+            var t = this._transactionsBySeller[seller.RefId];
+            //t.RingUpFinish();
+        }
+        internal void FinishTransaction(Actor buyer)
+        {
+            var t = this._transactionsByBuyer[buyer.RefId];
+            t.Dispose();
+        }
     }
- 
 }

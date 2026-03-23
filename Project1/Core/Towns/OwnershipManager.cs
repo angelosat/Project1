@@ -82,7 +82,7 @@ namespace Project1.Core.Towns
             if (ownerId == EntityRefId.Null)
                 return;
 
-            if (this.Map.World.GetEntity<Actor>(ownerId) is not Actor owner)
+            if (this.Map.World.Get<Actor>(ownerId) is not Actor owner)
                 return;
 
             if (this._actorBeds.TryGetValue(owner, out var bed) && e.Entity == bed.Parent)
@@ -121,7 +121,7 @@ namespace Project1.Core.Towns
             var prevOwnerId = e.PreviousOwner;
 
             // Remove old mapping
-            if (prevOwnerId != EntityRefId.Null && this.Map.World.GetEntity<Actor>(prevOwnerId) is Actor prevOwner &&
+            if (prevOwnerId != EntityRefId.Null && this.Map.World.Get<Actor>(prevOwnerId) is Actor prevOwner &&
                 this._actorBeds.TryGetValue(prevOwner, out var prevBed) &&
                 prevBed == bed)
             {

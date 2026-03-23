@@ -100,7 +100,7 @@ namespace Project1.Core
 
             internal void ResolveReferences(Actor actor)
             {
-                this.Item = actor.World.GetEntity<Entity>(this.ItemRefId);
+                this.Item = actor.World.Get<Entity>(this.ItemRefId);
                 this.Refresh(actor);
             }
 

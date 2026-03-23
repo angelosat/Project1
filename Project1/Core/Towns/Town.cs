@@ -46,7 +46,8 @@ namespace Project1.Core.Towns
 
         public IReadOnlyCollection<DutyDef> AvailableDuties => field ??= 
                 [
-                    DutyDefOf.Workplace,
+                    //DutyDefOf.Workplace,
+                    DutyDefOf.Cashier,
                     DutyDefOf.Digger,
                     DutyDefOf.Miner,
                     DutyDefOf.Lumberjack,
@@ -333,7 +334,7 @@ namespace Project1.Core.Towns
                 {
                     var id = (int)bytes.Value;
                     //this.AddMember(id);
-                    this.Members.Add(this.Map.World.GetEntity<Actor>(id));
+                    this.Members.Add(this.Map.World.Get<Actor>(id));
                 }
 
             foreach (var member in this.Members)//.Select(this.Map.World.GetEntity<Actor>))
@@ -362,7 +363,7 @@ namespace Project1.Core.Towns
             var acount = r.ReadInt32();
             for (int i = 0; i < acount; i++)
             {
-                this.Members.Add(this.Map.World.GetEntity<Actor>(r.ReadInt32()));
+                this.Members.Add(this.Map.World.Get<Actor>(r.ReadInt32()));
             }
 
             foreach (var ut in Utility.All())

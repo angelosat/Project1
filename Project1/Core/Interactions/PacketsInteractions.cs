@@ -39,7 +39,7 @@ namespace Project1.Core.Interactions
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             var interaction = r.ReadDef<InteractionDef>();
             var target = r.ReadTarget(client.Map);
             actor.Work.Perform(interaction, target);
@@ -48,7 +48,7 @@ namespace Project1.Core.Interactions
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             actor.Work.Task.Finish();
         }
         private static void SendInteractionNextSwingSpeed(InteractionNextSwingSpeedEvent e)
@@ -67,7 +67,7 @@ namespace Project1.Core.Interactions
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             var progress = r.ReadInt32();
             actor.Work.Task.AddProgress(progress);
         }
@@ -75,7 +75,7 @@ namespace Project1.Core.Interactions
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             var speed = r.ReadSingle();
             actor.Work.Task.SetNextSwingSpeed(speed);
         }
@@ -89,7 +89,7 @@ namespace Project1.Core.Interactions
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             actor.Work.Stop();
         }
     }

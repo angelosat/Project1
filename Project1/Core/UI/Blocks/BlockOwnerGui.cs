@@ -17,7 +17,7 @@ namespace Project1.Core.UI.Blocks
             var currentOwner = comp.Owner;
             var actors = entity.Map.Town.Members.Prepend(null);
 
-            var combo = new ComboBoxNewNew<Actor>(actors, 100, a => a?.Name ?? "-None-", a => PlayerSetOwner(comp, a), () => entity.Map?.World.GetEntity<Actor>(comp.Owner));
+            var combo = new ComboBoxNewNew<Actor>(actors, 100, a => a?.Name ?? "-None-", a => PlayerSetOwner(comp, a), () => entity.Map?.World.Get<Actor>(comp.Owner));
             this.Controls.Clear();
             this.Controls.Add(combo);
         }

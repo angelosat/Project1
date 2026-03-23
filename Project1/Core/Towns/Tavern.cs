@@ -43,7 +43,7 @@ namespace Project1.Core.Towns
             var map = this.Town.Map;
             return this.WorkerProps.Values.Any(p =>
             {
-                var actor = map.World.GetEntity<Actor>(p.ActorID);
+                var actor = map.World.Get<Actor>(p.ActorID);
                 return
                     p.GetJob(JobInnKeeper).Enabled &&
                     actor.AI.State.Behavior is TaskBehaviorInnKeeper &&

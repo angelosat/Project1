@@ -1,9 +1,129 @@
-﻿using System;
+﻿using Project1.Core.Entities;
 using Project1.Core.Simulation;
+using Project1.Core.Towns.Shops;
 using Project1.Framework;
+using System;
 
 namespace Project1.Core.Interactions
 {
+    sealed class InteractionClaimBoughtItem : InteractionLogic
+    {
+        sealed class Context : InteractionContext
+        {
+            internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
+        }
+
+        protected override InteractionContext CreateContextInternal() => new Context();
+        internal override void OnFinish(Interaction i)
+        {
+            var ctx = i.Context;
+            var actor = ctx.Actor;
+            if (actor.Net.IsClient)
+                return;
+            var item = ctx.Target.Entity;
+            actor.Inventory.HaulNew(item, item.StackSize);
+            var manager = actor.AI.State.ItemPreferences;
+            var (role, score) = manager.GetPotential(item);
+            if (role is null)
+                throw new Exception();
+            manager.Commit(role, item, score);
+            actor.Map.Town.ShopManager.FinishTransaction(actor);
+        }
+    }
+    sealed class InteractionRingUpTransactionFinish : InteractionLogic
+    {
+        sealed class Context : InteractionContext
+        {
+            internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
+        }
+        protected override InteractionContext CreateContextInternal() => new Context();
+        public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsCancelled;
+        public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
+        internal override void OnFinish(Interaction i)
+        {
+            var ctx = i.Context;
+            var actor = ctx.Actor;
+            if (actor.Net.IsClient)
+                return;
+            //var global = ctx.Target.Global;
+            //var count = ctx.Count;
+            //InteractionHelpers.TryDepositCarriedItemInsideBlockOrSpawn(actor, global, count);
+            InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity);
+            actor.Map.Town.ShopManager.RingUpFinish(actor);
+        }
+    }
+    sealed class InteractionRingUpTransaction : InteractionLogic
+    {
+        sealed class Context : InteractionContext
+        {
+            internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
+            internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
+            public override float ProgressPercentage => 0;
+        }
+        protected override InteractionContext CreateContextInternal() => new Context();
+        public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsCancelled;
+        public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
+        internal override void OnFinish(Interaction i)
+        {
+            var ctx = i.Context;
+            var actor = ctx.Actor;
+            if (actor.Net.IsClient)
+                return;
+            var global = ctx.Target.Global;
+            var count = ctx.Count;
+            var typedCtx = (Context)ctx;
+            var item = ctx.Target.Entity;
+            actor.Inventory.HaulNew(item, item.StackSize);
+            actor.Map.Town.ShopManager.RingUp(actor, item);
+        }
+    }
+    sealed class InteractionPayTransaction : InteractionLogic
+    {
+        sealed class Context : InteractionContext
+        {
+            internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransaction(this.Actor);
+            internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
+            public override float ProgressPercentage => 0;
+        }
+        protected override InteractionContext CreateContextInternal() => new Context();
+        public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsCancelled;
+        public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
+        internal override void OnFinish(Interaction i)
+        {
+            var ctx = i.Context;
+            var actor = ctx.Actor;
+            if (actor.Net.IsClient)
+                return;
+            var global = ctx.Target.Global;
+            var count = ctx.Count;
+            var hauled = actor.Hauled;
+            var typedCtx = (Context)ctx;
+            ArgumentNullException.ThrowIfNull(hauled);
+            if (hauled.Def != ItemDefOf.Coins || hauled.StackSize < typedCtx.Price)
+                throw new InvalidOperationException(); // or cancel transaction safely
+            InteractionHelpers.TryDepositCarriedItemInsideBlockOrSpawn(actor, global, count);
+            actor.Map.Town.ShopManager.MarkPaid(actor, hauled);
+        }
+    }
+    class InteractionSwapItemLogic : InteractionLogic
+    {
+        class Context : InteractionContext
+        {
+            Cell _cachedCell;
+            internal Cell Cell => _cachedCell ??= this.Target.Map.GetCell(this.Target.Global.Below());
+        }
+        protected override InteractionContext CreateContextInternal() => new Context();
+        public override bool CanPerform(InteractionContext ctx) => ((Context)ctx).Cell.IsSolid();
+        public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
+        internal override void OnFinish(Interaction i)
+        {
+            var ctx = i.Context;
+            var actor = ctx.Actor;
+            if (actor.Net.IsClient)
+                return;
+            InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity);
+        }
+    }
     class InteractionPlaceItemLogic : InteractionLogic
     {
         class Context : InteractionContext
@@ -40,100 +160,7 @@ namespace Project1.Core.Interactions
         public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
         internal override void OnFinish(Interaction i)
         {
-            //var ctx = i.Context;
-            //var actor = ctx.Actor;
-            //if (actor.Net.IsClient)
-            //    return;
-            //var global = ctx.Target.Global;
-            //var count = ctx.Count;
-            //var hauled = actor.Hauled;
-            //ArgumentNullException.ThrowIfNull(hauled);
-            //if (count > hauled.StackSize)
-            //    throw new Exception();
             InteractionHelpers.DepositResource(i);
         }
     }
-    //class InteractionPlaceItem : InteractionPerpetual
-    //{
-    //    int Amount;
-
-    //    public InteractionPlaceItem()
-    //         : this(-1)
-    //    {
-    //    }
-
-    //    public InteractionPlaceItem(int amount) // -1 means whole stack
-    //        : base(
-    //        "UseHauledOnTarget")//, .4f)
-    //    {
-    //        if (amount == 0)
-    //            throw new Exception();
-    //        this.Amount = amount;
-    //        this.CrossFadeAnimationLength = 25;
-    //    }
-    //    protected override void Done()
-    //    {
-    //        this.CachedAnimation.FadeOutAndRemove();
-    //        if (this.Actor.Net.IsClient)
-    //            return;
-    //        var actor = this.Actor;
-    //        var target = this.Target;
-    //        var hauled = actor.Inventory.HaulSlot;// PersonalInventoryComponent.GetHauling(actor);
-    //        var hauledObj = hauled.Object as Entity;
-    //        ArgumentNullException.ThrowIfNull(hauledObj);
-    //        if (this.Amount > hauledObj.StackSize)
-    //            throw new Exception();
-    //        //this.Animation.FadeOutAndRemove();
-    //        var global = target.Global;
-    //        switch (target.Type)
-    //        {
-    //            case TargetType.Position:
-    //                InteractionHelpers.TryDepositCarriedItemInsideBlockOrSpawn(actor, global, this.Amount);
-    //                //if (actor.Map.GetBlockEntity(global)?.TryConsume(hauledObj) ?? false)
-    //                //    return;
-    //                //if (actor.Map.GetBlock(global).TryConsume(actor, hauledObj, global, this.Amount == -1 ? hauledObj.StackSize : this.Amount))
-    //                //    return;
-    //                //actor.Map.Spawn(hauledObj, global, actor.Velocity);
-    //                break;
-
-    //            case TargetType.Entity:
-    //                throw new NotImplementedException();
-
-    //            default:
-    //                break;
-    //        }
-    //        this.Finish();
-
-    //    }
-
-    //    // TODO: make it so i have access to the carried item's stacksize, and include it in the name ( Throw 1 vs Throw 16 for example)
-    //    public override string ToString()
-    //    {
-    //        return this.Name + (this.Amount != -1 ? " x" + this.Amount.ToString() : "All");
-    //    }
-    //    [Obsolete]
-    //    public bool InRange(Actor a, TargetArgs t)
-    //    {
-    //        var actorCoords = a.Global;
-    //        var actorBox = new BoundingBox(actorCoords - new Vector3(1, 1, 0), actorCoords + new Vector3(1, 1, a.Physics.Height));
-    //        var targetBox = new BoundingBox(t.Global - Vector3.One, t.Global + Vector3.One);
-    //        return actorBox.Intersects(targetBox);
-    //    }
-    //    protected override void WriteExtra(IDataWriter w)
-    //    {
-    //        w.Write(this.Amount);
-    //    }
-    //    protected override void ReadExtra(IDataReader r)
-    //    {
-    //        this.Amount = r.ReadInt32();
-    //    }
-    //    protected override void AddSaveData(SaveTag tag)
-    //    {
-    //        tag.Add(this.Amount.Save("Amount"));
-    //    }
-    //    public override void LoadData(SaveTag tag)
-    //    {
-    //        tag.TryGetTagValueOrDefault<int>("Amount", out this.Amount);
-    //    }
-    //}
 }

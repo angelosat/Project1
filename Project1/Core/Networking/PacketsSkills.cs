@@ -30,7 +30,7 @@ namespace Project1.Core.Networking
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             var skill = r.ReadDef<SkillDef>();
             var level = r.ReadInt32();
             var xp = r.ReadInt32();

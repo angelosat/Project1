@@ -25,7 +25,7 @@ namespace Project1.Core.Networking
         static void OnAttributeAdjusted(NetEndpoint endpoint, Packet packet)
         {
             endpoint.World
-                .GetEntity<Actor>(packet.PacketReader.ReadEntityRefId())
+                .Get<Actor>(packet.PacketReader.ReadEntityRefId())
                 .Attributes.SetValue(packet.PacketReader.ReadDef<AttributeDef>(), packet.PacketReader.ReadSingle());
         }
     }

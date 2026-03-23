@@ -32,7 +32,7 @@ namespace Project1.Core.Animations
         private static void OnRestingFrameOverride(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var actor = endpoint.World.GetEntity<Actor>(r.ReadEntityRefId());
+            var actor = endpoint.World.Get<Actor>(r.ReadEntityRefId());
             var bonedef = r.ReadDef<BoneDef>();
             var kf = Keyframe.Create(r);
             actor.SpriteComp.OverrideRestingFrame(bonedef, kf);
@@ -55,7 +55,7 @@ namespace Project1.Core.Animations
         private static void OnBoneToggled(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var actor = endpoint.World.GetEntity<Actor>(r.ReadEntityRefId());
+            var actor = endpoint.World.Get<Actor>(r.ReadEntityRefId());
             var bonedef = r.ReadDef<BoneDef>();
             var toggle = r.ReadBoolean();
             var cascade = r.ReadBoolean();

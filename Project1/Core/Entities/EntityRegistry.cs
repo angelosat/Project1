@@ -34,6 +34,10 @@ namespace Project1.Core.Entities
 
             this._inner.Add(entity.RefId, entity);
             this._innerObservable.Add(entity);
+
+            entity.World = this.World;
+            entity.Net = this.World.Net;
+
             return true;
         }
 

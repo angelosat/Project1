@@ -403,7 +403,7 @@ namespace Project1.Core.Animations
             {
                 var client = endpoint as Client;
                 var r = packet.PacketReader;
-                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+                var actor = client.World.Get<Actor>(r.ReadInt32());
                 var animDef = r.ReadDef<AnimationDef>();
                 var anim = actor.SpriteComp.GetAnimation(animDef);
                 anim.Read(r);

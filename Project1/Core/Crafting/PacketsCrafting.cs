@@ -148,7 +148,7 @@ namespace Project1.Core.Crafting
         {
             var r = packet.PacketReader;
             var order = endpoint.Map.Town.CraftingManager.GetOrder(r.ReadInt32());
-            var actor = endpoint.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = endpoint.World.Get<Actor>(r.ReadInt32());
             order.CompletedBy(actor);
         }
 

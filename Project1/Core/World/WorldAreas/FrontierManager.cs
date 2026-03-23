@@ -36,7 +36,7 @@ namespace Project1.Core.World.WorldAreas
                 if (client is null)
                     throw new Exception();
                 var r = packet.PacketReader;
-                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+                var actor = client.World.Get<Actor>(r.ReadInt32());
                 var pos = r.ReadSingle();
                 ((actor.World as StaticWorld).Space as FrontierManager).PlaceAt(actor, pos);
             }

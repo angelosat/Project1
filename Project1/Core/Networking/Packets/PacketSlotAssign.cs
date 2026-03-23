@@ -27,7 +27,7 @@ namespace Project1.Core.Networking.Packets
             var client = endpoint as Client;
             var r = packet.PacketReader;
             var ownerId = r.ReadInt32();
-            var owner = client.World.GetEntity<Actor>(ownerId);
+            var owner = client.World.Get<Actor>(ownerId);
             var slotId = r.ReadInt32();
             var itemId = r.ReadInt32();
             var item = itemId > 0 ? client.World.GetEntity(itemId) : null;

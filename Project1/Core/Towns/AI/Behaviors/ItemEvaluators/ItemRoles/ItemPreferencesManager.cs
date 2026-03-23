@@ -242,8 +242,21 @@ namespace Project1.Core
                 else
                     yield return (con, i, score);
             }
+            // if there's been invalidations, rescan map
+            if(toRemove.Count > 0)
+            {
+                foreach (var item in this.Actor.Map.Entities)
+                    this.notScannedYet.Enqueue(item);
+            }
             foreach (var r in toRemove)
                 this.PreCommitScanCache.Remove(r);
+        }
+        internal (ItemRoleDef role, int score) GetPotential(Entity item)
+        {
+            foreach (var vk in this.PreCommitScanCache)
+                if (vk.Value.item == item)
+                    return (vk.Key, vk.Value.score);
+            return default;
         }
 
         internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotentialAll()
@@ -490,7 +503,7 @@ namespace Project1.Core
                     throw new Exception();
                 var r = pck.PacketReader;
 
-                var actor = net.World.GetEntity<Actor>(r.ReadInt32());
+                var actor = net.World.Get<Actor>(r.ReadInt32());
                 var manager = actor.ItemPreferences;
 
                 // read deltas

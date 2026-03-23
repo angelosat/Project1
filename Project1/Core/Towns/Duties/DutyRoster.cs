@@ -51,7 +51,7 @@ namespace Project1.Core.Towns.Duties
         }
         public IDataReader Read(IDataReader r)
         {
-            this._roster = r.ReadListNewNew<DutyAssignment>().ToDictionary(d => this.Provider.Map.World.GetEntity<Actor>(d.ActorId), d => d);
+            this._roster = r.ReadListNewNew<DutyAssignment>().ToDictionary(d => this.Provider.Map.World.Get<Actor>(d.ActorId), d => d);
             return r;
         }
 

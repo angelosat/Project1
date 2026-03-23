@@ -148,7 +148,7 @@ namespace Project1.Core.Attributes
             {
                 var client = endpoint as Client;
                 var r = packet.PacketReader;
-                var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+                var actor = client.World.Get<Actor>(r.ReadInt32());
                 var def = r.ReadDef<AttributeDef>();
                 var delta = r.ReadSingle();
                 actor.Attributes.ApplyDelta(def, delta);

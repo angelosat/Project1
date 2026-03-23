@@ -21,10 +21,33 @@ namespace Project1.Core.Interactions
             Animation = AnimationDefOf.TouchItem,
             ProgressHandler = InteractionProgressHandlers.FirstContact// new InteractionProgressFirstContact()
         };
+        public static readonly InteractionDef Swap = new("Swap", typeof(InteractionSwapItemLogic))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = InteractionProgressHandlers.FirstContact
+        };
         public static readonly InteractionDef Place = new("Placing", typeof(InteractionPlaceItemLogic))
         { 
             Animation = AnimationDefOf.TouchItem, 
             ProgressHandler = InteractionProgressHandlers.FirstContact,// new InteractionProgressFirstContact(),
+            Range = InteractionRange.Any
+        };
+        public static readonly InteractionDef Pay = new("Paying", typeof(InteractionPayTransaction))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = InteractionProgressHandlers.FirstContact,// new InteractionProgressFirstContact(),
+            Range = InteractionRange.Any
+        };
+        public static readonly InteractionDef RingUp = new("RingingUp", typeof(InteractionRingUpTransaction))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = InteractionProgressHandlers.FirstContact,
+            Range = InteractionRange.Any
+        };
+        public static readonly InteractionDef RingUpFinish = new("RingingUpFinish", typeof(InteractionRingUpTransactionFinish))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = InteractionProgressHandlers.FirstContact,
             Range = InteractionRange.Any
         };
         public static readonly InteractionDef DepositResource = new("Depositing", typeof(InteractionDepositLogic))
@@ -148,6 +171,15 @@ namespace Project1.Core.Interactions
         public static readonly InteractionDef WaitingService = new("WaitService", typeof(InteractionWaitingService))
         {
             ProgressHandler = InteractionProgressHandlers.Passive
+        };
+        public static readonly InteractionDef WaitingPayment = new("WaitPayment", typeof(InteractionWaitForPayment))
+        {
+            ProgressHandler = InteractionProgressHandlers.Passive
+        };
+        public static readonly InteractionDef ClaimBoughtItem = new("ClaimBoughtItem", typeof(InteractionClaimBoughtItem))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            ProgressHandler = InteractionProgressHandlers.FirstContact
         };
         static InteractionDefOf()
         {

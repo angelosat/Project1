@@ -140,7 +140,7 @@ namespace Project1.Core
                 var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var global = r.ReadIntVec3();
-                var owner = r.ReadInt32() is int refID && refID > -1 ? net.World.GetEntity<Actor>(refID) : null;
+                var owner = r.ReadInt32() is int refID && refID > -1 ? net.World.Get<Actor>(refID) : null;
                 if (net is Client c)
                     BlockBedEntity.SetOwner(c.Map, global, owner);
                 else

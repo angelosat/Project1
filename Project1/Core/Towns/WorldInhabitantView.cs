@@ -117,7 +117,7 @@ namespace Project1.Core.Towns
             var r = packet.PacketReader;
             if (net is Server)
                 throw new Exception();
-            var props = net.World.GetEntity<Actor>(r.ReadInt32()).GetVisitorProperties();
+            var props = net.World.Get<Actor>(r.ReadInt32()).GetVisitorProperties();
             props.AwardTownRating(r.ReadSingle());
         }
         public void AwardTownRating(float value)

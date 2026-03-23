@@ -25,7 +25,7 @@ namespace Project1.Core.Networking
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             var needdef = r.ReadDef<NeedDef>();
             var need = actor.GetNeed(needdef);
             var val = r.ReadInt32();
@@ -52,7 +52,7 @@ namespace Project1.Core.Networking
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             var need = r.ReadDef<NeedDef>();
             var percentage = r.ReadSingle();
 

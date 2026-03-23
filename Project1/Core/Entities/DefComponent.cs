@@ -21,7 +21,7 @@ namespace Project1.Core.Entities
         public EntityRefId AuthorId = EntityRefId.Null;
         public Actor Author
         {
-            get => this.Owner.World.GetEntity<Actor>(this.AuthorId);
+            get => this.Owner.World.Get<Actor>(this.AuthorId);
             set => this.AuthorId = value.RefId;
         }
 

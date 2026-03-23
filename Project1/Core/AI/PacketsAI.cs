@@ -27,7 +27,7 @@ namespace Project1.Core.AI
         private static void OnLogEntry(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var actor = endpoint.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = endpoint.World.Get<Actor>(r.ReadInt32());
             var text = r.ReadString();
             actor.AI.State.Log.Write(text);
         }
@@ -42,7 +42,7 @@ namespace Project1.Core.AI
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = client.World.Get<Actor>(r.ReadInt32());
             var frontier = r.ReadDef<FrontierDef>();
             actor.AI.Meta.SetTargetFrontier(frontier);
         }

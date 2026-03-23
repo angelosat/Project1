@@ -116,7 +116,7 @@ namespace Project1.Core.Blocks
             var entity = map.GetBlockEntity(r.ReadIntVec3());
             var ownerid = r.ReadEntityRefId();
             //var previousOwnerid = r.ReadEntityRefId();
-            var owner = ownerid != EntityRefId.Null ? map.World.GetEntity<Actor>(ownerid) : null;
+            var owner = ownerid != EntityRefId.Null ? map.World.Get<Actor>(ownerid) : null;
             var comp = entity.GetComp<BlockOwnershipComp>();
             comp.SetOwner(owner);
         }
@@ -127,7 +127,7 @@ namespace Project1.Core.Blocks
             var map = endpoint.Map;
             var entity = map.GetBlockEntity(r.ReadIntVec3());
             var ownerid = (EntityRefId)r.ReadEntityRefId();
-            var owner = ownerid != EntityRefId.Null ? map.World.GetEntity<Actor>(ownerid) : null;
+            var owner = ownerid != EntityRefId.Null ? map.World.Get<Actor>(ownerid) : null;
             var comp = entity.GetComp<BlockOwnershipComp>();
             // internally fires BlockOwnerChangedEvent to be replicated
             comp.SetOwner(owner); 

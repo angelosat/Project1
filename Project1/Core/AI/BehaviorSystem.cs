@@ -11,7 +11,7 @@ namespace Project1.Core.AI
         }
         private void OnReservationInvalidated(ReservationInvalidatedEvent e)
         {
-            var actor = this.Map.World.GetEntity<Actor>(e.Reservation.Actor);
+            var actor = this.Map.World.Get<Actor>(e.Reservation.Actor);
             actor.CurrentPlan.Cancel();
         }
     }

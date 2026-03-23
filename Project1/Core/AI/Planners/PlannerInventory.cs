@@ -12,8 +12,8 @@ namespace Project1.Core.AI.Planners
             // TODO associate labors with tool, if labor is enabled, look for and store tools in inventory.
             // if labor is disabled, remove unnecessary tools from inventory
             // TODO flag jobs for which a tool is already acquired so as to not recheck everything all the time
-            if (!actor.IsTownMember)
-                return null; // TODO instead of doing this, check if the tool is claimable
+            //if (!actor.IsTownMember)
+            //    return null; // TODO instead of doing this, check if the tool is claimable
 
             var map = actor.Map;
             //var jobs = actor.ActiveDuties;
@@ -27,7 +27,10 @@ namespace Project1.Core.AI.Planners
                 else // else fallback to next planner
                     return null;
             }
-
+            // let actors reach this point even if they are not a town member,
+            // and only allow town members to evaluate and claim free map items 
+            if (!actor.IsTownMember)
+                return null; // TODO instead of doing this, check if the tool is claimable
             // Query manager for potential map items to go carry/pick up
             var potentialAll = manager.GetPotential();
             foreach (var (role, item, score) in potentialAll)

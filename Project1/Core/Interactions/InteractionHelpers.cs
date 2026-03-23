@@ -46,7 +46,15 @@ namespace Project1.Core.Interactions
             var finalItem = carried.Take(amount == -1 ? null : amount);
             actor.Map.Spawn(finalItem, global, actor.Velocity);
         }
-
+        public static void TrySwapHauledItem(
+           Actor actor,
+           Entity target)
+        {
+            var carried = actor.Hauled;
+            ArgumentNullException.ThrowIfNull(carried);
+            actor.Map.Spawn(carried, target.Global, target.Velocity);
+            actor.Inventory.HaulNew(target, target.StackSize);
+        }
         public static void DepositResource(Interaction i)
         {
             var ctx = i.Context;

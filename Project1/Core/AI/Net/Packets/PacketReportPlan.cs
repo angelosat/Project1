@@ -27,7 +27,7 @@ namespace Project1.Core.AI.Net.Packets
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = endpoint.World.GetEntity<Actor>(r.ReadInt32());
+            var actor = endpoint.World.Get<Actor>(r.ReadInt32());
             var hasBhav = r.ReadBoolean();
             if (hasBhav)
             {

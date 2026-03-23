@@ -25,7 +25,7 @@ namespace Project1.Core.Simulation
     public interface IEntityProvider
     {
         Entity GetEntity(EntityRefId refId);
-        T GetEntity<T>(EntityRefId refId) where T : Entity;
+        T Get<T>(EntityRefId refId) where T : Entity;
 
     }
     public abstract class WorldBase : Inspectable, IEntityProvider
@@ -74,10 +74,17 @@ namespace Project1.Core.Simulation
         
         public void Register(Entity entity, bool immediate = false)
         {
-            entity.World = this;
-            entity.Net = this.Net;
-            foreach (var e in entity.GetSelfAndChildren())
+            //entity.World = this;
+            //entity.Net = this.Net;
+            //foreach (var e in entity.GetSelfAndChildren())
+            //    this.EntityRegistry.Add(e);
+            //entity.World = this;
+            //entity.Net = this.Net;
+            var toRegister = entity.GetSelfAndChildren();
+            foreach (var e in toRegister)
+            {
                 this.EntityRegistry.Add(e);
+            }
             this.Events.Post(new EntityRegisteredEvent(entity, immediate));
         }
         public Entity GetEntity(EntityRefId refId)
@@ -88,7 +95,7 @@ namespace Project1.Core.Simulation
                 return null!; // dont throw because return might be null for early snapshots
             return obj;
         }
-        public T? GetEntity<T>(EntityRefId refId) where T : Entity
+        public T? Get<T>(EntityRefId refId) where T : Entity
         {
             this.EntityRegistry.TryGetValue(refId, out var obj);
             return obj as T;

@@ -2,13 +2,49 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Interactions;
 using Project1.Framework;
 using System;
 using System.Linq;
 
 namespace Project1.Core.Towns.Shops;
 
-class PlannerBuy : Planner
+sealed class InteractionBrowseProduct : InteractionLogic
+{
+    internal override void OnFinish(Interaction i)
+    {
+        var actor = i.Actor;
+        if (actor.Net.IsClient)
+            return;
+        var item = i.Target.Entity;
+        var prefs = actor.AI.State.ItemPreferences;
+        var list = actor.Map.Town.ShopManager.GetShoppingList(actor);
+        if (list.Dequeue() is not Entity entity || item != entity)
+            throw new Exception();
+        prefs.EvaluateInt(item);
+    }
+}
+sealed class PlannerBrowse : Planner
+{
+    protected override Plan TryPlan(Actor actor)
+    {
+        if (actor.IsTownMember)
+            throw new Exception();
+        var map = actor.Map;
+        var shops = map.Town.ShopManager;
+        var list = shops.GetShoppingList(actor);
+        if (actor.IsHauling)
+            return null;
+        while(list.Peek() is Entity item)
+        {
+            if (!actor.CanReachAndReserve(item))
+                continue;
+            return new Plan(PlanDefOf.BrowseProduct, item);
+        }
+        return null;
+    }
+}
+sealed class PlannerBuy : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {

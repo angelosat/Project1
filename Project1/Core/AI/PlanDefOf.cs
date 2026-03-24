@@ -84,6 +84,7 @@ namespace Project1.Core.AI
         static public readonly PlanDef RingUp = new ("RingingUp", typeof(BehaviorExecutePlanNew), InteractionDefOf.RingUp);
         static public readonly PlanDef RingUpFinish = new ("RingingUpFinish", typeof(BehaviorExecutePlanNew), InteractionDefOf.RingUpFinish);
         static public readonly PlanDef ClaimBoughtItem = new ("ClaimBoughtItem", typeof(BehaviorExecutePlanNew), InteractionDefOf.ClaimBoughtItem);
+        static public readonly PlanDef BrowseProduct = new ("BrowseProduct", typeof(BehaviorExecutePlanNew), InteractionDefOf.BrowseProduct);
 
         static PlanDefOf()
         {

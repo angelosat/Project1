@@ -181,6 +181,10 @@ namespace Project1.Core.Interactions
             Animation = AnimationDefOf.TouchItem,
             ProgressHandler = InteractionProgressHandlers.FirstContact
         };
+        public static readonly InteractionDef BrowseProduct = new("BrowseProduct", typeof(InteractionBrowseProduct))
+        {
+            ProgressHandler = InteractionProgressHandlers.Timed
+        };
         static InteractionDefOf()
         {
             Def.Register(typeof(InteractionDefOf));

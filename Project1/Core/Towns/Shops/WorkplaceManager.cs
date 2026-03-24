@@ -246,6 +246,13 @@ namespace Project1.Core.Towns.Shops
             foreach (var shop in this.Shops.Values)
                 yield return shop;
         }
+        readonly Dictionary<EntityRefId, ShoppingList> _shoppingListsByActor = [];
+        internal ShoppingList GetShoppingList(Actor buyer)
+        {
+            if (!this._shoppingListsByActor.TryGetValue(buyer.RefId, out var list))
+                this._shoppingListsByActor[buyer.RefId] = list = new(buyer, [.. this.GetItemsForSale()]);
+            return list;
+        }
 
         readonly Dictionary<EntityRefId, ShopTransaction> _transactionsRequests = [];
         readonly Dictionary<EntityRefId, ShopTransaction> _transactionsBySeller = [];
@@ -550,5 +557,10 @@ namespace Project1.Core.Towns.Shops
             var t = this._transactionsByBuyer[buyer.RefId];
             t.Dispose();
         }
+
+        internal IEnumerable<Entity> GetItemsForSale()
+            => this.Town.Map.Stockpiles.Stockpiles
+            .Where(s => s.ForSale)
+            .SelectMany(s => s.Items);
     }
 }

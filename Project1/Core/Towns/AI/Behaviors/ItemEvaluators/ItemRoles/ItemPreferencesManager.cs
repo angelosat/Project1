@@ -87,7 +87,7 @@ namespace Project1.Core
                 this.PreCommitScanCache[role] = (item, score);
             }
         }
-        private void EvaluateOne()
+        internal void EvaluateOne()
         {
             if (notScannedYet.Count == 0)
                 return;
@@ -95,8 +95,14 @@ namespace Project1.Core
             var item = notScannedYet.Dequeue();
             if (this.Actor.Map != item.Map)
                 return;
+            EvaluateInt(item);
+        }
+        internal Entity Peek()
+            => this.notScannedYet.TryPeek(out var entity) ? entity : null;
+        internal void EvaluateInt(Entity item)
+        {
             var roles = this.Evaluate(item);
-            
+
             foreach (var (role, score) in roles)
             {
                 //if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score &&
@@ -104,11 +110,12 @@ namespace Project1.Core
                 //    continue;
                 if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score)
                     continue;
-                if(this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+                if (this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
                     continue;
                 this.PreCommitScanCache[role] = (item, score);
             }
         }
+
         private bool StillValid(Entity i)
         {
             return i.ExistsOn(this.Actor.Map);
@@ -475,8 +482,7 @@ namespace Project1.Core
 
         public void Tick()
         {
-            this.EvaluateOne();
-            //this.EvaluateOneNew();
+            //this.EvaluateOne();
             this.UpdateBiases();
             this.UpdateTempIgnore();
         }

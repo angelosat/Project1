@@ -6,7 +6,6 @@ using Project1.Framework;
 
 namespace Project1.Core.Towns.Shops;
 
-
 sealed class ShopTransaction(Actor buyer, Entity item, IntVec3 counter)
 {
     internal enum TransactionState

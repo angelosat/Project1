@@ -34,6 +34,7 @@ namespace Project1.Core.AI.Behaviors
 
         static readonly public List<PlannerDef> VisitorPlanners =
         [
+            PlannerDefOf.Browse,
             PlannerDefOf.Buy,
             //PlannerDefOf.Departure
         ];

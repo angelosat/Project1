@@ -35,5 +35,8 @@ internal static class ShopSystem
     {
         public bool IsForSale()
             => item.Map.Town.ZoneManager.GetZoneAt<Stockpile>(item.Cell.Below)?.ForSale ?? false;
+
+        public bool IsInvolvedInExistingTransaction()
+            => item.Map.Town.ShopManager.TryGetTransactionByItem(item, out _);
     }
 }

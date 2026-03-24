@@ -29,11 +29,8 @@ class PlannerBuy : Planner
             var item = map.World.GetEntity(transaction.Item);
 
             var carried = actor.Hauled;
-            //if (carried is null && map.GetEntitiesAt(transaction.Counter.Above).Any(e => e.RefId == transaction.Item))
-            if (carried is null)// && map.World.GetEntity(transaction.Item).Cell == transaction.Counter.Above)
+            if (carried is null)
             {
-                //var seller = map.World.GetEntity<Actor>(transaction.Seller);
-                //if (seller.Hauled?.RefId == transaction.Item && transaction.Money == EntityRefId.Null) // waiting for payment
                 if (transaction.IsComplete)
                 {
                     var (role, score) = manager.GetPotential(item);
@@ -52,21 +49,15 @@ class PlannerBuy : Planner
                 if (item.Cell == transaction.Counter.Above)
                 {
                     if (transaction.IsPaid) // item paid for and ready to be claimed
-                    {
-                        //return new Plan(PlanDefOf.GoHaul, item) { Continuation = PlanContinuationPolicy.Yield };
                         return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
-                    }
                     else // item on counter and waiting for clerk
                         return new Plan(PlanDefOf.WaitForService);
                 }
             }
             if (carried is not null)
             {
-                if (carried.Def == ItemDefOf.Coins && transaction.WaitingForPayment)// seller.Hauled?.RefId == transaction.Item)
-                {
-                    //return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, transaction.Counter.Above));
+                if (carried.Def == ItemDefOf.Coins && transaction.WaitingForPayment)
                     return new Plan(PlanDefOf.Pay, new TargetArgs(map, transaction.Counter.Above));
-                }
                 if (carried.RefId != transaction.Item)
                     throw new InvalidOperationException();
                 transaction.Tick();
@@ -82,9 +73,7 @@ class PlannerBuy : Planner
                 }
                 return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, transaction.Counter.Above));
             }
-            //return null;
         }
-        
 
         var potentialAll = manager.GetPotential();
         foreach (var (role, item, score) in potentialAll)
@@ -100,6 +89,9 @@ class PlannerBuy : Planner
                 manager.DiscardPotential(item);
                 return null;
             }
+
+            if (!item.IsInvolvedInExistingTransaction())
+                continue;
 
             if (!actor.CanReachAndReserve(item))
                 continue;

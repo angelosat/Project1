@@ -40,7 +40,5 @@ sealed class ShopTransaction(Actor buyer, Entity item, IntVec3 counter)
         => this.TicksRemaining = Ticks.FromHours(1);
     internal void MarkPaid() => this.State = TransactionState.Paid;
     internal void RingUp() => this.State = TransactionState.WaitingForPayment;
-    //internal void RingUpFinish() => this.State = TransactionState.Complete;
     internal void Dispose() => this.State = TransactionState.Disposed;
-
 }

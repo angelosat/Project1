@@ -251,6 +251,7 @@ namespace Project1.Core.Towns.Shops
         readonly Dictionary<EntityRefId, ShopTransaction> _transactionsBySeller = [];
         readonly Dictionary<EntityRefId, ShopTransaction> _transactionsByBuyer = [];
         readonly Dictionary<EntityRefId, ShopTransaction> _transactionsActive = [];
+        readonly Dictionary<EntityRefId, ShopTransaction> _transactionsByItem = [];
         readonly List<ShopTransaction> _transactionsAll = [];
         internal bool TryBeginTransaction(Actor actor, Entity item, IntVec3 servicePoint)
         {
@@ -258,6 +259,7 @@ namespace Project1.Core.Towns.Shops
             this._transactionsAll.Add(transaction);
             this._transactionsRequests.Add(actor.RefId, transaction);
             this._transactionsByBuyer.Add(actor.RefId, transaction);
+            this._transactionsByItem.Add(item.RefId, transaction);
             return true;
             // TODO made it a bool return in case i have some conditions that can make it fail in the future
         }
@@ -270,6 +272,8 @@ namespace Project1.Core.Towns.Shops
         internal bool TryGetTransactionBySeller(Actor seller, out ShopTransaction transaction)
         //=> this._transactionsBySeller[seller.RefId];
             => this._transactionsBySeller.TryGetValue(seller.RefId, out transaction);
+        internal bool TryGetTransactionByItem(Entity item, out ShopTransaction transaction)
+            => this._transactionsByItem.TryGetValue(item.RefId, out transaction);
         internal ShopTransaction GetTransactionBySeller(Actor seller)
                //=> this._transactionsBySeller[seller.RefId];
                => this._transactionsBySeller.TryGetValue(seller.RefId, out var t) ? t : null;
@@ -293,6 +297,7 @@ namespace Project1.Core.Towns.Shops
                     this._transactionsActive.Remove(transaction.Buyer);
                     this._transactionsRequests.Remove(transaction.Buyer);
                     this._transactionsByBuyer.Remove(transaction.Buyer);
+                    this._transactionsByItem.Remove(transaction.Item);
                     if (transaction.Seller != EntityRefId.Null)
                         this._transactionsBySeller.Remove(transaction.Seller);
                 }
@@ -539,11 +544,6 @@ namespace Project1.Core.Towns.Shops
             if (item.RefId != t.Item)
                 throw new InvalidOperationException();
             t.RingUp();
-        }
-        internal void RingUpFinish(Actor seller)
-        {
-            var t = this._transactionsBySeller[seller.RefId];
-            //t.RingUpFinish();
         }
         internal void FinishTransaction(Actor buyer)
         {

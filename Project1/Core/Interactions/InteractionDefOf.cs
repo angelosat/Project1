@@ -183,7 +183,8 @@ namespace Project1.Core.Interactions
         };
         public static readonly InteractionDef BrowseProduct = new("BrowseProduct", typeof(InteractionBrowseProduct))
         {
-            ProgressHandler = InteractionProgressHandlers.Timed
+            //ProgressHandler = InteractionProgressHandlers.Timed
+            ProgressHandler = InteractionProgressHandlers.External
         };
         static InteractionDefOf()
         {

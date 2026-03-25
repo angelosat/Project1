@@ -13,6 +13,16 @@ internal class ThoughtItemEvaluatorVisitor : ThoughtProcess
             return;
         var manager = state.ItemPreferences;
         var list = actor.Map.Town.ShopManager.GetShoppingListEmpty(actor);
+        
+        while (manager.DequeueUnevaluated() is Entity nextEntity)
+        {
+            if (!nextEntity.IsForSale())
+                continue;
+            var tempEvaluation = manager.EvaluateWithoutRegistering(nextEntity);
+            if(tempEvaluation.Roles.Length > 0)
+                list.Add(nextEntity, tempEvaluation);
+        }
+
         //if(list.GetResultsSorted().FirstOrDefault() is var best && best.item is Entity item)
         //{
         //    var placeholderThreshold = 2;
@@ -21,12 +31,6 @@ internal class ThoughtItemEvaluatorVisitor : ThoughtProcess
         //        list.Impulse = item;
         //    }
         //}
-        while (manager.DequeueUnevaluated() is Entity nextEntity)
-        {
-            if (!nextEntity.IsForSale())
-                continue;
-            list.Add(nextEntity);
-        }
     }
 }
 internal class ThoughtItemEvaluatorTownMember : ThoughtProcess
@@ -38,7 +42,7 @@ internal class ThoughtItemEvaluatorTownMember : ThoughtProcess
         var manager = state.ItemPreferences;
         if(manager.DequeueUnevaluated() is Entity item)
         {
-            var result = manager.EvaluateNew(item);
+            var result = manager.EvaluateAndRegister(item);
             //state.Knowledge.Register(item, result);
             manager.TryPreCommit(item, result);
         }

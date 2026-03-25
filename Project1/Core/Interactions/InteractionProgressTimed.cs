@@ -40,7 +40,12 @@
         sealed class InteractionProgressContextual : IInteractionProgressHandler
         {
             public float GetProgressPercentage(Interaction interaction) => interaction.Context.ProgressPercentage;
-            public void Tick(Interaction interaction) { }
+            public void Tick(Interaction interaction) 
+            {
+                if (interaction.Actor.Net.IsClient)
+                    return;
+                interaction.Def.Logic.OnTick(interaction);
+            }
             public void AddProgress(Interaction interaction, int progress)// => interaction.Def.Logic.ApplyWork(interaction.Context, progress);
             {
                 if (interaction.Actor.Net.IsClient)

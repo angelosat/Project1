@@ -54,7 +54,10 @@ sealed class PlannerBuy : Planner
                 if (item.Cell == transaction.Counter.Above)
                 {
                     if (transaction.IsPaid) // item paid for and ready to be claimed
+                    {
+                        actor.AI.State.Log.Write($"I bought {item.Name}");
                         return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
+                    }
                     else // item on counter and waiting for clerk
                         return new Plan(PlanDefOf.WaitForService);
                 }
@@ -90,6 +93,7 @@ sealed class PlannerBuy : Planner
                 continue;
             if (!map.Town.ShopManager.TryBeginTransaction(actor, item, price, foundPoint))
                 continue;
+            actor.AI.State.Log.Write($"I am impulsively buying {item.Name}!");
             return new Plan(PlanDefOf.GoHaul) { TargetA = item };
         }
         if (!shoppingList.HasFinished)
@@ -101,6 +105,7 @@ sealed class PlannerBuy : Planner
                 continue;
             if (!map.Town.ShopManager.TryBeginTransaction(actor, item, price, foundPoint))
                 continue;
+            actor.AI.State.Log.Write($"I decided to buy {item.Name}");
             return new Plan(PlanDefOf.GoHaul) { TargetA = item };
         }
         return null;

@@ -28,12 +28,13 @@ namespace Project1.Core.Towns.Stockpiles
         //readonly List<GameObject> Cache = [];
         public readonly ObservableCollection<GameObject> CacheObservable = [];
         public HashSet<Entity> AcceptedItems = [];
+        bool _forSale;
         public bool ForSale
         {
-            get => field;
+            get => this._forSale;
             set
             {
-                field = value;
+                this._forSale = value;
                 this._signal.Raise();
                 this.Map.Events.Post(new StockpileUpdatedEvent(this));
             }
@@ -255,18 +256,22 @@ namespace Project1.Core.Towns.Stockpiles
         protected override void SaveExtra(SaveTag tag)
         {
             tag.Add(this.Settings.Save("Settings"));
+            tag.Save("ForSale", this._forSale);
         }
         protected override void LoadExtra(SaveTag tag)
         {
             tag.TryGetTag("Settings", t => this.Settings.Load(t));
+            if (tag.TryLoadBool("ForSale", out var forSale)) this._forSale = forSale;
         }
         protected override void WriteExtra(IDataWriter w)
         {
             this.Settings.Write(w);
+            w.Write(this._forSale);
         }
         protected override void ReadExtra(IDataReader r)
         {
             this.Settings.Read(r);
+            this._forSale = r.ReadBoolean();
         }
         public void FiltersGuiCallback(ItemDef item, MaterialDef material)
         {

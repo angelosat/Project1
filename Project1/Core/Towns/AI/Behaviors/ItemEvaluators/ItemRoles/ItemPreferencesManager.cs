@@ -110,7 +110,7 @@ namespace Project1.Core
         internal void EvaluateInt(Entity item)
         {
             //var roles = this.Evaluate(item);
-            var result = this.EvaluateNew(item);
+            var result = this.EvaluateAndRegister(item);
             this.TryPreCommit(item, result);
             //foreach (var (role, score) in roles)
             //{
@@ -224,7 +224,7 @@ namespace Project1.Core
         }
         internal bool TryCommit(Entity item)
         {
-            var results = this.EvaluateNew(item);
+            var results = this.EvaluateAndRegister(item);
             bool commited = false;
             // commit item for roles where it scores higher than existing items
             foreach(var (Role, Score) in results.Roles)
@@ -263,11 +263,35 @@ namespace Project1.Core
                     yield return (role, score);
             }
         }
-        internal ItemEvaluation EvaluateNew(Entity item)
+        internal ItemEvaluation EvaluateAndRegister(Entity item)
         {
             var knowledge = this.Actor.AI.State.Knowledge;
             if (knowledge.TryQuery(item, out var existing))
                 return existing;
+            //List<(ItemRoleDef role, int score)> results = [];
+            //foreach (var role in FlatItemRolesList)
+            //{
+            //    var score = role.Worker.GetInventoryScore(this.Actor, item, role);
+            //    if (this.ItemBiases.TryGetValue(item.RefId, out var bias))
+            //        score += bias.Value;
+            //    if (score > 0)
+            //        results.Add((role, score));
+            //}
+            //var result = new ItemEvaluation(item.RefId, [.. results]);
+            var result = this.EvaluateInternal(item);
+            knowledge.Register(item, result);
+            return result;
+        }
+        internal ItemEvaluation EvaluateWithoutRegistering(Entity item)
+        {
+            var knowledge = this.Actor.AI.State.Knowledge;
+            if (knowledge.TryQuery(item, out var existing))
+                return existing;
+            return this.EvaluateInternal(item);
+        }
+
+        private ItemEvaluation EvaluateInternal(Entity item)
+        {
             List<(ItemRoleDef role, int score)> results = [];
             foreach (var role in FlatItemRolesList)
             {
@@ -278,9 +302,9 @@ namespace Project1.Core
                     results.Add((role, score));
             }
             var result = new ItemEvaluation(item.RefId, [.. results]);
-            knowledge.Register(item, result);
             return result;
         }
+
         internal (ItemRoleDef role, int score) FindBestRole(Entity item)
         {
             var allRoles = this.Evaluate(item);

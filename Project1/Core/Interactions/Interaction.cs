@@ -48,7 +48,7 @@ namespace Project1.Core.Interactions
         public AnimationDef AnimationDef => this.Def.Animation;// = AnimationDefOf.Work;
         internal Actor Actor => this.Context.Actor;
         internal TargetArgs Target => this.Context.Target;
-        internal int Count;
+        //internal int Count;
 
         private bool _drawProgressBar;
         public Func<Vector3> BarPosition;

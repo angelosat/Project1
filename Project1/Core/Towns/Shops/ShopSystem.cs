@@ -29,6 +29,8 @@ internal static class ShopSystem
             return actorMoney >= itemValue;
         }
         
+        public ShoppingList ShoppingList
+            => actor.Map.Town.ShopManager.GetShoppingListEmpty(actor);
     }
 
     extension(Entity item)

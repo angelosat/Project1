@@ -121,7 +121,19 @@ namespace Project1.Framework
                 return true;
             }
         }
-
+        public bool TryLoadBool(string name, out bool value)
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = (bool)tag.Value;
+                return true;
+            }
+        }
         public bool TryGetTagValueOut<TValue>(string name, out TValue value)
         {
             if (!this.TryGetTag(name, out var tag))

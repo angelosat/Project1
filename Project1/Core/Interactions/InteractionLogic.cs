@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
+using System;
 
 namespace Project1.Core.Interactions
 {
@@ -18,8 +19,10 @@ namespace Project1.Core.Interactions
             return ctx;
         }
         internal virtual void OnStart(Interaction i) { }
+        internal virtual void OnTick(Interaction i) { }
         internal virtual void OnFinish(Interaction i) { }
         internal virtual int CalculateMax(InteractionContext ctx) => 100;
         internal virtual void OnProgressAdded(Interaction i, int delta) { }
+
     }
 }

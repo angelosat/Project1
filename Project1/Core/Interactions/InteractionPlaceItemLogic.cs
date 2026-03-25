@@ -46,7 +46,7 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
         var actor = ctx.Actor;
         if (actor.Net.IsClient)
             return;
-        InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity, i.Count);
+        InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity, ctx.Count);
     }
 }
 sealed class InteractionRingUpTransaction : InteractionLogic
@@ -118,7 +118,7 @@ class InteractionSwapItemLogic : InteractionLogic
         var actor = ctx.Actor;
         if (actor.Net.IsClient)
             return;
-        InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity, i.Count);
+        InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity, ctx.Count);
     }
 }
 class InteractionPlaceItemLogic : InteractionLogic

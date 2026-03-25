@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
-using Project1.Core.Networking;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.MetaRoles;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
-using Project1.Core.Entities;
-using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.UI.Hud;
-using Project1.Core.AI.MetaRoles;
-using Project1.Core.Graphics;
+using Project1.Framework;
 using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.AI
 {
@@ -105,11 +104,13 @@ namespace Project1.Core.AI
         public override void Tick()
         {
             var parent = this.Owner;
-            var net = parent.Net;
-            if (net is Client) // do i want to run some deterministic behaviors locally too? answer: NO
+            if (parent.Net.IsClient) // do i want to run some deterministic behaviors locally too? answer: NO
                 return;
 
             this.State.Tick();
+
+            foreach (var thought in this.Meta.Def.Thoughts)
+                thought.Tick(this.State);
 
             if (this.Enabled)
                 this.Root.Tick(parent as Actor, this.State);

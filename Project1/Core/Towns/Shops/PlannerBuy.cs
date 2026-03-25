@@ -2,48 +2,11 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Interactions;
 using Project1.Framework;
 using System;
 using System.Linq;
 
 namespace Project1.Core.Towns.Shops;
-
-sealed class InteractionBrowseProduct : InteractionLogic
-{
-    internal override void OnFinish(Interaction i)
-    {
-        var actor = i.Actor;
-        if (actor.Net.IsClient)
-            return;
-        var item = i.Target.Entity;
-        var prefs = actor.AI.State.ItemPreferences;
-        var list = actor.Map.Town.ShopManager.GetShoppingList(actor);
-        if (list.Dequeue() is not Entity entity || item != entity)
-            throw new Exception();
-        prefs.EvaluateInt(item);
-    }
-}
-sealed class PlannerBrowse : Planner
-{
-    protected override Plan TryPlan(Actor actor)
-    {
-        if (actor.IsTownMember)
-            throw new Exception();
-        var map = actor.Map;
-        var shops = map.Town.ShopManager;
-        var list = shops.GetShoppingList(actor);
-        if (actor.IsHauling)
-            return null;
-        while(list.Peek() is Entity item)
-        {
-            if (!actor.CanReachAndReserve(item))
-                continue;
-            return new Plan(PlanDefOf.BrowseProduct, item);
-        }
-        return null;
-    }
-}
 sealed class PlannerBuy : Planner
 {
     protected override Plan TryPlan(Actor actor)
@@ -111,9 +74,18 @@ sealed class PlannerBuy : Planner
             }
         }
 
-        var potentialAll = manager.GetPotential();
-        foreach (var (role, item, score) in potentialAll)
+        //var potentialAll = manager.GetPotential();
+        var shoppingList = shops.GetShoppingList(actor);
+        if (!shoppingList.HasFinished)
+            return null;
+        //var potentialAll = manager.GetPotentialInt();
+        var potentialAll = shoppingList.GetResults();
+        //foreach (var (role, item, score) in potentialAll)
+        foreach (var item in potentialAll)
         {
+            if (item.Map != actor.Map)
+                continue;
+
             if (!item.IsForSale())
             {
                 manager.DiscardPotential(item);
@@ -126,7 +98,7 @@ sealed class PlannerBuy : Planner
                 return null;
             }
 
-            if (!item.IsInvolvedInExistingTransaction())
+            if (item.IsInvolvedInExistingTransaction())
                 continue;
 
             if (!actor.CanReachAndReserve(item))

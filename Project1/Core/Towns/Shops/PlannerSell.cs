@@ -47,7 +47,9 @@ class PlannerSell : Planner
 
             var item = map.World.GetEntity(t.Item);
             if (item.Map != map)
-                throw new Exception();
+                return null; // only go ahead and assign seller if the item is on the counter
+            if (item.Cell != t.Counter.Above)
+                return null;
 
             manager.AssignSeller(t, actor);
         }

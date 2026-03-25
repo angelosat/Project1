@@ -33,7 +33,7 @@ namespace Project1.Core.AI.Planners
                 return null; // TODO instead of doing this, check if the tool is claimable
             // Query manager for potential map items to go carry/pick up
             //manager.EvaluateOne();
-            var potentialAll = manager.GetPotential();
+            var potentialAll = manager.TryGetPotential();
             foreach (var (role, item, score) in potentialAll)
             {
                 if (!actor.CanReachAndReserve(item))

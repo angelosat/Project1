@@ -28,6 +28,7 @@ namespace Project1.Core
 
         readonly Dictionary<int, ItemBias> ItemBiases = [];
         readonly Queue<Entity> notScannedYet = [];
+        readonly HashSet<EntityRefId> alreadyQueued = [];
         readonly Dictionary<ItemRoleDef, ItemPreference> PrefsInternal = [];
         readonly Dictionary<Entity, List<ItemPreference>> ItemsToPrefs = [];
         readonly Dictionary<int, int> TempIgnore = [];
@@ -40,7 +41,7 @@ namespace Project1.Core
         private void EnqueueNewSpawnedItem(EntitySpawnedEvent e)
         {
             if (!this.TempIgnore.ContainsKey(e.Entity.RefId))
-                this.notScannedYet.Enqueue(e.Entity);
+                this.TryEnqueue(e.Entity);
         }
         Control GetGui()
         {
@@ -150,8 +151,17 @@ namespace Project1.Core
 
                 var item = this.Actor.Map.World.GetEntity(key);
                 if (item.ExistsOn(this.Actor.Map))
-                    this.notScannedYet.Enqueue(item);
+                    this.TryEnqueue(item);
             }
+        }
+
+        private bool TryEnqueue(Entity item)
+        {
+            if (this.alreadyQueued.Contains(item.RefId))
+                return false;
+            this.notScannedYet.Enqueue(item);
+            this.alreadyQueued.Add(item.RefId);
+            return true;
         }
 
         static List<ItemRoleDef> FlatItemRolesList => _flatItemRolesList ??= GenerateItemRolesAll();
@@ -232,13 +242,44 @@ namespace Project1.Core
             score = 0;
             return null;
         }
-        internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotential()
+        internal IEnumerable<(ItemRoleDef role, Entity item, int score)> TryGetPotential()
         {
             if (this.IsScanning)
             {
                 //ScanOne();
                 yield break;
             }
+            foreach (var v in this.GetPotentialInt())
+                yield return v;
+            //if (this.PreCommitScanCache.Count == 0)
+            //    yield break;
+            //var toRemove = new List<ItemRoleDef>();
+            //foreach (var (con, (i, score)) in this.PreCommitScanCache)
+            //{
+            //    if (!StillValid(i))
+            //        toRemove.Add(con);
+            //    else
+            //        yield return (con, i, score);
+            //}
+            //// if there's been invalidations, rescan map
+            //if(toRemove.Count > 0)
+            //{
+            //    foreach (var item in this.Actor.Map.Entities)
+            //        this.TryEnqueue(item);
+            //}
+            //foreach (var r in toRemove)
+            //    this.PreCommitScanCache.Remove(r);
+        }
+        internal (ItemRoleDef role, int score) GetPotential(Entity item)
+        {
+            foreach (var vk in this.PreCommitScanCache)
+                if (vk.Value.item == item)
+                    return (vk.Key, vk.Value.score);
+            return default;
+        }
+
+        internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotentialInt()
+        {
             if (this.PreCommitScanCache.Count == 0)
                 yield break;
             var toRemove = new List<ItemRoleDef>();
@@ -250,20 +291,13 @@ namespace Project1.Core
                     yield return (con, i, score);
             }
             // if there's been invalidations, rescan map
-            if(toRemove.Count > 0)
+            if (toRemove.Count > 0)
             {
                 foreach (var item in this.Actor.Map.Entities)
-                    this.notScannedYet.Enqueue(item);
+                    this.TryEnqueue(item);
             }
             foreach (var r in toRemove)
                 this.PreCommitScanCache.Remove(r);
-        }
-        internal (ItemRoleDef role, int score) GetPotential(Entity item)
-        {
-            foreach (var vk in this.PreCommitScanCache)
-                if (vk.Value.item == item)
-                    return (vk.Key, vk.Value.score);
-            return default;
         }
 
         internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotentialAll()
@@ -403,7 +437,7 @@ namespace Project1.Core
 
             foreach (var i in this.Actor.Map.Entities)
                 if (i != item)
-                    this.notScannedYet.Enqueue(i);
+                    this.TryEnqueue(i);
         }
 
         internal void DiscardPotential(Entity item)
@@ -420,7 +454,7 @@ namespace Project1.Core
 
             foreach (var i in this.Actor.Map.Entities)
                 if (i != item)
-                    this.notScannedYet.Enqueue(i);
+                    this.TryEnqueue(i);
         }
 
         public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
@@ -465,7 +499,7 @@ namespace Project1.Core
         public void OnSpawn(MapBase newMap)
         {
             foreach (var i in newMap.Entities)
-                this.notScannedYet.Enqueue(i);
+                this.TryEnqueue(i);
             newMap.Events.ListenTo<EntitySpawnedEvent>(EnqueueNewSpawnedItem);
         }
         public void RemoveJunk(Entity item)
@@ -558,7 +592,7 @@ namespace Project1.Core
         internal void ResolveReferences() 
         {
             foreach (var i in this.Actor.Map.Entities)
-                this.notScannedYet.Enqueue(i);
+                this.TryEnqueue(i);
             this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(EnqueueNewSpawnedItem);
         }
         public SaveTag Save(string name = "")

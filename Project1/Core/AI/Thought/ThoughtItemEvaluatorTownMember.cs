@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Towns.Shops;
+using System.Linq;
 
 namespace Project1.Core.AI.Thought;
 
@@ -12,6 +13,14 @@ internal class ThoughtItemEvaluatorVisitor : ThoughtProcess
             return;
         var manager = state.ItemPreferences;
         var list = actor.Map.Town.ShopManager.GetShoppingListEmpty(actor);
+        //if(list.GetResultsSorted().FirstOrDefault() is var best && best.item is Entity item)
+        //{
+        //    var placeholderThreshold = 2;
+        //    if(best.score >= placeholderThreshold)
+        //    {
+        //        list.Impulse = item;
+        //    }
+        //}
         while (manager.DequeueUnevaluated() is Entity nextEntity)
         {
             if (!nextEntity.IsForSale())

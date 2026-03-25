@@ -46,7 +46,7 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
         var actor = ctx.Actor;
         if (actor.Net.IsClient)
             return;
-        InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity);
+        InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity, i.Count);
     }
 }
 sealed class InteractionRingUpTransaction : InteractionLogic

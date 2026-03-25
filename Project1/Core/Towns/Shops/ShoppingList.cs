@@ -14,7 +14,9 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
     readonly List<Entity> ItemsToBrowse = items;
     readonly Queue<int> IndicesRemaining = new(Enumerable.Range(0, items.Count).Shuffle());
     readonly SortedList<int, Entity> Results = [];
+    readonly List<(Entity item, int score, int price)> ResultsUnsorted = [];
     internal IEnumerable<Entity> GetResults() => this.Results.Values;
+    internal IOrderedEnumerable<(Entity item, int score, int price)> GetResultsSorted() => this.ResultsUnsorted.OrderByDescending(v => v.score);
     internal bool HasFinished => this.IndicesRemaining.Count == 0;
 
     public void Add(Entity item)
@@ -27,11 +29,15 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
     public Entity? Dequeue()
         => this.IndicesRemaining.Count > 0 ? this.ItemsToBrowse[this.IndicesRemaining.Dequeue()] : null;
 
-    internal void Register(Entity item, IEnumerable<(ItemRoleDef role, int score)> results)
-    {
-        var max = results.Max(e => e.score);
-        this.Results[max] = item;
-    }
+    //internal void Register(Entity item, IEnumerable<(ItemRoleDef role, int score)> results)
+    //{
+    //    var max = results.Max(e => e.score);
+    //    this.Results[max] = item;
+    //}
     internal void Register(Entity item, int score)
-        => this.Results[score] = item;
+    //=> this.Results[score] = item;
+    {
+        this.Results[score] = item;
+        this.ResultsUnsorted.Add((item, score, item.GetValueTotal()));
+    }
 }

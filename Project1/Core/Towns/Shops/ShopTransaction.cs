@@ -6,7 +6,7 @@ using Project1.Framework;
 
 namespace Project1.Core.Towns.Shops;
 
-sealed class ShopTransaction(Actor buyer, Entity item, IntVec3 counter)
+sealed class ShopTransaction(Actor buyer, Entity item, int price, IntVec3 counter)
 {
     internal enum TransactionState
     {
@@ -18,6 +18,7 @@ sealed class ShopTransaction(Actor buyer, Entity item, IntVec3 counter)
     public EntityRefId Seller = EntityRefId.Null;
     public readonly EntityRefId Item = item.RefId;
     public EntityRefId Money = EntityRefId.Null;
+    public int Price = price;
     public readonly IntVec3 Counter = counter;
     double TicksRemaining = Ticks.FromHours(1);
     internal bool IsCancelled => this._cancelled;

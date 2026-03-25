@@ -42,8 +42,12 @@ sealed class PlannerBuy : Planner
                 }
                 if (transaction.WaitingForPayment) // waiting for payment
                 {
+                    var price = transaction.Price;
                     var moneyInInventory = actor.Inventory.Contents.FirstOrDefault(i => i.Def == ItemDefOf.Coins);
-                    return new Plan(PlanDefOf.RetrieveFromInventory, moneyInInventory);
+                    if (moneyInInventory.StackSize < price)
+                        throw new InvalidOperationException(); // normally the amount of coins should exist.
+                                                               // maybe cancel the transaction gracefully if otherwise
+                    return new Plan(PlanDefOf.RetrieveFromInventory, moneyInInventory) { AmountA = price };
                 }
                 if (item.Cell == transaction.Counter.Above)
                 {
@@ -78,10 +82,10 @@ sealed class PlannerBuy : Planner
         var shoppingList = shops.GetShoppingListPopulated(actor);
         if (!shoppingList.HasFinished)
             return null;
-        //var potentialAll = manager.GetPotentialInt();
         var potentialAll = shoppingList.GetResults();
-        //foreach (var (role, item, score) in potentialAll)
-        foreach (var item in potentialAll)
+        var potentialOrdered = shoppingList.GetResultsSorted();
+        //foreach (var item in potentialAll)
+        foreach (var (item, score, price) in potentialOrdered)
         {
             if (item.Map != actor.Map)
                 continue;
@@ -117,7 +121,7 @@ sealed class PlannerBuy : Planner
             }
             if (!validServicePointFound)
                 return null;
-            if (!map.Town.ShopManager.TryBeginTransaction(actor, item, foundPoint))
+            if (!map.Town.ShopManager.TryBeginTransaction(actor, item, price, foundPoint))
                 return null;
             return new Plan(PlanDefOf.GoHaul) { TargetA = item };
         }

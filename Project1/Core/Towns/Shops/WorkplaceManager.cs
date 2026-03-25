@@ -276,9 +276,9 @@ namespace Project1.Core.Towns.Shops
         readonly Dictionary<EntityRefId, ShopTransaction> _transactionsActive = [];
         readonly Dictionary<EntityRefId, ShopTransaction> _transactionsByItem = [];
         readonly List<ShopTransaction> _transactionsAll = [];
-        internal bool TryBeginTransaction(Actor actor, Entity item, IntVec3 servicePoint)
+        internal bool TryBeginTransaction(Actor actor, Entity item, int price, IntVec3 servicePoint)
         {
-            var transaction = new ShopTransaction(actor, item, servicePoint);
+            var transaction = new ShopTransaction(actor, item, price, servicePoint);
             this._transactionsAll.Add(transaction);
             this._transactionsRequests.Add(actor.RefId, transaction);
             this._transactionsByBuyer.Add(actor.RefId, transaction);

@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Core.AI.Behaviors.NodeTypes;
-using Project1.Core.Entities;
+﻿using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Simulation;
 
 namespace Project1.Core.AI
 {
@@ -27,31 +22,8 @@ namespace Project1.Core.AI
             }
             this.Timer = 0;
 
-            UpdateNearbyObjects(parent, state.Knowledge);
-
-            state.NearbyEntities = (
-                from memory in state.Knowledge.Objects.Values
-                let obj = memory.Object
-                where obj.Exists
-                // filter by range in relation to personality (for example, a function of determination and need score?)
-                orderby Vector3.Distance(parent.Global, obj.Global)
-                select obj).ToList();
-
             // return fail so we don't block parent selector
             return BehaviorState.Fail;
-        }
-
-        void UpdateNearbyObjects(GameObject parent, Knowledge knowledge)
-        {
-            foreach(var obj in parent.GetNearbyObjects(r=> r < Chunk.Size))
-            {
-                if (!knowledge.Objects.TryGetValue(obj, out Memory mem))
-                {
-                    knowledge.Objects[obj] = obj.ToMemory(parent);
-                }
-                else
-                    mem.Refresh(parent);
-            }
         }
 
         public override object Clone()

@@ -21,7 +21,6 @@ namespace Project1.Core.AI
                 return BehaviorState.Fail;//.Running;
             }
             this.Timer = 0;
-            state.Knowledge.Update();
             // return fail so we don't block parent selector
             return BehaviorState.Fail;
         }

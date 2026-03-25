@@ -75,7 +75,7 @@ sealed class PlannerBuy : Planner
         }
 
         //var potentialAll = manager.GetPotential();
-        var shoppingList = shops.GetShoppingList(actor);
+        var shoppingList = shops.GetShoppingListPopulated(actor);
         if (!shoppingList.HasFinished)
             return null;
         //var potentialAll = manager.GetPotentialInt();

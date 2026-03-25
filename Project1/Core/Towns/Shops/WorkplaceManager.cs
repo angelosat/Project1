@@ -162,6 +162,16 @@ namespace Project1.Core.Towns.Shops
             }
 
             town.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+            town.Map.Events.ListenTo<StockpileUpdatedEvent>(HandleStockpileUpdated);
+        }
+
+        private void HandleStockpileUpdated(StockpileUpdatedEvent e)
+        {
+            if (!e.Stockpile.ForSale)
+                return;
+            foreach(var item in e.Stockpile.Items)
+                foreach(var actorid in this._shoppingListsByActor.Keys)
+                    this.Map.World.Get<Actor>(actorid).AI.State.ItemPreferences.TryEnqueue(item);
         }
 
         private void HandleBlocksChanged(BlocksChangedEvent e)
@@ -247,7 +257,13 @@ namespace Project1.Core.Towns.Shops
                 yield return shop;
         }
         readonly Dictionary<EntityRefId, ShoppingList> _shoppingListsByActor = [];
-        internal ShoppingList GetShoppingList(Actor buyer)
+        internal ShoppingList GetShoppingListEmpty(Actor buyer)
+        {
+            if (!this._shoppingListsByActor.TryGetValue(buyer.RefId, out var list))
+                this._shoppingListsByActor[buyer.RefId] = list = new(buyer, []);
+            return list;
+        }
+        internal ShoppingList GetShoppingListPopulated(Actor buyer)
         {
             if (!this._shoppingListsByActor.TryGetValue(buyer.RefId, out var list))
                 this._shoppingListsByActor[buyer.RefId] = list = new(buyer, [.. this.GetItemsForSale()]);

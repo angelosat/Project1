@@ -1,35 +1,18 @@
-﻿using Project1.Core;
+﻿using Project1.Core.Entities;
+using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
 using System.Collections.Generic;
-using System.Linq;
-using Project1.Core.Entities;
 
-namespace Project1.Core.AI
+namespace Project1.Core.AI;
+
+public record struct ItemEvaluation(EntityRefId Item, (ItemRoleDef Role, int Score)[] Roles) { }
+public sealed class Knowledge
 {
-    public class Knowledge
-    {
-        public Dictionary<GameObject, Memory> Objects = new Dictionary<GameObject, Memory>();
-        public void Update()
-        {
-            // TODO: maybe create a new list and add only continuing memories instead of removing them
-            foreach (KeyValuePair<GameObject, Memory> memory in this.Objects.ToDictionary(foo => foo.Key, foo => foo.Value))
-            {
-                if (memory.Value.Update())
-                    this.Objects.Remove(memory.Key);
-            }
-        }
+    readonly Dictionary<Entity, ItemEvaluation> KnowledgeItems = [];
+    public void Register(Entity item, ItemEvaluation evaluation)
+        => this.KnowledgeItems.Add(item, evaluation);
 
-        public void Invalidate()
-        {
-            foreach(var obj in Objects.Values)
-                obj.State = Memory.States.Invalid;
-        }
-
-        public override string ToString()
-        {
-            string text = "";
-            foreach (Memory m in Objects.Values)
-                text += m.ToString() + "\n";
-            return text.TrimEnd('\n');
-        }
-    }
+    public ItemEvaluation Query(Entity item)
+        => this.KnowledgeItems.TryGetValue(item, out var entry) ? entry : default;
+    public bool TryQuery(Entity item, out ItemEvaluation entry)
+        => this.KnowledgeItems.TryGetValue(item, out entry);
 }

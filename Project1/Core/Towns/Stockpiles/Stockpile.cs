@@ -35,6 +35,7 @@ namespace Project1.Core.Towns.Stockpiles
             {
                 field = value;
                 this._signal.Raise();
+                this.Map.Events.Post(new StockpileUpdatedEvent(this));
             }
         }
         public Stockpile()

@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.AI;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
@@ -33,7 +34,14 @@ namespace Project1.Core
         readonly Dictionary<Entity, List<ItemPreference>> ItemsToPrefs = [];
         readonly Dictionary<int, int> TempIgnore = [];
         readonly HashSet<int> ToDiscard = [];
-
+        public Entity DequeueUnevaluated()
+        {
+            if (this.notScannedYet.Count == 0)
+                return null;
+            var entity = this.notScannedYet.Dequeue();
+            this.alreadyQueued.Remove(entity.RefId);
+            return entity;
+        }
         public ItemPreferencesManager(Actor actor)
         {
             this.Actor = actor;
@@ -92,8 +100,7 @@ namespace Project1.Core
         {
             if (notScannedYet.Count == 0)
                 return;
-            //var jobs = this.Actor.ActiveDuties;
-            var item = notScannedYet.Dequeue();
+            var item = this.DequeueUnevaluated();
             if (this.Actor.Map != item.Map)
                 return;
             EvaluateInt(item);
@@ -102,13 +109,25 @@ namespace Project1.Core
             => this.notScannedYet.TryPeek(out var entity) ? entity : null;
         internal void EvaluateInt(Entity item)
         {
-            var roles = this.Evaluate(item);
-
-            foreach (var (role, score) in roles)
+            //var roles = this.Evaluate(item);
+            var result = this.EvaluateNew(item);
+            this.TryPreCommit(item, result);
+            //foreach (var (role, score) in roles)
+            //{
+            //    //if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score &&
+            //    //    this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+            //    //    continue;
+            //    if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score)
+            //        continue;
+            //    if (this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+            //        continue;
+            //    this.PreCommitScanCache[role] = (item, score);
+            //}
+        }
+        internal void TryPreCommit(Entity item, ItemEvaluation result)
+        {
+            foreach (var (role, score) in result.Roles)
             {
-                //if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score &&
-                //    this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
-                //    continue;
                 if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score)
                     continue;
                 if (this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
@@ -116,7 +135,6 @@ namespace Project1.Core
                 this.PreCommitScanCache[role] = (item, score);
             }
         }
-
         private bool StillValid(Entity i)
         {
             return i.ExistsOn(this.Actor.Map);
@@ -155,14 +173,24 @@ namespace Project1.Core
             }
         }
 
-        private bool TryEnqueue(Entity item)
+        internal bool TryEnqueue(Entity item)
         {
+            //if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
+            //    return false;
             if (this.alreadyQueued.Contains(item.RefId))
                 return false;
             this.notScannedYet.Enqueue(item);
             this.alreadyQueued.Add(item.RefId);
             return true;
         }
+        //private Entity Dequeue()
+        //{
+        //    if (this.notScannedYet.Count == 0)
+        //        return null;
+        //    var entity = this.Dequeue();
+        //    this.alreadyQueued.Remove(entity.RefId);
+        //    return entity;
+        //}
 
         static List<ItemRoleDef> FlatItemRolesList => _flatItemRolesList ??= GenerateItemRolesAll();
         static List<ItemRoleDef> GenerateItemRolesAll()
@@ -194,15 +222,25 @@ namespace Project1.Core
             this.PrefsInternal[role] = pref;
             this.PrefUpdated?.Invoke(pref);
         }
+        internal bool TryCommit(Entity item)
+        {
+            var results = this.EvaluateNew(item);
+            bool commited = false;
+            // commit item for roles where it scores higher than existing items
+            foreach(var (Role, Score) in results.Roles)
+            {
+                if (this.PrefsInternal.TryGetValue(Role, out var existing) && existing.InventoryScore > Score)
+                    continue;
+                commited = true;
+                this.Commit(Role, item, Score);
+            }
+            return commited;
+        }
         internal void Commit(ItemRoleDef role, Entity item, int score)
         {
             Entity oldItem = null;
             if (this.PrefsInternal.TryGetValue(role, out var oldPref))
             {
-                //var oldItem = oldPref.Item;
-                //int oldScore = oldPref.InventoryScore;
-                //Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
-                //return;
                 oldItem = oldPref.Item;
                 this.ItemsToPrefs.Remove(oldItem);
             }
@@ -211,7 +249,6 @@ namespace Project1.Core
             if (!this.ItemsToPrefs.TryGetValue(item, out var list))
                 this.ItemsToPrefs[item] = list = [];
             list.Add(pref);
-            //Packets.SyncDeltas(this.Actor, [(role, null, item, score)]);
             Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
             this.PreCommitScanCache.Remove(role);
         }
@@ -225,6 +262,24 @@ namespace Project1.Core
                 if (score > 0)
                     yield return (role, score);
             }
+        }
+        internal ItemEvaluation EvaluateNew(Entity item)
+        {
+            var knowledge = this.Actor.AI.State.Knowledge;
+            if (knowledge.TryQuery(item, out var existing))
+                return existing;
+            List<(ItemRoleDef role, int score)> results = [];
+            foreach (var role in FlatItemRolesList)
+            {
+                var score = role.Worker.GetInventoryScore(this.Actor, item, role);
+                if (this.ItemBiases.TryGetValue(item.RefId, out var bias))
+                    score += bias.Value;
+                if (score > 0)
+                    results.Add((role, score));
+            }
+            var result = new ItemEvaluation(item.RefId, [.. results]);
+            knowledge.Register(item, result);
+            return result;
         }
         internal (ItemRoleDef role, int score) FindBestRole(Entity item)
         {
@@ -308,7 +363,7 @@ namespace Project1.Core
             var dic = new Dictionary<ItemRoleDef, (Entity item, int score)>();
             while (notScannedYet.Count > 0)
             {
-                var item = notScannedYet.Dequeue();
+                var item = this.DequeueUnevaluated();
                 if (this.Actor.Map != item.Map)
                     continue;
                 var roles = this.Evaluate(item);

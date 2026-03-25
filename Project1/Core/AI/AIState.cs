@@ -11,6 +11,7 @@ using Project1.Core.Pathing;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -52,7 +53,6 @@ namespace Project1.Core.AI
         public AIState(Actor actor)
         {
             this.Owner = actor;
-            this.NearbyEntities = new List<GameObject>();
             this.ItemPreferences = new ItemPreferencesManager(actor);
             this.Log = new(actor);
         }
@@ -277,6 +277,5 @@ namespace Project1.Core.AI
         public IEnumerable<Behavior> AllPlannedTasks => TaskStack.Concat(TaskQueue);
         public Behavior Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
         public TargetArgs MoveOrder => this.MoveOrders.Any() ? this.MoveOrders.Peek() : TargetArgs.Null;
-        public List<GameObject> NearbyEntities { get; set; }
     }
 }

@@ -23,10 +23,11 @@ sealed class InteractionClaimBoughtItem : InteractionLogic
         var item = ctx.Target.Entity;
         actor.Inventory.HaulNew(item, item.StackSize);
         var manager = actor.AI.State.ItemPreferences;
-        var (role, score) = manager.GetPotential(item);
-        if (role is null)
-            throw new Exception();
-        manager.Commit(role, item, score);
+        //var (role, score) = manager.GetPotential(item);
+        //if (role is null)
+        //    throw new Exception();
+        //manager.Commit(role, item, score);
+        manager.TryCommit(item);
         actor.Map.Town.ShopManager.FinishTransaction(actor);
     }
 }

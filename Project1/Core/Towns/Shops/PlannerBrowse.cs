@@ -14,7 +14,7 @@ sealed class PlannerBrowse : Planner
             throw new Exception();
         var map = actor.Map;
         var shops = map.Town.ShopManager;
-        var list = shops.GetShoppingList(actor);
+        var list = shops.GetShoppingListPopulated(actor);
         if (actor.IsHauling)
             return null;
         //while(list.Peek() is Entity item)

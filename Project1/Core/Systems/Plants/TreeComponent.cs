@@ -20,7 +20,7 @@ namespace Project1.Core.Systems.Plants
         }
         public override EntityCompDef CompDef => EntityCompDefOf.Tree;
 
-        public Progress GrowthNew = new(0, 100, 5);
+        public ProgressFloat GrowthNew = new(0, 100, 5);
         int GrowthTick;
         int GrowthRate = Ticks.PerSecond;
         const float InitialGrowthPercentage = .05f;
@@ -70,7 +70,7 @@ namespace Project1.Core.Systems.Plants
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            tag.TryGetTag("GrowthNew", t => this.GrowthNew = new Progress(t));
+            tag.TryGetTag("GrowthNew", t => this.GrowthNew = new ProgressFloat(t));
         }
         static public bool IsGrown(GameObject obj)
         {

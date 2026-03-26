@@ -6,7 +6,7 @@ using System;
 
 namespace Project1.Core.Helpers
 {
-    public class ProgressLeveledExp : Progress
+    public class ProgressLeveledExp : ProgressFloat
     {
         readonly int BaseAmountToLevel;
         public ProgressLeveledExp(int amountToLevelBase, int level)

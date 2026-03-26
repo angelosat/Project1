@@ -23,12 +23,12 @@ namespace Project1.Core.UI
         readonly Label LblLoading, LblInfo;
         readonly Panel PanelBar;
         readonly Bar ProgressBar;
-        readonly Progress MapLoadProgress;
+        readonly ProgressFloat MapLoadProgress;
         public Action Callback = () => { };
 
         public LoadingWidget(int barWidth)
         {
-            this.MapLoadProgress = new Progress();
+            this.MapLoadProgress = new ProgressFloat();
             this.PanelBar = new Panel() { AutoSize = true };
             this.ProgressBar = new Bar(this.MapLoadProgress) { Width = barWidth };
             this.PanelBar.Controls.Add(this.ProgressBar);
@@ -47,7 +47,7 @@ namespace Project1.Core.UI
         }
         public LoadingWidget(int barWidth, string initialMessage, float initialPercentage)
         {
-            this.MapLoadProgress = new Progress() { Percentage = initialPercentage };
+            this.MapLoadProgress = new ProgressFloat() { Percentage = initialPercentage };
             this.LblLoading = new Label("Please wait...") { Location = new Vector2((int)(barWidth * 0.5f), 0) };
             this.LblLoading.Anchor = Vector2.UnitX * 0.5f;
             this.LblInfo = new Label(initialMessage);

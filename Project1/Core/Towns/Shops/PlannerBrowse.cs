@@ -24,7 +24,7 @@ sealed class PlannerBrowse : Planner
                 continue;
             if (!actor.CanReachAndReserve(item))
                 continue;
-            return new Plan(PlanDefOf.BrowseProduct, item);
+            return new Plan(PlanDefOf.BrowseProduct, item) { Continuation = PlanContinuationPolicy.Yield };
         }
         return null;
     }

@@ -51,10 +51,8 @@ sealed class InteractionBrowseProduct : InteractionLogic
         //var maxScore = result.Roles.Max(r => r.Score);
         var maxScore = (int)list.GetInterest(item);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxScore);
-        var impulseThresholdPlaceholder = 2;
-        var isImpulse = maxScore >= impulseThresholdPlaceholder;
-        list.Register(item, maxScore, isImpulse);
-        actor.AI.State.Log.Write($"Potential buy: {item.RefId}:{item.Name} maxScore: {maxScore} isImpulse: {isImpulse}");
+        list.Register(item, maxScore);
+        actor.AI.State.Log.Write($"Browsed: {item.RefId}: {item.Name} interest: {maxScore} isImpulse: {isImpulse}");
     }
     internal override void OnTick(Interaction i)
         //=> ((Context)i.Context).ShoppingList.AddInterest(i.Target.Entity, 1);

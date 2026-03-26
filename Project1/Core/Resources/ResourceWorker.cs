@@ -15,7 +15,7 @@ namespace Project1.Core.Resources
     public abstract class ResourceWorker : MetricWorker
     {
         protected ResourceDef ResourceDef;
-        static public Progress Recovery { get { return new Progress(0, Ticks.PerSecond, Ticks.PerSecond); } }
+        static public ProgressFloat Recovery { get { return new ProgressFloat(0, Ticks.PerSecond, Ticks.PerSecond); } }
         public ResourceWorker(ResourceDef resourceDef)
         {
             this.ResourceDef = resourceDef;

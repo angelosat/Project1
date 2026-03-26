@@ -1,12 +1,12 @@
-﻿using System;
-using System.Globalization;
+﻿using Project1.Framework.Interfaces;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using Project1.Framework.Interfaces;
+using System;
+using System.Globalization;
 
 namespace Project1.Framework.Helpers
 {
-    public class Progress : IProgressBar
+    public class ProgressFloat : IProgressBar
     {
         public virtual float Min { get; set; }
         public virtual float Max { get; set; }
@@ -22,18 +22,18 @@ namespace Project1.Framework.Helpers
         {
             this.Value += value;
         }
-        public Progress()
+        public ProgressFloat()
         {
             this.Min = this.Value = 0;
             this.Max = 100;
         }
-        public Progress(float min, float max, float value)
+        public ProgressFloat(float min, float max, float value)
         {
             this.Min = min;
             this.Max = max;
             this.Value = value;
         }
-        public Progress(float max)
+        public ProgressFloat(float max)
         {
             this.Max = max;
             this.Value = 0;
@@ -60,13 +60,13 @@ namespace Project1.Framework.Helpers
         }
         protected virtual void ReadExtra(IDataReader r) { }
 
-        public Progress(IDataReader io)
+        public ProgressFloat(IDataReader r)
         {
-            this.Min = io.ReadSingle();
-            this.Max = io.ReadSingle();
-            this.Value = io.ReadSingle();
+            this.Min = r.ReadSingle();
+            this.Max = r.ReadSingle();
+            this.Value = r.ReadSingle();
         }
-        public Progress Save(SaveTag tag, string name)
+        public ProgressFloat Save(SaveTag tag, string name)
         {
             tag.Add(this.Save(name));
             return this;
@@ -89,14 +89,14 @@ namespace Project1.Framework.Helpers
             this.LoadExtra(tag);
         }
         protected virtual void LoadExtra(SaveTag tag) { }
-        public Progress(SaveTag tag)
+        public ProgressFloat(SaveTag tag)
         {
             this.Min = tag.GetValue<float>("Min");
             this.Max = tag.GetValue<float>("Max");
             this.Value = tag.GetValue<float>("Value");
         }
 
-        public Progress(Progress toCopy)
+        public ProgressFloat(ProgressFloat toCopy)
         {
             this.Min = toCopy.Min;
             this.Max = toCopy.Max;

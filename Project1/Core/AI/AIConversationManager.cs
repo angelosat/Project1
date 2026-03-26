@@ -19,7 +19,7 @@ namespace Project1.Core.AI
             public enum States { Requested, Accepted, Declined, Started, Finished}
             public States State;
             public GameObject Initiator, Target;
-            public Progress Progress = new(0, Ticks.PerSecond, 0);
+            public ProgressFloat Progress = new(0, Ticks.PerSecond, 0);
             public Conversation(GameObject initiator, GameObject target)
             {
                 this.Initiator = initiator;

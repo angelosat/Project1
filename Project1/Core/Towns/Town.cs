@@ -477,5 +477,7 @@ namespace Project1.Core.Towns
             foreach (var c in this.TownComponents)
                 c.OnBlocksChanged(positions);
         }
+
+        public bool IsClaimedBySystem(Entity item) => this.TownComponents.Any(c => c.IsClaimedBySystem(item));
     }
 }

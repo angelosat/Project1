@@ -39,9 +39,9 @@ namespace Project1.Core.Resources
             set => this._value = Math.Max(0, Math.Min(value, this.Max));
         }
         public float Deficit => this._max - this._value;
-        static Progress CreateCooldown() => new(0, Ticks.PerGameMinute, Ticks.PerGameMinute);
+        static ProgressFloat CreateCooldown() => new(0, Ticks.PerGameMinute, Ticks.PerGameMinute);
         public ResourceThreshold CurrentThreshold => this.ResourceDef.Worker.GetCurrentThreshold(this);
-        public Progress RechargingDelay = CreateCooldown();
+        public ProgressFloat RechargingDelay = CreateCooldown();
         public float Percentage { get => this.Value / this.Max; set => this.Value = this.Max * value; }
         public float Min => 0;
         public string Name => this.ResourceDef.Name;

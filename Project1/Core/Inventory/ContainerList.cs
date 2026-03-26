@@ -77,7 +77,10 @@ namespace Project1.Core.Inventory
             if (this.Contents.FirstOrDefault(i => i.CanAbsorb(item)) is Entity existing)
             {
                 //existing.StackSize += item.StackSize;
+                if (item.StackSize > existing.StackAvailableSpace)
+                    throw new NotImplementedException();
                 existing.Add(item.StackSize);
+                item.Consume(item.StackSize);
                 return;
                 //throw new NotImplementedException();
             }

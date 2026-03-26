@@ -230,9 +230,9 @@ namespace Project1.Core.Entities
                 return;
             this.StackSize -= amount;
             if (this.IsEmpty)
-                this.World.DisposeEntity(this.RefId);
+                this.World?.DisposeEntity(this.RefId);
             else
-                this.World.Events.Post(new EntityStackDecreased(this as Entity, amount));
+                this.World?.Events.Post(new EntityStackDecreased(this as Entity, amount));
         }
         
         public void Add(int amount)

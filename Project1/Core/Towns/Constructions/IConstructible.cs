@@ -11,7 +11,7 @@ namespace Project1.Core.Towns.Constructions
         bool IsReadyToBuild(out ItemDef def, out MaterialDef material, out int amount);
         bool IsValidHaulDestination(ItemDef objid);
         int GetMissingAmount(ItemDef objid);
-        Progress BuildProgress { get; }
+        ProgressFloat BuildProgress { get; }
         List<IntVec3> Children { get; }
     }
 }

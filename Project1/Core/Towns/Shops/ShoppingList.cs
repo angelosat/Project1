@@ -19,13 +19,15 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
     internal List<(Entity item, int score, int price)> PotentialImpulseBuysList = [];
     readonly Dictionary<Entity, ItemEvaluation> AllResultsPerItem = [];
     //readonly Dictionary<Entity, ProgressInt> Interest = [];
-    readonly Dictionary<Entity, Progress> Interest = [];
-
+    readonly Dictionary<Entity, ProgressFloat> Interest = [];
+    
     internal IOrderedEnumerable<(Entity item, int score, int price)> GetResultsSorted() => this.ResultsUnsorted.OrderByDescending(v => this.Interest[v.item].Value);
     internal IEnumerable<(Entity item, int score, int price)> GetResultsImpulse() => this.PotentialImpulseBuysList;
     internal bool HasFinished => this.IndicesRemaining.Count == 0;
 
     public bool HasResults => this.ResultsUnsorted.Count + this.PotentialImpulseBuysList.Count > 0;
+
+    public bool HasCompletedPurchaseThisVisit { get; private set; }
 
     public void Add(Entity item)
     {
@@ -37,7 +39,7 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
         this.ItemsToBrowse.Add(item); 
         this.IndicesRemaining.Enqueue(this.ItemsToBrowse.Count - 1);
         //this.Interest.Add(item, new ProgressInt(evaluation.MaxScore * Ticks.PerGameMinute));
-        this.Interest.Add(item, new Progress(0, evaluation.MaxScore * Ticks.PerGameMinute, 0));
+        this.Interest.Add(item, new ProgressFloat(0, evaluation.MaxScore * Ticks.PerGameMinute, 0));
         this.AllResultsPerItem.Add(item, evaluation);
     }
     internal void Add(Entity item, ItemEvaluation evaluation, int maxInterest)
@@ -45,17 +47,18 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
         this.ItemsToBrowse.Add(item);
         this.IndicesRemaining.Enqueue(this.ItemsToBrowse.Count - 1);
         //this.Interest.Add(item, new ProgressInt(evaluation.MaxScore * Ticks.PerGameMinute));
-        this.Interest.Add(item, new Progress(maxInterest));
+        this.Interest.Add(item, new ProgressFloat(maxInterest));
         this.AllResultsPerItem.Add(item, evaluation);
     }
     public Entity? Dequeue()
         => this.IndicesRemaining.Count > 0 ? this.ItemsToBrowse[this.IndicesRemaining.Dequeue()] : null;
 
-    internal void Register(Entity item, int score, bool isImpulse = false)
+    internal void Register(Entity item, int score)
     {
         this.Results[score] = item;
         var entry = (item, score, item.GetValueTotal());
         this.ResultsUnsorted.Add(entry);
+        var isImpulse = score >= InterestImpulse;
         if (isImpulse)
             this.PotentialImpulseBuysList.Add(entry);
     }
@@ -70,4 +73,10 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
     const int rampup = 500;
     internal ItemEvaluation GetCachedResult(Entity item)
         => this.AllResultsPerItem[item];
+
+    internal void MarkFulfilled()
+        => this.HasCompletedPurchaseThisVisit = true;
+
+    const int InterestMin = 100;
+    const int InterestImpulse = 150;
 }

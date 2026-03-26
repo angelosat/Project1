@@ -35,7 +35,7 @@ namespace Project1.Core.Attributes
         public float Tick = Ticks.PerSecond / 0.5f; //1 tick per 2 seconds
         public float Timer = 0;
         public float RegenerationRate = 1;
-        public Progress Rec = new(0, Ticks.PerSecond, Ticks.PerSecond);
+        public ProgressFloat Rec = new(0, Ticks.PerSecond, Ticks.PerSecond);
         public float DecayRate = -0.5f;
         public float GainRate = 0;
         public List<ValueModifier> Modifiers = [];

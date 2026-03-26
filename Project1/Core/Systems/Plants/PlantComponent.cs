@@ -37,13 +37,13 @@ namespace Project1.Core.Systems.Plants
             public ToolUseDef ToolToCut;
             protected override void ApplyDefaultsTo(PlantComponent comp)
             {
-                comp.Progress = new Progress(0, comp.Length, 0);
+                comp.Progress = new ProgressFloat(0, comp.Length, 0);
             }
         }
         const float HarvestThreshold = .5f;
         public override string Name { get; } = "Plant";
-        public Progress GrowthBody = new(0, 100, 5);
-        public Progress GrowthFruit = new(0, 100, 0);
+        public ProgressFloat GrowthBody = new(0, 100, 5);
+        public ProgressFloat GrowthFruit = new(0, 100, 0);
         public void SetBodyGrowth(float percentage)
         {
             this.GrowthBody.Percentage = percentage;
@@ -103,11 +103,11 @@ namespace Project1.Core.Systems.Plants
                 fruitBone.SetSprite(null);
         }
         float Length => this.Species.GrowTicks;
-        Progress Progress;
+        ProgressFloat Progress;
         public int Level;
         public PlantComponent()
         {
-            this.Progress = new Progress();
+            this.Progress = new ProgressFloat();
         }
         internal void SetGrowth(float growth, float fruitGrowth)
         {
@@ -116,8 +116,8 @@ namespace Project1.Core.Systems.Plants
         }
         public PlantComponent(PlantComponent toCopy)
         {
-            this.GrowthBody = new Progress(toCopy.GrowthBody);
-            this.GrowthFruit = new Progress(toCopy.GrowthFruit);
+            this.GrowthBody = new ProgressFloat(toCopy.GrowthBody);
+            this.GrowthFruit = new ProgressFloat(toCopy.GrowthFruit);
         }
         public override void OnObjectLoaded(GameObject parent)
         {
@@ -319,8 +319,8 @@ namespace Project1.Core.Systems.Plants
         }
         public override void Read(IDataReader r)
         {
-            this.GrowthFruit = new Progress(r);
-            this.GrowthBody = new Progress(r);
+            this.GrowthFruit = new ProgressFloat(r);
+            this.GrowthBody = new ProgressFloat(r);
             this.FruitGrowthTick = r.ReadInt32();
             this.GrowthTick = r.ReadInt32();
             this.UpdateFruitTexture();
@@ -342,8 +342,8 @@ namespace Project1.Core.Systems.Plants
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            tag.TryGetTag("GrowthNew", t => this.GrowthBody = new Progress(t));
-            tag.TryGetTag("FruitGrowth", t => this.GrowthFruit = new Progress(t));
+            tag.TryGetTag("GrowthNew", t => this.GrowthBody = new ProgressFloat(t));
+            tag.TryGetTag("FruitGrowth", t => this.GrowthFruit = new ProgressFloat(t));
         }
         public override void GetClientActions(GameObject parent, List<ContextAction> actions)
         {

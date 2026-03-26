@@ -14,7 +14,7 @@ namespace Project1.Core.AI.MetaRoles
             var world = actor.World;
             if (!meta.LocationDecision.CanEvaluate(world.CurrentTick))
                 return;
-            var roll = world.Random.Roll(actor.Needs.GetPercentage(AdventurerNeedsDefOf.Adventuring));
+            var roll = world.Random.Roll(1 - actor.Needs.GetPercentage(AdventurerNeedsDefOf.Adventuring));
             if (roll)
             {
                 meta.LocationDecision.RegisterSuccess();

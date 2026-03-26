@@ -163,6 +163,13 @@ namespace Project1.Core.Towns.Shops
 
             town.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
             town.Map.Events.ListenTo<StockpileUpdatedEvent>(HandleStockpileUpdated);
+            town.Map.Events.ListenTo<EntityDespawnedEvent>(HandleEntityDespawned);
+        }
+
+        private void HandleEntityDespawned(EntityDespawnedEvent e)
+        {
+            if (e.Entity is Actor actor)
+                this._shoppingListsByActor.Remove(actor.RefId);
         }
 
         private void HandleStockpileUpdated(StockpileUpdatedEvent e)
@@ -571,6 +578,8 @@ namespace Project1.Core.Towns.Shops
         internal void FinishTransaction(Actor buyer)
         {
             var t = this._transactionsByBuyer[buyer.RefId];
+            var shoppinglist = this._shoppingListsByActor[buyer.RefId];
+            shoppinglist.MarkFulfilled();
             t.Dispose();
         }
 
@@ -578,5 +587,20 @@ namespace Project1.Core.Towns.Shops
             => this.Town.Map.Stockpiles.Stockpiles
             .Where(s => s.ForSale)
             .SelectMany(s => s.Items);
+
+        internal override bool IsClaimedBySystem(Entity item)
+        {
+            foreach(var t in this._transactionsAll)
+            {
+                if (t.Item != item.RefId)
+                    continue;
+                if (item.Map != this.Map)
+                    continue;
+                if (item.Cell != t.Counter.Above)
+                    continue;
+                return true;
+            }
+            return false;
+        }
     }
 }

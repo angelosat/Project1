@@ -166,7 +166,7 @@ namespace Project1.Core.Inventory
                 throw new Exception();
             this.Contents.Remove(item);
             item.Container = null;
-            parent.Map.Spawn(item as Entity, parent.Global + new Vector3(0, 0, parent.Physics.Height), Vector3.Zero);
+            parent.Map.Spawn(item, parent.Global + new Vector3(0, 0, parent.Physics.Height), Vector3.Zero);
 
         }
         public bool StoreHauled()

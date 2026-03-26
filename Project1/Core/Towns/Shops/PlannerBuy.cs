@@ -23,13 +23,13 @@ sealed class PlannerBuy : Planner
 
         if (!servicepoints.Any())
             return null;
+        var carried = actor.Hauled;
 
         if (shops.TryGetTransaction(actor, out var transaction))
         {
             var seller = map.World.Get<Actor>(transaction.Seller);
             var item = map.World.GetEntity(transaction.Item);
 
-            var carried = actor.Hauled;
             if (carried is null)
             {
                 if (transaction.IsComplete)
@@ -82,7 +82,11 @@ sealed class PlannerBuy : Planner
                 return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, transaction.Counter.Above));
             }
         }
+        if (carried is not null)
+            return null;
         var shoppingList = shops.GetShoppingListPopulated(actor);
+        if (shoppingList.HasCompletedPurchaseThisVisit)
+            return null;
         IntVec3 foundPoint = default;
         if (shoppingList.HasResults && !FindServicePoint(actor, servicepoints, out foundPoint))
             return null;
@@ -93,7 +97,7 @@ sealed class PlannerBuy : Planner
                 continue;
             if (!map.Town.ShopManager.TryBeginTransaction(actor, item, price, foundPoint))
                 continue;
-            actor.AI.State.Log.Write($"I am impulsively buying {item.Name}!");
+            actor.AI.State.Log.Write($"I am impulsively buying {item.RefId}: {item.Name}!");
             return new Plan(PlanDefOf.GoHaul) { TargetA = item };
         }
         if (!shoppingList.HasFinished)

@@ -1,6 +1,5 @@
 ﻿using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Stockpiles;
 using System;
@@ -37,7 +36,7 @@ namespace Project1.Core.AI.Planners
                         var places = stockpile.FindPlacesFor(carried).Where(actor.CanReachAndReserve);
                         foreach(var cell in places)
                             // emit godeliver task at place
-                            return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell));
+                            return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
                     }
                 } 
                 // else if can carry more
@@ -63,7 +62,7 @@ namespace Project1.Core.AI.Planners
                             var places = stockpile.FindPlacesFor(carried).Where(actor.CanReachAndReserve);
                             foreach (var cell in places)
                                 // emit godeliver task at place
-                                return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell));
+                                return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
                         }
                     }
                 }
@@ -79,6 +78,10 @@ namespace Project1.Core.AI.Planners
             // iterate map items
             foreach (var item in mapItems)
             {
+                if (!actor.CanReachAndReserve(item))
+                    continue;
+                if (actor.Map.Town.IsClaimedBySystem(item))
+                    continue;
                 var currentStockpile = stockpiles.FirstOrDefault(s => s.Contains(item));
                 // iterate map stockpiles sorted by priority
                 foreach (var stockpile in stockpiles)

@@ -96,7 +96,7 @@ namespace Project1.Core.UI
         {
             if(this.AttentionCountdown != null)
             {
-                (this.AttentionCountdown.Object as Progress).Value--;
+                (this.AttentionCountdown.Object as ProgressFloat).Value--;
             }
             
             this.Timer -= 1;

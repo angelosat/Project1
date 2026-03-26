@@ -539,7 +539,7 @@ namespace Project1.Framework.Serialization
             foreach (var s in strings)
                 w.Write(s);
         }
-        public static void Write(this IDataWriter w, Progress progress)
+        public static void Write(this IDataWriter w, ProgressFloat progress)
         {
             progress.Write(w);
         }

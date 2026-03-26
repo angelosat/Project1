@@ -5,7 +5,7 @@ using Project1.Framework;
 
 namespace Project1.Core.Systems.Plants
 {
-    public class Growth : Progress
+    public class Growth : ProgressFloat
     {
         const int InitialGrowth = 10;
         const float GrowthMax = 100;

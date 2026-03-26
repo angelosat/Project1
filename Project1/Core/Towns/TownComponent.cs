@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Input;
 using Project1.Core.Networking;
@@ -84,5 +85,6 @@ namespace Project1.Core.Towns
         internal virtual void OnBlocksChanged(IEnumerable<IntVec3> positions) { }
         internal virtual void OnHudCreated(Hud hud) { }
         internal virtual void OnCameraRotated(Camera camera) { }
+        internal virtual bool IsClaimedBySystem(Entity item) => false;
     }
 }

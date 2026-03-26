@@ -110,6 +110,10 @@ namespace Project1.Core.Blocks
         {
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks])
         };
+        static public readonly BlockDef ReceptionDesk = new("ReceptionDesk", typeof(BlockShopCounter))
+        {
+            ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks])
+        };
         static public readonly BlockDef ShopShelf = new("ShopShelf", typeof(BlockShopShelf));
         static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation))
         {

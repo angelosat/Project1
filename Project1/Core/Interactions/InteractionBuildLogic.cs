@@ -11,7 +11,7 @@ namespace Project1.Core.Interactions
         {
             BlockConstructionComp _cachedComp;
             public BlockConstructionComp CachedComp => this._cachedComp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockConstructionComp>();
-            public override float ProgressPercentage => this.CachedComp.Progress.Percentage;
+            public override float ProgressBarPercentage => this.CachedComp.Progress.Percentage;
         }
         protected override Context CreateContextInternal() => new();
         public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);

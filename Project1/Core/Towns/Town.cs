@@ -15,6 +15,7 @@ using Project1.Core.Towns.Constructions;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Duties;
+using Project1.Core.Towns.Inns;
 using Project1.Core.Towns.Reputation;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Storage;
@@ -48,6 +49,7 @@ namespace Project1.Core.Towns
                 [
                     //DutyDefOf.Workplace,
                     DutyDefOf.Cashier,
+                    DutyDefOf.Innkeeper,
                     DutyDefOf.Digger,
                     DutyDefOf.Miner,
                     DutyDefOf.Lumberjack,
@@ -113,6 +115,8 @@ namespace Project1.Core.Towns
         [InspectorHidden]
         public TownServicesComp ShopManager;
         [InspectorHidden]
+        public InnManager InnManager;
+        [InspectorHidden]
         public QuestsManager QuestManager;
         [InspectorHidden]
         public StorageManager Storage;
@@ -143,6 +147,7 @@ namespace Project1.Core.Towns
             this.ReservationManager = new(this);
             //this.TerrainManager = new(this);
             this.ShopManager = new(this);
+            this.InnManager = new(this);
             this.QuestManager = new(this);
             this.Storage = new(this);
             this.Furniture = new(this);
@@ -160,6 +165,7 @@ namespace Project1.Core.Towns
                 this.ReservationManager,
                 //this.TerrainManager,
                 this.ShopManager,
+                this.InnManager,
                 this.QuestManager,
                 this.Storage,
                 this.Furniture,

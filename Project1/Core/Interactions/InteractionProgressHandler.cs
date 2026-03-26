@@ -4,8 +4,8 @@
     public interface IInteractionProgressHandler
     {
         bool IsFinished(Interaction interaction);
-        float GetProgressPercentage(Interaction interaction);
+        float GetProgressBarPercentage(Interaction interaction);
         void Tick(Interaction interaction);
-        void AddProgress(Interaction interaction, int progress);
+        void AddProgressFromToolSwing(Interaction interaction, int progress);
     }
 }

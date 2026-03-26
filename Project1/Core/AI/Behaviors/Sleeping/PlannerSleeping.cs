@@ -15,6 +15,8 @@ namespace Project1.Core.AI.Behaviors.Sleeping
     {
         protected override Plan TryPlan(Actor actor)
         {
+            if (!actor.IsTownMember)
+                return null;
             var map = actor.Map;
 
             if (actor.Hauled is not null)
@@ -32,17 +34,20 @@ namespace Project1.Core.AI.Behaviors.Sleeping
                 if(actor.CanReachAndReserve(bed))
                     return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };
             }
+            //if (actor.IsTownMember)
+            //{
+                //var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();
+                //if (!possibleBeds.Any())
+                //    possibleBeds = map.GetBlockEntities<BlockBedEntity>().Where(b => b.Owner is null);// FindOrClaimBedNew(actor);
+                var possibleBeds = actor.Map.BlockEntities.Where(e => e.HasComp<BlockBedComp>() && actor.CanReserve(e));
+                foreach (var bed in possibleBeds)
+                {
+                    var cell = map.GetCell(bed.OriginGlobal);
+                    //var interactionSpot = bed.OriginGlobal + cell.Block.GetInteractionSpotsLocal(map, bed.OriginGlobal, cell.Orientation).First();
+                    return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };//, bed);
+                }
+            //}
 
-            //var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();
-            //if (!possibleBeds.Any())
-            //    possibleBeds = map.GetBlockEntities<BlockBedEntity>().Where(b => b.Owner is null);// FindOrClaimBedNew(actor);
-            var possibleBeds = actor.Map.BlockEntities.Where(e => e.HasComp<BlockBedComp>() && actor.CanReserve(e));
-            foreach (var bed in possibleBeds)
-            {
-                var cell = map.GetCell(bed.OriginGlobal);
-                //var interactionSpot = bed.OriginGlobal + cell.Block.GetInteractionSpotsLocal(map, bed.OriginGlobal, cell.Orientation).First();
-                return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };//, bed);
-            }
             if (energyValue <= 10)//0) 
                 return new Plan(PlanDefOf.SleepingOnGround);
 

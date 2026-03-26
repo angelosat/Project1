@@ -28,6 +28,7 @@ namespace Project1.Core
         public int X => Value % Chunk.Size;
 
         public IntVec3Local Local => new(this.X, this.Y, this.Z);
+        public IntVec3 GetGlobal(Chunk chunk) => this.Local.ToGlobal(chunk);
     }
 
     public readonly record struct PacketId(int Value)

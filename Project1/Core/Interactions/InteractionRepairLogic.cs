@@ -7,7 +7,7 @@ namespace Project1.Core.Interactions
         sealed class Context : InteractionContext
         {
             internal IResourceView Durability => field ??= this.Target.Object.Resources.View(ResourceDefOf.Durability);
-            public override float ProgressPercentage => this.Durability.Percentage;
+            public override float ProgressBarPercentage => this.Durability.Percentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         internal override void OnProgressAdded(Interaction i, int delta)

@@ -273,7 +273,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
             var toCheck = new Queue<Region>();
             toCheck.Enqueue(reg1);
             var handled = new HashSet<Region>() { reg1 };
-            while(toCheck.Any())
+            while(toCheck.Count != 0)
             {
                 var currentRegion = toCheck.Dequeue();
                 if (currentRegion == reg2)

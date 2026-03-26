@@ -142,6 +142,7 @@ namespace Project1.Core.Towns.Shops
         readonly HashSet<IntVec3> ServicePoints = [];
         public IReadOnlySet<IntVec3> GetServicePoints()
             => this.ServicePoints;
+        public bool HasServicePoints => this.ServicePoints.Count > 0;
         internal int CurrentShopID = 1;
 
         Dictionary<int, Workplace> Shops = [];

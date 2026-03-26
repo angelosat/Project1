@@ -10,7 +10,7 @@ namespace Project1.Core.Interactions
             internal MapQuery Query => field ??= new MapQuery(this.Actor.Map, this.Target.Global);
             internal IBlockHealth BlockHealth => field ??= this.Actor.Map.GetBlockHealth(this.Target.Global);
             internal BlockDef InitialBlock => field ??= this.Query.Block.BlockDef;
-            public override float ProgressPercentage => (1 - this.BlockHealth?.HealthPercentage) ?? 0;
+            public override float ProgressBarPercentage => (1 - this.BlockHealth?.HealthPercentage) ?? 0;
         }
         //class Context : InteractionContext
         //{

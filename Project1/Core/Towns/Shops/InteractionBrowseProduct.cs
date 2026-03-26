@@ -52,7 +52,7 @@ sealed class InteractionBrowseProduct : InteractionLogic
         var maxScore = (int)list.GetInterest(item);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxScore);
         list.Register(item, maxScore);
-        actor.AI.State.Log.Write($"Browsed: {item.RefId}: {item.Name} interest: {maxScore} isImpulse: {isImpulse}");
+        actor.AI.State.Log.Write($"Browsed: {item.RefId}: {item.Name} interest: {maxScore}");
     }
     internal override void OnTick(Interaction i)
         //=> ((Context)i.Context).ShoppingList.AddInterest(i.Target.Entity, 1);

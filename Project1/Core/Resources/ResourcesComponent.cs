@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI.NamePlates;
@@ -7,9 +8,11 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Resources
 {
+    public readonly record struct ResourceSnapshot(ResourceDef Def, float Value, float Max) { }
     public sealed class ResourcesComponent : EntityComp
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Resources;
@@ -18,7 +21,6 @@ namespace Project1.Core.Resources
 
         internal override void CopyFrom(EntityComp comp)
         {
-         
             var source = (ResourcesComponent)comp;
             
             foreach (var r in source.Resources.Values)
@@ -35,7 +37,11 @@ namespace Project1.Core.Resources
         {
             throw new System.Exception();
         }
-        
+        public ResourceSnapshot Get(ResourceDef def)
+        {
+            var res = this.Resources[def];
+            return new(def, res.Value, res.Max);
+        }
         public override void Tick()
         {
             foreach (var item in this.Resources.Values)
@@ -126,6 +132,10 @@ namespace Project1.Core.Resources
             {
                 r.Owner = this.Owner;
             }
+            // HACK
+            if(this.Owner.Profile is ActorDnaDef dna)
+            foreach (var res in dna.Resources.Where(r => !this.Resources.ContainsKey(r)))
+                this.Add(res);
         }
         internal void ApplyDelta(ResourceDef def, float delta)
         {
@@ -147,6 +157,9 @@ namespace Project1.Core.Resources
             => this.Resources[def].Percentage;
         public EntityResourceView View(ResourceDef def)
             => this.Resources.TryGetValue(def, out var res) ? new(this, res) : null;
+
+        internal float GetValue(ResourceDef def)
+            => this.Resources[def].Value;
 
         public new class Spec : Spec<ResourcesComponent> 
         {

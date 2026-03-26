@@ -2,7 +2,6 @@
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using System;
-using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Services
 {

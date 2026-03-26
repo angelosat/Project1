@@ -14,11 +14,13 @@ sealed class PlannerBrowse : Planner
             throw new Exception();
         var map = actor.Map;
         var shops = map.Town.ShopManager;
-        var list = shops.GetShoppingListPopulated(actor);
+        if (!shops.HasServicePoints)
+            return null;
         if (actor.IsHauling)
             return null;
+        var list = shops.GetShoppingListPopulated(actor);
         //while(list.Peek() is Entity item)
-        while(list.Dequeue() is Entity item)
+        while (list.Dequeue() is Entity item)
         {
             if (item.Map != map)
                 continue;

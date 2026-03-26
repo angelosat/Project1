@@ -13,7 +13,7 @@ namespace Project1.Core.Interactions
         {
             BlockWorkstationComp _comp;
             public BlockWorkstationComp Comp => this._comp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
-            public override float ProgressPercentage => this.Actor.Work.Task.ProgressPercentage;
+            public override float ProgressBarPercentage => this.Actor.Work.Task.ProgressPercentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);

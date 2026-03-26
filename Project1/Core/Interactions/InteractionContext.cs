@@ -7,6 +7,6 @@ namespace Project1.Core.Interactions
         public Actor Actor;
         public TargetArgs Target;
         public int Count;
-        public virtual float ProgressPercentage { get; }
+        public virtual float ProgressBarPercentage { get; }
     }
 }

@@ -55,7 +55,7 @@ sealed class InteractionRingUpTransaction : InteractionLogic
     {
         internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
         internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
-        public override float ProgressPercentage => 0;
+        public override float ProgressBarPercentage => 0;
     }
     protected override InteractionContext CreateContextInternal() => new Context();
     public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsCancelled;
@@ -80,7 +80,7 @@ sealed class InteractionPayTransaction : InteractionLogic
     {
         internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransaction(this.Actor);
         internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
-        public override float ProgressPercentage => 0;
+        public override float ProgressBarPercentage => 0;
     }
     protected override InteractionContext CreateContextInternal() => new Context();
     public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsCancelled;

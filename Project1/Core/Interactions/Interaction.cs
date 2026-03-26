@@ -55,7 +55,7 @@ namespace Project1.Core.Interactions
         public Func<float> BarProgress;
 
         public readonly ProgressInt Progress = new(100);
-        public float ProgressPercentage => this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage;
+        public float ProgressPercentage => this.Def.ProgressHandler?.GetProgressBarPercentage(this) ?? this.Progress.Percentage;
 
         // TODO: i need a method that returns satisfaction score based on ai entity's state
         //static readonly Dictionary<Need.Types, float> _needSatisfaction = new();
@@ -140,7 +140,7 @@ namespace Project1.Core.Interactions
         public void DrawUI(SpriteBatch sb, Camera camera)
         {
             var actor = this.Actor;
-            Bar.Draw(sb, camera, this.Actor.Global, this.Def.LabelReadable, this.Def.ProgressHandler?.GetProgressPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
+            Bar.Draw(sb, camera, this.Actor.Global, this.Def.LabelReadable, this.Def.ProgressHandler?.GetProgressBarPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
         }
 
         //internal virtual void ResolveReferences()
@@ -214,7 +214,7 @@ namespace Project1.Core.Interactions
             this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
 
             if (this.Def.ProgressHandler is not null)
-                this.Def.ProgressHandler.AddProgress(this, v);
+                this.Def.ProgressHandler.AddProgressFromToolSwing(this, v);
             else
                 this.OnAddProgress(v);
             this.Def.Logic.OnProgressAdded(this, v);

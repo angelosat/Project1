@@ -15,7 +15,7 @@ namespace Project1.Core.Interactions
             internal IResourceView Assembly => field ??= this.UnfinishedItem.Resources.View(ResourceDefOf.Assembly);
             internal ResourcesComponent Resources => field ??= this.UnfinishedItem?.GetComponent<ResourcesComponent>();
             internal BlockWorkstationComp Workstation => field ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
-            public override float ProgressPercentage => this.Assembly?.Percentage ?? 0;
+            public override float ProgressBarPercentage => this.Assembly?.Percentage ?? 0;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         public override bool CanPerform(InteractionContext ctx)

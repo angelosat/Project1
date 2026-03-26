@@ -17,7 +17,7 @@ namespace Project1.Core.Interactions
             Need _energy;
             Need Energy => _energy ??= this.Actor.GetNeed(NeedDefOf.Energy);
             internal EntityEffectWrapper Effect => field ??= this.Actor.Effects.GetEffect(EffectDefOf.ModifyNeed, NeedDefOf.Energy);
-            public override float ProgressPercentage => this.Energy.Percentage;
+            public override float ProgressBarPercentage => this.Energy.Percentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         public override bool CanPerform(InteractionContext ctx)

@@ -1,5 +1,6 @@
 ﻿using Project1.Core.AI.Planners;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Inns;
 using System.Collections.Generic;
 
 namespace Project1.Core.AI.Behaviors
@@ -34,6 +35,7 @@ namespace Project1.Core.AI.Behaviors
 
         static readonly public List<PlannerDef> VisitorPlanners =
         [
+            PlannerDefOf.LodgingCheckin,
             PlannerDefOf.Buy,
             PlannerDefOf.Browse,
             //PlannerDefOf.Departure

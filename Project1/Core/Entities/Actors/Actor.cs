@@ -457,5 +457,21 @@ namespace Project1.Core.Entities.Actors
             if (this.GetVisitorProperties() is WorldInhabitantView props)
                 props.OffsiteArea = null;
         }
+
+        public bool TryChoosePosition(IEnumerable<IntVec3> positions, out IntVec3 foundPosition)
+        {
+            var validPosition = false;
+            foundPosition = default;
+            foreach (var point in positions)
+            {
+                if (this.CanReachAndReserve(point))
+                {
+                    validPosition = true;
+                    foundPosition = point;
+                    break;
+                }
+            }
+            return validPosition;
+        }
     }
 }

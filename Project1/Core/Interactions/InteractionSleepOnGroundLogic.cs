@@ -12,7 +12,7 @@ namespace Project1.Core.Interactions
         {
             Need _energy;
             Need Energy => _energy ??= this.Actor.GetNeed(NeedDefOf.Energy);
-            public override float ProgressPercentage => this.Energy.Percentage;
+            public override float ProgressBarPercentage => this.Energy.Percentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         internal override void OnStart(Interaction i)

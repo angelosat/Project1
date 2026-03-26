@@ -21,6 +21,7 @@ namespace Project1.Core.Interactions
         internal virtual void OnStart(Interaction i) { }
         internal virtual void OnTick(Interaction i) { }
         internal virtual void OnFinish(Interaction i) { }
+        internal virtual bool IsFinished(Interaction i) => false;
         internal virtual int CalculateMax(InteractionContext ctx) => 100;
         internal virtual void OnProgressAdded(Interaction i, int delta) { }
 

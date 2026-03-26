@@ -9,6 +9,7 @@ using Project1.Core.Towns.Constructions.AI;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Farming;
 using Project1.Core.Towns.Forestry;
+using Project1.Core.Towns.Inns;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Switch;
 using Project1.Core.Towns.Tasks;
@@ -37,6 +38,8 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef SmartEquip = new("SmartEquip", typeof(PlannerSmartEquip));
         static public readonly PlannerDef Idle = new("Idle", typeof(PlannerIdle));
 
+        static public readonly PlannerDef LodgingCheckin = new("LodgingCheckin", typeof(PlannerLodgingCheckIn));
+        static public readonly PlannerDef LodgingRegister = new("LodgingRegister", typeof(PlannerLodgingRegisterGuest));
         static public readonly PlannerDef Browse = new("Browse", typeof(PlannerBrowse));
         static public readonly PlannerDef Buy = new("Buy", typeof(PlannerBuy));
         static public readonly PlannerDef Sell = new("Sell", typeof(PlannerSell));

@@ -12,7 +12,7 @@ namespace Project1.Core.Interactions
             public IResourceView HitPoints => field ??= this.Target.Object.Resources.View(ResourceDefOf.HitPoints);
             PlantComponent _plantComp;
             public PlantComponent PlantComp => this._plantComp ??= this.Target.Object.GetComponent<PlantComponent>();
-            public override float ProgressPercentage => 1 - this.HitPoints.Percentage;
+            public override float ProgressBarPercentage => 1 - this.HitPoints.Percentage;
         }
         protected override InteractionContext CreateContextInternal() => new Context();
         public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);

@@ -8,7 +8,7 @@ internal sealed class InteractionWaitForPayment : InteractionLogic
     {
         internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
         internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
-        public override float ProgressPercentage => this.Transaction?.IsPaid ?? false ? 1 : 0 ;
+        public override float ProgressBarPercentage => this.Transaction?.IsPaid ?? false ? 1 : 0 ;
     }
 
     protected override InteractionContext CreateContextInternal()
@@ -28,7 +28,7 @@ internal sealed class InteractionWaitingService : InteractionLogic
     {
         internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransaction(this.Actor);
 
-        public override float ProgressPercentage => this.Transaction?.WaitingForPayment ?? false ? 1 : 0;
+        public override float ProgressBarPercentage => this.Transaction?.WaitingForPayment ?? false ? 1 : 0;
     }
 
     protected override InteractionContext CreateContextInternal()

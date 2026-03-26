@@ -1,6 +1,7 @@
 ﻿using Project1.Framework.Events;
 using Project1.Framework.Interfaces;
 using Project1.Framework.Serialization;
+using SharpDX.Direct3D9;
 using System;
 
 namespace Project1.Framework.Helpers
@@ -29,6 +30,8 @@ namespace Project1.Framework.Helpers
         public bool IsFinished => this.Value == this.Max;
 
         public int ApplyDelta(int value) => this.Value = Math.Min(this.Max, Math.Max(0, this.Value + value));
+        public int ApplyPercentageDelta(float delta) 
+            => this.Value = (int)Math.Min(this.Max, Math.Max(0, (this.Percentage + delta) * this.Max));
         public int Set(int value) => this.Value = Math.Min(this.Max, Math.Max(0, value));
         public void SetMax(int max)
         {

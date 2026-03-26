@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Interactions;
 using System;
-using System.Linq;
 
 namespace Project1.Core.Towns.Shops;
 
@@ -10,7 +9,7 @@ sealed class InteractionBrowseProduct : InteractionLogic
     {
         internal ShoppingList ShoppingList => field ??= this.Actor.ShoppingList;
         //public override float ProgressPercentage => this.ShoppingList.GetInterestPercentage(this.Target.Entity);
-        public override float ProgressPercentage => this.Actor.Net.IsClient ? 0 : this.ShoppingList.GetInterestPercentage(this.Target.Entity);
+        //public override float ProgressPercentage => this.Actor.Net.IsClient ? 0 : this.ShoppingList.GetInterestPercentage(this.Target.Entity);
         // public override float ProgressPercentage => this.ShoppingList.GetInterestPercentage(this.Target.Entity) >= 1 ? 1 : 0;
     }
     protected override InteractionContext CreateContextInternal()
@@ -50,7 +49,7 @@ sealed class InteractionBrowseProduct : InteractionLogic
         if (result.Roles.Length == 0)
             return;
         //var maxScore = result.Roles.Max(r => r.Score);
-        int maxScore = list.GetInterest(item);
+        var maxScore = (int)list.GetInterest(item);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxScore);
         var impulseThresholdPlaceholder = 2;
         var isImpulse = maxScore >= impulseThresholdPlaceholder;
@@ -58,5 +57,6 @@ sealed class InteractionBrowseProduct : InteractionLogic
         actor.AI.State.Log.Write($"Potential buy: {item.RefId}:{item.Name} maxScore: {maxScore} isImpulse: {isImpulse}");
     }
     internal override void OnTick(Interaction i)
-        => ((Context)i.Context).ShoppingList.AddInterest(i.Target.Entity, 1);
+        //=> ((Context)i.Context).ShoppingList.AddInterest(i.Target.Entity, 1);
+        => ((Context)i.Context).ShoppingList.AddInterestPercentage(i.Target.Entity, 1f / i.Progress.Max);
 }

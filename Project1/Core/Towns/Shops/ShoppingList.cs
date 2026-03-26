@@ -18,7 +18,8 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
     readonly List<(Entity item, int score, int price)> ResultsUnsorted = [];
     internal List<(Entity item, int score, int price)> PotentialImpulseBuysList = [];
     readonly Dictionary<Entity, ItemEvaluation> AllResultsPerItem = [];
-    readonly Dictionary<Entity, ProgressInt> Interest = [];
+    //readonly Dictionary<Entity, ProgressInt> Interest = [];
+    readonly Dictionary<Entity, Progress> Interest = [];
 
     internal IOrderedEnumerable<(Entity item, int score, int price)> GetResultsSorted() => this.ResultsUnsorted.OrderByDescending(v => this.Interest[v.item].Value);
     internal IEnumerable<(Entity item, int score, int price)> GetResultsImpulse() => this.PotentialImpulseBuysList;
@@ -35,10 +36,18 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
     {
         this.ItemsToBrowse.Add(item); 
         this.IndicesRemaining.Enqueue(this.ItemsToBrowse.Count - 1);
-        this.Interest.Add(item, new ProgressInt(evaluation.MaxScore * Ticks.PerGameMinute));
+        //this.Interest.Add(item, new ProgressInt(evaluation.MaxScore * Ticks.PerGameMinute));
+        this.Interest.Add(item, new Progress(0, evaluation.MaxScore * Ticks.PerGameMinute, 0));
         this.AllResultsPerItem.Add(item, evaluation);
     }
-
+    internal void Add(Entity item, ItemEvaluation evaluation, int maxInterest)
+    {
+        this.ItemsToBrowse.Add(item);
+        this.IndicesRemaining.Enqueue(this.ItemsToBrowse.Count - 1);
+        //this.Interest.Add(item, new ProgressInt(evaluation.MaxScore * Ticks.PerGameMinute));
+        this.Interest.Add(item, new Progress(maxInterest));
+        this.AllResultsPerItem.Add(item, evaluation);
+    }
     public Entity? Dequeue()
         => this.IndicesRemaining.Count > 0 ? this.ItemsToBrowse[this.IndicesRemaining.Dequeue()] : null;
 
@@ -50,11 +59,13 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
         if (isImpulse)
             this.PotentialImpulseBuysList.Add(entry);
     }
-    internal void AddInterest(Entity item, int delta)
-        => this.Interest[item].ApplyDelta(delta);
+    //internal void AddInterest(Entity item, int delta)
+    //    => this.Interest[item].ApplyDelta(delta);
+    internal void AddInterestPercentage(Entity item, float delta)
+        => this.Interest[item].ApplyPercentageDelta(delta);
     internal float GetInterestPercentage(Entity item)
         => this.Interest[item].Percentage;
-    internal int GetInterest(Entity item)
+    internal float GetInterest(Entity item)
         => this.Interest[item].Value;
     const int rampup = 500;
     internal ItemEvaluation GetCachedResult(Entity item)

@@ -33,6 +33,15 @@ namespace Project1.Framework.Helpers
             this.Max = max;
             this.Value = value;
         }
+        public Progress(float max)
+        {
+            this.Max = max;
+            this.Value = 0;
+            this.Min = 0;
+        }
+        public float ApplyDelta(float value) => this.Value = Math.Min(this.Max, Math.Max(0, this.Value + value));
+        public float ApplyPercentageDelta(float delta)
+            => this.Value = Math.Min(this.Max, Math.Max(0, (this.Percentage + delta) * this.Max));
 
         public void Write(IDataWriter io)
         {

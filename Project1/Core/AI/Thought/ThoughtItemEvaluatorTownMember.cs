@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Towns.Shops;
-using System.Linq;
 
 namespace Project1.Core.AI.Thought;
 
@@ -13,14 +12,28 @@ internal class ThoughtItemEvaluatorVisitor : ThoughtProcess
             return;
         var manager = state.ItemPreferences;
         var list = actor.Map.Town.ShopManager.GetShoppingListEmpty(actor);
-        
+
         while (manager.DequeueUnevaluated() is Entity nextEntity)
         {
             if (!nextEntity.IsForSale())
                 continue;
             var tempEvaluation = manager.EvaluateWithoutRegistering(nextEntity);
-            if(tempEvaluation.Roles.Length > 0)
-                list.Add(nextEntity, tempEvaluation);
+
+
+            if (tempEvaluation.Roles.Length == 0)
+                continue;
+
+            var evaluationSum = tempEvaluation.SumScore;
+
+            // consider the difference of the sums? or the difference of scores of the best role the item fulfils?
+            var existingRolesScoreSum = 0;
+            foreach (var (Role, Score) in tempEvaluation.Roles)
+                existingRolesScoreSum += manager.GetExistingScore(Role);
+            var scoreDiff = evaluationSum - existingRolesScoreSum;
+            if (existingRolesScoreSum == 0)
+                scoreDiff += 100; // if the item isn't replacing anything, boost its interest
+            //list.Add(nextEntity, tempEvaluation);
+            list.Add(nextEntity, tempEvaluation, scoreDiff);
         }
 
         //if(list.GetResultsSorted().FirstOrDefault() is var best && best.item is Entity item)

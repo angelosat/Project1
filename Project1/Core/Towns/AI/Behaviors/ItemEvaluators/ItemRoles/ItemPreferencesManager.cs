@@ -305,6 +305,20 @@ namespace Project1.Core
             return result;
         }
 
+        internal bool TryGetExistingScore(ItemRoleDef role, out Entity item, out int score)
+        {
+            if (this.PrefsInternal.TryGetValue(role, out var pref))
+            {
+                item = pref.Item;
+                score = pref.InventoryScore;
+                return true;
+            }
+            item = null;
+            score = -1;
+            return false;
+        }
+        internal int GetExistingScore(ItemRoleDef role)
+            => this.PrefsInternal.TryGetValue(role, out var pref) ? pref.InventoryScore : 0;
         internal (ItemRoleDef role, int score) FindBestRole(Entity item)
         {
             var allRoles = this.Evaluate(item);

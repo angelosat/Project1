@@ -15,8 +15,8 @@ namespace Project1.Core.AI.Behaviors.Sleeping
     {
         protected override Plan TryPlan(Actor actor)
         {
-            if (!actor.IsTownMember)
-                return null;
+            //if (!actor.IsTownMember)
+            //    return null;
             var map = actor.Map;
 
             if (actor.Hauled is not null)
@@ -28,14 +28,14 @@ namespace Project1.Core.AI.Behaviors.Sleeping
             if (energyValue > 50)// need.Threshold)
                 return null;
 
-            if(map.Town.Ownership.TryGetOwnedBed(actor, out var bedComp))
+            if(map.Town.Ownership.TryGetAssignedBed(actor, out var bedComp))
             {
                 var bed = bedComp.Parent;
                 if(actor.CanReachAndReserve(bed))
                     return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };
             }
-            //if (actor.IsTownMember)
-            //{
+            if (actor.IsTownMember)
+            {
                 //var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();
                 //if (!possibleBeds.Any())
                 //    possibleBeds = map.GetBlockEntities<BlockBedEntity>().Where(b => b.Owner is null);// FindOrClaimBedNew(actor);
@@ -46,9 +46,9 @@ namespace Project1.Core.AI.Behaviors.Sleeping
                     //var interactionSpot = bed.OriginGlobal + cell.Block.GetInteractionSpotsLocal(map, bed.OriginGlobal, cell.Orientation).First();
                     return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };//, bed);
                 }
-            //}
+            }
 
-            if (energyValue <= 10)//0) 
+            if (energyValue <= 0)
                 return new Plan(PlanDefOf.SleepingOnGround);
 
             return null;

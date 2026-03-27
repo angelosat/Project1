@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Towns
 {
+    record struct BedAssignment(Actor Actor, BlockBedComp Bed) { }
     public sealed class OwnershipManager : TownComponent
     {
         public override string Name => "Ownership";
@@ -14,7 +15,7 @@ namespace Project1.Core.Towns
         public OwnershipManager(Town town) : base(town)
         {
         }
-        internal bool TryGetOwnedBed(Actor actor, out BlockBedComp comp)
+        internal bool TryGetAssignedBed(Actor actor, out BlockBedComp comp)
             => this._actorBeds.TryGetValue(actor, out comp);
         public IEnumerable<IntVec3> GetOwnedBlocks(Actor actor)
         {
@@ -96,29 +97,16 @@ namespace Project1.Core.Towns
 
         private void HandleBlockOwnerChanged(BlockOwnerChangedEvent e)
         {
-            var owner = e.NewOwner;
+            this.Assign(e.Entity, e.NewOwner);
+            return;
             var be = e.Entity;
-            //var ownercomp = be.GetComp<BlockOwnershipComp>();
-            //if(be.TryGetComp<BlockBedComp>(out var bedcomp))
-            //{
-            //    if(e.PreviousOwner != EntityRefId.Null)
-            //    {
-            //        var prevOwner = this.Map.World.GetEntity<Actor>(e.PreviousOwner);
-            //        this._actorBeds.Remove(prevOwner);
-            //    }
-            //    if (owner is not null)
-            //    {
-            //        if (this._actorBeds.TryGetValue(owner, out var existing))
-            //            existing.Parent.GetComp<BlockOwnershipComp>().Owner = EntityRefId.Null;
-            //        this._actorBeds[owner] = bedcomp;
-            //    }
-            //}
+            var newOwner = e.NewOwner;
+            var prevOwnerId = e.PreviousOwner;
+
             var bed = be.GetComp<BlockBedComp>();
             if (bed == null)
                 return;
 
-            var newOwner = e.NewOwner;
-            var prevOwnerId = e.PreviousOwner;
 
             // Remove old mapping
             if (prevOwnerId != EntityRefId.Null && this.Map.World.Get<Actor>(prevOwnerId) is Actor prevOwner &&
@@ -138,12 +126,42 @@ namespace Project1.Core.Towns
 
                 this._actorBeds[newOwner] = bed;
             }
-            return;
-            var previousOwner = e.PreviousOwner;
-            if (previousOwner != EntityRefId.Null)
-                this.Remove(previousOwner, be.OriginGlobal);
-            if (owner.RefId != EntityRefId.Null)
-                this.Add(owner.RefId, be.OriginGlobal);
+        }
+        public bool Assign(IntVec3 bed, Actor newOwner)
+            => this.Assign(this.Map.GetBlockEntity(bed), newOwner);
+        
+        public bool Assign(BlockEntity be, Actor newOwner)
+        {
+            var bed = be.GetComp<BlockBedComp>();
+            if (bed == null)
+                return false;
+
+            var comp = bed.Parent.GetComp<BlockOwnershipComp>();
+            var prevOwnerId = comp.Owner;
+            if (prevOwnerId == newOwner.RefId)
+                return false;
+
+            // Remove old mapping
+            if (prevOwnerId != EntityRefId.Null && this.Map.World.Get<Actor>(prevOwnerId) is Actor prevOwner &&
+                this._actorBeds.TryGetValue(prevOwner, out var prevBed) &&
+                prevBed == bed)
+            {
+                this._actorBeds.Remove(prevOwner);
+            }
+
+            // Assign new mapping
+            if (newOwner != null)
+            {
+                if (this._actorBeds.TryGetValue(newOwner, out var existing) && existing != bed)
+                {
+                    if (bed != existing)
+                        throw new System.Exception();
+                    existing.Parent.GetComp<BlockOwnershipComp>().SetOwner(null);
+                }
+                this._actorBeds[newOwner] = bed;
+            }
+
+            return true;
         }
     }
 }

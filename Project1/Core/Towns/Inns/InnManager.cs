@@ -91,6 +91,7 @@ public sealed class InnManager : TownComponent
         var entry = new InnGuestProfile(guest.RefId, bed, this.Map.World.CurrentTick);
         this.RegistryByGuest.Add(guest.RefId, entry);
         this.RegistryByBed.Add(bed, entry);
+        this.Town.Ownership.Assign(bed, guest);
         return true;
     }
     internal bool Checkout(Actor guest)
@@ -99,6 +100,7 @@ public sealed class InnManager : TownComponent
             return false;
         this.RegistryByGuest.Remove(guest.RefId);
         this.RegistryByBed.Remove(entry.AssignedBed);
+        this.Town.Ownership.Assign(entry.AssignedBed, null);
         return true;
     }
     private void HandleBlockEntityRemoved(BlockEntityRemovedEvent e)

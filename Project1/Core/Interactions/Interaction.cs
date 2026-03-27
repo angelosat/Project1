@@ -107,7 +107,6 @@ namespace Project1.Core.Interactions
             {
                 if (this.Def.Logic.HasSucceeded(this))
                 {
-
                     this.Def.Logic.OnSuccess(this);
                     this.Finish();
                     return;
@@ -411,14 +410,14 @@ namespace Project1.Core.Interactions
             return fromToolWeight;
         }
 
-        internal void MarkSucceeded()
-        {
-            this.State = States.Succeeded;
-        }
-        internal void MarkFailed()
-        {
-            this.State = States.Failed;
-        }
+        //internal void MarkSucceeded()
+        //{
+        //    this.State = States.Succeeded;
+        //}
+        //internal void MarkFailed()
+        //{
+        //    this.State = States.Failed;
+        //}
 
         float TotalWorkApplied;
 

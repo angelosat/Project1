@@ -3,6 +3,7 @@ using Project1.Core.Skills;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.AI;
+using Project1.Core.Towns.Inns;
 using Project1.Core.Towns.Shops;
 using Project1.Framework;
 
@@ -33,6 +34,12 @@ namespace Project1.Core.Interactions
             Range = InteractionRange.Any
         };
         public static readonly InteractionDef Pay = new("Paying", typeof(InteractionPayTransaction))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            Controller = InteractionControllers.FirstContact,// new InteractionProgressFirstContact(),
+            Range = InteractionRange.Any
+        };
+        public static readonly InteractionDef PayForBed = new("PayingForBed", typeof(InteractionPayForBed))
         {
             Animation = AnimationDefOf.TouchItem,
             Controller = InteractionControllers.FirstContact,// new InteractionProgressFirstContact(),

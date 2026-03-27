@@ -394,5 +394,7 @@ namespace Project1.Core.Inventory
             found = this.Contents.FirstOrDefault(predicate);
             return found is not null;
         }
+        internal Entity Get(Func<Entity, bool> predicate)
+            => this.Contents.FirstOrDefault(predicate);
     }
 }

@@ -19,9 +19,9 @@ namespace Project1.Core.Towns.Inns
     {
         public static readonly OrderCommandDef OrderToggleInnBed = new("ToggleInnBed", ItemContent.BerryBushFruit, typeof(OrderCommandToggleInnBed), ValidSelectedCount.Single);
         //public static readonly InteractionDef InteractionCheckIn = new("CheckingIn", typeof(InteractionCheckIn), InteractionProgressHandlers.Passive);
-        public static readonly InteractionDef InteractionCheckIn = new("CheckingIn", typeof(InteractionCheckIn), InteractionProgressHandlers.ExternalFull);
+        public static readonly InteractionDef InteractionCheckIn = new("CheckingIn", typeof(InteractionCheckIn), InteractionControllers.ExternalFull);
         //public static readonly InteractionDef InteractionRegisterGuest = new("RegisteringGuest", typeof(InteractionRegisterInnGuest), InteractionProgressHandlers.Timed);
-        public static readonly InteractionDef InteractionRegisterGuest = new("RegisteringGuest", typeof(InteractionRegisterInnGuest), InteractionProgressHandlers.ExternalFull);
+        public static readonly InteractionDef InteractionRegisterGuest = new("RegisteringGuest", typeof(InteractionRegisterInnGuest), InteractionControllers.ExternalFull);
         public static readonly PlanDef PlanCheckIn = new("CheckIn", typeof(BehaviorExecutePlanNew), InteractionCheckIn);
         public static readonly PlanDef PlanRegisterGuest = new("RegisteringGuest", typeof(BehaviorExecutePlanNew), InteractionRegisterGuest);
         static InnsDefOf()

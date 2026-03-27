@@ -19,7 +19,7 @@ namespace Project1.Core.Interactions
         public readonly Type InteractionClass;
         public readonly InteractionLogic Logic;
         public AnimationDef Animation;
-        public IInteractionProgressHandler ProgressHandler;
+        public IInteractionController Controller;
         public SkillDef Skill;
         public ToolUseDef ToolUse;
         public InteractionRange Range = InteractionRange.Touching;
@@ -28,9 +28,9 @@ namespace Project1.Core.Interactions
             this.InteractionClass = typeof(Interaction);
             this.Logic = ActivatorSafe<InteractionLogic>.CreateInstance(workerType ?? typeof(InteractionLogic));
         }
-        public InteractionDef(string name, Type workerType, IInteractionProgressHandler progressHandler) : this(name, workerType)
+        public InteractionDef(string name, Type workerType, IInteractionController progressHandler) : this(name, workerType)
         {
-            this.ProgressHandler = progressHandler;
+            this.Controller = progressHandler;
         }
         public InteractionDef(string name, Type interactionClass, Type workerType) : base(name)
         {

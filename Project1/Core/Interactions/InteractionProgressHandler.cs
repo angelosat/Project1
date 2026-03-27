@@ -1,7 +1,7 @@
 ﻿namespace Project1.Core.Interactions
 {
    
-    public interface IInteractionProgressHandler
+    public interface IInteractionController
     {
         bool IsFinished(Interaction interaction);
         float GetProgressBarPercentage(Interaction interaction);

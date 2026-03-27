@@ -19,11 +19,15 @@ namespace Project1.Core.Interactions
             return ctx;
         }
         internal virtual void OnStart(Interaction i) { }
-        internal virtual void OnTick(Interaction i) { }
+        internal virtual void OnTick(Interaction i) => i.Progress.ApplyDelta(1);
+        //internal virtual void OnTickNew(Interaction i) { }
         internal virtual void OnFinish(Interaction i) { }
         internal virtual bool IsFinished(Interaction i) => false;
+        internal virtual bool HasSucceeded(Interaction i) => i.Progress.Percentage >= 1;
+        internal virtual bool HasFailed(Interaction i) => false;
         internal virtual int CalculateMax(InteractionContext ctx) => 100;
         internal virtual void OnProgressAdded(Interaction i, int delta) { }
-
+        internal virtual void OnSuccess(Interaction i) { }
+        internal virtual void OnFailure(Interaction i) { }
     }
 }

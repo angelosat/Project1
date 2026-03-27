@@ -67,11 +67,10 @@ namespace Project1.Core.Interactions
 
         public override void Tick()
         {
-            var parent = this.Owner;
             if (this.Task == null)
                 return;
 
-            this.Task.Update();
+            this.Task.Tick();
 
             if (this.Task.State == Interaction.States.Running)
             {

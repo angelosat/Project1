@@ -31,9 +31,9 @@ namespace Project1.Core.Interactions
         //protected virtual void OnInitialize(Actor actor, TargetArgs target) { }
         public override string ToString()
             => $"{this.Def.LabelReadable}";
-        public enum States { Unstarted, Running, Finished, Failed, Finishing }
+        public enum States { Unstarted, Running, Failed, Succeeded, Finishing, Finished}
         public enum RunningTypes { Once, Continuous }
-        public States State { get; protected set; } = States.Unstarted;
+        public States State { get; private set; } = States.Unstarted;
 
         public RunningTypes RunningType = RunningTypes.Once;
 
@@ -55,7 +55,7 @@ namespace Project1.Core.Interactions
         public Func<float> BarProgress;
 
         public readonly ProgressInt Progress = new(100);
-        public float ProgressPercentage => this.Def.ProgressHandler?.GetProgressBarPercentage(this) ?? this.Progress.Percentage;
+        public float ProgressPercentage => this.Def.Controller?.GetProgressBarPercentage(this) ?? this.Progress.Percentage;
 
         // TODO: i need a method that returns satisfaction score based on ai entity's state
         //static readonly Dictionary<Need.Types, float> _needSatisfaction = new();
@@ -87,7 +87,7 @@ namespace Project1.Core.Interactions
                 }
             }
         }
-        public void Update()
+        public void Tick()
         {
             if (this.State == States.Finished)
                 return;
@@ -103,7 +103,23 @@ namespace Project1.Core.Interactions
                 this.State = States.Running;
                 return; // give one tick buffer for insteractions that finish instantly to have a chance to be ticked on clients
             }
-            if (this.Def.ProgressHandler?.IsFinished(this) ?? this.State == States.Finished) // TODO: maybe check for failed state too?
+            if (this.Actor.Net.IsServer)
+            {
+                if (this.Def.Logic.HasSucceeded(this))
+                {
+
+                    this.Def.Logic.OnSuccess(this);
+                    this.Finish();
+                    return;
+                }
+                if (this.Def.Logic.HasFailed(this))
+                {
+                    this.Def.Logic.OnFailure(this);
+                    this.Finish();
+                    return;
+                }
+            }
+            if (this.Def.Controller?.IsFinished(this) ?? this.State == States.Finished) // TODO: maybe check for failed state too?
             {
                 if (this.Actor.Net.IsServer)
                 {
@@ -112,7 +128,34 @@ namespace Project1.Core.Interactions
                 }
                 return;
             }
-            this.Def.ProgressHandler?.Tick(this);
+            this.Def.Controller?.Tick(this);
+        }
+        public void TickOld()
+        {
+            if (this.State == States.Finished)
+                return;
+            if (this.State == States.Finishing) // TODO: maybe check for failed state too?
+            {
+                if (this._cachedAnimation.State == AnimationStates.Removed)
+                    this.State = States.Finished;
+                return;
+            }
+            if (this.State == States.Unstarted)
+            {
+                this.Start();
+                this.State = States.Running;
+                return; // give one tick buffer for insteractions that finish instantly to have a chance to be ticked on clients
+            }
+            if (this.Def.Controller?.IsFinished(this) ?? this.State == States.Finished) // TODO: maybe check for failed state too?
+            {
+                if (this.Actor.Net.IsServer)
+                {
+                    this.Finish();
+                    this.Actor.Map.Events.Post(new InteractionFinishedEvent(this.Actor));
+                }
+                return;
+            }
+            this.Def.Controller?.Tick(this);
         }
         public void Finish()
         {
@@ -140,7 +183,7 @@ namespace Project1.Core.Interactions
         public void DrawUI(SpriteBatch sb, Camera camera)
         {
             var actor = this.Actor;
-            Bar.Draw(sb, camera, this.Actor.Global, this.Def.LabelReadable, this.Def.ProgressHandler?.GetProgressBarPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
+            Bar.Draw(sb, camera, this.Actor.Global, this.Def.LabelReadable, this.Def.Controller?.GetProgressBarPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
         }
 
         //internal virtual void ResolveReferences()
@@ -213,8 +256,8 @@ namespace Project1.Core.Interactions
         {
             this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
 
-            if (this.Def.ProgressHandler is not null)
-                this.Def.ProgressHandler.AddProgressFromToolSwing(this, v);
+            if (this.Def.Controller is not null)
+                this.Def.Controller.AddProgressFromToolSwing(this, v);
             else
                 this.OnAddProgress(v);
             this.Def.Logic.OnProgressAdded(this, v);
@@ -367,6 +410,16 @@ namespace Project1.Core.Interactions
                 toolWeight / strength;
             return fromToolWeight;
         }
+
+        internal void MarkSucceeded()
+        {
+            this.State = States.Succeeded;
+        }
+        internal void MarkFailed()
+        {
+            this.State = States.Failed;
+        }
+
         float TotalWorkApplied;
 
         enum SkillAwardTypes { OnSwing, OnFinish }

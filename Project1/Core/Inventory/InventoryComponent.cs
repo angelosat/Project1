@@ -388,5 +388,11 @@ namespace Project1.Core.Inventory
                     yield return e;
             }
         }
+
+        internal bool TryGet(Func<Entity, bool> predicate, out Entity found)
+        {
+            found = this.Contents.FirstOrDefault(predicate);
+            return found is not null;
+        }
     }
 }

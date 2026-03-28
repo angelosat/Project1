@@ -3,7 +3,7 @@ using Project1.Core.Towns.Shops;
 
 namespace Project1.Core.AI.Thought;
 
-internal class ThoughtItemEvaluatorVisitor : ThoughtProcess
+internal sealed class ThoughtItemEvaluatorVisitor : ThoughtProcess
 {
     public override void Tick(AIState state)
     {

@@ -92,42 +92,9 @@ namespace Project1.Core.Towns.Shops
 
             var shoplistcontainer = shoplist.MakeScrollable(-1, 200);
 
-            //shoplist.OnGameEventAction = e =>
-            //{
-            //    switch ((Message.Types)e.Type)
-            //    {
-            //        case Message.Types.ShopsUpdated:
-            //            var shop = e.Parameters[0] as Workplace;
-            //            if (this.Shopss.Contains(shop))
-            //                shoplist.AddItems(shop);
-            //            else
-            //                shoplist.RemoveItems(shop);
-            //            break;
-
-            //        default:
-            //            break;
-            //    }
-            //};
-            //shoplist.ShowAction = () =>
-            //{
-            //    shoplist.ClearItems();
-            //    shoplist.AddItems(this.Shops.Values.ToArray());
-            //};
-            //shoplist.AddItems(this.Shops.Values.ToArray());
-            //var net = this.Town.Net;
-            //var selectTypeMenu = selectShopType(t => Packets.SendPlayerCreateShop(net, net.GetPlayer().ID, t));
-            //var btnNew = new Button("New", () => selectTypeMenu.Toggle(UIManager.MouseScaled));
             var btnNew = new Button("New", () => town.Map.Events.Post(new PlayerCreateShopEvent()));
             boxList.AddControlsVertically(shoplistcontainer, btnNew);
             this.AddControlsHorizontally(boxList);
-            //return box;
-
-            //Control selectShopType(Action<Type> callback)
-            //{
-            //    var list = new ListBoxNoScroll<Type, Button>(t => new Button(t.Name, () => callback(t)));
-            //    list.AddItems(typeof(Shop), typeof(Tavern));
-            //    return list.ToContextMenu("Select shop type");
-            //}
         }
     }
     public partial class TownServicesComp : TownComponent
@@ -297,16 +264,13 @@ namespace Project1.Core.Towns.Shops
         internal bool TryGetTransaction(Actor buyer, out ShopTransaction transaction)
             => this._transactionsByBuyer.TryGetValue(buyer.RefId, out transaction);
         internal ShopTransaction GetTransaction(Actor buyer)
-        //=> this._transactionsByBuyer[buyer.RefId];
             => this._transactionsByBuyer.TryGetValue(buyer.RefId, out var t) ? t : null;
         
         internal bool TryGetTransactionBySeller(Actor seller, out ShopTransaction transaction)
-        //=> this._transactionsBySeller[seller.RefId];
             => this._transactionsBySeller.TryGetValue(seller.RefId, out transaction);
         internal bool TryGetTransactionByItem(Entity item, out ShopTransaction transaction)
             => this._transactionsByItem.TryGetValue(item.RefId, out transaction);
         internal ShopTransaction GetTransactionBySeller(Actor seller)
-               //=> this._transactionsBySeller[seller.RefId];
                => this._transactionsBySeller.TryGetValue(seller.RefId, out var t) ? t : null;
         internal IEnumerable<ShopTransaction> PendingTransactions => this._transactionsRequests.Values;
         internal void AssignSeller(ShopTransaction transaction, Actor seller)

@@ -160,7 +160,7 @@ namespace Project1.Core.AI.Behaviors
                 var currentBhav = state.Behavior;
                 var (result, source) = currentBhav.TickNew(parent, state);
 
-                if (parent.Resources.View(ResourceDefOf.Stamina).Value == 0)
+                if (parent.Resources.ViewOld(ResourceDefOf.Stamina).Value == 0)
                     result = BehaviorState.Fail;
 
                 switch (result)

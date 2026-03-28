@@ -25,7 +25,6 @@ class PlannerSell : Planner
                 if (!actor.CanReachAndReserve(existing.Counter))
                     throw new Exception();
 
-                //if (map.World.Get<Entity>(existing.Money) is Entity money && money.Cell == existing.Counter.Above && money.StackSize >= item.GetValueTotal())
                 if (map.World.Get<Entity>(existing.Money) is Entity money && money.Cell == existing.Counter.Above && money.StackSize >= existing.Price)
                     return new Plan(PlanDefOf.RingUpFinish, money) { AmountA = existing.Price, Continuation = PlanContinuationPolicy.Yield };
 

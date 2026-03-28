@@ -2,19 +2,15 @@
 
 namespace Project1.Core.Resources
 {
-    public sealed class ResourceDef : Def
+    public sealed class ResourceDef(string name, Type workerClass, float baseRegenRate = 0) : Def(name)
     {
+        public float BaseRegenRate = baseRegenRate;
 
-        public Type WorkerClass;
+        public Type WorkerClass = workerClass;
        
         public readonly int BaseMax = 100;
-
-        public ResourceDef(string name, Type workerClass) : base(name)
-        {
-            this.WorkerClass = workerClass;
-        }
-
         ResourceWorker workerCached;
+
         public ResourceWorker Worker => workerCached ??= (ResourceWorker)Activator.CreateInstance(this.WorkerClass, this);
 
         public string Format => "";

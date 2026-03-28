@@ -9,7 +9,7 @@ namespace Project1.Core.Interactions
     {
         public sealed class Context : InteractionContext
         {
-            public IResourceView HitPoints => field ??= this.Target.Object.Resources.View(ResourceDefOf.HitPoints);
+            public IResourceView HitPoints => field ??= this.Target.Object.Resources.ViewOld(ResourceDefOf.HitPoints);
             PlantComponent _plantComp;
             public PlantComponent PlantComp => this._plantComp ??= this.Target.Object.GetComponent<PlantComponent>();
             public override float ProgressBarPercentage => 1 - this.HitPoints.Percentage;

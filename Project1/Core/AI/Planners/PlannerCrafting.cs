@@ -290,7 +290,7 @@ namespace Project1.Core.AI.Planners
 
             return null;
 
-            static bool isRepairable(Entity e) => e.Resources?.View(ResourceDefOf.Durability) is IResourceView durability && durability.Percentage < 1;
+            static bool isRepairable(Entity e) => e.Resources?.ViewOld(ResourceDefOf.Durability) is IResourceView durability && durability.Percentage < 1;
         }
     }
 }

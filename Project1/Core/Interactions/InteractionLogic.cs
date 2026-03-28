@@ -5,6 +5,7 @@ namespace Project1.Core.Interactions
 {
     public class InteractionLogic
     {
+
         public virtual bool CanPerform(InteractionContext ctx) { return true; }
         public virtual bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
         public virtual bool WillFinish(InteractionContext ctx, int workAmount) { return true; }
@@ -20,7 +21,6 @@ namespace Project1.Core.Interactions
         }
         internal virtual void OnStart(Interaction i) { }
         internal virtual void OnTick(Interaction i) => i.Progress.ApplyDelta(1);
-        //internal virtual void OnTickNew(Interaction i) { }
         internal virtual void OnFinish(Interaction i) { }
         internal virtual bool IsFinished(Interaction i) => false;
         internal virtual bool HasSucceeded(Interaction i) => i.Progress.Percentage >= 1;

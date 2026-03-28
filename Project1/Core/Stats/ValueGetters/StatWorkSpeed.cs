@@ -13,7 +13,7 @@ namespace Project1.Core.Entities.Stats.ValueGetters
             var toolspeed = actor.Gear.GetGear(GearTypeDefOf.Mainhand)?.GetStat(StatDefOf.ToolSpeed) ?? 0;
             var speed = 1 + toolspeed;
 
-            var stamina = obj.Resources.View(ResourceDefOf.Stamina);
+            var stamina = obj.Resources.ViewOld(ResourceDefOf.Stamina);
             speed *= stamina.CurrentThreshold.Value;
 
             return speed;

@@ -13,8 +13,9 @@ using System.Linq;
 
 namespace Project1.Core.Resources
 {
-    public sealed class Resource : MetricWrapper, IProgressBar, ISaveableNewNew<Resource>, IDefWrapper<ResourceDef>, ISerializableNew<Resource>, INamed
+    public sealed class Resource : /*MetricWrapper, */IProgressBar, ISaveableNewNew<Resource>, IDefWrapper<ResourceDef>, ISerializableNew<Resource>, INamed
     {
+        public Entity Owner;
         public ResourceDef ResourceDef;
         public List<ResourceRateModifier> Modifiers = new();
         public int TicksPerRecoverOne, TicksPerDrainOne;
@@ -52,7 +53,7 @@ namespace Project1.Core.Resources
             this.Max = def.BaseMax;
             this.Value = this.Max;
         }
-        public override void Tick()
+        public /*override*/ void Tick()
         {
             if(this.RechargingDelay.Value < this.RechargingDelay.Max)
             {

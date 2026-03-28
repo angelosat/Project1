@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace Project1.Core.Inventory
 {
-    public class InventoryComponent : EntityComp
+    public sealed class InventoryComponent : EntityComp
     {
         public new class Spec(int size) : Spec<InventoryComponent> 
         {
@@ -373,10 +373,10 @@ namespace Project1.Core.Inventory
         }
 
         readonly Label CachedGuiLabelCarrying = new();
-        internal override void GetSelectionInfo(IUISelection info, GameObject parent)
-        {
-            info.AddInfo(this.CachedGuiLabelCarrying.SetTextFunc(() => $"Carrying: {this.HaulSlot.Object?.DebugName ?? "Nothing"}"));
-        }
+        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        //{
+        //    info.AddInfo(this.CachedGuiLabelCarrying.SetTextFunc(() => $"Carrying: {this.HaulSlot.Object?.DebugName ?? "Nothing"}"));
+        //}
 
         public IEnumerable<Entity> FindItems(Func<Entity, bool> p)
         {

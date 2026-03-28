@@ -3,7 +3,7 @@ using Project1.Core.Entities;
 
 namespace Project1.Core.Systems.Plants
 {
-    class SeedComponent : EntityComp
+    sealed class SeedComponent : EntityComp
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Seed;
         public override string Name { get; } = "Seed";
@@ -17,10 +17,10 @@ namespace Project1.Core.Systems.Plants
         {
             this.Level = toCopy.Level;
         }
-        internal override void GetSelectionInfo(IUISelection info, GameObject parent)
-        {
-            info.AddInfo(new Label() { TextFunc = () => string.Format("Grows into: {0}", this.Owner.Profile.LabelReadable) });
-        }
+        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        //{
+        //    info.AddInfo(new Label() { TextFunc = () => string.Format("Grows into: {0}", this.Owner.Profile.LabelReadable) });
+        //}
 
         public new class Spec : Spec<SeedComponent> { }
         

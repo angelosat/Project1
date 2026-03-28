@@ -142,7 +142,7 @@ namespace Project1.Core.Systems.Tools
                 entityBone.Material = mat;
                 durabilityMax += mat.Density;
             }
-            var durability = this.Owner.Resources.View(ResourceDefOf.Durability);
+            var durability = this.Owner.Resources.ViewOld(ResourceDefOf.Durability);
             durability.Value = durability.Max = durabilityMax;
         }
     }

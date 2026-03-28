@@ -12,7 +12,7 @@ namespace Project1.Core.Interactions
         {
             internal Entity UnfinishedItem => field ??= this.Workstation.GetUnfinishedItem();
             internal UnfinishedItemComp UnfinishedComp => field ??= this.UnfinishedItem?.GetComponent<UnfinishedItemComp>();
-            internal IResourceView Assembly => field ??= this.UnfinishedItem.Resources.View(ResourceDefOf.Assembly);
+            internal IResourceView Assembly => field ??= this.UnfinishedItem.Resources.ViewOld(ResourceDefOf.Assembly);
             internal ResourcesComponent Resources => field ??= this.UnfinishedItem?.GetComponent<ResourcesComponent>();
             internal BlockWorkstationComp Workstation => field ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
             public override float ProgressBarPercentage => this.Assembly?.Percentage ?? 0;

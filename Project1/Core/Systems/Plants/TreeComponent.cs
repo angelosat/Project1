@@ -1,13 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Project1.Core.Entities;
 using Project1.Framework;
-using Project1.Framework.UI;
-using Project1.Framework.Serialization;
 using Project1.Framework.Helpers;
-using Project1.Core.Entities;
+using Project1.Framework.Serialization;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Systems.Plants
 {
-    class TreeComponent : EntityComp
+    sealed class TreeComponent : EntityComp
     {
         public class States
         {
@@ -86,10 +85,10 @@ namespace Project1.Core.Systems.Plants
             this.Growth.Set(parent, r.ReadInt32());
         }
 
-        internal override void GetSelectionInfo(IUISelection info, GameObject parent)
-        {
-            info.AddInfo(new Bar(this.GrowthNew) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthNew.Percentage.ToString("##0%") });
-        }
+        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        //{
+        //    info.AddInfo(new Bar(this.GrowthNew) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthNew.Percentage.ToString("##0%") });
+        //}
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
             tooltip.Controls.Add(new Bar()

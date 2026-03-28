@@ -77,7 +77,7 @@ namespace Project1.Core.Systems.Tools
             var comp = item.GetComponent<UnfinishedItemComp>();
             comp.Initialize(author, order, [handleMaterial ,headMaterial]);
 
-            var assembly = item.Resources.View(ResourceDefOf.Assembly);
+            var assembly = item.Resources.ViewOld(ResourceDefOf.Assembly);
             assembly.Value = 0;
             assembly.Max = 110;
 

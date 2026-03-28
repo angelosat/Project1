@@ -12,7 +12,7 @@ namespace Project1.Core.Resources
         static public readonly ResourceDef Fuel = new("Fuel", typeof(ResourceWorkerPassive));
         static public readonly ResourceDef RepairCharges = new("Repair Charges", typeof(ResourceWorkerPassive));
         static public readonly ResourceDef Assembly = new("Assembly", typeof(ResourceWorkerPassive));
-        static public readonly ResourceDef Patience = new("Patience", typeof(ResourceWorkerPassive));
+        static public readonly ResourceDef Patience = new("Patience", typeof(ResourceWorkerPassive), baseRegenRate: .001f);
 
         static ResourceDefOf()
         {

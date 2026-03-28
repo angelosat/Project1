@@ -16,7 +16,7 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
             var interaction = task.Def.Interaction;
             if (interaction is null)
                 return 0;
-            var durability = item.Resources.View(ResourceDefOf.Durability);
+            var durability = item.Resources.ViewOld(ResourceDefOf.Durability);
             if (durability.Value == 0)
                 return -100;
             //if (durability.Percentage < 1)

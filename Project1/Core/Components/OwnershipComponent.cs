@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Project1.Core.Components
 {
-    public class OwnershipComponent : EntityComp
+    public sealed class OwnershipComponent : EntityComp
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Ownership;
         public new class Spec : Spec<OwnershipComponent> { }
@@ -109,10 +109,10 @@ namespace Project1.Core.Components
             //parent.Net.EventOccured((int)Message.Types.ItemOwnerChanged, parent.RefId);
         }
         static Control ActorList;
-        internal override void GetSelectionInfo(IUISelection info, GameObject parent)
-        {
-            info.AddInfo(new Label() { TextFunc = () => string.Format("Assigned to {0}", parent.Town.GetMembers().FirstOrDefault(a => a.GetPossesions().Contains(parent))?.Name ?? "none") });
-        }
+        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        //{
+        //    info.AddInfo(new Label() { TextFunc = () => string.Format("Assigned to {0}", parent.Town.GetMembers().FirstOrDefault(a => a.GetPossesions().Contains(parent))?.Name ?? "none") });
+        //}
         readonly Button BtnOwner = new("Owner");
         internal override IEnumerable<Button> GetTabs()
         {

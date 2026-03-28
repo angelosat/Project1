@@ -6,19 +6,6 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Inns
 {
-    //sealed class InteractionRegisterInnGuest : InteractionLogic
-    //{
-    //    sealed class Context : InteractionContext
-    //    {
-    //        Queue<Actor> Queue => field ??= this.Actor.Map.Town.InnManager.GetQueue(this.Target.Global);
-    //        Actor NextGuest => field ??= this.Queue.Peek();
-    //    }
-    //    internal override void OnFinish(Interaction i)
-    //    {
-    //        var manager = i.Actor.Map.Town.InnManager;
-    //        manager.RegisterGuest(i.Target.Global);
-    //    }
-    //}
     sealed class InnTransactionContext : InteractionContext
     {
         internal InnManager Manager => field ??= this.Actor.Map.Town.InnManager;
@@ -33,8 +20,6 @@ namespace Project1.Core.Towns.Inns
         internal override void OnStart(Interaction i)
         {
             var typedCtx = (InnTransactionContext)i.Context;
-            //var transaction = typedCtx.Transaction;
-            //transaction.AssignClerk(i.Actor);
             typedCtx.Manager.AssignClerk(i.Target.Global, i.Actor);
         }
         internal override bool HasSucceeded(Interaction i)
@@ -76,13 +61,8 @@ namespace Project1.Core.Towns.Inns
         protected override InteractionContext CreateContextInternal()
             => new Context();
         internal override void OnStart(Interaction i)
-        //=> i.Progress.SetMax(Ticks.FromMinutes(10));
-        {
-            i.Progress.SetMax(Ticks.FromMinutes(10));
-            //var typedCtx = (Context)i.Context;
-            //var transaction = typedCtx.Manager.GetTransactionByGuest(typedCtx.NextGuest);
-            //transaction.AssignClerk(i.Actor);
-        }
+            => i.Progress.SetMax(Ticks.FromMinutes(10));
+        
         internal override void OnSuccess(Interaction i)
         {
             var typedCtx = (Context)i.Context;
@@ -93,52 +73,19 @@ namespace Project1.Core.Towns.Inns
                 return;
             manager.RegisterGuest(i.Target.Global);
         }
-        //internal override void OnTick(Interaction i)
-        //{
-        //    var typedCtx = (Context)i.Context;
-        //    var manager = typedCtx.Manager;
-        //    if (i.Progress.Percentage >= 1)
-        //    {
-        //        manager.RegisterGuest(i.Target.Global);
-        //        i.MarkSucceeded();
-        //        return;
-        //    }
-        //    var guest = typedCtx.NextGuest;
-        //    if (!manager.IsQueuing(guest))
-        //    {
-        //        i.MarkFailed();
-        //        return;
-        //    }
-        //    if (typedCtx.Queue.Peek() != guest)
-        //    {
-        //        i.MarkFailed();
-        //        return;
-        //    }
-        //}
-        
-        //internal override bool IsFinished(Interaction i)
-        //{
-        //    var typedCtx = (Context)i.Context;
-        //    var manager = typedCtx.Manager;
-        //    if (i.Progress.Percentage >= 1)
-        //    {
-        //        manager.RegisterGuest(i.Target.Global);
-        //        return true;
-        //    }
-        //    var guest = typedCtx.NextGuest;
-        //    if (!manager.IsQueuing(guest))
-        //        return true;
-        //    if (typedCtx.Queue.Peek() != guest)
-        //        return true;
-        //    return false;
-        //}
     }
     sealed class InteractionCheckIn : InteractionLogic
     {
         sealed class Context : InteractionContext
         {
-            public override float ProgressBarPercentage => this.Actor.HasCheckedIn ? 1 : 0;
+            internal IResourceView Patience => field ??= this.Actor.Resources.View(ResourceDefOf.Patience);
+            internal override float GetPercentage(Interaction i) => ((Context)i.Context).Patience.Percentage;
+
         }
+
+        protected override InteractionContext CreateContextInternal()
+            => new Context();
+
         internal override void OnStart(Interaction i)
             => i.Actor.Map.Town.InnManager.TryEnqueue(i.Actor, i.Target.Global);
 
@@ -154,50 +101,5 @@ namespace Project1.Core.Towns.Inns
 
         internal override void OnTick(Interaction i)
             => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
-
-        //internal override void OnTick(Interaction i)
-        //{
-        //    var ctx = i.Context;
-        //    var actor = ctx.Actor;
-        //    var comp = actor.Resources;
-        //    if (actor.HasCheckedIn)
-        //    {
-        //        actor.AI.State.Log.Write($"I have checked in successfully");
-        //        i.MarkSucceeded();
-        //        return;
-        //    }
-        //    if (comp.GetValue(ResourceDefOf.Patience) <= 0)
-        //    {
-        //        actor.Map.Town.InnManager.AbortQueuing(actor);
-        //        i.MarkFailed();
-        //        return;
-        //    }
-        //    comp.ApplyDelta(ResourceDefOf.Patience, -.01f);
-        //}
-        //internal override void OnFinish(Interaction i)
-        //{
-        //    i.Actor.Map.Town.InnManager.AbortQueuing(i.Actor);
-        //}
-
-
-
-        //internal override bool IsFinished(Interaction i)
-        //{
-        //    var ctx = i.Context;
-        //    var actor = ctx.Actor;
-        //    var comp = actor.Resources;
-        //    if (actor.HasCheckedIn)
-        //    {
-        //        actor.AI.State.Log.Write($"I have checked in successfully");
-        //        return true;
-        //    }
-        //    if (comp.GetValue(ResourceDefOf.Patience) == 0)
-        //    {
-        //        actor.Map.Town.InnManager.AbortQueuing(actor);
-        //        return true;
-        //    }
-        //    comp.ApplyDelta(ResourceDefOf.Patience, -.01f);
-        //    return false;
-        //}
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
-using Project1.Core.Helpers;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework.Events;
@@ -12,7 +11,7 @@ using System.Linq;
 
 namespace Project1.Core.Resources
 {
-    public abstract class ResourceWorker : MetricWorker
+    public abstract class ResourceWorker// : MetricWorker
     {
         protected ResourceDef ResourceDef;
         static public ProgressFloat Recovery { get { return new ProgressFloat(0, Ticks.PerSecond, Ticks.PerSecond); } }
@@ -56,7 +55,7 @@ namespace Project1.Core.Resources
         }
         public virtual string GetBarHoverText(Resource resource)
         {
-            return $"{resource.Value.ToString(this.Format)} / {resource.Max.ToString(this.Format)}";
+            return $"{((int)resource.Value).ToString(this.Format)} / {resource.Max.ToString(this.Format)}";
         }
         public virtual Control GetControlBar(Resource resource)
         {
@@ -83,9 +82,9 @@ namespace Project1.Core.Resources
         }
 
         public readonly float BaseMax = 100;
-        public sealed override void Tick(MetricWrapper wrapper)
+        public /*sealed override*/ void Tick(Resource resource)
         {
-            var resource = (Resource)wrapper;
+            //var resource = (Resource)wrapper;
             foreach (var ratemod in resource.Modifiers)
                 this.ApplyDelta(resource, ratemod.Def.GetRateMod(resource.Owner));
             this.TickExtra(resource);
@@ -93,7 +92,7 @@ namespace Project1.Core.Resources
         }
         protected virtual void updateRec(Resource resource) { }
         protected virtual void TickExtra(Resource resource) { }
-        protected virtual float GetRegenRate(Resource resource) => 0;
+        protected virtual float GetRegenRate(Resource resource) => resource.Def.BaseRegenRate;
         public virtual string Format => "";
         public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate, Resource values) { }
         public virtual void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, GameObject parent) { }

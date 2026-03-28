@@ -71,30 +71,15 @@
         sealed class InteractionControllerFullyExternal : IInteractionController
         {
             // purely for visual feedback
-            public float GetProgressBarPercentage(Interaction interaction) => interaction.Progress.Percentage;
+            public float GetProgressBarPercentage(Interaction i) => i.Context.GetPercentage(i);
             public void Tick(Interaction i)
             {
                 var logic = i.Def.Logic;
-                //if (logic.HasSucceeded(i))
-                //{
-                //    i.MarkSucceeded();
-                //    return;
-                //}
-                //if(logic.HasFailed(i))
-                //{
-                //    i.MarkFailed();
-                //    return;
-                //}
                 logic.OnTick(i);
             }
             public void AddProgressFromToolSwing(Interaction interaction, int progress) { }
             public bool IsFinished(Interaction interaction)
-            {
-                return false;
-                //if (interaction.Actor.Net.IsClient)
-                //    return false;
-                //return interaction.Def.Logic.IsFinished(interaction);
-            }
+                => false;
         }
     }
 }

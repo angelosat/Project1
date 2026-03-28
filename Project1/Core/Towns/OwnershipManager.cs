@@ -19,7 +19,6 @@ namespace Project1.Core.Towns
             => this._actorBeds.TryGetValue(actor, out comp);
         public IEnumerable<IntVec3> GetOwnedBlocks(Actor actor)
         {
-            //    this._actorPossesions[actor.RefId];
             if (this._actorPossesions.TryGetValue(actor.RefId, out var list))
                 return list;
             return [];
@@ -67,15 +66,6 @@ namespace Project1.Core.Towns
 
         private void HandleBlockEntityRemoved(BlockEntityRemovedEvent e)
         {
-            //if (!e.Entity.TryGetComp<BlockOwnershipComp>(out var comp))
-            //    return;
-            //var id = e.Entity.OriginGlobal;
-            //this.Remove(id);
-            //if(comp.Owner != EntityRefId.Null && this.Map.World.GetEntity<Actor>(comp.Owner) is Actor owner)
-            //{
-            //    if (this._actorBeds.TryGetValue(owner, out var bed) && e.Entity == bed.Parent)
-            //        this._actorBeds.Remove(owner);
-            //}
             if (!e.Entity.TryGetComp<BlockOwnershipComp>(out var comp))
                 return;
 

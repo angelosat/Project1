@@ -132,13 +132,7 @@ namespace Project1.Core.Entities
             }
         }
         public Town Town;
-        public virtual void GetSelectionInfo(IUISelection info)
-        {
-            info.AddIcon(IconCameraFollow.Value);
-            this.Map?.World.OnTargetSelected(info, this);
-            foreach (var comp in this.Components.Values)
-                comp.GetSelectionInfo(info, this);
-        }
+       
         public virtual IEnumerable<Control> GetSelectionInfo()
         {
             foreach (var comp in this.Components.Values)

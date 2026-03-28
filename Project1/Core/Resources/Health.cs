@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Project1.Core.Resources
 {
-    class Health : ResourceWorker
+    sealed class Health : ResourceWorker
     {
         public Health(ResourceDef def) : base(def)
         {

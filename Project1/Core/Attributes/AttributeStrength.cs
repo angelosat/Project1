@@ -13,7 +13,7 @@ namespace Project1.Core.Attributes
         }
         internal override void Award(Entity obj, AttributeRuntime attributeStat, float p)
         {
-            var stamina = obj.Resources.View(ResourceDefOf.Stamina);
+            var stamina = obj.Resources.ViewOld(ResourceDefOf.Stamina);
             var strAwardMultiplier = 1 + (int)(stamina.Def.Worker.Thresholds.Count * (1 - stamina.CurrentThreshold.Value));
             attributeStat.AddToProgress(strAwardMultiplier * p);
         }

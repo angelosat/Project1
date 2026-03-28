@@ -24,7 +24,7 @@ namespace Project1.Core.Interactions
 
             var speed = 1 + toolspeed;
 
-            var stamina = actor.Resources.View(ResourceDefOf.Stamina);
+            var stamina = actor.Resources.ViewOld(ResourceDefOf.Stamina);
             speed *= stamina.CurrentThreshold.Value;
 
             return speed;

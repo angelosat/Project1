@@ -7,6 +7,7 @@ using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -102,10 +103,10 @@ namespace Project1.Core.Resources
                 return this._cachedGui;
             }
         }
-        internal override void GetSelectionInfo(IUISelection info, GameObject parent)
-        {
-            info.AddInfo(this.CachedGui);
-        }
+        //internal override void GetSelectionInfo(IUISelection info, GameObject parent)
+        //{
+        //    info.AddInfo(this.CachedGui);
+        //}
         internal override IEnumerable<Control> GetSelectionInfo()
         {
             //info.AddInfo(this.CachedGui);
@@ -143,39 +144,76 @@ namespace Project1.Core.Resources
             res.ApplyDelta(delta);
             this.Owner.World?.Events.Post(new ResourceModifiedEvent(this.Owner, def, delta));
         }
+        public float GetMax(ResourceDef def)
+            => this.Resources[def].Max;
         public void SetMax(ResourceDef def, float max)
             => this.Resources[def].Max = max;
         public void SetPercentage(ResourceDef def, float percentage)
            => this.Resources[def].Percentage = percentage;
         public void SetValue(ResourceDef def, float value)
             => this.Resources[def].SetValue(value);
+        public int GetTicksPerRecoverOne(ResourceDef def)
+            => this.Resources[def].TicksPerRecoverOne;
         public void SetTicksPerRecoverOne(ResourceDef def, int value)
             => this.Resources[def].SetTicksPerRecoverOne(value);
         internal Resource GetResource(ResourceDef def)
            => this.Resources[def];
         internal float GetPercentage(ResourceDef def)
             => this.Resources[def].Percentage;
-        public EntityResourceView View(ResourceDef def)
+        [Obsolete]
+        public EntityResourceViewOld ViewOld(ResourceDef def)
             => this.Resources.TryGetValue(def, out var res) ? new(this, res) : null;
+        public EntityResourceView View(ResourceDef def)
+            => this.Resources.TryGetValue(def, out _) ? new(this, def) : null;
 
         internal float GetValue(ResourceDef def)
             => this.Resources[def].Value;
 
-        public new class Spec : Spec<ResourcesComponent> 
+        public new sealed class Spec(ResourceDef[] defs) : Spec<ResourcesComponent> 
         {
-            public ResourceDef[] Defs;
-            public Spec(ResourceDef[] defs)
-            {
-                this.Defs = defs;
-            }
+            public ResourceDef[] Defs = defs;
+
             protected override void ApplyDefaultsTo(ResourcesComponent comp)
             {
                 foreach (var def in this.Defs)
                     comp.Add(def);
             }
         }
+        public ResourceThreshold GetCurrentThreshold(ResourceDef def)
+            => this.Resources[def].CurrentThreshold;
+        public float GetThresholdValue(ResourceDef def, int index)
+            => this.Resources[def].GetThresholdValue(index);
+        public record class EntityResourceView(ResourcesComponent Comp, ResourceDef Def) : IResourceView
+        {
+            public float Value
+            {
+                get => this.Comp.GetValue(this.Def);
+                set => this.Comp.SetValue(this.Def, value);
+            }
+            public float Percentage
+            {
+                get => this.Comp.GetPercentage(this.Def);
+                set => this.Comp.SetPercentage(this.Def, value);
+            }
+            public float Max
+            {
+                get => this.Comp.GetMax(this.Def);
+                set => this.Comp.SetMax(this.Def, value);
+            }
+            public int TicksPerRecoverOne
+            {
+                get => this.Comp.GetTicksPerRecoverOne(this.Def);
+                set => this.Comp.SetTicksPerRecoverOne(this.Def, value);
+            }
 
-        public record class EntityResourceView(ResourcesComponent Comp, Resource Resource) : IResourceView
+            public void ApplyDelta(float delta) => this.Comp.ApplyDelta(this.Def, delta);
+            //public ResourceThreshold CurrentThreshold => this.Resource.CurrentThreshold;
+            //public float GetThresholdValue(int index) => this.Resource.GetThresholdValue(index);
+            public ResourceThreshold CurrentThreshold => this.Comp.GetCurrentThreshold(this.Def);
+            public float GetThresholdValue(int index) => this.Comp.GetThresholdValue(this.Def, index);
+        }
+        [Obsolete]
+        public record class EntityResourceViewOld(ResourcesComponent Comp, Resource Resource) : IResourceView
         {
             public ResourceDef Def => this.Resource.Def;
             public float Value

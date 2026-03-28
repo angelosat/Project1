@@ -94,8 +94,6 @@ namespace Project1.Core.Entities
         internal virtual void OnMapLoaded(GameObject parent) { }
         internal virtual void GetQuickButtons(SelectionManager info, GameObject parent) { }
         internal virtual IEnumerable<Button> GetTabs() { yield break; }
-        [Obsolete]
-        internal virtual void GetSelectionInfo(IUISelection info, GameObject parent) { }
         internal virtual IEnumerable<Control> GetSelectionInfo() { yield break; }
         internal virtual void SyncWrite(IDataWriter w) { }
         internal virtual void SyncRead(GameObject parent, IDataReader r) { }

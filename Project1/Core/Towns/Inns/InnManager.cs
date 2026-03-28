@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Blocks;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Framework;
@@ -10,7 +9,7 @@ using System.Linq;
 namespace Project1.Core.Towns.Inns;
 public sealed class InnTransaction(EntityRefId guest, IntVec3 desk)
 {
-    enum States { Queuing, AwaitingPayment, Paid, Finished, Disposed }
+    enum States { Queuing, AwaitingPayment, Paid, Processed, Finished, Disposed }
     readonly EntityRefId Guest = guest;
     internal EntityRefId Clerk { get; private set; }
     internal EntityRefId Money;// { get; private set; }
@@ -19,6 +18,7 @@ public sealed class InnTransaction(EntityRefId guest, IntVec3 desk)
 
     public bool IsAwaitingPayment => this.State == States.AwaitingPayment;
     public bool IsPaid => this.State == States.Paid;
+    public bool IsProcessed => this.State == States.Processed;
     public bool IsFinished => this.State == States.Finished;
     public bool IsDisposed => this.State == States.Disposed;
 
@@ -42,6 +42,13 @@ public sealed class InnTransaction(EntityRefId guest, IntVec3 desk)
             throw new Exception();
         this.Money = money.RefId;
         this.State = States.Paid;
+    }
+
+    internal void MarkProcessed()
+    {
+        if (this.State != States.Paid)
+            throw new Exception();
+        this.State = States.Processed;
     }
 
     internal void Dispose()

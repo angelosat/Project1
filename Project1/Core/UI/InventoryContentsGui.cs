@@ -4,12 +4,14 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Screens;
 using Project1.Framework.UI;
 using Project1.Core.Input;
+using Project1.Core.Blocks;
+using Project1.Core.Towns.Storage;
 
 namespace Project1.Core.UI
 {
     internal class InventoryContentsGui : GroupBox
     {
-        Table<Entity> TableContents;
+        readonly Table<Entity> TableContents;
         Actor Actor;
         ContainerList Container;
         public InventoryContentsGui()
@@ -21,9 +23,15 @@ namespace Project1.Core.UI
                     .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, () => drop(o), "Drop").ShowOnParentFocus(true));
             void drop(GameObject o)
             {
+                if (o == this.Actor)
                 if (this.Actor.IsSpawned && this.Actor.IsTownMember)
                     Ingame.Instance.Events.Post(new PlayerForcedDropInventoryItemEvent(this.Actor, o as Entity, o.StackSize));
             }
+        }
+        public void Build(BlockEntity block)
+        {
+            var inve = block.GetComp<BlockInventoryComp>();
+
         }
         public void Build(Actor actor)
         {

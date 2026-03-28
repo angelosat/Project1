@@ -36,7 +36,7 @@ namespace Project1.Core.Inventory
             }
             this.Filter = filter;
         }
-        public ItemContainer(byte size = 0)
+        public ItemContainer(byte size = 1) // why did i have it default to 0?
         {
             this.Parent = null;
             this.Children = new List<ItemContainer>();

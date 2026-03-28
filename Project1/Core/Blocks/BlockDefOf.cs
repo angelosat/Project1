@@ -8,6 +8,7 @@ using Project1.Core.Resources;
 using Project1.Core.Rooms;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Towns.Shops.Blocks;
+using Project1.Core.Towns.Storage;
 using Project1.Framework;
 
 namespace Project1.Core.Blocks
@@ -112,6 +113,7 @@ namespace Project1.Core.Blocks
         };
         static public readonly BlockDef ReceptionDesk = new("ReceptionDesk", typeof(BlockShopCounter))
         {
+            BlockEntityCompSpecs = [new BlockInventoryComp.Spec()],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks])
         };
         static public readonly BlockDef ShopShelf = new("ShopShelf", typeof(BlockShopShelf));

@@ -2,6 +2,7 @@
 using Project1.Core.Blocks.Doors;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Shops.Blocks;
+using Project1.Core.Towns.Storage;
 using Project1.Framework;
 
 namespace Project1.Core.Blocks.Comps
@@ -23,6 +24,7 @@ namespace Project1.Core.Blocks.Comps
         internal static readonly BlockCompDef Light = new("Light", typeof(BlockLightComp));
         internal static readonly BlockCompDef Shop = new("Shop", typeof(BlockShopComp));
         internal static readonly BlockCompDef Shelf = new("Shop", typeof(BlockShelfComp));
+        internal static readonly BlockCompDef Inventory = new("Inventory", typeof(BlockInventoryComp));
 
         static BlockCompDefOf()
         {

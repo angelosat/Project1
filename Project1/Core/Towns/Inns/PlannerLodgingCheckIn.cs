@@ -31,16 +31,23 @@ namespace Project1.Core.Towns.Inns
                     transaction.Dispose();
                     return new Plan(PlanDefOf.GoHaul, money);
                 }
+                if (transaction.IsProcessed && actor.Hauled is null)
+                {
+                    return new Plan(InnsDefOf.PlanRegisterGuest, new TargetArgs(actor.Map, transaction.Desk));
+                }
                 if (transaction.IsPaid)
                 //return null;
                 {
                     var money = map.World.Get<Entity>(transaction.Money);
+                    
                     //if()
                     if (actor.Hauled == money)
                     {
                         if (!manager.TryFindBedFrom(transaction.Desk, out _))
                             throw new Exception();
-                        return new Plan(InnsDefOf.PlanRegisterGuest, new TargetArgs(actor.Map, transaction.Desk));
+                        transaction.MarkProcessed();
+                        return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, transaction.Desk));
+                        //return new Plan(InnsDefOf.PlanRegisterGuest, new TargetArgs(actor.Map, transaction.Desk));
                         //return new Plan(PlanDefOf.StoreInInventory);
                     }
                     if (money.Cell == transaction.Desk.Above)

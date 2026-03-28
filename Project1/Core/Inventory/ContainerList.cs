@@ -26,6 +26,7 @@ namespace Project1.Core.Inventory
                         .AddColumn("preference", 96, o => actor.ItemPreferences.GetListControl(o))
                         .AddColumn("weight", 32, o => new Label(() => o.TotalWeight.ToString("0.# kg")))
                         .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, delegate { drop(o); }, "Drop").ShowOnParentFocus(true));
+
                 throw new Exception();
                 return null;// _gui.Bind(this.Contents);
                 void drop(GameObject o)

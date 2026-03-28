@@ -42,5 +42,9 @@ namespace Project1.Core.Towns.Storage
         //{
         //    yield return this.Contents.Gui;
         //}
+        internal override IEnumerable<Control> GetInspectorControls()
+        {
+            yield return new InventoryListGui(this.Contents);
+        }
     }
 }

@@ -89,7 +89,7 @@ namespace Project1.Framework.UI
                 currentY += row.Height + Spacing;
                 return row;
             });
-            this.AddControls(newControls.ToArray());
+            this.AddControls([.. newControls]);
         }
         internal Control GetControlFromItem(TObject tag) => this.Controls.FirstOrDefault(c => c.Tag.Equals(tag));
         //Control AddItem(TObject item)

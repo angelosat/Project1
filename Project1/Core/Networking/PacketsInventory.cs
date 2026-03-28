@@ -2,6 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Input;
 using Project1.Core.Inventory;
+using Project1.Core.Towns.Storage;
 using Project1.Framework;
 using System;
 
@@ -10,15 +11,17 @@ namespace Project1.Core.Networking
     [EnsureStaticCtorCall]
     internal static class PacketsInventory
     {
-        static readonly PacketId _pSync, _pSlot, _pPlayerForcedDropInventoryItem, _pInventoryAdded, _pInventoryRemoved;
+        static readonly PacketId _pSync, _pSlot, _pPlayerForcedDropInventoryItem,
+            _pInventoryAdded = Registry.PacketHandlers.Register(OnInventoryItemAdded),
+            _pInventoryRemoved = Registry.PacketHandlers.Register(OnInventoryItemRemoved),
+            _pBlockInventoryAdded = Registry.PacketHandlers.Register(OnBlockInventoryItemAdded),
+            _pBlockInventoryRemoved = Registry.PacketHandlers.Register(OnBlockInventoryItemRemoved)
+            ;
         static PacketsInventory()
         {
             _pSync = Registry.PacketHandlers.Register(OnInventorySync);
             _pSlot = Registry.PacketHandlers.Register(OnSlotUpdated);
             _pPlayerForcedDropInventoryItem = Registry.PacketHandlers.Register(OnReceivePlayerForcedDropInventoryItem);
-
-            _pInventoryAdded = Registry.PacketHandlers.Register(OnInventoryItemAdded);
-            _pInventoryRemoved = Registry.PacketHandlers.Register(OnInventoryItemRemoved);
 
             Registry.WorldEventHooksServer.Register<InventoryUpdatedEvent>(SendInventoryUpdated);
             Registry.WorldEventHooksServer.Register<SlotUpdatedEvent>(SendSlotUpdated);
@@ -27,6 +30,9 @@ namespace Project1.Core.Networking
 
             Registry.WorldEventHooksServer.Register<InventoryItemAddedEvent>(HandleInventoryItemAdded);
             Registry.WorldEventHooksServer.Register<InventoryItemRemovedEvent>(HandleInventoryItemRemoved);
+
+            Registry.MapEventHooksServer.Register<BlockInventoryItemAddedEvent>(HandleBlockInventoryItemAdded);
+            Registry.MapEventHooksServer.Register<BlockInventoryItemRemovedEvent>(HandleBlockInventoryItemRemoved);
         }
 
         private static void OnInventoryItemAdded(NetEndpoint endpoint, Packet packet)
@@ -59,6 +65,41 @@ namespace Project1.Core.Networking
                 .Write(e.Actor.RefId)
                 .Write(e.Item.RefId);
         }
+        private static void HandleBlockInventoryItemAdded(BlockInventoryItemAddedEvent e)
+        {
+            var server = e.Entity.Map.Net as Server;
+            server.BeginPacket(_pBlockInventoryAdded)
+                .Write(e.Entity.Map.ID)
+                .Write(e.Entity.OriginGlobal)
+                .Write(e.Item.RefId);
+        }
+        private static void HandleBlockInventoryItemRemoved(BlockInventoryItemRemovedEvent e)
+        {
+            var server = e.Entity.Map.Net as Server;
+            server.BeginPacket(_pBlockInventoryRemoved)
+                .Write(e.Entity.Map.ID)
+                .Write(e.Entity.OriginGlobal)
+                .Write(e.Item.RefId);
+        }
+        private static void OnBlockInventoryItemAdded(NetEndpoint endpoint, Packet packet)
+        {
+            var client = endpoint as Client;
+            var r = packet.PacketReader;
+            var mapid = r.ReadInt32();
+            var be = client.Map.GetBlockEntity(r.ReadIntVec3());
+            var item = client.World.GetEntity(r.ReadInt32());
+            be.GetComp<BlockInventoryComp>().Insert(item);
+        }
+        private static void OnBlockInventoryItemRemoved(NetEndpoint endpoint, Packet packet)
+        {
+            var client = endpoint as Client;
+            var r = packet.PacketReader;
+            var mapid = r.ReadInt32();
+            var be = client.Map.GetBlockEntity(r.ReadIntVec3());
+            var item = client.World.GetEntity(r.ReadInt32());
+            be.GetComp<BlockInventoryComp>().Remove(item);
+        }
+
         private static void OnReceivePlayerForcedDropInventoryItem(NetEndpoint endpoint, Packet packet)
         {
             var server = endpoint as Server;

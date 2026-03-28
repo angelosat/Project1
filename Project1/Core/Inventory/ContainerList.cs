@@ -25,14 +25,14 @@ namespace Project1.Core.Inventory
                         .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
                         .AddColumn("preference", 96, o => actor.ItemPreferences.GetListControl(o))
                         .AddColumn("weight", 32, o => new Label(() => o.TotalWeight.ToString("0.# kg")))
-                        .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, delegate { drop(o); }, "Drop").ShowOnParentFocus(true));
+                        .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, () => drop(o), "Drop").ShowOnParentFocus(true));
 
                 throw new Exception();
                 return null;// _gui.Bind(this.Contents);
-                void drop(GameObject o)
+                void drop(Entity o)
                 {
                     if (actor.IsSpawned && actor.IsTownMember)
-                        Ingame.Instance.Events.Post(new PlayerForcedDropInventoryItemEvent(this.Parent as Entity, o as Entity, o.StackSize));
+                        Ingame.Instance.Events.Post(new PlayerForcedDropInventoryItemEvent(this.Parent, o, o.StackSize));
                 }
             }
         }

@@ -239,6 +239,8 @@ namespace Project1.Core.Entities
         public IntVec3? CellIfSpawned => this.IsSpawned ? this.Cell : null;
         internal void Detach()
         {
+            this.ContainerNew?.Remove(this);
+            this.ContainerNew = null;
             this.Container?.Remove(this as Entity);
             this.Container = null;
             this.Slot?.Assign(null, out var _);

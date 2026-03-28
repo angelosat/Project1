@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Framework.Events;
 using Project1.Framework.Serialization;
@@ -54,4 +55,6 @@ namespace Project1.Core.Inventory
     }
     public record struct InventoryItemAddedEvent(Actor Actor, Entity Item) : IEventPayload { }
     public record struct InventoryItemRemovedEvent(Actor Actor, Entity Item) : IEventPayload { }
+    public record struct BlockInventoryItemAddedEvent(BlockEntity Entity, Entity Item) : IEventPayload { }
+    public record struct BlockInventoryItemRemovedEvent(BlockEntity Entity, Entity Item) : IEventPayload { }
 }

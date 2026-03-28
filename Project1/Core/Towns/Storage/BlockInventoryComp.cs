@@ -19,13 +19,24 @@ namespace Project1.Core.Towns.Storage
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Inventory;
 
-        readonly ContainerList Contents = [];
+        //readonly ContainerList Contents = [];
+        readonly InventoryList Contents = new();
 
         internal override bool TryConsume(Entity item)
         {
-            this.Contents.Add(item);
+            this.Insert(item);
             $"{item.RefId}:{item.Name} deposited inside {this.Parent}".ToConsole();
             return true;
+        }
+        internal void Insert(Entity item)
+        {
+            var result = this.Contents.Insert(item);
+            if (result.Inserted)
+                this.Map.Events.Post(new BlockInventoryItemAddedEvent(this.Parent, item));
+        }
+        internal void Remove(Entity item)
+        {
+            this.Contents.Remove(item);
         }
         //internal override IEnumerable<Control> GetInspectorControls()
         //{

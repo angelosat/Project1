@@ -592,6 +592,7 @@ namespace Project1.Core.Entities
         }
         Sprite CachedSprite;
         public ContainerList Container;
+        public InventoryList ContainerNew;
 
         public Sprite GetSprite()
         {

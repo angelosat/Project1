@@ -98,6 +98,7 @@ public class StaticMap : MapBase, ITooltippable
         this.Town = new Town(this);
         this.Regions = new RegionManager(this);
         this.Stockpiles = new(this);
+        this.Hauling = new(this);
         this.EntityTracker = new(this);
         this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
         this.ParticleManager = new Graphics.Particles.ParticleManager(this);

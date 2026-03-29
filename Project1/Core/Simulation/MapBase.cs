@@ -98,6 +98,7 @@ public abstract class MapBase : Inspectable
     public ParticleManager ParticleManager;
     public RegionManager Regions;
     public StockpileManager Stockpiles;
+    public HaulingManager Hauling;
     protected EntityTrackerPerCell EntityTracker;
     internal List<SimulationSystem> SimulationSystems = [];
     internal CollisionSystem Collisions;
@@ -222,6 +223,7 @@ public abstract class MapBase : Inspectable
         this.World.ResolveReferences();
         this.Town.ResolveReferences();
         this.Stockpiles.ResolveReferences();
+        this.Hauling.ResolveReferences();
         this.EntityTracker.ResolveReferences();
         foreach (var chunk in this.ActiveChunks.Values)
             chunk.ResolveReferences();
@@ -1063,6 +1065,7 @@ public abstract class MapBase : Inspectable
         if(entity is Actor actor) (this.World as StaticWorld).Space.Exit(actor);
 
         entity.Slot?.Assign(null);
+        entity.Detach();
         entity.Net = this.Net;
         entity.Map = this;
         entity.Global = position;

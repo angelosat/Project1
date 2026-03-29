@@ -69,8 +69,8 @@ namespace Project1.Core.Towns.Inns
             var manager = typedCtx.Manager;
             var transaction = typedCtx.Manager.GetTransactionByGuest(typedCtx.NextGuest);
             var money = i.Actor.Map.World.Get<Entity>(transaction.Money);
-            if (money.Cell != transaction.Desk.Above)
-                return;
+            //if (money.Cell != transaction.Desk.Above)
+            //    return;
             manager.RegisterGuest(i.Target.Global);
         }
     }

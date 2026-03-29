@@ -6,11 +6,12 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.Simulation.Physics
 {
-    public sealed class PositionComponent : EntityComp
+    public sealed class TransformComp : EntityComp
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Transform;
         public override string Name { get; } = "Position";
 
+        public ITransformAnchor Anchor;
         public GameObject ParentEntity;
         public Vector2 Direction;
         public Vector3 Velocity;
@@ -18,10 +19,25 @@ namespace Project1.Core.Simulation.Physics
         Vector3 _global;
         public Vector3 Global
         {
-            get => this._global;
+            //get => this._global;
+            get => this.Anchor?.Global ?? this._global;
             set => this._global = value;
         }
-
+        public MapBase Map
+        {
+            get => this.Anchor?.Map ?? field;
+            set => field = value;
+        }
+        public bool IsSpawned => this.Map is not null && this.Anchor is null;
+        public bool IsSpawnedIn(MapBase map) => this.Map == map && this.Anchor is null;
+        public void Detach()
+        {
+            this.Anchor = null;
+            //if (!this.IsSpawned)
+            //    return;
+            this.Map?.Despawn(this.Owner);
+            this.Map = null;
+        }
         public override string ToString()
         {
             return this.Global.ToString() + "\n" +

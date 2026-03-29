@@ -34,7 +34,8 @@ public sealed class InnTransaction(EntityRefId guest, IntVec3 desk)
     {
         if (this.State != States.Processed)
             throw new Exception();
-        this.State = States.Finished;
+        //this.State = States.Finished;
+        this.State = States.Disposed;
     }
     internal void MarkPaid(Entity money)
     {

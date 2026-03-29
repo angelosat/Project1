@@ -171,11 +171,17 @@ namespace Project1.Core.Entities
             this.OnObjectChanged();
             if (newItem is not null)
             {
-                newItem.Container?.Remove(newItem as Entity);
-                newItem.Map?.Despawn(newItem as Entity);
-                newItem.Slot?.Object = prevItem;
+                //newItem.Container?.Remove(newItem as Entity);
+                //newItem.Map?.Despawn(newItem as Entity);
+                //newItem.Slot?.Object = prevItem;
+                //newItem.Slot = this;
+                //newItem.Owner = this.Owner;
+
+                var prevSlot = newItem.Slot;
+                ((Entity)newItem).Detach();
+                prevSlot?.Object = prevItem;
                 newItem.Slot = this;
-                newItem.Owner = this.Owner;
+                newItem.Transform.Anchor = this.Owner;
             }
             this.Owner.World.Events.Post(new SlotUpdatedEvent(this));
             return true;

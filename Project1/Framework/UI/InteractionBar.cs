@@ -62,7 +62,7 @@ namespace Project1.Core.UI
 
         public new static int DefaultHeight = UIManager.DefaultProgressBar.Height;
         public static int DefaultWidth = UIManager.DefaultProgressBar.Width;
-        PositionComponent PositionComponent;
+        TransformComp PositionComponent;
         public override void Draw(SpriteBatch sb)
         {
             Vector2 screenLoc;

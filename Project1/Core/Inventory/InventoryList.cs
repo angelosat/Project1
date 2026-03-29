@@ -7,6 +7,7 @@ using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Inventory
 {
@@ -55,6 +56,7 @@ namespace Project1.Core.Inventory
     {
         readonly internal ChangeNotifier Notifier = new();
         private readonly List<Entity> items = [];
+        public event Action<Entity> ItemAdded, ItemRemoved;
 
         public IReadOnlyList<Entity> Items => this.items;
         public readonly struct InsertResult(ISet<Entity> merged, bool added)
@@ -86,6 +88,8 @@ namespace Project1.Core.Inventory
             this.items.Add(item);
             this.Notifier.Notify();
             item.ContainerNew = this;
+            this.ItemAdded?.Invoke(item);
+
             return new(merged, true);
         }
 
@@ -93,6 +97,10 @@ namespace Project1.Core.Inventory
         {
             this.items.Remove(item);
             item.Container = null;
+            this.ItemRemoved?.Invoke(item);
         }
+
+        public bool Contains(Entity item)
+            => this.Items.Contains(item);
     }
 }

@@ -23,14 +23,14 @@ namespace Project1.Core.Towns.Inns
             //if (manager.GetTransactionByGuest(actor) is CheckInTransaction transaction)
             if (manager.GetTransactionByClerk(actor) is InnTransaction transaction)
             {
-                if (transaction.IsFinished)
-                {
-                    var money = map.World.Get<Entity>(transaction.Money);
-                    if (money.Cell != transaction.Desk.Above)
-                        throw new Exception();
-                    transaction.Dispose();
-                    return new Plan(PlanDefOf.GoHaul, money);
-                }
+                //if (transaction.IsFinished)
+                //{
+                //    var money = map.World.Get<Entity>(transaction.Money);
+                //    if (money.Cell != transaction.Desk.Above)
+                //        throw new Exception();
+                //    transaction.Dispose();
+                //    return new Plan(PlanDefOf.GoHaul, money);
+                //}
                 if (transaction.IsProcessed && actor.Hauled is null)
                 {
                     return new Plan(InnsDefOf.PlanRegisterGuest, new TargetArgs(actor.Map, transaction.Desk));

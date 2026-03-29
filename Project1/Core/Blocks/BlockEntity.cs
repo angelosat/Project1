@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace Project1.Core.Blocks
 {
-    public class BlockEntity : Inspectable, IDisposable, ISerializableNew<BlockEntity>, ISaveableNewNew<BlockEntity>, ISelectable
+    public class BlockEntity : Inspectable, ITransformAnchor, IDisposable, ISerializableNew<BlockEntity>, ISaveableNewNew<BlockEntity>, ISelectable
     {
         public string Name { get; set; }
         public HashSet<IntVec3> CellsOccupied = [];

@@ -241,13 +241,15 @@ namespace Project1.Core.Entities
         {
             this.ContainerNew?.Remove(this);
             this.ContainerNew = null;
-            this.Container?.Remove(this as Entity);
+            this.Container?.Remove(this);
             this.Container = null;
             this.Slot?.Assign(null, out var _);
             this.Slot = null;
-            this.Map?.Despawn(this);
-            this.Map = null;
+            //this.Map?.Despawn(this);
+            //this.Map = null;
+            this.Transform.Detach();
             this.Owner = null;
+            //this.Transform.Anchor = null;
         }
         public IEnumerable<Entity> GetSelfAndChildren()
         {

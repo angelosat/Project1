@@ -39,7 +39,17 @@ using System.Linq;
 
 namespace Project1.Core.Entities
 {
-    public abstract class GameObject : Inspectable, ITooltippable, IContextable, INameplateable, ISlottable, ISelectable//, ILabeled, IInspectable
+    public abstract class EntityBase : Inspectable
+    {
+        public abstract MapBase Map { get; }
+        public abstract Vector3 Global { get; }
+    }
+    public interface ITransformAnchor
+    {
+        public abstract MapBase Map { get; }
+        public Vector3 Global { get; }
+    }
+    public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable, IContextable, INameplateable, ISlottable, ISelectable//, ILabeled, IInspectable
     {
         public static readonly Dictionary<int, GameObject> Templates = [];
         public override string LabelReadable => this.Name;
@@ -119,17 +129,25 @@ namespace Project1.Core.Entities
 
         public WorldBase World { get; set; }
 
-        MapBase _map;
+        //MapBase _map;
         public MapBase LastMap { get; private set; }
         public MapBase Map
         {
-            get => this._map;
+            get => this.Transform.Map;
             set
             {
-                this._map = value;
+                //this._map = value;
+                this.Transform.Map = value;
                 if (value is not null)
                     this.LastMap = value;
             }
+            //get => this._map;
+            //set
+            //{
+            //    this._map = value;
+            //    if (value is not null)
+            //        this.LastMap = value;
+            //}
         }
         public Town Town;
        
@@ -180,6 +198,7 @@ namespace Project1.Core.Entities
         {
             return this.DefComponent.Quality.Color;
         }
+        public EntityBase OwnerNew;
         public GameObject Owner
         {
             get => this.Transform.ParentEntity;
@@ -266,7 +285,8 @@ namespace Project1.Core.Entities
         internal MaterialDef PrimaryMaterial => this.Body.Material;
         
         public bool IsForbidden;
-        public bool IsSpawned => this._map is not null;
+        //public bool IsSpawned => this._map is not null;
+        public bool IsSpawned => this.Transform.IsSpawned;
         public bool IsReserved => this.Map?.Town.ReservationManager.IsReserved(this) ?? false;
         public bool IsPlayerControlled => this.Net.GetPlayers().Any(p => p.ControllingEntity == this); 
         public virtual bool IsHaulable => this.Def.IsHaulable;
@@ -303,9 +323,9 @@ namespace Project1.Core.Entities
         [InspectorHidden]
         public DefComponent DefComponent => this._defComponent ??= this.GetComponent<DefComponent>();
 
-        PositionComponent _transform;
+        TransformComp _transform;
         [InspectorHidden]
-        public PositionComponent Transform => this._transform ??= this.GetComponent<PositionComponent>();
+        public TransformComp Transform => this._transform ??= this.GetComponent<TransformComp>();
 
         PhysicsComp _physicsCached;
         [InspectorHidden]
@@ -930,7 +950,8 @@ namespace Project1.Core.Entities
         }
 
         public bool Exists => this.IsSpawned;
-        public bool ExistsOn(MapBase map) => this._map == map && this.Owner == null;
+        //public bool ExistsOn(MapBase map) => this._map == map && this.Owner == null;
+        public bool ExistsOn(MapBase map) => this.Transform.IsSpawnedIn(map);
 
         internal void MoveOrder(TargetArgs target, bool enqueue)
         {

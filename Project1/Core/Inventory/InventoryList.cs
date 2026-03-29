@@ -1,43 +1,35 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Entities;
+using Project1.Core.Towns.Storage;
 using Project1.Core.UI;
 using Project1.Framework.Events;
+using Project1.Framework.Helpers;
 using Project1.Framework.UI;
-using SharpDX.Direct2D1;
 using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.Inventory
 {
-    internal sealed class InventoryListGui : GroupBox
+    internal sealed class InventoryListGui : SelectionBoundControl
     {
-        Table<Entity> TableContents;
-        InventoryList Inventory;
-        public InventoryListGui(InventoryList inv)
+        readonly Table<Entity> TableContents;
+        readonly InventoryList Inventory;
+        BlockInventoryComp Comp;
+        public InventoryListGui()
         {
-            this.Inventory = inv;
-            inv.Notifier.Subscribe(() => this.Invalidate(true));
-            inv.ItemAdded += this.Inv_ItemAdded;
-            inv.ItemRemoved += this.Inv_ItemRemoved;
-            //this.TableContents.ClearControls();
-
             this.TableContents = new Table<Entity>()
                     .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
-                    .AddColumn("weight", 32, o => new Label(() => o.TotalWeight.ToString("0.# kg")));
-            this.TableContents.AddItems(inv.Items);
-            this.Controls.Add(this.TableContents);
-
+                    .AddColumn("weight", 48, o => new Label(() => o.TotalWeight.ToString("0.# kg")));
+    
+            this.Controls.Add(this.TableContents
+                .ToScrollableBox(this.TableContents.RowWidth, 16 * (LabelNew.DefaultHeight + 1), ScrollModes.Vertical)
+                .ToPanelLabeled("Inventory"));
         }
-
-        //public void Refresh(InventoryList inv)
-        //{
-
-
-        //}
-
+        
         protected override void OnHidden()
         {
-            this.Inventory.ItemAdded -= this.Inv_ItemAdded;
-            this.Inventory.ItemRemoved -= this.Inv_ItemRemoved;
+            this.Comp.ItemAdded -= this.Inv_ItemAdded;
+            this.Comp.ItemRemoved -= this.Inv_ItemRemoved;
             base.OnHidden();
         }
 
@@ -46,11 +38,22 @@ namespace Project1.Core.Inventory
 
         private void Inv_ItemAdded(Entity obj)
             => this.TableContents.AddItem(obj);
+
+        protected internal override void OnBind(ISelectable selectable)
+        {
+            if (selectable is not BlockEntity be)
+                return;
+            if (!be.TryGetComp<BlockInventoryComp>(out var comp))
+                return;
+            comp.ItemAdded += this.Inv_ItemAdded;
+            comp.ItemRemoved += this.Inv_ItemRemoved;
+            this.TableContents.AddItems(comp.Items);
+            this.Comp = comp;
+        }
     }
-    public sealed class InventoryList// : ObservableCollection<Entity>
+    public sealed class InventoryList
     {
         readonly internal ChangeNotifier Notifier = new();
-        public event Action<Entity> ItemAdded, ItemRemoved;
         private readonly List<Entity> items = [];
 
         public IReadOnlyList<Entity> Items => this.items;
@@ -82,7 +85,6 @@ namespace Project1.Core.Inventory
             item.Detach();
             this.items.Add(item);
             this.Notifier.Notify();
-            this.ItemAdded?.Invoke(item);
             item.ContainerNew = this;
             return new(merged, true);
         }
@@ -91,7 +93,6 @@ namespace Project1.Core.Inventory
         {
             this.items.Remove(item);
             item.Container = null;
-            this.ItemRemoved?.Invoke(item);
         }
     }
 }

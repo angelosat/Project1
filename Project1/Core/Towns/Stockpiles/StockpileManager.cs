@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Simulation;
+using Project1.Core.Towns.Storage;
 using Project1.Core.Towns.Zones;
+using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,6 +15,8 @@ namespace Project1.Core.Towns.Stockpiles
         public IReadOnlyList<Stockpile> Stockpiles => this._allStockpiles;
         public IEnumerable<Entity> AllItems => this._allStockpiles.SelectMany(s => s.Items);
         public IEnumerable<Entity> GetItems(ZoneId stockpileId) => stockpileId != ZoneId.Null ? this._allStockpilesById[stockpileId].Items : this.AllItems;
+
+        Dictionary<IntVec3, BlockInventoryComp> BlockEntities = [];
         public StockpileManager(MapBase map) : base(map)
         {
             map.Events.ListenTo<ZoneCreatedEvent>(OnZoneCreated);

@@ -31,7 +31,11 @@ namespace Project1.Core.Entities
             get => string.IsNullOrEmpty(this.CustomName) ? this.Owner.Def.LabelReadable : this.CustomName; 
             set => this.CustomName = value;
         }
-
+        internal override void CopyFrom(EntityComp source)
+        {
+            var comp = (DefComponent)source;
+            this.CustomName = comp.CustomName;
+        }
         internal override void ApplyQuality(Entity parent, QualityDef quality)
         {
             this.Quality = quality;

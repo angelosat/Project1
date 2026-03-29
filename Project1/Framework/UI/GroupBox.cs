@@ -132,5 +132,8 @@ namespace Project1.Framework.UI
                 mode |= ScrollModes.Vertical;
             return new ScrollableBoxNewNewNew(boundsW, boundsH, mode).AddControls(this);
         }
+        internal Control ToScrollableBox(int boundsW, int boundsH, ScrollModes mode = ScrollModes.Vertical)
+            => new ScrollableBoxNewNewNew(boundsW, boundsH, mode).AddControls(this);
+        
     }
 }

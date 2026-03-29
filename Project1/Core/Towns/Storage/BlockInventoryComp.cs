@@ -3,7 +3,6 @@ using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Inventory;
 using Project1.Framework;
-using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 
@@ -19,9 +18,9 @@ namespace Project1.Core.Towns.Storage
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Inventory;
 
-        //readonly ContainerList Contents = [];
         readonly InventoryList Contents = new();
-
+        public IReadOnlyList<Entity> Items => this.Contents.Items;
+        public event Action<Entity> ItemAdded, ItemRemoved;
         internal override bool TryConsume(Entity item)
         {
             this.Insert(item);
@@ -32,19 +31,19 @@ namespace Project1.Core.Towns.Storage
         {
             var result = this.Contents.Insert(item);
             if (result.Inserted)
+            {
+                this.ItemAdded?.Invoke(item);
                 this.Map.Events.Post(new BlockInventoryItemAddedEvent(this.Parent, item));
+            }
         }
         internal void Remove(Entity item)
         {
             this.Contents.Remove(item);
+            this.ItemRemoved?.Invoke(item);
         }
-        //internal override IEnumerable<Control> GetInspectorControls()
-        //{
-        //    yield return this.Contents.Gui;
-        //}
-        internal override IEnumerable<Control> GetInspectorControls()
+        internal override IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
-            yield return new InventoryListGui(this.Contents);
+            yield return ("Storage", typeof(InventoryListGui));
         }
     }
 }

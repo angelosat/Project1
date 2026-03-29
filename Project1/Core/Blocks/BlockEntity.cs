@@ -42,11 +42,13 @@ namespace Project1.Core.Blocks
             this.OriginGlobal = originGlobal;
             this.CellsOccupied.Add(originGlobal);
             this.Def = def;
+            this.Name = $"{def.LabelReadable} (entity)";
         }
         public BlockEntity(BlockDef def)
         {
             this.Comps = new(this);
             this.Def = def;
+            this.Name = $"{def.LabelReadable} (entity)";
         }
         public BlockEntity SetFootprint(IEnumerable<IntVec3> cells)
         {

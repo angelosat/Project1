@@ -281,7 +281,7 @@ namespace Project1.Core.Entities
             foreach (var comp in this.Components.Values)
                 obj.GetComponent(comp.GetType()).CopyFrom(comp);
             obj._stackSize = amount < 0 ? this.StackSize : amount;
-            obj.Name = this.Name;
+            //obj.Name = this.Name;
             return obj;
         }
         

@@ -264,6 +264,18 @@ namespace Project1.Core.Towns.Shops
             return true;
             // TODO made it a bool return in case i have some conditions that can make it fail in the future
         }
+        //internal bool TryBeginTransaction(ShopTransaction transaction)
+        //{
+        //    this._transactionsAll.Add(transaction);
+        //    this._transactionsRequests.Add(transaction.Buyer, transaction);
+        //    this._transactionsByBuyer.Add(transaction.Buyer, transaction);
+        //    this._transactionsByItem.Add(transaction.Item, transaction);
+        //    this.Town.Map.Events.Post(new TransactionStartedEvent(this.Town.Map, transaction));
+        //    return true;
+        //    // TODO made it a bool return in case i have some conditions that can make it fail in the future
+        //}
+        internal bool TryGetTransaction(EntityRefId buyer, out ShopTransaction transaction)
+          => this._transactionsByBuyer.TryGetValue(buyer, out transaction);
         internal bool TryGetTransaction(Actor buyer, out ShopTransaction transaction)
             => this._transactionsByBuyer.TryGetValue(buyer.RefId, out transaction);
         internal ShopTransaction GetTransaction(Actor buyer)
@@ -535,6 +547,7 @@ namespace Project1.Core.Towns.Shops
             var t = this._transactionsByBuyer[buyer.RefId];
             t.Money = money.RefId;
             t.MarkPaid();
+            this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
         }
         internal void RingUp(Actor seller, Entity item)
         {
@@ -542,14 +555,22 @@ namespace Project1.Core.Towns.Shops
             if (item.RefId != t.Item)
                 throw new InvalidOperationException();
             t.RingUp();
+            this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
         }
         internal void FinishTransaction(Actor buyer)
         {
             var t = this._transactionsByBuyer[buyer.RefId];
             var shoppinglist = this._shoppingListsByActor[buyer.RefId];
-            t.MarkComplete();
+            //t.MarkComplete();
             shoppinglist.MarkFulfilled();
             t.Dispose();
+            this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+        }
+        internal void MarkProcessed(Actor seller)
+        {
+            var t = this._transactionsBySeller[seller.RefId];
+            t.MarkProcessed();
+            this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
         }
 
         internal IEnumerable<Entity> GetItemsForSale()

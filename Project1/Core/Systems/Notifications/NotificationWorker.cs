@@ -13,7 +13,8 @@ namespace Project1.Core.Systems.Notifications
     {
         public override void Hook(/*MapBase map*/)
         {
-            Registry.MapEventHooksServer.Register<TransactionStartedEvent>(HandleTransactionStarted);
+            //Registry.MapEventHooksServer.Register<TransactionStartedEvent>(HandleTransactionStarted);
+            Registry.MapEventHooksClient.Register<TransactionStartedEvent>(HandleTransactionStarted);
         }
 
         private void HandleTransactionStarted(TransactionStartedEvent e)

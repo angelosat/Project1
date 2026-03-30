@@ -1,8 +1,6 @@
 ﻿using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Framework;
-using System.Net;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Project1.Core.UI.Hud.Chat
 {

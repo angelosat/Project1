@@ -4,6 +4,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
+using Project1.Core.Simulation;
 using Project1.Core.Towns.Services;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.UI;
@@ -18,6 +19,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Shops
 {
+    internal record struct TransactionStartedEvent(MapBase Map, ShopTransaction Transaction) : IEventPayload { }
     [EnsureStaticCtorCall]
     internal static class PacketsShops
     {
@@ -258,6 +260,7 @@ namespace Project1.Core.Towns.Shops
             this._transactionsRequests.Add(actor.RefId, transaction);
             this._transactionsByBuyer.Add(actor.RefId, transaction);
             this._transactionsByItem.Add(item.RefId, transaction);
+            actor.Map.Events.Post(new TransactionStartedEvent(actor.Map, transaction));
             return true;
             // TODO made it a bool return in case i have some conditions that can make it fail in the future
         }

@@ -177,7 +177,8 @@ namespace Project1.Core.Interactions
         };
         public static readonly InteractionDef WaitingService = new("WaitService", typeof(InteractionWaitingService))
         {
-            Controller = InteractionControllers.Passive
+            //Controller = InteractionControllers.Passive
+            Controller = InteractionControllers.ExternalFull
         };
         public static readonly InteractionDef WaitingPayment = new("WaitPayment", typeof(InteractionWaitForPayment))
         {

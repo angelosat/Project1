@@ -2,7 +2,6 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Quests;
 using System;
 
 namespace Project1.Core.Towns.Shops;

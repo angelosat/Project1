@@ -544,6 +544,7 @@ namespace Project1.Core.Towns.Shops
         {
             var t = this._transactionsByBuyer[buyer.RefId];
             var shoppinglist = this._shoppingListsByActor[buyer.RefId];
+            t.MarkComplete();
             shoppinglist.MarkFulfilled();
             t.Dispose();
         }
@@ -555,6 +556,8 @@ namespace Project1.Core.Towns.Shops
 
         internal override bool IsClaimedBySystem(Entity item)
         {
+            if (item.IsForSale())
+                return true;
             foreach(var t in this._transactionsAll)
             {
                 if (t.Item != item.RefId)

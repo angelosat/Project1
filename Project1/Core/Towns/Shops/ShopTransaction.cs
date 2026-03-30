@@ -10,7 +10,7 @@ sealed class ShopTransaction(Actor buyer, Entity item, int price, IntVec3 counte
 {
     internal enum TransactionState
     {
-        Unstarted, WaitingForPayment, Paid, Complete, Disposed, Cancelled
+        Unstarted, WaitingForPayment, Paid, Processed, Complete, Disposed, Cancelled
     }
     internal TransactionState State;
     bool _cancelled;
@@ -24,6 +24,7 @@ sealed class ShopTransaction(Actor buyer, Entity item, int price, IntVec3 counte
     internal bool IsCancelled => this._cancelled;
     internal bool IsDisposed => this.State == TransactionState.Disposed;
     internal bool IsComplete => this.State == TransactionState.Complete;
+    internal bool IsProcessed => this.State == TransactionState.Processed;
     internal bool IsPaid => this.State == TransactionState.Paid;
     internal bool WaitingForPayment => this.State == TransactionState.WaitingForPayment;
     public bool TimedOut => this.TicksRemaining <= 0;
@@ -39,6 +40,18 @@ sealed class ShopTransaction(Actor buyer, Entity item, int price, IntVec3 counte
     internal void RefreshTimer()
         => this.TicksRemaining = Ticks.FromHours(1);
     internal void MarkPaid() => this.State = TransactionState.Paid;
+    internal void MarkProcessed()
+    {
+        if (this.State != TransactionState.Paid)
+            throw new System.Exception();
+        this.State = TransactionState.Processed;
+    }
+    internal void MarkComplete()
+    {
+        if (this.State != TransactionState.Processed)
+            throw new System.Exception();
+        this.State = TransactionState.Complete;
+    }
     internal void RingUp() => this.State = TransactionState.WaitingForPayment;
     internal void Dispose() => this.State = TransactionState.Disposed;
 }

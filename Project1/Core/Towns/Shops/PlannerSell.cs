@@ -2,6 +2,7 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Quests;
 using System;
 
 namespace Project1.Core.Towns.Shops;
@@ -16,22 +17,31 @@ class PlannerSell : Planner
         var map = actor.Map;
         var manager = map.Town.ShopManager;
 
-        if(manager.TryGetTransactionBySeller(actor, out var existing))
+        if(manager.TryGetTransactionBySeller(actor, out var transaction))
         {
-            var item = map.World.GetEntity(existing.Item);
+            if(actor.Hauled?.RefId == transaction.Money)
+            if(transaction.IsProcessed)
+            {
+                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, transaction.Counter)){ Continuation = PlanContinuationPolicy.Yield };
+                
+            }
+            var item = map.World.GetEntity(transaction.Item);
 
             if (actor.Hauled == item)
             {
-                if (!actor.CanReachAndReserve(existing.Counter))
+                if (!actor.CanReachAndReserve(transaction.Counter))
                     throw new Exception();
 
-                if (map.World.Get<Entity>(existing.Money) is Entity money && money.Cell == existing.Counter.Above && money.StackSize >= existing.Price)
-                    return new Plan(PlanDefOf.RingUpFinish, money) { AmountA = existing.Price, Continuation = PlanContinuationPolicy.Yield };
+                if (map.World.Get<Entity>(transaction.Money) is Entity money &&
+                    money.Cell == transaction.Counter.Above &&
+                    money.StackSize >= transaction.Price)
+                    return new Plan(PlanDefOf.RingUpFinish, money) { AmountA = transaction.Price };//, Continuation = PlanContinuationPolicy.Yield };
 
-                return new Plan(PlanDefOf.WaitForPayment, new TargetArgs(map, existing.Counter.Above));
+                return new Plan(PlanDefOf.WaitForPayment, new TargetArgs(map, transaction.Counter.Above));
             }
-
-            if (item.Cell != existing.Counter.Above)
+            if (transaction.IsProcessed)
+                return null;
+            if (item.Cell != transaction.Counter.Above)
                 return null;
 
             if (!actor.CanReach(item))

@@ -32,15 +32,22 @@ sealed class PlannerBuy : Planner
 
             if (carried is null)
             {
-                if (transaction.IsComplete)
+                //if (transaction.IsComplete)
+                //{
+                //    var (role, score) = manager.GetPotential(item);
+                //    if (role is null)
+                //        throw new Exception();
+                //    manager.Commit(role, item, score);
+                //    shops.FinishTransaction(actor);
+                //    return null;
+                //}
+                if (transaction.IsProcessed)
                 {
-                    var (role, score) = manager.GetPotential(item);
-                    if (role is null)
-                        throw new Exception();
-                    manager.Commit(role, item, score);
-                    shops.FinishTransaction(actor);
-                    return null;
-                    throw new Exception();
+                    if (item.Cell == transaction.Counter.Above)
+                    {
+                        actor.AI.State.Log.Write($"I bought {item.Name}");
+                        return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
+                    }
                 }
                 if (transaction.WaitingForPayment) // waiting for payment
                 {
@@ -51,16 +58,19 @@ sealed class PlannerBuy : Planner
                                                                // maybe cancel the transaction gracefully if otherwise
                     return new Plan(PlanDefOf.RetrieveFromInventory, moneyInInventory) { AmountA = price };
                 }
-                if (item.Cell == transaction.Counter.Above)
-                {
-                    if (transaction.IsPaid) // item paid for and ready to be claimed
-                    {
-                        actor.AI.State.Log.Write($"I bought {item.Name}");
-                        return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
-                    }
-                    else // item on counter and waiting for clerk
-                        return new Plan(PlanDefOf.WaitForService);
-                }
+                //if (item.Cell == transaction.Counter.Above)
+                //{
+                //    if(transaction.IsProcessed)
+                //        //if (transaction.IsPaid) // item paid for and ready to be claimed
+                //    {
+                //        actor.AI.State.Log.Write($"I bought {item.Name}");
+                //        return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
+                //    }
+                //    else // item on counter and waiting for clerk
+                //        return new Plan(PlanDefOf.WaitForService);
+                //}
+                return new Plan(PlanDefOf.WaitForService);
+
             }
             if (carried is not null)
             {

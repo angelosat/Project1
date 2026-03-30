@@ -19,7 +19,8 @@ sealed class PlannerBrowse : Planner
         if (actor.IsHauling)
             return null;
         var list = shops.GetShoppingListPopulated(actor);
-        //while(list.Peek() is Entity item)
+        if (list.HasCompletedPurchaseThisVisit)
+            return null;
         while (list.Dequeue() is Entity item)
         {
             if (item.Map != map)

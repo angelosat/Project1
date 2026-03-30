@@ -42,6 +42,8 @@ internal sealed class InteractionWaitingService : InteractionLogic
             return false;
         if (typedCtx.Transaction.WaitingForPayment)
             return false;
+        if (typedCtx.Transaction.IsProcessed)
+            return false;
         return true;
     }
 }

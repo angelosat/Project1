@@ -5,32 +5,6 @@ using Project1.Framework;
 using System;
 
 namespace Project1.Core.Interactions;
-
-sealed class InteractionClaimBoughtItem : InteractionLogic
-{
-    sealed class Context : InteractionContext
-    {
-        internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
-    }
-
-    protected override InteractionContext CreateContextInternal() => new Context();
-    internal override void OnFinish(Interaction i)
-    {
-        var ctx = i.Context;
-        var actor = ctx.Actor;
-        if (actor.Net.IsClient)
-            return;
-        var item = ctx.Target.Entity;
-        actor.Inventory.HaulNew(item, item.StackSize);
-        var manager = actor.AI.State.ItemPreferences;
-        //var (role, score) = manager.GetPotential(item);
-        //if (role is null)
-        //    throw new Exception();
-        //manager.Commit(role, item, score);
-        manager.TryCommit(item);
-        actor.Map.Town.ShopManager.FinishTransaction(actor);
-    }
-}
 sealed class InteractionRingUpTransactionFinish : InteractionLogic
 {
     sealed class Context : InteractionContext
@@ -43,10 +17,12 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
     internal override void OnFinish(Interaction i)
     {
         var ctx = i.Context;
+        var typedCtx = (Context)ctx;
         var actor = ctx.Actor;
         if (actor.Net.IsClient)
             return;
         InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity, ctx.Count);
+        typedCtx.Transaction.MarkProcessed();
     }
 }
 sealed class InteractionRingUpTransaction : InteractionLogic

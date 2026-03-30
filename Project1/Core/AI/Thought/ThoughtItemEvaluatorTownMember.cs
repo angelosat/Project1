@@ -57,6 +57,8 @@ internal class ThoughtItemEvaluatorTownMember : ThoughtProcess
         {
             var result = manager.EvaluateAndRegister(item);
             //state.Knowledge.Register(item, result);
+            if (state.Owner.Map.Town.IsClaimedBySystem(item))
+                return;
             manager.TryPreCommit(item, result);
         }
     }

@@ -109,6 +109,7 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Construction = new("Construction", typeof(BlockConstruction));
         static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(BlockShopCounter))
         {
+            BlockEntityCompSpecs = [new BlockInventoryComp.Spec()],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks])
         };
         static public readonly BlockDef ReceptionDesk = new("ReceptionDesk", typeof(BlockShopCounter))

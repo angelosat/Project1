@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Input;
-using Project1.Core.Inventory;
+using Project1.Core.Systems.Inventory;
 using Project1.Core.Towns.Storage;
 using Project1.Framework;
 using System;
@@ -42,6 +42,7 @@ namespace Project1.Core.Networking
             var actor = client.World.Get<Actor>(r.ReadInt32());
             var item = client.World.GetEntity(r.ReadInt32());
             actor.Inventory.Contents.AddInternal(item);
+            //actor.Inventory.Insert(item);
         }
         private static void OnInventoryItemRemoved(NetEndpoint endpoint, Packet packet)
         {

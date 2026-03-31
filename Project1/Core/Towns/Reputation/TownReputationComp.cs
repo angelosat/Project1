@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Framework.Events;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Reputation;
 
+internal record struct ReputationDeltaAppliedEvent(EntityRefId ActorId, float Delta) : IEventPayload;
 public sealed class TownReputationComp : TownComponent, IGuiNew
 {
     static readonly List<ReputationSourceDef> AllDefs = Def.GetDefs<ReputationSourceDef>().ToList();
@@ -32,9 +34,10 @@ public sealed class TownReputationComp : TownComponent, IGuiNew
             return;
         this._table.Add(agent.RefId, new(agent, this.Town.Map.World.CurrentTick));
     }
-    internal void ApplyDelta(EntityRefId buyer, int v)
+    internal void ApplyDelta(EntityRefId actor, int v)
     {
-        this._table[buyer].ApplyDelta(v);
+        this._table[actor].ApplyDelta(v);
+        this.Map.Events.Post(new ReputationDeltaAppliedEvent(actor, v));
     }
     public Control CreateControl()
     {

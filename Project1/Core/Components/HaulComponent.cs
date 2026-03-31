@@ -5,7 +5,7 @@ using Project1.Core.Animations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Resources;
-using Project1.Core.Inventory;
+using Project1.Core.Systems.Inventory;
 
 namespace Project1.Core.Components
 {

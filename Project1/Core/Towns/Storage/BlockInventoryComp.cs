@@ -1,8 +1,8 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
-using Project1.Core.Inventory;
 using Project1.Core.Legacy.Storage;
+using Project1.Core.Systems.Inventory;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
@@ -36,6 +36,12 @@ namespace Project1.Core.Towns.Storage
             this.Insert(item);
             $"{item.RefId}:{item.Name} deposited inside {this.Parent}".ToConsole();
             return true;
+        }
+        internal void InsertInt(Entity item)
+        {
+            this.Contents.InsertInt(item);
+            item.Transform.Anchor = this.Parent;
+            this.Map.Events.Post(new BlockInventoryItemAddedEvent(this.Parent, item));
         }
         internal void Insert(Entity item)
         {

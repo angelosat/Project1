@@ -27,7 +27,7 @@ namespace Project1.Core.Networking
     internal enum PlayerSavingState
     { Saved, Changed, Saving }
 
-    public class Client : NetEndpoint
+    public sealed class Client : NetEndpoint
     {
         public override bool IsServer => false;
         public override bool IsClient => true;
@@ -63,11 +63,19 @@ namespace Project1.Core.Networking
 
         private const int OrderedReliablePacketsHistoryCapacity = 64;
         private readonly Queue<Packet> OrderedReliablePacketsHistory = new(OrderedReliablePacketsHistoryCapacity);
-
+        //readonly List<IPresentationSystem> _systems = [];
         private Client()
         {
             Registry.EndpointHooks.HookTo(this.Events);
             this.ChatService = new(this);
+
+            //foreach (var type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
+            //{
+            //    if (typeof(IPresentationSystem).IsAssignableFrom(type) && !type.IsAbstract)
+            //        _systems.Add((IPresentationSystem)Activator.CreateInstance(type));
+            //}
+            //foreach (var sys in _systems)
+            //    sys.Init();
         }
         SnapshotManager Snapshots = new();
         public PlayerData PlayerData;
@@ -998,6 +1006,10 @@ namespace Project1.Core.Networking
 
         internal void SetMap(MapBase map)
         {
+            if(this.Map is not null)
+            {
+                Registry.MapEventHooksClient.UnHook(this.Map.Events);
+            }
             this.Map = map;
             this.World = map.World;
             Registry.MapEventHooksClient.HookTo(map.Events);

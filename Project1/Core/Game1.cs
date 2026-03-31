@@ -23,6 +23,7 @@ using Project1.Core.Animations;
 using Project1.Framework.UI;
 using Project1.Framework;
 using Project1.Core.Networking;
+using Project1.Core.Systems.Presentation;
 
 namespace Project1.Core
 {
@@ -168,6 +169,7 @@ namespace Project1.Core
 
             /// def init
             EnsureInitHelper.Init();
+            PresentationSystem.Init();
 
             GameObject.LoadTemplates();
 

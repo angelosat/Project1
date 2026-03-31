@@ -5,7 +5,7 @@ using Project1.Framework.Events;
 using Project1.Framework.Serialization;
 using System;
 
-namespace Project1.Core.Inventory
+namespace Project1.Core.Systems.Inventory
 {
     internal sealed class SlotUpdatedEvent : IEventPayload
     {

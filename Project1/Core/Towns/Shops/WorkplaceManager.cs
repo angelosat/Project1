@@ -3,6 +3,7 @@ using Project1.Core.Components;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
+using Project1.Core.Resources;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Services;
@@ -255,7 +256,7 @@ namespace Project1.Core.Towns.Shops
         readonly List<ShopTransaction> _transactionsAll = [];
         internal bool TryBeginTransaction(Actor actor, Entity item, int price, IntVec3 servicePoint)
         {
-            var transaction = new ShopTransaction(this.Map.World.CurrentTick, actor, item, price, servicePoint);
+            var transaction = new ShopTransaction(this.Map.World.CurrentTick, (int)actor.Resources.GetValue(ResourceDefOf.Patience), actor, item, price, servicePoint);
             this._transactionsAll.Add(transaction);
             this._transactionsRequests.Add(actor.RefId, transaction);
             this._transactionsByBuyer.Add(actor.RefId, transaction);

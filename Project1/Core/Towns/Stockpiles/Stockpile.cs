@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Stockpiles
 {
-    public class Stockpile : Zone, IStorageNew, IContextable, ISelectable, IUpdatable
+    public sealed class Stockpile : Zone, IStorageNew, IContextable, ISelectable, IUpdatable
     {
         public override ZoneDef ZoneDef => ZoneDefOf.Stockpile;
         public StorageSettings Settings { get; } = new();

@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Stockpiles
 {
-    public class HaulingManager : MapComponent
+    public sealed class HaulingManager : MapComponent
     {
         readonly List<Stockpile> _allStockpiles = [];
         readonly Dictionary<ZoneId, Stockpile> _allStockpilesById = [];
@@ -18,6 +18,7 @@ namespace Project1.Core.Towns.Stockpiles
         public IEnumerable<Entity> GetItems(ZoneId stockpileId) => stockpileId != ZoneId.Null ? this._allStockpilesById[stockpileId].Items : this.AllItems;
 
         readonly Dictionary<IntVec3, BlockInventoryHaulingTarget> BlockEntities = [];
+        readonly Dictionary<ZoneId, StockpileHaulingTarget> StockpileTargets = [];
 
         readonly HashSet<IHaulingTarget> _allTargets = [];
         public IReadOnlySet<IHaulingTarget> AllTargets => this._allTargets;
@@ -102,8 +103,7 @@ namespace Project1.Core.Towns.Stockpiles
                 return;
             this._allStockpiles.Remove(stockpile);
             this._allStockpilesById.Remove(stockpile.ID);
-            throw new System.Exception();
-            // TODO remove stockpilehaulingtarget
+            this.StockpileTargets.Remove(stockpile.ID);
         }
         private void OnZoneCreated(ZoneCreatedEvent e)
         {
@@ -111,6 +111,7 @@ namespace Project1.Core.Towns.Stockpiles
                 return;
             this._allStockpiles.Add(stockpile);
             this._allStockpilesById[stockpile.ID] = stockpile;
+            this.StockpileTargets.Add(stockpile.ID, new(stockpile));
         }
         public override void Tick() { }
     }

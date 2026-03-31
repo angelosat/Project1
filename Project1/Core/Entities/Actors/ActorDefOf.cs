@@ -8,9 +8,9 @@ using Project1.Core.Skills;
 using Project1.Core.Interactions;
 using Project1.Core.Mood;
 using Project1.Core.Gear;
-using Project1.Core.Inventory;
 using Project1.Core.Needs;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Inventory;
 
 namespace Project1.Core.Entities.Actors
 {

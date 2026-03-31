@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Project1.Core.Input
 {
-    internal class SelectionFinal
+    internal sealed class SelectionFinal
     {
         internal HashSet<ISelectable> Targets = [];
         internal IntVec3? Begin, End;
@@ -36,7 +36,8 @@ namespace Project1.Core.Input
         {
             if (selectable is CellSelection cell)
                 this.SetBox(cell.Map, cell.Global, cell.Global);
-            this.Targets.Add(selectable);
+            else
+                this.Targets.Add(selectable);
         }
         internal void SetBox(MapBase map, IntVec3 begin, IntVec3 end)
         {

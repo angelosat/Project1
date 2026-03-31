@@ -590,6 +590,10 @@ namespace Project1.Core.Networking
        
         public void SetMap(MapBase map)
         {
+            if(this.Map is not null)
+            {
+                Registry.MapEventHooksServer.UnHook(this.Map.Events);
+            }
             this.Map = map;
             this.World = map.World;
             this.World.Net = this;

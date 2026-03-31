@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Inventory
+namespace Project1.Core.Systems.Inventory
 {
     internal sealed class InventoryListGui : SelectionBoundControl
     {
@@ -66,6 +66,15 @@ namespace Project1.Core.Inventory
             public IReadOnlyList<Entity> Merged => this._merged;
             public bool AnyMerge => this._merged.Length > 0;
         }
+        public void InsertInt(Entity item)
+        {
+            item.Detach();
+            this.items.Add(item);
+            this.Notifier.Notify();
+            item.ContainerNew = this;
+            this.ItemAdded?.Invoke(item);
+        }
+
         public InsertResult Insert(Entity item)
         {
             if (item.ContainerNew == this)

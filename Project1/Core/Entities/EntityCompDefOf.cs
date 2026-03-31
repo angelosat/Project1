@@ -13,10 +13,10 @@ using Project1.Core.Interactions;
 using Project1.Core.Animations;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Mood;
-using Project1.Core.Inventory;
 using Project1.Core.Needs;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Inventory;
 
 namespace Project1.Core.Entities
 {

@@ -5,8 +5,8 @@ using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Serialization;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Inventory;
 using Project1.Core.Entities;
+using Project1.Core.Systems.Inventory;
 
 namespace Project1.Core.Gear
 {

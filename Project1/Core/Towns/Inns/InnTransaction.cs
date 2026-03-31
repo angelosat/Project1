@@ -9,7 +9,7 @@ using System;
 
 namespace Project1.Core.Towns.Inns;
 
-public sealed class InnTransaction(double tickStarted, EntityRefId guest, IntVec3 desk) : ITownServiceTransaction
+public sealed class InnTransaction(double tickStarted, int patienceInitial, EntityRefId guest, IntVec3 desk) : ITownServiceTransaction
 {
     enum States { Queuing, AwaitingPayment, Paid, Processed, Succeeded, Failed }
     internal EntityRefId Guest = guest;
@@ -20,6 +20,7 @@ public sealed class InnTransaction(double tickStarted, EntityRefId guest, IntVec
     public TownServiceDef Service => TownServiceDefOf.Lodging;
     public double TickStarted { get; private set; } = tickStarted;
     public IntVec3 Desk { get; private set; } = desk;
+    public int PatienceInitial { get; private set; } = patienceInitial;
     States State;
 
     public bool IsAwaitingPayment => this.State == States.AwaitingPayment;
@@ -61,6 +62,7 @@ public sealed class InnTransaction(double tickStarted, EntityRefId guest, IntVec
     public void Write(IDataWriter w)
     {
         w.Write(this.TickStarted);
+        w.Write(this.PatienceInitial);
         w.Write(this.Guest);
         w.Write(this.Clerk);
         w.Write(this.Money);
@@ -71,6 +73,7 @@ public sealed class InnTransaction(double tickStarted, EntityRefId guest, IntVec
     public void Read(IDataReader r)
     {
         this.TickStarted = r.ReadDouble();
+        this.PatienceInitial = r.ReadInt32();
         this.Guest = r.ReadEntityRefId();
         this.Clerk = r.ReadEntityRefId();
         this.Money = r.ReadEntityRefId();

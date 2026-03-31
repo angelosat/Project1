@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Inventory
+namespace Project1.Core.Systems.Inventory
 {
     public class ItemContainer : GameObjectSlotCollection
     {

@@ -1,11 +1,11 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Inventory;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Screens;
 using Project1.Framework.UI;
 using Project1.Core.Input;
 using Project1.Core.Blocks;
 using Project1.Core.Towns.Storage;
+using Project1.Core.Systems.Inventory;
 
 namespace Project1.Core.UI
 {

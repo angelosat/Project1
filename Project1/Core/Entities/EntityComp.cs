@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Graphics;
 using Project1.Core.Interactions;
-using Project1.Core.Inventory;
 using Project1.Core.Rendering;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI.Hud;
 using Project1.Core.UI.NamePlates;

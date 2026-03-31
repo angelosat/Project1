@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Input;
+using Project1.Core.Inventory;
 using Project1.Core.Screens;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -11,9 +12,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Inventory
+namespace Project1.Core.Systems.Inventory
 {
-    public class ContainerList : Inspectable, IList<Entity>, ISerializableNew<ContainerList>, ISaveable
+    public sealed class ContainerList : Inspectable, IList<Entity>, ISerializableNew<ContainerList>, ISaveable
     {
         TableObservable<Entity> _gui;
         public Control Gui

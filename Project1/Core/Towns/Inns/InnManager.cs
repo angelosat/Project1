@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Resources;
 using Project1.Core.Towns.Shops;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -76,7 +77,7 @@ public sealed class InnManager : TownComponent
             throw new System.Exception();
         this.GuestsQueuing.Add(guest);
         this.QueuesPerServicePoint[servicePoint].Enqueue(guest);
-        var transaction = new InnTransaction(this.Map.World.CurrentTick, guest.RefId, servicePoint);
+        var transaction = new InnTransaction(this.Map.World.CurrentTick, (int)guest.Resources.GetValue(ResourceDefOf.Patience), guest.RefId, servicePoint);
         this.OpenTransactionsByGuest.Add(guest.RefId, transaction);
         this.OpenTransactionsByDesk.Add(servicePoint, transaction);
         this.Town.OpenTransactions.Add(guest.RefId, transaction);

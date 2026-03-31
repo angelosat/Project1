@@ -16,6 +16,7 @@ public interface ITownServiceTransaction
     EntityRefId Seller { get; }
     TownServiceDef Service { get; }
     double TickStarted { get; }
+    int PatienceInitial { get; }
     bool IsSucceeded { get; }
     bool IsFailed { get; }
     void Write(IDataWriter w);
@@ -40,15 +41,16 @@ sealed class ShopTransaction : ITownServiceTransaction
     double TicksRemaining = Ticks.FromHours(1);
     public double TickStarted { get; set; }
     public TownServiceDef Service => TownServiceDefOf.Selling;
-
+    public int PatienceInitial { get; private set; }
     ShopTransaction() { }
-    public ShopTransaction(double tickStarted, Actor buyer, Entity item, int price, IntVec3 counter)
+    public ShopTransaction(double tickStarted, int patienceSnapshot, Actor buyer, Entity item, int price, IntVec3 counter)
     {
         this.Buyer = buyer.RefId;
         this.Item = item.RefId;
         this.Price = price;
         this.Counter = counter;
         this.TickStarted = tickStarted;
+        this.PatienceInitial = patienceSnapshot;
     }
 
     public bool IsFailed => this.State == TransactionState.Failed;
@@ -101,6 +103,8 @@ sealed class ShopTransaction : ITownServiceTransaction
 
     public void Write(IDataWriter w)
     {
+        w.Write(this.TickStarted);
+        w.Write(this.PatienceInitial);
         w.Write(this.Buyer);
         w.Write(this.Seller);
         w.Write(this.Item);
@@ -112,6 +116,8 @@ sealed class ShopTransaction : ITownServiceTransaction
 
     public void Read(IDataReader r)
     {
+        this.TickStarted = r.ReadDouble();
+        this.PatienceInitial = r.ReadInt32();
         this.Buyer = r.ReadEntityRefId();
         this.Seller = r.ReadEntityRefId();
         this.Item = r.ReadEntityRefId();

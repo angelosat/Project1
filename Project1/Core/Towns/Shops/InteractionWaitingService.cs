@@ -19,7 +19,7 @@ internal sealed class InteractionWaitingService : InteractionLogic
     {
         var typedCtx = (Context)ctx;
         typedCtx.Transaction.Tick();
-        if (typedCtx.Transaction.IsCancelled)
+        if (typedCtx.Transaction.IsFailed)
             return false;
         if (typedCtx.Transaction.WaitingForPayment)
             return false;
@@ -46,7 +46,7 @@ internal sealed class InteractionWaitingService : InteractionLogic
         var typedCtx = (Context)i.Context;
         if (typedCtx.Patience.Percentage <= 0)
             return true;
-        if (typedCtx.Transaction.IsCancelled)
+        if (typedCtx.Transaction.IsFailed)
             return true;
         return false;
     }

@@ -7,13 +7,12 @@ namespace Project1.Core.Systems.Notifications
 {
     public abstract class NotificationWorker
     {
-        public abstract void Hook();// MapBase map);
+        public abstract void Hook();
     }
     public sealed class NotificationNoWorkerAssigned : NotificationWorker
     {
-        public override void Hook(/*MapBase map*/)
+        public override void Hook()
         {
-            //Registry.MapEventHooksServer.Register<TransactionStartedEvent>(HandleTransactionStarted);
             Registry.MapEventHooksClient.Register<TransactionStartedEvent>(HandleTransactionStarted);
         }
 

@@ -255,25 +255,16 @@ namespace Project1.Core.Towns.Shops
         readonly List<ShopTransaction> _transactionsAll = [];
         internal bool TryBeginTransaction(Actor actor, Entity item, int price, IntVec3 servicePoint)
         {
-            var transaction = new ShopTransaction(actor, item, price, servicePoint);
+            var transaction = new ShopTransaction(this.Map.World.CurrentTick, actor, item, price, servicePoint);
             this._transactionsAll.Add(transaction);
             this._transactionsRequests.Add(actor.RefId, transaction);
             this._transactionsByBuyer.Add(actor.RefId, transaction);
             this._transactionsByItem.Add(item.RefId, transaction);
+            this.Town.OpenTransactions.Add(actor.RefId, transaction);
             actor.Map.Events.Post(new TransactionStartedEvent(actor.Map, transaction));
             return true;
             // TODO made it a bool return in case i have some conditions that can make it fail in the future
         }
-        //internal bool TryBeginTransaction(ShopTransaction transaction)
-        //{
-        //    this._transactionsAll.Add(transaction);
-        //    this._transactionsRequests.Add(transaction.Buyer, transaction);
-        //    this._transactionsByBuyer.Add(transaction.Buyer, transaction);
-        //    this._transactionsByItem.Add(transaction.Item, transaction);
-        //    this.Town.Map.Events.Post(new TransactionStartedEvent(this.Town.Map, transaction));
-        //    return true;
-        //    // TODO made it a bool return in case i have some conditions that can make it fail in the future
-        //}
         internal bool TryGetTransaction(EntityRefId buyer, out ShopTransaction transaction)
           => this._transactionsByBuyer.TryGetValue(buyer, out transaction);
         internal bool TryGetTransaction(Actor buyer, out ShopTransaction transaction)
@@ -296,20 +287,23 @@ namespace Project1.Core.Towns.Shops
             transaction.RefreshTimer();
             this._transactionsBySeller.Add(seller.RefId, transaction);
             this._transactionsRequests.Remove(transaction.Buyer);
+            this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
         }
         public override void Tick()
         {
             foreach(var transaction in this._transactionsAll.ToArray())
             {
-                if (transaction.IsCancelled || transaction.IsDisposed)
+                if (transaction.IsFailed || transaction.IsSucceeded)
                 {
                     this._transactionsAll.Remove(transaction);
                     this._transactionsActive.Remove(transaction.Buyer);
                     this._transactionsRequests.Remove(transaction.Buyer);
                     this._transactionsByBuyer.Remove(transaction.Buyer);
                     this._transactionsByItem.Remove(transaction.Item);
+                    this.Town.OpenTransactions.Remove(transaction.Buyer);
                     if (transaction.Seller != EntityRefId.Null)
                         this._transactionsBySeller.Remove(transaction.Seller);
+                    this.Map.Events.Post(new ShopTransactionFinishedEvent(this.Map, transaction));
                 }
             }
         }
@@ -565,6 +559,7 @@ namespace Project1.Core.Towns.Shops
             shoppinglist.MarkFulfilled();
             t.Dispose();
             this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+            //this.Map.Events.Post(new ShopTransactionFinishedEvent(this.Map, t));
         }
         internal void MarkProcessed(Actor seller)
         {

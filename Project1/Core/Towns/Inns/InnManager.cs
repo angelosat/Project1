@@ -1,5 +1,7 @@
 ﻿using Project1.Core.Blocks;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Shops;
 using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,21 +21,16 @@ public sealed class InnManager : TownComponent
     private readonly Dictionary<IntVec3, InnTransaction> OpenTransactionsByDesk = [];
     private readonly Dictionary<EntityRefId, InnTransaction> OpenTransactionsByClerk = [];
     public IEnumerable<IntVec3> AvailableBeds => this.AllBeds.Where(b => !this.RegistryByBed.ContainsKey(b));
-    //public CheckInTransaction GetTransaction(Actor guest) => this.OpenTransactionsByGuest[guest.RefId];
     public InnTransaction GetTransactionByGuest(Actor actor)
     {
         if (this.OpenTransactionsByGuest.TryGetValue(actor.RefId, out var foundByGuest))
             return foundByGuest;
-        //if (this.OpenTransactionsByClerk.TryGetValue(actor.RefId, out var foundByClerk))
-        //    return foundByClerk;
         return null;
     }
     public InnTransaction GetTransactionByClerk(Actor actor)
     {
         if (this.OpenTransactionsByClerk.TryGetValue(actor.RefId, out var foundByGuest))
             return foundByGuest;
-        //if (this.OpenTransactionsByClerk.TryGetValue(actor.RefId, out var foundByClerk))
-        //    return foundByClerk;
         return null;
     }
     public InnTransaction GetTransaction(IntVec3 desk)
@@ -48,19 +45,18 @@ public sealed class InnManager : TownComponent
     {
         foreach(var (id, t) in this.OpenTransactionsByGuest.ToArray())
         {
-            if (t.IsDisposed)
+            if (t.IsSucceeded || t.IsFailed)
             {
                 this.OpenTransactionsByGuest.Remove(id);
                 this.OpenTransactionsByDesk.Remove(t.Desk);
                 this.OpenTransactionsByClerk.Remove(t.Clerk);
-                //if (t.Clerk != EntityRefId.Null)
-                //this.OpenTransactionsByClerk.Remove(t.Clerk);
+                this.Town.OpenTransactions.Remove(id);
+                this.Map.Events.Post(new ShopTransactionFinishedEvent(this.Map, t));
             }
         }
     }
-        // TODO: track how long each guest was waited and return the one who has waited the longest
+    // TODO: track how long each guest was waited and return the one who has waited the longest
     public Actor PeekNextGuestInQueue(IntVec3 servicePoint)
-        // => this.QueuesPerServicePoint[servicePoint] is Queue<Actor> queue && queue.Count > 0 ? queue.Peek() : null;
     {
         var queue = this.QueuesPerServicePoint[servicePoint];
         while (queue.Count > 0)
@@ -80,13 +76,21 @@ public sealed class InnManager : TownComponent
             throw new System.Exception();
         this.GuestsQueuing.Add(guest);
         this.QueuesPerServicePoint[servicePoint].Enqueue(guest);
-        var transaction = new InnTransaction(guest.RefId, servicePoint);
+        var transaction = new InnTransaction(this.Map.World.CurrentTick, guest.RefId, servicePoint);
         this.OpenTransactionsByGuest.Add(guest.RefId, transaction);
         this.OpenTransactionsByDesk.Add(servicePoint, transaction);
+        this.Town.OpenTransactions.Add(guest.RefId, transaction);
         return true;
     }
     internal void AbortQueuing(Actor actor)
-    => this.GuestsQueuing.Remove(actor);
+
+    {
+        this.GuestsQueuing.Remove(actor);
+        var t = this.OpenTransactionsByGuest[actor.RefId];
+        t.MarkFailed();
+        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+
+    }
     public InnManager(Town town) : base(town)
     {
         town.Map.Events.ListenTo<BlockEntityRemovedEvent>(HandleBlockEntityRemoved);
@@ -138,6 +142,8 @@ public sealed class InnManager : TownComponent
         this.RegistryByGuest.Add(guest.RefId, entry);
         this.RegistryByBed.Add(bed, entry);
         this.Town.Ownership.Assign(bed, guest);
+        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+
         return true;
     }
     internal bool Checkout(Actor guest)
@@ -186,8 +192,22 @@ public sealed class InnManager : TownComponent
     internal void AssignClerk(IntVec3 desk, Actor actor)
     {
         var transaction = this.OpenTransactionsByDesk[desk];
-        //transaction.Clerk = actor.RefId;
         transaction.AssignClerk(actor);
         this.OpenTransactionsByClerk.Add(actor.RefId, transaction);
+        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+    }
+
+    internal void MarkPaid(Actor actor, Entity hauled)
+    {
+        var transaction = this.GetTransactionByGuest(actor);
+        transaction.MarkPaid(hauled);
+        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+    }
+
+    internal void MarkProcessed(EntityRefId buyer)
+    {
+        var transaction = this.OpenTransactionsByGuest[buyer];
+        transaction.MarkProcessed();
+        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
     }
 }

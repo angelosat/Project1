@@ -2,7 +2,6 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
-using Project1.Core.Screens;
 using Project1.Framework;
 
 namespace Project1.Core.Towns.Shops
@@ -22,10 +21,6 @@ namespace Project1.Core.Towns.Shops
 
         private static void HandleTransactionStarted(TransactionStartedEvent e)
         {
-            //if (Ingame.Net.IsServer)
-            //{
-
-            //}
             SendTransactionStartedEvent(e.Map.Net, e);
         }
         static void SendTransactionStartedEvent(NetEndpoint endpoint, TransactionStartedEvent e)
@@ -51,10 +46,6 @@ namespace Project1.Core.Towns.Shops
 
         private static void HandleShopTransactionUpdated(ShopTransactionUpdatedEvent e)
         {
-            //if(Ingame.Net.IsServer)
-            //{
-
-            //}
             SendTransactionUpdatedEvent(e.Map.Net, e);
         }
         static void SendTransactionUpdatedEvent(NetEndpoint endpoint, ShopTransactionUpdatedEvent e)
@@ -69,8 +60,8 @@ namespace Project1.Core.Towns.Shops
             var r = packet.PacketReader;
             var buyerId = r.ReadEntityRefId();
             var buyer = endpoint.World.Get<Actor>(buyerId);
-            if (!endpoint.Map.Town.ShopManager.TryGetTransaction(buyer, out var transaction))
-                throw new System.Exception();
+            if (!endpoint.Map.Town.OpenTransactions.TryGetValue(buyer.RefId, out var transaction))
+                    throw new System.Exception();
             transaction.Read(r);
         }
     }

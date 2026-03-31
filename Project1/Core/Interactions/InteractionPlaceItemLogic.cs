@@ -12,7 +12,7 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
         internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
     }
     protected override InteractionContext CreateContextInternal() => new Context();
-    public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsCancelled;
+    public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsFailed;
     public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnFinish(Interaction i)
     {
@@ -35,7 +35,7 @@ sealed class InteractionRingUpTransaction : InteractionLogic
         public override float ProgressBarPercentage => 0;
     }
     protected override InteractionContext CreateContextInternal() => new Context();
-    public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsCancelled;
+    public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsFailed;
     public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnFinish(Interaction i)
     {
@@ -60,7 +60,7 @@ sealed class InteractionPayTransaction : InteractionLogic
         public override float ProgressBarPercentage => 0;
     }
     protected override InteractionContext CreateContextInternal() => new Context();
-    public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsCancelled;
+    public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsFailed;
     public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnFinish(Interaction i)
     {

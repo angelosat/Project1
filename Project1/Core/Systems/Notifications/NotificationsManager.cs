@@ -13,8 +13,6 @@ namespace Project1.Core.Systems.Notifications
             {
                 def.Worker.Hook();
             }
-            //Registry.MapEventHooksServer.Register<HookDefs>;
-            //Registry.MapEventHooksServer.re
         }
     }
 }

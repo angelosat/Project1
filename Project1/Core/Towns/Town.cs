@@ -110,8 +110,6 @@ namespace Project1.Core.Towns
         public DutyRoster DutiesManager;
         [InspectorHidden]
         public ReservationManager ReservationManager;
-        //[InspectorHidden]
-        //public TerrainManager TerrainManager;
         [InspectorHidden]
         public TownServicesComp ShopManager;
         [InspectorHidden]
@@ -132,6 +130,7 @@ namespace Project1.Core.Towns
         public IEntityProvider Entities => this.Map.World;
 
         public Dictionary<Utility.Types, HashSet<IntVec3>> TownUtilitiesNew = new();
+        public Dictionary<EntityRefId, ITownServiceTransaction> OpenTransactions = [];
 
         public Town(MapBase map)
         {

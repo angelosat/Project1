@@ -1,33 +1,53 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace Project1.Core.Towns.Reputation
+namespace Project1.Core.Towns.Reputation;
+
+public sealed class TownReputationComp : TownComponent, IGuiNew
 {
-    sealed class AgentReputationEntry(Actor actor, ulong tick)
+    static readonly List<ReputationSourceDef> AllDefs = Def.GetDefs<ReputationSourceDef>().ToList();
+
+    public override string Name => "Reputation";
+    readonly Dictionary<EntityRefId, ActorReputationEntry> _table = [];
+
+    public TownReputationComp(Town town) : base(town)
     {
-        internal EntityRefId AgentId = actor.RefId;
-        internal ulong TickDiscovered = tick;
+        town.Map.Events.ListenTo<EntitySpawnedEvent>(HandleEntitySpawned);
+
+        foreach (var def in AllDefs)
+            def.Worker.HookTo(town.Map);
     }
-    public sealed class TownReputationComp : TownComponent
+
+    private void HandleEntitySpawned(EntitySpawnedEvent e)
     {
-        public override string Name => "Reputation";
-        readonly Dictionary<Actor, AgentReputationEntry> _table = [];
-
-        public TownReputationComp(Town town) : base(town)
-        {
-            town.Map.Events.ListenTo<EntitySpawnedEvent>(HandleEntitySpawned);
-        }
-
-        private void HandleEntitySpawned(EntitySpawnedEvent e)
-        {
-            if (e.Entity is not Actor agent)
-                return;
-            if (this._table.ContainsKey(agent))
-                return;
-            if (this.Town.Members.Contains(agent))
-                return;
-            this._table.Add(agent, new(agent, this.Town.Map.World.CurrentTick));
-        }
+        if (e.Entity is not Actor agent)
+            return;
+        if (this._table.ContainsKey(agent.RefId))
+            return;
+        if (this.Town.Members.Contains(agent))
+            return;
+        this._table.Add(agent.RefId, new(agent, this.Town.Map.World.CurrentTick));
+    }
+    internal void ApplyDelta(EntityRefId buyer, int v)
+    {
+        this._table[buyer].ApplyDelta(v);
+    }
+    public Control CreateControl()
+    {
+        var box = new GroupBox();
+        var table = new Table<EntityRefId>()
+            .AddColumn("name", 128, e => new LabelNew(() => this.Map.World.Get<Actor>(e).LabelReadable))
+            .AddColumn("rep", 128, e => this._table[e].CreateControl());
+        table.AddItems(this._table.Keys);
+        box.Controls.Add(table);
+        return box;
+    }
+    internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
+    {
+        yield return (() => "Reputation", () => this.CreateControl().ToWindow("Reputation").Show());
     }
 }

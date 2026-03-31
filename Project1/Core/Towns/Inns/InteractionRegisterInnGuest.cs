@@ -21,10 +21,6 @@ namespace Project1.Core.Towns.Inns
         {
             var typedCtx = (Context)i.Context;
             var manager = typedCtx.Manager;
-            var transaction = typedCtx.Manager.GetTransactionByGuest(typedCtx.NextGuest);
-            //var money = i.Actor.Map.World.Get<Entity>(transaction.Money);
-            //if (money.Cell != transaction.Desk.Above)
-            //    return;
             manager.RegisterGuest(i.Target.Global);
         }
     }

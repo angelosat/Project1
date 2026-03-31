@@ -1,24 +1,32 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Towns.Services;
+using Project1.Core.Towns.Shops;
 using Project1.Framework;
+using Project1.Framework.Serialization;
 using System;
 
 namespace Project1.Core.Towns.Inns;
 
-public sealed class InnTransaction(EntityRefId guest, IntVec3 desk)
+public sealed class InnTransaction(double tickStarted, EntityRefId guest, IntVec3 desk) : ITownServiceTransaction
 {
-    enum States { Queuing, AwaitingPayment, Paid, Processed, Finished, Disposed }
-    readonly EntityRefId Guest = guest;
+    enum States { Queuing, AwaitingPayment, Paid, Processed, Succeeded, Failed }
+    internal EntityRefId Guest = guest;
     internal EntityRefId Clerk { get; private set; }
-    internal EntityRefId Money;// { get; private set; }
-    public IntVec3 Desk { get; init; } = desk;
+    internal EntityRefId Money;
+    public EntityRefId Buyer => this.Guest;
+    public EntityRefId Seller => this.Clerk;
+    public TownServiceDef Service => TownServiceDefOf.Lodging;
+    public double TickStarted { get; private set; } = tickStarted;
+    public IntVec3 Desk { get; private set; } = desk;
     States State;
 
     public bool IsAwaitingPayment => this.State == States.AwaitingPayment;
     public bool IsPaid => this.State == States.Paid;
     public bool IsProcessed => this.State == States.Processed;
-    public bool IsFinished => this.State == States.Finished;
-    public bool IsDisposed => this.State == States.Disposed;
+    public bool IsSucceeded => this.State == States.Succeeded;
+    public bool IsFailed => this.State == States.Failed;
 
     internal void AssignClerk(Actor clerk)
     {
@@ -27,13 +35,13 @@ public sealed class InnTransaction(EntityRefId guest, IntVec3 desk)
         this.Clerk = clerk.RefId;
         this.State = States.AwaitingPayment;
     }
-
+    internal void MarkFailed()
+        => this.State = States.Failed;
     internal void MarkFinished()
     {
         if (this.State != States.Processed)
             throw new Exception();
-        //this.State = States.Finished;
-        this.State = States.Disposed;
+        this.State = States.Succeeded;
     }
     internal void MarkPaid(Entity money)
     {
@@ -50,6 +58,23 @@ public sealed class InnTransaction(EntityRefId guest, IntVec3 desk)
         this.State = States.Processed;
     }
 
-    internal void Dispose()
-        => this.State = States.Disposed;
+    public void Write(IDataWriter w)
+    {
+        w.Write(this.TickStarted);
+        w.Write(this.Guest);
+        w.Write(this.Clerk);
+        w.Write(this.Money);
+        w.Write(this.Desk);
+        w.Write((int)this.State);
+    }
+
+    public void Read(IDataReader r)
+    {
+        this.TickStarted = r.ReadDouble();
+        this.Guest = r.ReadEntityRefId();
+        this.Clerk = r.ReadEntityRefId();
+        this.Money = r.ReadEntityRefId();
+        this.Desk = r.ReadIntVec3();
+        this.State = (States)r.ReadInt32();
+    }
 }

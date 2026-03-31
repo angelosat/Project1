@@ -45,6 +45,7 @@ namespace Project1.Framework.UI
             : this()
         {
             this.Object = progress;
+            this.HoverFunc = () => progress.ToString();
         }
         public override void Update()
         {

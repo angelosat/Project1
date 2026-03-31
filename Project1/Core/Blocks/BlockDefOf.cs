@@ -7,6 +7,7 @@ using Project1.Core.Graphics.Particles;
 using Project1.Core.Resources;
 using Project1.Core.Rooms;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Shops.Blocks;
 using Project1.Core.Towns.Storage;
 using Project1.Framework;
@@ -109,7 +110,10 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Construction = new("Construction", typeof(BlockConstruction));
         static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(BlockShopCounter))
         {
-            BlockEntityCompSpecs = [new BlockInventoryComp.Spec()],
+            BlockEntityCompSpecs = [
+                new BlockInventoryComp.Spec(),
+                new BlockResourcesComp.Spec([ResourceDefOf.Cash]),
+                new BlockShopComp.Spec()],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks])
         };
         static public readonly BlockDef ReceptionDesk = new("ReceptionDesk", typeof(BlockShopCounter))

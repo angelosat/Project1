@@ -70,8 +70,6 @@ namespace Project1.Core.Interactions
             var fuel = CraftingSystem.GetFuelValue(carried) * carried.StackSize;
             comp.ApplyDelta(ResourceDefOf.Fuel, fuel);
             carried.Consume(amount == -1 ? carried.StackSize : amount);
-            //var finalItem = carried.Take(amount == -1 ? null : amount);
-            //actor.Map.Spawn(finalItem, global, actor.Velocity);
         }
     }
 }

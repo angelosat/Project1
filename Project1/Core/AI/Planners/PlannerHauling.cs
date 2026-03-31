@@ -13,9 +13,11 @@ namespace Project1.Core.AI.Planners
         {
             var carried = actor.Hauled;
             var map = actor.Map;
+            var town = map.Town;
             var stockpiles = map.Hauling.AllTargets.OrderByDescending(i => i.Priority);//  map.Town.ZoneManager.GetZones<Stockpile>().OrderByDescending(i => i.Priority);
             var mapItems = map.Haulables
                 .Where(actor.CanReachAndReserve)
+                .Where(town.IsClaimedBySystem)
                 .SortByReachableRegionDistance(actor)
                 .Union(map.Hauling.InventoryItems)
                 .ToList();
@@ -82,10 +84,6 @@ namespace Project1.Core.AI.Planners
             // iterate map items
             foreach (var item in mapItems)
             {
-                if (!actor.CanReachAndReserve(item))
-                    continue;
-                if (actor.Map.Town.IsClaimedBySystem(item))
-                    continue;
                 var currentStockpile = stockpiles.FirstOrDefault(s => s.Contains(item));
                 // iterate map stockpiles sorted by priority
                 foreach (var stockpile in stockpiles)

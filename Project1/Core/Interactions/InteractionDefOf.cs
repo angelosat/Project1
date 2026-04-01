@@ -2,6 +2,7 @@
 using Project1.Core.Skills;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;
+using Project1.Core.Towns;
 using Project1.Core.Towns.AI;
 using Project1.Core.Towns.Inns;
 using Project1.Core.Towns.Shops;
@@ -18,6 +19,11 @@ namespace Project1.Core.Interactions
             Controller = InteractionControllers.FirstContact// new InteractionProgressFirstContact()
         };
         public static readonly InteractionDef Pick = new("Picking", typeof(InteractionHaulLogic))
+        {
+            Animation = AnimationDefOf.TouchItem,
+            Controller = InteractionControllers.FirstContact// new InteractionProgressFirstContact()
+        };
+        public static readonly InteractionDef WithdrawCash = new("Withdrawing", typeof(InteractionWithdrawCashOverflow))
         {
             Animation = AnimationDefOf.TouchItem,
             Controller = InteractionControllers.FirstContact// new InteractionProgressFirstContact()

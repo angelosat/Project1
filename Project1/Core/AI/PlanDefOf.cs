@@ -60,6 +60,7 @@ namespace Project1.Core.AI
         static public readonly PlanDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul), InteractionDefOf.Pick);
         static public readonly PlanDef SwapCarried = new("Swapping", typeof(BehaviorExecutePlanNew), InteractionDefOf.Swap);
         static public readonly PlanDef Deposit = new("Depositing", typeof(BehaviorExecutePlanNew), InteractionDefOf.DepositResource);
+        static public readonly PlanDef Withdraw = new("Withdrawing", typeof(BehaviorExecutePlanNew), InteractionDefOf.WithdrawCash);
         static public readonly PlanDef RetrieveFromInventory = new("FetchingFromInv", typeof(TaskBehaviorHaulFromInventory), InteractionDefOf.Pick);
         //static public readonly PlanDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace), InteractionDefOf.Place);
         static public readonly PlanDef GoPlace = new("Placing", typeof(BehaviorPlace), InteractionDefOf.Place);

@@ -12,16 +12,44 @@ namespace Project1.Core.Networking
     {
         readonly static PacketId 
             _pResourceDelta = Registry.PacketHandlers.Register(ReceiveResourceDelta),
-            _pBlockResourceDelta = Registry.PacketHandlers.Register(ReceiveBlockResourceDelta);
+            _pResourceValue = Registry.PacketHandlers.Register(ReceiveResourceValue),
+            _pBlockResourceDelta = Registry.PacketHandlers.Register(ReceiveBlockResourceDelta),
+            _pBlockResourceValue = Registry.PacketHandlers.Register(ReceiveBlockResourceValue);
 
        
 
+        private static void ReceiveResourceValue(NetEndpoint endpoint, Packet packet)
+        {
+            throw new NotImplementedException();
+        }
+
         static PacketsResources()
         {
-            Registry.WorldEventHooksServer.Register<ResourceModifiedEvent>(SendResourceDelta);
-            Registry.WorldEventHooksServer.Register<BlockResourceModifiedEvent>(SendBlockResourceDelta);
+            Registry.WorldEventHooksServer.Register<ResourceDeltaAppliedEvent>(SendResourceDelta);
+            Registry.WorldEventHooksServer.Register<BlockResourceDeltaAppliedEvent>(SendBlockResourceDelta);
+            Registry.WorldEventHooksServer.Register<BlockResourceValueSetEvent>(SendBlockResourceValue);
         }
-        private static void SendResourceDelta(ResourceModifiedEvent e)
+
+        private static void SendBlockResourceValue(BlockResourceValueSetEvent e)
+        {
+            Server.Instance.BeginPacket(_pBlockResourceValue)
+                .Write(e.Map.ID)
+                .Write(e.Cell)
+                .Write(e.Def)
+                .Write(e.Value);
+        }
+        private static void ReceiveBlockResourceValue(NetEndpoint endpoint, Packet packet)
+        {
+            var r = packet.PacketReader;
+            var mapid = r.ReadInt32();
+            var cell = r.ReadIntVec3();
+            var resDef = r.ReadDef<ResourceDef>();
+            var delta = r.ReadSingle();
+            endpoint
+                .Map.Query(cell).BlockEntity.GetComp<BlockResourcesComp>()
+                .SetValue(resDef, delta);
+        }
+        private static void SendResourceDelta(ResourceDeltaAppliedEvent e)
         {
             Server.Instance.BeginPacket(_pResourceDelta)
                 .Write(e.Entity.RefId)
@@ -34,7 +62,7 @@ namespace Project1.Core.Networking
                 .GetEntity(packet.PacketReader.ReadEntityRefId())
                 .Resources.ApplyDelta(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
         }
-        static void SendBlockResourceDelta(BlockResourceModifiedEvent e)
+        static void SendBlockResourceDelta(BlockResourceDeltaAppliedEvent e)
         {
             Server.Instance.BeginPacket(_pBlockResourceDelta)
              .Write(e.Map.ID)

@@ -53,45 +53,6 @@ namespace Project1.Core.AI.Behaviors.Sleeping
 
             return null;
         }
-        protected Plan TryPlanOld(Actor actor)
-        {
-            var map = actor.Map;
-            var need = actor.GetNeed(NeedDefOf.Energy);
-            var energyValue = need.Value;
-
-            if (energyValue > 99)// need.Threshold)
-                return null;
-
-            var possibleBeds = actor.Possessions.GetOwned<BlockBedEntity>();
-            if (!possibleBeds.Any())
-                possibleBeds = map.GetBlockEntities<BlockBedEntity>().Where(b => b.Owner is null);// FindOrClaimBedNew(actor);
-            foreach (var bed in possibleBeds)
-            {
-                // determine exact cell from which to operate bed
-                var bedglobal = bed.OriginGlobal;
-                if (!actor.CanReserve(bedglobal))
-                    continue;
-                var bedCell = map.GetCell(bedglobal);
-                var operatingPositions = bedCell.GetInteractionSpots(map, bedglobal);
-                foreach (var p in operatingPositions)
-                {
-                    if (!actor.CanReach(p))
-                        continue;
-                    if (!map.IsStandableIn(p))
-                        continue;
-                    // check to reserve operating position solid block below?
-                    var operatingPosition = new TargetArgs(map, p);
-
-                    var task = new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bedglobal), operatingPosition);//, bed);
-                    return task;
-                }
-            }
-
-            if (energyValue <= 10)//0) 
-                return new Plan(PlanDefOf.SleepingOnGround);
-
-            return null;
-        }
         private static IEnumerable<TargetArgs> FindOrClaimBedNew(Actor actor)
         {
             var assignedBedrooms = actor.Map.Town.RoomManager.GetRoomsByOwner(actor).Where(r => r.HasRole(RoomRoleDefOf.Bedroom));

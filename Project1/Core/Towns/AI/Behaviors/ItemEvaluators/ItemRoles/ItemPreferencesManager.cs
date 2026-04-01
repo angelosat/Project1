@@ -488,8 +488,8 @@ namespace Project1.Core
         }
         public bool IsUseful(Entity item)
         {
-            if (item.Def == ItemDefOf.Coins) // HACK
-                return true;
+            //if (item.Def == ItemDefOf.Coins) // HACK
+            //    return true;
             if (this.ItemsToPrefs.ContainsKey(item))
                 return true;
             return false;

@@ -3,6 +3,7 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Project1.Core.Blocks.Block;
 
 namespace Project1.Core.Blocks.Comps;
 
@@ -23,18 +24,21 @@ internal class BlockResourcesComp : BlockComp
     public void ApplyDelta(ResourceDef resource, float delta)
     {
         this._resources[resource].ApplyDelta(delta);
-        this.Map.World.Events.Post(new BlockResourceModifiedEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, delta));
+        this.Map.World.Events.Post(new BlockResourceDeltaAppliedEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, delta));
     }
 
     public bool HasResource(ResourceDef resource)
         => this._resources.ContainsKey(resource);
+
+    public float GetOverflow(ResourceDef resource)
+        => this._resources[resource].Overflow;
 
     public bool TryApplyDelta(ResourceDef resource, float delta)
     {
         if (!this._resources.TryGetValue(resource, out var resourceRuntime))
             return false;
         resourceRuntime.ApplyDelta(delta);
-        this.Map.World.Events.Post(new BlockResourceModifiedEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, delta));
+        this.Map.World.Events.Post(new BlockResourceDeltaAppliedEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, delta));
         return true;
     }
 
@@ -44,8 +48,17 @@ internal class BlockResourcesComp : BlockComp
     public float GetValue(ResourceDef resource)
         => this._resources[resource].Value;
     public void SetValue(ResourceDef resource, float value)
-        => this._resources[resource].Value = value;
-
+    {
+        this._resources[resource].Value = value;
+        this.Map?.World.Events.Post(new BlockResourceValueSetEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, value));
+    }
+    public void SetToMax(ResourceDef resource)
+    {
+        var r = this._resources[resource];
+        this.SetValue(resource, r.Max);
+    }
+    public float GetMax(ResourceDef resource)
+       => this._resources[resource].Max;
     public void SetMax(ResourceDef resource, float value)
        => this._resources[resource].Max = value;
 

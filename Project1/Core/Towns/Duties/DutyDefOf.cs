@@ -7,7 +7,7 @@ namespace Project1.Core.Towns.Duties
     {
         static public readonly DutyDef Digger = new DutyDef("Digger", PlannerDefOf.Digging).SetTool(ToolUseDefOf.Digging);
         static public readonly DutyDef Miner = new DutyDef("Miner").SetTool(ToolUseDefOf.Mining);
-        static public readonly DutyDef Hauler = new("Hauler", PlannerDefOf.Refueling, PlannerDefOf.Hauling, PlannerDefOf.Restocking);
+        static public readonly DutyDef Hauler = new("Hauler", PlannerDefOf.Refueling, PlannerDefOf.Hauling, PlannerDefOf.Restocking, PlannerDefOf.Withdraw);
         static public readonly DutyDef Lumberjack = new DutyDef("Lumberjack", PlannerDefOf.Chopping).SetTool(ToolUseDefOf.Chopping);
         static public readonly DutyDef Forester = new("Forester");
         static public readonly DutyDef Craftsman = new DutyDef("Craftsman", PlannerDefOf.Crafting).SetTool(ToolUseDefOf.Building);

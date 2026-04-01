@@ -47,7 +47,7 @@ namespace Project1.Core.Resources
             set
             {
                 this._value = this.ApplyValue(value, out var overflow);
-                if(overflow > 0)
+                //if(overflow > 0)
                     this._overflow = Math.Min(overflow, this._overflowMax);
             }
         }

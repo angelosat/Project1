@@ -10,9 +10,9 @@ namespace Project1.Core.Entities
         public EntityLifecycleSystem(MapBase map) : base(map)
         {
             map.Events.ListenTo<EntityKilledEvent>(OnEntityKilled);
-            map.World.Events.ListenTo<ResourceModifiedEvent>(OnEntityResourceAdjusted);
+            map.World.Events.ListenTo<ResourceDeltaAppliedEvent>(OnEntityResourceAdjusted);
         }
-        private void OnEntityResourceAdjusted(ResourceModifiedEvent e)
+        private void OnEntityResourceAdjusted(ResourceDeltaAppliedEvent e)
         {
             if (e.Def != ResourceDefOf.HitPoints)
                 return;

@@ -693,15 +693,23 @@ namespace Project1.Core.Entities
         }
         internal List<SaveTag> SaveInternal()
         {
-            var data = new List<SaveTag>
-            {
-                this.Def.Name.Save("Def"),
-                // todo : items without profile (coins for now)
-                this.Profile?.Save("ProfileID"),
-                ((int)this.RefId).Save("InstanceID"),
-                this._stackSize.Save("Stack"),
-                this.Components.Save("Components")
-            };
+            //var data = new List<SaveTag>
+            //{
+            //    this.Def.Name.Save("Def"),
+            //    // todo : items without profile (coins for now)
+            //    //this.Profile?.Save("ProfileID"),
+                
+            //    ((int)this.RefId).Save("InstanceID"),
+            //    this._stackSize.Save("Stack"),
+            //    this.Components.Save("Components")
+            //};
+            var data = new List<SaveTag>();
+            data.Add(this.Def.Name.Save("Def"));
+            data.Add(this._stackSize.Save("Stack"));
+            data.Add(this.Components.Save("Components"));
+            if (this.Profile is not null)
+                data.Add(this.Profile.Save("ProfileID"));
+            data.Add(((int)this.RefId).Save("InstanceID"));
             return data;
         }
 

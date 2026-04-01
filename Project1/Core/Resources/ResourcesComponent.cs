@@ -142,7 +142,7 @@ namespace Project1.Core.Resources
         {
             var res = this.Resources[def];
             res.ApplyDelta(delta);
-            this.Owner.World?.Events.Post(new ResourceModifiedEvent(this.Owner, def, delta));
+            this.Owner.World?.Events.Post(new ResourceDeltaAppliedEvent(this.Owner, def, delta));
         }
         public float GetMax(ResourceDef def)
             => this.Resources[def].Max;

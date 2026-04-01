@@ -132,10 +132,10 @@ public abstract class MapBase : Inspectable
     public int ChunkVolume => Chunk.Size * Chunk.Size * this.GetMaxHeight();
     public int Volume => this.ActiveChunks.Count * this.ChunkVolume;
     public Random Random => this.World.Random;
-    public IEnumerable<T> GetBlockEntities<T>() where T : BlockEntity
-    {
-        return this.BlockEntities.OfType<T>();
-    }
+    public IEnumerable<T> GetBlockEntityComps<T>() where T : BlockComp
+        => this.BlockEntities
+            .Select(be => be.GetCompOrDefault<T>())
+            .Where(c => c is not null);
     
     public static int MaxHeight = 128;
 

@@ -9,10 +9,10 @@ internal sealed class PresentationResources : IPresentationWorker
 {
     public void Register()
     {
-        Registry.MapEventHooksClient.Register<ResourceModifiedEvent>(OnHealthLost);
+        Registry.MapEventHooksClient.Register<ResourceDeltaAppliedEvent>(OnHealthLost);
     }
 
-    private static void OnHealthLost(ResourceModifiedEvent e)
+    private static void OnHealthLost(ResourceDeltaAppliedEvent e)
     {
         if (e.Def != ResourceDefOf.Health)
             return;

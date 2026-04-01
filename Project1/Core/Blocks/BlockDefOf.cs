@@ -108,6 +108,14 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Slab = new("Slab", typeof(BlockSlab));
         static public readonly BlockDef Conveyor = new("Conveyor", typeof(BlockConveyor));
         static public readonly BlockDef Construction = new("Construction", typeof(BlockConstruction));
+        static public readonly BlockDef QuestBoard = new("QuestBoard", typeof(BlockCounter))
+        {
+            ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]),
+            BlockEntityCompSpecs = [
+                new BlockInventoryComp.Spec(),
+                new BlockResourcesComp.Spec([ResourceDefOf.Cash]),
+                new BlockShopComp.Spec()],
+        };
         static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(BlockShopCounter))
         {
             BlockEntityCompSpecs = [

@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Legacy;
 
-namespace Project1.Core.Quests
+namespace Project1.Core.Quests.Legacy
 {
     public class Quest
     {

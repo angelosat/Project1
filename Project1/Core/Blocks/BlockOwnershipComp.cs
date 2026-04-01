@@ -29,7 +29,7 @@ namespace Project1.Core.Blocks
         }
         internal override IEnumerable<Control> GetInspectorControls()
         {
-            yield return new LabelNew(() => $"Owner: {(this.Owner != EntityRefId.Null ? this.Map.World.GetEntity(this.Owner).Name : "<none>")}").Bind(this.Notifications);
+            yield return new LabelNew(() => $"Owner: {(this.Owner != EntityRefId.Null ? this.Map.World.GetEntity(this.Owner).Name : "<none>")}").InvalidateOn(this.Notifications);
         }
         internal void SetOwner(Actor a)
         {

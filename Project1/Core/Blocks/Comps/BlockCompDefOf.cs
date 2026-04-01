@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Blocks.Construction;
 using Project1.Core.Blocks.Doors;
+using Project1.Core.Quests;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Shops.Blocks;
 using Project1.Core.Towns.Storage;
@@ -25,6 +26,7 @@ namespace Project1.Core.Blocks.Comps
         internal static readonly BlockCompDef Shop = new("Shop", typeof(BlockShopComp));
         internal static readonly BlockCompDef Shelf = new("Shop", typeof(BlockShelfComp));
         internal static readonly BlockCompDef Inventory = new("Inventory", typeof(BlockInventoryComp));
+        internal static readonly BlockCompDef Quests = new("Quests", typeof(BlockQuestsComp));
 
         static BlockCompDefOf()
         {

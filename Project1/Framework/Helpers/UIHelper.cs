@@ -97,6 +97,16 @@ namespace Project1.Framework.Helpers
             var panel = new PanelScrollable(ctrl, mode) { AutoSize = true, BackgroundStyle = panelBackgroundStyle, Opacity = opacity };
             return panel;
         }
+        static public PanelScrollable ToPanelScrollable(this Control ctrl, int? width, int? height, ScrollModes mode, BackgroundStyle panelBackgroundStyle, float opacity = 1)
+        {
+            var panel = new PanelScrollable(ctrl, mode) { /*AutoSize = true, */BackgroundStyle = panelBackgroundStyle, Opacity = opacity };
+            if (width.HasValue)
+                panel.Width = width.Value;
+            if (height.HasValue)
+                panel.Height = height.Value;
+            //panel.AutoSize = true;
+            return panel;
+        }
         static public PanelLabeledNew ToPanelLabeled(this Control ctrl)
         {
             var panel = new PanelLabeledNew(ctrl.Name) { AutoSize = true };

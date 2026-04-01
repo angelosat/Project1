@@ -1,4 +1,5 @@
-﻿using Project1.Framework.Helpers;
+﻿using Microsoft.Xna.Framework;
+using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,20 @@ namespace Project1.Framework.UI
         readonly ListBoxNoScroll<T, ButtonFinal> ListControl;
         readonly Func<T> CurrentlySelectedGetter;
         readonly Func<IEnumerable<T>> ItemsGetter;
+        public ComboBoxFinal(Func<IEnumerable<T>> itemsGetter, int width, Func<T, string> nameGetter, Action<T> callBack, Func<T> currentlySelectedGetter)
+        {
+            this.CurrentlySelectedGetter = currentlySelectedGetter;
+            this.ItemsGetter = itemsGetter;
+            this.Button = new ButtonFinal(() => this.CurrentlySelectedGetter != null ? nameGetter(this.CurrentlySelectedGetter()) : "undefined", BtnPress, width);
+
+            //var itemwidth = width - (int)this.Button.Font.MeasureString(label).X;
+            this.ListControl = new ListBoxNoScroll<T, ButtonFinal>(i => CreateButton(i, nameGetter, callBack, width));
+            this.ListControl//.ToPanelScrollable(ScrollModes.Vertical)//.ToPanel()
+                .HideOnAnyClick();
+            //this.ListControl.BackgroundColor = Color.Black * .5f;
+
+            this.Controls.Add(this.Button);
+        }
         public ComboBoxFinal(IEnumerable<T> list, int width, Func<T, string> nameGetter, Action<T> callBack, Func<T> currentlySelectedGetter)
         {
             this.CurrentlySelectedGetter = currentlySelectedGetter;
@@ -76,6 +91,8 @@ namespace Project1.Framework.UI
         }
         ButtonFinal CreateButton(T i, Func<T, string> labelGetter, Action<T> callBack, int width)
         {
+            return new ButtonFinal(()=>labelGetter(i), () => onSelect(i), width);
+
             return new ButtonFinal(labelGetter(i), () => onSelect(i), width);
             void onSelect(T i)
             {
@@ -86,7 +103,12 @@ namespace Project1.Framework.UI
         private void BtnPress()
         {
             if (this.ItemsGetter is not null)
-                this.Initialize(this.ItemsGetter());
+            {
+                var itemsGot = this.ItemsGetter();
+                if (!itemsGot.Any())
+                    return;
+                this.Initialize(itemsGot);
+            }
             var panel = this.ListControl.ToPanelScrollable(ScrollModes.Vertical)
                 .HideOnAnyClick(); //this.ListControl.TopLevelControl as PanelScrollable;
             panel.Layer = this.TopLevelControl.Layer;
@@ -116,6 +138,18 @@ namespace Project1.Framework.UI
         readonly ListBoxNoScroll<T, Button> ListControl;
         readonly Func<T> CurrentlySelectedGetter;
         readonly Func<IEnumerable<T>> ItemsGetter;
+        public ComboBoxNewNew(int width, Func<T, string> nameGetter, Action<T> callBack, Func<T> currentlySelectedGetter, Func<IEnumerable<T>> itemsGetter)
+        {
+            this.CurrentlySelectedGetter = currentlySelectedGetter;
+            this.ItemsGetter = itemsGetter;
+            this.Button = new Button(() => this.CurrentlySelectedGetter != null ? nameGetter(this.CurrentlySelectedGetter()) : "undefined", BtnPress, width);
+
+            this.ListControl = new ListBoxNoScroll<T, Button>(i => CreateButton(i, nameGetter, callBack, width));
+            this.ListControl//.ToPanelScrollable(width: width, height: width, ScrollModes.Vertical, BackgroundStyle.PanelNew)
+                .HideOnAnyClick();
+            this.ListControl.BackgroundColor = Color.Black * .5f;
+            this.Controls.Add(this.Button);
+        }
         public ComboBoxNewNew(IEnumerable<T> list, int width, Func<T, string> nameGetter, Action<T> callBack, Func<T> currentlySelectedGetter)
         {
             this.CurrentlySelectedGetter = currentlySelectedGetter;
@@ -139,6 +173,7 @@ namespace Project1.Framework.UI
 
             this.Controls.Add(this.Button);
         }
+
         public ComboBoxNewNew(int width, string label, Func<T, string> nameGetter, Action<T> callBack, Func<T> currentlySelectedGetter, Func<IEnumerable<T>> itemsGetter)
         {
             this.CurrentlySelectedGetter = currentlySelectedGetter;
@@ -154,7 +189,7 @@ namespace Project1.Framework.UI
 
             this.Controls.Add(this.Button);
         }
-
+        
         public ComboBoxNewNew(IEnumerable<T> list, int width, string label, Func<T, string> nameGetter, Func<string> currentlySelectedGetter, Action<T> callBack)
         {
             this.Button = new Button(() =>

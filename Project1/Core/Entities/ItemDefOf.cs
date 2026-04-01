@@ -29,6 +29,7 @@ namespace Project1.Core.Entities
             Description = "Used as an input for crafting final products",
             Category = ItemCategoryDefOf.RawMaterials,
             Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
+            ProfileType = typeof(MaterialRefinementDef)
         };
         static public readonly ItemDef UnfinishedItem = new ItemDef("UnfinishedItem", typeof(Entity))
         {
@@ -46,7 +47,8 @@ namespace Project1.Core.Entities
             DefaultMaterial = MaterialDefOf.Seed,
             Comps = [typeof(SeedComponent)],
             CompDefs = [EntityCompDefOf.Seed],
-            Body = new Bone(BoneDefOf.Item, ItemContent.SeedsFull)
+            Body = new Bone(BoneDefOf.Item, ItemContent.SeedsFull),
+            ProfileType = typeof(PlantSpeciesDef)
         };
         static public readonly ItemDef Fruit = new ItemDef("Fruit", typeof(Entity))
         {
@@ -55,7 +57,8 @@ namespace Project1.Core.Entities
             ReplaceName = true,
             Comps = [typeof(ConsumableComponent)],
             CompDefs = [EntityCompDefOf.Consumable],
-            Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull)
+            Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull),
+            ProfileType = typeof(PlantSpeciesDef)
         };
         static public readonly ItemDef Consumable = new ItemDef("Consumable", typeof(Entity))
         {
@@ -74,7 +77,8 @@ namespace Project1.Core.Entities
             DefaultMaterialType = MaterialTypeDefOf.Flesh,
             Comps = [typeof(ConsumableComponent)],
             CompDefs = [EntityCompDefOf.Consumable],
-            Body = new Bone(BoneDefOf.Item, Sprite.Default)
+            Body = new Bone(BoneDefOf.Item, Sprite.Default),
+            ProfileType = typeof(MaterialRefinementDef)
         };
 
 

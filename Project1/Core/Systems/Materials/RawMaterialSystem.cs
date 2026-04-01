@@ -9,7 +9,7 @@ namespace Project1.Core.Systems.Materials
     [EnsureStaticCtorCall]
     public class RawMaterialSystem
     {
-        public static readonly Dictionary<MaterialTypeDef, HashSet<MaterialDef>> MaterialsByType = [];
+        internal static readonly Dictionary<MaterialTypeDef, HashSet<MaterialDef>> MaterialsByType = [];
         static RawMaterialSystem()
         {
             foreach (var matdef in Def.GetDefs<MaterialDef>())
@@ -19,7 +19,8 @@ namespace Project1.Core.Systems.Materials
                 list.Add(matdef);
             }
         }
-
+        public static IReadOnlySet<MaterialDef> GetMaterialsByType(MaterialTypeDef typeDef)
+            => typeDef is null ? [] : MaterialsByType[typeDef];
         static public Entity Create(MaterialRefinementDef profile, MaterialDef material, int stackSize = -1)
         {
             return Create(profile, material, [], stackSize);
@@ -46,7 +47,7 @@ namespace Project1.Core.Systems.Materials
             var materials = Def.GetDefs<MaterialDef>();
 
             foreach (var state in states)
-                foreach (var material in Def.GetDefs<MaterialDef>().Where(m => m.Type == state.MaterialType))
+                foreach (var material in materials.Where(m => m.Type == state.MaterialType))
                     yield return EntityFactory
                         .Request(state, defaultMaterial: material)
                         .Create();

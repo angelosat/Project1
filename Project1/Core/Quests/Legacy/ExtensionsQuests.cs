@@ -1,6 +1,6 @@
-﻿using Project1.Core.Quests;
+﻿using Project1.Core.Towns;
 
-namespace Project1.Core.Towns
+namespace Project1.Core.Quests.Legacy
 {
     static class ExtensionsQuests
     {

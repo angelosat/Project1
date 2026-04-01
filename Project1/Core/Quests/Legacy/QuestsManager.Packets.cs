@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Project1.Core.Quests;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Networking;
+using Project1.Core.Quests.Legacy;
 
 namespace Project1.Core
 {

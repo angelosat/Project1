@@ -8,6 +8,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
 using Project1.Core.Input;
 using Project1.Core.Networking;
+using Project1.Core.Quests;
 using Project1.Core.Rooms;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Plants;
@@ -116,6 +117,7 @@ namespace Project1.Core.Towns
         public InnManager InnManager;
         [InspectorHidden]
         public QuestsManager QuestManager;
+        public QuestsTownComp QuestManagerNew;
         [InspectorHidden]
         public StorageManager Storage;
         public FurnitureTracker Furniture;
@@ -152,6 +154,7 @@ namespace Project1.Core.Towns
             this.Furniture = new(this);
             this.Ownership = new(this);
             this.Reputation = new(this);
+            this.QuestManagerNew = new(this);
 
             this.TownComponents.AddRange([
                 this.ZoneManager,
@@ -166,6 +169,7 @@ namespace Project1.Core.Towns
                 this.ShopManager,
                 this.InnManager,
                 this.QuestManager,
+                this.QuestManagerNew,
                 this.Storage,
                 this.Furniture,
                 this.Ownership,

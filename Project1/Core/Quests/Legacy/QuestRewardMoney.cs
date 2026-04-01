@@ -5,7 +5,7 @@ using Project1.Core.Networking;
 using System;
 using System.Linq;
 
-namespace Project1.Core.Quests
+namespace Project1.Core.Quests.Legacy
 {
     class QuestRewardMoney : QuestReward
     {

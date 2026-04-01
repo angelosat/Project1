@@ -1,7 +1,7 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.Quests.AI;
 
-namespace Project1.Core.Quests
+namespace Project1.Core.Quests.Legacy
 {
     class QuestTaskDefOf
     {

@@ -2,7 +2,7 @@
 using Project1.Core.Legacy;
 using System;
 
-namespace Project1.Core.Quests
+namespace Project1.Core.Quests.Legacy
 {
     class QuestRewardItem : QuestReward
     {

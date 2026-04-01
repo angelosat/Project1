@@ -19,6 +19,7 @@ namespace Project1.Core.Entities
     {
         public int StackCapacity = 1;
         public int StackDimension = 1;
+        public Type ProfileType;
         public ItemCategory Category;
         public Sprite DefaultSprite;
         public MaterialDef DefaultMaterial;

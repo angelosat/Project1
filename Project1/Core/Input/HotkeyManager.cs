@@ -135,8 +135,8 @@ namespace Project1.Core.Input
                     .AddColumn(null, cat.Key.Name, 192, h => new LabelNew(h.Label))// h.Label.ToLabel())
                     //.AddColumn(null, "Primary", 64, h => new Label(() => $"{h.Key1.Label}", () => editHotkey(h, 0)))
                     //.AddColumn(null, "Secondary", 64, h => new Label(() => $"{h.Key2.Label}", () => editHotkey(h, 1)))
-                    .AddColumn(null, "Primary", 64, h => new LabelNew(() => $"{h.Key1.Label}", () => editHotkey(h, 0)).Bind(h))
-                    .AddColumn(null, "Secondary", 64, h => new LabelNew(() => $"{h.Key2.Label}", () => editHotkey(h, 1)).Bind(h))
+                    .AddColumn(null, "Primary", 64, h => new LabelNew(() => $"{h.Key1.Label}", () => editHotkey(h, 0)).InvalidateOn(h))
+                    .AddColumn(null, "Secondary", 64, h => new LabelNew(() => $"{h.Key2.Label}", () => editHotkey(h, 1)).InvalidateOn(h))
                     .AddItems(cat))]);
             box.Validate(true);
             return box;

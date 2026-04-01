@@ -238,7 +238,7 @@ namespace Project1.Framework.UI
 
         public ListBoxNoScroll<TObject, TControl> AddItems(IEnumerable<TObject> items)
         {
-            return this.AddItems(items.ToArray());
+            return this.AddItems([.. items]);
         }
         public ListBoxNoScroll<TObject, TControl> AddItems(params TObject[] items)
         {

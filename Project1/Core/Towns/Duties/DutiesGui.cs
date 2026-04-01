@@ -26,7 +26,7 @@ namespace Project1.Core.Towns.Duties
                 {
                     var job = roster.Roster[actor].Duties[duty];
                     var ch = new CheckBoxFinalNew(() => Ingame.Instance.Events.Post(new PlayerDutyToggleEvent(actor, duty)), () => job.Enabled);
-                    ch.Bind(job);
+                    ch.InvalidateOn(job);
                     return ch;
                 }, 0);
                 tableManual.AddColumn(duty, iconManual, CheckBoxFinalNew.DefaultBounds.Width, (actor) =>
@@ -39,7 +39,7 @@ namespace Project1.Core.Towns.Duties
                         RightClickAction = () => Ingame.Instance.Events.Post(new PlayerDutyAdjustPriorityEvent(actor, duty, -1)),
                         HoverText = job.Def.LabelReadable
                     };
-                    btn.Bind(job);
+                    btn.InvalidateOn(job);
                     return btn;
                 }, 0);
             }

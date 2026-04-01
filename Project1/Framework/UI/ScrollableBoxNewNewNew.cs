@@ -57,6 +57,10 @@ namespace Project1.Framework.UI
             this.Controls.Add(this.Viewport);
             this.UpdateScrollbars();
         }
+        static public ScrollableBoxNewNewNew FromWidth(GroupBox content, int width, int height)
+            => new ScrollableBoxNewNewNew(content, width + ScrollbarV.DefaultWidth, height, ScrollModes.Vertical);
+        
+      
         static IntVec2 ModeFactor(ScrollModes mode) => new((mode & ScrollModes.Vertical) == ScrollModes.Vertical ? 1 : 0, (mode & ScrollModes.Horizontal) == ScrollModes.Horizontal ? 1 : 0);
         public override Control AddControls(params Control[] controls)
         {

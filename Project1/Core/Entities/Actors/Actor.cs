@@ -12,7 +12,7 @@ using Project1.Core.Mood;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Entities;
 using Project1.Core.Networking.Inventory;
-using Project1.Core.Quests;
+using Project1.Core.Quests.Legacy;
 using Project1.Core.Resources;
 using Project1.Core.Rooms;
 using Project1.Core.Simulation;

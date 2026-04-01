@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using System;
 
-namespace Project1.Core.Quests
+namespace Project1.Core.Quests.Legacy
 {
     class QuestGiverProperties
     {

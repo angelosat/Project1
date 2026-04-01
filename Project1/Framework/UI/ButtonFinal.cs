@@ -77,11 +77,12 @@ namespace Project1.Framework.UI
             this.Invalidate();
             //this.Validate();
         }
-        public override void Validate(bool cascade = false)
-        {
-            this.Text = this.TextFunc?.Invoke() ?? this.Text;
-            base.Validate(cascade);
-        }
+        //public override void Validate(bool cascade = false)
+        //{
+        //    this.Text = this.TextFunc?.Invoke() ?? this.Text;
+        //    base.Validate(cascade);
+        //}
+        
         static public int GetWidth(SpriteFont font, string txt)
         {
             var textw = (int)font.MeasureString(txt).X;
@@ -150,6 +151,7 @@ namespace Project1.Framework.UI
 
         public override void OnPaint(SpriteBatch sb)
         {
+            this.Text = this.TextFunc?.Invoke() ?? "";// this.Text;
             ButtonFinal.Draw(sb, this, Vector2.Zero, 1);// (MouseHover || IsPressed) ? 1 : 0.5f);
         }
 

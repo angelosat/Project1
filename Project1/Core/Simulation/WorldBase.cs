@@ -165,23 +165,11 @@ namespace Project1.Core.Simulation
                 //$"{this.Net} disposing {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
                 obj.OnDispose();
                 this.EntityRegistry.Remove(obj.RefId);
-                obj.Net = null; // this also makes gameobject.isdisposed return true
-                                //obj.RefId = 0; // dont set it to 0 because systems must be able to remove this entity's reference by id
-
-                // remove from potential slot or container so that it gets detached from the parent entity and map.despawn() can remove if from the correct chunk by its true position,
-                // otherwise its parent position will be read
-                obj.Container?.Remove(obj);
-                obj.Slot?.Assign(null, out var _);
-                obj.Map?.Despawn(obj);
-
-                //if (obj.IsSpawned || obj.Container is not null || obj.Slot is not null)
-                //    throw new Exception("entity must not be spawned, in a container, or in a slot, when disposing");
-
-                //obj.OnDespawn();
-                //foreach (var child in from slot in o.GetChildren() where slot.HasValue select slot.Object)
-                //    this.DisposeObject(child);
-                //this.Events.Post(new EntityDisposedEvent(o));
-
+                obj.Net = null;
+                //obj.Container?.Remove(obj);
+                //obj.Slot?.Assign(null, out var _);
+                //obj.Map?.Despawn(obj);
+                obj.Detach();
             }
             this.Events.Post(new EntityDisposedEvent(o));
             return true;

@@ -111,7 +111,7 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef ShopCounter = new("ShopCounter", typeof(BlockShopCounter))
         {
             BlockEntityCompSpecs = [
-                new BlockInventoryComp.Spec(),
+                //new BlockInventoryComp.Spec(),
                 new BlockResourcesComp.Spec([ResourceDefOf.Cash]),
                 new BlockShopComp.Spec()],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks])

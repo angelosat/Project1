@@ -2,6 +2,7 @@
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Blocks.Comps;
 
@@ -15,6 +16,9 @@ internal class BlockResourcesComp : BlockComp
     public override BlockCompDef CompDef => BlockCompDefOf.Resources;
 
     readonly Dictionary<ResourceDef, Resource> _resources = [];
+
+    public IOrderedEnumerable<Resource> OrderedByDeficit
+        => this._resources.Values.OrderByDescending(r => r.Deficit);
 
     public void ApplyDelta(ResourceDef resource, float delta)
     {
@@ -39,12 +43,20 @@ internal class BlockResourcesComp : BlockComp
 
     public float GetValue(ResourceDef resource)
         => this._resources[resource].Value;
+    public void SetValue(ResourceDef resource, float value)
+        => this._resources[resource].Value = value;
+
+    public void SetMax(ResourceDef resource, float value)
+       => this._resources[resource].Max = value;
 
     public float GetDeficit(ResourceDef resource)
         => this._resources[resource].Deficit;
 
     public float GetValueOrDefault(ResourceDef resource, float dflt = 0)
         => this._resources.TryGetValue(resource, out var res) ? res.Value : dflt;
+
+    public void SetOverflowMax(ResourceDef resource, float max)
+        => this._resources[resource].SetOverflowMax(max);       
 
     public BlockResourcesComp(ResourceDef[] resources)
     {

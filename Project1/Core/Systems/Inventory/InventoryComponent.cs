@@ -131,7 +131,7 @@ namespace Project1.Core.Systems.Inventory
             if (!target.IsHaulable)
                 throw new Exception();
             if (amount == 0)
-                throw new Exception("Amount must be initialized");
+                throw new Exception("Amount must be specified");
             if (amount < 0)
                 amount = target.StackSize;
             if (amount > target.StackSize)

@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace Project1.Core.Resources
 {
-    public sealed class Resource : /*MetricWrapper, */IProgressBar, ISaveableNewNew<Resource>, IDefWrapper<ResourceDef>, ISerializableNew<Resource>, INamed
+    public sealed class Resource : IProgressBar, ISaveableNewNew<Resource>, IDefWrapper<ResourceDef>, ISerializableNew<Resource>, INamed
     {
         public Entity Owner;
         public ResourceDef ResourceDef;
@@ -34,11 +34,50 @@ namespace Project1.Core.Resources
             }
         }
         float _value;
+        float _overflow, _overflowMax;
+        public float Overflow
+        {
+            get => this._overflow;
+            set => this._overflow = Math.Max(0, Math.Min(this._overflowMax, value));
+        }
         public float Value
         {
             get => this._value;
-            set => this._value = Math.Max(0, Math.Min(value, this.Max));
+            //set => this._value = Math.Max(0, Math.Min(value, this.Max));
+            set
+            {
+                this._value = this.ApplyValue(value, out var overflow);
+                if(overflow > 0)
+                    this._overflow = Math.Min(overflow, this._overflowMax);
+            }
         }
+        public float ValueWithOverflow => this._value + this._overflow;
+        public float MaxWithOverflow => this._max + this._overflowMax;
+        public void SetValue(float value)
+        {
+            if (value > _max)
+            {
+                _overflow = value - _max;
+                _value = _max;
+            }
+            else if (value < _max)
+            {
+                _overflow = 0;
+                _value = value;
+            }
+        }
+        public float ApplyValue(float value, out float overflow)
+        {
+            if (value > _max)
+            {
+                overflow = value - _max;
+                return _max;
+            }
+            overflow = 0;
+            return value;
+        }
+        public void SetOverflowMax(float max)
+            => this._overflowMax = max;
         public float Deficit => this._max - this._value;
         static ProgressFloat CreateCooldown() => new(0, Ticks.PerGameMinute, Ticks.PerGameMinute);
         public ResourceThreshold CurrentThreshold => this.ResourceDef.Worker.GetCurrentThreshold(this);
@@ -143,10 +182,10 @@ namespace Project1.Core.Resources
             foreach (var (eventType, handler) in this.ResourceDef.Worker.GetEventHandlers())
                 _unsub += parent.Map?.Events.ListenTo(eventType, handler);
         }
-        internal void SetValue(float value)
-        {
-            this.Value = value;
-        }
+        //internal void SetValue(float value)
+        //{
+        //    this.Value = value;
+        //}
         public void SetTicksPerRecoverOne(int value)
         {
             this.TicksPerRecoverOne = value;

@@ -80,9 +80,9 @@ namespace Project1.Core.Blocks
         {
         }
 
-        internal virtual void ResolveReferences(MapBase map, IntVec3 global)
-        {
-        }
+        //internal virtual void ResolveReferences(MapBase map, IntVec3 global)
+        //{
+        //}
         internal virtual void ResolveReferences()
         {
         }

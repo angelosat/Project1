@@ -262,12 +262,12 @@ namespace Project1.Core.Blocks
                 c.ResolveReferences();
         }
 
-        internal void ResolveReferences(MapBase map, IntVec3 global)
-        {
-            foreach (var c in this.Comps.Values)
-                c.ResolveReferences(map, global);
-            this.OnMapLoaded(map, global);
-        }
+        //internal void ResolveReferences(MapBase map, IntVec3 global)
+        //{
+        //    foreach (var c in this.Comps.Values)
+        //        c.ResolveReferences(map, global);
+        //    this.OnMapLoaded(map, global);
+        //}
 
         protected virtual void OnMapLoaded(MapBase map, IntVec3 global)
         {

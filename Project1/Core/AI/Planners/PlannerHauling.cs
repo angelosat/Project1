@@ -17,7 +17,7 @@ namespace Project1.Core.AI.Planners
             var stockpiles = map.Hauling.AllTargets.OrderByDescending(i => i.Priority);//  map.Town.ZoneManager.GetZones<Stockpile>().OrderByDescending(i => i.Priority);
             var mapItems = map.Haulables
                 .Where(actor.CanReachAndReserve)
-                .Where(town.IsClaimedBySystem)
+                .Where(i => !town.IsClaimedBySystem(i))
                 .SortByReachableRegionDistance(actor)
                 .Union(map.Hauling.InventoryItems)
                 .ToList();

@@ -109,6 +109,8 @@ namespace Project1.Core.Entities
                 var obj = ToolSystem.Create(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
                 AddTemplate(obj);
             }
+
+            AddTemplate(ItemDefOf.Coins.Create());
         }
 
         #region Common Properties

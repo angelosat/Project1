@@ -55,6 +55,7 @@ namespace Project1.Core.Resources
         }
         public virtual string GetBarHoverText(Resource resource)
         {
+            return $"{((int)resource.ValueWithOverflow).ToString(this.Format)} / {resource.Max.ToString(this.Format)} ({resource.MaxWithOverflow})";
             return $"{((int)resource.Value).ToString(this.Format)} / {resource.Max.ToString(this.Format)}";
         }
         public virtual Control GetControlBar(Resource resource)
@@ -77,6 +78,7 @@ namespace Project1.Core.Resources
         public virtual void ApplyDelta(Resource resource, float delta)
         {
             resource.Value += delta;
+            //resource.SetValue(resource.Value + delta);
             if (resource.Value <= 0)
                 this.OnDepleted(resource);
         }

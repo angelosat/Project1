@@ -20,6 +20,11 @@ namespace Project1.Core.Entities
             foreach (var component in this._innerList)
                 component.Tick();
         }
+        internal void TickOffMap()
+        {
+            foreach (var component in this._innerList)
+                component.TickOffMap();
+        }
         internal void Resolve()
         {
             foreach (var comp in this._innerList) comp.Resolve();
@@ -108,5 +113,7 @@ namespace Project1.Core.Entities
         {
             return this._innerList[compindex];
         }
+
+        
     }
 }

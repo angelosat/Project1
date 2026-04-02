@@ -210,7 +210,7 @@ namespace Project1.Core.World
         void ForceVisitDepart(Actor actor)
         {
             var serverActor = Server.Instance.World.Get<Actor>(actor.RefId);
-            var newPercentage = serverActor.Map == null ? 0 : 1f;
+            var newPercentage = serverActor.Map == null ? 1f : 0;// 0 : 1f;
             serverActor.Needs.OverridePercentage(AdventurerNeedsDefOf.Adventuring, newPercentage);
             serverActor.AI.Meta.LocationDecision.Reset();
             var debugmsg = $"{serverActor.Name}'s visit chance modifier set to 1";

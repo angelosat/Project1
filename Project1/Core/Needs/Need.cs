@@ -40,7 +40,8 @@ namespace Project1.Core.Needs
             set => this._valueInt = (int)MathHelper.Clamp(value, 0, 100);
         }
         public int _valueInt = 100;
-        public float TicksPerNaturalDecay = 1 / Ticks.FromSeconds(10);
+        [Obsolete("let defs declare natural decay or let systems explicitly apply accumulator deltas")]
+        public float TicksPerNaturalDecay = 0;//1 / Ticks.FromSeconds(10);
         public float Accumulator;
         public readonly float Min = 0f;
         public readonly float Max = 100f;

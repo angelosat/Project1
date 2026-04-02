@@ -54,6 +54,11 @@ namespace Project1.Core.Entities
             this.Components.Add(EntityCompDefOf.Physics);
             this.Components.Add(EntityCompDefOf.Sprite);
         }
+
+        internal void TickOffMap()
+        {
+            this.Components.TickOffMap();
+        }
         public Entity Initialize()
         {
             if (this._initialized)

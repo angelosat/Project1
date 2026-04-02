@@ -6,6 +6,7 @@ using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,7 +51,8 @@ namespace Project1.Core.Needs
             foreach (var n in this.NeedsNew.Values)
                 n.Tick();
         }
-
+        public override void TickOffMap()
+            => this.Tick();
         internal override void Resolve()
         {
             foreach (var n in this.NeedsNew.Values)
@@ -153,6 +155,9 @@ namespace Project1.Core.Needs
             need.SetValue((int)(need.Max * percentage), this.Owner);
             this.Owner.World.Events.Post(new ActorNeedOverridenEvent(this.Owner as Actor, need.Def, need.Value));
         }
+
+        internal void ApplyAccumulatorDelta(NeedDef need, float delta)
+            => this.NeedsNew[need].Accumulator += delta;
 
         public new class Spec: Spec<NeedsComponent>
         {

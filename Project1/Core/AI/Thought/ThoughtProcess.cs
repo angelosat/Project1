@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Project1.Core.AI.Thought;
 
-namespace Project1.Core.AI.Thought
+public abstract class ThoughtProcess
 {
-    public abstract class ThoughtProcess
-    {
-        public abstract void Tick(AIState state);
-    }
+    public abstract void TickOnMap(AIState state);
+    public abstract void TickOffMap(AIState state);
 }

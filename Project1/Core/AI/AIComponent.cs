@@ -110,12 +110,16 @@ namespace Project1.Core.AI
             this.State.Tick();
 
             foreach (var thought in this.Meta.Def.Thoughts)
-                thought.Tick(this.State);
-
+                thought.TickOnMap(this.State);
             if (this.Enabled)
                 this.Root.Tick(parent as Actor, this.State);
         }
-
+        public override void TickOffMap()
+        {
+            //foreach (var thought in this.Meta.Def.Thoughts)
+            //    thought.TickOffMap(this.State);
+            this.Meta.TickOffMap();
+        }
         public override void OnSpawn(MapBase newMap)
         {
             this.State.Leash = this.Owner.Global;

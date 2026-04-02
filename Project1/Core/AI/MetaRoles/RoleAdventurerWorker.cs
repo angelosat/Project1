@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Towns.AI.Needs;
-using Project1.Core.Networking;
 using Project1.Framework.Helpers;
 
 namespace Project1.Core.AI.MetaRoles
@@ -11,10 +10,14 @@ namespace Project1.Core.AI.MetaRoles
             var actor = meta.Actor;
             if (actor.Net.IsClient)
                 return;
+           
+            var needDelta = (actor.IsSpawned ? -1 : 1) / (float)Ticks.PerGameMinute;
+            actor.Needs.ApplyAccumulatorDelta(AdventurerNeedsDefOf.Adventuring, needDelta);
+
             var world = actor.World;
             if (!meta.LocationDecision.CanEvaluate(world.CurrentTick))
                 return;
-            var roll = world.Random.Roll(1 - actor.Needs.GetPercentage(AdventurerNeedsDefOf.Adventuring));
+            var roll = world.Random.Roll(actor.Needs.GetPercentage(AdventurerNeedsDefOf.Adventuring));
             if (roll)
             {
                 meta.LocationDecision.RegisterSuccess();

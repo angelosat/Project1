@@ -34,6 +34,7 @@ namespace Project1.Core.Entities
         public Entity Owner;
         public EntityComp() { }
         public virtual void Tick() { }
+        public virtual void TickOffMap() { }
         public virtual void Initialize(GameObject parent) { }
         public virtual void Randomize(GameObject parent, RandomThreaded random) { this.Initialize(parent); }
         public virtual void OnSpawn(MapBase newMap) { }
@@ -101,6 +102,9 @@ namespace Project1.Core.Entities
         internal virtual IEnumerable<GameObjectSlot> GetSlots() { yield break; }
         internal virtual void OnKill() { }
         internal virtual void ResolveReferencesNew() { }
+
+        
+
         public abstract class Spec
         {
             public abstract Type CompClass { get; }

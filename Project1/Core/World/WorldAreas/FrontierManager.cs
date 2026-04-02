@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Effects;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
+using Project1.Core.Needs;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Core.Networking;
+using Project1.Core.Towns.AI.Needs;
+using Project1.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.World.WorldAreas
 {
@@ -91,8 +91,7 @@ namespace Project1.Core.World.WorldAreas
                 this.ActorPositions[actor] = nextDistance;
                 var currentFrontier = this.GetFrontier(actor);
                 currentFrontier.Tick(actor);
-                actor.Needs.Tick();
-                actor.AI.Meta.Tick();
+                actor.TickOffMap();
             }
         }
 

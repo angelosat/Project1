@@ -82,7 +82,12 @@ namespace Project1.Core.AI.MetaRoles
             actor.Needs.Remove(this.Def.Needs);
         }
 
-        internal virtual void Tick() => this.Def.Worker.Tick(this);
+        internal virtual void TickOffMap()
+        {
+            foreach (var t in this.Def.Thoughts)
+                t.TickOffMap(this.Actor.AI.State);
+            this.Def.Worker.Tick(this);
+        }
 
         internal void ReturnToTown()
         {

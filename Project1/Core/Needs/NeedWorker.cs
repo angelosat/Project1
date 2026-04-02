@@ -4,11 +4,12 @@ using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Needs
 {
-    public abstract class NeedWorker : MetricWorker
+    public abstract class NeedWorker// : MetricWorker
     {
-        public sealed override void Tick(MetricWrapper wrapper)
+        //public sealed override void Tick(MetricWrapper wrapper)
+        public void Tick(Need need)
         {
-            var need = (Need)wrapper;
+            //var need = (Need)wrapper;
 
             if (need.Mods.Count > 0)
             {

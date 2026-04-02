@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Helpers;
-using Project1.Core.Systems.Materials;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using System;
 using System.Reflection;
@@ -16,7 +16,7 @@ public readonly record struct QuestId(int Value)
 
 public abstract class QuestRuntime : Inspectable, ISaveableNewNew<QuestRuntime>, ISerializableNew<QuestRuntime>
 {
-    protected abstract QuestDef Def { get; }
+    internal abstract QuestDef Def { get; }
     internal QuestId Id { get; private set; }
 
     internal int Count = 10;
@@ -102,44 +102,4 @@ public abstract class QuestRuntime : Inspectable, ISaveableNewNew<QuestRuntime>,
     protected virtual void OnRead(IDataReader r) { }
 
    
-}
-
-internal sealed class FetchQuestRuntime : QuestRuntime
-{
-    protected override QuestDef Def => QuestDefOf.Deliver;
-    public (MaterialRefinementDef, MaterialDef) Key => (this.Refinement, this.Material);
-    internal MaterialRefinementDef Refinement { get; private set; }
-    internal MaterialDef Material { get; private set; }
-
-    public override string LabelReadable => $"Deliver {this.Count} {this.Material.LabelReadable} {this.Refinement.LabelReadable}";
-
-    public FetchQuestRuntime(QuestId id, int reward, MaterialRefinementDef refinement, MaterialDef material) : base(id, reward)
-    {
-        Refinement = refinement;
-        Material = material;
-    }
-    FetchQuestRuntime()
-    {
-        
-    }
-    protected override void OnSave(SaveTag tag)
-    {
-        tag.Save("Refinement", this.Refinement);
-        tag.Save("Material", this.Material);
-    }
-    protected override void OnLoad(SaveTag tag)
-    {
-        this.Refinement = tag.LoadDef<MaterialRefinementDef>("Refinement");
-        this.Material = tag.LoadDef<MaterialDef>("Material");
-    }
-    protected override void OnWrite(IDataWriter w)
-    {
-        w.Write(this.Refinement);
-        w.Write(this.Material);
-    }
-    protected override void OnRead(IDataReader r)
-    {
-        this.Refinement = r.ReadDef<MaterialRefinementDef>();
-        this.Material = r.ReadDef<MaterialDef>();
-    }
 }

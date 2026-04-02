@@ -1,20 +1,7 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Towns.AI.Needs;
 using Project1.Core.Towns.Shops;
 
 namespace Project1.Core.AI.Thought;
-
-internal sealed class ThoughtAdventuring : ThoughtProcess
-{
-    public override void TickOffMap(AIState state)
-    {
-    }
-
-    public override void TickOnMap(AIState state)
-    {
-        state.Owner.Needs.ApplyAccumulatorDelta(AdventurerNeedsDefOf.Adventuring, -1f / Ticks.PerGameMinute);
-    }
-}
 internal sealed class ThoughtItemEvaluatorVisitor : ThoughtProcess
 {
     public override void TickOffMap(AIState state)

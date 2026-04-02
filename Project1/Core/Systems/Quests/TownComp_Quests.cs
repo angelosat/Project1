@@ -54,7 +54,7 @@ sealed class PlannerQuest : Planner
         return null;
     }
 
-    private static bool TryScan(Actor actor, QuestsTownComp manager, IEnumerable<IntVec3> boards, out IntVec3 board, out IEnumerable<QuestRuntime> availableQuests)
+    private static bool TryScan(Actor actor, TownComp_Quests manager, IEnumerable<IntVec3> boards, out IntVec3 board, out IEnumerable<QuestRuntime> availableQuests)
     {
         //foundBoard = false;
         board = default;
@@ -73,7 +73,7 @@ sealed class PlannerQuest : Planner
     }
 }
 
-public sealed class QuestsTownComp : TownComponent
+public sealed class TownComp_Quests : TownComponent
 {
     public ChangeNotifier Notifier = new();
     public override string Name => "QuestsNew";
@@ -82,14 +82,14 @@ public sealed class QuestsTownComp : TownComponent
     readonly Dictionary<QuestId, QuestRuntime> AllQuestsInt = [];
     public IEnumerable<QuestRuntime> AllQuests => this.AllQuestsInt.Values;
     readonly Dictionary<(MaterialRefinementDef, MaterialDef), QuestId> FetchQuests = [];
-    readonly Dictionary<QuestId, FetchQuestRuntime> FetchQuestsById = [];
+    readonly Dictionary<QuestId, QuestRuntime_Deliver> FetchQuestsById = [];
     public Action<QuestRuntime> Added, Removed;
     readonly Dictionary<EntityRefId, HashSet<QuestId>> AcceptedQuestsByActor = [];
     readonly Dictionary<QuestId, HashSet<EntityRefId>> AcceptedQuestsByQuest = [];
     readonly HashSet<IntVec3> _questBoards = [];
     public IEnumerable<IntVec3> QuestBoards => this._questBoards;
 
-    public QuestsTownComp(Town town) : base(town)
+    public TownComp_Quests(Town town) : base(town)
     {
         town.Map.Events.ListenTo<BlockEntityAddedEvent>(HandleBlockEntityAdded);
         town.Map.Events.ListenTo<BlockEntityRemovedEvent>(HandleBlockEntityRemoved);
@@ -105,6 +105,8 @@ public sealed class QuestsTownComp : TownComponent
         if (e.Entity.HasComp<BlockQuestsComp>())
             this._questBoards.Add(e.Entity.OriginGlobal);
     }
+    public QuestRuntime GetQuest(QuestId id)
+        => this.AllQuestsInt[id];
     public IEnumerable<QuestRuntime> GetAcceptedQuestsByActor(Actor actor)
     {
         if (!this.AcceptedQuestsByActor.TryGetValue(actor.RefId, out var list))
@@ -210,7 +212,7 @@ public sealed class QuestsTownComp : TownComponent
         if (this.FetchQuests.TryGetValue(key, out _))
             return false;
         var reward = ItemDefOf.Ingredient.BaseValue * matdef.Value;
-        var quest = new FetchQuestRuntime(this.GetNextQuestId(), reward, refdef, matdef);
+        var quest = new QuestRuntime_Deliver(this.GetNextQuestId(), reward, refdef, matdef);
         this.AllQuestsInt.Add(quest.Id, quest);
         this.FetchQuests[key] = quest.Id;
         this.FetchQuestsById[quest.Id] = quest;
@@ -223,7 +225,7 @@ public sealed class QuestsTownComp : TownComponent
         var q = this.AllQuestsInt[id];
         switch (q)
         {
-            case FetchQuestRuntime:
+            case QuestRuntime_Deliver:
                 var fq = this.FetchQuestsById[id];
                 this.FetchQuests.Remove((fq.Refinement, fq.Material));
                 this.FetchQuestsById.Remove(id);
@@ -262,7 +264,7 @@ public sealed class QuestsTownComp : TownComponent
     {
         switch(q)
         {
-            case FetchQuestRuntime fq:
+            case QuestRuntime_Deliver fq:
                 this.FetchQuests[fq.Key] = fq.Id;
                 this.FetchQuestsById[fq.Id] = fq;
                 break;

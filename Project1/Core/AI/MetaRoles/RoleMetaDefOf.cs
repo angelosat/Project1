@@ -1,4 +1,5 @@
-﻿using Project1.Core.AI.Thought;
+﻿using Project1.Core.AI.MetaRoles.Adventurer;
+using Project1.Core.AI.Thought;
 using Project1.Core.Needs;
 using Project1.Core.Towns.AI.Needs;
 using Project1.Framework;
@@ -13,7 +14,8 @@ namespace Project1.Core.AI.MetaRoles
         public readonly static RoleMetaDef Adventurer = new("Adventurer", typeof(RoleAdventurerData), typeof(RoleAdventurerWorker), [
             AdventurerNeedsDefOf.Adventuring],
             [typeof(ThoughtItemEvaluatorVisitor),
-            typeof(ThoughtAdventuring)]);
+            typeof(ThoughtAdventuring),
+            typeof(ThoughtQuests)]);
         public readonly static RoleMetaDef Npc = new("Npc", typeof(RoleNpcData), typeof(RoleNpcWorker), [], []);
 
         static RoleMetaDefOf()

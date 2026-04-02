@@ -117,7 +117,7 @@ namespace Project1.Core.Towns
         public InnManager InnManager;
         [InspectorHidden]
         public QuestsManager QuestManager;
-        public QuestsTownComp QuestManagerNew;
+        public TownComp_Quests QuestManagerNew;
         [InspectorHidden]
         public StorageManager Storage;
         public FurnitureTracker Furniture;

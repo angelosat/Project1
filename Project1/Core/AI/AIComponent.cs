@@ -14,249 +14,247 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Core.AI
+namespace Project1.Core.AI;
+
+public sealed class AIComponent : EntityComp<AIComponent.Spec>
 {
-    public class AIComponent : EntityComp<AIComponent.Spec>
+    public override EntityCompDef CompDef => EntityCompDefOf.AI;
+
+    public override string Name { get; } = "AI";
+    public Guid Guid = Guid.NewGuid();
+    public static Dictionary<Guid, GameObject> Registry = new();
+    public static Guid GetGuid(GameObject agent)
     {
-        public override EntityCompDef CompDef => EntityCompDefOf.AI;
+        return agent.GetComponent<AIComponent>().Guid;
+    }
+    public static GameObject GetAgent(Guid guid)
+    {
+        return Registry[guid];
+    }
+    public void Sync(int seed)
+    {
+        this.State.InSync = true;
+    }
 
-        public override string Name { get; } = "AI";
-        public Guid Guid = Guid.NewGuid();
-        public static Dictionary<Guid, GameObject> Registry = new();
-        public static Guid GetGuid(GameObject agent)
+    public static void Invalidate(GameObject obj)
+    {
+        // TODO: signal each npc that remembers obj, that obj's state has changed, so that they evaluate it again next time they see it
+        throw new NotImplementedException();
+    }
+
+    Behavior Root;
+    readonly Knowledge Knowledge;
+    public AIState State;
+    public RoleMetaWrapper Meta;
+    public T GetMeta<T>() where T : RoleMetaWrapper => this.Meta as T;
+    bool Enabled = true;
+    public AIComponent()
+    {
+        this.Knowledge = new Knowledge();
+    }
+    internal override void CopyFrom(EntityComp source)
+    {
+        var c = source as AIComponent;
+        this.Root = c.Root.Clone() as Behavior;
+        this.Meta = c.Meta.Def.CreateWrapper();
+    }
+    public override void Randomize(GameObject parent, RandomThreaded random)
+    {
+        this.State.Generate(parent, random);
+    }
+    
+    internal T FindBehavior<T>() where T : Behavior
+    {
+        return (this.Root as BehaviorComposite).Find(typeof(T)) as T;
+    }
+
+    public void Enable()
+    {
+        this.Enabled = true;
+    }
+    public void Disable()
+    {
+        this.Enabled = false;
+    }
+
+    internal override void Resolve()
+    {
+        var profile = this.Owner.Profile as ActorDnaDef;
+        this.Root = profile.Behavior.Clone() as Behavior;
+        this.Root.AttachTo(this.Owner as Actor);
+        this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
+    }
+    internal override void ResolveReferences()
+    {
+        this.State.ResolveReferences();
+    }
+    internal override void ResolveReferencesNew()
+    {
+        this.State.OnAttachedToMap();
+    }
+    public AIComponent Initialize(Behavior root)
+    {
+        return this;
+    }
+
+    public Behavior GetCurrentBehavior()
+    {
+        return (this.Root as BehaviorQueue).Current;
+    }
+
+    public override void Tick()
+    {
+        var parent = this.Owner;
+        if (parent.Net.IsClient) // do i want to run some deterministic behaviors locally too? answer: NO
+            return;
+
+        this.State.Tick();
+
+        foreach (var thought in this.Meta.Def.Thoughts)
+            thought.TickOnMap(this.State);
+        if (this.Enabled)
+            this.Root.Tick(parent as Actor, this.State);
+    }
+    public override void TickOffMap()
+    {
+        this.Meta.TickOffMap();
+    }
+    public override void OnSpawn(MapBase newMap)
+    {
+        this.State.Leash = this.Owner.Global;
+        this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
+        this.State.ItemPreferences.OnSpawn(newMap);
+    }
+    public override void OnDespawnExtra(MapBase oldmap)
+    {
+        this.State.ItemPreferences.OnDespawn(oldmap);
+    }
+    public override void OnObjectSynced(GameObject parent)
+    {
+        this.Owner.Map?.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
+    }
+    void HandleBlocksChange(CellsInvalidatedEvent e)
+    {
+        if (!this.State.Path?.IsValid(this.Owner as Actor) ?? false)
         {
-            return agent.GetComponent<AIComponent>().Guid;
+            this.State.Path = null;
         }
-        public static GameObject GetAgent(Guid guid)
+    }
+    internal override List<SaveTag> Save()
+    {
+        var save = new List<SaveTag>
         {
-            return Registry[guid];
+            new SaveTag(SaveTag.Types.ByteArray, "Guid", this.Guid.ToByteArray()),
+            this.State.Save("State"),
+            this.Root.Save("Root"),
+            this.Meta.Save("Meta")
+        };
+        return save;
+    }
+    internal override void LoadExtra(SaveTag save)
+    {
+        save.TryGetTagValue<byte[]>("Guid", v => this.Guid = new Guid(v));
+        this.State.Load(save["State"]);
+        this.Root.Load(save["Root"]);
+        if (save.TryLoadNew<RoleMetaWrapper>("Meta", out var meta)) this.Meta = meta;
+        this.Meta.Actor = this.Owner as Actor;
+        this.State.ResolveReferences();
+    }
+
+    public override void Write(IDataWriter w)
+    {
+        w.Write(this.Guid.ToByteArray());
+        this.State.Write(w);
+        this.Root.Write(w);
+        w.Write(this.Meta.Def);
+    }
+    public override void Read(IDataReader r)
+    {
+        this.Guid = new Guid(r.ReadBytes(16));
+        this.State.Read(r);
+        this.Root.Read(r);
+        this.Meta = r.ReadDef<RoleMetaDef>().CreateWrapper();
+        this.Meta.Actor = this.Owner as Actor;
+        this.State.ResolveReferences();
+    }
+
+    internal override void GetInterface(GameObject gameObject, Control box)
+    {
+        base.GetInterface(gameObject, box);
+        box.AddControls(new Interface());
+    }
+    internal override void OnMapLoaded(GameObject parent)
+    {
+        this.State.MapLoaded(parent as Actor);
+        this.Root.MapLoaded(parent as Actor);
+    }
+    public override void OnObjectLoaded(GameObject parent)
+    {
+        this.State.ObjectLoaded(parent);
+        this.Root.ObjectLoaded(parent);
+    }
+    class Interface : GroupBox
+    {
+        readonly Label Label;
+        public Interface()
+        {
+            this.Label = new Label("Behavior: ") { Width = 300 };
+            this.AddControls(this.Label);
         }
-        public void Sync(int seed)
+    }
+
+    internal void MoveOrder(TargetArgs target, bool enqueue)
+    {
+        this.State.AddMoveOrder(target, enqueue);
+    }
+    public override void DrawAfter(MySpriteBatch sb, Camera cam)
+    {
+        var parent = this.Owner;
+        var serverentity = parent;
+        var state = AIState.GetState(serverentity);
+        if (state is null)
         {
-            this.State.InSync = true;
+            return; // we are in client
         }
 
-        public static void Invalidate(GameObject obj)
+        var path = state.Path;
+        if (!SelectionManager.IsSelected(parent))
         {
-            // TODO: signal each npc that remembers obj, that obj's state has changed, so that they evaluate it again next time they see it
-            throw new NotImplementedException();
+            return;
         }
 
-        Behavior Root;
-        readonly Knowledge Knowledge;
-        public AIState State;
-        public RoleMetaWrapper Meta;
-        bool Enabled = true;
-        public AIComponent()
+        var first = true;
+        if (path is not null)
         {
-            this.Knowledge = new Knowledge();
-        }
-        internal override void CopyFrom(EntityComp source)
-        {
-            var c = source as AIComponent;
-            this.Root = c.Root.Clone() as Behavior;
-            this.Meta = c.Meta.Def.CreateWrapper();
-        }
-        public override void Randomize(GameObject parent, RandomThreaded random)
-        {
-            this.State.Generate(parent, random);
-        }
-        
-        internal T FindBehavior<T>() where T : Behavior
-        {
-            return (this.Root as BehaviorComposite).Find(typeof(T)) as T;
-        }
+            cam.DrawBlockMouseover(sb, parent.Map, path.Current, Color.Lime);
 
-        public void Enable()
-        {
-            this.Enabled = true;
-        }
-        public void Disable()
-        {
-            this.Enabled = false;
-        }
-
-        internal override void Resolve()
-        {
-            var profile = this.Owner.Profile as ActorDnaDef;
-            this.Root = profile.Behavior.Clone() as Behavior;
-            this.Root.AttachTo(this.Owner as Actor);
-            this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
-        }
-        internal override void ResolveReferences()
-        {
-            this.State.ResolveReferences();
-        }
-        internal override void ResolveReferencesNew()
-        {
-            this.State.OnAttachedToMap();
-        }
-        public AIComponent Initialize(Behavior root)
-        {
-            return this;
-        }
-
-        public Behavior GetCurrentBehavior()
-        {
-            return (this.Root as BehaviorQueue).Current;
-        }
-
-        public override void Tick()
-        {
-            var parent = this.Owner;
-            if (parent.Net.IsClient) // do i want to run some deterministic behaviors locally too? answer: NO
-                return;
-
-            this.State.Tick();
-
-            foreach (var thought in this.Meta.Def.Thoughts)
-                thought.TickOnMap(this.State);
-            if (this.Enabled)
-                this.Root.Tick(parent as Actor, this.State);
-        }
-        public override void TickOffMap()
-        {
-            //foreach (var thought in this.Meta.Def.Thoughts)
-            //    thought.TickOffMap(this.State);
-            this.Meta.TickOffMap();
-        }
-        public override void OnSpawn(MapBase newMap)
-        {
-            this.State.Leash = this.Owner.Global;
-            this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
-            this.State.ItemPreferences.OnSpawn(newMap);
-        }
-        public override void OnDespawnExtra(MapBase oldmap)
-        {
-            this.State.ItemPreferences.OnDespawn(oldmap);
-        }
-        public override void OnObjectSynced(GameObject parent)
-        {
-            this.Owner.Map?.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
-        }
-        void HandleBlocksChange(CellsInvalidatedEvent e)
-        {
-            if (!this.State.Path?.IsValid(this.Owner as Actor) ?? false)
+            if (path.Stack != null)
             {
-                this.State.Path = null;
-            }
-        }
-        internal override List<SaveTag> Save()
-        {
-            var save = new List<SaveTag>
-            {
-                new SaveTag(SaveTag.Types.ByteArray, "Guid", this.Guid.ToByteArray()),
-                this.State.Save("State"),
-                this.Root.Save("Root"),
-                this.Meta.Save("Meta")
-            };
-            return save;
-        }
-        internal override void LoadExtra(SaveTag save)
-        {
-            save.TryGetTagValue<byte[]>("Guid", v => this.Guid = new Guid(v));
-            this.State.Load(save["State"]);
-            this.Root.Load(save["Root"]);
-            if (save.TryLoadNew<RoleMetaWrapper>("Meta", out var meta)) this.Meta = meta;
-            this.Meta.Actor = this.Owner as Actor;
-            this.State.ResolveReferences();
-        }
-
-        public override void Write(IDataWriter w)
-        {
-            w.Write(this.Guid.ToByteArray());
-            this.State.Write(w);
-            this.Root.Write(w);
-            w.Write(this.Meta.Def);
-        }
-        public override void Read(IDataReader r)
-        {
-            this.Guid = new Guid(r.ReadBytes(16));
-            this.State.Read(r);
-            this.Root.Read(r);
-            this.Meta = r.ReadDef<RoleMetaDef>().CreateWrapper();
-            this.Meta.Actor = this.Owner as Actor;
-            this.State.ResolveReferences();
-        }
-
-        internal override void GetInterface(GameObject gameObject, Control box)
-        {
-            base.GetInterface(gameObject, box);
-            box.AddControls(new Interface());
-        }
-        internal override void OnMapLoaded(GameObject parent)
-        {
-            this.State.MapLoaded(parent as Actor);
-            this.Root.MapLoaded(parent as Actor);
-        }
-        public override void OnObjectLoaded(GameObject parent)
-        {
-            this.State.ObjectLoaded(parent);
-            this.Root.ObjectLoaded(parent);
-        }
-        class Interface : GroupBox
-        {
-            readonly Label Label;
-            public Interface()
-            {
-                this.Label = new Label("Behavior: ") { Width = 300 };
-                this.AddControls(this.Label);
-            }
-        }
-
-        internal void MoveOrder(TargetArgs target, bool enqueue)
-        {
-            this.State.AddMoveOrder(target, enqueue);
-        }
-        public override void DrawAfter(MySpriteBatch sb, Camera cam)
-        {
-            var parent = this.Owner;
-            var serverentity = parent;
-            var state = AIState.GetState(serverentity);
-            if (state is null)
-            {
-                return; // we are in client
-            }
-
-            var path = state.Path;
-            if (!SelectionManager.IsSelected(parent))
-            {
-                return;
-            }
-
-            var first = true;
-            if (path is not null)
-            {
-                cam.DrawBlockMouseover(sb, parent.Map, path.Current, Color.Lime);
-
-                if (path.Stack != null)
+                foreach (var global in path.Stack)
                 {
-                    foreach (var global in path.Stack)
-                    {
-                        cam.DrawBlockMouseover(sb, parent.Map, global, first ? Color.Red : Color.Blue);
-                        first = false;
-                    }
+                    cam.DrawBlockMouseover(sb, parent.Map, global, first ? Color.Red : Color.Blue);
+                    first = false;
                 }
             }
-            foreach (var target in state.MoveOrders)
-            {
-                cam.DrawBlockMouseover(sb, parent.Map, target.Global.Above(), Color.Yellow);
-            }
         }
-        readonly Label CachedGuiLabelCurrentTask = new();
-        internal override IEnumerable<Control> GetSelectionInfo()
+        foreach (var target in state.MoveOrders)
         {
-            //info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle"));
-            yield return this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle");
+            cam.DrawBlockMouseover(sb, parent.Map, target.Global.Above(), Color.Yellow);
         }
-        public new class Spec : Spec<AIComponent>
-        {
-            public readonly Behavior Root;
+    }
+    readonly Label CachedGuiLabelCurrentTask = new();
+    internal override IEnumerable<Control> GetSelectionInfo()
+    {
+        //info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle"));
+        yield return this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle");
+    }
+    public new class Spec : Spec<AIComponent>
+    {
+        public readonly Behavior Root;
 
-            public Spec(Behavior root)
-            {
-                this.Root = root;
-            }
+        public Spec(Behavior root)
+        {
+            this.Root = root;
         }
     }
 }

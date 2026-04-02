@@ -100,8 +100,8 @@ internal sealed class QuestsGuiNew : GroupBox
 {
     readonly ListBoxNoScroll<QuestRuntime> ListQuests;
     readonly Table<QuestRuntime> TableQuests;
-    readonly QuestsTownComp Comp;
-    public QuestsGuiNew(QuestsTownComp comp)
+    readonly TownComp_Quests Comp;
+    public QuestsGuiNew(TownComp_Quests comp)
     {
         var btn = new Button("Create Quest", 100) { LeftClickAction = () => new CreateFetchQuestGui().ToWindow("Create Quest").Show() };
         this.Comp = comp;

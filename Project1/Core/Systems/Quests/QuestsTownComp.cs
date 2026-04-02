@@ -1,10 +1,12 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Blocks;
+using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Interactions;
+using Project1.Core.Resources;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Towns;
 using Project1.Framework;
@@ -28,7 +30,7 @@ sealed class InteractionAcceptQuest : InteractionLogic
             return;
         var map = actor.Map;
         var manager = map.Town.QuestManagerNew;
-        manager.AcceptAllQuests(actor);
+        manager.TryAcceptAllQuests(i.Target.Global, actor);
     }
 }
 sealed class PlannerQuest : Planner
@@ -40,25 +42,34 @@ sealed class PlannerQuest : Planner
         var map = actor.Map;
         var manager = map.Town.QuestManagerNew;
         var boards = manager.QuestBoards;
-        bool foundBoard = false;
-        IntVec3 board = default;
-        foreach(var b in boards)
-        {
-            if (!actor.CanReachAndReserve(b))
-                continue;
-            foundBoard = true;
-            board = b;
-            break;
-        }
-        if (!foundBoard)
+        if (!TryScan(actor, manager, boards, out var board, out var availableQuests))
             return null;
-        var allquests = manager.AllQuests;
-        foreach(var q in allquests)
+        //var allquests = manager.AllQuests;
+        //foreach(var q in allquests)
+        foreach (var q in availableQuests)
         {
             if (!manager.HasQuest(actor, q.Id))
                 return new Plan(QuestDefOf.PlanQuest, map, board);
         }
         return null;
+    }
+
+    private static bool TryScan(Actor actor, QuestsTownComp manager, IEnumerable<IntVec3> boards, out IntVec3 board, out IEnumerable<QuestRuntime> availableQuests)
+    {
+        //foundBoard = false;
+        board = default;
+        availableQuests = null;
+        foreach (var b in boards)
+        {
+            if (!actor.CanReachAndReserve(b))
+                continue;
+            availableQuests = manager.GetAvailableQuests(b);
+            if (!availableQuests.Any())
+                continue;
+            board = b;
+            return true;
+        }
+        return false;
     }
 }
 
@@ -117,31 +128,81 @@ public sealed class QuestsTownComp : TownComponent
     {
         yield return (() => "QuestsNew", () => new QuestsGuiNew(this).ToWindow("Quests").Show());
     }
-    internal void AcceptQuest(Actor actor, QuestRuntime quest)
-    {
-        var actorid = actor.RefId;
-        //this.AcceptedQuests.Add(actor.RefId, )
-        if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
-            this.AcceptedQuestsByActor[actorid] = list = [];
-        list.Add(quest.Id);
-        this.AcceptedQuestsByQuest[quest.Id].Add(actorid);
-        this.Notifier.Notify();
+    //internal void AcceptQuest(Actor actor, QuestRuntime quest)
+    //{
+    //    var actorid = actor.RefId;
+    //    //this.AcceptedQuests.Add(actor.RefId, )
+    //    if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
+    //        this.AcceptedQuestsByActor[actorid] = list = [];
+    //    list.Add(quest.Id);
+    //    this.AcceptedQuestsByQuest[quest.Id].Add(actorid);
+    //    this.Notifier.Notify();
 
-    }
-    internal void AcceptAllQuests(Actor actor)
+    //}
+    internal void TryAcceptAllQuests(IntVec3 board, Actor actor)
     {
         var actorid = actor.RefId;
-        //this.AcceptedQuests.Add(actor.RefId, )
-        if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
-            this.AcceptedQuestsByActor[actorid] = list = [];
+        //if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
+        //    this.AcceptedQuestsByActor[actorid] = list = [];
+        List<QuestRuntime> accepted = [];
+        var cash = this.Map.GetBlockEntityComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
+
         foreach (var q in this.AllQuests)
         {
             //if (!list.Contains(q.Id))
+            var reward = q.Reward;
+            if (reward > cash)
+                continue;
+            //list.Add(q.Id);
+            //this.AcceptedQuestsByQuest[q.Id].Add(actorid);
+            accepted.Add(q);
+        }
+        if (accepted.Count == 0)
+            return;
+        if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
+            this.AcceptedQuestsByActor[actorid] = list = [];
+        foreach(var q in accepted)
+        {
             list.Add(q.Id);
             this.AcceptedQuestsByQuest[q.Id].Add(actorid);
         }
-        this.Map.Events.Post(new ActorAcceptedQuestsEvent(actorid));
+        this.Map.Events.Post(new ActorAcceptedQuestsEvent(board, actorid));
         this.Notifier.Notify();
+    }
+    //internal void AcceptAllQuests(IntVec3 board, Actor actor)
+    //{
+    //    var actorid = actor.RefId;
+    //    //this.AcceptedQuests.Add(actor.RefId, )
+    //    if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
+    //        this.AcceptedQuestsByActor[actorid] = list = [];
+    //    List<QuestId> accepted = [];
+    //    foreach (var q in this.AllQuests)
+    //    {
+    //        //if (!list.Contains(q.Id))
+    //        list.Add(q.Id);
+    //        this.AcceptedQuestsByQuest[q.Id].Add(actorid);
+    //    }
+    //    this.Map.Events.Post(new ActorAcceptedQuestsEvent(actorid));
+    //    this.Notifier.Notify();
+    //}
+    internal bool IsQuestAvailable(IntVec3 board, QuestId id)
+    {
+        var cash = this.Map.GetBlockEntityComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
+        var reward = this.AllQuestsInt[id].Reward;
+        if (cash < reward)
+            return false;
+        return true;
+    }
+    internal IEnumerable<QuestRuntime> GetAvailableQuests(IntVec3 board)
+    {
+        var cash = this.Map.GetBlockEntityComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
+        return this.AllQuests.Where(q => q.Reward <= cash);
+        //foreach(var q in this.AllQuests)
+        //{
+        //    if (q.Reward > cash)
+        //        continue;
+        //    yield return q.Id;
+        //}
     }
     internal bool TryCreateQuest(MaterialRefinementDef refdef, MaterialDef matdef)
     {

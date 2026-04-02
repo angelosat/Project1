@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Materials;
+using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.UI;
@@ -11,7 +12,7 @@ namespace Project1.Core.Systems.Quests;
 
 record struct PlayerRequestQuestCreationEvent(MaterialRefinementDef RefinementDef, MaterialDef MaterialDef) : IEventPayload { }
 record struct PlayerRequestQuestDeletionEvent(QuestId Id) : IEventPayload { }
-record struct ActorAcceptedQuestsEvent(EntityRefId ActorId) : IEventPayload { }
+record struct ActorAcceptedQuestsEvent(IntVec3 Board, EntityRefId ActorId) : IEventPayload { }
 internal sealed class CreateFetchQuestGui : GroupBox
 {
     MaterialRefinementDef refDef;

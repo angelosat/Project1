@@ -18,4 +18,6 @@ internal sealed class BlockQuestsComp : BlockComp
     public override BlockCompDef CompDef => BlockCompDefOf.Quests;
 
     int Budget;
+
+    
 }

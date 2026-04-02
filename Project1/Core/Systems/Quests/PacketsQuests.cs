@@ -31,13 +31,15 @@ internal static class PacketsQuests
     {
         var server = Server.Instance;
         server.BeginPacket(_pActorAcceptedQuests)
+            .Write(e.Board)
             .Write(e.ActorId);
     }
     private static void ReceiveActorAcceptedQuests(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
+        var board = r.ReadIntVec3();
         var actorid = r.ReadEntityRefId();
-        endpoint.Map.Town.QuestManagerNew.AcceptAllQuests(endpoint.World.Get<Actor>(actorid));
+        endpoint.Map.Town.QuestManagerNew.TryAcceptAllQuests(board, endpoint.World.Get<Actor>(actorid));
     }
     private static void HandlePlayerDeleteQuest(PlayerRequestQuestDeletionEvent e)
     {

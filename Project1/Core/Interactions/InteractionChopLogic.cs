@@ -14,7 +14,7 @@ namespace Project1.Core.Interactions
             public PlantComponent PlantComp => this._plantComp ??= this.Target.Object.GetComponent<PlantComponent>();
             public override float ProgressBarPercentage => 1 - this.HitPoints.Percentage;
         }
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override InteractionContext CreateContextInt() => new Context();
         public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
         public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
         public override bool WillFinish(InteractionContext ctx, int workAmount) => WillFinish((Context)ctx, workAmount);

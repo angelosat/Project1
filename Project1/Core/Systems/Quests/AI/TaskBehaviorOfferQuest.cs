@@ -3,7 +3,7 @@ using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.NodeTypes;
 
-namespace Project1.Core.Quests.AI
+namespace Project1.Core.Systems.Quests.AI
 {
     class TaskBehaviorOfferQuest : BehaviorExecutePlan
     {

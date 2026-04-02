@@ -21,7 +21,7 @@ namespace Project1.Core.Interactions
         //    public override float ProgressPercentage => (1 - this.BlockHealth?.HealthPercentage) ?? 0;
         //}
         public override void ApplyWork(InteractionContext ctx, int workAmount) => ApplyWork((Context)ctx, workAmount);
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override InteractionContext CreateContextInt() => new Context();
         static void ApplyWork(Context ctx, int workAmount) => ctx.Actor.Map.ApplyBlockDamage(ctx.Target.Global, -workAmount);
     }
 }

@@ -11,7 +11,7 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
     {
         internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
     }
-    protected override InteractionContext CreateContextInternal() => new Context();
+    protected override InteractionContext CreateContextInt() => new Context();
     public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsFailed;
     public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnFinish(Interaction i)
@@ -34,7 +34,7 @@ sealed class InteractionRingUpTransaction : InteractionLogic
         internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
         public override float ProgressBarPercentage => 0;
     }
-    protected override InteractionContext CreateContextInternal() => new Context();
+    protected override InteractionContext CreateContextInt() => new Context();
     public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsFailed;
     public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnFinish(Interaction i)
@@ -59,7 +59,7 @@ sealed class InteractionPayTransaction : InteractionLogic
         internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
         public override float ProgressBarPercentage => 0;
     }
-    protected override InteractionContext CreateContextInternal() => new Context();
+    protected override InteractionContext CreateContextInt() => new Context();
     public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsFailed;
     public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnFinish(Interaction i)
@@ -86,7 +86,7 @@ class InteractionSwapItemLogic : InteractionLogic
         Cell _cachedCell;
         internal Cell Cell => _cachedCell ??= this.Target.Map.GetCell(this.Target.Global.Below());
     }
-    protected override InteractionContext CreateContextInternal() => new Context();
+    protected override InteractionContext CreateContextInt() => new Context();
     public override bool CanPerform(InteractionContext ctx) => ((Context)ctx).Cell.IsSolid();
     public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnFinish(Interaction i)
@@ -105,7 +105,7 @@ class InteractionPlaceItemLogic : InteractionLogic
         Cell _cachedCell;
         internal Cell Cell => _cachedCell ??= this.Target.Map.GetCell(this.Target.Global.Below());
     }
-    protected override InteractionContext CreateContextInternal() => new Context();
+    protected override InteractionContext CreateContextInt() => new Context();
     public override bool CanPerform(InteractionContext ctx) => ((Context)ctx).Cell.IsSolid();
     public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnFinish(Interaction i)
@@ -129,7 +129,7 @@ class InteractionDepositLogic : InteractionLogic
     {
         internal Cell Cell => field ??= this.Target.Map.GetCell(this.Target.Global.Below());
     }
-    protected override InteractionContext CreateContextInternal() => new Context();
+    protected override InteractionContext CreateContextInt() => new Context();
     public override bool CanPerform(InteractionContext ctx) => ((Context)ctx).Cell.IsSolid();
     public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnFinish(Interaction i)

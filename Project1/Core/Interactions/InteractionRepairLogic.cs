@@ -9,7 +9,7 @@ namespace Project1.Core.Interactions
             internal IResourceView Durability => field ??= this.Target.Object.Resources.ViewOld(ResourceDefOf.Durability);
             public override float ProgressBarPercentage => this.Durability.Percentage;
         }
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override InteractionContext CreateContextInt() => new Context();
         internal override void OnProgressAdded(Interaction i, int delta)
         {
             var actor = i.Actor;

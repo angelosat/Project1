@@ -5,21 +5,13 @@ using Project1.Framework.Serialization;
 using System;
 using System.Reflection;
 
-namespace Project1.Core.Quests;
+namespace Project1.Core.Systems.Quests;
 
-public class QuestDef(string name, Type runtimeType) : Def(name)
+public readonly record struct QuestId(int Value)
 {
-    public readonly Type RuntimeType = runtimeType;
-}
-[EnsureStaticCtorCall]
-public static class QuestDefOf
-{
-    public static readonly QuestDef Deliver = new("Deliver", typeof(FetchQuestRuntime));
-
-    static QuestDefOf()
-    {
-        Def.Register(typeof(QuestDefOf));
-    }
+    internal static readonly QuestId Null = new(0);
+    public static implicit operator QuestId(int v) => new(v);
+    public static implicit operator int(QuestId v) => v.Value;
 }
 
 public abstract class QuestRuntime : Inspectable, ISaveableNewNew<QuestRuntime>, ISerializableNew<QuestRuntime>

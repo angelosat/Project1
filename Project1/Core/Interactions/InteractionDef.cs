@@ -28,9 +28,9 @@ namespace Project1.Core.Interactions
             this.InteractionClass = typeof(Interaction);
             this.Logic = ActivatorSafe<InteractionLogic>.CreateInstance(workerType ?? typeof(InteractionLogic));
         }
-        public InteractionDef(string name, Type workerType, IInteractionController progressHandler) : this(name, workerType)
+        public InteractionDef(string name, Type workerType, IInteractionController progressController) : this(name, workerType)
         {
-            this.Controller = progressHandler;
+            this.Controller = progressController;
         }
         public InteractionDef(string name, Type interactionClass, Type workerType) : base(name)
         {

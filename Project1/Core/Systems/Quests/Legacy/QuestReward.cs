@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 
-namespace Project1.Core.Quests.Legacy
+namespace Project1.Core.Systems.Quests.Legacy
 {
     public abstract class QuestReward
     {

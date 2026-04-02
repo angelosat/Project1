@@ -3,7 +3,7 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.Towns;
 using Project1.Core.Entities.Actors;
 
-namespace Project1.Core.Quests.AI
+namespace Project1.Core.Systems.Quests.AI
 {
     class TaskGiverQuestComplete : Planner
     {

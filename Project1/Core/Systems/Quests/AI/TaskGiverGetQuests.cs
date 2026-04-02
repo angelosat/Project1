@@ -1,9 +1,9 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Quests.Legacy;
+using Project1.Core.Systems.Quests.Legacy;
 
-namespace Project1.Core.Quests.AI
+namespace Project1.Core.Systems.Quests.AI
 {
     class TaskGiverGetQuests : Planner
     {

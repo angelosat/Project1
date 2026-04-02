@@ -1,26 +1,17 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Helpers;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Materials;
-using Project1.Core.Towns;
-using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
-using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
-namespace Project1.Core.Quests;
+namespace Project1.Core.Systems.Quests;
 
 record struct PlayerRequestQuestCreationEvent(MaterialRefinementDef RefinementDef, MaterialDef MaterialDef) : IEventPayload { }
 record struct PlayerRequestQuestDeletionEvent(QuestId Id) : IEventPayload { }
-public readonly record struct QuestId(int Value)
-{
-    internal static readonly QuestId Null = new(0);
-    public static implicit operator QuestId(int v) => new(v);
-    public static implicit operator int(QuestId v) => v.Value;
-}
+record struct ActorAcceptedQuestsEvent(EntityRefId ActorId) : IEventPayload { }
 internal sealed class CreateFetchQuestGui : GroupBox
 {
     MaterialRefinementDef refDef;
@@ -29,8 +20,6 @@ internal sealed class CreateFetchQuestGui : GroupBox
     int Reward;
     readonly ChangeNotifier Notifier = new();
     readonly ButtonFinal BtnApply, BtnCancel;
-
-
     readonly ComboBoxFinal<MaterialRefinementDef> ComboRefinementDef;
     readonly ComboBoxFinal<MaterialDef> ComboMaterialDef;
     readonly LabelNew LabelReward;
@@ -44,7 +33,7 @@ internal sealed class CreateFetchQuestGui : GroupBox
         this.BtnCancel = new(() => "Cancel", () => { }, 64);
         this.LabelReward = new LabelNew(() => $"Reward: {this.Reward}") { Width = 100 };
         this.LabelReward.InvalidateOn(this.Notifier);
-        var panelcbox  = new Panel() { AutoSize = true };
+        var panelcbox = new Panel() { AutoSize = true };
         panelcbox.AddControlsHorizontally(this.ComboRefinementDef, this.ComboMaterialDef);
         var panelbuttons = new Panel() { AutoSize = true };
         panelbuttons.AddControlsHorizontally(BtnApply, BtnCancel);
@@ -66,7 +55,7 @@ internal sealed class CreateFetchQuestGui : GroupBox
     void SetRefDef(MaterialRefinementDef def)
     {
         this.refDef = def;
-        if(this.refDef.MaterialType != this.typeDef)
+        if (this.refDef.MaterialType != this.typeDef)
         {
             this.SetMatDef(null);
             this.typeDef = null;
@@ -82,6 +71,7 @@ internal sealed class CreateFetchQuestGui : GroupBox
         this.Notifier.Notify();
     }
 }
+
 internal sealed class CreateQuestGui : GroupBox
 {
     ItemDef itemDef = null;
@@ -121,6 +111,11 @@ internal sealed class QuestsGuiNew : GroupBox
         this.TableQuests = new Table<QuestRuntime>()
             .AddColumn("label", 256, q => new LabelNew(q) { MouseThrough = false })
             .AddColumn("reward", 96, q => new LabelNew($"Reward: {q.Reward}") { MouseThrough = false })
+            .AddColumn("assigned", 64, q => new LabelNew(() => $"Assigned: {comp.GetAssignedActorsByQuest(q.Id).Count}")
+            {
+                MouseThrough = false,
+                HoverFunc = () => string.Join(Environment.NewLine, comp.GetAssignedActorsByQuest(q.Id).Select(id => comp.Map.World.Get<Entity>(id).LabelReadable))
+            }.InvalidateOn(comp.Notifier))
             .AddColumn("delete", 16 /*Icon.Cross.Width*/, q => IconButton.CreateSmall(Icon.Cross, () => Delete(q), "Delete").ShowOnParentFocus(true))
             ;
         this.TableQuests.AddItems(comp.AllQuests);
@@ -144,84 +139,5 @@ internal sealed class QuestsGuiNew : GroupBox
         this.Comp.Removed -= OnQuestRemoved;
 
         base.OnHidden();
-    }
-}
-public sealed class QuestsTownComp : TownComponent
-{
-    public override string Name => "QuestsNew";
-    QuestId _nextQuestId = 1;
-    QuestId GetNextQuestId() => this._nextQuestId++;
-    readonly Dictionary<QuestId, QuestRuntime> AllQuestsInt = [];
-    public IEnumerable<QuestRuntime> AllQuests => this.AllQuestsInt.Values;
-    readonly Dictionary<(MaterialRefinementDef, MaterialDef), QuestId> FetchQuests = [];
-    readonly Dictionary<QuestId, FetchQuestRuntime> FetchQuestsById = [];
-    public Action<QuestRuntime> Added, Removed;
-    public QuestsTownComp(Town town) : base(town)
-    {
-    }
-
-    internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
-    {
-        yield return (() => "QuestsNew", () => new QuestsGuiNew(this).ToWindow("Quests").Show());
-    }
-   
-    internal bool TryCreateQuest(MaterialRefinementDef refdef, MaterialDef matdef)
-    {
-        var key = (refdef, matdef);
-        if (this.FetchQuests.TryGetValue(key, out _))
-            return false;
-        var reward = ItemDefOf.Ingredient.BaseValue * matdef.Value;
-        var quest = new FetchQuestRuntime(this.GetNextQuestId(), reward, refdef, matdef);
-        this.AllQuestsInt.Add(quest.Id, quest);
-        this.FetchQuests[key] = quest.Id;
-        this.FetchQuestsById[quest.Id] = quest;
-        this.Added?.Invoke(quest);
-        return true;
-    }
-    internal void DeleteQuest(QuestId id)
-    {
-        var q = this.AllQuestsInt[id];
-        switch (q)
-        {
-            case FetchQuestRuntime:
-                var fq = this.FetchQuestsById[id];
-                this.FetchQuests.Remove((fq.Refinement, fq.Material));
-                this.FetchQuestsById.Remove(id);
-                break;
-        }
-        this.AllQuestsInt.Remove(id);
-        this.Removed?.Invoke(q);
-    }
-
-    protected override void AddSaveData(SaveTag tag)
-    {
-        tag.Save("Quests", this.AllQuestsInt.Values);
-    }
-    public override void Load(SaveTag tag)
-    {
-        var quests = tag.LoadList<QuestRuntime>("Quests");
-        foreach (var q in quests)
-            this.AddQuestInt(q);
-    }
-    public override void Write(IDataWriter w)
-    {
-        w.Write(this.AllQuestsInt.Values);
-    }
-    public override void Read(IDataReader r)
-    {
-        var quests = r.ReadList<QuestRuntime>();
-        foreach (var q in quests)
-            this.AddQuestInt(q);
-    }
-    private void AddQuestInt(QuestRuntime q)
-    {
-        switch(q)
-        {
-            case FetchQuestRuntime fq:
-                this.FetchQuests[fq.Key] = fq.Id;
-                this.FetchQuestsById[fq.Id] = fq;
-                break;
-        }
-        this.AllQuestsInt[q.Id] = q;
     }
 }

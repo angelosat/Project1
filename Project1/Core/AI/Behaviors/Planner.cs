@@ -1,5 +1,6 @@
 ﻿using Project1.Core.AI.Planners;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Systems.Quests;
 using System.Collections.Generic;
 
 namespace Project1.Core.AI.Behaviors
@@ -38,6 +39,7 @@ namespace Project1.Core.AI.Behaviors
             PlannerDefOf.LodgingCheckin,
             PlannerDefOf.Buy,
             PlannerDefOf.Browse,
+            QuestDefOf.PlannerQuests
             //PlannerDefOf.Departure
         ];
 

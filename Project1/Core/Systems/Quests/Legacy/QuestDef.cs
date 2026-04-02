@@ -17,7 +17,7 @@ using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 
-namespace Project1.Core.Quests.Legacy
+namespace Project1.Core.Systems.Quests.Legacy
 {
     [EnsureStaticCtorCall]
     public class QuestDef : ISerializableNew<QuestDef>, ISaveable

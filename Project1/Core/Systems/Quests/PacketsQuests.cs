@@ -1,11 +1,12 @@
-﻿using Project1.Core.Helpers;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using System;
 
-namespace Project1.Core.Quests;
+namespace Project1.Core.Systems.Quests;
 
 [EnsureStaticCtorCall]
 internal static class PacketsQuests
@@ -13,18 +14,31 @@ internal static class PacketsQuests
     static readonly PacketId
         _pCreateQuest = Registry.PacketHandlers.Register(ReceiveCreateQuest),
         _pPlayerCreateQuest = Registry.PacketHandlers.Register(ReceivePlayerCreateQuest),
-        _pPlayerDeleteQuest = Registry.PacketHandlers.Register(ReceivePlayerDeleteQuest)
-
+        _pPlayerDeleteQuest = Registry.PacketHandlers.Register(ReceivePlayerDeleteQuest),
+        _pActorAcceptedQuests = Registry.PacketHandlers.Register(ReceiveActorAcceptedQuests)
         ;
 
-   
+    
 
     static PacketsQuests()
     {
         Registry.PlayerInputEventHooks.Register<PlayerRequestQuestCreationEvent>(HandlePlayerCreateQuest);
         Registry.PlayerInputEventHooks.Register<PlayerRequestQuestDeletionEvent>(HandlePlayerDeleteQuest);
+        Registry.MapEventHooksServer.Register<ActorAcceptedQuestsEvent>(HandleActorAcceptedQuests);
     }
 
+    private static void HandleActorAcceptedQuests(ActorAcceptedQuestsEvent e)
+    {
+        var server = Server.Instance;
+        server.BeginPacket(_pActorAcceptedQuests)
+            .Write(e.ActorId);
+    }
+    private static void ReceiveActorAcceptedQuests(NetEndpoint endpoint, Packet packet)
+    {
+        var r = packet.PacketReader;
+        var actorid = r.ReadEntityRefId();
+        endpoint.Map.Town.QuestManagerNew.AcceptAllQuests(endpoint.World.Get<Actor>(actorid));
+    }
     private static void HandlePlayerDeleteQuest(PlayerRequestQuestDeletionEvent e)
     {
         if (Ingame.Net.IsServer)

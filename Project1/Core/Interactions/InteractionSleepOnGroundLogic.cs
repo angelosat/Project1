@@ -14,7 +14,7 @@ namespace Project1.Core.Interactions
             Need Energy => _energy ??= this.Actor.GetNeed(NeedDefOf.Energy);
             public override float ProgressBarPercentage => this.Energy.Percentage;
         }
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override InteractionContext CreateContextInt() => new Context();
         internal override void OnStart(Interaction i)
         {
             var a = i.Actor;

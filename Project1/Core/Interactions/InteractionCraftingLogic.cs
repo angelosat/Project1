@@ -15,7 +15,7 @@ namespace Project1.Core.Interactions
             public BlockWorkstationComp Comp => this._comp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
             public override float ProgressBarPercentage => this.Actor.Work.Task.ProgressPercentage;
         }
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override InteractionContext CreateContextInt() => new Context();
         public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
         static bool CanFinish(Context ctx) => CanPerform(ctx);
         public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);

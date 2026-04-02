@@ -12,7 +12,7 @@ sealed class InteractionBrowseProduct : InteractionLogic
         //public override float ProgressPercentage => this.Actor.Net.IsClient ? 0 : this.ShoppingList.GetInterestPercentage(this.Target.Entity);
         // public override float ProgressPercentage => this.ShoppingList.GetInterestPercentage(this.Target.Entity) >= 1 ? 1 : 0;
     }
-    protected override InteractionContext CreateContextInternal()
+    protected override InteractionContext CreateContextInt()
         => new Context();
     //internal override void OnFinish(Interaction i)
     //{

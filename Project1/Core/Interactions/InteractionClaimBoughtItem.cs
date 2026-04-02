@@ -9,7 +9,7 @@ sealed class InteractionClaimBoughtItem : InteractionLogic
         internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
     }
 
-    protected override InteractionContext CreateContextInternal() => new Context();
+    protected override InteractionContext CreateContextInt() => new Context();
     internal override void OnFinish(Interaction i)
     {
         var ctx = i.Context;

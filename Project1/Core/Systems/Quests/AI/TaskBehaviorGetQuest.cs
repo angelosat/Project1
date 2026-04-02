@@ -5,18 +5,19 @@ using Project1.Core.AI.Behaviors.NodeTypes;
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Core.Quests.AI
+namespace Project1.Core.Systems.Quests.AI
 {
-    class TaskBehaviorQuestComplete : BehaviorExecutePlan
+    class TaskBehaviorGetQuest : BehaviorExecutePlan
     {
         protected override IEnumerable<Behavior> GetSteps()
         {
-            var actor = this.Actor;
             var task = this.Plan;
+            var actor = this.Actor;
             var qgiver = TargetIndex.A;
+            var quest = task.Quest;
             yield return BehaviorHelper.MoveTo(qgiver);
             throw new NotImplementedException();
-            //yield return new BehaviorResolveInteraction(qgiver, () => new InteractionQuestDeliver(task.Quest));
+            //yield return new BehaviorResolveInteraction(qgiver, () => new InteractionGetQuest(quest));
         }
         public override void CleanUp()
         {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Project1.Core.Quests;
+namespace Project1.Core.Systems.Quests;
 
 internal sealed class BlockQuestsComp : BlockComp
 {

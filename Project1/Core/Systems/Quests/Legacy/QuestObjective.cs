@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using Project1.Framework.Serialization;
 using Project1.Framework;
 
-namespace Project1.Core.Quests.Legacy
+namespace Project1.Core.Systems.Quests.Legacy
 {
     public abstract class QuestObjective : ISaveable, ISerializable
     {

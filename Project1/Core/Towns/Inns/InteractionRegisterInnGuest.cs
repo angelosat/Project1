@@ -12,7 +12,7 @@ namespace Project1.Core.Towns.Inns
             internal Queue<Actor> Queue => field ??= this.Manager.GetQueue(this.Target.Global);
             internal Actor NextGuest => field ??= this.Queue.Peek();
         }
-        protected override InteractionContext CreateContextInternal()
+        protected override InteractionContext CreateContextInt()
             => new Context();
         internal override void OnStart(Interaction i)
             => i.Progress.SetMax(Ticks.FromMinutes(10));

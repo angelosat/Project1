@@ -7,6 +7,7 @@ using Project1.Core.Graphics.Particles;
 using Project1.Core.Resources;
 using Project1.Core.Rooms;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Quests;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Shops.Blocks;
 using Project1.Core.Towns.Storage;
@@ -112,7 +113,7 @@ namespace Project1.Core.Blocks
         {
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]),
             BlockEntityCompSpecs = [
-                new BlockInventoryComp.Spec(),
+                new BlockQuestsComp.Spec(),
                 new BlockResourcesComp.Spec([ResourceDefOf.Cash]),
                 new BlockShopComp.Spec()],
         };

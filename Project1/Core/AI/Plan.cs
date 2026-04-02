@@ -236,6 +236,13 @@ namespace Project1.Core.AI
             this.Def = def;
             this.SetTarget(TargetIndex.A, interactionTarget);
         }
+        public Plan(PlanDef def, MapBase map, IntVec3 pos) : this()
+        {
+            ArgumentNullException.ThrowIfNull(def);
+
+            this.Def = def;
+            this.SetTarget(TargetIndex.A, new TargetArgs(map, pos));
+        }
         public Plan(PlanDef def, MapBase map, IntVec3 pos, int amount) : this()
         {
             ArgumentNullException.ThrowIfNull(def);

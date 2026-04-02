@@ -10,17 +10,22 @@ namespace Project1.Core.Interactions
         public virtual bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
         public virtual bool WillFinish(InteractionContext ctx, int workAmount) { return true; }
         public virtual void ApplyWork(InteractionContext ctx, int workAmount) { }
-        protected virtual InteractionContext CreateContextInternal() => new();
+        protected virtual InteractionContext CreateContextInt() => new();
         internal InteractionContext CreateContext(Actor actor, TargetArgs target, int count)
         {
-            var ctx = this.CreateContextInternal();
+            var ctx = this.CreateContextInt();
             ctx.Actor = actor;
             ctx.Target = target;
             ctx.Count = count;
             return ctx;
         }
         internal virtual void OnStart(Interaction i) { }
-        internal virtual void OnTick(Interaction i) => i.Progress.ApplyDelta(1);
+        internal virtual void OnTick(Interaction i) //=> i.Progress.ApplyDelta(1);
+        {
+            //if (i.Actor.Net.IsClient)
+            //    return;
+            //i.Progress.ApplyDelta(1);
+        }
         internal virtual void OnFinish(Interaction i) { }
         internal virtual bool IsFinished(Interaction i) => false;
         internal virtual bool HasSucceeded(Interaction i) => i.Progress.Percentage >= 1;

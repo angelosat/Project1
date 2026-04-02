@@ -19,7 +19,7 @@ namespace Project1.Core.Interactions
             internal EntityEffectWrapper Effect => field ??= this.Actor.Effects.GetEffect(EffectDefOf.ModifyNeed, NeedDefOf.Energy);
             public override float ProgressBarPercentage => this.Energy.Percentage;
         }
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override InteractionContext CreateContextInt() => new Context();
         public override bool CanPerform(InteractionContext ctx)
         {
             var typedCtx = (Context)ctx;

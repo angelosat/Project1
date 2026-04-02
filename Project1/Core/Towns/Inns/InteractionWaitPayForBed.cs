@@ -5,7 +5,7 @@ namespace Project1.Core.Towns.Inns
 {
     sealed class InteractionWaitPayForBed : InteractionLogic
     {
-        protected override InteractionContext CreateContextInternal()
+        protected override InteractionContext CreateContextInt()
             => new InnTransactionContext();
         internal override void OnStart(Interaction i)
         {

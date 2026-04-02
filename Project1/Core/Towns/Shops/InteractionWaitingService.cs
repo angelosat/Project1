@@ -12,7 +12,7 @@ internal sealed class InteractionWaitingService : InteractionLogic
         //public override float ProgressBarPercentage => this.Transaction?.WaitingForPayment ?? false ? 1 : 0;
     }
 
-    protected override InteractionContext CreateContextInternal()
+    protected override InteractionContext CreateContextInt()
         => new Context();
 
     public override bool CanPerform(InteractionContext ctx)

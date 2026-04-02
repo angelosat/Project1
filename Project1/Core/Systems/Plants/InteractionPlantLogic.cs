@@ -11,7 +11,7 @@ namespace Project1.Core.Systems.Plants
             Cell _cell;
             internal Cell Cell => this._cell ??= this.Target.Cell;
         }
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override InteractionContext CreateContextInt() => new Context();
         public override bool CanPerform(InteractionContext ctx)
         {
             var typedctx = (Context)ctx;

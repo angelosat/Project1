@@ -1,8 +1,8 @@
 ﻿using Project1.Core.AI.Behaviors.Eating;
 using Project1.Core.AI.Behaviors.Idle;
 using Project1.Core.AI.Behaviors.Sleeping;
-using Project1.Core.Quests.AI;
 using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Quests.AI;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors;
 using Project1.Core.Towns.Constructions.AI;

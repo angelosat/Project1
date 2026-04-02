@@ -17,7 +17,7 @@ namespace Project1.Core.Interactions
             internal BlockWorkstationComp Workstation => field ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
             public override float ProgressBarPercentage => this.Assembly?.Percentage ?? 0;
         }
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override InteractionContext CreateContextInt() => new Context();
         public override bool CanPerform(InteractionContext ctx)
             => ctx.Actor.Map.Town.CraftingManager.CanContinueItem(ctx.Actor, ((Context)ctx).UnfinishedComp);// .GetContract(ctx.Actor)?.IsValid ?? false;
         public override void ApplyWork(InteractionContext ctx, int workAmount)

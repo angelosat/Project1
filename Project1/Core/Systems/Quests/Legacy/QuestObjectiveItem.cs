@@ -5,7 +5,7 @@ using Project1.Core.World.WorldAreas;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy;
 
-namespace Project1.Core.Quests.Legacy
+namespace Project1.Core.Systems.Quests.Legacy
 {
     class QuestObjectiveItem : QuestObjective
     {

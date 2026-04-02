@@ -16,7 +16,7 @@ namespace Project1.Core.Interactions
         }
         static bool CanPerform(Context ctx) => ctx.Workstation.IngredientsInPlace(ctx.Actor.CurrentPlan.TargetsA);
         public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
-        protected override InteractionContext CreateContextInternal() => new Context();
+        protected override InteractionContext CreateContextInt() => new Context();
         internal override void OnFinish(Interaction i)
         {
             var actor = i.Actor;

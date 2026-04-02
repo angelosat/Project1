@@ -12,7 +12,7 @@ namespace Project1.Core.Towns.Inns
 
         }
 
-        protected override InteractionContext CreateContextInternal()
+        protected override InteractionContext CreateContextInt()
             => new Context();
 
         internal override void OnStart(Interaction i)

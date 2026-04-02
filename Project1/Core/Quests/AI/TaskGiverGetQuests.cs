@@ -33,7 +33,7 @@ namespace Project1.Core.Quests.AI
             return null;
         }
 
-        private bool Decide(Actor actor, QuestDef q)
+        private bool Decide(Actor actor, Legacy.QuestDef q)
         {
             return q.GetRewardRatio() >= 1;
         }

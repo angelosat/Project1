@@ -551,25 +551,25 @@ namespace Project1.Framework.Serialization
                 collection.Add((string)pos.Value);
             return collection;
         }
-        /// <summary>
-        /// U mast have a constructor that accepts a savetag as the first parameter
-        /// </summary>
-        /// <typeparam name="U"></typeparam>
-        /// <param name="collection"></param>
-        /// <param name="save"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static bool TryLoad<U>(this ICollection<U> collection, SaveTag save, string name, params object[] ctorArgs)
-            where U : class, ISaveable
-        {
-            return save.TryGetTag(name, t =>
-            {
-                var tags = t.Value as List<SaveTag>;
-                var count = tags.Count;
-                for (int i = 0; i < count; i++)
-                    collection.Add(Activator.CreateInstance(typeof(U), new[] { tags[i] }.Concat(ctorArgs).ToArray()) as U);
-            });
-        }
+        ///// <summary>
+        ///// U mast have a constructor that accepts a savetag as the first parameter
+        ///// </summary>
+        ///// <typeparam name="U"></typeparam>
+        ///// <param name="collection"></param>
+        ///// <param name="save"></param>
+        ///// <param name="name"></param>
+        ///// <returns></returns>
+        //public static bool TryLoad<U>(this ICollection<U> collection, SaveTag save, string name, params object[] ctorArgs)
+        //    where U : class, ISaveable
+        //{
+        //    return save.TryGetTag(name, t =>
+        //    {
+        //        var tags = t.Value as List<SaveTag>;
+        //        var count = tags.Count;
+        //        for (int i = 0; i < count; i++)
+        //            collection.Add(Activator.CreateInstance(typeof(U), new[] { tags[i] }.Concat(ctorArgs).ToArray()) as U);
+        //    });
+        //}
         public static bool TryLoad(this ICollection<int> collection, SaveTag save, string name)
         {
             return save.TryGetTag(name, t =>
@@ -725,69 +725,69 @@ namespace Project1.Framework.Serialization
                 list.Add((int)item.Value);
         }
 
-        [Obsolete]
-        public static List<T> Load<T>(this List<T> list, SaveTag save) where T : class, ISaveable
-        {
-            if (!save.TryGetTagValueOrDefault<string>("Type", out string objTypeName))
-                return list;
-            var objType = Type.GetType(objTypeName);
-            list.Clear();
+        //[Obsolete]
+        //public static List<T> Load<T>(this List<T> list, SaveTag save) where T : class, ISaveable
+        //{
+        //    if (!save.TryGetTagValueOrDefault<string>("Type", out string objTypeName))
+        //        return list;
+        //    var objType = Type.GetType(objTypeName);
+        //    list.Clear();
 
-            var tags = save["List"].Value as List<SaveTag>;
-            foreach (var t in tags)
-            {
-                var obj = Activator.CreateInstance(objType) as T;
-                obj.Load(t);
-                list.Add(obj);
-            }
-            return list;
-        }
+        //    var tags = save["List"].Value as List<SaveTag>;
+        //    foreach (var t in tags)
+        //    {
+        //        var obj = Activator.CreateInstance(objType) as T;
+        //        obj.Load(t);
+        //        list.Add(obj);
+        //    }
+        //    return list;
+        //}
 
-        public static bool Load<T, U>(this Dictionary<T, U> dic, SaveTag save, string name, Func<U, T> keySelector, Action<U> initializer = null)
-            where U : class, ISaveable, new()
-        {
-            var list = new List<U>();
-            if (!list.TryLoadMutable(save, name))
-                return false;
-            foreach (var i in list)
-            {
-                dic[keySelector(i)] = i;
-                initializer?.Invoke(i);
-            }
-            return true;
-        }
+        //public static bool Load<T, U>(this Dictionary<T, U> dic, SaveTag save, string name, Func<U, T> keySelector, Action<U> initializer = null)
+        //    where U : class, ISaveable, new()
+        //{
+        //    var list = new List<U>();
+        //    if (!list.TryLoadMutable(save, name))
+        //        return false;
+        //    foreach (var i in list)
+        //    {
+        //        dic[keySelector(i)] = i;
+        //        initializer?.Invoke(i);
+        //    }
+        //    return true;
+        //}
 
         public static void Save(this ISaveable item, SaveTag saveTag, string name)
         {
             saveTag.Add(item.Save(name));
         }
-        /// <summary>
-        /// Immutable means that the collection is already initialized and populated and its items will be updated from the save tag (no new item instantiation)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="saveTag"></param>
-        /// <param name="tagName"></param>
-        public static void SaveImmutable<T>(this T[] array, SaveTag saveTag, string tagName) where T : ISaveable, INamed
-        {
-            var tag = new SaveTag(SaveTag.Types.Compound, tagName);
-            for (int i = 0; i < array.Length; i++)
-            {
-                var sk = array[i];
-                tag.Add(sk.Save(sk.Name));
-            }
-            saveTag.Add(tag);
-        }
-        public static void SaveImmutable<T>(this IList<T> array, SaveTag saveTag, string tagName) where T : ISaveable, INamed
-        {
-            var tag = new SaveTag(SaveTag.Types.Compound, tagName);
-            for (int i = 0; i < array.Count; i++)
-            {
-                var sk = array[i];
-                tag.Add(sk.Save(sk.Name));
-            }
-            saveTag.Add(tag);
-        }
+        ///// <summary>
+        ///// Immutable means that the collection is already initialized and populated and its items will be updated from the save tag (no new item instantiation)
+        ///// </summary>
+        ///// <typeparam name="T"></typeparam>
+        ///// <param name="array"></param>
+        ///// <param name="saveTag"></param>
+        ///// <param name="tagName"></param>
+        //public static void SaveImmutable<T>(this T[] array, SaveTag saveTag, string tagName) where T : ISaveable, INamed
+        //{
+        //    var tag = new SaveTag(SaveTag.Types.Compound, tagName);
+        //    for (int i = 0; i < array.Length; i++)
+        //    {
+        //        var sk = array[i];
+        //        tag.Add(sk.Save(sk.Name));
+        //    }
+        //    saveTag.Add(tag);
+        //}
+        //public static void SaveImmutable<T>(this IList<T> array, SaveTag saveTag, string tagName) where T : ISaveable, INamed
+        //{
+        //    var tag = new SaveTag(SaveTag.Types.Compound, tagName);
+        //    for (int i = 0; i < array.Count; i++)
+        //    {
+        //        var sk = array[i];
+        //        tag.Add(sk.Save(sk.Name));
+        //    }
+        //    saveTag.Add(tag);
+        //}
         public static void Save(this IEnumerable<int> ints, SaveTag save, string name)
         {
             var list = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Int);

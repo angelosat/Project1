@@ -76,6 +76,10 @@ namespace Project1.Core.Helpers
         {
             tag.Add(def.Save(name));
         }
+        public static void Save<T>(this SaveTag tag, string name, T def) where T : Def
+        {
+            tag.Add(def.Save(name));
+        }
         public static void ReadDefWrappers<TKey, TValue>(this IDataReader r, Dictionary<TKey, TValue> dic) where TValue : IDefWrapper<TKey>, ISerializableNew<TValue> where TKey : Def
         {
             dic.Clear();

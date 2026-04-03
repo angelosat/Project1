@@ -4,7 +4,7 @@ using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Systems.Quests.AI
 {
-    class PlannerQuests : Planner
+    class PlannerQuestGiver : Planner
     {
         protected override Plan TryPlan(Actor actor)
         {

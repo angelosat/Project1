@@ -1,75 +1,73 @@
-﻿using Project1.Core.AI;
-using Project1.Core.AI.Behaviors;
-using Project1.Core.Blocks;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Interactions;
 using Project1.Core.Resources;
+using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Towns;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Systems.Quests;
-
-sealed class InteractionAcceptQuest : InteractionLogic
+sealed class QuestTracker
 {
-    sealed class Context : InteractionContext { }
-    protected override InteractionContext CreateContextInt() => new Context();
-    internal override void OnFinish(Interaction i)
-    {
-        var actor = i.Actor;
-        if (actor.Net.IsClient)
-            return;
-        var map = actor.Map;
-        var manager = map.Town.QuestManagerNew;
-        manager.TryAcceptAllQuests(i.Target.Global, actor);
-    }
+    internal QuestId QuestId;
+    internal EntityRefId ActorId;
+    internal int Progress;
+    internal bool IsCompleted => false;
 }
-sealed class PlannerQuest : Planner
+
+abstract class QuestController
 {
-    protected override Plan TryPlan(Actor actor)
+    protected TownComp_Quests Comp;
+    public void Register(TownComp_Quests comp)
     {
-        if (actor.IsHauling)
-            return null;
-        var map = actor.Map;
-        var manager = map.Town.QuestManagerNew;
-        var boards = manager.QuestBoards;
-        if (!TryScan(actor, manager, boards, out var board, out var availableQuests))
-            return null;
-        //var allquests = manager.AllQuests;
-        //foreach(var q in allquests)
-        foreach (var q in availableQuests)
-        {
-            if (!manager.HasQuest(actor, q.Id))
-                return new Plan(QuestDefOf.PlanQuest, map, board);
-        }
-        return null;
+        this.Comp = comp;
+        this.OnRegister();
+    }
+    protected abstract void OnRegister();
+}
+sealed class QuestController_Deliver : QuestController
+{
+    protected override void OnRegister()
+    {
+        this.Comp.Map.World.Events.ListenTo<InventoryItemAddedEvent>(HandleInventoryItemAdded);
+        this.Comp.Map.World.Events.ListenTo<InventoryItemMergedEvent>(HandleInventoryItemMerged);
     }
 
-    private static bool TryScan(Actor actor, TownComp_Quests manager, IEnumerable<IntVec3> boards, out IntVec3 board, out IEnumerable<QuestRuntime> availableQuests)
+    private void HandleInventoryItemMerged(InventoryItemMergedEvent e)
     {
-        //foundBoard = false;
-        board = default;
-        availableQuests = null;
-        foreach (var b in boards)
+        var actor = e.Actor;
+        var item = e.Existing;
+        var amount = e.MergeAmount;
+        this.TryIncrementProgress(actor, item, amount);
+    }
+
+    private void HandleInventoryItemAdded(InventoryItemAddedEvent e)
+    {
+        var actor = e.Actor;
+        var item = e.Item;
+        var amount = item.StackSize;
+        this.TryIncrementProgress(actor, item, amount);
+    }
+
+    private void TryIncrementProgress(Actor actor, Entity item, int amount)
+    {
+        var quests = this.Comp.GetAcceptedQuestsByActor<QuestRuntime_Deliver>(actor);
+
+        foreach (var q in quests)
         {
-            if (!actor.CanReachAndReserve(b))
-                continue;
-            availableQuests = manager.GetAvailableQuests(b);
-            if (!availableQuests.Any())
-                continue;
-            board = b;
-            return true;
+            if (q.Matches(item))
+                this.Comp.IncrementProgress(actor, q, amount);
         }
-        return false;
     }
 }
 
@@ -86,15 +84,31 @@ public sealed class TownComp_Quests : TownComponent
     public Action<QuestRuntime> Added, Removed;
     readonly Dictionary<EntityRefId, HashSet<QuestId>> AcceptedQuestsByActor = [];
     readonly Dictionary<QuestId, HashSet<EntityRefId>> AcceptedQuestsByQuest = [];
-    readonly HashSet<IntVec3> _questBoards = [];
-    public IEnumerable<IntVec3> QuestBoards => this._questBoards;
+    //readonly HashSet<IntVec3> _questBoards = [];
+    readonly Dictionary<IntVec3, BlockQuestsComp> _questBoards = [];
+    public IEnumerable<IntVec3> QuestBoards => this._questBoards.Keys;
+    readonly Dictionary<(EntityRefId actorId, QuestId qId), int> Progress = [];
 
+    //static readonly QuestController[] Controllers;
+    //static TownComp_Quests()
+    //{
+    //    Controllers = [.. AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
+    //        .Where(t => typeof(QuestController).IsAssignableFrom(t) && !t.IsAbstract)
+    //        .Select(t => (QuestController)Activator.CreateInstance(t))];
+    //}
     public TownComp_Quests(Town town) : base(town)
     {
         town.Map.Events.ListenTo<BlockEntityAddedEvent>(HandleBlockEntityAdded);
         town.Map.Events.ListenTo<BlockEntityRemovedEvent>(HandleBlockEntityRemoved);
-    }
 
+        QuestController[] controllers = [.. AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
+            .Where(t => typeof(QuestController).IsAssignableFrom(t) && !t.IsAbstract)
+            .Select(t => (QuestController)Activator.CreateInstance(t))];
+
+        foreach (var c in controllers)
+            c.Register(this);
+    }
+    
     private void HandleBlockEntityRemoved(BlockEntityRemovedEvent e)
     {
         this._questBoards.Remove(e.Entity.OriginGlobal);
@@ -102,8 +116,8 @@ public sealed class TownComp_Quests : TownComponent
 
     private void HandleBlockEntityAdded(BlockEntityAddedEvent e)
     {
-        if (e.Entity.HasComp<BlockQuestsComp>())
-            this._questBoards.Add(e.Entity.OriginGlobal);
+        if (e.Entity.TryGetComp<BlockQuestsComp>(out var comp))
+            this._questBoards.Add(e.Entity.OriginGlobal, comp);
     }
     public QuestRuntime GetQuest(QuestId id)
         => this.AllQuestsInt[id];
@@ -112,6 +126,12 @@ public sealed class TownComp_Quests : TownComponent
         if (!this.AcceptedQuestsByActor.TryGetValue(actor.RefId, out var list))
             return [];
         return list.Select(qid => this.AllQuestsInt[qid]);
+    }
+    public IEnumerable<T> GetAcceptedQuestsByActor<T>(Actor actor) where T : QuestRuntime
+    {
+        if (!this.AcceptedQuestsByActor.TryGetValue(actor.RefId, out var list))
+            return [];
+        return list.Select(qid => this.AllQuestsInt[qid]).OfType<T>();
     }
     public IReadOnlySet<EntityRefId> GetAssignedActorsByQuest(QuestId id)
     {
@@ -167,10 +187,17 @@ public sealed class TownComp_Quests : TownComponent
         {
             list.Add(q.Id);
             this.AcceptedQuestsByQuest[q.Id].Add(actorid);
+            this.Progress.Add((actor.RefId, q.Id), 0);
         }
         this.Map.Events.Post(new ActorAcceptedQuestsEvent(board, actorid));
         this.Notifier.Notify();
     }
+    internal bool IsComplete(Actor actor, QuestRuntime quest)
+        => this.Progress[(actor.RefId, quest.Id)] >= this.Required(quest.Id);
+    internal bool IsComplete(Actor actor, QuestId questId)
+        => this.Progress[(actor.RefId, questId)] >= this.Required(questId);
+    int Required(QuestId id)
+        => this.AllQuestsInt[id].Count;
     //internal void AcceptAllQuests(IntVec3 board, Actor actor)
     //{
     //    var actorid = actor.RefId;
@@ -237,8 +264,8 @@ public sealed class TownComp_Quests : TownComponent
     internal override void ResolveReferences()
     {
         foreach (var be in this.Map.BlockEntities)
-            if (be.HasComp<BlockQuestsComp>())
-                this._questBoards.Add(be.OriginGlobal);
+            if (be.TryGetComp<BlockQuestsComp>(out var comp))
+                this._questBoards.Add(be.OriginGlobal, comp);
     }
     protected override void AddSaveData(SaveTag tag)
     {
@@ -271,5 +298,47 @@ public sealed class TownComp_Quests : TownComponent
         }
         this.AllQuestsInt[q.Id] = q;
         this.AcceptedQuestsByQuest[q.Id] = [];
+    }
+
+    internal void IncrementProgress(Actor actor, QuestRuntime q, int delta)
+    {
+        this.Progress[(actor.RefId, q.Id)] += delta;
+    }
+
+    internal bool HasCompletedQuests(Actor actor)
+        => this.AcceptedQuestsByActor[actor.RefId].Any(q => this.IsComplete(actor, q));
+
+    IEnumerable<QuestRuntime> GetCompletedQuests(Actor actor)
+        => this.AcceptedQuestsByActor[actor.RefId].Where(q => this.IsComplete(actor, q)).Select(q => this.AllQuestsInt[q]);
+
+    internal QuestRuntime GetNextCompletedQuest(Actor actor)
+    {
+        if (!this.AcceptedQuestsByActor.TryGetValue(actor.RefId, out var list))
+            return null;
+        return list.Where(q => this.IsComplete(actor, q)).Select(q => this.AllQuestsInt[q]).FirstOrDefault();
+    }
+    internal Entity CompleteNextQuest(Actor actor, IntVec3 board)
+    {
+        var boardEntity = this._questBoards[board].Parent;
+        if (this.GetCompletedQuests(actor).FirstOrDefault() is not QuestRuntime quest)
+            throw new InvalidOperationException();
+        var resComp = boardEntity.GetComp<BlockResourcesComp>();
+        var reward = quest.Reward;
+        resComp.ApplyDelta(ResourceDefOf.Cash, -reward);
+        var coins = ItemDefOf.Coins.Create(null, reward);
+        this.UnassignQuest(actor, quest);
+        return coins;
+    }
+
+    private void UnassignQuest(Actor actor, QuestRuntime quest)
+    {
+        var actorid = actor.RefId;
+        var questid = quest.Id;
+        var list = this.AcceptedQuestsByActor[actorid];
+        list.Remove(questid);
+        if (list.Count == 0)
+            this.AcceptedQuestsByActor.Remove(actorid);
+        this.AcceptedQuestsByQuest[questid].Remove(actorid);
+        this.Progress.Remove((actorid, questid));
     }
 }

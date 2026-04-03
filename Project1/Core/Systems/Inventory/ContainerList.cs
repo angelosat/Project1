@@ -80,14 +80,16 @@ namespace Project1.Core.Systems.Inventory
                 //existing.StackSize += item.StackSize;
                 if (item.StackSize > existing.StackAvailableSpace)
                     throw new NotImplementedException();
-                existing.Add(item.StackSize);
-                item.Consume(item.StackSize);
+                var amount = item.StackSize;
+                existing.Add(amount);
+                item.Consume(amount);
+                item.World?.Events.Post(new InventoryItemMergedEvent(this.Parent as Actor, existing, amount));
                 return;
                 //throw new NotImplementedException();
             }
 
             ((ICollection<Entity>)this.Contents).Add(item);
-            item.World.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
+            item.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
             item.Detach();
             item.Container = this;
             item.Owner = this.Parent;

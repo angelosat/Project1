@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Project1.Core.AI.MetaRoles.Adventurer;
 
-internal class ThoughtQuests : ThoughtProcess
+internal class ThoughtProcess_Quests : ThoughtProcess
 {
     public override void TickOffMap(AIState state)
     {
@@ -18,8 +18,19 @@ internal class ThoughtQuests : ThoughtProcess
         var meta = actor.AI.Meta as RoleAdventurerData;
         var activequestId = meta.ActiveQuest;
         if (activequestId != QuestId.Null)
+        {
+            var activequest = manager.GetQuest(activequestId);
+            if (manager.IsComplete(actor, activequest))
+            {
+                meta.NextDesiredLoot = null;
+                meta.ActiveQuest = QuestId.Null;
+                state.Log.Write($"I finished quest {activequest.LabelReadable}");
+            }
             return;
-        var quest = quests.First();
+        }
+        var quest = quests.FirstOrDefault(q => !manager.IsComplete(actor, q));
+        if (quest is null)
+            return;
         activequestId = quest.Id;
         var qruntime = manager.GetQuest(activequestId);
         meta.ActiveQuest = activequestId;

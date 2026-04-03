@@ -54,6 +54,8 @@ namespace Project1.Core.Systems.Inventory
 
     }
     public record struct InventoryItemAddedEvent(Actor Actor, Entity Item) : IEventPayload { }
+    public record struct InventoryItemMergedEvent(Actor Actor, Entity Existing, int MergeAmount) : IEventPayload { }
+
     public record struct InventoryItemRemovedEvent(Actor Actor, Entity Item) : IEventPayload { }
     public record struct BlockInventoryItemAddedEvent(BlockEntity Entity, Entity Item) : IEventPayload { }
     public record struct BlockInventoryItemRemovedEvent(BlockEntity Entity, Entity Item) : IEventPayload { }

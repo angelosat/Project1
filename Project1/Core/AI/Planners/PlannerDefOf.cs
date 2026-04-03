@@ -34,7 +34,7 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef Restocking = new("Restocking", typeof(PlannerRestocking));
         static public readonly PlannerDef Withdraw = new("Withdrawing", typeof(PlannerWithdrawCashOverflow));
         static public readonly PlannerDef Inventory = new("Inventory", typeof(PlannerInventory));
-        static public readonly PlannerDef QuestGiving = new("QuestGiving", typeof(PlannerQuests));
+        static public readonly PlannerDef QuestGiving = new("QuestGiving", typeof(PlannerQuestGiver));
         static public readonly PlannerDef Switching = new("Switching", typeof(PlannerToggleSwitch));
         static public readonly PlannerDef Workplace = new("Workplace", typeof(PlannerWorkplace));
         static public readonly PlannerDef SmartEquip = new("SmartEquip", typeof(PlannerSmartEquip));

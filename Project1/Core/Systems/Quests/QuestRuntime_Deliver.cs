@@ -1,9 +1,11 @@
 ﻿using Project1.Core.AI.MetaRoles.Adventurer;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Serialization;
+using System;
 
 namespace Project1.Core.Systems.Quests;
 
@@ -20,7 +22,7 @@ internal sealed class QuestRuntime_Deliver : QuestRuntime
 {
     internal override QuestDef Def => QuestDefOf.Deliver;
     //internal override QuestResolver_Deliver CreateResolver => new();
-
+    internal override int Count => ItemDefOf.Ingredient.StackCapacity;
     public (MaterialRefinementDef, MaterialDef) Key => (this.Refinement, this.Material);
     internal MaterialRefinementDef Refinement { get; private set; }
     internal MaterialDef Material { get; private set; }
@@ -29,12 +31,26 @@ internal sealed class QuestRuntime_Deliver : QuestRuntime
 
     public QuestRuntime_Deliver(QuestId id, int reward, MaterialRefinementDef refinement, MaterialDef material) : base(id, reward)
     {
-        Refinement = refinement;
-        Material = material;
+        this.Refinement = refinement;
+        this.Material = material;
     }
     QuestRuntime_Deliver()
     {
         
+    }
+    internal bool Matches(Entity item)
+    {
+        if (item.Profile != this.Refinement)
+            return false;
+        if (item.PrimaryMaterial != this.Material)
+            return false;
+        return true;
+    }
+    internal bool IsFulfilledBy(Entity item)
+    {
+        if (!this.Matches(item))
+            return false;
+        return item.StackSize >= this.Count;
     }
     protected override void OnSave(SaveTag tag)
     {

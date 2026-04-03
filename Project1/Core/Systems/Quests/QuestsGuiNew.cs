@@ -82,7 +82,7 @@ internal sealed class CreateQuestGui : GroupBox
     public CreateQuestGui()
     {
 
-        var comboItemDef = new ComboBoxFinal<ItemDef>(Def.GetDefs<ItemDef>(), 100, def => def?.LabelReadable, def => setItem(def), () => itemDef);
+        var comboItemDef = new ComboBoxFinal<ItemDef>(Def.GetDefs<ItemDef>(), 100, def => def?.LabelReadable, def => SetItem(def), () => itemDef);
         //var comboProfileDef = new ComboBoxNewNew<Def>(Def.GetDefs(this.profileDefType), 100, def => def?.LabelReadable, def => profileDef = def, () => profileDef);
         var comboProfileDef = new ComboBoxFinal<Def>(() => Def.GetDefs(this.profileDefType), 100, def => def?.LabelReadable, def => profileDef = def, () => profileDef);
         var comboMaterialDef = new ComboBoxFinal<MaterialDef>(Def.GetDefs<MaterialDef>(), 100, def => def?.LabelReadable, def => materialDef = def, () => materialDef);
@@ -90,7 +90,7 @@ internal sealed class CreateQuestGui : GroupBox
         this.AddControlsHorizontally(comboItemDef, comboProfileDef, comboMaterialDef);
     }
 
-    void setItem(ItemDef def)
+    void SetItem(ItemDef def)
     {
         this.itemDef = def;
         this.profileDefType = def?.ProfileType;

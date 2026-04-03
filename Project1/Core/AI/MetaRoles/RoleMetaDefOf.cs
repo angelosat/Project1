@@ -15,7 +15,7 @@ namespace Project1.Core.AI.MetaRoles
             AdventurerNeedsDefOf.Adventuring],
             [typeof(ThoughtItemEvaluatorVisitor),
             typeof(ThoughtAdventuring),
-            typeof(ThoughtQuests)]);
+            typeof(ThoughtProcess_Quests)]);
         public readonly static RoleMetaDef Npc = new("Npc", typeof(RoleNpcData), typeof(RoleNpcWorker), [], []);
 
         static RoleMetaDefOf()

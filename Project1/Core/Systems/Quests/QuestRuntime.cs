@@ -19,7 +19,8 @@ public abstract class QuestRuntime : Inspectable, ISaveableNewNew<QuestRuntime>,
     internal abstract QuestDef Def { get; }
     internal QuestId Id { get; private set; }
 
-    internal int Count = 10;
+    //internal int Count = 20;
+    internal abstract int Count { get; }
     internal int Reward;
 
     public QuestRuntime(QuestId id, int reward)
@@ -53,7 +54,7 @@ public abstract class QuestRuntime : Inspectable, ISaveableNewNew<QuestRuntime>,
         tag.Save("Def", this.Def);
         tag.Save("Id", (int)this.Id);
         tag.Save("Reward", this.Reward);
-        tag.Save("Count", this.Count);
+        //tag.Save("Count", this.Count);
         this.OnSave(tag);
         return tag;
     }
@@ -61,7 +62,7 @@ public abstract class QuestRuntime : Inspectable, ISaveableNewNew<QuestRuntime>,
     {
         this.Id = (QuestId)tag.LoadInt("Id");
         this.Reward = tag.LoadInt("Reward");
-        if (tag.TryLoadInt("Count", out var count)) this.Count = count;
+        //if (tag.TryLoadInt("Count", out var count)) this.Count = count;
         this.OnLoad(tag);
     }
     protected virtual void OnSave(SaveTag tag) { }
@@ -72,7 +73,7 @@ public abstract class QuestRuntime : Inspectable, ISaveableNewNew<QuestRuntime>,
         w.Write(this.Def);
         w.Write(this.Id);
         w.Write(this.Reward);
-        w.Write(this.Count);
+        //w.Write(this.Count);
         this.OnWrite(w);
     }
     public static QuestRuntime Create(IDataReader r)
@@ -92,7 +93,7 @@ public abstract class QuestRuntime : Inspectable, ISaveableNewNew<QuestRuntime>,
     {
         this.Id = r.ReadInt32();
         this.Reward = r.ReadInt32();
-        this.Count = r.ReadInt32();
+        //this.Count = r.ReadInt32();
         this.OnRead(r);
         return this;
     }

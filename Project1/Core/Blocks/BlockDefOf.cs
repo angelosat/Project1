@@ -113,6 +113,7 @@ namespace Project1.Core.Blocks
         {
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]),
             BlockEntityCompSpecs = [
+                new BlockInventoryComp.Spec(),
                 new BlockQuestsComp.Spec(),
                 new BlockResourcesComp.Spec([ResourceDefOf.Cash]),
                 new BlockShopComp.Spec()],

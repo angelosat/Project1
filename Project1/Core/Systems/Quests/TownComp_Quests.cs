@@ -4,70 +4,72 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Resources;
-using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Towns;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
-using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Systems.Quests;
-sealed class QuestTracker
+sealed class QuestTracker : ISaveableNewNew<QuestTracker>, ISerializableNewNew<QuestTracker>
 {
     internal QuestId QuestId;
     internal EntityRefId ActorId;
-    internal int Progress;
-    internal bool IsCompleted => false;
-}
+    //internal int Progress, Count;
+    internal int CountRemaining;
+    internal IntVec3 SourceBoard;
+    internal bool IsComplete => CountRemaining <= 0;
+    internal (EntityRefId actorid, QuestId qid) Key => (this.ActorId, this.QuestId);
 
-abstract class QuestController
-{
-    protected TownComp_Quests Comp;
-    public void Register(TownComp_Quests comp)
+    internal QuestTracker(QuestId questId, EntityRefId actorId, int count, IntVec3 sourceBoard)
     {
-        this.Comp = comp;
-        this.OnRegister();
-    }
-    protected abstract void OnRegister();
-}
-sealed class QuestController_Deliver : QuestController
-{
-    protected override void OnRegister()
-    {
-        this.Comp.Map.World.Events.ListenTo<InventoryItemAddedEvent>(HandleInventoryItemAdded);
-        this.Comp.Map.World.Events.ListenTo<InventoryItemMergedEvent>(HandleInventoryItemMerged);
+        this.QuestId = questId;
+        this.ActorId = actorId;
+        this.CountRemaining = count;
+        this.SourceBoard = sourceBoard;
     }
 
-    private void HandleInventoryItemMerged(InventoryItemMergedEvent e)
+    internal void Increment(int delta) => this.CountRemaining -= delta;
+
+    public SaveTag Save(string name = "")
     {
-        var actor = e.Actor;
-        var item = e.Existing;
-        var amount = e.MergeAmount;
-        this.TryIncrementProgress(actor, item, amount);
+        var tag = new SaveTag(SaveTag.Types.Compound, name);
+        tag.Save("QuestId", this.QuestId);
+        tag.Save("ActorId", this.ActorId);
+        tag.Save("CountRemaining", this.CountRemaining);
+        tag.Save("SourceBoard", this.SourceBoard);
+        return tag;
     }
 
-    private void HandleInventoryItemAdded(InventoryItemAddedEvent e)
+    public static QuestTracker Create(SaveTag tag)
     {
-        var actor = e.Actor;
-        var item = e.Item;
-        var amount = item.StackSize;
-        this.TryIncrementProgress(actor, item, amount);
+        var questid = (QuestId)tag.LoadInt("QuestId");
+        var actorid = (EntityRefId)tag.LoadInt("ActorId");
+        var countRemaining = tag.LoadInt("CountRemaining");
+        var sourceBoard = tag.LoadIntVec3("SourceBoard");
+        return new(questid, actorid, countRemaining, sourceBoard);
     }
 
-    private void TryIncrementProgress(Actor actor, Entity item, int amount)
+    public IDataWriter Write(IDataWriter w)
     {
-        var quests = this.Comp.GetAcceptedQuestsByActor<QuestRuntime_Deliver>(actor);
+        w.Write(this.QuestId);
+        w.Write(this.ActorId);
+        w.Write(this.CountRemaining);
+        w.Write(this.SourceBoard);
+        return w;
+    }
 
-        foreach (var q in quests)
-        {
-            if (q.Matches(item))
-                this.Comp.IncrementProgress(actor, q, amount);
-        }
+    public static QuestTracker Create(IDataReader r)
+    {
+        var questid = (QuestId)r.ReadInt32();
+        var actorid = r.ReadEntityRefId();
+        var countRemaining = r.ReadInt32();
+        var sourceBoard = r.ReadIntVec3();
+        return new(questid, actorid, countRemaining, sourceBoard);
     }
 }
 
@@ -84,18 +86,11 @@ public sealed class TownComp_Quests : TownComponent
     public Action<QuestRuntime> Added, Removed;
     readonly Dictionary<EntityRefId, HashSet<QuestId>> AcceptedQuestsByActor = [];
     readonly Dictionary<QuestId, HashSet<EntityRefId>> AcceptedQuestsByQuest = [];
-    //readonly HashSet<IntVec3> _questBoards = [];
     readonly Dictionary<IntVec3, BlockQuestsComp> _questBoards = [];
     public IEnumerable<IntVec3> QuestBoards => this._questBoards.Keys;
-    readonly Dictionary<(EntityRefId actorId, QuestId qId), int> Progress = [];
+    //readonly Dictionary<(EntityRefId actorId, QuestId qId), int> Progress = [];
+    readonly Dictionary<(EntityRefId actorId, QuestId qId), QuestTracker> Trackers = [];
 
-    //static readonly QuestController[] Controllers;
-    //static TownComp_Quests()
-    //{
-    //    Controllers = [.. AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
-    //        .Where(t => typeof(QuestController).IsAssignableFrom(t) && !t.IsAbstract)
-    //        .Select(t => (QuestController)Activator.CreateInstance(t))];
-    //}
     public TownComp_Quests(Town town) : base(town)
     {
         town.Map.Events.ListenTo<BlockEntityAddedEvent>(HandleBlockEntityAdded);
@@ -140,80 +135,86 @@ public sealed class TownComp_Quests : TownComponent
         return list;
     }
     public bool HasQuest(Actor actor, QuestId qid)
-    {
-        return this.AcceptedQuestsByQuest[qid].Contains(actor.RefId);
-        //if (!this.AcceptedQuestsByActor.TryGetValue(actor.RefId, out var list))
-        //    return false;
-        //return list.Contains(qid);
-    }
+        => this.AcceptedQuestsByQuest[qid].Contains(actor.RefId);
     internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
     {
         yield return (() => "QuestsNew", () => new QuestsGuiNew(this).ToWindow("Quests").Show());
     }
-    //internal void AcceptQuest(Actor actor, QuestRuntime quest)
-    //{
-    //    var actorid = actor.RefId;
-    //    //this.AcceptedQuests.Add(actor.RefId, )
-    //    if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
-    //        this.AcceptedQuestsByActor[actorid] = list = [];
-    //    list.Add(quest.Id);
-    //    this.AcceptedQuestsByQuest[quest.Id].Add(actorid);
-    //    this.Notifier.Notify();
-
-    //}
+    
     internal void TryAcceptAllQuests(IntVec3 board, Actor actor)
     {
         var actorid = actor.RefId;
-        //if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
-        //    this.AcceptedQuestsByActor[actorid] = list = [];
         List<QuestRuntime> accepted = [];
-        var cash = this.Map.GetBlockEntityComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
-
+        var boardEntity = this.Map.GetBlockEntity(board);
+        var boardResourceComp = boardEntity.GetComp<BlockResourcesComp>();
+        var cash = boardResourceComp.GetValue(ResourceDefOf.Cash);
+        var availableBudget = cash;
+        var budgetUsed = 0;
         foreach (var q in this.AllQuests)
         {
-            //if (!list.Contains(q.Id))
             var reward = q.Reward;
-            if (reward > cash)
+            if (reward > availableBudget)
                 continue;
-            //list.Add(q.Id);
-            //this.AcceptedQuestsByQuest[q.Id].Add(actorid);
+            availableBudget -= reward;
+            budgetUsed += reward;
             accepted.Add(q);
         }
         if (accepted.Count == 0)
             return;
+        boardResourceComp.ApplyDelta(ResourceDefOf.Cash, -budgetUsed);
+        AssignQuests(board, accepted, actorid);
+        //if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
+        //    this.AcceptedQuestsByActor[actorid] = list = [];
+        //foreach(var q in accepted)
+        //{
+        //    list.Add(q.Id);
+        //    this.AcceptedQuestsByQuest[q.Id].Add(actorid);
+        //    //this.Progress.Add((actor.RefId, q.Id), 0);
+        //    this.Trackers.Add((actorid, q.Id), new(q.Id, actorid, q.Count, board));
+        //}
+        //boardResourceComp.ApplyDelta(ResourceDefOf.Cash, -budgetUsed);
+        //boardEntity.GetCompOrDefault<BlockQuestsComp>().ReservedBudget += budgetUsed;
+        //this.Map.Events.Post(new ActorAcceptedQuestsEvent(board, actorid, list.ToArray()));
+        this.Notifier.Notify();
+    }
+    internal void TryAcceptAllQuestsInt(IntVec3 board, Actor actor, IEnumerable<QuestId> questIds)
+    {
+        var questList = questIds.Select(this.GetQuest);
+        var actorid = actor.RefId;
+        AssignQuests(board, questList, actorid);
+    }
+
+    private void AssignQuests(IntVec3 board, IEnumerable<QuestRuntime> questList, int actorid)
+    {
         if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
             this.AcceptedQuestsByActor[actorid] = list = [];
-        foreach(var q in accepted)
+        var budgetUsed = 0;
+        foreach (var q in questList)
         {
             list.Add(q.Id);
             this.AcceptedQuestsByQuest[q.Id].Add(actorid);
-            this.Progress.Add((actor.RefId, q.Id), 0);
+            this.Trackers.Add((actorid, q.Id), new(q.Id, actorid, q.Count, board));
+            budgetUsed += q.Reward;
         }
-        this.Map.Events.Post(new ActorAcceptedQuestsEvent(board, actorid));
+        var boardEntity = this.Map.GetBlockEntity(board);
+        //var boardResourceComp = boardEntity.GetComp<BlockResourcesComp>();
+        //boardResourceComp.ApplyDelta(ResourceDefOf.Cash, -budgetUsed);
+        boardEntity.GetCompOrDefault<BlockQuestsComp>().ReservedBudget += budgetUsed;
+        this.Map.Events.Post(new ActorAcceptedQuestsEvent(board, actorid, [.. list]));
         this.Notifier.Notify();
     }
+
+    //internal bool IsComplete(Actor actor, QuestRuntime quest)
+    //    => this.Progress[(actor.RefId, quest.Id)] >= this.Required(quest.Id);
+    //internal bool IsComplete(Actor actor, QuestId questId)
+    //    => this.Progress[(actor.RefId, questId)] >= this.Required(questId);
     internal bool IsComplete(Actor actor, QuestRuntime quest)
-        => this.Progress[(actor.RefId, quest.Id)] >= this.Required(quest.Id);
+       => this.Trackers[(actor.RefId, quest.Id)].IsComplete;
     internal bool IsComplete(Actor actor, QuestId questId)
-        => this.Progress[(actor.RefId, questId)] >= this.Required(questId);
+        => this.Trackers[(actor.RefId, questId)].IsComplete;
     int Required(QuestId id)
         => this.AllQuestsInt[id].Count;
-    //internal void AcceptAllQuests(IntVec3 board, Actor actor)
-    //{
-    //    var actorid = actor.RefId;
-    //    //this.AcceptedQuests.Add(actor.RefId, )
-    //    if (!this.AcceptedQuestsByActor.TryGetValue(actorid, out var list))
-    //        this.AcceptedQuestsByActor[actorid] = list = [];
-    //    List<QuestId> accepted = [];
-    //    foreach (var q in this.AllQuests)
-    //    {
-    //        //if (!list.Contains(q.Id))
-    //        list.Add(q.Id);
-    //        this.AcceptedQuestsByQuest[q.Id].Add(actorid);
-    //    }
-    //    this.Map.Events.Post(new ActorAcceptedQuestsEvent(actorid));
-    //    this.Notifier.Notify();
-    //}
+   
     internal bool IsQuestAvailable(IntVec3 board, QuestId id)
     {
         var cash = this.Map.GetBlockEntityComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
@@ -226,12 +227,6 @@ public sealed class TownComp_Quests : TownComponent
     {
         var cash = this.Map.GetBlockEntityComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
         return this.AllQuests.Where(q => q.Reward <= cash);
-        //foreach(var q in this.AllQuests)
-        //{
-        //    if (q.Reward > cash)
-        //        continue;
-        //    yield return q.Id;
-        //}
     }
     internal bool TryCreateQuest(MaterialRefinementDef refdef, MaterialDef matdef)
     {
@@ -258,35 +253,25 @@ public sealed class TownComp_Quests : TownComponent
                 this.FetchQuestsById.Remove(id);
                 break;
         }
+        var qid = q.Id;
+        foreach(var actorid in this.AcceptedQuestsByQuest[qid])
+        {
+            var tracker = this.Trackers[(actorid, qid)];
+            this.Refund(tracker);
+            this.UnassignQuest(actorid, qid);
+        }
+        this.AcceptedQuestsByQuest.Remove(qid);
         this.AllQuestsInt.Remove(id);
         this.Removed?.Invoke(q);
     }
-    internal override void ResolveReferences()
+    void Refund(QuestTracker tracker)
     {
-        foreach (var be in this.Map.BlockEntities)
-            if (be.TryGetComp<BlockQuestsComp>(out var comp))
-                this._questBoards.Add(be.OriginGlobal, comp);
+        var board = this._questBoards[tracker.SourceBoard].Parent;
+        var q = this.AllQuestsInt[tracker.QuestId];
+        board.GetComp<BlockResourcesComp>().ApplyDelta(ResourceDefOf.Cash, q.Reward);
+        board.GetComp<BlockQuestsComp>().ReservedBudget -= q.Reward;
     }
-    protected override void AddSaveData(SaveTag tag)
-    {
-        tag.Save("Quests", this.AllQuestsInt.Values);
-    }
-    public override void Load(SaveTag tag)
-    {
-        var quests = tag.LoadList<QuestRuntime>("Quests");
-        foreach (var q in quests)
-            this.AddQuestInt(q);
-    }
-    public override void Write(IDataWriter w)
-    {
-        w.Write(this.AllQuestsInt.Values);
-    }
-    public override void Read(IDataReader r)
-    {
-        var quests = r.ReadList<QuestRuntime>();
-        foreach (var q in quests)
-            this.AddQuestInt(q);
-    }
+
     private void AddQuestInt(QuestRuntime q)
     {
         switch(q)
@@ -301,9 +286,10 @@ public sealed class TownComp_Quests : TownComponent
     }
 
     internal void IncrementProgress(Actor actor, QuestRuntime q, int delta)
-    {
-        this.Progress[(actor.RefId, q.Id)] += delta;
-    }
+        => this.Trackers[(actor.RefId, q.Id)].Increment(delta);
+    //{
+    //    this.Progress[(actor.RefId, q.Id)] += delta;
+    //}
 
     internal bool HasCompletedQuests(Actor actor)
         => this.AcceptedQuestsByActor[actor.RefId].Any(q => this.IsComplete(actor, q));
@@ -319,26 +305,54 @@ public sealed class TownComp_Quests : TownComponent
     }
     internal Entity CompleteNextQuest(Actor actor, IntVec3 board)
     {
-        var boardEntity = this._questBoards[board].Parent;
         if (this.GetCompletedQuests(actor).FirstOrDefault() is not QuestRuntime quest)
             throw new InvalidOperationException();
-        var resComp = boardEntity.GetComp<BlockResourcesComp>();
         var reward = quest.Reward;
-        resComp.ApplyDelta(ResourceDefOf.Cash, -reward);
         var coins = ItemDefOf.Coins.Create(null, reward);
         this.UnassignQuest(actor, quest);
         return coins;
     }
 
     private void UnassignQuest(Actor actor, QuestRuntime quest)
+        => this.UnassignQuest(actor.RefId, quest.Id);
+    private void UnassignQuest(EntityRefId actorid, QuestId questid)
     {
-        var actorid = actor.RefId;
-        var questid = quest.Id;
         var list = this.AcceptedQuestsByActor[actorid];
         list.Remove(questid);
         if (list.Count == 0)
             this.AcceptedQuestsByActor.Remove(actorid);
         this.AcceptedQuestsByQuest[questid].Remove(actorid);
-        this.Progress.Remove((actorid, questid));
+        this.Trackers.Remove((actorid, questid));
+    }
+    internal override void ResolveReferences()
+    {
+        foreach (var be in this.Map.BlockEntities)
+            if (be.TryGetComp<BlockQuestsComp>(out var comp))
+                this._questBoards.Add(be.OriginGlobal, comp);
+    }
+    protected override void AddSaveData(SaveTag tag)
+    {
+        tag.Save("Quests", this.AllQuestsInt.Values);
+        tag.Save("Trackers", this.Trackers.Values);
+    }
+    public override void Load(SaveTag tag)
+    {
+        var quests = tag.LoadList<QuestRuntime>("Quests");
+        foreach (var q in quests)
+            this.AddQuestInt(q);
+    }
+    public override void Write(IDataWriter w)
+    {
+        w.Write(this.AllQuestsInt.Values);
+        w.WriteNew(this.Trackers.Values);
+    }
+    public override void Read(IDataReader r)
+    {
+        var quests = r.ReadList<QuestRuntime>();
+        foreach (var q in quests)
+            this.AddQuestInt(q);
+        var trackers = r.ReadListNewNew<QuestTracker>();
+        foreach (var t in trackers)
+            this.Trackers.Add(t.Key, t);
     }
 }

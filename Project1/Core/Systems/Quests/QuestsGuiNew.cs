@@ -12,7 +12,7 @@ namespace Project1.Core.Systems.Quests;
 
 record struct PlayerRequestQuestCreationEvent(MaterialRefinementDef RefinementDef, MaterialDef MaterialDef) : IEventPayload { }
 record struct PlayerRequestQuestDeletionEvent(QuestId Id) : IEventPayload { }
-record struct ActorAcceptedQuestsEvent(IntVec3 Board, EntityRefId ActorId) : IEventPayload { }
+record struct ActorAcceptedQuestsEvent(IntVec3 Board, EntityRefId ActorId, QuestId[] Quests) : IEventPayload { }
 internal sealed class CreateFetchQuestGui : GroupBox
 {
     MaterialRefinementDef refDef;

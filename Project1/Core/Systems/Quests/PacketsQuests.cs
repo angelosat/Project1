@@ -5,6 +5,7 @@ using Project1.Core.Screens;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using System;
+using System.Linq;
 
 namespace Project1.Core.Systems.Quests;
 
@@ -32,14 +33,16 @@ internal static class PacketsQuests
         var server = Server.Instance;
         server.BeginPacket(_pActorAcceptedQuests)
             .Write(e.Board)
-            .Write(e.ActorId);
+            .Write(e.ActorId)
+            .Write(e.Quests.Select(q=>(int)q).ToArray());
     }
     private static void ReceiveActorAcceptedQuests(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
         var board = r.ReadIntVec3();
         var actorid = r.ReadEntityRefId();
-        endpoint.Map.Town.QuestManagerNew.TryAcceptAllQuests(board, endpoint.World.Get<Actor>(actorid));
+        var questIds = r.ReadListInt32().Select(id => (QuestId)id);
+        endpoint.Map.Town.QuestManagerNew.TryAcceptAllQuestsInt(board, endpoint.World.Get<Actor>(actorid), questIds);
     }
     private static void HandlePlayerDeleteQuest(PlayerRequestQuestDeletionEvent e)
     {

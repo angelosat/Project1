@@ -13,7 +13,7 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators
             if (tool == null)
                 return 0;
             var ability = tool.Ability;
-            var similarOwnedItem = actor.Inventory.FindItems((Entity item) => item.Def.ToolProperties?.Ability.Def == ability.Def).FirstOrDefault();
+            var similarOwnedItem = actor.Inventory.Where((Entity item) => item.Def.ToolProperties?.Ability.Def == ability.Def).FirstOrDefault();
             var benefit = ability.Effectiveness - (similarOwnedItem?.Def.ToolProperties.Ability.Effectiveness ?? 0); // TODO get total effeciency (multiplied by item level/quality?
             return benefit;
         }
@@ -24,7 +24,7 @@ namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators
             if (apparel == null)
                 return 0;
             int benefit = 0;
-            var similarOwnedItem = actor.Inventory.FindItems((Entity item) => item.Def.ApparelProperties?.GearType == apparel.GearType).FirstOrDefault();
+            var similarOwnedItem = actor.Inventory.Where((Entity item) => item.Def.ApparelProperties?.GearType == apparel.GearType).FirstOrDefault();
             benefit = apparel.ArmorValue - (similarOwnedItem?.Def.ApparelProperties.ArmorValue ?? 0);
             return benefit;
         }

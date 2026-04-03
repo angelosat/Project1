@@ -74,7 +74,6 @@ namespace Project1.Core.Systems.Inventory
         {
             if (item.Container == this)
                 throw new Exception();
-
             if (this.Contents.FirstOrDefault(i => i.CanAbsorb(item)) is Entity existing)
             {
                 //existing.StackSize += item.StackSize;

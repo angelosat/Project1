@@ -17,8 +17,9 @@ internal sealed class OffmapActivity_FindLoot : OffmapActivity
             return;
         var loot = RawMaterialSystem.Create(desiredLoot.Value.refdef, desiredLoot.Value.matdef, 1);
         actor.World.Register(loot);
-        actor.Inventory.Insert(loot);
-        actor.AI.State.Log.Write($"I found {loot.LabelReadable}");
+        var foundCount = loot.StackSize;
+        actor.Inventory.Insert(loot, out var newTotal);
+        actor.AI.State.Log.Write($"I found {loot.LabelReadable} x{foundCount} ({newTotal})");
     }
 }
 internal sealed class OffmapActivity_ResourceGather : OffmapActivity

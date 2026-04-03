@@ -830,8 +830,24 @@ namespace Project1.Core.Entities
         public int StackAvailableSpace { get { return this.StackMax - this.StackSize; } }
         public bool CanAbsorb(GameObject otherItem, int amount = -1)
         {
+            //ArgumentNullException.ThrowIfNull(otherItem);
+
+            //if (!this.Matches(otherItem))
+            //    return false;
+
+            //if (amount == -1)
+            //    return true;
+
+            //if (this.IsStackFull)
+            //    return false;
+
+            //if (this.StackSize + amount > this.StackMax)
+            //    throw new Exception();
+
+            //return true;
+
             ArgumentNullException.ThrowIfNull(otherItem);
-                
+
             if (this == otherItem)
                 return false;
 
@@ -852,6 +868,24 @@ namespace Project1.Core.Entities
 
             if (this.StackSize + amount > this.StackMax)
                 throw new Exception();
+
+            return true;
+        }
+        public bool Matches(GameObject other)
+        {
+            ArgumentNullException.ThrowIfNull(other);
+
+            if (this == other)
+                return true;
+
+            if (other.Def != null && this.Def != other.Def)
+                return false;
+
+            if (other.Profile is not null && this.Profile != other.Profile)
+                return false;
+
+            if (!this.HasMatchingBody(other))
+                return false;
 
             return true;
         }

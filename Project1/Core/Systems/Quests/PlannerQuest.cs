@@ -25,7 +25,7 @@ sealed class PlannerQuest : Planner
         {
             if(actor.Hauled is Entity carried && quest.IsFulfilledBy(carried))
                 return new Plan(QuestDefOf.PlanQuestComplete, map, board);
-            if (actor.Inventory.FindItems(quest.IsFulfilledBy).FirstOrDefault() is not Entity item)
+            if (actor.Inventory.Where(quest.IsFulfilledBy).FirstOrDefault() is not Entity item)
                 throw new System.Exception();
             return new Plan(PlanDefOf.RetrieveFromInventory, item);
         }

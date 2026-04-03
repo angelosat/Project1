@@ -185,6 +185,7 @@ namespace Project1.Core.Systems.Inventory
         {
             return this.Insert(obj as Entity);
         }
+
         public bool Insert(Entity obj)
         {
             if (obj == null)
@@ -193,7 +194,14 @@ namespace Project1.Core.Systems.Inventory
 
             return true;
         }
-
+        public bool Insert(Entity obj, out int newTotal)
+        {
+            //if (obj == null)
+            //    return false;
+            this.Contents.Add(obj);
+            newTotal = this.Count(e => e.Matches(obj));
+            return true;
+        }
         public bool Unequip(GameObject item)
         {
             var slot = (this.Owner as Entity).Gear.GetSlot(item);
@@ -240,7 +248,7 @@ namespace Project1.Core.Systems.Inventory
         }
         public int Count(Func<Entity, bool> filter)
         {
-            return this.FindItems(filter).Sum(i => i.StackSize);
+            return this.Where(filter).Sum(i => i.StackSize);
 
         }
         public bool Contains(GameObject item)
@@ -317,7 +325,7 @@ namespace Project1.Core.Systems.Inventory
         {
             var remaining = amount;
 
-            var e = this.FindItems(filter).GetEnumerator();
+            var e = this.Where(filter).GetEnumerator();
             while (e.MoveNext() && remaining > 0)
             {
                 var i = e.Current;
@@ -378,15 +386,16 @@ namespace Project1.Core.Systems.Inventory
         //    info.AddInfo(this.CachedGuiLabelCarrying.SetTextFunc(() => $"Carrying: {this.HaulSlot.Object?.DebugName ?? "Nothing"}"));
         //}
 
-        public IEnumerable<Entity> FindItems(Func<Entity, bool> p)
+        public IEnumerable<Entity> Where(Func<Entity, bool> p)
         {
-            foreach (var s in this.Contents)
-            {
-                if (s is not Entity e)
-                    continue;
-                if (p(e))
-                    yield return e;
-            }
+            return this.Contents.Where(i => p(i));
+            //foreach (var s in this.Contents)
+            //{
+            //    //if (s is not Entity e)
+            //    //    continue;
+            //    if (p(s))
+            //        yield return s;
+            //}
         }
 
         internal bool TryGet(Func<Entity, bool> predicate, out Entity found)

@@ -98,7 +98,7 @@ namespace Project1.Core.Systems.Tools
             foreach (var (bone, mat) in comp.MaterialBindings)
             {
                 var refinement = GetCorrectRefinementForBoneMaterial(bone, mat);
-                var ingredient = RawMaterialSystem.Create(refinement, mat, 1);
+                var ingredient = MaterialSystem.Create(refinement, mat, 1);
                 ingredients.Add(ingredient);
             }
             entity.Map.Events.Post(new LootDropEvent([.. ingredients], entity.Map, entity.Global, entity.Velocity));

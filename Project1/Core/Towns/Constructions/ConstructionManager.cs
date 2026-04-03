@@ -229,7 +229,7 @@ namespace Project1.Core.Towns.Constructions
             foreach(var (refinement, material, amount) in comp.DepositedMaterials)
             {
                 this.Map.Events.Post(new LootDropEvent(
-                    [RawMaterialSystem.Create(refinement, material, amount)],
+                    [MaterialSystem.Create(refinement, material, amount)],
                     this.Map,
                     entity.OriginGlobal,
                     Vector3.Zero));

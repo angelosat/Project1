@@ -1,6 +1,4 @@
-﻿using Project1.Core.AI.MetaRoles.Adventurer;
-using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
@@ -8,15 +6,6 @@ using Project1.Framework.Serialization;
 using System;
 
 namespace Project1.Core.Systems.Quests;
-
-internal sealed class QuestResolver_Deliver : QuestResolver
-{
-    public override void Tick(Actor actor, QuestRuntime quest)
-    {
-        var typedQ = (QuestRuntime_Deliver)quest;
-        actor.AI.GetMeta<RoleAdventurerData>().NextDesiredLoot = typedQ.Key;
-    }
-}
 
 internal sealed class QuestRuntime_Deliver : QuestRuntime
 {

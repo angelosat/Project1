@@ -101,7 +101,7 @@ namespace Project1.Core.Entities
         {
             AddTemplate(EntityFactory.Request(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer).Create());
 
-            foreach (var t in RawMaterialSystem.GenerateTemplates().Where(t => t is not null))
+            foreach (var t in MaterialSystem.GenerateTemplates().Where(t => t is not null))
                 AddTemplate(t);
 
             foreach (var toolProp in Core.Def.GetDefs<ToolProfileDef>())

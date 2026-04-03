@@ -59,7 +59,7 @@ namespace Project1.Core.Crafting
         internal void Dispose() => this.IsDisposed = true;
 
         public bool IsAllowed(BoneDef bone, MaterialDef mat) => !this.Filters[bone].Contains(mat);
-        public bool IsAllowed(BoneDef bone, MaterialTypeDef form) => RawMaterialSystem.MaterialsByType[form].All(mat => !this.Filters[bone].Contains(mat));
+        public bool IsAllowed(BoneDef bone, MaterialTypeDef form) => MaterialSystem.MaterialsByType[form].All(mat => !this.Filters[bone].Contains(mat));
         internal void Toggle(BoneDef bone, MaterialTypeDef form, MaterialDef material)
         {
             var filters = this.Filters[bone];
@@ -72,7 +72,7 @@ namespace Project1.Core.Crafting
             }
             else
             {
-                var allMats = RawMaterialSystem.MaterialsByType[form];
+                var allMats = MaterialSystem.MaterialsByType[form];
                 if (allMats.Any(filters.Contains))
                     foreach (var mat in allMats)
                         filters.Remove(mat);
@@ -118,7 +118,7 @@ namespace Project1.Core.Crafting
         {
             this.AcceptableMaterials[bone] =
                                 [.. this.Rules[bone].MaterialTypes.SelectMany(mt=>
-                                RawMaterialSystem.MaterialsByType[mt]
+                                MaterialSystem.MaterialsByType[mt]
                                     .Where(m => !Filters[bone].Contains(m)))];
         }
        
@@ -342,7 +342,7 @@ namespace Project1.Core.Crafting
                     //rule.Profiles
                     //.SelectMany(f => RawMaterialSystem.MaterialsByType[f.MaterialType])
                     //[.. RawMaterialSystem.MaterialsByType[rule.MaterialType].Where(m => !Filters[bone].Contains(m))];
-                    [.. rule.MaterialTypes.SelectMany(t=>RawMaterialSystem.MaterialsByType[t].Where(m => !Filters[bone].Contains(m)))];
+                    [.. rule.MaterialTypes.SelectMany(t=>MaterialSystem.MaterialsByType[t].Where(m => !Filters[bone].Contains(m)))];
                 AcceptableMaterials[bone] = mats;
             }
             return mats;
@@ -370,7 +370,7 @@ namespace Project1.Core.Crafting
             //        (m, rule.Profiles))) // pair material + form
             //    .ToArray();
             var array = rule.MaterialTypes
-                .SelectMany(mt => RawMaterialSystem.MaterialsByType[mt])
+                .SelectMany(mt => MaterialSystem.MaterialsByType[mt])
                 .SelectMany(p => rule.Profiles, (m, p) => (m, p)).ToArray();
             return array;
         }

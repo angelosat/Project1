@@ -137,7 +137,7 @@ namespace Project1.Core.Systems.Tools
             {
                 var entityBone = this.Owner.Body.FindBone(rule.Bone);
                 var matTypes = rule.MaterialTypes;// validRefinements.Select(r => r.MaterialType);
-                var mats = matTypes.SelectMany(t => RawMaterialSystem.MaterialsByType[t]).ToArray();
+                var mats = matTypes.SelectMany(t => MaterialSystem.MaterialsByType[t]).ToArray();
                 var mat = mats.SelectRandom(r);
                 entityBone.Material = mat;
                 durabilityMax += mat.Density;

@@ -27,7 +27,8 @@ namespace Project1.Core.AI.MetaRoles
             internal void Reset() => this.NextTick = 0;
             internal void ScheduleNext(WorldBase world)
             {
-                var basedelay = (ulong)world.Random.Next(Ticks.FromHours(1), Ticks.FromHours(2));
+                //var basedelay = (ulong)world.Random.Next(Ticks.FromHours(1), Ticks.FromHours(2));
+                var basedelay = (ulong)world.Random.Next(Ticks.FromMinutes(10), Ticks.FromMinutes(20));
                 var damping = (ulong)(this.FailureStreak * Ticks.FromHours(1));
                 this.NextTick = world.CurrentTick + basedelay + damping;
             }
@@ -91,7 +92,8 @@ namespace Project1.Core.AI.MetaRoles
 
         internal void ReturnToTown()
         {
-            this.TargetFrontier = null;
+            //this.TargetFrontier = null;
+            this.SetTargetFrontier(null);
         }
 
         public SaveTag Save(string name = "")

@@ -5,7 +5,7 @@ namespace Project1.Core.AI.MetaRoles.Adventurer;
 
 internal sealed class ThoughtAdventuring : ThoughtProcess
 {
-    public override void TickOffMap(AIState state)
+    internal override void TickOffMap(AIState state)
     {
         //var needDelta = (actor.IsSpawned ? -1 : 1) / (float)Ticks.PerGameMinute;
         //actor.Needs.ApplyAccumulatorDelta(AdventurerNeedsDefOf.Adventuring, needDelta);
@@ -16,7 +16,7 @@ internal sealed class ThoughtAdventuring : ThoughtProcess
 
     }
 
-    public override void TickOnMap(AIState state)
+    internal override void TickOnMap(AIState state)
     {
         state.Owner.Needs.ApplyAccumulatorDelta(AdventurerNeedsDefOf.Adventuring, -1f / Ticks.PerGameMinute);
     }

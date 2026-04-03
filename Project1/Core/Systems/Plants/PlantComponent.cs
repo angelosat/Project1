@@ -222,7 +222,7 @@ namespace Project1.Core.Systems.Plants
             var yield = (int)(this.GrowthBody.Percentage * plantdef.MaxYieldCutDown);
             if (plantdef.ChoppingProduct != null && yield > 0)
             {
-                var product = RawMaterialSystem.Create(MaterialRefinementDefOf.Logs, owner.Body.Material);
+                var product = MaterialSystem.Create(MaterialRefinementDefOf.Logs, owner.Body.Material);
                 product.SetStackSize(yield);
                 owner.Map.Events.Post(new LootDropEvent([product], this.Owner.Map, this.Owner.Global, this.Owner.Velocity));
 

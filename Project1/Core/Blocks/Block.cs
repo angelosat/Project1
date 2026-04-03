@@ -738,7 +738,7 @@ namespace Project1.Core.Blocks
                     yield return i;
             if(this.BlockDef.ConstructionProfile is not null)
                 foreach (var i in this.BlockDef.ConstructionProfile.Refinements)
-                    foreach (var m in RawMaterialSystem.MaterialsByType[i.MaterialType])
+                    foreach (var m in MaterialSystem.MaterialsByType[i.MaterialType])
                         yield return m;
             //return this.Ingredient?.GetAllValidMaterials() ?? Enumerable.Empty<MaterialDef>();//.Select(m => (byte)m.ID);
         }

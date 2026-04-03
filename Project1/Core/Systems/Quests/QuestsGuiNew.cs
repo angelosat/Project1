@@ -28,7 +28,7 @@ internal sealed class CreateFetchQuestGui : GroupBox
     {
         this.ComboRefinementDef = new ComboBoxFinal<MaterialRefinementDef>(() => Def.GetDefs<MaterialRefinementDef>(), 100, def => def?.LabelReadable, SetRefDef, () => refDef);
         this.ComboRefinementDef.InvalidateOn(this.Notifier);
-        this.ComboMaterialDef = new ComboBoxFinal<MaterialDef>(() => this.refDef is not null ? RawMaterialSystem.GetMaterialsByType(this.refDef.MaterialType) : [], 100, def => def?.LabelReadable, SetMatDef, () => materialDef);
+        this.ComboMaterialDef = new ComboBoxFinal<MaterialDef>(() => this.refDef is not null ? MaterialSystem.GetMaterialsByType(this.refDef.MaterialType) : [], 100, def => def?.LabelReadable, SetMatDef, () => materialDef);
         this.ComboMaterialDef.InvalidateOn(this.Notifier);
         this.BtnApply = new(() => "Apply", Apply, 64);
         this.BtnCancel = new(() => "Cancel", () => { }, 64);

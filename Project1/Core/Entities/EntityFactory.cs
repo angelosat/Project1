@@ -18,7 +18,7 @@ namespace Project1.Core.Entities
         {
             return req.Context switch
             {
-                MaterialRefinementDef => RawMaterialSystem.Create(req),
+                MaterialRefinementDef => MaterialSystem.Create(req),
                 ActorDnaDef => ActorSystem.Create(req),
                 PlantSpeciesDef => PlantSystem.Create(req),
                 ToolProfileDef => ToolSystem.Create(req),

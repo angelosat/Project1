@@ -1,12 +1,14 @@
 ﻿using Project1.Core.AI.Thought;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Quests;
+using Project1.Core.World.WorldAreas;
 using System.Linq;
 
 namespace Project1.Core.AI.MetaRoles.Adventurer;
 
 internal class ThoughtProcess_Quests : ThoughtProcess
 {
-    public override void TickOffMap(AIState state)
+    internal override void TickOffMap(AIState state)
     {
         var actor = state.Owner;
         if (actor.Net.IsClient)
@@ -38,7 +40,12 @@ internal class ThoughtProcess_Quests : ThoughtProcess
         state.Log.Write($"I set {qruntime.LabelReadable} as my active quest.");
     }
 
-    public override void TickOnMap(AIState state)
+    internal override int GetFrontierScore(Actor actor, FrontierDef frontier)
+    {
+        return base.GetFrontierScore(actor, frontier);
+    }
+
+    internal override void TickOnMap(AIState state)
     {
     }
 }

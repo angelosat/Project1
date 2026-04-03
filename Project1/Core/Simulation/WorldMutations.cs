@@ -44,7 +44,7 @@ namespace Project1.Core.Simulation
             {
                 if (comp.IngredientUsed is MaterialRefinementDef matRef)
                 {
-                    var refund = RawMaterialSystem.Create(matRef, cell.Material);
+                    var refund = MaterialSystem.Create(matRef, cell.Material);
                     map.Events.Post(new LootDropEvent([refund], map, global));
                 }
             }
@@ -52,7 +52,7 @@ namespace Project1.Core.Simulation
             {
                 //foreach (var refinement in constrProf.Refinements)
                 //    loot.Add(EntityFactory.Create(refinement, null, cell.Material));
-                loot.Add(RawMaterialSystem.Create(constrProf.Refinements.Single(), cell.Material));
+                loot.Add(MaterialSystem.Create(constrProf.Refinements.Single(), cell.Material));
                 map.Events.Post(new LootDropEvent([.. loot], map, global));
             }
             //MapEdit

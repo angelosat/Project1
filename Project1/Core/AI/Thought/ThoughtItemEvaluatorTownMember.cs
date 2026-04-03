@@ -4,11 +4,11 @@ using Project1.Core.Towns.Shops;
 namespace Project1.Core.AI.Thought;
 internal sealed class ThoughtItemEvaluatorVisitor : ThoughtProcess
 {
-    public override void TickOffMap(AIState state)
+    internal override void TickOffMap(AIState state)
     {
     }
 
-    public override void TickOnMap(AIState state)
+    internal override void TickOnMap(AIState state)
     {
         var actor = state.Owner;
         if (!actor.IsSpawned)
@@ -51,11 +51,11 @@ internal sealed class ThoughtItemEvaluatorVisitor : ThoughtProcess
 }
 internal class ThoughtItemEvaluatorTownMember : ThoughtProcess
 {
-    public override void TickOffMap(AIState state)
+    internal override void TickOffMap(AIState state)
     {
     }
 
-    public override void TickOnMap(AIState state)
+    internal override void TickOnMap(AIState state)
     {
         if (!state.Owner.IsSpawned)
             return;

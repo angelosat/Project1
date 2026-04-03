@@ -1,15 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.AI;
+using Project1.Core.AI.MetaRoles.Adventurer;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.World.WorldAreas;
+
 
 public class FrontierManager : IWorldSpaceManager
 {
@@ -39,38 +43,48 @@ public class FrontierManager : IWorldSpaceManager
     }
 
     readonly Dictionary<FrontierDef, FrontierWrapper> Frontiers = [];
-    readonly Dictionary<FrontierTier, FrontierWrapper> FrontiersByTier = [];
+    //readonly Dictionary<Tier, FrontierWrapper> FrontiersByTier = [];
+    static readonly Dictionary<Tier, FrontierDef> FrontiersByTier = [];
     readonly Dictionary<Actor, WorldSpacePosition> ActorPositions = [];
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
-
+    static readonly HashSet<FrontierDef> _cachedDefs;// = [];
     public StaticWorld World { get; }
     static readonly List<OffmapActivity> _offmapActivities = [];
+    static internal List<FrontierDecider> Deciders = [];
     static FrontierManager()
     {
         foreach (var type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
         {
             if (typeof(OffmapActivity).IsAssignableFrom(type) && !type.IsAbstract)
-                _offmapActivities.Add(((OffmapActivity)Activator.CreateInstance(type)));
+                _offmapActivities.Add((OffmapActivity)Activator.CreateInstance(type));
         }
+        foreach (var type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
+        {
+            if (typeof(FrontierDecider).IsAssignableFrom(type) && !type.IsAbstract)
+                Deciders.Add((FrontierDecider)Activator.CreateInstance(type));
+        }
+
+        _cachedDefs = [.. Def.GetDefs<FrontierDef>()];
+        FrontiersByTier = _cachedDefs.ToDictionary(d => new Tier(d.Tier), d => d);
     }
     public FrontierManager(StaticWorld world)
     {
         this.World = world;
-        foreach (var areadef in Def.GetDefs<FrontierDef>())
+        foreach (var areadef in _cachedDefs)
             this.Frontiers.Add(areadef, new FrontierWrapper(areadef));
 
-        var byTier = this.Frontiers.Values.ToList();
-        byTier.Sort((a, b) => a.Def.Tier.CompareTo(b.Def.Tier));
-        this.FrontiersByTier = byTier.ToDictionary(f => new FrontierTier(f.Def.Tier), f => f);
-
-
+        //var byTier = this.Frontiers.Values.ToList();
+        //byTier.Sort((a, b) => a.Def.Tier.CompareTo(b.Def.Tier));
+        //this.FrontiersByTier = byTier.ToDictionary(f => new Tier(f.Def.Tier), f => f);
     }
-
+    internal ChangeNotifier Notifier = new();
     public void Tick()
     {
         var world = this.World;
         //float step = 1f / Ticks.PerGameHour;
-        float step = 1f / Ticks.PerGameMinute;
+        //float step = 1f / Ticks.PerGameMinute
+        float step = 1f / Ticks.FromMinutes(5);
+        
         var snapshot = ActorPositions.ToList();
         foreach (var (actor, distance) in snapshot)
         {
@@ -82,6 +96,7 @@ public class FrontierManager : IWorldSpaceManager
                 // actors should settle in the middle of the zone (or maybe jitter around the middle to influence the chances of encounters)
                 nextDistance = distance + ((target - .5f < distance) ? -step : step);
                 nextDistance = Math.Clamp(nextDistance, 0, this.Frontiers.Count);
+                this.Notifier.Notify();
             }
             if (nextDistance == 0)
             {
@@ -103,7 +118,9 @@ public class FrontierManager : IWorldSpaceManager
                 this.EventSchedulers[actor].Tick(this.World.CurrentTick);
         }
     }
-
+    static internal FrontierDef GetFrontier(Tier tier)
+        => FrontiersByTier[tier];
+    static internal IEnumerable<FrontierDef> AllFrontiers => FrontiersByTier.Values;
     public FrontierWrapper GetFrontier(Entity entity)
     {
         if (entity is not Actor actor)
@@ -113,10 +130,15 @@ public class FrontierManager : IWorldSpaceManager
         var distance = (int)Math.Ceiling(value);
         if (distance == 0)
             return null;
-        for (int i = 0; i < this.FrontiersByTier.Count; i++)
+        //for (int i = 0; i < this.FrontiersByTier.Count; i++)
+        //{
+        //    if (i < distance && distance <= i + 1)
+        //        return this.FrontiersByTier[i+1];
+        //}
+        for (int i = 0; i < FrontiersByTier.Count; i++)
         {
             if (i < distance && distance <= i + 1)
-                return this.FrontiersByTier[i+1];
+                return this.Frontiers[FrontiersByTier[i + 1]];
         }
         throw new Exception("Actor distance out of bounds");
     }
@@ -142,7 +164,8 @@ public class FrontierManager : IWorldSpaceManager
     void TriggerOffmapEvent(Actor actor)
     {
         var activity = _offmapActivities.SelectRandom(this.World.Random);
-        activity.Tick(actor);
+        var front = this.GetFrontier(actor);
+        activity.Tick(front, actor);
     }
     public FrontierDef PlaceAtRandom(Entity entity)
     {

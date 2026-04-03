@@ -126,6 +126,31 @@ namespace Project1.Framework.UI
         {
             UIManager.DrawStringOutlined(sb, this.Text, position, this.Anchor);
         }
+        static public ButtonNew CreateBigNew(Action leftClickAction, int width, Texture2D graphic, Control topLabel, Control bottomLabel)
+        {
+            var btn = new ButtonNew(width)
+            {
+                AutoSize = false,
+                BackgroundStyle = BackgroundStyle.LargeButton,
+                LeftClickAction = leftClickAction
+            };
+            btn.Width = width;
+            var padding = btn.BackgroundStyle.Left.Width;
+            var picbox = new PictureBox(graphic) { MouseThrough = true, Location = new Vector2(padding, btn.Height / 2), Anchor = new Vector2(0, .5f) };//) { DrawAction = () => block.PaintIcon(Block.Width, Block.Height, variant.Data) });
+
+            topLabel.Location = picbox.TopRight + Vector2.UnitX * padding;
+            topLabel.MouseThrough = true;
+
+            btn.AddControls(picbox, topLabel);
+            if (bottomLabel is not null)
+            {
+                bottomLabel.Location = picbox.BottomRight + Vector2.UnitX * padding;
+                bottomLabel.Anchor = Vector2.UnitY;
+                bottomLabel.MouseThrough = true;
+                btn.AddControls(bottomLabel);
+            }
+            return btn;
+        }
         static public ButtonNew CreateBig(Action leftClickAction, int width, Texture2D graphic, Label topLabel, Label bottomLabel)
         {
             var btn = new ButtonNew(width)

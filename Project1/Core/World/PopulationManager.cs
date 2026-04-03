@@ -174,14 +174,15 @@ namespace Project1.Core.World
             var list = new ListBoxObservable<WorldInhabitantView, ButtonNew>(props =>
             {
                 var npc = props.Actor;
-                var btn = ButtonNew.CreateBig(
+                var btn = ButtonNew.CreateBigNew(
                     //() => SelectionManager.Select(npc),
                     //() => Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([npc])),
                     () => UIManager.ToggleUnique<SelectionDetailsGui>(npc),
                     box.Viewport.Width,
                     npc.RenderIcon(),
                     new Label(() => npc.Npc.FullName) { TextColorFunc = ()=> npc.GetNameplateColor()},
-                    new Label(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}"));
+                    //new Label(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}"));
+                    new LabelNew(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}").InvalidateOn(((FrontierManager)((StaticWorld)npc.World).Space).Notifier));
 
                 // debugging stuff
                 btn.RightClickActionNew = b =>

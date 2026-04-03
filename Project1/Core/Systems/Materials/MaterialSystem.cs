@@ -7,16 +7,22 @@ using System.Linq;
 namespace Project1.Core.Systems.Materials
 {
     [EnsureStaticCtorCall]
-    public class RawMaterialSystem
+    public class MaterialSystem
     {
         internal static readonly Dictionary<MaterialTypeDef, HashSet<MaterialDef>> MaterialsByType = [];
-        static RawMaterialSystem()
+        static readonly Dictionary<int, HashSet<MaterialDef>> MaterialsByTier = [];
+        static MaterialSystem()
         {
-            foreach (var matdef in Def.GetDefs<MaterialDef>())
+            var allmats = Def.GetDefs<MaterialDef>();
+            foreach (var matdef in allmats)
             {
                 if (!MaterialsByType.TryGetValue(matdef.Type, out var list))
                     MaterialsByType[matdef.Type] = list = [];
                 list.Add(matdef);
+                var tier = matdef.Tier;
+                if (!MaterialsByTier.TryGetValue(tier, out var listByTier))
+                    MaterialsByTier[tier] = listByTier = [];
+                listByTier.Add(matdef);
             }
         }
         public static IReadOnlySet<MaterialDef> GetMaterialsByType(MaterialTypeDef typeDef)

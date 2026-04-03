@@ -145,7 +145,8 @@ namespace Project1.Core.Needs
                 box.AddControls(panel);
             }
         }
-
+        public int GetValue(NeedDef need)
+            => this.NeedsNew[need].Value;
         public float GetPercentage(NeedDef need)
             => this.NeedsNew[need].Percentage;
 

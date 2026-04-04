@@ -258,11 +258,14 @@ namespace Project1.Core.Entities
         }
         public IEnumerable<Entity> GetSelfAndChildren()
         {
-            yield return this;
+            // moving this to the end because this is usually called when registering entities to the entity registry
+            // so inventory items must be registered first so clients can resolve their entityrefids
+            //yield return this;
             foreach (var c in this.Components.Values)
                 foreach (var ch in c.GetChildren())
                     foreach (var chch in ch.GetSelfAndChildren())
                         yield return chch;
+            yield return this;
         }
         public Entity Split(int amount)
         {

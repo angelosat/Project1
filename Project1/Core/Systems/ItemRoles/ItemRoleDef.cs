@@ -2,7 +2,7 @@
 using Project1.Core.Entities.Actors;
 using System;
 
-namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
+namespace Project1.Core.Systems.ItemRoles
 {
     public class ItemRoleDef(ItemRoleContextDef context, Def specific) : Def($"{context.LabelReadable}:{specific?.LabelReadable}")// Def($"ItemRole:{context.Name}:{specific.Name}")
     {

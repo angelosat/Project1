@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Project1.Framework.Interfaces;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core;
 using Project1.Core.Entities;
+using Project1.Framework.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 
 namespace Project1.Framework.Serialization
 {
@@ -788,6 +789,18 @@ namespace Project1.Framework.Serialization
         //    }
         //    saveTag.Add(tag);
         //}
+
+        extension(SaveTag tag)
+        {
+            public void Save(string name, ICollection<int> collection)
+            {
+                var list = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Int);
+                foreach (var item in collection)
+                    list.Add(new SaveTag(SaveTag.Types.Int, "", item));
+                tag.Add(list);
+            }
+        }
+        
         public static void Save(this IEnumerable<int> ints, SaveTag save, string name)
         {
             var list = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Int);

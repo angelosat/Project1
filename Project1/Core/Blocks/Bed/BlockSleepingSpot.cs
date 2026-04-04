@@ -17,7 +17,6 @@ namespace Project1.Core
             this.Furniture = FurnitureDefOf.Bed;
             this.BuildProperties.Category = ConstructionCategoryDefOf.Furniture;
             this.Variations.Add(Block.FaceHighlights[-IntVec3.UnitZ]);
-            this.UtilitiesProvided.Add(Utility.Types.Sleeping);
             this.RequiresConstruction = false;
             this.DrawMaterialColor = false;
         }

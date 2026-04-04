@@ -1,5 +1,6 @@
 ﻿using Project1.Framework;
 using Project1.Core.AI.Planners;
+using Project1.Core.Systems.Conversations;
 
 namespace Project1.Core.Needs
 {
@@ -28,7 +29,8 @@ namespace Project1.Core.Needs
         };
         static public readonly NeedDef Social = new("Social", typeof(NeedSocialWorker))
         {
-            CategoryDef = NeedCategoryDef.NeedCategoryRelationships
+            CategoryDef = NeedCategoryDef.NeedCategoryRelationships,
+            Planner = ConversationDefOf.PlannerConvo
         };
 
         static public readonly NeedDef Curiosity = new("Curiosity", typeof(NeedCuriosityWorker))

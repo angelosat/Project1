@@ -12,7 +12,8 @@ namespace Project1.Core.Interactions
         Touching,        // actor just needs to be adjacent
         Exact,           // actor must occupy the exact tile
         Any,             // actor can be anywhere “reasonable”
-        InteractionSpot  // actor must reach a special spot (counter, workstation)
+        InteractionSpot, // actor must reach a special spot (counter, workstation)
+        None             // actor can be anywhere
     }
     public class InteractionDef : Def
     {

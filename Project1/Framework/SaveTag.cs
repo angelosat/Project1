@@ -502,8 +502,16 @@ namespace Project1.Framework
             return new List<Vector3>().Load(this);
         }
         public List<int> LoadListInt(string name)
+            => new List<int>().Load(this[name]);
+        public bool TryLoadListInt(string name, out List<int> list)
         {
-            return new List<int>().Load(this[name]);
+            if (this.TryGetTag(name, out var t))
+            {
+                list = [.. ((List<SaveTag>)this[name].Value).Select(t => (int)t.Value)];
+                return true;
+            }
+            list = null;
+            return false;
         }
         public Vector2 LoadVector2()
         {

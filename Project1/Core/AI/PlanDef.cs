@@ -1,4 +1,5 @@
-﻿using Project1.Core.Interactions;
+﻿using Project1.Core.AI.Behaviors;
+using Project1.Core.Interactions;
 using System;
 
 namespace Project1.Core.AI
@@ -11,7 +12,11 @@ namespace Project1.Core.AI
         public Func<Plan, TargetArgs> GetPrimaryTarget;
         public bool Idle;
         internal InteractionDef Interaction;
-
+        public PlanDef(string name, InteractionDef interaction = null) : base(name)
+        {
+            this.BehaviorClass = typeof(BehaviorExecutePlanNew);
+            this.Interaction = interaction;
+        }
         public PlanDef(string name, Type bhavClass, InteractionDef interaction = null) : base(name)
         {
             this.BehaviorClass = bhavClass;

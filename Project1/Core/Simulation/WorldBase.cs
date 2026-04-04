@@ -71,7 +71,10 @@ namespace Project1.Core.Simulation
         {
             this.EntityRegistry = new(this);
         }
-        
+        internal void RegisterInt(Entity entity)
+        {
+            this.EntityRegistry.Add(entity);
+        }
         public void Register(Entity entity, bool immediate = false)
         {
             //entity.World = this;
@@ -84,8 +87,9 @@ namespace Project1.Core.Simulation
             foreach (var e in toRegister)
             {
                 this.EntityRegistry.Add(e);
+                this.Events.Post(new EntityRegisteredEvent(e, immediate));
             }
-            this.Events.Post(new EntityRegisteredEvent(entity, immediate));
+            //this.Events.Post(new EntityRegisteredEvent(entity, immediate));
         }
         public Entity GetEntity(EntityRefId refId)
         {

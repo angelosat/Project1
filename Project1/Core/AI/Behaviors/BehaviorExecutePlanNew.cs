@@ -24,9 +24,11 @@ namespace Project1.Core.AI.Behaviors
                 InteractionRange.Exact => PathEndMode.Exact,
                 InteractionRange.Any => PathEndMode.Any,
                 InteractionRange.InteractionSpot => PathEndMode.InteractionSpot,
+                InteractionRange.None => null,
                 _ => throw new NotImplementedException(),
             };
-            yield return new BehaviorResolvePath(endMode).FailOnInvalidInteraction(this.Actor, this.Plan);
+            if(endMode is not null)
+                yield return new BehaviorResolvePath(endMode).FailOnInvalidInteraction(this.Actor, this.Plan);
             yield return new BehaviorResolveInteraction();
         }
         int CurrentStepIndex;

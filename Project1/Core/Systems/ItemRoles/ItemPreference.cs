@@ -2,15 +2,14 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
-using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using System;
 
-namespace Project1.Core
+namespace Project1.Core.Systems.ItemRoles
 {
-    public partial class ItemPreferencesManager
-    {
+    //public partial class ItemPreferencesManager
+    //{
       
 
         public struct ItemPreference : ISaveable, ISaveableNewNew<ItemPreference>, IDictionarySyncable<ItemRoleDef, ItemPreference>
@@ -121,5 +120,5 @@ namespace Project1.Core
             public ItemRoleDef GetKey() => this.Role;
             public bool ShouldCopy() => this.Item is not null;
         }
-    }
+    //}
 }

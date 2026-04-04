@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Project1.Framework;
 
-namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
+namespace Project1.Core.Systems.ItemRoles
 {
     [EnsureStaticCtorCall]
     public class ItemRoleDefOf

@@ -12,6 +12,7 @@ using Project1.Core.Networking;
 using Project1.Core.Networking.Simulation;
 using Project1.Core.Simulation.Lighting;
 using Project1.Core.Simulation.Physics;
+using Project1.Core.Systems.Conversations;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Stockpiles;
@@ -99,7 +100,9 @@ public abstract class MapBase : Inspectable
     public RegionManager Regions;
     public StockpileManager Stockpiles;
     public HaulingManager Hauling;
+    //public ConversationSystem Conversations;
     protected EntityTrackerPerCell EntityTracker;
+    internal List<MapComponent> Comps = [];
     internal List<SimulationSystem> SimulationSystems = [];
     internal CollisionSystem Collisions;
     public float Sunlight;
@@ -242,8 +245,7 @@ public abstract class MapBase : Inspectable
         var global = Cell.GetOrigin(this, vec);
         var cell = this.GetCell(global);
         var block = cell.Block;
-        foreach (var u in block.UtilitiesProvided)
-            this.Town.RemoveUtility(u, global);
+       
         var blockentity = this.GetBlockEntity(global);
 
         var parts = cell.GetParts(global);

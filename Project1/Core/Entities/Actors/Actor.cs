@@ -17,6 +17,7 @@ using Project1.Core.Rooms;
 using Project1.Core.Simulation;
 using Project1.Core.Skills;
 using Project1.Core.Stats;
+using Project1.Core.Systems.ItemRoles;
 using Project1.Core.Systems.Quests.Legacy;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators;
@@ -87,7 +88,7 @@ namespace Project1.Core.Entities.Actors
         }
         
         public AILog Log => AIState.GetState(this).Log;
-        public ItemPreferencesManager ItemPreferences => this.AI.State.ItemPreferences;
+        public ItemPreferenceManager ItemPreferences => this.AI.State.ItemPreferences;
 
         public Room AssignedRoom => this.Town?.RoomManager.FindRoom(this.RefId); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null
         internal Workplace Workplace => this.Town?.ShopManager.GetShop(this); // replaced this.town with this.net.map.town because when the actor leaves the map, this.town returns null

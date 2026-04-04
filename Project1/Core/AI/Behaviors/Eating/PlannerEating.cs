@@ -33,10 +33,5 @@ namespace Project1.Core.AI.Behaviors.Eating
 
             return new Plan(PlanDefOf.Eating, carried);
         }
-        
-        private static IOrderedEnumerable<IntVec3> FindEatingPlaces(Actor actor)
-        {
-            return actor.Map.Town.GetUtilities(Utility.Types.Eating).Where(p => actor.CanReserve(p)).OrderBy(p => Vector3.DistanceSquared(p, actor.Global));
-        }
     }
 }

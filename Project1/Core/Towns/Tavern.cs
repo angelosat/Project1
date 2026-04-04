@@ -6,7 +6,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Rooms;
 using Project1.Core.Towns.Duties;
-using Project1.Core.Towns.Shops.Blocks;
+using Project1.Core.Towns.Shops;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
@@ -46,7 +46,7 @@ namespace Project1.Core.Towns
                 var actor = map.World.Get<Actor>(p.ActorID);
                 return
                     p.GetJob(JobInnKeeper).Enabled &&
-                    actor.AI.State.Behavior is TaskBehaviorInnKeeper &&
+                    //actor.AI.State.Behavior is TaskBehaviorInnKeeper &&
                     actor.CellIfSpawned.Value == map.GetBehindOfBlock(this.Counter.Value);
             });
         }

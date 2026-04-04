@@ -22,13 +22,11 @@ namespace Project1.Core.Blocks
             this.Furniture = FurnitureDefOf.Table;
             this.BuildProperties.Category = ConstructionCategoryDefOf.Furniture;
             this.Ingredient = new Ingredient(amount: 4).IsBuildingMaterial();
-            this.UtilitiesProvided.Add(Utility.Types.Eating);
         }
 
         internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
         {
             base.OnPlaced(map, global, material, data, variation, orientation, notify);
-            map.Town.AddUtility(Utility.Types.Eating, global);
         }
       
         public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Microsoft.Xna.Framework.Vector4 screenBounds, Microsoft.Xna.Framework.Color sunlight, Microsoft.Xna.Framework.Vector4 blocklight, Microsoft.Xna.Framework.Color fog, Microsoft.Xna.Framework.Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)

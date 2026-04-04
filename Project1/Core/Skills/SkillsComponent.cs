@@ -60,10 +60,10 @@ namespace Project1.Core.Skills
             box.AddControls(GuiList);
         }
         internal Skill GetSkill(SkillDef skill)
-        {
-            return this.SkillsNew[skill];
-        }
-        
+            => this.SkillsNew[skill];
+        internal int GetLevel(SkillDef skill)
+            => this.SkillsNew[skill].Level;
+
         public SkillsComponent Randomize()
         {
             var range = 10;

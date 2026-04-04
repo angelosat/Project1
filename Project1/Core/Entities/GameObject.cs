@@ -648,6 +648,21 @@ namespace Project1.Core.Entities
             w.Write(this.StackSize);
             this.Components.Write(w);
         }
+        public static Entity Create(IDataReader r, WorldBase entityResolver)
+        {
+            string defName = r.ReadString();
+            var def = Core.Def.GetDef<ItemDef>(defName);
+            var profile = Core.Def.GetDef(r.ReadString());
+            //var def = r.ReadDef<ItemDef>();
+            //var profile = r.ReadDef<Def>();
+            var obj = def.Create(profile);
+            obj.World = entityResolver;
+            obj.RefId = r.ReadInt32();
+            var amount = r.ReadInt32();
+            obj._stackSize = amount < 0 ? def.StackCapacity : amount;
+            obj.Components.Read(r);
+            return obj;
+        }
         public static Entity Create(IDataReader r)
         {
             string defName = r.ReadString();
@@ -712,7 +727,28 @@ namespace Project1.Core.Entities
             data.Add(((int)this.RefId).Save("InstanceID"));
             return data;
         }
+        /// <summary>
+        /// Creates an object from a savetag node.
+        /// </summary>
+        /// <param name="tag">A tag with a list of tags as its value.</param>
+        /// <returns></returns>
+        internal static GameObject Load(SaveTag tag, WorldBase entityResolver)
+        {
+            tag.TryGetTagValueOrDefault("Def", out string defName);
+            var def = Core.Def.GetDef<ItemDef>(defName);
+            Def profile = null;
+            if (tag.TryGetTagValueOrDefault("ProfileID", out string profileName)) profile = Core.Def.GetDef(profileName);
 
+            if (def is null)
+                return null;
+            var obj = def.Create(profile);
+            obj.World = entityResolver; // to resolve child entities (like inventory items saved as entityrefids)
+            tag.TryGetTagValueOrDefault("InstanceID", out obj.RefId);
+            tag.TryGetTagValue<int>("Stack", v => obj._stackSize = v);
+            obj.Components.Load(tag["Components"]);
+            obj.ResetName();
+            return obj;
+        }
         /// <summary>
         /// Creates an object from a savetag node.
         /// </summary>

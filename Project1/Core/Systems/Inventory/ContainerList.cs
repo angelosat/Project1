@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Screens;
 using Project1.Core.UI;
@@ -98,11 +99,15 @@ namespace Project1.Core.Systems.Inventory
         internal void AddInternal(Entity item)
         {
             this.Contents.Add(item);
+            item.Container = this;
             this.ItemAdded?.Invoke(item);
         }
         internal void RemoveInternal(Entity item)
         {
-            this.Contents.Remove(item);
+            if (item.Container != this)
+                throw new Exception();
+            if (this.Contents.Remove(item))
+                item.Container = null;
             this.ItemRemoved ?.Invoke(item);
         }
         public void Clear()
@@ -144,44 +149,95 @@ namespace Project1.Core.Systems.Inventory
         {
             w.Write(this.Contents.Count);
             foreach (var o in this.Contents)
-                o.Write(w);
+                w.Write(o.RefId);
         }
         public ContainerList Read(IDataReader r)
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                var obj = GameObject.Create(r) as Entity;
+                var id = r.ReadEntityRefId();
+                var obj = this.Parent.World.Get<Entity>(id);
                 this.Contents.Add(obj);
                 obj.Container = this;
             }
             return this;
         }
-        internal void Instantiate(Action<GameObject> instantiator)
-        {
-            foreach (var o in this.Contents)
-                instantiator(o);
-        }
+
         public SaveTag Save(string name = "")
         {
             var save = new SaveTag(SaveTag.Types.Compound, name);
-            var listtag = new SaveTag(SaveTag.Types.List, "Contents", SaveTag.Types.Compound);
-            foreach (var i in this.Contents)
-                listtag.Add(i.Save());
-            save.Add(listtag);
+            //var listtag = new SaveTag(SaveTag.Types.List, "Contents", SaveTag.Types.Compound);
+            //foreach (var i in this.Contents)
+            //    listtag.Add(i.Save());
+            //save.Add(listtag);
+            save.Save("Contents", this.Contents.Select(e => e.RefId).ToList());
+            //this.Contents.Select(e => (int)e.RefId).ToList().Save()
             return save;
         }
         public ISaveable Load(SaveTag tag)
         {
-            //return this; // added this to reset inventory contents of every entity to do some work that will break existing items
-            var itemList = tag["Contents"].Value as List<SaveTag>;
-            foreach (var itemTag in itemList)
-                if(GameObject.Load(itemTag) is Entity obj)
+            if (tag.TryLoadListInt("Contents", out var list))
+            {
+                var items = this.Parent.World.GetEntities(list);
+                foreach (var i in items)
                 {
-                    this.Contents.Add(obj);
-                    obj.Container = this;
+                    this.Contents.Add(i);
+                    i.Container = this;
                 }
+            }
+            //var itemList = tag["Contents"].Value as List<SaveTag>;
+            //foreach (var itemTag in itemList)
+            //    if (GameObject.Load(itemTag) is Entity obj)
+            //    {
+            //        this.Contents.Add(obj);
+            //        obj.Container = this;
+            //    }
             return this;
+        }
+        //public void Write(IDataWriter w)
+        //{
+        //    w.Write(this.Contents.Count);
+        //    foreach (var o in this.Contents)
+        //        o.Write(w);
+        //}
+        //public ContainerList Read(IDataReader r)
+        //{
+        //    var count = r.ReadInt32();
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var obj = GameObject.Create(r) as Entity;
+        //        this.Contents.Add(obj);
+        //        obj.Container = this;
+        //    }
+        //    return this;
+        //}
+
+        //public SaveTag Save(string name = "")
+        //{
+        //    var save = new SaveTag(SaveTag.Types.Compound, name);
+        //    var listtag = new SaveTag(SaveTag.Types.List, "Contents", SaveTag.Types.Compound);
+        //    foreach (var i in this.Contents)
+        //        listtag.Add(i.Save());
+        //    save.Add(listtag);
+        //    return save;
+        //}
+        //public ISaveable Load(SaveTag tag)
+        //{
+        //    //return this; // added this to reset inventory contents of every entity to do some work that will break existing items
+        //    var itemList = tag["Contents"].Value as List<SaveTag>;
+        //    foreach (var itemTag in itemList)
+        //        if(GameObject.Load(itemTag) is Entity obj)
+        //        {
+        //            this.Contents.Add(obj);
+        //            obj.Container = this;
+        //        }
+        //    return this;
+        //}
+        internal void Instantiate(Action<GameObject> instantiator)
+        {
+            foreach (var o in this.Contents)
+                instantiator(o);
         }
         public override IEnumerable<(string item, object value)> Inspect()
         {

@@ -1,5 +1,5 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
+using Project1.Core.Systems.ItemRoles;
 using System.Collections.Generic;
 using System.Linq;
 

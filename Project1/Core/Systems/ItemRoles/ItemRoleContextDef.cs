@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
+namespace Project1.Core.Systems.ItemRoles
 {
     public class ItemRoleContextDef(string name, Type contextType, Type workerType) : Def(name)
     {

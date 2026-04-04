@@ -100,8 +100,12 @@ public class StaticMap : MapBase, ITooltippable
         this.Stockpiles = new(this);
         this.Hauling = new(this);
         this.EntityTracker = new(this);
+        //this.Conversations = new(this);
         this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
         this.ParticleManager = new Graphics.Particles.ParticleManager(this);
+
+        //this.Comps.AddRange(this.Conversations);
+
         this.SimulationSystems.Add(new BlockLifecycleSystem(this));
         this.SimulationSystems.Add(new EntityLifecycleSystem(this));
         this.SimulationSystems.Add(new BehaviorSystem(this));
@@ -171,9 +175,15 @@ public class StaticMap : MapBase, ITooltippable
     {
         this.AddTime();
         this.Regions.Update();
-        TickChunks();
-        TickSystems();
+        this.TickChunks();
+        this.TickComps();
+        this.TickSystems();
         this.Town.Tick();
+    }
+    private void TickComps()
+    {
+        foreach (var comp in this.Comps)
+            comp.Tick();
     }
 
     private void TickSystems()

@@ -70,7 +70,7 @@ namespace Project1.Core.Entities
             var list = tag.Value as List<SaveTag>;
             foreach (var entityTag in list)
             {
-                var obj = GameObject.Load(entityTag) as Entity ?? throw new NullReferenceException();
+                var obj = GameObject.Load(entityTag, this.World) as Entity ?? throw new NullReferenceException();
                 obj.World = this.World;
                 this.Add(obj);
             }
@@ -86,8 +86,9 @@ namespace Project1.Core.Entities
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                var entity = GameObject.Create(r) as Entity;
-                entity.World = this.World;
+                //var entity = GameObject.Create(r) as Entity;
+                //entity.World = this.World;
+                var entity = GameObject.Create(r, this.World);
                 this.Add(entity);
             }
         }

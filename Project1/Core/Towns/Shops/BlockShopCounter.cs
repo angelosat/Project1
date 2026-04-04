@@ -7,7 +7,7 @@ using Project1.Framework;
 using Project1.Framework.Graphics;
 using System.Linq;
 
-namespace Project1.Core.Towns.Shops.Blocks
+namespace Project1.Core.Towns.Shops
 {
     class BlockShopCounter : Block//, IBlockWorkstation
     {

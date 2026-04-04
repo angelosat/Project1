@@ -6,7 +6,7 @@ using Project1.Core.Rooms;
 using Project1.Framework.Graphics;
 using System.Linq;
 
-namespace Project1.Core.Towns.Shops.Blocks
+namespace Project1.Core.Towns.Shops
 {
     class BlockShopShelf : Block//, IBlockWorkstation
     {
@@ -33,6 +33,5 @@ namespace Project1.Core.Towns.Shops.Blocks
         {
             this.InputStockpile = stockpileId;
         }
-
     }
 }

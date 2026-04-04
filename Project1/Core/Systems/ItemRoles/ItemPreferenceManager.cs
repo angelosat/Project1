@@ -4,7 +4,6 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -14,10 +13,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core
+namespace Project1.Core.Systems.ItemRoles
 {
     [EnsureStaticCtorCall]
-    public partial class ItemPreferencesManager : Inspectable, ISaveable, ISerializableNew<ItemPreferencesManager>
+    public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
     {
         static List<ItemRoleDef> _flatItemRolesList;
         static readonly Dictionary<ItemRoleContextDef, List<ItemRoleDef>> ContextToItemRolesMap = [];
@@ -42,7 +41,7 @@ namespace Project1.Core
             this.alreadyQueued.Remove(entity.RefId);
             return entity;
         }
-        public ItemPreferencesManager(Actor actor)
+        public ItemPreferenceManager(Actor actor)
         {
             this.Actor = actor;
         }
@@ -696,12 +695,12 @@ namespace Project1.Core
         }
         #endregion
         #region ISerializableNew implementations
-        public static ItemPreferencesManager Create(IDataReader r) => new ItemPreferencesManager().Read(r);
-        public ItemPreferencesManager()
+        public static ItemPreferenceManager Create(IDataReader r) => new ItemPreferenceManager().Read(r);
+        public ItemPreferenceManager()
         {
             
         }
-        public ItemPreferencesManager Read(IDataReader r)
+        public ItemPreferenceManager Read(IDataReader r)
         {
             r.ReadValuesWithInferredKeys(this.PrefsInternal, r => r.Role);
             this.BuildItemsToPrefsCache();

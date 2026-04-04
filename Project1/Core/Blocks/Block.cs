@@ -278,7 +278,6 @@ namespace Project1.Core.Blocks
         //public ConstructionProfile ConstructionProfile;
         public BuildProperties BuildProperties = new();
         public FurnitureDef Furniture;
-        public List<Utility.Types> UtilitiesProvided = new();
         /// <summary>
         /// The index to the block's variation is stored within a cell. Add variations to this list so they can be picked at random whenever a block is placed.
         /// </summary>

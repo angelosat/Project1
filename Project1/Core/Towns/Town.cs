@@ -10,6 +10,7 @@ using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Rooms;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Conversations;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Quests;
 using Project1.Core.Towns.Constructions;
@@ -123,6 +124,7 @@ namespace Project1.Core.Towns
         public FurnitureTracker Furniture;
         public OwnershipManager Ownership;
         public TownReputationComp Reputation;
+        public ConversationSystem Conversations;
 
         public List<TownComponent> TownComponents = [];
 
@@ -131,7 +133,6 @@ namespace Project1.Core.Towns
 
         public IEntityProvider Entities => this.Map.World;
 
-        public Dictionary<Utility.Types, HashSet<IntVec3>> TownUtilitiesNew = new();
         public Dictionary<EntityRefId, ITownServiceTransaction> OpenTransactions = [];
 
         public Town(MapBase map)
@@ -155,8 +156,9 @@ namespace Project1.Core.Towns
             this.Ownership = new(this);
             this.Reputation = new(this);
             this.QuestManagerNew = new(this);
+            this.Conversations = new(this);
 
-            this.TownComponents.AddRange([
+            this.TownComponents.AddRange(
                 this.ZoneManager,
                 this.GrowingManager,
                 this.ConstructionsManager,
@@ -173,12 +175,9 @@ namespace Project1.Core.Towns
                 this.Storage,
                 this.Furniture,
                 this.Ownership,
-                this.Reputation
-            ]);
-            
-            var utilities = (Utility.Types[])Enum.GetValues(typeof(Utility.Types));
-            foreach(var u in utilities)
-                this.TownUtilitiesNew[u] = new HashSet<IntVec3>();
+                this.Reputation,
+                this.Conversations
+            );
         }
 
         public void Update()
@@ -186,29 +185,7 @@ namespace Project1.Core.Towns
             foreach (var comp in this.TownComponents)
                 comp.Update();
         }
-        public void AddUtility(Utility.Types type, Vector3 global)
-        {
-            this.TownUtilitiesNew[type].Add(global);
-        }
-        public void RemoveUtility(Utility.Types type, Vector3 global)
-        {
-            if (!this.TownUtilitiesNew[type].Remove(global))
-            {
-            }
-            if (this.TownUtilitiesNew.Any(ut => ut.Value.Contains(global)))
-                throw new Exception();
-        }
-        public IEnumerable<IntVec3> GetUtilities(Utility.Types type)
-        {
-            return this.TownUtilitiesNew[type];
-        }
-        public bool HasUtility(Vector3 global, Utility.Types utility)
-        {
-            if (this.TownUtilitiesNew.TryGetValue(utility, out var list))
-                return list.Contains(global);
-            return false;
-        }
-
+       
         internal void AddMember(Actor actor)
         {
             if (!actor.HasComponent<AIComponent>())
@@ -218,6 +195,7 @@ namespace Project1.Core.Towns
             RoleMetaDefOf.TownMember.AssignTo(actor);
             actor.Town = this;
             //actor.Net.Report($"{actor.Name} has joined the town!");
+            this.DutiesManager.Add(actor);
             actor.AI.State.Log.Write("I joined the town!");
         }
 
@@ -225,6 +203,7 @@ namespace Project1.Core.Towns
         {
             if (actor.HasComponent<AIComponent>())
             {
+                this.DutiesManager.Remove(actor);
                 this.Members.Remove(actor);
                 this.Map.Events.Post(new MemberRemovedEvent(actor));
                 actor.Town = null;
@@ -285,18 +264,6 @@ namespace Project1.Core.Towns
 
             SaveAgents(tag);
 
-            var utilitiesTag = new SaveTag(SaveTag.Types.List, "Utilities", SaveTag.Types.Compound);
-            
-            foreach (var t in this.TownUtilitiesNew)
-            {
-                var typeTag = new SaveTag(SaveTag.Types.Compound);
-                typeTag.Add(new SaveTag(SaveTag.Types.Int, "Type", (int)t.Key));
-                var positionsTag = t.Value.ToList().Save("Positions");
-                typeTag.Add(positionsTag);
-                utilitiesTag.Add(typeTag);
-            }
-            tag.Add(utilitiesTag);
-
             return tag;
         }
 
@@ -320,20 +287,6 @@ namespace Project1.Core.Towns
                 }
            
             LoadAgents(save);
-
-            if (save.TryGetTagValueOrDefault("Utilities", out List<SaveTag> utilitiesTag))
-            {
-                foreach (var tag in utilitiesTag)
-                {
-                    var utilityType = (Utility.Types)(int)tag["Type"].Value;
-                    var positionList = new List<IntVec3>().Load(tag["Positions"].Value as List<SaveTag>);
-                    var hash = new HashSet<IntVec3>(positionList);
-                    this.TownUtilitiesNew[utilityType] = hash;
-                }
-            }
-
-            //foreach (var c in this.TownComponents)
-            //    c.ResolveReferences();
         }
 
         private void LoadAgents(SaveTag save)
@@ -359,9 +312,6 @@ namespace Project1.Core.Towns
             foreach (var a in this.Members)
                 w.Write(a.RefId);
 
-            foreach (var ut in Utility.All())
-                w.Write(this.TownUtilitiesNew[ut].ToList());
-
             this.DutiesManager.Write(w);
         }
         public void Read(IDataReader r)
@@ -371,12 +321,7 @@ namespace Project1.Core.Towns
 
             var acount = r.ReadInt32();
             for (int i = 0; i < acount; i++)
-            {
                 this.Members.Add(this.Map.World.Get<Actor>(r.ReadInt32()));
-            }
-
-            foreach (var ut in Utility.All())
-                this.TownUtilitiesNew[ut] = [.. r.ReadListVector3()];
 
             this.DutiesManager.Read(r);
         }

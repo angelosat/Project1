@@ -53,7 +53,6 @@ namespace Project1.Core
             this.Parts = new AtlasDepthNormals.Node.Token[2][];
             this.Parts[0] = this.TopParts;
             this.Parts[1] = this.BottomParts;
-            this.UtilitiesProvided.Add(Utility.Types.Sleeping);
             this.Size = new(1, 2, 1);
         }
         public override bool IsRoomBorder => false;
@@ -135,7 +134,6 @@ namespace Project1.Core
 
             var entity = new BlockBedEntity(this.BlockDef, global);
             map.AddBlockEntity(entity);
-            map.Town.AddUtility(Utility.Types.Sleeping, top);
         }
         
         public override bool IsValidPosition(MapBase map, IntVec3 global, int orientation)

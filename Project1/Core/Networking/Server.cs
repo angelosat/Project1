@@ -533,6 +533,12 @@ namespace Project1.Core.Networking
             entity.SetStackSize(entity.StackMax);
             entity.Randomize(Random);
             target.Map = Instance.Map;
+
+            // register child entities first otherwise the entityrefids will resolve to null when replicating on clients
+            //foreach(var child in entity.GetSelfAndChildren())
+            //{
+            //    this.Map.World.Register(child, immediate: true);
+            //}
             this.Map.World.Register(entity, immediate: true);
 
             switch (target.Type)

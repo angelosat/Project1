@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 
-namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
+namespace Project1.Core.Systems.ItemRoles
 {
     abstract class ItemRoleWorker
     {

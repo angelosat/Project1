@@ -8,6 +8,7 @@ using Project1.Core.AI.Reservations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Pathing;
+using Project1.Core.Systems.ItemRoles;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
@@ -31,7 +32,7 @@ namespace Project1.Core.AI
         public Plan ForcedTask;
         public AILog Log;
         public bool InSync;
-        public ItemPreferencesManager ItemPreferences;
+        public ItemPreferenceManager ItemPreferences;
         public int JobFindTimer;
         public Knowledge Knowledge;
         public BehaviorExecutePlan LastBehavior;
@@ -52,7 +53,7 @@ namespace Project1.Core.AI
         public AIState(Actor actor)
         {
             this.Owner = actor;
-            this.ItemPreferences = new ItemPreferencesManager(actor);
+            this.ItemPreferences = new ItemPreferenceManager(actor);
             this.Log = new(actor);
         }
         private void Enqueue(PlanExecutor bhav)

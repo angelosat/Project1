@@ -123,8 +123,8 @@ namespace Project1.Core.Networking
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var obj = GameObject.Create(r);
-            client.World.Register(obj);
+            var obj = GameObject.Create(r, client.World);
+            client.World.RegisterInt(obj);
         }
         private static void SendEntityDisposed(EntityDisposedEvent @event)
         {

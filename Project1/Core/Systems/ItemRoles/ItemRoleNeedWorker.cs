@@ -3,7 +3,7 @@ using Project1.Core.Needs;
 using Project1.Core.Entities.Actors;
 using System.Linq;
 
-namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
+namespace Project1.Core.Systems.ItemRoles
 {
     class ItemRoleNeedWorker : ItemRoleWorker
     {

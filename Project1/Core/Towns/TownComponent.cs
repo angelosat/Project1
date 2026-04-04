@@ -19,6 +19,7 @@ namespace Project1.Core.Towns
     {
         public Town Town;
         public MapBase Map => this.Town.Map;
+        public WorldBase World => this.Map.World;
         public NetEndpoint Net => this.Map.Net;
         public override string LabelReadable => this.Name;
         const float UpdateFrequency = 1; // per second

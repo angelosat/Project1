@@ -14,7 +14,6 @@ using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Shops;
-using Project1.Core.Towns.Shops.Blocks;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.UI;
 using Project1.Framework;

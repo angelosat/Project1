@@ -4,7 +4,7 @@ using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Tools;
 
-namespace Project1.Core.Towns.AI.Behaviors.ItemEvaluators.ItemRoles
+namespace Project1.Core.Systems.ItemRoles
 {
     sealed class ItemRoleToolWorker : ItemRoleWorker
     {

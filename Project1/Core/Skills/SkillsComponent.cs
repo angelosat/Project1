@@ -8,6 +8,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Entities;
 using Project1.Framework.Helpers;
 using Project1.Core.Entities.Actors;
+using System;
 
 namespace Project1.Core.Skills
 {
@@ -113,8 +114,16 @@ namespace Project1.Core.Skills
         }
 
         internal void SetValue(SkillDef skill, int level, int xp)
+            => this[skill].SetValue(level, xp);
+            
+        internal void ApplyXp(SkillDef skill, int xp)
         {
-            this[skill].SetValue(level, xp);
+            var actor = this.Owner as Actor;
+            var s = this.SkillsNew[skill];
+            var result = s.AwardInt(xp);
+            actor.Map.Events.Post(new SkillAdjustedEvent(actor, s));
+            if(result == Skill.SkillXpAwardResult.LevelUp)
+                actor.Map.Events.Post(new SkillLevelUpEvent(actor, s));
         }
 
         public new class Spec : Spec<SkillsComponent>

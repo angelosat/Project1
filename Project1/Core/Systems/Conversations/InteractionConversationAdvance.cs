@@ -1,11 +1,10 @@
-﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Interactions;
+﻿using Project1.Core.Interactions;
 
 namespace Project1.Core.Systems.Conversations;
 
 internal sealed class InteractionContext_Conversation : InteractionContext
 {
-    internal ConversationRuntime Conversation => field ??= this.Actor.Map.Town.Conversations.GetConverationByActor(this.Actor);
+    internal ConversationRuntime Conversation => field ??= this.Actor.Map.Town.Conversations.GetConversationByActor(this.Actor);
 }
 internal class InteractionConversationReceive : InteractionLogic
 {
@@ -14,9 +13,16 @@ internal class InteractionConversationReceive : InteractionLogic
     {
         var typedCtx = (InteractionContext_Conversation)i.Context;
         var convo = typedCtx.Conversation;
+        if (convo is null)
+            return true;
         if (convo.CurrentTalker == i.Actor.RefId)
             return true;
         return false;
+        //var typedCtx = (InteractionContext_Conversation)i.Context;
+        //var convo = typedCtx.Conversation;
+        //if (convo.CurrentTalker == i.Actor.RefId)
+        //    return true;
+        //return false;
     }
 }
 internal class InteractionConversationAdvance : InteractionLogic

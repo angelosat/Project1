@@ -3,6 +3,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Needs;
 using Project1.Core.Skills;
 using Project1.Core.Towns;
+using Project1.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,10 +53,15 @@ public class ConversationSystem : TownComponent
     => this.ActiveConversationsByInitiator.TryGetValue(actor.RefId, out convo);
     internal bool TryGetConversationByTarget(Actor actor, out ConversationRuntime convo)
         => this.ActiveConversationsByTarget.TryGetValue(actor.RefId, out convo);
-    internal ConversationRuntime GetConverationByTarget(Actor actor)
+    internal ConversationRuntime GetConversationByTarget(Actor actor)
         => this.ActiveConversationsByTarget[actor.RefId];
-    internal ConversationRuntime GetConverationByActor(Actor actor)
-       => this.ActiveConversationsByActor[actor.RefId];
+    internal ConversationRuntime GetConversationByActor(Actor actor)
+        //=> this.ActiveConversationsByActor[actor.RefId];
+    {
+        if (this.ActiveConversationsByActor.TryGetValue(actor.RefId, out var convo))
+            return convo;
+        return null;
+    }
     public ConversationSystem(Town town) : base(town)
     {
         var map = town.Map;
@@ -86,6 +92,7 @@ public class ConversationSystem : TownComponent
             this.ActiveConversationsByActor.Remove(convo.Target);
             this._availableActors.Add(convo.Initiator);
             this._availableActors.Add(convo.Target);
+            $"{this.World.Net} convo between {convo.Initiator} and {convo.Target} finished and removed".ToConsole();
         }
     }
 
@@ -115,7 +122,8 @@ public class ConversationSystem : TownComponent
         var talker = this.World.Get<Actor>(convo.CurrentTalker);
         var receiver = this.World.Get<Actor>(convo.CurrentReceiver);
         var talkerSkill = talker.Skills.GetLevel(SkillDefOf.Social);
-        receiver.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, talkerSkill);
+        receiver.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, talkerSkill + 10);
+        talker.Skills.ApplyXp(SkillDefOf.Social, talkerSkill);
         convo.CycleTalker();
     }
 }

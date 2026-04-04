@@ -416,12 +416,12 @@ namespace Project1.Core.UI.Hud
         {
             this.BoxOrderButtons.ClearControls();
             this.ActionsAdded.Clear();
-            //Client.Instance.Map.Town.Select(null, this);
             this.RefreshOrderButtons();
         }
         void AddTabAction(string label, Action action, Color col)
         {
-            this.BoxTabs.AddControlsLineWrap([new Button(label) { LeftClickAction = action, BackgroundColor = col * .5f }], this.PanelInfo.Width);
+            //this.BoxTabs.AddControlsLineWrap([new Button(label) { LeftClickAction = action, BackgroundColor = col * .5f }], this.PanelInfo.Width);
+            this.BoxTabs.AddControlsLineWrap([new Button(label) { LeftClickAction = action, BackgroundColor = col * .5f }]);
         }
         public void AddTabAction(string label, Action action)
         {

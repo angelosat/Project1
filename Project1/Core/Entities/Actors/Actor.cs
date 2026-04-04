@@ -19,6 +19,7 @@ using Project1.Core.Skills;
 using Project1.Core.Stats;
 using Project1.Core.Systems.ItemRoles;
 using Project1.Core.Systems.Quests.Legacy;
+using Project1.Core.Systems.Relationships;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators;
 using Project1.Core.Towns.Duties;
@@ -48,6 +49,7 @@ namespace Project1.Core.Entities.Actors
         public AIComponent AI => field ??= this.GetComponent<AIComponent>();
 
         internal PersonalityComponent Personality => field ??= this.GetComponent<PersonalityComponent>();
+        internal RelationshipsComp Relationships => field ??= this.GetComponent<RelationshipsComp>();
 
         [InspectorHidden]
         public Skill this[SkillDef skill] => this.Skills.GetSkill(skill);
@@ -275,6 +277,7 @@ namespace Project1.Core.Entities.Actors
             yield return ("Gear", typeof(InventoryUI));
             yield return ("Stats", typeof(StatsGuiNew));
             yield return ("Personality", typeof(PersonalityUI));
+            yield return ("Relationships", typeof(RelationshipsCompGui));
         }
         public bool CanOperate(TargetArgs target)
         {

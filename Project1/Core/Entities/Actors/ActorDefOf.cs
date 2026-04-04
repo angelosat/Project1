@@ -59,7 +59,8 @@ namespace Project1.Core.Entities.Actors
                 EntityCompDefOf.Skills,
                 EntityCompDefOf.Gear,
                 EntityCompDefOf.Personality,
-                EntityCompDefOf.AI
+                EntityCompDefOf.AI,
+                EntityCompDefOf.Relationships
             ]
         };
 

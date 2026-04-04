@@ -71,8 +71,9 @@ namespace Project1.Core.Entities
             var compData = tag.Value as Dictionary<string, SaveTag>;
             foreach (var comp in this._inner.Values)
             {
-                var data = compData[comp.CompDef.Name];
-                comp.Load(this._owner, data);
+                //var data = compData[comp.CompDef.Name];
+                if (compData.TryGetValue(comp.CompDef.Name, out var data))
+                    comp.Load(this._owner, data);
             }
         }
         public void CreateAndResolve(ItemDef def)

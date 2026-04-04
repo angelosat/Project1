@@ -115,15 +115,17 @@ public class ConversationSystem : TownComponent
 
     internal void Advance(Actor actor)
     {
-       
         var convo = this.ActiveConversationsByActor[actor.RefId];
         if (convo.CurrentTalker != actor.RefId)
             throw new Exception();
         var talker = this.World.Get<Actor>(convo.CurrentTalker);
         var receiver = this.World.Get<Actor>(convo.CurrentReceiver);
         var talkerSkill = talker.Skills.GetLevel(SkillDefOf.Social);
-        receiver.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, talkerSkill + 10);
-        talker.Skills.ApplyXp(SkillDefOf.Social, talkerSkill);
+        var delta = talkerSkill;
+        receiver.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, delta + 10);
+        talker.Skills.ApplyXp(SkillDefOf.Social, delta);
+        talker.Relationships.ApplyDelta(receiver, delta);
+        receiver.Relationships.ApplyDelta(talker, delta);
         convo.CycleTalker();
     }
 }

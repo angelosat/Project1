@@ -1,22 +1,23 @@
-﻿using Project1.Framework;
-using Project1.Core.AI;
+﻿using Project1.Core.AI;
+using Project1.Core.Animations;
 using Project1.Core.Attributes;
 using Project1.Core.Components;
-using Project1.Core.Entities.Stats;
-using Project1.Core.Graphics.Particles;
-using Project1.Core.Legacy.Crafting;
-using Project1.Core.Resources;
-using Project1.Core.Simulation.Physics;
-using Project1.Core.Gear;
-using Project1.Core.Skills;
-using Project1.Core.Interactions;
-using Project1.Core.Animations;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
+using Project1.Core.Gear;
+using Project1.Core.Graphics.Particles;
+using Project1.Core.Interactions;
+using Project1.Core.Legacy.Crafting;
 using Project1.Core.Mood;
 using Project1.Core.Needs;
-using Project1.Core.Systems.Tools;
-using Project1.Core.Systems.Plants;
+using Project1.Core.Resources;
+using Project1.Core.Simulation.Physics;
+using Project1.Core.Skills;
 using Project1.Core.Systems.Inventory;
+using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Relationships;
+using Project1.Core.Systems.Tools;
+using Project1.Framework;
 
 namespace Project1.Core.Entities
 {
@@ -55,6 +56,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Equip = new("Equip", typeof(EquipComponent));
         public static readonly EntityCompDef Particles = new("Particles", typeof(ParticlesComponent));
         public static readonly EntityCompDef Tree = new("Tree", typeof(TreeComponent));
+        public static readonly EntityCompDef Relationships = new("Relationships", typeof(RelationshipsComp));
         static EntityCompDefOf()
         {
             Def.Register(typeof(EntityCompDefOf));

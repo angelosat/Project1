@@ -1,5 +1,6 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors.NodeTypes;
+using Project1.Core.AI.Personality;
 using Project1.Core.Attributes;
 using Project1.Core.Gear;
 using Project1.Core.Needs;

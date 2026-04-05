@@ -3,6 +3,7 @@ using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Conversation;
 using Project1.Core.AI.Planners;
+using Project1.Core.AI.Personality;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Attributes;
 using Project1.Core.Blocks;
@@ -332,7 +333,7 @@ namespace Project1.Core.Entities.Actors
         internal int GetHaulStackLimitFromEndurance(ItemDef def)
         {
             var maxHaulWeight = StatDefOf.MaxHaulWeight.CalculateFor(this);
-            var activityLevel = this.GetTrait(TraitDefOf.Activity)?.Normalized ?? 0;
+            var activityLevel = this.GetTrait(TraitDefOf.Drive)?.Normalized ?? 0;
             var maxDesiredEncumberance = maxHaulWeight + maxHaulWeight * activityLevel * .5f;
             var unitWeight = def.Weight;
             int stackEnduranceLimit = (int)Math.Floor(maxDesiredEncumberance / unitWeight);
@@ -346,7 +347,7 @@ namespace Project1.Core.Entities.Actors
 
         internal float GetOpportunisticHaulSearchRange(int baseSearchRange)
         {
-            var organizationValue = this.GetTrait(TraitDefOf.Planning)?.Normalized ?? 0;
+            var organizationValue = this.GetTrait(TraitDefOf.Deliberation)?.Normalized ?? 0;
             var num = baseSearchRange * organizationValue * .5f;
             return baseSearchRange + num;
         }

@@ -1,5 +1,6 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
+using Project1.Core.AI.Personality;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Needs;
 using System;
@@ -32,6 +33,9 @@ internal sealed class PlannerConversation : Planner
                 var other = actor.Map.World.Get<Actor>(convo.CurrentReceiver);
                 if (!actor.CanReachAndReserve(other))
                     throw new InvalidOperationException("Conversation shouldn't continue if actors can't reach eachother");
+                var manner = actor.Personality.GetPercentage(TraitDefOf.Manners);
+                var intent = new ConvoIntent_Compliment(manner * 10);
+                manager.SetNextIntent(actor, intent);
                 return new Plan(ConversationDefOf.PlanAdvance, other);
             }
             else if (convo.CurrentReceiver == actor.RefId)

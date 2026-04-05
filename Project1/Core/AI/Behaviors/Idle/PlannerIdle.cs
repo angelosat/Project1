@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.AI.Personality;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using System;
@@ -17,7 +18,7 @@ namespace Project1.Core.AI.Behaviors.Idle
                 return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
 
             int BaseWaitTime = 5;
-            var composure = actor[TraitDefOf.Composure].Normalized;
+            var composure = actor[TraitDefOf.Temperament].Normalized;
             var waitTicks = (int)((BaseWaitTime + (.5f * BaseWaitTime * composure)) * Ticks.PerSecond);
             var dir = ChooseDirection(actor);
             return new Plan(PlanDefOf.Idle, new TargetArgs(dir)) { TicksTimeout = waitTicks };

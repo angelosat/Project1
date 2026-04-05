@@ -7,6 +7,7 @@ using Project1.Core.AI.Behaviors.Pathing;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Framework;
 using Project1.Core.AI.Reservations;
+using Project1.Core.AI.Personality;
 
 namespace Project1.Core.AI.Behaviors
 {

@@ -1,4 +1,4 @@
-﻿namespace Project1.Core.AI
+﻿namespace Project1.Core.AI.Personality
 {
     public class TraitDef : Def
     {

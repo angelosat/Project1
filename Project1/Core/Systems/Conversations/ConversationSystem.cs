@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.AI.Personality;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Needs;
 using Project1.Core.Skills;
@@ -21,6 +22,8 @@ sealed class ConversationRuntime(EntityRefId initiator, EntityRefId target)
 
     internal bool IsRequested => this.State == States.Requested;
     internal bool IsFinished => this.State == States.Finished;
+
+    public ConvoIntent NextIntent { get; internal set; }
 
     internal void MarkAccepted()
     {
@@ -120,12 +123,69 @@ public class ConversationSystem : TownComponent
             throw new Exception();
         var talker = this.World.Get<Actor>(convo.CurrentTalker);
         var receiver = this.World.Get<Actor>(convo.CurrentReceiver);
-        var talkerSkill = talker.Skills.GetLevel(SkillDefOf.Social);
-        var delta = talkerSkill;
-        receiver.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, delta + 10);
-        talker.Skills.ApplyXp(SkillDefOf.Social, delta);
-        talker.Relationships.ApplyDelta(receiver, delta);
-        receiver.Relationships.ApplyDelta(talker, delta);
+     
+
+        var intent = convo.NextIntent;
+        var deltas = intent.Calculate(talker, receiver);
+
+        //var talkerSkill = talker.Skills.GetLevel(SkillDefOf.Social);
+        //var delta = talkerSkill;
+        //receiver.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, delta + 10);
+        //talker.Skills.ApplyXp(SkillDefOf.Social, delta);
+        //talker.Relationships.ApplyDelta(receiver, delta);
+        //receiver.Relationships.ApplyDelta(talker, delta);
+
+        talker.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, deltas.TalkerNeed);
+        receiver.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, deltas.ListenerNeed);
+        talker.Skills.ApplyXp(SkillDefOf.Social, deltas.TalkerXp);
+        talker.Relationships.ApplyDelta(receiver, deltas.TalkerRel);
+        receiver.Relationships.ApplyDelta(talker, deltas.ListenerRel);
+
         convo.CycleTalker();
+    }
+
+    internal void SetNextIntent(Actor actor, ConvoIntent_Compliment intent)
+        => this.ActiveConversationsByActor[actor.RefId].NextIntent = intent;
+}
+
+record struct ConvoDeltas(float TalkerNeed, float ListenerNeed, int TalkerXp, int TalkerRel, int ListenerRel) { }
+record struct ConvoInputs(int TalkerSkill, float TalkerManner, float TalkerSelflessness, float ListenerResilience) { }
+abstract record ConvoIntent
+{
+    int Skill(Actor actor) => actor.Skills.GetLevel(SkillDefOf.Social);
+    float Manner(Actor actor) => actor.Personality.GetPercentage(TraitDefOf.Manners);
+    float Selflessness(Actor actor) => actor.Personality.GetPercentage(TraitDefOf.Selflessness);
+    float Resilience(Actor actor) => actor.Personality.GetPercentage(TraitDefOf.Resilience);
+    protected ConvoInputs Deconstruct(Actor talker, Actor listener)
+    {
+        var talkerSkill = this.Skill(talker);
+        var talkerManner = this.Manner(talker);
+        var talkerSelflessness = this.Selflessness(talker);
+        var listenerResilience = this.Resilience(listener);
+        return new(talkerSkill, talkerManner, talkerSelflessness, listenerResilience);
+    }
+    internal ConvoDeltas Calculate(Actor talker, Actor listener)
+        => this.OnCalculate(this.Deconstruct(talker, listener));
+    protected abstract ConvoDeltas OnCalculate(ConvoInputs inputs);
+}
+sealed record ConvoIntent_Compliment(float Magnitude) : ConvoIntent
+{
+    protected override ConvoDeltas OnCalculate(ConvoInputs inputs)
+    {
+        var sign = this.Magnitude > 0 ? 1 : -1;
+        var magnitude = (int)Math.Abs(inputs.TalkerSkill * this.Magnitude);
+        var xp = magnitude + 10;
+        var talkerNeedDelta = (1 - inputs.TalkerSelflessness) * magnitude / 2;
+        var listenerNeedDelta = Math.Max(0, sign * (1 - inputs.ListenerResilience) * magnitude / 2);
+        var talkerRel = 0;
+        var listenerRel = sign * magnitude;
+        return new(talkerNeedDelta, listenerNeedDelta, xp, talkerRel, listenerRel);
+    }
+}
+sealed record ConvoIntent_Insult(int Magnitude) : ConvoIntent
+{
+    protected override ConvoDeltas OnCalculate(ConvoInputs inputs)
+    {
+        throw new NotImplementedException();
     }
 }

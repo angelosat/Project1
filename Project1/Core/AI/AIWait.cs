@@ -4,6 +4,7 @@ using System;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Framework.Serialization;
 using Project1.Framework;
+using Project1.Core.AI.Personality;
 
 namespace Project1.Core.AI
 {
@@ -22,7 +23,7 @@ namespace Project1.Core.AI
             this.TimerNew--;
             if (this.TimerNew <= 0)
             {
-                var composure = parent.GetTrait(TraitDefOf.Composure).Normalized;
+                var composure = parent.GetTrait(TraitDefOf.Temperament).Normalized;
                 this.TimerNew = (int)((BaseWaitTime + (.5f * BaseWaitTime * composure)) * Ticks.PerSecond);
                 return BehaviorState.Success;
             }

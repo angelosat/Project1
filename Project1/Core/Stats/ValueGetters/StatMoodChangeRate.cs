@@ -1,4 +1,4 @@
-﻿using Project1.Core.AI;
+﻿using Project1.Core.AI.Personality;
 using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Entities.Stats.ValueGetters

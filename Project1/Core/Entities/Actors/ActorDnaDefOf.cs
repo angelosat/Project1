@@ -2,12 +2,12 @@
 using Project1.Core.Needs;
 using Project1.Core.Gear;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Attributes;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.Systems.Materials;
+using Project1.Core.AI.Personality;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -50,12 +50,14 @@ namespace Project1.Core.Entities.Actors
                 GearTypeDefOf.Hands,
                 GearTypeDefOf.Legs ],
             Traits = [
-                TraitDefOf.Attention,
-                TraitDefOf.Composure,
+                TraitDefOf.Focus,
+                TraitDefOf.Temperament,
                 TraitDefOf.Patience,
-                TraitDefOf.Activity,
-                TraitDefOf.Planning,
-                TraitDefOf.Resilience ],
+                TraitDefOf.Drive,
+                TraitDefOf.Deliberation,
+                TraitDefOf.Resilience,
+                TraitDefOf.Manners,
+                TraitDefOf.Selflessness],
             Diet = [
                 MaterialTypeDefOf.Fruit,
                 MaterialTypeDefOf.Flesh,

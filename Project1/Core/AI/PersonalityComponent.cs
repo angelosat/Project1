@@ -1,10 +1,13 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.AI.Personality;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Screens;
 using Project1.Core.Serialization;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Helpers;
+using Project1.Framework.Input;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
@@ -116,25 +119,40 @@ namespace Project1.Core.AI
             }
         }
 
+        internal override void Resolve()
+        {
+            var dna = (ActorDnaDef)this.Owner.Profile;
+            foreach (var t in dna.Traits)
+                this.AddTrait(t);
+        }
+
         public override void Write(IDataWriter w)
         {
-            w.WriteValues(this.Traits);
+            //w.WriteValues(this.Traits);
+            w.Write(this.Traits.Values);
             this.Favorites.WriteDefs(w);
         }
         public override void Read(IDataReader r)
         {
-            r.ReadDefWrappers(this.Traits);
+            //r.ReadDefWrappers(this.Traits);
+            this.Traits = r.ReadList<Trait>().ToDictionary(t => t.Def, t => t);
             this.Favorites.Clear();
             this.Favorites.ReadDefs(r);
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            tag.SaveDefWrappers("Traits", this.Traits);
+            //tag.SaveDefWrappers("Traits", this.Traits);
+            tag.Save("Traits", this.Traits.Values);
             this.Favorites.SaveDefs(tag, "Favorites");
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            tag.LoadDefWrappers("Traits", this.Traits);
+            //tag.LoadDefWrappers("Traits", this.Traits);
+            Dictionary<TraitDef, Trait> temp = [];
+            tag.LoadDefWrappers("Traits", temp);
+            foreach(var (def, runtime) in this.Traits)
+                if(temp.TryGetValue(def, out var load))
+                    runtime.Value = load.Value;
             this.Favorites.Clear();
             if (!this.Favorites.TryLoadDefs(tag, "Favorites"))
                 this.Favorites = GenerateMaterialPreferences();
@@ -163,11 +181,36 @@ namespace Project1.Core.AI
             var p = actor.Personality;
             var boxtraits = new GroupBox();
             foreach (var t in p.Traits.Values)
-                boxtraits.AddControlsBottomLeft(t.GetListControlGui());
+            {
+                var bar = t.GetListControlGui() as ButtonBase;
+                bar.LeftClickAction = () => {
+                    if (!InputState.IsKeyDown(System.Windows.Forms.Keys.ControlKey))
+                        return;
+                    "todo: request trait change from server".ToConsole();
+                    var posClicked = UIManager.MouseScaled.X - (bar.ScreenLocation.X + bar.Width / 2);
+                    var val = posClicked;// * 2;
+                    Ingame.Instance.Events.Post(new PlayerChangeTraitValueEvent(actor, t.Def, val));
+                };
+                
+                boxtraits.AddControlsBottomLeft(bar);
+            }
             box.AddControlsVertically(
                 boxtraits.ToPanelLabeled("Traits"), 
                 getFavoritesUI(p, boxtraits.Width));
         }
+
+        internal void SetValue(TraitDef trait, float value)
+        {
+            this.Traits[trait].Value = value;
+            this.Owner.World.Events.Post(new TraitValueChangedEvent(this.Owner as Actor, trait, value));
+        }
+
+        public float GetValue(TraitDef trait)
+            => this.Traits[trait].Value;
+        public float GetPercentage(TraitDef trait)
+          => this.Traits[trait].Percentage;
+
+
         public new class Spec : Spec<PersonalityComponent>
         {
             public TraitDef[] Items;
@@ -177,8 +220,8 @@ namespace Project1.Core.AI
             }
             protected override void ApplyDefaultsTo(PersonalityComponent comp)
             {
-                foreach (var trait in this.Items)
-                    comp.AddTrait(trait);
+                //foreach (var trait in this.Items)
+                //    comp.AddTrait(trait);
                 comp.Randomize();
             }
         }

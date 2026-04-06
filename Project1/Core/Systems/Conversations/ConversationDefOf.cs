@@ -10,14 +10,14 @@ public static class ConversationDefOf
 {
     public static readonly PlannerDef PlannerConvo = new("Initiator", typeof(PlannerConversation));
 
-    public static readonly InteractionDef InteractionAdvance = new("Advance", typeof(InteractionConversationAdvance), InteractionControllers.Timed);
-    public static readonly InteractionDef InteractionReceive = new("Receive", typeof(InteractionConversationReceive), InteractionControllers.ExternalFull)
+    public static readonly InteractionDef InteractionTalk = new("Talk", typeof(InteractionConversationTalk), InteractionControllers.Timed);
+    public static readonly InteractionDef InteractionListen = new("Listen", typeof(InteractionConversationListen), InteractionControllers.ExternalFull)
     {
         Range = InteractionRange.None
     };
 
-    public static readonly PlanDef PlanAdvance = new("Advance", InteractionAdvance);
-    public static readonly PlanDef PlanReceive = new("Receive", InteractionReceive);
+    public static readonly PlanDef PlanTalk = new("Talk", InteractionTalk);
+    public static readonly PlanDef PlanListen = new("Listen", InteractionListen);
 
     static ConversationDefOf()
     {

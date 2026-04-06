@@ -13,7 +13,13 @@ namespace Project1.Core.Systems.Presentation
             //        ((IPresentationSystem)Activator.CreateInstance(type)).Init();
             //}
 
-            foreach (var type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
+            //foreach (var type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
+            //{
+            //    if (typeof(IPresentationWorker).IsAssignableFrom(type) && !type.IsInterface)
+            //        ((IPresentationWorker)Activator.CreateInstance(type)).Register();
+            //}
+            var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).Where(type => typeof(IPresentationWorker).IsAssignableFrom(type));
+            foreach (var type in types)
             {
                 if (typeof(IPresentationWorker).IsAssignableFrom(type) && !type.IsInterface)
                     ((IPresentationWorker)Activator.CreateInstance(type)).Register();

@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.UI;
 using Project1.Framework.Helpers;
@@ -47,10 +46,11 @@ namespace Project1.Core.Systems.Relationships
     }
     sealed class RelationshipEntry
     {
-        static readonly Tick baseInterval = Ticks.FromMinutes(10);
+        static readonly Tick baseInterval = Ticks.FromHours(1);
         ProgressIntSigned _progress { get; } = new(100);
         internal IProgressBar Progress => this._progress;
         internal int Sign => this._progress.Value >= 0 ? 1 : -1;
+        internal int Value => this._progress.Value;
         internal Tick NextUpdate { get; private set; }
         internal void ApplyDelta(int value, Tick currentTick)
         {
@@ -94,5 +94,8 @@ namespace Project1.Core.Systems.Relationships
             entry.ApplyDelta(delta, this.Owner.World.CurrentTick);
             this.Owner.World.Events.Post(new RelationshipDeltaAppliedEvent(this.Owner.RefId, target.RefId, delta));
         }
+
+        public int Get(Actor other)
+            => this.Entries.TryGetValue(other.RefId, out var entry) ? entry.Value : 0;
     }
 }

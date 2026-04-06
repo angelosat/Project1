@@ -24,28 +24,39 @@ internal sealed class PlannerConversation : Planner
                 {
                     if (convo.IsRequested)
                         return null;
-                    if (!NeedsSocial(actor))
+                    if (IsSatisfied(actor))
                     {
                         convo.MarkFinished();
                         return null;
                     }
                 }
-                var other = actor.Map.World.Get<Actor>(convo.CurrentReceiver);
+                var other = actor.Map.World.Get<Actor>(convo.CurrentListener);
                 if (!actor.CanReachAndReserve(other))
                     throw new InvalidOperationException("Conversation shouldn't continue if actors can't reach eachother");
-                var manner = actor.Personality.GetPercentage(TraitDefOf.Manners);
-                var intent = new ConvoIntent_Compliment(manner * 10);
+                var manners = actor.Personality.GetPercentage(TraitDefOf.Manners);
+
+                //float signChance = 0.5f + manners * 0.5f;
+                var signBase = .5f;// 66f;
+                float signChance = signBase + manners * (1 - signBase);
+                // Manners -1 → 0% positive, +1 → 100% positive
+                var rand = actor.World.Random;
+                int sign = rand.NextDouble() < signChance ? 1 : -1;
+                float strength = (float)rand.NextDouble();
+
+                float magnitude = sign * strength;
+
+                var intent = new ConvoIntent_Compliment(magnitude);// manners * 10);
                 manager.SetNextIntent(actor, intent);
-                return new Plan(ConversationDefOf.PlanAdvance, other);
+                return new Plan(ConversationDefOf.PlanTalk, other);
             }
-            else if (convo.CurrentReceiver == actor.RefId)
+            else if (convo.CurrentListener == actor.RefId)
             {
                 if (actor.RefId == convo.Target && convo.IsRequested)
                     convo.MarkAccepted();
                 var other = actor.Map.World.Get<Actor>(convo.CurrentTalker);
                 if (!actor.CanReachAndReserve(other))
                     throw new InvalidOperationException("Conversation shouldn't continue if actors can't reach eachother");
-                return new Plan(ConversationDefOf.PlanReceive, other);
+                return new Plan(ConversationDefOf.PlanListen, other);
             }
             return null;
         }
@@ -72,5 +83,11 @@ internal sealed class PlannerConversation : Planner
         var socialPercentage = actor.Needs.GetPercentage(NeedDefOf.Social);
         var threshold = .5f;
         return socialPercentage < threshold;
+    }
+    static bool IsSatisfied(Actor actor)
+    {
+        var socialPercentage = actor.Needs.GetPercentage(NeedDefOf.Social);
+        var threshold = .95f;
+        return socialPercentage >= threshold;
     }
 }

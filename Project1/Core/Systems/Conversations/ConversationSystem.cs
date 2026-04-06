@@ -18,13 +18,22 @@ sealed class ConversationRuntime(EntityRefId initiator, EntityRefId target)
     internal EntityRefId Initiator = initiator, Target = target;
     States State;
     internal EntityRefId CurrentTalker { get; private set; } = initiator;
-    internal EntityRefId CurrentReceiver => this.CurrentTalker == this.Initiator ? this.Target : this.Initiator;
+    internal EntityRefId CurrentListener => this.CurrentTalker == this.Initiator ? this.Target : this.Initiator;
+
+    internal int InitiatorRelationshipAtStart { get; private set; }
+    internal int TargetRelationshipAtStart { get; private set; }
+    int InitiatorMinOffset, InitiatorMaxOffset,
+        TargetMinOffset, TargetMaxOffset;
 
     internal bool IsRequested => this.State == States.Requested;
     internal bool IsFinished => this.State == States.Finished;
 
     public ConvoIntent NextIntent { get; internal set; }
-
+    public ConversationRuntime(Actor initiator, Actor target) : this(initiator.RefId, target.RefId)
+    {
+        this.InitiatorRelationshipAtStart = initiator.Relationships.Get(target);
+        this.TargetRelationshipAtStart = target.Relationships.Get(initiator);
+    }
     internal void MarkAccepted()
     {
         Debug.Assert(this.State == States.Requested);
@@ -36,8 +45,21 @@ sealed class ConversationRuntime(EntityRefId initiator, EntityRefId target)
         Debug.Assert(this.State == States.Running);
         this.State = States.Finished;
     }
-    internal void CycleTalker()
+    internal void SwapRoles()
         =>   this.CurrentTalker = this.CurrentTalker == this.Initiator ? this.Target : this.Initiator;
+
+    internal void OnRelationshipUpdate(EntityRefId actorId, int current)
+    {
+        if(actorId == this.Initiator)
+            UpdateOffsets(current - this.InitiatorRelationshipAtStart, ref this.InitiatorMinOffset, ref this.InitiatorMaxOffset);
+        else
+            UpdateOffsets(current - this.TargetRelationshipAtStart, ref this.TargetMinOffset, ref this.TargetMaxOffset);
+    }
+    static void UpdateOffsets(int offset, ref int min, ref int max)
+    {
+        if (offset < min) min = offset;
+        if (offset > max) max = offset;
+    }
 }
 public class ConversationSystem : TownComponent
 {
@@ -95,8 +117,21 @@ public class ConversationSystem : TownComponent
             this.ActiveConversationsByActor.Remove(convo.Target);
             this._availableActors.Add(convo.Initiator);
             this._availableActors.Add(convo.Target);
+
+            Finish(convo);
+
             $"{this.World.Net} convo between {convo.Initiator} and {convo.Target} finished and removed".ToConsole();
         }
+    }
+
+    private void Finish(ConversationRuntime convo)
+    {
+        var initiator = this.Map.World.Get<Actor>(convo.Initiator);
+        var target = this.Map.World.Get<Actor>(convo.Target);
+        var initiatorRelDiff = initiator.Relationships.Get(target) - convo.InitiatorRelationshipAtStart;
+        var targetRelDiff = target.Relationships.Get(initiator) - convo.TargetRelationshipAtStart;
+        initiator.AI.State.Log.Write($"I had a {(initiatorRelDiff >= 0 ? "positive" : "negative")} conversation with {target.Name}");
+        target.AI.State.Log.Write($"I had a {(targetRelDiff >= 0 ? "positive" : "negative")} conversation with {initiator.Name}");
     }
 
     internal bool TryStartConversation(Actor initiator, Actor target)
@@ -122,11 +157,11 @@ public class ConversationSystem : TownComponent
         if (convo.CurrentTalker != actor.RefId)
             throw new Exception();
         var talker = this.World.Get<Actor>(convo.CurrentTalker);
-        var receiver = this.World.Get<Actor>(convo.CurrentReceiver);
+        var listener = this.World.Get<Actor>(convo.CurrentListener);
      
 
         var intent = convo.NextIntent;
-        var deltas = intent.Calculate(talker, receiver);
+        var deltas = intent.Calculate(talker, listener);
 
         //var talkerSkill = talker.Skills.GetLevel(SkillDefOf.Social);
         //var delta = talkerSkill;
@@ -136,12 +171,13 @@ public class ConversationSystem : TownComponent
         //receiver.Relationships.ApplyDelta(talker, delta);
 
         talker.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, deltas.TalkerNeed);
-        receiver.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, deltas.ListenerNeed);
+        listener.Needs.ApplyAccumulatorDelta(NeedDefOf.Social, deltas.ListenerNeed);
         talker.Skills.ApplyXp(SkillDefOf.Social, deltas.TalkerXp);
-        talker.Relationships.ApplyDelta(receiver, deltas.TalkerRel);
-        receiver.Relationships.ApplyDelta(talker, deltas.ListenerRel);
+        listener.Relationships.ApplyDelta(talker, deltas.ListenerRel);
 
-        convo.CycleTalker();
+        convo.OnRelationshipUpdate(listener.RefId, listener.Relationships.Get(talker));
+
+        convo.SwapRoles();
     }
 
     internal void SetNextIntent(Actor actor, ConvoIntent_Compliment intent)
@@ -150,6 +186,12 @@ public class ConversationSystem : TownComponent
 
 record struct ConvoDeltas(float TalkerNeed, float ListenerNeed, int TalkerXp, int TalkerRel, int ListenerRel) { }
 record struct ConvoInputs(int TalkerSkill, float TalkerManner, float TalkerSelflessness, float ListenerResilience) { }
+abstract record class ConvoSubject;
+record class ConvoSubject_Entity(Entity Subject) : ConvoSubject;
+record class ConvoSubject_Concept(Def Concept) : ConvoSubject;
+record struct ConvoSubjectNew(EntityRefId Subject, Def Concept) { }
+
+
 abstract record ConvoIntent
 {
     int Skill(Actor actor) => actor.Skills.GetLevel(SkillDefOf.Social);
@@ -173,12 +215,18 @@ sealed record ConvoIntent_Compliment(float Magnitude) : ConvoIntent
     protected override ConvoDeltas OnCalculate(ConvoInputs inputs)
     {
         var sign = this.Magnitude > 0 ? 1 : -1;
-        var magnitude = (int)Math.Abs(inputs.TalkerSkill * this.Magnitude);
-        var xp = magnitude + 10;
+        var magnitude = (int)Math.Ceiling(Math.Abs(inputs.TalkerSkill * this.Magnitude));
+        var xp = 10 + magnitude;
         var talkerNeedDelta = (1 - inputs.TalkerSelflessness) * magnitude / 2;
         var listenerNeedDelta = Math.Max(0, sign * (1 - inputs.ListenerResilience) * magnitude / 2);
+        //var listenerRel = sign * magnitude;
+        var listenerRel = sign * (int)Math.Ceiling(magnitude / 33f);
         var talkerRel = 0;
-        var listenerRel = sign * magnitude;
+        if(sign < 0)
+        {
+            float harshness = 1 - inputs.TalkerManner;
+            talkerRel = -(int)Math.Ceiling(magnitude * harshness / 50f);
+        }
         return new(talkerNeedDelta, listenerNeedDelta, xp, talkerRel, listenerRel);
     }
 }

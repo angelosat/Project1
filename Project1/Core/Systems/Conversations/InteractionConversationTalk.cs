@@ -6,7 +6,7 @@ internal sealed class InteractionContext_Conversation : InteractionContext
 {
     internal ConversationRuntime Conversation => field ??= this.Actor.Map.Town.Conversations.GetConversationByActor(this.Actor);
 }
-internal class InteractionConversationReceive : InteractionLogic
+internal class InteractionConversationListen : InteractionLogic
 {
     protected override InteractionContext_Conversation CreateContextInt() => new();
     internal override bool HasSucceeded(Interaction i)
@@ -25,7 +25,7 @@ internal class InteractionConversationReceive : InteractionLogic
         //return false;
     }
 }
-internal class InteractionConversationAdvance : InteractionLogic
+internal class InteractionConversationTalk : InteractionLogic
 {
     protected override InteractionContext_Conversation CreateContextInt() => new();
     internal override void OnFinish(Interaction i)

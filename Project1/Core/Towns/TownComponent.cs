@@ -91,5 +91,6 @@ namespace Project1.Core.Towns
 
         internal virtual void Scan(BlockEntity entity) { }
         internal virtual void Scan(Entity entity) { }
+        internal virtual void Scan((Chunk chunk, Cell cell, CellId id) index) { }
     }
 }

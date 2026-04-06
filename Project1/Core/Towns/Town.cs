@@ -189,7 +189,7 @@ public sealed class Town : Inspectable, IDutyProvider
     {
         foreach(var ee in e.Changes)
         {
-            if (ee.Block == BlockDefOf.Waypoint.Block)
+            if (ee.Block.BlockDef == BlockDefOf.Waypoint)
                 this.Waypoint = ee.Global.Above;
             else if (this.Waypoint.HasValue && this.Waypoint.Value == ee.Global.Above)
                 this.Waypoint = null;
@@ -459,5 +459,12 @@ public sealed class Town : Inspectable, IDutyProvider
     {
         foreach (var comp in this.TownComponents)
             comp.Scan(entity);
+    }
+    public void Scan((Chunk chunk, Cell cell, CellId id) index)
+    {
+        if (index.cell.Block.BlockDef == BlockDefOf.Waypoint)
+            this.Waypoint = index.id.GetGlobal(index.chunk);
+        foreach (var comp in this.TownComponents)
+            comp.Scan(index);
     }
 }

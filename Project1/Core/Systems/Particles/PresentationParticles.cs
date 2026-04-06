@@ -31,14 +31,17 @@ internal sealed class PresentationParticles : IPresentationWorker
         var entity = e.Entity;
         var map = entity.Map;
         var emitter = NewEmitter(entity.Global);
-        emitter.Radius = .5f;
-        emitter.Force = .2f;
-        emitter.Acceleration = Vector3.One * .8f;
+        emitter.HasPhysics = false;
+        emitter.Radius =  .5f;
+        //emitter.Force = .2f;
+        //emitter.Acceleration = Vector3.One * .8f;
+        emitter.Force = .3f;
+        emitter.Acceleration = Vector3.One * .7f;
         emitter.Source = entity.Global;
-        emitter.SizeBegin = emitter.SizeEnd = 2;
+        emitter.SizeBegin = emitter.SizeEnd = 4;
         emitter.ParticleWeight = -.1f;
         emitter.Emit(100);
-        emitter.ColorBegin = emitter.ColorEnd = Color.Teal;
+        emitter.ColorBegin = emitter.ColorEnd = Color.White;// Teal;
         map.ParticleManager.AddEmitter(emitter);
     }
 

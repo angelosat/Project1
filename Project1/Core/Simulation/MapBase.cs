@@ -12,7 +12,6 @@ using Project1.Core.Networking;
 using Project1.Core.Networking.Simulation;
 using Project1.Core.Simulation.Lighting;
 using Project1.Core.Simulation.Physics;
-using Project1.Core.Systems.Conversations;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Stockpiles;
@@ -231,7 +230,9 @@ public abstract class MapBase : Inspectable
         foreach (var comp in this.Comps)
             comp.ResolveReferences();
         foreach (var chunk in this.ActiveChunks.Values)
+        {
             chunk.ResolveReferences();
+        }
         foreach (var be in this.BlockEntities)
         {
             foreach (var comp in this.Comps)
@@ -244,10 +245,10 @@ public abstract class MapBase : Inspectable
                 comp.Scan(entity);
             this.Town.Scan(entity);
         }
-        //foreach(var index in this.GetAllCellsWithIndex())
-        //{
-        //    var global = index.id.GetGlobal(index.chunk);
-        //}
+        foreach (var index in this.GetAllCellsWithIndex())
+        {
+            this.Town.Scan(index);
+        }
     }
     internal void SyncSetCellData(IntVec3 global, byte data)
     {

@@ -13,7 +13,7 @@ namespace Project1.Core.Entities
     internal record struct EntityForbiddenEvent(Entity Entity) : IEventPayload { }
     internal record struct ActorGearUpdatedEvent(Actor Actor, Entity NewItem, Entity OldItem) : IEventPayload { }
     internal record struct ActorNeedOverridenEvent(Actor Actor, NeedDef Need, float Percentage) : IEventPayload { }
-    internal record struct ActorNeedUpdatedEvent(Need Need) : IEventPayload { }
+    internal record struct ActorNeedUpdatedEvent(NeedRuntime Need) : IEventPayload { }
     internal record struct EntityCompUpdatedEvent(EntityComp Comp) : IEventPayload { }
     internal record struct EntityKilledEvent(Entity Entity) : IEventPayload { }
     internal record struct ActorFootStepEvent(Entity Entity) : IEventPayload { }

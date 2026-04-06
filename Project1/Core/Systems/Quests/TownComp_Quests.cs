@@ -287,10 +287,7 @@ public sealed class TownComp_Quests : TownComponent
 
     internal void IncrementProgress(Actor actor, QuestRuntime q, int delta)
         => this.Trackers[(actor.RefId, q.Id)].Increment(delta);
-    //{
-    //    this.Progress[(actor.RefId, q.Id)] += delta;
-    //}
-
+    
     internal bool HasCompletedQuests(Actor actor)
         => this.AcceptedQuestsByActor[actor.RefId].Any(q => this.IsComplete(actor, q));
 
@@ -309,6 +306,7 @@ public sealed class TownComp_Quests : TownComponent
             throw new InvalidOperationException();
         var reward = quest.Reward;
         var coins = ItemDefOf.Coins.Create(null, reward);
+        this.World.Register(coins);
         this.UnassignQuest(actor, quest);
         return coins;
     }
@@ -326,11 +324,16 @@ public sealed class TownComp_Quests : TownComponent
         this.World.Events.Post(new QuestCompleteEvent(actorid, questid));
     }
 
-    internal override void ResolveReferences()
+    //internal override void ResolveReferences()
+    //{
+    //    foreach (var be in this.Map.BlockEntities)
+    //        if (be.TryGetComp<BlockQuestsComp>(out var comp))
+    //            this._questBoards.Add(be.OriginGlobal, comp);
+    //}
+    internal override void Scan(BlockEntity entity)
     {
-        foreach (var be in this.Map.BlockEntities)
-            if (be.TryGetComp<BlockQuestsComp>(out var comp))
-                this._questBoards.Add(be.OriginGlobal, comp);
+        if (entity.TryGetComp<BlockQuestsComp>(out var comp))
+            this._questBoards.Add(entity.OriginGlobal, comp);
     }
     protected override void AddSaveData(SaveTag tag)
     {

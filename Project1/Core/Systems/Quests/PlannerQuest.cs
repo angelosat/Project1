@@ -29,6 +29,8 @@ sealed class PlannerQuest : Planner
                 throw new System.Exception();
             return new Plan(PlanDefOf.RetrieveFromInventory, item);
         }
+        if (actor.IsHauling)
+            return null;
         foreach (var q in availableQuests)
         {
             if (!manager.HasQuest(actor, q.Id))

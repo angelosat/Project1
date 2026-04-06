@@ -13,6 +13,7 @@ namespace Project1.Core.Needs
         public NeedCategoryDef CategoryDef;
         public NeedWorker Worker;
         public PlannerDef[] Planners = [];
+        public float DecayTicksPerUnit;
 
         public NeedDef(string name, Type needType, NeedCategoryDef category = null) : base(name)
         {

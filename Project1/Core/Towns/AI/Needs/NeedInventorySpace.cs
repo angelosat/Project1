@@ -4,7 +4,7 @@ namespace Project1.Core.Towns.AI.Needs
 {
     class NeedInventorySpace : NeedWorker 
     {
-        protected override void TickExtra(Need need)
+        protected override void TickExtra(NeedRuntime need)
         {
             var actor = need.Owner;
             var inv = actor.Inventory;

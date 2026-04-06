@@ -225,11 +225,29 @@ public abstract class MapBase : Inspectable
     {
         this.World.ResolveReferences();
         this.Town.ResolveReferences();
-        this.Stockpiles.ResolveReferences();
-        this.Hauling.ResolveReferences();
-        this.EntityTracker.ResolveReferences();
+        //this.Stockpiles.ResolveReferences();
+        //this.Hauling.ResolveReferences();
+        //this.EntityTracker.ResolveReferences();
+        foreach (var comp in this.Comps)
+            comp.ResolveReferences();
         foreach (var chunk in this.ActiveChunks.Values)
             chunk.ResolveReferences();
+        foreach (var be in this.BlockEntities)
+        {
+            foreach (var comp in this.Comps)
+                comp.Scan(be);
+            this.Town.Scan(be);
+        }
+        foreach (var entity in this.Entities)
+        {
+            foreach (var comp in this.Comps)
+                comp.Scan(entity);
+            this.Town.Scan(entity);
+        }
+        //foreach(var index in this.GetAllCellsWithIndex())
+        //{
+        //    var global = index.id.GetGlobal(index.chunk);
+        //}
     }
     internal void SyncSetCellData(IntVec3 global, byte data)
     {

@@ -938,11 +938,11 @@ namespace Project1.Core.Entities
         {
             return NpcComponent.GetPossessions(this).Select(id => this.World.GetEntity(id) as GameObject).ToList();
         }
-        internal Need GetNeed(NeedDef def)
+        internal NeedRuntime GetNeed(NeedDef def)
         {
             return this.GetComponent<NeedsComponent>().NeedsNew[def];//.First(n => n.NeedDef == def);
         }
-        internal IEnumerable<Need> GetNeeds(NeedCategoryDef cat)
+        internal IEnumerable<NeedRuntime> GetNeeds(NeedCategoryDef cat)
         {
             return this.GetComponent<NeedsComponent>().NeedsNew.Values.Where(n => n.NeedDef.CategoryDef == cat);
         }

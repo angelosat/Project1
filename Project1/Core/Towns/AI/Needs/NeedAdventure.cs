@@ -4,7 +4,7 @@ namespace Project1.Core.Towns.AI.Needs
 {
     public class NeedAdventure : NeedWorker
     {
-        protected override void TickExtra(Need need)
+        protected override void TickExtra(NeedRuntime need)
         {
 
             //need.Value -= (need.Owner.World.CurrentTick - (need.Owner as Actor).AI.Meta.LastMapTransitionTick) / 100;

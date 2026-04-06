@@ -2,22 +2,18 @@
 using Project1.Framework;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 
 namespace Project1.Core.Simulation
 {
     public sealed class EntityTrackerPerCell(MapBase map) : MapComponent(map), IEntityTracker
     {
         readonly Dictionary<IntVec3, HashSet<Entity>> Internal = [];
-        //readonly Dictionary<IntVec3, HashSet<EntityRefId>> InternalRefs = [];
 
         private static readonly IReadOnlySet<Entity> Empty = ImmutableHashSet<Entity>.Empty;
-        private static readonly IReadOnlySet<EntityRefId> EmptyRefs = ImmutableHashSet<EntityRefId>.Empty;
+        //private static readonly IReadOnlySet<EntityRefId> EmptyRefs = ImmutableHashSet<EntityRefId>.Empty;
 
         public IReadOnlySet<Entity> GetEntitiesAt(IntVec3 cell)
             => this.Internal.TryGetValue(cell, out var list) ? list : Empty;
-        //public IReadOnlySet<EntityRefId> GetEntitiesRefsAt(IntVec3 cell)
-        //    => this.InternalRefs.TryGetValue(cell, out var list) ? list : EmptyRefs;
 
         public void OnEntityMoved(Entity entity, IntVec3 lastCell, IntVec3 nextCell)
         {
@@ -54,10 +50,14 @@ namespace Project1.Core.Simulation
             this.Remove(entity, entity.Global);
         }
 
-        protected internal override void ResolveReferences()
+        //protected internal override void ResolveReferences()
+        //{
+        //    foreach (var entity in this.Map.Entities)
+        //        this.Add(entity, entity.Global);
+        //}
+        internal override void Scan(Entity entity)
         {
-            foreach (var entity in this.Map.Entities)
-                this.Add(entity, entity.Global);
+            this.Add(entity, entity.Global);
         }
     }
 }

@@ -104,6 +104,12 @@ public class StaticMap : MapBase, ITooltippable
         this.UndiscoveredAreaManager = new UndiscoveredAreaManager(this);
         this.ParticleManager = new Graphics.Particles.ParticleManager(this);
 
+        this.Comps.AddRange(
+            this.Stockpiles,
+            this.Hauling,
+            this.EntityTracker
+            );
+
         //this.Comps.AddRange(this.Conversations);
 
         this.SimulationSystems.Add(new BlockLifecycleSystem(this));

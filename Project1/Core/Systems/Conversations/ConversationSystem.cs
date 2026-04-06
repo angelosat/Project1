@@ -145,10 +145,12 @@ public class ConversationSystem : TownComponent
         this._availableActors.Remove(target.RefId);
         return true;
     }
-    internal override void ResolveReferences()
+
+    internal override void Scan(Entity entity)
     {
-        foreach (var actor in this.Map.Entities.OfType<Actor>())
-            this._availableActors.Add(actor.RefId);
+        if (entity is not Actor actor)
+            return;
+        this._availableActors.Add(actor.RefId);
     }
 
     internal void Advance(Actor actor)
@@ -217,8 +219,10 @@ sealed record ConvoIntent_Compliment(float Magnitude) : ConvoIntent
         var sign = this.Magnitude > 0 ? 1 : -1;
         var magnitude = (int)Math.Ceiling(Math.Abs(inputs.TalkerSkill * this.Magnitude));
         var xp = 10 + magnitude;
-        var talkerNeedDelta = (1 - inputs.TalkerSelflessness) * magnitude / 2;
-        var listenerNeedDelta = Math.Max(0, sign * (1 - inputs.ListenerResilience) * magnitude / 2);
+        //var talkerNeedDelta = (1 - inputs.TalkerSelflessness) * magnitude / 2;
+        //var listenerNeedDelta = Math.Max(0, sign * (1 - inputs.ListenerResilience) * magnitude / 2); 
+        var talkerNeedDelta = (1 - inputs.TalkerSelflessness) * xp;
+        var listenerNeedDelta = Math.Max(0, sign * (1 - inputs.ListenerResilience) * xp);
         //var listenerRel = sign * magnitude;
         var listenerRel = sign * (int)Math.Ceiling(magnitude / 33f);
         var talkerRel = 0;

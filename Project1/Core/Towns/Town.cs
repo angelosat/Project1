@@ -2,6 +2,7 @@
 using Project1.Core.AI;
 using Project1.Core.AI.MetaRoles;
 using Project1.Core.AI.Reservations;
+using Project1.Core.Blocks;
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
@@ -433,5 +434,16 @@ namespace Project1.Core.Towns
         }
 
         public bool IsClaimedBySystem(Entity item) => this.TownComponents.Any(c => c.IsClaimedBySystem(item));
+
+        internal void Scan(BlockEntity entity)
+        {
+            foreach (var comp in this.TownComponents)
+                comp.Scan(entity);
+        }
+        internal void Scan(Entity entity)
+        {
+            foreach (var comp in this.TownComponents)
+                comp.Scan(entity);
+        }
     }
 }

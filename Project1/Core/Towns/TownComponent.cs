@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Input;
@@ -87,5 +88,8 @@ namespace Project1.Core.Towns
         internal virtual void OnHudCreated(Hud hud) { }
         internal virtual void OnCameraRotated(Camera camera) { }
         internal virtual bool IsClaimedBySystem(Entity item) => false;
+
+        internal virtual void Scan(BlockEntity entity) { }
+        internal virtual void Scan(Entity entity) { }
     }
 }

@@ -13,9 +13,8 @@ sealed class InteractionCompleteQuest : InteractionLogic
             return;
         var map = actor.Map;
         var manager = map.Town.QuestManagerNew;
-        //var nextQuestToComplete = manager./*getcom*/
-        var reward = manager.CompleteNextQuest(actor, i.Target.Global);
         InteractionHelpers.TryDepositCarriedItemInsideBlockOrSpawn(actor, i.Target.Global);
+        var reward = manager.CompleteNextQuest(actor, i.Target.Global);
         actor.Inventory.HaulNew(reward, reward.StackSize);
     }
 }

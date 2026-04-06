@@ -16,7 +16,7 @@ using System.Linq;
 
 namespace Project1.Core.Needs
 {
-    public sealed class Need : MetricWrapper, IProgressBar, IDefWrapper<NeedDef>, INamed, ISerializableNew<Need>, ISaveableNewNew<Need>
+    public sealed class NeedRuntime : MetricWrapper, IProgressBar, IDefWrapper<NeedDef>, INamed, ISerializableNew<NeedRuntime>, ISaveableNewNew<NeedRuntime>
     {
         internal void AddMod(EffectDef needLetDef, float ticksUntilChange)
         {
@@ -43,6 +43,7 @@ namespace Project1.Core.Needs
         [Obsolete("let defs declare natural decay or let systems explicitly apply accumulator deltas")]
         public float TicksPerNaturalDecay = 0;//1 / Ticks.FromSeconds(10);
         public float Accumulator;
+        public Accumulator AccumulatorNew = new();
         public readonly float Min = 0f;
         public readonly float Max = 100f;
         public float Percentage => this.Value / this.Max;
@@ -60,17 +61,17 @@ namespace Project1.Core.Needs
                 txt += $"\n{needlet}";
             return txt;
         }
-        public  Need()
+        public  NeedRuntime()
         {
             this._Value = this.Max;
 
         }
-        public Need(Actor parent) : this()
+        public NeedRuntime(Actor parent) : this()
         {
             this.Owner = parent;
         }
 
-        public Need(Actor parent, NeedDef needDef) : this(parent)
+        public NeedRuntime(Actor parent, NeedDef needDef) : this(parent)
         {
             this.NeedDef = needDef;
         }
@@ -108,6 +109,9 @@ namespace Project1.Core.Needs
         {
             this.SetValue(this.Value + delta);
         }
+        public void ApplyAccumulatorDelta(float delta)
+            => this.AccumulatorNew.Add(delta);
+        
         public Bar ToBar(GameObject parent)
         {
             var bar = new Bar()
@@ -146,7 +150,7 @@ namespace Project1.Core.Needs
             w.Write(this.DecayDelay);
             this.Mods.Write(w);
         }
-        public Need Read(IDataReader r)
+        public NeedRuntime Read(IDataReader r)
         {
             this.NeedDef = r.ReadDef<NeedDef>();
             this.Value = r.ReadInt32();
@@ -155,7 +159,7 @@ namespace Project1.Core.Needs
             this.Mods.Read(r);
             return this;
         }
-        static public Need Create(IDataReader r) => new Need().Read(r);
+        static public NeedRuntime Create(IDataReader r) => new NeedRuntime().Read(r);
    
         public SaveTag Save(string name = "")
         {
@@ -168,9 +172,9 @@ namespace Project1.Core.Needs
             return tag;
         }
       
-        static public Need Create(SaveTag tag)
+        static public NeedRuntime Create(SaveTag tag)
         {
-            var need = new Need();
+            var need = new NeedRuntime();
             need.NeedDef = tag.LoadDef<NeedDef>("Def");
             need.Value = tag.LoadInt("Value");
             tag.TryGetTagValueOrDefault<float>("Mod", out need.Mod);

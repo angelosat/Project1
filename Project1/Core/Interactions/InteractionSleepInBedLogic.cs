@@ -14,8 +14,8 @@ namespace Project1.Core.Interactions
     {
         sealed class Context : InteractionContext
         {
-            Need _energy;
-            Need Energy => _energy ??= this.Actor.GetNeed(NeedDefOf.Energy);
+            NeedRuntime _energy;
+            NeedRuntime Energy => _energy ??= this.Actor.GetNeed(NeedDefOf.Energy);
             internal EntityEffectWrapper Effect => field ??= this.Actor.Effects.GetEffect(EffectDefOf.ModifyNeed, NeedDefOf.Energy);
             public override float ProgressBarPercentage => this.Energy.Percentage;
         }

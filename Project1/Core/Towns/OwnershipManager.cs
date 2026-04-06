@@ -54,15 +54,17 @@ namespace Project1.Core.Towns
             this.Map.Events.ListenTo<BlockOwnerChangedEvent>(HandleBlockOwnerChanged);
             this.Map.Events.ListenTo<BlockEntityRemovedEvent>(HandleBlockEntityRemoved);
 
-            foreach(var be in this.Map.BlockEntities)
-            {
-                if (!be.TryGetComp<BlockOwnershipComp>(out var comp))
-                    continue;
-                var owner = comp.Owner;
-                if (owner == EntityRefId.Null)
-                    continue;
-            }
+            //foreach(var be in this.Map.BlockEntities)
+            //{
+            //    if (!be.TryGetComp<BlockOwnershipComp>(out var comp))
+            //        continue;
+            //    var owner = comp.Owner;
+            //    if (owner == EntityRefId.Null)
+            //        continue;
+            //}
         }
+
+        
 
         private void HandleBlockEntityRemoved(BlockEntityRemovedEvent e)
         {

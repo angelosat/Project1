@@ -487,8 +487,8 @@ namespace Project1.Core.Systems.ItemRoles
         }
         public bool IsUseful(Entity item)
         {
-            //if (item.Def == ItemDefOf.Coins) // HACK
-            //    return true;
+            if (item.Def == ItemDefOf.Coins) // HACK
+                return true; // TODO create an itemrolecash
             if (this.ItemsToPrefs.ContainsKey(item))
                 return true;
             return false;

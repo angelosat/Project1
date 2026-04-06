@@ -10,8 +10,8 @@ namespace Project1.Core.Interactions
     {
         sealed class Context : InteractionContext
         {
-            Need _energy;
-            Need Energy => _energy ??= this.Actor.GetNeed(NeedDefOf.Energy);
+            NeedRuntime _energy;
+            NeedRuntime Energy => _energy ??= this.Actor.GetNeed(NeedDefOf.Energy);
             public override float ProgressBarPercentage => this.Energy.Percentage;
         }
         protected override InteractionContext CreateContextInt() => new Context();

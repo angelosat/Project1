@@ -17,20 +17,20 @@ namespace Project1.Core.Needs
         public override EntityCompDef CompDef => EntityCompDefOf.Needs;
         public override string Name { get; } = "Needs";
            
-        public Dictionary<NeedDef, Need> NeedsNew = [];
+        public Dictionary<NeedDef, NeedRuntime> NeedsNew = [];
 
         internal override void CopyFrom(EntityComp source)
         {
             var c = (NeedsComponent)source;
             foreach(var n in c.NeedsNew.Values)
-                this.NeedsNew.Add(n.NeedDef, new Need(this.Owner as Actor, n.NeedDef));
+                this.NeedsNew.Add(n.NeedDef, new NeedRuntime(this.Owner as Actor, n.NeedDef));
         }
         public NeedsComponent()
         {
         }
-        public Need AddNeed(NeedDef def)
+        public NeedRuntime AddNeed(NeedDef def)
         {
-            var need = new Need(this.Owner as Actor, def);
+            var need = new NeedRuntime(this.Owner as Actor, def);
             this.NeedsNew.Add(def, need);
             return need;
         }
@@ -58,7 +58,7 @@ namespace Project1.Core.Needs
             foreach (var n in this.NeedsNew.Values)
                 n.Owner = this.Owner as Actor;
         }
-        static public Need ModifyNeed(GameObject actor, NeedDef type, int value)
+        static public NeedRuntime ModifyNeed(GameObject actor, NeedDef type, int value)
         {
        
             var need = actor.GetNeed(type);
@@ -158,7 +158,8 @@ namespace Project1.Core.Needs
         }
 
         internal void ApplyAccumulatorDelta(NeedDef need, float delta)
-            => this.NeedsNew[need].Accumulator += delta;
+            //=> this.NeedsNew[need].Accumulator += delta;
+            => this.NeedsNew[need].ApplyAccumulatorDelta(delta);
 
         public new class Spec: Spec<NeedsComponent>
         {

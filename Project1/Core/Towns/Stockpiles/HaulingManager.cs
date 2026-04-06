@@ -83,20 +83,31 @@ namespace Project1.Core.Towns.Stockpiles
                 TryRegister(s);
             }
 
-            foreach (var entity in this.Map.Entities)
-            {
-                if (!zonemanager.CellsToZones.TryGetValue(entity.Cell.Below, out var zone))
-                    continue;
-                if (zone is Stockpile sp && sp.Accepts(entity))
-                    sp.AcceptedItems.Add(entity);
-            }
+            //foreach (var entity in this.Map.Entities)
+            //{
+            //    if (!zonemanager.CellsToZones.TryGetValue(entity.Cell.Below, out var zone))
+            //        continue;
+            //    if (zone is Stockpile sp && sp.Accepts(entity))
+            //        sp.AcceptedItems.Add(entity);
+            //}
 
-            foreach(var be in this.Map.BlockEntities)
-                this.TryRegister(be);
+            //foreach(var be in this.Map.BlockEntities)
+            //    this.TryRegister(be);
         }
 
-       
+        internal override void Scan(BlockEntity be)
+        {
+            this.TryRegister(be);
+        }
+        internal override void Scan(Entity entity)
+        {
+            var zonemanager = this.Map.Town.ZoneManager;
 
+            if (!zonemanager.CellsToZones.TryGetValue(entity.Cell.Below, out var zone))
+                return;
+            if (zone is Stockpile sp && sp.Accepts(entity))
+                sp.AcceptedItems.Add(entity);
+        }
         private void OnZoneDeleted(ZoneDeletedEvent e)
         {
             if (e.Zone is not Stockpile stockpile)
@@ -154,15 +165,23 @@ namespace Project1.Core.Towns.Stockpiles
                 this._allStockpilesById[s.ID] = s;
             }
 
-            foreach (var entity in this.Map.Entities)
-            {
-                if (!zonemanager.CellsToZones.TryGetValue(entity.Cell.Below, out var zone))
-                    continue;
-                if (zone is Stockpile sp && sp.Accepts(entity))
-                    sp.AcceptedItems.Add(entity);
-            }
+            //foreach (var entity in this.Map.Entities)
+            //{
+            //    if (!zonemanager.CellsToZones.TryGetValue(entity.Cell.Below, out var zone))
+            //        continue;
+            //    if (zone is Stockpile sp && sp.Accepts(entity))
+            //        sp.AcceptedItems.Add(entity);
+            //}
         }
+        internal override void Scan(Entity entity)
+        {
+            var zonemanager = this.Map.Town.ZoneManager;
 
+            if (!zonemanager.CellsToZones.TryGetValue(entity.Cell.Below, out var zone))
+                return;
+            if (zone is Stockpile sp && sp.Accepts(entity))
+                sp.AcceptedItems.Add(entity);
+        }
         private void OnZoneDeleted(ZoneDeletedEvent e)
         {
             if (e.Zone is not Stockpile stockpile)

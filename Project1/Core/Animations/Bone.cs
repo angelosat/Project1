@@ -783,7 +783,7 @@ namespace Project1.Core
         public Bone Read(IDataReader r)
         {
             if (r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace())
-                this.Material = Core.Def.GetDef<MaterialDef>(matName);
+                this.Material = Core.Def.Get<MaterialDef>(matName);
 
             this.Sprite = r.ReadString() is string spritename && !spritename.IsNullEmptyOrWhiteSpace() ? Sprite.LoadNew(spritename) : null;
 

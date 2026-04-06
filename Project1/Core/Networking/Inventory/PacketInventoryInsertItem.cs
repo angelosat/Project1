@@ -35,7 +35,7 @@ namespace Project1.Core.Networking.Inventory
             var itemID = r.ReadInt32();
             var item = net.World.GetEntity(itemID) as Entity;
             var actor = net.World.GetEntity(actorID) as Actor;
-            var area = Def.GetDef<FrontierDef>(r.ReadString());
+            var area = Def.Get<FrontierDef>(r.ReadString());
             actor.Loot(item, area);
         }
     }

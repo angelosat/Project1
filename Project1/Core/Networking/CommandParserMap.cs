@@ -30,8 +30,8 @@ namespace Project1.Core.Networking
                         break;
 
                     case "replace":
-                        var old = Def.GetDef<BlockDef>(p[1]).Block;
-                        var replace = Def.GetDef<BlockDef>(p[2]).Block;
+                        var old = Def.Get<BlockDef>(p[1]).Block;
+                        var replace = Def.Get<BlockDef>(p[2]).Block;
                         if (replace == BlockDefOf.Air.Block || old == BlockDefOf.Air.Block)
                             break;
                         foreach (var ch in net.Map.GetActiveChunks())

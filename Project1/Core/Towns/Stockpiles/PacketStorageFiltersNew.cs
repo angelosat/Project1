@@ -29,7 +29,7 @@ namespace Project1.Core.Towns.Stockpiles
             var r = pck.PacketReader;
             var stockpileID = r.ReadInt32();
             var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
-            var item = Def.GetDef<ItemDef>(r);
+            var item = Def.Get<ItemDef>(r);
             var v = Def.GetDef(r.ReadString());
             stockpile.Settings.Toggle(item, v);
             if (net is Server)
@@ -48,7 +48,7 @@ namespace Project1.Core.Towns.Stockpiles
             var r = pck.PacketReader;
             var stockpileID = r.ReadInt32();
             var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
-            var cat = r.ReadString() is string catName && !catName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<ItemCategory>(catName) : null;
+            var cat = r.ReadString() is string catName && !catName.IsNullEmptyOrWhiteSpace() ? Def.Get<ItemCategory>(catName) : null;
             stockpile.Settings.Toggle(cat);
             if (net is Server)
                 Send(stockpile, cat);
@@ -67,11 +67,11 @@ namespace Project1.Core.Towns.Stockpiles
             var r = pck.PacketReader;
             var stockpileID = r.ReadInt32();
             var stockpile = net.Map.Town.ZoneManager.GetZone<Stockpile>(stockpileID);
-            var item = Def.GetDef<ItemDef>(r);
+            var item = Def.Get<ItemDef>(r);
             MaterialDef mat = null;
             if (r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace())
             {
-                mat = Def.GetDef<MaterialDef>(matName);
+                mat = Def.Get<MaterialDef>(matName);
                 stockpile.Settings.Toggle(item, mat);
             }
             else

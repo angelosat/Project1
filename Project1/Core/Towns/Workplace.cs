@@ -625,7 +625,7 @@ namespace Project1.Core.Towns
                 var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var tavern = net.Map.Town.GetShop(r.ReadInt32());
-                var role = Def.GetDef<DutyDef>(r.ReadString());
+                var role = Def.Get<DutyDef>(r.ReadString());
                 var actor = net.World.Get<Actor>(r.ReadInt32());
                 if (net is Client)
                     tavern.ToggleJob(actor, role);

@@ -11,7 +11,7 @@ namespace Project1.Core.Towns.Reputation;
 internal record struct ReputationDeltaAppliedEvent(EntityRefId ActorId, float Delta) : IEventPayload;
 public sealed class TownReputationComp : TownComponent, IGuiNew
 {
-    static readonly List<ReputationSourceDef> AllDefs = Def.GetDefs<ReputationSourceDef>().ToList();
+    static readonly List<ReputationSourceDef> AllDefs = Def.Get<ReputationSourceDef>().ToList();
 
     public override string Name => "Reputation";
     readonly Dictionary<EntityRefId, ActorReputationEntry> _table = [];

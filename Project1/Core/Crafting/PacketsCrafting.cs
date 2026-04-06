@@ -130,7 +130,7 @@ namespace Project1.Core.Crafting
             var bone = r.ReadDef<BoneDef>();
             //var refinement = r.ReadDef<MaterialRefinementDef>();
             var refinement = r.ReadDef<MaterialTypeDef>();
-            var material = r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<MaterialDef>(matName) : null;
+            var material = r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace() ? Def.Get<MaterialDef>(matName) : null;
             order.Toggle(bone, refinement, material);
             if (endpoint is Server)
                 SendPlayerModifiedOrderFilters(endpoint, order, bone, refinement, material);

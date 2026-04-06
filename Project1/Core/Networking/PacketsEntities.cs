@@ -125,6 +125,7 @@ namespace Project1.Core.Networking
             var r = packet.PacketReader;
             var obj = GameObject.Create(r, client.World);
             client.World.RegisterInt(obj);
+            //client.World.Register(obj);
         }
         private static void SendEntityDisposed(EntityDisposedEvent @event)
         {

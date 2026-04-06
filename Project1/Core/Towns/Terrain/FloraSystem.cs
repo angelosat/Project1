@@ -20,7 +20,7 @@ namespace Project1.Core.Towns.Terrain
 
         Action<MapBase, IntVec3>[] SpawnActions => field ??= [SpawnEntity, SpawnBlock];
 
-        PlantSpeciesDef[] AllSpieces => field ??= [.. Def.GetDefs<PlantSpeciesDef>()];
+        PlantSpeciesDef[] AllSpieces => field ??= [.. Def.Get<PlantSpeciesDef>()];
 
         public override void Tick()
         {

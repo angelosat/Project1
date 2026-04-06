@@ -126,9 +126,9 @@ namespace Project1.Core.Legacy.Crafting
 
         public IngredientRestrictions Read(IDataReader r)
         {
-            this.ItemDef = new HashSet<ItemDef>(r.ReadStringArray().Select(Def.GetDef<ItemDef>));
-            this.Material = new HashSet<MaterialDef>(r.ReadStringArray().Select(Def.GetDef<MaterialDef>));
-            this.MaterialType = new HashSet<MaterialTypeDef>(r.ReadStringArray().Select(Def.GetDef<MaterialTypeDef>));
+            this.ItemDef = new HashSet<ItemDef>(r.ReadStringArray().Select(Def.Get<ItemDef>));
+            this.Material = new HashSet<MaterialDef>(r.ReadStringArray().Select(Def.Get<MaterialDef>));
+            this.MaterialType = new HashSet<MaterialTypeDef>(r.ReadStringArray().Select(Def.Get<MaterialTypeDef>));
             return this;
         }
 

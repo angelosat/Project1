@@ -167,7 +167,7 @@ namespace Project1.Core.AI
         static public HashSet<MaterialDef> GenerateMaterialPreferences()
         {
             var list = new HashSet<MaterialDef>();
-            foreach (var type in Def.GetDefs<MaterialTypeDef>())
+            foreach (var type in Def.Get<MaterialTypeDef>())
             {
                 if (type.SubTypes.Any())
                     list.Add(type.SubTypes.SelectRandom(Randomizer));

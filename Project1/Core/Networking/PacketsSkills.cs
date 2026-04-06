@@ -1,6 +1,5 @@
 ﻿using Project1.Framework;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Networking;
 using Project1.Core.Helpers;
 using Project1.Core.Skills;
 
@@ -15,7 +14,7 @@ namespace Project1.Core.Networking
         {
             _pTypeIdModifySkill = Registry.PacketHandlers.Register(Receive);
 
-            Registry.MapEventHooksServer.Register<SkillAdjustedEvent>(SendSkillIncrease);
+            Registry.WorldEventHooksServer.Register<SkillAdjustedEvent>(SendSkillIncrease);
         }
 
         private static void SendSkillIncrease(SkillAdjustedEvent e)

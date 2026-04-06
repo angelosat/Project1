@@ -124,7 +124,7 @@ namespace Project1.Core.Towns.Shops
 
         public TownServicesComp(Town town) : base(town)
         {
-            foreach (var def in Def.GetDefs<TownServiceDef>())
+            foreach (var def in Def.Get<TownServiceDef>())
             {
                 var serviceType = def.RuntimeType;
                 var runtime = def.CreateRuntime();

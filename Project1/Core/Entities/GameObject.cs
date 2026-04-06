@@ -104,7 +104,7 @@ namespace Project1.Core.Entities
             foreach (var t in MaterialSystem.GenerateTemplates().Where(t => t is not null))
                 AddTemplate(t);
 
-            foreach (var toolProp in Core.Def.GetDefs<ToolProfileDef>())
+            foreach (var toolProp in Core.Def.Get<ToolProfileDef>())
             {
                 var obj = ToolSystem.Create(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
                 AddTemplate(obj);
@@ -651,7 +651,7 @@ namespace Project1.Core.Entities
         public static Entity Create(IDataReader r, WorldBase entityResolver)
         {
             string defName = r.ReadString();
-            var def = Core.Def.GetDef<ItemDef>(defName);
+            var def = Core.Def.Get<ItemDef>(defName);
             var profile = Core.Def.GetDef(r.ReadString());
             //var def = r.ReadDef<ItemDef>();
             //var profile = r.ReadDef<Def>();
@@ -666,7 +666,7 @@ namespace Project1.Core.Entities
         public static Entity Create(IDataReader r)
         {
             string defName = r.ReadString();
-            var def = Core.Def.GetDef<ItemDef>(defName);
+            var def = Core.Def.Get<ItemDef>(defName);
             var profile = Core.Def.GetDef(r.ReadString());
             //var def = r.ReadDef<ItemDef>();
             //var profile = r.ReadDef<Def>();
@@ -735,7 +735,7 @@ namespace Project1.Core.Entities
         internal static GameObject Load(SaveTag tag, WorldBase entityResolver)
         {
             tag.TryGetTagValueOrDefault("Def", out string defName);
-            var def = Core.Def.GetDef<ItemDef>(defName);
+            var def = Core.Def.Get<ItemDef>(defName);
             Def profile = null;
             if (tag.TryGetTagValueOrDefault("ProfileID", out string profileName)) profile = Core.Def.GetDef(profileName);
 
@@ -757,7 +757,7 @@ namespace Project1.Core.Entities
         internal static GameObject Load(SaveTag tag)
         {
             tag.TryGetTagValueOrDefault("Def", out string defName);
-            var def = Core.Def.GetDef<ItemDef>(defName);
+            var def = Core.Def.Get<ItemDef>(defName);
             Def profile = null;
             if (tag.TryGetTagValueOrDefault("ProfileID", out string profileName)) profile = Core.Def.GetDef(profileName);
 

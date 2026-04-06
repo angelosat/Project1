@@ -48,7 +48,7 @@ namespace Project1.Core.WorldGen
        
         PlantSpeciesDef[] GetValidPlants()
         {
-            return Core.Def.GetDefs<PlantSpeciesDef>().ToArray();
+            return Core.Def.Get<PlantSpeciesDef>().ToArray();
         }
     }
 }

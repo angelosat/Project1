@@ -35,7 +35,7 @@ namespace Project1.Core.Crafting
 
         public CraftingManager(Town town) : base(town)
         {
-            var workstationDefs = Def.GetDefs<WorkstationDef>();
+            var workstationDefs = Def.Get<WorkstationDef>();
             foreach (var def in workstationDefs)
                 this._byType.Add(def, []);
         }

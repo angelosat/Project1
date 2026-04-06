@@ -55,7 +55,7 @@ namespace Project1.Core.Systems.Plants
             //Register(LightTree);
 
             System.IO.FileStream file = System.IO.File.Create(path);
-            var list = new List<PlantSpeciesDef>(GetDefs<PlantSpeciesDef>());
+            var list = new List<PlantSpeciesDef>(Get<PlantSpeciesDef>());
             ser.Serialize(file, list);
             file.Close();
         }
@@ -158,7 +158,7 @@ namespace Project1.Core.Systems.Plants
             //Register(LightTree);
 
             System.IO.FileStream file = System.IO.File.Create(path);
-            var list = new List<PlantSpeciesDef>(GetDefs<PlantSpeciesDef>());
+            var list = new List<PlantSpeciesDef>(Get<PlantSpeciesDef>());
             ser.Serialize(file, list);
             file.Close();
         }

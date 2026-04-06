@@ -381,7 +381,7 @@ namespace Project1.Core.Rooms
             this.Cells = new(this.Interior);
             tag.TryGetTagValueOrDefault("OwnerRef", out this.OwnerRef);
             tag.TryGetTagValue<int>("Workplace", ref this.workplaceID);
-            tag.TryGetTagValue<string>("RoomDef", v => this.roomRole = !v.IsNullEmptyOrWhiteSpace() ? Def.GetDef<RoomRoleDef>(v) : null);
+            tag.TryGetTagValue<string>("RoomDef", v => this.roomRole = !v.IsNullEmptyOrWhiteSpace() ? Def.Get<RoomRoleDef>(v) : null);
             return this;
         }
         public void Write(IDataWriter w)
@@ -399,7 +399,7 @@ namespace Project1.Core.Rooms
             this.Cells = new(this.Interior);
             this.OwnerRef = r.ReadInt32();
             this.workplaceID = r.ReadInt32();
-            this.roomRole = (r.ReadString() is string s && !s.IsNullEmptyOrWhiteSpace()) ? Def.GetDef<RoomRoleDef>(s) : null;
+            this.roomRole = (r.ReadString() is string s && !s.IsNullEmptyOrWhiteSpace()) ? Def.Get<RoomRoleDef>(s) : null;
             return this;
         }
 

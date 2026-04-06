@@ -60,7 +60,7 @@ namespace Project1.Core.Mood
 
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTagValue<string>("Def", t => this.Def = Core.Def.GetDef<MoodletDef>(t));
+            tag.TryGetTagValue<string>("Def", t => this.Def = Core.Def.Get<MoodletDef>(t));
             tag.TryGetTagValueOrDefault<int>("TicksRemaining", out this.TicksRemaining);
             return this;
         }
@@ -73,7 +73,7 @@ namespace Project1.Core.Mood
 
         public Moodlet Read(IDataReader r)
         {
-            this.Def = Core.Def.GetDef<MoodletDef>(r.ReadString());
+            this.Def = Core.Def.Get<MoodletDef>(r.ReadString());
             this.TicksRemaining = r.ReadInt32();
             return this;
         }

@@ -137,7 +137,7 @@ namespace Project1.Core.Towns.Duties
             var client = net as Client;
             //var player = client.GetPlayer(r.ReadInt32());
             var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
-            var jobDef = Def.GetDef<DutyDef>(r.ReadString());
+            var jobDef = Def.Get<DutyDef>(r.ReadString());
             var job = actor.GetDuty(jobDef);
             job.Read(r);
             net.Events.Post(new DutyUpdatedEvent(actor, jobDef));

@@ -138,7 +138,7 @@ namespace Project1.Core.Entities
             CraftingProperties = CraftingProperties.ToolCraftingProperties,
             NameGetter = e => e.Def.LabelReadable,
             VariantType = typeof(ToolProfileDef),
-            StorageFilterVariations = Def.GetDefs<ToolProfileDef>(),
+            StorageFilterVariations = Def.Get<ToolProfileDef>(),
             VariationGetter = e => e.Def,
             Comps = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComponent), typeof(StatsComponent)],
             CompDefs = [EntityCompDefOf.Tool, EntityCompDefOf.Ownership, EntityCompDefOf.Resources, EntityCompDefOf.Stats],
@@ -153,7 +153,7 @@ namespace Project1.Core.Entities
         }
         private static void GenerateCookingRecipes()
         {
-            var cookables = Def.GetDefs<ItemDef>().Where(d => d.RecipeProperties != null).ToList();
+            var cookables = Def.Get<ItemDef>().Where(d => d.RecipeProperties != null).ToList();
             foreach (var def in cookables)
                 Def.Register(def.CreateRecipe());
         }

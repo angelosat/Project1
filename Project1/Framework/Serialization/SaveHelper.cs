@@ -868,7 +868,7 @@ namespace Project1.Framework.Serialization
         {
             var list = tag[name].Value as List<SaveTag>;
             foreach (var item in list)
-                defs.Add(Def.GetDef<T>((string)item.Value));
+                defs.Add(Def.Get<T>((string)item.Value));
             return true;
         }
         public static bool TryLoadDefs<T>(this ICollection<T> defs, SaveTag tag, string name) where T : Def
@@ -877,7 +877,7 @@ namespace Project1.Framework.Serialization
                 return false;
             var list = listTag.Value as List<SaveTag>;
             foreach (var item in list)
-                defs.Add(Def.GetDef<T>((string)item.Value));
+                defs.Add(Def.Get<T>((string)item.Value));
             return true;
         }
         public static bool TryLoad(this ICollection<Def> defs, SaveTag tag, string name)
@@ -909,17 +909,17 @@ namespace Project1.Framework.Serialization
         }
         public static T LoadDef<T>(this SaveTag tag, string name) where T : Def
         {
-            return Def.GetDef<T>(tag[name].Value as string);
+            return Def.Get<T>(tag[name].Value as string);
         }
         public static T LoadDef<T>(this SaveTag tag) where T : Def
         {
-            return Def.GetDef<T>(tag.Value as string);
+            return Def.Get<T>(tag.Value as string);
         }
         public static bool TryLoadDef<T>(this SaveTag tag, string name, ref T target) where T : Def
         {
             if (!tag.TryGetTag(name, out var deftag))
                 return false;
-            target = Def.GetDef<T>((string)deftag.Value);
+            target = Def.Get<T>((string)deftag.Value);
             return true;
         }
         public static bool TryLoadDefOut<T>(this SaveTag tag, string name, out T target) where T : Def
@@ -929,7 +929,7 @@ namespace Project1.Framework.Serialization
                 target = default;
                 return false;
             }
-            target = Def.GetDef<T>((string)deftag.Value);
+            target = Def.Get<T>((string)deftag.Value);
             return true;
         }
         public static SaveTag Save(this IEnumerable<string> strings, string name)

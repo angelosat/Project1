@@ -25,7 +25,7 @@ namespace Project1.Core.UI.Blocks
             this.Picker = new();
             this.Panel_Blocks = new Panel() { AutoSize = true };
             this.ToolBox = new UIToolsBox(this.OnToolSelectedNew);
-            var categories = Def.GetDefs<BlockDef>().Where(b => b.Block.BlockDef.ConstructionProfile is not null).GroupBy(b => b.Block.BlockDef.ConstructionProfile.Category); // blocks without ingredients are built immediately (sleeping spots)
+            var categories = Def.Get<BlockDef>().Where(b => b.Block.BlockDef.ConstructionProfile is not null).GroupBy(b => b.Block.BlockDef.ConstructionProfile.Category); // blocks without ingredients are built immediately (sleeping spots)
             foreach (var cat in categories)
             {
                 var list = cat.Where(b => b.ConstructionProfile is not null);
@@ -46,7 +46,7 @@ namespace Project1.Core.UI.Blocks
 
             var cbox = new ComboBoxNew<ConstructionCategoryDef>(
                         new ButtonGridGenericNew<ConstructionCategoryDef>(
-                            Def.GetDefs<ConstructionCategoryDef>(),
+                            Def.Get<ConstructionCategoryDef>(),
                             (c, b) =>
                             {
                                 b.LeftClickAction = () =>
@@ -93,7 +93,7 @@ namespace Project1.Core.UI.Blocks
                 return lastVariant;
             var profile = block.ConstructionProfile;
             var refinement = profile.Refinements.First();
-            var validMats = Def.GetDefs<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
+            var validMats = Def.Get<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
             var defaultMat = validMats.First();
             return new ConstructionDesignationArgs(block, refinement, defaultMat, 0);
         }

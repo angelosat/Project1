@@ -29,7 +29,7 @@ namespace Project1.Core.World
         readonly ObservableCollection<WorldInhabitantView> WorldInhabitants = [];
         public IEnumerable<WorldInhabitantView> AllActors => this.WorldInhabitants;
         public readonly StaticWorld World;
-        const int WorldPopulationCap = 2;//1;//0;//6;
+        const int WorldPopulationCap = 3;//1;//0;//6;
         public int WorldPopulationCount { get; private set; }
         const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
         const int InitialApproval = 50;

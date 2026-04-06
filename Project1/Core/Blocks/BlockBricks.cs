@@ -21,7 +21,7 @@ namespace Project1.Core.Blocks
         }
         public override IEnumerable<MaterialDef> GetEditorVariations()
         {
-            return Def.GetDefs<MaterialDef>().Where(m => m.Type == MaterialTypeDefOf.Stone || m.Type == MaterialTypeDefOf.Metal);
+            return Def.Get<MaterialDef>().Where(m => m.Type == MaterialTypeDefOf.Stone || m.Type == MaterialTypeDefOf.Metal);
         }
     }
 }

@@ -10,9 +10,7 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Quests;
 
-record struct PlayerRequestQuestCreationEvent(MaterialRefinementDef RefinementDef, MaterialDef MaterialDef) : IEventPayload { }
-record struct PlayerRequestQuestDeletionEvent(QuestId Id) : IEventPayload { }
-record struct ActorAcceptedQuestsEvent(IntVec3 Board, EntityRefId ActorId, QuestId[] Quests) : IEventPayload { }
+
 internal sealed class CreateFetchQuestGui : GroupBox
 {
     MaterialRefinementDef refDef;
@@ -26,7 +24,7 @@ internal sealed class CreateFetchQuestGui : GroupBox
     readonly LabelNew LabelReward;
     public CreateFetchQuestGui()
     {
-        this.ComboRefinementDef = new ComboBoxFinal<MaterialRefinementDef>(() => Def.GetDefs<MaterialRefinementDef>(), 100, def => def?.LabelReadable, SetRefDef, () => refDef);
+        this.ComboRefinementDef = new ComboBoxFinal<MaterialRefinementDef>(() => Def.Get<MaterialRefinementDef>(), 100, def => def?.LabelReadable, SetRefDef, () => refDef);
         this.ComboRefinementDef.InvalidateOn(this.Notifier);
         this.ComboMaterialDef = new ComboBoxFinal<MaterialDef>(() => this.refDef is not null ? MaterialSystem.GetMaterialsByType(this.refDef.MaterialType) : [], 100, def => def?.LabelReadable, SetMatDef, () => materialDef);
         this.ComboMaterialDef.InvalidateOn(this.Notifier);
@@ -82,10 +80,10 @@ internal sealed class CreateQuestGui : GroupBox
     public CreateQuestGui()
     {
 
-        var comboItemDef = new ComboBoxFinal<ItemDef>(Def.GetDefs<ItemDef>(), 100, def => def?.LabelReadable, def => SetItem(def), () => itemDef);
+        var comboItemDef = new ComboBoxFinal<ItemDef>(Def.Get<ItemDef>(), 100, def => def?.LabelReadable, def => SetItem(def), () => itemDef);
         //var comboProfileDef = new ComboBoxNewNew<Def>(Def.GetDefs(this.profileDefType), 100, def => def?.LabelReadable, def => profileDef = def, () => profileDef);
-        var comboProfileDef = new ComboBoxFinal<Def>(() => Def.GetDefs(this.profileDefType), 100, def => def?.LabelReadable, def => profileDef = def, () => profileDef);
-        var comboMaterialDef = new ComboBoxFinal<MaterialDef>(Def.GetDefs<MaterialDef>(), 100, def => def?.LabelReadable, def => materialDef = def, () => materialDef);
+        var comboProfileDef = new ComboBoxFinal<Def>(() => Def.Get(this.profileDefType), 100, def => def?.LabelReadable, def => profileDef = def, () => profileDef);
+        var comboMaterialDef = new ComboBoxFinal<MaterialDef>(Def.Get<MaterialDef>(), 100, def => def?.LabelReadable, def => materialDef = def, () => materialDef);
 
         this.AddControlsHorizontally(comboItemDef, comboProfileDef, comboMaterialDef);
     }

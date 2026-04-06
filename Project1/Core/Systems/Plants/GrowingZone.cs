@@ -142,7 +142,7 @@ namespace Project1.Core.Systems.Plants
                 GrowingZone growzone = null;
                 var box = new GroupBox();// 300, 200);
                 box.AddControlsVertically(
-                    new ComboBoxNewNew<PlantSpeciesDef>(Def.GetDefs<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.LabelReadable ?? ""}", () => growzone?.Plant, p => PacketsGrowingZones.SendPlant(growzone, p)),
+                    new ComboBoxNewNew<PlantSpeciesDef>(Def.Get<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.LabelReadable ?? ""}", () => growzone?.Plant, p => PacketsGrowingZones.SendPlant(growzone, p)),
                     new CheckBoxNew("Tilling", () => PacketsGrowingZones.ToggleTilling(growzone), () => growzone.Tilling),
                     new CheckBoxNew("Planting", () => PacketsGrowingZones.TogglePlanting(growzone), () => growzone.Planting),
                     new CheckBoxNew("Harvesting", () => PacketsGrowingZones.ToggleHarvesting(growzone), () => growzone.Harvesting)
@@ -174,7 +174,7 @@ namespace Project1.Core.Systems.Plants
             {
                 var box = new GroupBox();// 300, 200);
                 box.AddControlsVertically(
-                    new ComboBoxNewNew<PlantSpeciesDef>(Def.GetDefs<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.LabelReadable ?? ""}", () => this.CurrentGrowZone?.Plant, p => PacketsGrowingZones.SendPlant(this.CurrentGrowZone, p)),
+                    new ComboBoxNewNew<PlantSpeciesDef>(Def.Get<PlantSpeciesDef>(), 128, $"Plant: ", d => $"{d?.LabelReadable ?? ""}", () => this.CurrentGrowZone?.Plant, p => PacketsGrowingZones.SendPlant(this.CurrentGrowZone, p)),
                     new CheckBoxNew("Tilling", () => PacketsGrowingZones.ToggleTilling(this.CurrentGrowZone), () => this.CurrentGrowZone.Tilling),
                     new CheckBoxNew("Planting", () => PacketsGrowingZones.TogglePlanting(this.CurrentGrowZone), () => this.CurrentGrowZone.Planting),
                     new CheckBoxNew("Harvesting", () => PacketsGrowingZones.ToggleHarvesting(this.CurrentGrowZone), () => this.CurrentGrowZone.Harvesting)

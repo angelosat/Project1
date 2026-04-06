@@ -59,7 +59,7 @@ namespace Project1.Core.Systems.Plants
             tree.GetComponent<PlantComponent>().GrowthBody.Percentage = 1;
             GameObject.AddTemplate(tree);
 
-            var allPlants = Def.GetDefs<PlantSpeciesDef>();
+            var allPlants = Def.Get<PlantSpeciesDef>();
             GameObject.AddTemplates(allPlants.Select(p => p.Create(PlantStageDefOf.Seed)));
             GameObject.AddTemplates(allPlants.Where(p => p.ProducesFruit).Select(p => p.Create(PlantStageDefOf.Fruit)));
 
@@ -67,7 +67,7 @@ namespace Project1.Core.Systems.Plants
                 .AddBuildSite(IsWorkstation.Types.PlantProcessing)
                 .AddIngredient("a", new Ingredient()
                     .SetAllow(ItemDefOf.Fruit, true))
-                .AddProduct(new Reaction.Product(i => Def.GetDefs<PlantSpeciesDef>().First(d => d.FruitMaterial == i["a"].PrimaryMaterial).Create(PlantStageDefOf.Seed) as Entity, 4))
+                .AddProduct(new Reaction.Product(i => Def.Get<PlantSpeciesDef>().First(d => d.FruitMaterial == i["a"].PrimaryMaterial).Create(PlantStageDefOf.Seed) as Entity, 4))
                 );
         }
     }

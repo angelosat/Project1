@@ -64,7 +64,7 @@ public class FrontierManager : IWorldSpaceManager
                 Deciders.Add((FrontierDecider)Activator.CreateInstance(type));
         }
 
-        _cachedDefs = [.. Def.GetDefs<FrontierDef>()];
+        _cachedDefs = [.. Def.Get<FrontierDef>()];
         FrontiersByTier = _cachedDefs.ToDictionary(d => new Tier(d.Tier), d => d);
     }
     public FrontierManager(StaticWorld world)

@@ -14,6 +14,7 @@ namespace Project1.Core.Systems.Materials
         public float Shininess;
         public DutyDef JobToExtract;
         public SkillDef SkillToRefine;
+        public SkillDef GatheringSkill;
         public MaterialProcessGraphDef ProductionGraph = MaterialProcessGraphDefOf.Default;
 
         public MaterialTypeDef(string name, MaterialChemistryDef chemistry)

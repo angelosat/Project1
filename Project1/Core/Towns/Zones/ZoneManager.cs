@@ -30,7 +30,7 @@ namespace Project1.Core.Towns.Zones
         static ZoneManager()
         {
             Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyCategoryManagement, "Zones", ToggleGui, System.Windows.Forms.Keys.Y);
-            ZoneDefs = [.. Def.GetDefs<ZoneDef>()];
+            ZoneDefs = [.. Def.Get<ZoneDef>()];
         }
         public ZoneManager(Town town)
         {

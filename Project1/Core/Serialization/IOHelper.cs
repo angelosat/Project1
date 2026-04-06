@@ -20,13 +20,13 @@ namespace Project1.Core.Serialization
         }
         public static T ReadDef<T>(this BinaryReader r) where T : Def
         {
-            return Def.GetDef<T>(r.ReadString());
+            return Def.Get<T>(r.ReadString());
         }
         public static ICollection<T> ReadDefs<T>(this ICollection<T> list, IDataReader r) where T : Def
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
-                list.Add(Def.GetDef<T>(r));
+                list.Add(Def.Get<T>(r));
             return list;
         }
         /// <summary>

@@ -8,11 +8,13 @@ namespace Project1.Core.Skills
     {
         public void Register()
         {
-            Registry.MapEventHooksClient.Register<SkillLevelUpEvent>(OnSkillIncreased);
+            Registry.WorldEventHooksClient.Register<SkillLevelUpEvent>(OnSkillIncreased);
         }
         private static void OnSkillIncreased(SkillLevelUpEvent e)
         {
             var actor = e.Actor;
+            if (!actor.IsSpawned)
+                return;
             var skill = e.Actor.Skills[e.Skill.Def];
             FloatingText.Create(actor.Map, actor.Global, $"{skill.SkillDef.LabelReadable} increased!", ft => ft.Font = UIManager.FontBold);
         }

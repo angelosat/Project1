@@ -165,7 +165,7 @@ namespace Project1.Core.Legacy.Crafting
 
         private void ResolveAllowedItems()
         {
-            var finalDefs = Def.GetDefs<ItemDef>();
+            var finalDefs = Def.Get<ItemDef>();
 
             if (this.SpecifiedItemDefs.Any())
                 this._resolvedItemDefs = this.SpecifiedItemDefs;

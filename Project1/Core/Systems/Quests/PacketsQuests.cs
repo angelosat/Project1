@@ -16,19 +16,40 @@ internal static class PacketsQuests
         _pCreateQuest = Registry.PacketHandlers.Register(ReceiveCreateQuest),
         _pPlayerCreateQuest = Registry.PacketHandlers.Register(ReceivePlayerCreateQuest),
         _pPlayerDeleteQuest = Registry.PacketHandlers.Register(ReceivePlayerDeleteQuest),
-        _pActorAcceptedQuests = Registry.PacketHandlers.Register(ReceiveActorAcceptedQuests)
+        _pActorAcceptedQuests = Registry.PacketHandlers.Register(ReceiveActorAcceptedQuests),
+        _pQuestComplete = Registry.PacketHandlers.Register(ReceiveQuestComplete)
         ;
 
-    
+   
 
     static PacketsQuests()
     {
         Registry.PlayerInputEventHooks.Register<PlayerRequestQuestCreationEvent>(HandlePlayerCreateQuest);
         Registry.PlayerInputEventHooks.Register<PlayerRequestQuestDeletionEvent>(HandlePlayerDeleteQuest);
-        Registry.MapEventHooksServer.Register<ActorAcceptedQuestsEvent>(HandleActorAcceptedQuests);
+        Registry.MapEventHooksServer.Register<QuestAssignedEvent>(HandleActorAcceptedQuests);
+        Registry.WorldEventHooksServer.Register<QuestCompleteEvent>(HandleQuestComplete);
     }
 
-    private static void HandleActorAcceptedQuests(ActorAcceptedQuestsEvent e)
+    private static void HandleQuestComplete(QuestCompleteEvent e)
+    {
+        SendQuestComplete(Server.Instance, e.ActorId, e.QuestId);
+    }
+
+    private static void SendQuestComplete(NetEndpoint endpoint, EntityRefId actorId, QuestId questId)
+    {
+        endpoint.BeginPacket(_pQuestComplete)
+            .Write(actorId)
+            .Write(questId);
+    }
+    private static void ReceiveQuestComplete(NetEndpoint endpoint, Packet packet)
+    {
+        var r = packet.PacketReader;
+        var actorid = r.ReadEntityRefId();
+        //var actor = endpoint.World.Get<Actor>();
+        var qid = (QuestId)r.ReadInt32();
+        endpoint.Map.Town.QuestManagerNew.UnassignQuest(actorid, qid);
+    }
+    private static void HandleActorAcceptedQuests(QuestAssignedEvent e)
     {
         var server = Server.Instance;
         server.BeginPacket(_pActorAcceptedQuests)

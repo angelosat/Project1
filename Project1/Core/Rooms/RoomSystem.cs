@@ -7,7 +7,7 @@ namespace Project1.Core.Rooms
     {
         static public IEnumerable<RoomRoleDef> RolesByFurniture(FurnitureDef furn)
         {
-            return Def.GetDefs<RoomRoleDef>().Where(r => r.Furniture.Contains(furn));
+            return Def.Get<RoomRoleDef>().Where(r => r.Furniture.Contains(furn));
         }
     }
 }

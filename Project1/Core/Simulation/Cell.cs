@@ -269,7 +269,7 @@ namespace Project1.Core.Simulation
         public Cell Read(IDataReader r)
         {
             this.Block = r.ReadDef<BlockDef>().Block;
-            this.Material = Def.GetDef<MaterialDef>(r);
+            this.Material = Def.Get<MaterialDef>(r);
             this.Data = new BitVector32(r.ReadInt32());
             return this;
         }

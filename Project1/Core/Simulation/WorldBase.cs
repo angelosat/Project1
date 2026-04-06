@@ -74,6 +74,7 @@ namespace Project1.Core.Simulation
         internal void RegisterInt(Entity entity)
         {
             this.EntityRegistry.Add(entity);
+            this.Events.Post(new EntityRegisteredEvent(entity));
         }
         public void Register(Entity entity, bool immediate = false)
         {

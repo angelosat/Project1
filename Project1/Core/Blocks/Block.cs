@@ -937,7 +937,7 @@ namespace Project1.Core.Blocks
             var profile = this.BlockDef.ConstructionProfile;
             foreach (var refinement in profile.Refinements)
             {
-                var validMats = profile.Materials ?? Def.GetDefs<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
+                var validMats = profile.Materials ?? Def.Get<MaterialDef>().Where(m => refinement.MaterialType == m.Type);
                 foreach (var mat in validMats)
                     yield return new ConstructionDesignationArgs(this.BlockDef, refinement, mat, ItemDefOf.Ingredient.StackCapacity); // HACK
             }

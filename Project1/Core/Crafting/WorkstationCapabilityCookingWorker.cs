@@ -18,7 +18,7 @@ namespace Project1.Core.Crafting
         public override (ResourceDef resource, int value) ResourceConsumption => (ResourceDefOf.Fuel, 5);
 
         public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
-            => Def.GetDefs<ConsumableDef>().Select(def => new AddOrderRequest(this.CapabilityDef, def));
+            => Def.Get<ConsumableDef>().Select(def => new AddOrderRequest(this.CapabilityDef, def));
 
         public override IEnumerable<CraftingRule> GetCraftingRulesStruct(Def recipe)
         {

@@ -89,7 +89,7 @@ namespace Project1.Core.Towns.Stockpiles
 
         public ItemFilter Read(IDataReader r)
         {
-            this.Item = Def.GetDef<ItemDef>(r.ReadString());
+            this.Item = Def.Get<ItemDef>(r.ReadString());
             this.Sync(r);
             return this;
         }

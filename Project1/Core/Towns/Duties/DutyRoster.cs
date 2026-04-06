@@ -9,7 +9,7 @@ namespace Project1.Core.Towns.Duties
 {
     public sealed class DutyRoster
     {
-        static List<DutyDef> AllDutyDefs => field ??= [.. Def.GetDefs<DutyDef>()];
+        static List<DutyDef> AllDutyDefs => field ??= [.. Def.Get<DutyDef>()];
         Dictionary<Actor, DutyAssignment> _rosterByActor = [];
         Dictionary<DutyDef, HashSet<Actor>> _rosterByDuty;
         public IReadOnlyDictionary<Actor, DutyAssignment> Roster => this._rosterByActor;

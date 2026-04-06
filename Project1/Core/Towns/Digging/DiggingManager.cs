@@ -77,7 +77,7 @@ namespace Project1.Core.Towns.Digging
         }
         public override void Load(SaveTag tag)
         {
-            tag.TryGetTagValue<List<SaveTag>>("Positions", v => this.AllPositions = new HashSet<IntVec3>(new List<IntVec3>().Load(v)));
+            tag.TryGetTagValue<List<SaveTag>>("Positions", v => this.AllPositions = [.. new List<IntVec3>().Load(v)]);
         }
         public override void Write(IDataWriter w)
         {

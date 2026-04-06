@@ -61,11 +61,11 @@ namespace Project1.Core
             return null;
         }
 
-        static public T GetDef<T>(IDataReader r) where T : Def
+        static public T Get<T>(IDataReader r) where T : Def
         {
-            return GetDef<T>(r.ReadString());
+            return Get<T>(r.ReadString());
         }
-        static public T GetDef<T>(string defName) where T : Def
+        static public T Get<T>(string defName) where T : Def
         {
             if (TryGetDef<T>(defName) is not T def)
             {
@@ -101,11 +101,11 @@ namespace Project1.Core
         {
             w.Write(this.Name);
         }
-        internal static IEnumerable<T> GetDefs<T>() where T: Def
+        internal static IEnumerable<T> Get<T>() where T: Def
         {
             return Database.Values.OfType<T>();
         }
-        internal static IEnumerable<Def> GetDefs(Type deftype)
+        internal static IEnumerable<Def> Get(Type deftype)
         {
             return Database.Values.Where(d => d.GetType().IsAssignableFrom(deftype));
         }

@@ -58,7 +58,7 @@ namespace Project1.Core.Systems.Plants
         {
             var r = packet.PacketReader;
             var zone = net.Map.Town.ZoneManager.GetZone<GrowingZone>(r.ReadInt32());
-            zone.Plant = Def.GetDef<PlantSpeciesDef>(r);
+            zone.Plant = Def.Get<PlantSpeciesDef>(r);
             zone.Tilling = r.ReadBoolean();
             zone.Planting = r.ReadBoolean();
             zone.Harvesting = r.ReadBoolean();

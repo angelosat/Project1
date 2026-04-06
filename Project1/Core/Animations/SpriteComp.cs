@@ -582,7 +582,7 @@ namespace Project1.Core.Animations
         public override Control GetParametrizer()
         {
             var parametrizableBones = this.Materials.Keys.Where(b => this.Owner.Def.CraftingProperties?.Reagents.ContainsKey(b) ?? false);
-            var allMats = Def.GetDefs<MaterialDef>();
+            var allMats = Def.Get<MaterialDef>();
             foreach (var bone in parametrizableBones)
             {
                 MaterialDef currentlySelectedMaterial = null;

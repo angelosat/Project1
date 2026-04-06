@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
+using Project1.Core.World.WorldAreas;
 using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,10 @@ namespace Project1.Core.Systems.Materials
     {
         internal static readonly Dictionary<MaterialTypeDef, HashSet<MaterialDef>> MaterialsByType = [];
         static readonly Dictionary<int, HashSet<MaterialDef>> MaterialsByTier = [];
+        static readonly Dictionary<int, Dictionary<MaterialRefinementDef, MaterialDef>> RefinemenetsByTier = [];
         static MaterialSystem()
         {
-            var allmats = Def.GetDefs<MaterialDef>();
+            var allmats = Def.Get<MaterialDef>();
             foreach (var matdef in allmats)
             {
                 if (!MaterialsByType.TryGetValue(matdef.Type, out var list))
@@ -23,8 +25,25 @@ namespace Project1.Core.Systems.Materials
                 if (!MaterialsByTier.TryGetValue(tier, out var listByTier))
                     MaterialsByTier[tier] = listByTier = [];
                 listByTier.Add(matdef);
+
+            }
+
+            var allRefs = Def.Get<MaterialRefinementDef>();
+            foreach (var refDef in allRefs)
+            {
+                var typ = refDef.MaterialType;
+                var mats = MaterialsByType[typ];
+                foreach(var mat in mats)
+                {
+                    var tier = mat.Tier;
+                    if (!RefinemenetsByTier.TryGetValue(tier, out var dicType))
+                        RefinemenetsByTier[tier] = dicType = [];
+                    dicType.Add(refDef, mat);
+                }
             }
         }
+        public static MaterialDef ByTierAndType(int tier, MaterialRefinementDef refinement)
+            => RefinemenetsByTier[tier][refinement];
         public static IReadOnlySet<MaterialDef> GetMaterialsByType(MaterialTypeDef typeDef)
             => typeDef is null ? [] : MaterialsByType[typeDef];
         static public Entity Create(MaterialRefinementDef profile, MaterialDef material, int stackSize = -1)
@@ -49,8 +68,8 @@ namespace Project1.Core.Systems.Materials
 
         static public IEnumerable<Entity> GenerateTemplates()
         {
-            var states = Def.GetDefs<MaterialRefinementDef>();
-            var materials = Def.GetDefs<MaterialDef>();
+            var states = Def.Get<MaterialRefinementDef>();
+            var materials = Def.Get<MaterialDef>();
 
             foreach (var state in states)
                 foreach (var material in materials.Where(m => m.Type == state.MaterialType))

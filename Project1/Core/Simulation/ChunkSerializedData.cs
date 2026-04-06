@@ -282,7 +282,7 @@ namespace Project1.Core.Simulation
                 if (string.IsNullOrWhiteSpace(kvp.Key))
                     continue;
 
-                var blockDef = Def.GetDef<BlockDef>(kvp.Key);
+                var blockDef = Def.Get<BlockDef>(kvp.Key);
                 var runTags = kvp.Value.GetList();
                 var runs = new Run[runTags.Count];
                 for (int i = 0; i < runTags.Count; i++)
@@ -310,7 +310,7 @@ namespace Project1.Core.Simulation
                 if (string.IsNullOrWhiteSpace(kvp.Key))
                     continue;
 
-                var matDef = Def.GetDef<MaterialDef>(kvp.Key);
+                var matDef = Def.Get<MaterialDef>(kvp.Key);
                 var runTags = kvp.Value.GetList();
                 var runs = new Run[runTags.Count];
                 for (int i = 0; i < runTags.Count; i++)
@@ -423,7 +423,7 @@ namespace Project1.Core.Simulation
             for (int i = 0; i < blockRunCount; i++)
             {
                 string blockName = reader.ReadString();
-                var blockDef = Def.GetDef<BlockDef>(blockName);
+                var blockDef = Def.Get<BlockDef>(blockName);
                 int runCount = reader.ReadInt32();
                 var runs = new Run[runCount];
                 for (int j = 0; j < runCount; j++)
@@ -444,7 +444,7 @@ namespace Project1.Core.Simulation
             for (int i = 0; i < materialRunCount; i++)
             {
                 string matName = reader.ReadString();
-                var matDef = Def.GetDef<MaterialDef>(matName);
+                var matDef = Def.Get<MaterialDef>(matName);
                 int runCount = reader.ReadInt32();
                 var runs = new Run[runCount];
                 for (int j = 0; j < runCount; j++)

@@ -121,9 +121,9 @@ namespace Project1.Core.Skills
             var actor = this.Owner as Actor;
             var s = this.SkillsNew[skill];
             var result = s.AwardInt(xp);
-            actor.Map.Events.Post(new SkillAdjustedEvent(actor, s));
+            actor.World.Events.Post(new SkillAdjustedEvent(actor, s));
             if(result == Skill.SkillXpAwardResult.LevelUp)
-                actor.Map.Events.Post(new SkillLevelUpEvent(actor, s));
+                actor.World.Events.Post(new SkillLevelUpEvent(actor, s));
         }
 
         public new class Spec : Spec<SkillsComponent>

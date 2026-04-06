@@ -31,7 +31,7 @@ namespace Project1.Core.Rooms
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
             var room = net.Map.Town.RoomManager.GetRoom(r.ReadInt32());
-            var roomdef = r.ReadString() is string roomRoleName && !roomRoleName.IsNullEmptyOrWhiteSpace() ? Def.GetDef<RoomRoleDef>(roomRoleName) : null;
+            var roomdef = r.ReadString() is string roomRoleName && !roomRoleName.IsNullEmptyOrWhiteSpace() ? Def.Get<RoomRoleDef>(roomRoleName) : null;
             if (net is Client)
                 room.RoomRole = roomdef;
             else

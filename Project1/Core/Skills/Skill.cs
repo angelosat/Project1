@@ -52,7 +52,7 @@ namespace Project1.Core.Skills
             if (this.LvlProgress.Value + v < this.LvlProgress.Max)
             {
                 this.LvlProgress.ApplyDelta(v);
-                actor.Map.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
+                actor.World.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
                 return;
             }
             var remaining = this.LvlProgress.Value + v;
@@ -67,8 +67,8 @@ namespace Project1.Core.Skills
             this.LvlProgress.SetMax(GetNextLvlXp(this.Level));
             this.LvlProgress.SetValue(remaining);
             actor.Net.ConsoleBox.Write(Log.Entry.Notification(actor, " has reached Level ", this.Level," in ", this, "!"));
-            actor.Map.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
-            actor.Map.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
+            actor.World.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
+            actor.World.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
         }
         internal enum SkillXpAwardResult { XpGain, LevelUp }
         internal SkillXpAwardResult AwardInt(int v)
@@ -103,9 +103,9 @@ namespace Project1.Core.Skills
             var actor = this.Comp.Owner;
             this.Level = level;
             this.LvlProgress.SetValue(xp);
-            actor.Map.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
+            actor.World.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
             if (this.Level != oldLevel)
-                actor.Map.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
+                actor.World.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
         }
         public Control GetListControlGui()
         {

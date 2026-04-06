@@ -121,9 +121,9 @@ namespace Project1.Core.Towns
                 var tavern = net.Map.Town.GetShop<Tavern>(r.ReadInt32());
                 var order = tavern.GetOrder(r.ReadInt32());
                 var reagent = r.ReadString();
-                var defs = r.ReadStringArray().Select(Def.GetDef<ItemDef>).ToArray();
-                var mats = r.ReadStringArray().Select(Def.GetDef<MaterialDef>).ToArray();
-                var matTypes = r.ReadStringArray().Select(Def.GetDef<MaterialTypeDef>).ToArray();
+                var defs = r.ReadStringArray().Select(Def.Get<ItemDef>).ToArray();
+                var mats = r.ReadStringArray().Select(Def.Get<MaterialDef>).ToArray();
+                var matTypes = r.ReadStringArray().Select(Def.Get<MaterialTypeDef>).ToArray();
                 if (net is Client)
                     throw new NotImplementedException();
                     //order.ToggleReagentRestrictions(reagent, defs, mats, matTypes);

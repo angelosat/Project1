@@ -9,7 +9,7 @@ namespace Project1.Core.Systems.ItemRoles
         public static readonly ItemRoleDef Nutrition = new(ItemRoleContextDefOf.Nutrition, null);
         static ItemRoleDefOf()
         {
-            var contexts = Def.GetDefs<ItemRoleContextDef>();
+            var contexts = Def.Get<ItemRoleContextDef>();
             ///solidify list because we modify it within the iteration
             foreach (var contextDef in contexts.ToList())
             {

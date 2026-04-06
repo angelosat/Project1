@@ -28,7 +28,7 @@ namespace Project1.Core.Entities
         }
 
         static QualityDef[] _allCached;
-        static QualityDef[] All => _allCached ??= [.. GetDefs<QualityDef>()];
+        static QualityDef[] All => _allCached ??= [.. Get<QualityDef>()];
 
         public static QualityDef GetRandom(Random rand, float mastery)
         {

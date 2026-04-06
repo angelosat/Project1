@@ -56,7 +56,7 @@ namespace Project1.Core.Blocks
         }
         public override IEnumerable<MaterialDef> GetEditorVariations()
         {
-            return Def.GetDefs<MaterialDef>().Where(mat => mat.Type == MaterialTypeDefOf.Wood);
+            return Def.Get<MaterialDef>().Where(mat => mat.Type == MaterialTypeDefOf.Wood);
         }
        
         public override void Draw(MySpriteBatch sb, Vector2 screenPos, Color sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)

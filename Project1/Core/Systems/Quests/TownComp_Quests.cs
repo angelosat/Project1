@@ -200,7 +200,7 @@ public sealed class TownComp_Quests : TownComponent
         //var boardResourceComp = boardEntity.GetComp<BlockResourcesComp>();
         //boardResourceComp.ApplyDelta(ResourceDefOf.Cash, -budgetUsed);
         boardEntity.GetCompOrDefault<BlockQuestsComp>().ReservedBudget += budgetUsed;
-        this.Map.Events.Post(new ActorAcceptedQuestsEvent(board, actorid, [.. list]));
+        this.Map.Events.Post(new QuestAssignedEvent(board, actorid, [.. list]));
         this.Notifier.Notify();
     }
 
@@ -315,7 +315,7 @@ public sealed class TownComp_Quests : TownComponent
 
     private void UnassignQuest(Actor actor, QuestRuntime quest)
         => this.UnassignQuest(actor.RefId, quest.Id);
-    private void UnassignQuest(EntityRefId actorid, QuestId questid)
+    internal void UnassignQuest(EntityRefId actorid, QuestId questid)
     {
         var list = this.AcceptedQuestsByActor[actorid];
         list.Remove(questid);
@@ -323,7 +323,9 @@ public sealed class TownComp_Quests : TownComponent
             this.AcceptedQuestsByActor.Remove(actorid);
         this.AcceptedQuestsByQuest[questid].Remove(actorid);
         this.Trackers.Remove((actorid, questid));
+        this.World.Events.Post(new QuestCompleteEvent(actorid, questid));
     }
+
     internal override void ResolveReferences()
     {
         foreach (var be in this.Map.BlockEntities)

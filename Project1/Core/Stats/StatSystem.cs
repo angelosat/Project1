@@ -19,17 +19,17 @@ namespace Project1.Core.Entities.Stats
         static public IReadOnlyDictionary<ToolUseDef, InteractionDef> ToolToInteraction => _toolToInteraction;
         static StatSystem()
         {
-            var tooldefs = Def.GetDefs<ToolUseDef>();
+            var tooldefs = Def.Get<ToolUseDef>();
             foreach (var def in tooldefs)
                 if(def.Skill is not null)
                 _skillsToTools[def.Skill] = def;
 
-            var toolprofiles = Def.GetDefs<ToolProfileDef>();
+            var toolprofiles = Def.Get<ToolProfileDef>();
             foreach (var profile in toolprofiles)
                 if(profile.ToolUse is not null)
                 _useToProfile[profile.ToolUse] = profile;
 
-            var interactions = Def.GetDefs<InteractionDef>();
+            var interactions = Def.Get<InteractionDef>();
             foreach (var i in interactions)
                 if (i.ToolUse is ToolUseDef use)
                 {

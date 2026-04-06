@@ -35,7 +35,7 @@ namespace Project1.Core.Legacy
         }
         public ISaveable Load(SaveTag tag)
         {
-            this.Def = Core.Def.GetDef<ItemDef>(tag.GetValue<string>("Def"));
+            this.Def = Core.Def.Get<ItemDef>(tag.GetValue<string>("Def"));
             this.Amount = tag.GetValue<int>("Amount");
             return this;
         }
@@ -46,7 +46,7 @@ namespace Project1.Core.Legacy
         }
         public ItemDefAmount Read(IDataReader r)
         {
-            this.Def = Core.Def.GetDef<ItemDef>(r.ReadString());
+            this.Def = Core.Def.Get<ItemDef>(r.ReadString());
             this.Amount = r.ReadInt32();
             return this;
         }

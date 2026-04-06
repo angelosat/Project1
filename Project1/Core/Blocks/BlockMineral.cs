@@ -20,7 +20,7 @@ namespace Project1.Core.Blocks
         }
         public override IEnumerable<MaterialDef> GetEditorVariations()
         {
-            return Def.GetDefs<MaterialDef>().Where(mat => mat.Type == MaterialTypeDefOf.Stone || mat.Type == MaterialTypeDefOf.Metal);
+            return Def.Get<MaterialDef>().Where(mat => mat.Type == MaterialTypeDefOf.Stone || mat.Type == MaterialTypeDefOf.Metal);
         }
         public override void DrawUI(SpriteBatch sb, Vector2 pos)
         {

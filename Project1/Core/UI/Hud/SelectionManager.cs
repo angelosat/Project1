@@ -36,7 +36,7 @@ namespace Project1.Core.UI.Hud
         int _selectedStackIndex;
         readonly SelectionFinal Selection = new();
         public static readonly SelectionManager Instance = new();
-        static readonly Lazy<List<OrderCommandDef>> AllOrderCommands = new(() => [.. Def.GetDefs<OrderCommandDef>()]);
+        static readonly Lazy<List<OrderCommandDef>> AllOrderCommands = new(() => [.. Def.Get<OrderCommandDef>()]);
 
         public IReadOnlyCollection<ISelectable> CurrentSelections => this.Selection.Targets;
         HashSet<ISelectable> MultipleSelected => this.Selection.Targets;
@@ -354,7 +354,7 @@ namespace Project1.Core.UI.Hud
             this.InitTabs(target);
 
         }
-        static IEnumerable<SelectionMiniButtonDef> AllMiniButtons => field ??= Def.GetDefs<SelectionMiniButtonDef>();
+        static IEnumerable<SelectionMiniButtonDef> AllMiniButtons => field ??= Def.Get<SelectionMiniButtonDef>();
         private void RefreshMiniButtons(ISelectable selected)
         {
             this.BoxIcons.ClearControls();

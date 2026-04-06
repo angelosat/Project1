@@ -73,6 +73,7 @@ namespace Project1.Core.Systems.Inventory
         }
         public void Add(Entity item)
         {
+            //ArgumentNullException.ThrowIfNull(item.World);
             if (item.Container == this)
                 throw new Exception();
             if (this.Contents.FirstOrDefault(i => i.CanAbsorb(item)) is Entity existing)
@@ -87,7 +88,8 @@ namespace Project1.Core.Systems.Inventory
                 return;
                 //throw new NotImplementedException();
             }
-
+            if (item.World is null)
+                this.Parent.World.Register(item);
             ((ICollection<Entity>)this.Contents).Add(item);
             item.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
             item.Detach();

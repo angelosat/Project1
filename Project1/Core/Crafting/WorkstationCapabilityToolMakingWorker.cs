@@ -16,7 +16,7 @@ namespace Project1.Core.Crafting
 
         public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
         {
-            return Def.GetDefs<ToolProfileDef>()
+            return Def.Get<ToolProfileDef>()
                 .Select(def => new AddOrderRequest(this.CapabilityDef, def)
                     .AddCondition(new CraftingOrderModuleReq(2)));
         }

@@ -32,7 +32,7 @@ namespace Project1.Core.Towns.Designations
         ReadOnlyDictionary<DesignationDef, ObservableHashSet<BlockEntity>> BlockEntityDesignations;
         public readonly Dictionary<DesignationDef, BlockRendererObservable> Renderers = [];
         static List<DesignationDef> designationDefs;
-        static List<DesignationDef> AllDesignationDefs => designationDefs ??= [.. Def.GetDefs<DesignationDef>()];
+        static List<DesignationDef> AllDesignationDefs => designationDefs ??= [.. Def.Get<DesignationDef>()];
         private static readonly IHotkey Hotkey;
         GroupBox _pendingDesignationLabel;
         GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();
@@ -40,13 +40,13 @@ namespace Project1.Core.Towns.Designations
         {
             Hotkey = HotkeyManager.RegisterHotkey(ToolManagement.HotkeyCategoryManagement, "Designations", ToggleGui, System.Windows.Forms.Keys.U);
 
-            foreach (var d in Def.GetDefs<DesignationDef>())
+            foreach (var d in Def.Get<DesignationDef>())
                 HotkeyManager.RegisterHotkey(ToolManagement.HotkeyCategoryManagement, $"Designate: {d.LabelReadable}", () => SetTool(d));
         }
         
         public DesignationManager(Town town) : base(town)
         {
-            var desDefs = Def.GetDefs<DesignationDef>();
+            var desDefs = Def.Get<DesignationDef>();
 
             var cellDesignationDefs = desDefs.Where(d => d.TargetType == TargetType.Cell);
             var entityDesignationDefs = desDefs.Where(d => d.TargetType == TargetType.Entity);

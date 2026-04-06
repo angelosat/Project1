@@ -15,14 +15,14 @@ namespace Project1.Core.Systems.Plants
         public string GrowthMaterialString
         {
             get => this.GrowthMaterial.Name;
-            set => this.GrowthMaterial = Def.GetDef<MaterialDef>(value);
+            set => this.GrowthMaterial = Def.Get<MaterialDef>(value);
         }
 
         [XmlElement(ElementName = "GrowthItemDef")]
         public string GrowthItemDefString
         {
             get => this.GrowthItemDef.Name;
-            set => this.GrowthItemDef = Def.GetDef<ItemDef>(value);
+            set => this.GrowthItemDef = Def.Get<ItemDef>(value);
         }
 
         public int MaxYieldHarvest;

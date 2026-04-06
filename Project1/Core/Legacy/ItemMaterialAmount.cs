@@ -78,8 +78,8 @@ namespace Project1.Core.Legacy
         }
         public ItemMaterialAmount Read(IDataReader r)
         {
-            this.Item = Def.GetDef<ItemDef>(r.ReadString());
-            this.Material = Def.GetDef<MaterialDef>(r.ReadString());
+            this.Item = Def.Get<ItemDef>(r.ReadString());
+            this.Material = Def.Get<MaterialDef>(r.ReadString());
             this.Amount = r.ReadInt32();
             return this;
         }

@@ -941,7 +941,7 @@ namespace Project1.Core.Blocks
             }
         }
 
-        internal virtual bool IsAvailable(MapBase map) => true;
+        internal virtual (bool result, string error) IsAvailable(MapBase map) => (true, null);
 
         internal virtual void OnPlaced(CellQuery cellQuery) { }
 

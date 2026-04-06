@@ -5,6 +5,7 @@ using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Consumables.Scrolls;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Presentation;
 using Project1.Framework;
@@ -22,6 +23,23 @@ internal sealed class PresentationParticles : IPresentationWorker
         Registry.MapEventHooksClient.Register<PlantChoppedEvent>(OnPlantChopped);
         Registry.MapEventHooksClient.Register<ActorFootStepEvent>(OnEntityFootStep);
         Registry.MapEventHooksClient.Register<BlockParticlesEvent>(OnBlockParticles);
+        Registry.MapEventHooksClient.Register<EntityTeleportedEvent>(OnEntityTeleport);
+    }
+
+    private void OnEntityTeleport(EntityTeleportedEvent e)
+    {
+        var entity = e.Entity;
+        var map = entity.Map;
+        var emitter = NewEmitter(entity.Global);
+        emitter.Radius = .5f;
+        emitter.Force = .2f;
+        emitter.Acceleration = Vector3.One * .8f;
+        emitter.Source = entity.Global;
+        emitter.SizeBegin = emitter.SizeEnd = 2;
+        emitter.ParticleWeight = -.1f;
+        emitter.Emit(100);
+        emitter.ColorBegin = emitter.ColorEnd = Color.Teal;
+        map.ParticleManager.AddEmitter(emitter);
     }
 
     private static void OnBlockParticles(BlockParticlesEvent e)

@@ -78,6 +78,14 @@ namespace Project1.Core.Input
             bool isReplace = InputState.IsKeyDown(this.KeyReplace);
             var global = this.Target.Global + ((isDelete || isReplace) ? Vector3.Zero : this.Target.Face);
             var block = isDelete ? BlockDefOf.Air.Block : this.Block;
+
+            var (result, error) = block.IsAvailable(this.Target.Map);
+            if (!result)
+            {
+                Ingame.Net.ChatService.Post(ChatSource.System, error);
+                return;
+            }
+
             byte state = isDelete ? (byte)0 : this.State;
 
             if (global != this.LastPainted)

@@ -18,8 +18,8 @@ class BlockWaypoint : Block
         this.Ingredient = new Ingredient(RawMaterialDefOf.Ingots, null, null, 1);
         this.BuildProperties.Category = ConstructionCategoryDefOf.Structural;
     }
-    internal override bool IsAvailable(MapBase map)
-        => !map.Town.Waypoint.HasValue;
+    internal override (bool result, string error) IsAvailable(MapBase map)
+        => map.Town.Waypoint.HasValue ? (false, "Waypoint already exists") : (true, null);
     public override float GetPathingCost(byte data)
     {
         return 0;

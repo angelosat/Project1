@@ -191,6 +191,8 @@ public sealed class Town : Inspectable, IDutyProvider
         {
             if (ee.Block == BlockDefOf.Waypoint.Block)
                 this.Waypoint = ee.Global.Above;
+            else if (this.Waypoint.HasValue && this.Waypoint.Value == ee.Global.Above)
+                this.Waypoint = null;
         }
     }
 

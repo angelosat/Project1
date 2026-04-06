@@ -113,9 +113,9 @@ public class FrontierManager : IWorldSpaceManager
             this.ActorPositions[actor] = nextDistance;
             var currentFrontier = this.GetFrontier(actor);
             currentFrontier.Tick(actor);
-            actor.TickOffMap();
             if(actor.Net.IsServer)
                 this.EventSchedulers[actor].Tick(this.World.CurrentTick);
+            actor.TickOffMap();
         }
     }
     static internal FrontierDef GetFrontier(Tier tier)

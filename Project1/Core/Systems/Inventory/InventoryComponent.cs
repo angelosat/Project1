@@ -229,7 +229,7 @@ namespace Project1.Core.Systems.Inventory
         }
         public IEnumerable<Entity> All => this.GetItems();
 
-        public Entity First(Func<Entity, bool> filter)
+        public Entity? First(Func<Entity, bool> filter)
         {
             foreach (var slot in this.Contents)
                 if (filter(slot))

@@ -1,11 +1,35 @@
 ﻿using Project1.Core.AI.Thought;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Quests;
 using Project1.Core.World.WorldAreas;
 using System.Linq;
 
 namespace Project1.Core.AI.MetaRoles.Adventurer;
 
+internal class ThoughtProcess_UseTownScroll : ThoughtProcess
+{
+    internal override void TickOffMap(AIState state)
+    {
+        var actor = state.Owner;
+        if (actor.Net.IsClient)
+            return;
+        var meta = actor.AI.Meta;
+        if (meta.TargetFrontier is not null)
+            return;
+        if (actor.Inventory.First(i => i.Profile == ConsumableDefOf.TownScroll) is not Entity item)
+            return;
+        if (!actor.Net.Map.Town.Waypoint.HasValue)
+            return;
+        ConsumableDefOf.TownScroll.Effect.Execute(actor);
+        item.Consume(1);
+    }
+
+    internal override void TickOnMap(AIState state)
+    {
+    }
+}
 internal class ThoughtProcess_Quests : ThoughtProcess
 {
     internal override void TickOffMap(AIState state)

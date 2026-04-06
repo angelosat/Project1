@@ -8,8 +8,9 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Crafting
 {
-    public class WorkstationCapabilitySmeltingWorker(WorkstationCapabilityDef def) : WorkstationCapabilityWorker(def)
+    public class WorkstationCapabilitySmelting/*(WorkstationCapabilityDef def) */: WorkstationCapabilityWorker/*(def)*/
     {
+        public override WorkstationCapabilityDef CapabilityDef => WorkstationCapabilityDefOf.Smelting;
         public override bool CreatesUnfinished => false;
         public override SkillDef CraftingSkill => SkillDefOf.Smithing;
         public override (ResourceDef resource, int value) ResourceConsumption => (ResourceDefOf.Fuel, 5);

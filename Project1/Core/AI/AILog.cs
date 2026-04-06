@@ -24,7 +24,7 @@ namespace Project1.Core.AI
             this.Inner.Add(entry);
             if (this.Inner.Count > Capacity)
                 this.Inner.RemoveAt(0);
-            this.Owner.World.Events.Post(new AILogEntryEvent(this.Owner, text));
+            this.Owner.World?.Events.Post(new AILogEntryEvent(this.Owner, text));
             return entry;
         }
         

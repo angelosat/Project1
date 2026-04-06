@@ -31,24 +31,8 @@ namespace Project1.Core.Towns.Stockpiles
     }
     internal sealed class StockpileFiltersGui : SelectionBoundControl// GroupBox, ISelectionBound
     {
-        //readonly Stockpile Stockpile;
         Action _unsub;
         ListCollapsibleNewNew ListCollapsible;
-        //public StockpileFiltersGui(Stockpile stockpile)
-        //{
-        //    this.Stockpile = stockpile;
-        //    var entries = IngredientGroupBuilder.Build(stockpile);
-        //    this.ListCollapsible = new ListCollapsibleNewNew();
-        //    this.ListCollapsible.BuildNew(entries);
-        //    Client.Instance.Map.Events.ListenTo<StockpileUpdatedEvent>(OnStockpileUpdatedEvent);
-
-        //    var box = new ScrollableBoxNewNewNew(this.ListCollapsible, 200, 400, ScrollModes.Vertical);
-        //    this.AddControls(box);
-        //}
-        //public StockpileFiltersGui()
-        //{
-
-        //}
 
         protected internal override void OnBind(ISelectable selectable)
         {

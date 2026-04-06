@@ -55,7 +55,7 @@ namespace Project1.Core.Entities
             StackCapacity = 32,
             Category = ItemCategoryDefOf.FoodRaw,
             ReplaceName = true,
-            Comps = [typeof(ConsumableComponent)],
+            Comps = [typeof(ConsumableComp)],
             CompDefs = [EntityCompDefOf.Consumable],
             Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull),
             ProfileType = typeof(PlantSpeciesDef)
@@ -64,7 +64,7 @@ namespace Project1.Core.Entities
         {
             StackCapacity = 32,
             ReplaceName = true,
-            Comps = [typeof(ConsumableComponent)],
+            Comps = [typeof(ConsumableComp)],
             CompDefs = [EntityCompDefOf.Consumable],
             Body = new Bone(BoneDefOf.Item, Sprite.Default),
             //DefaultSprite = Sprite.Default
@@ -75,7 +75,7 @@ namespace Project1.Core.Entities
             StackCapacity = 8,
             Category = ItemCategoryDefOf.FoodRaw,
             DefaultMaterialType = MaterialTypeDefOf.Flesh,
-            Comps = [typeof(ConsumableComponent)],
+            Comps = [typeof(ConsumableComp)],
             CompDefs = [EntityCompDefOf.Consumable],
             Body = new Bone(BoneDefOf.Item, Sprite.Default),
             ProfileType = typeof(MaterialRefinementDef)
@@ -96,11 +96,11 @@ namespace Project1.Core.Entities
                             .SetAllow(def.ValidMaterialTypes, true)
                             .SetAllowed(ItemCategoryDefOf.FoodRaw, true))
                     .AddProductMaker(def => new Reaction.Product(def).GetMaterialFromIngredient("Filling")),
-            Comps = [typeof(ConsumableComponent)],
+            Comps = [typeof(ConsumableComp)],
             CompDefs = [EntityCompDefOf.Consumable],
 
         }.SetMadeFrom(MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Flesh)
-            .AddSpec(new ConsumableComponent.Spec() { FoodClasses = [FoodClass.Dish] });
+            .AddSpec(new ConsumableComp.Spec());// { FoodClasses = [FoodClass.Dish] });
 
         static public readonly ItemDef Coins = new("Coins", typeof(Entity))
         {

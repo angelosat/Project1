@@ -89,7 +89,8 @@ namespace Project1.Core.Graphics
                 this.Texture.Dispose();
         }
 
-        static Sprite _default = new("default", new Vector2(16, 24), new Vector2(16, 24));
+        //static Sprite _default = new("default", new Vector2(16, 24), new Vector2(16, 24));
+        static Sprite _default = new("default", new Vector2(16, 32), new Vector2(16, 32));
         static public Sprite Default => _default;
 
         public static Sprite Shadow;

@@ -5,14 +5,16 @@ using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
 using Project1.Framework.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Crafting
 {
-    public abstract class WorkstationCapabilityWorker(WorkstationCapabilityDef def)
+    public abstract class WorkstationCapabilityWorker//WorkstationCapabilityDef def)
     {
-        public readonly WorkstationCapabilityDef CapabilityDef = def;
+        //public readonly WorkstationCapabilityDef CapabilityDef = def;
+        public abstract WorkstationCapabilityDef CapabilityDef { get; }
         public abstract bool CreatesUnfinished { get; }
         public abstract SkillDef CraftingSkill { get; }
         public virtual (ResourceDef resource, int value) ResourceConsumption { get; }
@@ -26,5 +28,7 @@ namespace Project1.Core.Crafting
             => this.GetBoneLayout().Zip(ingredients).ToDictionary();
         public Dictionary<BoneDef, MaterialDef> MapBonesToMaterials(Def recipe, IEnumerable<MaterialDef> materials)
             => this.GetBoneLayout().Zip(materials).ToDictionary();
+
+        internal virtual int GetOutputStackSize(Def recipe) => 1;
     }
 }

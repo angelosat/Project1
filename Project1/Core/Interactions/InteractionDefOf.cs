@@ -118,7 +118,7 @@ namespace Project1.Core.Interactions
             Skill = SkillDefOf.Construction,
             ToolUse = ToolUseDefOf.Building
         };
-        public static readonly InteractionDef Craft = new("Crafting", typeof(InteractionCraftingLogic))
+        public static readonly InteractionDef Craft = new("Crafting", typeof(InteractionCrafting))
         {
             Animation = AnimationDefOf.Tool,
             Controller = InteractionControllers.Internal,// new InteractionProgressTool(),

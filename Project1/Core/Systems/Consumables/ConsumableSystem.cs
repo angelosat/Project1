@@ -1,7 +1,5 @@
 ﻿using Project1.Core.Animations;
-using Project1.Core.Assets;
 using Project1.Core.Entities;
-using Project1.Core.Graphics;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
@@ -23,10 +21,10 @@ namespace Project1.Core.Systems.Consumables
             //    .Allow(MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Chunk);
         }
 
-        public static Entity Create(ConsumableDef profile, MaterialDef material)
+        public static Entity Create(ConsumableDef profile, MaterialDef material, int stackSize = -1)
         {
-            var item = ItemDefOf.Consumable.Create();
-            item.Profile = profile;
+            var item = ItemDefOf.Consumable.Create(profile: profile, amount: stackSize);
+            //item.Profile = profile;
             //item.Body.Sprite = Sprite.Default;
             item.Body.Sprite = profile.Sprite;
             item.Name = $"{material.LabelReadable} {profile.LabelReadable}";
@@ -36,7 +34,7 @@ namespace Project1.Core.Systems.Consumables
 
         internal static Entity Create(EntityCreationRequest req)
         {
-            return Create((ConsumableDef)req.Context, req.MaterialBindings[BoneDefOf.Item]);
+            return Create((ConsumableDef)req.Context, req.MaterialBindings[BoneDefOf.Item], req.StackSize);
         }
 
         //public static IEnumerable<CraftingRules> GetRules(ConsumableDef def) => Rules.Values;

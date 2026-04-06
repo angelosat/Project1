@@ -14,6 +14,8 @@ namespace Project1.Core.Towns.AI.Behaviors
         const int MaxTries = 5;
         protected override Plan TryPlan(Actor actor)
         {
+            if (actor.IsHauling)
+                return null;
             //var visitor = actor.GetVisitorProperties();
             //var chance = visitor.GetDepartChance();
             var decision = actor.AI.Meta.LocationDecision;

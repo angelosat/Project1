@@ -43,6 +43,9 @@ namespace Project1.Core.Assets
         static public readonly Sprite OreGrayscale = new Sprite("boulder", Block.BlockDepthMap) { OriginY = 8, OriginGround = new Vector2(16, 24) };
         static public readonly Sprite LogsGrayscale = new Sprite("logsbw", BlockDepthMap) { OriginY = 8, OriginGround = new Vector2(16, 24) };//, Joint = new Vector2(16, 24) }; //OriginGround = new Vector2(16, 24), Joint = new Vector2(16, 24) };
 
+        static public readonly Sprite PageBlank = new("blankpage") { OriginGround = new Vector2(16, 32) };
+        static public readonly Sprite PageWritten = new("writtenpage") { OriginGround = new Vector2(16, 32) };
+
         static public readonly Sprite BerriesFull = new Sprite("berries", new Vector2(16, 32), new Vector2(16, 24));
         static public readonly Sprite SeedsFull = new Sprite("seeds", new Vector2(16, 32), new Vector2(16, 24));
         static public readonly Sprite Sapling = new Sprite("sapling", new Vector2(16, 32), new Vector2(16, 24));

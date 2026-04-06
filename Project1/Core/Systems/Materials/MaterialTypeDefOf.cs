@@ -46,6 +46,8 @@ namespace Project1.Core.Systems.Materials
         static public readonly MaterialTypeDef Sediment = new("Sediment", MaterialChemistryDefOf.Inorganic)
         { GatheringSkill = SkillDefOf.Mining };
 
+
+
         static MaterialTypeDefOf()
         {
             Def.Register(typeof(MaterialTypeDefOf));

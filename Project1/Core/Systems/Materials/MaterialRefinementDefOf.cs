@@ -20,6 +20,9 @@ namespace Project1.Core.Systems.Materials
         static public readonly MaterialRefinementDef FruitRaw = new("FruitRaw", null, MaterialTypeDefOf.Flesh, ItemContent.OreGrayscale);
 
 
+        static public readonly MaterialRefinementDef Parchment = new("Parchment", null, MaterialTypeDefOf.Fiber, ItemContent.PageBlank);
+
+
         static MaterialRefinementDefOf()
         {
             Def.Register(typeof(MaterialRefinementDefOf));

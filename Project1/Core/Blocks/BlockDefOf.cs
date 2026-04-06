@@ -106,6 +106,7 @@ namespace Project1.Core.Blocks
         static public readonly BlockDef Counter = new("Counter", typeof(BlockCounter));
         static public readonly BlockDef Designation = new("Designation", typeof(BlockDesignation)) { BlockEntityCompSpecs = [new BlockConstructionComp.Spec()] };
         static public readonly BlockDef Slab = new("Slab", typeof(BlockSlab));
+        static public readonly BlockDef Waypoint = new("Waypoint", typeof(BlockWaypoint));
         static public readonly BlockDef Conveyor = new("Conveyor", typeof(BlockConveyor));
         static public readonly BlockDef Construction = new("Construction", typeof(BlockConstruction));
         static public readonly BlockDef QuestBoard = new("QuestBoard", typeof(BlockCounter))
@@ -164,6 +165,14 @@ namespace Project1.Core.Blocks
                 new BlockBuildingComp.Spec(),
                 new BlockWorkstationComp.Spec(WorkstationDefOf.Kitchen),
                 new BlockResourcesComp.Spec([ResourceDefOf.Fuel])
+                ],
+            ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
+        };
+        static public readonly BlockDef ScribeDesk = new("ScribeDesk", typeof(BlockWorkstation))
+        {
+            BlockEntityCompSpecs = [
+                new BlockBuildingComp.Spec(),
+                new BlockWorkstationComp.Spec(WorkstationDefOf.ScribeDesk)
                 ],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };

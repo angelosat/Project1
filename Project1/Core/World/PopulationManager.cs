@@ -1,11 +1,11 @@
 ﻿using Project1.Core.AI.MetaRoles;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Entities;
-using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Materials;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Needs;
 using Project1.Core.UI;
@@ -124,7 +124,10 @@ namespace Project1.Core.World
         {
             var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
             var coins = ItemDefOf.Coins.Create().SetStackSize(500);
+            var townscroll = ConsumableSystem.Create(ConsumableDefOf.TownScroll, MaterialDefOf.ShrubStem, 1);
             actor.Inventory.Insert(coins);
+            //this.World.Register(townscroll);
+            actor.Inventory.Insert(townscroll);
             var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
             need.Value = this.World.Random.Next(0, 100);
             actor.Skills.Randomize();

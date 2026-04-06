@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
-using Project1.Core.Crafting;
-using Project1.Core.Entities;
 using Project1.Framework;
 using System.Linq;
 
 namespace Project1.Core.Interactions
 {
-    class InteractionCraftingLogic : InteractionLogic
+    class InteractionCrafting : InteractionLogic
     {
         public sealed class Context : InteractionContext
         {

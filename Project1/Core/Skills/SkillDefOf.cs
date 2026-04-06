@@ -63,6 +63,11 @@ namespace Project1.Core.Skills
             Description = "Plantcutting description",
             Icon = new Icon(UIManager.Icons32, 12, 32)
         };
+        static public readonly SkillDef Scribing = new("Scribing")
+        {
+            Description = "Scribing description",
+            Icon = new Icon(UIManager.Icons32, 12, 32)
+        };
         static SkillDefOf()
         {
             Def.Register(typeof(SkillDefOf));

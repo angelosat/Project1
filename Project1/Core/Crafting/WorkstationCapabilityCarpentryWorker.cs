@@ -5,34 +5,35 @@ using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
 using System.Collections.Generic;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Crafting;
+
+public sealed class WorkstationCapabilityCarpentryWorker/*(WorkstationCapabilityDef def)*/ : WorkstationCapabilityWorker/*(def)*/
 {
-    public class WorkstationCapabilityCarpentryWorker(WorkstationCapabilityDef def) : WorkstationCapabilityWorker(def)
+    public override WorkstationCapabilityDef CapabilityDef => WorkstationCapabilityDefOf.Carpentry;
+
+    public override bool CreatesUnfinished => false;
+
+    public override SkillDef CraftingSkill => SkillDefOf.Carpentry;
+    public override IEnumerable<BoneDef> GetBoneLayout()
     {
-        public override bool CreatesUnfinished => false;
+        yield return BoneDefOf.Item;
+    }
+    public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
+    {
+        yield return new AddOrderRequest(this.CapabilityDef, MaterialRefinementDefOf.Planks);
+    }
+    
+    public override IEnumerable<CraftingRule> GetCraftingRulesStruct(Def recipe)
+    {
+        if (recipe is MaterialRefinementDef matRefinement)
+        {
+            yield return new(BoneDefOf.Item, ItemDefOf.Ingredient, [matRefinement.Source], [matRefinement.Source.MaterialType], 1);
+        }
+    }
 
-        public override SkillDef CraftingSkill => SkillDefOf.Carpentry;
-        public override IEnumerable<BoneDef> GetBoneLayout()
-        {
-            yield return BoneDefOf.Item;
-        }
-        public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
-        {
-            yield return new AddOrderRequest(this.CapabilityDef, MaterialRefinementDefOf.Planks);
-        }
-        
-        public override IEnumerable<CraftingRule> GetCraftingRulesStruct(Def recipe)
-        {
-            if (recipe is MaterialRefinementDef matRefinement)
-            {
-                yield return new(BoneDefOf.Item, ItemDefOf.Ingredient, [matRefinement.Source], [matRefinement.Source.MaterialType], 1);
-            }
-        }
-
-        public override IEnumerable<(Def[] validRefinements, int quantity)> GetValidIngredientsPerSlot(Def recipe)
-        {
-            if (recipe is MaterialRefinementDef matRefinement)
-                yield return ([matRefinement.Source], 1);
-        }
+    public override IEnumerable<(Def[] validRefinements, int quantity)> GetValidIngredientsPerSlot(Def recipe)
+    {
+        if (recipe is MaterialRefinementDef matRefinement)
+            yield return ([matRefinement.Source], 1);
     }
 }

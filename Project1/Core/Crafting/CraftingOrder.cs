@@ -439,7 +439,8 @@ namespace Project1.Core.Crafting
 
         internal EntityCreationRequest GetCreationRequest()
         {
-            return new EntityCreationRequest(this.ProductDef, null, stackSize: 1);
+            //return new EntityCreationRequest(this.ProductDef, null, stackSize: 1);
+            return new EntityCreationRequest(this.ProductDef, null, stackSize: this.WorkstationCapability.Worker.GetOutputStackSize(this.ProductDef));
         }
 
         internal void CompletedBy(Actor actor)

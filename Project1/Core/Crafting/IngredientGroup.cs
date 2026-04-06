@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Crafting;
+
+public record IngredientGroup
 {
-    public record IngredientGroup
-    {
-        internal string Label;
-        internal List<IngredientGroupEntry> Entries = [];
-    }
+    internal string Label;
+    internal List<IngredientGroupEntry> Entries = [];
 }

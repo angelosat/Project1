@@ -89,9 +89,10 @@ namespace Project1.Core.Systems.Inventory
                 //throw new NotImplementedException();
             }
             if (item.World is null)
-                this.Parent.World.Register(item);
+                this.Parent.World?.Register(item);
             ((ICollection<Entity>)this.Contents).Add(item);
-            item.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
+            //item.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
+            this.Parent.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
             item.Detach();
             item.Container = this;
             item.Owner = this.Parent;

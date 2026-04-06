@@ -14,7 +14,6 @@ using Project1.Core.Networking;
 using Project1.Core.Rooms;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
-using Project1.Core.Towns;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Graphics;
@@ -22,7 +21,6 @@ using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 
 namespace Project1.Core.Blocks
@@ -942,6 +940,8 @@ namespace Project1.Core.Blocks
                     yield return new ConstructionDesignationArgs(this.BlockDef, refinement, mat, ItemDefOf.Ingredient.StackCapacity); // HACK
             }
         }
+
+        internal virtual bool IsAvailable(MapBase map) => true;
 
         internal virtual void OnPlaced(CellQuery cellQuery) { }
 

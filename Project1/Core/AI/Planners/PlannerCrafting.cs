@@ -4,6 +4,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Core.Resources;
+using Project1.Core.Towns.Duties;
 using System.Linq;
 using static Project1.Core.Crafting.CraftingOrder;
 
@@ -92,6 +93,8 @@ namespace Project1.Core.AI.Planners
                 // Check fuel requirement
                 if (!order.CheckFuelReq())
                     continue;
+
+                //if(!actor.HasDuty(order.WorkstationCapability.))
 
                 // Track slots we want to exclude (already being deposited into by others)
                 var workstationSlots = order.Workstation.Parent.CellsOccupied;

@@ -48,7 +48,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Personality = new("Personality", typeof(PersonalityComponent));
         public static readonly EntityCompDef Npc = new("Npc", typeof(NpcComponent));
         public static readonly EntityCompDef Seed = new("Seed", typeof(SeedComponent));
-        public static readonly EntityCompDef Consumable = new("Consumable", typeof(ConsumableComponent));
+        public static readonly EntityCompDef Consumable = new("Consumable", typeof(ConsumableComp));
         public static readonly EntityCompDef UnfinishedItem = new("UnfinishedItem", typeof(UnfinishedItemComp));
         public static readonly EntityCompDef Blood = new("Blood", typeof(BloodComponent));
         public static readonly EntityCompDef Bomb = new("Bomb", typeof(BombComponent));

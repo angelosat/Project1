@@ -8,6 +8,7 @@ using Project1.Core.Gear;
 using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;

@@ -8,8 +8,9 @@ using System.Linq;
 
 namespace Project1.Core.Crafting
 {
-    public class WorkstationCapabilityToolMakingWorker(WorkstationCapabilityDef def) : WorkstationCapabilityWorker(def)
+    public class WorkstationCapabilityToolMaking/*(WorkstationCapabilityDef def)*/ : WorkstationCapabilityWorker/*(def)*/
     {
+        public override WorkstationCapabilityDef CapabilityDef => WorkstationCapabilityDefOf.ToolMaking;
         public override bool CreatesUnfinished => true;
         public override SkillDef CraftingSkill => SkillDefOf.Crafting;
 

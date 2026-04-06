@@ -71,6 +71,9 @@ internal class RoleAdventurerWorker : RoleMetaWorker
     {
         if (!meta.LocationDecision.CanEvaluate(world.CurrentTick))
             return;
+        meta.LocationDecision.ScheduleNext(world);
+        if (meta.TargetFrontier is null) // actor is already returning to town
+            return;
         var frontier = FrontierManager.Deciders.Select(d => d.GetScore(actor.AI)).MaxBy(i => i.score).frontier;
         if (frontier is null)
         {
@@ -86,6 +89,5 @@ internal class RoleAdventurerWorker : RoleMetaWorker
             actor.AI.State.Log.Write($"I'm going to {frontier.LabelReadable}.");
             meta.SetTargetFrontier(frontier);
         }
-        meta.LocationDecision.ScheduleNext(world);
     }
 }

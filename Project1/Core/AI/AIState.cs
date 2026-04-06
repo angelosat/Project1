@@ -8,6 +8,7 @@ using Project1.Core.AI.Reservations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Pathing;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.ItemRoles;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -48,6 +49,7 @@ namespace Project1.Core.AI
         public Stack<Behavior> TaskStack = [];
         public string TaskString = "none";
         public SortedSet<Threat> Threats = [];
+        
         public Plan CurrentPlan => this.Behavior?.Plan;
 
         public AIState(Actor actor)

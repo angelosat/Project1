@@ -158,7 +158,7 @@ public class ToolManagement : DefaultTool
         delta *= minL;
 
         delta *= .01f;
-        var cam = Engine.Map.Camera;
+        var cam = this.Map.Camera;
         cam.Move(cam.Coordinates += delta * 4);
 
     }

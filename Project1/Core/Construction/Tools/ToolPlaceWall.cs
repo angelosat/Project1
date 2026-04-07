@@ -157,7 +157,7 @@ namespace Project1.Core.Modules.Construction
 
                         var bounds = cam.GetScreenBounds(global, Block.Bounds);
                         var pos = new Vector2(bounds.X, bounds.Y);
-                        var depth = global.GetDrawDepth(Engine.Map, cam);
+                        var depth = global.GetDrawDepth(this.Map, cam);
                         sb.Draw(Sprite.Atlas.Texture, pos, Sprite.BlockHighlight.AtlasToken.Rectangle, 0, Vector2.Zero, cam.Zoom, col * .5f, SpriteEffects.None, depth);
                     }
                 }

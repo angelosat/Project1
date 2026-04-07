@@ -118,7 +118,7 @@ public sealed class Client : NetEndpoint
     {
         this.IsRunning = false;
         Instance.World = null;
-        Engine.Map = null;
+        //Engine.Map = null;
         this.Timeout = -1;
         Packet.Create(this.NextPacketID, PacketType.PlayerDisconnected).BeginSendTo(this.Host, this.RemoteIP, a => { });
         this.IncomingAll = new ConcurrentQueue<Packet>();
@@ -134,7 +134,7 @@ public sealed class Client : NetEndpoint
         "receiving pakets from server timed out".ToConsole();
         this.Timeout = -1;
         this.World = null;
-        Engine.Map = null;
+        //Engine.Map = null;
         this.IncomingAll = new ConcurrentQueue<Packet>();
         this.PacketsBuffer = new Queue<Packet>();
 
@@ -1047,25 +1047,37 @@ public sealed class Client : NetEndpoint
             }
     }
 
-    internal void SetMap(MapBase map)
+    internal void AddMap(MapBase map)
     {
-        if(this.Map is not null)
-        {
-            Registry.MapEventHooksClient.UnHook(this.Map.Events);
-        }
-        this.Map = map;
-        this.World = map.World;
+        //if(this.Map is not null)
+        //{
+        //    Registry.MapEventHooksClient.UnHook(this.Map.Events);
+        //}
+        //this.Map = map;
+        //this.World = map.World;
         this.World.AddMap(map);
         Registry.MapEventHooksClient.HookTo(map.Events);
-        Registry.WorldEventHooksClient.HookTo(map.World.Events);
-        this.MainViewport = new(map, map.Camera);
+        //Registry.WorldEventHooksClient.HookTo(map.World.Events);
+        //this.MainViewport = new(map, map.Camera);
         map.Validate();
     }
-
-
+    internal void UnloadMap(MapId mapid)
+    {
+        var map = this.World.Get(mapid);
+        if (this.MainViewport.Map == map)
+            throw new NotImplementedException();
+        Registry.MapEventHooksClient.UnHook(map.Events);
+        this.World.RemoveMap(mapid);
+    }
+    public override void ViewMap(MapId mapid)
+    {
+        var map = this.World.Get(mapid);
+        this.MainViewport = new(map, map.Camera);
+    }
     internal void SetWorld(StaticWorld world)
     {
         this.World = world;
+        Registry.WorldEventHooksClient.HookTo(world.Events);
         world.Net = this;
     }
 
@@ -1074,8 +1086,5 @@ public sealed class Client : NetEndpoint
         return this.BeginPacket(pType);
     }
 
-    public override void ViewMap(MapId mapid)
-    {
-        throw new NotImplementedException();
-    }
+    
 }

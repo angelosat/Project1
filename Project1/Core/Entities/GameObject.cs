@@ -605,7 +605,8 @@ namespace Project1.Core.Entities
             pos += body.OriginGroundOffset * cam.Zoom;
             // TODO: fix difference between tint and material in this drawtree method
             var tint = Color.White * .5f;
-            body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, cam.Zoom, 0, SpriteEffects.None, 0.5f, global.GetDrawDepth(Engine.Map, cam));
+            //body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, cam.Zoom, 0, SpriteEffects.None, 0.5f, global.GetDrawDepth(Engine.Map, cam));
+            body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, cam.Zoom, 0, SpriteEffects.None, 0.5f, global.GetDrawDepth(cam));
         }
 
         public virtual void GetTooltipInfo(Control tooltip)

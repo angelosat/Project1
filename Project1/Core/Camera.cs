@@ -1562,7 +1562,8 @@ public sealed class Camera : ICamera, IInputEventHandler
 
         var bounds = this.GetScreenBounds(global, Block.Bounds);
         var pos = new Vector2(bounds.X, bounds.Y);
-        var depth = global.GetDrawDepth(Engine.Map, this);
+        //var depth = global.GetDrawDepth(Engine.Map, this);
+        var depth = global.GetDrawDepth(this);
         var highlight = Block.FaceHighlights[IntVec3.UnitZ];
         sb.Draw(highlight.Atlas.Texture, pos, highlight.Rectangle, 0, Vector2.Zero, this.Zoom, col, SpriteEffects.None, depth);
     }
@@ -1574,7 +1575,8 @@ public sealed class Camera : ICamera, IInputEventHandler
 
         var bounds = this.GetScreenBounds(global, Block.Bounds);
         var pos = new Vector2(bounds.X, bounds.Y);
-        var depth = global.GetDrawDepth(Engine.Map, this);
+        //var depth = global.GetDrawDepth(Engine.Map, this);
+        var depth = global.GetDrawDepth(this);
         sb.Draw(Sprite.Atlas.Texture, pos, Sprite.BlockHighlight.AtlasToken.Rectangle, 0, Vector2.Zero, this.Zoom, col * .5f, SpriteEffects.None, depth);
     }
     public void DrawGridBlock(MySpriteBatch sb, AtlasDepthNormals.Node.Token sprite, Color col, IntVec3 global)
@@ -1585,7 +1587,8 @@ public sealed class Camera : ICamera, IInputEventHandler
         sprite.Atlas.Begin(this.Effect); // this was commented out
         var bounds = this.GetScreenBounds(global, Block.Bounds);
         var pos = new Vector2(bounds.X, bounds.Y);
-        var depth = global.GetDrawDepth(Engine.Map, this);
+        //var depth = global.GetDrawDepth(Engine.Map, this);
+        var depth = global.GetDrawDepth(this);
         sb.Draw(sprite.Atlas.Texture, pos, sprite.Rectangle, 0, Vector2.Zero, this.Zoom, col, SpriteEffects.None, depth);
     }
     public void DrawGridBlocks(MySpriteBatch sb, IEnumerable<IntVec3> positions, Color col)

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Framework.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns.UI
 {
@@ -12,8 +11,10 @@ namespace Project1.Core.Towns.UI
     {
         List<Actor> TrackedTownMembers = [];
         const int Spacing = 1;//5;
+        MapBase Map;
         public UINpcFrameContainer(MapBase map)
         {
+            this.Map = map;
             this.HideAction += map.World.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
             this.HideAction += map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
         }
@@ -43,7 +44,7 @@ namespace Project1.Core.Towns.UI
             if (!Camera.DrawnOnce)
                 return;
             //var actors = Net.Client.Instance.Map.Town.GetMembers().Where(a => a != null).ToList(); // WHY WOULD THE RETURNED TOWN MEMBER LIST CONTAIN NULL VALUES???
-            var actors = Engine.Map.Town.GetMembers();
+            var actors = this.Map.Town.GetMembers();
             var toInit = actors.Where(a => !this.TrackedTownMembers.Contains(a));
             foreach (var a in toInit)
                 this.AddControlsTopRight(Spacing, new UINpcFrame(a));

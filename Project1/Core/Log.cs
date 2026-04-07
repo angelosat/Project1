@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
+using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Framework;
 using System;
@@ -136,7 +138,7 @@ List of available commands:
                         Set(wordQueue);
                         break;
                     case "/updatethumb":
-                        UpdateMapThumpnail();
+                        UpdateMapThumpnail(Ingame.Net.MainViewport.Map);
                         break;
                    
                     case "/help":
@@ -151,11 +153,11 @@ List of available commands:
             }
         }
 
-        private static void UpdateMapThumpnail()
+        private static void UpdateMapThumpnail(MapBase map)
         {
-            string worldPath = @"/Saves/Worlds/" + Engine.Map.GetName() + "/";
+            string worldPath = @"/Saves/Worlds/" + map.GetName() + "/";
 
-            using Texture2D thumbnail = Engine.Map.GetThumbnail();
+            using Texture2D thumbnail = map.GetThumbnail();
             using (FileStream stream = new(Directory.GetCurrentDirectory() + worldPath + "thumbnailSmall.png", FileMode.OpenOrCreate))
             {
                 thumbnail.SaveAsPng(stream, thumbnail.Width, thumbnail.Height);
@@ -184,7 +186,7 @@ List of available commands:
                     try
                     {
                         color = (Color)typeof(Color).GetProperty(colorName).GetValue(null, null);
-                        Engine.Map.SetAmbientColor(color);
+                        Ingame.Net.MainViewport.Map.SetAmbientColor(color);
                         break;
                     }
                     catch (Exception)
@@ -196,7 +198,7 @@ List of available commands:
                         int r = int.Parse(words.Dequeue()),
                             g = int.Parse(words.Dequeue()),
                             b = int.Parse(words.Dequeue());
-                        Engine.Map.SetAmbientColor(new Color(r, g, b));
+                        Ingame.Net.MainViewport.Map.SetAmbientColor(new Color(r, g, b));
                     }
                     catch (Exception)
                     {
@@ -207,7 +209,7 @@ List of available commands:
                 case "hour":
                 case "time":
                     int t = int.Parse(words.Dequeue());
-                    foreach (var ch in Engine.Map.GetActiveChunks())
+                    foreach (var ch in Ingame.Net.MainViewport.Map.GetActiveChunks())
                         ch.Value.LightCache.Clear();
                     Enqueue(EntryTypes.System, "Hour set to " + t);
                     break;

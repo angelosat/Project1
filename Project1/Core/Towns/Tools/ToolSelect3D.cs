@@ -199,7 +199,8 @@ namespace Project1.Core.Towns.Tools
                 return;
             var bounds = cam.GetScreenBounds(global, Block.Bounds);
             var pos = new Vector2(bounds.X, bounds.Y);
-            var depth = global.GetDrawDepth(Engine.Map, cam);
+            //var depth = global.GetDrawDepth(Engine.Map, cam);
+            var depth = global.GetDrawDepth(cam);
             if (IsRemoving() && Enabled)
             {
                 var x = Math.Min(this.Begin.X, this.End.X);

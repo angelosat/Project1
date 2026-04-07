@@ -199,9 +199,9 @@ namespace Project1.Core.Input
         {
             Walking = true;
         }
-        public static Vector2 GetDirection2()
+        public static Vector2 GetDirection2(MapBase map)
         {
-            var cam = Engine.Map.Camera;
+            var cam = map.Camera;
             int x = Controller.Instance.msCurrent.X - cam.Width / 2;
             int y = Controller.Instance.msCurrent.Y - cam.Height / 2;
             Coords.Ortho(x, y, out float xx, out float yy);

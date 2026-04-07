@@ -187,7 +187,8 @@ class GameModeStaticMaps : GameMode
         map.InitUndiscoveredAreas();
         map.Init();
         map.ResolveReferences();
-        client.SetMap(map);
+        client.AddMap(map);
+        client.ViewMap(map.ID);
 
         var ingame = Ingame.Instance.Initialize(client);
 

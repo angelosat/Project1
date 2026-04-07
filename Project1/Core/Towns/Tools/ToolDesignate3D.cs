@@ -62,9 +62,9 @@ namespace Project1.Core.Towns.Tools
             var positions = this.GetPositions(w, h);
             foreach (var pos in positions)
             {
-                if (Engine.Map.IsSolid(pos))
+                if (this.Map.IsSolid(pos))
                     return false;
-                if (!Engine.Map.IsSolid(pos - IntVec3.UnitZ))
+                if (!this.Map.IsSolid(pos - IntVec3.UnitZ))
                     return false;
             }
             return true;
@@ -196,7 +196,8 @@ namespace Project1.Core.Towns.Tools
 
                         var bounds = cam.GetScreenBounds(global, Block.Bounds);
                         var pos = new Vector2(bounds.X, bounds.Y);
-                        var depth = global.GetDrawDepth(Engine.Map, cam);
+                        //var depth = global.GetDrawDepth(Engine.Map, cam);
+                        var depth = global.GetDrawDepth(cam);
                         sb.Draw(Block.Atlas.Texture, pos, Block.BlockHighlight.Rectangle, 0, Vector2.Zero, cam.Zoom, col * .5f, SpriteEffects.None, depth);
 
                     }
@@ -217,7 +218,8 @@ namespace Project1.Core.Towns.Tools
 
                     var bounds = cam.GetScreenBounds(global, Block.Bounds);
                     var pos = new Vector2(bounds.X, bounds.Y);
-                    var depth = global.GetDrawDepth(Engine.Map, cam);
+                    //var depth = global.GetDrawDepth(Engine.Map, cam);
+                    var depth = global.GetDrawDepth(cam);
                     sb.Draw(Sprite.Atlas.Texture, pos, Sprite.BlockHighlight.AtlasToken.Rectangle, 0, Vector2.Zero, cam.Zoom, col*.5f, SpriteEffects.None, depth);
                 }
         }
@@ -228,7 +230,8 @@ namespace Project1.Core.Towns.Tools
                 return;
             var bounds = cam.GetScreenBounds(global, Block.Bounds);
             var pos = new Vector2(bounds.X, bounds.Y);
-            var depth = global.GetDrawDepth(Engine.Map, cam);
+            //var depth = global.GetDrawDepth(Engine.Map, cam);
+            var depth = global.GetDrawDepth(cam);
             if (IsRemoving() && Enabled)
             {
                 var x = Math.Min(this.Begin.X, this.End.X);

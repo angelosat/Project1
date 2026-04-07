@@ -37,10 +37,20 @@ namespace Project1.Core.Helpers
             Vector3 rotated = local.Rotate(camera);
             return rotated.X + rotated.Y;
         }
+        public static float GetDrawDepth(this Vector3 worldGlobal, Camera camera)
+        {
+            Vector3 rotated = worldGlobal.Rotate(camera);
+            return rotated.X + rotated.Y;
+        }
         public static float GetDrawDepth(this IntVec3 worldGlobal, MapBase map, Camera camera)
         {
             IntVec3 local = worldGlobal - new IntVec3(map.GetOffset(), 0);
             IntVec3 rotated = local.Rotate(camera);
+            return rotated.X + rotated.Y;
+        }
+        public static float GetDrawDepth(this IntVec3 worldGlobal, Camera camera)
+        {
+            IntVec3 rotated = worldGlobal.Rotate(camera);
             return rotated.X + rotated.Y;
         }
         public static Vector3 ToLocal(this Vector3 global)
@@ -68,7 +78,8 @@ namespace Project1.Core.Helpers
         {
             var bounds = cam.GetScreenBounds(global, Block.Bounds);
             var pos = new Vector2(bounds.X, bounds.Y);
-            var depth = global.GetDrawDepth(Engine.Map, cam);
+            //var depth = global.GetDrawDepth(Engine.Map, cam);
+            var depth = global.GetDrawDepth(cam);
             sb.Draw(sprite.Atlas.Texture, pos, sprite.Rectangle, 0, Vector2.Zero, cam.Zoom, color, Microsoft.Xna.Framework.Graphics.SpriteEffects.None, depth);
         }
         static public bool ContainsEntityFootprint(this Vector3 blockGlobal, GameObject entity)

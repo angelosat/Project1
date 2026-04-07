@@ -6,7 +6,7 @@ namespace Project1.Core.Towns
     {
         public override void OnContextActionBarCreated(ContextActionBar.ContextActionBarArgs args)
         {
-            foreach (var comp in Engine.Map.Town.TownComponents)
+            foreach (var comp in args.Target.Map.Town.TownComponents)
                 comp.OnContextActionBarCreated(args);
         }
     }

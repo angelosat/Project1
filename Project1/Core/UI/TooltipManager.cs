@@ -9,6 +9,7 @@ using Project1.Framework.Events;
 using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.Input;
+using Project1.Core.Screens;
 
 namespace Project1.Core.UI
 {
@@ -118,7 +119,8 @@ namespace Project1.Core.UI
         {
             var map = e.Map;
             var cells = e.Positions;
-            if(Engine.Map == map)
+            //if(Engine.Map == map)
+                if(Ingame.Net.MainViewport.Map == map)
             if (Instance.Object is InteractionTarget target && target.Type == TargetType.Cell && cells.Contains((IntVec3)target.Global))
                 Instance.Reset();
         }

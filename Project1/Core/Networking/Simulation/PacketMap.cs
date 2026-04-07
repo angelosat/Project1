@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Simulation;
 using Project1.Framework;
 using System;
+using System.Linq;
 
 namespace Project1.Core.Networking.Simulation;
 
@@ -24,18 +25,16 @@ class PacketMap
     {
         var r = packet.PacketReader;
         var client = net as Client;
-        if (client.Map is not null)
-        {
-            throw new Exception("map already received");
-        }
+        //if (client.Map is not null)
+        //    throw new Exception("map already received");
         if (client.World is null)
             throw new Exception("map received before world");
 
         StaticMap map = StaticMap.ReadData(client, r);
+        if(client.World.Maps.Any(m=>m.ID == map.ID))
+            throw new Exception("map already received");
         map.World = client.World as StaticWorld;
-        //map.World.GetMaps().Add(map.Coordinates, map);
-        //client.World.AddMap(map);
-        client.SetMap(map);
+        client.PendingMaps.Add(map.ID, map);
         GameMode.Current.MapReceived(map);
     }
 }

@@ -122,7 +122,7 @@ namespace Project1.Core.Blocks
         }
         public bool TryGetComp<T>(out T comp) where T : BlockComp
             => this.Comps.TryGetComp(out comp);
-        internal void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity)
+        internal void OnDrop(GameObject actor, GameObject item, InteractionTarget target, int quantity)
         {
             foreach (var comp in this.Comps.Values)
                 comp.OnDrop(actor, item, target, quantity);
@@ -336,7 +336,7 @@ namespace Project1.Core.Blocks
         {
             this.GetQuickButtons(
                 (name, guiType) => panel.AddTabAction(name,
-                    () => UIManager.ToggleUnique(guiType, new TargetArgs(this.Map, this.OriginGlobal)))
+                    () => UIManager.ToggleUnique(guiType, new InteractionTarget(this.Map, this.OriginGlobal)))
                 ,this.Map,
                 this.Global);
         }

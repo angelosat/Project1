@@ -8,7 +8,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
     {
         public MapBase Map;
         public Vector3 Global;
-        public TargetArgs Target;
+        public InteractionTarget Target;
         public NodeBase Parent;
         public float CostToGoal;
         public float CostFromStart;

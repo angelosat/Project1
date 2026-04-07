@@ -172,7 +172,7 @@ namespace Project1.Core.AI.Behaviors
             /// TODO: interperet amount by target type:
             /// for entities do if -1 then amount = entity.stacksize
             /// for intvec3 and blockentities, do amount  = 1
-            if (this.Plan.GetTarget(sourceIndex) is TargetArgs singleTarget && singleTarget != TargetArgs.Null)
+            if (this.Plan.GetTarget(sourceIndex) is InteractionTarget singleTarget && singleTarget != InteractionTarget.Null)
             {
                 var amountSpecified = this.Plan.GetAmount(sourceIndex);
                 var amountToReserve = singleTarget.Type switch
@@ -212,16 +212,16 @@ namespace Project1.Core.AI.Behaviors
         {
             return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, this.Plan.GetTarget(index), amount);
         }
-        internal bool Reserve(TargetArgs target, int amount = -1)
+        internal bool Reserve(InteractionTarget target, int amount = -1)
         {
             return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, target, amount);
         }
         internal bool Reserve(IntVec3 global)
         {
-            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, new TargetArgs(this.Actor.Map, global), 1);
+            return this.Actor.Map.Town.ReservationManager.Reserve(this.Actor, this.Plan, new InteractionTarget(this.Actor.Map, global), 1);
         }
 
-        internal bool ReserveAsManyAsPossible(TargetArgs item, int desiredAmount)
+        internal bool ReserveAsManyAsPossible(InteractionTarget item, int desiredAmount)
         {
             return this.Actor.Map.Town.ReservationManager.ReserveAsManyAsPossible(this.Actor, this.Plan, item, desiredAmount);
         }

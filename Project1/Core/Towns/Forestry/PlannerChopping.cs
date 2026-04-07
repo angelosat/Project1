@@ -23,7 +23,7 @@ namespace Project1.Core.Towns.Forestry
                 .Where(o => actor.CanReserve(o))
                 .OrderByReachableRegionDistance(actor);
 
-            if (trees.FirstOrDefault() is not TargetArgs tree)
+            if (trees.FirstOrDefault() is not InteractionTarget tree)
                 return null;
 
             return new Plan(PlanDefOf.Chop) { TargetA = tree, Designation = DesignationDefOf.Chop };

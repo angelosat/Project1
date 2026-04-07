@@ -10,7 +10,7 @@ namespace Project1.Core.AI.Behaviors.Idle
 
         protected override Plan TryPlan(Actor actor)
         {
-            var direction = new TargetArgs(ChooseDirection(actor));
+            var direction = new InteractionTarget(ChooseDirection(actor));
             return new Plan(PlanDefOf.Wander, direction) { TicksTimeout = Ticks.PerSecond };
         }
 

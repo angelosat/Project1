@@ -6,13 +6,13 @@ namespace Project1.Core.Helpers
 {
     internal static class TargetArgsExtensions
     {
-        static public TargetArgs At(this IntVec3 pos, MapBase map)
+        static public InteractionTarget At(this IntVec3 pos, MapBase map)
         {
-            return new TargetArgs(map, pos);
+            return new InteractionTarget(map, pos);
         }
-        static public TargetArgs At(this Vector3 pos, MapBase map)
+        static public InteractionTarget At(this Vector3 pos, MapBase map)
         {
-            return new TargetArgs(map, pos);
+            return new InteractionTarget(map, pos);
         }
     }
 }

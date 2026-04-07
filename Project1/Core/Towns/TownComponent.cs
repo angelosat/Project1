@@ -77,7 +77,7 @@ namespace Project1.Core.Towns
         }
         internal virtual IEnumerable<Button> GetTabs(ISelectable selected) { yield break; }
         
-        internal virtual void OnTooltipCreated(Control tooltip, TargetArgs targetArgs)
+        internal virtual void OnTooltipCreated(Control tooltip, InteractionTarget targetArgs)
         {
         }
         internal virtual void OnCitizenAdded(int actorID) { }

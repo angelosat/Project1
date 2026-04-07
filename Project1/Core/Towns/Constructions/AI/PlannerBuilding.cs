@@ -39,10 +39,10 @@ namespace Project1.Core.Towns.Constructions.AI
                         //(Entity item, int amount) = FindMoreFor(carried, target);
                         (Entity item, int amount) = FindMoreForNew(actor, carried, target);
                         if (item is not null)
-                            return new Plan(PlanDefOf.GoHaul, new TargetArgs(item)) { AmountA = amount };
+                            return new Plan(PlanDefOf.GoHaul, new InteractionTarget(item)) { AmountA = amount };
                     }
                     var amountToDeposit = target.Missing;
-                    return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, cell)) { Designation = DesignationDefOf.Construct, AmountA = amountToDeposit, TargetB = new TargetArgs(target.Parent) };
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(actor.Map, cell)) { Designation = DesignationDefOf.Construct, AmountA = amountToDeposit, TargetB = new InteractionTarget(target.Parent) };
                 }
                 return null;
             }
@@ -51,7 +51,7 @@ namespace Project1.Core.Towns.Constructions.AI
             foreach (var comp in buildablesReady)
                 foreach (var c in comp.Parent.CellsOccupied)
                     if (actor.CanReach(c))
-                        return new Plan(PlanDefOf.Construct, new TargetArgs(actor.Map, c)) { Designation = DesignationDefOf.Construct, TargetB = new TargetArgs(comp.Parent) };
+                        return new Plan(PlanDefOf.Construct, new InteractionTarget(actor.Map, c)) { Designation = DesignationDefOf.Construct, TargetB = new InteractionTarget(comp.Parent) };
 
             //var byRefinement = buildables[false].ToLookup(c => c.Requirement.refinement);
             //var byRefinementAndMaterial =
@@ -87,7 +87,7 @@ namespace Project1.Core.Towns.Constructions.AI
                         if (actor.CanReachAndReserve(item))
                             foreach (var comp in candidates.Where(c => actor.CanReserve(c.Parent)))
                                 if (comp.Parent.CellsOccupied.Any(c => actor.CanReach(c)))
-                                    return new Plan(PlanDefOf.GoHaul, new TargetArgs(item)) { AmountA = comp.Missing, TargetB = new TargetArgs(comp.Parent) };
+                                    return new Plan(PlanDefOf.GoHaul, new InteractionTarget(item)) { AmountA = comp.Missing, TargetB = new InteractionTarget(comp.Parent) };
             }
             return null;
         }

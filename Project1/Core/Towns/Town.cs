@@ -42,7 +42,7 @@ public sealed class Town : Inspectable, IDutyProvider
     UIQuickMenu QuickMenu;
     public static HotkeyCategory HotkeyContext = new("Town");
 
-    internal void OnTooltipCreated(Control tooltip, TargetArgs targetArgs)
+    internal void OnTooltipCreated(Control tooltip, InteractionTarget targetArgs)
     {
         foreach (var c in this.TownComponents)
             c.OnTooltipCreated(tooltip, targetArgs);

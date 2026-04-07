@@ -75,7 +75,7 @@ sealed class PlannerBuy : Planner
             if (carried is not null)
             {
                 if (carried.Def == ItemDefOf.Coins && transaction.WaitingForPayment)
-                    return new Plan(PlanDefOf.Pay, new TargetArgs(map, transaction.Counter.Above));
+                    return new Plan(PlanDefOf.Pay, new InteractionTarget(map, transaction.Counter.Above));
                 if (carried.RefId != transaction.Item)
                     throw new InvalidOperationException();
                 transaction.Tick();
@@ -89,7 +89,7 @@ sealed class PlannerBuy : Planner
                     transaction.Cancel();
                     return null;
                 }
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, transaction.Counter.Above));
+                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, transaction.Counter.Above));
             }
         }
         if (carried is not null)

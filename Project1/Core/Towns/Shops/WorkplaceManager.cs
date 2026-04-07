@@ -403,7 +403,7 @@ public partial class TownServicesComp : TownComponent
             //info.AddInfo(new Label(() => string.Format("Shop: {0}", this.Shopss.FirstOrDefault(sh => sh.HasStockpile(stockpile.ID))?.Name ?? "")));
             info.AddInfo(new Label(() => $"Shop: {this.Shopss.FirstOrDefault(sh => sh.HasStockpile(stockpile.ID))?.Name ?? ""}"));
         }
-        else if (selected is TargetArgs target)
+        else if (selected is InteractionTarget target)
         {
             if (target.Type == TargetType.Cell)
             {

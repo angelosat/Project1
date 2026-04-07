@@ -42,7 +42,7 @@ namespace Project1.Core.AI.Planners
                         var places = stockpile.GetCandidateCells(carried).Where(actor.CanReachAndReserve);
                         foreach (var cell in places)
                             // emit godeliver task at place
-                            return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
+                            return new Plan(PlanDefOf.HaulToStockpile, new InteractionTarget(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
                     }
                 }
                 // else if can carry more
@@ -68,7 +68,7 @@ namespace Project1.Core.AI.Planners
                             var places = stockpile.GetCandidateCells(carried).Where(actor.CanReachAndReserve);
                             foreach (var cell in places)
                                 // emit godeliver task at place
-                                return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
+                                return new Plan(PlanDefOf.HaulToStockpile, new InteractionTarget(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
                         }
                     }
                 }
@@ -78,7 +78,7 @@ namespace Project1.Core.AI.Planners
                 var freeCells = actor.Map.FindNearestEmptyCellsOrCurrent(actor.Cell.Below, 3);
                 var finalCell = freeCells.FirstOrDefault();
                 //return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, finalCell));
+                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(actor.Map, finalCell));
             }
             // if actor has empty hands
             // iterate map items
@@ -100,7 +100,7 @@ namespace Project1.Core.AI.Planners
                         !currentStockpile.Accepts(item) ||
                         stockpile.Priority > currentStockpile.Priority)
                     {
-                        var t = new TargetArgs(item);
+                        var t = new InteractionTarget(item);
                         var unreservedAmount = map.Town.ReservationManager.GetUnreservedAmount(t);
                         return new Plan(PlanDefOf.GoHaul, item) { AmountA = Math.Min(unreservedAmount, availableCapacity) };
                     }
@@ -139,7 +139,7 @@ namespace Project1.Core.AI.Planners
                         var places = stockpile.FindPlacesFor(carried).Where(actor.CanReachAndReserve);
                         foreach(var cell in places)
                             // emit godeliver task at place
-                            return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
+                            return new Plan(PlanDefOf.HaulToStockpile, new InteractionTarget(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
                     }
                 } 
                 // else if can carry more
@@ -165,7 +165,7 @@ namespace Project1.Core.AI.Planners
                             var places = stockpile.FindPlacesFor(carried).Where(actor.CanReachAndReserve);
                             foreach (var cell in places)
                                 // emit godeliver task at place
-                                return new Plan(PlanDefOf.HaulToStockpile, new TargetArgs(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
+                                return new Plan(PlanDefOf.HaulToStockpile, new InteractionTarget(actor.Map, cell)) { Continuation = PlanContinuationPolicy.Yield };
                         }
                     }
                 }
@@ -175,7 +175,7 @@ namespace Project1.Core.AI.Planners
                 var freeCells = actor.Map.FindNearestEmptyCellsOrCurrent(actor.Cell.Below, 3);
                 var finalCell = freeCells.FirstOrDefault();
                 //return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, finalCell));
+                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(actor.Map, finalCell));
             }
             // if actor has empty hands
             // iterate map items
@@ -201,7 +201,7 @@ namespace Project1.Core.AI.Planners
                         !currentStockpile.Accepts(item) ||
                         stockpile.Priority > currentStockpile.Priority)
                     {
-                        var t = new TargetArgs(item);
+                        var t = new InteractionTarget(item);
                         var unreservedAmount = map.Town.ReservationManager.GetUnreservedAmount(t);
                         return new Plan(PlanDefOf.GoHaul, item) { AmountA = Math.Min(unreservedAmount, availableCapacity) };
                     }

@@ -32,7 +32,7 @@ namespace Project1.Core.AI.Behaviors.Sleeping
             {
                 var bed = bedComp.Parent;
                 if(actor.CanReachAndReserve(bed))
-                    return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };
+                    return new Plan(PlanDefOf.SleepingOnBed, new InteractionTarget(map, bed.OriginGlobal)) { TargetB = new InteractionTarget(bed) };
             }
             if (actor.IsTownMember)
             {
@@ -44,7 +44,7 @@ namespace Project1.Core.AI.Behaviors.Sleeping
                 {
                     var cell = map.GetCell(bed.OriginGlobal);
                     //var interactionSpot = bed.OriginGlobal + cell.Block.GetInteractionSpotsLocal(map, bed.OriginGlobal, cell.Orientation).First();
-                    return new Plan(PlanDefOf.SleepingOnBed, new TargetArgs(map, bed.OriginGlobal)) { TargetB = new TargetArgs(bed) };//, bed);
+                    return new Plan(PlanDefOf.SleepingOnBed, new InteractionTarget(map, bed.OriginGlobal)) { TargetB = new InteractionTarget(bed) };//, bed);
                 }
             }
 

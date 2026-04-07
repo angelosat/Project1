@@ -45,8 +45,8 @@ public sealed class SelectionManager
     internal static IEnumerable<GameObject> SelectedEntities => GetSelectedEntities();
     internal static ISelectable SingleSelected => Instance.MultipleSelected.Count == 1 ? Instance.MultipleSelected.Single() : null;
     internal static Entity SingleSelectedEntity => SingleSelected as Entity;
-    internal static IntVec3? SingleSelectedCell => (SingleSelected is TargetArgs target && target.Type == TargetType.Cell) ? target.Global : null;
-    internal static BlockEntity SelectedBlockEntity => (SingleSelected is TargetArgs target && target.Type == TargetType.Cell) ? target.BlockEntityOld : null;
+    internal static IntVec3? SingleSelectedCell => (SingleSelected is InteractionTarget target && target.Type == TargetType.Cell) ? target.Global : null;
+    internal static BlockEntity SelectedBlockEntity => (SingleSelected is InteractionTarget target && target.Type == TargetType.Cell) ? target.BlockEntityOld : null;
 
     static SelectionManager() { }
 
@@ -112,7 +112,7 @@ public sealed class SelectionManager
     {
         this.Select(e.Single);
     }
-    public void Select(TargetArgs target)
+    public void Select(InteractionTarget target)
     {
         ISelectable selectable = target.Type switch
         {
@@ -162,7 +162,7 @@ public sealed class SelectionManager
         {
             if (this.MultipleSelected.FirstOrDefault(t =>
                  t == e.Entity ||
-                 t is TargetArgs target && target.Global == (Vector3)e.Entity.OriginGlobal) is ISelectable t)
+                 t is InteractionTarget target && target.Global == (Vector3)e.Entity.OriginGlobal) is ISelectable t)
             {
                 this.Unselect(t);
             }
@@ -240,7 +240,7 @@ public sealed class SelectionManager
     }
     public static void Select(MapBase map, BoundingBox box)
     {
-        Select(map.GetObjects(box).Select(s => new TargetArgs(s as Entity)));
+        Select(map.GetObjects(box).Select(s => new InteractionTarget(s as Entity)));
     }
     private void Select(IntVec3 begin, IntVec3 end)
     {
@@ -250,7 +250,7 @@ public sealed class SelectionManager
         this.LabelName.TextFunc = () => $"Multiple cells x{this.Selection.Targets.Count}";
         this.RefreshOrderButtons();
     }
-    public static void Select(IEnumerable<TargetArgs> targets)
+    public static void Select(IEnumerable<InteractionTarget> targets)
     {
         Instance.SelectInternal(targets);
     }
@@ -260,7 +260,7 @@ public sealed class SelectionManager
     }
     internal static void SelectAllVisible(ItemDef def)
     {
-        var objects = Ingame.Instance.Scene.ObjectsDrawn.Where(i => i.Def == def).Select(o => new TargetArgs(o));
+        var objects = Ingame.Instance.Scene.ObjectsDrawn.Where(i => i.Def == def).Select(o => new InteractionTarget(o));
         Select(objects);
     }
     internal static void AddToSelection(IEnumerable<ISelectable> targets)
@@ -335,7 +335,7 @@ public sealed class SelectionManager
                 this.LabelName.TextFunc = () => "<none>";
                 this.WindowInfo?.Hide();
                 this.WindowInfo = null;
-                this.SelectedSource = TargetArgs.Null;
+                this.SelectedSource = InteractionTarget.Null;
                 this.Selectable = null;
                 this.MultipleSelected.Clear();
                 return;

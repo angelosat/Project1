@@ -30,7 +30,7 @@ namespace Project1.Core.Towns.Inns
                 //}
                 if (transaction.IsProcessed && actor.Hauled is null)
                 {
-                    return new Plan(InnsDefOf.PlanRegisterGuest, new TargetArgs(actor.Map, transaction.Desk));
+                    return new Plan(InnsDefOf.PlanRegisterGuest, new InteractionTarget(actor.Map, transaction.Desk));
                 }
                 if (transaction.IsPaid)
                 //return null;
@@ -44,7 +44,7 @@ namespace Project1.Core.Towns.Inns
                             throw new Exception();
                         //transaction.MarkProcessed();
                         manager.MarkProcessed(transaction.Buyer);
-                        return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, transaction.Desk));
+                        return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, transaction.Desk));
                         //return new Plan(InnsDefOf.PlanRegisterGuest, new TargetArgs(actor.Map, transaction.Desk));
                         //return new Plan(PlanDefOf.StoreInInventory);
                     }
@@ -63,7 +63,7 @@ namespace Project1.Core.Towns.Inns
                 if (!manager.TryFindBedFrom(point, out var foundBed))
                     continue;
                 //return new Plan(InnsDefOf.PlanRegisterGuest, new TargetArgs(actor.Map, point));
-                return new Plan(InnsDefOf.PlanWaitForPayForBed, new TargetArgs(actor.Map, point));
+                return new Plan(InnsDefOf.PlanWaitForPayForBed, new InteractionTarget(actor.Map, point));
             }
             return null;
         }

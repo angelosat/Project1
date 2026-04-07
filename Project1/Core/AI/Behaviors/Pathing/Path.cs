@@ -13,7 +13,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
 {
     public class Path : IEnumerator<Vector3>, ISaveable
     {
-        public Stack<TargetArgs> StackTargets = new();
+        public Stack<InteractionTarget> StackTargets = new();
         public Stack<Vector3> Stack;
         Vector3[] Steps;
         int CurrentStepIndex;
@@ -32,7 +32,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
                 this.Stack.Push(current.Global);
                 current = current.Parent;
             }
-            this.StackTargets = new Stack<TargetArgs>();
+            this.StackTargets = new Stack<InteractionTarget>();
             var currentnode = node;
             while (current.Parent != null)
             {

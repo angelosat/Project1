@@ -14,7 +14,7 @@ namespace Project1.Core.AI.Packets
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        static internal void Send(NetEndpoint net, MapBase map, List<int> npcIDs, TargetArgs target, bool enqueue)
+        static internal void Send(NetEndpoint net, MapBase map, List<int> npcIDs, InteractionTarget target, bool enqueue)
         {
             var w = net.BeginPacket(p);
             w.Write(map.ID);
@@ -27,7 +27,7 @@ namespace Project1.Core.AI.Packets
             var r = pck.PacketReader;
             var map = net.World.Get(r.ReadMapId());
             var npcids = r.ReadListInt32();
-            var target = TargetArgs.Read(net.World, r);
+            var target = InteractionTarget.Read(net.World, r);
             var enqueue = r.ReadBoolean();
             foreach(var npc in net.World.GetEntities(npcids))
                 npc.MoveOrder(target, enqueue);

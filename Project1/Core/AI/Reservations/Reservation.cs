@@ -11,7 +11,7 @@ namespace Project1.Core.AI.Reservations
     public class Reservation
     {
         public int Actor;
-        public TargetArgs Target;
+        public InteractionTarget Target;
         int _amount;
         public int Amount
         {
@@ -20,7 +20,7 @@ namespace Project1.Core.AI.Reservations
         }
         public override string ToString()
             => $"Actor: {this.Actor} Target: {this.Target} Amount: {this.Amount}";
-        public Reservation(GameObject actor, TargetArgs target, int stackcount)
+        public Reservation(GameObject actor, InteractionTarget target, int stackcount)
         {
             if (stackcount == -1)
                 throw new Exception();
@@ -40,7 +40,7 @@ namespace Project1.Core.AI.Reservations
         {
             var r = pck.PacketReader;
             this.Actor = r.ReadInt32();
-            this.Target = TargetArgs.Read(map.World, r);
+            this.Target = InteractionTarget.Read(map.World, r);
             this.Amount = r.ReadInt32();
         }
         public SaveTag Save()
@@ -54,7 +54,7 @@ namespace Project1.Core.AI.Reservations
         public Reservation(MapBase map, SaveTag tag)
         {
             this.Actor = tag.GetValue<int>("ActorID");
-            this.Target = new TargetArgs(map.World, tag["Target"]);
+            this.Target = new InteractionTarget(map.World, tag["Target"]);
             this.Amount = tag.GetValue<int>("Amount");
         }
     }

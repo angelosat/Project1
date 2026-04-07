@@ -29,10 +29,10 @@ namespace Project1.Core.AI.Behaviors.Helpers
         internal static Behavior SetTarget(TargetIndex a, (MapBase map, IntVec3 value) position)
         {
             var bhav = new BehaviorCustom();
-            bhav.InitAction = () => bhav.Actor.CurrentPlan.SetTarget(a, new TargetArgs(position.map, position.value));
+            bhav.InitAction = () => bhav.Actor.CurrentPlan.SetTarget(a, new InteractionTarget(position.map, position.value));
             return bhav;
         }
-        internal static Behavior SetTarget(TargetIndex a, Func<TargetArgs> targetGetter)
+        internal static Behavior SetTarget(TargetIndex a, Func<InteractionTarget> targetGetter)
         {
             var bhav = new BehaviorCustom();
             bhav.InitAction = () => bhav.Actor.CurrentPlan.SetTarget(a, targetGetter());

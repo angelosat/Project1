@@ -27,24 +27,24 @@ namespace Project1.Core.AI
     public sealed class Plan
     {
         public PlanContinuationPolicy Continuation;
-        public TargetArgs TargetA = TargetArgs.Null;
-        public TargetArgs TargetB = TargetArgs.Null;
-        public TargetArgs TargetC = TargetArgs.Null;
-        public List<TargetArgs> TargetsA = [];
-        public List<TargetArgs> TargetsB = [];
-        public List<TargetArgs> TargetsC = [];
+        public InteractionTarget TargetA = InteractionTarget.Null;
+        public InteractionTarget TargetB = InteractionTarget.Null;
+        public InteractionTarget TargetC = InteractionTarget.Null;
+        public List<InteractionTarget> TargetsA = [];
+        public List<InteractionTarget> TargetsB = [];
+        public List<InteractionTarget> TargetsC = [];
         public List<int> AmountsA = [];
         public List<int> AmountsB = [];
         public List<int> AmountsC = [];
         public int AmountA = -1, AmountB = -1, AmountC = -1;
         public int Count;
-        public List<List<TargetArgs>> TargetQueues = [];
+        public List<List<InteractionTarget>> TargetQueues = [];
         public List<List<int>> AmountQueues = [];
         public List<ObjectAmount> PlacedObjects = [];
         public List<Entity> CraftedItems = [];
         public DesignationDef Designation;
         public CraftingOrder Order;
-        public TargetArgs Product = TargetArgs.Null;
+        public InteractionTarget Product = InteractionTarget.Null;
         public bool Forced;
         public bool Urgent = true; // TODO default should be false
         int ReservedBy = -1;
@@ -90,7 +90,7 @@ namespace Project1.Core.AI
         public PlanDef Def;
         //public int ID { get; internal set; }
         public string Status => $"{this.Def.Interaction?.LabelReadable} : {this.TargetA}";
-        public TargetArgs GetTarget(TargetIndex targetInd)
+        public InteractionTarget GetTarget(TargetIndex targetInd)
         {
             return targetInd switch
             {
@@ -101,7 +101,7 @@ namespace Project1.Core.AI
             };
         }
         public bool IsImmediate = true;
-        internal TargetArgs GetTarget(int targetInd)
+        internal InteractionTarget GetTarget(int targetInd)
         {
             return this.GetTarget((TargetIndex)targetInd);
         }
@@ -115,7 +115,7 @@ namespace Project1.Core.AI
                 _ => throw new Exception(),
             };
         }
-        internal List<TargetArgs> GetTargetQueue(TargetIndex targetInd)
+        internal List<InteractionTarget> GetTargetQueue(TargetIndex targetInd)
         {
             return targetInd switch
             {
@@ -138,9 +138,9 @@ namespace Project1.Core.AI
         internal Plan SetTarget(TargetIndex targetInd, Entity target, int amount)
         {
             this.SetAmount(targetInd, amount);
-            return this.SetTarget(targetInd, new TargetArgs(target));
+            return this.SetTarget(targetInd, new InteractionTarget(target));
         }
-        internal Plan SetTarget(TargetIndex targetInd, TargetArgs targetArgs)
+        internal Plan SetTarget(TargetIndex targetInd, InteractionTarget targetArgs)
         {
             switch (targetInd)
             {
@@ -223,13 +223,13 @@ namespace Project1.Core.AI
             this.BehaviorType = behaviorType;
         }
         [Obsolete("use a ctor which accepts a plandef")]
-        public Plan(Type behaviorType, TargetArgs targetA) : this()
+        public Plan(Type behaviorType, InteractionTarget targetA) : this()
         {
             throw new Exception();
             this.BehaviorType = behaviorType;
             this.SetTarget(TargetIndex.A, targetA);
         }
-        public Plan(PlanDef def, TargetArgs interactionTarget) : this()
+        public Plan(PlanDef def, InteractionTarget interactionTarget) : this()
         {
             ArgumentNullException.ThrowIfNull(def);
 
@@ -241,14 +241,14 @@ namespace Project1.Core.AI
             ArgumentNullException.ThrowIfNull(def);
 
             this.Def = def;
-            this.SetTarget(TargetIndex.A, new TargetArgs(map, pos));
+            this.SetTarget(TargetIndex.A, new InteractionTarget(map, pos));
         }
         public Plan(PlanDef def, MapBase map, IntVec3 pos, int amount) : this()
         {
             ArgumentNullException.ThrowIfNull(def);
 
             this.Def = def;
-            this.SetTarget(TargetIndex.A, new TargetArgs(map, pos));
+            this.SetTarget(TargetIndex.A, new InteractionTarget(map, pos));
             this.SetAmount(TargetIndex.A, amount);
         }
         public Plan(PlanDef def, Entity item, int amount = -1) : this()
@@ -256,10 +256,10 @@ namespace Project1.Core.AI
             ArgumentNullException.ThrowIfNull(def);
 
             this.Def = def;
-            this.SetTarget(TargetIndex.A, new TargetArgs(item));
+            this.SetTarget(TargetIndex.A, new InteractionTarget(item));
             this.SetAmount(TargetIndex.A, amount);
         }
-        public Plan(PlanDef def, TargetArgs targetA, TargetArgs targetB) : this()
+        public Plan(PlanDef def, InteractionTarget targetA, InteractionTarget targetB) : this()
         {
             if (def is null) throw new Exception();
 
@@ -267,7 +267,7 @@ namespace Project1.Core.AI
             this.SetTarget(TargetIndex.A, targetA);
             this.SetTarget(TargetIndex.B, targetB);
         }
-        public Plan(Type behaviorType, TargetArgs targetA, TargetArgs targetB) : this()
+        public Plan(Type behaviorType, InteractionTarget targetA, InteractionTarget targetB) : this()
         {
             throw new Exception();
             this.BehaviorType = behaviorType;
@@ -376,9 +376,9 @@ namespace Project1.Core.AI
         public void LoadData(SaveTag tag)
         {
             this.Def = tag.LoadDef<PlanDef>("Def");
-            tag.TryGetTag("TargetA", t => this.TargetA = new TargetArgs(t));
-            tag.TryGetTag("TargetB", t => this.TargetB = new TargetArgs(t));
-            tag.TryGetTag("TargetC", t => this.TargetC = new TargetArgs(t));
+            tag.TryGetTag("TargetA", t => this.TargetA = new InteractionTarget(t));
+            tag.TryGetTag("TargetB", t => this.TargetB = new InteractionTarget(t));
+            tag.TryGetTag("TargetC", t => this.TargetC = new InteractionTarget(t));
 
 
             tag.TryGetTagValueOrDefault("AmountA", out this.AmountA);
@@ -399,18 +399,18 @@ namespace Project1.Core.AI
 
 
             tag.TryGetTagValueOrDefault("Count", out this.Count);
-            tag.TryGetTag("Product", t => this.Product = new TargetArgs(t));
+            tag.TryGetTag("Product", t => this.Product = new InteractionTarget(t));
             tag.TryGetTagValueOrDefault("Forced", out this.Forced);
             if (tag.TryGetTagValueOrDefault("Queues", out List<SaveTag> queuestag))
             {
                 foreach (var qtag in queuestag)
                 {
                     var curqtag = qtag.Value as List<SaveTag>;
-                    var tlist = new List<TargetArgs>();
+                    var tlist = new List<InteractionTarget>();
                     var clist = new List<int>();
                     foreach (var ctag in curqtag)
                     {
-                        var tar = new TargetArgs(ctag["Target"]);
+                        var tar = new InteractionTarget(ctag["Target"]);
 
                         var amount = (int)ctag["Amount"].Value;
                         tlist.Add(tar);
@@ -443,7 +443,7 @@ namespace Project1.Core.AI
         internal void SyncFromServer(NetEndpoint provider, IDataReader r)
         {
             this.Def = r.ReadDef<PlanDef>();
-            this.TargetA = TargetArgs.Read(provider.World, r);
+            this.TargetA = InteractionTarget.Read(provider.World, r);
             if (r.ReadBoolean())
             {
                 var orderid = r.ReadInt32();
@@ -475,11 +475,11 @@ namespace Project1.Core.AI
         }
         internal void AddTarget(TargetIndex index, Entity target, int count = -1)
         {
-            this.AddTarget(index, new TargetArgs(target), count);
+            this.AddTarget(index, new InteractionTarget(target), count);
         }
-        internal void AddTarget(TargetIndex index, TargetArgs target, int count = -1)
+        internal void AddTarget(TargetIndex index, InteractionTarget target, int count = -1)
         {
-            List<TargetArgs> t;
+            List<InteractionTarget> t;
             List<int> a;
             switch (index)
             {
@@ -505,7 +505,7 @@ namespace Project1.Core.AI
             a.Add(count);
         }
         
-        IEnumerable<TargetArgs> GetCustomTargets() { yield break; }
+        IEnumerable<InteractionTarget> GetCustomTargets() { yield break; }
         public bool IsStillValid()
         {
             var map = this.Actor.Map;
@@ -527,7 +527,7 @@ namespace Project1.Core.AI
             /// TODO: interperet amount by target type:
             /// for entities do if -1 then amount = entity.stacksize
             /// for intvec3 and blockentities, do amount  = 1
-            if (this.GetTarget(sourceIndex) is TargetArgs singleTarget && singleTarget != TargetArgs.Null)
+            if (this.GetTarget(sourceIndex) is InteractionTarget singleTarget && singleTarget != InteractionTarget.Null)
             {
                 var amountSpecified = this.GetAmount(sourceIndex);
                 var amountToReserve = singleTarget.Type switch

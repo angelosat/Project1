@@ -9,7 +9,7 @@ namespace Project1.Core.Towns.Farming
     class TaskBehaviorTilling : BehaviorExecutePlan
     {
         public const TargetIndex TargetInd = TargetIndex.A;
-        TargetArgs Target { get { return this.Plan.GetTarget(TargetInd); } }
+        InteractionTarget Target { get { return this.Plan.GetTarget(TargetInd); } }
         protected override IEnumerable<Behavior> GetSteps()
         {
             yield return new BehaviorResolvePath(PathEndMode.Touching)

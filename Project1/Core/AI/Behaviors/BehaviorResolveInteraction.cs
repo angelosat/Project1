@@ -12,11 +12,11 @@ namespace Project1.Core.AI.Behaviors
     {
         readonly int TargetInd;
         readonly TargetIndex CountInd;
-        TargetArgs Target { get => this.TargetGetter?.Invoke() ?? (this.TargetInd != (int)TargetIndex.None ? this.Actor.CurrentPlan.GetTarget(this.TargetInd) : null); set { } }
+        InteractionTarget Target { get => this.TargetGetter?.Invoke() ?? (this.TargetInd != (int)TargetIndex.None ? this.Actor.CurrentPlan.GetTarget(this.TargetInd) : null); set { } }
         Interaction _interaction;
         public InteractionDef InteractionDef;
         public Func<Interaction> InteractionFactory;
-        readonly Func<TargetArgs> TargetGetter;
+        readonly Func<InteractionTarget> TargetGetter;
         Interaction Interaction
         {
             get
@@ -37,7 +37,7 @@ namespace Project1.Core.AI.Behaviors
             this.TargetInd = (int)targetInd;
             this.CountInd = countInd;
         }
-        public BehaviorResolveInteraction(Func<TargetArgs> targetGetter, Func<Interaction> interactionFactory)
+        public BehaviorResolveInteraction(Func<InteractionTarget> targetGetter, Func<Interaction> interactionFactory)
         {
             this.InteractionFactory = interactionFactory;
             this.TargetGetter = targetGetter;
@@ -61,7 +61,7 @@ namespace Project1.Core.AI.Behaviors
             this.TargetInd = targetInd;
             this.Interaction = interaction;
         }
-        public BehaviorResolveInteraction(TargetArgs targetArgs, Interaction interaction)
+        public BehaviorResolveInteraction(InteractionTarget targetArgs, Interaction interaction)
         {
             this.Target = targetArgs;
             this.Interaction = interaction;

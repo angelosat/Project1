@@ -24,7 +24,7 @@ namespace Project1.Core.AI.Behaviors.Observe
                 var obj = randomized.Dequeue();
                 if (obj == actor)
                     continue;
-                return new Plan(typeof(BehaviorTaskObserveNew)) { TargetA = new TargetArgs(obj) };
+                return new Plan(typeof(BehaviorTaskObserveNew)) { TargetA = new InteractionTarget(obj) };
             }
             return null;
         }

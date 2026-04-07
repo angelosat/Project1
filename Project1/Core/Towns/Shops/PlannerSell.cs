@@ -21,7 +21,7 @@ class PlannerSell : Planner
             if(actor.Hauled?.RefId == transaction.Money)
             if(transaction.IsProcessed)
             {
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, transaction.Counter)){ Continuation = PlanContinuationPolicy.Yield };
+                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, transaction.Counter)){ Continuation = PlanContinuationPolicy.Yield };
                 
             }
             var item = map.World.GetEntity(transaction.Item);
@@ -36,7 +36,7 @@ class PlannerSell : Planner
                     money.StackSize >= transaction.Price)
                     return new Plan(PlanDefOf.RingUpFinish, money) { AmountA = transaction.Price };//, Continuation = PlanContinuationPolicy.Yield };
 
-                return new Plan(PlanDefOf.WaitForPayment, new TargetArgs(map, transaction.Counter.Above));
+                return new Plan(PlanDefOf.WaitForPayment, new InteractionTarget(map, transaction.Counter.Above));
             }
             if (transaction.IsProcessed)
                 return null;

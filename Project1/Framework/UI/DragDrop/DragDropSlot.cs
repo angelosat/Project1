@@ -12,9 +12,9 @@ namespace Project1.Core
         new public GameObjectSlot Source;
         public GameObjectSlot Slot;
         RenderTarget2D Texture;
-        public TargetArgs SourceTarget, DraggedTarget;
+        public InteractionTarget SourceTarget, DraggedTarget;
 
-        public DragDropSlot(GameObject parent, TargetArgs source, TargetArgs dragged, DragDropEffects effects)
+        public DragDropSlot(GameObject parent, InteractionTarget source, InteractionTarget dragged, DragDropEffects effects)
         {
             this.Parent = parent;
             this.SourceTarget = source;

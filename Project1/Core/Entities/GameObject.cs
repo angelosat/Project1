@@ -588,7 +588,7 @@ namespace Project1.Core.Entities
                 comp.DrawUI(sb, camera, this);
         }
 
-        public void DrawPreview(MySpriteBatch sb, Camera cam, TargetArgs target, bool precise)
+        public void DrawPreview(MySpriteBatch sb, Camera cam, InteractionTarget target, bool precise)
         {
             if (target.Type != TargetType.Cell)
                 return;
@@ -821,7 +821,7 @@ namespace Project1.Core.Entities
         }
         
 
-        public bool IsInInteractionRange(TargetArgs target)
+        public bool IsInInteractionRange(InteractionTarget target)
         {
             if (target.Type == TargetType.Cell)
             {
@@ -1033,7 +1033,7 @@ namespace Project1.Core.Entities
         //public bool ExistsOn(MapBase map) => this._map == map && this.Owner == null;
         public bool ExistsOn(MapBase map) => this.Transform.IsSpawnedIn(map);
 
-        internal void MoveOrder(TargetArgs target, bool enqueue)
+        internal void MoveOrder(InteractionTarget target, bool enqueue)
         {
             this.GetComponent<AIComponent>().MoveOrder(target, enqueue);
         }

@@ -39,7 +39,7 @@ namespace Project1.Core.Interactions
             this.Logic = ActivatorSafe<InteractionLogic>.CreateInstance(workerType ?? typeof(InteractionLogic));
         }
 
-        public Interaction Create(Actor actor, TargetArgs target, int count = -1)
+        public Interaction Create(Actor actor, InteractionTarget target, int count = -1)
         {
             var interaction = ActivatorSafe<Interaction>.CreateInstance(this.InteractionClass);
             interaction.Def = this;
@@ -48,7 +48,7 @@ namespace Project1.Core.Interactions
             return interaction;
         }
 
-        internal InteractionContext CreateContext(Actor actor, TargetArgs target, int count)
+        internal InteractionContext CreateContext(Actor actor, InteractionTarget target, int count)
         {
             return this.Logic.CreateContext(actor, target, count);
         }

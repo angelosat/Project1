@@ -54,6 +54,6 @@ abstract public class Planner
         return task != null ? new PlannerResult(task, this) : PlannerResult.Empty;
     }
     public virtual bool ShouldContinue(Actor actor, Plan plan) => true;
-    public virtual Plan TryTaskOn(Actor actor, TargetArgs target, bool ignoreOtherReservations = false) => null;
-    public virtual PlanDef CanGiveTask(Actor actor, TargetArgs target) => null; 
+    public virtual Plan TryTaskOn(Actor actor, InteractionTarget target, bool ignoreOtherReservations = false) => null;
+    public virtual PlanDef CanGiveTask(Actor actor, InteractionTarget target) => null; 
 }

@@ -25,7 +25,7 @@ namespace Project1.Core.Towns.Inns
             {
                 
                 if (transaction.IsPaid)
-                    return new Plan(InnsDefOf.PlanCheckIn, new TargetArgs(map, transaction.Desk));
+                    return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(map, transaction.Desk));
                 if (transaction.IsAwaitingPayment)
                 {
                     if (actor.Hauled is Entity carried)
@@ -34,7 +34,7 @@ namespace Project1.Core.Towns.Inns
                             return null;
                         if (carried.StackSize != price)
                             return null;
-                        return new Plan(InnsDefOf.PlanPayCheckIn, new TargetArgs(map, transaction.Desk.Above));
+                        return new Plan(InnsDefOf.PlanPayCheckIn, new InteractionTarget(map, transaction.Desk.Above));
                     }
                     else
                     {
@@ -76,7 +76,7 @@ namespace Project1.Core.Towns.Inns
             //    return null;
             if (!actor.Inventory.TryGet(e => e.Def == ItemDefOf.Coins && e.StackSize >= price, out _))
                 return null;
-            return new Plan(InnsDefOf.PlanCheckIn, new TargetArgs(actor.Map, desk));
+            return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(actor.Map, desk));
         }
 
         //protected override Plan TryPlan(Actor actor)

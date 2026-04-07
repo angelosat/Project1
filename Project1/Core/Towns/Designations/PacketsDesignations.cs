@@ -77,7 +77,7 @@ namespace Project1.Core.Towns.Designations
             if (endpoint.IsServer)
                 Send(endpoint, mapid, begin, end, def, isRemoval);
         }
-        static public void Send(NetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
+        static public void Send(NetEndpoint net, bool remove, IEnumerable<InteractionTarget> targets, DesignationDef designation)
         {
             remove |= designation == null;
             var w = net.BeginPacketImmediate(p);

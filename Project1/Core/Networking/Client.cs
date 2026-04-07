@@ -90,7 +90,7 @@ public sealed class Client : NetEndpoint
     //private TimeSpan ClientClock = new();
     private double LastReceivedTime = int.MinValue;
     public static bool IsSaving;
-
+    internal Dictionary<MapId, MapBase> PendingMaps = [];
     //public override TimeSpan Clock => this.ClientClock;
 
 
@@ -761,25 +761,39 @@ public sealed class Client : NetEndpoint
         return bitvector;
     }
 
-    public HashSet<Vector2> ChunkRequests = new();
+    public HashSet<Vector2> ChunkRequests = [];
+    public HashSet<(MapId mapid, Vector2 chunkCoords)> ChunkRequestsNew = new();
     private ulong lasttickreceived;
 
-    public void ReceiveChunk(Chunk chunk)
-    {
-        this.ChunkRequests.Remove(chunk.MapCoords);
+    //public void ReceiveChunk(Chunk chunk)
+    //{
+    //    this.ChunkRequests.Remove(chunk.MapCoords);
 
-        if (this.Map.GetActiveChunks().ContainsKey(MapBase.GetChunkKey(chunk.MapCoords)))
+    //    if (this.Map.GetActiveChunks().ContainsKey(MapBase.GetChunkKey(chunk.MapCoords)))
+    //    {
+    //        (chunk.MapCoords.ToString() + " already loaded").ToConsole();
+    //        return;
+    //    }
+    //    chunk.Map = this.Map;
+
+    //    Instance.Map.AddChunk(chunk);
+    //    return;
+    //}
+    public void ReceiveChunk(MapId mapid, Chunk chunk)
+    {
+        this.ChunkRequestsNew.Remove((mapid, chunk.MapCoords));
+
+        var map = this.PendingMaps[mapid];
+        var key = MapBase.GetChunkKey(chunk.MapCoords);
+        if (map.GetActiveChunks().ContainsKey(key))
         {
             (chunk.MapCoords.ToString() + " already loaded").ToConsole();
             return;
         }
-        chunk.Map = this.Map;
-        //ResolveChunkReferences(chunk);
 
-        Instance.Map.AddChunk(chunk);
+        map.AddChunk(chunk);
         return;
     }
-
     /// <summary>
     /// The client can't create objects, must await for a server message
     /// </summary>
@@ -1048,6 +1062,7 @@ public sealed class Client : NetEndpoint
         map.Validate();
     }
 
+
     internal void SetWorld(StaticWorld world)
     {
         this.World = world;
@@ -1057,5 +1072,10 @@ public sealed class Client : NetEndpoint
     public override IDataWriter BeginPacketImmediate(PacketId pType)
     {
         return this.BeginPacket(pType);
+    }
+
+    public override void ViewMap(MapId mapid)
+    {
+        throw new NotImplementedException();
     }
 }

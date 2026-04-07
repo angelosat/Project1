@@ -203,7 +203,7 @@ public sealed class AIComponent : EntityComp<AIComponent.Spec>
         }
     }
 
-    internal void MoveOrder(TargetArgs target, bool enqueue)
+    internal void MoveOrder(InteractionTarget target, bool enqueue)
     {
         this.State.AddMoveOrder(target, enqueue);
     }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
-using Project1.Core.Helpers;
 using Project1.Core.Loot;
 using Project1.Core.Networking.Entities;
 using Project1.Core.Networking.Packets;
@@ -530,7 +529,7 @@ public class Server : NetEndpoint
         }
     }
 
-    public void SpawnRequestFromTemplate(int templateID, TargetArgs target)
+    public void SpawnRequestFromTemplate(int templateID, InteractionTarget target)
     {
         var template = GameObject.Templates[templateID] as Entity;
         var entity = template.Clone(1) as Entity;
@@ -721,5 +720,10 @@ public class Server : NetEndpoint
     {
         this.Report(text);
         Network.SyncReport(this, text);
+    }
+
+    public override void ViewMap(MapId mapid)
+    {
+        throw new NotImplementedException();
     }
 }

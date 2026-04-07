@@ -47,7 +47,7 @@ namespace Project1.Core.Interactions
         Animation CachedAnimation => _cachedAnimation ??= this.Actor.SpriteComp.GetAnimation(this.AnimationDef);// = new(AnimationDef.Work);
         public AnimationDef AnimationDef => this.Def.Animation;// = AnimationDefOf.Work;
         internal Actor Actor => this.Context.Actor;
-        internal TargetArgs Target => this.Context.Target;
+        internal InteractionTarget Target => this.Context.Target;
         //internal int Count;
 
         private bool _drawProgressBar;
@@ -189,7 +189,7 @@ namespace Project1.Core.Interactions
         //{
         //}
 
-        public string GetCompletedText(Actor actor, TargetArgs target)
+        public string GetCompletedText(Actor actor, InteractionTarget target)
         {
             return this.Name + ": " + target.ToString();
         }

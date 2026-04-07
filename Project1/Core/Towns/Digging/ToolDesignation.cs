@@ -41,7 +41,7 @@ namespace Project1.Core.Towns.Digging
                 .Where(v => map.GetBlock(v) != BlockDefOf.Air.Block || map.IsUndiscovered(v));
             this.Renderer.CreateMesh(camera, positions);
         }
-        public override void UpdateRemote(TargetArgs target)
+        public override void UpdateRemote(InteractionTarget target)
         {
             if(target.Type == TargetType.Cell)
             this.End = target.Global;

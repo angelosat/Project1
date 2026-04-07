@@ -25,7 +25,7 @@ namespace Project1.Core.Networking.Entities
             w.Write(false);
             w.Write(success);
         }
-        internal static void Send(NetEndpoint net, GameObject entity, Interaction action, TargetArgs target, int count)
+        internal static void Send(NetEndpoint net, GameObject entity, Interaction action, InteractionTarget target, int count)
         {
             var server = net as Server;
             var w = server.BeginPacket(PacketInteract);
@@ -51,7 +51,7 @@ namespace Project1.Core.Networking.Entities
                 entity.Work.End(r.ReadBoolean());
                 return;
             }
-            var target = TargetArgs.Read(net.World, r);
+            var target = InteractionTarget.Read(net.World, r);
             var count = r.ReadInt32();
             var action = r.ReadDef<InteractionDef>().Create(entity, target, count);
             //action.Count = count;

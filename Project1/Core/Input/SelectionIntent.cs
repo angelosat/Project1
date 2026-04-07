@@ -29,16 +29,16 @@ namespace Project1.Core.Input
                 return map.World.GetEntities(this.EntityIDs);
             throw new UnreachableException();
         }
-        public IEnumerable<TargetArgs> ResolveTargets(MapBase map)
+        public IEnumerable<InteractionTarget> ResolveTargets(MapBase map)
         {
             if (this.Type == SelectionType.Null)
                 return [];
             if (this.Type == SelectionType.List)
-                return this.Cells.Select(c => new TargetArgs(map, c));
+                return this.Cells.Select(c => new InteractionTarget(map, c));
             else if (this.Type == SelectionType.Box)
-                return IntVec3Helper.GetBox(this.Begin, this.End).Select(c => new TargetArgs(map, c));
+                return IntVec3Helper.GetBox(this.Begin, this.End).Select(c => new InteractionTarget(map, c));
             else if (this.Type == SelectionType.Entities)
-                return map.World.GetEntities(this.EntityIDs).Select(e => new TargetArgs(e));
+                return map.World.GetEntities(this.EntityIDs).Select(e => new InteractionTarget(e));
             throw new UnreachableException();
         }
         public SelectionResolved ResolveTargetsNew(MapBase map)
@@ -46,11 +46,11 @@ namespace Project1.Core.Input
             if (this.Type == SelectionType.Null)
                 return new SelectionResolved([], this);
             if (this.Type == SelectionType.List)
-                return new SelectionResolved(this.Cells.Select(c => new TargetArgs(map, c)), this);
+                return new SelectionResolved(this.Cells.Select(c => new InteractionTarget(map, c)), this);
             else if (this.Type == SelectionType.Box)
                 return new SelectionResolved(map.Select(this.Begin, this.End), this);
             else if (this.Type == SelectionType.Entities)
-                return new SelectionResolved(map.World.GetEntities(this.EntityIDs).Select(e => new TargetArgs(e)), this);
+                return new SelectionResolved(map.World.GetEntities(this.EntityIDs).Select(e => new InteractionTarget(e)), this);
             throw new UnreachableException();
         }
         public SelectionIntent(IEnumerable<EntityRefId> ids)

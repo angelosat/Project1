@@ -16,7 +16,7 @@ namespace Project1.Core.AI.Packets
         {
             PType = Registry.PacketHandlers.Register(Receive);
         }
-        internal static void Send(PlannerDef plannerDef, Actor actor, TargetArgs target)
+        internal static void Send(PlannerDef plannerDef, Actor actor, InteractionTarget target)
         {
             var client = actor.Map.Net as Client;
             var w = client.GetOutgoingStreamOrderedReliable();
@@ -30,7 +30,7 @@ namespace Project1.Core.AI.Packets
             var r = pck.PacketReader;
             var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
             var planner = r.ReadDef<PlannerDef>();
-            var target = TargetArgs.Read(net.World, r);
+            var target = InteractionTarget.Read(net.World, r);
             actor.ForceTask(planner, target);
         }
     }

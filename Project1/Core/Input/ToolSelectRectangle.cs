@@ -56,7 +56,7 @@ namespace Project1.Core.Input
             this.Begin = player.MousePosition;
             return base.Read(player);
         }
-        internal override void DrawUIRemote(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, Vector2 vector2, TargetArgs targetArgs, PlayerData player)
+        internal override void DrawUIRemote(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, Vector2 vector2, InteractionTarget targetArgs, PlayerData player)
         {
             PlayerData.GetMousePosition(player.CameraPosition, this.Begin, player.CameraZoom, camera).GetRectangle(vector2).DrawHighlight(sb, Color.Yellow*.5f);
         }

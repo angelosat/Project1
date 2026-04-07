@@ -38,14 +38,14 @@ public class PlayerData
     public Actor ControllingEntity;
     public int Ping;
     public bool IsActive;
-    public Dictionary<Vector2, byte[]> PendingChunks = [];
-    public HashSet<Vector2> SentChunks = [];
-    //public Dictionary<Chunk, byte[]> PendingChunks = [];
-    //public HashSet<Chunk> SentChunks = [];
+
+    public HashSet<(MapBase map, Chunk chunk)> SentChunks = [];
+    public Dictionary<(MapBase map, Chunk chunk), byte[]> PendingChunks = [];
+
     public Vector2 CameraPosition;
     public ControlTool CurrentTool = ToolManager.Instance.GetDefaultTool();
     public float CameraZoom;
-    public TargetArgs Target = TargetArgs.Null;
+    public InteractionTarget Target = InteractionTarget.Null;
     public Vector2? LastPointer; // dont store this in the player class?
     public int SuggestedSpeed = 1;
     static readonly Random Random = new();
@@ -122,7 +122,7 @@ public class PlayerData
         throw new NotImplementedException();
     }
 
-    internal void UpdateTarget(TargetArgs target)
+    internal void UpdateTarget(InteractionTarget target)
     {
         this.Target = target;
     }

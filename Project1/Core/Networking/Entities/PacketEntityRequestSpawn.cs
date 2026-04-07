@@ -11,7 +11,7 @@ namespace Project1.Core.Networking.Entities
         {
             _packetTypeId = Registry.PacketHandlers.Register(ReceiveTemplate);
         }
-        internal static void SendTemplate(NetEndpoint net, int templateID, TargetArgs target)
+        internal static void SendTemplate(NetEndpoint net, int templateID, InteractionTarget target)
         {
             var w = net.BeginPacketImmediate(_packetTypeId);
             w.Write(templateID);
@@ -22,7 +22,7 @@ namespace Project1.Core.Networking.Entities
             var r = pck.PacketReader;
             var server = net as Server;
             var templateID = r.ReadInt32();
-            var target = TargetArgs.Read(net.World, r);
+            var target = InteractionTarget.Read(net.World, r);
             server.SpawnRequestFromTemplate(templateID, target);
         }
     }

@@ -121,7 +121,7 @@ namespace Project1.Core.Towns.Stockpiles
         public void GetContextActions(GameObject playerEntity, ContextArgs a)
         {
         }
-        public bool IsValidStorage(Entity item, TargetArgs target, int amount)
+        public bool IsValidStorage(Entity item, InteractionTarget target, int amount)
         {
             if (!this.Accepts(item))
                 return false;

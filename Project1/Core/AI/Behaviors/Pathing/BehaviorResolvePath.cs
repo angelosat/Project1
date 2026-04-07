@@ -12,11 +12,11 @@ namespace Project1.Core.AI.Behaviors.Pathing
 
         }
 
-        public BehaviorResolvePath(TargetArgs target)
+        public BehaviorResolvePath(InteractionTarget target)
             : this(target, PathEndMode.Touching)
         {
         }
-        public BehaviorResolvePath(TargetArgs target, PathEndMode mode)
+        public BehaviorResolvePath(InteractionTarget target, PathEndMode mode)
         {
             this.Children = new List<Behavior>(){
                     new BehaviorResolveDoors(),

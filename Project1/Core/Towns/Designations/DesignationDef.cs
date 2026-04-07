@@ -50,7 +50,7 @@ namespace Project1.Core.Towns.Designations
         DesignationWorker _cachedWorker;
         public DesignationWorker Worker => _cachedWorker ??= (DesignationWorker)Activator.CreateInstance(this.WorkerClass);
 
-        public bool IsValid(MapBase map, IntVec3 global) => this.IsValid(new TargetArgs(map, global));// this.Worker.IsValid(new TargetArgs(map, global));
-        public bool IsValid(TargetArgs target) => this.Worker.IsValid(target);
+        public bool IsValid(MapBase map, IntVec3 global) => this.IsValid(new InteractionTarget(map, global));// this.Worker.IsValid(new TargetArgs(map, global));
+        public bool IsValid(InteractionTarget target) => this.Worker.IsValid(target);
     }
 }

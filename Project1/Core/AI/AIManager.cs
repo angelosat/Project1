@@ -10,7 +10,7 @@ namespace Project1.Core.AI
     {
         public override void OnTooltipCreated(ITooltippable item, Tooltip t)
         {
-            if (item is not TargetArgs target)
+            if (item is not InteractionTarget target)
                 return;
             if (target.Type != TargetType.Entity)
                 return;

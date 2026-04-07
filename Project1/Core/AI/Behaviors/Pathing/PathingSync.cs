@@ -28,7 +28,7 @@ namespace Project1.Core.Pathing
         public float Range;
 
         public Vector3 Start, Finish, FinishPrecise;
-        public TargetArgs FinishTarget;
+        public InteractionTarget FinishTarget;
         Path PathInProgress;
         MapBase Map;
         Actor Actor;
@@ -64,7 +64,7 @@ namespace Project1.Core.Pathing
             this.Start = start.ToRounded();
             this.Actor = actor;
 
-            this.FinishTarget = new TargetArgs(map, finish);
+            this.FinishTarget = new InteractionTarget(map, finish);
             this.FinishPrecise = finish;
             this.Finish = finish.ToRounded();
 

@@ -56,7 +56,7 @@ public class ToolManagement : DefaultTool
     {
         return null;
     }
-    TargetArgs Origin;
+    InteractionTarget Origin;
     Vector2? SelectionRectangleOrigin;
     bool LeftPressed, DblClicked;
 
@@ -106,13 +106,13 @@ public class ToolManagement : DefaultTool
         Ingame.Instance.Events.Post(new PlayerChangedSpeedEvent(nextSpeed));
     }
 
-    private void ClickTarget(TargetArgs target)
+    private void ClickTarget(InteractionTarget target)
     {
         if (target.Type == TargetType.Cell)// || target.Type == TargetType.BlockEntity)
         {
             IntVec3 global = target.Global;
             if (target.Map.TryGetBlockEntity(target.Global, out var blockEntity))
-                Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new TargetArgs(blockEntity)));
+                Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new InteractionTarget(blockEntity)));
             else
                 //Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(global, global));
                 Ingame.Instance.Events.Post(new PlayerSelectionBlockEvent(new CellSelection(Ingame.MainViewportMap, global, target.Face)));
@@ -136,7 +136,7 @@ public class ToolManagement : DefaultTool
             {
                 if (target.Map.TryGetBlockEntity(target.Global, out var blockEntity))
                 {
-                    Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new TargetArgs(blockEntity)));
+                    Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new InteractionTarget(blockEntity)));
                     return;
                 }
             }
@@ -343,7 +343,7 @@ public class ToolManagement : DefaultTool
         e.Handled = true;
     }
    
-    private bool TryShowForceTaskGUI(TargetArgs target)
+    private bool TryShowForceTaskGUI(InteractionTarget target)
     {
         var actor = SelectionManager.SingleSelectedEntity as Actor;
 
@@ -381,7 +381,7 @@ public class ToolManagement : DefaultTool
     internal override void DrawAfterWorld(MySpriteBatch sb, MapBase map)
     {
         var cam = map.Camera;
-        if(this.Target is TargetArgs tar && tar.Type == TargetType.Cell)
+        if(this.Target is InteractionTarget tar && tar.Type == TargetType.Cell)
             cam.DrawBlockMouseover(sb, map, tar, Color.White);
         if (this.Target is null || this.Target.Type == TargetType.Null)
             return;

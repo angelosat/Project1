@@ -11,7 +11,7 @@ namespace Project1.Core.Interactions
         public virtual bool WillFinish(InteractionContext ctx, int workAmount) { return true; }
         public virtual void ApplyWork(InteractionContext ctx, int workAmount) { }
         protected virtual InteractionContext CreateContextInt() => new();
-        internal InteractionContext CreateContext(Actor actor, TargetArgs target, int count)
+        internal InteractionContext CreateContext(Actor actor, InteractionTarget target, int count)
         {
             var ctx = this.CreateContextInt();
             ctx.Actor = actor;

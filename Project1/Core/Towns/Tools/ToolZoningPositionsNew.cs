@@ -116,7 +116,7 @@ namespace Project1.Core.Towns.Tools
                 return Messages.Remove;
         }
         
-        public override void UpdateRemote(TargetArgs target)
+        public override void UpdateRemote(InteractionTarget target)
         {
             if (target.Type == TargetType.Cell)
                 this.End = new(target.Global.XY(), this.Begin.Z);

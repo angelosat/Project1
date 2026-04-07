@@ -9,11 +9,11 @@ namespace Project1.Core.Legacy
 {
     public class ObjectAmount : ISaveable, ISerializableNew<ObjectAmount>
     {
-        TargetArgs ObjectTarget;
+        InteractionTarget ObjectTarget;
         public Entity Object
         {
             get { return this.ObjectTarget.Entity; }
-            set { this.ObjectTarget = new TargetArgs(value); }
+            set { this.ObjectTarget = new InteractionTarget(value); }
         }
         int _amount;
         public int Amount
@@ -59,7 +59,7 @@ namespace Project1.Core.Legacy
         }
         public ISaveable Load(SaveTag tag)
         {
-            tag.TryGetTag("Object", t => this.ObjectTarget = new TargetArgs(t));
+            tag.TryGetTag("Object", t => this.ObjectTarget = new InteractionTarget(t));
             tag.TryGetTagValue<int>("Amount", t => this._amount = t);
             return this;
         }

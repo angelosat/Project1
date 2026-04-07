@@ -19,7 +19,7 @@ namespace Project1.Core.Input
         {
 
         }
-        public ToolSelect(TargetArgs target)
+        public ToolSelect(InteractionTarget target)
         {
             this.Begin = target.Type == TargetType.Cell ? this.GetBeginFromTarget(target.Global) : target.Object.Global.ToCell();
             this.End = this.Begin;

@@ -20,11 +20,11 @@ namespace Project1.Core.UI
         }
         public class ContextActionBarArgs
         {
-            public TargetArgs Target;
+            public InteractionTarget Target;
             public List<ContextActionBarAction> Actions = new List<ContextActionBarAction>();
             public Action<Button> ControlInit = btn => { };
             public object[] Parameters;
-            public ContextActionBarArgs(TargetArgs target)
+            public ContextActionBarArgs(InteractionTarget target)
             {
                 this.Target = target;
             }
@@ -41,7 +41,7 @@ namespace Project1.Core.UI
             }
         }
 
-        static public void Create(TargetArgs t)
+        static public void Create(InteractionTarget t)
         {
             var args = new ContextActionBar.ContextActionBarArgs(t);
             foreach (var comp in Game1.Instance.GameComponents)

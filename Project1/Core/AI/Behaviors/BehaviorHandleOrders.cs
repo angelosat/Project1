@@ -8,16 +8,16 @@ namespace Project1.Core.AI.Behaviors
     class BehaviorHandleOrders : Behavior
     {
         BehaviorResolvePath CurrentBehav;
-        TargetArgs CurrentMoveOrder = TargetArgs.Null;
+        InteractionTarget CurrentMoveOrder = InteractionTarget.Null;
         public override BehaviorState Tick(Actor parent, AIState state)
         {
-            if (this.CurrentBehav is not null && this.CurrentMoveOrder != TargetArgs.Null && state.MoveOrder == this.CurrentMoveOrder)
+            if (this.CurrentBehav is not null && this.CurrentMoveOrder != InteractionTarget.Null && state.MoveOrder == this.CurrentMoveOrder)
             {
                 if (this.CurrentBehav.Tick(parent, state) != BehaviorState.Running)
                 {
                     this.CurrentBehav = null;
                     state.MoveOrders.Dequeue();
-                    this.CurrentMoveOrder = TargetArgs.Null;
+                    this.CurrentMoveOrder = InteractionTarget.Null;
                 }
                 else
                     return BehaviorState.Running;
@@ -31,7 +31,7 @@ namespace Project1.Core.AI.Behaviors
                 if (parent.CanReach(destination))
                 {
                     parent.StopPathing();
-                    var target = new TargetArgs(parent.Map, destination);
+                    var target = new InteractionTarget(parent.Map, destination);
                     parent.CurrentPlan = new Plan() { TargetA = target };
                     this.CurrentBehav = new BehaviorResolvePath(TargetIndex.A, PathEndMode.Exact);
                     this.CurrentMoveOrder = state.MoveOrder;

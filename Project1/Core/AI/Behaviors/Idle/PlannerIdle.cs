@@ -15,13 +15,13 @@ namespace Project1.Core.AI.Behaviors.Idle
             // make this the last fall-back/clean-up planner?
             // drop any carried item at this point
             if(actor.Hauled is Entity carried)
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(actor.Map, actor.Cell));
+                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(actor.Map, actor.Cell));
 
             int BaseWaitTime = 5;
             var composure = actor[TraitDefOf.Temperament].Normalized;
             var waitTicks = (int)((BaseWaitTime + (.5f * BaseWaitTime * composure)) * Ticks.PerSecond);
             var dir = ChooseDirection(actor);
-            return new Plan(PlanDefOf.Idle, new TargetArgs(dir)) { TicksTimeout = waitTicks };
+            return new Plan(PlanDefOf.Idle, new InteractionTarget(dir)) { TicksTimeout = waitTicks };
         }
 
         static Vector2 ChooseDirection(Actor actor)

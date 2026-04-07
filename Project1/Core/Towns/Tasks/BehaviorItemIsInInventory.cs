@@ -17,7 +17,7 @@ namespace Project1.Core.Towns.Tasks
         {
 
         }
-        public BehaviorItemIsInInventory(TargetArgs item)
+        public BehaviorItemIsInInventory(InteractionTarget item)
         {
             throw new Exception();
         }

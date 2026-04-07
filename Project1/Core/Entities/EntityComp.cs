@@ -67,7 +67,7 @@ namespace Project1.Core.Entities
         internal virtual ContextAction GetContextActivate(GameObject parent, GameObject player) => null;
         public virtual void GetClientActions(GameObject parent, List<ContextAction> actions) { }
         public virtual void GetInteractions(GameObject parent, List<Interaction> actions) { }
-        internal virtual void GetEquippedActionsWithTarget(GameObject parent, GameObject actor, TargetArgs t, List<Interaction> list) { }
+        internal virtual void GetEquippedActionsWithTarget(GameObject parent, GameObject actor, InteractionTarget t, List<Interaction> list) { }
         internal SaveTag SaveAs(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);

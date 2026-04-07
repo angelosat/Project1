@@ -24,7 +24,7 @@ namespace Project1.Core.Helpers
         public static T ReadDef<T>(this IDataReader r) where T : Def => Def.Get<T>(r.ReadString());
         public static Def ReadDef(this IDataReader r) => Def.GetDef(r.ReadString());
         public static T TryReadDef<T>(this IDataReader r) where T : Def => r.ReadString() is string defName && !defName.IsNullEmptyOrWhiteSpace() ? Def.Get<T>(defName) : null!;
-        public static TargetArgs ReadTarget(this IDataReader r, WorldBase world) => TargetArgs.Read(world, r);
+        public static InteractionTarget ReadTarget(this IDataReader r, WorldBase world) => InteractionTarget.Read(world, r);
         public static IDataWriter Write(this IDataWriter w, ICollection<EntityRefId> v)
         {
             w.Write(v.Count);
@@ -64,7 +64,7 @@ namespace Project1.Core.Helpers
                 list.Add(r.ReadDef<T>());
             return list;
         }
-        public static IDataWriter Write(this IDataWriter w, ICollection<TargetArgs> list)
+        public static IDataWriter Write(this IDataWriter w, ICollection<InteractionTarget> list)
         {
             w.Write(list.Count);
             foreach (var i in list)
@@ -72,7 +72,7 @@ namespace Project1.Core.Helpers
             return w;
         }
         public static IDataWriter Write(this IDataWriter w, EntityComp comp) { comp.Write(w); return w; }
-        public static IDataWriter Write(this IDataWriter w, TargetArgs target) { target.Write(w); return w; }
+        public static IDataWriter Write(this IDataWriter w, InteractionTarget target) { target.Write(w); return w; }
         public static void SaveDef<T>(this SaveTag tag, string name, T def) where T : Def
         {
             tag.Add(def.Save(name));

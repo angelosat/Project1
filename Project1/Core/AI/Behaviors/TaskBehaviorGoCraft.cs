@@ -14,7 +14,7 @@ namespace Project1.Core
             var plan = this.Plan;
             var item = plan.Order.UnfinishedItem;
             ArgumentNullException.ThrowIfNull(item);
-            if (!map.Town.ReservationManager.Reserve(this.Actor, plan, new TargetArgs(item)))
+            if (!map.Town.ReservationManager.Reserve(this.Actor, plan, new InteractionTarget(item)))
                 return false;
             return base.CommitReservations();
         }
@@ -32,7 +32,7 @@ namespace Project1.Core
             var ingredients = contract.Ingredients;
             bool ingredientSuccess = true;
             foreach (var i in ingredients)
-                ingredientSuccess &= map.Town.ReservationManager.Reserve(this.Actor, this.Plan, new TargetArgs(i));
+                ingredientSuccess &= map.Town.ReservationManager.Reserve(this.Actor, this.Plan, new InteractionTarget(i));
             if (ingredientSuccess)
                 return base.CommitReservations();
             return ingredientSuccess;

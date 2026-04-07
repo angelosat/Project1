@@ -14,7 +14,7 @@ namespace Project1.Core.Interactions
         public new class Spec : Spec<WorkComponent> { }
         public override string Name { get; } = "Work";
         public Interaction Task { get; set; }
-        public TargetArgs Target { get; set; }
+        public InteractionTarget Target { get; set; }
 
         public void Interrupt(bool success = false)
         {
@@ -31,7 +31,7 @@ namespace Project1.Core.Interactions
         {
             this.Task.OnToolContact();
         }
-        public Interaction Perform(InteractionDef taskDef, TargetArgs target, int count = -1)
+        public Interaction Perform(InteractionDef taskDef, InteractionTarget target, int count = -1)
         {
             var interaction = taskDef.Create(this.Owner as Actor, target, count);
             this.Start(interaction);
@@ -49,7 +49,7 @@ namespace Project1.Core.Interactions
             this.Target = task.Target;
             parent.FaceTowards(this.Target);
         }
-        public void Perform(Interaction task, TargetArgs target, int quantity = -1)
+        public void Perform(Interaction task, InteractionTarget target, int quantity = -1)
         {
             //var parent = this.Owner as Actor;
             //task.Count = quantity;
@@ -122,7 +122,7 @@ namespace Project1.Core.Interactions
             var isinteracting = r.ReadBoolean();
             if (!isinteracting)
                 return;
-            this.Target = TargetArgs.Read(this.Owner.World, r);
+            this.Target = InteractionTarget.Read(this.Owner.World, r);
             var interactionDef = r.ReadDef<InteractionDef>();
             var interaction = interactionDef.Create(this.Owner as Actor, this.Target);
             interaction.Read(r);
@@ -143,7 +143,7 @@ namespace Project1.Core.Interactions
                 return;
             if (!isInteracting)
                 return;
-            this.Target = new TargetArgs(save["Target"]);
+            this.Target = new InteractionTarget(save["Target"]);
             var interactionTag = save["Interaction"];
             var inter = Interaction.Load(interactionTag);
             this.Task = inter;

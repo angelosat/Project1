@@ -24,7 +24,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
                    orderby dist
                    select t;
         }
-        public static IEnumerable<TargetArgs> OrderByReachableRegionDistance(this IEnumerable<TargetArgs> targets, Actor actor)
+        public static IEnumerable<InteractionTarget> OrderByReachableRegionDistance(this IEnumerable<InteractionTarget> targets, Actor actor)
         {
             return from t in targets
                    let dist = actor.Map.GetRegionDistance(actor.GetCellStandingOn(), t.Global.ToCell(), actor)

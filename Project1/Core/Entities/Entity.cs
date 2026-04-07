@@ -137,7 +137,7 @@ namespace Project1.Core.Entities
         internal void Select()
         {
             //SelectionManager.Select(this);
-            Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new TargetArgs(this)));
+            Ingame.Instance.Events.Post(new PlayerSelectionSingleEvent(Single: new InteractionTarget(this)));
         }
         /// <summary>
         /// reset name in case of errors or def changes

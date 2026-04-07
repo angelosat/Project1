@@ -21,16 +21,16 @@ namespace Project1.Core.Input
                 if (value is Slot)
                 {
                     var goslot = (value as Slot).Tag;
-                    this.Target = new TargetArgs(goslot);
+                    this.Target = new InteractionTarget(goslot);
                 }
                 else if (value is GameObject && !Controller.BlockTargeting)
                 { 
-                    this.Target = new TargetArgs(value as Entity);
+                    this.Target = new InteractionTarget(value as Entity);
                     this.TargetEntity = this.Target;
                 }
-                else if (value is TargetArgs)
+                else if (value is InteractionTarget)
                 {
-                    var target = value as TargetArgs;
+                    var target = value as InteractionTarget;
                     if (target.Type == TargetType.Cell)
                         this.TargetCell = target;
                     else if (target.Type == TargetType.Entity)
@@ -41,7 +41,7 @@ namespace Project1.Core.Input
         public bool Multifaceted;
         public Vector3 Face;
         public Vector3 Precise;
-        public TargetArgs Target, TargetCell, TargetEntity;
+        public InteractionTarget Target, TargetCell, TargetEntity;
         public float Depth = float.MinValue;//1;
 
 

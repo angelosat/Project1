@@ -317,9 +317,9 @@ namespace Project1.Core.Input
             return false;
         }
 
-        public static TargetArgs CurrentTarget => Instance.ActiveTool != null ? (Instance.ActiveTool.Target ?? TargetArgs.Null) : TargetArgs.Null;
+        public static InteractionTarget CurrentTarget => Instance.ActiveTool != null ? (Instance.ActiveTool.Target ?? InteractionTarget.Null) : InteractionTarget.Null;
 
-        public static TargetArgs LastValidTarget
+        public static InteractionTarget LastValidTarget
         {
             get
             {

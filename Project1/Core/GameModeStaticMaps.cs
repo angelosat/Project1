@@ -122,12 +122,18 @@ class GameModeStaticMaps : GameMode
     {
         PacketChunkRequest.Send(client, Client.Instance.PlayerData.ID);
     }
-    internal override void ChunkReceived(Server server, int playerid, Vector2 vec)
+    internal override void ChunkReceived(Server server, int playerid, MapId mapid, IntVec2 chunkCoords)
     {
         var player = server.GetPlayer(playerid);
-        player.SentChunks.Remove(vec);
+        var map = server.World.Get(mapid);
+        var ch = map.ActiveChunks[MapBase.GetChunkKey(chunkCoords)];
+        player.SentChunks.Remove((server.World.Get(mapid), ch));
         if (player.SentChunks.Count == 0 && player.PendingChunks.Count == 0)
             player.SendSnapshots = true;
+        //var player = server.GetPlayer(playerid);
+        //player.SentChunks.Remove(vec);
+        //if (player.SentChunks.Count == 0 && player.PendingChunks.Count == 0)
+        //    player.SendSnapshots = true;
     }
 
     internal override void Update(Server server)
@@ -138,38 +144,50 @@ class GameModeStaticMaps : GameMode
     {
         foreach (var pl in server.Players?.GetList())
         {
+            //if (pl.SentChunks.Count > 0)
+            //{
+            //    continue;
+            //}
+            //if (pl.PendingChunks.Count == 0)
+            //{
+            //    continue;
+            //}
+            //var pending = pl.PendingChunks;
+            //var first = pending.First();
+            //pending.Remove(first.Key);
+            //pl.SentChunks.Add(first.Key);
+            ////PacketChunk.Send(server, first.Key.MapCoords, first.Key.Map, first.Value, pl);
+            //PacketChunk.Send(server, first.Key, first.Value, pl);
+            //("sending chunk " + first.Key.ToString()).ToConsole();
+
             if (pl.SentChunks.Count > 0)
-            {
                 continue;
-            }
 
             if (pl.PendingChunks.Count == 0)
-            {
                 continue;
-            }
-
             var pending = pl.PendingChunks;
             var first = pending.First();
             pending.Remove(first.Key);
             pl.SentChunks.Add(first.Key);
             //PacketChunk.Send(server, first.Key.MapCoords, first.Key.Map, first.Value, pl);
-            PacketChunk.Send(server, first.Key, first.Value, pl);
+            PacketChunk.Send(server, first.Key.map, first.Value, pl);
             ("sending chunk " + first.Key.ToString()).ToConsole();
         }
     }
     
-    internal override void AllChunksReceived(NetEndpoint net)
+    internal override void AllChunksReceived(NetEndpoint net, MapId mapid)
     {
         // all chunks received, enter world
         "all chunks loaded!".ToConsole();
         net.Events.Post(new ChunksLoadedEvent());
-        var map = net.Map as StaticMap;
+        var client = net as Client;
+        var map = client.PendingMaps[mapid] as StaticMap;
+        client.PendingMaps.Remove(mapid);
         map.Regions.Init();
         map.InitUndiscoveredAreas();
         map.Init();
         map.ResolveReferences();
-
-        var client = net as Client;
+        client.SetMap(map);
 
         var ingame = Ingame.Instance.Initialize(client);
 

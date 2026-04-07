@@ -19,12 +19,12 @@ namespace Project1.Core.AI.Behaviors
         /// <param name="actor"></param>
         /// <param name="condition"></param>
         /// <returns></returns>
-        static public TargetArgs FindItemAnywhere(Actor actor, Func<GameObject, bool> condition)
+        static public InteractionTarget FindItemAnywhere(Actor actor, Func<GameObject, bool> condition)
         {
             var inventoryitem = actor.Inventory.First(condition);
             if (inventoryitem != null)
             {
-                var invitemtarget = new TargetArgs(inventoryitem);
+                var invitemtarget = new InteractionTarget(inventoryitem);
                 return invitemtarget;
             }
             else
@@ -36,8 +36,8 @@ namespace Project1.Core.AI.Behaviors
                     .FirstOrDefault();
                     
                 if (item == null)
-                    return TargetArgs.Null;
-                return new TargetArgs(item);
+                    return InteractionTarget.Null;
+                return new InteractionTarget(item);
             }
         }
         static public Behavior FailOnNotCarrying(this Behavior bhav)

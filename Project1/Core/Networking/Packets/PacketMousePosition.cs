@@ -11,7 +11,7 @@ namespace Project1.Core.Networking.Packets
         {
             _packetTypeId = Registry.PacketHandlers.Register(Receive);
         }
-        static internal void Send(NetEndpoint net, int playerid, TargetArgs target)
+        static internal void Send(NetEndpoint net, int playerid, InteractionTarget target)
         {
             var w = net.BeginPacketImmediate(_packetTypeId);
             w.Write(playerid);
@@ -21,7 +21,7 @@ namespace Project1.Core.Networking.Packets
         {
             var r = pck.PacketReader;
             var playerid = r.ReadInt32();
-            var target = TargetArgs.Read(net.World, r);
+            var target = InteractionTarget.Read(net.World, r);
             net.GetPlayer(playerid)?.UpdateTarget(target);
             if (net is Server server)
                 Send(server, playerid, target);

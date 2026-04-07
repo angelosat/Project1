@@ -41,7 +41,7 @@ sealed class PlannerRestocking : Planner
                     return new Plan(PlanDefOf.GoHaul, nextItem) { AmountA = amountToPickUp };
                 }
             }
-            return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, target.Parent.OriginGlobal)) { TargetB = new TargetArgs(target.Parent) };
+            return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, target.Parent.OriginGlobal)) { TargetB = new InteractionTarget(target.Parent) };
         }
         foreach (var i in candidateCoinsInStockpiles)
         {

@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Project1.Core.Input
 {
-    public record struct SelectionResolved(List<TargetArgs> Targets, SelectionIntent Source)
+    public record struct SelectionResolved(List<InteractionTarget> Targets, SelectionIntent Source)
     {
-        public SelectionResolved(IEnumerable<TargetArgs> targets, SelectionIntent source)
+        public SelectionResolved(IEnumerable<InteractionTarget> targets, SelectionIntent source)
             : this(targets.ToList(), source)
         {
 

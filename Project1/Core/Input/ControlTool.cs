@@ -30,8 +30,8 @@ namespace Project1.Core.Input
             if (this.GetIcon() is Icon icon)
                 icon.Draw(sb, pos);
         }
-        public TargetArgs Target;
-        public TargetArgs TargetLast;
+        public InteractionTarget Target;
+        public InteractionTarget TargetLast;
         public virtual Icon Icon => Icon.Cursor;
         
         public virtual Icon GetIcon()
@@ -60,7 +60,7 @@ namespace Project1.Core.Input
             face = Controller.Instance.Mouseover.Face;
             return Controller.Instance.Mouseover.TryGet<GameObject>(out target);
         }
-        public virtual void UpdateRemote(TargetArgs target) { this.Target = target; }
+        public virtual void UpdateRemote(InteractionTarget target) { this.Target = target; }
         public virtual void Update()
         {
             var cam = this.Map.Camera;
@@ -82,7 +82,7 @@ namespace Project1.Core.Input
         {
             if ((Controller.Instance.Mouseover.Object is Element))
             {
-                this.Target = TargetArgs.Null;
+                this.Target = InteractionTarget.Null;
             }
             else
             {
@@ -93,13 +93,13 @@ namespace Project1.Core.Input
                     this.TargetLast = this.Target.Type != TargetType.Null ? this.Target : this.TargetLast;
                 }
                 else
-                    this.Target = TargetArgs.Null;
+                    this.Target = InteractionTarget.Null;
             }
         }
         protected void UpdateTarget()
         {
             if (Controller.Instance.Mouseover.Object is Element)
-                this.Target = TargetArgs.Null;
+                this.Target = InteractionTarget.Null;
             else
             {
                 if (Controller.Instance.Mouseover.Target != null)
@@ -108,7 +108,7 @@ namespace Project1.Core.Input
                     this.TargetLast = this.Target.Type != TargetType.Null ? this.Target : this.TargetLast;
                 }
                 else
-                    this.Target = TargetArgs.Null;
+                    this.Target = InteractionTarget.Null;
             }
         }
         public virtual void Update(SceneState scene)
@@ -226,7 +226,7 @@ namespace Project1.Core.Input
         {
             return this;
         }
-        internal virtual void DrawUIRemote(SpriteBatch sb, Camera camera, Vector2 vector2, TargetArgs targetArgs, PlayerData player)
+        internal virtual void DrawUIRemote(SpriteBatch sb, Camera camera, Vector2 vector2, InteractionTarget targetArgs, PlayerData player)
         {
             UIManager.DrawStringOutlined(sb, this.GetType().Name, vector2 + new Vector2(0, UIManager.Cursor.Height));
         }

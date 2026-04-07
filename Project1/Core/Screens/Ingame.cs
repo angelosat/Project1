@@ -101,7 +101,7 @@ internal class Ingame : GameScreen
     //static public MapBase GetMap()
     //    => DrawServer ? Server.Instance.MainViewport.Map : Client.Instance.MainViewport.Map;
     
-    static public MapBase MainViewportMap => DrawServer ? Server.Instance.Map : Client.Instance.Map;
+    static public MapBase MainViewportMap => DrawServer ? Server.Instance.MainViewport.Map : Client.Instance.MainViewport.Map;
     static public bool DrawServer;
     public override void HandleKeyDown(System.Windows.Forms.KeyEventArgs e)
     {

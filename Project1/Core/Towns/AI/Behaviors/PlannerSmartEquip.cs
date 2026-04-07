@@ -70,9 +70,9 @@ namespace Project1.Core.Towns.AI.Behaviors
             if (mostImpactful.item is not null)
             {
                 if (mostImpactful.score > 0)
-                    return new Plan(PlanDefOf.Equip, new TargetArgs(mostImpactful.item)) { Continuation = PlanContinuationPolicy.Yield };
+                    return new Plan(PlanDefOf.Equip, new InteractionTarget(mostImpactful.item)) { Continuation = PlanContinuationPolicy.Yield };
                 else if (mostImpactful.score < 0)
-                    return new Plan(PlanDefOf.Unequip, new TargetArgs(mostImpactful.item)) { Continuation = PlanContinuationPolicy.Yield };
+                    return new Plan(PlanDefOf.Unequip, new InteractionTarget(mostImpactful.item)) { Continuation = PlanContinuationPolicy.Yield };
             }
 
             // evaluate if there's an item to be moved from inventory to the haul/carry slot

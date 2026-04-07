@@ -5,20 +5,20 @@ namespace Project1.Core.AI.Behaviors.Conditionals
 {
     class IsAt : BehaviorCondition
     {
-        TargetArgs Target;
+        InteractionTarget Target;
         string VariableName;
         public IsAt(string variableName)
         {
             this.VariableName = variableName;
         }
-        public IsAt(TargetArgs target)
+        public IsAt(InteractionTarget target)
         {
             this.Target = target;
         }
         
         public override bool Evaluate(GameObject agent, AIState state)
         {
-            var target = this.Target ?? state.Blackboard[this.VariableName] as TargetArgs;
+            var target = this.Target ?? state.Blackboard[this.VariableName] as InteractionTarget;
             var res = agent.IsInInteractionRange(target);
             return res;
         }

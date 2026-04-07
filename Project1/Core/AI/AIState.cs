@@ -38,7 +38,7 @@ namespace Project1.Core.AI
         public Knowledge Knowledge;
         public BehaviorExecutePlan LastBehavior;
         public Vector3 Leash;
-        public Queue<TargetArgs> MoveOrders = new();
+        public Queue<InteractionTarget> MoveOrders = new();
         public Actor Owner; //use this?
         public Path Path;
         public PathingSync PathFinder = new();
@@ -66,7 +66,7 @@ namespace Project1.Core.AI
         {
             this.TaskStack.Push(bhav);
         }
-        internal void AddMoveOrder(TargetArgs target, bool enqueue)
+        internal void AddMoveOrder(InteractionTarget target, bool enqueue)
         {
             this.Owner.EndCurrentTask();
             if (!enqueue)
@@ -100,8 +100,8 @@ namespace Project1.Core.AI
         internal void MapLoaded(Actor parent)
         {
             var targets = from v in this.Blackboard.Values
-                          where v is TargetArgs
-                          select v as TargetArgs;
+                          where v is InteractionTarget
+                          select v as InteractionTarget;
             /// i dont need this anymore after phasing to targetargs lazily resolving entity id and passing the provider (client or server) at targetargs initialization
             this.CurrentPlan?.MapLoaded(parent);
             this.Behavior?.Actor = parent;
@@ -278,6 +278,6 @@ namespace Project1.Core.AI
 
         public IEnumerable<Behavior> AllPlannedTasks => TaskStack.Concat(TaskQueue);
         public Behavior Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
-        public TargetArgs MoveOrder => this.MoveOrders.Any() ? this.MoveOrders.Peek() : TargetArgs.Null;
+        public InteractionTarget MoveOrder => this.MoveOrders.Any() ? this.MoveOrders.Peek() : InteractionTarget.Null;
     }
 }

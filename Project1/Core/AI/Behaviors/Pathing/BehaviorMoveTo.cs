@@ -17,7 +17,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
             };
         }
 
-        public BehaviorMoveTo(TargetArgs targetArgs, int range)
+        public BehaviorMoveTo(InteractionTarget targetArgs, int range)
         {
             this.Children =
             [

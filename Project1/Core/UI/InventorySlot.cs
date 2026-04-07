@@ -21,7 +21,7 @@ namespace Project1.Core.UI
             {
                 if (InputState.IsKeyDown(System.Windows.Forms.Keys.ShiftKey) && invSlot.StackSize > 1)
                 {
-                    SplitStackWindow.Instance.Refresh(new TargetArgs(invSlot)).Show();
+                    SplitStackWindow.Instance.Refresh(new InteractionTarget(invSlot)).Show();
                     return;
                 }
                 if (Tag.HasValue)
@@ -33,7 +33,7 @@ namespace Project1.Core.UI
             DragDropCreateAction = () =>
             {
                 if (DragDropEnabled)
-                    DragDropManager.Create(new DragDropSlot(parent, new TargetArgs(this.Tag), new TargetArgs(this.Tag), DragDropEffects.Move | DragDropEffects.Link));
+                    DragDropManager.Create(new DragDropSlot(parent, new InteractionTarget(this.Tag), new InteractionTarget(this.Tag), DragDropEffects.Move | DragDropEffects.Link));
             };
             RightClickAction = () =>
             {

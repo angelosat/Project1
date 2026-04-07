@@ -99,13 +99,13 @@ namespace Project1.Core.Input
             float mouseoverDepth = drawdepth;
             if (mouseoverDepth >= Instance.MouseoverNext.Depth)
             {
-                if (Instance.Mouseover.Object is TargetArgs target)
+                if (Instance.Mouseover.Object is InteractionTarget target)
                 {
                     if (target.Object != entity)
-                        target = new TargetArgs(entity, face);// { Map = Engine.Map };
+                        target = new InteractionTarget(entity, face);// { Map = Engine.Map };
                 }
                 else
-                    target = new TargetArgs(entity, face);// { Map = Engine.Map };
+                    target = new InteractionTarget(entity, face);// { Map = Engine.Map };
 
                 Instance.MouseoverNext.Target = target;
                 Instance.MouseoverNext.Object = target;
@@ -119,12 +119,12 @@ namespace Project1.Core.Input
             if (Instance.MouseoverNext.Depth > depth)
                 return;
 
-            var target = new TargetArgs(map, global, face, precise);
+            var target = new InteractionTarget(map, global, face, precise);
 
             /// VERY HACKY
             /// it's to not create a new mouseover while hovering withing the same cell (the cell global remains the same but the precise and face vectors change while moving cursor around block)
             /// TODO tidy up
-            if (global != _LastMouseoverBlockGlobal || (Instance.Mouseover.Object is TargetArgs t && t.Type != TargetType.Cell)) // very hacky
+            if (global != _LastMouseoverBlockGlobal || (Instance.Mouseover.Object is InteractionTarget t && t.Type != TargetType.Cell)) // very hacky
                 Instance.MouseoverNext.Object = target;
             else
                 Instance.MouseoverNext.Object = Instance.Mouseover.Object;
@@ -145,7 +145,7 @@ namespace Project1.Core.Input
             return keydown ^ BlockTargeting;
         }
 
-        public static TargetArgs TargetCell { get { return Instance.Mouseover.TargetCell; } }
-        public static TargetArgs TargetEntity { get { return Instance.Mouseover.TargetEntity; } }
+        public static InteractionTarget TargetCell { get { return Instance.Mouseover.TargetCell; } }
+        public static InteractionTarget TargetEntity { get { return Instance.Mouseover.TargetEntity; } }
     }
 }

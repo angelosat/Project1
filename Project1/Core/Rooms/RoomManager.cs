@@ -277,7 +277,7 @@ namespace Project1.Core.Rooms
         {
             return this.Rooms.Values.FirstOrDefault(r => r.ContainsBorder(global));
         }
-        internal override void OnTooltipCreated(Control tooltip, TargetArgs targetArgs)
+        internal override void OnTooltipCreated(Control tooltip, InteractionTarget targetArgs)
         {
             if (targetArgs.Type != TargetType.Cell)
                 return;

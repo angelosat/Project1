@@ -1058,7 +1058,8 @@ public class Chunk : Inspectable
     }
     void Read(IDataReader reader)
     {
-        this.MapCoords = reader.ReadVector2();
+        //this.MapCoords = reader.ReadVector2();
+        this.MapCoords = reader.ReadIntVec2();
 
         this.LightValid = reader.ReadBoolean();
         this.EdgesValid = reader.ReadBoolean();

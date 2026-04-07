@@ -57,12 +57,12 @@ namespace Project1.Core.UI
                 this.Hide();
         }
 
-        public SplitStackWindow Refresh(TargetArgs slotTarget)
+        public SplitStackWindow Refresh(InteractionTarget slotTarget)
         {
             this.SplitAction = (a) =>
             {
                 int count = short.Parse(this.Txt_Amount.Text);
-                DragDropManager.Create(new DragDropSlot(null, slotTarget, new TargetArgs(new GameObjectSlot(slotTarget.Slot.Object.Clone(), count)), DragDropEffects.Move | DragDropEffects.Link));
+                DragDropManager.Create(new DragDropSlot(null, slotTarget, new InteractionTarget(new GameObjectSlot(slotTarget.Slot.Object.Clone(), count)), DragDropEffects.Move | DragDropEffects.Link));
             };
 
             this.Tag = slotTarget.Slot;

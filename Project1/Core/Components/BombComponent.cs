@@ -94,7 +94,7 @@ namespace Project1.Core.Components
             }
         }
 
-        internal override void GetEquippedActionsWithTarget(GameObject parent, GameObject actor, TargetArgs t, List<Interaction> list)
+        internal override void GetEquippedActionsWithTarget(GameObject parent, GameObject actor, InteractionTarget t, List<Interaction> list)
         {
             //list.Add(new InteractionSetFuse(this.CycleFuse));
         }

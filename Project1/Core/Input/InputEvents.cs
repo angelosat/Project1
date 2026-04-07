@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Project1.Core.Input
 {
     public enum SelectionOp { Clear = 0, Add, Remove }
-    internal record struct PlayerSelectionSingleEvent(TargetArgs Single = null, TargetArgs Add = null, List<TargetArgs> Multiple = null) : IEventPayload { }
+    internal record struct PlayerSelectionSingleEvent(InteractionTarget Single = null, InteractionTarget Add = null, List<InteractionTarget> Multiple = null) : IEventPayload { }
     internal record struct PlayerSelectionEventNew(SelectionIntent Selection) : IEventPayload { }
     internal record struct PlayerSelectionCubeEvent(IntVec3 Begin, IntVec3 End) : IEventPayload { }
     internal record struct PlayerSelectionBlockEvent(CellSelection Cell) : IEventPayload { }

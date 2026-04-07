@@ -100,14 +100,14 @@ namespace Project1.Core.Serialization
         //    }
         //    return dic;
         //}
-        public static void Write(this BinaryWriter w, List<TargetArgs> list)
+        public static void Write(this BinaryWriter w, List<InteractionTarget> list)
         {
             var count = list.Count;
             w.Write(count);
             foreach (var i in list)
                 i.Write(w);
         }
-        public static void Write(this BinaryWriter w, IEnumerable<TargetArgs> list)
+        public static void Write(this BinaryWriter w, IEnumerable<InteractionTarget> list)
         {
             w.Write(list.ToList());
         }
@@ -116,7 +116,7 @@ namespace Project1.Core.Serialization
         {
             w.Write(def.Name);
         }
-        public static void Write(this BinaryWriter w, TargetArgs target)
+        public static void Write(this BinaryWriter w, InteractionTarget target)
         {
             target.Write(w);
         }
@@ -138,7 +138,7 @@ namespace Project1.Core.Serialization
             foreach (var i in list)
                 i.Write(w);
         }
-        public static void Write(this BinaryWriter w, ICollection<TargetArgs> list)
+        public static void Write(this BinaryWriter w, ICollection<InteractionTarget> list)
         {
             var count = list.Count;
             w.Write(count);

@@ -19,7 +19,7 @@ namespace Project1.Core.Towns.Farming
             {
                 if (!actor.CanReachAndReserve(plant))
                     continue;
-                return new Plan(PlanDefOf.Harvesting, new TargetArgs(plant));
+                return new Plan(PlanDefOf.Harvesting, new InteractionTarget(plant));
             }
             return null;
         }

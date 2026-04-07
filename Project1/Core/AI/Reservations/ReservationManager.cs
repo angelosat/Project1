@@ -13,7 +13,7 @@ namespace Project1.Core.AI.Reservations
     public class ReservationManager : TownComponent
     {
         readonly List<Reservation> Reservations = [];
-        readonly Dictionary<TargetArgs, List<Reservation>> ByTarget = [];
+        readonly Dictionary<InteractionTarget, List<Reservation>> ByTarget = [];
         readonly Dictionary<EntityRefId, List<Reservation>> ByActor = [];
         readonly HashSet<Entity> MarkedConsumedByPlan = [];
         string _name = "Reservations";
@@ -39,7 +39,7 @@ namespace Project1.Core.AI.Reservations
         private void OnCellInvalidated(CellsInvalidatedEvent e)
         {
             foreach (var cell in e.Positions)
-                this.Unreserve(new TargetArgs(e.Map, cell));
+                this.Unreserve(new InteractionTarget(e.Map, cell));
         }
         void AddReservation(Reservation vation)
         {
@@ -53,7 +53,7 @@ namespace Project1.Core.AI.Reservations
                 this.ByActor[vation.Actor] = byactorlist = [];
             byactorlist.Add(vation);
         }
-        internal bool Reserve(Actor actor, Plan plan, TargetArgs target, int stackCount = -1)
+        internal bool Reserve(Actor actor, Plan plan, InteractionTarget target, int stackCount = -1)
         {
             if (target.Type == TargetType.Null)
                 throw new Exception();
@@ -85,7 +85,7 @@ namespace Project1.Core.AI.Reservations
 
             return true;
         }
-        internal bool ReserveAsManyAsPossible(Actor actor, Plan task, TargetArgs target, int desiredAmount = -1)
+        internal bool ReserveAsManyAsPossible(Actor actor, Plan task, InteractionTarget target, int desiredAmount = -1)
         {
             if (target.Type == TargetType.Null || target.Type == TargetType.Cell)
                 throw new Exception();
@@ -102,7 +102,7 @@ namespace Project1.Core.AI.Reservations
             this.AddReservation(vation);
             return true;
         }
-        private void TryCancelExistingReservations(TargetArgs target, int stackCount)
+        private void TryCancelExistingReservations(InteractionTarget target, int stackCount)
         {
             List<Reservation> foundStacks = [];
             int foundAmount = 0;
@@ -158,7 +158,7 @@ namespace Project1.Core.AI.Reservations
             reservationsByActor.Clear();
             this.ByActor.Remove(actor.RefId);
         }
-        void Unreserve(TargetArgs target)
+        void Unreserve(InteractionTarget target)
         {
             if (!this.ByTarget.TryGetValue(target, out var reservationsByTarget))
                 return;
@@ -177,7 +177,7 @@ namespace Project1.Core.AI.Reservations
             reservationsByTarget.Clear();
             this.ByTarget.Remove(target);
         }
-        internal bool CanReserve(GameObject actor, TargetArgs target, int stackcount = -1, bool ignoreOtherReservations = false)
+        internal bool CanReserve(GameObject actor, InteractionTarget target, int stackcount = -1, bool ignoreOtherReservations = false)
         {
             if (target.Type == TargetType.Entity && target.Object.Owner == actor)
                 return true;
@@ -196,9 +196,9 @@ namespace Project1.Core.AI.Reservations
         }
         internal int GetUnreservedAmount(Entity obj)
         {
-            return GetUnreservedAmount(new TargetArgs(obj));
+            return GetUnreservedAmount(new InteractionTarget(obj));
         }
-        internal int GetUnreservedAmount(TargetArgs target)
+        internal int GetUnreservedAmount(InteractionTarget target)
         {
             var sum = 0;
             foreach (var r in Reservations) // there might be multiple reservations for the same target, for example an item with stacksize > 1 might be reserved by multiple actors for different tasks

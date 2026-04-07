@@ -5,7 +5,7 @@ namespace Project1.Core.Interactions
     public class InteractionContext
     {
         public Actor Actor;
-        public TargetArgs Target;
+        public InteractionTarget Target;
         public int Count;
         public virtual float ProgressBarPercentage { get; }
 

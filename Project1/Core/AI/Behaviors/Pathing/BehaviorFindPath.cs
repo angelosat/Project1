@@ -11,7 +11,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
     {
         readonly string TargetName, PathName = "path";
         readonly int TargetInd;
-        TargetArgs Target { get => this.Actor.CurrentPlan.GetTarget(this.TargetInd); set { } }
+        InteractionTarget Target { get => this.Actor.CurrentPlan.GetTarget(this.TargetInd); set { } }
 
         readonly float Range;
         readonly PathEndMode FinishMode = PathEndMode.Touching;
@@ -21,7 +21,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
             this.Range = range;
             this.PathName = pathName;
         }
-        public BehaviorFindPath(TargetArgs target, PathEndMode mode, string pathname)
+        public BehaviorFindPath(InteractionTarget target, PathEndMode mode, string pathname)
         {
             this.Target = target;
             this.PathName = pathname;

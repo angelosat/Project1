@@ -9,7 +9,7 @@ namespace Project1.Core.AI
         public Type BehaviorClass;
         public string Format;
         public TargetIndex PrimaryTargetIndex;
-        public Func<Plan, TargetArgs> GetPrimaryTarget;
+        public Func<Plan, InteractionTarget> GetPrimaryTarget;
         public bool Idle;
         internal InteractionDef Interaction;
         public PlanDef(string name, InteractionDef interaction = null) : base(name)
@@ -26,7 +26,7 @@ namespace Project1.Core.AI
         {
             return string.Format(this.Format, this.GetPrimaryTarget(task).LabelReadable);
         }
-        public string GetForceText(TargetArgs target)
+        public string GetForceText(InteractionTarget target)
         {
             return string.Format(this.Format, target.LabelReadable);
         }

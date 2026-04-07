@@ -30,7 +30,7 @@ namespace Project1.Core.Towns.AI.Behaviors
             visitor.Actor.AI.State.ConversationPartner = actor;
             actor.AI.State.ConversationPartner = visitor.Actor;
             actor.EnqueueCommunication(visitor.Actor, ConversationTopic.Guidance);
-            return new Plan(PlanDefOf.Chatting, new TargetArgs(visitor.Actor));
+            return new Plan(PlanDefOf.Chatting, new InteractionTarget(visitor.Actor));
         }
     }
 }

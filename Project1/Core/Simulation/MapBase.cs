@@ -1119,19 +1119,19 @@ public abstract class MapBase : Inspectable
         yield return current.Above;
     }
    
-    internal List<TargetArgs> Select(IntVec3 begin, IntVec3 end)
+    internal List<InteractionTarget> Select(IntVec3 begin, IntVec3 end)
     {
         var cube = IntVec3Helper.GetBox(begin, end);
-        List<TargetArgs> allTargets = [];
+        List<InteractionTarget> allTargets = [];
         HashSet<IntVec3> excluded = [];
         foreach (var cell in cube)
             if (this.TryGetBlockEntity(cell, out var entity))
             {
-                allTargets.Add(new TargetArgs(entity));
+                allTargets.Add(new InteractionTarget(entity));
                 foreach (var c in entity.CellsOccupied)
                     excluded.Add(c);
             }
-        var cellTargets = cube.Except(excluded).Select(c => new TargetArgs(this, c));
+        var cellTargets = cube.Except(excluded).Select(c => new InteractionTarget(this, c));
         return [.. allTargets.Union(cellTargets)];
     }
 

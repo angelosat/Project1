@@ -475,7 +475,7 @@ public class StaticMap : MapBase, ITooltippable
     }
     public static StaticMap ReadData(NetEndpoint net, IDataReader r)
     {
-        var id = (MapId)r.ReadInt32();
+        var id = r.ReadMapId();
 
         var name = r.ReadString();
         var map = new StaticMap(net.World as StaticWorld, name)

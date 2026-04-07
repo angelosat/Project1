@@ -106,7 +106,7 @@ namespace Project1.Core.Blocks
                 order.Workstation = this;
         }
 
-        internal bool IngredientsInPlace(List<TargetArgs> targetsA)
+        internal bool IngredientsInPlace(List<InteractionTarget> targetsA)
         {
             var slots = this.Parent.CellsOccupied.Zip(targetsA);
             return slots.All(s => this.Parent.Map.GetEntitiesAt(s.First.Above).Any(c => c == s.Second.Object));

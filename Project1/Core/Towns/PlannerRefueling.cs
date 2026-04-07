@@ -44,7 +44,7 @@ sealed class PlannerRefueling : Planner
                     return new Plan(PlanDefOf.GoHaul, nextItem) { AmountA = amountToPickUp };
                 }
             }
-            return new Plan(PlanDefOf.Deposit, new TargetArgs(map, target.Parent.OriginGlobal)) { TargetB = new TargetArgs(target.Parent) };
+            return new Plan(PlanDefOf.Deposit, new InteractionTarget(map, target.Parent.OriginGlobal)) { TargetB = new InteractionTarget(target.Parent) };
         }
         foreach (var i in itemsInStockpiles)
         {

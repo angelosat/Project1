@@ -6,7 +6,7 @@ namespace Project1.Core.Towns.Stockpiles
 {
     class StockpileAIHelper
     {
-        public static bool IsValidStorage(GameObject item, TargetArgs destination)
+        public static bool IsValidStorage(GameObject item, InteractionTarget destination)
         {
             if (destination.HasObject && (destination.Object == null || !destination.Object.IsSpawned || destination.Object.IsStackFull))
                 return false;

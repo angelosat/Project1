@@ -156,12 +156,12 @@ namespace Project1.Core.Entities.Actors
             throw new NotImplementedException();
         }
 
-        internal void ForceTask(PlanDef taskdef, TargetArgs target)
+        internal void ForceTask(PlanDef taskdef, InteractionTarget target)
         {
             throw new NotImplementedException();
         }
 
-        internal void FaceTowards(TargetArgs targetA)
+        internal void FaceTowards(InteractionTarget targetA)
         {
             if(targetA is not null)
                 this.FaceTowards(targetA.Global);
@@ -172,7 +172,7 @@ namespace Project1.Core.Entities.Actors
             this.Direction.Normalize();
             this.Net.LogStateChange(this);
         }
-        internal void ForceTask(PlannerDef planner, TargetArgs target)
+        internal void ForceTask(PlannerDef planner, InteractionTarget target)
         {
             var task = planner.Worker.TryTaskOn(this, target, true);
             if (task is not null)
@@ -275,7 +275,7 @@ namespace Project1.Core.Entities.Actors
             yield return ("Personality", typeof(PersonalityUI));
             yield return ("Relationships", typeof(RelationshipsCompGui));
         }
-        public bool CanOperate(TargetArgs target)
+        public bool CanOperate(InteractionTarget target)
         {
             if (target.Type != TargetType.Cell)
                 throw new Exception();
@@ -396,7 +396,7 @@ namespace Project1.Core.Entities.Actors
             this.Mobile.Jump(this);
         }
 
-        internal IEnumerable<(PlanDef task, PlannerDef giver)> CanForceTaskOn(TargetArgs target)
+        internal IEnumerable<(PlanDef task, PlannerDef giver)> CanForceTaskOn(InteractionTarget target)
         {
             if (target == null || target.Type == TargetType.Null)
                 yield break;

@@ -14,7 +14,7 @@ namespace Project1.Core.Systems.Plants
             if (actor.IsHauling)
                 return null;
             foreach(var pos in actor.Map.Town.GrowingManager.GetNextTillingPos().Where(actor.CanReachAndReserve))
-                return new Plan(PlanDefOf.Till, new TargetArgs(actor.Map, pos));
+                return new Plan(PlanDefOf.Till, new InteractionTarget(actor.Map, pos));
         
             return null;
         }

@@ -136,10 +136,10 @@ namespace Project1.Core.AI.Planners
                     //var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order);
                     var withUnfinishedItem = order.WorkstationCapability.Worker.CreatesUnfinished;
                     var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinishedBegin : PlanDefOf.Crafting;
-                    var plan = new Plan(plandef, new TargetArgs(map, order.Workstation.Parent.OriginGlobal)) 
+                    var plan = new Plan(plandef, new InteractionTarget(map, order.Workstation.Parent.OriginGlobal)) 
                     {
                         Order = order,
-                        TargetB = new TargetArgs(order.Workstation.Parent)
+                        TargetB = new InteractionTarget(order.Workstation.Parent)
                     };
 
                     foreach (var allocation in feasibility.ArmedSlots)
@@ -160,7 +160,7 @@ namespace Project1.Core.AI.Planners
                         {
                             // Fully satisfies → deposit now
                             return new Plan(PlanDefOf.GoPlace,
-                                new TargetArgs(map, carriedAlloc.Slot))
+                                new InteractionTarget(map, carriedAlloc.Slot))
                             {
                                 AmountA = carriedAlloc.Quantity
                             };
@@ -172,7 +172,7 @@ namespace Project1.Core.AI.Planners
                                 .First(a => a.Slot == carriedAlloc.Slot && a.Entity != carried);
 
                             return new Plan(PlanDefOf.GoHaul,
-                                new TargetArgs(remainderAlloc.Entity))
+                                new InteractionTarget(remainderAlloc.Entity))
                             {
                                 AmountA = remainderAlloc.Quantity
                             };
@@ -186,7 +186,7 @@ namespace Project1.Core.AI.Planners
                     var correctAlloc = feasibility.Allocations.FirstOrDefault(a => carried.CanAbsorb(a.Entity));
                     if (correctAlloc.Entity != null)
                     {
-                        return new Plan(PlanDefOf.GoHaul, new TargetArgs(correctAlloc.Entity))
+                        return new Plan(PlanDefOf.GoHaul, new InteractionTarget(correctAlloc.Entity))
                         {
                             AmountA = correctAlloc.Quantity
                         };
@@ -207,7 +207,7 @@ namespace Project1.Core.AI.Planners
                 foreach (var alloc in feasibility.Allocations)
                     if (alloc.Entity == targetStack)
                         totalQuantity += alloc.Quantity;
-                return new Plan(PlanDefOf.GoHaul, new TargetArgs(targetStack))
+                return new Plan(PlanDefOf.GoHaul, new InteractionTarget(targetStack))
                 {
                     AmountA = totalQuantity
                 };
@@ -242,9 +242,9 @@ namespace Project1.Core.AI.Planners
             var workstation = order.Workstation.Parent;
             if (cell.Below == workstation.OriginGlobal)
             {
-                return new Plan(PlanDefOf.CraftingUnfinishedAdvance, new TargetArgs(map, workstation.OriginGlobal))
+                return new Plan(PlanDefOf.CraftingUnfinishedAdvance, new InteractionTarget(map, workstation.OriginGlobal))
                 {
-                    TargetB = new TargetArgs(workstation),
+                    TargetB = new InteractionTarget(workstation),
                     Order = order
                 };
             }
@@ -252,9 +252,9 @@ namespace Project1.Core.AI.Planners
             {
                 if (actor.CanReachAndReserve(workstation) && map.IsCellEmpty(workstation.OriginGlobal.Above))
                 {
-                    return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, workstation.OriginGlobal.Above))
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, workstation.OriginGlobal.Above))
                     {
-                        TargetB = new TargetArgs(workstation)
+                        TargetB = new InteractionTarget(workstation)
                     };
                 }
                 else
@@ -277,10 +277,10 @@ namespace Project1.Core.AI.Planners
 
             var itemsOnBench = map.GetEntitiesAt(benchCell.Above);
             if (itemsOnBench.FirstOrDefault(isRepairable) is Entity repairableItem)
-                return new Plan(PlanDefOf.Repairing, repairableItem) { TargetB = new TargetArgs(map, workstation.Parent.OriginGlobal), TargetC = new TargetArgs(workstation.Parent) };
+                return new Plan(PlanDefOf.Repairing, repairableItem) { TargetB = new InteractionTarget(map, workstation.Parent.OriginGlobal), TargetC = new InteractionTarget(workstation.Parent) };
 
             if (actor.Hauled is Entity hauled && isRepairable(hauled))
-                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, benchCell.Above)) { TargetB = new TargetArgs(workstation.Parent) };
+                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, benchCell.Above)) { TargetB = new InteractionTarget(workstation.Parent) };
 
             if (actor.Gear[GearTypeDefOf.Mainhand] is Entity repairableGear && isRepairable(repairableGear))
                 return new Plan(PlanDefOf.Unequip, repairableGear);

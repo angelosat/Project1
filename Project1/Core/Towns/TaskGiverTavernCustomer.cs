@@ -32,7 +32,7 @@ namespace Project1.Core.Towns
                 var desiredIngredients = SelectIngredients(town.Map.World.Random, favs, order);
                 var request = new VisitorCraftRequest(order, desiredIngredients);
                 tavern.AddCustomer(actor, table, request);
-                return new Plan(typeof(TaskBehaviorTavernCustomer), new TargetArgs(actor.Map, table)) { ShopID = tavern.ID };
+                return new Plan(typeof(TaskBehaviorTavernCustomer), new InteractionTarget(actor.Map, table)) { ShopID = tavern.ID };
             }
             return null;
         }

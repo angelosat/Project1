@@ -47,7 +47,7 @@ namespace Project1.Core.Networking
                 this.Write(i);
             return this;
         }
-        public IDataWriter Write(ICollection<TargetArgs> list)
+        public IDataWriter Write(ICollection<InteractionTarget> list)
         {
             var count = list.Count;
             this._writer.Write(count);

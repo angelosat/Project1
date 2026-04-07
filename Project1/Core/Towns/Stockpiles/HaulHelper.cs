@@ -10,11 +10,11 @@ namespace Project1.Core.Towns.Stockpiles
 {
     static class HaulHelper
     {
-        public static bool IsValidStorage(this TargetArgs storage, MapBase map, GameObject item)
+        public static bool IsValidStorage(this InteractionTarget storage, MapBase map, GameObject item)
         {
             return StockpileAIHelper.IsValidStorage(item, storage);
         }
-        public static bool IsValidHaulDestinationNew(this TargetArgs destination, MapBase map, GameObject item)
+        public static bool IsValidHaulDestinationNew(this InteractionTarget destination, MapBase map, GameObject item)
         {
             var pos = (IntVec3)destination.Global;
             return

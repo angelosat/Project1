@@ -56,7 +56,7 @@ public abstract class Workplace : ISerializable, ISaveable
     {
         if(e.NewItems != null)
             foreach (var n in e.NewItems.Cast<IntVec3>())
-                this.FacilitiesTargetsCached.Add(n, new TargetArgs(this.Map, n));
+                this.FacilitiesTargetsCached.Add(n, new InteractionTarget(this.Map, n));
         if(e.OldItems != null)
             foreach (var n in e.OldItems.Cast<IntVec3>())
                 this.FacilitiesTargetsCached.Remove(n);
@@ -202,7 +202,7 @@ public abstract class Workplace : ISerializable, ISaveable
     }
 
     public readonly ObservableHashSet<IntVec3> Facilities = [];
-    public readonly ObservableDictionary<IntVec3, TargetArgs> FacilitiesTargetsCached = new();
+    public readonly ObservableDictionary<IntVec3, InteractionTarget> FacilitiesTargetsCached = new();
     public virtual IEnumerable<IntVec3> GetFacilities() { yield break; }
 
     public virtual CraftingOrder GetOrder(int orderID)
@@ -503,7 +503,7 @@ public abstract class Workplace : ISerializable, ISaveable
         Workplace SelectedShop;
         TableCompact<Stockpile> TableStockpiles;
         TableCompact<Stockpile> TableShoppingDisplays;
-        TableCompact<TargetArgs> TableFacilities;
+        TableCompact<InteractionTarget> TableFacilities;
         TableCompact<int, Actor> TableJobRoles;
         //ListBoxObservable<int, Actor, ButtonNew> ListAvailableWorkers;
         ListBoxObservable<Actor, ButtonNew> ListAvailableWorkers;
@@ -533,7 +533,7 @@ public abstract class Workplace : ISerializable, ISaveable
             this.TableShoppingDisplays = new TableCompact<Stockpile>() { Name = "Shopping" }
                 .AddColumn(null, "name", 200, st => new CheckBoxTest(() => st.Name, () => this.SelectedShop.StockpilesOutput.Contains(st.ID), () => TickShoppingArea(st)));
 
-            this.TableFacilities = new TableCompact<TargetArgs>() { Name = "Facilities" }
+            this.TableFacilities = new TableCompact<InteractionTarget>() { Name = "Facilities" }
                 .AddColumn(null, "name", 200 - Icon.Cross.Width, st => new Label(() => st.Block.Name))
                 .AddColumn(null, "delete", Icon.Cross.Width, st => IconButton.CreateSmall(Icon.Cross, () => PacketsWorkplaces.SendPlayerShopAssignCounter(st.Map.Net, st.Map.Net.GetPlayer(), st.Map, this.SelectedShop, st.Global), "remove"));
 

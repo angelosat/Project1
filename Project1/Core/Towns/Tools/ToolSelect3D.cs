@@ -55,7 +55,7 @@ namespace Project1.Core.Towns.Tools
             this.Width = w;
             this.Height = h;
         }
-        public override void UpdateRemote(TargetArgs target)
+        public override void UpdateRemote(InteractionTarget target)
         {
             base.UpdateRemote(target);
             if (!Enabled)

@@ -26,7 +26,7 @@ namespace Project1.Core.Towns.Designations
     public class DesignationManager : TownComponent
     {
         public override string Name => "Designation Manager";
-        ReadOnlyDictionary<DesignationDef, ObservableHashSet<TargetArgs>> Designations;
+        ReadOnlyDictionary<DesignationDef, ObservableHashSet<InteractionTarget>> Designations;
         ReadOnlyDictionary<DesignationDef, ObservableHashSet<IntVec3>> CellDesignations;
         ReadOnlyDictionary<DesignationDef, ObservableHashSet<Entity>> EntityDesignations;
         ReadOnlyDictionary<DesignationDef, ObservableHashSet<BlockEntity>> BlockEntityDesignations;
@@ -94,13 +94,13 @@ namespace Project1.Core.Towns.Designations
         //                SelectionManager.AddInfoNew(this.UpdatePendingDesignationLabel(this.Designations.First(d => d.Value.Contains(target)).Key));
         //        }
         //}
-        internal IEnumerable<TargetArgs> GetDesignationTargets(DesignationDef desDef)
+        internal IEnumerable<InteractionTarget> GetDesignationTargets(DesignationDef desDef)
         {
             return desDef.TargetType switch
             {
-                TargetType.Cell => this.CellDesignations[desDef].Select(d => new TargetArgs(this.Map, d)),
-                TargetType.Entity => this.EntityDesignations[desDef].Select(d => new TargetArgs(d)),
-                TargetType.BlockEntity => this.BlockEntityDesignations[desDef].Select(d => new TargetArgs(d)),
+                TargetType.Cell => this.CellDesignations[desDef].Select(d => new InteractionTarget(this.Map, d)),
+                TargetType.Entity => this.EntityDesignations[desDef].Select(d => new InteractionTarget(d)),
+                TargetType.BlockEntity => this.BlockEntityDesignations[desDef].Select(d => new InteractionTarget(d)),
                 _ => throw new UnreachableException()
             };
         }
@@ -325,7 +325,7 @@ namespace Project1.Core.Towns.Designations
             var contains = this.CellDesignations[desType].Contains(global);
             return contains;
         }
-        internal bool IsDesignation(TargetArgs global, DesignationDef desType)
+        internal bool IsDesignation(InteractionTarget global, DesignationDef desType)
         {
             return global.Type switch
             {

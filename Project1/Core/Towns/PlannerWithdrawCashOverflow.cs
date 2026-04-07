@@ -25,7 +25,7 @@ sealed class PlannerWithdrawCashOverflow : Planner
                 continue;
             if (!actor.CanReachAndReserve(comp.Parent))
                 continue;
-            return new Plan(PlanDefOf.Withdraw, new TargetArgs(map, comp.Parent.OriginGlobal));
+            return new Plan(PlanDefOf.Withdraw, new InteractionTarget(map, comp.Parent.OriginGlobal));
         }
         return null;
     }

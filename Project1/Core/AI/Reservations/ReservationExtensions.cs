@@ -13,19 +13,19 @@ namespace Project1.Core.AI.Reservations
         static public bool CanReserve(this Actor obj, BlockEntity target)
         {
             var map = obj.Map;
-            return map.Town.ReservationManager.CanReserve(obj, new TargetArgs(target), 1, false);
+            return map.Town.ReservationManager.CanReserve(obj, new InteractionTarget(target), 1, false);
         }
         static public bool CanReserve(this Actor obj, IntVec3 target)
         {
             var map = obj.Map;
-            return map.Town.ReservationManager.CanReserve(obj, new TargetArgs(map, target), 1, false);
+            return map.Town.ReservationManager.CanReserve(obj, new InteractionTarget(map, target), 1, false);
         }
         static public bool CanReserve(this Actor obj, Vector3 target, int stackcount = -1, bool force = false)
         {
             var map = obj.Map;
-            return map.Town.ReservationManager.CanReserve(obj, new TargetArgs(map, target), stackcount, force);
+            return map.Town.ReservationManager.CanReserve(obj, new InteractionTarget(map, target), stackcount, force);
         }
-        static public bool CanReserve(this Actor obj, TargetArgs target, int stackcount = -1, bool force = false)
+        static public bool CanReserve(this Actor obj, InteractionTarget target, int stackcount = -1, bool force = false)
         {
             return obj.Map.Town.ReservationManager.CanReserve(obj, target, stackcount, force);
         }
@@ -35,7 +35,7 @@ namespace Project1.Core.AI.Reservations
         //}
         static public bool CanReserve(this Actor obj, Entity target, int stackcount = -1, bool force = false)
         {
-            return !target.IsForbidden && obj.Map.Town.ReservationManager.CanReserve(obj, new TargetArgs(target), stackcount, force);
+            return !target.IsForbidden && obj.Map.Town.ReservationManager.CanReserve(obj, new InteractionTarget(target), stackcount, force);
         }
         static public void Unreserve(this Actor obj)
         {
@@ -50,19 +50,19 @@ namespace Project1.Core.AI.Reservations
         //    obj.Map.Town.ReservationManager.Unreserve(obj, target);
         //}
 
-        static public int GetUnreservedAmount(this Actor obj, TargetArgs i)
+        static public int GetUnreservedAmount(this Actor obj, InteractionTarget i)
         {
             return obj.Map.Town.ReservationManager.GetUnreservedAmount(i);
         }
        
         static public bool TryGetUnreservedAmount(this Actor obj, Entity i, out int amount)
         {
-            amount = obj.Map.Town.ReservationManager.GetUnreservedAmount(new TargetArgs(i));
+            amount = obj.Map.Town.ReservationManager.GetUnreservedAmount(new InteractionTarget(i));
             return amount > 0;
         }
         static public int GetUnreservedAmount(this Actor obj, Vector3 i)
         {
-            return obj.Map.Town.ReservationManager.GetUnreservedAmount(new TargetArgs(obj.Map, i));
+            return obj.Map.Town.ReservationManager.GetUnreservedAmount(new InteractionTarget(obj.Map, i));
         }
     }
 }

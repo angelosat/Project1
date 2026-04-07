@@ -518,12 +518,12 @@ namespace Project1.Framework.Serialization
                 list.Add((Vector3)pos.Value);
             return list;
         }
-        public static T LoadTargets<T>(this T list, SaveTag tag) where T : ICollection<TargetArgs>, new()
+        public static T LoadTargets<T>(this T list, SaveTag tag) where T : ICollection<InteractionTarget>, new()
         {
             list.Clear();
             var positions = tag.Value as List<SaveTag>;
             foreach (var pos in positions)
-                list.Add((TargetArgs)pos.Value);
+                list.Add((InteractionTarget)pos.Value);
             return list;
         }
         public static T LoadIntVecs<T>(this T list, SaveTag tag) where T : ICollection<IntVec3>, new()
@@ -1042,19 +1042,19 @@ namespace Project1.Framework.Serialization
        
 
 
-        public static SaveTag Save(this List<TargetArgs> list, string name = "")
+        public static SaveTag Save(this List<InteractionTarget> list, string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Compound);
             foreach (var i in list)
                 tag.Add(i.Save());
             return tag;
         }
-        public static void Load(this List<TargetArgs> list, SaveTag tag)
+        public static void Load(this List<InteractionTarget> list, SaveTag tag)
         {
             list.Clear();
             var tags = tag.Value as List<SaveTag>;
             foreach (var i in tags)
-                list.Add(new TargetArgs(i));
+                list.Add(new InteractionTarget(i));
 
         }
 

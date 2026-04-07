@@ -18,7 +18,7 @@ namespace Project1.Core.Input
         public Block Block => this.Cell.Block;
         public BlockEntity BlockEntity => this._blockEntity ??= this.Map.GetBlockEntity(this.Global);
 
-        public readonly TargetArgs ToTarget() => new(this.Map, this.Global);
+        public readonly InteractionTarget ToTarget() => new(this.Map, this.Global);
 
         public readonly string Name => $"Cell {Global}";
 

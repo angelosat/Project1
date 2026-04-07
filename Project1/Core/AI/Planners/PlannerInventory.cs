@@ -50,7 +50,7 @@ namespace Project1.Core.AI.Planners
             return null;
         }
 
-        public override PlanDef CanGiveTask(Actor actor, TargetArgs target)
+        public override PlanDef CanGiveTask(Actor actor, InteractionTarget target)
         {
             if (target.Object is not Entity item)
                 return null;

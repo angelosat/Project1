@@ -29,7 +29,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
                     comp.OnActorExited(parent);
                     this.CellsToComps.Remove(door);
                     if(comp.CanClose())
-                        parent.Work.Perform(InteractionDefOf.ToggleDoor, new TargetArgs(parent.Map, door));
+                        parent.Work.Perform(InteractionDefOf.ToggleDoor, new InteractionTarget(parent.Map, door));
                 }
             }
             return HandleByCorners(parent);
@@ -59,7 +59,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
                 this.CellsToComps.Add(door, doorComp);
                 doorComp.OnActorEntered(parent);
                 if (!open)
-                    parent.Work.Perform(InteractionDefOf.ToggleDoor, new TargetArgs(parent.Map, door));
+                    parent.Work.Perform(InteractionDefOf.ToggleDoor, new InteractionTarget(parent.Map, door));
                 return BehaviorState.Fail;
             }
             return BehaviorState.Fail;

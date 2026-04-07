@@ -56,7 +56,7 @@ namespace Project1.Core.Blocks
            
         }
 
-        internal virtual void OnDrop(GameObject actor, GameObject item, TargetArgs target, int quantity) { }
+        internal virtual void OnDrop(GameObject actor, GameObject item, InteractionTarget target, int quantity) { }
         internal virtual void OnRemoved(MapBase map, IntVec3 global, BlockEntity parent) { }
         internal virtual void OnNeighborChanged(MapBase map, IntVec3 source) { }
         [Obsolete]

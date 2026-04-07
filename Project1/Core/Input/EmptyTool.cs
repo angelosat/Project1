@@ -8,7 +8,7 @@ namespace Project1.Core.Input
 {
     class EmptyTool : ControlTool
     {
-        public Func<TargetArgs, ControlTool.Messages>
+        public Func<InteractionTarget, ControlTool.Messages>
             LeftClick = (target) => { return ControlTool.Messages.Default; },
             RightClick = (target) => { return ControlTool.Messages.Remove; };
         public Func<KeyEventArgs, ControlTool.Messages>

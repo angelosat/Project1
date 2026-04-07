@@ -35,19 +35,19 @@ namespace Project1.Core
             {
                 throw new NotImplementedException();
             }
-            public Dictionary<TargetArgs, int> GetPotentialHaulTargets(Actor actor, GameObject item, out int maxamount)
+            public Dictionary<InteractionTarget, int> GetPotentialHaulTargets(Actor actor, GameObject item, out int maxamount)
             {
-                var dic = new Dictionary<TargetArgs, int>();
+                var dic = new Dictionary<InteractionTarget, int>();
                 maxamount = item.StackMax;
                 if (this.Contents.Count < 4)
                 {
-                    dic.Add(new TargetArgs(actor.Map, this.Global), maxamount);
+                    dic.Add(new InteractionTarget(actor.Map, this.Global), maxamount);
                 }
 
                 return dic;
             }
 
-            public bool IsValidStorage(Entity item, TargetArgs target, int quantity)
+            public bool IsValidStorage(Entity item, InteractionTarget target, int quantity)
             {
                 if (this.Contents.Count == this.Capacity)
                 {
@@ -127,17 +127,17 @@ namespace Project1.Core
                 }
             }
 
-            public TargetArgs GetBestHaulTarget(GameObject actor, GameObject item)
+            public InteractionTarget GetBestHaulTarget(GameObject actor, GameObject item)
             {
                 throw new NotImplementedException();
             }
 
-            public IEnumerable<TargetArgs> GetPotentialHaulTargets(GameObject actor, GameObject item)
+            public IEnumerable<InteractionTarget> GetPotentialHaulTargets(GameObject actor, GameObject item)
             {
                 throw new NotImplementedException();
             }
 
-            public IEnumerable<TargetArgs> GetPotentialHaulTargets(Actor actor, GameObject item)
+            public IEnumerable<InteractionTarget> GetPotentialHaulTargets(Actor actor, GameObject item)
             {
                 throw new NotImplementedException();
             }

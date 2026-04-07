@@ -18,7 +18,7 @@ namespace Project1.Core.Towns.AI.Behaviors
                     continue;
                 else
                 {
-                    return new Plan(typeof(BehaviorEquipItemNew), new TargetArgs(item));
+                    return new Plan(typeof(BehaviorEquipItemNew), new InteractionTarget(item));
                     // TODO check world incase the item is available in the map but not inside inveotry? return a pickup task in that case?
                     // TODO return equipping taskbehavior
                     // add previously equipped to todiscard?

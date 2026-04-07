@@ -489,7 +489,7 @@ namespace Project1.Core.Simulation.Physics
         private void HitGround(GameObject parent, Vector3 vector3, float force)
         {
             this.MidAir = false;
-            parent.Net.Map.Events.Post(new EntityHitGroundEvent(parent as Entity, force));
+            parent.Map.Events.Post(new EntityHitGroundEvent(parent as Entity, force));
         }
         
         private void HitCeiling(GameObject parent, Vector3 vector3)

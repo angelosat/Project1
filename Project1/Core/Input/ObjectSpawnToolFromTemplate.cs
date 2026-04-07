@@ -67,7 +67,7 @@ namespace Project1.Core.Input
         private void SpawnEntity()
         {
             //var map = Engine.Map;
-            var map = Client.Instance.Map;
+            var map = this.Map;
             var blockHeight = Block.GetBlockHeight(map, this.Target.Global);
             var position = this.Target.Global + this.Target.Face * new Vector3(1,1,blockHeight) + GetPrecise();
             PacketEntityRequestSpawn.SendTemplate(Client.Instance, this.TemplateID, position.At(map));

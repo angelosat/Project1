@@ -32,7 +32,7 @@ namespace Project1.Core.Input
         {
             if (this.Target != null)
                 if (this.Target.Type == TargetType.Cell)
-                    PacketCommandNpc.Send(Client.Instance, this.Actors.Select(i => i.RefId).ToList(), this.Target, IsEnqueing);
+                    PacketCommandNpc.Send(Client.Instance, this.Map, [.. this.Actors.Select(i => i.RefId)], this.Target, IsEnqueing);
             return base.MouseLeftPressed(e);
         }
         public override ControlTool.Messages MouseRightDown(System.Windows.Forms.HandledMouseEventArgs e)

@@ -6,7 +6,7 @@ namespace Project1.Core.Networking
 {
     class CommandParserMap
     {
-        public void Execute(INetEndpoint net, string command)
+        public void Execute(NetEndpoint net, string command)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace Project1.Core.Networking
                         var replace = Def.Get<BlockDef>(p[2]).Block;
                         if (replace == BlockDefOf.Air.Block || old == BlockDefOf.Air.Block)
                             break;
-                        foreach (var ch in net.Map.GetActiveChunks())
+                        foreach (var ch in net.MainViewport.Map.GetActiveChunks())
                             foreach (var cell in ch.Value.Cells)
                                 if (cell.Block == old)
                                 {

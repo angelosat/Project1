@@ -4,35 +4,35 @@ using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 
-namespace Project1.Core.Networking.Simulation
+namespace Project1.Core.Networking.Simulation;
+
+public record struct SetBlockArgs(MapId MapId, IntVec3 Global, Block Block, MaterialDef Material, byte Data, int Orientation, IntVec3 Source) : ISerializableNew<SetBlockArgs>
 {
-    public record struct SetBlockArgs(IntVec3 Global, Block Block, MaterialDef Material, byte Data, int Orientation, IntVec3 Source) : ISerializableNew<SetBlockArgs>
+    public static SetBlockArgs Create(IDataReader r)
     {
-        public static SetBlockArgs Create(IDataReader r)
-        {
-            return new SetBlockArgs().Read(r);
-        }
-        public SetBlockArgs Read(IDataReader r)
-        {
-            this.Global = r.ReadIntVec3();
-            this.Block = r.ReadDef<BlockDef>().Block;
-            this.Material = r.ReadDef<MaterialDef>();
-            this.Data = r.ReadByte();
-            this.Orientation = r.ReadInt32();
-            this.Source = r.ReadIntVec3();
-            return this;
-        }
+        return new SetBlockArgs().Read(r);
+    }
+    public SetBlockArgs Read(IDataReader r)
+    {
+        this.MapId = (MapId)r.ReadInt32();   
+        this.Global = r.ReadIntVec3();
+        this.Block = r.ReadDef<BlockDef>().Block;
+        this.Material = r.ReadDef<MaterialDef>();
+        this.Data = r.ReadByte();
+        this.Orientation = r.ReadInt32();
+        this.Source = r.ReadIntVec3();
+        return this;
+    }
 
-        public void Write(IDataWriter w)
-        {
-            w
-               .Write(this.Global)
-               .Write(this.Block.BlockDef)
-               .Write(this.Material)
-               .Write(this.Data)
-               .Write(this.Orientation)
-               .Write(this.Source);
-        }
-
+    public void Write(IDataWriter w)
+    {
+        w
+            .Write(this.MapId)
+            .Write(this.Global)
+            .Write(this.Block.BlockDef)
+            .Write(this.Material)
+            .Write(this.Data)
+            .Write(this.Orientation)
+            .Write(this.Source);
     }
 }

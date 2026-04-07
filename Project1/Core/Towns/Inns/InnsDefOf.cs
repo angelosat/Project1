@@ -39,10 +39,10 @@ namespace Project1.Core.Towns.Inns
         internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
         {
             if (selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity be && be.HasComp<BlockBedComp>())
-                Ingame.Instance.Events.Post(new PlayerToggledInnBedEvent(be.OriginGlobal));
+                Ingame.Instance.Events.Post(new PlayerToggledInnBedEvent(Ingame.Net.MainViewport.Map.ID, be.OriginGlobal));
         }
     }
-    public record struct PlayerToggledInnBedEvent(IntVec3 Bed) : IEventPayload { }
+    public record struct PlayerToggledInnBedEvent(MapId MapId, IntVec3 Bed) : IEventPayload { }
     public static class InnHelpers
     {
         extension(Actor visitor)

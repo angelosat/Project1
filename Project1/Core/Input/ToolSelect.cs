@@ -35,13 +35,14 @@ namespace Project1.Core.Input
         protected virtual void Select()
         {
             this.SelectAction(this.Begin, this.End);
-            SelectionManager.Select(Client.Instance.Map, this.Begin.GetBoundingBox(this.End));
+            SelectionManager.Select(this.Map, this.Begin.GetBoundingBox(this.End));
         }
         public override void Update()
         {
-            var cam = Engine.Map.Camera;
-
-            cam.MousePicking(Ingame.DrawServer ? Server.Instance.Map : Client.Instance.Map);
+            //var cam = Engine.Map.Camera;
+            var cam = this.Map.Camera;
+            //cam.MousePicking(Ingame.DrawServer ? Server.Instance.Map : Client.Instance.Map);
+            cam.MousePicking(this.Map);
             this.UpdateTarget();
 
             if (Controller.TargetCell != null)

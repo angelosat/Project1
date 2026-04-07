@@ -20,20 +20,10 @@ namespace Project1.Core.World.WorldAreas
         public int LootWeightEquipment = 1;
         public int LootWeightCurrency = 1;
         public readonly int Tier;
-        readonly Action<WorldInhabitantView>[] TickActions;
         LootWrapper LootCurrency;
         public FrontierDef(string name, int tier) : base(name)
         {
             this.Tier = tier;
-            this.TickActions = new Action<WorldInhabitantView>[] {
-                AwardLoot,
-                Quest,
-                Damage
-            };
-        }
-        public void Tick(WorldInhabitantView props)
-        {
-            this.TickActions.SelectRandomWeighted(props.World.Random, p => 1)(props);
         }
 
         private void Damage(WorldInhabitantView visitor)
@@ -46,13 +36,6 @@ namespace Project1.Core.World.WorldAreas
             //actor.Resources.AdjustAndSync(ResourceDefOf.Health, -dmg);
             actor.Resources.ApplyDelta(ResourceDefOf.Health, -dmg);
             actor.AI.State.Log.Write($"[Lost {dmg} health,{Color.Red}] while exploring {this.Name}");
-        }
-
-        private void Quest(WorldInhabitantView visitor)
-        {
-            var actor = visitor.Actor;
-            foreach (var q in visitor.GetQuests())
-                q.TryComplete(actor, this);
         }
 
         private void AwardLoot(WorldInhabitantView visitor)
@@ -68,7 +51,6 @@ namespace Project1.Core.World.WorldAreas
             var (factory, weight) = new (Func<GameObject> factory, int weight)[]
             {
                 (()=>GetRandomRawMaterial(rand), this.LootWeightRawMaterial),
-                //(()=>GetRandomEquipment(rand), this.LootWeightRawMaterial),
                 (()=>LootCurrency.GenerateNew(rand), this.LootWeightCurrency)
             }.SelectRandomWeighted(rand, p => p.weight);
             var obj = factory();

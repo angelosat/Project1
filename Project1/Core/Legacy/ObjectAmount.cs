@@ -81,7 +81,8 @@ namespace Project1.Core.Legacy
 
         public ObjectAmount Read(IDataReader r)
         {
-            this.ObjectTarget = TargetArgs.Read(Network.CurrentEndpoint, r);
+            throw new NotImplementedException();
+            //this.ObjectTarget = TargetArgs.Read(Network.CurrentEndpoint, r);
             this._amount = r.ReadInt32();
             return this;
         }

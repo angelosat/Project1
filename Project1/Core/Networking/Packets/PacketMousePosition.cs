@@ -21,7 +21,7 @@ namespace Project1.Core.Networking.Packets
         {
             var r = pck.PacketReader;
             var playerid = r.ReadInt32();
-            var target = TargetArgs.Read(net, r);
+            var target = TargetArgs.Read(net.World, r);
             net.GetPlayer(playerid)?.UpdateTarget(target);
             if (net is Server server)
                 Send(server, playerid, target);

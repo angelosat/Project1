@@ -1,5 +1,4 @@
-﻿using Project1.Core.Networking;
-using Project1.Core.Screens;
+﻿using Project1.Core.Screens;
 
 namespace Project1.Core.Networking
 {
@@ -9,7 +8,7 @@ namespace Project1.Core.Networking
     }
     class CommandParser
     {
-        static public bool Execute(INetEndpoint net, PlayerData player, string command)
+        static public bool Execute(NetEndpoint net, PlayerData player, string command)
         {
             var p = command.Split(' ');
             var type = p[0];
@@ -22,7 +21,7 @@ namespace Project1.Core.Networking
             return false;
         }
 
-        static public bool Execute(INetEndpoint net, string command)
+        static public bool Execute(NetEndpoint net, string command)
         {
             var p = command.Split(' ');
             var type = p[0];

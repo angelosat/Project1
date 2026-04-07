@@ -45,13 +45,13 @@ namespace Project1.Core.Networking.Entities
             if (net is Server)
                 throw new Exception();
             var entity = net.World.Get<Actor>(r.ReadInt32());
-            var map = net.Map;
+            var map = entity.Map;
             if (!r.ReadBoolean())
             {
                 entity.Work.End(r.ReadBoolean());
                 return;
             }
-            var target = TargetArgs.Read(net, r);
+            var target = TargetArgs.Read(net.World, r);
             var count = r.ReadInt32();
             var action = r.ReadDef<InteractionDef>().Create(entity, target, count);
             //action.Count = count;
@@ -59,7 +59,7 @@ namespace Project1.Core.Networking.Entities
             var global = r.ReadVector3();
             var velocity = r.ReadVector3();
             var dir = r.ReadVector3();
-            action.Resolve(net.Map);
+            action.Resolve(map);
             //entity.Work.Perform(action, target);
             entity.Work.Start(action);
         }

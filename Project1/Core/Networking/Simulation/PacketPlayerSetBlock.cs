@@ -18,13 +18,14 @@ namespace Project1.Core.Networking.Simulation
 
         private static void HandlePlayerPaintedBlock(PlayerPaintedBlockEvent e)
         {
-            Send(Client.Instance, Client.Instance.GetPlayer(), e.Global, e.Block, e.Material, e.State, e.Variation, e.Orientation);
+            Send(Client.Instance, Client.Instance.GetPlayer(), e.MapId, e.Global, e.Block, e.Material, e.State, e.Variation, e.Orientation);
         }
 
-        public static void Send(NetEndpoint net, PlayerData player, IntVec3 global, Block block, MaterialDef material, byte data = 0, int variation = 0, int orientation = 0)
+        public static void Send(NetEndpoint net, PlayerData player, MapId mapid, IntVec3 global, Block block, MaterialDef material, byte data = 0, int variation = 0, int orientation = 0)
         {
             net.BeginPacketImmediate(p)
                .Write(player.ID)
+               .Write(mapid)
                .Write(global)
                .Write(block.BlockDef)
                .Write(material)
@@ -36,6 +37,8 @@ namespace Project1.Core.Networking.Simulation
         {
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
+            var mapid = r.ReadMapId();
+            var map = net.World.Get(mapid);
             var global = r.ReadIntVec3();
             var block = r.ReadDef<BlockDef>().Block;
             var material = Def.Get<MaterialDef>(r);
@@ -43,7 +46,7 @@ namespace Project1.Core.Networking.Simulation
             var variation = r.ReadInt32();
             var orientation = r.ReadInt32();
             
-            Perform(net.Map, global, block, material, data, variation, orientation);
+            Perform(map, global, block, material, data, variation, orientation);
         }
 
         private static void Perform(MapBase map, IntVec3 global, Block block, MaterialDef material, byte data, int variation, int orientation)

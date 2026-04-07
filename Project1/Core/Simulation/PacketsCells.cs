@@ -37,14 +37,17 @@ namespace Project1.Core.Simulation
                 throw new Exception();
             var r = packet.PacketReader;
             var mapid = r.ReadInt32();
+            var map = endpoint.World.Get(mapid);
             var global = r.ReadIntVec3();
             var block = r.ReadDef<BlockDef>();
             var material = r.ReadDef<MaterialDef>();
             var data = r.ReadInt32();
-            var edit = new CellQuery(endpoint.Map, global);
-            edit.Block = block.Block;
-            edit.Material = material;
-            edit.Data = data;
+            var edit = new CellQuery(map, global)
+            {
+                Block = block.Block,
+                Material = material,
+                Data = data
+            };
         }
     }
 }

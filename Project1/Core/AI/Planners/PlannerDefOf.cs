@@ -2,7 +2,6 @@
 using Project1.Core.AI.Behaviors.Idle;
 using Project1.Core.AI.Behaviors.Sleeping;
 using Project1.Core.Systems.Plants;
-using Project1.Core.Systems.Quests.AI;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors;
 using Project1.Core.Towns.Constructions.AI;
@@ -34,7 +33,6 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef Restocking = new("Restocking", typeof(PlannerRestocking));
         static public readonly PlannerDef Withdraw = new("Withdrawing", typeof(PlannerWithdrawCashOverflow));
         static public readonly PlannerDef Inventory = new("Inventory", typeof(PlannerInventory));
-        static public readonly PlannerDef QuestGiving = new("QuestGiving", typeof(PlannerQuestGiver));
         static public readonly PlannerDef Switching = new("Switching", typeof(PlannerToggleSwitch));
         static public readonly PlannerDef Workplace = new("Workplace", typeof(PlannerWorkplace));
         static public readonly PlannerDef SmartEquip = new("SmartEquip", typeof(PlannerSmartEquip));

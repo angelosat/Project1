@@ -8,6 +8,7 @@ using Project1.Core.Entities;
 using Project1.Framework.UI;
 using Project1.Core.Graphics;
 using Project1.Framework.Helpers;
+using Project1.Core.Screens;
 
 namespace Project1.Core.UI
 {
@@ -79,7 +80,8 @@ namespace Project1.Core.UI
             if (camera.Zoom <= 1)
                 return;
            
-            var objects = Client.Instance.Map.Entities;
+            //var objects = Client.Instance.Map.Entities;
+            var objects = Ingame.Net.MainViewport.Map.Entities;
             foreach (var o in objects)
             {
                 if (o.StackSize <= 1)

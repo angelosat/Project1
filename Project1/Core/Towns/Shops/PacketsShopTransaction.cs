@@ -41,7 +41,7 @@ namespace Project1.Core.Towns.Shops
             var item = endpoint.World.Get<Entity>(itemId);
             var price = r.ReadInt32();
             var counter = r.ReadIntVec3();
-            endpoint.Map.Town.ShopManager.TryBeginTransaction(buyer, item, price, counter);
+            buyer.Map.Town.ShopManager.TryBeginTransaction(buyer, item, price, counter);
         }
 
         private static void HandleShopTransactionUpdated(ShopTransactionUpdatedEvent e)
@@ -60,7 +60,7 @@ namespace Project1.Core.Towns.Shops
             var r = packet.PacketReader;
             var buyerId = r.ReadEntityRefId();
             var buyer = endpoint.World.Get<Actor>(buyerId);
-            if (!endpoint.Map.Town.OpenTransactions.TryGetValue(buyer.RefId, out var transaction))
+            if (!buyer.Map.Town.OpenTransactions.TryGetValue(buyer.RefId, out var transaction))
                     throw new System.Exception();
             transaction.Read(r);
         }

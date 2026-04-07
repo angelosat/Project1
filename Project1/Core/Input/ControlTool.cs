@@ -17,7 +17,8 @@ namespace Project1.Core.Input
     public class ControlTool : IInputEventHandler
     {
         public enum Messages { Default, Remove }
-        
+        protected MapBase Map => Ingame.Net.MainViewport.Map;
+
 
         protected void Sync()
         {
@@ -62,8 +63,9 @@ namespace Project1.Core.Input
         public virtual void UpdateRemote(TargetArgs target) { this.Target = target; }
         public virtual void Update()
         {
-            var cam = Client.Instance.Map.Camera;
-            cam.MousePicking(Ingame.DrawServer ? Server.Instance.Map : Client.Instance.Map);
+            var cam = this.Map.Camera;
+            //cam.MousePicking(Ingame.DrawServer ? Server.Instance.Map : Client.Instance.Map);
+            cam.MousePicking(this.Map);
 
             UpdateTarget();
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Networking;
@@ -7,7 +6,6 @@ using Project1.Core.Screens;
 using Project1.Core.Serialization;
 using Project1.Framework;
 using Project1.Framework.Serialization;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,36 +25,40 @@ namespace Project1.Core.Towns.Designations
         private static void OnPlayerDesignationEntities(PlayerDesignationEntitiesEvent e)
         {
             if (Ingame.Net.IsServer)
-                Ingame.CurrentMap.Town.DesignationManager.AddEntities(e.Designation, e.Entities, e.IsRemoval);
-            Send(Ingame.Net, e.Entities, e.Designation, e.IsRemoval);
+                Ingame.MainViewportMap.Town.DesignationManager.AddEntities(e.Designation, e.Entities, e.IsRemoval);
+            Send(Ingame.Net, e.MapId, e.Entities, e.Designation, e.IsRemoval);
         }
-        static public void Send(NetEndpoint endpoint, IReadOnlyCollection<Entity> entities, DesignationDef def, bool isRemoval)
+        static public void Send(NetEndpoint endpoint, MapId mapid, IReadOnlyCollection<Entity> entities, DesignationDef def, bool isRemoval)
         {
             endpoint.BeginPacketImmediate(_pPlayerDesignationEntities)
+                .Write(mapid)
                 .Write(isRemoval)
                 .Write(def)
                 .Write(entities.Select(e => e.RefId).ToList());
         }
         private static void ReceiveEntities(NetEndpoint endpoint, Packet packet)
         {
-            var map = endpoint.Map;
+            //var map = endpoint.Map;
             var r = packet.PacketReader;
+            var mapid = r.ReadMapId();
+            var map = endpoint.World.Get(mapid);
             var isRemoval = r.ReadBoolean();
             var def = r.ReadDef<DesignationDef>();
-            var entities = map.World.GetEntities(r.ReadListEntityRefId()).ToArray();
+            var entities = endpoint.World.GetEntities(r.ReadListEntityRefId()).ToArray();
             map.Town.DesignationManager.Edit(def, entities, isRemoval);
             if (endpoint.IsServer)
-                Send(endpoint, entities, def, isRemoval);
+                Send(endpoint, mapid, entities, def, isRemoval);
         }
         private static void OnPlayerDesignation(PlayerDesignationCellsEvent e)
         {
             if (Ingame.Net.IsServer)
-                Ingame.CurrentMap.Town.DesignationManager.Edit(e.Designation, e.Begin, e.End, e.IsRemoval);
-            Send(Ingame.Net, e.Begin, e.End, e.Designation, e.IsRemoval);
+                Ingame.MainViewportMap.Town.DesignationManager.Edit(e.Designation, e.Begin, e.End, e.IsRemoval);
+            Send(Ingame.Net, e.MapId, e.Begin, e.End, e.Designation, e.IsRemoval);
         }
-        static public void Send(NetEndpoint endpoint, IntVec3 begin, IntVec3 end, DesignationDef def, bool isRemoval)
+        static public void Send(NetEndpoint endpoint, MapId mapid, IntVec3 begin, IntVec3 end, DesignationDef def, bool isRemoval)
         {
             endpoint.BeginPacketImmediate(_pPlayerDesignation)
+                .Write(mapid)
                 .Write(isRemoval)
                 .Write(def)
                 .Write(begin)
@@ -64,15 +66,16 @@ namespace Project1.Core.Towns.Designations
         }
         private static void ReceiveCells(NetEndpoint endpoint, Packet packet)
         {
-            var map = endpoint.Map;
             var r = packet.PacketReader;
+            var mapid = r.ReadMapId();
+            var map = endpoint.World.Get(mapid);
             var isRemoval = r.ReadBoolean();
             var def = r.ReadDef<DesignationDef>();
             var begin = r.ReadIntVec3();
             var end = r.ReadIntVec3();
             map.Town.DesignationManager.Edit(def, begin, end, isRemoval);
             if (endpoint.IsServer)
-                Send(endpoint, begin, end, def, isRemoval);
+                Send(endpoint, mapid, begin, end, def, isRemoval);
         }
         static public void Send(NetEndpoint net, bool remove, IEnumerable<TargetArgs> targets, DesignationDef designation)
         {

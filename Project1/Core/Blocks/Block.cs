@@ -499,32 +499,6 @@ namespace Project1.Core.Blocks
             this.BreakNew(map, global);
             map.RemoveBlock(global);
         }
-        public virtual void Break(GameObject actor, IntVec3 global)
-        {
-            var mat = GetBlockMaterial(actor.Map, global);
-            var net = actor.Net;
-            net.PopLoot(this.GetLootTable(actor.Map.GetBlockData(global)), global, Vector3.Zero);
-            net.Map.RemoveBlock(global);
-
-            var e = this.GetEmitter();
-            e.Source = (Vector3)global + Vector3.UnitZ * 0.5f;
-            e.SizeBegin = 1;
-            e.SizeEnd = 1;
-            e.ParticleWeight = 1;
-            e.Radius = 1f;// .5f;
-            e.Force = .1f;
-            e.Friction = .5f;
-            e.AlphaBegin = 1;
-            e.AlphaEnd = 0;
-            var color = mat.Color;
-            e.ColorBegin = color;
-            e.ColorEnd = color;
-
-            e.Lifetime = Ticks.PerSecond * 2;
-            var pieces = this.GetParticleRects(25);
-            e.Emit(Atlas.Texture, pieces, Vector3.Zero);
-            actor.Map.ParticleManager.AddEmitter(e);
-        }
         public virtual bool IsSolid(MapBase map, Vector3 global, byte data)
         {
             var offset = global + 0.5f * new Vector3(1, 1, 0);
@@ -744,7 +718,7 @@ namespace Project1.Core.Blocks
             return this.Ingredient?.GetItemMaterialAmounts(this) ?? Enumerable.Empty<ItemMaterialAmount>();
         }
        
-        public virtual void OnSteppedOn(GameObject actor, IntVec3 global) { }
+        //public virtual void OnSteppedOn(GameObject actor, IntVec3 global) { }
 
         public virtual bool TryConsume(GameObject actor, GameObject dropped, IntVec3 global, int amount = -1)
         {

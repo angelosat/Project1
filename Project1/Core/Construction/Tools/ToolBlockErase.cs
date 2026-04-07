@@ -36,9 +36,9 @@ namespace Project1.Core.Construction.Tools
             if (e.KeyValue == 17)
                 ToolManager.SetTool(this.PreviousTool);
         }
-        private static void RemoveZone(Vector3 min, Vector3 max, bool remove)
+        private static void RemoveZone(MapId mapid, Vector3 min, Vector3 max, bool remove)
         {
-            var a = new ToolBlockBuild.Args(BuildToolDefOf.Box, min, max, true, InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu), false, 0);
+            var a = new ToolBlockBuild.Args(BuildToolDefOf.Box, mapid, min, max, true, InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu), false, 0);
             PacketDesignateConstruction.SendRemove(Client.Instance, a);
         }
        

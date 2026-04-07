@@ -2,7 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Framework;
-using Project1.Core.Networking;
+using Project1.Core.Helpers;
 
 namespace Project1.Core.Rooms
 {
@@ -23,6 +23,7 @@ namespace Project1.Core.Rooms
                 room.RoomRole = roomType;
             var w = net.BeginPacketImmediate(PacketSetRoomType);
             w.Write(player.ID);
+            w.Write(room.Map.ID);
             w.Write(room.ID);
             w.Write(roomType?.Name ?? "");
         }
@@ -30,7 +31,9 @@ namespace Project1.Core.Rooms
         {
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
-            var room = net.Map.Town.RoomManager.GetRoom(r.ReadInt32());
+            var mapid = r.ReadMapId();
+            var map = net.World.Get(mapid);
+            var room = map.Town.RoomManager.GetRoom(r.ReadInt32());
             var roomdef = r.ReadString() is string roomRoleName && !roomRoleName.IsNullEmptyOrWhiteSpace() ? Def.Get<RoomRoleDef>(roomRoleName) : null;
             if (net is Client)
                 room.RoomRole = roomdef;
@@ -44,6 +47,7 @@ namespace Project1.Core.Rooms
                 room.ForceAddOwner(owner);
             var w = net.BeginPacketImmediate(PacketSetOwner);
             w.Write(player.ID);
+            w.Write(room.Map.ID);
             w.Write(room.ID);
             w.Write(owner?.RefId ?? -1);
         }
@@ -51,8 +55,10 @@ namespace Project1.Core.Rooms
         {
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
+            var mapid = r.ReadMapId();
+            var map = net.World.Get(mapid);
             var roomID = r.ReadInt32();
-            var room = net.Map.Town.RoomManager.GetRoom(roomID);
+            var room = map.Town.RoomManager.GetRoom(roomID);
             var owner = r.ReadInt32() is int id && id != -1 ? net.World.Get<Actor>(id) : null;
             if (net is Server)
                 SetOwner(net, player, room, owner);
@@ -66,6 +72,7 @@ namespace Project1.Core.Rooms
                 room.SetWorkplace(wplace);
             var w = net.BeginPacketImmediate(PacketSetWorkplace);
             w.Write(player.ID);
+            w.Write(room.Map.ID);
             w.Write(room.ID);
             w.Write(wplace?.ID ?? -1);
         }
@@ -73,9 +80,11 @@ namespace Project1.Core.Rooms
         {
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
+            var mapid = r.ReadMapId();
+            var map = net.World.Get(mapid);
             var roomID = r.ReadInt32();
-            var room = net.Map.Town.RoomManager.GetRoom(roomID);
-            var wplace = r.ReadInt32() is int id && id != -1 ? net.Map.Town.ShopManager.GetShop(id) : null;
+            var room = map.Town.RoomManager.GetRoom(roomID);
+            var wplace = r.ReadInt32() is int id && id != -1 ? map.Town.ShopManager.GetShop(id) : null;
 
             if (net is Server)
                 SetWorkplace(net, player, room, wplace);
@@ -89,6 +98,7 @@ namespace Project1.Core.Rooms
                 room.Refresh(center);
             var w = net.BeginPacketImmediate(PacketRefresh);
             w.Write(playerData.ID);
+            w.Write(room.Map.ID);
             w.Write(room.ID);
             w.Write(center);
         }
@@ -96,7 +106,9 @@ namespace Project1.Core.Rooms
         {
             var r = pck.PacketReader;
             var player = net.GetPlayer(r.ReadInt32());
-            var room = net.Map.Town.RoomManager.GetRoom(r.ReadInt32());
+            var mapid = r.ReadMapId();
+            var map = net.World.Get(mapid);
+            var room = map.Town.RoomManager.GetRoom(r.ReadInt32());
             var center = r.ReadIntVec3();
             if (net is Client)
                 room.Refresh(center);

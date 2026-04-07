@@ -75,8 +75,8 @@ namespace Project1.Core.AI
         static public readonly PlanDef HaulToStockpile = new("StockpileHauling", typeof(TaskBehaviorHaulToStockpile), InteractionDefOf.Place);
         //static public readonly PlanDef Plant = new("Plant", typeof(TaskBehaviorGoPlace), InteractionDefOf.Plant);
         static public readonly PlanDef Plant = new("Plant", typeof(BehaviorPlanting), InteractionDefOf.Plant);
-        static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(TaskBehaviorSleepOnGround), InteractionDefOf.SleepOnGround);
-        static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(TaskBehaviorSleepingNew), InteractionDefOf.SleepInBed);
+        static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(BehaviorExecutePlanNew/*TaskBehaviorSleepOnGround*/), InteractionDefOf.SleepOnGround);
+        static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(BehaviorExecutePlanNew/*TaskBehaviorSleepingNew*/), InteractionDefOf.SleepInBed);
         static public readonly PlanDef Eating = new("Eating", typeof(BehaviorEating), InteractionDefOf.Eat);
         static public readonly PlanDef Switching = new("Switching", typeof(BehaviorExecutePlanNew), InteractionDefOf.Switch);
         static public readonly PlanDef WaitForService = new ("Waiting", typeof(BehaviorExecutePlanNew), InteractionDefOf.WaitingService);

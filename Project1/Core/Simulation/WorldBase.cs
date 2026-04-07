@@ -54,10 +54,12 @@ public abstract class WorldBase : Inspectable, IEntityProvider
 
     public abstract void WriteData(IDataWriter w);
 
-    public abstract MapCollection GetMaps();
-    protected Dictionary<MapId, MapBase> Maps = [];
-    public MapBase Get(MapId id) => this.Maps[id];
+    //public abstract MapCollection GetMaps();
+    protected Dictionary<MapId, MapBase> _maps = [];
+    public MapBase Get(MapId id) => this._maps[id];
+    public ICollection<MapBase> Maps => this._maps.Count > 0 ? this._maps.Values : [];
 
+    public MapBase? MainMap => this.Maps.FirstOrDefault();
     public abstract void Draw(SpriteBatch sb, Camera cam);
     public abstract void Tick();
     public abstract void OnHudCreated(Hud hud);
@@ -182,7 +184,6 @@ public abstract class WorldBase : Inspectable, IEntityProvider
         return true;
     }
     
-    public abstract MapBase GetMap(int mapId);
     public EventBus Events { get; } = new();
 
     internal SaveTag Save()
@@ -205,7 +206,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
         this.EntityRegistry.Read(r);
     }
 
-    public abstract FrontierDef PlaceAt(Entity entity, WorldSpacePosition pos);
+    public abstract /*FrontierDef*/ void PlaceAt(Entity entity, WorldSpacePosition pos);
     public abstract FrontierDef GetFrontierOf(Entity entity);
 
     MapId NextMapID => ++field;
@@ -213,10 +214,10 @@ public abstract class WorldBase : Inspectable, IEntityProvider
     {
         map.World = this;
         map.ID = this.NextMapID;
-        this.Maps.Add(map.ID, map);
+        this._maps.Add(map.ID, map);
     }
     internal void RemoveMap(MapId mapId)
     {
-        this.Maps.Remove(mapId);
+        this._maps.Remove(mapId);
     }
 }

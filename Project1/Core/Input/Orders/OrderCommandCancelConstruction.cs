@@ -14,7 +14,7 @@ namespace Project1.Core.Input.Orders
         internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
         {
             if (selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity construction)
-                Ingame.Instance.Events.Post(new PlayerCancelledConstructionEvent([construction.Global]));
+                Ingame.Instance.Events.Post(new PlayerCancelledConstructionEvent(Ingame.Net.MainViewport.Map.ID, [construction.Global]));
         }
     }
 }

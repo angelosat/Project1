@@ -14,7 +14,7 @@ namespace Project1.Core.UI
             var entries = IngredientGroupBuilder.Build(order);
             this.ListCollapsible = new ListCollapsibleNewNew();
             this.ListCollapsible.Build(entries);
-            Client.Instance.Map.Events.ListenTo<CraftOrderUpdatedEvent>(OnOrderUpdated);
+            order.Workstation.Map.Events.ListenTo<CraftOrderUpdatedEvent>(OnOrderUpdated);
             var panel = new Panel() { AutoSize = false }.SetClientDimensions(200, 200);
             var box = new ScrollableBoxNewNewNew(this.ListCollapsible, 200, 400, ScrollModes.Vertical);
             panel.AddControls(box);

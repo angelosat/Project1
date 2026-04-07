@@ -122,7 +122,7 @@ namespace Project1.Core.Interactions
             var isinteracting = r.ReadBoolean();
             if (!isinteracting)
                 return;
-            this.Target = TargetArgs.Read(this.Owner.Map, r);
+            this.Target = TargetArgs.Read(this.Owner.World, r);
             var interactionDef = r.ReadDef<InteractionDef>();
             var interaction = interactionDef.Create(this.Owner as Actor, this.Target);
             interaction.Read(r);

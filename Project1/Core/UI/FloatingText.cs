@@ -17,7 +17,7 @@ namespace Project1.Core.UI
         }
         static public void Create(MapBase map, Func<Vector3> global, string text, Action<FloatingText> initializer = null)
         {
-            if (map is null || map != Ingame.Net.Map)
+            if (map is null || map != Ingame.Net.MainViewport.Map)
                 return;
             var ft = new FloatingText(global, text);
             ft.Font = UIManager.FontBold;

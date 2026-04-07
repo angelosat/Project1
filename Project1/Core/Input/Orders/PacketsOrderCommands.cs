@@ -21,27 +21,29 @@ namespace Project1.Core.Input.Orders
         {
             var r = packet.PacketReader;
             var def = r.ReadDef<OrderCommandDef>();
+            var mapid = r.ReadMapId();
+            var map = endpoint.World.Get(mapid);
             var selection = r.Read<SelectionIntent>();
-            var map = endpoint.Map; // temp
             def.Worker.Execute(map, selection);
             if (endpoint is Server server)
-                SendPlayerIssuedOrderCommand(server, def, selection);
+                SendPlayerIssuedOrderCommand(server, def, mapid, selection);
             else 
                 SelectionManager.Instance.RefreshOrderButtons();
         }
-        private static void SendPlayerIssuedOrderCommand(NetEndpoint endpoint, OrderCommandDef def, SelectionIntent selection)
+        private static void SendPlayerIssuedOrderCommand(NetEndpoint endpoint, OrderCommandDef def, MapId mapid, SelectionIntent selection)
         {
             endpoint.BeginPacketImmediate(_pPlayerIssuedOrderCommand)
                 .Write(def)
+                .Write(mapid)
                 .Write(selection);
         }
 
         private static void OnPlayerIssuedOrderCommand(PlayerIssuedOrderCommandEvent e)
         {
-            var map = Ingame.GetMap(); // temp
+            var map = e.Map; // temp
             var net = map.Net;
             if (net.IsClient)
-                SendPlayerIssuedOrderCommand(net, e.Def, e.Selection);
+                SendPlayerIssuedOrderCommand(net, e.Def, map.ID, e.Selection);
             else
                 e.Def.Worker.Execute(map, e.Selection);
         }

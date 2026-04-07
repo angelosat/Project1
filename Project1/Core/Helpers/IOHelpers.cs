@@ -12,6 +12,7 @@ namespace Project1.Core.Helpers
     internal static class IOHelpers
     {
         public static int ReadEntityRefId(this IDataReader r) => new EntityRefId(r.ReadInt32());
+        public static int ReadMapId(this IDataReader r) => new MapId(r.ReadInt32());
         public static List<EntityRefId> ReadListEntityRefId(this IDataReader r)
         {
             var count = r.ReadInt32();
@@ -23,7 +24,7 @@ namespace Project1.Core.Helpers
         public static T ReadDef<T>(this IDataReader r) where T : Def => Def.Get<T>(r.ReadString());
         public static Def ReadDef(this IDataReader r) => Def.GetDef(r.ReadString());
         public static T TryReadDef<T>(this IDataReader r) where T : Def => r.ReadString() is string defName && !defName.IsNullEmptyOrWhiteSpace() ? Def.Get<T>(defName) : null!;
-        public static TargetArgs ReadTarget(this IDataReader r, MapBase map) => TargetArgs.Read(map, r);
+        public static TargetArgs ReadTarget(this IDataReader r, WorldBase world) => TargetArgs.Read(world, r);
         public static IDataWriter Write(this IDataWriter w, ICollection<EntityRefId> v)
         {
             w.Write(v.Count);

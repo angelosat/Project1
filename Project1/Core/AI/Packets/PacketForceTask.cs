@@ -29,9 +29,8 @@ namespace Project1.Core.AI.Packets
         {
             var r = pck.PacketReader;
             var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
-            var typeName = r.ReadString();
             var planner = r.ReadDef<PlannerDef>();
-            var target = TargetArgs.Read(actor.World.Net, r);
+            var target = TargetArgs.Read(net.World, r);
             actor.ForceTask(planner, target);
         }
     }

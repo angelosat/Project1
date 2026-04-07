@@ -34,7 +34,7 @@ namespace Project1.Core.Input
         public override void Update()
         {
             this.Selection = this.Begin.GetRectangle(UIManager.Mouse);
-            var cam = Ingame.CurrentMap.Camera;
+            var cam = Ingame.MainViewportMap.Camera;
             this.CurrentSelected = Ingame.Instance.Scene.ObjectsDrawn.Where(o => o.GetScreenBounds(cam).Intersects(this.Selection)).ToList();
         }
 

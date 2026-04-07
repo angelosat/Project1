@@ -16,7 +16,7 @@ namespace Project1.Core.Blocks
     public record struct BlockEntityRemovedEvent(BlockEntity Entity) : IEventPayload { }
     public record struct BlockEntityAddedEvent(BlockEntity Entity) : IEventPayload { }
     public record struct BlockSetEvent(SetBlockArgs Args) : IEventPayload { }
-    public record struct PlayerPaintedBlockEvent(IntVec3 Global, Block Block, MaterialDef Material, byte State, int Variation, int Orientation) : IEventPayload { }
+    public record struct PlayerPaintedBlockEvent(MapId MapId, IntVec3 Global, Block Block, MaterialDef Material, byte State, int Variation, int Orientation) : IEventPayload { }
     public record struct BlockHitPointsDepletedEvent(IntVec3 Cell) : IEventPayload { }
     public record struct BlockDamagedEvent(MapBase Map, IntVec3 Cell, int Delta) : IEventPayload { }
 

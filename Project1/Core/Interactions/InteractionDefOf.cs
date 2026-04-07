@@ -149,7 +149,7 @@ namespace Project1.Core.Interactions
             Skill = SkillDefOf.Tinkering
         };
         //public static readonly InteractionDef Drop = new("Dropping", typeof(InteractionThrow), null);
-        public static readonly InteractionDef Depart = new("Departing", typeof(InteractionDepartLogic))
+        public static readonly InteractionDef Depart = new("Departing", typeof(InteractionDepart))
         {
             Controller = InteractionControllers.Instant// new InteractionProgressInstant()
         };

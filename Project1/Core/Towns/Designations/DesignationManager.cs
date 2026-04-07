@@ -447,7 +447,7 @@ namespace Project1.Core.Towns.Designations
         }
         private static void SetTool(DesignationDef d)
         {
-            ToolManager.SetTool(new ToolDesignation((begin, end, isRemoval) => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(d, begin, end, isRemoval))));
+            ToolManager.SetTool(new ToolDesignation((begin, end, isRemoval) => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(d, Ingame.Net.MainViewport.Map.ID, begin, end, isRemoval))));
         }
         GroupBox UpdatePendingDesignationLabel(DesignationDef des)
         {

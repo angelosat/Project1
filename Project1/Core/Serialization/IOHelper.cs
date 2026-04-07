@@ -35,71 +35,71 @@ namespace Project1.Core.Serialization
         /// <param name="r"></param>
         /// <param name="net">pass the net peer to resolve targets initially</param>
         /// <returns></returns>
-        [Obsolete]
-        public static List<TargetArgs> ReadListTargets(this IDataReader r, NetEndpoint net = null)
-        {
-            var count = r.ReadInt32();
-            var list = new List<TargetArgs>(count);
-            for (int i = 0; i < count; i++)
-            {
-                list.Add(TargetArgs.Read(net, r));
-            }
-            return list;
-        }
-        public static List<TargetArgs> ReadListTargets(this IDataReader r, MapBase map)
-        {
-            var count = r.ReadInt32();
-            var list = new List<TargetArgs>(count);
-            for (int i = 0; i < count; i++)
-            {
-                list.Add(TargetArgs.Read(map, r));
-            }
-            return list;
-        }
-        public static T ReadTargets<T>(this T collection, MapBase map, IDataReader r)
-           where T : ICollection<TargetArgs>, new()
-        {
-            var count = r.ReadInt32();
-            for (int i = 0; i < count; i++)
-                collection.Add(TargetArgs.Read(map, r));
-            return collection;
-        }
-        public static Dictionary<T, U> Sync<T, U>(this Dictionary<T, U> dic, IDataWriter w) where U : ISerializable where T : Def
-        {
-            foreach (var vk in dic)
-            {
-                vk.Key.Write(w);
-                vk.Value.Write(w);
-            }
-            return dic;
-        }
-        public static Dictionary<T, U> Sync<T, U>(this Dictionary<T, U> dic, IDataReader r) where U : ISerializable where T : Def
-        {
-            for (int i = 0; i < dic.Count; i++)
-            {
-                var def = Def.GetDef(r.ReadString()) as T;
-                dic[def].Read(r);
-            }
-            return dic;
-        }
-        public static Dictionary<T, U> SyncNew<T, U>(this Dictionary<T, U> dic, IDataWriter w) where U : ISerializableNew<U> where T : Def
-        {
-            foreach (var vk in dic)
-            {
-                vk.Key.Write(w);
-                vk.Value.Write(w);
-            }
-            return dic;
-        }
-        public static Dictionary<T, U> SyncNew<T, U>(this Dictionary<T, U> dic, IDataReader r) where U : ISerializableNew<U> where T : Def
-        {
-            for (int i = 0; i < dic.Count; i++)
-            {
-                var def = Def.GetDef(r.ReadString()) as T;
-                dic[def].Read(r);
-            }
-            return dic;
-        }
+        //[Obsolete]
+        //public static List<TargetArgs> ReadListTargets(this IDataReader r, NetEndpoint net = null)
+        //{
+        //    var count = r.ReadInt32();
+        //    var list = new List<TargetArgs>(count);
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        list.Add(TargetArgs.Read(net.World, r));
+        //    }
+        //    return list;
+        //}
+        //public static List<TargetArgs> ReadListTargets(this IDataReader r, MapBase map)
+        //{
+        //    var count = r.ReadInt32();
+        //    var list = new List<TargetArgs>(count);
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        list.Add(TargetArgs.Read(map, r));
+        //    }
+        //    return list;
+        //}
+        //public static T ReadTargets<T>(this T collection, MapBase map, IDataReader r)
+        //   where T : ICollection<TargetArgs>, new()
+        //{
+        //    var count = r.ReadInt32();
+        //    for (int i = 0; i < count; i++)
+        //        collection.Add(TargetArgs.Read(map, r));
+        //    return collection;
+        //}
+        //public static Dictionary<T, U> Sync<T, U>(this Dictionary<T, U> dic, IDataWriter w) where U : ISerializable where T : Def
+        //{
+        //    foreach (var vk in dic)
+        //    {
+        //        vk.Key.Write(w);
+        //        vk.Value.Write(w);
+        //    }
+        //    return dic;
+        //}
+        //public static Dictionary<T, U> Sync<T, U>(this Dictionary<T, U> dic, IDataReader r) where U : ISerializable where T : Def
+        //{
+        //    for (int i = 0; i < dic.Count; i++)
+        //    {
+        //        var def = Def.GetDef(r.ReadString()) as T;
+        //        dic[def].Read(r);
+        //    }
+        //    return dic;
+        //}
+        //public static Dictionary<T, U> SyncNew<T, U>(this Dictionary<T, U> dic, IDataWriter w) where U : ISerializableNew<U> where T : Def
+        //{
+        //    foreach (var vk in dic)
+        //    {
+        //        vk.Key.Write(w);
+        //        vk.Value.Write(w);
+        //    }
+        //    return dic;
+        //}
+        //public static Dictionary<T, U> SyncNew<T, U>(this Dictionary<T, U> dic, IDataReader r) where U : ISerializableNew<U> where T : Def
+        //{
+        //    for (int i = 0; i < dic.Count; i++)
+        //    {
+        //        var def = Def.GetDef(r.ReadString()) as T;
+        //        dic[def].Read(r);
+        //    }
+        //    return dic;
+        //}
         public static void Write(this BinaryWriter w, List<TargetArgs> list)
         {
             var count = list.Count;

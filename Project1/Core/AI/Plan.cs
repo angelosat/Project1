@@ -443,7 +443,7 @@ namespace Project1.Core.AI
         internal void SyncFromServer(NetEndpoint provider, IDataReader r)
         {
             this.Def = r.ReadDef<PlanDef>();
-            this.TargetA = TargetArgs.Read(provider, r);
+            this.TargetA = TargetArgs.Read(provider.World, r);
             if (r.ReadBoolean())
             {
                 var orderid = r.ReadInt32();

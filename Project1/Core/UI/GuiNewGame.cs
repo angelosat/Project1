@@ -1,17 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.WorldGen;
+using Project1.Framework.Helpers;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Project1.Framework.UI;
-using Project1.Core.WorldGen;
-using Project1.Core.Networking;
-using Project1.Framework.Helpers;
 
 namespace Project1.Core.UI
 {
@@ -145,7 +143,8 @@ namespace Project1.Core.UI
         private static void OnMapGenerated(Actor[] actors, StaticWorld world, StaticMap map)
         {
             //map.AddStartingActors(actors);
-            world.Maps.Add(map.Coordinates, map);
+            //world.Maps.Add(map.Coordinates, map);
+            world.AddMap(map);
             string localHost = "127.0.0.1";
             UIConnecting.Create(localHost);
             map.CameraRecenter();

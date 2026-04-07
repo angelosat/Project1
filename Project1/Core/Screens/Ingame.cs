@@ -11,111 +11,113 @@ using Project1.Framework.Events;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
 
-namespace Project1.Core.Screens
+namespace Project1.Core.Screens;
+
+internal class Ingame : GameScreen
 {
-    internal class Ingame : GameScreen
+    static Ingame _instance;
+    static public Ingame Instance => _instance ??= new();
+        
+    public NotificationArea NotificationArea;
+    public NameplateManager NameplateManager;// = new();
+    public static readonly HotkeyCategory HotkeyContextInterface = new("Ingame");
+    public EventBus Events = new();
+
+    bool HideInterface = false;
+    public SceneState Scene = new();
+    public override Camera Camera => MainViewportMap.Camera; 
+
+    public override GameScreen Initialize(NetEndpoint net)
     {
-        static Ingame _instance;
-        static public Ingame Instance => _instance ??= new();
-            
-        public NotificationArea NotificationArea;
-        public NameplateManager NameplateManager;// = new();
-        public static readonly HotkeyCategory HotkeyContextInterface = new("Ingame");
-        public EventBus Events = new();
+        //var map = net.Map.Camera;
+        var map = net.MainViewport.Map;
+        var camera = map.Camera;
+        if (net is Server)
+            DrawServer = true;
+        WindowManager = new UIManager();
+        NotificationArea = new NotificationArea();
+        this.Hud = new Hud(net, camera);
+        this.Hud.Initialize(net);
+        GameMode.Current.OnHudCreated(this.Hud);
+        net.World.MainMap.World.OnHudCreated(this.Hud);
+        this.Hud.Show(WindowManager);
+        this.NameplateManager = new NameplateManager(net.World.MainMap);
+        this.NameplateManager.Show(WindowManager);
+        this.ToolManager = ToolManager.Instance;
+        this.ToolManager.Bind(net.World.MainMap);
 
-        bool HideInterface = false;
-        public SceneState Scene = new();
-        public override Camera Camera => GetMap().Camera; 
+        this.InputRouter.Add(this.ToolManager);
+        this.InputRouter.Add(this.WindowManager);
+        this.InputRouter.Add(ContextMenuManager.Instance);
+        this.InputRouter.Add(this.Camera);
+        this.InputRouter.Add(this);
 
-        public override GameScreen Initialize(NetEndpoint net)
+        SelectionManager.Instance.Bind(net);
+        SelectionManager.Instance.Init(this);
+        TooltipManager.Bind(net);
+        Registry.PlayerInputEventHooks.HookTo(this.Events);
+        return this;
+    }
+    static public NetEndpoint Net => DrawServer ? Server.Instance : Client.Instance;
+    public Hud Hud;
+    public override void Update(Game1 game, GameTime gt)
+    {
+        base.Update(game, gt);
+        //var map = DrawServer? Server.Instance.Map : Client.Instance.Map;
+        var map = MainViewportMap;
+        ToolManager.Update(map, this.Scene);
+        map.Camera.Update(map);
+        WindowManager.Update(game, gt);
+        NotificationArea.Update();
+    }
+    public override void Draw(SpriteBatch sb)
+    {
+        this.Scene.ObjectBounds.Clear();
+        this.Scene.ObjectsDrawn.Clear();
+
+        var map = MainViewportMap;
+        map.Camera.DrawMap(map, ToolManager, WindowManager, Scene);
+        ToolManager.DrawUI(sb, map);
+        DrawInterface(sb, Scene);
+        NotificationArea.Draw(sb);
+    }
+
+    private void DrawInterface(SpriteBatch sb, SceneState scene)
+    {
+        if (HideInterface)
+            return;
+
+        //var cam = DrawServer ? Server.Instance.Map.Camera : Client.Instance.Map.Camera;
+        var cam = MainViewportMap.Camera;
+        WindowManager.Draw(sb, cam);
+    }
+
+    internal override void OnGameEvent(GameEvent e)
+    {
+        this.NameplateManager.OnGameEvent(e);
+        base.OnGameEvent(e);
+    } 
+
+    //static public MapBase GetMap()
+    //    => DrawServer ? Server.Instance.MainViewport.Map : Client.Instance.MainViewport.Map;
+    
+    static public MapBase MainViewportMap => DrawServer ? Server.Instance.Map : Client.Instance.Map;
+    static public bool DrawServer;
+    public override void HandleKeyDown(System.Windows.Forms.KeyEventArgs e)
+    {
+        //base.HandleKeyDown(e);
+        if (e.Handled)
+            return;
+
+        var pressed = InputState.Instance.GetPressedKeys();
+        if (pressed.Contains(GlobalVars.KeyBindings.HideInterface))
+            HideInterface = !HideInterface;
+        if (pressed.Contains(System.Windows.Forms.Keys.F6))
         {
-            var camera = net.Map.Camera;
-            if (net is Server)
-                DrawServer = true;
-            WindowManager = new UIManager();
-            NotificationArea = new NotificationArea();
-            this.Hud = new Hud(net, camera);
-            this.Hud.Initialize(net);
-            GameMode.Current.OnHudCreated(this.Hud);
-            net.Map.World.OnHudCreated(this.Hud);
-            this.Hud.Show(WindowManager);
-            this.NameplateManager = new NameplateManager(net);
-            this.NameplateManager.Show(WindowManager);
-            this.ToolManager = ToolManager.Instance;
-            this.ToolManager.Bind(net.Map);
-
-            this.InputRouter.Add(this.ToolManager);
-            this.InputRouter.Add(this.WindowManager);
-            this.InputRouter.Add(ContextMenuManager.Instance);
-            this.InputRouter.Add(this.Camera);
-            this.InputRouter.Add(this);
-
-            SelectionManager.Instance.Bind(net);
-            SelectionManager.Instance.Init(this);
-            TooltipManager.Bind(net);
-            Registry.PlayerInputEventHooks.HookTo(this.Events);
-            return this;
-        }
-        static public NetEndpoint Net => DrawServer ? Server.Instance : Client.Instance;
-        public Hud Hud;
-        public override void Update(Game1 game, GameTime gt)
-        {
-            base.Update(game, gt);
-            var map = DrawServer? Server.Instance.Map : Client.Instance.Map;
-            ToolManager.Update(map, this.Scene);
-            map.Camera.Update(map);
-            WindowManager.Update(game, gt);
-            NotificationArea.Update();
-        }
-        public override void Draw(SpriteBatch sb)
-        {
-            this.Scene.ObjectBounds.Clear();
-            this.Scene.ObjectsDrawn.Clear();
-
-            var map = GetMap();
-            map.Camera.DrawMap(map, ToolManager, WindowManager, Scene);
-            ToolManager.DrawUI(sb, map);
-            DrawInterface(sb, Scene);
-            NotificationArea.Draw(sb);
-        }
-
-        private void DrawInterface(SpriteBatch sb, SceneState scene)
-        {
-            if (HideInterface)
-                return;
-
-            var cam = DrawServer ? Server.Instance.Map.Camera : Client.Instance.Map.Camera;
-            WindowManager.Draw(sb, cam);
-        }
-
-        internal override void OnGameEvent(GameEvent e)
-        {
-            this.NameplateManager.OnGameEvent(e);
-            base.OnGameEvent(e);
-        } 
- 
-        static public MapBase GetMap()
-        {
-            return DrawServer ? Server.Instance.Map : Client.Instance.Map;
-        }
-        static public MapBase CurrentMap => DrawServer ? Server.Instance.Map : Client.Instance.Map;
-        static public bool DrawServer;
-        public override void HandleKeyDown(System.Windows.Forms.KeyEventArgs e)
-        {
-            //base.HandleKeyDown(e);
-            if (e.Handled)
-                return;
-
-            var pressed = InputState.Instance.GetPressedKeys();
-            if (pressed.Contains(GlobalVars.KeyBindings.HideInterface))
-                HideInterface = !HideInterface;
-            if (pressed.Contains(System.Windows.Forms.Keys.F6))
-            {
-                DrawServer = !DrawServer;
-                //GetMap().Camera.TopSliceChanged = true;
-                //this.Hud.Chat.Write(Log.EntryTypes.System, string.Format("draw server: {0}", DrawServer));
-                Client.Instance.ChatService.Post(ChatSource.System, $"draw server: {DrawServer}");
-            }
+            DrawServer = !DrawServer;
+            //GetMap().Camera.TopSliceChanged = true;
+            //this.Hud.Chat.Write(Log.EntryTypes.System, string.Format("draw server: {0}", DrawServer));
+            Client.Instance.ChatService.Post(ChatSource.System, $"draw server: {DrawServer}");
         }
     }
 }

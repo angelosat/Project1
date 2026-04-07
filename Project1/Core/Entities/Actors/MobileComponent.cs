@@ -124,7 +124,7 @@ namespace Project1.Core.Entities.Actors
             {
                 var force = Vector3.Zero;
                 var feetposition = parent.Global + Vector3.UnitZ * 0.1f;
-                var cell = parent.Net.Map.GetCell(feetposition);
+                var cell = parent.Map.GetCell(feetposition);
                 var block = cell.Block;// parent.Net.Map.GetBlock(parent.Global + Vector3.UnitZ * 0.1f); // to check if entity is in water
                 var isStanding = PhysicsComp.IsStanding(parent);
                 if (!isStanding)

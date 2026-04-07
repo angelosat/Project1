@@ -60,7 +60,7 @@ namespace Project1.Core.Networking
             var entity = endpoint.World.GetEntity(entityId);
             if (entity is null)
                 return;
-            endpoint.Map.Despawn(entity);
+            entity.Map.Despawn(entity);
         }
 
         private static void SendEntitySpawned(EntitySpawnedEvent e)
@@ -72,6 +72,7 @@ namespace Project1.Core.Networking
                 ;
             w
                 .Write((int)e.Entity.RefId)
+                .Write(e.Map.ID)
                 .Write(e.Entity.Global)
                 .Write(e.Entity.Velocity);
         }
@@ -80,10 +81,12 @@ namespace Project1.Core.Networking
         {
             var r = packet.PacketReader;
             var id = r.ReadEntityRefId();
+            var mapid = r.ReadMapId();
+            var map = endpoint.World.Get(mapid);
             var global = r.ReadVector3();
             var vel = r.ReadVector3();
             var entity = endpoint.World.GetEntity(id);
-            endpoint.Map.Spawn(entity, global, vel);
+            map.Spawn(entity, global, vel);
         }
 
         private static void SendEntityStackIncreased(EntityStackIncreased increased)

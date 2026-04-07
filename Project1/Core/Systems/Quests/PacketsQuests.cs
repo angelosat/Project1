@@ -45,9 +45,10 @@ internal static class PacketsQuests
     {
         var r = packet.PacketReader;
         var actorid = r.ReadEntityRefId();
-        //var actor = endpoint.World.Get<Actor>();
+        var actor = endpoint.World.Get<Actor>(actorid);
+        var map = actor.Map;
         var qid = (QuestId)r.ReadInt32();
-        endpoint.Map.Town.QuestManagerNew.UnassignQuest(actorid, qid);
+        map.Town.QuestManagerNew.UnassignQuest(actorid, qid);
     }
     private static void HandleActorAcceptedQuests(QuestAssignedEvent e)
     {
@@ -62,28 +63,32 @@ internal static class PacketsQuests
         var r = packet.PacketReader;
         var board = r.ReadIntVec3();
         var actorid = r.ReadEntityRefId();
+        var actor = endpoint.World.Get<Actor>(actorid);
+        var map = actor.Map;
         var questIds = r.ReadListInt32().Select(id => (QuestId)id);
-        endpoint.Map.Town.QuestManagerNew.TryAcceptAllQuestsInt(board, endpoint.World.Get<Actor>(actorid), questIds);
+        map.Town.QuestManagerNew.TryAcceptAllQuestsInt(board, actor, questIds);
     }
     private static void HandlePlayerDeleteQuest(PlayerRequestQuestDeletionEvent e)
     {
         if (Ingame.Net.IsServer)
         {
-            Ingame.CurrentMap.Town.QuestManagerNew.DeleteQuest(e.Id);
+            Ingame.MainViewportMap.Town.QuestManagerNew.DeleteQuest(e.Id);
         }
-        SendPlayerDeleteQuest(Ingame.Net, e.Id);
+        SendPlayerDeleteQuest(Ingame.Net, e.MapId, e.Id);
     }
 
-    private static void SendPlayerDeleteQuest(NetEndpoint net, QuestId id)
+    private static void SendPlayerDeleteQuest(NetEndpoint net, MapId mapId, QuestId qId)
     {
         net.BeginPacketImmediate(_pPlayerDeleteQuest)
-            .Write(id);
+            .Write(mapId)
+            .Write(qId);
     }
     private static void ReceivePlayerDeleteQuest(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
+        var map = endpoint.World.Get(r.ReadMapId());
         var qid = (QuestId)r.ReadInt32();
-        endpoint.Map.Town.QuestManagerNew.DeleteQuest(qid);
+        map.Town.QuestManagerNew.DeleteQuest(qid);
 
         if (endpoint.IsServer)
             SendDeleteQuest(endpoint, qid);
@@ -99,7 +104,7 @@ internal static class PacketsQuests
     {
         if (Ingame.Net.IsServer)
         {
-            if (!Ingame.CurrentMap.Town.QuestManagerNew.TryCreateQuest(e.RefinementDef, e.MaterialDef))
+            if (!Ingame.MainViewportMap.Town.QuestManagerNew.TryCreateQuest(e.RefinementDef, e.MaterialDef))
                 return;
         }
         SendPlayerCreateQuest(Ingame.Net, e);
@@ -108,6 +113,7 @@ internal static class PacketsQuests
     private static void SendPlayerCreateQuest(NetEndpoint client, PlayerRequestQuestCreationEvent e)
     {
         client.BeginPacketImmediate(_pPlayerCreateQuest)
+            .Write(e.MapId)
             .Write(e.RefinementDef)
             .Write(e.MaterialDef);
     }
@@ -115,16 +121,20 @@ internal static class PacketsQuests
     private static void ReceivePlayerCreateQuest(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
+        var server = endpoint as Server;
         var player = packet.Player;
+        var mapid = (MapId)r.ReadInt32();
+        var map = server.World.Get(mapid);
         var refdef = r.ReadDef<MaterialRefinementDef>();
         var matdef = r.ReadDef<MaterialDef>();
-        if(endpoint.Map.Town.QuestManagerNew.TryCreateQuest(refdef, matdef))
-            SendCreateQuest(endpoint as Server, refdef, matdef);
+        if(map.Town.QuestManagerNew.TryCreateQuest(refdef, matdef))
+            SendCreateQuest(endpoint as Server, mapid, refdef, matdef);
     }
 
-    private static void SendCreateQuest(Server server, MaterialRefinementDef refdef, MaterialDef matdef)
+    private static void SendCreateQuest(Server server, MapId mapId, MaterialRefinementDef refdef, MaterialDef matdef)
     {
         server.BeginPacketImmediate(_pCreateQuest)
+            .Write(mapId)
             .Write(refdef)
             .Write(matdef);
     }
@@ -132,9 +142,11 @@ internal static class PacketsQuests
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
+        var mapid = (MapId)r.ReadInt32();
+        var map = client.World.Get(mapid);
         var refdef = r.ReadDef<MaterialRefinementDef>();
         var matdef = r.ReadDef<MaterialDef>();
-        if (!client.Map.Town.QuestManagerNew.TryCreateQuest(refdef, matdef))
+        if (!map.Town.QuestManagerNew.TryCreateQuest(refdef, matdef))
             throw new InvalidOperationException();
     }
 }

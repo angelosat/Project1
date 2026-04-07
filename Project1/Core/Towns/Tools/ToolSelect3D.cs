@@ -21,7 +21,7 @@ namespace Project1.Core.Towns.Tools
         int Width, Height;
         protected bool Enabled;
         bool Removing;
-        protected Action<Vector3, Vector3, bool> Add;
+        protected Action<MapId, Vector3, Vector3, bool> Add;
         Func<List<Vector3>> GetZones = () => new List<Vector3>();
 
         protected ToolSelect3D()
@@ -29,11 +29,11 @@ namespace Project1.Core.Towns.Tools
 
         }
        
-        public ToolSelect3D(Action<Vector3, Vector3, bool> callback)
+        public ToolSelect3D(Action<MapId, Vector3, Vector3, bool> callback)
             : this(callback, () => new List<Vector3>())
         {
         }
-        public ToolSelect3D(Action<Vector3, Vector3, bool> callback, Func<List<Vector3>> zones)
+        public ToolSelect3D(Action<MapId, Vector3, Vector3, bool> callback, Func<List<Vector3>> zones)
         {
             this.Add = callback;
             this.GetZones = zones;
@@ -113,7 +113,7 @@ namespace Project1.Core.Towns.Tools
             var begin = new Vector3(x, y, z);
             var end = new Vector3(xx, yy, zz);
 
-            this.Add(begin, end, IsRemoving());
+            this.Add(this.Map.ID, begin, end, IsRemoving());
 
             this.Removing = false;
             this.Enabled = false;

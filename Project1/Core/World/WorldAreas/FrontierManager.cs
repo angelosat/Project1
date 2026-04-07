@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.AI;
 using Project1.Core.AI.MetaRoles.Adventurer;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
@@ -142,6 +141,23 @@ public class FrontierManager : IWorldSpaceManager
         }
         throw new Exception("Actor distance out of bounds");
     }
+    public FrontierDef FrontierAt(WorldSpacePosition pos)
+    {
+        var distance = (int)Math.Ceiling(pos);
+        if (distance == 0)
+            return null;
+        //for (int i = 0; i < this.FrontiersByTier.Count; i++)
+        //{
+        //    if (i < distance && distance <= i + 1)
+        //        return this.FrontiersByTier[i+1];
+        //}
+        for (int i = 0; i < FrontiersByTier.Count; i++)
+        {
+            if (i < distance && distance <= i + 1)
+                return this.Frontiers[FrontiersByTier[i + 1]].Def;
+        }
+        throw new ArgumentOutOfRangeException(nameof(pos), "World-space position out of bounds");
+    }
     public void Exit(Actor actor)
     {
         if (!this.ActorPositions.ContainsKey(actor))
@@ -149,43 +165,44 @@ public class FrontierManager : IWorldSpaceManager
         this.ActorPositions.Remove(actor);
         this.EventSchedulers.Remove(actor);
     }
-    public void Enter(Actor actor)
-    {
-        this.ActorPositions.Add(actor, 0);
-        this.EventSchedulers.Add(
-            actor, 
-            new(() => this.TriggerOffmapEvent(actor), this.World.CurrentTick, Ticks.FromMinutes(1), Ticks.FromMinutes(3), new()));
-        actor.Map.Despawn(actor);
+    //public void Enter(Actor actor)
+    //{
+    //    this.ActorPositions.Add(actor, 0);
+    //    this.EventSchedulers.Add(
+    //        actor, 
+    //        new(() => this.TriggerOffmapEvent(actor), this.World.CurrentTick, Ticks.FromMinutes(1), Ticks.FromMinutes(3), new()));
+    //    actor.Map.Despawn(actor);
 
-        if (actor.Net is not Server server)
-            return;
-        server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.LabelReadable}!");
-    }
+    //    if (actor.Net is not Server server)
+    //        return;
+    //    server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.LabelReadable}!");
+    //}
     void TriggerOffmapEvent(Actor actor)
     {
         var activity = _offmapActivities.SelectRandom(this.World.Random);
         var front = this.GetFrontier(actor);
         activity.Tick(front, actor);
     }
-    public FrontierDef PlaceAtRandom(Entity entity)
+    public FrontierDef /*void*/ PlaceAtRandom(Entity entity)
     {
         var tier = 1 + entity.World.Random.Next(this.Frontiers.Count);
-        return this.PlaceAt(entity, tier);
+        /*return*/ this.PlaceAt(entity, tier);
+        return this.GetFrontier(entity).Def;
     }
-    public FrontierDef PlaceAt(Entity entity, WorldSpacePosition pos)
+    public void PlaceAt(Entity entity, WorldSpacePosition pos)
     {
         // TODO sort entities to actors and non-actors. for example, if the entity is an item, place it in the target zone's treasure pool
         if (entity is not Actor actor)
-            return null;
+            return;
         this.ActorPositions.Add(actor, pos);
         this.EventSchedulers.Add(
             actor,
             new(() => this.TriggerOffmapEvent(actor), this.World.CurrentTick, Ticks.FromMinutes(1), Ticks.FromMinutes(3), new()));
-        actor.AI.Meta.SetTargetFrontier(this.GetFrontier(actor).Def);
+        //actor.AI.Meta.SetTargetFrontier(this.GetFrontier(actor).Def);
 
         actor.Map?.Despawn(actor);
         this.World.Events.Post(new InhabitantPlacedInWorldEvent(actor, pos));
-        return this.GetFrontier(actor).Def;
+        //return this.GetFrontier(actor).Def;
     }
     
 }

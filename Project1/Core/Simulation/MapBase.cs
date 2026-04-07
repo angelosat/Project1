@@ -891,7 +891,7 @@ public abstract class MapBase : Inspectable
         }
         if (raiseEvent)
             this.NotifyBlockChanged(global);
-        var setblockargs = new SetBlockArgs(global, block, material, data, orientation, source);
+        var setblockargs = new SetBlockArgs(this.ID, global, block, material, data, orientation, source);
         this.Events.Post(new BlockSetEvent(setblockargs));
         return new PlaceBlockResult(entity, cell, true);
     }
@@ -1093,7 +1093,7 @@ public abstract class MapBase : Inspectable
         entity.Velocity = velocity;
         this.Add(entity);
         entity.OnSpawn(this);
-        this.Events.Post(new EntitySpawnedEvent(entity, immediate));
+        this.Events.Post(new EntitySpawnedEvent(this, entity, immediate));
         this.EntityTracker.OnEntitySpawned(entity);
     }
     internal void ApplyBlockDamage(IntVec3 global, int workAmount)

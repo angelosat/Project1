@@ -42,7 +42,7 @@ namespace Project1.Core
             set
             {
                 this._hideUnknownBlocks = value;
-                Ingame.CurrentMap.InvalidateChunks();
+                Ingame.MainViewportMap.InvalidateChunks();
             }
         }
         bool _drawTopSlice = true;
@@ -52,7 +52,7 @@ namespace Project1.Core
             set
             {
                 this._drawTopSlice = value;
-                Ingame.CurrentMap.InvalidateChunks();
+                Ingame.MainViewportMap.InvalidateChunks();
             }
         }
         public bool DrawZones = true;
@@ -172,7 +172,7 @@ namespace Project1.Core
         }
         protected void OnRotationChanged()
         {
-            Ingame.CurrentMap.OnCameraRotated(this);
+            Ingame.MainViewportMap.OnCameraRotated(this);
             SelectionManager.Instance.OnCameraRotated(this);
         }
         void gfx_DeviceReset(object sender, EventArgs e)

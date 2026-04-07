@@ -36,11 +36,11 @@ namespace Project1.Core.AI.Reservations
             this.Target.Write(w);
             w.Write(this.Amount);
         }
-        public Reservation(NetEndpoint net, Packet pck)
+        public Reservation(MapBase map, Packet pck)
         {
             var r = pck.PacketReader;
             this.Actor = r.ReadInt32();
-            this.Target = TargetArgs.Read(net, r);
+            this.Target = TargetArgs.Read(map.World, r);
             this.Amount = r.ReadInt32();
         }
         public SaveTag Save()

@@ -6,6 +6,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.UI;
+using Project1.Core.Screens;
 
 namespace Project1.Core.Input
 {
@@ -16,7 +17,6 @@ namespace Project1.Core.Input
 
         bool MouseMove = true;
         GameObject Actor => Client.Instance.GetPlayer().ControllingEntity;
-
         public DefaultTool()
         {
         }

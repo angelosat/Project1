@@ -45,14 +45,14 @@ namespace Project1.Core.Helpers
             }
         }
 
-        public static byte GetData(this Vector3 global, INetEndpoint net)
-        {
-            return GetData(global, net.Map);
-        }
-        public static byte GetData(this Vector3 global, MapBase map)
-        {
-            return map.TryGetCell(global, out Cell cell) ? cell.BlockData : (byte)0;
-        }
+        //public static byte GetData(this Vector3 global, INetEndpoint net)
+        //{
+        //    return GetData(global, net.Map);
+        //}
+        //public static byte GetData(this Vector3 global, MapBase map)
+        //{
+        //    return map.TryGetCell(global, out Cell cell) ? cell.BlockData : (byte)0;
+        //}
        
         public static IntVec2 GetChunkCoords(this Vector3 global)
         {

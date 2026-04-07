@@ -36,7 +36,7 @@ namespace Project1.Core
         
         internal abstract void OnMainMenuCreated(MainMenuWindow mainmenu);
 
-        public virtual void ParseCommand(INetEndpoint net, string command)
+        public virtual void ParseCommand(NetEndpoint net, string command)
         {
 
         }

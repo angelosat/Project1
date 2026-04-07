@@ -20,7 +20,8 @@ internal class ThoughtProcess_UseTownScroll : ThoughtProcess
             return;
         if (actor.Inventory.First(i => i.Profile == ConsumableDefOf.TownScroll) is not Entity item)
             return;
-        if (!actor.Net.Map.Town.Waypoint.HasValue)
+        var map = actor.Net.World.MainMap;
+        if (!map.Town.Waypoint.HasValue)
             return;
         ConsumableDefOf.TownScroll.Effect.Execute(actor);
         item.Consume(1);
@@ -37,7 +38,7 @@ internal class ThoughtProcess_Quests : ThoughtProcess
         var actor = state.Owner;
         if (actor.Net.IsClient)
             return;
-        var manager = actor.Net.Map.Town.QuestManagerNew;
+        var manager = actor.World.MainMap.Town.QuestManagerNew;
         var quests = manager.GetAcceptedQuestsByActor(actor);
         if (!quests.Any())
             return;

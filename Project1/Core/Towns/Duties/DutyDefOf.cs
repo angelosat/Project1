@@ -20,9 +20,7 @@ namespace Project1.Core.Towns.Duties
         static public readonly DutyDef Cook = new("Cook");
         static public readonly DutyDef Scribe = new("Scribe");
         static public readonly DutyDef Guide = new("Guide");
-        static public readonly DutyDef QuestGiver = new("QuestGiver", PlannerDefOf.QuestGiving);
         static public readonly DutyDef MiscDuties = new("MiscDuties", PlannerDefOf.Switching);
-        //static public readonly DutyDef Workplace = new("TavernWorker", PlannerDefOf.Workplace);
         static public readonly DutyDef Cashier = new("Cashier", PlannerDefOf.Sell);
         static public readonly DutyDef Innkeeper = new("Innkeeper", PlannerDefOf.LodgingRegister);
         static DutyDefOf()

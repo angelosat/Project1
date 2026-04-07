@@ -1,8 +1,6 @@
 ﻿using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
-using Project1.Core.Legacy.Crafting;
-using Project1.Core.Networking;
 using Project1.Core.Networking;
 using Project1.Core.Systems.Materials;
 using System;
@@ -26,7 +24,8 @@ namespace Project1.Core.Towns
             {
                 var r = pck.PacketReader;
                 var pl = net.GetPlayer(r.ReadInt32());
-                var tavern = net.Map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
+                var map = net.World.Get(r.ReadMapId());
+                var tavern = map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
                 var orderid = r.ReadInt32();
                 var order = tavern.GetOrder(orderid);
                 if (net is Client)
@@ -40,6 +39,7 @@ namespace Project1.Core.Towns
                     tavern.RemoveOrder(order);
                 net.BeginPacket(PacketOrderRemove)
                     .Write(player.ID)
+                    .Write(tavern.Map.ID)
                     .Write(tavern.ID)
                     .Write(order.Id);
             }
@@ -47,7 +47,9 @@ namespace Project1.Core.Towns
             {
                 var r = pck.PacketReader;
                 var pl = net.GetPlayer(r.ReadInt32());
-                var tavern = net.Map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
+                var mapid = r.ReadMapId();
+                var map = net.World.Get(mapid);
+                var tavern = map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
                 var reaction = r.ReadDef<Reaction>();
                 var id = r.ReadInt32();
                 if (net is Client)
@@ -78,6 +80,7 @@ namespace Project1.Core.Towns
                     order.Enabled = enabled;
                 net.BeginPacket(PacketOrderSync)
                     .Write(player.ID)
+                    .Write(tavern.Map.ID)
                     .Write(tavern.ID)
                     .Write(order.Id)
                     .Write(enabled);
@@ -86,7 +89,8 @@ namespace Project1.Core.Towns
             {
                 var r = pck.PacketReader;
                 var pl = net.GetPlayer(r.ReadInt32());
-                var tavern = net.Map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
+                var map = net.World.Get(r.ReadMapId());
+                var tavern = map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
                 var order = tavern.GetOrder(r.ReadInt32());
                 var enabled = r.ReadBoolean();
                 if (net is Client)
@@ -107,6 +111,7 @@ namespace Project1.Core.Towns
                 var w = net.BeginPacket(PacketOrderUpdateIngredients);
 
                 w.Write(player.ID);
+                w.Write(tavern.Map.ID);
                 w.Write(tavern.ID);
                 w.Write(order.Id);
                 w.Write(reagent);
@@ -118,7 +123,9 @@ namespace Project1.Core.Towns
             {
                 var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
-                var tavern = net.Map.Town.GetShop<Tavern>(r.ReadInt32());
+                var mapid = r.ReadMapId();
+                var map = net.World.Get(mapid);
+                var tavern = map.Town.GetShop<Tavern>(r.ReadInt32());
                 var order = tavern.GetOrder(r.ReadInt32());
                 var reagent = r.ReadString();
                 var defs = r.ReadStringArray().Select(Def.Get<ItemDef>).ToArray();

@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Materials;
-using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.UI;
@@ -43,7 +42,7 @@ internal sealed class CreateFetchQuestGui : GroupBox
 
     private void Apply()
     {
-        Ingame.Instance.Events.Post(new PlayerRequestQuestCreationEvent(this.refDef, this.materialDef));
+        Ingame.Instance.Events.Post(new PlayerRequestQuestCreationEvent(Ingame.Net.MainViewport.Map.ID, this.refDef, this.materialDef));
     }
 
     void CalculateReward()
@@ -123,7 +122,7 @@ internal sealed class QuestsGuiNew : GroupBox
 
     private static void Delete(QuestRuntime q)
     {
-        Ingame.Instance.Events.Post(new PlayerRequestQuestDeletionEvent(q.Id));
+        Ingame.Instance.Events.Post(new PlayerRequestQuestDeletionEvent(Ingame.Net.MainViewport.Map.ID, q.Id));
     }
 
     private void OnQuestRemoved(QuestRuntime q)

@@ -1,21 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
+using Project1.Core.Construction;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Legacy;
+using Project1.Core.Legacy.Crafting;
+using Project1.Core.Loot;
+using Project1.Core.Rooms;
+using Project1.Core.Simulation;
+using Project1.Core.Systems.Materials;
+using Project1.Framework;
+using Project1.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Loot;
-using Project1.Core.Legacy;
-using Project1.Core.Towns;
-using Project1.Core.Helpers;
-using Project1.Core.Legacy.Crafting;
-using Project1.Core.Rooms;
-using Project1.Core.Simulation;
-using Project1.Framework.UI;
-using Project1.Framework.Graphics;
-using Project1.Framework;
-using Project1.Core.Graphics;
-using Project1.Core.Construction;
-using Project1.Core.Systems.Materials;
 
 namespace Project1.Core
 {
@@ -103,37 +101,12 @@ namespace Project1.Core
             return data;
         }
 
-        public override FurnitureDef GetFurnitureRole(MapBase map, IntVec3 global)
-        {
-            return IsTop(map, global) ? this.Furniture : null;
-        }
-
-        private static bool IsTop(MapBase map, IntVec3 global)
-        {
-            return map.GetBlockEntity(global) is BlockBedEntity;
-        }
-
         internal override IEnumerable<(IntVec3 global, byte data)> GetFootprint(MapBase map, IntVec3 global, int orientation)
         {
             var top = global;
             var bottom = global + Coords.Rotate(IntVec3.UnitY, orientation);
             yield return (top, 0);
             yield return (bottom, 0);
-        }
-        [Obsolete]
-        internal override void OnPlaced(MapBase map, IntVec3 global, MaterialDef material, byte data, int variation, int orientation, bool notify = true)
-        {
-            if (!IsValidPosition(map, global, orientation))
-                return;
-
-            var top = global;
-            var bottom = global + Coords.Rotate(IntVec3.UnitY, orientation);
-            
-            map.SetBlock(bottom, this, material, 0, 0, orientation, notify);
-            map.SetBlock(top, this, material, 0, 0, orientation, notify);
-
-            var entity = new BlockBedEntity(this.BlockDef, global);
-            map.AddBlockEntity(entity);
         }
         
         public override bool IsValidPosition(MapBase map, IntVec3 global, int orientation)
@@ -214,22 +187,7 @@ namespace Project1.Core
                 sb.DrawBlock(Atlas.Texture, map, top, topSrc, cam, Color.Transparent, tint, Color.White, Vector4.One);
             }
         }
-        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
-        {
-            return new BlockBedEntity(this.BlockDef, originGlobal);
-        }
-       
-        public static BlockBedEntity GetEntity(MapBase map, IntVec3 global)
-        {
-            return map.GetBlockEntity<BlockBedEntity>(Cell.GetOrigin(map, global));
-        }
-       
-        internal override void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
-        {
-            var entity = GetEntity(map, vector3);
-            entity.GetSelectionInfo(info, map, vector3);
-        }
-
+        
         protected override IEnumerable<IntVec3> GetInteractionSpotsLocal()
         {
             yield return new IntVec3(-1, 0, 0);

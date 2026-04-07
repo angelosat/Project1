@@ -19,7 +19,6 @@ using Project1.Core.Simulation;
 using Project1.Core.Skills;
 using Project1.Core.Stats;
 using Project1.Core.Systems.ItemRoles;
-using Project1.Core.Systems.Quests.Legacy;
 using Project1.Core.Systems.Relationships;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators;
@@ -206,24 +205,20 @@ namespace Project1.Core.Entities.Actors
                 map.GetBlock(above.Above()).IsStandableIn; //TODO: take into account actor's height instead of hardcoding checks 2 blocks above
         }
 
-        internal void FinishConversation()
-        {
-            if (this.Net is Client)
-                return;
-            var state = this.AI.State;
-            state.ConversationPartner.AI.State.ConversationPartner = null;
-            state.ConversationPartner = null;
-        }
+        //internal void FinishConversation()
+        //{
+        //    if (this.Net is Client)
+        //        return;
+        //    var state = this.AI.State;
+        //    state.ConversationPartner.AI.State.ConversationPartner = null;
+        //    state.ConversationPartner = null;
+        //}
 
         internal void EnqueueCommunication(Actor target, ConversationTopic topic)
         {
             this.AI.State.CommunicationPending.Add(target, topic);
         }
 
-        internal void EndInteraction()
-        {
-            AIManager.EndInteraction(this);
-        }
         [Obsolete]
         internal void Equip(GameObject item)
         {
@@ -444,18 +439,18 @@ namespace Project1.Core.Entities.Actors
             return score;
         }
 
-        internal bool CanAcceptQuest(QuestDef quest)
-        {
-            return !this.GetVisitorProperties().HasQuest(quest);
-        }
-        internal void AcceptQuest(int questID)
-        {
-            this.GetVisitorProperties().AcceptQuest(this.Town.QuestManager.GetQuest(questID));
-        }
-        internal bool AcceptQuest(QuestDef quest)
-        {
-            return this.GetVisitorProperties().AcceptQuest(quest);
-        }
+        //internal bool CanAcceptQuest(QuestDef quest)
+        //{
+        //    return !this.GetVisitorProperties().HasQuest(quest);
+        //}
+        //internal void AcceptQuest(int questID)
+        //{
+        //    this.GetVisitorProperties().AcceptQuest(this.Town.QuestManager.GetQuest(questID));
+        //}
+        //internal bool AcceptQuest(QuestDef quest)
+        //{
+        //    return this.GetVisitorProperties().AcceptQuest(quest);
+        //}
         internal override void OnSpawn(MapBase map)
         {
             base.OnSpawn(map);

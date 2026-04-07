@@ -1,6 +1,5 @@
-﻿using System;
-using Project1.Core.Networking;
-using Project1.Framework;
+﻿using Project1.Framework;
+using System;
 
 namespace Project1.Core.Networking.Packets
 {
@@ -21,12 +20,13 @@ namespace Project1.Core.Networking.Packets
         }
         static public void Receive(NetEndpoint net, Packet packet)
         {
-            var r = packet.PacketReader;
-            if (net is Server)
-                throw new Exception();
-            var list = r.ReadListVector3();
-			foreach(var vec in list)
-                net.Map.RandomBlockUpdate(vec);
+            throw new NotImplementedException();
+   //         var r = packet.PacketReader;
+   //         if (net is Server)
+   //             throw new Exception();
+   //         var list = r.ReadListVector3();
+			//foreach(var vec in list)
+   //             net.Map.RandomBlockUpdate(vec);
         }
     }
 }

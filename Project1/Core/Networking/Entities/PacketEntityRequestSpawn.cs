@@ -22,7 +22,7 @@ namespace Project1.Core.Networking.Entities
             var r = pck.PacketReader;
             var server = net as Server;
             var templateID = r.ReadInt32();
-            var target = TargetArgs.Read(net, r);
+            var target = TargetArgs.Read(net.World, r);
             server.SpawnRequestFromTemplate(templateID, target);
         }
     }

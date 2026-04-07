@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Core.Simulation;
 using Project1.Framework;
 
 namespace Project1.Core.AI.Packets
@@ -12,9 +14,10 @@ namespace Project1.Core.AI.Packets
         {
             p = Registry.PacketHandlers.Register(Receive);
         }
-        static internal void Send(NetEndpoint net, List<int> npcIDs, TargetArgs target, bool enqueue)
+        static internal void Send(NetEndpoint net, MapBase map, List<int> npcIDs, TargetArgs target, bool enqueue)
         {
             var w = net.BeginPacket(p);
+            w.Write(map.ID);
             w.Write(npcIDs);
             target.Write(w);
             w.Write(enqueue);
@@ -22,8 +25,9 @@ namespace Project1.Core.AI.Packets
         static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
+            var map = net.World.Get(r.ReadMapId());
             var npcids = r.ReadListInt32();
-            var target = TargetArgs.Read(net, r);
+            var target = TargetArgs.Read(net.World, r);
             var enqueue = r.ReadBoolean();
             foreach(var npc in net.World.GetEntities(npcids))
                 npc.MoveOrder(target, enqueue);

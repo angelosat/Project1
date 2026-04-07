@@ -1,10 +1,8 @@
-﻿using Project1.Core.Rooms;
-using Project1.Core.Towns;
-using Project1.Core.Blocks;
-using Project1.Core.Simulation;
-using System.Collections.Generic;
-using Project1.Framework;
+﻿using Project1.Core.Blocks;
 using Project1.Core.Construction;
+using Project1.Core.Rooms;
+using Project1.Framework;
+using System.Collections.Generic;
 
 namespace Project1.Core
 {
@@ -34,10 +32,6 @@ namespace Project1.Core
         public override float GetHeight(float x, float y)
         {
             return 0;
-        }
-        public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)
-        {
-            return new BlockBedEntity(this.BlockDef, originGlobal);
         }
     }
 }

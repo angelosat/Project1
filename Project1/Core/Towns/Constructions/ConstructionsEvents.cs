@@ -4,6 +4,6 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Towns.Constructions
 {
-    public record struct PlayerCancelledConstructionEvent(List<IntVec3> Targets) : IEventPayload { }
+    public record struct PlayerCancelledConstructionEvent(MapId MapId, List<IntVec3> Targets) : IEventPayload { }
 
 }

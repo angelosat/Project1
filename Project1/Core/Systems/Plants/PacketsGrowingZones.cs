@@ -1,4 +1,5 @@
-﻿using Project1.Core.Networking;
+﻿using Project1.Core.Helpers;
+using Project1.Core.Networking;
 using Project1.Framework;
 
 namespace Project1.Core.Systems.Plants
@@ -16,6 +17,7 @@ namespace Project1.Core.Systems.Plants
             var client = zone.Net as Client;
             var w = client.GetOutgoingStreamOrderedReliable();
             w.Write(pSync);
+            w.Write(zone.Map.ID);
             w.Write(zone.ID);
             plant.Write(w);
             w.Write(tilling);
@@ -47,7 +49,7 @@ namespace Project1.Core.Systems.Plants
             //var w = zone.Map.Net.GetOutgoingStreamOrderedReliable();
             //w.Write(pSync);
             var w = zone.Map.Net.BeginPacketOld(pSync);
-
+            w.Write(zone.Map.ID);
             w.Write(zone.ID);
             zone.Plant.Write(w);
             w.Write(zone.Tilling);
@@ -57,7 +59,9 @@ namespace Project1.Core.Systems.Plants
         static void Sync(NetEndpoint net, Packet packet)
         {
             var r = packet.PacketReader;
-            var zone = net.Map.Town.ZoneManager.GetZone<GrowingZone>(r.ReadInt32());
+            var mapid = r.ReadMapId();
+            var map = net.World.Get(mapid);
+            var zone = map.Town.ZoneManager.GetZone<GrowingZone>(r.ReadInt32());
             zone.Plant = Def.Get<PlantSpeciesDef>(r);
             zone.Tilling = r.ReadBoolean();
             zone.Planting = r.ReadBoolean();

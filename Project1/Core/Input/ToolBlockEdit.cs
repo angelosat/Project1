@@ -89,7 +89,7 @@ namespace Project1.Core.Input
             byte state = isDelete ? (byte)0 : this.State;
 
             if (global != this.LastPainted)
-                Ingame.Instance.Events.Post(new PlayerPaintedBlockEvent(global, block, this.Material, state, this.Variation, this.Orientation));
+                Ingame.Instance.Events.Post(new PlayerPaintedBlockEvent(this.Map.ID, global, block, this.Material, state, this.Variation, this.Orientation));
                 //PacketPlayerSetBlock.Send(Client.Instance, Client.Instance.GetPlayer(), global, block, this.Material, state, this.Variation, this.Orientation);
             this.LastPainted = global;
 

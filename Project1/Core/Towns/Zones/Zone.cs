@@ -131,10 +131,10 @@ namespace Project1.Core.Towns.Zones
                 return false;
             return true;
         }
-        public void RequestDelete()
-        {
-            PacketPlayerZoneDelete.Send(Client.Instance, this.GetType(), this.ID);
-        }
+        //public void RequestDelete()
+        //{
+        //    PacketPlayerZoneDelete.Send(Client.Instance, this.GetType(), this.ID);
+        //}
         public void Edit()
         {
             ToolManager.SetTool(new ToolDesignateZone(this.Town, this.ZoneDef));
@@ -151,11 +151,11 @@ namespace Project1.Core.Towns.Zones
         {
             yield return new CheckBoxNew("Hide", () => this.Hide = !this.Hide, () => this.Hide);
         }
-        public void GetQuickButtons(SelectionManager info)
-        {
-            info.AddButtons(new IconButton(Icon.Cross) { LeftClickAction = this.RequestDelete, HoverText = "Delete" });
-            info.AddButtons(new IconButton(Icon.Construction) { LeftClickAction = this.Edit, HoverText = "Edit" });
-        }
+        //public void GetQuickButtons(SelectionManager info)
+        //{
+        //    info.AddButtons(new IconButton(Icon.Cross) { LeftClickAction = this.RequestDelete, HoverText = "Delete" });
+        //    info.AddButtons(new IconButton(Icon.Construction) { LeftClickAction = this.Edit, HoverText = "Edit" });
+        //}
         internal void OnCameraRotated(Camera cam)
         {
             this.Cells.Invalidate();

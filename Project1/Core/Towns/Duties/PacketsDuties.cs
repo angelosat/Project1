@@ -27,14 +27,14 @@ namespace Project1.Core.Towns.Duties
         private static void OnPlayerDutyAdjustPriority(PlayerDutyAdjustPriorityEvent e)
         {
             if(Ingame.Net.IsServer)
-                Ingame.CurrentMap.Town.DutiesManager.ApplyPriorityDelta(e.Actor, e.Duty, e.Delta);
+                Ingame.MainViewportMap.Town.DutiesManager.ApplyPriorityDelta(e.Actor, e.Duty, e.Delta);
             SendAdjustPriority(e.Actor, e.Duty, e.Delta);
         }
 
         private static void OnPlayerDutyToggle(PlayerDutyToggleEvent e)
         {
             if(Ingame.Net.IsServer)
-                Ingame.CurrentMap.Town.DutiesManager.Toggle(e.Actor, e.Duty);
+                Ingame.MainViewportMap.Town.DutiesManager.Toggle(e.Actor, e.Duty);
             SendLaborToggle(e.Actor, e.Duty);
         }
 
@@ -80,44 +80,21 @@ namespace Project1.Core.Towns.Duties
             if (endpoint is Server)
                 SendAdjustPriority(actor, job.Def, delta);
         }
-        //public static void SendPriorityModify(Actor actor, Duty job, int priority)
-        //{
-        //    var net = actor.Net;
-        //    if (net is Server)
-        //    {
-        //        throw new UnreachableException();
-        //        //job.Priority = (byte)priority;
-        //        net.Events.Post(new DutyUpdatedEvent(actor, job.Def));
-        //        //net.EventOccured((int)Components.Message.Types.JobUpdated, actor, job.Def);
-        //        SyncJob(actor, job);
-        //    }
-        //    else
-        //    {
-        //        var w = net.BeginPacketImmediate(pMod);
-        //        //w.Write(player.ID);//, actor.RefId, job.Def.Name, priority);
-        //        w.Write(actor.RefId);
-        //        w.Write(job.Def);
-        //        w.Write(job);
-        //    }
-        //}
+      
         public static void SendLaborToggle(Actor actor, DutyDef jobDef)
         {
             var net = actor.Net;
             var w = net.BeginPacketImmediate(pToggle);
-            //w.Write(player.ID);
             w.Write(actor.RefId);
             w.Write(jobDef);
         }
+
         private static void HandleLaborToggle(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            //var player = net.GetPlayer(r.ReadInt32());
             var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
-            //var jobDef = Def.GetDef<JobDef>(r);
             var jobDef = r.ReadDef<DutyDef>();
-            //actor.ToggleJob(jobDef);
-            //net.Events.Post(new DutyUpdatedEvent(actor, jobDef));
-            net.Map.Town.DutiesManager.Toggle(actor, jobDef);
+            net.World.MainMap.Town.DutiesManager.Toggle(actor, jobDef);
             if (net is Server)
                 SendLaborToggle(actor, jobDef);
         }
@@ -126,7 +103,6 @@ namespace Project1.Core.Towns.Duties
         {
             var net = actor.Net as Server;
             var w = net.BeginPacketImmediate(pSync);
-            //w.Write(player.ID);
             w.Write(actor.RefId);
             w.Write(job.Def.Name);
             job.Write(w);
@@ -135,7 +111,6 @@ namespace Project1.Core.Towns.Duties
         {
             var r = pck.PacketReader;
             var client = net as Client;
-            //var player = client.GetPlayer(r.ReadInt32());
             var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
             var jobDef = Def.Get<DutyDef>(r.ReadString());
             var job = actor.GetDuty(jobDef);

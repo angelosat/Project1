@@ -2,8 +2,8 @@
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Input;
-using Project1.Core.Networking;
 using Project1.Core.Screens;
+using Project1.Core.Simulation;
 using Project1.Framework.UI;
 using System.Collections.Generic;
 
@@ -24,14 +24,14 @@ namespace Project1.Core.UI.NamePlates
         public override int Width { get => BoundsScreen.Width; }
         public override int Height { get => BoundsScreen.Height; }
 
-        public NameplateManager(NetEndpoint net)
+        public NameplateManager(MapBase map)
         {
             Instance = this;
             this.AddControls(this.ContainerActors);
             this.MouseThrough = true;
-            net.Map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
-            net.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-            foreach (var entity in net.Map.Entities)
+            map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
+            map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+            foreach (var entity in map.Entities)
                 this.CreateNameplateFor(entity as Entity);
         }
 

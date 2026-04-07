@@ -437,9 +437,10 @@ public class StaticMap : MapBase, ITooltippable
     }
     public static StaticMap Create(StaticWorld world, Vector2 coords)
     {
-        var map = new StaticMap(world, coords);
-        world.Maps[coords] = map;
-        return map;
+        throw new NotImplementedException();
+        //var map = new StaticMap(world, coords);
+        //world.Maps[coords] = map;
+        //return map;
     }
     public override void GetTooltipInfo(Control tooltip)
     {

@@ -50,7 +50,6 @@ public sealed class Town : Inspectable, IDutyProvider
 
     public IReadOnlyCollection<DutyDef> AvailableDuties => field ??= 
             [
-                //DutyDefOf.Workplace,
                 DutyDefOf.Cashier,
                 DutyDefOf.Innkeeper,
                 DutyDefOf.Digger,
@@ -67,7 +66,6 @@ public sealed class Town : Inspectable, IDutyProvider
                 DutyDefOf.Cook,
                 DutyDefOf.Scribe,
                 DutyDefOf.Guide,
-                DutyDefOf.QuestGiver,
                 DutyDefOf.Hauler,
                 DutyDefOf.MiscDuties,
             ];
@@ -118,8 +116,8 @@ public sealed class Town : Inspectable, IDutyProvider
     public TownServicesComp ShopManager;
     [InspectorHidden]
     public InnManager InnManager;
-    [InspectorHidden]
-    public QuestsManager QuestManager;
+    //[InspectorHidden]
+    //public QuestsManager QuestManager;
     public TownComp_Quests QuestManagerNew;
     [InspectorHidden]
     public StorageManager Storage;
@@ -153,7 +151,7 @@ public sealed class Town : Inspectable, IDutyProvider
         //this.TerrainManager = new(this);
         this.ShopManager = new(this);
         this.InnManager = new(this);
-        this.QuestManager = new(this);
+        //this.QuestManager = new(this);
         this.Storage = new(this);
         this.Furniture = new(this);
         this.Ownership = new(this);
@@ -173,7 +171,7 @@ public sealed class Town : Inspectable, IDutyProvider
             //this.TerrainManager,
             this.ShopManager,
             this.InnManager,
-            this.QuestManager,
+            //this.QuestManager,
             this.QuestManagerNew,
             this.Storage,
             this.Furniture,

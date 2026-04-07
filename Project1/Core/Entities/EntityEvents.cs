@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Needs;
+using Project1.Core.Simulation;
 using Project1.Framework.Events;
 
 namespace Project1.Core.Entities
@@ -8,7 +9,7 @@ namespace Project1.Core.Entities
     internal record struct EntityStackIncreased(Entity Entity, int Amount) : IEventPayload { }
     internal record struct EntityRegisteredEvent(Entity Entity, bool Immediate = false) : IEventPayload { }
     internal record struct EntityDisposedEvent(Entity Entity) : IEventPayload { }
-    internal record struct EntitySpawnedEvent(Entity Entity, bool Immediate = false) : IEventPayload { }
+    internal record struct EntitySpawnedEvent(MapBase Map, Entity Entity, bool Immediate = false) : IEventPayload { }
     internal record struct EntityDespawnedEvent(Entity Entity) : IEventPayload { }
     internal record struct EntityForbiddenEvent(Entity Entity) : IEventPayload { }
     internal record struct ActorGearUpdatedEvent(Actor Actor, Entity NewItem, Entity OldItem) : IEventPayload { }

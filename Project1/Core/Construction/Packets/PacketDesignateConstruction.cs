@@ -3,6 +3,7 @@ using Project1.Core.Blocks;
 using Project1.Core.Construction.Tools;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
+using Project1.Core.Map;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Serialization;
@@ -26,10 +27,27 @@ namespace Project1.Core.Construction.Packets
 
         }
 
+       
+
+        private static void OnPlayerCancelledConstruction(PlayerCancelledConstructionEvent e)
+        {
+            if(Ingame.Net.IsServer)
+                Ingame.Net.World.Get(e.MapId).Town.ConstructionsManager.RemoveNew(e.Targets);
+            SendRemoveExplicitly(Client.Instance, e.MapId, e.Targets);
+        }
+        static void SendRemoveExplicitly(NetEndpoint net, MapId mapid, List<IntVec3> targets)
+        {
+            net.BeginPacketImmediate(_pRemoveExplicitly)
+                .Write((int)SelectionType.List)
+                .Write(mapid)
+                .Write(targets);
+        }
+
         private static void ReceiveRemoveExplicitly(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var map = endpoint.Map;
+            var mapid = r.ReadMapId();
+            var map = endpoint.World.Get(mapid);
             var selectionType = (SelectionType)r.ReadInt32();
             List<IntVec3> cells;
             switch (selectionType)
@@ -48,21 +66,9 @@ namespace Project1.Core.Construction.Packets
                     throw new InvalidOperationException();
             }
             if (map.Town.ConstructionsManager.RemoveNew(cells) && endpoint is Server server)
-                SendRemoveExplicitly(server, cells);
+                SendRemoveExplicitly(server, mapid, cells);
         }
 
-        private static void OnPlayerCancelledConstruction(PlayerCancelledConstructionEvent e)
-        {
-            if(Ingame.Net.IsServer)
-                Ingame.CurrentMap.Town.ConstructionsManager.RemoveNew(e.Targets);
-            SendRemoveExplicitly(Client.Instance, e.Targets);
-        }
-        static void SendRemoveExplicitly(NetEndpoint net, List<IntVec3> targets)
-        {
-            net.BeginPacketImmediate(_pRemoveExplicitly)
-                .Write((int)SelectionType.List)
-                .Write(targets);
-        }
         static void SendRemoveExplicitly(NetEndpoint net, IntVec3 begin, IntVec3 end)
         {
 
@@ -87,6 +93,7 @@ namespace Project1.Core.Construction.Packets
         {
             var r = pck.PacketReader;
             var args = new ToolBlockBuild.Args(r);
+            var map = net.World.Get(args.MapId);
             BlockDef block = null;
             MaterialRefinementDef refinement = null;
             MaterialDef material = null;
@@ -101,7 +108,7 @@ namespace Project1.Core.Construction.Packets
 
             var constructionArgs = new ConstructionDesignationArgs(block, refinement, material, (byte)args.Orientation);
             var cells = args.ToolDef.Worker.GetPositions(args.Begin, args.End);
-            net.Map.Town.ConstructionsManager.Designate(cells, constructionArgs, args.Removing);
+            map.Town.ConstructionsManager.Designate(cells, constructionArgs, args.Removing);
 
             if (net is Server)
                 Send(net, args, constructionArgs);

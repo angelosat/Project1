@@ -2,12 +2,8 @@
 using Project1.Core.Networking.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
-using SharpDX.Direct3D9;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using static Project1.Core.Blocks.Block;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Project1.Core.Simulation
 {
@@ -82,7 +78,7 @@ namespace Project1.Core.Simulation
                 else if (block.TryCreateNewBlockEntity(this.Map, cell, orientation) is BlockEntity entity)
                     this.EntitiesAdded.Add(entity);
                 foreach (var target in footprint)
-                    this.Changes[target.global] = new SetBlockArgs(target.global, block, material, target.data, orientation, origin - target.global);
+                    this.Changes[target.global] = new SetBlockArgs(this.Map.ID, target.global, block, material, target.data, orientation, origin - target.global);
             }
         }
         internal void ReplaceWithoutEntity(IntVec3 cell, Block block, MaterialDef material, byte data, int variation, int orientation)
@@ -94,13 +90,13 @@ namespace Project1.Core.Simulation
             var newFootprint = block.GetFootprint(this.Map, cell, orientation);
             var origin = newFootprint.First().global;
             foreach(var newCell in newFootprint)
-                this.Changes[newCell.global] = new SetBlockArgs(newCell.global, block, material, newCell.data, orientation, origin - newCell.global);
+                this.Changes[newCell.global] = new SetBlockArgs(this.Map.ID, newCell.global, block, material, newCell.data, orientation, origin - newCell.global);
         }
         internal void PaintWithOrigin(HashSet<IntVec3> footprint, Block block, MaterialDef material, byte data, int variation, int orientation)
         {
             var origin = footprint.First();
             foreach (var cell in footprint)
-                this.Changes[cell] = new SetBlockArgs(cell, block, material, data, orientation, origin - cell);
+                this.Changes[cell] = new SetBlockArgs(this.Map.ID, cell, block, material, data, orientation, origin - cell);
         }
         void Remove(IntVec3 global)
         {
@@ -108,7 +104,7 @@ namespace Project1.Core.Simulation
             {
                 this.EntitiesRemoved.Add(entity);
                 foreach(var c in entity.CellsOccupied)
-                    this.Changes[c] = new SetBlockArgs(c, BlockDefOf.Air.Block, MaterialDefOf.Air, 0, 0, IntVec3.Zero);
+                    this.Changes[c] = new SetBlockArgs(this.Map.ID, c, BlockDefOf.Air.Block, MaterialDefOf.Air, 0, 0, IntVec3.Zero);
 
                 // blockentity gets precedent for which cells it occupies, so we dont have to further check for simple multicelled blocks
                 return;
@@ -116,7 +112,7 @@ namespace Project1.Core.Simulation
             var cell = this.Map.GetCell(global);
             var parts = cell.GetParts(global);
             foreach (var p in parts)
-                this.Changes[p] = new SetBlockArgs(p, BlockDefOf.Air.Block, MaterialDefOf.Air, 0, 0, IntVec3.Zero);
+                this.Changes[p] = new SetBlockArgs(this.Map.ID, p, BlockDefOf.Air.Block, MaterialDefOf.Air, 0, 0, IntVec3.Zero);
         }
         
         void Place(IntVec3 global, BlockDef block, MaterialDef material, byte data, int variation, int orientation)
@@ -134,7 +130,7 @@ namespace Project1.Core.Simulation
                     this.EntitiesAdded.Add(entity);
             }
             // todo: set source correctly
-            this.Changes[global] = new SetBlockArgs(global, worker, material, data, orientation, IntVec3.Zero);
+            this.Changes[global] = new SetBlockArgs(this.Map.ID, global, worker, material, data, orientation, IntVec3.Zero);
         }
 
         private void RecordAttachCellToEntity(IntVec3 global, BlockEntity entity)

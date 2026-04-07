@@ -57,7 +57,8 @@ namespace Project1.Core.AI.Packets
             //var net = Ingame.Net;
 
             //net.EventOccured((int)Message.Types.PlayerControlNpc, player, nextEntity, lastEntity);
-            net.Map.Events.Post(new PlayerControlActorEvent(player, nextEntity, lastEntity));
+            var map = nextEntity?.Map ?? lastEntity.Map;
+            map.Events.Post(new PlayerControlActorEvent(player, nextEntity, lastEntity));
 
             if (nextEntity is not null)
                 net.Report($"{player.Name} is assuming direct control over {nextEntity.Name}");

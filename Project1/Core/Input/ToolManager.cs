@@ -26,8 +26,8 @@ namespace Project1.Core.Input
         static ToolManager()
         {
             HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Ignore entity mouse hover", ToggleEntityTargeting, System.Windows.Forms.Keys.V);
-            HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate camera left", () => Ingame.CurrentMap.Camera.RotateClockwise(), System.Windows.Forms.Keys.Oemcomma);
-            HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate camera right", () => Ingame.CurrentMap.Camera.RotateCounterClockwise(), System.Windows.Forms.Keys.OemPeriod);
+            HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate camera left", () => Ingame.MainViewportMap.Camera.RotateClockwise(), System.Windows.Forms.Keys.Oemcomma);
+            HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate camera right", () => Ingame.MainViewportMap.Camera.RotateCounterClockwise(), System.Windows.Forms.Keys.OemPeriod);
 
             HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate construction clockwise", () => CurrentTool.RotateClockwise(), System.Windows.Forms.Keys.E);
             HotkeyManager.RegisterHotkey(HotkeyContextTargeting, "Rotate construction anticlockwise", () => CurrentTool.RotateAntiClockwise(), System.Windows.Forms.Keys.Q);

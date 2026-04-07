@@ -112,7 +112,7 @@ namespace Project1.Core
             }
             set
             {
-                this._mapID = value?.ID ?? -1;
+                this._mapID = value?.ID ?? 0;
                 this._resolvedMap = value;
             }
         }
@@ -216,56 +216,67 @@ namespace Project1.Core
             this._resolvedEntity = obj;
             this.World = obj.World;
         }
-        public TargetArgs(Entity obj, Vector3? face)
-        {
-            this.Type = TargetType.Entity;
-            this.EntityID = obj.RefId;
-            this.Global = obj.Global;
-            this.Face = face.HasValue ? face.Value : Vector3.Zero;
-            this._resolvedEntity = obj;
-        }
-        public TargetArgs(WorldBase provider, Vector3 global)
-        {
-            this.World = provider;
-            this.Type = TargetType.Cell;
-            this.Global = global;
-        }
+        //public TargetArgs(Entity obj, Vector3? face)
+        //{
+        //    this.Type = TargetType.Entity;
+        //    this.EntityID = obj.RefId;
+        //    this.Global = obj.Global;
+        //    this.Face = face.HasValue ? face.Value : Vector3.Zero;
+        //    this._resolvedEntity = obj;
+        //}
+        //public TargetArgs(WorldBase provider, Vector3 global)
+        //{
+        //    this.World = provider;
+        //    this.Type = TargetType.Cell;
+        //    this.Global = global;
+        //}
         public TargetArgs(MapBase map, Vector3 global)
         {
-            this._resolvedMap = map;
+            //this._resolvedMap = map;
+            this.Map = map;
             this.World = map.World;
             this.Type = TargetType.Cell;
             this.Global = global;
         }
-        public TargetArgs(Vector3 global, Vector3 face)
-        {
-            this.Type = TargetType.Cell;
-            this.Global = global;
-            this.Face = face;
-        }
-        public TargetArgs(Vector3 global, Vector3 face, Vector3 precise)
-        {
-            this.Type = TargetType.Cell;
-            this.Global = global;
-            this.Face = face;
-            this.Precise = precise;
-        }
-        public TargetArgs(WorldBase world, Vector3 global, Vector3 face, Vector3 precise)
-        {
-            this.World = world;
-            this.Type = TargetType.Cell;
-            this.Global = global;
-            this.Face = face;
-            this.Precise = precise;
-        }
+        //public TargetArgs(Vector3 global, Vector3 face)
+        //{
+        //    this.Type = TargetType.Cell;
+        //    this.Global = global;
+        //    this.Face = face;
+        //}
+        //public TargetArgs(Vector3 global, Vector3 face, Vector3 precise)
+        //{
+        //    this.Type = TargetType.Cell;
+        //    this.Global = global;
+        //    this.Face = face;
+        //    this.Precise = precise;
+        //}
+        //public TargetArgs(WorldBase world, Vector3 global, Vector3 face, Vector3 precise)
+        //{
+        //    this.World = world;
+        //    this.Type = TargetType.Cell;
+        //    this.Global = global;
+        //    this.Face = face;
+        //    this.Precise = precise;
+        //}
         public TargetArgs(MapBase map, Vector3 global, Vector3 face, Vector3 precise)
         {
             this.Type = TargetType.Cell;
-            this._resolvedMap = map;
+            //this._resolvedMap = map;
+            this.Map = map;
             this.Global = global;
             this.Face = face;
             this.Precise = precise;
             this.World = map.World;
+        }
+        public TargetArgs(MapId mapid, Vector3 global, Vector3 face, Vector3 precise)
+        {
+            this.Type = TargetType.Cell;
+            this._mapID = mapid;
+            this.Global = global;
+            this.Face = face;
+            this.Precise = precise;
+            //this.World = map.World;
         }
         public TargetArgs(WorldBase world, GameObjectSlot slot)
         {
@@ -302,16 +313,16 @@ namespace Project1.Core
             };
             return copy;
         }
-        public TargetArgs(Vector3 global, GameObjectSlot slot)
-            : this(null, global, slot)
-        {
+        //public TargetArgs(Vector3 global, GameObjectSlot slot)
+        //    : this(null, global, slot)
+        //{
 
-        }
+        //}
         [Obsolete("world object will eventually not have a singular map field")]
-        public TargetArgs(NetEndpoint provider, Vector3 global, GameObjectSlot slot)
+        public TargetArgs(MapBase map, Vector3 global, GameObjectSlot slot)
         {
-            this.World = provider.World;
-            this.Map = provider.Map;
+            this.World = map.World;
+            this.Map = map;
             if (slot == null)
                 throw new Exception();
             this.Type = TargetType.BlockEntitySlot;
@@ -335,6 +346,7 @@ namespace Project1.Core
                     return this;
 
                 case TargetType.Cell:
+                    w.Write(this._mapID);
                     w.Write(this.Global);
                     w.Write(this.Face);
                     w.Write(this.Precise);
@@ -359,47 +371,7 @@ namespace Project1.Core
                     return this;
             }
         }
-        public TargetArgs Write(IDataWriter w)
-        {
-            w.Write((int)this.Type);
-            switch (this.Type)
-            {
-                case TargetType.Slot:
-
-                    w.Write(this.Slot.Owner.RefId);
-                    w.Write(this.Slot.ID);
-                    w.Write(this.Slot.ContainerNew.ID);
-                    return this;
-
-                case TargetType.Cell:
-                    w.Write(this.Global);
-                    w.Write(this.Face);
-                    w.Write(this.Precise);
-                    return this;
-
-                case TargetType.Entity:
-
-                    w.Write(this.EntityID);
-                    return this;
-
-                case TargetType.Direction:
-                    w.Write(this.Direction);
-                    return this;
-
-                case TargetType.BlockEntitySlot:
-                    w.Write(this.Global);
-                    w.Write(this.Slot.ContainerNew.Name);
-                    w.Write(this.Slot.ID);
-                    return this;
-
-                //case TargetType.BlockEntity:
-                //    w.Write(this.BlockEntity.CellsOccupied.First());
-                //    return this;
-
-                default:
-                    return this;
-            }
-        }
+  
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name, this.SaveAsList());
@@ -443,13 +415,90 @@ namespace Project1.Core
             }
             return tag;
         }
-        static public TargetArgs Read(NetEndpoint provider, IDataReader reader)
+        //IDataWriter ISerializableNewNew<TargetArgs>.Write(IDataWriter w)
+        public IDataWriter Write(IDataWriter w)
         {
-            return Read(provider.Map, reader);
+            w.Write((int)this.Type);
+            switch (this.Type)
+            {
+                case TargetType.Slot:
+
+                    w.Write(this.Slot.Owner.RefId);
+                    w.Write(this.Slot.ID);
+                    w.Write(this.Slot.ContainerNew.ID);
+                    return w;
+
+                case TargetType.Cell:
+                    w.Write(this._mapID);
+                    w.Write(this.Global);
+                    w.Write(this.Face);
+                    w.Write(this.Precise);
+                    return w;
+
+                case TargetType.Entity:
+
+                    w.Write(this.EntityID);
+                    return w;
+
+                case TargetType.Direction:
+                    w.Write(this.Direction);
+                    return w;
+
+                case TargetType.BlockEntitySlot:
+                    w.Write(this._mapID);
+                    w.Write(this.Global);
+                    w.Write(this.Slot.ContainerNew.Name);
+                    w.Write(this.Slot.ID);
+                    return w;
+
+                default:
+                    return w;
+            }
         }
-        static public TargetArgs Read(MapBase map, IDataReader reader)
+        //public TargetArgs Write(IDataWriter w)
+        //{
+        //    w.Write((int)this.Type);
+        //    switch (this.Type)
+        //    {
+        //        case TargetType.Slot:
+        //            w.Write(this.Slot.Owner.RefId);
+        //            w.Write(this.Slot.ID);
+        //            w.Write(this.Slot.ContainerNew.ID);
+        //            return this;
+
+        //        case TargetType.Cell:
+        //            w.Write(this._mapID);
+        //            w.Write(this.Global);
+        //            w.Write(this.Face);
+        //            w.Write(this.Precise);
+        //            return this;
+
+        //        case TargetType.Entity:
+        //            w.Write(this.EntityID);
+        //            return this;
+
+        //        case TargetType.Direction:
+        //            w.Write(this.Direction);
+        //            return this;
+
+        //        case TargetType.BlockEntitySlot:
+        //            w.Write(this._mapID);
+        //            w.Write(this.Global);
+        //            w.Write(this.Slot.ContainerNew.Name);
+        //            w.Write(this.Slot.ID);
+        //            return this;
+
+        //        //case TargetType.BlockEntity:
+        //        //    w.Write(this.BlockEntity.CellsOccupied.First());
+        //        //    return this;
+
+        //        default:
+        //            return this;
+        //    }
+        //}
+        static public TargetArgs Read(WorldBase world, IDataReader reader)
         {
-            ArgumentNullException.ThrowIfNull(map);
+            ArgumentNullException.ThrowIfNull(world);
             TargetType type = (TargetType)reader.ReadInt32();
             switch (type)
             {
@@ -458,26 +507,28 @@ namespace Project1.Core
 
                 case TargetType.Entity:
                     int netID = reader.ReadInt32();
-                    return new TargetArgs(map.World, netID);
+                    return new TargetArgs(world, netID);
 
                 case TargetType.Cell:
-                    return new TargetArgs(map.World, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3()) { Map = map };
+                    var mapCell = world.Get(reader.ReadMapId());
+                    return new TargetArgs(mapCell, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());
 
                 case TargetType.Slot:
                     int parentID = reader.ReadInt32();
-                    GameObject parent = map.World.GetEntity(parentID);
+                    GameObject parent = world.GetEntity(parentID);
                     byte slotID = reader.ReadByte();
                     int containerID = reader.ReadInt32();
                     var slot = parent.GetChild(containerID, slotID);
-                    return new TargetArgs(map.World, slot);
+                    return new TargetArgs(world, slot);
 
                 case TargetType.BlockEntitySlot:
+                    var mapBe = world.Get(reader.ReadMapId());
                     var vector3 = reader.ReadVector3();
-                    var blockentity = map!.GetBlockEntity(vector3);
+                    var blockentity = mapBe!.GetBlockEntity(vector3);
                     var containerName = reader.ReadString();
                     var slotid = reader.ReadByte();
                     var s = blockentity.GetChild(containerName, slotid);
-                    return new TargetArgs(map.Net, vector3, s);
+                    return new TargetArgs(mapBe, vector3, s);
 
                 case TargetType.Direction:
                     return new TargetArgs(reader.ReadVector2());
@@ -860,43 +911,7 @@ namespace Project1.Core
             _ => (int)Type
         };
 
-        IDataWriter ISerializableNewNew<TargetArgs>.Write(IDataWriter w)
-        {
-            w.Write((int)this.Type);
-            switch (this.Type)
-            {
-                case TargetType.Slot:
-
-                    w.Write(this.Slot.Owner.RefId);
-                    w.Write(this.Slot.ID);
-                    w.Write(this.Slot.ContainerNew.ID);
-                    return w;
-
-                case TargetType.Cell:
-                    w.Write(this.Global);
-                    w.Write(this.Face);
-                    w.Write(this.Precise);
-                    return w;
-
-                case TargetType.Entity:
-
-                    w.Write(this.EntityID);
-                    return w;
-
-                case TargetType.Direction:
-                    w.Write(this.Direction);
-                    return w;
-
-                case TargetType.BlockEntitySlot:
-                    w.Write(this.Global);
-                    w.Write(this.Slot.ContainerNew.Name);
-                    w.Write(this.Slot.ID);
-                    return w;
-
-                default:
-                    return w;
-            }
-        }
+        
 
         public static TargetArgs Create(IDataReader r)
         {
@@ -905,7 +920,7 @@ namespace Project1.Core
             {
                 TargetType.Null => TargetArgs.Null,
                 TargetType.Entity => new TargetArgs(r.ReadEntityRefId()),
-                TargetType.Cell => new TargetArgs(r.ReadVector3(), r.ReadVector3(), r.ReadVector3()),
+                TargetType.Cell => new TargetArgs(r.ReadMapId(), r.ReadVector3(), r.ReadVector3(), r.ReadVector3()),
                 TargetType.Slot => throw new NotImplementedException(),
                 TargetType.BlockEntitySlot => throw new NotImplementedException(),
                 TargetType.Direction => new TargetArgs(r.ReadVector2()),

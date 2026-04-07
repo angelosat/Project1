@@ -31,7 +31,7 @@ namespace Project1.Core.Networking
         public EndPoint Sender;
         public EndPoint Recipient;
         public ReliabilityType Reliability;
-        public SimulationTick Tick;
+        public SimulationTick? Tick;
         public bool IsCompressed = true; //until i remove the code that blindly compressed everything
         public bool Synced;
         /// <summary>
@@ -77,7 +77,9 @@ namespace Project1.Core.Networking
             byte[] decompressed = isCompressed ? payload.Decompress() : payload; // TODO: FIX: i already have a decompressed payload and i still deserialize everything when handling packets???
             bool synced = reader.ReadBoolean();
             //double tick = reader.ReadDouble();
-            long tick = reader.ReadInt64();
+            var hasTick = reader.ReadBoolean();
+            var tick = (SimulationTick?)(hasTick ? reader.ReadUInt64() : null);
+            //long tick = reader.ReadInt64();
             var r = new BinaryReader(new MemoryStream(decompressed));
             return new Packet(id, type, length, payload)
             {
@@ -114,23 +116,25 @@ namespace Project1.Core.Networking
         public byte[] ToArray()
         {
             var mem = new MemoryStream();
-            using BinaryWriter writer = GetWriter(mem);
-            writer.Write(this.ID);
-            writer.Write((int)this.Reliability);
+            using BinaryWriter w = GetWriter(mem);
+            w.Write(this.ID);
+            w.Write((int)this.Reliability);
             if (this.Reliability == ReliabilityType.OrderedReliable)
             {
-                writer.Write(this.OrderedReliableID);
+                w.Write(this.OrderedReliableID);
             }
-            writer.Write((byte)this.PacketType);
+            w.Write((byte)this.PacketType);
             var isCompressed = this.Payload.Length >= Network.CompressionThreshold;
             byte[] final = isCompressed ? this.Payload.Compress() : this.Payload;
             //writer.Write(this.Payload.Length);
             //writer.Write(this.Payload);
-            writer.Write(isCompressed);
-            writer.Write(final.Length);
-            writer.Write(final);
-            writer.Write(this.Synced);
-            writer.Write(this.Tick);
+            w.Write(isCompressed);
+            w.Write(final.Length);
+            w.Write(final);
+            w.Write(this.Synced);
+            w.Write(this.Tick.HasValue);
+            if (this.Tick.HasValue)
+                w.Write(this.Tick.Value);
             return mem.ToArray();
         }
 

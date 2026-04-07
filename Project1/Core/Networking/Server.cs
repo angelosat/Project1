@@ -24,8 +24,8 @@ public class Server : NetEndpoint
 {
     public override bool IsServer => true;
     public override bool IsClient => false;
-    long _tick;
-    public override long CurrentTick => this._tick;// ServerClock.TotalMilliseconds;
+    ulong _tick;
+    public override ulong CurrentTick => this._tick;// ServerClock.TotalMilliseconds;
 
     readonly string _name = "Server";
     public override string ToString()
@@ -215,7 +215,9 @@ public class Server : NetEndpoint
                 var data = stream.GetBytes(mem);
                 var p = Packet.Create(player, PacketType.MergedPackets, data, stream.Reliability);
                 p.Synced = true;
-                p.Tick = stream.IsSimulation ? this.CurrentTick : SimulationTick.Immediate;
+                //p.Tick = stream.IsSimulation ? this.CurrentTick : SimulationTick.Immediate;
+                if (stream.IsSimulation)
+                    p.Tick = this.CurrentTick;
                 this.Enqueue(player, p);
             }
             stream.Reset();

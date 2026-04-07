@@ -34,9 +34,9 @@ public sealed class Client : NetEndpoint
 
     private static Client _Instance;
     public static Client Instance => _Instance ??= new Client();
-    long _tick;
-    public override long CurrentTick { get => this._tick; }// set => this._tick = value; }// this.ClientClock.TotalMilliseconds;
-    public double TickTarget;
+    ulong _tick;
+    public override ulong CurrentTick { get => this._tick; }// set => this._tick = value; }// this.ClientClock.TotalMilliseconds;
+    public ulong TickTarget;
     private ConsoleBoxAsync _Console;
     public override ConsoleBoxAsync ConsoleBox => this._Console ??= new ConsoleBoxAsync(new Rectangle(0, 0, 400, 400)) { FadeText = false }; //new Rectangle(0, 0, 800, 600)
 
@@ -287,7 +287,7 @@ public sealed class Client : NetEndpoint
                     //map.Validate();
                     //this.ApplyEntitySnapshots();
                     this.Snapshots.ApplyEntitySnapshots(this.World, this.CurrentTick);
-                    while (this.CurrentTick < this.TickTarget)
+                    while (this.CurrentTick + ClientTickDelay < this.TickTarget)
                     {
                         // moved this here because on speed > 0 the map wasn't ticked and logic wasn't executed between handling consecutive tick packets
                         this.HandleBufferedPackets();
@@ -409,8 +409,9 @@ public sealed class Client : NetEndpoint
         while (this.PacketsBuffer.Count > 0)
         {
             var next = this.PacketsBuffer.Peek();
-            if (next.Tick > this.CurrentTick)
-                return;
+            //if (next.Tick > this.CurrentTick)
+            if (next.Tick.Value > this.CurrentTick)
+                    return;
             this.PacketsBuffer.Dequeue();
             this.HandleMessage(next);
         }
@@ -440,16 +441,16 @@ public sealed class Client : NetEndpoint
             if (this.RecentPackets.Count > this.RecentPacketBufferSize)
                 this.RecentPackets.Dequeue();
 
-            if (packet.Tick != SimulationTick.Immediate)
-            {
-                // clock correction happens first, for all packets
-                double target = packet.Tick - ClientTickDelay;
-                //double curr = this.CurrentTick;
-                //double smoothed = curr + (target - curr) * 0.15;
-                //this.TickTarget = smoothed;
-                //ulong target = packet.Tick - ClientTickDelay;
-                this.TickTarget = target;
-            }
+            //if (packet.Tick != SimulationTick.Immediate)
+            //{
+            //    // clock correction happens first, for all packets
+            //    double target = packet.Tick - ClientTickDelay;
+            //    double curr = this.CurrentTick;
+            //    double smoothed = curr + (target - curr) * 0.15;
+            //    this.TickTarget = smoothed;
+            //}
+            if (packet.Tick.HasValue)
+                this.TickTarget = packet.Tick.Value;// - ClientTickDelay;
             // for ordered packets, only handle last one (store most recent and discard and older ones)
             if (packet.Reliability == ReliabilityType.Ordered)
             {
@@ -531,7 +532,8 @@ public sealed class Client : NetEndpoint
                 this.Speed = r.ReadInt32();
                 Log.Network(this, $"Connected to {this.RemoteIP}");
                 GameMode.Current.PlayerIDAssigned(this);
-                this._tick = (long)Math.Max(msg.Tick - ClientTickDelay, 0);
+                //this._tick = (ulong)Math.Max(msg.Tick.Value - ClientTickDelay, 0);
+                this._tick = (ulong)Math.Max(- ClientTickDelay, 0);
                 this.PlayerData.RemoteOrderedReliableSequence = msg.OrderedReliableID;
                 this.Events.Post(new ServerConnectionAcceptedEvent());
                 break;
@@ -616,7 +618,8 @@ public sealed class Client : NetEndpoint
             {
                 this.PlayerData.RemoteOrderedReliableSequence = nextid;
                 Packet packet = this.IncomingOrderedReliable.Dequeue();
-                if (packet.Tick == SimulationTick.Immediate)
+                //if (packet.Tick == SimulationTick.Immediate)
+                if (!packet.Tick.HasValue)
                 {
                     this.HandleMessage(packet);
                     continue;

@@ -464,6 +464,7 @@ public class StaticMap : MapBase, ITooltippable
     }
     public override void WriteData(IDataWriter w)
     {
+        w.Write(this.ID);
         w.Write(this.Name);
         w.Write(this.Coordinates.X);
         w.Write(this.Coordinates.Y);
@@ -473,11 +474,14 @@ public class StaticMap : MapBase, ITooltippable
     }
     public static StaticMap ReadData(NetEndpoint net, IDataReader r)
     {
+        var id = (MapId)r.ReadInt32();
+
         var name = r.ReadString();
         var map = new StaticMap(net.World as StaticWorld, name)
         {
             Coordinates = new Vector2(r.ReadSingle(), r.ReadSingle()),
         };
+        map.ID = id;
         var size = r.ReadString();
         map.Size = MapSize.AllSizes.First(foo => foo.Name == size);
         map.Town.Read(r);

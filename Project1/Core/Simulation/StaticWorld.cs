@@ -70,10 +70,10 @@ namespace Project1.Core.Simulation
         {
             return this.Name;
         }
-        public override MapBase GetMap(Vector2 mapCoords)
-        {
-            return this.Maps.GetValueOrDefaultMy(mapCoords);
-        }
+        //public override MapBase GetMap(Vector2 mapCoords)
+        //{
+        //    return this.Maps.GetValueOrDefaultMy(mapCoords);
+        //}
         public Random GetRandom()
         {
             return this.Random;

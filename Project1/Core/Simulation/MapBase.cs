@@ -92,7 +92,7 @@ public abstract class MapBase : Inspectable
     public WorldBase World;
     //public Dictionary<IntVec2, Chunk> ActiveChunks = [];
     public Dictionary<int, Chunk> ActiveChunks = [];
-    public readonly int ID;
+    public MapId ID;
     public NetEndpoint Net => field ??= this.World.Net;
     public GameObject PlayerCharacter;
     public ParticleManager ParticleManager;

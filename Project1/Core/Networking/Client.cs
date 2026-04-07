@@ -1012,6 +1012,7 @@ namespace Project1.Core.Networking
             }
             this.Map = map;
             this.World = map.World;
+            this.World.AddMap(map);
             Registry.MapEventHooksClient.HookTo(map.Events);
             Registry.WorldEventHooksClient.HookTo(map.World.Events);
             this.MainViewport = new(this.Map, this.Map.Camera);

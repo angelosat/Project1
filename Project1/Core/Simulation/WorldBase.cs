@@ -1,8 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
-using Project1.Core.Map;
 using Project1.Core.Networking;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;

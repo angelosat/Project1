@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Loot;
-using Project1.Core.Networking.Entities;
 using Project1.Core.Networking.Packets;
 using Project1.Core.Networking.Simulation;
 using Project1.Core.Simulation;
@@ -49,7 +48,6 @@ public class Server : NetEndpoint
             return this._Console;
         }
     }
-    SnapshotManager Snapshots = new();
     public const int SnapshotIntervalMS = 10;// send 60 snapshots per second to clients
     public const int LightIntervalMS = 10;// send 60 light updates per second to clients
     readonly NetworkStream PlayerCommandsStream = new(ReliabilityType.OrderedReliable, false);
@@ -85,7 +83,7 @@ public class Server : NetEndpoint
         this._tick++;
     }
 
-    public override MapBase Map { get; set; }
+    //public override MapBase Map { get; set; }
     public override WorldBase World { get; set; }
     public static int Port = 5541;
     static Socket Listener;
@@ -108,7 +106,8 @@ public class Server : NetEndpoint
 
         Instance.Players = new PlayerList(Instance);
         IsRunning = false;
-        Instance.Map = null;
+        Instance.World = null;
+        //Instance.Map = null;
         Connections = new ConcurrentDictionary<EndPoint, UdpConnection>();
         Instance.Speed = 0;
     }
@@ -160,19 +159,35 @@ public class Server : NetEndpoint
         HandleIncoming();
         HandleIncomingOrdered();
         GameMode.Current?.Update(Instance);
-        if (Instance.Map is null)
+        //if (Instance.Map is null)
+        //    return;
+        if (Instance.IsSaving)
             return;
-        if (!Instance.IsSaving)
-        {
-            var lastTick = this.CurrentTick;
-            this.TickMaps();
-            //this.Map.Validate();
-            //this.Snapshots.Flush(this, this.EntitiesChangedSinceLastSnapshot);
-            this.FlushSnapshots(lastTick);
-        }
+        var lastTick = this.CurrentTick;
+        this.TickMaps();
+        this.FlushSnapshots(lastTick);
         this.WritePlayerSpecificNew();
         this.FlushStreams(false);
         this.SendPackets();
+
+        //if (!IsRunning)
+        //    return;
+        //HandleIncoming();
+        //HandleIncomingOrdered();
+        //GameMode.Current?.Update(Instance);
+        //if (Instance.Map is null)
+        //    return;
+        //if (!Instance.IsSaving)
+        //{
+        //    var lastTick = this.CurrentTick;
+        //    this.TickMaps();
+        //    //this.Map.Validate();
+        //    //this.Snapshots.Flush(this, this.EntitiesChangedSinceLastSnapshot);
+        //    this.FlushSnapshots(lastTick);
+        //}
+        //this.WritePlayerSpecificNew();
+        //this.FlushStreams(false);
+        //this.SendPackets();
     }
     private void WritePlayerSpecificNew()
     {
@@ -535,15 +550,10 @@ public class Server : NetEndpoint
         var entity = template.Clone(1) as Entity;
         entity.SetStackSize(entity.StackMax);
         entity.Randomize(Random);
-        target.Map = Instance.Map;
-
-        // register child entities first otherwise the entityrefids will resolve to null when replicating on clients
-        //foreach(var child in entity.GetSelfAndChildren())
-        //{
-        //    this.Map.World.Register(child, immediate: true);
-        //}
-        this.Map.World.Register(entity, immediate: true);
-
+        //target.Map = Instance.Map;
+        //this.Map.World.Register(entity, immediate: true);
+        var map = target.Map;
+        map.World.Register(entity, immediate: true);
         switch (target.Type)
         {
             case TargetType.Slot:
@@ -551,7 +561,8 @@ public class Server : NetEndpoint
                 break;
 
             case TargetType.Cell:
-                this.Map.Spawn(entity, target.Global, Vector3.Zero, immediate: true);
+                //this.Map.Spawn(entity, target.Global, Vector3.Zero, immediate: true);
+                map.Spawn(entity, target.Global, Vector3.Zero, immediate: true);
                 break;
 
             default:
@@ -597,25 +608,40 @@ public class Server : NetEndpoint
         return this.World.DisposeEntity(netID);
     }
    
-    public void SetMap(MapBase map)
+    public void AddMap(MapBase map)
     {
-        if(this.Map is not null)
-        {
-            Registry.MapEventHooksServer.UnHook(this.Map.Events);
-        }
-        this.Map = map;
-        this.World = map.World;
-        this.World.Net = this;
+        //if(this.Map is not null)
+        //{
+        //    Registry.MapEventHooksServer.UnHook(this.Map.Events);
+        //}
+        //this.Map = map;
+        //this.World = map.World;
+        //this.World.Net = this;
         Registry.MapEventHooksServer.HookTo(map.Events);
-        Registry.WorldEventHooksServer.HookTo(map.World.Events);
+        //Registry.WorldEventHooksServer.HookTo(map.World.Events);
         foreach (var obj in this.World.Entities)
             obj.Value.OnMapLoaded(map);
         map.ResolveReferences();
         Random = new RandomThreaded(map.Random);
-        this.MainViewport = new(map, map.Camera);
+        //this.MainViewport = new(map, map.Camera);
         map.Validate();
     }
-
+    internal void UnloadMap(MapId mapid)
+    {
+        var map = this.World.Get(mapid);
+        Registry.MapEventHooksServer.UnHook(map.Events);
+    }
+    internal void SetWorld(WorldBase world)
+    {
+        this.World = world;
+        this.World.Net = this;
+        Registry.WorldEventHooksServer.HookTo(world.Events);
+    }
+    public override void ViewMap(MapId mapid)
+    {
+        var map = this.World.Get(mapid);
+        this.MainViewport = new(map, map.Camera);
+    }
     public override bool TryGetNetworkObject(int netID, out Entity obj)
     {
         return this.World.TryGetEntity(netID, out obj);
@@ -720,10 +746,5 @@ public class Server : NetEndpoint
     {
         this.Report(text);
         Network.SyncReport(this, text);
-    }
-
-    public override void ViewMap(MapId mapid)
-    {
-        throw new NotImplementedException();
     }
 }

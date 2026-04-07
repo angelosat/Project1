@@ -1,75 +1,75 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using Project1.Framework.UI;
-using Project1.Core.UI;
-using Project1.Core.Networking;
+﻿using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
-using Project1.Core.Networking;
+using Project1.Core.UI;
 using Project1.Framework.Helpers;
+using Project1.Framework.UI;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 
-namespace Project1.Core.Serialization
+namespace Project1.Core.Serialization;
+
+static class SaveFileManager
 {
-    static class SaveFileManager
+    public static readonly ObservableCollection<SaveFile> SaveFiles = [];
+
+    internal static void Refresh()
     {
-        public static readonly ObservableCollection<SaveFile> SaveFiles = [];
+        SaveFiles.Clear();
+        var directory = new DirectoryInfo(SaveFile.SaveFolderFullPath);
+        if (!Directory.Exists(directory.FullName))
+            Directory.CreateDirectory(directory.FullName);
+        var files = directory.GetFiles();
+        var savefiles = files.Select(SaveFile.Load);
+        var ordered = savefiles.OrderByDescending(s => s.Header.CreationTime);
+        foreach (var s in ordered)
+            SaveFiles.Add(s);
+    }
 
-        internal static void Refresh()
-        {
-            SaveFiles.Clear();
-            var directory = new DirectoryInfo(SaveFile.SaveFolderFullPath);
-            if (!Directory.Exists(directory.FullName))
-                Directory.CreateDirectory(directory.FullName);
-            var files = directory.GetFiles();
-            var savefiles = files.Select(SaveFile.Load);
-            var ordered = savefiles.OrderByDescending(s => s.Header.CreationTime);
-            foreach (var s in ordered)
-                SaveFiles.Add(s);
-        }
+    public static void Delete(SaveFile save)
+    {
+        SaveFiles.Remove(save);
+        save.File.Delete();
+    }
+    static Control _guiCached;
+    public static Control Gui => _guiCached ??= CreateGui();
+    private static Control CreateGui()
+    {
+        var box = ScrollableBoxNewNewNew.FromContentsSize(SaveFile.Gui.Width, SaveFile.Gui.Width, ScrollModes.Vertical)
+            .AddControls(new ListBoxObservable<SaveFile>(SaveFiles));
+        return box.ToPanel();
+    }
 
-        public static void Delete(SaveFile save)
-        {
-            SaveFiles.Remove(save);
-            save.File.Delete();
-        }
-        static Control _guiCached;
-        public static Control Gui => _guiCached ??= CreateGui();
-        private static Control CreateGui()
-        {
-            var box = ScrollableBoxNewNewNew.FromContentsSize(SaveFile.Gui.Width, SaveFile.Gui.Width, ScrollModes.Vertical)
-                .AddControls(new ListBoxObservable<SaveFile>(SaveFiles));
-            return box.ToPanel();
-        }
+    public static void Load(SaveFile item)
+    {
+        Server.Start();
 
-        public static void Load(SaveFile item)
+        StaticMap map = null;
+        DialogLoading.AddTask(
+            "Loading map",
+            () => map = item.World.Map);
+        DialogLoading.AddTask(
+            "Initializing undiscovered areas",
+            () => map.InitUndiscoveredAreas());
+        DialogLoading.AddTask(
+           "Initializing",
+           () => map.Init());
+        DialogLoading.Start(() =>
         {
-            Server.Start();
+            map.CameraRecenter();
+            string localHost = "127.0.0.1";
+            UIConnecting.Create(localHost);
+            Server.Instance.SetWorld(item.World);
+            Server.Instance.AddMap(map);
 
-            StaticMap map = null;
-            DialogLoading.AddTask(
-                "Loading map",
-                () => map = item.World.Map);
-            DialogLoading.AddTask(
-                "Initializing undiscovered areas",
-                () => map.InitUndiscoveredAreas());
-            DialogLoading.AddTask(
-               "Initializing",
-               () => map.Init());
-            DialogLoading.Start(() =>
-            {
-                map.CameraRecenter();
-                string localHost = "127.0.0.1";
-                UIConnecting.Create(localHost);
-                Server.Instance.SetMap(map);
-                Client.Instance.Connect(localHost, "host", a => { LobbyWindow.Instance.Console.Write("Connected to " + localHost); });
-            });
-        }
+            Client.Instance.Connect(localHost, "host", a => { LobbyWindow.Instance.Console.Write("Connected to " + localHost); });
+        });
+    }
 
-        internal static Control InitGui()
-        {
-            Refresh();
-            return Gui;
-        }
+    internal static Control InitGui()
+    {
+        Refresh();
+        return Gui;
     }
 }

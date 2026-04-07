@@ -46,7 +46,7 @@ class GameModeStaticMaps : GameMode
     void IngameSave()
     {
         // TODO: store the map reference here? or pass something like a game state as an argument so i can select what to save?
-        var map = Server.Instance.Map as StaticMap;
+        var map = Server.Instance.World.MainMap as StaticMap;
         DialogInput getSaveName = null;
         ScrollableBoxNewNew groupBox = null;
         var box = new GroupBox();

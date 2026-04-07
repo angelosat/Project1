@@ -19,7 +19,7 @@ class PacketMap
     {
         var server = net as Server;
         var w = player.BeginReliable(_packetTypeId);
-        server.Map.WriteData(w);
+        server.World.MainMap.WriteData(w);
     }
     private static void Receive(NetEndpoint net, Packet packet)
     {

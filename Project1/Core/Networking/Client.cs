@@ -51,11 +51,11 @@ public sealed class Client : NetEndpoint
     public long NextPacketID => this._packetID++;
     private long RemoteSequence = 0;
 
-    public override MapBase Map
-    {
-        set => Engine.Map = value;
-        get => Engine.Map;
-    }
+    //public override MapBase Map
+    //{
+    //    set => Engine.Map = value;
+    //    get => Engine.Map;
+    //}
     public override WorldBase World { get; set; }
 
     private readonly int TimeoutLength = Ticks.PerSecond * 2;

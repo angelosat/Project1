@@ -4,7 +4,6 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Networking;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.World;
@@ -25,22 +24,22 @@ namespace Project1.Core.Simulation;
 
 public class StaticWorld : WorldBase
 {
-    static class Packets
-    {
-        public static readonly int PacketClockAdvanced;
-        static Packets()
-        {
-            PacketClockAdvanced = Registry.PacketHandlers.Register(ReceiveClockAdvanced);
-        }
+    //static class Packets
+    //{
+    //    public static readonly int PacketClockAdvanced;
+    //    static Packets()
+    //    {
+    //        PacketClockAdvanced = Registry.PacketHandlers.Register(ReceiveClockAdvanced);
+    //    }
 
-        private static void ReceiveClockAdvanced(NetEndpoint net, Packet pck)
-        {
-            var r = pck.PacketReader;
-            if (net is Server)
-                throw new Exception();
-            net.World.CurrentTick++;
-        }
-    }
+    //    private static void ReceiveClockAdvanced(NetEndpoint net, Packet pck)
+    //    {
+    //        var r = pck.PacketReader;
+    //        if (net is Server)
+    //            throw new Exception();
+    //        net.World.CurrentTick++;
+    //    }
+    //}
     public override float Gravity => -0.015f;//-0.04f;// -0.05f; //35f;
     public const int Zenith = 14;
 
@@ -95,7 +94,6 @@ public class StaticWorld : WorldBase
         this.DefaultBlock = BlockDefOf.Soil.Block;
         this.Terraformers = new List<Terraformer>();
         this.Trees = true;
-        //this.Maps = new MapCollection();
         this.PopulationManager = new PopulationManager(this);
         this.Space = new FrontierManager(this);
     }

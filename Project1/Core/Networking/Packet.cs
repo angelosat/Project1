@@ -76,7 +76,8 @@ namespace Project1.Core.Networking
             byte[] payload = reader.ReadBytes(length);
             byte[] decompressed = isCompressed ? payload.Decompress() : payload; // TODO: FIX: i already have a decompressed payload and i still deserialize everything when handling packets???
             bool synced = reader.ReadBoolean();
-            double tick = reader.ReadDouble();
+            //double tick = reader.ReadDouble();
+            long tick = reader.ReadInt64();
             var r = new BinaryReader(new MemoryStream(decompressed));
             return new Packet(id, type, length, payload)
             {

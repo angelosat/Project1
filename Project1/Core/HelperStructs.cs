@@ -30,7 +30,11 @@ public readonly record struct CellId(int Value)
     public IntVec3Local Local => new(this.X, this.Y, this.Z);
     public IntVec3 GetGlobal(Chunk chunk) => this.Local.ToGlobal(chunk);
 }
-
+public record struct Tier(byte Value)
+{
+    public static implicit operator byte(Tier pos) => pos.Value;
+    public static implicit operator Tier(byte pos) => new(pos);
+}
 public readonly record struct PacketId(int Value)
 {
     public static implicit operator PacketId(int v) => new(v);

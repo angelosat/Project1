@@ -10,7 +10,7 @@ namespace Project1.Framework.Helpers
         readonly int RangeMin;
         readonly int RangeMax;
         readonly Random? Random;
-        Action? Callback;
+        readonly Action? Callback;
         public Scheduler(ulong currentTick, int rangemin, int rangemax, Random rand) : this(rangemin, rangemax, rand)
         {
             this.ScheduleFrom(currentTick);

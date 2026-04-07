@@ -2,9 +2,10 @@
 using Project1.Core.AI.MetaRoles.Adventurer;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Input.Building;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Framework;
+using Project1.Core.Systems.Tools;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using System;
@@ -13,36 +14,9 @@ using System.Linq;
 
 namespace Project1.Core.World.WorldAreas;
 
-
 public class FrontierManager : IWorldSpaceManager
 {
-    [EnsureStaticCtorCall]
-    static class Packets
-    {
-        static readonly int _pPlaceAt;
-        static Packets()
-        {
-            _pPlaceAt = Registry.PacketHandlers.Register(ReceivePlaceAt);
-        }
-
-        static internal void SendPlaceAt(Actor actor, float pos)
-        {
-            (actor.Net as Server).BeginPacket(_pPlaceAt)
-                .Write(actor.RefId)
-                .Write(pos);
-        }
-        private static void ReceivePlaceAt(NetEndpoint endpoint, Packet packet)
-        {
-            var client = endpoint as Client ?? throw new Exception();
-            var r = packet.PacketReader;
-            var actor = client.World.Get<Actor>(r.ReadInt32());
-            var pos = r.ReadSingle();
-            ((actor.World as StaticWorld).Space as FrontierManager).PlaceAt(actor, pos);
-        }
-    }
-
     readonly Dictionary<FrontierDef, FrontierWrapper> Frontiers = [];
-    //readonly Dictionary<Tier, FrontierWrapper> FrontiersByTier = [];
     static readonly Dictionary<Tier, FrontierDef> FrontiersByTier = [];
     readonly Dictionary<Actor, WorldSpacePosition> ActorPositions = [];
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
@@ -76,6 +50,18 @@ public class FrontierManager : IWorldSpaceManager
         //byTier.Sort((a, b) => a.Def.Tier.CompareTo(b.Def.Tier));
         //this.FrontiersByTier = byTier.ToDictionary(f => new Tier(f.Def.Tier), f => f);
     }
+
+    void FillLootPools()
+    {
+        foreach(var f in this.Frontiers.Values)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                f.AddLoot(ToolSystem.CreateRandom((Tier)f.Def.Tier));
+            }
+        }
+    }
+
     internal ChangeNotifier Notifier = new();
     public void Tick()
     {
@@ -134,10 +120,10 @@ public class FrontierManager : IWorldSpaceManager
         //    if (i < distance && distance <= i + 1)
         //        return this.FrontiersByTier[i+1];
         //}
-        for (int i = 0; i < FrontiersByTier.Count; i++)
+        for (byte i = 0; i < FrontiersByTier.Count; i++)
         {
             if (i < distance && distance <= i + 1)
-                return this.Frontiers[FrontiersByTier[i + 1]];
+                return this.Frontiers[FrontiersByTier[(Tier)(i + 1)]];
         }
         throw new Exception("Actor distance out of bounds");
     }
@@ -154,7 +140,7 @@ public class FrontierManager : IWorldSpaceManager
         for (int i = 0; i < FrontiersByTier.Count; i++)
         {
             if (i < distance && distance <= i + 1)
-                return this.Frontiers[FrontiersByTier[i + 1]].Def;
+                return this.Frontiers[FrontiersByTier[(byte)(i + 1)]].Def;
         }
         throw new ArgumentOutOfRangeException(nameof(pos), "World-space position out of bounds");
     }

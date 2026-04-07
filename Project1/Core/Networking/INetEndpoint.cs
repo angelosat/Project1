@@ -12,7 +12,7 @@ public interface INetEndpoint
 {
     ConsoleBoxAsync ConsoleBox { get; }
     PlayerData CurrentPlayer { get; }
-    double CurrentTick { get; }
+    long CurrentTick { get; }
     //MapBase Map { get; }
     WorldBase World { get; }
     int Speed { get; }

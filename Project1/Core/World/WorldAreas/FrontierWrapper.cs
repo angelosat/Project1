@@ -1,22 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 
-namespace Project1.Core.World.WorldAreas
+namespace Project1.Core.World.WorldAreas;
+
+public class FrontierWrapper
 {
-    public class FrontierWrapper
+    public readonly FrontierDef Def;
+    List<Entity> LootPool = [];
+    public FrontierWrapper(FrontierDef def)
     {
-        public readonly FrontierDef Def;
-        List<Entity> LootPool = [];
-        public FrontierWrapper(FrontierDef def)
-        {
-            this.Def = def;
-        }
-        internal void Tick(Actor actor)
-        {
-            // roll encounter
-            // roll random loot
-            // etc
-        }
+        this.Def = def;
+    }
+
+    internal void AddLoot(Entity entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void Tick(Actor actor)
+    {
+        // roll encounter
+        // roll random loot
+        // etc
     }
 }

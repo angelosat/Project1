@@ -34,8 +34,8 @@ public sealed class Client : NetEndpoint
 
     private static Client _Instance;
     public static Client Instance => _Instance ??= new Client();
-    double _tick;
-    public override double CurrentTick { get => this._tick; }// set => this._tick = value; }// this.ClientClock.TotalMilliseconds;
+    long _tick;
+    public override long CurrentTick { get => this._tick; }// set => this._tick = value; }// this.ClientClock.TotalMilliseconds;
     public double TickTarget;
     private ConsoleBoxAsync _Console;
     public override ConsoleBoxAsync ConsoleBox => this._Console ??= new ConsoleBoxAsync(new Rectangle(0, 0, 400, 400)) { FadeText = false }; //new Rectangle(0, 0, 800, 600)
@@ -444,9 +444,11 @@ public sealed class Client : NetEndpoint
             {
                 // clock correction happens first, for all packets
                 double target = packet.Tick - ClientTickDelay;
-                double curr = this.CurrentTick;
-                double smoothed = curr + (target - curr) * 0.15;
-                this.TickTarget = smoothed;
+                //double curr = this.CurrentTick;
+                //double smoothed = curr + (target - curr) * 0.15;
+                //this.TickTarget = smoothed;
+                //ulong target = packet.Tick - ClientTickDelay;
+                this.TickTarget = target;
             }
             // for ordered packets, only handle last one (store most recent and discard and older ones)
             if (packet.Reliability == ReliabilityType.Ordered)
@@ -529,7 +531,7 @@ public sealed class Client : NetEndpoint
                 this.Speed = r.ReadInt32();
                 Log.Network(this, $"Connected to {this.RemoteIP}");
                 GameMode.Current.PlayerIDAssigned(this);
-                this._tick = Math.Max(msg.Tick - ClientTickDelay, 0);
+                this._tick = (long)Math.Max(msg.Tick - ClientTickDelay, 0);
                 this.PlayerData.RemoteOrderedReliableSequence = msg.OrderedReliableID;
                 this.Events.Post(new ServerConnectionAcceptedEvent());
                 break;

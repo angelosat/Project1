@@ -51,7 +51,7 @@ public abstract partial class NetEndpoint : INetEndpoint
     public ChatService ChatService { get; init; }
     public abstract ConsoleBoxAsync ConsoleBox { get; }
     public abstract PlayerData CurrentPlayer { get; }
-    public abstract double CurrentTick { get; }
+    public abstract long CurrentTick { get; }
     //public abstract MapBase Map { get; set; }
     public abstract WorldBase World { get; set; }
     public abstract void ViewMap(MapId mapid);

@@ -24,8 +24,8 @@ public class Server : NetEndpoint
 {
     public override bool IsServer => true;
     public override bool IsClient => false;
-    double _tick;
-    public override double CurrentTick => this._tick;// ServerClock.TotalMilliseconds;
+    long _tick;
+    public override long CurrentTick => this._tick;// ServerClock.TotalMilliseconds;
 
     readonly string _name = "Server";
     public override string ToString()

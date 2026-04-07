@@ -29,7 +29,7 @@ namespace Project1.Core.Systems.Materials
         public int BreakResistance = 1;
         public int ValueBase = 1;
         public float ValueMultiplier = 1;
-        public int Tier;
+        public Tier Tier;
 
         /// <summary>
         /// How many ticks it takes for the liquid to flow to nearby cells

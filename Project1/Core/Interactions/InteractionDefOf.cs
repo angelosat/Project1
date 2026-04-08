@@ -216,7 +216,7 @@ internal static class InteractionDefOf
     };
     public static readonly InteractionDef CastSpell = new("CastSpell", typeof(InteractionCastSpell), InteractionControllers.Timed)
     {
-        ProgressBarColor = ResourceDefOf.Mana.Color
+        ProgressBarColor = ResourceDefOf.Mana.Color,
     };
     static InteractionDefOf()
     {

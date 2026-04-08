@@ -42,8 +42,15 @@ sealed class InteractionHealingWaitCaster : InteractionLogic
 {
     protected override InteractionContext_Healing CreateContextInt() => new();
     static SpellRequest Request(InteractionContext ctx) => ((InteractionContext_Healing)ctx).RequestByCaster;
+    internal override void OnStart(Interaction i)
+    {
+        if (i.Actor.Net.IsClient)
+            return;
+        var typedCtx = (InteractionContext_Healing)i.Context;
+        typedCtx.Manager.MarkCasterReady(i.Actor);
+    }
     internal override bool HasSucceeded(Interaction i)
-        => Request(i.Context).IsReady;
+        => Request(i.Context).IsTargetReady;
 }
 sealed class InteractionHealingSeek : InteractionLogic
 {
@@ -51,6 +58,11 @@ sealed class InteractionHealingSeek : InteractionLogic
 
     internal override void OnTick(Interaction i)
         => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
+    internal override void OnStart(Interaction i)
+    {
+        var typedCtx = (InteractionContext_Healing)i.Context;
+        typedCtx.Manager.MarkTargetReady(i.Actor);
+    }
     internal override bool HasSucceeded(Interaction i)
     {
         var typedCtx = (InteractionContext_Healing)i.Context;

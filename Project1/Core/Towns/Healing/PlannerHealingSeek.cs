@@ -35,9 +35,11 @@ internal class PlannerHealingOffer : Planner
                 map.Town.Trades.MarkAccepted(actor);
                 return new Plan(HealingDefOf.PlanHealingWaitPay);
             }
-            if (existing.IsPaid)
+            //if (existing.IsPaid)
+            if (existing.IsTargetReady)
                 return new Plan(SpellDefOf.PlanCastSpell, target) { Spell = SpellDefOf.Healing, Continuation = PlanContinuationPolicy.Yield };
-            return new Plan(HealingDefOf.PlanHealingWaitCaster);
+            if (existing.IsPaid)
+                return new Plan(HealingDefOf.PlanHealingWaitCaster);
         }
         var allRequests = manager.PendingRequests;
         foreach(var req in allRequests)
@@ -68,7 +70,11 @@ internal class PlannerHealingSeek : Planner
             var caster = map.World.Get<Actor>(existing.CasterId);
             if (!actor.CanReachAndReserve(caster))
                 return null;
-            if (existing.IsAccepted && !actor.IsHauling)
+            if (existing.IsPaid)
+                return null;
+            //if (existing.IsAccepted && !actor.IsHauling)
+            //if (existing.IsPaid && !actor.IsHauling)
+            if (existing.IsCasterReady && !actor.IsHauling)
                 return new Plan(HealingDefOf.PlanHealingSeek, caster);
 
             if (existing.IsWaitingPay)
@@ -95,6 +101,7 @@ internal class PlannerHealingSeek : Planner
                     return new Plan(PlanDefOf.RetrieveFromInventory, money) { AmountA = existing.Price };
                 }
             }
+         
             throw new UnreachableException();
         }
         if (actor.IsHauling)

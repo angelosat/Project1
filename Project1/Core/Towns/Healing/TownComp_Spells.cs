@@ -14,7 +14,7 @@ namespace Project1.Core.Towns.Healing;
 
 sealed class SpellRequest(Actor actor, SpellDef spell, int price) : ITownServiceTransaction
 {
-    enum States { Requested, Accepted, WaitingPay, Paid, Ready, Succeeded, Failed }
+    enum States { Requested, Accepted, WaitingPay, Paid, CasterReady, TargetReady, Succeeded, Failed }
     States State;
     internal EntityRefId TargetId = actor.RefId;
     internal EntityRefId CasterId;
@@ -25,7 +25,8 @@ sealed class SpellRequest(Actor actor, SpellDef spell, int price) : ITownService
     internal bool IsWaitingPay => this.State == States.WaitingPay;
     internal bool IsPaid => this.State == States.Paid;
     internal bool IsAccepted => this.State == States.Accepted;
-    internal bool IsReady => this.State == States.Ready;
+    internal bool IsTargetReady => this.State == States.TargetReady;
+    internal bool IsCasterReady => this.State == States.CasterReady;
     internal bool IsDisposed => this.State == States.Succeeded || this.State == States.Failed;
 
     public EntityRefId Buyer => this.TargetId;
@@ -51,15 +52,20 @@ sealed class SpellRequest(Actor actor, SpellDef spell, int price) : ITownService
         if (this.Price > 0)
             this.State = States.WaitingPay;
         else
-            this.State = States.Accepted;
+            this.State = States.Paid;// States.Accepted;
     }
 
-    internal void MarkReady()
+    internal void MarkTargetReady()
     {
-        //if (this.State != States.Accepted)
+        if (this.State != States.CasterReady)
+            throw new InvalidOperationException();
+        this.State = States.TargetReady;
+    }
+    internal void MarkCasterReady()
+    {
         if (this.State != States.Paid)
             throw new InvalidOperationException();
-        this.State = States.Ready;
+        this.State = States.CasterReady;
     }
     internal void MarkPaid()
     {
@@ -98,7 +104,7 @@ public class TownComp_Spells : TownComp
 
     readonly Dictionary<EntityRefId, SpellRequest> _pendingRequestsByTarget = [];
     readonly Dictionary<EntityRefId, SpellRequest> _acceptedRequestsByCaster = [];
-    internal Dictionary<SpellDef, int> PriceList = new() { { SpellDefOf.Healing, 100 } };
+    internal Dictionary<SpellDef, int> PriceList = new() { { SpellDefOf.Healing, 0 } };// 100 } };
 
     public TownComp_Spells(Town town) : base(town)
     {
@@ -157,6 +163,21 @@ public class TownComp_Spells : TownComp
     internal void MarkPaid(SpellRequest req, Actor caster)
     {
         req.MarkPaid();
+        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+    }
+
+    internal void MarkTargetReady(Actor target)
+    {
+        var req = this._pendingRequestsByTarget[target.RefId];
+        req.MarkTargetReady();
+        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+    }
+
+    internal void MarkCasterReady(Actor caster)
+    {
+        var req = this._acceptedRequestsByCaster[caster.RefId];
+        req.MarkCasterReady();
+        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
     }
 }
 

@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace Project1.Core.Rooms;
 
-public class RoomManager : TownComponent
+public class RoomManager : TownComp
 {
     int RoomIDSequence;
     int GetNextRoomID()

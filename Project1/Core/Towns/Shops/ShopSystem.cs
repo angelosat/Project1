@@ -6,7 +6,7 @@ using System.Collections.Generic;
 #nullable enable
 
 namespace Project1.Core.Towns.Shops;
-internal sealed class ShopsComp : TownComponent
+internal sealed class ShopsComp : TownComp
 {
     public override string Name => "Shops";
     List<ShopTransaction> _transactions = [];

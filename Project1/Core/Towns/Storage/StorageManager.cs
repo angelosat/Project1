@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Storage
 {
-    public class StorageManager : TownComponent
+    public class StorageManager : TownComp
     {
         readonly string _name = "Storage";
         public override string Name => this._name;

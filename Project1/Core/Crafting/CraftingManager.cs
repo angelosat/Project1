@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace Project1.Core.Crafting
 {
-    public class CraftingManager : TownComponent
+    public class CraftingManager : TownComp
     {
         private int NextOrderId = 1;
         public override string Name => "CraftingManager";

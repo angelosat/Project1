@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Project1.Core.Towns
 {
     record struct BedAssignment(Actor Actor, BlockBedComp Bed) { }
-    public sealed class OwnershipManager : TownComponent
+    public sealed class OwnershipManager : TownComp
     {
         public override string Name => "Ownership";
 

@@ -6,6 +6,7 @@
 - recalculate path on cell invalidation
 - buffs + buff/blessing town service
 - restaurant town service
+- make conversation requests expire
 - 
 - create primary raw material processing workstations
 - separate pathing behavior from interaction behavior. probably dont need behaviorexecuteplan anymore, just assume that all behaviors are a path to an interaction

@@ -61,7 +61,7 @@ sealed class ConversationRuntime(EntityRefId initiator, EntityRefId target)
         if (offset > max) max = offset;
     }
 }
-public class ConversationSystem : TownComponent
+public class ConversationSystem : TownComp
 {
     readonly Dictionary<EntityRefId, ConversationRuntime> ActiveConversationsByInitiator = [];
     readonly Dictionary<EntityRefId, ConversationRuntime> ActiveConversationsByTarget = [];

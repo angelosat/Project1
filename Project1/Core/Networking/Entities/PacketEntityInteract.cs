@@ -54,13 +54,10 @@ namespace Project1.Core.Networking.Entities
             var target = InteractionTarget.Read(net.World, r);
             var count = r.ReadInt32();
             var action = r.ReadDef<InteractionDef>().Create(entity, target, count);
-            //action.Count = count;
             action.Read(r);
             var global = r.ReadVector3();
             var velocity = r.ReadVector3();
             var dir = r.ReadVector3();
-            action.Resolve(map);
-            //entity.Work.Perform(action, target);
             entity.Work.Start(action);
         }
     }

@@ -17,7 +17,7 @@ using System.Linq;
 namespace Project1.Core.Towns.Zones;
 
 [EnsureStaticCtorCall]
-public class ZoneManager : TownComponent
+public class ZoneManager : TownComp
 {
     static readonly ZoneDef[] ZoneDefs;// = [ZoneDefOf.Stockpile, ZoneDefOf.Growing];
     public override string Name => "ZoneManager";

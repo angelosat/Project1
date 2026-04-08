@@ -108,7 +108,7 @@ class WorkplacesGui : GroupBox
         this.AddControlsHorizontally(boxList);
     }
 }
-public partial class TownServicesComp : TownComponent
+public partial class TownServicesComp : TownComp
 {
     public ChangeNotifier Notifications = new();
     const int UIListWidth = 250;

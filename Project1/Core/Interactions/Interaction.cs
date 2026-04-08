@@ -182,12 +182,16 @@ namespace Project1.Core.Interactions
         public void DrawUI(SpriteBatch sb, Camera camera)
         {
             var actor = this.Actor;
-            Bar.Draw(sb, camera, this.Actor.Global, this.Def.LabelReadable, this.Def.Controller?.GetProgressBarPercentage(this) ?? this.Progress.Percentage, camera.Zoom * .2f);
+            Bar.Draw(
+                sb, 
+                camera, 
+                this.Actor.Global, 
+                this.Def.LabelReadable, 
+                this.Def.Controller?.GetProgressBarPercentage(this) ?? this.Progress.Percentage, 
+                camera.Zoom * .2f,
+                this.Def.ProgressBarColor
+                );
         }
-
-        //internal virtual void ResolveReferences()
-        //{
-        //}
 
         public string GetCompletedText(Actor actor, InteractionTarget target)
         {
@@ -203,25 +207,16 @@ namespace Project1.Core.Interactions
         {
             this.CurrentTick = r.ReadSingle();
             this.State = (States)r.ReadInt32();
-            //this.ReadExtra(r);
         }
-        //protected virtual void WriteExtra(IDataWriter w) { }
-        //protected virtual void ReadExtra(IDataReader r) { }
-
+       
         public SaveTag SaveAs(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             tag.Add(this.GetType().FullName.Save("Name"));
             tag.Add(((int)this.State).Save("State"));
             tag.Add(this.CurrentTick.Save("Progress"));
-            //this.AddSaveData(tag);
             return tag;
         }
-
-        //void AddSaveData(SaveTag tag) { }
-        //public void LoadData(SaveTag tag)
-        //{
-        //}
 
         public static Interaction Load(SaveTag tag)
         {
@@ -232,18 +227,7 @@ namespace Project1.Core.Interactions
             //inter.LoadData(tag);
             return inter;
         }
-        internal void Resolve(MapBase map)
-        {
-        }
-        //internal void FinishAction()
-        //{
-        //}
         
-        internal void AfterLoad()
-        {
-            this.CachedAnimation.Entity = this.Actor;
-        }
-
         public void DrawProgressBar(Func<Vector3> position, Func<float> progress, Func<string> label)
         {
             this._drawProgressBar = true;
@@ -288,10 +272,7 @@ namespace Project1.Core.Interactions
             this.AddProgress(amount);
             DegradeTool(tool);
             this.TotalWorkApplied += amount;
-            //this._cachedAnimation.Frame.ToConsole();
-
-            //var speed = InteractionResolverDefOf.WorkSpeed.Worker.Resolve(actor);
-            //this.CachedAnimation.Speed = actor[StatDefOf.WorkSpeed];
+    
             this.SetNextSwingSpeed(speed);
             if (skill is not null)
             {
@@ -314,8 +295,6 @@ namespace Project1.Core.Interactions
                 //throw new NotImplementedException();
                 actor.Skills.Increase(skill, (int)this.TotalWorkApplied);
             }
-            //this.Done();
-            //this.Finish();
         }
 
         private static void DegradeTool(Entity tool)
@@ -334,7 +313,6 @@ namespace Project1.Core.Interactions
         bool WillFinish(int amount) => this.Def.Logic.WillFinish(this.Context, amount);
         float WorkDifficulty { get; } = 1;
 
-        //protected virtual void Done() => this.Def.Logic?.OnFinish(this);
         int CalculateWorkAmount()
         {
             var toolUse = this.Def.ToolUse;
@@ -410,14 +388,10 @@ namespace Project1.Core.Interactions
             return fromToolWeight;
         }
 
-        //internal void MarkSucceeded()
-        //{
-        //    this.State = States.Succeeded;
-        //}
-        //internal void MarkFailed()
-        //{
-        //    this.State = States.Failed;
-        //}
+        internal void OnAnimationHook()
+        {
+            this.Def.Logic.OnAnimationHook(this);
+        }
 
         float TotalWorkApplied;
 

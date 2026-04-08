@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Inns;
 record struct InnGuestProfile(EntityRefId ActorId, IntVec3 AssignedBed, Tick TimeCheckedIn) { }
-public sealed class InnManager : TownComponent
+public sealed class InnManager : TownComp
 {
 
     public override string Name => "Inns";

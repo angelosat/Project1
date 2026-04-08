@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns
 {
-    public class FurnitureTracker(Town town) : TownComponent(town)
+    public class FurnitureTracker(Town town) : TownComp(town)
     {
         public override string Name => "Furniture";
 

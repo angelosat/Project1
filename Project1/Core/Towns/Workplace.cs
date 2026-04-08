@@ -62,12 +62,12 @@ public abstract class Workplace : ISerializable, ISaveable
                 this.FacilitiesTargetsCached.Remove(n);
     }
 
-    public Workplace(TownComponent manager, int id) : this(manager)
+    public Workplace(TownComp manager, int id) : this(manager)
     {
         this.ID = id;
     }
 
-    public Workplace(TownComponent manager) : this()
+    public Workplace(TownComp manager) : this()
     {
         this.Town = manager.Town;
     }

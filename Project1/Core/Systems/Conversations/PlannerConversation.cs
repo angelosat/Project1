@@ -55,7 +55,8 @@ internal sealed class PlannerConversation : Planner
                     convo.MarkAccepted();
                 var other = actor.Map.World.Get<Actor>(convo.CurrentTalker);
                 if (!actor.CanReachAndReserve(other))
-                    throw new InvalidOperationException("Conversation shouldn't continue if actors can't reach eachother");
+                    return null;
+                    //throw new InvalidOperationException("Conversation shouldn't continue if actors can't reach eachother");
                 return new Plan(ConversationDefOf.PlanListen, other);
             }
             return null;

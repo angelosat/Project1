@@ -23,7 +23,7 @@ using System.Linq;
 namespace Project1.Core.Towns.Designations
 {
     [EnsureStaticCtorCall]
-    public class DesignationManager : TownComponent
+    public class DesignationManager : TownComp
     {
         public override string Name => "Designation Manager";
         ReadOnlyDictionary<DesignationDef, ObservableHashSet<InteractionTarget>> Designations;

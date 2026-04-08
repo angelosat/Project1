@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Project1.Core.Towns.Reputation;
 
 internal record struct ReputationDeltaAppliedEvent(EntityRefId ActorId, float Delta) : IEventPayload;
-public sealed class TownReputationComp : TownComponent, IGuiNew
+public sealed class TownReputationComp : TownComp, IGuiNew
 {
     static readonly List<ReputationSourceDef> AllDefs = [.. Def.Get<ReputationSourceDef>()];
 

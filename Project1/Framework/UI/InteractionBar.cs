@@ -91,14 +91,17 @@ namespace Project1.Core.UI
                 sb.Draw(UIManager.ProgressBarBorder, screenLoc, Color.White);
         }
         static public void Draw(SpriteBatch sb, Vector2 screenLoc, int width, float percentage, float scale)
+            => Draw(sb, screenLoc, width, percentage, scale, Color.Orange);
+            
+        static public void Draw(SpriteBatch sb, Vector2 screenLoc, int width, float percentage, float scale, Color color)
         {
             var w = (int)(width * scale);
             var h = (int)(UIManager.DefaultProgressBar.Height * scale);
-            var x = (int)screenLoc.X - w/2;
-            var y = (int)screenLoc.Y - h/2;
+            var x = (int)screenLoc.X - w / 2;
+            var y = (int)screenLoc.Y - h / 2;
             var rect = new Rectangle(x, y, w, h);
-            sb.Draw(UIManager.DefaultProgressBar, rect, null, Color.Lerp(Color.Orange, Color.Transparent, 0.5f), 0, Vector2.Zero, SpriteEffects.FlipVertically, 0);//1);//0.1f);
-            sb.Draw(UIManager.DefaultProgressBar, new Vector2(x, y), new Rectangle(0, 0, (int)(w * percentage), h), Color.Orange);
+            sb.Draw(UIManager.DefaultProgressBar, rect, null, Color.Lerp(color, Color.Transparent, 0.5f), 0, Vector2.Zero, SpriteEffects.FlipVertically, 0);//1);//0.1f);
+            sb.Draw(UIManager.DefaultProgressBar, new Vector2(x, y), new Rectangle(0, 0, (int)(w * percentage), h), color);
             if (width == DefaultWidth)
                 sb.Draw(UIManager.ProgressBarBorder, new Vector2(x, y), null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0f);//0.05f);
         }

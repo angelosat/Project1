@@ -111,10 +111,12 @@ namespace Project1.Framework.UI
             UIManager.DrawStringOutlined(sb, text, textLoc, Alignment.Horizontal.Left, Alignment.Vertical.Center, 0.5f);
         }
         static public void Draw(SpriteBatch sb, Camera camera, Vector3 global, string text, float percentage, float scale)
+            => Draw(sb, camera, global, text, percentage, scale, Color.Orange);
+        static public void Draw(SpriteBatch sb, Camera camera, Vector3 global, string text, float percentage, float scale, Color color)
         {
             text = camera.Zoom > 2 ? text : "";
             var scrLoc = camera.GetScreenPositionFloat(global);
-            InteractionBar.Draw(sb, scrLoc, InteractionBar.DefaultWidth, percentage, scale);
+            InteractionBar.Draw(sb, scrLoc, InteractionBar.DefaultWidth, percentage, scale, color);
             UIManager.DrawStringOutlined(sb, text, scrLoc, Color.Black, Color.White, 1, Alignment.Horizontal.Center, Alignment.Vertical.Center, 0.5f);
         }
     }

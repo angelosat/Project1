@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Towns
 {
-    public abstract class TownComponent : Inspectable
+    public abstract class TownComp : Inspectable
     {
         public Town Town;
         public MapBase Map => this.Town.Map;
@@ -26,11 +26,11 @@ namespace Project1.Core.Towns
         const float UpdateFrequency = 1; // per second
         float UpdateTimerMax = Ticks.PerSecond / UpdateFrequency;
         float UpdateTimer;
-        protected TownComponent()
+        protected TownComp()
         {
 
         }
-        public TownComponent(Town town)
+        public TownComp(Town town)
         {
             this.Town = town;
         }

@@ -62,7 +62,7 @@ static class SaveFileManager
             UIConnecting.Create(localHost);
             Server.Instance.SetWorld(item.World);
             Server.Instance.AddMap(map);
-
+            Server.Instance.ViewMap(map.ID);
             Client.Instance.Connect(localHost, "host", a => { LobbyWindow.Instance.Console.Write("Connected to " + localHost); });
         });
     }

@@ -20,7 +20,7 @@ using System.Numerics;
 
 namespace Project1.Core.Towns.Constructions
 {
-    public class ConstructionManager : TownComponent
+    public class ConstructionManager : TownComp
     {
         public static readonly QuickButton IconCancel = new QuickButton(Icon.X, KeyBind.Cancel) { HoverText = "Cancel designation" };
         public override string Name => "Constructions";

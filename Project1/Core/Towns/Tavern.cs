@@ -103,11 +103,11 @@ namespace Project1.Core.Towns
         {
 
         }
-        public Tavern(TownComponent manager, int id) : base(manager, id)
+        public Tavern(TownComp manager, int id) : base(manager, id)
         {
             this.Name = string.Format("Tavern{0}", this.ID);
         }
-        public Tavern(TownComponent manager) : base(manager)
+        public Tavern(TownComp manager) : base(manager)
         {
         }
         

@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Animations;
+using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;
@@ -38,6 +39,18 @@ internal static class InteractionDefOf
     { 
         Animation = AnimationDefOf.TouchItem, 
         Controller = InteractionControllers.FirstContact,// new InteractionProgressFirstContact(),
+        Range = InteractionRange.Any
+    };
+    public static readonly InteractionDef TradeOffer = new("TradeOffer", typeof(InteractionTradeOffer))
+    {
+        Animation = AnimationDefOf.ExtendArms,
+        Controller = InteractionControllers.ExternalFull,
+        Range = InteractionRange.Any
+    };
+    public static readonly InteractionDef TradeComplete = new("TradeComplete", typeof(InteractionTradeComplete))
+    {
+        Animation = AnimationDefOf.ExtendArms,
+        Controller = InteractionControllers.ExternalFull,
         Range = InteractionRange.Any
     };
     public static readonly InteractionDef Pay = new("Paying", typeof(InteractionPayTransaction))
@@ -201,7 +214,10 @@ internal static class InteractionDefOf
         Controller = InteractionControllers.Timed
         //ProgressHandler = InteractionProgressHandlers.External
     };
-    public static readonly InteractionDef CastSpell = new("CastSpell", typeof(InteractionCastSpell), InteractionControllers.Timed);
+    public static readonly InteractionDef CastSpell = new("CastSpell", typeof(InteractionCastSpell), InteractionControllers.Timed)
+    {
+        ProgressBarColor = ResourceDefOf.Mana.Color
+    };
     static InteractionDefOf()
     {
         Def.Register(typeof(InteractionDefOf));

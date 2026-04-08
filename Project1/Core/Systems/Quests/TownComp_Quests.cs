@@ -73,7 +73,7 @@ sealed class QuestTracker : ISaveableNewNew<QuestTracker>, ISerializableNewNew<Q
     }
 }
 
-public sealed class TownComp_Quests : TownComponent
+public sealed class TownComp_Quests : TownComp
 {
     public ChangeNotifier Notifier = new();
     public override string Name => "QuestsNew";

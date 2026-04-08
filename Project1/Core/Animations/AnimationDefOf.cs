@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities.Actors;
+using Project1.Framework;
+using System;
 
 namespace Project1.Core.Animations
 {
@@ -137,6 +137,25 @@ namespace Project1.Core.Animations
                 ))
             .AddEvent(25, e => (e as Actor).Work.OnToolContact());
 
+        static public readonly AnimationDef ExtendArms = new AnimationDef("ExtendArms", 4)
+            .AddClip(BoneDefOf.RightHand, WarpMode.Once,
+                new Keyframe(0, Vector2.Zero, -3 * (float)Math.PI / 4f, Interpolation.Sine),
+                new Keyframe(25, Vector2.Zero, -3 * (float)Math.PI / 4f, Interpolation.Sine)
+                )
+            .AddClip(BoneDefOf.LeftHand, new AnimationClip(WarpMode.Once,
+                new Keyframe(0, Vector2.Zero, -3*(float)Math.PI / 4f, Interpolation.Sine),
+                new Keyframe(25, Vector2.Zero, -3 * (float)Math.PI / 4f, Interpolation.Sine)
+                ))
+            .AddClip(BoneDefOf.Torso, new AnimationClip(WarpMode.Once,
+                new Keyframe(0, Vector2.Zero, (float)Math.PI / 4f, Interpolation.Sine),
+                new Keyframe(25, Vector2.Zero, (float)Math.PI / 4f, Interpolation.Sine)
+                ))
+            .AddClip(BoneDefOf.Head, new AnimationClip(WarpMode.Once,
+                new Keyframe(0, Vector2.Zero, -(float)Math.PI / 4f, Interpolation.Sine),
+                new Keyframe(25, Vector2.Zero, -(float)Math.PI / 4f, Interpolation.Sine)
+                ))
+            .AddEvent(25, e => (e as Actor).Work.OnAnimationHook());
+
         static public readonly AnimationDef DeliverAttack = new AnimationDef("AnimationDeliverAttack", 4)
             .AddClip(BoneDefOf.RightHand, WarpMode.Once,
                 new Keyframe(0, Vector2.Zero, -4 * (float)Math.PI / 3f),
@@ -154,15 +173,6 @@ namespace Project1.Core.Animations
         static AnimationDefOf()
         {
             Def.Register(typeof(AnimationDefOf));
-            //Register(Null);
-            //Register(TouchItem);
-            //Register(Walk);
-            //Register(Jump);
-            //Register(Crouch);
-            //Register(Tool);
-            //Register(Haul);
-            //Register(Work);
-            //Register(DeliverAttack);
         }
     }
 }

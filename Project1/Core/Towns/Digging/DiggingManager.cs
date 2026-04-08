@@ -14,7 +14,7 @@ using Project1.Core.Systems.Materials;
 
 namespace Project1.Core.Towns.Digging
 {
-    public class DiggingManager : TownComponent
+    public class DiggingManager : TownComp
     {
         HashSet<IntVec3> AllPositions = [];
 

@@ -26,7 +26,10 @@ namespace Project1.Core.Interactions
             //this.Task.FinishAction();
             //this.Stop();
         }
-
+        internal void OnAnimationHook()
+        {
+            this.Task.OnAnimationHook();
+        }
         internal void OnToolContact()
         {
             this.Task.OnToolContact();

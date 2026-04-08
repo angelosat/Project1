@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Plants
 {
-    public class GrowingManager : TownComponent
+    public class GrowingManager : TownComp
     {
         readonly List<GrowingZone> GrowZones = [];
         public ILookup<PlantSpeciesDef, GrowingZone> BySpecies => this.GrowZones.ToLookup(z => z.Plant);

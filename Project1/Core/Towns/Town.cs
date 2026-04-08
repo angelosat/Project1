@@ -14,6 +14,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Systems.Conversations;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Quests;
+using Project1.Core.Systems.Trading;
 using Project1.Core.Towns.Constructions;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Digging;
@@ -128,8 +129,9 @@ public sealed class Town : Inspectable, IDutyProvider
     public OwnershipManager Ownership;
     public TownReputationComp Reputation;
     public ConversationSystem Conversations;
+    public TownComp_Trade Trades;
 
-    public List<TownComponent> TownComponents = [];
+    public List<TownComp> TownComponents = [];
 
     public MapBase Map { get; private set; }
     public NetEndpoint Net => this.Map.Net;
@@ -151,10 +153,8 @@ public sealed class Town : Inspectable, IDutyProvider
         this.CraftingManager = new(this);
         this.DutiesManager = new(this);
         this.ReservationManager = new(this);
-        //this.TerrainManager = new(this);
         this.ShopManager = new(this);
         this.InnManager = new(this);
-        //this.QuestManager = new(this);
         this.Storage = new(this);
         this.Furniture = new(this);
         this.Ownership = new(this);
@@ -162,6 +162,7 @@ public sealed class Town : Inspectable, IDutyProvider
         this.QuestManagerNew = new(this);
         this.SpellManager = new(this);
         this.Conversations = new(this);
+        this.Trades = new(this);
 
         this.TownComponents.AddRange(
             this.ZoneManager,
@@ -172,17 +173,16 @@ public sealed class Town : Inspectable, IDutyProvider
             this.RoomManager,
             this.CraftingManager,
             this.ReservationManager,
-            //this.TerrainManager,
             this.ShopManager,
             this.InnManager,
-            //this.QuestManager,
             this.QuestManagerNew,
             this.SpellManager,
             this.Storage,
             this.Furniture,
             this.Ownership,
             this.Reputation,
-            this.Conversations
+            this.Conversations,
+            this.Trades
         );
 
         this.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);

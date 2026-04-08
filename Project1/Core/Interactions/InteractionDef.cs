@@ -1,4 +1,5 @@
-﻿using Project1.Core.Animations;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Animations;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Tools;
@@ -24,6 +25,7 @@ namespace Project1.Core.Interactions
         public SkillDef Skill;
         public ToolUseDef ToolUse;
         public InteractionRange Range = InteractionRange.Touching;
+        public Color ProgressBarColor = Color.Orange;
         public InteractionDef(string name, Type workerType) : base(name)
         {
             this.InteractionClass = typeof(Interaction);

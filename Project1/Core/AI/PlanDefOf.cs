@@ -3,7 +3,6 @@ using Project1.Core.AI.Behaviors.Eating;
 using Project1.Core.AI.Behaviors.Idle;
 using Project1.Core.AI.Behaviors.ItemOwnership;
 using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.AI.Behaviors.Sleeping;
 using Project1.Core.Interactions;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Towns.AI.Behaviors;
@@ -87,6 +86,8 @@ namespace Project1.Core.AI
         static public readonly PlanDef ClaimBoughtItem = new ("ClaimBoughtItem", typeof(BehaviorExecutePlanNew), InteractionDefOf.ClaimBoughtItem);
         static public readonly PlanDef BrowseProduct = new ("BrowseProduct", typeof(BehaviorExecutePlanNew), InteractionDefOf.BrowseProduct);
         //static public readonly PlanDef CastSpell = new("CastSpell", typeof(BehaviorExecutePlanNew), InteractionDefOf.CastSpell);
+        static public readonly PlanDef TradeOffer = new("TradeOffer", typeof(BehaviorExecutePlanNew), InteractionDefOf.TradeOffer);
+        static public readonly PlanDef TradeComplete = new("TradeComplete", typeof(BehaviorExecutePlanNew), InteractionDefOf.TradeComplete);
 
         static PlanDefOf()
         {

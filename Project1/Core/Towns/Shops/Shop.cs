@@ -30,11 +30,11 @@ namespace Project1.Core.Towns.Shops
         readonly Dictionary<Actor, Entity> PendingSales = new();
         readonly Dictionary<Actor, Transaction> PendingTransactions = new();
 
-        public Shop(TownComponent manager, int id) : base(manager, id)
+        public Shop(TownComp manager, int id) : base(manager, id)
         {
             this.Name = string.Format("Shop{0}", this.ID);
         }
-        public Shop(TownComponent manager) : base(manager)
+        public Shop(TownComp manager) : base(manager)
         {
 
         }

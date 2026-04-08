@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Project1.Core.AI.Reservations
 {
-    public class ReservationManager : TownComponent
+    public class ReservationManager : TownComp
     {
         readonly List<Reservation> Reservations = [];
         readonly Dictionary<InteractionTarget, List<Reservation>> ByTarget = [];

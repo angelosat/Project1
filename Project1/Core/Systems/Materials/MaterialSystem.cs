@@ -42,6 +42,8 @@ namespace Project1.Core.Systems.Materials
                 }
             }
         }
+        public static List<MaterialDef> ByTier(int tier)
+            => [.. RefinemenetsByTier[tier].Select(e => e.Value)];
         public static MaterialDef ByTierAndType(int tier, MaterialRefinementDef refinement)
             => RefinemenetsByTier[tier][refinement];
         public static IReadOnlySet<MaterialDef> GetMaterialsByType(MaterialTypeDef typeDef)

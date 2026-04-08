@@ -4,8 +4,7 @@ using Project1.Core.Systems.Materials;
 using Project1.Core.World.WorldAreas;
 
 namespace Project1.Core.World;
-
-internal sealed class OffmapActivity_FindLoot : OffmapActivity
+internal sealed class OffmapActivity_FarmLoot : OffmapActivity
 {
     internal override void Tick(FrontierWrapper frontier, Actor actor)
     {

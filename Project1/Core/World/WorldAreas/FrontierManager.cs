@@ -45,19 +45,19 @@ public class FrontierManager : IWorldSpaceManager
         this.World = world;
         foreach (var areadef in _cachedDefs)
             this.Frontiers.Add(areadef, new FrontierWrapper(areadef));
-
+        this.GenerateTreasure(new Random());
         //var byTier = this.Frontiers.Values.ToList();
         //byTier.Sort((a, b) => a.Def.Tier.CompareTo(b.Def.Tier));
         //this.FrontiersByTier = byTier.ToDictionary(f => new Tier(f.Def.Tier), f => f);
     }
 
-    void FillLootPools()
+    void GenerateTreasure(Random rand)
     {
         foreach(var f in this.Frontiers.Values)
         {
             for (int i = 0; i < 10; i++)
             {
-                f.AddLoot(ToolSystem.CreateRandom((Tier)f.Def.Tier));
+                f.AddTreasure(ToolSystem.CreateRandom(rand, f.Def.Tier));
             }
         }
     }
@@ -137,10 +137,10 @@ public class FrontierManager : IWorldSpaceManager
         //    if (i < distance && distance <= i + 1)
         //        return this.FrontiersByTier[i+1];
         //}
-        for (int i = 0; i < FrontiersByTier.Count; i++)
+        for (byte i = 0; i < FrontiersByTier.Count; i++)
         {
             if (i < distance && distance <= i + 1)
-                return this.Frontiers[FrontiersByTier[(byte)(i + 1)]].Def;
+                return this.Frontiers[FrontiersByTier[(Tier)(i + 1)]].Def;
         }
         throw new ArgumentOutOfRangeException(nameof(pos), "World-space position out of bounds");
     }

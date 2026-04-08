@@ -39,7 +39,8 @@ namespace Project1.Core.Entities.Actors
                 SkillDefOf.Carpentry,
                 SkillDefOf.Crafting,
                 SkillDefOf.Plantcutting,
-                SkillDefOf.Social
+                SkillDefOf.Social,
+                SkillDefOf.Exploration
                 ],
             Gear = [
                 GearTypeDefOf.Mainhand,

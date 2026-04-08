@@ -9,6 +9,7 @@ using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,12 +20,15 @@ namespace Project1.Core.Systems.Tools;
 internal static class ToolSystem
 {
     public static Dictionary<BoneDef, CraftingRules> Rules = [];
+    static HashSet<ToolProfileDef> _allDefs;
     static ToolSystem()
     {
         CreateRuleFor(BoneDefOf.ToolHandle)
             .Allow(MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots);
         CreateRuleFor(BoneDefOf.ToolHead)
             .Allow(MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Chunk);
+
+        _allDefs = [.. Def.Get<ToolProfileDef>()];
     }
     public static CraftingRules CreateRuleFor(BoneDef bone)
     {
@@ -115,8 +119,18 @@ internal static class ToolSystem
         throw new UnreachableException();
     }
 
-    internal static Entity CreateRandom(Tier tier)
+    internal static Entity CreateRandom(Random rand, Tier tier)
     {
-        throw new NotImplementedException();
+        //var refinemenets = MaterialSystem.ByTier(tier);
+        ////var handleRef = Rules[BoneDefOf.ToolHandle].Types.SelectRandom(rand);
+        //var handleRef = refinemenets.SelectRandom(rand);
+        //var handleMat = MaterialSystem.GetMaterialsByType(tier, handleRef);
+
+        ////var edgeRef = Rules[BoneDefOf.ToolHead].Types.SelectRandom(rand);
+        //var edgeRef = refinemenets.SelectRandom(rand);
+        //var edgeMat = MaterialSystem.ByTierAndType(tier, edgeRef);
+        var mats = MaterialSystem.ByTier(tier);
+
+        return Create(_allDefs.SelectRandom(rand), mats.SelectRandom(rand), mats.SelectRandom(rand));
     }
 }

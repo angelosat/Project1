@@ -19,7 +19,7 @@ namespace Project1.Core.World.WorldAreas
         public int LootWeightRawMaterial = 1;
         public int LootWeightEquipment = 1;
         public int LootWeightCurrency = 1;
-        public readonly byte Tier;
+        public readonly Tier Tier;
         LootWrapper LootCurrency;
         public FrontierDef(string name, byte tier) : base(name)
         {

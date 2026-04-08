@@ -236,7 +236,15 @@ namespace Project1.Framework.Helpers
             var roll = rand.NextDouble();
             return roll <= chance;
         }
-      
+        public static bool Roll100(this Random rand, int chance)
+        {
+            if (chance <= 0)
+                return false;
+            if (chance >= 100)
+                return true;
+            var roll = rand.Next(100) + 1;
+            return roll <= chance;
+        }
         static public Dictionary<T, U> ToDictionary<T,U>(this IList<T> listA, IList<U> listB)
         {
             var count = listA.Count;

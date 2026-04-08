@@ -52,7 +52,7 @@ public sealed class InnManager : TownComponent
                 this.OpenTransactionsByDesk.Remove(t.Desk);
                 this.OpenTransactionsByClerk.Remove(t.Clerk);
                 this.Town.OpenTransactions.Remove(id);
-                this.Map.Events.Post(new ShopTransactionFinishedEvent(this.Map, t));
+                this.Map.Events.Post(new TownServiceComplete(this.Map, t));
             }
         }
     }

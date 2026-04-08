@@ -8,13 +8,13 @@ namespace Project1.Core.Towns.Reputation;
 
 public sealed class ReputationSourceCustomer : ReputationSourceWorker
 {
-    const int BaseValue = 10;
+    const int BaseValue = 1;
     public override void HookTo(MapBase map)
     {
-        map.Events.ListenTo<ShopTransactionFinishedEvent>(HandleShopTransactionFinished);
+        map.Events.ListenTo<TownServiceComplete>(HandleShopTransactionFinished);
     }
 
-    private void HandleShopTransactionFinished(ShopTransactionFinishedEvent e)
+    private void HandleShopTransactionFinished(TownServiceComplete e)
     {
         var map = e.Map;
         var transaction = e.Transaction;

@@ -31,8 +31,11 @@ namespace Project1.Core.AI
             var rand = parent.Map.Random;
             double radians = rand.NextDouble() * 2 * Math.PI;
             var choice = new Vector3((float)Math.Cos(radians), (float)Math.Sin(radians), 0);
-            var dist = Math.Min(Vector3.Distance(parent.Global, state.Leash) / (float)MaxRange, 1);
-            var towardsLeash = state.Leash - parent.Global;
+            if (!state.Leash.HasValue)
+                state.Leash = parent.Global;
+            var leash = state.Leash.Value;
+            var dist = Math.Min(Vector3.Distance(parent.Global, leash) / (float)MaxRange, 1);
+            var towardsLeash = leash - parent.Global;
             towardsLeash.Z = 0;
             if (towardsLeash != Vector3.Zero)
                 towardsLeash.Normalize();

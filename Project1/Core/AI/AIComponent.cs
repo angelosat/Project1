@@ -57,6 +57,7 @@ public sealed class AIComponent : EntityComp<AIComponent.Spec>
         var c = source as AIComponent;
         this.Root = c.Root.Clone() as Behavior;
         this.Meta = c.Meta.Def.CreateWrapper();
+        this.Meta.Actor = this.Owner as Actor;
     }
     public override void Randomize(GameObject parent, RandomThreaded random)
     {
@@ -121,7 +122,7 @@ public sealed class AIComponent : EntityComp<AIComponent.Spec>
     }
     public override void OnSpawn(MapBase newMap)
     {
-        this.State.Leash = this.Owner.Global;
+        //this.State.Leash = this.Owner.Global;
         this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
         this.State.ItemPreferences.OnSpawn(newMap);
     }

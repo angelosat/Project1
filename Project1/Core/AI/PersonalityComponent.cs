@@ -35,9 +35,9 @@ namespace Project1.Core.AI
         }
         internal override void CopyFrom(EntityComp source)
         {
-            var traits = ((PersonalityComponent)source).Traits;
-            foreach (var trait in traits.Keys)
-                this.AddTrait(trait);
+            //var traits = ((PersonalityComponent)source).Traits;
+            //foreach (var trait in traits.Keys)
+            //    this.AddTrait(trait);
             this.Randomize();
         }
         public void AddTrait(TraitDef def)

@@ -18,6 +18,7 @@ using Project1.Core.Towns.Constructions;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Duties;
+using Project1.Core.Towns.Healing;
 using Project1.Core.Towns.Inns;
 using Project1.Core.Towns.Reputation;
 using Project1.Core.Towns.Shops;
@@ -50,6 +51,7 @@ public sealed class Town : Inspectable, IDutyProvider
 
     public IReadOnlyCollection<DutyDef> AvailableDuties => field ??= 
             [
+        DutyDefOf.Healer,
                 DutyDefOf.Cashier,
                 DutyDefOf.Innkeeper,
                 DutyDefOf.Digger,
@@ -119,6 +121,7 @@ public sealed class Town : Inspectable, IDutyProvider
     //[InspectorHidden]
     //public QuestsManager QuestManager;
     public TownComp_Quests QuestManagerNew;
+    public TownComp_Spells SpellManager;
     [InspectorHidden]
     public StorageManager Storage;
     public FurnitureTracker Furniture;
@@ -157,6 +160,7 @@ public sealed class Town : Inspectable, IDutyProvider
         this.Ownership = new(this);
         this.Reputation = new(this);
         this.QuestManagerNew = new(this);
+        this.SpellManager = new(this);
         this.Conversations = new(this);
 
         this.TownComponents.AddRange(
@@ -173,6 +177,7 @@ public sealed class Town : Inspectable, IDutyProvider
             this.InnManager,
             //this.QuestManager,
             this.QuestManagerNew,
+            this.SpellManager,
             this.Storage,
             this.Furniture,
             this.Ownership,

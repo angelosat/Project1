@@ -312,7 +312,7 @@ public partial class TownServicesComp : TownComponent
                 this.Town.OpenTransactions.Remove(transaction.Buyer);
                 if (transaction.Seller != EntityRefId.Null)
                     this._transactionsBySeller.Remove(transaction.Seller);
-                this.Map.Events.Post(new ShopTransactionFinishedEvent(this.Map, transaction));
+                this.Map.Events.Post(new TownServiceComplete(this.Map, transaction));
             }
         }
     }

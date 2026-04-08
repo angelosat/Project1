@@ -4,14 +4,13 @@ using Project1.Framework.Events;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Project1.Core.Towns.Reputation;
 
 internal record struct ReputationDeltaAppliedEvent(EntityRefId ActorId, float Delta) : IEventPayload;
 public sealed class TownReputationComp : TownComponent, IGuiNew
 {
-    static readonly List<ReputationSourceDef> AllDefs = Def.Get<ReputationSourceDef>().ToList();
+    static readonly List<ReputationSourceDef> AllDefs = [.. Def.Get<ReputationSourceDef>()];
 
     public override string Name => "Reputation";
     readonly Dictionary<EntityRefId, ActorReputationEntry> _table = [];
@@ -44,7 +43,7 @@ public sealed class TownReputationComp : TownComponent, IGuiNew
         var box = new GroupBox();
         var table = new Table<EntityRefId>()
             .AddColumn("name", 128, e => new LabelNew(() => this.Map.World.Get<Actor>(e).LabelReadable))
-            .AddColumn("rep", 128, e => this._table[e].CreateControl());
+            .AddColumn("rep", 200, e => this._table[e].CreateControl());
         table.AddItems(this._table.Keys);
         box.Controls.Add(table);
         return box;

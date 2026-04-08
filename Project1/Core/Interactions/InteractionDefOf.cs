@@ -4,6 +4,7 @@ using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI;
+using Project1.Core.Towns.Healing;
 using Project1.Core.Towns.Inns;
 using Project1.Core.Towns.Shops;
 using Project1.Framework;
@@ -200,6 +201,7 @@ internal static class InteractionDefOf
         Controller = InteractionControllers.Timed
         //ProgressHandler = InteractionProgressHandlers.External
     };
+    public static readonly InteractionDef CastSpell = new("CastSpell", typeof(InteractionCastSpell), InteractionControllers.Timed);
     static InteractionDefOf()
     {
         Def.Register(typeof(InteractionDefOf));

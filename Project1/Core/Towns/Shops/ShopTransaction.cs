@@ -23,7 +23,7 @@ public interface ITownServiceTransaction
     void Read(IDataReader r);
 }
 internal record struct ShopTransactionUpdatedEvent(MapBase Map, ITownServiceTransaction Transaction) : IEventPayload { }
-internal record struct ShopTransactionFinishedEvent(MapBase Map, ITownServiceTransaction Transaction) : IEventPayload { }
+internal record struct TownServiceComplete(MapBase Map, ITownServiceTransaction Transaction) : IEventPayload { }
 sealed class ShopTransaction : ITownServiceTransaction
 {
     internal enum TransactionState

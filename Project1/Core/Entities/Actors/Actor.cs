@@ -274,6 +274,7 @@ namespace Project1.Core.Entities.Actors
             yield return ("Stats", typeof(StatsGuiNew));
             yield return ("Personality", typeof(PersonalityUI));
             yield return ("Relationships", typeof(RelationshipsCompGui));
+            yield return ("Resources", typeof(ResourcesGui));
         }
         public bool CanOperate(InteractionTarget target)
         {

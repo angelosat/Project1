@@ -12,6 +12,7 @@ namespace Project1.Core.Towns.Services
         static public readonly TownServiceDef Buying = new("Buying", typeof(TownServiceBuying));
         static public readonly TownServiceDef Repairing = new("Repairing", typeof(TownServiceRepairing));
         static public readonly TownServiceDef Lodging = new("Lodging", typeof(TownServiceLodging));
+        static public readonly TownServiceDef Healing = new("Healing", typeof(TownServiceHealing));
     }
     public sealed class TownServiceDef(string name, Type runtimeType) : Def(name)
     {
@@ -21,15 +22,11 @@ namespace Project1.Core.Towns.Services
 
     public abstract class TownServiceRuntime { }
 
-    public sealed class TownServiceSelling : TownServiceRuntime 
-    {
-        //HashSet<IntVec3> ServicePoints = [];
-        //public IReadOnlySet<IntVec3> GetServicePoints()
-        //    => this.ServicePoints;
-    }
+    public sealed class TownServiceSelling : TownServiceRuntime { }
     public sealed class TownServiceBuying : TownServiceRuntime { }
     public sealed class TownServiceRepairing : TownServiceRuntime { }
     public sealed class TownServiceLodging : TownServiceRuntime { }
+    public sealed class TownServiceHealing : TownServiceRuntime { }
 
     static class TownServiceExtensions
     {

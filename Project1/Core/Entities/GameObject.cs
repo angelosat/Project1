@@ -340,9 +340,10 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public InventoryComponent Inventory => this.GetComponent<InventoryComponent>();
     public NeedsComponent Needs => this.GetComponent<NeedsComponent>();
 
-    ResourcesComponent _resourcesCached;
+    ResourcesComp _resourcesCached;
     [InspectorHidden]
-    public ResourcesComponent Resources => this._resourcesCached ??= this.GetComponent<ResourcesComponent>();
+    public ResourcesComp Resources => this._resourcesCached ??= this.GetComponent<ResourcesComp>();
+
 
     private StatsComponent _stats;
     [InspectorHidden]
@@ -1169,7 +1170,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
     internal void AddResourceModifier(ResourceRateModifier resourceModifier)
     {
-        this.GetComponent<ResourcesComponent>().AddModifier(resourceModifier);
+        this.GetComponent<ResourcesComp>().AddModifier(resourceModifier);
     }
     internal void AddStatModifier(StatNewModifier statNewModifier)
     {

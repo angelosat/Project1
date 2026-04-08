@@ -20,8 +20,11 @@ namespace Project1.Core.AI.Behaviors.Idle
             var state = actor.AI.State;
             double radians = rand.NextDouble() * 2 * Math.PI;
             var choice = new Vector3((float)Math.Cos(radians), (float)Math.Sin(radians), 0);
-            var dist = Math.Min(Vector3.Distance(actor.Global, state.Leash) / (float)MaxRange, 1);
-            var towardsLeash = state.Leash - actor.Global;
+            if (!state.Leash.HasValue)
+                state.Leash = actor.Global;
+            var leash = state.Leash.Value;
+            var dist = Math.Min(Vector3.Distance(actor.Global, leash) / (float)MaxRange, 1);
+            var towardsLeash = leash - actor.Global;
             towardsLeash.Z = 0;
             if (towardsLeash != Vector3.Zero)
                 towardsLeash.Normalize();

@@ -35,6 +35,7 @@ abstract public class Planner
 
     static readonly public List<PlannerDef> VisitorPlanners =
     [
+        PlannerDefOf.SeekHealing,
         PlannerDefOf.LodgingCheckin,
         PlannerDefOf.Buy,
         PlannerDefOf.Browse,

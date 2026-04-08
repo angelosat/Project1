@@ -3,6 +3,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Entities;
+using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
@@ -132,6 +133,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         need.Value = this.World.Random.Next(0, 100);
         actor.Skills.Randomize();
         //actor.AI.Meta.LocationDecision.ScheduleNext(this.World);
+        actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
         this.World.Register(actor);
         return actor;
     }

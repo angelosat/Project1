@@ -26,7 +26,7 @@ namespace Project1.Core.Entities.Actors
         {
             yield return new NeedsComponent.Spec(Needs);
             yield return new AttributesComponent.Spec(Attributes);
-            yield return new ResourcesComponent.Spec(Resources);
+            yield return new ResourcesComp.Spec(Resources);
             yield return new GearComponent.Spec(Gear);
             yield return new SkillsComponent.Spec(Skills);
             yield return new PersonalityComponent.Spec(Traits);

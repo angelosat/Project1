@@ -9,7 +9,7 @@ namespace Project1.Core.Resources
             => entity.HasResource(type);
         
         //static public Resource GetResource(this GameObject entity, ResourceDef def) => entity.GetComponent<ResourcesComponent>()?.GetResource(def);
-        static public IResourceView GetResource(this Entity entity, ResourceDef def) => entity.GetComponent<ResourcesComponent>()?.ViewOld(def);
+        static public IResourceView GetResource(this Entity entity, ResourceDef def) => entity.GetComponent<ResourcesComp>()?.ViewOld(def);
 
         static public IResourceView GetHealth(this Actor actor) => actor.GetResource(ResourceDefOf.Health);
         static public void AdjustHealth(this Actor actor, int value) => actor.GetResource(ResourceDefOf.Health).ApplyDelta(value);

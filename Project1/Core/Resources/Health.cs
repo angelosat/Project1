@@ -54,6 +54,7 @@ namespace Project1.Core.Resources
         }
         protected override float GetRegenRate(Resource values)
         {
+            return 0;
             float rate = ((float)Math.Pow(values.Percentage, 2)) / TickRate;
 
             return rate;

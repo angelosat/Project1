@@ -37,7 +37,7 @@ namespace Project1.Core.AI
         public int JobFindTimer;
         public Knowledge Knowledge;
         public BehaviorExecutePlan LastBehavior;
-        public Vector3 Leash;
+        public Vector3? Leash;
         public Queue<InteractionTarget> MoveOrders = new();
         public Actor Owner; //use this?
         public Path Path;

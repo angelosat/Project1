@@ -1,5 +1,12 @@
 # todo 2025
 ## immediate
+- repairing town service
+- resources tab in actor gui (for health)
+- dev/debug increase/decrease skill levels
+- recalculate path on cell invalidation
+- buffs + buff/blessing town service
+- restaurant town service
+- 
 - create primary raw material processing workstations
 - separate pathing behavior from interaction behavior. probably dont need behaviorexecuteplan anymore, just assume that all behaviors are a path to an interaction
 - repair: create a blockrepaircomp for workstations with repair capability that holds repair charges similar to how 

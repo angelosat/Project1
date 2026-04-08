@@ -27,6 +27,7 @@ namespace Project1.Core.Entities.Actors
                 AttributeDefOf.Dexterity ],
             Resources = [
                 ResourceDefOf.Health,
+                ResourceDefOf.Mana,
                 ResourceDefOf.Stamina,
                 ResourceDefOf.Patience],
             Skills = [

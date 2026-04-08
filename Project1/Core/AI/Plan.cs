@@ -8,6 +8,7 @@ using Project1.Core.Interactions;
 using Project1.Core.Legacy;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Magic;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Shops;
@@ -44,6 +45,7 @@ namespace Project1.Core.AI
         public List<Entity> CraftedItems = [];
         public DesignationDef Designation;
         public CraftingOrder Order;
+        public SpellDef Spell;
         public InteractionTarget Product = InteractionTarget.Null;
         public bool Forced;
         public bool Urgent = true; // TODO default should be false
@@ -434,6 +436,7 @@ namespace Project1.Core.AI
         internal void SyncToClients(IDataWriter w)
         {
             w.Write(this.Def);
+            w.Write(this.Spell);
             this.TargetA.Write(w);
             var hasOrder = this.Order is not null;
             w.Write(hasOrder);
@@ -443,6 +446,7 @@ namespace Project1.Core.AI
         internal void SyncFromServer(NetEndpoint provider, IDataReader r)
         {
             this.Def = r.ReadDef<PlanDef>();
+            this.Spell = r.ReadDef<SpellDef>();
             this.TargetA = InteractionTarget.Read(provider.World, r);
             if (r.ReadBoolean())
             {

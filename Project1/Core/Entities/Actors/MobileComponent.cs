@@ -205,7 +205,7 @@ namespace Project1.Core.Entities.Actors
             Vector2 direction = parent.Transform.Direction;
             this.Acceleration = Math.Min(1, this.Acceleration + AccelerationStep);
 
-            var resources = parent.GetComponent<ResourcesComponent>();
+            var resources = parent.GetComponent<ResourcesComp>();
             var newwalk = StatDefOf.WalkSpeed.CalculateFor(parent);
             var walkSpeed = newwalk * Acceleration * NormalWalkSpeed * (this.CurrentState.Speed + this.CurrentState.SprintSpeed * resources.GetPercentage(ResourceDefOf.Stamina));
             if (this._currentState == State.Types.Sprinting)

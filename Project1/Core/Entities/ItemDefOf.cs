@@ -38,7 +38,7 @@ namespace Project1.Core.Entities
             Category = ItemCategoryDefOf.Manufactured,
             CompDefs = [EntityCompDefOf.UnfinishedItem, EntityCompDefOf.Resources],
             Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
-        }.AddSpec(new ResourcesComponent.Spec([ResourceDefOf.Assembly]));
+        }.AddSpec(new ResourcesComp.Spec([ResourceDefOf.Assembly]));
 
         static public readonly ItemDef Seeds = new ItemDef("Seeds", typeof(Entity))
         {
@@ -140,12 +140,12 @@ namespace Project1.Core.Entities
             VariantType = typeof(ToolProfileDef),
             StorageFilterVariations = Def.Get<ToolProfileDef>(),
             VariationGetter = e => e.Def,
-            Comps = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComponent), typeof(StatsComponent)],
+            Comps = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComp), typeof(StatsComponent)],
             CompDefs = [EntityCompDefOf.Tool, EntityCompDefOf.Ownership, EntityCompDefOf.Resources, EntityCompDefOf.Stats],
             Body = new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
                             .AddJoint(Vector2.Zero, new Bone(BoneDefOf.ToolHead, ItemContent.LogsGrayscale) { DrawMaterialColor = true })
         }
-            .AddSpec(new ResourcesComponent.Spec([ResourceDefOf.Durability]));
+            .AddSpec(new ResourcesComp.Spec([ResourceDefOf.Durability]));
         static ItemDefOf()
         {
             Def.Register(typeof(ItemDefOf));

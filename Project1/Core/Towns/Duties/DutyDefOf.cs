@@ -23,6 +23,7 @@ namespace Project1.Core.Towns.Duties
         static public readonly DutyDef MiscDuties = new("MiscDuties", PlannerDefOf.Switching);
         static public readonly DutyDef Cashier = new("Cashier", PlannerDefOf.Sell);
         static public readonly DutyDef Innkeeper = new("Innkeeper", PlannerDefOf.LodgingRegister);
+        static public readonly DutyDef Healer = new("Healer", PlannerDefOf.OfferHealing);
         static DutyDefOf()
         {
             Def.Register(typeof(DutyDefOf));

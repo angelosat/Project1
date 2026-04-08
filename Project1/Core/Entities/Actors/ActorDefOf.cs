@@ -35,7 +35,7 @@ namespace Project1.Core.Entities.Actors
                 typeof(MoodComp),
                 typeof(WorkComponent),
                 typeof(EffectsComponent),
-                typeof(ResourcesComponent),
+                typeof(ResourcesComp),
                 typeof(NeedsComponent),
                 typeof(AttributesComponent),
                 typeof(SkillsComponent),

@@ -23,25 +23,25 @@ internal sealed class PresentationParticles : IPresentationWorker
         Registry.MapEventHooksClient.Register<PlantChoppedEvent>(OnPlantChopped);
         Registry.MapEventHooksClient.Register<ActorFootStepEvent>(OnEntityFootStep);
         Registry.MapEventHooksClient.Register<BlockParticlesEvent>(OnBlockParticles);
-        Registry.MapEventHooksClient.Register<EntityTeleportedEvent>(OnEntityTeleport);
+        Registry.MapEventHooksClient.Register<EntitySpellEvent>(OnEntityTeleport);
     }
 
-    private void OnEntityTeleport(EntityTeleportedEvent e)
+    private void OnEntityTeleport(EntitySpellEvent e)
     {
         var entity = e.Entity;
         var map = entity.Map;
-        var emitter = NewEmitter(entity.Global);
+        var emitter = NewEmitter(entity.Global + Vector3.UnitZ);
         emitter.HasPhysics = false;
         emitter.Radius =  .5f;
         //emitter.Force = .2f;
         //emitter.Acceleration = Vector3.One * .8f;
         emitter.Force = .3f;
         emitter.Acceleration = Vector3.One * .7f;
-        emitter.Source = entity.Global;
+        emitter.Source = entity.Global + Vector3.UnitZ;
         emitter.SizeBegin = emitter.SizeEnd = 4;
         emitter.ParticleWeight = -.1f;
         emitter.Emit(100);
-        emitter.ColorBegin = emitter.ColorEnd = Color.White;// Teal;
+        emitter.ColorBegin = emitter.ColorEnd = e.Spell.School.Color;// Color.White;// Teal;
         map.ParticleManager.AddEmitter(emitter);
     }
 

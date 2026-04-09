@@ -9,6 +9,7 @@ using Project1.Core.Legacy;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Magic;
+using Project1.Core.Systems.Trading;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Shops;
@@ -46,6 +47,7 @@ namespace Project1.Core.AI
         public DesignationDef Designation;
         public CraftingOrder Order;
         public SpellDef Spell;
+        public TradeId TradeId;
         public InteractionTarget Product = InteractionTarget.Null;
         public bool Forced;
         public bool Urgent = true; // TODO default should be false

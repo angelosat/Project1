@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Networking;
 using Project1.Core.Resources;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Towns.Services;
 using Project1.Core.Towns.Shops;
@@ -12,7 +14,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Healing;
 
-sealed class SpellRequest(Actor actor, SpellDef spell, int price) : ITownServiceTransaction
+sealed class SpellRequest(Actor actor, SpellDef spell, int price) : TownServiceRequest
 {
     enum States { Requested, Accepted, Succeeded, Failed }
     States State;
@@ -32,20 +34,23 @@ sealed class SpellRequest(Actor actor, SpellDef spell, int price) : ITownService
     internal bool IsCasterReady { get; private set; }
     internal bool IsDisposed => this.State == States.Succeeded || this.State == States.Failed;
 
-    public EntityRefId Buyer => this.TargetId;
+    internal override EntityRefId Buyer => this.TargetId;
 
-    public EntityRefId Seller => this.CasterId;
+    internal override EntityRefId Seller => this.CasterId;
 
-    public TownServiceDef Service => TownServiceDefOf.Healing;
+    internal override TownServiceDef Service => TownServiceDefOf.Healing;
 
-    public double TickStarted { get; set; } = actor.World.CurrentTick;
+    internal override SimulationTick TickStarted { get; set; } = actor.World.CurrentTick;
 
-    public int PatienceInitial { get; set; } = (int)actor.Resources.GetValue(ResourceDefOf.Patience);
+    internal override int PatienceInitial { get; set; } = (int)actor.Resources.GetValue(ResourceDefOf.Patience);
 
-    public bool IsSucceeded => this.State == States.Succeeded;
+    internal override bool IsSucceeded => this.State == States.Succeeded;
 
-    public bool IsFailed => this.State == States.Failed;
+    internal override bool IsFailed => this.State == States.Failed;
 
+    public bool RequiresPayment => this.Price > 0;
+
+    public ulong PaymentId { get; internal set; }
 
     internal void MarkAccepted(Actor caster)
     {
@@ -69,7 +74,7 @@ sealed class SpellRequest(Actor actor, SpellDef spell, int price) : ITownService
     internal void MarkSucceeded()
         => this.State = States.Succeeded;
 
-    public void Write(IDataWriter w)
+    internal override void Write(IDataWriter w)
     {
         w.Write(this.TargetId);
         w.Write(this.CasterId);
@@ -81,7 +86,7 @@ sealed class SpellRequest(Actor actor, SpellDef spell, int price) : ITownService
         w.Write((int)this.State);
     }
 
-    public void Read(IDataReader r)
+    internal override void Read(IDataReader r)
     {
         this.TargetId = r.ReadEntityRefId();
         this.CasterId = r.ReadEntityRefId();
@@ -141,6 +146,7 @@ public class TownComp_Spells : TownComp
     internal SpellRequest Request(Actor target, SpellDef spell)
     {
         var request = new SpellRequest(target, spell, this.PriceList[spell]);
+        var id = this.Town.ServiceRequests.Register(request);
         this._pendingRequestsByTarget.Add(target.RefId, request);
         this.Map.Events.Post(new HealingRequestCreatedEvent(target, spell));
         $"spell request created {target.LabelReadable} {spell.LabelReadable}".ToConsole();
@@ -150,6 +156,12 @@ public class TownComp_Spells : TownComp
     internal void MarkAccepted(SpellRequest req, Actor caster)
     {
         req.MarkAccepted(caster);
+        if (req.RequiresPayment)
+        {
+            var spellTarget = this.World.Get<Actor>(req.TargetId);
+            var payment = this.Town.Trades.Request(spellTarget, caster);
+            req.PaymentId = payment.Id;
+        }
         this._acceptedRequestsByCaster.Add(req.CasterId, req);
         this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
     }
@@ -181,152 +193,3 @@ public class TownComp_Spells : TownComp
         this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
     }
 }
-
-
-//using Project1.Core.Entities.Actors;
-//using Project1.Core.Helpers;
-//using Project1.Core.Resources;
-//using Project1.Core.Systems.Magic;
-//using Project1.Core.Towns.Services;
-//using Project1.Core.Towns.Shops;
-//using Project1.Framework.Serialization;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-
-//namespace Project1.Core.Towns.Healing;
-
-//sealed class SpellRequest(Actor actor, SpellDef spell) : ITownServiceTransaction
-//{
-//    enum States { Requested, Accepted, Ready, Succeeded, Failed }
-//    States State;
-//    internal EntityRefId TargetId = actor.RefId;
-//    internal EntityRefId CasterId;
-//    internal SpellDef Spell = spell;
-//    internal Dictionary<SpellDef, int> PriceList = new() { { SpellDefOf.Healing, 100 } };
-
-//    internal bool IsAccepted => this.State == States.Accepted;
-//    internal bool IsReady => this.State == States.Ready;
-//    internal bool IsDisposed => this.State == States.Succeeded || this.State == States.Failed;
-
-//    public EntityRefId Buyer => this.TargetId;
-
-//    public EntityRefId Seller => this.CasterId;
-
-//    public TownServiceDef Service => TownServiceDefOf.Healing;
-
-//    public double TickStarted { get; set; } = actor.World.CurrentTick;
-
-//    public int PatienceInitial { get; set; } = (int)actor.Resources.GetValue(ResourceDefOf.Patience);
-
-//    public bool IsSucceeded => this.State == States.Succeeded;
-
-//    public bool IsFailed => this.State == States.Failed;
-
-//    internal void MarkAccepted(Actor caster)
-//    {
-//        if (this.State != States.Requested)
-//            throw new InvalidOperationException();
-//        this.CasterId = caster.RefId;
-//        this.State = States.Accepted;
-//    }
-
-//    internal void MarkReady()
-//    {
-//        if (this.State != States.Accepted)
-//            throw new InvalidOperationException();
-//        this.State = States.Ready;
-//    }
-
-//    internal void MarkSuceeded()
-//        => this.State = States.Succeeded;
-
-//    public void Write(IDataWriter w)
-//    {
-//        w.Write(this.TargetId);
-//        w.Write(this.CasterId);
-//        w.Write(this.Spell);
-//        w.Write((int)this.State);
-//    }
-
-//    public void Read(IDataReader r)
-//    {
-//        this.TargetId = r.ReadEntityRefId();
-//        this.CasterId = r.ReadEntityRefId();
-//        this.Spell = r.ReadDef<SpellDef>();
-//        this.State = (States)r.ReadInt32();
-//    }
-//}
-
-//public class TownComp_Spells : TownComp
-//{
-//    public override string Name => "Spells";
-
-//    readonly Dictionary<EntityRefId, SpellRequest> _pendingRequestsByTarget = [];
-//    //readonly Dictionary<EntityRefId, SpellRequest> _acceptedRequestsByTarget = [];
-//    readonly Dictionary<EntityRefId, SpellRequest> _acceptedRequestsByCaster = [];
-
-//    public TownComp_Spells(Town town) : base(town)
-//    {
-//    }
-
-//    internal ICollection<SpellRequest> PendingRequests => this._pendingRequestsByTarget.Values;
-//    public override void Tick()
-//    {
-//        foreach(var req in this._pendingRequestsByTarget.Values.ToArray())
-//        {
-//            if (!req.IsDisposed)
-//                continue;
-//            this._pendingRequestsByTarget.Remove(req.TargetId);
-//            this._acceptedRequestsByCaster.Remove(req.CasterId);
-//            this.Map.Events.Post(new TownServiceComplete(this.Map, req));
-//        }
-//    }
-//    internal bool TryGetRequestByTarget(Actor target, out SpellRequest existing)
-//        => this._pendingRequestsByTarget.TryGetValue(target.RefId, out existing);
-//    internal bool TryGetRequestByCaster(Actor caster, out SpellRequest existing)
-//        => this._acceptedRequestsByCaster.TryGetValue(caster.RefId, out existing);
-//    internal SpellRequest GetRequestbyTargetOrDefault(Actor target)
-//    {
-//        if (this._pendingRequestsByTarget.TryGetValue(target.RefId, out var existing))
-//            return existing;
-//        return null;
-//    }
-//    internal SpellRequest GetRequestbyCasterOrDefault(Actor caster)
-//    {
-//        if (this._acceptedRequestsByCaster.TryGetValue(caster.RefId, out var existing))
-//            return existing;
-//        return null;
-//    }
-//    internal SpellRequest Request(Actor target, SpellDef spell)
-//    {
-//        var request = new SpellRequest(target, spell);
-//        this._pendingRequestsByTarget.Add(target.RefId, request);
-//        this.Map.Events.Post(new HealingRequestCreatedEvent(target, spell));
-//        return request;
-//    }
-//    //internal SpellRequest GetOrCreateInt(Actor target)
-//    //{
-//    //    if (this._pendingRequestsByTarget.TryGetValue(target.RefId, out var existing))
-//    //        return existing;
-//    //    return Request(target);
-//    //}
-
-//    internal void MarkAccepted(SpellRequest req, Actor caster)
-//    {
-//        //req.CasterId = caster.RefId;
-//        req.MarkAccepted(caster);
-//        //this._pendingRequestsByTarget.Remove(req.TargetId);
-//        //this._acceptedRequestsByTarget.Add(req.TargetId, req);
-//        this._acceptedRequestsByCaster.Add(req.CasterId, req);
-//        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
-
-//    }
-
-//    internal void MarkSucceeded(Actor target)
-//    {
-//        var req = this._pendingRequestsByTarget[target.RefId];
-//        req.MarkSuceeded();
-//        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
-//    }
-//}

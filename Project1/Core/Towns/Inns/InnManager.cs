@@ -1,14 +1,15 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Resources;
+using Project1.Core.Networking;
+using Project1.Core.Simulation;
 using Project1.Core.Towns.Shops;
 using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Towns.Inns;
-record struct InnGuestProfile(EntityRefId ActorId, IntVec3 AssignedBed, Tick TimeCheckedIn) { }
+record struct InnGuestProfile(EntityRefId ActorId, IntVec3 AssignedBed, SimulationTick TimeCheckedIn) { }
 public sealed class InnManager : TownComp
 {
 
@@ -77,7 +78,7 @@ public sealed class InnManager : TownComp
             throw new System.Exception();
         this.GuestsQueuing.Add(guest);
         this.QueuesPerServicePoint[servicePoint].Enqueue(guest);
-        var transaction = new InnTransaction(this.Map.World.CurrentTick, (int)guest.Resources.GetValue(ResourceDefOf.Patience), guest.RefId, servicePoint);
+        var transaction = new InnTransaction(guest, servicePoint);
         this.OpenTransactionsByGuest.Add(guest.RefId, transaction);
         this.OpenTransactionsByDesk.Add(servicePoint, transaction);
         this.Town.OpenTransactions.Add(guest.RefId, transaction);

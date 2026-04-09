@@ -37,7 +37,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
     public virtual float Gravity { get; }
     public int Seed { get; set; }
     public int MaxHeight { get; set;  }
-    public virtual ulong CurrentTick { get; set; }
+    public virtual SimulationTick CurrentTick { get; set; }
     public virtual TimeSpan Clock { get; }
     public NetEndpoint Net { get; set; }
 

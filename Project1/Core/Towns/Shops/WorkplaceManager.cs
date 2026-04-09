@@ -292,7 +292,8 @@ public partial class TownServicesComp : TownComp
     {
         if (transaction.Seller != EntityRefId.Null)
             throw new Exception();
-        transaction.Seller = seller.RefId;
+        //transaction.Seller = seller.RefId;
+        transaction.SetSeller(seller);
         transaction.RefreshTimer();
         this._transactionsBySeller.Add(seller.RefId, transaction);
         this._transactionsRequests.Remove(transaction.Buyer);

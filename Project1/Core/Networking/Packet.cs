@@ -4,6 +4,7 @@ using System.Net;
 using System.IO;
 using System.Diagnostics;
 using Project1.Framework.Serialization;
+using Project1.Core.Simulation;
 
 namespace Project1.Core.Networking
 {

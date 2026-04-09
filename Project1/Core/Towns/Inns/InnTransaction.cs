@@ -1,33 +1,38 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Resources;
+using Project1.Core.Simulation;
 using Project1.Core.Towns.Services;
-using Project1.Core.Towns.Shops;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using System;
 
 namespace Project1.Core.Towns.Inns;
 
-public sealed class InnTransaction(double tickStarted, int patienceInitial, EntityRefId guest, IntVec3 desk) : ITownServiceTransaction
+public sealed class InnTransaction(Actor guest, IntVec3 desk) : TownServiceRequest
 {
     enum States { Queuing, AwaitingPayment, Paid, Processed, Succeeded, Failed }
-    internal EntityRefId Guest = guest;
+    internal EntityRefId Guest = guest.RefId;
     internal EntityRefId Clerk { get; private set; }
     internal EntityRefId Money;
-    public EntityRefId Buyer => this.Guest;
-    public EntityRefId Seller => this.Clerk;
-    public TownServiceDef Service => TownServiceDefOf.Lodging;
-    public double TickStarted { get; private set; } = tickStarted;
+    internal override EntityRefId Buyer => this.Guest;
+    internal override EntityRefId Seller => this.Clerk;
+    internal override TownServiceDef Service => TownServiceDefOf.Lodging;
+    //internal override SimulationTick TickStarted { get; private set; } = tickStarted;
+    internal override SimulationTick TickStarted { get; set; } = guest.World.CurrentTick;
+
     public IntVec3 Desk { get; private set; } = desk;
-    public int PatienceInitial { get; private set; } = patienceInitial;
+    internal override int PatienceInitial { get; set; } = (int)guest.Resources.GetValue(ResourceDefOf.Patience);// patienceInitial;
     States State;
 
     public bool IsAwaitingPayment => this.State == States.AwaitingPayment;
     public bool IsPaid => this.State == States.Paid;
     public bool IsProcessed => this.State == States.Processed;
-    public bool IsSucceeded => this.State == States.Succeeded;
-    public bool IsFailed => this.State == States.Failed;
+    internal override bool IsSucceeded => this.State == States.Succeeded;
+    internal override bool IsFailed => this.State == States.Failed;
+
+
 
     internal void AssignClerk(Actor clerk)
     {
@@ -59,7 +64,7 @@ public sealed class InnTransaction(double tickStarted, int patienceInitial, Enti
         this.State = States.Processed;
     }
 
-    public void Write(IDataWriter w)
+    internal override void Write(IDataWriter w)
     {
         w.Write(this.TickStarted);
         w.Write(this.PatienceInitial);
@@ -70,9 +75,9 @@ public sealed class InnTransaction(double tickStarted, int patienceInitial, Enti
         w.Write((int)this.State);
     }
 
-    public void Read(IDataReader r)
+    internal override void Read(IDataReader r)
     {
-        this.TickStarted = r.ReadDouble();
+        this.TickStarted = (SimulationTick)r.ReadUInt64();
         this.PatienceInitial = r.ReadInt32();
         this.Guest = r.ReadEntityRefId();
         this.Clerk = r.ReadEntityRefId();

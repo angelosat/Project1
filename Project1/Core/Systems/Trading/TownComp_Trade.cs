@@ -1,5 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Networking;
+using Project1.Core.Simulation;
 using Project1.Core.Towns;
 using Project1.Framework;
 using System;
@@ -8,14 +10,22 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Trading;
 
-sealed class TradeRuntime(Actor giver, Actor recipient)
+public readonly record struct TradeId(ulong Value)
+{
+    public static readonly TradeId Null = new(0);
+    public static implicit operator TradeId(ulong v) => new(v);
+    public static implicit operator ulong(TradeId v) => (ulong)v.Value;
+}
+
+sealed class TradeRuntime(TradeId id, Actor giver, Actor recipient)
 {
     enum States { Unstarted, Accepted, Offered, Declined, Complete, Disposed }
     internal EntityRefId
         Giver = giver.RefId,
         Recipient = recipient.RefId,
         Item;
-    internal Tick TickInitiated = giver.World.CurrentTick;
+    internal TradeId Id { get; init; } = id;
+    internal SimulationTick TickInitiated = giver.World.CurrentTick;
     States State = States.Unstarted;
     internal bool IsOffered => this.State == States.Offered;
     internal bool IsAccepted => this.State == States.Accepted;
@@ -54,18 +64,19 @@ public sealed class TownComp_Trade : TownComp
 {
     public override string Name => "Trade";
 
-    readonly Dictionary<EntityRefId, TradeRuntime> byGiver = [];
-    readonly Dictionary<EntityRefId, TradeRuntime> byRecipient = [];
+    readonly Dictionary<TradeId, TradeRuntime> byId = [];
+    //readonly Dictionary<EntityRefId, TradeRuntime> byGiver = [];
+    //readonly Dictionary<EntityRefId, TradeRuntime> byRecipient = [];
     readonly HashSet<TradeRuntime> all = [];
-
+    TradeId NextTradeId => ++field;
     public TownComp_Trade(Town town) : base(town)
     {
     }
-    int expirationThreshold = Ticks.FromHours(1);
+    SimulationTick expirationThreshold = (ulong)Ticks.FromHours(1);
     public override void Tick()
     {
         var current = this.Map.World.CurrentTick;
-        foreach(var trade in this.byGiver.Values.ToArray())
+        foreach(var trade in this.byId.Values.ToArray())
         {
             if (current - trade.TickInitiated >= expirationThreshold)
                 trade.MarkDeclined();
@@ -73,69 +84,44 @@ public sealed class TownComp_Trade : TownComp
             if (!trade.IsDisposed)
                 continue;
 
-            this.byGiver.Remove(trade.Giver);
-            this.byRecipient.Remove(trade.Recipient);
+            //this.byGiver.Remove(trade.Giver);
+            //this.byRecipient.Remove(trade.Recipient);
+            this.byId.Remove(trade.Id);
         }
     }
-    internal TradeRuntime RequestPayment(Actor giver, Actor recipient, int price)
-    {
-        var trade = new TradeRuntime(giver, recipient);
-        return trade;
-    }
+  
     internal TradeRuntime Request(Actor giver, Actor recipient)
     {
-        var trade = new TradeRuntime(giver, recipient);
-        this.byGiver.Add(trade.Giver, trade);
-        this.byRecipient.Add(trade.Recipient, trade);
+        var trade = new TradeRuntime(this.NextTradeId, giver, recipient);
+        //this.byGiver.Add(trade.Giver, trade);
+        //this.byRecipient.Add(trade.Recipient, trade);
+        this.byId.Add(trade.Id, trade);
         $"traderequest created {giver.LabelReadable} {recipient.LabelReadable}".ToConsole();
         return trade;
     }
+   
+    internal TradeRuntime GetTradeById(TradeId id)
+       => this.byId[id];
 
-    internal void Decline(Actor target)
+    internal void MarkAccepted(TradeId id)
     {
-        this.byRecipient[target.RefId].MarkDeclined();
+        this.byId[id].MarkAccepted();
     }
-
-    internal void Accept(Actor target)
+    internal void MarkDeclined(TradeId id)
     {
-        this.byRecipient[target.RefId].MarkAccepted();
+        this.byId[id].MarkDeclined();
     }
-
-    internal TradeRuntime GetTradeByGiver(Actor actor)
+    internal void MarkOffered(TradeId id)
     {
-        return this.byGiver[actor.RefId];
+        this.byId[id].MarkOffered();
     }
-    internal TradeRuntime GetTradeByRecipient(Actor actor)
+    internal void MarkComplete(TradeId id)
     {
-        return this.byRecipient[actor.RefId];
+        this.byId[id].MarkComplete();
     }
-    internal bool TryGetTradeByRecipient(Actor actor, out TradeRuntime trade)
+    internal void MarkItem(TradeId id, Entity item)
     {
-        return this.byRecipient.TryGetValue(actor.RefId, out trade);
-    }
-    internal bool TryGetTradeByGiver(Actor actor, out TradeRuntime trade)
-    {
-        return this.byGiver.TryGetValue(actor.RefId, out trade);
-    }
-    internal void MarkAccepted(Actor target)
-    {
-        this.byRecipient[target.RefId].MarkAccepted();
-    }
-    internal void MarkDeclined(Actor target)
-    {
-        this.byRecipient[target.RefId].MarkDeclined();
-    }
-    internal void MarkOffered(Actor initiator)
-    {
-        this.byGiver[initiator.RefId].MarkOffered();
-    }
-    internal void MarkComplete(Actor target)
-    {
-        this.byRecipient[target.RefId].MarkComplete();
-    }
-    internal void MarkItem(Actor giver, Entity item)
-    {
-        this.byGiver[giver.RefId].SetItem(item);
+        this.byId[id].SetItem(item);
     }
 
     internal void MarkDisposed(TradeRuntime trade)

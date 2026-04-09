@@ -22,6 +22,7 @@ using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Healing;
 using Project1.Core.Towns.Inns;
 using Project1.Core.Towns.Reputation;
+using Project1.Core.Towns.Services;
 using Project1.Core.Towns.Shops;
 using Project1.Core.Towns.Storage;
 using Project1.Core.Towns.UI;
@@ -130,6 +131,7 @@ public sealed class Town : Inspectable, IDutyProvider
     public TownReputationComp Reputation;
     public ConversationSystem Conversations;
     public TownComp_Trade Trades;
+    public TownComp_ServiceRequests ServiceRequests;
 
     public List<TownComp> TownComponents = [];
 
@@ -139,7 +141,7 @@ public sealed class Town : Inspectable, IDutyProvider
     public IntVec3? Waypoint;
     public IEntityProvider Entities => this.Map.World;
 
-    public Dictionary<EntityRefId, ITownServiceTransaction> OpenTransactions = [];
+    public Dictionary<EntityRefId, TownServiceRequest> OpenTransactions = [];
 
     public Town(MapBase map)
     {
@@ -163,6 +165,7 @@ public sealed class Town : Inspectable, IDutyProvider
         this.SpellManager = new(this);
         this.Conversations = new(this);
         this.Trades = new(this);
+        this.ServiceRequests = new(this);
 
         this.TownComponents.AddRange(
             this.ZoneManager,
@@ -182,7 +185,8 @@ public sealed class Town : Inspectable, IDutyProvider
             this.Ownership,
             this.Reputation,
             this.Conversations,
-            this.Trades
+            this.Trades,
+            this.ServiceRequests
         );
 
         this.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);

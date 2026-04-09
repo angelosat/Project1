@@ -53,7 +53,6 @@ namespace Project1.Core.AI
         static public readonly PlanDef Idle = new("Idleing", typeof(TaskBehaviorIdle)) { Idle = true };
         static public readonly PlanDef Wander = new("Wandering", typeof(TaskBehaviorWander)) { Idle = true };
         static public readonly PlanDef Depart = new("Departing", typeof(TaskBehaviorDepart), InteractionDefOf.Depart);
-        //static public readonly PlanDef DropCarried = new("Dropping carried item", typeof(TaskBehaviorDropItem), InteractionDefOf.Drop);
         static public readonly PlanDef Equip = new("Equipping", typeof(BehaviorEquipItemNew), InteractionDefOf.Equip);
         static public readonly PlanDef Unequip = new("Unquipping", typeof(BehaviorUnequip), InteractionDefOf.Unequip);
         static public readonly PlanDef GoHaul = new("Fetching", typeof(TaskBehaviorGoHaul), InteractionDefOf.Pick);
@@ -61,7 +60,6 @@ namespace Project1.Core.AI
         static public readonly PlanDef Deposit = new("Depositing", typeof(BehaviorExecutePlanNew), InteractionDefOf.DepositResource);
         static public readonly PlanDef Withdraw = new("Withdrawing", typeof(BehaviorExecutePlanNew), InteractionDefOf.WithdrawCash);
         static public readonly PlanDef RetrieveFromInventory = new("FetchingFromInv", typeof(TaskBehaviorHaulFromInventory), InteractionDefOf.Pick);
-        //static public readonly PlanDef GoPlace = new("Placing", typeof(TaskBehaviorGoPlace), InteractionDefOf.Place);
         static public readonly PlanDef GoPlace = new("Placing", typeof(BehaviorPlace), InteractionDefOf.Place);
         static public readonly PlanDef StoreInInventory = new("Storing", typeof(TaskBehaviorStoreInInventory), InteractionDefOf.Store);
         static public readonly PlanDef Construct = new("Constructing", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct);
@@ -72,10 +70,9 @@ namespace Project1.Core.AI
         static public readonly PlanDef CraftingUnfinishedBegin = new("CraftingUnfinishedBegi", typeof(BehaviorGoCraftUnfinishedBegin), InteractionDefOf.CraftUnfinishedBegin);
         static public readonly PlanDef Repairing = new("Repairing", typeof(TaskBehaviorRepairing), InteractionDefOf.Repair);
         static public readonly PlanDef HaulToStockpile = new("StockpileHauling", typeof(TaskBehaviorHaulToStockpile), InteractionDefOf.Place);
-        //static public readonly PlanDef Plant = new("Plant", typeof(TaskBehaviorGoPlace), InteractionDefOf.Plant);
         static public readonly PlanDef Plant = new("Plant", typeof(BehaviorPlanting), InteractionDefOf.Plant);
-        static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(BehaviorExecutePlanNew/*TaskBehaviorSleepOnGround*/), InteractionDefOf.SleepOnGround);
-        static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(BehaviorExecutePlanNew/*TaskBehaviorSleepingNew*/), InteractionDefOf.SleepInBed);
+        static public readonly PlanDef SleepingOnGround = new("SleepingOnGround", typeof(BehaviorExecutePlanNew), InteractionDefOf.SleepOnGround);
+        static public readonly PlanDef SleepingOnBed = new("SleepingOnBed", typeof(BehaviorExecutePlanNew), InteractionDefOf.SleepInBed);
         static public readonly PlanDef Eating = new("Eating", typeof(BehaviorEating), InteractionDefOf.Eat);
         static public readonly PlanDef Switching = new("Switching", typeof(BehaviorExecutePlanNew), InteractionDefOf.Switch);
         static public readonly PlanDef WaitForService = new ("Waiting", typeof(BehaviorExecutePlanNew), InteractionDefOf.WaitingService);
@@ -85,7 +82,6 @@ namespace Project1.Core.AI
         static public readonly PlanDef RingUpFinish = new ("RingingUpFinish", typeof(BehaviorExecutePlanNew), InteractionDefOf.RingUpFinish);
         static public readonly PlanDef ClaimBoughtItem = new ("ClaimBoughtItem", typeof(BehaviorExecutePlanNew), InteractionDefOf.ClaimBoughtItem);
         static public readonly PlanDef BrowseProduct = new ("BrowseProduct", typeof(BehaviorExecutePlanNew), InteractionDefOf.BrowseProduct);
-        //static public readonly PlanDef CastSpell = new("CastSpell", typeof(BehaviorExecutePlanNew), InteractionDefOf.CastSpell);
         static public readonly PlanDef TradeOffer = new("TradeOffer", typeof(BehaviorExecutePlanNew), InteractionDefOf.TradeOffer);
         static public readonly PlanDef TradeComplete = new("TradeComplete", typeof(BehaviorExecutePlanNew), InteractionDefOf.TradeComplete);
 

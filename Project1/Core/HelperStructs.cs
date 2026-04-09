@@ -50,6 +50,7 @@ public record struct PlayerId(int Value)
     public static implicit operator PlayerId(int v) => new(v);
     public static implicit operator int(PlayerId v) => (int)v.Value;
 }
+
 public readonly record struct ZoneId(int Value)
 {
     internal static readonly ZoneId Null = new(0);

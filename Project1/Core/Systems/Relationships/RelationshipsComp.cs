@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Framework.Helpers;
 using Project1.Framework.Interfaces;
@@ -46,16 +47,16 @@ namespace Project1.Core.Systems.Relationships
     }
     sealed class RelationshipEntry
     {
-        static readonly Tick baseInterval = Ticks.FromHours(1);
+        static readonly SimulationTick baseInterval = (ulong)Ticks.FromHours(1);
         ProgressIntSigned _progress { get; } = new(100);
         internal IProgressBar Progress => this._progress;
         internal int Sign => this._progress.Value >= 0 ? 1 : -1;
         internal int Value => this._progress.Value;
-        internal Tick NextUpdate { get; private set; }
-        internal void ApplyDelta(int value, Tick currentTick)
+        internal SimulationTick NextUpdate { get; private set; }
+        internal void ApplyDelta(int value, SimulationTick currentTick)
         {
             //this.NextUpdate = currentTick;
-            var scaledInterval = baseInterval * Math.Clamp(Math.Abs(this._progress.Percentage), 0.1f, 1f);
+            var scaledInterval = baseInterval * (ulong)Math.Clamp(Math.Abs(this._progress.Percentage), 0.1f, 1f);
             this.NextUpdate = currentTick + scaledInterval;
             this._progress.ApplyDelta(value);
         }

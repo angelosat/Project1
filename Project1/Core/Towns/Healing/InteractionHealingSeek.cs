@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Interactions;
 using Project1.Core.Resources;
+using Project1.Core.Systems.Consumables.Scrolls;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Trading;
 
@@ -28,13 +29,15 @@ sealed class InteractionCastSpell : InteractionLogic
 
     internal override void OnFinish(Interaction i)
     {
-        Spell(i.Context).Worker.Cast(i.Actor, i.Target);
+        var spell = Spell(i.Context);
+        spell.Worker.Cast(i.Actor, i.Target);
+        i.Actor.Map.Events.Post(new EntitySpellEvent(i.Target, spell));
     }
 }
 sealed class InteractionHealingWaitPay : InteractionLogic
 {
     protected override InteractionContext_Trade CreateContextInt() => new();
-    static TradeRuntime Trade(InteractionContext ctx) => ((InteractionContext_Trade)ctx).TradeByRecipient;
+    static TradeRuntime Trade(InteractionContext ctx) => ((InteractionContext_Trade)ctx).Trade;
     internal override bool HasSucceeded(Interaction i)
         => Trade(i.Context).IsOffered;
 }

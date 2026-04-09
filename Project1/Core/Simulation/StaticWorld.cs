@@ -56,7 +56,7 @@ public class StaticWorld : WorldBase
     public override PopulationManager Population => this.PopulationManager;
     public IWorldSpaceManager Space;
     ulong currentTick;
-    public override ulong CurrentTick { get => this.currentTick; set => this.currentTick = value; }
+    public override SimulationTick CurrentTick { get => this.currentTick; set => this.currentTick = value; }
 
     readonly PopulationManager PopulationManager;
     public override void Tick()
@@ -182,7 +182,8 @@ public class StaticWorld : WorldBase
         this.Random = new Random(currentRandomState);
         tag.Add(new SaveTag(SaveTag.Types.Int, "RandomState", currentRandomState));
         tag.Add(new SaveTag(SaveTag.Types.Double, "Time", this.Clock.TotalSeconds));
-        this.CurrentTick.Save(tag, "CurrentTick");
+        //this.CurrentTick.Save(tag, "CurrentTick");
+        tag.Save("CurrentTick", this.currentTick);
         //this.DefaultBlock.BaseID.Save(tag, "DefaultBlock");
         tag.SaveDef("DefaultBlock", this.DefaultBlock.BlockDef);
         this.Name.Save(tag, "Name");

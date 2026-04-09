@@ -1,4 +1,4 @@
-﻿namespace Project1.Core.Networking;
+﻿namespace Project1.Core.Simulation;
 
 //public record struct SimulationTick(double Value)
 //{

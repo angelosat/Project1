@@ -6,25 +6,14 @@ using Project1.Core.Towns.Services;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Serialization;
+using System;
 
 #nullable enable
 
 namespace Project1.Core.Towns.Shops;
-public interface ITownServiceTransaction
-{
-    EntityRefId Buyer { get; }
-    EntityRefId Seller { get; }
-    TownServiceDef Service { get; }
-    double TickStarted { get; }
-    int PatienceInitial { get; }
-    bool IsSucceeded { get; }
-    bool IsFailed { get; }
-    void Write(IDataWriter w);
-    void Read(IDataReader r);
-}
-internal record struct ShopTransactionUpdatedEvent(MapBase Map, ITownServiceTransaction Transaction) : IEventPayload { }
-internal record struct TownServiceComplete(MapBase Map, ITownServiceTransaction Transaction) : IEventPayload { }
-sealed class ShopTransaction : ITownServiceTransaction
+internal record struct ShopTransactionUpdatedEvent(MapBase Map, TownServiceRequest Transaction) : IEventPayload { }
+internal record struct TownServiceComplete(MapBase Map, TownServiceRequest Transaction) : IEventPayload { }
+sealed class ShopTransaction : TownServiceRequest
 {
     internal enum TransactionState
     {
@@ -32,20 +21,21 @@ sealed class ShopTransaction : ITownServiceTransaction
     }
     internal TransactionState State;
     bool _cancelled;
-    public EntityRefId Buyer { get; private set; }
-    public EntityRefId Seller { get; set; } = EntityRefId.Null;
+    EntityRefId _buyerInt, _sellerInt = EntityRefId.Null;
+    internal override EntityRefId Buyer => this._buyerInt;//{ get; }
+    internal override EntityRefId Seller => this._sellerInt;//{ get; } = EntityRefId.Null;
     public EntityRefId Item { get; private set; }
     public EntityRefId Money = EntityRefId.Null;
     public int Price;
     public IntVec3 Counter { get; private set; }
     double TicksRemaining = Ticks.FromHours(1);
-    public double TickStarted { get; set; }
-    public TownServiceDef Service => TownServiceDefOf.Selling;
-    public int PatienceInitial { get; private set; }
+    internal override SimulationTick TickStarted { get; set; }
+    internal override TownServiceDef Service => TownServiceDefOf.Selling;
+    internal override int PatienceInitial { get; set; }
     ShopTransaction() { }
-    public ShopTransaction(double tickStarted, int patienceSnapshot, Actor buyer, Entity item, int price, IntVec3 counter)
+    public ShopTransaction(SimulationTick tickStarted, int patienceSnapshot, Actor buyer, Entity item, int price, IntVec3 counter)
     {
-        this.Buyer = buyer.RefId;
+        this._buyerInt = buyer.RefId;
         this.Item = item.RefId;
         this.Price = price;
         this.Counter = counter;
@@ -53,14 +43,16 @@ sealed class ShopTransaction : ITownServiceTransaction
         this.PatienceInitial = patienceSnapshot;
     }
 
-    public bool IsFailed => this.State == TransactionState.Failed;
-    public bool IsSucceeded => this.State == TransactionState.Succeeded;
+    internal override bool IsFailed => this.State == TransactionState.Failed;
+    internal override bool IsSucceeded => this.State == TransactionState.Succeeded;
     internal bool IsComplete => this.State == TransactionState.Complete;
     internal bool IsProcessed => this.State == TransactionState.Processed;
     internal bool IsPaid => this.State == TransactionState.Paid;
     internal bool WaitingForPayment => this.State == TransactionState.WaitingForPayment;
     public bool TimedOut => this.TicksRemaining <= 0;
 
+    internal void SetSeller(Actor seller)
+        => this._sellerInt = seller.RefId;
     internal void Cancel()
         => this._cancelled = true;
     internal void Tick()
@@ -101,7 +93,7 @@ sealed class ShopTransaction : ITownServiceTransaction
     }
     internal void Dispose() => this.State = TransactionState.Succeeded;
 
-    public void Write(IDataWriter w)
+    internal override void Write(IDataWriter w)
     {
         w.Write(this.TickStarted);
         w.Write(this.PatienceInitial);
@@ -114,16 +106,17 @@ sealed class ShopTransaction : ITownServiceTransaction
         w.Write((int)this.State);
     }
 
-    public void Read(IDataReader r)
+    internal override void Read(IDataReader r)
     {
-        this.TickStarted = r.ReadDouble();
+        this.TickStarted = (SimulationTick)r.ReadUInt64();
         this.PatienceInitial = r.ReadInt32();
-        this.Buyer = r.ReadEntityRefId();
-        this.Seller = r.ReadEntityRefId();
+        this._buyerInt = r.ReadEntityRefId();
+        this._sellerInt = r.ReadEntityRefId();
         this.Item = r.ReadEntityRefId();
         this.Money = r.ReadEntityRefId();
         this.Counter = r.ReadIntVec3();
         this.Price = r.ReadInt32();
         this.State = (TransactionState)r.ReadInt32();
     }
+
 }

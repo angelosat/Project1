@@ -14,14 +14,27 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Healing;
 
-sealed class SpellRequest(Actor actor, SpellDef spell, int price) : TownServiceRequest
+public sealed class SpellRequest : TownServiceRequest
 {
     enum States { Requested, Accepted, Succeeded, Failed }
     States State;
-    internal EntityRefId TargetId = actor.RefId;
+    internal EntityRefId TargetId;
     internal EntityRefId CasterId;
-    internal int Price { get; private set; } = price;
-    internal SpellDef Spell = spell;
+    internal int Price { get; private set; }
+    internal SpellDef Spell;
+
+    public SpellRequest(Actor actor, SpellDef spell, int price) : base(actor)//.World.CurrentTick)
+    {
+        TargetId = actor.RefId;
+        Price = price;
+        Spell = spell;
+        //TickStarted = actor.World.CurrentTick;
+        //PatienceInitial = (int)actor.Resources.GetValue(ResourceDefOf.Patience);
+    }
+
+    public SpellRequest()
+    {
+    }
 
     internal bool IsPending => this.State == States.Requested;
     internal bool IsPaid 
@@ -40,9 +53,9 @@ sealed class SpellRequest(Actor actor, SpellDef spell, int price) : TownServiceR
 
     internal override TownServiceDef Service => TownServiceDefOf.Healing;
 
-    internal override SimulationTick TickStarted { get; set; } = actor.World.CurrentTick;
+    //internal override SimulationTick TickStarted { get; set; }
 
-    internal override int PatienceInitial { get; set; } = (int)actor.Resources.GetValue(ResourceDefOf.Patience);
+    //internal override int PatienceInitial { get; set; }
 
     internal override bool IsSucceeded => this.State == States.Succeeded;
 
@@ -74,7 +87,7 @@ sealed class SpellRequest(Actor actor, SpellDef spell, int price) : TownServiceR
     internal void MarkSucceeded()
         => this.State = States.Succeeded;
 
-    internal override void Write(IDataWriter w)
+    protected override void WriteExtra(IDataWriter w)
     {
         w.Write(this.TargetId);
         w.Write(this.CasterId);
@@ -86,7 +99,7 @@ sealed class SpellRequest(Actor actor, SpellDef spell, int price) : TownServiceR
         w.Write((int)this.State);
     }
 
-    internal override void Read(IDataReader r)
+    protected override void ReadExtra(IDataReader r)
     {
         this.TargetId = r.ReadEntityRefId();
         this.CasterId = r.ReadEntityRefId();
@@ -120,6 +133,7 @@ public class TownComp_Spells : TownComp
                 continue;
             this._pendingRequestsByTarget.Remove(req.TargetId);
             this._acceptedRequestsByCaster.Remove(req.CasterId);
+            this.Town.ServiceRequests.Remove(req.Id);
             this.Map.Events.Post(new TownServiceComplete(this.Map, req));
         }
     }
@@ -164,6 +178,7 @@ public class TownComp_Spells : TownComp
         }
         this._acceptedRequestsByCaster.Add(req.CasterId, req);
         this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal void MarkSucceeded(Actor target)
@@ -171,12 +186,16 @@ public class TownComp_Spells : TownComp
         var req = this._pendingRequestsByTarget[target.RefId];
         req.MarkSucceeded();
         this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
 
     internal void MarkPaid(SpellRequest req, Actor caster)
     {
         req.MarkPaid();
         this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
 
     internal void MarkTargetReady(Actor target)
@@ -184,6 +203,8 @@ public class TownComp_Spells : TownComp
         var req = this._pendingRequestsByTarget[target.RefId];
         req.MarkTargetReady();
         this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
 
     internal void MarkCasterReady(Actor caster)
@@ -191,5 +212,7 @@ public class TownComp_Spells : TownComp
         var req = this._acceptedRequestsByCaster[caster.RefId];
         req.MarkCasterReady();
         this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
 }

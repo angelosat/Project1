@@ -3,6 +3,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Towns.Services;
 using Project1.Core.Towns.Shops;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -193,23 +194,29 @@ public sealed class InnManager : TownComp
 
     internal void AssignClerk(IntVec3 desk, Actor actor)
     {
-        var transaction = this.OpenTransactionsByDesk[desk];
-        transaction.AssignClerk(actor);
-        this.OpenTransactionsByClerk.Add(actor.RefId, transaction);
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+        var req = this.OpenTransactionsByDesk[desk];
+        req.AssignClerk(actor);
+        this.OpenTransactionsByClerk.Add(actor.RefId, req);
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
 
     internal void MarkPaid(Actor actor, Entity hauled)
     {
-        var transaction = this.GetTransactionByGuest(actor);
-        transaction.MarkPaid(hauled);
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+        var req = this.GetTransactionByGuest(actor);
+        req.MarkPaid(hauled);
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
 
     internal void MarkProcessed(EntityRefId buyer)
     {
-        var transaction = this.OpenTransactionsByGuest[buyer];
-        transaction.MarkProcessed();
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+        var req = this.OpenTransactionsByGuest[buyer];
+        req.MarkProcessed();
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
 }

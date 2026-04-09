@@ -10,21 +10,33 @@ using System;
 
 namespace Project1.Core.Towns.Inns;
 
-public sealed class InnTransaction(Actor guest, IntVec3 desk) : TownServiceRequest
+public sealed class InnTransaction : TownServiceRequest, ISaveableNewNew<InnTransaction>
 {
     enum States { Queuing, AwaitingPayment, Paid, Processed, Succeeded, Failed }
-    internal EntityRefId Guest = guest.RefId;
+    internal EntityRefId Guest;
     internal EntityRefId Clerk { get; private set; }
     internal EntityRefId Money;
     internal override EntityRefId Buyer => this.Guest;
     internal override EntityRefId Seller => this.Clerk;
     internal override TownServiceDef Service => TownServiceDefOf.Lodging;
     //internal override SimulationTick TickStarted { get; private set; } = tickStarted;
-    internal override SimulationTick TickStarted { get; set; } = guest.World.CurrentTick;
+    //internal override SimulationTick TickStarted { get; set; }
 
-    public IntVec3 Desk { get; private set; } = desk;
-    internal override int PatienceInitial { get; set; } = (int)guest.Resources.GetValue(ResourceDefOf.Patience);// patienceInitial;
+    public IntVec3 Desk { get; private set; }
+    //internal override int PatienceInitial { get; set; }// patienceInitial;
     States State;
+
+    public InnTransaction(Actor guest, IntVec3 desk) : base(guest)//.World.CurrentTick)
+    {
+        Guest = guest.RefId;
+        //TickStarted = guest.World.CurrentTick;
+        Desk = desk;
+        //PatienceInitial = (int)guest.Resources.GetValue(ResourceDefOf.Patience);
+    }
+
+    public InnTransaction()
+    {
+    }
 
     public bool IsAwaitingPayment => this.State == States.AwaitingPayment;
     public bool IsPaid => this.State == States.Paid;
@@ -64,10 +76,10 @@ public sealed class InnTransaction(Actor guest, IntVec3 desk) : TownServiceReque
         this.State = States.Processed;
     }
 
-    internal override void Write(IDataWriter w)
+    protected override void WriteExtra(IDataWriter w)
     {
-        w.Write(this.TickStarted);
-        w.Write(this.PatienceInitial);
+        //w.Write(this.TickStarted);
+        //w.Write(this.PatienceInitial);
         w.Write(this.Guest);
         w.Write(this.Clerk);
         w.Write(this.Money);
@@ -75,14 +87,24 @@ public sealed class InnTransaction(Actor guest, IntVec3 desk) : TownServiceReque
         w.Write((int)this.State);
     }
 
-    internal override void Read(IDataReader r)
+    protected override void ReadExtra(IDataReader r)
     {
-        this.TickStarted = (SimulationTick)r.ReadUInt64();
-        this.PatienceInitial = r.ReadInt32();
+        //this.TickStarted = (SimulationTick)r.ReadUInt64();
+        //this.PatienceInitial = r.ReadInt32();
         this.Guest = r.ReadEntityRefId();
         this.Clerk = r.ReadEntityRefId();
         this.Money = r.ReadEntityRefId();
         this.Desk = r.ReadIntVec3();
         this.State = (States)r.ReadInt32();
+    }
+
+    public SaveTag Save(string name = "")
+    {
+        throw new NotImplementedException();
+    }
+
+    public static InnTransaction Create(SaveTag tag)
+    {
+        throw new NotImplementedException();
     }
 }

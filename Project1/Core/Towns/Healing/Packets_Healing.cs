@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities.Actors;
+﻿using Microsoft.Xna.Framework.Content;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Systems.Magic;
@@ -55,5 +56,7 @@ internal static class Packets_Healing
         var manager = target.Map.Town.SpellManager;
         var req = manager.GetRequestbyTargetOrDefault(target);
         req.Read(r);
+        //throw new System.Exception();
+        //req.ReadExtra(r);
     }
 }

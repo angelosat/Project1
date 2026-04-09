@@ -9,7 +9,6 @@ using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Tools;
 using Project1.Core.UI;
-using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;

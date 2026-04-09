@@ -476,6 +476,8 @@ namespace Project1.Framework
         {
             return (ulong)this[name].Value;
         }
+        //public T Load<T>(string name) where T : struct
+        //    => (T)this[name].Value;
         public ulong LoadUlong()
         {
             return (ulong)this.Value;

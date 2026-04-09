@@ -62,7 +62,9 @@ namespace Project1.Core.Towns.Shops
             var buyer = endpoint.World.Get<Actor>(buyerId);
             if (!buyer.Map.Town.OpenTransactions.TryGetValue(buyer.RefId, out var transaction))
                     throw new System.Exception();
-            transaction.Read(r);
+            throw new System.Exception();
+
+            //transaction.ReadExtra(r);
         }
     }
 }

@@ -115,8 +115,8 @@ public partial class TownServicesComp : TownComp
 
     readonly ObservableHashSet<Workplace> Shopss = new();
 
-    readonly Dictionary<TownServiceDef, TownServiceRuntime> _servicesByDef = [];
-    readonly Dictionary<Type, TownServiceRuntime> _servicesByType = [];
+    readonly Dictionary<TownServiceDef, TownServiceWorker> _servicesByDef = [];
+    readonly Dictionary<Type, TownServiceWorker> _servicesByType = [];
     readonly HashSet<IntVec3> ServicePoints = [];
     public IReadOnlySet<IntVec3> GetServicePoints()
         => this.ServicePoints;
@@ -132,13 +132,13 @@ public partial class TownServicesComp : TownComp
 
     public TownServicesComp(Town town) : base(town)
     {
-        foreach (var def in Def.Get<TownServiceDef>())
-        {
-            var serviceType = def.RuntimeType;
-            var runtime = def.CreateRuntime();
-            this._servicesByDef.Add(def, runtime);
-            this._servicesByType.Add(serviceType, runtime);
-        }
+        //foreach (var def in Def.Get<TownServiceDef>())
+        //{
+        //    var serviceType = def.RuntimeType;
+        //    var runtime = def.CreateRuntime();
+        //    this._servicesByDef.Add(def, runtime);
+        //    this._servicesByType.Add(serviceType, runtime);
+        //}
 
         town.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         town.Map.Events.ListenTo<StockpileUpdatedEvent>(HandleStockpileUpdated);
@@ -171,7 +171,7 @@ public partial class TownServicesComp : TownComp
         }
     }
 
-    public T GetService<T>() where T : TownServiceRuntime => (T)this._servicesByType[typeof(T)];
+    public T GetService<T>() where T : TownServiceWorker => (T)this._servicesByType[typeof(T)];
     public override string Name => "Shops";
     public Shop CreateShop()
     {
@@ -548,34 +548,42 @@ public partial class TownServicesComp : TownComp
 
     internal void MarkPaid(Actor buyer, Entity money)
     {
-        var t = this._transactionsByBuyer[buyer.RefId];
-        t.Money = money.RefId;
-        t.MarkPaid();
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+        var req = this._transactionsByBuyer[buyer.RefId];
+        req.Money = money.RefId;
+        req.MarkPaid();
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
     internal void RingUp(Actor seller, Entity item)
     {
-        var t = this._transactionsBySeller[seller.RefId];
-        if (item.RefId != t.Item)
+        var req = this._transactionsBySeller[seller.RefId];
+        if (item.RefId != req.Item)
             throw new InvalidOperationException();
-        t.RingUp();
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+        req.RingUp();
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
     internal void FinishTransaction(Actor buyer)
     {
-        var t = this._transactionsByBuyer[buyer.RefId];
+        var req = this._transactionsByBuyer[buyer.RefId];
         var shoppinglist = this._shoppingListsByActor[buyer.RefId];
         //t.MarkComplete();
         shoppinglist.MarkFulfilled();
-        t.Dispose();
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+        req.Dispose();
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
         //this.Map.Events.Post(new ShopTransactionFinishedEvent(this.Map, t));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
     internal void MarkProcessed(Actor seller)
     {
-        var t = this._transactionsBySeller[seller.RefId];
-        t.MarkProcessed();
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+        var req = this._transactionsBySeller[seller.RefId];
+        req.MarkProcessed();
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+
     }
 
     internal IEnumerable<Entity> GetItemsForSale()

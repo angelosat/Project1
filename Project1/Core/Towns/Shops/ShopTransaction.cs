@@ -13,7 +13,7 @@ using System;
 namespace Project1.Core.Towns.Shops;
 internal record struct ShopTransactionUpdatedEvent(MapBase Map, TownServiceRequest Transaction) : IEventPayload { }
 internal record struct TownServiceComplete(MapBase Map, TownServiceRequest Transaction) : IEventPayload { }
-sealed class ShopTransaction : TownServiceRequest
+public sealed class ShopTransaction : TownServiceRequest
 {
     internal enum TransactionState
     {
@@ -29,18 +29,18 @@ sealed class ShopTransaction : TownServiceRequest
     public int Price;
     public IntVec3 Counter { get; private set; }
     double TicksRemaining = Ticks.FromHours(1);
-    internal override SimulationTick TickStarted { get; set; }
-    internal override TownServiceDef Service => TownServiceDefOf.Selling;
-    internal override int PatienceInitial { get; set; }
-    ShopTransaction() { }
-    public ShopTransaction(SimulationTick tickStarted, int patienceSnapshot, Actor buyer, Entity item, int price, IntVec3 counter)
+    //internal override SimulationTick TickStarted { get; set; }
+    internal override TownServiceDef Service => TownServiceDefOf.Buying;
+    //internal override int PatienceInitial { get; set; }
+    public ShopTransaction() { }
+    public ShopTransaction(SimulationTick tickStarted, int patienceSnapshot, Actor buyer, Entity item, int price, IntVec3 counter) : base(buyer)
     {
         this._buyerInt = buyer.RefId;
         this.Item = item.RefId;
         this.Price = price;
         this.Counter = counter;
-        this.TickStarted = tickStarted;
-        this.PatienceInitial = patienceSnapshot;
+        //this.TickStarted = tickStarted;
+        //this.PatienceInitial = patienceSnapshot;
     }
 
     internal override bool IsFailed => this.State == TransactionState.Failed;
@@ -93,10 +93,10 @@ sealed class ShopTransaction : TownServiceRequest
     }
     internal void Dispose() => this.State = TransactionState.Succeeded;
 
-    internal override void Write(IDataWriter w)
+    protected override void WriteExtra(IDataWriter w)
     {
-        w.Write(this.TickStarted);
-        w.Write(this.PatienceInitial);
+        //w.Write(this.TickStarted);
+        //w.Write(this.PatienceInitial);
         w.Write(this.Buyer);
         w.Write(this.Seller);
         w.Write(this.Item);
@@ -106,10 +106,10 @@ sealed class ShopTransaction : TownServiceRequest
         w.Write((int)this.State);
     }
 
-    internal override void Read(IDataReader r)
+    protected override void ReadExtra(IDataReader r)
     {
-        this.TickStarted = (SimulationTick)r.ReadUInt64();
-        this.PatienceInitial = r.ReadInt32();
+        //this.TickStarted = (SimulationTick)r.ReadUInt64();
+        //this.PatienceInitial = r.ReadInt32();
         this._buyerInt = r.ReadEntityRefId();
         this._sellerInt = r.ReadEntityRefId();
         this.Item = r.ReadEntityRefId();

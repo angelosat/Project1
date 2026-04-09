@@ -21,11 +21,17 @@ public class TownComp_ServiceRequests : TownComp
 
     TownServiceRequestId NextId => ++field;
 
-    public TownServiceRequestId Register(TownServiceRequest request)
+    internal TownServiceRequestId Register(TownServiceRequest request)
     {
         var id = this.NextId;
         request.Id = id;
         this._openRequests.Add(id, request);
         return id;
     }
+
+    internal void Remove(TownServiceRequestId id)
+        => this._openRequests.Remove(id);
+
+    public TownServiceRequest Get(TownServiceRequestId id)
+        => this._openRequests[id];
 }

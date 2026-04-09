@@ -87,6 +87,8 @@ public abstract class TownServiceRequest : ISaveableNewNew<TownServiceRequest>, 
 
     public TownServiceRequest Read(IDataReader r)
     {
+        _ = r.ReadDef<TownServiceDef>();
+
         this.Id = r.ReadUInt64();
         this.TickStarted = r.ReadUInt64();
         this.PatienceInitial = r.ReadInt32();

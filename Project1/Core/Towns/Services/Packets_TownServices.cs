@@ -1,13 +1,7 @@
-﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
+﻿using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Core.Systems.Magic;
-using Project1.Core.Towns.Healing;
 using Project1.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Project1.Core.Towns.Services;
 
@@ -58,10 +52,6 @@ internal class Packets_TownServices
     private static void ReceiveSync(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
-        //var target = endpoint.World.Get<Actor>(r.ReadEntityRefId());
-        //var manager = target.Map.Town.SpellManager;
-        //var req = manager.GetRequestbyTargetOrDefault(target);
-        //req.ReadExtra(r);
         var map = endpoint.World.Get(r.ReadMapId());
         var manager = map.Town.ServiceRequests;
         var request = manager.Get(r.ReadUInt64());

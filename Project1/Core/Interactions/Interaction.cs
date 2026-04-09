@@ -6,7 +6,6 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Core.Resources;
-using Project1.Core.Simulation;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.Healing;
@@ -108,8 +107,6 @@ namespace Project1.Core.Interactions
             {
                 if (this.Def.Logic.HasSucceeded(this))
                 {
-                    //if (this.Def == HealingDefOf.InteractionHealingSeek)
-                    //    "asdasd".ToConsole();
                     this.Def.Logic.OnSuccess(this);
                     this.Finish();
                     return;

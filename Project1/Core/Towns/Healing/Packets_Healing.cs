@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Content;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Systems.Magic;

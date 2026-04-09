@@ -177,42 +177,39 @@ public class TownComp_Spells : TownComp
             req.PaymentId = payment.Id;
         }
         this._acceptedRequestsByCaster.Add(req.CasterId, req);
-        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+        //this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal void MarkSucceeded(Actor target)
     {
         var req = this._pendingRequestsByTarget[target.RefId];
         req.MarkSucceeded();
-        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+        //this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
 
     }
 
     internal void MarkPaid(SpellRequest req, Actor caster)
     {
         req.MarkPaid();
-        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
+        //this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal void MarkTargetReady(Actor target)
     {
         var req = this._pendingRequestsByTarget[target.RefId];
         req.MarkTargetReady();
-        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
+        //this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal void MarkCasterReady(Actor caster)
     {
         var req = this._acceptedRequestsByCaster[caster.RefId];
         req.MarkCasterReady();
-        this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
+        //this.Map.Events.Post(new HealingRequestUpdatedEvent(req));
+        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 }

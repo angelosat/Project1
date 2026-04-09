@@ -14,14 +14,15 @@ internal class PlannerHealingOffer : Planner
     {
         var map = actor.Map;
         var manager = map.Town.SpellManager;
-        if(manager.TryGetRequestByCaster(actor, out var existing))
+        if (manager.TryGetRequestByCaster(actor, out var existing))
         {
             if (existing.IsDisposed)
                 return null;
             var target = map.World.Get<Actor>(existing.TargetId);
             if (!actor.CanReachAndReserve(target))
                 return null;
-            if (existing.IsWaitingPay)
+            //if (existing.IsWaitingPay)
+            if (!existing.IsPaid)
             {
                 var trade = map.Town.Trades.GetTradeByRecipient(actor);
                 if (trade.IsOffered)
@@ -35,11 +36,12 @@ internal class PlannerHealingOffer : Planner
                 map.Town.Trades.MarkAccepted(actor);
                 return new Plan(HealingDefOf.PlanHealingWaitPay);
             }
-            //if (existing.IsPaid)
-            if (existing.IsTargetReady)
-                return new Plan(SpellDefOf.PlanCastSpell, target) { Spell = SpellDefOf.Healing, Continuation = PlanContinuationPolicy.Yield };
-            if (existing.IsPaid)
+            else
+            {
+                if (existing.IsTargetReady)
+                    return new Plan(SpellDefOf.PlanCastSpell, target) { Spell = SpellDefOf.Healing, Continuation = PlanContinuationPolicy.Yield };
                 return new Plan(HealingDefOf.PlanHealingWaitCaster);
+            }
         }
         var allRequests = manager.PendingRequests;
         foreach(var req in allRequests)
@@ -71,15 +73,19 @@ internal class PlannerHealingSeek : Planner
             if (!actor.CanReachAndReserve(caster))
                 return null;
             if (existing.IsPaid)
-                return null;
-            //if (existing.IsAccepted && !actor.IsHauling)
-            //if (existing.IsPaid && !actor.IsHauling)
-            if (existing.IsCasterReady && !actor.IsHauling)
-                return new Plan(HealingDefOf.PlanHealingSeek, caster);
-
-            if (existing.IsWaitingPay)
+            //return null;
             {
-                if(!actor.Map.Town.Trades.TryGetTradeByGiver(actor, out var trade))
+                //if (existing.IsAccepted && !actor.IsHauling)
+                //if (existing.IsPaid && !actor.IsHauling)
+                if (existing.IsCasterReady && !actor.IsHauling)
+                    return new Plan(HealingDefOf.PlanHealingSeek, caster);
+                return null;
+            }
+            //if (existing.IsWaitingPay)
+            //if (!existing.IsPaid)
+            else
+            {
+                if (!actor.Map.Town.Trades.TryGetTradeByGiver(actor, out var trade))
                     trade = actor.Map.Town.Trades.Request(actor, caster);
 
                 if (trade.IsComplete)

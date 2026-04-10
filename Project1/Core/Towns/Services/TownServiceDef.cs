@@ -1,6 +1,7 @@
-﻿using Project1.Core.Towns.Healing;
-using Project1.Core.Towns.Inns;
-using Project1.Core.Towns.Shops;
+﻿using Project1.Core.Towns.Services.Healing;
+using Project1.Core.Towns.Services.Inns;
+using Project1.Core.Towns.Services.Repairing;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using System;
@@ -19,6 +20,7 @@ namespace Project1.Core.Towns.Services
         static public readonly TownServiceDef Buying = new("Buying", typeof(ServiceRequest_Shop));
         static public readonly TownServiceDef Lodging = new("Lodging", typeof(ServiceRequest_Inn));
         static public readonly TownServiceDef Healing = new("Healing", typeof(ServiceRequest_Spell));
+        static public readonly TownServiceDef Repairing = new("Repairing", typeof(ServiceRequest_Repair));
     }
     public sealed class TownServiceDef(string name, Type runtimeType) : Def(name)
     {

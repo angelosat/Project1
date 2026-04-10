@@ -40,7 +40,7 @@ internal static class PacketsInventory
         var client = endpoint as Client;
         var r = packet.PacketReader;
         var actor = client.World.Get<Actor>(r.ReadInt32());
-        var item = client.World.GetEntity(r.ReadInt32());
+        var item = client.World.Get(r.ReadInt32());
         actor.Inventory.Contents.AddInternal(item);
         //actor.Inventory.Insert(item);
     }
@@ -49,7 +49,7 @@ internal static class PacketsInventory
         var client = endpoint as Client;
         var r = packet.PacketReader;
         var actor = client.World.Get<Actor>(r.ReadInt32());
-        var item = client.World.GetEntity(r.ReadInt32());
+        var item = client.World.Get(r.ReadInt32());
         actor.Inventory.Contents.RemoveInternal(item);
     }
     private static void HandleInventoryItemAdded(InventoryItemAddedEvent e)
@@ -89,7 +89,7 @@ internal static class PacketsInventory
         var mapid = r.ReadInt32();
         var map = client.World.Get(mapid);
         var be = map.GetBlockEntity(r.ReadIntVec3());
-        var item = endpoint.World.GetEntity(r.ReadInt32());
+        var item = endpoint.World.Get(r.ReadInt32());
         be.GetComp<BlockInventoryComp>().Insert(item);
     }
     private static void OnBlockInventoryItemRemoved(NetEndpoint endpoint, Packet packet)
@@ -99,7 +99,7 @@ internal static class PacketsInventory
         var mapid = r.ReadInt32();
         var map = client.World.Get(mapid);
         var be = map.GetBlockEntity(r.ReadIntVec3());
-        var item = client.World.GetEntity(r.ReadInt32());
+        var item = client.World.Get(r.ReadInt32());
         be.GetComp<BlockInventoryComp>().Remove(item);
     }
 
@@ -111,7 +111,7 @@ internal static class PacketsInventory
         var owner = server.World.Get<Actor>(ownerid);
         var map = owner.Map;
         var itemid = r.ReadInt32();
-        var item = map.World.GetEntity(itemid);
+        var item = map.World.Get(itemid);
         var count = r.ReadInt32();
         owner.AI.State.ItemPreferences.ForceDrop(item); 
     }
@@ -145,7 +145,7 @@ internal static class PacketsInventory
         var client = endpoint as Client;
         var r = packet.PacketReader;
         var e = SlotUpdatedEvent.Create(r);
-        var entity = client.World.GetEntity(e.Owner);
+        var entity = client.World.Get(e.Owner);
         var slot = entity.GetSlot(e.SlotIndex);
         slot.Assign(e.Content);
     }

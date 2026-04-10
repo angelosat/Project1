@@ -1,5 +1,5 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Shops;
 
 namespace Project1.Core.AI.Thought;
 internal sealed class ThoughtItemEvaluatorVisitor : ThoughtProcess
@@ -14,7 +14,7 @@ internal sealed class ThoughtItemEvaluatorVisitor : ThoughtProcess
         if (!actor.IsSpawned)
             return;
         var manager = state.ItemPreferences;
-        var list = actor.Map.Town.ShopManager.GetShoppingListEmpty(actor);
+        var list = actor.Map.Town.Shops.GetShoppingListEmpty(actor);
 
         while (manager.DequeueUnevaluated() is Entity nextEntity)
         {

@@ -166,7 +166,7 @@ namespace Project1.Core.Systems.ItemRoles
             {
                 this.TempIgnore.Remove(key);
 
-                var item = this.Actor.Map.World.GetEntity(key);
+                var item = this.Actor.Map.World.Get(key);
                 if (item.ExistsOn(this.Actor.Map))
                     this.TryEnqueue(item);
             }
@@ -432,7 +432,7 @@ namespace Project1.Core.Systems.ItemRoles
             var items = actor.Inventory.GetItems();
             foreach (var i in this.ToDiscard.ToArray())
             {
-                var item = net.World.GetEntity(i);
+                var item = net.World.Get(i);
                 if (!items.Contains(item))
                 {
                     this.RemoveJunk(item);
@@ -645,8 +645,8 @@ namespace Project1.Core.Systems.ItemRoles
                     var role = r.ReadDef<ItemRoleDef>();
                     var olditemid = r.ReadInt32();
                     var newitemid = r.ReadInt32();
-                    var olditem = olditemid > 0 ? actor.Map.World.GetEntity(olditemid) : null;
-                    var newitem = newitemid > 0 ? actor.Map.World.GetEntity(newitemid) : null;
+                    var olditem = olditemid > 0 ? actor.Map.World.Get(olditemid) : null;
+                    var newitem = newitemid > 0 ? actor.Map.World.Get(newitemid) : null;
                     var score = r.ReadInt32();
                     manager.UpdatePref(role, newitem, score);
                 }

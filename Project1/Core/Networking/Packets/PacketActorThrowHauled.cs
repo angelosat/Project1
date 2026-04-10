@@ -28,7 +28,7 @@ namespace Project1.Core.Networking.Packets
             if (endpoint is Server)
                 throw new Exception();
             var r = packet.PacketReader;
-            var actor = endpoint.World.GetEntity(r.ReadInt32());
+            var actor = endpoint.World.Get(r.ReadInt32());
             var velocity = r.ReadVector3();
             var amount = r.ReadInt32();
             actor.Inventory.Throw(velocity, amount);

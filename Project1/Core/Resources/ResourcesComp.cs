@@ -43,6 +43,8 @@ public sealed class ResourcesComp : EntityComp
         var res = this.Resources[def];
         return new(def, res.Value, res.Max);
     }
+    public float? GetValueOrDefault(ResourceDef def)
+        => this.Resources.TryGetValue(def, out var val) ? val.Value : null;
     public override void Tick()
     {
         foreach (var item in this.Resources.Values)

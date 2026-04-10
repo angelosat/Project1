@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Project1.Core.Blocks;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Services.Shops;
+using Project1.Framework;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services;
@@ -15,6 +19,9 @@ public class TownComp_ServiceRequests : TownComp
     readonly Dictionary<TownServiceRequestId, ServiceRequest> _openRequests = [];
     public IReadOnlyCollection<ServiceRequest> GetAllRequests() => this._openRequests.Values;
     public IEnumerable<T> GetAllRequests<T>() where T : ServiceRequest => this._openRequests.Values.OfType<T>();
+    HashSet<IntVec3> CountersAll = [];
+    Dictionary<TownServiceDef, HashSet<IntVec3>> CountersByService = [];
+    Dictionary<IntVec3, Queue<Actor>> QueuesByCounter = [];
 
     public TownComp_ServiceRequests(Town town) : base(town)
     {
@@ -37,4 +44,11 @@ public class TownComp_ServiceRequests : TownComp
 
     public ServiceRequest Get(TownServiceRequestId id)
         => this._openRequests[id];
+
+    internal override void Scan(BlockEntity entity)
+    {
+        if (!entity.HasComp<BlockShopComp>())
+            return;
+        this.CountersAll.Add(entity.OriginGlobal);
+    }
 }

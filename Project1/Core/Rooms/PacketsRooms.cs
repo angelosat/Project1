@@ -84,7 +84,7 @@ namespace Project1.Core.Rooms
             var map = net.World.Get(mapid);
             var roomID = r.ReadInt32();
             var room = map.Town.RoomManager.GetRoom(roomID);
-            var wplace = r.ReadInt32() is int id && id != -1 ? map.Town.ShopManager.GetShop(id) : null;
+            var wplace = r.ReadInt32() is int id && id != -1 ? map.Town.Shops.GetShop(id) : null;
 
             if (net is Server)
                 SetWorkplace(net, player, room, wplace);

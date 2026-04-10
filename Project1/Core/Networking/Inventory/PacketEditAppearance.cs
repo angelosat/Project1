@@ -23,7 +23,7 @@ namespace Project1.Core.Networking.Inventory
         {
             var r = pck.PacketReader;
             var actorID = r.ReadInt32();
-            var actor = net.World.GetEntity(actorID) as Actor;
+            var actor = net.World.Get(actorID) as Actor;
             var colors = new CharacterColors(r);
             actor.Sprite.Customization = colors;
             if (net is Server)

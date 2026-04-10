@@ -12,7 +12,7 @@ using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Trading;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Designations;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Core.Towns.Zones;
 using Project1.Framework;
 using Project1.Framework.Helpers;

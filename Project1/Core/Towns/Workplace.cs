@@ -12,7 +12,7 @@ using Project1.Core.Rooms;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Duties;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -338,7 +338,7 @@ public abstract class Workplace : ISerializable, ISaveable
             this.RemoveWorker(actor);
             return;
         }
-        this.Town.ShopManager.GetShop<Shop>(actor)?.RemoveWorker(actor);
+        this.Town.Shops.GetShop<Shop>(actor)?.RemoveWorker(actor);
         this.Workers.Add(actor.RefId);
         this.WorkerProps.Add(actor.RefId, new WorkerProps(actor, this.GetRoleDefs().ToArray()));
         this.Town.Net.EventOccured((int)Message.Types.ShopUpdated, this, new[] { actor });
@@ -347,7 +347,7 @@ public abstract class Workplace : ISerializable, ISaveable
     internal IEnumerable<Actor> GetWorkers()
     {
         foreach (var actor in this.Workers)
-            yield return this.Town.Map.World.GetEntity(actor) as Actor;
+            yield return this.Town.Map.World.Get(actor) as Actor;
     }
 
     internal virtual void OnBlocksChanged(IEnumerable<IntVec3> positions) { }
@@ -404,7 +404,7 @@ public abstract class Workplace : ISerializable, ISaveable
     static Control CreateWorkersUI(Workplace shop)
     {
         var town = shop.Town;
-        var manager = town.ShopManager;
+        var manager = town.Shops;
         var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 7, ScrollModes.Vertical);
         var listworkers = new ListBoxNoScroll<Actor, ButtonNew>(
              a =>
@@ -453,7 +453,7 @@ public abstract class Workplace : ISerializable, ISaveable
                     break;
             }
         };
-        box.SetGetDataAction(o =>
+        box.SetGetDataAction((Action<object>)(o =>
         {
             tav = o as Workplace;
             table.Clear();
@@ -471,8 +471,8 @@ public abstract class Workplace : ISerializable, ISaveable
                     };
                 });
             }
-            table.AddItems(tav.Workers.Select(i => tav.Map.World.GetEntity(i)).Cast<Actor>());
-        });
+            table.AddItems(tav.Workers.Select((Func<int, Entities.Entity>)(i => (Entities.Entity)tav.Map.World.Get(i))).Cast<Actor>());
+        }));
 
         box.AddControlsVertically(
             tablePanel);
@@ -545,7 +545,7 @@ public abstract class Workplace : ISerializable, ISaveable
                      a =>
                      a.GetButton(200,//boxlistworkers.Client.Width,
                      () => a.Workplace != null ? $"Assigned to {a.Workplace.Name}" : "",
-                     () => a.Town.ShopManager.ToggleWorker(a, this.SelectedShop)));
+                     () => a.Town.Shops.ToggleWorker(a, this.SelectedShop)));
             var listWorkersContext = this.ListAvailableWorkers.ToContextMenu("Assign workers");
 
             workersTab.AddControlsVertically(
@@ -651,7 +651,7 @@ public abstract class Workplace : ISerializable, ISaveable
             var mapid = r.ReadMapId();
             var map = net.World.Get(mapid);
             var shopid = r.ReadInt32();
-            var shopmanager = map.Town.ShopManager;
+            var shopmanager = map.Town.Shops;
             var shop = shopmanager.GetShop(shopid);
             var name = r.ReadString();
             var oldName = shop.Rename(name);
@@ -677,7 +677,7 @@ public abstract class Workplace : ISerializable, ISaveable
             var mapid = r.ReadMapId();
             var map = net.World.Get(mapid);
             var shopid = r.ReadInt32();
-            var shopmanager = map.Town.ShopManager;
+            var shopmanager = map.Town.Shops;
             var shop = shopmanager.GetShop(shopid);
             shop.ToggleOpen();
             DebugConsole.Write($"Player {net.GetPlayer(playerID).Name} toggled shop {shop.Name} open");  

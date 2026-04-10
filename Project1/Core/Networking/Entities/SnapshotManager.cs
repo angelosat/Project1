@@ -36,7 +36,7 @@ internal class SnapshotManager
         foreach (var kv in prev.Dictionary)
         {
             var prevSnap = kv.Value;
-            var entity = world.GetEntity(prevSnap.RefID);
+            var entity = world.Get(prevSnap.RefID);
             if (entity is null) /// snapshot for entity that hasn't been spawned but the client yet? silently drop?
                 continue;
             
@@ -60,7 +60,7 @@ internal class SnapshotManager
         {
             var prevSnap = kv.Value;
             next.Dictionary.TryGetValue(prevSnap.RefID, out var nextSnap);
-            var entity = world.GetEntity(prevSnap.RefID);
+            var entity = world.Get(prevSnap.RefID);
             if (entity is null) /// snapshot for entity that hasn't been spawned but the client yet? silently drop?
                 continue;
             if (nextSnap == EntitySnapshot.Empty)// is null)
@@ -86,7 +86,7 @@ internal class SnapshotManager
                 continue;
 
             var nextObj = kv.Value;
-            var entity = world.GetEntity(nextObj.RefID);
+            var entity = world.Get(nextObj.RefID);
             if (entity == null) continue;
             if (entity.Map == null) continue; // a snapshot could have been received earlier than the packet to actually spawn an entity that actually is registered in the world but is unspawned
 

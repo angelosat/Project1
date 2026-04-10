@@ -27,7 +27,7 @@ namespace Project1.Core.Towns.UI
         {
             foreach (var id in enumerable)
             {
-                var plant = Server.Instance.World.GetEntity(id);
+                var plant = Server.Instance.World.Get(id);
                 plant.TryGetComponent<PlantComponent>(c => c.FinishGrowing(plant));
                 plant.TryGetComponent<TreeComponent>(c => c.FinishGrowing(plant));
                 plant.Sync(Server.Instance);

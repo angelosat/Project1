@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Shops;
 using System.Diagnostics;
 
 namespace Project1.Core.Towns.Reputation;

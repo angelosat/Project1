@@ -37,7 +37,10 @@ public class TraitDefOf
         NameNegative = "Unmotivated",
         NamePositive = "Driven",
     };
-    //static public readonly TraitDef Planning = new TraitDef("Planning")
+
+    /// <summary>
+    /// Affects the range of which the actor will search for opportunistic hauls
+    /// </summary>
     static public readonly TraitDef Deliberation = new TraitDef("Planning")
     {
         NameNegative = "Hasty",

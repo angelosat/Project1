@@ -25,7 +25,7 @@ namespace Project1.Core.Towns
                 var r = pck.PacketReader;
                 var pl = net.GetPlayer(r.ReadInt32());
                 var map = net.World.Get(r.ReadMapId());
-                var tavern = map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
+                var tavern = map.Town.Shops.GetShop(r.ReadInt32()) as Tavern;
                 var orderid = r.ReadInt32();
                 var order = tavern.GetOrder(orderid);
                 if (net is Client)
@@ -49,7 +49,7 @@ namespace Project1.Core.Towns
                 var pl = net.GetPlayer(r.ReadInt32());
                 var mapid = r.ReadMapId();
                 var map = net.World.Get(mapid);
-                var tavern = map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
+                var tavern = map.Town.Shops.GetShop(r.ReadInt32()) as Tavern;
                 var reaction = r.ReadDef<Reaction>();
                 var id = r.ReadInt32();
                 if (net is Client)
@@ -90,7 +90,7 @@ namespace Project1.Core.Towns
                 var r = pck.PacketReader;
                 var pl = net.GetPlayer(r.ReadInt32());
                 var map = net.World.Get(r.ReadMapId());
-                var tavern = map.Town.ShopManager.GetShop(r.ReadInt32()) as Tavern;
+                var tavern = map.Town.Shops.GetShop(r.ReadInt32()) as Tavern;
                 var order = tavern.GetOrder(r.ReadInt32());
                 var enabled = r.ReadBoolean();
                 if (net is Client)

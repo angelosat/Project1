@@ -32,7 +32,7 @@ namespace Project1.Core.Networking
             var r = packet.PacketReader;
             var list = r.ReadListEntityRefId();
             foreach (var id in list)
-                endpoint.World.GetEntity(id).ToggleForbidden();
+                endpoint.World.Get(id).ToggleForbidden();
             if (endpoint is Server server)
                 SendPlayerForbidItem(server, list);
         }

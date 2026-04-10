@@ -8,9 +8,9 @@ using Project1.Core.Towns.Constructions.AI;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Farming;
 using Project1.Core.Towns.Forestry;
-using Project1.Core.Towns.Healing;
-using Project1.Core.Towns.Inns;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Healing;
+using Project1.Core.Towns.Services.Inns;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Core.Towns.Switch;
 using Project1.Core.Towns.Tasks;
 
@@ -44,7 +44,7 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef Browse = new("Browse", typeof(PlannerBrowse));
         static public readonly PlannerDef SeekHealing = new("Healing", typeof(PlannerHealingSeek));
         static public readonly PlannerDef OfferHealing = new("Healer", typeof(PlannerHealingOffer));
-        static public readonly PlannerDef Buy = new("Buy", typeof(PlannerBuy));
+        static public readonly PlannerDef Buy = new("Buy", typeof(Planner_Buy));
         static public readonly PlannerDef Sell = new("Sell", typeof(PlannerSell));
         static public readonly PlannerDef Departure = new("Departure", typeof(PlannerDeparture));
 

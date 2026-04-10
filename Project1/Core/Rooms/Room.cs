@@ -39,7 +39,7 @@ namespace Project1.Core.Rooms
         private Workplace workplace;
         public Workplace Workplace
         {
-            get => workplaceID != -1 ? (workplace ??= this.Map.Town.ShopManager.GetShop(workplaceID)) : null;
+            get => workplaceID != -1 ? (workplace ??= this.Map.Town.Shops.GetShop(workplaceID)) : null;
             set
             {
                 workplace = value;
@@ -349,7 +349,7 @@ namespace Project1.Core.Rooms
 
         public Actor GetOwner()
         {
-            return this.Map.World.GetEntity(this.OwnerRef) as Actor;
+            return this.Map.World.Get(this.OwnerRef) as Actor;
         }
         public override string ToString()
         {

@@ -6,7 +6,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Rooms;
 using Project1.Core.Towns.Duties;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;

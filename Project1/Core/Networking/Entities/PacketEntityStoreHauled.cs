@@ -26,7 +26,7 @@ namespace Project1.Core.Networking.Entities
             if (endpoint.IsServer)
                 throw new Exception();
             var actorId = packet.PacketReader.ReadInt32();
-            var actor = endpoint.World.GetEntity(actorId);
+            var actor = endpoint.World.Get(actorId);
             actor.Inventory.StoreHauled();
         }
     }

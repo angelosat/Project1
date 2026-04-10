@@ -26,9 +26,9 @@ namespace Project1.Core.Networking.Packets
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.GetEntity(r.ReadInt32());
+            var actor = client.World.Get(r.ReadInt32());
             var itemId = r.ReadInt32();
-            var item = itemId > 0 ? client.World.GetEntity(itemId) : null;
+            var item = itemId > 0 ? client.World.Get(itemId) : null;
             var amount = r.ReadInt32();
             actor.Inventory.HaulSlot.Assign(item);
         }

@@ -43,7 +43,7 @@ namespace Project1.Core.Towns.Duties
             var r = pck.PacketReader;
             var server = net as Server;
             //var player = server.GetPlayer(r.ReadInt32());
-            var actor = server.World.GetEntity(r.ReadInt32()) as Actor;
+            var actor = server.World.Get(r.ReadInt32()) as Actor;
             //var jobDef = Def.GetDef<JobDef>(r.ReadString());
             var jobDef = r.ReadDef<DutyDef>();
             var job = actor.GetDuty(jobDef);
@@ -72,7 +72,7 @@ namespace Project1.Core.Towns.Duties
         private static void HandleAdjustPriority(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var actor = endpoint.World.GetEntity(r.ReadInt32()) as Actor;
+            var actor = endpoint.World.Get(r.ReadInt32()) as Actor;
             var jobDef = r.ReadDef<DutyDef>();
             var job = actor.GetDuty(jobDef);
             var delta = r.ReadInt32();
@@ -92,7 +92,7 @@ namespace Project1.Core.Towns.Duties
         private static void HandleLaborToggle(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+            var actor = net.World.Get(r.ReadInt32()) as Actor;
             var jobDef = r.ReadDef<DutyDef>();
             net.World.MainMap.Town.DutiesManager.Toggle(actor, jobDef);
             if (net is Server)
@@ -111,7 +111,7 @@ namespace Project1.Core.Towns.Duties
         {
             var r = pck.PacketReader;
             var client = net as Client;
-            var actor = client.World.GetEntity(r.ReadInt32()) as Actor;
+            var actor = client.World.Get(r.ReadInt32()) as Actor;
             var jobDef = Def.Get<DutyDef>(r.ReadString());
             var job = actor.GetDuty(jobDef);
             job.Read(r);

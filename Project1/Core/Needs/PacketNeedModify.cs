@@ -23,7 +23,7 @@ namespace Project1.Core.Needs
         private static void ReceiveSet(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+            var actor = net.World.Get(r.ReadInt32()) as Actor;
             var need = r.ReadDef<NeedDef>();
             var value = r.ReadInt32();
             actor.GetNeed(need).SetValue(value);
@@ -40,7 +40,7 @@ namespace Project1.Core.Needs
         static public void ReceiveModify(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var entity = net.World.GetEntity(r.ReadInt32());
+            var entity = net.World.Get(r.ReadInt32());
             var need = r.ReadDef<NeedDef>();
             var value = r.ReadInt32();
             NeedsComponent.ModifyNeed(entity, need, value);

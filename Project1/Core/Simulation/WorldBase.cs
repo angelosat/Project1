@@ -22,7 +22,7 @@ namespace Project1.Core.Simulation;
 
 public interface IEntityProvider
 {
-    Entity GetEntity(EntityRefId refId);
+    Entity Get(EntityRefId refId);
     T Get<T>(EntityRefId refId) where T : Entity;
 
 }
@@ -94,7 +94,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
         }
         //this.Events.Post(new EntityRegisteredEvent(entity, immediate));
     }
-    public Entity GetEntity(EntityRefId refId)
+    public Entity Get(EntityRefId refId)
     {
         if (refId == EntityRefId.Null)
             return null!;
@@ -102,6 +102,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
             return null!; // dont throw because return might be null for early snapshots
         return obj;
     }
+    
     public T? Get<T>(EntityRefId refId) where T : Entity
     {
         this.EntityRegistry.TryGetValue(refId, out var obj);
@@ -155,7 +156,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
     }
     public bool TryDisposeEntity(EntityRefId id)
     {
-        var entity = this.GetEntity(id);
+        var entity = this.Get(id);
         if (entity is not null)
             return this.DisposeEntity(entity);
         return false;

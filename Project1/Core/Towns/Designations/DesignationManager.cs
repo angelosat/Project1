@@ -427,7 +427,7 @@ namespace Project1.Core.Towns.Designations
             {
                 var count = r.ReadInt32();
                 for (int i = 0; i < count; i++)
-                    d.Value.Add(this.Map.World.GetEntity(r.ReadEntityRefId()));
+                    d.Value.Add(this.Map.World.Get(r.ReadEntityRefId()));
             }
         }
         internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()

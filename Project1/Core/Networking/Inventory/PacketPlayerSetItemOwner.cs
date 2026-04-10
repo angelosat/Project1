@@ -21,7 +21,7 @@ namespace Project1.Core.Networking.Inventory
             var r = pck.PacketReader;
             var itemID = r.ReadInt32();
             var ownerID = r.ReadInt32();
-            var item = net.World.GetEntity(itemID);
+            var item = net.World.Get(itemID);
             
             item.SetOwner(ownerID);
          

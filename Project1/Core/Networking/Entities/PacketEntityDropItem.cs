@@ -27,8 +27,8 @@ namespace Project1.Core.Networking.Entities
                 throw new Exception();
             var actorId = packet.PacketReader.ReadInt32();
             var targetId = packet.PacketReader.ReadInt32();
-            var actor = endpoint.World.GetEntity(actorId);
-            var target = endpoint.World.GetEntity(targetId);
+            var actor = endpoint.World.Get(actorId);
+            var target = endpoint.World.Get(targetId);
             actor.Inventory.Drop(target);
         }
     }

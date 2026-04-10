@@ -82,7 +82,7 @@ public class WorldInhabitantView : Inspectable, ITooltippable
     {
         this.ShopBlacklist.Add(shopID);
         this.SyncAwardTownRating(-50);
-        var shop = this.Actor.Town.ShopManager.GetShop(shopID);
+        var shop = this.Actor.Town.Shops.GetShop(shopID);
         this.Actor.AI.State.Log.Write($"Blacklisted {shop.Name} because of bad service");
     }
    

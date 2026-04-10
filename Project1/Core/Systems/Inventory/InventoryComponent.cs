@@ -238,6 +238,15 @@ namespace Project1.Core.Systems.Inventory
                 return this.HaulSlot.Object as Entity;
             return null;
         }
+        public IEnumerable<Entity> FindAll(Func<Entity, bool> filter)
+            => this.Contents.Where(filter);
+
+        public IEnumerable<(Entity item, int score)> Score(Func<Entity, int?> score)
+            => this.Contents
+            .Select(e => (e, score(e)))
+            .Where(i => i.Item2.HasValue)
+            .Select(e=>(e.e, e.Item2.Value));
+       
         public int Count(ItemDef def)
         {
             return this.Count(e => e.Def == def);

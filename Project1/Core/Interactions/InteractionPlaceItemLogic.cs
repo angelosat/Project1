@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Simulation;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
 using System;
 
@@ -9,7 +9,7 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
 {
     sealed class Context : InteractionContext
     {
-        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
+        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.Shops.GetTransactionBySeller(this.Actor);
     }
     protected override InteractionContext CreateContextInt() => new Context();
     public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsFailed;
@@ -23,15 +23,15 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
             return;
         InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity, ctx.Count);
         //typedCtx.Transaction.MarkProcessed();
-        actor.Map.Town.ShopManager.MarkProcessed(actor);
+        actor.Map.Town.Shops.MarkProcessed(actor);
     }
 }
 sealed class InteractionRingUpTransaction : InteractionLogic
 {
     sealed class Context : InteractionContext
     {
-        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
-        internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
+        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.Shops.GetTransactionBySeller(this.Actor);
+        internal int? Price => field ??= this.Actor.World.Get(this.Transaction.Item).GetValueTotal();
         public override float ProgressBarPercentage => 0;
     }
     protected override InteractionContext CreateContextInt() => new Context();
@@ -48,15 +48,15 @@ sealed class InteractionRingUpTransaction : InteractionLogic
         var typedCtx = (Context)ctx;
         var item = ctx.Target.Entity;
         actor.Inventory.HaulNew(item, item.StackSize);
-        actor.Map.Town.ShopManager.RingUp(actor, item);
+        actor.Map.Town.Shops.RingUp(actor, item);
     }
 }
 sealed class InteractionPayTransaction : InteractionLogic
 {
     sealed class Context : InteractionContext
     {
-        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransaction(this.Actor);
-        internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
+        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.Shops.GetTransaction(this.Actor);
+        internal int? Price => field ??= this.Actor.World.Get(this.Transaction.Item).GetValueTotal();
         public override float ProgressBarPercentage => 0;
     }
     protected override InteractionContext CreateContextInt() => new Context();
@@ -76,7 +76,7 @@ sealed class InteractionPayTransaction : InteractionLogic
         if (hauled.Def != ItemDefOf.Coins || hauled.StackSize < typedCtx.Price)
             throw new InvalidOperationException(); // or cancel transaction safely
         InteractionHelpers.TryDepositCarriedItemInsideBlockOrSpawn(actor, global, count);
-        actor.Map.Town.ShopManager.MarkPaid(actor, hauled);
+        actor.Map.Town.Shops.MarkPaid(actor, hauled);
     }
 }
 class InteractionSwapItemLogic : InteractionLogic

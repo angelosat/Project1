@@ -28,7 +28,7 @@ namespace Project1.Core.AI.Packets
         static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var actor = net.World.GetEntity(r.ReadInt32()) as Actor;
+            var actor = net.World.Get(r.ReadInt32()) as Actor;
             var planner = r.ReadDef<PlannerDef>();
             var target = InteractionTarget.Read(net.World, r);
             actor.ForceTask(planner, target);

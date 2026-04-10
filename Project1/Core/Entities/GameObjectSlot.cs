@@ -140,7 +140,7 @@ namespace Project1.Core.Entities
         }
         public void Assign(EntityRefId refId)
         {
-            var item = this.Owner.World.GetEntity(refId);
+            var item = this.Owner.World.Get(refId);
             var prevItem = this.Object;
             if (item is not null)
             {

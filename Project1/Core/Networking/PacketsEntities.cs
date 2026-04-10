@@ -35,7 +35,7 @@ namespace Project1.Core.Networking
             var r = packet.PacketReader;
             var entityid = r.ReadInt32();
             var compindex = r.ReadInt32();
-            var entity = client.World.GetEntity(entityid);
+            var entity = client.World.Get(entityid);
             var comp = entity.Components.GetComp(compindex);
             comp.Read(r);
         }
@@ -57,7 +57,7 @@ namespace Project1.Core.Networking
         private static void OnDespawn(NetEndpoint endpoint, Packet packet)
         {
             var entityId = packet.PacketReader.ReadEntityRefId();
-            var entity = endpoint.World.GetEntity(entityId);
+            var entity = endpoint.World.Get(entityId);
             if (entity is null)
                 return;
             entity.Map.Despawn(entity);
@@ -85,7 +85,7 @@ namespace Project1.Core.Networking
             var map = endpoint.World.Get(mapid);
             var global = r.ReadVector3();
             var vel = r.ReadVector3();
-            var entity = endpoint.World.GetEntity(id);
+            var entity = endpoint.World.Get(id);
             map.Spawn(entity, global, vel);
         }
 
@@ -99,7 +99,7 @@ namespace Project1.Core.Networking
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var entity = client.World.GetEntity(r.ReadEntityRefId());
+            var entity = client.World.Get(r.ReadEntityRefId());
             var amount = r.ReadInt32();
             entity.Add(amount);
         }
@@ -113,7 +113,7 @@ namespace Project1.Core.Networking
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var entity = client.World.GetEntity(r.ReadEntityRefId());
+            var entity = client.World.Get(r.ReadEntityRefId());
             var amount = r.ReadInt32();
             entity.Consume(amount);
         }

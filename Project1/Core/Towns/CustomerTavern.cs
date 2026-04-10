@@ -26,7 +26,7 @@ namespace Project1.Core.Towns
 
         public Actor Customer
         {
-            get { return CachedCustomer ??= (CustomerID != -1 ? this.Tavern.Town.Map.World.GetEntity(this.CustomerID) as Actor : null); }
+            get { return CachedCustomer ??= (CustomerID != -1 ? this.Tavern.Town.Map.World.Get(this.CustomerID) as Actor : null); }
             set
             {
                 this.CustomerID = value?.RefId ?? -1;
@@ -35,7 +35,7 @@ namespace Project1.Core.Towns
         }
         public Actor ServedBy
         {
-            get { return CachedServedBy ??= (ServedByID != -1 ? this.Tavern.Town.Map.World.GetEntity(this.ServedByID) as Actor : null); }
+            get { return CachedServedBy ??= (ServedByID != -1 ? this.Tavern.Town.Map.World.Get(this.ServedByID) as Actor : null); }
             set
             {
                 this.ServedByID = value?.RefId ?? -1;
@@ -46,7 +46,7 @@ namespace Project1.Core.Towns
         {
             get
             {
-                return CachedOrderTakenBy ??= (OrderTakenByID != -1 ? this.Tavern.Town.Map.World.GetEntity(this.OrderTakenByID) as Actor : null);
+                return CachedOrderTakenBy ??= (OrderTakenByID != -1 ? this.Tavern.Town.Map.World.Get(this.OrderTakenByID) as Actor : null);
             }
             set
             {
@@ -56,7 +56,7 @@ namespace Project1.Core.Towns
         }
         public Entity Dish
         {
-            get { return this.CachedDish ??= (DishID != -1 ? this.Tavern.Town.Map.World.GetEntity(this.DishID) as Entity : null); }
+            get { return this.CachedDish ??= (DishID != -1 ? this.Tavern.Town.Map.World.Get(this.DishID) as Entity : null); }
             set { this.DishID = value?.RefId ?? -1; }
         }
 

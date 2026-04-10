@@ -8,7 +8,7 @@ using Project1.Core.Resources;
 using Project1.Core.Rooms;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quests;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Core.Towns.Storage;
 using Project1.Framework;
 

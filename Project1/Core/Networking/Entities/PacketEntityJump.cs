@@ -23,7 +23,7 @@ namespace Project1.Core.Networking.Entities
         {
             var r = pck.PacketReader;
             var id = r.ReadInt32();
-            var entity = net.World.GetEntity(id) as Actor;
+            var entity = net.World.Get(id) as Actor;
             entity.Jump();
             if (net is Server)
                 Send(net, entity.RefId);

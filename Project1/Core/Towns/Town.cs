@@ -19,11 +19,12 @@ using Project1.Core.Towns.Constructions;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Duties;
-using Project1.Core.Towns.Healing;
-using Project1.Core.Towns.Inns;
 using Project1.Core.Towns.Reputation;
 using Project1.Core.Towns.Services;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Healing;
+using Project1.Core.Towns.Services.Inns;
+using Project1.Core.Towns.Services.Repairing;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Core.Towns.Storage;
 using Project1.Core.Towns.UI;
 using Project1.Core.Towns.Zones;
@@ -116,14 +117,13 @@ public sealed class Town : Inspectable, IDutyProvider
     public DutyRoster DutiesManager;
     [InspectorHidden]
     public ReservationManager ReservationManager;
-    [InspectorHidden]
-    public TownServicesComp ShopManager;
-    [InspectorHidden]
-    public InnManager InnManager;
+    public TownComp_Shops Shops;
+    public TownComp_Repairs Repairs;
+    public TownComp_Inns Inns;
     //[InspectorHidden]
     //public QuestsManager QuestManager;
     public TownComp_Quests QuestManagerNew;
-    public TownComp_Spells SpellManager;
+    public TownComp_Spells Spells;
     [InspectorHidden]
     public StorageManager Storage;
     public FurnitureTracker Furniture;
@@ -155,17 +155,18 @@ public sealed class Town : Inspectable, IDutyProvider
         this.CraftingManager = new(this);
         this.DutiesManager = new(this);
         this.ReservationManager = new(this);
-        this.ShopManager = new(this);
-        this.InnManager = new(this);
+        this.Shops = new(this);
+        this.Inns = new(this);
         this.Storage = new(this);
         this.Furniture = new(this);
         this.Ownership = new(this);
         this.Reputation = new(this);
         this.QuestManagerNew = new(this);
-        this.SpellManager = new(this);
+        this.Spells = new(this);
         this.Conversations = new(this);
         this.Trades = new(this);
         this.ServiceRequests = new(this);
+        this.Repairs = new(this);
 
         this.TownComponents.AddRange(
             this.ZoneManager,
@@ -176,17 +177,18 @@ public sealed class Town : Inspectable, IDutyProvider
             this.RoomManager,
             this.CraftingManager,
             this.ReservationManager,
-            this.ShopManager,
-            this.InnManager,
+            this.Shops,
+            this.Inns,
             this.QuestManagerNew,
-            this.SpellManager,
+            this.Spells,
             this.Storage,
             this.Furniture,
             this.Ownership,
             this.Reputation,
             this.Conversations,
             this.Trades,
-            this.ServiceRequests
+            this.ServiceRequests,
+            this.Repairs
         );
 
         this.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
@@ -435,18 +437,18 @@ public sealed class Town : Inspectable, IDutyProvider
 
     internal IEnumerable<T> GetBusinesses<T>() where T : Workplace
     {
-        return this.ShopManager.GetShops().OfType<T>();
+        return this.Shops.GetShops().OfType<T>();
         throw new NotImplementedException();
     }
 
     internal Workplace GetShop(int shopID)
     {
-        return this.ShopManager.GetShop(shopID);
+        return this.Shops.GetShop(shopID);
     }
 
     internal T GetShop<T>(int shopID) where T  : Workplace
     {
-        return this.ShopManager.GetShop(shopID) as T;
+        return this.Shops.GetShop(shopID) as T;
     }
 
     internal void OnBlocksChanged(IEnumerable<IntVec3> positions)

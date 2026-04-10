@@ -36,7 +36,7 @@ namespace Project1.Core.AI.Packets
             var playerid = (PlayerId)r.ReadInt32();
             var player = net.GetPlayer(playerid);
             var entityid = (EntityRefId)r.ReadInt32();
-            var nextEntity = entityid != -1 ? net.World.GetEntity(entityid) as Actor : null;
+            var nextEntity = entityid != -1 ? net.World.Get(entityid) as Actor : null;
             Perform(net, player, nextEntity);
             if (net is Server)
             {

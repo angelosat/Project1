@@ -1,4 +1,4 @@
-﻿using Project1.Core.Towns.Shops;
+﻿using Project1.Core.Towns.Services.Shops;
 
 namespace Project1.Core.Interactions;
 
@@ -6,7 +6,7 @@ sealed class InteractionClaimBoughtItem : InteractionLogic
 {
     sealed class Context : InteractionContext
     {
-        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
+        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.Shops.GetTransactionBySeller(this.Actor);
     }
 
     protected override InteractionContext CreateContextInt() => new Context();
@@ -24,6 +24,6 @@ sealed class InteractionClaimBoughtItem : InteractionLogic
         //    throw new Exception();
         //manager.Commit(role, item, score);
         manager.TryCommit(item);
-        actor.Map.Town.ShopManager.FinishTransaction(actor);
+        actor.Map.Town.Shops.FinishTransaction(actor);
     }
 }

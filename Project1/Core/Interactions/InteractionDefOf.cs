@@ -5,9 +5,9 @@ using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI;
-using Project1.Core.Towns.Healing;
-using Project1.Core.Towns.Inns;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Healing;
+using Project1.Core.Towns.Services.Inns;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
 
 namespace Project1.Core.Interactions;

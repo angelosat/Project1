@@ -24,7 +24,7 @@ namespace Project1.Core.Networking.Entities
         {
             var r = packet.PacketReader;
             var id = r.ReadInt32();
-            var entity = net.World.GetEntity(id) as Actor;
+            var entity = net.World.Get(id) as Actor;
             var toggle = r.ReadBoolean();
             entity.MoveToggle(toggle);
         }

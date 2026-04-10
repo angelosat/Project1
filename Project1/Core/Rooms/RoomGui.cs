@@ -21,7 +21,7 @@ namespace Project1.Core.Rooms
             this.AddControlsVertically(
                 new ComboBoxFinal<RoomRoleDef>(128, "Role", r => r?.LabelReadable ?? "none", setRoomDef, () => currentRoom?.RoomRole, () => currentRoom.Furnitures.SelectMany(f => RoomSystem.RolesByFurniture(f)).Distinct().Prepend(null)),
                 new ComboBoxFinal<Actor>(128, "Owner", a => a?.Name ?? "none", setOwner, () => currentRoom?.GetOwner(), () => currentRoom?.Map.Town.GetMembers().Prepend(null)),
-                new ComboBoxFinal<Workplace>(128, "Workplace", w => w?.Name ?? "none", setWorkplace, () => currentRoom?.Workplace, () => currentRoom.Map.Town.ShopManager.GetShops().Where(sh => sh.IsValidRoom(currentRoom)).Prepend(null)),
+                new ComboBoxFinal<Workplace>(128, "Workplace", w => w?.Name ?? "none", setWorkplace, () => currentRoom?.Workplace, () => currentRoom.Map.Town.Shops.GetShops().Where(sh => sh.IsValidRoom(currentRoom)).Prepend(null)),
                 new LabelNew(() => $"Interior: {currentRoom?.Interior.Count} cells").InvalidateOn(this.Notifications),
                 new LabelNew(() => $"Edges: {currentRoom?.Border.Count} cells").InvalidateOn(this.Notifications),
                 new LabelNew(() => $"Value: {currentRoom?.Value}").InvalidateOn(this.Notifications),

@@ -54,7 +54,7 @@ namespace Project1.Core.Components
         {
             if (parent.Net == null)
                 return;
-            var owner = parent.World.GetEntity(this.OwnerRef);
+            var owner = parent.World.Get(this.OwnerRef);
             tooltip.AddControlsBottomLeft(Label.ParseWrap("Owner: ", this.ItemOwner));
         }
 
@@ -84,7 +84,7 @@ namespace Project1.Core.Components
             var setownercombo = new ComboBoxNewNew<GameObject>(150, "Owner",
                 A => A?.Name ?? "None",
                 o => PacketPlayerSetItemOwner.Send(Client.Instance, gameObject.RefId, o != null ? o.RefId : -1),
-                () => comp.OwnerRef == -1 ? null : gameObject.World.GetEntity(comp.OwnerRef),
+                () => comp.OwnerRef == -1 ? null : gameObject.World.Get(comp.OwnerRef),
                 () => alllist.Prepend(null));
 
             //setownercombo.OnGameEventAction = a =>

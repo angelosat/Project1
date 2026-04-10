@@ -23,8 +23,8 @@ namespace Project1.Core.Networking.Inventory
             var r = pck.PacketReader;
             var actorID = r.ReadInt32();
             var itemID = r.ReadInt32();
-            var item = net.World.GetEntity(itemID);
-            var actor = net.World.GetEntity(actorID) as Actor;
+            var item = net.World.Get(itemID);
+            var actor = net.World.Get(actorID) as Actor;
             actor.Equip(item);
             if (net is Server)
                 Send(net, actorID, itemID);

@@ -60,7 +60,7 @@ namespace Project1.Core.Networking
         static void ReceiveResourceDelta(NetEndpoint endpoint, Packet packet)
         {
             endpoint.World
-                .GetEntity(packet.PacketReader.ReadEntityRefId())
+                .Get(packet.PacketReader.ReadEntityRefId())
                 .Resources.ApplyDelta(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
         }
         static void SendBlockResourceDelta(BlockResourceDeltaAppliedEvent e)

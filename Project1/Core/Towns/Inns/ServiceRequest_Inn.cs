@@ -1,8 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Resources;
-using Project1.Core.Simulation;
 using Project1.Core.Towns.Services;
 using Project1.Framework;
 using Project1.Framework.Serialization;
@@ -10,31 +8,21 @@ using System;
 
 namespace Project1.Core.Towns.Inns;
 
-public sealed class InnTransaction : TownServiceRequest, ISaveableNewNew<InnTransaction>
+public sealed class ServiceRequest_Inn : ServiceRequest
 {
     enum States { Queuing, AwaitingPayment, Paid, Processed, Succeeded, Failed }
-    internal EntityRefId Guest;
-    internal EntityRefId Clerk { get; private set; }
     internal EntityRefId Money;
-    internal override EntityRefId Buyer => this.Guest;
-    internal override EntityRefId Seller => this.Clerk;
     internal override TownServiceDef Service => TownServiceDefOf.Lodging;
-    //internal override SimulationTick TickStarted { get; private set; } = tickStarted;
-    //internal override SimulationTick TickStarted { get; set; }
 
     public IntVec3 Desk { get; private set; }
-    //internal override int PatienceInitial { get; set; }// patienceInitial;
     States State;
 
-    public InnTransaction(Actor guest, IntVec3 desk) : base(guest)//.World.CurrentTick)
+    public ServiceRequest_Inn(Actor guest, IntVec3 desk) : base(guest)
     {
-        Guest = guest.RefId;
-        //TickStarted = guest.World.CurrentTick;
         Desk = desk;
-        //PatienceInitial = (int)guest.Resources.GetValue(ResourceDefOf.Patience);
     }
 
-    public InnTransaction()
+    public ServiceRequest_Inn()
     {
     }
 
@@ -44,13 +32,11 @@ public sealed class InnTransaction : TownServiceRequest, ISaveableNewNew<InnTran
     internal override bool IsSucceeded => this.State == States.Succeeded;
     internal override bool IsFailed => this.State == States.Failed;
 
-
-
     internal void AssignClerk(Actor clerk)
     {
         if (this.State != States.Queuing)
             throw new Exception();
-        this.Clerk = clerk.RefId;
+        this.Vendor = clerk.RefId;
         this.State = States.AwaitingPayment;
     }
     internal void MarkFailed()
@@ -76,12 +62,22 @@ public sealed class InnTransaction : TownServiceRequest, ISaveableNewNew<InnTran
         this.State = States.Processed;
     }
 
+    protected override void SaveExtra(SaveTag tag)
+    {
+        tag.Save("Money", this.Money);
+        tag.Save("Counter", this.Desk);
+        tag.Save("State", (int)this.State);
+    }
+
+    protected override void LoadExtra(SaveTag tag)
+    {
+        this.Money = tag.LoadEntityRefId("Money");
+        this.Desk = tag.LoadIntVec3("Counter");
+        this.State = (States)tag.LoadInt("State");
+    }
+
     protected override void WriteExtra(IDataWriter w)
     {
-        //w.Write(this.TickStarted);
-        //w.Write(this.PatienceInitial);
-        w.Write(this.Guest);
-        w.Write(this.Clerk);
         w.Write(this.Money);
         w.Write(this.Desk);
         w.Write((int)this.State);
@@ -89,22 +85,8 @@ public sealed class InnTransaction : TownServiceRequest, ISaveableNewNew<InnTran
 
     protected override void ReadExtra(IDataReader r)
     {
-        //this.TickStarted = (SimulationTick)r.ReadUInt64();
-        //this.PatienceInitial = r.ReadInt32();
-        this.Guest = r.ReadEntityRefId();
-        this.Clerk = r.ReadEntityRefId();
         this.Money = r.ReadEntityRefId();
         this.Desk = r.ReadIntVec3();
         this.State = (States)r.ReadInt32();
-    }
-
-    public SaveTag Save(string name = "")
-    {
-        throw new NotImplementedException();
-    }
-
-    public static InnTransaction Create(SaveTag tag)
-    {
-        throw new NotImplementedException();
     }
 }

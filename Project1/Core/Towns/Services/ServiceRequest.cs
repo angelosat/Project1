@@ -9,27 +9,25 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.Towns.Services;
 
-public abstract class TownServiceRequest : ISaveableNewNew<TownServiceRequest>, ISerializableNew<TownServiceRequest>
+public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISerializableNew<ServiceRequest>
 {
     internal TownServiceRequestId Id { get; set; }
     public SimulationTick TickStarted { get; private set; }
     internal int PatienceInitial { get; private set; }
 
-    abstract internal EntityRefId Buyer { get; }
-    abstract internal EntityRefId Seller { get; }
+    internal EntityRefId Customer { get; set; }
+    internal EntityRefId Vendor { get; set; }
     abstract internal TownServiceDef Service { get; }
-    //abstract internal int PatienceInitial { get; set; }
     abstract internal bool IsSucceeded { get; }
     abstract internal bool IsFailed { get;}
 
-    protected TownServiceRequest(Actor customer)//SimulationTick tickStarted, int initialPatience)
+    protected ServiceRequest(Actor customer)
     {
-        //this.TickStarted = tickStarted;
-        //this.PatienceInitial = initialPatience;
+        this.Customer = customer.RefId;
         this.TickStarted = customer.World.CurrentTick;
         this.PatienceInitial = (int)customer.Resources.GetValue(ResourceDefOf.Patience);
     }
-    protected TownServiceRequest()
+    protected ServiceRequest()
     {
         
     }
@@ -41,51 +39,34 @@ public abstract class TownServiceRequest : ISaveableNewNew<TownServiceRequest>, 
         tag.Save("Id", this.Id);
         tag.Save("TickStarted", this.TickStarted);
         tag.Save("PatienceInitial", this.PatienceInitial);
+        tag.Save("Customer", this.Customer);
+        tag.Save("Vendor", this.Vendor);
         this.SaveExtra(tag);
         return tag;
     }
 
-    public static TownServiceRequest Create(SaveTag tag)
+    public static ServiceRequest Create(SaveTag tag)
     {
         var def = tag.LoadDef<TownServiceDef>("Def");
         var runtime = def.Worker.CreateRuntime();
-        //runtime.Id = tag.Load<TownServiceRequestId>("Id");
-        //runtime.TickStarted = tag.Load<SimulationTick>("TickStarted");
-        //runtime.PatienceInitial = tag.Load<int>("PatienceInitial");
         runtime.Id = (TownServiceRequestId)tag.LoadUlong("Id");
         runtime.TickStarted = (SimulationTick)tag.LoadUlong("TickStarted");
         runtime.PatienceInitial = tag.LoadInt("PatienceInitial");
+        runtime.Customer = tag.LoadEntityRefId("Customer");
+        runtime.Vendor = tag.LoadEntityRefId("Vendor");
         runtime.LoadExtra(tag);
         return runtime;
     }
 
-    //public IDataWriter Write(IDataWriter w)
-    //{
-    //    w.Write(this.Service);
-    //    w.Write(this.Id);
-    //    w.Write(this.TickStarted);
-    //    w.Write(this.PatienceInitial);
-    //    this.WriteExtra(w);
-    //    return w;
-    //}
-
-    public static TownServiceRequest Create(IDataReader r)
+    public static ServiceRequest Create(IDataReader r)
     {
         var def = r.ReadDef<TownServiceDef>();
         var runtime = def.Worker.CreateRuntime();
         runtime.Read(r);
-        //runtime.Id = r.ReadUInt64();
-        //runtime.TickStarted = r.ReadUInt64();
-        //runtime.PatienceInitial = r.ReadInt32();
-        //runtime.ReadExtra(r);
         return runtime;
     }
-    protected virtual void SaveExtra(SaveTag tag) { }
-    protected virtual void LoadExtra(SaveTag tag) { }
-    protected virtual void WriteExtra(IDataWriter w) { }
-    protected virtual void ReadExtra(IDataReader r) { }
 
-    public TownServiceRequest Read(IDataReader r)
+    public ServiceRequest Read(IDataReader r)
     {
         _ = r.ReadDef<TownServiceDef>();
 
@@ -105,6 +86,11 @@ public abstract class TownServiceRequest : ISaveableNewNew<TownServiceRequest>, 
         w.Write(this.PatienceInitial);
         this.WriteExtra(w);
     }
+
+    protected virtual void SaveExtra(SaveTag tag) { }
+    protected virtual void LoadExtra(SaveTag tag) { }
+    protected virtual void WriteExtra(IDataWriter w) { }
+    protected virtual void ReadExtra(IDataReader r) { }
 }
 
 //public interface ITownServiceRequest

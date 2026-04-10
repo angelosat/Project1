@@ -6,7 +6,7 @@ internal sealed class InteractionWaitingService : InteractionLogic
 {
     sealed class Context : InteractionContext
     {
-        internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransaction(this.Actor);
+        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransaction(this.Actor);
         internal IResourceView Patience => field ??= this.Actor.Resources.View(ResourceDefOf.Patience);
         internal override float GetPercentage(Interaction i) => ((Context)i.Context).Patience.Percentage;
         //public override float ProgressBarPercentage => this.Transaction?.WaitingForPayment ?? false ? 1 : 0;

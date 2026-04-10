@@ -55,7 +55,6 @@ namespace Project1.Core.Systems.Relationships
         internal SimulationTick NextUpdate { get; private set; }
         internal void ApplyDelta(int value, SimulationTick currentTick)
         {
-            //this.NextUpdate = currentTick;
             var scaledInterval = baseInterval * (ulong)Math.Clamp(Math.Abs(this._progress.Percentage), 0.1f, 1f);
             this.NextUpdate = currentTick + scaledInterval;
             this._progress.ApplyDelta(value);

@@ -9,8 +9,8 @@ namespace Project1.Core.Towns.Healing;
 sealed class InteractionContext_Healing : InteractionContext
 {
     internal TownComp_Spells Manager => field ??= this.Actor.Map.Town.SpellManager;
-    internal SpellRequest RequestByTarget => field ??= this.Manager.GetRequestbyTargetOrDefault(this.Actor);
-    internal SpellRequest RequestByCaster => field ??= this.Manager.GetRequestbyCasterOrDefault(this.Actor);
+    internal ServiceRequest_Spell RequestByTarget => field ??= this.Manager.GetRequestbyTargetOrDefault(this.Actor);
+    internal ServiceRequest_Spell RequestByCaster => field ??= this.Manager.GetRequestbyCasterOrDefault(this.Actor);
     internal IResourceView Patience => field ??= this.Actor.Resources.View(ResourceDefOf.Patience);
     internal override float GetPercentage(Interaction i) => this.Patience.Percentage;
 }
@@ -44,7 +44,7 @@ sealed class InteractionHealingWaitPay : InteractionLogic
 sealed class InteractionHealingWaitCaster : InteractionLogic
 {
     protected override InteractionContext_Healing CreateContextInt() => new();
-    static SpellRequest Request(InteractionContext ctx) => ((InteractionContext_Healing)ctx).RequestByCaster;
+    static ServiceRequest_Spell Request(InteractionContext ctx) => ((InteractionContext_Healing)ctx).RequestByCaster;
     internal override void OnStart(Interaction i)
     {
         if (i.Actor.Net.IsClient)

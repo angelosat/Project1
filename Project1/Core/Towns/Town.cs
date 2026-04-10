@@ -141,7 +141,7 @@ public sealed class Town : Inspectable, IDutyProvider
     public IntVec3? Waypoint;
     public IEntityProvider Entities => this.Map.World;
 
-    public Dictionary<EntityRefId, TownServiceRequest> OpenTransactions = [];
+    public Dictionary<EntityRefId, ServiceRequest> OpenTransactions = [];
 
     public Town(MapBase map)
     {

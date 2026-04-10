@@ -16,16 +16,16 @@ namespace Project1.Core.Towns.Services
         //static public readonly TownServiceDef Lodging = new("Lodging", typeof(TownServiceLodging));
         //static public readonly TownServiceDef Healing = new("Healing", typeof(TownServiceHealing)); //, typeof(SpellRequest)
 
-        static public readonly TownServiceDef Buying = new("Buying", typeof(ShopTransaction));
-        static public readonly TownServiceDef Lodging = new("Lodging", typeof(InnTransaction));
-        static public readonly TownServiceDef Healing = new("Healing", typeof(SpellRequest));
+        static public readonly TownServiceDef Buying = new("Buying", typeof(ServiceRequest_Shop));
+        static public readonly TownServiceDef Lodging = new("Lodging", typeof(ServiceRequest_Inn));
+        static public readonly TownServiceDef Healing = new("Healing", typeof(ServiceRequest_Spell));
     }
     public sealed class TownServiceDef(string name, Type runtimeType) : Def(name)
     {
         public readonly Type RuntimeType = runtimeType;
         public readonly TownServiceWorker Worker;
 
-        public T CreateRuntime<T>() where T : TownServiceRequest => ActivatorSafe<T>.CreateInstance(this.RuntimeType);
+        public T CreateRuntime<T>() where T : ServiceRequest => ActivatorSafe<T>.CreateInstance(this.RuntimeType);
 
         //public TownServiceRuntime CreateRuntime() => ActivatorSafe<TownServiceRuntime>.CreateInstance(this.RuntimeType);
 
@@ -33,23 +33,23 @@ namespace Project1.Core.Towns.Services
 
     public abstract class TownServiceWorker
     {
-        public abstract TownServiceRequest CreateRuntime();
+        public abstract ServiceRequest CreateRuntime();
     }
 
     //public sealed class TownServiceWorker_Selling : TownServiceWorker { }
     //public sealed class TownServiceWorker_Repairing : TownServiceWorker { }
     public sealed class TownServiceWorker_Lodging : TownServiceWorker
     {
-        public override InnTransaction CreateRuntime() => new();
+        public override ServiceRequest_Inn CreateRuntime() => new();
     }
     public sealed class TownServiceWorker_Healing : TownServiceWorker
     {
-        public override SpellRequest CreateRuntime() => new();
+        public override ServiceRequest_Spell CreateRuntime() => new();
 
     }
     public sealed class TownServiceWorker_Buying : TownServiceWorker
     {
-        public override ShopTransaction CreateRuntime() => new();
+        public override ServiceRequest_Shop CreateRuntime() => new();
     }
 
     //static class TownServiceExtensions

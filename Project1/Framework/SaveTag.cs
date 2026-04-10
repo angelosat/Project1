@@ -121,6 +121,8 @@ namespace Project1.Framework
                 return true;
             }
         }
+
+        
         public bool TryLoadBool(string name, out bool value)
         {
             if (!this.TryGetTag(name, out var tag))
@@ -468,6 +470,7 @@ namespace Project1.Framework
             var save = item.Save(name);
             this.Add(save);
         }
+        public bool LoadBool(string name) => (bool)this[name].Value;
         public int LoadInt(string name) => (int)this[name].Value;
         public float LoadSingle(string name) => (float)this[name].Value;
         public byte LoadByte(string name) => (byte)this[name].Value;

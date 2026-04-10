@@ -18,16 +18,16 @@ public sealed class ReputationSourceCustomer : ReputationSourceWorker
     {
         var map = e.Map;
         var transaction = e.Transaction;
-        var actor = map.World.Get<Actor>(transaction.Buyer);
+        var actor = map.World.Get<Actor>(transaction.Customer);
         //var patienceRemaining = actor.Resources.GetPercentage(ResourceDefOf.Patience);
         var patienceCurrent = (int)actor.Resources.GetValue(ResourceDefOf.Patience);
         var patienceMax = (int)actor.Resources.GetMax(ResourceDefOf.Patience);
         var patienceConsumed = transaction.PatienceInitial - patienceCurrent;
         var patienceConsumedNormalized = (float)patienceConsumed / patienceMax;
         if (transaction.IsSucceeded)
-            map.Town.Reputation.ApplyDelta(transaction.Buyer, 1 + (int)(BaseValue * (1 - patienceConsumedNormalized)));
+            map.Town.Reputation.ApplyDelta(transaction.Customer, 1 + (int)(BaseValue * (1 - patienceConsumedNormalized)));
         else if (transaction.IsFailed)
-            map.Town.Reputation.ApplyDelta(transaction.Buyer, -BaseValue);
+            map.Town.Reputation.ApplyDelta(transaction.Customer, -BaseValue);
         else
             throw new UnreachableException();
     }

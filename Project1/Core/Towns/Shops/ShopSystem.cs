@@ -9,7 +9,7 @@ namespace Project1.Core.Towns.Shops;
 internal sealed class ShopsComp : TownComp
 {
     public override string Name => "Shops";
-    List<ShopTransaction> _transactions = [];
+    List<ServiceRequest_Shop> _transactions = [];
 
     internal bool TryBeginTransaction(Actor actor, Entity item)
     {

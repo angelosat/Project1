@@ -9,6 +9,6 @@ namespace Project1.Core.Towns.Inns
         internal InnManager Manager => field ??= this.Actor.Map.Town.InnManager;
         internal Queue<Actor> Queue => field ??= this.Manager.GetQueue(this.Target.Global);
         internal Actor NextGuest => field ??= this.Queue.Peek();
-        internal InnTransaction Transaction => field ??= this.Manager.GetTransactionByGuest(this.NextGuest);
+        internal ServiceRequest_Inn Transaction => field ??= this.Manager.GetTransactionByGuest(this.NextGuest);
     }
 }

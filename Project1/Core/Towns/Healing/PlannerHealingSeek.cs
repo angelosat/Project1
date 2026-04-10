@@ -18,7 +18,7 @@ internal class PlannerHealingOffer : Planner
         {
             if (existing.IsDisposed)
                 return null;
-            var target = map.World.Get<Actor>(existing.TargetId);
+            var target = map.World.Get<Actor>(existing.Customer);
             if (!actor.CanReachAndReserve(target))
                 return null;
             if (!existing.IsPaid)
@@ -47,7 +47,7 @@ internal class PlannerHealingOffer : Planner
         {
             if (!req.IsPending)
                 continue;
-            var target = map.World.Get<Actor>(req.TargetId);
+            var target = map.World.Get<Actor>(req.Customer);
             if (!actor.CanReach(target))
                 continue;
             manager.MarkAccepted(req, actor);
@@ -68,7 +68,7 @@ internal class PlannerHealingSeek : Planner
         var manager = map.Town.SpellManager;
         if (manager.TryGetRequestByTarget(actor, out var existing))
         {
-            var caster = map.World.Get<Actor>(existing.CasterId);
+            var caster = map.World.Get<Actor>(existing.Vendor);
             if (!actor.CanReachAndReserve(caster))
                 return null;
             if (existing.IsPaid)

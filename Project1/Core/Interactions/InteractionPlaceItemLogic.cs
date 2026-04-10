@@ -9,7 +9,7 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
 {
     sealed class Context : InteractionContext
     {
-        internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
+        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
     }
     protected override InteractionContext CreateContextInt() => new Context();
     public override bool CanPerform(InteractionContext ctx) => !((Context)ctx).Transaction.IsFailed;
@@ -30,7 +30,7 @@ sealed class InteractionRingUpTransaction : InteractionLogic
 {
     sealed class Context : InteractionContext
     {
-        internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
+        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
         internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
         public override float ProgressBarPercentage => 0;
     }
@@ -55,7 +55,7 @@ sealed class InteractionPayTransaction : InteractionLogic
 {
     sealed class Context : InteractionContext
     {
-        internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransaction(this.Actor);
+        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransaction(this.Actor);
         internal int? Price => field ??= this.Actor.World.GetEntity(this.Transaction.Item).GetValueTotal();
         public override float ProgressBarPercentage => 0;
     }

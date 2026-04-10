@@ -27,7 +27,7 @@ sealed class PlannerBuy : Planner
 
         if (shops.TryGetTransaction(actor, out var transaction))
         {
-            var seller = map.World.Get<Actor>(transaction.Seller);
+            var seller = map.World.Get<Actor>(transaction.Vendor);
             var item = map.World.GetEntity(transaction.Item);
 
             if (carried is null)

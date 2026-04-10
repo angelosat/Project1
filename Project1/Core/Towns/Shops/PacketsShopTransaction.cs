@@ -27,7 +27,7 @@ namespace Project1.Core.Towns.Shops
         {
             var w = endpoint.BeginPacket(_pTransactionStarted);
             var transaction = e.Transaction;
-            w.Write(transaction.Buyer);
+            w.Write(transaction.Customer);
             w.Write(transaction.Item);
             w.Write(transaction.Price);
             w.Write(transaction.Counter);
@@ -51,7 +51,7 @@ namespace Project1.Core.Towns.Shops
         static void SendTransactionUpdatedEvent(NetEndpoint endpoint, ShopTransactionUpdatedEvent e)
         {
             var w = endpoint.BeginPacket(_pTransactionUpdated);
-            w.Write(e.Transaction.Buyer);
+            w.Write(e.Transaction.Customer);
             e.Transaction.Write(w);
         }
 

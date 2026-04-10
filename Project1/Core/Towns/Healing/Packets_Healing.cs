@@ -9,12 +9,12 @@ namespace Project1.Core.Towns.Healing;
 [EnsureStaticCtorCall]
 internal static class Packets_Healing
 {
-    static readonly PacketId 
-        _pCreate = Registry.PacketHandlers.Register(ReceiveCreate),
-        _pSync = Registry.PacketHandlers.Register(ReceiveSync);
+    static readonly PacketId
+        _pCreate = Registry.PacketHandlers.Register(ReceiveCreate);
+        //_pSync = Registry.PacketHandlers.Register(ReceiveSync);
     static Packets_Healing()
     {
-        Registry.MapEventHooksServer.Register<HealingRequestUpdatedEvent>(HandleRequestUpdated);
+        //Registry.MapEventHooksServer.Register<HealingRequestUpdatedEvent>(HandleRequestUpdated);
         Registry.MapEventHooksServer.Register<HealingRequestCreatedEvent>(HandleRequestCreated);
     }
 
@@ -36,26 +36,26 @@ internal static class Packets_Healing
         var manager = target.Map.Town.SpellManager;
         manager.Request(target, spell);
     }
-    private static void HandleRequestUpdated(HealingRequestUpdatedEvent e)
-    {
-        SendRequestUpdated(Server.Instance, e.Request);
-    }
+    //private static void HandleRequestUpdated(HealingRequestUpdatedEvent e)
+    //{
+    //    SendRequestUpdated(Server.Instance, e.Request);
+    //}
 
-    private static void SendRequestUpdated(NetEndpoint endpoint, SpellRequest request)
-    {
-        var w = endpoint.BeginPacket(_pSync);
-        w.Write(request.TargetId);
-        request.Write(w);
-    }
+    //private static void SendRequestUpdated(NetEndpoint endpoint, SpellRequest request)
+    //{
+    //    var w = endpoint.BeginPacket(_pSync);
+    //    w.Write(request.TargetId);
+    //    request.Write(w);
+    //}
 
-    private static void ReceiveSync(NetEndpoint endpoint, Packet packet)
-    {
-        var r = packet.PacketReader;
-        var target = endpoint.World.Get<Actor>(r.ReadEntityRefId());
-        var manager = target.Map.Town.SpellManager;
-        var req = manager.GetRequestbyTargetOrDefault(target);
-        req.Read(r);
-        //throw new System.Exception();
-        //req.ReadExtra(r);
-    }
+    //private static void ReceiveSync(NetEndpoint endpoint, Packet packet)
+    //{
+    //    var r = packet.PacketReader;
+    //    var target = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+    //    var manager = target.Map.Town.SpellManager;
+    //    var req = manager.GetRequestbyTargetOrDefault(target);
+    //    req.Read(r);
+    //    //throw new System.Exception();
+    //    //req.ReadExtra(r);
+    //}
 }

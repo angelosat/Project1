@@ -6,14 +6,13 @@ using Project1.Core.Towns.Services;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Serialization;
-using System;
 
 #nullable enable
 
 namespace Project1.Core.Towns.Shops;
-internal record struct ShopTransactionUpdatedEvent(MapBase Map, TownServiceRequest Transaction) : IEventPayload { }
-internal record struct TownServiceComplete(MapBase Map, TownServiceRequest Transaction) : IEventPayload { }
-public sealed class ShopTransaction : TownServiceRequest
+internal record struct ShopTransactionUpdatedEvent(MapBase Map, ServiceRequest Transaction) : IEventPayload { }
+internal record struct TownServiceComplete(MapBase Map, ServiceRequest Transaction) : IEventPayload { }
+public sealed class ServiceRequest_Shop : ServiceRequest
 {
     internal enum TransactionState
     {
@@ -21,26 +20,18 @@ public sealed class ShopTransaction : TownServiceRequest
     }
     internal TransactionState State;
     bool _cancelled;
-    EntityRefId _buyerInt, _sellerInt = EntityRefId.Null;
-    internal override EntityRefId Buyer => this._buyerInt;//{ get; }
-    internal override EntityRefId Seller => this._sellerInt;//{ get; } = EntityRefId.Null;
     public EntityRefId Item { get; private set; }
     public EntityRefId Money = EntityRefId.Null;
     public int Price;
     public IntVec3 Counter { get; private set; }
     double TicksRemaining = Ticks.FromHours(1);
-    //internal override SimulationTick TickStarted { get; set; }
     internal override TownServiceDef Service => TownServiceDefOf.Buying;
-    //internal override int PatienceInitial { get; set; }
-    public ShopTransaction() { }
-    public ShopTransaction(SimulationTick tickStarted, int patienceSnapshot, Actor buyer, Entity item, int price, IntVec3 counter) : base(buyer)
+    public ServiceRequest_Shop() { }
+    public ServiceRequest_Shop(Actor buyer, Entity item, int price, IntVec3 counter) : base(buyer)
     {
-        this._buyerInt = buyer.RefId;
         this.Item = item.RefId;
         this.Price = price;
         this.Counter = counter;
-        //this.TickStarted = tickStarted;
-        //this.PatienceInitial = patienceSnapshot;
     }
 
     internal override bool IsFailed => this.State == TransactionState.Failed;
@@ -52,7 +43,7 @@ public sealed class ShopTransaction : TownServiceRequest
     public bool TimedOut => this.TicksRemaining <= 0;
 
     internal void SetSeller(Actor seller)
-        => this._sellerInt = seller.RefId;
+        => this.Vendor = seller.RefId;
     internal void Cancel()
         => this._cancelled = true;
     internal void Tick()
@@ -93,12 +84,26 @@ public sealed class ShopTransaction : TownServiceRequest
     }
     internal void Dispose() => this.State = TransactionState.Succeeded;
 
+    protected override void SaveExtra(SaveTag tag)
+    {
+        tag.Save("Item", this.Item);
+        tag.Save("Money", this.Money);
+        tag.Save("Counter", this.Counter);
+        tag.Save("Price", this.Price);
+        tag.Save("State", (int)this.State);
+    }
+
+    protected override void LoadExtra(SaveTag tag)
+    {
+        this.Item = tag.LoadEntityRefId("Item");
+        this.Money = tag.LoadEntityRefId("Money");
+        this.Counter = tag.LoadIntVec3("Counter");
+        this.Price = tag.LoadInt("Price");
+        this.State = (TransactionState)tag.LoadInt("State");
+    }
+
     protected override void WriteExtra(IDataWriter w)
     {
-        //w.Write(this.TickStarted);
-        //w.Write(this.PatienceInitial);
-        w.Write(this.Buyer);
-        w.Write(this.Seller);
         w.Write(this.Item);
         w.Write(this.Money);
         w.Write(this.Counter);
@@ -108,10 +113,6 @@ public sealed class ShopTransaction : TownServiceRequest
 
     protected override void ReadExtra(IDataReader r)
     {
-        //this.TickStarted = (SimulationTick)r.ReadUInt64();
-        //this.PatienceInitial = r.ReadInt32();
-        this._buyerInt = r.ReadEntityRefId();
-        this._sellerInt = r.ReadEntityRefId();
         this.Item = r.ReadEntityRefId();
         this.Money = r.ReadEntityRefId();
         this.Counter = r.ReadIntVec3();

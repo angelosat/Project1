@@ -18,7 +18,7 @@ namespace Project1.Core.Towns.Inns
             var map = actor.Map;
             var manager = map.Town.InnManager;
             //if (manager.GetTransactionByGuest(actor) is CheckInTransaction transaction)
-            if (manager.GetTransactionByClerk(actor) is InnTransaction transaction)
+            if (manager.GetTransactionByClerk(actor) is ServiceRequest_Inn transaction)
             {
                 //if (transaction.IsFinished)
                 //{
@@ -43,7 +43,7 @@ namespace Project1.Core.Towns.Inns
                         if (!manager.TryFindBedFrom(transaction.Desk, out _))
                             throw new Exception();
                         //transaction.MarkProcessed();
-                        manager.MarkProcessed(transaction.Buyer);
+                        manager.MarkProcessed(transaction.Customer);
                         return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, transaction.Desk));
                         //return new Plan(InnsDefOf.PlanRegisterGuest, new TargetArgs(actor.Map, transaction.Desk));
                         //return new Plan(PlanDefOf.StoreInInventory);

@@ -6,7 +6,7 @@ sealed class InteractionClaimBoughtItem : InteractionLogic
 {
     sealed class Context : InteractionContext
     {
-        internal ShopTransaction Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
+        internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.ShopManager.GetTransactionBySeller(this.Actor);
     }
 
     protected override InteractionContext CreateContextInt() => new Context();

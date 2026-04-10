@@ -4,7 +4,6 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
-using Project1.Core.Resources;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Services;
@@ -21,7 +20,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Shops;
 
-internal record struct TransactionStartedEvent(MapBase Map, ShopTransaction Transaction) : IEventPayload { }
+internal record struct TransactionStartedEvent(MapBase Map, ServiceRequest_Shop Transaction) : IEventPayload { }
 [EnsureStaticCtorCall]
 internal static class PacketsShops
 {
@@ -132,14 +131,6 @@ public partial class TownServicesComp : TownComp
 
     public TownServicesComp(Town town) : base(town)
     {
-        //foreach (var def in Def.Get<TownServiceDef>())
-        //{
-        //    var serviceType = def.RuntimeType;
-        //    var runtime = def.CreateRuntime();
-        //    this._servicesByDef.Add(def, runtime);
-        //    this._servicesByType.Add(serviceType, runtime);
-        //}
-
         town.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         town.Map.Events.ListenTo<StockpileUpdatedEvent>(HandleStockpileUpdated);
         town.Map.Events.ListenTo<EntityDespawnedEvent>(HandleEntityDespawned);
@@ -176,14 +167,12 @@ public partial class TownServicesComp : TownComp
     public Shop CreateShop()
     {
         var newshop = new Shop(this, this.GetNextShopID());
-        //this.Shops.Add(newshop.ID, newshop);
         this.AddShop(newshop);
         return newshop;
     }
     public Shop CreateShop(int id)
     {
         var newshop = new Shop(this, id);
-        //this.Shops.Add(newshop.ID, newshop);
         this.AddShop(newshop);
         return newshop;
     }
@@ -192,12 +181,6 @@ public partial class TownServicesComp : TownComp
         this.Shopss.Add(shop);
         this.Shops.Add(shop.ID, shop);
         this.Notifications.Notify();
-        //this.Town.Net.EventOccured((int)Message.Types.ShopsUpdated, shop);
-    }
-    
-    public Workplace FindShop(Stockpile stockpile)
-    {
-        return this.Shopss.FirstOrDefault(sh => sh.HasStockpile(stockpile.ID));
     }
 
     public T FindShop<T>(Stockpile stockpile) where T : Workplace
@@ -217,11 +200,6 @@ public partial class TownServicesComp : TownComp
         return this.Shops[shopid];
     }
 
-    public Workplace GetShop(IntVec3 facility)
-    {
-        return this.Shopss.FirstOrDefault(s => s.GetFacilities().Any(f => f == facility));
-    }
-
     public Workplace GetShop(Actor worker)
     {
         return this.Shopss.FirstOrDefault(s => s.HasWorker(worker));
@@ -230,11 +208,6 @@ public partial class TownServicesComp : TownComp
     public T GetShop<T>(Actor worker) where T : Workplace
     {
         return this.Shopss.FirstOrDefault(s => s.HasWorker(worker)) as T;
-    }
-
-    public T GetShop<T>(int shopid) where T : Workplace
-    {
-        return this.Shops[shopid] as T;
     }
 
     public IEnumerable<Workplace> GetShops()
@@ -256,47 +229,54 @@ public partial class TownServicesComp : TownComp
         return list;
     }
 
-    readonly Dictionary<EntityRefId, ShopTransaction> _transactionsRequests = [];
-    readonly Dictionary<EntityRefId, ShopTransaction> _transactionsBySeller = [];
-    readonly Dictionary<EntityRefId, ShopTransaction> _transactionsByBuyer = [];
-    readonly Dictionary<EntityRefId, ShopTransaction> _transactionsActive = [];
-    readonly Dictionary<EntityRefId, ShopTransaction> _transactionsByItem = [];
-    readonly List<ShopTransaction> _transactionsAll = [];
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsRequests = [];
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsBySeller = [];
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByBuyer = [];
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsActive = [];
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByItem = [];
+    readonly List<ServiceRequest_Shop> _transactionsAll = [];
     internal bool TryBeginTransaction(Actor actor, Entity item, int price, IntVec3 servicePoint)
     {
-        var transaction = new ShopTransaction(this.Map.World.CurrentTick, (int)actor.Resources.GetValue(ResourceDefOf.Patience), actor, item, price, servicePoint);
-        this._transactionsAll.Add(transaction);
-        this._transactionsRequests.Add(actor.RefId, transaction);
-        this._transactionsByBuyer.Add(actor.RefId, transaction);
-        this._transactionsByItem.Add(item.RefId, transaction);
+        var transaction = new ServiceRequest_Shop(actor, item, price, servicePoint);
+        AddInt(transaction);
         this.Town.OpenTransactions.Add(actor.RefId, transaction);
         actor.Map.Events.Post(new TransactionStartedEvent(actor.Map, transaction));
         return true;
         // TODO made it a bool return in case i have some conditions that can make it fail in the future
     }
-    internal bool TryGetTransaction(EntityRefId buyer, out ShopTransaction transaction)
+
+    private void AddInt(ServiceRequest_Shop transaction)
+    {
+        this._transactionsAll.Add(transaction);
+        this._transactionsRequests.Add(transaction.Customer, transaction);
+        this._transactionsByBuyer.Add(transaction.Customer, transaction);
+        if (transaction.Vendor != EntityRefId.Null)
+            this._transactionsBySeller.Add(transaction.Vendor, transaction);
+        this._transactionsByItem.Add(transaction.Item, transaction);
+    }
+
+    internal bool TryGetTransaction(EntityRefId buyer, out ServiceRequest_Shop transaction)
       => this._transactionsByBuyer.TryGetValue(buyer, out transaction);
-    internal bool TryGetTransaction(Actor buyer, out ShopTransaction transaction)
+    internal bool TryGetTransaction(Actor buyer, out ServiceRequest_Shop transaction)
         => this._transactionsByBuyer.TryGetValue(buyer.RefId, out transaction);
-    internal ShopTransaction GetTransaction(Actor buyer)
+    internal ServiceRequest_Shop GetTransaction(Actor buyer)
         => this._transactionsByBuyer.TryGetValue(buyer.RefId, out var t) ? t : null;
     
-    internal bool TryGetTransactionBySeller(Actor seller, out ShopTransaction transaction)
+    internal bool TryGetTransactionBySeller(Actor seller, out ServiceRequest_Shop transaction)
         => this._transactionsBySeller.TryGetValue(seller.RefId, out transaction);
-    internal bool TryGetTransactionByItem(Entity item, out ShopTransaction transaction)
+    internal bool TryGetTransactionByItem(Entity item, out ServiceRequest_Shop transaction)
         => this._transactionsByItem.TryGetValue(item.RefId, out transaction);
-    internal ShopTransaction GetTransactionBySeller(Actor seller)
+    internal ServiceRequest_Shop GetTransactionBySeller(Actor seller)
            => this._transactionsBySeller.TryGetValue(seller.RefId, out var t) ? t : null;
-    internal IEnumerable<ShopTransaction> PendingTransactions => this._transactionsRequests.Values;
-    internal void AssignSeller(ShopTransaction transaction, Actor seller)
+    internal IEnumerable<ServiceRequest_Shop> PendingTransactions => this._transactionsRequests.Values;
+    internal void AssignSeller(ServiceRequest_Shop transaction, Actor seller)
     {
-        if (transaction.Seller != EntityRefId.Null)
+        if (transaction.Vendor != EntityRefId.Null)
             throw new Exception();
-        //transaction.Seller = seller.RefId;
         transaction.SetSeller(seller);
         transaction.RefreshTimer();
         this._transactionsBySeller.Add(seller.RefId, transaction);
-        this._transactionsRequests.Remove(transaction.Buyer);
+        this._transactionsRequests.Remove(transaction.Customer);
         this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
     }
     public override void Tick()
@@ -306,29 +286,16 @@ public partial class TownServicesComp : TownComp
             if (transaction.IsFailed || transaction.IsSucceeded)
             {
                 this._transactionsAll.Remove(transaction);
-                this._transactionsActive.Remove(transaction.Buyer);
-                this._transactionsRequests.Remove(transaction.Buyer);
-                this._transactionsByBuyer.Remove(transaction.Buyer);
+                this._transactionsActive.Remove(transaction.Customer);
+                this._transactionsRequests.Remove(transaction.Customer);
+                this._transactionsByBuyer.Remove(transaction.Customer);
                 this._transactionsByItem.Remove(transaction.Item);
-                this.Town.OpenTransactions.Remove(transaction.Buyer);
-                if (transaction.Seller != EntityRefId.Null)
-                    this._transactionsBySeller.Remove(transaction.Seller);
+                this.Town.OpenTransactions.Remove(transaction.Customer);
+                if (transaction.Vendor != EntityRefId.Null)
+                    this._transactionsBySeller.Remove(transaction.Vendor);
                 this.Map.Events.Post(new TownServiceComplete(this.Map, transaction));
             }
         }
-    }
-    public Control GetUIShopListWithNoneOption<T>(Action<Workplace> selectAction, Func<T, bool> filter) where T : Workplace // TODO make this a singleton
-    {
-        var box = new GroupBox();
-        void action(Workplace wp)
-        {
-            selectAction(wp);
-            box.TopLevelControl.Hide();
-        };
-        return box.AddControlsVertically(
-                new Button("None", () => action(null), UIListWidth),
-                this.CreateUIShopList(action, filter))
-            .ToPanelLabeled("Select shop").HideOnAnyClick();
     }
 
     public override void Load(SaveTag tag)
@@ -336,12 +303,6 @@ public partial class TownServicesComp : TownComp
         tag.TryGetTagValue("ShopIDSequence", ref this.CurrentShopID);
         this.Shopss.LoadAbstract(tag, "Shops", this);
         this.Shops = this.Shopss.ToDictionary(i => i.ID, i => i);
-    }
-
-    public void PlayerAssignCounter(Workplace shop, IntVec3 global)
-    {
-        var net = this.Town.Net;
-        PacketsWorkplaces.SendPlayerShopAssignCounter(net, net.GetPlayer(), shop.Map, shop, global);
     }
 
     public override void Read(IDataReader r)
@@ -369,11 +330,7 @@ public partial class TownServicesComp : TownComp
         w.Write(this.CurrentShopID);
         this.Shopss.WriteAbstract(w);
     }
-
-    internal IEnumerable<T> GetShops<T>() where T : Workplace
-    {
-        return this.Shopss.OfType<T>();
-    }
+    
     internal override void OnBlocksChanged(IEnumerable<IntVec3> positions)
     {
         foreach (var wp in this.Shopss)
@@ -382,49 +339,7 @@ public partial class TownServicesComp : TownComp
 
     internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
     {
-        //var win = new Lazy<Window>(() => this.GetUIManager().ToWindow("Shops"));
-        //yield return new Tuple<Func<string>, Action>(() => "Businesses", () => win.Value.Toggle());
         yield return (() => "Shops", () => UIManager.ToggleSingleton<WorkplacesGui>("Shops"));
-    }
-    internal /*override*/ void OnTargetSelected(IUISelection info, ISelectable selected)
-    {
-        if (selected is Stockpile stockpile)
-        {
-            var net = stockpile.Town.Net;
-
-            var control = new Lazy<Control>(
-                () =>
-                new GroupBox().AddControlsVertically(
-                    new Button("None", () => PacketsWorkplaces.SendPlayerAddStockpileToShop(net, net.GetPlayer().ID, stockpile.Map, stockpile.Town.ShopManager.FindShop(stockpile)?.ID ?? -1, stockpile.ID), UIListWidth),
-                    this.CreateUIShopList(sh => PacketsWorkplaces.SendPlayerAddStockpileToShop(net, net.GetPlayer().ID, sh.Map, sh.ID, stockpile.ID)))
-                .ToPanelLabeled("Select shop").HideOnAnyClick());
-
-            info.AddTabAction("Shop", () => control.Value.SetLocation(UIManager.Mouse).Toggle());
-
-            //info.AddInfo(new Label(() => string.Format("Shop: {0}", this.Shopss.FirstOrDefault(sh => sh.HasStockpile(stockpile.ID))?.Name ?? "")));
-            info.AddInfo(new Label(() => $"Shop: {this.Shopss.FirstOrDefault(sh => sh.HasStockpile(stockpile.ID))?.Name ?? ""}"));
-        }
-        else if (selected is InteractionTarget target)
-        {
-            if (target.Type == TargetType.Cell)
-            {
-                var block = target.Block;
-                if (this.Shopss.Any(s => s.IsAllowed(block)))
-                {
-                    info.AddTabAction("Shopp", () =>
-                    {
-                        //var foundShop = this.Shopss.FirstOrDefault(w => w.Facilities.ContainsKey(target.Global));
-                        var foundShop = this.Shopss.FirstOrDefault(w => w.Facilities.Contains(target.Global));
-
-                        if (foundShop == null)
-                            this.GetUIShopListWithNoneOption<Workplace>(s => this.PlayerAssignCounter(s, target.Global), w => w.IsAllowed(block)).SetLocation(UIManager.Mouse).Toggle();
-                        else
-                            foundShop.OpenGui();
-                    });
-                }
-            }
-        }
-        
     }
 
     internal override void ResolveReferences()
@@ -437,6 +352,9 @@ public partial class TownServicesComp : TownComp
             if (cell.cell.Block == BlockDefOf.ShopCounter.Block)
                 this.ServicePoints.Add(cell.id.Local.ToGlobal(cell.chunk));
         }
+
+        foreach (var req in this.Town.ServiceRequests.GetAllRequests<ServiceRequest_Shop>())
+            this.AddInt(req);
     }
 
     internal void ToggleWorker(Actor a, Workplace shop)
@@ -449,13 +367,6 @@ public partial class TownServicesComp : TownComp
         this.Shopss.SaveAbstract(tag, "Shops");
     }
 
-    GroupBox CreateShopListGui()
-    {
-        var box = new GroupBox();
-        var table = new TableCompact<Workplace>().AddColumn(null, "name", 200, w => new Label(() => w.Name)).Bind(this.Shopss);
-        box.AddControls(table);
-        return box;
-    }
     private ListBoxNoScroll<Workplace, Button> CreateUIShopList(Action<Workplace> selectAction, Func<Workplace, bool> filter = null)
     {
         return this.CreateUIShopList<Workplace>(selectAction, filter);
@@ -463,7 +374,6 @@ public partial class TownServicesComp : TownComp
 
     private ListBoxNoScroll<T, Button> CreateUIShopList<T>(Action<T> selectAction, Func<T, bool> filter) where T : Workplace
     {
-        //var shoplist = new ListBoxNew<T, Button>(UIListWidth, Button.DefaultHeight * 8, s => new Button(s.Name, () => selectAction?.Invoke(s)));
         var shoplist = new ListBoxNoScroll<T, Button>(s => new Button(s.Name, () => selectAction?.Invoke(s)));
         shoplist.OnGameEventAction = e =>
         {
@@ -489,69 +399,11 @@ public partial class TownServicesComp : TownComp
         return shoplist;
     }
 
-    Control GetUIManager()
-    {
-        var box = new GroupBox();
-        var boxList = new GroupBox();
-
-        var shopUI = new Lazy<(Control control, Action<Workplace> refresh)>(Workplace.CreateUI);
-        var win = new Lazy<Window>(() => shopUI.Value.control.ToWindow("Shop"));
-
-        var shoplist = new TableCompact<Workplace>()
-            .AddColumn(new(), "name", 200, sh => new Label(() => sh.Name, () =>
-            {
-                shopUI.Value.refresh(sh);
-            }), 0)
-            .AddColumn(new(), "delete", Icon.Cross.SourceRect.Width,
-                w => IconButton.CreateSmall(Icon.Cross,
-                    () => MessageBox.CreateDialogue("Warning!", $"{w.Name} will be deleted. Are you sure?",
-                        () => PacketsWorkplaces.SendPlayerDeleteShop(this.Town.Net, this.Town.Net.GetPlayer(), this.Map.ID, w.ID))));
-
-        var shoplistcontainer = shoplist.MakeScrollable(-1, 200);
-
-        shoplist.OnGameEventAction = e =>
-        {
-            switch ((Message.Types)e.Type)
-            {
-                case Message.Types.ShopsUpdated:
-                    var shop = e.Parameters[0] as Workplace;
-                    if (this.Shopss.Contains(shop))
-                        shoplist.AddItems(shop);
-                    else
-                        shoplist.RemoveItems(shop);
-                    break;
-
-                default:
-                    break;
-            }
-        };
-        shoplist.ShowAction = () =>
-        {
-            shoplist.ClearItems();
-            shoplist.AddItems(this.Shops.Values.ToArray());
-        };
-        shoplist.AddItems(this.Shops.Values.ToArray());
-        var net = this.Town.Net;
-        var selectTypeMenu = selectShopType(t => PacketsWorkplaces.SendPlayerCreateShop(net, net.GetPlayer().ID, this.Map, t));
-        var btnNew = new Button("New", () => selectTypeMenu.Toggle(UIManager.MouseScaled));
-        boxList.AddControlsVertically(shoplistcontainer, btnNew);
-        box.AddControlsHorizontally(boxList);
-        return box;
-
-        Control selectShopType(Action<Type> callback)
-        {
-            var list = new ListBoxNoScroll<Type, Button>(t => new Button(t.Name, () => callback(t)));
-            list.AddItems(typeof(Shop), typeof(Tavern));
-            return list.ToContextMenu("Select shop type");
-        }
-    }
-
     internal void MarkPaid(Actor buyer, Entity money)
     {
         var req = this._transactionsByBuyer[buyer.RefId];
         req.Money = money.RefId;
         req.MarkPaid();
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
         this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
 
     }
@@ -561,29 +413,21 @@ public partial class TownServicesComp : TownComp
         if (item.RefId != req.Item)
             throw new InvalidOperationException();
         req.RingUp();
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
         this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
     }
     internal void FinishTransaction(Actor buyer)
     {
         var req = this._transactionsByBuyer[buyer.RefId];
         var shoppinglist = this._shoppingListsByActor[buyer.RefId];
-        //t.MarkComplete();
         shoppinglist.MarkFulfilled();
         req.Dispose();
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
-        //this.Map.Events.Post(new ShopTransactionFinishedEvent(this.Map, t));
         this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
     }
     internal void MarkProcessed(Actor seller)
     {
         var req = this._transactionsBySeller[seller.RefId];
         req.MarkProcessed();
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
         this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
     }
 
     internal IEnumerable<Entity> GetItemsForSale()

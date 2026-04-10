@@ -20,29 +20,29 @@ public sealed class InnManager : TownComp
     private readonly Dictionary<EntityRefId, InnGuestProfile> RegistryByGuest = [];
     private readonly Dictionary<IntVec3, InnGuestProfile> RegistryByBed = [];
     private readonly HashSet<Actor> GuestsQueuing = [];
-    private readonly Dictionary<EntityRefId, InnTransaction> OpenTransactionsByGuest = [];
-    private readonly Dictionary<IntVec3, InnTransaction> OpenTransactionsByDesk = [];
-    private readonly Dictionary<EntityRefId, InnTransaction> OpenTransactionsByClerk = [];
+    private readonly Dictionary<EntityRefId, ServiceRequest_Inn> OpenTransactionsByGuest = [];
+    private readonly Dictionary<IntVec3, ServiceRequest_Inn> OpenTransactionsByDesk = [];
+    private readonly Dictionary<EntityRefId, ServiceRequest_Inn> OpenTransactionsByClerk = [];
     public IEnumerable<IntVec3> AvailableBeds => this.AllBeds.Where(b => !this.RegistryByBed.ContainsKey(b));
-    public InnTransaction GetTransactionByGuest(Actor actor)
+    public ServiceRequest_Inn GetTransactionByGuest(Actor actor)
     {
         if (this.OpenTransactionsByGuest.TryGetValue(actor.RefId, out var foundByGuest))
             return foundByGuest;
         return null;
     }
-    public InnTransaction GetTransactionByClerk(Actor actor)
+    public ServiceRequest_Inn GetTransactionByClerk(Actor actor)
     {
         if (this.OpenTransactionsByClerk.TryGetValue(actor.RefId, out var foundByGuest))
             return foundByGuest;
         return null;
     }
-    public InnTransaction GetTransaction(IntVec3 desk)
+    public ServiceRequest_Inn GetTransaction(IntVec3 desk)
     {
         if (this.OpenTransactionsByDesk.TryGetValue(desk, out var found))
             return found;
         return null;
     }
-    public bool TryGetTransaction(Actor guest, out InnTransaction transaction)
+    public bool TryGetTransaction(Actor guest, out ServiceRequest_Inn transaction)
         => this.OpenTransactionsByGuest.TryGetValue(guest.RefId, out transaction);
     public override void Tick()
     {
@@ -52,7 +52,7 @@ public sealed class InnManager : TownComp
             {
                 this.OpenTransactionsByGuest.Remove(id);
                 this.OpenTransactionsByDesk.Remove(t.Desk);
-                this.OpenTransactionsByClerk.Remove(t.Clerk);
+                this.OpenTransactionsByClerk.Remove(t.Vendor);
                 this.Town.OpenTransactions.Remove(id);
                 this.Map.Events.Post(new TownServiceComplete(this.Map, t));
             }
@@ -79,12 +79,23 @@ public sealed class InnManager : TownComp
             throw new System.Exception();
         this.GuestsQueuing.Add(guest);
         this.QueuesPerServicePoint[servicePoint].Enqueue(guest);
-        var transaction = new InnTransaction(guest, servicePoint);
-        this.OpenTransactionsByGuest.Add(guest.RefId, transaction);
-        this.OpenTransactionsByDesk.Add(servicePoint, transaction);
+        var transaction = new ServiceRequest_Inn(guest, servicePoint);
+        AddInt(transaction);
         this.Town.OpenTransactions.Add(guest.RefId, transaction);
+        //this.OpenTransactionsByGuest.Add(guest.RefId, transaction);
+        //this.OpenTransactionsByDesk.Add(servicePoint, transaction);
+        //this.Town.OpenTransactions.Add(guest.RefId, transaction);
         return true;
     }
+
+    private void AddInt(ServiceRequest_Inn transaction)
+    {
+        this.OpenTransactionsByGuest.Add(transaction.Customer, transaction);
+        this.OpenTransactionsByDesk.Add(transaction.Desk, transaction);
+        if (transaction.Vendor != EntityRefId.Null)
+            this.OpenTransactionsByClerk.Add(transaction.Vendor, transaction);
+    }
+
     internal void AbortQueuing(Actor actor)
 
     {
@@ -187,6 +198,9 @@ public sealed class InnManager : TownComp
             var global = id.GetGlobal(chunk);
             this.QueuesPerServicePoint.Add(global, []);
         }
+
+        foreach (var req in this.Town.ServiceRequests.GetAllRequests<ServiceRequest_Inn>())
+            this.AddInt(req);
     }
 
     internal bool IsQueuing(Actor actor)
@@ -219,4 +233,5 @@ public sealed class InnManager : TownComp
         this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
 
     }
+
 }

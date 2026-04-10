@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns.Services;
 
@@ -11,7 +12,9 @@ public readonly record struct TownServiceRequestId(ulong Value)
 
 public class TownComp_ServiceRequests : TownComp
 {
-    readonly Dictionary<TownServiceRequestId, TownServiceRequest> _openRequests = [];
+    readonly Dictionary<TownServiceRequestId, ServiceRequest> _openRequests = [];
+    public IReadOnlyCollection<ServiceRequest> GetAllRequests() => this._openRequests.Values;
+    public IEnumerable<T> GetAllRequests<T>() where T : ServiceRequest => this._openRequests.Values.OfType<T>();
 
     public TownComp_ServiceRequests(Town town) : base(town)
     {
@@ -21,7 +24,7 @@ public class TownComp_ServiceRequests : TownComp
 
     TownServiceRequestId NextId => ++field;
 
-    internal TownServiceRequestId Register(TownServiceRequest request)
+    internal TownServiceRequestId Register(ServiceRequest request)
     {
         var id = this.NextId;
         request.Id = id;
@@ -32,6 +35,6 @@ public class TownComp_ServiceRequests : TownComp
     internal void Remove(TownServiceRequestId id)
         => this._openRequests.Remove(id);
 
-    public TownServiceRequest Get(TownServiceRequestId id)
+    public ServiceRequest Get(TownServiceRequestId id)
         => this._openRequests[id];
 }

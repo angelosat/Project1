@@ -5,7 +5,6 @@ using Project1.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Intrinsics.Arm;
 
 namespace Project1.Framework.Serialization
 {

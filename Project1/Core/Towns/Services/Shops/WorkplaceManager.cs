@@ -278,7 +278,7 @@ public partial class TownComp_Shops : TownComp
         this._transactionsRequests.Remove(transaction.Customer);
         this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
     }
-    public override void Tick()
+    internal override void Tick()
     {
         foreach(var transaction in this._transactionsAll.ToArray())
         {

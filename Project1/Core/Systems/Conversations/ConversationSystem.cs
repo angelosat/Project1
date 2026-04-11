@@ -105,7 +105,7 @@ public class ConversationSystem : TownComp
         this._availableActors.Remove(e.Entity.RefId);
     }
 
-    public override void Tick()
+    internal override void Tick()
     {
         foreach(var convo in this.ActiveConversationsByInitiator.Values.ToArray())
         {

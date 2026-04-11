@@ -44,7 +44,7 @@ public sealed class TownComp_Inns : TownComp
     }
     public bool TryGetTransaction(Actor guest, out ServiceRequest_Inn transaction)
         => this.OpenTransactionsByGuest.TryGetValue(guest.RefId, out transaction);
-    public override void Tick()
+    internal override void Tick()
     {
         foreach(var (id, t) in this.OpenTransactionsByGuest.ToArray())
         {

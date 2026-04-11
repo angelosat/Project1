@@ -149,6 +149,7 @@ namespace Project1.Core.Systems.Inventory
             if (actor.Inventory.HaulSlot.Object is not GameObject existing)
             {
                 actor.Inventory.HaulSlot.Assign(finalItem, out var _);
+                actor.Map.Events.Post(new ActorHaulingNewItemEvent(actor));
                 return;
             }
             if (!existing.CanAbsorb(finalItem))

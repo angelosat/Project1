@@ -72,7 +72,7 @@ namespace Project1.Core.Towns
         public virtual void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam) { }
         public virtual void DrawUI(SpriteBatch sb, MapBase map, Camera cam) { }
 
-        public virtual void Tick()
+        internal virtual void Tick()
         {
         }
         internal virtual IEnumerable<Button> GetTabs(ISelectable selected) { yield break; }

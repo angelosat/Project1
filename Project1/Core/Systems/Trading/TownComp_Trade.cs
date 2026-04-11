@@ -73,7 +73,7 @@ public sealed class TownComp_Trade : TownComp
     {
     }
     SimulationTick expirationThreshold = (ulong)Ticks.FromHours(1);
-    public override void Tick()
+    internal override void Tick()
     {
         var current = this.Map.World.CurrentTick;
         foreach(var trade in this.byId.Values.ToArray())

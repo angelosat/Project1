@@ -11,6 +11,8 @@ namespace Project1.Core.Towns.Services;
 
 public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISerializableNew<ServiceRequest>
 {
+    enum States { Pending, VendorWaitingItem, VendorWorking, VendorWaitingPay, VendorIsPaid, Success, Failure }
+    private States State;
     internal TownServiceRequestId Id { get; set; }
     public SimulationTick TickStarted { get; private set; }
     internal int PatienceInitial { get; private set; }
@@ -24,10 +26,8 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     abstract internal TownServiceDef Service { get; }
     abstract internal bool IsSucceeded { get; }
     abstract internal bool IsFailed { get;}
-    public bool IsVendorWaiting { get; internal set; }
-    public bool IsVendorWaitingPayment { get; internal set; }
-    public bool IsVendorPaid { get; internal set; }
-    public bool IsVendorWorking { get; internal set; }
+
+    public bool IsPaidFor => this.Money != EntityRefId.Null;
 
     protected ServiceRequest(Actor customer, int price)
     {
@@ -56,10 +56,10 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         tag.Save("Price", this.Price);
         tag.Save("Customer", this.Customer);
         tag.Save("Vendor", this.Vendor);
-        //tag.Save("CounterHasValue", this.Counter.HasValue);
         if (this.Counter.HasValue)
             tag.Save("Counter", this.Counter.Value);
         tag.Save("Money", this.Money);
+        tag.Save("State", (int)this.State);
         this.SaveExtra(tag);
         return tag;
     }
@@ -74,11 +74,10 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         runtime.Price = tag.LoadInt("Price");
         runtime.Customer = tag.LoadEntityRefId("Customer");
         runtime.Vendor = tag.LoadEntityRefId("Vendor");
-        //var counterHasValue = tag.LoadBool("CounterHasValue");
-        //if (counterHasValue)
-        //    runtime.Counter = tag.LoadIntVec3("Counter");
-        if (tag.TryLoadIntVec3("Counter", out var counter)) runtime.Counter = counter;
+        if (tag.TryLoadIntVec3("Counter", out var counter)) 
+            runtime.Counter = counter;
         runtime.Money = tag.LoadEntityRefId("Money");
+        runtime.State = (States)tag.LoadInt("State");
         runtime.LoadExtra(tag);
         return runtime;
     }
@@ -105,6 +104,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         if (this.Counter.HasValue)
             w.Write(this.Counter.Value);
         w.Write(this.Money);
+        w.Write((int)this.State);
         this.WriteExtra(w);
     }
 
@@ -121,6 +121,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         if (r.ReadBoolean())
             this.Counter = r.ReadIntVec3();
         this.Money = r.ReadEntityRefId();
+        this.State = (States)r.ReadInt32();
         this.ReadExtra(r);
         return this;
     }
@@ -130,35 +131,19 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     protected virtual void WriteExtra(IDataWriter w) { }
     protected virtual void ReadExtra(IDataReader r) { }
 
+    public bool IsVendorWaitingItemSubmit => this.State == States.VendorWaitingItem;
+    public bool IsVendorWorking => this.State == States.VendorWorking;
+    public bool IsVendorWaitingPayment => this.State == States.VendorWaitingPay;
+
     internal void MarkVendorWaiting()
-    {
-        this.IsVendorWaiting = true;
-        this.IsVendorWorking = false;
-        this.IsVendorWaitingPayment = false;
-        this.IsVendorPaid = false;
-    }
+        => this.State = States.VendorWaitingItem;
 
     internal void MarkVendorWorking()
-    {
-        this.IsVendorWaiting = false;
-        this.IsVendorWorking = true;
-        this.IsVendorWaitingPayment = false;
-        this.IsVendorPaid = false;
-    }
+        => this.State = States.VendorWorking;
 
     internal void MarkVendorWaitingPayment()
-    {
-        this.IsVendorWaiting = false;
-        this.IsVendorWorking = false;
-        this.IsVendorWaitingPayment = true;
-        this.IsVendorPaid = false;
-    }
+        => this.State = States.VendorWaitingPay;
 
-    internal void MarkVendorPaid()
-    {
-        this.IsVendorWaiting = false;
-        this.IsVendorWorking = false;
-        this.IsVendorWaitingPayment = false;
-        this.IsVendorPaid = true;
-    }
+    internal void MarkIsPaidFor()
+        => this.State = States.VendorIsPaid;
 }

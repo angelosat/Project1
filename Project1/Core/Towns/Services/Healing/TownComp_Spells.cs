@@ -21,7 +21,7 @@ public class TownComp_Spells : TownComp
     {
     }
 
-    public override void Tick()
+    internal override void Tick()
     {
         foreach (var req in this._pendingRequestsByTarget.Values.ToArray())
         {

@@ -2,10 +2,12 @@
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Systems.Inventory;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services.Repairing;
@@ -19,13 +21,31 @@ public sealed class TownComp_Repairs : TownComp
     private readonly HashSet<IntVec3> _repairStationsAvailable = [];
     private readonly Dictionary<EntityRefId, ServiceRequest_Repair> _requests = [];
     private readonly Dictionary<IntVec3, ServiceRequest_Repair> _requestsByRepairBench = [];
+    private readonly Dictionary<EntityRefId, ServiceRequest_Repair> _requestsByItem = [];
     internal IReadOnlySet<IntVec3> RepairStationsAvailable => this._repairStationsAvailable;
 
     public TownComp_Repairs(Town town) : base(town)
     {
+        //town.Map.Events.ListenTo<ActorHaulingNewItemEvent>(HandleActorHaulingNewItem);
     }
 
-    public override void Tick()
+    //private void HandleActorHaulingNewItem(ActorHaulingNewItemEvent e)
+    //{
+    //    var item = e.Actor.Hauled;
+    //    if (!this._requestsByItem.TryGetValue(item.RefId, out var request))
+    //        return;
+    //    if (request.ItemSubmitted)
+    //        return;
+    //    if (e.Actor.RefId != request.Vendor)
+    //    {
+    //        if (e.Actor.RefId != request.Customer)
+    //            Debug.Fail("Unexpected item holder for repair request");
+    //        return;
+    //    }
+    //    request.ItemSubmitted = true;
+    //}
+
+    internal override void Tick()
     {
         foreach(var req in this._requests.Values.ToArray())
         {
@@ -48,10 +68,12 @@ public sealed class TownComp_Repairs : TownComp
     private void AddInt(ServiceRequest_Repair req)
     {
         this._requests.Add(req.Customer, req);
+        this._requestsByItem.Add(req.Item, req);
     }
     private void RemoveInt(ServiceRequest_Repair req)
     {
         this._requests.Remove(req.Customer);
+        this._requestsByItem.Remove(req.Item);
         if (req.RepairBench.HasValue)
         {
             this._requestsByRepairBench.Remove(req.RepairBench.Value);

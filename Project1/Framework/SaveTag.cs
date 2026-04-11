@@ -485,6 +485,19 @@ namespace Project1.Framework
         {
             return (ulong)this.Value;
         }
+        public bool TryLoadIntVec3(string name, out IntVec3 value)
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = (IntVec3)tag.Value;
+                return true;
+            }
+        }
         public IntVec3 LoadIntVec3(string name)
         {
             var tag = this[name];

@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Interactions;
 using Project1.Core.Resources;
-using System.Linq;
 
 namespace Project1.Core.Towns.Services.Repairing;
 
@@ -29,13 +28,6 @@ internal sealed class Interaction_Repair_MoneyWait : InteractionLogic
     internal override bool HasSucceeded(Interaction i)
     {
         var typed = (InteractionContext_Vendor)i.Context;
-        //var moneyCell = typed.Request.Counter.Value.Above;
-        //var itemsInCell = i.Actor.Map.GetEntitiesAt(moneyCell);
-        //if (itemsInCell.FirstOrDefault(e => e.Def == ItemDefOf.Coins && e.StackSize >= typed.Request.Price) is Entity money)
-        //{
-        //    //typed.Request.Money = money.RefId;
-        //    return true;
-        //}
         if (i.Actor.World.Get(typed.Request.Money) is Entity item && item.Cell == typed.Request.Counter.Value.Above)
             return true;
         return false;
@@ -48,7 +40,6 @@ internal sealed class Interaction_RepairServing : InteractionLogic
         if (i.Actor.Net.IsClient)
             return;
         var req = i.Actor.CurrentPlan.ServiceRequest;
-        //req.IsVendorWaiting = true;
         req.MarkVendorWaiting();
     }
 
@@ -64,7 +55,6 @@ internal sealed class Interaction_RepairServing : InteractionLogic
         if (i.Actor.Net.IsClient)
             return;
         var req = i.Actor.CurrentPlan.ServiceRequest;
-        //req.IsVendorWorking = true;
         req.MarkVendorWorking();
     }
 }
@@ -90,9 +80,6 @@ internal sealed class Interaction_RepairCustomerWaitPrice : InteractionLogic
         var req = (ServiceRequest_Repair)i.Actor.CurrentPlan.ServiceRequest;
         if (req.IsVendorWaitingPayment)
             return true;
-        //var item = i.Actor.Map.World.Get(req.Item);
-        //if (item.Cell == req.Counter.Value.Above && item.Resources.GetPercentage(ResourceDefOf.Durability) >= 1)
-        //    return true;
         return false;
     }
 
@@ -107,7 +94,6 @@ internal sealed class Interaction_RepairQueue : InteractionLogic
     protected override InteractionContext_Customer CreateContextInt() => new();
     internal override void OnStart(Interaction i)
     {
-        //i.Actor.Map.Town.ServiceRequests.Enqueue(i.Actor, i.Target.Global);
         if (i.Actor.Net.IsClient)
             return;
         i.Actor.Map.Town.ServiceRequests.Enqueue(i.Actor);

@@ -4,6 +4,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,6 +31,7 @@ public sealed class TownComp_Repairs : TownComp
         {
             if (!(req.IsFailed || req.IsSucceeded))
                 continue;
+            this.Map.Events.Post(new TownServiceCompleteEvent(this.Map, req));
             this.RemoveInt(req);
         }
     }
@@ -42,9 +44,6 @@ public sealed class TownComp_Repairs : TownComp
     }
     internal bool TryGetByCustomer(Actor customer, out ServiceRequest_Repair req)
         => this._requests.TryGetValue(customer.RefId, out req);
-
-    internal bool TryGetByVendor(Actor customer, out ServiceRequest_Repair req)
-    => this._requests.TryGetValue(customer.RefId, out req);
 
     private void AddInt(ServiceRequest_Repair req)
     {

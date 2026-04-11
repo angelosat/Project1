@@ -47,14 +47,12 @@ internal sealed class Planner_Repairs_Vendor : Planner
                 if(money is not null && actor.Hauled == money)
                     return new Plan(PlanDefOf.GoPlace, map, counter) { Continuation = PlanContinuationPolicy.Yield };
 
-                //if(map.GetEntitiesAt(counter.Above).FirstOrDefault(i=>i.RefId == req.Money) is Entity money)
                 if (money is not null && money.Cell == counter.Above)
                 {
                     req.MarkVendorPaid();
                     return new Plan(PlanDefOf.SwapCarried, money);
                 }
                 if (actor.Hauled == item)
-                    //return new Plan(PlanDefOf.GoPlace, map, counter.Above);
                     return new Plan(ServiceRepairsDefOf.PlanWaitMoney, map, counter) { ServiceRequest = req };
 
 

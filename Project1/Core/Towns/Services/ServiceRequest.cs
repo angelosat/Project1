@@ -56,6 +56,10 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         tag.Save("Price", this.Price);
         tag.Save("Customer", this.Customer);
         tag.Save("Vendor", this.Vendor);
+        //tag.Save("CounterHasValue", this.Counter.HasValue);
+        if (this.Counter.HasValue)
+            tag.Save("Counter", this.Counter.Value);
+        tag.Save("Money", this.Money);
         this.SaveExtra(tag);
         return tag;
     }
@@ -70,6 +74,11 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         runtime.Price = tag.LoadInt("Price");
         runtime.Customer = tag.LoadEntityRefId("Customer");
         runtime.Vendor = tag.LoadEntityRefId("Vendor");
+        //var counterHasValue = tag.LoadBool("CounterHasValue");
+        //if (counterHasValue)
+        //    runtime.Counter = tag.LoadIntVec3("Counter");
+        if (tag.TryLoadIntVec3("Counter", out var counter)) runtime.Counter = counter;
+        runtime.Money = tag.LoadEntityRefId("Money");
         runtime.LoadExtra(tag);
         return runtime;
     }
@@ -82,20 +91,6 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         return runtime;
     }
 
-    public ServiceRequest Read(IDataReader r)
-    {
-        _ = r.ReadDef<TownServiceDef>();
-
-        this.Id = r.ReadUInt64();
-        this.TickStarted = r.ReadUInt64();
-        this.PatienceInitial = r.ReadInt32();
-        this.Price = r.ReadInt32();
-        this.Customer = r.ReadEntityRefId();
-        this.Vendor = r.ReadEntityRefId();
-        this.ReadExtra(r);
-        return this;
-    }
-
     public void Write(IDataWriter w)
     {
         w.Write(this.Service);
@@ -106,7 +101,28 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         w.Write(this.Price);
         w.Write(this.Customer);
         w.Write(this.Vendor);
+        w.Write(this.Counter.HasValue);
+        if (this.Counter.HasValue)
+            w.Write(this.Counter.Value);
+        w.Write(this.Money);
         this.WriteExtra(w);
+    }
+
+    public ServiceRequest Read(IDataReader r)
+    {
+        _ = r.ReadDef<TownServiceDef>();
+
+        this.Id = r.ReadUInt64();
+        this.TickStarted = r.ReadUInt64();
+        this.PatienceInitial = r.ReadInt32();
+        this.Price = r.ReadInt32();
+        this.Customer = r.ReadEntityRefId();
+        this.Vendor = r.ReadEntityRefId();
+        if (r.ReadBoolean())
+            this.Counter = r.ReadIntVec3();
+        this.Money = r.ReadEntityRefId();
+        this.ReadExtra(r);
+        return this;
     }
 
     protected virtual void SaveExtra(SaveTag tag) { }
@@ -146,17 +162,3 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         this.IsVendorPaid = true;
     }
 }
-
-//public interface ITownServiceRequest
-//{
-//    TownServiceRequestId Id { get; internal set; }
-//    EntityRefId Buyer { get; }
-//    EntityRefId Seller { get; }
-//    TownServiceDef Service { get; }
-//    double TickStarted { get; }
-//    int PatienceInitial { get; }
-//    bool IsSucceeded { get; }
-//    bool IsFailed { get; }
-//    void Write(IDataWriter w);
-//    void Read(IDataReader r);
-//}

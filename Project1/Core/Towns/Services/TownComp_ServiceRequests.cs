@@ -2,6 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,6 +51,12 @@ public class TownComp_ServiceRequests : TownComp
         this._openRequests.Remove(id);
         this._openRequestsByCustomer.Remove(req.Customer);
         this._openRequestsByVendor.Remove(req.Vendor);
+        var counter = req.Counter;
+        if(counter.HasValue)
+        {
+            if (!this.QueuesByCounter[counter.Value].TryDequeue(out var customer) || customer.RefId != req.Customer)
+                throw new InvalidOperationException();
+        }
     }
 
     internal ServiceRequest Get(TownServiceRequestId id)
@@ -62,7 +69,6 @@ public class TownComp_ServiceRequests : TownComp
      => this._openRequestsByVendor[vendorId];
 
     internal IEnumerable<Actor> Peek(TownServiceDef service)
-        //=> this.CountersByService[service].Select(c => this.QueuesByCounter[c].Peek());
         => this.CountersByService[service].Where(c => this.QueuesByCounter[c].Count > 0).Select(c => this.QueuesByCounter[c].Peek());
 
     internal IEnumerable<ServiceRequest> GetAllPendingRequests(TownServiceDef service)
@@ -99,7 +105,6 @@ public class TownComp_ServiceRequests : TownComp
     }
 
     internal IEnumerable<IntVec3> GetCounters(TownServiceDef service)
-    //=> this.CountersByService[service];
     {
         if (service == TownServiceDefOf.Repairing)
             return this.Town.Repairs.Counters;

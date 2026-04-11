@@ -54,7 +54,7 @@ public sealed class TownComp_Inns : TownComp
                 this.OpenTransactionsByDesk.Remove(t.Desk);
                 this.OpenTransactionsByClerk.Remove(t.Vendor);
                 this.Town.OpenTransactions.Remove(id);
-                this.Map.Events.Post(new TownServiceComplete(this.Map, t));
+                this.Map.Events.Post(new TownServiceCompleteEvent(this.Map, t));
             }
         }
     }

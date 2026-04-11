@@ -292,7 +292,7 @@ public partial class TownComp_Shops : TownComp
                 this.Town.OpenTransactions.Remove(transaction.Customer);
                 if (transaction.Vendor != EntityRefId.Null)
                     this._transactionsBySeller.Remove(transaction.Vendor);
-                this.Map.Events.Post(new TownServiceComplete(this.Map, transaction));
+                this.Map.Events.Post(new TownServiceCompleteEvent(this.Map, transaction));
             }
         }
     }

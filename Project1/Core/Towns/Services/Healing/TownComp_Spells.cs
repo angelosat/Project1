@@ -30,7 +30,7 @@ public class TownComp_Spells : TownComp
             this._pendingRequestsByTarget.Remove(req.Customer);
             this._acceptedRequestsByCaster.Remove(req.Vendor);
             this.Town.ServiceRequests.Remove(req.Id);
-            this.Map.Events.Post(new TownServiceComplete(this.Map, req));
+            this.Map.Events.Post(new TownServiceCompleteEvent(this.Map, req));
         }
     }
     internal bool TryGetRequestByTarget(Actor target, out ServiceRequest_Spell existing)

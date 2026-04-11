@@ -11,7 +11,7 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.Towns.Services.Shops;
 internal record struct ShopTransactionUpdatedEvent(MapBase Map, ServiceRequest Transaction) : IEventPayload { }
-internal record struct TownServiceComplete(MapBase Map, ServiceRequest Transaction) : IEventPayload { }
+internal record struct TownServiceCompleteEvent(MapBase Map, ServiceRequest Transaction) : IEventPayload { }
 public sealed class ServiceRequest_Shop : ServiceRequest
 {
     internal enum TransactionState

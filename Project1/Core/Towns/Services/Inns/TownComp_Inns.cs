@@ -22,6 +22,7 @@ public sealed class TownComp_Inns : TownComp
     private readonly Dictionary<EntityRefId, ServiceRequest_Inn> OpenTransactionsByGuest = [];
     private readonly Dictionary<IntVec3, ServiceRequest_Inn> OpenTransactionsByDesk = [];
     private readonly Dictionary<EntityRefId, ServiceRequest_Inn> OpenTransactionsByClerk = [];
+    int Price = 100;
     public IEnumerable<IntVec3> AvailableBeds => this.AllBeds.Where(b => !this.RegistryByBed.ContainsKey(b));
     public ServiceRequest_Inn GetTransactionByGuest(Actor actor)
     {
@@ -78,7 +79,7 @@ public sealed class TownComp_Inns : TownComp
             throw new System.Exception();
         this.GuestsQueuing.Add(guest);
         this.QueuesPerServicePoint[servicePoint].Enqueue(guest);
-        var transaction = new ServiceRequest_Inn(guest, servicePoint);
+        var transaction = new ServiceRequest_Inn(guest, this.Price, servicePoint);
         AddInt(transaction);
         this.Town.OpenTransactions.Add(guest.RefId, transaction);
         //this.OpenTransactionsByGuest.Add(guest.RefId, transaction);

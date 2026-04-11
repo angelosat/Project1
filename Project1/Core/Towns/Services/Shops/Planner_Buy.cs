@@ -5,6 +5,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services.Shops;
@@ -29,7 +30,7 @@ sealed class Planner_Buy : Planner
         {
             var seller = map.World.Get<Actor>(transaction.Vendor);
             var item = map.World.Get(transaction.Item);
-
+            var counter = transaction.Counter.Value;
             if (carried is null)
             {
                 //if (transaction.IsComplete)
@@ -43,7 +44,7 @@ sealed class Planner_Buy : Planner
                 //}
                 if (transaction.IsProcessed)
                 {
-                    if (item.Cell == transaction.Counter.Above)
+                    if (item.Cell == counter.Above)
                     {
                         actor.AI.State.Log.Write($"I bought {item.Name}");
                         return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
@@ -75,7 +76,7 @@ sealed class Planner_Buy : Planner
             if (carried is not null)
             {
                 if (carried.Def == ItemDefOf.Coins && transaction.WaitingForPayment)
-                    return new Plan(PlanDefOf.Pay, new InteractionTarget(map, transaction.Counter.Above));
+                    return new Plan(PlanDefOf.Pay, new InteractionTarget(map, counter.Above));
                 if (carried.RefId != transaction.Item)
                     throw new InvalidOperationException();
                 transaction.Tick();
@@ -84,12 +85,12 @@ sealed class Planner_Buy : Planner
                     transaction.Cancel();
                     return null;
                 }
-                if (!actor.CanReachAndReserve(transaction.Counter))
+                if (!actor.CanReachAndReserve(counter))
                 {
                     transaction.Cancel();
                     return null;
                 }
-                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, transaction.Counter.Above));
+                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter.Above));
             }
         }
         if (carried is not null)

@@ -4,7 +4,6 @@ using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Serialization;
-using System;
 
 #nullable enable
 
@@ -15,6 +14,8 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     internal TownServiceRequestId Id { get; set; }
     public SimulationTick TickStarted { get; private set; }
     internal int PatienceInitial { get; private set; }
+    internal int Price { get; private set; }
+    internal EntityRefId Money { get; set; }
 
     internal IntVec3? Counter { get; private set; }
 
@@ -24,20 +25,23 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     abstract internal bool IsSucceeded { get; }
     abstract internal bool IsFailed { get;}
     public bool IsVendorWaiting { get; internal set; }
+    public bool IsVendorWaitingPayment { get; internal set; }
+    public bool IsVendorPaid { get; internal set; }
     public bool IsVendorWorking { get; internal set; }
 
-    protected ServiceRequest(Actor customer)
+    protected ServiceRequest(Actor customer, int price)
     {
         this.Customer = customer.RefId;
         this.TickStarted = customer.World.CurrentTick;
         this.PatienceInitial = (int)customer.Resources.GetValue(ResourceDefOf.Patience);
+        this.Price = price;
     }
     protected ServiceRequest()
     {
         
     }
 
-    public ServiceRequest(Actor customer, IntVec3 counter) : this(customer)
+    public ServiceRequest(Actor customer, int price, IntVec3 counter) : this(customer, price)
     {
         this.Counter = counter;
     }
@@ -49,6 +53,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         tag.Save("Id", this.Id);
         tag.Save("TickStarted", this.TickStarted);
         tag.Save("PatienceInitial", this.PatienceInitial);
+        tag.Save("Price", this.Price);
         tag.Save("Customer", this.Customer);
         tag.Save("Vendor", this.Vendor);
         this.SaveExtra(tag);
@@ -62,6 +67,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         runtime.Id = (TownServiceRequestId)tag.LoadUlong("Id");
         runtime.TickStarted = (SimulationTick)tag.LoadUlong("TickStarted");
         runtime.PatienceInitial = tag.LoadInt("PatienceInitial");
+        runtime.Price = tag.LoadInt("Price");
         runtime.Customer = tag.LoadEntityRefId("Customer");
         runtime.Vendor = tag.LoadEntityRefId("Vendor");
         runtime.LoadExtra(tag);
@@ -83,6 +89,9 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         this.Id = r.ReadUInt64();
         this.TickStarted = r.ReadUInt64();
         this.PatienceInitial = r.ReadInt32();
+        this.Price = r.ReadInt32();
+        this.Customer = r.ReadEntityRefId();
+        this.Vendor = r.ReadEntityRefId();
         this.ReadExtra(r);
         return this;
     }
@@ -94,6 +103,9 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         w.Write(this.Id);
         w.Write(this.TickStarted);
         w.Write(this.PatienceInitial);
+        w.Write(this.Price);
+        w.Write(this.Customer);
+        w.Write(this.Vendor);
         this.WriteExtra(w);
     }
 
@@ -106,12 +118,32 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     {
         this.IsVendorWaiting = true;
         this.IsVendorWorking = false;
+        this.IsVendorWaitingPayment = false;
+        this.IsVendorPaid = false;
     }
 
     internal void MarkVendorWorking()
     {
         this.IsVendorWaiting = false;
         this.IsVendorWorking = true;
+        this.IsVendorWaitingPayment = false;
+        this.IsVendorPaid = false;
+    }
+
+    internal void MarkVendorWaitingPayment()
+    {
+        this.IsVendorWaiting = false;
+        this.IsVendorWorking = false;
+        this.IsVendorWaitingPayment = true;
+        this.IsVendorPaid = false;
+    }
+
+    internal void MarkVendorPaid()
+    {
+        this.IsVendorWaiting = false;
+        this.IsVendorWorking = false;
+        this.IsVendorWaitingPayment = false;
+        this.IsVendorPaid = true;
     }
 }
 

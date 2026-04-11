@@ -8,6 +8,7 @@ using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -237,6 +238,12 @@ namespace Project1.Core.Systems.Inventory
             if (this.HaulSlot.Object != null && filter(this.HaulSlot.Object as Entity))
                 return this.HaulSlot.Object as Entity;
             return null;
+        }
+        public Entity? FirstToTake(Func<Entity, bool> filter, int amount)
+        {
+            var all = this.FindAll(i=>filter(i) && i.StackSize>=amount);
+            var sorted = all.OrderBy(i => i.StackSize);
+            return sorted.FirstOrDefault();
         }
         public IEnumerable<Entity> FindAll(Func<Entity, bool> filter)
             => this.Contents.Where(filter);

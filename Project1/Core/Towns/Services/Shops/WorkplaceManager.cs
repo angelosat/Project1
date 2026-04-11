@@ -444,7 +444,7 @@ public partial class TownComp_Shops : TownComp
                 continue;
             if (item.Map != this.Map)
                 continue;
-            if (item.Cell != t.Counter.Above)
+            if (item.Cell != t.Counter.Value.Above)
                 continue;
             return true;
         }

@@ -18,29 +18,30 @@ class Planner_Sell : Planner
 
         if(manager.TryGetTransactionBySeller(actor, out var transaction))
         {
-            if(actor.Hauled?.RefId == transaction.Money)
+            var counter = transaction.Counter.Value;
+            if (actor.Hauled?.RefId == transaction.Money)
             if(transaction.IsProcessed)
             {
-                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, transaction.Counter)){ Continuation = PlanContinuationPolicy.Yield };
+                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter)){ Continuation = PlanContinuationPolicy.Yield };
                 
             }
             var item = map.World.Get(transaction.Item);
 
             if (actor.Hauled == item)
             {
-                if (!actor.CanReachAndReserve(transaction.Counter))
+                if (!actor.CanReachAndReserve(counter))
                     throw new Exception();
 
                 if (map.World.Get<Entity>(transaction.Money) is Entity money &&
-                    money.Cell == transaction.Counter.Above &&
+                    money.Cell == counter.Above &&
                     money.StackSize >= transaction.Price)
                     return new Plan(PlanDefOf.RingUpFinish, money) { AmountA = transaction.Price };//, Continuation = PlanContinuationPolicy.Yield };
 
-                return new Plan(PlanDefOf.WaitForPayment, new InteractionTarget(map, transaction.Counter.Above));
+                return new Plan(PlanDefOf.WaitForPayment, new InteractionTarget(map, counter.Above));
             }
             if (transaction.IsProcessed)
                 return null;
-            if (item.Cell != transaction.Counter.Above)
+            if (item.Cell != counter.Above)
                 return null;
 
             if (!actor.CanReach(item))
@@ -51,13 +52,14 @@ class Planner_Sell : Planner
 
         foreach(var t in manager.PendingTransactions)
         {
-            if (!actor.CanReachAndReserve(t.Counter))
+            var tcounter = t.Counter.Value;
+            if (!actor.CanReachAndReserve(tcounter))
                 continue;
 
             var item = map.World.Get(t.Item);
             if (item.Map != map)
                 return null; // only go ahead and assign seller if the item is on the counter
-            if (item.Cell != t.Counter.Above)
+            if (item.Cell != tcounter.Above)
                 return null;
 
             manager.AssignSeller(t, actor);

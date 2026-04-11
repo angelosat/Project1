@@ -42,8 +42,21 @@ internal sealed class Planner_Repairs_Vendor : Planner
             }
             else
             {
+                var money = map.World.Get(req.Money);
+
+                if(money is not null && actor.Hauled == money)
+                    return new Plan(PlanDefOf.GoPlace, map, counter) { Continuation = PlanContinuationPolicy.Yield };
+
+                //if(map.GetEntitiesAt(counter.Above).FirstOrDefault(i=>i.RefId == req.Money) is Entity money)
+                if (money is not null && money.Cell == counter.Above)
+                {
+                    req.MarkVendorPaid();
+                    return new Plan(PlanDefOf.SwapCarried, money);
+                }
                 if (actor.Hauled == item)
-                    return new Plan(PlanDefOf.GoPlace, map, counter.Above);
+                    //return new Plan(PlanDefOf.GoPlace, map, counter.Above);
+                    return new Plan(ServiceRepairsDefOf.PlanWaitMoney, map, counter) { ServiceRequest = req };
+
 
                 if (actor.Hauled is null && item.Cell != counter.Above)
                     return new Plan(PlanDefOf.GoHaul, item);
@@ -96,15 +109,39 @@ internal sealed class Planner_Repairs_Customer : Planner
                     existing.MarkSuccess();
                     return null;
                 }
-                if (item.Cell == counter.Above)
-                    return new Plan(PlanDefOf.GoHaul, item);
+                if(existing.IsVendorPaid)
+                {
+                    if (actor.Hauled == item)
+                        return new Plan(PlanDefOf.StoreInInventory);
+                    if (item.Cell == counter.Above)
+                        return new Plan(PlanDefOf.GoHaul, item);
+                    return new Plan(ServiceRepairsDefOf.PlanWaitItem) { ServiceRequest = existing };
+                }
+                if (existing.IsVendorWaitingPayment)
+                {
+                    if (existing.Money != EntityRefId.Null)
+                    {
+                        var itemMoney = actor.World.Get(existing.Money);
+                        if (itemMoney.Cell == counter.Above)
+                            return new Plan(ServiceRepairsDefOf.PlanWaitItem) { ServiceRequest = existing };
+                    }
+                    if (actor.Hauled is Entity carriedMoney && carriedMoney.Def == ItemDefOf.Coins && carriedMoney.StackSize == existing.Price)
+                    {
+                        existing.Money = carriedMoney.RefId;
+                        return new Plan(PlanDefOf.GoPlace, map, counter.Above);
+                    }
+                    var money = actor.Inventory.FirstToTake(e => e.Def == ItemDefOf.Coins, existing.Price) 
+                        ?? throw new UnreachableException("money should never be null if we've reached this point");
+                    return new Plan(PlanDefOf.RetrieveFromInventory, money) { AmountA = existing.Price };
+
+                }
                 throw new UnreachableException();
             }
             if (existing.IsVendorWaiting && actor.Hauled == item)
                 return new Plan(PlanDefOf.GoPlace, map, counter.Above);
 
             if (existing.IsVendorWorking)
-                return new Plan(ServiceRepairsDefOf.PlanQueueWait, map, counter) { ServiceRequest = existing };
+                return new Plan(ServiceRepairsDefOf.PlanQueueWait, map, counter.Above) { ServiceRequest = existing };
 
             if (actor.Hauled is Entity carried)
             {

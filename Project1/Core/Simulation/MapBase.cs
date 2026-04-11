@@ -709,8 +709,8 @@ public abstract class MapBase : Inspectable
     
     internal virtual IEnumerable<Entity> GetEntitiesAt(IntVec3 pos)
         => this.EntityTracker.GetEntitiesAt(pos);
-    internal virtual IReadOnlySet<Entity> GetEntitiesAtNew(IntVec3 pos)
-       => this.EntityTracker.GetEntitiesAt(pos);
+    //internal virtual IReadOnlySet<Entity> GetEntitiesAtNew(IntVec3 pos)
+    //   => this.EntityTracker.GetEntitiesAt(pos);
     public bool IsCellEmpty(IntVec3 cell) => !this.GetEntitiesAt(cell).Any();
     public abstract bool IsInBounds(Vector3 global);
     public abstract void SetSkyLight(IntVec3 global, byte value);

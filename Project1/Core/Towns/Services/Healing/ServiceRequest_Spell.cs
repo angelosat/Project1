@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Systems.Magic;
-using Project1.Core.Towns.Services;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using System;
@@ -12,12 +11,12 @@ public sealed class ServiceRequest_Spell : ServiceRequest
 {
     enum States { Requested, Accepted, Succeeded, Failed }
     States State;
-    internal int Price { get; private set; }
+    //internal int Price { get; private set; }
     internal SpellDef Spell;
 
-    public ServiceRequest_Spell(Actor actor, SpellDef spell, int price) : base(actor)
+    public ServiceRequest_Spell(Actor actor, SpellDef spell, int price) : base(actor, price)
     {
-        Price = price;
+        //Price = price;
         Spell = spell;
     }
 
@@ -71,7 +70,7 @@ public sealed class ServiceRequest_Spell : ServiceRequest
     protected override void SaveExtra(SaveTag tag)
     {
         tag.Save("Spell", this.Spell);
-        tag.Save("Price", this.Price);
+        //tag.Save("Price", this.Price);
         tag.Save("IsPaid", this.IsPaid);
         tag.Save("IsTargetReady", this.IsTargetReady);
         tag.Save("IsCasterReady", this.IsCasterReady);
@@ -81,7 +80,7 @@ public sealed class ServiceRequest_Spell : ServiceRequest
     protected override void LoadExtra(SaveTag tag)
     {
         this.Spell = tag.LoadDef<SpellDef>("Spell");
-        this.Price = tag.LoadInt("Price");
+        //this.Price = tag.LoadInt("Price");
         this.IsPaid = tag.LoadBool("IsPaid");
         this.IsTargetReady = tag.LoadBool("IsTargetReady");
         this.IsCasterReady = tag.LoadBool("IsCasterReady");
@@ -91,7 +90,7 @@ public sealed class ServiceRequest_Spell : ServiceRequest
     protected override void WriteExtra(IDataWriter w)
     {
         w.Write(this.Spell);
-        w.Write(this.Price);
+        //w.Write(this.Price);
         w.Write(this.IsPaid);
         w.Write(this.IsTargetReady);
         w.Write(this.IsCasterReady);
@@ -101,7 +100,7 @@ public sealed class ServiceRequest_Spell : ServiceRequest
     protected override void ReadExtra(IDataReader r)
     {
         this.Spell = r.ReadDef<SpellDef>();
-        this.Price = r.ReadInt32();
+        //this.Price = r.ReadInt32();
         this.IsPaid = r.ReadBoolean();
         this.IsTargetReady = r.ReadBoolean();
         this.IsCasterReady = r.ReadBoolean();

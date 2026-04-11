@@ -41,7 +41,7 @@ namespace Project1.Core.Networking
         private static void ReceiveBlockResourceValue(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var mapid = r.ReadInt32();
+            var mapid = r.ReadMapId();
             var map = endpoint.World.Get(mapid);
             var cell = r.ReadIntVec3();
             var resDef = r.ReadDef<ResourceDef>();
@@ -74,7 +74,7 @@ namespace Project1.Core.Networking
         private static void ReceiveBlockResourceDelta(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var mapid = r.ReadInt32();
+            var mapid = r.ReadMapId();
             var map = endpoint.World.Get(mapid);
             var cell = r.ReadIntVec3();
             var resDef = r.ReadDef<ResourceDef>();

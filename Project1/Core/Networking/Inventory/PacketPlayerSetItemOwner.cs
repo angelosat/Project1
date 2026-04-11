@@ -1,4 +1,5 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Helpers;
+using Project1.Framework;
 
 namespace Project1.Core.Networking.Inventory
 {
@@ -19,8 +20,8 @@ namespace Project1.Core.Networking.Inventory
         static public void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var itemID = r.ReadInt32();
-            var ownerID = r.ReadInt32();
+            var itemID = r.ReadEntityRefId();
+            var ownerID = r.ReadEntityRefId();
             var item = net.World.Get(itemID);
             
             item.SetOwner(ownerID);

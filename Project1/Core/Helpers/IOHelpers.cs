@@ -5,13 +5,14 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Project1.Core.Helpers;
 
 internal static class IOHelpers
 {
-    public static int ReadEntityRefId(this IDataReader r) => new EntityRefId(r.ReadInt32());
-    public static int ReadMapId(this IDataReader r) => new MapId(r.ReadInt32());
+    public static EntityRefId ReadEntityRefId(this IDataReader r) => new(r.ReadInt32());
+    public static MapId ReadMapId(this IDataReader r) => new(r.ReadInt32());
     public static List<EntityRefId> ReadListEntityRefId(this IDataReader r)
     {
         var count = r.ReadInt32();
@@ -132,5 +133,11 @@ internal static class IOHelpers
     extension(SaveTag tag)
     {
         public EntityRefId LoadEntityRefId(string name) => (EntityRefId)tag[name].Value;
+        public List<EntityRefId> LoadListEntityRefId(string name) => [.. tag.LoadListInt(name).Select(i => (EntityRefId)i)];
+        public void Save(string name, ICollection<EntityRefId> list)
+        {
+            var asints = list.Select(i => (int)i).ToList();
+            tag.Save(name, asints);
+        }
     }
 }

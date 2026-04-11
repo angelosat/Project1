@@ -41,7 +41,7 @@ public abstract class Workplace : ISerializable, ISaveable
 
     readonly protected HashSet<int> StockpilesInput = new();
     readonly protected HashSet<int> StockpilesOutput = new();
-    protected ObservableHashSet<int> Workers = new();
+    protected ObservableHashSet<EntityRefId> Workers = new();
 
     protected Dictionary<int, WorkerProps> WorkerProps = new();
 
@@ -261,7 +261,9 @@ public abstract class Workplace : ISerializable, ISaveable
             this.Name = this.DefaultName;
         this.StockpilesInput.Load(tag, "Stockpiles");
         this.Facilities.Load(tag, "Facilities");
-        this.Workers.Load(tag, "Workers");
+        foreach (var w in tag.LoadListEntityRefId("Workers"))
+            this.Workers.Add(w);
+
         this.Rooms.TryLoad(tag, "Rooms");
         if (!tag.TryGetTag("WorkerProps", v => this.WorkerProps = v.LoadArray<WorkerProps>().ToDictionary(i => i.ActorID, i => i)))
             this.InitWorkerProps();
@@ -276,7 +278,10 @@ public abstract class Workplace : ISerializable, ISaveable
         this.Name = r.ReadString();
         this.StockpilesInput.Read(r);
         this.Facilities.Read(r);
-        this.Workers.Read(r);
+        //this.Workers.Read(r);
+        foreach (var w in r.ReadListEntityRefId())
+            this.Workers.Add(w);
+
         //var entityIds = r.ReadListInt32();
         //this.Workers.Clear();
         //foreach (var id in entityIds)
@@ -295,8 +300,8 @@ public abstract class Workplace : ISerializable, ISaveable
         this.Name.Save(tag, "Name");
         tag.Add(this.StockpilesInput.Save("Stockpiles"));
         tag.Add(this.Facilities.Save("Facilities"));
-        //tag.Add(this.Workers.Save("Workers"));
-        this.Workers.Save(tag, "Workers");
+        //this.Workers.Save(tag, "Workers");
+        tag.Save("Workers", this.Workers);
         tag.Add(this.Rooms.Save("Rooms"));
         this.WorkerProps.Values.SaveNewBEST(tag, "WorkerProps");
 
@@ -471,7 +476,7 @@ public abstract class Workplace : ISerializable, ISaveable
                     };
                 });
             }
-            table.AddItems(tav.Workers.Select((Func<int, Entities.Entity>)(i => (Entities.Entity)tav.Map.World.Get(i))).Cast<Actor>());
+            table.AddItems(tav.Workers.Select((Func<EntityRefId, Entities.Entity>)(i => (Entities.Entity)tav.Map.World.Get(i))).Cast<Actor>());
         }));
 
         box.AddControlsVertically(
@@ -504,7 +509,7 @@ public abstract class Workplace : ISerializable, ISaveable
         TableCompact<Stockpile> TableStockpiles;
         TableCompact<Stockpile> TableShoppingDisplays;
         TableCompact<InteractionTarget> TableFacilities;
-        TableCompact<int, Actor> TableJobRoles;
+        TableCompact<EntityRefId, Actor> TableJobRoles;
         //ListBoxObservable<int, Actor, ButtonNew> ListAvailableWorkers;
         ListBoxObservable<Actor, ButtonNew> ListAvailableWorkers;
         CheckBoxTest ChkBoxEnabled;
@@ -538,7 +543,7 @@ public abstract class Workplace : ISerializable, ISaveable
                 .AddColumn(null, "delete", Icon.Cross.Width, st => IconButton.CreateSmall(Icon.Cross, () => PacketsWorkplaces.SendPlayerShopAssignCounter(st.Map.Net, st.Map.Net.GetPlayer(), st.Map, this.SelectedShop, st.Global), "remove"));
 
             var workersTab = new GroupBox() { Name = "Workers" };
-            this.TableJobRoles = new TableCompact<int, Actor>(i => this.SelectedShop.Map.World.Get<Actor>(i), true) { Name = "Workers" }
+            this.TableJobRoles = new TableCompact<EntityRefId, Actor>(i => this.SelectedShop.Map.World.Get<Actor>(i), true) { Name = "Workers" }
             .AddColumn(null, "Worker".ToLabel(), 90, a => new Label(a.Name));
             //this.ListAvailableWorkers = new ListBoxObservable<int, Actor, ButtonNew>(
             this.ListAvailableWorkers = new ListBoxObservable<Actor, ButtonNew>(

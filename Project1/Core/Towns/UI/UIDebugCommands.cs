@@ -19,11 +19,11 @@ namespace Project1.Core.Towns.UI
         {
             this.AutoSize = true;
             this.AddControlsVertically(
-                new Button("Grow selected") { LeftClickAction = () => GrowPlants(SelectionManager.GetSelectedEntities().Select(t => t.RefId)) }
+                new Button("Grow selected") { LeftClickAction = () => GrowPlants(SelectionManager.GetSelectedEntities().Select(t => (EntityRefId)t.RefId)) }
                 );
         }
 
-        private void GrowPlants(IEnumerable<int> enumerable)
+        private void GrowPlants(IEnumerable<EntityRefId> enumerable)
         {
             foreach (var id in enumerable)
             {

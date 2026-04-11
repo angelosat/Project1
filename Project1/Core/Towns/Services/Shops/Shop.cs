@@ -115,7 +115,7 @@ namespace Project1.Core.Towns.Services.Shops
             this.CustomerQueue.Dequeue();
             this.PendingTransactions.Remove(actor);
         }
-        public void RemoveCustomer(int actorID)
+        public void RemoveCustomer(EntityRefId actorID)
         {
             var actor = this.Town.Map.World.Get(actorID) as Actor;
             if (this.GetNextCustomer() != actor)

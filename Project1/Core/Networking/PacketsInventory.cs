@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Towns.Storage;
@@ -39,8 +40,8 @@ internal static class PacketsInventory
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadInt32());
-        var item = client.World.Get(r.ReadInt32());
+        var actor = client.World.Get<Actor>(r.ReadEntityRefId());
+        var item = client.World.Get(r.ReadEntityRefId());
         actor.Inventory.Contents.AddInternal(item);
         //actor.Inventory.Insert(item);
     }
@@ -48,8 +49,8 @@ internal static class PacketsInventory
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadInt32());
-        var item = client.World.Get(r.ReadInt32());
+        var actor = client.World.Get<Actor>(r.ReadEntityRefId());
+        var item = client.World.Get(r.ReadEntityRefId());
         actor.Inventory.Contents.RemoveInternal(item);
     }
     private static void HandleInventoryItemAdded(InventoryItemAddedEvent e)
@@ -86,20 +87,20 @@ internal static class PacketsInventory
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var map = client.World.Get(mapid);
         var be = map.GetBlockEntity(r.ReadIntVec3());
-        var item = endpoint.World.Get(r.ReadInt32());
+        var item = endpoint.World.Get(r.ReadEntityRefId());
         be.GetComp<BlockInventoryComp>().Insert(item);
     }
     private static void OnBlockInventoryItemRemoved(NetEndpoint endpoint, Packet packet)
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var map = client.World.Get(mapid);
         var be = map.GetBlockEntity(r.ReadIntVec3());
-        var item = client.World.Get(r.ReadInt32());
+        var item = client.World.Get(r.ReadEntityRefId());
         be.GetComp<BlockInventoryComp>().Remove(item);
     }
 
@@ -110,7 +111,7 @@ internal static class PacketsInventory
         var ownerid = r.ReadInt32();
         var owner = server.World.Get<Actor>(ownerid);
         var map = owner.Map;
-        var itemid = r.ReadInt32();
+        var itemid = r.ReadEntityRefId();
         var item = map.World.Get(itemid);
         var count = r.ReadInt32();
         owner.AI.State.ItemPreferences.ForceDrop(item); 

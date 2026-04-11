@@ -8,7 +8,6 @@ using Project1.Core.Gear;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Tools;
-using Project1.Core.Towns.Healing;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;

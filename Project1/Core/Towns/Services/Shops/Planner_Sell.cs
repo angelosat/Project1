@@ -6,7 +6,7 @@ using System;
 
 namespace Project1.Core.Towns.Services.Shops;
 
-class PlannerSell : Planner
+class Planner_Sell : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {

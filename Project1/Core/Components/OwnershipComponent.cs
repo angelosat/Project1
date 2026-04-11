@@ -17,7 +17,7 @@ namespace Project1.Core.Components
         public override EntityCompDef CompDef => EntityCompDefOf.Ownership;
         public new class Spec : Spec<OwnershipComponent> { }
         public override string Name { get; } = "Ownership";
-        public int OwnerRef { get; private set; } = -1;
+        public EntityRefId OwnerRef { get; private set; } = -1;
         public Actor ItemOwner;
 
         public new OwnershipComponent Initialize(GameObject owner = null)
@@ -43,7 +43,8 @@ namespace Project1.Core.Components
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            tag.Add(this.OwnerRef.Save("Owner"));
+            //tag.Add(this.OwnerRef.Save("Owner"));
+            tag.Save("Owner", this.OwnerRef);
         }
         internal override void LoadExtra(SaveTag tag)
         {

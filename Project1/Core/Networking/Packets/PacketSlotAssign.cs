@@ -1,7 +1,8 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Entities;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Framework;
 
 namespace Project1.Core.Networking.Packets
 {
@@ -26,10 +27,10 @@ namespace Project1.Core.Networking.Packets
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var ownerId = r.ReadInt32();
+            var ownerId = r.ReadEntityRefId();
             var owner = client.World.Get<Actor>(ownerId);
             var slotId = r.ReadInt32();
-            var itemId = r.ReadInt32();
+            var itemId = r.ReadEntityRefId();
             var item = itemId > 0 ? client.World.Get(itemId) : null;
             owner.GetSlot(slotId).Assign(item);
         }

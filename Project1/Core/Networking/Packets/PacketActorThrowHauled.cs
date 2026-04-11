@@ -1,8 +1,9 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Project1.Framework;
+﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Framework;
+using System;
 
 namespace Project1.Core.Networking.Packets
 {
@@ -28,7 +29,7 @@ namespace Project1.Core.Networking.Packets
             if (endpoint is Server)
                 throw new Exception();
             var r = packet.PacketReader;
-            var actor = endpoint.World.Get(r.ReadInt32());
+            var actor = endpoint.World.Get(r.ReadEntityRefId());
             var velocity = r.ReadVector3();
             var amount = r.ReadInt32();
             actor.Inventory.Throw(velocity, amount);

@@ -1,7 +1,8 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Entities;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Framework;
 
 namespace Project1.Core.Networking.Packets
 {
@@ -26,8 +27,8 @@ namespace Project1.Core.Networking.Packets
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.Get(r.ReadInt32());
-            var itemId = r.ReadInt32();
+            var actor = client.World.Get(r.ReadEntityRefId());
+            var itemId = r.ReadEntityRefId();
             var item = itemId > 0 ? client.World.Get(itemId) : null;
             var amount = r.ReadInt32();
             actor.Inventory.HaulSlot.Assign(item);

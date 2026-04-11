@@ -7,6 +7,7 @@ using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Tools;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Needs;
 using Project1.Core.UI;
@@ -71,16 +72,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     public void Tick()
     {
         if(this.Schedule.OnSchedule(this.World.CurrentTick))
-        {
             this.PopulateRuntime();
-        }
-        //this.TickCount--;
-        //if (this.TickCount > 0)
-        //    return;
-        //this.TickCount = (int)(Ticks.PerSecond / TickRate);
-        //this.PopulateRuntime(this.World.Net);
     }
-
 
     internal void Initialize()
     {
@@ -126,14 +119,18 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
         var coins = ItemDefOf.Coins.Create().SetStackSize(500);
         var townscroll = ConsumableSystem.Create(ConsumableDefOf.TownScroll, MaterialDefOf.ShrubStem, 1);
-        actor.Inventory.Insert(coins);
-        //this.World.Register(townscroll);
-        actor.Inventory.Insert(townscroll);
+        var inventory = actor.Inventory;
+        inventory.Insert(coins);
+        inventory.Insert(townscroll);
         var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
         need.Value = this.World.Random.Next(0, 100);
         actor.Skills.Randomize();
-        //actor.AI.Meta.LocationDecision.ScheduleNext(this.World);
-        actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
+        //actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
+
+        var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);
+        damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);
+        inventory.Insert(damagedTool);
+
         this.World.Register(actor);
         return actor;
     }

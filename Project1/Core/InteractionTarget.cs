@@ -141,7 +141,8 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
     public Vector3 Face;
     public Vector3 Precise;
 
-    int ParentID, ContainerID, SlotID;
+    EntityRefId ParentID;
+    int ContainerID, SlotID;
     string ContainerName;
     GameObjectSlot _Slot;
     public GameObjectSlot Slot
@@ -512,8 +513,7 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
                 return new InteractionTarget(mapCell, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());
 
             case TargetType.Slot:
-                int parentID = reader.ReadInt32();
-                GameObject parent = world.Get(parentID);
+                var parent = world.Get(reader.ReadEntityRefId());
                 byte slotID = reader.ReadByte();
                 int containerID = reader.ReadInt32();
                 var slot = parent.GetChild(containerID, slotID);

@@ -51,7 +51,7 @@ internal static class PacketsBlocks
         if (endpoint is not Client)
             throw new Exception();
         var r = packet.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var cell = r.ReadIntVec3();
         var delta = r.ReadInt32();
         var map = endpoint.World.Get(mapid);
@@ -61,7 +61,7 @@ internal static class PacketsBlocks
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var originglobal = r.ReadIntVec3();
         var blockentity = client.World.Get(mapid).GetBlockEntity(originglobal);
         var compindex = r.ReadInt32();
@@ -104,7 +104,7 @@ internal static class PacketsBlocks
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var map = client.World.Get(mapid);
         var entity = map.GetBlockEntity(r.ReadIntVec3());
         var ownerid = r.ReadEntityRefId();
@@ -116,7 +116,7 @@ internal static class PacketsBlocks
     private static void OnBlockOwnerChangedByPlayer(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var map = endpoint.World.Get(mapid);
         var entity = map.GetBlockEntity(r.ReadIntVec3());
         var ownerid = (EntityRefId)r.ReadEntityRefId();
@@ -149,7 +149,7 @@ internal static class PacketsBlocks
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var list = r.ReadList<SetBlockArgs>();
         client.World.Get(mapid).SetBlockInternal(list.ToDictionary(a => a.Global, a => a));
     }

@@ -12,6 +12,7 @@ using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Trading;
 using Project1.Core.Towns;
 using Project1.Core.Towns.Designations;
+using Project1.Core.Towns.Services;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Core.Towns.Zones;
 using Project1.Framework;
@@ -105,6 +106,8 @@ namespace Project1.Core.AI
             };
         }
         public bool IsImmediate = true;
+        internal ServiceRequest ServiceRequest;
+
         internal InteractionTarget GetTarget(int targetInd)
         {
             return this.GetTarget((TargetIndex)targetInd);

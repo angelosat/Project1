@@ -8,6 +8,7 @@ using Project1.Core.Resources;
 using Project1.Core.Rooms;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quests;
+using Project1.Core.Towns.Services;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Core.Towns.Storage;
 using Project1.Framework;
@@ -123,7 +124,15 @@ namespace Project1.Core.Blocks
             BlockEntityCompSpecs = [
                 //new BlockInventoryComp.Spec(),
                 new BlockResourcesComp.Spec([ResourceDefOf.Cash]),
+                //new BlockShopComp.Spec(TownServiceDefOf.Buying)],
                 new BlockShopComp.Spec()],
+            ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks])
+        };
+        static public readonly BlockDef ShopCounterRepairs = new("ShopCounterRepairs", typeof(BlockShopCounter))
+        {
+            BlockEntityCompSpecs = [
+                new BlockResourcesComp.Spec([ResourceDefOf.Cash]),
+                new BlockShopComp.Spec()],//TownServiceDefOf.Repairing)],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks])
         };
         static public readonly BlockDef ReceptionDesk = new("ReceptionDesk", typeof(BlockShopCounter))

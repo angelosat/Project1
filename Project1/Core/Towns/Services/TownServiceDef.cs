@@ -21,6 +21,11 @@ namespace Project1.Core.Towns.Services
         static public readonly TownServiceDef Lodging = new("Lodging", typeof(ServiceRequest_Inn));
         static public readonly TownServiceDef Healing = new("Healing", typeof(ServiceRequest_Spell));
         static public readonly TownServiceDef Repairing = new("Repairing", typeof(ServiceRequest_Repair));
+
+        static TownServiceDefOf()
+        {
+            Def.Register(typeof(TownServiceDefOf));
+        }
     }
     public sealed class TownServiceDef(string name, Type runtimeType) : Def(name)
     {

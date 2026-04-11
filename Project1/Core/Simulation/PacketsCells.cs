@@ -36,8 +36,7 @@ namespace Project1.Core.Simulation
             if (endpoint.IsServer)
                 throw new Exception();
             var r = packet.PacketReader;
-            var mapid = r.ReadInt32();
-            var map = endpoint.World.Get(mapid);
+            var map = endpoint.World.Get(r.ReadMapId());
             var global = r.ReadIntVec3();
             var block = r.ReadDef<BlockDef>();
             var material = r.ReadDef<MaterialDef>();

@@ -26,7 +26,7 @@ namespace Project1.Core.Rooms
         public Color Color;
         private bool Valid;
         public int ID;
-        public int OwnerRef = -1;
+        public EntityRefId OwnerRef = -1;
         private int workplaceID = -1;
         public HashSet<FurnitureDef> Furnitures = [];
         public Vector3 Global => this.Cells.First();
@@ -369,7 +369,8 @@ namespace Project1.Core.Rooms
             var tag = new SaveTag(SaveTag.Types.Compound, name);
             tag.Add(this.ID.Save("ID"));
             tag.Add(this.Interior.Save("Positions"));
-            tag.Add(this.OwnerRef.Save("OwnerRef"));
+            //tag.Add(this.OwnerRef.Save("OwnerRef"));
+            tag.Save("OwnerRef", this.OwnerRef);
             tag.Add("Workplace", this.workplaceID);
             tag.Add("RoomDef", this.roomRole?.Name ?? "");
             return tag;

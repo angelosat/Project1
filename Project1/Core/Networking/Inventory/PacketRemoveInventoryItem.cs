@@ -1,6 +1,7 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Entities;
+using Project1.Core.Helpers;
+using Project1.Framework;
 
 namespace Project1.Core.Networking.Inventory
 {
@@ -24,8 +25,8 @@ namespace Project1.Core.Networking.Inventory
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.Get(r.ReadInt32());
-            var item = client.World.Get(r.ReadInt32());
+            var actor = client.World.Get(r.ReadEntityRefId());
+            var item = client.World.Get(r.ReadEntityRefId());
             actor.Inventory.Remove(item);
         }
     }

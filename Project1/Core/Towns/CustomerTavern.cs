@@ -14,9 +14,9 @@ namespace Project1.Core.Towns
         public int TicksWaited;
         public Tavern Tavern;
         public bool IsSeated;
-        public int DishID = -1;
+        public EntityRefId DishID = -1;
 
-        public int ServedByID = -1, OrderTakenByID = -1;
+        public EntityRefId ServedByID = -1, OrderTakenByID = -1;
         public bool IsServed => this.ServedByID != -1;
         public bool IsOrderTaken => this.OrderTakenByID != -1;
 
@@ -81,8 +81,10 @@ namespace Project1.Core.Towns
         {
             this.Table.Save(save, "Table");
             this.TicksWaited.Save(save, "TicksWaited");
-            this.ServedByID.Save(save, "ServedBy");
-            this.OrderTakenByID.Save(save, "OrderTakenBy");
+            //this.ServedByID.Save(save, "ServedBy");
+            //this.OrderTakenByID.Save(save, "OrderTakenBy");
+            save.Save("ServedBy", this.ServedByID);
+            save.Save("OrderTakenBy", this.OrderTakenByID);
         }
         protected override void LoadExtra(SaveTag save)
         {

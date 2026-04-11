@@ -1,6 +1,7 @@
 ﻿using Project1.Core.AI.Planners;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Quests;
+using Project1.Core.Towns.Services.Repairing;
 using System.Collections.Generic;
 
 namespace Project1.Core.AI.Behaviors;
@@ -36,6 +37,7 @@ abstract public class Planner
     static readonly public List<PlannerDef> VisitorPlanners =
     [
         PlannerDefOf.SeekHealing,
+        ServiceRepairsDefOf.PlannerCustomer,
         PlannerDefOf.LodgingCheckin,
         PlannerDefOf.Buy,
         PlannerDefOf.Browse,

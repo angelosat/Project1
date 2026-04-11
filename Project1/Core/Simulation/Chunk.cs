@@ -1070,7 +1070,7 @@ public class Chunk : Inspectable
         var serializer = new ChunkSerializer();
         serializer.Deserialize(this, reader);
 
-        var entityRefIds = reader.ReadListInt32();
+        var entityRefIds = reader.ReadListEntityRefId();
         foreach (var refId in entityRefIds)
             this.Add(this.Map.World.Get(refId));
         this.ReadBlockEntitiesDistinct(reader);
@@ -1239,7 +1239,7 @@ public class Chunk : Inspectable
             for (int i = 0; i < Size; i++)
                 this.HeightMap[i][j] = (byte)heightTag[n++].Value;
 
-        var list = chunktag.LoadListInt("Entities");
+        var list = chunktag.LoadListEntityRefId("Entities");
         foreach (var refId in list)
             this.Add(this.Map.World.Get(refId));
 

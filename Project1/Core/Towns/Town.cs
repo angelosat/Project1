@@ -52,28 +52,29 @@ public sealed class Town : Inspectable, IDutyProvider
             c.OnTooltipCreated(tooltip, targetArgs);
     }
 
-    public IReadOnlyCollection<DutyDef> AvailableDuties => field ??= 
-            [
+    public IReadOnlyCollection<DutyDef> AvailableDuties => field ??=
+    [
+        DutyDefOf.Repairsmith,
         DutyDefOf.Healer,
-                DutyDefOf.Cashier,
-                DutyDefOf.Innkeeper,
-                DutyDefOf.Digger,
-                DutyDefOf.Miner,
-                DutyDefOf.Lumberjack,
-                DutyDefOf.Forester,
-                DutyDefOf.Craftsman,
-                DutyDefOf.Smelter,
-                DutyDefOf.Farmer,
-                DutyDefOf.Harvester,
-                DutyDefOf.Forager,
-                DutyDefOf.Builder,
-                DutyDefOf.Carpenter,
-                DutyDefOf.Cook,
-                DutyDefOf.Scribe,
-                DutyDefOf.Guide,
-                DutyDefOf.Hauler,
-                DutyDefOf.MiscDuties,
-            ];
+        DutyDefOf.Cashier,
+        DutyDefOf.Innkeeper,
+        DutyDefOf.Digger,
+        DutyDefOf.Miner,
+        DutyDefOf.Lumberjack,
+        DutyDefOf.Forester,
+        DutyDefOf.Craftsman,
+        DutyDefOf.Smelter,
+        DutyDefOf.Farmer,
+        DutyDefOf.Harvester,
+        DutyDefOf.Forager,
+        DutyDefOf.Builder,
+        DutyDefOf.Carpenter,
+        DutyDefOf.Cook,
+        DutyDefOf.Scribe,
+        DutyDefOf.Guide,
+        DutyDefOf.Hauler,
+        DutyDefOf.MiscDuties,
+    ];
 
     internal void Init()
     {

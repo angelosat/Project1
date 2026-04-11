@@ -1,6 +1,7 @@
-﻿using Project1.Framework;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Framework;
 
 namespace Project1.Core.Networking.Inventory
 {
@@ -21,8 +22,8 @@ namespace Project1.Core.Networking.Inventory
         static public void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var actorID = r.ReadInt32();
-            var itemID = r.ReadInt32();
+            var actorID = r.ReadEntityRefId();
+            var itemID = r.ReadEntityRefId();
             var item = net.World.Get(itemID);
             var actor = net.World.Get(actorID) as Actor;
             actor.Equip(item);

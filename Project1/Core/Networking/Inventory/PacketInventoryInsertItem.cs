@@ -1,9 +1,10 @@
-﻿using System;
-using Project1.Framework;
-using Project1.Core.Entities;
-using Project1.Core.World.WorldAreas;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Core.World.WorldAreas;
+using Project1.Framework;
+using System;
 
 namespace Project1.Core.Networking.Inventory
 {
@@ -31,8 +32,8 @@ namespace Project1.Core.Networking.Inventory
             if (net is Server)
                 throw new Exception();
 
-            var actorID = r.ReadInt32();
-            var itemID = r.ReadInt32();
+            var actorID = r.ReadEntityRefId();
+            var itemID = r.ReadEntityRefId();
             var item = net.World.Get(itemID) as Entity;
             var actor = net.World.Get(actorID) as Actor;
             var area = Def.Get<FrontierDef>(r.ReadString());

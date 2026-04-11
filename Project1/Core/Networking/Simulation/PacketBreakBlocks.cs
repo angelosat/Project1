@@ -1,4 +1,5 @@
-﻿using Project1.Core.Simulation;
+﻿using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 using Project1.Framework;
 using System.Collections.Generic;
 
@@ -23,7 +24,7 @@ internal class PacketBreakBlocks
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var map = client.World.Get(mapid);
         map.RemoveBlocks(packet.PacketReader.ReadListIntVec3());
     }

@@ -241,7 +241,7 @@ namespace Project1.Core.Systems.Inventory
         public IEnumerable<Entity> FindAll(Func<Entity, bool> filter)
             => this.Contents.Where(filter);
 
-        public IEnumerable<(Entity item, int score)> Score(Func<Entity, int?> score)
+        public IEnumerable<(Entity item, float score)> Score(Func<Entity, float?> score)
             => this.Contents
             .Select(e => (e, score(e)))
             .Where(i => i.Item2.HasValue)

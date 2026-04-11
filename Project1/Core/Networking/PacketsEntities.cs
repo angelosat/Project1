@@ -33,8 +33,8 @@ namespace Project1.Core.Networking
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var entityid = r.ReadInt32();
-            var compindex = r.ReadInt32();
+            var entityid = r.ReadEntityRefId();
+            var compindex = r.ReadEntityRefId();
             var entity = client.World.Get(entityid);
             var comp = entity.Components.GetComp(compindex);
             comp.Read(r);

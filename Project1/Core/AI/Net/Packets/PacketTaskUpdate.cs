@@ -1,4 +1,5 @@
-﻿using Project1.Core.Networking;
+﻿using Project1.Core.Helpers;
+using Project1.Core.Networking;
 using Project1.Core.Networking;
 using Project1.Framework;
 
@@ -23,7 +24,7 @@ namespace Project1.Core.AI.Net.Packets
             if (net is not Client client)
                 throw new System.Exception();
             var r = pck.PacketReader;
-            var entity = net.World.Get(r.ReadInt32());
+            var entity = net.World.Get(r.ReadEntityRefId());
             if (entity == null)
                 return;
             var taskString = r.ReadString();

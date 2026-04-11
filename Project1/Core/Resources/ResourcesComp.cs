@@ -45,6 +45,10 @@ public sealed class ResourcesComp : EntityComp
     }
     public float? GetValueOrDefault(ResourceDef def)
         => this.Resources.TryGetValue(def, out var val) ? val.Value : null;
+
+    internal float? GetPercentageOrDefault(ResourceDef def)
+        => this.Resources.TryGetValue(def, out var val) ? val.Percentage : null;
+
     public override void Tick()
     {
         foreach (var item in this.Resources.Values)
@@ -166,6 +170,8 @@ public sealed class ResourcesComp : EntityComp
        => this.Resources[def];
     internal float GetPercentage(ResourceDef def)
         => this.Resources[def].Percentage;
+
+
     [Obsolete]
     public EntityResourceViewOld ViewOld(ResourceDef def)
         => this.Resources.TryGetValue(def, out var res) ? new(this, res) : null;

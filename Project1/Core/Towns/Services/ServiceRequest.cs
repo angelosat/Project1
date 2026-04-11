@@ -4,6 +4,7 @@ using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Serialization;
+using System;
 
 #nullable enable
 
@@ -15,11 +16,15 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     public SimulationTick TickStarted { get; private set; }
     internal int PatienceInitial { get; private set; }
 
+    internal IntVec3? Counter { get; private set; }
+
     internal EntityRefId Customer { get; set; }
     internal EntityRefId Vendor { get; set; }
     abstract internal TownServiceDef Service { get; }
     abstract internal bool IsSucceeded { get; }
     abstract internal bool IsFailed { get;}
+    public bool IsVendorWaiting { get; internal set; }
+    public bool IsVendorWorking { get; internal set; }
 
     protected ServiceRequest(Actor customer)
     {
@@ -30,6 +35,11 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     protected ServiceRequest()
     {
         
+    }
+
+    public ServiceRequest(Actor customer, IntVec3 counter) : this(customer)
+    {
+        this.Counter = counter;
     }
 
     public SaveTag Save(string name = "")
@@ -91,6 +101,18 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     protected virtual void LoadExtra(SaveTag tag) { }
     protected virtual void WriteExtra(IDataWriter w) { }
     protected virtual void ReadExtra(IDataReader r) { }
+
+    internal void MarkVendorWaiting()
+    {
+        this.IsVendorWaiting = true;
+        this.IsVendorWorking = false;
+    }
+
+    internal void MarkVendorWorking()
+    {
+        this.IsVendorWaiting = false;
+        this.IsVendorWorking = true;
+    }
 }
 
 //public interface ITownServiceRequest

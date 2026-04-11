@@ -5,11 +5,12 @@ namespace Project1.Core.Towns
 {
     public abstract class CustomerProperties : ISaveable, ISerializable
     {
-        public int CustomerID;
+        public EntityRefId CustomerID;
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            this.CustomerID.Save(tag, "CustomerID");
+            //this.CustomerID.Save(tag, "CustomerID");
+            tag.Save("CustomerId", this.CustomerID);
             this.SaveExtra(tag);
             return tag;
         }

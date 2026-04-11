@@ -1,8 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Systems.Magic;
-using Project1.Core.Towns.Services;
-using Project1.Core.Towns.Shops;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;

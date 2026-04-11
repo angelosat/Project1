@@ -1,7 +1,8 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.ColorCustomization;
-using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Framework;
 
 namespace Project1.Core.Networking.Inventory
 {
@@ -22,7 +23,7 @@ namespace Project1.Core.Networking.Inventory
         private static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var actorID = r.ReadInt32();
+            var actorID = r.ReadEntityRefId();
             var actor = net.World.Get(actorID) as Actor;
             var colors = new CharacterColors(r);
             actor.Sprite.Customization = colors;

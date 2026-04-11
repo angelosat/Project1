@@ -186,7 +186,7 @@ static class PacketsCrafting
     private static void OnPlayerCreatedOrder(NetEndpoint net, Packet pck)
     {
         var r = pck.PacketReader;
-        var mapid = (MapId)r.ReadInt32();
+        var mapid = r.ReadMapId();
         var map = net.World.Get(mapid);
         var workstationPosition = r.ReadIntVec3();
         var product = r.ReadDef();
@@ -205,7 +205,7 @@ static class PacketsCrafting
     private static void OnPlayerDeletedOrder(NetEndpoint net, Packet pck)
     {
         var r = pck.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var map = net.World.Get(mapid);
         var order = map.Town.CraftingManager.DeleteOrder(r.ReadInt32());
         if (net is Server server)
@@ -224,7 +224,7 @@ static class PacketsCrafting
     private static void OnPlayerModifiedOrder(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
-        var mapid = r.ReadInt32();
+        var mapid = r.ReadMapId();
         var map = endpoint.World.Get(mapid);
         var order = map.Town.CraftingManager.GetOrder(r.ReadInt32());
         var priorityDelta = r.ReadInt32();

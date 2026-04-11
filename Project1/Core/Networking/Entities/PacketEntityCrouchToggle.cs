@@ -1,6 +1,7 @@
-﻿using Project1.Framework;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Framework;
 
 namespace Project1.Core.Networking.Entities
 {
@@ -22,7 +23,7 @@ namespace Project1.Core.Networking.Entities
         internal static void Receive(NetEndpoint net, Packet pck)
         {
             var r = pck.PacketReader;
-            var id = r.ReadInt32();
+            var id = r.ReadEntityRefId();
             var entity = net.World.Get(id) as Actor;
             var toggle = r.ReadBoolean();
             entity.CrouchToggle(toggle);

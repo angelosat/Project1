@@ -89,7 +89,7 @@ public class PacketsWorkplaces
         var r = pck.PacketReader;
         var playerID = r.ReadInt32();
         var map = net.World.Get(r.ReadMapId());
-        var actorID = r.ReadInt32();
+        var actorID = r.ReadEntityRefId();
         var shopID = r.ReadInt32();
         var manager = map.Town.Shops;
         var actor = net.World.Get(actorID) as Actor;

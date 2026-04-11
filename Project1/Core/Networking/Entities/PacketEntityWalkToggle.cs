@@ -1,33 +1,33 @@
-﻿using Project1.Framework;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Framework;
 
-namespace Project1.Core.Networking.Entities
+namespace Project1.Core.Networking.Entities;
+
+[EnsureStaticCtorCall]
+static class PacketEntityWalkToggle
 {
-    [EnsureStaticCtorCall]
-    static class PacketEntityWalkToggle
+    static readonly int PType;
+    static PacketEntityWalkToggle()
     {
-        static readonly int PType;
-        static PacketEntityWalkToggle()
-        {
-            PType = Registry.PacketHandlers.Register(Receive);
-        }
-        internal static void Send(NetEndpoint net, int entityID, bool toggle)
-        {
-            var server = net as Server;
-            var w = server.BeginPacket(PType);
-            w.Write(entityID);
-            w.Write(toggle);
-        }
-        internal static void Receive(NetEndpoint net, Packet p)
-        {
-            var r = p.PacketReader;
-            var id = r.ReadInt32();
-            var entity = net.World.Get(id) as Actor;
-            var toggle = r.ReadBoolean();
-            entity.WalkToggle(toggle);
+        PType = Registry.PacketHandlers.Register(Receive);
+    }
+    internal static void Send(NetEndpoint net, int entityID, bool toggle)
+    {
+        var server = net as Server;
+        var w = server.BeginPacket(PType);
+        w.Write(entityID);
+        w.Write(toggle);
+    }
+    internal static void Receive(NetEndpoint net, Packet p)
+    {
+        var r = p.PacketReader;
+        var id = r.ReadEntityRefId();
+        var entity = net.World.Get(id) as Actor;
+        var toggle = r.ReadBoolean();
+        entity.WalkToggle(toggle);
 
-            if (net.IsServer)
-                Send(net, entity.RefId, toggle);
-        }
+        if (net.IsServer)
+            Send(net, entity.RefId, toggle);
     }
 }

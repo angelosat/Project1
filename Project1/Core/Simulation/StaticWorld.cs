@@ -123,7 +123,7 @@ public class StaticWorld : WorldBase
         });
         if (save.TryGetTag("Flat", out SaveTag flatTag))
             this.Flat = (bool)flatTag.Value;
-        save.TryGetTagValue<double>("CurrentTick", v => this.CurrentTick = (ulong)v);
+        save.TryGetTagValue<ulong>("CurrentTick", v => this.CurrentTick = (ulong)v);
 
         if (save.TryLoadDefOut<BlockDef>("DefaultBlock", out var bd))
             this.DefaultBlock = bd.Block;

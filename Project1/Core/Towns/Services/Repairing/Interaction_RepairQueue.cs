@@ -1,10 +1,93 @@
 ﻿using Project1.Core.Interactions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Project1.Core.Resources;
 
 namespace Project1.Core.Towns.Services.Repairing;
 
-internal class Interaction_RepairQueue : InteractionLogic
+sealed class InteractionContext_Customer : InteractionContext
 {
+    internal IResourceView Patience => field ??= this.Actor.Resources.View(ResourceDefOf.Patience);
+    internal override float GetPercentage(Interaction i)
+        => this.Patience.Percentage;
+}
+
+sealed class InteractionContext_Vendor : InteractionContext
+{
+    internal ServiceRequest Request => field ??= this.Actor.CurrentPlan.ServiceRequest;
+}
+
+internal sealed class Interaction_RepairServing : InteractionLogic
+{
+    internal override void OnStart(Interaction i)
+    {
+        if (i.Actor.Net.IsClient)
+            return;
+        var req = i.Actor.CurrentPlan.ServiceRequest;
+        //req.IsVendorWaiting = true;
+        req.MarkVendorWaiting();
+    }
+
+    internal override bool HasSucceeded(Interaction i)
+    {
+        var req = (ServiceRequest_Repair)i.Actor.CurrentPlan.ServiceRequest;
+        if (i.Actor.Map.World.Get(req.Item).Cell == req.Counter.Value.Above)
+            return true;
+        return false;
+    }
+    internal override void OnSuccess(Interaction i)
+    {
+        if (i.Actor.Net.IsClient)
+            return;
+        var req = i.Actor.CurrentPlan.ServiceRequest;
+        //req.IsVendorWorking = true;
+        req.MarkVendorWorking();
+    }
+}
+
+internal sealed class Interaction_RepairPlaceItem : InteractionLogic
+{
+
+}
+internal sealed class Interaction_RepairWait : InteractionLogic
+{
+    protected override InteractionContext_Customer CreateContextInt() => new();
+
+    internal override bool HasSucceeded(Interaction i)
+    {
+        var req = (ServiceRequest_Repair)i.Actor.CurrentPlan.ServiceRequest;
+        var item = i.Actor.Map.World.Get(req.Item);
+        if (item.Cell == req.Counter.Value.Above && item.Resources.GetPercentage(ResourceDefOf.Durability) >= 1)
+            return true;
+        return false;
+    }
+
+    internal override bool HasFailed(Interaction i)
+        => i.Actor.Resources.GetPercentage(ResourceDefOf.Patience) <= 0;
+
+    internal override void OnTick(Interaction i)
+        => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
+}
+internal sealed class Interaction_RepairQueue : InteractionLogic
+{
+    protected override InteractionContext_Customer CreateContextInt() => new();
+    internal override void OnStart(Interaction i)
+    {
+        //i.Actor.Map.Town.ServiceRequests.Enqueue(i.Actor, i.Target.Global);
+        if (i.Actor.Net.IsClient)
+            return;
+        i.Actor.Map.Town.ServiceRequests.Enqueue(i.Actor);
+    }
+
+    internal override bool HasSucceeded(Interaction i)
+    {
+        var req = i.Actor.CurrentPlan.ServiceRequest;
+        if (req.IsVendorWaiting)
+            return true;
+        return false;
+    }
+
+    internal override bool HasFailed(Interaction i)
+        => i.Actor.Resources.GetPercentage(ResourceDefOf.Patience) <= 0;
+
+    internal override void OnTick(Interaction i)
+        => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
 }

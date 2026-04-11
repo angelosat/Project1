@@ -1226,7 +1226,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     private static void SyncSetStacksize(NetEndpoint net, Packet packet)
     {
         var r = packet.PacketReader;
-        var obj = net.World.Get(r.ReadInt32());
+        var obj = net.World.Get(r.ReadEntityRefId());
         var value = r.ReadInt32();
         if (net is Client)
             obj.SetStackSize(value);
@@ -1261,8 +1261,8 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         if (net is Server)
             throw new Exception();
 
-        var master = net.World.Get(r.ReadInt32());
-        var slave = net.World.Get(r.ReadInt32());
+        var master = net.World.Get(r.ReadEntityRefId());
+        var slave = net.World.Get(r.ReadEntityRefId());
         master.Absorb(slave);
     }
     #endregion

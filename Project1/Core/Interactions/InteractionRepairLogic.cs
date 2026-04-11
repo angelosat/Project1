@@ -6,7 +6,8 @@ namespace Project1.Core.Interactions
     {
         sealed class Context : InteractionContext
         {
-            internal IResourceView Durability => field ??= this.Target.Object.Resources.ViewOld(ResourceDefOf.Durability);
+            //internal IResourceView Durability => field ??= this.Target.Object.Resources.ViewOld(ResourceDefOf.Durability);
+            internal IResourceView Durability => field ??= this.Target.Object.Resources.View(ResourceDefOf.Durability);
             public override float ProgressBarPercentage => this.Durability.Percentage;
         }
         protected override InteractionContext CreateContextInt() => new Context();
@@ -15,7 +16,7 @@ namespace Project1.Core.Interactions
             var actor = i.Actor;
             if (actor.Net.IsClient) return;
             var ctx = (Context)i.Context;
-            ctx.Durability.ApplyDelta(1);
+            ctx.Durability.ApplyDelta(100);
         }
     }
 }

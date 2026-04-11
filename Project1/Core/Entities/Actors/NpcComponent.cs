@@ -1,12 +1,11 @@
 ﻿using Project1.Core.AI.Packets;
-using Project1.Core.Components;
+using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
@@ -19,7 +18,7 @@ namespace Project1.Core.Entities.Actors
     {
         public new class Spec : Spec<NpcComponent> { }
         public override EntityCompDef CompDef => EntityCompDefOf.Npc;
-        HashSet<int> Possesions = [];
+        HashSet<EntityRefId> Possesions = [];
         public string FullName => this.FirstName + (this.LastName.IsNullEmptyOrWhiteSpace() ? "" : string.Format(" {0}", this.LastName));
 
         static public List<GameObject> NpcDirectory = new List<GameObject>();
@@ -70,7 +69,7 @@ namespace Project1.Core.Entities.Actors
             this.LastName = GetRandomName();
         }
 
-        static public HashSet<int> GetPossessions(GameObject actor)
+        static public HashSet<EntityRefId> GetPossessions(GameObject actor)
         {
             return actor.GetComponent<NpcComponent>().Possesions;
         }
@@ -133,21 +132,23 @@ namespace Project1.Core.Entities.Actors
         public override void Read(IDataReader r)
         {
             base.Read(r);
-            this.Possesions = new HashSet<int>(r.ReadListInt32());
+            this.Possesions = new HashSet<EntityRefId>(r.ReadListEntityRefId());
             this.FirstName = r.ReadString();
             this.LastName = r.ReadString();
         }
         internal override void SaveExtra(SaveTag tag)
         {
             base.SaveExtra(tag);
-            tag.Add(this.Possesions.Save("Possesions"));
+            //tag.Add(this.Possesions.Save("Possesions"));
+            tag.Save("Possesions", this.Possesions);
             tag.Add(this.FirstName.Save("FirstName"));
             tag.Add(this.LastName.Save("LastName"));
         }
         internal override void LoadExtra(SaveTag tag)
         {
             base.LoadExtra(tag);
-            tag.TryGetTag("Possesions", t => this.Possesions = new HashSet<int>(new List<int>().Load(t)));
+            //tag.TryGetTag("Possesions", t => this.Possesions = new HashSet<int>(new List<int>().Load(t)));
+            this.Possesions = [.. tag.LoadListEntityRefId("Possesions")];
             tag.TryGetTagValue<string>("FirstName", v => this.FirstName = v);
             tag.TryGetTagValue<string>("LastName", v => this.LastName = v);
         }

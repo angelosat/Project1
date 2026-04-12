@@ -60,4 +60,4 @@ public record struct InventoryItemRemovedEvent(Actor Actor, Entity Item) : IEven
 public record struct BlockInventoryItemAddedEvent(BlockEntity Entity, Entity Item) : IEventPayload { }
 public record struct BlockInventoryItemRemovedEvent(BlockEntity Entity, Entity Item) : IEventPayload { }
 
-public record struct ActorHaulingNewItemEvent(Actor Actor) : IEventPayload;
+public record struct ActorHaulingNewItemEvent(Actor Actor, Entity SplitSource) : IEventPayload;

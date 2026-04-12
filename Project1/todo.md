@@ -1,6 +1,7 @@
 # todo 2025
 ## immediate
-- repairing town service
+- offmapactivity meet other npc and gain social need
+- fix inspector tabs
 - resources tab in actor gui (for health)
 - dev/debug increase/decrease skill levels
 - recalculate path on cell invalidation

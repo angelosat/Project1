@@ -96,15 +96,7 @@ public sealed class TownComp_Inns : TownComp
             this.OpenTransactionsByClerk.Add(transaction.Vendor, transaction);
     }
 
-    internal void AbortQueuing(Actor actor)
-
-    {
-        this.GuestsQueuing.Remove(actor);
-        var t = this.OpenTransactionsByGuest[actor.RefId];
-        t.MarkFailed();
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
-
-    }
+   
     public TownComp_Inns(Town town) : base(town)
     {
         town.Map.Events.ListenTo<BlockEntityRemovedEvent>(HandleBlockEntityRemoved);
@@ -114,6 +106,12 @@ public sealed class TownComp_Inns : TownComp
         => this.QueuesPerServicePoint.Keys;
     public IEnumerable<IntVec3> GetServicePointsWithQueue()
         => this.QueuesPerServicePoint.Where(kv => kv.Value.Count > 0).Select(kv => kv.Key);
+    public IEnumerable<IntVec3> GetServicePointsWithQueueUnserved()
+       => this.QueuesPerServicePoint
+        .Where(kv => kv.Value.Count > 0)
+        .Where(kv => this.OpenTransactionsByGuest[kv.Value.Peek().RefId].Vendor == EntityRefId.Null)
+        .Select(kv => kv.Key);
+
     public Queue<Actor> GetQueue(IntVec3 desk)
         => this.QueuesPerServicePoint[desk];
     public bool TryFindBedFrom(IntVec3 servicePoint, out IntVec3 foundBed)
@@ -131,35 +129,7 @@ public sealed class TownComp_Inns : TownComp
         return false;
     }
     public bool HasProfile(Actor actor) => this.RegistryByGuest.ContainsKey(actor.RefId);
-    internal bool RegisterGuest(IntVec3 servicePoint)
-    {
-        var queue = this.QueuesPerServicePoint[servicePoint];
-        var guest = queue.Peek();
-        IntVec3? foundBed = default;
-        foreach(var potentialBed in this.AvailableBeds)
-        {
-            if (guest.CanReach(potentialBed))
-            {
-                foundBed = potentialBed;
-                break;
-            }
-        }
-        if (foundBed is null)
-            return false;
-        var bed = foundBed.Value;
-        queue.Dequeue();
-        this.GuestsQueuing.Remove(guest);
-        var entry = new InnGuestProfile(guest.RefId, bed, this.Map.World.CurrentTick);
-        var transaction = this.OpenTransactionsByGuest[guest.RefId];
-        transaction.MarkFinished();
-        //this.ActiveTransactions.Remove(guest.RefId);
-        this.RegistryByGuest.Add(guest.RefId, entry);
-        this.RegistryByBed.Add(bed, entry);
-        this.Town.Ownership.Assign(bed, guest);
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
-
-        return true;
-    }
+    
     internal bool Checkout(Actor guest)
     {
         if (!this.RegistryByGuest.TryGetValue(guest.RefId, out var entry))
@@ -203,35 +173,71 @@ public sealed class TownComp_Inns : TownComp
             this.AddInt(req);
     }
 
+    internal override void Scan(BlockEntity entity)
+    {
+        if (!entity.HasComp<BlockBedComp>())
+            return;
+        this.AllBeds.Add(entity.OriginGlobal);
+    }
+
     internal bool IsQueuing(Actor actor)
         => this.GuestsQueuing.Contains(actor);
+
+    internal bool RegisterGuest(IntVec3 servicePoint)
+    {
+        var queue = this.QueuesPerServicePoint[servicePoint];
+        var guest = queue.Peek();
+        IntVec3? foundBed = default;
+        foreach (var potentialBed in this.AvailableBeds)
+        {
+            if (guest.CanReach(potentialBed))
+            {
+                foundBed = potentialBed;
+                break;
+            }
+        }
+        if (foundBed is null)
+            return false;
+        var bed = foundBed.Value;
+        queue.Dequeue();
+        this.GuestsQueuing.Remove(guest);
+        var entry = new InnGuestProfile(guest.RefId, bed, this.Map.World.CurrentTick);
+        var transaction = this.OpenTransactionsByGuest[guest.RefId];
+        transaction.MarkFinished();
+        this.RegistryByGuest.Add(guest.RefId, entry);
+        this.RegistryByBed.Add(bed, entry);
+        this.Town.Ownership.Assign(bed, guest);
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+        return true;
+    }
+    internal void AbortQueuing(Actor actor)
+
+    {
+        this.GuestsQueuing.Remove(actor);
+        var t = this.OpenTransactionsByGuest[actor.RefId];
+        t.MarkFailed();
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
+    }
 
     internal void AssignClerk(IntVec3 desk, Actor actor)
     {
         var req = this.OpenTransactionsByDesk[desk];
         req.AssignClerk(actor);
         this.OpenTransactionsByClerk.Add(actor.RefId, req);
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
-        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal void MarkPaid(Actor actor, Entity hauled)
     {
         var req = this.GetTransactionByGuest(actor);
         req.MarkPaid(hauled);
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
-        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal void MarkProcessed(EntityRefId buyer)
     {
         var req = this.OpenTransactionsByGuest[buyer];
         req.MarkProcessed();
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
-        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
-
 }

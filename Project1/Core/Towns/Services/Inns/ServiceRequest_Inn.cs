@@ -33,9 +33,12 @@ public sealed class ServiceRequest_Inn : ServiceRequest
 
     internal void AssignClerk(Actor clerk)
     {
+        this.Vendor = clerk.RefId;
+    }
+    internal void MarkAwaitingPayment()
+    {
         if (this.State != States.Queuing)
             throw new Exception();
-        this.Vendor = clerk.RefId;
         this.State = States.AwaitingPayment;
     }
     internal void MarkFailed()

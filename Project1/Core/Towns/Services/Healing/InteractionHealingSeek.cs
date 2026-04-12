@@ -63,6 +63,8 @@ sealed class InteractionHealingSeek : InteractionLogic
         => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
     internal override void OnStart(Interaction i)
     {
+        if (i.Actor.Net.IsClient)
+            return;
         var typedCtx = (InteractionContext_Healing)i.Context;
         typedCtx.Manager.MarkTargetReady(i.Actor);
     }

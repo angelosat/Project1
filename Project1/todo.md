@@ -1,6 +1,8 @@
 # todo 2025
 ## immediate
 - crafting: commit crafting contract not just before returning a final craft plan, but when the actor determines feasibility of a crafting order. to prevent other actors from trying to fulfil the same order inbeteen planner ticks
+- crafting: figure out when to uncommit interrupted crafting commitments. maybe attach the craftingorder or the commitment to every plan returned by plannercrafting
+- and let craftingmanager listen to actorassigneplan events, and uncommit whenever a plan doesnt have the commited order attached
 - offmapactivity meet other npc and gain social need
 - fix inspector tabs
 - resources tab in actor gui (for health)

@@ -20,6 +20,15 @@ sealed class PlannerCrafting : Planner
         var carried = actor.Hauled;
         var manager = map.Town.CraftingManager;
 
+        if (manager.TryGetCommitedOrder(actor, out var existing))
+        {
+            var (flowControl, value) = tryOrder(actor, map, carried, manager, existing);
+            if (flowControl)
+                return value;
+            else
+                manager.Uncommit(actor);
+        }
+
         // Gather all pending, reachable orders
         //var allOrders = manager.GetAllOrdersUnsorted()
         //    .Where(o => o.Pending && actor.CanReachAndReserve(o.Workstation.Parent));
@@ -80,159 +89,184 @@ sealed class PlannerCrafting : Planner
         
         foreach (var order in allOrders)
         {
-            if (order.CurrentWorker != EntityRefId.Null && order.CurrentWorker != actor.RefId)
-                continue;
-
-            if (TryUnfinishedItem(actor, order) is Plan unfinishedPlan)
+            (bool flowControl, Plan value) = tryOrder(actor, map, carried, manager, order);
+            switch (flowControl)
             {
-                return unfinishedPlan;
+                case false: continue;
+                case true: return value;
             }
-
-            if (TryRepairPlan(actor, order) is Plan repairPlan)
-            {
-                return repairPlan;
-            }
-            // Check fuel requirement
-            if (!order.CheckFuelReq())
-                continue;
-
-            //if(!actor.HasDuty(order.WorkstationCapability.))
-
-            // Track slots we want to exclude (already being deposited into by others)
-            var workstationSlots = order.Workstation.Parent.CellsOccupied;
-            var excludedSlots = workstationSlots.Select(c => c.Above).Where(c => !actor.CanReachAndReserve(c)).ToHashSet();
-            if (excludedSlots.Count == workstationSlots.Count)
-                continue;
-
-            //IEnumerable<Entity> itemPool =
-            //    order.Workstation.Input != ZoneId.Null ?
-            //    map.Town.ZoneManager.GetZone<Stockpile>(order.Workstation.Input).Items :
-            //    map.Stockpiles.Items;
-
-            //var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(i => i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
-            var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(actor.CanReachAndReserve);
-            //var candidateIngredients = map.GetEntities<Entity>().Where(i=>i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
-
-            if (carried is not null)
-                candidateIngredients = candidateIngredients.Prepend(carried);
-            var candidates = candidateIngredients.ToList();
-
-            // Build candidate pool (carried first if exists)
-            //var candidates = carried != null
-            //    ? new List<Entity> { carried }.Concat(map.GetEntities<Entity>().Where(actor.CanReachAndReserve)).ToList()
-            //    : map.GetEntities<Entity>().Where(actor.CanReachAndReserve).ToList();
-
-
-            // Evaluate feasibility with exclusions
-            var feasibility = order.IsFeasibleNew(candidates, excludedSlots, carried);
-
-            if (feasibility.State == CraftingOrderState.NotEnoughItems)
-                continue;
-            manager.Commit(order, actor);
-            // All slots already satisfied
-            if (feasibility.State == CraftingOrderState.ReadyToCraft &&
-                carried == null &&
-                actor.CanReachAndReserve(order.Workstation.Parent))
-                //feasibility.ArmedSlots.All(i => actor.CanReachAndReserve(i.Entity)))
-            {
-                //var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order);
-                var withUnfinishedItem = order.WorkstationCapability.Worker.CreatesUnfinished;
-                var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinishedBegin : PlanDefOf.Crafting;
-                var plan = new Plan(plandef, new InteractionTarget(map, order.Workstation.Parent.OriginGlobal)) 
-                {
-                    Order = order,
-                    TargetB = new InteractionTarget(order.Workstation.Parent)
-                };
-
-                foreach (var allocation in feasibility.ArmedSlots)
-                    plan.AddTarget(TargetIndex.A, allocation.Entity);
-                manager.Commit(actor, order.Workstation, order, feasibility.ArmedSlots.Select(i => i.Entity));
-                return plan;
-            }
-
-            // Carried item can be deposited
-            if (carried is not null)
-            {
-                var carriedAlloc = feasibility.Allocations
-                    .FirstOrDefault(a => a.Entity == carried);
-
-                if (carriedAlloc.Entity is not null)
-                {
-                    if (carried.StackSize >= carriedAlloc.Quantity)
-                    {
-                        // Fully satisfies → deposit now
-                        return new Plan(PlanDefOf.GoPlace,
-                            new InteractionTarget(map, carriedAlloc.Slot))
-                        {
-                            AmountA = carriedAlloc.Quantity,
-                            TargetB = new InteractionTarget(order.Workstation.Parent)
-                        };
-                    }
-                    else
-                    {
-                        // Partially satisfies → gather remainder first
-                        var remainderAlloc = feasibility.Allocations
-                            .First(a => a.Slot == carriedAlloc.Slot && a.Entity != carried);
-
-                        return new Plan(PlanDefOf.GoHaul,
-                            new InteractionTarget(remainderAlloc.Entity))
-                        {
-                            AmountA = remainderAlloc.Quantity,
-                            TargetB = new InteractionTarget(order.Workstation.Parent)
-                        };
-                    }
-                }
-            }
-
-            // Otherwise, pick up next needed item
-            if (carried != null)
-            {
-                var correctAlloc = feasibility.Allocations.FirstOrDefault(a => carried.CanAbsorb(a.Entity));
-                if (correctAlloc.Entity != null)
-                {
-                    return new Plan(PlanDefOf.GoHaul, new InteractionTarget(correctAlloc.Entity))
-                    {
-                        AmountA = correctAlloc.Quantity,
-                        TargetB = new InteractionTarget(order.Workstation.Parent)
-                    };
-                }
-                else return null; // the carried item it irrelevant to crafting, to return null so fallback planners can handle it
-            }
-            //foreach (var alloc in feasibility.Allocations)
-            //{
-            //    return new Plan(PlanDefOf.GoHaul, new TargetArgs(alloc.Entity))
-            //    {
-            //        AmountA = alloc.Quantity
-            //    };
-            //}
-
-            // Consolidate allocations if they're from the same stack
-            Entity targetStack = feasibility.Allocations.First().Entity;
-            int totalQuantity = 0;
-            foreach (var alloc in feasibility.Allocations)
-                if (alloc.Entity == targetStack)
-                    totalQuantity += alloc.Quantity;
-            return new Plan(PlanDefOf.GoHaul, new InteractionTarget(targetStack))
-            {
-                AmountA = totalQuantity,
-                TargetB = new InteractionTarget(order.Workstation.Parent)
-            };
-            // Otherwise, pick up next needed item
-            //foreach (var alloc in feasibility.Allocations)
-            //{
-            //    // Skip entities already carried
-            //    if (alloc.Entity == carried)
-            //        continue;
-
-            //    return new Plan(PlanDefOf.GoHaul, new TargetArgs(alloc.Entity))
-            //    {
-            //        AmountA = alloc.Quantity
-            //    };
-            //}
         }
 
         return null;
     }
+
+    private static (bool flowControl, Plan value) tryOrder(Actor actor, Simulation.MapBase map, Entity carried, CraftingManager manager, CraftingOrder order)
+    {
+        if (manager.ProductToMove(actor) is Entity toMove)
+        {
+            // haul it explicitly to the output stockpile of the order? or let other planners claim it?
+            if (carried == toMove)
+                return (false, null);
+            if (actor.CanReachAndReserve(toMove))
+            {
+                manager.Uncommit(actor);
+                return (true, new Plan(PlanDefOf.GoHaul, toMove) { Continuation = PlanContinuationPolicy.Yield });
+            }
+        }
+
+        //if (order.CurrentWorker != EntityRefId.Null && order.CurrentWorker != actor.RefId)
+        //    return (flowControl: false, value: null);
+        if(!manager.CanCommit(actor, order))
+            return (flowControl: false, value: null);
+
+        if (TryUnfinishedItem(actor, order) is Plan unfinishedPlan)
+        {
+            return (flowControl: true, value: unfinishedPlan);
+        }
+
+        if (TryRepairPlan(actor, order) is Plan repairPlan)
+        {
+            return (flowControl: true, value: repairPlan);
+        }
+        // Check fuel requirement
+        if (!order.CheckFuelReq())
+            return (flowControl: false, value: null);
+
+        //if(!actor.HasDuty(order.WorkstationCapability.))
+
+        // Track slots we want to exclude (already being deposited into by others)
+        var workstationSlots = order.Workstation.Parent.CellsOccupied;
+        var excludedSlots = workstationSlots.Select(c => c.Above).Where(c => !actor.CanReachAndReserve(c)).ToHashSet();
+        if (excludedSlots.Count == workstationSlots.Count)
+            return (flowControl: false, value: null);
+
+        //IEnumerable<Entity> itemPool =
+        //    order.Workstation.Input != ZoneId.Null ?
+        //    map.Town.ZoneManager.GetZone<Stockpile>(order.Workstation.Input).Items :
+        //    map.Stockpiles.Items;
+
+        //var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(i => i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
+        var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(actor.CanReachAndReserve);
+        //var candidateIngredients = map.GetEntities<Entity>().Where(i=>i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
+
+        if (carried is not null)
+            candidateIngredients = candidateIngredients.Prepend(carried);
+        var candidates = candidateIngredients.ToList();
+
+        // Build candidate pool (carried first if exists)
+        //var candidates = carried != null
+        //    ? new List<Entity> { carried }.Concat(map.GetEntities<Entity>().Where(actor.CanReachAndReserve)).ToList()
+        //    : map.GetEntities<Entity>().Where(actor.CanReachAndReserve).ToList();
+
+
+        // Evaluate feasibility with exclusions
+        var feasibility = order.IsFeasibleNew(candidates, excludedSlots, carried);
+
+        if (feasibility.State == CraftingOrderState.NotEnoughItems)
+            return (flowControl: false, value: null);
+        manager.Commit(order, actor);
+        // All slots already satisfied
+        if (feasibility.State == CraftingOrderState.ReadyToCraft &&
+            carried == null &&
+            actor.CanReachAndReserve(order.Workstation.Parent))
+        //feasibility.ArmedSlots.All(i => actor.CanReachAndReserve(i.Entity)))
+        {
+            //var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order);
+            var withUnfinishedItem = order.WorkstationCapability.Worker.CreatesUnfinished;
+            var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinishedBegin : PlanDefOf.Crafting;
+            var plan = new Plan(plandef, new InteractionTarget(map, order.Workstation.Parent.OriginGlobal))
+            {
+                Order = order,
+                TargetB = new InteractionTarget(order.Workstation.Parent)
+            };
+
+            foreach (var allocation in feasibility.ArmedSlots)
+                plan.AddTarget(TargetIndex.A, allocation.Entity);
+            manager.Commit(actor, order.Workstation, order, feasibility.ArmedSlots.Select(i => i.Entity));
+            return (flowControl: true, value: plan);
+        }
+
+        // Carried item can be deposited
+        if (carried is not null)
+        {
+            var carriedAlloc = feasibility.Allocations
+                .FirstOrDefault(a => a.Entity == carried);
+
+            if (carriedAlloc.Entity is not null)
+            {
+                if (carried.StackSize >= carriedAlloc.Quantity)
+                {
+                    // Fully satisfies → deposit now
+                    return (flowControl: true, value: new Plan(PlanDefOf.GoPlace,
+                        new InteractionTarget(map, carriedAlloc.Slot))
+                    {
+                        AmountA = carriedAlloc.Quantity,
+                        TargetB = new InteractionTarget(order.Workstation.Parent)
+                    });
+                }
+                else
+                {
+                    // Partially satisfies → gather remainder first
+                    var remainderAlloc = feasibility.Allocations
+                        .First(a => a.Slot == carriedAlloc.Slot && a.Entity != carried);
+
+                    return (flowControl: true, value: new Plan(PlanDefOf.GoHaul,
+                        new InteractionTarget(remainderAlloc.Entity))
+                    {
+                        AmountA = remainderAlloc.Quantity,
+                        TargetB = new InteractionTarget(order.Workstation.Parent)
+                    });
+                }
+            }
+        }
+
+        // Otherwise, pick up next needed item
+        if (carried != null)
+        {
+            var correctAlloc = feasibility.Allocations.FirstOrDefault(a => carried.CanAbsorb(a.Entity));
+            if (correctAlloc.Entity != null)
+            {
+                return (flowControl: true, value: new Plan(PlanDefOf.GoHaul, new InteractionTarget(correctAlloc.Entity))
+                {
+                    AmountA = correctAlloc.Quantity,
+                    TargetB = new InteractionTarget(order.Workstation.Parent)
+                });
+            }
+            else return (flowControl: true, value: null); // the carried item it irrelevant to crafting, to return null so fallback planners can handle it
+        }
+        //foreach (var alloc in feasibility.Allocations)
+        //{
+        //    return new Plan(PlanDefOf.GoHaul, new TargetArgs(alloc.Entity))
+        //    {
+        //        AmountA = alloc.Quantity
+        //    };
+        //}
+
+        // Consolidate allocations if they're from the same stack
+        Entity targetStack = feasibility.Allocations.First().Entity;
+        int totalQuantity = 0;
+        foreach (var alloc in feasibility.Allocations)
+            if (alloc.Entity == targetStack)
+                totalQuantity += alloc.Quantity;
+        return (flowControl: true, value: new Plan(PlanDefOf.GoHaul, new InteractionTarget(targetStack))
+        {
+            AmountA = totalQuantity,
+            TargetB = new InteractionTarget(order.Workstation.Parent)
+        });
+        // Otherwise, pick up next needed item
+        //foreach (var alloc in feasibility.Allocations)
+        //{
+        //    // Skip entities already carried
+        //    if (alloc.Entity == carried)
+        //        continue;
+
+        //    return new Plan(PlanDefOf.GoHaul, new TargetArgs(alloc.Entity))
+        //    {
+        //        AmountA = alloc.Quantity
+        //    };
+        //}
+    }
+
     private static Plan TryUnfinishedItem(Actor actor, CraftingOrder order)
     {
         if (order.UnfinishedItem is not Entity unfinishedItem)

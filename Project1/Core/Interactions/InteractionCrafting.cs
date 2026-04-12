@@ -43,7 +43,8 @@ namespace Project1.Core.Interactions
             }
             var product = creationReq.Create();
             map.Spawn(product, workstation.Global.Above(), Vector3.Zero);
-            order.CompletedBy(actor);
+            //order.CompletedBy(actor);
+            actor.Map.Town.CraftingManager.MarkCompleted(order, actor, product);
         }
     }
 }

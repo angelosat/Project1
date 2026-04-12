@@ -446,7 +446,7 @@ namespace Project1.Core.Crafting
 
         internal void CompletedBy(Actor actor)
         {
-            this.CurrentWorker = EntityRefId.Null;
+            //this.CurrentWorker = EntityRefId.Null;
             if(this.Mode == CraftMode.FixedAmount) this.Amount--;
             this.Workstation.Map.Events.Post(new CraftOrderUpdatedEvent(this));
             this.Workstation.Map.Events.Post(new CraftOrderCompletedEvent(this, actor));

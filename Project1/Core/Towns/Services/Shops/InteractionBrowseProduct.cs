@@ -50,7 +50,7 @@ sealed class InteractionBrowseProduct : InteractionLogic
             return;
         //var maxScore = result.Roles.Max(r => r.Score);
         var maxScore = (int)list.GetInterest(item);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxScore);
+        ArgumentOutOfRangeException.ThrowIfNegative(maxScore);
         list.Register(item, maxScore);
         actor.AI.State.Log.Write($"Browsed: {item.RefId}: {item.Name} interest: {maxScore}");
     }

@@ -22,7 +22,6 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
         if (actor.Net.IsClient)
             return;
         InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity, ctx.Count);
-        //typedCtx.Transaction.MarkProcessed();
         actor.Map.Town.Shops.MarkProcessed(actor);
     }
 }

@@ -149,7 +149,7 @@ public sealed class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui
     public float GetPercentage(NeedDef need)
         => this.NeedsNew[need].Percentage;
 
-    internal void OverridePercentage(NeedDef adventuring, float percentage)
+    internal void SetPercentage(NeedDef adventuring, float percentage)
     {
         var need = this.NeedsNew[adventuring];
         need.SetValue((int)(need.Max * percentage), this.Owner);

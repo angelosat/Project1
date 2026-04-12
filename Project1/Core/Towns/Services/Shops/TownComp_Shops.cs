@@ -20,61 +20,6 @@ using System.Linq;
 namespace Project1.Core.Towns.Services.Shops;
 
 internal record struct TransactionStartedEvent(MapBase Map, ServiceRequest_Shop Transaction) : IEventPayload { }
-[EnsureStaticCtorCall]
-internal static class PacketsShops
-{
-    internal readonly static PacketId 
-        _pShopCreated = Registry.PacketHandlers.Register(ReceiveCreateShop), 
-        _pShopDeleted, 
-        _pPlayerShopCreated = Registry.PacketHandlers.Register(ReceivePlayerCreateShop),
-        _pPlayerShopDeleted;
-
-    static PacketsShops()
-    {
-        Registry.PlayerInputEventHooks.Register<PlayerCreateShopEvent>(HandlePlayerCreateShop);
-    }
-
-    private static void HandlePlayerCreateShop(PlayerCreateShopEvent e)
-    {
-        if (Ingame.Net.IsServer)
-            Ingame.MainViewportMap.Town.Shops.CreateShop();
-        else
-            SendPlayerCreateShop(Client.Instance, e.MapId);
-    }
-
-    private static void SendPlayerCreateShop(Client client, MapId mapid)
-    {
-        client.BeginPacketImmediate(_pPlayerShopCreated)
-            .Write(client.PlayerData.ID)
-            .Write(mapid)
-            ;
-    }
-    private static void ReceivePlayerCreateShop(NetEndpoint endpoint, Packet packet)
-    {
-        var server = endpoint as Server;
-        var r = packet.PacketReader;
-        var playerid = r.ReadInt32();
-        var mapid = r.ReadMapId();
-        var map = endpoint.World.Get(mapid);
-        var shop = map.Town.Shops.CreateShop();
-        SendCreateShop(server, shop);
-    }
-    private static void SendCreateShop(Server server, Shop shop)
-    {
-        server.BeginPacketImmediate(_pShopCreated)
-            .Write(shop.Map.ID)
-            .Write(shop.ID);
-    }
-    private static void ReceiveCreateShop(NetEndpoint endpoint, Packet packet)
-    {
-        var client = endpoint as Client;
-        var r = packet.PacketReader;
-        var mapid = (MapId)r.ReadInt32();
-        var map = client.World.Get(mapid);
-        var shopid = r.ReadInt32();
-        map.Town.Shops.CreateShop(shopid);
-    }
-}
 
 internal record struct PlayerDeleteShopEvent(Workplace Workplace) : IEventPayload { }
 internal record struct PlayerCreateShopEvent(MapId MapId) : IEventPayload { }
@@ -106,7 +51,7 @@ class WorkplacesGui : GroupBox
         this.AddControlsHorizontally(boxList);
     }
 }
-public partial class TownComp_Shops : TownComp
+public sealed class TownComp_Shops : TownComp
 {
     public ChangeNotifier Notifications = new();
     const int UIListWidth = 250;
@@ -272,11 +217,11 @@ public partial class TownComp_Shops : TownComp
     {
         if (transaction.Vendor != EntityRefId.Null)
             throw new Exception();
-        transaction.SetSeller(seller);
+        transaction.AssignVendor(seller);
         transaction.RefreshTimer();
         this._transactionsBySeller.Add(seller.RefId, transaction);
         this._transactionsRequests.Remove(transaction.Customer);
-        this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
+        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
     }
     internal override void Tick()
     {
@@ -401,9 +346,11 @@ public partial class TownComp_Shops : TownComp
     internal void MarkPaid(Actor buyer, Entity money)
     {
         var req = this._transactionsByBuyer[buyer.RefId];
-        req.Money = money.RefId;
-        req.MarkPaid();
-        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+        //req.Money = money.RefId;
+        //req.MarkPaid();
+        //req.MarkIsPaidFor();
+        req.AllocateMoney(money);
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
 
     }
     internal void RingUp(Actor seller, Entity item)
@@ -411,22 +358,25 @@ public partial class TownComp_Shops : TownComp
         var req = this._transactionsBySeller[seller.RefId];
         if (item.RefId != req.Item)
             throw new InvalidOperationException();
-        req.RingUp();
-        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+        //req.RingUp();
+        req.MarkVendorWaitingPayment();
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
     internal void FinishTransaction(Actor buyer)
     {
         var req = this._transactionsByBuyer[buyer.RefId];
         var shoppinglist = this._shoppingListsByActor[buyer.RefId];
         shoppinglist.MarkFulfilled();
-        req.Dispose();
-        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+        //req.Dispose();
+        req.MarkSucceeded();
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
     internal void MarkProcessed(Actor seller)
     {
         var req = this._transactionsBySeller[seller.RefId];
-        req.MarkProcessed();
-        this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+        //req.MarkProcessed();
+        req.MarkIsPaidFor();
+        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal IEnumerable<Entity> GetItemsForSale()

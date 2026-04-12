@@ -59,12 +59,12 @@ internal static class InteractionDefOf
         Controller = InteractionControllers.FirstContact,// new InteractionProgressFirstContact(),
         Range = InteractionRange.Any
     };
-    public static readonly InteractionDef PayForBed = new("PayingForBed", typeof(InteractionPayForBed))
-    {
-        Animation = AnimationDefOf.TouchItem,
-        Controller = InteractionControllers.FirstContact,// new InteractionProgressFirstContact(),
-        Range = InteractionRange.Any
-    };
+    //public static readonly InteractionDef PayForBed = new("PayingForBed", typeof(InteractionPayForBed))
+    //{
+    //    Animation = AnimationDefOf.TouchItem,
+    //    Controller = InteractionControllers.FirstContact,// new InteractionProgressFirstContact(),
+    //    Range = InteractionRange.Any
+    //};
     public static readonly InteractionDef RingUp = new("RingingUp", typeof(InteractionRingUpTransaction))
     {
         Animation = AnimationDefOf.TouchItem,
@@ -200,10 +200,10 @@ internal static class InteractionDefOf
         //Controller = InteractionControllers.Passive
         Controller = InteractionControllers.ExternalFull
     };
-    public static readonly InteractionDef WaitingPayment = new("WaitPayment", typeof(InteractionWaitForPayment))
-    {
-        Controller = InteractionControllers.Passive
-    };
+    //public static readonly InteractionDef WaitingPayment = new("WaitPayment", typeof(InteractionWaitForPayment))
+    //{
+    //    Controller = InteractionControllers.ExternalFull
+    //};
     public static readonly InteractionDef ClaimBoughtItem = new("ClaimBoughtItem", typeof(InteractionClaimBoughtItem))
     {
         Animation = AnimationDefOf.TouchItem,

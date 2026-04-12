@@ -16,12 +16,12 @@ internal class PlannerHealingOffer : Planner
         var manager = map.Town.Spells;
         if (manager.TryGetRequestByCaster(actor, out var existing))
         {
-            if (existing.IsDisposed)
-                return null;
+            //if (existing.IsDisposed)
+            //    return null;
             var target = map.World.Get<Actor>(existing.Customer);
             if (!actor.CanReachAndReserve(target))
                 return null;
-            if (!existing.IsPaid)
+            if (!existing.IsPaidFor)
             {
                 var trade = map.Town.Trades.GetTradeById(existing.PaymentId);
                 if (trade.IsOffered)
@@ -45,7 +45,7 @@ internal class PlannerHealingOffer : Planner
         var allRequests = manager.PendingRequests;
         foreach (var req in allRequests)
         {
-            if (!req.IsPending)
+            if (req.IsVendorAssigned)
                 continue;
             var target = map.World.Get<Actor>(req.Customer);
             if (!actor.CanReach(target))
@@ -71,7 +71,7 @@ internal class PlannerHealingSeek : Planner
             var caster = map.World.Get<Actor>(existing.Vendor);
             if (!actor.CanReachAndReserve(caster))
                 return null;
-            if (existing.IsPaid)
+            if (existing.IsPaidFor)
             {
                 if (existing.IsCasterReady && !actor.IsHauling)
                     return new Plan(HealingDefOf.PlanHealingSeek, caster);

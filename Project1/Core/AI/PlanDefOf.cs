@@ -76,7 +76,6 @@ public static class PlanDefOf
     static public readonly PlanDef Eating = new("Eating", typeof(BehaviorEating), InteractionDefOf.Eat);
     static public readonly PlanDef Switching = new("Switching", typeof(BehaviorExecutePlanNew), InteractionDefOf.Switch);
     static public readonly PlanDef WaitForService = new ("Waiting", typeof(BehaviorExecutePlanNew), InteractionDefOf.WaitingService);
-    static public readonly PlanDef WaitForPayment = new ("WaitingForPayment", typeof(BehaviorExecutePlanNew), InteractionDefOf.WaitingPayment);
     static public readonly PlanDef Pay = new ("Paying", typeof(BehaviorExecutePlanNew), InteractionDefOf.Pay);
     static public readonly PlanDef RingUp = new ("RingingUp", typeof(BehaviorExecutePlanNew), InteractionDefOf.RingUp);
     static public readonly PlanDef RingUpFinish = new ("RingingUpFinish", typeof(BehaviorExecutePlanNew), InteractionDefOf.RingUpFinish);

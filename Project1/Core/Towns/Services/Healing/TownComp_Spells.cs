@@ -58,7 +58,6 @@ public class TownComp_Spells : TownComp
         var request = new ServiceRequest_Spell(target, spell, this.PriceList[spell]);
         var id = this.Town.ServiceRequests.Register(request);
         this._pendingRequestsByTarget.Add(target.RefId, request);
-        //this.Map.Events.Post(new HealingRequestCreatedEvent(target, spell));
         $"spell request created {target.LabelReadable} {spell.LabelReadable}".ToConsole();
         return request;
     }
@@ -72,7 +71,7 @@ public class TownComp_Spells : TownComp
 
     internal void MarkAccepted(ServiceRequest_Spell req, Actor caster)
     {
-        req.MarkAccepted(caster);
+        req.AssignVendor(caster);
         if (req.RequiresPayment)
         {
             var spellTarget = this.World.Get<Actor>(req.Customer);
@@ -80,35 +79,29 @@ public class TownComp_Spells : TownComp
             req.PaymentId = payment.Id;
         }
         this._acceptedRequestsByCaster.Add(req.Vendor, req);
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal void MarkSucceeded(Actor target)
     {
         var req = this._pendingRequestsByTarget[target.RefId];
         req.MarkSucceeded();
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
     }
 
     internal void MarkPaid(ServiceRequest_Spell req, Actor caster)
     {
-        req.MarkPaid();
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+        req.MarkIsPaidFor();
     }
 
     internal void MarkTargetReady(Actor target)
     {
         var req = this._pendingRequestsByTarget[target.RefId];
         req.MarkTargetReady();
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal void MarkCasterReady(Actor caster)
     {
         var req = this._acceptedRequestsByCaster[caster.RefId];
         req.MarkCasterReady();
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
     internal override void ResolveReferences()

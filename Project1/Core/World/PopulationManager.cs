@@ -125,7 +125,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         inventory.Insert(townscroll);
         var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
         need.Value = this.World.Random.Next(0, 100);
-        actor.Needs.OverridePercentage(NeedDefOf.Energy, .1f);
+        //actor.Needs.SetPercentage(NeedDefOf.Energy, .1f);
         actor.Skills.Randomize();
         //actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
 
@@ -216,7 +216,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     {
         var serverActor = Server.Instance.World.Get<Actor>(actor.RefId);
         var newPercentage = serverActor.Map == null ? 1f : 0;// 0 : 1f;
-        serverActor.Needs.OverridePercentage(AdventurerNeedsDefOf.Adventuring, newPercentage);
+        serverActor.Needs.SetPercentage(AdventurerNeedsDefOf.Adventuring, newPercentage);
         serverActor.AI.Meta.LocationDecision.Reset();
         var debugmsg = $"{serverActor.Name}'s visit chance modifier set to 1";
         Server.Instance.ConsoleBox.Write(debugmsg);

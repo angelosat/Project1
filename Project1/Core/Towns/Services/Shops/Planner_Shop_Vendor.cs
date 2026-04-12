@@ -2,11 +2,12 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Services.Repairing;
 using System;
 
 namespace Project1.Core.Towns.Services.Shops;
 
-class Planner_Sell : Planner
+class Planner_Shop_Vendor : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {
@@ -20,7 +21,7 @@ class Planner_Sell : Planner
         {
             var counter = transaction.Counter.Value;
             if (actor.Hauled?.RefId == transaction.Money)
-            if(transaction.IsProcessed)
+            if(transaction.IsPaidFor)
             {
                 return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter)){ Continuation = PlanContinuationPolicy.Yield };
                 
@@ -37,9 +38,10 @@ class Planner_Sell : Planner
                     money.StackSize >= transaction.Price)
                     return new Plan(PlanDefOf.RingUpFinish, money) { AmountA = transaction.Price };//, Continuation = PlanContinuationPolicy.Yield };
 
-                return new Plan(PlanDefOf.WaitForPayment, new InteractionTarget(map, counter.Above));
+                //return new Plan(PlanDefOf.WaitForPayment, new InteractionTarget(map, counter.Above));
+                return new Plan(ServiceRepairsDefOf.PlanWaitMoney, new InteractionTarget(map, counter.Above)) { ServiceRequest = transaction };
             }
-            if (transaction.IsProcessed)
+            if (transaction.IsPaidFor)
                 return null;
             if (item.Cell != counter.Above)
                 return null;

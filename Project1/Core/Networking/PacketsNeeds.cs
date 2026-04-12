@@ -56,7 +56,7 @@ namespace Project1.Core.Networking
             var need = r.ReadDef<NeedDef>();
             var percentage = r.ReadSingle();
 
-            actor.Needs.OverridePercentage(need, percentage);
+            actor.Needs.SetPercentage(need, percentage);
         }
     }
 

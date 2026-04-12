@@ -5,12 +5,11 @@ using Project1.Core.Entities.Actors;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services.Shops;
 
-sealed class Planner_Buy : Planner
+sealed class Planner_Shop_Customer : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {
@@ -33,16 +32,7 @@ sealed class Planner_Buy : Planner
             var counter = transaction.Counter.Value;
             if (carried is null)
             {
-                //if (transaction.IsComplete)
-                //{
-                //    var (role, score) = manager.GetPotential(item);
-                //    if (role is null)
-                //        throw new Exception();
-                //    manager.Commit(role, item, score);
-                //    shops.FinishTransaction(actor);
-                //    return null;
-                //}
-                if (transaction.IsProcessed)
+                if (transaction.IsPaidFor)
                 {
                     if (item.Cell == counter.Above)
                     {
@@ -50,7 +40,7 @@ sealed class Planner_Buy : Planner
                         return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
                     }
                 }
-                if (transaction.WaitingForPayment) // waiting for payment
+                if (transaction.IsVendorWaitingPayment && !transaction.IsMoneyAllocated) // waiting for payment
                 {
                     var price = transaction.Price;
                     var moneyInInventory = actor.Inventory.Contents.FirstOrDefault(i => i.Def == ItemDefOf.Coins);
@@ -59,36 +49,17 @@ sealed class Planner_Buy : Planner
                                                                // maybe cancel the transaction gracefully if otherwise
                     return new Plan(PlanDefOf.RetrieveFromInventory, moneyInInventory) { AmountA = price };
                 }
-                //if (item.Cell == transaction.Counter.Above)
-                //{
-                //    if(transaction.IsProcessed)
-                //        //if (transaction.IsPaid) // item paid for and ready to be claimed
-                //    {
-                //        actor.AI.State.Log.Write($"I bought {item.Name}");
-                //        return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
-                //    }
-                //    else // item on counter and waiting for clerk
-                //        return new Plan(PlanDefOf.WaitForService);
-                //}
                 return new Plan(PlanDefOf.WaitForService);
 
             }
             if (carried is not null)
             {
-                if (carried.Def == ItemDefOf.Coins && transaction.WaitingForPayment)
-                    return new Plan(PlanDefOf.Pay, new InteractionTarget(map, counter.Above));
-                if (carried.RefId != transaction.Item)
-                    throw new InvalidOperationException();
-                transaction.Tick();
-                if (transaction.TimedOut)
+                if (!transaction.IsMoneyAllocated)
                 {
-                    transaction.Cancel();
-                    return null;
-                }
-                if (!actor.CanReachAndReserve(counter))
-                {
-                    transaction.Cancel();
-                    return null;
+                    if (carried.Def == ItemDefOf.Coins && transaction.IsVendorWaitingPayment)
+                        transaction.AllocateMoney(carried);
+                    //else
+                    //    return null;
                 }
                 return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter.Above));
             }

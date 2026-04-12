@@ -21,9 +21,9 @@ internal sealed class InteractionWaitingService : InteractionLogic
         typedCtx.Transaction.Tick();
         if (typedCtx.Transaction.IsFailed)
             return false;
-        if (typedCtx.Transaction.WaitingForPayment)
+        if (typedCtx.Transaction.IsVendorWaitingPayment)
             return false;
-        if (typedCtx.Transaction.IsProcessed)
+        if (typedCtx.Transaction.IsPaidFor)
             return false;
         return true;
     }
@@ -34,9 +34,9 @@ internal sealed class InteractionWaitingService : InteractionLogic
     internal override bool HasSucceeded(Interaction i)
     {
         var typedCtx = (Context)i.Context;
-        if (typedCtx.Transaction.WaitingForPayment)
+        if (typedCtx.Transaction.IsVendorWaitingPayment)
             return true;
-        if (typedCtx.Transaction.IsProcessed)
+        if (typedCtx.Transaction.IsPaidFor)
             return true;
         return false;
     }

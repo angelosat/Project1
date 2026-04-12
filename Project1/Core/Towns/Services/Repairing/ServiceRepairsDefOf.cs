@@ -12,7 +12,7 @@ public static class ServiceRepairsDefOf
     public static readonly InteractionDef InteractionQueue = new("Queuing", typeof(Interaction_RepairCustomer_Queue), InteractionControllers.ExternalFull);
     public static readonly InteractionDef InteractionWaitPrice = new("WaitPrice", typeof(Interaction_RepairCustomer_WaitPriceAnnounce), InteractionControllers.ExternalFull);
     public static readonly InteractionDef InteractionServing = new("Serving", typeof(Interaction_RepairVendor_WaitItemSubmit), InteractionControllers.ExternalFull);
-    public static readonly InteractionDef InteractionWaitMoney = new("WaitMoney", typeof(Interaction_RepairVendor_WaitPayment), InteractionControllers.ExternalFull);
+    public static readonly InteractionDef InteractionWaitMoney = new("WaitMoney", typeof(Interaction_Vendor_WaitPayment), InteractionControllers.ExternalFull);
     public static readonly InteractionDef InteractionCustomerWaitItemAvailable = new("WaitItem", typeof(Interaction_RepairCustomer_WaitItemAvailable), InteractionControllers.ExternalFull);
 
     public static readonly PlanDef PlanQueue = new("Queue", typeof(BehaviorExecutePlanNew), InteractionQueue);

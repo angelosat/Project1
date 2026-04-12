@@ -14,7 +14,7 @@ sealed class InteractionContext_Vendor : InteractionContext
 {
     internal ServiceRequest Request => field ??= this.Actor.CurrentPlan.ServiceRequest;
 }
-internal sealed class Interaction_RepairVendor_WaitPayment : InteractionLogic
+internal sealed class Interaction_Vendor_WaitPayment : InteractionLogic
 {
     protected override InteractionContext_Vendor CreateContextInt() => new();
     internal override void OnStart(Interaction i)

@@ -2,12 +2,9 @@
 using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Systems.Inventory;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services.Repairing;

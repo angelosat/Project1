@@ -65,7 +65,7 @@ internal static class InteractionDefOf
     //    Controller = InteractionControllers.FirstContact,// new InteractionProgressFirstContact(),
     //    Range = InteractionRange.Any
     //};
-    public static readonly InteractionDef RingUp = new("RingingUp", typeof(InteractionRingUpTransaction))
+    public static readonly InteractionDef RingUp = new("RingingUp", typeof(InteractionRingUp))
     {
         Animation = AnimationDefOf.TouchItem,
         Controller = InteractionControllers.FirstContact,

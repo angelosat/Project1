@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
@@ -102,6 +101,7 @@ public class TownComp_ServiceRequests : TownComp
         this.CountersAll.Add(cell);
         this.QueuesByCounter.Add(cell, new());
         this.CountersByService[TownServiceDefOf.Repairing].Add(cell); // HACK
+        this.CountersByService[TownServiceDefOf.Buying].Add(cell); // HACK
     }
 
     internal IEnumerable<IntVec3> GetCounters(TownServiceDef service)

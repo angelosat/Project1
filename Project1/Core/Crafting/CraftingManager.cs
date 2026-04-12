@@ -115,7 +115,10 @@ namespace Project1.Core.Crafting
                     this.NextOrderId = Math.Max(this.NextOrderId, order.Id + 1);
                 }
         }
-
+        internal void Commit(CraftingOrder order, Actor actor)
+        {
+            order.CurrentWorker = actor.RefId;
+        }
         internal Contract Commit(Actor actor, BlockWorkstationComp workstation, CraftingOrder order, IEnumerable<Entity> ingredients)
         {
             var contract = new Contract(actor, workstation, order, ingredients);

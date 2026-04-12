@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderCommandCancelUnfinished : CommandWorker
+    internal sealed class OrderCommandCancelUnfinished : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target)
             => target is Entity item && item.HasComponent<UnfinishedItemComp>();

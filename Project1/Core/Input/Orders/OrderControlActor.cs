@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderControlActor : CommandWorker
+    internal sealed class OrderControlActor : OrderCommandWorker
     {
         //internal override bool CanIssue(IReadOnlyCollection<ISelectable> targets)
         //    => targets.Count == 1 && this.CanIssue(targets.First());

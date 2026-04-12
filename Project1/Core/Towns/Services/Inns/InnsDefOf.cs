@@ -30,7 +30,7 @@ public static class InnsDefOf
     }
 }
 
-sealed class OrderCommandToggleInnBed : CommandWorker
+sealed class OrderCommandToggleInnBed : OrderCommandWorker
 {
     internal override bool CanIssue(ISelectable target)
         => target is BlockEntity be && be.HasComp<BlockBedComp>();

@@ -2,9 +2,11 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.Services.Repairing;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services.Shops;
@@ -25,14 +27,14 @@ sealed class Planner_Shop_Customer : Planner
             return null;
         var carried = actor.Hauled;
 
-        if (shops.TryGetTransaction(actor, out var transaction))
+        if (shops.TryGetTransaction(actor, out var req))
         {
-            var seller = map.World.Get<Actor>(transaction.Vendor);
-            var item = map.World.Get(transaction.Item);
-            var counter = transaction.Counter.Value;
+            var seller = map.World.Get<Actor>(req.Vendor);
+            var item = map.World.Get(req.Item);
+            var counter = req.Counter.Value;
             if (carried is null)
             {
-                if (transaction.IsPaidFor)
+                if (req.IsPaidFor)
                 {
                     if (item.Cell == counter.Above)
                     {
@@ -40,9 +42,9 @@ sealed class Planner_Shop_Customer : Planner
                         return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
                     }
                 }
-                if (transaction.IsVendorWaitingPayment && !transaction.IsMoneyAllocated) // waiting for payment
+                if (req.IsVendorWaitingPayment && !req.IsMoneyAllocated) // waiting for payment
                 {
-                    var price = transaction.Price;
+                    var price = req.Price;
                     var moneyInInventory = actor.Inventory.Contents.FirstOrDefault(i => i.Def == ItemDefOf.Coins);
                     if (moneyInInventory.StackSize < price)
                         throw new InvalidOperationException(); // normally the amount of coins should exist.
@@ -54,13 +56,24 @@ sealed class Planner_Shop_Customer : Planner
             }
             if (carried is not null)
             {
-                if (!transaction.IsMoneyAllocated)
+                if (!req.IsMoneyAllocated)
                 {
-                    if (carried.Def == ItemDefOf.Coins && transaction.IsVendorWaitingPayment)
-                        transaction.AllocateMoney(carried);
+                    if (carried.Def == ItemDefOf.Coins && req.IsVendorWaitingPayment)
+                        req.AllocateMoney(carried);
                     //else
                     //    return null;
                 }
+
+                if(carried == item)
+                {
+                    if(req.IsVendorWaitingItemSubmit)
+                        return new Plan(PlanDefOf.GoPlace, map, counter.Above);
+                    if (req.IsPaidFor)
+                        return new Plan(PlanDefOf.StoreInInventory);
+                    //throw new UnreachableException();
+                    return new Plan(TownServicesDefOf.PlanQueue, map, counter.Above) { ServiceRequest = req };
+                }
+
                 return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter.Above));
             }
         }
@@ -73,7 +86,7 @@ sealed class Planner_Shop_Customer : Planner
         if (shoppingList.HasResults && !FindServicePoint(actor, servicepoints, out foundPoint))
             return null;
         //while (shoppingList.DequeueImpulse() is var impulse && impulse.item is Entity item)
-        foreach(var (item, score, price) in shoppingList.GetResultsImpulse())
+        foreach (var (item, score, price) in shoppingList.GetResultsImpulse())
         {
             if (!IsValid(actor, item))
                 continue;
@@ -128,7 +141,7 @@ sealed class Planner_Shop_Customer : Planner
         return validServicePointFound;
     }
 }
-//sealed class PlannerBuy : Planner
+//sealed class Planner_Shop_Customer : Planner
 //{
 //    protected override Plan TryPlan(Actor actor)
 //    {
@@ -137,31 +150,29 @@ sealed class Planner_Shop_Customer : Planner
 
 //        var map = actor.Map;
 //        var manager = actor.ItemPreferences;
-//        var shops = map.Town.ShopManager;
-//        var servicepoints = map.Town.ShopManager.GetServicePoints();
+//        var shops = map.Town.Shops;
+//        var servicepoints = map.Town.Shops.GetServicePoints();
 
 //        if (!servicepoints.Any())
 //            return null;
+//        var carried = actor.Hauled;
 
 //        if (shops.TryGetTransaction(actor, out var transaction))
 //        {
-//            var seller = map.World.Get<Actor>(transaction.Seller);
-//            var item = map.World.GetEntity(transaction.Item);
-
-//            var carried = actor.Hauled;
+//            var seller = map.World.Get<Actor>(transaction.Vendor);
+//            var item = map.World.Get(transaction.Item);
+//            var counter = transaction.Counter.Value;
 //            if (carried is null)
 //            {
-//                if (transaction.IsComplete)
+//                if (transaction.IsPaidFor)
 //                {
-//                    var (role, score) = manager.GetPotential(item);
-//                    if (role is null)
-//                        throw new Exception();
-//                    manager.Commit(role, item, score);
-//                    shops.FinishTransaction(actor);
-//                    return null;
-//                    throw new Exception();
+//                    if (item.Cell == counter.Above)
+//                    {
+//                        actor.AI.State.Log.Write($"I bought {item.Name}");
+//                        return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
+//                    }
 //                }
-//                if (transaction.WaitingForPayment) // waiting for payment
+//                if (transaction.IsVendorWaitingPayment && !transaction.IsMoneyAllocated) // waiting for payment
 //                {
 //                    var price = transaction.Price;
 //                    var moneyInInventory = actor.Inventory.Contents.FirstOrDefault(i => i.Def == ItemDefOf.Coins);
@@ -170,52 +181,37 @@ sealed class Planner_Shop_Customer : Planner
 //                                                               // maybe cancel the transaction gracefully if otherwise
 //                    return new Plan(PlanDefOf.RetrieveFromInventory, moneyInInventory) { AmountA = price };
 //                }
-//                if (item.Cell == transaction.Counter.Above)
-//                {
-//                    if (transaction.IsPaid) // item paid for and ready to be claimed
-//                        return new Plan(PlanDefOf.ClaimBoughtItem, item) { Continuation = PlanContinuationPolicy.Yield };
-//                    else // item on counter and waiting for clerk
-//                        return new Plan(PlanDefOf.WaitForService);
-//                }
+//                return new Plan(PlanDefOf.WaitForService);
+
 //            }
 //            if (carried is not null)
 //            {
-//                if (carried.Def == ItemDefOf.Coins && transaction.WaitingForPayment)
-//                    return new Plan(PlanDefOf.Pay, new TargetArgs(map, transaction.Counter.Above));
-//                if (carried.RefId != transaction.Item)
-//                    throw new InvalidOperationException();
-//                transaction.Tick();
-//                if (transaction.TimedOut)
+//                if (!transaction.IsMoneyAllocated)
 //                {
-//                    transaction.Cancel();
-//                    return null;
+//                    if (carried.Def == ItemDefOf.Coins && transaction.IsVendorWaitingPayment)
+//                        transaction.AllocateMoney(carried);
+//                    //else
+//                    //    return null;
 //                }
-//                if (!actor.CanReachAndReserve(transaction.Counter))
-//                {
-//                    transaction.Cancel();
-//                    return null;
-//                }
-//                return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, transaction.Counter.Above));
+//                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter.Above));
 //            }
 //        }
-
+//        if (carried is not null)
+//            return null;
 //        var shoppingList = shops.GetShoppingListPopulated(actor);
-//        while(shoppingList.DequeueImpulse() is var impulse && impulse.item is Entity item)
+//        if (shoppingList.HasCompletedPurchaseThisVisit)
+//            return null;
+//        IntVec3 foundPoint = default;
+//        if (shoppingList.HasResults && !FindServicePoint(actor, servicepoints, out foundPoint))
+//            return null;
+//        //while (shoppingList.DequeueImpulse() is var impulse && impulse.item is Entity item)
+//        foreach(var (item, score, price) in shoppingList.GetResultsImpulse())
 //        {
-//            if (item.Map != actor.Map)
+//            if (!IsValid(actor, item))
 //                continue;
-//            if (!item.IsForSale())
+//            if (!map.Town.Shops.TryBeginTransaction(actor, item, price, foundPoint))
 //                continue;
-//            if (!actor.CanAfford(item))
-//                continue;
-//            if (item.IsInvolvedInExistingTransaction())
-//                continue;
-//            if (!actor.CanReachAndReserve(item))
-//                continue;
-//            if (!FindServicePoint(actor, servicepoints, out var foundPoint))
-//                return null;
-//            if (!map.Town.ShopManager.TryBeginTransaction(actor, item, impulse.price, foundPoint))
-//                return null;
+//            actor.AI.State.Log.Write($"I am impulsively buying {item.RefId}: {item.Name}!");
 //            return new Plan(PlanDefOf.GoHaul) { TargetA = item };
 //        }
 //        if (!shoppingList.HasFinished)
@@ -223,34 +219,29 @@ sealed class Planner_Shop_Customer : Planner
 //        var potentialOrdered = shoppingList.GetResultsSorted();
 //        foreach (var (item, score, price) in potentialOrdered)
 //        {
-//            if (item.Map != actor.Map)
+//            if (!IsValid(actor, item))
 //                continue;
-
-//            if (!item.IsForSale())
-//            {
-//                manager.DiscardPotential(item);
-//                return null;
-//            }
-
-//            if (!actor.CanAfford(item))
-//            {
-//                manager.DiscardPotential(item);
-//                return null;
-//            }
-
-//            if (item.IsInvolvedInExistingTransaction())
+//            if (!map.Town.Shops.TryBeginTransaction(actor, item, price, foundPoint))
 //                continue;
-
-//            if (!actor.CanReachAndReserve(item))
-//                continue;
-
-//            if (!FindServicePoint(actor, servicepoints, out var foundPoint))
-//                return null;
-//            if (!map.Town.ShopManager.TryBeginTransaction(actor, item, price, foundPoint))
-//                return null;
+//            actor.AI.State.Log.Write($"I decided to buy {item.Name}");
 //            return new Plan(PlanDefOf.GoHaul) { TargetA = item };
 //        }
 //        return null;
+//    }
+
+//    private static bool IsValid(Actor actor, Entity item)
+//    {
+//        if (item.Map != actor.Map)
+//            return false;
+//        if (!item.IsForSale())
+//            return false;
+//        if (!actor.CanAfford(item))
+//            return false;
+//        if (item.IsInvolvedInExistingTransaction())
+//            return false;
+//        if (!actor.CanReachAndReserve(item))
+//            return false;
+//        return true;
 //    }
 
 //    private static bool FindServicePoint(Actor actor, IReadOnlySet<IntVec3> servicepoints, out IntVec3 foundPoint)
@@ -269,3 +260,4 @@ sealed class Planner_Shop_Customer : Planner
 //        return validServicePointFound;
 //    }
 //}
+

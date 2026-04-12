@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Project1.Core.Input.Orders
 {
-    internal abstract class CommandWorker
+    internal abstract class OrderCommandWorker
     {
         internal abstract void Issue(OrderCommandRuntime runtime, SelectionFinal selection);
         internal abstract bool CanIssue(ISelectable target);

@@ -4,7 +4,7 @@ using Project1.Core.UI;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderCommandRemoveDesignation : CommandWorker
+    internal sealed class OrderCommandRemoveDesignation : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target) //=> target.Map.Town.DesignationManager.IsDesignation(target);
             => target.Map.Town.DesignationManager.GetDesignation(target)?.IsManual ?? false;

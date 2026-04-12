@@ -41,6 +41,7 @@ namespace Project1.Core.Crafting
 
         public int SkillFilter;
 
+        public EntityRefId CurrentWorker;
         public int Id { get; private set; }
         public SkillDef Skill { get; init; }
         public MaterialRefinementDef Refinement { get; init; }
@@ -445,6 +446,7 @@ namespace Project1.Core.Crafting
 
         internal void CompletedBy(Actor actor)
         {
+            this.CurrentWorker = EntityRefId.Null;
             if(this.Mode == CraftMode.FixedAmount) this.Amount--;
             this.Workstation.Map.Events.Post(new CraftOrderUpdatedEvent(this));
             this.Workstation.Map.Events.Post(new CraftOrderCompletedEvent(this, actor));

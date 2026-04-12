@@ -11,14 +11,14 @@ internal record struct ShopTransactionUpdatedEvent(MapBase Map, ServiceRequest T
 internal record struct TownServiceCompleteEvent(MapBase Map, ServiceRequest Transaction) : IEventPayload { }
 public sealed class ServiceRequest_Shop : ServiceRequest
 {
-    public EntityRefId Item { get; private set; }
     double TicksRemaining = Ticks.FromHours(1);
     internal override TownServiceDef Service => TownServiceDefOf.Buying;
     public ServiceRequest_Shop() { }
-    public ServiceRequest_Shop(Actor buyer, Entity item, int price, IntVec3 counter) : base(buyer, price, counter)
+
+    public ServiceRequest_Shop(Actor customer, Entity item, int price, IntVec3 counter) : base(customer, item, price, counter)
     {
-        this.Item = item.RefId;
     }
+
     public bool TimedOut => this.TicksRemaining <= 0;
 
     internal void Tick()

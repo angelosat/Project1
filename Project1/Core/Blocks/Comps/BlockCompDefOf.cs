@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Blocks.Construction;
 using Project1.Core.Blocks.Doors;
 using Project1.Core.Systems.Quests;
+using Project1.Core.Towns.Services;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Core.Towns.Storage;
 using Project1.Framework;

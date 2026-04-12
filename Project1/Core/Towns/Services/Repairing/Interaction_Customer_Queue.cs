@@ -33,7 +33,7 @@ internal sealed class Interaction_Vendor_WaitPayment : InteractionLogic
         return false;
     }
 }
-internal sealed class Interaction_RepairVendor_WaitItemSubmit : InteractionLogic
+internal sealed class Interaction_Vendor_WaitItemSubmit : InteractionLogic
 {
     internal override void OnStart(Interaction i)
     {
@@ -45,7 +45,7 @@ internal sealed class Interaction_RepairVendor_WaitItemSubmit : InteractionLogic
 
     internal override bool HasSucceeded(Interaction i)
     {
-        var req = (ServiceRequest_Repair)i.Actor.CurrentPlan.ServiceRequest;
+        var req = i.Actor.CurrentPlan.ServiceRequest;
         //if (i.Actor.Map.World.Get(req.Item).Cell == req.Counter.Value.Above)
         //    return true;
         if (req.IsItemSubmitted(i.Actor.Map.World))
@@ -91,7 +91,7 @@ internal sealed class Interaction_RepairCustomer_WaitPriceAnnounce : Interaction
     internal override void OnTick(Interaction i)
         => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
 }
-internal sealed class Interaction_RepairCustomer_Queue : InteractionLogic
+internal sealed class Interaction_Customer_Queue : InteractionLogic
 {
     protected override InteractionContext_Customer CreateContextInt() => new();
     internal override void OnStart(Interaction i)

@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Framework;
 
@@ -9,11 +10,44 @@ namespace Project1.Core.Towns.Services;
 internal class Packets_TownServices
 {
     static readonly PacketId
-        _pSync = Registry.PacketHandlers.Register(ReceiveSync);
+        _pSync = Registry.PacketHandlers.Register(ReceiveSync),
+        _pCounterServiceAssigned = Registry.PacketHandlers.Register(ReceiveCounterServiceAssigned);
+
+   
 
     static Packets_TownServices()
     {
         Registry.MapEventHooksServer.Register<TownServiceRequestUpdatedEvent>(HandleRequestUpdated);
+
+        Registry.PlayerInputEventHooks.Register<PlayerAssignedServiceToCounterEvent>(HandlePlayerAssignedServiceToCounter);
+    }
+
+    private static void HandlePlayerAssignedServiceToCounter(PlayerAssignedServiceToCounterEvent e)
+    {
+        if(Ingame.Net.IsServer)
+        {
+            e.Comp.Service = e.Service;
+        }
+        SendPlayerCounterServiceAssigned(Server.Instance, e.Comp.Parent.Map.ID, e.Comp.Parent.OriginGlobal, e.Service);
+    }
+
+    private static void SendPlayerCounterServiceAssigned(NetEndpoint endpoint, MapId mapid, IntVec3 global, TownServiceDef service)
+    {
+        endpoint.BeginPacketImmediate(_pCounterServiceAssigned)
+            .Write(mapid)
+            .Write(global)
+            .Write(service);
+    }
+    private static void ReceiveCounterServiceAssigned(NetEndpoint endpoint, Packet packet)
+    {
+        var r = packet.PacketReader;
+        var map = endpoint.World.Get(r.ReadMapId());
+        var comp = map.GetBlockEntityComp<BlockShopComp>(r.ReadIntVec3());
+        var service = r.ReadDef<TownServiceDef>();
+        comp.Service = service;
+        if (endpoint is Server server)
+            SendPlayerCounterServiceAssigned(server, map.ID, comp.Parent.OriginGlobal, service);
+
     }
 
     private static void HandleRequestUpdated(TownServiceRequestUpdatedEvent e)

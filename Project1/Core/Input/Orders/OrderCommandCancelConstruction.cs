@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderCommandCancelConstruction : CommandWorker
+    internal sealed class OrderCommandCancelConstruction : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target)
             => target is BlockEntity construction && target.Map.Town.DesignationManager.GetDesignation(construction) == DesignationDefOf.Construct;

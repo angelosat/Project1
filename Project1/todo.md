@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- crafting: commit crafting contract not just before returning a final craft plan, but when the actor determines feasibility of a crafting order. to prevent other actors from trying to fulfil the same order inbeteen planner ticks
 - offmapactivity meet other npc and gain social need
 - fix inspector tabs
 - resources tab in actor gui (for health)

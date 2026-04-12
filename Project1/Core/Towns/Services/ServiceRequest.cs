@@ -21,6 +21,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     internal int PatienceInitial { get; private set; }
     internal int Price { get; private set; }
     internal EntityRefId Money { get; set; }
+    internal EntityRefId Item { get; set; }
 
     internal IntVec3? Counter { get; private set; }
 
@@ -55,6 +56,13 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     {
         this.Counter = counter;
     }
+    public ServiceRequest(Actor customer, Entity item, int price, IntVec3 counter) : this(customer, price, counter)
+    {
+        this.Item = item.RefId;
+    }
+
+    internal bool IsItemSubmitted(WorldBase world)
+       => world.Get(this.Item).Cell == this.Counter!.Value.Above;
 
     internal void AllocateMoney(Entity money)
     => this.Money = money.RefId;
@@ -165,5 +173,6 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     protected virtual void LoadExtra(SaveTag tag) { }
     protected virtual void WriteExtra(IDataWriter w) { }
     protected virtual void ReadExtra(IDataReader r) { }
+
 
 }

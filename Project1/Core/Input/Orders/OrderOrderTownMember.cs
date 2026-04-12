@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderOrderTownMember : CommandWorker
+    internal sealed class OrderOrderTownMember : OrderCommandWorker
     {
         //internal override bool CanIssue(IReadOnlyCollection<ISelectable> targets)
         //    => targets.Count == 1 && this.CanIssue(targets.First());

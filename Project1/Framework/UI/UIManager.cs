@@ -824,7 +824,7 @@ namespace Project1.Framework.UI
             if (enabled)
                 this.Add(this.DialogBlock);
         }
-        public static void ToggleSingleton<T>(string title) where T : Control
+        public static T ToggleSingleton<T>(string title) where T : Control
         {
             var type = typeof(T);
             var key = new WindowKey(type, null);//, mode);
@@ -833,6 +833,7 @@ namespace Project1.Framework.UI
             {
                 win.Close();
                 _windowsSingleton.Remove(key);
+                return win.Client.Controls.First() as T;
             }
             else
             {
@@ -844,6 +845,7 @@ namespace Project1.Framework.UI
                 _windowsSingleton[key] = window;
                 window.HideAction += () => _windowsSingleton.Remove(key);
                 window.Show();
+                return control as T;
             }
         }
         public static void ToggleSingleton(Type type, ISelectable selectable)

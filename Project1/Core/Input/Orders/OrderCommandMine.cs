@@ -4,7 +4,7 @@ using Project1.Core.UI;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderCommandMine : CommandWorker
+    internal sealed class OrderCommandMine : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target)
             => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Mine.Worker.IsValid(target);

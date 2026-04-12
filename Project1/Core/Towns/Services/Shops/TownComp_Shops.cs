@@ -189,14 +189,15 @@ public sealed class TownComp_Shops : TownComp
         // TODO made it a bool return in case i have some conditions that can make it fail in the future
     }
 
-    private void AddInt(ServiceRequest_Shop transaction)
+    private void AddInt(ServiceRequest_Shop req)
     {
-        this._transactionsAll.Add(transaction);
-        this._transactionsRequests.Add(transaction.Customer, transaction);
-        this._transactionsByBuyer.Add(transaction.Customer, transaction);
-        if (transaction.Vendor != EntityRefId.Null)
-            this._transactionsBySeller.Add(transaction.Vendor, transaction);
-        this._transactionsByItem.Add(transaction.Item, transaction);
+        this._transactionsAll.Add(req);
+        this._transactionsRequests.Add(req.Customer, req);
+        this._transactionsByBuyer.Add(req.Customer, req);
+        if (req.Vendor != EntityRefId.Null)
+            this._transactionsBySeller.Add(req.Vendor, req);
+        this._transactionsByItem.Add(req.Item, req);
+        this.Town.ServiceRequests.Register(req);
     }
 
     internal bool TryGetTransaction(EntityRefId buyer, out ServiceRequest_Shop transaction)

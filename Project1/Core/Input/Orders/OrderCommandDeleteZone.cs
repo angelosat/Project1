@@ -4,7 +4,7 @@ using Project1.Core.UI;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderCommandDeleteZone : CommandWorker
+    internal sealed class OrderCommandDeleteZone : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target) => target is Zone;
         //protected override void Execute(MapBase map, IEnumerable<ISelectable> targets)

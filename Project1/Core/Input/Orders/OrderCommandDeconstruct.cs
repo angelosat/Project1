@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderCommandDeconstruct : CommandWorker
+    internal sealed class OrderCommandDeconstruct : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target)
             => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Deconstruct.Worker.IsValid(target);
@@ -21,7 +21,7 @@ namespace Project1.Core.Input.Orders
             }
         }
     }
-    internal sealed class OrderCommandSwitch : CommandWorker
+    internal sealed class OrderCommandSwitch : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target)
             => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Switch.Worker.IsValid(target);
@@ -37,7 +37,7 @@ namespace Project1.Core.Input.Orders
         }
         
     }
-    internal sealed class OrderCommandSwitchOff : CommandWorker
+    internal sealed class OrderCommandSwitchOff : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target)
             => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.SwitchOff.Worker.IsValid(target);

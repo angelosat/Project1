@@ -1,98 +1,106 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.AI.Personality;
+using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
+using Project1.Core.Towns.Duties;
 using System.Diagnostics;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services.Repairing;
-internal sealed class Planner_Repairs_Customer : Planner
+
+internal sealed class Planner_Repairs_Vendor : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {
+        if (!actor.HasDuty(DutyDefOf.Repairsmith))
+            return null;
         var map = actor.Map;
+        var world = map.World;
         var manager = actor.Map.Town.Repairs;
 
-        if (manager.TryGetByCustomer(actor, out var existing))
+        if (map.Town.ServiceRequests.TryGetByVendor(actor, out ServiceRequest_Repair req))
         {
-            var counter = existing.Counter.Value;
-
-            var item = actor.World.Get(existing.Item);
+            var counter = req.Counter.Value;
+            var item = world.Get(req.Item);
             var durability = item.Resources.GetPercentage(ResourceDefOf.Durability);
-            if (durability >= 1)
+
+            if (durability < 1)
             {
+                if (item.Cell == req.RepairBench.Value.Above)
+                    return new Plan(PlanDefOf.Repairing, item);
+
                 if (actor.Hauled == item)
-                    return new Plan(PlanDefOf.StoreInInventory) { Continuation = PlanContinuationPolicy.Yield };
-                if (actor.Inventory.Contains(item))
-                {
-                    existing.MarkSuccess();
-                    return null;
-                }
-                if (existing.IsMoneyAllocated)
-                {
-                    if (actor.Hauled == item)
-                        return new Plan(PlanDefOf.StoreInInventory);
-                    if (item.IsSpawned && actor.CanReachAndReserve(item))// == counter.Above)
-                        return new Plan(PlanDefOf.GoHaul, item);
-                    return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemAvailable) { ServiceRequest = existing };
-                }
-                if (existing.IsVendorWaitingPayment)
-                {
-                    if (existing.Money != EntityRefId.Null)
-                    {
-                        var itemMoney = actor.World.Get(existing.Money);
-                        if (itemMoney.Cell == counter.Above)
-                            return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemAvailable) { ServiceRequest = existing };
-                    }
-                    if (actor.Hauled is Entity carriedMoney && carriedMoney.Def == ItemDefOf.Coins && carriedMoney.StackSize == existing.Price)
-                    {
-                        //existing.Money = carriedMoney.RefId;
-                        existing.AllocateMoney(carriedMoney);
-                        return new Plan(PlanDefOf.GoPlace, map, counter.Above);
-                    }
-                    var money = actor.Inventory.FirstToTake(e => e.Def == ItemDefOf.Coins, existing.Price)
-                        ?? throw new UnreachableException("money should never be null if we've reached this point");
-                    return new Plan(PlanDefOf.RetrieveFromInventory, money) { AmountA = existing.Price };
+                    return new Plan(PlanDefOf.GoPlace, map, req.RepairBench.Value.Above);
 
-                }
-                throw new UnreachableException();
+                if (actor.Hauled is null && item.IsSpawned)
+                    return new Plan(PlanDefOf.GoHaul, item);
+
+                return new Plan(TownServicesDefOf.PlanWaitItemSubmit, map, counter) { ServiceRequest = req };
             }
-            if (existing.IsVendorWaitingItemSubmit && actor.Hauled == item)
-                return new Plan(PlanDefOf.GoPlace, map, counter.Above);
-
-            if (existing.IsVendorWorking)
-                return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemReady, map, counter.Above) { ServiceRequest = existing };
-
-            if (actor.Hauled is Entity carried)
+            else
             {
-                if (carried != item)
-                    return null;
+                if (map.World.Get(req.Money) is Entity money)
+                {
+                    if (actor.Hauled == money)
+                        // deposit money inside cash register
+                        return new Plan(PlanDefOf.GoPlace, map, counter) { Continuation = PlanContinuationPolicy.Yield };
 
-                return new Plan(TownServicesDefOf.PlanQueue, map, counter.Above) { ServiceRequest = existing };
+                    if (money.IsSpawned)
+                    {
+                        req.MarkIsPaidFor();
+                        return new Plan(PlanDefOf.SwapCarried, money);
+                    }
+                }
+                if (actor.Hauled == item)
+                    return new Plan(TownServicesDefOf.PlanWaitMoney, map, counter) { ServiceRequest = req };
+
+                if (actor.Hauled is null && item.Cell != counter.Above)
+                    return new Plan(PlanDefOf.GoHaul, item);
+
+                return null;
+
+                //if (map.World.Get(req.Money) is Entity money)
+                //{
+                //    if (actor.Hauled == money)
+                //        // deposit money inside cash register
+                //        return new Plan(PlanDefOf.GoPlace, map, counter) { Continuation = PlanContinuationPolicy.Yield };
+
+                //    if (money.Cell == counter.Above)
+                //    {
+                //        req.MarkVendorPaid();
+                //        return new Plan(PlanDefOf.SwapCarried, money);
+                //    }
+                //}
+                //if (actor.Hauled == item)
+                //    return new Plan(ServiceRepairsDefOf.PlanWaitMoney, map, counter) { ServiceRequest = req };
+
+                //if (actor.Hauled is null && item.Cell != counter.Above)
+                //    return new Plan(PlanDefOf.GoHaul, item);
+
+                //return null;
             }
-            return new Plan(PlanDefOf.RetrieveFromInventory, item);
+            throw new UnreachableException();
         }
 
-        var inventory = actor.Inventory;
-        var durThreshold = .5f + actor.Personality.GetPercentage(TraitDefOf.Deliberation) / 2f;
-        var damaged = inventory.Score(e => e.Resources?.GetPercentageOrDefault(ResourceDefOf.Durability));
+        var bench = map.Town.CraftingManager.AllWorkstations
+            .Where(e => e.WorkstationType.Capabilities.Contains(WorkstationCapabilityDefOf.Repairing))
+            .FirstOrDefault(e => actor.CanReachAndReserve(e.Parent.OriginGlobal));
 
-        var mostDamaged = damaged
-            .Where(e => e.score < durThreshold)
-            .OrderBy(i => i.score)
-            .FirstOrDefault();
-
-        if (mostDamaged.item is null)
+        if (bench is null)
             return null;
 
-        var counters = map.Town.ServiceRequests.GetCounters(TownServiceDefOf.Repairing);
-        foreach (var counter in counters)
+        foreach (var pending in map.Town.ServiceRequests.GetAllPendingRequests(TownServiceDefOf.Repairing))
         {
-            if (!actor.CanReachAndReserve(counter))
+            var typed = pending as ServiceRequest_Repair;
+            if (typed is null)
                 continue;
-            manager.Begin(actor, mostDamaged.item, (int)((1 - mostDamaged.score) * 100), counter);
+            var customer = world.Get(pending.Customer);
+            if (!actor.CanReachAndReserve(customer))
+                continue;
+            manager.AssignVendor(typed, actor);
+            manager.AssignRepairBench(typed, bench.Parent.OriginGlobal);
             return null;
         }
 

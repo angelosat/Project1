@@ -4,7 +4,7 @@ using Project1.Core.UI;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderCommandForbid : CommandWorker
+    internal sealed class OrderCommandForbid : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target) => target is Entity entity && entity.IsForbiddable();
         internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Project1.Core.Input.Orders
 {
-    internal sealed class OrderToggleTownMember : CommandWorker
+    internal sealed class OrderToggleTownMember : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target) => target is Actor;
         internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)

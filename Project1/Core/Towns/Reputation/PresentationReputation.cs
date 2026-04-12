@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Entities.Actors;
-using Project1.Core.Screens;
 using Project1.Core.Systems.Presentation;
 using Project1.Core.UI;
 using Project1.Framework.UI;
@@ -15,7 +13,8 @@ sealed class PresentationReputation : IPresentationWorker
     }
     private static void OnReputationChanged(ReputationDeltaAppliedEvent e)
     {
-        var actor = Ingame.Net.World.Get<Actor>(e.ActorId);
+        //var actor = Ingame.Net.World.Get<Actor>(e.ActorId);
+        var actor = e.Actor;
         var positive = e.Delta > 0;
         FloatingText.Create(
             actor.Map, 

@@ -2,7 +2,6 @@
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Towns.Services.Shops;
-using System.Diagnostics;
 
 namespace Project1.Core.Towns.Reputation;
 
@@ -24,10 +23,8 @@ public sealed class ReputationSourceCustomer : ReputationSourceWorker
         var patienceConsumed = transaction.PatienceInitial - patienceCurrent;
         var patienceConsumedNormalized = (float)patienceConsumed / patienceMax;
         if (transaction.IsSucceeded)
-            map.Town.Reputation.ApplyDelta(transaction.Customer, 1 + (int)(BaseValue * (1 - patienceConsumedNormalized)));
+            map.Town.Reputation.ApplyDelta(actor, 1 + (int)(BaseValue * (1 - patienceConsumedNormalized)));
         else if (transaction.IsFailed)
-            map.Town.Reputation.ApplyDelta(transaction.Customer, -BaseValue);
-        else
-            throw new UnreachableException();
+            map.Town.Reputation.ApplyDelta(actor, -BaseValue);
     }
 }

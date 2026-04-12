@@ -19,23 +19,34 @@ internal sealed class PlannerLodgingCheckIn : Planner
         if (actor.HasCheckedIn)
             return null;
         var price = 100; // TODO: query manager for price
-        if (manager.TryGetTransaction(actor, out var transaction))
+        if (manager.TryGetTransaction(actor, out var req))
         {
-            
-            if (transaction.IsPaid)
-                return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(map, transaction.Desk));
-            if (transaction.IsAwaitingPayment)
+            if (req.IsPaidFor)
+                return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(map, req.Counter.Value.Above));
+            if (req.IsVendorWaitingPayment)
             {
                 if (actor.Hauled is Entity carried)
                 {
-                    if (carried.Def != ItemDefOf.Coins)
-                        return null;
-                    if (carried.StackSize != price)
-                        return null;
-                    return new Plan(InnsDefOf.PlanPayCheckIn, new InteractionTarget(map, transaction.Desk.Above));
+                    if (!req.IsMoneyAllocated)
+                    {
+                        if (carried.Def != ItemDefOf.Coins)
+                            return null;
+                        if (carried.StackSize != price)
+                            return null;
+                        req.AllocateMoney(carried);
+                    }
+                    else
+                    {
+                        throw new System.Exception();
+                        if (carried.RefId != req.Money)
+                            return null;
+                    }
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value.Above));
                 }
                 else
                 {
+                    if (req.IsMoneyAllocated)
+                        return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(map, req.Counter.Value.Above));
                     if (!actor.Inventory.TryGet(e => e.Def == ItemDefOf.Coins && e.StackSize >= price, out Entity money))
                         return null;
                     return new Plan(PlanDefOf.RetrieveFromInventory, money) { AmountA = price };

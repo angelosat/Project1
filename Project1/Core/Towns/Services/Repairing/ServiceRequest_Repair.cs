@@ -16,11 +16,6 @@ internal sealed class ServiceRequest_Repair : ServiceRequest
 
     internal override TownServiceDef Service => TownServiceDefOf.Repairing;
 
-    internal override bool IsSucceeded => this.State == States.Success;
-
-    internal override bool IsFailed => this.State == States.Failure;
-
-
     public ServiceRequest_Repair(Actor customer, Entity item, int price, IntVec3 counter) : base(customer, price, counter)
     {
         this.Item = item.RefId;

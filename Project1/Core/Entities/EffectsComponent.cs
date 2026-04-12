@@ -9,11 +9,10 @@ using System.Linq;
 
 namespace Project1.Core.Entities;
 
-public class EffectsComponent : EntityComp
+public sealed class EffectsComponent : EntityComp
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Effects;
     public new class Spec : Spec<EffectsComponent> { }
-    //public float GetRemainingBudget(EffectDef def) => this.ActiveEffects.Where(e => e.Def == def).Sum(e => e.Budget);
     public EntityEffectWrapper GetEffect(EffectDef def) => this.ActiveEffects.First(e => e.Def == def);
     //public EntityEffectWrapper GetEffect(EffectDef def, Def target) => this.ActiveEffects.First(e => e.Def == def && e.Target == target);
     public EntityEffectWrapper? GetEffect(EffectDef def, Def target) => this.ActiveEffects.FirstOrDefault(e => e.Def == def && e.Target == target);
@@ -38,11 +37,7 @@ public class EffectsComponent : EntityComp
         var wrapper = new EntityEffectWrapper(effectt, null, 1, 0);
         this.Apply(wrapper);
     }
-    //public void Apply(EffectDef effect, int? budget, Tick tickRate)
-    //{
-    //    var wrapper = new EntityEffectWrapper(effect, null, 0, 0);
-    //    this.Apply(wrapper);
-    //}
+
     internal void Remove(EffectDef effect)
     {
         var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect);
@@ -68,8 +63,6 @@ public class EffectsComponent : EntityComp
         foreach (var w in this.ActiveEffects)
         {
             w.Tick(actor);
-            //if (w.RemainingBudget.HasValue && w.RemainingBudget == 0)
-            //    w.IsFinished = true;
             if (w.IsFinished)
             {
                 w.Finish(actor);

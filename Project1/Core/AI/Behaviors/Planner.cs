@@ -45,7 +45,6 @@ abstract public class Planner
     ];
 
     protected abstract Plan TryPlan(Actor actor);
-        //=> null;
 
     public Plan FindPlanNew(Actor actor)
         => TryPlan(actor);

@@ -29,10 +29,6 @@ static public class ReservationExtensions
     {
         return obj.Map.Town.ReservationManager.CanReserve(obj, target, stackcount, force);
     }
-    //static public bool CanReserve(this Actor obj, Entity target, int stackcount = -1, bool force = false)
-    //{
-    //    return obj.Map.Town.ReservationManager.CanReserve(obj, new TargetArgs(target), stackcount, force);
-    //}
     static public bool CanReserve(this Actor obj, Entity target, int stackcount = -1, bool force = false)
     {
         return !target.IsForbidden && obj.Map.Town.ReservationManager.CanReserve(obj, new InteractionTarget(target), stackcount, force);
@@ -41,14 +37,6 @@ static public class ReservationExtensions
     {
         obj.LastMap.Town.ReservationManager.Unreserve(obj);
     }
-    //static public void Unreserve(this Actor obj, GameObject tar)
-    //{
-    //    obj.Map.Town.ReservationManager.Unreserve(obj, new TargetArgs(tar));
-    //}
-    //static public void Unreserve(this Actor obj, TargetArgs target)
-    //{
-    //    obj.Map.Town.ReservationManager.Unreserve(obj, target);
-    //}
 
     static public int GetUnreservedAmount(this Actor obj, InteractionTarget i)
     {

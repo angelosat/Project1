@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Project1.Core.Needs;
 
-public class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui
+public sealed class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Needs;
     public override string Name { get; } = "Needs";

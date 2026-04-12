@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
@@ -12,7 +13,7 @@ namespace Project1.Core.Towns.Services;
 public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISerializableNew<ServiceRequest>
 {
     enum States { Pending, VendorWaitingItem, VendorWorking, VendorWaitingPay, VendorIsPaid, Success, Failure }
-    private States State;
+    private States Phase;
     internal TownServiceRequestId Id { get; set; }
     public SimulationTick TickStarted { get; private set; }
     internal int PatienceInitial { get; private set; }
@@ -24,10 +25,11 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     internal EntityRefId Customer { get; set; }
     internal EntityRefId Vendor { get; set; }
     abstract internal TownServiceDef Service { get; }
-    abstract internal bool IsSucceeded { get; }
-    abstract internal bool IsFailed { get;}
+    internal bool IsSucceeded => this.Phase == States.Success;
+    internal bool IsFailed => this.Phase == States.Failure;
 
-    public bool IsPaidFor => this.Money != EntityRefId.Null;
+    public bool IsMoneyAllocated => this.Money != EntityRefId.Null;
+    public bool IsPaidFor => this.Phase == States.VendorIsPaid;
 
     protected ServiceRequest(Actor customer, int price)
     {
@@ -59,7 +61,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         if (this.Counter.HasValue)
             tag.Save("Counter", this.Counter.Value);
         tag.Save("Money", this.Money);
-        tag.Save("State", (int)this.State);
+        tag.Save("Phase", (int)this.Phase);
         this.SaveExtra(tag);
         return tag;
     }
@@ -77,7 +79,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         if (tag.TryLoadIntVec3("Counter", out var counter)) 
             runtime.Counter = counter;
         runtime.Money = tag.LoadEntityRefId("Money");
-        runtime.State = (States)tag.LoadInt("State");
+        runtime.Phase = (States)tag.LoadInt("Phase");
         runtime.LoadExtra(tag);
         return runtime;
     }
@@ -104,7 +106,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         if (this.Counter.HasValue)
             w.Write(this.Counter.Value);
         w.Write(this.Money);
-        w.Write((int)this.State);
+        w.Write((int)this.Phase);
         this.WriteExtra(w);
     }
 
@@ -121,7 +123,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         if (r.ReadBoolean())
             this.Counter = r.ReadIntVec3();
         this.Money = r.ReadEntityRefId();
-        this.State = (States)r.ReadInt32();
+        this.Phase = (States)r.ReadInt32();
         this.ReadExtra(r);
         return this;
     }
@@ -131,19 +133,38 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     protected virtual void WriteExtra(IDataWriter w) { }
     protected virtual void ReadExtra(IDataReader r) { }
 
-    public bool IsVendorWaitingItemSubmit => this.State == States.VendorWaitingItem;
-    public bool IsVendorWorking => this.State == States.VendorWorking;
-    public bool IsVendorWaitingPayment => this.State == States.VendorWaitingPay;
+    public bool IsVendorWaitingItemSubmit => this.Phase == States.VendorWaitingItem;
+    public bool IsVendorWorking => this.Phase == States.VendorWorking;
+    public bool IsVendorWaitingPayment => this.Phase == States.VendorWaitingPay;
 
     internal void MarkVendorWaiting()
-        => this.State = States.VendorWaitingItem;
+        => this.Phase = States.VendorWaitingItem;
 
     internal void MarkVendorWorking()
-        => this.State = States.VendorWorking;
+        => this.Phase = States.VendorWorking;
 
     internal void MarkVendorWaitingPayment()
-        => this.State = States.VendorWaitingPay;
+        => this.Phase = States.VendorWaitingPay;
 
     internal void MarkIsPaidFor()
-        => this.State = States.VendorIsPaid;
+        => this.Phase = States.VendorIsPaid;
+
+    internal void MarkSucceeded()
+    {
+        this.Phase = States.Success;
+    }
+    internal void MarkFailed()
+    {
+        this.Phase = States.Failure;
+    }
+
+    internal void AllocateMoney(Entity money)
+    {
+        this.Money = money.RefId;
+    }
+
+    internal void AssignVendor(Actor actor)
+    {
+        this.Vendor = actor.RefId;
+    }
 }

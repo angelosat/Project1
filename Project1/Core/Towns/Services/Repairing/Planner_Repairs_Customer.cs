@@ -128,7 +128,7 @@ internal sealed class Planner_Repairs_Customer : Planner
                     existing.MarkSuccess();
                     return null;
                 }
-                if (existing.IsPaidFor)
+                if (existing.IsMoneyAllocated)
                 {
                     if (actor.Hauled == item)
                         return new Plan(PlanDefOf.StoreInInventory);
@@ -146,7 +146,8 @@ internal sealed class Planner_Repairs_Customer : Planner
                     }
                     if (actor.Hauled is Entity carriedMoney && carriedMoney.Def == ItemDefOf.Coins && carriedMoney.StackSize == existing.Price)
                     {
-                        existing.Money = carriedMoney.RefId;
+                        //existing.Money = carriedMoney.RefId;
+                        existing.AllocateMoney(carriedMoney);
                         return new Plan(PlanDefOf.GoPlace, map, counter.Above);
                     }
                     var money = actor.Inventory.FirstToTake(e => e.Def == ItemDefOf.Coins, existing.Price)

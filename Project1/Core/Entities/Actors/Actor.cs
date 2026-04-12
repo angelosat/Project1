@@ -35,7 +35,6 @@ namespace Project1.Core.Entities.Actors;
 
 public sealed class Actor : Entity
 {
-
     internal SkillsComponent Skills => field ??= this.GetComponent<SkillsComponent>();
 
     internal AttributesComponent Attributes => field ??= this.GetComponent<AttributesComponent>();

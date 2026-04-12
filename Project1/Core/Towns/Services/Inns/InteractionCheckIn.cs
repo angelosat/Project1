@@ -18,8 +18,17 @@ sealed class InteractionCheckIn : InteractionLogic
     internal override void OnStart(Interaction i)
         => i.Actor.Map.Town.Inns.TryEnqueue(i.Actor, i.Target.Global);
 
+    //internal override bool HasSucceeded(Interaction i)
+    //    => i.Actor.HasCheckedIn || i.Actor.Map.Town.Inns.GetTransactionByGuest(i.Actor).IsAwaitingPayment;
     internal override bool HasSucceeded(Interaction i)
-        => i.Actor.HasCheckedIn || i.Actor.Map.Town.Inns.GetTransactionByGuest(i.Actor).IsAwaitingPayment;
+    {
+        if (i.Actor.HasCheckedIn)
+            return true;
+        if (i.Actor.Map.Town.Inns.GetTransactionByGuest(i.Actor).IsVendorWaitingPayment)
+            return true;
+        return false;
+    }
+
     internal override void OnSuccess(Interaction i)
         => i.Actor.AI.State.Log.Write($"I have checked in successfully");
 

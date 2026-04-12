@@ -16,29 +16,31 @@ internal sealed class PlannerLodgingRegisterGuest : Planner
 
         var map = actor.Map;
         var manager = map.Town.Inns;
-        if (manager.GetTransactionByClerk(actor) is ServiceRequest_Inn transaction)
+        if (manager.GetTransactionByClerk(actor) is ServiceRequest_Inn req)
         {
-            if (transaction.IsProcessed && actor.Hauled is null)
-                return new Plan(InnsDefOf.PlanRegisterGuest, new InteractionTarget(actor.Map, transaction.Desk));
+            if (req.IsPaidFor && actor.Hauled is null)
+                    return new Plan(InnsDefOf.PlanRegisterGuest, new InteractionTarget(actor.Map, req.Counter.Value));
 
-            if (transaction.IsPaid)
+            if (req.IsMoneyAllocated)
             {
-                var money = map.World.Get<Entity>(transaction.Money);
+                var money = map.World.Get<Entity>(req.Money);
                 
                 if (actor.Hauled == money)
                 {
-                    if (!manager.TryFindBedFrom(transaction.Desk, out _))
+                    if (!manager.TryFindBedFrom(req.Counter.Value, out _))
                         throw new Exception();
-                    manager.MarkProcessed(transaction.Customer);
-                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, transaction.Desk));
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value));
                 }
-                if (money.Cell == transaction.Desk.Above)
+                if (money.Cell == req.Counter.Value.Above)
+                {
+                    req.MarkIsPaidFor();
+
                     return new Plan(PlanDefOf.GoHaul, money);
+                }
             }
 
             throw new UnreachableException();
         }
-        //var busyServicePoints = manager.GetServicePointsWithQueue();
         var busyServicePoints = manager.GetServicePointsWithQueueUnserved();
         foreach (var point in busyServicePoints)
         {

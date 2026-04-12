@@ -47,7 +47,6 @@ public sealed class Reservation
     public SaveTag Save()
     {
         var tag = new SaveTag(SaveTag.Types.Compound);
-        //tag.Add(this.Actor.Save("ActorID"));
         tag.Save("ActorID", this.Actor);
         tag.Add(this.Target.Save("Target"));
         tag.Add(this.Amount.Save("Amount"));
@@ -55,7 +54,6 @@ public sealed class Reservation
     }
     public Reservation(MapBase map, SaveTag tag)
     {
-        //this.Actor = tag.GetValue<int>("ActorID");
         this.Actor = tag.LoadEntityRefId("ActorID");
         this.Target = new InteractionTarget(map.World, tag["Target"]);
         this.Amount = tag.GetValue<int>("Amount");

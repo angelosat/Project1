@@ -10,7 +10,7 @@ sealed class InteractionWaitPayForBed : InteractionLogic
     internal override void OnStart(Interaction i)
     {
         var typedCtx = (InteractionContext_Inns)i.Context;
-        typedCtx.Transaction.MarkAwaitingPayment();
+        typedCtx.Transaction.MarkVendorWaitingPayment();
     }
     internal override bool HasSucceeded(Interaction i)
     {
@@ -19,7 +19,7 @@ sealed class InteractionWaitPayForBed : InteractionLogic
         if (transaction.Money == EntityRefId.Null)
             return false;
         var money = i.Actor.Map.World.Get<Entity>(transaction.Money);
-        if (money.Cell != transaction.Desk.Above)
+        if (money.Cell != transaction.Counter.Value.Above)
             return false;
         return true;
     }

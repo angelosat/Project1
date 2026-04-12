@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Blocks;
-using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
@@ -12,7 +11,6 @@ namespace Project1.Core.Towns.Services.Inns;
 record struct InnGuestProfile(EntityRefId ActorId, IntVec3 AssignedBed, SimulationTick TimeCheckedIn) { }
 public sealed class TownComp_Inns : TownComp
 {
-
     public override string Name => "Inns";
     private readonly HashSet<IntVec3> AllBeds = [];
     private readonly Dictionary<IntVec3, Queue<Actor>> QueuesPerServicePoint = [];
@@ -51,7 +49,7 @@ public sealed class TownComp_Inns : TownComp
             if (t.IsSucceeded || t.IsFailed)
             {
                 this.OpenTransactionsByGuest.Remove(id);
-                this.OpenTransactionsByDesk.Remove(t.Desk);
+                this.OpenTransactionsByDesk.Remove(t.Counter.Value);
                 this.OpenTransactionsByClerk.Remove(t.Vendor);
                 this.Town.OpenTransactions.Remove(id);
                 this.Map.Events.Post(new TownServiceCompleteEvent(this.Map, t));
@@ -82,16 +80,13 @@ public sealed class TownComp_Inns : TownComp
         var transaction = new ServiceRequest_Inn(guest, this.Price, servicePoint);
         AddInt(transaction);
         this.Town.OpenTransactions.Add(guest.RefId, transaction);
-        //this.OpenTransactionsByGuest.Add(guest.RefId, transaction);
-        //this.OpenTransactionsByDesk.Add(servicePoint, transaction);
-        //this.Town.OpenTransactions.Add(guest.RefId, transaction);
         return true;
     }
 
     private void AddInt(ServiceRequest_Inn transaction)
     {
         this.OpenTransactionsByGuest.Add(transaction.Customer, transaction);
-        this.OpenTransactionsByDesk.Add(transaction.Desk, transaction);
+        this.OpenTransactionsByDesk.Add(transaction.Counter.Value, transaction);
         if (transaction.Vendor != EntityRefId.Null)
             this.OpenTransactionsByClerk.Add(transaction.Vendor, transaction);
     }
@@ -202,12 +197,11 @@ public sealed class TownComp_Inns : TownComp
         queue.Dequeue();
         this.GuestsQueuing.Remove(guest);
         var entry = new InnGuestProfile(guest.RefId, bed, this.Map.World.CurrentTick);
-        var transaction = this.OpenTransactionsByGuest[guest.RefId];
-        transaction.MarkFinished();
+        var req = this.OpenTransactionsByGuest[guest.RefId];
+        req.MarkSucceeded();
         this.RegistryByGuest.Add(guest.RefId, entry);
         this.RegistryByBed.Add(bed, entry);
         this.Town.Ownership.Assign(bed, guest);
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
         return true;
     }
     internal void AbortQueuing(Actor actor)
@@ -216,28 +210,12 @@ public sealed class TownComp_Inns : TownComp
         this.GuestsQueuing.Remove(actor);
         var t = this.OpenTransactionsByGuest[actor.RefId];
         t.MarkFailed();
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, t));
     }
 
     internal void AssignClerk(IntVec3 desk, Actor actor)
     {
         var req = this.OpenTransactionsByDesk[desk];
-        req.AssignClerk(actor);
+        req.AssignVendor(actor);
         this.OpenTransactionsByClerk.Add(actor.RefId, req);
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-    }
-
-    internal void MarkPaid(Actor actor, Entity hauled)
-    {
-        var req = this.GetTransactionByGuest(actor);
-        req.MarkPaid(hauled);
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-    }
-
-    internal void MarkProcessed(EntityRefId buyer)
-    {
-        var req = this.OpenTransactionsByGuest[buyer];
-        req.MarkProcessed();
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 }

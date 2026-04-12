@@ -35,14 +35,12 @@ sealed class BehaviorHandlePlans : Behavior
     {
         var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);
         planners = planners.Concat(Planner.EssentialPlanners);
-        //var jobs = actor.Town.DutiesManager.GetDuties(actor);
         var jobs = actor.ActiveDuties;
         jobs = jobs.OrderBy(j => j.Priority);
         var jobPlanners = jobs.SelectMany(j => j.Def.Planners);
 
         // replace this when meta-roles are fully implemented
         planners = actor.IsTownMember ? planners.Concat(jobPlanners) : planners.Concat(Planner.VisitorPlanners);
-        //planners = planners.Concat(jobPlanners);
         planners = planners.Append(PlannerDefOf.Idle);
         return planners;
     }
@@ -62,15 +60,12 @@ sealed class BehaviorHandlePlans : Behavior
             var bhav = plan.CreateBehavior(parent);
 
             if (!bhav.CommitReservations())
-            //if (!plan.ReserveAll())
             {
                 parent.Unreserve();
                 continue;
             }
-            //var bhav = plan.CreateBehavior(parent);
             state.Assign(bhav, planner);
             $"{this.Actor} assigned {plan} from {planner}".ToConsole();
-            //parent.AI.State.CurrentPlanner = plan.Continuation == PlanContinuationPolicy.Continue ? planner : null;
             return plan;
         }
 
@@ -79,7 +74,6 @@ sealed class BehaviorHandlePlans : Behavior
 
     bool TryForcePlan(Actor parent, Plan plan, AIState state)
     {
-        //if (!bhav.CommitReservations())
         if (!plan.ReserveAll())
             return false;
         var bhav = plan.CreateBehavior(parent);
@@ -160,7 +154,7 @@ sealed class BehaviorHandlePlans : Behavior
             var currentBhav = state.Behavior;
             var (result, source) = currentBhav.TickNew(parent, state);
 
-            if (parent.Resources.ViewOld(ResourceDefOf.Stamina).Value == 0)
+            if (parent.Resources.View(ResourceDefOf.Stamina).Value == 0)
                 result = BehaviorState.Fail;
 
             switch (result)
